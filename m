@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F09BD7DB274
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 05:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B6D7DB276
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 05:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbjJ3ENn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 00:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        id S230399AbjJ3EPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 00:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3ENl (ORCPT
+        with ESMTP id S229514AbjJ3EPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 00:13:41 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61D4AB4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 21:13:36 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxDOtuLT9lRqs1AA--.34396S3;
-        Mon, 30 Oct 2023 12:13:34 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxO9xrLT9l5M02AA--.51747S3;
-        Mon, 30 Oct 2023 12:13:33 +0800 (CST)
-Message-ID: <ea335f64-16cc-47aa-b523-0aae6f64e223@loongson.cn>
-Date:   Mon, 30 Oct 2023 12:13:34 +0800
+        Mon, 30 Oct 2023 00:15:30 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E618B6;
+        Sun, 29 Oct 2023 21:15:26 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39U4FAOi82682907, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39U4FAOi82682907
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Oct 2023 12:15:10 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 30 Oct 2023 12:15:11 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 30 Oct 2023 12:15:10 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
+ RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
+ 15.01.2375.007; Mon, 30 Oct 2023 12:15:10 +0800
+From:   Ricky WU <ricky_wu@realtek.com>
+To:     "arnd@arndb.de" <arnd@arndb.de>, Ricky WU <ricky_wu@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "frank.li@vivo.com" <frank.li@vivo.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: [PATCH v4 2/3] misc: rtsx: add to support new card reader rts5264
+Thread-Topic: [PATCH v4 2/3] misc: rtsx: add to support new card reader
+ rts5264
+Thread-Index: AQHaCuT8FdmgKygrd0utDvH25GSSyA==
+Date:   Mon, 30 Oct 2023 04:15:10 +0000
+Message-ID: <398787c4b0374b7fa61fefd14287d70d@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.81.102]
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] drm/loongson: Allow attach drm bridge driver by
- calling lsdc_output_init()
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20231029194607.379459-1-suijingfeng@loongson.cn>
- <20231029194607.379459-4-suijingfeng@loongson.cn>
- <CAA8EJpoWXtmMt9vpG9Q4dpv6HnMjtdmEo6rbBszXNG30NhbB1A@mail.gmail.com>
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <CAA8EJpoWXtmMt9vpG9Q4dpv6HnMjtdmEo6rbBszXNG30NhbB1A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8CxO9xrLT9l5M02AA--.51747S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXw1kCw17CFykCF43Zw4rCrX_yoWrGF4UpF
-        Wrta9xKr4DJFn0gry8Zr48Z34xKrZ5tFs5twsYkFy3C34Yyryfta1jqr45CFykAFsYqrWI
-        yF4qqF1kuFn0yrXCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        XVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y
-        6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-        AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-        2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
-        C2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-        nUUI43ZEXa7IU8CksDUUUUU==
+X-KSE-AntiSpam-Interceptor-Info: fallback
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -67,108 +64,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-
-On 2023/10/30 07:10, Dmitry Baryshkov wrote:
->> +
->> +/* Built-in HDMI encoder funcs on display pipe 0 */
->> +
->> +static void lsdc_pipe0_hdmi_encoder_reset(struct drm_encoder *encoder)
->> +{
->> +       struct drm_device *ddev = encoder->dev;
->> +       struct lsdc_device *ldev = to_lsdc(ddev);
->> +       u32 val;
->> +
->> +       val = PHY_CLOCK_POL | PHY_CLOCK_EN | PHY_DATA_EN;
->> +       lsdc_wreg32(ldev, LSDC_CRTC0_DVO_CONF_REG, val);
->> +
->> +       /* Using built-in GPIO emulated I2C instead of the hardware I2C */
->> +       lsdc_ureg32_clr(ldev, LSDC_HDMI0_INTF_CTRL_REG, HW_I2C_EN);
->> +
->> +       /* Help the HDMI phy get out of reset state */
->> +       lsdc_wreg32(ldev, LSDC_HDMI0_PHY_CTRL_REG, HDMI_PHY_RESET_N);
->> +
->> +       drm_dbg(ddev, "%s reset\n", encoder->name);
->> +
->> +       mdelay(20);
->> +}
->> +
->> +const struct drm_encoder_funcs lsdc_pipe0_hdmi_encoder_funcs = {
->> +       .reset = lsdc_pipe0_hdmi_encoder_reset,
->> +       .destroy = drm_encoder_cleanup,
->> +};
->> +
->> +/* Built-in HDMI encoder funcs on display pipe 1 */
-> All pipe 1 code looks like a pipe0, just the registers were changed.
-> Could you please refactor that to use a single instance of all
-> functions and pass pipe id through the data struct?
-> Then you can use macros to determine whether to use pipe 0 or pipe 1 register.
->
-
-Yes, you are right. But please allow me to explain something.
-
-In the past, Thomas told me to untangle it, despite this idea lead to duplicated code(or pattern).
-but at the long run, this pay off.
-
-Because the method of passing pipe id will introduce the "if and else" side effects.
-But my functions have no if and else.
-
-
-```
-if (pipe == 0) {
-     ...
-} else if (pipe == 1) {
-     ...
-}
-```
-
-Using the C program language's Macro(#define XXX) to generate code is not fun to me.
-Because every time you want to change it, It needs my brains to thinking it twice. Maybe
-more than twice.
-
-1) It needs my brains to replace the macros manually each time I saw the code.
-
-2) When I want to change(alter) the prototype, I need to worry about all of the instances.
-    sometimes it is not symmetry. The DVO port and HDMI phy itself is symmetry, but the
-    external display bridge connected with them are not symmetry. So, there are some registers
-    located at the domain of this display controller side should change according to the
-    different type of external display bridge.
-
-3) Code duplication is actually less harmful than unmaintainable.
-    macros are abstract, as noob level programmer, we completely drop the idea of abstract.
-    Bad abstract means design failure, this is what we are most afraid of.
-    Generally, we would like divide the whole into small cases, handle them one by one.
-    It is actually to review and understand.
-
-4) From the viewpoint of the hardware, the display output hardware suffer from changes.
-    Because users always want *new* display interface. The need of the users are also varies.
-    Personally, I think macros are best for the symmetry case, while the output part of a
-    display pipe always suffer from change.
-
->> +
->> +static void lsdc_pipe1_hdmi_encoder_reset(struct drm_encoder *encoder)
->> +{
->> +       struct drm_device *ddev = encoder->dev;
->> +       struct lsdc_device *ldev = to_lsdc(ddev);
->> +       u32 val;
->> +
->> +       val = PHY_CLOCK_POL | PHY_CLOCK_EN | PHY_DATA_EN;
->> +       lsdc_wreg32(ldev, LSDC_CRTC1_DVO_CONF_REG, val);
->> +
->> +       /* Using built-in GPIO emulated I2C instead of the hardware I2C */
->> +       lsdc_ureg32_clr(ldev, LSDC_HDMI1_INTF_CTRL_REG, HW_I2C_EN);
->> +
->> +       /* Help the HDMI phy get out of reset state */
->> +       lsdc_wreg32(ldev, LSDC_HDMI1_PHY_CTRL_REG, HDMI_PHY_RESET_N);
->> +
->> +       drm_dbg(ddev, "%s reset\n", encoder->name);
->> +
->> +       mdelay(20);
->> +}
->> +
->> +const struct drm_encoder_funcs lsdc_pipe1_hdmi_encoder_funcs = {
->> +       .reset = lsdc_pipe1_hdmi_encoder_reset,
->> +       .destroy = drm_encoder_cleanup,
->> +};
-
+YWRkIHJ0czUyNjQgdG8ganVkZ2VtZW50IHRoZW4gZG8gdGhlIHJ0czUyNjQgZnVuY3Rpb24NCm9y
+IHNldCBzb21lIHJ0czUyNjQgcmVnaXN0ZXJzDQoNClNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxy
+aWNreV93dUByZWFsdGVrLmNvbT4NCi0tLQ0KdjI6IHJlbW92ZWQgaWMgdmVyc2lvbiBjaGVjaw0K
+djM6IHNwbGl0IHRoZSBwYXRjaCB1cCB3aXRoIGNhcmRyZWFkZXIgcGFydCBhbmQgbW1jIHBhcnQN
+CnY0OiBzcGxpdCBuZXcgZGVmaW5pdGlvbiB1cCBmcm9tIHYzDQotLS0NCiBkcml2ZXJzL21pc2Mv
+Y2FyZHJlYWRlci9ydHN4X3Bjci5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
+DQogZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9wY3IuaCB8ICAxICsNCiBpbmNsdWRlL2xp
+bnV4L3J0c3hfcGNpLmggICAgICAgICAgIHwgIDggKysrKysrKysNCiAzIGZpbGVzIGNoYW5nZWQs
+IDM0IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJz
+L21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jIGIvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRz
+eF9wY3IuYw0KaW5kZXggYTMwNzUxYWQzNzMzLi4xYTY0MzY0NzAwZWIgMTAwNjQ0DQotLS0gYS9k
+cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jDQorKysgYi9kcml2ZXJzL21pc2MvY2Fy
+ZHJlYWRlci9ydHN4X3Bjci5jDQpAQCAtMjYsNiArMjYsNyBAQA0KICNpbmNsdWRlICJydHN4X3Bj
+ci5oIg0KICNpbmNsdWRlICJydHM1MjYxLmgiDQogI2luY2x1ZGUgInJ0czUyMjguaCINCisjaW5j
+bHVkZSAicnRzNTI2NC5oIg0KIA0KIHN0YXRpYyBib29sIG1zaV9lbiA9IHRydWU7DQogbW9kdWxl
+X3BhcmFtKG1zaV9lbiwgYm9vbCwgU19JUlVHTyB8IFNfSVdVU1IpOw0KQEAgLTU0LDYgKzU1LDcg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkIHJ0c3hfcGNpX2lkc1tdID0gew0K
+IAl7IFBDSV9ERVZJQ0UoMHgxMEVDLCAweDUyNjApLCBQQ0lfQ0xBU1NfT1RIRVJTIDw8IDE2LCAw
+eEZGMDAwMCB9LA0KIAl7IFBDSV9ERVZJQ0UoMHgxMEVDLCAweDUyNjEpLCBQQ0lfQ0xBU1NfT1RI
+RVJTIDw8IDE2LCAweEZGMDAwMCB9LA0KIAl7IFBDSV9ERVZJQ0UoMHgxMEVDLCAweDUyMjgpLCBQ
+Q0lfQ0xBU1NfT1RIRVJTIDw8IDE2LCAweEZGMDAwMCB9LA0KKwl7IFBDSV9ERVZJQ0UoMHgxMEVD
+LCAweDUyNjQpLCBQQ0lfQ0xBU1NfT1RIRVJTIDw8IDE2LCAweEZGMDAwMCB9LA0KIAl7IDAsIH0N
+CiB9Ow0KIA0KQEAgLTcxNCw2ICs3MTYsOSBAQCBpbnQgcnRzeF9wY2lfc3dpdGNoX2Nsb2NrKHN0
+cnVjdCBydHN4X3BjciAqcGNyLCB1bnNpZ25lZCBpbnQgY2FyZF9jbG9jaywNCiAJaWYgKFBDSV9Q
+SUQocGNyKSA9PSBQSURfNTIyOCkNCiAJCXJldHVybiBydHM1MjI4X3BjaV9zd2l0Y2hfY2xvY2so
+cGNyLCBjYXJkX2Nsb2NrLA0KIAkJCQlzc2NfZGVwdGgsIGluaXRpYWxfbW9kZSwgZG91YmxlX2Ns
+aywgdnBjbGspOw0KKwlpZiAoUENJX1BJRChwY3IpID09IFBJRF81MjY0KQ0KKwkJcmV0dXJuIHJ0
+czUyNjRfcGNpX3N3aXRjaF9jbG9jayhwY3IsIGNhcmRfY2xvY2ssDQorCQkJCXNzY19kZXB0aCwg
+aW5pdGlhbF9tb2RlLCBkb3VibGVfY2xrLCB2cGNsayk7DQogDQogCWlmIChpbml0aWFsX21vZGUp
+IHsNCiAJCS8qIFdlIHVzZSAyNTBrKGFyb3VuZCkgaGVyZSwgaW4gaW5pdGlhbCBzdGFnZSAqLw0K
+QEAgLTk4Nyw3ICs5OTIsOCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgcnRzeF9wY2lfaXNyKGludCBp
+cnEsIHZvaWQgKmRldl9pZCkNCiANCiAJaW50X3JlZyAmPSAocGNyLT5iaWVyIHwgMHg3RkZGRkYp
+Ow0KIA0KLQlpZiAoaW50X3JlZyAmIFNEX09DX0lOVCkNCisJaWYgKChpbnRfcmVnICYgU0RfT0Nf
+SU5UKSB8fA0KKwkJCSgoaW50X3JlZyAmIFNEX09WUF9JTlQpICYmIChQQ0lfUElEKHBjcikgPT0g
+UElEXzUyNjQpKSkNCiAJCXJ0c3hfcGNpX3Byb2Nlc3Nfb2NwX2ludGVycnVwdChwY3IpOw0KIA0K
+IAlpZiAoaW50X3JlZyAmIFNEX0lOVCkgew0KQEAgLTExNTksNyArMTE2NSw5IEBAIHZvaWQgcnRz
+eF9wY2lfZW5hYmxlX29vYnNfcG9sbGluZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQogCXUx
+NiB2YWw7DQogDQotCWlmICgoUENJX1BJRChwY3IpICE9IFBJRF81MjVBKSAmJiAoUENJX1BJRChw
+Y3IpICE9IFBJRF81MjYwKSkgew0KKwlpZiAoKFBDSV9QSUQocGNyKSAhPSBQSURfNTI1QSkgJiYN
+CisJCShQQ0lfUElEKHBjcikgIT0gUElEXzUyNjApICYmDQorCQkoUENJX1BJRChwY3IpICE9IFBJ
+RF81MjY0KSkgew0KIAkJcnRzeF9wY2lfcmVhZF9waHlfcmVnaXN0ZXIocGNyLCAweDAxLCAmdmFs
+KTsNCiAJCXZhbCB8PSAxPDw5Ow0KIAkJcnRzeF9wY2lfd3JpdGVfcGh5X3JlZ2lzdGVyKHBjciwg
+MHgwMSwgdmFsKTsNCkBAIC0xMTc1LDcgKzExODMsOSBAQCB2b2lkIHJ0c3hfcGNpX2Rpc2FibGVf
+b29ic19wb2xsaW5nKHN0cnVjdCBydHN4X3BjciAqcGNyKQ0KIHsNCiAJdTE2IHZhbDsNCiANCi0J
+aWYgKChQQ0lfUElEKHBjcikgIT0gUElEXzUyNUEpICYmIChQQ0lfUElEKHBjcikgIT0gUElEXzUy
+NjApKSB7DQorCWlmICgoUENJX1BJRChwY3IpICE9IFBJRF81MjVBKSAmJg0KKwkJKFBDSV9QSUQo
+cGNyKSAhPSBQSURfNTI2MCkgJiYNCisJCShQQ0lfUElEKHBjcikgIT0gUElEXzUyNjQpKSB7DQog
+CQlydHN4X3BjaV9yZWFkX3BoeV9yZWdpc3RlcihwY3IsIDB4MDEsICZ2YWwpOw0KIAkJdmFsICY9
+IH4oMTw8OSk7DQogCQlydHN4X3BjaV93cml0ZV9waHlfcmVnaXN0ZXIocGNyLCAweDAxLCB2YWwp
+Ow0KQEAgLTEyMjYsNyArMTIzNiw3IEBAIHN0YXRpYyBpbnQgcnRzeF9wY2lfaW5pdF9odyhzdHJ1
+Y3QgcnRzeF9wY3IgKnBjcikNCiAJcnRzeF9wY2lfZW5hYmxlX2J1c19pbnQocGNyKTsNCiANCiAJ
+LyogUG93ZXIgb24gU1NDICovDQotCWlmIChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHsNCisJ
+aWYgKChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHx8IChQQ0lfUElEKHBjcikgPT0gUElEXzUy
+NjQpKSB7DQogCQkvKiBHYXRpbmcgcmVhbCBtY3UgY2xvY2sgKi8NCiAJCWVyciA9IHJ0c3hfcGNp
+X3dyaXRlX3JlZ2lzdGVyKHBjciwgUlRTNTI2MV9GV19DRkcxLA0KIAkJCVJUUzUyNjFfTUNVX0NM
+T0NLX0dBVElORywgMCk7DQpAQCAtMTI3MCw2ICsxMjgwLDExIEBAIHN0YXRpYyBpbnQgcnRzeF9w
+Y2lfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJZWxzZSBpZiAoUENJX1BJRChwY3Ip
+ID09IFBJRF81MjI4KQ0KIAkJcnRzeF9wY2lfYWRkX2NtZChwY3IsIFdSSVRFX1JFR19DTUQsIFNT
+Q19DVEwyLCAweEZGLA0KIAkJCVJUUzUyMjhfU1NDX0RFUFRIXzJNKTsNCisJZWxzZSBpZiAoaXNf
+dmVyc2lvbihwY3IsIDB4NTI2NCwgSUNfVkVSX0EpKQ0KKwkJcnRzeF9wY2lfYWRkX2NtZChwY3Is
+IFdSSVRFX1JFR19DTUQsIFNTQ19DVEwxLCBTU0NfUlNUQiwgMCk7DQorCWVsc2UgaWYgKFBDSV9Q
+SUQocGNyKSA9PSBQSURfNTI2NCkNCisJCXJ0c3hfcGNpX2FkZF9jbWQocGNyLCBXUklURV9SRUdf
+Q01ELCBTU0NfQ1RMMiwgMHhGRiwNCisJCQlSVFM1MjY0X1NTQ19ERVBUSF8yTSk7DQogCWVsc2UN
+CiAJCXJ0c3hfcGNpX2FkZF9jbWQocGNyLCBXUklURV9SRUdfQ01ELCBTU0NfQ1RMMiwgMHhGRiwg
+MHgxMik7DQogDQpAQCAtMTMwNSw2ICsxMzIwLDcgQEAgc3RhdGljIGludCBydHN4X3BjaV9pbml0
+X2h3KHN0cnVjdCBydHN4X3BjciAqcGNyKQ0KIAljYXNlIFBJRF81MjYwOg0KIAljYXNlIFBJRF81
+MjYxOg0KIAljYXNlIFBJRF81MjI4Og0KKwljYXNlIFBJRF81MjY0Og0KIAkJcnRzeF9wY2lfd3Jp
+dGVfcmVnaXN0ZXIocGNyLCBQTV9DTEtfRk9SQ0VfQ1RMLCAxLCAxKTsNCiAJCWJyZWFrOw0KIAlk
+ZWZhdWx0Og0KQEAgLTE0MDQsNiArMTQyMCwxMCBAQCBzdGF0aWMgaW50IHJ0c3hfcGNpX2luaXRf
+Y2hpcChzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJY2FzZSAweDUyMjg6DQogCQlydHM1MjI4X2lu
+aXRfcGFyYW1zKHBjcik7DQogCQlicmVhazsNCisNCisJY2FzZSAweDUyNjQ6DQorCQlydHM1MjY0
+X2luaXRfcGFyYW1zKHBjcik7DQorCQlicmVhazsNCiAJfQ0KIA0KIAlwY3JfZGJnKHBjciwgIlBJ
+RDogMHglMDR4LCBJQyB2ZXJzaW9uOiAweCUwMnhcbiIsDQpAQCAtMTU0NCw3ICsxNTY0LDcgQEAg
+c3RhdGljIGludCBydHN4X3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGNpZGV2LA0KIAlwY3It
+PnBjaSA9IHBjaWRldjsNCiAJZGV2X3NldF9kcnZkYXRhKCZwY2lkZXYtPmRldiwgaGFuZGxlKTsN
+CiANCi0JaWYgKENIS19QQ0lfUElEKHBjciwgMHg1MjVBKSkNCisJaWYgKChDSEtfUENJX1BJRChw
+Y3IsIDB4NTI1QSkpIHx8IChDSEtfUENJX1BJRChwY3IsIDB4NTI2NCkpKQ0KIAkJYmFyID0gMTsN
+CiAJbGVuID0gcGNpX3Jlc291cmNlX2xlbihwY2lkZXYsIGJhcik7DQogCWJhc2UgPSBwY2lfcmVz
+b3VyY2Vfc3RhcnQocGNpZGV2LCBiYXIpOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJk
+cmVhZGVyL3J0c3hfcGNyLmggYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5oDQpp
+bmRleCAzN2QxZjMxNmFlMTcuLjkyMTVkNjZkZTAwYyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWlz
+Yy9jYXJkcmVhZGVyL3J0c3hfcGNyLmgNCisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0
+c3hfcGNyLmgNCkBAIC03NCw2ICs3NCw3IEBAIHZvaWQgcnRsODQxMWJfaW5pdF9wYXJhbXMoc3Ry
+dWN0IHJ0c3hfcGNyICpwY3IpOw0KIHZvaWQgcnRzNTI2MF9pbml0X3BhcmFtcyhzdHJ1Y3QgcnRz
+eF9wY3IgKnBjcik7DQogdm9pZCBydHM1MjYxX2luaXRfcGFyYW1zKHN0cnVjdCBydHN4X3BjciAq
+cGNyKTsNCiB2b2lkIHJ0czUyMjhfaW5pdF9wYXJhbXMoc3RydWN0IHJ0c3hfcGNyICpwY3IpOw0K
+K3ZvaWQgcnRzNTI2NF9pbml0X3BhcmFtcyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcik7DQogDQogc3Rh
+dGljIGlubGluZSB1OCBtYXBfc2RfZHJpdmUoaW50IGlkeCkNCiB7DQpkaWZmIC0tZ2l0IGEvaW5j
+bHVkZS9saW51eC9ydHN4X3BjaS5oIGIvaW5jbHVkZS9saW51eC9ydHN4X3BjaS5oDQppbmRleCA1
+MzQwMzhkOTYyZTQuLjQ2MTJlZjA5YTBjNyAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGludXgvcnRz
+eF9wY2kuaA0KKysrIGIvaW5jbHVkZS9saW51eC9ydHN4X3BjaS5oDQpAQCAtNjAsNiArNjAsNyBA
+QA0KICNkZWZpbmUgICBTRF9FWElTVAkJCSgxIDw8IDE2KQ0KICNkZWZpbmUgICBERUxJTktfSU5U
+CQkJR1BJTzBfSU5UDQogI2RlZmluZSAgIE1TX09DX0lOVAkJCSgxIDw8IDIzKQ0KKyNkZWZpbmUg
+ICBTRF9PVlBfSU5UCQkoMSA8PCAyMykNCiAjZGVmaW5lICAgU0RfT0NfSU5UCQkJKDEgPDwgMjIp
+DQogDQogI2RlZmluZSBDQVJEX0lOVAkJKFhEX0lOVCB8IE1TX0lOVCB8IFNEX0lOVCkNCkBAIC04
+MCw2ICs4MSw3IEBADQogI2RlZmluZSAgIE9DX0lOVF9FTgkJCSgxIDw8IDIzKQ0KICNkZWZpbmUg
+ICBERUxJTktfSU5UX0VOCQkJR1BJTzBfSU5UX0VODQogI2RlZmluZSAgIE1TX09DX0lOVF9FTgkJ
+CSgxIDw8IDIzKQ0KKyNkZWZpbmUgICBTRF9PVlBfSU5UX0VOCQkJKDEgPDwgMjMpDQogI2RlZmlu
+ZSAgIFNEX09DX0lOVF9FTgkJCSgxIDw8IDIyKQ0KIA0KICNkZWZpbmUgUlRTWF9EVU1fUkVHCQkJ
+MHgxQw0KQEAgLTU4Myw2ICs1ODUsNyBAQA0KICNkZWZpbmUgICBPQkZGX0RJU0FCTEUJCQkweDAw
+DQogDQogI2RlZmluZSBDRFJFU1VNRUNUTAkJCTB4RkU1Mg0KKyNkZWZpbmUgQ0RHVwkJCQkweEZF
+NTMNCiAjZGVmaW5lIFdBS0VfU0VMX0NUTAkJCTB4RkU1NA0KICNkZWZpbmUgUENMS19DVEwJCQkw
+eEZFNTUNCiAjZGVmaW5lICAgUENMS19NT0RFX1NFTAkJCTB4MjANCkBAIC03NjQsNiArNzY3LDkg
+QEANCiAjZGVmaW5lICAgU0RfVklPX0xET18xVjgJCTB4NDANCiAjZGVmaW5lICAgU0RfVklPX0xE
+T18zVjMJCTB4NzANCiANCisjZGVmaW5lIFJUUzUyNjRfQVVUT0xPQURfQ0ZHMgkJMHhGRjdEDQor
+I2RlZmluZSBSVFM1MjY0X0NISVBfUlNUX05fU0VMCQkoMSA8PCA2KQ0KKw0KICNkZWZpbmUgUlRT
+NTI2MF9BVVRPTE9BRF9DRkc0CQkweEZGN0YNCiAjZGVmaW5lICAgUlRTNTI2MF9NSU1PX0RJU0FC
+TEUJCTB4OEENCiAvKlJUUzUyNjEqLw0KQEAgLTEyNjEsNiArMTI2Nyw3IEBAIHN0cnVjdCBydHN4
+X3BjciB7DQogCXU4CQkJCWRtYV9lcnJvcl9jb3VudDsNCiAJdTgJCQlvY3Bfc3RhdDsNCiAJdTgJ
+CQlvY3Bfc3RhdDI7DQorCXU4CQkJb3ZwX3N0YXQ7DQogCXU4CQkJcnRkM19lbjsNCiB9Ow0KIA0K
+QEAgLTEyNzEsNiArMTI3OCw3IEBAIHN0cnVjdCBydHN4X3BjciB7DQogI2RlZmluZSBQSURfNTI2
+MAkweDUyNjANCiAjZGVmaW5lIFBJRF81MjYxCTB4NTI2MQ0KICNkZWZpbmUgUElEXzUyMjgJMHg1
+MjI4DQorI2RlZmluZSBQSURfNTI2NAkweDUyNjQNCiANCiAjZGVmaW5lIENIS19QQ0lfUElEKHBj
+ciwgcGlkKQkJKChwY3IpLT5wY2ktPmRldmljZSA9PSAocGlkKSkNCiAjZGVmaW5lIFBDSV9WSUQo
+cGNyKQkJCSgocGNyKS0+cGNpLT52ZW5kb3IpDQotLSANCjIuMjUuMQ0K
