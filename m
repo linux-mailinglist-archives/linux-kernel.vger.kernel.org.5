@@ -2,487 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8394A7DC1AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126BB7DC1B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbjJ3VPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S229800AbjJ3VSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjJ3VPD (ORCPT
+        with ESMTP id S229498AbjJ3VSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:15:03 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04591E4;
-        Mon, 30 Oct 2023 14:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=T4bpafi4wDXiw73pjC/hG/AEsWrMCKBgzmGC8f4wvEg=; b=Ep6vlwg3j5td1u0IWj6u/FJyZr
-        njBeIetuNw250LulYprcBszHXe6aD5ba1aK4zt/u4kL8jwVXnonQIFrbyZVGz3AlIjVMAUOHMh1KI
-        dGaRcDLwVph2boOmmsDSJvGeEun+5AESNRuWfHOi/TFwXxmoOthBAS/FnX93E1sU0mts=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:39622 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qxZaz-0005eW-SJ; Mon, 30 Oct 2023 17:14:51 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     hugo@hugovil.com, lech.perczak@camlingroup.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Date:   Mon, 30 Oct 2023 17:14:47 -0400
-Message-Id: <20231030211447.974779-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 30 Oct 2023 17:18:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60CCE1;
+        Mon, 30 Oct 2023 14:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698700718; x=1730236718;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=lY4jmUjEk7T/UuvZJKnhuq6mtYMiLEdNLwaCINd2TFs=;
+  b=d9RgYeCJe9yBEo1E3PjW97fpCpLaK0leqvMB72IpkeZHB5MeZHYpfBbf
+   S/sS4pk/reN5fXS+0EkQY1G6mFuPUQfvHhTXju3uDvRvyC21giEbDiEEZ
+   d1C25PZmGqlz11GGEINzS7+AS9G5pl/iteD5Jag4HyXOtsz4A1jr/BLBe
+   XIFU6Uq7cqGtgUZv9AgmVfrGq3/nJZRc3MVfEjCbuFX8rMbZ2BC+cuEGg
+   NBPOCRBcYbIUSL0WkZ6K8VVwtOJWiTrre/3/s0ssbP4DxsPPs09G0lcOq
+   bSONkw20X1qb0sQ8KDGPLVuGCorvyyI36n9Ugh8FvhQ4Xrx68+dUoCSfH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="368373121"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="368373121"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 14:18:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="884005638"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="884005638"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 14:18:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 14:18:37 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 14:18:36 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 14:18:36 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 30 Oct 2023 14:18:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XQzBUxPfvkgKSPJXZ0fZXeI/H0sNZKi0qQar18XksHeq/2SE8SJs+X3lX00U2G+0MuZIwAsLdXtle2/1UPZF6REukcQiwAGm3rMItGbNmpxPKrEyu83j/eL76aeRSuAxCZiLVSP3UegkpdbxD38bw6McXXNioJVJ0oAKuJPy/CWFdNbqXx75qQ8fSTtDWEV6QsXVwO8hcBDdKBzS344hOgsZ4sm33tdTF/LBpEqV2c3U3ixFhp5bd1wFExcPJla4DyDIFbo4O0xYq0At7UMbI/F3VS4AiIgFeofecibVeUqKt61Sz9VzYTGQhEnjSezwzlfXOhePU5m2d7Kz3gtUig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SzE5+sTnn3HRIpBncnvU15oHXU7jDW+ITsG73cchzdo=;
+ b=l8edvkEZwXfSVCGyKlCDSGQ8DZzLDpApywISN3ZMYskAa6JMuPcpIzy5BQEtsnihhHxhnMA+0DYsjfUMlre9gI8dpJdjYQYevWyQVX3XFtuxD605vsC75kAn73r2uBXzKeogsLQ82HmgKBNIo53AIgH9m+yt0Ie71mD61x1JkPTOKdH9RKRlBLAvnB8LCi7Obpvs/Bzg9o+3KiRnW5zsxu9/dHdNYDGIeiytGa42jxWkfgSCoTlXiILlzBBbUHMtri0zPEZrp+D1vtMUpLN28SWDkU/GN9koc19/ypHrTvaS3nglxN4tW8Oswfcv2/RYRyI7Y+q8WzgdECcn0p4woQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by PH8PR11MB7070.namprd11.prod.outlook.com (2603:10b6:510:216::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27; Mon, 30 Oct
+ 2023 21:18:34 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6933.028; Mon, 30 Oct 2023
+ 21:18:34 +0000
+Message-ID: <5f7fa4e8-4bce-4bf4-a557-6993ae5f2e4c@intel.com>
+Date:   Mon, 30 Oct 2023 14:18:31 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 1/8] x86/resctrl: Prepare for new domain scope
+Content-Language: en-US
+To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        "Peter Newman" <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Shuah Khan" <skhan@linuxfoundation.org>, <x86@kernel.org>
+CC:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <patches@lists.linux.dev>
+References: <20231003213043.13565-1-tony.luck@intel.com>
+ <20231020213100.123598-1-tony.luck@intel.com>
+ <20231020213100.123598-2-tony.luck@intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231020213100.123598-2-tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0367.namprd04.prod.outlook.com
+ (2603:10b6:303:81::12) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH8PR11MB7070:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3db11dd6-8382-4a33-9c22-08dbd98dc646
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fE14zqDZXbZFzWQmdxbxiEDyS/V1tudAGrYwvJLXB9zAo8TcvCtb6YR/oznDfEfLLq+tAuinXJw4ArWbj5EkJN9stklCzb4n/hgqrYJDvkZYFMUbWKL05uofxTT9bSqy1wjvr5GN4jPpcQ8jpbCTr3cvbxTT6ttDjxYJYrt+jJ4Q50PoPzwQMvhDXwUrYpE+Gtm7toz1vU7Uk8cPPgoRjrxLTG78i7MLXJpo+ZwtL2j00RA31Lfnp5Ad2p59l1+FLYxnfhwsvB0PIUjYHlKSxy+V8hhlkPY9mWw5o48E3AVTyP/X3BSQEf5IsRjUeabKnO9WTCl/1IvQiW/T/94Cf+ti+SdTbe/scxQzkZwbc+LnbPGXPUolymm05cMhs7ApUMs4lxaCLvY+tjee/ZK5z7FszsnGPDok2QRhE74/z1zVr61fd2A0vItdoKIPOOad1beMKgDUbl8R7Ax2brQH75kBcvLyt2Qmp+a3m+VlYteinHTvt2KbpnWGr+UeL0YtCPCKo+zDAnRqFqH/p+X41YBiz7Ix5fxKEUV6ABmiBK04Fa8IZutzqFVZTNZeteGWJVbiwiP85X0gkdNZAO3IfZkNy1bsEP5iUYfQPCErBsHvaTzERzHVt8qMroGPGvc7z50ZXzgayz85upff0ebZ7w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(136003)(366004)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(31686004)(2616005)(26005)(6512007)(53546011)(82960400001)(31696002)(36756003)(86362001)(38100700002)(7416002)(2906002)(83380400001)(5660300002)(478600001)(6506007)(6666004)(8936002)(8676002)(4326008)(66946007)(66556008)(66476007)(316002)(54906003)(44832011)(6486002)(41300700001)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TUVCekR5ckFXRmdML1B0cjZuZ3dTYUNYNzZCUngyb0ZDeTQ5SzhKK3I0dkxM?=
+ =?utf-8?B?QzdSclJEb1pWOGZiZlovVHJTV3Y4SVg0aEhwaXI5ajdBNUtiaWp4VTV5WXpN?=
+ =?utf-8?B?N2pMUU5nK3BXM1NkWlVPMTJyR0grSlloaktyNmIreEJZUzVwSEVLZ0cwdVFU?=
+ =?utf-8?B?ZlplUUtiT2hCVUZ6V1NxcmhkaDl3QWd2c3Nsdk1uWndjT0I4MUQ0dW9yMWhE?=
+ =?utf-8?B?azBVNThiQm5hQXh1aWlZeUZSUW50NzhQbFpyaE5TOGNhVTFUYlFla0xrbUtB?=
+ =?utf-8?B?NVdNNEJLWUp3TktPUjZhelp2eXJQcFNJNitHTjJLSU5ualh4cDVqdlpwVXlZ?=
+ =?utf-8?B?bjl0bGFoWk1VMERxRjF3aDF3WjBZSXN6OTF2OFBCVzQySUcyOUlBUUFST2xI?=
+ =?utf-8?B?MXB2NkF1cVk4SGJDT05teWd1eFNkdm1qRU5zcE0xeE81U0RoUEVQRHFlaW9t?=
+ =?utf-8?B?MkMrSXBjblc0a2dlVGNNZDdUNVd0MDJtUytQR3IwWWlzY1FXTVo4RzVWRmE3?=
+ =?utf-8?B?QlhVS0VSQmNiVFhQZm81MVVvbjFxUERTM21peTBZSC95SGZ5OUhOVmVMNzhx?=
+ =?utf-8?B?cEhybnd5OWVDMzAwMzFTVnZqZzdDeWtjYlpyUzkwUG1ka2FPRmFWZTZUTEpO?=
+ =?utf-8?B?UDY1MGJEQy9DblZFVEJreExJa2Z2Q2xhMzJZVGR0VEhhWmNzSWhjN1JNYnRx?=
+ =?utf-8?B?VkV0elo4cEpKWFdBSklVRjBIbi9ZaEdNdy9qYkNVYXR6QklDK2Fqckk1S0dF?=
+ =?utf-8?B?N0szMHFnS0xlSFA1eW5EcEovbGpudjlXQ0Z3Uml3YzZibys5M0JCb21xTmdX?=
+ =?utf-8?B?YUJRMFh6alh6K1Y0QmV2YmZEQmE2ZWs1KzdxK0labTdKTlQyUDIxclRoUDND?=
+ =?utf-8?B?NWx2a0lpYmVpelM0YkgwQjVVZy9yK1dlQndKYjkyYUE3ejVkWVJuOVJWMHlz?=
+ =?utf-8?B?RkQvT1AvWnc2VXdIT0NXNGNzem5RZHJ3ZTRrUDBoSitFMkMxbHdBYnJlQWo4?=
+ =?utf-8?B?ZjYzTjZRQll1dWJSRzkrNU1QZG5kcTFudHh4Z0YyZDlrYVJlL013TmovWkhj?=
+ =?utf-8?B?V0ZTczQwZ0tpTHh2YTA3R2hEckR6dFkzVTVnK2xoNE04ZmRlY1ZwcUg0Mkdm?=
+ =?utf-8?B?NmNZNENyUTRISjB6SnRYMmxUWE4vU1VBek4ySGtoVkNVZ2FtcDFvTEh3a3JC?=
+ =?utf-8?B?WS9GN0VkNTNES211Z1JHV1dKWVNxS1ptQUJKZGlKOTN3cVg1MlVVaEpIMU5r?=
+ =?utf-8?B?a1ZvREJEcmJmMDcyVGFmakVhWXEvRGVRU05aSVBla1EvMUdGTlBRK1FXY3Rm?=
+ =?utf-8?B?M2FKQkw1amN0MTB1dnlwaElieUxGZ2lDWDFKUUdGRkppQXN3YzhTNlJUZFJy?=
+ =?utf-8?B?SlpaZVlhZlVRNUdDeGp1VFpIU0ViQ3hWZUtVR2pJWmkrVkVEZGtLai9zaHgw?=
+ =?utf-8?B?cHRhWi9rdFF4WU9IZ3F6UmlMbjNReTVMNm1kNGtnb21maUZpVUtja0piTHpM?=
+ =?utf-8?B?dE9Mc1EwdkZEd3NyVndXWHZNZEZLQWg2dURUTGEzdXpDcVhlTEVPa2tpYWtJ?=
+ =?utf-8?B?VzBCTGJsV2ZHS3NZZWY1MjM0Sk9aQzJjZTNmdGF3ekRCcDBKVW1vRDZUMk5n?=
+ =?utf-8?B?TXY5S3hDZDFDbzJ6OG1nVHhvOHJYYlNJbGwvOTdrRmNLU0dacUVpTDZUOEt0?=
+ =?utf-8?B?bnpUSEtYOEs0dWVwN2hGMXpjTHBya3Zna1lXSUY0RFNhV200Z0VaY2gzSldP?=
+ =?utf-8?B?OTgyS3dqa3lRV0NoR3RmZjI5NGJ1dGFjRCtBM1VMSEc0b0FrSGU3VTRIczlh?=
+ =?utf-8?B?SkJWRm5yQVBCT2NjV2tsOU9JQXoxWERITFg1Wk4zMTRFMjRoT01MaXFFR3M5?=
+ =?utf-8?B?NlhpdS8yeDZvWlVlTVhjcVlQTzNqa2JZVUZrWDRmeDduOUQveGR0WitGeWtS?=
+ =?utf-8?B?OVhub29tTWh1TnNEUWMrY2ZldC80eWZ5MUxHYUtMQnhLb0JBNTB6eFhkdlM4?=
+ =?utf-8?B?Vm1sSjkvSmZDMUVpVTFSTkc2Zy9XV0ZpTnQxTm13TmZ2SGRtdkhMWXNrNDdo?=
+ =?utf-8?B?Qzd6WlVNK2srblRsdWQrOE9nZXNWWEZSUlRkMXhtVFo1UzBxRVdtMjl1RnFR?=
+ =?utf-8?B?TDNFOVo3RElhUjNybGlsQktUMWNZZlJVMmRMam5wUVROaUtSWW5qWms2WFlI?=
+ =?utf-8?B?RlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3db11dd6-8382-4a33-9c22-08dbd98dc646
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 21:18:34.5515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UeOntD3WZ1ZehT1WxWXwdKkTxgL3sXSJ6RqQc/Kx+OMmxpREsvdwXY5W+SgxlpDXDAFn1PPlxIJCrR6LlyK/+wRFNJcswQ/jAf9Q8YDZQMY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7070
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH] serial: sc16is7xx: improve regmap debugfs by using one regmap per port
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Hi Tony,
 
-With this current driver regmap implementation, it is hard to make sense
-of the register addresses displayed using the regmap debugfs interface,
-because they do not correspond to the actual register addresses documented
-in the datasheet. For example, register 1 is displayed as registers 04 thru
-07:
+On 10/20/2023 2:30 PM, Tony Luck wrote:
 
-$ cat /sys/kernel/debug/regmap/spi0.0/registers
-  04: 10 -> Port 0, register offset 1
-  05: 10 -> Port 1, register offset 1
-  06: 00 -> Port 2, register offset 1 -> invalid
-  07: 00 -> port 3, register offset 1 -> invalid
-  ...
-
-The reason is that bits 0 and 1 of the register address correspond to the
-channel (port) bits, so the register address itself starts at bit 2, and we
-must 'mentally' shift each register address by 2 bits to get its real
-address/offset.
-
-Also, only channels 0 and 1 are supported by the chip, so channel mask
-combinations of 10b and 11b are invalid, and the display of these
-registers is useless.
-
-This patch adds a separate regmap configuration for each port, similar to
-what is done in the max310x driver, so that register addresses displayed
-match the register addresses in the chip datasheet. Also, each port now has
-its own debugfs entry.
-
-Example with new regmap implementation:
-
-$ cat /sys/kernel/debug/regmap/spi0.0-port0/registers
-1: 10
-2: 01
-3: 00
 ...
 
-$ cat /sys/kernel/debug/regmap/spi0.0-port1/registers
-1: 10
-2: 01
-3: 00
+> @@ -506,12 +519,17 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
+>   */
+>  static void domain_add_cpu(int cpu, struct rdt_resource *r)
+>  {
+> -	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
+> +	int id = get_domain_id_from_scope(cpu, r->scope);
+>  	struct list_head *add_pos = NULL;
+>  	struct rdt_hw_domain *hw_dom;
+>  	struct rdt_domain *d;
+>  	int err;
+>  
+> +	if (id < 0) {
+> +		pr_warn_once("Can't find domain id for CPU:%d scope:%d for resource %s\n",
+> +			     cpu, r->scope, r->name);
+> +		return;
+> +	}
+>  	d = rdt_find_domain(r, id, &add_pos);
+>  	if (IS_ERR(d)) {
+>  		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
 
-As an added bonus, this also simplifies some operations (read/write/modify)
-because it is no longer necessary to manually shift register addresses.
+From what I can tell the original implementation relied on implementation of
+rdt_find_domain() to do error checking of the id value, printing the above pr_warn()
+if id was found to be invalid. In your change the error checking on id is moved
+earlier yet this original behavior is maintained. How could rdt_find_domain()
+possibly fail for this reason at this point?
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/tty/serial/sc16is7xx.c | 143 +++++++++++++++++++--------------
- 1 file changed, 81 insertions(+), 62 deletions(-)
+> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> index 8f559eeae08e..8c5f932bc00b 100644
+> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> @@ -292,10 +292,14 @@ static void pseudo_lock_region_clear(struct pseudo_lock_region *plr)
+>   */
+>  static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
+>  {
+> +	int scope = plr->s->res->scope;
 
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index db2bb1c0d36c..4c69c30fbac1 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -300,8 +300,8 @@
- 
- 
- /* Misc definitions */
-+#define SC16IS7XX_SPI_READ_BIT		BIT(7)
- #define SC16IS7XX_FIFO_SIZE		(64)
--#define SC16IS7XX_REG_SHIFT		2
- #define SC16IS7XX_GPIOS_PER_BANK	4
- 
- struct sc16is7xx_devtype {
-@@ -323,6 +323,7 @@ struct sc16is7xx_one_config {
- struct sc16is7xx_one {
- 	struct uart_port		port;
- 	u8				line;
-+	struct regmap			*regmap;
- 	struct kthread_work		tx_work;
- 	struct kthread_work		reg_work;
- 	struct kthread_delayed_work	ms_work;
-@@ -360,48 +361,37 @@ static void sc16is7xx_stop_tx(struct uart_port *port);
- 
- #define to_sc16is7xx_one(p,e)	((container_of((p), struct sc16is7xx_one, e)))
- 
--static int sc16is7xx_line(struct uart_port *port)
--{
--	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
--
--	return one->line;
--}
--
- static u8 sc16is7xx_port_read(struct uart_port *port, u8 reg)
- {
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 	unsigned int val = 0;
--	const u8 line = sc16is7xx_line(port);
- 
--	regmap_read(s->regmap, (reg << SC16IS7XX_REG_SHIFT) | line, &val);
-+	regmap_read(one->regmap, reg, &val);
- 
- 	return val;
- }
- 
- static void sc16is7xx_port_write(struct uart_port *port, u8 reg, u8 val)
- {
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
--	regmap_write(s->regmap, (reg << SC16IS7XX_REG_SHIFT) | line, val);
-+	regmap_write(one->regmap, reg, val);
- }
- 
- static void sc16is7xx_fifo_read(struct uart_port *port, unsigned int rxlen)
- {
- 	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
--	u8 addr = (SC16IS7XX_RHR_REG << SC16IS7XX_REG_SHIFT) | line;
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
--	regcache_cache_bypass(s->regmap, true);
--	regmap_raw_read(s->regmap, addr, s->buf, rxlen);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, true);
-+	regmap_raw_read(one->regmap, SC16IS7XX_RHR_REG, s->buf, rxlen);
-+	regcache_cache_bypass(one->regmap, false);
- }
- 
- static void sc16is7xx_fifo_write(struct uart_port *port, u8 to_send)
- {
- 	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
--	u8 addr = (SC16IS7XX_THR_REG << SC16IS7XX_REG_SHIFT) | line;
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
- 	/*
- 	 * Don't send zero-length data, at least on SPI it confuses the chip
-@@ -410,19 +400,17 @@ static void sc16is7xx_fifo_write(struct uart_port *port, u8 to_send)
- 	if (unlikely(!to_send))
- 		return;
- 
--	regcache_cache_bypass(s->regmap, true);
--	regmap_raw_write(s->regmap, addr, s->buf, to_send);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, true);
-+	regmap_raw_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
-+	regcache_cache_bypass(one->regmap, false);
- }
- 
- static void sc16is7xx_port_update(struct uart_port *port, u8 reg,
- 				  u8 mask, u8 val)
- {
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
--	regmap_update_bits(s->regmap, (reg << SC16IS7XX_REG_SHIFT) | line,
--			   mask, val);
-+	regmap_update_bits(one->regmap, reg, mask, val);
- }
- 
- static int sc16is7xx_alloc_line(void)
-@@ -477,7 +465,7 @@ static const struct sc16is7xx_devtype sc16is762_devtype = {
- 
- static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
- {
--	switch (reg >> SC16IS7XX_REG_SHIFT) {
-+	switch (reg) {
- 	case SC16IS7XX_RHR_REG:
- 	case SC16IS7XX_IIR_REG:
- 	case SC16IS7XX_LSR_REG:
-@@ -496,7 +484,7 @@ static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
- 
- static bool sc16is7xx_regmap_precious(struct device *dev, unsigned int reg)
- {
--	switch (reg >> SC16IS7XX_REG_SHIFT) {
-+	switch (reg) {
- 	case SC16IS7XX_RHR_REG:
- 		return true;
- 	default:
-@@ -509,6 +497,7 @@ static bool sc16is7xx_regmap_precious(struct device *dev, unsigned int reg)
- static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- {
- 	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 	u8 lcr;
- 	u8 prescaler = 0;
- 	unsigned long clk = port->uartclk, div = clk / 16 / baud;
-@@ -540,12 +529,12 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 			     SC16IS7XX_LCR_CONF_MODE_B);
- 
- 	/* Enable enhanced features */
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_update(port, SC16IS7XX_EFR_REG,
- 			      SC16IS7XX_EFR_ENABLE_BIT,
- 			      SC16IS7XX_EFR_ENABLE_BIT);
- 
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Put LCR back to the normal mode */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
-@@ -561,10 +550,10 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 			     SC16IS7XX_LCR_CONF_MODE_A);
- 
- 	/* Write the new divisor */
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_write(port, SC16IS7XX_DLH_REG, div / 256);
- 	sc16is7xx_port_write(port, SC16IS7XX_DLL_REG, div % 256);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Put LCR back to the normal mode */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
-@@ -1078,7 +1067,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
- 			     SC16IS7XX_LCR_CONF_MODE_B);
- 
- 	/* Configure flow control */
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_write(port, SC16IS7XX_XON1_REG, termios->c_cc[VSTART]);
- 	sc16is7xx_port_write(port, SC16IS7XX_XOFF1_REG, termios->c_cc[VSTOP]);
- 
-@@ -1097,7 +1086,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
- 			      SC16IS7XX_EFR_REG,
- 			      SC16IS7XX_EFR_FLOWCTRL_BITS,
- 			      flow);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Update LCR register */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
-@@ -1148,7 +1137,6 @@ static int sc16is7xx_config_rs485(struct uart_port *port, struct ktermios *termi
- static int sc16is7xx_startup(struct uart_port *port)
- {
- 	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
- 	unsigned int val;
- 	unsigned long flags;
- 
-@@ -1165,7 +1153,7 @@ static int sc16is7xx_startup(struct uart_port *port)
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG,
- 			     SC16IS7XX_LCR_CONF_MODE_B);
- 
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 
- 	/* Enable write access to enhanced features and internal clock div */
- 	sc16is7xx_port_update(port, SC16IS7XX_EFR_REG,
-@@ -1183,7 +1171,7 @@ static int sc16is7xx_startup(struct uart_port *port)
- 			     SC16IS7XX_TCR_RX_RESUME(24) |
- 			     SC16IS7XX_TCR_RX_HALT(48));
- 
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Now, initialize the UART */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, SC16IS7XX_LCR_WORD_LEN_8);
-@@ -1464,7 +1452,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s)
- 	if (s->mctrl_mask)
- 		regmap_update_bits(
- 			s->regmap,
--			SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
-+			SC16IS7XX_IOCONTROL_REG,
- 			SC16IS7XX_IOCONTROL_MODEM_A_BIT |
- 			SC16IS7XX_IOCONTROL_MODEM_B_BIT, s->mctrl_mask);
- 
-@@ -1479,7 +1467,7 @@ static const struct serial_rs485 sc16is7xx_rs485_supported = {
- 
- static int sc16is7xx_probe(struct device *dev,
- 			   const struct sc16is7xx_devtype *devtype,
--			   struct regmap *regmap, int irq)
-+			   struct regmap *regmaps[], int irq)
- {
- 	unsigned long freq = 0, *pfreq = dev_get_platdata(dev);
- 	unsigned int val;
-@@ -1487,16 +1475,16 @@ static int sc16is7xx_probe(struct device *dev,
- 	int i, ret;
- 	struct sc16is7xx_port *s;
- 
--	if (IS_ERR(regmap))
--		return PTR_ERR(regmap);
-+	for (i = 0; i < devtype->nr_uart; i++)
-+		if (IS_ERR(regmaps[i]))
-+			return PTR_ERR(regmaps[i]);
- 
- 	/*
- 	 * This device does not have an identification register that would
- 	 * tell us if we are really connected to the correct device.
- 	 * The best we can do is to check if communication is at all possible.
- 	 */
--	ret = regmap_read(regmap,
--			  SC16IS7XX_LSR_REG << SC16IS7XX_REG_SHIFT, &val);
-+	ret = regmap_read(regmaps[0], SC16IS7XX_LSR_REG, &val);
- 	if (ret < 0)
- 		return -EPROBE_DEFER;
- 
-@@ -1530,7 +1518,7 @@ static int sc16is7xx_probe(struct device *dev,
- 			return -EINVAL;
- 	}
- 
--	s->regmap = regmap;
-+	s->regmap = regmaps[0];
- 	s->devtype = devtype;
- 	dev_set_drvdata(dev, s);
- 	mutex_init(&s->efr_lock);
-@@ -1545,8 +1533,8 @@ static int sc16is7xx_probe(struct device *dev,
- 	sched_set_fifo(s->kworker_task);
- 
- 	/* reset device, purging any pending irq / data */
--	regmap_write(s->regmap, SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
--			SC16IS7XX_IOCONTROL_SRESET_BIT);
-+	regmap_write(s->regmap, SC16IS7XX_IOCONTROL_REG,
-+		     SC16IS7XX_IOCONTROL_SRESET_BIT);
- 
- 	for (i = 0; i < devtype->nr_uart; ++i) {
- 		s->p[i].line		= i;
-@@ -1570,6 +1558,7 @@ static int sc16is7xx_probe(struct device *dev,
- 		s->p[i].port.ops	= &sc16is7xx_ops;
- 		s->p[i].old_mctrl	= 0;
- 		s->p[i].port.line	= sc16is7xx_alloc_line();
-+		s->p[i].regmap		= regmaps[i];
- 
- 		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
- 			ret = -ENOMEM;
-@@ -1598,13 +1587,13 @@ static int sc16is7xx_probe(struct device *dev,
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG,
- 				     SC16IS7XX_LCR_CONF_MODE_B);
- 
--		regcache_cache_bypass(s->regmap, true);
-+		regcache_cache_bypass(regmaps[i], true);
- 
- 		/* Enable write access to enhanced features */
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_EFR_REG,
- 				     SC16IS7XX_EFR_ENABLE_BIT);
- 
--		regcache_cache_bypass(s->regmap, false);
-+		regcache_cache_bypass(regmaps[i], false);
- 
- 		/* Restore access to general registers */
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG, 0x00);
-@@ -1698,19 +1687,36 @@ static const struct of_device_id __maybe_unused sc16is7xx_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, sc16is7xx_dt_ids);
- 
- static struct regmap_config regcfg = {
--	.reg_bits = 7,
--	.pad_bits = 1,
-+	.reg_bits = 5,
-+	.pad_bits = 3,
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_RBTREE,
- 	.volatile_reg = sc16is7xx_regmap_volatile,
- 	.precious_reg = sc16is7xx_regmap_precious,
-+	.max_register = SC16IS7XX_EFCR_REG,
- };
- 
-+static const char *sc16is7xx_regmap_name(unsigned int port_id)
-+{
-+	static char buf[6];
-+
-+	snprintf(buf, sizeof(buf), "port%d", port_id);
-+
-+	return buf;
-+}
-+
-+static unsigned int sc16is7xx_regmap_port_mask(unsigned int port_id)
-+{
-+	/* CH1,CH0 are at bits 2:1. */
-+	return port_id << 1;
-+}
-+
- #ifdef CONFIG_SERIAL_SC16IS7XX_SPI
- static int sc16is7xx_spi_probe(struct spi_device *spi)
- {
- 	const struct sc16is7xx_devtype *devtype;
--	struct regmap *regmap;
-+	struct regmap *regmaps[2];
-+	unsigned int i;
- 	int ret;
- 
- 	/* Setup SPI bus */
-@@ -1732,11 +1738,20 @@ static int sc16is7xx_spi_probe(struct spi_device *spi)
- 		devtype = (struct sc16is7xx_devtype *)id_entry->driver_data;
- 	}
- 
--	regcfg.max_register = (0xf << SC16IS7XX_REG_SHIFT) |
--			      (devtype->nr_uart - 1);
--	regmap = devm_regmap_init_spi(spi, &regcfg);
-+	for (i = 0; i < devtype->nr_uart; i++) {
-+		regcfg.name = sc16is7xx_regmap_name(i);
-+		/*
-+		 * If read_flag_mask is 0, the regmap code sets it to a default
-+		 * of 0x80. Since we specify our own mask, we must add the READ
-+		 * bit ourselves:
-+		 */
-+		regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i) |
-+			SC16IS7XX_SPI_READ_BIT;
-+		regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
-+		regmaps[i] = devm_regmap_init_spi(spi, &regcfg);
-+	}
- 
--	return sc16is7xx_probe(&spi->dev, devtype, regmap, spi->irq);
-+	return sc16is7xx_probe(&spi->dev, devtype, regmaps, spi->irq);
- }
- 
- static void sc16is7xx_spi_remove(struct spi_device *spi)
-@@ -1775,7 +1790,8 @@ static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
- {
- 	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
- 	const struct sc16is7xx_devtype *devtype;
--	struct regmap *regmap;
-+	struct regmap *regmaps[2];
-+	unsigned int i;
- 
- 	if (i2c->dev.of_node) {
- 		devtype = device_get_match_data(&i2c->dev);
-@@ -1785,11 +1801,14 @@ static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
- 		devtype = (struct sc16is7xx_devtype *)id->driver_data;
- 	}
- 
--	regcfg.max_register = (0xf << SC16IS7XX_REG_SHIFT) |
--			      (devtype->nr_uart - 1);
--	regmap = devm_regmap_init_i2c(i2c, &regcfg);
-+	for (i = 0; i < devtype->nr_uart; i++) {
-+		regcfg.name = sc16is7xx_regmap_name(i);
-+		regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i);
-+		regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
-+		regmaps[i] = devm_regmap_init_i2c(i2c, &regcfg);
-+	}
- 
--	return sc16is7xx_probe(&i2c->dev, devtype, regmap, i2c->irq);
-+	return sc16is7xx_probe(&i2c->dev, devtype, regmaps, i2c->irq);
- }
- 
- static void sc16is7xx_i2c_remove(struct i2c_client *client)
+enum resctrl_scope ? 
 
-base-commit: 64ebf8797249e792af2143eb9e4bd404d10a022e
--- 
-2.39.2
+>  	struct cpu_cacheinfo *ci;
+>  	int ret;
+>  	int i;
+
+
+
+
+Reinette
 
