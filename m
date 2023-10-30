@@ -2,165 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF0C7DC139
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80B87DC13E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjJ3Ucb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 16:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        id S230093AbjJ3Uff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjJ3Uc3 (ORCPT
+        with ESMTP id S229763AbjJ3Ufe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 16:32:29 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2083.outbound.protection.outlook.com [40.107.223.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E28CAB;
-        Mon, 30 Oct 2023 13:32:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F0C60U8pIopa1zcmaWcaOE9RYSWbormobRLJrWkjp8aFbO8efWY4wHgdcSEy9/1Q5ZKAyomv3HLsolAwhGuOB1kmeWBMf6dWudSXnMCwC9aD2Xj6JaGzaDTiCXceY+pk9scTNsCRkDHEj9X5BIjxERCSYAwkjKV8a483slkDfnL0yLkBrtsmN3PixwbPO1DVQFTJifWZkkBXrFRnkNo/aaBYI+T3/Ug2H4hXWOm0cltyxylfLp0ZOUl4kxF4c4bFBBpQxv2DGUmtAfXbIAs9oyR/6R+sHOmHGdM6xRptucQNImkMHw0EuiyGZu3+9UzNu0lI1XS+rts+1z7sD+2jlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KvzQlQOCgR+97t1P+GAdGXoGyCMeg7dNhJkEAQkRW5k=;
- b=GtcJjL7n7hIY+j4lEml5BSkuQWp7GC6OWrJwy7Yf9yYnanPftUcW84JknhFV9D8DCOLjaov5cLlm/fPYL66AzKUN9Y3vQDTPTHAEQDxX0ElvYQam08pz32AlGY0mWinIOc9VTQWvOcRUp1eU6gVNI0wpqpXUVjAXLRrYLYGPIrttwzqHzTbFbaueIwhXyD7QRv2vAsf0kXkCjL0HWSN0SN8ewpKWiyyr4iyDtvIaMdLBvyJORMGuR9eqAtVHLDJ8cI+m3Ej97q6SRcKBf6lnq316HYuI4unoe8vRbkSRJGxikyqH8y+YAKsDR1c+IFRInnbNVhYLall8eduvrqyE9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KvzQlQOCgR+97t1P+GAdGXoGyCMeg7dNhJkEAQkRW5k=;
- b=uE3Px87PMXQpbSyT/UPrT0aNl+V/gxTO5Z33gEXddL7qv9j+VsOgyi2kGIkowqKZbOfZ5TtfyeF2KN6/L05DEM8YxCs3CaQ+cRv/rGqydT00aCOVv0cKc6Wim4d0URw7EIHK+hyxubJftYEDQ2L1UQ3BBPxdhTeOtBScGtz4gkw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by SN7PR12MB7022.namprd12.prod.outlook.com (2603:10b6:806:261::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.26; Mon, 30 Oct
- 2023 20:32:24 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::e16e:d7f1:94ad:3021]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::e16e:d7f1:94ad:3021%7]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
- 20:32:24 +0000
-Message-ID: <8bd907ec-3f91-2e3d-de7c-ef753a005ea7@amd.com>
-Date:   Mon, 30 Oct 2023 15:32:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 11/14] x86/sev: Prevent RDTSC/RDTSCP interception for
- Secure TSC enabled guests
-Content-Language: en-US
-To:     Nikunj A Dadhania <nikunj@amd.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org
-Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        dave.hansen@linux.intel.com, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
-References: <20231030063652.68675-1-nikunj@amd.com>
- <20231030063652.68675-12-nikunj@amd.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20231030063652.68675-12-nikunj@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0096.namprd13.prod.outlook.com
- (2603:10b6:806:24::11) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+        Mon, 30 Oct 2023 16:35:34 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CA2AB
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:35:32 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so413a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698698130; x=1699302930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4vFDjtAEsjttTI22sc8G5a8nAtIAx3Cy/lcAcpUigTY=;
+        b=SU8CnUDUyoZlJpXvqMJkWC+vPGTkTDyBMerx/C/B4IWlvmtpGHb5yLQ5IsEG4IZeoA
+         k8H0fggV7DvD5UwkM0cc1EcRY38tLsenUJSwZ4QNStbyUH8Q/xpq++su6yxSN1f8Li4y
+         HF/F6yoWX9mF/CY9DqkGQ1Lawz9547uCEMrbul71fXxGorqOgQC8TlVrfx8fdQHVi7GS
+         HpuIAkNrOIHLvMRSRDfkJgMCFq73KWgc4voaBZSMxkkQje81nKw4S8xUVcy8Sg9UUDeG
+         68rmAkod+JNp3nce/7hCgaXY8eoDtbV7PQ7AJfaWz7hTKMLg6LmxnPQWiJJ5eXtlhnGZ
+         5y6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698698130; x=1699302930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4vFDjtAEsjttTI22sc8G5a8nAtIAx3Cy/lcAcpUigTY=;
+        b=dgCeF3MZ4zQ6vdhb8ekuPQNXicY4jZuNmdV+rqIjYjzwbHH1M02BvXfsTP3EBwra0m
+         ZImoxZ2/8z6KIBuk7EsW3Ob//qWuf+xow5QEWQ8HUudsOIdfeUjTiFI72Go2n24/+wFW
+         HffcJen7rXkZQLQsCE647jXO3R570WoQiDXBCyWJ5QMmjJWpxlrTMJGZaSjceRgSdTz+
+         2/MHgp3DzP2fDzROOOMfcBpWrCBkbZjQVhuIbRhfKE8yPNQgUCT9QlFklsYLihnCYi89
+         ecJ+VPMTrNMvUIoEc1AnnjwuVpAjNcLt8yRX2bWHp0kWGYV+pjTZejTSYXHme6EB7w/w
+         p3cQ==
+X-Gm-Message-State: AOJu0YzhHDLjp62MMFsfvrx4nV5PopMlvVStKf9KX+hCCDFmrq/3cVDS
+        O9hqrGP9r9ecB4C/Dy/7sVhw59W1qgFvj41K8rrJXg==
+X-Google-Smtp-Source: AGHT+IH31+TiFXNuUyrjrcqRDXnwTQqwKlPmSQHk8e8Z0SC06WDOD05Veu2EH0W5nMXTlXnkAfTM4lJUkj0e/XKNmcM=
+X-Received: by 2002:a05:6402:d69:b0:542:d79b:9529 with SMTP id
+ ec41-20020a0564020d6900b00542d79b9529mr8777edb.7.1698698130518; Mon, 30 Oct
+ 2023 13:35:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|SN7PR12MB7022:EE_
-X-MS-Office365-Filtering-Correlation-Id: 560c87cf-4215-450d-a552-08dbd9875337
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DmEjSJAPmGGjAQvSQul5951igKqr7VcUuQScDj9uCMM31BWFkgFMSZ4+QNO+97rYL1TRWx2pAtUBtNuD9r9XbD9P3usBheYmdIVLMk23lfpI98MHuP/tQBwhLeXMbeU1KI8cS5GzFBjVLLs6z8QEyuP19uSW6MVnhvEwDzCVqEO0JyB//UyQ9YDb02+ETDTckxvfC5C4j3Ryu0pwCO51q/OVz8T/6+mF1N+yoQTCISUwGj72E8XivNlN726Vx0t3AFYTER3xjpIv7f7LiN6DmXXdslq6sKRVAiDePsn4PM/N3gRJ1FeSYB4CyYvmXzCAGE/UbOr0Mo9ZyWKhwJFbldjgK3ZZipo3S2WkhhP85FJSypDZU2NORKdsPIDdEA0Jl8WzyFg3wLAucdDF7wtbfyhxHf9gn+c4w9pMwiw6YOjynNld96nhWWqshRYHDHzqFTEdCZ7L1d22n6lNpTGvB8ZOmaN536qL6IXgucHDT88u4z5ZG9B6b9eD1+08eRxj7VTzUX+eW92SEjN+pKFkb9elonUt3hYcVPLps2T1zeuhHyIRnMnCD6x5fK9HmuxW2w9zmZprjSkK7iuU5RteylSaEUfTv9cAaoUga0JDfT1BC4HseVS7Oa8tsnjeac9/ZFCPEXlgxlDYPw9VSsCg6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(346002)(136003)(366004)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(31686004)(41300700001)(8676002)(316002)(8936002)(66556008)(66476007)(66946007)(4326008)(5660300002)(38100700002)(2616005)(6666004)(6512007)(478600001)(83380400001)(36756003)(53546011)(6506007)(2906002)(6486002)(86362001)(7416002)(26005)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NkdaamVmS0RRVkxCQ25KWEFSR1F5NldtSmJiWFZqcldZcjFFU09CQVZ2VTdq?=
- =?utf-8?B?ekdVSFMvTndYbkRJSndOVStWd3lXdnFoa2NEMHNPcldXZWh0MzdkNWM3L2lQ?=
- =?utf-8?B?NmJyenVnOFh4dkFlcTFtSHhwTHV1V3c1ZkZMT1JVaEJBR3ZTV2RiZnhYMzNH?=
- =?utf-8?B?SzlLcnRPVmZSdWZOSW5kSStHb1IxaG5kUjliQlJNRWFXNzNER1ZzeXZWU2sx?=
- =?utf-8?B?c2h2Z3hvVnpUd1hhRmtuSVVNaE10VWFtY3U0L2FCWXRjR3hSYkdNVDRMbERU?=
- =?utf-8?B?Lzc0TWYzWVBheWtUMXNValNiYWdqYVZYUW40b2ZoSzRmYjMvODJNMG4yMFB4?=
- =?utf-8?B?aVU3WnR1dFlIekNzZnNIRUFyUWJ2azNjRDlLRDl4ck1peUhYamxMK3hYZzZh?=
- =?utf-8?B?Q09QOWhxWm9zQlVrQ01TeEdwbFJhRWdtY3pPdjlnS0ViMUFLTlRzSmxEWWNY?=
- =?utf-8?B?SndXN2IzS0ZOOFZZbjVHRU1nQ2VuSEx3aUJ6SUtORzV3cVAzT3lJMFB0ZnNq?=
- =?utf-8?B?aVFqTUVwWXR2Y3RDTHdjaEFSQVJ6K2QwWVc4SWZ6d3NIRHBWck9NaVo4ZzRJ?=
- =?utf-8?B?NzdzeC8vN1VlT1ZKRU1Lb2wrQS9EbU1mRmZHYzliZHVqdWVRQU12VWpzNmpI?=
- =?utf-8?B?bzdMZWYwbGtMVzl5YjRLWUxWZzdSNmg1MGlOOTZmMGlKaXRMOHBPOGlabURW?=
- =?utf-8?B?eExXOEZ1TjNCUEtMTVFDUHNPSGJzK3BNOHNtdVdPM1RNaTkvdEtvRWQrVnBU?=
- =?utf-8?B?OUhqNzkzVHVYSm1VLzJ6eXFlWDNQaDF0N3VnZExvNUxBTnNFU1IyNVBLU1FR?=
- =?utf-8?B?UkR0VldjMHlRdUY5akRONk11SnJoYnFFTlpzbW84NU5tUXluNkZuaWhCbU55?=
- =?utf-8?B?V2RuV3cxRzJrQkR2dnJ2MFJ1dWp0MFlTZ3U1RUlaL0hDdU9uc0NJWEJhS3RE?=
- =?utf-8?B?alY4ZHVRWXVUVmsvb1ZCOVZvNlMwdmhjbUtrWUxmQVV2UHZNdG5WWFRPdS95?=
- =?utf-8?B?TkxoYldad3FrZXhmWjE3VnZsTFg2YWJNNTU2QkMvbTNkcUN0dzk5SVozSzVu?=
- =?utf-8?B?OWNtMGgrZjlrYVYyWEhsTXdLYmNCcDExQ1pKSFpOemljVnNqOEFXSk9yU285?=
- =?utf-8?B?YmZLYldCczIxeUFmeUEvcncyNWJKV0FFNTdjNTNlZVhqSkVmbjY2c1ZlaEQr?=
- =?utf-8?B?SlZSOURDemNSYTR5ZjJPempjVDFBcmhSakdrakN5Y1FqSHdVZG51blFSU1lS?=
- =?utf-8?B?V0lWb2sySlVubmU3VGtiNktocHJsb2Z1Q1ZUTTh6QzFieDZSU1JuRFdKN2Ni?=
- =?utf-8?B?VmhTRE1FTkg3YkZXSE5ZWExtMFdEY0w5T3VaZWIzVnM2cHNlUUpZZjZUZU55?=
- =?utf-8?B?UzRLNWR3azRNa2o3Y2EyMGhhcUpOTnJ1ejdNQkFydzRPLytKZXB0SXJGTi9v?=
- =?utf-8?B?TjhrSjFXeFV4Wm5CNFpadlBlUk9nOEF3NzhyY1VGRHFUd01JdjJybjBCZjlK?=
- =?utf-8?B?VnlSQ2dVNm82ZWhQY01hNWlaZktzSkNpQzB2ZU1jRVphSG5rcG1STkxvNE5n?=
- =?utf-8?B?ZGNLaTUvU2dRRGtTUE5QRS84bExFajJvcjYvVTV5SVF0KzE2NERJaE40QTN4?=
- =?utf-8?B?VVc1emViVFF2cFhXaWp6dFN2M2sxREJFREgrR2tldmVxQlQ4bVk2QVJ5WEV6?=
- =?utf-8?B?RnJxbEZPaG53NzBxbkpZTnZNcVdyRWgrLzg4UXpYckJpNlBXMXp5bkdDMXJK?=
- =?utf-8?B?bEc4WXRidS9ZR09nUitoMk9CTDU2d01uQ05PbFpJQm5jd09JQ1NPZlVYZm9w?=
- =?utf-8?B?d0JtZVI1eU1PNXVJalV4dCt6TEdwdXZVQnJOYW4vZG1GSTZPbm12RHJIRnNZ?=
- =?utf-8?B?TnhiTFRqa3l1YnMwSVViUWc1bTdUSGNiQkxJZlhBZU81WDZWYmtNRlB6bDg5?=
- =?utf-8?B?V1lZZnBJdUIzY0FzQkhlcUFMREgweGc4bE9DdFpoZEJSelhvTkloSXpOWEZo?=
- =?utf-8?B?SDZjaEZJL1AxWDlLWUthM0VyMUp4QmM2RGpzb0lyQ3dhYzRZT2U1TXFBMmdm?=
- =?utf-8?B?aUZVQUxWYmpjTm41VjdCSm0rcEZXMHphNmlWYmExMS8yY25qQUVTcEZiZXdz?=
- =?utf-8?Q?DGthq0MWwyh39usjkX9Q4joSF?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 560c87cf-4215-450d-a552-08dbd9875337
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 20:32:24.5407
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ENrYkiHl2sTVBUgyPqqOsI3GsbA8pdfCEBulORlmQ7NiA0/r28eAIxp7NB8hwIiamkpeYc7cmbhX0fbBnXhBQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7022
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231027213059.3550747-1-ptf@google.com> <415e0355-7d71-4b82-b4fc-37dad22486a9@gmail.com>
+ <CAJs+hrEi8oo1q5mMfNbaUi8x1H-sBGmYToTkRfVXs=ga9LPupQ@mail.gmail.com> <cd23aed9-a792-4baa-ba1a-701e6512ce30@gmail.com>
+In-Reply-To: <cd23aed9-a792-4baa-ba1a-701e6512ce30@gmail.com>
+From:   Patrick Thompson <ptf@google.com>
+Date:   Mon, 30 Oct 2023 16:35:19 -0400
+Message-ID: <CAJs+hrGe=uyxa3Pp9sAQphjfopGRWKiRY55Tamwa6X68faBsyg@mail.gmail.com>
+Subject: Re: [PATCH v2] net: r8169: Disable multicast filter for RTL_GIGA_MAC_VER_46
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     netdev@vger.kernel.org, Chun-Hao Lin <hau@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        nic_swsd@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 01:36, Nikunj A Dadhania wrote:
-> The hypervisor should not be intercepting RDTSC/RDTSCP when Secure TSC
-> is enabled. A #VC exception will be generated if the RDTSC/RDTSCP
-> instructions are being intercepted. If this should occur and Secure
-> TSC is enabled, terminate guest execution.
-> 
-> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-> ---
->   arch/x86/kernel/sev-shared.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index ccb0915e84e1..833b0ae38f0b 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -991,6 +991,13 @@ static enum es_result vc_handle_rdtsc(struct ghcb *ghcb,
->   	bool rdtscp = (exit_code == SVM_EXIT_RDTSCP);
->   	enum es_result ret;
->   
-> +	/*
-> +	 * RDTSC and RDTSCP should not be intercepted when Secure TSC is
-> +	 * enabled. Terminate the SNP guest when the interception is enabled.
-> +	 */
-> +	if (sev_status & MSR_AMD64_SNP_SECURE_TSC)
+The packet being filtered out by the multicast filter has a unicast
+destination address matching the device, the frame only contains the
+eapol protocol and does not have an IPv4 address associated with it.
 
-If you have to use sev_status, then please document why cc_platform_has() 
-can't be used in the comment above.
+I will send out a v3 patch with VER_48 included.
 
-Thanks,
-Tom
+Sorry, I sent a non-plaintext email previously so I am resending it.
 
-> +		return ES_VMM_ERROR;
-> +
->   	ret = sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, 0, 0);
->   	if (ret != ES_OK)
->   		return ret;
+On Mon, Oct 30, 2023 at 3:38=E2=80=AFPM Heiner Kallweit <hkallweit1@gmail.c=
+om> wrote:
+>
+> On 30.10.2023 17:52, Patrick Thompson wrote:
+> > I wouldn't trust the mc filter, the eap packet being filtered is not a
+> > multicast packet so I wonder what else could be erroneously filtered.
+> > I do agree that it would be nice to be able to override it for testing
+> > purposes.
+> >
+>
+> I'm not an EAP(OL) expert, just read that EAPOL can use unicast,
+> broadcast , and ethernet multicast (01:80:C2:00:00:03).
+> What's that target MAC and IP4 address of the packet being
+> filtered out in your case?
+>
+> > Would you like me to add MAC_VER_48 to the patch? I would not be able
+> > to test and confirm that it affects it in the same way I have for
+> > VER_46.
+> >
+> Yes, VER_48 should be included because it has the same MAC as VER_46.
+>
+> > It is unfortunate that the naming doesn't quite line up.
+> >
+> > On Sat, Oct 28, 2023 at 4:38=E2=80=AFAM Heiner Kallweit <hkallweit1@gma=
+il.com> wrote:
+> >>
+> >> On 27.10.2023 23:30, Patrick Thompson wrote:
+> >>> MAC_VER_46 ethernet adapters fail to detect eapol packets unless
+> >>> allmulti is enabled. Add exception for VER_46 in the same way VER_35
+> >>> has an exception.
+> >>>
+> >> MAC_VER_48 (RTL8107E) has the same MAC, just a different PHY.
+> >> So I would expect that the same quirk is needed for MAC_VER_48.
+> >>
+> >> MAC_VER_xx is a little misleading, actually it should be NIC_VER_xx
+> >>
+> >>> Fixes: 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
+> >>> Signed-off-by: Patrick Thompson <ptf@google.com>
+> >>> ---
+> >>>
+> >>> Changes in v2:
+> >>> - add Fixes tag
+> >>> - add net annotation
+> >>> - update description
+> >>>
+> >>>  drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/=
+ethernet/realtek/r8169_main.c
+> >>> index 361b90007148b..a775090650e3a 100644
+> >>> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> >>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> >>> @@ -2584,7 +2584,8 @@ static void rtl_set_rx_mode(struct net_device *=
+dev)
+> >>>               rx_mode |=3D AcceptAllPhys;
+> >>>       } else if (netdev_mc_count(dev) > MC_FILTER_LIMIT ||
+> >>>                  dev->flags & IFF_ALLMULTI ||
+> >>> -                tp->mac_version =3D=3D RTL_GIGA_MAC_VER_35) {
+> >>> +                tp->mac_version =3D=3D RTL_GIGA_MAC_VER_35 ||
+> >>> +                tp->mac_version =3D=3D RTL_GIGA_MAC_VER_46) {
+> >>>               /* accept all multicasts */
+> >>>       } else if (netdev_mc_empty(dev)) {
+> >>>               rx_mode &=3D ~AcceptMulticast;
+> >>
+>
