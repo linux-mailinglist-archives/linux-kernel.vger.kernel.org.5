@@ -2,129 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783A77DB4D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2461A7DB4DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbjJ3IH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        id S232006AbjJ3IMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbjJ3IHz (ORCPT
+        with ESMTP id S231419AbjJ3IMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:07:55 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11539D6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:07:52 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7b9dc244151so2542152241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698653271; x=1699258071; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=u1/VaDbZg1pSYVDN7uPxJsz6GyIrT5GcoGyIJN1XUSY=;
-        b=QEzOHijGzVSL2H4H1on8ry9lbReHY/FnIiWDA6Rl1EZUWYP3EfvILoEHgsCU6RTLCR
-         wEN1TRExxbY0/LbRvLlnYhFQiFWX1PTOAKtaAdgYjO1v06/saY2Xr2Kxh5mAkxC1lh2s
-         t4D0F4Kmwn4nleytpmlgD0L8c2QbwL2Wsst+X/yOEqJlNthyg6qb1/dkMZHN20OfeJF6
-         dhK2WDyjikoSjKrrov8sLJwx0iugC9fJKDA7/r2sHPgsfD5+Vo82JEEKoCC6NRjIGBU3
-         Bi5KLtSKWDa0XnCEOAaBPs+o4FLsagXl2d7WFe6uyvdlaaSHmCrZH3gm1nJHuIZRtXQn
-         Xqrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698653271; x=1699258071;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u1/VaDbZg1pSYVDN7uPxJsz6GyIrT5GcoGyIJN1XUSY=;
-        b=MEp+JQIyb64as0gekrVb9K1Byx7LrotB5eT2zrX/orOskTsi557SUeNRAD3OOhyTnI
-         +0S177FWd4wnbQM62asHik4N1yBZEeBUg3JejOMH+Rir9JWQ3LkhfSGlpUfW5iyAtNbK
-         ToAbTrDA0QsTXw4yvW7hhb4EiOH+0rs3iFOplmwqFrfwuGBu0uhU1ioWtmHBGh0GdF8d
-         pFdtlKbathR68N/h3TApGdSpXWn08sWLl8MXE/PLfL0bJrVPHponOS/MBcj4Qesz6z/F
-         4Qd/3oRaSxSKRVJdzKNbdXhWX7xM/DWV0PYTokXSGAnX5WFdV5VccKWo0imSV969VNEq
-         xM5w==
-X-Gm-Message-State: AOJu0YyYE1mogMWL2YxBL7VdMgMCwwpKFDpWyzkihlMBNKn+AmYsMkMj
-        6D8Fktf7WPHTHwpE0h/8WCcEyboaptdO4Q+8Wd8kwg==
-X-Google-Smtp-Source: AGHT+IGUxeoMcIumPX7IET/lt4f1ldDBPjGrti0GnFsUkgmMHXfs2maVr1bRQ5PTuZfkffq7alJKaaOJocUYalarFe4=
-X-Received: by 2002:a67:e0c1:0:b0:457:c425:a696 with SMTP id
- m1-20020a67e0c1000000b00457c425a696mr4882109vsl.4.1698653271021; Mon, 30 Oct
- 2023 01:07:51 -0700 (PDT)
+        Mon, 30 Oct 2023 04:12:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504ACA2;
+        Mon, 30 Oct 2023 01:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698653537; x=1730189537;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=N7fgkNsYqzyQEPdyjc5ZvJhPw1EHpN8HXepKO0W0mGg=;
+  b=d4gTJher4XgPHEUYvoXBGn+3UFCW7TVR4aXbDJIhLY9aTxofF9aiwi6l
+   uCHnO0Wunq4qK5kAYZpOff8IpLyaiw7T+FqcfKTVQqETFJQQ9nwUJ7jSx
+   P92zZMHc9bPUoEb9S7tEIw7gfRlJgTXeQImKy8fz57dztjP1fL5VM+fmR
+   4GZKl+JxiyuOtVpheNvR2+pJX2JPpdEUchVnMK9a8PneDZIUlUe4lzp+3
+   OtQBmCtEdU4A54uJINhUqtK+WFGkokRUD0p6Tg8RIFVzpQAQ9eSNHbexV
+   kosp3nY5iRcmQWDpM4q3PqvmGGB9MbBdDI1Rz86HVUl1ArpGK75aVL4aN
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="390888816"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="390888816"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 01:12:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="830612580"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="830612580"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 01:12:16 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 01:12:15 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 01:12:15 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 30 Oct 2023 01:12:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MKR9snjzNe/Ze86/qVyvbmy4AQSAF5la52gpnZexKPjrurBMmU1F8x0WKpvEL6sfPcz6f0Y3f+e/n6XoIHe38SK6OmsfUWa69hPx5bh1Mb8j/RSRmp1mou/RfwNhzqwNsFfRRRcpdTEsp87pjIyBdBKXlPR4yKak7R2DvVoQA6E85XPg4pqZXQ7E063yjLYfHSIC1gD4XkmJoU56tYad7BVjGbfFbS4iCXGbppebi2r1T62/NPg3t/E9l5hoUIpBlsSs16UrWQ5Af5JIqkDXlIo73+dNuB8imoentRNfdQfndKL0wVW2CVVdUfScDVURgSDXKCGJOz19sO+5Q82mNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X9vkp1CJIfW1AIEPRn0itXrQbWQ42HgzTp/f393cgFg=;
+ b=fBK+a9k2esbaO4oiP0mi+tmuzoOLrCMwU2/Sl3kUqXJQH30CQHnfE5GKZvMnZeI9uMcn7K+JC344rHzF+XgXlJne+snOdtgXCYunbIYJQjqmG2eiqvdWtOfnUQvhzo0PljACSw/JIzlVV0oVxhtbHJX03tD3e2U1fkeozyVcfxW16nEJrQsK6DvVKVxsjbaPRD8yfB+1sqNjyFPUPDVK6kafCvVZ7PIP0yjRvlRu+dGBIzrzUYG6ws5rxoZcacPozZh58hZUHcdWUaO3Kb1YfeSbfRY4m3BVsOv66I5jZlmCaho5Dt1EDeqG3B0/k3uAo/+zgNCSOeKFjE7eDPu7FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by DS7PR11MB7782.namprd11.prod.outlook.com (2603:10b6:8:e0::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.27; Mon, 30 Oct 2023 08:12:07 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::6227:c967:5d1d:2b72]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::6227:c967:5d1d:2b72%5]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
+ 08:12:07 +0000
+Date:   Mon, 30 Oct 2023 16:11:47 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        "Oliver Upton" <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <kvm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.linux.dev>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <kvm-riscv@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        "Maciej Szmigiero" <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        "Isaku Yamahata" <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v13 13/35] KVM: Introduce per-page memory attributes
+Message-ID: <ZT9lQ9c7Bik6FIpw@chao-email>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-14-seanjc@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231027182217.3615211-14-seanjc@google.com>
+X-ClientProxiedBy: SI2PR02CA0012.apcprd02.prod.outlook.com
+ (2603:1096:4:194::7) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 MIME-Version: 1.0
-References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
- <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com> <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
- <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com> <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
-In-Reply-To: <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 30 Oct 2023 13:37:39 +0530
-Message-ID: <CA+G9fYv3Ph6UDpW1uhoXD5QBE4tAZKpUkVy-Oo9NNrghChL_+A@mail.gmail.com>
-Subject: Re: qemu-arm64: handle_futex_death - kernel/futex/core.c:661 - Unable
- to handle kernel unknown 43 at virtual address
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|DS7PR11MB7782:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0492113d-a4d0-4a22-4f72-08dbd91fe8a0
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IW6w/QjkvzkXweV4lRD4ALJJE/n7n54hL8mSCjWHjSaCLzqdxibA9dABe06l0+6sHr1I1Ou+9Zycg3qgjsSdQ9BBaAMNHJHnUBJ28aZ1iKDbYVpzKt5qMKTfR1ecRZkiHrZXhJIfcmEwtSb254AzJQwMIAKNuC7MqqTRlL0H3MBhSwc2vIiuc+qTGRPXeEU8DeIKnUEPgoBiUoYJY1HwiUGgfsXEKJho2Op8NI9X8W9/SE7BwYAOy+u8HVNfPWwTaF0gyFmEb0hBVSuQnYWfeh40Atgp3BP1BFWFr/NZEwWqVQqFk/CQuyeKyYrO1LpWICaFdFN7MdzPZw2TqPOgnrA9x3rM3NpC1Ozd0WtB/s76S+ARQKoceEUVGrPWIKWvtsfaBY+SSZUV5FDoxaehHNtm9gSIGdCAjCEhpNAMUaq2etUl4FlfCaPMiNV5HZvdzX5f/zKC593U6na4MsH6aW8Xl4u4cWae0EVsjgTpDcfPDl8ulSILcgfIw4J1diz++gnVPHIamR0iVaCBEorx7a2eyUiirgi3Bx4FScEwRdGbaWNQy101LhUKPvPVDWEB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(376002)(346002)(39860400002)(136003)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(5660300002)(41300700001)(7416002)(2906002)(7406005)(54906003)(66946007)(66556008)(66476007)(6486002)(8936002)(8676002)(4326008)(44832011)(478600001)(316002)(6916009)(33716001)(38100700002)(83380400001)(86362001)(9686003)(6512007)(6506007)(6666004)(26005)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PI9DcH28XxTUT57eRoZ+dDxXY7h0KtSmfut7rIfbLrakHC93YTpMht0me4NP?=
+ =?us-ascii?Q?+dZbsEOijvLTO78IU9qzCUDHO7FbPDkcDFwkgKDu51oGTb8Lc475xJptX/R9?=
+ =?us-ascii?Q?JJhdmCgmXbt1QhLlYhWdMvTgjj8/MOcU375ZVoNkr9/6OqU+bRZE32yRA7he?=
+ =?us-ascii?Q?2aeCqmjIU7hbGP8WruM4QYEUFOp0tZV+O15aPG016Qonq1vojJj1fXvUlUcL?=
+ =?us-ascii?Q?1jGStrE9NjHp1HAZTqQx2k4GmmTN0dPVV+kKTqTxluCHm12JwEjd5BfXX0co?=
+ =?us-ascii?Q?Wj5Dlfmjf7cK9gtHvxVCSDljax2HjCpGX4JFNRKDcwDzlmlcvrCwFITytVI7?=
+ =?us-ascii?Q?CCxhwWocBeFJ722Fe/B4m5LhK101EyUMEEJeisubZFh+l6k5xiHRWhCPxYx7?=
+ =?us-ascii?Q?3/f6HWbEXcxkeaTPjfUh1rOffHYw7IMGffvv4zpX5H2nxdlJWzfPnmR3zED2?=
+ =?us-ascii?Q?XHv/m1ReO1jporBEAu/Cp/K5dOReZYF79Hdz3ER+nZn4+UirelcNCSFWeQN+?=
+ =?us-ascii?Q?hjUilkET97E4YH+tzieMyNsK0FlWVcfslRVBa9DU6cS9GDWflyOUD3gcZ0V5?=
+ =?us-ascii?Q?53yKJc3uVXSuWtqWr6Xdg5DsAT94IyKPyxpLRobQw0AoUVWy0zR40p+EDcq9?=
+ =?us-ascii?Q?WygtI8kIRjOPlQ1tOl9OhvrM5t5y3JcgSaEFG0/mzSIT/CCoH0Z86Wnfqm3L?=
+ =?us-ascii?Q?NqZgesKOjikw53iuIoUA1bgragghW9kbpbtnMySOtHYFM0OgIlKjGWbR5XoF?=
+ =?us-ascii?Q?lZ4Ftv5dfEirm7UB/ktY1pGxqCm7ic6EZCt23e0vBlY8sw1aHZ9k2DVhpBXx?=
+ =?us-ascii?Q?YcbhspeiiWAmGkZW0BFkkbr0xEG/4rtHVER4AsbLsHrEUyL5V286i/jEf+//?=
+ =?us-ascii?Q?ijjaryACFRKtzrP+DyX9Wga6Qz6VAh3RbiG9GOOFT5U7V9Fbq1+wh/vFLILP?=
+ =?us-ascii?Q?Ca4BssKHE5ETh31DPqQyCLP/M3n1DTkQbzYqh2aLbiFYlT9fL1mo0RiQEknB?=
+ =?us-ascii?Q?sPMChZLKnWvVD5dp8L5Z/WbS4X/u3RtFyMYIf9zrbLPbr+hZyRRjC2koH7mK?=
+ =?us-ascii?Q?uvXwSkV1vehdAJe3zjs1mS4E37PZMACc020CNztBVC7McUGnfY3siS82mNWn?=
+ =?us-ascii?Q?1XYd/1mmLRoHSQEWTOm8ycDhGHBYOJcJzdTND6a9n3OIzAs7FTxgD/OF2l5I?=
+ =?us-ascii?Q?DJsERjVPK0YY6NYMM3nJoSKR0bF9M4570q4vFT7Kc5MyojTyxO8SrNSsVM2I?=
+ =?us-ascii?Q?w0o5rvtx5pskhuEFN6r0Av5sPX/deBxiJhsXiisbsJP/8amROtDpVgFa8cvy?=
+ =?us-ascii?Q?jq7hG93xGAzWQZTa4a+jnaM5RVp3VImubvxTVo3P+FIVRJ+Q76A/tsk0aWOe?=
+ =?us-ascii?Q?i00TTz/4zhtNgghMpM9f46oDgvIjkGb1O25c4Zozb4v3L6b0wJO4ly6QhCB2?=
+ =?us-ascii?Q?hh8VE1fpvEefRFSFPwMj8wQT7J8yNfL2M9ib/pd7lfyvNq6F49xwm5HrmzKk?=
+ =?us-ascii?Q?VoM6NbIbgPo6pxLPNf3622X0ug3UCp4E/hpJwnOx/sVh4JLD7ea5jFf3AWn+?=
+ =?us-ascii?Q?AimAEb/L+MlyyYbAVjGZrYWAkTpuWRcuzY+IFxqR?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0492113d-a4d0-4a22-4f72-08dbd91fe8a0
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 08:12:07.4694
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CtLySxnyC6zgG2d7/Ju6fExQnsupAJ990YIT9LSkWZqTb+JKA9vsJHykP1HwwNUBTiYpU7iawhXJvFj6wwBmNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7782
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Oct 2023 at 13:12, Ard Biesheuvel <ardb@kernel.org> wrote:
+On Fri, Oct 27, 2023 at 11:21:55AM -0700, Sean Christopherson wrote:
+>From: Chao Peng <chao.p.peng@linux.intel.com>
 >
-> On Fri, 27 Oct 2023 at 12:57, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > On Thu, 26 Oct 2023 at 21:09, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >
-> > > > On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
-> > > > > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
-> > > > > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 ...
-> > > > It looks like this is fallout from the LPA2 enablement.
-> > > >
-> > > > According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
-> > > > 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
-> > > >
-> > > >         0b101011 When FEAT_LPA2 is implemented:
-> > > >                  Translation fault, level -1.
-> > > >
-> > > > It's triggered here by an LDTR in a get_user() on a bogus userspace address.
-> > > > The exception is expected, and it's supposed to be handled via the exception
-> > > > fixups, but the LPA2 patches didn't update the fault_info table entries for all
-> > > > the level -1 faults, and so those all get handled by do_bad() and don't call
-> > > > fixup_exception(), causing them to be fatal.
-> > > >
-> > > > It should be relatively simple to update the fault_info table for the level -1
-> > > > faults, but given the other issues we're seeing I think it's probably worth
-> > > > dropping the LPA2 patches for the moment.
-> > > >
-> > >
-> > > Thanks for the analysis Mark.
-> > >
-> > > I agree that this should not be difficult to fix, but given the other
-> > > CI problems and identified loose ends, I am not going to object to
-> > > dropping this partially or entirely at this point. I'm sure everybody
-> > > will be thrilled to go over those 60 patches again after I rebase them
-> > > onto v6.7-rc1 :-)
-> >
-> > I am happy to test any proposed fix patch.
-> >
+>In confidential computing usages, whether a page is private or shared is
+>necessary information for KVM to perform operations like page fault
+>handling, page zapping etc. There are other potential use cases for
+>per-page memory attributes, e.g. to make memory read-only (or no-exec,
+>or exec-only, etc.) without having to modify memslots.
 >
-> Thanks Naresh. Patch attached.
+>Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
+>userspace to operate on the per-page memory attributes.
+>  - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
+>    a guest memory range.
 
-This patch did not solve the reported problem.
-Test log links,
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/naresh/tests/2XTP1lXcUUscT357YaAm2G1AhpS
+>  - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
+>    memory attributes.
 
-- Naresh
+This ioctl() is already removed. So, the changelog is out-of-date and needs
+an update.
+
+>
+>+
+>+:Capability: KVM_CAP_MEMORY_ATTRIBUTES
+>+:Architectures: x86
+>+:Type: vm ioctl
+>+:Parameters: struct kvm_memory_attributes(in)
+
+					   ^ add one space here?
+
+
+>+static bool kvm_pre_set_memory_attributes(struct kvm *kvm,
+>+					  struct kvm_gfn_range *range)
+>+{
+>+	/*
+>+	 * Unconditionally add the range to the invalidation set, regardless of
+>+	 * whether or not the arch callback actually needs to zap SPTEs.  E.g.
+>+	 * if KVM supports RWX attributes in the future and the attributes are
+>+	 * going from R=>RW, zapping isn't strictly necessary.  Unconditionally
+>+	 * adding the range allows KVM to require that MMU invalidations add at
+>+	 * least one range between begin() and end(), e.g. allows KVM to detect
+>+	 * bugs where the add() is missed.  Rexlaing the rule *might* be safe,
+
+					    ^^^^^^^^ Relaxing
+
+>@@ -4640,6 +4850,17 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+> 	case KVM_CAP_BINARY_STATS_FD:
+> 	case KVM_CAP_SYSTEM_EVENT_DATA:
+> 		return 1;
+>+#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+>+	case KVM_CAP_MEMORY_ATTRIBUTES:
+>+		u64 attrs = kvm_supported_mem_attributes(kvm);
+>+
+>+		r = -EFAULT;
+>+		if (copy_to_user(argp, &attrs, sizeof(attrs)))
+>+			goto out;
+>+		r = 0;
+>+		break;
+
+This cannot work, e.g., no @argp in this function and is fixed by a later commit:
+
+	fcbef1e5e5d2 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific backing memory")
