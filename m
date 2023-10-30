@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9C47DBB64
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03BF7DBB67
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbjJ3OIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        id S233333AbjJ3OIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232677AbjJ3OIC (ORCPT
+        with ESMTP id S229587AbjJ3OIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:08:02 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60EDC1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:07:59 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4079ed65582so33024835e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698674878; x=1699279678; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+x6+LsrjZdB8dHUELRSubYTsHMKRqi5GBjTWofSCMDk=;
-        b=XzR15MZSaJ5rcYRcqgEh7c8vUnMlL5v9R+zWTwbI4usZ3aPhMF5rinw2t9iEsxbYEy
-         H5gp4XB4XlAF/bySz4rt+PGc1f9nyW3YWafsXXMnE/bOlaJUML8A/VkrmnMLZRS7GJ3k
-         QAHXipYM3oM7fyBAzg8G9PLSi2//LurYS2cgeE8y21NB+MrZWFOi9KJcUk2uz7GvyuvZ
-         9DhRI/ZZbSo9WlgwrqMO3uyewsXb+6ijOq3wlwgL9zZFDAO5RLCee/dqzKe0IV2X0e+o
-         X6QWMr3R1z9/hSMtDLx0pBB29Is//qmbc7/DrsFFH8bxOV15bcdUt3Miq1oRUyfipYIP
-         nqqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698674878; x=1699279678;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+x6+LsrjZdB8dHUELRSubYTsHMKRqi5GBjTWofSCMDk=;
-        b=eoUlX7gLRBDP+6aWQhG0+oBU2JsyeiG+vaRk+vNh/J+UY10SmcdDVxAh+U9wvkrEyL
-         slJOCb8MDgrhpodCjB5xB6Zklw4IWKm9U9YCIsz3dz62W4XpGrvfeXnhIKjYx2abV31D
-         RHxc0jSu3Pdt5xaVjL9ZxlwWM0jgxHoQUejEtcVfeD0z6VtW3Q975BEXnpfQ60m99ds3
-         D5MGmZx12B4sw54ucheUZp7/G7ldc1449VOb6/DwYBN9mJ0erpU8wSq7GVWXLrAtSxmA
-         OkJUp1Aw6jum7h3Wn5TfDUvYS+juQ2qd0P2vuqIGJ8Pf+PnOsXcKNUrUshRcWwT4GLsH
-         Dwlg==
-X-Gm-Message-State: AOJu0YwNQQ6HnlIiTEqqAOcSsrS3SyM18CMp0FK54ve072OO4u0pKhIp
-        hlVSO2f3p4wAME3gPgV1QPLWkhfy7km8cZLz+4o=
-X-Google-Smtp-Source: AGHT+IHa3PONe2ZHFjs1Ut/yXYmZH5eEEBpHXQF4IG+q5Drd25RgyRrQwRp16iOxIIUmK+4amlW37A==
-X-Received: by 2002:a05:600c:35cd:b0:406:872d:7725 with SMTP id r13-20020a05600c35cd00b00406872d7725mr8744073wmq.1.1698674878017;
-        Mon, 30 Oct 2023 07:07:58 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id g10-20020a5d46ca000000b0031980783d78sm8241952wrs.54.2023.10.30.07.07.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 07:07:57 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 17:07:54 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Tyler Hicks <code@tyhicks.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, ecryptfs@vger.kernel.org
-Subject: Re: [PATCH] ecryptfs: Simplify
- ecryptfs_crypto_api_algify_cipher_name()
-Message-ID: <72f7eca6-3566-46fd-9ff9-386b4077d55d@kadam.mountain>
-References: <2c4bd387e8036854d3338400038fdde8dce3806a.1698672391.git.christophe.jaillet@wanadoo.fr>
+        Mon, 30 Oct 2023 10:08:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C589B
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ZvVwMmMCo28cYULH2hI7U9noh43qi+Y+r47o/gBi8K0=; b=2W2T4tXsXA3+MrRnsZ/2CgXlHA
+        0vbu6ddViciW4oH3aa2bWbnOK4P80TAkVwLSgZUD2EDRx1xfz9T8PUCFfea5z6cYpNUVKWoOtQkKH
+        qm+IgSkFJOp9MrHtkCJ0RLgJjxXbF4eQik3BQveFC3aOugRNA5eX2J5WMRvRsdx1aRry+HFjlNSt7
+        LE707TBWKbeKhAPSsubvOh9jWxWIwtxLHPer7faI7tv+HZMLB4pAFWmZaiTUqO6hVjs1YQ37tpHKj
+        XKhloJjzEroXhPindG89xH/KnK5pDXloztrjgIg/2QJ9O/Rzk5p7zv0uXfSSRNCPovGJfeNiJKVXm
+        e/Ctj/9A==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qxSwd-003SqF-36;
+        Mon, 30 Oct 2023 14:08:44 +0000
+Date:   Mon, 30 Oct 2023 15:08:41 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Subject: [GIT PULL] dma-mapping updates for Linux 6.7
+Message-ID: <ZT-46QZiN8b37Swy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2c4bd387e8036854d3338400038fdde8dce3806a.1698672391.git.christophe.jaillet@wanadoo.fr>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 02:27:32PM +0100, Christophe JAILLET wrote:
-> Use kasprintf() instead of hand writing it.
-> It is much less verbose.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Hi Linus,
 
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+the Kconfig dependencies added in this branch caught configuration issues
+in a riscv platform.  The fixes for that went into th soc tree, so it
+if you want to avoid them it might make sense to pull this branch after
+the soc tree.
 
-regards,
-dan carpenter
+The following changes since commit ce55c22ec8b223a90ff3e084d842f73cfba35588:
 
+  Merge tag 'net-6.6-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-10-19 12:08:18 -0700)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.7-2023-10-30
+
+for you to fetch changes up to 36d91e851598a9ea523ad4681dd11fa661d59695:
+
+  dma-debug: Fix a typo in a debugging eye-catcher (2023-10-23 07:52:54 +0200)
+
+----------------------------------------------------------------
+dma-mapping updates for Linux 6.7
+
+ - get rid of the fake support for coherent DMA allocation on coldfire with
+   caches (Christoph Hellwig)
+ - add a few Kconfig dependencies so that Kconfig catches the use of
+   invalid configurations (Christoph Hellwig)
+ - fix a type in dma-debug output (Chuck Lever)
+ - rewrite a comment in swiotlb (Sean Christopherson)
+
+----------------------------------------------------------------
+Christoph Hellwig (8):
+      dma-direct: add dependencies to CONFIG_DMA_GLOBAL_POOL
+      dma-direct: add a CONFIG_ARCH_HAS_DMA_ALLOC symbol
+      dma-direct: simplify the use atomic pool logic in dma_direct_alloc
+      dma-direct: warn when coherent allocations aren't supported
+      m68k: use the coherent DMA code for coldfire without data cache
+      net: fec: use dma_alloc_noncoherent for data cache enabled coldfire
+      m68k: don't provide arch_dma_alloc for nommu/coldfire
+      m68k: remove unused includes from dma.c
+
+Chuck Lever (1):
+      dma-debug: Fix a typo in a debugging eye-catcher
+
+Sean Christopherson (1):
+      swiotlb: rewrite comment explaining why the source is preserved on DMA_FROM_DEVICE
+
+ arch/arm/Kconfig                          |  1 +
+ arch/m68k/Kconfig                         |  6 +--
+ arch/m68k/Kconfig.cpu                     | 12 +++++
+ arch/m68k/kernel/Makefile                 |  2 +-
+ arch/m68k/kernel/dma.c                    | 34 +-----------
+ arch/parisc/Kconfig                       |  1 +
+ drivers/net/ethernet/freescale/fec_main.c | 86 +++++++++++++++++++++++++++----
+ kernel/dma/Kconfig                        | 11 ++++
+ kernel/dma/debug.c                        |  2 +-
+ kernel/dma/direct.c                       | 37 +++++--------
+ kernel/dma/swiotlb.c                      | 12 +++--
+ 11 files changed, 127 insertions(+), 77 deletions(-)
