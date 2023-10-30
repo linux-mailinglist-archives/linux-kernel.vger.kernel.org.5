@@ -2,147 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A836F7DB353
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E4E7DB362
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjJ3Gbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
+        id S231567AbjJ3Ge5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbjJ3Gbu (ORCPT
+        with ESMTP id S229514AbjJ3Ge4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:31:50 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CADDF5
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=UpRT4osgu/w1c0pk9YIMsIv1/UH/MkmAUIraL9fcJ3E=;
-  b=N0UCLpBG4yBdHx6p/bTJTBiyPD5+iZzFNeMi2jqhtoFvhKM8oSc390k9
-   KpkQdLuiy50QLs10ZWEUQlvEJcENuIDnFrNBxaBn+yq15va0X4m8gLdcQ
-   Zcsv8cMgajkEG56q8MPig/bSYePLLP+RyKOHDGvvhKVltDZY54qLc94Y1
-   o=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,262,1694728800"; 
-   d="scan'208";a="133818454"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 07:31:21 +0100
-Date:   Mon, 30 Oct 2023 07:31:21 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Nancy Nyambura <nicymimz@gmail.com>
-cc:     gagallo7+outreachy@gmail.com, nicydaniels@gmail.com,
-        outreachy@lists.linux.dev,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Media: omap4iss: Enable RSZB and update resizer
- control
-In-Reply-To: <20231029220710.47063-1-nicymimz@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2310300729480.3533@hadrien>
-References: <20231029220710.47063-1-nicymimz@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 30 Oct 2023 02:34:56 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2082.outbound.protection.outlook.com [40.107.92.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AE4A7;
+        Sun, 29 Oct 2023 23:34:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hjs5exTgzBfHuV5+faTNgFTPfntwn9CS/Uv6o/fnXUYkDs0YO48uMLBcs+tc2TBBI4uQ5NEngDC2nTWZeVhdpCjP0aRbLRYiTv/HTURb47j2Ip4DtVOUIZOfmCiRvSXN2Cri3GVnAtdU8j2GKjDVJipXDPtUv+VTuTwhrKtemX0riKNELQxv5WoQvND4CSm9C6Pk4Oy60yqzvYBHy/LcqV5ccVjuQ0pqGSCbUSisx1rGB68G2XctLTljvZdorXs7Qpl8uufDOEjfJnCIMziybYfQs2q1eRwtiiscpu5GsJ2n/6s0b8aJw1DO3FaqvyXwCtpHsg0AJsz2dOZQKIOqNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mWW3xn6If36pYqgPGKypcbtKbqciRvqtlNV/5LHVWH8=;
+ b=M12hC7Xm/HO5MAxSLa/i7YYUj36KJtM/7e6hE9vL3ATch9VH9PwVhJNVNWmAE1BbdcieWp8OBZax/aFRtUrw9t1e2Ob+X0txlAbpeQavP8wXIfvlJOpAsECAhCjrZ891ubgpGJdaRYxzqRpcVJvEqNtozF/lSApy0rl39yO9eG7SNVbp+5YvsEiAfHDnOQUnLhZmVGsdTckfox75XlO+683zVvWKSo/4Vj2tKEEFvQ0CyPlMIkspavUDzZXp2TIBOTWPfOCpO0pnAHm4xiVf6aUq6Z7fUNqxJE7WOhikBqWQ93/rS3VnMkrWnpruU/lOZE+NA5kYcMsQkzF57EieYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mWW3xn6If36pYqgPGKypcbtKbqciRvqtlNV/5LHVWH8=;
+ b=dElRPVjtpoo93NIo+8dI1y9wPtcrAxufsIqSfJ/ING/TICwZtPhZ2b+3oBYsS8q+VJs8Wmp5vkjSr68aGryVC3X+qSUSD4BLGoFX0mu1Toc8VhaQBcbjGibTEpNien56PtVRfSUNaYZhWC116OH6YMvg3TnksXlGgptJkNpdheQ=
+Received: from BL1PR13CA0071.namprd13.prod.outlook.com (2603:10b6:208:2b8::16)
+ by CYYPR12MB8963.namprd12.prod.outlook.com (2603:10b6:930:c3::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Mon, 30 Oct
+ 2023 06:34:50 +0000
+Received: from BL6PEPF0001AB78.namprd02.prod.outlook.com
+ (2603:10b6:208:2b8:cafe::8) by BL1PR13CA0071.outlook.office365.com
+ (2603:10b6:208:2b8::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.14 via Frontend
+ Transport; Mon, 30 Oct 2023 06:34:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB78.mail.protection.outlook.com (10.167.242.171) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6933.15 via Frontend Transport; Mon, 30 Oct 2023 06:34:50 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 30 Oct
+ 2023 01:34:37 -0500
+From:   Meng Li <li.meng@amd.com>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "Nathan Fontenot" <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        "Perry Yuan" <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Oleksandr Natalenko" <oleksandr@natalenko.name>,
+        Meng Li <li.meng@amd.com>
+Subject: [PATCH V10 0/7] amd-pstate preferred core
+Date:   Mon, 30 Oct 2023 14:33:56 +0800
+Message-ID: <20231030063403.3502816-1-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB78:EE_|CYYPR12MB8963:EE_
+X-MS-Office365-Filtering-Correlation-Id: b578659c-867b-4efb-04b5-08dbd91251af
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2fsOsjhzEKQK1KTYaxidoPswNiWIeTjkOCO6rQF2QCvjGK20dcgmtUtUgraXD0bMCgjD9loxhjJGjaoaY1b+M1AAYxtdeFQKK5tEpZut7vuzjaX0+LdEFTyKNdPe0racUQgrMb2HmD9dMuNuY/K6Wvkiy6gPC0/B7qdB5sD9A/7Lgs2/3F8fE+7MGlD4Sc8z0NadkdwepLaNRNSogODzv4RBeaXmtryAqiIT6CdEmJlgTIur5xLVkuqVxJJafMi5JbUA0siokarWoHL/iFslyPa0EzbDqswDW+AGk+JmBv5dpA8r3zl/eZaY1H21lgHtieZkMrzyBhKEKHwzAcB3dOry9T3eG2n02RQOVzA4yNKN+7PjhyppaabV3aBgCuQTqREZCd9iCip6QBpbFN+550t6XDPhu1JCD2yVyEc7C5CM49lrgj4pIq61xnMZvoUpiLWd10HPbCps+KQke4ZZ0XkwlqXrcsy4+oP+mAwlxjtaJ5wrZQ7KsJmfSVng2UVgGa+pWgr8NlA9TyT5nzhETqBJbNC04/wj2GnvmwpLIt9iY0zDswXvrvq12rHllZGN9m+7eE+VviITKk7L7RRKNDH77AgVJqQU3AJ51hktzgtOXF6TJKhjknW9iVehZCTvu2fTQoueGBb/pcwqlKk7+ekSczZXKEZLxH63TndB86MukNwX5/rFhX+H1OaFIRAjfRqe/6gAOZscgcintEf9y/n7DVx0mcGvW/kufIeSvOVA9N9ocHXRDyh12ZasA21PkBClHCKCxZ6fuu57dfhzVK5J5FmxB9tpKLEEKfTHHfleWv8wIKIqAeVlX+xGoD3D
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(136003)(346002)(230273577357003)(230922051799003)(230173577357003)(64100799003)(82310400011)(186009)(1800799009)(451199024)(46966006)(36840700001)(40470700004)(7696005)(6666004)(478600001)(83380400001)(16526019)(47076005)(26005)(2616005)(1076003)(336012)(426003)(2906002)(5660300002)(7416002)(41300700001)(54906003)(316002)(6636002)(70206006)(110136005)(4326008)(8676002)(8936002)(70586007)(36860700001)(86362001)(36756003)(81166007)(356005)(82740400003)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 06:34:50.5651
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b578659c-867b-4efb-04b5-08dbd91251af
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB78.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8963
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all:
 
+The core frequency is subjected to the process variation in semiconductors.
+Not all cores are able to reach the maximum frequency respecting the
+infrastructure limits. Consequently, AMD has redefined the concept of
+maximum frequency of a part. This means that a fraction of cores can reach
+maximum frequency. To find the best process scheduling policy for a given
+scenario, OS needs to know the core ordering informed by the platform through
+highest performance capability register of the CPPC interface.
 
-On Mon, 30 Oct 2023, Nancy Nyambura wrote:
+Earlier implementations of amd-pstate preferred core only support a static
+core ranking and targeted performance. Now it has the ability to dynamically
+change the preferred core based on the workload and platform conditions and
+accounting for thermals and aging.
 
-> Enable RSZB functionality in the OMAP4 ISS driver. This change sets the RSZB system configuration register to enable the RSZB module. Additionally, it updates the resizer control by setting the RSZ_EN_EN flag as required. This change enhances the driver's capabilities and prepares it for future developments.
+Amd-pstate driver utilizes the functions and data structures provided by
+the ITMT architecture to enable the scheduler to favor scheduling on cores
+which can be get a higher frequency with lower voltage.
+We call it amd-pstate preferred core.
 
-Could you explain more about your changes?  What information led you to
-make these changes.  The current messages says what is done, but not so
-much about why.
+Here sched_set_itmt_core_prio() is called to set priorities and
+sched_set_itmt_support() is called to enable ITMT feature.
+Amd-pstate driver uses the highest performance value to indicate
+the priority of CPU. The higher value has a higher priority.
 
-Also, the log message should be limited to around 70 characters per line,
-so that it looks nice in the git history after it has been indented.
+Amd-pstate driver will provide an initial core ordering at boot time.
+It relies on the CPPC interface to communicate the core ranking to the
+operating system and scheduler to make sure that OS is choosing the cores
+with highest performance firstly for scheduling the process. When amd-pstate
+driver receives a message with the highest performance change, it will
+update the core ranking.
 
-julia
+Changes from V9->V10:
+- cpufreq: amd-pstate:
+- - add judgement for highest_perf. When it is less than 255, the
+  preferred core feature is enabled. And it will set the priority.
+- - deleset "static u32 max_highest_perf" etc, because amd p-state
+  perferred coe does not require specail process for hotpulg.
 
+Changes form V8->V9:
+- all:
+- - pick up Tested-By flag added by Oleksandr.
+- cpufreq: amd-pstate:
+- - pick up Review-By flag added by Wyes.
+- - ignore modification of bug.
+- - add a attribute of prefcore_ranking.
+- - modify data type conversion from u32 to int.
+- Documentation: amd-pstate:
+- - pick up Review-By flag added by Wyes.
 
->
-> Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
-> ---
->  drivers/staging/media/omap4iss/iss_resizer.c | 34 +++++++++++---------
->  1 file changed, 19 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/staging/media/omap4iss/iss_resizer.c b/drivers/staging/media/omap4iss/iss_resizer.c
-> index a5f8f9f1ab16..23089eeaf448 100644
-> --- a/drivers/staging/media/omap4iss/iss_resizer.c
-> +++ b/drivers/staging/media/omap4iss/iss_resizer.c
-> @@ -7,17 +7,17 @@
->   * Author: Sergio Aguirre <sergio.a.aguirre@gmail.com>
->   */
->
-> -#include <linux/module.h>
-> -#include <linux/uaccess.h>
-> -#include <linux/delay.h>
-> -#include <linux/device.h>
-> -#include <linux/dma-mapping.h>
-> -#include <linux/mm.h>
-> -#include <linux/sched.h>
-> -
-> -#include "iss.h"
-> -#include "iss_regs.h"
-> -#include "iss_resizer.h"
-> + #include <linux/module.h>
-> + #include <linux/uaccess.h>
-> + #include <linux/delay.h>
-> + #include <linux/device.h>
-> + #include <linux/dma-mapping.h>
-> + #include <linux/mm.h>
-> + #include <linux/sched.h>
-> +
-> + #include "iss.h"
-> + #include "iss_regs.h"
-> + #include "iss_resizer.h"
->
->  static const unsigned int resizer_fmts[] = {
->  	MEDIA_BUS_FMT_UYVY8_1X16,
-> @@ -30,11 +30,11 @@ static const unsigned int resizer_fmts[] = {
->   *
->   * Also prints other debug information stored in the RESIZER module.
->   */
-> -#define RSZ_PRINT_REGISTER(iss, name)\
-> + #define RSZ_PRINT_REGISTER(iss, name)\
->  	dev_dbg(iss->dev, "###RSZ " #name "=0x%08x\n", \
->  		iss_reg_read(iss, OMAP4_ISS_MEM_ISP_RESIZER, RSZ_##name))
->
-> -#define RZA_PRINT_REGISTER(iss, name)\
-> + #define RZA_PRINT_REGISTER(iss, name)\
->  	dev_dbg(iss->dev, "###RZA " #name "=0x%08x\n", \
->  		iss_reg_read(iss, OMAP4_ISS_MEM_ISP_RESIZER, RZA_##name))
->
-> @@ -116,8 +116,12 @@ static void resizer_enable(struct iss_resizer_device *resizer, u8 enable)
->  		       RSZ_SRC_EN_SRC_EN, enable ? RSZ_SRC_EN_SRC_EN : 0);
->
->  	/* TODO: Enable RSZB */
-> -	iss_reg_update(iss, OMAP4_ISS_MEM_ISP_RESIZER, RZA_EN, RSZ_EN_EN,
-> -		       enable ? RSZ_EN_EN : 0);
-> +	u32 reg_value = ioread32(iss->base_addr + OMAP4_ISS_MEM_ISP_RESIZER,
-> +		       	+ RZ_SYSCONFIG);
-> +	reg_value |= RSZ_SYSCONFIG_RSZB_CLK_EN;
-> +	iowrite32(reg_value, iss->base_addr + OMAP4_ISS_MEM_ISP_RESIZER,
-> +			+ RSZ_SYSCONFIG);
-> +
->  }
->
->  /* -----------------------------------------------------------------------------
-> --
-> 2.40.1
->
->
->
+Changes form V7->V8:
+- all:
+- - pick up Review-By flag added by Mario and Ray.
+- cpufreq: amd-pstate:
+- - use hw_prefcore embeds into cpudata structure.
+- - delete preferred core init from cpu online/off.
+
+Changes form V6->V7:
+- x86:
+- - Modify kconfig about X86_AMD_PSTATE.
+- cpufreq: amd-pstate:
+- - modify incorrect comments about scheduler_work().
+- - convert highest_perf data type.
+- - modify preferred core init when cpu init and online.
+- acpi: cppc:
+- - modify link of CPPC highest performance.
+- cpufreq:
+- - modify link of CPPC highest performance changed.
+
+Changes form V5->V6:
+- cpufreq: amd-pstate:
+- - modify the wrong tag order.
+- - modify warning about hw_prefcore sysfs attribute.
+- - delete duplicate comments.
+- - modify the variable name cppc_highest_perf to prefcore_ranking.
+- - modify judgment conditions for setting highest_perf.
+- - modify sysfs attribute for CPPC highest perf to pr_debug message.
+- Documentation: amd-pstate:
+- - modify warning: title underline too short.
+
+Changes form V4->V5:
+- cpufreq: amd-pstate:
+- - modify sysfs attribute for CPPC highest perf.
+- - modify warning about comments
+- - rebase linux-next
+- cpufreq: 
+- - Moidfy warning about function declarations.
+- Documentation: amd-pstate:
+- - align with ``amd-pstat``
+
+Changes form V3->V4:
+- Documentation: amd-pstate:
+- - Modify inappropriate descriptions.
+
+Changes form V2->V3:
+- x86:
+- - Modify kconfig and description.
+- cpufreq: amd-pstate: 
+- - Add Co-developed-by tag in commit message.
+- cpufreq:
+- - Modify commit message.
+- Documentation: amd-pstate:
+- - Modify inappropriate descriptions.
+
+Changes form V1->V2:
+- acpi: cppc:
+- - Add reference link.
+- cpufreq:
+- - Moidfy link error.
+- cpufreq: amd-pstate: 
+- - Init the priorities of all online CPUs
+- - Use a single variable to represent the status of preferred core.
+- Documentation:
+- - Default enabled preferred core.
+- Documentation: amd-pstate: 
+- - Modify inappropriate descriptions.
+- - Default enabled preferred core.
+- - Use a single variable to represent the status of preferred core.
+
+Meng Li (7):
+  x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
+  acpi: cppc: Add get the highest performance cppc control
+  cpufreq: amd-pstate: Enable amd-pstate preferred core supporting.
+  cpufreq: Add a notification message that the highest perf has changed
+  cpufreq: amd-pstate: Update amd-pstate preferred core ranking
+    dynamically
+  Documentation: amd-pstate: introduce amd-pstate preferred core
+  Documentation: introduce amd-pstate preferrd core mode kernel command
+    line options
+
+ .../admin-guide/kernel-parameters.txt         |   5 +
+ Documentation/admin-guide/pm/amd-pstate.rst   |  59 +++++-
+ arch/x86/Kconfig                              |   5 +-
+ drivers/acpi/cppc_acpi.c                      |  13 ++
+ drivers/acpi/processor_driver.c               |   6 +
+ drivers/cpufreq/amd-pstate.c                  | 187 ++++++++++++++++--
+ drivers/cpufreq/cpufreq.c                     |  13 ++
+ include/acpi/cppc_acpi.h                      |   5 +
+ include/linux/amd-pstate.h                    |  10 +
+ include/linux/cpufreq.h                       |   5 +
+ 10 files changed, 288 insertions(+), 20 deletions(-)
+
+-- 
+2.34.1
+
