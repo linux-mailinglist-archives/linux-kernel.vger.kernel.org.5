@@ -2,63 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DAB7DBD52
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A367DBD2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbjJ3QBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S233753AbjJ3P6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbjJ3QBx (ORCPT
+        with ESMTP id S233311AbjJ3P6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:01:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27054C5;
-        Mon, 30 Oct 2023 09:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698681710; x=1730217710;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=QIXNVS87BZwBhwymtUJwnbG1tcrG2PhdTv9h7IVMuB0=;
-  b=N08jxK+Q9tnAtgk4/cI5hUScM20RGHzfitPGzaeVndclmRobH+6/PbMx
-   tsmKfwjiI/qhTJm9l0nyjkawQ9xUR5EBPoV38VHQx/Lu4JpxkH3022ZlH
-   ybQhDSqVfQPQBHehqu2UTbWtq3s91Oli+c5GwLO7qNB2s5wMe6K0rBHcR
-   1bwDIY90vTn0tD9nW3zLtczV7xuhEkfgjv726J81YWZI9UBSOyxzzwHGA
-   lx5N9jZxXl9pScS86Mw3bxXBhQxzJiaxlCJ4s9Hf1VvL6iCPUx+l41VlB
-   44UOuV7TW8TtHrYcGgkqnpaqK0iXTvDvD+ngSVslAJxKJ9OWiLEw0mffw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="419216550"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="419216550"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:58:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="795297518"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="795297518"
-Received: from sgruszka-mobl.ger.corp.intel.com ([10.252.50.181])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:58:27 -0700
-Date:   Mon, 30 Oct 2023 17:58:24 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Henry Shi <henryshi2018@gmail.com>
-cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, Hans de Goede <hdegoede@redhat.com>,
-        markgross@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
-Subject: Re: [PATCH v10] platform/x86: Add Silicom Platform Driver
-In-Reply-To: <20231027203836.25936-1-henryshi2018@gmail.com>
-Message-ID: <12ddd0a-6e50-7d8a-9437-e4209850bd@linux.intel.com>
-References: <20231027203836.25936-1-henryshi2018@gmail.com>
+        Mon, 30 Oct 2023 11:58:50 -0400
+Received: from DM4PR02CU001.outbound.protection.outlook.com (mail-centralusazon11012004.outbound.protection.outlook.com [52.101.63.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB66EDA
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:58:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xwujvhx6kkPusj2bQT1M4tT5TjdqLkA2rBojqAC2KilSB8HYil5SHyIANBeNdoIZ7hjoIT5oW9KSqj5A3M2kfSkF0qvYrHwZGdIU58xVMeMTLdYBbRHUD8ILpRiIAjWnUHZMZTwnvw+rJUOhCQt4/J0ywP9L1RsiX7uxclacAV4c19sCF5Rab+fMx8faSUMYmQyDNHug+kZPWKlfeeIm1qkPIqSoWwg3bbNGieJxe9OuUEbHRWYoazI4A8yVQQRH/AbRED2XrRcvSuUO5CeoSlQIVhCuJXBDZa30H6sc2gx/28730bqWZ7/hVgMn99uBR6I8bjlR08S5Cgy/EAV4rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sv9BnbclOW8tIPcf1lnDudHGr2EOuFKuq5WFNkZfccI=;
+ b=LFheezU5LP734j4KznsykU+w2ciq723SIrFIoABBMOdxufKCA5fD4iBu6HAERo88rBsorC0NJ6rrecVLUxurgh97/v4D1hYQXM+OMPhCch7A1NVnxTRotByb9cKREqt9bxUI1cE1rPnO60d9+vzmbUDn9dGGjyKj4950pNA5xUM7Hn3zvv9IZubMOommFi+QzB7HndXlkWiThZLGgIC28ZK7fh0JXihR/wmQvZSKnqYvATJETe3aI3qUydAv/DLIVKKMUKmWPPWs/F3d1bz/s8iIlJfszebt7mzDPYNFzAP/xAzYfg+BQEqZdPasxfGzi8NEO21jce395aJOA+GVDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sv9BnbclOW8tIPcf1lnDudHGr2EOuFKuq5WFNkZfccI=;
+ b=VrxK1jnJq8LTYaEIPQAFyMztLGZT9BF4kssMiOjLNJ3peQS7kcWJUxHkYK9iyJ6Jv0E4kEZEOHJ9KUhkGX+lD5p+g829E89vVL36ZpAMLNFttkKQw4igpxI+PsMptzmwxRFwYwtZMy1Jkbtesr84N/ZwdPldOXQm9UZoINcoWwY=
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
+ by CH3PR05MB10316.namprd05.prod.outlook.com (2603:10b6:610:1a7::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Mon, 30 Oct
+ 2023 15:58:44 +0000
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::b668:aef3:606e:923f]) by BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::b668:aef3:606e:923f%4]) with mapi id 15.20.6933.028; Mon, 30 Oct 2023
+ 15:58:44 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Byungchul Park <byungchul@sk.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
+        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
+        "hughd@google.com" <hughd@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Thread-Topic: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Thread-Index: AQHaCwJWAIN/MoWKfkqwslHpJdh5ILBiSanQgAA0MIA=
+Date:   Mon, 30 Oct 2023 15:58:44 +0000
+Message-ID: <0138328C-74D5-471E-A2CC-7675CA692F42@vmware.com>
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <20231030072540.38631-3-byungchul@sk.com>
+ <63C530D3-3A1D-4BE9-8AA7-EFF5B895BE80@vmware.com>
+ <20231030125129.GD81877@system.software.com>
+In-Reply-To: <20231030125129.GD81877@system.software.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3731.700.6)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|CH3PR05MB10316:EE_
+x-ms-office365-filtering-correlation-id: aeed0348-91f3-4f71-6d3d-08dbd9611845
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cKFJ5T23Zhx6loyyNr6Q/of4Y7vw6QeKJV4XMXwNAsIwKB1Ukzo9ULdKUfQUGzFw5Aud6TCxW1s5ygwLf6ToA5OoSpnqQF/c8THPmZIuR1fPHB1HWFHHVF30Q/1HEQCutLxSKvLsGbRoBy9o60SoCdmqkUWGzBmid3E0lAAGhKl3eT1Edwyz8PjAEyZgTudcJn05koEFO63DptJHlNg6ziGRohkM5sx+wEgOF73iTRmB76Lnz+W++yYnyFjycQi9ddTbTVXyRXHXxZ0e9XQdSsV51VA+uDGHp9X1EKOt/VNANScldVpxbD4mXPPFk6udbqFWoIGft9nmF58NxgzyWygIVIUXJF8Nm5qkZUpWOPDKt2ODVxwnkz37GHt5ag4jjDwGaHfBG/93Kj3za5DqCAy5EoFTEjisUVj/RRmXdCgPlVeo5LvZcip9iEGkiCMArO5NiZOft1WC/cHh8rYpPabZFMHfxfKXyvVmQw1yJs6laZxsXu+3cG/AV9SnyA2sT12C6dWyQS9Z0CNfNgA3tQv1wYYPQAcetzfJ8Dky2vJ2JAAQV/KCTr4F2v5z0hx/C0gS+PUxN3aQ7QW7Lb7EH4Q3KOrKWOkcYh6Ff15otsEXDPTxpWy07E6VdpqQvUJNUE6KErHkmgl4JWYPU3rRYIsS3XFFQzEiZNtNPpESDb76uLiDtFfPvD4zdXlmD3xiIFAECYMp4wimuiI1Vc+3HA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(366004)(396003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(26005)(2616005)(122000001)(6512007)(38070700009)(2906002)(4744005)(86362001)(38100700002)(53546011)(478600001)(6486002)(36756003)(71200400001)(6506007)(66946007)(6916009)(66476007)(66556008)(54906003)(64756008)(66446008)(76116006)(316002)(4326008)(8936002)(8676002)(91956017)(7416002)(41300700001)(5660300002)(33656002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZmdYMFo2UFJTUkNwVGVxL0JwazBROG9ObDQ2Vk1ocG1ZY0RGT1FRQ1NvMVZp?=
+ =?utf-8?B?cEc3eEJNaHVzRy9VMFNUSVpBY1FKQTJhVnZuMC9vTWpRQU9xTWFGdFpDSlRo?=
+ =?utf-8?B?K09CckN6Tis0NXFaSHpDRk5sOGZUWmorWm5ybHhCQ2VOM2lmb3lVaGxDSlNt?=
+ =?utf-8?B?UHVocmQrTVplL0d2Y1RlQ0VNS0I3NjZROEZqc2lML0lMQUorY1pSYTN2SUs0?=
+ =?utf-8?B?TEJhQU8wZmtoT2JERWFYSks3aHI2eFlaY0lKanl5MExoZTBVUU15WjA3ck5Z?=
+ =?utf-8?B?QVdOTk1ObklYbW9uQXUwRi9aR1RsR0FTU2hMMHNsaUh0YWZiOTU2ekpWcldG?=
+ =?utf-8?B?Q1FPWGpTWENPRTgwSk1JR0x1bFNmMmJzUjl4S29VYWg4UXVQVjdKSnZkVE9W?=
+ =?utf-8?B?Vi8vZjRxOXE2YWZSVkdzdEhBZ2ZEdDc3TGVwSXJLVVdEbG5yZFZIRWlqOVBC?=
+ =?utf-8?B?UVhVY250Um00eTN3NUEyTjBoT2RUNW42Ty9rTVpYYUY0SkIyY2hHd1JEQTE2?=
+ =?utf-8?B?OE5mcmVKeUMxdEZsSnpYQUVrTUJFR3JRYWRyREw1bWFEL1lCMUJhcE9VTzNM?=
+ =?utf-8?B?bVQvbGlPWHJiTVZIWHRtanAwVTZRZy9ORGR0dnVRK21CZngrM09LZkhXa2U4?=
+ =?utf-8?B?YUNsVk8zdDVmZVRsYlZIMkp3VFZ5UjFsU2tUREhwOXEzUEpIK2NWbkJyajlq?=
+ =?utf-8?B?MGV6T1dJY2w4bG9Pdm4xSUxQUWhLVUkzdzZ3Zm5LdUFnMjdBVGI3R2lxY3NP?=
+ =?utf-8?B?WWc4VGROazkrZkRvUmRsZFY0TUFEVTVRek8vcGZ4cHBnbk5XZjUyWmJMOTBW?=
+ =?utf-8?B?Z1RJZDNsSkpIQTRFTmdYOWZLNjFuRGxxTXVoTTBsWE01a2JCcHMzTXROZTNP?=
+ =?utf-8?B?Z2RrVjl1RzZ4WDU5b1NDU1F4S3NXMXEvRSs5SDlXN1BXdHI3RWE4Rm5OdWMr?=
+ =?utf-8?B?Rkl5R2gybEFaUWQrNytxWHQvVFRiUFl1UUVncmpnWjdVOTh1MlptRkUxSnpK?=
+ =?utf-8?B?Sm5zZTduQjJUSTU5UzJOWHFJaTQ1VGhaMjNCdmdoSklxVGl0QUxNN0RwWUV3?=
+ =?utf-8?B?T2tqYmRyRHMxczhXTWhVMlBLNWtmRFo1WS9zc0dtNGJURDRVVVFiR1AxU00x?=
+ =?utf-8?B?OXlLeG4yQUhrelErN3U4SnZNM2Nrd1FFTVlDajErbUVDdC82cmlKL3lPMUkr?=
+ =?utf-8?B?WC9uaEh0UWp2T3V1K1cwUFc4cGtBY0l4QmNqR3NhS3BubHpUQllWUm1Qamdv?=
+ =?utf-8?B?UitvekZsRXFpMlJqK0NtUGZRNUcyV1dOeFZkM3B3TXZ6OUNtcEY3TVdFdGhX?=
+ =?utf-8?B?YUx3anhDd3JaOHVDYVZUQVNzeTlvdnJndFEyMXZ6K3VKZGtFQU5zY0FWL3JU?=
+ =?utf-8?B?eWZnSkpOdnFQaitzWFp1STc4MGt1N3RTaHpuek1nTzBwMHBReDJQYzRhOVJl?=
+ =?utf-8?B?UlFpNlRpSGxKSkpLTjlMUHQ2MkJCZ0g0bTRneEpEbXRSdk1DRG5QaTFkSGh0?=
+ =?utf-8?B?MXQ5NXJkVXQrYTN2OUxPeFZzZlBQOG85VFkwaTVvSWlkUis2QnRFbGliZ0Rt?=
+ =?utf-8?B?eCtjbzA4SWoxMDRtb1hRSFJ5MVkybW1YYTBvZXZvcDRyUW5oc3VmY3ZEQ2ky?=
+ =?utf-8?B?bXVScGxnVThrOFZNdnpjN0d6NmNMaVMrK0h2TnJzbEFSU2ZDeWZGd1RUWkZK?=
+ =?utf-8?B?Tzh4K1BqTTZ6WFk5cm1YMEVnUzY5NmR4UTJpY2NRYjdId3kxRCtUZXRQTVM1?=
+ =?utf-8?B?M1JuSVhKRjRzREs5YW14eGkvUnZXR0hJaXMvZ1drUGxhUzdzOXM1RW9MOTZv?=
+ =?utf-8?B?dDlZTXFWUnlqdExLTUk3Y2paNHRRWmFHRm1VRkJhV09vMDJBa2tTSmYyZjYz?=
+ =?utf-8?B?SW03S2luamZwdlNoY0Y4ODVFbkZYT3hCNC80T1VoTGNJT0dBQkRwbG15NE9m?=
+ =?utf-8?B?SzREL2hoMHJRM2xTTjI3eUt4cjZwOVJxTHIxOUxnaVd2R3JrVEg0VXQzYUtR?=
+ =?utf-8?B?cDRaK1FIS2VCcmF3MHpZaXlEQ1AzSXJQcDF5R3hiQ0c1bHN2RGNmL3o5dWJX?=
+ =?utf-8?B?Y2RhTytubzdCaWU4Y2pXalFvcFVTQ1hSOHMvbU5NMStNQXVYS0ZDTmEwcjhD?=
+ =?utf-8?Q?H/+WUvf4Cut1ISu4k4muTFzqs?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F90C1781A951F24292E3FF7A466243D9@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-211416239-1698677818=:1729"
-Content-ID: <491cbf6c-d878-7fb5-4889-24986ae2d3d@linux.intel.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeed0348-91f3-4f71-6d3d-08dbd9611845
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2023 15:58:44.5289
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4/VFI21oKmW+IJfvzWb4RHFIIN0LrlI2LF7hAXYIZbweHsFNOG7XTcJSjcxqE1vY1thICeS8jHrmR7CyHCFd5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR05MB10316
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,411 +146,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-211416239-1698677818=:1729
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <922f3e2a-80fb-e1be-7290-ad768d91f7d6@linux.intel.com>
-
-On Fri, 27 Oct 2023, Henry Shi wrote:
-
-> platform/x86: Add Silicom Platform Driver
-> 
-> Add Silicom platform (silicom-platform) Linux driver for Swisscom
-> Business Box (Swisscom BB) as well as Cordoba family products.
-> 
-> This platform driver provides support for various functions via
-> the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
-> and device attributes.
-> 
-> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
-> ---
-> 
-> Changes from v1 to v2:
-> ===========================
-> 
-> Suggested by Hans de Goede <hdegoede@redhat.com>
-> .Use git send-email to submit patch.
-> .patch contents should be in message body.
-> .Kconfig bit for the driver should be in drivers/platform/x86/Kconfig.
-> 
-> changes from patch v2 to v3
-> ===========================
-> 
-> changes suggested by Guenter Roeck <groeck7@gmail.com>
-> .Removed unnecessary include file linux/thermal.h.
-> .Removed EXPORT_SYMBOL for mutex lock/unlock function.
-> 
-> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> .Remove extra new line in code on multiple position.
-> .Use table instead of space in code.
-> .Uss Linux defined bit operation MACRO define.
-> .Removed local variable in rpm_get().
-> .Corrected typo in comments.
-> .Corrected incorrect indentation.
-> .Removed unnecessary comments in silicom_mc_leds_register().
-> .Rewrite efuse_status_show() to used defined variable and removed 
-> uncessary local variables.
-> .Rewrite uc_version_show() to used defined variable and removed 
-> uncessary local variables.
-> .Removed unused MACRO define: #define CHANNEL_TO_BIT(chan) ((chan) & 0x07).
-> .Rewrite powercycle_uc() to used defined variable and removed uncessary 
-> local variables.
-> .use GENMASK() and use FIELD_GET() instead of bit shift.
-> .Added define for constant 0x28 used in  efuse_status_show().
-> .Added define for constant 0x0 used in  uc_version_show().
-> .Added define for constant 0x0 used in  powercycle_uc().
-> .Rearrange functions to avoid uncessary pre-define.
-> .Rewrite rpm_get() to used defined variable and removed uncessary 
-> local variables.
-> .Rewrite temp_get() to used defined variable and removed uncessary 
-> local variables.
-> .Use FIELD_GET instead of bit shift in temp_get().
-> .Used #define for constant variable 0/1.
-> 
-> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
-> .use "if (!led->subled_info)" instead of
-> "if (IS_ERR_OR_NULL(led->subled_info))
-> "in silicom_mc_leds_register
-> 
-> changes from patch v3 to v4
-> ===========================
-> 
-> changes suggested by Guenter Roeck <groeck7@gmail.com>
-> 
-> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
-> .Rewrite silicom_mec_led/gpip_set/get() functions to use two newly created
-> silicom_mec_port_get()/silicom_mec_port_set() which have common code.
-> .Remove duplicate code in silicom_mec_port_get()
-> .Rewrite uc_version_show() to use Linux bit operation MACRO, and add
-> logic to check un-supported register value.
-> .Added "#define MEC_EFUSE_LSB_ADDR 0x28" and "#define
-> MEC_POWER_CYCLE_ADDR 0x24"
-> .Added "#define MEC_VERSION_MAJOR GENMASK(15, 14)" and "#define
-> MEC_VERSION_MINOR GENMASK(13, 8)".
-> 
-> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
-> .Used a local variable to store "sizeof(struct mc_subled)" in function
-> silicom_mc_leds_register().
-> 
-> change from patch v4 to v5
-> ===========================================
-> 
-> changes suggested by Guenter Roeck <groeck7@gmail.com>:
-> .Corrected return value in temp_get() to return 1/10000th degree.
-> .Removed local variable struct silicom_fan_control_data *ctl in
-> silicom_fan_control_read_fan(),
-> removed storing rpm value to ctl variable.
-> .Removed local variable struct silicom_fan_control_data *ctl in 
-> silicom_fan_control_read_temp(),
-> .removed storing rpm value to ctl variable.
-> .Changed return string in silicom_fan_control_read_labels() to 
-> specific string for Silicom platform driver.
-> .Removed silicom_fan_control_data structure.
-> .Removed static variable mec_io_base and mec_io_len, and added
-> "#define MEC_IO_BASE 0x0800 and #define MEC_IO_LEN 0x8".
-> .Removed ".write = NULL" in silicom_fan_control_hwmon_ops
-> structure defination.
-> .Removed unnecessary function silicom_fan_control_write().
-> .Removed unnecessary check for silicom_led_info in function
-> silicom_platform_probe.
-> .Removed unnecessary local variable "silicom_fan_control_data *ctl"
-> in silicom_platform_probe().
-> .Clean out driver initialization error handling in
-> silicom_platform_init();
-> .Add patch version and changelog for patch submission.
-> 
-> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
-> .Rename "#define MEC_DATA(offset) to "#define MEC_DATA_OFFSET(offset).
-> .Use constant defined in include/linux/units.h instead of a literal.
-> .return directly instead of go to err condition when
-> platform_device_register_simple() failed.
-> .Remove unnecessary check for silicom_led_info and silicom_gpiochip.
-> .Use a local variable to how multiple use of array size.
-> .Align the arguments to the same column in
-> silicom_mec_led_mc_brightness_set.
-> .Add patch version and changelog that shows version to version changes
-> for patch submission.
-> 
-> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
-> .Use "sizeof(*led)" instead of "sizeof(struct led_classdev_mc)"
-> .Use "if (!led)" instead of "if (IS_ERR_OR_NULL(led))" 
-> .Removed unnecessary error message:
-> "dev_err(dev, "Failed to alloc led_classdev_mc[%d]:
-> %ld\n", i, PTR_ERR(led)).
-> 
-> change from patch vv5 to v6
-> ===========================================
-> 
-> changes suggested by Guenter Roeck <groeck7@gmail.com>:
-> .Removed checkpath warnings. 
-> .Resoved dependencies between CONFIG_HWMON and CONFIG_SILICOM_PLATFORM.
-> 
-> change from patch v6 to v7
-> ===========================================
-> 
-> changes suggested by Hans de Goede <hdegoede@redhat.com>:
-> .Usa a proper subsystem prefix for this patch subject:
-> Subject: platform/x86: Add Silicom Platform Driver.
-> 
-> change from patch v7 to v8
-> ===========================================
-> 
-> changes suggested by Hans de Goede <hdegoede@redhat.com>:
-> .Chnage commit message of this driver.
-> .Adjust location of change log and signed-off-by.
-> .Change "config SILICOM_PLATFORM" and help contents location,
-> and put it to source "drivers/platform/x86/siemens/Kconfig".
-> .Set editor tab to 8 and align the start of extra function
-> parameters to directly after (. This should be applied for
-> all function.
-> .Do not manually create a sysfs dir and register sysfs attribute,
-> instead define a platform_driver structure.
-> .Move MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids) directly after
-> table declaration.
-> .Using pr_info() instead of dev_info() in function
-> silicom_platform_info_init().
-> .Made dmi_check_system() check the first thing to do in
-> silicom_platform_init().
-> .Instead of separate platform_device creation + driver registration,
-> switched to using platform_create_bundle().
-> .Removed mutex_destroy(&mec_io_mutex).
-> 
-> 
-> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
-> .Too many GENMASK() within to code itself, need put them to
-> #define. Removed all GENMASK() in c functions.
-> 
-> change from patch v8 to v9
-> ===========================================
-> 
-> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
-> .Just do the same (like MEC_VERSION_MAJOR) with all places in the where
-> you previously had GENMASK() in the code (currently MEC_GET_BITS()
-> is there, obviously, but it should go away and be replaced with
-> FIELD_GET(GOODPREFIX_GOODNAME, ...))).
-> .This is sysfs so it's odd to print pr_err() like that here. If the driver
-> does not support those versions at all, the probe should fail. If driver is
-> fine but just doesn't know how to interpret such a version, you should
-> return -Esomething here. Driver returns -EINVAL here.
-> .Replace CENTI with 100
-> .Align FIELD_GET()s to the same column for line 661.
-> .Change variables efuse_status, mec_uc_version, power_cycle to unsigned
-> int from int.
-> 
-> changes suggested by Hans de Goede <hdegoede@redhat.com>:
-> .Please add a Documentation/ABI/testing/sysfs-platform-silicom
-> file to document driver specific the sysfs attributes of this driver.
-> .Like with the Kconfig part, group this together with the other industrial
-> PC drivers we have at the end of the Makefile after Siemens
-> Simatic Industrial PCs.
-> 
-> change from patch v9 to v10 (current patch)
-> ===========================================
-> 
-> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
-> .Added missing newline in kernel document file.
-> .Changed the order #define to make sure they are in increasing order.
-> .Removed printing in init function silicom_platform_info_init();
-> .Changed #define name MEC_PREFIX_HIGH_BYTES to MEC_TEMPERATURE.
-> .Removed dev_err(dev, "Failed to register[%d]: %d\n", i, err)
-> in function silicom_mc_leds_register() before ruturn err.
-> .Changed %du to %u in function power_cycle_store(...).
-> .Chnaged sprintf() to sysfs_emit().
-> .Changed start point for multi-line comments.
-> .Added empty line to seperate #define.
-> .Remove parenthesis around MEC_IO_BASE.
-> .Changed #define EC_ADDR_MSB (MEC_IO_BASE + 0x3), use
-> a constant value instead of MEC_DATA_OFFSET_MASK.
-> .Changed define name MEC_PREFIX_NAME to MEC_PORT_LOC.
-> .Changed define MEC_PREFIX_HIGH_BYTES to MEC_TEMP_LOC.
-> .Removed "PREFIX" from define name, changed
-> MEC_PREFIX_SEC_BYTE to MEC_VERSION_LOC.
-> 
->  .../ABI/testing/sysfs-platform-silicom        |  266 +++++
->  drivers/platform/x86/Kconfig                  |   14 +
->  drivers/platform/x86/Makefile                 |    3 +
->  drivers/platform/x86/silicom-platform.c       | 1006 +++++++++++++++++
->  4 files changed, 1289 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-platform-silicom
->  create mode 100644 drivers/platform/x86/silicom-platform.c
-> 
-
-> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
-> new file mode 100644
-> index 000000000000..e397822cbda3
-> --- /dev/null
-> +++ b/drivers/platform/x86/silicom-platform.c
-> @@ -0,0 +1,1006 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +//
-> +// silicom-platform.c - Silicom MEC170x platform driver
-> +//
-> +// Copyright (C) 2023 Henry Shi <henrys@silicom-usa.com>
-> +#include <linux/dmi.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/init.h>
-> +#include <linux/ioport.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/led-class-multicolor.h>
-> +#include <linux/module.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/mutex.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/string.h>
-> +#include <linux/kobject.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/bits.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/units.h>
-
-The includes should be in alphabethical order.
-
-> +#define MEC_POWER_CYCLE_ADDR 0x24
-> +#define MEC_EFUSE_LSB_ADDR 0x28
-> +#define MEC_PORT_OFFSET_MASK 0xfc
-> +#define MEC_PORT_CHANNEL_MASK 0x7
-> +#define MEC_DATA_OFFSET_MASK 0x03
-
-These 3 should use GENMASK() too.
-
-> +#define MEC_GPIO_IN_POS 0x08
-> +#define MEC_IO_BASE 0x0800
-> +#define MEC_IO_LEN 0x8
-> +#define MEC_ADDR ((MEC_IO_BASE) + 0x02)
-> +#define MEC_DATA_OFFSET(offset) ((MEC_IO_BASE) + 0x04 + (offset))
-> +#define EC_ADDR_LSB MEC_ADDR
-> +#define EC_ADDR_MSB (MEC_IO_BASE + 0x3)
-> +#define SILICOM_MEC_MAGIC 0x5a
-> +
-> +#define OFFSET_BIT_TO_CHANNEL(off, bit) ((((off) + 0x014) << 3) | (bit))
-> +#define CHANNEL_TO_OFFSET(chan) (((chan) >> 3) - 0x14)
-> +#define MEC_VERSION_MAJOR GENMASK(15, 14)
-> +#define MEC_VERSION_MINOR GENMASK(13, 8)
-> +#define MEC_PORT_LOC GENMASK(31, 3)
-> +#define MEC_TEMP_LOC GENMASK(31, 16)
-> +#define MEC_VERSION_LOC GENMASK(15, 8)
-> +#define IO_REG_BANK 0x0
-> +#define DEFAULT_CHAN_LO 0
-> +#define DEFAULT_CHAN_HI 0
-> +#define DEFAULT_CHAN_LO_T 0xc
-> +
-> +static DEFINE_MUTEX(mec_io_mutex);
-> +static unsigned int efuse_status;
-> +static unsigned int mec_uc_version;
-> +static unsigned int power_cycle;
-
-> +static int silicom_mec_port_get(unsigned int offset)
-> +{
-> +	u8 reg;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Get the dword offset from the channel */
-> +	outb(FIELD_GET(MEC_PORT_LOC, offset) & MEC_PORT_OFFSET_MASK, MEC_ADDR);
-> +
-> +	/* Get the current register */
-> +	reg = inb(MEC_DATA_OFFSET(FIELD_GET(MEC_PORT_LOC, offset) & MEC_DATA_OFFSET_MASK));
-
-This now become much more readable and easier to follow what's going on, 
-thanks. I'm still in favor of adding more local variables from the 
-construct that are now on inb/outb() lines as it would make the code less 
-heavy to read.
-
-I now notice that extracting MEC_PORT_LOC as an intermediate step doesn't 
-seem necessary at all. Arguably, it avoids left shift in the case with 
-MEC_PORT_OFFSET_MASK but I still think even that would be cleaner if do 
-just this:
-	FIELD_GET(MEC_PORT_OFFSET_MASK, offset) << 2
-(or * sizeof(u32)). Or you could rename the define to 
-MEC_PORT_DWORD_OFFSET which will self-documents the need for << 2. Note 
-you need to adjust the defines a little to get the fields directly from 
-offset instead of from MEC_PORT_LOC.
-
-Also, now that I finally can follow the logic behind these defines, order 
-their defintions logically since you have centain hierarcies and some of 
-them are "siblings". MEC_PORT_OFFSET_MASK and MEC_DATA_OFFSET_MASK are 
-parts of MEC_PORT_LOC.  MEC_PORT_LOC and MEC_PORT_CHANNEL_MASK are parts 
-of what you call "offset".
-
-So put them in order like this:
-
-#define MEC_PORT_CHANNEL_MASK	GENMASK(2, 0)
-#define MEC_PORT_LOC		GENMASK(31, 3)
-#define  MEC_DATA_OFFSET_MASK	GENMASK(1, 0)
-#define  MEC_PORT_OFFSET_MASK	GENMASK(7, 2)
-
-I seem to have forgotten to mention that the defines should be (mostly) 
-aligned to start from the same column. "Mostly" because if you have 
-different groups of defines, they don't need to share the indentation 
-level (usually you want to add an empty line in between such logical 
-blocks).
-
-That is, there's no need to go overboard with it, just put the logically 
-similar ones together, in oder and align their values to the same column.
-
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	return (reg >> (offset & MEC_PORT_CHANNEL_MASK)) & 0x01;
-> +}
-> +
-> +static enum led_brightness silicom_mec_led_get(int channel)
-> +{
-> +	/* Outputs are active low */
-> +	return silicom_mec_port_get(channel) ? LED_OFF : LED_ON;
-> +}
-> +
-> +static void silicom_mec_port_set(int channel, int on)
-> +{
-> +	u8 reg;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Get the dword offset from the channel */
-> +	outb(FIELD_GET(MEC_PORT_LOC, channel) & MEC_PORT_OFFSET_MASK, MEC_ADDR);
-> +
-> +	/* Get the current port settings */
-> +	reg = inb(MEC_DATA_OFFSET(FIELD_GET(MEC_PORT_LOC, channel) & MEC_DATA_OFFSET_MASK));
-> +	/* Outputs are active low, so clear the bit for on, or set it for off */
-> +	if (on)
-> +		reg &= ~(1 << (channel & MEC_PORT_CHANNEL_MASK));
-> +	else
-> +		reg |= 1 << (channel & MEC_PORT_CHANNEL_MASK);
-> +	/* Write back the updated register */
-> +	outb(reg, MEC_DATA_OFFSET(FIELD_GET(MEC_PORT_LOC, channel) & MEC_DATA_OFFSET_MASK));
-
-Just make the calculation once and store into a local variable. It will 
-make the code easier to read too.
-
-> +	mutex_unlock(&mec_io_mutex);
-> +}
-
-
-> +static ssize_t power_cycle_store(struct device *dev,
-> +				 struct device_attribute *attr,
-> +				 const char *buf, size_t count)
-> +{
-> +	int rc;
-> +
-> +	rc = kstrtou32(buf, 0, &power_cycle);
-> +	if (rc) {
-> +		dev_err(dev, "Failed to read power_cycle\n");
-
-I said about this already in the prev version... Please don't print 
-anything when userspace gives an invalid value, just return -EINVAL.
-
-> +		return -EINVAL;
-> +	}
-> +	if (power_cycle > 0)
-> +		powercycle_uc();
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_RW(power_cycle);
-
-
---
- i.
-
---8323329-211416239-1698677818=:1729--
+DQoNCj4gT24gT2N0IDMwLCAyMDIzLCBhdCAyOjUxIFBNLCBCeXVuZ2NodWwgUGFyayA8Ynl1bmdj
+aHVsQHNrLmNvbT4gd3JvdGU6DQo+IA0KPiBJIHJlYWxseSBzcGVudCBhIGxvdCBvZiB0aW1lIGhl
+c2l0YXRpbmcgd2hldGhlciBzcGxpdHRpbmcgaXQgb3Igbm90Lg0KPiBIb3dldmVyLCB0aGUgdGVz
+dCByZXN1bHQgY2Fubm90IGJlIHN0YWJsZSB3aXRob3V0IHRob3NlLiBJJ20gc3RpbGwNCj4gY29u
+ZnVzZWQuIEkgdGhpbmsgdGhlIHRlc3QgcmVzdWx0IHNob3VsZCBiZSBzdGFibGUgYXQgZWFjaCBj
+b21taXQsDQo+IHJpZ2h0Pw0KDQpPZiBjb3Vyc2UuIFlvdSBjYW4gZXh0cmFjdCB0aGUgb3B0aW1p
+emF0aW9uIHdlIG1lbnRpb25lZCwgYW5kIHBlcmhhcHMNCmhhdmUgbW9yZSBwcmVwYXJhdG9yeSBw
+YXRjaGVzLg0KDQpKdXN0IGEgY291cGxlIG9mIGNvbW1lbnRzIHRoYXQgbWF5IGFsc28gaGVscCBi
+cmVha2luZyB0aGUgcGF0Y2hlczoNCg0KMS4gVGhlIOKAnHN0b3BwaW5n4oCdIGxvZ2ljIGlzIGEg
+Yml0IG5vdCBncmVhdC4gVHJ5IHRvIHNlZSBpZiB5b3UgY2FuDQpzb21laG93IHVzZSBzaHJpbmtl
+ciBvciBPT00gaW5mcmFzdHJ1Y3R1cmUgaW5zdGVhZC4NCg0KMi4gUmVnYXJkaW5nIOKAnG92ZXJm
+bG93c+KAnSwgaXTigJlzIG5vdCBhbHdheXMgYSBxdWVzdGlvbiBvZiB3aGV0aGVyIGFuDQpvdmVy
+ZmxvdyB3b3VsZCBoYXBwZW4gbmF0dXJhbGx5LCBidXQgd2hldGhlciBhIG1hbGljaW91cyBwcm9j
+ZXNzIGNhbg0KdHJpZ2dlciBpdC4NCg0KUmVnYXJkcywNCk5hZGF2DQoNCg==
