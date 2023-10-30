@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BED17DBA9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEA37DBA8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbjJ3NXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        id S233342AbjJ3NXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 09:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233385AbjJ3NXo (ORCPT
+        with ESMTP id S232176AbjJ3NXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:23:44 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7241711C;
-        Mon, 30 Oct 2023 06:23:28 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-581f78a0206so2481010eaf.2;
-        Mon, 30 Oct 2023 06:23:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698672207; x=1699277007;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wjt3TAo3Dse9HLcIvA8SfElE9ogqvEen9PSWvl4jKHI=;
-        b=mmJ2O9QWzNLBNtv84PO4RnisLOQnnfw3/r9tB6Q6P/dnsNyC+QvafLbLMp1hKLP8v8
-         RJko+tL92o23bz1pRiUKIprqpsvjGKCz49SsG2iejxh2dRCn7RQ+WmianTiKPyyM9bhE
-         U9fZX2sfA2Q/HwQczWlmcvVCqM5PYIp4pkKLoASKG0cupiTA9EWdfUVaZF9/UGlcfSuX
-         IQLigcaCHIPCN0HrYDsiFBGp+zLUrM9X/rfBmzFUJDSaKFHh92g7D/8dqeQC2btMbT4A
-         yg+8PD+LXLQwF1vxs8emZtKCrWmsZE1P7c+NyYXB+gOgdxVoFrIOze1tC/w6b0VGb0KZ
-         tv2g==
-X-Gm-Message-State: AOJu0YzAwctl+cvE09ovS+Zwa8w7FW9TDnGAl19+eBApCp6Bp6Q+loWP
-        tKAsQDfyOXkksikYMEg/dg==
-X-Google-Smtp-Source: AGHT+IEaB8n505Hu712q4IY6O7KQDxychWyTNOV58H89VBCZFr9I2EC1PD5VP1sd2CT4pNHS5AyMkw==
-X-Received: by 2002:a4a:dcca:0:b0:583:fb9c:6fe4 with SMTP id h10-20020a4adcca000000b00583fb9c6fe4mr10046399oou.1.1698672207050;
-        Mon, 30 Oct 2023 06:23:27 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id y199-20020a4a45d0000000b00581d6ea29d1sm1805586ooa.4.2023.10.30.06.22.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 06:23:26 -0700 (PDT)
-Received: (nullmailer pid 732542 invoked by uid 1000);
-        Mon, 30 Oct 2023 13:22:16 -0000
-Date:   Mon, 30 Oct 2023 08:22:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Elad Nachman <enachman@marvell.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, pali@kernel.org,
-        mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
-Subject: Re: [PATCH v4 2/3] dt-bindings: arm64: dts: add dt-bindings for
- Marvell COM Express boards
-Message-ID: <20231030132216.GA726350-robh@kernel.org>
-References: <20231029174814.559583-1-enachman@marvell.com>
- <20231029174814.559583-3-enachman@marvell.com>
+        Mon, 30 Oct 2023 09:23:09 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CA8C6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:23:06 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 46B82660297B;
+        Mon, 30 Oct 2023 13:23:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698672185;
+        bh=TxpERrHKvTXLv7m6DqA8hS2RM5V93+V2vFmeraHSOl0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MgC3ld0hp1ucNJ8hYE/CQB6rOFdkGUDdh5aNHd2Yf+ZDPyfrt0QEoyArU9WLoirI3
+         dO3j4ke8OcVsxL6DZyMGBJs1tjnk3pZs2I7NAc8aVCis5bzn/V2iiqmfvxNKn1D9xh
+         6EXM5NPAlIlVBdjROTAgeaQ26D6X1RxJB+zjhbV7xgdYPwlFoKccoEYZ3K9egQfRQc
+         PSSWjG+eIhcR3qqn/bSI+4Wk3LmXfwStmus2Yh2lVpsQvZAhjhuqhE0vTww5FyoM9I
+         fjuEgX/yFxSnjAGQU1xrkkVRlLQkh/RFV1GcBXXE2oMf8rrCFuPYCxbvM46xDDLq2p
+         AMhuZnN1yMRdQ==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     boris.brezillon@collabora.com
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        wenst@chromium.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com
+Subject: [PATCH 0/4] drm/panfrost: Turn off clocks and regulators in PM
+Date:   Mon, 30 Oct 2023 14:22:53 +0100
+Message-ID: <20231030132257.85379-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231029174814.559583-3-enachman@marvell.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 07:48:13PM +0200, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
+At least MediaTek platforms are able to get the GPU clocks and regulators
+completely off during system suspend, allowing to save a bit of power.
 
-Drop 'dts:' from the subject. This is not a .dts file.
+Panfrost is used on more than just MediaTek SoCs and the benefits of this
+can be variable across different SoC models and/or different SoCs from
+different manufacturers: this means that just adding this ability for all
+could result in unexpected issues and breakages on untested SoCs.
 
-Also drop the 2nd 'dt-bindings'. Subject line space is precious.
+For the aforemenetioned reasons, turning off the clocks and/or regulators
+was implemented inside of a capabilities barrier that shall be enabled on
+a per-SoC basis (in the panfrost_compatible platform data) after testing
+of both benefits and feasibility.
 
-> 
-> Add dt bindings for:
-> CN9130 COM Express CPU module
-> CN9131 COM Express CPU module
-> AC5X RD COM Express Type 7 carrier board.
-> AC5X RD COM Express board with a CN9131 COM Express Type 7 CPU module.
-> 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
-> ---
->  .../bindings/arm/marvell/armada-7k-8k.yaml        | 15 +++++++++++++++
->  .../bindings/arm/marvell/marvell,ac5.yaml         | 14 ++++++++++++++
->  2 files changed, 29 insertions(+)
+In this series, I am adding the ability to switch on/off clocks and
+regulators and enabling that on all MediaTek platforms, as I was able
+to successfully test that on multiple Chromebooks featuring different
+MediaTek SoCs; specifically, I've manually tested on MT8186, MT8192 and
+MT8195, while MT8183 got tested only by KernelCI.
+
+Cheers!
+
+AngeloGioacchino Del Regno (4):
+  drm/panfrost: Implement ability to turn on/off GPU clocks in suspend
+  drm/panfrost: Set clocks on/off during system sleep on MediaTek SoCs
+  drm/panfrost: Implement ability to turn on/off regulators in suspend
+  drm/panfrost: Set regulators on/off during system sleep on MediaTek
+    SoCs
+
+ drivers/gpu/drm/panfrost/panfrost_device.c | 78 ++++++++++++++++++++--
+ drivers/gpu/drm/panfrost/panfrost_device.h | 13 ++++
+ drivers/gpu/drm/panfrost/panfrost_drv.c    |  3 +
+ 3 files changed, 90 insertions(+), 4 deletions(-)
+
+-- 
+2.42.0
+
