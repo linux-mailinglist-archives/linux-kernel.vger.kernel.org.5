@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 978D47DB1DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 02:54:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAADA7DB1DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 02:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjJ3ByB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 21:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S229891AbjJ3BzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 21:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjJ3ByA (ORCPT
+        with ESMTP id S229801AbjJ3BzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 21:54:00 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E83BBE;
-        Sun, 29 Oct 2023 18:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698630832;
-        bh=dYFDOWaS0KfiTiA61olW9Oj7YVFUk+87DhnSiTj61xk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OfS/cGpW2qh3SITHSOjtk1Cl3fiLJXiEEoQJiciz234dGfd3V1hTizNYkZ8vSvm1m
-         dMYcpAl1wq8AXRfRGhIRt96qz9wetJKxZ5y2CSAFNEDPXrUsDSpQcVEWAqfkYLl4o4
-         EFPisaLIuVI80l2WTb16U8X6uzh2vui+5k1pqH67a1WsAjWylq2ks60uWq0Ir+pRq4
-         sU0WRJ/OnLLC+nllgZuh9JAuOEFfhj/Zw2zzb2Ns0MsJ77gnJKbcXT6lzbyoLvHcT/
-         97jnPv6KTleENBrFB9WbNRrKmd/P/uM4l1W/5SZeHxnGfgHRivHzS40AVZm803DRxa
-         rHuKNRCbZ/MUA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SJbsW5dB1z4wcH;
-        Mon, 30 Oct 2023 12:53:51 +1100 (AEDT)
-Date:   Mon, 30 Oct 2023 12:53:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Andrew Jones <ajones@ventanamicro.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Subject: linux-next: manual merge of the kvm-riscv tree with the risc-v tree
-Message-ID: <20231030125302.250fc7e8@canb.auug.org.au>
+        Sun, 29 Oct 2023 21:55:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8E0BF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 18:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698630914; x=1730166914;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=4z9cc4o/HwXQhG6Oi7EH4mIi1M0DulyFnn9b0G5P/MQ=;
+  b=RI7IjVXHe06LTxHTqOYWURzAVrM9QcQGVEYX46pzmbrWWlZdIAFY3nx2
+   R+7OGPM3GJCKJ3ZXDM2NmMdN6jB4Uvhj0JOk6YhzKSQOD7RF+iNcTwonD
+   dpBnlpai6Ya9tvEoI1CsAndClMZ/2fYWbofxUKbrykudhgVBAn0rQL+JL
+   v7ZNduMvCa23gS7FT05LrVn6yhPb4pOBwkzAdLtzycuIC5+jCuW6Fa5UP
+   evmzGdbT+Jn9Z9FKw2jAtHZ8ypxmw59dOCugHkwmO5w+hChDnMMK/IBfR
+   ip4uIxkEQdJcmbwCZUtbRpgNwGa45UBKUwu1pWlWnlilOCFA8oPQbmUZy
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="390854918"
+X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
+   d="scan'208";a="390854918"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 18:55:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="789317352"
+X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
+   d="scan'208";a="789317352"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 18:55:12 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     <akpm@linux-foundation.org>, <shy828301@gmail.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: huge_memory: batch tlb flush when splitting a
+ pte-mapped THP
+In-Reply-To: <431d9fb6823036369dcb1d3b2f63732f01df21a7.1698488264.git.baolin.wang@linux.alibaba.com>
+        (Baolin Wang's message of "Mon, 30 Oct 2023 09:11:47 +0800")
+References: <431d9fb6823036369dcb1d3b2f63732f01df21a7.1698488264.git.baolin.wang@linux.alibaba.com>
+Date:   Mon, 30 Oct 2023 09:53:10 +0800
+Message-ID: <87bkcgev09.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ev_P.ii7gIhH2ye4yyf81x8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ev_P.ii7gIhH2ye4yyf81x8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Hi all,
+> I can observe an obvious tlb flush hotpot when splitting a pte-mapped THP on
+> my ARM64 server, and the distribution of this hotspot is as follows:
+>
+>    - 16.85% split_huge_page_to_list
+>       + 7.80% down_write
+>       - 7.49% try_to_migrate
+>          - 7.48% rmap_walk_anon
+>               7.23% ptep_clear_flush
+>       + 1.52% __split_huge_page
+>
+> The reason is that the split_huge_page_to_list() will build migration entries
+> for each subpage of a pte-mapped Anon THP by try_to_migrate(), or unmap for
+> file THP, and it will clear and tlb flush for each subpage's pte. Moreover,
+> the split_huge_page_to_list() will set TTU_SPLIT_HUGE_PMD flag to ensure
+> the THP is already a pte-mapped THP before splitting it to some normal pages.
+>
+> Actually, there is no need to flush tlb for each subpage immediately, instead
+> we can batch tlb flush for the pte-mapped THP to improve the performance.
+>
+> After this patch, we can see the batch tlb flush can improve the latency
+> obviously when running thpscale.
+>                              k6.5-base                   patched
+> Amean     fault-both-1      1071.17 (   0.00%)      901.83 *  15.81%*
+> Amean     fault-both-3      2386.08 (   0.00%)     1865.32 *  21.82%*
+> Amean     fault-both-5      2851.10 (   0.00%)     2273.84 *  20.25%*
+> Amean     fault-both-7      3679.91 (   0.00%)     2881.66 *  21.69%*
+> Amean     fault-both-12     5916.66 (   0.00%)     4369.55 *  26.15%*
+> Amean     fault-both-18     7981.36 (   0.00%)     6303.57 *  21.02%*
+> Amean     fault-both-24    10950.79 (   0.00%)     8752.56 *  20.07%*
+> Amean     fault-both-30    14077.35 (   0.00%)    10170.01 *  27.76%*
+> Amean     fault-both-32    13061.57 (   0.00%)    11630.08 *  10.96%*
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Today's linux-next merge of the kvm-riscv tree got a conflict in:
+LGTM, Thanks!
 
-  arch/riscv/include/asm/csr.h
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 
-between commit:
-
-  43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
-
-from the risc-v tree and commits:
-
-  db3c01c7a308 ("RISCV: KVM: Add senvcfg context save/restore")
-  81f0f314fec9 ("RISCV: KVM: Add sstateen0 context save/restore")
-
-from the kvm-riscv tree.
-
-I fixed it up (I just used the latter version of this file) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Ev_P.ii7gIhH2ye4yyf81x8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU/DH4ACgkQAVBC80lX
-0GyRDgf9E9dcPDl6hTobFU7kCPXVeo1tdZ4WYCTQ0YrOs2ywVdWTzk6L3V88sI62
-7b8W4LlG7Dgze4L7amOflXScckkJRHNermO1pIvZ4lYgP2/dQtRIygPGlnnWWmgv
-d2lNAzBm0vKUATKLtFrA6NQS8yBG4Rc4HidUUs72kVXnFYwrvXXMoC8ESfgA/J9D
-SBmYDpnTpZHoI6jbeDr22hH1v9TtNJH9Txrqh464mAw4y1yyGeUnxT73PtoHKd3R
-CFMjR9hWfEReYfwLhBw3MpgKqm5/TDH+O9xAST0I2AYSKYaeP3hao8RzJRJFI4Yo
-TSll0iW4CrlBaThO3PW6td7FMc2M/w==
-=qbeN
------END PGP SIGNATURE-----
-
---Sig_/Ev_P.ii7gIhH2ye4yyf81x8--
+> ---
+>  mm/huge_memory.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index f31f02472396..0e4c14bf6872 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2379,7 +2379,7 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>  static void unmap_folio(struct folio *folio)
+>  {
+>  	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
+> -		TTU_SYNC;
+> +		TTU_SYNC | TTU_BATCH_FLUSH;
+>  
+>  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
+>  
+> @@ -2392,6 +2392,8 @@ static void unmap_folio(struct folio *folio)
+>  		try_to_migrate(folio, ttu_flags);
+>  	else
+>  		try_to_unmap(folio, ttu_flags | TTU_IGNORE_MLOCK);
+> +
+> +	try_to_unmap_flush();
+>  }
+>  
+>  static void remap_page(struct folio *folio, unsigned long nr)
