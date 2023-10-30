@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7CB7DBE7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 147117DBE82
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbjJ3RFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
+        id S233496AbjJ3RLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3RFq (ORCPT
+        with ESMTP id S230284AbjJ3RLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:05:46 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C4CB3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:05:44 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c9d407bb15so42106245ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698685544; x=1699290344; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LpoK82vM9+w/LO1csF/zKyyZK4DZcstBZkP+dk7Q69A=;
-        b=daod1jcdSBBp8Z9RVw0KCShaHIAdQch/3gQZERGBytUvkRa+icNErulVz3SWBV+jtn
-         y3oihk17+oCixzKuSGWb0v6Bn1OvAFU4quImbVfmgMhDBEYh2MYxMOCWIpCW0vnaWer5
-         yskcTJOlP79oP967KJZZ2OabF0nofCjwSr1aw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698685544; x=1699290344;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LpoK82vM9+w/LO1csF/zKyyZK4DZcstBZkP+dk7Q69A=;
-        b=hAl0dZlOqrlBup/iKkDLnT9kyL+vkbl4Ut1YC5CVaxuJbK0BxNMjNcrusFXPVdsEgL
-         StzmHHgILv6sglBoVH24DfCGAgf2PNNFv/FK2KWjkk2m15J3pMID12rskS4KYjm6NCUH
-         LXS2LlZBuVGg9ReepbqZ977aWjOotFXXz8fMIVGTtTu47YCV/YLM8CwgcaOw0N+9Ud1O
-         HJQcrKz7+fYQa6R772TOg/I/Lo1gAeOo8gT3PeStg5LIFguovlz6rvYxG4EA14CztDiT
-         D87n6UTN+P0Ey2k14EqzHLPp1ReItog9u1JLmbmRiHBJlu0C8EcSebRiWNTJVX3/Y5hW
-         vB4w==
-X-Gm-Message-State: AOJu0YxQCeBXSB14eJ9n0sYysfw3qXMdpl/RZrcqP7CVapUDJ046ggS9
-        g33ViYglkC1ktrLelpCP354lSJec/yBBmvYtj60ZuQ==
-X-Google-Smtp-Source: AGHT+IG0UEt3dnfoBAEhkoMtdSGOd6b2sJDUQcQrf+yl8y0yhmP1mC5IvP9sKtvBBRR28WXukL+GVA==
-X-Received: by 2002:a17:902:f1d2:b0:1c2:1068:1f4f with SMTP id e18-20020a170902f1d200b001c210681f4fmr9600777plc.17.1698685543679;
-        Mon, 30 Oct 2023 10:05:43 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t17-20020a170902e85100b001bb99e188fcsm6501434plg.194.2023.10.30.10.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 10:05:43 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 10:05:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [GIT PULL] pstore updates for v6.7-rc1
-Message-ID: <202310301005.D5CF8F730E@keescook>
+        Mon, 30 Oct 2023 13:11:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC40DB
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698685858; x=1730221858;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=/RAGX+9gwX6ksfizFfuzo4ZOmJME+20YcWPjn8DVEoI=;
+  b=YVNz4thO77PrrsocHeHrSh4wOJzPuKR5fzRbk1lRMEBE4p02AyeduiTV
+   HQqYEaWD50u+oTODiSFT/+E+hbAdooLACO8mgiDKq5zaT/ZioGp8AW/gQ
+   6NbRaOcTJtKxuYHMBS8beu5HVxcvACIGoB8N5yW/D/JpPl4bcXqhU0ukB
+   gkjoIOvRptYs1tLWbJNAtcXwXmrjDu39hWG/2ude33UUNnwxMmxzRloLs
+   FxLJUfFnQIPSAGB5I/UePpKLsv926iUYmjNskcset3dmJH0h1cy+KwCwi
+   5CVNVClMVoxulZZMbnNIUED0Ay/SCgcbQ2yjQfJ1AmHcDnIgamtH7aYMd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="9647659"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="9647659"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 10:10:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="795320705"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="795320705"
+Received: from rgibson-mobl.amr.corp.intel.com (HELO [10.251.7.5]) ([10.251.7.5])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 10:10:39 -0700
+Message-ID: <16b6446a-fe43-423a-8944-b18e105eaf2d@intel.com>
+Date:   Mon, 30 Oct 2023 10:10:38 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] x86/mm/cpa: Warn if set_memory_XXcrypted() fails
+Content-Language: en-US
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
+        peterz@infradead.org, kirill.shutemov@linux.intel.com,
+        elena.reshetova@intel.com, isaku.yamahata@intel.com,
+        seanjc@google.com, Michael Kelley <mikelley@microsoft.com>,
+        thomas.lendacky@amd.com, decui@microsoft.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-kernel@vger.kernel.org
+References: <20231027214744.1742056-1-rick.p.edgecombe@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20231027214744.1742056-1-rick.p.edgecombe@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+I can fix this up when it gets applied, but a nit about the subject:
+This isn't handling generic "set_memory_XXcrypted()" failures.  It's
+specifically about presumed VMM-specific failures, thus the "vmm_fail"
+label and the warning text.
 
-Please pull these small pstore updates for v6.7-rc1.
-
-Thanks!
-
--Kees
-
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
-
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v6.7-rc1
-
-for you to fetch changes up to a19d48f7c5d57c0f0405a7d4334d1d38fe9d3c1c:
-
-  pstore/platform: Add check for kstrdup (2023-10-12 09:47:01 -0700)
-
-----------------------------------------------------------------
-pstore updates for v6.7-rc1
-
-- Check for out-of-memory condition during initialization (Jiasheng Jiang)
-
-- Fix documentation typos (Tudor Ambarus)
-
-----------------------------------------------------------------
-Jiasheng Jiang (1):
-      pstore/platform: Add check for kstrdup
-
-Tudor Ambarus (2):
-      docs: pstore-blk.rst: use "about" as a preposition after "care"
-      docs: pstore-blk.rst: fix typo, s/console/ftrace
-
- Documentation/admin-guide/pstore-blk.rst | 8 ++++----
- fs/pstore/platform.c                     | 9 ++++++++-
- 2 files changed, 12 insertions(+), 5 deletions(-)
-
--- 
-Kees Cook
