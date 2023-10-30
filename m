@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1457DC21D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECFC7DC221
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbjJ3VvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
+        id S230114AbjJ3VvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjJ3Vu5 (ORCPT
+        with ESMTP id S232139AbjJ3VvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:50:57 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76481FD
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:50:52 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507c8316abcso7077585e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:50:52 -0700 (PDT)
+        Mon, 30 Oct 2023 17:51:13 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C7BFF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:51:09 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso7581127e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:51:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698702651; x=1699307451; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ttxIanjqvG1zYzKHX4Ly11R/8GQQy/BYZqzIWE7ybLI=;
-        b=s7AwhXLHONIrem9IWo4ZloXVniq5hA8T4ztDgHxoovlrhOwqQL30b/O/7fJlR2DJX5
-         p4RfRCKLC0v7R5EjbQCRpp4Kce+8OrljWVHm93q1G+qICfDcRcOjSsD61+rn3bd86LBo
-         wfMTjN0a2EvsucQpkOYpU3twntqsf/cRAagnij44r1Z7P8KZ0tNub2EUamGnsPHJXPB8
-         +xNw++XoyqCYsRgMG/VsCN2dGzan7d/UOMEpzFxpAHYhfZMbnHdq7iwkjpX+IYH8JiE2
-         2wyXS0/LEEsRMbzLPvQcOv9B2dnXAEalctYmAhbN47OfCeBHnom2oe6pLPhBXYxdrV3c
-         rwQA==
+        d=linaro.org; s=google; t=1698702668; x=1699307468; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=+i0ZPrNW1oXlJv0V43Xxb3tYdTNJ/c4Q2gcMWYRfwq4=;
+        b=EcTJxrAoJopW9AmKYK+IlnIRlIdG+0emgd2KkWh36ZOgnYy+K5Ts/+VGRhJ6l+o7ih
+         Cro7XeKXZJNSWu/wm6n9fz5EhfVsQ9RfbBFGf9kLdMIHvdmXBoQCpAn+G2VJC/HrAeSd
+         XfR6/wtfZi3PoSxEli8uvDWM3yXhrHwVXc9Xl9UeuTQ+kG+JJs7G/tPtRs29g/l8fzTG
+         Cw/A05ouMYaz2YJMz8rOGi6ZFocD4AihIsh2VoDW2ocuMOxHjlVYy9QLko7Aj3OlFjp6
+         7HpCHgzb8qVaqwwgklv9HfJO/JA3lgROwtC638L5N5Q696+oKKAEhDX9XAiBaUZQIHiy
+         vPZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698702651; x=1699307451;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ttxIanjqvG1zYzKHX4Ly11R/8GQQy/BYZqzIWE7ybLI=;
-        b=VWv3Xrur3pysAFkKIfwmEev/JVC7B2uhf+kI7O66S857En9FL25a9heFtfjvma1+gl
-         Q3NQ/2VZ3Kr734okFSQpw7nzX0oM21qVCbneRD/Txk78hE3y3tZ1y7JZSz0G3KojZTUy
-         I/8RSSTpQs/xlXakqhAIN6p9JQDZrE06DB5CPs9mrGnxxK7meAtZy5io+OhVkDXluzKD
-         Wftx1yK21Mg2ta6MzaTll27eRZmZFEPT6cUmCjMDb/hDa5dBLDDWUP5SZThc6oh/Mzi+
-         RGSawa/ssZnK9pc/0wUZTUqSLTaZdII6G0Gpp9SqgrJ2KZq/fudmPFQMxyKPFg0+wgf6
-         Pduw==
-X-Gm-Message-State: AOJu0YwOllbA94v8grLgJHyHd/25t7dqQT7ycUnLTlx8yIEWe1Irwrzu
-        Sn88blYwfMditrbHIPlvT6JL7QVDt3TeDdiS66w=
-X-Google-Smtp-Source: AGHT+IFIXjkI2/1SLJc6OkGqaMLJLR0cK+RDeuqDUw/oogOAw2tnec6ZbVUprpamzzP6g9+C8hvX8w==
-X-Received: by 2002:ac2:44da:0:b0:507:9a49:3f23 with SMTP id d26-20020ac244da000000b005079a493f23mr7739736lfm.18.1698702650607;
-        Mon, 30 Oct 2023 14:50:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698702668; x=1699307468;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+i0ZPrNW1oXlJv0V43Xxb3tYdTNJ/c4Q2gcMWYRfwq4=;
+        b=IxyhVW26w/O7PHShXLPdIN4CoCKL9PFwKRMFXHj0zyeNs/cVb6WK3GYSq7DaIWIuUS
+         mmBH39jLCKfIcHjeLFzxq52vYiBUVGF6bCpxvFt+mqJrv8ahnhnN3j0W+10JQJSaG7wu
+         wvSC0qKmsikURMmhRU5GhwbxBzbErw/PFlpXDivJ46tiQPOn1TvezRUyrYWVpf8q8qT9
+         D5D9VGnDXcyVpuDcLoQ/eQS4blQdquKNC7ulVmu+VRGAgKKdQy06fxgsiJwOEw0HFsNy
+         Pjb/VVbbMhrANk8OmkGzVQ4tjzsZihle7DPKRNtHIuXQwFdKu8+nPdfIcd8+HGLCkTHl
+         HlJw==
+X-Gm-Message-State: AOJu0YwRJjAwxDhOYbhDj8Px6jB2wRZlUZP2ATl0oJPwi4fVI/dvW0Eb
+        QDavsVZc2Hg9KiEJrobToxxuOA==
+X-Google-Smtp-Source: AGHT+IFmE6ztU2Q6zdkf1gJY8NFYriow0ELTB1pszbg8s2vqp3M0zhuSbTLIyoyXRVcM1bqTSGcHzQ==
+X-Received: by 2002:a19:6746:0:b0:509:dd0:941a with SMTP id e6-20020a196746000000b005090dd0941amr5060062lfj.11.1698702668031;
+        Mon, 30 Oct 2023 14:51:08 -0700 (PDT)
 Received: from [192.168.133.160] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
-        by smtp.gmail.com with ESMTPSA id s2-20020a19ad42000000b0050794b05c8asm1560841lfd.42.2023.10.30.14.50.49
+        by smtp.gmail.com with ESMTPSA id s2-20020a19ad42000000b0050794b05c8asm1560841lfd.42.2023.10.30.14.51.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 14:50:50 -0700 (PDT)
-Message-ID: <c2ad06fd-805f-44b9-bf4d-806ef20f272a@linaro.org>
-Date:   Mon, 30 Oct 2023 22:50:48 +0100
+        Mon, 30 Oct 2023 14:51:07 -0700 (PDT)
+Message-ID: <db624c01-a48c-4a8f-b9ea-548b25aa3091@linaro.org>
+Date:   Mon, 30 Oct 2023 22:51:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 3/3] arm64: dts: qcom: acer-aspire1: Add sound
 Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 To:     Nikita Travkin <nikita@trvn.ru>,
         cros-qcom-dts-watchers@chromium.org,
         Andy Gross <agross@kernel.org>,
@@ -67,7 +69,7 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231027-aspire1-sound-v1-0-5ff3cf8b5701@trvn.ru>
  <20231027-aspire1-sound-v1-3-5ff3cf8b5701@trvn.ru>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+ <c2ad06fd-805f-44b9-bf4d-806ef20f272a@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
  BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
@@ -103,7 +105,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231027-aspire1-sound-v1-3-5ff3cf8b5701@trvn.ru>
+In-Reply-To: <c2ad06fd-805f-44b9-bf4d-806ef20f272a@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -115,36 +117,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.10.2023 16:42, Nikita Travkin wrote:
-> This laptop has two i2s speakers; an i2s audio codec for the headset
-> jack; two DMIC microphones in the lid and the displayport audio channel.
+On 30.10.2023 22:50, Konrad Dybcio wrote:
+> On 27.10.2023 16:42, Nikita Travkin wrote:
+>> This laptop has two i2s speakers; an i2s audio codec for the headset
+>> jack; two DMIC microphones in the lid and the displayport audio channel.
+>>
+>> This commit adds the audio node that describes all of the above with the
+>> exception of the DMICs that require in-SoC digital codec to be brought
+>> up, which will be done later.
+>>
+>> Note that the displayport channel is connected here for completeness,
+>> but the displayport can't be used yet since the HPD signal is created by
+>> the embedded controller, which will be added later.
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+> [...]
 > 
-> This commit adds the audio node that describes all of the above with the
-> exception of the DMICs that require in-SoC digital codec to be brought
-> up, which will be done later.
 > 
-> Note that the displayport channel is connected here for completeness,
-> but the displayport can't be used yet since the HPD signal is created by
-> the embedded controller, which will be added later.
+>> +		primary-tx-dai-link {
+>> +			link-name = "Primary MI2S Capture";
+>> +
+>> +			cpu {
+>> +				sound-dai = <&q6afedai PRIMARY_MI2S_TX>;
+>> +			};
+>> +
+>> +			platform {
+>> +				sound-dai = <&q6routing>;
+>> +			};
+>> +
+>> +			codec {
+>> +				sound-dai = <&alc5682 0>;
+> Both RX and TX going to 5862 interface?
+interface1*
 > 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
-[...]
-
-
-> +		primary-tx-dai-link {
-> +			link-name = "Primary MI2S Capture";
-> +
-> +			cpu {
-> +				sound-dai = <&q6afedai PRIMARY_MI2S_TX>;
-> +			};
-> +
-> +			platform {
-> +				sound-dai = <&q6routing>;
-> +			};
-> +
-> +			codec {
-> +				sound-dai = <&alc5682 0>;
-Both RX and TX going to 5862 interface?
-
-Konrad
+> Konrad
