@@ -2,171 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B377DBE84
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7147DBE86
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbjJ3RLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
+        id S233824AbjJ3RLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbjJ3RLQ (ORCPT
+        with ESMTP id S233832AbjJ3RL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:11:16 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06534D9;
-        Mon, 30 Oct 2023 10:11:14 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32f7c44f6a7so1408295f8f.1;
-        Mon, 30 Oct 2023 10:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698685872; x=1699290672; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ry3Aypoe5JPo+tRS+yvTNFBsfgQ4Fm63F5zsO3uosT0=;
-        b=KScjAMMfWRUBxYBDzV0AKyprR9mOVil9nTMUSmA15jwsKTA5sJD8iqik2rAYO7AQAa
-         6F4NzYsbMvWZY5sibLG9cC+noocISccLjlxdCNhp5M+ivyzResmy/mdahGFUlQETrvP4
-         5bWHZ684h8I5FUlLba1iW4XEq169s83PwezDMB8SxyvVr8qZUmcnCrSO/19DjeT3bA7p
-         nHUk08WFcKTsRqvdr1J8ub/31OoLYOChWNAUZA9r3uAsoVtWHRnfsD2Fexcn4fjBq5Ia
-         5RWYe9Ey//quQONeXfuiPRkwLdiv2bTJM5W51ROKkEqGY4cA8Ma3RdxYyDskfRgNjOO/
-         o39w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698685872; x=1699290672;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ry3Aypoe5JPo+tRS+yvTNFBsfgQ4Fm63F5zsO3uosT0=;
-        b=MnVfK8WsAQMIF8I9jk45HkgIw176DZEhhxkiOptT8ir1wLGY+2VPxEbZLHbKrOXI/Q
-         VcmUTNWT76gPlu5xYrXO8HxG0mm9D8gosr7YI2O2+vlfwp5qDaRcW1UBiaK9u8IiJeZO
-         mLJ5cWm4ZnTjq1vDvpgoSgg+O8rdfbrKR8QVrYwedPfYuTqzJOwpLgKYHVhSbUo9z6gU
-         eUs72xh+clnC9ilm1ImbbZMjC+u8UAt2u90nuzYnWtq9kqS4YHhVxiChmI2BmbrQjsOm
-         Iv/pWlkcKGkygfOylREvA+7IMgT+nRTAg4kiWLVlbdJ3kylFeACwsLgITueKA0a04VYx
-         n7wA==
-X-Gm-Message-State: AOJu0Yz6UdArhuso9VUOQjwp9ETf8SCa+5uChn/zQE68ZiwIx/Wud7V/
-        hPYQuAumnHFToMXtYd0FMYqes1uXvd+W4oy6nT8=
-X-Google-Smtp-Source: AGHT+IFFA8HajvEcs6Z39LGJi+lHKvMiO49+MSFy94JzgZ7XQhe36VP3AUafTfu9BuF3gzqgnemmWWhG2VTzuhaLUz0=
-X-Received: by 2002:adf:f605:0:b0:32d:89b5:7fd9 with SMTP id
- t5-20020adff605000000b0032d89b57fd9mr7973222wrp.56.1698685872109; Mon, 30 Oct
- 2023 10:11:12 -0700 (PDT)
+        Mon, 30 Oct 2023 13:11:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4539710B;
+        Mon, 30 Oct 2023 10:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698685884; x=1730221884;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=5SHS0YMOkn5JVvPfG41/C9UnVXfwBzYy9NEvR6uPjJI=;
+  b=CtJJN5iSuX1nlB7sW1nW127O/3bHBXqdwQiRYV9hUltnXMlIXnc0KCGt
+   9k+q77PNRIPgDJakiusSv+huXrYm5Npi1qyfpWSbJZxC1Z/gdLtB01IQG
+   5G1ahwArkVGrg/P68LnttDulHlt/GAzScNZiQoEhT4i65c26Hyc+gs/fB
+   Vd/btznajI9ATJUw+Ovv96spIOqRslP5VFqVug65z60af38AN0mwkvfo1
+   MVvqQh+Ic7uRkqCMoc+Gagh6WQ6QgYUxgewCJMPdW69HwbrBE2csL9+im
+   52HwOKY1xXQAQq2C1izyGXw4PgwtB29kbIxlxjzzNFz3NJQEd26zd4a7L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="385311687"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="385311687"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 10:11:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="877207770"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="877207770"
+Received: from squtub-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.238])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 10:11:19 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Vegard Nossum <vegard.nossum@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Hu Haowen <src.res.211@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH] docs: translations: add translations links when they exist
+In-Reply-To: <20231028162931.261843-1-vegard.nossum@oracle.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231028162931.261843-1-vegard.nossum@oracle.com>
+Date:   Mon, 30 Oct 2023 19:11:07 +0200
+Message-ID: <878r7k593o.fsf@intel.com>
 MIME-Version: 1.0
-References: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
-In-Reply-To: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 30 Oct 2023 10:11:00 -0700
-Message-ID: <CAADnVQKm3u+XbMoRxXSwg_d+Q80jPdqgzO6Yz+6JXvYATyMEZw@mail.gmail.com>
-Subject: Re: BPF: bpf_d_path() can be invoked on "struct path" not holding
- proper references, resulting in kernel memory corruption
-To:     Jann Horn <jannh@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, KP Singh <kpsingh@google.com>,
-        Matt Bobrowski <mattbobrowski@google.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 10:13=E2=80=AFAM Jann Horn <jannh@google.com> wrote=
-:
+On Sat, 28 Oct 2023, Vegard Nossum <vegard.nossum@oracle.com> wrote:
+> Add a new Sphinx extension that knows about the translations of kernel
+> documentation and can insert links to the translations at the top of
+> the document.
 >
-> Hi!
+> It basically works like this:
 >
-> bpf_d_path() can be invoked on a "struct path" that results from
-> following a pointer chain involving pointers that can concurrently
-> change; this can lead to stuff like use-after-free in d_path().
+> 1. Register a new node type, LanguagesNode.
 >
-> For example, the BPF verifier permits stuff like
-> bpf_d_path(&current->mm->exe_file->f_path, ...), which is not actually
-> safe in many contexts:
+> 2. Register a new transform, TranslationsTransform, that inserts a new
+>    LanguageNode at the top of every document. The LanguageNode contains
+>    "pending references" to translations of the document. The key here
+>    is that these are pending (i.e. unresolved) references that may or
+>    may not actually exist.
 >
-> current->mm->exe_file can concurrently change; so by the time
-> bpf_d_path() is called, the file's refcount might have gone to zero,
-> and __fput() may have already mostly torn down the file. "struct file"
-> currently has some limited RCU lifetime, but that is supposed to be an
-> implementation detail that BPF shouldn't be relying on, and "struct
-> file" will soon have even less RCU lifetime than before (see
-> <https://lore.kernel.org/all/20230930-glitzer-errungenschaft-b86880c177c4=
-@brauner/>).
+> 3. Register a 'doctree-resolved' event that iterates over all the
+>    LanguageNode nodes. Any unresolved references are filtered out; the
+>    list of resolved references is passed to the 'translations.html'
+>    template and rendered as an HTML node (if HTML output is selected).
 >
-> When __fput() tears down a file, it drops the references held by
-> file->f_path.mnt and file->f_path.dentry. "struct vfsmount" has some
-> kind of RCU lifetime, but "struct dentry" will be freed directly in
-> dentry_free() if it has DCACHE_NORCU set, which is the case if it was
-> allocated via d_alloc_pseudo(), which is how memfd files are
-> allocated.
->
-> So the following race is possible, if we start in a situation where
-> current->mm->exe_file points to a memfd:
->
-> thread A            thread B
-> =3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=3D
-> begin RCU section
-> begin BPF program
-> compute path =3D &current->mm->exe_file->f_path
->
->                     prctl(PR_SET_MM, PR_SET_MM_MAP, ...)
->                       updates current->mm->exe_file
->                       calls fput() on old ->exe_file
->                     __fput() runs
->                       dput(dentry);
->                       mntput(mnt)
->
-> invoke helper bpf_d_path(path, ...)
->   d_path()
->     reads path->dentry->d_op  *** UAF read ***
->     reads path->dentry->d_op->d_dname  *** read through wild pointer ***
->     path->dentry->d_op->d_dname(...) *** wild pointer call ***
->
-> So if an attacker managed to reallocate the old "struct dentry" with
-> attacker-controlled data, they could probably get the kernel to call
-> an attacker-provided function pointer, eventually letting an attacker
-> gain kernel privileges.
->
-> Obviously this is not a bug an unprivileged attacker can just hit
-> directly on a system where no legitimate BPF programs are already
-> running, because loading tracing BPF programs requires privileges; but
-> if a privileged process loads a tracing BPF program that does
-> something unsafe like "bpf_d_path(&current->mm->exe_file->f_path,
-> ...)", an attacker might be able to leverage that.
+> Testing: make htmldocs with v7.3.0.
 
-Thanks for the report. That's a verifier bug indeed.
-Curious, did you actually see such broken bpf program or this is
-theoretical issue in case somebody will write such thing ?
+I'm just observing the kernel documentation has a system of its own for
+translations. Maybe it's fine this way, but it's certainly different
+from what the Sphinx developers had in mind. (But I'm not an expert on
+this field, don't ask me how this should be done!)
+
+Regardless, the implication is that this builds on the translation
+solution chosen for kernel documentation, for better and for worse, and
+raises the bar for switching later. It's something to be aware of.
 
 >
-> If BPF wants to be able to promise that buggy BPF code can't crash the
-> kernel (or, worse, introduce privilege escalation vulnerabilities in
-> the kernel),
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> ---
+>  Documentation/conf.py                         |  2 +-
+>  Documentation/sphinx-static/custom.css        |  8 ++
+>  .../sphinx/templates/translations.html        | 12 +++
+>  Documentation/sphinx/translations.py          | 96 +++++++++++++++++++
+>  4 files changed, 117 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/sphinx/templates/translations.html
+>  create mode 100644 Documentation/sphinx/translations.py
+>
+> diff --git a/Documentation/conf.py b/Documentation/conf.py
+> index d4fdf6a3875a..64eab500b2cd 100644
+> --- a/Documentation/conf.py
+> +++ b/Documentation/conf.py
+> @@ -55,7 +55,7 @@ needs_sphinx =3D '1.7'
+>  extensions =3D ['kerneldoc', 'rstFlatTable', 'kernel_include',
+>                'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
+>                'maintainers_include', 'sphinx.ext.autosectionlabel',
+> -              'kernel_abi', 'kernel_feat']
+> +              'kernel_abi', 'kernel_feat', 'translations']
+>=20=20
+>  if major >=3D 3:
+>      if (major > 3) or (minor > 0 or patch >=3D 2):
+> diff --git a/Documentation/sphinx-static/custom.css b/Documentation/sphin=
+x-static/custom.css
+> index 084a884f6fb7..33adee4a35d9 100644
+> --- a/Documentation/sphinx-static/custom.css
+> +++ b/Documentation/sphinx-static/custom.css
+> @@ -73,3 +73,11 @@ input.kernel-toc-toggle { display: none; }
+>      h3.kernel-toc-contents { display: inline; }
+>      div.kerneltoc a { color: black; }
+>  }
+> +
+> +/* Language selection bar */
+> +div.language-selection {
+> +    background: #eeeeee;
+> +    border: 1px solid #cccccc;
+> +    margin-bottom: 1em;
+> +    padding: .5em;
+> +}
+> diff --git a/Documentation/sphinx/templates/translations.html b/Documenta=
+tion/sphinx/templates/translations.html
+> new file mode 100644
+> index 000000000000..08afb595c203
+> --- /dev/null
+> +++ b/Documentation/sphinx/templates/translations.html
+> @@ -0,0 +1,12 @@
+> +<!-- SPDX-License-Identifier: GPL-2.0 -->
+> +<!-- Copyright =C2=A9 2023, Oracle and/or its affiliates. -->
+> +
+> +{# Create a language bar for translations #}
+> +{% if languages|length > 0: %}
+> +<div class=3D"language-selection">
+> +Languages:
+> +{% for ref in languages: %}
+> +<a href=3D"{{ ref.refuri }}">{{ ref.astext() }}</a>{% if not loop.last %=
+}, {% endif %}
+> +{% endfor %}
+> +</div>
+> +{% endif %}
 
-Only the former. The verifier cannot possibly guarantee that the bpf-lsm
-program or tracing bpf prog is not leaking addresses or acting maliciously.
-Same in networking. XDP prog might be doing firewalling incorrectly,
-dropping wrong packets, disabling ssh when it shouldn't, etc.
-We cannot validate semantics. The verifier tries to guarantee non-crash onl=
-y.
-Hence loading bpf prog is a privileged operation.
+This could also be part of the menu on the left, I think it's fairly
+easy to extend in alabaster. But then again it's already pretty crowded,
+and it's all a matter of taste.
 
-But back to the verifier bug... I suspect it will be very hard to
-craft a test that does prctl(PR_SET_MM) and goes all the way through
-the delayed fput logic on one cpu while bpf prog under rcu_read_lock
-calls bpf_d_path on the other cpu. I can see this happening in theory
-and we need to close this verification gap, but we need to be realistic
-in assessing the severity of it.
-To fix it we need to make bpf_d_path KF_TRUSTED_ARGS. All new kfuncs
-are done this way already. They don't allow unrestricted pointer walks.
+> diff --git a/Documentation/sphinx/translations.py b/Documentation/sphinx/=
+translations.py
+> new file mode 100644
+> index 000000000000..e1da811bdaf0
+> --- /dev/null
+> +++ b/Documentation/sphinx/translations.py
+> @@ -0,0 +1,96 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright =C2=A9 2023, Oracle and/or its affiliates.
+> +# Author: Vegard Nossum <vegard.nossum@oracle.com>
+> +#
+> +# Add translation links to the top of the document.
+> +#
+> +
+> +import os
+> +
+> +from docutils import nodes
+> +from docutils.transforms import Transform
+> +
+> +import sphinx
+> +from sphinx import addnodes
+> +from sphinx.errors import NoUri
+> +
+> +all_languages =3D {
+> +    # English is always first
+> +    None: 'English',
+> +
+> +    # Keep the rest sorted alphabetically
+> +    'zh_CN': 'Chinese',
+> +    'it_IT': 'Italian',
+> +    'ja_JP': 'Japanese',
+> +    'ko_KR': 'Korean',
+> +    'sp_SP': 'Spanish',
+> +    'zh_TW': 'Taiwanese',
+> +}
+
+Maybe the path to translations should be a configuration option for the
+extension, and it could read the translations from the directory instead
+of hard coding them here.
+
+> +
+> +class LanguagesNode(nodes.Element):
+> +    pass
+> +
+> +class TranslationsTransform(Transform):
+> +    default_priority =3D 900
+> +
+> +    def apply(self):
+> +        app =3D self.document.settings.env.app
+> +        if app.builder.format not in ['html']:
+> +            return
+> +
+> +        docname =3D self.document.settings.env.docname
+> +
+> +        this_lang_code =3D None
+> +        components =3D docname.split(os.sep)
+> +        if components[0] =3D=3D 'translations' and len(components) > 2:
+> +            this_lang_code =3D components[1]
+> +
+> +            # normalize docname to be the untranslated one
+> +            docname =3D os.path.join(*components[2:])
+
+Need to rename these files, and keep the translated document names
+up-to-date:
+
+for f in $(find Documentation/translations/ -name "*.rst"); do if ! test -f=
+ Documentation/${f##Documentation/translations/??_??/}; then echo $f; fi; d=
+one
+
+Maybe the extension should warn about documents under translations that
+do not have a corresponding original.
+
+BR,
+Jani.
+
+> +
+> +        new_nodes =3D LanguagesNode()
+> +
+> +        for lang_code, lang_name in all_languages.items():
+> +            if lang_code =3D=3D this_lang_code:
+> +                continue
+> +
+> +            if lang_code is None:
+> +                target_name =3D docname
+> +            else:
+> +                target_name =3D os.path.join('translations', lang_code, =
+docname)
+> +
+> +            pxref =3D addnodes.pending_xref('', refdomain=3D'std',
+> +                reftype=3D'doc', reftarget=3D'/' + target_name, modname=
+=3DNone,
+> +                classname=3DNone, refexplicit=3DTrue)
+> +            pxref +=3D nodes.Text(lang_name)
+> +            new_nodes +=3D pxref
+> +
+> +        self.document.insert(0, new_nodes)
+> +
+> +def process_languages(app, doctree, docname):
+> +    for node in doctree.traverse(LanguagesNode):
+> +        languages =3D []
+> +
+> +        # Iterate over the child nodes; any resolved links will have
+> +        # the type 'nodes.reference', while unresolved links will be
+> +        # type 'nodes.Text'.
+> +        languages =3D list(filter(lambda xref:
+> +            isinstance(xref, nodes.reference), node.children))
+> +
+> +        html_content =3D app.builder.templates.render('translations.html=
+',
+> +            context=3D{
+> +                'languages': languages,
+> +            })
+> +
+> +        node.replace_self(nodes.raw('', html_content, format=3D'html'))
+> +
+> +def setup(app):
+> +    app.add_node(LanguagesNode)
+> +    app.add_transform(TranslationsTransform)
+> +    app.connect('doctree-resolved', process_languages)
+> +
+> +    return {
+> +        'parallel_read_safe': True,
+> +        'parallel_write_safe': True,
+> +    }
+
+--=20
+Jani Nikula, Intel
