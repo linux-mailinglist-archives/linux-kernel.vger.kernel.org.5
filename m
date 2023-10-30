@@ -2,404 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DC77DBE4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7787DBE50
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbjJ3QyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
+        id S233698AbjJ3QyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjJ3Qx6 (ORCPT
+        with ESMTP id S231919AbjJ3QyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:53:58 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A55DA
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:53:55 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc3bb4c307so8736895ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698684835; x=1699289635; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g2Qy05fJV7O/T/e2KrUkQigx6UtJsi8HFmlOQKzP0uU=;
-        b=g4aXwTYxG6SYMWV89/1gGfk+dsT+IYV65M268WvyrGn5oEAlYJAUhY6EXrwfQA6u9R
-         SEop3iWzLu214FGGvdOO0xIRVdmq/th+a0/Pxi/YeA57apt1Puv1haqTPl0cYO7vTUqW
-         oc139djDriHdRokSv+FKlFT4+maOs9uRoNnEIS9BtWbOehd9Zp5zC6C4MwcIYjk+WGGb
-         oY5ql0TG+5nSZoin0IvKBTtYk3j2NsAnOOCablbvkhkOg1QLJYqiP7cHKKZ2UnmkxoqX
-         I4Qf/VFYG29tD9FPwXbn3np0rnCrAbL7OdYuAWxhoIJdzu6DDc0Dewq3AEpV3+cdEhu/
-         Cccg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698684835; x=1699289635;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g2Qy05fJV7O/T/e2KrUkQigx6UtJsi8HFmlOQKzP0uU=;
-        b=WUtfni37X8dRHhNS7RaUmrXNvII9/xLd6kcUI2K8tS+uSE/QIG/26/RiO2ZrQGGh7W
-         GqP5xZtWadORU+kXYr6OnoFyI1mxpcAStSPRkl2ut/8eskyKwh4ZesztP6dTnKTgG0fn
-         KlHp1E22gsGbpzuwLrIT1+cEyI1LBmWF405hIdOj8SZnn505TiR8dqQ+tOiFyQxwRoaQ
-         zsBJ6DAsQs1Psn+egar5ZW1HQkRzVlRj5jt0n4GQAq/fWxhWa6CrO+WEbJwMeGq+0JVL
-         fsITNm4Dw0lTsDoW8xm7uZhzroCS6Y59aU/K/zCOOfDC0ATxRlh57BedT5GEZqC+YadR
-         OO3A==
-X-Gm-Message-State: AOJu0Ywe5NR62A947XysmPuLdXG6+y/SXMx1ZXt0jaqUF83cvLODWiun
-        hI8Rb2tI/5xUFNkRE+bvNZjOBg==
-X-Google-Smtp-Source: AGHT+IELyEzMPCZIK1jGGqzZjOjX483WaD7ycdUy6EWhivpECGBZ90269Yo9hhrNGYoSLvPayW0Jww==
-X-Received: by 2002:a17:902:d581:b0:1cc:32ce:bd9 with SMTP id k1-20020a170902d58100b001cc32ce0bd9mr5679200plh.69.1698684834654;
-        Mon, 30 Oct 2023 09:53:54 -0700 (PDT)
-Received: from google.com (175.199.125.34.bc.googleusercontent.com. [34.125.199.175])
-        by smtp.gmail.com with ESMTPSA id c5-20020a170902d90500b001cc32f46757sm4438158plz.107.2023.10.30.09.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 09:53:53 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 09:53:48 -0700
-From:   David Matlack <dmatlack@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v13 03/35] KVM: Use gfn instead of hva for
- mmu_notifier_retry
-Message-ID: <ZT_fnAcDAvuPCwws@google.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-4-seanjc@google.com>
+        Mon, 30 Oct 2023 12:54:08 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2048.outbound.protection.outlook.com [40.107.223.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4F3F5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:54:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a+hwk6+RUm3RBxnPtRIrgb5/oOem8koJwIDouMGURwExQW0n7DzXr87GEeN0Zs2MqVYyXg6IZ2lJe0UYDm4/UN+TJPBNbHxdl4wvLJW0Ps5tNVzu/MkePndV+1yAD23M3iM7b+cGVCU6oi/b9QaANTtGyrpxKjP9MTk6f3pxmW6EIK4/8IdOIRRLssyJpbFRsH5TevmKQScHIq4DXQ2b+RtcWZ1W9HDbgi1Jt61q0mU0NKX1AyCMWdQROxDNCRXeRbtOYs2LtcmO39CMJ+gGT7dCLyu8xkevDvPBYLUbHhqHsnXlClyrnwtoEyq9MT9xZnuHPYAzDDIJj2H+zDUEag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gkGCn9dNz40ZlKnolDsdkEWtEmSkWCPpUl3Qb18sFmU=;
+ b=WVVXK3YVKtaOmxSC0pFvGpyw8LhU/aI/TnbygpKWa0KyAWhBgV/ILUXmV04MMbtqmfkDgH7QNftGyz+xXmXRa+MAeP2Q883mouEEtid3kjV8KOR7abnTSa3+EtnE1h9yZZsXYIixKQigy5J0s/SeX4R6CcACqeAuzx2PoUTXsz8k5+AbhXewiUsTDsZhVZzzRK4GTVT6DsxIVLF6UpPBb1HtmlWKwTIec1doc1sTJRK3+Dz5AY/kw4pWMznVgAjOSV67gMnY6k0lx8/6ZHYM2QKaBlqHPq0+SuxRvs+ZrfjDpBDj8lBhxLj7SSjjKEdrWGvnw/qznTb//8toEvciuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gkGCn9dNz40ZlKnolDsdkEWtEmSkWCPpUl3Qb18sFmU=;
+ b=5s1WLtQI5pKhJGth7rHgzwr6H21Sk+5xXN8I5vBxBGu3kyqDAfDgIZab4EtqlaYsMEuHupffO5thUsOgI1VW0LU7d3mHz6RlErPfbJjaccEnLTxkh5Sy3bruDfVpi1Gj1sEyx+YcYXXKwo8xaV4nqNUNKoz2n/xL7sF5r1Qr7PI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH0PR12MB5284.namprd12.prod.outlook.com (2603:10b6:610:d7::13)
+ by CY5PR12MB6369.namprd12.prod.outlook.com (2603:10b6:930:21::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27; Mon, 30 Oct
+ 2023 16:54:01 +0000
+Received: from CH0PR12MB5284.namprd12.prod.outlook.com
+ ([fe80::33ed:3162:e4ed:3569]) by CH0PR12MB5284.namprd12.prod.outlook.com
+ ([fe80::33ed:3162:e4ed:3569%6]) with mapi id 15.20.6933.028; Mon, 30 Oct 2023
+ 16:54:01 +0000
+Message-ID: <1ce5a7ae-b38e-433b-8f73-4bfc95bfe9c3@amd.com>
+Date:   Mon, 30 Oct 2023 12:53:58 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: remove redundant check
+To:     =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        Rodrigo.Siqueira@amd.com, skhan@linuxfoundation.org,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dillon.varone@amd.com, Jun.Lei@amd.com, george.shen@amd.com,
+        samson.tam@amd.com, SyedSaaem.Rizvi@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231029124404.16159-1-jose.pekkarinen@foxhound.fi>
+ <ce1b69e1-fa38-2e12-1ad5-375ac244af42@amd.com>
+ <3c228e4f69c01dddd4743bdb68845566@foxhound.fi>
+Content-Language: en-US
+From:   Aurabindo Pillai <aurabindo.pillai@amd.com>
+In-Reply-To: <3c228e4f69c01dddd4743bdb68845566@foxhound.fi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: QB1P288CA0022.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c00:2d::35) To CH0PR12MB5284.namprd12.prod.outlook.com
+ (2603:10b6:610:d7::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027182217.3615211-4-seanjc@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5284:EE_|CY5PR12MB6369:EE_
+X-MS-Office365-Filtering-Correlation-Id: 68ca40d5-5fb2-42cd-c52e-08dbd968d107
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iQjyu1z65yAurG2K2ycxsQWYmxrryCuZrXAaI5EWSo02djgQuR+wDDoNWnb9pa/T3hI3V3FKKVVyU1JGn9pcUt6WxXbjE7pmz2jLNdQcHD2kj5OvskLj4pd0mH9PRd4+msNTdDHV1IRouU9nN0m1vTOLTQoz5PpSmpESuZXje2SAw9F70XW8b4wE3VcRkeMSCvRuPDq+a6qqOT4XGALWjar+oAyglmN1VzYY2M2O/zDJDyXorCdFnQloABeeKzJHMj0zM37qRWqchpJV1JEMvr4Z1zsqkUj8IvKzG+k+wGQ/5Z8QATTlfSswr0FVJ1Qg74Xkz31udXXFV00YcGiwz7IX0cdsK+lj7Y0JJ0agmA89zRFTfveL8FaYJJLBshWfr75lswYHA0ahFGRfWbOJt1riRMOD+G84o1KnUxPRbX2SeuV13wA3iG4bV5HUrK1arwG61DKRLA2+nmMgUYvB3g+AFXkrphZngyjTJxtgL+SAcr3GxC01P2YJ2PL24ZhApbKVboX4duKLMqjZ9VC9wBNbTywRvQ7PdlnqAh5EkEubpVxDo+713W8zqlASsF2anL9NKgFR6G+jNcq5ME7hGwLMq2gYtbzye4cHDsYbcPBe2uB1NWDaFZZAq4hmfiq4+HKXWLn41EikxbTrKxSApvry+em5lFEymb8H0UDAggfCg/lPRxyjSjBRN73ibffV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5284.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(376002)(346002)(230273577357003)(230922051799003)(230173577357003)(451199024)(186009)(64100799003)(1800799009)(31686004)(478600001)(6666004)(66946007)(6506007)(6486002)(83380400001)(36756003)(38100700002)(66556008)(4001150100001)(66476007)(2906002)(41300700001)(2616005)(26005)(6512007)(53546011)(44832011)(86362001)(31696002)(5660300002)(8676002)(4326008)(6916009)(8936002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TDI2a3ExaU1CS2d0NVozL0NCVnJ6ZDIxdjNmMU9ac0pOTXJDMzhCT2NRTzRS?=
+ =?utf-8?B?NnpXM0c3eE9DL1JYRklHYldTcE8reHhZVVBvYzFtMUJWWWwraGlMM3pPU1VR?=
+ =?utf-8?B?UHBpQUk5bkthVnBYaUI2RmJPcWl4ZVdsSEF4NmpyaW8rTU5QUmVUTStyLytG?=
+ =?utf-8?B?dlFab1NBYmRONGdOWit0Y3NTMUJBMUIwS1g1bVZyQTgvdEVpYlNBSGVVcmUx?=
+ =?utf-8?B?c3JKekk5djNJbmVPcWE0UUxlYUs1RW5GR2VEbGtmYWh6ZU82aDlWcXNkT0lJ?=
+ =?utf-8?B?SStpUzhhUWV6SjRZZlBUdXBoUGV5M05VNk9aczAraTZ1OHphUGtEMi81aURB?=
+ =?utf-8?B?Z0pna1VmQVV2QUpEbjB2RTA3VGl6V3dxc1cwT1U3dDBZbWE4RGdxUjVxQTYy?=
+ =?utf-8?B?cHFMZEdocjJmZmFGaGtmZ1BvL2wrTGNYdDZWb3AwTW9yUzVUTG5zcWhsL2d3?=
+ =?utf-8?B?NE11L29peUx2aFMxcEdlU0lSeGx5bjZKdkd6YzhZTlhScTZGSVQrbThqVzJt?=
+ =?utf-8?B?a1htMmZlY3Avc0FKc0cwMkxlRzROc01nWXBkdVE0ZEJ5VERheDJhbFE3b2E1?=
+ =?utf-8?B?a0p3T1g1VFhFbzRhSkdZLzU1TGQzd3NRRWQ1RWFTTE5BR2RKT2FyQjE2Z0lU?=
+ =?utf-8?B?UEcwbFdDT3oyRlpLRGRTNGlGNFNnRW5Pb2JVVzNYTWl4VVAvdks1Vk5PanJj?=
+ =?utf-8?B?bEhvQ3lCb2pvRnRqQlJDTnE1T3NaaGtDdUJwVXdmYWdJbVlLbk5Sbm80U0NC?=
+ =?utf-8?B?bHRhOGNhd1N0V0ZDMlNoMFpMRzRoajlaNG1EcWNaTms1ZXJzU055VzZsNlhi?=
+ =?utf-8?B?TVVzSTJDL2tPSFBZS3ZkYWtnMU50SU1keVM5alM1SmVIWDc2a3luSk5Ibmcr?=
+ =?utf-8?B?eHJKOXd1VXJuS0ErWlZ1NjRwbk1XbUxEWnd5NUdiMzFWdzRjN1Y0L3lvUFU3?=
+ =?utf-8?B?b0JvbGxQNm5XT1hXR3l6aFBmSEorYlhDZGIrM1NnaWhMNE96bzZ0aWx2cXpG?=
+ =?utf-8?B?Q0VGWjdmUlFCRzVGTFhoaHBCZHJ5NnE3c2h4NGszTlFEWU15cEExUlFoQk1n?=
+ =?utf-8?B?NHU4b2NyZlY5YkJYSFdzVDNUa2EycUdudTFkNzczemJsZlRObGVoUVRXblBs?=
+ =?utf-8?B?OEJwMWY4MURCejBRSWMxeXBzekZ6ZVJUNlFQWEtET0MyR1dQL3FtYjMySi9i?=
+ =?utf-8?B?TXFZZVBRb3MzeFlTTU9iandrRlZPNEkxQkhiUFArY3RocTZER2RGS1B3amlD?=
+ =?utf-8?B?REZ0L3REZnhhSVdrMFRZR0RsRkdPOWkvVWdpaFFuTUNPblNzMFY5a0phZjZk?=
+ =?utf-8?B?SGs2a0FlRjZrTjh6YzM1VS9LbG9wSkJyNUUwcmFjSlZXbXlLUVVEdlB5YWF1?=
+ =?utf-8?B?SVo1L0dTU3pPYUQ0YUZsaUhicGpaNGZPZm5oVCtRQXRHR05nUm9La3RRdVFa?=
+ =?utf-8?B?ZGpuUmdncFYzNVdIa044RDByUG80T1FNSW9BeDRzd2wxdmsyVTA5aHNKNGNn?=
+ =?utf-8?B?U1Vna05XSUMwckhLQlRiRjArMTllQmZIM084RU0wb1JFRldoM1dqMUh2ZEZl?=
+ =?utf-8?B?R3RGM3ZtNXhmR25DOGI1MUlwdEdncTk0cHV1SDdFQTdNK25ybkZSNW5NT1Fq?=
+ =?utf-8?B?cUtYYmxPOUlEV2VsU2lsbXE4bWpQVUdHZm1OTmtPbktNNVpVd2NVeWljeDhK?=
+ =?utf-8?B?Q0xOMHVnWVUxbEEwejAzYXpHby9EbmdVQjJudUNLSXh1alZhZHp6Vy9ONGxR?=
+ =?utf-8?B?VmdaRC82NnBWR241WDVPU1BYelZkSys3UUhQWHl0cWVlK2xBVi9sbEs4RkdE?=
+ =?utf-8?B?TFBHMTJRaWl4aHk3dlRVR3pvUlBxSHVMYnNaT3A0ZEd0SllDNDNVamNNZ0Nu?=
+ =?utf-8?B?MXIrdmJxdWhJWTJVaDYycjk0NVRUeldkS20xdzhHNjIzcWZDR004L2RXREpC?=
+ =?utf-8?B?NXVQZlN1RkxGY1FndXc2dkI3WCt0cEpJejBXUStnMHhPWW5paTVwZHh3SzA2?=
+ =?utf-8?B?TmsxTDkyVDJFUjltSDVtQXp3NEVHQ210dmo5YXNCODRRYXVFdzJBdW1CaW55?=
+ =?utf-8?B?cm45aEpseVhHVXRITWhDU3VQUjQ3V0VDbHoyR011aVdRY0hIUGlGT0dBbkhl?=
+ =?utf-8?Q?GqAyXjoUNzhYZAI71n3nINTB/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68ca40d5-5fb2-42cd-c52e-08dbd968d107
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5284.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 16:54:01.2114
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UHo6Q+zTjRp8NNNNKX0EPZi6ey9imuMRFKmDWjYbxTRpDCe8VIAeyGkIaBoZNbPMtCi0+Y3Xi0BUkYwmQkln8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6369
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-27 11:21 AM, Sean Christopherson wrote:
-> From: Chao Peng <chao.p.peng@linux.intel.com>
+
+
+On 2023-10-30 12:26, José Pekkarinen wrote:
+> On 2023-10-30 15:52, Aurabindo Pillai wrote:
+>> On 10/29/2023 8:44 AM, José Pekkarinen wrote:
+>>> This patch addresses the following warning spotted by
+>>> using coccinelle where the case checked does the same
+>>> than the else case.
+>>>
+>>> drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c:4664:8-10: WARNING: possible condition with no effect (if == else)
+>>>
+>>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>>> ---
+>>>   .../drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c   | 4 ----
+>>>   1 file changed, 4 deletions(-)
+>>>
+>>> diff --git 
+>>> a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c 
+>>> b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c
+>>> index ecea008f19d3..d940dfa5ae43 100644
+>>> --- 
+>>> a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c
+>>> +++ 
+>>> b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c
+>>> @@ -4661,10 +4661,6 @@ void dml32_CalculateMinAndMaxPrefetchMode(
+>>>       } else if (AllowForPStateChangeOrStutterInVBlankFinal == 
+>>> dm_prefetch_support_uclk_fclk_and_stutter) {
+>>>           *MinPrefetchMode = 0;
+>>>           *MaxPrefetchMode = 0;
+>>> -    } else if (AllowForPStateChangeOrStutterInVBlankFinal ==
+>>> -            dm_prefetch_support_uclk_fclk_and_stutter_if_possible) {
+>>> -        *MinPrefetchMode = 0;
+>>> -        *MaxPrefetchMode = 3;
+>>>       } else {
+>>>           *MinPrefetchMode = 0;
+>>>           *MaxPrefetchMode = 3;
+>>
+>> What tree did you use to generate the patch? On amd-staging-drm-next,
+>> MaxPrefetchMode is 0 for the second last branch, which is the correct
+>> one, so this patch isnt needed.
 > 
-> Currently in mmu_notifier invalidate path, hva range is recorded and
-> then checked against by mmu_notifier_retry_hva() in the page fault
-> handling path. However, for the to be introduced private memory, a page
-                          ^^^^^^^^^^^^^^^^^^^^^^^^
-
-Is there a missing word here?
-
-> fault may not have a hva associated, checking gfn(gpa) makes more sense.
+>      I'm using the stable tree, sorry, if it is out of
+> date just ignore it then.
 > 
-> For existing hva based shared memory, gfn is expected to also work. The
-> only downside is when aliasing multiple gfns to a single hva, the
-> current algorithm of checking multiple ranges could result in a much
-> larger range being rejected. Such aliasing should be uncommon, so the
-> impact is expected small.
+>      Thanks!
 > 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Cc: Xu Yilun <yilun.xu@intel.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Reviewed-by: Fuad Tabba <tabba@google.com>
-> Tested-by: Fuad Tabba <tabba@google.com>
-> [sean: convert vmx_set_apic_access_page_addr() to gfn-based API]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c   | 10 ++++++----
->  arch/x86/kvm/vmx/vmx.c   | 11 +++++------
->  include/linux/kvm_host.h | 33 ++++++++++++++++++++------------
->  virt/kvm/kvm_main.c      | 41 +++++++++++++++++++++++++++++++---------
->  4 files changed, 64 insertions(+), 31 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index f7901cb4d2fa..d33657d61d80 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3056,7 +3056,7 @@ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
->   *
->   * There are several ways to safely use this helper:
->   *
-> - * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, before
-> + * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, before
->   *   consuming it.  In this case, mmu_lock doesn't need to be held during the
->   *   lookup, but it does need to be held while checking the MMU notifier.
->   *
-> @@ -4358,7 +4358,7 @@ static bool is_page_fault_stale(struct kvm_vcpu *vcpu,
->  		return true;
->  
->  	return fault->slot &&
-> -	       mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva);
-> +	       mmu_invalidate_retry_gfn(vcpu->kvm, fault->mmu_seq, fault->gfn);
->  }
->  
->  static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> @@ -6245,7 +6245,9 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->  
->  	write_lock(&kvm->mmu_lock);
->  
-> -	kvm_mmu_invalidate_begin(kvm, 0, -1ul);
-> +	kvm_mmu_invalidate_begin(kvm);
-> +
-> +	kvm_mmu_invalidate_range_add(kvm, gfn_start, gfn_end);
->  
->  	flush = kvm_rmap_zap_gfn_range(kvm, gfn_start, gfn_end);
->  
-> @@ -6255,7 +6257,7 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->  	if (flush)
->  		kvm_flush_remote_tlbs_range(kvm, gfn_start, gfn_end - gfn_start);
->  
-> -	kvm_mmu_invalidate_end(kvm, 0, -1ul);
-> +	kvm_mmu_invalidate_end(kvm);
->  
->  	write_unlock(&kvm->mmu_lock);
->  }
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 72e3943f3693..6e502ba93141 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6757,10 +6757,10 @@ static void vmx_set_apic_access_page_addr(struct kvm_vcpu *vcpu)
->  		return;
->  
->  	/*
-> -	 * Grab the memslot so that the hva lookup for the mmu_notifier retry
-> -	 * is guaranteed to use the same memslot as the pfn lookup, i.e. rely
-> -	 * on the pfn lookup's validation of the memslot to ensure a valid hva
-> -	 * is used for the retry check.
-> +	 * Explicitly grab the memslot using KVM's internal slot ID to ensure
-> +	 * KVM doesn't unintentionally grab a userspace memslot.  It _should_
-> +	 * be impossible for userspace to create a memslot for the APIC when
-> +	 * APICv is enabled, but paranoia won't hurt in this case.
->  	 */
->  	slot = id_to_memslot(slots, APIC_ACCESS_PAGE_PRIVATE_MEMSLOT);
->  	if (!slot || slot->flags & KVM_MEMSLOT_INVALID)
-> @@ -6785,8 +6785,7 @@ static void vmx_set_apic_access_page_addr(struct kvm_vcpu *vcpu)
->  		return;
->  
->  	read_lock(&vcpu->kvm->mmu_lock);
-> -	if (mmu_invalidate_retry_hva(kvm, mmu_seq,
-> -				     gfn_to_hva_memslot(slot, gfn))) {
-> +	if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
->  		kvm_make_request(KVM_REQ_APIC_PAGE_RELOAD, vcpu);
->  		read_unlock(&vcpu->kvm->mmu_lock);
->  		goto out;
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index fb6c6109fdca..11d091688346 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -787,8 +787,8 @@ struct kvm {
->  	struct mmu_notifier mmu_notifier;
->  	unsigned long mmu_invalidate_seq;
->  	long mmu_invalidate_in_progress;
-> -	unsigned long mmu_invalidate_range_start;
-> -	unsigned long mmu_invalidate_range_end;
-> +	gfn_t mmu_invalidate_range_start;
-> +	gfn_t mmu_invalidate_range_end;
->  #endif
->  	struct list_head devices;
->  	u64 manual_dirty_log_protect;
-> @@ -1392,10 +1392,9 @@ void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc);
->  void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
->  #endif
->  
-> -void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
-> -			      unsigned long end);
-> -void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
-> -			    unsigned long end);
-> +void kvm_mmu_invalidate_begin(struct kvm *kvm);
-> +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end);
+>      José.
+Actually, you're right - the patch's limited context mislead me, sorry.
+But please add the following tag and sent it to stable@vger.kernel.org 
+instead:
 
-What is the reason to separate range_add() from begin()?
-
-> +void kvm_mmu_invalidate_end(struct kvm *kvm);
->  
->  long kvm_arch_dev_ioctl(struct file *filp,
->  			unsigned int ioctl, unsigned long arg);
-> @@ -1970,9 +1969,9 @@ static inline int mmu_invalidate_retry(struct kvm *kvm, unsigned long mmu_seq)
->  	return 0;
->  }
->  
-> -static inline int mmu_invalidate_retry_hva(struct kvm *kvm,
-> +static inline int mmu_invalidate_retry_gfn(struct kvm *kvm,
->  					   unsigned long mmu_seq,
-> -					   unsigned long hva)
-> +					   gfn_t gfn)
->  {
->  	lockdep_assert_held(&kvm->mmu_lock);
->  	/*
-> @@ -1981,10 +1980,20 @@ static inline int mmu_invalidate_retry_hva(struct kvm *kvm,
->  	 * that might be being invalidated. Note that it may include some false
->  	 * positives, due to shortcuts when handing concurrent invalidations.
->  	 */
-> -	if (unlikely(kvm->mmu_invalidate_in_progress) &&
-> -	    hva >= kvm->mmu_invalidate_range_start &&
-> -	    hva < kvm->mmu_invalidate_range_end)
-> -		return 1;
-> +	if (unlikely(kvm->mmu_invalidate_in_progress)) {
-> +		/*
-> +		 * Dropping mmu_lock after bumping mmu_invalidate_in_progress
-> +		 * but before updating the range is a KVM bug.
-> +		 */
-> +		if (WARN_ON_ONCE(kvm->mmu_invalidate_range_start == INVALID_GPA ||
-> +				 kvm->mmu_invalidate_range_end == INVALID_GPA))
-> +			return 1;
-> +
-> +		if (gfn >= kvm->mmu_invalidate_range_start &&
-> +		    gfn < kvm->mmu_invalidate_range_end)
-> +			return 1;
-> +	}
-> +
->  	if (kvm->mmu_invalidate_seq != mmu_seq)
->  		return 1;
->  	return 0;
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 5a97e6c7d9c2..1a577a25de47 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -543,9 +543,7 @@ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
->  
->  typedef bool (*gfn_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
->  
-> -typedef void (*on_lock_fn_t)(struct kvm *kvm, unsigned long start,
-> -			     unsigned long end);
-> -
-> +typedef void (*on_lock_fn_t)(struct kvm *kvm);
->  typedef void (*on_unlock_fn_t)(struct kvm *kvm);
->  
->  struct kvm_mmu_notifier_range {
-> @@ -637,7 +635,8 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
->  				locked = true;
->  				KVM_MMU_LOCK(kvm);
->  				if (!IS_KVM_NULL_FN(range->on_lock))
-> -					range->on_lock(kvm, range->start, range->end);
-> +					range->on_lock(kvm);
-> +
->  				if (IS_KVM_NULL_FN(range->handler))
->  					break;
->  			}
-> @@ -742,16 +741,29 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
->  	kvm_handle_hva_range(mn, address, address + 1, arg, kvm_change_spte_gfn);
->  }
->  
-> -void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
-> -			      unsigned long end)
-> +void kvm_mmu_invalidate_begin(struct kvm *kvm)
->  {
-> +	lockdep_assert_held_write(&kvm->mmu_lock);
->  	/*
->  	 * The count increase must become visible at unlock time as no
->  	 * spte can be established without taking the mmu_lock and
->  	 * count is also read inside the mmu_lock critical section.
->  	 */
->  	kvm->mmu_invalidate_in_progress++;
-> +
->  	if (likely(kvm->mmu_invalidate_in_progress == 1)) {
-> +		kvm->mmu_invalidate_range_start = INVALID_GPA;
-> +		kvm->mmu_invalidate_range_end = INVALID_GPA;
-
-I don't think this is incorrect, but I was a little suprised to see this
-here rather than in end() when mmu_invalidate_in_progress decrements to
-0.
-
-> +	}
-> +}
-> +
-> +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end)
-> +{
-> +	lockdep_assert_held_write(&kvm->mmu_lock);
-
-Does this compile/function on KVM architectures with
-!KVM_HAVE_MMU_RWLOCK? I assumed we would get an email from the buildbot
-if it didn't compile but I don't know if buildbot builds with lockdep
-enabled.
-
-On this topic, I wonder if we should just bit the bullet and convert all
-architectures to a rwlock_t.
-
-> +
-> +	WARN_ON_ONCE(!kvm->mmu_invalidate_in_progress);
-> +
-> +	if (likely(kvm->mmu_invalidate_range_start == INVALID_GPA)) {
->  		kvm->mmu_invalidate_range_start = start;
->  		kvm->mmu_invalidate_range_end = end;
->  	} else {
-> @@ -771,6 +783,12 @@ void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
->  	}
->  }
->  
-> +static bool kvm_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
-> +{
-> +	kvm_mmu_invalidate_range_add(kvm, range->start, range->end);
-> +	return kvm_unmap_gfn_range(kvm, range);
-> +}
-> +
->  static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->  					const struct mmu_notifier_range *range)
->  {
-> @@ -778,7 +796,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->  	const struct kvm_mmu_notifier_range hva_range = {
->  		.start		= range->start,
->  		.end		= range->end,
-> -		.handler	= kvm_unmap_gfn_range,
-> +		.handler	= kvm_mmu_unmap_gfn_range,
->  		.on_lock	= kvm_mmu_invalidate_begin,
->  		.on_unlock	= kvm_arch_guest_memory_reclaimed,
->  		.flush_on_ret	= true,
-> @@ -817,8 +835,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->  	return 0;
->  }
->  
-> -void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
-> -			    unsigned long end)
-> +void kvm_mmu_invalidate_end(struct kvm *kvm)
->  {
->  	/*
->  	 * This sequence increase will notify the kvm page fault that
-> @@ -834,6 +851,12 @@ void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
-
-Let's add a lockdep_assert_held_write(&kvm->mmu_lock) here too while
-we're at it?
-
->  	 */
->  	kvm->mmu_invalidate_in_progress--;
->  	KVM_BUG_ON(kvm->mmu_invalidate_in_progress < 0, kvm);
-> +
-> +	/*
-> +	 * Assert that at least one range was added between start() and end().
-> +	 * Not adding a range isn't fatal, but it is a KVM bug.
-> +	 */
-> +	WARN_ON_ONCE(kvm->mmu_invalidate_range_start == INVALID_GPA);
->  }
->  
->  static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
-> -- 
-> 2.42.0.820.g83a721a137-goog
-> 
+Fixes: 974ce181 ("drm/amd/display: Add check for PState change in DCN32")
