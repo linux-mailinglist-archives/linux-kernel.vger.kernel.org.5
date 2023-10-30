@@ -2,242 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 495AC7DC1F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081AD7DC1F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbjJ3VcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        id S232019AbjJ3VcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbjJ3VcW (ORCPT
+        with ESMTP id S231995AbjJ3VcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:32:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CD611B;
-        Mon, 30 Oct 2023 14:32:12 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39ULVuEv016684;
-        Mon, 30 Oct 2023 21:31:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=JLBYQvouHm+ivITtAnS//CALxj6F/tmmVd/NsTeTqyE=;
- b=mVQM5zRRDwJHiF79Hfq3oWk9idm/OLvnuVYDkVPlTWw6y+PfNvgPgWXm6XsffpYJaOK6
- j1XeQb2lu5agLaQkNcbTx0yQTJM3HsfIybqzGDpXcacTdUpbaPoPYsq86y+l8JTuh/Y5
- JCeLQE/Vo7cpgVeNo3nf1WdvbrXIGOhyIRLj55S0cL6JWv6dfvQz7EnY57c/SGb4MVFW
- z9yS3yyX6enaRdoonfI938zpFTtyorkVZKZSVcv5r11x6qYKYfOnxqSJXg14cVVCfPt7
- YOdvsBKxbRCuZ5EoIN9IsD1nST2eJt1IEbss98TU9IgwLA+C/TURfqUoeJAcpzgGhCrj Gg== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2chyh7rf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 21:31:56 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39ULVubm011305
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 21:31:56 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 30 Oct 2023 14:31:55 -0700
-From:   Elliot Berman <quic_eberman@quicinc.com>
-Date:   Mon, 30 Oct 2023 14:31:34 -0700
-Subject: [PATCH RFC 2/2] firmware: psci: Read and use vendor reset types
+        Mon, 30 Oct 2023 17:32:01 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4E6F1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:31:56 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9c773ac9b15so743831066b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1698701514; x=1699306314; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m4CDD7gOBgZXjdEejFuqXex8Na0HsuHTt1rp6KKwgU8=;
+        b=cFB4AMdfWXdBpvydQuLAOpk/VqmaHUK80IWOZi0itPlsiWNzAXUbC9JHNtmUvMwvl6
+         LyMn+7bVtYTxbpduoVtCVHdrCn24GH1ZOrd4UKnPOy55qyFqF3zJkG3SxZFDLFWFAMu6
+         tMcWa0E1SMT9ELiz1wzdHAtJhQlFrfos/rNAA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698701514; x=1699306314;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m4CDD7gOBgZXjdEejFuqXex8Na0HsuHTt1rp6KKwgU8=;
+        b=dUsz/EKXa/5NFvpyKDpw72tKClZJHWcqm6nOil5pRf8WswbgrbgrASTE+IPfwMkkQ4
+         KBoRd0tMxf2t/YpsWesvu1aSoDRxolP2cFm/n/W6DeQResga0hTG8RPx6x//J+wCA/6r
+         LkXbrxgudM75xikYgVXKcHiZnqCqlzw0BnGKklVM7VrQ2roRsLPd5fsiDegGdTIm30Lh
+         5u3tsl6sS+Jn+wwJ0QQJZ2e9pTKGH/ZApUoVQmKCrkysYrPNGFf5XxtSz8XCSejT7Afx
+         fTzVJe3u2wE07M3BqDQg0iFPaUuXwfwwAmsBvF0qgKQwW/RvGQUtoSqWl92yrc5MayZC
+         ktaQ==
+X-Gm-Message-State: AOJu0YwIHhGBR0tP1QwrcvSgM0I3uR/ZUW62Tuk1gWuEREerlbVgO/6U
+        4qak1dGLWPJaRxQfSIkU1q3O/zCQIGOMUSJ8TYlg+g==
+X-Google-Smtp-Source: AGHT+IFhjP/mR9HRcpIkSuaZdan+rUcg31q6kP4J4z8rGVJUNgnkLOnSqLyCmOK/FfSA5tiiFnEZSw==
+X-Received: by 2002:a17:906:7310:b0:9be:e153:3b82 with SMTP id di16-20020a170906731000b009bee1533b82mr8576531ejc.17.1698701514399;
+        Mon, 30 Oct 2023 14:31:54 -0700 (PDT)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id gs23-20020a170906f19700b00992f2befcbcsm6573839ejb.180.2023.10.30.14.31.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 14:31:53 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9c773ac9b15so743828066b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:31:53 -0700 (PDT)
+X-Received: by 2002:a17:907:7ba1:b0:9b7:37de:601a with SMTP id
+ ne33-20020a1709077ba100b009b737de601amr9630560ejc.49.1698701513400; Mon, 30
+ Oct 2023 14:31:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231030-arm-psci-system_reset2-vendor-reboots-v1-2-dcdd63352ad1@quicinc.com>
-References: <20231030-arm-psci-system_reset2-vendor-reboots-v1-0-dcdd63352ad1@quicinc.com>
-In-Reply-To: <20231030-arm-psci-system_reset2-vendor-reboots-v1-0-dcdd63352ad1@quicinc.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Elliot Berman <quic_eberman@quicinc.com>
-X-Mailer: b4 0.13-dev
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: nPoM-AxfQC_BuKVQzcAwanO9tqVyCc2T
-X-Proofpoint-GUID: nPoM-AxfQC_BuKVQzcAwanO9tqVyCc2T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0 phishscore=0
- clxscore=1015 suspectscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310300168
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <34E014FF-351E-4977-B694-060A5DADD35A@oracle.com>
+In-Reply-To: <34E014FF-351E-4977-B694-060A5DADD35A@oracle.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Oct 2023 11:31:36 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wifhiJ-QbcwrH0RzPaKeZv93GKDQuBUth18ay=sLu5CVA@mail.gmail.com>
+Message-ID: <CAHk-=wifhiJ-QbcwrH0RzPaKeZv93GKDQuBUth18ay=sLu5CVA@mail.gmail.com>
+Subject: Re: [GIT PULL] nfsd changes for v6.7 (early)
+To:     Chuck Lever III <chuck.lever@oracle.com>, NeilBrown <neilb@suse.de>
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SoC vendors have different types of resets and are controlled through
-various registers. For instance, Qualcomm chipsets can reboot to a
-"download mode" that allows a RAM dump to be collected. Another example
-is they also support writing a cookie that can be read by bootloader
-during next boot. PSCI offers a mechanism, SYSTEM_RESET2, for these
-vendor reset types to be implemented without requiring drivers for every
-register/cookie.
+On Wed, 25 Oct 2023 at 04:24, Chuck Lever III <chuck.lever@oracle.com> wrote:
+>
+> This release completes the SunRPC thread scheduler work that was
+> begun in v6.6. The scheduler can now find an svc thread to wake in
+> constant time and without a list walk. Thanks again to Neil Brown
+> for this overhaul.
 
-Add support in PSCI to statically map reboot mode commands from
-userspace to a vendor reset and cookie value using the device tree.
+Btw, the "help" text for the new Kconfig option that this introduces
+is just ridiculously bad.
 
-Reboot mode framework is close but doesn't quite fit with the
-design and requirements for PSCI SYSTEM_RESET2. Some of these issues can
-be solved but doesn't seem reasonable in sum:
- 1. reboot mode registers against the reboot_notifier_list, which is too
-    early to call SYSTEM_RESET2. PSCI would need to remember the reset
-    type from the reboot-mode framework callback and use it
-    psci_sys_reset.
- 2. reboot mode assumes only one cookie/parameter is described in the
-    device tree. SYSTEM_RESET2 uses 2: one for the type and one for
-    cookie.
- 3. psci cpuidle driver already registers a driver against the
-    arm,psci-1.0 compatible. Refactoring would be needed to have both a
-    cpuidle and reboot-mode driver.
+I react to these things, because I keep telling people that our
+Kconfig is one of the nastier parts to people just building and
+testing their own kernels. Yes, you can start with whatever distro
+default config, and build your own, and install it, but when people
+then introduce new options and ask insane and unhelpful questions,
+that scares off any sane person.
 
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
- drivers/firmware/psci/psci.c | 87 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 86 insertions(+), 1 deletion(-)
+So Kconfig questions really need to make sense, and they need to have
+help messages that are useful..
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index d9629ff87861..93914b48a950 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -29,6 +29,8 @@
- #include <asm/smp_plat.h>
- #include <asm/suspend.h>
- 
-+#define REBOOT_PREFIX "reboot-mode-"
-+
- /*
-  * While a 64-bit OS can make calls with SMC32 calling conventions, for some
-  * calls it is necessary to use SMC64 to pass or return 64-bit values.
-@@ -79,6 +81,14 @@ struct psci_0_1_function_ids get_psci_0_1_function_ids(void)
- static u32 psci_cpu_suspend_feature;
- static bool psci_system_reset2_supported;
- 
-+struct psci_reset_param {
-+	const char *mode;
-+	u32 reset_type;
-+	u32 cookie;
-+};
-+static struct psci_reset_param *psci_reset_params;
-+static size_t num_psci_reset_params;
-+
- static inline bool psci_has_ext_power_state(void)
- {
- 	return psci_cpu_suspend_feature &
-@@ -305,11 +315,29 @@ static int get_set_conduit_method(const struct device_node *np)
- 	return 0;
- }
- 
-+static void psci_vendor_sys_reset2(unsigned long action, void *data)
-+{
-+	const char *cmd = data;
-+	size_t i;
-+
-+	for (i = 0; i < num_psci_reset_params; i++) {
-+		if (!strcmp(psci_reset_params[i].mode, cmd)) {
-+			invoke_psci_fn(PSCI_FN_NATIVE(1_1, SYSTEM_RESET2),
-+				       psci_reset_params[i].reset_type,
-+				       psci_reset_params[i].cookie, 0);
-+			break;
-+		}
-+	}
-+}
-+
- static int psci_sys_reset(struct notifier_block *nb, unsigned long action,
- 			  void *data)
- {
-+	if (psci_system_reset2_supported && num_psci_reset_params)
-+		psci_vendor_sys_reset2(action, data);
-+
- 	if ((reboot_mode == REBOOT_WARM || reboot_mode == REBOOT_SOFT) &&
--	    psci_system_reset2_supported) {
-+		 psci_system_reset2_supported) {
- 		/*
- 		 * reset_type[31] = 0 (architectural)
- 		 * reset_type[30:0] = 0 (SYSTEM_WARM_RESET)
-@@ -748,6 +776,63 @@ static const struct of_device_id psci_of_match[] __initconst = {
- 	{},
- };
- 
-+static int __init psci_init_system_reset2_modes(void)
-+{
-+	const size_t len = strlen(REBOOT_PREFIX);
-+	struct psci_reset_param *param;
-+	struct device_node *np;
-+	struct property *prop;
-+	size_t count = 0;
-+	u32 magic[2];
-+	int ret;
-+
-+	if (!psci_system_reset2_supported)
-+		return 0;
-+
-+	np = of_find_matching_node(NULL, psci_of_match);
-+	if (!np)
-+		return 0;
-+
-+	for_each_property_of_node(np, prop) {
-+		if (strncmp(prop->name, REBOOT_PREFIX, len))
-+			continue;
-+		ret = of_property_count_elems_of_size(np, prop->name, sizeof(magic[0]));
-+		if (ret != 1 && ret != 2)
-+			continue;
-+
-+		count++;
-+	}
-+
-+	param = psci_reset_params = kcalloc(count, sizeof(*psci_reset_params), GFP_KERNEL);
-+	if (!psci_reset_params)
-+		return -ENOMEM;
-+
-+	for_each_property_of_node(np, prop) {
-+		if (strncmp(prop->name, REBOOT_PREFIX, len))
-+			continue;
-+
-+		param->mode = kstrdup_const(prop->name + len, GFP_KERNEL);
-+		if (!param->mode)
-+			continue;
-+
-+		ret = of_property_read_variable_u32_array(np, prop->name, magic, 1, 2);
-+		if (ret < 0) {
-+			pr_warn("Failed to parse vendor reboot mode %s\n", param->mode);
-+			kfree(param->mode);
-+			continue;
-+		}
-+
-+		/* Force reset type to be in vendor space */
-+		param->reset_type = PSCI_1_1_RESET_TYPE_VENDOR_START | magic[0];
-+		param->cookie = ret == 2 ? magic[1] : 0;
-+		param++;
-+		num_psci_reset_params++;
-+	}
-+
-+	return 0;
-+}
-+arch_initcall(psci_init_system_reset2_modes);
-+
- int __init psci_dt_init(void)
- {
- 	struct device_node *np;
+Honestly, that LWQ_TEST option probably fails both cases.  The
+"testing" is a toy, and the Kconfig option is horrific. I literally
+think that we would be better off removing that code. Any bug found by
+that testv would be so fundamental as to not be worth testing for.
 
--- 
-2.41.0
-
+                 Linus
