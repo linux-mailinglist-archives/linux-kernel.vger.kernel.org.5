@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683CB7DBF4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E27A7DBF59
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbjJ3Rp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        id S233933AbjJ3RvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjJ3Rp5 (ORCPT
+        with ESMTP id S229780AbjJ3RvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:45:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CAF7BC4;
-        Mon, 30 Oct 2023 10:45:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 264DAFEC;
-        Mon, 30 Oct 2023 10:46:35 -0700 (PDT)
-Received: from [10.57.7.2] (unknown [10.57.7.2])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5B0E3F738;
-        Mon, 30 Oct 2023 10:45:50 -0700 (PDT)
-Message-ID: <83d6a790-3d18-4922-850b-b60e88761786@arm.com>
-Date:   Mon, 30 Oct 2023 17:46:42 +0000
+        Mon, 30 Oct 2023 13:51:19 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A412B4;
+        Mon, 30 Oct 2023 10:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Ni1GPgCl8w8Lwh/aSdbo/ks9Sgjz4jtglOS0ql7XSO4=; b=01c617rJlquZVt2QBAZvsxfiUn
+        We9Aa2YJR/FiIGF2DchKsF4HTzXH4x13XmbhOFjuOjjTLrSvKEbbIiIVeMQu4u7PR8HN2WFJmMyfQ
+        C6J8t3czF4AKG2F9u13+0fCagYzgASIqbySFKQ8DbW1a5cFRQtx6yrNueDmBMUQgJ3HEoQfA/tW2Y
+        6zKGiVKt5ORIV3bWGHSyvSBoiOH7RlM0U2llB7+2OXH2TD8iVukcZ8K6w4/w+3LY6bhMz5YBBMP6H
+        5M32zkEld5QtXKRKatFhDhrcgT9/IEWXaX/fsQh6kfxMZP7g104aTS23og0hO0W/VM5RGC4DF0bOO
+        lTqzoc7Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50422)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qxWPr-0001wo-2E;
+        Mon, 30 Oct 2023 17:51:07 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qxWPn-0004Co-Sm; Mon, 30 Oct 2023 17:51:03 +0000
+Date:   Mon, 30 Oct 2023 17:51:03 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "acpica-devel@lists.linuxfoundation.org" 
+        <acpica-devel@lists.linuxfoundation.org>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
+        "justin.he@arm.com" <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>
+Subject: Re: [RFC PATCH v3 00/39] ACPI/arm64: add support for virtual
+ cpuhotplug
+Message-ID: <ZT/tB0ykr8JJd+E4@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+ <C2C5C292-AD2C-4D98-8225-39ABE68C5395@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] sched/schedutil: rework performance estimation
-Content-Language: en-US
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     wyes.karny@amd.com, peterz@infradead.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org, vschneid@redhat.com, bristot@redhat.com,
-        bsegall@google.com, rostedt@goodmis.org, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, beata.michalska@arm.com,
-        linux-kernel@vger.kernel.org, qyousef@layalina.io,
-        viresh.kumar@linaro.org, mingo@redhat.com, mgorman@suse.de
-References: <20231026170913.32605-1-vincent.guittot@linaro.org>
- <20231026170913.32605-2-vincent.guittot@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231026170913.32605-2-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C2C5C292-AD2C-4D98-8225-39ABE68C5395@oracle.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
-
-On 10/26/23 18:09, Vincent Guittot wrote:
-> The current method to take into account uclamp hints when estimating the
-> target frequency can end into situation where the selected target
-> frequency is finally higher than uclamp hints whereas there are no real
-> needs. Such cases mainly happen because we are currently mixing the
-> traditional scheduler utilization signal with the uclamp performance
-> hints. By adding these 2 metrics, we loose an important information when
-> it comes to select the target frequency and we have to make some
-> assumptions which can't fit all cases.
+On Mon, Oct 30, 2023 at 04:41:19PM +0000, Miguel Luis wrote:
+> Hi Russell,
 > 
-> Rework the interface between the scheduler and schedutil governor in order
-> to propagate all information down to the cpufreq governor.
+> Tested on QEMU, based on Salil's RFC v2 [1], running with KVM.
+> - boot
+> - hotplug up to 'maxcpus'
+> - hotunplug down to the number of boot cpus
+> - hotplug vcpus and migrate with vcpus offline
+> - hotplug vcpus and migrate with vcpus online
+> - hotplug vcpus then unplug vcpus then migrate
+> - successive live migrations (up until 6)
 > 
-> effective_cpu_util() interface changes and now returns the actual
-> utilization of the CPU with 2 optional inputs:
-> - The minimum performance for this CPU; typically the capacity to handle
->    the deadline task and the interrupt pressure. But also uclamp_min
->    request when available.
-> - The maximum targeting performance for this CPU which reflects the
->    maximum level that we would like to not exceed. By default it will be
->    the CPU capacity but can be reduced because of some performance hints
->    set with uclamp. The value can be lower than actual utilization and/or
->    min performance level.
+> Feel free to add:
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> 
+> Thank you
+> Miguel
+> 
+> [1] https://lore.kernel.org/qemu-devel/20230926100436.28284-1-salil.mehta@huawei.com/
 
-You have probably missed my question in the last v1 patch set.
+That's good news, thanks for testing!
 
-The description above needs a bit of clarification, since looking at the
-patches some dark corners are introduced IMO:
+I've pushed out an updated series against v6.6 earlier today in case
+anyone wants something specifically against v6.6, but I don't think
+there is any pressing reason to re-test. The only ACPI change
+between the two is:
 
-Currently, we have a less aggressive power saving policy than this
-proposal.
+9b311b7313d6 ACPI: NFIT: Install Notify() handler before getting NFIT table
 
-The questions:
-What if the PD has 4 CPUs, the max util found is 500 and is from a CPU
-w/ uclamp_max, but there is another CPU with normal utilization 499?
-What should be the final frequency for that PD?
+and the only arm64 changes are in dts files. Nothing significant in
+kernel/ and nothing in drivers/base/.
 
-In current design, where we care more about 'delivered performance
-to the tasks' than power saving, the +20% would be applied for the
-frequency. Therefore if that CPU with 499 util doesn't have uclamp_max,
-it would get a decent amount of idle time for its tasks (to compensate
-some workload variation).
+So I think at this point, I will pause waiting for 6.7-rc1 (which
+I'll do an updated patch set, since it will include changes queued
+up) and hopefully followed by Rafael's comments. Maybe James will
+also have some time to work on this again.
 
-Regards,
-Lukasz
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
