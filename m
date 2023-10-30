@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3C87DB781
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FF57DB780
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbjJ3KMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
+        id S232491AbjJ3KMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJ3KMj (ORCPT
+        with ESMTP id S232464AbjJ3KMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:12:39 -0400
-Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FD78A66
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:12:36 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id xPG3qqyAE4QsMxPG3qncw9; Mon, 30 Oct 2023 11:12:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1698660754;
-        bh=UlJi3Q2/4KzrolD0gZ6MzxC5lWsP/eLAiQtg1TLakIM=;
-        h=From:To:Cc:Subject:Date;
-        b=VdKt3ZPQ1msygyxneY6z561IdGpQL3CanQWxiVuLcgvAXqqX7L+HgUv4v3nXyd47H
-         bUJrFPoICjbtY336Qp6+Q/Wq1Xds9VRAguAGS9Ozf7BDFO951zA9TZFyI9q5tR6du/
-         HtIf6tW3upFeDjQb70hvaaEWgi56YBGd1J6S9oDYUstT6KtSVM1BMMpta2awG2dZQH
-         ckan5wUNSIKdJX+2PBRYriv1DR4zv7gXrkYfmCYirOGyBupsWyEr9VI+zxptSySldk
-         FDIqpGsL4eHKch/IJNLcwvfWIVZnDWqkUnAB6KM5Nk42+3sQ5VAmMy/0zVlT6oLP1H
-         3s4F5bO+iCZ7Q==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 30 Oct 2023 11:12:34 +0100
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Tero Kristo <t-kristo@ti.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2] firmware: ti_sci: Fix an off-by-one in ti_sci_debugfs_create()
-Date:   Mon, 30 Oct 2023 11:12:26 +0100
-Message-Id: <7158db0a4d7b19855ddd542ec61b666973aad8dc.1698660720.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Mon, 30 Oct 2023 06:12:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C488A65;
+        Mon, 30 Oct 2023 03:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698660753; x=1730196753;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7z2DxabdPBp6OSDf1FLw7CkIaI9qXRgDC3qvx+ROjjM=;
+  b=lAiQ6hFOg00fU9r6o58k4Pa+VKl7SUecCpxahTivE0l1zjQoI+vvJdCN
+   ZcdmfrMqON/S03RruzDoUvu20ArjHhszqPBmIJ0uLOY772qBZQ7dGzBs0
+   4tnEQ4044syn1sRoZ5Jh4+fEd73MBEA+yDxmoB/mZyPiKdDrGRQd+OR3t
+   BI2s9QSKcu4b/LGCi0Rh377M7BfJ5P5zl1E6hiMHCznG5tXML7aVJtRA5
+   ni/QqZcrHRN37mguTAEB9PnkC3HD4EJn1UgyRPQlQ48e8Om5tHD0l4oB0
+   7UBqwK3P9m/pTSGOEUL+UKlhU4ByGfAqJ80unQJ7BubbGGBxJXl7WLeju
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="378418140"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="378418140"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 03:12:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="736695839"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="736695839"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 03:12:30 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qxPFz-00000009rLX-2VKR;
+        Mon, 30 Oct 2023 12:12:27 +0200
+Date:   Mon, 30 Oct 2023 12:12:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        len.brown@intel.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v2] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+Message-ID: <ZT+BiykmKepdAA8K@smile.fi.intel.com>
+References: <20231026083335.12551-1-raag.jadav@intel.com>
+ <20231027081855.GK3208943@black.fi.intel.com>
+ <ZTuMo2qDO6Aqq3D_@black.fi.intel.com>
+ <ZTvGaNZmGWpsM-yw@black.fi.intel.com>
+ <20231027142856.GL3208943@black.fi.intel.com>
+ <ZTvqYwFWm9PQeKIU@black.fi.intel.com>
+ <CAJZ5v0hkB6Lm82ie6hfzFVDaqEj7DYxnYxD5NRQNXZxKZjL+xg@mail.gmail.com>
+ <CAJZ5v0i6H3aaDv1pPoygSHLLNA9YUr2AkMus=Cbb=KvyV5BEpg@mail.gmail.com>
+ <ZTzNBAPe0ToFUqIw@black.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTzNBAPe0ToFUqIw@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ending NULL is not taken into account by strncat(), so switch to
-snprintf() to correctly build 'debug_name'.
+On Sat, Oct 28, 2023 at 11:58:12AM +0300, Raag Jadav wrote:
+> On Fri, Oct 27, 2023 at 07:40:38PM +0200, Rafael J. Wysocki wrote:
 
-Using snprintf() also makes the code more readable.
+...
 
-Fixes: aa276781a64a ("firmware: Add basic support for TI System Control Interface (TI-SCI) protocol")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-v2:
-   - use snprintf() to simplify code   [Dan Carpenter]
+> We'd probably end up with an oops trying to strcmp into a random address
+> without knowing its type, so I think Mika's would be a better approach.
+> 
+> #define acpi_dev_uid_match(adev, uid2)                                                          \
+> ({                                                                                              \
+>         const char *uid1 = acpi_device_uid(adev);                                               \
+>         u64 __uid1;                                                                             \
+>                                                                                                 \
+>         _Generic(uid2,                                                                          \
+>                  int: uid1 && !kstrtou64(uid1, 0, &__uid1) && (typeof(uid2))__uid1 == uid2,     \
+>                  const char *: uid1 && uid2 && !strcmp(uid1, (const char *)uid2),               \
+>                  default: false);                                                               \
+>                                                                                                 \
+> })
+> 
+> This one I atleast got to compile, but I'm not very well versed with _Generic,
+> so this could definitely use some comments.
 
-v1: https://lore.kernel.org/all/880aeea52f3bdde5e3e8843bbedb7fd068a58be2.1698565938.git.christophe.jaillet@wanadoo.fr/
----
- drivers/firmware/ti_sci.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+If you go this way, make _Generic() use simple in the macro with a help of two
+additional functions (per type). Also you need to take care about uid2 type to
+be _any_ unsigned integer. Or if you want to complicate things, then you need
+to distinguish signed and unsigned cases.
 
-diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 7041befc756a..8b9a2556de16 100644
---- a/drivers/firmware/ti_sci.c
-+++ b/drivers/firmware/ti_sci.c
-@@ -164,7 +164,7 @@ static int ti_sci_debugfs_create(struct platform_device *pdev,
- {
- 	struct device *dev = &pdev->dev;
- 	struct resource *res;
--	char debug_name[50] = "ti_sci_debug@";
-+	char debug_name[50];
- 
- 	/* Debug region is optional */
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-@@ -181,10 +181,10 @@ static int ti_sci_debugfs_create(struct platform_device *pdev,
- 	/* Setup NULL termination */
- 	info->debug_buffer[info->debug_region_size] = 0;
- 
--	info->d = debugfs_create_file(strncat(debug_name, dev_name(dev),
--					      sizeof(debug_name) -
--					      sizeof("ti_sci_debug@")),
--				      0444, NULL, info, &ti_sci_debug_fops);
-+	snprintf(debug_name, sizeof(debug_name), "ti_sci_debug@%s",
-+		 dev_name(dev));
-+	info->d = debugfs_create_file(debug_name, 0444, NULL, info,
-+				      &ti_sci_debug_fops);
- 	if (IS_ERR(info->d))
- 		return PTR_ERR(info->d);
- 
+P.S.
+All to me it seems way too overengineered w/o any potential prospective user.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
