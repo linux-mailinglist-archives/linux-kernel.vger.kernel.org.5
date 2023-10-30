@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2CB7DB9BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A193C7DB9C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbjJ3MUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S233201AbjJ3MVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbjJ3MUn (ORCPT
+        with ESMTP id S232531AbjJ3MVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:20:43 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7466C9;
-        Mon, 30 Oct 2023 05:20:40 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so7014859a12.2;
-        Mon, 30 Oct 2023 05:20:40 -0700 (PDT)
+        Mon, 30 Oct 2023 08:21:05 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBEEE1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:21:02 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59e88a28b98so37980427b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698668439; x=1699273239; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id:from:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tRAvOgi6qogXEjImiUor+DkPqw1Ot9Ogtre0wvi5M6k=;
-        b=nqcCLdy5BkfZ2ly+kvgp4RantdlvoU4aMWj2ag9y62CfeIFVxBhT4sDv8MWxxHhQz6
-         AwOjnIq0UrQE6WfcY4MoQR4Q9aHmkCLPpe05h7UhWsb1yTbYx5N/n8vMAeqa+7Z3mFBK
-         sakoRSaiZya+jKItdc8TbAS0Tsnl+qRa0fK9m0gYKnh9eobWDKUE4KT0SyOqhvLx1zue
-         /8rDcyS0eX1MLFNRwds0vKf+RbKFKYroq2hGVuuqXotl2YR0+KmNLn96d3aahl6Pmf+d
-         A6ODm5bw3BennCXc+dZpagOltGe4tQ+SxCgxTQ6NmxpuWe/gz0Y/bVjOe+V5j+h18KZH
-         Zq4g==
+        d=linaro.org; s=google; t=1698668461; x=1699273261; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tx0E1lO7sX80TYEZLbZ/p7IN8KY+xevJVJVX9CSG4+g=;
+        b=E1Supr9PmXY1SK5nvsePtOPDuCxdtw7ixjy2sCUzCWZO6+UdYRnStsBNYVw3rF9Ayi
+         0pTaIdcbzl79P30ovDKBq1TB5LVJonsKK3x8fcI0UrChg4dsLLEG3dhP2DEH4+k2bv1O
+         /tNKCi3w9KUKNzNpIbDID8ThaYTeNEGpD6s9fEbQV/hQEGEB3dfEMfj+qW4LlTK5ecll
+         57pxRnUJTsuk3ifc0Z7L1X10cxSP/v31QPvpqQogIxXFCsq41qWteEmqiadpkSLQ1gXo
+         Anf4jE02vrBG2/Arcch3VlUvoLxhiE40+dMyRBsh4u1/QqUulbuFL8NgbemRm1ibXhcx
+         i1JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698668439; x=1699273239;
-        h=content-transfer-encoding:in-reply-to:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tRAvOgi6qogXEjImiUor+DkPqw1Ot9Ogtre0wvi5M6k=;
-        b=XqEaZzdyqBQkCdeitvkanUmaT3WpkpKZYIbpLtTymS6ZlnkpE8pQKraKYlrEqxkPhO
-         iiahUaALC53aBIfI2nyAxJ1hBkAODODk/Col2Qke8wynAJc9NGtdw+H8BUMFh8USGPAV
-         gIpFSHFRPNFOgJBjzeC9Xiem2JsDrlOJ4qHTXkA26bHmKrIRfa6u9yqWNuJruPrqXQLp
-         Zwyo4XQg/EfFMqaJdCg938G33ozjGJ8QjcVUpWEauj7BR1xWXhI0WjObbPqY6uYiF3ox
-         ftOynquIH065e/s10l8hXEiaPyu2adru8lb9kbryHiJ34i/87S22gzxxMtksqsASg4cN
-         j9dw==
-X-Gm-Message-State: AOJu0YwriaYqxZ9iNBs6p8Xqdmi+owWA3v9IJ53EghsMwPQt7gdqclTT
-        +gliFFhPCa/Rv5dsF/8ubSY=
-X-Google-Smtp-Source: AGHT+IEA4HEagqHQDt4CQKteRzlCff1bThN0D10TLJ2IhOR2hdu91b9A3yPlJ/I94joRwFOXZlnzxA==
-X-Received: by 2002:a17:907:72c5:b0:9b2:f941:6916 with SMTP id du5-20020a17090772c500b009b2f9416916mr8109533ejc.17.1698668439086;
-        Mon, 30 Oct 2023 05:20:39 -0700 (PDT)
-Received: from [192.168.0.105] (5401D598.dsl.pool.telekom.hu. [84.1.213.152])
-        by smtp.gmail.com with ESMTPSA id ci6-20020a170906c34600b009a1dbf55665sm5802219ejb.161.2023.10.30.05.20.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 05:20:38 -0700 (PDT)
-From:   Kira <nyakov13@gmail.com>
-X-Google-Original-From: Kira <Nyakov13@gmail.com>
-Message-ID: <566c0155-4f80-43ec-be2c-2d1ad631bf25@gmail.com>
-Date:   Mon, 30 Oct 2023 13:20:36 +0100
+        d=1e100.net; s=20230601; t=1698668461; x=1699273261;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tx0E1lO7sX80TYEZLbZ/p7IN8KY+xevJVJVX9CSG4+g=;
+        b=O8pSwzSmGDa5TTa6OvJTqNLpKQJOx1DVoTuLf4pIqUf/5J0+94sW3rkAiblSgqnlZC
+         UmuJzPbb2gtYusdLU1BKLa2LGqjY7tE0wvPjr1fvkxyAk8b7cNOEg6WLqjw7lLlewZRy
+         IE2lvsDP+yf4U9ofsb9GP68AYa/H9Yh/ci0cSe/kxAG3t7PrTUmLGUT/VlWylsmNH/Or
+         cryOr6DxEdjH+EmY9k0zAo8pDQjvK92ycmku1ZkrpIAhMpHFkC5vXzmh/8LOT0BfJLZb
+         YzwLnI0CqfcUGdtA0iQuYbaqao0UEp+vzssE9hUneIWonRCuiYTtXKMdH6I7wMrMTSnt
+         Dreg==
+X-Gm-Message-State: AOJu0YyUm3HdopPK4ua5sKzLdFmBLcAT/enRzOFYCN7OChGxHyqkvnmW
+        UWdRbL0+lNbkRkSKmYZUK6naxvGybMA5QnpCW4owTg==
+X-Google-Smtp-Source: AGHT+IFKE8vLRCh0SuUhxTnn5PdhE/o7DyZSiHlRWBzISa81u1bz2zPdSgaIvbzp7Wc+FD7P0CwSUInn+dj6DwNZIKw=
+X-Received: by 2002:a81:441e:0:b0:5ae:15bb:466a with SMTP id
+ r30-20020a81441e000000b005ae15bb466amr10123206ywa.14.1698668461455; Mon, 30
+ Oct 2023 05:21:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     benjamin.poirier@gmail.com
-Cc:     James.Bottomley@HansenPartnership.com, coiby.xu@gmail.com,
-        corbet@lwn.net, davem@davemloft.net, deller@gmx.de,
-        edumazet@google.com, error27@gmail.com, gregkh@linuxfoundation.org,
-        kuba@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-staging@lists.linux.dev, manishc@marvell.com,
-        nandhakumar.singaram@gmail.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, raven@themaw.net, ricardoapl.dev@gmail.com,
-        sumitraartsy@gmail.com, svenjoac@gmx.de
-References: <20231020124457.312449-3-benjamin.poirier@gmail.com>
-Subject: Re: [PATCH 2/2] staging: qlge: Retire the driver
-Content-Language: en-US, ru-RU
-In-Reply-To: <20231020124457.312449-3-benjamin.poirier@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231030-topic-sm8650-upstream-mdss-v2-0-43f1887c82b8@linaro.org> <20231030-topic-sm8650-upstream-mdss-v2-5-43f1887c82b8@linaro.org>
+In-Reply-To: <20231030-topic-sm8650-upstream-mdss-v2-5-43f1887c82b8@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 30 Oct 2023 14:20:50 +0200
+Message-ID: <CAA8EJppBTOnSAWLpZjHAGwwfQzPRVgHVmDfN4nvaVifU+2xEOQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] drm/msm/dpu: add support for SM8650 DPU
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have a couple of QLogic QLE8142 10GbE Converged Network adapters.
+On Mon, 30 Oct 2023 at 12:36, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> Add DPU version 10.0 support for the SM8650 platform.
+>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-They are pretty old yes, but also working well and energy efficient. 
-They still can be considered as modern hardware because they was so 
-advance back in the days.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-And I think there is a lots of them out there, maybe not in 
-production(but somewhere still is), but in used market.
+> ---
+>  .../drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h    | 457 +++++++++++++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |  26 ++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |   1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h        |   3 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   1 +
+>  5 files changed, 488 insertions(+)
 
-So it will be really nice if drivers were still in kernel.
-
-
-With best regards
-
-Kira.
-
+-- 
+With best wishes
+Dmitry
