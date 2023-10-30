@@ -2,150 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141177DC310
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0927DC314
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbjJ3XVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 19:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
+        id S230516AbjJ3XXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 19:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjJ3XVT (ORCPT
+        with ESMTP id S229646AbjJ3XXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 19:21:19 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE34CE1;
-        Mon, 30 Oct 2023 16:21:16 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UMxJ5T027898;
-        Mon, 30 Oct 2023 23:21:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=Xmd6a1HFCEs4zHzanMDaFYvFZD6VsU2NQzb2qz4zmoY=;
- b=B8t0Q0lUZXSxo3OKv5GaZHY/Ibe6IsjW/xjlNSeVZDBQNz2ESPGLXu8tAsRKqn3Grni8
- 4pgXpAWeH3aap0l3XxvU4T1MqsyDWKMDWgODW+Ynk3oufHUdz8oJEaR0MIsdkzfXHmxv
- 0KNymRPdxFOWb4dDEh02hm/yF5lkE9zHMVi2J/pxspXrQ/+dQqYaEDUC4EOlCUhL5VM2
- 5cqBCD0TE4Oqx4cLI5BhorMjy/9QVd8Nzdux0SOB01bx/h8X0NlAVed74p0Oqdldal7w
- jQNHP4PWWP2roshSDM3QMAFylbqDomGo6B/CFBvCHYqnlvtMRkM34YrW2A2mTn76N3A/ Tg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0tuubunt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Oct 2023 23:21:09 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39ULGu6r022427;
-        Mon, 30 Oct 2023 23:21:08 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u0rr4xmb3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Oct 2023 23:21:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JEmm9Xyh3n+ukVCQUD+u+gxXM7eVt4Z57cZDiSxlbGFQsgyn/Iv8Ij15w/CR5FtLeQHH1UOTl487pjcv77ufZRx/y+B1xLvsZ1W/MFWvOw1gt17YJthaFB9XjDowsL0jEmZruiGWThSZFzyVSmRz10y8DAZfXM6HYvdfrn9HR5ikhrm/wWb+QLWvGh0TGcrkyoI/Ns1fCvu04NfUeonq0Hd4lG64PnZX3KsnNEGZ2iBuNg5QaE7tKvPeWVKVKSE4Smj26AKyPUYdZmxh8YAW6XC1u6XC20Hcw7MkAmYGwZJy6imOmHaDVSWbdGW8H73NO/W4vanSVVwXT/YYbLsy/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xmd6a1HFCEs4zHzanMDaFYvFZD6VsU2NQzb2qz4zmoY=;
- b=Recw2Sz96sZXYbE2cZC6VwIfRApJZQN69q7VDmpHFTasRdYujmtJXBkKESYbfsbCFRYZqTd9aGHAIG/ef//4JAP0Gd/j4sGFt1zOZiPEybTKKeO4sQh1c9kvQho2YqIN/L3wykWehzHWCliSCKTGzSoW8GUpY0UeNBQRXmjM4e0Upfq+vXxmgnEFKom8qJPeWgL//B21mxzfCCzxJfc++2s78PE6kQUbelxoeaKQZHS9XjPry3Xi5u70G9vto+xyW2omhcDpC1OprVJvsquesmfQglQJwoz1aFWKLNjVQIxD2lDQwhBMTLhk0NPWOlLDYqwfyro+1rbnzpvtCrgMcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xmd6a1HFCEs4zHzanMDaFYvFZD6VsU2NQzb2qz4zmoY=;
- b=wg/yB0T0wdFIMFQTGlCjDXV5hArhcqQj/epE+Tl9DHKRj+j7z0C2UQIdthvDtlOlkGnbfDfvF7f7H0dQXmhtpfm94V+0R/WJznx7ViKjX8bzomcftKZ/DLro7eJapcRJ4LOknhCkXjQs/bIFpT+oC85EP1D4jxQIBbTAVfN0vDQ=
-Received: from DS7PR10MB5134.namprd10.prod.outlook.com (2603:10b6:5:3a1::23)
- by CO1PR10MB4500.namprd10.prod.outlook.com (2603:10b6:303:98::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Mon, 30 Oct
- 2023 23:21:06 +0000
-Received: from DS7PR10MB5134.namprd10.prod.outlook.com
- ([fe80::3a93:ba27:cbea:c6d4]) by DS7PR10MB5134.namprd10.prod.outlook.com
- ([fe80::3a93:ba27:cbea:c6d4%4]) with mapi id 15.20.6933.019; Mon, 30 Oct 2023
- 23:21:06 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Neil Brown <neilb@suse.de>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [GIT PULL] nfsd changes for v6.7 (early)
-Thread-Topic: [GIT PULL] nfsd changes for v6.7 (early)
-Thread-Index: AQHaB07bp3SsPgtJx0O5OMKo6TKfuLBi4k0AgAAei4A=
-Date:   Mon, 30 Oct 2023 23:21:06 +0000
-Message-ID: <96800661-0F30-4F9E-89E4-C0B032EFDEB9@oracle.com>
-References: <34E014FF-351E-4977-B694-060A5DADD35A@oracle.com>
- <CAHk-=wifhiJ-QbcwrH0RzPaKeZv93GKDQuBUth18ay=sLu5CVA@mail.gmail.com>
-In-Reply-To: <CAHk-=wifhiJ-QbcwrH0RzPaKeZv93GKDQuBUth18ay=sLu5CVA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS7PR10MB5134:EE_|CO1PR10MB4500:EE_
-x-ms-office365-filtering-correlation-id: 73d8eee8-5e26-444c-ef77-08dbd99ee445
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4UKMigz3proUJDYjp6ljcKU185Y6sqv7w3PH97DYDuIVSUARX93razmfJ14v1bvz4s/EQNtD7tJnNHohS4kO+muSg2OvYRCt3O3CbxjDoJvmC2B9FKXPZ/pH5v4cgEzNPV3AsdVuJJqMXBg7UQ6otfRK/UUQ8DGm+xwVN5RmJbNzBWUpPO2A/NJ3j23XZUN4+XoOTSjYsp04MCaZcw/zG58HpE9PKe8+/d+lGP43NHshlpQ6tCeR7w9csApTh+VkTnx/Y0Lh39p7NnPs80pDtVYFbWojjsRIHOvTHdQHFmxiCNS0qkQmasX4a9JEKrdaHqTYe4nl0fIGwEJC19/lVQdlnqjVKEDeE3snMmLOq1Ga/QUw/j4oidyXTbf9DIxoLtHsbzO9doXObZWiYik1kHlDhrOd4sJt486KbNfiWUNdQInLJv+geC12CmUF1T7WK8qnZ176jF539KWOQ7ICAbgWHFtApI5b5k9I5ukC6SqguQdMxroJkiOom9Z8gNQ4XE8w0KvcvVl7ggDORBce0LSopOWhJQPG0VfcH2Utdz65lKBijwILMAqWKK6AbLys2jNWP59ky+E2I7cDy86xDDkz8dK4RQakscR9uDFiicPLnMCzNKChlDVMasuPBOm3vnjtYdv+oNcRzjat12f1zQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB5134.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(316002)(2906002)(6916009)(5660300002)(66556008)(26005)(4326008)(41300700001)(8676002)(38070700009)(8936002)(83380400001)(38100700002)(64756008)(66476007)(122000001)(91956017)(6512007)(36756003)(66446008)(53546011)(66946007)(2616005)(6506007)(71200400001)(478600001)(76116006)(54906003)(86362001)(33656002)(6486002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qJqp7NSrQMYPJQVD+vvl0k+gpgH3HAPJoHC1odL7PkN7s78RS+qql6wG0peR?=
- =?us-ascii?Q?trcx4PaAtlpZ+CmvgvzT/wsMvJlatXANjLvhxR23O/a8bnvB97P05PLQhguG?=
- =?us-ascii?Q?ceae5MKrLhsDG7wteTsrflvC9+5P/s10dZukyUdhwSG/LqsFL2KkJEqr0x2h?=
- =?us-ascii?Q?OneNKkIa0Pn15iIrrkHn86Qw+D5x8G7+TNHgERWC5CdWy70gT4qck+wGbe3p?=
- =?us-ascii?Q?GH2zOgGDcurMyByjBNqgIxidi74FdSdBnutVTep8ZwlZrlEccChfPVeHzpWq?=
- =?us-ascii?Q?qNvz4xphltXg86tEWJymMNhM72oXj06/sYU5tI/UQIhFt3redWFqotrFx7Aa?=
- =?us-ascii?Q?McRASPmvnzGXKkQ3bSw/jHVn9vkRtZgEtmbZKp9/rArOIxJDsFMmhoOu2s4g?=
- =?us-ascii?Q?JPzfQGZ59wRvruxVvgCp7h4pYCL7/iZyTEnjnY9UlvXuQgClJ3fVsEFmD1G8?=
- =?us-ascii?Q?0fn2ovV2Grl+mxc0XbY3qqL2xk3zQrpmhdDEi5GQM3vnRYXYjTFwa8m8VCsN?=
- =?us-ascii?Q?O2XEkgWr6sLZAPSAuB9QcemKRs/YG1DVUhIByhep2gVo+Cw/I8ftb1fQ40AW?=
- =?us-ascii?Q?M528jo36fYHCsuMkwPxDmL+jqAUGOBU5EoG7nl6LXkTchfyRUE1CKe85SguX?=
- =?us-ascii?Q?7Uv3P4+mcMjgShq2E/vkYPxJ1GFd8ZFs1VsKc4rg1jxJx5Pl0vhc0eZGpHyC?=
- =?us-ascii?Q?LFRe3a8sk51TFv/QksVAwE0ZmhDFD6jdNiuGLGyhU5cREuUJmQ0Oe3xeQD3E?=
- =?us-ascii?Q?p8gq//Yh/kooC4OrLPcI2P8vt4Vcybl16c+U4kBqzhNZpPFgpHs19cWiA1fj?=
- =?us-ascii?Q?xR17ZnAtGRL4mxUehfkGrI4m0vt7ChXZQF9XZ1QZMxYE8wZfwZKCbhP8BrZh?=
- =?us-ascii?Q?1aPsyKxZ/pzRhOZe5h3kDpinHfeQJYReYrLdGgvzYZIdjCcM+DA8tOEQhzub?=
- =?us-ascii?Q?ls/9o7NO6o92VG/ChfeSu0sOGspydZ4uWZ1lSYWqRwCD3xT9/mWR8VMnSNt+?=
- =?us-ascii?Q?cdu9zAe3dMNtLeidv3kV18HBSPyR5rDXZWBFLWiqnmJbB0JkrjIQLOTfuV8c?=
- =?us-ascii?Q?gy9fmBJ2Z5BcAd4e6Jn5hIuTRkAzN3vsKY36eEp6Ntvmeq9Clq92Ch6bML8I?=
- =?us-ascii?Q?HB9FIb5rSd3Lavx0ops6yNU1OstSXyBl/5CE2wwIBReyC5j3oURcpLO9S6Ji?=
- =?us-ascii?Q?AOy5cUpdRlu2yA9KyV/g7/PDTRFstuIa/zC/TORxMC57TEIcJ3b5Z3fnL7+d?=
- =?us-ascii?Q?FE7KYt21YajXGx3vEP2TRz5sBoOganKciBwyeMkfXNZPK+S8nzOMVfkM3amm?=
- =?us-ascii?Q?o7AqUejYvFmmjBaHnLz1iEDAW4m1jWKBGEJ5GrP57KOHklxEOOE6RDMOo6ua?=
- =?us-ascii?Q?4HeY6gnHFsnI/JE/qFMnu3haAojfSkk7UkZamwvj4G1x7/H6cwDbqr8BSfXJ?=
- =?us-ascii?Q?i9lBtNKGozYj0+itGHLrbYlzYnmzQXxmZsF2lsbhHpt8MhGAjNf8QIbxKhs3?=
- =?us-ascii?Q?D2J8OE1JDVia/A8B9QAJrvdtIJHD9IIZ6er6Q9CJA1pJBTKO65zO1gu9wZf4?=
- =?us-ascii?Q?lwf5sD5BGETCibdWGcXIBonsfUy3+4t5LTFwbYO/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D5D70A32ED9B6C4CBA0BBBF5FA7FE599@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 30 Oct 2023 19:23:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8222FE1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:22:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698708139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Ld3vezLmgKEaAeNYJLpNp3rB+LOD2edLdu+ngMl8YRY=;
+        b=T68KyUI6XiLk25lsQugARnewTF2S/lIjA3IAoyQk+6pcNZTXEfNETCUOBVI1uE49hcBiwz
+        7zZlia4oNf7zi21JVy40H9qBoyHlVgosBPSr63HtAclDznOJ9iWjzYaf/30gpVplf7tAQ7
+        0rDvJaWGDb4LRQ+PSTQ8IJGBp/XVLBQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-426-G3wAOxEsN5aGvoQzQ2_jrQ-1; Mon, 30 Oct 2023 19:22:18 -0400
+X-MC-Unique: G3wAOxEsN5aGvoQzQ2_jrQ-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-54356d8ea43so510681a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:22:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698708137; x=1699312937;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ld3vezLmgKEaAeNYJLpNp3rB+LOD2edLdu+ngMl8YRY=;
+        b=XSwmc/gv/tOdqzkYKkBZ8K1iKK3bGDY+BhMZ2ANU0Bwtw4yP8veZkfEVH1rA7A9vqF
+         2ZsZaJsXeI+n4H3ebW+u42gMe/zFNxnCxHLoYedZVi9zz7+yk9H8TTxO5vIXtFePP9af
+         04BeE/lJvDeJkohGSnAaB87lxdT2XnWuFqI2q29PLX75lLJMcqD8V4gMj9BO5Fp54oPd
+         G8VfwxTIFltZCJ5zaM50c6eN+pU7UooQQUUYxLIBkLWpKJiytkhl9gJ+tuj90qKMV1HH
+         gqmEWU0Fd5kdCM8hO4kzmq/LiD+aL9kIXsO5xmHKCYmNUEr5aYVdvphU8kCP/2fXT9Ws
+         LdXw==
+X-Gm-Message-State: AOJu0YxXlwLvFdFDwGzmxgftBC/aKmsIq/cB6yRSUlZ+MX+88R/T1+Sc
+        6XJ/8T5EpeK3Vek9+TKU7AhgGM3cFVx7cDwCCf9Ia8DL2b8e5iJjeR6B/kKKAmCoLX3iKfGo0jc
+        3DNJFaykvl1R+q737HCyx5KKA
+X-Received: by 2002:a05:6402:31e3:b0:540:8fc6:dc89 with SMTP id dy3-20020a05640231e300b005408fc6dc89mr9031608edb.25.1698708136863;
+        Mon, 30 Oct 2023 16:22:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFIvgnzIhjdrEt9J9u+25rSKeQu3EBi4IBaV39UByrGfNi98o8+yXXgbVdhdU/vIuSdikvGKQ==
+X-Received: by 2002:a05:6402:31e3:b0:540:8fc6:dc89 with SMTP id dy3-20020a05640231e300b005408fc6dc89mr9031573edb.25.1698708136546;
+        Mon, 30 Oct 2023 16:22:16 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id 27-20020a50875b000000b0054358525a5bsm131435edv.62.2023.10.30.16.22.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 16:22:15 -0700 (PDT)
+Message-ID: <afa0d4ec-4b37-4a67-b546-016148ef4efe@redhat.com>
+Date:   Tue, 31 Oct 2023 00:22:13 +0100
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 9PIUqcAQ/8wT62X0exxreU93xclTXEXeJA3xq2fCndeu/C4Z59igr+9PeaMbvMArFSG6H8S5oIqlbDdaimKnP/HTCql+HcTcQlfT28iP94LHq60tIlL+uon0GEFcxgXIQJTSBpvci3bqJihbmxSwF+i9baO84JItLiW964SKqt3at/n/1QAZeWpdmrlnyWdIOXhwbikA7gE8bEQ+OLCg0YALWpus1/TMtT89TqovBpyp15cH9RJpPCjgquP1J1r6x5yBSq0fT1VTCVtym9T3YQP/csRQdVp311oQNWuUp19Jvvtu9/Qm5LVNkdd+c7TXGNiIqvszRD4g5rXoqH6fS+C0zy3NeSuqrbau2darrOQbbMO1r3m+q24N6XlNsOCT3eErkQwQbOymsCYn0SR2vH/j/BzJMUm59tDPvzzlNoZREA+XKoCxJHniivg1llkZ/wUlJRpRbWj6GmGYHGhv1xUtznisO21XWKeqhrGnlCq3kFnrIT7GzOU2HVsFwaSb3gJz8utHGl/vNVuIETBKiXOik9p2ZFgkYlBXbPk5AC7ScLqOGJ0br+0zlZMApYDwX+W/UcGIG4B1fAPXkIQXFAK4DdQTaPNSutmLt35dDwxkPJci3sttDQFDOOA2Ky92AkXdzJ2E+7sRI57OJ0yy5o8mITdEkveOPahvhNyo1sMUsERl9FNMrRJxLpBZlq30yCDmNAbirlkJq9OYz0gi+rPVw7exjXUl1s4eEE5BLkEXQLBLsd1vLeOwt5ep6HklaoROvey0Pq4qZNeI6L4jgmLdPWLbd5ClITasvhueuFTGpY3b8MLmiJ6C+KiNnx1cd1/X12pjiJ2POVsQRL53Nw0CG3WFlWmXr8Z6JGW2NW6oPWhpyYAJyp4ixXwu5DRR
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB5134.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73d8eee8-5e26-444c-ef77-08dbd99ee445
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2023 23:21:06.0326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TtKtROoG/6owFIKkRtS/ZI8pvnxC8RLiyuaYtwhfjMTCcfm7hLTrWySEQxNjZS5T/Kb736Rbccz+JYHITSGYeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4500
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310300182
-X-Proofpoint-GUID: 5CfScFAsXm1X8hqwlWL86tvbuxnHl9Xw
-X-Proofpoint-ORIG-GUID: 5CfScFAsXm1X8hqwlWL86tvbuxnHl9Xw
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 08/35] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-9-seanjc@google.com>
+ <211d093f-4023-4a39-a23f-6d8543512675@redhat.com>
+ <ZUARTvhpChFSGF9s@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <ZUARTvhpChFSGF9s@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -153,48 +153,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/30/23 21:25, Sean Christopherson wrote:
+> On Mon, Oct 30, 2023, Paolo Bonzini wrote:
+>> On 10/27/23 20:21, Sean Christopherson wrote:
+>>>
+>>> +		if (ioctl == KVM_SET_USER_MEMORY_REGION)
+>>> +			size = sizeof(struct kvm_userspace_memory_region);
+>>
+>> This also needs a memset(&mem, 0, sizeof(mem)), otherwise the out-of-bounds
+>> access of the commit message becomes a kernel stack read.
+> 
+> Ouch.  There's some irony.  Might be worth doing memset(&mem, -1, sizeof(mem))
+> though as '0' is a valid file descriptor and a valid file offset.
+
+Either is okay, because unless the flags check is screwed up it should
+not matter.  The memset is actually unnecessary, though it may be a good
+idea anyway to keep it, aka belt-and-suspenders.
+
+>> Probably worth adding a check on valid flags here.
+> 
+> Definitely needed.  There's a very real bug here.  But rather than duplicate flags
+> checking or plumb @ioctl all the way to __kvm_set_memory_region(), now that we
+> have the fancy guard(mutex) and there are no internal calls to kvm_set_memory_region(),
+> what if we:
+> 
+>    1. Acquire/release slots_lock in __kvm_set_memory_region()
+>    2. Call kvm_set_memory_region() from x86 code for the internal memslots
+>    3. Disallow *any* flags for internal memslots
+>    4. Open code check_memory_region_flags in kvm_vm_ioctl_set_memory_region()
+
+I dislike this step, there is a clear point where all paths meet
+(ioctl/internal, locked/unlocked) and that's __kvm_set_memory_region().
+I think that's the place where flags should be checked.  (I don't mind
+the restriction on internal memslots; it's just that to me it's not a
+particularly natural way to structure the checks).
+
+On the other hand, the place where to protect from out-of-bounds
+accesses, is the place where you stop caring about struct
+kvm_userspace_memory_region vs kvm_userspace_memory_region2 (and
+your code gets it right, by dropping "ioctl" as soon as possible).
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 87f45aa91ced..fe5a2af14fff 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1635,6 +1635,14 @@ bool __weak kvm_arch_dirty_log_supported(struct kvm *kvm)
+  	return true;
+  }
+  
++/*
++ * Flags that do not access any of the extra space of struct
++ * kvm_userspace_memory_region2.  KVM_SET_USER_MEMORY_REGION_FLAGS
++ * only allows these.
++ */
++#define KVM_SET_USER_MEMORY_REGION_FLAGS \
++	(KVM_MEM_LOG_DIRTY_PAGES | KVM_MEM_READONLY)
++
+  static int check_memory_region_flags(struct kvm *kvm,
+  				     const struct kvm_userspace_memory_region2 *mem)
+  {
+@@ -5149,10 +5149,16 @@ static long kvm_vm_ioctl(struct file *filp,
+  		struct kvm_userspace_memory_region2 mem;
+  		unsigned long size;
+  
+-		if (ioctl == KVM_SET_USER_MEMORY_REGION)
++		if (ioctl == KVM_SET_USER_MEMORY_REGION) {
++			/*
++			 * Fields beyond struct kvm_userspace_memory_region shouldn't be
++			 * accessed, but avoid leaking kernel memory in case of a bug.
++			 */
++			memset(&mem, 0, sizeof(mem));
+  			size = sizeof(struct kvm_userspace_memory_region);
+-		else
++		} else {
+  			size = sizeof(struct kvm_userspace_memory_region2);
++		}
+  
+  		/* Ensure the common parts of the two structs are identical. */
+  		SANITY_CHECK_MEM_REGION_FIELD(slot);
+@@ -5165,6 +5167,11 @@ static long kvm_vm_ioctl(struct file *filp,
+  		if (copy_from_user(&mem, argp, size))
+  			goto out;
+  
++		r = -EINVAL;
++		if (ioctl == KVM_SET_USER_MEMORY_REGION &&
++		    (mem->flags & ~KVM_SET_USER_MEMORY_REGION_FLAGS))
++			goto out;
++
+  		r = kvm_vm_ioctl_set_memory_region(kvm, &mem);
+  		break;
+  	}
 
 
-> On Oct 30, 2023, at 2:31 PM, Linus Torvalds <torvalds@linux-foundation.or=
-g> wrote:
->=20
-> On Wed, 25 Oct 2023 at 04:24, Chuck Lever III <chuck.lever@oracle.com> wr=
-ote:
->>=20
->> This release completes the SunRPC thread scheduler work that was
->> begun in v6.6. The scheduler can now find an svc thread to wake in
->> constant time and without a list walk. Thanks again to Neil Brown
->> for this overhaul.
->=20
-> Btw, the "help" text for the new Kconfig option that this introduces
-> is just ridiculously bad.
->=20
-> I react to these things, because I keep telling people that our
-> Kconfig is one of the nastier parts to people just building and
-> testing their own kernels. Yes, you can start with whatever distro
-> default config, and build your own, and install it, but when people
-> then introduce new options and ask insane and unhelpful questions,
-> that scares off any sane person.
->=20
-> So Kconfig questions really need to make sense, and they need to have
-> help messages that are useful..
->=20
-> Honestly, that LWQ_TEST option probably fails both cases.  The
-> "testing" is a toy, and the Kconfig option is horrific. I literally
-> think that we would be better off removing that code. Any bug found by
-> that testv would be so fundamental as to not be worth testing for.
+That's a kind of patch that you can't really get wrong (though I have
+the brown paper bag ready).
 
-I have to admit I didn't look too closely at that part
-of the series, except to note that there's no maintainer
-of record for those files. That's probably why there was
-little initial pushback on the scant help text.
+Maintainance-wise it's fine, since flags are being added at a pace of
+roughly one every five years, and anyway it's also future proof: I placed
+the #define near check_memory_region_flags so that in five years we remember
+to keep it up to date.  But worst case, the new flags will only be allowed
+by KVM_SET_USER_MEMORY_REGION2 unnecessarily; there are no security issues
+waiting to bite us.
 
-Do you need a refreshed PR with the testing bit removed,
-or can you live with Neil or me sending a subsequent
-fix-up later in the merge window?
+In sum, this is exactly the only kind of fix that should be in the v13->v14
+delta.
 
-
---
-Chuck Lever
-
+Paolo
 
