@@ -2,156 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A4A7DB8AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24057DB6C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbjJ3LDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S232681AbjJ3Jy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjJ3LDo (ORCPT
+        with ESMTP id S232664AbjJ3Jye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:03:44 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52212D60
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:50:23 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so59410031fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:50:23 -0700 (PDT)
+        Mon, 30 Oct 2023 05:54:34 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5367B10FF;
+        Mon, 30 Oct 2023 02:51:45 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc37fb1310so7408765ad.1;
+        Mon, 30 Oct 2023 02:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698659422; x=1699264222; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9stpqAnk3dnnYMPNPoplRmh3fae6uUBC7Ti/UuDSw9Q=;
-        b=aRNJkoKJQvmlv/hsT6S38CsZkNZO1jy1037zxF5JTlVH+ECXF08EqKRgnUPoTh2yH2
-         dybrG9TB2yDrg8ekPMVvE7tzepjvB00ZYfmWZQCjn8DA2VkbZlpa7dUTJBhPjh6VNMW1
-         D1vLCZDqDbcdOmrWbuRX8xDlrd1an3mFlo6JG4qCQZ49YMHaAWYCukUCpsT3qDSQxKKK
-         iSippeULGIxV/hQMGwX0pVEwQZWouW4myGPI2ItXkz6fpNwPYzwMtOaQxwBQphwixbx+
-         VIMqPiJiMCZ5xpZgjla5bxEcXPzEJ5qRhXQ+VD3Y0+eDPod8p/L8w1wNNd5AQa8ZQ78G
-         RA3w==
+        d=gmail.com; s=20230601; t=1698659505; x=1699264305; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xgxgpsaVyH1lVEz0VhsPPbc3s7klX5OAAe3i55j/B/o=;
+        b=m2+C9/bagjbDQRr1Kiw7cc1DYYM2Q4lvrbVvlJIU3RNuqG27mAdKhJayy6nShYGwtg
+         sGanCSmLYz7PYjRF4iprTLN2OwnZm0Ij/D+K15sZrz1tRpRCzkj9awDstU5u0WS0d40j
+         B/SZ9dA2o0ZHc/V5x14yzZzMbEpmUvPef8+Xass7bC2YblH0sEQcJl8HVDYcnYAs+XsG
+         emmdzBEv+ynnb6w4OFjIa/SXgos7e14aBccgl+3AL4EYAzarPbNQkSDtjfBFsK1WtaHG
+         IH1Y/2YyuLrDUbcFhK6oKtQvACsH6VuzJa9mPSXYpGm2dBxnihDOtQ3FzuCdPjM9wNdh
+         16RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698659422; x=1699264222;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9stpqAnk3dnnYMPNPoplRmh3fae6uUBC7Ti/UuDSw9Q=;
-        b=IeOHISG3J62o6Jgt0zpTQvRTEYUy3t0hHu3fpfn0/ztAiOeCBGrVOVbwv1ydiPA7wg
-         95b4MqkKEvDagsPPaxCTzDIiCoSM5s57Avulg9qcaGvNbnEEpZeFo8taAaQjBbeyqt8c
-         RplNxIU1pQ746SyDO9OCHTatvGzlPMdZ3IJA5eY7sJ2nCUt84r+b6HnhDpI09V4kewr3
-         5+Y7iD1j6qDAzDoTA8BelsCl5xitLKQdsCSu99qEQYG8gxzVL04IxXH0SdZAQcff6rWn
-         Kk8pZE3ogwLkPxzmf2PDUfHY8mGwzQyNq0NeCeUBoBOPbi5RF9qg50dNbJ8Fbu6nKGVH
-         YBDQ==
-X-Gm-Message-State: AOJu0YzdAVQzAnAGWJMV/vWe3mOBIJgFJryHhX433VGGJd7xIVPI5GVH
-        g9hfXsc/Ce/2vSloPvRAy+hGgg==
-X-Google-Smtp-Source: AGHT+IF8BRHzSBLAZL+eKA2bBwMHrEA2VYNBDrypefOEeDr9TVmVwhQV99YTlyzNjUZuQUkLcAU3JQ==
-X-Received: by 2002:a2e:b042:0:b0:2bc:bf29:18d3 with SMTP id d2-20020a2eb042000000b002bcbf2918d3mr7393280ljl.31.1698659421879;
-        Mon, 30 Oct 2023 02:50:21 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id hj19-20020a05600c529300b0040841e79715sm8625242wmb.27.2023.10.30.02.50.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 02:50:21 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 30 Oct 2023 10:50:16 +0100
-Subject: [PATCH v2 4/4] fixup! pinctrl: qcom: handle intr_target_reg
- wakeup_present/enable bits
+        d=1e100.net; s=20230601; t=1698659505; x=1699264305;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xgxgpsaVyH1lVEz0VhsPPbc3s7klX5OAAe3i55j/B/o=;
+        b=GDeSoiWdJEWraHmVa5xTlGYmqh1N/77jCGq1xUpqvC5/wda/2TNG/3TVIH9YHTc8f5
+         y+FG8RRs8A3382SWD8Q6I3D7by1OuWz0MyOGXucGq1benO+NF6B8OHHOAO9dk4AZHmUa
+         teinrvXC+vMIC2AvQKig6NZS8VvLuw4H9apurxVNhHxZ/5me1ehoIBHjlMPG8OYQYDXE
+         BekFSSsUSvD5mKjQyxxstk091DxZqDwIP4CRWqmYGOhuD6k0oxnG2hr2H75k+ddcXuz6
+         lqbdBKJFl+6bY/E1nRzEhYS4c7fXUs3XkZtYVjMrJkClUxk9/QqQG4kWbgrWchy4XFcr
+         jXAQ==
+X-Gm-Message-State: AOJu0Yx7P76YaKi3KhkbYlwdmfDu7XD7lmKZqQ/qKiQbD3jZ/2yUZnZ9
+        LTdGIrxAWlp75R0swgdVdK8=
+X-Google-Smtp-Source: AGHT+IHfLmfWp8BpjK450zlBNqPf10/4CQX8jLTfRQgNlqIqpDLwAjZdlKmbVyrY9kQJL8NmDUmcNw==
+X-Received: by 2002:a17:902:d2c7:b0:1cc:3fa8:25fc with SMTP id n7-20020a170902d2c700b001cc3fa825fcmr2780581plc.53.1698659504706;
+        Mon, 30 Oct 2023 02:51:44 -0700 (PDT)
+Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id jk5-20020a170903330500b001c9c879ee4asm5930842plb.17.2023.10.30.02.51.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 02:51:44 -0700 (PDT)
+Message-ID: <27286396-645d-4f16-8b66-f437e16f5bc4@gmail.com>
+Date:   Mon, 30 Oct 2023 18:51:40 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scripts/kernel-doc: Fix the regex for matching -Werror
+ flag
+To:     Yujie Liu <yujie.liu@intel.com>, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <20231030085404.3343403-1-yujie.liu@intel.com>
+Content-Language: en-US
+From:   Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20231030085404.3343403-1-yujie.liu@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-topic-sm8650-upstream-tlmm-v2-4-9d4d4386452d@linaro.org>
-References: <20231030-topic-sm8650-upstream-tlmm-v2-0-9d4d4386452d@linaro.org>
-In-Reply-To: <20231030-topic-sm8650-upstream-tlmm-v2-0-9d4d4386452d@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1975;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=NZ3RXY5Xpm5QETB8k/ZBCrFID44rfsi5TIXbGtVooac=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP3xXFx7AsacbYFF//r69uEQGhm0QXGQMbBz9l3JQ
- 6u7vnGaJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT98VwAKCRB33NvayMhJ0Q6XD/
- 9WIiQEcewz2fpQghH4iNdrn9Mf/tLX27m+6DkL1doieAfm16UuJc3xc4jr27ROYTYVJGjsAi92b/ij
- 5UG0BefVkb0r4vL0MQ7NQoHz2g0rlegJeKRuTKym3eEXcHc55MXL5hxeFheLZTB6zv/R6Rbz4jL//a
- gTk7SyJxDvBMf7rJm0HXRQVRKttDHFqWNV1VyJf75svDfzn3aMe81mfQE3aY5chlkUclkroPplhEJ8
- ZtviZZeDPdDmFofmzK5hKoCBySMInUQo5KZVd4xP4Jsv3WY3xcXgU13kZB0Bx3Ugr7BbP2Og8eYoqY
- ngCGL/e3sGcwygRVrWM75yHe6p4X9+OLIUU+yZ6cDCTdibYeMtNrXkpNsmsAnXzgl5XfLn3IaMwUcd
- LW99x3sK7LMnuZ+luUumMcLF59Uoqtm/SI3FyhYQBVVziVwjZa46pT3/OpfBs1s6fWNP5I8HskSy4A
- ondkCQ/Z0ECVbrwp6V4KEEK/NZJxjn3E91jL1XlFCR1pc3tWmYInWHBpj1iNn6C0tZVxXqPoPrjZab
- G4uRtCLDfW2H6sbWkE8I8Y5MKLvoBJQpLfdDvQxrJN+naNjuGOuwtLhcrqSbvHFWIbJy/yQh8u8Ux3
- PHK2SIk7v3Sf0sK4De5H8BxnDrWhoflZlE1CS7Y6cMorkCxR3PW04GxgNxaA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- drivers/pinctrl/qcom/pinctrl-msm.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Hi,
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index 2489a9ac8455..207b41018580 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -1197,6 +1197,7 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
- 	const struct msm_pingroup *g = &pctrl->soc->groups[d->hwirq];
-+	unsigned long flags;
- 	int ret;
- 
- 	if (!try_module_get(gc->owner))
-@@ -1233,11 +1234,15 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
- 	if (test_bit(d->hwirq, pctrl->skip_wake_irqs) && g->intr_wakeup_present_bit) {
- 		u32 intr_cfg;
- 
-+		raw_spin_lock_irqsave(&pctrl->lock, flags);
-+
- 		intr_cfg = msm_readl_intr_cfg(pctrl, g);
- 		if (intr_cfg & BIT(g->intr_wakeup_present_bit)) {
- 			intr_cfg |= BIT(g->intr_wakeup_enable_bit);
- 			msm_writel_intr_cfg(intr_cfg, pctrl, g);
- 		}
-+
-+		raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- 	}
- 
- 	return 0;
-@@ -1251,16 +1256,21 @@ static void msm_gpio_irq_relres(struct irq_data *d)
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
- 	const struct msm_pingroup *g = &pctrl->soc->groups[d->hwirq];
-+	unsigned long flags;
- 
- 	/* Disable the wakeup_enable bit if it has been set in msm_gpio_irq_reqres() */
- 	if (test_bit(d->hwirq, pctrl->skip_wake_irqs) && g->intr_wakeup_present_bit) {
- 		u32 intr_cfg;
- 
-+		raw_spin_lock_irqsave(&pctrl->lock, flags);
-+
- 		intr_cfg = msm_readl_intr_cfg(pctrl, g);
- 		if (intr_cfg & BIT(g->intr_wakeup_present_bit)) {
- 			intr_cfg &= ~BIT(g->intr_wakeup_enable_bit);
- 			msm_writel_intr_cfg(intr_cfg, pctrl, g);
- 		}
-+
-+		raw_spin_unlock_irqrestore(&pctrl->lock, flags);
- 	}
- 
- 	gpiochip_unlock_as_irq(gc, d->hwirq);
+On 2023/10/30 17:54, Yujie Liu wrote:
+> Swarup reported a "make htmldocs" warning:
+> 
+>   Variable length lookbehind is experimental in regex;
+>   marked by <-- HERE in m/(?<=^|\s)-Werror(?=$|\s)
+>   <-- HERE / at ./scripts/kernel-doc line 188.
+> 
+> Akira managed to reproduce it by perl v5.34.0.
+> 
+> On second thought, it is not necessary to have the complicated
+> "lookahead and lookbehind" things, and the regex can be simplified.
 
--- 
-2.34.1
+Nice!
 
+As a matter of fact, that experimental "Variable length lookbehind"
+support was new to perl v5.30.  So your previous change didn't work on
+systems such as Debian buster, RHEL 8, and the like.
+
+Thank you for the quick fix.
+
+Let me add a couple of tags.
+
+> 
+> Generally, the kernel-doc warnings should be considered as errors only
+> when "-Werror" flag is set in KCFLAGS, but not when
+> "-Werror=<diagnostic-type>" is set, which means there needs to be a
+> space or start of string before "-Werror", and a space or end of string
+> after "-Werror".
+> 
+> The following cases have been tested to work as expected:
+> 
+> * kernel-doc warnings are considered as errors:
+> 
+>   $ KCFLAGS="-Werror" make W=1
+>   $ KCFLAGS="-Wcomment -Werror" make W=1
+>   $ KCFLAGS="-Werror -Wundef" make W=1
+>   $ KCFLAGS="-Wcomment -Werror -Wundef" make W=1
+> 
+> * kernel-doc warnings remain as warnings:
+> 
+>   $ KCFLAGS="-Werror=return-type" make W=1
+>   $ KCFLAGS="-Wcomment -Werror=return-type" make W=1
+>   $ KCFLAGS="-Werror=return-type -Wundef" make W=1
+>   $ KCFLAGS="-Wcomment -Werror=return-type -Wundef" make W=1
+> 
+> The "Variable length lookbehind is experimental in regex" warning is
+> also resolved by this patch.
+> 
+> Fixes: 91f950e8b9d8 ("scripts/kernel-doc: match -Werror flag strictly")
+> Reported-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+Closes: https://lore.kernel.org/r/20231028182231.123996-1-swarupkotikalapudi@gmail.com/
+
+> Cc: Akira Yokosawa <akiyks@gmail.com>
+Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
+
+> Signed-off-by: Yujie Liu <yujie.liu@intel.com>
+> ---
+>  scripts/kernel-doc | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+> index d660e1f4b483..08a3e603db19 100755
+> --- a/scripts/kernel-doc
+> +++ b/scripts/kernel-doc
+> @@ -185,7 +185,7 @@ if (defined($ENV{'KBUILD_VERBOSE'}) && $ENV{'KBUILD_VERBOSE'} =~ '1') {
+>  if (defined($ENV{'KCFLAGS'})) {
+>  	my $kcflags = "$ENV{'KCFLAGS'}";
+>  
+> -	if ($kcflags =~ /(?<=^|\s)-Werror(?=$|\s)/) {
+> +	if ($kcflags =~ /(\s|^)-Werror(\s|$)/) {
+
+Simpler is better.  I can read this ;-)
+
+        Thanks, Akira
+
+>  		$Werror = 1;
+>  	}
+>  }
