@@ -2,386 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E9D7DB343
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE3B7DB39F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjJ3G3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S231834AbjJ3GlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbjJ3G3m (ORCPT
+        with ESMTP id S231922AbjJ3GlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:29:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6284D9;
-        Sun, 29 Oct 2023 23:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698647375; x=1730183375;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=i0c97lut2Bvllo+XzHeJrjnxRIYvTu8913KH1Ax+Fms=;
-  b=R04ZXq8gmOm0QWrlFj0E+U0hfGrO+0od8v5TsMnD4/74OrJmSD4u332Q
-   72INIgN0M8xJl4QZpPRviPTfVi4M1oMeRd9fB0IxstDGTdw3JQHwSy7P2
-   Mu15pwTsFUYHMF7CGBVh/3P+bPXifcHBwVLdLkhnQTKburlPBC7WxvPOZ
-   IuhOuRIOLLTgrEblzKz83+QJPQaBgiWsMtqkklA16h5fjzZ4rdikYSldf
-   uZaXItsinjVXn6QlR26esKR6saxo/wIz+1jpQE9RnyJ2Gm1m1yMzEGB6x
-   w6QbduBKkmC3b4CxfZTWNGqcYOJX0TqOdFuuwB0kpOPGQ89wULTEeaWdb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="452278002"
-X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
-   d="scan'208";a="452278002"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 23:29:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="903893081"
-X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
-   d="scan'208";a="903893081"
-Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Oct 2023 23:29:31 -0700
-From:   Xiao Wang <xiao.w.wang@intel.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, ardb@kernel.org
-Cc:     anup@brainfault.org, haicheng.li@intel.com,
-        ajones@ventanamicro.com, yujie.liu@intel.com, charlie@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiao Wang <xiao.w.wang@intel.com>
-Subject: [PATCH v4 2/2] riscv: Optimize bitops with Zbb extension
-Date:   Mon, 30 Oct 2023 14:39:04 +0800
-Message-Id: <20231030063904.2116277-3-xiao.w.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231030063904.2116277-1-xiao.w.wang@intel.com>
-References: <20231030063904.2116277-1-xiao.w.wang@intel.com>
+        Mon, 30 Oct 2023 02:41:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40FBFA
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698647985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5nyjgS0fYQSx/D6IewuJYJKpefagBoQYUrzFE3HJwSY=;
+        b=c0JKXf1XNYdZBD54SIInBrEimKqKNX1GM4Np6PyR5+LdsZrBd6kpfJc0XrbSDS7GNTHapq
+        SYnESGlbGRiU3aVNaiG3zz8A/C9VZFNS0uOnnp9CMn9W9VLOYw7MZP6SwEMKApowAwsAnl
+        843iMCUbZf+fV504MoIqwdQSb94hE3Q=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-Sa0GpomiOSiIcNA2zBgDCA-1; Mon, 30 Oct 2023 02:39:43 -0400
+X-MC-Unique: Sa0GpomiOSiIcNA2zBgDCA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-778999c5f1dso546823485a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:39:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698647983; x=1699252783;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5nyjgS0fYQSx/D6IewuJYJKpefagBoQYUrzFE3HJwSY=;
+        b=Cz44MnY6GPfRUXKP/16lBlBs4ggamHX0L0wwLnFcrti6qUd46w3LUDkp/4bg+mbmTz
+         0NbizyUK4/G4kkp2zfXXaq0QY7DdBPgI8lIfTSnVv25JgdhFxZJgN+bRjBs8CZbJSHEF
+         8RLMFnEA7pzHhI+qN1bJrHCYxzraV8jH5I6Q40uO2ubkVPsyd49vvUm/hOf1Dek26H2b
+         jIdWW9a2xhD5wqUjJ5LrQJd6fFXAjS5XI0m6fQMgwA2piKcdGRrgzWTwygxv2thqB5r0
+         hSICHZkq/WlKPmvUzvTHHZ8V44Uz5AKzwlPKApymb8SSKG9+CNVBttNwcxWDI57OBgiH
+         LoIw==
+X-Gm-Message-State: AOJu0YyJgLNMyuVqnn9L284oj5i+mWM1N4LM12cZ8p+8VUNJiUaIvi0B
+        BoTd0a68YJLAidNSQ6qcDoT9ZxjPMG2G7OVQACQJOmUskpF+CdfADF9Wd3E2/guKHLvN5KWUE91
+        Sbfvs9Y+IUBMAeRjwoUGr85xY
+X-Received: by 2002:a05:620a:284a:b0:774:3581:588f with SMTP id h10-20020a05620a284a00b007743581588fmr10211184qkp.53.1698647982943;
+        Sun, 29 Oct 2023 23:39:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEbHw2zXdgTmOe2Ipypz0FWeothc3gJE844cZo0OJypubB7AFZMaV4V7mlETkwq0DTLZNfoTw==
+X-Received: by 2002:a05:620a:284a:b0:774:3581:588f with SMTP id h10-20020a05620a284a00b007743581588fmr10211165qkp.53.1698647982600;
+        Sun, 29 Oct 2023 23:39:42 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:280:24f0:3f78:514a:4f03:fdc0? ([2a01:e0a:280:24f0:3f78:514a:4f03:fdc0])
+        by smtp.gmail.com with ESMTPSA id e22-20020a05620a209600b007756d233fbdsm3088023qka.37.2023.10.29.23.39.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Oct 2023 23:39:42 -0700 (PDT)
+Message-ID: <365845dd-ffc4-4a0d-b5cd-622e18ae9eef@redhat.com>
+Date:   Mon, 30 Oct 2023 07:39:39 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 1/2] vfio/migration: Add debugfs to live migration
+ driver
+Content-Language: en-US
+To:     Longfang Liu <liulongfang@huawei.com>, alex.williamson@redhat.com,
+        jgg@nvidia.com, shameerali.kolothum.thodi@huawei.com,
+        jonathan.cameron@huawei.com
+Cc:     bcreeley@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
+References: <20231028075447.41939-1-liulongfang@huawei.com>
+ <20231028075447.41939-2-liulongfang@huawei.com>
+From:   =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clegoate@redhat.com>
+In-Reply-To: <20231028075447.41939-2-liulongfang@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch leverages the alternative mechanism to dynamically optimize
-bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
-Zbb ext is not supported by the runtime CPU, legacy implementation is
-used. If Zbb is supported, then the optimized variants will be selected
-via alternative patching.
+On 10/28/23 09:54, Longfang Liu wrote:
+> There are multiple devices, software and operational steps involved
+> in the process of live migration. An error occurred on any node may
+> cause the live migration operation to fail.
+> This complex process makes it very difficult to locate and analyze
+> the cause when the function fails.
+> 
+> In order to quickly locate the cause of the problem when the
+> live migration fails, I added a set of debugfs to the vfio
+> live migration driver.
+> 
+>      +-------------------------------------------+
+>      |                                           |
+>      |                                           |
+>      |                  QEMU                     |
+>      |                                           |
+>      |                                           |
+>      +---+----------------------------+----------+
+>          |      ^                     |      ^
+>          |      |                     |      |
+>          |      |                     |      |
+>          v      |                     v      |
+>       +---------+--+               +---------+--+
+>       |src vfio_dev|               |dst vfio_dev|
+>       +--+---------+               +--+---------+
+>          |      ^                     |      ^
+>          |      |                     |      |
+>          v      |                     |      |
+>     +-----------+----+           +-----------+----+
+>     |src dev debugfs |           |dst dev debugfs |
+>     +----------------+           +----------------+
+> 
+> The entire debugfs directory will be based on the definition of
+> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
+> interfaces in vfio.h will be empty definitions, and the creation
+> and initialization of the debugfs directory will not be executed.
+> 
+>     vfio
+>      |
+>      +---<dev_name1>
+>      |    +---migration
+>      |        +--state
+>      |
+>      +---<dev_name2>
+>           +---migration
+>               +--state
+> 
+> debugfs will create a public root directory "vfio" file.
+> then create a dev_name() file for each live migration device.
+> First, create a unified state acquisition file of "migration"
+> in this device directory.
+> Then, create a public live migration state lookup file "state".
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 
-The legacy bitops support is taken from the generic C implementation as
-fallback.
 
-If the parameter is a build-time constant, we leverage compiler builtin to
-calculate the result directly, this approach is inspired by x86 bitops
-implementation.
+Reviewed-by: Cédric Le Goater <clg@redhat.com>
 
-EFI stub runs before the kernel, so alternative mechanism should not be
-used there, this patch introduces a macro NO_ALTERNATIVE for this purpose.
+Thanks,
 
-Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
----
- arch/riscv/include/asm/bitops.h       | 255 +++++++++++++++++++++++++-
- drivers/bitopstest/Kconfig            |   1 +
- drivers/firmware/efi/libstub/Makefile |   2 +-
- 3 files changed, 254 insertions(+), 4 deletions(-)
+C.
 
-diff --git a/arch/riscv/include/asm/bitops.h b/arch/riscv/include/asm/bitops.h
-index 3540b690944b..ef35c9ebc2ed 100644
---- a/arch/riscv/include/asm/bitops.h
-+++ b/arch/riscv/include/asm/bitops.h
-@@ -15,13 +15,262 @@
- #include <asm/barrier.h>
- #include <asm/bitsperlong.h>
- 
-+#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE)
- #include <asm-generic/bitops/__ffs.h>
--#include <asm-generic/bitops/ffz.h>
--#include <asm-generic/bitops/fls.h>
- #include <asm-generic/bitops/__fls.h>
-+#include <asm-generic/bitops/ffs.h>
-+#include <asm-generic/bitops/fls.h>
-+
-+#else
-+#include <asm/alternative-macros.h>
-+#include <asm/hwcap.h>
-+
-+#if (BITS_PER_LONG == 64)
-+#define CTZW	"ctzw "
-+#define CLZW	"clzw "
-+#elif (BITS_PER_LONG == 32)
-+#define CTZW	"ctz "
-+#define CLZW	"clz "
-+#else
-+#error "Unexpected BITS_PER_LONG"
-+#endif
-+
-+static __always_inline unsigned long variable__ffs(unsigned long word)
-+{
-+	int num;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		"ctz %0, %1\n"
-+		".option pop\n"
-+		: "=r" (word) : "r" (word) :);
-+
-+	return word;
-+
-+legacy:
-+	num = 0;
-+#if BITS_PER_LONG == 64
-+	if ((word & 0xffffffff) == 0) {
-+		num += 32;
-+		word >>= 32;
-+	}
-+#endif
-+	if ((word & 0xffff) == 0) {
-+		num += 16;
-+		word >>= 16;
-+	}
-+	if ((word & 0xff) == 0) {
-+		num += 8;
-+		word >>= 8;
-+	}
-+	if ((word & 0xf) == 0) {
-+		num += 4;
-+		word >>= 4;
-+	}
-+	if ((word & 0x3) == 0) {
-+		num += 2;
-+		word >>= 2;
-+	}
-+	if ((word & 0x1) == 0)
-+		num += 1;
-+	return num;
-+}
-+
-+/**
-+ * __ffs - find first set bit in a long word
-+ * @word: The word to search
-+ *
-+ * Undefined if no set bit exists, so code should check against 0 first.
-+ */
-+#define __ffs(word)				\
-+	(__builtin_constant_p(word) ?		\
-+	 (unsigned long)__builtin_ctzl(word) :	\
-+	 variable__ffs(word))
-+
-+static __always_inline unsigned long variable__fls(unsigned long word)
-+{
-+	int num;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		"clz %0, %1\n"
-+		".option pop\n"
-+		: "=r" (word) : "r" (word) :);
-+
-+	return BITS_PER_LONG - 1 - word;
-+
-+legacy:
-+	num = BITS_PER_LONG - 1;
-+#if BITS_PER_LONG == 64
-+	if (!(word & (~0ul << 32))) {
-+		num -= 32;
-+		word <<= 32;
-+	}
-+#endif
-+	if (!(word & (~0ul << (BITS_PER_LONG-16)))) {
-+		num -= 16;
-+		word <<= 16;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-8)))) {
-+		num -= 8;
-+		word <<= 8;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-4)))) {
-+		num -= 4;
-+		word <<= 4;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-2)))) {
-+		num -= 2;
-+		word <<= 2;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-1))))
-+		num -= 1;
-+	return num;
-+}
-+
-+/**
-+ * __fls - find last set bit in a long word
-+ * @word: the word to search
-+ *
-+ * Undefined if no set bit exists, so code should check against 0 first.
-+ */
-+#define __fls(word)							\
-+	(__builtin_constant_p(word) ?					\
-+	 (unsigned long)(BITS_PER_LONG - 1 - __builtin_clzl(word)) :	\
-+	 variable__fls(word))
-+
-+static __always_inline int variable_ffs(int x)
-+{
-+	int r;
-+
-+	if (!x)
-+		return 0;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		CTZW "%0, %1\n"
-+		".option pop\n"
-+		: "=r" (r) : "r" (x) :);
-+
-+	return r + 1;
-+
-+legacy:
-+	r = 1;
-+	if (!(x & 0xffff)) {
-+		x >>= 16;
-+		r += 16;
-+	}
-+	if (!(x & 0xff)) {
-+		x >>= 8;
-+		r += 8;
-+	}
-+	if (!(x & 0xf)) {
-+		x >>= 4;
-+		r += 4;
-+	}
-+	if (!(x & 3)) {
-+		x >>= 2;
-+		r += 2;
-+	}
-+	if (!(x & 1)) {
-+		x >>= 1;
-+		r += 1;
-+	}
-+	return r;
-+}
-+
-+/**
-+ * ffs - find first set bit in a word
-+ * @x: the word to search
-+ *
-+ * This is defined the same way as the libc and compiler builtin ffs routines.
-+ *
-+ * ffs(value) returns 0 if value is 0 or the position of the first set bit if
-+ * value is nonzero. The first (least significant) bit is at position 1.
-+ */
-+#define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) : variable_ffs(x))
-+
-+static __always_inline int variable_fls(unsigned int x)
-+{
-+	int r;
-+
-+	if (!x)
-+		return 0;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		CLZW "%0, %1\n"
-+		".option pop\n"
-+		: "=r" (r) : "r" (x) :);
-+
-+	return 32 - r;
-+
-+legacy:
-+	r = 32;
-+	if (!(x & 0xffff0000u)) {
-+		x <<= 16;
-+		r -= 16;
-+	}
-+	if (!(x & 0xff000000u)) {
-+		x <<= 8;
-+		r -= 8;
-+	}
-+	if (!(x & 0xf0000000u)) {
-+		x <<= 4;
-+		r -= 4;
-+	}
-+	if (!(x & 0xc0000000u)) {
-+		x <<= 2;
-+		r -= 2;
-+	}
-+	if (!(x & 0x80000000u)) {
-+		x <<= 1;
-+		r -= 1;
-+	}
-+	return r;
-+}
-+
-+/**
-+ * fls - find last set bit in a word
-+ * @x: the word to search
-+ *
-+ * This is defined in a similar way as ffs, but returns the position of the most
-+ * significant set bit.
-+ *
-+ * fls(value) returns 0 if value is 0 or the position of the last set bit if
-+ * value is nonzero. The last (most significant) bit is at position 32.
-+ */
-+#define fls(x)								\
-+	(__builtin_constant_p(x) ?					\
-+	 (int)(((x) != 0) ?						\
-+	  (sizeof(unsigned int) * 8 - __builtin_clz(x)) : 0) :		\
-+	 variable_fls(x))
-+
-+#endif /* !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE) */
-+
-+#include <asm-generic/bitops/ffz.h>
- #include <asm-generic/bitops/fls64.h>
- #include <asm-generic/bitops/sched.h>
--#include <asm-generic/bitops/ffs.h>
- 
- #include <asm-generic/bitops/hweight.h>
- 
-diff --git a/drivers/bitopstest/Kconfig b/drivers/bitopstest/Kconfig
-index d0e2af4b801e..6ef6dcd41d49 100644
---- a/drivers/bitopstest/Kconfig
-+++ b/drivers/bitopstest/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig BITOPSTEST
- 	tristate "self test for bitops optimization"
-+	default y
- 	help
- 	  Enable this to test the bitops APIs.
- 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index a1157c2a7170..d68cacd4e3af 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)		+= -DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
- 				   -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
- 				   -DEFI_HAVE_STRCMP -fno-builtin -fpic \
- 				   $(call cc-option,-mno-single-pic-base)
--cflags-$(CONFIG_RISCV)		+= -fpic
-+cflags-$(CONFIG_RISCV)		+= -fpic -DNO_ALTERNATIVE
- cflags-$(CONFIG_LOONGARCH)	+= -fpie
- 
- cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)	+= -I$(srctree)/scripts/dtc/libfdt
--- 
-2.25.1
+
+> ---
+>   drivers/vfio/Kconfig      | 10 +++++
+>   drivers/vfio/Makefile     |  1 +
+>   drivers/vfio/debugfs.c    | 90 +++++++++++++++++++++++++++++++++++++++
+>   drivers/vfio/vfio.h       | 14 ++++++
+>   drivers/vfio/vfio_main.c  |  4 ++
+>   include/linux/vfio.h      |  7 +++
+>   include/uapi/linux/vfio.h |  1 +
+>   7 files changed, 127 insertions(+)
+>   create mode 100644 drivers/vfio/debugfs.c
+> 
+> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
+> index 6bda6dbb4878..ceae52fd7586 100644
+> --- a/drivers/vfio/Kconfig
+> +++ b/drivers/vfio/Kconfig
+> @@ -80,6 +80,16 @@ config VFIO_VIRQFD
+>   	select EVENTFD
+>   	default n
+>   
+> +config VFIO_DEBUGFS
+> +	bool "Export VFIO internals in DebugFS"
+> +	depends on DEBUG_FS
+> +	help
+> +	  Allows exposure of VFIO device internals. This option enables
+> +	  the use of debugfs by VFIO drivers as required. The device can
+> +	  cause the VFIO code create a top-level debug/vfio directory
+> +	  during initialization, and then populate a subdirectory with
+> +	  entries as required.
+> +
+>   source "drivers/vfio/pci/Kconfig"
+>   source "drivers/vfio/platform/Kconfig"
+>   source "drivers/vfio/mdev/Kconfig"
+> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
+> index c82ea032d352..d43a699d55b1 100644
+> --- a/drivers/vfio/Makefile
+> +++ b/drivers/vfio/Makefile
+> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
+>   vfio-$(CONFIG_IOMMUFD) += iommufd.o
+>   vfio-$(CONFIG_VFIO_CONTAINER) += container.o
+>   vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
+> +vfio-$(CONFIG_VFIO_DEBUGFS) += debugfs.o
+>   
+>   obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
+>   obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
+> diff --git a/drivers/vfio/debugfs.c b/drivers/vfio/debugfs.c
+> new file mode 100644
+> index 000000000000..9f02ae15e084
+> --- /dev/null
+> +++ b/drivers/vfio/debugfs.c
+> @@ -0,0 +1,90 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023, HiSilicon Ltd.
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/vfio.h>
+> +#include "vfio.h"
+> +
+> +static struct dentry *vfio_debugfs_root;
+> +
+> +static int vfio_device_state_read(struct seq_file *seq, void *data)
+> +{
+> +	struct device *vf_dev = seq->private;
+> +	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
+> +	enum vfio_device_mig_state state;
+> +	int ret;
+> +
+> +	BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=
+> +		VFIO_DEVICE_STATE_PRE_COPY_P2P + 1);
+> +
+> +	ret = vdev->mig_ops->migration_get_state(vdev, &state);
+> +	if (ret)
+> +		return -EINVAL;
+> +
+> +	switch (state) {
+> +	case VFIO_DEVICE_STATE_ERROR:
+> +		seq_puts(seq, "ERROR\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_STOP:
+> +		seq_puts(seq, "STOP\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_RUNNING:
+> +		seq_puts(seq, "RUNNING\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_STOP_COPY:
+> +		seq_puts(seq, "STOP_COPY\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_RESUMING:
+> +		seq_puts(seq, "RESUMING\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_RUNNING_P2P:
+> +		seq_puts(seq, "RUNNING_P2P\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_PRE_COPY:
+> +		seq_puts(seq, "PRE_COPY\n");
+> +		break;
+> +	case VFIO_DEVICE_STATE_PRE_COPY_P2P:
+> +		seq_puts(seq, "PRE_COPY_P2P\n");
+> +		break;
+> +	default:
+> +		seq_puts(seq, "Invalid\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void vfio_device_debugfs_init(struct vfio_device *vdev)
+> +{
+> +	struct device *dev = &vdev->device;
+> +
+> +	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
+> +
+> +	if (vdev->mig_ops) {
+> +		struct dentry *vfio_dev_migration = NULL;
+> +
+> +		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
+> +		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
+> +					  vfio_device_state_read);
+> +	}
+> +}
+> +
+> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
+> +{
+> +	debugfs_remove_recursive(vdev->debug_root);
+> +}
+> +
+> +void vfio_debugfs_create_root(void)
+> +{
+> +	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
+> +}
+> +
+> +void vfio_debugfs_remove_root(void)
+> +{
+> +	debugfs_remove_recursive(vfio_debugfs_root);
+> +	vfio_debugfs_root = NULL;
+> +}
+> +
+> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
+> index 307e3f29b527..bde84ad344e5 100644
+> --- a/drivers/vfio/vfio.h
+> +++ b/drivers/vfio/vfio.h
+> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
+>   }
+>   #endif
+>   
+> +#ifdef CONFIG_VFIO_DEBUGFS
+> +void vfio_debugfs_create_root(void);
+> +void vfio_debugfs_remove_root(void);
+> +
+> +void vfio_device_debugfs_init(struct vfio_device *vdev);
+> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
+> +#else
+> +static inline void vfio_debugfs_create_root(void) { }
+> +static inline void vfio_debugfs_remove_root(void) { }
+> +
+> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
+> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
+> +#endif /* CONFIG_VFIO_DEBUGFS */
+> +
+>   #endif
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index e31e1952d7b8..94f02b6891ac 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -311,6 +311,7 @@ static int __vfio_register_dev(struct vfio_device *device,
+>   	refcount_set(&device->refcount, 1);
+>   
+>   	vfio_device_group_register(device);
+> +	vfio_device_debugfs_init(device);
+>   
+>   	return 0;
+>   err_out:
+> @@ -378,6 +379,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
+>   		}
+>   	}
+>   
+> +	vfio_device_debugfs_exit(device);
+>   	/* Balances vfio_device_set_group in register path */
+>   	vfio_device_remove_group(device);
+>   }
+> @@ -1676,6 +1678,7 @@ static int __init vfio_init(void)
+>   	if (ret)
+>   		goto err_alloc_dev_chrdev;
+>   
+> +	vfio_debugfs_create_root();
+>   	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+>   	return 0;
+>   
+> @@ -1691,6 +1694,7 @@ static int __init vfio_init(void)
+>   
+>   static void __exit vfio_cleanup(void)
+>   {
+> +	vfio_debugfs_remove_root();
+>   	ida_destroy(&vfio.device_ida);
+>   	vfio_cdev_cleanup();
+>   	class_destroy(vfio.device_class);
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index 454e9295970c..769d7af86225 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -69,6 +69,13 @@ struct vfio_device {
+>   	u8 iommufd_attached:1;
+>   #endif
+>   	u8 cdev_opened:1;
+> +#ifdef CONFIG_DEBUG_FS
+> +	/*
+> +	 * debug_root is a static property of the vfio_device
+> +	 * which must be set prior to registering the vfio_device.
+> +	 */
+> +	struct dentry *debug_root;
+> +#endif
+>   };
+>   
+>   /**
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 7f5fb010226d..2b68e6cdf190 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
+>   	VFIO_DEVICE_STATE_RUNNING_P2P = 5,
+>   	VFIO_DEVICE_STATE_PRE_COPY = 6,
+>   	VFIO_DEVICE_STATE_PRE_COPY_P2P = 7,
+> +	VFIO_DEVICE_STATE_NR,
+>   };
+>   
+>   /**
 
