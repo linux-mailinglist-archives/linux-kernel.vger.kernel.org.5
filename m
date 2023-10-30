@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CED7DC030
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C6C7DC036
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjJ3TBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
+        id S231531AbjJ3TFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjJ3TBi (ORCPT
+        with ESMTP id S229721AbjJ3TFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:01:38 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8856D9F;
-        Mon, 30 Oct 2023 12:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1698692486; x=1699297286; i=rwahl@gmx.de;
-        bh=RL+2Jj7yTa1YkQxwQqBk1lDJpWOcvMAibeGmceC7PFM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=lc07Nrme33vaEJXATGrCrZLPUnO1jMXAgKct4TXWqfYjUV1C6sB+3s6VrkpU8X13
-         1n1zPaidYaM1YcwIm3D+v5isXKpDgQav3cTqUZDhpwQztla+XI30/OfkKHMwllrsY
-         ILQkn9dKG3fMVw7Ob4K4OLY8mBgJCoNjXyk8if3UBEXeGmDRaUJuWMiB8cGLSkkp6
-         o3KcowWxJ8X5UU47CACC+Iw9grfbZvn2WY8bNC3AP2al0NqOnDr0bkZRfYkLFQ6tO
-         xIW2EA1oanFS9S8NITGaGJsV1ILGFx7lffbCmf6I0+So1g1SWOsgPhkrrIAwL2pl6
-         nlwQgfYHJCFDkzph1A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MuDXp-1rkXbE3lwT-00udmR; Mon, 30
- Oct 2023 20:01:25 +0100
-From:   Ronald Wahl <rwahl@gmx.de>
-To:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ronald Wahl <ronald.wahl@raritan.com>
-Subject: [PATCH] dmaengine: ti: k3-psil-am62: Fix SPI PDMA data
-Date:   Mon, 30 Oct 2023 20:01:13 +0100
-Message-ID: <20231030190113.16782-1-rwahl@gmx.de>
-X-Mailer: git-send-email 2.41.0
+        Mon, 30 Oct 2023 15:05:08 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9208DB
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 12:05:02 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-5845213c583so2814631eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 12:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698692702; x=1699297502; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fPq41GL4yH6DVVO3wMu/zZLhUfAE1z9hLgfWVkoLlNs=;
+        b=SBuA4MPIC+VmsWdMbFrHFWFYvQG2YSpgukSbcdnjxa1s9GgWLURxhYThIqePSGVv9j
+         dglNiKyOxHRMgJmMLWe3JmRu00SwZjhhk0j+GsGt3oSFfZqiKI01JxfSTWK96BuQaOEW
+         +FkpU1NNbPSoXGM9WYqvWsGc86hZlv/S7w21ofiryV/ia3ZMSI43RlHq5Dk3APoJF2om
+         Z5F1e+yOq/IotfqxMGIl2sI+y8bozTLSZeuKWELcJl6uXkGoPORbWIgMWI0Xy6idCCRS
+         ReXfqylqGm1BlvkhlDwNb15Kxes3lHu4WHAHND4wIidxJqqc82kUW3rmKSYTJapRP1Zu
+         1xog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698692702; x=1699297502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fPq41GL4yH6DVVO3wMu/zZLhUfAE1z9hLgfWVkoLlNs=;
+        b=HiEdY8urFA/eKz72BrDgo8O+FeaZY1VuRO4LyzBgfohxCggDZVy3V0xS5ATouCWHPf
+         tFWbv9EKbrQEJWOvOBmcj0coG1dgQjSVS96pTODMr34g3NtCcyvLy8gKv0pFpKaELmWN
+         DqjTriMMl4DzX3cld2n4TW3CgVMy7XJ89mnpE8oAs3EdrJmye1mYFAkopgxr7JZVMarA
+         UGGo4JSqtnjgivzQ3zaI4DEOZHuizyhjYIax2E+bb9RUUk5iuJpV30pQZlXU/o8AjIwk
+         zh7tqU+6vlUJqwYl7mv+zvmASJeY2k4ngkLEuKpLZF6Fq6REMf+CyWAAppLga5lXOM6A
+         3//Q==
+X-Gm-Message-State: AOJu0YxqDeoyHyNVeEQpKe2cn1iiQ9p26DpPiWagNqtl8xqm2vxSaMlQ
+        n9u5sh931LqSe/Nhcd1otVBdMDCyDBUJ7b5l43Mejw==
+X-Google-Smtp-Source: AGHT+IFsF7GqdgYXY2P2iN82D2guup+g5HfwABWPWMbalVAfnCysMxt6anEr2vTjqBXJrvNRJCNdKiING312ShE+3CE=
+X-Received: by 2002:a05:6358:c381:b0:168:d12b:a166 with SMTP id
+ fl1-20020a056358c38100b00168d12ba166mr10044450rwb.17.1698692701743; Mon, 30
+ Oct 2023 12:05:01 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230916040915.1075620-1-irogers@google.com>
+In-Reply-To: <20230916040915.1075620-1-irogers@google.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 30 Oct 2023 12:04:25 -0700
+Message-ID: <CAL715WLq+wMGC26ESviAwSFGCpCYbf8knRFo=6Lbwgk8qwB8xA@mail.gmail.com>
+Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+To:     gregkh@linuxfoundation.org
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>, stable@vger.linux.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:L6kLIsHeklRFkUTiQk+CeqdX3lShBysPO12BdwFKntNStilMnjz
- hnsGJW4Qn43v3qIjUp8GOMJg09tmgPvClz3yJCok/hMpUBNZWKJ1FhLkVpJ1GjNUHY1zqrp
- 9nlZuRP1sCkXab4aVXZO5sCAGiLShZeMLGTf/UToLgG63huU/m6yHrnCGvic0YixwriqKhf
- o2710fiSp2nRoiDkskllQ==
-UI-OutboundReport: notjunk:1;M01:P0:x7yBYD442zw=;lf1QeWTjOrGoH8GY43dxnSi3Gvd
- ZuSJcQwdndewF1fdfn4JaPPzIwmmwR5XaRRd+MKpHNzVgYAIRZaZZopeKVWRFIyDqOo0IzfZZ
- fw/11pktrtIXGtNCDPu/b6J5lkH3GNCUJ/C/mEEEarldfDM40TGU1zyXb5gOZjGUSVDPO7Pia
- WcHoeda0XWHNA5EAzKrfrwuFoQWECa0PaF//A2OLrWjSN+0+XXDUOLB6uSzAxRhjhJAIFORZj
- 88N6wZWVMLV0W3VYFKgOi59/jam2cTsgUKIwnJqyamDDr7zYMklqjUvzyDvTSAtS2PPhObi1d
- TB3WCNTzUqdUBZenXgGZvI74YNeHzMqoLqM1gb3cWGBUZq02TFwsOH9zkZelb9XJgMQZf/MT1
- OFPxj3YDZxdfIoml0cqzUIdZ2ee42TM2GcFWA3CiPhxUVEZkGknNFrJK8XhrW6Z2cWABqdJJa
- JxsRHKKwxpXCkQhCoIqQvf72MDy7eQgg6WB7ZVm0zy5OI03WxXEix9u7d57yVphXQtZzH0uxY
- Q4PdmWZrQeKNmj/CE3SCnFMNXkXnQEvd9ehze78uEaJclADYxIpTrnX8f5Ziq9z72cv20kffK
- z3G4r4qBVwtgotBrMMepgIMYlNQQY0CwHtOk7ohieC4czV+h908zw4Ex9wmm3NTWmzntNOT4j
- pYQGJYCeOW/JrMZToTAm+OyXBYVuARi7jeOdQY8/E32VC61yIjMge+LiDJwjFeBNDdY1/+JYh
- jQOgG5+LpfrboGQuBee1KU6fo2IgWvill01jeEKtcBJ0utQhMfcbxRM80E3gmuUrWfpz4jOUJ
- 025ydRYqw2M7+LTszeHCtzvywIv8PQNAXANsEf/dsUnSdRHHs9QQI/bBBUBSj6X2Fp+krZ+KO
- obs7rYwx3C6mLBonoDFWLG9HTr6+SQWeOAbSuutawaX29l2QbpBtXak1QCFH5fFhKTHQpds6I
- JdRmRXhnCv3PFsPj0zWSWtbUn0M=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM62x has 3 SPI channels where each channel has 4 TX and 4 RX threads.
-This also fixes the thread numbers.
+On Fri, Sep 15, 2023 at 9:10=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> Dummy events are created with an attribute where the period and freq
+> are zero. evsel__config will then see the uninitialized values and
+> initialize them in evsel__default_freq_period. As fequency mode is
+> used by default the dummy event would be set to use frequency
+> mode. However, this has no effect on the dummy event but does cause
+> unnecessary timers/interrupts. Avoid this overhead by setting the
+> period to 1 for dummy events.
+>
+> evlist__add_aux_dummy calls evlist__add_dummy then sets freq=3D0 and
+> period=3D1. This isn't necessary after this change and so the setting is
+> removed.
+>
+> From Stephane:
+>
+> The dummy event is not counting anything. It is used to collect mmap
+> records and avoid a race condition during the synthesize mmap phase of
+> perf record. As such, it should not cause any overhead during active
+> profiling. Yet, it did. Because of a bug the dummy event was
+> programmed as a sampling event in frequency mode. Events in that mode
+> incur more kernel overheads because on timer tick, the kernel has to
+> look at the number of samples for each event and potentially adjust
+> the sampling period to achieve the desired frequency. The dummy event
+> was therefore adding a frequency event to task and ctx contexts we may
+> otherwise not have any, e.g., perf record -a -e
+> cpu/event=3D0x3c,period=3D10000000/. On each timer tick the
+> perf_adjust_freq_unthr_context() is invoked and if ctx->nr_freq is
+> non-zero, then the kernel will loop over ALL the events of the context
+> looking for frequency mode ones. In doing, so it locks the context,
+> and enable/disable the PMU of each hw event. If all the events of the
+> context are in period mode, the kernel will have to traverse the list for
+> nothing incurring overhead. The overhead is multiplied by a very large
+> factor when this happens in a guest kernel. There is no need for the
+> dummy event to be in frequency mode, it does not count anything and
+> therefore should not cause extra overhead for no reason.
+>
+> Fixes: 5bae0250237f ("perf evlist: Introduce perf_evlist__new_dummy const=
+ructor")
+> Reported-by: Stephane Eranian <eranian@google.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/evlist.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 25c3ebe2c2f5..e36da58522ef 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -251,6 +251,9 @@ static struct evsel *evlist__dummy_event(struct evlis=
+t *evlist)
+>                 .type   =3D PERF_TYPE_SOFTWARE,
+>                 .config =3D PERF_COUNT_SW_DUMMY,
+>                 .size   =3D sizeof(attr), /* to capture ABI version */
+> +               /* Avoid frequency mode for dummy events to avoid associa=
+ted timers. */
+> +               .freq =3D 0,
+> +               .sample_period =3D 1,
+>         };
+>
+>         return evsel__new_idx(&attr, evlist->core.nr_entries);
+> @@ -277,8 +280,6 @@ struct evsel *evlist__add_aux_dummy(struct evlist *ev=
+list, bool system_wide)
+>         evsel->core.attr.exclude_kernel =3D 1;
+>         evsel->core.attr.exclude_guest =3D 1;
+>         evsel->core.attr.exclude_hv =3D 1;
+> -       evsel->core.attr.freq =3D 0;
+> -       evsel->core.attr.sample_period =3D 1;
+>         evsel->core.system_wide =3D system_wide;
+>         evsel->no_aux_samples =3D true;
+>         evsel->name =3D strdup("dummy:u");
+> --
+> 2.42.0.459.ge4e396fd5e-goog
+>
 
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-=2D--
- drivers/dma/ti/k3-psil-am62.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Hi Greg,
 
-diff --git a/drivers/dma/ti/k3-psil-am62.c b/drivers/dma/ti/k3-psil-am62.c
-index 2b6fd6e37c61..1272b1541f61 100644
-=2D-- a/drivers/dma/ti/k3-psil-am62.c
-+++ b/drivers/dma/ti/k3-psil-am62.c
-@@ -74,7 +74,9 @@ static struct psil_ep am62_src_ep_map[] =3D {
- 	PSIL_SAUL(0x7505, 21, 35, 8, 36, 0),
- 	PSIL_SAUL(0x7506, 22, 43, 8, 43, 0),
- 	PSIL_SAUL(0x7507, 23, 43, 8, 44, 0),
--	/* PDMA_MAIN0 - SPI0-3 */
-+	/* PDMA_MAIN0 - SPI0-2 */
-+	PSIL_PDMA_XY_PKT(0x4300),
-+	PSIL_PDMA_XY_PKT(0x4301),
- 	PSIL_PDMA_XY_PKT(0x4302),
- 	PSIL_PDMA_XY_PKT(0x4303),
- 	PSIL_PDMA_XY_PKT(0x4304),
-@@ -85,8 +87,6 @@ static struct psil_ep am62_src_ep_map[] =3D {
- 	PSIL_PDMA_XY_PKT(0x4309),
- 	PSIL_PDMA_XY_PKT(0x430a),
- 	PSIL_PDMA_XY_PKT(0x430b),
--	PSIL_PDMA_XY_PKT(0x430c),
--	PSIL_PDMA_XY_PKT(0x430d),
- 	/* PDMA_MAIN1 - UART0-6 */
- 	PSIL_PDMA_XY_PKT(0x4400),
- 	PSIL_PDMA_XY_PKT(0x4401),
-@@ -141,7 +141,9 @@ static struct psil_ep am62_dst_ep_map[] =3D {
- 	/* SAUL */
- 	PSIL_SAUL(0xf500, 27, 83, 8, 83, 1),
- 	PSIL_SAUL(0xf501, 28, 91, 8, 91, 1),
--	/* PDMA_MAIN0 - SPI0-3 */
-+	/* PDMA_MAIN0 - SPI0-2 */
-+	PSIL_PDMA_XY_PKT(0xc300),
-+	PSIL_PDMA_XY_PKT(0xc301),
- 	PSIL_PDMA_XY_PKT(0xc302),
- 	PSIL_PDMA_XY_PKT(0xc303),
- 	PSIL_PDMA_XY_PKT(0xc304),
-@@ -152,8 +154,6 @@ static struct psil_ep am62_dst_ep_map[] =3D {
- 	PSIL_PDMA_XY_PKT(0xc309),
- 	PSIL_PDMA_XY_PKT(0xc30a),
- 	PSIL_PDMA_XY_PKT(0xc30b),
--	PSIL_PDMA_XY_PKT(0xc30c),
--	PSIL_PDMA_XY_PKT(0xc30d),
- 	/* PDMA_MAIN1 - UART0-6 */
- 	PSIL_PDMA_XY_PKT(0xc400),
- 	PSIL_PDMA_XY_PKT(0xc401),
-=2D-
-2.41.0
+This patch is a critical performance fix for perf and vPMU. Can you
+help us dispatch the commit to all stable kernel versions?
 
+Appreciate your help. Thanks.
+-Mingwei
