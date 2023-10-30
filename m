@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B05997DC165
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C9E7DC169
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjJ3UrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 16:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
+        id S229975AbjJ3Uuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJ3Uq6 (ORCPT
+        with ESMTP id S229498AbjJ3Uuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 16:46:58 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4EBDF;
-        Mon, 30 Oct 2023 13:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698698812;
-        bh=CpTdll+8XVH6r91t8HW1QM29SCZcmEjYvGOHhG+p4n8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Npu7eACCrxV4K8pPP/N0tTZUxX/RH74VmHBG2sFcmSU44BkNxjEFjs7b5GKSstz9K
-         lTJTIa/vatadaGcHkD7EiR+r0fpfUJ/sfusr+hOqd2ydWc6rjMGXFlrYi7DtCE/4Ez
-         DBrbSlIWYvNemJKH3WYrQbUL57HZAqLWpUg7Q6TfSxUNYcvRDKrLqHbYwMmM7r/Nrb
-         v8+Z4Tgwhw4nmgUlLvELl2E6K7yFGOQP7Gs6nsheqH7RbUyP0kIjNYXKsn14WnXcHO
-         8gileDbWPblxDvD0AWILYP/xEtDB04LbpTk9rVKKFx3U3F02g88mQ2kE3Etvu8NJpj
-         U6mzfZ8dcBHzA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SK50q4hySz4wc6;
-        Tue, 31 Oct 2023 07:46:51 +1100 (AEDT)
-Date:   Tue, 31 Oct 2023 07:46:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     John Johansen <john.johansen@canonical.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Subject: Re: linux-next: manual merge of the apparmor tree with the security
- tree
-Message-ID: <20231031074649.3bdbec45@canb.auug.org.au>
-In-Reply-To: <CAHC9VhQbxJ4-z4Hp7CSmtcTNOWGFeQF2eEyct9=nHCMN_89YXw@mail.gmail.com>
-References: <20231027130320.69469330@canb.auug.org.au>
-        <CAHC9VhQ+Nt7CrLxSZcOVNEtAypruOmM0ST0P0JJMrOq4XYmAkw@mail.gmail.com>
-        <4b4eb40c-b65a-46e2-9e23-5412a9cdcad0@canonical.com>
-        <CAHC9VhQbxJ4-z4Hp7CSmtcTNOWGFeQF2eEyct9=nHCMN_89YXw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aiy5N31_hmy5w4rYuRJ_1ME";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 16:50:37 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED08ED
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:50:35 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afc00161daso31274797b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698699034; x=1699303834; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tlU8k+5W0N+VIEb7C9PJmPm8rehaU2/fXsyGUQ0B3ko=;
+        b=A34YrAd76+qhHyy9uiOgHUuH/CTgPIGycq8tKxijRfEDXHGv5YjTFDkoZpjqQAGvPT
+         H8IKT/UXokr8W1WGFPDRyt51GDdbrSHFkDGl9iOBySlhgG68tbFgKvtaPawvmmgG0A1H
+         cgD0JmST8sXv3YjMHg8e+wUfYMSv7uocJImTt2zi22ATd+No04gWDghE5C7L7BAHI+sS
+         YGO1BIKf+GllT6Rfn2EPRJhk1xEwxZAjymsX8UYmjsEGtmUJMqZaVbkfW5LnsXRs5F2C
+         22eeoyBF+ltXDL1QkOUXnvsN9lY94qO/VoYOXFsItL4M3IetVU0GWjZlbd5s0WFh1zZB
+         Sd8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698699034; x=1699303834;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tlU8k+5W0N+VIEb7C9PJmPm8rehaU2/fXsyGUQ0B3ko=;
+        b=as6GsYHysyRA+nVDLY4f2LgxIDXGB+mABJemEnSTmTxz3GlJJ+Cn86ET9LLdtdlTOg
+         vcqL+1BqqZHqmU4nAokp9s49e6al1i8MPx200aJfhtPk1n6fyCpdwFeGjPq3KVmccHUH
+         C6xPH2LVGaARs0koKM/4curwX27Qh3WW31NjVra2PwfAh/LHQbmIg4VdH9G4JoaF4Zy+
+         oeoe6/M7Y1UouxAoH1w2GX7Y1czXuG/WobHLERdE1xNa1teEYxMyd49Cxxd5r8iNvea2
+         TGP2pxGqfyxhKJBYzChq9mpr0IEn3MtkgPX2RpXRoTeNcLjphzhB+28LeagXSQq4T4TJ
+         ZXbQ==
+X-Gm-Message-State: AOJu0Yyz/OjF+tLg1MrWU/kuAKTEdUOEOpqS8KsVsSUpAZsAr8INC9/t
+        S5j9ZBsMSaXQNJW0M+zTQz+rzLQ=
+X-Google-Smtp-Source: AGHT+IHy83zK8iZYXhUh94dM51N49/ljRVFPASmrjDiooMVdgIlRHr35Klf2swwmRqc9iUPy5UnbXE0=
+X-Received: from ptf16.nyc.corp.google.com ([2620:0:1003:314:b293:ee7f:826f:b212])
+ (user=ptf job=sendgmr) by 2002:a25:26cd:0:b0:d9a:3a26:fb56 with SMTP id
+ m196-20020a2526cd000000b00d9a3a26fb56mr195591ybm.2.1698699034576; Mon, 30 Oct
+ 2023 13:50:34 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 16:50:14 -0400
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231030205031.177855-1-ptf@google.com>
+Subject: [PATCH v3] net: r8169: Disable multicast filter for RTL8168H and RTL8107E
+From:   Patrick Thompson <ptf@google.com>
+To:     netdev@vger.kernel.org
+Cc:     Patrick Thompson <ptf@google.com>, Chun-Hao Lin <hau@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        nic_swsd@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aiy5N31_hmy5w4rYuRJ_1ME
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+RTL8168H and RTL8107E ethernet adapters erroneously filter unicast
+eapol packets unless allmulti is enabled. These devices correspond to
+RTL_GIGA_MAC_VER_46 and VER_48. Add an exception for VER_46 and VER_48
+in the same way that VER_35 has an exception.
 
-Hi Paul,
+Fixes: 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
+Signed-off-by: Patrick Thompson <ptf@google.com>
+---
 
-On Mon, 30 Oct 2023 12:52:50 -0400 Paul Moore <paul@paul-moore.com> wrote:
->
-> On Sun, Oct 29, 2023 at 5:09=E2=80=AFPM John Johansen <john.johansen@cano=
-nical.com> wrote:
-> >
-> > is part of the Three basic syscalls series, the plan is still to have t=
-hat
-> > series bake in next for a full cycle? =20
->=20
-> Yes, that's still the plan.  Once v6.7-rc1 is out I'll rebase the LSM
-> syscall patches and I expect the vast majority of these conflicts to
-> disappear, although I'm sure we'll pick up some new ones with the rest
-> of the v6.7-rcX cycle :)
+Changes in v3:
+- disable mc filter for VER_48
+- update description
 
-These patches should not be in linux-next until after v6.7-rc1.
---=20
-Cheers,
-Stephen Rothwell
+Changes in v2:
+- add Fixes tag
+- add net annotation
+- update description
 
---Sig_/aiy5N31_hmy5w4rYuRJ_1ME
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ drivers/net/ethernet/realtek/r8169_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 361b90007148b..c92286926a1b5 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -2584,7 +2584,9 @@ static void rtl_set_rx_mode(struct net_device *dev)
+ 		rx_mode |= AcceptAllPhys;
+ 	} else if (netdev_mc_count(dev) > MC_FILTER_LIMIT ||
+ 		   dev->flags & IFF_ALLMULTI ||
+-		   tp->mac_version == RTL_GIGA_MAC_VER_35) {
++		   tp->mac_version == RTL_GIGA_MAC_VER_35 ||
++		   tp->mac_version == RTL_GIGA_MAC_VER_46 ||
++		   tp->mac_version == RTL_GIGA_MAC_VER_48) {
+ 		/* accept all multicasts */
+ 	} else if (netdev_mc_empty(dev)) {
+ 		rx_mode &= ~AcceptMulticast;
+-- 
+2.42.0.820.g83a721a137-goog
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVAFjkACgkQAVBC80lX
-0GyboAf/XupUfVXdKLvYrSCUgrEzBwzYxm90+mL6+/RD/KibOPbvIq0hLzt2rtFf
-qukY435IlE0d9qTl0zlf2AjGjTlLcJq99h39PfJdjX7RvePVFbThlnnk1uyQl1rl
-jmr5BJrEfB33mBg7v8q2v/dqTC7jXdHSeYbuYMwD9JDTuXY1MKOoYcD4FOw8jyiy
-re6d2+6FpNj4rIm7raCAYYja62PkHRudcwpVgXHwVNRwxjSihC2y8b9vtU6MUqsh
-ovqArLTSpdHvrFULpphUmRUuKNww/9Qf73OofVLiDZgLBsB3hzFXk8QWsLIM23X/
-Km+nVuCW4kZ4tcLeLF88fLO8XWfh8A==
-=gVFO
------END PGP SIGNATURE-----
-
---Sig_/aiy5N31_hmy5w4rYuRJ_1ME--
