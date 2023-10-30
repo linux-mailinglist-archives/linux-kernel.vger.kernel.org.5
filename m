@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC797DBFF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0866B7DBFFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjJ3SjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 14:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S230221AbjJ3SkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 14:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJ3SjL (ORCPT
+        with ESMTP id S229537AbjJ3SkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 14:39:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82E8DD
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:39:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F8C9C433C7;
-        Mon, 30 Oct 2023 18:39:06 +0000 (UTC)
-Date:   Mon, 30 Oct 2023 14:39:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>, linux-mm@kvack.org,
-        x86@kernel.org, akpm@linux-foundation.org, luto@kernel.org,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
-Message-ID: <20231030143904.5db873b9@gandalf.local.home>
-In-Reply-To: <c573ef1a-b269-469c-a63f-6ec9c137d789@efficios.com>
-References: <20231025235413.597287e1@gandalf.local.home>
-        <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
-        <20231026071413.4ed47b0e@gandalf.local.home>
-        <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
-        <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
-        <7871472b-a0c4-4475-9671-69a3244f956d@efficios.com>
-        <20231026164549.14d45c60@gandalf.local.home>
-        <644da047-2f7a-4d55-a339-f2dc28d2c852@efficios.com>
-        <20231027122442.5c76dd62@gandalf.local.home>
-        <f0741a5b-229a-429a-8451-8af17261be9e@efficios.com>
-        <20231027124930.3753cdd4@gandalf.local.home>
-        <ce0dbdaf-6be4-4f3b-9b5a-aedeac00ddf6@efficios.com>
-        <20231030094508.031357b4@gandalf.local.home>
-        <bb628206-28eb-470e-aaea-0f18ce94e983@efficios.com>
-        <20231030141956.05661b90@gandalf.local.home>
-        <c573ef1a-b269-469c-a63f-6ec9c137d789@efficios.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 30 Oct 2023 14:40:11 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3DDB7;
+        Mon, 30 Oct 2023 11:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1698691198; x=1699295998; i=rwahl@gmx.de;
+        bh=27RRESGc2uODi+u0giI2RrxmPZLNkWSIaKlElwaCV/U=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=m4q/cNMHfPFXVDXhV7VC0poCbjnOHFxgFsSXoYHfsDCs4UVqSLbhuzVPrIX0jnwi
+         PCvPBAMQVg5lLd0Zt2cz7GM+IOHPwOdpTNa1GaNGkytL2Nv7A5X2seQiOyovBhvbw
+         8kME2mRTvRmA99OE3EmAdKBRz5qlOadn05coR8Va2RcEJSBKz3ABnDgwbUHNK+bkE
+         JS1PZhFywJVmmQ4Eq7TUtx0J8MDOt36vcn2+xGB2D94LL63cpbywdGNgJGEjzjmV6
+         /GMseLwBu0wzaWm9cKk8IGAIzuKF2AiAUl/XXKbDKkREXTIJwskNh8PzXQNZNc4uY
+         k62IFBvNziD4n0LUbQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MGhyc-1qjjep3kEk-00DkmI; Mon, 30
+ Oct 2023 19:39:57 +0100
+From:   Ronald Wahl <rwahl@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Ronald Wahl <ronald.wahl@raritan.com>
+Subject: [PATCH] serial: 8250: 8250_omap: Do not start RX DMA on THRI interrupt
+Date:   Mon, 30 Oct 2023 19:39:51 +0100
+Message-ID: <20231030183951.15331-1-rwahl@gmx.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Fbjb7EBuSKecN9y3Stcy7ML/8gd17DauMMlKaSXlrmHhzRO8LyE
+ 82/lESIwfH+SOlwshww6Kpm1HY7efEV4oa+V1MlSutGd1Agxxdm71go6hgt7ehnRsDsrbMS
+ nGRip/Q2fR46TGc3DxUKm3mq3a+bU9wlQlG2YvyCiIAhAaEbz7thw7Xa+61Gin+bjv63Sfi
+ iMdfuEh3wZfmvTt7HCW9A==
+UI-OutboundReport: notjunk:1;M01:P0:EqntbAvvnIk=;mVEf8wRMZgwoIkthCFxxD+snD6g
+ 6e4RlIqCJbvuax1Qou3ZZJuCE7hlgJObVxKaN1gKk4hxYPn3aBuhNlp0aYVNb8iS0EGPsojtq
+ CqyYVNEpoM7pQN22SqqJTxCHVn8a+NpESnlqaojbmF5KzbHCC80yZ9UqyMZoeMhcD+Yotd6XB
+ upXpnhsDFUiZ0gy++p0hEbefqIytYcaXAQDYCKIKcuxYmUkzdG6HSTV4eMj2FaIVuoZ7y7EuI
+ DybgmeaFEALETCgP4r9FbLS8/SS9Q7hWoCU8DE17Cesn+GZZpKaNQnXkt3gFcoidAA1L92nVx
+ DgkA9+tWAJZ9BHuq4KHa4JYTfsmxG0TJq7GmnwGQPFqkDctAvYTP9x3J6m9Lx61UbxtQNjFnU
+ XrSTJ4kbZst/bu6VSGVW75S8kxHP8Vam7N8Y3QWaDRfWbhJCUMr850yKLJG13PewltD8+Yjk8
+ 5NpAjqpdsbcM3yZKjhHXBZYyThQ2TWBhJ4P8dUi4m/GDEENQ1VpNK0bjD8Zg0b/orwR4PuKqN
+ fzJQsUfYiuDnk/+s5z75VMPcmCHZnxCrKt8ZHlfAPZTdiw9lSyMAffMosPrK9KcYe1+E78U0v
+ MY5qwXwJcXPsvovbwRF4cOKcfHboghXm3kaFTOm3tMSldU+hWKPQ9o+iVn8fP2CXh4cCP9ltX
+ WshWqyE5k8kRolxUHYhLOF8303eZD6X0HF7NiA/7UmsfA/bmRctRmsxfo/VxSEOBLjsKNXigA
+ +YeWYCoCwFYWu1QYcLcnsZTeGvcX22uqX348yv4FugFtq9HROh8p3fJBrJsU02sPovR7WS+xg
+ 4TnL9UyEGlE+OAtSBMbnqeTs1kQlqbpHM9snBX2pYP3gYMonlCeRWkYx2h0XHjeOvG7d4CvmK
+ ptSzsgMHZj0E0bTHUJCT6EKMWqFbNirBaOi4AeI5wH4R+cTXM2LJyxAnqrbhYKGuuY73Du3PI
+ Vb2XQQfFDzOWZY7Lz29m5Y2FE4o=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 14:27:10 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Starting RX DMA on THRI interrupt is too early because TX may not have
+finished yet.
 
-> > So I just made every unlock disable the extended time slot. I need to go
-> > back and enable both a counter and an on/off as I now realize that the spin
-> > locks (called within the lwlock) will disable the extend time before the
-> > lwlock is released. This should work if I have the spinlocks inc and dec
-> > (they are straight forward and all locks are associated with an easily
-> > found unlock), and have the lwlock use bit 31 as an on/off switch.  
-> 
-> This extra on/off switch appears to be working around userspace issues.
+This change is inspired by commit 90b8596ac460 ("serial: 8250: Prevent
+starting up DMA Rx on THRI interrupt") and fixes DMA issues I had with
+an AM62 SoC that is using the 8250 OMAP variant.
 
-Yep!
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+=2D--
+ drivers/tty/serial/8250/8250_omap.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-But that doesn't mean there's not a legitimate use case for it. I don't
-want to limit the feature for that. It's unlikely bit 31 would ever be hit
-by a counter anyway, for which it could be used as an on/off switch the
-same way the NEED_RESCHED bit is used as an on/off switch for preempt_count
-in the kernel.
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250=
+/8250_omap.c
+index c7ab2963040b..f2f59ec6b50b 100644
+=2D-- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1282,10 +1282,11 @@ static int omap_8250_dma_handle_irq(struct uart_po=
+rt *port)
 
-> 
-> > Anyway, I would let user space decide what it wants to do, and giving it 31
-> > bits to say "I'm extended" and let user space come up with how it handles
-> > those 31 bits.  
-> 
-> If this makes it into the RSEQ uapi, RSEQ should state how userspace
-> should collaborate wrt those bits (e.g. nesting counter protocol), even
-> though it's not a kernel ABI per se. Otherwise we'll just push this to
-> libc to specify this, which is odd.
+ 	status =3D serial_port_in(port, UART_LSR);
 
-I agree that user space should have the usage specified. Hell, that bit
-could just be used for testing purposes. I think having it reserved is a
-good thing than not specifying it and limiting its usage later.
+-	if (priv->habit & UART_HAS_EFR2)
+-		am654_8250_handle_rx_dma(up, iir, status);
+-	else
+-		status =3D omap_8250_handle_rx_dma(up, iir, status);
++	if ((iir & 0x3f) !=3D UART_IIR_THRI)
++		if (priv->habit & UART_HAS_EFR2)
++			am654_8250_handle_rx_dma(up, iir, status);
++		else
++			status =3D omap_8250_handle_rx_dma(up, iir, status);
 
--- Steve
+ 	serial8250_modem_status(up);
+ 	if (status & UART_LSR_THRE && up->dma->tx_err) {
+=2D-
+2.41.0
+
