@@ -2,159 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 204E17DB24B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 04:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA0E7DB258
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 04:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbjJ3Dea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 23:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
+        id S231484AbjJ3DxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 23:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3De1 (ORCPT
+        with ESMTP id S229514AbjJ3DxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 23:34:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9045897
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 20:34:24 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507ad511315so5806609e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 20:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698636863; x=1699241663; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fGS4hNCMCGzlmos7YQoGqMipr4zcr59AwUfz4i9isKs=;
-        b=lgQg8hy8VcC5SDgENxGApCWjtSwcas/rnSmRYhovuysMROytW2bJOGMLYbGzsInzHI
-         U3qZlNxCrIJ1yWAMkhxTyXA/82n4ywu9p01BZaxp9zfVBRxwKSujikiSULLLCSQZIkrK
-         wRiI8sZhEt10IbtQghas6RcvvT/dSsHXASWyOSKG/DBHnX35CswxzhxmXQ6O4uw19JUY
-         Dj5FGOdCzWi10k9zX++1BmilbDeRLTe7HjG6LcGHNLXuI/PY/gRsrr+8i9PoV7e5FR5l
-         BunzF5CHPVYf0tI0iNU3P2QzrHpjzyHhPnuIe++VeELnsEzSouVwwxGelImu+nnOJawY
-         OziA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698636863; x=1699241663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fGS4hNCMCGzlmos7YQoGqMipr4zcr59AwUfz4i9isKs=;
-        b=oO6kElM/0UtBXz200RroTUghd5e8UcgnOhYaOdogx4eU3uBYJsFbR6R7rYfvvXn9Ae
-         bq1jf2gJ6Gm5iQvjfxwEmIK4fmPg2zK7R9tr7OPoYQSU0rN3K4fyWWeyNtqAOf9nJDU/
-         5tDwbzdZaMG6KMQqWULLszNApa5z1+105hOxt2jL4R48i1JBzmcUgKmKA02/c/I6Zxzd
-         FpVijovp++GcCMuJaCOXjRyIgDYRgfiVeZlt5S+RoPJVByPwj4/V1IvRG7wAzRGpH44b
-         PRLB9zkI4z8UkTeG6IfMT9qszNQWz34Ts+/gtuuSC0FbtH6+LbR9u61DFX0nHyBGeetG
-         cZdg==
-X-Gm-Message-State: AOJu0YxwIwZjd04bWoCi2MJPY8EtQR5B19IoZKQKqtp4WaNHe0/AzhQw
-        oMdjX6FwHg+3fvZzgq5i81iyeB2zFgm/iCR/+SmNTw==
-X-Google-Smtp-Source: AGHT+IHDk0ZTQwDTQgg/afhMScBDrQXQzC/zS5Jz4d5p7lDgec2dt8Qrsdi+0/JMMaupJKq1ZCybuQW1Ygh6bb9ELHc=
-X-Received: by 2002:a05:6512:2244:b0:500:9a45:62f with SMTP id
- i4-20020a056512224400b005009a45062fmr8329638lfu.8.1698636862700; Sun, 29 Oct
- 2023 20:34:22 -0700 (PDT)
+        Sun, 29 Oct 2023 23:53:12 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51209B;
+        Sun, 29 Oct 2023 20:53:07 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vv5D-ur_1698637982;
+Received: from 30.240.112.195(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vv5D-ur_1698637982)
+          by smtp.aliyun-inc.com;
+          Mon, 30 Oct 2023 11:53:03 +0800
+Message-ID: <889576c1-4761-4329-9f3b-63a2930c391d@linux.alibaba.com>
+Date:   Mon, 30 Oct 2023 11:53:01 +0800
 MIME-Version: 1.0
-References: <20231025095248.458789-1-hezhongkun.hzk@bytedance.com> <CAKEwX=P+c3kSKx3Ptz2PxHJfGGxyV5uO8gK41kDjkYV9ytcP6w@mail.gmail.com>
-In-Reply-To: <CAKEwX=P+c3kSKx3Ptz2PxHJfGGxyV5uO8gK41kDjkYV9ytcP6w@mail.gmail.com>
-From:   =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
-Date:   Mon, 30 Oct 2023 11:34:11 +0800
-Message-ID: <CACSyD1MxxhAGFQL4aq7DKNdROdtOs1Mj6R-EsxbPfr=JdVEzeg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] zswap: add writeback_time_threshold
- interface to shrink zswap pool
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Yicong Yang <yangyicong@huawei.com>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
+References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
+ <20231020134230.53342-4-xueshuai@linux.alibaba.com>
+ <20231023123202.GA3515@willie-the-truck>
+ <cf72afb6-44c7-45f0-bfaa-6881f6782ebf@arm.com>
+ <5b695595-d243-4ea5-97bb-f4c74398fc27@linux.alibaba.com>
+ <6790b6ea-4874-4a8c-a8fd-d9ab6caaf1d4@arm.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <6790b6ea-4874-4a8c-a8fd-d9ab6caaf1d4@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi  Nhat=EF=BC=8C thanks for your time.
 
-> My original concern with this approach (i.e regarding what value should b=
-e
-> used, and how frequent should userspace trigger this time-based writeback
-> mechanism) still stands.
->
-> If I'm a user of this feature, how would I figure out how long should an =
-object
-> lie dormant in the zswap pool before it is highly likely to be a cold obj=
-ect?
-> Users have no clue what the access time stats look like, what is its
-> distribution,
-> etc., and will have to somehow guesstimate this based purely on their kno=
-wledge
-> of the program's memory access patterns (which, in many cases, are intent=
-ionally
-> abstracted away).
->
-> It's rather hard for users to know what value of cutoff makes sense, with=
-out
-> extensive experiments on a realistic workload.
 
-I understand your concern, and it is indeed a problem. There are
-currently too few
-contexts in which this feature is used, and determining the threshold
-is very difficult.
-So I have a new idea to show the lie dormant time distribution through
-a new patch,
-as you mentioned above.Based on this time distribution, users can make bett=
-er
-choices.
+On 2023/10/27 02:06, Robin Murphy wrote:
+...
+>>>>      return ret;
+>>>>
+>>> [...]
+>>>>> +static int __init dwc_pcie_pmu_init(void)
+>>>>> +{
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
+>>>>> +                      "perf/dwc_pcie_pmu:online",
+>>>>> +                      dwc_pcie_pmu_online_cpu,
+>>>>> +                      dwc_pcie_pmu_offline_cpu);
+>>>>> +    if (ret < 0)
+>>>>> +        return ret;
+>>>>> +
+>>>>> +    dwc_pcie_pmu_hp_state = ret;
+>>>>> +
+>>>>> +    ret = platform_driver_register(&dwc_pcie_pmu_driver);
+>>>>> +    if (ret)
+>>>>> +        goto platform_driver_register_err;
+>>>>> +
+>>>>> +    dwc_pcie_pmu_dev = platform_device_register_simple(
+>>>>> +                "dwc_pcie_pmu", PLATFORM_DEVID_NONE, NULL, 0);
+>>>>> +    if (IS_ERR(dwc_pcie_pmu_dev)) {
+>>>>> +        ret = PTR_ERR(dwc_pcie_pmu_dev);
+>>>>> +        goto platform_device_register_error;
+>>>>> +    }
+>>>>
+>>>> I'm a bit confused as to why you're having to create a platform device
+>>>> for a PCI device -- is this because the main designware driver has already
+>>>> bound to it? A comment here explaining why you need to do this would be
+>>>> very helpful. In particular, is there any dependency on another driver
+>>>> to make sure that e.g. config space accesses work properly? If so, we
+>>>> probably need to enforce module load ordering or something like that.
+>>>
+>>> AFAICS the platform device/driver serve no purpose other than being a hilariously roundabout way to run the for_each_pci_dev() loop in dwc_pcie_pmu_probe() upon module init, and to save explicitly freeing the PMU name/data. Furthermore the devres action for dwc_pcie_pmu_remove_cpuhp_instance() is apparently going for even more style points at module exit by not even relying on the corresponding .remove callback of the tenuous platform driver to undo what its .probe did, but (ab)using the device's devres list to avoid having to keep track of an explicit list of PMU instances at all.
+>>
+>> You are right.
+>>
+>>>
+>>> Frankly I think it would be a lot more straightforward to just maintain that explicit list of PMU instances, do the PMU creation directly in dwc_pcie_pmu_init(), then unregister and free them in dwc_pcie_pmu_exit(). Not every driver has to contain a literal struct device_driver.
+>>
+>> Agreed, it might be more straightforward. But personally speaking, I prefer
+>> current implementation.
+>>
+>>      - standard driver creation / probe flow is more normal
+> 
+> It's really not, though. We have a weird singleton platform device appearing out of nowhere which effectively represents the module being loaded, rather than anything about the actual underlying hardware. If you want this to look like "normal" driver model usage, then create a separate platform device for each physical PCI PMU instance you discover (potentially via both a one-time scan at module_init and an ADD_DEVICE hotplug notifier later), then have the platform driver just register the corresponding PMU device in .probe and unregister it in .remove, without confusing devres action tricks.
+> 
 
->
-> If I may ask, how do you use this feature internally? You don't have to
-> reveal any NDA-breaking details of course, but just a rough idea of
-> the kind of procedure to determine sensible threshold values will
-> help your case and the future user of this feature a lot.
->
+Got it. If IIUC, I should register a platform device for each matched pci
+device in module_init() or when BUS_NOTIFY_ADD_DEVICE event triggered, and
+unwind it in module exit() and when BUS_NOTIFY_DEL_DEVICE event triggered.
 
-As you mentioned, we decide this threshold based on the knowledge of the
-program's memory access patterns and the multiple test results for differen=
-t
-business models=EF=BC=8Cjust an experience value.
-So  the patch to show the lie dormant time distribution should be valuable.
+Thank you for valuable comments.
 
->
-> nit: looks there's a double space between time and will?
->
-
-Oh, got it, thanks.
-
-> > +
-> > +          The zswap can be swapout and save memory in userspace proact=
-ively
-> > +          by writing writeback_time_threshold in second.
->
-> I think we should include a bit more details in this config option descri=
-ption.
-> Feel free to just recycle details from the commit log of course, but at l=
-east
-> there should be something along the line of:
->
-> When this is selected, users can proactively trigger writebacks by writin=
-g a
-> value to the writeback_time_threshold file. The pages whose last access t=
-ime
-> is older than this value will be written back.
->
-> (please beautify that paragraph if you use it).
->
-
-Thanks  a lot for your description. I will add it.
-
->
-> Do you have any experimental results/benchmarks that show
-> the wins from this approach?
-
-OK,  Add it for next time.
->
-> Writing back cold pages from zswap is a good idea from a
-> theoretical and philosophical POV, but all sort of things could go
-> wrong, especially if we write pages that turn out to be needed
-> later on. Some experimental results would be nice.
-
-Thanks, i will add a new patch to show the last acccesed time distribution
-and add experimental results.
+Best Regards,
+Shuai
