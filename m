@@ -2,137 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0AE7DC0BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96037DC0BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbjJ3TlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
+        id S229937AbjJ3Tlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjJ3TlV (ORCPT
+        with ESMTP id S229625AbjJ3Tlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:41:21 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB8AB3;
-        Mon, 30 Oct 2023 12:41:18 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SK3Sb4Fw2z67ZHd;
-        Tue, 31 Oct 2023 03:37:19 +0800 (CST)
-Received: from localhost (10.48.147.130) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 30 Oct
- 2023 19:41:15 +0000
-Date:   Mon, 30 Oct 2023 19:41:12 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 01/17] pinctrl: intel: Provide Intel pin control wide
- PM ops structure
-Message-ID: <20231030194112.00001917@Huawei.com>
-In-Reply-To: <20231030120734.2831419-2-andriy.shevchenko@linux.intel.com>
-References: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
-        <20231030120734.2831419-2-andriy.shevchenko@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 30 Oct 2023 15:41:51 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D44B3;
+        Mon, 30 Oct 2023 12:41:49 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507ad511315so7073979e87.0;
+        Mon, 30 Oct 2023 12:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698694908; x=1699299708; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLBCiejWcLX5tzcNkh0MgObjl1pJEDZ1NaFHdVzEHHY=;
+        b=Zoez7amHjbnHWrNfZ+mPJoo0XuXENbH2hP/FUoM7p6uuD/q7tAd//H7YAm5IBcDbLQ
+         8fveMTFXvvSWI7EqtIuvEpH1Cjm7YD2ZtMg3vrR8UxApIuN28ISezHVg5ibs8hwmtq/+
+         OoquqEt8cL//KZreMFWmSDjDxpez6xdQnHzMaqBwaYjLvsLLJvnkP1pSwJJh2fcyKFd5
+         ahkedhgPxOqqp8KHXWh0uiR7OjQdQtFTsXWvTPjMihyM5rfkKcFeKA2pyhq6qwDcdxoA
+         N33mET2lI9TTX1ImKQOr9PQclJewpPE1PDLHDCdbgX65N9Brp7Zf3cTyb8mr9ZS9WHvz
+         +ong==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698694908; x=1699299708;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oLBCiejWcLX5tzcNkh0MgObjl1pJEDZ1NaFHdVzEHHY=;
+        b=k57uthC82+AIMpJvwlSutb7+2oJZeVwSvVGz9xqV9DIaSVgkYG6cDs57dzWPSV03Xm
+         SnCGtcwjgayv3Hk0Zqrl85ig60Ely+Jw0O8NSyWNKqmAW6mx7Lhx1UWZ0hfs+dOmjnQu
+         TNKpSpzjrYe7cpg3kXEN8aibCzz3Wgr4cLwThvlje+pJwfSQATKq888IcDGibScTQy1+
+         bJ666wgJHt0+qRjg4yoaKG/ebpEpxiuOy/M1DSH36GWgpp/MlbS/wHZZPFfmCP4etxr3
+         19Pgkn7XMopJzOuxoKOiCKVzc2MLBK3nma0U73l6EThTlCYj0tkPZ++LZqiEOzhouftv
+         wdxg==
+X-Gm-Message-State: AOJu0YzXSMBGSAjDsgqV0Y/GZzJfvjzo4VByQvSlrMaskwIUni98t2cj
+        EWdlfE/8W7iQ5TkMhseD+EU=
+X-Google-Smtp-Source: AGHT+IH8oLUZxa/qDapfaqh+h8SSJjQMEWfN8vEfOglWrr6qY0TlgxnahKt61qU8BJDMkKNqRG53yw==
+X-Received: by 2002:a19:ae08:0:b0:507:a58d:24ba with SMTP id f8-20020a19ae08000000b00507a58d24bamr7836062lfc.63.1698694907651;
+        Mon, 30 Oct 2023 12:41:47 -0700 (PDT)
+Received: from hex.my.domain (83.11.208.51.ipv4.supernova.orange.pl. [83.11.208.51])
+        by smtp.gmail.com with ESMTPSA id m10-20020ac2428a000000b005057184ae62sm1527802lfh.96.2023.10.30.12.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 12:41:47 -0700 (PDT)
+From:   Artur Weber <aweber.kernel@gmail.com>
+Subject: [PATCH v2 0/6] mfd: bcm590xx: Add support for BCM59054
+Date:   Mon, 30 Oct 2023 20:41:42 +0100
+Message-Id: <20231030-bcm59054-v2-0-5fa4011aa5ba@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.48.147.130]
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAPYGQGUC/0XMSwrCMBSF4a2UOzaSZzWO3Id0UNPb9oJpSiJBK
+ dm7sQgO/8Ph2yBhJExwaTaImClRWGrIQwNu7pcJGQ21QXKpBJeW3Z03lhvNFA6twVZbrQzU+xp
+ xpNdO3braM6VniO9dzuK7/hDF/0gWjDNlxGm0Z+4Equvke3ocXfDQlVI+2g0eBKAAAAA=
+To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Stanislav Jakubek <stano.jakubek@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Artur Weber <aweber.kernel@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698694906; l=2364;
+ i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
+ bh=xEWklxV2bb+THqz2hq7fCZYhiQfBC65HD3CxOBM/EsU=;
+ b=Hi1r6Cuym/1TEN0XMMiSJF37zFmuslgicn4heRqmRSDjBZF7B+8LBPVuGY7+lww/KzdqK1Hws
+ J3BGKg5B1+9Bg3FvlnTf7Zvy9Q7VHd1v3wG4qmgETkzgFpAaEpf8xYv
+X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
+ pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 14:07:18 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Add support for the BCM59054 MFD to the bcm590xx driver and fix a
+couple of small bugs in it that also affected the already supported
+BCM59056.
 
-> With the help of EXPORT_NS_GPL_DEV_PM_OPS() and
-> NOIRQ_SYSTEM_SLEEP_PM_OPS() we may convert PM ops functions to become
-> static. This also takes into account the PM configuration options such
-> as CONFIG_PM and CONFIG_PM_SLEEP. Hence the first step is to provide
-> a generic PM ops structure that can be used by drivers directly.
+While we're at it - convert the devicetree bindings to YAML format
+and drop the bcm59056 DTS in favor of describing the PMU in users'
+DTS files, as is done for most other MFDs.
 
-It's a good thing to do, but if rolling a v3, should mention that the export
-moves into the namespace.
+The BCM59054 is fairly similar to the BCM59056, with the primary
+difference being the different number and layout of regulators.
+It is primarily used in devices using the BCM21664 and BCM23550
+chipsets.
 
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Other than that,
-LGTM
+I'd appreciate testing on BCM59056-equipped boards to make sure
+they aren't affected negatively by the changes. So far, I've
+tested this patch series on a Samsung Galaxy Grand Neo (BAFFINLITE
+REV02) with a BCM23550 chipset (BCM59054 MFD); this device is not
+yet supported in the mainline kernel, but I'm working on adding
+support for it, and other commercially-available devices using
+Broadcom Kona chips. Hopefully some of that work will make it
+into mainline in the near future ;)
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+---
+Changes in v2:
+- Fixed BCM59054 ID being passed to BCM59056 function in the
+  regulator driver
+- Dropped linux-rpi-kernel from the CC list
+- Link to v1: https://lore.kernel.org/r/20231030-bcm59054-v1-0-3517f980c1e3@gmail.com
 
-> ---
->  drivers/pinctrl/intel/pinctrl-intel.c | 8 +++++---
->  drivers/pinctrl/intel/pinctrl-intel.h | 4 ++--
->  2 files changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-> index b19527a8728e..9fbdc7bfa65c 100644
-> --- a/drivers/pinctrl/intel/pinctrl-intel.c
-> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
-> @@ -899,7 +899,7 @@ static int intel_gpio_to_pin(struct intel_pinctrl *pctrl, unsigned int offset,
->   *
->   * Return: a GPIO offset, or negative error code if translation can't be done.
->   */
-> -static __maybe_unused int intel_pin_to_gpio(struct intel_pinctrl *pctrl, int pin)
-> +static int intel_pin_to_gpio(struct intel_pinctrl *pctrl, int pin)
->  {
->  	const struct intel_community *community;
->  	const struct intel_padgroup *padgrp;
-> @@ -1682,7 +1682,6 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
->  }
->  EXPORT_SYMBOL_NS_GPL(intel_pinctrl_get_soc_data, PINCTRL_INTEL);
->  
-> -#ifdef CONFIG_PM_SLEEP
->  static bool __intel_gpio_is_direct_irq(u32 value)
->  {
->  	return (value & PADCFG0_GPIROUTIOXAPIC) && (value & PADCFG0_GPIOTXDIS) &&
-> @@ -1883,7 +1882,10 @@ int intel_pinctrl_resume_noirq(struct device *dev)
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(intel_pinctrl_resume_noirq);
-> -#endif
-> +
-> +EXPORT_NS_GPL_DEV_PM_OPS(intel_pinctrl_pm_ops, PINCTRL_INTEL) = {
-> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(intel_pinctrl_suspend_noirq, intel_pinctrl_resume_noirq)
-> +};
->  
->  MODULE_AUTHOR("Mathias Nyman <mathias.nyman@linux.intel.com>");
->  MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
-> diff --git a/drivers/pinctrl/intel/pinctrl-intel.h b/drivers/pinctrl/intel/pinctrl-intel.h
-> index 2bb553598e8b..d3f511f97ed9 100644
-> --- a/drivers/pinctrl/intel/pinctrl-intel.h
-> +++ b/drivers/pinctrl/intel/pinctrl-intel.h
-> @@ -255,10 +255,8 @@ struct intel_pinctrl {
->  int intel_pinctrl_probe_by_hid(struct platform_device *pdev);
->  int intel_pinctrl_probe_by_uid(struct platform_device *pdev);
->  
-> -#ifdef CONFIG_PM_SLEEP
->  int intel_pinctrl_suspend_noirq(struct device *dev);
->  int intel_pinctrl_resume_noirq(struct device *dev);
-> -#endif
->  
->  #define INTEL_PINCTRL_PM_OPS(_name)					\
->  const struct dev_pm_ops _name = {					\
-> @@ -266,6 +264,8 @@ const struct dev_pm_ops _name = {					\
->  				      intel_pinctrl_resume_noirq)	\
->  }
->  
-> +extern const struct dev_pm_ops intel_pinctrl_pm_ops;
-> +
->  struct intel_community *intel_get_community(struct intel_pinctrl *pctrl, unsigned int pin);
->  
->  int intel_get_groups_count(struct pinctrl_dev *pctldev);
+---
+Artur Weber (6):
+      dt-bindings: mfd: brcm,bcm59056: Convert to YAML
+      dt-bindings: mfd: brcm,bcm59056: Add compatible for BCM59054
+      ARM: dts: Drop DTS for BCM59056 PMIC
+      mfd: bcm590xx: Add compatible for BCM59054
+      regulator: bcm590xx: Add support for BCM59054
+      regulator: bcm590xx: Add proper handling for PMMODE registers
+
+ .../devicetree/bindings/mfd/brcm,bcm59056.txt      |  39 --
+ .../devicetree/bindings/mfd/brcm,bcm59056.yaml     | 142 +++++
+ arch/arm/boot/dts/broadcom/bcm28155-ap.dts         |  68 +-
+ arch/arm/boot/dts/broadcom/bcm59056.dtsi           |  91 ---
+ drivers/mfd/bcm590xx.c                             |   5 +-
+ drivers/regulator/bcm590xx-regulator.c             | 708 ++++++++++++++++-----
+ include/linux/mfd/bcm590xx.h                       |   7 +
+ 7 files changed, 728 insertions(+), 332 deletions(-)
+---
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+change-id: 20231029-bcm59054-3ed65e649435
+
+Best regards,
+-- 
+Artur Weber <aweber.kernel@gmail.com>
 
