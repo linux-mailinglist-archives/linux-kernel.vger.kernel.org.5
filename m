@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E977DB338
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959957DB350
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbjJ3G3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41972 "EHLO
+        id S230262AbjJ3GbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjJ3G32 (ORCPT
+        with ESMTP id S231579AbjJ3Ga4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:29:28 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA4AAB
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:29:25 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50917cd6d6eso2241e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698647364; x=1699252164; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rzVHmjEI+YpEe4gZLECBFUB4/fthvdQpMU6WpBuzUV0=;
-        b=KjESlcO0g4o7IpYQhSZpDNTE5vfv1v1m1tmoJ/14crc9m18CMtgf/A1BpRDPldgDRY
-         +el+PQn5YjW0goEbdseq4MPE8XV9/B7vmXhOcOj6X05m5Gi2g7VHUW5cF4m2AUVSD/w1
-         ye+zo9X880Bo++vUlJ3EOfdxS0KpYpKecPAkYJUhmZWBzYU/HlWsN/HNa+47iqIiMmU4
-         FELmTA5expLe37hoGR2JKEAQTQbcTOoeGAi5fmKGeBfyKLl0pOFewq2k0Ep7vysElD93
-         ac2bOmkmax4XCxwp/HU+ZGgFAJIPo3ce9IjEcnE7XXxYU299H7pRose3uzJBHOf73C0t
-         EmxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698647364; x=1699252164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rzVHmjEI+YpEe4gZLECBFUB4/fthvdQpMU6WpBuzUV0=;
-        b=Bd6FfKTtuT/EGUuAqYAbybhiybo6ibvPSqNZWgUcWcdQbO7dmsRkjqN31bGfR9wdWn
-         xTBIR+LG5maDHEkhwVURt9VLTNGauML84DMVjklTyPGIabo/CJozStpqUAYwHi1bb7s7
-         rdD6aIT3C0g9Kg3gjj42lCCM2vYae7sWsTeHms8CEhGeR91TKBDBxlWwDyW2kISmDQ0/
-         pa2JzpcZ2wDv15QT/ggkjgvBXLlTJQ8prATyiB//ibdMddsJRmtLBEXG2z2MdbBo4X2d
-         NucSvr3p43o0RiecdGXB0pFw01/UGoXcpMBHv5GAAAyRDkegu1vfScJHiXBjMbx/hYdQ
-         ONQw==
-X-Gm-Message-State: AOJu0Yz8A7tuRIMv0qpz37Wtu9dN047b4/eu0Yj5wXfErZlKTM9z40nG
-        +FfqfHa2NmayhixAzjpilrz95yg0maGmlS15xlgmeA==
-X-Google-Smtp-Source: AGHT+IGNd8Zyh1SuuCCalJuqfkJij1W8Z950z1DL0BW7grGmSYMkrmd9YuoBi5W65KCG6eZKQxoa4NdSsGzWynyaMVE=
-X-Received: by 2002:ac2:4e85:0:b0:501:b029:1a47 with SMTP id
- o5-20020ac24e85000000b00501b0291a47mr58180lfr.1.1698647363870; Sun, 29 Oct
- 2023 23:29:23 -0700 (PDT)
+        Mon, 30 Oct 2023 02:30:56 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC2F1710;
+        Sun, 29 Oct 2023 23:30:25 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39U4qVpp029054;
+        Mon, 30 Oct 2023 06:30:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=LoQmDt0HC3WFsyV4QHLlwmtClrcplDakQD+6QZ3lau4=;
+ b=QFXFzfL+eu1mKbx/G2Aetz2ma9bb2HOTOHlUDf47I0LHDqdhSqhp+0WHnWOXdfRuESBf
+ s56yX4Pb+1wEOjie3bg6Q7eDpDaFMeETz7sDsV3FKR9/6hBFSo1etwIUvqUlWQvTM9mz
+ LxLwxBeDe9ShcnqLaEJyT3nASsGC5hFH9bFQJ/EbkmLby0hEvJhfpTE+QnIsmCEYPGAp
+ +dkkpwHVg5VCLZvBQdh1HRNw/4VlFFNFOxOEMA0+Pke0SA8KIj0UPFfXfH/HylKO28yr
+ fL61ztbEZPMwxm/XeC0rnhXSn42vp8SrwXCBFeyFRFCD8oJ+2BprjLLnc+5ad9mfBosj Aw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0ufyjw3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 06:30:15 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39U6UEpp028914
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 06:30:14 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 29 Oct
+ 2023 23:30:11 -0700
+Message-ID: <3af43db0-0459-733b-ec13-76041eaf8b42@quicinc.com>
+Date:   Mon, 30 Oct 2023 12:00:08 +0530
 MIME-Version: 1.0
-References: <VI1P193MB075256E076A09E5B2EF7A16F99D6A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
- <CA+fCnZfn0RnnhifNxctrUaLEptE=z9L=e3BY_8tRH2UXZWAO6Q@mail.gmail.com> <VI1P193MB07524EFBE97632D575A91EDB99A2A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-In-Reply-To: <VI1P193MB07524EFBE97632D575A91EDB99A2A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 30 Oct 2023 07:29:10 +0100
-Message-ID: <CACT4Y+a+xfzXBgqVz3Gxv4Ri1CqHTV1m=i=h4j5KWxsmdP+t5A@mail.gmail.com>
-Subject: Re: [RFC] mm/kasan: Add Allocation, Free, Error timestamps to KASAN report
-To:     Juntong Deng <juntong.deng@outlook.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>, ryabinin.a.a@gmail.com,
-        glider@google.com, vincenzo.frascino@arm.com,
-        akpm@linux-foundation.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] bus: mhi: host: Add alignment check for event ring read
+ pointer
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>
+References: <20231023-alignment_check-v1-1-2ca5716d5c15@quicinc.com>
+ <20231027130947.GD17527@thinkpad>
+ <27609135-af23-68b3-0c2c-b4f0c40963d0@quicinc.com>
+ <20231029072645.GA2481@thinkpad>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20231029072645.GA2481@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qG66vgf3bK_BhWVsntaHUEfTW0AKfU0y
+X-Proofpoint-ORIG-GUID: qG66vgf3bK_BhWVsntaHUEfTW0AKfU0y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_04,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 clxscore=1015 mlxlogscore=999 phishscore=0 suspectscore=0
+ impostorscore=0 spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310300047
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,69 +86,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Oct 2023 at 10:05, Juntong Deng <juntong.deng@outlook.com> wrote=
-:
->
-> On 2023/10/26 3:22, Andrey Konovalov wrote:
-> > On Tue, Oct 17, 2023 at 9:40=E2=80=AFPM Juntong Deng <juntong.deng@outl=
-ook.com> wrote:
-> >>
-> >> The idea came from the bug I was fixing recently,
-> >> 'KASAN: slab-use-after-free Read in tls_encrypt_done'.
-> >>
-> >> This bug is caused by subtle race condition, where the data structure
-> >> is freed early on another CPU, resulting in use-after-free.
-> >>
-> >> Like this bug, some of the use-after-free bugs are caused by race
-> >> condition, but it is not easy to quickly conclude that the cause of th=
-e
-> >> use-after-free is race condition if only looking at the stack trace.
-> >>
-> >> I did not think this use-after-free was caused by race condition at th=
-e
-> >> beginning, it took me some time to read the source code carefully and
-> >> think about it to determine that it was caused by race condition.
-> >>
-> >> By adding timestamps for Allocation, Free, and Error to the KASAN
-> >> report, it will be much easier to determine if use-after-free is
-> >> caused by race condition.
-> >
-> > An alternative would be to add the CPU number to the alloc/free stack
-> > traces. Something like:
-> >
-> > Allocated by task 42 on CPU 2:
-> > (stack trace)
-> >
-> > The bad access stack trace already prints the CPU number.
->
-> Yes, that is a great idea and the CPU number would help a lot.
->
-> But I think the CPU number cannot completely replace the free timestamp,
-> because some freeing really should be done at another CPU.
->
-> We need the free timestamp to help us distinguish whether it was freed
-> a long time ago or whether it was caused to be freed during the
-> current operation.
->
-> I think both the CPU number and the timestamp should be displayed, more
-> information would help us find the real cause of the error faster.
->
-> Should I implement these features?
 
-Hi Juntong,
+On 10/29/2023 12:56 PM, Manivannan Sadhasivam wrote:
+> On Fri, Oct 27, 2023 at 08:19:44AM -0600, Jeffrey Hugo wrote:
+>> On 10/27/2023 7:09 AM, Manivannan Sadhasivam wrote:
+>>> On Mon, Oct 23, 2023 at 03:13:06PM +0530, Krishna chaitanya chundru wrote:
+>>>> Though we do check the event ring read pointer by "is_valid_ring_ptr"
+>>>> to make sure it is in the buffer range, but there is another risk the
+>>>> pointer may be not aligned.  Since we are expecting event ring elements
+>>>> are 128 bits(struct mhi_tre) aligned, an unaligned read pointer could lead
+>>> "mhi_tre" got renamed to "mhi_ring_element"
+>>>
+>>>> to multiple issues like DoS or ring buffer memory corruption.
+>>>>
+>>>> So add a alignment check for event ring read pointer.
+>>>>
+>>> Since this is a potential fix, you should add the fixes tag and CC stable.
+>>>
+>>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>>> ---
+>>>>    drivers/bus/mhi/host/main.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>>> index 499590437e9b..c907bbb67fb2 100644
+>>>> --- a/drivers/bus/mhi/host/main.c
+>>>> +++ b/drivers/bus/mhi/host/main.c
+>>>> @@ -268,7 +268,7 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
+>>>>    static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
+>>>>    {
+>>>> -	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
+>>>> +	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len && addr % 16 == 0;
+>>> How about,
+>>>
+>>> !(addr % 16)
+>> We are guaranteed that the ring allocation is 16 byte aligned, right?
+>>
+>> I think using "struct mhi_ring_element" instead of "16" would be better.
+>>
+>> I'm also thinking that perhaps doing a bit-wise & with a mask would be
+>> better than the % operator.  Not only is that how these alignment checks
+>> seem to normally be done elsewhere, but this check is in a critical patch
+>> for the MHI stack.
+>>
+> Yes, both of your suggestions sounds good to me.
+>
+> Chaitanya, please use below check:
+>
+> 	!(addr & (sizeof(struct mhi_ring_element) - 1))
+>
+> - Mani
 
-There is also an aspect of memory consumption. KASAN headers increase
-the size of every heap object. So we tried to keep them as compact as
-possible. At some point CPU numbers and timestamps (IIRC) were already
-part of the header, but we removed them to shrink the header to 16
-bytes.
-PID gives a good approximation of potential races. I usually look at
-PIDs to understand if it's a "plain old single-threaded
-use-after-free", or free and access happened in different threads.
-Re timestamps, I see you referenced a syzbot report. With syzkaller
-most timestamps will be very close even for non-racing case.
-So if this is added, this should be added at least under a separate config.
+I will update in the next patch.
 
-If you are looking for potential KASAN improvements, here is a good list:
-https://bugzilla.kernel.org/buglist.cgi?bug_status=3D__open__&component=3DS=
-anitizers&list_id=3D1134168&product=3DMemory%20Management
+- Krishna Chaitanya.
+
+>> -Jeff
+>>
