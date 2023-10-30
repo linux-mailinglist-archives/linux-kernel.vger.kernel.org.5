@@ -2,197 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2E07DBAEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146F07DBAF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjJ3Nh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        id S231641AbjJ3Nhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 09:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJ3Nh1 (ORCPT
+        with ESMTP id S231678AbjJ3Nhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:37:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E187AA2;
-        Mon, 30 Oct 2023 06:37:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48F53C433C8;
-        Mon, 30 Oct 2023 13:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698673044;
-        bh=xgrSUtzCIyimkvkqPcm5cQu355vBStn8Nf7zgaVsVaA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K0ioALA5b54Lxhs760+Z08LF52iDAIOaAwaEFE8MqGokajFVuxUfpndwg0vmszEYe
-         4NTSLSs0s7EKha3L/NoNeJwrMcLJXKOWaM+NwlXXn42X3DU+A6PjaHrKFOO7Q8ZrGi
-         EJfy0z2pgQT66oUG5rW7Xt+h6Kfih/WkhrUqT64oUlDTZ4H2qnT4crBoAGrG+N8ROh
-         wmgUHoiLaqwogjyb1Z72qkHQJ7yF1WA49BZ0QNyWknfaf1Wj+7g456YdzMNLM41xCi
-         U72ICET9pSXgOKHzasljgdNDFOt/Wof4iAvaKytjZAVl3+n1Tcn9pDXBQ2h9asjHsV
-         Y8+g0ng+mdmlw==
-Date:   Mon, 30 Oct 2023 22:37:20 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>, suleiman@google.com,
-        briannorris@google.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v4] PM: sleep: Expose last succeeded resumed timestamp
- in sysfs
-Message-Id: <20231030223720.30c95dbe73c2c8c6b455b5e4@kernel.org>
-In-Reply-To: <169865271630.102723.17346936890436522603.stgit@mhiramat.roam.corp.google.com>
-References: <169865271630.102723.17346936890436522603.stgit@mhiramat.roam.corp.google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 09:37:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3865EA2;
+        Mon, 30 Oct 2023 06:37:36 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A453AAE;
+        Mon, 30 Oct 2023 14:37:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698673037;
+        bh=n+m4Gx+KWEPcvX8Srrfk/rdjClAXTqu3i/27kXT66XY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U4eckLEZGQFEuN4wthcOD9R8uPspZQoS36KBWj+ZFoQZMaKXH+P+9LeYys2KA/b9X
+         x3p7WqlJ/i7uuD7NuPSCKMsDYudzWwxycF6uCscRUaPmeRKOYi3RN8Otq1zc3/Ih2C
+         UPFfANZyLaIPTwQAFsw0CVD4GdQSmkiBHOuZDmqo=
+Date:   Mon, 30 Oct 2023 15:37:39 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
+Message-ID: <20231030133739.GL12144@pendragon.ideasonboard.com>
+References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
+ <20231020141354.2500602-4-tomm.merciai@gmail.com>
+ <ZTpnHdpTgRNll3TC@kekkonen.localdomain>
+ <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <20231030123703.GK12144@pendragon.ideasonboard.com>
+ <ZT+vwJImu5qS4GyU@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZT+vwJImu5qS4GyU@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, please ignore this v4, because I found this does not typo fix.
-I sent v4.1. in
+Hi Tommaso,
 
-https://lore.kernel.org/all/169865961255.107850.9724026775256278587.stgit@mhiramat.roam.corp.google.com/
+On Mon, Oct 30, 2023 at 02:29:36PM +0100, Tommaso Merciai wrote:
+> On Mon, Oct 30, 2023 at 02:37:03PM +0200, Laurent Pinchart wrote:
+> > On Mon, Oct 30, 2023 at 01:26:58PM +0100, Tommaso Merciai wrote:
+> > > On Thu, Oct 26, 2023 at 01:18:21PM +0000, Sakari Ailus wrote:
+> > > > Hi Tommaso,
+> > > > 
+> > > > Thanks for the update.
+> > > > 
+> > > > There's still quite a bit to do in this driver. Feel free to ask further
+> > > > questions regarding the comments.
+> > > > 
+> > > > On Fri, Oct 20, 2023 at 04:13:51PM +0200, Tommaso Merciai wrote:
+> > > > > The Alvium camera is shipped with sensor + isp in the same housing.
+> > > > > The camera can be equipped with one out of various sensor and abstract
+> > > > > the user from this. Camera is connected via MIPI CSI-2.
+> > > > > 
+> > > > > Most of the camera module features are supported, with the main exception
+> > > > > being fw update.
+> > > > > 
+> > > > > The driver provides all mandatory, optional and recommended V4L2 controls
+> > > > > for maximum compatibility with libcamera
+> > > > > 
+> > > > > References:
+> > > > >  - https://www.alliedvision.com/en/products/embedded-vision-solutions
+> > > > > 
+> > > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > > > > ---
+> > > > > Changes since v2:
+> > > > >  - Removed gpios/clock handling as suggested by LPinchart
+> > > > >  - Added vcc-ext-in supply support as suggested by LPinchart
+> > > > >  - Fixed alvium_setup_mipi_fmt funct as suggested by CJAILLET
+> > > > >  - Removed upside_down/hshake_bit priv data as suggested by CJAILLET
+> > > > >  - Fixed commit body as suggested by LPinchart
+> > > > >  - Mv alvium_set_streamon_delay to yalvium_set_lp2hs_delay
+> > > > >  - Fixed comment on lp2hs prop as suggested by LPinchart
+> > > > >  - Added pm resume/suspend functs as suggested by LPinchart
+> > > > >  - Dropped alvium_link_setup/alvium_s_power as suggested by LPinchart
+> > > > >  - Fixed regs defines as suggested by LPinchart
+> > > > >  - Fixed typedef as suggested by LPinchart
+> > > > >  - Dropped bcrm_v/fw_v from priv data as suggested by LPinchart
+> > > > >  - Now driver use the subdev active state to store the active format and crop
+> > > > >    as suggested by LPinchart
+> > > > >  - Dropped alvium_is_csi2/i2c_to_alvium as suggested by LPinchart
+> > > > > 
+> > > > > Changes since v3:
+> > > > >  - Fixed warnings Reported-by: kernel test robot <lkp@intel.com>
+> > > > > 
+> > > > > Changes since v4:
+> > > > >  - Removed print into alvium_get_dt_data for alliedvision,lp2hs-delay-us as
+> > > > >    suggested by CDooley
+> > > > > 
+> > > > > Changes since v5:
+> > > > >  - Used tab instead of space in .h as suggested by SAilus
+> > > > >  - Added support for new CCI API from HDeGoede as suggested by SAilus
+> > > > >  - Fixed alvium_write/alvium_read, functions now using the new CCI api, suggested by LPinchart
+> > > > >  - Fixed alvium_get_feat_inq func as suggested by SAilus
+> > > > >  - Fixed indentation/var-order/includes-order as suggested by SAilus
+> > > > >  - Fixed alvium_csi2_fmts with MIPI_CSI2_DT_ defines as suggested by SAilus
+> > > > >  - Fixed alvium_is_alive as suggested by SAilus
+> > > > >  - Fixed alvium_code_to_pixfmt funct as suggested by SAilus
+> > > > >  - Fixed alvium_get_dt_data function, now use only fwnode as suggested by SAilus
+> > > > >  - Fixed autosuspend into the probe, is disable as default as suggested by SAilus
+> > > > >  - Fixed alvium_get_dt_data function, assigned bus type before parsing the ep
+> > > > >    as suggested by SAilus
+> > > > >  - Fixed alvium_power_off, removed wrong print as suggested by SAilus
+> > > > > 
+> > > > > Changes since v6:
+> > > > >  - Fixed .h indentation
+> > > > >  - Fixed function params indentation
+> > > > >  - Added int *err params for alvium_read/alvium_write as suggested by LPinchart
+> > > > >  - Removed dbg print from the driver, driver is now using dbg/err prints that comes from
+> > > > >    new cci API as suggested by LPinchart. This, fits SAilus suggestion on common pattern function.
+> > > > >  - Fixed alvium_write_hshake, now use read_poll_timeout as suggested by LPinchart
+> > > > >  - Removed useless includes
+> > > > >  - Added maintainers file entries
+> > > > > 
+> > > > > Changes since v7:
+> > > > >  - Fix company legal entity from Inc. to GmbH
+> > > > >  - Fix warnings given from HVerkuil build-scripts in alvium_get_bcrm_vers,
+> > > > >    alvium_get_fw_version and probe functions using __le16/__le32. Fixed also
+> > > > >    probe function warning alvium-csi2.c:2665 alvium_probe() warn: missing error code? 'ret'
+> > > > > 
+> > > > > Changes since v8:
+> > > > >  - Fixed alvium_i2c_driver struct, use probe istead of probe_new
+> > > > >  - Fixed Kconfig description taking as reference new mt9m114 driver
+> > > > >  - Fixed Kconfig just select V4L2_CCI_I2C taking as reference new mt9m114 driver
+> > > > > 
+> > > > > Changes since v9:
+> > > > >  - Fixed Y8_1X8 mipi_fmt_regval
+> > > > >  - Removed alliedvision,lp2hs-delay-us property we set now a default safe value as discussed with SAilus
+> > > > >  - Added dft property for ctrls initialization, we first read dft values from the camera and set this into ctrls
+> > > > >  - Fixed indentation as suggested by SAilus
+> > > > >  - Fixed bit field definitions alignment into .h as suggested by SAilus
+> > > > >  - Fixed Heartbeat reg from R -> RW
+> > > > >  - Fixed adjusting values in format/crop changes as suggested by SAilus
+> > > > >  - Removed unnecessary brcm_addr checks as suggested by SAilus
+> > > > >  - Merged poweron/poweroff functions as suggested by SAilus
+> > > > >  - Added poweroff path during probe as suggested by SAilus
+> > > > >  - Fixed module license type as suggested by SAilus
+> > > > >  - Removed unnecessary MODULE_DEVICE_TABLE as suggested by SAilus
+> > > > >  - Fixed pm support in s_ctrl and s_stream functions
+> > > > >  - Removed unnecessary local variables  as suggested by SAilus
+> > > > >  - Added ret values checks as suggested by SAilus
+> > > > > 
+> > > > >  MAINTAINERS                     |    9 +
+> > > > >  drivers/media/i2c/Kconfig       |   10 +
+> > > > >  drivers/media/i2c/Makefile      |    1 +
+> > > > >  drivers/media/i2c/alvium-csi2.c | 2666 +++++++++++++++++++++++++++++++
+> > > > >  drivers/media/i2c/alvium-csi2.h |  489 ++++++
+> > > > >  5 files changed, 3175 insertions(+)
+> > > > >  create mode 100644 drivers/media/i2c/alvium-csi2.c
+> > > > >  create mode 100644 drivers/media/i2c/alvium-csi2.h
+> > 
+> > [snip]
+> > 
+> > > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> > > > > new file mode 100644
+> > > > > index 000000000000..2c40804655cd
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/media/i2c/alvium-csi2.c
+> > > > > @@ -0,0 +1,2666 @@
+> > 
+> > [snip]
+> > 
+> > > > > +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
+> > > > > +{
+> > > > > +	u64 val;
+> > > > > +	int ret = 0;
+> > > > > +
+> > > > > +	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
+> > > > 
+> > > > Missing error checking before the use of the value. The same pattern
+> > > > remains prevalent throughout the driver.
+> > > > 
+> > > > I think it'd be easier if you didn't use a temporary variable for reading,
+> > > > but instead had a register width specific access function. You could even
+> > > > introduce a helper macro to read this information as I suggested in an
+> > > > earlier review.
+> > > 
+> > > oks.
+> > > We are moving to use the following macros:
+> > > 
+> > > #define alvium_read_check(alvium, reg, value) \
+> > > { \
+> > > 	int ret = alvium_read(alvium, reg, value, NULL); \
+> > > 	if (ret) \
+> > > 		return ret; \
+> > > }
+> > 
+> > Please don't. Embedding a return in a macro is very confusing for the
+> > reader, and very very frowned upon in the kernel.
+> 
+> I'm a bit confused :)
+> Sorry.
+> 
+> Plan is to replace a common pattern.
+> First I switch to alvium_read(alvium, reg, value, err); implementation.
+> Then I switch to this macro that is not really safe :)
+> 
+> Do you have some hint? :)
+> Thanks in advance.
+> 
+> Maybe I haven't catch completely your comments.
 
-Thanks,
+In this specific case, the right pattern is either
 
-On Mon, 30 Oct 2023 16:58:36 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+	u64 val;
+	int ret;
 
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Expose last succeeded resumed timestamp as last_success_resume_time
-> attribute of suspend_stats in sysfs.
-> 
-> There are some printk()s for printing the similar resume timing to
-> dmesg, but those are recorded with local_clock(), and user can not
-> compare it with current time. We also have tracing events but it
-> requires CAP_SYS_ADMIN to use it.
-> 
-> This suspend_stats attribute is easy to access and only expose the
-> timestamp in CLOCK_MONOTONIC. So user can find the actual resumed
-> time and measure the elapsed time from the time when the kernel
-> finished the resume to the user-space action (e.g. display the UI).
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  Changes in v4:
->   - Update description to add why.
->   - Fix document typo.
->  Changes in v3:
->   - Add (unsigned long long) casting for %llu.
->   - Add a line after last_success_resume_time_show().
->  Changes in v2:
->   - Use %llu instead of %lu for printing u64 value.
->   - Remove unneeded indent spaces from the last_success_resume_time
->     line in the debugfs suspend_stat file.
-> ---
->  Documentation/ABI/testing/sysfs-power |   10 ++++++++++
->  include/linux/suspend.h               |    2 ++
->  kernel/power/main.c                   |   15 +++++++++++++++
->  kernel/power/suspend.c                |    1 +
->  4 files changed, 28 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/testing/sysfs-power
-> index a3942b1036e2..63659765dee1 100644
-> --- a/Documentation/ABI/testing/sysfs-power
-> +++ b/Documentation/ABI/testing/sysfs-power
-> @@ -442,6 +442,16 @@ Description:
->  		'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
->  		This number is measured in microseconds.
->  
-> +What:		/sys/power/suspend_stats/last_success_resume_time
-> +Date:		Oct 2023
-> +Contact:	Masami Hiramatsu <mhiramat@kernel.org>
-> +Description:
-> +		The /sys/power/suspend_stats/last_success_resume_time file
-> +		contains the timestamp of when the kernel successfully
-> +		resumed from suspend/hibernate.
-> +		This floating number is measured in seconds by monotonic
-> +		clock.
-> +
->  What:		/sys/power/sync_on_suspend
->  Date:		October 2019
->  Contact:	Jonas Meurer <jonas@freesources.org>
-> diff --git a/include/linux/suspend.h b/include/linux/suspend.h
-> index ef503088942d..ddd789044960 100644
-> --- a/include/linux/suspend.h
-> +++ b/include/linux/suspend.h
-> @@ -8,6 +8,7 @@
->  #include <linux/pm.h>
->  #include <linux/mm.h>
->  #include <linux/freezer.h>
-> +#include <linux/timekeeping.h>
->  #include <asm/errno.h>
->  
->  #ifdef CONFIG_VT
-> @@ -71,6 +72,7 @@ struct suspend_stats {
->  	u64	last_hw_sleep;
->  	u64	total_hw_sleep;
->  	u64	max_hw_sleep;
-> +	struct timespec64 last_success_resume_time;
->  	enum suspend_stat_step	failed_steps[REC_FAILED_NUM];
->  };
->  
-> diff --git a/kernel/power/main.c b/kernel/power/main.c
-> index f6425ae3e8b0..2ab23fd3daac 100644
-> --- a/kernel/power/main.c
-> +++ b/kernel/power/main.c
-> @@ -421,6 +421,17 @@ static ssize_t last_failed_step_show(struct kobject *kobj,
->  }
->  static struct kobj_attribute last_failed_step = __ATTR_RO(last_failed_step);
->  
-> +static ssize_t last_success_resume_time_show(struct kobject *kobj,
-> +		struct kobj_attribute *attr, char *buf)
-> +{
-> +	return sprintf(buf, "%llu.%llu\n",
-> +		(unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
-> +		(unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
-> +}
-> +
-> +static struct kobj_attribute last_success_resume_time =
-> +			__ATTR_RO(last_success_resume_time);
-> +
->  static struct attribute *suspend_attrs[] = {
->  	&success.attr,
->  	&fail.attr,
-> @@ -438,6 +449,7 @@ static struct attribute *suspend_attrs[] = {
->  	&last_hw_sleep.attr,
->  	&total_hw_sleep.attr,
->  	&max_hw_sleep.attr,
-> +	&last_success_resume_time.attr,
->  	NULL,
->  };
->  
-> @@ -514,6 +526,9 @@ static int suspend_stats_show(struct seq_file *s, void *unused)
->  			suspend_step_name(
->  				suspend_stats.failed_steps[index]));
->  	}
-> +	seq_printf(s,	"last_success_resume_time:\t%-llu.%llu\n",
-> +		   (unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
-> +		   (unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
->  
->  	return 0;
->  }
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index fa3bf161d13f..33334565d5a6 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> @@ -622,6 +622,7 @@ int pm_suspend(suspend_state_t state)
->  		dpm_save_failed_errno(error);
->  	} else {
->  		suspend_stats.success++;
-> +		ktime_get_ts64(&suspend_stats.last_success_resume_time);
->  	}
->  	pr_info("suspend exit\n");
->  	return error;
-> 
+	ret = alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, NULL);
+	if (ret)
+		return ret;
 
+	alvium->h_sup_csi_lanes = val;
+
+	return 0;
+
+or
+
+	u64 val;
+	int ret = 0;
+
+	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
+	if (ret)
+		return ret;
+
+	alvium->h_sup_csi_lanes = val;
+
+	return 0;
+
+I personally prefer the former.
+
+If the function was *writing* multiple registers, the right pattern
+would be
+
+	int ret = 0;
+
+	alvium_write(alvium, REG_BCRM_REG_1, foo, &ret);
+	alvium_write(alvium, REG_BCRM_REG_2, bar, &ret);
+	alvium_write(alvium, REG_BCRM_REG_3, baz, &ret);
+
+	if (ret)
+		return ret;
+
+	...
+
+	return 0;
+
+If you have to read multiple registers, you can also do
+
+	u64 mul, div;
+	int ret = 0;
+
+	alvium_read(alvium, REG_BCRM_MULTIPLER, &mul, &ret);
+	alvium_read(alvium, REG_BCRM_DIVIDER, &div, &ret);
+
+	if (ret)
+		return ret;
+
+	alvium->value = mul / div;
+
+	return 0;
+
+I hope this is clearer.
+
+> > > > > +	alvium->h_sup_csi_lanes = val;
+> > > > > +
+> > > > > +	return ret;
+> > > > > +}
+> > 
+> > [snip]
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Regards,
+
+Laurent Pinchart
