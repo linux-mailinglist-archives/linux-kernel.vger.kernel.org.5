@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F5C7DB973
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC3C7DB975
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbjJ3MFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        id S233178AbjJ3MF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233127AbjJ3MFr (ORCPT
+        with ESMTP id S233158AbjJ3MFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:05:47 -0400
+        Mon, 30 Oct 2023 08:05:51 -0400
 Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAF9C9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:05:45 -0700 (PDT)
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADF3DE
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:05:47 -0700 (PDT)
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9402D3FADC
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 12:05:43 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 732B73FADC
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 12:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698667543;
-        bh=goPlhkL/xzNb2R4OkDT742TxqiPYA+4C52wqVnxeTeU=;
+        s=20210705; t=1698667546;
+        bh=4wJ5Tm/61E15gRGj85phh+y3C3KRS+lk2/KYpXu5K6Q=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=ViAmbB4aptfuB10K4nwvaQsoxkNVtCrGfGQb5NO4WQ9w8DkqCJLsiM10Vb9mZ0FtJ
-         09QB1iEKbnOdPSZBBlOsHF17sos+B4KHLHzDxCBWJ1cIZ4n57H6e+jD9BCvxVSnold
-         EWC7h6nQZ3CIg5Nw7oVQeU+H4GFAhHqYycdAi09NtxCVqSXJVmgnH3Z3Z0/3WTODd6
-         fDFasvU1DdQi8RUna1RAhOQtCw13VcgkTtEVLKVZHEk0g7cf+ZkRAqnUTFSRKV714Q
-         hJ1yl6jWylmc4oMSk/LMIxBvz64rxJ25CJoI5i3gCHb31h2U+a7S6N5tVDEgPvIqdK
-         leSoP3s4qjuqA==
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2c53ea92642so44311401fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:05:43 -0700 (PDT)
+        b=W/Q4n9W/NmSxaLgatHw0Bsf43yi4d1jVl81pjqLpDPJrMLtXDK1oZUnK5eFoBWfz3
+         nNJl+xp6RZYyYDOMFBcMHY88k3P703DNTUgJ5ZVQhujVV7gHylWj2HqZiLzHF2vd5M
+         IT/kWmfAPkm55jrbErlEc2a11iE0Q59n48gnZsKg8JCRicpd8yt5okLTL9PH0ag+IJ
+         aupZQ7THKVtxfstbv4d6YfTd69ZZYRjSxzvA9qf8HECKU6XqNCXWnBRAVOglbwjpBe
+         9m+GOTfX3zHA4Objnf2EhhKXNSXBuuuPY9CNNRFmoV2x+YtlwmF6UQUhafWTs2qrgC
+         cl8aIpwG5oFBg==
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c50255b905so46859451fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:05:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698667543; x=1699272343;
+        d=1e100.net; s=20230601; t=1698667545; x=1699272345;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=goPlhkL/xzNb2R4OkDT742TxqiPYA+4C52wqVnxeTeU=;
-        b=uPH/g6juV6mqioSo91mni508UnPP8EVnGn0+9uv41SIqpO6IZierNWYP1aNNRQbihu
-         Qzacy0CRf8WbISyk8ca8sh+d+2M9svgt1Cg6AghNh0WSuz7G4cidv9FFaLr9CVGYmTMX
-         2WWxMEydcUPifmJ1kSBWotRLjnZQnFc0kubtafVUVEjIXQljt0RdVhAQ18dVP/0WMTdP
-         umGNLFs4aJMxQb9apB2w/xdW5M7LfGabFUpNlm6v6vxeesZCGMfluo36VfcAE/gZmvcy
-         Bj5nvhdh6TMk3UV1ipxyAxqYr6h/6blgxI2Kid07iJb9Hri31rtWiqRloefr6RDJj3nu
-         bhEg==
-X-Gm-Message-State: AOJu0Ywq9ozKlnG4qW9y5M6H0SuNm+BreKkrXES8ATK4yftEsW9DMwEw
-        BbGDiToiYAhOQLiMl/Fqpp9V073A1box9zyrRl4D5WpYyPCcx56vXsmrOrCJMC/r0i6S7wwnO0s
-        PaZAlcWUMYWInOuZCv8nS/IgZJRsMynnYZXYMRtTxzA==
-X-Received: by 2002:a05:6512:3b97:b0:507:9777:a34a with SMTP id g23-20020a0565123b9700b005079777a34amr9719637lfv.39.1698667543043;
-        Mon, 30 Oct 2023 05:05:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGoJXGtoW+Yqd/RvASlxF5C9PTbciLZsCRzR68/fGUZamt97cY67cCfeewUQXDLtQyX5xXHTg==
-X-Received: by 2002:a05:6512:3b97:b0:507:9777:a34a with SMTP id g23-20020a0565123b9700b005079777a34amr9719602lfv.39.1698667542331;
-        Mon, 30 Oct 2023 05:05:42 -0700 (PDT)
+        bh=4wJ5Tm/61E15gRGj85phh+y3C3KRS+lk2/KYpXu5K6Q=;
+        b=LCXYNIiWIeRmyeM9yM4YrL4ol8m5DgxxSjD1+kymCdzb34Lguju8xfxxSF1vEwVanc
+         di1KMVSgHHedy4svvi+H7gjXgXMK4CrIQb30qblcVAagi2bOP88MegdC4uub7OwbH8mb
+         XcHJgGIFaRfD09WNyjvOlEv9oiZDv9qx0EniJ+BiUvtmugJcWzgWswcUmwfKUBvl5IWY
+         5AJNs8T6iT/HUJ2nksX9iAYsZo4ohdy0dk59TqxuoYGEfHe4VQJ/dHxapIzQeK17nn5/
+         b9StuV8pMjYKOomX1o5hFLeiEhx1oLMjExrKK+vpRAL17WbUj9EYHvLuNU8EV9AF9SWa
+         OBfw==
+X-Gm-Message-State: AOJu0YwLTCup7hQ8FFSdOQwyBMkX/0zG22ype3D4EO8BuF+trMxJbmre
+        vhybvvYR9D5V35NJlKDT7ieA6Sz7jdKKD98c03wWCxpBFfHbZI14mc6wxCrMs8WwtbFqSfXgUbq
+        h5eBq/AblbLICLN4ZbLQjgNiMJBRwIi+qbhO+ACIxcA==
+X-Received: by 2002:ac2:4546:0:b0:507:9fe7:f321 with SMTP id j6-20020ac24546000000b005079fe7f321mr6505778lfm.54.1698667545669;
+        Mon, 30 Oct 2023 05:05:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFFjk4fuhPoH5Sw+MGTPAjK9r/p+eSXaiZ9oDTXTuXG2wBTG7Ty67wk54SY3GRoLzjpZWvuPQ==
+X-Received: by 2002:ac2:4546:0:b0:507:9fe7:f321 with SMTP id j6-20020ac24546000000b005079fe7f321mr6505764lfm.54.1698667545433;
+        Mon, 30 Oct 2023 05:05:45 -0700 (PDT)
 Received: from localhost ([159.148.223.140])
-        by smtp.gmail.com with ESMTPSA id n18-20020a056512311200b005056ccb222asm1418808lfb.105.2023.10.30.05.05.41
+        by smtp.gmail.com with ESMTPSA id er15-20020a05651248cf00b005031774a51fsm1418994lfb.225.2023.10.30.05.05.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 05:05:42 -0700 (PDT)
+        Mon, 30 Oct 2023 05:05:45 -0700 (PDT)
 From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>
 Cc:     smueller@chronox.de, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/4] crypto: drbg - ensure most preferred type is FIPS health checked
-Date:   Mon, 30 Oct 2023 14:05:13 +0200
-Message-Id: <20231030120517.39424-2-dimitri.ledkov@canonical.com>
+Subject: [PATCH v2 2/4] crypto: drbg - update FIPS CTR self-checks to aes256
+Date:   Mon, 30 Oct 2023 14:05:14 +0200
+Message-Id: <20231030120517.39424-3-dimitri.ledkov@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231030120517.39424-1-dimitri.ledkov@canonical.com>
 References: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
@@ -81,14 +81,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drbg supports multiple types of drbg, and multiple parameters of
-each. Health check sanity only checks one drbg of a single type. One
-can enable all three types of drbg. And instead of checking the most
-preferred algorithm (last one wins), it is currently checking first
-one instead.
-
-Update ifdef to ensure that healthcheck prefers HMAC, over HASH, over
-CTR, last one wins, like all other code and functions.
+When originally drbg was introduced FIPS self-checks for all types but
+CTR were using the most preferred parameters for each type of
+DRBG. Update CTR self-check to use aes256.
 
 This patch updates code from 541af946fe ("crypto: drbg - SP800-90A
 Deterministic Random Bit Generator"), but is not interesting to
@@ -98,27 +93,33 @@ builds, nor has any tangible effect on FIPS certifcation.
 Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 Reviewed-by: Stephan Mueller <smueller@chronox.de>
 ---
- crypto/drbg.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ crypto/drbg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/crypto/drbg.c b/crypto/drbg.c
-index ff4ebbc68e..2cce18dcfc 100644
+index 2cce18dcfc..b120e2866b 100644
 --- a/crypto/drbg.c
 +++ b/crypto/drbg.c
-@@ -2018,9 +2018,11 @@ static inline int __init drbg_healthcheck_sanity(void)
+@@ -1478,8 +1478,8 @@ static int drbg_generate(struct drbg_state *drbg,
+ 			err = alg_test("drbg_pr_hmac_sha256",
+ 				       "drbg_pr_hmac_sha256", 0, 0);
+ 		else if (drbg->core->flags & DRBG_CTR)
+-			err = alg_test("drbg_pr_ctr_aes128",
+-				       "drbg_pr_ctr_aes128", 0, 0);
++			err = alg_test("drbg_pr_ctr_aes256",
++				       "drbg_pr_ctr_aes256", 0, 0);
+ 		else
+ 			err = alg_test("drbg_pr_sha256",
+ 				       "drbg_pr_sha256", 0, 0);
+@@ -2017,7 +2017,7 @@ static inline int __init drbg_healthcheck_sanity(void)
+ 		return 0;
  
  #ifdef CONFIG_CRYPTO_DRBG_CTR
- 	drbg_convert_tfm_core("drbg_nopr_ctr_aes128", &coreref, &pr);
--#elif defined CONFIG_CRYPTO_DRBG_HASH
-+#endif
-+#ifdef CONFIG_CRYPTO_DRBG_HASH
- 	drbg_convert_tfm_core("drbg_nopr_sha256", &coreref, &pr);
--#else
-+#endif
-+#ifdef CONFIG_CRYPTO_DRBG_HMAC
- 	drbg_convert_tfm_core("drbg_nopr_hmac_sha256", &coreref, &pr);
+-	drbg_convert_tfm_core("drbg_nopr_ctr_aes128", &coreref, &pr);
++	drbg_convert_tfm_core("drbg_nopr_ctr_aes256", &coreref, &pr);
  #endif
- 
+ #ifdef CONFIG_CRYPTO_DRBG_HASH
+ 	drbg_convert_tfm_core("drbg_nopr_sha256", &coreref, &pr);
 -- 
 2.34.1
 
