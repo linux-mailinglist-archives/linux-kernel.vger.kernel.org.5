@@ -2,119 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8787DB55C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B929F7DB562
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbjJ3InT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
+        id S232278AbjJ3Ipb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbjJ3InR (ORCPT
+        with ESMTP id S232260AbjJ3Ip2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:43:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661F1AB;
-        Mon, 30 Oct 2023 01:43:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4250FC433C7;
-        Mon, 30 Oct 2023 08:43:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698655395;
-        bh=xUUBnEzx5bke2+28JgdYEHbvIfQzUUFXXsOQ+iz0rGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V4HGx57mG57AaY9MNBVEmLiSXnJYwd2H4v5e5uUXIlr4M80wlepa0PG8CsZJZaJ1P
-         dGDUEJ8YJBE9oCP0Ii+hToJrIghlNHFuj69sweWDVE1uHA1fFjnaLctMT7ZSw2lH1/
-         wpewVfkydBhu/NuEc12OvHh0MfFMStuoJbA7ACX0=
-Date:   Mon, 30 Oct 2023 09:43:11 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ChenXiaoSong <chenxiaosongemail@foxmail.com>
-Cc:     trond.myklebust@hammerspace.com, chenxiaosong@kylinos.cn,
-        Anna.Schumaker@netapp.com, sashal@kernel.org,
-        liuzhengyuan@kylinos.cn, huangjinhui@kylinos.cn,
-        liuyun01@kylinos.cn, huhai@kylinos.cn, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: Question about LTS 4.19 patch "89047634f5ce NFS: Don't interrupt
- file writeout due to fatal errors"
-Message-ID: <2023103055-anaerobic-childhood-c1f1@gregkh>
-References: <tencent_BEDA418B8BD86995FBF3E92D4F9F5D342C0A@qq.com>
+        Mon, 30 Oct 2023 04:45:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E64AF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7iSC55MBBKbBPMjxq7D6a8mNZJA5wjULy8jPs4yPReM=; b=m6ia6yfwqNZzTS+R1U/3zWEn5h
+        fNlVdPLoRa8mnyPLszt5TnImDcwUd1My193pN371ok3XUfe5nuNX24AHspVG3GR+7lzP2XqBmy1RL
+        U8tw0sHzYir7/hKRc2JGUv0uQqwbq1PJUUZJjuyW85a7NZ0KhOEIO+QocUlyfOHo1Jwqk53UUYxh7
+        rw6FgGT1ZY24Y4DTw8SccBOFZQkSYJoHe18+aXguC39Z1lShnmYhgQaUbFOkixAMFQwA48oHCZ1Fr
+        SNPx5kNI4dYoT5j+Hk6Lf0zK4rYojPgbyUesy8Jeyf5NOR/pOU3lkSZSQfT8XIu7HLm4JRXfSK1Ya
+        bThFxrUg==;
+Received: from [2001:8b0:10b:5:9cbc:41e:b3e7:96ad] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qxNtR-0034XF-UW; Mon, 30 Oct 2023 08:45:06 +0000
+Message-ID: <2b8c36376fa01fa6a1bac9570eb7d41e7e232a29.camel@infradead.org>
+Subject: [PATCH v3] lockdep: add lockdep_cleanup_dead_cpu()
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Juergen Gross <jgross@suse.com>
+Date:   Mon, 30 Oct 2023 08:45:05 +0000
+In-Reply-To: <635fa006e8f3816b4a36b964d6281f0d8efa789b.camel@infradead.org>
+References: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
+         <635fa006e8f3816b4a36b964d6281f0d8efa789b.camel@infradead.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-MjGvCDbu6s9yyae/hQ6Z"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_BEDA418B8BD86995FBF3E92D4F9F5D342C0A@qq.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 04:39:11PM +0800, ChenXiaoSong wrote:
-> Hi Trond and Greg:
-> 
-> LTS 4.19 reported null-ptr-deref BUG as follows:
-> 
-> BUG: unable to handle kernel NULL pointer dereference at 0000000000000080
-> Call Trace:
->  nfs_inode_add_request+0x1cc/0x5b8
->  nfs_setup_write_request+0x1fa/0x1fc
->  nfs_writepage_setup+0x2d/0x7d
->  nfs_updatepage+0x8b8/0x936
->  nfs_write_end+0x61d/0xd45
->  generic_perform_write+0x19a/0x3f0
->  nfs_file_write+0x2cc/0x6e5
->  new_sync_write+0x442/0x560
->  __vfs_write+0xda/0xef
->  vfs_write+0x176/0x48b
->  ksys_write+0x10a/0x1e9
->  __se_sys_write+0x24/0x29
->  __x64_sys_write+0x79/0x93
->  do_syscall_64+0x16d/0x4bb
->  entry_SYSCALL_64_after_hwframe+0x5c/0xc1
-> 
-> The reason is: generic_error_remove_page set page->mapping to NULL when nfs
-> server have a fatal error:
-> 
-> nfs_updatepage
->   nfs_writepage_setup
->     nfs_setup_write_request
->       nfs_try_to_update_request // return NULL
->         nfs_wb_page // return 0
->           nfs_writepage_locked // return 0
->             nfs_do_writepage // return 0
->               nfs_page_async_flush // return 0
->                 nfs_error_is_fatal_on_server
->                 generic_error_remove_page
->                   truncate_inode_page
->                     delete_from_page_cache
->                       __delete_from_page_cache
->                         page_cache_tree_delete
->                           page->mapping = NULL // this is point
->       nfs_create_request
->         req->wb_page    = page // the page is freed
->       nfs_inode_add_request
->         mapping = page_file_mapping(req->wb_page)
->           return page->mapping
->         spin_lock(&mapping->private_lock) // mapping is NULL
-> 
-> It is reasonable by reverting the patch "89047634f5ce NFS: Don't interrupt
-> file writeout due to fatal errors" to fix this bug?
 
-Try it and see, but note, that came from the 4.19.99 release which was
-released years ago, are you sure you are using the most recent 4.19.y
-release?
+--=-MjGvCDbu6s9yyae/hQ6Z
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> This patch is one patch of patchset [Fix up soft mounts for NFSv4.x](https://lore.kernel.org/all/20190407175912.23528-1-trond.myklebust@hammerspace.com/),
-> the patchset replace custom error reporting mechanism. it seams that we
-> should merge all the patchset to LTS 4.19, or all patchs should not be
-> merged. And the "Fixes:" label is not correct, this patch is a refactoring
-> patch, not for fixing bugs.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-If we missed some patches, that should be added on top of the current
-tree, please let us know the git commit ids of them after you have
-tested them that they work properly, and we will gladly apply them.
+Add a function to check that an offline CPU left the tracing infrastructure
+in a sane state. The acpi_idle_play_dead() function was recently observed=
+=C2=B9
+calling safe_halt() instead of raw_safe_halt(), which had the side-effect
+of setting the hardirqs_enabled flag for the offline CPU. On x86 this
+triggered lockdep warnings when the CPU came back online, but too early
+for the exception to be handled correctly, leading to a triple-fault.
 
-thanks,
+Add lockdep_cleanup_dead_cpu() to check for this kind of failure mode,
+print the events leading up to it, and correct it so that the CPU can
+come online again correctly.
 
-greg k-h
+[   61.556652] smpboot: CPU 1 is now offline
+[   61.556769] CPU 1 left hardirqs enabled!
+[   61.556915] irq event stamp: 128149
+[   61.556965] hardirqs last  enabled at (128149): [<ffffffff81720a36>] acp=
+i_idle_play_dead+0x46/0x70
+[   61.557055] hardirqs last disabled at (128148): [<ffffffff81124d50>] do_=
+idle+0x90/0xe0
+[   61.557117] softirqs last  enabled at (128078): [<ffffffff81cec74c>] __d=
+o_softirq+0x31c/0x423
+[   61.557199] softirqs last disabled at (128065): [<ffffffff810baae1>] __i=
+rq_exit_rcu+0x91/0x100
+
+=C2=B9 https://lore.kernel.org/lkml/a079bba5a0e47d6534b307553fc3772d26ce911=
+b.camel@infradead.org/
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+---
+
+v3: Add forward declaration of struct task_struct.
+
+v2: Fix spelling. 'Offlone' wasn't quite what I meant to type.
+    Add reference to ACPI patch.
+    Fix kerneldoc args for lockdep_cleanup_dead_cpu() (thanks lkp)
+    Closes: https://lore.kernel.org/oe-kbuild-all/202310290041.L5ndwcQ9-lkp=
+@intel.com/
+
+ include/linux/irqflags.h |  6 ++++++
+ kernel/cpu.c             |  1 +
+ kernel/locking/lockdep.c | 24 ++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+)
+
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 2b665c32f5fe..9b44f8b042a0 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -17,6 +17,8 @@
+ #include <asm/irqflags.h>
+ #include <asm/percpu.h>
+=20
++struct task_struct;
++
+ /* Currently lockdep_softirqs_on/off is used only by lockdep */
+ #ifdef CONFIG_PROVE_LOCKING
+   extern void lockdep_softirqs_on(unsigned long ip);
+@@ -24,12 +26,16 @@
+   extern void lockdep_hardirqs_on_prepare(void);
+   extern void lockdep_hardirqs_on(unsigned long ip);
+   extern void lockdep_hardirqs_off(unsigned long ip);
++  extern void lockdep_cleanup_dead_cpu(unsigned int cpu,
++				       struct task_struct *idle);
+ #else
+   static inline void lockdep_softirqs_on(unsigned long ip) { }
+   static inline void lockdep_softirqs_off(unsigned long ip) { }
+   static inline void lockdep_hardirqs_on_prepare(void) { }
+   static inline void lockdep_hardirqs_on(unsigned long ip) { }
+   static inline void lockdep_hardirqs_off(unsigned long ip) { }
++  static inline void lockdep_cleanup_dead_cpu(unsigned int cpu,
++					      struct task_struct *idle) {}
+ #endif
+=20
+ #ifdef CONFIG_TRACE_IRQFLAGS
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6de7c6bb74ee..225f5bc3708f 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1371,6 +1371,7 @@ static int takedown_cpu(unsigned int cpu)
+=20
+ 	cpuhp_bp_sync_dead(cpu);
+=20
++	lockdep_cleanup_dead_cpu(cpu, idle_thread_get(cpu));
+ 	tick_cleanup_dead_cpu(cpu);
+ 	rcutree_migrate_callbacks(cpu);
+ 	return 0;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index e85b5ad3e206..62bfda8991b8 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4538,6 +4538,30 @@ void lockdep_softirqs_off(unsigned long ip)
+ 		debug_atomic_inc(redundant_softirqs_off);
+ }
+=20
++/**
++ * lockdep_cleanup_dead_cpu - Ensure CPU lockdep state is cleanly stopped
++ *
++ * @cpu: index of offlined CPU
++ * @idle: task pointer for offlined CPU's idle thread
++ *
++ * Invoked after the CPU is dead. Ensures that the tracing infrastructure
++ * is left in a suitable state for the CPU to be subsequently brought
++ * online again.
++ */
++void lockdep_cleanup_dead_cpu(unsigned int cpu, struct task_struct *idle)
++{
++	if (unlikely(!debug_locks))
++		return;
++
++	if (unlikely(per_cpu(hardirqs_enabled, cpu))) {
++		pr_warn("CPU %u left hardirqs enabled!", cpu);
++		if (idle)
++			print_irqtrace_events(idle);
++		/* Clean it up for when the CPU comes online again. */
++		per_cpu(hardirqs_enabled, cpu) =3D 0;
++	}
++}
++
+ static int
+ mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+ {
+--=20
+2.41.0
+
+
+
+--=-MjGvCDbu6s9yyae/hQ6Z
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMwMDg0NTA1WjAvBgkqhkiG9w0BCQQxIgQgVA91rA+x
+ZIq+0IRCy1M2dDoRfPf8yw2MW+90eOc7rlMwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBRtEYKC3DusLoWX/fkGZnLobJCXkfeGrUQ
+103Gol/tGhOM3n0dH68RDQBlC5o5EkE/jGJfB8fdYv8lqnSU2Ev5+oJlx70vDjOSemnZSWI84gG5
+ATBia2GZfGQf0nAgGAXOa5eKnBbnrYjLfwQovc0Aj5RFK9xDmGEp976vtrA4Q+TJZAH+eHIp2LgF
+d8DhNjAKwKsF3t9DsrmF9ItyO+pv0vc8xEOq7wJoeIWx7ejerR/9Ag0G0KPTbOTsi6O3yiH7c3YF
+pYU2JoarAEMaP38qbeTyTROmjbi6nwGV8MHrN/XM0GDk5DmXk3x5b5m3srVtJTuqWolcCmH500NE
+paOlOkDNiXzBdnISdPIbsFljNvgz63dA0HrB/BH/F3RRxH2/9+MjhOFB4UiqMa+92jWYLJ8a72Ed
+c66PrD1ccyvKxc454aTUayQxnoBe5vO3nBfdlAlxM/RMQWcATqcTZqoD2GPSF04fTnHDIQy0gOKC
+8B0Kr+suIErx4pNlc1XLMwq29lFRscROiLdaHajxsUUHnHo0tH62CiJA9eVHc4DNgtr6pTTPcbDU
+XrK4YZh17xL+FyurDvK8K0VNaroMa8lfrW1Syxm/fu/ZoduN2ZpJYzC7bNStW2a85/sOOkKgkPUG
+5+kOADXRG4mVwnWAe6tVGwDpRDJ6qyNlmKmQgzIF5AAAAAAAAA==
+
+
+--=-MjGvCDbu6s9yyae/hQ6Z--
