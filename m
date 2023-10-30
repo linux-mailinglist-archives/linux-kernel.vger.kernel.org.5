@@ -2,165 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994967DB85F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9A97DB860
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbjJ3KhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:37:23 -0400
+        id S232851AbjJ3Kh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:37:28 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbjJ3KhA (ORCPT
+        with ESMTP id S232916AbjJ3KhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:37:00 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A14FFA
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:36:54 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c50d1b9f22so56433471fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:36:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698662212; x=1699267012; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DA6PVD1pNqlF4BUixIYFQIvuTNht/64ah3v95olbiNw=;
-        b=VQrERk8yGTj2EYxeGBJKwUK1AY/XHR55M9Ci6YSO7EhBJPwRxmoDxVk1V6RVf9tA/h
-         5OhzPkPJqCQRI0ERFfUF+uUt32SpXx1RmgrDHWaScmr+jd7lu+YYrH/VgRcyQiv6gCHI
-         tuY5eWBBzUXyU0+P4tIDoyChleIwq9J73V0H1XO7EmpQKkkN53PPhFYKOdqs97AKLgMA
-         5x4wjeUtXMqGF1kji5tbA2s8N34n+MMDO+XH9bVLvNFXPm60Kt8T5ZAW8s8TahNNzgIm
-         BGKXWNauQS0YuvBl6e7wEnKlpbjuox1odFVICmVL4XU24utsqpRibSmpzzY1aCX/5dd/
-         qJnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698662212; x=1699267012;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DA6PVD1pNqlF4BUixIYFQIvuTNht/64ah3v95olbiNw=;
-        b=cAI3SycySbEu56wb3fE5Kg2DDtWdAZc2dgoRas05zj5IDT9+FXsjEGHCfb1l+O0zz7
-         n8sR0J5i3f1FhCu5gYJEfKA0aaFkfcbxEFPQ5ShWEKi/Zm1g8PBA94PlEKZljBNKNbvT
-         7uPKO0uoqmf/d1dOdDX9dQJ2oTwJ3r1m2QwGmg4o+E2vHSd88OcSGY+uxFQIjH7tD8hm
-         Vp4IRDmmgC3eyX8F8UgsVB7/Ogbf0VLpJKJDtYmpTFzLUpYZ5d970aPV0HWLHT0lEzq+
-         ogRsMYtUOLxwsPYKYGRMww1XFzFP7BMROFsmPm1r0CJJ3RBh4XdLFbsSd51OVgpIfG5I
-         Bo0w==
-X-Gm-Message-State: AOJu0Yyl0GiIfJ87FeF6+4IypDdQVBoCg+YrdiKbzTV4jnwBlG4SR1EC
-        Mkthkt3eMO31hBPG2ewY3kOe0g==
-X-Google-Smtp-Source: AGHT+IF5rt60Krlu4XkRUEi0s9/CrfpATLDmDfv9/0Mtg2XZ+mRpHAfn82dZyCp8UC9qcW9Jh7dTgQ==
-X-Received: by 2002:a2e:9184:0:b0:2c5:1ad3:7798 with SMTP id f4-20020a2e9184000000b002c51ad37798mr7355852ljg.52.1698662212627;
-        Mon, 30 Oct 2023 03:36:52 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id r5-20020a05600c458500b004060f0a0fd5sm8783209wmo.13.2023.10.30.03.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 03:36:52 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 30 Oct 2023 11:36:30 +0100
-Subject: [PATCH v2 8/8] drm/msm: dsi: add support for DSI 2.8.0
+        Mon, 30 Oct 2023 06:37:03 -0400
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F404C9D
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:36:58 -0700 (PDT)
+X-AuditID: a67dfc5b-d85ff70000001748-8f-653f8749bddc
+Date:   Mon, 30 Oct 2023 19:36:52 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
+        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
+        "hughd@google.com" <hughd@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [v3 3/3] mm, migrc: Add a sysctl knob to enable/disable MIGRC
+ mechanism
+Message-ID: <20231030103652.GC81877@system.software.com>
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <20231030072540.38631-4-byungchul@sk.com>
+ <17CADC36-25C6-44EB-8084-6E3D9D64B3D3@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-topic-sm8650-upstream-mdss-v2-8-43f1887c82b8@linaro.org>
-References: <20231030-topic-sm8650-upstream-mdss-v2-0-43f1887c82b8@linaro.org>
-In-Reply-To: <20231030-topic-sm8650-upstream-mdss-v2-0-43f1887c82b8@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2167;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=mOPAs9fZnFHnWKWTDzyDhJJvT1b82KyCyg4RUEyUBOc=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP4c5PQd/l9lmI/IHAedI22CO88us5G1Wn2T2zHiT
- u5TkJDeJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT+HOQAKCRB33NvayMhJ0UeID/
- 9C5ihJ8N2WmdSPfB9UUSO2RACNYSosGJIIQpZ72sH+3Auc1eatlQdp1J18OmS0v1EUfueyLFztzgYc
- PYvL85QlipzQGnRsAmC18sFZA29GDdawbLS8Qv3069TT2yqcYyAKOTGv901sGOufbaByEYJIUCe0aE
- jnt+z+pjQraQO28jQWdHASBrEUkbIvGMDw+9x7AsoEWNx9LfNDRDuwaCCHRuMzM4FVtPeBUVUiOEk/
- 6D0B5+T7JUOmGXHVuSHcvTso/IUtWBn286L2SAT/LAAiwDY293STD/+6pCfxuUgpVEROWO/egsgUHe
- ANamWpRbaqB+QoGhpw3lhdsFwign4mUbsvGi5Pt6USLP8iMA8tczyAlB0RYGUqabEDohRViQidlz6W
- 7LGXucKOq3Y1TpwXqVTOUyLbElyMRQ50IvXW2QjeF3pzp6tnXgp6CMdKMG4iaMSwXOAvNmF0qk0yfW
- mbXbzqiJPYLWYSNjF48l38FDvSAjKkfwR9fuSw4de5EzpyCfhbWeArpxbBUir6roVqxn7Pi2dgoCQA
- 496W0TlQLXpPBmfX+PAe6FCipIcCkP5FXt14chJO8fW5paxLIFl6Q1zlduX7geIIaS+w1rdv9DZayd
- r6flv/2ILTbe2krxEigZWGNKZAEIYCtTclv+m3DXPzYtq+p5gs604uw3arSQ==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17CADC36-25C6-44EB-8084-6E3D9D64B3D3@vmware.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsXC9ZZnoa5Xu32qwf6dvBZz1q9hs/i84R+b
+        xYsN7YwWX9f/YrZ4+qmPxeLyrjlsFvfW/Ge1OL9rLavFjqX7mCwuHVjAZHF910NGi+O9B5gs
+        Nm+aymzx+wdQ3ZwpVhYnZ01mcRDw+N7ax+KxYFOpx+YVWh6L97xk8ti0qpPNY9OnSewe786d
+        Y/c4MeM3i8fOh5Ye804Gerzfd5XNY+svO4/Pm+Q83s1/yxbAF8Vlk5Kak1mWWqRvl8CV8f7T
+        dfaCxawV/1qnsjQw9rN0MXJySAiYSJx50ccOYz9Z3wgWZxFQlXhx6yoriM0moC5x48ZPZhBb
+        REBR4tD+e4wgNrPAO1aJ7580uxg5OIQFwiQeLQkGCfMKWEjM/30XrFVIYCqjxOfD+hBxQYmT
+        M5+wQLSqS/yZd4kZpJVZQFpi+T8OiLC8RPPW2WCbOAXsJA6dmgk2RlRAWeLAtuNMXYxcQFdu
+        Y5eYsn8FM8TJkhIHV9xgmcAoOAvJillIVsxCWDELyYoFjCyrGIUy88pyEzNzTPQyKvMyK/SS
+        83M3MQIjdlntn+gdjJ8uBB9iFOBgVOLhDQi3SxViTSwrrsw9xCjBwawkwsvsaJMqxJuSWFmV
+        WpQfX1Sak1p8iFGag0VJnNfoW3mKkEB6YklqdmpqQWoRTJaJg1OqgbFoQq16/2P2azOzgnzX
+        lvucS2VQmrLH0+b5On7+7V9SZa6tWHT8g9Whdp1VAj+bm/NWvY4+yL/RK2nfhDL/h8cfHmFv
+        r7Vou3c399PnCPa6x+dmur1g5bw964/3ifIZT1b2xKyK3K/xY4rn4b87nVpfGf4xjE6u2fs8
+        3OQe73E/q8s66QoJ3e1KLMUZiYZazEXFiQC0RpVO1AIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsXC5WfdrOvZbp9qMO21ucWc9WvYLD5v+Mdm
+        8WJDO6PF1/W/mC2efupjsTg89ySrxeVdc9gs7q35z2pxftdaVosdS/cxWVw6sIDJ4vquh4wW
+        x3sPMFls3jSV2eL3D6C6OVOsLE7OmsziIOjxvbWPxWPBplKPzSu0PBbvecnksWlVJ5vHpk+T
+        2D3enTvH7nFixm8Wj50PLT3mnQz0eL/vKpvH4hcfmDy2/rLz+LxJzuPd/LdsAfxRXDYpqTmZ
+        ZalF+nYJXBnvP11nL1jMWvGvdSpLA2M/SxcjJ4eEgInEk/WNYDaLgKrEi1tXWUFsNgF1iRs3
+        fjKD2CICihKH9t9jBLGZBd6xSnz/pNnFyMEhLBAm8WhJMEiYV8BCYv7vu2CtQgJTGSU+H9aH
+        iAtKnJz5hAWiVV3iz7xLzCCtzALSEsv/cUCE5SWat84G28QpYCdx6NRMsDGiAsoSB7YdZ5rA
+        yDcLyaRZSCbNQpg0C8mkBYwsqxhFMvPKchMzc0z1irMzKvMyK/SS83M3MQLjb1ntn4k7GL9c
+        dj/EKMDBqMTDGxBulyrEmlhWXJl7iFGCg1lJhJfZ0SZViDclsbIqtSg/vqg0J7X4EKM0B4uS
+        OK9XeGqCkEB6YklqdmpqQWoRTJaJg1OqgTFNoXetrVGQ97p9Fm36Z/48e/Xo7Nl7LafeTo6+
+        IvCTu2iiz/PTeyuYfwu4/g3lSpxzdAmz27fu5pwdQu66vE8MlyzpjuFJ8HT/9SnbvTjea53N
+        Jdmlz2aJ/2g6XbVEIYvb9Rj35pCOg/se9Me1Xno9I1DpkVnl8/VzzZSauXjKoj+u9Lv0tE6J
+        pTgj0VCLuag4EQAc7b8/uwIAAA==
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DSI Controller version 2.8.0 support for the SM8650 platform.
+On Mon, Oct 30, 2023 at 08:51:35AM +0000, Nadav Amit wrote:
+> 
+> > On Oct 30, 2023, at 9:25 AM, Byungchul Park <byungchul@sk.com> wrote:
+> > 
+> > Add a sysctl knob, '/proc/sys/vm/migrc_enable' to switch on/off migrc.
+> 
+> Please explain how users are expected to use this knob.
+> 
+> I suspect that the knob and the config option are not useful. You probably
+> used them for your evaluation or as a “chicken-bit”, but they are not
+> useful anymore.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/gpu/drm/msm/dsi/dsi_cfg.c | 17 +++++++++++++++++
- drivers/gpu/drm/msm/dsi/dsi_cfg.h |  1 +
- 2 files changed, 18 insertions(+)
+Okay. We can add the sysctl knob when we need it. Will remove it for now.
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.c b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-index 1f98ff74ceb0..10ba7d153d1c 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-@@ -190,6 +190,21 @@ static const struct msm_dsi_config sm8550_dsi_cfg = {
- 	},
- };
- 
-+static const struct regulator_bulk_data sm8650_dsi_regulators[] = {
-+	{ .supply = "vdda", .init_load_uA = 16600 },	/* 1.2 V */
-+};
-+
-+static const struct msm_dsi_config sm8650_dsi_cfg = {
-+	.io_offset = DSI_6G_REG_SHIFT,
-+	.regulator_data = sm8650_dsi_regulators,
-+	.num_regulators = ARRAY_SIZE(sm8650_dsi_regulators),
-+	.bus_clk_names = dsi_v2_4_clk_names,
-+	.num_bus_clks = ARRAY_SIZE(dsi_v2_4_clk_names),
-+	.io_start = {
-+		{ 0xae94000, 0xae96000 },
-+	},
-+};
-+
- static const struct regulator_bulk_data sc7280_dsi_regulators[] = {
- 	{ .supply = "vdda", .init_load_uA = 8350 },	/* 1.2 V */
- 	{ .supply = "refgen" },
-@@ -281,6 +296,8 @@ static const struct msm_dsi_cfg_handler dsi_cfg_handlers[] = {
- 		&sdm845_dsi_cfg, &msm_dsi_6g_v2_host_ops},
- 	{MSM_DSI_VER_MAJOR_6G, MSM_DSI_6G_VER_MINOR_V2_7_0,
- 		&sm8550_dsi_cfg, &msm_dsi_6g_v2_host_ops},
-+	{MSM_DSI_VER_MAJOR_6G, MSM_DSI_6G_VER_MINOR_V2_8_0,
-+		&sm8650_dsi_cfg, &msm_dsi_6g_v2_host_ops},
- };
- 
- const struct msm_dsi_cfg_handler *msm_dsi_cfg_get(u32 major, u32 minor)
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.h b/drivers/gpu/drm/msm/dsi/dsi_cfg.h
-index 43f0dd74edb6..4c9b4b37681b 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_cfg.h
-+++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.h
-@@ -28,6 +28,7 @@
- #define MSM_DSI_6G_VER_MINOR_V2_5_0	0x20050000
- #define MSM_DSI_6G_VER_MINOR_V2_6_0	0x20060000
- #define MSM_DSI_6G_VER_MINOR_V2_7_0	0x20070000
-+#define MSM_DSI_6G_VER_MINOR_V2_8_0	0x20080000
- 
- #define MSM_DSI_V2_VER_MINOR_8064	0x0
- 
+However, I'm not sure if it'd be okay without CONFIG_MIGRC. I'd like to
+see more opinion on it before going with it.
 
--- 
-2.34.1
-
+	Byungchul
