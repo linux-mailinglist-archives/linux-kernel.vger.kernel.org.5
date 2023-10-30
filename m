@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E83077DBBED
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FBE7DBBF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233363AbjJ3OiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
+        id S233436AbjJ3Ojo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJ3OiU (ORCPT
+        with ESMTP id S229568AbjJ3Ojn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:38:20 -0400
-Received: from sonic313-19.consmr.mail.sg3.yahoo.com (sonic313-19.consmr.mail.sg3.yahoo.com [106.10.240.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B21FC2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.in; s=s2048; t=1698676695; bh=z6S/Rs40qfHcv0FOZ990q0uOWmhbpZabeyMWApTv4D8=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=LlOi3dclzL3Ij9HocV9AhH0bRcROaeIxoVHQB0rKblYgW9eemnjCAHAvudGgDS2HiI4UkZP4FN42whLB89bc4HwnaLBoWVel7otQRZJhpXvGgwN5v2nVva1/xrcsqf74Wz+PzjUACuZHScw919+ymYafxhgS6IzfCCTp478Wzd46Hg5o7wp5QrMltEyHYxAy1I3VFQcHW47/EARaLtk+0WcWorxANznJKO6F1av9xJsjm7LaeeCIu0Svh1BWpVk3PpRjgiBSUT80FS7YrJPjcai/EYpuNcn/H/Os9OODPX7Ez3zFs2gqrqvFoSqL8+HFtdW+W4n67ivvrQ6LfhR4xA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1698676695; bh=+/kspEJeOfvPYwQNRU2lkLjVEOS8tnHFOctROJay1NT=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=iJWPWaBKmUkkxfod8IgKeqPx1Cpx2RoioO7J7fK5u2vJFOHyar1vkAJVV7zPbGCx6NUMLc84sp8kafFmqDEBETpMQTerj4jzy2ibtiPi3R5PxIJLTWK+VKOmBXh2a4oDcuBenO0ZbSXjl4BlIJfF9BtjS4AE5JSZ6N+1ntezW8AZJFf6Lf06pxTWgb6o6qoH2IwIrJ7yqocLltGDEfD059uGuj94L1yLkANKTdBO2EhNqKuAIZDUSUDhH1iR2uAcPsMKU+sIAufbxDWAcJP5y1pbfdYNegvFw/ruveLspb4dbKdo69dsvpohnV8YMjhZiGoJPUZQEBM9SlnYg1xAhg==
-X-YMail-OSG: NIR1aasVM1m1F10ISjLrLw.U1cxV08kf5FY4n64.JkH3MXukbil.03__PWo_hOl
- ZSAVll.FhzKbi_49vzUJvqUzswVAverXPQVK6_zl1jUav6MGDgzwTcSc3N86sNtqqTpi9BmXIM2Q
- uHjyT_N9elY93RtAu.3mTKNGZO8ZbsB7IAmaz7CTTSB6zYIXGOoCd9tDgvmPL6y9YQqPf1_5I.nG
- nJ8esUB30iZBVivf9oWfUVbUQHNFxZJje9TI.b4P0BTWhoRXgrHGRuQRZwq7JFjB46ih3yNnUY4.
- Vmdsy_VbZIttqF69_dMzTBN84xHSxiTyDK0W6g3R9ripkJE_wBRENH5ikT.OalQ3vbUTjkWyHFbr
- bTZWn7eDWWYRmhj20yq2HVqiYsghyl_5qmoQtVF7P.tU95gynqVpi_6bK9pSbe0XeJSZhG7vmcM5
- c3ZVOvVTeOWRN.aTOzkmrePenE0YIPF6T8JDkP8UAa_4ylKZKK9v9ho._Dn5EF7ospt0gGfraP4U
- tg9DfvjyoyQkmdx23O20u.YDlyjCX6m5oxa_gV7F2u9pGu4f_aSjRNcJjVbpvjZ3I3W0lyDPWAeG
- 7vE1ZzxkaR7i4ISoqVCDn21F2ksCCPNmPcNiGLh_mswCwY7rTeZdsCCiEsfwYe6dQuZ2mtcfFQhR
- aqlcTPgt2MVoPI8jXFzDnfu5RAdKDho4iJT0MxPjngkK3inTNjTaOq.uoz8d0.zqEGg_3C1COU2H
- MqZXWQpilrTgSTydxeWLcFoTkOTBYe5laeZXIyT.iqZTINQrjC0dOVLk_rA8_zd_gOc7LzzWQCuq
- vjTrVnfTMYeqgi7YTwSSXKjBoNwQ8bkMUf3rV8N_oSx0LNS2ieToQGw1P5Bi_OloaqsOUiIxpMQG
- 6Tc1.F4TAMM7m7ClKU1WK5PO6JrfQ2sZW8Ru8.7gPydy1pn3Kz8HMQTAIa1DtKt_3MhgarMR202P
- 3TtAVfDEZZs_oDinHVwdJpJR2T80Lj3ImEIu707bz.BstQoK10sV_d6Ow78ICHzxq0D4CneTUJIO
- kR24zDaVNv4rSiH37GFyz_yM.LBMqwAZ56tzfdJgsXnfXS_Dc64RZXp505fXUiDE30LJ5PuoWNMd
- X5wM3KvBKtwoMOo9IqjV4iHNXo63s4ImggjtmlMCYG27B.WeX_KtNyI3ixyjKMDF6BIBd4wUad.1
- PkcyEsJ5h4msvas9Tl2uW1agBoT0eqy26xJ76C5HHFP3qDX35Wr1zqTz.EKkyWX18tazPLTx23iL
- p4VWhGX8Zta3W3NUf5hPtDe7hFEdlJYSZCjIwRSuKjNk4MrlLZAAH3Zs_b149NGIbg_RqXkJOka5
- 0EE3.l2OV8Gfd25_.RBx_LJmgGMvSDIfkreP_IOibhcKg5EDVl9eapbx4_vSy2hEjJea0dya3IV5
- 39j2fmcnYxZXZbKuCYJdUZ6sX9XaLDNLOQC5InpNYFOQK1i_188PfvhR0YOc_SMxkTR8WE2nXRWv
- r4KiQQaXhv9OpAIVH30jRkzA.ryK2E5FGAqg0f77080ubHyGGpPugRUGe4bjQYfjTRgVrI_ZEqlM
- 7jH3CHuiXOnSRJx.jdzQ0MSj1JYRwSYyPixvaVwLLGUr3eySMygTi96BicvPYFsOJe1PymtkDsqa
- iGFaNYQKpFyXoDmQ4mLD95bpZS7jh663zHdfHWB6ac2BC9WDUjyCiqFjoCP5iJohSc6C8WWprDSn
- frnZJCCZtvjLPTLWTAXQ9lYD9gnwUjLs25hEhrd7bnnt9bQM2aUoXHjSCLvd5rYTYU4cNEnqLPrp
- OdXa8DNG6zdcPgjRNyMR.K0qgF3Jj6HonaOo.Vu1.9ZFON0luEvJtJ_DQ..jseIyboAlVW6ARJoS
- zYK4LlWlji2kuuLzOiYVv7YWGRnEwN94i1UJZU7hn6IWumS5ECyZNR8dzxXmNPQkKPxQvw.byn7U
- doExtLjxOcPwnG4PFuem8vCaDaT53JSk1saaav6Lgnzf0I4biTWY1pWy8xGetgP6UmPwNs5tIJAc
- nSWOXMB22LZdENbbv1UYQ44Kzh0Oedo.sX04cpVAhuOYnqoPtNz8XPwkzZ_t6NV04beZDcGMwQZG
- ckVq4s946lgRjj76nMKY_S3EOJ5yiylcaqH69FRa.i0Av_D.NOj4ZBNFUufuwL6SggYLZzA9HBoG
- S6i_YHztsNWsM18gZNZ4XNfLeVOIoEgNrzAA2jgdgGOx2eoPRGsjNcNtGa5qWqHRKYPzVa3e6HS0
- HfI0nvVL9wOAngqJATHjom6VbI7uLPA27wcYQjyu0pkW2eAka3Q--
-X-Sonic-MF: <coolgoose54@yahoo.in>
-X-Sonic-ID: 1d444252-8d78-4368-8a3f-db12921b4529
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.sg3.yahoo.com with HTTP; Mon, 30 Oct 2023 14:38:15 +0000
-Date:   Mon, 30 Oct 2023 14:38:14 +0000 (UTC)
-From:   Cool Goose <coolgoose54@yahoo.in>
-To:     Kalle Valo <kvalo@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux ath10k <ath10k@lists.infradead.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <2072544843.546737.1698676694520@mail.yahoo.com>
-In-Reply-To: <1242733089.791333.1695658442201@mail.yahoo.com>
-References: <1209906123.2716993.1695416371605.ref@mail.yahoo.com> <1209906123.2716993.1695416371605@mail.yahoo.com> <ZQ4vQNe3XsArwWQT@debian.me> <87a5taa7lp.fsf@kernel.org> <cafad11a-d7c7-4b68-880a-d6e05578fa5c@gmail.com> <1242733089.791333.1695658442201@mail.yahoo.com>
-Subject: Re: Atheros QCA6174 ath10k_pci fimware crashing
+        Mon, 30 Oct 2023 10:39:43 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1CF6C2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:39:36 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Cx5_EmwD9l8sE1AA--.39365S3;
+        Mon, 30 Oct 2023 22:39:34 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxni8jwD9llgc3AA--.52859S3;
+        Mon, 30 Oct 2023 22:39:34 +0800 (CST)
+Message-ID: <9926d2cf-5f92-4f4a-bc4d-423b07e38a3c@loongson.cn>
+Date:   Mon, 30 Oct 2023 22:39:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/8] drm/loongson: Introduce a drm bridge driver for
+ it66121 HDMI transmitter
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20231029194607.379459-1-suijingfeng@loongson.cn>
+ <20231029194607.379459-3-suijingfeng@loongson.cn>
+ <CAA8EJprjQXcTgxnC1POaBjVBzyVBvKpmKyJcCR5ExRUhVxtYoQ@mail.gmail.com>
+ <3ccb9600-6990-4ec7-81de-0d7b4e1294eb@loongson.cn>
+ <CAA8EJpqCe2j3GyeutnwTB0bkGXGk0az9-w3sPHLFwMVgAS=e7g@mail.gmail.com>
+ <df176548-0001-4df4-b556-6227b776cd18@loongson.cn>
+ <e4ozgwe7g5s3bioywxqcetuqwxk6byvz2lr3swlgy7wutxcxkp@obvvszcgz2qw>
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <e4ozgwe7g5s3bioywxqcetuqwxk6byvz2lr3swlgy7wutxcxkp@obvvszcgz2qw>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21890 YMailNorrin
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Bxni8jwD9llgc3AA--.52859S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Kr47Kr17ury5Jw48tr4xAFc_yoW8Cr17pF
+        WagFW2kF4vqF1Dtryqyr4xuFWrX39xK3y5Krn5Ja4v93sxuF42vFs8KayY9a47urs3Wa12
+        vrZ0vF97JFWDAacCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv
+        67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8C
+        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
+        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x02
+        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr
+        0_Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07U_
+        R67UUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It does feel like a hardware issue, either the bus or the card. I had Windows dual boot on the laptop and even Windows is complaining of network issues.
+Hi,
 
 
-
-
-
-
-On Monday, 25 September, 2023 at 12:14:02 pm GMT-4, Cool Goose <coolgoose54@yahoo.in> wrote: 
-
-
-
-
-
-Laptop model : Lenovo Flex 5, running Arch Linux since Dec 2019. No issues til around late 2022 when I would just disable wireless and reenable from GNOME system tray NetworkManager applet and then things would work fine. But for almost a couple of months, constant firmware crashes and device cannot be recovered even after disable-renabling wireless. If I remember correctly the transition to constant crashes coincided with me upgrading system, thus I am reporting here.
-
-Just in case it helps, I tried looking for a small system journal from the laptop where the firmware crash was included, and posted that here. http://ix.io/4Hpr
-
-I am trying to find out if this actually looks like a hardware failure becuase in that case I can call it non-recoverable issue and look for a wifi adapter.
-If it is hardware failure, I am trying to find out if there are any card settings I can tweak in may be BIOS that would make it work in say a restricted mode.
-
-Thanks.
-
-
-On Monday, 25 September, 2023 at 06:15:27 am GMT-4, Bagas Sanjaya <bagasdotme@gmail.com> wrote: 
-
-
-
-
-
-On 25/09/2023 17:08, Kalle Valo wrote:
-
-> Bagas Sanjaya <bagasdotme@gmail.com> writes:
-> 
->>> Sep 19 09:01:11 hostname kernel: ath10k_warn: 149 callbacks suppressed
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>> Sep 19 09:01:11 hostname kernel: ath10k_pci 0000:03:00.0: failed to wake target for read32 at 0x00036044: -110
->>>
+On 2023/10/30 21:39, Maxime Ripard wrote:
+> On Mon, Oct 30, 2023 at 09:25:50PM +0800, Sui Jingfeng wrote:
+>> I think my approach provide a solution, while still keep the bridges drivers
+>> to a modular at the same time. Despite simple, it indeed solve the problem.
+>> It simple because of explicit control of the loading order by myself, not by
+>> rely on the framework or something else (say component)
 >>
->> Looks like hardware issue, right?
-> 
-> It could be a hardware issue (for example a problem with the PCI bus
-> communication) but also simply a firmware crash. These kind of reports
-> come time to time but root cause is unknown.
+>> It is not totally duplicating, I have rewrite part of them. You can compare
+>> to see what I'm changed. It is just that it66162 was upstream-ed earlier than
+>> our solution. But I also have write display drivers for lt8618 and lt8619
+>> completely by myself.
+>>
+>> Even though our local drm bridges driver will not be able to enjoy the updates.
+>> We will accept such a results(or pain). I can maintain our local drm bridges
+>> drivers by myself. Sorry, on this technique point, we will not follow your idea.
+>> I'm sure that my approach is toward to right direction for our device at now.
+>> If someone invent a better solution to handle this problem, which make the
+>> various drm bridges drivers usable out of box, then I will follow and cooperate
+>> to test.
+> As far as I'm concerned, the two options are either you reuse the
+> already existing driver or this series isn't merged.
 
-> 
+It's not that I don't want to use thealready existing display bridge driver, It is just that it is not 
+suitable for non DT-based system to use. Our system using UEFI+ACPI, 
+beside the I2C, there also have GPIO HPD interrupt hardware. ACPI-based system and DT-based system have different way to use(request) the hardware.
+Can you feel my words?
 
-The reporter said on Arch Linux forum (see TS) that trying older
-linux-firmware package doesn't help, so I suspect this as hardware issue.
+If the variousdisplay bridge drivers are really ready to use, why I have to refuse?
 
-Cool Goose, what is your laptop model?
 
--- 
-An old man doll... just what I always wanted! - Clara
-
+> Ignoring what issue we raised and still merging your patch isn't on the
+> table, sorry.
+>
+> Maxime
 
