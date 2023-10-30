@@ -2,120 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C8F7DB618
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AF47DB61C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbjJ3JZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
+        id S232374AbjJ3J1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbjJ3JZp (ORCPT
+        with ESMTP id S232073AbjJ3J06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:25:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC79EA;
-        Mon, 30 Oct 2023 02:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698657942; x=1730193942;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=wTMbD+Y3gUCGRghE6+820yKHgUukE/w0guWwpnRSIoo=;
-  b=BDqKdv2oCsjhXEcKyWweyQW77xniZj/c+3NnW5ezZnI/P9ajEwNu/TEA
-   MzjSaBILxArq5+zI2uPwarRGouVXle0wKxi/P19hpTvy9yV0S7k8St/8m
-   UYgewTzxTMWv64JOMHuIiwgIFE8vw8OJnNUtzoi49hmiVnH/xCfAfRPXX
-   Qr/X9WhEHNA+/g1c+ekKvwtM8eimkuGs09AQhO/DFYwz7sj9lf+0ikWX3
-   t1DMRWzetbc4O3VQGNIfFh/jXT0u30L/EJA/sFx0IBAgN8plMxJS9iX3b
-   sLXX45xv+/emFXzN4Qj1lrdcF77+wevExyXWdiKABxjI9jj3AMgIOuH07
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="367386344"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="367386344"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:25:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="830632658"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="830632658"
-Received: from sgruszka-mobl.ger.corp.intel.com ([10.252.50.181])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:25:39 -0700
-Date:   Mon, 30 Oct 2023 11:25:37 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Vamshi Gajjela <vamshigajjela@google.com>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        ilpo.jarvinen@linux.intel.com, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, manugautam@google.com,
-        Subhash Jadavani <sjadavani@google.com>,
-        Channa Kadabi <kadabi@google.com>
-Subject: Re: [PATCH v5 1/2] serial: core: Update uart_poll_timeout() function
- to return unsigned long
-In-Reply-To: <20231030073542.251281-2-vamshigajjela@google.com>
-Message-ID: <2ed2249-d4ce-410-17d1-b78be4a3a643@linux.intel.com>
-References: <20231030073542.251281-1-vamshigajjela@google.com> <20231030073542.251281-2-vamshigajjela@google.com>
+        Mon, 30 Oct 2023 05:26:58 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F14C6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:26:56 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507bd64814fso5862139e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698658014; x=1699262814; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/S93wdJSw/AzX9CKKdyBARwqyDwptUmDMX/QD6LKCe4=;
+        b=oamF0bF34fDhS6xoumno2H3pWQk139BtFvEQ2etV86T6zSNi6o/xnv/azmQ4cHdngG
+         4CePOABtIWfKhWgcAufIU5VjJnJVP+PxokTYq83bcYQqoFMgqLc+zjqrXu+ApCRWfVue
+         qY5X090L0cSgIVJAYD6Yfk6/jh+5lmI4bhLW0R4Nz5U2/LSbbi2zX2ltvqwe3BZ/g6xM
+         CF4dKIgFM1vBryybR4G9+XMe0GpRMBTrXapJzJVBdFO50hzLpX+NlA/xms2lsQU/QRMM
+         FHViMpz5sCPiRV+q+bst2MiVxi7a60uSsBlGFhtztH2mfWoKRyztLuoWEktumq5IxDax
+         pr9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698658014; x=1699262814;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/S93wdJSw/AzX9CKKdyBARwqyDwptUmDMX/QD6LKCe4=;
+        b=HxTZTWPYIZAu7Jgmq0g9mQwSy1wByXuNqxstotJRQKKiXMcBmt2HiYFNgdYEufGnOj
+         K3u+e9DRNxhE4KHb2RXFyyeE9aQPPXc4ofTPuF6bsB+Ykni6Du1fZw1KKFw0egZiNORR
+         1yLM5Cfz7svzD48Wz7H3kulrHRYbouUczFJ3FMjjuNh34wMzwAgCZXlYmqFpehNWvtNR
+         2hZPq3hokS6leWzv69DzunQ3i3sJMmjOBWaZoRN7l/ZeEyq8cV9bbPKcKL6Si9x6tZ7S
+         vXjdkvr6n6NZlgFG3MPS0gaQXJweSbFK4fviIUOMU4V8ZVacHhhCvrJD2BaWznGOFWke
+         cTiA==
+X-Gm-Message-State: AOJu0YwZ621j8jMJ+GIgDkBAeED4yUaoA85lv0LDenIIR0PM8pu4ilX+
+        EwhVt0qR9Nd4HCLcPZMnGl43BSXer/+YmZTEWz4=
+X-Google-Smtp-Source: AGHT+IGlv3iUmWJJlYqW6cgPWqiSNT9vmjTv/sx/ZTNAqrBO65xw+S7UzqB3dpvnBxvLgrpZtCLRQA==
+X-Received: by 2002:ac2:5e24:0:b0:504:7e90:e05b with SMTP id o4-20020ac25e24000000b005047e90e05bmr6081095lfg.14.1698658013974;
+        Mon, 30 Oct 2023 02:26:53 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id d34-20020a0565123d2200b0050915816a16sm811912lfv.145.2023.10.30.02.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 02:26:53 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 30 Oct 2023 10:26:50 +0100
+Subject: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1516915826-1698657941=:1729"
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+X-B4-Tracking: v=1; b=H4sIANl2P2UC/3WNTQqDMBCFryKzbkoSmVi76j2Ki2imOiBJmYi0S
+ O7e4L7L9/e9AzIJU4Z7c4DQzplTrMJeGpgWH2dSHKoGq21rtO3Uiz9KtvXWOiejog7tGLDXZvJ
+ QN2+hWjh5T4i0wVDNhfOW5Ht+7OaM/uB2o4wK6DD0GrFF/1g5eknXJDMMpZQf+nuJXbAAAAA=
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+It was reported that the "LuCI" web UI was not working properly
+with a device using the RTL8366RB switch. Disabling the egress
+port tagging code made the switch work again, but this is not
+a good solution as we want to be able to direct traffic to a
+certain port.
 
---8323329-1516915826-1698657941=:1729
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+It turns out that packets between 1496 and 1500 bytes are
+dropped unless padded out to 1518 bytes.
 
-On Mon, 30 Oct 2023, Vamshi Gajjela wrote:
+If we pad the ethernet frames to a minimum of ETH_FRAME_LEN + FCS
+(1518 bytes) everything starts working fine.
 
-> The function uart_fifo_timeout() returns an unsigned long value, which
-> is the number of jiffies. Therefore, change the variable timeout in the
-> function uart_poll_timeout() from int to unsigned long.
-> Change the return type of the function uart_poll_timeout() from int to
-> unsigned long to be consistent with the type of timeout values.
-> 
-> Signed-off-by: Vamshi Gajjela <vamshigajjela@google.com>
-> ---
-> v5:
-> - no change. Consistent version for series
-> v4:
-> - author name in capitals to lowercase
-> v3:
-> - updated description
-> v2:
-> - unsigned long instead of unsigned int
-> - added () after function name in short log
-> - updated description
-> 
->  include/linux/serial_core.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-> index bb6f073bc159..6916a1d7e477 100644
-> --- a/include/linux/serial_core.h
-> +++ b/include/linux/serial_core.h
-> @@ -773,9 +773,9 @@ static inline unsigned long uart_fifo_timeout(struct uart_port *port)
->  }
->  
->  /* Base timer interval for polling */
-> -static inline int uart_poll_timeout(struct uart_port *port)
-> +static inline unsigned long uart_poll_timeout(struct uart_port *port)
->  {
-> -	int timeout = uart_fifo_timeout(port);
-> +	unsigned long timeout = uart_fifo_timeout(port);
->  
->  	return timeout > 6 ? (timeout / 2 - 2) : 1;
->  }
-> 
+1496 is the size of a normal data frame minus the internal DSA
+tag. The number is intuitive, the explanation evades me.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+As we completely lack datasheet or any insight into how this
+switch works, this trial-and-error solution is the best we
+can do. FWIW this bug may very well be the reason why Realteks
+code drops are not using CPU tagging. The vendor routers using
+this switch are all hardwired to disable CPU tagging and all
+packets are pushed to all ports on TX. This is also the case
+in the old OpenWrt driver, derived from the vendor code drops.
 
+I have tested smaller sizes, only 1518 or bigger padding works.
+
+Modifying the MTU on the switch (one setting affecting all
+ports) has no effect.
+
+Before this patch:
+
+PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
+^C
+--- 192.168.1.1 ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss, time 1048ms
+
+PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
+^C
+--- 192.168.1.1 ping statistics ---
+12 packets transmitted, 0 received, 100% packet loss, time 11267ms
+
+After this patch:
+
+PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
+1478 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.533 ms
+1478 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.630 ms
+
+PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
+1480 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.527 ms
+1480 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.562 ms
+
+Also LuCI starts working with the 1500 bytes frames it produces
+from the HTTP server.
+
+Fixes: 9eb8bc593a5e ("net: dsa: tag_rtl4_a: fix egress tags")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v2:
+- Pad packages >= 1496 bytes after some further tests
+- Use more to-the-point description
+- Provide ping results in the commit message
+- Link to v1: https://lore.kernel.org/r/20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org
+---
+ net/dsa/tag_rtl4_a.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
+index c327314b95e3..3292bc49b158 100644
+--- a/net/dsa/tag_rtl4_a.c
++++ b/net/dsa/tag_rtl4_a.c
+@@ -45,6 +45,16 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
+ 	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
+ 		return NULL;
+ 
++	/* Packets over 1496 bytes get dropped unless they get padded
++	 * out to 1518 bytes. 1496 is ETH_DATA_LEN - tag which is hardly
++	 * a coinicidence, and 1518 is ETH_FRAME_LEN + FCS so we define
++	 * the threshold size and padding like this.
++	 */
++	if (skb->len >= (ETH_DATA_LEN - RTL4_A_HDR_LEN)) {
++		if (unlikely(__skb_put_padto(skb, ETH_FRAME_LEN + ETH_FCS_LEN, false)))
++			return NULL;
++	}
++
+ 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
+ 		   dp->index);
+ 	skb_push(skb, RTL4_A_HDR_LEN);
+
+---
+base-commit: d9e164e4199bc465b3540d5fe3ffc8a9a4fc6157
+change-id: 20231027-fix-rtl8366rb-e752bd5901ca
+
+Best regards,
 -- 
- i.
+Linus Walleij <linus.walleij@linaro.org>
 
---8323329-1516915826-1698657941=:1729--
