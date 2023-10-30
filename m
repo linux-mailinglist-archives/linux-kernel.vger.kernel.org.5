@@ -2,126 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B88CC7DBB84
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38EA7DBB91
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbjJ3OP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S233703AbjJ3OQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233456AbjJ3OPY (ORCPT
+        with ESMTP id S231919AbjJ3OQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:15:24 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13476D6;
-        Mon, 30 Oct 2023 07:15:22 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6c0f14d6875so968279b3a.1;
-        Mon, 30 Oct 2023 07:15:22 -0700 (PDT)
+        Mon, 30 Oct 2023 10:16:31 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A30DE;
+        Mon, 30 Oct 2023 07:16:28 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9c773ac9b15so675497366b.2;
+        Mon, 30 Oct 2023 07:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698675321; x=1699280121; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Phy/nzVRPIoAgrWYC8gIYIVfTU+CyCtvaYTpZcFu2/8=;
-        b=QBpV9UdY42knpVQGs5E5RilYtXTI53PYds9gg3Ob0K/qpx8nmftauriIDOz6B8oS6u
-         +8w+pJYBDF40XRaHB6yIy0njwLQSTVAlLU2Aq40WPs2YeI20+C+Jip1+UDBL0ea4SOu/
-         houjI96fLErayKzCURbdAIEJMJgD5wx9ZGDEfujFQfgjHi082c3rzP6X8BvqmyQgx2Ny
-         sCPtxwzX4v6iM47mbe/rXFUj8RPLRD9Z8IV+8sHTPDuO9kihOC2yFcFdmYPHUcLPWiOx
-         EeopnGzaL+wTmuzXsQXKUzBrPxyObp/C07CoRfg2aQSgs6hFdD2dQS6d39GYxSo9TTVx
-         Vn/A==
+        d=gmail.com; s=20230601; t=1698675387; x=1699280187; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NotOi/IQjQkafFHNa5lm4v8ln1I7duJrUMZ0i8r8XoY=;
+        b=bDXaHL8PLPPM2HKcmQ45j1GhEku5gHYz4UmtXvjfXdYu7CXKJtu7ChfoIdeVNwxFUX
+         09oCp3yvnGQYrP1R6y2o2tl7Sz6j8xgMiRi8vSgo1GnNceZXcQK1lKyBgNA7UutLy9HL
+         +nelcrE0PVGFQGMJvBVyao7MJ52wrhICgWtAQn/2wP+01AVPnG3L4JyG+kfJ6u3Gyw0q
+         7in7eZPlqQTvoEVi5tAh4jLQ3KxlId6w5Eqsr6YphCpwJm6OFVHMruIga4z+IIW1jUwS
+         O/1/jkZQRi+vsvzP5cFXdV/Ck1bpiCCOGJRIzPkjpUI36VtvDibdIeBKTdwZpgqvX8zb
+         9vFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698675321; x=1699280121;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Phy/nzVRPIoAgrWYC8gIYIVfTU+CyCtvaYTpZcFu2/8=;
-        b=vlpW6/ajqdoYdhczTe+lLqcflpspF22AODDLW7Bnm1QcSzhXMn+Fr8xkywT1luuWXl
-         +cn8qTSKkzmLArAeFV+0ok8QbxOfeTfHwtoy1lNx1AyY4ngRa5/ZGDVdXYzWiEM4Fpbp
-         sVKvpefJrufdcKd7n8pRWvJbsVmjacLoxG7jggqcOLQjTWrKBtETDltVxpIq+0uAsyDW
-         UZp5Znqie79Ck7VXa9r8jt3fEjir2wf031nS/sEVtvliP73D+KoUuL4qaCgFpRXZFKAo
-         Iq7OIB4YsF+jl17dvclrMKPJUHSov41Z84fO6vLnI9O5oad6+7wHkvcMAK//IVrDztTo
-         bc0A==
-X-Gm-Message-State: AOJu0Yz9+iBct8mUQaMzOi4I5OrgTO/T06QBg3VyanJ/cen5ijbaaGUY
-        79b3BNLECiq9CMJFS43L3q8=
-X-Google-Smtp-Source: AGHT+IH1LGLzcObhgxTU63UavEcs3NmQlccH5PgxWH6rC1CZlrq70MTbiRAZcopHMG45pJY3z0yRRw==
-X-Received: by 2002:a05:6a00:1a04:b0:6b5:ec98:427d with SMTP id g4-20020a056a001a0400b006b5ec98427dmr7699238pfv.17.1698675321393;
-        Mon, 30 Oct 2023 07:15:21 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n10-20020a056a0007ca00b0068620bee456sm5987676pfu.209.2023.10.30.07.15.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 07:15:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <302a0c90-cc5a-41c3-8004-f96e9586ccf4@roeck-us.net>
-Date:   Mon, 30 Oct 2023 07:15:19 -0700
+        d=1e100.net; s=20230601; t=1698675387; x=1699280187;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NotOi/IQjQkafFHNa5lm4v8ln1I7duJrUMZ0i8r8XoY=;
+        b=CKEp5pu5cv9AJZlBqQLqPSfBP1PGT+Z0qDACRBjX09AmCfNFToqStZgDHy6Ezu+Bwd
+         Lp6PVfRSuZBy8/DnzD3PLhz5mwkRinUNrJiqQrohO4HT4qxy1S3ugxYa/qc9LLYxGJth
+         rcisXMZY3sc6N2VWkMDmRfU8b9MjnnQQ9gsXQUs5s1QASzb/ezZQKt8y5VxopsATh1WC
+         qGyiaQLN+HUMvsGYRlddAlIzyEcswMRlQxR8I/AuYiJH/R/QL/FVeXhPGgKFxFDro9mn
+         d2fqOsg7hsQofrLBf2JyqMXwF54RpKowOMbWizDya2MXhDo4hR8Ue1RK2llx5TUoPamC
+         2TMQ==
+X-Gm-Message-State: AOJu0Yydo1jIqIttHx45741+1roF3sbmaUmtthoLLIC8ZF/qhr/Q1EvW
+        X5UiD4X/rB4KQeyvgNc7Yno=
+X-Google-Smtp-Source: AGHT+IHIhDbQTbb2pT5sEOcg8opE2jO+TfDUzPSTq+WgT93QauODCdQY5CVihq5WGK5Ym2t0j5UUIg==
+X-Received: by 2002:a17:906:a198:b0:9d3:f436:6804 with SMTP id s24-20020a170906a19800b009d3f4366804mr1660027ejy.29.1698675386476;
+        Mon, 30 Oct 2023 07:16:26 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id g16-20020a1709064e5000b0098951bb4dc3sm6075214ejw.184.2023.10.30.07.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 07:16:26 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 16:16:23 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
+Message-ID: <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
+References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+ <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/2] hwmon: ltc2991: add driver support
-Content-Language: en-US
-To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-References: <20231026103413.27800-1-antoniu.miclaus@analog.com>
- <20231026103413.27800-2-antoniu.miclaus@analog.com>
- <075f6150-74f2-478e-9290-aa7186140cee@roeck-us.net>
- <CY4PR03MB3399049CB79E0F468A945C659BA1A@CY4PR03MB3399.namprd03.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CY4PR03MB3399049CB79E0F468A945C659BA1A@CY4PR03MB3399.namprd03.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+ <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,48 +78,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 00:59, Miclaus, Antoniu wrote:
+On Mon, Oct 30, 2023 at 10:26:50AM +0100, Linus Walleij wrote:
+> It was reported that the "LuCI" web UI was not working properly
+> with a device using the RTL8366RB switch. Disabling the egress
+> port tagging code made the switch work again, but this is not
+> a good solution as we want to be able to direct traffic to a
+> certain port.
 > 
->> On Thu, Oct 26, 2023 at 01:33:13PM +0300, Antoniu Miclaus wrote:
->>> Add support for LTC2991 Octal I2C Voltage, Current, and Temperature
->>> Monitor.
->>>
->>> The LTC2991 is used to monitor system temperatures, voltages and
->>> currents. Through the I2C serial interface, the eight monitors can
->>> individually measure supply voltages and can be paired for
->>> differential measurements of current sense resistors or temperature
->>> sensing transistors. Additional measurements include internal
->>> temperature and internal VCC.
->>>
->>> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
->>
->> Applied. I do have one comment (see below) about code which
->> I would normally reject, but I am getting tired.
->>
->> [ ... ]
->>
->>> +
->>> +struct ltc2991_state {
->>> +	struct device		*dev;
->>
->> It is completely pointless to have a reference to dev in struct
->> ltc2991_state because it is only used in the init function and
->> dereferenced six times there. It would have been much easier to
->> pass it as argument to that function. That would also have avoided
->> the wrong assumption or expectation that it is needed/used elsewhere.
->>
->> Guenter
-> Sorry for the misunderstanding. I took as reference some old driver
-> implementations from the mainline kernel.
+> It turns out that packets between 1496 and 1500 bytes are
+> dropped unless padded out to 1518 bytes.
 > 
-
-You can find examples for pretty much everything in the kernel, including
-pretty much everything bad and pointless.
-
-> Is it fine if I do a follow-up patch on this subject in the near future?
+> If we pad the ethernet frames to a minimum of ETH_FRAME_LEN + FCS
+> (1518 bytes) everything starts working fine.
 > 
+> 1496 is the size of a normal data frame minus the internal DSA
+> tag. The number is intuitive, the explanation evades me.
+> 
+> As we completely lack datasheet or any insight into how this
+> switch works, this trial-and-error solution is the best we
+> can do. FWIW this bug may very well be the reason why Realteks
+> code drops are not using CPU tagging. The vendor routers using
+> this switch are all hardwired to disable CPU tagging and all
+> packets are pushed to all ports on TX. This is also the case
+> in the old OpenWrt driver, derived from the vendor code drops.
+> 
+> I have tested smaller sizes, only 1518 or bigger padding works.
+> 
+> Modifying the MTU on the switch (one setting affecting all
+> ports) has no effect.
+> 
+> Before this patch:
+> 
+> PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
+> ^C
+> --- 192.168.1.1 ping statistics ---
+> 2 packets transmitted, 0 received, 100% packet loss, time 1048ms
+> 
+> PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
+> ^C
+> --- 192.168.1.1 ping statistics ---
+> 12 packets transmitted, 0 received, 100% packet loss, time 11267ms
+> 
+> After this patch:
+> 
+> PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
+> 1478 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.533 ms
+> 1478 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.630 ms
+> 
+> PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
+> 1480 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.527 ms
+> 1480 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.562 ms
+> 
+> Also LuCI starts working with the 1500 bytes frames it produces
+> from the HTTP server.
+> 
+> Fixes: 9eb8bc593a5e ("net: dsa: tag_rtl4_a: fix egress tags")
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> Changes in v2:
+> - Pad packages >= 1496 bytes after some further tests
+> - Use more to-the-point description
+> - Provide ping results in the commit message
+> - Link to v1: https://lore.kernel.org/r/20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org
+> ---
+>  net/dsa/tag_rtl4_a.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
+> index c327314b95e3..3292bc49b158 100644
+> --- a/net/dsa/tag_rtl4_a.c
+> +++ b/net/dsa/tag_rtl4_a.c
+> @@ -45,6 +45,16 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
+>  	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
+>  		return NULL;
+>  
+> +	/* Packets over 1496 bytes get dropped unless they get padded
+> +	 * out to 1518 bytes. 1496 is ETH_DATA_LEN - tag which is hardly
+> +	 * a coinicidence, and 1518 is ETH_FRAME_LEN + FCS so we define
+> +	 * the threshold size and padding like this.
+> +	 */
+> +	if (skb->len >= (ETH_DATA_LEN - RTL4_A_HDR_LEN)) {
+> +		if (unlikely(__skb_put_padto(skb, ETH_FRAME_LEN + ETH_FCS_LEN, false)))
+> +			return NULL;
+> +	}
 
-If you wish. I already accepted your patch.
+De-obfuscating the macros:
 
-Guenter
+	if (skb->len >= 1496)
+		__skb_put_padto(skb, 1518, false);
+
+	(...)
+
+	skb_push(skb, 4);
+
+which means that here, skb->len will be 1522, if it was originally 1496.
+So the code adds 26 extra octets, and only 4 of those are legitimate (a tag).
+The rest is absolutely unexplained, which means that until there is a
+valid explanation for them:
+
+pw-bot: cr
+
+(sorry, but if it works and we don't know why it works, then at some
+point it will break and we won't know why it stopped working)
+
+In the discussion on the previous thread:
+https://lore.kernel.org/netdev/CACRpkdbq03ZXcB-TaBp5Udo3M47rb-o+LfkEkC-gA1+=x1Zd-g@mail.gmail.com/
+
+you said that what increments is Dot1dTpPortInDiscards. 802.1Q-2018 says
+about it: "Count of received valid frames that were discarded (i.e.,
+filtered) by the Forwarding Process." which is odd enough to me, since
+packets sent by rtl4a_tag_xmit() should *not* be processed by the forwarding
+layer of the switch, but rather, force-delivered to the specified egress
+port.
+
+Could you please try to revert the effect of commit 339133f6c318 ("net:
+dsa: tag_rtl4_a: Drop bit 9 from egress frames") by setting that bit in
+the egress tag again? Who knows, maybe it is the bit which tells the
+switch to bypass the forwarding process. Or maybe there is a bit in a
+different position which does this. You could try to fill in all bits in
+unknown positions, check that there are no regressions with packet sizes
+< 1496, and then see if that made any changes to packet sizes >= 1496.
+If it did, try to see which bit made the difference.
+
+> +
+>  	netdev_dbg(dev, "add realtek tag to package to port %d\n",
+>  		   dp->index);
+>  	skb_push(skb, RTL4_A_HDR_LEN);
+> 
+> ---
+> base-commit: d9e164e4199bc465b3540d5fe3ffc8a9a4fc6157
+> change-id: 20231027-fix-rtl8366rb-e752bd5901ca
+> 
+> Best regards,
+> -- 
+> Linus Walleij <linus.walleij@linaro.org>
+> 
 
