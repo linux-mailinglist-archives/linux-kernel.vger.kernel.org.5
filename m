@@ -2,59 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7717DC338
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C267DC33B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjJ3XiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 19:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
+        id S231421AbjJ3Xk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 19:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjJ3XiJ (ORCPT
+        with ESMTP id S229646AbjJ3Xkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 19:38:09 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05575C2;
-        Mon, 30 Oct 2023 16:38:05 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E16593D6;
-        Tue, 31 Oct 2023 00:37:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698709068;
-        bh=ocghPvUkVuC2JBXsnLGBMenNLVMIBQOAXmT2GXhPlRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LrgxHWQ9b0cjebEd6q0+TTQjZAuK/YqP+yhs60AcMWdYvDhZ6zKcUWH40Xn7qm4ec
-         8gvHNaMRpIHEo/v8ZO1qf3eVpe5ZN6acMlbyWzlmia/zK23kStt6/AiaCs1nx3wimL
-         MWGlVvgxUvYvFW+5M7YoSsiqRX27eczfrDDwnj00=
-Date:   Tue, 31 Oct 2023 01:38:09 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Tommaso Merciai <tomm.merciai@gmail.com>, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, mhecht73@gmail.com,
-        linuxfancy@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
-Message-ID: <20231030233809.GD12764@pendragon.ideasonboard.com>
-References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
- <20231020141354.2500602-4-tomm.merciai@gmail.com>
- <ZTpnHdpTgRNll3TC@kekkonen.localdomain>
- <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <ZUAxoy2cRR6Rm9ig@kekkonen.localdomain>
+        Mon, 30 Oct 2023 19:40:55 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E40DE1;
+        Mon, 30 Oct 2023 16:40:53 -0700 (PDT)
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39UNdfx7438245
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 30 Oct 2023 16:39:45 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39UNdfx7438245
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023101201; t=1698709186;
+        bh=gK2EEZyGijeJQHTcUP1prwiedChlEnbZJT6QD4YsbxM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EcUAVk4A1Rp7eE2pVLzEnx3bRMG9zHOXJ+d4i63ZG4N0Iihc8EqDNvTtPS4QI0EBz
+         ezCFymFqcsuFrJoyXPi5zJH83peCHizZfjNoU6fdzQgJl62T+PMTXciNuK6JD7b7V6
+         HFP6Ish7q6grQsghhnmt6ibiRg0bCTTc4kMkphf1/Sy6o6TLjKoiqk179BLBMJmFk/
+         JDitANWnjNMuVHVLRPwOIchQ++EPfeQ0hpwdL3KaXFV7kkJnTEwGoTZeFRTN3jqwrl
+         NcYdEWcpFCYPoW/5Hq+bReM37Omwewbmo78O8qQ03DBM2uWUfPHR/Av+SIcNdaZ6oQ
+         Do8Au++3HFvcg==
+From:   "Xin Li (Intel)" <xin@zytor.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, weijiang.yang@intel.com,
+        kai.huang@intel.com
+Subject: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines and usages
+Date:   Mon, 30 Oct 2023 16:39:39 -0700
+Message-ID: <20231030233940.438233-1-xin@zytor.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZUAxoy2cRR6Rm9ig@kekkonen.localdomain>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,302 +52,294 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Xin Li <xin3.li@intel.com>
 
-Hans, there's a question for you below.
+Define VMX basic information fields with BIT_ULL()/GENMASK_ULL(), and
+replace hardcoded VMX basic numbers with these field macros.
 
-On Mon, Oct 30, 2023 at 10:43:47PM +0000, Sakari Ailus wrote:
-> Hi Tommaso,
-> 
-> On Mon, Oct 30, 2023 at 01:26:58PM +0100, Tommaso Merciai wrote:
-> 
-> ...
-> 
-> > > > +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
-> > > > +{
-> > > > +	u64 val;
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
-> > > 
-> > > Missing error checking before the use of the value. The same pattern
-> > > remains prevalent throughout the driver.
-> > > 
-> > > I think it'd be easier if you didn't use a temporary variable for reading,
-> > > but instead had a register width specific access function. You could even
-> > > introduce a helper macro to read this information as I suggested in an
-> > > earlier review.
-> > 
-> > oks.
-> > We are moving to use the following macros:
-> > 
-> > #define alvium_read_check(alvium, reg, value) \
-> > { \
-> > 	int ret = alvium_read(alvium, reg, value, NULL); \
-> > 	if (ret) \
-> > 		return ret; \
-> > }
-> > 
-> 
-> You could do something like (entirely untested):
-> 
-> #define ALVIUM_DECLARE_READ(sign, bits) \
-> 	static int
-> 	alvium_read_ ## sign ## bits(struct alvium_dev *alvium, u32 reg, \
-> 				     sign ## bits *val, int *err) \
-> 	{ \
-> 		u64 val64; \
-> 		int ret; \
-> 			\
-> 		if (err && *err < 0) \
-> 			return *err; \
-> 			\
-> 		alvium_read(alvium, reg, &val64, &ret); \
-> 		if (ret < 0) { \
-> 			if (err) \
-> 				*err = ret; \
-> 			return ret; \
-> 		}	\
-> 			\
-> 		*val = val64; \
-> 			\
-> 		return 0; \
-> 	}
-> 
-> ALVIUM_DECLARE_READ(u, 32);
-> 
-> And then, e.g. instead of (and failing to check ret):
-> 
-> 	u64 val;
-> 
-> 	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_RW, &val, &ret);
-> 	alvium->dft_contrast = val;
-> 
-> you'd have a single call:
-> 
-> 	alvium_read_u32(alvium, REG_BCRM_CONTRAST_VALUE_RW,
-> 		        &alvium->dft_contrast, &ret);
-> 
-> And so on.
-> 
-> You can drop sign if you don't need signed reads but some of the struct
-> fields you're writing something appear to be signed.
-> 
-> It'd be good to check the register size matches with the size of *val, too.
-> Maybe something like:
-> 
-> WARN_ON((CCI_REG ## bits(0) && CCI_REG_WIDTH_MASK) >> CCI_REG_WIDTH_SHIFT
-> 	!= sizeof(sign ## bits));
+Per Sean's ask, save the full/raw value of MSR_IA32_VMX_BASIC in the
+global vmcs_config as type u64 to get rid of the hi/lo crud, and then
+use VMX_BASIC helpers to extract info as needed.
 
-I think this could actually be automated, and implemented in v4l2-cci.
-Something like the following:
+Tested-by: Shan Kang <shan.kang@intel.com>
+Signed-off-by: Xin Li <xin3.li@intel.com>
+---
 
-diff --git a/drivers/media/v4l2-core/v4l2-cci.c b/drivers/media/v4l2-core/v4l2-cci.c
-index bc2dbec019b0..27f1eaa7777d 100644
---- a/drivers/media/v4l2-core/v4l2-cci.c
-+++ b/drivers/media/v4l2-core/v4l2-cci.c
-@@ -16,7 +16,7 @@
+Changes since v2:
+* Simply save the full/raw value of MSR_IA32_VMX_BASIC in the global
+  vmcs_config, and then use the helpers to extract info from it as
+  needed (Sean Christopherson).
+* Move all VMX_MISC related changes to the second patch (Kai Huang).
+* Commonize memory type definitions used in the VMX files, as memory
+  types are architectural.
 
- #include <media/v4l2-cci.h>
+Changes since v1:
+* Don't add field shift macros unless it's really needed, extra layer
+  of indirect makes it harder to read (Sean Christopherson).
+* Add a static_assert() to ensure that VMX_BASIC_FEATURES_MASK doesn't
+  overlap with VMX_BASIC_RESERVED_BITS (Sean Christopherson).
+* read MSR_IA32_VMX_BASIC into an u64 rather than 2 u32 (Sean
+  Christopherson).
+* Add 2 new functions for extracting fields from VMX basic (Sean
+  Christopherson).
+* Drop the tools header update (Sean Christopherson).
+* Move VMX basic field macros to arch/x86/include/asm/vmx.h.
+---
+ arch/x86/include/asm/msr-index.h |  9 ---------
+ arch/x86/include/asm/vmx.h       | 20 ++++++++++++++++++--
+ arch/x86/kvm/vmx/capabilities.h  |  6 ++----
+ arch/x86/kvm/vmx/nested.c        | 31 +++++++++++++++++++++----------
+ arch/x86/kvm/vmx/vmx.c           | 24 ++++++++++--------------
+ 5 files changed, 51 insertions(+), 39 deletions(-)
 
--int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
-+int __cci_read(struct regmap *map, u32 reg, void *val, int *err)
- {
- 	unsigned int len;
- 	u8 buf[8];
-@@ -37,19 +37,19 @@ int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
-
- 	switch (len) {
- 	case 1:
--		*val = buf[0];
-+		*(u8 *)val = buf[0];
- 		break;
- 	case 2:
--		*val = get_unaligned_be16(buf);
-+		*(u16 *)val = get_unaligned_be16(buf);
- 		break;
- 	case 3:
--		*val = get_unaligned_be24(buf);
-+		*(u32 *)val = get_unaligned_be24(buf);
- 		break;
- 	case 4:
--		*val = get_unaligned_be32(buf);
-+		*(u32 *)val = get_unaligned_be32(buf);
- 		break;
- 	case 8:
--		*val = get_unaligned_be64(buf);
-+		*(u64 *)val = get_unaligned_be64(buf);
- 		break;
- 	default:
- 		dev_err(regmap_get_device(map), "Error invalid reg-width %u for reg 0x%04x\n",
-@@ -64,7 +64,7 @@ int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
-
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(cci_read);
-+EXPORT_SYMBOL_GPL(__cci_read);
-
- int cci_write(struct regmap *map, u32 reg, u64 val, int *err)
- {
-@@ -119,7 +119,7 @@ int cci_update_bits(struct regmap *map, u32 reg, u64 mask, u64 val, int *err)
- 	u64 readval;
- 	int ret;
-
--	ret = cci_read(map, reg, &readval, err);
-+	ret = __cci_read(map, reg, &readval, err);
- 	if (ret)
- 		return ret;
-
-diff --git a/include/media/v4l2-cci.h b/include/media/v4l2-cci.h
-index 0f6803e4b17e..31223ce8d741 100644
---- a/include/media/v4l2-cci.h
-+++ b/include/media/v4l2-cci.h
-@@ -7,6 +7,9 @@
- #ifndef _V4L2_CCI_H
- #define _V4L2_CCI_H
-
-+#include <linux/bitfield.h>
-+#include <linux/build_bug.h>
-+#include <linux/log2.h>
- #include <linux/types.h>
-
- struct i2c_client;
-@@ -39,6 +42,8 @@ struct cci_reg_sequence {
- #define CCI_REG32(x)			((4 << CCI_REG_WIDTH_SHIFT) | (x))
- #define CCI_REG64(x)			((8 << CCI_REG_WIDTH_SHIFT) | (x))
-
-+int __cci_read(struct regmap *map, u32 reg, void *val, int *err);
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 8bcbebb56b8f..d83195f53e33 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -1084,15 +1084,6 @@
+ #define MSR_IA32_VMX_VMFUNC             0x00000491
+ #define MSR_IA32_VMX_PROCBASED_CTLS3	0x00000492
+ 
+-/* VMX_BASIC bits and bitmasks */
+-#define VMX_BASIC_VMCS_SIZE_SHIFT	32
+-#define VMX_BASIC_TRUE_CTLS		(1ULL << 55)
+-#define VMX_BASIC_64		0x0001000000000000LLU
+-#define VMX_BASIC_MEM_TYPE_SHIFT	50
+-#define VMX_BASIC_MEM_TYPE_MASK	0x003c000000000000LLU
+-#define VMX_BASIC_MEM_TYPE_WB	6LLU
+-#define VMX_BASIC_INOUT		0x0040000000000000LLU
+-
+ /* Resctrl MSRs: */
+ /* - Intel: */
+ #define MSR_IA32_L3_QOS_CFG		0xc81
+diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+index 0e73616b82f3..088b75d97c38 100644
+--- a/arch/x86/include/asm/vmx.h
++++ b/arch/x86/include/asm/vmx.h
+@@ -120,6 +120,14 @@
+ 
+ #define VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR	0x000011ff
+ 
++/* x86 memory types, explicitly used in VMX only */
++#define MEM_TYPE_WB				0x6ULL
++#define MEM_TYPE_UC				0x0ULL
 +
- /**
-  * cci_read() - Read a value from a single CCI register
-  *
-@@ -48,9 +53,17 @@ struct cci_reg_sequence {
-  * @err: Optional pointer to store errors, if a previous error is set
-  *       then the read will be skipped
-  *
-+ * The type of the @val pointer must match the size of the register being read.
-+ * Mismatches will result in compile-time errors.
-+ *
-  * Return: %0 on success or a negative error code on failure.
-  */
--int cci_read(struct regmap *map, u32 reg, u64 *val, int *err);
-+#define cci_read(map, reg, val, err) ({					\
-+	u32 __reg = (reg);						\
-+	u32 __size = FIELD_GET(CCI_REG_WIDTH_MASK, __reg);		\
-+	BUILD_BUG_ON(sizeof(*(val)) != roundup_pow_of_two(__size));	\
-+	__cci_read(map, __reg, (void *)(val), err);			\
-+})
++/* VMX_BASIC bits and bitmasks */
++#define VMX_BASIC_32BIT_PHYS_ADDR_ONLY		BIT_ULL(48)
++#define VMX_BASIC_INOUT				BIT_ULL(54)
++
+ #define VMX_MISC_PREEMPTION_TIMER_RATE_MASK	0x0000001f
+ #define VMX_MISC_SAVE_EFER_LMA			0x00000020
+ #define VMX_MISC_ACTIVITY_HLT			0x00000040
+@@ -143,6 +151,16 @@ static inline u32 vmx_basic_vmcs_size(u64 vmx_basic)
+ 	return (vmx_basic & GENMASK_ULL(44, 32)) >> 32;
+ }
+ 
++static inline u32 vmx_basic_vmcs_basic_cap(u64 vmx_basic)
++{
++	return (vmx_basic & GENMASK_ULL(63, 45)) >> 32;
++}
++
++static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
++{
++	return (vmx_basic & GENMASK_ULL(53, 50)) >> 50;
++}
++
+ static inline int vmx_misc_preemption_timer_rate(u64 vmx_misc)
+ {
+ 	return vmx_misc & VMX_MISC_PREEMPTION_TIMER_RATE_MASK;
+@@ -505,8 +523,6 @@ enum vmcs_field {
+ #define VMX_EPTP_PWL_5				0x20ull
+ #define VMX_EPTP_AD_ENABLE_BIT			(1ull << 6)
+ #define VMX_EPTP_MT_MASK			0x7ull
+-#define VMX_EPTP_MT_WB				0x6ull
+-#define VMX_EPTP_MT_UC				0x0ull
+ #define VMX_EPT_READABLE_MASK			0x1ull
+ #define VMX_EPT_WRITABLE_MASK			0x2ull
+ #define VMX_EPT_EXECUTABLE_MASK			0x4ull
+diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+index 41a4533f9989..86ce8bb96bed 100644
+--- a/arch/x86/kvm/vmx/capabilities.h
++++ b/arch/x86/kvm/vmx/capabilities.h
+@@ -54,9 +54,7 @@ struct nested_vmx_msrs {
+ };
+ 
+ struct vmcs_config {
+-	int size;
+-	u32 basic_cap;
+-	u32 revision_id;
++	u64 basic;
+ 	u32 pin_based_exec_ctrl;
+ 	u32 cpu_based_exec_ctrl;
+ 	u32 cpu_based_2nd_exec_ctrl;
+@@ -76,7 +74,7 @@ extern struct vmx_capability vmx_capability __ro_after_init;
+ 
+ static inline bool cpu_has_vmx_basic_inout(void)
+ {
+-	return	(((u64)vmcs_config.basic_cap << 32) & VMX_BASIC_INOUT);
++	return	vmcs_config.basic & VMX_BASIC_INOUT;
+ }
+ 
+ static inline bool cpu_has_virtual_nmis(void)
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index c5ec0ef51ff7..23704f8d9035 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -1201,23 +1201,34 @@ static bool is_bitwise_subset(u64 superset, u64 subset, u64 mask)
+ 	return (superset | subset) == superset;
+ }
+ 
++#define VMX_BASIC_VMCS_SIZE_SHIFT		32
++#define VMX_BASIC_DUAL_MONITOR_TREATMENT	BIT_ULL(49)
++#define VMX_BASIC_MEM_TYPE_SHIFT		50
++#define VMX_BASIC_TRUE_CTLS			BIT_ULL(55)
++
++#define VMX_BASIC_FEATURES_MASK			\
++	(VMX_BASIC_DUAL_MONITOR_TREATMENT |	\
++	 VMX_BASIC_INOUT |			\
++	 VMX_BASIC_TRUE_CTLS)
++
++#define VMX_BASIC_RESERVED_BITS			\
++	(GENMASK_ULL(63, 56) | GENMASK_ULL(47, 45) | BIT_ULL(31))
++
+ static int vmx_restore_vmx_basic(struct vcpu_vmx *vmx, u64 data)
+ {
+-	const u64 feature_and_reserved =
+-		/* feature (except bit 48; see below) */
+-		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |
+-		/* reserved */
+-		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56);
+ 	u64 vmx_basic = vmcs_config.nested.basic;
+ 
+-	if (!is_bitwise_subset(vmx_basic, data, feature_and_reserved))
++	static_assert(!(VMX_BASIC_FEATURES_MASK & VMX_BASIC_RESERVED_BITS));
++
++	if (!is_bitwise_subset(vmx_basic, data,
++			       VMX_BASIC_FEATURES_MASK | VMX_BASIC_RESERVED_BITS))
+ 		return -EINVAL;
+ 
+ 	/*
+ 	 * KVM does not emulate a version of VMX that constrains physical
+ 	 * addresses of VMX structures (e.g. VMCS) to 32-bits.
+ 	 */
+-	if (data & BIT_ULL(48))
++	if (data & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
+ 		return -EINVAL;
+ 
+ 	if (vmx_basic_vmcs_revision_id(vmx_basic) !=
+@@ -2690,11 +2701,11 @@ static bool nested_vmx_check_eptp(struct kvm_vcpu *vcpu, u64 new_eptp)
+ 
+ 	/* Check for memory type validity */
+ 	switch (new_eptp & VMX_EPTP_MT_MASK) {
+-	case VMX_EPTP_MT_UC:
++	case MEM_TYPE_UC:
+ 		if (CC(!(vmx->nested.msrs.ept_caps & VMX_EPTP_UC_BIT)))
+ 			return false;
+ 		break;
+-	case VMX_EPTP_MT_WB:
++	case MEM_TYPE_WB:
+ 		if (CC(!(vmx->nested.msrs.ept_caps & VMX_EPTP_WB_BIT)))
+ 			return false;
+ 		break;
+@@ -6964,7 +6975,7 @@ static void nested_vmx_setup_basic(struct nested_vmx_msrs *msrs)
+ 		VMCS12_REVISION |
+ 		VMX_BASIC_TRUE_CTLS |
+ 		((u64)VMCS12_SIZE << VMX_BASIC_VMCS_SIZE_SHIFT) |
+-		(VMX_BASIC_MEM_TYPE_WB << VMX_BASIC_MEM_TYPE_SHIFT);
++		(MEM_TYPE_WB << VMX_BASIC_MEM_TYPE_SHIFT);
+ 
+ 	if (cpu_has_vmx_basic_inout())
+ 		msrs->basic |= VMX_BASIC_INOUT;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index be20a60047b1..9caed798d070 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2568,13 +2568,13 @@ static u64 adjust_vmx_controls64(u64 ctl_opt, u32 msr)
+ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 			     struct vmx_capability *vmx_cap)
+ {
+-	u32 vmx_msr_low, vmx_msr_high;
+ 	u32 _pin_based_exec_control = 0;
+ 	u32 _cpu_based_exec_control = 0;
+ 	u32 _cpu_based_2nd_exec_control = 0;
+ 	u64 _cpu_based_3rd_exec_control = 0;
+ 	u32 _vmexit_control = 0;
+ 	u32 _vmentry_control = 0;
++	u64 basic_msr;
+ 	u64 misc_msr;
+ 	int i;
+ 
+@@ -2693,29 +2693,25 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 		_vmexit_control &= ~x_ctrl;
+ 	}
+ 
+-	rdmsr(MSR_IA32_VMX_BASIC, vmx_msr_low, vmx_msr_high);
++	rdmsrl(MSR_IA32_VMX_BASIC, basic_msr);
+ 
+ 	/* IA-32 SDM Vol 3B: VMCS size is never greater than 4kB. */
+-	if ((vmx_msr_high & 0x1fff) > PAGE_SIZE)
++	if ((vmx_basic_vmcs_size(basic_msr) > PAGE_SIZE))
+ 		return -EIO;
+ 
+ #ifdef CONFIG_X86_64
+ 	/* IA-32 SDM Vol 3B: 64-bit CPUs always have VMX_BASIC_MSR[48]==0. */
+-	if (vmx_msr_high & (1u<<16))
++	if (basic_msr & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
+ 		return -EIO;
+ #endif
+ 
+ 	/* Require Write-Back (WB) memory type for VMCS accesses. */
+-	if (((vmx_msr_high >> 18) & 15) != 6)
++	if (vmx_basic_vmcs_mem_type(basic_msr) != MEM_TYPE_WB)
+ 		return -EIO;
+ 
+ 	rdmsrl(MSR_IA32_VMX_MISC, misc_msr);
+ 
+-	vmcs_conf->size = vmx_msr_high & 0x1fff;
+-	vmcs_conf->basic_cap = vmx_msr_high & ~0x1fff;
+-
+-	vmcs_conf->revision_id = vmx_msr_low;
+-
++	vmcs_conf->basic = basic_msr;
+ 	vmcs_conf->pin_based_exec_ctrl = _pin_based_exec_control;
+ 	vmcs_conf->cpu_based_exec_ctrl = _cpu_based_exec_control;
+ 	vmcs_conf->cpu_based_2nd_exec_ctrl = _cpu_based_2nd_exec_control;
+@@ -2865,13 +2861,13 @@ struct vmcs *alloc_vmcs_cpu(bool shadow, int cpu, gfp_t flags)
+ 	if (!pages)
+ 		return NULL;
+ 	vmcs = page_address(pages);
+-	memset(vmcs, 0, vmcs_config.size);
++	memset(vmcs, 0, vmx_basic_vmcs_size(vmcs_config.basic));
+ 
+ 	/* KVM supports Enlightened VMCS v1 only */
+ 	if (kvm_is_using_evmcs())
+ 		vmcs->hdr.revision_id = KVM_EVMCS_VERSION;
+ 	else
+-		vmcs->hdr.revision_id = vmcs_config.revision_id;
++		vmcs->hdr.revision_id = vmx_basic_vmcs_revision_id(vmcs_config.basic);
+ 
+ 	if (shadow)
+ 		vmcs->hdr.shadow_vmcs = 1;
+@@ -2964,7 +2960,7 @@ static __init int alloc_kvm_area(void)
+ 		 * physical CPU.
+ 		 */
+ 		if (kvm_is_using_evmcs())
+-			vmcs->hdr.revision_id = vmcs_config.revision_id;
++			vmcs->hdr.revision_id = vmx_basic_vmcs_revision_id(vmcs_config.basic);
+ 
+ 		per_cpu(vmxarea, cpu) = vmcs;
+ 	}
+@@ -3366,7 +3362,7 @@ static int vmx_get_max_ept_level(void)
+ 
+ u64 construct_eptp(struct kvm_vcpu *vcpu, hpa_t root_hpa, int root_level)
+ {
+-	u64 eptp = VMX_EPTP_MT_WB;
++	u64 eptp = MEM_TYPE_WB;
+ 
+ 	eptp |= (root_level == 5) ? VMX_EPTP_PWL_5 : VMX_EPTP_PWL_4;
+ 
 
- /**
-  * cci_write() - Write a value to a single CCI register
-
-The change to cci_update_bits() is obviously wrong, I've hacked that to
-compile-test the rest with the drivers using cci_read(), and I get nice
-build-time errors due to usage of the wrong type :-)
-
-Is this something that would be considered ? Bonus points to anyone who
-would fix cci_update_bits() :-)
-
-> > > > +static int alvium_get_csi_clk_params(struct alvium_dev *alvium)
-> > > > +{
-> > > > +	u64 val;
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MIN_R, &val, &ret);
-> > > > +	alvium->min_csi_clk = val;
-> > > > +
-> > > > +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MAX_R, &val, &ret);
-> > > > +	alvium->max_csi_clk = val;
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +static int alvium_set_csi_clk(struct alvium_dev *alvium)
-> > > > +{
-> > > > +	struct device *dev = &alvium->i2c_client->dev;
-> > > > +	u64 csi_clk;
-> > > > +	int ret;
-> > > > +
-> > > > +	csi_clk = (u32)alvium->ep.link_frequencies[0];
-> > > 
-> > > Why casting to u32? Shouldn't csi_clk be u32 instead?
-> > 
-> > Ok we fix this in v11.
-> > Change to use u64 for calculation because type of ep.link_frequencies[0]
-> > Plan is to clamp csi_clk between min/max instead of returning error.
-> 
-> I think I would keep it as-is: this isn't V4L2 UAPI.
-> 
-> > > > +
-> > > > +	if (csi_clk < alvium->min_csi_clk || csi_clk > alvium->max_csi_clk)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	ret = alvium_write_hshake(alvium, REG_BCRM_CSI2_CLOCK_RW, csi_clk);
-> > > > +	if (ret) {
-> > > > +		dev_err(dev, "Fail to set csi lanes reg\n");
-> > > > +		return ret;
-> > > > +	}
-> > > > +
-> > > > +	alvium->link_freq = alvium->ep.link_frequencies[0];
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> 
-> ...
-> 
-> > > > +			goto out;
-> > > > +
-> > > > +		ret = alvium_set_mode(alvium, state);
-> > > > +		if (ret)
-> > > > +			goto out;
-> > > > +
-> > > > +		fmt = v4l2_subdev_get_pad_format(sd, state, 0);
-> > > > +		ret = alvium_set_framefmt(alvium, fmt);
-> > > > +		if (ret)
-> > > > +			goto out;
-> > > > +
-> > > > +		ret = alvium_set_stream_mipi(alvium, enable);
-> > > > +		if (ret)
-> > > > +			goto out;
-> > > > +
-> > > > +	} else {
-> > > > +		alvium_set_stream_mipi(alvium, enable);
-> > > > +		pm_runtime_mark_last_busy(&client->dev);
-> > > > +		pm_runtime_put_autosuspend(&client->dev);
-> > > 
-> > > pm_runtime_put() here, too.
-> > 
-> > Here is not needed we already have pm_runtime_put_autosuspend.
-> > I'm missing something?
-> 
-> Ah, I missed that while reviewing. Please ignore that comment then.
-> 
-> > > > +	}
-> > > > +
-> > > > +	alvium->streaming = !!enable;
-> > > > +	v4l2_subdev_unlock_state(state);
-> > > > +
-> > > > +	return 0;
-> > > > +
-> > > > +out:
-> > > > +	v4l2_subdev_unlock_state(state);
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +static int alvium_init_cfg(struct v4l2_subdev *sd,
-> > > > +			   struct v4l2_subdev_state *state)
-> > > > +{
-> > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > +	struct alvium_mode *mode = &alvium->mode;
-> > > 
-> > > Init_cfg() is expected to be configuration independent (as much as
-> > > possible). Therefore you should use defaults here, not current mode.
-> > 
-> > Defaults alvium mode already used here.
-> 
-> Ah, indeed. Please ignore.
-
+base-commit: 35dcbd9e47035f98f3910ae420bf10892c9bdc99
 -- 
-Regards,
+2.41.0
 
-Laurent Pinchart
