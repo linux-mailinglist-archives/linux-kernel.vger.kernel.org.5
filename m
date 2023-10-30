@@ -2,472 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4557DBCE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CBD7DBCEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbjJ3Pu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S233553AbjJ3Pw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbjJ3Pu4 (ORCPT
+        with ESMTP id S231845AbjJ3PwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:50:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4F2CC;
-        Mon, 30 Oct 2023 08:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:Date:Cc:To:
-        From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=JIVnKoGUsdrTNuefwCJEO8cGyy/1Op8gcQl3Jxn6RKU=; b=T4LMbY8qfiuXCTNlt59GCIVqkX
-        gJi8JrFrYrVNjIID4tfARMPhYPsVqswZELA/jKY5scoJE2pRO7HpYzrYW0xCw1KiH9f1mU/9RaCzs
-        jaqJe7K4e+DY7GynOeNULkQ/u9RQaefNW4cD4K7YRYhnu9KsLqZDzP2Do+Hxis9MKnUsBYmoMcgUi
-        5M8L6zxSKQO5KcJhFGD2KQhj7bLL5BHEbJP6xNfE7D86iJEyZsaC0NCdZNB6wulHhbu0soQIg9wjB
-        EAgQ03IkA38f2heHJjNC8tTUz4Uydt0M9SGT9sHd932Koz2OydtUSh3wpfmgFXa/+RK1vTOGAxwbN
-        C6tUCmbw==;
-Received: from [2001:8b0:10b:5:9cbc:41e:b3e7:96ad] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qxUXP-004wml-Ls; Mon, 30 Oct 2023 15:50:47 +0000
-Message-ID: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
-Subject: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <paul@xen.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Date:   Mon, 30 Oct 2023 15:50:41 +0000
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-51oeNHsRH1xpT5ehKUZ2"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 30 Oct 2023 11:52:24 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2044.outbound.protection.outlook.com [40.107.244.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DCEC5;
+        Mon, 30 Oct 2023 08:52:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ie/4+8R+dcdSlqN1nR08nQEItJ5MP70m36N+K0sxb/CvL6bi26AeoMFuyvEK79f+f232QmilM3y4u0JteEkvIYgUnS7t0qLfmtqzklBznJjsGiKp7qoTq2Im7loBgpfwfOzTzig0zCTXTQ2yuJ5IBIDkWDTs6qNYPYWlVIbP0vbZKA3Up6DNtOKyprifVckVIvBQ5fokzsy2jpKgNH5M3MTMUxPiE8ythBQe4DPixuqHEjz/nPXFSouZ3P6AHdewX7DG+ACP3Ogm7rBZUzdtWhHSM+VTZQXItQ9YBVzGr142sTYmv4vCYGt7+W+8WgG6wHte/Ppo9MlRgH+Qf9gSDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kY/u0RYlROT8r++xbmWk3XSor9PEcXGD87AG7kSyVAo=;
+ b=bNZGJqC+swRs8SPC0AvPbPRBNdZOTHjyMLASlnf47gqkdBdAOCbkzUrlwla7Hc2EyKbzPQCGv0PAyNN2ZIpKT7sezdo3zZ2RD5iG8UDNG9wh8oRgUI4qIo59qG6ZHbg1JqNT9k1JMe+wWw0tF3BM5xHnqRqOHNidl7QlYFnKrF9jVtLzgQPfmqacb+RCzFOW+FEzx3THmtttO3kpl3zzZLlDEBrFnrNTu+x68cEkwt1zyGKWEFGfgqzpPN8TAdlMRqrtxrLXL05BAjKxVN45iEr9w9dx87crlFYiGG0p7vpVyLmhgvfixZMiakpUAsmCi968MohkvSPm/PIK0sVdqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kY/u0RYlROT8r++xbmWk3XSor9PEcXGD87AG7kSyVAo=;
+ b=oGa3KyCL4w+l+xLB71F6wP3tjCG8oN2Ask5OgKY4QiDp7ettBG+ACKcbeHc1b7N8T53QZQ9e1G2XxnR/WKjIQUguhpaOgpIP5j8UZb9RfXP0bmxxBQoQ54VJepe7/CWM0TwN/QQF2ddmH90e0Jc6M6KAhFSWQvFSabQ+LD5/z2g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3407.namprd12.prod.outlook.com (2603:10b6:208:c5::18)
+ by PH7PR12MB6787.namprd12.prod.outlook.com (2603:10b6:510:1ad::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Mon, 30 Oct
+ 2023 15:52:17 +0000
+Received: from MN2PR12MB3407.namprd12.prod.outlook.com
+ ([fe80::3008:be4:e9a4:2a98]) by MN2PR12MB3407.namprd12.prod.outlook.com
+ ([fe80::3008:be4:e9a4:2a98%7]) with mapi id 15.20.6933.026; Mon, 30 Oct 2023
+ 15:52:17 +0000
+Message-ID: <83d88288-e82f-4c9c-b0ff-cc404e093a56@amd.com>
+Date:   Mon, 30 Oct 2023 15:52:12 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND v2 1/2] dt-bindings: w1: Add YAML DT schema for AMD AXI
+ w1 host and MAINTAINERS entry
+Content-Language: en-GB
+To:     Rob Herring <robh@kernel.org>
+Cc:     thomas.delev@amd.com, michal.simek@amd.com,
+        krzysztof.kozlowski@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+References: <20231026093029.3122573-1-kris.chaplin@amd.com>
+ <20231026093029.3122573-2-kris.chaplin@amd.com>
+ <20231030154015.GA1141490-robh@kernel.org>
+From:   Kris Chaplin <kris.chaplin@amd.com>
+In-Reply-To: <20231030154015.GA1141490-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3PR09CA0002.eurprd09.prod.outlook.com
+ (2603:10a6:102:b7::7) To MN2PR12MB3407.namprd12.prod.outlook.com
+ (2603:10b6:208:c5::18)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3407:EE_|PH7PR12MB6787:EE_
+X-MS-Office365-Filtering-Correlation-Id: 77e1ef8f-dd4b-4e37-b639-08dbd9603170
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ezkIns85HcXC7zD9LwANMAqfhMOsQIxR0o0JpnG1hr9/jSgGPvjCwbhcnNzVwQgOJ3nsdswE4YJ4/Thf/VJGtWLn/G4/YP+8ygVRDQRvnXvl6wopcmV1FhxsJ6fjN4b0T29qxkA+H7h2OvKD9Q5Asi2YB4HGwG1u/0LBNbOX8PSZX47Wg4M1s04mLCWvfIDLk9Mn9V/PBLJ3oiyDK5eX344+DlIXxvB9sHBb0Islep3N8L9W5DaOI/l9pxM+KNGhL7anghy2oe8GZ+YndYCY2WoxouVwv21E1ycWLcvGd5ewJkSuxJPAIB4fMAekJhSnBh8/RxeGOECVmWQYQwXEZ18rSXQ/anO/q3m89mx223IapMrGKi8SIpKcnT6RfgXPr1EA+5IRun5Fntes9JvJ9NBp/+PWe2V0RsM7AQbpzZkbb9pfvIqShE01JBSyV6bQ9MgDRwvtkg8vR0ZHTxKL8Ay9hTTG6CKjM/rwJI/HnJC95ImS4vaQ7XgPHrl09luzA0YGDGpIEH3gi6rkHsQUFhSEFqj0zvczjPsN/iblfQBw5xbK7LCD56K1DbtdN68k5eSBwOgDTjopku0OpoMsDHFsh77dDoPypFzAuWyw2mlxVbpwltKTC+JdzW7es+RzvU3J3QxjQDCjmE9pafcolQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3407.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(86362001)(36756003)(31696002)(2906002)(6486002)(6512007)(478600001)(41300700001)(4744005)(8936002)(8676002)(4326008)(6666004)(6506007)(44832011)(53546011)(83380400001)(26005)(2616005)(66556008)(5660300002)(6916009)(316002)(66946007)(66476007)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q2JkZUljNk14eVhTTGhCSHNlUTFEakVIU2NlbVhDdms0dmxVK00yMyszS1Zw?=
+ =?utf-8?B?MlpPV2pFd00rR0tNUURiQVBGbldZK2NSby8rVFo2VUlndU1rS0k1WDVCQlI3?=
+ =?utf-8?B?VlR1cTYrK0p6eU1iVXhSRjFtVnkwK1dDTnZoNWt1R0RCSnRSdmNrYmpUSVkw?=
+ =?utf-8?B?dkRKNFE1ZDBERW1BWHlQQlEzcmdocmJ3UEQ2WGQ0NjQ2aXFoLzBXQmF1dWRr?=
+ =?utf-8?B?OHI3SE9OTng4aXFaZ1dJUUt6MkVKNzZ4OXJRVTk2M2NBRkZLSUh0Y0t1MWF3?=
+ =?utf-8?B?NzU1TEtSNjZDZ3VrUEY1K1JQd2o1dGNxZ0FYbExqWjNYTWkwRG43dEFyNENs?=
+ =?utf-8?B?RXE3b2x4Y3FHaHQzSmhvN2JNZ3BWWVhUaDlBZ2dIbmFTbWxWRktFMVFtYjdF?=
+ =?utf-8?B?azFNM3c0Q04xYm85UTRZUDVZbFh5b1lDUVgvempNcGpraXl6WG1RcFEwd0xN?=
+ =?utf-8?B?SkZzSGNocEFFR0pEYjdoMDc2ejdiTnpwSWxmbFdFVnhub2tKNTFGdlg4Rmhm?=
+ =?utf-8?B?RTZjUW53ODhLQ3JqbmZ0b2YwZUw5a2VRYjJ4UGJXNnVQSXZYOUxTeVdCUnN5?=
+ =?utf-8?B?L2VaTkYvcStKdVhWa3hzUVdCNjY0YkxkN0puMEsrSGlhYjVRR1BVUjR6Zzg0?=
+ =?utf-8?B?bHFLcXp4elhHQXBDRm1oMnFjbXlWOWFyS2F2c2RVdGpuZERyaVZuSWwxRU9N?=
+ =?utf-8?B?WnZrdE9ZbmlVRVd3eC9zRTNraGhtTWN3T3h1ZWJ1UEV0STVOZXlmeTdzMWhB?=
+ =?utf-8?B?NnoxMzVzRDhRTnFhV2RkbFJCeGFKdnJZSzkyaTE5YWZWbDhHbll1OUdOeThQ?=
+ =?utf-8?B?TTVvWDdZaHRnL1pjVUd2THA2ZUoweEF1MlVEeWZDTEtEb2RWMENVZjY2SlBi?=
+ =?utf-8?B?M0dUY1JvRjN4QzlQMTZhNDM5N2o2ZFVjYXEvcG1NcHdwd25kR1dUeU1DdGdF?=
+ =?utf-8?B?Um5ZbzNWcXJXODhmWmpRbjVxUzFXZ3VubGNtZGx6UjlEUnFQRUpua2RFTzU5?=
+ =?utf-8?B?d0k4cXMwSXVlVTBRWmZ6RHg4UnQxcW9KczhzSUkrVHA3N1BpTVd4WEZiOGdD?=
+ =?utf-8?B?K1NyeTVkaGtZZHo1VFpmRmMrTGRZTVdoZ1RqMk1oeDR4bHJST0RrSHplVGI2?=
+ =?utf-8?B?NlFyVkVTU2JyL0M2T3A3dFZIQWV5Rzh0VWhVYk52bXNOZkxacVRwRk9jVk5M?=
+ =?utf-8?B?ZWxjeHdxbktuaGZ0dlR6dXBVdE81SDlRTjY0U1ordE0vTEhDSm81TEpuckZU?=
+ =?utf-8?B?aG5LaUtLS3BSOFhHdTFsdU16WlRGcUl6V3RwaHJiUWhITWFXcGIzTzZneTk0?=
+ =?utf-8?B?S0hnOGdId0lDUjU4MEd3RWVIVEhibUZweUNHYjVEREg0czVPcm5BTi9sSjYy?=
+ =?utf-8?B?VWRFdGtNeGtIQ09TUTJtTEE5clZBYk4rOEN3WjVrZlVWSTVUNmtmdk9VK2Mr?=
+ =?utf-8?B?MlU5WVcrYTZNbVRYUEh4ZjV4TnFHdjdLR203SmxramlIT210WTB3VWJIdFpa?=
+ =?utf-8?B?TDZwMWpXVXcvYTNPMlVlVWsrYlhNa0pzN0swN0wrNUhER3RvUFFXREwyTmpO?=
+ =?utf-8?B?dzNzTW1lUDUrOEJTREFYUEZXNkEyeC9hUTR2a3d1aHVlWWVSVytZZGRKMTlL?=
+ =?utf-8?B?OVJlazA4b05rTlI0WGh2bjAzVU9XOGZJVmw0TGRnQlV6S0dCN2tKSTQyano2?=
+ =?utf-8?B?ZlhjcFJoL1NmZmxXQ1JUblcwcmNzTGpRNW9Lb1puUXFyOVlLZityR25kNUtn?=
+ =?utf-8?B?Vmx6RllWSmxxM2JIMy9rSyswMmhIeXNVdFZPdmh6bVlLN0ZWR2NsczNIeVNa?=
+ =?utf-8?B?dDk3M3U0Q3VGekdrMmxWeGxPa2JRNzc2UGhlMWRBS1IzL2JjMnc3ck9UTXh5?=
+ =?utf-8?B?dnhnbFhBQUY1VlZhcjVmNE03RnJyVkFQU3NTZEQwRnppckZUWS9xUE5CYXlI?=
+ =?utf-8?B?Q2w0T1pxR2tOaVFOTDlKVlNQcU1vMmR3NW91bHZlRGpOZE9KRDN1QkJ1THFF?=
+ =?utf-8?B?cDkvUGJoMVhhQ1BnMExIWTdpSkNJdmZMRnN6VTNnb2ZxUXQvUVBvM0xNK0ZL?=
+ =?utf-8?B?dEx6RFBhVFp5Qm9zOFF4Vk9NalN4MTdJR1QzRVNMWXJIWGtkNjhBNk1SbVBw?=
+ =?utf-8?Q?oGriJqf1A9gdlUiTQ8WXPstGa?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77e1ef8f-dd4b-4e37-b639-08dbd9603170
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3407.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 15:52:17.4319
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s1DSdUoUmYsrED0VZhpwfIRRm3N2yZWrximIXjLtM2Nww7LWWx4/Dv5PpDbHNUmo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6787
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---=-51oeNHsRH1xpT5ehKUZ2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 30/10/2023 15:40, Rob Herring wrote:
+> Is there a device side implementation? I can't really imagine that
+> 1-wire would ever be implemented as firmware on the device side given
+> its limited nature. So adding 'host' doesn't make this any more
+> specific.
+>
+There are slave drivers as well as master, although these do not have a 
+device tree binding.
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+The IP device from AMD is called "axi_1wire_host", and so we are hoping 
+to stick with this binding if appropriate as it relates to the IP name.
 
-A test program such as http://david.woodhou.se/timerlat.c confirms user
-reports that timers are increasingly inaccurate as the lifetime of a
-guest increases. Reporting the actual delay observed when asking for
-100=C2=B5s of sleep, it starts off OK on a newly-launched guest but gets
-worse over time, giving incorrect sleep times:
+Regards,
+Kris
 
-root@ip-10-0-193-21:~# ./timerlat -c -n 5
-00000000 latency 103243/100000 (3.2430%)
-00000001 latency 103243/100000 (3.2430%)
-00000002 latency 103242/100000 (3.2420%)
-00000003 latency 103245/100000 (3.2450%)
-00000004 latency 103245/100000 (3.2450%)
-
-The biggest problem is that get_kvmclock_ns() returns inaccurate values
-when the guest TSC is scaled. The guest sees a TSC value scaled from the
-host TSC by a mul/shift conversion (hopefully done in hardware). The
-guest then converts that guest TSC value into nanoseconds using the
-mul/shift conversion given to it by the KVM pvclock information.
-
-But get_kvmclock_ns() performs only a single conversion directly from
-host TSC to nanoseconds, giving a different result. A test program at
-http://david.woodhou.se/tsdrift.c demonstrates the cumulative error
-over a day.
-
-It's non-trivial to fix get_kvmclock_ns(), although I'll come back to
-that. The actual guest hv_clock is per-CPU, and *theoretically* each
-vCPU could be running at a *different* frequency. But this patch is
-needed anyway because...
-
-The other issue with Xen timers was that the code would snapshot the
-host CLOCK_MONOTONIC at some point in time, and then... after a few
-interrupts may have occurred, some preemption perhaps... would also read
-the guest's kvmclock. Then it would proceed under the false assumption
-that those two happened at the *same* time. Any time which *actually*
-elapsed between reading the two clocks was introduced as inaccuracies
-in the time at which the timer fired.
-
-Fix it to use a variant of kvm_get_time_and_clockread(), which reads the
-host TSC just *once*, then use the returned TSC value to calculate the
-kvmclock (making sure to do that the way the guest would instead of
-making the same mistake get_kvmclock_ns() does).
-
-Sadly, hrtimers based on CLOCK_MONOTONIC_RAW are not supported, so Xen
-timers still have to use CLOCK_MONOTONIC. In practice the difference
-between the two won't matter over the timescales involved, as the
-*absolute* values don't matter; just the delta.
-
-This does mean a new variant of kvm_get_time_and_clockread() is needed;
-called kvm_get_monotonic_and_clockread() because that's what it does.
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- arch/x86/kvm/x86.c |  30 ++++++++++++
- arch/x86/kvm/x86.h |   1 +
- arch/x86/kvm/xen.c | 111 +++++++++++++++++++++++++++++++--------------
- 3 files changed, 109 insertions(+), 33 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 41cce5031126..aeede83d65dc 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2863,6 +2863,25 @@ static int do_monotonic_raw(s64 *t, u64 *tsc_timesta=
-mp)
- 	return mode;
- }
-=20
-+static int do_monotonic(s64 *t, u64 *tsc_timestamp)
-+{
-+	struct pvclock_gtod_data *gtod =3D &pvclock_gtod_data;
-+	unsigned long seq;
-+	int mode;
-+	u64 ns;
-+
-+	do {
-+		seq =3D read_seqcount_begin(&gtod->seq);
-+		ns =3D gtod->clock.base_cycles;
-+		ns +=3D vgettsc(&gtod->clock, tsc_timestamp, &mode);
-+		ns >>=3D gtod->clock.shift;
-+		ns +=3D ktime_to_ns(ktime_add(gtod->clock.offset, gtod->offs_boot));
-+	} while (unlikely(read_seqcount_retry(&gtod->seq, seq)));
-+	*t =3D ns;
-+
-+	return mode;
-+}
-+
- static int do_realtime(struct timespec64 *ts, u64 *tsc_timestamp)
- {
- 	struct pvclock_gtod_data *gtod =3D &pvclock_gtod_data;
-@@ -2895,6 +2914,17 @@ static bool kvm_get_time_and_clockread(s64 *kernel_n=
-s, u64 *tsc_timestamp)
- 						      tsc_timestamp));
- }
-=20
-+/* returns true if host is using TSC based clocksource */
-+bool kvm_get_monotonic_and_clockread(s64 *kernel_ns, u64 *tsc_timestamp)
-+{
-+	/* checked again under seqlock below */
-+	if (!gtod_is_based_on_tsc(pvclock_gtod_data.clock.vclock_mode))
-+		return false;
-+
-+	return gtod_is_based_on_tsc(do_monotonic(kernel_ns,
-+						 tsc_timestamp));
-+}
-+
- /* returns true if host is using TSC based clocksource */
- static bool kvm_get_walltime_and_clockread(struct timespec64 *ts,
- 					   u64 *tsc_timestamp)
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 1e7be1f6ab29..c08c6f729965 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -293,6 +293,7 @@ static inline bool kvm_check_has_quirk(struct kvm *kvm,=
- u64 quirk)
- void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc=
-_eip);
-=20
- u64 get_kvmclock_ns(struct kvm *kvm);
-+bool kvm_get_monotonic_and_clockread(s64 *kernel_ns, u64 *tsc_timestamp);
-=20
- int kvm_read_guest_virt(struct kvm_vcpu *vcpu,
- 	gva_t addr, void *val, unsigned int bytes,
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 0ea6016ad132..00a1e924a717 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -24,6 +24,7 @@
- #include <xen/interface/sched.h>
-=20
- #include <asm/xen/cpuid.h>
-+#include <asm/pvclock.h>
-=20
- #include "cpuid.h"
- #include "trace.h"
-@@ -144,17 +145,87 @@ static enum hrtimer_restart xen_timer_callback(struct=
- hrtimer *timer)
- 	return HRTIMER_NORESTART;
- }
-=20
--static void kvm_xen_start_timer(struct kvm_vcpu *vcpu, u64 guest_abs, s64 =
-delta_ns)
-+static void kvm_xen_start_timer(struct kvm_vcpu *vcpu, u64 guest_abs,
-+				bool linux_wa)
- {
-+	uint64_t guest_now;
-+	int64_t kernel_now, delta;
-+
-+	 /*
-+	 * The guest provides the requested timeout in absolute nanoseconds
-+	 * of the KVM clock =E2=80=94 as *it* sees it, based on the scaled TSC an=
-d
-+	 * the pvclock information provided by KVM.
-+	 *
-+	 * The kernel doesn't support hrtimers based on CLOCK_MONOTONIC_RAW
-+	 * so use CLOCK_MONOTONIC. In the timescales covered by timers, the
-+	 * difference won't matter much as there is no cumulative effect.
-+	 *
-+	 * Calculate the time for some arbitrary point in time around "now"
-+	 * in terms of both kvmclock and CLOCK_MONOTONIC. Calculate the
-+	 * delta between the kvmclock "now" value and the guest's requested
-+	 * timeout, apply the "Linux workaround" described below, and add
-+	 * the resulting delta to the CLOCK_MONOTONIC "now" value, to get
-+	 * the absolute CLOCK_MONOTONIC time at which the timer should
-+	 * fire.
-+	 */
-+	if (vcpu->kvm->arch.use_master_clock &&
-+	    static_cpu_has(X86_FEATURE_CONSTANT_TSC)) {
-+		uint64_t host_tsc, guest_tsc;
-+
-+		if (!IS_ENABLED(CONFIG_64BIT) ||
-+		    !kvm_get_monotonic_and_clockread(&kernel_now, &host_tsc)) {
-+			/*
-+			 * Don't fall back to get_kvmclock_ns() because it's
-+			 * broken; it has a systemic error in its results
-+			 * because it scales directly from host TSC to
-+			 * nanoseconds, and doesn't scale first to guest TSC
-+			 * and then* to nanoseconds as the guest does.
-+			 *
-+			 * There is a small error introduced here because time
-+			 * continues to elapse between the ktime_get() and the
-+			 * subsequent rdtsc(). But not the systemic drift due
-+			 * to get_kvmclock_ns().
-+			 */
-+			kernel_now =3D ktime_get(); /* This is CLOCK_MONOTONIC */
-+			host_tsc =3D rdtsc();
-+		}
-+
-+		/* Calculate the guest kvmclock as the guest would do it. */
-+		guest_tsc =3D kvm_read_l1_tsc(vcpu, host_tsc);
-+		guest_now =3D __pvclock_read_cycles(&vcpu->arch.hv_clock, guest_tsc);
-+	} else {
-+		/* Without CONSTANT_TSC, get_kvmclock_ns() is the only option */
-+		guest_now =3D get_kvmclock_ns(vcpu->kvm);
-+		kernel_now =3D ktime_get();
-+	}
-+
-+	delta =3D guest_abs - guest_now;
-+
-+	/* Xen has a 'Linux workaround' in do_set_timer_op() which
-+	 * checks for negative absolute timeout values (caused by
-+	 * integer overflow), and for values about 13 days in the
-+	 * future (2^50ns) which would be caused by jiffies
-+	 * overflow. For those cases, it sets the timeout 100ms in
-+	 * the future (not *too* soon, since if a guest really did
-+	 * set a long timeout on purpose we don't want to keep
-+	 * churning CPU time by waking it up).
-+	 */
-+	if (linux_wa) {
-+		if ((unlikely((int64_t)guest_abs < 0 ||
-+			      (delta > 0 && (uint32_t) (delta >> 50) !=3D 0)))) {
-+			delta =3D 100 * NSEC_PER_MSEC;
-+			guest_abs =3D guest_now + delta;
-+		}
-+	}
-+
- 	atomic_set(&vcpu->arch.xen.timer_pending, 0);
- 	vcpu->arch.xen.timer_expires =3D guest_abs;
-=20
--	if (delta_ns <=3D 0) {
-+	if (delta <=3D 0) {
- 		xen_timer_callback(&vcpu->arch.xen.timer);
- 	} else {
--		ktime_t ktime_now =3D ktime_get();
- 		hrtimer_start(&vcpu->arch.xen.timer,
--			      ktime_add_ns(ktime_now, delta_ns),
-+			      ktime_add_ns(kernel_now, delta),
- 			      HRTIMER_MODE_ABS_HARD);
- 	}
- }
-@@ -923,8 +994,7 @@ int kvm_xen_vcpu_set_attr(struct kvm_vcpu *vcpu, struct=
- kvm_xen_vcpu_attr *data)
- 		/* Start the timer if the new value has a valid vector+expiry. */
- 		if (data->u.timer.port && data->u.timer.expires_ns)
- 			kvm_xen_start_timer(vcpu, data->u.timer.expires_ns,
--					    data->u.timer.expires_ns -
--					    get_kvmclock_ns(vcpu->kvm));
-+					    false);
-=20
- 		r =3D 0;
- 		break;
-@@ -1340,7 +1410,6 @@ static bool kvm_xen_hcall_vcpu_op(struct kvm_vcpu *vc=
-pu, bool longmode, int cmd,
- {
- 	struct vcpu_set_singleshot_timer oneshot;
- 	struct x86_exception e;
--	s64 delta;
-=20
- 	if (!kvm_xen_timer_enabled(vcpu))
- 		return false;
-@@ -1374,13 +1443,7 @@ static bool kvm_xen_hcall_vcpu_op(struct kvm_vcpu *v=
-cpu, bool longmode, int cmd,
- 			return true;
- 		}
-=20
--		delta =3D oneshot.timeout_abs_ns - get_kvmclock_ns(vcpu->kvm);
--		if ((oneshot.flags & VCPU_SSHOTTMR_future) && delta < 0) {
--			*r =3D -ETIME;
--			return true;
--		}
--
--		kvm_xen_start_timer(vcpu, oneshot.timeout_abs_ns, delta);
-+		kvm_xen_start_timer(vcpu, oneshot.timeout_abs_ns, false);
- 		*r =3D 0;
- 		return true;
-=20
-@@ -1404,25 +1467,7 @@ static bool kvm_xen_hcall_set_timer_op(struct kvm_vc=
-pu *vcpu, uint64_t timeout,
- 		return false;
-=20
- 	if (timeout) {
--		uint64_t guest_now =3D get_kvmclock_ns(vcpu->kvm);
--		int64_t delta =3D timeout - guest_now;
--
--		/* Xen has a 'Linux workaround' in do_set_timer_op() which
--		 * checks for negative absolute timeout values (caused by
--		 * integer overflow), and for values about 13 days in the
--		 * future (2^50ns) which would be caused by jiffies
--		 * overflow. For those cases, it sets the timeout 100ms in
--		 * the future (not *too* soon, since if a guest really did
--		 * set a long timeout on purpose we don't want to keep
--		 * churning CPU time by waking it up).
--		 */
--		if (unlikely((int64_t)timeout < 0 ||
--			     (delta > 0 && (uint32_t) (delta >> 50) !=3D 0))) {
--			delta =3D 100 * NSEC_PER_MSEC;
--			timeout =3D guest_now + delta;
--		}
--
--		kvm_xen_start_timer(vcpu, timeout, delta);
-+		kvm_xen_start_timer(vcpu, timeout, true);
- 	} else {
- 		kvm_xen_stop_timer(vcpu);
- 	}
---=20
-2.41.0
-
-
-
---=-51oeNHsRH1xpT5ehKUZ2
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMwMTU1MDQxWjAvBgkqhkiG9w0BCQQxIgQgVpSkWRz5
-FLnhQia3eWtJENzLqSPqfyd/6JB91n8tT4cwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCD6FgX2DetEddNcDaD6o4NrsbMtuPJXwh8
-PcSbUvGVwyHMoFoqCC47fC+mCF2ca9tj5DOxFBeGts+JGVf92OeuAKN9y6juOLVbvoxkf981MqY2
-gTF/z7B9lmOkQhy4seaZdqcVd4vXjG0ef1Db9yaUGZzoBQrKwN9ZtGNwEG34BA2isdrFFkqdgYHR
-JO4qnOpFy3mr8BIItWHwe29GBxJp5c6uzk0KfHtO9Tt6/Q4MemwruRnZST/sjdp3n8/dzlXJ4Cs7
-fSi7ZKDbzVqP0NOx3dtgAklGh9jE1noCzZUViiwP351em6dfxqGPKKKWWcA9+CVCeIFhy99ArQ5g
-qI0SeKwEb3FNOx+q7Sx4tlxyfgWejLoNVypkDYqeecKAkfUIwFVWn+01e7oAu+NgtbwZTbfG2ZGs
-QS9p3s6dLlkugHUSN73qvvW1LYpEWJb8TNGwxd/MV59jnbnLELO0WGhfwpX+v1HVAHWlHAoSJOHx
-KpSRViKlQGuDtaShQcl26BZCb98davjYv1/2GJuSVMbWx+hYMnWX6dbf2V4KoJx7gu8UG+n5yQei
-I5iMoa+8h98vXIYexUlbtwjtXbY8GrhnLryD/hOMz/g1a2NixG80FYo/IiSwKynwxz02+EwM2dXq
-WPU3cPt/bvO3R10mRLzLAaMhAm6NLtgQEoVXJwiPIwAAAAAAAA==
-
-
---=-51oeNHsRH1xpT5ehKUZ2--
