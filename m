@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ACA7DC02F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CED7DC030
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjJ3TBJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Oct 2023 15:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
+        id S231459AbjJ3TBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjJ3TBH (ORCPT
+        with ESMTP id S229904AbjJ3TBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:01:07 -0400
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B529FD3;
-        Mon, 30 Oct 2023 12:01:05 -0700 (PDT)
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso4190599b3a.2;
-        Mon, 30 Oct 2023 12:01:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698692465; x=1699297265;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EccxOXdyEiVBJR4JsYbksdY+qQDRXxpoqTxDKJNnKo4=;
-        b=l4XL4OxzDoWFtuzkHBAIuvmkACiYrAg/vaulctmhQSwwqhESM/y+aeBSuAuPWwAa3W
-         uAl8I2GiY0xX9vfCytstw6QYHEGNFVJ3s07gc2AtNySXw+fXJyMbuNEZe7Gh7ZBYhlM8
-         VvJMqbrC4fQzr5DOSVW/YXR2OrfXXOaghPjxFrDqatuqjWz3wbf2ts7bdh5/zkTyLVde
-         +2ZuCnLXtv2Hkf5VujLyghO1Sr4Mmw55vv6nHEmVqRrGxy5OlKns+BB1hx3diqeC8qLV
-         oLKEoBMKIil/Hfw5pEFDVgsm8Dht2PYHTTSuLAVG40LWGvN+gKIux6uPPn21mgPywFI1
-         oZog==
-X-Gm-Message-State: AOJu0YwyQPlKTDR4HClaQX1T42PRQrn2wZqW3lxfMaZLUqUP8GZsYm5D
-        C4P9Xqyd+Tspubp4czbKN9NmmuGaEgPG8lAofyY=
-X-Google-Smtp-Source: AGHT+IHFuyF4BbsT4e0KeVL/IIS75StuE3RCihAqdEwed4Pg2vmvC79HcXunyaMZjS5ueT6lqx7J8grl7zRSiTzV57E=
-X-Received: by 2002:a05:6a00:140d:b0:6bd:3157:2dfe with SMTP id
- l13-20020a056a00140d00b006bd31572dfemr9835694pfu.7.1698692464997; Mon, 30 Oct
- 2023 12:01:04 -0700 (PDT)
+        Mon, 30 Oct 2023 15:01:38 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8856D9F;
+        Mon, 30 Oct 2023 12:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1698692486; x=1699297286; i=rwahl@gmx.de;
+        bh=RL+2Jj7yTa1YkQxwQqBk1lDJpWOcvMAibeGmceC7PFM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=lc07Nrme33vaEJXATGrCrZLPUnO1jMXAgKct4TXWqfYjUV1C6sB+3s6VrkpU8X13
+         1n1zPaidYaM1YcwIm3D+v5isXKpDgQav3cTqUZDhpwQztla+XI30/OfkKHMwllrsY
+         ILQkn9dKG3fMVw7Ob4K4OLY8mBgJCoNjXyk8if3UBEXeGmDRaUJuWMiB8cGLSkkp6
+         o3KcowWxJ8X5UU47CACC+Iw9grfbZvn2WY8bNC3AP2al0NqOnDr0bkZRfYkLFQ6tO
+         xIW2EA1oanFS9S8NITGaGJsV1ILGFx7lffbCmf6I0+So1g1SWOsgPhkrrIAwL2pl6
+         nlwQgfYHJCFDkzph1A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MuDXp-1rkXbE3lwT-00udmR; Mon, 30
+ Oct 2023 20:01:25 +0100
+From:   Ronald Wahl <rwahl@gmx.de>
+To:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ronald Wahl <ronald.wahl@raritan.com>
+Subject: [PATCH] dmaengine: ti: k3-psil-am62: Fix SPI PDMA data
+Date:   Mon, 30 Oct 2023 20:01:13 +0100
+Message-ID: <20231030190113.16782-1-rwahl@gmx.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230926205948.1399594-1-irogers@google.com> <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
- <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
- <CAP-5=fURbve928P5CGi-dQ7Y8mZhxRmi9wucFc_gP+aDGMftYw@mail.gmail.com>
- <CAP-5=fU5W=97NFvL1yUKw+rrbBrcd8c-S_y3=86SYv+pszNjmQ@mail.gmail.com> <CAM9d7cjRac8i9+VWYNfWxNr5iz3bUUxc0-Phfcbk0RdfwXqr6w@mail.gmail.com>
-In-Reply-To: <CAM9d7cjRac8i9+VWYNfWxNr5iz3bUUxc0-Phfcbk0RdfwXqr6w@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 30 Oct 2023 12:00:54 -0700
-Message-ID: <CAM9d7cgihtEmwOXhs8xxD4b6BRLqx6Kcg6E=K_JFQH__=kJUiA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] perf vendor events intel: Fix broadwellde
- tma_info_system_dram_bw_use metric
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Liang, Kan" <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:L6kLIsHeklRFkUTiQk+CeqdX3lShBysPO12BdwFKntNStilMnjz
+ hnsGJW4Qn43v3qIjUp8GOMJg09tmgPvClz3yJCok/hMpUBNZWKJ1FhLkVpJ1GjNUHY1zqrp
+ 9nlZuRP1sCkXab4aVXZO5sCAGiLShZeMLGTf/UToLgG63huU/m6yHrnCGvic0YixwriqKhf
+ o2710fiSp2nRoiDkskllQ==
+UI-OutboundReport: notjunk:1;M01:P0:x7yBYD442zw=;lf1QeWTjOrGoH8GY43dxnSi3Gvd
+ ZuSJcQwdndewF1fdfn4JaPPzIwmmwR5XaRRd+MKpHNzVgYAIRZaZZopeKVWRFIyDqOo0IzfZZ
+ fw/11pktrtIXGtNCDPu/b6J5lkH3GNCUJ/C/mEEEarldfDM40TGU1zyXb5gOZjGUSVDPO7Pia
+ WcHoeda0XWHNA5EAzKrfrwuFoQWECa0PaF//A2OLrWjSN+0+XXDUOLB6uSzAxRhjhJAIFORZj
+ 88N6wZWVMLV0W3VYFKgOi59/jam2cTsgUKIwnJqyamDDr7zYMklqjUvzyDvTSAtS2PPhObi1d
+ TB3WCNTzUqdUBZenXgGZvI74YNeHzMqoLqM1gb3cWGBUZq02TFwsOH9zkZelb9XJgMQZf/MT1
+ OFPxj3YDZxdfIoml0cqzUIdZ2ee42TM2GcFWA3CiPhxUVEZkGknNFrJK8XhrW6Z2cWABqdJJa
+ JxsRHKKwxpXCkQhCoIqQvf72MDy7eQgg6WB7ZVm0zy5OI03WxXEix9u7d57yVphXQtZzH0uxY
+ Q4PdmWZrQeKNmj/CE3SCnFMNXkXnQEvd9ehze78uEaJclADYxIpTrnX8f5Ziq9z72cv20kffK
+ z3G4r4qBVwtgotBrMMepgIMYlNQQY0CwHtOk7ohieC4czV+h908zw4Ex9wmm3NTWmzntNOT4j
+ pYQGJYCeOW/JrMZToTAm+OyXBYVuARi7jeOdQY8/E32VC61yIjMge+LiDJwjFeBNDdY1/+JYh
+ jQOgG5+LpfrboGQuBee1KU6fo2IgWvill01jeEKtcBJ0utQhMfcbxRM80E3gmuUrWfpz4jOUJ
+ 025ydRYqw2M7+LTszeHCtzvywIv8PQNAXANsEf/dsUnSdRHHs9QQI/bBBUBSj6X2Fp+krZ+KO
+ obs7rYwx3C6mLBonoDFWLG9HTr6+SQWeOAbSuutawaX29l2QbpBtXak1QCFH5fFhKTHQpds6I
+ JdRmRXhnCv3PFsPj0zWSWtbUn0M=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:12 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Ian,
->
-> On Wed, Oct 25, 2023 at 9:20 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Wed, Oct 25, 2023 at 2:56 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Thu, Oct 5, 2023 at 3:16 PM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > On Wed, Sep 27, 2023 at 6:47 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> > > > >
-> > > > >
-> > > > >
-> > > > > On 2023-09-26 4:59 p.m., Ian Rogers wrote:
-> > > > > > Broadwell-de has a consumer core and server uncore. The uncore_arb PMU
-> > > > > > isn't present and the broadwellx style cbox PMU should be used
-> > > > > > instead. Fix the tma_info_system_dram_bw_use metric to use the server
-> > > > > > metric rather than client.
-> > > > > >
-> > > > > > The associated converter script fix is in:
-> > > > > > https://github.com/intel/perfmon/pull/111
-> > > > > >
-> > > > > > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell variant events/metrics")
-> > > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > > ---
-> > > > >
-> > > > > Thanks Ian. The whole patch series looks good to me.
-> > > > >
-> > > > > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-> > > >
-> > > > Would be good to pick this up in perf-tools-next.
-> > > >
-> > > > Thanks,
-> > > > Ian
-> > >
-> > > Ping.
-> >
-> > Thanks Namhyung for picking this up. There were two other patches in
-> > the v2 patch set that Kan reviewed:
-> > https://lore.kernel.org/all/8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com/
-> > that I don't see in perf-tools-next.
->
-> Sorry about that.  I'll take care of them too.
+AM62x has 3 SPI channels where each channel has 4 TX and 4 RX threads.
+This also fixes the thread numbers.
 
-Applied to perf-tools-next, thanks!
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+=2D--
+ drivers/dma/ti/k3-psil-am62.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/dma/ti/k3-psil-am62.c b/drivers/dma/ti/k3-psil-am62.c
+index 2b6fd6e37c61..1272b1541f61 100644
+=2D-- a/drivers/dma/ti/k3-psil-am62.c
++++ b/drivers/dma/ti/k3-psil-am62.c
+@@ -74,7 +74,9 @@ static struct psil_ep am62_src_ep_map[] =3D {
+ 	PSIL_SAUL(0x7505, 21, 35, 8, 36, 0),
+ 	PSIL_SAUL(0x7506, 22, 43, 8, 43, 0),
+ 	PSIL_SAUL(0x7507, 23, 43, 8, 44, 0),
+-	/* PDMA_MAIN0 - SPI0-3 */
++	/* PDMA_MAIN0 - SPI0-2 */
++	PSIL_PDMA_XY_PKT(0x4300),
++	PSIL_PDMA_XY_PKT(0x4301),
+ 	PSIL_PDMA_XY_PKT(0x4302),
+ 	PSIL_PDMA_XY_PKT(0x4303),
+ 	PSIL_PDMA_XY_PKT(0x4304),
+@@ -85,8 +87,6 @@ static struct psil_ep am62_src_ep_map[] =3D {
+ 	PSIL_PDMA_XY_PKT(0x4309),
+ 	PSIL_PDMA_XY_PKT(0x430a),
+ 	PSIL_PDMA_XY_PKT(0x430b),
+-	PSIL_PDMA_XY_PKT(0x430c),
+-	PSIL_PDMA_XY_PKT(0x430d),
+ 	/* PDMA_MAIN1 - UART0-6 */
+ 	PSIL_PDMA_XY_PKT(0x4400),
+ 	PSIL_PDMA_XY_PKT(0x4401),
+@@ -141,7 +141,9 @@ static struct psil_ep am62_dst_ep_map[] =3D {
+ 	/* SAUL */
+ 	PSIL_SAUL(0xf500, 27, 83, 8, 83, 1),
+ 	PSIL_SAUL(0xf501, 28, 91, 8, 91, 1),
+-	/* PDMA_MAIN0 - SPI0-3 */
++	/* PDMA_MAIN0 - SPI0-2 */
++	PSIL_PDMA_XY_PKT(0xc300),
++	PSIL_PDMA_XY_PKT(0xc301),
+ 	PSIL_PDMA_XY_PKT(0xc302),
+ 	PSIL_PDMA_XY_PKT(0xc303),
+ 	PSIL_PDMA_XY_PKT(0xc304),
+@@ -152,8 +154,6 @@ static struct psil_ep am62_dst_ep_map[] =3D {
+ 	PSIL_PDMA_XY_PKT(0xc309),
+ 	PSIL_PDMA_XY_PKT(0xc30a),
+ 	PSIL_PDMA_XY_PKT(0xc30b),
+-	PSIL_PDMA_XY_PKT(0xc30c),
+-	PSIL_PDMA_XY_PKT(0xc30d),
+ 	/* PDMA_MAIN1 - UART0-6 */
+ 	PSIL_PDMA_XY_PKT(0xc400),
+ 	PSIL_PDMA_XY_PKT(0xc401),
+=2D-
+2.41.0
+
