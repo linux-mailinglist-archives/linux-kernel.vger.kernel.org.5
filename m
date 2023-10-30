@@ -2,381 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C67127DBCA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B21D37DBC9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbjJ3Peq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        id S233660AbjJ3PcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjJ3Peo (ORCPT
+        with ESMTP id S231395AbjJ3PcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:34:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D18A9;
-        Mon, 30 Oct 2023 08:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698680081; x=1730216081;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sCfHwKvsR9e65jD7V3rp3T+AppnNifiR6dKSdQ8zmGE=;
-  b=ayfgtL7ZaaYdEasGiq1VwJi1iY2ww4MXpLs7clLYVaiwTmf0YG9LpDtC
-   WZhOT1cJwQ2Siwor/rNqyy8MlWC5WgaRu78+etMS8Rkcn0akAQ6TD+8pN
-   HWvN43TpXub3saVwsbLe6eV0xpSYABM0KFj7OO41C7ng1svVT+Bs1Srra
-   K9s6KZB3O0Mu1xnduLCQRkXmTLJ+2PzmVG7xDVI3LSSwj1VDHwsXzNZ/H
-   2X8U099IOEpDvlkaMrLhkQGntZNLMShH1TFi7YioWQ/32BwuGJu0I+Z1D
-   MVnNAHs8QALcHyye6KNnNHxBXCvm+6mA/9DFefUSOvPfu2QUDsS9CHrJe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="387905806"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="387905806"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:32:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="883891209"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="883891209"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:32:06 -0700
-Received: from [10.212.90.12] (kliang2-mobl1.ccr.corp.intel.com [10.212.90.12])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id DEB0A580699;
-        Mon, 30 Oct 2023 08:32:04 -0700 (PDT)
-Message-ID: <ba847510-bdc4-4298-8d9c-10933023e712@linux.intel.com>
-Date:   Mon, 30 Oct 2023 11:32:03 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 07/17] perf stat: Add functions to set counter
- bitmaps for hardware-grouping method
-Content-Language: en-US
-To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Samantha Alt <samantha.alt@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Yang Jihong <yangjihong1@huawei.com>
-References: <20231014015202.1175377-1-weilin.wang@intel.com>
- <20231014015202.1175377-8-weilin.wang@intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231014015202.1175377-8-weilin.wang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 11:32:18 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B276EA9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:32:15 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afacc566f3so33968447b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698679935; x=1699284735; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6N1/Pi/gcjpAA6FjFn+3l/Xt1rwHVQqRPaAle2Pb3pE=;
+        b=PDevyMiFtadfy1oGCZNkRZSCcoVpLXLoegg6AfkcOvk6dE9LGuybfvqE+6vVbeDdNV
+         bx346ysh6hlIZ2bGTlBKIldqd4GAbydAmfg8cSmmmcAM4xYirWQqsCBg1l+XPQVONuIo
+         ql0kcXaOwGIRsxjr2t0JeyH8skrKfveAh2G0eCDK61e8bVAp6OqaS11lLox1TRy9OfCw
+         GhBDlmLueJtS6ifsR1akumvSAXTPmq9utJh5ZEbUXwlsZoXfNdtk274hvnRRPcxFj2tg
+         MDGjcQPbQZs6B2JpusQT9vrWXT36ebkCFqrnsBRJG5G41LirpiB5MA7lEjAPR/9nnY3Q
+         5Qlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698679935; x=1699284735;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6N1/Pi/gcjpAA6FjFn+3l/Xt1rwHVQqRPaAle2Pb3pE=;
+        b=AzaMPILwC71jtqbDugMDxatR6Qpy3LvKW8MS74pl5SFOsNGSA3miIGhu0GjpfhaLJK
+         o6ZvWbA0qkeaVjo0qtIw6tsSzzoyH23WSQUI0JZzWKIYWQoyJ9Kce/ugQGU2LG01xaOG
+         yLwG0XUP0Dn+0Ya3uaScLLGh5e11ZpyudsJorsoofOkQvOAAKogTcr6WManYPKL8yAkR
+         NjqWmWHAV4KyYT0Mocn1mfFc7w1RjpQ4Y/7E7FfLmj77KLtlr/IEH0lbSW6lD3vTzrNy
+         Ck7Dq4irI7KDuwCoYu0wlxns9btQ/HQmXQQltdr8XGVHRuPzwyZpBY//8lNQaCJEhrC8
+         GdzA==
+X-Gm-Message-State: AOJu0YwVRVqCTQhxOXJjKICHj+t83/J7fWITv4d+jfIDD7MXdnlb/Gvl
+        3HlR9XjdHI2JFyE8UdfpUUz0KZQRHwg=
+X-Google-Smtp-Source: AGHT+IHLNpXD5BTANcd2y5P/2OT6ceikS1KjRWdJLqWaOIKg+YqFppw3JUNH2nWBDF+whKwt+P4acLsjddw=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:132e:31bc:8300:d4e1])
+ (user=glider job=sendgmr) by 2002:a25:ad5a:0:b0:d90:e580:88e5 with SMTP id
+ l26-20020a25ad5a000000b00d90e58088e5mr184178ybe.10.1698679934767; Mon, 30 Oct
+ 2023 08:32:14 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 16:32:09 +0100
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231030153210.139512-1-glider@google.com>
+Subject: [PATCH v11 1/2] lib/bitmap: add bitmap_{read,write}()
+From:   Alexander Potapenko <glider@google.com>
+To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
+        pcc@google.com, andreyknvl@gmail.com,
+        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        alexandru.elisei@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Syed Nayyar Waris <syednwaris@gmail.com>
 
+The two new functions allow reading/writing values of length up to
+BITS_PER_LONG bits at arbitrary position in the bitmap.
 
-On 2023-10-13 9:51 p.m., weilin.wang@intel.com wrote:
-> From: Weilin Wang <weilin.wang@intel.com>
-> 
-> Add metricgroup__event_info data structure to represent an event in the
-> metric grouping context; the list of counters and the PMU name an event
-> should be collected with.
-> 
-> Add functions to parse event counter info from pmu-events and generate a
-> list of metricgroup__event_info data to prepare grouping.
-> 
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/util/metricgroup.c | 196 +++++++++++++++++++++++++++++++++-
->  tools/perf/util/metricgroup.h |  27 +++++
->  2 files changed, 220 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 8d4e29eb1..6af8a7341 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -1432,6 +1432,182 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
->  	return ret;
->  }
->  
-> +/**
-> + * set_counter_bitmap - The counter bit mapping: [8-15,0-7], e.g. the GP0 is the
-> + * 8th bit and GP7 is the 1st bit in this 16-bits bitmap. It is helpful for
-> + * assigning GP4-7 before GP0-3 because some events can be collected using GP0-3
-> + * only on some platforms.
+The code was taken from "bitops: Introduce the for_each_set_clump macro"
+by Syed Nayyar Waris with a number of changes and simplifications:
+ - instead of using roundup(), which adds an unnecessary dependency
+   on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+ - indentation is reduced by not using else-clauses (suggested by
+   checkpatch for bitmap_get_value());
+ - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+   and bitmap_write();
+ - some redundant computations are omitted.
 
-The bitmap looks weird. Can we use the normal bitmap and always search
-from the last set bit to find the available counter?
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com/
+Suggested-by: Yury Norov <yury.norov@gmail.com>
+Co-developed-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+---
+This patch was previously part of the "Implement MTE tag compression for
+swapped pages" series
+(https://lore.kernel.org/linux-arm-kernel/20231011172836.2579017-4-glider@google.com/T/)
 
-> + */
-> +static int set_counter_bitmap(int pos, unsigned long *bitmap)
-> +{
-> +	if (pos >= NR_COUNTERS || pos < 0)
-> +		return -EINVAL;
-> +	if (pos <= 7)
-> +		pos = TRANSFER_FIRST_BYTE(pos);
-> +	else
-> +		pos = TRANSFER_SEC_BYTE(pos);
-> +	*bitmap |= 1ul << pos;
-> +	return 0;
-> +}
-> +
-> +static int parse_fixed_counter(const char *counter,
-> +			      unsigned long *bitmap,
-> +			      bool *fixed)
-> +{
-> +	int ret = -ENOENT;
-> +	//TODO: this pattern is different on some other platforms
-> +	const char *pattern = "Fixed counter ";
-> +	int pos = 0;
-> +
-> +	if (!strncmp(counter, pattern, strlen(pattern))) {
-> +		pos = atoi(counter + strlen(pattern));
-> +		ret = set_counter_bitmap(pos, bitmap);
-> +		if (ret)
-> +			return ret;
-> +		*fixed = true;
-> +		return 0;
-> +	}
-> +	return ret;
-> +}
-> +
-> +/**
-> + * parse_counter - Parse event counter info from pmu-events and set up bitmap
-> + * accordingly.
-> + *
-> + * @counter: counter info string to be parsed.
-> + * @bitmap: bitmap to set based on counter info parsed.
-> + * @fixed: is set to true if the event uses fixed counter.
-> + */
-> +static int parse_counter(const char *counter,
-> +			unsigned long *bitmap,
-> +			bool *fixed)
-> +{
-> +	int ret = 0;
-> +	char *p;
-> +	char *tok;
-> +	int pos = 0;
-> +
-> +	ret = parse_fixed_counter(counter, bitmap, fixed);
-> +	// ret==0 means matched with fixed counter
+This patch was previously called "lib/bitmap: add
+bitmap_{set,get}_value()"
+(https://lore.kernel.org/lkml/20230720173956.3674987-2-glider@google.com/)
 
-Move the comments to the above of parse_fixed_counter().
-Uses /**/.
+v11:
+ - rearrange whitespace as requested by Andy Shevchenko,
+   add Reviewed-by:, update a comment
 
-> +	if (ret == 0)
-> +		return ret;
-> +
-> +	p = strdup(counter);
-> +	tok = strtok(p, ",");
-> +	if (!tok)
-> +		return -ENOENT;
-> +
-> +	while (tok) {
-> +		pos = atoi(tok);
-> +		ret = set_counter_bitmap(pos, bitmap);
-> +		if (ret)
-> +			return ret;
-> +		tok = strtok(NULL, ",");
-> +	}
-> +	return 0;
-> +}
-> +
-> +static struct metricgroup__event_info *event_info__new(const char *name,
-> +						      const char *pmu_name,
-> +						      const char *counter,
-> +						      bool free_counter)
-> +{
-> +	int ret = 0;
-> +	char *bit_buf = malloc(NR_COUNTERS);
-> +	bool fixed_counter = false;
-> +	struct metricgroup__event_info *e;
-> +
-> +	e = zalloc(sizeof(*e));
-> +	if (!e)
-> +		return NULL;
-> +	if (!pmu_name)
-> +		pmu_name = "core";
-> +
-> +	e->name = name;
-> +	e->free_counter = free_counter;
-> +	e->pmu_name = strdup(pmu_name);
-> +	if (free_counter) {
-> +		ret = set_counter_bitmap(0, e->counters);
-> +		if (ret)
-> +			return NULL;
-> +	} else {
-> +		ret = parse_counter(counter, e->counters, &fixed_counter);
-> +		if (ret)
-> +			return NULL;
-> +		e->fixed_counter = fixed_counter;
-> +	}
-> +
-> +	bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
-> +	pr_debug("Event %s requires pmu %s counter: %s bitmap %s, [pmu=%s]\n",
-> +		e->name, e->pmu_name, counter, bit_buf, pmu_name);
-> +
-> +	return e;
-> +}
-> +
-> +struct metricgroup__add_metric_event_data {
-> +	struct list_head *list;
-> +	/* pure event name, exclude umask and other info*/
-> +	const char *event_name;
-> +	/* event name and umask if applicable*/
-> +	const char *event_id;
-> +};
-> +
-> +static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
-> +						 const struct pmu_events_table *table __maybe_unused,
-> +						 void *data)
-> +{
-> +	struct metricgroup__event_info *event;
-> +	struct metricgroup__add_metric_event_data *d = data;
-> +
-> +	if (!strcasecmp(pe->name, d->event_name)) {
-> +		event = event_info__new(d->event_id, pe->pmu, pe->counter, /*free_counter=*/false);
-> +		if (!event)
-> +			return -ENOMEM;
-> +		list_add(&event->nd, d->list);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * get_metricgroup_events - Find counter requirement of events from the
-> + * pmu_events table
-> + * @full_id: the full event identifiers.
-> + * @table: pmu_events table that is searched for event data.
-> + * @event_info_list: the list that the new event counter info added to.
-> + */
-> +static int get_metricgroup_events(const char *full_id,
-> +				 const struct pmu_events_table *table,
-> +				 struct list_head *event_info_list)
-> +{
-> +	LIST_HEAD(list);
-> +	int ret = 0;
-> +	const char *id;
-> +	const char *rsep, *sep = strchr(full_id, '@');
-> +
-> +	if (sep) {
-> +		rsep = strchr(full_id, ',');
-> +		id = strndup(sep + 1, rsep - sep - 1);
-> +		if (ret)
-> +			goto out;
-> +	} else {
-> +		id = full_id;
-> +	}
-> +	{
-> +		struct metricgroup__add_metric_event_data data = {
-> +			.list = &list,
-> +			.event_name = id,
-> +			.event_id = full_id,
-> +		};
-> +		ret = pmu_events_table_for_each_event(table,
-> +				metricgroup__add_metric_event_callback, &data);
-> +	}
+v10:
+ - update comments as requested by Andy Shevchenko
 
-Please remove the useless {}
+v8:
+ - as suggested by Andy Shevchenko, handle reads/writes of more than
+   BITS_PER_LONG bits, add a note for 32-bit systems
 
-Thanks,
-Kan
-> +
-> +out:
-> +	list_splice(&list, event_info_list);
-> +	return ret;
-> +}
-> +
->  /**
->   * hw_aware_build_grouping - Build event groupings by reading counter
->   * requirement of the events and counter available on the system from
-> @@ -1445,9 +1621,25 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
->  				  const char *modifier __maybe_unused)
->  {
->  	int ret = 0;
-> +	struct hashmap_entry *cur;
-> +	LIST_HEAD(pmu_info_list);
-> +	LIST_HEAD(event_info_list);
-> +	size_t bkt;
-> +	const struct pmu_events_table *etable = pmu_events_table__find();
-> +
-> +#define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
-> +	hashmap__for_each_entry(ctx->ids, cur, bkt) {
-> +		const char *id = cur->pkey;
-> +
-> +		pr_debug("found event %s\n", id);
-> +
-> +		ret = get_metricgroup_events(id, etable, &event_info_list);
-> +		if (ret)
-> +			return ret;
-> +	}
->  
-> -	pr_debug("This is a placeholder\n");
->  	return ret;
-> +#undef RETURN_IF_NON_ZERO
->  }
->  
->  static void group_str_free(struct metricgroup__group_strs *g)
-> @@ -1521,8 +1713,6 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
->  	*out_evlist = parsed_evlist;
->  	parsed_evlist = NULL;
->  err_out:
-> -	parse_events_error__exit(&parse_error);
-> -	evlist__delete(parsed_evlist);
->  	metricgroup__free_grouping_strs(&groupings);
->  	return ret;
->  }
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-> index 89809df85..3704545c9 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -5,6 +5,7 @@
->  #include <linux/list.h>
->  #include <linux/rbtree.h>
->  #include <stdbool.h>
-> +#include <linux/bitmap.h>
->  #include "pmu-events/pmu-events.h"
->  #include "strbuf.h"
->  
-> @@ -67,6 +68,32 @@ struct metric_expr {
->  	int runtime;
->  };
->  
-> +/* Maximum number of counters per PMU*/
-> +#define NR_COUNTERS	16
-> +/*
-> + * Transfer bit position in the bitmap to ensure start assigning counter from
-> + * the last GP counter to the first.
-> + * bit15 <---> bit0
-> + * [GP8-GP15] [GP0-GP7]
-> + */
-> +#define TRANSFER_FIRST_BYTE(pos) (7 - pos)
-> +#define TRANSFER_SEC_BYTE(pos) (23 - pos)
-> +
-> +/**
-> + * An event used in a metric. This info is for metric grouping.
-> + */
-> +struct metricgroup__event_info {
-> +	struct list_head nd;
-> +	/** The name of the event. */
-> +	const char *name;
-> +	/** The name of the pmu the event be collected on. */
-> +	const char *pmu_name;
-> +	bool fixed_counter;
-> +	bool free_counter;
-> +	/** The counters the event allowed to be collected on. */
-> +	DECLARE_BITMAP(counters, NR_COUNTERS);
-> +};
-> +
->  /**
->   * Each group is one node in the group string list.
->   */
+v7:
+ - Address comments by Yury Norov, Andy Shevchenko, Rasmus Villemoes:
+   - update code comments;
+   - get rid of GENMASK();
+   - s/assign_bit/__assign_bit;
+   - more vertical whitespace for better readability;
+ - more compact code for bitmap_write() (now for real)
+
+v6:
+ - As suggested by Yury Norov, do not require bitmap_read(..., 0) to
+   return 0.
+
+v5:
+ - Address comments by Yury Norov:
+   - updated code comments and patch title/description
+   - replace GENMASK(nbits - 1, 0) with BITMAP_LAST_WORD_MASK(nbits)
+   - more compact bitmap_write() implementation
+
+v4:
+ - Address comments by Andy Shevchenko and Yury Norov:
+   - prevent passing values >= 64 to GENMASK()
+   - fix commit authorship
+   - change comments
+   - check for unlikely(nbits==0)
+   - drop unnecessary const declarations
+   - fix kernel-doc comments
+   - rename bitmap_{get,set}_value() to bitmap_{read,write}()
+---
+ include/linux/bitmap.h | 77 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 03644237e1efb..7dd00e2e6d539 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -77,6 +77,10 @@ struct device;
+  *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
+  *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+  *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
++ *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
++ *                                              map at start
++ *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
++ *                                              map at start
+  *
+  * Note, bitmap_zero() and bitmap_fill() operate over the region of
+  * unsigned longs, that is, bits behind bitmap till the unsigned long
+@@ -599,6 +603,79 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+ 	map[index] |= value << offset;
+ }
+ 
++/**
++ * bitmap_read - read a value of n-bits from the memory region
++ * @map: address to the bitmap memory region
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG
++ *
++ * Returns: value of @nbits bits located at the @start bit offset within the
++ * @map memory region. For @nbits = 0 and @nbits > BITS_PER_LONG the return
++ * value is undefined.
++ */
++static inline unsigned long bitmap_read(const unsigned long *map,
++					unsigned long start,
++					unsigned long nbits)
++{
++	size_t index = BIT_WORD(start);
++	unsigned long offset = start % BITS_PER_LONG;
++	unsigned long space = BITS_PER_LONG - offset;
++	unsigned long value_low, value_high;
++
++	if (unlikely(!nbits || nbits > BITS_PER_LONG))
++		return 0;
++
++	if (space >= nbits)
++		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
++
++	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
++	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
++	return (value_low >> offset) | (value_high << space);
++}
++
++/**
++ * bitmap_write - write n-bit value within a memory region
++ * @map: address to the bitmap memory region
++ * @value: value to write, clamped to nbits
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG.
++ *
++ * bitmap_write() behaves as-if implemented as @nbits calls of __assign_bit(),
++ * i.e. bits beyond @nbits are ignored:
++ *
++ *   for (bit = 0; bit < nbits; bit++)
++ *           __assign_bit(start + bit, bitmap, val & BIT(bit));
++ *
++ * For @nbits == 0 and @nbits > BITS_PER_LONG no writes are performed.
++ */
++static inline void bitmap_write(unsigned long *map, unsigned long value,
++				unsigned long start, unsigned long nbits)
++{
++	size_t index;
++	unsigned long offset;
++	unsigned long space;
++	unsigned long mask;
++	bool fit;
++
++	if (unlikely(!nbits || nbits > BITS_PER_LONG))
++		return;
++
++	mask = BITMAP_LAST_WORD_MASK(nbits);
++	value &= mask;
++	offset = start % BITS_PER_LONG;
++	space = BITS_PER_LONG - offset;
++	fit = space >= nbits;
++	index = BIT_WORD(start);
++
++	map[index] &= (fit ? (~(mask << offset)) : ~BITMAP_FIRST_WORD_MASK(start));
++	map[index] |= value << offset;
++	if (fit)
++		return;
++
++	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
++	map[index + 1] |= (value >> space);
++}
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __LINUX_BITMAP_H */
+-- 
+2.42.0.820.g83a721a137-goog
+
