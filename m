@@ -2,152 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525BB7DB57A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654D97DB57E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbjJ3Ivn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
+        id S232307AbjJ3Iwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbjJ3Ivk (ORCPT
+        with ESMTP id S232261AbjJ3Iwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:51:40 -0400
-Received: from CY4PR02CU007.outbound.protection.outlook.com (mail-westcentralusazon11011001.outbound.protection.outlook.com [40.93.199.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DA5B6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:51:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hnjABiBsT1aH9C2Wh563W2BEamlSrskocPc4QFckz2dRmn+jYcBIpVnhPw7Iwc0Gppna+h6xkxC4IGVCInOj93Y5mAqC9+RPYW/W5lp45ehr/qYGDPe/lTfo0IQgblcinCGzQZm64l3Tb1z/1NVTWCYt3MDnvH8zEo9cRE01wq5hlz13lKc+zR0dO7JxRmHhCNwbtWStnUle7KhJR9l89G6gV8iJm+bKe7mrkVtxihfQGK9jnSKgUkkwV6ltSP6Yebn6Z3BseTT0I2D711kNKmGef2qLIo9E/xr3BlZ2+E/r1sGUfflXe5AhuL2dh/Ptd3Yv5gyY6e9qMMhA/tqN1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lUjGvtIgBOLzhLMkPxfQ/+PU5LSX9cG9BOqp/IcQEBQ=;
- b=HohOAa2o28/b7ch29MBIoD1RihtSlhLCaD612I41Vtin/FelmIZR/WhDAxEC8klrRvWudVe9Vs5dMLcKcvu3HI5529ZKHNSE2//tGZKFKYFHhVsaA3zI0MshldfXVNDcvT2XYmvO8nuil6TI9smRwyPBYLkGes1l25BPuK+8PKdZNZQLd1e/eEYyFlf9MSXoe802+bn4WhHsxgV2WNSiuFNfplsjotZ9hM7iYMI/CXkQCEJwQyixcFgf+aMiF+a9kUNK4UBtnnFniHJbHqswZOpp8s+R3QGiY5t1ESMi/dRa8XomLW8M2s9R5VGOA3m6OVHx8pzwAe/yNi+8eDQ1ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lUjGvtIgBOLzhLMkPxfQ/+PU5LSX9cG9BOqp/IcQEBQ=;
- b=Yj8es5mJRqwO+pgEzjOQJO6k/WsBKJbRDTWZhAyc60VTpRvtSg9zGT0sd5gpWCBP5bQABQC5PbG6TlxT5TOr6kLHGhMSqEmWs4QdlU9nx3YuMByWuXqKOhDtAHEIeuRiBZdu9Go5IK4z+PF6J2km9NtKKe0iA+dl0phgN58ODxM=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by SA3PR05MB10322.namprd05.prod.outlook.com (2603:10b6:806:397::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Mon, 30 Oct
- 2023 08:51:35 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::b668:aef3:606e:923f]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::b668:aef3:606e:923f%4]) with mapi id 15.20.6933.028; Mon, 30 Oct 2023
- 08:51:35 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Byungchul Park <byungchul@sk.com>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        "hughd@google.com" <hughd@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [v3 3/3] mm, migrc: Add a sysctl knob to enable/disable MIGRC
- mechanism
-Thread-Topic: [v3 3/3] mm, migrc: Add a sysctl knob to enable/disable MIGRC
- mechanism
-Thread-Index: AQHaCwJU6mkgYNVDiEGUaMKS2dpxHLBiBoEA
-Date:   Mon, 30 Oct 2023 08:51:35 +0000
-Message-ID: <17CADC36-25C6-44EB-8084-6E3D9D64B3D3@vmware.com>
-References: <20231030072540.38631-1-byungchul@sk.com>
- <20231030072540.38631-4-byungchul@sk.com>
-In-Reply-To: <20231030072540.38631-4-byungchul@sk.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|SA3PR05MB10322:EE_
-x-ms-office365-filtering-correlation-id: cb338bc3-a8b9-4aa3-d453-08dbd9256c55
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 87hJjydbrvOmZhuFdBmffY+T707fQjLgmPn6M0JRUhHpK9ddj/ElsTvgT0HfcVKZ84uCrv9NapEevLwRL2INudLXoNHlbsEwvgbgGTYoC065oVQcki04x9aEbOEIQ2Hy16qX1mnW4PMFPycUcdX0zpIEYYBw3nnHu+0yCLgjE5rdtyJ5cAo1xO0ryUj3dlnf3FAoPhbxfMSN9w4CeejittwbupqmOoWowSWDo/oYf3vNjgae8dRw89/gHNBdjbPVni+k2wx6JEImLR5JTeuZWI4Mp3C4Foq3fa+A9OyGv8anEXN2BQkLE69SfCxtZYE64LUucjjFaFstcf1qjlrZCSbc39Fnd6iEp1bKvBRJ2Xzg623TcCBHI8nBOCkmVGTr5ybFwCH536EXYd9/+ZM4qjNmHj00g42QOVN4frLACkmYq+L2JqBx3NbJ1U2g9MWUYwGBx+MEHYb6xdiXkNZmeqfSp35fZmUb02z116zBM5bybwxP13c/1rd0+ZS5hiHaUMcbSWQE2z2trowE01fKVPw0nMIla1waSrN9FS6bU1alZ0lNbr/MnyaStwGX+XvChmMmfI/AEY9E975cz6DcWWc7RvkmvEZqjbjL6j0UcAKtE5nO1dxdjEdYC6GoCu+TVf0eXEI372A0EhJERTNrVM50Uz4awxw6vYH98PrNpUxzn1cAzYLBwkxwa0vI/FGgKm+3CbLxc9NUe57C/8c0fQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(7416002)(5660300002)(4744005)(122000001)(86362001)(2906002)(33656002)(36756003)(38070700009)(38100700002)(2616005)(26005)(478600001)(8676002)(6916009)(8936002)(6512007)(66556008)(64756008)(41300700001)(4326008)(76116006)(71200400001)(66946007)(66476007)(91956017)(6486002)(6506007)(54906003)(66446008)(316002)(53546011)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZTdNam9Gc3pHNmF4WTl0U0hyRDVVcGlNak5vczIzV0VJWmZKaVFJWSsyWHNF?=
- =?utf-8?B?aGJEY1ByL0s2anVEZzBScmQyWWNGSzI2dlhoU2ZkNjY3dkhnSlA4NW9rMGVT?=
- =?utf-8?B?WmpNb21PNk44ekFXVnR4WDFycE5DRWhkc0NHVFB5RWh5Qk4vNml6WEQ2Kzgr?=
- =?utf-8?B?c28wZmZjMXJKNjNWVkxaa0ZKaUc3V1BYMTk1dmNsUUJPeGR3OUIzTlovU1pt?=
- =?utf-8?B?ZEpNMEpieGhmZUo2ODFlTHdybTcwWnNpaHdPeW9XVjVtMnh6eDBBZmVGWmRp?=
- =?utf-8?B?aGJpRzRvUERpclZZRnpiTmk5N3VIdEJkYVUxY2RYRlFhM0VZZGQ4eis2NzBu?=
- =?utf-8?B?UTdZQ05BOFhtMitBM3RHNm40dmMwZktDUlY0dk5FaDgzdFJpdm1WTisyQ2FH?=
- =?utf-8?B?ZFptSlFUdFovcEZMdXBaNHpPdkE3R3o2S3dqRVlTWnM4QkY3UjY0MS9qS01i?=
- =?utf-8?B?RDZRRUlZdkJ5c0VoZWw1eWtLeWwvRWNkQ2hwbzg5cjFUeW1vY2ZIMmV6VXds?=
- =?utf-8?B?MXVIdjdGR1E3VGVTZHQ5YWdvejcvSXgvRkVTVm9OL3E3cWZQbmNXQ3BXRER5?=
- =?utf-8?B?cVZ3Y3E0QUdCVU1PV2ZXZjJwZkJiZUhEQjYvUmNMRUJlK1VoanNXTVN5Rk9v?=
- =?utf-8?B?R2NESXoxVlNUeTdIU3VZakxWaklNWHR6blZUTWd0VTE1dUd6MlhxcExiODhM?=
- =?utf-8?B?ZngvUUtERE9SLzB2OVA1RjVyUW5YcWFGcUJVYlpDdTM0MEpybkJmNllVclNI?=
- =?utf-8?B?emJrbnlwbkJKOEFXbFdWQUFJemJ4VXJiRU5XUkZBSzJpa2ZvbTRlN20xYUdE?=
- =?utf-8?B?RVpteWdvb2trT2JJZkdNVlJhK0wxQ2JBRVpuNkpJSGVST1R1T3V6NnU5YkdW?=
- =?utf-8?B?cTNDdDVpV1JjU28rRjFGMVdaTkV6RUIreVVqNUZnS2NPa3RyUkZYOWFpcEVp?=
- =?utf-8?B?L2FsRGt6SkVYWG5HekZTSFVIWnJHREtRUWN5RXo1RzkxY2JzZ3JKcStDWmxI?=
- =?utf-8?B?ajVZTExKVVZ6ZnRHN3gyblJJY0lkMHdsQXExdjhXMWh3bm1BT2xGdEt1SzN1?=
- =?utf-8?B?VnBFRFNScVlsSHUwb2QxbTM2UUZXU2Q1dGNFVGFacC9JTDBXeElpbmxGRnhh?=
- =?utf-8?B?S09tVzZTRmM3bFp5a0tpRnFjKzFkd0toa3hOWVlBZmN0aW5aWDRQOHFySjRP?=
- =?utf-8?B?VXcxL0FJWlA0NmxyendGeTA2c1d2QnR5eUxBdW9lTWhWQnJiZDFsaWRkZW82?=
- =?utf-8?B?U1BaUEJQZm1qZ1VSN1N5VTdnMFBFc2xzZWxBd0RKMElmaGJxelRFOFBBYWsw?=
- =?utf-8?B?NVIxZkhaUEVNSXp1SDRVNTJGQ2FqcElmMDEvYTlYNi9tQ0IrSURmSS9lWkt3?=
- =?utf-8?B?WEZma1VIQ1JGMmRFUlFJY0d5MGNSL1pYN2UvN3cwOWtPcXg1TGYwSFo1RkxC?=
- =?utf-8?B?T1JDdVdtM1Z1NzNiNks0Q2lZcHg1emhMSjBKLzJsV0FxS1pjOXJTb3VKMCs2?=
- =?utf-8?B?bG84YnZ4Y0E1VkhwU0xiVmpoeDVuOGcraHR4dmJrZm5mRFZudUhOZ2lSWlFK?=
- =?utf-8?B?UXEyYjNMeE8yaEhrVmZaVXlsWEdybzYxLzBVdVl6aVVTZFZqcDlnZk15ekRI?=
- =?utf-8?B?UjZQWElKTURra1pNNG1BdE1pZ1o0aThKTVgzd2p2Vk8yeDBZcmcxM1Nob0pH?=
- =?utf-8?B?a3Fmdzhud1Z4Uk03dFZPaHh0cmlTc2gxQjFaWkNRcXV6d3hIMXNSeG5kMzNB?=
- =?utf-8?B?TUhBdEtqekJsMHFqUS9GaTF6UU10WDVIbmVWWW8wMm1TR0lmSEU5V0hsZTFU?=
- =?utf-8?B?ZFBjWGM0a3RBblZlZHg5a05zeVB6WFRHWkJITEJaSWNYTVlVTk9uclNIL1ZW?=
- =?utf-8?B?aHpQK0lDdFlyd3dTYVljSTV3b242eDU0MktCMlR4WTBlYVFhbzJSSy9ZK1V4?=
- =?utf-8?B?S1ZxVnNOaWFneUw1aDdDQjEzODNib2grZjd3Ykp5T2k0bTBKeUNCeXp3bHVp?=
- =?utf-8?B?RUZFaThpWUR0aFZFcTFIYUdZSWFmUDd5RnpjUzg2cC9NVFZMQ1pESTUvNENK?=
- =?utf-8?B?S0VjekhITGZoZ1B6L1l2WWd1SWVhZ29IMkJyRnAwQnhSVWZDSVFDdW9uSVlS?=
- =?utf-8?Q?xrx1fiKU8gDFzIkJxntSsFWkI?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <061BA3DEC0FFAD43BE26F2606CB90D41@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 30 Oct 2023 04:52:49 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3930094
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:52:47 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6ce2988d62eso2901787a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1698655966; x=1699260766; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0gGEIDhDBnU4aFsLJZ/wB4B4cvrIyCziYnLzBrIhyCw=;
+        b=gXSErqR56A9c04DfaXIff9X5zWSeLtJKh9GuhiQ8TGt4is8ZI06IExJ3TvlP0oLDaP
+         IJx4Kozqefw4Q445EUqVCillLqRs+n4gFcvQ0DGZtQeVlDKo8zl0yQi6BcWjkfpRMNWJ
+         LLylGhyzutTGacK2VcRC+f5f8jwYOxibKp/RlVLdQ4KWo+iblWpy3ZPoasOAfVBd6J+a
+         QzSUmgLgwL9peoDVXytGC55u9C9XULeXMRoU5MuB2/qBjZC4HkCiCyCvAkpldfLYmrZ0
+         4NBl20n5u1L5+ZHYJm+fP9F+ntNotYWJCKoTo4IVv9BjxECQPL8yK357lMArJvsIw4q/
+         dOew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698655966; x=1699260766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0gGEIDhDBnU4aFsLJZ/wB4B4cvrIyCziYnLzBrIhyCw=;
+        b=c+s9GYXZo/RcWwhwpO/hCtIc66yk+eBN76nd9W7HPZOC1+zXmEhEBWeKIJlRn7qCY+
+         ZyW1RTIZDi15OK0R1iYqOX1IBK3Pa78fxXq7aGjN2HNe0i/nc/x9avJTJ4xgbU4zNp0L
+         g+LifTZVdcdvoItQEvu9Sn4ddgMtcodR9kF2IrZol0yFN2IiHaiWlW2HrKC4yceCqz17
+         C7p8O/jC2Kt38eGn3xdzVTUFc77dtL79U4QuEbBcT2JAMEbwYw/KxrDSa6xbyajn0DyY
+         f8kB2+83ic82Swqo0UlpgoFMi64/+BTvXlwQ/gsi/gZFeGEKhNQ44P+u/Lze+EONj50q
+         JCvQ==
+X-Gm-Message-State: AOJu0YzYjVrdA/CsmHljJ/u31M3UFCKAATTd4n33RgDsxj2YeQ415zdL
+        Sc0VYceOj56zJzkzVt0vGX2D98Hzqf30OSpsYC0pNQ==
+X-Google-Smtp-Source: AGHT+IHkR2THCj1FlipypbHdlgpkGFKhoiGmQpUIe9vWSJhv+2mHRfkz1ZHtE/ji28hfpcYLDEBXn8gv7HQRPYtb3Xg=
+X-Received: by 2002:a05:6808:1907:b0:3ad:c5f2:2792 with SMTP id
+ bf7-20020a056808190700b003adc5f22792mr15368637oib.46.1698655966526; Mon, 30
+ Oct 2023 01:52:46 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb338bc3-a8b9-4aa3-d453-08dbd9256c55
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2023 08:51:35.7545
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IMuD8mPWvQUNIj/p6WVpG0N2C0/VRWRo1yl9O4z6lEKOvNNd6GOp2fdxy0LUP/S1NuCZ9ifHXmJcEmtSN/xFJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR05MB10322
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230914114521.1491390-1-naresh.solanki@9elements.com>
+ <20230920130528.GG13143@google.com> <CABqG17j_gCr8xw65qjn4Kh7ChdraZbLsyGOsCmFEEWG3txjE4A@mail.gmail.com>
+ <20230921103156.GB3449785@google.com>
+In-Reply-To: <20230921103156.GB3449785@google.com>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Mon, 30 Oct 2023 14:22:35 +0530
+Message-ID: <CABqG17ibzHiYmzCZ6ZpAa8BZhj5N+0dQ0aa1yebtCk0YYVdsFQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3] leds: max5970: Add support for max5970
+To:     Lee Jones <lee@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IE9uIE9jdCAzMCwgMjAyMywgYXQgOToyNSBBTSwgQnl1bmdjaHVsIFBhcmsgPGJ5dW5nY2h1
-bEBzay5jb20+IHdyb3RlOg0KPiANCj4gQWRkIGEgc3lzY3RsIGtub2IsICcvcHJvYy9zeXMvdm0v
-bWlncmNfZW5hYmxlJyB0byBzd2l0Y2ggb24vb2ZmIG1pZ3JjLg0KDQpQbGVhc2UgZXhwbGFpbiBo
-b3cgdXNlcnMgYXJlIGV4cGVjdGVkIHRvIHVzZSB0aGlzIGtub2IuDQoNCkkgc3VzcGVjdCB0aGF0
-IHRoZSBrbm9iIGFuZCB0aGUgY29uZmlnIG9wdGlvbiBhcmUgbm90IHVzZWZ1bC4gWW91IHByb2Jh
-Ymx5DQp1c2VkIHRoZW0gZm9yIHlvdXIgZXZhbHVhdGlvbiBvciBhcyBhIOKAnGNoaWNrZW4tYml0
-4oCdLCBidXQgdGhleSBhcmUgbm90DQp1c2VmdWwgYW55bW9yZS4NCg0K
+Hi,
+
+On Thu, 21 Sept 2023 at 16:02, Lee Jones <lee@kernel.org> wrote:
+>
+> On Thu, 21 Sep 2023, Naresh Solanki wrote:
+>
+> > Hi
+> >
+> >
+> > On Wed, 20 Sept 2023 at 18:35, Lee Jones <lee@kernel.org> wrote:
+> > >
+> > > On Thu, 14 Sep 2023, Naresh Solanki wrote:
+> > >
+> > > > From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > >
+> > > > The MAX5970 is hot swap controller and has 4 indication LED.
+> > > >
+> > > > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > > > ---
+> > > > Changes in V3:
+> > > > - Drop array for ddata variable.
+> > > > Changes in V2:
+> > > > - Add of_node_put before return.
+> > > > - Code cleanup
+> > > > - Refactor code & remove max5970_setup_led function.
+> > > > ---
+> > > >  drivers/leds/Kconfig        |  11 ++++
+> > > >  drivers/leds/Makefile       |   1 +
+> > > >  drivers/leds/leds-max5970.c | 110 ++++++++++++++++++++++++++++++++=
+++++
+> > > >  3 files changed, 122 insertions(+)
+> > > >  create mode 100644 drivers/leds/leds-max5970.c
+> > >
+> > > Couple of nits and you're good to go.
+> > >
+> > > Once fixed please resubmit with my:
+> > >
+> > >   Reviewed-by: Lee Jones <lee@kernel.org>
+> > >
+> > > > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > > > index b92208eccdea..03ef527cc545 100644
+> > > > --- a/drivers/leds/Kconfig
+> > > > +++ b/drivers/leds/Kconfig
+> > > > @@ -637,6 +637,17 @@ config LEDS_ADP5520
+> > > >         To compile this driver as a module, choose M here: the modu=
+le will
+> > > >         be called leds-adp5520.
+> > > >
+> > > > +config LEDS_MAX5970
+> > > > +     tristate "LED Support for Maxim 5970"
+> > > > +     depends on LEDS_CLASS
+> > > > +     depends on MFD_MAX5970
+> > > > +     help
+> > > > +       This option enables support for the Maxim MAX5970 & MAX5978=
+ smart
+> > > > +       switch indication LEDs via the I2C bus.
+> > > > +
+> > > > +       To compile this driver as a module, choose M here: the modu=
+le will
+> > > > +       be called leds-max5970.
+> > > > +
+> > > >  config LEDS_MC13783
+> > > >       tristate "LED Support for MC13XXX PMIC"
+> > > >       depends on LEDS_CLASS
+> > > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > > > index d7348e8bc019..6eaee0a753c6 100644
+> > > > --- a/drivers/leds/Makefile
+> > > > +++ b/drivers/leds/Makefile
+> > > > @@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)           +=3D leds-lp8=
+501.o
+> > > >  obj-$(CONFIG_LEDS_LP8788)            +=3D leds-lp8788.o
+> > > >  obj-$(CONFIG_LEDS_LP8860)            +=3D leds-lp8860.o
+> > > >  obj-$(CONFIG_LEDS_LT3593)            +=3D leds-lt3593.o
+> > > > +obj-$(CONFIG_LEDS_MAX5970)           +=3D leds-max5970.o
+> > > >  obj-$(CONFIG_LEDS_MAX77650)          +=3D leds-max77650.o
+> > > >  obj-$(CONFIG_LEDS_MAX8997)           +=3D leds-max8997.o
+> > > >  obj-$(CONFIG_LEDS_MC13783)           +=3D leds-mc13783.o
+> > > > diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max597=
+0.c
+> > > > new file mode 100644
+> > > > index 000000000000..c9685990e26e
+> > > > --- /dev/null
+> > > > +++ b/drivers/leds/leds-max5970.c
+> > > > @@ -0,0 +1,110 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * Device driver for leds in MAX5970 and MAX5978 IC
+> > > > + *
+> > > > + * Copyright (c) 2022 9elements GmbH
+> > > > + *
+> > > > + * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > > + */
+> > > > +
+> > > > +#include <linux/leds.h>
+> > > > +#include <linux/mfd/max5970.h>
+> > > > +#include <linux/of.h>
+> > > > +#include <linux/platform_device.h>
+> > > > +#include <linux/regmap.h>
+> > > > +
+> > > > +#define ldev_to_maxled(c)       container_of(c, struct max5970_led=
+, cdev)
+> > > > +
+> > > > +struct max5970_led {
+> > > > +     struct device *dev;
+> > > > +     struct regmap *regmap;
+> > > > +     struct led_classdev cdev;
+> > > > +     unsigned int index;
+> > > > +};
+> > > > +
+> > > > +static int max5970_led_set_brightness(struct led_classdev *cdev,
+> > > > +                                   enum led_brightness brightness)
+> > > > +{
+> > > > +     struct max5970_led *ddata =3D ldev_to_maxled(cdev);
+> > > > +     int ret, val;
+> > > > +
+> > > > +     /* Set/clear corresponding bit for given led index */
+> > > > +     val =3D !brightness ? BIT(ddata->index) : 0;
+> > > > +
+> > > > +     ret =3D regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLA=
+SH, BIT(ddata->index), val);
+> > > > +     if (ret < 0)
+> > > > +             dev_err(cdev->dev, "failed to set brightness %d", ret=
+);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +static int max5970_led_probe(struct platform_device *pdev)
+> > > > +{
+> > > > +     struct device *dev =3D &pdev->dev;
+> > > > +     struct device_node *np =3D dev_of_node(dev->parent);
+> > > > +     struct regmap *regmap;
+> > > > +     struct device_node *led_node;
+> > > > +     struct device_node *child;
+> > >
+> > > Nit: You can place these on the same line.
+> > Ack
+> > >
+> > > > +     struct max5970_led *ddata;
+> > > > +     int ret =3D -ENODEV, num_leds =3D 0;
+> > > > +
+> > > > +     regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
+> > > > +     if (!regmap)
+> > > > +             return -EPROBE_DEFER;
+> > >
+> > > Why are you deferring here?
+> > This is a Leaf driver. Making sure the parent driver has initialized re=
+gmap.
+>
+> How can this driver initialise before the parent driver?
+The parent driver in this case is simple_i2c_mfd.
+Based on reference from other similar implementations, the regmap
+check was adapted.
+As you mentioned, your right that leaf driver will not start before parent
+driver is loaded successfully so probably the DEFER might not be needed
+here.
+
+Thanks,
+Naresh
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
