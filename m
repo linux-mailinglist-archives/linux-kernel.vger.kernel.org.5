@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B57727DBBAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D9B7DBBAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbjJ3OZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S233724AbjJ3OZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbjJ3OZa (ORCPT
+        with ESMTP id S233713AbjJ3OZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:25:30 -0400
+        Mon, 30 Oct 2023 10:25:40 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF29D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:25:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A39ED
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:25:29 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BF9D521D09;
-        Mon, 30 Oct 2023 14:25:22 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8FD4B21CBA;
+        Mon, 30 Oct 2023 14:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698675922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1698675928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3iQt5G91J6sbDJSILGZsPCJYY2SyUk44Azdroc+sL6s=;
-        b=iAPjbKUTc5G4JV+D/wYKw7PVbHI5C4U9dvqfFUrYhPpyFCsFWgJnnP9GXdhNYChDaUUjmp
-        3p7x54hf+qEOkCeKdQhz6OI9Gc/QOqFPYEZM30yud6i/sYTQwoa2hHJxQxSWa+4TIYWiVq
-        lNTnCkfDj+/4V4PZ4oxRRAS1XRYONjU=
+        bh=MAmhy1SfZZc3OWn+kKZBUGwLdrE+H9vpNfY8eC/OJPE=;
+        b=fAl6ZMq2YroKEIhjHpAt6yh2R55oV8ESiRpWRgC7/crBhG0aI4gT8m6YmCsH8pZGXXxW/N
+        QG9VdRT1vUZyC0jCyIpg53jcT+McJL/sa0rgM86EaYd9T7ArTeoPiaj9sYNqIh06J7DnM6
+        9KXdfYXV9DfNzcV6wOiLvTBdXeoGyHs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D30C138F8;
-        Mon, 30 Oct 2023 14:25:22 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 326F4138F8;
+        Mon, 30 Oct 2023 14:25:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id Yvb2HNK8P2XmQAAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 30 Oct 2023 14:25:22 +0000
+        id T0HoCti8P2X6QAAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 30 Oct 2023 14:25:28 +0000
 From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     Juergen Gross <jgross@suse.com>, Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v4 2/5] x86/alternative: add indirect call patching
-Date:   Mon, 30 Oct 2023 15:25:05 +0100
-Message-Id: <20231030142508.1407-3-jgross@suse.com>
+Subject: [PATCH v4 3/5] x86/paravirt: introduce ALT_NOT_XEN
+Date:   Mon, 30 Oct 2023 15:25:06 +0100
+Message-Id: <20231030142508.1407-4-jgross@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20231030142508.1407-1-jgross@suse.com>
 References: <20231030142508.1407-1-jgross@suse.com>
@@ -65,130 +68,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to prepare replacing of paravirt patching with alternative
-patching, add the capability to replace an indirect call with a direct
-one to alternative patching.
+Introduce the macro ALT_NOT_XEN as a short form of
+ALT_NOT(X86_FEATURE_XENPV).
 
-This is done via a new flag ALT_FLAG_CALL as the target of the call
-instruction needs to be evaluated using the value of the location
-addressed by the indirect call. For convenience add a macro for a
-default call instruction. In case it is being used without the new
-flag being set, it will result in a BUG() when being executed. As in
-most cases the feature used will be X86_FEATURE_ALWAYS add another
-macro ALT_CALL_ALWAYS usable for the flags parameter of the ALTERNATIVE
-macros.
-
-For a complete replacement handle the special cases of calling a nop
-function and an indirect call of NULL the same way as paravirt does.
-
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-V4:
-- 32-bit mode doesn't have %rip relative addressing (kernel test robot)
-- define ALT_CALL_INSTR in assembly, too (kernel test robot)
+V3:
+- split off from next patch
 ---
- arch/x86/include/asm/alternative.h |  9 ++++++
- arch/x86/kernel/alternative.c      | 45 ++++++++++++++++++++++++++++++
- 2 files changed, 54 insertions(+)
+ arch/x86/include/asm/paravirt.h       | 42 ++++++++++++---------------
+ arch/x86/include/asm/paravirt_types.h |  3 ++
+ 2 files changed, 21 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 484f16dfc429..2a74a94bd569 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -10,6 +10,9 @@
- 
- #define ALT_FLAG_NOT		(1 << 0)
- #define ALT_NOT(feature)	((ALT_FLAG_NOT << ALT_FLAGS_SHIFT) | (feature))
-+#define ALT_FLAG_CALL		(1 << 1)
-+#define ALT_CALL(feature)	((ALT_FLAG_CALL << ALT_FLAGS_SHIFT) | (feature))
-+#define ALT_CALL_ALWAYS		ALT_CALL(X86_FEATURE_ALWAYS)
- 
- #ifndef __ASSEMBLY__
- 
-@@ -150,6 +153,8 @@ static inline int alternatives_text_reserved(void *start, void *end)
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index ed5c7342f2ef..3749311d51c3 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -142,8 +142,7 @@ static inline void write_cr0(unsigned long x)
+ static __always_inline unsigned long read_cr2(void)
+ {
+ 	return PVOP_ALT_CALLEE0(unsigned long, mmu.read_cr2,
+-				"mov %%cr2, %%rax;",
+-				ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%cr2, %%rax;", ALT_NOT_XEN);
  }
- #endif	/* CONFIG_SMP */
  
-+#define ALT_CALL_INSTR		"call BUG_func"
-+
- #define b_replacement(num)	"664"#num
- #define e_replacement(num)	"665"#num
+ static __always_inline void write_cr2(unsigned long x)
+@@ -154,13 +153,12 @@ static __always_inline void write_cr2(unsigned long x)
+ static inline unsigned long __read_cr3(void)
+ {
+ 	return PVOP_ALT_CALL0(unsigned long, mmu.read_cr3,
+-			      "mov %%cr3, %%rax;", ALT_NOT(X86_FEATURE_XENPV));
++			      "mov %%cr3, %%rax;", ALT_NOT_XEN);
+ }
  
-@@ -386,6 +391,10 @@ void nop_func(void);
- 	.byte \alt_len
+ static inline void write_cr3(unsigned long x)
+ {
+-	PVOP_ALT_VCALL1(mmu.write_cr3, x,
+-			"mov %%rdi, %%cr3", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALL1(mmu.write_cr3, x, "mov %%rdi, %%cr3", ALT_NOT_XEN);
+ }
+ 
+ static inline void __write_cr4(unsigned long x)
+@@ -182,7 +180,7 @@ extern noinstr void pv_native_wbinvd(void);
+ 
+ static __always_inline void wbinvd(void)
+ {
+-	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT_XEN);
+ }
+ 
+ static inline u64 paravirt_read_msr(unsigned msr)
+@@ -390,27 +388,25 @@ static inline void paravirt_release_p4d(unsigned long pfn)
+ static inline pte_t __pte(pteval_t val)
+ {
+ 	return (pte_t) { PVOP_ALT_CALLEE1(pteval_t, mmu.make_pte, val,
+-					  "mov %%rdi, %%rax",
+-					  ALT_NOT(X86_FEATURE_XENPV)) };
++					  "mov %%rdi, %%rax", ALT_NOT_XEN) };
+ }
+ 
+ static inline pteval_t pte_val(pte_t pte)
+ {
+ 	return PVOP_ALT_CALLEE1(pteval_t, mmu.pte_val, pte.pte,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline pgd_t __pgd(pgdval_t val)
+ {
+ 	return (pgd_t) { PVOP_ALT_CALLEE1(pgdval_t, mmu.make_pgd, val,
+-					  "mov %%rdi, %%rax",
+-					  ALT_NOT(X86_FEATURE_XENPV)) };
++					  "mov %%rdi, %%rax", ALT_NOT_XEN) };
+ }
+ 
+ static inline pgdval_t pgd_val(pgd_t pgd)
+ {
+ 	return PVOP_ALT_CALLEE1(pgdval_t, mmu.pgd_val, pgd.pgd,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ #define  __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION
+@@ -444,14 +440,13 @@ static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
+ static inline pmd_t __pmd(pmdval_t val)
+ {
+ 	return (pmd_t) { PVOP_ALT_CALLEE1(pmdval_t, mmu.make_pmd, val,
+-					  "mov %%rdi, %%rax",
+-					  ALT_NOT(X86_FEATURE_XENPV)) };
++					  "mov %%rdi, %%rax", ALT_NOT_XEN) };
+ }
+ 
+ static inline pmdval_t pmd_val(pmd_t pmd)
+ {
+ 	return PVOP_ALT_CALLEE1(pmdval_t, mmu.pmd_val, pmd.pmd,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline void set_pud(pud_t *pudp, pud_t pud)
+@@ -464,7 +459,7 @@ static inline pud_t __pud(pudval_t val)
+ 	pudval_t ret;
+ 
+ 	ret = PVOP_ALT_CALLEE1(pudval_t, mmu.make_pud, val,
+-			       "mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++			       "mov %%rdi, %%rax", ALT_NOT_XEN);
+ 
+ 	return (pud_t) { ret };
+ }
+@@ -472,7 +467,7 @@ static inline pud_t __pud(pudval_t val)
+ static inline pudval_t pud_val(pud_t pud)
+ {
+ 	return PVOP_ALT_CALLEE1(pudval_t, mmu.pud_val, pud.pud,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline void pud_clear(pud_t *pudp)
+@@ -492,8 +487,7 @@ static inline void set_p4d(p4d_t *p4dp, p4d_t p4d)
+ static inline p4d_t __p4d(p4dval_t val)
+ {
+ 	p4dval_t ret = PVOP_ALT_CALLEE1(p4dval_t, mmu.make_p4d, val,
+-					"mov %%rdi, %%rax",
+-					ALT_NOT(X86_FEATURE_XENPV));
++					"mov %%rdi, %%rax", ALT_NOT_XEN);
+ 
+ 	return (p4d_t) { ret };
+ }
+@@ -501,7 +495,7 @@ static inline p4d_t __p4d(p4dval_t val)
+ static inline p4dval_t p4d_val(p4d_t p4d)
+ {
+ 	return PVOP_ALT_CALLEE1(p4dval_t, mmu.p4d_val, p4d.p4d,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline void __set_pgd(pgd_t *pgdp, pgd_t pgd)
+@@ -687,17 +681,17 @@ bool __raw_callee_save___native_vcpu_is_preempted(long cpu);
+ static __always_inline unsigned long arch_local_save_flags(void)
+ {
+ 	return PVOP_ALT_CALLEE0(unsigned long, irq.save_fl, "pushf; pop %%rax;",
+-				ALT_NOT(X86_FEATURE_XENPV));
++				ALT_NOT_XEN);
+ }
+ 
+ static __always_inline void arch_local_irq_disable(void)
+ {
+-	PVOP_ALT_VCALLEE0(irq.irq_disable, "cli;", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALLEE0(irq.irq_disable, "cli;", ALT_NOT_XEN);
+ }
+ 
+ static __always_inline void arch_local_irq_enable(void)
+ {
+-	PVOP_ALT_VCALLEE0(irq.irq_enable, "sti;", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALLEE0(irq.irq_enable, "sti;", ALT_NOT_XEN);
+ }
+ 
+ static __always_inline unsigned long arch_local_irq_save(void)
+@@ -759,7 +753,7 @@ void native_pv_lock_init(void) __init;
  .endm
  
-+.macro ALT_CALL_INSTR
-+	call BUG_func
-+.endm
-+
- /*
-  * Define an alternative between two instructions. If @feature is
-  * present, early code in apply_alternatives() replaces @oldinstr with
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index ff9ad30a9484..dd14db12c573 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -395,6 +395,45 @@ noinstr void BUG_func(void)
- }
- EXPORT_SYMBOL_GPL(BUG_func);
+ #define SAVE_FLAGS	ALTERNATIVE "PARA_IRQ_save_fl;", "pushf; pop %rax;", \
+-				    ALT_NOT(X86_FEATURE_XENPV)
++				    ALT_NOT_XEN
+ #endif
+ #endif /* CONFIG_PARAVIRT_XXL */
+ #endif	/* CONFIG_X86_64 */
+diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+index c3d680544da1..291d794f2344 100644
+--- a/arch/x86/include/asm/paravirt_types.h
++++ b/arch/x86/include/asm/paravirt_types.h
+@@ -557,5 +557,8 @@ extern struct paravirt_patch_site __parainstructions[],
+ 	__parainstructions_end[];
  
-+/*
-+ * Rewrite the "call BUG_func" replacement to point to the target of the
-+ * indirect pv_ops call "call *disp(%ip)".
-+ */
-+static int alt_replace_call(u8 *instr, u8 *insn_buff, struct alt_instr *a)
-+{
-+	void *target, *bug = &BUG_func;
+ #endif	/* __ASSEMBLY__ */
 +
-+	if (a->replacementlen != 5 || insn_buff[0] != CALL_INSN_OPCODE) {
-+		pr_err("Alternative: ALT_FLAG_CALL set for a non-call replacement instruction\n");
-+		pr_err("  Ignoring the flag for the instruction at %pS (%px)\n", instr, instr);
-+		return 5;
-+	}
++#define ALT_NOT_XEN	ALT_NOT(X86_FEATURE_XENPV)
 +
-+	if (a->instrlen != 6 || instr[0] != 0xff || instr[1] != 0x15) {
-+		pr_err("Alternative: ALT_FLAG_CALL set for unrecognized indirect call\n");
-+		pr_err("  Not replacing the instruction at %pS (%px)\n", instr, instr);
-+		return -1;
-+	}
-+
-+#ifdef CONFIG_X86_64
-+	/* ff 15 00 00 00 00   call   *0x0(%rip) */
-+	target = *(void **)(instr + a->instrlen + *(s32 *)(instr + 2));
-+#else
-+	/* ff 15 00 00 00 00   call   *0x0 */
-+	target = *(void **)(*(s32 *)(instr + 2));
-+#endif
-+	if (!target)
-+		target = bug;
-+
-+	/* (BUG_func - .) + (target - BUG_func) := target - . */
-+	*(s32 *)(insn_buff + 1) += target - bug;
-+
-+	if (target == &nop_func)
-+		return 0;
-+
-+	return 5;
-+}
-+
- /*
-  * Replace instructions with better alternatives for this CPU type. This runs
-  * before SMP is initialized to avoid SMP problems with self modifying code.
-@@ -462,6 +501,12 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 		memcpy(insn_buff, replacement, a->replacementlen);
- 		insn_buff_sz = a->replacementlen;
- 
-+		if (a->flags & ALT_FLAG_CALL) {
-+			insn_buff_sz = alt_replace_call(instr, insn_buff, a);
-+			if (insn_buff_sz < 0)
-+				continue;
-+		}
-+
- 		for (; insn_buff_sz < a->instrlen; insn_buff_sz++)
- 			insn_buff[insn_buff_sz] = 0x90;
- 
+ #endif  /* CONFIG_PARAVIRT */
+ #endif	/* _ASM_X86_PARAVIRT_TYPES_H */
 -- 
 2.35.3
 
