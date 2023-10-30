@@ -2,312 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E887DC12E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAB17DC130
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjJ3U0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 16:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
+        id S231143AbjJ3U1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjJ3U0p (ORCPT
+        with ESMTP id S229779AbjJ3U1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 16:26:45 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B728F7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:26:40 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso31618135ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698697600; x=1699302400; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u379CNnktvWACo/s1StahJ+ZYC1uQssAJnCQgDCpkVM=;
-        b=tdJC/IFOScn+Mslr+4BKn9VJa55D3y/FSXmwvmHdZbQNugeBm9iqgKbflLCWfSdC0i
-         xDE0qhuSGt2yklhhH8jzeXv3hwottChXjWYFQ7Y+DVV9SgloFYzrw8OVKdBk8cH6/Hnk
-         K6iVtSpWEt0fKdVFyUShMiVy1dd5KbjZ8K2u+D/2cb+K9lIhOHZzsY+vs2v9MdXnKFNy
-         Oc0OUKf+ZuKTcqsF9ibaXT82hANNgc4r3XAu6GcZFUB1TtwkBtn59j9H2zZU0oaMbwdk
-         CGwVytCc0gP/kPz/Z5OCEnF2R15B+M9gDoPV8US3ojbY0BsOU24CN/UQfVzZEfDw5RuY
-         E5NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698697600; x=1699302400;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u379CNnktvWACo/s1StahJ+ZYC1uQssAJnCQgDCpkVM=;
-        b=g+SdRLZ817Ii7JsWdOLi7zp+hLXPapL4B/w90J9dLuUCVmDyNc+BKK93hV2IW5g85y
-         l1UT0RFFFreXsbgj2DLlwvuua4jGIOcqLXAUKpyOFRdKGW4ic7V163V/BuyIAMLGwxrG
-         sQVedczvUTqp/m2J8Mmwd/LM7eYi7l9L8Lwu+/zObVwaXk2kxh3RIUGk/jK/ytNj9Fzc
-         8vB3z2pdN/4adpT4hjYntFU8yEYXJucZfg9S34BwPO9DcQ27oEcLEAJSjb382FYcAEnb
-         MiuuCtO5nHxjLT9UpHNQATGCoT0S9oYcRlWT5mnwS5B5Jyq06EWmvBvdE/vLXhxfgI+i
-         kUug==
-X-Gm-Message-State: AOJu0Yw71n6YD69ZHHCJ4lVbZfCNWsAqr3RQRCJ/CQxWbC7tBAHFwgtd
-        lu1ctvEdiA2cv+QdfMp6So9Ybg==
-X-Google-Smtp-Source: AGHT+IGUiB/WLjGhWKHRO7sSwy+UZLvqFCu9y52iYAEz61DVBAkQqxQOVpMpUlcAUFQYrPgF4jbu9A==
-X-Received: by 2002:a17:903:2344:b0:1cc:5a74:b1df with SMTP id c4-20020a170903234400b001cc5a74b1dfmr2494224plh.2.1698697599421;
-        Mon, 30 Oct 2023 13:26:39 -0700 (PDT)
-Received: from [192.168.60.239] (183.43.230.35.bc.googleusercontent.com. [35.230.43.183])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001cc29ffcd96sm5687846plb.192.2023.10.30.13.26.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 13:26:38 -0700 (PDT)
-Message-ID: <be7c3f52-eb50-4be8-8be5-01e9e0dbd589@google.com>
-Date:   Mon, 30 Oct 2023 13:26:37 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 2/4] usb: gadget: uvc: Allocate uvc_requests one at a
- time
+        Mon, 30 Oct 2023 16:27:10 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2051.outbound.protection.outlook.com [40.107.237.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B7107;
+        Mon, 30 Oct 2023 13:27:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NukTwQ1CA6NuLpscUauDS+3CucTiRCIA+W6IQpQ6BhyyL6QHcfhRkIItteQcunjqcZ4DII15LBvxBZwDBSrZFTS3mzy4zKKHhAd21ZDNz70O/UjKdWKmnTJ6qCeiP06k8Zrdmh3PEYVtc13AlI2euO95UBtPX+FATkUZrRpNplYkqeCK3D76341syMAiyHTz2k0tsDO5yky120ANLGqep2rqz2tqThQwIRKkod4unIv9O8UPO7iSvswh1yBOWfo8FNtwa8b7dXkWII417b4mTyN72oGN3ZpZIpUUX55vIwpdoLJESDGUhzMbbsJbbGAwZHT5yis1YOEEqYoGrWaEfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uIEHOeEdiGMJCsQaXHumckktB2o+cqiiekKgvWsnn+k=;
+ b=nAOSE+KB9G2xQdTcpZxmRUdvWzMORtD1r+5y4G5FSlDPyi7XWCmzChudTAp08cS8vTbFzfHgPcz+pvRPfPKEbyHultrgXmVtE4ZkKe00KXFd8+0aqtEeywMen+NR+UcDnTejFh2AnmCKe2viu3g/PDaROXo+ODH6gelBm/8VWxC6lmEd2qVc3lQ1s7YPxlOtqrbZEzmLWmIUYlkthTt3srGk48mlsgKf8saA0mbOYOs7SH3FqfwiXNUpRmyUHJpLGCCqupuWVevf88YZWXdvy+EzgxRf/2rPlQez1MdoTHV+7xnPH9pzPBO5zGCy6zOWQsVfDESgAgWm7tz5u1zduA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uIEHOeEdiGMJCsQaXHumckktB2o+cqiiekKgvWsnn+k=;
+ b=XrdBvle2VZOF9atUpnQXpKOSXQ3S5lgby96hndwvgSTBMCH/yxKiYxo+6BZ3T9G5tv6drkxGblJlTCER9BSD32fv/YIeW1Tseb7xUaSV/yC2P4TavUYnP6uEst74sZrjvX/ksav+3E3ksSy3Y6aHj+6JpMqoVgRr17vFz2JLmCg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by PH8PR12MB7133.namprd12.prod.outlook.com (2603:10b6:510:22e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.25; Mon, 30 Oct
+ 2023 20:27:02 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::e16e:d7f1:94ad:3021]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::e16e:d7f1:94ad:3021%7]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
+ 20:27:02 +0000
+Message-ID: <b5e71977-abf6-aa27-3a7b-37230b014724@amd.com>
+Date:   Mon, 30 Oct 2023 15:26:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 09/14] x86/sev: Add Secure TSC support for SNP guests
 Content-Language: en-US
-To:     Dan Scally <dan.scally@ideasonboard.com>
-Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
-        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        m.grzeschik@pengutronix.de
-References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
- <20231027201959.1869181-1-arakesh@google.com>
- <20231027201959.1869181-2-arakesh@google.com>
- <5f21a75f-7b09-4e17-b300-b5fb0ff12807@ideasonboard.com>
-From:   Avichal Rakesh <arakesh@google.com>
-In-Reply-To: <5f21a75f-7b09-4e17-b300-b5fb0ff12807@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+To:     Nikunj A Dadhania <nikunj@amd.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org
+Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, dionnaglaze@google.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-10-nikunj@amd.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <20231030063652.68675-10-nikunj@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR08CA0034.namprd08.prod.outlook.com
+ (2603:10b6:4:60::23) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH8PR12MB7133:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25bf153e-08ef-47d6-3230-08dbd9869339
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pY5fnsv6gvn4GQMIFgRK0h/yGUIqdvIFloyxbeb1hIXtQjrVgRrjRckaJoWH29a9QjJdKR75X6o5siEdV913qHscZQdqZbWdM5mdxTgfiXwkVI0TNbLhvtxIrx/BoQ8ZAoKe4AoE4UPrK6HyE5RamG7KlhIPeKhGK8KeU81If+dTWfiOI1yPgIlMtkRS9NerdH/wd1AW6H09h0nH+0e+laiCyLKPyAhnJ48oXbO8+tVYQEccwgYKcjmMWUz7WNSzoHd9kcV7mmC1MaMJds15Hi5dUwDEOVLrDS3juyj3cprS8IP/QtHAqPx+WPDhpK4BJxtf9XiAo4izqNNInSjOHpNZrcgFdIxAnfiE5nR4FYpfyJkS46eE54vx+Oyj+SXGLYHEwioKKZTkMdZMSdXaIEBtwPE/0+RSvM+sqkAkDqYvyJU9e9995oAtEsFN9lpoV5UbM7IF/c6JF4kZyKqTFqowtk+VU2knJeFIFiZm6CkgT7sJNuPmYd9ZWP+mSNokcA72DIrZGyXbXt+Z7tPWUWDdeIM5P2QKbXgM5MJtIe4zShUpfXEYClZqrBHUz+ZyE5rox1COv0PnmaGukUO5J908iLrO2oflmBYNl51CQ6lhro0FIMZG5SExV2DYIgoRTaTiKI64EG0FJOBLQL7fyg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(39860400002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(26005)(6486002)(83380400001)(2616005)(6506007)(478600001)(6666004)(6512007)(53546011)(316002)(66946007)(8676002)(4326008)(8936002)(31686004)(38100700002)(7416002)(41300700001)(66556008)(66476007)(36756003)(5660300002)(2906002)(31696002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L05jeFR0L2RpSk13SDFpVU1lQVdmOHc0WGRMcEFnRHFkMFRKZlZ2Ui9ic21t?=
+ =?utf-8?B?cTh1aHJ3VUI3WHhWTzdzUk5SK09SckhYRDZmdXMxNmN2enlrMDZlajE2ZWdJ?=
+ =?utf-8?B?RjVxME9TVktmVDQwVGlOVTQ2VmgvQTBRVFZNQ3lDRU85ZTZORTMvT2VxVkV4?=
+ =?utf-8?B?ekw4UjZhMmpxU2tYL0h0ZytsS3k0dG9KZUZNM1p3WDhEbjRDVE9RMmhnZENZ?=
+ =?utf-8?B?bjVRRmVxSzU0d2RLN0k3V05NVGQ1bUxxdlBmQWY0M212MytXWWN2N09iWmw5?=
+ =?utf-8?B?YkltWFRRSFREOGpybXVpRVY3OEw2bVMzS1VqcjhCUEJNYmhwRnNpUXBqcVBs?=
+ =?utf-8?B?VUJoR1Q0bVUvdk5pRXZYc0hOTFlaMnFrbmhvcWVMYlcya3pnOU9QVkNnMGJS?=
+ =?utf-8?B?YTN5WjNTSlFacVVZOXlEWndoUVJuK0NNNmVWNmhrcGo5VDhxRkdZeGhocXdm?=
+ =?utf-8?B?bVZEVkxtaWJJZ0F2YVFHN3c0T0R1ZXliSGlyRUYxaHFLT2lDaFY4aU9hOUI0?=
+ =?utf-8?B?QkkvaUcvNlM4VWljQk9rcVdOV2NtdnRoVVE1YncwR2FOanJIeWFQOHdZQWhx?=
+ =?utf-8?B?VWhBYUx6T0FWa0RwQlh5bGZURU4rcERyUHNoMFlqN0ROVFo0NkhnQkwyR0hI?=
+ =?utf-8?B?UGlUM1c2QmREUWxBUWFIZGxPMnpsTlVHeFprZlovYUVKNWZpZ2NvVElnMUlu?=
+ =?utf-8?B?U0RKcXprT3dvTFFMQ2NsYkcyYlBqbnlCVUFtbnV1T2lyY081NTZvRVhQZGd4?=
+ =?utf-8?B?RitOaTdtckYybkdBaUlFYTM0Yk9lZzB0eTVObHp0QjNQRVJSUDMvc0h0WkQr?=
+ =?utf-8?B?OW1FVXVNNytXVDJGL1Z2ZDZDbXFjSWx2ZkpFVU1Tb3pnb1pjYllDS3lzdzc4?=
+ =?utf-8?B?a1plU2xNNzdCQ1NFVlI0eEtYL3hwM1BlVUkzSE9aTnlrSDNVUTJnenZTdFpy?=
+ =?utf-8?B?dEhBY0ROTXkvR2U4TUJtUGU1aVh5UmZ3SHpmdmV2c2c1a0Y3YUpGRTR1UFBq?=
+ =?utf-8?B?dzVzWE1kRVlBbWoyNmprWE4zK0ZmZWw3anp2WFg3N2tvQktiL0JUNSsxM3FK?=
+ =?utf-8?B?V3Y2MUwvUVAxa3JpR3pwNVV1RC95cjd2VXFwSkpBWnBkNjJHVUNteGRoTGIz?=
+ =?utf-8?B?dG9hMzBqM1JySjVFeFVWcVlSbFAxdWtrMy9ydHMwTnVVUG03M3o5ZmpwZW4r?=
+ =?utf-8?B?OEVScS9PR2VsbStsK2tTOXlTVks2Lzd1L1B4REovOUF3dzJrK3pydC9hZFNS?=
+ =?utf-8?B?c0ZVQ2VKOVoxVHF0WS9XTjFMM0dudFR0eFBETzNYY3FLRzZPN3VFRU9zTnF4?=
+ =?utf-8?B?aXY5bDZYOU94dUkxY2J5WVZCMTdFYXMySTlxdVNFSjZUOE9qcXhYR3k2bVZw?=
+ =?utf-8?B?eEdZSGw1WjVjSXZtTUtDV3JHZ0pxWXhLczQ4WTNuLzFkVWkxeUxqcFFIYjRB?=
+ =?utf-8?B?Z1U3aHpVcW01aHROcnN2VHR4MkJnWXhoNit4dGdYQjdwdi9hSnhwNFAxRnZh?=
+ =?utf-8?B?KzhMUVE3cUxtWEg1RTQzamZLRzEwUmVVN3I0aHVyTUJYNmFNSDlHejBEVXpD?=
+ =?utf-8?B?VzNGZ01Od0owWkJOVUdZU0IzcHMwOWt3V09jQzN5MU84WFRvanJrbGcvQStp?=
+ =?utf-8?B?a0gra216V2xMMHh6VWwyemlac283d0ZOenB6bGJjQkZtZTdrMlNZaVJhOFFZ?=
+ =?utf-8?B?Ynl6THFRTGxtTmNGUWw1emdNMENXYVVKZ2dqSkFibjVVRmRRcVd6Qy9NSy85?=
+ =?utf-8?B?czVqd3hRV1FLSFc1VzI4b2hJOEVqcEdkQmRyYXZvbGxPMG93TW5pS3BhWTAw?=
+ =?utf-8?B?cnhEa1h5UERhc2h3TWVkczV1WFlYL2sxYVl6cWN1dGF5VXRWcTdxMm5hKzVm?=
+ =?utf-8?B?RTJyL1lYcVdEUUhXL2o2VkhwYzFqNVc1N0RNR3RpcjJMU3VIcExQam9oVnFr?=
+ =?utf-8?B?em02emZJVXZwQ0ZwZnBRQkRGeVRYc01xK01YSEM2UDdqVHVzeEJVRG1oOS9y?=
+ =?utf-8?B?Vlg1YTdBSm4xTWV6ZUZsSjF1WDJlQ2UrRXVzMWQzMDlLdkNGbnhNWFp4R3l2?=
+ =?utf-8?B?Q2lNZGtaeitWNW5ML29vVWZmTWxBQnpRQWwrM2liTUdvS3lKOFY5SUtISnJa?=
+ =?utf-8?Q?5cTqn3iARgYWbBsEU/hIJfDOn?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25bf153e-08ef-47d6-3230-08dbd9869339
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 20:27:02.3205
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6qEbQKdxJXOGJFxHRHgm1v3nxp4paV+oPB0Wbg70tmymwGh9b++UTbgWCxbMEcY2DGRQ57dHS+GK1PvwoE1WHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7133
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/28/23 13:13, Dan Scally wrote:
-> Hi Avichal
+On 10/30/23 01:36, Nikunj A Dadhania wrote:
+> Add support for Secure TSC in SNP enabled guests. Secure TSC allows
+> guest to securely use RDTSC/RDTSCP instructions as the parameters
+> being used cannot be changed by hypervisor once the guest is launched.
 > 
-> On 27/10/2023 21:19, Avichal Rakesh wrote:
->> Currently, the uvc gadget driver allocates all uvc_requests as one array
->> and deallocates them all when the video stream stops. This includes
->> de-allocating all the usb_requests associated with those uvc_requests.
->> This can lead to use-after-free issues if any of those de-allocated
->> usb_requests were still owned by the usb controller.
->>
->> This patch is 1 of 2 patches addressing the use-after-free issue.
->> Instead of bulk allocating all uvc_requests as an array, this patch
->> allocates uvc_requests one at a time, which should allows for similar
->> granularity when deallocating the uvc_requests. This patch has no
->> functional changes other than allocating each uvc_request separately,
->> and similarly freeing each of them separately.
->>
->> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
->> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
-> 
-> 
-> Sorry - I was unclear in my response to the first patch on v8. I meant my R-b to apply to the first patch only rather than to all of them. For this one I understand now the use of the conditional in uvc_video_free_request(), so that point is fine. I agree with Greg that the BUG_ON() shouldn't stand though.
+> During the boot-up of the secondary cpus, SecureTSC enabled guests
+> need to query TSC info from AMD Security Processor. This communication
+> channel is encrypted between the AMD Security Processor and the guest,
+> the hypervisor is just the conduit to deliver the guest messages to
+> the AMD Security Processor. Each message is protected with an
+> AEAD (AES-256 GCM). Use minimal AES GCM library to encrypt/decrypt SNP
+> Guest messages to communicate with the PSP.
 
-Ah, didn't realize BUG_ON is discouraged. Removed BUG_ON. 
-It was supposed to be a defensive bit of code anyway, 
-so removing the check entirely. If the state is 
-inconsistent, we'd see other errors, so the BUG_ON 
-wasn't providing value anyway.
-
-Also removed your Reviewed-by, my apologies.
+Add to this commit message that you're using the enc_init hook to perform 
+some Secure TSC initialization and why you have to do that.
 
 > 
->> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Signed-off-by: Avichal Rakesh <arakesh@google.com>
->> ---
->> v1 -> v2: Rebased to ToT
->> v2 -> v3: Fix email threading goof-up
->> v3 -> v4: Address review comments & re-rebase to ToT
->> v4 -> v5: Address more review comments. Add Reviewed-by & Tested-by.
->> v5 -> v6: No change
->> v6 -> v7: No change
->> v7 -> v8: No change. Getting back in review queue
->> v8 -> v9: Address review comments.
->>
->>   drivers/usb/gadget/function/uvc.h       |  3 +-
->>   drivers/usb/gadget/function/uvc_video.c | 89 ++++++++++++++-----------
->>   2 files changed, 52 insertions(+), 40 deletions(-)
->>
->> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
->> index 989bc6b4e93d..993694da0bbc 100644
->> --- a/drivers/usb/gadget/function/uvc.h
->> +++ b/drivers/usb/gadget/function/uvc.h
->> @@ -81,6 +81,7 @@ struct uvc_request {
->>       struct sg_table sgt;
->>       u8 header[UVCG_REQUEST_HEADER_LEN];
->>       struct uvc_buffer *last_buf;
->> +    struct list_head list;
->>   };
->>
->>   struct uvc_video {
->> @@ -102,7 +103,7 @@ struct uvc_video {
->>
->>       /* Requests */
->>       unsigned int req_size;
->> -    struct uvc_request *ureq;
->> +    struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
->>       struct list_head req_free;
->>       spinlock_t req_lock;
->>
->> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
->> index c334802ac0a4..f8f9209fee50 100644
->> --- a/drivers/usb/gadget/function/uvc_video.c
->> +++ b/drivers/usb/gadget/function/uvc_video.c
->> @@ -227,6 +227,24 @@ uvc_video_encode_isoc(struct usb_request *req, struct uvc_video *video,
->>    * Request handling
->>    */
->>
->> +static void
->> +uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
->> +{
->> +    sg_free_table(&ureq->sgt);
->> +    if (ureq->req && ep) {
->> +        usb_ep_free_request(ep, ureq->req);
->> +        ureq->req = NULL;
->> +    }
->> +
->> +    kfree(ureq->req_buffer);
->> +    ureq->req_buffer = NULL;
->> +
->> +    if (!list_empty(&ureq->list))
->> +        list_del_init(&ureq->list);
->> +
->> +    kfree(ureq);
->> +}
->> +
->>   static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_request *req)
->>   {
->>       int ret;
->> @@ -293,27 +311,12 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
->>   static int
->>   uvc_video_free_requests(struct uvc_video *video)
->>   {
->> -    unsigned int i;
->> -
->> -    if (video->ureq) {
->> -        for (i = 0; i < video->uvc_num_requests; ++i) {
->> -            sg_free_table(&video->ureq[i].sgt);
->> +    struct uvc_request *ureq, *temp;
->>
->> -            if (video->ureq[i].req) {
->> -                usb_ep_free_request(video->ep, video->ureq[i].req);
->> -                video->ureq[i].req = NULL;
->> -            }
->> -
->> -            if (video->ureq[i].req_buffer) {
->> -                kfree(video->ureq[i].req_buffer);
->> -                video->ureq[i].req_buffer = NULL;
->> -            }
->> -        }
->> -
->> -        kfree(video->ureq);
->> -        video->ureq = NULL;
->> -    }
->> +    list_for_each_entry_safe(ureq, temp, &video->ureqs, list)
->> +        uvc_video_free_request(ureq, video->ep);
->>
->> +    INIT_LIST_HEAD(&video->ureqs);
->>       INIT_LIST_HEAD(&video->req_free);
->>       video->req_size = 0;
->>       return 0;
->> @@ -322,39 +325,45 @@ uvc_video_free_requests(struct uvc_video *video)
->>   static int
->>   uvc_video_alloc_requests(struct uvc_video *video)
->>   {
->> +    struct uvc_request *ureq;
->>       unsigned int req_size;
->>       unsigned int i;
->>       int ret = -ENOMEM;
->>
->>       BUG_ON(video->req_size);
->> +    BUG_ON(!list_empty(&video->ureqs));
->>
->>       req_size = video->ep->maxpacket
->>            * max_t(unsigned int, video->ep->maxburst, 1)
->>            * (video->ep->mult);
->>
->> -    video->ureq = kcalloc(video->uvc_num_requests, sizeof(struct uvc_request), GFP_KERNEL);
->> -    if (video->ureq == NULL)
->> -        return -ENOMEM;
->> +    for (i = 0; i < video->uvc_num_requests; i++) {
->> +        ureq = kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
->> +        if (ureq == NULL)
->> +            goto error;
->> +
->> +        INIT_LIST_HEAD(&ureq->list);
->> +
->> +        list_add_tail(&ureq->list, &video->ureqs);
->>
->> -    for (i = 0; i < video->uvc_num_requests; ++i) {
->> -        video->ureq[i].req_buffer = kmalloc(req_size, GFP_KERNEL);
->> -        if (video->ureq[i].req_buffer == NULL)
->> +        ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
->> +        if (ureq->req_buffer == NULL)
->>               goto error;
->>
->> -        video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
->> -        if (video->ureq[i].req == NULL)
->> +        ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
->> +        if (ureq->req == NULL)
->>               goto error;
->>
->> -        video->ureq[i].req->buf = video->ureq[i].req_buffer;
->> -        video->ureq[i].req->length = 0;
->> -        video->ureq[i].req->complete = uvc_video_complete;
->> -        video->ureq[i].req->context = &video->ureq[i];
->> -        video->ureq[i].video = video;
->> -        video->ureq[i].last_buf = NULL;
->> +        ureq->req->buf = ureq->req_buffer;
->> +        ureq->req->length = 0;
->> +        ureq->req->complete = uvc_video_complete;
->> +        ureq->req->context = ureq;
->> +        ureq->video = video;
->> +        ureq->last_buf = NULL;
->>
->> -        list_add_tail(&video->ureq[i].req->list, &video->req_free);
->> +        list_add_tail(&ureq->req->list, &video->req_free);
->>           /* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
->> -        sg_alloc_table(&video->ureq[i].sgt,
->> +        sg_alloc_table(&ureq->sgt,
->>                      DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
->>                           PAGE_SIZE) + 2, GFP_KERNEL);
->>       }
->> @@ -489,8 +498,8 @@ static void uvcg_video_pump(struct work_struct *work)
->>    */
->>   int uvcg_video_enable(struct uvc_video *video, int enable)
->>   {
->> -    unsigned int i;
->>       int ret;
->> +    struct uvc_request *ureq;
->>
->>       if (video->ep == NULL) {
->>           uvcg_info(&video->uvc->func,
->> @@ -502,9 +511,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
->>           cancel_work_sync(&video->pump);
->>           uvcg_queue_cancel(&video->queue, 0);
->>
->> -        for (i = 0; i < video->uvc_num_requests; ++i)
->> -            if (video->ureq && video->ureq[i].req)
->> -                usb_ep_dequeue(video->ep, video->ureq[i].req);
->> +        list_for_each_entry(ureq, &video->ureqs, list) {
->> +            if (ureq->req)
->> +                usb_ep_dequeue(video->ep, ureq->req);
->> +        }
->>
->>           uvc_video_free_requests(video);
->>           uvcg_queue_enable(&video->queue, 0);
->> @@ -536,6 +546,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
->>    */
->>   int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
->>   {
->> +    INIT_LIST_HEAD(&video->ureqs);
->>       INIT_LIST_HEAD(&video->req_free);
->>       spin_lock_init(&video->req_lock);
->>       INIT_WORK(&video->pump, uvcg_video_pump);
->> -- 
->> 2.42.0.820.g83a721a137-goog
+> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+> ---
+>   arch/x86/coco/core.c             |  3 ++
+>   arch/x86/include/asm/sev-guest.h | 18 +++++++
+>   arch/x86/include/asm/sev.h       |  2 +
+>   arch/x86/include/asm/svm.h       |  6 ++-
+>   arch/x86/kernel/sev.c            | 82 ++++++++++++++++++++++++++++++++
+>   arch/x86/mm/mem_encrypt_amd.c    |  6 +++
+>   include/linux/cc_platform.h      |  8 ++++
+>   7 files changed, 123 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+> index eeec9986570e..5d5d4d03c543 100644
+> --- a/arch/x86/coco/core.c
+> +++ b/arch/x86/coco/core.c
+> @@ -89,6 +89,9 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
+>   	case CC_ATTR_GUEST_SEV_SNP:
+>   		return sev_status & MSR_AMD64_SEV_SNP_ENABLED;
+>   
+> +	case CC_ATTR_GUEST_SECURE_TSC:
+> +		return sev_status & MSR_AMD64_SNP_SECURE_TSC;
+> +
+>   	default:
+>   		return false;
+>   	}
+> diff --git a/arch/x86/include/asm/sev-guest.h b/arch/x86/include/asm/sev-guest.h
+> index e6f94208173d..58739173eba9 100644
+> --- a/arch/x86/include/asm/sev-guest.h
+> +++ b/arch/x86/include/asm/sev-guest.h
+> @@ -39,6 +39,8 @@ enum msg_type {
+>   	SNP_MSG_ABSORB_RSP,
+>   	SNP_MSG_VMRK_REQ,
+>   	SNP_MSG_VMRK_RSP,
+> +	SNP_MSG_TSC_INFO_REQ = 17,
+> +	SNP_MSG_TSC_INFO_RSP,
+>   
+>   	SNP_MSG_TYPE_MAX
+>   };
+> @@ -111,6 +113,22 @@ struct snp_guest_req {
+>   	u8 msg_type;
+>   };
+>   
+> +struct snp_tsc_info_req {
+> +#define SNP_TSC_INFO_REQ_SZ 128
+
+Please move this to before the struct definition.
+
+> +	/* Must be zero filled */
+> +	u8 rsvd[SNP_TSC_INFO_REQ_SZ];
+> +} __packed;
+> +
+> +struct snp_tsc_info_resp {
+> +	/* Status of TSC_INFO message */
+> +	u32 status;
+> +	u32 rsvd1;
+> +	u64 tsc_scale;
+> +	u64 tsc_offset;
+> +	u32 tsc_factor;
+> +	u8 rsvd2[100];
+> +} __packed;
+> +
+>   int snp_setup_psp_messaging(struct snp_guest_dev *snp_dev);
+>   int snp_send_guest_request(struct snp_guest_dev *dev, struct snp_guest_req *req,
+>   			   struct snp_guest_request_ioctl *rio);
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index 783150458864..038a5a15d937 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -200,6 +200,7 @@ void __init __noreturn snp_abort(void);
+>   void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+>   u64 snp_get_unsupported_features(u64 status);
+>   u64 sev_get_status(void);
+> +void __init snp_secure_tsc_prepare(void);
+>   #else
+>   static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+>   static inline void sev_es_ist_exit(void) { }
+> @@ -223,6 +224,7 @@ static inline void snp_abort(void) { }
+>   static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+>   static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+>   static inline u64 sev_get_status(void) { return 0; }
+> +static inline void __init snp_secure_tsc_prepare(void) { }
+>   #endif
+>   
+>   #endif
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index 3ac0ffc4f3e2..ee35c0488f56 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -414,7 +414,9 @@ struct sev_es_save_area {
+>   	u8 reserved_0x298[80];
+>   	u32 pkru;
+>   	u32 tsc_aux;
+> -	u8 reserved_0x2f0[24];
+> +	u64 tsc_scale;
+> +	u64 tsc_offset;
+> +	u8 reserved_0x300[8];
+>   	u64 rcx;
+>   	u64 rdx;
+>   	u64 rbx;
+> @@ -546,7 +548,7 @@ static inline void __unused_size_checks(void)
+>   	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x1c0);
+>   	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x248);
+>   	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x298);
+> -	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x2f0);
+> +	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x300);
+>   	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x320);
+>   	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x380);
+>   	BUILD_BUG_RESERVED_OFFSET(sev_es_save_area, 0x3f0);
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index fb3b1feb1b84..9468809d02c7 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -76,6 +76,10 @@ static u64 sev_hv_features __ro_after_init;
+>   /* Secrets page physical address from the CC blob */
+>   static u64 secrets_pa __ro_after_init;
+>   
+> +/* Secure TSC values read using TSC_INFO SNP Guest request */
+> +static u64 guest_tsc_scale __ro_after_init;
+> +static u64 guest_tsc_offset __ro_after_init;
+
+s/guest_/snp_/
+
+> +
+>   /* #VC handler runtime per-CPU data */
+>   struct sev_es_runtime_data {
+>   	struct ghcb ghcb_page;
+> @@ -1393,6 +1397,78 @@ bool snp_assign_vmpck(struct snp_guest_dev *dev, unsigned int vmpck_id)
+>   }
+>   EXPORT_SYMBOL_GPL(snp_assign_vmpck);
+>   
+> +static struct snp_guest_dev tsc_snp_dev __initdata;
+> +
+> +static int __init snp_get_tsc_info(void)
+> +{
+> +	static u8 buf[SNP_TSC_INFO_REQ_SZ + AUTHTAG_LEN];
+> +	struct snp_guest_request_ioctl rio;
+> +	struct snp_tsc_info_resp tsc_resp;
+> +	struct snp_tsc_info_req tsc_req;
+> +	struct snp_guest_req req;
+> +	int rc, resp_len;
+> +
+> +	/*
+> +	 * The intermediate response buffer is used while decrypting the
+> +	 * response payload. Make sure that it has enough space to cover the
+> +	 * authtag.
+> +	 */
+> +	resp_len = sizeof(tsc_resp) + AUTHTAG_LEN;
+> +	if (sizeof(buf) < resp_len)
+> +		return -EINVAL;
+> +
+> +	memset(&tsc_req, 0, sizeof(tsc_req));
+> +	memset(&req, 0, sizeof(req));
+> +	memset(&rio, 0, sizeof(rio));
+> +	memset(buf, 0, sizeof(buf));
+> +
+> +	if (!snp_assign_vmpck(&tsc_snp_dev, 0))
+> +		return -EINVAL;
+> +
+> +	/* Initialize the PSP channel to send snp messages */
+> +	if (snp_setup_psp_messaging(&tsc_snp_dev))
+> +		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SNP_UNSUPPORTED);
+
+This should just return the non-zero return code from 
+snp_setup_psp_messaging(), no?
+
+	rc = snp_setup_psp_messaging(&tsc_snp_dev);
+	if (rc)
+		return rc;
+
+> +
+> +	req.msg_version = MSG_HDR_VER;
+> +	req.msg_type = SNP_MSG_TSC_INFO_REQ;
+> +	req.vmpck_id = tsc_snp_dev.vmpck_id;
+> +	req.req_buf = &tsc_req;
+> +	req.req_sz = sizeof(tsc_req);
+> +	req.resp_buf = buf;
+> +	req.resp_sz = resp_len;
+> +	req.exit_code = SVM_VMGEXIT_GUEST_REQUEST;
+> +	rc = snp_send_guest_request(&tsc_snp_dev, &req, &rio);
+
+Aren't you supposed to hold a mutex before calling this since it will 
+eventually call the message sequence number functions?
+
+> +	if (rc)
+> +		goto err_req;
+> +
+> +	memcpy(&tsc_resp, buf, sizeof(tsc_resp));
+> +	pr_debug("%s: Valid response status %x scale %llx offset %llx factor %x\n",
+> +		 __func__, tsc_resp.status, tsc_resp.tsc_scale, tsc_resp.tsc_offset,
+> +		 tsc_resp.tsc_factor);
+> +
+> +	guest_tsc_scale = tsc_resp.tsc_scale;
+> +	guest_tsc_offset = tsc_resp.tsc_offset;
+> +
+> +err_req:
+> +	/* The response buffer contains the sensitive data, explicitly clear it. */
+> +	memzero_explicit(buf, sizeof(buf));
+> +	memzero_explicit(&tsc_resp, sizeof(tsc_resp));
+> +	memzero_explicit(&req, sizeof(req));
+> +
+> +	return rc;
+> +}
+> +
+> +void __init snp_secure_tsc_prepare(void)
+> +{
+> +	if (!cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
+> +		return;
+> +
+> +	if (snp_get_tsc_info())
+> +		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SNP_UNSUPPORTED);
+
+How about using SEV_TERM_SET_LINUX and a new GHCB_TERM_SECURE_TSC_INFO.
+
+> +
+> +	pr_debug("SecureTSC enabled\n");
+> +}
+> +
+>   static int wakeup_cpu_via_vmgexit(int apic_id, unsigned long start_ip)
+>   {
+>   	struct sev_es_save_area *cur_vmsa, *vmsa;
+> @@ -1493,6 +1569,12 @@ static int wakeup_cpu_via_vmgexit(int apic_id, unsigned long start_ip)
+>   	vmsa->vmpl		= 0;
+>   	vmsa->sev_features	= sev_status >> 2;
+>   
+> +	/* Setting Secure TSC parameters */
+> +	if (cc_platform_has(CC_ATTR_GUEST_SECURE_TSC)) {
+> +		vmsa->tsc_scale = guest_tsc_scale;
+> +		vmsa->tsc_offset = guest_tsc_offset;
+> +	}
+> +
+>   	/* Switch the page over to a VMSA page now that it is initialized */
+>   	ret = snp_set_vmsa(vmsa, true);
+>   	if (ret) {
+> diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
+> index 6faea41e99b6..9935fc506e99 100644
+> --- a/arch/x86/mm/mem_encrypt_amd.c
+> +++ b/arch/x86/mm/mem_encrypt_amd.c
+> @@ -215,6 +215,11 @@ void __init sme_map_bootdata(char *real_mode_data)
+>   	__sme_early_map_unmap_mem(__va(cmdline_paddr), COMMAND_LINE_SIZE, true);
+>   }
+>   
+> +void __init amd_enc_init(void)
+> +{
+> +	snp_secure_tsc_prepare();
+> +}
+> +
+>   void __init sev_setup_arch(void)
+>   {
+>   	phys_addr_t total_mem = memblock_phys_mem_size();
+> @@ -502,6 +507,7 @@ void __init sme_early_init(void)
+>   	x86_platform.guest.enc_status_change_finish  = amd_enc_status_change_finish;
+>   	x86_platform.guest.enc_tlb_flush_required    = amd_enc_tlb_flush_required;
+>   	x86_platform.guest.enc_cache_flush_required  = amd_enc_cache_flush_required;
+> +	x86_platform.guest.enc_init                  = amd_enc_init;
+>   
+>   	/*
+>   	 * AMD-SEV-ES intercepts the RDMSR to read the X2APIC ID in the
+> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+> index cb0d6cd1c12f..e081ca4d5da2 100644
+> --- a/include/linux/cc_platform.h
+> +++ b/include/linux/cc_platform.h
+> @@ -90,6 +90,14 @@ enum cc_attr {
+>   	 * Examples include TDX Guest.
+>   	 */
+>   	CC_ATTR_HOTPLUG_DISABLED,
+> +
+> +	/**
+> +	 * @CC_ATTR_GUEST_SECURE_TSC: Secure TSC is active.
+> +	 *
+> +	 * The platform/OS is running as a guest/virtual machine and actively
+> +	 * using AMD SEV-SNP Secure TSC feature.
+
+I think TDX also has a secure TSC like feature, so can this be generic?
+
+Thanks,
+Tom
+
+> +	 */
+> +	CC_ATTR_GUEST_SECURE_TSC,
+>   };
+>   
+>   #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
