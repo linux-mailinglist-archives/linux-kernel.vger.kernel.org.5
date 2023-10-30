@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C848A7DBD9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6713F7DBDA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbjJ3QT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        id S233630AbjJ3QUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3QTZ (ORCPT
+        with ESMTP id S229514AbjJ3QUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:19:25 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2484183
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:19:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9A8D91F7AB;
-        Mon, 30 Oct 2023 16:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698682761; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=65hZX46Ldjh7QmsBFkrp85EMDRFAD6ANd/SR2JZsnB8=;
-        b=YYItWmNlj7SP9sHM3ZodJJP8W9ZQJv0Za/vMl5JwLF4poelmVIwNVrvse1+kGH+cBJWyPD
-        jE53ki2zlLkK0CT/tTMMvBUyXSr63b41coyw4Mf4Vcn31W+tfn3o9KvzycsY4IA+K37pqT
-        gICuF+4mjGlcq6XR2gTnmrLiW/sL+Y8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698682761;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=65hZX46Ldjh7QmsBFkrp85EMDRFAD6ANd/SR2JZsnB8=;
-        b=vSXenXUTDOsD9EA2QUBG8rlM9M52i+HkCUmmdEgXFGSZc6Y3QevVZZ+OOC9pic17IVUWW0
-        pPdccO8IP3okpWBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 63DF613A8C;
-        Mon, 30 Oct 2023 16:19:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LSuqF4nXP2V5CQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 30 Oct 2023 16:19:21 +0000
-Message-ID: <04cbf4cd-3f62-9068-b4fd-c90158f2f116@suse.cz>
-Date:   Mon, 30 Oct 2023 17:19:21 +0100
+        Mon, 30 Oct 2023 12:20:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EDC83
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:20:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D07FFC433CA;
+        Mon, 30 Oct 2023 16:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698682799;
+        bh=8CB+A7ObhubnYvuahBzqn4eJLvBHVOjnBhZVrb8dFnk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=akFbJv95dTuqKRsQGo+Ea3m0Vhr422EcQxSOn0ZcR255YMvsmBVPDO9mdcUiyZxsA
+         q6aaKFs0gGobVTTRtFt2Z5nUxgrGi++AQf5Fv1UbPKcnrM9Z888+oscuK0I+Ghj6+s
+         eqUqEEJD+TyoM1gNB0J70dhFEOhOL5c+TJj048QxK/4+o89rHAnIQYEPiqBQkDB+K0
+         r9o0ulTJd2EQi7rSlSzEJ9cQDeb9Yn61wDeVCUhQpw63vR26nFwRmeRfAQ5rPsdeUo
+         MNwnkWi2rjaZRQsxjctavnfwmXzXDtEJjTZT1STHFY5GyLSCKZbGNya+ko9tcJooyk
+         VVMWWEQGSRwqw==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507bd19eac8so6745416e87.0;
+        Mon, 30 Oct 2023 09:19:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwSIONLziGJ8FCmfVYtwNw5OO947YWWoXEuQ7OYahZQqm/T8Unj
+        GFZXylCOxsdCP5B52LZ0wuiBwbINXpEKyPWSYg==
+X-Google-Smtp-Source: AGHT+IGhPodCnfPRw3kjgKtqbysRQzHuB1pJlVdyRGdREeej24r6SiIpuQ7qVUxVicmLsS83yHmtCdlKXyWAJYJCfUw=
+X-Received: by 2002:a05:6512:3b97:b0:507:9777:a34a with SMTP id
+ g23-20020a0565123b9700b005079777a34amr10517948lfv.39.1698682798032; Mon, 30
+ Oct 2023 09:19:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v3 0/7] slub: Delay freezing of CPU partial slabs
-Content-Language: en-US
-To:     Chengming Zhou <chengming.zhou@linux.dev>,
-        Christoph Lameter <cl@linux.com>
-Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
- <d5e40e42-ad02-e53d-c38f-09a4fdf1be88@linux.com>
- <1199315b-63ce-4be4-8cde-b8b2fd29f91a@linux.dev>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <1199315b-63ce-4be4-8cde-b8b2fd29f91a@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231026093029.3122573-1-kris.chaplin@amd.com>
+ <20231026093029.3122573-2-kris.chaplin@amd.com> <20231030154015.GA1141490-robh@kernel.org>
+ <df37f8db-a8c7-4a99-8828-3cb123afed1d@amd.com>
+In-Reply-To: <df37f8db-a8c7-4a99-8828-3cb123afed1d@amd.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 30 Oct 2023 11:19:45 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+SMY+C3=e=zbdrP_Ekj3FkRs7QQyg2pqmjrcz_0AvmBQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+SMY+C3=e=zbdrP_Ekj3FkRs7QQyg2pqmjrcz_0AvmBQ@mail.gmail.com>
+Subject: Re: [RESEND v2 1/2] dt-bindings: w1: Add YAML DT schema for AMD AXI
+ w1 host and MAINTAINERS entry
+To:     Kris Chaplin <kris.chaplin@amd.com>
+Cc:     thomas.delev@amd.com, michal.simek@amd.com,
+        krzysztof.kozlowski@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/23 04:36, Chengming Zhou wrote:
->> 
->> 
->> After this patch the PG_workingset indicates the state of being on the partial lists.
->> 
->> What does "frozen slab" then mean? The slab is being allocated from? Is that information useful or can we drop the frozen flag?
-> 
-> Right, frozen slab is the cpu slab, which is being allocated from by the cpu that froze it.
-> 
-> IMHO, the "frozen" bit is useful because:
-> 
-> 1. PG_workingset is only useful on partial slab, which indicates the slab is on the node
->    partial list, so we can manipulate its list in the __slab_free() path.
-> 
-> 2. But for full slab (slab->freelist == NULL), PG_workingset is not much useful, we don't
->    safely know whether it's used as the cpu slab or not just from this flag. So __slab_free()
->    still rely on the "frozen" bit to know it.
+On Mon, Oct 30, 2023 at 10:48=E2=80=AFAM Kris Chaplin <kris.chaplin@amd.com=
+> wrote:
+>
+> Hello Rob,
+>
+> On 30/10/2023 15:40, Rob Herring wrote:
+>
+> Is there a device side implementation? I can't really imagine that
+> 1-wire would ever be implemented as firmware on the device side given
+> its limited nature. So adding 'host' doesn't make this any more
+> specific.
+>
+> There are slave drivers as well as master, although these do not have a d=
+evice tree binding.
 
-Well, we could extend the meaning of PG_workingset to mean "not a cpu slab
-or pecpu partial slab" i.e. both on node partial list and full. However it
-would increase the number of cases where __slab_free() has to lock the
-list_lock and check the PG_working set. "slab->freelist == NULL" might
-happen often exactly because the freelist became cpu freelist.
+My question is whether there is slave/device IP for implementing the
+device side in software? The slave drivers in the kernel are for
+handling those devices, not a slave side controller interface.
 
-> 3. And the maintaining of "frozen" has no extra cost now, since it's changed together with "freelist"
->    and other counter using cmpxchg, we already have the cmpxchg when start to use a slab as the cpu slab.
+For comparison, we have SPI slave in the kernel which is for
+implementing the device side in software (running Linux or another
+OS). There is no such thing in the kernel for 1-wire and I would doubt
+there would ever be a software implementation. Could you, yes, but
+given the limited nature of 1-wire why would you?
 
-And together with this point, I don't see a reason to drop the frozen bit.
-It's still useful for cpu slabs. It just wasn't the best possible solution
-for percpu partial slabs.
+>
+> The IP device from AMD is called "axi_1wire_host", and so we are hoping t=
+o stick with this binding if appropriate as it relates to the IP name.
 
-> Maybe I missed something, I don't know how to drop the frozen flag.
+Okay, I suppose that is good enough reason.
 
-Should be possible, but not worth it IMHO.
+However, the versioning comments in your first v2 have not been
+addressed. I believe the conclusion was to mention the IP has a
+version register. And Conor's R-by tag was not added.
 
->> 
->> Update the definition?
->> 
-> 
-> Ok, will add a cleanup patch to update.
-> 
-> Thanks!
-
+Rob
