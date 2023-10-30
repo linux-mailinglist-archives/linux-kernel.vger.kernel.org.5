@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A2E7DBADB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF60E7DBADD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbjJ3NdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        id S233495AbjJ3NeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 09:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233499AbjJ3NdS (ORCPT
+        with ESMTP id S233430AbjJ3NeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:33:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A7AF9;
-        Mon, 30 Oct 2023 06:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=clnWS5S2l82Uc/OUwdJCZ2x+yq3BrnA/RwiazfTz46c=; b=f82SbE5WJfSrrMk6FgJN5X+gH+
-        Gh6p509Joxcb9ORuMDHbRKqy2KG8/HbXxb/kQCykhu9oynlrcA1btSmcc7BefR15WoA089/azdk5Y
-        jVhQ+qzrN7fxI67xmvC4pcG3kCx4jYmbmkWx80nVz3+GYkU/RIj0vdn2qnjScVjwZBY8eLczbsWcn
-        JDcgBkAR9xDaTa3c7hewLtC9QY3R+BzVfENIopHpcb4xyPXbOecw5ZNTq1LEB9dN6BmYTbdyrTRkI
-        kp/QmL8enm18eMIY44PlPJYwNKTFHpWQC9h7ycQkxFrUMh0uarBJ/Nl98CCZ4TFlQls8uXKuuXME6
-        vqf99kHA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qxSO9-003Q1x-20;
-        Mon, 30 Oct 2023 13:33:05 +0000
-Date:   Mon, 30 Oct 2023 06:33:05 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "NK, JESHWANTHKUMAR" <jeshwanthkumar.nk@amd.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, thomas.lendacky@amd.com,
-        john.allen@amd.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jens.wiklander@linaro.org,
-        sumit.garg@linaro.org, jarkko.nikula@linux.intel.com,
-        mario.limonciello@amd.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Mythri.Pandeshwarakrishna@amd.com, Devaraj.Rangasamy@amd.com,
-        Rijo-john.Thomas@amd.com, nimesh.easow@amd.com
-Subject: Re: [PATCH 1/3] crypto: ccp - Add function to allocate and free
- memory using DMA APIs
-Message-ID: <ZT+wkcITIz0ThWU7@infradead.org>
-References: <20231025065700.1556152-1-JESHWANTHKUMAR.NK@amd.com>
- <20231025065700.1556152-2-JESHWANTHKUMAR.NK@amd.com>
- <ZTtJdU5a/P4kg/Ss@infradead.org>
- <94059f5c-10dd-4d75-a69c-76b21ff49546@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94059f5c-10dd-4d75-a69c-76b21ff49546@amd.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 09:34:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C2EA2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:34:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 256A7C433C7;
+        Mon, 30 Oct 2023 13:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698672844;
+        bh=Myt5og+pg1HfyOP6hyyy1jAtd0jLpMjg1qLJ4J0X1Po=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sjfNx8oLyx2JrW2DnCneYandzUUtyZRzqaTmpv9pbmZcNlgYd1bvxuvschwuQuLlf
+         Fdj2nCWVby7p3jROxBVk4D1zwlgzNLEJOeOdiTBvoSiyvtShYoe7d0jb2tt43KIHqx
+         N9NfM0k1dM4veomxdRyuWbv+juIr23BDW7V+wvdmXG/T4ds06fr+7SvMuZXvOaLh2q
+         yZ0YA5WiOsto+xZIGXhxRI/fLcDIg4+1Z4cn+24qbxVccl9kHZ8D54RLjqDKL/gxZ0
+         Q/1j4LzpgBryU6QRi/ZqqMJyvhyBRN1ma8aSnj4epNqg+HHrHvUZT1VUbVKU9NEAeV
+         pe2VxZmof/2kA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regmap updates for v6.7
+Date:   Mon, 30 Oct 2023 13:33:54 +0000
+Message-Id: <20231030133404.256A7C433C7@smtp.kernel.org>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 07:05:17PM +0530, NK, JESHWANTHKUMAR wrote:
-> Can you please elaborate a bit more?
+The following changes since commit c6df843348d6b71ea986266c12831cb60c2cf325:
 
-Becasue the DMA API is a blackbox.  You can pass the dma_addr_t to
-hardware, and you can use the kernel virtual address.  That it can
-sometimes be implemented using the IMMU API is an implementation
-detail.  Similarly you can only feeds iovas generated by the IOMMU
-API into the IOMMU API, not any random other scalar value, which
-is what you can get from the DMA API.
+  regmap: fix NULL deref on lookup (2023-10-09 13:13:53 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-v6.7
+
+for you to fetch changes up to 6bbebcc11a69aef269eb2a33212f76992a4cfb1a:
+
+  regmap: Merge up fix for window/paging issue (2023-10-30 13:05:15 +0000)
+
+----------------------------------------------------------------
+regmap: Updates for v6.7
+
+The main change here is a fix for an issue where we were letting the
+selector for windowed register ranges get out of sync with the hardware
+during a cache sync plus associated KUnit tests.  This was reported just
+at the end of the release cycle and only in -next for a day prior to the
+merge window so it seemed better to hold off for now, the bug had been
+present for more than a decade so wasn't causing too many practical
+problems hopefully.  There's also a fix for error handling in the
+debugfs output from Christope Jaillet.
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      regmap: debugfs: Fix a erroneous check after snprintf()
+
+Mark Brown (4):
+      regmap: kunit: Fix marking of the range window as volatile
+      regmap: kunit: Add test for cache sync interaction with ranges
+      regmap: Ensure range selector registers are updated after cache sync
+      regmap: Merge up fix for window/paging issue
+
+ drivers/base/regmap/regcache.c       | 30 ++++++++++++++++
+ drivers/base/regmap/regmap-debugfs.c |  2 +-
+ drivers/base/regmap/regmap-kunit.c   | 68 ++++++++++++++++++++++++++++++++++--
+ 3 files changed, 96 insertions(+), 4 deletions(-)
