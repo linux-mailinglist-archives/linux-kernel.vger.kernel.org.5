@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCE97DBA96
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A097DBAA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbjJ3NXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S233391AbjJ3NZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 09:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233391AbjJ3NXM (ORCPT
+        with ESMTP id S232760AbjJ3NZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:23:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE55C9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:23:09 -0700 (PDT)
+        Mon, 30 Oct 2023 09:25:31 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DB98E;
+        Mon, 30 Oct 2023 06:25:29 -0700 (PDT)
 Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A6ED16607389;
-        Mon, 30 Oct 2023 13:23:07 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D8CD4660297B;
+        Mon, 30 Oct 2023 13:25:27 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698672188;
-        bh=Rs2Tz2duxz0x7ijP2hn/7R66LzyseqbsHizTc5CA0MU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dANsBif0cystNlFAFmjXOVWt1FQRW4An0MoKDZ1S/uaiNZ4O5spk4rfppG/x8r8ZC
-         w4tfGGx2x5WQi4a+9dOnwBqJ1b2Vz3nC6QLcAytkxYiFN6nxgxMZlqByhd1TAeHVs0
-         TrXbu20VSWk/KaHTMNAYBuysmkNRFUpkPj6a2IswsVzE9sWSgYsF/CIwMPaFHT7XiO
-         PHYI50bSQtQEaOdnDSjjMsZiLxMYF2sbwCtOuax1v1kTNMZiaPjuomZuID/Sj9NCbH
-         SOoEfMCgmQpGtcAoSHiU8NBzpozL3UJfLmsjFNM5o3m39LeCnYmWJ15/Hh21ERC1BX
-         7iKtkLTr0vk+g==
+        s=mail; t=1698672328;
+        bh=4eqeiWumk4iSfUH1LnoCuerSUI7m7wgrGgGcR0jKt20=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D6EovCptxO0ZxALbuNpnoq/13GJgRkqwpxgY1tqF99+c3Qnj7nIkTOP+QIiv7pD0t
+         4fDwG08rEhEJR6D71qtxH+M6nmNJvAtM/E22zOWd8lw4ZZz+fXgjOqee58z3woKI2n
+         UbQD1ZHF3OS287on70DQp2TfzNBbNAhmmdaM12nCgkNMp4LnayH5XXqxrm5UYd5YSP
+         8KBrgXvkbsWrzNpFEHQKZCGkiuMisVhcIl1T9bnp+PKnFQ47tOXGGN2XUXZc/g+P8l
+         4rNYb3/WCXBHkB9MV230pIx0/4ibr29eBHxrKm9Rt4/LPxnr3X9qqzvZ7Oz8t0JbFT
+         eHh9awnUnUCtQ==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-To:     boris.brezillon@collabora.com
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        wenst@chromium.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com
-Subject: [PATCH 4/4] drm/panfrost: Set regulators on/off during system sleep on MediaTek SoCs
-Date:   Mon, 30 Oct 2023 14:22:57 +0100
-Message-ID: <20231030132257.85379-5-angelogioacchino.delregno@collabora.com>
+To:     matthias.bgg@gmail.com
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, wenst@chromium.org,
+        angelogioacchino.delregno@collabora.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com
+Subject: [PATCH 0/2] MT8195 Cherry: Assign MFG vregs for power saving
+Date:   Mon, 30 Oct 2023 14:25:21 +0100
+Message-ID: <20231030132523.86123-1-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231030132257.85379-1-angelogioacchino.delregno@collabora.com>
-References: <20231030132257.85379-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -59,58 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All of the MediaTek SoCs supported by Panfrost can completely cut power
-to the GPU during full system sleep without any user-noticeable delay
-in the resume operation, as shown by measurements taken on multiple
-MediaTek SoCs.
+This series assigns the right regulators to MFG0 and MFG1, respectively
+VGPU (GPU Core) and VSRAM_OTHERS (GPU SRAM), and removes the property
+regulator-always-on from both.
 
-As an example, for MT8195 - a "before" with only runtime PM operations
-(so, without turning on/off regulators), and an "after" executing full
-system sleep .resume() handler (.resume() -> .runtime_resume() -> done):
+This allows to save power both during runtime suspend and during system
+sleep; specifically because:
+ 1. The GPU SRAM regulator is switched off during runtime suspend
+ 2. The GPU Core regulator is switched off during system sleep
 
-Average Panfrost-only system sleep resume time, before: 114186ns
-Average Panfrost-only system sleep resume time, after:  189684ns
+Of course, in order for those power saving actions to actually take
+place, it is required to also have the code in [1].
+Anyway, even without series [1], this will not introduce any unstability
+as the Vgpu regulator will simply not ever get turned off.
 
-Keep in mind that this additional ~0,075ms delay happens only in resume
-from a full system suspend, and not in runtime PM operations, hence it
-is acceptable.
+[1]: https://lore.kernel.org/r/20231030132257.85379-1-angelogioacchino.delregno@collabora.com
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/panfrost/panfrost_drv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+AngeloGioacchino Del Regno (2):
+  arm64: dts: mediatek: mt8195-cherry: Add MFG0 domain supply
+  arm64: dts: mediatek: mt8195-cherry: Assign sram supply to MFG1 pd
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 82f3c5fe9c58..f63382d9ab04 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -734,7 +734,7 @@ static const struct panfrost_compatible mediatek_mt8183_b_data = {
- 	.supply_names = mediatek_mt8183_b_supplies,
- 	.num_pm_domains = ARRAY_SIZE(mediatek_mt8183_pm_domains),
- 	.pm_domain_names = mediatek_mt8183_pm_domains,
--	.pm_features = BIT(GPU_PM_CLK_DIS),
-+	.pm_features = BIT(GPU_PM_CLK_DIS) | BIT(GPU_PM_VREG_OFF),
- };
- 
- static const char * const mediatek_mt8186_pm_domains[] = { "core0", "core1" };
-@@ -743,7 +743,7 @@ static const struct panfrost_compatible mediatek_mt8186_data = {
- 	.supply_names = mediatek_mt8183_b_supplies,
- 	.num_pm_domains = ARRAY_SIZE(mediatek_mt8186_pm_domains),
- 	.pm_domain_names = mediatek_mt8186_pm_domains,
--	.pm_features = BIT(GPU_PM_CLK_DIS),
-+	.pm_features = BIT(GPU_PM_CLK_DIS) | BIT(GPU_PM_VREG_OFF),
- };
- 
- static const char * const mediatek_mt8192_supplies[] = { "mali", NULL };
-@@ -754,7 +754,7 @@ static const struct panfrost_compatible mediatek_mt8192_data = {
- 	.supply_names = mediatek_mt8192_supplies,
- 	.num_pm_domains = ARRAY_SIZE(mediatek_mt8192_pm_domains),
- 	.pm_domain_names = mediatek_mt8192_pm_domains,
--	.pm_features = BIT(GPU_PM_CLK_DIS),
-+	.pm_features = BIT(GPU_PM_CLK_DIS) | BIT(GPU_PM_VREG_OFF),
- };
- 
- static const struct of_device_id dt_match[] = {
+ arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi | 10 ++++++++--
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi        |  2 +-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
 -- 
 2.42.0
 
