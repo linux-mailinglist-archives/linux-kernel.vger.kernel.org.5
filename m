@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A92877DBCA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A01A7DBCC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbjJ3PfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S233749AbjJ3PgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjJ3PfL (ORCPT
+        with ESMTP id S233681AbjJ3Pf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:35:11 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7E8ED;
-        Mon, 30 Oct 2023 08:35:07 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UDhSR5013884;
-        Mon, 30 Oct 2023 15:35:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=50xUNk9NC3R7h6Ppg362tAGARI/Vz8BDzF3mSRqY+YA=;
- b=FHYYHzBcHaCrVU+EA3YJMuEy1bXEg5rCMLWJUrNb6n8NmUi+raT1Bs+s6GRU9Mshl637
- 7GgdSL21/PHlSudt7D6H0nOwxcooHtvvz/bQXtn7kkA7F6DPRXydNBmA1m+vUMN7364h
- 4bzb5O35ndrjrwO/EhjJ7CccMiIeJJPAiN0NBESdk0URUxi99cJfuXNm9IzPJg6bAkuz
- eW4EoX5ey7OGEm0b6DAMCzpQnRAmM6eYBaMtnO4ziw2iRaaXndSkhjBDNesqVabNusS6
- 0VDXH9nZM6LNxVFeDceSDhre5Spp0iYk40F0AH9hQKLGgai/DWhHdtqiMSDTcRCnSeEG lw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0tbdk0pf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Oct 2023 15:35:02 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39UE43pU038285;
-        Mon, 30 Oct 2023 15:35:02 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u0rran8yt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Oct 2023 15:35:02 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39UFVkmQ023458;
-        Mon, 30 Oct 2023 15:35:01 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3u0rran8wc-9;
-        Mon, 30 Oct 2023 15:35:01 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] scsi: target: core: Fix one kernel-doc comment
-Date:   Mon, 30 Oct 2023 11:34:53 -0400
-Message-Id: <169868005483.2933713.4749914723765136748.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231017030913.89973-1-yang.lee@linux.alibaba.com>
-References: <20231017030913.89973-1-yang.lee@linux.alibaba.com>
+        Mon, 30 Oct 2023 11:35:58 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5C0B3;
+        Mon, 30 Oct 2023 08:35:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WE1tsrC5nD1he3EQ3Z3HGaPKaykIF9HkdVI/EJRhi6c=; b=LV7D/IWyq2Mw7vTdVg1EkrxxC1
+        fzJ5yRFzlAYj4fcJjzZtnGfpsXsCDVpO/UNR4YqP7qxjUUybZ7nZGyfZdxNL8kBxxQkTNHp25yUtf
+        2KJzm3FlMnAL5p+Qfjj1+ikr/MrjmBoYN+ASKZakexZnFd/Jo54EhdMWhyKesftBsfU5qrKyX8seW
+        2UDWVakMncsXCtbJFuOdiZGI2aEPV89Xh1oXklyVX3NGQmGLi6KaY+dx3jnwOaLBVjTYN0oid1QbQ
+        0DQd3kQw+sLq/tI01uxlHkEV+3NVgkTq8vOAmgPzCLveX2HVgoTtA134mT1CT67pbwFxd0FsFsTiv
+        mF5Xt6Vw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53860)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qxUIh-0001q0-2T;
+        Mon, 30 Oct 2023 15:35:35 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qxUIg-00047C-OV; Mon, 30 Oct 2023 15:35:34 +0000
+Date:   Mon, 30 Oct 2023 15:35:34 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: boot: Support Flat Image Tree
+Message-ID: <ZT/NRvLkvR8uuP5+@shell.armlinux.org.uk>
+References: <20231026072628.4115527-1-sjg@chromium.org>
+ <20231026072628.4115527-4-sjg@chromium.org>
+ <CAK7LNASATGRaS-6QxzqTEq7qNVkZPXOBE8pfRBg=2bQGyy3=yw@mail.gmail.com>
+ <CAFLszThguWT0u0R0EHfpBro0f-pWDwLOGk+5pQZEVhFYNKH8fQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2310300120
-X-Proofpoint-GUID: wC5KtRMVRMzIZO1Ji4f3s9R0HYmB7nKV
-X-Proofpoint-ORIG-GUID: wC5KtRMVRMzIZO1Ji4f3s9R0HYmB7nKV
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLszThguWT0u0R0EHfpBro0f-pWDwLOGk+5pQZEVhFYNKH8fQ@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 11:09:13 +0800, Yang Li wrote:
-
-> Fix one kernel-doc comment to silence the warnings:
-> drivers/target/target_core_transport.c:1930: warning: Excess function parameter 'cmd' description in 'target_submit'
-> drivers/target/target_core_transport.c:1930: warning: Function parameter or member 'se_cmd' not described in 'target_submit'
+On Sun, Oct 29, 2023 at 05:46:12AM +1300, Simon Glass wrote:
+> Hi Masahiro,
 > 
-> 
+> Sure, but that is a separate issue, isn't it? We already support
+> various boot targets in arm64 but not one that includes the DTs, so
+> far as I can see. The old arm 'uImage' target is pretty out-of-date
+> now.
 
-Applied to 6.7/scsi-queue, thanks!
+Does that mean it can be removed? ;)
 
-[1/1] scsi: target: core: Fix one kernel-doc comment
-      https://git.kernel.org/mkp/scsi/c/96f41cddbc7b
+I've NAK'd FIT support on 32-bit Arm in the past, and I remain of the
+opinion that boot loader specific packaging of the kernel should not
+be in the kernel but should be external to it - even more so given the
+multi-platform nature of 32-bit Arm kernels.
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
