@@ -2,161 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A32F7DC175
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5543A7DC17A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjJ3VAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        id S231544AbjJ3VBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJ3VAM (ORCPT
+        with ESMTP id S231283AbjJ3VA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:00:12 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571C7DD;
-        Mon, 30 Oct 2023 14:00:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PILj6hCUWUIL3b2NoRyIz79vwVcvPuiOL55xfPJ65ZjjledXQUeqakt1XqdwSkO8yQZddncPtuxW8eUdCDg0BovPJrLZN7nuLjalAxDNIOsKsPrQ1BSBF2Q6OQkhm6RtEDUoxGfRtVaBKYpskYYqg+GKpLbpX+X7OYNpVQr0fDpk4OJ98CFMoffPiqKIJ3dC8n2zerefaMkp/8nMxVOJSJORSrDwy8DioaHgN++Ic58CQLSufag+9DVkKDGv++XlK/CzIIRZ4dT5XHRMVxdORqgDEc0D9kPVuxZQTHBX2pGz6o3gsf8e+4JmST7Xy1CYYyvi15QXudZG+6zptblqJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6XaneCu9562uVHNPF2RVF3dc+sQJE6EXoTrW8175XIQ=;
- b=a9eb9yHlgBuCMJHssSYEMu80fdwuVmJgt6Qwmzd73nQa0v+MU6a0DjBZTCKze4h6ByM7ePH1ZQfcuix8pkry2gBa2weFN2jtycthbi3klMcyikUicUtwEDnBC2ycgEsnj7gM1aexSQFXtEY+L85UBY1jmZrTuNrPbgT990V6xplVhcBeQH/K02ITVgotUf+/cKy9AkgXP4VcSbQNq1+1gMrFio0J8y0+V2DQkcaClTGYBGvTGIk6oC5c8uIHaVBMR+B0EmrvXjO1D9yv+ApbJ9NVA4hynBfdb4loAG6rEAxdvTu1mFit7CVqfdXtWjol+UJnwwcVZGXg5GaYIfwlDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6XaneCu9562uVHNPF2RVF3dc+sQJE6EXoTrW8175XIQ=;
- b=JuxqoGKbtN4O64fQyg72zWochm6xmBP0rNQA2PeejesrKHQ3ETBMUHB8oA6KdXOJTGfk/ZVw7uFQoGp2ct2f7iVeZsKI3ylDRdO/+nTZIzOoUNyqytX0p1nq95HrtTPbr212ZLNAqz9k5MLXpen32Glq/OQzIQd83Vd0ToIlOLw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by SA1PR12MB8162.namprd12.prod.outlook.com (2603:10b6:806:33a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27; Mon, 30 Oct
- 2023 21:00:06 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::e16e:d7f1:94ad:3021]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::e16e:d7f1:94ad:3021%7]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
- 21:00:06 +0000
-Message-ID: <cfc9f863-dc07-7c23-7621-d2dc115651bd@amd.com>
-Date:   Mon, 30 Oct 2023 16:00:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 12/14] x86/kvmclock: Skip kvmclock when Secure TSC is
- available
-Content-Language: en-US
-To:     Nikunj A Dadhania <nikunj@amd.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org
-Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        dave.hansen@linux.intel.com, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
-References: <20231030063652.68675-1-nikunj@amd.com>
- <20231030063652.68675-13-nikunj@amd.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20231030063652.68675-13-nikunj@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0077.namprd13.prod.outlook.com
- (2603:10b6:806:23::22) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+        Mon, 30 Oct 2023 17:00:58 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05CFF7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:00:56 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1eb7a8d9610so675673fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698699656; x=1699304456; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=P8m8EAbGJbUxe5B9fBXpOTBojQ9A3raNvAoswxRtY9Q=;
+        b=aoyiCgUcQN8c/5sVQTRxOhI2mf0uK+Sie1DmvB78iBN2wo96pVIfFeljIjLNfg/tPW
+         5d1VsshSJ/SBYzNEIuZr2DY4iK3pAp21GQcBLdpzbbBKjYAS47O0r3GEZV89bCSrOm8x
+         d2mg+KpxGkj42Q8Zj/Ob5+JwKYhGuCOIcOak5mHQx1WiN/rVNUOiN5mN0dQxrkKgA1Cf
+         IVKbkg2jofArrOZQaG9AXLfc1TwmzSCGKrAIaNwwiugwWP3qAynXDZenwmJr0xtwyNzT
+         5FC77wIe2OKqV/W9ZVsb983qx260W12487Yp0lYgMki4A8HYr4fLA1CSMz3tmfB3Ebnz
+         wITg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698699656; x=1699304456;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P8m8EAbGJbUxe5B9fBXpOTBojQ9A3raNvAoswxRtY9Q=;
+        b=GPbu3kfSwWuhxLy7T24SsBc93VD2szKaK1jWb/Yy6iMzUCx4dZV6wIt82vE2V5Gvlg
+         S9TdwysRHvkOiEXHXl5n9oPVEwdkfNAvOk2msSD4x/PZebed/XWSqkxjOG/R1tim6Dgt
+         TVIHBX555GhgNFrOtSpsNcIr7T6+ELnfdpFcGHdLLRyYOpAfL41nmroHwWXw/vEhV5Av
+         IO7kUdWmc3BrL7wU/j/1u4X1rnr5oAySTGQeYZbhqViUKdu8OBrMwLWJZ83vcogrgZxF
+         FaKWzT6VOL6gJtD2473SXK29SEPHbayB5C7X1IrHWb1x2fCY9ngQpMqNEXU8miFYqThE
+         90Tw==
+X-Gm-Message-State: AOJu0YxQq+ee6cevJcvjp8clyAyJwkuEVvNIB+qrkE3Rwo4rd4Z1Lfwj
+        eY9m/5TtOuvXMnvbbi/PfIAEYkQKmXyCikEDAxE=
+X-Google-Smtp-Source: AGHT+IGik9l8JnL2h7xGT4i9fKk/5AFYblPH/eXoagbBRtKIpX5R7mNmQGNMicsortoCX8tngKlkxWNCti8kswgw1U0=
+X-Received: by 2002:a05:6870:9c87:b0:1e9:8a7e:5893 with SMTP id
+ pq7-20020a0568709c8700b001e98a7e5893mr11458603oab.5.1698699655902; Mon, 30
+ Oct 2023 14:00:55 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|SA1PR12MB8162:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35a7f016-64c0-4208-bcbc-08dbd98b31fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HRZzgC/B6KMoy13vDq8kuuljqbg/ZNWKWm4lnGuJzPgx5abpoItVvITLbrxSlOXkcLkAyL3gSk2Z5wke5OHtq7/Wx8DhDvDUQuqrd+qFHNN8AHqfmVdQ2+4fxEVhYGkiikGkBEG+jIuJp7PTQel+IrIIfT5QopHcmAjCqWDjTQSUhqYJSfUy/vrR2QJtNmVF5ynBjvtM3yuTVyz5XdXquTbnkOGJRZgqC63ir0wxon3x5X/zMmmw1VDcyvD7xFCKle4K+5g+Nv5i/ZVdE/Bow0+UU2ErBIMNrI3XzMPXackdPD5/0n3rfYaoeUQmJ5TaChlQJiZZmHK0ZhP9W3yXMvGmLj1VZnLqoR4w55wsWC8mC1tgssT5TeHX/BzZ+j2LsK18E+yqRS90W70Qo6nRFks77DiXbz8x3/nf58qLe4oC1IroC1VLQv/Koqy3/GSMfdByku7ycYTGyPfAXt3JBMcwDSKCEIjP7pk9Kqjl8Td+4ULaBfLQ+yPIwhh2x1/46D+7Xv1bknjXLu2fyKSLplllflJXKvnZeRiFqPL1gyLsLdn9p5AW0X+t+ldDkWQAV3bP7dpElEvOJCbCQI5SInOzvi1aD9LIX4j+yk7+PlfVf13Afb32Y+nQxDJYD5RzafSAFIy+aL4OKENPDUNdHQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(136003)(346002)(396003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(31686004)(6512007)(2616005)(26005)(38100700002)(31696002)(36756003)(86362001)(83380400001)(2906002)(7416002)(6486002)(478600001)(53546011)(6506007)(6666004)(66476007)(8936002)(4326008)(8676002)(316002)(966005)(66556008)(5660300002)(41300700001)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WlNIb1UxeEsreUwzRGkvWlUvQmlNbk5LNDhZNjlGenptV3B6SjlsTm5HZXBJ?=
- =?utf-8?B?NVIxRzdkR3U4Q3lRQ1liYXI5Qi9Ya0F4QTkxSzlCc0NoRXAxdTR5QUF4NjdS?=
- =?utf-8?B?dHR5U3FFZ3FCSW9VWGVodUFIQ1M3ZDZDckFRS0pxUWFLdytVVnFVUjNueDJw?=
- =?utf-8?B?QmRCRS84bG5kV3VjOUdYRDVXQXlSRXlyVXl3M3NuaVU4Q2wrMWkzRE9NNGt5?=
- =?utf-8?B?NUdUOUhnbC9Kd0p1dTRZK0VZMXMxM05HUlhkbEhPVEE3RzUxSGh4UDBpOWZs?=
- =?utf-8?B?dGhldUVZQTlhM0pGRlBqMk84NUtQNVk0WkRhemJjVzg1d2tMeDZzRTA3Ujdz?=
- =?utf-8?B?U1ZLZDN6SXU3NThNb25LcGMrSVZXdWZRVkpGK0V6NzExYXVEUEtocElERWZw?=
- =?utf-8?B?ZURZUnA3cEF6RVNRcWFLWU5MU0NEUDNBb2JiWU1PWWFUL0tINkZwdkNOWHZx?=
- =?utf-8?B?VElNenJ4N3o3ZGJ3THg2OCt6dWxSZUM4NjB6T3NxS0tlcUJJcXNNajR2Yzht?=
- =?utf-8?B?L25zZHgwR1JtbHllQ0ovNjZObmRzSk9iRDBhZm1hSkZKY2ZLWWlSUjVWNnVF?=
- =?utf-8?B?NEJSRG1ONXFXZnJMRDJ6SmF6NEJDK1kvdHhXbHFuSUx1a3hVMlM5RTVhTVZ6?=
- =?utf-8?B?NmRIeEZGeHdvcXQrS2o3VXNxckhVZzNsQnNlZnJ2US9STCtoZ00vQjJJUkhm?=
- =?utf-8?B?Q3d6cTdhS0habTdsY2xOdmZSUVNkbzJ4b2J2VE9HS3ZtMVpONmt0ejMwM1lY?=
- =?utf-8?B?bjRoL2VnbnVmSzVrVzI0SnBOOCtXWmt2TlNQTWJSYVFpQWVWY2lMVjhFZkRv?=
- =?utf-8?B?QXpPUTZZMW9XSDBvaW1vdlQ2Wjl1ZTMwY1hxKzJnMUtHeTdvRkhzNXFQM2FY?=
- =?utf-8?B?RFdYbnVRdUhBT2JlYXA1b1hwYkFEUmZkVzdMSzZhbFBnczB3RDZLMUhFSGVn?=
- =?utf-8?B?eXpHSHUvTlBlTXBZK3R6MHYzemUzZVBsM2FQUHM1WUVhdXErVVVUVStDT21W?=
- =?utf-8?B?Z3ByYnZIT3Q2ZEFwaWEvZktjUFJvR2trbWs5c0x6NlRVNTVMWU8xdVI2d1M3?=
- =?utf-8?B?NmFQUnVrQnVtWExYaEtjcmhnT0tRRW5xNXVhcnprOTFGT21uUkFiR3JJRk15?=
- =?utf-8?B?R3ZEdXl6dHZnLzQyRncxMFYrQTJZT1Frb1ZnSjArWEJ1Vm9meURpQ0F6OXRN?=
- =?utf-8?B?THlSYytRU2dTb1plTmtWY0N2SDUxclRDN1labVduMnVtK0dOU2FiNmY2dlY5?=
- =?utf-8?B?c2xkb1Rxd0Q2YVBQb08wUlBCNDg5RG5KTDBzVjBDSEs4a2YxYjRmRWhnajd5?=
- =?utf-8?B?MmIzZWtiQXlJUmIzQzlla29UZ0JuV1MydHFMdkFLSjVCNzgvZEpIQzk4SThE?=
- =?utf-8?B?UXNFcDRkbjBicitpSWhzVmtTamMzNWxKSEJyMEcrcVZuK1BDd3AwQ1ZuWE5C?=
- =?utf-8?B?YzlhR2FiYzZVY0txZmpzbzJheUpPKytLbyt4WXJ5RGFqbzFIVGJBdGxBWHlk?=
- =?utf-8?B?R2Yzb3dTQzN6VFY1elEzQUhCY3Nkbm1qVlREajlnRnVIQlRDdGNrVTY3RU5u?=
- =?utf-8?B?S29VY3labE5DVHd6Ty9ZUkFNSW55N1JWcHlZTkpiZmhlbkFKeURVcDh4NzhL?=
- =?utf-8?B?MU1tR3pDMkFieDcvbnJEVW5qTC9mR2wvMm90WEw1WHhMZHNpVFRCT3NDVVlJ?=
- =?utf-8?B?b2tJdUxZNWtGMVFPenZ4OE9VdHVYN3V4NEVBYTY5NnJCU3NmcnJwM0JSOGZ2?=
- =?utf-8?B?WWJ5bFg4S3g5WStHaUpZQU8zdDExcFErQ05TLzZ4TEQ3dmRQMDl0L09SYUps?=
- =?utf-8?B?aUU1TG4vaG1xMDRYcXdNVjdjYzgvZWxSNlQ3NzhycUVvMm9NQ1UzWUREbEc5?=
- =?utf-8?B?b2w1RnlSMGU5RzNmcWNsWUJaMTYvcHFEM1gveDJEVW5US2VBMTFlTWQyeWc5?=
- =?utf-8?B?L2J2RFVuQSs5bzZUd2dPdTJjbDliUEl6K0FhZ2VjdXRraHVCT21DaWpUZkVx?=
- =?utf-8?B?N3JlRm5lZ0hnTk9Sem43T05GRko5WHN5YldVakhHZ2QydWRsL21veXB0TFp2?=
- =?utf-8?B?T2JnMnBtODBvRHlXcnl1Ym8rVTlRdnNJV3V2ZFpiQjEzWEpvb0tPVnhuU2dP?=
- =?utf-8?Q?hpLdZAMCdXPHS75G1+/HMxK0T?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35a7f016-64c0-4208-bcbc-08dbd98b31fe
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 21:00:06.7058
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XoD310rKuNfLigbj0yJEyyyBM9jlY6uF1R8HGc7bDEvLu56JGxxGPlmM84HbRreMyRyerGGBYh+P67ylJIUZKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8162
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   olivia taylor <onetapdatalist@gmail.com>
+Date:   Mon, 30 Oct 2023 16:00:41 -0500
+Message-ID: <CACxKAZ=6nN=DzLgijYc6AWTbY1tVZ-W8WrnMiHqiKWhh=8dk_A@mail.gmail.com>
+Subject: RE: AWS re:Invent Attendees List- 2023
+To:     olivia taylor <onetapdatalist@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FILL_THIS_FORM,
+        FILL_THIS_FORM_LONG,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 01:36, Nikunj A Dadhania wrote:
-> For AMD SNP guests having Secure TSC enabled, skip using the kvmclock.
-> The guest kernel will fallback and use Secure TSC based clocksource.
-> 
-> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-> ---
->   arch/x86/kernel/kvmclock.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index fb8f52149be9..779e7311fa6f 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -288,7 +288,7 @@ void __init kvmclock_init(void)
->   {
->   	u8 flags;
->   
-> -	if (!kvm_para_available() || !kvmclock)
-> +	if (!kvm_para_available() || !kvmclock || cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
+Hi,
 
-And is setting X86_FEATURE_TSC_RELIABLE, as Dave Hansen suggests, enough
-to prevent usage of kvmclock?
+Would you be interested in acquiring the AWS re:Invent Attendees Data
+List for 2023?
 
-There was a discussion here:
-  https://lore.kernel.org/lkml/20230808162320.27297-1-kirill.shutemov@linux.intel.com/
+The list includes: company or organization name, first name, last
+name, full name, contact job title, verified email address, website
+URL, mailing address, phone number, industry, and many more.
 
-Thanks,
-Tom
+Number of Contacts: 50,487
+Cost: $1,989
 
->   		return;
->   
->   	if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE2)) {
+Interested? Email me back; I would love to provide more information on the list.
+
+Kind Regards,
+Olivia
+Marketing Coordinator
