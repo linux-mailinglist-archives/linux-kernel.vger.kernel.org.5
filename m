@@ -2,175 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596B57DB832
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A3F7DB837
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbjJ3Kfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
+        id S232696AbjJ3Kgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbjJ3Kff (ORCPT
+        with ESMTP id S232523AbjJ3Kgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:35:35 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9297B4;
-        Mon, 30 Oct 2023 03:35:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698662130; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=akDGj953efFQEJfaAaz3wJPWsZqsl8dwjZHGf/QuEY6dAdSLtBA8JXUDXIO4/lsTGq
-    RuJ65IyGjEewgBgucWwV/1bSbfCcIMsumuDXTiJPTYzH5TE5IDXlWVWuI1tvrKEofaP0
-    e8YVZNmq+OZeaJx2tleu0BUgwT9fNDE4AX9iFVV6CEHY1Bo8lpW8rvRCylXVhT9OMAVf
-    6cLOxRXR6Hc6R3sKxjVld8SwyYeEpAlxwP6QR2w6GFXQ9E2wW/gwGcIsB0882RqPY1f7
-    dPAQvQBnqHo2kXpj8HPpkuYCcCSSaZs9pRd75A3UaaDfn77E0PEh6Jvw+3oWIGNz8F3r
-    nONg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698662130;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=C4AOi4HruYGw3hZLrT2mTKcCjB4YO62MIePJfTz8dds=;
-    b=tmIv/pfzXtbYehKUaGKdXc4V0AHypbPsF8JYFUw52XWKgQi3m70Rxx7tt0USV6h4ch
-    ZNB+fB9BWi3cdu+1jVcCH8GC+aB+2GBCR5WRBMQCm57YyVT5NPdKnJCiAs+m8MSBjYAN
-    yyvmeT/dv4iQbbYOxeRodoTbMywSovsvXiFI3bpOXatXOZ8uJeyHmvPDzmUjVzb0+exW
-    LwbIHyh/VOBQZ8+gJGoxijP4BuuCM/HaTrItUlgsCWhv4YKmM+jYR2SXZO2fy7ZcCPOk
-    DDtguFJxT7oiC5QWqDUo59X73SpxuGaY2omHuo2Xc6CkcuA8ZWmIcavwpEV4pCWEPwBD
-    wDkg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698662130;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=C4AOi4HruYGw3hZLrT2mTKcCjB4YO62MIePJfTz8dds=;
-    b=W1+Bx6ohvt5grgmuq91SISNICpxt6EpRDg90q4HrlzmfoN6LTFPWOOMjA2pHTWXkY9
-    ya81fMapmB3JiEShzxktNkBAtnTNWJYoCbToMpG68gFPEWW727/vLt9EYOZt+g/sRp9s
-    BeBLdU0EPtdpvJVhUT+c2O9YWBSUv5lzh3/Hkm/zj3nJytsPj59p/YBaAZzYccHmTcsW
-    r2sG04fXRu72h0ekdKsiIwitijyDlwYEcXigBbbIO1LX9oRLRaslF6KvrpsjBEOkl31o
-    YbXG+DGcMkXapFWvHEakA4avQjSDuXi/yIkVaudzehxvTLmlvKP0xJ/+CHwXumoO5lxT
-    I/CA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698662130;
-    s=strato-dkim-0003; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=C4AOi4HruYGw3hZLrT2mTKcCjB4YO62MIePJfTz8dds=;
-    b=SYVIZLhY6r8eGwhWoshmHTlqz1V8OliewM+S5cGopHPqNQUMWi7l1ge2qW1ffkUqgA
-    jKlp2mAnEGd5bdzLrlBQ==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9yWsdNeEDyFXR1lg3JD8="
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 49.9.1 AUTH)
-    with ESMTPSA id 6b1cadz9UAZTTj9
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 30 Oct 2023 11:35:29 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, simo@redhat.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] crypto: drbg - update FIPS CTR self-checks to aes256
-Date:   Mon, 30 Oct 2023 11:35:28 +0100
-Message-ID: <1906073.RjUZ0rb3Up@tauon.chronox.de>
-In-Reply-To: <CADWks+Z0b8GPSg37=TQK_5LqVejC_CzbOxn_TUsvkQ45TOyuYw@mail.gmail.com>
-References: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
- <6413919.eMfrkXpHmx@tauon.chronox.de>
- <CADWks+Z0b8GPSg37=TQK_5LqVejC_CzbOxn_TUsvkQ45TOyuYw@mail.gmail.com>
+        Mon, 30 Oct 2023 06:36:48 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8825F9D
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:36:44 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40839807e82so24880155e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698662203; x=1699267003; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qe+6f2RNQqzEAAJWEhcjfCOgBjDBSpwsYGSepbX/BrQ=;
+        b=LbUT7sxKJngs/jGwPD9xsKW9smvnd6HIEYb9vxRtnf9DhtiicQOZvB9PimWTLOrpcK
+         F0oMirzEm3aqs/C7D5YXIc4qAbk1Mhpj9Dqlvuos7rOIQ7dSm8X/OcQpXVbRXhPDCMEE
+         HHo8bg3/Vl8K3f1Ns7f/xK+rWTL/fOw7XyjMJICU9l6AS4irGQjz/qxZzbxJ22SAnjy8
+         akCASFXjjx+eKwpONWQfueDW6/OAAKfuW6Ffh1IxaVJVI5OlSgU91x+Kib/UtlWkH1sy
+         B+U4JP7esxa0QcC4ztTNw34vWEvK0+4j9Toa09Fm3tijhnn9841WvyyvVOKzyB4jwTTP
+         8quw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698662203; x=1699267003;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qe+6f2RNQqzEAAJWEhcjfCOgBjDBSpwsYGSepbX/BrQ=;
+        b=iQu1nm4+rf9kbTpvk6f5rD/7fTgvHhxc7nm1QdthxKrA9rsWh2WpSBZKZ8GhHcFbYP
+         pMOCbbq8llsiu6eo8A1QF1SlSU8dDfq4qHjfcWAvopcqfviDpOhnWokubM0gyMeP8FFl
+         zyRqjbk2TUvQCR5R+SBeFOi8YpTa1zqTJaqYOs3FGVH61CraeB+Ic2ugyGNlscfG1RJ6
+         pjBUD/8KWhZASh1OCA2wjDf8MzTdU5jfpOz0+j9oaxGGTZiHw5Dp4BDj5Un1MyyupQDO
+         2CT0peDlHQzBYPhQyxc3MToLmwUxyt6pgmdUUvcJyIknRY+AGS4ugMcUq2qMuOAPXw6X
+         H6uQ==
+X-Gm-Message-State: AOJu0YyUFSRrLvsVKpedT/jtMPzzOp809BHyuqpLc+jusgMNGdZgw5sT
+        wq5ugfOa+HSWDn6puV6RT8/g0g==
+X-Google-Smtp-Source: AGHT+IEUBN2wlGCusHu79enfFQGZ1xXOJx57ZCWzP6fbJ1Q4MD/uv7gXLh62Ks81UpHClZFgYo1NMQ==
+X-Received: by 2002:a05:600c:3b9a:b0:401:b92f:eec5 with SMTP id n26-20020a05600c3b9a00b00401b92feec5mr13979002wms.9.1698662202849;
+        Mon, 30 Oct 2023 03:36:42 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id r5-20020a05600c458500b004060f0a0fd5sm8783209wmo.13.2023.10.30.03.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 03:36:42 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v2 0/8] drm/msm: Introduce display support for SM8650
+Date:   Mon, 30 Oct 2023 11:36:22 +0100
+Message-Id: <20231030-topic-sm8650-upstream-mdss-v2-0-43f1887c82b8@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACaHP2UC/33Nyw6CMBCF4VchXTumLSkXV76HYdGWESYR2nSQa
+ AjvbiWuXf5n8Z1NMCZCFpdiEwlXYgpzDn0qhB/tPCBQn1toqUslVQVLiOSBp6YyEp6Rl4R2gql
+ nBiz71qBsfe0akYGY8E6vA791uUfiJaT38bWq7/pjtfnHrgokOKdV6xpfW6OuD5ptCueQBtHt+
+ /4BB3mpXcUAAAA=
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2731;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=fZztST0Tz52prZISRUQq/mJrmvbzIZBrY3BqrBlopSs=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP4c2EA4xjcpeqPPieVb2X/c8s09EMY/1qKLqgq/X
+ sGzboCaJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT+HNgAKCRB33NvayMhJ0TlkD/
+ 9gXQqPK/9qLaLVBSQLxX3rLwEc9QE6uuLjc6rmn+KCegWWpNrrsww18EyianHJYXiDYBwyYC3KmBYr
+ Z7Fd1SDV8nL9vP/LQebm6SfQVD8LgihMqPmDGto2csG+cv3HaLOI/HFANOlwZuYtK5rC3yC2heEuA0
+ WQ0/ZIfpDqbXxN7YqMw9FhvtWCEeY0bY507d3F4uRVuMCsnXZGCEayk2npNOmvPhI0OQzQiF4w723F
+ twuV4hA487XNKVKrQSbbdjcI/GV+hL53LG4h4SmQdkDzRGeq0+yJ2eagwmfxfLAE//Y4aY6d5gOi5P
+ OFsdaBnSPxZZX2DBRLjkJsCNSyR3I3A4/uYs7ZfHMnBDM7PwqU746GJgjJMgyKdZ1H2sBe7XiQxTc1
+ n1bkAK+6oGaYVCbGRUCixgKi7v2jdlZuCGI3FkyQLBC2AUj3UDu1yjrB0nUsid3jHNnAaKuRzA0v/F
+ jR9rJsud6Ki7lPaBp2B4Iolv3v5L7eakgtORdg51LyUYI9Pl6GIhHi7vHLF5HWcnVjvcJpRB8wKyn+
+ g8ZZ84nQW7G0IUW4m0XgdCUGe+XXhZudiDbe6325nss0gfHvzql64sokpvkMbBhCYwphDVZpOkhFey
+ 0d0KOxETyjTx140ZMKQW439lAgO+b8qUlIyjFtTYJBPyI1exc2amOPZYRR9w==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 30. Oktober 2023, 11:30:32 CET schrieb Dimitri John Ledkov:
+The SM8650 MDSS is very close from the MDSS 9.0.0 found
+on the SM8550 SoC, with the following difference:
+- DSI PHY 2.8.8, no significant differences
+- DPU 10.0.0:
+  - Enhanced max_linewidth to 8k
+  - PINGPONG_8 & PINGPONG_9
+  - MERGE_3D_4
+  - DSC_4 & DSC_5, DSC_NATIVE_42x on DSC0/1
 
-Hi Dimitri,
+This patchset contains DSI PHY, DSI Controller, DPU & MDSS bindings
+in addition to the driver changes.
 
-> On Mon, 30 Oct 2023 at 12:23, Stephan Mueller <smueller@chronox.de> wrote:
-> > Am Sonntag, 29. Oktober 2023, 21:48:21 CET schrieb Dimitri John Ledkov:
-> > 
-> > Hi Dimitri,
-> > 
-> > > When originally drbg was introduced FIPS self-checks for all types but
-> > > CTR were using the most preferred parameters for each type of
-> > > DRBG. Update CTR self-check to use aes256.
-> > > 
-> > > Fixes: 541af946fe ("crypto: drbg - SP800-90A Deterministic Random Bit
-> > > Generator") Signed-off-by: Dimitri John Ledkov
-> > > <dimitri.ledkov@canonical.com>
-> > > 
-> > > 
-> > > 
-> > > ---
-> > > 
-> > >  crypto/drbg.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/crypto/drbg.c b/crypto/drbg.c
-> > > index 2cce18dcfc..b120e2866b 100644
-> > > --- a/crypto/drbg.c
-> > > +++ b/crypto/drbg.c
-> > > @@ -1478,8 +1478,8 @@ static int drbg_generate(struct drbg_state *drbg,
-> > > 
-> > >                       err = alg_test("drbg_pr_hmac_sha256",
-> > >                       
-> > >                                      "drbg_pr_hmac_sha256", 0, 0);
-> > >               
-> > >               else if (drbg->core->flags & DRBG_CTR)
-> > > 
-> > > -                     err = alg_test("drbg_pr_ctr_aes128",
-> > > -                                    "drbg_pr_ctr_aes128", 0, 0);
-> > > +                     err = alg_test("drbg_pr_ctr_aes256",
-> > > +                                    "drbg_pr_ctr_aes256", 0, 0);
-> > > 
-> > >               else
-> > >               
-> > >                       err = alg_test("drbg_pr_sha256",
-> > >                       
-> > >                                      "drbg_pr_sha256", 0, 0);
-> > > 
-> > > @@ -2017,7 +2017,7 @@ static inline int __init
-> > > drbg_healthcheck_sanity(void) return 0;
-> > > 
-> > >  #ifdef CONFIG_CRYPTO_DRBG_CTR
-> > > 
-> > > -     drbg_convert_tfm_core("drbg_nopr_ctr_aes128", &coreref, &pr);
-> > > +     drbg_convert_tfm_core("drbg_nopr_ctr_aes256", &coreref, &pr);
-> > > 
-> > >  #endif
-> > >  #ifdef CONFIG_CRYPTO_DRBG_HASH
-> > >  
-> > >       drbg_convert_tfm_core("drbg_nopr_sha256", &coreref, &pr);
-> > 
-> > I am not sure again whether this warrants a "Fixes" tag, because the first
-> > modification is in a commented-out code section and the latter again
-> > intends to test the DRBG thresholds and thus just needs "a" DRBG.
-> 
-> Agreed, it is more of a reference. But yes, I don't believe this needs
-> to trigger stable backports - because yes it is like dead code, or
-> fips only code which majority kernels don't do. Maybe I should
-> reference that commit in description only?
+Support for Display Port output is expected for later.
 
-I think this would be good to avoid the need to trigger backports for this 
-"trivial" patch.
+Dependencies: None
 
-Thanks a lot.
-> 
-> > Anyhow:
-> > 
-> > Reviewed-by: Stephan Mueller <smueller@chronox.de>
-> > 
-> > 
-> > Ciao
-> > Stephan
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstream/integ
 
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Changes in v2:
+- Rebased on top of https://patchwork.freedesktop.org/series/119804/ 
+- Enabled SDMA
+- Fixed sm8650_rt_pri_lvl table
+- Collected Reviewed-by tags
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-mdss-v1-0-bb219b8c7a51@linaro.org
 
-Ciao
-Stephan
+---
+Neil Armstrong (8):
+      dt-bindings: display: msm-dsi-phy-7nm: document the SM8650 DSI PHY
+      dt-bindings: display: msm-dsi-controller-main: document the SM8650 DSI Controller
+      dt-bindings: display: msm: document the SM8650 DPU
+      dt-bindings: display: msm: document the SM8650 Mobile Display Subsystem
+      drm/msm/dpu: add support for SM8650 DPU
+      drm/msm: mdss: add support for SM8650
+      drm/msm: dsi: add support for DSI-PHY on SM8650
+      drm/msm: dsi: add support for DSI 2.8.0
 
+ .../bindings/display/msm/dsi-controller-main.yaml  |   2 +
+ .../bindings/display/msm/dsi-phy-7nm.yaml          |   1 +
+ .../bindings/display/msm/qcom,sm8650-dpu.yaml      | 127 ++++++
+ .../bindings/display/msm/qcom,sm8650-mdss.yaml     | 322 +++++++++++++++
+ .../drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h    | 457 +++++++++++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |  26 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h        |   3 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   1 +
+ drivers/gpu/drm/msm/dsi/dsi_cfg.c                  |  17 +
+ drivers/gpu/drm/msm/dsi/dsi_cfg.h                  |   1 +
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy.c              |   2 +
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy.h              |   1 +
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c          |  27 ++
+ drivers/gpu/drm/msm/msm_mdss.c                     |   1 +
+ 15 files changed, 989 insertions(+)
+---
+base-commit: 8c53ca7d71a2d7274b51ec14a0d91b6ede09fd83
+change-id: 20231016-topic-sm8650-upstream-mdss-e3d95e09c7b8
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
