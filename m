@@ -2,172 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FE77DB700
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D2D7DB704
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbjJ3J6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
+        id S232647AbjJ3J6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232730AbjJ3J6Z (ORCPT
+        with ESMTP id S232701AbjJ3J62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:58:25 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16ECFD54
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:58:10 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40790b0a224so31257005e9.0
+        Mon, 30 Oct 2023 05:58:28 -0400
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0AF05D4E
         for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698659888; x=1699264688; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6RvNyX4Fz2m2NCW/vJbWFjQ+QnaBQUxKKhEUorJSJl0=;
-        b=tIqk9XjgzNTQWXw6UpCu4NtGVE22fmRlOtS6gdwu6+Es4L8meM8WSJDI+JDr4mEa6T
-         89RuLsaIbdtAGhmWuvKHcoyvcZWnOnHBBF9L3yWOI/DP3mo+rVUabD+UNBeTezH1XKLX
-         qM1cS8vPzp9iAjmfqqG44qWJW0Xgg7bvoHe1R9fvOwELLKsFgd11gFS1YFOJ7nb4vs2v
-         a3GEd1RAetCOAOC9lrL6NKMkxC2zDaG/zf5pV0TMJJ/rp6QvyNFQEmKKi5h6E/QPy6p3
-         iMZAGBf6LvVFIwsy/hYXyUJPEJk8O1ZHQUQ5fVzkdAv7VzhBDjGsRVASk1Q/9gYdZXXG
-         wkzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698659888; x=1699264688;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6RvNyX4Fz2m2NCW/vJbWFjQ+QnaBQUxKKhEUorJSJl0=;
-        b=KesBR43m3NMl0/FW0wWl13WEkzV1w/pN/zMXz8v4OMz7rsF3rEce903QGAI02uVtyF
-         yLRdGxsNtBBnQXBpnWv+BX8k8yw3v0SCdNteH7X20oECd+V6SvPjmu9qCERam+LrtZeE
-         rJ1s/ZpDla6lb9OlF6kQjyKyGhq3NVz2CaMUTX/B/Pbsic6DK4LkcD2sv36pvfg+YsOR
-         x38jBfdkPo6k/x3uqpekkSSndcuGnsrQGPr94FfVM1oa1aWe415NgZ2wA/Ew4ucuVi6H
-         wbI2cTFcMs3sucRcXdIBTe+pNhaKSYKMP7P2Xz+e1Fr1+WueOSicIl9K8/dE0lIvApSc
-         J1OQ==
-X-Gm-Message-State: AOJu0Yxtpa7HqWl3KdRiBGxi0898XhjT9PqJc9lK5peaO0mtzEajBN0r
-        yK9QM/1LR21C6Mby3G8fETeOLA==
-X-Google-Smtp-Source: AGHT+IHVgnG31BIbXsxf77gF/KZY1dyMRVY6RzNjOREKSujAw8BcdvmiemRkVE543fNMk59etCHgOw==
-X-Received: by 2002:a05:600c:3148:b0:405:1c19:b747 with SMTP id h8-20020a05600c314800b004051c19b747mr7855127wmo.15.1698659888512;
-        Mon, 30 Oct 2023 02:58:08 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id a1-20020a05600c348100b00402ff8d6086sm8703714wmq.18.2023.10.30.02.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 02:58:08 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 30 Oct 2023 10:57:57 +0100
-Subject: [PATCH v2 10/10] clk: qcom: rpmh: add clocks for SM8650
+X-AuditID: a67dfc5b-d85ff70000001748-11-653f7e308b6a
+Date:   Mon, 30 Oct 2023 18:58:03 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Message-ID: <20231030095803.GA81877@system.software.com>
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <20231030072540.38631-3-byungchul@sk.com>
+ <a8337371-50ed-4618-b48e-78b96d18810f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-topic-sm8650-upstream-clocks-v2-10-144333e086a2@linaro.org>
-References: <20231030-topic-sm8650-upstream-clocks-v2-0-144333e086a2@linaro.org>
-In-Reply-To: <20231030-topic-sm8650-upstream-clocks-v2-0-144333e086a2@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Taniya Das <quic_tdas@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2758;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=mzb8eXlPI1Gd54NRJWBblg1H1qJBOOIUS40Byd3Zn1s=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP34jn3vc9RS2jfsrkL6krbML8K6U+FbGSVPDWfK+
- wdClqZCJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT9+IwAKCRB33NvayMhJ0ZsED/
- 0Xc+ffUoMvOuHDJ6QYKHEXmuZrP8PlF4LlJ1KIgf4MXMpMhvNw3zl6ZITXx8wCw7PB5Ug3kcjVcoC4
- JOh6c7fWh4TsYPiNNyAYPr3/LWoSg/nNLSB66HwQtRBOrnHve/1cBp5TqRjUljx2jCptFKRm3XF9Fr
- hmOG4aVPpqNEFoy2KPRvNjDnj9vIBVtSCGcGMFhUapv9cKF4nNXj5BDlV8fzSQb6D0rQEtgf2qoOoQ
- TFewUyXhvBsCfnzGgvj6+i2txf/ippBYpd2E2Gb98j8JYrU527re1dijkoBvBXTx9LjjiZyp0jSg/f
- +p/fTbbxjnQUH4FamO99NYbblvwoD9KVvbtSXMOWZALgTWve/hjqt1C8Bj8hSMHMcJMy3uLs0tsTFM
- JkaBs4H48RMcmwjpXWu2AFyHon2A96NodLVZPsL7BidgGPV4wbRFgQMoUV5MwhaXpFpqUlGJrUrbnp
- eJHb5nyJl/wg7+DYsuj8VSRGlSWVmdUiYH+jOuuTu5YnQuEQ/JfxWoo+huzdH7viN36M1FT8Q58v5G
- 7OJ1DJdDt4HR0FIYPQScXTENxeLmd6yC19DFN4NREg8c/7NCVXvsm+J01W7jwMocQZs3k0X20HdnHC
- xfCG3R++ymj1BYdk/6effKrKUbODJGXrizwkVI1UE7b5wjnaKXBcCPQ+iEhw==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a8337371-50ed-4618-b48e-78b96d18810f@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsXC9ZZnoa5BnX2qwaVfahZz1q9hs/i84R+b
+        xYsN7YwWX9f/YrZ4+qmPxeLyrjlsFvfW/Ge1OL9rLavFjqX7mCwuHVjAZHF910NGi+O9B5gs
+        Nm+aymzx+wdQ3ZwpVhYnZ01mcRDw+N7ax+KxYFOpx+YVWh6L97xk8ti0qpPNY9OnSewe786d
+        Y/c4MeM3i8fOh5Ye804Gerzfd5XNY+svO4/Pm+Q83s1/yxbAF8Vlk5Kak1mWWqRvl8CV8eNm
+        G3PBCd2KH0efMzUwblbsYuTkkBAwkXhyZwkrjL338Ww2EJtFQFXiZMs+ZhCbTUBd4saNn2C2
+        iICGxKa2DUA2FwezwDsmiXk9T1lAEsIC0RKf9r5iB7F5BSwk2n/tYQcpEhKYyiixc+cxFoiE
+        oMTJmU/AbGYBLYkb/14ydTFyANnSEsv/cYCEOQXsJJoefgBbJiqgLHFg23EmkDkSAqvYJWb2
+        XmaHuFRS4uCKGywTGAVmIRk7C8nYWQhjFzAyr2IUyswry03MzDHRy6jMy6zQS87P3cQIjMNl
+        tX+idzB+uhB8iFGAg1GJhzcg3C5ViDWxrLgy9xCjBAezkggvs6NNqhBvSmJlVWpRfnxRaU5q
+        8SFGaQ4WJXFeo2/lKUIC6YklqdmpqQWpRTBZJg5OqQZGO+EdxgKW4r6dfVM7vhc3RTW4Fe53
+        2LZuz1fJhbPOR5/kTWLN/f5n8iPhXY+db/xYnLl3h9TqPKtHIpla6kXebNd9zL4/26VyQ3Tx
+        8u64jLttoRVXsq/MC3dg5uZYlN7gozivof7eZDnLVMEDYsdSCr83iiUYzvG7yP9dvYRzKvck
+        QfbsjC1KLMUZiYZazEXFiQCRJJ3HvwIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsXC5WfdrGtQZ59qMP+WgMWc9WvYLD5v+Mdm
+        8WJDO6PF1/W/mC2efupjsTg89ySrxeVdc9gs7q35z2pxftdaVosdS/cxWVw6sIDJ4vquh4wW
+        x3sPMFls3jSV2eL3D6C6OVOsLE7OmsziIOjxvbWPxWPBplKPzSu0PBbvecnksWlVJ5vHpk+T
+        2D3enTvH7nFixm8Wj50PLT3mnQz0eL/vKpvH4hcfmDy2/rLz+LxJzuPd/LdsAfxRXDYpqTmZ
+        ZalF+nYJXBk/brYxF5zQrfhx9DlTA+NmxS5GTg4JAROJvY9ns4HYLAKqEidb9jGD2GwC6hI3
+        bvwEs0UENCQ2tW0Asrk4mAXeMUnM63nKApIQFoiW+LT3FTuIzStgIdH+aw87SJGQwFRGiZ07
+        j7FAJAQlTs58AmYzC2hJ3Pj3kqmLkQPIlpZY/o8DJMwpYCfR9PAD2DJRAWWJA9uOM01g5J2F
+        pHsWku5ZCN0LGJlXMYpk5pXlJmbmmOoVZ2dU5mVW6CXn525iBEbVsto/E3cwfrnsfohRgINR
+        iYc3INwuVYg1say4MvcQowQHs5IIL7OjTaoQb0piZVVqUX58UWlOavEhRmkOFiVxXq/w1AQh
+        gfTEktTs1NSC1CKYLBMHp1QD4x2997G9K6YlL+e8mHLE781K3ZKwQoED6csPF8V2f+W4/Hme
+        4oonEhGZXxsnBYSbn397MNJm9hrmL3p/9le+FZjXE7jO0m/SUTaP2F4P/ue57P9nsSf+rftQ
+        5P3Qu2zfuQ369qoTpQWm1blUnXGq21m40bNYTzra1S7KJHCJ54Sru6a89fhyQImlOCPRUIu5
+        qDgRAPjNvt2mAgAA
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add RPMH Clocks for the SM8650 platform.
+On Mon, Oct 30, 2023 at 09:00:56AM +0100, David Hildenbrand wrote:
+> On 30.10.23 08:25, Byungchul Park wrote:
+> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
+> > We always face the migration overhead at either promotion or demotion,
+> > while working with tiered memory e.g. CXL memory and found out TLB
+> > shootdown is a quite big one that is needed to get rid of if possible.
+> > 
+> > Fortunately, TLB flush can be defered or even skipped if both source and
+> > destination of folios during migration are kept until all TLB flushes
+> > required will have been done, of course, only if the target PTE entries
+> > have read only permission, more precisely speaking, don't have write
+> > permission. Otherwise, no doubt the folio might get messed up.
+> > 
+> > To achieve that:
+> > 
+> >     1. For the folios that map only to non-writable TLB entries, prevent
+> >        TLB flush at migration by keeping both source and destination
+> >        folios, which will be handled later at a better time.
+> > 
+> >     2. When any non-writable TLB entry changes to writable e.g. through
+> >        fault handler, give up CONFIG_MIGRC mechanism so as to perform
+> >        TLB flush required right away.
+> > 
+> >     3. Temporarily stop migrc from working when the system is in very
+> >        high memory pressure e.g. direct reclaim needed.
+> > 
+> > The measurement result:
+> > 
+> >     Architecture - x86_64
+> >     QEMU - kvm enabled, host cpu
+> >     Numa - 2 nodes (16 CPUs 1GB, no CPUs 8GB)
+> >     Linux Kernel - v6.6-rc5, numa balancing tiering on, demotion enabled
+> >     Benchmark - XSBench -p 50000000 (-p option makes the runtime longer)
+> > 
+> >     run 'perf stat' using events:
+> >        1) itlb.itlb_flush
+> >        2) tlb_flush.dtlb_thread
+> >        3) tlb_flush.stlb_any
+> >        4) dTLB-load-misses
+> >        5) dTLB-store-misses
+> >        6) iTLB-load-misses
+> > 
+> >     run 'cat /proc/vmstat' and pick:
+> >        1) numa_pages_migrated
+> >        2) pgmigrate_success
+> >        3) nr_tlb_remote_flush
+> >        4) nr_tlb_remote_flush_received
+> >        5) nr_tlb_local_flush_all
+> >        6) nr_tlb_local_flush_one
+> > 
+> >     BEFORE - mainline v6.6-rc5
+> >     ------------------------------------------
+> >     $ perf stat -a \
+> > 	   -e itlb.itlb_flush \
+> > 	   -e tlb_flush.dtlb_thread \
+> > 	   -e tlb_flush.stlb_any \
+> > 	   -e dTLB-load-misses \
+> > 	   -e dTLB-store-misses \
+> > 	   -e iTLB-load-misses \
+> > 	   ./XSBench -p 50000000
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >        20953405     itlb.itlb_flush
+> >        114886593    tlb_flush.dtlb_thread
+> >        88267015     tlb_flush.stlb_any
+> >        115304095543 dTLB-load-misses
+> >        163904743    dTLB-store-misses
+> >        608486259	   iTLB-load-misses
+> > 
+> >     556.787113849 seconds time elapsed
+> > 
+> >     $ cat /proc/vmstat
+> > 
+> >     ...
+> >     numa_pages_migrated 3378748
+> >     pgmigrate_success 7720310
+> >     nr_tlb_remote_flush 751464
+> >     nr_tlb_remote_flush_received 10742115
+> >     nr_tlb_local_flush_all 21899
+> >     nr_tlb_local_flush_one 740157
+> >     ...
+> > 
+> >     AFTER - mainline v6.6-rc5 + CONFIG_MIGRC
+> >     ------------------------------------------
+> >     $ perf stat -a \
+> > 	   -e itlb.itlb_flush \
+> > 	   -e tlb_flush.dtlb_thread \
+> > 	   -e tlb_flush.stlb_any \
+> > 	   -e dTLB-load-misses \
+> > 	   -e dTLB-store-misses \
+> > 	   -e iTLB-load-misses \
+> > 	   ./XSBench -p 50000000
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >        4353555      itlb.itlb_flush
+> >        72482780     tlb_flush.dtlb_thread
+> >        68226458     tlb_flush.stlb_any
+> >        114331610808 dTLB-load-misses
+> >        116084771    dTLB-store-misses
+> >        377180518    iTLB-load-misses
+> > 
+> >     552.667718220 seconds time elapsed
+> > 
+> >     $ cat /proc/vmstat
+> > 
+> 
+> So, an improvement of 0.74% ? How stable are the results? Serious question:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/clk/qcom/clk-rpmh.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+I'm getting very stable result.
 
-diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-index 5d853fd43294..bb09170600ec 100644
---- a/drivers/clk/qcom/clk-rpmh.c
-+++ b/drivers/clk/qcom/clk-rpmh.c
-@@ -372,6 +372,8 @@ DEFINE_CLK_RPMH_VRM(clk3, _a1, "clka3", 1);
- DEFINE_CLK_RPMH_VRM(clk4, _a1, "clka4", 1);
- DEFINE_CLK_RPMH_VRM(clk5, _a1, "clka5", 1);
- 
-+DEFINE_CLK_RPMH_VRM(clk4, _a2, "clka4", 2);
-+DEFINE_CLK_RPMH_VRM(clk5, _a2, "clka5", 2);
- DEFINE_CLK_RPMH_VRM(clk6, _a2, "clka6", 2);
- DEFINE_CLK_RPMH_VRM(clk7, _a2, "clka7", 2);
- DEFINE_CLK_RPMH_VRM(clk8, _a2, "clka8", 2);
-@@ -630,6 +632,37 @@ static const struct clk_rpmh_desc clk_rpmh_sm8550 = {
- 	.num_clks = ARRAY_SIZE(sm8550_rpmh_clocks),
- };
- 
-+static struct clk_hw *sm8650_rpmh_clocks[] = {
-+	[RPMH_CXO_CLK]		= &clk_rpmh_bi_tcxo_div2.hw,
-+	[RPMH_CXO_CLK_A]	= &clk_rpmh_bi_tcxo_div2_ao.hw,
-+	[RPMH_LN_BB_CLK1]	= &clk_rpmh_clk6_a2.hw,
-+	[RPMH_LN_BB_CLK1_A]	= &clk_rpmh_clk6_a2_ao.hw,
-+	[RPMH_LN_BB_CLK2]	= &clk_rpmh_clk7_a2.hw,
-+	[RPMH_LN_BB_CLK2_A]	= &clk_rpmh_clk7_a2_ao.hw,
-+	[RPMH_LN_BB_CLK3]	= &clk_rpmh_clk8_a2.hw,
-+	[RPMH_LN_BB_CLK3_A]	= &clk_rpmh_clk8_a2_ao.hw,
-+	[RPMH_RF_CLK1]		= &clk_rpmh_clk1_a1.hw,
-+	[RPMH_RF_CLK1_A]	= &clk_rpmh_clk1_a1_ao.hw,
-+	[RPMH_RF_CLK2]		= &clk_rpmh_clk2_a1.hw,
-+	[RPMH_RF_CLK2_A]	= &clk_rpmh_clk2_a1_ao.hw,
-+	/*
-+	 * The clka3 RPMh resource is missing in cmd-db
-+	 * for current platforms, while the clka3 exists
-+	 * on the PMK8550, the clock is unconnected and
-+	 * unused.
-+	 */
-+	[RPMH_RF_CLK4]		= &clk_rpmh_clk4_a2.hw,
-+	[RPMH_RF_CLK4_A]	= &clk_rpmh_clk4_a2_ao.hw,
-+	[RPMH_RF_CLK5]		= &clk_rpmh_clk5_a2.hw,
-+	[RPMH_RF_CLK5_A]	= &clk_rpmh_clk5_a2_ao.hw,
-+	[RPMH_IPA_CLK]		= &clk_rpmh_ipa.hw,
-+};
-+
-+static const struct clk_rpmh_desc clk_rpmh_sm8650 = {
-+	.clks = sm8650_rpmh_clocks,
-+	.num_clks = ARRAY_SIZE(sm8650_rpmh_clocks),
-+};
-+
- static struct clk_hw *sc7280_rpmh_clocks[] = {
- 	[RPMH_CXO_CLK]      = &clk_rpmh_bi_tcxo_div4.hw,
- 	[RPMH_CXO_CLK_A]    = &clk_rpmh_bi_tcxo_div4_ao.hw,
-@@ -837,6 +870,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
- 	{ .compatible = "qcom,sm8350-rpmh-clk", .data = &clk_rpmh_sm8350},
- 	{ .compatible = "qcom,sm8450-rpmh-clk", .data = &clk_rpmh_sm8450},
- 	{ .compatible = "qcom,sm8550-rpmh-clk", .data = &clk_rpmh_sm8550},
-+	{ .compatible = "qcom,sm8650-rpmh-clk", .data = &clk_rpmh_sm8650},
- 	{ .compatible = "qcom,sc7280-rpmh-clk", .data = &clk_rpmh_sc7280},
- 	{ }
- };
+> worth the churn?
 
--- 
-2.34.1
+Yes, ultimately the time wise improvement should be observed. However,
+I've been focusing on the numbers of TLB flushes and TLB misses because
+better result in terms of total time will be followed depending on the
+test condition. We can see the result if we test with a system that:
+
+   1. has more CPUs that would induce a crazy number of IPIs.
+   2. has slow memories that makes TLB miss overhead bigger.
+   3. runs workloads that is harmful at TLB miss and IPI storm.
+   4. runs workloads that causes heavier numa migrations.
+   5. runs workloads that has a lot of read only permission mappings.
+   6. and so on.
+
+I will share the results once I manage to meet the conditions.
+
+By the way, I should've added IPI reduction because it also has super
+big delta :)
+
+> Or did I get the numbers wrong?
+> 
+> >   #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index 5c02720c53a5..1ca2ac91aa14 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -135,6 +135,9 @@ enum pageflags {
+> >   #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+> >   	PG_arch_2,
+> >   	PG_arch_3,
+> > +#endif
+> > +#ifdef CONFIG_MIGRC
+> > +	PG_migrc,		/* Page has its copy under migrc's control */
+> >   #endif
+> >   	__NR_PAGEFLAGS,
+> > @@ -589,6 +592,10 @@ TESTCLEARFLAG(Young, young, PF_ANY)
+> >   PAGEFLAG(Idle, idle, PF_ANY)
+> >   #endif
+> > +#ifdef CONFIG_MIGRC
+> > +PAGEFLAG(Migrc, migrc, PF_ANY)
+> > +#endif
+> 
+> I assume you know this: new pageflags are frowned upon.
+
+Sorry for that. I really didn't want to add a new headache.
+
+	Byungchul
 
