@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9416A7DBAC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0177DBA18
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjJ3NbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        id S233276AbjJ3Mqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233473AbjJ3NbJ (ORCPT
+        with ESMTP id S229587AbjJ3Mqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:31:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584B9F7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:31:03 -0700 (PDT)
+        Mon, 30 Oct 2023 08:46:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FE2B7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:46:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698672663; x=1730208663;
+  t=1698670009; x=1730206009;
   h=message-id:from:to:cc:date:subject:mime-version:
    content-transfer-encoding;
-  bh=yun/tgZR6iifj/rg24LF8kbSar3c4vPrxDeQj2EAXSM=;
-  b=SBnjaq91eBlqCru2cbK7lKgv6HXiCCO5fypApHX5vj53H5slvpqX8xwz
-   jHk+UnsdVtF/maRq1jul3U0CBblDrXwThNpUkaKgXEWHKA2HcjlkdZfG4
-   CrFfOhPLbBNmlJVe+QW35VVIB5GwqaNlxvNmDxLk0khZjbgbQzKssiSuv
-   jN6fOlU+LUJQ+xYhGUoTbQuRrKvP5KzNBPgnvY8BEqSJNidOLXQExhlAN
-   4l/HAvA/KINrOJSOyLSCRa580b/D3Opetkb9Q4Omh92V7WB9cRn7w5D/h
-   ktS98MKP+LX5/0iKv6UW9J6WWRA947fkKGJdVr1BqmRho+EeEoBXTDfDW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="367415982"
+  bh=UM2IuPKhME5eryCtH9YNZYBVMtsT6jTFBEyYnKnOTQ0=;
+  b=O1aZHayaHKI17LLfswPyau+eCOTqiapx0YM6JmMIYBEW4j+M/65drL4q
+   NUw42EYBQw/MBKrDV38Uqi3aqNciK/yHfm+zQllYUHh5dFTQjRVuQY5q5
+   8MJZbMz5LEHxwyp6AJ5Hr7Pea8DwZ5VWTMsjGCUxFn/bQAQLmbuC0zfYH
+   mTZxDsdtdVD1gLeVUSoyfmPfpmu5k1XTT/IibyFupTC2b3BjEumo75QtZ
+   H+YdYdTQu6ujuc8BYwVAIRXKWHpsRw8/12YcibVYsCeou9bwjDDOcdGuc
+   iuc3PRv53eVqBwrhqnVOU6zpmqBUNkvmckRv6GkPnR8YEw2fwsmLmEHMB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="387874190"
 X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="367415982"
+   d="scan'208";a="387874190"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 06:31:03 -0700
-Message-Id: <b7cfad$q4fr49@fmsmga002-auth.fm.intel.com>
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 05:46:49 -0700
+Message-Id: <b7cfad$q4ffmb@fmsmga002-auth.fm.intel.com>
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="877128841"
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="877117131"
 X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="877128841"
+   d="scan'208";a="877117131"
 Received: from ilavreno-mobl.ccr.corp.intel.com (HELO localhost) ([10.252.50.186])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 06:31:00 -0700
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 05:46:46 -0700
 From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Hans de Goede <hdegoede@redhat.com>,
         Andy Shevchenko <andy@kernel.org>
 Date:   Mon, 30 Oct 2023 14:43:48 +0200
-Subject: [GIT PULL] platform-drivers-x86 for v6.7-1
+Subject: platform-drivers-x86 for v6.7-1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MSGID_FROM_MTA_HEADER,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,11 +61,6 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
-
-This is a resend of the original pull request because I forgot to add
-the [GIT PULL] prefix into Subject in the original one so it was
-unclear if the original gets properly noticed by either you or the
-merge bot. I'm sorry about the extra confusion.
 
 Here is the main PDx86 PR for v6.7.
 
