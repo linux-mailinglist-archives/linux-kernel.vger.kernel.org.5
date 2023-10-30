@@ -2,160 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 325827DBFD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6412C7DBFDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjJ3S0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 14:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        id S230325AbjJ3S1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 14:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjJ3S0b (ORCPT
+        with ESMTP id S229897AbjJ3S1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 14:26:31 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2076.outbound.protection.outlook.com [40.107.243.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5715DF9;
-        Mon, 30 Oct 2023 11:26:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZVSzcw4lzycN7CezidacQRWg+BB1xo2fRl1nnkqAE7EU13YY1GnSMiqFBHH+O2duDqkS67Gcyw/yp0u2dJ53ZgKmqLbXdiZgbGlc/oTxQlpE+hqBq2ZSDlpEjlQMgB1ZtlC9ktsFtPq4Xih9KZdpbySNmI1yVIMacxmATvrAodpMb/l4OC/NdGNwaXNr2LOilazdMZgcn1oWPLGMOBBWK97MhkZRZLUQReipUAY3ynvx7jKfFjByaJSYfeuH1vhcrcy1MQAkj2/0dLeZvcmRGQZKjXrFnDBTl+tYz88F3AnQaa7FUWObl6r2TgNxKcYnIE3ZUg3nZ3UWA3EMO/Z5tA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R5YGtEKGaq8+tCKA1pmTCvsQGjQTmXysW/A/ymENySo=;
- b=bLwzPOpq/Ru93rwy1llug6JDhUBItBk+vC0t21i1g8sy7MABrFr/me/tG+qCyCPV+1+KQIC96PHU/iNnEX7UDt3+vIVgE2Lbykqn1lKgXW9ggoRMs4DUq5PnxMm5kF7U3pcYmsoEHZQO03MnTYwOdkQNdkIqgs63eDnG5bCmwUOBMT+NINpdvvSTK5xKUHh3k1zlhjCj2M0EmEreg58CI6xPhntY6zvENb+Z7jmvnkPaOio9K1AqnWwWX3FZpuoHIGrVcnnMp52YNdtnPYMwuWPc/IBIUgz3/jVho8t4maVkEQ1lM70pmjlASQqrbsVYXgNOU8nGxL8TancwqBMZ6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R5YGtEKGaq8+tCKA1pmTCvsQGjQTmXysW/A/ymENySo=;
- b=lP3X0aQB1HiOO4NBhWHLutNtz0KwuUtQhTmJIM2Vbroo6jttqiN5ecykbplGCdznNuihOQfsQ1R6H4yvlA4E2tQCGp4eowbHQ/9b7eY/4FsRIegXgrqZKx3jxlKxznW/lJHvaKT223jFnrvhaJ6fipsnzuUk4RwmWLqqoL5JBO5ArOh3d/Sl2Kbbi0NU1U6wD2fH1tSVnp8hu4Zh2xMEgJCsEcXvw4uHuHwnnlpBMJ3mujAlBcHjQFUPQpaDeaOOB+9XFEbj9CNRQRJ3NLYqOSrfn9lr3UjD+VLzvLJQzHQNAQAbEFQkwTQDt1JRP5l4xxTcNMdzVC4hiEB70iHePg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ1PR12MB6291.namprd12.prod.outlook.com (2603:10b6:a03:456::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27; Mon, 30 Oct
- 2023 18:26:23 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9%4]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
- 18:26:23 +0000
-Date:   Mon, 30 Oct 2023 15:26:21 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
-Subject: Re: linux-next: manual merge of the iommufd tree with the iommu tree
-Message-ID: <20231030182621.GV3952@nvidia.com>
-References: <20231027155522.6b2863a4@canb.auug.org.au>
- <20231027171522.692a58ec@canb.auug.org.au>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027171522.692a58ec@canb.auug.org.au>
-X-ClientProxiedBy: MN2PR15CA0048.namprd15.prod.outlook.com
- (2603:10b6:208:237::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 30 Oct 2023 14:27:17 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6898C1;
+        Mon, 30 Oct 2023 11:27:13 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507b96095abso6915436e87.3;
+        Mon, 30 Oct 2023 11:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698690432; x=1699295232; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=68ru9uL7QOJiXYVvDv7F1f/kURJOj/MVfTQISNyePXw=;
+        b=nRdhnSawsq3CpRMZ4XLDDIgcrm7lpywKrnfv/dhbq6Myr+yUTEet6YfPt/H0mhD0bl
+         LpmAq3oZ9ffiZcaS2LkesuhgoA8ByrFqjoG6Cj6/75JRhUNTFOPYZExgdi+7pEWHVsAJ
+         fjja6ecCD2m2cPFvjNKTCjadgsx1ANhALMKh3CnHkc6HfK0mIdMaCDcufu5jU+/DSkXu
+         9HFadnJp2xI2RFbFAX+cCzIYY71SLON7/fQkdzN1qE11dMiM4EGcvz+tO3NZE6NbUSdN
+         1aguXvPDfVPg/B0RUbXdagF/eKueungn7fCfZLJZAG3NiMxVq2bt4e1sqWrsVXnu3rkN
+         rRYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698690432; x=1699295232;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=68ru9uL7QOJiXYVvDv7F1f/kURJOj/MVfTQISNyePXw=;
+        b=gC05pC3cdee8mwr8ByVLHPoyS7yCNLTPPildih/lv0LXPOJ/1l8PwEn36Q6ZknmWJy
+         dNMGR9BbAWW6sufl+tYpqbqsiZa2+KfuaZZblTg3gdSapHl9LnUnp/dI46qafjYrfFlt
+         kmoRZc8xBbo1No5rHmwdbVbCA5Oyzjkb/E6q5klb0cK66Li/PETXmzN3zftPRKIMEBsU
+         7oqWVyAWrZOsbz+saw6taCcxR9KvgTAVLNtqpO6GJzVwbaVTHDjd0W/xnsmE9zo8m4h9
+         CVfG5kysY7RaTfhta5Ofm95jo1nOgB13rZ3HmbhMEOoEx8zr+YCf5Hz5w7IZSY1KuDVA
+         QhXw==
+X-Gm-Message-State: AOJu0Yz0zzDL1gk883Ai6tgbMmcYwHZp66U0VldzLFWX7groOLYYyDJg
+        vJDqCJyhAwRc1dPaM25XBauqJh6KOHz1Onfi60MMSMQx
+X-Google-Smtp-Source: AGHT+IHYr1b1vlP+xjU2P6kzEETyjPXpEnHyblf9hzTh9kwbBkX03iDZkkdZd+RgmmfoxDH0tVEbBXblpMLqhuFLLSA=
+X-Received: by 2002:a05:6512:1107:b0:508:1178:efa4 with SMTP id
+ l7-20020a056512110700b005081178efa4mr9236721lfg.55.1698690431567; Mon, 30 Oct
+ 2023 11:27:11 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ1PR12MB6291:EE_
-X-MS-Office365-Filtering-Correlation-Id: f54ef95a-4ba2-4d26-c897-08dbd975b82f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KEaM/oFApDs3TsxPFd0p2OgFILMHLxMVGGluLqpg8OF9HK0r2SQfDagEnkBq1Ws//L+KR+0hkXGWAUhzDBadeGsDDO/K8o0EryVWEH6bzAJJfLTOZJO2UHduYS6OH4u8Y2QK1vP61FdD/ouiMuWXA3EYjuEuN7dydOc+z3WVZad2OXw3Z/L1lF50eYMq08uEwvOO/erRl4w235CVSABw3GzH++xUWI1eAt2yAWxD1tQzlqJ2bdIJMfz1n4D3dgDMAIQoCTGf9svvGP7QtOUU5TArMP9XqWf1XsSePIPmYn8KHy/jgRi0tBVHsSiqSnTZs5nyOjbwBgPVRjOgVKiCdhdKciGLYK2ZGVINCxfNglcOAv7ADhZdZsioSk96VBgMvb5SeNxWOBR28bhEbBpkZ+mrdPPv1yZw0//H3XUVM906oTLHfFOdlh2umf/X/626coBcRWwivZglrLiVq17VFPIlx/vYmURYjWFMX4/9yjqnM72VSWSBuYzQ/W0OeuHazZ3VEvbZ+Rcev6aVIVuItHMGMg8DuoK6HxP3BSBV7PSv6S0EDULTbxdvaSSL3nSq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(39860400002)(376002)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(8936002)(4326008)(8676002)(5660300002)(83380400001)(41300700001)(316002)(66556008)(54906003)(6916009)(66946007)(66476007)(478600001)(6486002)(2906002)(6506007)(26005)(2616005)(1076003)(6512007)(33656002)(36756003)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KGZ+BZ1x+vJI+4DylcTbqHgX7MrB1efo6TtgIA3EXpqymGAOolKOreBrkS8z?=
- =?us-ascii?Q?WVyIT7crXhHvEEhYiZGtt7xa1TO8pLYtCw3pjQIEyNEXAqau727MDZRN+em9?=
- =?us-ascii?Q?vB5IKmSeEvXnG8HEyDeLZkfaodosU3BlWhuPOCGyG1CBrU5pvCOxYsmAUMSw?=
- =?us-ascii?Q?FXEumcqlroHZJesRoK0004DjyLGaxIilQI6VkHS5avIJgV3j4BvSU0BEYjw2?=
- =?us-ascii?Q?uvIfEgpfQbuGgQ8OVAyFDCC5bYAaBxuRvzPO5fOz5C7SXyB0HKIUxdzveuoC?=
- =?us-ascii?Q?uaz6HORq5nelj2Hp89zAoijKzXfndjFS80szvo9YRxlohRi9/RyyjB5NuwzQ?=
- =?us-ascii?Q?sYb1FsXnFx4H+ap+fV2fvSdUAHcgUBr4/D4DKxLrJdg9x/wtdnyj4bfFVZxW?=
- =?us-ascii?Q?GO1ocZzYP+0V39LucTvU4sEDx8OHPHRjQBgCMqKS0NHJJyN8nJpIwvuZfsfx?=
- =?us-ascii?Q?9q/EvIVmHkEvAJ42p6uYlhXwW97xaYY35x8bvfz6jbKmEmqwVeL89GsAeGmE?=
- =?us-ascii?Q?39Hlu6F+ua8NxtSiUBadhfJmw5yN89LXd2qSk4StCxlrRVnumz509YC+Fc2R?=
- =?us-ascii?Q?eRbR3H2Oq1gwVfcrFEDDdYe66v4c+fwjJXM/x1LvFynxtpx1wHwYRZM9/BfX?=
- =?us-ascii?Q?c97ZbKMam/CbrvzfoGlkfwq64w6fmDu9Y94W8AwdTRXmg+ook5HO7cFtU7uj?=
- =?us-ascii?Q?kdiNTdRGWCeYAcyE+AWpXhP+i59i4YEF+FdsdlAmRB3Fm6evChA7yPOBcmRc?=
- =?us-ascii?Q?dBhq9IqBGxmJSUIxREqNrayo3icplAAHrNb8WVv5JTApX3RYjxRvxm/Pbwc9?=
- =?us-ascii?Q?cyZVwZs5nxcfQ3kYd+Ka4JzgJRLT/BiBKfjitEhehZCozyh9IyxQ9kElLw1e?=
- =?us-ascii?Q?gYBU4AhZ1BznpB1zNhOWAi/4MldrlnyxZudoHlkph2618gTEbe3U0fIdTAaF?=
- =?us-ascii?Q?sUvI4/VdiDRoDtaQjV2KL4yqvAX3FGShmTfb5NbsK1PSCfMDTdqlCYoVeoEd?=
- =?us-ascii?Q?G7+hcgxSEx8HdwolzpKs1yA173krnWXzuSMLjX+T3Nz19AVWJm3MfQkS+02h?=
- =?us-ascii?Q?2p62UZyb8bDJmDl0F7yI+u1KBjPP5cBDQG4BuN7x66HA/+zMZjJ+aQSgiLYR?=
- =?us-ascii?Q?KMGolOVXLhUC5AwXT4Xzzwqxn5vses+26/y8hFiC/yl1WrxvcxaJws0x3tZF?=
- =?us-ascii?Q?r9TqY/un6UA+dJR20b2ilYJLMI021HGxwnKnHc+0ZqDhYkkHzr65iGBkJO+L?=
- =?us-ascii?Q?2DJS3P92AsBVM5ygNAdgMPsGh4yV3d86tLAnWilUtXYVJKoLTnAmnsjP91am?=
- =?us-ascii?Q?bHXQuUGXfZGR8t6EuVxwGykED7swzECSVzbaIw2BmF3BxhIrYSway4qVT2yp?=
- =?us-ascii?Q?g5A31ysss3ASkuxP68csEZ9HnjMVJ/ikDIK/QYKhHnDJ2opjIcyCSNrUlY9c?=
- =?us-ascii?Q?tj7wvSjmpI3c/u4RhSI3p1qNDAvvKiI0wbYZI1Sps2Jra3eeD9JKhgHQ0iTa?=
- =?us-ascii?Q?u2lFOqBprbTIFK2mdIbM/ZH6rRkmIc64oygjE8nxXjkjRBgbY+az6lue6lKP?=
- =?us-ascii?Q?KaUjNXV8GuUzfkPjzc36hCXyEsOLG+FyfjtaQLsk?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f54ef95a-4ba2-4d26-c897-08dbd975b82f
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 18:26:22.9404
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vP6v9weVX32okY92Y1LrP8Kw09DMsfnR9R4zQZ6qCitS1TtDbjpR/Xqn/3/6yaUI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6291
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231027165859.395638-1-robdclark@gmail.com> <20231027165859.395638-7-robdclark@gmail.com>
+ <597b5bb3-ca75-4662-9904-12c4d8e9101a@amd.com> <CAF6AEGu1Z1k0bKrMZw4-RJSC-nbO=tuDOjQiPmi61_m_1nRCgA@mail.gmail.com>
+ <836a6052-ad23-4a5f-9eb5-a7b5361b568c@gmail.com>
+In-Reply-To: <836a6052-ad23-4a5f-9eb5-a7b5361b568c@gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 30 Oct 2023 11:26:59 -0700
+Message-ID: <CAF6AEGsq+LApqQQA9z9p+ce4CN-eant==y5hcOzNZ0PccHFCnQ@mail.gmail.com>
+Subject: Re: [PATCH 6/7] drm/exec: Pass in initial # of objects
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>, dri-devel@lists.freedesktop.org,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Guchun Chen <guchun.chen@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        Dong Chenchen <dongchenchen2@huawei.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Philip Yang <Philip.Yang@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+        linux-arm-msm@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jack Xiao <Jack.Xiao@amd.com>,
+        Jonathan Kim <jonathan.kim@amd.com>,
+        freedreno@lists.freedesktop.org,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lang Yu <Lang.Yu@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 05:15:22PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Fri, 27 Oct 2023 15:55:22 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Mon, Oct 30, 2023 at 9:01=E2=80=AFAM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> Am 30.10.23 um 14:38 schrieb Rob Clark:
+> > On Mon, Oct 30, 2023 at 1:05=E2=80=AFAM Christian K=C3=B6nig
+> > <christian.koenig@amd.com> wrote:
+> >> Am 27.10.23 um 18:58 schrieb Rob Clark:
+> >>> From: Rob Clark <robdclark@chromium.org>
+> >>>
+> >>> In cases where the # is known ahead of time, it is silly to do the ta=
+ble
+> >>> resize dance.
+> >> Ah, yes that was my initial implementation as well, but I ditched that
+> >> because nobody actually used it.
+> >>
+> >> One comment below.
+> >>
+> >>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >>> ---
+> >>>    drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c  |  2 +-
+> >>>    drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c |  4 ++--
+> >>>    drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c |  4 ++--
+> >>>    drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c |  4 ++--
+> >>>    drivers/gpu/drm/drm_exec.c              | 15 ++++++++++++---
+> >>>    drivers/gpu/drm/nouveau/nouveau_exec.c  |  2 +-
+> >>>    drivers/gpu/drm/nouveau/nouveau_uvmm.c  |  2 +-
+> >>>    include/drm/drm_exec.h                  |  2 +-
+> >>>    8 files changed, 22 insertions(+), 13 deletions(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_cs.c
+> >>> index efdb1c48f431..d27ca8f61929 100644
+> >>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> >>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> >>> @@ -65,7 +65,7 @@ static int amdgpu_cs_parser_init(struct amdgpu_cs_p=
+arser *p,
+> >>>        }
+> >>>
+> >>>        amdgpu_sync_create(&p->sync);
+> >>> -     drm_exec_init(&p->exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
+> >>> +     drm_exec_init(&p->exec, DRM_EXEC_INTERRUPTIBLE_WAIT, 0);
+> >>>        return 0;
+> >>>    }
+> >>>
+> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c b/drivers/gpu/dr=
+m/amd/amdgpu/amdgpu_csa.c
+> >>> index 720011019741..796fa6f1420b 100644
+> >>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
+> >>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
+> >>> @@ -70,7 +70,7 @@ int amdgpu_map_static_csa(struct amdgpu_device *ade=
+v, struct amdgpu_vm *vm,
+> >>>        struct drm_exec exec;
+> >>>        int r;
+> >>>
+> >>> -     drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
+> >>> +     drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT, 0);
+> >>>        drm_exec_until_all_locked(&exec) {
+> >>>                r =3D amdgpu_vm_lock_pd(vm, &exec, 0);
+> >>>                if (likely(!r))
+> >>> @@ -110,7 +110,7 @@ int amdgpu_unmap_static_csa(struct amdgpu_device =
+*adev, struct amdgpu_vm *vm,
+> >>>        struct drm_exec exec;
+> >>>        int r;
+> >>>
+> >>> -     drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
+> >>> +     drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT, 0);
+> >>>        drm_exec_until_all_locked(&exec) {
+> >>>                r =3D amdgpu_vm_lock_pd(vm, &exec, 0);
+> >>>                if (likely(!r))
+> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/dr=
+m/amd/amdgpu/amdgpu_gem.c
+> >>> index ca4d2d430e28..16f1715148ad 100644
+> >>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+> >>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+> >>> @@ -203,7 +203,7 @@ static void amdgpu_gem_object_close(struct drm_ge=
+m_object *obj,
+> >>>        struct drm_exec exec;
+> >>>        long r;
+> >>>
+> >>> -     drm_exec_init(&exec, DRM_EXEC_IGNORE_DUPLICATES);
+> >>> +     drm_exec_init(&exec, DRM_EXEC_IGNORE_DUPLICATES, 0);
+> >>>        drm_exec_until_all_locked(&exec) {
+> >>>                r =3D drm_exec_prepare_obj(&exec, &bo->tbo.base, 1);
+> >>>                drm_exec_retry_on_contention(&exec);
+> >>> @@ -739,7 +739,7 @@ int amdgpu_gem_va_ioctl(struct drm_device *dev, v=
+oid *data,
+> >>>        }
+> >>>
+> >>>        drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
+> >>> -                   DRM_EXEC_IGNORE_DUPLICATES);
+> >>> +                   DRM_EXEC_IGNORE_DUPLICATES, 0);
+> >>>        drm_exec_until_all_locked(&exec) {
+> >>>                if (gobj) {
+> >>>                        r =3D drm_exec_lock_obj(&exec, gobj);
+> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c b/drivers/gpu/dr=
+m/amd/amdgpu/amdgpu_mes.c
+> >>> index b6015157763a..3c351941701e 100644
+> >>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
+> >>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
+> >>> @@ -1105,7 +1105,7 @@ int amdgpu_mes_ctx_map_meta_data(struct amdgpu_=
+device *adev,
+> >>>
+> >>>        amdgpu_sync_create(&sync);
+> >>>
+> >>> -     drm_exec_init(&exec, 0);
+> >>> +     drm_exec_init(&exec, 0, 0);
+> >>>        drm_exec_until_all_locked(&exec) {
+> >>>                r =3D drm_exec_lock_obj(&exec,
+> >>>                                      &ctx_data->meta_data_obj->tbo.ba=
+se);
+> >>> @@ -1176,7 +1176,7 @@ int amdgpu_mes_ctx_unmap_meta_data(struct amdgp=
+u_device *adev,
+> >>>        struct drm_exec exec;
+> >>>        long r;
+> >>>
+> >>> -     drm_exec_init(&exec, 0);
+> >>> +     drm_exec_init(&exec, 0, 0);
+> >>>        drm_exec_until_all_locked(&exec) {
+> >>>                r =3D drm_exec_lock_obj(&exec,
+> >>>                                      &ctx_data->meta_data_obj->tbo.ba=
+se);
+> >>> diff --git a/drivers/gpu/drm/drm_exec.c b/drivers/gpu/drm/drm_exec.c
+> >>> index 5d2809de4517..27d11c20d148 100644
+> >>> --- a/drivers/gpu/drm/drm_exec.c
+> >>> +++ b/drivers/gpu/drm/drm_exec.c
+> >>> @@ -69,16 +69,25 @@ static void drm_exec_unlock_all(struct drm_exec *=
+exec)
+> >>>     * drm_exec_init - initialize a drm_exec object
+> >>>     * @exec: the drm_exec object to initialize
+> >>>     * @flags: controls locking behavior, see DRM_EXEC_* defines
+> >>> + * @nr: the initial # of objects
+> >>>     *
+> >>>     * Initialize the object and make sure that we can track locked ob=
+jects.
+> >>> + *
+> >>> + * If nr is non-zero then it is used as the initial objects table si=
+ze.
+> >>> + * In either case, the table will grow (be re-allocated) on demand.
+> >>>     */
+> >>> -void drm_exec_init(struct drm_exec *exec, uint32_t flags)
+> >>> +void drm_exec_init(struct drm_exec *exec, uint32_t flags, unsigned n=
+r)
+> >>>    {
+> >>> +     size_t sz =3D PAGE_SIZE;
+> >>> +
+> >>> +     if (nr)
+> >>> +             sz =3D (size_t)nr * sizeof(void *);
+> >>> +
+> >>>        exec->flags =3D flags;
+> >>> -     exec->objects =3D kmalloc(PAGE_SIZE, GFP_KERNEL);
+> >>> +     exec->objects =3D kmalloc(sz, GFP_KERNEL);
+> >> Please use k*v*malloc() here since we can't predict how large that wil=
+l be.
+> > or __GFP_NOWARN?  If userspace (or kasan) is cheeky and asks for ~0
+> > objects, we should probably just fail?
+>
+> Oh, good point! If this value is controlled by userspace we must be much
+> more careful.
+>
+> Instead of __GFP_NOWARN or any other workaround we should use
+> kvmalloc_array() here.
+>
+> Maybe turn the code upside down, in other words something like this here:
+>
+> if (!nr)
+>      nr =3D PAGE_SIZE / sizeof(void *);
+>
+> exec->objects =3D kvmalloc_array(nr, sizeof(void *), GFP_KERNEL);
+> exec->max_objects =3D exec->objects ? nr : 0;
+
+oh, good point
+
+BR,
+-R
+
+>
+> Regards,
+> Christian.
+>
 > >
-> > Today's linux-next merge of the iommufd tree got a conflict in:
-> > 
-> >   drivers/iommu/iommufd/selftest.c
-> > 
-> > between commits:
-> > 
-> >   1c68cbc64fe6 ("iommu: Add IOMMU_DOMAIN_PLATFORM")
-> >   13fbceb1b8e9 ("iommufd: Convert to alloc_domain_paging()")
-> > 
-> > from the iommu tree and commits:
-> > 
-> >   408663619fcf ("iommufd/selftest: Add domain_alloc_user() support in iommu mock")
-> >   266ce58989ba ("iommufd/selftest: Test IOMMU_HWPT_ALLOC_DIRTY_TRACKING")
-> >   7adf267d66d1 ("iommufd/selftest: Test IOMMU_HWPT_SET_DIRTY_TRACKING")
-> >   a9af47e382a4 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP")
-> >   0795b305da89 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP_NO_CLEAR flag")
-> >   65fe32f7a447 ("iommufd/selftest: Add nested domain allocation for mock domain")
-> > 
-> > from the iommufd tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> 
-> The resolution should have been as below (I think).
-
-This was too horrible, I pushed a patch to reorganize the new iommufd side
-code to more closely match how the domain_alloc_paging stuff is
-supposed to work
-
-Thanks,
-Jason
-
+> > BR,
+> > -R
+> >
+> >> With that fixed the patch is Reviewed-by: Christian K=C3=B6nig
+> >> <christian.koenig@amd.com>.
+> >>
+> >> Regards,
+> >> Christian.
+> >>
+> >>>        /* If allocation here fails, just delay that till the first us=
+e */
+> >>> -     exec->max_objects =3D exec->objects ? PAGE_SIZE / sizeof(void *=
+) : 0;
+> >>> +     exec->max_objects =3D exec->objects ? sz / sizeof(void *) : 0;
+> >>>        exec->num_objects =3D 0;
+> >>>        exec->contended =3D DRM_EXEC_DUMMY;
+> >>>        exec->prelocked =3D NULL;
+> >>> diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.c b/drivers/gpu/drm=
+/nouveau/nouveau_exec.c
+> >>> index 19024ce21fbb..f5930cc0b3fb 100644
+> >>> --- a/drivers/gpu/drm/nouveau/nouveau_exec.c
+> >>> +++ b/drivers/gpu/drm/nouveau/nouveau_exec.c
+> >>> @@ -103,7 +103,7 @@ nouveau_exec_job_submit(struct nouveau_job *job)
+> >>>
+> >>>        nouveau_uvmm_lock(uvmm);
+> >>>        drm_exec_init(exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
+> >>> -                         DRM_EXEC_IGNORE_DUPLICATES);
+> >>> +                         DRM_EXEC_IGNORE_DUPLICATES, 0);
+> >>>        drm_exec_until_all_locked(exec) {
+> >>>                struct drm_gpuva *va;
+> >>>
+> >>> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm=
+/nouveau/nouveau_uvmm.c
+> >>> index aae780e4a4aa..3a9331a1c830 100644
+> >>> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> >>> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> >>> @@ -1288,7 +1288,7 @@ nouveau_uvmm_bind_job_submit(struct nouveau_job=
+ *job)
+> >>>        }
+> >>>
+> >>>        drm_exec_init(exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
+> >>> -                         DRM_EXEC_IGNORE_DUPLICATES);
+> >>> +                         DRM_EXEC_IGNORE_DUPLICATES, 0);
+> >>>        drm_exec_until_all_locked(exec) {
+> >>>                list_for_each_op(op, &bind_job->ops) {
+> >>>                        struct drm_gpuva_op *va_op;
+> >>> diff --git a/include/drm/drm_exec.h b/include/drm/drm_exec.h
+> >>> index b5bf0b6da791..f1a66c048721 100644
+> >>> --- a/include/drm/drm_exec.h
+> >>> +++ b/include/drm/drm_exec.h
+> >>> @@ -135,7 +135,7 @@ static inline bool drm_exec_is_contended(struct d=
+rm_exec *exec)
+> >>>        return !!exec->contended;
+> >>>    }
+> >>>
+> >>> -void drm_exec_init(struct drm_exec *exec, uint32_t flags);
+> >>> +void drm_exec_init(struct drm_exec *exec, uint32_t flags, unsigned n=
+r);
+> >>>    void drm_exec_fini(struct drm_exec *exec);
+> >>>    bool drm_exec_cleanup(struct drm_exec *exec);
+> >>>    int drm_exec_lock_obj(struct drm_exec *exec, struct drm_gem_object=
+ *obj);
+>
