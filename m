@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869CD7DBBBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEB67DBBCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbjJ3O2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
+        id S233389AbjJ3O3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjJ3O2C (ORCPT
+        with ESMTP id S231845AbjJ3O3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:28:02 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815B8B7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:28:00 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32d834ec222so2866500f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698676079; x=1699280879; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8bh30D821O7pisqZqTkIBA0xZHpQPYVy9p5w5SCB02E=;
-        b=GjlSjuRXPQ98phgFdg/9m6Hz/PbHIIy5OPcIdiVJQ4t4UFyDL3fKOttVTh87jYe7V4
-         Zsd36EQF0merQf/Zcs0hoauva1PVVSr1MM1cFLHuPPGPHJwz1r4pVHJHCsE1m0tKYqEo
-         DteU1KjCaW0D4tmc8BzsLwbNeZAHigNH0AKXL4imaSBgWpuw6537XtBGuN08wz5cTzdc
-         08o44V43C6WfP2iTAYDMA4Rj0v/MV/ItD5aOyonsqlPHu8eEcf5RgmWwxSwov14SzLN3
-         gIVhiD2YHC1SZtWF9/1EBoL0xzHOmoOKo0fx5oy4HG/XwrXMM9mnUpFfAClmIXuiPsT0
-         ArkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698676079; x=1699280879;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8bh30D821O7pisqZqTkIBA0xZHpQPYVy9p5w5SCB02E=;
-        b=xVJXxEblU/AraTLz4L5Ac1cEXoyHsTiv+DJospf6nnSi+68+FZD2MSm1nJJqTgH1km
-         DGKK3O+P4SKwLaFmKjrvGi4psv04UucQdSCgRpwCZcDNFAKCxRF8M/t0xI6wOWTbCGRr
-         UCMtcr+kg3I/NB5KeVDcQdJqspT/rruKfI6CC3z/3C9WvU97VAMSivNBPeBQL9HGWpGi
-         x/Bf7Nkex8kHITkWuVwzqp+BZgsgxImU2W0e0GZ8huynHHMoZLRwgfad+nIKQIz2UapF
-         Qu5h8OH/I3xfxG/hCJmsaJiQtO0BRNnDVLy3oK9g4TH4qt8ONXCvAk5Fz1ilvSipLdoz
-         MjHQ==
-X-Gm-Message-State: AOJu0YyGJutVcSH11dkJEEvuArBZ+NRaMurm4Cuh/e5cZduKTUMvAnjx
-        YBHR/yEC0BMoGgqLhJZr9Qp5LCEip9tX0GvZ
-X-Google-Smtp-Source: AGHT+IE3SQg91TEitYFJnQaQAgiOXMoUSTQs8i2qySEtTVeVUoQXBmjsnkqttxIyG/Sf9l0B1dk1Iw==
-X-Received: by 2002:a5d:64eb:0:b0:32f:79e5:5ea9 with SMTP id g11-20020a5d64eb000000b0032f79e55ea9mr4382841wri.10.1698676078663;
-        Mon, 30 Oct 2023 07:27:58 -0700 (PDT)
-Received: from nancy-1-2.. ([105.163.156.232])
-        by smtp.googlemail.com with ESMTPSA id d14-20020a5d4f8e000000b0032d96dd703bsm8276569wru.70.2023.10.30.07.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 07:27:58 -0700 (PDT)
-From:   Nancy Nyambura <nicymimz@gmail.com>
-Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
-        Nancy Nyambura <nicymimz@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] Staging: rts5208: Replace strncpy() with strscpy()
-Date:   Mon, 30 Oct 2023 17:27:47 +0300
-Message-Id: <20231030142751.49913-1-nicymimz@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 30 Oct 2023 10:29:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40FAC2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698676126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xIZMjEJ0unwch+/xbrgX1dR7Es/DPi6eBHIG0w2M6uI=;
+        b=RHoSIvk0WCpFlWJQ9I01gxooEvSJPd3QykQ4x5FDbN2b4JgTvxxmnEpRZDmCkisZx4R9F9
+        awbt3FU2VEMVW9qViyXzkUG6ZIZZpHYdPk3aAuA6+fvPeoEhcnE1v5+H3y2eN/FMTXNUkd
+        fiibtLV5UC48od6ggJyxXqTdudXiG70=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-36-R6A-FZZFOEuUyUffcUXunQ-1; Mon, 30 Oct 2023 10:28:37 -0400
+X-MC-Unique: R6A-FZZFOEuUyUffcUXunQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E1323830967;
+        Mon, 30 Oct 2023 14:28:35 +0000 (UTC)
+Received: from redhat.com (unknown [10.22.17.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8F0E6492BE0;
+        Mon, 30 Oct 2023 14:28:35 +0000 (UTC)
+Date:   Mon, 30 Oct 2023 09:28:34 -0500
+From:   Bill O'Donnell <bodonnel@redhat.com>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL for v6.7] autofs updates
+Message-ID: <ZT+9kixqhgsRKlav@redhat.com>
+References: <20231027-vfs-autofs-018bbf11ed67@brauner>
+ <43ea4439-8cb9-8b0d-5e04-3bd5e85530f4@themaw.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43ea4439-8cb9-8b0d-5e04-3bd5e85530f4@themaw.net>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warning found by checkpath.pl
-I replaced strncpy with strscpy because strscpy is suitable when the destination buffer is NUL-terminated, which is often the case when copying strings. Strscpy ensures that the destination buffer is properly NUL-terminated without padding. In the code, the objective is to copy a string (inquiry_string) to the buf buffer, and it's likely that the buf buffer is NUL-terminated since it is handling a string. Strscpy_pad is used when you have afixed-size buffer, and you want to copy a string into it while ensuring the remaining space is padded with a specific character (like '\0') hence not appropriate for this context.
+On Sun, Oct 29, 2023 at 03:54:52PM +0800, Ian Kent wrote:
+> On 27/10/23 22:33, Christian Brauner wrote:
+> > Hey Linus,
+> > 
+> > /* Summary */
+> > This ports autofs to the new mount api. The patchset has existed for
+> > quite a while but never made it upstream. Ian picked it back up.
+> > 
+> > This also fixes a bug where fs_param_is_fd() was passed a garbage
+> > param->dirfd but it expected it to be set to the fd that was used to set
+> > param->file otherwise result->uint_32 contains nonsense. So make sure
+> > it's set.
+> > 
+> > One less filesystem using the old mount api. We're getting there, albeit
+> > rather slow. The last remaining major filesystem that hasn't converted
+> > is btrfs. Patches exist - I even wrote them - but so far they haven't
+> > made it upstream.
+> 
+> Yes, looks like about 39 still to be converted.
+> 
+> 
+> Just for information, excluding btrfs, what would you like to see as the
+> 
+> priority for conversion (in case me or any of my colleagues get a chance
+> 
+> to spend a bit more time on it)?
 
-Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
----
-Changes in v2:
-  - Explain why strscpy and not strscpy_pad
-
- drivers/staging/rts5208/rtsx_scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
-index 08bd768ad34d..52324b8ebbc7 100644
---- a/drivers/staging/rts5208/rtsx_scsi.c
-+++ b/drivers/staging/rts5208/rtsx_scsi.c
-@@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- 
- 	if (sendbytes > 8) {
- 		memcpy(buf, inquiry_buf, 8);
--		strncpy(buf + 8, inquiry_string, sendbytes - 8);
-+		strscpy(buf + 8, inquiry_string, sendbytes - 8);
- 		if (pro_formatter_flag) {
- 			/* Additional Length */
- 			buf[4] = 0x33;
--- 
-2.40.1
+I'm just starting to have a look at zonefs as a candidate.
+-Bill
 
