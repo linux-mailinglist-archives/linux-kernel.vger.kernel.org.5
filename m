@@ -2,112 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6587DB931
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 798767DB933
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbjJ3Lm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
+        id S233070AbjJ3LnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 07:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3Lm2 (ORCPT
+        with ESMTP id S229456AbjJ3LnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:42:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A53CB6;
-        Mon, 30 Oct 2023 04:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698666146; x=1730202146;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Wgjl1H5YZOAljBGcZUVinUUuvxtEN2OCmrNb2NgLeng=;
-  b=doUKXhMNdagXxFYh3KG1aEdrhf3KRRvUpOWezGSMVOLVQY+wcZwZIOHg
-   PdLrgxFAnpK2h/NieygqkFR7tJsQofvT4fW4nMlZP7B8ILYZmCem+SbXU
-   c9yJudKin8MVFFF/uhdzEBwbfJpn+kWUW7rZNHDhpVajtL5oan1y0umwY
-   n9nQb7AzXJMwAs+bgVGnKIpRrpYVp2DlAf1la5UdGYgfZ2dpmRdqWlQEt
-   R52KvaZAdu+FPhZWMVCx0xci/diIf9scWl7SJi6vfBfAWnWG1Qb9wfdTW
-   5Y1b7jEnXH1peHpawju2RdSAlpXtjZuZchEseWzvvdeYmiUcAr49yvPNU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="454519518"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="454519518"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 04:42:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="883836795"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="883836795"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 30 Oct 2023 04:42:23 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6AFD02BF; Mon, 30 Oct 2023 13:42:22 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>
-Subject: [PATCH v1 1/1] PCI: Avoid potential out-of-bounds read in pci_dev_for_each_resource()
-Date:   Mon, 30 Oct 2023 13:42:18 +0200
-Message-Id: <20231030114218.2752236-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Mon, 30 Oct 2023 07:43:20 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6637B6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:43:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3593FFEC;
+        Mon, 30 Oct 2023 04:43:59 -0700 (PDT)
+Received: from [10.57.71.117] (unknown [10.57.71.117])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA0353F738;
+        Mon, 30 Oct 2023 04:43:14 -0700 (PDT)
+Message-ID: <5993c198-0d27-46c3-b757-3a02c2aacfc9@arm.com>
+Date:   Mon, 30 Oct 2023 11:43:13 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 5/9] mm: thp: Extend THP to allocate anonymous large
+ folios
+Content-Language: en-GB
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <20230929114421.3761121-6-ryan.roberts@arm.com>
+ <8a72da61-b2ef-48ad-ae59-0bae7ac2ce10@nvidia.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <8a72da61-b2ef-48ad-ae59-0bae7ac2ce10@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity complains that pointer in the pci_dev_for_each_resource()
-may be wrong, i.e. mighe be used for the out-of-bounds read.
+On 28/10/2023 00:04, John Hubbard wrote:
+> On 9/29/23 04:44, Ryan Roberts wrote:
+> 
+> Hi Ryan,
+> 
+> A few clarifying questions below.
 
-There is no actual issue right now, because we have another check
-afterwards and the out-of-bounds read is not being performed. In any
-case it's better code with this get fixed, hence the proposed change.
+Excellent - keep them coming!
 
-As Jonas pointed out "It probably makes the code slightly less
-performant as res will now be checked for being not NULL (which will
-always be true), but I doubt it will be significant (or in any hot
-paths)."
+> 
+> ...
+>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>> index 2e7c338229a6..c4860476a1f5 100644
+>> --- a/include/linux/huge_mm.h
+>> +++ b/include/linux/huge_mm.h
+>> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
+>>   #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
+>>     /*
+>> - * Mask of all large folio orders supported for anonymous THP.
+>> + * Mask of all large folio orders supported for anonymous THP; all orders up to
+>> + * and including PMD_ORDER, except order-0 (which is not "huge") and order-1
+>> + * (which is a limitation of the THP implementation).
+>>    */
+>> -#define THP_ORDERS_ALL_ANON    BIT(PMD_ORDER)
+>> +#define THP_ORDERS_ALL_ANON    ((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) | BIT(1)))
+>>     /*
+>>    * Mask of all large folio orders supported for file THP.
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index b5b82fc8e164..92ed9c782dc9 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -4059,6 +4059,87 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>       return ret;
+>>   }
+>>   +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
+>> +{
+>> +    int i;
+>> +
+>> +    if (nr_pages == 1)
+>> +        return vmf_pte_changed(vmf);
+>> +
+>> +    for (i = 0; i < nr_pages; i++) {
+>> +        if (!pte_none(ptep_get_lockless(vmf->pte + i)))
+>> +            return true;
+> 
+> This seems like something different than the function name implies.
+> It's really confusing: for a single page case, return true if the
+> pte in the page tables has changed, yes that is very clear.
+> 
+> But then for multiple page cases, which is really the main
+> focus here--for that, claim that the range has changed if any
+> pte is present (!pte_none). Can you please help me understand
+> what this means?
 
-Fixes: 09cc90063240 ("PCI: Introduce pci_dev_for_each_resource()")
-Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-Closes: https://lore.kernel.org/r/20230509182122.GA1259567@bhelgaas
-Suggested-by: Jonas Gorski <jonas.gorski@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/pci.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Yes I understand your confusion. Although I'm confident that the code is
+correct, its a bad name - I'll make the excuse that this has evolved through
+rebasing to cope with additions to UFFD. Perhaps something like
+vmf_is_large_folio_suitable() is a better name.
 
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 60ca768bc867..19adad23a204 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -2127,14 +2127,14 @@ int pci_iobar_pfn(struct pci_dev *pdev, int bar, struct vm_area_struct *vma);
- 	(pci_resource_end((dev), (bar)) ? 				\
- 	 resource_size(pci_resource_n((dev), (bar))) : 0)
- 
--#define __pci_dev_for_each_res0(dev, res, ...)				\
--	for (unsigned int __b = 0;					\
--	     res = pci_resource_n(dev, __b), __b < PCI_NUM_RESOURCES;	\
-+#define __pci_dev_for_each_res0(dev, res, ...)					\
-+	for (unsigned int __b = 0;						\
-+	     __b < PCI_NUM_RESOURCES && (res = pci_resource_n(dev, __b));	\
- 	     __b++)
- 
--#define __pci_dev_for_each_res1(dev, res, __b)				\
--	for (__b = 0;							\
--	     res = pci_resource_n(dev, __b), __b < PCI_NUM_RESOURCES;	\
-+#define __pci_dev_for_each_res1(dev, res, __b)					\
-+	for (__b = 0;								\
-+	     __b < PCI_NUM_RESOURCES && (res = pci_resource_n(dev, __b));	\
- 	     __b++)
- 
- #define pci_dev_for_each_resource(dev, res, ...)			\
--- 
-2.40.0.1.gaa8946217a0b
+It used to be that we would only take the do_anonymous_page() path if the pte
+was none; i.e. this is the first time we are faulting on an address covered by
+an anon VMA and we need to allocate some memory. But more recently we also end
+up here if the pte is a uffd_wp marker. So for a single pte, instead of checking
+none, we can check if the pte has changed from our original check (where we
+determined it was a uffd_wp marker or none). But for multiple ptes, we don't
+have storage to store all the original ptes from the first check.
+
+Fortunately, if uffd is in use for a vma, then we don't want to use a large
+folio anyway (this would break uffd semantics because we would no longer get a
+fault for every page). So we only care about the "same but not none" case for
+nr_pages=1.
+
+Would changing the name to vmf_is_large_folio_suitable() help here?
+
+
+> 
+>> +    }
+>> +
+>> +    return false;
+>> +}
+>> +
+>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>> +{
+>> +    gfp_t gfp;
+>> +    pte_t *pte;
+>> +    unsigned long addr;
+>> +    struct folio *folio;
+>> +    struct vm_area_struct *vma = vmf->vma;
+>> +    unsigned int orders;
+>> +    int order;
+>> +
+>> +    /*
+>> +     * If uffd is active for the vma we need per-page fault fidelity to
+>> +     * maintain the uffd semantics.
+>> +     */
+>> +    if (userfaultfd_armed(vma))
+>> +        goto fallback;
+>> +
+>> +    /*
+>> +     * Get a list of all the (large) orders below PMD_ORDER that are enabled
+>> +     * for this vma. Then filter out the orders that can't be allocated over
+>> +     * the faulting address and still be fully contained in the vma.
+>> +     */
+>> +    orders = hugepage_vma_check(vma, vma->vm_flags, false, true, true,
+>> +                    BIT(PMD_ORDER) - 1);
+>> +    orders = transhuge_vma_suitable(vma, vmf->address, orders);
+>> +
+>> +    if (!orders)
+>> +        goto fallback;
+>> +
+>> +    pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+>> +    if (!pte)
+>> +        return ERR_PTR(-EAGAIN);
+> 
+> pte_offset_map() can only fail due to:
+> 
+>     a) Wrong pmd type. These include:
+>         pmd_none
+>         pmd_bad
+>         pmd migration entry
+>         pmd_trans_huge
+>         pmd_devmap
+> 
+>     b) __pte_map() failure
+> 
+> For (a), why is it that -EAGAIN is used here? I see that that
+> will lead to a re-fault, I got that far, but am missing something
+> still.
+> 
+> For (b), same question, actually. I'm not completely sure why
+> why a retry is going to fix a __pte_map() failure?
+
+I'm not going to claim to understand all the details of this. But this is due to
+a change that Hugh introduced and we concluded at [1] that its always correct to
+return EAGAIN here to rerun the fault. In fact, with the current implementation
+pte_offset_map() should never fail for anon IIUC, but the view was that EAGAIN
+makes it safe for tomorrow, and because this would only fail due to a race,
+retrying is correct.
+
+[1] https://lore.kernel.org/linux-mm/8bdfd8d8-5662-4615-86dc-d60259bd16d@google.com/
+
+
+> 
+> 
+>> +
+>> +    order = first_order(orders);
+>> +    while (orders) {
+>> +        addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>> +        vmf->pte = pte + pte_index(addr);
+>> +        if (!vmf_pte_range_changed(vmf, 1 << order))
+>> +            break;
+>> +        order = next_order(&orders, order);
+>> +    }
+>> +
+>> +    vmf->pte = NULL;
+>> +    pte_unmap(pte);
+>> +
+>> +    gfp = vma_thp_gfp_mask(vma);
+>> +
+>> +    while (orders) {
+>> +        addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+>> +        folio = vma_alloc_folio(gfp, order, vma, addr, true);
+>> +        if (folio) {
+>> +            clear_huge_page(&folio->page, addr, 1 << order);
+>> +            return folio;
+>> +        }
+>> +        order = next_order(&orders, order);
+>> +    }
+> 
+> And finally: is it accurate to say that there are *no* special
+> page flags being set, for PTE-mapped THPs? I don't see any here,
+> but want to confirm.
+
+The page flags are coming from 'gfp = vma_thp_gfp_mask(vma)', which pulls in the
+correct flags based on transparent_hugepage/defrag file.
+
+> 
+> 
+> thanks,
 
