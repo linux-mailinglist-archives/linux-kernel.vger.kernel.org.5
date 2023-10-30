@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A65C7DC09B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F907DC09D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjJ3Tg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
+        id S230398AbjJ3Tg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJ3Tgz (ORCPT
+        with ESMTP id S229837AbjJ3Tg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:36:55 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79088DB;
-        Mon, 30 Oct 2023 12:36:52 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507f1c29f25so6770236e87.1;
-        Mon, 30 Oct 2023 12:36:52 -0700 (PDT)
+        Mon, 30 Oct 2023 15:36:56 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8D9E4;
+        Mon, 30 Oct 2023 12:36:54 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507a3b8b113so7050700e87.0;
+        Mon, 30 Oct 2023 12:36:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698694611; x=1699299411; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bh26XfJbTftWgy18NaxuF1WAEMg2xoCjkdWOn5977yI=;
-        b=Ankkjo6byXRMP1f2FphgaOWQrEqOyuyZyAOO2Cw6MAr3AuhlTdf2yPbBv6JEaInVf3
-         n0eKxRoBeCFX+FyKwObuwTSgs/6jP8mbn0O//0MKRonimrV0ynFCrXnXGUDrCIQ55V4H
-         Ih/85U3jgWMCy9AaPiQAAQYSboop6C2Js/hko4f9X6vTnwfv7jB7GKVVD3i3hLanboSh
-         kHPRb/0UpE/paEGv8kRn9qa1AmSa3otOAUMrPnIWZZypes/CTqHH9EeS0N2gcPz2vs5w
-         zpUF9dkyh4Q9PXNxFx8J1l7SbjpG9VRBLQUI5bTqarKvWFV7Kwpw/Z56CpX2wD9eiasS
-         9LfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698694611; x=1699299411;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1698694612; x=1699299412; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Bh26XfJbTftWgy18NaxuF1WAEMg2xoCjkdWOn5977yI=;
-        b=jJOMMMPxx8RQ2+mbcZEvCsw7XPqyRUJ+U7xvUVAAgH/BRTnPdhL2wsK0risuLtFVD4
-         K+pP6Z1nFgaVYiRk4EtGHmECKfl5TBT5GQ+fFNjojt9XHCOdxXoGqiImKPVhKvexbFva
-         mO/E5Tc1/bxblIEVVFvzTH0v2BgAFjMPjsLYyLOyk13V0YPvR6uX47tA7GbOWVcOHBVI
-         yH53G61sAbRsJXHplhycxeGmux4uzz8uOFNGj9Tg1xIoD82jwXUNFLxmfPdksUGLvMC5
-         8C0mtDujHqwYTreY0wkv2g6o7t8dSnRAKF3RBMvYhWKkNfw4md2UoqtePLN6CoqoQcpe
-         9MZA==
-X-Gm-Message-State: AOJu0YxtJ0uDf/n23NKmGKYuWak6HO49mKQBboLwsjuhyDARr459BsBI
-        AsfQOz1BnTAWMS40LiYekzk=
-X-Google-Smtp-Source: AGHT+IFVbjYqeABIoPu8DwMk3cICsKdrlwzu1sNA3bEnRYKzBi6n/CDT8zTE7cxdP4KmOodOsO78wg==
-X-Received: by 2002:ac2:5390:0:b0:500:91ac:c0b5 with SMTP id g16-20020ac25390000000b0050091acc0b5mr7558359lfh.30.1698694610559;
-        Mon, 30 Oct 2023 12:36:50 -0700 (PDT)
+        bh=swATsRm/D/rD5LWbhxOgcaqNC48PvNHzrc6mwlQlkRo=;
+        b=TNMwdrTeUoaKkyAka2zhYPkkCaPnrKgcu65NzPg3E8keiqnF5LYUBWpdSDCTkeCKee
+         Zc96XNxA/PRrl2lJ2iKiMH9qJEMwe+WW8GOBdKTXO1rRrcOxMUNq2wnhGxVG1IobFfnR
+         6ECwSmXEdLN25M3YAJvC+z0pcSXPHxkcIIOK9M5Uit1AEnf/hZcX4EpRT6O4XeXC6WLY
+         u/grzs/DWKlYh0zqMTKjt73kJ9g/6uj42KdLaSzqAiJ1qR4IAgQxAU8bzLt0kMMqwU6K
+         yMXeEGvq00ddYXltgep6a5kuqBtnqk2ZU/JFN8aTMhbE+dU6wCpAD2lUgJ01443rwg0V
+         oQLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698694612; x=1699299412;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=swATsRm/D/rD5LWbhxOgcaqNC48PvNHzrc6mwlQlkRo=;
+        b=ryqQ2Iv+nsrWP1YouGMN6dBTKdXZBtoaUBWWAmZNA9amG6OOFucMXKYyITa/GTwT6I
+         pClH0/7f0hGaKhjsYl2t8PiTZdKtjGC8r7a9v0iq1jcnSEmj50xkfqMhRuBpCzo7WC6T
+         pJH1Vb2TT6Mw1R9bVyLz5cSqb2NgQ5y/h2YwFzi4Z5Es7suPnki5rnlxTqu5d/9caKnQ
+         yD3oaov7bjXNHciJ6HNShsLoqsnxP4qRx0odMM8KW/rkEPAoN1KxtMS8xVpi8j1SXy4E
+         yk77Qj1d3VFFukAKPhYLt3fw3pj+Y+v5zJKCie2QqxbWUuhNp3/0d7SmlIBhXLRaDdxo
+         OIag==
+X-Gm-Message-State: AOJu0YzhVAjYkBQRziDslImuGn4Rfz9+sG9K08afycNwCwbV0Wu9saYK
+        dfZKWHex65iGSB8oJRlycko=
+X-Google-Smtp-Source: AGHT+IHYbNe4KBt+CBTopPnMMMZtMSCUiv8wrfgJIVyNXLh+MeRN2a7zjDK6KPfXhkRi+LHbdUhLhg==
+X-Received: by 2002:a05:6512:489a:b0:502:9fce:b6d4 with SMTP id eq26-20020a056512489a00b005029fceb6d4mr7018134lfb.25.1698694612133;
+        Mon, 30 Oct 2023 12:36:52 -0700 (PDT)
 Received: from hex.my.domain (83.11.208.51.ipv4.supernova.orange.pl. [83.11.208.51])
-        by smtp.gmail.com with ESMTPSA id a27-20020ac2521b000000b0050482b29ac8sm1510781lfl.31.2023.10.30.12.36.49
+        by smtp.gmail.com with ESMTPSA id a27-20020ac2521b000000b0050482b29ac8sm1510781lfl.31.2023.10.30.12.36.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 12:36:50 -0700 (PDT)
+        Mon, 30 Oct 2023 12:36:51 -0700 (PDT)
 From:   Artur Weber <aweber.kernel@gmail.com>
-Subject: [PATCH 0/6] mfd: bcm590xx: Add support for BCM59054
-Date:   Mon, 30 Oct 2023 20:36:37 +0100
-Message-Id: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
+Date:   Mon, 30 Oct 2023 20:36:38 +0100
+Subject: [PATCH 1/6] dt-bindings: mfd: brcm,bcm59056: Convert to YAML
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMUFQGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDAyNL3aTkXFNLA1MTXePUFDPTVDMTSxNjUyWg8oKi1LTMCrBR0bG1tQA
- 1gSuaWgAAAA==
+Message-Id: <20231030-bcm59054-v1-1-3517f980c1e3@gmail.com>
+References: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
+In-Reply-To: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
 To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
@@ -75,16 +75,16 @@ Cc:     Stanislav Jakubek <stano.jakubek@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         Artur Weber <aweber.kernel@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698694608; l=2127;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698694608; l=4521;
  i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=8uNP0FkkjxZLolVyEC3Crq7ZNEr3i9gNvQ7PYt3oBl4=;
- b=gtxa7vZMkbHoh5+HI/HS+vJWbKblgVgBc1TrziDaAzI5Is20/imvZ1DNc729ZtNdjRrPuz0av
- 2TxKRw4NduGA7u3GhyO4bhkBe/7eLTgFhpoRu8UyUqKiXFBDTE4gDmn
+ bh=Y62BQBGtAcPv02Fu046rbEKVHmHWcxt/VeMRr4coqwE=;
+ b=NXn9onAcbC7xKz6CkbyIxg5LEEu9GFFO0hSS76/oKuLrVrPcz57N+/GGBvnxVJPYP/i02U1hu
+ RnJrwGYM67tDIxoQUuTf/QZUxB0QkMPSRR+FqKBij5kYBfJHDe4kBy8
 X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
  pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,51 +92,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the BCM59054 MFD to the bcm590xx driver and fix a
-couple of small bugs in it that also affected the already supported
-BCM59056.
-
-While we're at it - convert the devicetree bindings to YAML format
-and drop the bcm59056 DTS in favor of describing the PMU in users'
-DTS files, as is done for most other MFDs.
-
-The BCM59054 is fairly similar to the BCM59056, with the primary
-difference being the different number and layout of regulators.
-It is primarily used in devices using the BCM21664 and BCM23550
-chipsets.
-
-I'd appreciate testing on BCM59056-equipped boards to make sure
-they aren't affected negatively by the changes. So far, I've
-tested this patch series on a Samsung Galaxy Grand Neo (BAFFINLITE
-REV02) with a BCM23550 chipset (BCM59054 MFD); this device is not
-yet supported in the mainline kernel, but I'm working on adding
-support for it, and other commercially-available devices using
-Broadcom Kona chips. Hopefully some of that work will make it
-into mainline in the near future ;)
+Convert devicetree bindings for the Broadcom BCM59056 PMU MFD from
+TXT to YAML format. This patch does not change any functionality;
+the bindings remain the same.
 
 Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 ---
-Artur Weber (6):
-      dt-bindings: mfd: brcm,bcm59056: Convert to YAML
-      dt-bindings: mfd: brcm,bcm59056: Add compatible for BCM59054
-      ARM: dts: Drop DTS for BCM59056 PMIC
-      mfd: bcm590xx: Add compatible for BCM59054
-      regulator: bcm590xx: Add support for BCM59054
-      regulator: bcm590xx: Add proper handling for PMMODE registers
+ .../devicetree/bindings/mfd/brcm,bcm59056.txt      | 39 ----------
+ .../devicetree/bindings/mfd/brcm,bcm59056.yaml     | 91 ++++++++++++++++++++++
+ 2 files changed, 91 insertions(+), 39 deletions(-)
 
- .../devicetree/bindings/mfd/brcm,bcm59056.txt      |  39 --
- .../devicetree/bindings/mfd/brcm,bcm59056.yaml     | 142 +++++
- arch/arm/boot/dts/broadcom/bcm28155-ap.dts         |  68 +-
- arch/arm/boot/dts/broadcom/bcm59056.dtsi           |  91 ---
- drivers/mfd/bcm590xx.c                             |   5 +-
- drivers/regulator/bcm590xx-regulator.c             | 708 ++++++++++++++++-----
- include/linux/mfd/bcm590xx.h                       |   7 +
- 7 files changed, 728 insertions(+), 332 deletions(-)
----
-base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
-change-id: 20231029-bcm59054-3ed65e649435
+diff --git a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.txt b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.txt
+deleted file mode 100644
+index be51a15e05f9..000000000000
+--- a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.txt
++++ /dev/null
+@@ -1,39 +0,0 @@
+--------------------------------
+-BCM590xx Power Management Units
+--------------------------------
+-
+-Required properties:
+-- compatible: "brcm,bcm59056"
+-- reg: I2C slave address
+-- interrupts: interrupt for the PMU. Generic interrupt client node bindings
+-  are described in interrupt-controller/interrupts.txt
+-
+-------------------
+-Voltage Regulators
+-------------------
+-
+-Optional child nodes:
+-- regulators: container node for regulators following the generic
+-  regulator binding in regulator/regulator.txt
+-
+-  The valid regulator node names for BCM59056 are:
+-  	rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
+-	mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
+-	csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
+-	gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
+-	vbus
+-
+-Example:
+-	pmu: bcm59056@8 {
+-		compatible = "brcm,bcm59056";
+-		reg = <0x08>;
+-		interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+-		regulators {
+-			rfldo_reg: rfldo {
+-				regulator-min-microvolt = <1200000>;
+-				regulator-max-microvolt = <3300000>;
+-			};
+-
+-			...
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
+new file mode 100644
+index 000000000000..6d6acc9fd312
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
+@@ -0,0 +1,91 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/brcm,bcm59056.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: BCM590xx Power Management Unit MFD
++
++maintainers:
++  - Artur Weber <aweber.kernel@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - "brcm,bcm59056"
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  regulators:
++    type: object
++    description: Container node for regulators.
++
++    # The valid regulator node names for BCM59056 are:
++    #   rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
++    #   mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
++    #   csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
++    #   gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
++    #   vbus
++    patternProperties:
++      "^(cam|sim|mmc)ldo[1-2]$":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
++
++      "^(rf|sd|sdx|aud|mic|usb|vib)ldo$":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
++
++      "^(c|m|v)sr$":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
++
++      "^(io|sd)sr[1-2]$":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
++
++      "^gpldo[1-6]$":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
++
++    properties:
++      "vbus":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pmu: bcm59056@8 {
++            compatible = "brcm,bcm59056";
++            reg = <0x08>;
++            interrupts = <0 215 IRQ_TYPE_LEVEL_HIGH>;
++            regulators {
++                rfldo_reg: rfldo {
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <3300000>;
++                };
++            };
++        };
++    };
 
-Best regards,
 -- 
-Artur Weber <aweber.kernel@gmail.com>
+2.42.0
 
