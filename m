@@ -2,153 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8CF7DB39C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A467DB384
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbjJ3Gjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43614 "EHLO
+        id S231626AbjJ3GiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232020AbjJ3Gjm (ORCPT
+        with ESMTP id S231678AbjJ3GiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:39:42 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E548F3;
-        Sun, 29 Oct 2023 23:39:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nkS8hUmfgoQSLmx8FI/zq+MIJrZc+iOqtKZUu0oHy77DjunAxj2+se+lHOh+8mgxZSV4KorOIHzXP7rjIYciWHX2NxD0duA+Xg9fEo6S+CTHykHwOnDHq/ZvmoiF3CxGQD6gcRCr55+KwTaVH/AcPDKMpUIWFLcSUFMZ1jh4pKGKy31zp4vdFZmNR6qd5pfJJi/fTmEeeoKjlUyummf1qEhemdo6o/uWlIcBx88DNtSOxF5a673O/p+WTS0cghy1BGu7ypkj1/RDJeAMG/4ifePGe+HW24tT1H5+k1TUCUPjynJ7WM/HurIOIKRa3e5Vqp2me0ToCEQhsB/r+vDh7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7S0QfNyZyCPa4u3nkOKUErbZa/aijuE0Cav6TY9y0Jo=;
- b=dEKbUtzBVyAPUqsIoWpl7nZ5a7D0sfprtxuFCU83wSpDMePeIIMS4Nzjko0x3BBPHEcvUfgEREyCVw8e6qfSbE4S0C3i9uPmwwPIxGXempy9u2BU2U8gttISX3VNgyKLAgEmwE/7aYxOVSzp5MJHuFNpe24bFmOtR/oJoNSj76Pcug25z45topn7yqBQ8nENR4+pVoD0OjTGKBqYUPvPZ5Oi8isctazW1myEkSB3AfxTXh07uxC3h+niPjwozBr/vMknFqTD06UTE5M5Ll1S5Wv8Vwaq9NqNLoURArvx3yl85nKDJOlKcZc4pEl4xi1YxGuD07bMmVYnerUhnYloVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7S0QfNyZyCPa4u3nkOKUErbZa/aijuE0Cav6TY9y0Jo=;
- b=mw5NEosPzc8OhhPO1ytdra4r0BlYWjdiytGAMn3sDaEdd8bV5AqvBg2A2klNdMZDPHvj16fpV5KCJB7lQ5A/5/NYCaDVyKiJEmfR96WPAYVrQyxTks+ZabFcBN5/tpn75D9e4tpECfPY8WXzyM9SzA44t4GQDfg9i/bXkseBVVg=
-Received: from CY8PR19CA0046.namprd19.prod.outlook.com (2603:10b6:930:6::10)
- by DS0PR12MB8041.namprd12.prod.outlook.com (2603:10b6:8:147::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.25; Mon, 30 Oct
- 2023 06:39:09 +0000
-Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
- (2603:10b6:930:6:cafe::71) by CY8PR19CA0046.outlook.office365.com
- (2603:10b6:930:6::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28 via Frontend
- Transport; Mon, 30 Oct 2023 06:39:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Mon, 30 Oct 2023 06:39:08 +0000
-Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 30 Oct
- 2023 01:38:48 -0500
-From:   Nikunj A Dadhania <nikunj@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
-        <x86@kernel.org>, <kvm@vger.kernel.org>
-CC:     <bp@alien8.de>, <mingo@redhat.com>, <tglx@linutronix.de>,
-        <dave.hansen@linux.intel.com>, <dionnaglaze@google.com>,
-        <pgonda@google.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
-        <nikunj@amd.com>
-Subject: [PATCH v5 14/14] x86/sev: Enable Secure TSC for SNP guests
-Date:   Mon, 30 Oct 2023 12:06:52 +0530
-Message-ID: <20231030063652.68675-15-nikunj@amd.com>
+        Mon, 30 Oct 2023 02:38:06 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7437DAB
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:37:56 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SJk3X2WFqzvQJ0;
+        Mon, 30 Oct 2023 14:32:56 +0800 (CST)
+Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 30 Oct
+ 2023 14:37:53 +0800
+From:   Jinjie Ruan <ruanjinjie@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will.deacon@arm.com>, <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH v4.19] arm64: fix a concurrency issue in emulation_proc_handler()
+Date:   Mon, 30 Oct 2023 06:37:09 +0000
+Message-ID: <20231030063709.2443546-1-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231030063652.68675-1-nikunj@amd.com>
-References: <20231030063652.68675-1-nikunj@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|DS0PR12MB8041:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3968ae8b-6668-42eb-64ca-08dbd912eba9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 26/CSPagFGtGSue1wm/NaJtR5R/sHa9keuLy5KZI/zPpe/FQcsogOXKoBMOnvH56my8zIiWIACCu/lcZzr/qtkUwZigwJfH9QFHHnMHlPDSP+GfSG3+4yUlg5TvWpYjPEmyeLmmln2nwFH1ZMjjPBfb2s3bRJtLfPvILC84GjZRZy9y+zjPBMfVR3dwGrQK5zBm2PGgJCWaOzzfwXHoV4XUgQu8PDzPcEWAGIuMGLkj6uRiaBBL44VjQyFIwV8lY62617kyZYHumvKFQFwxIQk+PHlejhANLE3ONqA/jXObexbr7GfbgqNlqjtTBv11E5boKafJZAzdb2PWC9xpI2FntRjoKxFGX85MrHWENkd2URghAZGvuZIBbnuTljEWhB6qeJ/ei2XVIjul71J/rYmI7+8J3QxreijhWffmnGbhxYalXGvIzZ7POtO9XYkXJsKPpREQ2sK3slWPyQwVBMZx1hZbNoorZdvxbPNjBKSr/REGhlhVA8djY11V1QEXQMqLvDYpgBzdYd3pJOd4MNUtJ308RRSl5R1sv8yTn6Dene1AbheIfyC5DLFZgIHyowLXXXEhGl6CMju66tseDubasBbEgJqnwPZHteC6Hc6jWTlxIwImFJVgNMcs2c1ElNOYy74kqofDqYIi7ndCIDv26BknraNKpFcHBGwYCv2a+Aw/jgY9U+0gD+SccWIxmIimfohLsaOtPzrC9Gtx2CMUp/wDjpWFdBcQFQnHINEP90t9O24vLIgrusr0Ipg8ZBOusthphwP9wj2mubUaBfA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(376002)(136003)(230922051799003)(451199024)(64100799003)(186009)(82310400011)(1800799009)(40470700004)(46966006)(36840700001)(2906002)(40460700003)(36860700001)(54906003)(70586007)(70206006)(47076005)(81166007)(356005)(82740400003)(316002)(478600001)(26005)(7696005)(6666004)(110136005)(83380400001)(2616005)(16526019)(426003)(1076003)(336012)(41300700001)(7416002)(5660300002)(8936002)(8676002)(4326008)(40480700001)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 06:39:08.8349
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3968ae8b-6668-42eb-64ca-08dbd912eba9
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8041
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.55]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all the required plumbing is done for enabling SNP
-Secure TSC feature, add Secure TSC to snp features present list.
+In linux-6.1, the related code is refactored in commit 124c49b1b5d9
+("arm64: armv8_deprecated: rework deprected instruction handling") and this
+issue was incidentally fixed. I have adapted the patch set to linux stable
+5.10. However, 4.19 and 5.10 are too different and the patch set is
+hard to adapt to 4.19.
 
-The CC_ATTR_GUEST_SECURE_TSC can be used by the guest to query whether
-the SNP guest has Secure TSC feature active.
+This patch is to solve the problem of repeated addition of linked lists
+described below with few changes.
 
-Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+How to reproduce:
+CONFIG_ARMV8_DEPRECATED=y, CONFIG_SWP_EMULATION=y, and CONFIG_DEBUG_LIST=y,
+then launch two shell executions:
+       #!/bin/bash
+       while [ 1 ];
+       do
+           echo 1 > /proc/sys/abi/swp
+       done
+
+or "echo 1 > /proc/sys/abi/swp" and then aunch two shell executions:
+       #!/bin/bash
+       while [ 1 ];
+       do
+           echo 0 > /proc/sys/abi/swp
+       done
+
+In emulation_proc_handler(), read and write operations are performed on
+insn->current_mode. In the concurrency scenario, mutex only protects
+writing insn->current_mode, and not protects the read. Suppose there are
+two concurrent tasks, task1 updates insn->current_mode to INSN_EMULATE
+in the critical section, the prev_mode of task2 is still the old data
+INSN_UNDEF of insn->current_mode. As a result, two tasks call
+update_insn_emulation_mode twice with prev_mode = INSN_UNDEF and
+current_mode = INSN_EMULATE, then call register_emulation_hooks twice,
+resulting in a list_add double problem.
+
+After applying this patch, the following list add or list del double
+warnings never occur.
+
+Call trace:
+ __list_add_valid+0xd8/0xe4
+ register_undef_hook+0x94/0x13c
+ update_insn_emulation_mode+0xd0/0x12c
+ emulation_proc_handler+0xd8/0xf4
+ proc_sys_call_handler+0x140/0x250
+ proc_sys_write+0x1c/0x2c
+ new_sync_write+0xec/0x18c
+ vfs_write+0x214/0x2ac
+ ksys_write+0x70/0xfc
+ __arm64_sys_write+0x24/0x30
+ el0_svc_common.constprop.0+0x7c/0x1bc
+ do_el0_svc+0x2c/0x94
+ el0_svc+0x20/0x30
+ el0_sync_handler+0xb0/0xb4
+ el0_sync+0x160/0x180
+
+Call trace:
+ __list_del_entry_valid+0xac/0x110
+ unregister_undef_hook+0x34/0x80
+ update_insn_emulation_mode+0xf0/0x180
+ emulation_proc_handler+0x8c/0xd8
+ proc_sys_call_handler+0x1d8/0x208
+ proc_sys_write+0x14/0x20
+ new_sync_write+0xf0/0x190
+ vfs_write+0x304/0x388
+ ksys_write+0x6c/0x100
+ __arm64_sys_write+0x1c/0x28
+ el0_svc_common.constprop.4+0x68/0x188
+ do_el0_svc+0x24/0xa0
+ el0_svc+0x14/0x20
+ el0_sync_handler+0x90/0xb8
+ el0_sync+0x160/0x180
+
+Fixes: af483947d472 ("arm64: fix oops in concurrently setting insn_emulation sysctls")
+Cc: stable@vger.kernel.org#4.19.x
+Cc: gregkh@linuxfoundation.org
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 ---
- arch/x86/boot/compressed/sev.c |  3 ++-
- arch/x86/mm/mem_encrypt.c      | 10 ++++++++--
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/armv8_deprecated.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 80d76aea1f7b..b1a4bab8ecf1 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -375,7 +375,8 @@ static void enforce_vmpl0(void)
-  * by the guest kernel. As and when a new feature is implemented in the
-  * guest kernel, a corresponding bit should be added to the mask.
-  */
--#define SNP_FEATURES_PRESENT	MSR_AMD64_SNP_DEBUG_SWAP
-+#define SNP_FEATURES_PRESENT	(MSR_AMD64_SNP_DEBUG_SWAP |	\
-+				 MSR_AMD64_SNP_SECURE_TSC)
- 
- u64 snp_get_unsupported_features(u64 status)
+diff --git a/arch/arm64/kernel/armv8_deprecated.c b/arch/arm64/kernel/armv8_deprecated.c
+index 7c69a203cdf8..b8d481c3e26d 100644
+--- a/arch/arm64/kernel/armv8_deprecated.c
++++ b/arch/arm64/kernel/armv8_deprecated.c
+@@ -211,10 +211,12 @@ static int emulation_proc_handler(struct ctl_table *table, int write,
+ 				  loff_t *ppos)
  {
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 01abecc9a774..26608b9f2ca7 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -69,8 +69,14 @@ static void print_mem_encrypt_feature_info(void)
- 		pr_cont(" SEV-ES");
+ 	int ret = 0;
+-	struct insn_emulation *insn = container_of(table->data, struct insn_emulation, current_mode);
+-	enum insn_emulation_mode prev_mode = insn->current_mode;
++	struct insn_emulation *insn;
++	enum insn_emulation_mode prev_mode;
  
- 	/* Secure Nested Paging */
--	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
--		pr_cont(" SEV-SNP");
-+	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
-+		pr_cont(" SEV-SNP\n");
-+		pr_cont("SNP Features active: ");
-+
-+		/* SNP Secure TSC */
-+		if (cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
-+			pr_cont(" SECURE-TSC");
-+	}
+ 	mutex_lock(&insn_emulation_mutex);
++	insn = container_of(table->data, struct insn_emulation, current_mode);
++	prev_mode = insn->current_mode;
+ 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
  
- 	pr_cont("\n");
- }
+ 	if (ret || !write || prev_mode == insn->current_mode)
 -- 
 2.34.1
 
