@@ -2,194 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFB17DBCED
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B7B7DBCF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjJ3Pwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        id S233646AbjJ3PyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbjJ3Pwe (ORCPT
+        with ESMTP id S233642AbjJ3PyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:52:34 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E80C5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:52:30 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so7464389a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698681149; x=1699285949; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qcBEi1lBI38DN/iPYBUEKFD33e1P8VGGwEZLkT86i0o=;
-        b=OnwFDxQn/S7Fb/dcQZG8ZAoM2RjKGNeGszz31t93ziMlKf7+UpvgTE43IMFiwwE7nS
-         o7rM3LpFn4aboSrd98R6sssEkpXUnqEr7NcuLdsz/p+40XofJSrpLgN58eTablLyLKQC
-         9LJVgJOl1IPeo3alcuKVN/mTlr8is8xwS+mIF+bc3HObnznyVgEDDyI3MY5+Y10yQfaz
-         iybeQcbfilGQ7NJcMCns1zSZv4ZzTi5GI8a4T29enAqldkIThsUtIOSQ/XEO/WF+n+Jb
-         9hd5VgwRIWMJGnj8JaWCjkBXeLK6GmUFnQz4xmcKAwADuwu5hqFAKBdMXnYLc98JdhV0
-         GPew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698681149; x=1699285949;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qcBEi1lBI38DN/iPYBUEKFD33e1P8VGGwEZLkT86i0o=;
-        b=nT7ePtniW7HbNfeaWa4ed4JK+ZwFu+PPIUYBvofdfWOtd/IfMRh8Ymys5RtB3tJrv7
-         /9MBL/k1M2veJMpkhHzdOqUlutOc4EdRT3VT2rQ31lsvfaLKPzV5Pfi7m5cHzGdy8gYy
-         v5ZRJ9B8AVRF0nh/X6Buwc7bx42emJ66I+IDmY6r/js1Fj+VVKjAE++/mspQRTkRr271
-         SM7PriG8FD6OCsPX7ob8OO5456RtRl6iApsJJsdXkuH8owZOdxrPeayvpAuNlj8S6rbQ
-         YsbL+CqBNDfi8yoWn/7OfqH1k2+cqKvVCfRlWORQX3c4/rbpz3TPEIFLo3fnek0eBatc
-         8OXA==
-X-Gm-Message-State: AOJu0Yzm/LpObfMZJkLhNueCzb4OA0aUwt6aJoTk2yeuA9jouSlGNs0u
-        8Zvaqw9xkHEOshk1CYo27sk=
-X-Google-Smtp-Source: AGHT+IGlois2Urfp4DO3dHoJNYIFRP6cbF1tyrafdH0gLp9u4cmMpfl/mWbX2MVvH6o1Af4Rzoxv1A==
-X-Received: by 2002:a17:906:80da:b0:9d3:ccd1:a922 with SMTP id a26-20020a17090680da00b009d3ccd1a922mr2329078ejx.58.1698681149064;
-        Mon, 30 Oct 2023 08:52:29 -0700 (PDT)
-Received: from [192.168.178.25] ([134.19.60.47])
-        by smtp.gmail.com with ESMTPSA id lo10-20020a170906fa0a00b00993a37aebc5sm6100891ejb.50.2023.10.30.08.52.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 08:52:28 -0700 (PDT)
-Message-ID: <403a0750-361e-4218-8c83-a085966349e4@gmail.com>
-Date:   Mon, 30 Oct 2023 16:52:25 +0100
+        Mon, 30 Oct 2023 11:54:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C07C5;
+        Mon, 30 Oct 2023 08:54:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698681244; x=1730217244;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yuuVEK/WCKgIgnUepz96+I9qXc9OXiBKs3MAo0tKBzs=;
+  b=KQ8Veuxst/uEeG5+Y/CK/bkc/KSqeiNy7tVx9kkWZv+hd31JRRoe6Mc+
+   7hw4YQBky3OiEgUKGe4wkN8JXdPVu4H6LIfAtSopOLOQBqAJPeOi5robO
+   D+WBS2fln4/I3xKXveqj4BQBrnYa+Jmst5xuGkcG24i/G4dh/ywYizBQ3
+   tEw3HSAEsDUN62iNnS3omSZ9V+Bo8CDnxkCpYelhqTZX252JoJDwqSyjN
+   tDC7mMvq0g6w8au80MCpQ6f/SOFflmRyRZsVweuTHb55kDO1o3LqGuzA3
+   uq53zR8KdE0b/7tOH/FLLM85hhyiAInKyPa2H1vhE1u5n45o/WUVAhWa4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="386986404"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="386986404"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:53:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="736770579"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="736770579"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 30 Oct 2023 08:53:46 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3F6C72AB; Mon, 30 Oct 2023 17:53:45 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Raag Jadav <raag.jadav@intel.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v1 1/1] pinctrl: tangier: Move default strength assignment to a switch-case
+Date:   Mon, 30 Oct 2023 17:53:40 +0200
+Message-Id: <20231030155340.3468528-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: Fixes uninitialized variable usage in
- amdgpu_dm_setup_replay
-Content-Language: en-US
-To:     Yuran Pereira <yuran.pereira@hotmail.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc:     "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>,
-        "Lakha, Bhawanpreet" <Bhawanpreet.Lakha@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <DB3PR10MB683590457246A6625BAA6102E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
- <dc2242cd-6522-4073-b376-edc2a9abc3d9@amd.com>
- <PH8PR12MB727953EE85D593EF25650454F9DCA@PH8PR12MB7279.namprd12.prod.outlook.com>
- <39ab34ec-209d-4176-b271-1a02e2976497@amd.com>
- <DB3PR10MB6835311E66539604DD442CBBE8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-In-Reply-To: <DB3PR10MB6835311E66539604DD442CBBE8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 28.10.23 um 02:48 schrieb Yuran Pereira:
-> Hello,
-> On Fri, Oct 27, 2023 at 11:57:45AM -0400, Hamza Mahfooz wrote:
->> On 10/27/23 11:55, Lakha, Bhawanpreet wrote:
->>> [AMD Official Use Only - General]
->>>
->>>
->>>
->>> There was a consensus to use memset instead of {0}. I remember making
->>> changes related to that previously.
->> Hm, seems like it's used rather consistently in the DM and in DC
->> though.
->>
-> Have you decided which one should be used?
->
-> Should I submit a v2 patch using {0} instead of memset?
+iWhen ->pin_config_set() is called from the GPIO library (assumed
+GpioIo() ACPI resource), the argument can be 1, when, for example,
+PullDefault is provided. In such case we supply sane default in
+the driver. Move that default assingment to a switch-case, so
+it will be consolidated in one place.
 
-The problem is that {0} doesn't initialize padding fields in structures.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/intel/pinctrl-tangier.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-So what can happen are problems like leaking bytes to userspace or 
-getting unstable hash keys etc...
-
-So I think memset() is usually preferred and that not only counts for Linux.
-
-Regards,
-Christian.
-
->
->
-> Yuran Pereira
->>> Bhawan
->>>
->>> ------------------------------------------------------------------------
->>> *From:* Mahfooz, Hamza <Hamza.Mahfooz@amd.com>
->>> *Sent:* October 27, 2023 11:53 AM
->>> *To:* Yuran Pereira <yuran.pereira@hotmail.com>; airlied@gmail.com
->>> <airlied@gmail.com>
->>> *Cc:* Li, Sun peng (Leo) <Sunpeng.Li@amd.com>; Lakha, Bhawanpreet
->>> <Bhawanpreet.Lakha@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; Siqueira,
->>> Rodrigo <Rodrigo.Siqueira@amd.com>; linux-kernel@vger.kernel.org
->>> <linux-kernel@vger.kernel.org>; amd-gfx@lists.freedesktop.org
->>> <amd-gfx@lists.freedesktop.org>; dri-devel@lists.freedesktop.org
->>> <dri-devel@lists.freedesktop.org>; Deucher, Alexander
->>> <Alexander.Deucher@amd.com>; Koenig, Christian
->>> <Christian.Koenig@amd.com>;
->>> linux-kernel-mentees@lists.linuxfoundation.org
->>> <linux-kernel-mentees@lists.linuxfoundation.org>
->>> *Subject:* Re: [PATCH] drm/amdgpu: Fixes uninitialized variable usage in
->>> amdgpu_dm_setup_replay
->>> On 10/26/23 17:25, Yuran Pereira wrote:
->>>> Since `pr_config` is not initialized after its declaration, the
->>>> following operations with `replay_enable_option` may be performed
->>>> when `replay_enable_option` is holding junk values which could
->>>> possibly lead to undefined behaviour
->>>>
->>>> ```
->>>>        ...
->>>>        pr_config.replay_enable_option |= pr_enable_option_static_screen;
->>>>        ...
->>>>
->>>>        if (!pr_config.replay_timing_sync_supported)
->>>>            pr_config.replay_enable_option &= ~pr_enable_option_general_ui;
->>>>        ...
->>>> ```
->>>>
->>>> This patch initializes `pr_config` after its declaration to ensure that
->>>> it doesn't contain junk data, and prevent any undefined behaviour
->>>>
->>>> Addresses-Coverity-ID: 1544428 ("Uninitialized scalar variable")
->>>> Fixes: dede1fea4460 ("drm/amd/display: Add Freesync Panel DM code")
->>>> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
->>>> ---
->>>>     drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c | 3 +++
->>>>     1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
->>>> index 32d3086c4cb7..40526507f50b 100644
->>>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
->>>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
->>>> @@ -23,6 +23,7 @@
->>>>      *
->>>>      */
->>>> +#include <linux/string.h>
->>>>     #include "amdgpu_dm_replay.h"
->>>>     #include "dc.h"
->>>>     #include "dm_helpers.h"
->>>> @@ -74,6 +75,8 @@ bool amdgpu_dm_setup_replay(struct dc_link *link, struct amdgpu_dm_connector *ac
->>>>          struct replay_config pr_config;
->>> I would prefer setting pr_config = {0};
->>>
->>>>          union replay_debug_flags *debug_flags = NULL;
->>>> +     memset(&pr_config, 0, sizeof(pr_config));
->>>> +
->>>>          // For eDP, if Replay is supported, return true to skip checks
->>>>          if (link->replay_settings.config.replay_supported)
->>>>                  return true;
->>> -- 
->>> Hamza
->>>
->> -- 
->> Hamza
->>
+diff --git a/drivers/pinctrl/intel/pinctrl-tangier.c b/drivers/pinctrl/intel/pinctrl-tangier.c
+index 007bca1cf224..26e34ec0a972 100644
+--- a/drivers/pinctrl/intel/pinctrl-tangier.c
++++ b/drivers/pinctrl/intel/pinctrl-tangier.c
+@@ -368,14 +368,11 @@ static int tng_config_set_pin(struct tng_pinctrl *tp, unsigned int pin,
+ 		break;
+ 
+ 	case PIN_CONFIG_BIAS_PULL_UP:
+-		/* Set default strength value in case none is given */
+-		if (arg == 1)
+-			arg = 20000;
+-
+ 		switch (arg) {
+ 		case 50000:
+ 			term = BUFCFG_PUPD_VAL_50K;
+ 			break;
++		case 1: /* Set default strength value in case none is given */
+ 		case 20000:
+ 			term = BUFCFG_PUPD_VAL_20K;
+ 			break;
+@@ -394,14 +391,11 @@ static int tng_config_set_pin(struct tng_pinctrl *tp, unsigned int pin,
+ 		break;
+ 
+ 	case PIN_CONFIG_BIAS_PULL_DOWN:
+-		/* Set default strength value in case none is given */
+-		if (arg == 1)
+-			arg = 20000;
+-
+ 		switch (arg) {
+ 		case 50000:
+ 			term = BUFCFG_PUPD_VAL_50K;
+ 			break;
++		case 1: /* Set default strength value in case none is given */
+ 		case 20000:
+ 			term = BUFCFG_PUPD_VAL_20K;
+ 			break;
+-- 
+2.40.0.1.gaa8946217a0b
 
