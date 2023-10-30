@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8576B7DB965
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD027DB963
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbjJ3MAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        id S233133AbjJ3MA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbjJ3MA1 (ORCPT
+        with ESMTP id S229456AbjJ3MA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:00:27 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FB4F1;
-        Mon, 30 Oct 2023 05:00:23 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32dc918d454so2766818f8f.2;
-        Mon, 30 Oct 2023 05:00:23 -0700 (PDT)
+        Mon, 30 Oct 2023 08:00:26 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579D0E1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:00:22 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso6837671a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698667221; x=1699272021; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9T5S8kCI0IiXREJBxPiHYf6awYVTefKwzkyELqsdrZo=;
-        b=Noz1G9520KNvd0+YjFw9dE7qpt0CrYBhVW4XdvRQ6Cu3ZQtDPUFtKiKGAEvCfTXqa+
-         On+Fdcnl2qT+xPqHk7TYJiS33gg3xZbfNM+QZTOXYwt+GCuSc31GygWJRePV0vz59Ghf
-         H0SV1wHPTvD0ZbCEr6GNa70H3DlvjMz9NxNkMnie3RwQQPuRgVJFlY4nFuuQtZhV0hHm
-         20i247AgoqODHinunqPnSJDwySR/m4oKgWbXHTmg23UHJLvsY3LMMoqpFuUgxRMfB/Wo
-         3cMYpjGxcHi7+7mz4m3Fi3QxMUDerKdStVDlXThpi6NDEkQ59nSrLsYxfln8qyu/4FbD
-         NH/w==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698667221; x=1699272021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eD/Hku5WqOIioJLR7k0Stytz0LCcxDS5zuThuxZH3V0=;
+        b=OBHjmSKFu05TB83BwUChpVYHYJ4/rhgRXe0sQ0nwZKc2e+fWzRIJYPZigaLmdVZqxL
+         78+MIYsQoqnmHX1/ap0x3VRNdUMAYIQkMAHMXD5M+EyGtFJlXxxwEc6OGBiI3LeYquH7
+         8iZTigYYHkztWVAF94xR9cOKIQTyu5jaZreMpCbfWJJ1GnR0Zd8SL6+WTcN9NxQKDJ99
+         /LDr/pIXHNNxeJIHOk5nGCDSrBcrp979nbsT7WMgyLn8S3gIUdZymsQ5SKoZgmWyxJ9e
+         UGYUGumxDfE/ApkYWPu9r+pVDsZ4nXgIcfap5kiN27JqRbiA0nC4zANb3HK1zZiRSTUo
+         dj2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1698667221; x=1699272021;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9T5S8kCI0IiXREJBxPiHYf6awYVTefKwzkyELqsdrZo=;
-        b=SNHSxieI0yYl9jmpExw2v48C7XjWE76a95eztt8nsEy9uJpJtLtgaxt6gDBlu6zZ8k
-         lEOKMQCCMoF6bOmFyuigQcd0TpeI4wwgnFTjMwTP4z3G7vt2P5O0gLTaOaRdlumNsh9Y
-         umB7DTEp0nhMTeiWL32wA9X3aJl3qTI1P1gsDFD/0SDpCEhanAAwcpH64drDYCYK1eqO
-         6Lkl4EOZxAxvUsdWEMKhDlFTx2k/GhD8ZX9GE9VLmHTy5C9I1alUTO0/VOQNKHOIITbR
-         QAI9/BZnjZ+0xhP9lMcFo5/RmElIw83l9TeexsRZuz/8SU74vZ6j+wyum3Nwre8JGh2k
-         E/gw==
-X-Gm-Message-State: AOJu0Yy81Z3KgtBMlWv80vRiYBvrYIcNdcN+Em1k6GpCKSaBNLf4STXR
-        osoMgU1NfE3mF76d1MQpAaQ=
-X-Google-Smtp-Source: AGHT+IHtRzHF4q6z4FowSshP7nN2TfJP0FrDkHaAdi0mhZlwavk9Z4J+Uu0HHLX/PFA2391Un1ZvuQ==
-X-Received: by 2002:a5d:59a5:0:b0:32f:89fb:771d with SMTP id p5-20020a5d59a5000000b0032f89fb771dmr1596003wrr.12.1698667221311;
-        Mon, 30 Oct 2023 05:00:21 -0700 (PDT)
-Received: from [192.168.14.164] (54-240-197-239.amazon.com. [54.240.197.239])
-        by smtp.gmail.com with ESMTPSA id h16-20020adfe990000000b0032dc24ae625sm8118864wrm.12.2023.10.30.05.00.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        bh=eD/Hku5WqOIioJLR7k0Stytz0LCcxDS5zuThuxZH3V0=;
+        b=eTHIK4JQNO3Z1u5tWLWClStVpnXwVPXMgdyn3O3b1t20I4Grn4WPeX5prHV1mAoVZi
+         vNrRxGAVuz4FpQ8bDtp765RjBxjKvuvCSq6frUlaIgNTe8IYkL5Dggaplb/MlB3Jb8ut
+         190EDB9odt17v+wXkHMV5q0huaxc/H9BGzHpVJYMfPktomC+MzGzSPaikIPell6lxjaf
+         032H3g7+AsivRjUIVC+OctDAMPQjlXHmBo6JykvpSU5esyj55fEa9yuuRR4YZdY8uaNX
+         9oRcWK4yDI2A8QRacRc35VdzWCNCMQxW0ocjLnpwlgawXa0lt/2CjGK9m3H8Xme1wbDj
+         Ul2Q==
+X-Gm-Message-State: AOJu0Yyk8QCpcWeSnt72FbQSzY2DZMTYW2RCapb8y2j0/dmS4LjIXBj3
+        nPmsVo4ECx9M84OVad4HhfMfQw==
+X-Google-Smtp-Source: AGHT+IEu6pYcuAdxr8KM6ya/Cfy3+ocS+J14sUsIKB4T8zEWt11CS+7dZS44KS+gjWW9iDuewhT57Q==
+X-Received: by 2002:a17:906:fd8c:b0:9c7:5a01:ffea with SMTP id xa12-20020a170906fd8c00b009c75a01ffeamr9315203ejb.30.1698667220758;
         Mon, 30 Oct 2023 05:00:20 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <1f528e23-b58e-483e-8d65-97a822544167@xen.org>
-Date:   Mon, 30 Oct 2023 12:00:16 +0000
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id c16-20020a1709060fd000b0098ce63e36e9sm5958410ejk.16.2023.10.30.05.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 05:00:20 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 13:00:18 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Shigeru Yoshida <syoshida@redhat.com>
+Cc:     jmaloy@redhat.com, ying.xue@windriver.com, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com,
+        syzbot+9425c47dccbcb4c17d51@syzkaller.appspotmail.com
+Subject: Re: [PATCH net v3] tipc: Change nla_policy for bearer-related names
+ to NLA_NUL_STRING
+Message-ID: <ZT+a0upR3QjrZJBK@nanopsycho>
+References: <20231030075540.3784537-1-syoshida@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v7 00/11] KVM: xen: update shared_info and vcpu_info
- handling
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-References: <20231002095740.1472907-1-paul@xen.org>
- <6629b7f0b56e0fb2bad575a1d598cce26b1c6432.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <6629b7f0b56e0fb2bad575a1d598cce26b1c6432.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030075540.3784537-1-syoshida@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2023 07:41, David Woodhouse wrote:
-> On Mon, 2023-10-02 at 09:57 +0000, Paul Durrant wrote:
->> From: Paul Durrant <pdurrant@amazon.com>
->>
->> The following text from the original cover letter still serves as an
->> introduction to the series:
->>
->> "Currently we treat the shared_info page as guest memory and the VMM
->> informs KVM of its location using a GFN. However it is not guest memory as
->> such; it's an overlay page. So we pointlessly invalidate and re-cache a
->> mapping to the *same page* of memory every time the guest requests that
->> shared_info be mapped into its address space. Let's avoid doing that by
->> modifying the pfncache code to allow activation using a fixed userspace HVA
->> as well as a GPA."
->>
->> This version of the series is functionally the same as version 6. I have
->> simply added David Woodhouse's R-b to patch 11 to indicate that he has
->> now fully reviewed the series.
-> 
-> Thanks. I believe Sean is probably waiting for us to stop going back
-> and forth, and for the dust to settle. So for the record: I think I'm
-> done heckling and this is ready to go in.
-> 
+Mon, Oct 30, 2023 at 08:55:40AM CET, syoshida@redhat.com wrote:
+>syzbot reported the following uninit-value access issue [1]:
+>
+>=====================================================
+>BUG: KMSAN: uninit-value in strlen lib/string.c:418 [inline]
+>BUG: KMSAN: uninit-value in strstr+0xb8/0x2f0 lib/string.c:756
+> strlen lib/string.c:418 [inline]
+> strstr+0xb8/0x2f0 lib/string.c:756
+> tipc_nl_node_reset_link_stats+0x3ea/0xb50 net/tipc/node.c:2595
+> genl_family_rcv_msg_doit net/netlink/genetlink.c:971 [inline]
+> genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+> genl_rcv_msg+0x11ec/0x1290 net/netlink/genetlink.c:1066
+> netlink_rcv_skb+0x371/0x650 net/netlink/af_netlink.c:2545
+> genl_rcv+0x40/0x60 net/netlink/genetlink.c:1075
+> netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+> netlink_unicast+0xf47/0x1250 net/netlink/af_netlink.c:1368
+> netlink_sendmsg+0x1238/0x13d0 net/netlink/af_netlink.c:1910
+> sock_sendmsg_nosec net/socket.c:730 [inline]
+> sock_sendmsg net/socket.c:753 [inline]
+> ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+> ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+> __sys_sendmsg net/socket.c:2624 [inline]
+> __do_sys_sendmsg net/socket.c:2633 [inline]
+> __se_sys_sendmsg net/socket.c:2631 [inline]
+> __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+>Uninit was created at:
+> slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
+> slab_alloc_node mm/slub.c:3478 [inline]
+> kmem_cache_alloc_node+0x577/0xa80 mm/slub.c:3523
+> kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:559
+> __alloc_skb+0x318/0x740 net/core/skbuff.c:650
+> alloc_skb include/linux/skbuff.h:1286 [inline]
+> netlink_alloc_large_skb net/netlink/af_netlink.c:1214 [inline]
+> netlink_sendmsg+0xb34/0x13d0 net/netlink/af_netlink.c:1885
+> sock_sendmsg_nosec net/socket.c:730 [inline]
+> sock_sendmsg net/socket.c:753 [inline]
+> ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+> ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+> __sys_sendmsg net/socket.c:2624 [inline]
+> __do_sys_sendmsg net/socket.c:2633 [inline]
+> __se_sys_sendmsg net/socket.c:2631 [inline]
+> __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+>TIPC bearer-related names including link names must be null-terminated
+>strings. If a link name which is not null-terminated is passed through
+>netlink, strstr() and similar functions can cause buffer overrun. This
+>causes the above issue.
+>
+>This patch changes the nla_policy for bearer-related names from NLA_STRING
+>to NLA_NUL_STRING. This resolves the issue by ensuring that only
+>null-terminated strings are accepted as bearer-related names.
+>
+>syzbot reported similar uninit-value issue related to bearer names [2]. The
+>root cause of this issue is that a non-null-terminated bearer name was
+>passed. This patch also resolved this issue.
+>
+>Fixes: 7be57fc69184 ("tipc: add link get/dump to new netlink api")
+>Fixes: 0655f6a8635b ("tipc: add bearer disable/enable to new netlink api")
+>Reported-and-tested-by: syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com
+>Closes: https://syzkaller.appspot.com/bug?extid=5138ca807af9d2b42574 [1]
+>Reported-and-tested-by: syzbot+9425c47dccbcb4c17d51@syzkaller.appspotmail.com
+>Closes: https://syzkaller.appspot.com/bug?extid=9425c47dccbcb4c17d51 [2]
+>Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
 
-Nudge.
-
-Sean, is there anything more I need to do on this series?
-
-   Paul
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
