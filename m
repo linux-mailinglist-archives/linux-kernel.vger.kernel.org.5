@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEB67DBBCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82AE7DBBCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjJ3O3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
+        id S233393AbjJ3O3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbjJ3O3c (ORCPT
+        with ESMTP id S233197AbjJ3O26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:29:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40FAC2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698676126;
+        Mon, 30 Oct 2023 10:28:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3807F9F;
+        Mon, 30 Oct 2023 07:28:56 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698676134;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xIZMjEJ0unwch+/xbrgX1dR7Es/DPi6eBHIG0w2M6uI=;
-        b=RHoSIvk0WCpFlWJQ9I01gxooEvSJPd3QykQ4x5FDbN2b4JgTvxxmnEpRZDmCkisZx4R9F9
-        awbt3FU2VEMVW9qViyXzkUG6ZIZZpHYdPk3aAuA6+fvPeoEhcnE1v5+H3y2eN/FMTXNUkd
-        fiibtLV5UC48od6ggJyxXqTdudXiG70=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-36-R6A-FZZFOEuUyUffcUXunQ-1; Mon, 30 Oct 2023 10:28:37 -0400
-X-MC-Unique: R6A-FZZFOEuUyUffcUXunQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E1323830967;
-        Mon, 30 Oct 2023 14:28:35 +0000 (UTC)
-Received: from redhat.com (unknown [10.22.17.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8F0E6492BE0;
-        Mon, 30 Oct 2023 14:28:35 +0000 (UTC)
-Date:   Mon, 30 Oct 2023 09:28:34 -0500
-From:   Bill O'Donnell <bodonnel@redhat.com>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL for v6.7] autofs updates
-Message-ID: <ZT+9kixqhgsRKlav@redhat.com>
-References: <20231027-vfs-autofs-018bbf11ed67@brauner>
- <43ea4439-8cb9-8b0d-5e04-3bd5e85530f4@themaw.net>
+        bh=HGYwynunSWpp7MY0OO3XJkBFIC76kaNXkC48AoOrAVc=;
+        b=HG5UUtFdFYt0Bica1QYIiuNSEnQMtxRj9w+bpsYb3AfvdlKXY7TY7mG0I7mfBNJ26Vb3vH
+        ER4H+Nk6g/JJW+Vn/Oi13KEL6TEQLaGby5uQ6JqENOPTd6j2Jmflk+MxodDPQmZZD26+91
+        GrnifWswkG3mK1wi/Ks+vRIrhC6i7fLlRRulZxfm8mzbuCumlthapIZTd8RtggLw0yswll
+        XBp1pDDuxSh27lbtEBhVahhSXksr9sda76qTJ88Esg4Bwcj203d453C5XBKRoiR5vEavF3
+        yZOr9uPr8SsPoXo2eSnlKfAuctUz5lgEeGQpqPKDtf9P6WaWZW8KRQacCl/P3A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698676134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HGYwynunSWpp7MY0OO3XJkBFIC76kaNXkC48AoOrAVc=;
+        b=QaOIDXiFtF6jCGy9EsLrcRusyaTEH5L7V++quj7q1yHWGNZwm+B08xNgGMCk9CUXz1WMun
+        3MLluabPLEJBK5DQ==
+To:     Sunil V L <sunilvl@ventanamicro.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Sunil V L <sunilvl@ventanamicro.com>
+Subject: Re: [RFC PATCH v2 11/21] PCI: MSI: Add helper function to set
+ system wide MSI support
+In-Reply-To: <20231025202344.581132-12-sunilvl@ventanamicro.com>
+References: <20231025202344.581132-1-sunilvl@ventanamicro.com>
+ <20231025202344.581132-12-sunilvl@ventanamicro.com>
+Date:   Mon, 30 Oct 2023 15:28:53 +0100
+Message-ID: <87a5s0yyje.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43ea4439-8cb9-8b0d-5e04-3bd5e85530f4@themaw.net>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 03:54:52PM +0800, Ian Kent wrote:
-> On 27/10/23 22:33, Christian Brauner wrote:
-> > Hey Linus,
-> > 
-> > /* Summary */
-> > This ports autofs to the new mount api. The patchset has existed for
-> > quite a while but never made it upstream. Ian picked it back up.
-> > 
-> > This also fixes a bug where fs_param_is_fd() was passed a garbage
-> > param->dirfd but it expected it to be set to the fd that was used to set
-> > param->file otherwise result->uint_32 contains nonsense. So make sure
-> > it's set.
-> > 
-> > One less filesystem using the old mount api. We're getting there, albeit
-> > rather slow. The last remaining major filesystem that hasn't converted
-> > is btrfs. Patches exist - I even wrote them - but so far they haven't
-> > made it upstream.
-> 
-> Yes, looks like about 39 still to be converted.
-> 
-> 
-> Just for information, excluding btrfs, what would you like to see as the
-> 
-> priority for conversion (in case me or any of my colleagues get a chance
-> 
-> to spend a bit more time on it)?
+On Thu, Oct 26 2023 at 01:53, Sunil V. L. wrote:
+> Like pci_no_msi() used to disable MSI support, add a function to enable
+> system wide MSI support.
 
-I'm just starting to have a look at zonefs as a candidate.
--Bill
+Why?
 
+int pci_msi_enable = 1;
+
+So this function makes it more one or what am I missing here?
+
+Thanks,
+
+        tglx
