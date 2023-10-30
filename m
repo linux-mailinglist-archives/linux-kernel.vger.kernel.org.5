@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6B87DB708
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031457DB713
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbjJ3KAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        id S232947AbjJ3KAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbjJ3J7z (ORCPT
+        with ESMTP id S232856AbjJ3KAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:59:55 -0400
+        Mon, 30 Oct 2023 06:00:05 -0400
 Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2089.outbound.protection.outlook.com [40.107.15.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C632133;
-        Mon, 30 Oct 2023 02:59:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8BB10DE;
+        Mon, 30 Oct 2023 02:59:37 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TvUdZran8XX1zKL/QIWWu46MAg4bV/hJYT5sKpCR8j5VJpKqhxAND3gpEf69Di0bCJf/YhrwefJLLCxqfrpjJgyvcHnGPVTpKl+ZwhpBPzl7v3wTVlwjtB5eNqzp3vQXlZZ0hcT82WfbPcWtyjJ2NKo6CsYNVmoZupUDwtY5RxF0FQmfTa1XXPspHYAqvmVoRts/g/H8TxvoTLDAiQRB7h6Kqnrrutse7AFiK3l6O1bj05abZ0dOvZoW/C1GlemI6ZZe+qEWUz7yjHbFfUA94lO1wpLpV2vlpB1++VJPjj4fBNBuv74nhRC+byTOsU4g5cS65mV7vHo296Pr7g8Ebw==
+ b=IXEk5emtCANSm/GQFZzFecoDBbL7OrfQKPtxM/9tgcfD8LBIKP5Zvnu2BqQb/ZkACiHhTozpAifvQFSnhgJOKql+KhDJta80RVLNNpgUs51jL2XW3WBjYjBofMZWlWpNjrtDZ/oILmhNK/+YUejyEFiykuQABxo7rEyPaN0nLNNeqk5YqWOt/s6RqlL9vVq0z+s05lgTlBzb3q1GMdjqRbet9pN3nne4U68C+OE+cTD+rLJvujcMjFik26etMt/p+qrRaaYHsZS/drxFP3h/L+jrKobHyu1VBrtawCC7tctPnCIlsdjqpy+q9qGfZkePYZouZOhZSZzCrnYn+3Xf+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VjTqOHOeZ/NVLKd9lNYRmPSGYlvl7aEySjLoUYNtkAc=;
- b=aAaR6mhN32uq9aecICn49fgN76MFi1+GsSlFvkVJezOoiyo9HtjXfwwaVaXS0na1+nKWYd2MH4mgNXKy9Ekol1rH3ds/0hn3A53+Pu+PuJ0AYhivuOTiazF9KQvQuyPT47SoZQIiXOpeVQ1DOoEdm8OLOvoIjE5pniKAyuGEYleZCLpYJsWN0QNKM36Kqx4M/YFst8/dcQ0aNE2BGbBg0l163mRTIz5cuzi6G8SnTtHgcEOOPXxw0hb3lKwMrMNMF5KtrOgUUFHbekDNjJ5tttwAFJ62XQWvxRyfI4ItpLYp5/bybcaaWS/vyXw4jZiWtB89lJozzr6tvb9gXAiSxQ==
+ bh=G4Qg/nbJczaWykdnPsCprrI5TVjM058N/677FUPGEhU=;
+ b=If2mqbR015EsVROkB90PJkimzcX7EixobjwA8gdLL2Yuyri90Vm84VL3e6WmIb3++s3Uen7BJgigU6b2t6tNuDoOXax1EHI9YBUQxkWAktWho6FEnSmJK6IAJxmOOmz9yvMoEuPLUaT0LJoNG9au91qHeLUSc3okXpfBMezTrWhzztoM9tzVUFOaEbqP8u5YfmEqf1OwYz0K/+J1S/NsTWxAkFpnEV0Btk9bw88oMCYONzi6CbUXJLkoZOY64ss7f+FoKj3ux3Ytr1VtSeQSwJqq7AA8/psZ4jQ5+wNAKJd31g15sVKogiolGQRYpCKKWudzFDy/MOVoRJC3rlS0mA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VjTqOHOeZ/NVLKd9lNYRmPSGYlvl7aEySjLoUYNtkAc=;
- b=kNT0hbKhnmh9LptVbALW2ND8ABoCzs57dj3kWCfHi7hQ1GKpNh2kddKPrMo379ra57ZhiAVGB0JkWaHtigQ5hDncvsdDWWtWJ1ghzNk284/HKWJVgWydcFXTZgt1//uKIT54hbP5OLkdXo3V8dtrOu4bl7G0v66SIqcDEPrZJRY=
+ bh=G4Qg/nbJczaWykdnPsCprrI5TVjM058N/677FUPGEhU=;
+ b=S/mPxkRJ/9RAqP2196VOphhtoS0TVPK8pD9uJkRJVHMNqqgf1NlRaYwzSEyL3y8QQvhcgEmfLO3WDPwtZekB+BWKP8AQA7S6Wz2cWk9igSXXHOazyCBaMxWvUYBgjOyhZPXFsH0c2/vQ5OBo2vv07Z4/4aMsgft+i28oKE17wCg=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from DU2PR04MB8630.eurprd04.prod.outlook.com (2603:10a6:10:2dd::15)
  by AS8PR04MB8513.eurprd04.prod.outlook.com (2603:10a6:20b:340::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.16; Mon, 30 Oct
- 2023 09:59:28 +0000
+ 2023 09:59:33 +0000
 Received: from DU2PR04MB8630.eurprd04.prod.outlook.com
  ([fe80::9ba:8e4f:1465:9351]) by DU2PR04MB8630.eurprd04.prod.outlook.com
  ([fe80::9ba:8e4f:1465:9351%4]) with mapi id 15.20.6954.016; Mon, 30 Oct 2023
- 09:59:28 +0000
+ 09:59:33 +0000
 From:   Pankaj Gupta <pankaj.gupta@nxp.com>
 To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         clin@suse.com, conor+dt@kernel.org, pierre.gondois@arm.com,
@@ -49,10 +49,12 @@ To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
         alexander.stein@ew.tq-group.com, V.Sethi@nxp.com
 Cc:     Pankaj Gupta <pankaj.gupta@nxp.com>
-Subject: [PATCH v7 00/11] firmware: imx: NXP Secure-Enclave FW Driver
-Date:   Mon, 30 Oct 2023 15:28:38 +0530
-Message-Id: <20231030095849.3456820-1-pankaj.gupta@nxp.com>
+Subject: [PATCH v7 01/11] Documentation/firmware: added imx/se-fw to other_interfaces
+Date:   Mon, 30 Oct 2023 15:28:39 +0530
+Message-Id: <20231030095849.3456820-2-pankaj.gupta@nxp.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231030095849.3456820-1-pankaj.gupta@nxp.com>
+References: <20231030095849.3456820-1-pankaj.gupta@nxp.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SG2PR03CA0100.apcprd03.prod.outlook.com
@@ -61,50 +63,50 @@ X-ClientProxiedBy: SG2PR03CA0100.apcprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU2PR04MB8630:EE_|AS8PR04MB8513:EE_
-X-MS-Office365-Filtering-Correlation-Id: 976b661e-733e-465e-5b2f-08dbd92ee77b
+X-MS-Office365-Filtering-Correlation-Id: 53b115ca-6c50-4a36-6ad9-08dbd92eeae6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ye7vGccLbXgXf8ISTsrG+BVOtC88Nq0CzyZ0MaUPth+V7rQWiO318t9MF8jEdKPirE5++z97NA9/usMImdrw6FGQioKM5YD/OdB9si2558F5WOQzsq9jmc/HS9DKb5EQwbnqWntmBVUBbVpwervsBIYebIS+i+1iETBYvzIaYEr+5hoLAkqDRFYsoB+hgjQoLXVrpFC21psIvFlm9ejIp/tn5PQGbur77Br84H5IRW13fcs3WpAIv4KUHPJp9DjOU7wR3MzdSBKcwBwEmxpvmJahb9uFFJv3EgEt1ccCNwcS2lxZm/D7l+wH3AlKlY9Sy17Zt3sKN9Iz4m12/ohzAdU9y22fADD/Z7PYHqIZfpgM/q6Wn6xJFGNuyLVVZ9e3hsmhzU/QImKwRnqbB8F5D3Rw+jJtYhjgqKc9aNF1gUaDBqQpiMciK5gyDkm4nPYXLZJLDZipcTPAjV1tUJBf+P/MSX4QlV2bI6tbYBcIOad/ckL/fjet6Jk58NuyjCshZr7UA4fMc4F6cc7H9Waultz00QLAdleVNA+yp62eMKROQMze5e6QSBd1GudmOJKOmRZUDT3WKatICkjpW/NTKFW+n01kOsQ0IqJzNeMQbGC1egHxUroPeKdTZb5GmsVQ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8630.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(376002)(366004)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(478600001)(6666004)(66946007)(6486002)(6506007)(83380400001)(36756003)(38100700002)(66556008)(1076003)(2616005)(66476007)(2906002)(41300700001)(26005)(52116002)(6512007)(44832011)(86362001)(38350700005)(921008)(6636002)(8676002)(4326008)(5660300002)(8936002)(316002)(7416002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: BpffQoUJgjg5PEsGLsAWqBG9Lr5vV8WGKipRKVv8aPWxbErWpKug7DxU6kc91TAMAA5Z4KAfRDs/lYR+XnqJ7BzQ1/DI0TYVrTheZkOFv7lvxtBUJsW0tZzEC36wn0A1Sn1bwZxff4jpuLul9BaEubueiObkYM+v2Qsn3su3Cmdd/AzFw84KrT4jod8fkA2fhIcKv0zRHVG6ogqYsCz47VjdgISwdrcEF0i5PIT3FJIOrL122kb1lpF0T3xgJRZb6KvYYWVq1+mERAYhGIj/SO8Bss4xr2MTg5TUjbcD4/QLae830JaSMgrPdVZzOF3k98Jkbz91JxUMwxCIjxPtiqR4hn9FP0hyjcYr/Nl5a9j+nrVABMg+2c8rtNwCf8ogXUznjbjphJDCCckqYJ7Y0+bu0NHZh5s+2Xexhjv8fsVg2O+JIEwSFwxVfk7CURzzbzAxmWDD9L5ERvThvo/sZqQhVMl4HRTjATUEBweJzdCHe5bKC5YF4QmklSpxn5RH6GAjcn4AJGTBiT8py7kJZk6EoA9vKRAEcWXM9u/Kx1KLfUzdpL+IcvcZ3/YxEa4W4JaUnvNPg8adngj5XGWtcFlsw8I0V2EDMELw1RfQvOP1lEyhleq+8ZbHjpQykjAIjiJ0IwFBRJw1qayTf94VzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8630.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(376002)(366004)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(478600001)(66946007)(6486002)(6506007)(83380400001)(36756003)(38100700002)(66556008)(1076003)(2616005)(66476007)(2906002)(41300700001)(26005)(52116002)(6512007)(44832011)(86362001)(38350700005)(921008)(6636002)(8676002)(4326008)(5660300002)(8936002)(316002)(7416002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LGKQZaOwmnAG5HA7jJvo33gPeTGBMmVNKO5mh1nrWqm5QQWym5dSinxFmnve?=
- =?us-ascii?Q?EQLwTCx2uQdrHUkFPNqoADNHHcq+cgwY11pKH7WjJ2PvsPvwp1ePicHRq4+4?=
- =?us-ascii?Q?ENzsoHSnskIwbA4pO6IVEdWsdq3ugzd1HgrqsDRgtocjI3+uo1bq6eCd30LF?=
- =?us-ascii?Q?LvdQS9udSqmnHEzDcZsoVj6KTrXHUulReBSXo/ecbicbPNX/GYRUVNEZEc3m?=
- =?us-ascii?Q?UegJkLTXtWJXTHqGe/J/8cX8wzP6dlVu2WxuC4wxPqKPYX30P3qmaNTyZPWJ?=
- =?us-ascii?Q?VHGAVJkN9Wwbxy4rZU3iMDVukpnyz4cMBfd85udAMyyU5dV0IQnB97g0Exm2?=
- =?us-ascii?Q?RpUNbrLO1jOOb/qhZNBIBt9RbHdNP+Ttt3fdLl/dtoOvOx0mEN0hWsZRkgo0?=
- =?us-ascii?Q?qGIw2xHpEsZixZSGRM6vDNOoVz9UH1uXe+KT0Xl8DUF861xgUDoCj9v/YkSF?=
- =?us-ascii?Q?+SKipOlL9MFnmoCxDhOdKSp+uIAbNFzNjbtoZs9uWZmu/Ttu78wWZmGlZT9W?=
- =?us-ascii?Q?mOtc1sWPXcc4AFwOyFoclXUBX7LYx8muIil5dRhzY3K6hlzA45aXMnudEm3T?=
- =?us-ascii?Q?8kkq1hpTfK5bLhD4ZHVZkWrk8NrukR6zvDxg17v+W+FlanYMy0wr1Lyy45yp?=
- =?us-ascii?Q?wmqsUEuxSPC4xEOA5Kue0sxFmcNeoPG7HlzdYiPOneGXMtmDTk7R0JeGNbBx?=
- =?us-ascii?Q?HbkWwg+hgBPoVLhCZrBHdW4vVYKwAfsJdwUlgUtrY4Te4UyWZ3fhiFL2DgOi?=
- =?us-ascii?Q?8OdvJWwbNo460P1Zps8+FPuiDHniww+pp6B5q9pauzZgVrmuQFf1vMa9WG5A?=
- =?us-ascii?Q?GMIn7Nc4/+Ws/8Wz/ZBHslB7yv4MwfqkWBEVdobfP4b34kAsEaJPUh99zOXP?=
- =?us-ascii?Q?gmCemnHre59kUHjLP6suTrAAgFX4rkzoH3oLOh8Sbjt0WJwpBeork1Hrk1dp?=
- =?us-ascii?Q?kbtZ90fZqLh93FwCn2ig36S2xQDAqXfDDJnvAHD/8TXvhASp8ZHcJCkjwM90?=
- =?us-ascii?Q?RcXMbNfpum+aun7yrPV0Ogw/i48exP5+Emni+qd+lj2CohxnE0VPFht5/OdD?=
- =?us-ascii?Q?jxaCjAbACF7GEz4dAevqciNXbCG1jZ+1zBXJo3Ur75t9E01cCSSPqge31Dsu?=
- =?us-ascii?Q?tR9KQrI2w+QCwWcGALL/7AsfIfALdURxumBmgGXmpeTxVdZSxEkZfCq6VjMy?=
- =?us-ascii?Q?d21XKRT+yZmuG7SU6+2OyEYECPknm+jyq+gkTpFmTqPU6Zk49aCxayeDoBjk?=
- =?us-ascii?Q?mVger8e/5VkcG5DDza00Yh1CS4ZGehR6vi1DXoiL+1GSJIgYmsVBixi8rqN6?=
- =?us-ascii?Q?et0nfBN7/5Vtnn0Cv5qagKnGKUbk0VZSoVkmch7TLeAjN7vzMSVaG4gLewgC?=
- =?us-ascii?Q?BXODbpzeyDMf0ceijuVEvjGa8y6hu9gWl0UJR5K5ezxaPiBiRm0J9OaDE9uH?=
- =?us-ascii?Q?5g97Z0PbQVQqaPgbY7SMw1TACQtY/73CJBwYBKuLUykj6w0XimAItRpGMBuy?=
- =?us-ascii?Q?T0901c0BBY1Dw8U9KIfdHbj9a45+LpXNlog86U2Xsc6VrGhJEMZhjhs4z9+O?=
- =?us-ascii?Q?pJhkDWh3KtTjzaMFFGfq5QMDMrHYIyQpqe1z/Ygb?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0UKeSRMtVnI8ldhlJzyEnPfm3fKES/GOPwEY9MVj40MXOGwsk2RecPIC/AcS?=
+ =?us-ascii?Q?YHmXtsaNkEh9LAhxn68zJzFcLB3GHM8tbEEnEUSeHp+J9d4BOcUKEoyaH69B?=
+ =?us-ascii?Q?gNzPYaEnXy5uCRhxq8H6rkTpokbXMA8+gsLeHCh9+Eov0AdNJbm/OYo7ILBt?=
+ =?us-ascii?Q?etWxnnHpn1e5ItlXry1qLkjad+/nMz/Ozqt+EEYgRIcEL6O4jIqD0ty/7zZG?=
+ =?us-ascii?Q?Fxgst+XWg2MTwfKn8Oeb34Q2g+X2IVAjUq30VS7APTkEWhfRUbROFWHl2e8U?=
+ =?us-ascii?Q?ZzKrdR3TQ6Wb8bwwi5z8kgtLpPRYEqj6DiMh2myo+ougULLrJDAuRmN4/min?=
+ =?us-ascii?Q?7CmehauDInbL7YbYTMpwukF+EBG+yGocHMLvue2bP0NFZpBrB8uZUyVp6iNl?=
+ =?us-ascii?Q?z9yj0aZkc2jaupeM01kEx8MVhgDbFB0UWWadjuSsyb96X1Hg2E1nLDa3dG8Q?=
+ =?us-ascii?Q?4TsOkw81OCf2flF071EqR+D8lxbsQhbovP+aHPsDd867lSkI/4BA0WQngKLV?=
+ =?us-ascii?Q?MBOrEY6IZMItbKaD9ieBrdqSIny1cT49fMp938vQ6cJ+jUFQzx5PM6LFfZ2K?=
+ =?us-ascii?Q?QuPru8/DQMHSkIHo+Wdas1MSxKCIy5ndxPM25spVpgAIixCti4kaBYeWJzWe?=
+ =?us-ascii?Q?NFN0wGcPZ+neEu4KQRl8ddU5ul2Ephaii7A2zcQt0qmHxtY2r/4s6HWLKhCT?=
+ =?us-ascii?Q?slIk7l13vw9C0RKvA89I7rtMJFwRILjWCOpZmZRC/b3Mmv3A3gv4Dporigd8?=
+ =?us-ascii?Q?UAyAcof2OgvQe6hsF/TWmtfPRgfeB/BM4WSKbZTUg9Eyx9WNpvdV4Eqon6zl?=
+ =?us-ascii?Q?WNDsGAHEIjTRz0O3QwdZJADHLQLVAf7qnCa4JnHTwtXNa2o/J91bY2TpUW0E?=
+ =?us-ascii?Q?jMIdBcf2H/u7Ze8PgxFz2/Dskq72mwPs7WKSCrjMTCqeUuYrLvgJfp2osuvX?=
+ =?us-ascii?Q?+gGxG7Vw+rbJco3N0Jt17sMSOK2EbJJSoqMSmhjdpB/y5G3vXjZy1d8xp04Y?=
+ =?us-ascii?Q?5rhbZFOZdat1jzJCGtaS7A/+kfITOYZfKUsfyw6ArcQl6rjH24aubDE1jJ9l?=
+ =?us-ascii?Q?3bF80ScNXtgmKuYlDCd3dcAIv7OrDJ3tln4uFj+s85c4CN9GATFXmlZgUrDZ?=
+ =?us-ascii?Q?61xvXD82Zisv91rf5lqnpcLXE3BObYs3JBj8Vr2mn8pZ2rJTDyGxYNfsLv/a?=
+ =?us-ascii?Q?rWcKrRmzMdwLuZP27lLymOFHvq34DMHenpHHf7+W2A/FWxGupLXvCvn9NnRH?=
+ =?us-ascii?Q?Ce1GMd2zY5Yrty2eRAHPCfnW8cWl8Wy982nrZzwkgeEmP/fImIyko8mpBcQo?=
+ =?us-ascii?Q?l2CTcsMkNSxa21E1PS7nvcgmHVuAEcdSG5neXrNcxxIrX6aAVq+PLif1R8rD?=
+ =?us-ascii?Q?tC9JI/hjluaSXESNaB+wNKe4zAWiEfdFxOctnQR7WB7WBvbMJXQapsOMdFfP?=
+ =?us-ascii?Q?gQb34qE4dur+mFDQHXfPWSBpHXEo3CAD/C3fzJHifVD52F9QImFyC7BEvgHk?=
+ =?us-ascii?Q?56A5JyG9PH39x5iwMewGryDrud68Yt7AXgt040Nt1OqTyNXWzF0lsvviLeTy?=
+ =?us-ascii?Q?8EC1C6IfxvY93Tcfx+OGm9YRPkwWiRsasqJWMhi/?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 976b661e-733e-465e-5b2f-08dbd92ee77b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53b115ca-6c50-4a36-6ad9-08dbd92eeae6
 X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8630.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 09:59:28.1486
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 09:59:33.7683
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wK4IsXvT0jF3z12j2CQ1Molr57qcOcGaMUn4foMf34+yifZtrurggQldcx/oGIBukVmzP5ZtmuVJMbTLeTVwlQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: zoBg5LCOtPkQr08EUsiYEsoj3Y/yokmrFSd9j9uNQu/zlzZn7rqTjgjXkWMm5n03d5h2nBJcLRy71WkhQqgIHA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8513
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -116,184 +118,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V7 Changes:
-- 2/11 DT Binding: Disposed off comments from .yaml
-        -- added | to preserve formating.
-        -- removed extra spaces, restricting under 80 col.
-	-- replaced the "fsl,sram" property, with standard property "sram".
-	-- Added details about usage of sram.
-	-- removed the property "mu_id".
-	-- Added allOf:if:then: for reserved memory.
-	-- removed label.
+Documented i.MX SoC's Service layer and C_DEV driver for SoC(s)
+enabled with hardware IP for secure-enclaves like:
+- edgelock enclave on i.MX93 & i.MX8ULP
 
-- 3,4,5,6/11: DTSI changes:
-	-- removed the property "mu_id".
-	-- rename node-name & label
+Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+---
+ .../driver-api/firmware/other_interfaces.rst  | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-- 7/11 firmware: imx: add driver for NXP EdgeLock Enclave:
-	-- Removed dev_err for the cases of failure in memory allocation.
-        -- For others, coverted dev_err to dev_dbg.
-        -- Updated the commit msg about the details for userspace lib
-
-
-V6 Changes:
-
-- 1/11 (New): Kernel doc: "Documentation/driver-api/firmware/other_interfaces.rst" is added.
-
-- 2/11 DT Binding: Disposed off comments from .yaml
-	-- replaced the "sram-pool" property, with standard property "fsl,sram".
-	-- removed the additional details from the description.
-
-- 3,4,5,6/11: DTSI changes:
-	-- Validated using the following commands:
-		--- make dt_binding_check DT_SCHEMA_FILES=freescale
-        --- make CHECK_DTBS=y freescale/imx8ulp-evk.dtb;
-		    make CHECK_DTBS=y freescale/imx93-11x11-evk.dtb
-
-- 7/11 firmware: imx: add driver for NXP EdgeLock Enclave:
-	-- Removed:
-		Reported-by: kernel test robot <lkp@intel.com> 
-		Closes:https://lore.kernel.org/oe-kbuild-all/202304120902.bP52A56z-lkp@intel.com
-	-- pr_info is removed.
-	-- macro "devctx_info", "devctx_dbg" & "devctx_err" is removed.
-	-- Updated ABI:
-	    --- Users: user-space SE-LIB, crypto-api, imx-ocotp-ele driver , smw
-		--- IOCTLS: Updated the ioctl
-		--- read/write: 
-	-- Correct message header validation.
-	   --- segregated handling of the error, while msg header parsing.
-	-- removed TX and RX messages static allocation in state container.
-	-- ran coccicheck: make C=1 CHECK=scripts/coccicheck drivers/firmware/imx/*.* W=1
-		--- ran on all the patches.
-- 8/11 firmware: imx: init-fw api exchange on imx93
-	-- removed TX and RX messages static allocation in state container.
-	-- moved the header file ele_fw_api.h, to driver/firmware/imx/
-	-- segregated handling of the error, while msg header parsing.
-
-- 9/11 firmware: imx: enable trng
-	-- macro "devctx_info", "devctx_dbg" & "devctx_err" is removed.
-	-- will remove this patch, will send this patch later, including RNG and crypto-maintainers. 
-  
-  
-  
-  
-- 10/11 firmware: imx: enclave-fw: add handling for save/restore IMEM region
-	-- Linux comment style fixed.
-	
-- 10/11(old)(Removed) firmware: imx: enclave api to read-common-fuses
-	-- This API will be used by imx-ocotp-ele.c.
-	-- This patch can be sent later, when the changes to imx-ocotp-ele.c will be sent.
-	-- "Documentation/driver-api/firmware/other_interfaces.rst" will be update for the exported symbols:
-	   - read_common_fuses()
-	   - get_se_dev()
-	
-v5 Changes:
-  - 1/7 DT Binding: Disposed off comments from .yaml
-	-- to use "-", instead of "_".
-	-- to use generic name, concatinated with soc-id.
-	-- removed mu-did.
-	-- renamed the ele-mu to se-fw
-	-- moved the file from .../arm/freescale/ to .../firmware/
-  - 2/7 Changed the .dtsi, as per the comments.
-	-- removed mu-did
-	-- renamed the ele_mu to se-fw.
-	-- updated the compatible string.
-	-- tested the DTB.
-  - 4/7  Changed the .dtsi, as per the comments.
-	-- removed mu-did
-	-- renamed the ele_mu to se-fw.
-	-- updated the compatible string.
-	-- tested the DTB.
-  - 6/7 Changes in driver code:
-	-- replace pr_err with dev_err
-	-- removed export symbols, except one, which will be used in other driver.
-	-- Each API, send-recived based on device reference.
-	-- Divided the commits into smaller commits.
-		- Base Driver
-			-- Added ABI file.
-		- 7/11 (new) firmware: imx: init-fw api exchange on imx93
-		- 8/11 (new) firmware: imx: enable trng
-		- 9/11 (new) firmware: imx: enclave-fw: add handling for save/restore IMEM region
-		- 10/11 (new) firmware: imx: enclave api to read-common-fuses
-
-v4 Changes:
-- Post internal review, changed the name from "ele-mu" to "se-fw".
-- Disposed-off comments in the dt-binding file.
-- Removed the non-hw related dt-bindings from the driver code.
-- Corrected the File MAINTAINERS for correct name of yaml file.
-
-v3 Changes:
-- update the commit message for documentation.
-- Fixed dt-binding checking error for file- fsl,ele_mu.yaml
-- Coverity fixes in the ele_mu.c
-
-v2 Changes:
-- Fixed Kernel Test Bot issues.
-- Removed ".../devicetree/bindings/mailbox/fsl,muap.txt"
-
-The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
-secure enclave within the SoC boundary to enable features like
-- HSM
-- SHE
-- V2X
-
-Communicates via message unit with linux kernel. This driver
-is enables communication ensuring well defined message sequence
-protocol between Application Core and enclave's firmware.
-
-Driver configures multiple misc-device on the MU, for multiple
-user-space applications can communicate on single MU.
-
-It exists on some i.MX processors. e.g. i.MX8ULP, i.MX93 etc.
-
-Pankaj Gupta (11):
-  Documentation/firmware: added imx/se-fw to other_interfaces
-  dt-bindings: arm: fsl: add imx-se-fw binding doc
-  arm64: dts: imx8ulp-evk: added nxp secure enclave firmware
-  arm64: dts: imx8ulp-evk: reserved mem-ranges to constrain ele_fw
-    dma-range
-  arm64: dts: imx93-11x11-evk: added nxp secure enclave fw
-  arm64: dts: imx93-11x11-evk: reserved mem-ranges
-  firmware: imx: add driver for NXP EdgeLock Enclave
-  firmware: imx: init-fw api exchange on imx93
-  firmware: imx: enable trng
-  firmware: imx: enclave-fw: add handling for save/restore IMEM region
-  MAINTAINERS: Added maintainer details
-
- Documentation/ABI/testing/se-cdev             |   41 +
- .../bindings/firmware/fsl,imx-se-fw.yaml      |   83 +
- .../driver-api/firmware/other_interfaces.rst  |   67 +
- MAINTAINERS                                   |   10 +
- arch/arm64/boot/dts/freescale/imx8ulp-evk.dts |   15 +
- arch/arm64/boot/dts/freescale/imx8ulp.dtsi    |   10 +-
- .../boot/dts/freescale/imx93-11x11-evk.dts    |   15 +
- arch/arm64/boot/dts/freescale/imx93.dtsi      |    8 +-
- drivers/firmware/imx/Kconfig                  |   21 +
- drivers/firmware/imx/Makefile                 |    3 +
- drivers/firmware/imx/ele_base_msg.c           |  271 ++++
- drivers/firmware/imx/ele_common.c             |  294 ++++
- drivers/firmware/imx/ele_common.h             |   40 +
- drivers/firmware/imx/ele_fw_api.c             |  118 ++
- drivers/firmware/imx/ele_fw_api.h             |   26 +
- drivers/firmware/imx/ele_trng.c               |   47 +
- drivers/firmware/imx/se_fw.c                  | 1376 +++++++++++++++++
- drivers/firmware/imx/se_fw.h                  |  154 ++
- include/linux/firmware/imx/ele_base_msg.h     |   67 +
- include/linux/firmware/imx/ele_mu_ioctl.h     |   74 +
- 20 files changed, 2738 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/ABI/testing/se-cdev
- create mode 100644 Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
- create mode 100644 drivers/firmware/imx/ele_base_msg.c
- create mode 100644 drivers/firmware/imx/ele_common.c
- create mode 100644 drivers/firmware/imx/ele_common.h
- create mode 100644 drivers/firmware/imx/ele_fw_api.c
- create mode 100644 drivers/firmware/imx/ele_fw_api.h
- create mode 100644 drivers/firmware/imx/ele_trng.c
- create mode 100644 drivers/firmware/imx/se_fw.c
- create mode 100644 drivers/firmware/imx/se_fw.h
- create mode 100644 include/linux/firmware/imx/ele_base_msg.h
- create mode 100644 include/linux/firmware/imx/ele_mu_ioctl.h
-
+diff --git a/Documentation/driver-api/firmware/other_interfaces.rst b/Documentation/driver-api/firmware/other_interfaces.rst
+index 06ac89adaafb..1d21b88ef20e 100644
+--- a/Documentation/driver-api/firmware/other_interfaces.rst
++++ b/Documentation/driver-api/firmware/other_interfaces.rst
+@@ -49,3 +49,70 @@ of the requests on to a secure monitor (EL3).
+ 
+ .. kernel-doc:: drivers/firmware/stratix10-svc.c
+    :export:
++
++NXP i.MX Secure Enclave Enabled SoC Service layer and C_DEV driver
++------------------------------------------------------------------
++The NXP's i.MX HW IP like EdgeLock-Enclave, creating an embedded secure
++enclave within the SoC boundary to enable features like
++ - HSM
++ - SHE
++ - V2X
++
++SoC enabled with the NXP i.MX secure enclave IP(s) like EdgeLock-Enclave(ELE),
++are: i.MX93, i.MX8ULP.
++
++This driver exposes two interfaces:
++- service layer: This layer takes the two mutex locks:
++  "mu_cmd_lock" is taken to ensure one service is processed at a time. This
++  lock is not unlocked, till one service processing is complete. Multiple
++  messages can be exchanged with FW as part of one service processing.
++  "mu_lock" is taken to ensure one message is sent over MU at a time. This
++  lock is unlocked, post sending the message.
++
++- c_dev:
++  This driver configures multiple misc-devices on the MU, to exchange
++  messages from User-space application and NXP's Edgelocke Enclave firmware.
++  The driver ensures that the messages must follow the following protocol
++  defined.
++
++                                Non-Secure               +   Secure
++                                                         |
++                                                         |
++                  +---------+      +-------------+       |
++                  | se_fw.c +<---->+imx-mailbox.c|       |
++                  |         |      |  mailbox.c  +<-->+------+    +------+
++                  +---+-----+      +-------------+    | MU X +<-->+ ELE |
++                      |                               +------+    +------+
++                      +----------------+                 |
++                      |                |                 |
++                      v                v                 |
++                  logical           logical              |
++                  receiver          waiter               |
++                     +                 +                 |
++                     |                 |                 |
++                     |                 |                 |
++                     |            +----+------+          |
++                     |            |           |          |
++                     |            |           |          |
++              device_ctx     device_ctx     device_ctx   |
++                                                         |
++                User 0        User 1       User Y        |
++                +------+      +------+     +------+      |
++                |misc.c|      |misc.c|     |misc.c|      |
++ kernel space   +------+      +------+     +------+      |
++                                                         |
++ +------------------------------------------------------ |
++                    |             |           |          |
++ userspace     /dev/ele_muXch0    |           |          |
++                          /dev/ele_muXch1     |          |
++                                        /dev/ele_muXchY  |
++                                                         |
++
++When a user sends a command to the firmware, it registers its device_ctx
++as waiter of a response from firmware.
++
++Enclave's Firmware owns the storage management, over linux filesystem.
++For this c_dev provisions a dedicated slave device called "receiver".
++
++.. kernel-doc:: drivers/firmware/imx/se_fw.c
++   :export:
 -- 
 2.34.1
 
