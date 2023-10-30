@@ -2,121 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC2F7DBDCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEFE7DBDD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjJ3Q1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
+        id S231562AbjJ3Q2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjJ3Q1e (ORCPT
+        with ESMTP id S229514AbjJ3Q2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:27:34 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5214F1;
-        Mon, 30 Oct 2023 09:27:27 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UExUPN007745;
-        Mon, 30 Oct 2023 16:27:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=jm/R6KRA2W21JvQwRBpLxy+9HHpN8ayQwQqtG2bLlE0=;
- b=PZPkeGkLExzUgKDt3vOt24DA6b3+bcRztQZU1v4/7ABaWC+j7uPTjZs4RbsDQ6PXS8x7
- FE1Zf1L1Abfd+8niXT1+ALBgbslCwlJdZDC/dz7Sy28v60vtVYvYHViNihuepW/lhXnD
- K/C7sv/TqRLFfYHtL+3ESaNsnRp6E8Sy+SChWhtAyOQ0dP0HMAzr578WTJcGWNUezNAC
- F/Q6DJGw0tD9oH/rUgCZblYMt6YedtdBgOBmsGto9zzsN+fxSuWpxD+xLyTIca+dXa7I
- gw+KA80ErLv3Q6PZGocepKnul9px6Bde13wEjhPnrrwnQkdHXbeasV3xjy/YVvrYG3Vm zA== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2chygkgu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 16:27:20 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39UGRK6v007483
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 16:27:20 GMT
-Received: from [10.216.30.48] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
- 2023 09:27:17 -0700
-Message-ID: <9d71fc3b-f7a9-9f23-6fbe-a7665954cd30@quicinc.com>
-Date:   Mon, 30 Oct 2023 21:57:13 +0530
+        Mon, 30 Oct 2023 12:28:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72969DB
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698683277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=QJRzUGi0crPAdF+PsGr4fd82XBsUf26/RqsTLoK6Cc8=;
+        b=PzDdow5/Wb2YXgvu5Iime0LPp5xVYoWEfI6LnNKBDrY+fgcjqDnTNtER1Q/TyOIzW17SX3
+        Yav9ta0/6t1/oXJAQge7v3G2ijuel5JQUxYw7eI0+amUFBm1xBuQwrlMh5bz2aY0AVsbs4
+        MgBsNJZedzOvLJQo+UJjGD6yqyCJ4sk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-569-OR5uKCWlNr2M6j70bt9zIg-1; Mon, 30 Oct 2023 12:27:56 -0400
+X-MC-Unique: OR5uKCWlNr2M6j70bt9zIg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-407d3e55927so32545495e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:27:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698683275; x=1699288075;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QJRzUGi0crPAdF+PsGr4fd82XBsUf26/RqsTLoK6Cc8=;
+        b=awLMl4ZFAaQfMaCXQObpYTzNK0uP7mMlCy70IDVMke/5KIAb/Z2C9LTOgJq1rIfATO
+         WvBcfEMx2+mDlTv+zfTQ87dnrNO5EF2+B2wgZhRapzcGkggNRSqbpWDRS+sLoQsFcsl9
+         CFEpY0OIuX1bnpFgVb61vCGl2CDS3zUL4NAoiZU5ucZeEdFcaQVKaaS6hHQGsVaZ3D6E
+         hWRunI4ljFKWAKoaCVScHBJ2Y+Y+GUAemJ2dra35IUF0Yg9a19S4xShWcFzZB/7iGVuY
+         LzcRoWzU9aloar15Iz+mDPq8bPQzPjPrMX+4G1tIA5JBH32a8M1N3kjOBuIcMcUmkpZn
+         pdqw==
+X-Gm-Message-State: AOJu0Ywbjocs8q0YW28VF2NVwbU94oyq4GLslO+TWYmz5fG3dNAbQb/P
+        eNRI/4XEDZ/CuE1JBDPzY5qo7HokoFm9X78knHt1SprcLgkFLyf1UZ144vUNQDnDMpDbVZm/rWC
+        jmWBzCQ5TJX/zVERa2zGgaboh
+X-Received: by 2002:a05:600c:5204:b0:408:3f61:cb4f with SMTP id fb4-20020a05600c520400b004083f61cb4fmr7847792wmb.23.1698683274959;
+        Mon, 30 Oct 2023 09:27:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfa0KyfT9rBRGOGCePk10CmFCQx85iYerXM1uRezmX93sdvp3R2tcV7yoRdLLu5R9pLdpikw==
+X-Received: by 2002:a05:600c:5204:b0:408:3f61:cb4f with SMTP id fb4-20020a05600c520400b004083f61cb4fmr7847757wmb.23.1698683274613;
+        Mon, 30 Oct 2023 09:27:54 -0700 (PDT)
+Received: from [192.168.1.174] ([151.81.68.207])
+        by smtp.googlemail.com with ESMTPSA id u18-20020a05600c19d200b00401b242e2e6sm13160177wmq.47.2023.10.30.09.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 09:27:53 -0700 (PDT)
+Message-ID: <ac502d11-1fe8-45ec-bb91-02c94dbcd16d@redhat.com>
+Date:   Mon, 30 Oct 2023 17:27:47 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] eventfs: Fix kerneldoc of eventfs_remove_rec()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 02/35] KVM: Assert that mmu_invalidate_in_progress
+ *never* goes negative
 Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-CC:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20231030121523.0b2225a7@gandalf.local.home>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231030121523.0b2225a7@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-3-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20231027182217.3615211-3-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: luB8N8f8cj3zTVPpKHG2HhCZl_liRfVI
-X-Proofpoint-GUID: luB8N8f8cj3zTVPpKHG2HhCZl_liRfVI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 adultscore=0 mlxlogscore=953 spamscore=0 phishscore=0
- clxscore=1015 suspectscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310300128
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/30/2023 9:45 PM, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 10/27/23 20:21, Sean Christopherson wrote:
+> Move the assertion on the in-progress invalidation count from the primary
+> MMU's notifier path to KVM's common notification path, i.e. assert that
+> the count doesn't go negative even when the invalidation is coming from
+> KVM itself.
 > 
-> The eventfs_remove_rec() had some missing parameters in the kerneldoc
-> comment above it. Also, rephrase the description a bit more to have a bit
-> more correct grammar.
-> 
-> Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode");
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310052216.4SgqasWo-lkp@intel.com/
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Opportunistically convert the assertion to a KVM_BUG_ON(), i.e. kill only
+> the affected VM, not the entire kernel.  A corrupted count is fatal to the
+> VM, e.g. the non-zero (negative) count will cause mmu_invalidate_retry()
+> to block any and all attempts to install new mappings.  But it's far from
+> guaranteed that an end() without a start() is fatal or even problematic to
+> anything other than the target VM, e.g. the underlying bug could simply be
+> a duplicate call to end().  And it's much more likely that a missed
+> invalidation, i.e. a potential use-after-free, would manifest as no
+> notification whatsoever, not an end() without a start().
 
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
--Mukesh
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->   fs/tracefs/event_inode.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+>   virt/kvm/kvm_main.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index 5a3cc5394294..1c28e013201f 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -977,9 +977,11 @@ static void free_rcu_ei(struct rcu_head *head)
->   /**
->    * eventfs_remove_rec - remove eventfs dir or file from list
->    * @ei: eventfs_inode to be removed.
-> + * @head: the list head to place the deleted @ei and children
-> + * @level: prevent recursion from going more than 3 levels deep.
->    *
-> - * This function recursively remove eventfs_inode which
-> - * contains info of file or dir.
-> + * This function recursively removes eventfs_inodes which
-> + * contains info of files and/or directories.
->    */
->   static void eventfs_remove_rec(struct eventfs_inode *ei, struct list_head *head, int level)
->   {
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 0524933856d4..5a97e6c7d9c2 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -833,6 +833,7 @@ void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
+>   	 * in conjunction with the smp_rmb in mmu_invalidate_retry().
+>   	 */
+>   	kvm->mmu_invalidate_in_progress--;
+> +	KVM_BUG_ON(kvm->mmu_invalidate_in_progress < 0, kvm);
+>   }
+>   
+>   static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+> @@ -863,8 +864,6 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+>   	 */
+>   	if (wake)
+>   		rcuwait_wake_up(&kvm->mn_memslots_update_rcuwait);
+> -
+> -	BUG_ON(kvm->mmu_invalidate_in_progress < 0);
+>   }
+>   
+>   static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+
