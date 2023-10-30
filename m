@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF4A7DB97C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631517DB98B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjJ3MHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        id S233253AbjJ3MHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3MHR (ORCPT
+        with ESMTP id S233151AbjJ3MHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:07:17 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694A1C9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:07:14 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d2e6c8b542so192696066b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698667633; x=1699272433; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mAof5WwCREHhgYvZP5oL9OZtxCJg/p8F1Qyqhopa2tA=;
-        b=tk6cYUSbwPm94Sddc5HmcF/6xvZycbisb6NRMHiZRwgedeVomxu3fOpnu6SFB6HRBg
-         MFm8fYFiVFe601gpfhjoylVsQ2emYZ6f3CfjrHGe4iHfAZTlo9gvs7rHC9IZF0i0zqaj
-         jRiW7zPCD0XZUK95q67FEETmOUgJMG27sQ8Ttr2UUvpKNxCReYXBHTWNrxCdUkq2djIu
-         Z9fzGEHsY2rx3rcEXZbPJAAxPYt78Deq2OtFLyKVKKy1Zgbz+VaFT62P9lKdqYH2t7WG
-         O4V8mJIsJzONMWKcHpdZh+55xgav5BYEUCBdB6i8fg1Fw6HAmiEB0XXnRvQtfs+mWHFn
-         C/tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698667633; x=1699272433;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mAof5WwCREHhgYvZP5oL9OZtxCJg/p8F1Qyqhopa2tA=;
-        b=xStc6JpMy0BMJYjhxjHcGGt+BuT5KuX8QEd28h/cd+zjW0fkVNkcBEnuFFnMOA0uOl
-         hsu0Aef00y8rg8voenXvf3XSF6M+GaPTQdt1zXc7OdsUGVB+0EAdei1768M/pEY2zDv1
-         L1VTLm32GaOvbHLMdKppNUhOHMixxs/O/aHYzGbBcYcTp8W2jICiX7CCCe9nxzxuEusz
-         oWQCZTe5iabYNPYRtvpDYXtFM+vsqKK4DfynrWVBC6RnAKxjF0VTxWfXV304db18+Gx5
-         5uPYuVl3Or3q0dIDvcCRvFPfrH/rP1C/jhfTI0u+JIHhvntOX44/H9V9e6L9Suj0mEZF
-         AIDg==
-X-Gm-Message-State: AOJu0YyVh5ikMmkkDXkT+woE1Ye3V2kZ+BlMv6p59L1HKykRHFZoc12W
-        b8WmbM5ZfYfonvxhn0hTxYd2Jw==
-X-Google-Smtp-Source: AGHT+IGBHK0i5fSOAaHDaa1kq/y9l+3D/IFB+FmpFVFFTGvhuxbi2H37szUupGExcwAp3AVcfJetTw==
-X-Received: by 2002:a17:907:7f1e:b0:9c3:e66e:2006 with SMTP id qf30-20020a1709077f1e00b009c3e66e2006mr9039051ejc.9.1698667632723;
-        Mon, 30 Oct 2023 05:07:12 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id d26-20020a17090648da00b00988dbbd1f7esm5870031ejt.213.2023.10.30.05.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 05:07:12 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 13:07:11 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jijie Shao <shaojijie@huawei.com>
-Cc:     hawk@kernel.org, ilias.apalodimas@linaro.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jdamato@fastly.com, shenjian15@huawei.com, wangjie125@huawei.com,
-        liuyonglong@huawei.com, linyunsheng@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: page_pool: add missing free_percpu when
- page_pool_init fail
-Message-ID: <ZT+cb4sO3PK1EbT5@nanopsycho>
-References: <20231030091256.2915394-1-shaojijie@huawei.com>
+        Mon, 30 Oct 2023 08:07:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C1AD3;
+        Mon, 30 Oct 2023 05:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698667662; x=1730203662;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zwSMionLKlybSbWrt7iGhb3VWvETokFqg3T+MVC3gQk=;
+  b=EIhsF9/aUkmw59OiNDAzESguwgrj51StknJJoUHZ9pX9rh+D7C248pDz
+   pRVTEtcojkvyDXo7E3jtywlNpVjBYGEV4xBAkLPLmDKwadfFJ0HdBU910
+   v6Fd1WblPC0Z9CbqSRfjqySgH983ADxSGBpJVrM7KUHwqmlNKICgi8ZpV
+   XFwBpcm2qwjK+RhIfyKsTlEDmKzc98F2r3qQ/QX43JfblCxjl6T1KD5p+
+   yIAuBJ00Owf1QoNmIel7fQtkUGLshJ+T4OtIPnLx65Kl1Lj7PwD+T6rH4
+   OCnazjH1uvPjcCiMVCxvPNYBGv4NRuzCDGKF7I32Qlb75Ljbo4pPLA+vP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="373107330"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="373107330"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 05:07:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="753771399"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="753771399"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 30 Oct 2023 05:07:37 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id CDCFD2D2; Mon, 30 Oct 2023 14:07:35 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Subject: [PATCH v3 00/17] pinctrl: intel: Use NOIRQ PM helper
+Date:   Mon, 30 Oct 2023 14:07:17 +0200
+Message-Id: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030091256.2915394-1-shaojijie@huawei.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Oct 30, 2023 at 10:12:56AM CET, shaojijie@huawei.com wrote:
->From: Jian Shen <shenjian15@huawei.com>
->
->When ptr_ring_init() returns failure in page_pool_init(), free_percpu()
->is not called to free pool->recycle_stats, which may cause memory
->leak.
+Intel pin control drivers use NOIRQ variant of the PM callbacks.
+To make them smaller and less error prone against different
+kernel configurations (with possible defined but not used variables)
+switch to use NOIRQ PM helper.
 
-Would be nice to see the use of imperative mood in the patch description
-too, not only patch subject. Nevertheless, fix looks fine:
+Changelog v3:
+- dropped applied patches
+- dropped MediaTek patch for now
+- split Intel patch to the series using suggection by Paul
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Changelog v2:
+- rewritten commit message in patch 1 (Rafael)
+- converted non-Intel pin control drivers as well
+- added couple of kinda related patches to use pm_ptr()
+
+Andy Shevchenko (17):
+  pinctrl: intel: Provide Intel pin control wide PM ops structure
+  pinctrl: alderlake: Switch to use Intel pin control PM ops
+  pinctrl: broxton: Switch to use Intel pin control PM ops
+  pinctrl: cannonlake: Switch to use Intel pin control PM ops
+  pinctrl: cedarfork: Switch to use Intel pin control PM ops
+  pinctrl: denverton: Switch to use Intel pin control PM ops
+  pinctrl: elkhartlake: Switch to use Intel pin control PM ops
+  pinctrl: emmitsburg: Switch to use Intel pin control PM ops
+  pinctrl: geminilake: Switch to use Intel pin control PM ops
+  pinctrl: icelake: Switch to use Intel pin control PM ops
+  pinctrl: jasperlake: Switch to use Intel pin control PM ops
+  pinctrl: lakefield: Switch to use Intel pin control PM ops
+  pinctrl: lewisburg: Switch to use Intel pin control PM ops
+  pinctrl: meteorlake: Switch to use Intel pin control PM ops
+  pinctrl: sunrisepoint: Switch to use Intel pin control PM ops
+  pinctrl: tigerlake: Switch to use Intel pin control PM ops
+  pinctrl: intel: Make PM ops functions static
+
+ drivers/pinctrl/intel/pinctrl-alderlake.c    |  5 ++---
+ drivers/pinctrl/intel/pinctrl-broxton.c      |  5 ++---
+ drivers/pinctrl/intel/pinctrl-cannonlake.c   |  5 ++---
+ drivers/pinctrl/intel/pinctrl-cedarfork.c    |  5 ++---
+ drivers/pinctrl/intel/pinctrl-denverton.c    |  5 ++---
+ drivers/pinctrl/intel/pinctrl-elkhartlake.c  |  5 ++---
+ drivers/pinctrl/intel/pinctrl-emmitsburg.c   |  5 ++---
+ drivers/pinctrl/intel/pinctrl-geminilake.c   |  5 ++---
+ drivers/pinctrl/intel/pinctrl-icelake.c      |  5 ++---
+ drivers/pinctrl/intel/pinctrl-intel.c        | 14 +++++++-------
+ drivers/pinctrl/intel/pinctrl-intel.h        | 11 +----------
+ drivers/pinctrl/intel/pinctrl-jasperlake.c   |  5 ++---
+ drivers/pinctrl/intel/pinctrl-lakefield.c    |  5 ++---
+ drivers/pinctrl/intel/pinctrl-lewisburg.c    |  5 ++---
+ drivers/pinctrl/intel/pinctrl-meteorlake.c   |  5 ++---
+ drivers/pinctrl/intel/pinctrl-sunrisepoint.c |  5 ++---
+ drivers/pinctrl/intel/pinctrl-tigerlake.c    |  5 ++---
+ 17 files changed, 38 insertions(+), 62 deletions(-)
+
+-- 
+2.40.0.1.gaa8946217a0b
+
