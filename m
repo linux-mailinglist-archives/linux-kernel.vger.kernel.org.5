@@ -2,123 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9E47DBC6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CCB7DBC72
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbjJ3PKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        id S233626AbjJ3POG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233594AbjJ3PKw (ORCPT
+        with ESMTP id S233605AbjJ3POE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:10:52 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABA1B3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:10:50 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc391ca417so15023955ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698678650; x=1699283450; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KOZvdXx7B3Ln4TkuYLwgyefo4h1Hfhkns40zUU/7nr4=;
-        b=uPZVEJqvYTlbJNowv0ebR9yoZfdXIugjWiTmeaNxbHvGx0qXaDcGFrTK8WUWwp8s5I
-         Up2s9kPpNxaD75CahH2x+zK8MgkRTOqTeUcZs9HXxhBUvTv5GCu0S62d79PFB22h9/w9
-         zP/WGsZYeotC/Q9HLd6jxLcY5KLz2nq8FGAbXdskon3lFbphsS/WCKMNpPPmHvlM7Lhl
-         06jjVLQ2is3t9DhKewwoaOrTDa2+d+4vLviK51O7PbWLsLgvVL+5D7f6wrif0Ae58nlX
-         hVRyPBFGHMgEyR2vDHzKPAO/CvqYjUTfIiAv+sSo81lssY4RP9J4zubY5Kt4JSyN37eu
-         8u7g==
+        Mon, 30 Oct 2023 11:14:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FACFC9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698678796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tqhHvkxz2M3gWjoEU6H5EuCj6+A9vLSSzAJNkkzQU6w=;
+        b=TfwWhQslVFcC3sOGID6dcb9y9SFDy/gnZ2CgesroE7QeSNkgwgrOg9ucVB4I7dhN86Hdpi
+        NWfLJyn61blGSE+KMAaYiELsly+BJm5seMbP+srTsjx2IIIg1CA6greseJitd/YSxX6siS
+        XvPAVI+0QIvvdso+q2HAhbxfgSA9MpU=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-324-ftqvXhQ3MveGtEOc-mD02A-1; Mon, 30 Oct 2023 11:13:14 -0400
+X-MC-Unique: ftqvXhQ3MveGtEOc-mD02A-1
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5af9b0850fdso36907497b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:13:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698678650; x=1699283450;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KOZvdXx7B3Ln4TkuYLwgyefo4h1Hfhkns40zUU/7nr4=;
-        b=p2V6ZFT2ZQSXQG4d3doXD4Nws+ln1gJ1giawt2RSzGDgKBH0bVHEzG/bJTnaIHJCWx
-         6USOI/1w+DGAadFO1kTWKBU/eDL9TXxxRrlK0nNXYBC1H+Zsbb7hRKwu9KrA4ue66lmX
-         pyAmZ0/l8wbsB88z+P2CXFOZ8dBLEGrtKYzRS9rgO5/VapnbKmAFCrBREJBZz9ujf1zJ
-         lfYOmcyjSslaMhrewQR4XHtJMZmucnCBw/rWq4ViKeeTCkHqzW+JISEWfGE5IIWpD2a9
-         M7KL3UhunI7SO8II7EG7uRE0NistK+MVTSLveL7u0yZ77/+YgQ4SU7wZDonjozW7j+jK
-         IIEw==
-X-Gm-Message-State: AOJu0Yz+Zc3c8DeNn9HcKRYBvIxaRwTp4fjVurLZncbRSdVRA1cdA24B
-        agOHMxQdbZJ+f6GVIc/ribsM4jbGlf4=
-X-Google-Smtp-Source: AGHT+IGKxEV3Zm0LHm49D00vu0SroYxPWHJAglB5Z25j3orkER7wqfALY8RDBDcQE47ypqJuytd6ByhoLOc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f7c3:b0:1cc:29fb:f398 with SMTP id
- h3-20020a170902f7c300b001cc29fbf398mr148282plw.10.1698678649839; Mon, 30 Oct
- 2023 08:10:49 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 15:10:48 +0000
-In-Reply-To: <CAE8KmOw1DzOr-GvQ9E+Y5RCX1GQ1h1Bumk5pB++9=SjMUPHxBg@mail.gmail.com>
-Mime-Version: 1.0
-References: <CAE8KmOw1DzOr-GvQ9E+Y5RCX1GQ1h1Bumk5pB++9=SjMUPHxBg@mail.gmail.com>
-Message-ID: <ZT_HeK7GXdY-6L3t@google.com>
-Subject: Re: About patch bdedff263132 - KVM: x86: Route pending NMIs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Prasad Pandit <ppandit@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1698678793; x=1699283593;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tqhHvkxz2M3gWjoEU6H5EuCj6+A9vLSSzAJNkkzQU6w=;
+        b=n9On7yhBhRQKCWtDlcaB2Aod1JAmlPgDrtbXlBdSV5ivGqkgFv6aAMzdWcw/Py17IH
+         l/kLq5Mf1QiIaaEwFE6m1XW+EBI81iFFRJNNqnidmi4mLhsOnCidac0I4w1U75R0egNS
+         DZzjyPoV9w/K2a0UODrNrkc9QCsDxdAkOwb3FnXu2dq7gRRUulezMNGbwedkUSe1HuA6
+         rPK/eeyAcHy55ckb3k0z7SxAuFrZJHO/pTeVFm4YFBAEPWQG9eHfXMqqx/yW/tQXMH5K
+         mWp7QahexST7Dnp898HMthRzcxilmSM6XlQYuaF0Uya+J6l6kUjkGKqfAGjHfxV70oru
+         8EcQ==
+X-Gm-Message-State: AOJu0Yy6U2pARga+kFZL13WunwJmFqyeDMPCqAR2XzmbwyjT1Y1JpGcQ
+        wpyrIvYZ6XIXNEkCXCvKsxRxIkjdBWiwJlKi+GTlIiFknG+CzyruQuNFdCnmEUAO8LfM3k1ph7f
+        XVQVFm8w0nKAUMiRK/8X80lG9Y8ida4qk5zBIpj2d
+X-Received: by 2002:a81:c645:0:b0:59a:f131:50fa with SMTP id q5-20020a81c645000000b0059af13150famr8908940ywj.47.1698678793588;
+        Mon, 30 Oct 2023 08:13:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE8cagaVuRD2uSX1dWbSnBRneMUnh/waBGaPbXNrsgtq6V0qCCz1BymrTFgG+Jx9BdLD5vLUGUG7Gx9e5ChMvk=
+X-Received: by 2002:a81:c645:0:b0:59a:f131:50fa with SMTP id
+ q5-20020a81c645000000b0059af13150famr8908930ywj.47.1698678793337; Mon, 30 Oct
+ 2023 08:13:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
+In-Reply-To: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Mon, 30 Oct 2023 16:12:36 +0100
+Message-ID: <CAJaqyWc59oRS86sygnUR-D-wQ-N2TbofsG1hxAmCiGwkb4y42A@mail.gmail.com>
+Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
+To:     Steve Sistare <steven.sistare@oracle.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Dragos Tatulea <dtatulea@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+KVM and LKML
-
-https://people.kernel.org/tglx/notes-about-netiquette
-
-On Mon, Oct 30, 2023, Prasad Pandit wrote:
-> Hello Sean,
-> 
-> Please see:
->     -> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bdedff263132c862924f5cad96f0e82eeeb4e2e6
-> 
-> * While testing a real-time host/guest setup, the above patch is
-> causing a strange regression wherien guest boot delays by indefinite
-> time. Sometimes it boots within a minute, sometimes it takes much
-> longer. Maybe the guest VM is waiting for a NMI event.
-> 
-> * Reverting the above patch helps to fix this issue. I'm wondering if
-> a fix patch like below would be acceptable OR reverting above patch is
-> more reasonable?
-
-No, a revert would break AMD's vNMI.
-
-> ===
-> # cat ~test/rpmbuild/SOURCES/linux-kernel-test.patch
-> +++ linux-5.14.0-372.el9/arch/x86/kvm/x86.c     2023-10-30
-> 09:05:05.172815973 -0400
-> @@ -5277,7 +5277,8 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_e
->         if (events->flags & KVM_VCPUEVENT_VALID_NMI_PENDING) {
->                 vcpu->arch.nmi_pending = 0;
->                 atomic_set(&vcpu->arch.nmi_queued, events->nmi.pending);
-> -               kvm_make_request(KVM_REQ_NMI, vcpu);
-> +               if (events->nmi.pending)
-> +                       kvm_make_request(KVM_REQ_NMI, vcpu);
-
-This looks sane, but it should be unnecessary as KVM_REQ_NMI nmi_queued=0 should
-be a (costly) nop.  Hrm, unless the vCPU is in HLT, in which case KVM will treat
-a spurious KVM_REQ_NMI as a wake event.  When I made this change, my assumption
-was that userspace would set KVM_VCPUEVENT_VALID_NMI_PENDING iff there was
-relevant information to process.  But if I'm reading the code correctly, QEMU
-invokes KVM_SET_VCPU_EVENTS with KVM_VCPUEVENT_VALID_NMI_PENDING at the end of
-machine creation.
-
-Hmm, but even that should be benign unless userspace is stuffing other guest
-state.  E.g. KVM will spuriously exit to userspace with -EAGAIN while the vCPU
-is in KVM_MP_STATE_UNINITIALIZED, and I don't see a way for the vCPU to be put
-into a blocking state after transitioning out of UNINITIATED via INIT+SIPI without
-processing KVM_REQ_NMI.
-
+On Thu, Oct 26, 2023 at 10:09=E2=80=AFPM Steve Sistare
+<steven.sistare@oracle.com> wrote:
+>
+> mlx5_vdpa does not preserve userland's view of vring base for the control
+> queue in the following sequence:
+>
+> ioctl VHOST_SET_VRING_BASE
+> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
+>   mlx5_vdpa_set_status()
+>     setup_cvq_vring()
+>       vringh_init_iotlb()
+>         vringh_init_kern()
+>           vrh->last_avail_idx =3D 0;
+> ioctl VHOST_GET_VRING_BASE
+>
+> To fix, restore the value of cvq->vring.last_avail_idx after calling
+> vringh_init_iotlb.
+>
+> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
+>  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
+>  include/linux/vringh.h            |  2 ++
+>  3 files changed, 38 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 946488b8989f..f64758143115 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *=
+mvdev)
+>         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
+>         int err =3D 0;
+>
+> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
+> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
+> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
+> +
+>                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_feat=
+ures,
+>                                         MLX5_CVQ_MAX_ENT, false,
+>                                         (struct vring_desc *)(uintptr_t)c=
+vq->desc_addr,
+>                                         (struct vring_avail *)(uintptr_t)=
+cvq->driver_addr,
+>                                         (struct vring_used *)(uintptr_t)c=
+vq->device_addr);
+>
+> +               if (!err)
+> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_idx=
+);
+> +       }
+>         return err;
+>  }
+>
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index 7b8fd977f71c..799762c83007 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct vr=
+ingh *vrh,
 >         }
->         static_call(kvm_x86_set_nmi_mask)(vcpu, events->nmi.masked);
-> ===
-> 
-> * Could you please have a look and suggest what could be a better fix?
+>  }
+>
+> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
+> +                           int (*putu16)(const struct vringh *vrh,
+> +                               __virtio16 *p, u16 val))
+> +{
+> +    int ret;
+> +
+> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
+> +    if (ret)
+> +        return ret;
+> +
+> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
+> +    if (ret)
+> +        return ret;
+> +
 
-Please provide more information on what is breaking and/or how to reproduce the
-issue.  E.g. at the very least, a trace of KVM_{G,S}ET_VCPU_EVENTS.   There's not
-even enough info here to write a changelog.
+I don't think VMM should be able to modify the guest's vring memory.
+For vringh it should be enough with the next line, no need for
+previous.
+
+If I'm not wrong this was solved in the simulator by [1] and [2]. Am I
+missing something?
+
+Thanks!
+
+[1] https://lkml.org/lkml/2023/1/18/1045
+[2] https://www.spinics.net/lists/kernel/msg4705724.html
+
+> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
+> +    return 0;
+> +}
+> +
+>  /* Userspace access helpers: in this case, addresses are really userspac=
+e. */
+>  static inline int getu16_user(const struct vringh *vrh, u16 *val, const =
+__virtio16 *p)
+>  {
+> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struct v=
+host_iotlb *iotlb,
+>  }
+>  EXPORT_SYMBOL(vringh_set_iotlb);
+>
+> +/**
+> + * vringh_set_base_iotlb - set avail_idx and used_idx
+> + * @vrh: the vring
+> + * @idx: the value to set
+> + */
+> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
+> +{
+> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
+> +}
+> +EXPORT_SYMBOL(vringh_set_base_iotlb);
+> +
+> +
+>  /**
+>   * vringh_getdesc_iotlb - get next available descriptor from ring with
+>   * IOTLB.
+> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
+> index c3a8117dabe8..e9b8af4e6a5e 100644
+> --- a/include/linux/vringh.h
+> +++ b/include/linux/vringh.h
+> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 feat=
+ures,
+>                          struct vring_avail *avail,
+>                          struct vring_used *used);
+>
+> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
+> +
+>  int vringh_getdesc_iotlb(struct vringh *vrh,
+>                          struct vringh_kiov *riov,
+>                          struct vringh_kiov *wiov,
+> --
+> 2.39.3
+>
+
