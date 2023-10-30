@@ -2,205 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1FD7DC28A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8442B7DC28C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbjJ3WhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 18:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        id S232239AbjJ3Whb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 18:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjJ3WhS (ORCPT
+        with ESMTP id S232225AbjJ3Wh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 18:37:18 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CCEE8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so4438627b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698705434; x=1699310234; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s3l/lL5wYf4n3GthHM0NoG2tR/ievkKXd51rX7QyzCg=;
-        b=YZJJRKmpYSheU+R2mseNAMbeGSdPJLFe40wCupbHYAd3o4QvZNI/n7SGn2r5cooFgq
-         2TEcO78mRTQJBTq7k2LqUtVvJres5aMQhj3nULXOrrdnw3Gj9/WT+z7z2ABtzED7KsbV
-         ekC9YAJYeG7FVFi/CvzzPWQPOAWd7xX/xs+NjEVXTta0c+tu9fOv2E6WvTvGDYo0G3A3
-         nk/n2nXjoAIwMY394rKnbmnbD9xeR0wGUW/4HzwyTv9RhbV1nF/lk2rhXLia5gW1lDor
-         Xwl91GIsakdFQ/xOsemb/k2wPINm34d+665mfEqcz2YTJlkO8PHNhrdA0s286qBDrOO7
-         /l3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698705434; x=1699310234;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s3l/lL5wYf4n3GthHM0NoG2tR/ievkKXd51rX7QyzCg=;
-        b=mJqXNNJn3dzL5lZw0T+cyHjd+Y5Zl5WPhWrKg67AFPaaM/DbyNcc3k4UZCq0RZXHF5
-         +U9rKTPpuG68VEM/Q7n3J+25FS2mWFbsqgtHolDPsbFf7vCerKVEhvIuWkafF4R6j82Q
-         HZ4sLYKNRQdtEoulx/ctMxF9NC8GwWmQspE2n1qwEQ4kiLzWi+K3nFRHBN/UMFbS6qIp
-         zB5v7tWBOvCriwe6YyFzOtyEPxh52AMg6OpB/GHgg+g+h65ZLJDfnxAFnU5bzwuYMeTh
-         KmSZ2GlJmzb0pEA0Gqg3X8qM9KKfBgfAsQNFP7qqF3ljuNyxwwatqMRCG+uGTpGl73Ew
-         ArvQ==
-X-Gm-Message-State: AOJu0YwGOQto1EZ3CyQkRsm1AQoYNVKaDQ9oYZIxtUw3u8tWwGx4uKI9
-        vYCZ6O7ksIPW29GDPpzW20Hw3Jle+d6T6N4GKyU=
-X-Google-Smtp-Source: AGHT+IH220teegvrDu5BQvWXj+pfKEIBe9mpI/qNDn7XBuC5Q1LlqBFVtPwA3Li0K8x18IiaaOOLaQ==
-X-Received: by 2002:a05:6a21:6da1:b0:175:7085:ba18 with SMTP id wl33-20020a056a216da100b001757085ba18mr9996599pzb.58.1698705434041;
-        Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id p11-20020a17090a2d8b00b002774d7e2fefsm2932pjd.36.2023.10.30.15.37.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 15:37:13 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qxasg-0066We-2r;
-        Tue, 31 Oct 2023 09:37:10 +1100
-Date:   Tue, 31 Oct 2023 09:37:10 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <ZUAwFkAizH1PrIZp@dread.disaster.area>
-References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
- <ZTcBI2xaZz1GdMjX@dread.disaster.area>
- <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
- <ZTc8tClCRkfX3kD7@dread.disaster.area>
- <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
- <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
- <ZTjMRRqmlJ+fTys2@dread.disaster.area>
- <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area>
- <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+        Mon, 30 Oct 2023 18:37:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A2126;
+        Mon, 30 Oct 2023 15:37:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2948DC433C7;
+        Mon, 30 Oct 2023 22:37:24 +0000 (UTC)
+Date:   Mon, 30 Oct 2023 18:37:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-sh@vger.kernel.org
+Subject: Re: arch/sh/boot/compressed/misc.c:118:6: warning: no previous
+ prototype for 'arch_ftrace_ops_list_func'
+Message-ID: <20231030183722.21712d18@gandalf.local.home>
+In-Reply-To: <202310310611.5RteDpO7-lkp@intel.com>
+References: <202310310611.5RteDpO7-lkp@intel.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 06:35:58AM -0400, Jeff Layton wrote:
-> On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
-> > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
-> > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
-> > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
-> > > In earlier discussions you alluded to some repair and/or analysis tools
-> > > that depended on this counter.
-> > 
-> > Yes, and one of those "tools" is *me*.
-> > 
-> > I frequently look at the di_changecount when doing forensic and/or
-> > failure analysis on filesystem corpses.  SOE analysis, relative
-> > modification activity, etc all give insight into what happened to
-> > the filesystem to get it into the state it is currently in, and
-> > di_changecount provides information no other metadata in the inode
-> > contains.
-> > 
-> > > I took a quick look in xfsprogs, but I
-> > > didn't see anything there. Is there a library or something that these
-> > > tools use to get at this value?
-> > 
-> > xfs_db is the tool I use for this, such as:
-> > 
-> > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/mapper/fast
-> > v3.change_count = 35
-> > $
-> > 
-> > The root inode in this filesystem has a change count of 35. The root
-> > inode has 32 dirents in it, which means that no entries have ever
-> > been removed or renamed. This sort of insight into the past history
-> > of inode metadata is largely impossible to get any other way, and
-> > it's been the difference between understanding failure and having no
-> > clue more than once.
-> > 
-> > Most block device parsing applications simply write their own
-> > decoder that walks the on-disk format. That's pretty trivial to do,
-> > developers can get all the information needed to do this from the
-> > on-disk format specification documentation we keep on kernel.org...
-> > 
+On Tue, 31 Oct 2023 06:15:04 +0800
+kernel test robot <lkp@intel.com> wrote:
+
+> Hi Steven,
 > 
-> Fair enough. I'm not here to tell you that you guys that you need to
-> change how di_changecount works. If it's too valuable to keep it
-> counting atime-only updates, then so be it.
+> FYI, the error/warning still remains.
 > 
-> If that's the case however, and given that the multigrain timestamp work
-> is effectively dead, then I don't see an alternative to growing the on-
-> disk inode. Do you?
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   14ab6d425e80674b6a0145f05719b11e82e64824
+> commit: 17b251a290ba84a0c2c5c82df9596cb2e7207ca6 ftrace/sh: Add arch_ftrace_ops_list_func stub to have compressed image still link
+> date:   2 years ago
+> config: sh-allnoconfig (https://download.01.org/0day-ci/archive/20231031/202310310611.5RteDpO7-lkp@intel.com/config)
+> compiler: sh4-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310310611.5RteDpO7-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310310611.5RteDpO7-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    arch/sh/boot/compressed/misc.c:109:6: warning: no previous prototype for '__stack_chk_fail' [-Wmissing-prototypes]
+>      109 | void __stack_chk_fail(void)
+>          |      ^~~~~~~~~~~~~~~~
+>    arch/sh/boot/compressed/misc.c:115:6: warning: no previous prototype for 'ftrace_stub' [-Wmissing-prototypes]
+>      115 | void ftrace_stub(void)
+>          |      ^~~~~~~~~~~
+> >> arch/sh/boot/compressed/misc.c:118:6: warning: no previous prototype for 'arch_ftrace_ops_list_func' [-Wmissing-prototypes]  
+>      118 | void arch_ftrace_ops_list_func(void)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-Yes, I do see alternatives. That's what I've been trying
-(unsuccessfully) to describe and get consensus on. I feel like I'm
-being ignored and rail-roaded here, because nobody is even
-acknowledging that I'm proposing alternatives and keeps insisting
-that the only solution is a change of on-disk format.
+As the comment states, this is needed only because the linker script
+vmlinux.lds.h references them, and it will not build without it.
 
-So, I'll summarise the situation *yet again* in the hope that this
-time I won't get people arguing about atime vs i-version and what
-constitutes an on-disk format change because that goes nowhere and
-does nothing to determine which solution might be acceptible.
+If someone really cares, they could simply add a header to quiet these
+warnings, but seriously, these functions are just stubs to allow the sh
+boot portion use the vmlinux.lds.h linker script. These stubs are only for
+satisfying linker references and are not used. I'm not going to be the one
+to bother "fixing" it.
 
-The basic situation is this:
+-- Steve
 
-If XFS can ignore relatime or lazytime persistent updates for given
-situations, then *we don't need to make periodic on-disk updates of
-atime*. This makes the whole problem of "persistent atime update bumps
-i_version" go away because then we *aren't making persistent atime
-updates* except when some other persistent modification that bumps
-[cm]time occurs.
 
-But I don't want to do this unconditionally - for systems not
-running anything that samples i_version we want relatime/lazytime
-to behave as they are supposed to and do periodic persistent updates
-as per normal. Principle of least surprise and all that jazz.
+>    arch/sh/boot/compressed/misc.c:128:6: warning: no previous prototype for 'decompress_kernel' [-Wmissing-prototypes]
+>      128 | void decompress_kernel(void)
+>          |      ^~~~~~~~~~~~~~~~~
+> 
+> 
+> vim +/arch_ftrace_ops_list_func +118 arch/sh/boot/compressed/misc.c
+> 
+>    113	
+>    114	/* Needed because vmlinux.lds.h references this */
+>    115	void ftrace_stub(void)
+>    116	{
+>    117	}
+>  > 118	void arch_ftrace_ops_list_func(void)  
+>    119	{
+>    120	}
+>    121	
+> 
 
-So we really need an indication for inodes that we should enable this
-mode for the inode. I have asked if we can have per-operation
-context flag to trigger this given the needs for io_uring to have
-context flags for timestamp updates to be added. 
-
-I have asked if we can have an inode flag set by the VFS or
-application code for this. e.g. a flag set by nfsd whenever it accesses a
-given inode.
-
-I have asked if this inode flag can just be triggered if we ever see
-I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
-and whether this is a reliable mechanism for setting such a flag.
-
-I have suggested mechanisms for using masked off bits of timestamps
-to encode sub-timestamp granularity change counts and keep them
-invisible to userspace and then not using i_version at all for XFS.
-This avoids all the problems that the multi-grain timestamp
-infrastructure exposed due to variable granularity of user visible
-timestamps and ordering across inodes with different granularity.
-This is potentially a general solution, too.
-
-So, yeah, there are *lots* of ways we can solve this problem without
-needing to change on-disk formats.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
