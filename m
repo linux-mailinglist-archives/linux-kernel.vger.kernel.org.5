@@ -2,295 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7147DBE86
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A397DBE91
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbjJ3RLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S233771AbjJ3RM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233832AbjJ3RL3 (ORCPT
+        with ESMTP id S232579AbjJ3RMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:11:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4539710B;
-        Mon, 30 Oct 2023 10:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698685884; x=1730221884;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=5SHS0YMOkn5JVvPfG41/C9UnVXfwBzYy9NEvR6uPjJI=;
-  b=CtJJN5iSuX1nlB7sW1nW127O/3bHBXqdwQiRYV9hUltnXMlIXnc0KCGt
-   9k+q77PNRIPgDJakiusSv+huXrYm5Npi1qyfpWSbJZxC1Z/gdLtB01IQG
-   5G1ahwArkVGrg/P68LnttDulHlt/GAzScNZiQoEhT4i65c26Hyc+gs/fB
-   Vd/btznajI9ATJUw+Ovv96spIOqRslP5VFqVug65z60af38AN0mwkvfo1
-   MVvqQh+Ic7uRkqCMoc+Gagh6WQ6QgYUxgewCJMPdW69HwbrBE2csL9+im
-   52HwOKY1xXQAQq2C1izyGXw4PgwtB29kbIxlxjzzNFz3NJQEd26zd4a7L
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="385311687"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="385311687"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 10:11:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="877207770"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="877207770"
-Received: from squtub-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.238])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 10:11:19 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Vegard Nossum <vegard.nossum@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Carlos Bilbao <carlos.bilbao@amd.com>,
-        Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Hu Haowen <src.res.211@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: Re: [PATCH] docs: translations: add translations links when they exist
-In-Reply-To: <20231028162931.261843-1-vegard.nossum@oracle.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231028162931.261843-1-vegard.nossum@oracle.com>
-Date:   Mon, 30 Oct 2023 19:11:07 +0200
-Message-ID: <878r7k593o.fsf@intel.com>
+        Mon, 30 Oct 2023 13:12:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B133103
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698685915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=lo4ysHz5pmHfFsXnk84EoayTJ3hTlIhc3rVOfp1rxtc=;
+        b=cpLDJt2+6yxkZbmC7dAvXetuv6zb+Okf2WZrlidRuXr59dd4Ieo0D95vLh1pG3XpMitwSH
+        FIYEosZk7PEEkIiKFempJUazAQzvBf4NHCnThG1GmfPYeV/D6LBQVQBFS6toBJtoXUnkfc
+        xAd4JF24ptyQSHh5Q3SK3zFHgkxwjko=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-211-kRtekgbKNqmBJLwiSZ_Caw-1; Mon, 30 Oct 2023 13:11:54 -0400
+X-MC-Unique: kRtekgbKNqmBJLwiSZ_Caw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4084163ecd9so34499675e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:11:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698685913; x=1699290713;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lo4ysHz5pmHfFsXnk84EoayTJ3hTlIhc3rVOfp1rxtc=;
+        b=h51Z6YuK8P8YYd+N7tchSU2cHfxdsEhPj6Knti/XF1XISNtalheSI9bKX6hM6pNxLv
+         DMr0vp0NewFkNpxPUK2rnvf3I/3SVgPM4kVc5Ifbojf/rJB1LvVu18axezw/K+FgL3eN
+         IjjrxIapxWFitI3cumovqB/SkDpxPskZPVMZrQiYNEAJvvtR5EdQrlO1YKlypwdPd5qo
+         Dywjmh3C777qPGPRWnD10GK+FUzGG5rRb/56SK9/qKhMNqpwNpNC/s+vTJwOPikfDj54
+         cP+Mdi4ICCj/dKRpuA015W8S7uJs4wK82ceLmngYIGVNjV7xxk5lgKcYu5Cz8g+f5WBL
+         EK3w==
+X-Gm-Message-State: AOJu0Yx14YPV5W4mnJD+NFVmXmiabpTIllo03Hwowmxd84k6jsehveo0
+        wwDKgdw4wvkiWwyitMwqy1fP6nEsMGVxtljUDz0eA1dRanTDrvnLNKdZExk5QXrjIRYkDVr7VWi
+        4y2jFOtkloocfZShGNxS19Bzr
+X-Received: by 2002:a05:600c:1c9a:b0:401:d803:6243 with SMTP id k26-20020a05600c1c9a00b00401d8036243mr8797117wms.32.1698685912903;
+        Mon, 30 Oct 2023 10:11:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEE3mzsAlLnekLWdY8A4rueILcmfn/0LGvZfOgJVm2OXLCsoyw1l1K7DLfNbIxoxk9UoBDhkg==
+X-Received: by 2002:a05:600c:1c9a:b0:401:d803:6243 with SMTP id k26-20020a05600c1c9a00b00401d8036243mr8797063wms.32.1698685912474;
+        Mon, 30 Oct 2023 10:11:52 -0700 (PDT)
+Received: from [192.168.1.174] ([151.81.68.207])
+        by smtp.googlemail.com with ESMTPSA id w16-20020adfcd10000000b0032da75af3easm8617198wrm.80.2023.10.30.10.11.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 10:11:51 -0700 (PDT)
+Message-ID: <773328b3-0ef0-4e93-afb9-6fba3302b8a7@redhat.com>
+Date:   Mon, 30 Oct 2023 18:11:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 10/35] KVM: Add a dedicated mmu_notifier flag for
+ reclaiming freed memory
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-11-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20231027182217.3615211-11-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Oct 2023, Vegard Nossum <vegard.nossum@oracle.com> wrote:
-> Add a new Sphinx extension that knows about the translations of kernel
-> documentation and can insert links to the translations at the top of
-> the document.
->
-> It basically works like this:
->
-> 1. Register a new node type, LanguagesNode.
->
-> 2. Register a new transform, TranslationsTransform, that inserts a new
->    LanguageNode at the top of every document. The LanguageNode contains
->    "pending references" to translations of the document. The key here
->    is that these are pending (i.e. unresolved) references that may or
->    may not actually exist.
->
-> 3. Register a 'doctree-resolved' event that iterates over all the
->    LanguageNode nodes. Any unresolved references are filtered out; the
->    list of resolved references is passed to the 'translations.html'
->    template and rendered as an HTML node (if HTML output is selected).
->
-> Testing: make htmldocs with v7.3.0.
+On 10/27/23 20:21, Sean Christopherson wrote:
+> Handle AMD SEV's kvm_arch_guest_memory_reclaimed() hook by having
+> __kvm_handle_hva_range() return whether or not an overlapping memslot
+> was found, i.e. mmu_lock was acquired.  Using the .on_unlock() hook
+> works, but kvm_arch_guest_memory_reclaimed() needs to run after dropping
+> mmu_lock, which makes .on_lock() and .on_unlock() asymmetrical.
+> 
+> Use a small struct to return the tuple of the notifier-specific return,
+> plus whether or not overlap was found.  Because the iteration helpers are
+> __always_inlined, practically speaking, the struct will never actually be
+> returned from a function call (not to mention the size of the struct will
+> be two bytes in practice).
 
-I'm just observing the kernel documentation has a system of its own for
-translations. Maybe it's fine this way, but it's certainly different
-from what the Sphinx developers had in mind. (But I'm not an expert on
-this field, don't ask me how this should be done!)
+Could have been split in two patches, but it's fine anyway.
 
-Regardless, the implication is that this builds on the translation
-solution chosen for kernel documentation, for better and for worse, and
-raises the bar for switching later. It's something to be aware of.
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
->
-> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-> ---
->  Documentation/conf.py                         |  2 +-
->  Documentation/sphinx-static/custom.css        |  8 ++
->  .../sphinx/templates/translations.html        | 12 +++
->  Documentation/sphinx/translations.py          | 96 +++++++++++++++++++
->  4 files changed, 117 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/sphinx/templates/translations.html
->  create mode 100644 Documentation/sphinx/translations.py
->
-> diff --git a/Documentation/conf.py b/Documentation/conf.py
-> index d4fdf6a3875a..64eab500b2cd 100644
-> --- a/Documentation/conf.py
-> +++ b/Documentation/conf.py
-> @@ -55,7 +55,7 @@ needs_sphinx =3D '1.7'
->  extensions =3D ['kerneldoc', 'rstFlatTable', 'kernel_include',
->                'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
->                'maintainers_include', 'sphinx.ext.autosectionlabel',
-> -              'kernel_abi', 'kernel_feat']
-> +              'kernel_abi', 'kernel_feat', 'translations']
->=20=20
->  if major >=3D 3:
->      if (major > 3) or (minor > 0 or patch >=3D 2):
-> diff --git a/Documentation/sphinx-static/custom.css b/Documentation/sphin=
-x-static/custom.css
-> index 084a884f6fb7..33adee4a35d9 100644
-> --- a/Documentation/sphinx-static/custom.css
-> +++ b/Documentation/sphinx-static/custom.css
-> @@ -73,3 +73,11 @@ input.kernel-toc-toggle { display: none; }
->      h3.kernel-toc-contents { display: inline; }
->      div.kerneltoc a { color: black; }
->  }
-> +
-> +/* Language selection bar */
-> +div.language-selection {
-> +    background: #eeeeee;
-> +    border: 1px solid #cccccc;
-> +    margin-bottom: 1em;
-> +    padding: .5em;
-> +}
-> diff --git a/Documentation/sphinx/templates/translations.html b/Documenta=
-tion/sphinx/templates/translations.html
-> new file mode 100644
-> index 000000000000..08afb595c203
-> --- /dev/null
-> +++ b/Documentation/sphinx/templates/translations.html
-> @@ -0,0 +1,12 @@
-> +<!-- SPDX-License-Identifier: GPL-2.0 -->
-> +<!-- Copyright =C2=A9 2023, Oracle and/or its affiliates. -->
-> +
-> +{# Create a language bar for translations #}
-> +{% if languages|length > 0: %}
-> +<div class=3D"language-selection">
-> +Languages:
-> +{% for ref in languages: %}
-> +<a href=3D"{{ ref.refuri }}">{{ ref.astext() }}</a>{% if not loop.last %=
-}, {% endif %}
-> +{% endfor %}
-> +</div>
-> +{% endif %}
+Paolo
 
-This could also be part of the menu on the left, I think it's fairly
-easy to extend in alabaster. But then again it's already pretty crowded,
-and it's all a matter of taste.
-
-> diff --git a/Documentation/sphinx/translations.py b/Documentation/sphinx/=
-translations.py
-> new file mode 100644
-> index 000000000000..e1da811bdaf0
-> --- /dev/null
-> +++ b/Documentation/sphinx/translations.py
-> @@ -0,0 +1,96 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright =C2=A9 2023, Oracle and/or its affiliates.
-> +# Author: Vegard Nossum <vegard.nossum@oracle.com>
-> +#
-> +# Add translation links to the top of the document.
-> +#
-> +
-> +import os
-> +
-> +from docutils import nodes
-> +from docutils.transforms import Transform
-> +
-> +import sphinx
-> +from sphinx import addnodes
-> +from sphinx.errors import NoUri
-> +
-> +all_languages =3D {
-> +    # English is always first
-> +    None: 'English',
-> +
-> +    # Keep the rest sorted alphabetically
-> +    'zh_CN': 'Chinese',
-> +    'it_IT': 'Italian',
-> +    'ja_JP': 'Japanese',
-> +    'ko_KR': 'Korean',
-> +    'sp_SP': 'Spanish',
-> +    'zh_TW': 'Taiwanese',
-> +}
-
-Maybe the path to translations should be a configuration option for the
-extension, and it could read the translations from the directory instead
-of hard coding them here.
-
-> +
-> +class LanguagesNode(nodes.Element):
-> +    pass
-> +
-> +class TranslationsTransform(Transform):
-> +    default_priority =3D 900
-> +
-> +    def apply(self):
-> +        app =3D self.document.settings.env.app
-> +        if app.builder.format not in ['html']:
-> +            return
-> +
-> +        docname =3D self.document.settings.env.docname
-> +
-> +        this_lang_code =3D None
-> +        components =3D docname.split(os.sep)
-> +        if components[0] =3D=3D 'translations' and len(components) > 2:
-> +            this_lang_code =3D components[1]
-> +
-> +            # normalize docname to be the untranslated one
-> +            docname =3D os.path.join(*components[2:])
-
-Need to rename these files, and keep the translated document names
-up-to-date:
-
-for f in $(find Documentation/translations/ -name "*.rst"); do if ! test -f=
- Documentation/${f##Documentation/translations/??_??/}; then echo $f; fi; d=
-one
-
-Maybe the extension should warn about documents under translations that
-do not have a corresponding original.
-
-BR,
-Jani.
-
-> +
-> +        new_nodes =3D LanguagesNode()
-> +
-> +        for lang_code, lang_name in all_languages.items():
-> +            if lang_code =3D=3D this_lang_code:
-> +                continue
-> +
-> +            if lang_code is None:
-> +                target_name =3D docname
-> +            else:
-> +                target_name =3D os.path.join('translations', lang_code, =
-docname)
-> +
-> +            pxref =3D addnodes.pending_xref('', refdomain=3D'std',
-> +                reftype=3D'doc', reftarget=3D'/' + target_name, modname=
-=3DNone,
-> +                classname=3DNone, refexplicit=3DTrue)
-> +            pxref +=3D nodes.Text(lang_name)
-> +            new_nodes +=3D pxref
-> +
-> +        self.document.insert(0, new_nodes)
-> +
-> +def process_languages(app, doctree, docname):
-> +    for node in doctree.traverse(LanguagesNode):
-> +        languages =3D []
-> +
-> +        # Iterate over the child nodes; any resolved links will have
-> +        # the type 'nodes.reference', while unresolved links will be
-> +        # type 'nodes.Text'.
-> +        languages =3D list(filter(lambda xref:
-> +            isinstance(xref, nodes.reference), node.children))
-> +
-> +        html_content =3D app.builder.templates.render('translations.html=
-',
-> +            context=3D{
-> +                'languages': languages,
-> +            })
-> +
-> +        node.replace_self(nodes.raw('', html_content, format=3D'html'))
-> +
-> +def setup(app):
-> +    app.add_node(LanguagesNode)
-> +    app.add_transform(TranslationsTransform)
-> +    app.connect('doctree-resolved', process_languages)
-> +
-> +    return {
-> +        'parallel_read_safe': True,
-> +        'parallel_write_safe': True,
-> +    }
-
---=20
-Jani Nikula, Intel
