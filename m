@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F197DBA00
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED2B7DBA02
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbjJ3Mkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
+        id S233262AbjJ3Mkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbjJ3Mkm (ORCPT
+        with ESMTP id S233191AbjJ3Mkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:40:42 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4944EC9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:40:39 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UCUfv8002259;
-        Mon, 30 Oct 2023 12:40:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=oT8Q2JY+ZYriM6AyjlplkXOaiisUB1+zlmU2NxFg5bg=;
- b=BkP3BgFhgtfOCJXwuAFbjnczCb/AfWc/JBI/r3u2GwXKqNfTRid6CF9fB9DRLUw+o6/i
- e8PmL7aVexkqG0PUfb/mT/JAI3jdJeo+4AdX7v/DTCDxEaT0/R4cg/RrXZlHhYgyF1R/
- qFKWc+B01Mil5+fr836hVwxMqx6V4Tiga0KMdCdN0jW+EmGrDrGxlOSEGV4a9Ns3NyF+
- kQywXFMWVor7aJqby7oMt+2tkSu+5Cne4kuhpChdDXE8FpWZiKvRbStZS3NsZnopuL+Z
- jHYBDm0iVkNshovdBgK+YOlqjkhIUgx/3w+MAOaha8PdZWIZRJViJkyP6muls21bLjBB EQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2chyg0tg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 12:40:23 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39UCeMqW009157
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 12:40:22 GMT
-Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 30 Oct 2023 05:40:19 -0700
-From:   Charan Teja Kalla <quic_charante@quicinc.com>
-To:     <akpm@linux-foundation.org>, <mgorman@techsingularity.net>,
-        <mhocko@suse.com>, <david@redhat.com>, <vbabka@suse.cz>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Charan Teja Kalla <quic_charante@quicinc.com>
-Subject: [PATCH] mm: page_alloc: unreserve highatomic page blocks before oom
-Date:   Mon, 30 Oct 2023 18:09:50 +0530
-Message-ID: <1698669590-3193-1-git-send-email-quic_charante@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 30 Oct 2023 08:40:45 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3C7B4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:40:42 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-777754138bdso319552485a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1698669642; x=1699274442; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=molrN2bMHZh5oor/TkmRjLj+0zRtggCfyjqWbE6KD7Y=;
+        b=TWUljpkKBRQDSdiZrDj91bhZlj0iyh5unbJp/nTN5ubk02zM5gf3U6QkOMxVqaBHDG
+         0wtbrwENeLw3wozE/ODscMrpnH8VDwkcRMSY7LFgAa9G3eCxzHKKJExJH8Yc5rkQO4lt
+         9CGsaFw+ej/fjuz/+Om2eWPux0h1dzkSySdtHMSXECVIRk/uvi8dBgxt3Y1rTFQ7WVCs
+         0q729rVn7BqyzhERyjJypAA7+OMvobRJKJbW6HGF3KHGt8ViND6tr/EsZTLwnICFjaov
+         ShBiryzG/SMsBVCk2x7TAtrDxTWmpqRnaIW8mk48MuPdzBssExWrFf6MKVuLFhgGd43n
+         Niiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698669642; x=1699274442;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=molrN2bMHZh5oor/TkmRjLj+0zRtggCfyjqWbE6KD7Y=;
+        b=hMO9BcrPYzawtLsqUSvGlczWri9Fg14Lb87I968aVpgBhO6O39ZQR0cbp3wmxdxqdS
+         8wtWgDlXt+3zV0OEATWwI5QSRiJ5/MbSfzQIkxC0rgGeQIfxnhmqy2l52QV4kAsJsRM6
+         RCa9O6CwzYl+gj1dEPNY7MsUvCiRwJuykKtuCDGnBOFrzWdpVPoXUDmS6ij5CGDXuGH6
+         oDcX/uOab3HK3C66E8f3kF6Jh6TOPi8zS4HRm/V6IU5sbfdslxaQc4kWLagOfjOVRDgW
+         82nmzyxb9jXDJ7KTchpbpZv9IxSdM3qZpWcwwP/NpQF4OPS90AoYZHH5vbDfV6GpqnOt
+         Tmtw==
+X-Gm-Message-State: AOJu0Yxfd+NYI2sqSkLrc8RFt8iLviUEEoa/+PYNOZPeaWV/eAk94rn0
+        Glt2xEWZZPf5Zp1isHKd8jJGXQ==
+X-Google-Smtp-Source: AGHT+IFQiTGf+DpYZI6/KAqgrSYdCWdsolhWJXAygY+kM8KIkHic0hv7QBHipjDqmxhiqJNkm+vWyg==
+X-Received: by 2002:a05:620a:3953:b0:778:ba89:2fbd with SMTP id qs19-20020a05620a395300b00778ba892fbdmr9362026qkn.36.1698669642074;
+        Mon, 30 Oct 2023 05:40:42 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05620a124b00b0076cbcf8ad3bsm3234305qkl.55.2023.10.30.05.40.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 05:40:41 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qxRZR-006euh-5R;
+        Mon, 30 Oct 2023 09:40:41 -0300
+Date:   Mon, 30 Oct 2023 09:40:41 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc:     "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>
+Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
+Message-ID: <20231030124041.GE691768@ziepe.ca>
+References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+ <4da48f85-a72f-4f6b-900f-fc293d63b5ae@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: meoXfyj-2M7sxjewK1Sa1HdZUAmpIapY
-X-Proofpoint-GUID: meoXfyj-2M7sxjewK1Sa1HdZUAmpIapY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0 phishscore=0
- clxscore=1011 suspectscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310300097
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4da48f85-a72f-4f6b-900f-fc293d63b5ae@fujitsu.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -73,98 +80,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__alloc_pages_direct_reclaim() is called from slowpath allocation where
-high atomic reserves can be unreserved after there is a progress in
-reclaim and yet no suitable page is found. Later should_reclaim_retry()
-gets called from slow path allocation to decide if the reclaim needs to
-be retried before OOM kill path is taken.
+On Mon, Oct 30, 2023 at 07:51:41AM +0000, Zhijian Li (Fujitsu) wrote:
+> 
+> 
+> On 27/10/2023 13:41, Li Zhijian wrote:
+> > mr->page_list only encodes *page without page offset, when
+> > page_size != PAGE_SIZE, we cannot restore the address with a wrong
+> > page_offset.
+> > 
+> > Note that this patch will break some ULPs that try to register 4K
+> > MR when PAGE_SIZE is not 4K.
+> > SRP and nvme over RXE is known to be impacted.
+> > 
+> > Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> > ---
+> >   drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > index f54042e9aeb2..61a136ea1d91 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
+> >   	struct rxe_mr *mr = to_rmr(ibmr);
+> >   	unsigned int page_size = mr_page_size(mr);
+> >   
+> > +	if (page_size != PAGE_SIZE) {
+> 
+> It seems this condition is too strict, it should be:
+> 	if (!IS_ALIGNED(page_size, PAGE_SIZE))
+> 
+> So that, page_size with (N * PAGE_SIZE) can work as previously.
+> Because the offset(mr.iova & page_mask) will get lost only when !IS_ALIGNED(page_size, PAGE_SIZE)
 
-should_reclaim_retry() checks the available(reclaimable + free pages)
-memory against the min wmark levels of a zone and returns:
-a)  true, if it is above the min wmark so that slow path allocation will
-do the reclaim retries.
-b) false, thus slowpath allocation takes oom kill path.
+That makes sense
 
-should_reclaim_retry() can also unreserves the high atomic reserves
-**but only after all the reclaim retries are exhausted.**
-
-In a case where there are almost none reclaimable memory and free pages
-contains mostly the high atomic reserves but allocation context can't
-use these high atomic reserves, makes the available memory below min
-wmark levels hence false is returned from should_reclaim_retry() leading
-the allocation request to take OOM kill path. This is an early oom kill
-because high atomic reserves are holding lot of free memory and 
-unreserving of them is not attempted.
-
-(early)OOM is encountered on a machine in the below state(excerpt from
-the oom kill logs):
-[  295.998653] Normal free:7728kB boost:0kB min:804kB low:1004kB
-high:1204kB reserved_highatomic:8192KB active_anon:4kB inactive_anon:0kB
-active_file:24kB inactive_file:24kB unevictable:1220kB writepending:0kB
-present:70732kB managed:49224kB mlocked:0kB bounce:0kB free_pcp:688kB
-local_pcp:492kB free_cma:0kB
-[  295.998656] lowmem_reserve[]: 0 32
-[  295.998659] Normal: 508*4kB (UMEH) 241*8kB (UMEH) 143*16kB (UMEH)
-33*32kB (UH) 7*64kB (UH) 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB
-0*4096kB = 7752kB
-
-Per above log, the free memory of ~7MB exist in the high atomic
-reserves is not freed up before falling back to oom kill path.
-
-This fix includes unreserving these atomic reserves in the OOM path
-before going for a kill. The side effect of unreserving in oom kill path
-is that these free pages are checked against the high wmark. If
-unreserved from should_reclaim_retry()/__alloc_pages_direct_reclaim(),
-they are checked against the min wmark levels.
-
-Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
----
- mm/page_alloc.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 95546f3..2a2536d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3281,6 +3281,8 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 		.order = order,
- 	};
- 	struct page *page;
-+	struct zone *zone;
-+	struct zoneref *z;
- 
- 	*did_some_progress = 0;
- 
-@@ -3295,6 +3297,16 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 	}
- 
- 	/*
-+	 * If should_reclaim_retry() encounters a state where:
-+	 * reclaimable + free doesn't satisfy the wmark levels,
-+	 * it can directly jump to OOM without even unreserving
-+	 * the highatomic page blocks. Try them for once here
-+	 * before jumping to OOM.
-+	 */
-+retry:
-+	unreserve_highatomic_pageblock(ac, true);
-+
-+	/*
- 	 * Go through the zonelist yet one more time, keep very high watermark
- 	 * here, this is only to catch a parallel oom killing, we must fail if
- 	 * we're still under heavy pressure. But make sure that this reclaim
-@@ -3307,6 +3319,12 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 	if (page)
- 		goto out;
- 
-+	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, ac->highest_zoneidx,
-+								ac->nodemask) {
-+		if (zone->nr_reserved_highatomic > 0)
-+			goto retry;
-+	}
-+
- 	/* Coredumps can quickly deplete all memory reserves */
- 	if (current->flags & PF_DUMPCORE)
- 		goto out;
--- 
-2.7.4
-
+Jason
