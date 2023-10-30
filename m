@@ -2,200 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEFE7DBDD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDC97DBDDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbjJ3Q2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S233397AbjJ3Qbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3Q2r (ORCPT
+        with ESMTP id S233885AbjJ3Qbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:28:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72969DB
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:27:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698683277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=QJRzUGi0crPAdF+PsGr4fd82XBsUf26/RqsTLoK6Cc8=;
-        b=PzDdow5/Wb2YXgvu5Iime0LPp5xVYoWEfI6LnNKBDrY+fgcjqDnTNtER1Q/TyOIzW17SX3
-        Yav9ta0/6t1/oXJAQge7v3G2ijuel5JQUxYw7eI0+amUFBm1xBuQwrlMh5bz2aY0AVsbs4
-        MgBsNJZedzOvLJQo+UJjGD6yqyCJ4sk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-569-OR5uKCWlNr2M6j70bt9zIg-1; Mon, 30 Oct 2023 12:27:56 -0400
-X-MC-Unique: OR5uKCWlNr2M6j70bt9zIg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-407d3e55927so32545495e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:27:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698683275; x=1699288075;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QJRzUGi0crPAdF+PsGr4fd82XBsUf26/RqsTLoK6Cc8=;
-        b=awLMl4ZFAaQfMaCXQObpYTzNK0uP7mMlCy70IDVMke/5KIAb/Z2C9LTOgJq1rIfATO
-         WvBcfEMx2+mDlTv+zfTQ87dnrNO5EF2+B2wgZhRapzcGkggNRSqbpWDRS+sLoQsFcsl9
-         CFEpY0OIuX1bnpFgVb61vCGl2CDS3zUL4NAoiZU5ucZeEdFcaQVKaaS6hHQGsVaZ3D6E
-         hWRunI4ljFKWAKoaCVScHBJ2Y+Y+GUAemJ2dra35IUF0Yg9a19S4xShWcFzZB/7iGVuY
-         LzcRoWzU9aloar15Iz+mDPq8bPQzPjPrMX+4G1tIA5JBH32a8M1N3kjOBuIcMcUmkpZn
-         pdqw==
-X-Gm-Message-State: AOJu0Ywbjocs8q0YW28VF2NVwbU94oyq4GLslO+TWYmz5fG3dNAbQb/P
-        eNRI/4XEDZ/CuE1JBDPzY5qo7HokoFm9X78knHt1SprcLgkFLyf1UZ144vUNQDnDMpDbVZm/rWC
-        jmWBzCQ5TJX/zVERa2zGgaboh
-X-Received: by 2002:a05:600c:5204:b0:408:3f61:cb4f with SMTP id fb4-20020a05600c520400b004083f61cb4fmr7847792wmb.23.1698683274959;
-        Mon, 30 Oct 2023 09:27:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHfa0KyfT9rBRGOGCePk10CmFCQx85iYerXM1uRezmX93sdvp3R2tcV7yoRdLLu5R9pLdpikw==
-X-Received: by 2002:a05:600c:5204:b0:408:3f61:cb4f with SMTP id fb4-20020a05600c520400b004083f61cb4fmr7847757wmb.23.1698683274613;
-        Mon, 30 Oct 2023 09:27:54 -0700 (PDT)
-Received: from [192.168.1.174] ([151.81.68.207])
-        by smtp.googlemail.com with ESMTPSA id u18-20020a05600c19d200b00401b242e2e6sm13160177wmq.47.2023.10.30.09.27.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 09:27:53 -0700 (PDT)
-Message-ID: <ac502d11-1fe8-45ec-bb91-02c94dbcd16d@redhat.com>
-Date:   Mon, 30 Oct 2023 17:27:47 +0100
+        Mon, 30 Oct 2023 12:31:34 -0400
+X-Greylist: delayed 165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 09:31:29 PDT
+Received: from p3plwbeout22-04.prod.phx3.secureserver.net (p3plsmtp22-04-2.prod.phx3.secureserver.net [68.178.252.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74EBED
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:31:29 -0700 (PDT)
+Received: from mailex.mailcore.me ([94.136.40.143])
+        by :WBEOUT: with ESMTP
+        id xV87q1AHYvd3NxV88qxv9l; Mon, 30 Oct 2023 09:28:44 -0700
+X-CMAE-Analysis: v=2.4 cv=VI8YI/DX c=1 sm=1 tr=0 ts=653fd9bc
+ a=EhJYbXVJKsomWlz4CTV+qA==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=AUd_NHdVAAAA:8
+ a=FXvPX3liAAAA:8 a=RxiQ5PF5XbUlaTgh13YA:9 a=QEXdDO2ut3YA:10
+ a=UObqyxdv-6Yh2QiB9mM_:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
+X-SID:  xV87q1AHYvd3N
+Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=[192.168.178.90])
+        by smtp05.mailcore.me with esmtpa (Exim 4.94.2)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1qxV8D-0002PF-6R; Mon, 30 Oct 2023 16:28:49 +0000
+Message-ID: <332ff885-f621-883a-696a-e8247fb43ecc@squashfs.org.uk>
+Date:   Mon, 30 Oct 2023 16:28:40 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 02/35] KVM: Assert that mmu_invalidate_in_progress
- *never* goes negative
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-3-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20231027182217.3615211-3-seanjc@google.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] docs: filesystems: document the squashfs specific
+ mount options
+To:     Ariel Miculas <amiculas@cisco.com>
+Cc:     linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, serge@hallyn.com,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+References: <20231029161924.50648-1-amiculas@cisco.com>
+ <bd039dc7-cfe5-c210-b65e-0cba3186ee0b@squashfs.org.uk>
+ <qgwx4cjswrhzxqijsosix437xyw3ifglv6uz2d3nq7whkjqueo@c5pzoqtoqtgb>
+ <46d308b2-5e59-862d-b429-e6ee418bc61e@squashfs.org.uk>
+ <oonydtkv6anpjbugjvqkp4byqlf3aiwkwf4g7y5w5tthivxomh@b4w4jyceaepz>
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+In-Reply-To: <oonydtkv6anpjbugjvqkp4byqlf3aiwkwf4g7y5w5tthivxomh@b4w4jyceaepz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Mailcore-Auth: 439999529
+X-Mailcore-Domain: 1394945
+X-123-reg-Authenticated:  phillip@squashfs.org.uk  
+X-Originating-IP: 82.69.79.175
+X-CMAE-Envelope: MS4xfLIBLo9MzFVKo/3fDXJ8SEJIZbHn/dw0P3cnXkWxQA/bfG6XpVa8AiM0ymCgm9s5Dz0xvNuvme3KnHbQkYS7F5hk6l1OXnRxIqr1qWCz/Kua/JFhEPzp
+ nGoFsRAiZgJhgRw6qyObEGVqmBNo4OIyILMxF3pDFG291fhghyMxKBmg+VWKeIxr+KigMlR5YB3thMbhar53XcVsAhsOd/2rg7CZsz/CQpoPJIkeO2+TJX6t
+ t+DLD4+ythBlN00ZqHnpsg==
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/23 20:21, Sean Christopherson wrote:
-> Move the assertion on the in-progress invalidation count from the primary
-> MMU's notifier path to KVM's common notification path, i.e. assert that
-> the count doesn't go negative even when the invalidation is coming from
-> KVM itself.
+On 30/10/2023 16:09, Ariel Miculas wrote:
+> On 23/10/30 03:40PM, Phillip Lougher wrote:
+>> On 30/10/2023 12:57, Ariel Miculas wrote:
+>>> On 23/10/29 08:33PM, Phillip Lougher wrote:
+>>>> On 29/10/2023 16:19, Ariel Miculas wrote:
+>>>>> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
+>>>>> can be used to specify the decompression mode: single-threaded,
+>>>>> multi-threaded, percpu or the number of threads used for decompression.
+>>>>> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set and
+>>>>> SQUASHFS_DECOMP_MULTI is set, the "threads" option can also be used to
+>>>>> specify the number of threads used for decompression. This mount option
+>>>>> is only mentioned in fs/squashfs/Kconfig, which makes it difficult to
+>>>>> find.
+>>>>>
+>>>>> Another mount option available is "errors", which can be configured to
+>>>>> panic the kernel when squashfs errors are encountered.
+>>>>>
+>>>>> Add both these options to the squashfs documentation, making them more
+>>>>> noticeable.
+>>>>>
+>>>>> Signed-off-by: Ariel Miculas <amiculas@cisco.com>
+>>>>
+>>>> Looks good to me.
+>>>>
+>>>> Reviewed-by: Phillip Lougher <phillip@squashfs.org.uk>
+>>>
+>>> Unfortunately, it seems this is not quite correct either:
+>>> There is the config option SQUASHFS_MOUNT_DECOMP_THREADS:
+>>> ```
+>>> 	bool "Add the mount parameter 'threads=' for squashfs"
+>>> 	depends on SQUASHFS
+>>> 	depends on SQUASHFS_DECOMP_MULTI
+>>> 	default n
+>>> 	help
+>>> 	  Use threads= to set the decompression parallel mode and the number of threads.
+>>> 	  If SQUASHFS_CHOICE_DECOMP_BY_MOUNT=y
+>>> 	      threads=<single|multi|percpu|1|2|3|...>
+>>> 	  else
+>>> 	      threads=<2|3|...>
+>>> 	  The upper limit is num_online_cpus() * 2.
+>>> ```
+>>> that depends on SQUASHFS_DECOMP_MULTI.
+>>> So I think I should take my v1 patch and specify that the "threads="
+>>> mount option depends on SQUASHFS_MOUNT_DECOMP_THREADS. There's no need
+>>> to specify SQUASHFS_DECOMP_MULTI, because SQUASHFS_MOUNT_DECOMP_THREADS
+>>> already depends on it.
+>>
+>> Sorry, you have to specify SQUASHFS_DECOMP_MULTI to be able to specify
+>> SQUASHFS_MOUNT_DECOMP_THREADS if SQUASHFS_DECOMP_BY_MOUNT is unselected.
+> Agree.
+>>
+>> Just try it, do make menuconfig, ensure SQUASHFS_CHOICE_DECOMP_BY_MOUNT
+>> is unselected, select Single threaded decompression and you won't be
+>> able to specify SQUASHFS_MOUNT_DECOMP_THREADS.
+> True.
+>>
+>> That was the point of my review. What bit don't you understand?
+> But SQUASHFS_DECOMP_MULTI is not enough, you need to specify
+> SQUASHFS_MOUNT_DECOMP_THREADS in order to use the "threads=" mount
+> option.
+> So instead of saying
+> ```
+> If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
+> SQUASHFS_DECOMP_MULTI is set:
+> ```
+> wouldn't it be right to actually say:
+> ```
+> If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
+> SQUASHFS_MOUNT_DECOMP_THREADS is set:
+> ```?
 > 
-> Opportunistically convert the assertion to a KVM_BUG_ON(), i.e. kill only
-> the affected VM, not the entire kernel.  A corrupted count is fatal to the
-> VM, e.g. the non-zero (negative) count will cause mmu_invalidate_retry()
-> to block any and all attempts to install new mappings.  But it's far from
-> guaranteed that an end() without a start() is fatal or even problematic to
-> anything other than the target VM, e.g. the underlying bug could simply be
-> a duplicate call to end().  And it's much more likely that a missed
-> invalidation, i.e. a potential use-after-free, would manifest as no
-> notification whatsoever, not an end() without a start().
-
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   virt/kvm/kvm_main.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+> As you've mentioned, you could only set SQUASHFS_MOUNT_DECOMP_THREADS
+> when SQUASHFS_DECOMP_MULTI is selected. That happens in two cases:
+> * either SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, in which case it also
+>    selects SQUASHFS_MOUNT_DECOMP_THREADS
+> * either SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set,
+>    SQUASHFS_DECOMP_MULTI is set and SQUASHFS_MOUNT_DECOMP_THREADS is also
+>    set
 > 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 0524933856d4..5a97e6c7d9c2 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -833,6 +833,7 @@ void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
->   	 * in conjunction with the smp_rmb in mmu_invalidate_retry().
->   	 */
->   	kvm->mmu_invalidate_in_progress--;
-> +	KVM_BUG_ON(kvm->mmu_invalidate_in_progress < 0, kvm);
->   }
->   
->   static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
-> @@ -863,8 +864,6 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
->   	 */
->   	if (wake)
->   		rcuwait_wake_up(&kvm->mn_memslots_update_rcuwait);
-> -
-> -	BUG_ON(kvm->mmu_invalidate_in_progress < 0);
->   }
->   
->   static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+> So I wouldn't even mention SQUASHFS_DECOMP_MULTI in the documentation,
+> only SQUASHFS_MOUNT_DECOMP_THREADS, because the latter always depends on
+> the former. And the "threads=" mount option is only available when
+> SQUASHFS_MOUNT_DECOMP_THREADS is set (which is the configuration I've
+> missed in v1 and v2).
+> 
+
+You seem determined to create an unpleasant argument here by trying to 
+argue your first patch was correct, and I, as merely the maintainer, 
+can't tell you to change it to how I want it.
+
+If, as you pointed out in your first patch, the purpose is to
+document the mount options, then the fact that threads=xxx
+option depends on SQUASHFS_DECOMP_MULTI being selected is
+important, and should be mentioned.
+
+I have accepted your V2.  If you want to withdraw it now, please
+do so.  But I will not accept further patches from you, nor
+respond to any more of your emails.
+
+It is never a good look to argue with the maintainer, when I am
+trying to help you make your patch better. You attitude means this
+has been a waste of my time so far.
+
+Phillip
+
+> Regards,
+> Ariel
+>>
+>> Phillip
+>>
+>>> What do you think?
+>>>
+>>> Regards,
+>>> Ariel
+>>>
+>>
 
