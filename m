@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5543A7DC17A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200E17DC17C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbjJ3VBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        id S231395AbjJ3VCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbjJ3VA6 (ORCPT
+        with ESMTP id S229764AbjJ3VCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:00:58 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05CFF7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:00:56 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1eb7a8d9610so675673fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698699656; x=1699304456; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P8m8EAbGJbUxe5B9fBXpOTBojQ9A3raNvAoswxRtY9Q=;
-        b=aoyiCgUcQN8c/5sVQTRxOhI2mf0uK+Sie1DmvB78iBN2wo96pVIfFeljIjLNfg/tPW
-         5d1VsshSJ/SBYzNEIuZr2DY4iK3pAp21GQcBLdpzbbBKjYAS47O0r3GEZV89bCSrOm8x
-         d2mg+KpxGkj42Q8Zj/Ob5+JwKYhGuCOIcOak5mHQx1WiN/rVNUOiN5mN0dQxrkKgA1Cf
-         IVKbkg2jofArrOZQaG9AXLfc1TwmzSCGKrAIaNwwiugwWP3qAynXDZenwmJr0xtwyNzT
-         5FC77wIe2OKqV/W9ZVsb983qx260W12487Yp0lYgMki4A8HYr4fLA1CSMz3tmfB3Ebnz
-         wITg==
+        Mon, 30 Oct 2023 17:02:43 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D6EDD;
+        Mon, 30 Oct 2023 14:02:41 -0700 (PDT)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b3e7f56ca4so2750357b6e.0;
+        Mon, 30 Oct 2023 14:02:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698699656; x=1699304456;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P8m8EAbGJbUxe5B9fBXpOTBojQ9A3raNvAoswxRtY9Q=;
-        b=GPbu3kfSwWuhxLy7T24SsBc93VD2szKaK1jWb/Yy6iMzUCx4dZV6wIt82vE2V5Gvlg
-         S9TdwysRHvkOiEXHXl5n9oPVEwdkfNAvOk2msSD4x/PZebed/XWSqkxjOG/R1tim6Dgt
-         TVIHBX555GhgNFrOtSpsNcIr7T6+ELnfdpFcGHdLLRyYOpAfL41nmroHwWXw/vEhV5Av
-         IO7kUdWmc3BrL7wU/j/1u4X1rnr5oAySTGQeYZbhqViUKdu8OBrMwLWJZ83vcogrgZxF
-         FaKWzT6VOL6gJtD2473SXK29SEPHbayB5C7X1IrHWb1x2fCY9ngQpMqNEXU8miFYqThE
-         90Tw==
-X-Gm-Message-State: AOJu0YxQq+ee6cevJcvjp8clyAyJwkuEVvNIB+qrkE3Rwo4rd4Z1Lfwj
-        eY9m/5TtOuvXMnvbbi/PfIAEYkQKmXyCikEDAxE=
-X-Google-Smtp-Source: AGHT+IGik9l8JnL2h7xGT4i9fKk/5AFYblPH/eXoagbBRtKIpX5R7mNmQGNMicsortoCX8tngKlkxWNCti8kswgw1U0=
-X-Received: by 2002:a05:6870:9c87:b0:1e9:8a7e:5893 with SMTP id
- pq7-20020a0568709c8700b001e98a7e5893mr11458603oab.5.1698699655902; Mon, 30
- Oct 2023 14:00:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698699760; x=1699304560;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d7f1xtNDZ2uDSqBxTL8RZj3B3UCu3G/3InhqrWq5zmE=;
+        b=EHN889V/7iU1eJNrtj8FEdvl0+Oun6scFR4S6u0gLSj2athWAKZamWJClvcqdC0tZY
+         4f9L3pW0Gdu07Cg8lMRvUngLAAGVNAuE5owrFfMn4yVRZ5PyVfu1ftylJa7vK30oxW7F
+         1gwWKvt9P17SPExvhSCQse/GB2kgEPAS+Y7iDwGefc/Wx8kutn5bdaUi0WMu+M6Xt3iE
+         AGQzp1kMAy6uvTpT5rLvQkV8RToEhrjXGTkE7KADGKM3BupCN3NQ4HCVsBRSdHuxtbeT
+         3awYiB2phlg1BFJD11655q+xqbWrEy5yeklw4arQL4+rqFIFgH+G1j5IC0I02FfNy6hz
+         HrcQ==
+X-Gm-Message-State: AOJu0YyqLl90bsuPILWDIzzBlOLhu14ghO+SlagrqfyoLvSH2Vvc1/7m
+        2e53B2V7OXVM/B4jy9HG3j7AIbrMJg==
+X-Google-Smtp-Source: AGHT+IEIAyLxg6HwrCzx3hlGBX4hCgvdOO1NyX+dV0BfyIjLzSLOUFRLFUBIowlOSbqHK1sdnH83zQ==
+X-Received: by 2002:a05:6808:1526:b0:3a7:4878:235a with SMTP id u38-20020a056808152600b003a74878235amr11894866oiw.29.1698699760623;
+        Mon, 30 Oct 2023 14:02:40 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id bk28-20020a0568081a1c00b003b274008e46sm1524847oib.0.2023.10.30.14.02.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 14:02:39 -0700 (PDT)
+Received: (nullmailer pid 2457362 invoked by uid 1000);
+        Mon, 30 Oct 2023 21:02:38 -0000
+Date:   Mon, 30 Oct 2023 16:02:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rao Mandadapu <quic_srivasam@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH] dt-bindings: soundwire: Add reference to
+ soundwire-controller.yaml schema
+Message-ID: <169869975649.2457261.10866906758422041610.robh@kernel.org>
+References: <20231016155537.2973625-1-robh@kernel.org>
 MIME-Version: 1.0
-From:   olivia taylor <onetapdatalist@gmail.com>
-Date:   Mon, 30 Oct 2023 16:00:41 -0500
-Message-ID: <CACxKAZ=6nN=DzLgijYc6AWTbY1tVZ-W8WrnMiHqiKWhh=8dk_A@mail.gmail.com>
-Subject: RE: AWS re:Invent Attendees List- 2023
-To:     olivia taylor <onetapdatalist@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FILL_THIS_FORM,
-        FILL_THIS_FORM_LONG,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016155537.2973625-1-robh@kernel.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Would you be interested in acquiring the AWS re:Invent Attendees Data
-List for 2023?
+On Mon, 16 Oct 2023 10:55:37 -0500, Rob Herring wrote:
+> The soundwire-controller.yaml schema already defines the form for devices
+> in child nodes, so there's no need to do the same in the QCom controller
+> binding. Add a $ref to the soundwire-controller.yaml schema and drop the
+> child node schema.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/soundwire/qcom,soundwire.yaml       | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+> 
 
-The list includes: company or organization name, first name, last
-name, full name, contact job title, verified email address, website
-URL, mailing address, phone number, industry, and many more.
+Applied, thanks!
 
-Number of Contacts: 50,487
-Cost: $1,989
-
-Interested? Email me back; I would love to provide more information on the list.
-
-Kind Regards,
-Olivia
-Marketing Coordinator
