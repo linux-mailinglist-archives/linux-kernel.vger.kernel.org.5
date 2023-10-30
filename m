@@ -2,178 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9726C7DB421
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA147DB3E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbjJ3HVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 03:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        id S231719AbjJ3HTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 03:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbjJ3HU7 (ORCPT
+        with ESMTP id S229517AbjJ3HTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 03:20:59 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B961B3;
-        Mon, 30 Oct 2023 00:20:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GL0NhqPVCzjSRPxWHZ7HvXa5gAG0ZT5+h3Kp6EB1AwEw1uZsudFx2MoVylDQimnZCXOjNRmtnp8iCnpdhY+rvXkUhDbBSRdJpplhz6fiJMFrsLyYGVeuyJfgzE5hOxVB5N9oBi8I4caWGNWzy6mHnyhbRpcH8c/fBEE9qRbEdR/9G+Jti38efmPLTedUO1FFq1nJudvQHefjNOQQ3jEs4D4ZM3nVPAJSIv1IuRRflgf5EA/7cujGnTDRGCr6AlYesq7h0qrLIGAb5FJm2JhKwtZDtjUEVGef5qkvluLgEbDvMPbKOeppB5s3lw1f1SaTNW9hOOysXJLoWACBtbQkjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vP1wCT9rAxWtNY+/Zm6kmN9ULRiGso0luVIOZ4aFcfo=;
- b=FerVBxRYw0Rlx83211VMzI42GXQm3rnAsbSAZ5wl1mAKoPcI8HnH/FdTrhsCUEMTu3qqioHWLwkiuHTRFaA3CyoDYoOVGMA/gT4AtvL/0gak1sFzPQgFWsocaxYP+XRsa2yQJ5948b+DxMp/HgdG64vuWeqNmvo8Pa26KaeuMhued0q8LWNz0TA/48M4GbCUVqAPpyj7LEC04jfaehDb367DhhnI8K2tNJBYz+5oMkPXK3GrZVGHz1aetPLHAYZYAUSMGJQDXkL9TaowDfGy0goY8K/mu3xJSCS5erfSa6FBzuGcA99i//YbWs8Zs55sYpLw1ql6v5P7JoIxvSHhow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vP1wCT9rAxWtNY+/Zm6kmN9ULRiGso0luVIOZ4aFcfo=;
- b=pvXBG2VdpyFGle/E2C2O1ep3+caWlvKBbvoU978WSVxaZFVd9Cg+gH8q1zJHRD1ljUjBsMX59dtWlHM6kiUuR42O7AUWrfKYBEn/D1F4BTfKzBpiH7endYEPFtn4+tkbj4W8SMNXF3I4g/FsHQDzSy5T0AKW2scv7bwsNo/YvuY=
-Received: from CY5PR04CA0029.namprd04.prod.outlook.com (2603:10b6:930:1e::20)
- by MW4PR12MB8609.namprd12.prod.outlook.com (2603:10b6:303:1e2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27; Mon, 30 Oct
- 2023 07:20:48 +0000
-Received: from CY4PEPF0000E9D7.namprd05.prod.outlook.com
- (2603:10b6:930:1e:cafe::58) by CY5PR04CA0029.outlook.office365.com
- (2603:10b6:930:1e::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27 via Frontend
- Transport; Mon, 30 Oct 2023 07:20:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D7.mail.protection.outlook.com (10.167.241.78) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Mon, 30 Oct 2023 07:20:48 +0000
-Received: from compile-server.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 30 Oct
- 2023 02:20:18 -0500
-From:   Ma Jun <Jun.Ma2@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>, <lenb@kernel.org>,
-        <johannes@sipsolutions.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <alexander.deucher@amd.com>, <Lijo.Lazar@amd.com>,
-        <mario.limonciello@amd.com>, <netdev@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>
-CC:     <majun@amd.com>, Evan Quan <quanliangl@hotmail.com>,
-        Ma Jun <Jun.Ma2@amd.com>
-Subject: [Patch v13 9/9] drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
-Date:   Mon, 30 Oct 2023 15:18:32 +0800
-Message-ID: <20231030071832.2217118-10-Jun.Ma2@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231030071832.2217118-1-Jun.Ma2@amd.com>
-References: <20231030071832.2217118-1-Jun.Ma2@amd.com>
+        Mon, 30 Oct 2023 03:19:21 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AE6BD;
+        Mon, 30 Oct 2023 00:19:18 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39U6dEql015840;
+        Mon, 30 Oct 2023 07:19:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vXc+weUqzzCt9tNSctgE/5jPnd/LdyFH3/tydVcgjb0=;
+ b=Tq5F8sMceib/1+dIK0WhTOz4w30Gb1L47JnmTcbDXyhIznL5xCcRBmQTtC3cWP7eQIWR
+ imA59R7VfeMzvTK9LGpL8bsqiqt1O/BT8rMhbZ3SOwdauQYWvIocY0CpjugT7cOmvKXD
+ uwicA8cWx4aovUflnONGkambWMz9eQN35cG4azNwPrmbNVyKY2wPjiXbd1Gf2CfKiaFq
+ wxSUAXCuH4RYe0r+tyrq+PIW4z4rSdhFtc2NS4gz8TL9WqR04/h/DqYXufvhdI/DVMSk
+ A2TFK+ylT+Ft6jUGiaiYD6Puf2eNf7zmUO/inypZsiDRZLQNsAHWbROqXjYSj2hS/Z4x Zg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0samb96m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 07:19:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39U7J3uP009255
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 07:19:03 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
+ 2023 00:18:59 -0700
+Message-ID: <f0d4df5b-9c84-03e0-dcd5-67c285527387@quicinc.com>
+Date:   Mon, 30 Oct 2023 12:48:56 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v2] bus: mhi: host: Add tracing support
+Content-Language: en-US
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com>
+ <9216f694-cce0-2b95-df34-e5b60538644a@quicinc.com>
+ <ab9367fa-53e7-36d1-cac5-a3c1e28df4b3@quicinc.com>
+ <baf17652-e2e8-0083-459e-a6ea4372466b@quicinc.com>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <baf17652-e2e8-0083-459e-a6ea4372466b@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D7:EE_|MW4PR12MB8609:EE_
-X-MS-Office365-Filtering-Correlation-Id: d1594655-bfbf-41dd-0411-08dbd918bdba
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f8oe0FE4JukUW7NrkweqT26aUuySbTkrW5cs5FR7y33SczOd6slSv28z0mfZ1Czmz4PYIfSx5hF7xa1USLZVSd172FyFXShmEQ9bxqmyPrmLLad03oCiToB2akTbVDN0ZwjKx6HoOzUKXBOCXFWygKctgUExA2/WNKyWFMx/8KjPkp2IlcZ7FeHnW8BsP2/MGBRFEPDa/QVdY50lSlePNBuRCyDIDYtSBirlKOu4mU8XqXDAWdQuIN76fWex8D0PzlM8oR+C/rs5Gpjx05eZ0PQmm3XDN/nkkU0MilDcE/VY0dJUbJLSoBeLeulQFhXX7Q94hwG3DnyGrf+EcNeFHjMTthhA7GdXg6VTzgLeqSdBUQkHgI12R5q8NrlL4wh4lebiwXcTYJz1/uGUEBL1hghpnW1zfAQ1dJD9b6PbRDG2uxiW2ijvVaN73afTof6qMcOBh4ruRsOvjP3FuTJQWv/lPtfndZ4SQKIyllE28FFJYrMB1AKPSaxtoo0KLeuG7su3cK3ZSMO8g97MsNGrqmL3Rs0elW3rtYyCjiAZ+qbJukfN7pK+NoPxEflhzaMH1SuLiHYzXjmEDVtWBWZ02F7owJV+zztfbSgRDt0Z5tItPq1gCgAjLyL+iIQctScczqUbNIQ2C/+cee+uSvHALiSQ9aa88s+lBXjkX9FtuIMp1JibQjNnJwwX4Uz+bZ4dJTS30DHIG5BB/CNlp7icf+xCYQM+VD5Z/PR+kyEtmm2DAbmsb/6Xz6HvODsRvRUPlOqwE1ZN12Jxe0quoQVEGGQ2yZddyZ6H3q7wy90NoWQHsY4KcvtGCWCUY5AylrgMUZ/UT/WET885mYPlhB1+Nw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(346002)(136003)(39860400002)(230273577357003)(230173577357003)(230922051799003)(82310400011)(64100799003)(1800799009)(186009)(451199024)(36840700001)(40470700004)(83380400001)(16526019)(110136005)(41300700001)(2906002)(7416002)(5660300002)(2616005)(86362001)(36756003)(40480700001)(1076003)(426003)(336012)(26005)(40460700003)(32650700002)(81166007)(36860700001)(7696005)(478600001)(54906003)(70586007)(70206006)(4326008)(8936002)(8676002)(316002)(45080400002)(921008)(82740400003)(356005)(6666004)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 07:20:48.7490
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1594655-bfbf-41dd-0411-08dbd918bdba
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D7.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB8609
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: w9svGWX5iQkhbROXPT8ciIFEeDu7sw3I
+X-Proofpoint-ORIG-GUID: w9svGWX5iQkhbROXPT8ciIFEeDu7sw3I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_05,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 adultscore=0 clxscore=1011 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310300053
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <quanliangl@hotmail.com>
 
-Fulfill the SMU13.0.7 support for Wifi RFI mitigation feature.
+On 10/27/2023 8:59 PM, Jeffrey Hugo wrote:
+> On 10/23/2023 1:11 AM, Krishna Chaitanya Chundru wrote:
+>>
+>> On 10/20/2023 8:33 PM, Jeffrey Hugo wrote:
+>>> On 10/13/2023 3:52 AM, Krishna chaitanya chundru wrote:
+>>>> This change adds ftrace support for following functions which
+>>>> helps in debugging the issues when there is Channel state & MHI
+>>>> state change and also when we receive data and control events:
+>>>> 1. mhi_intvec_threaded_handler
+>>>> 2. mhi_process_data_event_ring
+>>>> 3. mhi_process_ctrl_ev_ring
+>>>> 4. mhi_gen_tre
+>>>> 5. mhi_update_channel_state
+>>>> 6. mhi_tryset_pm_state
+>>>> 7. mhi_pm_st_worker
+>>>>
+>>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>>> ---
+>>>> Changes in v2:
+>>>> - Passing the raw state into the trace event and using 
+>>>> __print_symbolic() as suggested by bjorn.
+>>>> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by 
+>>>> bjorn.
+>>>> - Fixed the kernel test rebot issues.
+>>>> - Link to v1: 
+>>>> https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com 
+>>>>
+>>>> ---
+>>>>   MAINTAINERS                     |   1 +
+>>>>   drivers/bus/mhi/host/init.c     |   3 +
+>>>>   drivers/bus/mhi/host/internal.h |   1 +
+>>>>   drivers/bus/mhi/host/main.c     |  32 +++--
+>>>>   drivers/bus/mhi/host/pm.c       |   6 +-
+>>>>   include/trace/events/mhi_host.h | 287 
+>>>> ++++++++++++++++++++++++++++++++++++++++
+>>>>   6 files changed, 317 insertions(+), 13 deletions(-)
+>>>>
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>> index 35977b269d5e..4339c668a6ab 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -13862,6 +13862,7 @@ F:    Documentation/mhi/
+>>>>   F:    drivers/bus/mhi/
+>>>>   F:    drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>>>   F:    include/linux/mhi.h
+>>>> +F:    include/trace/events/mhi_host.h
+>>>>     MICROBLAZE ARCHITECTURE
+>>>>   M:    Michal Simek <monstr@monstr.eu>
+>>>> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+>>>> index f78aefd2d7a3..3afa90a204fd 100644
+>>>> --- a/drivers/bus/mhi/host/init.c
+>>>> +++ b/drivers/bus/mhi/host/init.c
+>>>> @@ -20,6 +20,9 @@
+>>>>   #include <linux/wait.h>
+>>>>   #include "internal.h"
+>>>>   +#define CREATE_TRACE_POINTS
+>>>> +#include <trace/events/mhi_host.h>
+>>>
+>>> This feels redundant to me.  A few lines ago we included internal.h, 
+>>> and internal.h includes trace/events/mhi_host.h
+>>
+>> As Steve mentioned, this is mandatory step for creating trace points 
+>> & trace events.
+>
+> I understand this creates the trace points, and that needs to be done 
+> in C code.  It dtill seems redundant because we are including the 
+> header twice (and I am aware trace has the special multi-header read 
+> functionality for this).
+>
+> The duplicate include still feels weird, but I have not come up with a 
+> better way to structure this.
+We will use this way for now then, we will check in parallel if there 
+is  a way to avoid this and change it in the future.
+>
+>>
+>>>
+>>>> +
+>>>>   static DEFINE_IDA(mhi_controller_ida);
+>>>>     const char * const mhi_ee_str[MHI_EE_MAX] = {
+>>>> diff --git a/drivers/bus/mhi/host/internal.h 
+>>>> b/drivers/bus/mhi/host/internal.h
+>>>> index 2e139e76de4c..a80a317a59a9 100644
+>>>> --- a/drivers/bus/mhi/host/internal.h
+>>>> +++ b/drivers/bus/mhi/host/internal.h
+>>>> @@ -7,6 +7,7 @@
+>>>>   #ifndef _MHI_INT_H
+>>>>   #define _MHI_INT_H
+>>>>   +#include <trace/events/mhi_host.h>
+>>>>   #include "../common.h"
+>>>>     extern struct bus_type mhi_bus_type;
+>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>>> index dcf627b36e82..fcdb728ba49f 100644
+>>>> --- a/drivers/bus/mhi/host/main.c
+>>>> +++ b/drivers/bus/mhi/host/main.c
+>>>> @@ -246,6 +246,11 @@ static void *mhi_to_virtual(struct mhi_ring 
+>>>> *ring, dma_addr_t addr)
+>>>>       return (addr - ring->iommu_base) + ring->base;
+>>>>   }
+>>>>   +dma_addr_t mhi_to_physical(struct mhi_ring *ring, void *addr)
+>>>> +{
+>>>> +    return (addr - ring->base) + ring->iommu_base;
+>>>> +}
+>>>
+>>> This seems to be poorly named since we are using the iommu_base 
+>>> which suggests we are converting to an IOVA.
+>>>
+>>> Why do we need this though?  This seems like it might be a security 
+>>> issue, or at the very least, not preferred, and I'm struggling to 
+>>> figure out what value this provides to you are I when looking at the 
+>>> log.
+>>>
+>> I will rename the function to reflect it is converting to IOVA.
+>>
+>> We MHI TRE we write the IOVA address, to correlate between TRE events 
+>> in the MHI ring and event we are processing  we want to log the IOVA 
+>> address.
+>>
+>> As we are logging only IOVA address which is provided in the 
+>> devicetree and not the original physical address we are not expecting 
+>> any security issues here.
+>>
+>> Correct me if I was wrong.
+>
+> The IOVA is not provided by DT, it is a runtime allocated value 
+> provided by the IOMMU, if present.  If not present, then it is a 
+> physical address.
+>
+> Remember, x86 does not use devicetree.
+>
+> While the IOVA (with an iommu) is not technically a physical address, 
+> but is treated as such by the device.  I can imagine an attacker doing 
+> bad things if they get a hold of the value.
+Sure we will remove it.
+>
+> Still, you haven't indicated why this is useful.
 
-Signed-off-by: Evan Quan <quanliangl@hotmail.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
---
-v10->v11:
-  - downgrade the prompt level on message failure(Lijo)
-v13:
- - Fix the format issue (IIpo Jarvinen)
- - Remove duplicate code (IIpo Jarvinen)
----
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c    | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+The TRE ring elements has address in the IOVA format when we want to 
+correlate the address with the TRE elements in the dumps it will easier 
+with this way.
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-index 94ef5b4d116d..b230d13fc5b0 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-@@ -134,6 +134,7 @@ static struct cmn2asic_msg_mapping smu_v13_0_7_message_map[SMU_MSG_MAX_COUNT] =
- 	MSG_MAP(AllowGpo,			PPSMC_MSG_SetGpoAllow,           0),
- 	MSG_MAP(GetPptLimit,			PPSMC_MSG_GetPptLimit,                 0),
- 	MSG_MAP(NotifyPowerSource,		PPSMC_MSG_NotifyPowerSource,           0),
-+	MSG_MAP(EnableUCLKShadow,		PPSMC_MSG_EnableUCLKShadow,            0),
- };
- 
- static struct cmn2asic_mapping smu_v13_0_7_clk_map[SMU_CLK_COUNT] = {
-@@ -215,6 +216,7 @@ static struct cmn2asic_mapping smu_v13_0_7_table_map[SMU_TABLE_COUNT] = {
- 	TAB_MAP(ACTIVITY_MONITOR_COEFF),
- 	[SMU_TABLE_COMBO_PPTABLE] = {1, TABLE_COMBO_PPTABLE},
- 	TAB_MAP(OVERDRIVE),
-+	TAB_MAP(WIFIBAND),
- };
- 
- static struct cmn2asic_mapping smu_v13_0_7_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {
-@@ -510,6 +512,9 @@ static int smu_v13_0_7_tables_init(struct smu_context *smu)
- 		       AMDGPU_GEM_DOMAIN_VRAM);
- 	SMU_TABLE_INIT(tables, SMU_TABLE_COMBO_PPTABLE, MP0_MP1_DATA_REGION_SIZE_COMBOPPTABLE,
- 			PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
-+	SMU_TABLE_INIT(tables, SMU_TABLE_WIFIBAND,
-+		       sizeof(WifiBandEntryTable_t), PAGE_SIZE,
-+		       AMDGPU_GEM_DOMAIN_VRAM);
- 
- 	smu_table->metrics_table = kzalloc(sizeof(SmuMetricsExternal_t), GFP_KERNEL);
- 	if (!smu_table->metrics_table)
-@@ -2178,6 +2183,11 @@ static int smu_v13_0_7_set_df_cstate(struct smu_context *smu,
- 					       NULL);
- }
- 
-+static bool smu_v13_0_7_wbrf_support_check(struct smu_context *smu)
-+{
-+	return smu->smc_fw_version > 0x00524600;
-+}
-+
- static const struct pptable_funcs smu_v13_0_7_ppt_funcs = {
- 	.get_allowed_feature_mask = smu_v13_0_7_get_allowed_feature_mask,
- 	.set_default_dpm_table = smu_v13_0_7_set_default_dpm_table,
-@@ -2246,6 +2256,9 @@ static const struct pptable_funcs smu_v13_0_7_ppt_funcs = {
- 	.set_mp1_state = smu_v13_0_7_set_mp1_state,
- 	.set_df_cstate = smu_v13_0_7_set_df_cstate,
- 	.gpo_control = smu_v13_0_gpo_control,
-+	.is_asic_wbrf_supported = smu_v13_0_7_wbrf_support_check,
-+	.enable_uclk_shadow = smu_v13_0_enable_uclk_shadow,
-+	.set_wbrf_exclusion_ranges = smu_v13_0_set_wbrf_exclusion_ranges,
- };
- 
- void smu_v13_0_7_set_ppt_funcs(struct smu_context *smu)
--- 
-2.34.1
+Anyway we will not expose this as you suggested as it might expose 
+physical address in some platforms.
+
+>
+>>
+>>>> +
+>>>>   static void mhi_add_ring_element(struct mhi_controller *mhi_cntrl,
+>>>>                    struct mhi_ring *ring)
+>>>>   {
+>>>> @@ -491,11 +496,9 @@ irqreturn_t mhi_intvec_threaded_handler(int 
+>>>> irq_number, void *priv)
+>>>>         state = mhi_get_mhi_state(mhi_cntrl);
+>>>>       ee = mhi_get_exec_env(mhi_cntrl);
+>>>> -    dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+>>>> -        TO_MHI_EXEC_STR(mhi_cntrl->ee),
+>>>> -        mhi_state_str(mhi_cntrl->dev_state),
+>>>> -        TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+>>>>   + trace_mhi_intvec_threaded_handler(mhi_cntrl->mhi_dev->name, 
+>>>> mhi_cntrl->ee,
+>>>> +                      mhi_cntrl->dev_state, ee, state);
+>>>
+>>> Why are we removing the debug message when adding this trace? The 
+>>> commit text doesn't say.  (Looks like you do this several times, 
+>>> assume this comment applies to all isntances)
+>>
+>> I will add this in the commit text in my next patch.
+>>
+>> Just a query is recommended to keep both debug message and trace 
+>> events. If yes we will not remove the debug messages.
+>
+> I think it would be preferred to have one mechanism or the other, not 
+> both.  It seems like you are doing an incomplete conversion.
+>
+For now we will remove the dbg message where we added the traces and 
+will mention that in the commit.
+>>
+>>>
+>>>>       if (state == MHI_STATE_SYS_ERR) {
+>>>>           dev_dbg(dev, "System error detected\n");
+>>>>           pm_state = mhi_tryset_pm_state(mhi_cntrl,
+>>>> @@ -832,6 +835,12 @@ int mhi_process_ctrl_ev_ring(struct 
+>>>> mhi_controller *mhi_cntrl,
+>>>>       while (dev_rp != local_rp) {
+>>>>           enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>>>>   + trace_mhi_process_ctrl_ev_ring(mhi_cntrl->mhi_dev->name,
+>>>> +                           mhi_to_physical(ev_ring, local_rp),
+>>>> +                           local_rp->ptr, local_rp->dword[0],
+>>>> +                           local_rp->dword[1],
+>>>> +                           MHI_TRE_GET_EV_STATE(local_rp));
+>>>
+>>> Why not just pass in the local_rp as a single parameter and have the 
+>>> trace implementation decode it?  (Looks like you do this several 
+>>> times, assume this comment applies to all isntances)
+>>
+>> MHI_TRE_GET_EV_STATE definition is present in 
+>> drivers/bus/mhi/common.h which is common for both EP & MHI driver.
+>>
+>> If we keep this macro definition again in mhi_host.h it will be 
+>> redundant one.
+>
+> What is wrong with including the right header over in the trace to get 
+> the definition?  I didn't ask for it to be redefined.
+>
+> If the struct definition for local_rp changes, it will probably break 
+> this, which will require changes to the definition and use of 
+> trace_mhi_process_ctrl_ev_ring().  If trace_mhi_process_ctrl_ev_ring() 
+> just takes the struct and decodes it, the decode logic just needs to 
+> be updated (in one place) when the struct definition changes.
+>
+>>
+>> And we are only using this way only for this trace log. So we are 
+>> using the macro to get the state information.
+>
+> No, you do the same thing for trace_mhi_process_data_event_ring() and 
+> trace_mhi_gen_tre().
+
+Mani, can we move common.h to include  folder from the drivers folder so 
+that we can include that file in the mhi_host.h for trace events?
+
+- Krishna Chaitanya.
 
