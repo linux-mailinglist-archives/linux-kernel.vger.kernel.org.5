@@ -2,244 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 798767DB933
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68887DB935
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbjJ3LnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        id S232991AbjJ3LpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 07:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3LnU (ORCPT
+        with ESMTP id S229456AbjJ3LpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:43:20 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6637B6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:43:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3593FFEC;
-        Mon, 30 Oct 2023 04:43:59 -0700 (PDT)
-Received: from [10.57.71.117] (unknown [10.57.71.117])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA0353F738;
-        Mon, 30 Oct 2023 04:43:14 -0700 (PDT)
-Message-ID: <5993c198-0d27-46c3-b757-3a02c2aacfc9@arm.com>
-Date:   Mon, 30 Oct 2023 11:43:13 +0000
+        Mon, 30 Oct 2023 07:45:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CC3C5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cwVuwgnOv5r0BduS2NFCQTDkWPxIV5qbAn/Ows6hD4E=; b=S/jAle9cEv4vC60/nLAV/3eums
+        L7uQfrndiWKgTYNf738nhe/7bL49uGKYef+bR1pFxUu4jWojXwwpYWkF4UY36nIvoJYyq10kiFCab
+        Z7QQMsuiZ/PzNTQBiZ/2ZzxkhHR9chQHFyHg7m8Rjzp1eUUiKW3uZVxW4Of14XTgbDqv0yPYwygUW
+        MLHVxVYZX5cMoGgLLlboMmPs8eMg5A4Gz+S4Y1Vvn1QKxTRx3tvOqb0E0hIIByt1jFB/T+/f4DOLn
+        ue+S/9/vx2iH+u7WdlCyRJXlvr2wNKfuN3Jc7i0goGlE7d5MQyu8o4TlJOMFF16nY8bEb/6rj48kq
+        /mDRdg4Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qxQhP-003rSf-BB; Mon, 30 Oct 2023 11:44:53 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF910300478; Mon, 30 Oct 2023 12:44:50 +0100 (CET)
+Date:   Mon, 30 Oct 2023 12:44:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Richard Purdie <richard.purdie@linuxfoundation.org>
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: 32 bit qemu regression from v6.5 tip pull [6c480f222128
+ x86/alternative: Rewrite optimize_nops() some]
+Message-ID: <20231030114450.GB12604@noisy.programming.kicks-ass.net>
+References: <ZT6narvE+LxX+7Be@windriver.com>
+ <20231030082644.GK26550@noisy.programming.kicks-ass.net>
+ <ba1369810b39f79c0b092151bfa062dd0cf505b3.camel@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/9] mm: thp: Extend THP to allocate anonymous large
- folios
-Content-Language: en-GB
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-6-ryan.roberts@arm.com>
- <8a72da61-b2ef-48ad-ae59-0bae7ac2ce10@nvidia.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <8a72da61-b2ef-48ad-ae59-0bae7ac2ce10@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba1369810b39f79c0b092151bfa062dd0cf505b3.camel@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2023 00:04, John Hubbard wrote:
-> On 9/29/23 04:44, Ryan Roberts wrote:
+On Mon, Oct 30, 2023 at 10:55:26AM +0000, Richard Purdie wrote:
+> On Mon, 2023-10-30 at 09:26 +0100, Peter Zijlstra wrote:
+> > On Sun, Oct 29, 2023 at 02:41:46PM -0400, Paul Gortmaker wrote:
+> > > The TL;DR is that the Yocto folks encountered a regression in their
+> > > automated QA tests (after a move from v6.4 --> v6.5) where non-KVM
+> > > enabled boot tests on 32 bit x86 would (with ~2% frequency) splat with:
+> > 
+> > You're sure you're not running into this here:
+> > 
+> >   https://lkml.kernel.org/r/20230706170537.95959-1-richard.henderson@linaro.org
+> > 
+> > ?
 > 
-> Hi Ryan,
+> We're using qemu 8.1.0. Whilst I will get us updated to 8.1.2 and see
+> if that helps, I think those commits are in 8.1.0:
 > 
-> A few clarifying questions below.
+> $ git show cb62bd15e14e304617d250158b77d0deb032f03
+> commit cb62bd15e14e304617d250158b77d0deb032f032
+> Author: Richard Henderson <richard.henderson@linaro.org>
+> Date:   Thu Jul 6 08:45:13 2023 +0100
+> 
+>     accel/tcg: Split out cpu_exec_longjmp_cleanup
+> [...]
+> $ git tag --contains cb62bd15e14e304617d250158b77d0deb032f03
+> v8.1.0
+> v8.1.0-rc0
+> v8.1.0-rc1
+> v8.1.0-rc2
+> v8.1.0-rc3
+> v8.1.0-rc4
+> v8.1.1
+> v8.1.2
+> 
+> Similarly for:
+> 
+> commit deba78709ae8ce103e2248413857747f804cd1ef
+> Author: Richard Henderson <richard.henderson@linaro.org>
+> Date:   Thu Jul 6 17:55:48 2023 +0100
+> 
+>     accel/tcg: Always lock pages before translation
+> 
+> and
+> 
+> commit ad17868eb162a5466d8ad43e5ccb428776403308
+> Author: Richard Henderson <richard.henderson@linaro.org>
+> Date:   Wed Jul 26 12:58:08 2023 -0700
+> 
+>     accel/tcg: Clear tcg_ctx->gen_tb on buffer overflow
+> [...]
+>     Fixes: deba78709ae8 ("accel/tcg: Always lock pages before translation")
+> 
+> Both of which are also in 8.1.0.
+> 
+> Is there any other patch related to those we might be missing?
 
-Excellent - keep them coming!
+Not sure -- afaik that was it.
 
-> 
-> ...
->> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->> index 2e7c338229a6..c4860476a1f5 100644
->> --- a/include/linux/huge_mm.h
->> +++ b/include/linux/huge_mm.h
->> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
->>   #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
->>     /*
->> - * Mask of all large folio orders supported for anonymous THP.
->> + * Mask of all large folio orders supported for anonymous THP; all orders up to
->> + * and including PMD_ORDER, except order-0 (which is not "huge") and order-1
->> + * (which is a limitation of the THP implementation).
->>    */
->> -#define THP_ORDERS_ALL_ANON    BIT(PMD_ORDER)
->> +#define THP_ORDERS_ALL_ANON    ((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) | BIT(1)))
->>     /*
->>    * Mask of all large folio orders supported for file THP.
->> diff --git a/mm/memory.c b/mm/memory.c
->> index b5b82fc8e164..92ed9c782dc9 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -4059,6 +4059,87 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>       return ret;
->>   }
->>   +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
->> +{
->> +    int i;
->> +
->> +    if (nr_pages == 1)
->> +        return vmf_pte_changed(vmf);
->> +
->> +    for (i = 0; i < nr_pages; i++) {
->> +        if (!pte_none(ptep_get_lockless(vmf->pte + i)))
->> +            return true;
-> 
-> This seems like something different than the function name implies.
-> It's really confusing: for a single page case, return true if the
-> pte in the page tables has changed, yes that is very clear.
-> 
-> But then for multiple page cases, which is really the main
-> focus here--for that, claim that the range has changed if any
-> pte is present (!pte_none). Can you please help me understand
-> what this means?
+Thomas was looking at this and wondered if something like the below
+would help?
 
-Yes I understand your confusion. Although I'm confident that the code is
-correct, its a bad name - I'll make the excuse that this has evolved through
-rebasing to cope with additions to UFFD. Perhaps something like
-vmf_is_large_folio_suitable() is a better name.
+---
+ arch/x86/kernel/alternative.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It used to be that we would only take the do_anonymous_page() path if the pte
-was none; i.e. this is the first time we are faulting on an address covered by
-an anon VMA and we need to allocate some memory. But more recently we also end
-up here if the pte is a uffd_wp marker. So for a single pte, instead of checking
-none, we can check if the pte has changed from our original check (where we
-determined it was a uffd_wp marker or none). But for multiple ptes, we don't
-have storage to store all the original ptes from the first check.
-
-Fortunately, if uffd is in use for a vma, then we don't want to use a large
-folio anyway (this would break uffd semantics because we would no longer get a
-fault for every page). So we only care about the "same but not none" case for
-nr_pages=1.
-
-Would changing the name to vmf_is_large_folio_suitable() help here?
-
-
-> 
->> +    }
->> +
->> +    return false;
->> +}
->> +
->> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->> +{
->> +    gfp_t gfp;
->> +    pte_t *pte;
->> +    unsigned long addr;
->> +    struct folio *folio;
->> +    struct vm_area_struct *vma = vmf->vma;
->> +    unsigned int orders;
->> +    int order;
->> +
->> +    /*
->> +     * If uffd is active for the vma we need per-page fault fidelity to
->> +     * maintain the uffd semantics.
->> +     */
->> +    if (userfaultfd_armed(vma))
->> +        goto fallback;
->> +
->> +    /*
->> +     * Get a list of all the (large) orders below PMD_ORDER that are enabled
->> +     * for this vma. Then filter out the orders that can't be allocated over
->> +     * the faulting address and still be fully contained in the vma.
->> +     */
->> +    orders = hugepage_vma_check(vma, vma->vm_flags, false, true, true,
->> +                    BIT(PMD_ORDER) - 1);
->> +    orders = transhuge_vma_suitable(vma, vmf->address, orders);
->> +
->> +    if (!orders)
->> +        goto fallback;
->> +
->> +    pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->> +    if (!pte)
->> +        return ERR_PTR(-EAGAIN);
-> 
-> pte_offset_map() can only fail due to:
-> 
->     a) Wrong pmd type. These include:
->         pmd_none
->         pmd_bad
->         pmd migration entry
->         pmd_trans_huge
->         pmd_devmap
-> 
->     b) __pte_map() failure
-> 
-> For (a), why is it that -EAGAIN is used here? I see that that
-> will lead to a re-fault, I got that far, but am missing something
-> still.
-> 
-> For (b), same question, actually. I'm not completely sure why
-> why a retry is going to fix a __pte_map() failure?
-
-I'm not going to claim to understand all the details of this. But this is due to
-a change that Hugh introduced and we concluded at [1] that its always correct to
-return EAGAIN here to rerun the fault. In fact, with the current implementation
-pte_offset_map() should never fail for anon IIUC, but the view was that EAGAIN
-makes it safe for tomorrow, and because this would only fail due to a race,
-retrying is correct.
-
-[1] https://lore.kernel.org/linux-mm/8bdfd8d8-5662-4615-86dc-d60259bd16d@google.com/
-
-
-> 
-> 
->> +
->> +    order = first_order(orders);
->> +    while (orders) {
->> +        addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->> +        vmf->pte = pte + pte_index(addr);
->> +        if (!vmf_pte_range_changed(vmf, 1 << order))
->> +            break;
->> +        order = next_order(&orders, order);
->> +    }
->> +
->> +    vmf->pte = NULL;
->> +    pte_unmap(pte);
->> +
->> +    gfp = vma_thp_gfp_mask(vma);
->> +
->> +    while (orders) {
->> +        addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->> +        folio = vma_alloc_folio(gfp, order, vma, addr, true);
->> +        if (folio) {
->> +            clear_huge_page(&folio->page, addr, 1 << order);
->> +            return folio;
->> +        }
->> +        order = next_order(&orders, order);
->> +    }
-> 
-> And finally: is it accurate to say that there are *no* special
-> page flags being set, for PTE-mapped THPs? I don't see any here,
-> but want to confirm.
-
-The page flags are coming from 'gfp = vma_thp_gfp_mask(vma)', which pulls in the
-correct flags based on transparent_hugepage/defrag file.
-
-> 
-> 
-> thanks,
-
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 73be3931e4f0..fd44739828f7 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1685,8 +1685,8 @@ void __init_or_module text_poke_early(void *addr, const void *opcode,
+ 	} else {
+ 		local_irq_save(flags);
+ 		memcpy(addr, opcode, len);
+-		local_irq_restore(flags);
+ 		sync_core();
++		local_irq_restore(flags);
+ 
+ 		/*
+ 		 * Could also do a CLFLUSH here to speed up CPU recovery; but
