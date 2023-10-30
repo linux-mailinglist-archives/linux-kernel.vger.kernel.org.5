@@ -2,193 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9070F7DB2E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 06:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0EC7DB2EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 06:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjJ3Fpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 01:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
+        id S231222AbjJ3Frj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 01:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjJ3Fpq (ORCPT
+        with ESMTP id S229829AbjJ3Fri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 01:45:46 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00D9BC;
-        Sun, 29 Oct 2023 22:45:43 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 01D4C3200988;
-        Mon, 30 Oct 2023 01:45:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 30 Oct 2023 01:45:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1698644741; x=1698731141; bh=jaTWG66pDHoMbCEBoC0gkbfu5n/wvjRGKKr
-        6RONugiw=; b=kH1PljIwB4mx8xnaIGjwZChPF+ytCawKcocvOonU1W80TSZWp7A
-        mlndkyy1y+v/Pp5M1Ti83zkcRGcpZEX8qlYgTYvlWUISmO7ywFth8lvMO1TOM1PW
-        ESUBADIRp9beHdJ5/jRCsesd1tHJIl9C2+xvZtsLgEH51g1M0AsnI0UsqfBb+9rM
-        46Cyet41GCFc5y01IQJpT62gHDNEp8coBIY66tx86nQbOxtedlnqHFoWxaKYsW6M
-        7NBSWFS4kgLFziprja2mK1e0I7mfD/w5NfmRN7XI1jp93GE1UVTgUeG3BLSn5Pvd
-        s9F8Tx74suf3yQcN4y6tEb9ZiVtxjAaLvVQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698644741; x=1698731141; bh=jaTWG66pDHoMbCEBoC0gkbfu5n/wvjRGKKr
-        6RONugiw=; b=lU/j/+GsBZjBEEfDrgUzeheIxy92PUsVQwlz9VpHBPNkyGeJuEp
-        Ie4cXb1MwbbxAZXN8YU+ms/igcfooRHZBD/kJqX3qsI3j4GlAs4O6qv8qVOqO9Jf
-        Q7AecRB79YnnBiICaFAAmthF6J1Hs3YGSG3DTxQZtOaAWsGTnI/fdiO2Xjr1wLc8
-        ASaFSONgTCewvWzr2QWqnM1/6YTeGbWt1AaNniaLvZr6NF3BE5EpiDfxGO3XArfY
-        n6vYrs47fmcxnPdnwueK8nerYpL3BgGYFf6euhUHPZFk6Fu0FSaI8Z09EG6Tqiqv
-        Q+Roqn/VyaZwP+74u0rJyQfLkxDneCowbRw==
-X-ME-Sender: <xms:BUM_ZQU51d17FuPrp3ucPlUeWHzV-9uuv0_BgNGCvO6i_zF4oqFTOA>
-    <xme:BUM_ZUnhlTPM7z25YGpWS2ZxZVSSSXtSQZGP2LG53JNy0eCzAf4i3UQ8sXg1U8RiY
-    LCswe_wm2w0>
-X-ME-Received: <xmr:BUM_ZUba5JMOj-Rr6g8_AzLmFqeUQI5LCVNIQ_07XT1UJRs6BHSEAltH0i9SrxeVqscCJI3GDopPxUEVj1eNOSETAJD-d8TO9GyWuPYDpYsGm2SuqB6ZDgve>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleelgdekkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuhffvvehfjggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    eiveelkefgtdegudefudeftdelteejtedvheeuleevvdeluefhuddtieegveelkeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:BUM_ZfU_98WYEJc-r7pFTctcN3qRayb6W5zTEMzhBM-314_3kPDCCA>
-    <xmx:BUM_Zakd3BUGtYMBT6nyVbxOd4PgwA6e-6PQYWHvE2EeEFTJc7486w>
-    <xmx:BUM_ZUcTEXgs2896m8D2OQJzisVWovqy1u0DVriyrJmn-Z6jqYO-2Q>
-    <xmx:BUM_ZV9DDlqafNvwsJKyNuhtvxWaxOjawSSs8IN8BWocmKLJTS0ikQ>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 30 Oct 2023 01:45:35 -0400 (EDT)
-Message-ID: <cbc065c0-1dc3-974f-6e48-483baaf750a3@themaw.net>
-Date:   Mon, 30 Oct 2023 13:45:33 +0800
+        Mon, 30 Oct 2023 01:47:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17325BD;
+        Sun, 29 Oct 2023 22:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698644856; x=1730180856;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qSQyLJ3ELQydTlzFiy93Tk9n3bfWoaN+9E4KxaUOtcU=;
+  b=nPcj695a+UxLsQ+CXSrIwKaUsb7P9QqzTSvBqkuIbPHAOTouWJMroa+/
+   za9fLRyR0kWytG+EMhXapFAecnvMHkfWstBX1sduygxmXkLYDtrqoWdKF
+   wyg34dNWSNV3ZrhteG84GDYTQxh03W5WtMuiKgKXm6jdCRlgAPGj1EKqL
+   9mOpNW+2Pg/GKYZKC2w3Gv1fIp+oWBTUabLoCFI+Zn9lGXu3F9sLhgUN6
+   DmAQElsWinGipk6mOQfPnP8gIpqSzM0/Qth20JhZhYLtHj1ULpiV64L6n
+   6GEOOmFV93vSiU7fHnnraK457xniGrubuKp/e68XQOkiCq9hrsKb7O3FV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="9550062"
+X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
+   d="scan'208";a="9550062"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 22:47:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
+   d="scan'208";a="7855338"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.9.145]) ([10.93.9.145])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 22:47:28 -0700
+Message-ID: <47c9a8f1-0098-4543-ac98-e210ca6b0d34@intel.com>
+Date:   Mon, 30 Oct 2023 13:47:21 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/6] mounts: keep list of mounts in an rbtree
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] x86/kvm/async_pf: Use separate percpu variable to
+ track the enabling of asyncpf
 Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-3-mszeredi@redhat.com>
- <b69c1c17-35f9-351e-79a9-ef3ef5481974@themaw.net>
- <CAOssrKe76uZ5t714=Ta7GMLnZdS4QGm-fOfT9q5hNFe1fsDMVg@mail.gmail.com>
- <c938a7d9-aa9e-a3ad-a001-fb9022d21475@themaw.net>
- <dfb5f3d5-8db8-34af-d605-14112e8cc485@themaw.net>
-In-Reply-To: <dfb5f3d5-8db8-34af-d605-14112e8cc485@themaw.net>
+To:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231025055914.1201792-1-xiaoyao.li@intel.com>
+ <20231025055914.1201792-2-xiaoyao.li@intel.com> <87a5s73w53.fsf@redhat.com>
+ <ZTkkmgs_oCnDCGvd@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <ZTkkmgs_oCnDCGvd@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/10/23 13:37, Ian Kent wrote:
-> On 28/10/23 09:36, Ian Kent wrote:
->> On 27/10/23 16:17, Miklos Szeredi wrote:
->>> On Fri, Oct 27, 2023 at 5:12 AM Ian Kent <raven@themaw.net> wrote:
->>>> On 25/10/23 22:02, Miklos Szeredi wrote:
->>>>> The mnt.mnt_list is still used to set up the mount tree and for
->>>>> propagation, but not after the mount has been added to a 
->>>>> namespace.  Hence
->>>>> mnt_list can live in union with rb_node.  Use MNT_ONRB mount flag to
->>>>> validate that the mount is on the correct list.
->>>> Is that accurate, propagation occurs at mount and also at umount.
->>> When propagating a mount, the new mount's mnt_list is used as a head
->>> for the new propagated mounts.  These are then moved to the rb tree by
->>> commit_tree().
->>>
->>> When umounting there's a "to umount" list called tmp_list in
->>> umount_tree(), this list is used to collect direct umounts and then
->>> propagated umounts.  The direct umounts are added in umount_tree(),
->>> the propagated ones umount_one().
->>>
->>> Note: umount_tree() can be called on a not yet finished mount, in that
->>> case the mounts are still on mnt_list, so umount_tree() needs to deal
->>> with both.
->>>
->>>> IDG how the change to umount_one() works, it looks like umount_list()
->>>>
->>>> uses mnt_list. It looks like propagate_umount() is also using 
->>>> mnt_list.
->>>>
->>>>
->>>> Am I missing something obvious?
->>> So when a mount is part of a namespace (either anonymous or not) it is
->>> on the rb tree, when not then it can temporarily be on mnt_list.
->>> MNT_ONRB flag is used to validate that the mount is on the list that
->>> we expect it to be on, but also to detect the case of the mount setup
->>> being aborted.
->>>
->>> We could handle the second case differently, since we should be able
->>> to tell when we are removing the mount from a namespace and when we
->>> are aborting a mount, but this was the least invasive way to do this.
+On 10/25/2023 10:22 PM, Sean Christopherson wrote:
+> On Wed, Oct 25, 2023, Vitaly Kuznetsov wrote:
+>> Xiaoyao Li <xiaoyao.li@intel.com> writes:
+>>> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+>>> index b8ab9ee5896c..388a3fdd3cad 100644
+>>> --- a/arch/x86/kernel/kvm.c
+>>> +++ b/arch/x86/kernel/kvm.c
+>>> @@ -65,6 +65,7 @@ static int __init parse_no_stealacc(char *arg)
+>>>   
+>>>   early_param("no-steal-acc", parse_no_stealacc);
+>>>   
+>>> +static DEFINE_PER_CPU_READ_MOSTLY(bool, async_pf_enabled);
 >>
->> Thanks for the explanation, what you've said is essentially what I
->>
->> understood reading the series.
->>
->>
->> But I still haven't quite got this so I'll need to spend more time
->>
->> on this part of the patch series.
->>
->>
->> That's not a problem, ;).
->
-> After cloning your git tree and looking in there I don't see what
->
-> I was concerned about so I think I was confused by obscurity by
->
-> diff rather than seeing a real problem, ;)
->
->
-> Still that union worries me a little bit so I'll keep looking at
->
-> the code for a while.
+>> Would it make a difference is we replace this with a cpumask? I realize
+>> that we need to access it on all CPUs from hotpaths but this mask will
+>> rarely change so maybe there's no real perfomance hit?
+> 
+> FWIW, I personally prefer per-CPU booleans from a readability perspective.  I
+> doubt there is a meaningful performance difference for a bitmap vs. individual
+> booleans, the check is already gated by a static key, i.e. kernels that are NOT
+> running as KVM guests don't care.
 
-Is fs/namespace.c:iterate_mounts() a problem?
+I agree with it.
 
-It's called from:
+> Actually, if there's performance gains to be had, optimizing kvm_read_and_reset_apf_flags()
+> to read the "enabled" flag if and only if it's necessary is a more likely candidate.
+> Assuming the host isn't being malicious/stupid, then apf_reason.flags will be '0'
+> if PV async #PFs are disabled.  The only question is whether or not apf_reason.flags
+> is predictable enough for the CPU.
+> 
+> Aha!  In practice, the CPU already needs to resolve a branch based on apf_reason.flags,
+> it's just "hidden" up in __kvm_handle_async_pf().
+> 
+> If we really want to micro-optimize, provide an __always_inline inner helper so
+> that __kvm_handle_async_pf() doesn't need to make a CALL just to read the flags.
+> Then in the common case where a #PF isn't due to the host swapping out a page,
+> the paravirt happy path doesn't need a taken branch and never reads the enabled
+> variable.  E.g. the below generates:
 
-1) ./kernel/audit_tree.c:709: if (iterate_mounts(compare_root,
-2) ./kernel/audit_tree.c:839:    err = iterate_mounts(tag_mount, tree, mnt);
-3) ./kernel/audit_tree.c:917:        failed = iterate_mounts(tag_mount, 
-tree, tagged);
+If this is wanted. It can be a separate patch, irrelevant with this 
+series, I think.
 
-
- From functions 1) audit_trim_trees(), 2) audit_add_tree_rule() and
-
-3) audit_tag_tree().
-
-
->
->
+>     0xffffffff81939ed0 <+0>:	41 54              	push   %r12
+>     0xffffffff81939ed2 <+2>:	31 c0              	xor    %eax,%eax
+>     0xffffffff81939ed4 <+4>:	55                 	push   %rbp
+>     0xffffffff81939ed5 <+5>:	53                 	push   %rbx
+>     0xffffffff81939ed6 <+6>:	48 83 ec 08        	sub    $0x8,%rsp
+>     0xffffffff81939eda <+10>:	65 8b 2d df 81 6f 7e	mov    %gs:0x7e6f81df(%rip),%ebp        # 0x320c0 <apf_reason>
+>     0xffffffff81939ee1 <+17>:	85 ed              	test   %ebp,%ebp
+>     0xffffffff81939ee3 <+19>:	75 09              	jne    0xffffffff81939eee <__kvm_handle_async_pf+30>
+>     0xffffffff81939ee5 <+21>:	48 83 c4 08        	add    $0x8,%rsp
+>     0xffffffff81939ee9 <+25>:	5b                 	pop    %rbx
+>     0xffffffff81939eea <+26>:	5d                 	pop    %rbp
+>     0xffffffff81939eeb <+27>:	41 5c              	pop    %r12
+>     0xffffffff81939eed <+29>:	c3                 	ret
+> 
+> 
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index b8ab9ee5896c..b24133dc0731 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -240,22 +240,29 @@ void kvm_async_pf_task_wake(u32 token)
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_async_pf_task_wake);
+>   
+> -noinstr u32 kvm_read_and_reset_apf_flags(void)
+> +static __always_inline u32 __kvm_read_and_reset_apf_flags(void)
+>   {
+> -       u32 flags = 0;
+> +       u32 flags = __this_cpu_read(apf_reason.flags);
+>   
+> -       if (__this_cpu_read(apf_reason.enabled)) {
+> -               flags = __this_cpu_read(apf_reason.flags);
+> -               __this_cpu_write(apf_reason.flags, 0);
+> +       if (unlikely(flags)) {
+> +               if (likely(__this_cpu_read(apf_reason.enabled)))
+> +                       __this_cpu_write(apf_reason.flags, 0);
+> +               else
+> +                       flags = 0;
+>          }
+>   
+>          return flags;
+>   }
+> +
+> +u32 kvm_read_and_reset_apf_flags(void)
+> +{
+> +       return __kvm_read_and_reset_apf_flags();
+> +}
+>   EXPORT_SYMBOL_GPL(kvm_read_and_reset_apf_flags);
+>   
+>   noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
+>   {
+> -       u32 flags = kvm_read_and_reset_apf_flags();
+> +       u32 flags = __kvm_read_and_reset_apf_flags();
+>          irqentry_state_t state;
+>   
+>          if (!flags)
+> 
+>>>   static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_reason) __aligned(64);
+>>>   DEFINE_PER_CPU_DECRYPTED(struct kvm_steal_time, steal_time) __aligned(64) __visible;
+>>>   static int has_steal_clock = 0;
+>>> @@ -244,7 +245,7 @@ noinstr u32 kvm_read_and_reset_apf_flags(void)
+>>>   {
+>>>   	u32 flags = 0;
+>>>   
+>>> -	if (__this_cpu_read(apf_reason.enabled)) {
+>>> +	if (__this_cpu_read(async_pf_enabled)) {
+>>>   		flags = __this_cpu_read(apf_reason.flags);
+>>>   		__this_cpu_write(apf_reason.flags, 0);
+>>>   	}
+>>> @@ -295,7 +296,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
+>>>   
+>>>   	inc_irq_stat(irq_hv_callback_count);
+>>>   
+>>> -	if (__this_cpu_read(apf_reason.enabled)) {
+>>> +	if (__this_cpu_read(async_pf_enabled)) {
+>>>   		token = __this_cpu_read(apf_reason.token);
+>>>   		kvm_async_pf_task_wake(token);
+>>>   		__this_cpu_write(apf_reason.token, 0);
+>>> @@ -362,7 +363,7 @@ static void kvm_guest_cpu_init(void)
+>>>   		wrmsrl(MSR_KVM_ASYNC_PF_INT, HYPERVISOR_CALLBACK_VECTOR);
+>>>   
+>>>   		wrmsrl(MSR_KVM_ASYNC_PF_EN, pa);
+>>> -		__this_cpu_write(apf_reason.enabled, 1);
+>>> +		__this_cpu_write(async_pf_enabled, 1);
 >>
+>> As 'async_pf_enabled' is bool, it would probably be more natural to
+>> write
 >>
->> Ian
->>
->>>
->>> Thanks,
->>> Miklos
->>>
->>
->
+>> 	__this_cpu_write(async_pf_enabled, true);
+> 
+> +1000
+
