@@ -2,119 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980E97DB6D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC5B7DB6D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbjJ3J4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
+        id S232729AbjJ3J5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbjJ3J4B (ORCPT
+        with ESMTP id S232869AbjJ3J5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:56:01 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145D710F6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:55:27 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507a3b8b113so6112409e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:55:26 -0700 (PDT)
+        Mon, 30 Oct 2023 05:57:24 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C515125;
+        Mon, 30 Oct 2023 02:56:35 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so3574900276.0;
+        Mon, 30 Oct 2023 02:56:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698659725; x=1699264525; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8bkGQDj4pTSB5aXxaxpfi8qDmUZfumql9Hra/PlolFk=;
-        b=SKDf+49ADfPQnvr51xLwPpYmCRAwL5rSfYO4cKfYsxZZWjf5/9SDNbtdZlRbngJcsM
-         IQXwtRSgmrvWdPPlqhiHlVytkMF5Q/SevRY3p++j4Pt5DLZjha7turGuNyKfu2KNmXfc
-         jZZa0g/h0L8COywUMv+P8SP50fgZaggs+JKA2y1/81sbaZB93PhH6aYSz5jKlfVvsas0
-         cCO50c4mkOzA0LmglqEZZuA2/YkPdL+fXZXfvytjWXqTiEp0bkSAOJrLZCiUuEdG7bew
-         6fd6oU/Y9V0S9HrIzBkjvogKAjF9TlXrURn/6BTSsaQwfnxb5cVZaaxZoi6os5z+0iSf
-         ADdQ==
+        d=gmail.com; s=20230601; t=1698659794; x=1699264594; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lvScWoVnKDPSWV1dAHWMOmr+PITzURyuLxHTYAjlzQE=;
+        b=dR1oVR/QbCDNx9WboS8oQRipd+F9ueSunFwiJ2TBZcSrMMMQE3C4P3kF2Xt2YyS2hJ
+         83HqX0Xyx6OYco0+0wlJN+gmm5T/hXCtxAHy83NHieHZ/xwpqOlE5azui/Uc/BcP1bul
+         TWvn34ySnmDlqJl4Ebnh7JI1PGKP7dUI00gXdZNbyyhf/pgL9sO/Pptr5SMaxgPDNVXP
+         k93D6Vvst/qKZHTRYJXv0rXmCeOLqfNvOG80EesL/Fv0ctyx33eTg7fW7lXG8T5XFtGE
+         U+1UhNYzhn48Lb4VDqAmS529JZNo7Vqpqkspq2gmqvPZ9rRqVtqdQ+rZbVw3xHX+k4gr
+         hq2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698659725; x=1699264525;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698659794; x=1699264594;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8bkGQDj4pTSB5aXxaxpfi8qDmUZfumql9Hra/PlolFk=;
-        b=MPZU2jSG7gcYfz8qvojXdMnX2jWaeGOVpnpqrXzxnhOcUYrg4Ul/FUiunU7UxpaDhE
-         DjweIz/Z9lHCGkJPHSWfIN7D3bUuli4NJmEY51T1uvjfcxbF8c337eiKS3rYwmY0nxhr
-         peiEhfkHEP0RT7IKHf8Z/MdaxgAk3rmHlImpCFqiykSedCEJxG8Es3auyDEFSuiGWCNH
-         l1Q4ZsNp69Vv2I+bziK1EEj8wdb4IMcInrJjpcyhWthxswHijKn+e0UrUZcwL0WVobhS
-         Ag3YPstkr2M8fI2tEkJy3IFSW5Z15jDEV99sN81ExlYZBFdB2OxFKvhij9rTErscFyd0
-         /9+w==
-X-Gm-Message-State: AOJu0YzrbNiWArVd5zq8rTg0iR1q2uf+8MLrLxTWaQnboh+iVauESdiI
-        9e8J0qNoI9dgvVblEkIUDkGKwg==
-X-Google-Smtp-Source: AGHT+IEU8j34c4zXdeXi+aNQLxi2n1+qiw1MVqpJjz8esqLzeEi6Jlt8NNZLb8aUyv6g1HxeprRLCw==
-X-Received: by 2002:a19:f80e:0:b0:507:ab5b:7b6c with SMTP id a14-20020a19f80e000000b00507ab5b7b6cmr6197361lff.36.1698659725355;
-        Mon, 30 Oct 2023 02:55:25 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id m11-20020a05600c4f4b00b0040651505684sm8783759wmq.29.2023.10.30.02.55.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 02:55:24 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 30 Oct 2023 10:55:20 +0100
-Subject: [PATCH v2 2/2] soc: qcom: socinfo: Add SM8650 SoC ID table entry
+        bh=lvScWoVnKDPSWV1dAHWMOmr+PITzURyuLxHTYAjlzQE=;
+        b=CHDBI/q0jah4Lbg5xB/pcZvqKRTWKqYA6FW5TKbKZGcxQKgMW+A2gRd42pIEXbqaVO
+         NpASvzilEP4vN6oJLOl5Mkq+NFrmX0kxE+ANl1Ik8qDYNyV1ZMlu3po0sTWd1IsO43vj
+         VvhRL4gy219xK2trCUKPKRKi4g56vcTaogPxWFOhj+jzHJx7nyYFoJOYHkVkCdDHId/q
+         O+CM2voVrs/pPFOL9qqO7x9Xj6aLk2PrS1HA36webSrTuKmjdYFKRSMOBaxkxjgbvbnf
+         6udnoFg2l2Cms6s5MCMAuKF/FIF7zCaRmzQpf9QcP6gk6enrqrrBTeZ0jStA35xtXpn1
+         TBXQ==
+X-Gm-Message-State: AOJu0YzYZS5QVPq1a4nV0vWVAiDz5W115vUx4OWcQdjK5TE9YdZ55iBK
+        EnPWW0T/6wJtOuxNNTU1HjYkMyGOOQb3YBNCWQUO46VSOamTPPFV
+X-Google-Smtp-Source: AGHT+IHq5pz2chz0pt4KB1IUqwD7/2/MTBAcZ0f8iyTiARw7tee0RdVTzu4zUsY3maFk1njO4qjJv/01rg6CYJnDSg8=
+X-Received: by 2002:a25:8747:0:b0:d9c:aa29:6180 with SMTP id
+ e7-20020a258747000000b00d9caa296180mr6344305ybn.46.1698659794572; Mon, 30 Oct
+ 2023 02:56:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-topic-sm8650-upstream-socinfo-v2-2-4751e7391dc9@linaro.org>
-References: <20231030-topic-sm8650-upstream-socinfo-v2-0-4751e7391dc9@linaro.org>
-In-Reply-To: <20231030-topic-sm8650-upstream-socinfo-v2-0-4751e7391dc9@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org> <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <86wmxcejav.wl-maz@kernel.org> <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
+ <86pm2ye2si.wl-maz@kernel.org> <CAMpQs4LjePLy5RFMz2S=1sa9Zme_UrJmKKRog0LAg_ZhA07TMA@mail.gmail.com>
+ <CAOiHx=mq3hw-LFerb9UzU7VSnLypnvPuo1GomCnN=p0u3xN1Ug@mail.gmail.com>
+ <CAMpQs4+neiaJKp93UcemJbPPbhmf1B7WYNqKh=qx0avrbwW2cQ@mail.gmail.com>
+ <CAOiHx==uSQrO6+Ob1qe3NaRdXoGTwLYSS8S7YYMwQ4zhSbX75g@mail.gmail.com>
+ <CAAhV-H4yZ7DKx865M1RN+0L8CZjua=wBMsuXT0ekNANRN+RWAg@mail.gmail.com>
+ <CAMpQs4Kug8dOWHD+nqAbGkmqkWU=y=k6+VwojETn8PEwf+MSPA@mail.gmail.com>
+ <87wmvh5vyb.wl-maz@kernel.org> <CAAhV-H6g+eCj6B2S6HWhv-9AqWZkf9gaN-=TUmhHDe3Qx9_o+A@mail.gmail.com>
+ <d0ab3e30-0b19-4a96-8fd5-c6937af1658f@linaro.org> <CAAhV-H7Kwb9xT8R0TTbqEhrLUEcnxkTcEy=RhAxD3basBvWxKA@mail.gmail.com>
+ <34c33fc5-7b54-4f5e-8af8-2dce062a7968@linaro.org>
+In-Reply-To: <34c33fc5-7b54-4f5e-8af8-2dce062a7968@linaro.org>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Mon, 30 Oct 2023 15:56:18 +0600
+Message-ID: <CAMpQs4JUZzUk=ZucC3aE7+tZB35_FSu-kioU_HR1AatssAqaLA@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=708;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=zSHF5cYhgjvQfhnPCHiseIMiUqrm+cN0hIaKtY6Ml04=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP32K/2ueqZYSgzCcUEsJHcp9enEmtabbxe3LcnLB
- eQVEVJqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT99igAKCRB33NvayMhJ0c0JD/
- 0UWyoiZqzxhbagsYX1Rdc4V4VV4RTijEeOuC1xFGWX2eGJPYsXQTkYK+irPDe4QlFBJ1lL/xC2L1wK
- yYvxs5loTyFPwuw/tNjmKNwaEvsdGL9EjvfCxUbNiTBaGvfSmh8j1U+Lv1TIC9MBZPGY5THXjtIJnT
- W2NqCSi33SQFQ2Ai+IoedFZNdjGKRS0g6TPIJxOXbQPN04s92Y5rbW1UKou03F39LyzDBOAoPvBrDb
- FQB6XgcMFsiNmBghVGz+oSQZj9stc8sUCaXe8y4ai3SqLHcZW0R4ZXoBGE0A1U6yTv9vNsrRKnHgRS
- AC7M1WX7vq+qyeiGS0OAFJIbpRwXxWosJ8m+qSFfWD/f0Bh7xSwvu8uQh0OOm4JxI7Nw1DM6U/sMAN
- MBzHEyHcPVFXVNGzAgrtYL83hatuH8ko8XP/nCeNtN4kbl4EN5gCTeSTgAduH7bOcNUHAUqyg8aveC
- XiS4nF3RXoKfIyBX0cV8ndfgq9oKvYR/BfMMJrFW7Tpvb2AOGS8+fk33G1F5XDxISjMLAxFzE3zULe
- uY5lupg4djgNITuCq2Hl4pQzcDuQjJcFf9VlF6ba3JhPwsyZ4zyp9Kx2kRVREgr8uiMrsYPDrXQ2nE
- MiBeCn76zfOC9Bt5xXtR6/cgEi5JBvry8TwiJRayAULl+QKGr4X5uj8J/HSQ==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+        Conor Dooley <conor+dt@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org, frowand.list@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SoC Info support for the SM8650 platform.
+On Sun, Oct 29, 2023 at 1:42=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 26/10/2023 09:19, Huacai Chen wrote:
+> > Hi, Krzysztof
+> >
+> > On Wed, Oct 25, 2023 at 3:16=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 25/10/2023 03:56, Huacai Chen wrote:
+> >>> Hi, Krzysztof,
+> >>>
+> >>> On Fri, Oct 20, 2023 at 8:18=E2=80=AFPM Marc Zyngier <maz@kernel.org>=
+ wrote:
+> >>>>
+> >>>> On Fri, 20 Oct 2023 10:51:35 +0100,
+> >>>> Binbin Zhou <zhoubb.aaron@gmail.com> wrote:
+> >>>>>
+> >>>>> Hi Krzysztof & Marc:
+> >>>>>
+> >>>>> Sorry for the interruption.
+> >>>>> As said before, we tried to use the 'interrupt-map attribute' in ou=
+r
+> >>>>> Loongson liointc dts(i), but there are some unfriendly points.
+> >>>>> Do you have any other different suggestions?
+> >>>>
+> >>>> I don't have any suggestion, but if you are still thinking of adding
+> >>>> some extra crap to the of_irq_imap_abusers[] array, the answer is a
+> >>>> firm 'NO'.
+> >>> Excuse me, but as described before, 'interrupt-map' cannot be used fo=
+r
+> >>> liointc unless adding it to of_irq_imap_abusers[], can we still use
+> >>> 'parent_int_map' in this case? Or just change it to 'parent-int-map'
+> >>> to satisfy the naming style?
+> >>
+> >> Why do you respond to me? You received firm 'NO' about
+> >> of_irq_imap_abusers, so how adhering to naming style or violating nami=
+ng
+> >> style has anything to do with it?
+> > I'm sorry but of_irq_imap_abusers is to make 'interrupt-map' to work,
+> > without of_irq_imap_abusers we can only use the existing
+> > 'parent_int_map'. We need your response because we want to know
+> > whether you can accept the existing method since the other approach
+> > has received 'NO'. And, changing 'parent_int_map' to 'parent-int-map'
+> > can be a little better, at least it satisfies the naming style.
+>
+> Indeed, interrupt-map might not fit here. I don't know whether your
+> custom property - purely for runtime performance purpose - will be
+> accepted. Initial description of this field suggested that it is OS
+> policy, not hardware choice. But sure, propose something with
+> justification, so we can review it. The proposal must not break ABI, so
+> you must support both parent_int_map and parent-int-map (or whatever we
+> call it) properties. The first we will probably deprecate.
+>
+Hi Krzysztof:
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/soc/qcom/socinfo.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks a lot for your reply and suggestion!
+I'll try to split the change points into separate patches in the next
+version, it might be better understood.
 
-diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-index 51e05bec5bfc..8e8cd4ea58d1 100644
---- a/drivers/soc/qcom/socinfo.c
-+++ b/drivers/soc/qcom/socinfo.c
-@@ -417,6 +417,7 @@ static const struct soc_id soc_id[] = {
- 	{ qcom_board_id(SA8775P) },
- 	{ qcom_board_id(QRU1000) },
- 	{ qcom_board_id(QDU1000) },
-+	{ qcom_board_id(SM8650) },
- 	{ qcom_board_id(SM4450) },
- 	{ qcom_board_id(QDU1010) },
- 	{ qcom_board_id(QRU1032) },
+Thanks.
+Binbin
 
--- 
-2.34.1
-
+> The way this property was sneaked into kernel bypassing review is still
+> disappointing.
+>
+> Best regards,
+> Krzysztof
+>
