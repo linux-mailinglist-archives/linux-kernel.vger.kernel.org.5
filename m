@@ -2,338 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AA07DBFC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC677DC061
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjJ3SVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 14:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
+        id S229849AbjJ3TZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjJ3SUm (ORCPT
+        with ESMTP id S232360AbjJ3SWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 14:20:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D59E1;
-        Mon, 30 Oct 2023 11:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698690038; x=1730226038;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=vwoNizkiHcFYzYVMWoNqF3D7lmeva/dKQ41pgY/Z5Eo=;
-  b=oIPxdGh2L7axnKHvFARPmeUYlAfGCBBp76ONANHG6iod16Vgykf5YmdT
-   jRhPPmhS3obzO+FKJ6NQ0jeV+IMAMe0jLVizCoY+wddaS+FbedQS6opF5
-   xFHkAmSkZ96bBNFSWZXVgqzu5frODhmv1oj0PmIxfUT1pmxQIx07fYD5r
-   ySHpVDLB2CcIA1WU+dwBhtab+P2QgBOKIZrHfSVM06i8jpgYnlUPiiZ/z
-   KqEHTIGv6m6i4R2e5+Yj20yiPQPkZr6j6a3o+e/M9KAYszAVH4JRbAVS7
-   gfsox4wImxFise3DadxLaDmE/jdoQ+c3IlAIQzvYaxPN/UbPHpnHnQVGF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="367479647"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="367479647"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 11:20:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="789529539"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="789529539"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by orsmga008.jf.intel.com with ESMTP; 30 Oct 2023 11:20:30 -0700
-From:   Haitao Huang <haitao.huang@linux.intel.com>
-To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
-        mkoutny@suse.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        sohil.mehta@intel.com
-Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
-        zhanb@microsoft.com, anakrish@microsoft.com,
-        mikko.ylinen@linux.intel.com, yangjie@microsoft.com,
-        Haitao Huang <haitao.huang@linux.intel.com>
-Subject: [PATCH v6 12/12] selftests/sgx: Add scripts for EPC cgroup testing
-Date:   Mon, 30 Oct 2023 11:20:13 -0700
-Message-Id: <20231030182013.40086-13-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231030182013.40086-1-haitao.huang@linux.intel.com>
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+        Mon, 30 Oct 2023 14:22:03 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ECE1738;
+        Mon, 30 Oct 2023 11:21:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1698690066; x=1699294866; i=rwahl@gmx.de;
+        bh=juI+8xCOhSJyejFjOT2zkvfZkD279hxgL01eRZueXmI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=dhnkcWSOdzAkTce9+0fTzPMoVmi6fOPzmDE1BgDM9CfeIdKlFEwoYDiRDMvdSIAd
+         1jGYvTDc9KBE96pWCRY0a7T3+fc39EpTrF3CThFdu3JdIsT6yZULGbU+C+8QCDsIF
+         o7XxFF+JP77rTTL9wk6/4KJntb7PHNUC7qrO7P/+JoYqMd0KIkzFcgV83atE+TdVF
+         RTzHfDWnc8vM7m9Bis45Ljk/Fv//Pk8S1iHGy697NTimNx4B23NNW1xnBs68tqSLh
+         tQiQG4EsQeE0hBRd3rr3CPRiKZKTUdMWN5ITM0yAyqKY0CfPs41JNFk2zpZQPWMAR
+         odAB4uPU58HyIrDU7A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mnpns-1rGbIB3wj4-00pMjn; Mon, 30
+ Oct 2023 19:21:05 +0100
+From:   Ronald Wahl <rwahl@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ronald Wahl <ronald.wahl@raritan.com>
+Subject: [PATCH] serial: 8250: 8250_omap: Clear UART_HAS_RHR_IT_DIS bit
+Date:   Mon, 30 Oct 2023 19:20:44 +0100
+Message-ID: <20231030182044.14056-1-rwahl@gmx.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6aEzOJf8ErnBwG/cjEQ/aqFw3nonnMkCVnajg0LlL2q0bNLLcLA
+ 9ajQSHt7hlGwrKrgidJ1nQQetWU8U1yMsO7HF9o9HyvNET9X+NlKpMSIYgn8ySOLqBuEvnB
+ pCo4UAwzcBPy9H4IQy0YiEXuIRPSYJUTrGuEkgWzGCXqh8BI1gFGcfoKU+8aR6E4BuyV2Nd
+ T5ED3kSMnL+orUyWoaKyw==
+UI-OutboundReport: notjunk:1;M01:P0:OFvOA48QsX4=;+71PI5ffwO95P42qbi7HnE9iE8B
+ mGeuc9wafxvcFgoiRqt8/9fDJSEmcIQzRhVZS3+SryF0hMQ7xGiuMrKCi8jel8rVrjB0WC3JU
+ FSSBJ1OkvCy0c+KZlc4cYhIS+i9dIt5fwMNkX3o1jTo1LdqDgxwVGQJpJ+jqs7jZc6zMCZDCQ
+ jMvoNnK8RKaYltsZ+Usuf2FTN+F4T7TU3MMq/Ngeyk/Z5QK4nkxMqjdreGGaO45PgoZ/2ER+e
+ mEJrHBC2fqXlQqBjkEPiXnjRL56mWuxcM23Ck53tPwpwp1ycTiSh+g2qFRxxzbbKySSF3k0Lc
+ 2hSBLZCF0uvmw9cZMfSzCj5douhIx3RKI/9bpmQIwPBB/VZGnmqJuYUbvU4v1s0O2CT73Zk0h
+ I+qL/e0cQevqJoBQyHdIwnAOToQVmpxVDLOEcb6uYECE12i9xKoQHgJPJ9al48hjJlDffPSfK
+ xY6fgtHdn2bJL+GdaLKKoz+pGfJhshDuVbiRs4CnXsyeXwEbFhD2xJTvRYYJACGelE+f5S+1Q
+ QLv/UFdA26IgdPjz9Wk7tHLMD1FHhWkOTyWluqbMWlWBeZH59dIqphqqPFiNBsrLNOq41zneN
+ eyeLF+y9AvMKoKVdfSjRpRtHzjNGPR2MeLxq84VkWG4Xaxz330Q2rlSUSJ8NbERKhusBi4gRT
+ WoIGX+A19TV8Xd3f/0it9hi+ZRBK9jxhWF24lpcLeyi+VpsSZM7mcLhqQWvle0EpVu4rUWkQk
+ zu6qAZ6JjcvReC7bs4XGtKRjW/TebAku7zg+5UmVkOOCt/hr+ptdFAcO6cNV8S14kMnMOT6c+
+ ElpBpMUaCaULV0F9UDr5gqGtn0RufFIRg0lIw6AtP4GNpZON6UPSNc1iX1jVTvwRfEtipSYIT
+ V+R1juwOsHj6nyRwevKAVuhawq1ZJg4cB2SRLuRgbRbnf9i+wqY1H/zFlLSGTFAdWMfgHsrmE
+ vEqBwMWg3GHssQLDt7yrjQuu2Xk=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scripts rely on cgroup-tools package from libcgroup [1].
+This fixes commit 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX
+interrupt after DMA enable") which unfortunately set the
+UART_HAS_RHR_IT_DIS bit in the UART_OMAP_IER2 register and never
+cleared it.
 
-To run selftests for epc cgroup:
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+=2D--
+ drivers/tty/serial/8250/8250_omap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-sudo ./run_epc_cg_selftests.sh
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250=
+/8250_omap.c
+index ca972fd37725..c7ab2963040b 100644
+=2D-- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -914,7 +914,7 @@ static void __dma_rx_do_complete(struct uart_8250_port=
+ *p)
+ 	if (priv->habit & UART_HAS_RHR_IT_DIS) {
+ 		reg =3D serial_in(p, UART_OMAP_IER2);
+ 		reg &=3D ~UART_OMAP_IER2_RHR_IT_DIS;
+-		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
++		serial_out(p, UART_OMAP_IER2, reg);
+ 	}
 
-With different cgroups, the script starts one or multiple concurrent SGX
-selftests, each to run one unclobbered_vdso_oversubscribed test.  Each
-of such test tries to load an enclave of EPC size equal to the EPC
-capacity available on the platform. The script checks results against
-the expectation set for each cgroup and reports success or failure.
+ 	dmaengine_tx_status(rxchan, cookie, &state);
+@@ -1060,7 +1060,7 @@ static int omap_8250_rx_dma(struct uart_8250_port *p=
+)
+ 	if (priv->habit & UART_HAS_RHR_IT_DIS) {
+ 		reg =3D serial_in(p, UART_OMAP_IER2);
+ 		reg |=3D UART_OMAP_IER2_RHR_IT_DIS;
+-		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
++		serial_out(p, UART_OMAP_IER2, reg);
+ 	}
 
-The script creates 3 different cgroups at the beginning with following
-expectations:
-
-1) SMALL - intentionally small enough to fail the test loading an
-enclave of size equal to the capacity.
-2) LARGE - large enough to run up to 4 concurrent tests but fail some if
-more than 4 concurrent tests are run. The script starts 4 expecting at
-least one test to pass, and then starts 5 expecting at least one test
-to fail.
-3) LARGER - limit is the same as the capacity, large enough to run lots of
-concurrent tests. The script starts 10 of them and expects all pass.
-Then it reruns the same test with one process randomly killed and
-usage checked to be zero after all process exit.
-
-To watch misc cgroup 'current' changes during testing, run this in a
-separate terminal:
-
-./watch_misc_for_tests.sh current
-
-[1] https://github.com/libcgroup/libcgroup/blob/main/README
-
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
----
-V5:
-
-- Added script with automatic results checking, remove the interactive
-script.
-- The script can run independent from the series below.
----
- .../selftests/sgx/run_epc_cg_selftests.sh     | 196 ++++++++++++++++++
- .../selftests/sgx/watch_misc_for_tests.sh     |  13 ++
- 2 files changed, 209 insertions(+)
- create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
- create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
-
-diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-new file mode 100755
-index 000000000000..72b93f694753
---- /dev/null
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -0,0 +1,196 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023 Intel Corporation.
-+
-+TEST_ROOT_CG=selftest
-+cgcreate -g misc:$TEST_ROOT_CG
-+if [ $? -ne 0 ]; then
-+    echo "# Please make sure cgroup-tools is installed, and misc cgroup is mounted."
-+    exit 1
-+fi
-+TEST_CG_SUB1=$TEST_ROOT_CG/test1
-+TEST_CG_SUB2=$TEST_ROOT_CG/test2
-+TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
-+TEST_CG_SUB4=$TEST_ROOT_CG/test4
-+
-+cgcreate -g misc:$TEST_CG_SUB1
-+cgcreate -g misc:$TEST_CG_SUB2
-+cgcreate -g misc:$TEST_CG_SUB3
-+cgcreate -g misc:$TEST_CG_SUB4
-+
-+# Default to V2
-+CG_ROOT=/sys/fs/cgroup
-+if [ ! -d "/sys/fs/cgroup/misc" ]; then
-+    echo "# cgroup V2 is in use."
-+else
-+    echo "# cgroup V1 is in use."
-+    CG_ROOT=/sys/fs/cgroup/misc
-+fi
-+
-+CAPACITY=$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print $2}')
-+# This is below number of VA pages needed for enclave of capacity size. So
-+# should fail oversubscribed cases
-+SMALL=$(( CAPACITY / 512 ))
-+
-+# At least load one enclave of capacity size successfully, maybe up to 4.
-+# But some may fail if we run more than 4 concurrent enclaves of capacity size.
-+LARGE=$(( SMALL * 4 ))
-+
-+# Load lots of enclaves
-+LARGER=$CAPACITY
-+echo "# Setting up limits."
-+echo "sgx_epc $SMALL" | tee $CG_ROOT/$TEST_CG_SUB1/misc.max
-+echo "sgx_epc $LARGE" | tee $CG_ROOT/$TEST_CG_SUB2/misc.max
-+echo "sgx_epc $LARGER" | tee $CG_ROOT/$TEST_CG_SUB4/misc.max
-+
-+timestamp=$(date +%Y%m%d_%H%M%S)
-+
-+test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
-+
-+echo "# Start unclobbered_vdso_oversubscribed with SMALL limit, expecting failure..."
-+# Always use leaf node of misc cgroups so it works for both v1 and v2
-+# these may fail on OOM
-+cgexec -g misc:$TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log 2>&1
-+if [[ $? -eq 0 ]]; then
-+    echo "# Fail on SMALL limit, not expecting any test passes."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+else
-+    echo "# Test failed as expected."
-+fi
-+
-+echo "# PASSED SMALL limit."
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with LARGE limit,
-+        expecting at least one success...."
-+pids=()
-+for i in {1..4}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_positive_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+any_success=0
-+for pid in "${pids[@]}"; do
-+    wait "$pid"
-+    status=$?
-+    if [[ $status -eq 0 ]]; then
-+        any_success=1
-+	echo "# Process $pid returned successfully."
-+    fi
-+done
-+
-+if [[ $any_success -eq 0 ]]; then
-+    echo "# Failed on LARGE limit positive testing, no test passes."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+
-+echo "# PASSED LARGE limit positive testing."
-+
-+echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with LARGE limit,
-+        expecting at least one failure...."
-+pids=()
-+for i in {1..5}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_negative_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+any_failure=0
-+for pid in "${pids[@]}"; do
-+    wait "$pid"
-+    status=$?
-+    if [[ $status -ne 0 ]]; then
-+	echo "# Process $pid returned failure."
-+        any_failure=1
-+    fi
-+done
-+
-+if [[ $any_failure -eq 0 ]]; then
-+    echo "# Failed on LARGE limit negative testing, no test fails."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+
-+echo "# PASSED LARGE limit negative testing."
-+
-+echo "# Start 10 concurrent unclobbered_vdso_oversubscribed tests with LARGER limit,
-+        expecting no failure...."
-+pids=()
-+for i in {1..10}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+any_failure=0
-+for pid in "${pids[@]}"; do
-+    wait "$pid"
-+    status=$?
-+    if [[ $status -ne 0 ]]; then
-+	echo "# Process $pid returned failure."
-+        any_failure=1
-+    fi
-+done
-+
-+if [[ $any_failure -ne 0 ]]; then
-+    echo "# Failed on LARGER limit, at least one test fails."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+
-+echo "# PASSED LARGER limit tests."
-+
-+
-+echo "# Start 10 concurrent unclobbered_vdso_oversubscribed tests with LARGER limit,
-+      randomly kill one, expecting no failure...."
-+pids=()
-+for i in {1..10}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+sleep $((RANDOM % 10 + 5))
-+
-+# Randomly select a PID to kill
-+RANDOM_INDEX=$((RANDOM % 10))
-+PID_TO_KILL=${pids[RANDOM_INDEX]}
-+
-+kill $PID_TO_KILL
-+echo "# Killed process with PID: $PID_TO_KILL"
-+
-+any_failure=0
-+for pid in "${pids[@]}"; do
-+    wait "$pid"
-+    status=$?
-+    if [ "$pid" != "$PID_TO_KILL" ]; then
-+        if [[ $status -ne 0 ]]; then
-+	    echo "# Process $pid returned failure."
-+            any_failure=1
-+        fi
-+    fi
-+done
-+
-+if [[ $any_failure -ne 0 ]]; then
-+    echo "# Failed on random killing, at least one test fails."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+
-+sleep 1
-+
-+USAGE=$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk '{print $2}')
-+if [ "$USAGE" -ne 0 ]; then
-+    echo "# Failed: Final usage is $USAGE, not 0."
-+else
-+    echo "# PASSED leakage check."
-+    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
-+fi
-+cgdelete -r -g misc:$TEST_ROOT_CG
-+echo "# done."
-diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-new file mode 100755
-index 000000000000..dbd38f346e7b
---- /dev/null
-+++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-@@ -0,0 +1,13 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023 Intel Corporation.
-+
-+if [ -z "$1" ]
-+  then
-+    echo "No argument supplied, please provide 'max', 'current' or 'events'"
-+    exit 1
-+fi
-+
-+watch -n 1 "find /sys/fs/cgroup -wholename */test*/misc.$1 -exec sh -c \
-+    'echo \"\$1:\"; cat \"\$1\"' _ {} \;"
-+
--- 
-2.25.1
+ 	dma_async_issue_pending(dma->rxchan);
+=2D-
+2.41.0
 
