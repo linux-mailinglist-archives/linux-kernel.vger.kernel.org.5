@@ -2,257 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2728E7DB4F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1787DB4F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjJ3IPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S232077AbjJ3IPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbjJ3IPs (ORCPT
+        with ESMTP id S232050AbjJ3IPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:15:48 -0400
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974E4BD;
-        Mon, 30 Oct 2023 01:15:45 -0700 (PDT)
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <prvs=9681cd3a30=fe@dev.tdt.de>)
-        id 1qxNQq-00GSKG-5Q; Mon, 30 Oct 2023 09:15:32 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1qxNQp-000Zs3-1p; Mon, 30 Oct 2023 09:15:31 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id A3726240049;
-        Mon, 30 Oct 2023 09:15:30 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 01A4E240040;
-        Mon, 30 Oct 2023 09:15:29 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 2BE07215D4;
-        Mon, 30 Oct 2023 09:15:28 +0100 (CET)
+        Mon, 30 Oct 2023 04:15:50 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7E291;
+        Mon, 30 Oct 2023 01:15:44 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5079f9675c6so6280367e87.2;
+        Mon, 30 Oct 2023 01:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698653742; x=1699258542; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KWYjvSDY5DIMMFjnpJiqvif2JTitQHxK/8ZOowXvcTI=;
+        b=gpwVR6g/irhgPQClnd1F4QpmwjX2W+eoQ5E5IbHIzEJvOHHCN8bJNfbZ3dlM2C4w4N
+         HXn7Su/r6ZaTIxVjKuBb0E0b3wYzGsDtvQFYgP4AozZPyN6qUbgOxHaRxbdDE+kxiXY4
+         W6Z/AXAAhVeBzV5+qLBHYj9Uaq0Xsb/hhEhoDFugEPwXfqezKJh203SUgGC6Wg9a3KHV
+         Csq89Zf97He0VofY4iP9mStj8we/DQF2RXowXTlf84pZ0hFy6vkHQ4u9tmVMQsT2ywx2
+         tvGb6aoZHptOPtKGg2hg6qDHaYldtEm4MMWV17pMgx4hnOAOJibIrRRHn/GSWL4uKPvX
+         wrPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698653742; x=1699258542;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KWYjvSDY5DIMMFjnpJiqvif2JTitQHxK/8ZOowXvcTI=;
+        b=vuiL7A+4p0T8e7DDJlV6FtdCkO1z/LLfbAMeLdhTyuTYc5mtyxItHmwwsnaDEQBIX4
+         GIgveE5l5U9KJP3UiBHLbb52fVJ9KoiCK63tNBOgApRAG7rWsnyBMh2Yj5aJeAgAwa0F
+         BxA/66rAXyuozKplop0CMEpTmyIIbQ0Lj+ewdl8xWoh9hNT6+gDGxdD+AeyRkEgpscdM
+         4zAZVKkc6YrKelJ9ahLoBhTS2i5vEpIDyGOvkFskeszwMPuOwY9dHvyYTjTClDsyyFd+
+         Nsz0mZA1G8KhRv7MMZBoZoFV1G/CdC1+atQ1BV5lejeu6o/IQzagoJN5NR2P0QK9AYCQ
+         eIrA==
+X-Gm-Message-State: AOJu0YwqtsjHV3mb6usPHrSlSnbgivm9V6BA9dFWXiL96bPhow3COZYj
+        PYBKHlur6s7BzZHrgX6c+rBAZuHsVoBxXd6YX2ErYtdX
+X-Google-Smtp-Source: AGHT+IHblBhpQey3QA286YT9LUKfwfKp4KRW2N0/x8HmCpUcyQrgHgSeWzhTZnzJekj9aqpKhjR75KioNv30Rn+svKI=
+X-Received: by 2002:ac2:4a79:0:b0:503:90d:e0df with SMTP id
+ q25-20020ac24a79000000b00503090de0dfmr6221722lfp.34.1698653742068; Mon, 30
+ Oct 2023 01:15:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 30 Oct 2023 09:15:28 +0100
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     m.brock@vanmierlo.com
-Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] leds: ledtrig-tty: add new line mode evaluation
-In-Reply-To: <ddf9439a092576cd18c6e025d0b61602@vanmierlo.com>
-References: <20231023094205.2706812-1-fe@dev.tdt.de>
- <20231023094205.2706812-3-fe@dev.tdt.de>
- <ddf9439a092576cd18c6e025d0b61602@vanmierlo.com>
-Message-ID: <2951fd563fc6a364d8cddfb7ec17808b@dev.tdt.de>
-X-Sender: fe@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.17
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+References: <CAFGKuwoFUaXMsOOWJNBenQDG6+syt80Z9pvQQK1XSZFztC2_SQ@mail.gmail.com>
+ <2023103052-unpeeled-calibrate-ae48@gregkh>
+In-Reply-To: <2023103052-unpeeled-calibrate-ae48@gregkh>
+From:   ariel marcovitch <arielmarcovitch@gmail.com>
+Date:   Mon, 30 Oct 2023 10:15:30 +0200
+Message-ID: <CAFGKuwp7JH8H9vjz8iJ24R9TRW0GDE-O96VBAG4L8X4DhTabXg@mail.gmail.com>
+Subject: Re: Gaps in logs while using usb-serial as a console
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-purgate-ID: 151534::1698653731-DCC6A3D8-37093731/0/0
-X-purgate: clean
-X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 30 Oct 2023 at 08:22, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Oct 29, 2023 at 08:21:21PM +0200, ariel marcovitch wrote:
+> > Greetings!
+> >
+> > While using a usb-serial device as console, I've noticed some
+> > significant gaps in the kernel logs it receives.
+> >
+> > The problem can be reproduced in qemu like this (the kernel is a
+> > x86_64_defconfig with usb-serial enabled and with the ftdi_sio driver
+> > enabled):
+> > qemu-system-x86_64 -m 4G -kernel arch/x86_64/boot/bzImage -usb -device
+> > usb-serial,chardev=ser -chardev pty,id=ser -append 'console=ttyUSB0'
+> > (this will create a `pts` device that will connect to the other end of
+> > the emulated usb-serial)
+> >
+> > Then the logs look something like this:
+> > [    1.006459] SELinux:  Initializing.
+> > [    1.011620] Mount-cache hash table entries: 8192 (order: 4, 65536
+> > bytes, li[    2.315341] ACPI: \_SB_.LNKD: Enabled at IRQ 11
+> >
+> > This probably happens because of the code in
+> > `usb_serial_generic_write` which tries to insert the data into the
+> > fifo:
+> > count = kfifo_in_locked(&port->write_fifo, buf, count, &port->lock);
+> > Because added indications for when the result is less than expected
+> > and it showed significant losses.
+> > The return value is silently ignored in `usb_console_write`
+> > Also making the fifo bigger in `setup_port_bulk_out` helped (I made it
+> > 10 times bigger and there were no losses)
+> >
+> > The reason so much data is written at a short time is because
+> > usb-serial is initialized rather late, and when it is registered as a
+> > console, all the logs until this point are written to it.
+> >
+> > I'm not sure what the solution should be. Maybe we need to check
+> > whether the write in `console_emit_next_record` was successful and not
+> > increase the seq counter in this case.
+> >
+> > Any suggestions?
+>
+> Please realize that usb-serial console was the result of me loosing a
+> drunken bet.  It's amazing it works at all.  For "fake" devices like
+LOL your drunken bet was quite helpful to some people
+Because modern PCs come without a serial port, I wanted to use it to
+see early logs on my crashing kernel without having to use printk
+delay and things like that.
+I'm curious as to how kernel people debug PCs in general...
+In any case, the usb-serial setup was quite weird as it required two
+usb-serial and a gender changer
 
+> this, that use the generic usb-serial code, yes, you will have overruns
+> and other problems, that's just part of how it works (i.e. not well.)
+>
+> For something like qemu, please use a real console, like the serial port
+> (i.e. a fake serial port), not the fake usb-serial port.
+Yeah I was just using it to demonstrate the problem (I agree it is
+quite weird to use usb-serial as a console for qemu)
+I experienced the same problem with a real usb-serial device, then I
+tried to use emulation so I can debug it more easily
 
-On 2023-10-28 12:43, m.brock@vanmierlo.com wrote:
-> Florian Eckert wrote on 2023-10-23 11:42:
-> 
->> @@ -16,6 +16,28 @@ struct ledtrig_tty_data {
->>      const char *ttyname;
->>      struct tty_struct *tty;
->>      int rx, tx;
->> +     unsigned long ttytrigger;
->> +};
-> 
-> ttytriggers ?
+>
+> So this is "working as designed" in that it wasn't designed at all and
+> again, it is a miracle any data is flowing there at all :)
+I see...
+However it may be possible to fix it without much effort, so why not?
+Something like checking the return value for the console's write
+function seems reasonable to me anyway...
+Besides, don't other types of consoles have the same problem (being
+initialized late, getting a lot of data, losing some of it)?
+>
+> sorry,
+>
+> greg k-h
+Thank you for your honest feedback,
 
-Yes that would be nicer name. thanks
-
-> [...]
-> 
->>  static void ledtrig_tty_work(struct work_struct *work)
->>  {
->>  	struct ledtrig_tty_data *trigger_data =
->>  		container_of(work, struct ledtrig_tty_data, dwork.work);
->> +	struct led_classdev *led_cdev = trigger_data->led_cdev;
->> +	unsigned long interval = LEDTRIG_TTY_INTERVAL;
->>  	struct serial_icounter_struct icount;
->> +	enum led_trigger_tty_state state;
->> +	int current_brightness;
->> +	int status;
->>  	int ret;
->> 
->> +	state = TTY_LED_DISABLE;
->>  	mutex_lock(&trigger_data->mutex);
->> 
->>  	if (!trigger_data->ttyname) {
->> @@ -115,22 +218,74 @@ static void ledtrig_tty_work(struct work_struct 
->> *work)
->>  		trigger_data->tty = tty;
->>  	}
->> 
->> -	ret = tty_get_icount(trigger_data->tty, &icount);
->> -	if (ret) {
->> -		dev_info(trigger_data->tty->dev, "Failed to get icount, stopped 
->> polling\n");
->> -		mutex_unlock(&trigger_data->mutex);
->> -		return;
->> +	status = tty_get_tiocm(trigger_data->tty);
->> +	if (status > 0) {
->> +		if (test_bit(TRIGGER_TTY_CTS, &trigger_data->ttytrigger)) {
->> +			if (status & TIOCM_CTS)
->> +				state = TTY_LED_ENABLE;
->> +		}
->> +
->> +		if (test_bit(TRIGGER_TTY_DSR, &trigger_data->ttytrigger)) {
->> +			if (status & TIOCM_DSR)
->> +				state = TTY_LED_ENABLE;
->> +		}
->> +
->> +		if (test_bit(TRIGGER_TTY_CAR, &trigger_data->ttytrigger)) {
->> +			if (status & TIOCM_CAR)
->> +				state = TTY_LED_ENABLE;
->> +		}
->> +
->> +		if (test_bit(TRIGGER_TTY_RNG, &trigger_data->ttytrigger)) {
->> +			if (status & TIOCM_RNG)
->> +				state = TTY_LED_ENABLE;
->> +		}
->> +	}
->> +
->> +	/* The rx/tx handling must come after the evaluation of TIOCM_*,
->> +	 * since the display for rx/tx has priority
->> +	 */
->> +	if (test_bit(TRIGGER_TTY_RX, &trigger_data->ttytrigger) ||
->> +	    test_bit(TRIGGER_TTY_TX, &trigger_data->ttytrigger)) {
->> +		ret = tty_get_icount(trigger_data->tty, &icount);
->> +		if (ret) {
->> +			dev_info(trigger_data->tty->dev, "Failed to get icount, stopped 
->> polling\n");
->> +			mutex_unlock(&trigger_data->mutex);
->> +			return;
->> +		}
->> +
->> +		if (test_bit(TRIGGER_TTY_RX, &trigger_data->ttytrigger) &&
->> +		    (icount.tx != trigger_data->tx)) {
-> 
-> You check for TRIGGER_TTY_RX and then compare icount.tx, is that 
-> correct?
-
-I would say this is correct. At first I check if the tx path should be 
-evaluated
-and if this is correct I check if there was a tx transmission during the 
-last run.
-
->> +			trigger_data->tx = icount.tx;
->> +			state = TTY_LED_BLINK;
->> +		}
->> +
->> +		if (test_bit(TRIGGER_TTY_TX, &trigger_data->ttytrigger) &&
->> +		    (icount.rx != trigger_data->rx)) {
-> 
-> You check for TRIGGER_TTY_TX and then compare icount.rx, is that 
-> correct?
-
-I would say this is correct. At first I check if the rx path should be 
-evaluated
-and if this is correct I check if there was a rx transmission during the 
-last run.
-
->> +			trigger_data->rx = icount.rx;
->> +			state = TTY_LED_BLINK;
->> +		}
->>  	}
->> 
->> -	if (icount.rx != trigger_data->rx ||
->> -	    icount.tx != trigger_data->tx) {
->> -		unsigned long interval = LEDTRIG_TTY_INTERVAL;
->> +	current_brightness = led_cdev->brightness;
->> +	if (current_brightness)
->> +		led_cdev->blink_brightness = current_brightness;
->> 
->> +	if (!led_cdev->blink_brightness)
->> +		led_cdev->blink_brightness = led_cdev->max_brightness;
-> 
-> Is it OK to override the chosen brightness here?
-
-In my setup my brightness in the sysfs path of the LED ist set to '0'.
-Even though the tty trigger was configured correctly the LED was not
-turned on. If I set max_brightness in this path the LED works correctly.
-I would check this a gain if this is still needed.
-
->> +
->> +	switch (state) {
->> +	case TTY_LED_BLINK:
->>  		led_blink_set_oneshot(trigger_data->led_cdev, &interval,
->>  				      &interval, 0);
-> 
-> Change trigger_data->led_cdev to simply led_cdev
-
-Thanks for the hint. I will change this.
-
-> Shouldn't the led return to the line controlled steady state?
-
-Sorry I do not understand your question.
-
-> Set an invert variable to true if state was TTY_LED_ENABLE before it 
-> got set
-> to TTY_LED_BLINK
-
-No matter whether the LED is on or off beforehand. I understand that the
-LED is always on for the first half of the period and off for the rest 
-of
-the period. I think that is correct and I don't need to make a 
-distinction
-via invert here. I hope I have understood your comment correctly here.
-
-> How do interval and the frequency of ledtrig_tty_work() relate?
-
-The work is twice as long as of the interval. So the variable
-LEDTRIG_TTY_INTERVAL = 50 and the work is scheduled LEDTRIG_TTY_INTERVAL 
-* 2.
-But that was also before my change.
-
->> -
->> -		trigger_data->rx = icount.rx;
->> -		trigger_data->tx = icount.tx;
->> +		break;
->> +	case TTY_LED_ENABLE:
->> +		led_set_brightness(led_cdev, led_cdev->blink_brightness);
->> +		break;
->> +	case TTY_LED_DISABLE:
->> +		fallthrough;
->> +	default:
->> +		led_set_brightness(led_cdev, LED_OFF);
->> +		break;
->>  	}
-> 
-> Maarten
-
-Thank you for your feedback. I must say, however, that I am currently in
-the process of preparing v6, which will implement the comments and
-change requests from 'greg k-h' [1]. The big change here in v6 is, that 
-I have
-switched to completion and split the change in more reviewable commits.
-I will see if your comments can also be incorporated into the new 
-approach.
-
----
-
-Florian
-
-[1] 
-https://lore.kernel.org/linux-leds/2023102341-jogger-matching-dded@gregkh/
+Ariel Marcovitch
