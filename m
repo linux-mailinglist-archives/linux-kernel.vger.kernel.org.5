@@ -2,122 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E937DB7A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E98F7DB7B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbjJ3KRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
+        id S232568AbjJ3KSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbjJ3KQs (ORCPT
+        with ESMTP id S232516AbjJ3KRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:16:48 -0400
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5518A60
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:07:23 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 3E9DC2B00124;
-        Mon, 30 Oct 2023 06:07:19 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 30 Oct 2023 06:07:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698660438; x=1698667638; bh=C0
-        spIghu26RS2wSePnhlO3VNbIZSADnovwnCABmc7C4=; b=RKBHp/8HXI5MdxTLUG
-        sjTD10H5ter+kClY+aYdpwooyGy5f8IwRe3HkozWNFbKQ6hY0uC4rY/abuASM/Ts
-        gbxcuEWLVJU0uf4lk6xr0VuixzVQHiexvztu4A/nIOEY7f4jWFJIWkxl31POeGkW
-        +b4/QuqzYnQvJRXlfpfYfRvAte9fGj6yL5rLJnb1TY6Hk+j1Z60oCeb3eAAMmJCC
-        RRGII1IK5P5SHtegyPe7hfhOsVmHQQPPVLkeTJ26zDJXakEJdWAei1+IL5dELo36
-        BDIOG+oy4YmZoYViF/yWWBbcfz70oqDx7b2hgBh55rf5/zbusVe7BBo4vx5Cup8/
-        GpAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698660438; x=1698667638; bh=C0spIghu26RS2
-        wSePnhlO3VNbIZSADnovwnCABmc7C4=; b=B3MRq1ue/dMlkLetdRiRUouN8zJPR
-        L3B1Jb4D9iwtRemN46QOwk1kBy8Tpz6C3dJ2008xf578SsD/i4540hST/jBxDNBq
-        waEkDOnmtLvV2RFDcL2g8xNC2tnVHMR18cltuM1DTDrCyo6hDDoZNx54N/fO8Eo3
-        /imKNfNbQEFHzD6iZQ431tL7Xwa81EJdOdogA37vkQBUwmTnvFB4n3W/wVJfv90Y
-        TEBXlxhlPDqJ3+Kz6myadXrYb3QOrEIy6XT+5kJrlP46M4kiyeCZDlZHihs2b5Ui
-        772WvO6QsJ9ImSUKbcWcWu6tQrC/1xDDOAw7Sy0OZhCvd/22ACkgAoUOw==
-X-ME-Sender: <xms:VYA_ZdLUSl_zQ27EJdpf---UOQdzZS7hrufqr4yiNwC0WPvANVGHyQ>
-    <xme:VYA_ZZJln2PErRZpqhTdikK2ex6pB2UCBIVJWLotFavPrt3wcPJa24uR9PWWFZLpy
-    vyW1i7p4ohWwK7AKG8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddttddguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:VYA_ZVvDF9ZPLgxZ4RQWSEeEbbISJbhSluKsCJVlXC36i5EI3QSj0Q>
-    <xmx:VYA_ZeZbaci_WsO4NVcQR2LUZqoQMrCwbRHao8dkMSV7tGqCPle4Tg>
-    <xmx:VYA_ZUaJuGU4ElrPPnwQfbIuiLPWd2QvhcqomOoIuTaaSGBTItwvkQ>
-    <xmx:VoA_ZRR556ZzlQwwmRgvxHGug2eDFRSR_DbcAJMx9k6Z8L4HV2vi88gFrtc>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B405FB6008D; Mon, 30 Oct 2023 06:07:17 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Mon, 30 Oct 2023 06:17:46 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFB08A63
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:08:16 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mtapsc-3-Zuw0VAkjMoGz3HawsfyiRw-1; Mon, 30 Oct 2023 10:08:14 +0000
+X-MC-Unique: Zuw0VAkjMoGz3HawsfyiRw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 30 Oct
+ 2023 10:08:28 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 30 Oct 2023 10:08:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Woodhouse' <dwmw2@infradead.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] KVM: selftests: add -MP to CFLAGS
+Thread-Topic: [PATCH] KVM: selftests: add -MP to CFLAGS
+Thread-Index: AQHaCdXc3e78bpbjnkOmWxrFAzERRLBhRPEwgADTCoCAAAV0YA==
+Date:   Mon, 30 Oct 2023 10:08:28 +0000
+Message-ID: <aae76a24900444b7a812a21815a0b212@AcuMS.aculab.com>
+References: <9fc8b5395321abbfcaf5d78477a9a7cd350b08e4.camel@infradead.org>
+         <3fa5bdded7504d6582cf01f4db4cd6b4@AcuMS.aculab.com>
+ <213451dcf8036133426aa04b6f377a16c6b53ff5.camel@infradead.org>
+In-Reply-To: <213451dcf8036133426aa04b6f377a16c6b53ff5.camel@infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Message-Id: <052ea479-9965-45d0-b1a5-3e8079ffb0ab@app.fastmail.com>
-In-Reply-To: <20231030071922.233080-1-glaubitz@physik.fu-berlin.de>
-References: <20231023131953.2876682-1-arnd@kernel.org>
- <20231030071922.233080-1-glaubitz@physik.fu-berlin.de>
-Date:   Mon, 30 Oct 2023 11:06:55 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Stanislaw Gruszka" <stf_xl@wp.pl>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Jeff Johnson" <quic_jjohnson@quicinc.com>,
-        "Geoff Levand" <geoff@infradead.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Kalle Valo" <kvalo@kernel.org>, linux-staging@lists.linux.dev,
-        linux-wireless@vger.kernel.org,
-        "Claudiu Beznea" <claudiu.beznea@tuxon.dev>,
-        linux-kernel@vger.kernel.org,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Pavel Machek" <pavel@ucw.cz>, "Jakub Kicinski" <kuba@kernel.org>,
-        "Gregory Greenman" <gregory.greenman@intel.com>,
-        "Johannes Berg" <johannes@sipsolutions.net>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        "Larry Finger" <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH 00/10] Remove obsolete and orphaned wifi drivers
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023, at 08:19, John Paul Adrian Glaubitz wrote:
-> Hi Arnd!
->
-> There is some non-x86 hardware like the Amiga that still uses 
-> PCMCIA-style networking
-> cards on machines like the A600 and A1200. So, unless these drivers are 
-> actually causing
-> problems, I would rather not see them go yet.
+RnJvbTogRGF2aWQgV29vZGhvdXNlDQo+IFNlbnQ6IDMwIE9jdG9iZXIgMjAyMyAwOTo0Ng0KPiAN
+Cj4gT24gU3VuLCAyMDIzLTEwLTI5IGF0IDIxOjEzICswMDAwLCBEYXZpZCBMYWlnaHQgd3JvdGU6
+DQo+ID4gRnJvbTogRGF2aWQgV29vZGhvdXNlDQo+ID4gPiBTZW50OiAyOCBPY3RvYmVyIDIwMjMg
+MjA6MzUNCj4gPiA+DQo+ID4gPiBVc2luZyAtTUQgd2l0aG91dCAtTVAgY2F1c2VzIGJ1aWxkIGZh
+aWx1cmVzIHdoZW4gYSBoZWFkZXIgZmlsZSBpcyBkZWxldGVkDQo+ID4gPiBvciBtb3ZlZC4gV2l0
+aCAtTVAsIHRoZSBjb21waWxlciB3aWxsIGVtaXQgcGhvbnkgdGFyZ2V0cyBmb3IgdGhlIGhlYWRl
+cg0KPiA+ID4gZmlsZXMgaXQgbGlzdHMgYXMgZGVwZW5kZW5jaWVzLCBhbmQgdGhlIE1ha2VmaWxl
+cyB3b24ndCByZWZ1c2UgdG8gYXR0ZW1wdA0KPiA+ID4gdG8gcmVidWlsZCBhIEMgdW5pdCB3aGlj
+aCBubyBsb25nZXIgaW5jbHVkZXMgdGhlIGRlbGV0ZWQgaGVhZGVyLg0KPiA+DQo+ID4gV29uJ3Qg
+YSBwaG9ueSB0YXJnZXQgc3RvcCBhIGhlYWRlciBiZWluZyBidWlsdCBpZiB0aGVyZSBpcw0KPiA+
+IGFuIGFjdHVhbCBydWxlIHRvIGJ1aWxkIGl0Pw0KPiANCj4gSXQgcHJvYmFibHkgd291bGQgaGF2
+ZSB0YWtlbiB5b3UgYWJvdXQgdGhlIHNhbWUgdGltZSB0byBmaW5kIHRoZSBhbnN3ZXINCj4gZm9y
+IHlvdXJzZWxmLCBhcyBpdCB0b29rIHRvIHdyaXRlIHRoYXQgZW1haWwuIFdoeSBkb24ndCB5b3Ug
+dHJ5IGl0Pw0KDQpJIHdhcyBzdXJlIHRoYXQganVzdCBhZGRpbmcNCg0KZm9vLmg6DQoNCndvdWxk
+IGdlbmVyYXRlIGEgJ25vIHJ1bGVzIHRvIGJ1aWxkJyBlcnJvci4NCk1heWJlIHRoYXQgd2FzIEJT
+RCBtYWtlIG9yIFNZUy1WIG1ha2UuDQoNCkJ1dCBjYWxsaW5nIHRoZSAncGhvbnknIGlzIHByb2Jh
+Ymx5IHdyb25nLg0KUEhPTlkgaGFzIGEgdmVyeSBzcGVjaWZpYyBtZWFuaW5nIHRvIG1ha2UgLSBh
+bmQgdGhlc2UgYXJlbid0IFBIT05ZLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Do you know of any systems other than the Amiga that are still
-in use with new kernels and that rely on PCMCIA networking?
-
-I know that Amiga has its own simple CONFIG_AMIGA_PCMCIA
-implementation that is incompatible with CONFIG_PCMCIA device
-drivers, so it is not affected by this.
-
-For the few ARM systems that still support a CF card slot,
-these tend to be used for IDE type storage cards because their
-internal flash is too limited otherwise.
-
-       Arnd
