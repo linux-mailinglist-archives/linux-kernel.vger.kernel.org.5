@@ -2,192 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09647DB4D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783A77DB4D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjJ3IHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
+        id S232199AbjJ3IH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbjJ3IHa (ORCPT
+        with ESMTP id S231944AbjJ3IHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:07:30 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360F0C9;
-        Mon, 30 Oct 2023 01:07:27 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39U87Owj088839;
-        Mon, 30 Oct 2023 03:07:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1698653244;
-        bh=ODz0sm3tFst2rQ5PTq9uui03oHrQZkgoaoB5cf+ILv8=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=wTP32IrQMkkSBn9xTkoQcaQlFnXhVBZIuLrAPc1zgQJ41DDuSd3ivhSRHkwMWWy01
-         PSda22g/uya9t+pl15cuH4DHSegG+ExReyI/Y8LT9TVZxBKV73g8CCqjEYeaA8l2LZ
-         9Z9YfbZ1L/UTT+IfDlysQGFERaeasvSTG760xgqg=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39U87OAg094512
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Oct 2023 03:07:24 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 30
- Oct 2023 03:07:23 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 30 Oct 2023 03:07:23 -0500
-Received: from [172.24.227.94] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39U87LVw013556;
-        Mon, 30 Oct 2023 03:07:21 -0500
-Message-ID: <42f1b9a6-2dad-42ca-a41c-3a57f87323cc@ti.com>
-Date:   Mon, 30 Oct 2023 13:37:20 +0530
+        Mon, 30 Oct 2023 04:07:55 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11539D6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:07:52 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7b9dc244151so2542152241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698653271; x=1699258071; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1/VaDbZg1pSYVDN7uPxJsz6GyIrT5GcoGyIJN1XUSY=;
+        b=QEzOHijGzVSL2H4H1on8ry9lbReHY/FnIiWDA6Rl1EZUWYP3EfvILoEHgsCU6RTLCR
+         wEN1TRExxbY0/LbRvLlnYhFQiFWX1PTOAKtaAdgYjO1v06/saY2Xr2Kxh5mAkxC1lh2s
+         t4D0F4Kmwn4nleytpmlgD0L8c2QbwL2Wsst+X/yOEqJlNthyg6qb1/dkMZHN20OfeJF6
+         dhK2WDyjikoSjKrrov8sLJwx0iugC9fJKDA7/r2sHPgsfD5+Vo82JEEKoCC6NRjIGBU3
+         Bi5KLtSKWDa0XnCEOAaBPs+o4FLsagXl2d7WFe6uyvdlaaSHmCrZH3gm1nJHuIZRtXQn
+         Xqrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698653271; x=1699258071;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u1/VaDbZg1pSYVDN7uPxJsz6GyIrT5GcoGyIJN1XUSY=;
+        b=MEp+JQIyb64as0gekrVb9K1Byx7LrotB5eT2zrX/orOskTsi557SUeNRAD3OOhyTnI
+         +0S177FWd4wnbQM62asHik4N1yBZEeBUg3JejOMH+Rir9JWQ3LkhfSGlpUfW5iyAtNbK
+         ToAbTrDA0QsTXw4yvW7hhb4EiOH+0rs3iFOplmwqFrfwuGBu0uhU1ioWtmHBGh0GdF8d
+         pFdtlKbathR68N/h3TApGdSpXWn08sWLl8MXE/PLfL0bJrVPHponOS/MBcj4Qesz6z/F
+         4Qd/3oRaSxSKRVJdzKNbdXhWX7xM/DWV0PYTokXSGAnX5WFdV5VccKWo0imSV969VNEq
+         xM5w==
+X-Gm-Message-State: AOJu0YyYE1mogMWL2YxBL7VdMgMCwwpKFDpWyzkihlMBNKn+AmYsMkMj
+        6D8Fktf7WPHTHwpE0h/8WCcEyboaptdO4Q+8Wd8kwg==
+X-Google-Smtp-Source: AGHT+IGUxeoMcIumPX7IET/lt4f1ldDBPjGrti0GnFsUkgmMHXfs2maVr1bRQ5PTuZfkffq7alJKaaOJocUYalarFe4=
+X-Received: by 2002:a67:e0c1:0:b0:457:c425:a696 with SMTP id
+ m1-20020a67e0c1000000b00457c425a696mr4882109vsl.4.1698653271021; Mon, 30 Oct
+ 2023 01:07:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: sdhci_am654: fix start loop index for TAP value
- parsing
-Content-Language: en-US
-To:     Nitin Yadav <n-yadav@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231026061458.1116276-1-n-yadav@ti.com>
- <8b7f948d-316c-4135-875a-de455ff4849c@intel.com>
- <8148dae9-e3fc-4589-ba57-a3f7a3e63b80@intel.com>
- <7054b3bb-de99-3fb0-5f17-78249f31c53f@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <7054b3bb-de99-3fb0-5f17-78249f31c53f@ti.com>
+References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
+ <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com> <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
+ <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com> <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
+In-Reply-To: <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 30 Oct 2023 13:37:39 +0530
+Message-ID: <CA+G9fYv3Ph6UDpW1uhoXD5QBE4tAZKpUkVy-Oo9NNrghChL_+A@mail.gmail.com>
+Subject: Re: qemu-arm64: handle_futex_death - kernel/futex/core.c:661 - Unable
+ to handle kernel unknown 43 at virtual address
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitin, Adrian
+On Sat, 28 Oct 2023 at 13:12, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Fri, 27 Oct 2023 at 12:57, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Thu, 26 Oct 2023 at 21:09, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
+> > > > > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
+> > > > > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 ...
+> > > > It looks like this is fallout from the LPA2 enablement.
+> > > >
+> > > > According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
+> > > > 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
+> > > >
+> > > >         0b101011 When FEAT_LPA2 is implemented:
+> > > >                  Translation fault, level -1.
+> > > >
+> > > > It's triggered here by an LDTR in a get_user() on a bogus userspace address.
+> > > > The exception is expected, and it's supposed to be handled via the exception
+> > > > fixups, but the LPA2 patches didn't update the fault_info table entries for all
+> > > > the level -1 faults, and so those all get handled by do_bad() and don't call
+> > > > fixup_exception(), causing them to be fatal.
+> > > >
+> > > > It should be relatively simple to update the fault_info table for the level -1
+> > > > faults, but given the other issues we're seeing I think it's probably worth
+> > > > dropping the LPA2 patches for the moment.
+> > > >
+> > >
+> > > Thanks for the analysis Mark.
+> > >
+> > > I agree that this should not be difficult to fix, but given the other
+> > > CI problems and identified loose ends, I am not going to object to
+> > > dropping this partially or entirely at this point. I'm sure everybody
+> > > will be thrilled to go over those 60 patches again after I rebase them
+> > > onto v6.7-rc1 :-)
+> >
+> > I am happy to test any proposed fix patch.
+> >
+>
+> Thanks Naresh. Patch attached.
 
-On 27/10/23 11:41, Nitin Yadav wrote:
-> Hi Adrian,
-> 
-> On 26/10/23 12:33, Adrian Hunter wrote:
->> On 26/10/23 10:00, Adrian Hunter wrote:
->>> On 26/10/23 09:14, Nitin Yadav wrote:
->>>> ti,otap-del-sel-legacy/ti,itap-del-sel-legacy passed from DT
->>>> are currently ignored for all SD/MMC and eMMC modes. Fix this
->>>> by making start loop index to MMC_TIMING_LEGACY.
->>>>
->>>> Fixes: 8ee5fc0e0b3be ("mmc: sdhci_am654: Update OTAPDLY writes")
->>>>
->>>
->>> There isn't usually a blank line here
->>>
->>> Perhaps a Cc: stable@vger.kernel.org tag?
->>>
->>>> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
->>>
->>> Nevertheless:
->>>
->>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
->>
->> Sorry, sent that prematurely - see comment below
->>
->>>
->>>
->>>> ---
->>>>  drivers/mmc/host/sdhci_am654.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
->>>> index 544aaaf5cb0f..aae9d255c6a1 100644
->>>> --- a/drivers/mmc/host/sdhci_am654.c
->>>> +++ b/drivers/mmc/host/sdhci_am654.c
->>>> @@ -606,7 +606,7 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
->>>>  		return 0;
->>>>  	}
->>>>  
->>
->> Isn't the MMC_TIMING_LEGACY information read at the top of
->> sdhci_am654_get_otap_delay()?
-> Loop also take care of ITAP. Looks like at some point single property
-> ti,otap-del-sel was used for all modes and then we moved to one property
-> per mode:
-> https://lore.kernel.org/r/20200108150920.14547-3-faiz_abbas@ti.com
-> (since v5.7)
+This patch did not solve the reported problem.
+Test log links,
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/naresh/tests/2XTP1lXcUUscT357YaAm2G1AhpS
 
-Looks like ti,otap-del-sel is deprecated for a while now (since v5.7+). 
-I think that's sufficient enough time to drop it now (don't see any in 
-kernel DT use this property). Lets drop the above code which handles 
-MMC_TIMING_LEGACY separately, so that below for() loop can handle the 
-whole set of bindings efficiently.
-
-Since this patch is marked for stable, can we get rid of the check for 
-deprecated property in a follow up patch?
-
-Something like below? (completely untested):
-
-
-diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-index c125485ba80e..50c8d3051096 100644
---- a/drivers/mmc/host/sdhci_am654.c
-+++ b/drivers/mmc/host/sdhci_am654.c
-@@ -577,32 +577,17 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
- 	int i;
- 	int ret;
- 
--	ret = device_property_read_u32(dev, td[MMC_TIMING_LEGACY].otap_binding,
--				 &sdhci_am654->otap_del_sel[MMC_TIMING_LEGACY]);
--	if (ret) {
--		/*
--		 * ti,otap-del-sel-legacy is mandatory, look for old binding
--		 * if not found.
--		 */
--		ret = device_property_read_u32(dev, "ti,otap-del-sel",
--					       &sdhci_am654->otap_del_sel[0]);
--		if (ret) {
--			dev_err(dev, "Couldn't find otap-del-sel\n");
--
--			return ret;
--		}
--
--		dev_info(dev, "Using legacy binding ti,otap-del-sel\n");
--		sdhci_am654->legacy_otapdly = true;
--
--		return 0;
--	}
--
--	for (i = MMC_TIMING_MMC_HS; i <= MMC_TIMING_MMC_HS400; i++) {
-+	for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
- 
- 		ret = device_property_read_u32(dev, td[i].otap_binding,
- 					       &sdhci_am654->otap_del_sel[i]);
- 		if (ret) {
-+			if (i == MMC_TIMING_LEGACY) {
-+				dev_err(dev, "ti,otap-del-sel-legacy is mandatory");
-+				return ret;
-+			}
-+
- 			dev_dbg(dev, "Couldn't find %s\n",
- 				td[i].otap_binding);
- 			/*
-
-
-
->>
->>>> -	for (i = MMC_TIMING_MMC_HS; i <= MMC_TIMING_MMC_HS400; i++) {
->>>> +	for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
->>>>  
->>>>  		ret = device_property_read_u32(dev, td[i].otap_binding,
->>>>  					       &sdhci_am654->otap_del_sel[i]);
->>>
->>
-> 
-
--- 
-Regards
-Vignesh
+- Naresh
