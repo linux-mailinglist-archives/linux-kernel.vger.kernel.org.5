@@ -2,209 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E057DB667
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E0F7DB69B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjJ3Jrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        id S232786AbjJ3Jt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbjJ3Jrs (ORCPT
+        with ESMTP id S232796AbjJ3Jsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:47:48 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6096AC1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:47:45 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a82f176860so37691637b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:47:45 -0700 (PDT)
+        Mon, 30 Oct 2023 05:48:54 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BC910D1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:48:23 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32dcd3e5f3fso2928570f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:48:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698659264; x=1699264064; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VNqVOafoli2UlL22BBZlG8If4F8EihISHX/NTqTcwEU=;
-        b=RdAbLCTD64CjfR9vjoNwPMnxOjeZSOeYr/CtJp0AV7i0sqVfhpTGOY3+Vb1LGkTEoT
-         kCM5+hatJVP8mvAMedrKLiwtv24YoeYF+p1t1GGGGs9iutIsRvNtBsNiASMkOw6os17B
-         J7Cwr+BTVREhYpFGJK67jqJ+lnrhjSRAfCKQiAsOcP+Z07qMT1XbNhkW40T5/AhXjQE+
-         +9dKZFQzrbQdgmnzNht64JD6jA5S4h2KQoawts96x0xAEloufPJ/M3kvGmhKzS9pcJBn
-         K8douAFF2nCjVudIf3iYV3Ndqs205MCmIi13XIkeWY/72IQlgvfGYewYs5hGQvH9mOMN
-         PbZQ==
+        d=linaro.org; s=google; t=1698659302; x=1699264102; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KPTZJaV/MjL39+P4h6OmYZujDec2OSDGxnH10oBPzHE=;
+        b=eFMSckd0/jLbQXb/2AC3TIJ38GlssXXI9Ue8ucbscKvRoB5q/flk6Z2mzVAmjZaTHD
+         x9LHViXpzEwik3JgQdB6v6ikTkFH3Nu+Q00/JbbeVyLzoozhY+iIVH36Lgdc6HewEfij
+         Ict3rtMzRq6ZOdbarrgprTatJ+KsJgzr662KzuFPvmBDIwWorBlFlX5IyMGchf0uwyCG
+         lJsu1C2CsACzcgjTqD1OxBF4SN5TZk3F4ZBopek5tfU6C8jFTg0vxkE5TkNKrAPLclOz
+         R5uWfDv1KFUgftkhCA3yUWjJNf8xUIHOE81Gw+RIjiROIGKNTEbq3fKSGV6DECYKsXKM
+         XnnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698659264; x=1699264064;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698659302; x=1699264102;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VNqVOafoli2UlL22BBZlG8If4F8EihISHX/NTqTcwEU=;
-        b=Xu4sYRcJiPTnpBCQLb0RGpSgaV/zArXnV6udSEfYC/0Kd18vExX+YraZOPM9jYLzxc
-         WJPf42WRM0f6ogd1vxnxHQtRa6+LlFlUsrNw/NOyO+Zkz0hdzXN7Dq9H2JX6ANI94L/D
-         LH9P4kEP9nM3ySbeWxIeaWBf0RqPh5hwq/z7NcAWQxbkea/3uy4+NNO2WTnjPEGz5C8i
-         Yau+gMi2Vu8Eilgr9lWxCfLw/og32+7XX5TBMEi63sxsPs8Wj2lPhdjSYYnMh0Pstcmd
-         5jp9+O+3oEDlDmklz66NjkKvnSJnQxiiQ5EcGrFwo2cTpeGqm2w2gjMDEMEeF34K5IFq
-         U+qw==
-X-Gm-Message-State: AOJu0YxsADXNaIA0BaFC9s0/IUIn4Q0ErLbwtSZDbbZim9/1BrRz1NMl
-        m7IxngCXCbTJochSQibLWUSzdzuiL3gp3pq/y4NY0Q==
-X-Google-Smtp-Source: AGHT+IH4vGEQN2ht9HEWJL1x66zGUn2ZBD0Ei507AWcGjNS0lN6B3REXl08u1/DpS4NjeE917SoyGVG+xW8qvzQFjvI=
-X-Received: by 2002:a81:e249:0:b0:59b:cfe1:bcf1 with SMTP id
- z9-20020a81e249000000b0059bcfe1bcf1mr8771096ywl.44.1698659264481; Mon, 30 Oct
- 2023 02:47:44 -0700 (PDT)
+        bh=KPTZJaV/MjL39+P4h6OmYZujDec2OSDGxnH10oBPzHE=;
+        b=QlkTQ5wVRakztrztfWtENk2KBA/JoPW6opSDaul4i1fHgyGKH+h1XssNJ4Fgplia56
+         Trd1RDgxr8x9ofkdOuhncdLWfamQEFXierliKre+QU66uZvbYboyrw//xw+Og686EAiX
+         X7gNoTz8VkLkjrD+u3k+csVlr/cTiEqY4V5z/Hojv3GGvZHdZxCxbVlOL1EE9eCe10h0
+         OhQ7Y028dHlYCHFzK4alyRu55ZX/R5WFAWVTxnTuj9Ts59/T+qv9trJvRc/3ivYqaKgx
+         EQNr9W7Dy8hJaYVZ/e6aV82ccpt99i+EnD1iCLPWMMCXaljoVJtvQFZsFYcBqBQw4Z9g
+         wmHw==
+X-Gm-Message-State: AOJu0Ywpw+Dyqc+mFmefcHLS+IGlyI5Mcspz9V6ENEhlAYrhfthmY7tJ
+        bz6qq1I3PLQj76mljq0yKWiV0Q==
+X-Google-Smtp-Source: AGHT+IEi+2EnChCdXuC4BZnLb291jlsE8CMuY5f+RKFa/FzCVHA6umqZ7slvZXuTl1qatU8X6D5bTA==
+X-Received: by 2002:a5d:588f:0:b0:32f:7e4e:535d with SMTP id n15-20020a5d588f000000b0032f7e4e535dmr4565173wrf.15.1698659302024;
+        Mon, 30 Oct 2023 02:48:22 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id x14-20020a5d444e000000b0031980294e9fsm7854256wrr.116.2023.10.30.02.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 02:48:21 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v2 0/7] phy: qcom: Introduce PCIe, UFS & USB PHY support
+ for SM8650
+Date:   Mon, 30 Oct 2023 10:48:16 +0100
+Message-Id: <20231030-topic-sm8650-upstream-phy-v2-0-a543a4c4b491@linaro.org>
 MIME-Version: 1.0
-References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
- <20230903214150.2877023-13-dmitry.baryshkov@linaro.org> <ZQRKq7K8jKlH/Y4X@kuha.fi.intel.com>
- <0F1BE090-92C4-4233-A77A-9B4C653DA1A7@linaro.org> <ZT9m/OoFUiZaWy9s@kuha.fi.intel.com>
-In-Reply-To: <ZT9m/OoFUiZaWy9s@kuha.fi.intel.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 30 Oct 2023 11:47:33 +0200
-Message-ID: <CAA8EJprgpfh_GOeV+557YHWUJC-9W1Tw7nzb0jy5mPAv35VuGA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 12/12] usb: typec: qcom: define the bridge's path
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOB7P2UC/32NQQ6CMBBFr0Jm7Zh2gAquvIdhQWqBSYQ2UyQSw
+ t2txLXL95P/3gbRCbsI12wDcQtH9lMCOmVgh3bqHfIjMZCiXCttcPaBLcaxMqXCV4izuHbEMKx
+ YKzKqoK6mooL0D+I6fh/ue5N44Dh7WY/Uor/rz0rlH+uiUaHR+SXVS1K2uD15asWfvfTQ7Pv+A
+ VMar0zDAAAA
+To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2164;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=P+sEQT2Rv1FEwMjfBQ01O/6OblFcpIJuA1P/WnguyMc=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP3vhUQVNRQTirHoI4ASs8izOOUwzDBGyfp5VSXYs
+ TPF2zoqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT974QAKCRB33NvayMhJ0S8iEA
+ CuqKVtPX8PmzsPKVHBPLVuzhDgroORz8sE72lh4OKElFlUNHHxoOHINYb4ovPfZRgI5OCrmcDxAGNX
+ YF8G66klpXUREC/Csw/e52IfnnQe1Nf8F4hYu2UovITfjzwK2gon5mxZuvC2/zNGnltz2/8wy2NCOm
+ bDYHHDgILnxi1FM747iRJs1NyfJ8BWGbTTo4a7b/y+H9XM759nY8kigheM6/QqL4ky0I8YwAoDBiXC
+ 9JycmtxsUsW63RLLmkIMZti8wmFcRBcsBLxC67XAxaHAYxqrXeRdSRGSRubZjSlUJ2eCCf+gYmC3vT
+ JmUVuUN42fo+J0wEKN6tdkzi4YCZkLkCsfsLDA4zebASWoAu6LmRmrTQceVK7SNQYGFRYue0MVuejt
+ XkeDFulmOEc4sTUS/73A95/9RJNKrdkXndNIaBUGlW+kHHzGgvy/d4e/Vzpcg1eeDw1dz20soCf681
+ B0dj3+J2VEu1q6989TJGUt5NzcdX8tbjopn6qsJCI0BcZTIqOlPChWv2UyMLXfVPLNYYecJAQTdyJT
+ xKQOQImrYoOHIVIhQui6jpSGbImts5ncT5xp3/+e97cfqeo/5ATxXCRXslRrlDFd5pr8freekAI8ST
+ MjWxhrxzTy/Sk8us5yhyst3/+Nwdm1ld/6K1cjo2OGaRBZMQMVLnMsmEUauA==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 at 10:19, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Mon, Oct 23, 2023 at 09:24:33PM +0300, Dmitry Baryshkov wrote:
-> > On 15 September 2023 15:14:35 EEST, Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
-> > >Hi Dmitry,
-> > >
-> > >On Mon, Sep 04, 2023 at 12:41:50AM +0300, Dmitry Baryshkov wrote:
-> > >> In order to notify the userspace about the DRM connector's USB-C port,
-> > >> export the corresponding port's name as the bridge's path field.
-> > >>
-> > >> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > >> ---
-> > >>  drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c     | 11 +++++++----
-> > >>  drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.c |  4 +++-
-> > >>  drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.h |  6 ++++--
-> > >>  3 files changed, 14 insertions(+), 7 deletions(-)
-> > >>
-> > >> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-> > >> index b9d4856101c7..452dc6437861 100644
-> > >> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-> > >> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-> > >> @@ -156,6 +156,7 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
-> > >>    struct device_node *np = dev->of_node;
-> > >>    const struct pmic_typec_resources *res;
-> > >>    struct regmap *regmap;
-> > >> +  char *tcpm_name;
-> > >>    u32 base[2];
-> > >>    int ret;
-> > >>
-> > >> @@ -211,10 +212,6 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
-> > >>    mutex_init(&tcpm->lock);
-> > >>    platform_set_drvdata(pdev, tcpm);
-> > >>
-> > >> -  tcpm->pmic_typec_drm = qcom_pmic_typec_init_drm(dev);
-> > >> -  if (IS_ERR(tcpm->pmic_typec_drm))
-> > >> -          return PTR_ERR(tcpm->pmic_typec_drm);
-> > >> -
-> > >>    tcpm->tcpc.fwnode = device_get_named_child_node(tcpm->dev, "connector");
-> > >>    if (!tcpm->tcpc.fwnode)
-> > >>            return -EINVAL;
-> > >> @@ -225,6 +222,12 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
-> > >>            goto fwnode_remove;
-> > >>    }
-> > >>
-> > >> +  tcpm_name = tcpm_port_get_name(tcpm->tcpm_port);
-> > >> +  tcpm->pmic_typec_drm = qcom_pmic_typec_init_drm(dev, tcpm_name);
-> > >
-> > >So I got some questions and concerns off-list. This was one of the
-> > >concerns. That tcpm_name is now the actual port device name, so I'm
-> > >afraid this is not acceptable.
-> > >
-> > >You can't use device name as a reference, ever. There is no way to
-> > >guarantee that a device with a specific name is what you meant it to
-> > >be by the time it's accessed.
-> >
-> > Hmm, could you please be more specific, why? I mean, class devices are not
-> > that easy to be renamed in sysfs, are they? Or are you concerned about the
-> > device being destroyed behind userspace's back? At least for MSM this will be
-> > a huge problem already, with the bridge driver suddenly being removed.
->
-> The race exists even in your case, but please do not look at this as a
-> solution for only your platform.
+The SM8650 PHYs are similar to very close to the ones found
+on the SM8550 platform.
 
-Yes!
+Only a few changes in the init tables are required for the
+UFS, PCIe and USB3/DP Combo PHYs.
 
->
-> This is about showing the user space a link between two device
-> instances (struct device), and the way you do that is by creating a
-> symlink. That way the kernel can take care of reference counting and
-> guarantee that the link always points to the correct device. That way
-> the link will also be always visible in user space without requirement
-> for any specific ABI like it should.
+The Synopsys eUSB2 PHY is the same as SM8550, so only a fallback
+is added in the bindings.
 
-I'm fine with the symlink approach (and I'll follow that up after
-finishing the UCSI glue driver rework). However I feel several
-deficiencies there:
+Dependencies: None
 
-1) It creates asymmetry with the DP MST case. Do we want to have
-symlinks in each of the MST connectors? Or do we follow the PATH
-properties in the MST case until we find the root port, which has
-symlink? Please note, that fine X11 renames DP MST connectors
-internally, so in xrandr I see DP-2-1, which maps to
-/sys/class/drm/card0-DP-2. Kind of hard to follow.
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstream/integ
 
-2) For the multi-card cases, one has to remap the connector to the
-card index + connector path. And this needs to be done by all user
-space applications, which would like to present this kind of
-information for the user.
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Changes in v2:
+- bindings: Add missing sm8650 entry in allOf:if:then
+- Collected reviewed-by tags from Dmitry
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-phy-v1-0-6137101520c4@linaro.org
 
-3) If we were to support non-USB-C connectors (e.g. MyDP / SlimPort
-and MHL used simple micro-USB connectors) there would be a completely
-new uABI. And any external port / wrapper will also require a
-completely new symlink kind.
+---
+Neil Armstrong (7):
+      dt-bindings: phy: qcom,sc8280xp-qmp-ufs-phy: document the SM8650 QMP UFS PHY
+      dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: document the SM8650 QMP PCIe PHYs
+      dt-bindings: phy: qcom,sc8280xp-qmp-usb43dp-phy: document the SM8650 QMP USB/DP Combo PHY
+      dt-bindings: phy: qcom,snps-eusb2: document the SM8650 Synopsys eUSB2 PHY
+      phy: qcom: qmp-ufs: add QMP UFS PHY tables for SM8650
+      phy: qcom: qmp-pcie: add QMP PCIe PHY tables for SM8650
+      phy: qcom: qmp-combo: add QMP USB3/DP PHY tables for SM8650
 
-I understand your concerns regarding mentioning external device in the
-PATH property. However I think we should make it easier for the
-userspace app to determine the kind of the external connector. What
-would you think about extending the PATH property in the following
-way:
+ .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml   |  5 ++
+ .../bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml    |  2 +
+ .../phy/qcom,sc8280xp-qmp-usb43dp-phy.yaml         |  2 +
+ .../bindings/phy/qcom,snps-eusb2-phy.yaml          |  1 +
+ drivers/phy/qualcomm/phy-qcom-qmp-combo.c          |  4 +
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           | 65 ++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |  1 +
+ .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |  7 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 86 ++++++++++++++++++++++
+ 9 files changed, 173 insertions(+)
+---
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+change-id: 20231016-topic-sm8650-upstream-phy-9026042f9248
 
-For the USB-C connectors the PATH property has the value of
-`typec:cardN-DP-m` value. Userspace app can then look for the
-typec_connector symlink at the /sys/class/drm/cardN-DP-m subdir to
-find the information about the corresponding USB-C port.
-
-In future this will allow us to define e.g.:
-
-For the SlimPort / MyDP the PATH property has the value of
-`micro_usb:cardN-HDMI-m` or `micro_usb:cardN-DP-m`. The symlink is
-called /sys/class/drm/cardN-DP-m/micro_usb_connector.
-
-Or:
-
-For the SlimPort / MyDP the PATH property has the value of
-`mydp:cardN-HDMI-m` or `mydp:cardN-DP-m`. The symlink is called
-/sys/class/drm/cardN-DP-m/mydp_connector.
-
-
+Best regards,
 -- 
-With best wishes
-Dmitry
+Neil Armstrong <neil.armstrong@linaro.org>
+
