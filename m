@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C417DBF60
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1737DBF62
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbjJ3RwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
+        id S233880AbjJ3Rwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbjJ3RwM (ORCPT
+        with ESMTP id S231609AbjJ3Rwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:52:12 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F837103
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:52:06 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so9836713a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:52:06 -0700 (PDT)
+        Mon, 30 Oct 2023 13:52:41 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A129C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:52:38 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53b32dca0bfso9862233a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698688325; x=1699293125; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698688357; x=1699293157; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1DOAGGRD9zn/OfpdLXvRloDl4JqpWGj7oIPv4XRwA/8=;
-        b=M/mSEMidvWKreUVzl2UY5BWQKIFCcRjsFSAbsWmQeoXtcfLraD1MJrfc3GyctyS6Po
-         ECS64rsf2u4ObDZ3aUs5P99AXDkLvcWYKWMmqFW7S6R6emCLg/qUGxepk14AsVf1xuST
-         2pXX1In/Qu6YYQx2WGCrUDDf6XLsPTe81iJrMTlVM/txVYbinoapcBSLJz+CJjQHiPUY
-         Wzxie7dXaEbg4jk7xDmKjKEisWmTsNn2oTjmfpP0BU1B7vdQx2Z/HDEAZU4sBsrglneu
-         nvUFjSbf9PnQFE4+Wbc+0q4pARAo5sgscKNVzbDMwRsFxYquDjHP1Y4PbaKFLNYJ/b5N
-         qZCQ==
+        bh=pdJux0Q4B07NLTg26fucIZtojK2epWCkbuqQD9NS0Io=;
+        b=l+MgFjeJc7pd3alSF7BrR0EIDRA9G8YyKGRzUTTbfc0lZ4tznDstoL6Msq0JGLg9ka
+         HGDcC5lXKPwJl6jn3YwBQSX5Uo6VEfJs/vjZyF7CTwpdvggmsy6kt8gHMxpcg61kfyt/
+         lRCgrBLOzP5tIhm84AzR0r+iQrjDslI2KYojBZGpmf4m4mydMsGm2nnxp3hzYGtLdTVv
+         hT+bMsuATLOgrwVj+vkA7aMylcwmyfbFCvzBXLXIKG8ONZnrCixtKFKI7S8DqdHTmHNt
+         Wuwxig8fEaVe4UDBykaATaxGnT7fWJHyTHUuSioaZksVWKxEUMEYM63lfGALlM6sC6W9
+         I1bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698688325; x=1699293125;
+        d=1e100.net; s=20230601; t=1698688357; x=1699293157;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1DOAGGRD9zn/OfpdLXvRloDl4JqpWGj7oIPv4XRwA/8=;
-        b=YJlvTbjAFNwmXkmXUkTNzwwqKEe8fTJwis9V3UrZXj8Mr/2+8szAzurR0ix8SdZcPj
-         yapSjEInmbD0bbtNJt3TKY6PYMZwSmjsD3n52mmKTa7Rc5TGd+WnLMVYjhgckJZU/hNg
-         +NGOHo+ekrhVYU+LQWzVe5eG9kMEatgdqH6nzgTsYxL3Fun384Xav792g3w9VNh2H8g8
-         cqwcWK3861o+XuTsjUmhjpHGku1uZ/5KkEH+f8y7JfsUdLrmv39UJQ0M6BOSb6EEvGVv
-         n913jEn5p4DXQnbnHE+TouiHvYAXUMe+fDSeHERIRlDsBjBl/wSvD5moCwQp4J86M/3i
-         wnfw==
-X-Gm-Message-State: AOJu0YydI6vMRjeNJuQrYs/YS3QfasDnFdohgHuAB1hplqpFOXVP9/80
-        zdkrV5UubP/smpQmszuhXjMqjA==
-X-Google-Smtp-Source: AGHT+IFDqdQvj78F0yb6k/qL7PbPBcugZqEuNJBx8rK08kf5WCT69hLYeH1eIsnM0xYezBly+pUaQQ==
-X-Received: by 2002:aa7:d28c:0:b0:51e:5bd5:fe7e with SMTP id w12-20020aa7d28c000000b0051e5bd5fe7emr357691edq.17.1698688325242;
-        Mon, 30 Oct 2023 10:52:05 -0700 (PDT)
+        bh=pdJux0Q4B07NLTg26fucIZtojK2epWCkbuqQD9NS0Io=;
+        b=MlCphHuQUCmb9BBYP+r6wVXqM16mFTJ8icuBBh2dytgQlgpyLMoKtUiyyzfv12PyrX
+         Dy3mcaM64HWV6UKrbHmO91GdJotr+UWd6llva9JWi6gVab1L6TQ+LSlgWmeH/Mr9RuWv
+         bkW1RkjPo6a77onjcYprY0t67tMfKGU0x84wS1I38nsGqhiV1mE8xCvY/a4WrJOzVS6y
+         M10DkqJyM5tbg9yfa7+BLmSmvj/YoBDpzegbpmmk0Wllyz9aP+m2R21HzwDQU+C9KLQ5
+         Y4gaXp6vev+H/IpPcDlXXSpr+qxuEmE6pIbiUW1lLymfjO53+fB8YpF3gmQh8Z5z9EGM
+         wvBw==
+X-Gm-Message-State: AOJu0YxInt2iTsj/VxSb4qCrfiMynGfp+qwU2wC2kMuNrRAu2jYrOkOq
+        4adk9LRX990Y3U4wnw1XCv/smQ==
+X-Google-Smtp-Source: AGHT+IEEDmPTbRyeq0tltnJanaHQVjRKXE5/XlVNjX4oUw/U36PPs5KdAqQDbHZA3j2UWvry+H51NA==
+X-Received: by 2002:a50:d553:0:b0:542:fe59:2234 with SMTP id f19-20020a50d553000000b00542fe592234mr355831edj.6.1698688357058;
+        Mon, 30 Oct 2023 10:52:37 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id x8-20020a50d608000000b00543597cd190sm429445edi.47.2023.10.30.10.52.03
+        by smtp.gmail.com with ESMTPSA id x8-20020a50d608000000b00543597cd190sm429445edi.47.2023.10.30.10.52.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 10:52:04 -0700 (PDT)
-Message-ID: <566b7ded-c4a2-4e77-8b0f-cc97128d4a17@linaro.org>
-Date:   Mon, 30 Oct 2023 18:52:03 +0100
+        Mon, 30 Oct 2023 10:52:36 -0700 (PDT)
+Message-ID: <9ea9a91b-22df-4dfa-88cd-2b8270cbfe0d@linaro.org>
+Date:   Mon, 30 Oct 2023 18:52:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 03/11] arm64: dts: imx8ulp-evk: added nxp secure
- enclave firmware
+Subject: Re: [PATCH v7 05/11] arm64: dts: imx93-11x11-evk: added nxp secure
+ enclave fw
 Content-Language: en-US
 To:     Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
         s.hauer@pengutronix.de, kernel@pengutronix.de, clin@suse.com,
@@ -66,7 +66,7 @@ To:     Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
         linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
         alexander.stein@ew.tq-group.com, V.Sethi@nxp.com
 References: <20231030095849.3456820-1-pankaj.gupta@nxp.com>
- <20231030095849.3456820-4-pankaj.gupta@nxp.com>
+ <20231030095849.3456820-6-pankaj.gupta@nxp.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,11 +112,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231030095849.3456820-4-pankaj.gupta@nxp.com>
+In-Reply-To: <20231030095849.3456820-6-pankaj.gupta@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,28 +126,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/10/2023 10:58, Pankaj Gupta wrote:
 > Added support for NXP secure enclave called EdgeLock Enclave
-> firmware (se-fw) for imx8ulp-evk.
+> firmware (se-fw) for imx93-11x11-evk.
 > 
 > Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
 > ---
->  arch/arm64/boot/dts/freescale/imx8ulp.dtsi | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+>  arch/arm64/boot/dts/freescale/imx93.dtsi | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> index 946f2b68d16f..7b66de3a392d 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> @@ -152,7 +152,7 @@ sosc: clock-sosc {
->  		#clock-cells = <0>;
->  	};
+> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> index dcf6e4846ac9..197de680fd27 100644
+> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>  /*
+> - * Copyright 2022 NXP
+> + * Copyright 2022-2023 NXP
+>   */
 >  
-> -	sram@2201f000 {
-> +	sram0: sram@2201f000 {
->  		compatible = "mmio-sram";
->  		reg = <0x0 0x2201f000 0x0 0x1000>;
->  
-> @@ -578,4 +578,12 @@ gpiod: gpio@2e200080 {
->  			gpio-ranges = <&iomuxc1 0 0 24>;
+>  #include <dt-bindings/clock/imx93-clock.h>
+> @@ -925,4 +925,10 @@ ddr-pmu@4e300dc0 {
+>  			interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
 >  		};
 >  	};
 > +
@@ -157,6 +156,7 @@ Node names should be generic. See also an explanation and list of
 examples (not exhaustive) in DT specification:
 https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
+Why do you even need label?
 
 Best regards,
 Krzysztof
