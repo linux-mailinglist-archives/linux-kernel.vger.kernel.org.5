@@ -2,197 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448727DC1EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834457DC1FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjJ3VcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
+        id S231928AbjJ3VeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjJ3Vb6 (ORCPT
+        with ESMTP id S229598AbjJ3VeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:31:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A1AED;
-        Mon, 30 Oct 2023 14:31:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6CC4C433C8;
-        Mon, 30 Oct 2023 21:31:53 +0000 (UTC)
-Date:   Mon, 30 Oct 2023 17:31:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
-        Mark Brown <broonie@kernel.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: selftests: user_events: ftrace_test - RIP:
- 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
-Message-ID: <20231030173151.0631169b@gandalf.local.home>
-In-Reply-To: <20231030124223.4e4ddeb8@gandalf.local.home>
-References: <CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com>
-        <20231027192011.GA436-beaub@linux.microsoft.com>
-        <20231027183640.2529ab68@gandalf.local.home>
-        <20231027223344.3854ac1f@rorschach.local.home>
-        <20231030163102.GA1853-beaub@linux.microsoft.com>
-        <20231030124223.4e4ddeb8@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 30 Oct 2023 17:34:01 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748F09F;
+        Mon, 30 Oct 2023 14:33:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F34E4218F2;
+        Mon, 30 Oct 2023 21:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1698701637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b7lSEG/712moXpupryJuVYCtv58RazdNCEsa1sLuvuw=;
+        b=zsGpI+jvNAZtSOZhYPus4+hE2G2/1GlnKh88VYt4+O/HZb3y497mEqtJQMcYHoDTqogKwP
+        eiFFC9LM14qhSN5fmUDIU1J6mwmex4gkFdmMnI4CWoQNI+TLlt/aFnK6J0Hz7Ybrz+Dq0z
+        gNr8dKbcLJCZpMwTBy9oqT2VfKH6k/w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1698701637;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b7lSEG/712moXpupryJuVYCtv58RazdNCEsa1sLuvuw=;
+        b=tCArXslRGuJNUOzlSCQ9nT+zM6AaLznm38LFjUN5lxjX+hcfbVbksteigmVDIWDv3JbWkW
+        LOOurkQ53cQHtHCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 64962138F8;
+        Mon, 30 Oct 2023 21:33:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7K2mB0IhQGWrIwAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 30 Oct 2023 21:33:54 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jeff Layton" <jlayton@kernel.org>
+Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
+        "Olga Kornievskaia" <kolga@netapp.com>,
+        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Zhi Li" <yieli@redhat.com>, "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [PATCH RFC] nfsd: fix error handling in nfsd_svc
+In-reply-to: <20231030-kdevops-v1-1-bae6baf62c69@kernel.org>
+References: <20231030-kdevops-v1-1-bae6baf62c69@kernel.org>
+Date:   Tue, 31 Oct 2023 08:33:50 +1100
+Message-id: <169870163037.24305.14020614041859684912@noble.neil.brown.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 12:42:23 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, 31 Oct 2023, Jeff Layton wrote:
+> Once we've set the nfsd_serv pointer in nfsd_svc, we still need to call
+> nfsd_last_thread if the server fails to be started. Remove the special
+> casing for nfsd_up_before case since shutting down the per-net stuff is
+> also handled by nfsd_last_thread.
+>=20
+> Finally, add a new special case at the start and skip doing anything if
+> the service already exists, 0 threads were requested and
+> serv->sv_nrthreads is 0.
 
-> > I still get the splat about the trace_array_put when running
-> > user_event's ftrace selftest:
-> > 
-> > [   26.665931] ------------[ cut here ]------------
-> > [   26.666663] WARNING: CPU: 12 PID: 291 at kernel/trace/trace.c:516 tracing_release_file_tr+0x46/0x50
-> > [   26.667470] Modules linked in:
-> > [   26.667808] CPU: 12 PID: 291 Comm: ftrace_test Not tainted 6.6.0-rc7-next-20231026 #3
-> > [   26.668665] RIP: 0010:tracing_release_file_tr+0x46/0x50
-> > [   26.669093] Code: d1 03 01 8b 83 c0 1e 00 00 85 c0 74 1d 83 e8 01 48 c7 c7 80 5b ef bc 89 83 c0 1e 00 00 e8 f2 b5 03 01 31 c0 5b e9 75 ee 27 01 <0f> 0b eb df 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90
-> > [   26.670580] RSP: 0018:ffffb6ef858ffee8 EFLAGS: 00010246
-> > [   26.671128] RAX: 0000000000000000 RBX: ffff9d7ae2364058 RCX: 0000000000000000
-> > [   26.671793] RDX: 0000000000000000 RSI: ffffffffbcb6b38b RDI: 00000000ffffffff
-> > [   26.672444] RBP: ffff9d7ac3e72200 R08: 0000000000000000 R09: 0000000000000000
-> > [   26.673072] R10: ffffb6ef858ffee8 R11: ffffffffbb28526f R12: 00000000000f801f
-> > [   26.673705] R13: ffff9d7b661a2020 R14: ffff9d7ac6057728 R15: 0000000000000000
-> > [   26.674339] FS:  00007fa852fa6740(0000) GS:ffff9d81a6300000(0000) knlGS:0000000000000000
-> > [   26.674978] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   26.675506] CR2: 00007fa852c2a250 CR3: 0000000105d92001 CR4: 0000000000370eb0
-> > [   26.676142] Call Trace:
-> > [   26.676357]  <TASK>
-> > [   26.676572]  ? __warn+0x7f/0x160
-> > [   26.677092]  ? tracing_release_file_tr+0x46/0x50
-> > [   26.677540]  ? report_bug+0x1c3/0x1d0
-> > [   26.677871]  ? handle_bug+0x3c/0x70
-> > [   26.678196]  ? exc_invalid_op+0x14/0x70
-> > [   26.678520]  ? asm_exc_invalid_op+0x16/0x20
-> > [   26.678845]  ? tracing_release_file_tr+0x1f/0x50
-> > [   26.679268]  ? tracing_release_file_tr+0x46/0x50
-> > [   26.679691]  ? tracing_release_file_tr+0x1f/0x50
-> > [   26.680105]  __fput+0xab/0x300
-> > [   26.680437]  __x64_sys_close+0x38/0x80  
-> 
-> Hmm, this doesn't tell me much. Let me go play with the user_event self
-> tests.
+This is very similar to my=20
+  Commit bf32075256e9 ("NFSD: simplify error paths in nfsd_svc()")
 
-I added a bunch of printk()s and I'm thinking there's a race in user event
-(or dynamic event) code.
+The main difference being that special case you mention.  I don't like
+that bit.
+If I run "rpc.nfsd 0" then I want the nfsd_svc to be destroyed, whether
+there were threads running or not.
 
-I put a printk in the open, write and release call to record the filp and
-the file in the open and this is what I hit:
+Is there a reason my patch isn't sufficient?
 
-[   32.603954] open ffff8d05488bf000 file=ffff8d0484f7a688
-[   32.607026] write ffff8d05488bf000
-[   32.608829] update file = ffff8d0484f7a688
-[   32.610100] update tr = ffffffffb2bebda0
-[   32.622203] write ffff8d05488bf000
-[   32.623231] update file = ffff8d0484f7a688
-[   32.624397] update tr = ffffffffb2bebda0
-[   32.625975] call delayed destroy
-[   32.627241] open ffff8d048510fc00 file=ffff8d0484f7a688
+Thanks,
+NeilBrown
 
-Another open with a different filp, but has the same file pointer (which is
-the meta data that matches the eventfs files, but not part of eventfs).
 
-[   32.628720] release ffff8d048510fc00
+>=20
+> Fixes: 9f28a971ee9f ("nfsd: separate nfsd_last_thread() from nfsd_put()")
+> Reported-by: Zhi Li <yieli@redhat.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> Here's what I was thinking for a targeted patch for stable. Testing it
+> now, but I won't have results until tomorrow.
+> ---
+>  fs/nfsd/nfssvc.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+> index 3deef000afa9..187b68769815 100644
+> --- a/fs/nfsd/nfssvc.c
+> +++ b/fs/nfsd/nfssvc.c
+> @@ -787,7 +787,6 @@ int
+>  nfsd_svc(int nrservs, struct net *net, const struct cred *cred)
+>  {
+>  	int	error;
+> -	bool	nfsd_up_before;
+>  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
+>  	struct svc_serv *serv;
+> =20
+> @@ -797,8 +796,9 @@ nfsd_svc(int nrservs, struct net *net, const struct cre=
+d *cred)
+>  	nrservs =3D max(nrservs, 0);
+>  	nrservs =3D min(nrservs, NFSD_MAXSERVS);
+>  	error =3D 0;
+> +	serv =3D nn->nfsd_serv;
+> =20
+> -	if (nrservs =3D=3D 0 && nn->nfsd_serv =3D=3D NULL)
+> +	if (nrservs =3D=3D 0 && (serv =3D=3D NULL || serv->sv_nrthreads =3D=3D 0))
+>  		goto out;
+> =20
+>  	strscpy(nn->nfsd_name, utsname()->nodename,
+> @@ -808,22 +808,17 @@ nfsd_svc(int nrservs, struct net *net, const struct c=
+red *cred)
+>  	if (error)
+>  		goto out;
+> =20
+> -	nfsd_up_before =3D nn->nfsd_net_up;
+>  	serv =3D nn->nfsd_serv;
+> =20
+>  	error =3D nfsd_startup_net(net, cred);
+>  	if (error)
+>  		goto out_put;
+>  	error =3D svc_set_num_threads(serv, NULL, nrservs);
+> -	if (error)
+> -		goto out_shutdown;
+> -	error =3D serv->sv_nrthreads;
+>  	if (error =3D=3D 0)
+> -		nfsd_last_thread(net);
+> -out_shutdown:
+> -	if (error < 0 && !nfsd_up_before)
+> -		nfsd_shutdown_net(net);
+> +		error =3D serv->sv_nrthreads;
+>  out_put:
+> +	if (serv->sv_nrthreads =3D=3D 0)
+> +		nfsd_last_thread(net);
+>  	/* Threads now hold service active */
+>  	if (xchg(&nn->keep_active, 0))
+>  		svc_put(serv);
+>=20
+> ---
+> base-commit: 31b5a36c4b88b44c91cdd523997b1e86fb47339d
+> change-id: 20231030-kdevops-5f7366897ef4
+>=20
+> Best regards,
+> --=20
+> Jeff Layton <jlayton@kernel.org>
+>=20
+>=20
 
-Only one release is called and then we call:
-
-[   32.630785] Remove event call ffff8d04809d7c58
-
-The above "Remove event call" came from user_event_set_call_visible()
-
-	if (visible) {
-		printk("show event call %px\n", &user->call);
-		ret = trace_add_event_call(&user->call);
-	} else {
-		printk("Remove event call %px\n", &user->call);
-		ret = trace_remove_event_call(&user->call);
-	}
-
-Where trace_remove_event_call() calls:
-
-   probe_remove_event_call() {
-      __trace_remove_event_call() {
-         event_remove() {
-            remove_event_from_tracers() {
-               remove_event_file_dir() {
-                  remove_event_file_dir() {
-                     kmem_cache_free(file_cachep, file);
-
-That is, call->file is freed at this point. Now any access to the file
-pointer is going to be garbage, which a write to enable will cause.
-
-So I see it is freed without seeing a release called.
-
-[   32.632323] Removing __test_event
-
-The above is the dentry being released (unlinked).
-
-[   32.633618] Removing enable
-[   32.634453] Removing user_events
-[   32.634948] write ffff8d05488bf000
-
-Another write is happening to the user event file (it may have been
-unlinked, but the release was never called, so it is still valid.
-
-[   32.636440] update file = ffff8d0484f7a688
-[   32.637685] update tr = dc64cc323d943921
-
-The above is the file pointer that we freed, and you can see the file->tr
-is now garbage.
-
-[   32.638827] general protection fault, probably for non-canonical address 0xdc64cc323d9457f9: 0000 [#1] PREEMPT SMP PTI
-[   32.641712] CPU: 4 PID: 911 Comm: ftrace_test Not tainted 6.6.0-rc4-test-00024-gd402dc722a1b-dirty #158
-[   32.644220] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[   32.646717] RIP: 0010:tracing_update_buffers+0x19/0x50
-[   32.648133] Code: 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 55 31 f6 31 ed 53 48 89 fb 48 c7 c7 e0 bc be b2 e8 d7 b6 cb 00 <80> bb d8 1e 00 00 00 74 15 48 c7 c7 e0 bc be b2 e8 42 9f cb 00 89
-[   32.653125] RSP: 0018:ffffb7b34172be20 EFLAGS: 00010246
-[   32.654573] RAX: 0000000000000000 RBX: dc64cc323d943921 RCX: 0000000000000000
-[   32.656503] RDX: 0000000000000000 RSI: ffffffffb1e09128 RDI: ffffffffb1e09128
-[   32.658445] RBP: 0000000000000000 R08: 000000000000002f R09: 0000000000000000
-[   32.660378] R10: ffffb7b34172be20 R11: 0000000000000001 R12: ffffb7b34172bf08
-[   32.662322] R13: ffff8d0484f7a688 R14: ffffb7b34172bf08 R15: 0000000000000000
-[   32.664249] FS:  00007f1769a10740(0000) GS:ffff8d05f7c00000(0000) knlGS:0000000000000000
-[   32.666438] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   32.668009] CR2: 000055c0cd72fc70 CR3: 000000010e3c6003 CR4: 0000000000170ee0
-[   32.669954] Call Trace:
-[   32.670653]  <TASK>
-[   32.671263]  ? die_addr+0x36/0x90
-[   32.672203]  ? exc_general_protection+0x236/0x4a0
-[   32.673521]  ? asm_exc_general_protection+0x26/0x30
-[   32.674872]  ? __mutex_lock+0x1c8/0xb40
-[   32.675942]  ? __mutex_lock+0x1c8/0xb40
-[   32.677009]  ? tracing_update_buffers+0x19/0x50
-[   32.678259]  event_enable_write+0xb4/0x140
-[   32.679311]  vfs_write+0xf2/0x530
-[   32.680172]  ? find_held_lock+0x2b/0x80
-[   32.681159]  ? _raw_spin_unlock+0x2d/0x50
-[   32.682711]  ? rcu_is_watching+0x11/0x50
-[   32.684159]  ? _raw_spin_unlock+0x2d/0x50
-[   32.685642]  ? trace_preempt_on+0x78/0x80
-[   32.687027]  ksys_write+0x75/0x100
-[   32.688257]  do_syscall_64+0x3f/0xc0
-[   32.689561]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[   32.691048] RIP: 0033:0x7f1769b0ab00
-
-Note, I think I can simplify some of the code (but not fix this bug) by
-letting the dput free the eventfs_inode as well (I think that is required).
-But the above looks to be a bug in the implementation of user_events.
-
--- Steve
