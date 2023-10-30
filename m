@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82AD7DC119
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876BB7DC11B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjJ3UWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 16:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S229892AbjJ3UWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJ3UWV (ORCPT
+        with ESMTP id S229485AbjJ3UWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 16:22:21 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1709310B
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:22:17 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a90d6ab962so45244947b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:22:16 -0700 (PDT)
+        Mon, 30 Oct 2023 16:22:41 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF086101
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:22:35 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b0e9c78309so26108727b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:22:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698697336; x=1699302136; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0MZDC0C692oKqu67pAXxbmQTWTZ0RHUdPxw5a4EVzJM=;
-        b=0VlrHSGhwJIJkMtZFxHFwGGbWJFDorb6gAu4FeP8UzhWC6LI3o3rn275cluUJjzhrU
-         WU0uYGc8cMV9zuP17dEcv90eosCcRFFhpzgLIQNjipUuX7p8zpuI6Rbi9mcIA4HBXx38
-         SREPRoWVKEATsdVRrYFFUUdon24wn5RL0+FkJ/42fPscZ2Lb3ky7NHPQ2Cgmq/GvL1ZG
-         sHKp59MQeO33YokwkhO+x1QvzgyQHMDrNIf4NbZZzAPYqjmjYpHPsLE8mhHRDCEgj/j/
-         xUJRVKTpXCxgCqpFzOo/QtW2l5RgJV3OpuqarEi9e8frRwznpiX3NFKQAmIjwA5i996n
-         Nb1g==
+        d=google.com; s=20230601; t=1698697355; x=1699302155; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RZbkFdW7n25fZk9cwmO7qLQnmgnKAK5eU70WepjOvI4=;
+        b=gvKoH2W+4/t9QzFXL/8SBkeGxP72e1Uh7PRT3YaKNFyI9XhOQXxrbi9hMH0/4bXW01
+         lSH3qMwzNs3Mc7eqCdM/xYPdZCtDJn7aUV4IEV0iR5yHICJCzuym0/NMucWIoY3hGKYA
+         RoYdCfWGHXnr5OUyZTdMVYKi2peejmR+KcoTZATUERIXZ5Icx8ZFnsQuFWuJG1i5vf/v
+         MC0Vsl26d9JzeYjT4nYzFYSQEQ7iqeqv2I0kCFIAPtkcxbcemu+RazEDR2fcLolI5RU0
+         ZvhrHgMdXAVCnNg5DKHOWcQBl/f+x7qtCZj7UXvRQTDiKABaeoTEi1anPTN6uJF/9GaV
+         /5Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698697336; x=1699302136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0MZDC0C692oKqu67pAXxbmQTWTZ0RHUdPxw5a4EVzJM=;
-        b=eMZTshEBrTgTSUjNK5/Xsm88NzfnAJMBzjmnWfNe3dp2vQz7/nfhXdHJ05cxMH8p5V
-         6FDDYXhQWfh8uV7aJcC17sT8w7rsEHof6jFGNF0aZMPHR+z6JJ/07ZHsxlYHS0PuJUqh
-         OTiKQ1riC8ca+Rd+gWQXFMy0bDNsjgSBhtfrV4+TMaTjDYUGTshBuG7am5dIMBdowvDV
-         5QHo/nx1VlQINH45JOgvhieazAU7pJoY+t/wZ82HXBqnGrel6zLeTSzC5sd3DS9h4Wre
-         rREjypP9m0dbCbkxDsE+Kypy6owGBvxo+hDxNR9AVMwtvOgI53c+kNp5HFbAlPHQ971o
-         hLsg==
-X-Gm-Message-State: AOJu0YwWqNEOAORhHZJ5w/AThAebCDPr0g/SWp5evjY/2SAij9J6suGe
-        lmf5ewTchJOUlnO8Sjt/eN81RGwEM+LEHcWlHsKgDzpT/s2zgsztb0I=
-X-Google-Smtp-Source: AGHT+IErTdQZnjT34lXTzXN3MzHAIzHtfhHdTZFEWa84Ne1hGq4DSlIR0kYYUcl8B03xzuvbq5tzsxkfTAgdkep7sF0=
-X-Received: by 2002:a81:a987:0:b0:5a7:be1d:7ad3 with SMTP id
- g129-20020a81a987000000b005a7be1d7ad3mr11134229ywh.1.1698697335636; Mon, 30
- Oct 2023 13:22:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231028003819.652322-1-surenb@google.com> <20231028003819.652322-6-surenb@google.com>
- <ZUAOpmVO3LMmge3S@x1n>
-In-Reply-To: <ZUAOpmVO3LMmge3S@x1n>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 30 Oct 2023 13:22:02 -0700
-Message-ID: <CAJuCfpEbrWVxfuqRxCrxB482-b=uUnZw2-gqmjxENBUqhCQb8A@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-To:     Peter Xu <peterx@redhat.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
+        d=1e100.net; s=20230601; t=1698697355; x=1699302155;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RZbkFdW7n25fZk9cwmO7qLQnmgnKAK5eU70WepjOvI4=;
+        b=BWhdEbW8NkLjnKbNB48rZOn9sMchjyrARIG0P5HBqV2IlZyvU4Nl3rR6NruEy9cSfQ
+         JBQABXrUvtq03X8HqGrJs1seeM8cW4lrXJzylM0K9a3IRD8QRDGnWOWXo9ET7N8Nyv+V
+         bM23FcIzVK7YWOVl3+4hxO0g3zFlccCnUyqSjmR3g9jOq8e9ln4EfUAdd2ofJmbBfCSc
+         oCjvbVVIOY0TgCwRkrq3oCalJ9csc3OvOLar/jccWyJm8s3uRQSAzNjA63Yhh5CE9AdP
+         w/LEv3wRqE/CocXLL7ZAPxzrIyi9t1qDicmeSrupxcBv0WKKKkMvN4eFU/PwoaQPrz+u
+         ChuA==
+X-Gm-Message-State: AOJu0YzKj0te1mNb1h5nsOCTgKbPkOyYv58e5vXAG9zVCejHoqbgdSKn
+        87lrIAHtAuvMaltjUfc/DNznxf5rLBBq
+X-Google-Smtp-Source: AGHT+IHat5B8FCm1prDUO4wysUSxkPtzPuT2YX9PKgBozG5IUodlAPr6/mBcF+W/g6u1xK/XEFTvRIAulDvd
+X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
+ (user=arakesh job=sendgmr) by 2002:a81:920b:0:b0:59b:f3a2:cd79 with SMTP id
+ j11-20020a81920b000000b0059bf3a2cd79mr219783ywg.8.1698697355197; Mon, 30 Oct
+ 2023 13:22:35 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 13:22:28 -0700
+In-Reply-To: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+Mime-Version: 1.0
+References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231030202231.3263253-1-arakesh@google.com>
+Subject: [PATCH v10 1/4] usb: gadget: uvc: prevent use of disabled endpoint
+From:   Avichal Rakesh <arakesh@google.com>
+To:     arakesh@google.com, dan.scally@ideasonboard.com
+Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        m.grzeschik@pengutronix.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,283 +70,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 1:14=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
->
-> On Fri, Oct 27, 2023 at 05:38:15PM -0700, Suren Baghdasaryan wrote:
-> > Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
-> > into destination buffer while checking the contents of both after
-> > the move. After the operation the content of the destination buffer
-> > should match the original source buffer's content while the source
-> > buffer should be zeroed. Separate tests are designed for PMD aligned an=
-d
-> > unaligned cases because they utilize different code paths in the kernel=
-.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  tools/testing/selftests/mm/uffd-common.c     |  24 ++++
-> >  tools/testing/selftests/mm/uffd-common.h     |   1 +
-> >  tools/testing/selftests/mm/uffd-unit-tests.c | 141 +++++++++++++++++++
-> >  3 files changed, 166 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/s=
-elftests/mm/uffd-common.c
-> > index 69e6653ad255..98957fd788d8 100644
-> > --- a/tools/testing/selftests/mm/uffd-common.c
-> > +++ b/tools/testing/selftests/mm/uffd-common.c
-> > @@ -643,6 +643,30 @@ int copy_page(int ufd, unsigned long offset, bool =
-wp)
-> >       return __copy_page(ufd, offset, false, wp);
-> >  }
-> >
-> > +int move_page(int ufd, unsigned long offset)
-> > +{
-> > +     struct uffdio_move uffdio_move;
-> > +
-> > +     if (offset >=3D nr_pages * page_size)
-> > +             err("unexpected offset %lu\n", offset);
-> > +     uffdio_move.dst =3D (unsigned long) area_dst + offset;
-> > +     uffdio_move.src =3D (unsigned long) area_src + offset;
-> > +     uffdio_move.len =3D page_size;
-> > +     uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
-> > +     uffdio_move.move =3D 0;
-> > +     if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
-> > +             /* real retval in uffdio_move.move */
-> > +             if (uffdio_move.move !=3D -EEXIST)
-> > +                     err("UFFDIO_MOVE error: %"PRId64,
-> > +                         (int64_t)uffdio_move.move);
-> > +             wake_range(ufd, uffdio_move.dst, page_size);
-> > +     } else if (uffdio_move.move !=3D page_size) {
-> > +             err("UFFDIO_MOVE error: %"PRId64, (int64_t)uffdio_move.mo=
-ve);
-> > +     } else
-> > +             return 1;
-> > +     return 0;
-> > +}
-> > +
-> >  int uffd_open_dev(unsigned int flags)
-> >  {
-> >       int fd, uffd;
-> > diff --git a/tools/testing/selftests/mm/uffd-common.h b/tools/testing/s=
-elftests/mm/uffd-common.h
-> > index 19930fd6682b..c9526b2cb6b3 100644
-> > --- a/tools/testing/selftests/mm/uffd-common.h
-> > +++ b/tools/testing/selftests/mm/uffd-common.h
-> > @@ -121,6 +121,7 @@ void wp_range(int ufd, __u64 start, __u64 len, bool=
- wp);
-> >  void uffd_handle_page_fault(struct uffd_msg *msg, struct uffd_args *ar=
-gs);
-> >  int __copy_page(int ufd, unsigned long offset, bool retry, bool wp);
-> >  int copy_page(int ufd, unsigned long offset, bool wp);
-> > +int move_page(int ufd, unsigned long offset);
-> >  void *uffd_poll_thread(void *arg);
-> >
-> >  int uffd_open_dev(unsigned int flags);
-> > diff --git a/tools/testing/selftests/mm/uffd-unit-tests.c b/tools/testi=
-ng/selftests/mm/uffd-unit-tests.c
-> > index debc423bdbf4..89e9529ce941 100644
-> > --- a/tools/testing/selftests/mm/uffd-unit-tests.c
-> > +++ b/tools/testing/selftests/mm/uffd-unit-tests.c
-> > @@ -1064,6 +1064,133 @@ static void uffd_poison_test(uffd_test_args_t *=
-targs)
-> >       uffd_test_pass();
-> >  }
-> >
-> > +static void uffd_move_handle_fault(
-> > +     struct uffd_msg *msg, struct uffd_args *args)
-> > +{
-> > +     unsigned long offset;
-> > +
-> > +     if (msg->event !=3D UFFD_EVENT_PAGEFAULT)
-> > +             err("unexpected msg event %u", msg->event);
-> > +
-> > +     if (msg->arg.pagefault.flags &
-> > +         (UFFD_PAGEFAULT_FLAG_WP | UFFD_PAGEFAULT_FLAG_MINOR | UFFD_PA=
-GEFAULT_FLAG_WRITE))
-> > +             err("unexpected fault type %llu", msg->arg.pagefault.flag=
-s);
-> > +
-> > +     offset =3D (char *)(unsigned long)msg->arg.pagefault.address - ar=
-ea_dst;
-> > +     offset &=3D ~(page_size-1);
-> > +
-> > +     if (move_page(uffd, offset))
-> > +             args->missing_faults++;
-> > +}
-> > +
-> > +static void uffd_move_test(uffd_test_args_t *targs)
-> > +{
-> > +     unsigned long nr;
-> > +     pthread_t uffd_mon;
-> > +     char c;
-> > +     unsigned long long count;
-> > +     struct uffd_args args =3D { 0 };
-> > +
-> > +     /* Prevent source pages from being mapped more than once */
-> > +     if (madvise(area_src, nr_pages * page_size, MADV_DONTFORK))
-> > +             err("madvise(MADV_DONTFORK) failure");
-> > +
-> > +     if (uffd_register(uffd, area_dst, nr_pages * page_size,
-> > +                       true, false, false))
-> > +             err("register failure");
-> > +
-> > +     args.handle_fault =3D uffd_move_handle_fault;
-> > +     if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
-> > +             err("uffd_poll_thread create");
-> > +
-> > +     /*
-> > +      * Read each of the pages back using the UFFD-registered mapping.=
- We
-> > +      * expect that the first time we touch a page, it will result in =
-a missing
-> > +      * fault. uffd_poll_thread will resolve the fault by moving sourc=
-e
-> > +      * page to destination.
-> > +      */
-> > +     for (nr =3D 0; nr < nr_pages; nr++) {
-> > +             /* Check area_src content */
-> > +             count =3D *area_count(area_src, nr);
-> > +             if (count !=3D count_verify[nr])
-> > +                     err("nr %lu source memory invalid %llu %llu\n",
-> > +                         nr, count, count_verify[nr]);
-> > +
-> > +             /* Faulting into area_dst should move the page */
-> > +             count =3D *area_count(area_dst, nr);
-> > +             if (count !=3D count_verify[nr])
-> > +                     err("nr %lu memory corruption %llu %llu\n",
-> > +                         nr, count, count_verify[nr]);
-> > +
-> > +             /* Re-check area_src content which should be empty */
-> > +             count =3D *area_count(area_src, nr);
-> > +             if (count !=3D 0)
-> > +                     err("nr %lu move failed %llu %llu\n",
-> > +                         nr, count, count_verify[nr]);
-> > +     }
-> > +
-> > +     if (write(pipefd[1], &c, sizeof(c)) !=3D sizeof(c))
-> > +             err("pipe write");
-> > +     if (pthread_join(uffd_mon, NULL))
-> > +             err("join() failed");
-> > +
-> > +     if (args.missing_faults !=3D nr_pages || args.minor_faults !=3D 0=
-)
-> > +             uffd_test_fail("stats check error");
-> > +     else
-> > +             uffd_test_pass();
-> > +}
-> > +
-> > +static int prevent_hugepages(void)
-> > +{
-> > +     /* This should be done before source area is populated */
-> > +     if (madvise(area_src, nr_pages * page_size, MADV_NOHUGEPAGE)) {
-> > +             /* Ignore if CONFIG_TRANSPARENT_HUGEPAGE=3Dn */
-> > +             if (errno !=3D EINVAL)
-> > +                     return -errno;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +struct uffd_test_case_ops uffd_move_test_case_ops =3D {
-> > +     .post_alloc =3D prevent_hugepages,
-> > +};
-> > +
-> > +#define ALIGN_UP(x, align_to) \
-> > +     (__typeof__(x))((((unsigned long)(x)) + ((align_to)-1)) & ~((alig=
-n_to)-1))
-> > +
-> > +static char *orig_area_src, *orig_area_dst;
-> > +static int pmd_align_areas(void)
-> > +{
-> > +     orig_area_src =3D area_src;
-> > +     orig_area_dst =3D area_dst;
-> > +     area_src =3D ALIGN_UP(area_src, page_size);
-> > +     area_dst =3D ALIGN_UP(area_dst, page_size);
-> > +     nr_pages--;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void pmd_restore_areas(void)
-> > +{
-> > +     area_src =3D orig_area_src;
-> > +     area_dst =3D orig_area_dst;
-> > +     nr_pages++;
-> > +}
->
-> Please stop using more global variables.. uffd tests are even less
-> maintainable.
->
-> Maybe you can consider add a flag for uffd_test_ctx_init()?  For allocati=
-ng
-> either small/thp/default?
+Currently the set_alt callback immediately disables the endpoint and queues
+the v4l2 streamoff event. However, as the streamoff event is processed
+asynchronously, it is possible that the video_pump thread attempts to queue
+requests to an already disabled endpoint.
 
-I was considering that but was not sure which way would be more
-preferable - using these new callbacks or adding new page size
-requirements. I'll change to the latter.
+This change moves disabling usb endpoint to the end of streamoff event
+callback. As the endpoint's state can no longer be used, video_pump is
+now guarded by uvc->state as well. To be consistent with the actual
+streaming state, uvc->state is now toggled between CONNECTED and STREAMING
+from the v4l2 event callback only.
 
->
->
-> > +
-> > +static int adjust_page_size(void)
-> > +{
-> > +     page_size =3D default_huge_page_size();
->
-> This is hacky too, currently page_size is the real page_size backing the
-> memory.
->
-> To make thp test simple, maybe just add one more test to MOVE a large chu=
-nk
-> to replace the thp test, which may contain a few thps?  It also doesn't
-> need to be fault based.
+Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.com/
+Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonboard.com/
+Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Signed-off-by: Avichal Rakesh <arakesh@google.com>
+---
+v1 -> v2 : Rebased to ToT and reworded commit message.
+v2 -> v3 : Fix email threading goof-up
+v3 -> v4 : Address review comments & re-rebase to ToT
+v4 -> v5 : Add Reviewed-by & Tested-by
+v5 -> v6 : No change
+v6 -> v7 : No change
+v7 -> v8 : No change. Getting back in review queue
+v8 -> v9 : Fix typo. No functional change.
+v9 -> v10: Rebase to ToT (usb-next)
 
-Sorry, I didn't get your suggestion. Could you please clarify? Which
-thp test are you referring to?
+ drivers/usb/gadget/function/f_uvc.c     | 11 +++++------
+ drivers/usb/gadget/function/f_uvc.h     |  2 +-
+ drivers/usb/gadget/function/uvc.h       |  2 +-
+ drivers/usb/gadget/function/uvc_v4l2.c  | 20 +++++++++++++++++---
+ drivers/usb/gadget/function/uvc_video.c |  3 ++-
+ 5 files changed, 26 insertions(+), 12 deletions(-)
 
-Thanks,
-Suren.
+diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+index 786379f1b7b7..77999ed53d33 100644
+--- a/drivers/usb/gadget/function/f_uvc.c
++++ b/drivers/usb/gadget/function/f_uvc.c
+@@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
+ 	return 0;
+ }
 
->
-> > +     nr_pages =3D UFFD_TEST_MEM_SIZE / page_size;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +struct uffd_test_case_ops uffd_move_pmd_test_case_ops =3D {
-> > +     .pre_alloc =3D adjust_page_size,
-> > +     .post_alloc =3D pmd_align_areas,
-> > +     .pre_release =3D pmd_restore_areas,
-> > +};
-> > +
-> >  /*
-> >   * Test the returned uffdio_register.ioctls with different register mo=
-des.
-> >   * Note that _UFFDIO_ZEROPAGE is tested separately in the zeropage tes=
-t.
-> > @@ -1141,6 +1268,20 @@ uffd_test_case_t uffd_tests[] =3D {
-> >               .mem_targets =3D MEM_ALL,
-> >               .uffd_feature_required =3D 0,
-> >       },
-> > +     {
-> > +             .name =3D "move",
-> > +             .uffd_fn =3D uffd_move_test,
-> > +             .mem_targets =3D MEM_ANON,
-> > +             .uffd_feature_required =3D UFFD_FEATURE_MOVE,
-> > +             .test_case_ops =3D &uffd_move_test_case_ops,
-> > +     },
-> > +     {
-> > +             .name =3D "move-pmd",
-> > +             .uffd_fn =3D uffd_move_test,
-> > +             .mem_targets =3D MEM_ANON,
-> > +             .uffd_feature_required =3D UFFD_FEATURE_MOVE,
-> > +             .test_case_ops =3D &uffd_move_pmd_test_case_ops,
-> > +     },
-> >       {
-> >               .name =3D "wp-fork",
-> >               .uffd_fn =3D uffd_wp_fork_test,
-> > --
-> > 2.42.0.820.g83a721a137-goog
-> >
->
-> --
-> Peter Xu
->
+-void uvc_function_setup_continue(struct uvc_device *uvc)
++void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
+ {
+ 	struct usb_composite_dev *cdev = uvc->func.config->cdev;
+
++	if (disable_ep && uvc->video.ep)
++		usb_ep_disable(uvc->video.ep);
++
+ 	usb_composite_setup_continue(cdev);
+ }
+
+@@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigned interface, unsigned alt)
+ 		if (uvc->state != UVC_STATE_STREAMING)
+ 			return 0;
+
+-		if (uvc->video.ep)
+-			usb_ep_disable(uvc->video.ep);
+-
+ 		memset(&v4l2_event, 0, sizeof(v4l2_event));
+ 		v4l2_event.type = UVC_EVENT_STREAMOFF;
+ 		v4l2_event_queue(&uvc->vdev, &v4l2_event);
+
+-		uvc->state = UVC_STATE_CONNECTED;
+-		return 0;
++		return USB_GADGET_DELAYED_STATUS;
+
+ 	case 1:
+ 		if (uvc->state != UVC_STATE_CONNECTED)
+diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/function/f_uvc.h
+index 1db972d4beeb..083aef0c65c6 100644
+--- a/drivers/usb/gadget/function/f_uvc.h
++++ b/drivers/usb/gadget/function/f_uvc.h
+@@ -11,7 +11,7 @@
+
+ struct uvc_device;
+
+-void uvc_function_setup_continue(struct uvc_device *uvc);
++void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+
+ void uvc_function_connect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index 6751de8b63ad..989bc6b4e93d 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -177,7 +177,7 @@ struct uvc_file_handle {
+  * Functions
+  */
+
+-extern void uvc_function_setup_continue(struct uvc_device *uvc);
++extern void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+ extern void uvc_function_connect(struct uvc_device *uvc);
+ extern void uvc_function_disconnect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+index 3f0a9795c0d4..7cb8d027ff0c 100644
+--- a/drivers/usb/gadget/function/uvc_v4l2.c
++++ b/drivers/usb/gadget/function/uvc_v4l2.c
+@@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	 * Complete the alternate setting selection setup phase now that
+ 	 * userspace is ready to provide video frames.
+ 	 */
+-	uvc_function_setup_continue(uvc);
++	uvc_function_setup_continue(uvc, 0);
+ 	uvc->state = UVC_STATE_STREAMING;
+
+ 	return 0;
+@@ -463,11 +463,18 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	struct video_device *vdev = video_devdata(file);
+ 	struct uvc_device *uvc = video_get_drvdata(vdev);
+ 	struct uvc_video *video = &uvc->video;
++	int ret = 0;
+
+ 	if (type != video->queue.queue.type)
+ 		return -EINVAL;
+
+-	return uvcg_video_enable(video, 0);
++	uvc->state = UVC_STATE_CONNECTED;
++	ret = uvcg_video_enable(video, 0);
++	if (ret < 0)
++		return ret;
++
++	uvc_function_setup_continue(uvc, 1);
++	return 0;
+ }
+
+ static int
+@@ -500,6 +507,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
+ static void uvc_v4l2_disable(struct uvc_device *uvc)
+ {
+ 	uvc_function_disconnect(uvc);
++	/*
++	 * Drop uvc->state to CONNECTED if it was streaming before.
++	 * This ensures that the usb_requests are no longer queued
++	 * to the controller.
++	 */
++	if (uvc->state == UVC_STATE_STREAMING)
++		uvc->state = UVC_STATE_CONNECTED;
++
+ 	uvcg_video_enable(&uvc->video, 0);
+ 	uvcg_free_buffers(&uvc->video.queue);
+ 	uvc->func_connected = false;
+@@ -647,4 +662,3 @@ const struct v4l2_file_operations uvc_v4l2_fops = {
+ 	.get_unmapped_area = uvcg_v4l2_get_unmapped_area,
+ #endif
+ };
+-
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index 91af3b1ef0d4..c334802ac0a4 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -384,13 +384,14 @@ static void uvcg_video_pump(struct work_struct *work)
+ 	struct uvc_video_queue *queue = &video->queue;
+ 	/* video->max_payload_size is only set when using bulk transfer */
+ 	bool is_bulk = video->max_payload_size;
++	struct uvc_device *uvc = video->uvc;
+ 	struct usb_request *req = NULL;
+ 	struct uvc_buffer *buf;
+ 	unsigned long flags;
+ 	bool buf_done;
+ 	int ret;
+
+-	while (video->ep->enabled) {
++	while (uvc->state == UVC_STATE_STREAMING && video->ep->enabled) {
+ 		/*
+ 		 * Retrieve the first available USB request, protected by the
+ 		 * request lock.
+--
+2.42.0.820.g83a721a137-goog
