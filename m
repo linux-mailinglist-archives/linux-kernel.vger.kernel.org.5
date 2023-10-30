@@ -2,510 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8754A7DBF5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C417DBF60
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbjJ3Rvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S233968AbjJ3RwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233880AbjJ3Rvw (ORCPT
+        with ESMTP id S233925AbjJ3RwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:51:52 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2077.outbound.protection.outlook.com [40.107.93.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A431FE4;
-        Mon, 30 Oct 2023 10:51:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K+rBsq/pmnykKCKoQMeNrGazJ1Be2zJCsRGnG88UiWkRHE2ENITqtQY8MF9OTDI8aF8BtD++0/IH8HWxsgfwJkTUH7eB+5kcz+tBfqCjKWB+kQgqitmAOeliaoKOnCyslAmMcsFtzlQGI6yK84VOD/7mRUt6TO6Wcv8Sx28nJVQ2kABrhxxqxZH6sg1RiAvPnGWsqsbkl09+/mxa8hbKf0LDF+g9EI7XXPxFC+h4+DOsgKbPPVO8CcazRW7BxiuQ5Fi2oMZjuRXfQhF4QZf8U2T73bBtxBGCK9mwrcyEqCQ1atvNGbO2pWOCiVlEU3JMgeQa1OMuQSVtsO22Epvd1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MlM9mwuiO7ZdevP/PD0xBNFGLMDvCebRaKmz4xyPXj0=;
- b=dC5JK9GiNl0IYFP/6a8wvjVZy/mZigqmfx02JpCfj4Jk1jlA6EZgC6E0/pcH6lAPxU6JEEXuBLoJshGcCpOaZ8w7fJJK9YstENZjAwDOU8/egevcu8YVTAYFirZ8EWQUD0RkIQnoMrbEw6gwt71boxK48pDV8S5bdwZx3g9aszSKk+OoTnbs5stIjiy5xTEl7y0DTGorjY82r6y+LU4oYlkcO5rg1vsB9etjzyheklGpe2ZuwOEcGywnqAF06oOUgOSRV9NgXHGX1WSZNjpVuD+XTExBTAbW0kRrvFVrL2tgLgD569kfhRKqzJkpeYa7Hb38od9EZWFaW5J3BFI36A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MlM9mwuiO7ZdevP/PD0xBNFGLMDvCebRaKmz4xyPXj0=;
- b=qI6TNeQNgQkjxfbQAgrpo2toI5G2kO3tVnKci3vVqz0NQXeyxAnYylk9NeuljHHdmBnXrD86nXbuIb5DX3ijgd97QcN05i7mF6m8GuHw4uXSg0hoDW9tjIspCJBSqx3fHwOHdwTsSYwuV3dAXI8L9RdXrZb3fAEjUv3KH/Xk85o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by PH8PR12MB7373.namprd12.prod.outlook.com (2603:10b6:510:217::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.26; Mon, 30 Oct
- 2023 17:51:43 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::e16e:d7f1:94ad:3021]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::e16e:d7f1:94ad:3021%7]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
- 17:51:43 +0000
-Message-ID: <2a4bbe7b-31e5-7527-8e63-10fb318e0f46@amd.com>
-Date:   Mon, 30 Oct 2023 12:51:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 01/14] virt: sev-guest: Use AES GCM crypto library
-Content-Language: en-US
-To:     Nikunj A Dadhania <nikunj@amd.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org
-Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        dave.hansen@linux.intel.com, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
-References: <20231030063652.68675-1-nikunj@amd.com>
- <20231030063652.68675-2-nikunj@amd.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20231030063652.68675-2-nikunj@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR14CA0059.namprd14.prod.outlook.com
- (2603:10b6:5:18f::36) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+        Mon, 30 Oct 2023 13:52:12 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F837103
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:52:06 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so9836713a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698688325; x=1699293125; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1DOAGGRD9zn/OfpdLXvRloDl4JqpWGj7oIPv4XRwA/8=;
+        b=M/mSEMidvWKreUVzl2UY5BWQKIFCcRjsFSAbsWmQeoXtcfLraD1MJrfc3GyctyS6Po
+         ECS64rsf2u4ObDZ3aUs5P99AXDkLvcWYKWMmqFW7S6R6emCLg/qUGxepk14AsVf1xuST
+         2pXX1In/Qu6YYQx2WGCrUDDf6XLsPTe81iJrMTlVM/txVYbinoapcBSLJz+CJjQHiPUY
+         Wzxie7dXaEbg4jk7xDmKjKEisWmTsNn2oTjmfpP0BU1B7vdQx2Z/HDEAZU4sBsrglneu
+         nvUFjSbf9PnQFE4+Wbc+0q4pARAo5sgscKNVzbDMwRsFxYquDjHP1Y4PbaKFLNYJ/b5N
+         qZCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698688325; x=1699293125;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1DOAGGRD9zn/OfpdLXvRloDl4JqpWGj7oIPv4XRwA/8=;
+        b=YJlvTbjAFNwmXkmXUkTNzwwqKEe8fTJwis9V3UrZXj8Mr/2+8szAzurR0ix8SdZcPj
+         yapSjEInmbD0bbtNJt3TKY6PYMZwSmjsD3n52mmKTa7Rc5TGd+WnLMVYjhgckJZU/hNg
+         +NGOHo+ekrhVYU+LQWzVe5eG9kMEatgdqH6nzgTsYxL3Fun384Xav792g3w9VNh2H8g8
+         cqwcWK3861o+XuTsjUmhjpHGku1uZ/5KkEH+f8y7JfsUdLrmv39UJQ0M6BOSb6EEvGVv
+         n913jEn5p4DXQnbnHE+TouiHvYAXUMe+fDSeHERIRlDsBjBl/wSvD5moCwQp4J86M/3i
+         wnfw==
+X-Gm-Message-State: AOJu0YydI6vMRjeNJuQrYs/YS3QfasDnFdohgHuAB1hplqpFOXVP9/80
+        zdkrV5UubP/smpQmszuhXjMqjA==
+X-Google-Smtp-Source: AGHT+IFDqdQvj78F0yb6k/qL7PbPBcugZqEuNJBx8rK08kf5WCT69hLYeH1eIsnM0xYezBly+pUaQQ==
+X-Received: by 2002:aa7:d28c:0:b0:51e:5bd5:fe7e with SMTP id w12-20020aa7d28c000000b0051e5bd5fe7emr357691edq.17.1698688325242;
+        Mon, 30 Oct 2023 10:52:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id x8-20020a50d608000000b00543597cd190sm429445edi.47.2023.10.30.10.52.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 10:52:04 -0700 (PDT)
+Message-ID: <566b7ded-c4a2-4e77-8b0f-cc97128d4a17@linaro.org>
+Date:   Mon, 30 Oct 2023 18:52:03 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH8PR12MB7373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d576567-1dee-4de2-fc86-08dbd970e0ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oKJQfacm7AW1xfbURzgkc/KDJHLSIz4zpH0sbWk0BqVWQuNBebgLbsFtsIV5BYuMEYdpAD93WfZbDkkfl7VKKOKe4iFAsBnAUMRozeJy+qEkj/OchCKgaIaEMcwRN6QGcBNg5xwgaiHU5lRgfHm/uIQFkZU7QB96HlvJGWViH4ePX4U9FYQUlPsA7d7y3GbVzm0si4ghsDRun+W6+5m+6Hv+GDm1PeJxH78iP7YlTL4Ukd1pPmRY1bXstVAp4MulYmrBmeVbh2oEX2AjrZupGaqr2DOutJStm6a2O6cVqZZKhy8uIrXYhV9sQ3rVuqXx+YWXe9XTXrS7sE7rgXD0c6dlLo+jCuaL7XcI1aortyjPAfAey4mT4Fn8krlS/CWf2ErhjdkQ3AN/cHOHCLCTC6KwRs8CnCUwWzQ8WWexBwDTNr0roTa87eEbyI7gYoNbnqGBef2fcvpzM968WS6tExy91kyAkqncDJBn7+4zlzdCf7V1pvRvvBwnQoEVVzxtfoMlJnkVLmXe/Wqb0eT5HgWQ4bYVmmUm66vqqhILtJlLrNBaKmlv/80rFawyjvklCJJ+ESWOpFE34vGf4oH1Gm8/wB25d9wHQL2NbzHwDBtClzSMALPSNC5O+ddhhSWVEYhFh7lcyGbigVcU777l7w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(66476007)(66556008)(316002)(41300700001)(8676002)(8936002)(31696002)(478600001)(86362001)(4326008)(2906002)(38100700002)(6486002)(66946007)(31686004)(30864003)(83380400001)(7416002)(5660300002)(36756003)(6512007)(26005)(2616005)(6506007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZThId2RaOFVNYndCSTBqRmZCMVkrdHN2WDBBUXNiNkpRWlQ5Q0Y4YVc4MVFs?=
- =?utf-8?B?S3M4ZUErYXhaWURZVThMYUxQc0ZqY1BST0pLNUw2aUwyTW5sWW0zUzY1Q2dV?=
- =?utf-8?B?SVYxdUtJTTRZTzliSXRhVEJ1VlRWSVAvclQ1TlZhd1JibGZOdWlkUGF6bVNu?=
- =?utf-8?B?aVZOTE1WeHI2eWRjL1pvdVVxRi9maEg2dzVncmhxMXdBdHVYNnVOSHUxSVJq?=
- =?utf-8?B?UEorbm1wcmZaRm9jeEtuV2lyVy9wdTZpT0xHMVJ6ejNSL29PSlo1SWZ6R0Fu?=
- =?utf-8?B?WFFzQkdwUEVCTXJnQkIvTVJ4S2cweTA1MmFBVGk2UlpHYjAwcU9NVTI2TEY5?=
- =?utf-8?B?RnljVkxKLzduTi9jWnVXQlBBWHpCYzAxcGZQL1Jyc1BzdW5DczBma1EvVStG?=
- =?utf-8?B?MEZSZDVwRlhCYWwzWUxsSFhUZlkzVkc2QU9TQlFSQ0pCU0ZCYkhMcGdEenpO?=
- =?utf-8?B?em1JOGFZMGI0bTFWaDNuRS9WZUxUbnRpcWdWcVBHMHp2OWt0Y3lweXJFTS9n?=
- =?utf-8?B?Vk9Yb2UrWTEyVWw0ZVQybkppYXQvMzhZYnMvYVAwRUxtSDNTcy85VWxFVnMz?=
- =?utf-8?B?eE5DaXZZUFJBa09XeTh5dlBreHZlQVQ1WFlaY0RoZXd5QlovN084SHVjODlG?=
- =?utf-8?B?cVh4ejhqT2ZNSzFCakVDRDRvRk0zMStyVmppMWo3TlNmYkNGeUlrWWJSTk5v?=
- =?utf-8?B?NFJHb0pxQzdqTEZuK3RHaVhYSUZUSzIrUFJwTWhwZytvSG5Fb2NHcStUQWxW?=
- =?utf-8?B?M1AxNEJpeHRBWnhXTXEzU050WC9FVWhBUkNMTHdVN3Y2SS9zYTlyU0pDS29j?=
- =?utf-8?B?Z2RkaWYrRElzL2p1VnRJbXk3UUpaUTNGZlBiOTV6NGJFMjk0dnpuZkQ1b2dI?=
- =?utf-8?B?Ulc0MVRDOWhka2U1azhOWXYyeFo1QmoyUkpJSERzLzlacHNBSVZhbktHQ3RB?=
- =?utf-8?B?WGdrYWU2YlcyeFJtZUJYU1Jrcmc3OEZVZ2Vqa3h3aXhpdDB4L2VKR0IzcUxY?=
- =?utf-8?B?WG9vSXFjaWhmbGVGbDdmTDJZVFUwRHFpeGVhWXZ1VXdWOVltaVRrMDhXcGpl?=
- =?utf-8?B?b05mMEl4WEVnNVRYM2RXY1dGOFAzWVVnd0FGSURYZXlueWRZTU5yOEZBN2oy?=
- =?utf-8?B?eHdWK1RubmpPNE5XS3IyU0xHMzZCYzY2Nm4zVXVETGFpcndoazF3cGlRaDY5?=
- =?utf-8?B?U2tDclVjNG1lbEI5WGl6WWtpbHZaYndMOWdIaVRzSmQ1QnN6ek95aS9EcmFy?=
- =?utf-8?B?d3NFTEVhVEo5SVJMM2piWHpkUDh3SzZ3TmJ1clIyY00vRVd5UXBhMXN4aWg1?=
- =?utf-8?B?QTYrQXdZcEg3eHk1encxN2lNdW8reGJDZW1HMHA3dlNCSVpERGcvVU91K01u?=
- =?utf-8?B?allMRGNuREZzelFNcWFQMW1sSFI4emF6UUZwR1pnMWpXakoyTnhvaWZ5RmFj?=
- =?utf-8?B?QzhPVzFPNUxaZjBjOEIzYVhGS0FmSi9MUWZDU0hJcE1TOXQwaGdmczBHZlJh?=
- =?utf-8?B?QUFhY2l6ZXdnOUxlM3dKb0FzRGNSekt6U3U1aUU4SEgzUzFtaFNleVY5Ylkr?=
- =?utf-8?B?d3c1TVBlVjE0VnNmNktMeDRlWXZRMnZxU2NCSjRWdGhCb1ROUVJZd3FOUEFr?=
- =?utf-8?B?MDZYVmJMVVhvcXFkUzZNZ0RYa3UwNW5PYytvbytHT3FIc0dicXgzTGp1ZnBs?=
- =?utf-8?B?cERoS3RDL2lYMURPUUdFK1F1dzVKMmZ0NTN0WFlmd2NvclBuaWlXTkZKRXYw?=
- =?utf-8?B?NDhaQmxTbzUyR0NCVUIrWTBZclB4TkpOUmJrcnR2YnEvZFNxbkkrUWxtYlgz?=
- =?utf-8?B?V0RkNWpVUzk4K1NGd0JXREV2YUFjMGFnRUFrWUpGUUJ1dVJFWG5FUmFicG9I?=
- =?utf-8?B?eEwvV1hKUTcvd0p5MGEySEN2ekdrYXN4cGtncnpKeWx6TktqOVZMYlR4d0wr?=
- =?utf-8?B?V2MweC83WUFiVFFDU0xEb1dmZnZjRWJkZ0lPRVlTaXMrNjdQQWZvZmxyeFZC?=
- =?utf-8?B?L1prQXoyQ2c5NjNRMzhjbm5LNlRDMmpOMkhrV3MzQ1NUaC83dnlDcC9wWEl4?=
- =?utf-8?B?c3dBOFBzZmpTMmIzWllpOEk3YytwZEpFSnMrdXlPcXNXTnZwdCtXMWFYYmgx?=
- =?utf-8?Q?DY558Xi4uTNm4nNPR4Q5Hb+/4?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d576567-1dee-4de2-fc86-08dbd970e0ad
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 17:51:43.3158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9Z6sZy6cvWIjDP4UTUqQQOgQgdRheMzb/Da1XDn0prmzJGeri6QtmFj8Km4PTNjoYIkWt7ed7VPzh5fsId2YPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7373
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 03/11] arm64: dts: imx8ulp-evk: added nxp secure
+ enclave firmware
+Content-Language: en-US
+To:     Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, clin@suse.com,
+        conor+dt@kernel.org, pierre.gondois@arm.com, festevam@gmail.com,
+        linux-imx@nxp.com, davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, V.Sethi@nxp.com
+References: <20231030095849.3456820-1-pankaj.gupta@nxp.com>
+ <20231030095849.3456820-4-pankaj.gupta@nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231030095849.3456820-4-pankaj.gupta@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 01:36, Nikunj A Dadhania wrote:
-> The sev-guest driver encryption code uses Crypto API for SNP guest
-> messaging to interact with AMD Security processor. For enabling SecureTSC,
-> SEV-SNP guests need to send a TSC_INFO request guest message before the
-> smpboot phase starts. Details from the TSC_INFO response will be used to
-> program the VMSA before the secondary CPUs are brought up. The Crypto API
-> is not available this early in the boot phase.
+On 30/10/2023 10:58, Pankaj Gupta wrote:
+> Added support for NXP secure enclave called EdgeLock Enclave
+> firmware (se-fw) for imx8ulp-evk.
 > 
-> In preparation of moving the encryption code out of sev-guest driver to
-> support SecureTSC and make reviewing the diff easier, start using AES GCM
-> library implementation instead of Crypto API.
-> 
-> CC: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-
-I just a few nit comments that might be nice to cover if you have to do a 
-v6...
-
+> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
 > ---
->   drivers/virt/coco/sev-guest/Kconfig     |   4 +-
->   drivers/virt/coco/sev-guest/sev-guest.c | 163 ++++++------------------
->   drivers/virt/coco/sev-guest/sev-guest.h |   3 +
->   3 files changed, 44 insertions(+), 126 deletions(-)
+>  arch/arm64/boot/dts/freescale/imx8ulp.dtsi | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/virt/coco/sev-guest/Kconfig b/drivers/virt/coco/sev-guest/Kconfig
-> index da2d7ca531f0..bcc760bfb468 100644
-> --- a/drivers/virt/coco/sev-guest/Kconfig
-> +++ b/drivers/virt/coco/sev-guest/Kconfig
-> @@ -2,9 +2,7 @@ config SEV_GUEST
->   	tristate "AMD SEV Guest driver"
->   	default m
->   	depends on AMD_MEM_ENCRYPT
-> -	select CRYPTO
-> -	select CRYPTO_AEAD2
-> -	select CRYPTO_GCM
-> +	select CRYPTO_LIB_AESGCM
->   	help
->   	  SEV-SNP firmware provides the guest a mechanism to communicate with
->   	  the PSP without risk from a malicious hypervisor who wishes to read,
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> index 97dbe715e96a..68044c436866 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> @@ -16,8 +16,7 @@
->   #include <linux/miscdevice.h>
->   #include <linux/set_memory.h>
->   #include <linux/fs.h>
-> -#include <crypto/aead.h>
-> -#include <linux/scatterlist.h>
-> +#include <crypto/gcm.h>
->   #include <linux/psp-sev.h>
->   #include <uapi/linux/sev-guest.h>
->   #include <uapi/linux/psp-sev.h>
-> @@ -28,24 +27,16 @@
->   #include "sev-guest.h"
->   
->   #define DEVICE_NAME	"sev-guest"
-> -#define AAD_LEN		48
-> -#define MSG_HDR_VER	1
->   
->   #define SNP_REQ_MAX_RETRY_DURATION	(60*HZ)
->   #define SNP_REQ_RETRY_DELAY		(2*HZ)
->   
-> -struct snp_guest_crypto {
-> -	struct crypto_aead *tfm;
-> -	u8 *iv, *authtag;
-> -	int iv_len, a_len;
-> -};
-> -
->   struct snp_guest_dev {
->   	struct device *dev;
->   	struct miscdevice misc;
->   
->   	void *certs_data;
-> -	struct snp_guest_crypto *crypto;
-> +	struct aesgcm_ctx *ctx;
->   	/* request and response are in unencrypted memory */
->   	struct snp_guest_msg *request, *response;
->   
-> @@ -152,132 +143,59 @@ static inline struct snp_guest_dev *to_snp_dev(struct file *file)
->   	return container_of(dev, struct snp_guest_dev, misc);
->   }
->   
-> -static struct snp_guest_crypto *init_crypto(struct snp_guest_dev *snp_dev, u8 *key, size_t keylen)
-> +static struct aesgcm_ctx *snp_init_crypto(u8 *key, size_t keylen)
->   {
-> -	struct snp_guest_crypto *crypto;
-> +	struct aesgcm_ctx *ctx;
->   
-> -	crypto = kzalloc(sizeof(*crypto), GFP_KERNEL_ACCOUNT);
-> -	if (!crypto)
-> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL_ACCOUNT);
-> +	if (!ctx)
->   		return NULL;
->   
-> -	crypto->tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
-> -	if (IS_ERR(crypto->tfm))
-> -		goto e_free;
-> -
-> -	if (crypto_aead_setkey(crypto->tfm, key, keylen))
-> -		goto e_free_crypto;
-> -
-> -	crypto->iv_len = crypto_aead_ivsize(crypto->tfm);
-> -	crypto->iv = kmalloc(crypto->iv_len, GFP_KERNEL_ACCOUNT);
-> -	if (!crypto->iv)
-> -		goto e_free_crypto;
-> -
-> -	if (crypto_aead_authsize(crypto->tfm) > MAX_AUTHTAG_LEN) {
-> -		if (crypto_aead_setauthsize(crypto->tfm, MAX_AUTHTAG_LEN)) {
-> -			dev_err(snp_dev->dev, "failed to set authsize to %d\n", MAX_AUTHTAG_LEN);
-> -			goto e_free_iv;
-> -		}
-> +	if (aesgcm_expandkey(ctx, key, keylen, AUTHTAG_LEN)) {
-> +		pr_err("SNP: crypto init failed\n");
-> +		kfree(ctx);
-> +		return NULL;
->   	}
->   
-> -	crypto->a_len = crypto_aead_authsize(crypto->tfm);
-> -	crypto->authtag = kmalloc(crypto->a_len, GFP_KERNEL_ACCOUNT);
-> -	if (!crypto->authtag)
-> -		goto e_free_iv;
-> -
-> -	return crypto;
-> -
-> -e_free_iv:
-> -	kfree(crypto->iv);
-> -e_free_crypto:
-> -	crypto_free_aead(crypto->tfm);
-> -e_free:
-> -	kfree(crypto);
-> -
-> -	return NULL;
-> -}
-> -
-> -static void deinit_crypto(struct snp_guest_crypto *crypto)
-> -{
-> -	crypto_free_aead(crypto->tfm);
-> -	kfree(crypto->iv);
-> -	kfree(crypto->authtag);
-> -	kfree(crypto);
-> -}
-> -
-> -static int enc_dec_message(struct snp_guest_crypto *crypto, struct snp_guest_msg *msg,
-> -			   u8 *src_buf, u8 *dst_buf, size_t len, bool enc)
-> -{
-> -	struct snp_guest_msg_hdr *hdr = &msg->hdr;
-> -	struct scatterlist src[3], dst[3];
-> -	DECLARE_CRYPTO_WAIT(wait);
-> -	struct aead_request *req;
-> -	int ret;
-> -
-> -	req = aead_request_alloc(crypto->tfm, GFP_KERNEL);
-> -	if (!req)
-> -		return -ENOMEM;
-> -
-> -	/*
-> -	 * AEAD memory operations:
-> -	 * +------ AAD -------+------- DATA -----+---- AUTHTAG----+
-> -	 * |  msg header      |  plaintext       |  hdr->authtag  |
-> -	 * | bytes 30h - 5Fh  |    or            |                |
-> -	 * |                  |   cipher         |                |
-> -	 * +------------------+------------------+----------------+
-> -	 */
-> -	sg_init_table(src, 3);
-> -	sg_set_buf(&src[0], &hdr->algo, AAD_LEN);
-> -	sg_set_buf(&src[1], src_buf, hdr->msg_sz);
-> -	sg_set_buf(&src[2], hdr->authtag, crypto->a_len);
-> -
-> -	sg_init_table(dst, 3);
-> -	sg_set_buf(&dst[0], &hdr->algo, AAD_LEN);
-> -	sg_set_buf(&dst[1], dst_buf, hdr->msg_sz);
-> -	sg_set_buf(&dst[2], hdr->authtag, crypto->a_len);
-> -
-> -	aead_request_set_ad(req, AAD_LEN);
-> -	aead_request_set_tfm(req, crypto->tfm);
-> -	aead_request_set_callback(req, 0, crypto_req_done, &wait);
-> -
-> -	aead_request_set_crypt(req, src, dst, len, crypto->iv);
-> -	ret = crypto_wait_req(enc ? crypto_aead_encrypt(req) : crypto_aead_decrypt(req), &wait);
-> -
-> -	aead_request_free(req);
-> -	return ret;
-> +	return ctx;
->   }
->   
-> -static int __enc_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
-> +static int __enc_payload(struct aesgcm_ctx *ctx, struct snp_guest_msg *msg,
->   			 void *plaintext, size_t len)
->   {
-> -	struct snp_guest_crypto *crypto = snp_dev->crypto;
->   	struct snp_guest_msg_hdr *hdr = &msg->hdr;
-> +	u8 iv[GCM_AES_IV_SIZE] = {};
->   
-> -	memset(crypto->iv, 0, crypto->iv_len);
-> -	memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> +	if (WARN_ON((hdr->msg_sz + ctx->authsize) > sizeof(msg->payload)))
-> +		return -EBADMSG;
->   
-> -	return enc_dec_message(crypto, msg, plaintext, msg->payload, len, true);
-> +	memcpy(iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> +	aesgcm_encrypt(ctx, msg->payload, plaintext, len, &hdr->algo, AAD_LEN,
-> +		       iv, hdr->authtag);
-> +	return 0;
->   }
+> diff --git a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
+> index 946f2b68d16f..7b66de3a392d 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
+> @@ -152,7 +152,7 @@ sosc: clock-sosc {
+>  		#clock-cells = <0>;
+>  	};
+>  
+> -	sram@2201f000 {
+> +	sram0: sram@2201f000 {
+>  		compatible = "mmio-sram";
+>  		reg = <0x0 0x2201f000 0x0 0x1000>;
+>  
+> @@ -578,4 +578,12 @@ gpiod: gpio@2e200080 {
+>  			gpio-ranges = <&iomuxc1 0 0 24>;
+>  		};
+>  	};
+> +
+> +	ele_fw2: se-fw2 {
 
-__enc_payload() is pretty small now and can probably just be part of the 
-only function that calls it, enc_payload().
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
->   
-> -static int dec_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
-> +static int dec_payload(struct aesgcm_ctx *ctx, struct snp_guest_msg *msg,
->   		       void *plaintext, size_t len)
->   {
-> -	struct snp_guest_crypto *crypto = snp_dev->crypto;
->   	struct snp_guest_msg_hdr *hdr = &msg->hdr;
-> +	u8 iv[GCM_AES_IV_SIZE] = {};
->   
-> -	/* Build IV with response buffer sequence number */
-> -	memset(crypto->iv, 0, crypto->iv_len);
-> -	memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> -
-> -	return enc_dec_message(crypto, msg, msg->payload, plaintext, len, false);
-> +	memcpy(iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> +	if (aesgcm_decrypt(ctx, plaintext, msg->payload, len, &hdr->algo,
-> +			   AAD_LEN, iv, hdr->authtag))
-> +		return 0;
-> +	else
-> +		return -EBADMSG;
 
-This would look cleaner / read easier to me to have as:
+Best regards,
+Krzysztof
 
-	if (!aesgcm_decrypt(...))
-		return -EBADMSG;
-
-	return 0;
-
-But just my opinion.
-
-And ditto here on the size now, can probably just be part of 
-verify_and_dec_payload() now.
-
-Thanks,
-Tom
-
->   }
->   
->   static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload, u32 sz)
->   {
-> -	struct snp_guest_crypto *crypto = snp_dev->crypto;
->   	struct snp_guest_msg *resp = &snp_dev->secret_response;
->   	struct snp_guest_msg *req = &snp_dev->secret_request;
->   	struct snp_guest_msg_hdr *req_hdr = &req->hdr;
->   	struct snp_guest_msg_hdr *resp_hdr = &resp->hdr;
-> +	struct aesgcm_ctx *ctx = snp_dev->ctx;
->   
->   	dev_dbg(snp_dev->dev, "response [seqno %lld type %d version %d sz %d]\n",
->   		resp_hdr->msg_seqno, resp_hdr->msg_type, resp_hdr->msg_version, resp_hdr->msg_sz);
-> @@ -298,11 +216,11 @@ static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload,
->   	 * If the message size is greater than our buffer length then return
->   	 * an error.
->   	 */
-> -	if (unlikely((resp_hdr->msg_sz + crypto->a_len) > sz))
-> +	if (unlikely((resp_hdr->msg_sz + ctx->authsize) > sz))
->   		return -EBADMSG;
->   
->   	/* Decrypt the payload */
-> -	return dec_payload(snp_dev, resp, payload, resp_hdr->msg_sz + crypto->a_len);
-> +	return dec_payload(ctx, resp, payload, resp_hdr->msg_sz);
->   }
->   
->   static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8 type,
-> @@ -329,7 +247,7 @@ static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8
->   	dev_dbg(snp_dev->dev, "request [seqno %lld type %d version %d sz %d]\n",
->   		hdr->msg_seqno, hdr->msg_type, hdr->msg_version, hdr->msg_sz);
->   
-> -	return __enc_payload(snp_dev, req, payload, sz);
-> +	return __enc_payload(snp_dev->ctx, req, payload, sz);
->   }
->   
->   static int __handle_guest_request(struct snp_guest_dev *snp_dev, u64 exit_code,
-> @@ -472,7 +390,6 @@ static int handle_guest_request(struct snp_guest_dev *snp_dev, u64 exit_code,
->   
->   static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
->   {
-> -	struct snp_guest_crypto *crypto = snp_dev->crypto;
->   	struct snp_report_resp *resp;
->   	struct snp_report_req req;
->   	int rc, resp_len;
-> @@ -490,7 +407,7 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
->   	 * response payload. Make sure that it has enough space to cover the
->   	 * authtag.
->   	 */
-> -	resp_len = sizeof(resp->data) + crypto->a_len;
-> +	resp_len = sizeof(resp->data) + snp_dev->ctx->authsize;
->   	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
->   	if (!resp)
->   		return -ENOMEM;
-> @@ -511,7 +428,6 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
->   
->   static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
->   {
-> -	struct snp_guest_crypto *crypto = snp_dev->crypto;
->   	struct snp_derived_key_resp resp = {0};
->   	struct snp_derived_key_req req;
->   	int rc, resp_len;
-> @@ -528,7 +444,7 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
->   	 * response payload. Make sure that it has enough space to cover the
->   	 * authtag.
->   	 */
-> -	resp_len = sizeof(resp.data) + crypto->a_len;
-> +	resp_len = sizeof(resp.data) + snp_dev->ctx->authsize;
->   	if (sizeof(buf) < resp_len)
->   		return -ENOMEM;
->   
-> @@ -552,7 +468,6 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
->   
->   static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
->   {
-> -	struct snp_guest_crypto *crypto = snp_dev->crypto;
->   	struct snp_ext_report_req req;
->   	struct snp_report_resp *resp;
->   	int ret, npages = 0, resp_len;
-> @@ -590,7 +505,7 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
->   	 * response payload. Make sure that it has enough space to cover the
->   	 * authtag.
->   	 */
-> -	resp_len = sizeof(resp->data) + crypto->a_len;
-> +	resp_len = sizeof(resp->data) + snp_dev->ctx->authsize;
->   	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
->   	if (!resp)
->   		return -ENOMEM;
-> @@ -802,8 +717,8 @@ static int __init sev_guest_probe(struct platform_device *pdev)
->   		goto e_free_response;
->   
->   	ret = -EIO;
-> -	snp_dev->crypto = init_crypto(snp_dev, snp_dev->vmpck, VMPCK_KEY_LEN);
-> -	if (!snp_dev->crypto)
-> +	snp_dev->ctx = snp_init_crypto(snp_dev->vmpck, VMPCK_KEY_LEN);
-> +	if (!snp_dev->ctx)
->   		goto e_free_cert_data;
->   
->   	misc = &snp_dev->misc;
-> @@ -818,11 +733,13 @@ static int __init sev_guest_probe(struct platform_device *pdev)
->   
->   	ret =  misc_register(misc);
->   	if (ret)
-> -		goto e_free_cert_data;
-> +		goto e_free_ctx;
->   
->   	dev_info(dev, "Initialized SEV guest driver (using vmpck_id %d)\n", vmpck_id);
->   	return 0;
->   
-> +e_free_ctx:
-> +	kfree(snp_dev->ctx);
->   e_free_cert_data:
->   	free_shared_pages(snp_dev->certs_data, SEV_FW_BLOB_MAX_SIZE);
->   e_free_response:
-> @@ -841,7 +758,7 @@ static int __exit sev_guest_remove(struct platform_device *pdev)
->   	free_shared_pages(snp_dev->certs_data, SEV_FW_BLOB_MAX_SIZE);
->   	free_shared_pages(snp_dev->response, sizeof(struct snp_guest_msg));
->   	free_shared_pages(snp_dev->request, sizeof(struct snp_guest_msg));
-> -	deinit_crypto(snp_dev->crypto);
-> +	kfree(snp_dev->ctx);
->   	misc_deregister(&snp_dev->misc);
->   
->   	return 0;
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.h b/drivers/virt/coco/sev-guest/sev-guest.h
-> index 21bda26fdb95..ceb798a404d6 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.h
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.h
-> @@ -13,6 +13,9 @@
->   #include <linux/types.h>
->   
->   #define MAX_AUTHTAG_LEN		32
-> +#define AUTHTAG_LEN		16
-> +#define AAD_LEN			48
-> +#define MSG_HDR_VER		1
->   
->   /* See SNP spec SNP_GUEST_REQUEST section for the structure */
->   enum msg_type {
