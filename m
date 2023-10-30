@@ -2,48 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A106B7DB5EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECAD7DB5EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbjJ3JO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
+        id S232466AbjJ3JOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbjJ3JO0 (ORCPT
+        with ESMTP id S232452AbjJ3JO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Oct 2023 05:14:26 -0400
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0D1C1
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541AEC4
         for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:14:24 -0700 (PDT)
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-581df11b5b4so5971679eaf.0
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1ef5310a497so6419064fac.1
         for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:14:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1698657263; x=1699262063;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=s/k6fj1Ok8H4018rsNJPpbDdWyWJ9Da6bFp5MK6zEd0=;
-        b=LA3MVtdBjZPlE4XtAhCzsCT2qiqjVbyl9yXJn8pZ0E4SvLX3ud6v27elK3YnwSj+36
-         FpO+BvXgmJJBoNSgOBAlhaK5E70dLDXOQ9TwC9B+I3iUI3mJ/MoQd3LwAdiOFSNPpeiE
-         VYa+IHgV4dLAw3uteOY4VqktpV71bBJradJZtqXJ6Opt9LR//D5BdRVvrxstv1Qj5tFK
-         WSbmk7FrngoVl1tkdpLFaQ564daCn5b6xQbQc1PHDujiZ5zNILsLqqT/HzhTOgK7w8wb
-         mnv+4xsX37MlPmAankP9e84NG0YPIlXf8hK+nnxwbIWeI642iN4/8HGWtAwdowOr2z8i
-         zYeA==
-X-Gm-Message-State: AOJu0YyHifsEck/3DVL9JTlSl4SQWTCBp8SPmm0zt9U0X24ABhesCl7d
-        6bF/ceHQmYBhh2+LTL98qDQ04M+LU3yBnhATgK9hPQCdNiar
-X-Google-Smtp-Source: AGHT+IGE0btxkEZJc7G/ff5dsBp090bjfC7wm7KwjEEeCTuNrZxMd2sit07dd2293WA7LTouUuT+diLd14C4L6e4bupeQirX6Tot
+        bh=FFwD3xWT5oqCS0O4af7YvkoJOuliGWNyJ/KuY2nX1ZU=;
+        b=LU/HyghvupfteVukp/SvyeF0v8GJOMSLl/5aCZfJPnAXlflPLQS33z0ZTQEat9ASRo
+         VwOl0bWqHb5PZnzLHnHdXLgneM7Sj/OhOqqVQcCFww91H7xiPlzDOQHk4gw86LruAh8D
+         yjJBRxj9Gcd7p4rIF44ns2nasqHxTgCI8mSDn3GrxGO6+8+tR7/F4ji1yxHAinm0Yn3Z
+         b6z+4MtSXFvnxev2C/IfHtwd3F8jdCEEOFZ9hKL+sJ/ujjvDXRODd9WlmtuXbEjnLNuT
+         ixOYH5SZ8u0qbGgH4SgNwdcxzxt0vS9ntR6jNxi/Zbx6uAvPB+seTMhCOhuUVPm4+G4h
+         QZDg==
+X-Gm-Message-State: AOJu0YzEejpCY+uFtLo4ZL9CrKfxXqQIHs1NwUx9rymf6UjeNlqRV4DM
+        rKHZN4VS6XZvYPGUQxC2rY8FB5+qEdrcsDi7h1OZ2mUacLu7
+X-Google-Smtp-Source: AGHT+IGVrdWp+aHEL4oApo6HrJlGIG6WhESJIcskwFV2cl2khGWVdjOBbnuViWlwOcH6psaxEVRYpLrjgRA2q7t+DdpCPMGva+wU
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:a2cf:b0:1e1:2f43:1dc6 with SMTP id
- w15-20020a056870a2cf00b001e12f431dc6mr4767635oak.1.1698657263401; Mon, 30 Oct
+X-Received: by 2002:a05:6870:71d0:b0:1d1:3ff8:9f80 with SMTP id
+ p16-20020a05687071d000b001d13ff89f80mr4618079oag.8.1698657263634; Mon, 30 Oct
  2023 02:14:23 -0700 (PDT)
 Date:   Mon, 30 Oct 2023 02:14:23 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7c3760608eb7633@google.com>
-Subject: [syzbot] Monthly kernfs report (Oct 2023)
-From:   syzbot <syzbot+list13d3fa5604b774fe7d5f@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org
+Message-ID: <000000000000cb55e20608eb7677@google.com>
+Subject: [syzbot] Monthly serial report (Oct 2023)
+From:   syzbot <syzbot+list6c6ceafbd04e2bbf4614@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -55,24 +54,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello kernfs maintainers/developers,
+Hello serial maintainers/developers,
 
-This is a 31-day syzbot report for the kernfs subsystem.
+This is a 31-day syzbot report for the serial subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/kernfs
+https://syzkaller.appspot.com/upstream/s/serial
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 7 issues are still open and 20 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 14 issues are still open and 41 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 168     Yes   WARNING in kernfs_remove_by_name_ns (3)
-                  https://syzkaller.appspot.com/bug?extid=93cbdd0ab421adc5275d
-<2> 47      Yes   KASAN: use-after-free Read in kernfs_next_descendant_post (2)
-                  https://syzkaller.appspot.com/bug?extid=6bc35f3913193fe7f0d3
-<3> 19      No    possible deadlock in lookup_slow (3)
-                  https://syzkaller.appspot.com/bug?extid=65459fd3b61877d717a3
+<1> 4047    Yes   BUG: sleeping function called from invalid context in console_lock (2)
+                  https://syzkaller.appspot.com/bug?extid=dbac96d8e73b61aa559c
+<2> 58      Yes   general protection fault in serial8250_tx_chars
+                  https://syzkaller.appspot.com/bug?extid=837b8c9032c053262db8
+<3> 52      Yes   BUG: soft lockup in tx
+                  https://syzkaller.appspot.com/bug?extid=5e87db90e68fbc4707c6
+<4> 32      Yes   KASAN: stack-out-of-bounds Read in sched_show_task
+                  https://syzkaller.appspot.com/bug?extid=8d2757d62d403b2d9275
+<5> 22      Yes   INFO: task can't die in show_free_areas
+                  https://syzkaller.appspot.com/bug?extid=8f41dccfb6c03cc36fd6
 
 ---
 This report is generated by a bot. It may contain errors.
