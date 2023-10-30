@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C487DB31E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885AA7DB31F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjJ3GMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
+        id S231349AbjJ3GND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjJ3GMy (ORCPT
+        with ESMTP id S231320AbjJ3GNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:12:54 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF2FA9;
-        Sun, 29 Oct 2023 23:12:47 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Vv6phb3_1698646362;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vv6phb3_1698646362)
-          by smtp.aliyun-inc.com;
-          Mon, 30 Oct 2023 14:12:43 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, michal.simek@amd.com
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] PCI: xilinx-xdma: Remove redundant dev_err()
-Date:   Mon, 30 Oct 2023 14:12:42 +0800
-Message-Id: <20231030061242.51475-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Mon, 30 Oct 2023 02:13:00 -0400
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE26B7
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=SOF4+PcgGPb+gmIIwjzNN4MW7Y6OXy/4z0Y3hzoww/k=;
+  b=bpRdTC9evxq++pSHCC7JZIzJIFMcbUGe8q4kMVeutURj1tNxbNxu7u2W
+   dSqhLhx67Wv8+7n/tfl2cYuvulFUdcaP6UqnoyIHCaLKAoNGI0bIeUiAo
+   IfO3fgUk0CG8SmnhN6X4398qwz7sFDMbVKmDtpkkym7cUWysxXNuewjwM
+   E=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,262,1694728800"; 
+   d="scan'208";a="133817206"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 07:12:54 +0100
+Date:   Mon, 30 Oct 2023 07:12:54 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Dorine Tipo <dorine.a.tipo@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nick Terrell <terrelln@fb.com>,
+        Daniel Stone <daniels@collabora.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Linux Outreachy <outreachy@lists.linux.dev>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH Resend] Fix line Length
+In-Reply-To: <ZT7v39jG4WTxPYjm@debian.me>
+Message-ID: <alpine.DEB.2.22.394.2310300712310.3533@hadrien>
+References: <20231029144312.5895-1-dorine.a.tipo@gmail.com> <alpine.DEB.2.22.394.2310291610030.3136@hadrien> <ZT7v39jG4WTxPYjm@debian.me>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to call the dev_err() function directly to print a
-custom message when handling an error from either the platform_get_irq()
-or platform_get_irq_byname() functions as both are going to display an
-appropriate error message in case of a failure.
 
-./drivers/pci/controller/pcie-xilinx-dma-pl.c:688:2-9: line 688 is redundant because platform_get_irq() already prints an error
-./drivers/pci/controller/pcie-xilinx-dma-pl.c:702:2-9: line 702 is redundant because platform_get_irq() already prints an error
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7074
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/pci/controller/pcie-xilinx-dma-pl.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+On Mon, 30 Oct 2023, Bagas Sanjaya wrote:
 
-diff --git a/drivers/pci/controller/pcie-xilinx-dma-pl.c b/drivers/pci/controller/pcie-xilinx-dma-pl.c
-index 2f7d676c683c..4e49b12a2e2a 100644
---- a/drivers/pci/controller/pcie-xilinx-dma-pl.c
-+++ b/drivers/pci/controller/pcie-xilinx-dma-pl.c
-@@ -684,10 +684,8 @@ static int xilinx_request_msi_irq(struct pl_dma_pcie *port)
- 	int ret;
- 
- 	port->msi.irq_msi0 = platform_get_irq_byname(pdev, "msi0");
--	if (port->msi.irq_msi0 <= 0) {
--		dev_err(dev, "Unable to find msi0 IRQ line\n");
-+	if (port->msi.irq_msi0 <= 0)
- 		return port->msi.irq_msi0;
--	}
- 
- 	ret = devm_request_irq(dev, port->msi.irq_msi0, xilinx_pl_dma_pcie_msi_handler_low,
- 			       IRQF_SHARED | IRQF_NO_THREAD, "xlnx-pcie-dma-pl",
-@@ -698,10 +696,8 @@ static int xilinx_request_msi_irq(struct pl_dma_pcie *port)
- 	}
- 
- 	port->msi.irq_msi1 = platform_get_irq_byname(pdev, "msi1");
--	if (port->msi.irq_msi1 <= 0) {
--		dev_err(dev, "Unable to find msi1 IRQ line\n");
-+	if (port->msi.irq_msi1 <= 0)
- 		return port->msi.irq_msi1;
--	}
- 
- 	ret = devm_request_irq(dev, port->msi.irq_msi1, xilinx_pl_dma_pcie_msi_handler_high,
- 			       IRQF_SHARED | IRQF_NO_THREAD, "xlnx-pcie-dma-pl",
--- 
-2.20.1.7.g153144c
+> On Sun, Oct 29, 2023 at 04:11:01PM +0100, Julia Lawall wrote:
+> >
+> >
+> > On Sun, 29 Oct 2023, Dorine Tipo wrote:
+> >
+> > > Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
+> > >
+> > > Fix the line lengths of lines 8 and 49
+> >
+> > The Signed off by line should be here, below the log message.  Please see
+> > the patches sent by others.
+> >
+> > >  export IGT_FORCE_DRIVER=${DRIVER_NAME}
+> > >  export PATH=$PATH:/igt/bin/
+> > > -export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/igt/lib/aarch64-linux-gnu/:/igt/lib/x86_64-linux-gnu:/igt/lib:/igt/lib64
+> > > +export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/igt/lib/aarch64-linux-gnu/:/igt/lib/x86_64-linux-gnu
+> > > +export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/igt/lib:/igt/lib64
+> >
+> > There was a suggestion that it was better to keep this as one line.
+> >
+>
+> Hi Julia,
+>
+> The submitter touched one of CI scripts for the DRM subsystem. To test
+> this patch, there must be a way to run these scripts locally (which
+> may requires non-trivial setup).
+>
+> Cc'ed DRM maintainers.
 
+There is a DRM outreachy project.  I think that motivated this patch.
+
+julia
