@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE937DC02E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACA7DC02F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjJ3TAk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Oct 2023 15:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
+        id S231404AbjJ3TBJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Oct 2023 15:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjJ3TAi (ORCPT
+        with ESMTP id S229904AbjJ3TBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:00:38 -0400
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD02BDB;
-        Mon, 30 Oct 2023 12:00:35 -0700 (PDT)
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6be1bc5aa1cso4834332b3a.3;
-        Mon, 30 Oct 2023 12:00:35 -0700 (PDT)
+        Mon, 30 Oct 2023 15:01:07 -0400
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B529FD3;
+        Mon, 30 Oct 2023 12:01:05 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso4190599b3a.2;
+        Mon, 30 Oct 2023 12:01:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698692435; x=1699297235;
+        d=1e100.net; s=20230601; t=1698692465; x=1699297265;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hotmwLNWfZIOI71jmodI5J3pb3/x688ktpGXbF2+9Qg=;
-        b=NoCUx7UvyRHDK9JPM5bTymMVDaTD/Po0fdArKWM29WiRzGtHM9YLSbuy6gXsN7VxWq
-         qWqEMoubDQntumblIEBMmW+8lmJs3XhA/LAzbQw/dZB62NCbphOQyQI25/FLu7ARfomp
-         iY4QQ0PfiBTuE6Fbztl1SfPQYeIITyTWo8RaHeTW0JB5csWxhXuIBrnqPlOjW+TW8OrN
-         R3nf9Xc0086pYfTf7htLNzeEyszKJBqDjV2aULmZ6OqOhXhc//78zzrDyb52Of2EPEsS
-         rD7mIlF0DdwXZ8p+2h0oQwsithncxmSyF9TjYTOITcfNSa96+8soJ48BHegnxLNU+Gz4
-         F3Iw==
-X-Gm-Message-State: AOJu0Yxp1MKPXCL4VvRpY5j45T2jXAlA2WVkDZWpGfR6xdLSQXaztzzI
-        tZRTeka1GHbgxY0FcJuQHFzakMCUUn+SoK32vI4=
-X-Google-Smtp-Source: AGHT+IHxvcQYqxvtaR4Wef4SHRJ6n5Dv0uoom04l6WxPXUIx5qkTRLh8T9JXMxeDAq0PoRYsuSUxgq4J0sI3+ZKXmMs=
-X-Received: by 2002:a05:6a20:8f0f:b0:17b:8016:6f79 with SMTP id
- b15-20020a056a208f0f00b0017b80166f79mr13979449pzk.3.1698692435310; Mon, 30
- Oct 2023 12:00:35 -0700 (PDT)
+        bh=EccxOXdyEiVBJR4JsYbksdY+qQDRXxpoqTxDKJNnKo4=;
+        b=l4XL4OxzDoWFtuzkHBAIuvmkACiYrAg/vaulctmhQSwwqhESM/y+aeBSuAuPWwAa3W
+         uAl8I2GiY0xX9vfCytstw6QYHEGNFVJ3s07gc2AtNySXw+fXJyMbuNEZe7Gh7ZBYhlM8
+         VvJMqbrC4fQzr5DOSVW/YXR2OrfXXOaghPjxFrDqatuqjWz3wbf2ts7bdh5/zkTyLVde
+         +2ZuCnLXtv2Hkf5VujLyghO1Sr4Mmw55vv6nHEmVqRrGxy5OlKns+BB1hx3diqeC8qLV
+         oLKEoBMKIil/Hfw5pEFDVgsm8Dht2PYHTTSuLAVG40LWGvN+gKIux6uPPn21mgPywFI1
+         oZog==
+X-Gm-Message-State: AOJu0YwyQPlKTDR4HClaQX1T42PRQrn2wZqW3lxfMaZLUqUP8GZsYm5D
+        C4P9Xqyd+Tspubp4czbKN9NmmuGaEgPG8lAofyY=
+X-Google-Smtp-Source: AGHT+IHFuyF4BbsT4e0KeVL/IIS75StuE3RCihAqdEwed4Pg2vmvC79HcXunyaMZjS5ueT6lqx7J8grl7zRSiTzV57E=
+X-Received: by 2002:a05:6a00:140d:b0:6bd:3157:2dfe with SMTP id
+ l13-20020a056a00140d00b006bd31572dfemr9835694pfu.7.1698692464997; Mon, 30 Oct
+ 2023 12:01:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231026003149.3287633-1-irogers@google.com> <e05d01dd-dd6f-4bb6-857f-3458b9b7159d@linux.intel.com>
-In-Reply-To: <e05d01dd-dd6f-4bb6-857f-3458b9b7159d@linux.intel.com>
+References: <20230926205948.1399594-1-irogers@google.com> <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
+ <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
+ <CAP-5=fURbve928P5CGi-dQ7Y8mZhxRmi9wucFc_gP+aDGMftYw@mail.gmail.com>
+ <CAP-5=fU5W=97NFvL1yUKw+rrbBrcd8c-S_y3=86SYv+pszNjmQ@mail.gmail.com> <CAM9d7cjRac8i9+VWYNfWxNr5iz3bUUxc0-Phfcbk0RdfwXqr6w@mail.gmail.com>
+In-Reply-To: <CAM9d7cjRac8i9+VWYNfWxNr5iz3bUUxc0-Phfcbk0RdfwXqr6w@mail.gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 30 Oct 2023 12:00:24 -0700
-Message-ID: <CAM9d7cg=y8mAQVMh7-Q6nt_Oj2Tif2+NZx0hxJnPPKHc9BAWYA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/9] perf vendor events intel: Update
- alderlake/alderlake events to v1.23
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Ian Rogers <irogers@google.com>,
+Date:   Mon, 30 Oct 2023 12:00:54 -0700
+Message-ID: <CAM9d7cgihtEmwOXhs8xxD4b6BRLqx6Kcg6E=K_JFQH__=kJUiA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] perf vendor events intel: Fix broadwellde
+ tma_info_system_dram_bw_use metric
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Liang, Kan" <kan.liang@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Edward Baker <edward.baker@intel.com>
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -68,23 +70,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 11:16 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+On Thu, Oct 26, 2023 at 10:12 AM Namhyung Kim <namhyung@kernel.org> wrote:
 >
+> Hi Ian,
 >
->
-> On 2023-10-25 8:31 p.m., Ian Rogers wrote:
-> > Update alderlake and alderlaken events from v1.21 to v1.23 adding the
-> > changes from:
-> > https://github.com/intel/perfmon/commit/8df4db9433a2aab59dbbac1a70281032d1af7734
-> > https://github.com/intel/perfmon/commit/846bd247c6e04acc572ca56c992e9e65852bbe63
+> On Wed, Oct 25, 2023 at 9:20 PM Ian Rogers <irogers@google.com> wrote:
 > >
-> > The tsx_cycles_per_elision metric is updated from PR:
-> > https://github.com/intel/perfmon/pull/116
+> > On Wed, Oct 25, 2023 at 2:56 PM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Thu, Oct 5, 2023 at 3:16 PM Ian Rogers <irogers@google.com> wrote:
+> > > >
+> > > > On Wed, Sep 27, 2023 at 6:47 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > On 2023-09-26 4:59 p.m., Ian Rogers wrote:
+> > > > > > Broadwell-de has a consumer core and server uncore. The uncore_arb PMU
+> > > > > > isn't present and the broadwellx style cbox PMU should be used
+> > > > > > instead. Fix the tma_info_system_dram_bw_use metric to use the server
+> > > > > > metric rather than client.
+> > > > > >
+> > > > > > The associated converter script fix is in:
+> > > > > > https://github.com/intel/perfmon/pull/111
+> > > > > >
+> > > > > > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell variant events/metrics")
+> > > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > > ---
+> > > > >
+> > > > > Thanks Ian. The whole patch series looks good to me.
+> > > > >
+> > > > > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> > > >
+> > > > Would be good to pick this up in perf-tools-next.
+> > > >
+> > > > Thanks,
+> > > > Ian
+> > >
+> > > Ping.
 > >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > Thanks Namhyung for picking this up. There were two other patches in
+> > the v2 patch set that Kan reviewed:
+> > https://lore.kernel.org/all/8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com/
+> > that I don't see in perf-tools-next.
 >
-> Thanks Ian. The whole patch series looks good to me.
->
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> Sorry about that.  I'll take care of them too.
 
 Applied to perf-tools-next, thanks!
