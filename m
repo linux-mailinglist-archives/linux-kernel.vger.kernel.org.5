@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8B97DB611
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3697DB614
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjJ3JYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        id S232397AbjJ3JYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbjJ3JYm (ORCPT
+        with ESMTP id S230477AbjJ3JYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:24:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA4AA7;
-        Mon, 30 Oct 2023 02:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698657880; x=1730193880;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=PzE2WjM3liPGYO4o8GBic2JxQGQnXqgby3fh52nVXJs=;
-  b=ZyQF/E7jh92Gm5qSZWfhxFK5qzB6Cy3bAmEM/bh7kXNkXxnvrE/2qw5s
-   KaT1XuX+LXv3dRNJ4RwRK90h4rDrzQyXF6Se/lNWcuZAXtXUMIOgyPYGr
-   9eGk6hBoCk4orm1qzdLJNXgrG0yKGi0DCPtdTF1LtdrbVzBmRv6sH2ogX
-   STkVvhLDJLjq3gFpUJUel6wrBPE2QK34afRsc7xb0iKl4r7SUZ3syC5GC
-   xYBOyaiA9FNujfKxb1DxLEBvuHib5c2qbz0HcBDwDONByxahHKFpRAj0q
-   p+OSZ9rVniUytYcy3bqX4tphKjkZQIfGL6qgp89/2NgXr0XU4lfgQmM5q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="373090942"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="373090942"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:24:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="710050263"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="710050263"
-Received: from sgruszka-mobl.ger.corp.intel.com ([10.252.50.181])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:24:36 -0700
-Date:   Mon, 30 Oct 2023 11:24:30 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Mark Hasemeyer <markhas@chromium.org>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Sanket Goswami <Sanket.Goswami@amd.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v1] platform/x86/amd/pmc: Get smu version before reading
- dram size
-In-Reply-To: <20231027212916.1035991-1-markhas@chromium.org>
-Message-ID: <2b8335a7-4b9b-825-c1b8-84158aaf2c42@linux.intel.com>
-References: <20231027212916.1035991-1-markhas@chromium.org>
+        Mon, 30 Oct 2023 05:24:48 -0400
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385E7C2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:24:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+        s=default2211; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References;
+        bh=f71kb40JMN6BLPnCWSZ1cPNxqIlMRwG76WxcbNmWQb8=; b=ZDWVUwZpgNaxZALcQS9fYTrhhn
+        ZIGKXEgQeG0VehZP4nhtqTCz8NBOOWMF70lRJwpiFdqcICzQ1Dr/WyJh4ZI9zJ7b/CCCQSvZS8+Cj
+        a7qmGCVnz0WRe8kRs5gbcyz80XffaOBuWhqTt/ZDkroAvbZkWqkn/VqTXwGkofgaiXWlmKgv3Qtu2
+        iRldNdZ/wsJoMQLnjtymwXjiwjsih9Zvf2OHn1Kp5CTjhaEy4SgxjiHdBLiK+vbq6Uf12o+atxOcM
+        KMNqFA2VQP20kDHxxSZ0RgU+i5i6vjNYYBvZdWZbmkp0vp5fnG6KS1lFTBk0wE/QsGuSGD7NWk5L7
+        fPxkC4Sw==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <martin@geanix.com>)
+        id 1qxOVn-000GoV-GG; Mon, 30 Oct 2023 10:24:43 +0100
+Received: from [185.17.218.86] (helo=rap..)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <martin@geanix.com>)
+        id 1qxOVn-000DPP-4A; Mon, 30 Oct 2023 10:24:43 +0100
+From:   =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+Subject: [PATCH 1/2] printk: export pr_flush()
+Date:   Mon, 30 Oct 2023 10:24:31 +0100
+Message-ID: <20231030092432.3434623-1-martin@geanix.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: martin@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27077/Mon Oct 30 08:39:55 2023)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023, Mark Hasemeyer wrote:
+Printk users might want to assure whatever printed has reached its
+destination before continuing. E.g. during the shutdown-procedure, where
+printk-buffers aren't necessarily emptied before the system goes down.
 
-> Calls to amd_pmc_get_dram_size can fail because the function assumes smu
+Signed-off-by: Martin Hundebøll <martin@geanix.com>
+---
+ include/linux/printk.h | 5 +++++
+ kernel/printk/printk.c | 4 +---
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-Always use () after function names, thank you.
-
-> version information has already been read when it hasn't. The smu
-> version is lazily read as opposed to being read at probe because it is
-> slow and increases boot time.
-> 
-> Read the smu version information if it has not been read yet.
-> 
-> Link: https://lore.kernel.org/all/a3ee6577-d521-6d18-0a15-2f97d6f8ac3a@amd.com/
-> Fixes: be8325fb3d8c ("platform/x86/amd: pmc: Get STB DRAM size from PMFW")
-> Cc: stable@vger.kernel.org # 6.5.x
-> 
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
-> ---
-> 
->  drivers/platform/x86/amd/pmc/pmc.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/amd/pmc/pmc.c b/drivers/platform/x86/amd/pmc/pmc.c
-> index cd6ac04c1468..f668eddbc5d5 100644
-> --- a/drivers/platform/x86/amd/pmc/pmc.c
-> +++ b/drivers/platform/x86/amd/pmc/pmc.c
-> @@ -970,6 +970,11 @@ static int amd_pmc_get_dram_size(struct amd_pmc_dev *dev)
->  
->  	switch (dev->cpu_id) {
->  	case AMD_CPU_ID_YC:
-> +		if (!dev->major) {
-> +			ret = amd_pmc_get_smu_version(dev);
-> +			if (ret)
-> +				goto err_dram_size;
-> +		}
->  		if (!(dev->major > 90 || (dev->major == 90 && dev->minor > 39))) {
->  			ret = -EINVAL;
->  			goto err_dram_size;
-> 
-
-Hi,
-
-Thank you for your patch. This has already come up but no acceptable patch 
-has emerged since. Please see this thread for what needs to be done if you 
-want to provide one (or maybe Shyam already has one which has just not 
-been sent out yet):
-
-https://lore.kernel.org/platform-driver-x86/3b224c62-a1d8-41bd-aced-5825f5f20e66@amd.com/
-
-(Since this dram size is on an init path that always needs SMU version, 
-the SMU version can just be called by the init unconditonally rather than 
-adding more of this lazy initialization everywhere).
-
-
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 8ef499ab3c1e..a2a33494c222 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -192,6 +192,7 @@ void show_regs_print_info(const char *log_lvl);
+ extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+ extern asmlinkage void dump_stack(void) __cold;
+ void printk_trigger_flush(void);
++bool pr_flush(int timeout_ms, bool reset_on_progress);
+ #else
+ static inline __printf(1, 0)
+ int vprintk(const char *s, va_list args)
+@@ -271,6 +272,10 @@ static inline void dump_stack(void)
+ static inline void printk_trigger_flush(void)
+ {
+ }
++static inline bool pr_flush(int timeout_ms, bool reset_on_progress)
++{
++	return true;
++}
+ #endif
+ 
+ #ifdef CONFIG_SMP
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 0b3af1529778..dc1d2c880eb0 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2336,7 +2336,6 @@ asmlinkage __visible int _printk(const char *fmt, ...)
+ }
+ EXPORT_SYMBOL(_printk);
+ 
+-static bool pr_flush(int timeout_ms, bool reset_on_progress);
+ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progress);
+ 
+ #else /* CONFIG_PRINTK */
+@@ -2365,7 +2364,6 @@ static ssize_t msg_print_ext_body(char *buf, size_t size,
+ static void console_lock_spinning_enable(void) { }
+ static int console_lock_spinning_disable_and_check(int cookie) { return 0; }
+ static bool suppress_message_printing(int level) { return false; }
+-static bool pr_flush(int timeout_ms, bool reset_on_progress) { return true; }
+ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progress) { return true; }
+ 
+ #endif /* CONFIG_PRINTK */
+@@ -3813,7 +3811,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+  * Context: Process context. May sleep while acquiring console lock.
+  * Return: true if all usable printers are caught up.
+  */
+-static bool pr_flush(int timeout_ms, bool reset_on_progress)
++bool pr_flush(int timeout_ms, bool reset_on_progress)
+ {
+ 	return __pr_flush(NULL, timeout_ms, reset_on_progress);
+ }
 -- 
- i.
+2.42.0
 
