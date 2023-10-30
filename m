@@ -2,185 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05B37DC025
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EDA7DC026
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjJ3S66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 14:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
+        id S229625AbjJ3S7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 14:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3S65 (ORCPT
+        with ESMTP id S229721AbjJ3S7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 14:58:57 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC069F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:58:54 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-351610727adso1826995ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:58:54 -0700 (PDT)
+        Mon, 30 Oct 2023 14:59:16 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E9AC9;
+        Mon, 30 Oct 2023 11:59:14 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b980391d7cso832430a12.0;
+        Mon, 30 Oct 2023 11:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698692334; x=1699297134; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698692354; x=1699297154; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ib4hWYqy3xNJl0QRkrHS+EQAyDQg24oqh98TyujegYM=;
-        b=Gzxq9VkAnG6mS+2ebpeWMIFm4GQKAH+UWqXfsx8TuXayKarmmqYxSI5r54asSSxiof
-         /srXqvfP5IRBtaqUkZaF/5Iw9D5isykTHN4mVR6PhDmXJbvDbvy2yow7Tgrjt+nAVqI6
-         0pO2UkwH8Qp5AzoBU0UXr8ubydZe1GMM/p0qBebsjMT13KvDpbbYo5HW/hCUWgAGe82M
-         ruESkgx90u2FeFQbYZqHZmzMCvAea39DRYm/xkG9VVxtGTUBY1/k4ti7iCOeuM1fbUtp
-         uOd2Wwz2vCGr7hHjJYCIQekghACCUwARzgSFe18P2U4KsIdJnZP//A8mb+Kt4q/247Ii
-         8XKQ==
+        bh=M7dazO68napvZmWwEzN+dzxcHG2lRJyOGRlqaZ3GkBE=;
+        b=h33tY1yz7GtdjiyBCAP/4emiLIXjLtGAQPRW3yGIAVcQWOE5y56P7jyaF++XfBs0wN
+         l0Y8J6G+Vr1nbDMEDSKXqMXzE4ZXjgxMW678Kbe+4uUunoLNpDEDqLiimubhg/9vTXMS
+         LyqRKv1m6eADuvVEVu72Uibgz6jJr+i4Q0CSiysTgcSY4xgF8+v9YTsnD/3JCsWJLB6V
+         ht5pHSoKcdHowIucrafWS0P/9eEQCSCd7bcmkIa1Ex3kQmnb34EbPI3kQdgzxB6Irrs9
+         LmCMEw0PpUnvFNhaIBtDWULTQf/luj/oaR39ol/d8bv27NMAwXQSTYq1TxNQQSBh9zzC
+         uJ7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698692334; x=1699297134;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ib4hWYqy3xNJl0QRkrHS+EQAyDQg24oqh98TyujegYM=;
-        b=Rb+JXBVP7tbdNkLV02tjW1za8CJzdEVMJ4a6QTgLqRFjl70vn3mAIhzaLr8FdUBlho
-         DDZIYo3bY7dryfp4mhIPxE0K6JqT7AlzuBUN6I5+7Mj51gL695k3igHcHJUvAtNybDiH
-         jGzeCIIMGqp8oWAM+8tZoIe8b9GoLMzmTtTFFrHbjDkStaKb5xzr578Y8MB4JsyicyfZ
-         V1Bc+4HAKw9UColRUbctiTWL2RL+id9RYr/jLNhE00tZNlfq8OC+Q4ToO5UI8F/e9YIm
-         DKr3cLB/pzOpw4JJiXVZpgY9fYsshLP1zmUNruYUc2QqjFWszT84ou4TQQ2ODXLaze5J
-         6QYA==
-X-Gm-Message-State: AOJu0YxQVg7QF6NSlK8lsffol/reoB3fjBgFagw9jdfoR2hbba+9clWZ
-        Nuc4SiBsfFCPRnsjSbN0ETh5fof3vbayEVs+DcE=
-X-Google-Smtp-Source: AGHT+IHTXBjdU2JVa1Y5xfA9ehT1aBnweJbHPmw18ifW40iqGSvqPI500VL4jLaKSM2ZPIWlYLhIhg==
-X-Received: by 2002:a5d:8b13:0:b0:79a:c487:2711 with SMTP id k19-20020a5d8b13000000b0079ac4872711mr10733086ion.0.1698692334159;
-        Mon, 30 Oct 2023 11:58:54 -0700 (PDT)
-Received: from [10.69.0.11] (c-68-55-100-39.hsd1.mi.comcast.net. [68.55.100.39])
-        by smtp.gmail.com with ESMTPSA id m38-20020a056638272600b0042b6940b793sm2317203jav.17.2023.10.30.11.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 11:58:53 -0700 (PDT)
-Message-ID: <2f5ffc3b-01be-413d-843e-8654d953f56f@gmail.com>
-Date:   Mon, 30 Oct 2023 14:58:52 -0400
+        d=1e100.net; s=20230601; t=1698692354; x=1699297154;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=M7dazO68napvZmWwEzN+dzxcHG2lRJyOGRlqaZ3GkBE=;
+        b=P0/JEmdO3LrlIW2Y6/XZE3rvgnhy2kdwK5AQr5do+Njq0mEKaSo9f2KVQbnEEUdEZO
+         HJ4LM2NJ9OAq3tlwtVvp3eh1cTwfaY41tZQr1Nr+fhFHxqWsFXbwLRVyt6LadPujF5uI
+         LlUc2B4nuK7U3J+0zalddoySIYQoMrafpxio/icwUNUQOJaXTGebU29v4qownX6A+/el
+         QR/BR42B3e2iiDdGXA+y+kxQBE2p4WX/Dsrx33Zs9bxjZxk/TnP/+hkhurNUMTZH5szU
+         GHHePYyttVT/s6y/OXNS/107S4gtkfjhHHouofm7i4tcAE+dJ9INfvnShi7RI3/n6dGm
+         JqtA==
+X-Gm-Message-State: AOJu0YxFRZbwGbwJYG5b5OcGOcDeInVysojnTnX9j7WI+tU3DEncic8/
+        h7GTLwlF0YjbUWeT7UjkHQG7a48eYog=
+X-Google-Smtp-Source: AGHT+IEYK/7NIbB9+YwA8+dM/ikdsUtQMR1tqu20/CQEd4UtfD5gmtWuh+QY6UvrBY6+ucg8C8pr7w==
+X-Received: by 2002:a05:6a21:778d:b0:180:d45e:7262 with SMTP id bd13-20020a056a21778d00b00180d45e7262mr1243548pzc.56.1698692353692;
+        Mon, 30 Oct 2023 11:59:13 -0700 (PDT)
+Received: from moohyul.svl.corp.google.com ([2620:15c:2a3:200:b306:b3a5:37ab:d58f])
+        by smtp.gmail.com with ESMTPSA id a18-20020aa78652000000b006be484e5b9bsm6191396pfo.58.2023.10.30.11.59.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 11:59:13 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 1/1] perf build: Disable BPF skeletons if clang version is < 12.0.1
+Date:   Mon, 30 Oct 2023 11:59:01 -0700
+Message-ID: <169869215963.2773399.8401888084213236204.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+In-Reply-To: <ZTvGx/Ou6BVnYBqi@kernel.org>
+References: <ZTvGx/Ou6BVnYBqi@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-        alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-From:   Brady Norander <bradynorander@gmail.com>
-Subject: [PATCH v2] ALSA: hda: intel-dsp-cfg: Use AVS driver on SKL/KBL/APL
- Chromebooks
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The legacy SKL driver no longer works properly on these Chromebook
-platforms. Use the new AVS driver by default instead.
+On Fri, 27 Oct 2023 11:18:47 -0300, Arnaldo Carvalho de Melo wrote:
+> While building on a wide range of distros and clang versions it was
+> noticed that at least version 12.0.1 (noticed on Alpine 3.15 with
+> "Alpine clang version 12.0.1") is needed to not fail with BTF generation
+> errors such as:
+> 
+> Debian:10
+> 
+> [...]
 
-Signed-off-by: Brady Norander <bradynorander@gmail.com>
----
-v2: Only use quirk if AVS is enabled
-  sound/hda/intel-dsp-config.c | 26 +++++++++++++++++---------
-  1 file changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 756fa0aa69bb..e056aca01900 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -16,10 +16,11 @@
-  static int dsp_driver;
-
-  module_param(dsp_driver, int, 0444);
--MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP 
-(0=auto, 1=legacy, 2=SST, 3=SOF)");
-+MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP 
-(0=auto, 1=legacy, 2=SST, 3=SOF, 4=AVS)");
-
-  #define FLAG_SST			BIT(0)
-  #define FLAG_SOF			BIT(1)
-+#define FLAG_AVS			BIT(2)
-  #define FLAG_SST_ONLY_IF_DMIC		BIT(15)
-  #define FLAG_SOF_ONLY_IF_DMIC		BIT(16)
-  #define FLAG_SOF_ONLY_IF_SOUNDWIRE	BIT(17)
-@@ -56,7 +57,7 @@ static const struct config_entry config_table[] = {
-  /*
-   * Apollolake (Broxton-P)
-   * the legacy HDAudio driver is used except on Up Squared (SOF) and
-- * Chromebooks (SST), as well as devices based on the ES8336 codec
-+ * Chromebooks (AVS), as well as devices based on the ES8336 codec
-   */
-  #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-  	{
-@@ -79,9 +80,9 @@ static const struct config_entry config_table[] = {
-  		.codec_hid =  &essx_83x6,
-  	},
-  #endif
--#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_AVS)
-  	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
-  		.dmi_table = (const struct dmi_system_id []) {
-  			{
-@@ -96,13 +97,13 @@ static const struct config_entry config_table[] = {
-  #endif
-  /*
-   * Skylake and Kabylake use legacy HDAudio driver except for Google
-- * Chromebooks (SST)
-+ * Chromebooks (AVS)
-   */
-
-  /* Sunrise Point-LP */
--#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_AVS)
-  	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
-  		.dmi_table = (const struct dmi_system_id []) {
-  			{
-@@ -114,15 +115,17 @@ static const struct config_entry config_table[] = {
-  			{}
-  		}
-  	},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
-  	{
-  		.flags = FLAG_SST | FLAG_SST_ONLY_IF_DMIC,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
-  	},
-  #endif
-  /* Kabylake-LP */
--#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_AVS)
-  	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
-  		.dmi_table = (const struct dmi_system_id []) {
-  			{
-@@ -134,6 +137,8 @@ static const struct config_entry config_table[] = {
-  			{}
-  		}
-  	},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
-  	{
-  		.flags = FLAG_SST | FLAG_SST_ONLY_IF_DMIC,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
-@@ -667,6 +672,9 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-  		}
-  	}
-
-+	if (cfg->flags & FLAG_AVS)
-+		return SND_INTEL_DSP_DRIVER_AVS;
-+
-  	return SND_INTEL_DSP_DRIVER_LEGACY;
-  }
-  EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
--- 
-2.42.0
+Applied to perf-tools-next, thanks!
