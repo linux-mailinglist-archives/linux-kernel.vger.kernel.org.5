@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAB47DBC15
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215077DBC16
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbjJ3Otc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S233538AbjJ3Otj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjJ3Ota (ORCPT
+        with ESMTP id S231919AbjJ3Oti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:49:30 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DC5C2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:49:28 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2b1af09c5so2268934b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:49:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698677367; x=1699282167; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMVahbLSn8lXQnXquOs+Qvt810+vZKKWXEX1fvH4e6I=;
-        b=Sld/oczm/prCPuZJtjkWPIZ9kxsgj1j6datRZ3tFdobOz+CGQDRA7zzlingZvibmAy
-         4qiCwXSRPfFxOalvXqBuHLuWCB6MC/ZkHL9DU6b/hx7NJo9cT17psz80sefXCxdjNeER
-         3qTaiYN32bmNNE+0T4dGUIjB5WbnUeBzS9Rd3O5RXDAFLQg1MTvvaES5IgJhf9p7sdlB
-         Ag0wihvPQmjFjGCb8j1KwjsykBUaKxr8jQz48BtHm/daWswRGFbUHTqmCfxZWmuIoZXD
-         NCCMbH0kBjVgAZ/PprzNcfCyjYHGWsSKnVmoq8ROsYi6/ruK4PG3TrPY2hTlH58+rE7j
-         Je6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698677367; x=1699282167;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMVahbLSn8lXQnXquOs+Qvt810+vZKKWXEX1fvH4e6I=;
-        b=aynuTi+DGp4/7f9YyGxUSmCQtuB61k1cJ9uOOPnelLWPhTnk7AhRdMGioy3Xi+d33a
-         gXaFZKG0tD0DNzLSR8P5oVuOHRdoOktaG31aQrXPEgcnZPfcdwJ4DVVDzV5K2L92wvjW
-         WiUIsH8Cbtmf7aBrQhotllg2Cl9HnNDrZd/BlA2igQrnjWPtGBbk6nJrofsDIRH7M7OK
-         9eEJjxmKo2v4JFGmKcm67B06l8LtfnSqShyVc9Nn1iSZgnQnUtWi6WhXkpeAWDOlzIxs
-         F2oMeIhS3OYJrsjLBxoNH2VPFvCtYXfw2C3i9UcVrLOUAITG+bjkr0ilS2aqLw+9qIYL
-         PglA==
-X-Gm-Message-State: AOJu0Yw/pg9i2HCEvApx13hYFHVFgzf8rmb/OBlnYR3E/rWOywzfPSuO
-        /8+Se+8Zr8w1C3HNp64O5Jw=
-X-Google-Smtp-Source: AGHT+IHgmY33b+zRR/3NEzXKawFh2MQG5Y8mEVCIt2a2TxgPHOwRTfXD1zgoZUCNK4vF7Xbsmqeq5g==
-X-Received: by 2002:a05:6808:189c:b0:3af:795d:b74b with SMTP id bi28-20020a056808189c00b003af795db74bmr10436603oib.50.1698677367554;
-        Mon, 30 Oct 2023 07:49:27 -0700 (PDT)
-Received: from localhost (modemcable065.128-200-24.mc.videotron.ca. [24.200.128.65])
-        by smtp.gmail.com with ESMTPSA id oo22-20020a05620a531600b0076ef3e6e6a4sm3387832qkn.42.2023.10.30.07.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 07:49:27 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 10:49:26 -0400
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH] .mailmap: Map Benjamin Poirier's address
-Message-ID: <ZT_Cdul7kwRgZv2z@d3>
-References: <20231030142454.22127-2-bagasdotme@gmail.com>
+        Mon, 30 Oct 2023 10:49:38 -0400
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D43ECC
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:49:33 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id xTa5qOlxecvbdxTa5q48rW; Mon, 30 Oct 2023 15:49:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698677371;
+        bh=cE6pCOkG8VB8NCmHUswVDdYmjB1x/ugVETT8yljrntY=;
+        h=From:To:Cc:Subject:Date;
+        b=Er2l+6NauL9234lJe7ylyNTS7h2FxAYZxIGdbUrnqT7VfXoom0z5tvfFX+wo/kwNT
+         XogrjtbgxYUWy1xFHaL9wpsWjPnsRHYyd171U+cbZ7NhD0Zrkmbq0fvI/Nlm3Dm2YI
+         697gvVaod9WwwGS9U5lEBC1TMbmpsMo3zofyGKqDDjjViKFNG7tiIJy0cu1vux2BOM
+         OFZykYnrx5D4/UXRyAglnMe8cJohqJRv5ZwAp2qcSLqjDTVPhDgsBCUyGK2281IPvB
+         5zntwOGXgeO3sKoRnUYOWvFQWIKzfmgpaWC8HEJbAIYnKBVOb/McdJpLFV/1i+MLWR
+         rBQD1EiMkBQKw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 30 Oct 2023 15:49:31 +0100
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-nvme@lists.infradead.org
+Subject: [PATCH v2] nvme-tcp: Fix a memory leak
+Date:   Mon, 30 Oct 2023 15:49:28 +0100
+Message-Id: <7f132cc47e627d63ddb084f3d0fcad10956d1e35.1698677322.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030142454.22127-2-bagasdotme@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-30 21:24 +0700, Bagas Sanjaya wrote:
-> Map out to his gmail address as he had left SUSE some time ago.
-> 
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> ---
->  I first contacted him when reporting tx-nocache-copy regression [1],
->  I emailed to his old SUSE address, but bounces. Now, he submitted
->  qlqe removal [2] using his gmail address.
-> 
->  Ben, can you give an ACK? I intend to route this patch through mm or
->  driver-core tree.
+All error handling path end to the error handling path, except this one.
+Go to the error handling branch as well here, otherwise 'icreq' and
+'icresp' will leak.
 
-Thank you for the addition.
+Fixes: 2837966ab2a8 ("nvme-tcp: control message handling for recvmsg()")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+---
+v2: - move ret = -xx; to the main path   [Christoph Hellwig]
+    - Add R-b tag
 
-Acked-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+v1: https://lore.kernel.org/all/f9420cde9afdc5af40bf8a8d5aa9184a9b5da729.1698614556.git.christophe.jaillet@wanadoo.fr/
+
+Personally I prefer v1. Pick the one you prefer :)
+---
+ drivers/nvme/host/tcp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 4714a902f4ca..f97711fc9f9f 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1423,13 +1423,14 @@ static int nvme_tcp_init_connection(struct nvme_tcp_queue *queue)
+ 			nvme_tcp_queue_id(queue), ret);
+ 		goto free_icresp;
+ 	}
++	ret = -ENOTCONN;
+ 	if (queue->ctrl->ctrl.opts->tls) {
+ 		ctype = tls_get_record_type(queue->sock->sk,
+ 					    (struct cmsghdr *)cbuf);
+ 		if (ctype != TLS_RECORD_TYPE_DATA) {
+ 			pr_err("queue %d: unhandled TLS record %d\n",
+ 			       nvme_tcp_queue_id(queue), ctype);
+-			return -ENOTCONN;
++			goto free_icresp;
+ 		}
+ 	}
+ 	ret = -EINVAL;
+-- 
+2.34.1
+
