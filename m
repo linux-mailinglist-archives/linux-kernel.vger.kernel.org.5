@@ -2,190 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CCA7DBD02
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E21B7DBD38
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233729AbjJ3P5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
+        id S233768AbjJ3P7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbjJ3P5K (ORCPT
+        with ESMTP id S233311AbjJ3P7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:57:10 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAA0D9;
-        Mon, 30 Oct 2023 08:57:08 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7d9d357faso43532207b3.0;
-        Mon, 30 Oct 2023 08:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698681427; x=1699286227; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KqEcy/FTVRmCJO3mUkkOypdWB4g67w6pVbljP7u/u5I=;
-        b=h8trYql0ZxP6HdfYh7yhVwyHwLZ3prtBQYJD7w/7qiDC8RQ7uFn+gcRdvvFxKBy1BQ
-         ZrdgiWLgvhr3vPKahrbUgrdenMoIqArVk/VJJjOeNS+xE/JZ7fObCCjeRYu1Rfvo+jYF
-         ByPGL44eGWPTswlTTGK3pSE587PIipHrMrsTPXxCHo8lVO4Bb2OTxETEsB74tIHP0oHj
-         HHU1RCdUMSuhPQoFnF98V5ZCmwjdIuL/WcNslkfRzQmUu70KsIeAEmqr/DENVL5pqkPb
-         p55wedwO7Efd6H9YL9joFucAz6DvmOjbWy0awPQRWGU6NCPwdEeB70Cwzzy67lpi0Xmd
-         Fx5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698681427; x=1699286227;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KqEcy/FTVRmCJO3mUkkOypdWB4g67w6pVbljP7u/u5I=;
-        b=waeHTeNHlmORMGumUT7ice9VR7dDRy0NmBbNhb08DSVjHTCsv6qYpBpFolnhi7VDeM
-         vNjRMhYpKsY6+Lr/CncI9lNl67OAXOFvqZobttoGQg2eLofAToNbCevrBWG46Ca7WXSU
-         OEDTRC1jEbZFbshzBaRBBJXWx0bYACp8cW8AjZz0GEm9W4B9Jks2ELy9V7xde1DtaqZb
-         Rw++if6Bztz/qZlssTgpdfrh1whf+EbAmKJtFKTxB9+Kr+X/qLRymI1KF+mthlroulJc
-         e8YvKQONd42ACPezWNXrf483LuLFB+WAwwpxn0rJYkU2g3c8P6HjCW/tH9NxmAuWKOZq
-         4/Hw==
-X-Gm-Message-State: AOJu0Yz1Vh8Lk/+2dnISxD9jI/LGsJoYjai/mBj0QqNHLuRJC+bjstzr
-        7xM2B2c3AR6dT7gW4jHFxkcIKuMhHgA=
-X-Google-Smtp-Source: AGHT+IE18mGvNltF9lPxIh0N14wvvI4rgbcA8hodrL95HNfCOEiENG8Zx5cNXYPF5TplfgOoHdtVtA==
-X-Received: by 2002:a81:5756:0:b0:5a7:a817:be43 with SMTP id l83-20020a815756000000b005a7a817be43mr10483325ywb.6.1698681427282;
-        Mon, 30 Oct 2023 08:57:07 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c190-20020a814ec7000000b005a7bbd713ddsm4423113ywb.108.2023.10.30.08.57.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 08:57:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e3de2c1f-3a05-4ffc-a50e-0b5522cf7740@roeck-us.net>
-Date:   Mon, 30 Oct 2023 08:57:04 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] hwmon: npcm750-pwm-fan: Add NPCM8xx support
-Content-Language: en-US
-To:     Tomer Maimon <tmaimon77@gmail.com>, jdelvare@suse.com,
-        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
-        andrew@codeconstruct.com.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net
-Cc:     openbmc@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
+        Mon, 30 Oct 2023 11:59:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0255DF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698681495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=wOaUyTLUS0taBhz/WyCO0smnj0qbDFqjI3pF8ZVyn2U=;
+        b=i59xOgDq7BMsuqMtx1DvOGe3QOCdZETwsPZPjVFnz1Q30TQ0NgZx0p2pTckjRiGFiKVhQg
+        FwPZhM1rFPVD8eNQSYBmkwMJOW7nCB6tPhrIcNJkSR+xxWHm2j4VwCdoi65G8hGRhePGn0
+        trvO0I9HA+6jGg0zPOfGnRzzl+DoQ0M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-160-QVZ95d_wODyJWmZnRTy1ag-1; Mon, 30 Oct 2023 11:58:13 -0400
+X-MC-Unique: QVZ95d_wODyJWmZnRTy1ag-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 840E4185A788;
+        Mon, 30 Oct 2023 15:58:13 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.219])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 61A921C060AE;
+        Mon, 30 Oct 2023 15:58:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 30 Oct 2023 16:57:12 +0100 (CET)
+Date:   Mon, 30 Oct 2023 16:57:10 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
         linux-kernel@vger.kernel.org
-References: <20231030150119.342791-1-tmaimon77@gmail.com>
- <20231030150119.342791-2-tmaimon77@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231030150119.342791-2-tmaimon77@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Subject: [PATCH] introduce for_other_threads(p, t)
+Message-ID: <20231030155710.GA9095@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 08:01, Tomer Maimon wrote:
-> Adding Pulse Width Modulation (PWM) and fan tacho NPCM8xx support to
-> NPCM PWM and fan tacho driver.
-> NPCM8xx uses a different number of PWM devices.
-> 
-> As part of adding NPCM8XX support:
-> - Add NPCM8xx specific compatible string.
-> - Add data to handle architecture-specific PWM and fan tacho parameters.
-> 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> ---
->   drivers/hwmon/npcm750-pwm-fan.c | 34 +++++++++++++++++++++++++++++----
->   1 file changed, 30 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/hwmon/npcm750-pwm-fan.c b/drivers/hwmon/npcm750-pwm-fan.c
-> index 10ed3f4335d4..765b08fa0396 100644
-> --- a/drivers/hwmon/npcm750-pwm-fan.c
-> +++ b/drivers/hwmon/npcm750-pwm-fan.c
-> @@ -46,9 +46,9 @@
->   #define NPCM7XX_PWM_CTRL_CH3_EN_BIT		BIT(16)
->   
->   /* Define the maximum PWM channel number */
-> -#define NPCM7XX_PWM_MAX_CHN_NUM			8
-> +#define NPCM7XX_PWM_MAX_CHN_NUM			12
->   #define NPCM7XX_PWM_MAX_CHN_NUM_IN_A_MODULE	4
-> -#define NPCM7XX_PWM_MAX_MODULES                 2
-> +#define NPCM7XX_PWM_MAX_MODULES                 3
->   
->   /* Define the Counter Register, value = 100 for match 100% */
->   #define NPCM7XX_PWM_COUNTER_DEFAULT_NUM		255
-> @@ -171,6 +171,10 @@
->   #define FAN_PREPARE_TO_GET_FIRST_CAPTURE	0x01
->   #define FAN_ENOUGH_SAMPLE			0x02
->   
-> +struct npcm_hwmon_info {
-> +	u32 pwm_max_channel;
-> +};
-> +
->   struct npcm7xx_fan_dev {
->   	u8 fan_st_flg;
->   	u8 fan_pls_per_rev;
-> @@ -204,6 +208,7 @@ struct npcm7xx_pwm_fan_data {
->   	struct timer_list fan_timer;
->   	struct npcm7xx_fan_dev fan_dev[NPCM7XX_FAN_MAX_CHN_NUM];
->   	struct npcm7xx_cooling_device *cdev[NPCM7XX_PWM_MAX_CHN_NUM];
-> +	const struct npcm_hwmon_info *info;
->   	u8 fan_select;
->   };
->   
-> @@ -619,9 +624,13 @@ static umode_t npcm7xx_is_visible(const void *data,
->   				  enum hwmon_sensor_types type,
->   				  u32 attr, int channel)
->   {
-> +	const struct npcm7xx_pwm_fan_data *hwmon_data = data;
-> +
->   	switch (type) {
->   	case hwmon_pwm:
-> -		return npcm7xx_pwm_is_visible(data, attr, channel);
-> +		if (channel < hwmon_data->info->pwm_max_channel)
-> +			return npcm7xx_pwm_is_visible(data, attr, channel);
+Cosmetic, but imho it makes the usage look more clear and simple, the
+new helper doesn't require to initialize "t".
 
-I would have expected this check to be handled in npcm7xx_pwm_is_visible().
+After this change while_each_thread() has only 3 users, and it is only
+used in the do/while loops.
 
-Guenter
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ fs/exec.c                    |  3 +--
+ include/linux/sched/signal.h |  3 +++
+ kernel/signal.c              | 11 ++++-------
+ 3 files changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/fs/exec.c b/fs/exec.c
+index 6518e33ea813..e5bdce5e36ee 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1580,11 +1580,10 @@ static void check_unsafe_exec(struct linux_binprm *bprm)
+ 	 * will be able to manipulate the current directory, etc.
+ 	 * It would be nice to force an unshare instead...
+ 	 */
+-	t = p;
+ 	n_fs = 1;
+ 	spin_lock(&p->fs->lock);
+ 	rcu_read_lock();
+-	while_each_thread(p, t) {
++	for_other_threads(p, t) {
+ 		if (t->fs == p->fs)
+ 			n_fs++;
+ 	}
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index d7fa3ca2fa53..134a2c0bc283 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -655,6 +655,9 @@ extern bool current_is_single_threaded(void);
+ #define while_each_thread(g, t) \
+ 	while ((t = next_thread(t)) != g)
+ 
++#define for_other_threads(p, t)	\
++	for (t = p; (t = next_thread(t)) != p; )
++
+ #define __for_each_thread(signal, t)	\
+ 	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node)
+ 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index ccfc3ded5672..f5781a54d89d 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1376,12 +1376,12 @@ int force_sig_info(struct kernel_siginfo *info)
+  */
+ int zap_other_threads(struct task_struct *p)
+ {
+-	struct task_struct *t = p;
++	struct task_struct *t;
+ 	int count = 0;
+ 
+ 	p->signal->group_stop_count = 0;
+ 
+-	while_each_thread(p, t) {
++	for_other_threads(p, t) {
+ 		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+ 		/* Don't require de_thread to wait for the vhost_worker */
+ 		if ((t->flags & (PF_IO_WORKER | PF_USER_WORKER)) != PF_USER_WORKER)
+@@ -2457,12 +2457,10 @@ static bool do_signal_stop(int signr)
+ 			sig->group_exit_code = signr;
+ 
+ 		sig->group_stop_count = 0;
+-
+ 		if (task_set_jobctl_pending(current, signr | gstop))
+ 			sig->group_stop_count++;
+ 
+-		t = current;
+-		while_each_thread(current, t) {
++		for_other_threads(current, t) {
+ 			/*
+ 			 * Setting state to TASK_STOPPED for a group
+ 			 * stop is always done with the siglock held,
+@@ -2958,8 +2956,7 @@ static void retarget_shared_pending(struct task_struct *tsk, sigset_t *which)
+ 	if (sigisemptyset(&retarget))
+ 		return;
+ 
+-	t = tsk;
+-	while_each_thread(tsk, t) {
++	for_other_threads(tsk, t) {
+ 		if (t->flags & PF_EXITING)
+ 			continue;
+ 
+-- 
+2.25.1.362.g51ebf55
+
 
