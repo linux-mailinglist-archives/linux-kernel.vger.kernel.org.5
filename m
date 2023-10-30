@@ -2,175 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AF47DB61C
+	by mail.lfdr.de (Postfix) with ESMTP id 6041B7DB61D
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbjJ3J1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S232414AbjJ3J1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbjJ3J06 (ORCPT
+        with ESMTP id S232084AbjJ3J06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Oct 2023 05:26:58 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F14C6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:26:56 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507bd64814fso5862139e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698658014; x=1699262814; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/S93wdJSw/AzX9CKKdyBARwqyDwptUmDMX/QD6LKCe4=;
-        b=oamF0bF34fDhS6xoumno2H3pWQk139BtFvEQ2etV86T6zSNi6o/xnv/azmQ4cHdngG
-         4CePOABtIWfKhWgcAufIU5VjJnJVP+PxokTYq83bcYQqoFMgqLc+zjqrXu+ApCRWfVue
-         qY5X090L0cSgIVJAYD6Yfk6/jh+5lmI4bhLW0R4Nz5U2/LSbbi2zX2ltvqwe3BZ/g6xM
-         CF4dKIgFM1vBryybR4G9+XMe0GpRMBTrXapJzJVBdFO50hzLpX+NlA/xms2lsQU/QRMM
-         FHViMpz5sCPiRV+q+bst2MiVxi7a60uSsBlGFhtztH2mfWoKRyztLuoWEktumq5IxDax
-         pr9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698658014; x=1699262814;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/S93wdJSw/AzX9CKKdyBARwqyDwptUmDMX/QD6LKCe4=;
-        b=HxTZTWPYIZAu7Jgmq0g9mQwSy1wByXuNqxstotJRQKKiXMcBmt2HiYFNgdYEufGnOj
-         K3u+e9DRNxhE4KHb2RXFyyeE9aQPPXc4ofTPuF6bsB+Ykni6Du1fZw1KKFw0egZiNORR
-         1yLM5Cfz7svzD48Wz7H3kulrHRYbouUczFJ3FMjjuNh34wMzwAgCZXlYmqFpehNWvtNR
-         2hZPq3hokS6leWzv69DzunQ3i3sJMmjOBWaZoRN7l/ZeEyq8cV9bbPKcKL6Si9x6tZ7S
-         vXjdkvr6n6NZlgFG3MPS0gaQXJweSbFK4fviIUOMU4V8ZVacHhhCvrJD2BaWznGOFWke
-         cTiA==
-X-Gm-Message-State: AOJu0YwZ621j8jMJ+GIgDkBAeED4yUaoA85lv0LDenIIR0PM8pu4ilX+
-        EwhVt0qR9Nd4HCLcPZMnGl43BSXer/+YmZTEWz4=
-X-Google-Smtp-Source: AGHT+IGlv3iUmWJJlYqW6cgPWqiSNT9vmjTv/sx/ZTNAqrBO65xw+S7UzqB3dpvnBxvLgrpZtCLRQA==
-X-Received: by 2002:ac2:5e24:0:b0:504:7e90:e05b with SMTP id o4-20020ac25e24000000b005047e90e05bmr6081095lfg.14.1698658013974;
-        Mon, 30 Oct 2023 02:26:53 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id d34-20020a0565123d2200b0050915816a16sm811912lfv.145.2023.10.30.02.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 02:26:53 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 30 Oct 2023 10:26:50 +0100
-Subject: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB684C1;
+        Mon, 30 Oct 2023 02:26:56 -0700 (PDT)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SJnwC2dd1z4f3lXw;
+        Mon, 30 Oct 2023 17:26:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+        by mail.maildlp.com (Postfix) with ESMTP id 64E1B1A0171;
+        Mon, 30 Oct 2023 17:26:53 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBn+djbdj9lI3ZoEQ--.33867S3;
+        Mon, 30 Oct 2023 17:26:53 +0800 (CST)
+Subject: Re: [PATCH] block: Fix minor range check in device_add_disk()
+To:     zhongjinghua <zhongjinghua@huaweicloud.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhongjinghua@huawei.com, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20231025084621.2338604-1-zhongjinghua@huaweicloud.com>
+ <119b7314-10a9-4d62-b40f-19462dc68009@I-love.SAKURA.ne.jp>
+ <26bafe93-345d-2696-8ee7-7d1baa0e7eb7@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <df52b8a2-dff1-3973-b2bf-ca915c3f44d3@huaweicloud.com>
+Date:   Mon, 30 Oct 2023 17:26:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
-X-B4-Tracking: v=1; b=H4sIANl2P2UC/3WNTQqDMBCFryKzbkoSmVi76j2Ki2imOiBJmYi0S
- O7e4L7L9/e9AzIJU4Z7c4DQzplTrMJeGpgWH2dSHKoGq21rtO3Uiz9KtvXWOiejog7tGLDXZvJ
- QN2+hWjh5T4i0wVDNhfOW5Ht+7OaM/uB2o4wK6DD0GrFF/1g5eknXJDMMpZQf+nuJXbAAAAA=
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <26bafe93-345d-2696-8ee7-7d1baa0e7eb7@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBn+djbdj9lI3ZoEQ--.33867S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wr45urWrAw1DJF1UXw43KFg_yoW8Jr4Dpr
+        W3ZFy5tF4DGr48uFsrJryFkr1rAw1jqrWrKF4xtryIgrZ0yFna9r9xtw45GFWxKryxKF4F
+        gF45XFZFva1rta7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbU
+        UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was reported that the "LuCI" web UI was not working properly
-with a device using the RTL8366RB switch. Disabling the egress
-port tagging code made the switch work again, but this is not
-a good solution as we want to be able to direct traffic to a
-certain port.
+Hi,
 
-It turns out that packets between 1496 and 1500 bytes are
-dropped unless padded out to 1518 bytes.
+在 2023/10/26 16:52, zhongjinghua 写道:
+> 
+> 在 2023/10/25 18:06, Tetsuo Handa 写道:
+>> On 2023/10/25 17:46, Zhong Jinghua wrote:
+>>> Checks added in patch:
+>>> commit e338924bd05d ("block: check minor range in device_add_disk()")
+>>> ignore the problem of first_minore < 0 and disk->minors < 0.
+>> What is the problem of first_minor < 0 or disk->minors < 0 ?
+>> Are negative values legal/illegal ?
+> 
+> These two values are used as the secondary device number and the maximum 
+> number of partitions, which is illegal if negative. Then first_minore 
+> and disk->minors are signed numbers, and the sum may be less than 
+> MINORMASK to bypass the check.
 
-If we pad the ethernet frames to a minimum of ETH_FRAME_LEN + FCS
-(1518 bytes) everything starts working fine.
+Let me complement it, first_minor and minors can be set by driver, and
+driver allow set them throuhh ioctl/sysfs from user parameters, for
+example:
 
-1496 is the size of a normal data frame minus the internal DSA
-tag. The number is intuitive, the explanation evades me.
+If user pass in -1, and each disk support 8 partitions, driver will
+usually set:
 
-As we completely lack datasheet or any insight into how this
-switch works, this trial-and-error solution is the best we
-can do. FWIW this bug may very well be the reason why Realteks
-code drops are not using CPU tagging. The vendor routers using
-this switch are all hardwired to disable CPU tagging and all
-packets are pushed to all ports on TX. This is also the case
-in the old OpenWrt driver, derived from the vendor code drops.
+disk->first_minor = -1 * 8 = -8;
+disk->minors = 8;
 
-I have tested smaller sizes, only 1518 or bigger padding works.
+Then first_minor + minors = 0, then the following condition can't detect
+this case:
 
-Modifying the MTU on the switch (one setting affecting all
-ports) has no effect.
+if (disk->first_minor + disk->minors > MINORMASK + 1)
 
-Before this patch:
+By the way, we never limit how first_minor and minors is set by driver,
+and it's illegal if driver set first_minor = -4, and minors = 8.
 
-PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
-^C
---- 192.168.1.1 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 1048ms
+Thanks,
+Kuai
 
-PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
-^C
---- 192.168.1.1 ping statistics ---
-12 packets transmitted, 0 received, 100% packet loss, time 11267ms
-
-After this patch:
-
-PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
-1478 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.533 ms
-1478 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.630 ms
-
-PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
-1480 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.527 ms
-1480 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.562 ms
-
-Also LuCI starts working with the 1500 bytes frames it produces
-from the HTTP server.
-
-Fixes: 9eb8bc593a5e ("net: dsa: tag_rtl4_a: fix egress tags")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Changes in v2:
-- Pad packages >= 1496 bytes after some further tests
-- Use more to-the-point description
-- Provide ping results in the commit message
-- Link to v1: https://lore.kernel.org/r/20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org
----
- net/dsa/tag_rtl4_a.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
-index c327314b95e3..3292bc49b158 100644
---- a/net/dsa/tag_rtl4_a.c
-+++ b/net/dsa/tag_rtl4_a.c
-@@ -45,6 +45,16 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
- 	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
- 		return NULL;
- 
-+	/* Packets over 1496 bytes get dropped unless they get padded
-+	 * out to 1518 bytes. 1496 is ETH_DATA_LEN - tag which is hardly
-+	 * a coinicidence, and 1518 is ETH_FRAME_LEN + FCS so we define
-+	 * the threshold size and padding like this.
-+	 */
-+	if (skb->len >= (ETH_DATA_LEN - RTL4_A_HDR_LEN)) {
-+		if (unlikely(__skb_put_padto(skb, ETH_FRAME_LEN + ETH_FCS_LEN, false)))
-+			return NULL;
-+	}
-+
- 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
- 		   dp->index);
- 	skb_push(skb, RTL4_A_HDR_LEN);
-
----
-base-commit: d9e164e4199bc465b3540d5fe3ffc8a9a4fc6157
-change-id: 20231027-fix-rtl8366rb-e752bd5901ca
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
+> 
+> .
+> 
 
