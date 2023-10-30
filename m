@@ -2,270 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18037DBDAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA83B7DBDBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbjJ3QVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
+        id S233867AbjJ3QWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3QVr (ORCPT
+        with ESMTP id S229606AbjJ3QWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:21:47 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2061.outbound.protection.outlook.com [40.107.105.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332A1E4;
-        Mon, 30 Oct 2023 09:21:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hNtg1qMhyX+vN6KwxK+aQF51aYMI2ev2pSeY6XWLmuEHLj9/vfbUXTifYtHvOcmpDNzrwR3QikKMomdW540JC3J2SbzeKFxnICu6en9+8zr0W87xN+zYNGRQ5V/6it7v0sdS+mYWUBk5mOBFrDqNXFyYdTmjUOIhy7w8sTHm+ahObb3e6lPuzLTZSjyAf6q4mTZxlaNK+5FtWCZoWwoJA7So3BUED2i9s/tjPiZWwABMaty/zf/ut9KxXdFabvjfbX/lXQtbLnRgZIE6u9XtCDPvsvcXAXfo0vIxiGn6vUXssNuUPIlF1cemV4d16KXUeWY3mH6/pyAuiuTVKTQV3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y38L2EqdgHsvE0BDZos2jnfFi+3YkHIIo43lCl4t9oQ=;
- b=I/18GMFLLTus9x9dJ7XfeizQHHUTvMSeEBSLYPbjjQEDb3MmWyy56HGd2RMeQap9fAPJbnfNkaIlSpSSb8MwguNFd/9JiIVRFfXdE3hif52o7FkBTkpo+z8in2Gf8inrnV5R3Gh+GLzx9ZukSk00UZcGAjMkmCKmBlhOTz39bO52QrxEoUs+StXR1m/fFM1uPiNnKSvmq6woogFvjjtnI4ezQKvL0CXc81pSlNDGhOovDvNGDtY9t+SMRAaTB3sv0QqQshTsDt6LE9TPZUU077d0PLvGYyDPAPkwg0BDZ5MTdj2C5p/ffeFNv1elq27PnAlUOKXhmCfJnlxLJYTbiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y38L2EqdgHsvE0BDZos2jnfFi+3YkHIIo43lCl4t9oQ=;
- b=QDebjEHSewECZjMeiN0gAYIVLPik9qrJJD+He/0WDSHdzOHe1MIvmk9zZW70uaUifOgNiHBS2EDv4lLWOamr4bT1iwnNl52D4JRK1dIUaRuuGq2SWA1okBofUhDkzNPBwSsugykmVY0xl0GORlfpkMMFP6mCJyl3IsHNWKtVt3w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DU2PR04MB8566.eurprd04.prod.outlook.com (2603:10a6:10:2d5::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.16; Mon, 30 Oct
- 2023 16:21:41 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::97ca:a905:8e64:c098]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::97ca:a905:8e64:c098%6]) with mapi id 15.20.6933.011; Mon, 30 Oct 2023
- 16:21:40 +0000
-Date:   Mon, 30 Oct 2023 12:21:32 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     "peter.chen@kernel.org" <peter.chen@kernel.org>,
-        "rogerq@kernel.org" <rogerq@kernel.org>,
-        "a-govindraju@ti.com" <a-govindraju@ti.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>
-Subject: Re: cdns3 uvc first ISO parkage lost problem
-Message-ID: <ZT/XkhOvbucxA90V@lizhi-Precision-Tower-5810>
-References: <ZTvhEl+JcnhJXcrl@lizhi-Precision-Tower-5810>
- <BYAPR07MB5381F7224612F0C0793B6B29DDA1A@BYAPR07MB5381.namprd07.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR07MB5381F7224612F0C0793B6B29DDA1A@BYAPR07MB5381.namprd07.prod.outlook.com>
-X-ClientProxiedBy: BYAPR07CA0031.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::44) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 30 Oct 2023 12:22:41 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DBA83;
+        Mon, 30 Oct 2023 09:22:36 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39UF3Wru012001;
+        Mon, 30 Oct 2023 17:22:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=WWjvixk
+        x1+sUJudPBiinwlW6wYpb+vSAYAex868zvkg=; b=KHUFHvzdpvB9wB8g7w2XTRG
+        Yzoq/mVxTwda2uxkNZ7zx4As5TV6cwA8r1yLgoHbak1dX8GUcm6p64pIudqwuGeB
+        fSsX1zIs2ON9mRvFyThxiPYcqC7gJYrCNzWVJMyK/grkRpdKePRm/0rk5r7kPh5l
+        fhjSKjtVwjmTdX26bZq1nFYxdHIWoE7cK8j9t4h5qdKTajGPaZjJTMyikv6vEJde
+        bBOb7m38xJ4NctwH6V65vGkfA2aU7VolwigG6ERzD4wPOtMOuxzptVDLSGlB5TKe
+        ACDosYaHira/AflfM4v0CWUt37YUjjA1AFww8V0O6QItPHjB3/6fLVRVf0iLBIg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u0ttvh0bb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 17:22:07 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BF16110005B;
+        Mon, 30 Oct 2023 17:22:05 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B116D25C61C;
+        Mon, 30 Oct 2023 17:22:05 +0100 (CET)
+Received: from localhost (10.252.13.136) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 30 Oct
+ 2023 17:22:02 +0100
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+Subject: [PATCH 0/3] Update STM DSI PHY driver
+Date:   Mon, 30 Oct 2023 17:21:54 +0100
+Message-ID: <20231030162157.218901-1-raphael.gallais-pou@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DU2PR04MB8566:EE_
-X-MS-Office365-Filtering-Correlation-Id: 136ef04d-367a-4d88-e823-08dbd9644c4f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZEM/r1YRgvh/YLqJsfgjDwvhRY3Q1I0A+Jlct4XVkAmJb6m6XeeBsh9kHpVDHPVzSfaleaChbJmHUOaOnJcpPhqNVSmeiZPrpwV5n3l8TXUs5pUUzuTJeRI+OMNOfT74ZC7wnzkgbCKL4W3WYu4bBkaOK3yXToCLtvugjDjMxqoxL4ZRIv0Bds2XYdWiX8FbZFoZquknyXg5681klTfVQWW7g1KATCaSPD+MLM9TNdPqonJAbbvc/WV9wMnrBhmOs84korR+Ez1Vdy2L2Q7PtypA+rqOhiP2jdoKYcf3QqDvUEibHi0HeTG0kbmlw76Ikk/Ce6DV8xs2cwtAwb1XnoB2bxfXW27xU9WtnhzzN6R4+vVW+HVoyb1/QP4H+5yh05pwubY5WfuHJTQFU8QWp7+O5BoLRiXjdJzLpHRf7XF6WJw1QPyK5HQBi4cizFWE847U4Orlly+jbuv0uVchmz9oRvZtm6PlA+Fn2QytM04wz8KpK7eCI1XHNoROJ4KZUDS7rihw3UxAEErb0sT0+lunOkUiYrQgFFEASlJgXrizwNNUWr2FQnoPSYO+zNcFVcQnycngjJ0+bA4QCPku8JBn8NnoYw6RCm1VmMOvOn0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(136003)(396003)(376002)(39860400002)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(83380400001)(41300700001)(2906002)(5660300002)(86362001)(26005)(33716001)(38100700002)(6512007)(6506007)(9686003)(6666004)(52116002)(6486002)(478600001)(966005)(54906003)(8676002)(66946007)(66476007)(8936002)(66556008)(4326008)(316002)(6916009)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Nd4S6CYL1HvWIxTPyT6EtaB78aidWHGxhICfAdeMcKzGPRyD60MRJDjUACnR?=
- =?us-ascii?Q?N5FysTDARewOd+WoULLE1JVuBo/JM4f+94bxhjXfUOdWb1noCRXJODGTJykk?=
- =?us-ascii?Q?t1UNZahYqvkkq5r3PiABf8+dOxQo/DUhAxdx+ITmzkZVRqQfhA2jOhkrbyvZ?=
- =?us-ascii?Q?I/uFm8PErzwRfUJWozR551PsA9xrvgM7shqbu5lJSq+1gIyhFvxj9y90t3e3?=
- =?us-ascii?Q?3NfvrfgMD8BL5lmkuVUhsEcXpELCqHwWOrC2yJ2nM7nG1u139ettNi/lJHb6?=
- =?us-ascii?Q?EeZOqlsKqT2K3Q+lhpLuv9XN8IdxObjLk/JNMQqq9xM8eAwNbnSy057vdIGF?=
- =?us-ascii?Q?/a8IHnnu1Lya9RZ29hMLaZSJDXk4f0MofrUuP/AAFHnl84fSm2WcyVrRE6Gc?=
- =?us-ascii?Q?Tab7ZVAcysnfMEhVOTUFEroISDYHzC1In4iT2Rx2AGZ4NOygDHz5+6d7cySr?=
- =?us-ascii?Q?zsSEequSeWEutOjulXBFuw8gpXaM6oYJtnKJx43xKcxZeON9HzNuMtAaeZSS?=
- =?us-ascii?Q?UcyTgxVMdMnnbsjpiUafbMNpEusmXeC9LWWk4ACQGWzyiK2YIw49eWkEJuU4?=
- =?us-ascii?Q?/blHTL7Nxe/kiXGrCIERBGSt3zlPCTpgwsXXnl9+xxUTGofW8C0l5gWdXyrL?=
- =?us-ascii?Q?zVwVKXqerkE9Iet9yi9eF61Ofjel2m9VHkVD+R/MFa/BRPvodfFySRN2/cXr?=
- =?us-ascii?Q?H0PRIJlWp3Z2pd+bbR8LuxRMV3tsRRqFHwymM+Yaqx+ROn3gYanskUqpcp9E?=
- =?us-ascii?Q?F4vz4chz8sj3KgDrMploJOex3u6Nwn3tvAQtypciL55lJH8os8Fxb97XZWem?=
- =?us-ascii?Q?DF1gFzxNoO6QRIhmdVaiftxVdMZ13CFJ0uG9cyMTy0cGgOpz7sggtvhoB4st?=
- =?us-ascii?Q?MtJ+b/AcNoAY+Wdr8VT0SRB1Jx+FK4Sen4jsp4wJjoJn75MnDqogAjanZdRe?=
- =?us-ascii?Q?HmXVBV4eAjGfqlQWfMESb7+iwPdD0jzbNgAP0jClVgLnxYFp+GZDSxsZ5q1b?=
- =?us-ascii?Q?ewAzz25ZydQERmIUf1f3MbUYOGua262MHIZJHUYdWIJCfiKKS0T+hlYLtPax?=
- =?us-ascii?Q?6mRnI2oAYDWivNJLS7sMg/WT2phDVo737G0HeEZw5tY9w91MxFRMNfdW7imU?=
- =?us-ascii?Q?zF92a2kZPm9OAlRKQkXDxzNxU9h/o82hYNaf52HiaWDscdqpivupMfdDtpKF?=
- =?us-ascii?Q?uYMuILM3oVLd6UoLvFFRyU28M2q14IfHeSGQDGhRrG+lTw0zjDxJWwnXdLoU?=
- =?us-ascii?Q?vI3sGoZwV89AKntBgYyXKf9moJGOGeQq06GhvS+CMtfzTpKxu2sljwwRmCu4?=
- =?us-ascii?Q?Y/Gqp5cyph334uwq2U8cP6EF9Y5xrlH0rmDUoA9g81Z66dD61s6OyrnX+Gsm?=
- =?us-ascii?Q?iQ8ezFHBd0rtIasjDzZ0JK6sGUMr+XNSuzy0kYKRRZLzZDKmWKNfrrRC0g9g?=
- =?us-ascii?Q?4KTcarOLo2IUtftpkoFjFBnQYWJ3F/QyqJRxHxTbCNDwWlcZe8HclUeqHEPM?=
- =?us-ascii?Q?M4z+jB3HHfua3+7vMfamiPjHrBGLOjHtxGkUBDC/DZEj9UyOTYhsFMRpNKsm?=
- =?us-ascii?Q?+vhRTmOHkyIOWZejbxU=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 136ef04d-367a-4d88-e823-08dbd9644c4f
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 16:21:40.6003
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eAaioME1vfQL5GTPICAabnvp3evdCDZZEQCxCOL+uhnz2bZzMAkjQ5wByCKENF8fn1o2X2kL08ATfuTIrGRo7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8566
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.252.13.136]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 06:34:48AM +0000, Pawel Laszczak wrote:
-> 
-> >
-> >hi Pawel Laszczak
-> >
-> >Recently, I met the problem when use uvc. UVC report jpg header error.
-> >
-> >Basic reproduce steps.
-> >Gadget side:
-> >1 -
-> >	https://urldefense.com/v3/__https://gist.github.com/kbingham/c39c
-> >4cc7c20882a104c08df5206e2f9f?permalink_comment_id=3270713__;!!EHscm
-> >S1ygiU1lA!H1h8GlLnbS6vqklXm_2qGyinP638O62Kk2eLB9zeMkjAGXUAPYyPXDL
-> >FasSqYt16xq0RGT0Ff-cP4A$
-> >	uvc-gadget.sh start
-> >2 -
-> >	https://urldefense.com/v3/__https://git.ideasonboard.org/uvc-
-> >gadget.git__;!!EHscmS1ygiU1lA!H1h8GlLnbS6vqklXm_2qGyinP638O62Kk2eLB9z
-> >eMkjAGXUAPYyPXDLFasSqYt16xq0RGT1ogOdRQA$
-> >	uvc-gadget -i test.jpg
-> >
-> >
-> >Host side:
-> >	https://urldefense.com/v3/__https://github.com/thekvs/uvccapture2
-> >__;!!EHscmS1ygiU1lA!H1h8GlLnbS6vqklXm_2qGyinP638O62Kk2eLB9zeMkjAGX
-> >UAPYyPXDLFasSqYt16xq0RGT1MNlKiXA$
-> >	uvccapture2 --device /dev/video0  --resolution 640x360 --count 1 --
-> >result 8qxp.jpeg
-> >
-> >	It will report jpeg header error.
-> >
-> >
-> >After debugs, I found two problem.
-> >
-> >Problem 1, sg is enabled. so uvc driver will use sg. each package include two
-> >trb,  trb0 is 8bytes header, trb1 is 1016bytes. total 1024.
-> >
-> >num_trb here is wrong.
-> >it should be
-> >	num_trb = priv_ep->interval * request->num_mapped_sgs.
-> >
-> >because priv_ep->interval is 1, I just simple set to request->num_mapped_sg
-> >as below patch. USB analyer show one whole 1024 ISO package sent out as
-> >expectation although document said only support one TD when use ISO
-> >(Maybe my doc is too old).
-> 
-> Support for sg  in uvc has been added after upstreaming this driver, so the driver
-> needs some improvement. 
-> 
-> Calculating of num_trb probably will more complicated change.
-> 
-> You can see how it is implemented in 
-> https://elixir.bootlin.com/linux/latest/source/drivers/usb/gadget/udc/cdns2/cdns2-gadget.c#L412.
-> 
-> CDNS2 is different controller and support only HS but has borrowed the DMA part from CDNS3.
-> It was upsteamed after adding sg to UVC.
-> 
-> Regarding TD, it is true that controller can support only one TD per  SOF but this TD can contain many TRBs
+This patch series aims to add several features of the dw-mipi-dsi phy
+driver that are missing or need to be updated.
 
-Okay, great. I can work a patch if I can resolve problem 2.
+First patch adds runtime PM functionality to the driver.
 
-> 
-> >
-> >diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-
-> >gadget.c
-> >index 69a44bd7e5d02..8cc99a885883f 100644
-> >--- a/drivers/usb/cdns3/cdns3-gadget.c
-> >+++ b/drivers/usb/cdns3/cdns3-gadget.c
-> >@@ -1125,10 +1125,7 @@ static int cdns3_ep_run_transfer(struct
-> >cdns3_endpoint *priv_ep,
-> >        struct scatterlist *s = NULL;
-> >        bool sg_supported = !!(request->num_mapped_sgs);
-> >
-> >-       if (priv_ep->type == USB_ENDPOINT_XFER_ISOC)
-> >-               num_trb = priv_ep->interval;
-> >-       else
-> >-               num_trb = sg_supported ? request->num_mapped_sgs : 1;
-> >+       num_trb = sg_supported ? request->num_mapped_sgs : 1;
-> >
-> >        if (num_trb > priv_ep->free_trbs) {
-> >                priv_ep->flags |= EP_RING_FULL;
-> >
-> >
-> >*** Problem 2 ***
-> >
-> >According to doc and my observation, looks like hardware fetch data into FIFO
-> >when get SOF, then transfer data when get IN token. Each SOF will increase
-> >TRB regardless it is ready or not.
-> 
-> Yes, but this fetched data will be sent in next  ITP. 
-> 
-> >
-> >When gadget complete equeue ISO data, so SOF will increase TRB regardless if
-> >there are IN token.
-> >
-> >   SOF       SOF       SOF     SOF  IN    SOF ....
-> >      TRB0      TRB1      TRB2      TRB3  ...
-> >
-> >
-> >Host may start get data at some time after gadget queue data.
-> >
-> >So TRB0..2 data will be lost.
-> >
-> >If it is audio data, it should be okay. But for uvc, it is jpeg header, so host side
-> >report error.
-> >
-> >I checked dwc gadget driver, which start equeue ISO data only get NYET.
-> >
-> >I check cdns spec, there are ISOERR. But it is never happen. According to
-> >document, ISOERR should issue when IN token and FIFO no data.
-> >
-> 
-> Current CDNS3 driver has disabled ISOERR. Did you enable it?
+Second patch adds a clock provider generated by the PHY itself.  As
+explained in the commit log of the second patch, a clock declaration is
+missing.  Since this clock is parent of 'dsi_k', it leads to an orphan
+clock.  Most importantly this patch is an anticipation for future
+versions of the DSI PHY, and its inclusion within the display subsystem
+and the DRM framework.
 
-Yes, I enabled all IRQ.
+Last patch fixes a corner effect introduced previously.  Since 'dsi' and
+'dsi_k' are gated by the same bit on the same register, both reference
+work as peripheral clock in the device-tree.
 
-+       if (priv_ep->type == USB_ENDPOINT_XFER_ISOC && priv_ep->dir) {
-+               priv_ep->flags |= EP_QUIRK_ISO_IN_NOST;
-+               reg |= 0xFFFF;
-+       }
+Raphael Gallais-Pou (2):
+  drm/stm: dsi: expose DSI PHY internal clock
+  arm: dts: st: fix DSI peripheral clock on stm32mp15 boards
 
-Supposed ISOERR should happen even DMA is disabled. 
-But I also tried enable DMA, and using lenght 0 TRB and link to loop.
+Yannick Fertre (1):
+  drm/stm: dsi: add pm runtime ops
 
-Still no ISOERR happen. I can see TRBADDR changed, but still no ISOERR 
+ arch/arm/boot/dts/st/stm32mp157.dtsi          |   2 +-
+ arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts |   2 +-
+ arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts |   2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts |   2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts |   2 +-
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         | 274 +++++++++++++++---
+ 6 files changed, 240 insertions(+), 44 deletions(-)
 
+-- 
+2.25.1
 
- irq/447-5b13000-200     [000] d..1.    78.662729: cdns3_epx_irq: IRQ for ep2in: 00000804 IOC , ep_traddr: c0086018 ep_last_sid: 00000000 use_streams: 0                                           
-										 ^^^^^^^
- irq/447-5b13000-200     [000] d..1.    78.662851: cdns3_epx_irq: IRQ for ep2in: 00000804 IOC , ep_traddr: c008600c ep_last_sid: 00000000 use_streams: 0                                                           
- irq/447-5b13000-200     [000] d..1.    78.662975: cdns3_epx_irq: IRQ for ep2in: 00000804 IOC , ep_traddr: c0086018 ep_last_sid: 00000000 use_streams: 0 
-
-STS is 0x804, only IOC set. 
-
-Frank
-
-> 
-> >I tried below method
-> >	1.  Delay queue TRB, but no ISOERR.
-> >	2.  queue a lenght 0 TRB,but no ISOERR
-> >
-> >My question is how to delay queue TRB to ISO IN token really happen to avoid
-> >lost JPEG header.
-> >
-> >Frank
-> >
-> >
-> >
-> >
-> >
-> 
