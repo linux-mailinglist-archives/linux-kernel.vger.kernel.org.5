@@ -2,194 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B597DBB7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1477A7DBB80
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjJ3OOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S232953AbjJ3OOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3OOK (ORCPT
+        with ESMTP id S231433AbjJ3OOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:14:10 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87AFBB7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:14:04 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UDoRib024485;
-        Mon, 30 Oct 2023 14:13:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qf1FSvwVcgKaq/tTfkCQ5FYVwbL6fYlm/tzw6/UI2vA=;
- b=dPut4q9jeYSqznN+vb/hkC9xuIWuzjptg/YynLPJ++xah46n0V0Bem0VGMg0tIWDplVk
- wNQ9jVmAlrC3nosoK+go3JaPBEO2dAkx9SRKuZr2ZDKVbuew1IK5Ll4Zccb71uHvDi8K
- +DJFRakTn/NhZYtDwewCMKYHvKNfmvqARIgtgjfukA+W2EVcav9PPulguC7xxx9tmt7m
- P91cekuuYL0s+WNrNEvepcme73xLDDEomzWu0icr1oF9IS9DIcsW8aAt0MstgtFJERg2
- U6/9Xc4nyXqagEmNRV8qUjo9/A9R+Yf+0Kq3KVf0hBDllGLOid1M6XSUBQEM2xTjqRrU 4A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u2dqp8sme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 14:13:43 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39UDoxDJ025735;
-        Mon, 30 Oct 2023 14:13:43 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u2dqp8sk3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 14:13:42 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39UBxL3s007726;
-        Mon, 30 Oct 2023 14:13:41 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1dmn9hkp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 14:13:41 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39UEDfb326084092
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Oct 2023 14:13:41 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 78B3658059;
-        Mon, 30 Oct 2023 14:13:41 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2258D58058;
-        Mon, 30 Oct 2023 14:13:38 +0000 (GMT)
-Received: from [9.171.79.141] (unknown [9.171.79.141])
-        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 30 Oct 2023 14:13:37 +0000 (GMT)
-Message-ID: <3873b6cd-a983-41fe-8618-a5e5635a7c82@linux.vnet.ibm.com>
-Date:   Mon, 30 Oct 2023 19:43:36 +0530
+        Mon, 30 Oct 2023 10:14:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11865C1;
+        Mon, 30 Oct 2023 07:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698675249; x=1730211249;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RbRt9CJjjdF4MIbpEP7sGvcVuzygZE5pqZR+8QLCnEA=;
+  b=D0idpo8NTe+Cv6kdMGnIgcnmNSkUv5jzPnZh77sSzZtKdrHnHFgRK917
+   4MzmcaaDtMFY013yxqpZmr5T70BrXVi6JlWwjeWzZPzMkn6D1BlUTFhd3
+   TKT96YgrtPH0UOFrnuVVssEELH79O1MU0HCrZcJrXRZwFJW03Jxw5aSzb
+   AgE0gL0mXcgn5ZGxRO++jGb9CPrJByujbNYeTaQ7EAC0qIQEEsvFNsRvn
+   8tUkeLR4ryTR+BZAoiN/WkhUk4AEn3Nj5yiK7HlENDFzDorQzXRT37L2P
+   fGU6AqwvBsUmuklh33Uiwd/cTCWrrMezgn6wqGuvI7NZeB2GswausTO6R
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="378447803"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="378447803"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 07:14:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="710104216"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="710104216"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 30 Oct 2023 07:14:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 03883330; Mon, 30 Oct 2023 16:14:04 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Raag Jadav <raag.jadav@intel.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v1 1/1] pinctrl: tangier: Enable 910 Ohm bias
+Date:   Mon, 30 Oct 2023 16:14:04 +0200
+Message-Id: <20231030141404.3242102-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/fair: Fix the decision for load balance
-Content-Language: en-US
-To:     Keisuke Nishimura <keisuke.nishimura@inria.fr>
-Cc:     linux-kernel@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20231027171742.1426070-1-keisuke.nishimura@inria.fr>
- <27d88cac-95d2-4861-b79c-410e3cfd96a9@linux.vnet.ibm.com>
- <CAKfTPtC=H4P_Hn7koJfWwfqVc7UyWNzzyrFWymnoYVK3pJkiDQ@mail.gmail.com>
- <c78aa476-44c7-4691-ae6b-d4b5ebc83c25@inria.fr>
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <c78aa476-44c7-4691-ae6b-d4b5ebc83c25@inria.fr>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ayX-7TOKj8GQjjCC5_OBC7kZrR9nRAIR
-X-Proofpoint-GUID: M7RoVcEim-cjLZn_ijKuRUaElRoLWQ9O
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- priorityscore=1501 phishscore=0 adultscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310300108
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Family 7 (I2C) supports special bias value, i.e. 910 Ohm.
 
+Enable it for configuring pin.
 
-On 10/30/23 3:32 PM, Keisuke Nishimura wrote:
-> 
-> 
-> On 30/10/2023 09:05, Vincent Guittot wrote:
->> On Mon, 30 Oct 2023 at 05:03, Shrikanth Hegde
->> <sshegde@linux.vnet.ibm.com> wrote:
->>>
->>>
->>>
->>> On 10/27/23 10:47 PM, Keisuke Nishimura wrote:
->>>> should_we_balance is called for the decision to do load-balancing.
->>>> When sched ticks invoke this function, only one CPU should return
->>>> true. However, in the current code, two CPUs can return true. The
->>>> following situation, where b means busy and i means idle, is an
->>>> example because CPU 0 and CPU 2 return true.
->>>>
->>>>          [0, 1] [2, 3]
->>>>           b  b   i  b
->>>>
->>>> This fix checks if there exists an idle CPU with busy sibling(s)
->>>> after looking for a CPU on an idle core. If some idle CPUs with busy
->>>> siblings are found, just the first one should do load-balancing.
->>>>
->>>
->>>> Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the
->>>> whole core for load balance")
->>>> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
->>>> ---
->>>>   kernel/sched/fair.c | 5 +++--
->>>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>> index 2048138ce54b..eff0316d6c7d 100644
->>>> --- a/kernel/sched/fair.c
->>>> +++ b/kernel/sched/fair.c
->>>> @@ -11083,8 +11083,9 @@ static int should_we_balance(struct lb_env
->>>> *env)
->>>>                return cpu == env->dst_cpu;
->>>>        }
->>>>
->>>
->>>
->>> There is comment above this /* Are we the first idle CPU? */
->>> Maybe update that comment as /* Are we the first idle core */
->>
->> I was about to say the same but it's not always true. If we are at SMT
->> level, we look for an idle CPU in the core
->>
-> 
-> Maybe I should update the comment with the additional contexts:
-> 
-> /*
->  * Are we the first idle core in a sched_domain not-sharing capacity,
->  * or the first idle CPU in a sched_domain sharing capacity?
->  */
-> 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/intel/pinctrl-tangier.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/drivers/pinctrl/intel/pinctrl-tangier.c b/drivers/pinctrl/intel/pinctrl-tangier.c
+index 40dd60c9e526..007bca1cf224 100644
+--- a/drivers/pinctrl/intel/pinctrl-tangier.c
++++ b/drivers/pinctrl/intel/pinctrl-tangier.c
+@@ -382,6 +382,9 @@ static int tng_config_set_pin(struct tng_pinctrl *tp, unsigned int pin,
+ 		case 2000:
+ 			term = BUFCFG_PUPD_VAL_2K;
+ 			break;
++		case 910:
++			term = BUFCFG_PUPD_VAL_910;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -405,6 +408,9 @@ static int tng_config_set_pin(struct tng_pinctrl *tp, unsigned int pin,
+ 		case 2000:
+ 			term = BUFCFG_PUPD_VAL_2K;
+ 			break;
++		case 910:
++			term = BUFCFG_PUPD_VAL_910;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+-- 
+2.40.0.1.gaa8946217a0b
 
-/*
- * Are we the first idle core in a MC or higher domain
- * or the first idle CPU in a SMT domain
- */
-
-
-> 
->>>
->>>> -     if (idle_smt == env->dst_cpu)
->>>> -             return true;
->>>> +     /* Is there an idle CPU with busy siblings? */
->>> nit: We can keep the comment style fixed in this function.
->>> /* Are we the first idle CPU with busy siblings */
->>>
-> 
-> OK, agreed. Should I create version 2?
-
-Yes. That would be good.
-
-> 
-> thanks,
-> Keisuke
-> 
->>>> +     if (idle_smt != -1)
->>>> +             return idle_smt == env->dst_cpu;
->>>>
->>>>        /* Are we the first CPU of this group ? */
->>>>        return group_balance_cpu(sg) == env->dst_cpu;
->>>
->>> code changes LGTM
->>> Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
