@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AAB7DBFE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9AF7DBFDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbjJ3SaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 14:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        id S229763AbjJ3SaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 14:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjJ3SaX (ORCPT
+        with ESMTP id S229453AbjJ3SaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 14:30:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02D5C0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698690574;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yn5bEsH9hOioNoGmXsOxQsfDpuqIq14dOr/Md8od0yY=;
-        b=FEvcu+aw37qWFuXp9M2E/iOy4HDDFiJE3lONLo5RKWN0MIhrlGOewYWpX65Sjiiq5+aVSy
-        mILuylYzGX/YpIqzbW/M+Xvbsu4H0zcB0Bb1SKiksZushN3l1kwt5AhJQkG3D/dmXcFo6F
-        RpyoZPQZKKbgNHrs4iBTY7PGNsConLs=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-403-4TDtPzbbMI6fk-hSIFku_A-1; Mon, 30 Oct 2023 14:29:33 -0400
-X-MC-Unique: 4TDtPzbbMI6fk-hSIFku_A-1
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5b0c27d504fso13571047b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:29:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698690573; x=1699295373;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yn5bEsH9hOioNoGmXsOxQsfDpuqIq14dOr/Md8od0yY=;
-        b=a/J4opOYc6nhaiDL3IUCywcZipaetWPrzYncEftE1CVrsXj5yS5l/eAQ4dBoa/9MnX
-         N4/APX9BfAeIlvdufRAMeWhu9lC2038MJHeIe+vbXqB2Xuhu6mJsU2ueIfA/dPIBs3+s
-         P3wKkm0ZIVbpdSGIp5nWc3UHCVoW3cfHtay4vaeGPOx967X9+QNde8nNPLEgm05874+Q
-         DGZA0i3F+POrPg12OwLEGi21D2x5RHfUBVnU9fFB3D7TXsvsJ7PvyT/4zZ5FuobhzS6b
-         M9pUlO99SxcizVzYqssm2ExB8cJrjqqh37zDBCIdKHPi/sIGvGf0mWarsLEWESOp+kXD
-         5zyw==
-X-Gm-Message-State: AOJu0YxxKzru0zCILHw0+msqF4VXO6C1InA+ashrIQ7mj12GhNl9DTWz
-        YSlkTrNwVUvynyfbjpfUQrlV4+ZXlzHzHwugr/S+I5h+9F0v50GuZtxeIFQuINSMbfsjaU99lJM
-        VpHFqZ4sjbqm1e/YZPGf/h/oKcuS+ye6DMQ4TAe4B
-X-Received: by 2002:a81:a983:0:b0:5b0:4055:73dc with SMTP id g125-20020a81a983000000b005b0405573dcmr397794ywh.14.1698690572716;
-        Mon, 30 Oct 2023 11:29:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFHwZHvblWDFfPKVMswhwr8dSFq2aB6UHcY+CmtK5BoOycrUaKSqR587AHdlzix89m1z5RjFpcSltcH24h0MPM=
-X-Received: by 2002:a81:a983:0:b0:5b0:4055:73dc with SMTP id
- g125-20020a81a983000000b005b0405573dcmr397787ywh.14.1698690572436; Mon, 30
- Oct 2023 11:29:32 -0700 (PDT)
+        Mon, 30 Oct 2023 14:30:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74B5C1;
+        Mon, 30 Oct 2023 11:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698690614; x=1730226614;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4HbE7+pI3nVZQ/2i4nki9aT3RMSseitiI/9E95mTiFw=;
+  b=Tt9bdLNAN9AuHdtd86HCT+NWYbGmDE5na92gL29xy4P0ET+GlZl6fRQJ
+   MXx2Y/F/lVz5shNVpzYE9KSbBJdL4bXIMIqqonhN/zqwfcvMHjJoKASIq
+   E+XXOwJR6C6vry4yxFvA/HdF+ci3toQGSmAs4U0xQROPpA1nVjH6RK9qe
+   OKxjmbswuqdFteouLE8XMj4Y+DPFeMJpHVr2FEDvcA0LRmrtTNUuawicq
+   lwhgnKrxrUdURm8HE7CbcuHv+1yOaOXnZCM2nWzpFU/0fRJ+crzTQJGUh
+   QsRrp0wAIKeVl5/0U5PihvArXS2iRa5KpM62wfDoFB+A3kwpTJCRhtr/N
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1008952"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="1008952"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 11:30:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="760367344"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="760367344"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 11:30:11 -0700
+Received: from [10.212.90.12] (kliang2-mobl1.ccr.corp.intel.com [10.212.90.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id EA6BA580699;
+        Mon, 30 Oct 2023 11:30:08 -0700 (PDT)
+Message-ID: <b8139aff-4de6-4291-99de-2383d5aa3656@linux.intel.com>
+Date:   Mon, 30 Oct 2023 14:30:07 -0400
 MIME-Version: 1.0
-References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
- <CAJaqyWc59oRS86sygnUR-D-wQ-N2TbofsG1hxAmCiGwkb4y42A@mail.gmail.com> <6fec5512-66fb-4d94-b225-1351e6d5e8cb@oracle.com>
-In-Reply-To: <6fec5512-66fb-4d94-b225-1351e6d5e8cb@oracle.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Mon, 30 Oct 2023 19:28:56 +0100
-Message-ID: <CAJaqyWd5eJ1zstxTfkvYct1A0t0HE0JVmcJg-U-PZLZSwTpnxA@mail.gmail.com>
-Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
-To:     Steven Sistare <steven.sistare@oracle.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 07/17] perf stat: Add functions to set counter
+ bitmaps for hardware-grouping method
+Content-Language: en-US
+To:     "Wang, Weilin" <weilin.wang@intel.com>,
+        "Rogers, Ian" <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>
+Cc:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Taylor, Perry" <perry.taylor@intel.com>,
+        "Alt, Samantha" <samantha.alt@intel.com>,
+        "Biggers, Caleb" <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Yang Jihong <yangjihong1@huawei.com>
+References: <20231014015202.1175377-1-weilin.wang@intel.com>
+ <20231014015202.1175377-8-weilin.wang@intel.com>
+ <ba847510-bdc4-4298-8d9c-10933023e712@linux.intel.com>
+ <CO6PR11MB56357BB9FFED934E2ED52E36EEA1A@CO6PR11MB5635.namprd11.prod.outlook.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CO6PR11MB56357BB9FFED934E2ED52E36EEA1A@CO6PR11MB5635.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,191 +84,357 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 6:56=E2=80=AFPM Steven Sistare
-<steven.sistare@oracle.com> wrote:
->
-> On 10/30/2023 11:12 AM, Eugenio Perez Martin wrote:
-> > On Thu, Oct 26, 2023 at 10:09=E2=80=AFPM Steve Sistare
-> > <steven.sistare@oracle.com> wrote:
-> >>
-> >> mlx5_vdpa does not preserve userland's view of vring base for the cont=
-rol
-> >> queue in the following sequence:
-> >>
-> >> ioctl VHOST_SET_VRING_BASE
-> >> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
-> >>   mlx5_vdpa_set_status()
-> >>     setup_cvq_vring()
-> >>       vringh_init_iotlb()
-> >>         vringh_init_kern()
-> >>           vrh->last_avail_idx =3D 0;
-> >> ioctl VHOST_GET_VRING_BASE
-> >>
-> >> To fix, restore the value of cvq->vring.last_avail_idx after calling
-> >> vringh_init_iotlb.
-> >>
-> >> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> >> ---
-> >>  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
-> >>  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
-> >>  include/linux/vringh.h            |  2 ++
-> >>  3 files changed, 38 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net=
-/mlx5_vnet.c
-> >> index 946488b8989f..f64758143115 100644
-> >> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> >> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> >> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_de=
-v *mvdev)
-> >>         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
-> >>         int err =3D 0;
-> >>
-> >> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> >> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
-> >> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
-> >> +
-> >>                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_f=
-eatures,
-> >>                                         MLX5_CVQ_MAX_ENT, false,
-> >>                                         (struct vring_desc *)(uintptr_=
-t)cvq->desc_addr,
-> >>                                         (struct vring_avail *)(uintptr=
-_t)cvq->driver_addr,
-> >>                                         (struct vring_used *)(uintptr_=
-t)cvq->device_addr);
-> >>
-> >> +               if (!err)
-> >> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_=
-idx);
-> >> +       }
-> >>         return err;
-> >>  }
-> >>
-> >> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> >> index 7b8fd977f71c..799762c83007 100644
-> >> --- a/drivers/vhost/vringh.c
-> >> +++ b/drivers/vhost/vringh.c
-> >> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct=
- vringh *vrh,
-> >>         }
-> >>  }
-> >>
-> >> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
-> >> +                           int (*putu16)(const struct vringh *vrh,
-> >> +                               __virtio16 *p, u16 val))
-> >> +{
-> >> +    int ret;
-> >> +
-> >> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
-> >> +    if (ret)
-> >> +        return ret;
-> >> +
-> >> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
-> >> +    if (ret)
-> >> +        return ret;
-> >> +
-> >
-> > I don't think VMM should be able to modify the guest's vring memory.
-> > For vringh it should be enough with the next line, no need for
-> > previous.
-> >
-> > If I'm not wrong this was solved in the simulator by [1] and [2]. Am I
-> > missing something?
-> >
-> > Thanks!
-> >
-> > [1] https://lkml.org/lkml/2023/1/18/1045
-> > [2] https://www.spinics.net/lists/kernel/msg4705724.html
-> >
-> >> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
-> >> +    return 0;
-> >> +}
-> >> +
->
-> OK, that makes sense.  I just verified that the idx I pass to vringh_set_=
-base_iotlb
-> does indeed match vrh->vring.avail->idx and vrh->vring.used->idx.
->
-> With no need to putu16, the fix could be confined to a few lines in the m=
-lx5 driver:
->
-> setup_cvq_vring(struct mlx5_vdpa_dev *mvdev) {
->     idx =3D cvq->vring.last_avail_idx;
->     vringh_init_iotlb(&cvq->vring, ...);
->     cvq->vring.last_avail_idx =3D  cvq->vring.last_used_idx =3D idx;
-> }
->
-> However, I wonder if re-syncing with the guest values would be a more rob=
-ust fix:
->
-> setup_cvq_vring(struct mlx5_vdpa_dev *mvdev) {
->     vringh_init_iotlb(&cvq->vring, ...);
->     vringh_sync_iotlb(&cvq->vring);
-> }
->
-> vringh_sync_iotlb(struct vringh *vrh) {
->     getu16_iotlb(vrh, &vrh->last_avail_idx, &vrh->vring.avail->idx);
 
-This is not valid. For example in the case of the net RX queue. The
-guest fills it periodically with rx buffers, but the next index to use
-is not avail_index but the index that vhost handles internally.
 
-If any, it *could* be valid to restore both of them from used_idx,
-since we trust the source to sync with the used ring. But this will
-not be valid once we migrate inflight descriptors too. If parent
-drivers start just restoring used idx for both, we will need to
-complicate behavior of the feature flag that indicates the vDPA device
-supports in-flight.
-
->     getu16_iotlb(vrh, &vrh->last_used_idx, &vrh->vring.used->idx);
-> }
->
-> - Steve
->
-> >>  /* Userspace access helpers: in this case, addresses are really users=
-pace. */
-> >>  static inline int getu16_user(const struct vringh *vrh, u16 *val, con=
-st __virtio16 *p)
-> >>  {
-> >> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struc=
-t vhost_iotlb *iotlb,
-> >>  }
-> >>  EXPORT_SYMBOL(vringh_set_iotlb);
-> >>
-> >> +/**
-> >> + * vringh_set_base_iotlb - set avail_idx and used_idx
-> >> + * @vrh: the vring
-> >> + * @idx: the value to set
-> >> + */
-> >> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
-> >> +{
-> >> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
-> >> +}
-> >> +EXPORT_SYMBOL(vringh_set_base_iotlb);
-> >> +
-> >> +
-> >>  /**
-> >>   * vringh_getdesc_iotlb - get next available descriptor from ring wit=
-h
-> >>   * IOTLB.
-> >> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
-> >> index c3a8117dabe8..e9b8af4e6a5e 100644
-> >> --- a/include/linux/vringh.h
-> >> +++ b/include/linux/vringh.h
-> >> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 f=
-eatures,
-> >>                          struct vring_avail *avail,
-> >>                          struct vring_used *used);
-> >>
-> >> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
-> >> +
-> >>  int vringh_getdesc_iotlb(struct vringh *vrh,
-> >>                          struct vringh_kiov *riov,
-> >>                          struct vringh_kiov *wiov,
-> >> --
-> >> 2.39.3
-> >>
-> >
+On 2023-10-30 1:46 p.m., Wang, Weilin wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Liang, Kan <kan.liang@linux.intel.com>
+>> Sent: Monday, October 30, 2023 8:32 AM
+>> To: Wang, Weilin <weilin.wang@intel.com>; Rogers, Ian
+>> <irogers@google.com>; Peter Zijlstra <peterz@infradead.org>; Ingo Molnar
+>> <mingo@redhat.com>; Arnaldo Carvalho de Melo <acme@kernel.org>;
+>> Alexander Shishkin <alexander.shishkin@linux.intel.com>; Jiri Olsa
+>> <jolsa@kernel.org>; Namhyung Kim <namhyung@kernel.org>; Hunter, Adrian
+>> <adrian.hunter@intel.com>
+>> Cc: linux-perf-users@vger.kernel.org; linux-kernel@vger.kernel.org; Taylor,
+>> Perry <perry.taylor@intel.com>; Alt, Samantha <samantha.alt@intel.com>;
+>> Biggers, Caleb <caleb.biggers@intel.com>; Mark Rutland
+>> <mark.rutland@arm.com>; Yang Jihong <yangjihong1@huawei.com>
+>> Subject: Re: [RFC PATCH v2 07/17] perf stat: Add functions to set counter
+>> bitmaps for hardware-grouping method
+>>
+>>
+>>
+>> On 2023-10-13 9:51 p.m., weilin.wang@intel.com wrote:
+>>> From: Weilin Wang <weilin.wang@intel.com>
+>>>
+>>> Add metricgroup__event_info data structure to represent an event in the
+>>> metric grouping context; the list of counters and the PMU name an event
+>>> should be collected with.
+>>>
+>>> Add functions to parse event counter info from pmu-events and generate a
+>>> list of metricgroup__event_info data to prepare grouping.
+>>>
+>>> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+>>> ---
+>>>  tools/perf/util/metricgroup.c | 196
+>> +++++++++++++++++++++++++++++++++-
+>>>  tools/perf/util/metricgroup.h |  27 +++++
+>>>  2 files changed, 220 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+>>> index 8d4e29eb1..6af8a7341 100644
+>>> --- a/tools/perf/util/metricgroup.c
+>>> +++ b/tools/perf/util/metricgroup.c
+>>> @@ -1432,6 +1432,182 @@ static int build_combined_expr_ctx(const
+>> struct list_head *metric_list,
+>>>  	return ret;
+>>>  }
+>>>
+>>> +/**
+>>> + * set_counter_bitmap - The counter bit mapping: [8-15,0-7], e.g. the GP0
+>> is the
+>>> + * 8th bit and GP7 is the 1st bit in this 16-bits bitmap. It is helpful for
+>>> + * assigning GP4-7 before GP0-3 because some events can be collected
+>> using GP0-3
+>>> + * only on some platforms.
+>>
+>> The bitmap looks weird. Can we use the normal bitmap and always search
+>> from the last set bit to find the available counter?
+>>
+>>
+> 
+> Hi Kan,
+> 
+> Yes, I just want to ensure to start using the highest indexed counter first. 
+> Could you please let me know what is the best way to search from the last set bit?
 >
 
+I didn't find any existing helper that does reverse search from the last
+set bit. But it should not be hard to implement one.
+
+An alternative way would start the search from the middle, e.g.,
+for_each_set_bit_wrap(), which should be what you try to achieve here.
+
+Thanks,
+Kan
+> Thanks,
+> Weilin
+> 
+> 
+>>> + */
+>>> +static int set_counter_bitmap(int pos, unsigned long *bitmap)
+>>> +{
+>>> +	if (pos >= NR_COUNTERS || pos < 0)
+>>> +		return -EINVAL;
+>>> +	if (pos <= 7)
+>>> +		pos = TRANSFER_FIRST_BYTE(pos);
+>>> +	else
+>>> +		pos = TRANSFER_SEC_BYTE(pos);
+>>> +	*bitmap |= 1ul << pos;
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int parse_fixed_counter(const char *counter,
+>>> +			      unsigned long *bitmap,
+>>> +			      bool *fixed)
+>>> +{
+>>> +	int ret = -ENOENT;
+>>> +	//TODO: this pattern is different on some other platforms
+>>> +	const char *pattern = "Fixed counter ";
+>>> +	int pos = 0;
+>>> +
+>>> +	if (!strncmp(counter, pattern, strlen(pattern))) {
+>>> +		pos = atoi(counter + strlen(pattern));
+>>> +		ret = set_counter_bitmap(pos, bitmap);
+>>> +		if (ret)
+>>> +			return ret;
+>>> +		*fixed = true;
+>>> +		return 0;
+>>> +	}
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +/**
+>>> + * parse_counter - Parse event counter info from pmu-events and set up
+>> bitmap
+>>> + * accordingly.
+>>> + *
+>>> + * @counter: counter info string to be parsed.
+>>> + * @bitmap: bitmap to set based on counter info parsed.
+>>> + * @fixed: is set to true if the event uses fixed counter.
+>>> + */
+>>> +static int parse_counter(const char *counter,
+>>> +			unsigned long *bitmap,
+>>> +			bool *fixed)
+>>> +{
+>>> +	int ret = 0;
+>>> +	char *p;
+>>> +	char *tok;
+>>> +	int pos = 0;
+>>> +
+>>> +	ret = parse_fixed_counter(counter, bitmap, fixed);
+>>> +	// ret==0 means matched with fixed counter
+>>
+>> Move the comments to the above of parse_fixed_counter().
+>> Uses /**/.
+>>
+>>> +	if (ret == 0)
+>>> +		return ret;
+>>> +
+>>> +	p = strdup(counter);
+>>> +	tok = strtok(p, ",");
+>>> +	if (!tok)
+>>> +		return -ENOENT;
+>>> +
+>>> +	while (tok) {
+>>> +		pos = atoi(tok);
+>>> +		ret = set_counter_bitmap(pos, bitmap);
+>>> +		if (ret)
+>>> +			return ret;
+>>> +		tok = strtok(NULL, ",");
+>>> +	}
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static struct metricgroup__event_info *event_info__new(const char
+>> *name,
+>>> +						      const char *pmu_name,
+>>> +						      const char *counter,
+>>> +						      bool free_counter)
+>>> +{
+>>> +	int ret = 0;
+>>> +	char *bit_buf = malloc(NR_COUNTERS);
+>>> +	bool fixed_counter = false;
+>>> +	struct metricgroup__event_info *e;
+>>> +
+>>> +	e = zalloc(sizeof(*e));
+>>> +	if (!e)
+>>> +		return NULL;
+>>> +	if (!pmu_name)
+>>> +		pmu_name = "core";
+>>> +
+>>> +	e->name = name;
+>>> +	e->free_counter = free_counter;
+>>> +	e->pmu_name = strdup(pmu_name);
+>>> +	if (free_counter) {
+>>> +		ret = set_counter_bitmap(0, e->counters);
+>>> +		if (ret)
+>>> +			return NULL;
+>>> +	} else {
+>>> +		ret = parse_counter(counter, e->counters, &fixed_counter);
+>>> +		if (ret)
+>>> +			return NULL;
+>>> +		e->fixed_counter = fixed_counter;
+>>> +	}
+>>> +
+>>> +	bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf,
+>> NR_COUNTERS);
+>>> +	pr_debug("Event %s requires pmu %s counter: %s bitmap %s,
+>> [pmu=%s]\n",
+>>> +		e->name, e->pmu_name, counter, bit_buf, pmu_name);
+>>> +
+>>> +	return e;
+>>> +}
+>>> +
+>>> +struct metricgroup__add_metric_event_data {
+>>> +	struct list_head *list;
+>>> +	/* pure event name, exclude umask and other info*/
+>>> +	const char *event_name;
+>>> +	/* event name and umask if applicable*/
+>>> +	const char *event_id;
+>>> +};
+>>> +
+>>> +static int metricgroup__add_metric_event_callback(const struct pmu_event
+>> *pe,
+>>> +						 const struct
+>> pmu_events_table *table __maybe_unused,
+>>> +						 void *data)
+>>> +{
+>>> +	struct metricgroup__event_info *event;
+>>> +	struct metricgroup__add_metric_event_data *d = data;
+>>> +
+>>> +	if (!strcasecmp(pe->name, d->event_name)) {
+>>> +		event = event_info__new(d->event_id, pe->pmu, pe->counter,
+>> /*free_counter=*/false);
+>>> +		if (!event)
+>>> +			return -ENOMEM;
+>>> +		list_add(&event->nd, d->list);
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +/**
+>>> + * get_metricgroup_events - Find counter requirement of events from the
+>>> + * pmu_events table
+>>> + * @full_id: the full event identifiers.
+>>> + * @table: pmu_events table that is searched for event data.
+>>> + * @event_info_list: the list that the new event counter info added to.
+>>> + */
+>>> +static int get_metricgroup_events(const char *full_id,
+>>> +				 const struct pmu_events_table *table,
+>>> +				 struct list_head *event_info_list)
+>>> +{
+>>> +	LIST_HEAD(list);
+>>> +	int ret = 0;
+>>> +	const char *id;
+>>> +	const char *rsep, *sep = strchr(full_id, '@');
+>>> +
+>>> +	if (sep) {
+>>> +		rsep = strchr(full_id, ',');
+>>> +		id = strndup(sep + 1, rsep - sep - 1);
+>>> +		if (ret)
+>>> +			goto out;
+>>> +	} else {
+>>> +		id = full_id;
+>>> +	}
+>>> +	{
+>>> +		struct metricgroup__add_metric_event_data data = {
+>>> +			.list = &list,
+>>> +			.event_name = id,
+>>> +			.event_id = full_id,
+>>> +		};
+>>> +		ret = pmu_events_table_for_each_event(table,
+>>> +				metricgroup__add_metric_event_callback,
+>> &data);
+>>> +	}
+>>
+>> Please remove the useless {}
+>>
+>> Thanks,
+>> Kan
+>>> +
+>>> +out:
+>>> +	list_splice(&list, event_info_list);
+>>> +	return ret;
+>>> +}
+>>> +
+>>>  /**
+>>>   * hw_aware_build_grouping - Build event groupings by reading counter
+>>>   * requirement of the events and counter available on the system from
+>>> @@ -1445,9 +1621,25 @@ static int hw_aware_build_grouping(struct
+>> expr_parse_ctx *ctx __maybe_unused,
+>>>  				  const char *modifier __maybe_unused)
+>>>  {
+>>>  	int ret = 0;
+>>> +	struct hashmap_entry *cur;
+>>> +	LIST_HEAD(pmu_info_list);
+>>> +	LIST_HEAD(event_info_list);
+>>> +	size_t bkt;
+>>> +	const struct pmu_events_table *etable = pmu_events_table__find();
+>>> +
+>>> +#define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
+>>> +	hashmap__for_each_entry(ctx->ids, cur, bkt) {
+>>> +		const char *id = cur->pkey;
+>>> +
+>>> +		pr_debug("found event %s\n", id);
+>>> +
+>>> +		ret = get_metricgroup_events(id, etable, &event_info_list);
+>>> +		if (ret)
+>>> +			return ret;
+>>> +	}
+>>>
+>>> -	pr_debug("This is a placeholder\n");
+>>>  	return ret;
+>>> +#undef RETURN_IF_NON_ZERO
+>>>  }
+>>>
+>>>  static void group_str_free(struct metricgroup__group_strs *g)
+>>> @@ -1521,8 +1713,6 @@ static int hw_aware_parse_ids(struct perf_pmu
+>> *fake_pmu,
+>>>  	*out_evlist = parsed_evlist;
+>>>  	parsed_evlist = NULL;
+>>>  err_out:
+>>> -	parse_events_error__exit(&parse_error);
+>>> -	evlist__delete(parsed_evlist);
+>>>  	metricgroup__free_grouping_strs(&groupings);
+>>>  	return ret;
+>>>  }
+>>> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+>>> index 89809df85..3704545c9 100644
+>>> --- a/tools/perf/util/metricgroup.h
+>>> +++ b/tools/perf/util/metricgroup.h
+>>> @@ -5,6 +5,7 @@
+>>>  #include <linux/list.h>
+>>>  #include <linux/rbtree.h>
+>>>  #include <stdbool.h>
+>>> +#include <linux/bitmap.h>
+>>>  #include "pmu-events/pmu-events.h"
+>>>  #include "strbuf.h"
+>>>
+>>> @@ -67,6 +68,32 @@ struct metric_expr {
+>>>  	int runtime;
+>>>  };
+>>>
+>>> +/* Maximum number of counters per PMU*/
+>>> +#define NR_COUNTERS	16
+>>> +/*
+>>> + * Transfer bit position in the bitmap to ensure start assigning counter from
+>>> + * the last GP counter to the first.
+>>> + * bit15 <---> bit0
+>>> + * [GP8-GP15] [GP0-GP7]
+>>> + */
+>>> +#define TRANSFER_FIRST_BYTE(pos) (7 - pos)
+>>> +#define TRANSFER_SEC_BYTE(pos) (23 - pos)
+>>> +
+>>> +/**
+>>> + * An event used in a metric. This info is for metric grouping.
+>>> + */
+>>> +struct metricgroup__event_info {
+>>> +	struct list_head nd;
+>>> +	/** The name of the event. */
+>>> +	const char *name;
+>>> +	/** The name of the pmu the event be collected on. */
+>>> +	const char *pmu_name;
+>>> +	bool fixed_counter;
+>>> +	bool free_counter;
+>>> +	/** The counters the event allowed to be collected on. */
+>>> +	DECLARE_BITMAP(counters, NR_COUNTERS);
+>>> +};
+>>> +
+>>>  /**
+>>>   * Each group is one node in the group string list.
+>>>   */
