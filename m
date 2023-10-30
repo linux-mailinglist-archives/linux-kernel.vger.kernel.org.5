@@ -2,164 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42D97DB1B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8DE7DB1BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjJ3ANA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 20:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S230495AbjJ3Atk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 20:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjJ3AM5 (ORCPT
+        with ESMTP id S229563AbjJ3Ati (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 20:12:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF20EA7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 17:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698624774; x=1730160774;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ty/PnS3WJCZjGn2JzyfXWoC5lQ3l5SVcDaNCHHJuxvU=;
-  b=FN/GnwaJlhgxpVyq0skv+xNc8+goYgXAreskfkW2ws2oA9sAuhbymfaQ
-   vZGGzYzmgqrZT3LJ5yoMpLbKpY8KPQJiiNsC2LldGYsAsHV2Y9w3GFDfy
-   AxPBoYu57A7xNxVaJGbxnledwG8jMPhlRZxJEG3zI9TIuOsccmRWZwUU2
-   GxxdcJyy+KtyGbWTfm68ol8wrDYF04wwvTrL9IGIkmKkH4HBuZSERCGOw
-   QnlZY/u9+7iE1W9hWbxRr3BZrx5QxBWINFfCnyidhkJI+Cp4Q5eQOe6B4
-   AfdYW424DgwadFplffEgLJwlG21ivjKamlLzrwmZGO3snGgf14Aq7cpea
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="390847907"
-X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
-   d="scan'208";a="390847907"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 17:12:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="1091462885"
-X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
-   d="scan'208";a="1091462885"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Oct 2023 17:12:52 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qxFth-000Cv1-2l;
-        Mon, 30 Oct 2023 00:12:49 +0000
-Date:   Mon, 30 Oct 2023 08:12:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        Sun, 29 Oct 2023 20:49:38 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55DEBA
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 17:49:35 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 2211A60173;
+        Mon, 30 Oct 2023 01:49:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698626973; bh=UuH9Bhgtc8CYKXgIbLMnFyP8eGT/ow9lhVeYuvbBnHI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rabutwy417UOteWsdg45v+xoTTtvYad1Bqv5MkIBRFVJAzZp/zjGceklFuUM88RJc
+         2CTs5916QC1PKPBxXYTOAX2WezO5c9WOh0qKYH9NMmkV2tdGWnVUj+qSBV/beKi/3n
+         yp0KNDDvq+XtDIXA2Vflzq+qNAnlsfewJ8ODvX8+WEIFTWWh204Nd8Bz8ngIlrHX/y
+         XK4pILxJxfR9vVRkKCKxaKFVJuAgAq3W6Gj9AQZ2k9CcGkyDCD6NBwVVkkcHdslsCJ
+         51SSnN5R0dTScc4m54xubfj0EEH9rYrTKyeBayi4iCp5nhQzVCe0/D6ObeD2xYutgL
+         k3OZAzVT/Vk1A==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Tq24Q_bA871N; Mon, 30 Oct 2023 01:49:30 +0100 (CET)
+Received: from defiant.home (78-3-40-166.adsl.net.t-com.hr [78.3.40.166])
+        by domac.alu.hr (Postfix) with ESMTPSA id 3B1DE60171;
+        Mon, 30 Oct 2023 01:49:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698626970; bh=UuH9Bhgtc8CYKXgIbLMnFyP8eGT/ow9lhVeYuvbBnHI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KsBzvD3wSUI2RdhOa2WKGMXm8edZDeG54FHGLBKF3zJEIyCuJbHOIx4pcPzD3VEFh
+         FhvDucDfzJHd9/RPcjuoeGxzSTdWu5sAXLcOZYsLI0H2dn2Yfj3SaUpS3kJ92Fhav8
+         sL/Qi9yqbcyzB9sw0KkCr/qD7gR/N0ebBugpIVvB5yCHSLvz9eWTXfPW4S+IqJ/Gzw
+         YrMNzSf3jJzG06/2wAH1LQr1VWc4pUHZfLWgRcknUMPwhywzHSbQB+3amxJ6yr0lIq
+         kTRx3y7Hc7nfy/G6sDhVMuaj+9pZnPPmMPZ31Ja1n/Ld96B8tm+jwNnSAKrw6yhbAy
+         JcOxGNlZl6jYg==
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/8] drm/loongson: Allow attach drm bridge driver by
- calling lsdc_output_init()
-Message-ID: <202310300738.zcudNQfj-lkp@intel.com>
-References: <20231029194607.379459-4-suijingfeng@loongson.cn>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Aditya Kali <TejunHeotj@kernel.org>
+Subject: [RFC PATCH v1 1/1] kernfs: replace deprecated strlcpy() with the safer strscpy()
+Date:   Mon, 30 Oct 2023 01:36:50 +0100
+Message-Id: <20231030003649.1214451-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231029194607.379459-4-suijingfeng@loongson.cn>
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sui,
+According to strlcpy() being officially deprecated and the encouragement
+to remove the remaining occurrences, this came as the intriguing example.
 
-kernel test robot noticed the following build warnings:
+We don't have a semantic way to bail out in the case kn->name
+doesn't fit into buflen sized buffer which traces to sizeof(kernfs_pr_cont_buf)
+which is PATH_MAX or currently 4096 bytes, so emulate what would
+strlcpy(buf, kn->name, buflen) do not to break things.
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linus/master v6.6-rc7 next-20231027]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+(It would not leave an empty string in buf. But this defeats the purpose that
+overrun is not silently ignored, but currently there doesn't seem a way to
+signal the buffer overrun error to the caller. As the function is static and
+the buf is only printed, it seems prudent to leave truncated path rather than
+an empty string.)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/drm-loongson-Introduce-a-minimal-support-for-Loongson-VBIOS/20231030-034730
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231029194607.379459-4-suijingfeng%40loongson.cn
-patch subject: [PATCH 3/8] drm/loongson: Allow attach drm bridge driver by calling lsdc_output_init()
-config: loongarch-randconfig-002-20231030 (https://download.01.org/0day-ci/archive/20231030/202310300738.zcudNQfj-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231030/202310300738.zcudNQfj-lkp@intel.com/reproduce)
+FIXME: strlen(kn->name) is unprotected from overrun, but for now we preserve
+exact behavior using strncpy(). As the return value passed by kernfs_name()
+to pr_cont_kernfs_name() where it is ignored later in the code, we could as
+well return the number of actually copied characters
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310300738.zcudNQfj-lkp@intel.com/
+     return buflen - 1;
 
-All warnings (new ones prefixed by >>):
+rather than pointless and dangerous strlen(kn->name) of strlcpy(buf, kn->name, buflen).
 
->> drivers/gpu/drm/loongson/lsdc_output.c:555:5: warning: no previous prototype for 'lsdc_encoder_init' [-Wmissing-prototypes]
-     555 | int lsdc_encoder_init(struct drm_device *ddev,
-         |     ^~~~~~~~~~~~~~~~~
->> drivers/gpu/drm/loongson/lsdc_output.c:578:5: warning: no previous prototype for 'lsdc_connector_init' [-Wmissing-prototypes]
-     578 | int lsdc_connector_init(struct drm_device *ddev,
-         |     ^~~~~~~~~~~~~~~~~~~
+As semantics are not agreed upon, a FIXME comment was left.
 
+The strlcpy() in kernfs_path_from_node_locked() can never overrun as "(null)"
+is needless to say safe for PATH_MAX sized buf and the rest is carefully
+computed and protected, so translation is one-for-one.
 
-vim +/lsdc_encoder_init +555 drivers/gpu/drm/loongson/lsdc_output.c
+Fixes: 17627157cda13 ("kernfs: handle null pointers while printing node name and path")
+Fixes: 3eef34ad7dc36 ("kernfs: implement kernfs_get_parent(), kernfs_name/path() and friends")
+Fixes: 9f6df573a4041 ("kernfs: Add API to generate relative kernfs path")
+Fixes: 3abb1d90f5d93 ("kernfs: make kernfs_path*() behave in the style of strlcpy()")
+Fixes: e56ed358afd81 ("kernfs: make kernfs_walk_ns() use kernfs_pr_cont_buf[]")
+Cc: Konstantin Khlebnikov <koct9i@gmail.com>
+Cc: Aditya Kali <Tejun Heo <tj@kernel.org>adityakali@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org
+Link: https://lwn.net/ml/ksummit-discuss/20231019054642.GF14346@lst.de/#t
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+---
+v1:
+ initial proposal for substituting deprecated strlcpy() with the preferred strscpy()
 
-   554	
- > 555	int lsdc_encoder_init(struct drm_device *ddev,
-   556			      struct lsdc_output *output,
-   557			      unsigned int pipe)
-   558	{
-   559		const struct lsdc_output_desc *descp = output->descp;
-   560		struct drm_encoder *encoder = &output->encoder;
-   561		int ret;
-   562	
-   563		ret = drm_encoder_init(ddev,
-   564				       encoder,
-   565				       descp->encoder_funcs,
-   566				       descp->encoder_type,
-   567				       descp->name);
-   568		if (ret)
-   569			return ret;
-   570	
-   571		encoder->possible_crtcs = BIT(pipe);
-   572	
-   573		drm_encoder_helper_add(encoder, descp->encoder_helper_funcs);
-   574	
-   575		return 0;
-   576	}
-   577	
- > 578	int lsdc_connector_init(struct drm_device *ddev,
-   579				struct lsdc_output *output,
-   580				struct i2c_adapter *ddc,
-   581				unsigned int pipe)
-   582	{
-   583		const struct lsdc_output_desc *descp = output->descp;
-   584		struct drm_connector *connector = &output->connector;
-   585		int ret;
-   586	
-   587		ret = drm_connector_init_with_ddc(ddev,
-   588						  connector,
-   589						  descp->connector_funcs,
-   590						  descp->connector_type,
-   591						  ddc);
-   592		if (ret)
-   593			return ret;
-   594	
-   595		drm_connector_helper_add(connector, descp->connector_helper_funcs);
-   596	
-   597		drm_connector_attach_encoder(connector, &output->encoder);
-   598	
-   599		connector->polled = DRM_CONNECTOR_POLL_CONNECT |
-   600				    DRM_CONNECTOR_POLL_DISCONNECT;
-   601	
-   602		connector->interlace_allowed = 0;
-   603		connector->doublescan_allowed = 0;
-   604	
-   605		drm_info(ddev, "DisplayPipe-%u has %s\n", pipe, descp->name);
-   606	
-   607		return 0;
-   608	}
-   609	
+ fs/kernfs/dir.c | 43 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 12 deletions(-)
 
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 8b2bd65d70e7..87456f3842c0 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -53,10 +53,32 @@ static bool kernfs_lockdep(struct kernfs_node *kn)
+ 
+ static int kernfs_name_locked(struct kernfs_node *kn, char *buf, size_t buflen)
+ {
+-	if (!kn)
+-		return strlcpy(buf, "(null)", buflen);
++	int len;
+ 
+-	return strlcpy(buf, kn->parent ? kn->name : "/", buflen);
++	if (!kn)
++		return strscpy(buf, "(null)", buflen);
++
++	/**
++	 * We don't have a semantic way to bail out in the case kn->name
++	 * doesn't fit into the buflen which traces to sizeof(kernfs_pr_cont_buf)
++	 * which is PATH_MAX or currently 4096 bytes, so emulate what would
++	 * strlcpy() do not to break things.
++	 *
++	 * FIXME: strlen(kn->name) is unprotected from overrun, but for now we preserve
++	 * exact behavior using strncpy(). As the return value is ignored later in the
++	 * code, we could as well return
++	 *
++	 *	return buflen - 1;
++	 *
++	 * rather than pointless and dangerous strlen(kn->name) of
++	 * strlcpy(buf, kn->name, buflen).
++	 */
++	if ((len = strscpy(buf, kn->parent ? kn->name : "/", buflen)) == -E2BIG) {
++		strncpy(buf, kn->name, buflen);
++		buf[buflen - 1] = '\0';
++		return buflen - 1;
++	} else
++		return len;
+ }
+ 
+ /* kernfs_node_depth - compute depth from @from to @to */
+@@ -141,13 +163,13 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+ 	int i, j;
+ 
+ 	if (!kn_to)
+-		return strlcpy(buf, "(null)", buflen);
++		return strscpy(buf, "(null)", buflen);
+ 
+ 	if (!kn_from)
+ 		kn_from = kernfs_root(kn_to)->kn;
+ 
+ 	if (kn_from == kn_to)
+-		return strlcpy(buf, "/", buflen);
++		return strscpy(buf, "/", buflen);
+ 
+ 	common = kernfs_common_ancestor(kn_from, kn_to);
+ 	if (WARN_ON(!common))
+@@ -159,16 +181,16 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+ 	buf[0] = '\0';
+ 
+ 	for (i = 0; i < depth_from; i++)
+-		len += strlcpy(buf + len, parent_str,
++		len += strscpy(buf + len, parent_str,
+ 			       len < buflen ? buflen - len : 0);
+ 
+ 	/* Calculate how many bytes we need for the rest */
+ 	for (i = depth_to - 1; i >= 0; i--) {
+ 		for (kn = kn_to, j = 0; j < i; j++)
+ 			kn = kn->parent;
+-		len += strlcpy(buf + len, "/",
++		len += strscpy(buf + len, "/",
+ 			       len < buflen ? buflen - len : 0);
+-		len += strlcpy(buf + len, kn->name,
++		len += strscpy(buf + len, kn->name,
+ 			       len < buflen ? buflen - len : 0);
+ 	}
+ 
+@@ -850,16 +872,13 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
+ 					  const unsigned char *path,
+ 					  const void *ns)
+ {
+-	size_t len;
+ 	char *p, *name;
+ 
+ 	lockdep_assert_held_read(&kernfs_root(parent)->kernfs_rwsem);
+ 
+ 	spin_lock_irq(&kernfs_pr_cont_lock);
+ 
+-	len = strlcpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
+-
+-	if (len >= sizeof(kernfs_pr_cont_buf)) {
++	if (strscpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf)) == -E2BIG) {
+ 		spin_unlock_irq(&kernfs_pr_cont_lock);
+ 		return NULL;
+ 	}
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
