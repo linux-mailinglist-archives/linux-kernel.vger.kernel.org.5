@@ -2,125 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BFB7DC126
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7010A7DC129
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjJ3UYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 16:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
+        id S231207AbjJ3UZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjJ3UYo (ORCPT
+        with ESMTP id S229763AbjJ3UZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 16:24:44 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7616DAB
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:24:41 -0700 (PDT)
-Received: from shreeya.shreeya (unknown [IPv6:2405:201:0:21ea:b346:60fd:ff70:bb1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D70C06607393;
-        Mon, 30 Oct 2023 20:24:38 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698697480;
-        bh=xHjjpWNrK+9sCsdLHaP5uOtD1MVhITgGMsNsB8PH8oE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EM/FpojG55w+GvA082yamXzZOyMMbEa8S81I6+U9trLh7eN5Hh9jDSIey9sFqQVex
-         fdN+doqZ+++VXUR3dW/QbJVP26OTbsvSB4mhZibin514kExl3IgQi4KsTY8sx4z5wJ
-         0Z/pXgiSwlONGBIdrS0cLLvh/IhMeoNR5qJ8QfM2BeZ+GoDuJcYqbrdQPXMgZvpU6G
-         Aw12bKt5J/ci4tkIgLzfB6zdtwaj/eg9O8egC4ApxkR2s9EOcWOM5DuUO/1yQ35Kip
-         N2GzlFeoWLpjLZW7hI3MSfasNJhSEvx2Cf24fQByEP2Nl0SKmNdUOH3+1GbapDxJGF
-         WOZZFLODZAFxQ==
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-To:     jack@suse.com
-Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
-        groeck@google.com, zsm@google.com,
-        Shreeya Patel <shreeya.patel@collabora.com>,
-        syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-Subject: [PATCH] fs: udf: super.c: Fix a use-after-free issue in udf_finalize_lvid
-Date:   Tue, 31 Oct 2023 01:54:18 +0530
-Message-Id: <20231030202418.847494-1-shreeya.patel@collabora.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 16:25:56 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D61FA
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:25:53 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7cfdacf8fso50446587b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698697552; x=1699302352; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nLe0geP8e2FVj4qDFmgiKe4HSQmMDr9vIKCdz5IJ0b8=;
+        b=gZxGx5Jf4pESioEERVkpiRgRf6GIeIS6jl+d8Yr7s6uQ9ZaHbHepyro/oMUFFdM4PR
+         BMawDbqaBfuJJZwkImn17Yrle2OYXjuDC3hlpP8Nxe4eJvpM0VUDwJSE/SogMF+NSvLi
+         gWZvE+pQnWh3F92G0skb5kQstwvro6UAGWFUqj7MoUxN2thrR6FKWG8NJEJyiSUAbBNN
+         22xpYyZ6+nFhjKYuGZK5PTrQfZ0Y9UsqzeVr3BtYcntUFnfWc7GYXKwABNZlq0byz7cX
+         uhkL28M6aJNIYED3UANCEqD6E16opDZksaIBtp89bM6rn7XZU3RHsfkKvjrL81sq8kpv
+         nFjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698697552; x=1699302352;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nLe0geP8e2FVj4qDFmgiKe4HSQmMDr9vIKCdz5IJ0b8=;
+        b=HU1hElK7+hOIRbqApDBiJdOyIT+ybYagYMmT3XXk7du/xmpmndSkNl/jZALMz3JDhQ
+         QWS/Q/Of7fSSiSi+5o87s7+rjQ0pRI0Lo2eurKOx1/O6mEBF3nCsMUHSrJv7pp5AZJYf
+         vojB2oVBXuXi0HhzEXZyGiEFIfHkpZmn1J6nNKC0tbUGzwtsTRTuMiXeTD7PdBEfpien
+         6+KAWIMZDHu5t3T/s6glJZ/snGTqg8EDztQxmHQc0H3BzrtVGNUYkiQCVDNLlvZXsvRP
+         MxTrX/XuV+sBQC9ZniteQebTvdU6v3tYyphd41sXunAlKrZQcTZUh7g/M80NQJiu2xsD
+         k/nQ==
+X-Gm-Message-State: AOJu0YyCLQQMDFckFnjIrod8SsWFIt/QrSbVaKWnb90rJR5lPscoD+yk
+        6WjEKD7rz5FOa8cp2nRpvS23/7AoJd8=
+X-Google-Smtp-Source: AGHT+IGlGqmQkLdJGZ9mJzjtHQ/qef61ty+xku12xbQ7aSZ0jjD/v7MM7HUcLrxp67U3zyWvPrrdlUHrpDU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:84cc:0:b0:d89:42d7:e72d with SMTP id
+ x12-20020a2584cc000000b00d8942d7e72dmr15389ybm.3.1698697552520; Mon, 30 Oct
+ 2023 13:25:52 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 13:25:50 -0700
+In-Reply-To: <211d093f-4023-4a39-a23f-6d8543512675@redhat.com>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-9-seanjc@google.com>
+ <211d093f-4023-4a39-a23f-6d8543512675@redhat.com>
+Message-ID: <ZUARTvhpChFSGF9s@google.com>
+Subject: Re: [PATCH v13 08/35] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some error handling cases in udf_sb_lvidiu() and redefine
-the descCRCLength in order to avoid use-after-free issue in
-udf_finalize_lvid.
+On Mon, Oct 30, 2023, Paolo Bonzini wrote:
+> On 10/27/23 20:21, Sean Christopherson wrote:
+> > 
+> > +		if (ioctl == KVM_SET_USER_MEMORY_REGION)
+> > +			size = sizeof(struct kvm_userspace_memory_region);
+> 
+> This also needs a memset(&mem, 0, sizeof(mem)), otherwise the out-of-bounds
+> access of the commit message becomes a kernel stack read.
 
-Following use-after-free issue was reported by syzbot :-
+Ouch.  There's some irony.  Might be worth doing memset(&mem, -1, sizeof(mem))
+though as '0' is a valid file descriptor and a valid file offset.
 
-https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
+> Probably worth adding a check on valid flags here.
 
-BUG: KASAN: use-after-free in crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
-Read of size 1 at addr ffff88816fba0000 by task syz-executor.0/32133
+Definitely needed.  There's a very real bug here.  But rather than duplicate flags
+checking or plumb @ioctl all the way to __kvm_set_memory_region(), now that we
+have the fancy guard(mutex) and there are no internal calls to kvm_set_memory_region(),
+what if we:
 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
-<TASK>
-__dump_stack lib/dump_stack.c:88 [inline]
-dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
-print_address_description mm/kasan/report.c:284 [inline]
-print_report+0x13c/0x462 mm/kasan/report.c:395
-kasan_report+0xa9/0xd5 mm/kasan/report.c:495
-crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
-udf_finalize_lvid+0x111/0x23b fs/udf/super.c:2022
-udf_sync_fs+0xba/0x123 fs/udf/super.c:2378
-sync_filesystem+0xe8/0x216 fs/sync.c:56
-generic_shutdown_super+0x6b/0x334 fs/super.c:474
-kill_block_super+0x79/0xd6 fs/super.c:1459
-deactivate_locked_super+0xa0/0x101 fs/super.c:332
-cleanup_mnt+0x2de/0x361 fs/namespace.c:1192
-task_work_run+0x22b/0x2d4 kernel/task_work.c:179
-resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-exit_to_user_mode_loop+0xc4/0xd3 kernel/entry/common.c:171
-exit_to_user_mode_prepare+0xb4/0x115 kernel/entry/common.c:204
-__syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
-syscall_exit_to_user_mode+0xae/0x278 kernel/entry/common.c:297
-do_syscall_64+0x5d/0x93 arch/x86/entry/common.c:99
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7e8195fb6e17
+  1. Acquire/release slots_lock in __kvm_set_memory_region()
+  2. Call kvm_set_memory_region() from x86 code for the internal memslots
+  3. Disallow *any* flags for internal memslots
+  4. Open code check_memory_region_flags in kvm_vm_ioctl_set_memory_region()
+  5. Pass @ioctl to kvm_vm_ioctl_set_memory_region() and allow KVM_MEM_PRIVATE
+     only for KVM_SET_USER_MEMORY_REGION2
 
-Fixes: ebbd5e99f60a ("udf: factor out LVID finalization for reuse")
-Reported-by: syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+E.g. this over ~5 patches
+
 ---
- fs/udf/super.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/kvm/x86.c       |  2 +-
+ include/linux/kvm_host.h |  4 +--
+ virt/kvm/kvm_main.c      | 65 +++++++++++++++++-----------------------
+ 3 files changed, 29 insertions(+), 42 deletions(-)
 
-diff --git a/fs/udf/super.c b/fs/udf/super.c
-index 928a04d9d9e0..ca8f10eaa748 100644
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -114,6 +114,10 @@ struct logicalVolIntegrityDescImpUse *udf_sb_lvidiu(struct super_block *sb)
- 	partnum = le32_to_cpu(lvid->numOfPartitions);
- 	/* The offset is to skip freeSpaceTable and sizeTable arrays */
- 	offset = partnum * 2 * sizeof(uint32_t);
-+	if (sb->s_blocksize < sizeof(*lvid) || (sb->s_blocksize - sizeof(*lvid)) <
-+	    (offset + sizeof(struct logicalVolIntegrityDescImpUse)))
-+		return NULL;
-+
- 	return (struct logicalVolIntegrityDescImpUse *)
- 					(((uint8_t *)(lvid + 1)) + offset);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e3eb608b6692..dd3e2017366c 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12478,7 +12478,7 @@ void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
+ 		m.guest_phys_addr = gpa;
+ 		m.userspace_addr = hva;
+ 		m.memory_size = size;
+-		r = __kvm_set_memory_region(kvm, &m);
++		r = kvm_set_memory_region(kvm, &m);
+ 		if (r < 0)
+ 			return ERR_PTR_USR(r);
+ 	}
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 687589ce9f63..fbb98efe8200 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1170,7 +1170,7 @@ static inline bool kvm_memslot_iter_is_valid(struct kvm_memslot_iter *iter, gfn_
+  *   -- just change its flags
+  *
+  * Since flags can be changed by some of these operations, the following
+- * differentiation is the best we can do for __kvm_set_memory_region():
++ * differentiation is the best we can do for __kvm_set_memory_region().
+  */
+ enum kvm_mr_change {
+ 	KVM_MR_CREATE,
+@@ -1181,8 +1181,6 @@ enum kvm_mr_change {
+ 
+ int kvm_set_memory_region(struct kvm *kvm,
+ 			  const struct kvm_userspace_memory_region2 *mem);
+-int __kvm_set_memory_region(struct kvm *kvm,
+-			    const struct kvm_userspace_memory_region2 *mem);
+ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot);
+ void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen);
+ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 23633984142f..39ceee2f67f2 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1608,28 +1608,6 @@ static void kvm_replace_memslot(struct kvm *kvm,
+ 	}
  }
-@@ -2337,6 +2341,8 @@ static int udf_sync_fs(struct super_block *sb, int wait)
- 		struct logicalVolIntegrityDesc *lvid;
  
- 		lvid = (struct logicalVolIntegrityDesc *)bh->b_data;
-+		if ((le16_to_cpu(lvid->descTag.descCRCLength) + sizeof(struct tag)) > sb->s_blocksize)
-+			lvid->descTag.descCRCLength = cpu_to_le16(sb->s_blocksize - sizeof(struct tag));
- 		udf_finalize_lvid(lvid);
+-static int check_memory_region_flags(struct kvm *kvm,
+-				     const struct kvm_userspace_memory_region2 *mem)
+-{
+-	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
+-
+-	if (kvm_arch_has_private_mem(kvm))
+-		valid_flags |= KVM_MEM_PRIVATE;
+-
+-	/* Dirty logging private memory is not currently supported. */
+-	if (mem->flags & KVM_MEM_PRIVATE)
+-		valid_flags &= ~KVM_MEM_LOG_DIRTY_PAGES;
+-
+-#ifdef __KVM_HAVE_READONLY_MEM
+-	valid_flags |= KVM_MEM_READONLY;
+-#endif
+-
+-	if (mem->flags & ~valid_flags)
+-		return -EINVAL;
+-
+-	return 0;
+-}
+-
+ static void kvm_swap_active_memslots(struct kvm *kvm, int as_id)
+ {
+ 	struct kvm_memslots *slots = kvm_get_inactive_memslots(kvm, as_id);
+@@ -2014,11 +1992,9 @@ static bool kvm_check_memslot_overlap(struct kvm_memslots *slots, int id,
+  * space.
+  *
+  * Discontiguous memory is allowed, mostly for framebuffers.
+- *
+- * Must be called holding kvm->slots_lock for write.
+  */
+-int __kvm_set_memory_region(struct kvm *kvm,
+-			    const struct kvm_userspace_memory_region2 *mem)
++static int __kvm_set_memory_region(struct kvm *kvm,
++				   const struct kvm_userspace_memory_region2 *mem)
+ {
+ 	struct kvm_memory_slot *old, *new;
+ 	struct kvm_memslots *slots;
+@@ -2028,9 +2004,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	int as_id, id;
+ 	int r;
  
- 		/*
+-	r = check_memory_region_flags(kvm, mem);
+-	if (r)
+-		return r;
++	guard(mutex)(&kvm->slots_lock);
+ 
+ 	as_id = mem->slot >> 16;
+ 	id = (u16)mem->slot;
+@@ -2139,27 +2113,42 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	kfree(new);
+ 	return r;
+ }
+-EXPORT_SYMBOL_GPL(__kvm_set_memory_region);
+ 
+ int kvm_set_memory_region(struct kvm *kvm,
+ 			  const struct kvm_userspace_memory_region2 *mem)
+ {
+-	int r;
++	/* Flags aren't supported for KVM-internal memslots. */
++	if (WARN_ON_ONCE(mem->flags))
++		return -EINVAL;
+ 
+-	mutex_lock(&kvm->slots_lock);
+-	r = __kvm_set_memory_region(kvm, mem);
+-	mutex_unlock(&kvm->slots_lock);
+-	return r;
++	return __kvm_set_memory_region(kvm, mem);
+ }
+ EXPORT_SYMBOL_GPL(kvm_set_memory_region);
+ 
+-static int kvm_vm_ioctl_set_memory_region(struct kvm *kvm,
++static int kvm_vm_ioctl_set_memory_region(struct kvm *kvm, unsigned int ioctl,
+ 					  struct kvm_userspace_memory_region2 *mem)
+ {
++	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
++
++	if (ioctl == KVM_SET_USER_MEMORY_REGION2 &&
++	    kvm_arch_has_private_mem(kvm))
++		valid_flags |= KVM_MEM_PRIVATE;
++
++	/* Dirty logging private memory is not currently supported. */
++	if (mem->flags & KVM_MEM_PRIVATE)
++		valid_flags &= ~KVM_MEM_LOG_DIRTY_PAGES;
++
++#ifdef __KVM_HAVE_READONLY_MEM
++	valid_flags |= KVM_MEM_READONLY;
++#endif
++
++	if (mem->flags & ~valid_flags)
++		return -EINVAL;
++
+ 	if ((u16)mem->slot >= KVM_USER_MEM_SLOTS)
+ 		return -EINVAL;
+ 
+-	return kvm_set_memory_region(kvm, mem);
++	return __kvm_set_memory_region(kvm, mem);
+ }
+ 
+ #ifndef CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT
+@@ -5145,7 +5134,7 @@ static long kvm_vm_ioctl(struct file *filp,
+ 		if (copy_from_user(&mem, argp, size))
+ 			goto out;
+ 
+-		r = kvm_vm_ioctl_set_memory_region(kvm, &mem);
++		r = kvm_vm_ioctl_set_memory_region(kvm, ioctl, &mem);
+ 		break;
+ 	}
+ 	case KVM_GET_DIRTY_LOG: {
+
+base-commit: 881375a408c0f4ea451ff14545b59216d2923881
 -- 
-2.39.2
 
