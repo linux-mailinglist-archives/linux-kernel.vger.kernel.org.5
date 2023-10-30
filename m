@@ -2,176 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEF57DB62A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FE47DB641
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjJ3Jbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        id S232240AbjJ3JmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbjJ3Jbm (ORCPT
+        with ESMTP id S231467AbjJ3JmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:31:42 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2136.outbound.protection.outlook.com [40.107.117.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08233E4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:31:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/MjROvXDYWY0sHA5+WoMFzUPLBd113/J+WqfSlR9hVyY8QTh9wbgjejCS3RadhwWhqYPRmAhusExHQI54Mu8uI3CmL3nvOp/Z4lgwZnu5pJ91u/uaLSksVgVr0RjwVIiZktis7BDPGVSis68WSnyrleYk9fQSuS+lu23raJHOaeG0mi2qBEdM4xHZeduMXSrufbo0UHb/uXXt54uiwTCeycEUwg2yKZkwmXRWG2YzlDIXpzaCN35NLhQ7v39DHIvsFDi1DeS7Dk/AcOVWWJxhf7/C5uKaArbkE9XzMSP9EF+J7sOfXRGLEIHvD5dDrSmFTq4cLLzIiRan1+RMUC9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G7uk1RCPPo/3pbIIh8SopvIQC8rZot3Mf9cz0qhbwQw=;
- b=Sqiwnyyz66nQrVZWFGjngi9kvCaIt0ZH29ZxJ6DHkHTJlFz2zjCExX3CtLgMNNGgd4oH6PfjgyXEDaxrQXhdmvh/wo4k9B2xfjECS4/IFuszzbDSmaQ5OyUvx1V697NhCAcFectUIftW3ZWN4DUEATEnb7G1djD0pq9FrHCneNR4weu7fYIeho4gpIw7C8pcDEcQxY5YUOBRMb+fHXiPFivnDOP7Ccp6R8/jdQNhUYYG0Oh2Io0j6aBaZt61y0BxeK2JLYSWRwgyqc0B+iij17uxWsSL/LIIPfvoEooubzqknYG2zL1M0aVqOmGjdsyQ5qPCSwO/lWtH3NgtUDu/CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G7uk1RCPPo/3pbIIh8SopvIQC8rZot3Mf9cz0qhbwQw=;
- b=DmJ6cjaqKNprBzTYmbT2IBc50Er+aHnnjdCaeSVzWDOxhCwQPsFA9sPKx8dsLyot+fZmYK1WerV3DohCgBWhgpy59GsvN11hc6BNmmiK977ZPyK45tY1tm9Xjbgnm59eM2S0KY+6apPcQC2SJ1x7gCfIZRZPDscREm56BHxrpUSZ7gQGLC8/waYdrmO9Vj2nOqceUsGizk6cK25V5UH9gP5B28xtXHBbK69i2+cZX1btbf4E8SiFOWVIacFlDoutk2fuYcYCZBcb1Dxmuz5gH86FxU5Qgwg4Cz9r49r/9afqRZwv2x3daNW/84YnkdQkBkO/SJiFsoewrEYl/DEIHA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PS2PR06MB3509.apcprd06.prod.outlook.com (2603:1096:300:67::17)
- by TYZPR06MB5027.apcprd06.prod.outlook.com (2603:1096:400:1c9::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Mon, 30 Oct
- 2023 09:31:34 +0000
-Received: from PS2PR06MB3509.apcprd06.prod.outlook.com
- ([fe80::df44:25be:44fc:9201]) by PS2PR06MB3509.apcprd06.prod.outlook.com
- ([fe80::df44:25be:44fc:9201%4]) with mapi id 15.20.6933.026; Mon, 30 Oct 2023
- 09:31:32 +0000
-From:   Wu Bo <bo.wu@vivo.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Wu Bo <wubo.oduw@gmail.com>,
-        Wu Bo <bo.wu@vivo.com>
-Subject: [PATCH 1/1] f2fs: fix fallocate failed under pinned block situation
-Date:   Mon, 30 Oct 2023 03:40:24 -0600
-Message-Id: <20231030094024.263707-1-bo.wu@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0087.apcprd02.prod.outlook.com
- (2603:1096:4:90::27) To PS2PR06MB3509.apcprd06.prod.outlook.com
- (2603:1096:300:67::17)
+        Mon, 30 Oct 2023 05:42:06 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFBBC1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:42:02 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32f737deedfso1801098f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698658921; x=1699263721; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mHCzSs2m/7vvAzZ4U/1F4bROTWnWkwS/Z4dOeVlDxw8=;
+        b=INbjt/C9Hu3EBqTPbfkBELrjK1oX9kuKmm5JbfPzbSKBtBTY6s3ThiAYPBDbJn7Inz
+         PlcEjezcUD9hOGpXifkcKaebE+ey73y2OJLL8LCXRwjjfTaSfhI+++xoSRCHBuUXy7ND
+         42y4Lxhc6GKmeUkpU0R0Yw7z2uFIIxcKDNOpxxps1Tzn+aQxIqbHhUNRTyoq+zU0pMDR
+         xjexdzke4NcmouQ6Wm8yAueHoDLHVoUJg3pWW0zaW9uGdhi2synCeKRf3XD9TlK2loit
+         HmCULPpJ2TJ2wa+yxRrwM5HQWTNt9yETBzJAIM+oRUXL78QkZUg+s6hBb42y34eXRUbT
+         4rTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698658921; x=1699263721;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mHCzSs2m/7vvAzZ4U/1F4bROTWnWkwS/Z4dOeVlDxw8=;
+        b=onSYVIRinF42X9RxtTP+ulr3wV5ATVq9TTa9+CqnE/a5emtXBwmFJNkNPVhB6htNwQ
+         /ezHsEa7a6/cvyXlL7PAxr5C/OZZcyToDAEWmtd2N0V/hELeiJYDZJqO9TEBVHtQAfjP
+         QIhq10sbF2Tf0jsSbg56z8NhakGvSoR/4tmChBZ2rugxs93P2B/NYnW8DFeXt/vXG4VJ
+         mGT3OhbEdt3kIOCrfFy/dLK2smrCDiZRVHD+9RLbhcWT7RtiM6RBI9sdycfdR2rxU3u/
+         zeEuv2eUij3BMpDVI+LCP30COQcrxeJiNisSvrIcA/xkWTuVQ/7xz0k8b0GOijapzP1j
+         f/2g==
+X-Gm-Message-State: AOJu0YxUx+o+V6mEnNMihVjl3HMNyFbSowdKnoZ+YGUeeSqgmRWVKEDZ
+        pbl+uf9kGgpTkqY1va7UVz5HtBY9Pm6Zdozm7ZAVyQ==
+X-Google-Smtp-Source: AGHT+IHLgy9Q1AjccPV9eytZ6NH+Dla7RFVhMBMQh5mG7MjRyocjMfF0BY5Tfwgt+/qe0cXXGpHjKQ==
+X-Received: by 2002:a5d:6d49:0:b0:32d:e478:9d70 with SMTP id k9-20020a5d6d49000000b0032de4789d70mr7033797wri.14.1698658920952;
+        Mon, 30 Oct 2023 02:42:00 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id k6-20020adff286000000b0031984b370f2sm7825761wro.47.2023.10.30.02.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 02:42:00 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Mon, 30 Oct 2023 10:41:59 +0100
+Subject: [PATCH v2] dt-bindings: usb: qcom,dwc3: document the SM8560
+ SuperSpeed DWC3 USB controller
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PS2PR06MB3509:EE_|TYZPR06MB5027:EE_
-X-MS-Office365-Filtering-Correlation-Id: 14f6bb30-8c2d-4cea-3e54-08dbd92b0079
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PkwgGjtSaW7xponbgyvVByZ+zY8WLtjog1f/ke7HkZI/2J/sIwDcf28Ohhza8xR4oYOxinXNK5a4GZm1QvSXVtpN9TCE21RYzp7V27lkLuy3g6sdi4ksbLJmlvATvolkWIadGuib7SeJQWJyV+wzL2ajKD/G8gRMtPju+hpd6S/aPjulK+ctVVH8HdqdEZg02ne7kAD7g6pPQP1LybbFNv7OiGyhJ2xz9Sa8BK9fPadZLwkS4/tRlKIG61IfLAKaGQ2oNvtci3igoAZKG1FSmAoSAG6EUVR7Vd0oltg1aHnkeWoybffDmqjk49QXcYq+Q7zwZQJMYWaDbxslej2vHd/OLBEYcEOe1pRnAZ8NuValcMSyBFu3LzaEQB5TCx1QDf+764cfPjZ6dZuaUDVaCAKw6pTYINbyTcMg9RnHdXSrR0Ccp4pYTyDOGQ/H4taInR27CScnyVKbRkFYEE0sa3DvefrBq/yZYo5nn2E04FiOotwtYHeAuVjEuQ1aSi0FUlVMh23b1Bk5mbMGgB9wYB2upMGyK84fGjeA89pKgtLgyX/IwaKqcM8eiyjj+kfByP8+TBhjcNVMbFGQhcGPfy5pB4n4Mu5NeEPq2YplK9pVcb8Nhy6JTmVJtLSQfNkP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR06MB3509.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(346002)(376002)(136003)(366004)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(2906002)(66476007)(54906003)(6666004)(66556008)(66946007)(316002)(38100700002)(107886003)(6506007)(52116002)(6512007)(6486002)(478600001)(110136005)(83380400001)(2616005)(1076003)(26005)(41300700001)(5660300002)(8936002)(38350700005)(8676002)(4326008)(86362001)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: nVIVsahreQeaVIkNr4fZgh8AKlDkZ0F+fw/8SthVHMvijPqXrNEgT7aFCo0Yym+PShFYdiWrYXxD2OxLfapfbHn036qARKruQqFx21quMW2qRL83iPm4HfDq0M3L3aO4YkC3rjMMRBQccdzJAA9RJN+ot8DkobrXzOgz6h46p59y+dkTTg54oXZgoQv5CXYKyh0d9p4rVxIjemwOvwehZYxB0qos+ws/0RbUOt/meBmXHr9Q0FVjpB8sOs2KxUPHfJzLCTubJ93GSakuAVHUbkkJOpNxwetLiklIQT5RdOVpdRZ+ntGDfNFJWhtMOlRp9NrJ/xdP7sHvK+m5briOufZjaA/e2P9B3C4AVUadYhAiW6CmHM1dV64u2xSjfCVv0Xz565iZpXJP1L8J6bbfdU9II8xdr++ECkF29oP1zhE=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14f6bb30-8c2d-4cea-3e54-08dbd92b0079
-X-MS-Exchange-CrossTenant-AuthSource: PS2PR06MB3509.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 09:31:32.1933
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GxnCYBQPDp8ZgV4N1fcIDDDQu7eg2kaT4zG+eJ6OAoudVNoDy+PLvTwWmcYzp828tbpnzzj/a6vCuNtB5vs7sQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5027
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231030-topic-sm8650-upstream-bindings-dwc3-v2-1-60c0824fb835@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAGZ6P2UC/42NQQ6CMBBFr0K6dgwtBS0r72FYIJ3CJNKSKaKGc
+ Hcr8QAu38/Pe6uIyIRR1NkqGBeKFHwCdchEN7S+RyCbWKhcFTKXFcxhog7ieK7KHB5TnBnbEW7
+ kLfk+gn12BVSolTRaOuOcSKaJ0dFrr1ybxAPFOfB7jy7yu/78qvzLv0iQ4KzV+oTGpOflTr7lc
+ Azci2bbtg/5Np/U1wAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1801;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=zky0TkPIaRnd/kBELZVgvTZFXaQ9ut5+Gj+VY7VDrlU=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlP3pn9T+FLYxLhEGFImi+fii7bJu5r6jkSsKl4ZG5
+ q9XMQLyJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZT96ZwAKCRB33NvayMhJ0R4cD/
+ 0SONkZGHDIfhfTCxzKHsbTodzrq1NTDDhHSqiN03KhESjN1C4pxIQqIXgajqTNVEypnob2LyYYGBnm
+ vdVbrYsGoDjX7ddCXDSy6AYobWcBEYQrN8kr9TUkQnu28xJpvMGfGLI1ttZFjjw0j429Bd0qOD701q
+ QG0GxG7+iBmtLDiajg6JNRRs/sO0vpQRApmAwbmsx4SGdtSjrCLYJn6SaOpkNhOgCZbik11Ycj8AVe
+ pdGL3fpjKiiwS6mLgf7teyI6bMzuef93go/rFQIpAonZMXIZDkYDesKvXOHwpHOb8IUfS44110uSyx
+ iWnMJOcUwrZJD2ViijcRJYpGaIWmovwhD5xIJLuisJmZHo8/kfRTO72H6qumvanAYc1iN+4u4k9XcT
+ 6aTouhRTj0crI9hOPsjo+UR7n2uhq2tDN+OZyZNesqEguTtV6auqTQEKKGte2rbnIkiIUpRZbW44tW
+ n1V5GMN3SC8Hv/Hg+0vWOk5ZEOCwPbMQwySxi/CGQVf8cj1XK1xBD32mKrgHb/AsI6KUCbqe3Qmbeb
+ TS7e7gnbVYAZVPBRq7fXkcgh1sJsr8adin4eAoIRtguDZE9pYNoeZ6gDXCt7HR14ZCh+Z7VmpFudst
+ t24JfISVafVlrdrG0zsiL+u2SO0cypGmjDSE2mZVCXBIgcV5zxCnoifsHV3A==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If GC victim has pinned block, it can't be recycled.
-And if GC is foreground running, after many failure try, the pinned file
-is expected to be clear pin flag. To enable the section be recycled.
+Document the SuperSpeed DWC3 USB controller on the SM8650 Platform.
 
-But when fallocate trigger FG_GC, GC can never recycle the pinned
-section. Because GC will go to stop before the failure try meet the threshold:
-	if (has_enough_free_secs(sbi, sec_freed, 0)) {
-		if (!gc_control->no_bg_gc &&
-		    total_sec_freed < gc_control->nr_free_secs)
-			goto go_gc_more;
-		goto stop;
-	}
-
-So when fallocate trigger FG_GC, at least recycle one.
-
-This issue can be reproduced by filling f2fs space as following layout.
-Every segment has one block is pinned:
-+-+-+-+-+-+-+-----+-+
-| | |p| | | | ... | | seg_n
-+-+-+-+-+-+-+-----+-+
-+-+-+-+-+-+-+-----+-+
-| | |p| | | | ... | | seg_n+1
-+-+-+-+-+-+-+-----+-+
-...
-+-+-+-+-+-+-+-----+-+
-| | |p| | | | ... | | seg_n+k
-+-+-+-+-+-+-+-----+-+
-
-And following are steps to reproduce this issue:
-dd if=/dev/zero of=./f2fs_pin.img bs=2M count=1024
-mkfs.f2fs f2fs_pin.img
-mkdir f2fs
-mount f2fs_pin.img ./f2fs
-cd f2fs
-dd if=/dev/zero of=./large_padding bs=1M count=1760
-./pin_filling.sh
-rm padding*
-sync
-touch fallocate_40m
-f2fs_io pinfile set fallocate_40m
-fallocate -l 41943040 fallocate_40m
-
-fallocate always fail with EAGAIN even there has enough free space.
-
-'pin_filling.sh' is:
-count=1
-while :
-do
-    # filling the seg space
-    for i in {1..511}:
-    do
-        name=padding_$count-$i
-        echo write $name
-        dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-                exit 0
-        fi
-    done
-    sync
-
-    # pin one block in a segment
-    name=pin_file$count
-    dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
-    sync
-    f2fs_io pinfile set $name
-    count=$(($count + 1))
-done
-
-Signed-off-by: Wu Bo <bo.wu@vivo.com>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- fs/f2fs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstream/integ
+---
+Changes in v2:
+- Fixed typo in patch subject
+- Added missing sm8650 entry in allOf:if:then for clocks and interrupts
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-dwc3-v1-1-fdd447e99865@linaro.org
+---
+ Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index ca5904129b16..e8a13616543f 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1690,7 +1690,7 @@ static int f2fs_expand_inode_data(struct inode *inode, loff_t offset,
- 			.init_gc_type = FG_GC,
- 			.should_migrate_blocks = false,
- 			.err_gc_skipped = true,
--			.nr_free_secs = 0 };
-+			.nr_free_secs = 1 };
- 	pgoff_t pg_start, pg_end;
- 	loff_t new_size;
- 	loff_t off_end;
+diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+index e889158ca205..ccce57e4290d 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+@@ -46,6 +46,7 @@ properties:
+           - qcom,sm8350-dwc3
+           - qcom,sm8450-dwc3
+           - qcom,sm8550-dwc3
++          - qcom,sm8650-dwc3
+       - const: qcom,dwc3
+ 
+   reg:
+@@ -318,6 +319,7 @@ allOf:
+               - qcom,sm8250-dwc3
+               - qcom,sm8450-dwc3
+               - qcom,sm8550-dwc3
++              - qcom,sm8650-dwc3
+     then:
+       properties:
+         clocks:
+@@ -377,6 +379,7 @@ allOf:
+               - qcom,sm8350-dwc3
+               - qcom,sm8450-dwc3
+               - qcom,sm8550-dwc3
++              - qcom,sm8650-dwc3
+     then:
+       properties:
+         interrupts:
+
+---
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+change-id: 20231016-topic-sm8650-upstream-bindings-dwc3-6e421941f9ff
+
+Best regards,
 -- 
-2.35.3
+Neil Armstrong <neil.armstrong@linaro.org>
 
