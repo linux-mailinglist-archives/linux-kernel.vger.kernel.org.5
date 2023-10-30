@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC24B7DBB95
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470977DBB98
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbjJ3ORh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
+        id S231577AbjJ3OTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjJ3ORf (ORCPT
+        with ESMTP id S229568AbjJ3OTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:17:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C9BC0;
-        Mon, 30 Oct 2023 07:17:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B59E521906;
-        Mon, 30 Oct 2023 14:17:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698675451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=JL0o6ejOmiqyX7RlEJrZ7RAI8Gjvf0EzzlogCece80k=;
-        b=Wjl2lgZqWUg/a9AE3QuJHK6+NDQzHMDQTy31U33Llwff6vIw9Uw3qZJEK6BBLQK7obO/sZ
-        t2Mtq/tO6UUvCOg2E8yhcLo1TzdTXF2lTFc0SzApsN+9MC+1pLb4PGPjwQK+Xh8b3RevrF
-        dn4G3KmXXo2GEKtZOC/O72raxnLbkZw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66803138F8;
-        Mon, 30 Oct 2023 14:17:31 +0000 (UTC)
-Received: from dovecot-director1.suse.de ([192.168.254.64])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jifVFvu6P2VsOgAAMHmgww
-        (envelope-from <nik.borisov@suse.com>); Mon, 30 Oct 2023 14:17:31 +0000
-From:   Nikolay Borisov <nik.borisov@suse.com>
-To:     seanjc@google.com
-Cc:     pbonzini@redhat.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: [PATCH] KVM: x86: User mutex guards to eliminate __kvm_x86_vendor_init()
-Date:   Mon, 30 Oct 2023 16:17:28 +0200
-Message-Id: <20231030141728.1406118-1-nik.borisov@suse.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 30 Oct 2023 10:19:48 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDED7B7;
+        Mon, 30 Oct 2023 07:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=pUI5nGy0LFYKow2okhoQ6OKyczy/kEldDjABNORebOc=; b=Ic4ZQEszf7DdPBZRY4YiXz7+XW
+        MXv68gsOVMuwSkXRYL3DrKHyZyOzPhzVGgAzEr2A8oyeWtTuVUNGncN2F6Z6J4fvq0Qi+kxFw3Nv+
+        Wf2XDjFO0BG4tlbg6rVzLmM4d2PQc1hwMNJAKKWQFYImP5WKESkANmYPNN6Qxph0TbYQdY3QbEPQ6
+        Di2fOOca1/h91PJlU7/bCFlPRgI4jm3zJn92v3HYBljyZR/8uiXQ6JDr1dIDq0nhvxRVrE7nsJXX6
+        TlIZkm3efA9OG3prnCXoxKJq8psh4siiA9ollSw1vn53aWlwdBFGj6ZROeQb92e8a3iV6UND6mRPD
+        /f/ivMyw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qxT72-0001SS-KC; Mon, 30 Oct 2023 15:19:28 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qxT71-000Y1o-O6; Mon, 30 Oct 2023 15:19:27 +0100
+Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Youlun Zhang <zhangyoulun@bytedance.com>
+References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
+ <20231027190254.GA88444@n191-129-154.byted.org>
+ <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+ <20231028231135.GA2236124@n191-129-154.byted.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
+Date:   Mon, 30 Oct 2023 15:19:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231028231135.GA2236124@n191-129-154.byted.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27077/Mon Oct 30 08:39:55 2023)
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current separation between (__){0,1}kvm_x86_vendor_init() is superfluos as
-the the underscore version doesn't have any other callers.
+On 10/29/23 1:11 AM, Peilin Ye wrote:
+> On Sat, Oct 28, 2023 at 09:06:44AM +0200, Daniel Borkmann wrote:
+>>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>>> index 21d75108c2e9..7aca28b7d0fd 100644
+>>>> --- a/net/core/filter.c
+>>>> +++ b/net/core/filter.c
+>>>> @@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
+>>>>    			     net_eq(net, dev_net(dev))))
+>>>>    			goto out_drop;
+>>>>    		skb->dev = dev;
+>>>> +		dev_sw_netstats_rx_add(dev, skb->len);
+>>>
+>>> This assumes that all devices that support BPF_F_PEER (currently only
+>>> veth) use tstats (instead of lstats, or dstats) - is that okay?
+>>
+>> Dumb question, but why all this change and not simply just call ...
+>>
+>>    dev_lstats_add(dev, skb->len)
+>>
+>> ... on the host dev ?
+> 
+> Since I didn't want to update host-veth's TX counters.  If we
+> bpf_redirect_peer()ed a packet from NIC TC ingress to Pod-veth TC ingress,
+> I think it means we've bypassed host-veth TX?
 
-Instead, use the newly added cleanup infrastructure to ensure that
-kvm_x86_vendor_init() holds the vendor_module_lock throughout its
-exectuion and that in case of error in the middle it's released. No
-functional changes.
+Yes. So the idea is to transition to tstats replace the location where
+we used to bump lstats with tstat's tx counter, and only the peer redirect
+would bump the rx counter.. then upon stats traversal we fold the latter into
+the rx stats which was populated by the opposite's tx counters. Makes sense.
 
-Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
----
- arch/x86/kvm/x86.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+OT: does cadvisor run inside the Pod to collect the device stats? Just
+curious how it gathers them.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 41cce5031126..cd7c2d0f88cb 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9446,11 +9446,13 @@ static void kvm_x86_check_cpu_compat(void *ret)
- 	*(int *)ret = kvm_x86_check_processor_compatibility();
- }
- 
--static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
-+int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- {
- 	u64 host_pat;
- 	int r, cpu;
- 
-+	guard(mutex)(&vendor_module_lock);
-+
- 	if (kvm_x86_ops.hardware_enable) {
- 		pr_err("already loaded vendor module '%s'\n", kvm_x86_ops.name);
- 		return -EEXIST;
-@@ -9580,17 +9582,6 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- 	kmem_cache_destroy(x86_emulator_cache);
- 	return r;
- }
--
--int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
--{
--	int r;
--
--	mutex_lock(&vendor_module_lock);
--	r = __kvm_x86_vendor_init(ops);
--	mutex_unlock(&vendor_module_lock);
--
--	return r;
--}
- EXPORT_SYMBOL_GPL(kvm_x86_vendor_init);
- 
- void kvm_x86_vendor_exit(void)
--- 
-2.34.1
+>>> If not, should I add another NDO e.g. ->ndo_stats_rx_add()?
+>>
+>> Definitely no new stats ndo resp indirect call in fast path.
+> 
+> Yeah, I think I'll put a comment saying that all devices that support
+> BPF_F_PEER must use tstats (or must use lstats), then.
 
+sgtm.
+
+Thanks,
+Daniel
