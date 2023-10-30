@@ -2,159 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCD87DBC9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67127DBCA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbjJ3PbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
+        id S233632AbjJ3Peq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233684AbjJ3PbG (ORCPT
+        with ESMTP id S231395AbjJ3Peo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:31:06 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06409C9;
-        Mon, 30 Oct 2023 08:31:02 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso7804062a12.3;
-        Mon, 30 Oct 2023 08:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698679860; x=1699284660; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OwEL6Pg+GghxIBTWLg7sNVv9RjmOZEAEG7bBzkZXR7g=;
-        b=EVEDM77gRD/J82tHhTVAt8AC9BcvlPT0H9Tnp+5FBeeXkVb84ebjVyCMLASxN5hxzG
-         b5J32MB/SqxFYfkJ1kkCsU/0rhIditGfLEyVjI+rMpE6kcXJ4zzJmvZgmjVRytXzH3FB
-         e0N22jPvUpjbTMprvKm0QdpvDwOmR7nHrsleGX9x0JXUjFoyZ3DcaUkfnznv8o0e6QlH
-         ZGGYbvZxt8xbYOk5Bl3AXTSavLsxlLGB3d0+eK3TfJqXSBCF/DvngBHpEx017aPIbK56
-         qtzXgu6W/1qQlZ2x+Mr1eoEZfdtfF2KmWMTAHdETzVea3GGxCYRHzfGzJUD4QHHrH6nH
-         cmsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698679860; x=1699284660;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OwEL6Pg+GghxIBTWLg7sNVv9RjmOZEAEG7bBzkZXR7g=;
-        b=uUkAPUC/TadKpHvlnMZs+xRL2MhBMT3SZS86LN06OhK80b83z1BqLJHyJnp7CcDnu+
-         M2xL9Uxi0tB/KmCCRWPYRZG9R67gkAZPDtwvHHqumSX+zm6dWHAHnseaqpW+iJUBfWPX
-         JQ1thtgqC39fNfWr87FeisqtObTDhB+lHrybkr8Wvr9ZwE7+aNXhKCA77xsDXH48MUSe
-         OXN2U22/pm/FKwF6gLalNGByXF5QcNCelmUJmdzifgehYzp+ZC01mykY+RLj+BObUERa
-         5XRweQxlB8qLvsoO7CE6d6dgtT9tVvPyQRnGQtvsB631K18L+Wk06h+nCVQ82pf6/9Db
-         silw==
-X-Gm-Message-State: AOJu0YwP9NQT2isZtTRJkokeaq63eBuh/FwiX9DpqC86TuqCu3MUAX1S
-        e0pkLB/FXwrHv/iQpCSqj4M=
-X-Google-Smtp-Source: AGHT+IG9pPQq9f7S7tZBTZOUFwtWw3/Nj1u7nONKa0vBEqjmp+oqajxd/j3IOP8Fo2JfnZ1SGfxFyA==
-X-Received: by 2002:a17:906:2b55:b0:9d2:810f:4922 with SMTP id b21-20020a1709062b5500b009d2810f4922mr3407648ejg.33.1698679860170;
-        Mon, 30 Oct 2023 08:31:00 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id g10-20020a17090613ca00b00992b8d56f3asm6172905ejc.105.2023.10.30.08.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 08:30:59 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 17:30:57 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <20231030153057.3ofydbzh7q2um3os@skbuf>
-References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
- <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
- <CACRpkdYg8hattBC1esfh3WBNLZdMM5rLWhn4HTRLMfr2ubbzAA@mail.gmail.com>
- <20231030152325.qdpvv4nbczhal35c@skbuf>
+        Mon, 30 Oct 2023 11:34:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D18A9;
+        Mon, 30 Oct 2023 08:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698680081; x=1730216081;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sCfHwKvsR9e65jD7V3rp3T+AppnNifiR6dKSdQ8zmGE=;
+  b=ayfgtL7ZaaYdEasGiq1VwJi1iY2ww4MXpLs7clLYVaiwTmf0YG9LpDtC
+   WZhOT1cJwQ2Siwor/rNqyy8MlWC5WgaRu78+etMS8Rkcn0akAQ6TD+8pN
+   HWvN43TpXub3saVwsbLe6eV0xpSYABM0KFj7OO41C7ng1svVT+Bs1Srra
+   K9s6KZB3O0Mu1xnduLCQRkXmTLJ+2PzmVG7xDVI3LSSwj1VDHwsXzNZ/H
+   2X8U099IOEpDvlkaMrLhkQGntZNLMShH1TFi7YioWQ/32BwuGJu0I+Z1D
+   MVnNAHs8QALcHyye6KNnNHxBXCvm+6mA/9DFefUSOvPfu2QUDsS9CHrJe
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="387905806"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="387905806"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:32:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="883891209"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="883891209"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:32:06 -0700
+Received: from [10.212.90.12] (kliang2-mobl1.ccr.corp.intel.com [10.212.90.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id DEB0A580699;
+        Mon, 30 Oct 2023 08:32:04 -0700 (PDT)
+Message-ID: <ba847510-bdc4-4298-8d9c-10933023e712@linux.intel.com>
+Date:   Mon, 30 Oct 2023 11:32:03 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231030152325.qdpvv4nbczhal35c@skbuf>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 07/17] perf stat: Add functions to set counter
+ bitmaps for hardware-grouping method
+Content-Language: en-US
+To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Yang Jihong <yangjihong1@huawei.com>
+References: <20231014015202.1175377-1-weilin.wang@intel.com>
+ <20231014015202.1175377-8-weilin.wang@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231014015202.1175377-8-weilin.wang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 05:23:25PM +0200, Vladimir Oltean wrote:
-> On Mon, Oct 30, 2023 at 03:37:24PM +0100, Linus Walleij wrote:
-> > On Mon, Oct 30, 2023 at 3:16 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > 
-> > > Could you please try to revert the effect of commit 339133f6c318 ("net:
-> > > dsa: tag_rtl4_a: Drop bit 9 from egress frames") by setting that bit in
-> > > the egress tag again? Who knows, maybe it is the bit which tells the
-> > > switch to bypass the forwarding process.
-> > 
-> > I have already tried that, it was one of the first things I tried,
-> > just looking over the git log and looking for usual suspects.
-> > 
-> > Sadly it has no effect whatsoever, the problem persists :(
-> > 
-> > > Or maybe there is a bit in a
-> > > different position which does this. You could try to fill in all bits in
-> > > unknown positions, check that there are no regressions with packet sizes
-> > > < 1496, and then see if that made any changes to packet sizes >= 1496.
-> > > If it did, try to see which bit made the difference.
-> > 
-> > Hehe now we're talking :D
-> > 
-> > I did something similar before, I think just switching a different bit
-> > every 10 packets or so and running a persistent ping until it succeeds
-> > or not.
-> > 
-> > I'll see what I can come up with.
-> > 
-> > Yours,
-> > Linus Walleij
+
+
+On 2023-10-13 9:51 p.m., weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
 > 
-> And the drop reason in ethtool -S also stays unchanged despite all the
-> extra bits set in the tag? It still behaves as if the packet goes
-> through the forwarding path?
+> Add metricgroup__event_info data structure to represent an event in the
+> metric grouping context; the list of counters and the PMU name an event
+> should be collected with.
+> 
+> Add functions to parse event counter info from pmu-events and generate a
+> list of metricgroup__event_info data to prepare grouping.
+> 
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> ---
+>  tools/perf/util/metricgroup.c | 196 +++++++++++++++++++++++++++++++++-
+>  tools/perf/util/metricgroup.h |  27 +++++
+>  2 files changed, 220 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 8d4e29eb1..6af8a7341 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -1432,6 +1432,182 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
+>  	return ret;
+>  }
+>  
+> +/**
+> + * set_counter_bitmap - The counter bit mapping: [8-15,0-7], e.g. the GP0 is the
+> + * 8th bit and GP7 is the 1st bit in this 16-bits bitmap. It is helpful for
+> + * assigning GP4-7 before GP0-3 because some events can be collected using GP0-3
+> + * only on some platforms.
 
-Could you please place these skb_dump() calls before and after the magic
-__skb_put_padto() call, for us to see if anything unexpected changes?
-Maybe the socket buffers have some unusual geometry which the conduit
-interface doesn't like, for some reason.
+The bitmap looks weird. Can we use the normal bitmap and always search
+from the last set bit to find the available counter?
 
-The number of skb dumps that you provide back should be even, and
-ideally the first one should be the unaltered packet, to avoid confusion :)
 
-diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
-index 25238093686c..2ca189b5125e 100644
---- a/net/dsa/tag_rtl4_a.c
-+++ b/net/dsa/tag_rtl4_a.c
-@@ -41,18 +41,22 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
- 	u8 *tag;
- 	u16 out;
- 
--	/* Pad out to at least 60 bytes */
--	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
--		return NULL;
--
- 	/* Packets over 1496 bytes get dropped unless they get padded
- 	 * out to 1518 bytes. 1496 is ETH_DATA_LEN - tag which is hardly
- 	 * a coinicidence, and 1518 is ETH_FRAME_LEN + FCS so we define
- 	 * the threshold size and padding like this.
- 	 */
- 	if (skb->len >= (ETH_DATA_LEN - RTL4_A_HDR_LEN)) {
-+		skb_dump(KERN_ERR, skb, true);
-+
- 		if (unlikely(__skb_put_padto(skb, ETH_FRAME_LEN + ETH_FCS_LEN, false)))
- 			return NULL;
-+
-+		skb_dump(KERN_ERR, skb, true);
-+	} else {
-+		/* Pad out to at least 60 bytes */
-+		if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
-+			return NULL;
- 	}
- 
- 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
--- 
-2.34.1
+> + */
+> +static int set_counter_bitmap(int pos, unsigned long *bitmap)
+> +{
+> +	if (pos >= NR_COUNTERS || pos < 0)
+> +		return -EINVAL;
+> +	if (pos <= 7)
+> +		pos = TRANSFER_FIRST_BYTE(pos);
+> +	else
+> +		pos = TRANSFER_SEC_BYTE(pos);
+> +	*bitmap |= 1ul << pos;
+> +	return 0;
+> +}
+> +
+> +static int parse_fixed_counter(const char *counter,
+> +			      unsigned long *bitmap,
+> +			      bool *fixed)
+> +{
+> +	int ret = -ENOENT;
+> +	//TODO: this pattern is different on some other platforms
+> +	const char *pattern = "Fixed counter ";
+> +	int pos = 0;
+> +
+> +	if (!strncmp(counter, pattern, strlen(pattern))) {
+> +		pos = atoi(counter + strlen(pattern));
+> +		ret = set_counter_bitmap(pos, bitmap);
+> +		if (ret)
+> +			return ret;
+> +		*fixed = true;
+> +		return 0;
+> +	}
+> +	return ret;
+> +}
+> +
+> +/**
+> + * parse_counter - Parse event counter info from pmu-events and set up bitmap
+> + * accordingly.
+> + *
+> + * @counter: counter info string to be parsed.
+> + * @bitmap: bitmap to set based on counter info parsed.
+> + * @fixed: is set to true if the event uses fixed counter.
+> + */
+> +static int parse_counter(const char *counter,
+> +			unsigned long *bitmap,
+> +			bool *fixed)
+> +{
+> +	int ret = 0;
+> +	char *p;
+> +	char *tok;
+> +	int pos = 0;
+> +
+> +	ret = parse_fixed_counter(counter, bitmap, fixed);
+> +	// ret==0 means matched with fixed counter
 
+Move the comments to the above of parse_fixed_counter().
+Uses /**/.
+
+> +	if (ret == 0)
+> +		return ret;
+> +
+> +	p = strdup(counter);
+> +	tok = strtok(p, ",");
+> +	if (!tok)
+> +		return -ENOENT;
+> +
+> +	while (tok) {
+> +		pos = atoi(tok);
+> +		ret = set_counter_bitmap(pos, bitmap);
+> +		if (ret)
+> +			return ret;
+> +		tok = strtok(NULL, ",");
+> +	}
+> +	return 0;
+> +}
+> +
+> +static struct metricgroup__event_info *event_info__new(const char *name,
+> +						      const char *pmu_name,
+> +						      const char *counter,
+> +						      bool free_counter)
+> +{
+> +	int ret = 0;
+> +	char *bit_buf = malloc(NR_COUNTERS);
+> +	bool fixed_counter = false;
+> +	struct metricgroup__event_info *e;
+> +
+> +	e = zalloc(sizeof(*e));
+> +	if (!e)
+> +		return NULL;
+> +	if (!pmu_name)
+> +		pmu_name = "core";
+> +
+> +	e->name = name;
+> +	e->free_counter = free_counter;
+> +	e->pmu_name = strdup(pmu_name);
+> +	if (free_counter) {
+> +		ret = set_counter_bitmap(0, e->counters);
+> +		if (ret)
+> +			return NULL;
+> +	} else {
+> +		ret = parse_counter(counter, e->counters, &fixed_counter);
+> +		if (ret)
+> +			return NULL;
+> +		e->fixed_counter = fixed_counter;
+> +	}
+> +
+> +	bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
+> +	pr_debug("Event %s requires pmu %s counter: %s bitmap %s, [pmu=%s]\n",
+> +		e->name, e->pmu_name, counter, bit_buf, pmu_name);
+> +
+> +	return e;
+> +}
+> +
+> +struct metricgroup__add_metric_event_data {
+> +	struct list_head *list;
+> +	/* pure event name, exclude umask and other info*/
+> +	const char *event_name;
+> +	/* event name and umask if applicable*/
+> +	const char *event_id;
+> +};
+> +
+> +static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
+> +						 const struct pmu_events_table *table __maybe_unused,
+> +						 void *data)
+> +{
+> +	struct metricgroup__event_info *event;
+> +	struct metricgroup__add_metric_event_data *d = data;
+> +
+> +	if (!strcasecmp(pe->name, d->event_name)) {
+> +		event = event_info__new(d->event_id, pe->pmu, pe->counter, /*free_counter=*/false);
+> +		if (!event)
+> +			return -ENOMEM;
+> +		list_add(&event->nd, d->list);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * get_metricgroup_events - Find counter requirement of events from the
+> + * pmu_events table
+> + * @full_id: the full event identifiers.
+> + * @table: pmu_events table that is searched for event data.
+> + * @event_info_list: the list that the new event counter info added to.
+> + */
+> +static int get_metricgroup_events(const char *full_id,
+> +				 const struct pmu_events_table *table,
+> +				 struct list_head *event_info_list)
+> +{
+> +	LIST_HEAD(list);
+> +	int ret = 0;
+> +	const char *id;
+> +	const char *rsep, *sep = strchr(full_id, '@');
+> +
+> +	if (sep) {
+> +		rsep = strchr(full_id, ',');
+> +		id = strndup(sep + 1, rsep - sep - 1);
+> +		if (ret)
+> +			goto out;
+> +	} else {
+> +		id = full_id;
+> +	}
+> +	{
+> +		struct metricgroup__add_metric_event_data data = {
+> +			.list = &list,
+> +			.event_name = id,
+> +			.event_id = full_id,
+> +		};
+> +		ret = pmu_events_table_for_each_event(table,
+> +				metricgroup__add_metric_event_callback, &data);
+> +	}
+
+Please remove the useless {}
+
+Thanks,
+Kan
+> +
+> +out:
+> +	list_splice(&list, event_info_list);
+> +	return ret;
+> +}
+> +
+>  /**
+>   * hw_aware_build_grouping - Build event groupings by reading counter
+>   * requirement of the events and counter available on the system from
+> @@ -1445,9 +1621,25 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
+>  				  const char *modifier __maybe_unused)
+>  {
+>  	int ret = 0;
+> +	struct hashmap_entry *cur;
+> +	LIST_HEAD(pmu_info_list);
+> +	LIST_HEAD(event_info_list);
+> +	size_t bkt;
+> +	const struct pmu_events_table *etable = pmu_events_table__find();
+> +
+> +#define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
+> +	hashmap__for_each_entry(ctx->ids, cur, bkt) {
+> +		const char *id = cur->pkey;
+> +
+> +		pr_debug("found event %s\n", id);
+> +
+> +		ret = get_metricgroup_events(id, etable, &event_info_list);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+> -	pr_debug("This is a placeholder\n");
+>  	return ret;
+> +#undef RETURN_IF_NON_ZERO
+>  }
+>  
+>  static void group_str_free(struct metricgroup__group_strs *g)
+> @@ -1521,8 +1713,6 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+>  	*out_evlist = parsed_evlist;
+>  	parsed_evlist = NULL;
+>  err_out:
+> -	parse_events_error__exit(&parse_error);
+> -	evlist__delete(parsed_evlist);
+>  	metricgroup__free_grouping_strs(&groupings);
+>  	return ret;
+>  }
+> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+> index 89809df85..3704545c9 100644
+> --- a/tools/perf/util/metricgroup.h
+> +++ b/tools/perf/util/metricgroup.h
+> @@ -5,6 +5,7 @@
+>  #include <linux/list.h>
+>  #include <linux/rbtree.h>
+>  #include <stdbool.h>
+> +#include <linux/bitmap.h>
+>  #include "pmu-events/pmu-events.h"
+>  #include "strbuf.h"
+>  
+> @@ -67,6 +68,32 @@ struct metric_expr {
+>  	int runtime;
+>  };
+>  
+> +/* Maximum number of counters per PMU*/
+> +#define NR_COUNTERS	16
+> +/*
+> + * Transfer bit position in the bitmap to ensure start assigning counter from
+> + * the last GP counter to the first.
+> + * bit15 <---> bit0
+> + * [GP8-GP15] [GP0-GP7]
+> + */
+> +#define TRANSFER_FIRST_BYTE(pos) (7 - pos)
+> +#define TRANSFER_SEC_BYTE(pos) (23 - pos)
+> +
+> +/**
+> + * An event used in a metric. This info is for metric grouping.
+> + */
+> +struct metricgroup__event_info {
+> +	struct list_head nd;
+> +	/** The name of the event. */
+> +	const char *name;
+> +	/** The name of the pmu the event be collected on. */
+> +	const char *pmu_name;
+> +	bool fixed_counter;
+> +	bool free_counter;
+> +	/** The counters the event allowed to be collected on. */
+> +	DECLARE_BITMAP(counters, NR_COUNTERS);
+> +};
+> +
+>  /**
+>   * Each group is one node in the group string list.
+>   */
