@@ -2,86 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A2D7DB37D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8CF7DB39C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjJ3GhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
+        id S231871AbjJ3Gjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbjJ3Gg5 (ORCPT
+        with ESMTP id S232020AbjJ3Gjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:36:57 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931C5110
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:36:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=WhYOyNsBwSt0A2Sp6fwBP45n6hPWu9Zp4no3NFT8gLY=;
-  b=HBfA4fZy8ZtGAthr3cjLV20wKPLkSFoB2J5GF/4mmuydOUkwrqyURjnD
-   b9FQmOu5+1zWfgQLY0Dk+aHL72ZY3LrVgMVnpSgUbotXtJQMtXhwtbkeK
-   aP2iKulGtnHrQ9Q3W/ssVxl3hlPtbs6j7IAa1hZRNJJ/pDQe2Uvg1ECM2
-   E=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,262,1694728800"; 
-   d="scan'208";a="133818847"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 07:36:52 +0100
-Date:   Mon, 30 Oct 2023 07:36:52 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Nancy Nyambura <nicymimz@gmail.com>
-cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rts5208: Replace strncpy() with strscpy() for
- appropriate string copying in rtsx_scsi line 524 warning: found by checkpatch.pl
- script
-In-Reply-To: <20231029191647.44127-1-nicymimz@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2310300735480.3533@hadrien>
-References: <20231029191647.44127-1-nicymimz@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 30 Oct 2023 02:39:42 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E548F3;
+        Sun, 29 Oct 2023 23:39:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nkS8hUmfgoQSLmx8FI/zq+MIJrZc+iOqtKZUu0oHy77DjunAxj2+se+lHOh+8mgxZSV4KorOIHzXP7rjIYciWHX2NxD0duA+Xg9fEo6S+CTHykHwOnDHq/ZvmoiF3CxGQD6gcRCr55+KwTaVH/AcPDKMpUIWFLcSUFMZ1jh4pKGKy31zp4vdFZmNR6qd5pfJJi/fTmEeeoKjlUyummf1qEhemdo6o/uWlIcBx88DNtSOxF5a673O/p+WTS0cghy1BGu7ypkj1/RDJeAMG/4ifePGe+HW24tT1H5+k1TUCUPjynJ7WM/HurIOIKRa3e5Vqp2me0ToCEQhsB/r+vDh7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7S0QfNyZyCPa4u3nkOKUErbZa/aijuE0Cav6TY9y0Jo=;
+ b=dEKbUtzBVyAPUqsIoWpl7nZ5a7D0sfprtxuFCU83wSpDMePeIIMS4Nzjko0x3BBPHEcvUfgEREyCVw8e6qfSbE4S0C3i9uPmwwPIxGXempy9u2BU2U8gttISX3VNgyKLAgEmwE/7aYxOVSzp5MJHuFNpe24bFmOtR/oJoNSj76Pcug25z45topn7yqBQ8nENR4+pVoD0OjTGKBqYUPvPZ5Oi8isctazW1myEkSB3AfxTXh07uxC3h+niPjwozBr/vMknFqTD06UTE5M5Ll1S5Wv8Vwaq9NqNLoURArvx3yl85nKDJOlKcZc4pEl4xi1YxGuD07bMmVYnerUhnYloVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7S0QfNyZyCPa4u3nkOKUErbZa/aijuE0Cav6TY9y0Jo=;
+ b=mw5NEosPzc8OhhPO1ytdra4r0BlYWjdiytGAMn3sDaEdd8bV5AqvBg2A2klNdMZDPHvj16fpV5KCJB7lQ5A/5/NYCaDVyKiJEmfR96WPAYVrQyxTks+ZabFcBN5/tpn75D9e4tpECfPY8WXzyM9SzA44t4GQDfg9i/bXkseBVVg=
+Received: from CY8PR19CA0046.namprd19.prod.outlook.com (2603:10b6:930:6::10)
+ by DS0PR12MB8041.namprd12.prod.outlook.com (2603:10b6:8:147::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.25; Mon, 30 Oct
+ 2023 06:39:09 +0000
+Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
+ (2603:10b6:930:6:cafe::71) by CY8PR19CA0046.outlook.office365.com
+ (2603:10b6:930:6::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28 via Frontend
+ Transport; Mon, 30 Oct 2023 06:39:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6933.15 via Frontend Transport; Mon, 30 Oct 2023 06:39:08 +0000
+Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 30 Oct
+ 2023 01:38:48 -0500
+From:   Nikunj A Dadhania <nikunj@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
+        <x86@kernel.org>, <kvm@vger.kernel.org>
+CC:     <bp@alien8.de>, <mingo@redhat.com>, <tglx@linutronix.de>,
+        <dave.hansen@linux.intel.com>, <dionnaglaze@google.com>,
+        <pgonda@google.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
+        <nikunj@amd.com>
+Subject: [PATCH v5 14/14] x86/sev: Enable Secure TSC for SNP guests
+Date:   Mon, 30 Oct 2023 12:06:52 +0530
+Message-ID: <20231030063652.68675-15-nikunj@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231030063652.68675-1-nikunj@amd.com>
+References: <20231030063652.68675-1-nikunj@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|DS0PR12MB8041:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3968ae8b-6668-42eb-64ca-08dbd912eba9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 26/CSPagFGtGSue1wm/NaJtR5R/sHa9keuLy5KZI/zPpe/FQcsogOXKoBMOnvH56my8zIiWIACCu/lcZzr/qtkUwZigwJfH9QFHHnMHlPDSP+GfSG3+4yUlg5TvWpYjPEmyeLmmln2nwFH1ZMjjPBfb2s3bRJtLfPvILC84GjZRZy9y+zjPBMfVR3dwGrQK5zBm2PGgJCWaOzzfwXHoV4XUgQu8PDzPcEWAGIuMGLkj6uRiaBBL44VjQyFIwV8lY62617kyZYHumvKFQFwxIQk+PHlejhANLE3ONqA/jXObexbr7GfbgqNlqjtTBv11E5boKafJZAzdb2PWC9xpI2FntRjoKxFGX85MrHWENkd2URghAZGvuZIBbnuTljEWhB6qeJ/ei2XVIjul71J/rYmI7+8J3QxreijhWffmnGbhxYalXGvIzZ7POtO9XYkXJsKPpREQ2sK3slWPyQwVBMZx1hZbNoorZdvxbPNjBKSr/REGhlhVA8djY11V1QEXQMqLvDYpgBzdYd3pJOd4MNUtJ308RRSl5R1sv8yTn6Dene1AbheIfyC5DLFZgIHyowLXXXEhGl6CMju66tseDubasBbEgJqnwPZHteC6Hc6jWTlxIwImFJVgNMcs2c1ElNOYy74kqofDqYIi7ndCIDv26BknraNKpFcHBGwYCv2a+Aw/jgY9U+0gD+SccWIxmIimfohLsaOtPzrC9Gtx2CMUp/wDjpWFdBcQFQnHINEP90t9O24vLIgrusr0Ipg8ZBOusthphwP9wj2mubUaBfA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(376002)(136003)(230922051799003)(451199024)(64100799003)(186009)(82310400011)(1800799009)(40470700004)(46966006)(36840700001)(2906002)(40460700003)(36860700001)(54906003)(70586007)(70206006)(47076005)(81166007)(356005)(82740400003)(316002)(478600001)(26005)(7696005)(6666004)(110136005)(83380400001)(2616005)(16526019)(426003)(1076003)(336012)(41300700001)(7416002)(5660300002)(8936002)(8676002)(4326008)(40480700001)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 06:39:08.8349
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3968ae8b-6668-42eb-64ca-08dbd912eba9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8041
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like the entire log message ended up in the subject line.  The
-subject line should give a concise summary of what is done.  The log
-message should give more detail about what you are doing and why.
+Now that all the required plumbing is done for enabling SNP
+Secure TSC feature, add Secure TSC to snp features present list.
 
-julia
+The CC_ATTR_GUEST_SECURE_TSC can be used by the guest to query whether
+the SNP guest has Secure TSC feature active.
 
-On Sun, 29 Oct 2023, Nancy Nyambura wrote:
+Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+---
+ arch/x86/boot/compressed/sev.c |  3 ++-
+ arch/x86/mm/mem_encrypt.c      | 10 ++++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-> Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
-> ---
->  drivers/staging/rts5208/rtsx_scsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
-> index 08bd768ad34d..52324b8ebbc7 100644
-> --- a/drivers/staging/rts5208/rtsx_scsi.c
-> +++ b/drivers/staging/rts5208/rtsx_scsi.c
-> @@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
->
->  	if (sendbytes > 8) {
->  		memcpy(buf, inquiry_buf, 8);
-> -		strncpy(buf + 8, inquiry_string, sendbytes - 8);
-> +		strscpy(buf + 8, inquiry_string, sendbytes - 8);
->  		if (pro_formatter_flag) {
->  			/* Additional Length */
->  			buf[4] = 0x33;
-> --
-> 2.40.1
->
->
->
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index 80d76aea1f7b..b1a4bab8ecf1 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -375,7 +375,8 @@ static void enforce_vmpl0(void)
+  * by the guest kernel. As and when a new feature is implemented in the
+  * guest kernel, a corresponding bit should be added to the mask.
+  */
+-#define SNP_FEATURES_PRESENT	MSR_AMD64_SNP_DEBUG_SWAP
++#define SNP_FEATURES_PRESENT	(MSR_AMD64_SNP_DEBUG_SWAP |	\
++				 MSR_AMD64_SNP_SECURE_TSC)
+ 
+ u64 snp_get_unsupported_features(u64 status)
+ {
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 01abecc9a774..26608b9f2ca7 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -69,8 +69,14 @@ static void print_mem_encrypt_feature_info(void)
+ 		pr_cont(" SEV-ES");
+ 
+ 	/* Secure Nested Paging */
+-	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
+-		pr_cont(" SEV-SNP");
++	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
++		pr_cont(" SEV-SNP\n");
++		pr_cont("SNP Features active: ");
++
++		/* SNP Secure TSC */
++		if (cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
++			pr_cont(" SECURE-TSC");
++	}
+ 
+ 	pr_cont("\n");
+ }
+-- 
+2.34.1
+
