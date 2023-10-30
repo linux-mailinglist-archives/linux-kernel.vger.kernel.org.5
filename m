@@ -2,142 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B297DB573
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A3C7DB576
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjJ3Itw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
+        id S232280AbjJ3IuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjJ3Itt (ORCPT
+        with ESMTP id S232297AbjJ3It7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:49:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4F39D;
-        Mon, 30 Oct 2023 01:49:47 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc0d0a0355so24667465ad.3;
-        Mon, 30 Oct 2023 01:49:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698655787; x=1699260587; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LTZiBHO/bcyQoF82GzeeiMxWv9nC9/4IT5S7HkUIiUE=;
-        b=DFXLV3UYxVc7NG5BA5Ynl4LyUPNEJp6Bm300p53E87GnhHx8GdZ/T/BlvCnBdjlDBx
-         WdTDBvbP2pWyxiEzcfsXevtI5fCCbxWH2rXcDtA9baTgsY42rN7BfoY6pHk/nHhOa1LW
-         ySj3+E5yPIheXW+g6hX2LCv7iY5HTJauYNBHFNmTJx2nGlAddE5GBMFNkJ1kTmmTTAQC
-         A9KypNtnCx52IdLa5YEtox2U6Lv29c13r5yPThlebmtWVMPNcdxJpsWWilG5S+SgL3Rx
-         gW8XDBiczV5RZl2Y8FKHvxWFH50G0U6Szb8dfJ0wOqjKNVG00+nGrP39lKUGAnG5uPz4
-         ISNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698655787; x=1699260587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LTZiBHO/bcyQoF82GzeeiMxWv9nC9/4IT5S7HkUIiUE=;
-        b=a+UfnHQ5iY6Ga013S+/Qx4rxvQdEWTl77HA2utDqTtGl1i2vIaMFUnHdZTyxMYkEv9
-         rujGaxVwtFQpR+VNCxFSv9r3fCcvx95l5Pw6thARsJbg0OyBWnfJj2uz1jENcOD9E6fS
-         AFjEVaGDCI8afysQh5u9j0NRKPyUJo0PMeu/dixTO6IxLrYcrSyTe21Bzct7qrZDShrs
-         OYlPuUX26nOWPIvvH19ifTdFcdTxXzhkP+UAMq/3VEHcPMnfnwTC1HbKl7OaNT4ylA32
-         haI4KX8/3z8Vz6U5xjqO8sCUZqscZLBpT5c2fmGx4QFYGhsb1qKCRfUsdCza67P1tgry
-         xRRA==
-X-Gm-Message-State: AOJu0Yx9IduPamuFuk8G7bvT9GcdBa4tfq3+W2Gkof+rhtgbXzARgcEW
-        yLfh0z7Lb5NOKsL2/0xZzkM=
-X-Google-Smtp-Source: AGHT+IGcyGfbxIKfrCw66ui0EgwGDUWqZJg6i/OKXwBfNICtZCy+YCkcfoGpSm01KhDRVWKdbmM1yA==
-X-Received: by 2002:a17:902:6803:b0:1c9:ca02:645c with SMTP id h3-20020a170902680300b001c9ca02645cmr6399819plk.36.1698655786724;
-        Mon, 30 Oct 2023 01:49:46 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:201:4be2:e81c:ea48:aaac])
-        by smtp.gmail.com with ESMTPSA id q13-20020a170902dacd00b001bc2831e1a8sm5808793plx.80.2023.10.30.01.49.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 01:49:46 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 08:49:40 +0000
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Kamel Bouhara <kamel.bouhara@bootlin.com>
-Cc:     Marco Felsch <m.felsch@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mark.satterthwaite@touchnetix.com,
-        bartp@baasheep.co.uk, hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v3 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Message-ID: <ZT9uJMExvf7B0gtR@google.com>
-References: <20231012074034.1090436-1-kamel.bouhara@bootlin.com>
- <20231012074034.1090436-4-kamel.bouhara@bootlin.com>
- <20231020120310.vrn6ew3fcg5e545w@pengutronix.de>
- <20231022193529.GC3072@kb-xps>
+        Mon, 30 Oct 2023 04:49:59 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47999C1;
+        Mon, 30 Oct 2023 01:49:56 -0700 (PDT)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SJn5Q75f3z4f3jJ6;
+        Mon, 30 Oct 2023 16:49:46 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+        by mail.maildlp.com (Postfix) with ESMTP id 14B2E1A016F;
+        Mon, 30 Oct 2023 16:49:53 +0800 (CST)
+Received: from [10.174.178.159] (unknown [10.174.178.159])
+        by APP4 (Coremail) with SMTP id gCh0CgB3BdUvbj9lkx9mEQ--.43659S3;
+        Mon, 30 Oct 2023 16:49:52 +0800 (CST)
+Message-ID: <ab998dda-80ba-7d8b-0cae-36665826deb5@huaweicloud.com>
+Date:   Mon, 30 Oct 2023 16:49:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231022193529.GC3072@kb-xps>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH -next] nbd: get config_lock before sock_shutdown
+To:     Yu Kuai <yukuai1@huaweicloud.com>, Jens Axboe <axboe@kernel.dk>,
+        josef@toxicpanda.com
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230707062256.1271948-1-zhongjinghua@huaweicloud.com>
+ <1b67a9dd-c28a-661a-3a46-dab509d4c34e@kernel.dk>
+ <ae49487b-9aa8-fe37-792b-676f7e70b23b@huaweicloud.com>
+From:   zhongjinghua <zhongjinghua@huaweicloud.com>
+In-Reply-To: <ae49487b-9aa8-fe37-792b-676f7e70b23b@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgB3BdUvbj9lkx9mEQ--.43659S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1UWF17Gr4kAw1rJryDAwb_yoW5ur4kpr
+        1kAF1UGrW5Gw1Iqr1UJw1UXryUJw1Ut3WUJr1UJa4UArsrCry2gr1UWr1q9r1UJr48Jr1U
+        Jr15GF13Zry7Jr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: x2kr0wpmlqwxtxd6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 09:35:29PM +0200, Kamel Bouhara wrote:
-> On Fri, Oct 20, 2023 at 02:03:10PM +0200, Marco Felsch wrote:
-> > > +
-> > > +static int
-> > > +axiom_i2c_write(struct i2c_client *client, u8 usage, u8 page, u8 *buf, u16 len)
-> > > +{
-> > > +	struct axiom_data *ts = i2c_get_clientdata(client);
-> > > +	struct axiom_cmd_header cmd_header;
-> > > +	struct i2c_msg msg[2];
-> > > +	int ret;
-> > > +
-> > > +	cmd_header.target_address = cpu_to_le16(usage_to_target_address(ts, usage, page, 0));
-> > > +	cmd_header.length = cpu_to_le16(len);
-> > > +	cmd_header.read = 0;
-> > > +
-> > > +	msg[0].addr = client->addr;
-> > > +	msg[0].flags = 0;
-> > > +	msg[0].len = sizeof(cmd_header);
-> > > +	msg[0].buf = (u8 *)&cmd_header;
-> > > +
-> > > +	msg[1].addr = client->addr;
-> > > +	msg[1].flags = 0;
-> > > +	msg[1].len = len;
-> > > +	msg[1].buf = (char *)buf;
-> >
-> > Please check the "comms protocol app note", for write it is not allowed
-> > to send a stop, so the whole data must be send in one i2c_msg.
-> >
-> 
-> Well I only have the "Programmer's Guide", I'll have to check that as it
-> really seems to works as it yet.
 
-As far as I know we only send "stop" on the last message in a sequence
-of messages in i2c_transfer() unless it is explicitly requested with
-I2C_M_STOP flag.
+在 2023/9/28 14:04, Yu Kuai 写道:
+> Hi,
+>
+> 在 2023/08/01 8:27, Jens Axboe 写道:
+>> On 7/7/23 12:22?AM, Zhong Jinghua wrote:
+>>> Config->socks in sock_shutdown may trigger a UAF problem.
+>>> The reason is that sock_shutdown does not hold the config_lock,
+>>> so that nbd_ioctl can release config->socks at this time.
+>>>
+>>> T0: NBD_SET_SOCK
+>>> T1: NBD_DO_IT
+>>>
+>>> T0                        T1
+>>>
+>>> nbd_ioctl
+>>>    mutex_lock(&nbd->config_lock)
+>>>    // get lock
+>>>    __nbd_ioctl
+>>>      nbd_start_device_ioctl
+>>>        nbd_start_device
+>>>         mutex_unlock(&nbd->config_lock)
+>>>           // relase lock
+>>>           wait_event_interruptible
+>>>           (kill, enter sock_shutdown)
+>>>           sock_shutdown
+>>>                     nbd_ioctl
+>>>                       mutex_lock(&nbd->config_lock)
+>>>                       // get lock
+>>>                       __nbd_ioctl
+>>>                         nbd_add_socket
+>>>                           krealloc
+>>>                         kfree(p)
+>>>                             //config->socks is NULL
+>>>             nbd_sock *nsock = config->socks // error
+>>>
+>>> Fix it by moving config_lock up before sock_shutdown.
+>>>
+>>> Signed-off-by: Zhong Jinghua <zhongjinghua@huaweicloud.com>
+>>> ---
+>>>   drivers/block/nbd.c | 7 ++++++-
+>>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>>> index c410cf29fb0c..accbe99ebb7e 100644
+>>> --- a/drivers/block/nbd.c
+>>> +++ b/drivers/block/nbd.c
+>>> @@ -1428,13 +1428,18 @@ static int nbd_start_device_ioctl(struct 
+>>> nbd_device *nbd)
+>>>       mutex_unlock(&nbd->config_lock);
+>>>       ret = wait_event_interruptible(config->recv_wq,
+>>> atomic_read(&config->recv_threads) == 0);
+>>> +
+>>> +    /*
+>>> +     * recv_work in flush_workqueue will not get this lock, because 
+>>> nbd_open
+>>> +     * will hold nbd->config_refs
+>>> +     */
+>>> +    mutex_lock(&nbd->config_lock);
+>>>       if (ret) {
+>>>           sock_shutdown(nbd);
+>>>           nbd_clear_que(nbd);
+>>>       }
+>>>         flush_workqueue(nbd->recv_workq);
+>>> -    mutex_lock(&nbd->config_lock);
+>>
+>> Feels pretty iffy to hold config_lock over the flush. If anything off
+>> recv_work() ever grabs it, we'd be stuck. Your comment assumes that the
+>> only case this will currently happen is if we drop the last ref, or at
+>> least that's the case that'd do it even if you don't mention it
+>> explicitly.
+>>
+>> Maybe this is all fine, but recv_work() should have a comment matching
+>> this one, and this comment should be more descriptive as well.
+>
+> Jinghua,
+>
+> Please add comment as Jens suggested, and resend this patch.
+>
+> Thanks,
+> Kuai
+>
+>>
+OK.
 
-...
-> > > +
-> > > +static void axiom_i2c_remove(struct i2c_client *client)
-> > > +{
-> > > +	struct axiom_data *ts = i2c_get_clientdata(client);
-> > > +
-> > > +	input_unregister_device(ts->input_dev);
-> >
-> > This can be part of devm_add_action_or_reset() and we could remove the
-> > .remove() callback for this driver.
-> >
-> 
-> Sure, thanks for the tips :)!
+Later I'll send out,
 
-Actually input devices allocated with devm do not need to be explicitly
-inregistered, so you do not need to bother with
-devm_add_action_or_reset() and simply delete axiom_i2c_remove().
+Thanks to Jens for the advice.
 
-Thanks.
-
--- 
-Dmitry
