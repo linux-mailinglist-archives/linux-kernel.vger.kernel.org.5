@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C69C97DC284
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1FD7DC28A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjJ3WhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 18:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38762 "EHLO
+        id S232183AbjJ3WhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 18:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjJ3WhB (ORCPT
+        with ESMTP id S231205AbjJ3WhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 18:37:01 -0400
-Received: from mail-ot1-x349.google.com (mail-ot1-x349.google.com [IPv6:2607:f8b0:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93591E8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:36:58 -0700 (PDT)
-Received: by mail-ot1-x349.google.com with SMTP id 46e09a7af769-6ce2cce763eso7358670a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:36:58 -0700 (PDT)
+        Mon, 30 Oct 2023 18:37:18 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CCEE8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so4438627b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698705418; x=1699310218; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lq5TwK+3n6zGzzimtcAIoXXorjYRH73jd8dtvn3Ft6I=;
-        b=RdGbf/NoSiOuyh5onpF3BZoHSI1vl0NLpmmOHSolZPmMOyhBJMYsa/7V1/FJsFBM6a
-         lql4DnFNZwfUde9/4v3VWLSNAD3XIoUGjibURqVKFM2u+EKn2t4ZvISAK6ZZ1r4gHP10
-         3ICQNxrFUryjHIRXZGo3qDdGf8cMXl3nPlp7uHtf4UUebbtkb+b+DWHaE47lPKJ+Tzlf
-         5RK//2wmpeoRc27RQI/9CWni5Z6P7dB5DZc+GKN3kTlenRIujv+AVn6SqZPwYAsZ1mZj
-         ZlivGFvUawiPOr/J1EYYTNrXJaH/cirIkhLvS1HynALB3m8Qt2Y5cIYA8UnMhJYdYafK
-         q8PA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698705434; x=1699310234; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3l/lL5wYf4n3GthHM0NoG2tR/ievkKXd51rX7QyzCg=;
+        b=YZJJRKmpYSheU+R2mseNAMbeGSdPJLFe40wCupbHYAd3o4QvZNI/n7SGn2r5cooFgq
+         2TEcO78mRTQJBTq7k2LqUtVvJres5aMQhj3nULXOrrdnw3Gj9/WT+z7z2ABtzED7KsbV
+         ekC9YAJYeG7FVFi/CvzzPWQPOAWd7xX/xs+NjEVXTta0c+tu9fOv2E6WvTvGDYo0G3A3
+         nk/n2nXjoAIwMY394rKnbmnbD9xeR0wGUW/4HzwyTv9RhbV1nF/lk2rhXLia5gW1lDor
+         Xwl91GIsakdFQ/xOsemb/k2wPINm34d+665mfEqcz2YTJlkO8PHNhrdA0s286qBDrOO7
+         /l3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698705418; x=1699310218;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lq5TwK+3n6zGzzimtcAIoXXorjYRH73jd8dtvn3Ft6I=;
-        b=U8z02NqQ8g6JP3rYBK1SwXzE45LqtSN3/WGq6x+uFDgmuazFx/tB+yLJhUEShoVsbc
-         uVRb/fCb7jGvdwfiSNrMoaJI7xB+9hucMDMaQkjyrlqOEvUrgSnEDgrni1kWkZZfCxOV
-         muPKmoKUKmhums0Pixqn+Qxe7Tsln38Vd06FNmg7T9O0qijKcoqimvs2Q0OXKZSXmxKX
-         KGGUDeOWDeB679Ad5LC6vSTeoTKiozZu+t8iHSaUgqWz/igeWZrq4TN5qO+307P522ML
-         oxA2HyHoKDw+gAYz1hHskgaUR28/rEWWxR1HEsCLN1o2XMh5QCv6Rw0cUjPiHn0XSvmi
-         yA/Q==
-X-Gm-Message-State: AOJu0YzuEdu3ifF7x4VM3T2MW1G5Vpl0Qa/+jU9hSmI+w2QZleS4kPQX
-        P1aJDzZwczsN+zyCFHbsQk9es+iHklbkaHQE8A==
-X-Google-Smtp-Source: AGHT+IH0vqfhJIEFVH7u9qgat5Uv0tRMPr607yPkkrPPdp+PXylCMaIkv+dU9D55BKCkNOTHg1rl2OPhrOkPq1RLGA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6830:4502:b0:6c4:58bd:290d with
- SMTP id i2-20020a056830450200b006c458bd290dmr222233otv.3.1698705417918; Mon,
- 30 Oct 2023 15:36:57 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 22:36:57 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAgwQGUC/x3NQQqDQAxA0atI1g2MIxX0KiLFJhkNyCiJSIt49
- w5dvs3/F7iYikNfXWByquuWC+pHBbRMeRZULoYYYlOHJqAflmn/IpueYo5OrrjqOxEmekmmjQU XfE7cxi61LB1Bie0mST//0TDe9w/THRIxeAAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698705417; l=3578;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=ZF9U9vNqxuweLPAWDBaMtDMKK84GlPUqwF7Byf2+S7s=; b=F1b2huUJ/pDsyqCT80uhn3Zf7p1L3WobUXybolIxFi5AJ2jvthi3HulpjB6iOjb1ZfU9kv111
- QIVZJMEINgNAVdeMOm48S4aw+a0kgwvm8A0d34cYpiKqJhOyUf5Kp3i
-X-Mailer: b4 0.12.3
-Message-ID: <20231030-strncpy-drivers-scsi-libfc-fc_encode-h-v1-1-c08c2be6befa@google.com>
-Subject: [PATCH] scsi: libfc: replace deprecated strncpy with memcpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20230601; t=1698705434; x=1699310234;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s3l/lL5wYf4n3GthHM0NoG2tR/ievkKXd51rX7QyzCg=;
+        b=mJqXNNJn3dzL5lZw0T+cyHjd+Y5Zl5WPhWrKg67AFPaaM/DbyNcc3k4UZCq0RZXHF5
+         +U9rKTPpuG68VEM/Q7n3J+25FS2mWFbsqgtHolDPsbFf7vCerKVEhvIuWkafF4R6j82Q
+         HZ4sLYKNRQdtEoulx/ctMxF9NC8GwWmQspE2n1qwEQ4kiLzWi+K3nFRHBN/UMFbS6qIp
+         zB5v7tWBOvCriwe6YyFzOtyEPxh52AMg6OpB/GHgg+g+h65ZLJDfnxAFnU5bzwuYMeTh
+         KmSZ2GlJmzb0pEA0Gqg3X8qM9KKfBgfAsQNFP7qqF3ljuNyxwwatqMRCG+uGTpGl73Ew
+         ArvQ==
+X-Gm-Message-State: AOJu0YwGOQto1EZ3CyQkRsm1AQoYNVKaDQ9oYZIxtUw3u8tWwGx4uKI9
+        vYCZ6O7ksIPW29GDPpzW20Hw3Jle+d6T6N4GKyU=
+X-Google-Smtp-Source: AGHT+IH220teegvrDu5BQvWXj+pfKEIBe9mpI/qNDn7XBuC5Q1LlqBFVtPwA3Li0K8x18IiaaOOLaQ==
+X-Received: by 2002:a05:6a21:6da1:b0:175:7085:ba18 with SMTP id wl33-20020a056a216da100b001757085ba18mr9996599pzb.58.1698705434041;
+        Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id p11-20020a17090a2d8b00b002774d7e2fefsm2932pjd.36.2023.10.30.15.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 15:37:13 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qxasg-0066We-2r;
+        Tue, 31 Oct 2023 09:37:10 +1100
+Date:   Tue, 31 Oct 2023 09:37:10 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZUAwFkAizH1PrIZp@dread.disaster.area>
+References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+ <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+ <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area>
+ <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+ <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area>
+ <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,109 +103,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated [1] and as such we should use different apis to
-copy string data.
+On Fri, Oct 27, 2023 at 06:35:58AM -0400, Jeff Layton wrote:
+> On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
+> > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
+> > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
+> > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> > > In earlier discussions you alluded to some repair and/or analysis tools
+> > > that depended on this counter.
+> > 
+> > Yes, and one of those "tools" is *me*.
+> > 
+> > I frequently look at the di_changecount when doing forensic and/or
+> > failure analysis on filesystem corpses.  SOE analysis, relative
+> > modification activity, etc all give insight into what happened to
+> > the filesystem to get it into the state it is currently in, and
+> > di_changecount provides information no other metadata in the inode
+> > contains.
+> > 
+> > > I took a quick look in xfsprogs, but I
+> > > didn't see anything there. Is there a library or something that these
+> > > tools use to get at this value?
+> > 
+> > xfs_db is the tool I use for this, such as:
+> > 
+> > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/mapper/fast
+> > v3.change_count = 35
+> > $
+> > 
+> > The root inode in this filesystem has a change count of 35. The root
+> > inode has 32 dirents in it, which means that no entries have ever
+> > been removed or renamed. This sort of insight into the past history
+> > of inode metadata is largely impossible to get any other way, and
+> > it's been the difference between understanding failure and having no
+> > clue more than once.
+> > 
+> > Most block device parsing applications simply write their own
+> > decoder that walks the on-disk format. That's pretty trivial to do,
+> > developers can get all the information needed to do this from the
+> > on-disk format specification documentation we keep on kernel.org...
+> > 
+> 
+> Fair enough. I'm not here to tell you that you guys that you need to
+> change how di_changecount works. If it's too valuable to keep it
+> counting atime-only updates, then so be it.
+> 
+> If that's the case however, and given that the multigrain timestamp work
+> is effectively dead, then I don't see an alternative to growing the on-
+> disk inode. Do you?
 
-We can see that ct is NUL-initialized with fc_ct_hdr_fill:
-|       ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len,
-...
+Yes, I do see alternatives. That's what I've been trying
+(unsuccessfully) to describe and get consensus on. I feel like I'm
+being ignored and rail-roaded here, because nobody is even
+acknowledging that I'm proposing alternatives and keeps insisting
+that the only solution is a change of on-disk format.
 
-In fc_ct_hdr_fill():
-|       memset(ct, 0, ct_plen);
+So, I'll summarise the situation *yet again* in the hope that this
+time I won't get people arguing about atime vs i-version and what
+constitutes an on-disk format change because that goes nowhere and
+does nothing to determine which solution might be acceptible.
 
-We also calculate the length of the source string:
-|       len = strnlen(fc_host_symbolic_name(lport->host), 255);
+The basic situation is this:
 
-then this argument is used in strncpy(), which is bad because the
-pattern of (dest, src, strlen(src)) usually leaves the destination
-buffer without NUL-termination. However, this seems to be correct in
-this instance since fr_name is part of a seq_buf-like structure
-monitoring the length:
-|       struct fc_ns_rspn {
-|       	struct fc_ns_fid fr_fid;	/* port ID object */
-|       	__u8		fr_name_len;
-|       	char		fr_name[];
-|       } __attribute__((__packed__));
+If XFS can ignore relatime or lazytime persistent updates for given
+situations, then *we don't need to make periodic on-disk updates of
+atime*. This makes the whole problem of "persistent atime update bumps
+i_version" go away because then we *aren't making persistent atime
+updates* except when some other persistent modification that bumps
+[cm]time occurs.
 
-So, this is really just a byte copy into a length-bounded string. Let's
-use memcpy() and mark the buffers as __nonstring.
+But I don't want to do this unconditionally - for systems not
+running anything that samples i_version we want relatime/lazytime
+to behave as they are supposed to and do periodic persistent updates
+as per normal. Principle of least surprise and all that jazz.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+So we really need an indication for inodes that we should enable this
+mode for the inode. I have asked if we can have per-operation
+context flag to trigger this given the needs for io_uring to have
+context flags for timestamp updates to be added. 
 
-Found with: $ rg "strncpy\("
----
- drivers/scsi/libfc/fc_encode.h | 8 ++++----
- include/uapi/scsi/fc/fc_ns.h   | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+I have asked if we can have an inode flag set by the VFS or
+application code for this. e.g. a flag set by nfsd whenever it accesses a
+given inode.
 
-diff --git a/drivers/scsi/libfc/fc_encode.h b/drivers/scsi/libfc/fc_encode.h
-index 7dcac3b6baa7..ba8cc4ee650c 100644
---- a/drivers/scsi/libfc/fc_encode.h
-+++ b/drivers/scsi/libfc/fc_encode.h
-@@ -140,8 +140,8 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
- 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len,
- 				    FC_FST_DIR, FC_NS_SUBTYPE);
- 		hton24(ct->payload.spn.fr_fid.fp_fid, lport->port_id);
--		strncpy(ct->payload.spn.fr_name,
--			fc_host_symbolic_name(lport->host), len);
-+		memcpy(ct->payload.spn.fr_name,
-+		       fc_host_symbolic_name(lport->host), len);
- 		ct->payload.spn.fr_name_len = len;
- 		break;
- 
-@@ -150,8 +150,8 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
- 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rsnn) + len,
- 				    FC_FST_DIR, FC_NS_SUBTYPE);
- 		put_unaligned_be64(lport->wwnn, &ct->payload.snn.fr_wwn);
--		strncpy(ct->payload.snn.fr_name,
--			fc_host_symbolic_name(lport->host), len);
-+		memcpy(ct->payload.snn.fr_name,
-+		       fc_host_symbolic_name(lport->host), len);
- 		ct->payload.snn.fr_name_len = len;
- 		break;
- 
-diff --git a/include/uapi/scsi/fc/fc_ns.h b/include/uapi/scsi/fc/fc_ns.h
-index 4cf0a40a099a..8a6f6c6b5213 100644
---- a/include/uapi/scsi/fc/fc_ns.h
-+++ b/include/uapi/scsi/fc/fc_ns.h
-@@ -145,7 +145,7 @@ struct fc_gid_pn_resp {
-  */
- struct fc_gspn_resp {
- 	__u8	fp_name_len;
--	char	fp_name[];
-+	char	fp_name[] __nonstring;
- };
- 
- /*
-@@ -171,7 +171,7 @@ struct fc_ns_rn_id {
- struct fc_ns_rsnn {
- 	__be64		fr_wwn;		/* node name */
- 	__u8		fr_name_len;
--	char		fr_name[];
-+	char		fr_name[] __nonstring;
- } __attribute__((__packed__));
- 
- /*
-@@ -180,7 +180,7 @@ struct fc_ns_rsnn {
- struct fc_ns_rspn {
- 	struct fc_ns_fid fr_fid;	/* port ID object */
- 	__u8		fr_name_len;
--	char		fr_name[];
-+	char		fr_name[] __nonstring;
- } __attribute__((__packed__));
- 
- /*
+I have asked if this inode flag can just be triggered if we ever see
+I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
+and whether this is a reliable mechanism for setting such a flag.
 
----
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
-change-id: 20231030-strncpy-drivers-scsi-libfc-fc_encode-h-5ad629f6de9c
+I have suggested mechanisms for using masked off bits of timestamps
+to encode sub-timestamp granularity change counts and keep them
+invisible to userspace and then not using i_version at all for XFS.
+This avoids all the problems that the multi-grain timestamp
+infrastructure exposed due to variable granularity of user visible
+timestamps and ordering across inodes with different granularity.
+This is potentially a general solution, too.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+So, yeah, there are *lots* of ways we can solve this problem without
+needing to change on-disk formats.
 
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
