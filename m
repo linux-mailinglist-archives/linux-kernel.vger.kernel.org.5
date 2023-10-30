@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F256E7DB1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4627DB1C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 02:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbjJ3ApF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 20:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        id S230150AbjJ3BIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 21:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjJ3ApB (ORCPT
+        with ESMTP id S229470AbjJ3BID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 20:45:01 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A726BC;
-        Sun, 29 Oct 2023 17:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698626697;
-        bh=VeiWM7mPmr6XiBbotJXD+Rpit3AEjKLnxEsF9zMYmyU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G7fLwjXOFwPWHvno28pk/ri9io9tWTuti3M2FyqztWbEeO767UW+qu2F2g6KcNHR9
-         lUPCGBnwQ8TnRFI3xMyCvdul/9qADwPKZBQ0+KIeCMBRzIF7CtmlhE2PwpGISWmOkw
-         4gnmSsXeAa2Y/Utdxo11BNTyz0XBq6SoZNGhGpAfjM1olH48EbRHzs7UTptdaclVWo
-         3JDsHlltxhDj+7xIXlklz36sTZKaqVFUFqdYomxfM9ODSEamFIhxds4LG3uC0fS5I+
-         hn6TPF4tB5c4mjqrvFGTrbPUIoeA2HQywH1VDUgzDSH5Rrr6XkCtcZ5AIbIbMjffxj
-         aqCtk8tccfKrA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SJZL13TM8z4wc8;
-        Mon, 30 Oct 2023 11:44:57 +1100 (AEDT)
-Date:   Mon, 30 Oct 2023 11:44:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Chancel Liu <chancel.liu@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: linux-next: manual merge of the sound tree with the
- sound-asoc-fixes tree
-Message-ID: <20231030114456.650b1371@canb.auug.org.au>
-In-Reply-To: <20231030114115.2a9f0260@canb.auug.org.au>
-References: <20231030114115.2a9f0260@canb.auug.org.au>
+        Sun, 29 Oct 2023 21:08:03 -0400
+X-Greylist: delayed 1119 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 29 Oct 2023 18:07:59 PDT
+Received: from smtp.bekkoame.ne.jp (lbkksmtpnat.bekkoame.ne.jp [150.95.255.128])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71B78BC
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 18:07:59 -0700 (PDT)
+Received: from smtp.3web.ne.jp (localhost [127.0.0.1])
+        by smtp.bekkoame.ne.jp (Postfix) with ESMTP id 809221042B9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:45:49 +0900 (JST)
+Received: from [127.0.0.1] (unknown [104.215.52.205])
+        by mx1.tky.3web.ne.jp (Postfix) with ESMTPA id 78DA41042AF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:45:49 +0900 (JST)
+Content-Type: text/plain; charset=utf-8
+From:   =?UTF-8?Q?vger=2Ekernel=2Eorg=E3=83=A1=E3=83=BC?=
+         =?UTF-8?Q?=E3=83=AB=E9=80=9A=E7=9F=A5=E3=82=B5?=
+         =?UTF-8?Q?=E3=83=BC=E3=83=93=E3=82=B9?= <te2@tky.3web.ne.jp>
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?=E3=83=A1=E3=83=BC=E3=83=AB=E3=80=90linu?=
+ =?UTF-8?Q?x-kernel=40vger=2Ekernel=2Eorg=E3=80=91?=
+ =?UTF-8?Q?=E3=81=AE=E8=A8=AD=E5=AE=9A=E7=A2=BA?=
+ =?UTF-8?Q?=E8=AA=8D=E3=81=AE=E3=81=8A=E9=A1=98?= =?UTF-8?Q?=E3=81=84?=
+Message-ID: <55a09474-3fb6-6ba3-538e-67ca38cf88a3@tky.3web.ne.jp>
+X-Priority: 1 (Highest)
+X-Msmail-Priority: High
+Importance: High
+Content-Transfer-Encoding: base64
+Date:   Mon, 30 Oct 2023 00:45:49 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O9wvm+fA9xAlnfBAaoDmsSo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_99,BAYES_999,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O9wvm+fA9xAlnfBAaoDmsSo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 30 Oct 2023 11:41:15 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the sound tree got a conflict in:
->=20
->   sound/soc/soc-pcm.c
->=20
-> between commit:
->=20
->   f0220575e65a ("ASoC: soc-dai: add flag to mute and unmute stream during=
- trigger")
->=20
-> from the sound-asoc-fixes tree and commit:
->=20
->   3efcb471f871 ("ASoC: soc-pcm.c: Make sure DAI parameters cleared if the=
- DAI becomes inactive")
->=20
-> from the sound tree.
->=20
-> I fixed it up (I just used the latter) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
-
-And then when I merged the sound-asoc tree, I used the version from that.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/O9wvm+fA9xAlnfBAaoDmsSo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU+/IgACgkQAVBC80lX
-0Gy3pAf9FNcHWr+r3gg0LVhzvKuWy/6tFt5amM/WJNBw2P9l0hVdas2UudgzaRUz
-3cZTZ1wS1IanvIrz6YKFByW7llPYCnNN84Ge5PwUo+WLzRIUv57ZH8IMquj/gDPf
-aKZPXphkl3IiczosHxaKabV3Kj6GkUEzktZY/BaSy5r+wbDbZD/XHlzhMeUSs5rm
-3sRxHkuK+2r+Bc4Gsk7wkF59hiP6XSaeSKpwnekoRVUWLBo2oQT2keHb0zkaKNRF
-4ki8AkedVzzd492ssYP1Uftu7Gag3/lxufXyee0+/PmL6RaoLN/r+HfxC7zGXtrF
-nRFTPpW3ecFMPOwM2c4ykCtavW6CdA==
-=/J4p
------END PGP SIGNATURE-----
-
---Sig_/O9wvm+fA9xAlnfBAaoDmsSo--
+4oC744GT44Gu44Oh44O844OrIO+8iFZnZXLvvInkvJrlk6Hjga7nmobmp5jjgavlrpvjgabjgZ/j
+goLjga7jgafjgZnjgIINCuKAu+OBk+OBruODoeODvOODq+OBuOOBrui/lOS/oeOBr+OBlOmBoOaF
+ruOBj+OBoOOBleOBhOOAgg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCjIwMjPlubQxMOac
+iDMw5pelDQoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg44OJ44Oh44Kk
+44Oz44Oh44Oz44OQ44O8Og0KDQrlubPntKDjgojjgornpZ7lpYjlt53lpKflrabjgrXjg7zjg5Pj
+grnjgpLjgZTliKnnlKjjgYTjgZ/jgaDjgY3oqqDjgavjgYLjgorjgYzjgajjgYbjgZTjgZbjgYTj
+gb7jgZnjgIINCg0K44OT44OD44Kw44Ot44O844OW77yIVmdlcu+8ieODoeODvOODq+OAkGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmfjgJHjga7jgrvjgq3jg6Xjg6rjg4bjgqPlvLfljJbjga7j
+gZ/jgoHjgIHjg6Hjg7zjg6vjgr3jg5Xjg4jjga7oqK3lrprjgpLlpInmm7TjgZXjgZvjgabjgYTj
+gZ/jgaDjgY3jgb7jgZnjgIINCuODoeODvOODq+OCveODleODiOOBruioreWumuOCkuOBlOeiuuiq
+jeOBhOOBn+OBoOOBjeOAgeS7iuW+jOOCguOBlOWIqeeUqOOBhOOBn+OBoOOBkeOCi+OCiOOBhuio
+reWumuOCkuWkieabtOOBl+OBpuOBj+OBoOOBleOBhOOAgg0KDQoNCuODoeODvOODq+OCveODleOD
+iOOBruioreWumueiuuiqjeODu+WkieabtOaWueazleOBq+OBpOOBhOOBpuOBr+OAgeS7peS4i+OB
+ruODquODs+OCr+OCkuOBlOWPgueFp+OBj+OBoOOBleOBhOOAgg0KDQrjg6Hjg7zjg6vjgr3jg5Xj
+g4jjga7oqK3lrprnorroqo3jg7vlpInmm7Tmlrnms5UNCg0KaHR0cHM6Ly9rYi1hdC5jb20vbWFp
+bC5hbXNlcnZlci5qcC9VSS9Mb2dpbj91aWQ9bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+DQrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrv
+vIrvvIrvvIrvvIoNCuOBlOWNlOWKm+OBguOCiuOBjOOBqOOBhuOBlOOBluOBhOOBvuOBmeOAgg0K
+aHR0cHM6Ly93d3cudmdlci5rZXJuZWwub3JnL2NvbnRhY3QvdXNlci8NCu+8iu+8iu+8iu+8iu+8
+iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8ig==
