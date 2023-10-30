@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910477DB41D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B087DB422
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjJ3HVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 03:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
+        id S231649AbjJ3HY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 03:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbjJ3HUk (ORCPT
+        with ESMTP id S229517AbjJ3HYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 03:20:40 -0400
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E07DD7B
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:20:31 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id xMZXqGw8VIsudxMZXqcmOd; Mon, 30 Oct 2023 08:20:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1698650428;
-        bh=7XgPRehCSAWCRbDjmZl/84CZ6/WWxMs6uaboa+ApIJw=;
-        h=From:To:Cc:Subject:Date;
-        b=BpQwBHoE2T3irox9hMtwFlrsmiWk6BjqE45Zz12TX3diF9APEZ5rKQFCektaKsfTi
-         +gOggw3fke5Z48pTjDYUQeQyHSyBCXu4+Euh4p3ujAjSAylJpOVYnWTLYUKWl6RrJU
-         kZx0ek7fJ5nwV/Omem0GvSH6x1pj01Plg6ypzoxmUfeaMOdulGs8O9USdP5MZd4MBt
-         +l1QsIBE5Mzx0hkIh0MYSE5xmRbcjzhOzgCr7QtJwLm8zH+W7SoYMAlRe1ryjL8TlW
-         8GyU6IXR82HxyP2n8iIJiSErPFEgPUreA3NujAEXJcftwe1yrWQnDuhj3Tn6epi2Uj
-         LM5DMbYOkBfZA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 30 Oct 2023 08:20:28 +0100
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Brad Love <brad@nextdimension.cc>, Sean Young <sean@mess.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: [PATCH] media: dvb-frontends: m88ds3103: Fix a memory leak in an error handling path of m88ds3103_probe()
-Date:   Mon, 30 Oct 2023 08:20:26 +0100
-Message-Id: <1b254cae201809f85e9884ed33ae72ff6338017d.1698650397.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Mon, 30 Oct 2023 03:24:24 -0400
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [IPv6:2001:41d0:203:375::b5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4A2A7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:24:22 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1698650660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iPJfSX51Ov+WGn0bxAkaRt0Zl4iWxaNa6Rvl7jWJpR4=;
+        b=Aa0Otn+t/VEndDsmkq9+3DXSDyhM0RF5cF9KQ8wftAM3x4bYxAgIXwRdUUCqQFEh9MLsp+
+        w/q+ROmDovuW+4XX1uAcme6Xmu/JTr13DUDCIWFy2PDboGMGgJxIEEVf3uq/cwo7YYbzQ2
+        pyvY8DUOwWZ7FOvOnYpPo8KUjVNKSqMYYwNGofRqFNNqH4qPigQgcbtHcHa/HhFD7Emc9p
+        9r3xaAmclEXOLjZG/RLIIHJYrAUGhDp4XPTXvqVbd8MyiHR2njpPqMD+jmo4+AU/PO7ey0
+        bpeTbLSiKi6oISz8KPTRfEAJxf7K5uVn/Ywjn6RM6dYejj/oA3grScwH9FCjeg==
+From:   John Watts <contact@jookia.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        John Watts <contact@jookia.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v4 0/7] Add FS035VG158 panel
+Date:   Mon, 30 Oct 2023 18:23:31 +1100
+Message-ID: <20231030072337.2341539-2-contact@jookia.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful i2c_mux_add_adapter(), then
-i2c_mux_del_adapters() should be called to free some resources, as
-already done in the remove function.
+Hello there,
 
-Fixes: e6089feca460 ("media: m88ds3103: Add support for ds3103b demod")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/media/dvb-frontends/m88ds3103.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+This RFC introduces support for the FS035VG158 LCD panel, cleaning up
+the nv3052c driver on the way and documentating existing panel code.
 
-diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
-index 26c67ef05d13..e0272054fca5 100644
---- a/drivers/media/dvb-frontends/m88ds3103.c
-+++ b/drivers/media/dvb-frontends/m88ds3103.c
-@@ -1894,7 +1894,7 @@ static int m88ds3103_probe(struct i2c_client *client)
- 		/* get frontend address */
- 		ret = regmap_read(dev->regmap, 0x29, &utmp);
- 		if (ret)
--			goto err_kfree;
-+			goto err_del_adapters;
- 		dev->dt_addr = ((utmp & 0x80) == 0) ? 0x42 >> 1 : 0x40 >> 1;
- 		dev_dbg(&client->dev, "dt addr is 0x%02x\n", dev->dt_addr);
- 
-@@ -1902,11 +1902,14 @@ static int m88ds3103_probe(struct i2c_client *client)
- 						      dev->dt_addr);
- 		if (IS_ERR(dev->dt_client)) {
- 			ret = PTR_ERR(dev->dt_client);
--			goto err_kfree;
-+			goto err_del_adapters;
- 		}
- 	}
- 
- 	return 0;
-+
-+err_del_adapters:
-+	i2c_mux_del_adapters(dev->muxc);
- err_kfree:
- 	kfree(dev);
- err:
+This patch series is at a bit of a standstill: I have gotten feedback
+that it should instead use the Leadtek LTK035C5444T panel init sequence
+instead of Fascontek's provided sequence which is almost identical.
+
+I don't feel comfortable providing a patch that does this unless someone
+can explain why the changes Fascontek have made aren't critical.
+
+I would like feedback to know if this is a blocker for this patch set,
+or otherwise what needs to be done to get it merged.
+
+John.
+
+v3 -> v4:
+- Mark panel_regs_len as unsigned
+
+v2 -> v3:
+- Dropped patches that add extra sleep time
+
+v1 -> v2:
+- Fixed a variable declaration style error
+- Cleaned up device tree yaml
+
+John Watts (7):
+  drm/panel: nv3052c: Document known register names
+  drm/panel: nv3052c: Add SPI device IDs
+  drm/panel: nv3052c: Allow specifying registers per panel
+  drm/panel: nv3052c: Add Fascontek FS035VG158 LCD display
+  dt-bindings: display: panel: Clean up leadtek,ltk035c5444t properties
+  dt-bindings: vendor-prefixes: Add fascontek
+  dt-bindings: display: panel: add Fascontek FS035VG158 panel
+
+ .../display/panel/fascontek,fs035vg158.yaml   |  56 ++
+ .../display/panel/leadtek,ltk035c5444t.yaml   |   8 +-
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ .../gpu/drm/panel/panel-newvision-nv3052c.c   | 515 +++++++++++++-----
+ 4 files changed, 437 insertions(+), 144 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/fascontek,fs035vg158.yaml
+
 -- 
-2.34.1
+2.42.0
 
