@@ -2,48 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F4E7DBE2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA7A7DBE31
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbjJ3Qme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
+        id S233929AbjJ3Qmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbjJ3Qm2 (ORCPT
+        with ESMTP id S233921AbjJ3Qmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:42:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F539E;
-        Mon, 30 Oct 2023 09:42:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 002DEC433C8;
-        Mon, 30 Oct 2023 16:42:24 +0000 (UTC)
-Date:   Mon, 30 Oct 2023 12:42:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
-        Mark Brown <broonie@kernel.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: selftests: user_events: ftrace_test - RIP:
- 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
-Message-ID: <20231030124223.4e4ddeb8@gandalf.local.home>
-In-Reply-To: <20231030163102.GA1853-beaub@linux.microsoft.com>
-References: <CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com>
-        <20231027192011.GA436-beaub@linux.microsoft.com>
-        <20231027183640.2529ab68@gandalf.local.home>
-        <20231027223344.3854ac1f@rorschach.local.home>
-        <20231030163102.GA1853-beaub@linux.microsoft.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 30 Oct 2023 12:42:49 -0400
+Received: from aer-iport-4.cisco.com (aer-iport-4.cisco.com [173.38.203.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C3A10C;
+        Mon, 30 Oct 2023 09:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=5604; q=dns/txt; s=iport;
+  t=1698684157; x=1699893757;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2ff83lpI/B4atr4jjrel8J+Woupc3elDH47etE1uLXw=;
+  b=DMmEUe040egEbYG8YGFQXv4dG/9ztyZn6n4phLloBek16v2jBt6jvSbp
+   FeMUE/vaEzkfrFR6kdO0J1xTgltbIZULGLF74ziU6zURAXfOYv3MsmmKA
+   mQekuf8XZw8XoPQm1J2dKr+gHjJI7u9vzTf/ru4aIHqI16O93jiouoG/W
+   U=;
+X-CSE-ConnectionGUID: 87bFVbZzSN+Xx5pcbs8gFg==
+X-CSE-MsgGUID: uXOk0WGnRFyKakXV7HhVQg==
+X-IPAS-Result: =?us-ascii?q?A0BhAQB+3D9llxbLJq1agQmBT4QILhJIjU6IYgOSWYslg?=
+ =?us-ascii?q?SUDVg8BAQENAQFEBAEBgXIBgxMChx4nNAkOAQIEAQEBAQMCAwEBAQEBAQECA?=
+ =?us-ascii?q?QEFAQEBAgEHBBQBAQEBAQEBATcFEDWFdYZNAQIDOj8QCxguVwYTCIJ2gl8Dq?=
+ =?us-ascii?q?A14gTSBAbMngWiBSIgKAYoGQoFJRIQ/PoQbhkkiBIZkKIFdBw4uBzKBCgwJg?=
+ =?us-ascii?q?QOCejUpjEJeIkdwGwMHA1grECsHBDAbBwYJFhgVJQZRAgItJAkTEj4EgWWBU?=
+ =?us-ascii?q?QqBAz8PDhGCQyICBzY2GUsrgjAJFQw0TXYQKgQUF4ERBGofFR4SJRESFw0DC?=
+ =?us-ascii?q?HYdAhEjPAMFAwQ0ChUNCyEFFEMDRAZKCwMCGgUDAwSBNgUNHgIQGgYNJwMDG?=
+ =?us-ascii?q?U0CEBQDHh0DAwYDCzEDMIEeDFoDbB82CTwPDB8COQ0pKgI7GgNEHUADeD01F?=
+ =?us-ascii?q?BttnlmCEFsGYgIPAjaBAxKBBAoBHcUmhBaTFI4MSQODa4xyhjaSUZg+ow0Ph?=
+ =?us-ascii?q?QwCBAYFAhaBYzqBWzMaCBsVgyJSGQ+OLA0Jk1FCMjsCBwsBAQMJiG+CWwEB?=
+IronPort-Data: A9a23:FWNQXamz71VXIcGJlxmpltLo5gwFJkRdPkR7XQ2eYbSJt1+Wr1Gzt
+ xJMUGvVP/3YZDDyKohzO9y/8E1QuJCBn9MwGVNtqylmEltH+JHPbTi7wugcHM8zwunrFh8PA
+ xA2M4GYRCwMZiaB4E/rav649SUUOZigHtLUEPTDNj16WThqQSIgjQMLs+Mii+aEu/Dha++2k
+ Y20+5a31GONgWYuaTtMsPrb8XuDgdyr0N8mlg1mDRx0lAe2e0k9VPo3Oay3Jn3kdYhYdsbSq
+ zHrlezREsvxpn/BO/v9+lrJWhRiro36YWBivkFrt52K2XCukMCdPpETb5LwYW8P49mAcksYJ
+ N9l7fRcQi9xVkHAdXh0vxRwS0lD0aN6FLDvcSe1n/KZ/V/9VTjc06h2B0stbYI29bMiaY1O3
+ aRwxDElZx2Zwumx2r/+E69nh98oK4/gO4Z3VnNIlG6CS612B8qbGOOQv7e03x9o7ixKNf/bZ
+ sEEbTN0RB/BeBZIfFwQDfrSmc/52iOnKGcEwL6TjbcHxGuL8yN36pb8E9PWSuLVZcVrp0nN8
+ woq+EygUk1Fa7Rz0wGt9nOqm/+Kni7hXo8WPKO3++Qsg1CJwGEXThoMWjOTqv6jgEOic9ZAL
+ QoS9zZGhbM/7kOmZtn0WxmppjiPuRt0c9NTC+gS7ACL17qR7QGEAGQNUj9GbpohrsBebTgr0
+ EKZ2t/uDhRxv7CPD3GQ7LGZqXW1Iyd9BXcCZCsATBMt+MD+qZozgAmJScxsVrO25uAZAhn5z
+ irPrTA5nalWi8cXka665lvAxTmro/AlUzLZ+C2HAWiL0AlLdrWDJLy4tEDQ5+0QI6iWGwzpU
+ Gc/p+CS6+UHDJeonSOLQfkQELzB2xpjGGCD6bKIN8RxnwlB60JPbqgNumogdRcB3tIsJGWwO
+ h67VRZ5vsc7AZe8UUNgS6SVYyjA5YHkENn/W7jvctNCCnSaXFbcpXwGiaK48WTgjk8omKczU
+ ap3kPpA715HV8yLLxLvGY/xNIPHIAhlnAs/orihlnyaPUK2PiL9dFv8GALmghoFxK2Fuh7J1
+ N1UKtGHzR5SOMWnPHiHr9ZPdwtbdSBibXwTlyCxXrPSSuaBMD95Y8I9PZt6E2CYt/0Pz7yRr
+ i3VtrFwkQSh1RUr1jlmmlg6OO+wAv6TXFowPDcnOh6zymM/bIO0hJrzhLNpFYTLANdLlKYuJ
+ 9FcIp3oKq0WGlz6F8E1MMCVQHpKL0/w22pj/kONPVACQnKXb1WSpIK6LlOxqnJm4+jenZJWn
+ oBMHzjzGfIrLzmOxu6PAB5z5ztdZUQgpd8=
+IronPort-HdrOrdr: A9a23:p+L1LaGEYUccSKitpLqEx8eALOsnbusQ8zAXPo5KJiC9Vvbo8v
+ xG/c5rtyMc5wx6ZJhNo7290ey7MBfhHP1OkOos1NWZPTUO0VHAROpfBMnZowEIcBeRygcy78
+ tdWpk7IMHsDFR8kMbx6BS1HpId2tWdmZrY4ts3CxxWPHhXg2YK1XYeNjqm
+X-Talos-CUID: 9a23:B82pBm1MdgB68mU+DCnwvbxfSp8vXEPX/mXrBQyIGTtxQ7eOGVC+9/Yx
+X-Talos-MUID: 9a23:mB9fBArxGaX9gqJe7r8ezyxSE8Qw3IuoMm4cspwFi/fbFSxOAjjI2Q==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.03,263,1694736000"; 
+   d="scan'208";a="9420324"
+Received: from aer-iport-nat.cisco.com (HELO aer-core-1.cisco.com) ([173.38.203.22])
+  by aer-iport-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 16:42:33 +0000
+Received: from localhost (ams3-vpn-dhcp2135.cisco.com [10.61.72.87])
+        (authenticated bits=0)
+        by aer-core-1.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39UGgWmV010699
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 30 Oct 2023 16:42:33 GMT
+Date:   Mon, 30 Oct 2023 18:42:32 +0200
+From:   Ariel Miculas <amiculas@cisco.com>
+To:     Phillip Lougher <phillip@squashfs.org.uk>
+Cc:     linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, serge@hallyn.com,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: filesystems: document the squashfs specific
+ mount options
+Message-ID: <nlpgfo5g4jzbb5hc2wu5a3mlnipgbjki7fqcgwe5jknxjmgbwa@2tpkg35xsuy4>
+References: <20231029161924.50648-1-amiculas@cisco.com>
+ <bd039dc7-cfe5-c210-b65e-0cba3186ee0b@squashfs.org.uk>
+ <qgwx4cjswrhzxqijsosix437xyw3ifglv6uz2d3nq7whkjqueo@c5pzoqtoqtgb>
+ <46d308b2-5e59-862d-b429-e6ee418bc61e@squashfs.org.uk>
+ <oonydtkv6anpjbugjvqkp4byqlf3aiwkwf4g7y5w5tthivxomh@b4w4jyceaepz>
+ <332ff885-f621-883a-696a-e8247fb43ecc@squashfs.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <332ff885-f621-883a-696a-e8247fb43ecc@squashfs.org.uk>
+X-Authenticated-User: amiculas@cisco.com
+X-Outbound-SMTP-Client: 10.61.72.87, ams3-vpn-dhcp2135.cisco.com
+X-Outbound-Node: aer-core-1.cisco.com
+X-Spam-Status: No, score=-10.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,74 +103,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 09:31:02 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> I applied both [1][2] patches, and I no longer get any panics. However,
-
-Great! Can I add "Tested-by" from you on those patches?
-
-> I still get the splat about the trace_array_put when running
-> user_event's ftrace selftest:
+On 23/10/30 04:28PM, Phillip Lougher wrote:
+> On 30/10/2023 16:09, Ariel Miculas wrote:
+> > On 23/10/30 03:40PM, Phillip Lougher wrote:
+> > > On 30/10/2023 12:57, Ariel Miculas wrote:
+> > > > On 23/10/29 08:33PM, Phillip Lougher wrote:
+> > > > > On 29/10/2023 16:19, Ariel Miculas wrote:
+> > > > > > When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
+> > > > > > can be used to specify the decompression mode: single-threaded,
+> > > > > > multi-threaded, percpu or the number of threads used for decompression.
+> > > > > > When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set and
+> > > > > > SQUASHFS_DECOMP_MULTI is set, the "threads" option can also be used to
+> > > > > > specify the number of threads used for decompression. This mount option
+> > > > > > is only mentioned in fs/squashfs/Kconfig, which makes it difficult to
+> > > > > > find.
+> > > > > > 
+> > > > > > Another mount option available is "errors", which can be configured to
+> > > > > > panic the kernel when squashfs errors are encountered.
+> > > > > > 
+> > > > > > Add both these options to the squashfs documentation, making them more
+> > > > > > noticeable.
+> > > > > > 
+> > > > > > Signed-off-by: Ariel Miculas <amiculas@cisco.com>
+> > > > > 
+> > > > > Looks good to me.
+> > > > > 
+> > > > > Reviewed-by: Phillip Lougher <phillip@squashfs.org.uk>
+> > > > 
+> > > > Unfortunately, it seems this is not quite correct either:
+> > > > There is the config option SQUASHFS_MOUNT_DECOMP_THREADS:
+> > > > ```
+> > > > 	bool "Add the mount parameter 'threads=' for squashfs"
+> > > > 	depends on SQUASHFS
+> > > > 	depends on SQUASHFS_DECOMP_MULTI
+> > > > 	default n
+> > > > 	help
+> > > > 	  Use threads= to set the decompression parallel mode and the number of threads.
+> > > > 	  If SQUASHFS_CHOICE_DECOMP_BY_MOUNT=y
+> > > > 	      threads=<single|multi|percpu|1|2|3|...>
+> > > > 	  else
+> > > > 	      threads=<2|3|...>
+> > > > 	  The upper limit is num_online_cpus() * 2.
+> > > > ```
+> > > > that depends on SQUASHFS_DECOMP_MULTI.
+> > > > So I think I should take my v1 patch and specify that the "threads="
+> > > > mount option depends on SQUASHFS_MOUNT_DECOMP_THREADS. There's no need
+> > > > to specify SQUASHFS_DECOMP_MULTI, because SQUASHFS_MOUNT_DECOMP_THREADS
+> > > > already depends on it.
+> > > 
+> > > Sorry, you have to specify SQUASHFS_DECOMP_MULTI to be able to specify
+> > > SQUASHFS_MOUNT_DECOMP_THREADS if SQUASHFS_DECOMP_BY_MOUNT is unselected.
+> > Agree.
+> > > 
+> > > Just try it, do make menuconfig, ensure SQUASHFS_CHOICE_DECOMP_BY_MOUNT
+> > > is unselected, select Single threaded decompression and you won't be
+> > > able to specify SQUASHFS_MOUNT_DECOMP_THREADS.
+> > True.
+> > > 
+> > > That was the point of my review. What bit don't you understand?
+> > But SQUASHFS_DECOMP_MULTI is not enough, you need to specify
+> > SQUASHFS_MOUNT_DECOMP_THREADS in order to use the "threads=" mount
+> > option.
+> > So instead of saying
+> > ```
+> > If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
+> > SQUASHFS_DECOMP_MULTI is set:
+> > ```
+> > wouldn't it be right to actually say:
+> > ```
+> > If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
+> > SQUASHFS_MOUNT_DECOMP_THREADS is set:
+> > ```?
+> > 
+> > As you've mentioned, you could only set SQUASHFS_MOUNT_DECOMP_THREADS
+> > when SQUASHFS_DECOMP_MULTI is selected. That happens in two cases:
+> > * either SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, in which case it also
+> >    selects SQUASHFS_MOUNT_DECOMP_THREADS
+> > * either SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set,
+> >    SQUASHFS_DECOMP_MULTI is set and SQUASHFS_MOUNT_DECOMP_THREADS is also
+> >    set
+> > 
+> > So I wouldn't even mention SQUASHFS_DECOMP_MULTI in the documentation,
+> > only SQUASHFS_MOUNT_DECOMP_THREADS, because the latter always depends on
+> > the former. And the "threads=" mount option is only available when
+> > SQUASHFS_MOUNT_DECOMP_THREADS is set (which is the configuration I've
+> > missed in v1 and v2).
+> > 
 > 
-> [   26.665931] ------------[ cut here ]------------
-> [   26.666663] WARNING: CPU: 12 PID: 291 at kernel/trace/trace.c:516 tracing_release_file_tr+0x46/0x50
-> [   26.667470] Modules linked in:
-> [   26.667808] CPU: 12 PID: 291 Comm: ftrace_test Not tainted 6.6.0-rc7-next-20231026 #3
-> [   26.668665] RIP: 0010:tracing_release_file_tr+0x46/0x50
-> [   26.669093] Code: d1 03 01 8b 83 c0 1e 00 00 85 c0 74 1d 83 e8 01 48 c7 c7 80 5b ef bc 89 83 c0 1e 00 00 e8 f2 b5 03 01 31 c0 5b e9 75 ee 27 01 <0f> 0b eb df 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90
-> [   26.670580] RSP: 0018:ffffb6ef858ffee8 EFLAGS: 00010246
-> [   26.671128] RAX: 0000000000000000 RBX: ffff9d7ae2364058 RCX: 0000000000000000
-> [   26.671793] RDX: 0000000000000000 RSI: ffffffffbcb6b38b RDI: 00000000ffffffff
-> [   26.672444] RBP: ffff9d7ac3e72200 R08: 0000000000000000 R09: 0000000000000000
-> [   26.673072] R10: ffffb6ef858ffee8 R11: ffffffffbb28526f R12: 00000000000f801f
-> [   26.673705] R13: ffff9d7b661a2020 R14: ffff9d7ac6057728 R15: 0000000000000000
-> [   26.674339] FS:  00007fa852fa6740(0000) GS:ffff9d81a6300000(0000) knlGS:0000000000000000
-> [   26.674978] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   26.675506] CR2: 00007fa852c2a250 CR3: 0000000105d92001 CR4: 0000000000370eb0
-> [   26.676142] Call Trace:
-> [   26.676357]  <TASK>
-> [   26.676572]  ? __warn+0x7f/0x160
-> [   26.677092]  ? tracing_release_file_tr+0x46/0x50
-> [   26.677540]  ? report_bug+0x1c3/0x1d0
-> [   26.677871]  ? handle_bug+0x3c/0x70
-> [   26.678196]  ? exc_invalid_op+0x14/0x70
-> [   26.678520]  ? asm_exc_invalid_op+0x16/0x20
-> [   26.678845]  ? tracing_release_file_tr+0x1f/0x50
-> [   26.679268]  ? tracing_release_file_tr+0x46/0x50
-> [   26.679691]  ? tracing_release_file_tr+0x1f/0x50
-> [   26.680105]  __fput+0xab/0x300
-> [   26.680437]  __x64_sys_close+0x38/0x80
-
-Hmm, this doesn't tell me much. Let me go play with the user_event self
-tests.
-
-Thanks Beau!
-
--- Steve
-
-
-> [   26.680757]  do_syscall_64+0x41/0xf0
-> [   26.681329]  entry_SYSCALL_64_after_hwframe+0x6c/0x74
-> [   26.681784] RIP: 0033:0x7fa852d15157
-> [   26.682126] Code: ff e8 0d 16 02 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 83 b8 f7 ff
-> [   26.684255] RSP: 002b:00007ffd226914f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-> [   26.684939] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fa852d15157
-> [   26.685602] RDX: 0000000000000002 RSI: 0000560ad54567d4 RDI: 0000000000000005
-> [   26.686257] RBP: 00007ffd22691520 R08: 0000000000000000 R09: 00007fa852fa6740
-> [   26.686877] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd22691758
-> [   26.687480] R13: 0000560ad5455ae7 R14: 0000560ad5458c38 R15: 00007fa8530d4040
-> [   26.688107]  </TASK>
-> [   26.688315] irq event stamp: 1361
-> [   26.688618] hardirqs last  enabled at (1369): [<ffffffffbb1d7f49>] console_unlock+0x109/0x130
-> [   26.689339] hardirqs last disabled at (1376): [<ffffffffbb1d7f2e>] console_unlock+0xee/0x130
-> [   26.690062] softirqs last  enabled at (1272): [<ffffffffbb14ba2a>] irq_exit_rcu+0x8a/0xe0
-> [   26.690774] softirqs last disabled at (1267): [<ffffffffbb14ba2a>] irq_exit_rcu+0x8a/0xe0
-> [   26.691620] ---[ end trace 0000000000000000 ]---
+> You seem determined to create an unpleasant argument here by trying to argue
+> your first patch was correct, and I, as merely the maintainer, can't tell
+> you to change it to how I want it.
+I'm not trying to argue that my first patch is correct, I'm sorry if it
+seems this way. I'm trying to argue that my v2 patch is also missing the
+mention of SQUASHFS_MOUNT_DECOMP_THREADS.
 > 
-> Thanks,
-> -Beau
+> If, as you pointed out in your first patch, the purpose is to
+> document the mount options, then the fact that threads=xxx
+> option depends on SQUASHFS_DECOMP_MULTI being selected is
+> important, and should be mentioned.
+Ok, I understand this. I also think it's important to mention
+SQUASHFS_MOUNT_DECOMP_THREADS, which was an oversight from my part.
 > 
-> 1. https://lore.kernel.org/linux-trace-kernel/20231030115018.25399dbd@gandalf.local.home/
-> 2. https://lore.kernel.org/linux-trace-kernel/20231028164650.4f5ea18a@rorschach.local.home/
+> I have accepted your V2.  If you want to withdraw it now, please
+> do so.  But I will not accept further patches from you, nor
+> respond to any more of your emails.
+> 
+> It is never a good look to argue with the maintainer, when I am
+> trying to help you make your patch better. You attitude means this
+> has been a waste of my time so far.
+I didn't want to argue against your suggestion, I did appreciate it and
+I have sent a v2 patch implementing it. I only wanted to point out a
+missing configuration option that, in my opinion, should also be part of
+the documentation. If you think that's not the case, let me know.
 
+Regards,
+Ariel
+> 
+> Phillip
+> 
+> > Regards,
+> > Ariel
+> > > 
+> > > Phillip
+> > > 
+> > > > What do you think?
+> > > > 
+> > > > Regards,
+> > > > Ariel
+> > > > 
+> > > 
+> 
