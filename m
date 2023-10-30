@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AE17DB8AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3877DB8AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbjJ3LCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S232847AbjJ3LD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 07:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbjJ3LCl (ORCPT
+        with ESMTP id S232617AbjJ3LDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:02:41 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F99CA2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:02:39 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32df66c691dso2726633f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:02:38 -0700 (PDT)
+        Mon, 30 Oct 2023 07:03:54 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75A6C5;
+        Mon, 30 Oct 2023 04:03:51 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c6b5841f61so17483831fa.0;
+        Mon, 30 Oct 2023 04:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698663757; x=1699268557; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698663830; x=1699268630; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1lhozIxyHBL/jN8zh4HAqe7ydkGHNrsZdasWYJCoeU=;
-        b=W+BsgdVCzLJpggy305uNJ15t7N9UoM309TKjRSFgMrE111Oe09PI/ILUaGQ0CEqN9d
-         ZvWQKghzRgD6cv5bqTFDDX3Wi41nXcXF6mrtjr+VM5u0NLBz6SDhSP2MCNFT/yao5NK/
-         JSQPERJBsIceWo5m0YyoNCriv6luHV8/pEpxRjQU9d3LrS/VsZy1mz7lP2pflOQfNFCt
-         P7cbl2TYKRIM4xdfhPewUHlCVMVADU8GuBG6H/bxFSBWeOj8cnlgeloUnWozfNZnbBkf
-         9AVfMIGzP2zaKob7Ko57ajXG3PbDPGvtUbprPyNg9iEUTdaTLRJWsplSWZh+62+W3C+b
-         vrJA==
+        bh=dP22ExIhwcZf4zvM/nB/XRRRBv2PXkjeYmhWWHNWxWc=;
+        b=lhWg30Z+YhvkrOEec4aTKBM6Gvju6qyYF5i6/+xkXgM3xlJ4HVbl5gQPOOe5mqRuI1
+         ew/EtNb0kbHObrQLPBiwVb0091NzMcBNL6r61sI01r6s0DwNVYKPeagljCX93hz7RgS0
+         hOvjxR9dptABQE5ul8h4YCxiD1AitsjzA5QWL7sCsv1xXgO1giIzM0lIuEPaRFbASbv8
+         g9jXNeXEgMlp7VPo+5UiQFy5NPGuoLCSFK4CCDzZwdaQezcQiVwbEuqn7ST2Tw4fPGh4
+         UbkVx/iDaZH5LtrhuwEvyHzmadHQxR+W3RJ+D1CNC2gq60iJGkLZpD5bfQCOasALo0SU
+         mZAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698663757; x=1699268557;
+        d=1e100.net; s=20230601; t=1698663830; x=1699268630;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U1lhozIxyHBL/jN8zh4HAqe7ydkGHNrsZdasWYJCoeU=;
-        b=qEPfHgWBKCW+i63zdhWKBV1fZDRSvTIYIHQwDmccTAI4LMEGi9yn3suc8AvlnP5Htj
-         1IZp7Ua5Rvalw9fFOn3Ns+DY3HUSjLw3jh7O6hPM9//r0P79a1VxvYObyYzuaWMOuG8W
-         PlqFrWa4ZTzHVyypa37nwCv1ihi51prnF71jEMeiM5kcpUt2l323E9LxL+wZxpElG5ZS
-         /Hc5olUAToZ/VAvGOs5mwhEeMbzrf0Fk7Dw1e8UG/Iru5zou6ptrsbXZZjLoaQhVXHUD
-         NLx4LpUmjZMIIPEahewNLdS59Q13TAyxjRz+4A31l3epNbEIAjcm37LCrd2jIBA8kiiH
-         /PSw==
-X-Gm-Message-State: AOJu0YwAZcY/iAe5WfmRhHYHMz554gDHSUQar/ZqOooYTQAPsbTjlwRO
-        V6Xh9/a/tptoXLqVl2gN8K5f3g==
-X-Google-Smtp-Source: AGHT+IHacRR+tU2esAAKHMXuWVCgDRo+jroaDmCpDRW5vjNxUTBKgis0G7GPkFz/oA7wycrVWfSGfw==
-X-Received: by 2002:adf:f24a:0:b0:32d:a476:527a with SMTP id b10-20020adff24a000000b0032da476527amr7320948wrp.50.1698663757422;
-        Mon, 30 Oct 2023 04:02:37 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o12-20020a056000010c00b003232f167df5sm7963731wrx.108.2023.10.30.04.02.36
+        bh=dP22ExIhwcZf4zvM/nB/XRRRBv2PXkjeYmhWWHNWxWc=;
+        b=M1vPfBCkCr/CQxH/pI/enRTMlLQwhak0Hccvz8cR6nL1cavSKsUcT51F1no+Y5LWzL
+         J4IH73Wu4m3NUPUXYyC8JmnG+BAN6AjVTWj8gWBzrliXzMWtjg/Gi7t8e7GAaxup02Xq
+         YgkLUCuI0EjGJ+h55y3OOhvgU/2Rx0v5pbs1rICKRYBXA4mZHpsnD0JbDhGu6NMWNpXV
+         KeRaiaASolFxSnkVSZNSJN2GuBkNzQuCowmU+MBvXYq8vln3jGljpHHwQAnvPDWwa3HQ
+         peftlsSwyVtPDY3QlzsUn6nGG3w/jMUstBRYTDDHfudO0HYIYL9r5JtsZExZlYz8JFht
+         opRw==
+X-Gm-Message-State: AOJu0YzgnmGr8ZbSfIVi7eoeDJ9xs4bp0y0WH3NUNKPk9vToBKwmR3ST
+        yOTgru1+CtqFa2LthHUEMgE=
+X-Google-Smtp-Source: AGHT+IHRnkYjUtR8YX6ha89b5TfCd6r0X4MdBYCPEfAfKiXbEl1zEKmaXeRNF5HkMmOrJ40Heesb4w==
+X-Received: by 2002:a2e:a309:0:b0:2c4:e5d4:d246 with SMTP id l9-20020a2ea309000000b002c4e5d4d246mr4581245lje.7.1698663829773;
+        Mon, 30 Oct 2023 04:03:49 -0700 (PDT)
+Received: from mobilestation (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id a27-20020a2eb17b000000b002bcc303bbffsm1181498ljm.104.2023.10.30.04.03.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 04:02:37 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 14:02:34 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Oliver Crumrine <ozlinux@hotmail.com>, colin.i.king@gmail.com,
-        sumitraartsy@gmail.com, u.kleine-koenig@pengutronix.de,
-        geert@linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v5 2/6] staging: octeon: remove typedef in enum
- cvmx_helper_interface_mode_t
-Message-ID: <50cb7891-44ed-4229-b0df-088a701beef5@kadam.mountain>
-References: <cover.1693236450.git.ozlinux@hotmail.com>
- <PH7PR11MB7643DEB4401AA83A0578087CBCE0A@PH7PR11MB7643.namprd11.prod.outlook.com>
- <32e9ad3c-191e-4dd1-b1cc-07f7b93c3f28@roeck-us.net>
- <2023103049-daybed-abstain-bad9@gregkh>
+        Mon, 30 Oct 2023 04:03:49 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 14:03:47 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Furong Xu <0x1207@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com
+Subject: Re: [PATCH net] net: stmmac: xgmac: Fix support for multiple
+ Flexible PPS outputs
+Message-ID: <bayygz3wn6toglzzfdy7ygzs3bhenlrs2y4jjkat54tr3pvxbt@gligw4c4umbe>
+References: <20231027025603.1035668-1-0x1207@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023103049-daybed-abstain-bad9@gregkh>
+In-Reply-To: <20231027025603.1035668-1-0x1207@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 07:24:37AM +0100, Greg KH wrote:
-> On Sun, Oct 29, 2023 at 10:17:21AM -0700, Guenter Roeck wrote:
-> > On Mon, Aug 28, 2023 at 11:39:07AM -0400, Oliver Crumrine wrote:
-> > > Remove typedef in enum cvmx_helper_interface_mode_t, and rename all instances
-> > > to cvmx_helper_interface_mode
-> > > 
-> > > Signed-off-by: Oliver Crumrine <ozlinux@hotmail.com>
-> > 
-> > In linux-next:
-> > 
-> > Building mips:cavium_octeon_defconfig ... failed
-> > --------------
-> > Error log:
-> > drivers/staging/octeon/ethernet.c: In function 'cvm_oct_common_get_stats':
-> > drivers/staging/octeon/ethernet.c:204:37: error: storage size of 'rx_status' isn't known
-> >   204 |         struct cvmx_pip_port_status rx_status;
-> >       |                                     ^~~~~~~~~
-> > drivers/staging/octeon/ethernet.c:205:37: error: storage size of 'tx_status' isn't known
-> >   205 |         struct cvmx_pko_port_status tx_status;
-> >       |                                     ^~~~~~~~~
-> > drivers/staging/octeon/ethernet.c:205:37: warning: unused variable 'tx_status' [-Wunused-variable]
-> > drivers/staging/octeon/ethernet.c:204:37: warning: unused variable 'rx_status' [-Wunused-variable]
-> >   204 |         struct cvmx_pip_port_status rx_status;
-> >       |                                     ^~~~~~~~~
-> > drivers/staging/octeon/ethernet.c: In function 'cvm_oct_probe':
-> > drivers/staging/octeon/ethernet.c:801:22: error: variable 'imode' has initializer but incomplete type
-> >   801 |                 enum cvmx_helper_interface_mode imode =
-> >       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/staging/octeon/ethernet.c:801:49: error: storage size of 'imode' isn't known
-> >   801 |                 enum cvmx_helper_interface_mode imode =
-> >       |                                                 ^~~~~
-> > drivers/staging/octeon/ethernet.c:801:49: warning: unused variable 'imode' [-Wunused-variable]
-> > 
-> > Bisect points to this patch. Bisect log attached.
-> > 
-> > As usual, my apologies for the noise if this has already been reported
-> > and/or fixed.
+On Fri, Oct 27, 2023 at 10:56:03AM +0800, Furong Xu wrote:
+> From XGMAC Core 3.20 and later, each Flexible PPS has individual PPSEN bit
+> to select Fixed mode or Flexible mode. The PPSEN must be set, or it stays
+> in Fixed PPS mode by default.
+> XGMAC Core prior 3.20, corresponding PPSEN bits are read-only reserved,
+> always set PPSEN do not make things worse ;)
 > 
-> It has not been reported, thanks for it, I'll go revert the offending
-> commits.  And I need to figure out how to build this driver better, I
-> get no build-failures from anyone for it when stuff like this happens,
-> odd...
+> Fixes: 95eaf3cd0a90 ("net: stmmac: dwxgmac: Add Flexible PPS support")
+> Signed-off-by: Furong Xu <0x1207@gmail.com>
 
-We did report it.
+Please don't forget to add the already got tags shall you need more
+patch revisions.
 
-https://lore.kernel.org/all/CA+G9fYvVETLEtiZ=MFRrxgXpmgirVHz-tDOxhU=7_9dtmx7o5g@mail.gmail.com/
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-It only fails for Octeon def_configs.  Just cross compiling on ARM
-isn't enough.  All the stub code is just for compile testing and doesn't
-work...
+-Serge(y)
 
-regards,
-dan carpenter
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h      | 2 +-
+>  drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> index 7a8f47e7b728..a4e8b498dea9 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> @@ -259,7 +259,7 @@
+>  	((val) << XGMAC_PPS_MINIDX(x))
+>  #define XGMAC_PPSCMD_START		0x2
+>  #define XGMAC_PPSCMD_STOP		0x5
+> -#define XGMAC_PPSEN0			BIT(4)
+> +#define XGMAC_PPSENx(x)			BIT(4 + (x) * 8)
+>  #define XGMAC_PPSx_TARGET_TIME_SEC(x)	(0x00000d80 + (x) * 0x10)
+>  #define XGMAC_PPSx_TARGET_TIME_NSEC(x)	(0x00000d84 + (x) * 0x10)
+>  #define XGMAC_TRGTBUSY0			BIT(31)
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> index f352be269deb..53bb8f16c481 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> @@ -1178,7 +1178,7 @@ static int dwxgmac2_flex_pps_config(void __iomem *ioaddr, int index,
+>  
+>  	val |= XGMAC_PPSCMDx(index, XGMAC_PPSCMD_START);
+>  	val |= XGMAC_TRGTMODSELx(index, XGMAC_PPSCMD_START);
+> -	val |= XGMAC_PPSEN0;
+> +	val |= XGMAC_PPSENx(index);
+>  
+>  	writel(cfg->start.tv_sec, ioaddr + XGMAC_PPSx_TARGET_TIME_SEC(index));
+>  
+> -- 
+> 2.34.1
+> 
+> 
