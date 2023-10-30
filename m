@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314C47DBC83
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68787DBC86
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbjJ3PXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        id S233620AbjJ3PYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjJ3PXc (ORCPT
+        with ESMTP id S232176AbjJ3PYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:23:32 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA60CA9;
-        Mon, 30 Oct 2023 08:23:29 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9d274222b5dso274021566b.3;
-        Mon, 30 Oct 2023 08:23:29 -0700 (PDT)
+        Mon, 30 Oct 2023 11:24:32 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A9FA9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:24:29 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507bd19eac8so6653527e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698679408; x=1699284208; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eNH80CZxnqUyHpVk9sm9AYdpPQYIATzHj8k0WS+FHSU=;
-        b=N/V6oVYvBAJNH76k2/U90OBTjW7t1T/iI+SGR5mzdiLpF6DsBXAXlbYWxK5UZU0pDM
-         i5pJAhvqZmXdccJVIsRIRVfdNEN6N3mQoRjeKcBc2rJVDp0ZRKCrxlBWmwTBl+NAStXa
-         iBHbP8Mpf6MlYDYTrgUjmeiUNe5NGxjnagar1TkBbQifN8h3sp7xjkyHVCnVUAPpqGE+
-         jIgd74fdn3zgO6lFU1vFRk1/j7kfO9I2t6+TQWiudC9akKm7Teg1SDcKlYtO8j54FFs/
-         5sVkP38+PZUNPhXUkmlVMKZEwZ6SmwbDoiju5euWQtd8JLd5ZrqgkGOqUBW/BE5LgKqt
-         cS5A==
+        d=google.com; s=20230601; t=1698679467; x=1699284267; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R0KowZ1di5qvK5n+3JJf/2IyXXL5HDQOugqkhoSxid4=;
+        b=PT90ZZmRn+F70XVdbwLQYBXVggwfwDLKNZ21pnKBvh2gF4DtRtwpxZxioIwXTWYII9
+         VPLwDmtirLf/826DNgZV8Jx9i0vSWzafCyW13JqtWE7JSGdrk7nw69NnqRI0qLxhUKWY
+         A9xAr5RXQ00G5HhxiLBZXKuXmhux0VPxPI+GEZ3YOETCR3xEgd40MSVBPfp3mZ3qjF+5
+         3UJj6gU5mje8k4MqT/lq5EBf30XAe9RLDy0jD7TxGVEy6UfJ8HguEfrlQ//U2mUDTSEJ
+         CaEeA/ZmmxMiTYRXpp4cwsOtjQWPOj07+bXopWiI3peTMNIDtLtC7DkJm3dBzdLFkubp
+         mXVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698679408; x=1699284208;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eNH80CZxnqUyHpVk9sm9AYdpPQYIATzHj8k0WS+FHSU=;
-        b=mFeAzA1/GFkd3bJvj3K0bJUx17agRXBQWA1VJCuQbiiDCJxg8wfVRSf+bMNkoqyTbk
-         LA4NpcV2kZwDV1KbUZ7JOV85K1yqVgdCrGe/dNSJjoTvYuxUQ1dWBdoUtKn83JxigS/8
-         tBW9COMD4OuGkOX99UkcuouGywbu7gHZRzasdyHNMhGM9XcpqUVYUR/0EuyXblxs3R7g
-         4MNqB2vn5YpFh/VmxvINScdtSOSZ1PoWefJaaC75RU08+0DWMEpVacFf10kp7b7PPRYt
-         6lWpnaL09+eehsWLa5Eb+Dkh5aiJ7+9URNnGNjbO0sJT/FbNaQ+KZ1FhkgSI8C4v5N/u
-         h5IQ==
-X-Gm-Message-State: AOJu0Yz0dCWsvzwqfyLW+SmREOLr0PuMDlWT1g3iWTpoekhkeQ+cX/3S
-        +FnaeXvXUdeDaWYb/9e6NVE=
-X-Google-Smtp-Source: AGHT+IGS5nNGthSZEJLEA8gIhHr1Cj5VgpSa4w8EbK/pMrU1iBuqRElaTqG0yRemfGMfWVOoSlM0bA==
-X-Received: by 2002:a17:907:74b:b0:9bd:a738:2bfe with SMTP id xc11-20020a170907074b00b009bda7382bfemr8196716ejb.38.1698679408000;
-        Mon, 30 Oct 2023 08:23:28 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id j11-20020a170906050b00b009a193a5acffsm6129522eja.121.2023.10.30.08.23.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 08:23:27 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 17:23:25 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <20231030152325.qdpvv4nbczhal35c@skbuf>
-References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
- <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
- <CACRpkdYg8hattBC1esfh3WBNLZdMM5rLWhn4HTRLMfr2ubbzAA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1698679467; x=1699284267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R0KowZ1di5qvK5n+3JJf/2IyXXL5HDQOugqkhoSxid4=;
+        b=bLOCTCNPOPpqT8IALS/0Ny3gtVhcaAGq371yBV7AXhVR6FzrMU7HVryIJtR6JkjSS7
+         vm4txlG2WpzvsD+m261zNN0VqSPAxnfRHFx0lIAi+ECt7qzhZtASSO32AEPsm5vqHjvX
+         w97Cst0XKBgInqviG05IVh9kWreweHYLz1/O0RjNCWaCewjclW9srKKWjh7CJVrUrNr1
+         b4HP4tMK0E8IK0gc8AVy4tzg4SbrwIaKO8Fh53Yr0BRPs6xRdvzN/nB0v5c9caH8JFdi
+         7ROuMUgT05katEc0dEN1Pn7cr9IXUALm0ngJajJD745hAW46VJQm3c7RXLXgdnivBdin
+         7t/A==
+X-Gm-Message-State: AOJu0YzkrBr3zBy/GEmfMKOva7fVa7o9aE47oN0eO/T42UgqdiWy/R5n
+        nFStNZS+P0g+IHYJexDSy/16Y3pgCV/+fh+q5frBDw==
+X-Google-Smtp-Source: AGHT+IGmRgljGaofo/j9ML6PQtvuC7qBg+AsBwPZwNI7Tw42CXdzWGdq/jjJE02sR+y2ZptZG3coS3/XlrPMtirxUkw=
+X-Received: by 2002:a05:6512:1103:b0:507:9a05:1aed with SMTP id
+ l3-20020a056512110300b005079a051aedmr9887913lfg.4.1698679467390; Mon, 30 Oct
+ 2023 08:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYg8hattBC1esfh3WBNLZdMM5rLWhn4HTRLMfr2ubbzAA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231026160100.195099-6-brgerst@gmail.com> <202310290927.2MuJJdu9-lkp@intel.com>
+ <CAMzpN2iUrfnuGQ9eFTr=NTeC6KSUPC37Qji5_g5MWejmXnXO3A@mail.gmail.com> <CAMzpN2jbA=ZCbbFq=gyVAtKBr4kyYcNPLpWaEcAhEAN2J0wwTw@mail.gmail.com>
+In-Reply-To: <CAMzpN2jbA=ZCbbFq=gyVAtKBr4kyYcNPLpWaEcAhEAN2J0wwTw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 30 Oct 2023 08:24:16 -0700
+Message-ID: <CAKwvOd=+MEv9aQAS91KT-Ov3N8f8XRPE3WTEwvJyom=PTCmUeQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] x86/stackprotector/64: Convert stack protector
+ to normal percpu variable
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,36 +79,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 03:37:24PM +0100, Linus Walleij wrote:
-> On Mon, Oct 30, 2023 at 3:16 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> 
-> > Could you please try to revert the effect of commit 339133f6c318 ("net:
-> > dsa: tag_rtl4_a: Drop bit 9 from egress frames") by setting that bit in
-> > the egress tag again? Who knows, maybe it is the bit which tells the
-> > switch to bypass the forwarding process.
-> 
-> I have already tried that, it was one of the first things I tried,
-> just looking over the git log and looking for usual suspects.
-> 
-> Sadly it has no effect whatsoever, the problem persists :(
-> 
-> > Or maybe there is a bit in a
-> > different position which does this. You could try to fill in all bits in
-> > unknown positions, check that there are no regressions with packet sizes
-> > < 1496, and then see if that made any changes to packet sizes >= 1496.
-> > If it did, try to see which bit made the difference.
-> 
-> Hehe now we're talking :D
-> 
-> I did something similar before, I think just switching a different bit
-> every 10 packets or so and running a persistent ping until it succeeds
-> or not.
-> 
-> I'll see what I can come up with.
-> 
-> Yours,
-> Linus Walleij
+On Sun, Oct 29, 2023 at 10:01=E2=80=AFAM Brian Gerst <brgerst@gmail.com> wr=
+ote:
+>
+> On Sun, Oct 29, 2023 at 2:56=E2=80=AFAM Brian Gerst <brgerst@gmail.com> w=
+rote:
+> >
+> > On Sat, Oct 28, 2023 at 9:26=E2=80=AFPM kernel test robot <lkp@intel.co=
+m> wrote:
+> > >
+> > > Hi Brian,
+> > >
+> > > kernel test robot noticed the following build errors:
+> > >
+> > > [auto build test ERROR on tip/master]
+> > > [also build test ERROR on next-20231027]
+> > > [cannot apply to tip/x86/core dennis-percpu/for-next linus/master tip=
+/auto-latest v6.6-rc7]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a not=
+e.
+> > > And when submitting patch, we suggest to use '--base' as documented i=
+n
+> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > >
+> > > url:    https://github.com/intel-lab-lkp/linux/commits/Brian-Gerst/x8=
+6-stackprotector-32-Remove-stack-protector-test-script/20231027-000533
+> > > base:   tip/master
+> > > patch link:    https://lore.kernel.org/r/20231026160100.195099-6-brge=
+rst%40gmail.com
+> > > patch subject: [PATCH v2 05/11] x86/stackprotector/64: Convert stack =
+protector to normal percpu variable
+> > > config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive=
+/20231029/202310290927.2MuJJdu9-lkp@intel.com/config)
+> > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.=
+git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> > > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/a=
+rchive/20231029/202310290927.2MuJJdu9-lkp@intel.com/reproduce)
+> > >
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new =
+version of
+> > > the same patch/commit), kindly add following tags
+> > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202310290927.2MuJJdu9=
+-lkp@intel.com/
+> > >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > > >> Unsupported relocation type: unknown type rel type name (42)
+> >
+> > Clang is generating a new relocation type (R_X86_64_REX_GOTPCRELX)
+> > that the relocs tool doesn't know about.  This is supposed to allow
+> >         movq    __stack_chk_guard@GOTPCREL(%rip), %rax
+> >         movq    %gs:(%rax), %rax
+> > to be relaxed to
+> >         leaq    __stack_chk_guard(%rip), %rax
+> >         movq    %gs:(%rax), %rax
+> >
+> > But why is clang doing this instead of what GCC does?
+> >         movq    %gs:__stack_chk_guard(%rip), %rax
+>
+> Digging a bit deeper, there also appears to be differences in how the
+> linkers behave with this new relocation:
+>
+> make CC=3Dclang LD=3Dld:
+> ffffffff81002838:       48 c7 c0 c0 5c 42 83    mov    $0xffffffff83425cc=
+0,%rax
+>                         ffffffff8100283b: R_X86_64_32S  __stack_chk_guard
+> ffffffff8100283f:       65 48 8b 00             mov    %gs:(%rax),%rax
+>
+> make CC=3Dclang LD=3Dld.lld:
+> ffffffff81002838:       48 8d 05 81 34 42 02    lea
+> 0x2423481(%rip),%rax        # ffffffff83425cc0 <__stack_chk_guard>
+>                         ffffffff8100283b: R_X86_64_REX_GOTPCRELX
+>  __stack_chk_guard-0x4
+> ffffffff8100283f:       65 48 8b 00             mov    %gs:(%rax),%rax
+>
+> The LLVM linker keeps the R_X86_64_REX_GOTPCRELX even after performing
+> the relaxation.  It should be R_X86_64_32S based on it changing to an
+> LEA instruction.  The GNU linker changes it to R_X86_64_32S and a MOV
+> immediate.
+>
+> So I think there are two issues here.  1) clang is producing code
+> referencing the GOT for stack protector accesses, despite -fno-PIE on
+> the command line and no other GOT references, and 2) ld.lld is using
+> the wrong relocation type after the relaxation step is performed.
+>
+> I think the quick fix here is to teach the relocs tool about this new
+> relocation.  It should be able to be safely ignored since it's
+> PC-relative.  The code clang produces is functionally correct,
+> although not optimal.
 
-And the drop reason in ethtool -S also stays unchanged despite all the
-extra bits set in the tag? It still behaves as if the packet goes
-through the forwarding path?
+Thanks for the report.  + Fangrui for thoughts on relocations against
+__stack_chk_guard; clang has similar issues for 32b x86 as well.
+
+>
+> Brian Gerst
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
