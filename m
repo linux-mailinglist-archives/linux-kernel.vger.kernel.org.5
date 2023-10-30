@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCB87DB962
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8576B7DB965
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbjJ3MAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44026 "EHLO
+        id S233139AbjJ3MAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3MAL (ORCPT
+        with ESMTP id S233117AbjJ3MA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:00:11 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCB19D
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:00:08 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40838915cecso34701815e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:00:08 -0700 (PDT)
+        Mon, 30 Oct 2023 08:00:27 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FB4F1;
+        Mon, 30 Oct 2023 05:00:23 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32dc918d454so2766818f8f.2;
+        Mon, 30 Oct 2023 05:00:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698667207; x=1699272007; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aybSsE5M6yYzp+XWhdtnqDXvKHs19lnGyTCpqKxYFzM=;
-        b=WnPW4u/x1Kv3xJi2I+0K0WuAK0tGvf7nZfFCfqqpNkUgzxbWlOK/qeFEhtCUF8Cyuf
-         I9zxSoAwixRV+XiChuXf28c4L7wK7dffy5OfbEpRm8GkqBZ96XSiFaWgQd+ek4jFzBIL
-         4wGiFcCyoSqKn79TazkBdBa3tMTmTwLRQC3ZJHHtpUjsjgFCNPVWt11vRsRYztOUxw9H
-         u8PQSSSAajdwoh2Mi1W/pjORp/ZrDlCbV9KomULXpyFSvwChtuR8HtjT/2qPa+2t17LJ
-         PCeBKDDHPezYQXD9irofQKqHfEa/G3UerLt+xkVhEvRy+CwvPvqK/WAFLqRm4201iuiQ
-         jU5w==
+        d=gmail.com; s=20230601; t=1698667221; x=1699272021; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9T5S8kCI0IiXREJBxPiHYf6awYVTefKwzkyELqsdrZo=;
+        b=Noz1G9520KNvd0+YjFw9dE7qpt0CrYBhVW4XdvRQ6Cu3ZQtDPUFtKiKGAEvCfTXqa+
+         On+Fdcnl2qT+xPqHk7TYJiS33gg3xZbfNM+QZTOXYwt+GCuSc31GygWJRePV0vz59Ghf
+         H0SV1wHPTvD0ZbCEr6GNa70H3DlvjMz9NxNkMnie3RwQQPuRgVJFlY4nFuuQtZhV0hHm
+         20i247AgoqODHinunqPnSJDwySR/m4oKgWbXHTmg23UHJLvsY3LMMoqpFuUgxRMfB/Wo
+         3cMYpjGxcHi7+7mz4m3Fi3QxMUDerKdStVDlXThpi6NDEkQ59nSrLsYxfln8qyu/4FbD
+         NH/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698667207; x=1699272007;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aybSsE5M6yYzp+XWhdtnqDXvKHs19lnGyTCpqKxYFzM=;
-        b=FRXX3qHdst7aj827qu9hO+h6QXqsi7D0CoNnGLVnoXTAoPmdqYNCMhdfKdTB7vUzuK
-         zUUKRBTThdMRSfj4hT0kGQnoogWgI+KBGyt7XxyHyLsfKCL/ljX1Gn7wBWu0b3aUzx+F
-         WaeqSOvAIr2Qhv5e+R52bxq3i+e4TxvlGl8BKQHY/P+Qdt54LLYYI67fWC0kBDveqLVo
-         BcM/EOMexOblajuHpI3FE8TciR45o8ZHOVjDdFdcmr2xNiZuDUud7UpK2DmCbBf6ESbB
-         DsgtGAISpRpmjE9cJZo1cumzIu2/OlpySHTLIPuvgvwKPVs2lpGw+ADjogboA5jPQv36
-         mRSA==
-X-Gm-Message-State: AOJu0Yzcqk7T/VxKBKw/ZmvQFt4O0lospIXgJho2JPIrT8QOHkS1YOzU
-        96cgi/pHJcgGtKe1LcgJx/seWiSFWyPt6B5W
-X-Google-Smtp-Source: AGHT+IEzrqtVLIOkEcuNzpug5Nxyx+/pmvVtkUHYEvcEDOg+sIqSMBOa3ZVG9wsBVSQVwrfL+xFIsw==
-X-Received: by 2002:a05:600c:4f55:b0:408:3707:b199 with SMTP id m21-20020a05600c4f5500b004083707b199mr7803003wmq.3.1698667206988;
-        Mon, 30 Oct 2023 05:00:06 -0700 (PDT)
-Received: from nancy-1-2.. ([105.163.156.232])
-        by smtp.googlemail.com with ESMTPSA id s10-20020a05600c45ca00b0040772138bb7sm12572236wmo.2.2023.10.30.05.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 05:00:06 -0700 (PDT)
-From:   Nancy Nyambura <nicymimz@gmail.com>
-Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
-        Nancy Nyambura <nicymimz@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] Staging: rts5208: Replace strncpy() with strscpy()
-Date:   Mon, 30 Oct 2023 14:59:34 +0300
-Message-Id: <20231030115939.48985-1-nicymimz@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1698667221; x=1699272021;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9T5S8kCI0IiXREJBxPiHYf6awYVTefKwzkyELqsdrZo=;
+        b=SNHSxieI0yYl9jmpExw2v48C7XjWE76a95eztt8nsEy9uJpJtLtgaxt6gDBlu6zZ8k
+         lEOKMQCCMoF6bOmFyuigQcd0TpeI4wwgnFTjMwTP4z3G7vt2P5O0gLTaOaRdlumNsh9Y
+         umB7DTEp0nhMTeiWL32wA9X3aJl3qTI1P1gsDFD/0SDpCEhanAAwcpH64drDYCYK1eqO
+         6Lkl4EOZxAxvUsdWEMKhDlFTx2k/GhD8ZX9GE9VLmHTy5C9I1alUTO0/VOQNKHOIITbR
+         QAI9/BZnjZ+0xhP9lMcFo5/RmElIw83l9TeexsRZuz/8SU74vZ6j+wyum3Nwre8JGh2k
+         E/gw==
+X-Gm-Message-State: AOJu0Yy81Z3KgtBMlWv80vRiYBvrYIcNdcN+Em1k6GpCKSaBNLf4STXR
+        osoMgU1NfE3mF76d1MQpAaQ=
+X-Google-Smtp-Source: AGHT+IHtRzHF4q6z4FowSshP7nN2TfJP0FrDkHaAdi0mhZlwavk9Z4J+Uu0HHLX/PFA2391Un1ZvuQ==
+X-Received: by 2002:a5d:59a5:0:b0:32f:89fb:771d with SMTP id p5-20020a5d59a5000000b0032f89fb771dmr1596003wrr.12.1698667221311;
+        Mon, 30 Oct 2023 05:00:21 -0700 (PDT)
+Received: from [192.168.14.164] (54-240-197-239.amazon.com. [54.240.197.239])
+        by smtp.gmail.com with ESMTPSA id h16-20020adfe990000000b0032dc24ae625sm8118864wrm.12.2023.10.30.05.00.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 05:00:20 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <1f528e23-b58e-483e-8d65-97a822544167@xen.org>
+Date:   Mon, 30 Oct 2023 12:00:16 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Reply-To: Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH v7 00/11] KVM: xen: update shared_info and vcpu_info
+ handling
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+References: <20231002095740.1472907-1-paul@xen.org>
+ <6629b7f0b56e0fb2bad575a1d598cce26b1c6432.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <6629b7f0b56e0fb2bad575a1d598cce26b1c6432.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-warning found by checkpatch.pl script.I replaced the usage of strncpy()
-with strscpy() in the code(line 524) for the buf buffer to improve
-string copying.This is appropriate since strscpy() is used when you want
-to copy a NUL-terminated string and the destination buffer requires
-trailing NUL-padding.
+On 05/10/2023 07:41, David Woodhouse wrote:
+> On Mon, 2023-10-02 at 09:57 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> The following text from the original cover letter still serves as an
+>> introduction to the series:
+>>
+>> "Currently we treat the shared_info page as guest memory and the VMM
+>> informs KVM of its location using a GFN. However it is not guest memory as
+>> such; it's an overlay page. So we pointlessly invalidate and re-cache a
+>> mapping to the *same page* of memory every time the guest requests that
+>> shared_info be mapped into its address space. Let's avoid doing that by
+>> modifying the pfncache code to allow activation using a fixed userspace HVA
+>> as well as a GPA."
+>>
+>> This version of the series is functionally the same as version 6. I have
+>> simply added David Woodhouse's R-b to patch 11 to indicate that he has
+>> now fully reviewed the series.
+> 
+> Thanks. I believe Sean is probably waiting for us to stop going back
+> and forth, and for the dust to settle. So for the record: I think I'm
+> done heckling and this is ready to go in.
+> 
 
-Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
----
-Changes in v2:
-  - Make the commit message more clearer.
- 
-drivers/staging/rts5208/rtsx_scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Nudge.
 
-diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
-index 08bd768ad34d..52324b8ebbc7 100644
---- a/drivers/staging/rts5208/rtsx_scsi.c
-+++ b/drivers/staging/rts5208/rtsx_scsi.c
-@@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- 
- 	if (sendbytes > 8) {
- 		memcpy(buf, inquiry_buf, 8);
--		strncpy(buf + 8, inquiry_string, sendbytes - 8);
-+		strscpy(buf + 8, inquiry_string, sendbytes - 8);
- 		if (pro_formatter_flag) {
- 			/* Additional Length */
- 			buf[4] = 0x33;
--- 
-2.40.1
+Sean, is there anything more I need to do on this series?
+
+   Paul
 
