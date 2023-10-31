@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7537DD92E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9CB7DD92F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbjJaXPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 19:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
+        id S1376877AbjJaXQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 19:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbjJaXP2 (ORCPT
+        with ESMTP id S236055AbjJaXQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:15:28 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F0BE4;
-        Tue, 31 Oct 2023 16:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698794123;
-        bh=/76Xugrew87xiLqcZFqXvqoM0IUWyml2vPqmzgwbdsg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r6yChABplSocrvD2adOhza3xhSf9fQD3NOD4auFXeog+qFTYbjqGVZEVyJMfQ1b4P
-         ZsMg1OKXVq+G3uR9006h9Fh11wS/2OKIbvSVTT6ncFyklS5MkZZcBSxxvxPAicU4gd
-         MO8U4nChIoN998f6EfWQh9fY4AmET5hAfcgyyzxq4J2tdfUWj+6bMb5dmSiRFVJrpO
-         yXy8MtWnFmUkDNbEDVK8doRFM6sdy5Zgz870cEF48CuKc6LSytzTDrQuNOvcbGIabF
-         fH7q/n7zBamp9PleAKJI8M/0yPQQTQfbXZ/j0b1V/DzfYsMZg3+EUvE3yQOqnbtDjc
-         XBy49MznqPnSg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKmFk4rbGz4x1v;
-        Wed,  1 Nov 2023 10:15:22 +1100 (AEDT)
-Date:   Wed, 1 Nov 2023 10:15:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Muralidhara M K <muralidhara.mk@amd.com>,
-        Suma Hegde <suma.hegde@amd.com>, Vicki Pfau <vi@endrift.com>
-Subject: Re: linux-next: manual merge of the tip tree with the pci tree
-Message-ID: <20231101101521.1d28e795@canb.auug.org.au>
-In-Reply-To: <20231009134701.17ab655e@canb.auug.org.au>
-References: <20231009134701.17ab655e@canb.auug.org.au>
+        Tue, 31 Oct 2023 19:16:14 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15510113;
+        Tue, 31 Oct 2023 16:16:12 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77063481352so27122085a.1;
+        Tue, 31 Oct 2023 16:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698794171; x=1699398971; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=atmiYi00WMCyp7aFMPt4w9sGV6FatXJOBSSrDMaqG7s=;
+        b=Hq/JiYbwXFukMP1+7zUH1DcR4YOqqpgdK+FRlnf1xU42Q8tcGkwWxvi4fU9ytU1+3d
+         PgZGg2QMO6vyLAm7WtEGQqnEZW1sj1r5wUaIioq43K70KAqXIHsvyCXoYxGvyo23hhXy
+         KlRzks3YbOpOSS5muFQ+FP0hclCIj2fIO9BX0ruiasHENAmKikiV+jm2BUQCRtCygoSD
+         GJlVGEF6EUHnmHZilvBsQqHluBfhf648ovVxb/1PazO6oEnvVRNU87pwbzy0+GDnI2VE
+         i8ONSVcPO6FJSXSfwtN+xSRLbX1secNbUuM6KDkzKWbsiyVdbH1okIaU6OHcteR8S2xa
+         FY8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698794171; x=1699398971;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=atmiYi00WMCyp7aFMPt4w9sGV6FatXJOBSSrDMaqG7s=;
+        b=Vd75MJSwU7RD8QR3RMh+asoHfJdSWPW7K2Ny8fKaZOVbKHOkjM+hWfbaSHEVgd66UT
+         c44ygHore55mXKTsrhUx8lxHqeFEa3Af53jPGyX4HdWB/hnX8CiIHMSsg3tPZNHYuuOq
+         94HI+aZL88BiI+B2qZVXSD1ItiqyjmR1H3nahQimmjcnTUa5KOSHK11c8+kpzHJEJtY4
+         Yb0rX0+j7x6EGO6w6GUAIdpw1yTt0D67MThkRuqTQOyiT1WZYUtovbXNscrk+1rXBEUJ
+         xeK9tp8d9Xknb36wmHNFLRKD/hBvwXXuUoA7BWTiSstUjOeBaSrFvAvZ32F/W4jGjYFH
+         BQ0w==
+X-Gm-Message-State: AOJu0Yyofu2WSlx8EDemF+r6gGuM5N3D6KqcRHjeT1R/zadFNXrn5Jkf
+        6W70uUCKqtbJfkXv3jLtFrg=
+X-Google-Smtp-Source: AGHT+IHzClK0Yy/DDg5jbTwk9MzhOqMDsSgvTkzwRWZOi4OOOoM6R+CxLmO15DBkYC+qiQUZ27zW4w==
+X-Received: by 2002:a05:6214:321:b0:671:560f:3306 with SMTP id j1-20020a056214032100b00671560f3306mr5041211qvu.4.1698794171063;
+        Tue, 31 Oct 2023 16:16:11 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id dc6-20020a05620a520600b00767b0c35c15sm912709qkb.91.2023.10.31.16.16.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 16:16:10 -0700 (PDT)
+Message-ID: <2cc5b202-f024-4fa1-a2d1-577fe463d633@gmail.com>
+Date:   Tue, 31 Oct 2023 16:16:07 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 00/86] 6.1.61-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231031165918.608547597@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231031165918.608547597@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/31/23 10:00, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.61 release.
+> There are 86 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 02 Nov 2023 16:59:03 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.61-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Hi all,
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-On Mon, 9 Oct 2023 13:47:01 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
-> Today's linux-next merge of the tip tree got a conflict in:
->=20
->   include/linux/pci_ids.h
->=20
-> between commit:
->=20
->   7e6f3b6d2c35 ("PCI: Prevent xHCI driver from claiming AMD VanGogh USB3 =
-DRD device")
->=20
-> from the pci tree and commit:
->=20
->   24775700eaa9 ("x86/amd_nb: Add AMD Family MI300 PCI IDs")
->=20
-> from the tip tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc include/linux/pci_ids.h
-> index 3a8e24e9a93f,91b457de262e..000000000000
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@@ -579,7 -579,7 +579,8 @@@
->   #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3 0x12c3
->   #define PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3 0x16fb
->   #define PCI_DEVICE_ID_AMD_MI200_DF_F3	0x14d3
-> + #define PCI_DEVICE_ID_AMD_MI300_DF_F3	0x152b
->  +#define PCI_DEVICE_ID_AMD_VANGOGH_USB	0x163a
->   #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
->   #define PCI_DEVICE_ID_AMD_LANCE		0x2000
->   #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-This is now a conflict between the pci tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBiokACgkQAVBC80lX
-0GwJUQf/ULq/xFm5IJ2GvxVUWIgtuit7oh7nVtXXrHo+LfhEdzAIobfscbvjNHtW
-ktQjq3VlzHHim9TssmTxNMX95tl9OvoCiyC+J77hqFOEo77pA9gx/Cq35c8y9bdH
-NW4wNNf8IMY7512xXhn97wGKG7AuQD/DUpYJeZstPMJq6UNuOLGeAvGoXD0XNQFB
-/59E6UqZ0g3KwVVuvc1p1m18Fla0kJhidKxK09yervnGDYDFbUcNF+wJQ3RGGFGN
-8Ei4y8fMwWsHqqPVxtiQqB2/Gg9xmsAB/Z/p4m+l6OrKjCefoSC/KvPb7z/bJAZn
-Tq9lPXqJ8u9KAI6JJHQRYB24lNzUSw==
-=AgUB
------END PGP SIGNATURE-----
-
---Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS--
