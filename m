@@ -2,148 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2507DCCE6
+	by mail.lfdr.de (Postfix) with ESMTP id 7688C7DCCE7
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344223AbjJaMWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
+        id S1344226AbjJaMWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbjJaMWG (ORCPT
+        with ESMTP id S231269AbjJaMWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:22:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0925D98;
-        Tue, 31 Oct 2023 05:22:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9FB961F38C;
-        Tue, 31 Oct 2023 12:22:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698754921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LxFJRcgKBrTkwCYk/XtrM2vfD36eMy9uV2KLQkafOhY=;
-        b=stIqHE18hi2qK54I3U59vf2hwUprwpecHKfDAQl0BfZhfY9q7vOh7VQOvfyRIjXKcuCKic
-        KzxtNU5bDMp3XfdhMrN/PHoUj5JOtUvbLJw1Z1SqneYw14oLKXB5dXYyn7z9vA2N6wH7ST
-        4OCFQZPjOT/CJctCbnuDY/fSgPBEEfM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698754921;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LxFJRcgKBrTkwCYk/XtrM2vfD36eMy9uV2KLQkafOhY=;
-        b=ezvTsNdnRqRV9+SjqugsQVNOwztieZlM3AEVPM4DYQWa5mL9YeU3DWOSCLoXuxS8MGnhK2
-        d4woXKVGLv2zv/CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8BBDD1391B;
-        Tue, 31 Oct 2023 12:22:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dhoQImnxQGV9SgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 31 Oct 2023 12:22:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1A429A06E5; Tue, 31 Oct 2023 13:22:01 +0100 (CET)
-Date:   Tue, 31 Oct 2023 13:22:01 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <20231031122201.kmxzttzfbearu6iu@quack3>
-References: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
- <ZTc8tClCRkfX3kD7@dread.disaster.area>
- <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
- <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
- <ZTjMRRqmlJ+fTys2@dread.disaster.area>
- <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area>
- <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area>
- <d5965ba7ed012433a9914ba38a6046f2ddb015ac.camel@kernel.org>
+        Tue, 31 Oct 2023 08:22:19 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061BE98;
+        Tue, 31 Oct 2023 05:22:16 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32deb2809daso3560505f8f.3;
+        Tue, 31 Oct 2023 05:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698754934; x=1699359734; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s2Z3nezCqTwH2BJQCZtQak+101Mqilb66MpCFaczsFs=;
+        b=Vk/OE8j5aeRoVx5xxfDFJcB8PGPzVBfqlMbRzZaiJr70y6KAgM/kY3BP5/XbN21VIT
+         v7P13OJ3LC379LTkdANgBmQ9dRLqqOs4g1fvmWSVHpHkoRtNg0TS681qFcyhyCKbwAQC
+         BXNOAq6c+KxRkTouGvrQ1N+qgGCPjWzWVx4SlRQnaL1nC2uZ+xVbCOy8qhixFLidN/N3
+         AKARPfrgP1XyXGPIxXOFsQHKSZ9GCrsSGxdhv2JcwRkjR9A34JA8THl6/o7eit+V+R0I
+         E2lk55Kh5O/+d3c7bP4f+4xEsIYlyDuTpnmDJ965yrpNfaCeYOozh6KjvSdSp57T5YUg
+         tXuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698754934; x=1699359734;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s2Z3nezCqTwH2BJQCZtQak+101Mqilb66MpCFaczsFs=;
+        b=IlSwDQfFcJwqgf8avTDwlYkI5ONVAyn5yHE0QJZWsd/TfuisPnWZdtnLJ8jh/28090
+         PYsthYdftHdzzIklih9yc0DNwvali/TvSdULjc93TEqpRisoVWcHj9KhpnIbj6SgWUNz
+         BuoAQD2bA7rykfuaawtlkiSgKyJYMnS1eQCmFi/ZcPH/KUOffJY13doVed6DK9z8Ea7B
+         t3Y6qm/iEPTq3FJrZPIKtqZClFJXxZv5PduI/IwqGszcpbZZ1RUtGuP1+MBf4mBOwDE0
+         UvLJSwtRgT7XScVcKlgsQivtKN/NoWszF0Dm5mhbSwxLDFuCL+/C/MyNK0HmWd72T4PN
+         Mcqw==
+X-Gm-Message-State: AOJu0YyDexwFS96bX37t6xVpUK74C4JepME8vLtoeiA6CQqOtT506doV
+        Zk8DfyYSFLulbDnjkGUaPrU=
+X-Google-Smtp-Source: AGHT+IEttRhp1/NOYUvlkNgiMGRZbEpHMy7xazY41UZqIVz6U9rY6Bly/gMlBHrm6QhanUn2JvfmbQ==
+X-Received: by 2002:a05:6000:b8d:b0:32d:9395:dec6 with SMTP id dl13-20020a0560000b8d00b0032d9395dec6mr10018028wrb.67.1698754934351;
+        Tue, 31 Oct 2023 05:22:14 -0700 (PDT)
+Received: from [10.95.146.166] (54-240-197-230.amazon.com. [54.240.197.230])
+        by smtp.gmail.com with ESMTPSA id a8-20020adffac8000000b003296b488961sm1403305wrs.31.2023.10.31.05.22.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 05:22:13 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <a2a13598-6d37-47a2-8a13-9963acb0f1e5@xen.org>
+Date:   Tue, 31 Oct 2023 12:22:08 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5965ba7ed012433a9914ba38a6046f2ddb015ac.camel@kernel.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <xadimgnik@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
+ <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
+ <F80266DD-D7EF-4A26-B9F8-BC33EC65F444@infradead.org>
+ <6c9671b4-d997-42ac-9821-06accb97357f@xen.org>
+ <1DCDC3DB-81E8-426C-AF4B-AA7CA2C1271E@infradead.org>
+Organization: Xen Project
+In-Reply-To: <1DCDC3DB-81E8-426C-AF4B-AA7CA2C1271E@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 31-10-23 07:04:53, Jeff Layton wrote:
-> On Tue, 2023-10-31 at 09:37 +1100, Dave Chinner wrote:
-> > I have suggested mechanisms for using masked off bits of timestamps
-> > to encode sub-timestamp granularity change counts and keep them
-> > invisible to userspace and then not using i_version at all for XFS.
-> > This avoids all the problems that the multi-grain timestamp
-> > infrastructure exposed due to variable granularity of user visible
-> > timestamps and ordering across inodes with different granularity.
-> > This is potentially a general solution, too.
+On 31/10/2023 12:11, David Woodhouse wrote:
 > 
-> I don't really understand this at all, but trying to do anything with
-> fine-grained timestamps will just run into a lot of the same problems we
-> hit with the multigrain work. If you still see this as a path forward,
-> maybe you can describe it more detail?
+> 
+> On 31 October 2023 12:06:17 GMT, Paul Durrant <xadimgnik@gmail.com> wrote:
+>> On 31/10/2023 11:42, David Woodhouse wrote:
+>>> Secondly, it's also wrong thing to do in the general case. Let's say KVM does its thing and snaps the kvmclock backwards in time on a KVM_REQ_CLOCK_UPDATE... do we really want to reinterpret existing timers against the new kvmclock? They were best left alone, I think.
+>>
+>> Do we not want to do exactly that? If the master clock is changed, why would we not want to re-interpret the guest's idea of time? That update will be visible to the guest when it re-reads the PV clock source.
+> 
+> Well no, because the guest set that timer *before* we yanked the clock from under it, and probably wants it interpreted in the time scale which was in force at the time it was set.
+> 
+> But more to the point, KVM shouldn't be doing that! We need to *fix* the kvmclock brokenness, not design further band-aids around it.
 
-Dave explained a bit more details here [1] like:
+Ok, fair enough.
 
-Another options is for XFS to play it's own internal tricks with
-[cm]time granularity and turn off i_version. e.g. limit external
-timestamp visibility to 1us and use the remaining dozen bits of the
-ns field to hold a change counter for updates within a single coarse
-timer tick. This guarantees the timestamp changes within a coarse
-tick for the purposes of change detection, but we don't expose those
-bits to applications so applications that compare timestamps across
-inodes won't get things back to front like was happening with the
-multi-grain timestamps....
--
+> 
+> As I said, this patch stands even *after* we fix kvmclock, because it handles the timer delta calculation from an single TSC read.
+> 
+> But overengineering a timer reset on KVM_REQ_CLOCK_UPDATE would not.
 
-So as far as I understand Dave wants to effectively persist counter in low
-bits of ctime and expose ctime+counter as its change cookie. I guess that
-could work and what makes the complexity manageable compared to full
-multigrain timestamps is the fact that we have one filesystem, one on-disk
-format etc. The only slight trouble could be that if we previously handed
-out something in low bits of ctime for XFS, we need to keep handing the
-same thing out until the inode changes (i.e., no rounding until the moment
-inode changes) as the old timestamp could be stored somewhere externally
-and compared.
+I'm not sure what you intend to do to kvmlock, so not sure whether we'll 
+still need the __pvclock_read_cycles(&vcpu->arch.hv_clock, guest_tsc) 
+but this patch (with the extra check on validity of hv_clock) does fix 
+the drift so...
 
-								Honza
+Reviewed-by: Paul Durrant <paul@xen.org>
 
-[1] https://lore.kernel.org/all/ZTjMRRqmlJ+fTys2@dread.disaster.area/
-
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
