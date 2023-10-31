@@ -2,293 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 134F87DCFD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B739E7DCFD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344389AbjJaPAu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 11:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        id S1344518AbjJaPCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344388AbjJaPAr (ORCPT
+        with ESMTP id S1344312AbjJaPCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:00:47 -0400
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C78DB;
-        Tue, 31 Oct 2023 08:00:44 -0700 (PDT)
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1e993765c1bso3901079fac.3;
-        Tue, 31 Oct 2023 08:00:44 -0700 (PDT)
+        Tue, 31 Oct 2023 11:02:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12036DB
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698764510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DXoFKDYmMjs1Yhsyi0bsO2NWVGWU+Gcffefv/dGeE/Q=;
+        b=GOrYUmlzzSlpw8/r93y7bL4ulObf6nlI1hhPHsQ4oLxPkUSZCtrXBbC8rW1veWcaSP0kHs
+        XmCrffDRC3HS+d67uRp+C7Zp0Lmh4flaeFzgLM/Lk+X23ar5LjL/KLLqn2FR57UsJRVb/B
+        Mkulvqy4FF5BJJ00aBbmmaP7T9uyzOw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-600-hE6Bt97PPf6CuGz5901ucg-1; Tue, 31 Oct 2023 11:01:48 -0400
+X-MC-Unique: hE6Bt97PPf6CuGz5901ucg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-531373ea109so4517675a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:01:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698764443; x=1699369243;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xFk7CTu0sTNMbN/yyWrgJyegrXLrps7A3T0HAuISYtg=;
-        b=TBqRDNhMZPjxqN9c4ufMRIhPRwvRX/I7WBFP9K6BHjJUet6lMinKXozb6Vjsl4Kvb4
-         9rEQQHAyA8GD14x4X/gEAM4G2PHH3Y7FptQlBpqqW8MoJPfBqrc91yQNg/p4qCB64jow
-         NzXFkO2inNw7Fcui/76+6q/GPo0wD6Y3PWR0dmuJ1zShFskyvVPTvh30aKSNBuli6QGU
-         YmEL7I3DfBJWrWamsYzJb50OMoK3lCDG9fYDUtIikHZNTxVQ3e3va2knDN+LHCizwXrM
-         ABqey31CIoB5WuFLWvGalkEwDbfj30fDpDjkaJXuC3X+AIRinDvqIx5YaOUIfj/Rhh8w
-         UM0A==
-X-Gm-Message-State: AOJu0Ywma0p1NkutxlBojlCAtGg+EGmiLe5FLMkkwvZSAH20saEE2Zl+
-        W3kc9sFQcdZ103xEM1Jz9RjzFenglmadHw==
-X-Google-Smtp-Source: AGHT+IE0slbHt809PdGr+3wxZB301IeoV6MzJh77vHSWgA0R0+p8Pq3VrIX79dRBSpqv34URObAhTQ==
-X-Received: by 2002:a05:6870:9d82:b0:1f0:b5f:8898 with SMTP id pv2-20020a0568709d8200b001f00b5f8898mr2758642oab.55.1698764441942;
-        Tue, 31 Oct 2023 08:00:41 -0700 (PDT)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id b19-20020a25ae93000000b00da086d6921fsm891774ybj.50.2023.10.31.08.00.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 08:00:41 -0700 (PDT)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5a7dd65052aso59607207b3.0;
-        Tue, 31 Oct 2023 08:00:41 -0700 (PDT)
-X-Received: by 2002:a81:ed0b:0:b0:5a7:ccf3:7163 with SMTP id
- k11-20020a81ed0b000000b005a7ccf37163mr11497141ywm.15.1698764441239; Tue, 31
- Oct 2023 08:00:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
- <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com> <20231031144505.bqnxu3pgrodp7ukp@moria.home.lan>
-In-Reply-To: <20231031144505.bqnxu3pgrodp7ukp@moria.home.lan>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 Oct 2023 16:00:28 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVKi=ShPUwTHrX0CEN2f9+jRXWymnKH=BiXTpmg857AJQ@mail.gmail.com>
-Message-ID: <CAMuHMdVKi=ShPUwTHrX0CEN2f9+jRXWymnKH=BiXTpmg857AJQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs for v6.7
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1698764506; x=1699369306;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DXoFKDYmMjs1Yhsyi0bsO2NWVGWU+Gcffefv/dGeE/Q=;
+        b=kHWOGJofN/Jb5C4jaLxxqO/CNLsO3GYU9H+koYGEHeSK+GzUvZkrI3NMkoZLyjxVNZ
+         8Rovm293kXfX1A8HjzCuGH1+X4X5G1KKAvEq6W4TpS49odjvamL1lU5C45KWMy1CvMFV
+         6fMZMOw/Zu/UmVg0PnZpSa3JBvDBdddX79wgn4IsUxJdF6UudOPGjoSeT0L0pHqHfxyc
+         fAC3pbLdzfDUbc9FNg6NTSF4ZFS6++ZHCafYin+NAHhv7XYgbJjsZ9bDRxCoKDJwbpZB
+         3x3/gZrq2MpMp+s3m8ixD5+vLts/d2n76yjaPveBXxksLl1VBaNBVVBSeC6+e54RpAHR
+         5Asw==
+X-Gm-Message-State: AOJu0YzOc6ga690GKGj3hqmnonuRQTtiKI6vZlv0Dy6lmoV5zA7hwETf
+        lupGLRqfuaE0mrdP7x8tw30cHc7h+mlV2olUT2MBnpuN161lIb+dWn7q1QjoG5oWk66oS6C9QVT
+        2QriwpRYAujtR/3vrTd66wPRHRrsntt4/
+X-Received: by 2002:aa7:c2cf:0:b0:540:54ef:43fd with SMTP id m15-20020aa7c2cf000000b0054054ef43fdmr10503072edp.34.1698764506679;
+        Tue, 31 Oct 2023 08:01:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHuqkldToHheow1GniVmtkiLXlIK/EbWhltsj5NgbydGarbsYVpOhHsbgv/mWdG1dO0mzovzw==
+X-Received: by 2002:aa7:c2cf:0:b0:540:54ef:43fd with SMTP id m15-20020aa7c2cf000000b0054054ef43fdmr10503041edp.34.1698764506255;
+        Tue, 31 Oct 2023 08:01:46 -0700 (PDT)
+Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id d29-20020a50f69d000000b00522828d438csm1305672edn.7.2023.10.31.08.01.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 08:01:45 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 16:01:42 +0100
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, faith@gfxstrand.net,
+        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_SBL_A autolearn=no
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
+ control
+Message-ID: <ZUEW1mxwGO3bxxGM@pollux>
+References: <20231027093238.2ff8172e@collabora.com>
+ <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
+ <20231027093943.3f0ae992@collabora.com>
+ <98988459-25a8-4ee0-89d4-cb816cbc5bef@amd.com>
+ <20231027102237.0cdb85af@collabora.com>
+ <190e3ab7-6440-4d41-a79f-5dd4b7d3ca52@amd.com>
+ <20231027121707.414810d6@collabora.com>
+ <ffb8ff87-a555-42d2-aef1-a21069282227@amd.com>
+ <ZT/uPhLK7gan61Ns@pollux>
+ <e9c6af32-8d2a-4f04-9c12-1170a3aa1236@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e9c6af32-8d2a-4f04-9c12-1170a3aa1236@amd.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kent,
+On Tue, Oct 31, 2023 at 02:20:50PM +0100, Christian K�nig wrote:
+> Hi Danilo,
+> 
+> sorry for splitting up the mail thread. I had to fetch this mail from my
+> spam folder for some reason.
+> 
+> Am 30.10.23 um 18:56 schrieb Danilo Krummrich:
+> > Hi Christian,
+> > 
+> > [SNIP]
+> > > > And yes, we can live with the overhead of making jobs
+> > > > slightly bigger than they actually are, thus potentially delaying their
+> > > > execution. It's just that I don't quite understand the rational behind
+> > > > this conservatism, as I don't really see what negative impact this extra
+> > > > ->update_job_credits() call in the credit checking path has, other than
+> > > > the slight overhead of an if-check for drivers that don't need it.
+> > >  From experience it showed that we should not make the scheduler more
+> > > complicated than necessary. And I still think that the ring buffers only
+> > > need to be filled enough to keep the hardware busy.
+> > Right, and this callback contributes to exactly that.
+> > 
+> > I don't really think there is much to worry about in terms of introducing more
+> > complexity. The implementation behind this callback is fairly trivial - it's
+> > simply called right before we check whether a job fits on the ring, to fetch
+> > the job's actual size.
+> > 
+> > I would agree if the implementation of that would be bulky, tricky and asking
+> > for a compromise. But, since it actually is simple and straight forward I really
+> > think that if we implement some kind of dynamic job-flow control it should be
+> > implemented as acurate as possible rather than doing it half-baked.
+> 
+> Yeah, I see the intention here and can perfectly relate to it it's just that
+> I have prioritize other things.
 
-On Tue, Oct 31, 2023 at 3:45 PM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
-> On Tue, Oct 31, 2023 at 01:47:02PM +0100, Geert Uytterhoeven wrote:
-> > On Mon, Oct 30, 2023 at 3:56 PM Kent Overstreet
-> > <kent.overstreet@linux.dev> wrote:
-> > > The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-> > >
-> > >   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-> > >
-> > > are available in the Git repository at:
-> > >
-> > >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-10-30
-> > >
-> > > for you to fetch changes up to b827ac419721a106ae2fccaa40576b0594edad92:
-> > >
-> > >   exportfs: Change bcachefs fid_type enum to avoid conflicts (2023-10-26 16:41:00 -0400)
-> > >
-> > > ----------------------------------------------------------------
-> > > Initial bcachefs pull request for 6.7-rc1
-> > >
-> > > Here's the bcachefs filesystem pull request.
-> > >
-> > > One new patch since last week: the exportfs constants ended up
-> > > conflicting with other filesystems that are also getting added to the
-> > > global enum, so switched to new constants picked by Amir.
-> > >
-> > > I'll also be sending another pull request later on in the cycle bringing
-> > > things up to date my master branch that people are currently running;
-> > > that will be restricted to fs/bcachefs/, naturally.
-> > >
-> > > Testing - fstests as well as the bcachefs specific tests in ktest:
-> > >   https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-for-upstream
-> > >
-> > > It's also been soaking in linux-next, which resulted in a whole bunch of
-> > > smatch complaints and fixes and a patch or two from Kees.
-> > >
-> > > The only new non fs/bcachefs/ patch is the objtool patch that adds
-> > > bcachefs functions to the list of noreturns. The patch that exports
-> > > osq_lock() has been dropped for now, per Ingo.
-> >
-> > Thanks for your PR!
-> >
-> > >  fs/bcachefs/mean_and_variance.c                 |  159 ++
-> > >  fs/bcachefs/mean_and_variance.h                 |  198 ++
-> > >  fs/bcachefs/mean_and_variance_test.c            |  240 ++
-> >
-> > Looking into missing dependencies for MEAN_AND_VARIANCE_UNIT_TEST and
-> > failing mean_and_variance tests, this does not seem to match what was
-> > submitted for public review?
-> >
-> > Lore only has:
-> > "[PATCH 31/32] lib: add mean and variance module."
-> > https://lore.kernel.org/all/20230509165657.1735798-32-kent.overstreet@linux.dev/
->
-> It was later moved back into fs/bcachefs/, yes. I want to consolidate
-> the time stats code in bcachefs and bcachefs, so I'll be sending a PR to
-> move it back out at some point.
+I don't see any work being required from your side for this.
 
-OK.
+> 
+> Adding this callback allows for the driver to influence the job submission
+> and while this might seems useful now I'm just to much of a burned child to
+> do stuff like this without having a really good reason for it.
 
-> Can you point me at what's failing?
+It does influence the job submission in the exact same way as the initial credit
+count set through drm_sched_job_init() does. There is absolutely nothing with
+this callback a driver couldn't mess up in the exact same way with the initial
+credit count set through drm_sched_job_init(). Following this logic we'd need to
+abandon the whole patch.
 
-MEAN_AND_VARIANCE_UNIT_TEST should depend on BCACHEFS_FS, as the actual
-mean_and_variance code is only compiled if BCACHEFS_FS is enabled.
+Hence, I don't really understand why you're so focused on this callback.
+Especially, since it's an optional one.
 
-On m68k (ARAnyM), it fails with:
+> 
+> > > If this here has some measurable positive effect then yeah we should
+> > > probably do it, but as long as it's only nice to have I have some objections
+> > > to that.
+> > Can't answer this, since Nouveau doesn't support native fence waits. However, I
+> > guess it depends on how many native fences a job carries. So, if we'd have two
+> > jobs with each of them carrying a lot of native fences, but not a lot of actual
+> > work, I can very well imagine that over-accounting can have a measureable
+> > impact.
+> 
+> What I can imagine as well is things like the hardware or firmware is
+> looking at the fullness of the ring buffer to predict how much pending work
+> there is.
+> 
+> > I just wonder if we really want to ask for real measurements given that the
+> > optimization is rather trivial and cheap and we already have enough evidence
+> > that it makes sense conceptually.
+> 
+> Well that's the point I disagree on, this callback isn't trivial. If (for
+> example) the driver returns a value larger than initially estimated for the
+> job we can run into an endless loop.
 
-KTAP version 1
-1..1
-    KTAP version 1
-    # Subtest: mean and variance tests
-    # module: mean_and_variance_test
-    1..9
-    ok 1 mean_and_variance_fast_divpow2
-    ok 2 mean_and_variance_u128_basic_test
-    ok 3 mean_and_variance_basic_test
-    ok 4 mean_and_variance_weighted_test
-    ok 5 mean_and_variance_weighted_advanced_test
-    ok 6 mean_and_variance_test_1
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 22 (0x16)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 32 (0x20)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 21 (0x15)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 29 (0x1d)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 20 (0x14)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 28 (0x1c)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 19 (0x13)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 27 (0x1b)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 18 (0x12)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 26 (0x1a)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 17 (0x11)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 25 (0x19)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 16 (0x10)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_2: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 24 (0x18)
-        stddev[i] == 9 (0x9)
-    not ok 7 mean_and_variance_test_2
-    ok 8 mean_and_variance_test_3
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 22 (0x16)
-        mean[i] == 10 (0xa)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 32 (0x20)
-        stddev[i] == 9 (0x9)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 32 (0x20)
-        mean[i] == 11 (0xb)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 39 (0x27)
-        stddev[i] == 13 (0xd)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 40 (0x28)
-        mean[i] == 12 (0xc)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 42 (0x2a)
-        stddev[i] == 15 (0xf)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 46 (0x2e)
-        mean[i] == 13 (0xd)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 44 (0x2c)
-        stddev[i] == 17 (0x11)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:111
-    Expected mean_and_variance_get_mean(mv) == mean[i], but
-        mean_and_variance_get_mean(mv) == 50 (0x32)
-        mean[i] == 14 (0xe)
-    # mean_and_variance_test_4: EXPECTATION FAILED at
-fs/bcachefs/mean_and_variance_test.c:112
-    Expected mean_and_variance_get_stddev(mv) == stddev[i], but
-        mean_and_variance_get_stddev(mv) == 45 (0x2d)
-        stddev[i] == 19 (0x13)
-    not ok 9 mean_and_variance_test_4
-# mean and variance tests: pass:7 fail:2 skip:0 total:9
-# Totals: pass:7 fail:2 skip:0 total:9
-not ok 1 mean and variance tests
+I agree it doesn't make sense to increase, but it wouldn't break anything,
+unless the job size starts exceeding the capacity of the ring. And this case is
+handled anyway.
 
-Haven't tried the test on any other platform yet, so this could be a
-big-endian, 32-bit, m68k-specific, or even a generic problem.
+> 
+> It's just one more thing which can go boom. At bare minimum we should check
+> that the value is always decreasing.
 
-Thanks!
+Considering the above I still agree, such a check makes sense - gonna add one.
 
-Gr{oetje,eeting}s,
+- Danilo
 
-                        Geert
+> 
+> Christian.
+> 
+> > 
+> > - Danilo
+> > 
+> > > Regards,
+> > > Christian.
+> > > 
+> > > > Regards,
+> > > > 
+> > > > Boris
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
