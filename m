@@ -2,102 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB147DCFE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CA87DCFE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344606AbjJaPGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
+        id S235174AbjJaPLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235106AbjJaPG1 (ORCPT
+        with ESMTP id S233467AbjJaPLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:06:27 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE77FFE
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:06:23 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d87554434so39508586d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698764783; x=1699369583; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XFiJeiYR5SSNo2dE3+Iew6FPjauUb0S9LLfJ6JqjMGA=;
-        b=j8vckZMqbY9KcvIxQrSo/HJlbqDw7k6UvP2Kd2EAGuwecFKnb0LZ24iXjhl9/9MH1Y
-         /oD8lDN4AWShZT8fRTurC3X8jdX/+un17y/PzuOCyR8ctgnEOk0TaWtIwB80449HGsl6
-         O9VJp9jCm0Yv8uOSUzbKsEnSDcRzCueJYfkiwBUVPEsK8X7D++xSacNzmIppWZRaOe53
-         CvXlKF4DA4MqOrgM8j0vapBcMAzwkZjE5RJmMBoOA8bMU+uDVmuIR5uJYy11RV0GW2vF
-         IefiSWIgC+R3u10Gemm5sChFQBiIgCJ/pOqHuHOXY49BmVH77uKH8Od8H58JRTXtIggx
-         qR5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698764783; x=1699369583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XFiJeiYR5SSNo2dE3+Iew6FPjauUb0S9LLfJ6JqjMGA=;
-        b=HyygWP8JRs6cUvzt6rFcIVRlZEGJ77cNSm5+3u2SY+dwAnQDc6jk/ZDhB1oxXCU/La
-         6QOTFUIKfnZysGIDuSnNd6CrgA/vdeMQode+D8wAWmW6cmkrw1pL8eMTcp2CJx2SeDv5
-         C0D0Q11RSu1apgkkAy0Pz0xeEMXPr/SwRcldv/GKDHBBJ6etgYYlPdLHOdS/qQneNClx
-         fGpU2xyaLlcVJ3Aw3dX1M1HH7elLL3+FA1M5jH64IWdazfaygYVhIE+jVlLfI0iSQd6m
-         hzHmWlSW2M5cviU/18rcy5W3QkbaxyTmfo3WDj21wSvILeTSie+kQqpZcuMPMJkUOMSy
-         RYrg==
-X-Gm-Message-State: AOJu0Yzmq58LeNR8dJ6PYA21VibMU5bSCIfYGe/K9jc+NP4mX53uD4Ks
-        k+9zfwfV7aORqILzeftIkcTjgloBHSmYToqSwIQ7Mg==
-X-Google-Smtp-Source: AGHT+IE151kEFir7qf7e2DG0sarSRU7TzUC/5hmwAex0rxC4ctantPqpX1svsxQNccGEPatzUcut0zJ7zmReLsYMGwo=
-X-Received: by 2002:ad4:5ce3:0:b0:66d:5b50:44d with SMTP id
- iv3-20020ad45ce3000000b0066d5b50044dmr20218799qvb.57.1698764782743; Tue, 31
- Oct 2023 08:06:22 -0700 (PDT)
+        Tue, 31 Oct 2023 11:11:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA81F3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698765059; x=1730301059;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=sncHb8N64StAqzTXvm19WT9pM90bLF04U6+sY/o4zzk=;
+  b=L5bV7N6hLmTIJ4PdPRDouPLL5R0fljLjm0OCE7VMnkSj6GD7LjZ9QSV1
+   0YsFLU66Ax6D7aQmLf9AUGwU/ydydXNrSV0JS3awbX2yu1tLL4zJlsVkC
+   f56YyJBfwqzvljAGwO5yvm+/5QVeQZR809Wuvns4pJkOeP5sBLzp2J25Q
+   hq5B7R3jozuF1BzyHq558IIzWKHOdl3oU75X20K2aEKBtZDvN63IM1/q8
+   cIEI6fy2j/xBo8peHqYSsq+Gykofses8ashzYdulRev63zzs0T7uYHzYY
+   3A35faGgDP0tLqt+SEtdMgJUdgSyd5i6b2wpsxIt4B4b9PsdVZfTVSFRI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="373357176"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="373357176"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 08:10:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="710452564"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="710452564"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 31 Oct 2023 08:10:28 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qxqNu-0000EW-0R;
+        Tue, 31 Oct 2023 15:10:26 +0000
+Date:   Tue, 31 Oct 2023 23:09:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux-foundation.org>
+Subject: kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+Message-ID: <202310312340.LW2o2xTj-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
-In-Reply-To: <20231027182217.3615211-17-seanjc@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Tue, 31 Oct 2023 15:05:45 +0000
-Message-ID: <CA+EHjTzj4drYKONVOLP19DYpJ4O8kSXcFzw2AKier1QdcFKx_Q@mail.gmail.com>
-Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,265 +63,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5a6a09e97199d6600d31383055f9d43fbbcbe86f
+commit: e240e53ae0abb0896e0f399bdfef41c69cec3123 mm, slub: add CONFIG_SLUB_TINY
+date:   11 months ago
+config: x86_64-randconfig-a013-20230614 (https://download.01.org/0day-ci/archive/20231031/202310312340.LW2o2xTj-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310312340.LW2o2xTj-lkp@intel.com/reproduce)
 
-On Fri, Oct 27, 2023 at 7:23=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310312340.LW2o2xTj-lkp@intel.com/
 
-...
+sparse warnings: (new ones prefixed by >>)
+   kernel/fork.c:1096:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *owner @@     got struct task_struct *p @@
+   kernel/fork.c:1096:19: sparse:     expected struct task_struct [noderef] __rcu *owner
+   kernel/fork.c:1096:19: sparse:     got struct task_struct *p
+   kernel/fork.c:1310:24: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct file [noderef] __rcu *__ret @@     got struct file *new_exe_file @@
+   kernel/fork.c:1310:24: sparse:     expected struct file [noderef] __rcu *__ret
+   kernel/fork.c:1310:24: sparse:     got struct file *new_exe_file
+   kernel/fork.c:1310:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __ret @@
+   kernel/fork.c:1310:22: sparse:     expected struct file *[assigned] old_exe_file
+   kernel/fork.c:1310:22: sparse:     got struct file [noderef] __rcu *[assigned] __ret
+   kernel/fork.c:1637:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:1637:38: sparse:     expected struct refcount_struct [usertype] *r
+   kernel/fork.c:1637:38: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:1646:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1646:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1646:31: sparse:     got struct spinlock [noderef] __rcu *
+>> kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1647:9: sparse:     expected void const *
+   kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
+>> kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1647:9: sparse:     expected void const *
+   kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1647:9: sparse:     expected void const *
+   kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1648:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1648:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1648:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2074:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2074:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2074:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2078:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2078:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2078:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2398:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct * @@
+   kernel/fork.c:2398:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:2398:32: sparse:     got struct task_struct *
+   kernel/fork.c:2407:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2407:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2407:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2454:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
+   kernel/fork.c:2454:54: sparse:     expected struct list_head *head
+   kernel/fork.c:2454:54: sparse:     got struct list_head [noderef] __rcu *
+   kernel/fork.c:2476:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2476:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2476:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2497:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2497:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2497:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2524:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/fork.c:2524:28: sparse:     expected struct sighand_struct *sighand
+   kernel/fork.c:2524:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/fork.c:2553:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2553:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2553:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2555:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2555:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2555:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2998:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/fork.c:2998:24: sparse:     expected struct task_struct *[assigned] parent
+   kernel/fork.c:2998:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:3079:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:3079:43: sparse:     expected struct refcount_struct const [usertype] *r
+   kernel/fork.c:3079:43: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:1742:9: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:2119:22: sparse: sparse: dereference of noderef expression
+   kernel/fork.c: note: in included file (through include/uapi/asm-generic/bpf_perf_event.h, arch/x86/include/generated/uapi/asm/bpf_perf_event.h, ...):
+   include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
+   include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
+   include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
+   include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
+   include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
+   kernel/fork.c:2452:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:2453:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:1088:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/fork.c:1088:23: sparse:    struct task_struct [noderef] __rcu *
+   kernel/fork.c:1088:23: sparse:    struct task_struct *
+--
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
+   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
+   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
+--
+>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
+>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
+>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
+>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void *
+   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
+--
+   drivers/gpu/drm/gma500/opregion.c:294:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got struct opregion_header *header @@
+   drivers/gpu/drm/gma500/opregion.c:294:25: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/gpu/drm/gma500/opregion.c:294:25: sparse:     got struct opregion_header *header
+>> drivers/gpu/drm/gma500/opregion.c:324:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *const p @@     got void [noderef] __iomem *[assigned] base @@
+   drivers/gpu/drm/gma500/opregion.c:324:20: sparse:     expected void const *const p
+   drivers/gpu/drm/gma500/opregion.c:324:20: sparse:     got void [noderef] __iomem *[assigned] base
+   drivers/gpu/drm/gma500/opregion.c:330:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_header *header @@     got void [noderef] __iomem *[assigned] base @@
+   drivers/gpu/drm/gma500/opregion.c:330:26: sparse:     expected struct opregion_header *header
+   drivers/gpu/drm/gma500/opregion.c:330:26: sparse:     got void [noderef] __iomem *[assigned] base
+   drivers/gpu/drm/gma500/opregion.c:331:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *vbt @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/gma500/opregion.c:331:23: sparse:     expected void *vbt
+   drivers/gpu/drm/gma500/opregion.c:331:23: sparse:     got void [noderef] __iomem *
+   drivers/gpu/drm/gma500/opregion.c:338:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_acpi *acpi @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/gma500/opregion.c:338:32: sparse:     expected struct opregion_acpi *acpi
+   drivers/gpu/drm/gma500/opregion.c:338:32: sparse:     got void [noderef] __iomem *
+   drivers/gpu/drm/gma500/opregion.c:343:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_asle *asle @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/gma500/opregion.c:343:32: sparse:     expected struct opregion_asle *asle
+   drivers/gpu/drm/gma500/opregion.c:343:32: sparse:     got void [noderef] __iomem *
+--
+>> drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *const p @@     got unsigned char [noderef] [usertype] __iomem * @@
+   drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse:     expected void const *const p
+   drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse:     got unsigned char [noderef] [usertype] __iomem *
+   drivers/gpu/drm/gma500/intel_bios.c:549:40: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/gpu/drm/gma500/intel_bios.c:559:24: sparse: sparse: cast removes address space '__iomem' of expression
 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.=
-rst
-> index e2252c748fd6..e82c69d5e755 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6079,6 +6079,15 @@ applied.
->  :Parameters: struct kvm_userspace_memory_region2 (in)
->  :Returns: 0 on success, -1 on error
->
-> +KVM_SET_USER_MEMORY_REGION2 is an extension to KVM_SET_USER_MEMORY_REGIO=
-N that
-> +allows mapping guest_memfd memory into a guest.  All fields shared with
-> +KVM_SET_USER_MEMORY_REGION identically.  Userspace can set KVM_MEM_PRIVA=
-TE in
-> +flags to have KVM bind the memory region to a given guest_memfd range of
-> +[guest_memfd_offset, guest_memfd_offset + memory_size].  The target gues=
-t_memfd
-> +must point at a file created via KVM_CREATE_GUEST_MEMFD on the current V=
-M, and
-> +the target range must not be bound to any other memory region.  All stan=
-dard
-> +bounds checks apply (use common sense).
-> +
+vim +1647 kernel/fork.c
 
-Bikeshedding here: Not sure if KVM_MEM_PRIVATE is the best name for
-this. It gets confusing with KVM_MEMORY_ATTRIBUTE_PRIVATE, i.e., that
-a region marked as KVM_MEM_PRIVATE is only potentially private. It did
-confuse the rest of the team when I walked them through a previous
-version of this code once. Would something like KVM_MEM_GUESTMEM make
-more sense?
+a016f3389c0660 JANAK DESAI        2006-02-07  1631  
+a39bc51691a0c8 Alexey Dobriyan    2007-10-18  1632  static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1633  {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1634  	struct sighand_struct *sig;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1635  
+60348802e9cb13 Zhaolei            2009-01-06  1636  	if (clone_flags & CLONE_SIGHAND) {
+d036bda7d0e726 Elena Reshetova    2019-01-18  1637  		refcount_inc(&current->sighand->count);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1638  		return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1639  	}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1640  	sig = kmem_cache_alloc(sighand_cachep, GFP_KERNEL);
+0c282b068eb26d Madhuparna Bhowmik 2020-01-27  1641  	RCU_INIT_POINTER(tsk->sighand, sig);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1642  	if (!sig)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1643  		return -ENOMEM;
+9d7fb04276481c Peter Zijlstra     2015-06-30  1644  
+d036bda7d0e726 Elena Reshetova    2019-01-18  1645  	refcount_set(&sig->count, 1);
+06e62a46bbba20 Jann Horn          2018-08-21  1646  	spin_lock_irq(&current->sighand->siglock);
+^1da177e4c3f41 Linus Torvalds     2005-04-16 @1647  	memcpy(sig->action, current->sighand->action, sizeof(sig->action));
+06e62a46bbba20 Jann Horn          2018-08-21  1648  	spin_unlock_irq(&current->sighand->siglock);
+b612e5df4587c9 Christian Brauner  2019-10-14  1649  
+b612e5df4587c9 Christian Brauner  2019-10-14  1650  	/* Reset all signal handler not set to SIG_IGN to SIG_DFL. */
+b612e5df4587c9 Christian Brauner  2019-10-14  1651  	if (clone_flags & CLONE_CLEAR_SIGHAND)
+b612e5df4587c9 Christian Brauner  2019-10-14  1652  		flush_signal_handlers(tsk, 0);
+b612e5df4587c9 Christian Brauner  2019-10-14  1653  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1654  	return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1655  }
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1656  
 
->  ::
->
->    struct kvm_userspace_memory_region2 {
-> @@ -6087,9 +6096,24 @@ applied.
->         __u64 guest_phys_addr;
->         __u64 memory_size; /* bytes */
->         __u64 userspace_addr; /* start of the userspace allocated memory =
-*/
-> +  __u64 guest_memfd_offset;
-> +       __u32 guest_memfd;
-> +       __u32 pad1;
-> +       __u64 pad2[14];
->    };
->
-> -See KVM_SET_USER_MEMORY_REGION.
-> +A KVM_MEM_PRIVATE region _must_ have a valid guest_memfd (private memory=
-) and
-> +userspace_addr (shared memory).  However, "valid" for userspace_addr sim=
-ply
-> +means that the address itself must be a legal userspace address.  The ba=
-cking
-> +mapping for userspace_addr is not required to be valid/populated at the =
-time of
-> +KVM_SET_USER_MEMORY_REGION2, e.g. shared memory can be lazily mapped/all=
-ocated
-> +on-demand.
+:::::: The code at line 1647 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
 
-Regarding requiring that a private region have both a valid
-guest_memfd and a userspace_addr, should this be
-implementation-specific? In pKVM at least, all regions for protected
-VMs are private, and KVM doesn't care about the host userspace address
-for those regions even when part of the memory is shared.
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
 
-> +When mapping a gfn into the guest, KVM selects shared vs. private, i.e c=
-onsumes
-> +userspace_addr vs. guest_memfd, based on the gfn's KVM_MEMORY_ATTRIBUTE_=
-PRIVATE
-> +state.  At VM creation time, all memory is shared, i.e. the PRIVATE attr=
-ibute
-> +is '0' for all gfns.  Userspace can control whether memory is shared/pri=
-vate by
-> +toggling KVM_MEMORY_ATTRIBUTE_PRIVATE via KVM_SET_MEMORY_ATTRIBUTES as n=
-eeded.
-
-In pKVM, guest memory is private by default, and most of it will
-remain so for the lifetime of the VM. Userspace could explicitly mark
-all the guest's memory as private at initialization, but it would save
-a slight amount of work. That said, I understand that it might be
-better to be consistent across implementations.
-
-...
-
-> --- /dev/null
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -0,0 +1,548 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/backing-dev.h>
-> +#include <linux/falloc.h>
-> +#include <linux/kvm_host.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/anon_inodes.h>
-
-nit: should this include be first (to maintain alphabetical ordering
-of the includes)?
-
-> +
-> +#include "kvm_mm.h"
-> +
-> +struct kvm_gmem {
-> +       struct kvm *kvm;
-> +       struct xarray bindings;
-> +       struct list_head entry;
-> +};
-> +
-> +static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t ind=
-ex)
-> +{
-> +       struct folio *folio;
-> +
-> +       /* TODO: Support huge pages. */
-> +       folio =3D filemap_grab_folio(inode->i_mapping, index);
-> +       if (IS_ERR_OR_NULL(folio))
-> +               return NULL;
-> +
-> +       /*
-> +        * Use the up-to-date flag to track whether or not the memory has=
- been
-> +        * zeroed before being handed off to the guest.  There is no back=
-ing
-> +        * storage for the memory, so the folio will remain up-to-date un=
-til
-> +        * it's removed.
-> +        *
-> +        * TODO: Skip clearing pages when trusted firmware will do it whe=
-n
-> +        * assigning memory to the guest.
-> +        */
-> +       if (!folio_test_uptodate(folio)) {
-> +               unsigned long nr_pages =3D folio_nr_pages(folio);
-> +               unsigned long i;
-> +
-> +               for (i =3D 0; i < nr_pages; i++)
-> +                       clear_highpage(folio_page(folio, i));
-> +
-> +               folio_mark_uptodate(folio);
-> +       }
-> +
-> +       /*
-> +        * Ignore accessed, referenced, and dirty flags.  The memory is
-> +        * unevictable and there is no storage to write back to.
-> +        */
-> +       return folio;
-> +}
-> +
-> +static void kvm_gmem_invalidate_begin(struct kvm_gmem *gmem, pgoff_t sta=
-rt,
-> +                                     pgoff_t end)
-> +{
-> +       bool flush =3D false, found_memslot =3D false;
-> +       struct kvm_memory_slot *slot;
-> +       struct kvm *kvm =3D gmem->kvm;
-> +       unsigned long index;
-> +
-> +       xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
-> +               pgoff_t pgoff =3D slot->gmem.pgoff;
-> +
-> +               struct kvm_gfn_range gfn_range =3D {
-> +                       .start =3D slot->base_gfn + max(pgoff, start) - p=
-goff,
-> +                       .end =3D slot->base_gfn + min(pgoff + slot->npage=
-s, end) - pgoff,
-> +                       .slot =3D slot,
-> +                       .may_block =3D true,
-> +               };
-> +
-> +               if (!found_memslot) {
-> +                       found_memslot =3D true;
-> +
-> +                       KVM_MMU_LOCK(kvm);
-> +                       kvm_mmu_invalidate_begin(kvm);
-> +               }
-> +
-> +               flush |=3D kvm_mmu_unmap_gfn_range(kvm, &gfn_range);
-> +       }
-> +
-> +       if (flush)
-> +               kvm_flush_remote_tlbs(kvm);
-> +
-> +       if (found_memslot)
-> +               KVM_MMU_UNLOCK(kvm);
-> +}
-> +
-> +static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start=
-,
-> +                                   pgoff_t end)
-> +{
-> +       struct kvm *kvm =3D gmem->kvm;
-> +
-> +       if (xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT)) {
-> +               KVM_MMU_LOCK(kvm);
-> +               kvm_mmu_invalidate_end(kvm);
-> +               KVM_MMU_UNLOCK(kvm);
-> +       }
-> +}
-> +
-> +static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff=
-_t len)
-> +{
-> +       struct list_head *gmem_list =3D &inode->i_mapping->private_list;
-> +       pgoff_t start =3D offset >> PAGE_SHIFT;
-> +       pgoff_t end =3D (offset + len) >> PAGE_SHIFT;
-> +       struct kvm_gmem *gmem;
-> +
-> +       /*
-> +        * Bindings must stable across invalidation to ensure the start+e=
-nd
-
-nit: Bindings must _be/stay?_ stable
-
-...
-
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 78a0b09ef2a5..5d1a2f1b4e94 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -798,7 +798,7 @@ void kvm_mmu_invalidate_range_add(struct kvm *kvm, gf=
-n_t start, gfn_t end)
->         }
->  }
->
-> -static bool kvm_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_rang=
-e *range)
-> +bool kvm_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *rang=
-e)
->  {
->         kvm_mmu_invalidate_range_add(kvm, range->start, range->end);
->         return kvm_unmap_gfn_range(kvm, range);
-> @@ -1034,6 +1034,9 @@ static void kvm_destroy_dirty_bitmap(struct kvm_mem=
-ory_slot *memslot)
->  /* This does not remove the slot from struct kvm_memslots data structure=
-s */
->  static void kvm_free_memslot(struct kvm *kvm, struct kvm_memory_slot *sl=
-ot)
->  {
-> +       if (slot->flags & KVM_MEM_PRIVATE)
-> +               kvm_gmem_unbind(slot);
-> +
-
-Should this be called after kvm_arch_free_memslot()? Arch-specific ode
-might need some of the data before the unbinding, something I thought
-might be necessary at one point for the pKVM port when deleting a
-memslot, but realized later that kvm_invalidate_memslot() ->
-kvm_arch_guest_memory_reclaimed() was the more logical place for it.
-Also, since that seems to be the pattern for arch-specific handlers in
-KVM.
-
->         kvm_destroy_dirty_bitmap(slot);
->
->         kvm_arch_free_memslot(kvm, slot);
-
-...
-
-Cheers,
-/fuad
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
