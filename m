@@ -2,162 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2330C7DCD11
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5A17DCD17
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344296AbjJaMh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        id S1344281AbjJaMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344275AbjJaMh1 (ORCPT
+        with ESMTP id S1344246AbjJaMij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:37:27 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8469BBB
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:37:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1698755821; x=1699360621; i=wahrenst@gmx.net;
-        bh=ag24Y16BKW7q/v3C5rXU1lpS2I4ZWF+C4wzfWUi35jI=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=PMQqjByMhtFGgfr0G6xWrchsOP7tnFF77eXWAcn1YaDsTSh8gk7qyaFLSIffjofW
-         lhzfBqcRfeiZO/tfvF5jOz0EoZPzJkJMjguY3SFA3xQBNFpAjRnJdD98rERsvZKkp
-         +H8PSZU0GoLBp9Ro36jm+ebXKE07ZsKjIwrnHM0CK563eccfNrQ696nVirbqTQm9V
-         yWaFmaSRkSDG6kgMUR9jAKjcQYn30sqL+jfwRbyrUgF/FC8bW0ly2I3nU4FBzQ2Nf
-         B2277C82TIBQxSzj72OLMqNGDN8XMA/ZafeIz5Ehfo41Zd0aT5IgYRaesm9ClWcJ2
-         eVHgQjB21S49hW6KwQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXXyJ-1qxPvO17Ud-00Z0x8; Tue, 31
- Oct 2023 13:37:01 +0100
-Message-ID: <db49b19c-5bd3-4d4c-8e58-e81c19868458@gmx.net>
-Date:   Tue, 31 Oct 2023 13:37:00 +0100
+        Tue, 31 Oct 2023 08:38:39 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3AD97;
+        Tue, 31 Oct 2023 05:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=KyXQpc8AXiGy6JfaWDKN47mA7BYnKlEsLUhMJAG3kDo=; b=U9skVJ4Leh3/l/gNvkw6v+TGQM
+        n+ETP0A806oMc+WbhIxsTd6PbAFDNFCD8ZTWxKyOLqC96jGY92PDJpBcz7TzvYFF/v/CBJSm3XJn3
+        c7o+Bs0SsPqB2hHqrlAPAgX+RQnZS3YzIi9HEID4GhoCrBVC4nF18Iqe0YPxPXar4lgI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qxo0t-000c0c-MQ; Tue, 31 Oct 2023 13:38:31 +0100
+Date:   Tue, 31 Oct 2023 13:38:31 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
+Subject: Re: [PATCH v3 1/1] r8169: Coalesce RTL8411b PHY power-down recovery
+ programming instructions to reduce spinlock stalls
+Message-ID: <7fa02dd1-c894-4980-8439-4dc1e22d3634@lunn.ch>
+References: <20231028110459.2644926-1-mirsad.todorovac@alu.unizg.hr>
+ <376db5ae-1bb0-4682-b132-b9852be3c7aa@gmail.com>
+ <23428695-fcff-495b-ac43-07639b4f5d08@alu.unizg.hr>
+ <30e15e9a-d82e-4d24-be37-1b9d1534c082@gmail.com>
+ <9f99c3a4-2752-464b-b37d-58a4f8041804@alu.unizg.hr>
+ <bd4a59be-c393-4302-9d32-759e7cbfe255@lunn.ch>
+ <11f59506-406a-463b-94c1-fe20246a102f@alu.unizg.hr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] [i2c-bcm2835] ALWAYS enable INTD
-Content-Language: en-US
-To:     mike.isely@cobaltdigital.com, Andi Shyti <andi.shyti@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Cc:     Mike Isely <isely@pobox.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231030162114.3603829-1-mike.isely@cobaltdigital.com>
- <20231030162114.3603829-3-mike.isely@cobaltdigital.com>
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <20231030162114.3603829-3-mike.isely@cobaltdigital.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:k/zR4gOE2uiwSLQd8j9aQUgMP0O9IWXNalB7fNmVTV4ot+Grwub
- s8n4Iq+3TKHZG0bwaiku3IpyBnbJYD7XwSAqSLzFwwPW6L48tFKJqiDvdr7iYkRt/mA1Jwc
- e7TYGouFfSsDw+OipdCagAStpU54rH+0Z65hGiId6k1xlGCA5f0qdhrNcb7WV7ecSPEPMns
- /Rb9pZgokJC1+30KdO8mg==
-UI-OutboundReport: notjunk:1;M01:P0:yS/VH2Lh/ws=;VUd+xFNGakw9R8zEf0C80wB8yaA
- UyHkoeNTqaZvYTk8vlfOiM6lkj8X33MKbnb/Rot8r9VdkvlMjQyhR//e45+ntdyBFlhSYejjv
- LN2ErKrox/i/w2/4xQolaSDzBo5x8S2ssYZ4hv/duGQHwjQZUgatymKGCTSleaX0DhDfqPGM1
- g6PVh94vGuBix0MfWujB++gIWbTFiEAe8q1KBWPbDbWcl2bkKL2k9xtiSQ1BPczShqt8OXnbZ
- 8wpgV+bC8hUP8FyxEdEou/tbXSn6FH8xYtZpFP0iEJ4p1CgNhI6qmMkYgvEQx3dbsjDGkQomB
- B2ESUbGsy3HM7Eg4fFX+TB6hoYSxk0qIqGP6duEp3F8XH8BLpI63IXL9DUHQ+v3FlqUyvtJ8f
- fhevTsIgWvjWklwrrKWa3ORXCB9F/nj0l/jGZlCtZJpaIDmn78i4KdrfufvYHpGrWZmOMAqNz
- vWAtc0+q5RO5XAMQKicaS+jUHiGAfSXa9VMdCv4SDt60rUmizE5hOhmQf3bZiYMriVYaroS7G
- fNTIxeZbvJO/K1shXvXuE4CJlV5bw/NOSV38bdthiYTlC3PLjMF/JJDIAOmYC6bAp7ki/qFkz
- f32J/rl7/+20txHKBtcl2xiR6G4OczJZLGKrS/jnY2UgpRajJpNE9u7ahMRqz1h4dD0Gpd8u8
- CVh3ubXMQ8TzfxHO+bVNvTm3SJRxqbcCBKelzyvxfeWH3+26xvC3mFFMhk0Qi5QUXj02siPOJ
- +eizBE5I+SNOiDd2nPqyAK2gx2MI3eaTTssODXNqifByrI2vNDhAxK1TjdJRhDBvINxeRwPBh
- XGAsMRtAwOF3MPETC6dBatNt3dWVHk7EQkDyDtdG4DEOIJ/CQtixKO0vQkHwlpyILuhQEaoMQ
- AmDZ5o3km4IFO/8pQ6hkhl55sAEDgTa7fCMl27Env1kLHD+96F7yQdUg86Y4PqVJVWSvYwd2R
- 3VKz/g==
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11f59506-406a-463b-94c1-fe20246a102f@alu.unizg.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Forware to Dave and Phil]
+On Tue, Oct 31, 2023 at 04:35:19AM +0100, Mirsad Todorovac wrote:
+> On 10/31/23 02:21, Andrew Lunn wrote:
+> > > I will not contradict, but the cummulative amount of memory barriers on each MMIO read/write
+> > > in each single one of the drivers could amount to some degrading of overall performance and
+> > > latency in a multicore system.
+> > 
+> > For optimisations, we like to see benchmark results which show some
+> > improvements. Do you have any numbers?
+> 
+> Hi, Andrew,
+> 
+> Thank you for your interest in RTL NIC driver optimisations.
+> 
+> My knowledge about the timing costs of synchronisation is mostly theoretical.
 
-Am 30.10.23 um 17:21 schrieb mike.isely@cobaltdigital.com:
-> From: Mike Isely <mike.isely@cobaltdigital.com>
->
-> There is a race in the bcm2835 i2c hardware: When one starts a write
-> transaction, two things apparently take place at the same time: (1) an
-> interrupt is posted to cause the FIFO to be filled with TX data,
-> and (2) an I2C transaction is started on the wire with the slave
-> select byte.  The race happens if there's no slave, as this causes a
-> slave selection timeout, raising the ERR flag in the hardware and
-> setting DONE.  The setting of that DONE flag races against TXW.  If
-> TXW gets set first, then an interrupt is raised if INTT was set.  If
-> ERR gets set first, then an interrupt is raised if INTD was set.  It's
-> one or the other, not both - probably because DONE being set disables
-> the hardware INTT interrupt path.
->
-> MOST of the time, TXW gets set first, the ISR runs, sees ERR is set
-> and cleanly fails the transaction.  However some of the time DONE gets
-> set first - but since the driver doesn't enable INTD until it's on the
-> last message - there's no interrupt at all.  Thus the ISR never fires
-> and the driver detects a timeout instead.  At best, the "wrong" error
-> code is delivered to the owner of the transaction.  At worst, if the
-> timeout doesn't propertly clean up the hardware (see prior commit
-> fixing that), the next - likely unrelated - transaction will get
-> fouled, leading to bizarre behavior in logic otherwise unrelated to
-> the source of the original error.
->
-> The fix here is to set INTD on for all messages not just the last one.
-> In that way, unexpected failures which might set DONE earlier than
-> expected will always trigger an interrupt and be handled correctly.
->
-> The datasheet for this hardware doesn't describe any scenario where
-> the hardware can realistically hang - even a stretched clock will be
-> noticed if it takes too long.  So in theory a timeout should really
-> NEVER happen, and with this fix I was completely unable to trigger any
-> further timeouts at all.
->
-> Signed-off-by: Mike Isely <isely@pobox.com>
-> ---
->   drivers/i2c/busses/i2c-bcm2835.c | 6 +-----
->   1 file changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-b=
-cm2835.c
-> index 96de875394e1..70005c037ff9 100644
-> --- a/drivers/i2c/busses/i2c-bcm2835.c
-> +++ b/drivers/i2c/busses/i2c-bcm2835.c
-> @@ -235,26 +235,22 @@ static void bcm2835_drain_rxfifo(struct bcm2835_i2=
-c_dev *i2c_dev)
->
->   static void bcm2835_i2c_start_transfer(struct bcm2835_i2c_dev *i2c_dev=
-)
->   {
-> -	u32 c =3D BCM2835_I2C_C_ST | BCM2835_I2C_C_I2CEN;
-> +	u32 c =3D BCM2835_I2C_C_ST | BCM2835_I2C_C_I2CEN | BCM2835_I2C_C_INTD;
->   	struct i2c_msg *msg =3D i2c_dev->curr_msg;
-> -	bool last_msg =3D (i2c_dev->num_msgs =3D=3D 1);
->
->   	if (!i2c_dev->num_msgs)
->   		return;
->
->   	i2c_dev->num_msgs--;
->   	i2c_dev->msg_buf =3D msg->buf;
->   	i2c_dev->msg_buf_remaining =3D msg->len;
->
->   	if (msg->flags & I2C_M_RD)
->   		c |=3D BCM2835_I2C_C_READ | BCM2835_I2C_C_INTR;
->   	else
->   		c |=3D BCM2835_I2C_C_INTT;
->
-> -	if (last_msg)
-> -		c |=3D BCM2835_I2C_C_INTD;
-> -
->   	bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_A, msg->addr);
->   	bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_DLEN, msg->len);
->   	bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_C, c);
->   }
+The kernel tends to be very practical. Maybe try to turn the
+theoretical knowledge into practice. Write a benchmark test, or see if
+any of the existing RT Linux tests show there is a real problem here,
+and your changes fix it.
 
+	Andrew
