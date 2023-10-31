@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524127DD339
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087477DD34E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347009AbjJaQwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        id S1346790AbjJaQxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346986AbjJaQwL (ORCPT
+        with ESMTP id S1346983AbjJaQwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:52:11 -0400
+        Tue, 31 Oct 2023 12:52:16 -0400
 Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2093.outbound.protection.outlook.com [40.107.21.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3096BA2;
-        Tue, 31 Oct 2023 09:49:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAFB11A;
+        Tue, 31 Oct 2023 09:49:43 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VMbOBMvLyvdwi6U6WFzfa+FuMY+/FMKP4Bvrbj+Zp011P8oQGikYfgLEq7NUJeK0nIfybRM5X5rolVoOK1yjV2xfAWljiQOYeBMZDIj5T/D1+YLnwpJXy2APk2o7pyKJ3HRngMqFBmkEaZPQ1M8/L7HPpM+abuqhJCxBkjr3aeYtlLeTaTSVi6EfBd0+DKsAo8v4VYOxiSjsmkyjXrzoaVVDoQ6imISlWWqX9jefcPQIgsdsXgYCMztNLpKTgB6GVKkxzL3ycCsWWC88bYquFL19sfL5OWtCcuN9FPE9n3CThQQHdh4wCiNbant37SGeykVYLTSyfYST3i/675SHrQ==
+ b=hpILFy7yCT2980Thvy4sy3m7MgbsHcJPLDhUrqOGd9mP3avfgjXixCawxKQ56N224tzoUMKbo6/evc+Oh8fKbGwbX4glPt5lwcxZvdCRPApETq6qsmYOeqalupn9B6Nt3IAvMzSm34UDEvRFFFxWNqbkGwN5sbzzhtUyW0gO0AdyxhGd3X4tvuGDhBGTSP4UcclU+XnG1YCuN7CRRX44Y8UB4pxQl1asLmzacsJZLuhtjKQdL/akhaiH1mTwF0YnzqbRwCWE/bOFWIxKXtzxI6wiJxgbdXC7lGDtpl6E5GNgx+nylJEocbD0A1jIRxDKVICbHrMUkDEOwCmf+wOxig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J441UACOmM+plHFUNs2UCVgRdvQT0qPnSeGsc/Q08Aw=;
- b=GcSgjhfZLZ0tEYU7aAaGOB2hLBge2Yg5YT8kYm+LME1CWG5Revyhv40FiexfM94vbkyxDt2bfG2qFx4qI/32vfmoJQsUaXaHPXQb9NGTQi1Rzt+VVsrox+uj5/XGuGt5Sl0Qzdg+58VU8bOAChffda0jjoIpDkJ7ZHbLj8zLt72qm/EKaAjOpZ5XZWueSlR6TIfLsG3xs8nc3sieDxDJy5x5utQLHHlpRwflw4KyXc9O9PjeGHpNqPmlYHGpPfqkPozYpMIQBr70KD6g6z9DlhEdi3Zsyx1IicsiIEfQGTxFA9qElx9H7s07AdK+0xQ1JYH8osWl+GE5B2lwmwXsYw==
+ bh=6L+xQIcU/M2AFE9gICKDEMemb0+dOzf9wEODUdS5KNo=;
+ b=fiMaqD8mnlzo0YrNItisW0OGbnEd0Z3zPwfKrB8n5GRAwAvtXUmKuHmDesBA2TjuwO7f7RAuTx0xkmw/I6BybXZeku9wwgxMAYc4Nj3qNC3/jjPUe+eoS2Omj+3RuOcOKpNs1LAIdDB1uheO3T3uO+zYZrFpgL44rBnDa+jssz0JgGZLvkSQoxjz4PvZxZ9bfU3SR3lf7wiTfWhJI0m1po/4EPIYjfRI5B7WrlBLg9Vcfoo+gZjuQWgK8BOTRTrSdyUidh8jg5WFEQQE6d8o06AO2R4neLfbtXnlWQBPwZHVc2hv5W1SAvnsX8ykM3W2WNqN6uhK0TBXEO3eP/8q9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=syrmia.com; dmarc=pass action=none header.from=syrmia.com;
  dkim=pass header.d=syrmia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syrmia.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J441UACOmM+plHFUNs2UCVgRdvQT0qPnSeGsc/Q08Aw=;
- b=SPshZl/9NE3/T5GO+y9KXv1mvt9XaiJYper0PtfUBeG/mm0y8iPc12c7870OaeO9u4glGiKtAV1UcGCLbQd21os4bDVci0xHtcFEzv+bwM1tBTLrLlN39eNV4h8dkpKKRL0jtiuKwRbQUgLsydo2PVn7EbsutNuIP5TRzTI1PLE=
+ bh=6L+xQIcU/M2AFE9gICKDEMemb0+dOzf9wEODUdS5KNo=;
+ b=Rnxl0E0jc/MI/exgNJS+tgOArdRCiiyMb05STfP//d1xJsVlyZCTIIGfd7k04XC6P5b4rFJUSokh/gaK+OB7Kjiwlb3iIglY4Ow0WampccZGcYntOT4+38GT4y2iBIZseBw5jx/EsBqFx9vOqYB09M75l2v/wKWvBmbbo6z7HjY=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=syrmia.com;
 Received: from VI1PR0302MB3486.eurprd03.prod.outlook.com
  (2603:10a6:803:1e::32) by AM9PR03MB7187.eurprd03.prod.outlook.com
  (2603:10a6:20b:26f::18) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 31 Oct
- 2023 16:49:39 +0000
+ 2023 16:49:41 +0000
 Received: from VI1PR0302MB3486.eurprd03.prod.outlook.com
  ([fe80::59be:1f7c:f22b:baaa]) by VI1PR0302MB3486.eurprd03.prod.outlook.com
  ([fe80::59be:1f7c:f22b:baaa%4]) with mapi id 15.20.6907.032; Tue, 31 Oct 2023
- 16:49:39 +0000
+ 16:49:41 +0000
 From:   Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     Aleksandar Rikalo <arikalo@gmail.com>,
@@ -59,9 +59,9 @@ Cc:     Aleksandar Rikalo <arikalo@gmail.com>,
         Serge Semin <fancer.lancer@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v3 02/11] MIPS: GIC: Generate redirect block accessors
-Date:   Tue, 31 Oct 2023 17:49:18 +0100
-Message-Id: <20231031164927.371663-3-aleksandar.rikalo@syrmia.com>
+Subject: [PATCH v3 03/11] irqchip: mips-gic: Introduce for_each_online_cpu_gic()
+Date:   Tue, 31 Oct 2023 17:49:19 +0100
+Message-Id: <20231031164927.371663-4-aleksandar.rikalo@syrmia.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231031164927.371663-1-aleksandar.rikalo@syrmia.com>
 References: <20231031164927.371663-1-aleksandar.rikalo@syrmia.com>
@@ -73,51 +73,51 @@ X-ClientProxiedBy: AM0PR10CA0065.EURPRD10.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: VI1PR0302MB3486:EE_|AM9PR03MB7187:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0065edd-c448-402f-204a-08dbda315f9c
+X-MS-Office365-Filtering-Correlation-Id: ac47c71d-db40-4c4a-4eec-08dbda3160ae
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6DIEhVIb7q1m2HlymGmzOTNEKkHaWR21z3vaCE6Fni3kAuNiEzCfBiBW4k+BL081AWXWf86FwtgDol6kvVYaRlUu8i75OepjdqxH5069CkzK2fzOQ8SZEGUQUbX9+p3sgu4wnte1BvP42hQ+jnUUUw1fZM20G9fvnbwjKbHDtKlvu9PhrVd4uN/KmjhgGKsvONtXfZr+Ab2NaotxriYoXqvJMcGOxrGjRGcDeffI5rHPtMrY0af5FeulAn25igx/SIMngytTamjC5Ntp3KCUtcyfjJ2v0C2USoLK+UGWxZOp6yF8x1qJD54jpyW7tVF3TLPK+2URDTzV6MMdAubVTOV0GsVmaAVqjTmtp5BjbztqtRXHCkMnyyIHPMXrsHE/CQwyKnNFqo2fxXKaYAUpk8FeWDuPJ7ciD0dhLPtHmAzQjs+zLtprj4TMResKcsBXQhrEc4IuEJWpL8YJaHr6PyIvjcs1FnRpxP59OB9jqHillobM9eoIeq3XljWNYlAfEEmMvn2YuoPLny+FrgnifNfAFUrlJfxaQCIkWh1atmIJlFfwxtv+RrtPpiytBfbdssrGciylcolF0aD7wkG2ieZ/DFCoC8ZGJ/NFHy4JHtHpdYXtGsqHLl5lMrAj4sbS
+X-Microsoft-Antispam-Message-Info: zhhAWW8jZqpEJ9TgzoEroN07DQlZsH2aYp/+R5uLOr3jVXBKp8a8LtnqPgipPls9KXkuw9b8M3xt7Fr/lu7VDbYDipijTwMohGW3cY2gNpnopmy+yXJMWY36B+rCbExFcXf7m+KAqaNb1BzFHwEcnDonOoPFannc5SAnV6KUD/b1fCuDZNQjk2CK6N2nWzkIiyZdl0kFzYA4u0Dn9RYMUeQotOyAP3V99i0ROlIH7bvoXFpC8qWgzFGUN+lRatV3mdSTTh9AdlZxIumB5BgmAFpF2XQK78vAbxuCDd2jaB72V1Glln7M1mVvr/8N7g5yGgGi9d0FfQrtMM/nV1p15sZUPc/yTLDrFxR0WLBzTHXlYe5rMudwCbAlEd1Jg7Ey79yc4zeqiUi+lfMTeWktdv+qUKsUKoXGnf12Mjo70rEPWse6mQA8zEVm2I65prSP8nZlzG/VHHY6fGNnMjCaw6eweM00F2zLHppfezs2jy9jBKSzjwde5ceTNRLjWs8sQxA90/x16VVZGsHtgzC0FZ2z2gTxhes/GHYVBq4/VaCYGfDDfyZwNXJpeMwilgNQ13LuJopEbI4TSQ56SVDDxr/uPvl5cQsqcCnbhirFesKgZdGuwE+Vvz4dihJSyDzM
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0302MB3486.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(346002)(39840400004)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(41300700001)(44832011)(316002)(54906003)(6916009)(66946007)(66556008)(66476007)(8936002)(7416002)(478600001)(2906002)(4326008)(5660300002)(8676002)(6486002)(26005)(52116002)(6512007)(6506007)(2616005)(83380400001)(36756003)(1076003)(38350700005)(38100700002)(6666004)(86362001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HUEFBIF9YntORipCHBEGVPEK5SOzz+i6b9tRG0g5VSQB4zvQXRcLD3PMUeYi?=
- =?us-ascii?Q?f5IaCcbUQq+ykLlsy1bzbVYHe2m3j13Ic5aDOFl59vj76IsyeKTBSKdubNtQ?=
- =?us-ascii?Q?nqnxaNUaBN/q6DrHGxUk34ejOEeansaa3s1CSOgkHke3DKt6OVFQGMM1ozqt?=
- =?us-ascii?Q?2dwCZoaXYehK9dR+U+AQ0X8Um2sV07GudDoJUh+Vh4EyLMImB64v6FnMlIwD?=
- =?us-ascii?Q?rNNlMLgQIJF7W58NcSzVcPeULL0Rnn42Daxn86fExMTudXd2YTELykq8PV4b?=
- =?us-ascii?Q?zFiVnOKBiO9orRQvN2vEGXTtd97chsMl0GcQKoxtp8rHW7aDARCzQZtNl/Hz?=
- =?us-ascii?Q?RogqpeUuOhW7LEZ7npLOrnFgfG83hYCHMflMMtoGxssP134yUxGsAV1HCQFd?=
- =?us-ascii?Q?GKwz6ZiewNm94H6nWVBF0h2Q1DGel3y/zSdpKbSs0UFiohF1qcuGItACZ9DQ?=
- =?us-ascii?Q?2Pd7xRKzfZuHJYHE2/qaAqMjRW8ZrQBD5S6FAaD2w229yjESbRPFuaGBDdVH?=
- =?us-ascii?Q?6QptYy7T973WCa4wN/0DQwtSA1H9Gur7PGb51Slo1NYi8vxDlFXkOs5YSmxs?=
- =?us-ascii?Q?rqUkB7EwftO0Nd6JZ1/qrO8IAzkuD2eDL7dW7JBthqETD5jtqjeCslBFGXNe?=
- =?us-ascii?Q?z/3fyRFp75Mt7+kU4tD7kgZTXqYuJHqoyizAxVih81C6ZvbhSSG4UTusPejU?=
- =?us-ascii?Q?EJRsB8iZa85hL2X3eepyDEfICYVlzNdD/4gxR6nQLkEqeoJoivC5pGlTYJsW?=
- =?us-ascii?Q?pO3ImAZAVQYz4+t8Xu499gzgQd52CtmHgsP5Tps5J4fDwZVCrpn5RJekb/L4?=
- =?us-ascii?Q?g38OpLrg12U9yZS+YwRKiNFGo4sE9DBYPQsIrjSNto8JE2euhoVc8f5GYpAj?=
- =?us-ascii?Q?humcroFTOL5R7ud3mo3FTcTKOuypl42LxODqan5eo8JFQhD5b+2UBoXazw+/?=
- =?us-ascii?Q?PZMnXMDCLNrhuKuauJ3PVpRsyu6P1GnOyRzIurShke/lFEH9pRqzyixRFGNJ?=
- =?us-ascii?Q?ax/fPC03d6qfotDBXbii782WJtJwlgqYsJeQ+SKC8EczyNBWxCGX3J8d+0nA?=
- =?us-ascii?Q?enOsk4gGqb0dJyQaiOCqGFD/2upNkEkh3IC5bx9557OsLN6flfGeBahmySPx?=
- =?us-ascii?Q?zVMQDxggkM7NsHOyT8Jx12erfkRIzUeoSmeeXmmJ19A9v2XEwzxh5QjO8SLu?=
- =?us-ascii?Q?dG/kkZPigvXsH88tQdPPrWoFiawHB1R5Yy9F223p4CNueUkakJar2vuDM3ZV?=
- =?us-ascii?Q?JK1FnyJ32/9qRHOz0Z5h2B50EV4ERCT90X80wiNQgTNzO7XcRpmpDxl+8yif?=
- =?us-ascii?Q?L8TthAJT6QOnKpkvtOZ+iE3kArSiti410O94HgQNv5kmta1H0clsJzQeya3x?=
- =?us-ascii?Q?iIqdwqEvB/pE2sNp33wR57epIat7vteSRirvRHEFezatUV0vgtWUlub6p619?=
- =?us-ascii?Q?SzDsHd5WugDRNs2dDRxqYlVxMidlWD5o7RdAofBq5foRXU34NxkXP0PQ7EsL?=
- =?us-ascii?Q?redOIVOwjQsN700JCz5v/YrDFLWCbDgVkubiovgfWMhc3ZFfF6mr/ZyzWyN/?=
- =?us-ascii?Q?l+V9VpfEIwhyykd5CkVK5oAXXUFaF7RhBEcT3jcAooWi1mYcbcORyNiblJI7?=
- =?us-ascii?Q?6A=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?y8r+B4Res9tRcGHWGhN/env3YcGyqMLvmsuLzUCSbR5S4avvzJlwQ8uwYIiz?=
+ =?us-ascii?Q?g7bu2acuKaYbOINZTDiId26XdX1qzExlJhvop3qHzkd5NBlzxAUEUM7V1zfK?=
+ =?us-ascii?Q?k/dC/+YXnbjGfI5ISIc7ulZilWqjWRteHH5y58JoGh7NB7pQF4PLghPZ8Qpl?=
+ =?us-ascii?Q?GRmWz0jYhQWUebnTJY9NeOenoC6Vpos5K61jCK8SLOYWqXLfHUqFBJV5oIUY?=
+ =?us-ascii?Q?75QcyHVQU66e1u0/4vVkNbsJP8j4lq7++O2ADwxNbTHzT4LfnhnD90uJQVRH?=
+ =?us-ascii?Q?+IK9PZ/Ca02HR60sBsBlM0+WoUt7IaeZSt1ahGtD0JVlDEajV5xQqpTT7FQD?=
+ =?us-ascii?Q?xNg0F9vWxd2hPzCeSylFe6uxpVaW07Tk/PQYY5VfFgyCZOKbmOQO5Y1DBq8U?=
+ =?us-ascii?Q?lTDBtGDswxEHoIEi8STZedJKlWe3kPiao6NTAq3WgC0/OCacMwta80rosx6h?=
+ =?us-ascii?Q?0wNQ1sIrG2yiTzEdDIJQR8kqpmh+EYRr2ar4e0uHFvtMETxbCtO1WJciaUKx?=
+ =?us-ascii?Q?kd3kAFgZUJUTk8zavV/5sG8bzKAYrc/phL7Cvvw0IKoWrVaDE1+sNFvQxIpn?=
+ =?us-ascii?Q?pnt80L/cy8NTI0FLp9roQoSTa8CeQTzJgB/aKbwWL5Uy10bXAQXHpxG78Xq/?=
+ =?us-ascii?Q?pzhVl4cYy1dGdIN9NMZFEad5osQJgNsjNYBLlHsQCrhz6OE4QTnsr80vyjHL?=
+ =?us-ascii?Q?DME3rhnsDDEWlhUbah/BZxc2RCs5OrfWJF8fm6z8LFpG5IgCdYjiXylaQQPX?=
+ =?us-ascii?Q?2ZcMQPx75WzqhDMFhttGbg3wyE5L/nq9ChZbyseLxeC8/86WaNlJus62e6Dh?=
+ =?us-ascii?Q?E1dFl7BdN0SO6dniWBPRzgYGD0Zv22NNzSVv3SUeIr9vRwkoH6G6n5jlzsBW?=
+ =?us-ascii?Q?ab71Jwj1qHZbqs7kmoKUSFqhC98IjzGVJx2Jqafmc5mNBEDMwFZskd0BR11H?=
+ =?us-ascii?Q?s6xaJ0nIt+n/f+s+CWDq48RnYMA7Of7R9TNT7eOs52wQCQKh6sBvrOarQy6F?=
+ =?us-ascii?Q?MBzCa0V9DL2mQcV4iRJy+tl5ljnqrG47ShhQVkTx+X0N8DTevbB8rbdA/PEN?=
+ =?us-ascii?Q?XUuJh+EbXUVukdVWik1JcYOuCNgDMDrb1KkuvvI47w+13Q1BgNQMbIu+1IbZ?=
+ =?us-ascii?Q?nhpSbPWsFaTkS4PtAUcr95blQEY5Zh/4o2el/5FF6RadJpynYLHpgufjB+3c?=
+ =?us-ascii?Q?g12Bzqvf/ga/SNnHWLSNvGP9HGtv7cp5CSoPjZ/SCIHllQtG6mUzQgp/AIWg?=
+ =?us-ascii?Q?fEcMeeqmTmbrP3wbNQivz96s0YM0k9qqMWV0HJ1uZv+Up2wjuL5tJkocpBts?=
+ =?us-ascii?Q?1Zu7F90PDKlW566bGEMF9u9Nx2vvAFiFV4y1wfKdrujNGIsqFhdSTY37DGfQ?=
+ =?us-ascii?Q?7kLnf3f5ndzXnsOK4TCp9w1jA7KDchuHtMlxMBjo4MuZTWTWWsFUJiIK7U4T?=
+ =?us-ascii?Q?JTogCs+9XASAm9qXQfiBv0WRkL3WXfwlKDF4wzBSBpgJ2Kw1x+7e0pjwIB+F?=
+ =?us-ascii?Q?JLxw8vSiHMHr9ECDWTh7r213Y7wrNNJUKtwhK89G80nlZQEm0xOUxZiLJ+7U?=
+ =?us-ascii?Q?66Vj9RfauyLleyS5DfC4d0GQwa+/b+7UBzhZYXc808g42XCib7iPV69bV8dA?=
+ =?us-ascii?Q?8Q=3D=3D?=
 X-OriginatorOrg: syrmia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0065edd-c448-402f-204a-08dbda315f9c
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac47c71d-db40-4c4a-4eec-08dbda3160ae
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR0302MB3486.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:49:39.6876
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:49:41.4592
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 19214a73-c1ab-4e19-8f59-14bdcb09a66e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SlkzTubqqotJ3KHI6k1jsgBLPlTc4Lofq4vOKfN9EAzscHv5MXTwXHxwHkqom+qJ5qL4GuoJFdtH4bRcRLip6KRxauaOIsjssLBv+4+NtyY=
+X-MS-Exchange-CrossTenant-UserPrincipalName: HoqN+gM0JP0Ia3LhJA31cSyc7BX5hdRY0omzCeS5j/Mkc+OCeaDi2xrGgZwJah/xK8U0FcZBxaTjAXtCP8aIU8o/ZFNe5FrDDg0DcqMHrdw=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB7187
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -131,154 +131,124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Burton <paulburton@kernel.org>
 
-With CM 3.5 the "core-other" register block evolves into the "redirect"
-register block, which is capable of accessing not only the core local
-registers of other cores but also the shared/global registers of other
-clusters.
+A few pieces of code in the MIPS GIC driver operate on the GIC local
+register block for each online CPU, accessing each via the GIC's
+other/redirect register block. This patch abstracts the process of
+iterating over online CPUs & configuring the other/redirect region to
+access their registers through a new for_each_online_cpu_gic() macro.
 
-This patch generates accessor functions for shared/global registers
-accessed via the redirect block, with "redir_" inserted after "gic_" in
-their names. For example the accessor function:
+This simplifies users of the new macro slightly, and more importantly
+prepares us for handling multi-cluster systems where the register
+configuration will be done via the CM's GCR_CL_REDIRECT register. By
+abstracting all other/redirect block configuration through this macro,
+and the __gic_with_next_online_cpu() function which backs it, users will
+trivially gain support for multi-cluster when it is implemented in
+__gic_with_next_online_cpu().
 
-  read_gic_config()
-
-...accesses the GIC_CONFIG register of the GIC in the local cluster.
-With this patch a new function:
-
-  read_gic_redir_config()
-
-...is added which accesses the GIC_CONFIG register of the GIC in
-whichever cluster the GCR_CL_REDIRECT register is configured to access.
-
-This mirrors the similar redirect block accessors already provided for
-the CM & CPC.
-
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Paul Burton <paulburton@kernel.org>
 Signed-off-by: Chao-ying Fu <cfu@wavecomp.com>
 Signed-off-by: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
 Signed-off-by: Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
 ---
- arch/mips/include/asm/mips-gic.h | 50 ++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 16 deletions(-)
+ drivers/irqchip/irq-mips-gic.c | 61 +++++++++++++++++++++++++++++-----
+ 1 file changed, 52 insertions(+), 9 deletions(-)
 
-diff --git a/arch/mips/include/asm/mips-gic.h b/arch/mips/include/asm/mips-gic.h
-index 084cac1c5ea2..fd9da5e3beaa 100644
---- a/arch/mips/include/asm/mips-gic.h
-+++ b/arch/mips/include/asm/mips-gic.h
-@@ -28,11 +28,13 @@ extern void __iomem *mips_gic_base;
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 76253e864f23..9e7182150b5c 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -66,6 +66,52 @@ static struct gic_all_vpes_chip_data {
+ 	bool	mask;
+ } gic_all_vpes_chip_data[GIC_NUM_LOCAL_INTRS];
  
- /* For read-only shared registers */
- #define GIC_ACCESSOR_RO(sz, off, name)					\
--	CPS_ACCESSOR_RO(gic, sz, MIPS_GIC_SHARED_OFS + off, name)
-+	CPS_ACCESSOR_RO(gic, sz, MIPS_GIC_SHARED_OFS + off, name)	\
-+	CPS_ACCESSOR_RO(gic, sz, MIPS_GIC_REDIR_OFS + off, redir_##name)
++static int __gic_with_next_online_cpu(int prev)
++{
++	unsigned int cpu;
++
++	/* Discover the next online CPU */
++	cpu = cpumask_next(prev, cpu_online_mask);
++
++	/* If there isn't one, we're done */
++	if (cpu >= nr_cpu_ids)
++		return cpu;
++
++	/*
++	 * Lock access to the next CPU's GIC local register block.
++	 *
++	 * In the single cluster case we simply set GIC_VL_OTHER. The caller
++	 * holds gic_lock so nothing can clobber the value we write.
++	 */
++	write_gic_vl_other(mips_cm_vp_id(cpu));
++
++	return cpu;
++}
++
++static inline void __lockdep_assert_held(raw_spinlock_t *gic_lock)
++{
++	lockdep_assert_held(gic_lock);
++}
++
++/**
++ * for_each_online_cpu_gic() - Iterate over online CPUs, access local registers
++ * @cpu: An integer variable to hold the current CPU number
++ * @gic_lock: A pointer to raw spin lock used as a guard
++ *
++ * Iterate over online CPUs & configure the other/redirect register region to
++ * access each CPUs GIC local register block, which can be accessed from the
++ * loop body using read_gic_vo_*() or write_gic_vo_*() accessor functions or
++ * their derivatives.
++ *
++ * The caller must hold gic_lock throughout the loop, such that GIC_VL_OTHER
++ * cannot be clobbered.
++ */
++#define for_each_online_cpu_gic(cpu, gic_lock)		\
++	for (__lockdep_assert_held(gic_lock),		\
++	     (cpu) = __gic_with_next_online_cpu(-1);	\
++	     (cpu) = __gic_with_next_online_cpu(cpu),	\
++	     (cpu) < nr_cpu_ids;)
++
+ static void gic_clear_pcpu_masks(unsigned int intr)
+ {
+ 	unsigned int i;
+@@ -358,10 +404,9 @@ static void gic_mask_local_irq_all_vpes(struct irq_data *d)
+ 	cd->mask = false;
  
- /* For read-write shared registers */
- #define GIC_ACCESSOR_RW(sz, off, name)					\
--	CPS_ACCESSOR_RW(gic, sz, MIPS_GIC_SHARED_OFS + off, name)
-+	CPS_ACCESSOR_RW(gic, sz, MIPS_GIC_SHARED_OFS + off, name)	\
-+	CPS_ACCESSOR_RW(gic, sz, MIPS_GIC_REDIR_OFS + off, redir_##name)
- 
- /* For read-only local registers */
- #define GIC_VX_ACCESSOR_RO(sz, off, name)				\
-@@ -45,7 +47,7 @@ extern void __iomem *mips_gic_base;
- 	CPS_ACCESSOR_RW(gic, sz, MIPS_GIC_REDIR_OFS + off, vo_##name)
- 
- /* For read-only shared per-interrupt registers */
--#define GIC_ACCESSOR_RO_INTR_REG(sz, off, stride, name)			\
-+#define _GIC_ACCESSOR_RO_INTR_REG(sz, off, stride, name)		\
- static inline void __iomem *addr_gic_##name(unsigned int intr)		\
- {									\
- 	return mips_gic_base + (off) + (intr * (stride));		\
-@@ -58,8 +60,8 @@ static inline unsigned int read_gic_##name(unsigned int intr)		\
+ 	raw_spin_lock_irqsave(&gic_lock, flags);
+-	for_each_online_cpu(cpu) {
+-		write_gic_vl_other(mips_cm_vp_id(cpu));
++	for_each_online_cpu_gic(cpu, &gic_lock)
+ 		write_gic_vo_rmask(BIT(intr));
+-	}
++
+ 	raw_spin_unlock_irqrestore(&gic_lock, flags);
  }
  
- /* For read-write shared per-interrupt registers */
--#define GIC_ACCESSOR_RW_INTR_REG(sz, off, stride, name)			\
--	GIC_ACCESSOR_RO_INTR_REG(sz, off, stride, name)			\
-+#define _GIC_ACCESSOR_RW_INTR_REG(sz, off, stride, name)		\
-+	_GIC_ACCESSOR_RO_INTR_REG(sz, off, stride, name)		\
- 									\
- static inline void write_gic_##name(unsigned int intr,			\
- 				    unsigned int val)			\
-@@ -68,22 +70,30 @@ static inline void write_gic_##name(unsigned int intr,			\
- 	__raw_writel(val, addr_gic_##name(intr));			\
+@@ -376,10 +421,9 @@ static void gic_unmask_local_irq_all_vpes(struct irq_data *d)
+ 	cd->mask = true;
+ 
+ 	raw_spin_lock_irqsave(&gic_lock, flags);
+-	for_each_online_cpu(cpu) {
+-		write_gic_vl_other(mips_cm_vp_id(cpu));
++	for_each_online_cpu_gic(cpu, &gic_lock)
+ 		write_gic_vo_smask(BIT(intr));
+-	}
++
+ 	raw_spin_unlock_irqrestore(&gic_lock, flags);
  }
  
-+#define GIC_ACCESSOR_RO_INTR_REG(sz, off, stride, name)			\
-+	_GIC_ACCESSOR_RO_INTR_REG(sz, off, stride, name)		\
-+	_GIC_ACCESSOR_RO_INTR_REG(sz, MIPS_GIC_REDIR_OFS + off, stride, redir_##name)
+@@ -534,10 +578,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
+ 		return -EPERM;
+ 
+ 	raw_spin_lock_irqsave(&gic_lock, flags);
+-	for_each_online_cpu(cpu) {
+-		write_gic_vl_other(mips_cm_vp_id(cpu));
++	for_each_online_cpu_gic(cpu, &gic_lock)
+ 		write_gic_vo_map(mips_gic_vx_map_reg(intr), map);
+-	}
 +
-+#define GIC_ACCESSOR_RW_INTR_REG(sz, off, stride, name)			\
-+	_GIC_ACCESSOR_RW_INTR_REG(sz, off, stride, name)		\
-+	_GIC_ACCESSOR_RW_INTR_REG(sz, MIPS_GIC_REDIR_OFS + off, stride, redir_##name)
-+
- /* For read-only local per-interrupt registers */
- #define GIC_VX_ACCESSOR_RO_INTR_REG(sz, off, stride, name)		\
--	GIC_ACCESSOR_RO_INTR_REG(sz, MIPS_GIC_LOCAL_OFS + off,		\
-+	_GIC_ACCESSOR_RO_INTR_REG(sz, MIPS_GIC_LOCAL_OFS + off,		\
- 				 stride, vl_##name)			\
--	GIC_ACCESSOR_RO_INTR_REG(sz, MIPS_GIC_REDIR_OFS + off,		\
-+	_GIC_ACCESSOR_RO_INTR_REG(sz, MIPS_GIC_REDIR_OFS + off,		\
- 				 stride, vo_##name)
+ 	raw_spin_unlock_irqrestore(&gic_lock, flags);
  
- /* For read-write local per-interrupt registers */
- #define GIC_VX_ACCESSOR_RW_INTR_REG(sz, off, stride, name)		\
--	GIC_ACCESSOR_RW_INTR_REG(sz, MIPS_GIC_LOCAL_OFS + off,		\
-+	_GIC_ACCESSOR_RW_INTR_REG(sz, MIPS_GIC_LOCAL_OFS + off,		\
- 				 stride, vl_##name)			\
--	GIC_ACCESSOR_RW_INTR_REG(sz, MIPS_GIC_REDIR_OFS + off,		\
-+	_GIC_ACCESSOR_RW_INTR_REG(sz, MIPS_GIC_REDIR_OFS + off,		\
- 				 stride, vo_##name)
- 
- /* For read-only shared bit-per-interrupt registers */
--#define GIC_ACCESSOR_RO_INTR_BIT(off, name)				\
-+#define _GIC_ACCESSOR_RO_INTR_BIT(off, name)				\
- static inline void __iomem *addr_gic_##name(void)			\
- {									\
- 	return mips_gic_base + (off);					\
-@@ -106,8 +116,8 @@ static inline unsigned int read_gic_##name(unsigned int intr)		\
- }
- 
- /* For read-write shared bit-per-interrupt registers */
--#define GIC_ACCESSOR_RW_INTR_BIT(off, name)				\
--	GIC_ACCESSOR_RO_INTR_BIT(off, name)				\
-+#define _GIC_ACCESSOR_RW_INTR_BIT(off, name)				\
-+	_GIC_ACCESSOR_RO_INTR_BIT(off, name)				\
- 									\
- static inline void write_gic_##name(unsigned int intr)			\
- {									\
-@@ -146,6 +156,14 @@ static inline void change_gic_##name(unsigned int intr,			\
- 	}								\
- }
- 
-+#define GIC_ACCESSOR_RO_INTR_BIT(off, name)				\
-+	_GIC_ACCESSOR_RO_INTR_BIT(off, name)				\
-+	_GIC_ACCESSOR_RO_INTR_BIT(MIPS_GIC_REDIR_OFS + off, redir_##name)
-+
-+#define GIC_ACCESSOR_RW_INTR_BIT(off, name)				\
-+	_GIC_ACCESSOR_RW_INTR_BIT(off, name)				\
-+	_GIC_ACCESSOR_RW_INTR_BIT(MIPS_GIC_REDIR_OFS + off, redir_##name)
-+
- /* For read-only local bit-per-interrupt registers */
- #define GIC_VX_ACCESSOR_RO_INTR_BIT(sz, off, name)			\
- 	GIC_ACCESSOR_RO_INTR_BIT(sz, MIPS_GIC_LOCAL_OFS + off,		\
-@@ -155,10 +173,10 @@ static inline void change_gic_##name(unsigned int intr,			\
- 
- /* For read-write local bit-per-interrupt registers */
- #define GIC_VX_ACCESSOR_RW_INTR_BIT(sz, off, name)			\
--	GIC_ACCESSOR_RW_INTR_BIT(sz, MIPS_GIC_LOCAL_OFS + off,		\
--				 vl_##name)				\
--	GIC_ACCESSOR_RW_INTR_BIT(sz, MIPS_GIC_REDIR_OFS + off,		\
--				 vo_##name)
-+	_GIC_ACCESSOR_RW_INTR_BIT(sz, MIPS_GIC_LOCAL_OFS + off,		\
-+				  vl_##name)				\
-+	_GIC_ACCESSOR_RW_INTR_BIT(sz, MIPS_GIC_REDIR_OFS + off,		\
-+				  vo_##name)
- 
- /* GIC_SH_CONFIG - Information about the GIC configuration */
- GIC_ACCESSOR_RW(32, 0x000, config)
+ 	return 0;
 -- 
 2.25.1
 
