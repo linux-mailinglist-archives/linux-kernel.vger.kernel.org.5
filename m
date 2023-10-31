@@ -2,122 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C8D7DCDF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 661077DCDFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344594AbjJaNga convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 09:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        id S1344624AbjJaNj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344559AbjJaNg3 (ORCPT
+        with ESMTP id S1344599AbjJaNj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:36:29 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C048EA;
-        Tue, 31 Oct 2023 06:36:27 -0700 (PDT)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-582050ce2d8so519718eaf.0;
-        Tue, 31 Oct 2023 06:36:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698759386; x=1699364186;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e2DPIqLf9ppE5aYoET2sqf9FsTqUrjaMI7dfyLVVvGw=;
-        b=hpvRc3rmA8HgHczB8eEkKytss1nVN//SQE6z5HUBTsJWh/CVbGXeCZhdBAEb549ag5
-         /pnwdhXw32HybVfxlgXeIPLpCHC/WRBxCSdXI3csejP/woQM7WQ1tf5A6iVBvxKQqtfk
-         rNb133R2ekCs0WICv/g/57PFGbORky1Y0ODr8v7VC39DBFTsV7Gs67wRolxPKTnglH26
-         exp31X4oXWJXXwQNs5+d5/+GQyOccJsUMTxb0vdHY63drIMqfEV993svP2YDBCVGVdRO
-         AAv5WRGG+11OqplQRXM9RL+zYObglYNoiosx4pe/KQ82HwACs1kih1NuF6z0NZvECThn
-         iFAw==
-X-Gm-Message-State: AOJu0YzGsn7cavGojbN1Mwhtjk9zgYfe+hKEpU1UiLewtluYQ+rPpF+o
-        LSDtOJ/2TCxY5i20Is+Zms9dL05ZKnhhr88pVHo+Z98x
-X-Google-Smtp-Source: AGHT+IHyWX7iQIrLlNrkTqu8Ropcb4uUFbHxDP3LQP3YU8t9Sdk1i+/KGWF/2sSew4NT5LYEqgAJmpQUTkuRQVblH8U=
-X-Received: by 2002:a4a:4184:0:b0:57c:6e35:251e with SMTP id
- x126-20020a4a4184000000b0057c6e35251emr13200504ooa.1.1698759386437; Tue, 31
- Oct 2023 06:36:26 -0700 (PDT)
+        Tue, 31 Oct 2023 09:39:58 -0400
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45EB9F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+R/StZ0rnd3KPlOJD7FBs4MnY5uMyxTojGwy+D7cBfE=;
+  b=dxs7i03DmLPGojj/9w98djg9obg0R40MvthZamq0P5raUwyVO57WH+6U
+   17INflnLwHjfbd9T71diB3EpXtd5f7mYbfGzQXqDKekM0KkpBbOJfUeyb
+   RspWzT5u8TpqsPMO8XTgrDUW+FLh0Gn0s+FJnhut8FfOmnhdAQ1kdG5zM
+   k=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=keisuke.nishimura@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,265,1694728800"; 
+   d="scan'208";a="70220528"
+Received: from dt-aponte.paris.inria.fr (HELO keisuke-XPS-13-7390.paris.inria.fr) ([128.93.67.66])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 14:39:53 +0100
+From:   Keisuke Nishimura <keisuke.nishimura@inria.fr>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Subject: [PATCH v3] sched/fair: Fix the decision for load balance
+Date:   Tue, 31 Oct 2023 14:38:22 +0100
+Message-Id: <20231031133821.1570861-1-keisuke.nishimura@inria.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <2187487.irdbgypaU6@kreacher> <3288922.44csPzL39Z@kreacher> <ZUC_OQwk_dwNYU_N@kekkonen.localdomain>
-In-Reply-To: <ZUC_OQwk_dwNYU_N@kekkonen.localdomain>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 31 Oct 2023 14:36:15 +0100
-Message-ID: <CAJZ5v0gU10X67sa74gqmK9MHVi-uBFGjEGHRySXL5LwWUF5o9g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] ACPI: scan: Extract CSI-2 connection graph from _CRS
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+should_we_balance is called for the decision to do load-balancing.
+When sched ticks invoke this function, only one CPU should return
+true. However, in the current code, two CPUs can return true. The
+following situation, where b means busy and i means idle, is an
+example, because CPU 0 and CPU 2 return true.
 
-On Tue, Oct 31, 2023 at 11:33 AM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Rafael,
->
-> On Fri, Oct 20, 2023 at 04:36:28PM +0200, Rafael J. Wysocki wrote:
-> > +#define NO_CSI2_PORT (UINT_MAX - 1)
-> > +
-> > +static void alloc_crs_csi2_swnodes(struct crs_csi2 *csi2)
-> > +{
-> > +     size_t port_count = csi2->port_count;
-> > +     struct acpi_device_software_nodes *swnodes;
-> > +     size_t alloc_size;
-> > +     unsigned int i;
-> > +
-> > +     /*
-> > +      * Allocate memory for ports, node pointers (number of nodes +
-> > +      * 1 (guardian), nodes (root + number of ports * 2 (because for
-> > +      * every port there is an endpoint)).
-> > +      */
-> > +     if (check_mul_overflow(sizeof(*swnodes->ports) +
-> > +                            sizeof(*swnodes->nodes) * 2 +
-> > +                            sizeof(*swnodes->nodeptrs) * 2,
-> > +                            port_count, &alloc_size))
-> > +             goto overflow;
-> > +
-> > +     if (check_add_overflow(sizeof(*swnodes) +
-> > +                            sizeof(*swnodes->nodes) +
-> > +                            sizeof(*swnodes->nodeptrs) * 2,
-> > +                            alloc_size, &alloc_size))
-> > +             goto overflow;
-> > +
-> > +     swnodes = kmalloc(alloc_size, GFP_KERNEL);
-> > +     if (!swnodes)
-> > +             return;
-> > +
-> > +     swnodes->ports = (struct acpi_device_software_node_port *)(swnodes + 1);
-> > +     swnodes->nodes = (struct software_node *)(swnodes->ports + port_count);
-> > +     swnodes->nodeptrs = (const struct software_node **)(swnodes->nodes + 1 +
-> > +                             2 * port_count);
-> > +     swnodes->num_ports = port_count;
-> > +
-> > +     for (i = 0; i < 2 * port_count + 1; i++)
-> > +             swnodes->nodeptrs[i] = &swnodes->nodes[i];
-> > +
-> > +     swnodes->nodeptrs[i] = NULL;
-> > +
-> > +     for (i = 0; i < port_count; i++)
-> > +             swnodes->ports[i].port_nr = NO_CSI2_PORT;
-> > +
-> > +     csi2->swnodes = swnodes;
-> > +     return;
-> > +
-> > +overflow:
-> > +     acpi_handle_info(csi2->handle, "too many _CRS CSI-2 resource handles (%zu)",
-> > +                      port_count);
->
-> I'd move this to where the conditions are, they can be merged.
+        [0, 1] [2, 3]
+         b  b   i  b
 
-No problem.
+This fix checks if there exists an idle CPU with busy sibling(s)
+after looking for a CPU on an idle core. If some idle CPUs with busy
+siblings are found, just the first one should do load-balancing.
+
+Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
+Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ kernel/sched/fair.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2048138ce54b..921f4f65adef 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11079,12 +11079,16 @@ static int should_we_balance(struct lb_env *env)
+ 			continue;
+ 		}
+ 
+-		/* Are we the first idle CPU? */
++		/*
++		 * Are we the first idle core in a non-SMT domain or higher,
++		 * or the first idle CPU in a SMT domain?
++		 */
+ 		return cpu == env->dst_cpu;
+ 	}
+ 
+-	if (idle_smt == env->dst_cpu)
+-		return true;
++	/* Are we the first idle CPU with busy siblings? */
++	if (idle_smt != -1)
++		return idle_smt == env->dst_cpu;
+ 
+ 	/* Are we the first CPU of this group ? */
+ 	return group_balance_cpu(sg) == env->dst_cpu;
+-- 
+2.34.1
+
