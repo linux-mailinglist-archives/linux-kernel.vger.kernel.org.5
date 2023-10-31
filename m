@@ -2,337 +2,547 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CF17DC402
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97BF7DC408
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236819AbjJaBwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 21:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S230165AbjJaByT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 21:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236814AbjJaBv4 (ORCPT
+        with ESMTP id S234799AbjJaByH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 21:51:56 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2111.outbound.protection.outlook.com [40.107.255.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCD9E1;
-        Mon, 30 Oct 2023 18:51:52 -0700 (PDT)
+        Mon, 30 Oct 2023 21:54:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC91D102;
+        Mon, 30 Oct 2023 18:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698717239; x=1730253239;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=7r7sBM9fpeQ3s996ImKA/KC9FyHFtaTJ81Y9KIMpDAA=;
+  b=e/l2ufzqK6FV6Uwzx7diio/q/vOdl7FtwVg3Uc11ZviDluPAMtHIMh3v
+   uWjCw0o3Pq9Egi7i2b01j/fXPgi3TA45DVjWbcAorXimlO19E2ipVt/Sf
+   /w4039IcOtbOHnBbgLgrzfqmtEB4s6uo8QcrJDrOsTtA25DneZRXxbXFP
+   zzkcSdPpTNqVzVtiivNtn3CMjOcwFZv5dwJ8EoWVGHssnJEQKwv6pZ4Zu
+   iWOeLwD5ZzdmeFZUM9f9Un/bHNxHkBO7EXQnxegeLaKbKKhBSgN7feefv
+   e3yJOlxxTRdMTngvQ+LtyuwypZCtRGJlkoj/oNdv555KilVDKIdL/sGnF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="392057872"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="392057872"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 18:53:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="877334520"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="877334520"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 18:53:58 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 18:53:57 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 18:53:57 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 18:53:57 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 30 Oct 2023 18:53:57 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IbgMbl4W2SLt7HOIJGQPnF7MxQNY/Gq/b2N7zQ2NipKYSkVA7vvM0QgbB7biG5+9MMYpNiad9UrK27biG38jZTrEjAa0VOYxKPpXUSp0NklHZGzWCRWTBC0KyMxbv18R8+0DvCKrIfBK9sBj+JIAVwdaD9udQwQaQddgSuDzWtVfGDJeVSz6ekHzmn86u7bag4J16ulxGPH65i9bfnIQ8mL0LGUm1HrqXxNQdXmk3+5UchJDzytfAOFz+wqZ2BNF2jHgEvmYd7FDy8Zvw9pjRPOfuAyW9Ou4sANJ3sdo+BrIaLV5/ota2TzM1ZPL5hTNf9d2W4BfKBKhf4Wq2O+C3g==
+ b=PMj20iSien5nNi6Ze2qc+CCPc3QQhh+aG/dYuUUuWN/dy4kr54l+UHdliAO5mXJNWQ2mujOYUfoLNFtYKjULbDMsFv+DsYHjO7z4X1jlgpdTm00ZT6maCezxKPczP9XdSFL/hg1FoGp2OWSPQaKOuISG6J4e3w/4LjQB72d9uGq7wcWn76XQ+cAXVdFACYlswz+MBqs4T+5fNB2S15/uBIo7iSOEkG2MGRrTQ8zqvc+owf8TGkH3tq6N7C7ssL2nKLFR4U8KpYzD0ujqkIrLO2yMyGbHsLfNlAYeA2ueNAkRhidodyNJaAL0QWUW0Iu3pj13V9t7P61qsvDUl2LCuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2qqHHhWXU4PAYV2tbCaQZ21hZNwgIki0aofBQpPT360=;
- b=G+9kowaiTpIXMZRQSdXU46mM8YnMUI4x3KUAk8gHZg+714/cZMbFgplMmo9fbSELt76z4Z+oeP8aovysuYaDVz77btUyC2yfqY1vDq4SBsfHEZaJQwOARHHJl7WJHMpVMmkX6h1HQ5wCu7ZByBt50+fUxOAiWbaWe4dI7ZD1QFgknzdlJRgMi0EynYK9c0RSmfFe6EzCqpqu8PDrKYA6wTP1yTj4wI6k0L9uNeYsIBTEUABo1ZlOHenTy9H4PBq/Dt6JxYSFHlDD0r5YxwnXlmvVBq0Zgr1PpI3gMO01MTmvhmT0ZROvXbbKiUV4futAQ+8R7O/U2tmTP++WYqKHjg==
+ bh=6bwPTqlzj9pbOn+tlH9aSlojbBAHeLXAPMDoiOnp6TE=;
+ b=f866jGXw5tOiJh3vXLXUcCfpxHT+2AqDcmqRZ41Av5xzupex41KRNblsAQ39q5kCNIWukg/JfuZN8UA+x9k5ppRuPDmlnVPbBgiF0mEnmEsN8AZp3KZm8yzXZUrIYKC0GDUgMddvZsQaT/gqL5V7h7kAWQfOIzq9+SHl0RL7IoY9uOXBtz9fL14+tB2m9iZBCi9Kcn5zPcad+PSTcNTMhagwU5K1QfHLXI0Z5pgxOp1EKjx5bPL1RJaWhmRDqiVeQeoJCqP+yhpufdKbI6+4Wy2MPk3GdDMnkzAzMcKRv34fLc5JhkDyLrQal6WsCFLQizf/9MpCOo2/ow6wJ8lK1w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=yunjingtech.com; dmarc=pass action=none
- header.from=yunjingtech.com; dkim=pass header.d=yunjingtech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=yunjingtech.com;
-Received: from SEYPR06MB6507.apcprd06.prod.outlook.com (2603:1096:101:177::9)
- by SEZPR06MB6926.apcprd06.prod.outlook.com (2603:1096:101:1e9::6) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DM8PR11MB5751.namprd11.prod.outlook.com (2603:10b6:8:12::16) by
+ BL1PR11MB5461.namprd11.prod.outlook.com (2603:10b6:208:30b::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
- 2023 01:51:47 +0000
-Received: from SEYPR06MB6507.apcprd06.prod.outlook.com
- ([fe80::605a:d113:7ca9:8572]) by SEYPR06MB6507.apcprd06.prod.outlook.com
- ([fe80::605a:d113:7ca9:8572%4]) with mapi id 15.20.6933.027; Tue, 31 Oct 2023
- 01:51:47 +0000
-From:   "larry.lai" <larry.lai@yunjingtech.com>
-To:     lee@kernel.org, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, pavel@ucw.cz
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
-        musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
-        noah.hung@yunjingtech.com, "larry.lai" <larry.lai@yunjingtech.com>,
-        Gary Wang <garywang@aaeon.com.tw>
-Subject: [PATCH V7 3/3] leds: Add support for UP board CPLD onboard LEDS
-Date:   Tue, 31 Oct 2023 09:51:19 +0800
-Message-Id: <20231031015119.29756-4-larry.lai@yunjingtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231031015119.29756-1-larry.lai@yunjingtech.com>
-References: <20231031015119.29756-1-larry.lai@yunjingtech.com>
-Content-Type: text/plain
-X-ClientProxiedBy: TYXPR01CA0060.jpnprd01.prod.outlook.com
- (2603:1096:403:a::30) To SEYPR06MB6507.apcprd06.prod.outlook.com
- (2603:1096:101:177::9)
+ 2023 01:53:55 +0000
+Received: from DM8PR11MB5751.namprd11.prod.outlook.com
+ ([fe80::d070:1879:5b04:5f57]) by DM8PR11MB5751.namprd11.prod.outlook.com
+ ([fe80::d070:1879:5b04:5f57%4]) with mapi id 15.20.6933.028; Tue, 31 Oct 2023
+ 01:53:55 +0000
+From:   "Wang, Xiao W" <xiao.w.wang@intel.com>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+CC:     "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "Li, Haicheng" <haicheng.li@intel.com>,
+        "ajones@ventanamicro.com" <ajones@ventanamicro.com>,
+        "Liu, Yujie" <yujie.liu@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 2/2] riscv: Optimize bitops with Zbb extension
+Thread-Topic: [PATCH v4 2/2] riscv: Optimize bitops with Zbb extension
+Thread-Index: AQHaCvp2pr7eekB1vU+a3i97SbKEQ7Biy64AgABNtHA=
+Date:   Tue, 31 Oct 2023 01:53:55 +0000
+Message-ID: <DM8PR11MB5751DE93BE278FF01576E5A5B8A0A@DM8PR11MB5751.namprd11.prod.outlook.com>
+References: <20231030063904.2116277-1-xiao.w.wang@intel.com>
+ <20231030063904.2116277-3-xiao.w.wang@intel.com> <ZUAT5gKXM+pU6r3w@ghost>
+In-Reply-To: <ZUAT5gKXM+pU6r3w@ghost>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM8PR11MB5751:EE_|BL1PR11MB5461:EE_
+x-ms-office365-filtering-correlation-id: aa6bedf6-0ab5-4c80-3b8f-08dbd9b43d85
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Qlh7VSTOYgXWy5F/kuUDiiiPgABBVHs5C6klz1vF5MjQzC+f8c4ElHXrOIVpYDS2VPZmA/7JEOmeOKUzvKTWkAg6EeEj9orlqj9kQ0XljAWGTUwt3BpnGlZOIOg6T7XCxk9ZXLpBmc2wFXW7VB4/Dpq+nxFFOL3enTKQbgC/8fkYvdGcrNsM9oMRdgvhZZvhA1PuMUkMM6hjSEem6u1VEyWrt02iJaASDajKvVK6yNHZPeMxLF3Vd1d+cAeUG6iAi2OQd1oi0aVxaJzYQF0rVSbDO5zhR3KAlhwut5nU/+zDKE5XAeEgn1vO1hwa/1n7ah5XyloEHoG+iKxCWTtO+CeGXuQ9b8AUPs2Rbho4a6j0sJ21aamkOySZm41quAo93GvAjz9Dcd+UYudUaH8+tMskMz46+MAsmB34JVpbzikI6cnlOMs1q4XCkSVgYI2ZWwvEIxSVx6UoL8yfqP9Vz9wWUEqDdyf9NgqEiUoQYxcoC0k9yE44Uel1SiX72SOI6dUbz0+T5e5BxlxO6KCJ5d4v7NdTjw27xFWUYQy71seDAQ8Wi5wH0MIyB5J7+o9rauelWXB2eeeMg+JHUt9Bt09+NM3Wj1n+golxsKoxRvQcKRxgkr16tjtuOzozfV2ReQNOlUM921p0WOAaxySKf5NA8cp0GTjNqjwhpsK7Gpg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5751.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(396003)(39860400002)(136003)(230922051799003)(230273577357003)(230173577357003)(1800799009)(186009)(64100799003)(451199024)(76116006)(66946007)(2906002)(8676002)(4326008)(53546011)(8936002)(316002)(66476007)(66446008)(64756008)(26005)(66556008)(478600001)(41300700001)(52536014)(7416002)(5660300002)(83380400001)(7696005)(9686003)(71200400001)(38100700002)(122000001)(82960400001)(6506007)(6916009)(54906003)(86362001)(55016003)(38070700009)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?nehiyFWjJErHhnNOPqDTHhprwHSYAYGbh8vf0ivG63xr5JWOXDDionGZ?=
+ =?Windows-1252?Q?d3hAVpvZiipKobikLIsbu2c3DB/sSemD/UgBuey4jTLag0rumvQlbWF7?=
+ =?Windows-1252?Q?YzEOiVhHiMT0vfScoRmBun7sSgT/lSSP6MSGHYgIBbnYL9ZStOARMJ7L?=
+ =?Windows-1252?Q?ilWjKMsgyA2TWGbqbsr8KgD9wwjNCtBcYkGUNukUn/Pcp5jbCl+oXBKg?=
+ =?Windows-1252?Q?0PUBlCGGNmmqHzqkdzJbEuJGL3hteXek4IlSfP3VRfamBhow0GSgfv6k?=
+ =?Windows-1252?Q?Q8kUoP5NhGxwkIQa1uo3hhZ+on41ViAy4E0nQOXJ/osPChejo967k9Du?=
+ =?Windows-1252?Q?d1O04w9GVEYpyDB3r/sp9P/60o0nOTfYcFYVX9bTnjdWvHFiMgqUls9P?=
+ =?Windows-1252?Q?k1nvsBQqlpa9phF2tg8GebFR6OvZD99xDPv0QJleI4Bpjy/YOytQUoWN?=
+ =?Windows-1252?Q?BRAojZpgFPhi7SXCXYuupLb6lgXp61Za7r7I4iwgHCdWwKySsXpaWvWk?=
+ =?Windows-1252?Q?ewI6W4A7nvngVzQXmYF2tombJ0pn/PVU4hPPgV5yhKPYTCYUlKqRhjbD?=
+ =?Windows-1252?Q?iWMIcpStUkBWXf9q/tckTIBTYiBWsVWr0d4DVEZSS8kPkl+99u+ZULXl?=
+ =?Windows-1252?Q?ITfLB1tBRBucezd05+i5QwavC6TEtiR64/0xJz6ZqvMH4Xr9RlHm67pf?=
+ =?Windows-1252?Q?sAefoe5bKSOQgL89XkKKeFxCIQbsmDmMFHMNecHNFiMZ7vpADkffxUCK?=
+ =?Windows-1252?Q?dV/Vx8XGADPlvoL1om3wFQ8DRHY/C2YS493frv9PUSM3SXuIvaV2a6T/?=
+ =?Windows-1252?Q?QICg3+o7pJycPehLEB8nbteR63F8KX5LX0XhwW5jpRZmNl9GzpBPSVXD?=
+ =?Windows-1252?Q?v//yr++RzS93CYJpTMuabRV1YPrlDDfvIY+tcp1i2kMg99/V8SJzGEfM?=
+ =?Windows-1252?Q?xvAJt8RdpH2Xy3z9E+gJRQpFZKCY1l6G2mK88eRniMXx7z/Ckg6Xu8hh?=
+ =?Windows-1252?Q?redSNAe15wAJCt9eYB56sXgWf3leDEPAT45whbMf298MncZV7RHetwl0?=
+ =?Windows-1252?Q?23iUhl9YZSXZshh4hPGUtbU3I1XMgVdZe8vQKEcBGpv/OEl2Id/+YjkT?=
+ =?Windows-1252?Q?HhWz2mBhDyzUD2kVbV300CbwEA7o/VjULaR5dIsht/vEUQA5vhE+YQ5v?=
+ =?Windows-1252?Q?CeEYlkFYUPgfHr0vThpbkeiigjvesXYRSR6phiLEoJRN+Vx5NNHqXuD7?=
+ =?Windows-1252?Q?v6mbyijIPOA+B81fFDg0BExExLD4ixAvMyvIpB4mgmfmLCUFHsx+pMYx?=
+ =?Windows-1252?Q?kKEtfxQ2zKcRaofAR4eNbymi4TwkXBysACT7uqxKLi1jCKX1qwXm/EV8?=
+ =?Windows-1252?Q?IFtJzUSoyCsdLbxHtvcZADQomkIbwCxUu0Nulltn2qkZsGmbaiUClY/h?=
+ =?Windows-1252?Q?8CXTXe/DjuHKBVatUXTtWUIaHk1YyCHMY4bem/s+WtbwusRunHThRpJQ?=
+ =?Windows-1252?Q?IO9l7BthaEZmrv0qgf0Q9pLhTxDhulBcS0OMo9BbMCrtc/cn1GFkyNrw?=
+ =?Windows-1252?Q?eEisZwicUQPIsSbmcsTjy6f3jax4S3CCvpP4C8z0CCvI14Yqz1yEKfiC?=
+ =?Windows-1252?Q?qalvYODPgh+sEBFUnDcry5EZ6mQJjiy7SjTgDmWj7V1lwPiQ18W28fKE?=
+ =?Windows-1252?Q?m1Q5e2iXg2cz+XX6KDoSfaLhbx5M4HB8?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEYPR06MB6507:EE_|SEZPR06MB6926:EE_
-X-MS-Office365-Filtering-Correlation-Id: 28d29f6b-f4dd-42cc-ec5e-08dbd9b3f16e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qUUBthBjw1W1rfZ2bT/b7W87QE9/dlniBL9mj4xXhldwwCRY8+1NJ2NXP70Yk+dXNH3wGDWL+n6uNpbI6Tn04PANiMGcFmFt8laSxfclYcMnK0PqVPfsW5p1VWEclVN+4zyF2Om/oG3wVsWOQpeX+57bl+Ea0S220ywKi95ms+uPRmIwjIvAxcga6g3BrKq2EG5CalZagHf1LXW76ZF8+5m297yMsLL6faAD0g83YnnhzV+TF7CthPpC0bkCPCIrK/POhy9kk+y64uisbcxsqkYRLpWPd4NqotWUWtBjhGNxLRx8b0QEjwkUI+Pq8phxtNqcDunP5C5byMjobZqQlWfuUVxLJGrNi8jc8TSO/7itdFUORzlU1kIaw3UuTcn53gt54SxmpoUV3sQe06RIxfmtP1JD5tqZIk1sDf+UsCUZmxthQsnMl7eqC/rjUWlhNcDZ0qAqK58RYKOAtN6vkOziHHa9A+0fDVvyPPRX8FD+qHFM7yn3OH241bmeWryFC1LBbMaoYlI9EtZ0zcCU2fnj5RyYSlUNrrSvUCWkJjRsYIXqGSlDUb+YOt5POsjedZwdlTJX1YCFtP9O9og5CrZfzjhpxO8pRIqy+te73l7wbvm4gqdGBbLjV/RpR3AWirmVy3mX8TGlj1dk9UNrFMKSQ+Y9tlX0zxLMV8nLkOQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6507.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(346002)(39830400003)(230922051799003)(230173577357003)(230273577357003)(186009)(64100799003)(1800799009)(451199024)(2906002)(38100700002)(86362001)(8676002)(8936002)(38350700005)(5660300002)(36756003)(41300700001)(4326008)(66946007)(478600001)(6512007)(6666004)(6506007)(52116002)(6486002)(66556008)(66476007)(54906003)(316002)(2616005)(83380400001)(1076003)(26005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6Ok8nfR3nrFUSZDCPR1GBO4N2Fj2BEheVSAiEag2GzUhVzfMzblmgFdhCw14?=
- =?us-ascii?Q?TXwwOfxgblkXK4BEMS+i6fUiECXvtaUoUWOCX7JvB9ksiqITnJb3vsOt2yL3?=
- =?us-ascii?Q?bwWD6w3EFXN7l67Zdx5rQUq7ZQoobwCuCzEI3lwaQOIy+xHStz6etl0oYR3q?=
- =?us-ascii?Q?XTxjRXIzmeiJenAND6iYc2W6dln24GMbKfUP7J9Ona2fLKrCP3zMjp2t8z1i?=
- =?us-ascii?Q?EXw2CAEJu2mOrkHFNFIybFlL9r3QhEI2U4kGAYb00NgBB68dFx2zHceHnv6H?=
- =?us-ascii?Q?9gq1ByiuMr9rwYac/866nYT8jo/YjpL2LQTC9FJ6ly11anzUE8fugdX/Mv5u?=
- =?us-ascii?Q?4JPan8psAhH+HM5Ke0ovEX9CzP2PxalQ1AtpER891IGnVSKOMx+D8WICt0zY?=
- =?us-ascii?Q?UZc3Vp+1vJRsdLDkxWvlRvAqmSuEZXtY8WgHfXjjo9rntkRZnD/pAD65hM8A?=
- =?us-ascii?Q?nI3dNrbrFV+ZbbkaBhr1g+D7ymw1jZ+2F26DjvN49Bo0mjtzgoTioO64/HDl?=
- =?us-ascii?Q?IGRuP4nT01gRlgK/HQn+oYKB45m6hAsmO7bBKT/vHxAjzGhmOunTzC2peo+F?=
- =?us-ascii?Q?5wGkva36StP+kYyriYVMt6aMNhdI/tf2ZAdVvmLltUa2aTjRfMtJ5YXc2qgR?=
- =?us-ascii?Q?+miN8cY6HyJCILA0anWeilCEGYz2KwNXiCD8zpjFx/IpYjYT6w6wQrtH0+GO?=
- =?us-ascii?Q?kaisSM5D5dFYGQ28z0urcezlhOSJseTFPwZ9pihwdNmnlVixYtcif3We6duN?=
- =?us-ascii?Q?RxDkiFJYREnI2IIdQM/A3hIPZIIGtoy5TnpSG9Mmzu/ke9lwMpU7tHYiqsQ6?=
- =?us-ascii?Q?GJLWEjiWkWaEu9/2M3yyWvmugGMM/vAPmw43E5HYomiChv0lFyzmqzmqaFKv?=
- =?us-ascii?Q?S88R8hxwRv3KGAu4pXSyGtVwfrAsQPacDyBIMUvct99RqHm+sPpvnVoiofHL?=
- =?us-ascii?Q?wsJkSaakMDaigH0O+/zL9Cg8+f5yDfs1XyB4jbKuuYkI24e52ia/34L1VNhU?=
- =?us-ascii?Q?M2yLCWQ1pyj8J2lUaVVjJGOpSjLb4SxwlCq0jrFsdy/ixUHmoPOgAATB+H1Y?=
- =?us-ascii?Q?9bF6sdCrXnrd1s574SwvDb2uFkhS7kGHfxvuCi1UGuFavWajKVK1M6IvA4ni?=
- =?us-ascii?Q?tTbZhyxIHj8f1E7AFxDrLPSzQ7M/rOWG+HIZaltNIeEW0flvb8D2Ac9NizN3?=
- =?us-ascii?Q?cPI+h2p0lC6dRERmzg0QXtYVADQega7wV6ouK22d1kWnAavwj54KfUrU/fKn?=
- =?us-ascii?Q?tCEQfweQJebKXU8Zm1i/rAqQkePUB45ZSf4RqXJJFufsrcSgtP9GmioklXqN?=
- =?us-ascii?Q?IoF+KRQ3+3WhIAeAIKN6lW9zxhiwjzl3OWlRjXdUFBxoG4av6VkR69132og2?=
- =?us-ascii?Q?/Yr4jv9q8eTuezLb6EBJG52fTqpi0d37rnG2YjfgJ5Jhmo3s9Hpx3pp3qMVp?=
- =?us-ascii?Q?QMVXdCVnqcCJ4BZEStylXk8iJYipbioHYAMoqp73kZ1rxgln0+OpBP/mQOI7?=
- =?us-ascii?Q?9tsd8bp3kHfVB4mD9G0jXFR8N9zXMHS8dp3kEm7BeCKhQKMzsu962yVs4RHA?=
- =?us-ascii?Q?DQvEZGgYRkCOOErH0zWQl6X4xFlgP5blW8orXEr/K3lxrc/0KCi3xoOFApIH?=
- =?us-ascii?Q?Qw=3D=3D?=
-X-OriginatorOrg: yunjingtech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28d29f6b-f4dd-42cc-ec5e-08dbd9b3f16e
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6507.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 01:51:47.7973
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5751.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa6bedf6-0ab5-4c80-3b8f-08dbd9b43d85
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2023 01:53:55.2375
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: be2d5505-f7e6-4600-bbe2-b3201c91b344
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aUZI3/bAbZz73W5uLbQJMDWZSKJ0P/fM7dH6zWvpySO2qbR2Do3WT3ziPiOD0TUCe5sgcffflzmDKX8XsRfpT9Bphk5qLHbV6pi0V5DSsZk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6926
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9mAqZPlopUC087ph5ma/maeENBUTsnsBM/+aOM56YbYUL/QBg/18YATs7rvjPdfmCPKdnHrZSlYoasgAAeCRAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5461
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UP boards come with a few FPGA-controlled onboard LEDs:
-* UP Board: yellow, green, red
-* UP Squared: blue, yellow, green, red
 
-This patch depends on patch "mfd: Add support for UP board CPLD/FPGA".
 
-Signed-off-by: Gary Wang <garywang@aaeon.com.tw>
-Signed-off-by: larry.lai <larry.lai@yunjingtech.com>
----
-PATCH V6 --> PATCH V7: cleaned up coding style and addressed review
-comments.
-PATCH V4 -> PATCH V6 : There is no change.
-RFC 2023/04/25 -> PATCH V4
-(1) Fixed kernel test robot compiler warning.
-(2) Remove mistakes with wrong Reviewed-by tags.
-RFC 2022/11/23 --> RFC 2023/04/25: Refer 2022/12/08 Lee Jones review,
-cleaned up coding style.
-PATCH V3 -> RFC 2022/11/23: Update the changes Copyright.
-PATCH V1 -> V3: There is no change.
-PATCH --> PATCH V1: Refer 2022/10/03 Andy Shevchenko review, cleaned up
-coding style.
----
- drivers/leds/Kconfig        |  10 +++
- drivers/leds/Makefile       |   1 +
- drivers/leds/leds-upboard.c | 154 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 165 insertions(+)
- create mode 100644 drivers/leds/leds-upboard.c
+> -----Original Message-----
+> From: Charlie Jenkins <charlie@rivosinc.com>
+> Sent: Tuesday, October 31, 2023 4:37 AM
+> To: Wang, Xiao W <xiao.w.wang@intel.com>
+> Cc: paul.walmsley@sifive.com; palmer@dabbelt.com;
+> aou@eecs.berkeley.edu; ardb@kernel.org; anup@brainfault.org; Li, Haicheng
+> <haicheng.li@intel.com>; ajones@ventanamicro.com; Liu, Yujie
+> <yujie.liu@intel.com>; linux-riscv@lists.infradead.org; linux-
+> efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v4 2/2] riscv: Optimize bitops with Zbb extension
+>=20
+> On Mon, Oct 30, 2023 at 02:39:04PM +0800, Xiao Wang wrote:
+> > This patch leverages the alternative mechanism to dynamically optimize
+> > bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
+> > Zbb ext is not supported by the runtime CPU, legacy implementation is
+> > used. If Zbb is supported, then the optimized variants will be selected
+> > via alternative patching.
+> >
+> > The legacy bitops support is taken from the generic C implementation as
+> > fallback.
+> >
+> > If the parameter is a build-time constant, we leverage compiler builtin=
+ to
+> > calculate the result directly, this approach is inspired by x86 bitops
+> > implementation.
+> >
+> > EFI stub runs before the kernel, so alternative mechanism should not be
+> > used there, this patch introduces a macro NO_ALTERNATIVE for this
+> purpose.
+> >
+> > Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> > ---
+> >  arch/riscv/include/asm/bitops.h       | 255 +++++++++++++++++++++++++-
+> >  drivers/bitopstest/Kconfig            |   1 +
+> >  drivers/firmware/efi/libstub/Makefile |   2 +-
+> >  3 files changed, 254 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/bitops.h
+> b/arch/riscv/include/asm/bitops.h
+> > index 3540b690944b..ef35c9ebc2ed 100644
+> > --- a/arch/riscv/include/asm/bitops.h
+> > +++ b/arch/riscv/include/asm/bitops.h
+> > @@ -15,13 +15,262 @@
+> >  #include <asm/barrier.h>
+> >  #include <asm/bitsperlong.h>
+> >
+> > +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE)
+> >  #include <asm-generic/bitops/__ffs.h>
+> > -#include <asm-generic/bitops/ffz.h>
+> > -#include <asm-generic/bitops/fls.h>
+> >  #include <asm-generic/bitops/__fls.h>
+> > +#include <asm-generic/bitops/ffs.h>
+> > +#include <asm-generic/bitops/fls.h>
+> > +
+> > +#else
+> > +#include <asm/alternative-macros.h>
+> > +#include <asm/hwcap.h>
+> > +
+> > +#if (BITS_PER_LONG =3D=3D 64)
+> > +#define CTZW	"ctzw "
+> > +#define CLZW	"clzw "
+> > +#elif (BITS_PER_LONG =3D=3D 32)
+> > +#define CTZW	"ctz "
+> > +#define CLZW	"clz "
+> > +#else
+> > +#error "Unexpected BITS_PER_LONG"
+> > +#endif
+> > +
+> > +static __always_inline unsigned long variable__ffs(unsigned long word)
+> > +{
+> > +	int num;
+> > +
+> > +	asm_volatile_goto(
+> > +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> > +		: : : : legacy);
+> > +
+>=20
+> On this and following asm blocks, checkpatch outputs:  "Lines should not
+> end with a '('".
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 499d0f215a8b..d9d533cb38ca 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -872,6 +872,16 @@ source "drivers/leds/flash/Kconfig"
- comment "RGB LED drivers"
- source "drivers/leds/rgb/Kconfig"
- 
-+config LEDS_UPBOARD
-+	tristate "LED support for the UP board"
-+	depends on LEDS_CLASS
-+	depends on MFD_INTEL_UPBOARD_FPGA
-+	help
-+	  This option enables support for the UP board LEDs.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called leds-upboard.
-+
- comment "LED Triggers"
- source "drivers/leds/trigger/Kconfig"
- 
-diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-index 4fd2f92cd198..e72956645646 100644
---- a/drivers/leds/Makefile
-+++ b/drivers/leds/Makefile
-@@ -83,6 +83,7 @@ obj-$(CONFIG_LEDS_TI_LMU_COMMON)	+= leds-ti-lmu-common.o
- obj-$(CONFIG_LEDS_TLC591XX)		+= leds-tlc591xx.o
- obj-$(CONFIG_LEDS_TPS6105X)		+= leds-tps6105x.o
- obj-$(CONFIG_LEDS_TURRIS_OMNIA)		+= leds-turris-omnia.o
-+obj-$(CONFIG_LEDS_UPBOARD)		+= leds-upboard.o
- obj-$(CONFIG_LEDS_WM831X_STATUS)	+= leds-wm831x-status.o
- obj-$(CONFIG_LEDS_WM8350)		+= leds-wm8350.o
- obj-$(CONFIG_LEDS_WRAP)			+= leds-wrap.o
-diff --git a/drivers/leds/leds-upboard.c b/drivers/leds/leds-upboard.c
-new file mode 100644
-index 000000000000..8198f41563ea
---- /dev/null
-+++ b/drivers/leds/leds-upboard.c
-@@ -0,0 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * UP Board CPLD/FPGA based LED driver
-+ *
-+ * Copyright (c) AAEON. All rights reserved.
-+ *
-+ * Author: Gary Wang <garywang@aaeon.com.tw>
-+ */
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
-+#include <linux/leds.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/upboard-fpga.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+struct upboard_led {
-+	struct regmap_field *field;
-+	struct led_classdev cdev;
-+	unsigned char bit;
-+};
-+
-+static enum led_brightness upboard_led_brightness_get(struct led_classdev *cdev)
-+{
-+	struct upboard_led *led = container_of(cdev, struct upboard_led, cdev);
-+	int brightness = 0;
-+
-+	regmap_field_read(led->field, &brightness);
-+
-+	return brightness;
-+};
-+
-+static void upboard_led_brightness_set(struct led_classdev *cdev, enum led_brightness brightness)
-+{
-+	struct upboard_led *led = container_of(cdev, struct upboard_led, cdev);
-+
-+	regmap_field_write(led->field, brightness != LED_OFF);
-+};
-+
-+static struct gpio_led_platform_data upboard_gpio_led_pd;
-+static const struct mfd_cell upboard_gpio_led_cells[] = {
-+	MFD_CELL_BASIC("leds-gpio", NULL,
-+		       &upboard_gpio_led_pd,
-+		       sizeof(upboard_gpio_led_pd), 0)
-+};
-+
-+int upboard_led_gpio_register(struct upboard_fpga *fpga)
-+{
-+	struct gpio_led blue_led, yellow_led, green_led, red_led;
-+	struct gpio_desc *desc;
-+	static struct gpio_led leds[4];
-+	int num_leds = 0;
-+	int ret;
-+
-+	desc = devm_gpiod_get(fpga->dev, "blue", GPIOD_OUT_LOW);
-+	if (!IS_ERR(desc)) {
-+		blue_led.name = "upboard:blue:";
-+		blue_led.gpio = desc_to_gpio(desc);
-+		blue_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-+		leds[num_leds++] = blue_led;
-+		devm_gpiod_put(fpga->dev, desc);
-+	}
-+
-+	desc = devm_gpiod_get(fpga->dev, "yellow", GPIOD_OUT_LOW);
-+	if (!IS_ERR(desc)) {
-+		yellow_led.name = "upboard:yellow:";
-+		yellow_led.gpio = desc_to_gpio(desc);
-+		yellow_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-+		leds[num_leds++] = yellow_led;
-+		devm_gpiod_put(fpga->dev, desc);
-+	}
-+
-+	desc = devm_gpiod_get(fpga->dev, "green", GPIOD_OUT_LOW);
-+	if (!IS_ERR(desc)) {
-+		green_led.name = "upboard:green:";
-+		green_led.gpio = desc_to_gpio(desc);
-+		green_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-+		leds[num_leds++] = green_led;
-+		devm_gpiod_put(fpga->dev, desc);
-+	}
-+
-+	desc = devm_gpiod_get(fpga->dev, "red", GPIOD_OUT_LOW);
-+	if (!IS_ERR(desc)) {
-+		red_led.name = "upboard:red:";
-+		red_led.gpio = desc_to_gpio(desc);
-+		red_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-+		leds[num_leds++] = red_led;
-+		devm_gpiod_put(fpga->dev, desc);
-+	}
-+
-+	/* No optional LEDs defined */
-+	if (num_leds == 0)
-+		return -ENODEV;
-+
-+	upboard_gpio_led_pd.num_leds = num_leds;
-+	upboard_gpio_led_pd.leds = leds;
-+
-+	ret = devm_mfd_add_devices(fpga->dev, PLATFORM_DEVID_AUTO,
-+				   upboard_gpio_led_cells,
-+				   ARRAY_SIZE(upboard_gpio_led_cells),
-+				   NULL, 0, NULL);
-+	if (ret) {
-+		dev_err(fpga->dev, "Failed to add GPIO LEDs, %d", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __init upboard_led_probe(struct platform_device *pdev)
-+{
-+	struct upboard_fpga * const cpld = dev_get_drvdata(pdev->dev.parent);
-+	struct reg_field fldconf = {
-+		.reg = UPFPGA_REG_FUNC_EN0,
-+	};
-+	struct upboard_led_data * const pdata = pdev->dev.platform_data;
-+	struct upboard_led *led;
-+
-+	/* check & register GPIO LEDs */
-+	if (strstr(pdata->colour, "gpio"))
-+		return upboard_led_gpio_register(cpld);
-+
-+	led = devm_kzalloc(&pdev->dev, sizeof(*led), GFP_KERNEL);
-+	if (!led)
-+		return -ENOMEM;
-+
-+	fldconf.lsb = pdata->bit;
-+	fldconf.msb = pdata->bit;
-+	led->field = devm_regmap_field_alloc(&pdev->dev, cpld->regmap, fldconf);
-+	if (IS_ERR(led->field))
-+		return PTR_ERR(led->field);
-+
-+	led->cdev.brightness_get = upboard_led_brightness_get;
-+	led->cdev.brightness_set = upboard_led_brightness_set;
-+	led->cdev.name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "upboard:%s:", pdata->colour);
-+	if (!led->cdev.name)
-+		return -ENOMEM;
-+
-+	return devm_led_classdev_register(&pdev->dev, &led->cdev);
-+};
-+
-+static struct platform_driver upboard_led_driver = {
-+	.driver = {
-+		.name = "upboard-led",
-+	},
-+};
-+module_platform_driver_probe(upboard_led_driver, upboard_led_probe);
-+
-+MODULE_AUTHOR("Gary Wang <garywang@aaeon.com.tw>");
-+MODULE_DESCRIPTION("UP Board LED driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:upboard-led");
--- 
-2.17.1
+I did below check, but I got no warning.
+# ./scripts/checkpatch.pl v4-0002-riscv-Optimize-bitops-with-Zbb-extension.=
+patch
+total: 0 errors, 0 warnings, 280 lines checked
+May I know how you do the check?
+BTW, I see arch/riscv/include/asm/jump_label.h and arch/riscv/include/asm/c=
+pufeature.h have similar code.
 
+>=20
+> > +	asm volatile (
+> > +		".option push\n"
+> > +		".option arch,+zbb\n"
+> > +		"ctz %0, %1\n"
+> > +		".option pop\n"
+> > +		: "=3Dr" (word) : "r" (word) :);
+> > +
+> > +	return word;
+> > +
+> > +legacy:
+> > +	num =3D 0;
+> > +#if BITS_PER_LONG =3D=3D 64
+> > +	if ((word & 0xffffffff) =3D=3D 0) {
+> > +		num +=3D 32;
+> > +		word >>=3D 32;
+> > +	}
+> > +#endif
+> > +	if ((word & 0xffff) =3D=3D 0) {
+> > +		num +=3D 16;
+> > +		word >>=3D 16;
+> > +	}
+> > +	if ((word & 0xff) =3D=3D 0) {
+> > +		num +=3D 8;
+> > +		word >>=3D 8;
+> > +	}
+> > +	if ((word & 0xf) =3D=3D 0) {
+> > +		num +=3D 4;
+> > +		word >>=3D 4;
+> > +	}
+> > +	if ((word & 0x3) =3D=3D 0) {
+> > +		num +=3D 2;
+> > +		word >>=3D 2;
+> > +	}
+> > +	if ((word & 0x1) =3D=3D 0)
+> > +		num +=3D 1;
+> > +	return num;
+> > +}
+> > +
+> > +/**
+> > + * __ffs - find first set bit in a long word
+> > + * @word: The word to search
+> > + *
+> > + * Undefined if no set bit exists, so code should check against 0 firs=
+t.
+> > + */
+> > +#define __ffs(word)				\
+> > +	(__builtin_constant_p(word) ?		\
+> > +	 (unsigned long)__builtin_ctzl(word) :	\
+> > +	 variable__ffs(word))
+> > +
+> > +static __always_inline unsigned long variable__fls(unsigned long word)
+> > +{
+> > +	int num;
+> > +
+> > +	asm_volatile_goto(
+> > +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> > +		: : : : legacy);
+> > +
+> > +	asm volatile (
+> > +		".option push\n"
+> > +		".option arch,+zbb\n"
+> > +		"clz %0, %1\n"
+> > +		".option pop\n"
+> > +		: "=3Dr" (word) : "r" (word) :);
+> > +
+> > +	return BITS_PER_LONG - 1 - word;
+> > +
+> > +legacy:
+> > +	num =3D BITS_PER_LONG - 1;
+> > +#if BITS_PER_LONG =3D=3D 64
+> > +	if (!(word & (~0ul << 32))) {
+> > +		num -=3D 32;
+> > +		word <<=3D 32;
+> > +	}
+> > +#endif
+> > +	if (!(word & (~0ul << (BITS_PER_LONG-16)))) {
+> > +		num -=3D 16;
+> > +		word <<=3D 16;
+> > +	}
+> > +	if (!(word & (~0ul << (BITS_PER_LONG-8)))) {
+> > +		num -=3D 8;
+> > +		word <<=3D 8;
+> > +	}
+> > +	if (!(word & (~0ul << (BITS_PER_LONG-4)))) {
+> > +		num -=3D 4;
+> > +		word <<=3D 4;
+> > +	}
+> > +	if (!(word & (~0ul << (BITS_PER_LONG-2)))) {
+> > +		num -=3D 2;
+> > +		word <<=3D 2;
+> > +	}
+> > +	if (!(word & (~0ul << (BITS_PER_LONG-1))))
+> > +		num -=3D 1;
+> > +	return num;
+> > +}
+> > +
+> > +/**
+> > + * __fls - find last set bit in a long word
+> > + * @word: the word to search
+> > + *
+> > + * Undefined if no set bit exists, so code should check against 0 firs=
+t.
+> > + */
+> > +#define __fls(word)							\
+> > +	(__builtin_constant_p(word) ?					\
+> > +	 (unsigned long)(BITS_PER_LONG - 1 - __builtin_clzl(word)) :	\
+> > +	 variable__fls(word))
+> > +
+> > +static __always_inline int variable_ffs(int x)
+> > +{
+> > +	int r;
+> > +
+> > +	if (!x)
+> > +		return 0;
+> > +
+> > +	asm_volatile_goto(
+> > +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> > +		: : : : legacy);
+> > +
+> > +	asm volatile (
+> > +		".option push\n"
+> > +		".option arch,+zbb\n"
+> > +		CTZW "%0, %1\n"
+> > +		".option pop\n"
+> > +		: "=3Dr" (r) : "r" (x) :);
+> > +
+> > +	return r + 1;
+> > +
+> > +legacy:
+> > +	r =3D 1;
+> > +	if (!(x & 0xffff)) {
+> > +		x >>=3D 16;
+> > +		r +=3D 16;
+> > +	}
+> > +	if (!(x & 0xff)) {
+> > +		x >>=3D 8;
+> > +		r +=3D 8;
+> > +	}
+> > +	if (!(x & 0xf)) {
+> > +		x >>=3D 4;
+> > +		r +=3D 4;
+> > +	}
+> > +	if (!(x & 3)) {
+> > +		x >>=3D 2;
+> > +		r +=3D 2;
+> > +	}
+> > +	if (!(x & 1)) {
+> > +		x >>=3D 1;
+> > +		r +=3D 1;
+> > +	}
+> > +	return r;
+> > +}
+> > +
+> > +/**
+> > + * ffs - find first set bit in a word
+> > + * @x: the word to search
+> > + *
+> > + * This is defined the same way as the libc and compiler builtin ffs r=
+outines.
+> > + *
+> > + * ffs(value) returns 0 if value is 0 or the position of the first set=
+ bit if
+> > + * value is nonzero. The first (least significant) bit is at position =
+1.
+> > + */
+> > +#define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) : variable_=
+ffs(x))
+> > +
+> > +static __always_inline int variable_fls(unsigned int x)
+> > +{
+> > +	int r;
+> > +
+> > +	if (!x)
+> > +		return 0;
+> > +
+> > +	asm_volatile_goto(
+> > +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> > +		: : : : legacy);
+> > +
+> > +	asm volatile (
+> > +		".option push\n"
+> > +		".option arch,+zbb\n"
+> > +		CLZW "%0, %1\n"
+> > +		".option pop\n"
+> > +		: "=3Dr" (r) : "r" (x) :);
+> > +
+> > +	return 32 - r;
+> > +
+> > +legacy:
+> > +	r =3D 32;
+> > +	if (!(x & 0xffff0000u)) {
+> > +		x <<=3D 16;
+> > +		r -=3D 16;
+> > +	}
+> > +	if (!(x & 0xff000000u)) {
+> > +		x <<=3D 8;
+> > +		r -=3D 8;
+> > +	}
+> > +	if (!(x & 0xf0000000u)) {
+> > +		x <<=3D 4;
+> > +		r -=3D 4;
+> > +	}
+> > +	if (!(x & 0xc0000000u)) {
+> > +		x <<=3D 2;
+> > +		r -=3D 2;
+> > +	}
+> > +	if (!(x & 0x80000000u)) {
+> > +		x <<=3D 1;
+> > +		r -=3D 1;
+> > +	}
+> > +	return r;
+> > +}
+> > +
+> > +/**
+> > + * fls - find last set bit in a word
+> > + * @x: the word to search
+> > + *
+> > + * This is defined in a similar way as ffs, but returns the position o=
+f the most
+> > + * significant set bit.
+> > + *
+> > + * fls(value) returns 0 if value is 0 or the position of the last set =
+bit if
+> > + * value is nonzero. The last (most significant) bit is at position 32=
+.
+> > + */
+> > +#define fls(x)
+> 	\
+> > +	(__builtin_constant_p(x) ?					\
+> > +	 (int)(((x) !=3D 0) ?						\
+> > +	  (sizeof(unsigned int) * 8 - __builtin_clz(x)) : 0) :		\
+> > +	 variable_fls(x))
+> > +
+>=20
+> Checkpath complains: "Macro argument reuse 'x' - possible side-effects"
+>=20
+
+Ditto.
+
+> > +#endif /* !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE)
+> */
+> > +
+> > +#include <asm-generic/bitops/ffz.h>
+> >  #include <asm-generic/bitops/fls64.h>
+> >  #include <asm-generic/bitops/sched.h>
+> > -#include <asm-generic/bitops/ffs.h>
+> >
+> >  #include <asm-generic/bitops/hweight.h>
+> >
+> > diff --git a/drivers/bitopstest/Kconfig b/drivers/bitopstest/Kconfig
+> > index d0e2af4b801e..6ef6dcd41d49 100644
+> > --- a/drivers/bitopstest/Kconfig
+> > +++ b/drivers/bitopstest/Kconfig
+> > @@ -1,6 +1,7 @@
+> >  # SPDX-License-Identifier: GPL-2.0-only
+> >  menuconfig BITOPSTEST
+> >  	tristate "self test for bitops optimization"
+> > +	default y
+> >  	help
+> >  	  Enable this to test the bitops APIs.
+>=20
+> Is this a test you wanted to add? The source code isn't included.
+
+Sorry, I mistakenly did a "git add" for my local test. Will drop it.
+
+BRs,
+Xiao
+
+>=20
+> - Charlie
+>=20
+> >
+> > diff --git a/drivers/firmware/efi/libstub/Makefile
+> b/drivers/firmware/efi/libstub/Makefile
+> > index a1157c2a7170..d68cacd4e3af 100644
+> > --- a/drivers/firmware/efi/libstub/Makefile
+> > +++ b/drivers/firmware/efi/libstub/Makefile
+> > @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)		+=3D -
+> DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
+> >  				   -DEFI_HAVE_MEMCHR -
+> DEFI_HAVE_STRRCHR \
+> >  				   -DEFI_HAVE_STRCMP -fno-builtin -fpic \
+> >  				   $(call cc-option,-mno-single-pic-base)
+> > -cflags-$(CONFIG_RISCV)		+=3D -fpic
+> > +cflags-$(CONFIG_RISCV)		+=3D -fpic -DNO_ALTERNATIVE
+> >  cflags-$(CONFIG_LOONGARCH)	+=3D -fpie
+> >
+> >  cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)	+=3D -
+> I$(srctree)/scripts/dtc/libfdt
+> > --
+> > 2.25.1
+> >
