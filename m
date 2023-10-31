@@ -2,254 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B49F37DCDA2
+	by mail.lfdr.de (Postfix) with ESMTP id 5FACC7DCDA1
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344475AbjJaNOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S1344484AbjJaNO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344467AbjJaNOU (ORCPT
+        with ESMTP id S1344480AbjJaNOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:14:20 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F76ED
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:14:17 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VC1bG0020481;
-        Tue, 31 Oct 2023 13:14:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=FFN8MO2SByMCG1VWE0WnyVW7hy5Fd5ffBJH86/KHafw=;
- b=nobcN6uo5EwTzr8tLJQw4/XcnmEr1U0ZCm0MbaK9L9CSl4qw1b+t7Q6n6HqGa/UG8wZI
- rfga0mT4AiRmYwg5sblnrAhHIfvo0+m+GQBVvH0Po8wxBLEU3sXoQdIhdwErYppa4xEm
- Uqn+icfzs9uHs7j9fY+6lFmhFkEkpxA6H4LhrDDmLJdY40ldBCkKRc2ROvtSBl0zDa2W
- qCO7nGpyUkZEURCTPud4yjFf6ioiQRU17EGcEzMAmYiLJiwpRHX1MtZocQJpwl/w8G8f
- OIAxPIWU3aWkZg3H4vDa/iZe4hudLiggGzwGsQZrwiYoaZaLAEQIv+v6HrAm722zTyuF 3Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2chyk50h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 13:14:01 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39VDE13r012590
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 13:14:01 GMT
-Received: from [10.214.66.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 31 Oct
- 2023 06:13:58 -0700
-Message-ID: <2a0d2dd8-562c-fec7-e3ac-0bd955643e16@quicinc.com>
-Date:   Tue, 31 Oct 2023 18:43:55 +0530
+        Tue, 31 Oct 2023 09:14:25 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2081.outbound.protection.outlook.com [40.107.94.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A93FD;
+        Tue, 31 Oct 2023 06:14:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NTMUGS+8SVrsdf57LFMdkZHGU3JEv+w+OUtPGcjZ2t5sGDxBP+ry3YH2It+Abipyg9rv4gmVUTLObP/MDtpBUEM64MlcwcY5N13XgnUTdEP7ifeaWHFSaLpSoB75EBOvVEnpl9B108JDOQmXy6tzM4dof8xss+SQfZz6Bt8UwPYdrE6XdEq2iGc1KVvtjqoEb354gmAG6tsM/JWJMcrTG5PMKiU3Nm3a4NCqzsxL7YoTv54qb/zw+FqPxTQpOfCdIebW8XPaiAxV3tid0H6/sB2DV/pEQRmRxJrCwGHqhZdweDm0eGQ+S19TNTPSKhaq2n2049xLGQ+jbOjm73lg0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N2SL7L3IDOZ+2rf5XUYQail7YRxo+8Hzd2ljfeGty/A=;
+ b=VBsCTPj7LSLIkIVOHEUGOOuymJSdNSW+dGwKcHS/uTPn0lTT6cvGOCGugrdEsBVNR+jcA8zYqxxUk6Op4nXrC+2cqJxQOLx9OCx1r2A8r5vuDD/fDQhIDYSq/N4oc6aqcdH9f0UD094H9munUWqQHtRmlioolUVT9DQ0Jng6ve8i4U7ZTmQkWUHQlfuBlflzEfcTI+28sEBjGAADGYQQ0ZGIbS12qTUJVup2UmJz6V8nzk3BaHQlAWzAps2YnZqAgT1u09o4qbJ4tFXQowrdDsOj1ZPU9pyNq9mTrygir0BqD+uK7GF5cF8hoHea3Ovl/4MKEQR+kHsOl7//FSV09g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N2SL7L3IDOZ+2rf5XUYQail7YRxo+8Hzd2ljfeGty/A=;
+ b=nmBmoon7IpIPmYmRRmBlOYmHm7U/ugABATGJp8yLITfNo14Lluk8jeEZQFeBF0UzzAbz7nko0T4Z23XVEAIlmQ0UIsAJA/99Nhi9I6GEw2jmjAuzjW/qkHI3PV6pCAK7v9q0V52q16E7241HxwMdviknE4w9oru8CHzQP3XLkdf6+M8TSXnqy9ATS+xVaGKHjo9lTKHsByAXnE1VxphbCLE92cOdoPFCdjLWTo5r2YloltpPUQ7elcpG8FILnsGz3TSI18SqKZtevpZeU9iocaDm2cD0rQqqWAkWOrEtItCsTj1EucuwzKWf/8zEino+n14Saq8i1vBHRdUCjVFPpw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM4PR12MB7550.namprd12.prod.outlook.com (2603:10b6:8:10e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
+ 2023 13:14:18 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::b53a:1092:9be2:cfb9]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::b53a:1092:9be2:cfb9%4]) with mapi id 15.20.6933.027; Tue, 31 Oct 2023
+ 13:14:18 +0000
+Date:   Tue, 31 Oct 2023 10:14:17 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>
+Subject: [GIT PULL] Please pull IOMMUFD subsystem changes
+Message-ID: <20231031131417.GA1815719@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5Nphx7FMM3LpZnMs"
+Content-Disposition: inline
+X-ClientProxiedBy: BLAPR03CA0131.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::16) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm: page_alloc: unreserve highatomic page blocks before
- oom
-To:     Michal Hocko <mhocko@suse.com>
-CC:     <akpm@linux-foundation.org>, <mgorman@techsingularity.net>,
-        <david@redhat.com>, <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1698669590-3193-1-git-send-email-quic_charante@quicinc.com>
- <gtya2g2pdbsonelny6vpfwj5vsxdrzhi6wzkpcrke33mr3q2hf@j4ramnjmfx52>
-Content-Language: en-US
-From:   Charan Teja Kalla <quic_charante@quicinc.com>
-In-Reply-To: <gtya2g2pdbsonelny6vpfwj5vsxdrzhi6wzkpcrke33mr3q2hf@j4ramnjmfx52>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: V00cAp50veuoZviQ86wMotv1d1L1osdL
-X-Proofpoint-GUID: V00cAp50veuoZviQ86wMotv1d1L1osdL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-31_01,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0 phishscore=0
- clxscore=1015 suspectscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310310105
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB7550:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0317a2d-8339-4140-2899-08dbda1349c1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TQH5WGtshxt8vmrkYz7ooiBoawLOpbhWC6jk4U4qnUysMiggzUKID85QOBXLXPxDRMpPPY36B0aMDJrHy068ETzWpukhIRDihQJ+v7p7+2g135yMtNcK/Mce69V6XNbL1iVcbm2w+ecvR8WfblwpP/K1aDQoS5gxz+CUoFcAcnqjZpHcd9JwBzS9ncKdrqKqr07MBPKczgf4sPj+IV+cWhSVpt6XG4Wo7igckzC4yj8XNt9UNxOO2y8sELx4BVs9ExFfbDDFdkpdp1WCeUy8Rz/n3zAlG+yLqPQhvGT5w7w7kx+y/MKYBc3RJvKzVOBSksT8aOQp7qGA5s8wWBFJk7ylDbi59Zy2mJnwzu6lhQbCQGjhheEJqyz3cSf7Z3R5SMWJj5ekb3dy2lkZkyBWruh9PM1skqVyGLU3PTmrf7ys3//24Q2o/KXQu4WiYkJ3K8jHXdMZVAVeCiF3r1QElTYaC7qMtAWd7dcPvYadR8Apc/OecgcO+VM+ZS1QKgwQYa2wDfG1/kXQgMNRmTKqZhq9sIk7zZTExeYC5UMZSZ5XeXllltl1yEG4+ijQQQGJMqqYJGVFy6+WT9gw4JL9b5zcSGWomHvBXpI9hMnRFTAah0dcnv6AXhrHjnKr2EXzGz4EYvo+oBAb6qJFIWiRalXYcDJAb4R66MrCC52OfK44RkUu6y+TP5JI/0Xu1COn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(366004)(376002)(136003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(26005)(1076003)(6512007)(2616005)(6506007)(44144004)(478600001)(21480400003)(83380400001)(6486002)(4001150100001)(2906002)(30864003)(41300700001)(66556008)(5660300002)(66946007)(966005)(66476007)(8936002)(8676002)(4326008)(316002)(6916009)(33656002)(38100700002)(86362001)(36756003)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uzp80Rq/ZhRLIiCcDPeHLEwdarg1493C3MFcKYMFjADEDBJIBXHRKe2hnmAg?=
+ =?us-ascii?Q?0X0TMzbEC3g+05fJ+dwlMVEMJzygkGn4b7H36w1+AABR8fbYJHLiVQjZvppD?=
+ =?us-ascii?Q?KY5+ugxWyqW+42L8ORu1zMnhhJylyzFCUwOmf5WH/J0PVTkxqx8OldUdHf4/?=
+ =?us-ascii?Q?boOUe8UKh08BpUQHCqBEjmP3ekzI1jjdPm56+Av5nsQoqt4LQCZ1bUUdrDCr?=
+ =?us-ascii?Q?I2WA7zt0gfuAtRlfMzTfrzl6FOzDuUlgo7sN2Ri1k0on0WF87bQFSgCCxyB4?=
+ =?us-ascii?Q?s8TskaIWAptoUshURal+XX/Vvq/6WQpdipR81aEjmBMCLEk+0rYarPv8wang?=
+ =?us-ascii?Q?6ERO4YUmCnbWhf51CGX9c/0/3sLaF0Bf25z7hDKFBmwk0Rz/f2RvNznYyhc0?=
+ =?us-ascii?Q?qblgP2LcQScQvjTazQPj21ceW2vFyPfj3jIFn4NB/R/uIX0CV9eMsGrXAnkO?=
+ =?us-ascii?Q?h5Tl4K0XJXaKDzA/ymzSGYAte7yPLwxLp8efC07/ZKk3LKOVSAeQWkEMhdMg?=
+ =?us-ascii?Q?fetoKLf4kiY8ajEJy1dB4ZjS2lx9htJhJWyuiwA4xdWI9Hw5xBcCTNRu1OjT?=
+ =?us-ascii?Q?e086TzFmL8Dk9z2lY49jP50QZ6J0RchhdW7mAOGna3iABIPnWvPr+LOIlpLt?=
+ =?us-ascii?Q?atVKeT5fXq3+2/Vww+NcIXQD2Qlo7vN5FUSB8GmllnqfpG0gIfKtNuusW3Za?=
+ =?us-ascii?Q?2x7NRKBELbzl4MOhGtaYcWBBTvRuYE2Sev9mgdKWGywVN0Hp3p/wOX+WGFdC?=
+ =?us-ascii?Q?ImKMgg2m2KkCPr65a9mgXSWfEgYSxTV2un5XvNClg+atB9AL1QlN0Hm2odlk?=
+ =?us-ascii?Q?nabTElrgUswMCsgI9aOp1Fx9jKfiRD8VCPHT2b8gdARz3L++oLpGzz1nRSU/?=
+ =?us-ascii?Q?4SX5xWKSXo4Fw1BYvIeyUkA53+1dt1fhPdYfsqpZVsQJWZUUY8qU78bYTf9z?=
+ =?us-ascii?Q?ogllOlaibxW3jZ9uGZMYSX2QMSed4kziy3LzJrCSqpOeDdZBwk4SNg3pIEpU?=
+ =?us-ascii?Q?v+x74ihOl86n8GP+NB9lfmTkcAG4iL2CuE9hd7s82pD2F3u+oEhg00lB3i2e?=
+ =?us-ascii?Q?98uIcISSRrmGk41RP6Ja5/s7yxf9tOm1jbuDyq0BFTkFJRx0SCt9zzyfR2Ut?=
+ =?us-ascii?Q?XDTq0i4sX5qd9VVCUlP/h1y4INEVlAiba1Vv17kuKAW5GWITqPSypmvtxfcV?=
+ =?us-ascii?Q?qiM/7Es9KQotEFsZFubQORl826NYLH28kwUtmJjBghYv3KOfTMZpXEScLgbZ?=
+ =?us-ascii?Q?GDEzSdO9Go/CdooJAGxCggbnn26TC7BDfPECX0LOjMR6raes4Qo59FfOQSo/?=
+ =?us-ascii?Q?/G2UJsSjXUmFq9J8NipjKZYyeUkRPfPIOsIHlu0lsYhzJFF78pczfqCfdj+6?=
+ =?us-ascii?Q?zaaNSLMv3Uh9AihN/Yd4iA2XvAPKCc4+mFQIsGOYr3l4sWSgx/UMi/gCeppQ?=
+ =?us-ascii?Q?w15k2e6/uyX3vOfumNQymydoYCI9pm+8t+MHQQofnVglQfrBeYG3N6qzAe3U?=
+ =?us-ascii?Q?Ve6L1QtKjUtfVWXA+l9z2suqz3BNgCl3y4WhUNBzs0wiPVmNEkjnxWqT4TtP?=
+ =?us-ascii?Q?ppE2y/7B6wFbZzX9GTUVtl2SMTtH5tadBRRLKsv3?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0317a2d-8339-4140-2899-08dbda1349c1
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 13:14:18.1225
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3UXHIm8l67Q39iTdnWD9VRymvmu5/r6ls1GR1cURbHBTfgYj/txdY0XImo3Hmb7T
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7550
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Michal/Pavan!!
+--5Nphx7FMM3LpZnMs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 10/31/2023 1:44 PM, Michal Hocko wrote:
-> On Mon 30-10-23 18:09:50, Charan Teja Kalla wrote:
->> __alloc_pages_direct_reclaim() is called from slowpath allocation where
->> high atomic reserves can be unreserved after there is a progress in
->> reclaim and yet no suitable page is found. Later should_reclaim_retry()
->> gets called from slow path allocation to decide if the reclaim needs to
->> be retried before OOM kill path is taken.
->>
->> should_reclaim_retry() checks the available(reclaimable + free pages)
->> memory against the min wmark levels of a zone and returns:
->> a)  true, if it is above the min wmark so that slow path allocation will
->> do the reclaim retries.
->> b) false, thus slowpath allocation takes oom kill path.
->>
->> should_reclaim_retry() can also unreserves the high atomic reserves
->> **but only after all the reclaim retries are exhausted.**
->>
->> In a case where there are almost none reclaimable memory and free pages
->> contains mostly the high atomic reserves but allocation context can't
->> use these high atomic reserves, makes the available memory below min
->> wmark levels hence false is returned from should_reclaim_retry() leading
->> the allocation request to take OOM kill path. This is an early oom kill
->> because high atomic reserves are holding lot of free memory and 
->> unreserving of them is not attempted.
-> 
-> OK, I see. So we do not release those reserved pages because OOM hits
-> too early. 
-> 
->> (early)OOM is encountered on a machine in the below state(excerpt from
->> the oom kill logs):
->> [  295.998653] Normal free:7728kB boost:0kB min:804kB low:1004kB
->> high:1204kB reserved_highatomic:8192KB active_anon:4kB inactive_anon:0kB
->> active_file:24kB inactive_file:24kB unevictable:1220kB writepending:0kB
->> present:70732kB managed:49224kB mlocked:0kB bounce:0kB free_pcp:688kB
->> local_pcp:492kB free_cma:0kB
->> [  295.998656] lowmem_reserve[]: 0 32
->> [  295.998659] Normal: 508*4kB (UMEH) 241*8kB (UMEH) 143*16kB (UMEH)
->> 33*32kB (UH) 7*64kB (UH) 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB
->> 0*4096kB = 7752kB
-> 
-> OK, this is quite interesting as well. The system is really tiny and 8MB
-> of reserved memory is indeed really high. How come those reservations
-> have grown that high?
+Hi Linus,
 
-Actually it is a VM running on the Linux kernel.
+This PR includes the dirty tracking and first part of the nested
+translation items for iommufd, details in the tag.
 
-Regarding the reservations, I think it is because of the 'max_managed '
-calculations in the below:
-static void reserve_highatomic_pageblock(struct page *page, ....) {
-    ....
-  /*
-   * Limit the number reserved to 1 pageblock or roughly 1% of a zone.
-   * Check is race-prone but harmless.
-   */
-    max_managed = (zone_managed_pages(zone) / 100) + pageblock_nr_pages;
+For those following, these series are still progressing:
 
-    if (zone->nr_reserved_highatomic >= max_managed)
-            goto out;
+- User page table invalidation:
+ https://lore.kernel.org/r/20231020092426.13907-1-yi.l.liu@intel.com
+ https://lore.kernel.org/r/20231020093719.18725-1-yi.l.liu@intel.com
 
-    zone->nr_reserved_highatomic += pageblock_nr_pages;
-    set_pageblock_migratetype(page, MIGRATE_HIGHATOMIC);
-    move_freepages_block(zone, page, MIGRATE_HIGHATOMIC, NULL);
-out:
-}
+- ARM SMMUv3 nested translation:
+ https://lore.kernel.org/all/cover.1683688960.git.nicolinc@nvidia.com/
 
-Since we are always appending the 1% of zone managed pages count to
-pageblock_nr_pages, the minimum it is turning into 2 pageblocks as the
-'nr_reserved_highatomic' is incremented/decremented in pageblock size
-granules.
+- Draft AMD IOMMU nested translation:
+ https://lore.kernel.org/all/20230621235508.113949-1-suravee.suthikulpanit@amd.com/
 
-And for my case the 8M out of ~50M is turned out to be 16%, which is high.
+- ARM SMMUv3 Dirty tracking:
+ https://github.com/jpemartins/linux/commits/smmu-iommufd-v3
 
-If the below looks fine to you, I can raise this as a separate change:
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 2a2536d..41441ced 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1886,7 +1886,9 @@ static void reserve_highatomic_pageblock(struct
-page *page, struct zone *zone)
-         * Limit the number reserved to 1 pageblock or roughly 1% of a zone.
-         * Check is race-prone but harmless.
-         */
--       max_managed = (zone_managed_pages(zone) / 100) + pageblock_nr_pages;
-+       max_managed = max_t(unsigned long,
-+                       ALIGN(zone_managed_pages(zone) / 100,
-pageblock_nr_pages),
-+                       pageblock_nr_pages);
-        if (zone->nr_reserved_highatomic >= max_managed)
-                return;
+There is also a lot of ongoing work to consistently and generically enable
+PASID and SVA support in all the IOMMU drivers:
 
->>
->> Per above log, the free memory of ~7MB exist in the high atomic
->> reserves is not freed up before falling back to oom kill path.
->>
->> This fix includes unreserving these atomic reserves in the OOM path
->> before going for a kill. The side effect of unreserving in oom kill path
->> is that these free pages are checked against the high wmark. If
->> unreserved from should_reclaim_retry()/__alloc_pages_direct_reclaim(),
->> they are checked against the min wmark levels.
-> 
-> I do not like the fix much TBH. I think the logic should live in
+ SMMUv3:
+   https://lore.kernel.org/r/0-v1-e289ca9121be+2be-smmuv3_newapi_p1_jgg@nvidia.com
+   https://lore.kernel.org/r/0-v1-afbb86647bbd+5-smmuv3_newapi_p2_jgg@nvidia.com
+ AMD:
+   https://lore.kernel.org/all/20231016104351.5749-1-vasant.hegde@amd.com/
+   https://lore.kernel.org/all/20231013151652.6008-1-vasant.hegde@amd.com/
+ Intel:
+   https://lore.kernel.org/r/20231017032045.114868-1-tina.zhang@intel.com
 
-yeah, This code looks way too cleaner to me. Let me know If I can raise
-V2 with the below, suggested-by you.
+RFC patches for PASID support in iommufd & vfio:
+ https://lore.kernel.org/all/20230926092651.17041-1-yi.l.liu@intel.com/
+ https://lore.kernel.org/all/20230926093121.18676-1-yi.l.liu@intel.com/
 
-I think another thing system is missing here is draining the pcp lists.
-min:804kB low:1004kB high:1204kB free_pcp:688kB
+IO page faults and events delivered to userspace through iommufd:
+ https://lore.kernel.org/all/20231026024930.382898-1-baolu.lu@linux.intel.com/
 
-IIUC, the drain pages is being called in reclaim path as below. In this
-case, when did_some_progress  = 0, it is also skipping the pcp drain.
-struct page *__alloc_pages_direct_reclaim() {
-    .....
-   *did_some_progress = __perform_reclaim(gfp_mask, order, ac);
-   if (unlikely(!(*did_some_progress)))
-      goto out;
-retry:
-    page = get_page_from_freelist();
-    if (!page && !drained) {
-        drain_all_pages(NULL);
-        drained = true;
-        goto retry;
-    }
-out:
-}
+RFC patches exploring support for the first Intel Scalable IO Virtualization
+(SIOV r1) device are posted:
+ https://lore.kernel.org/all/20231009085123.463179-1-yi.l.liu@intel.com/
 
-so, how about the extending the below code from you for this case.
-Assuming that did_some_progress > 0 means the draining perhaps already
-done in __alloc_pages_direct_reclaim() thus:
-out:
-   if (!ret) {
-       ret = unreserve_highatomic_pageblock(ac, true);
-       drain_all_pages(NULL);
-   }
-   return ret;
+Along with qemu patches implementing iommufd:
+ https://lore.kernel.org/all/20231016083223.1519410-1-zhenzhong.duan@intel.com/
 
-Please suggest If the above doesn't make sense. If Looks good, I will
-raise a separate patch for this condition.
-> should_reclaim_retry. One way to approach it is to unreserve at the end
-> of the function, something like this:
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 95546f376302..d04e14adf2c5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3813,10 +3813,8 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
->  	 * Make sure we converge to OOM if we cannot make any progress
->  	 * several times in the row.
->  	 */
-> -	if (*no_progress_loops > MAX_RECLAIM_RETRIES) {
-> -		/* Before OOM, exhaust highatomic_reserve */
-> -		return unreserve_highatomic_pageblock(ac, true);
-> -	}
-> +	if (*no_progress_loops > MAX_RECLAIM_RETRIES)
-> +		goto out;
->  
->  	/*
->  	 * Keep reclaiming pages while there is a chance this will lead
-> @@ -3859,6 +3857,12 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
->  		schedule_timeout_uninterruptible(1);
->  	else
->  		cond_resched();
-> +
-> +out:
-> +	/* Before OOM, exhaust highatomic_reserve */
-> +	if (!ret)
-> +		return unreserve_highatomic_pageblock(ac, true);
-> +
->  	return ret;
->  }
->  
+There are some conflicts with Joerg's main iommu tree, most are of the append
+to list type of conflict. A few notes:
+
+drivers/iommu/iommufd/selftest.c needs a non-conflict hunk:
+
+- static struct iommu_domain *mock_domain_alloc(unsigned int iommu_domain_type)
+- {
+-       if (iommu_domain_type == IOMMU_DOMAIN_BLOCKED)
+-               return &mock_blocking_domain;
+-       if (iommu_domain_type == IOMMU_DOMAIN_UNMANAGED)
+-               return mock_domain_alloc_paging(NULL);
+-       return NULL;
+- }
+-
+
+drivers/iommu/iommufd/selftest.c should be:
+
+@@@ -466,10 -293,8 +450,9 @@@ static const struct iommu_ops mock_ops
+        .owner = THIS_MODULE,
+        .pgsize_bitmap = MOCK_IO_PAGE_SIZE,
+        .hw_info = mock_domain_hw_info,
+-       .domain_alloc = mock_domain_alloc,
++       .domain_alloc_paging = mock_domain_alloc_paging,
+ +      .domain_alloc_user = mock_domain_alloc_user,
+        .capable = mock_domain_capable,
+-       .set_platform_dma_ops = mock_domain_set_plaform_dma_ops,
+
+include/linux/iommu.h should be:
+
+ - * @domain_alloc: allocate iommu domain
+ + * @domain_alloc: allocate and return an iommu domain if success. Otherwise
+ + *                NULL is returned. The domain is not fully initialized until
+ + *                the caller iommu_domain_alloc() returns.
+ + * @domain_alloc_user: Allocate an iommu domain corresponding to the input
+ + *                     parameters as defined in include/uapi/linux/iommufd.h.
+ + *                     Unlike @domain_alloc, it is called only by IOMMUFD and
+ + *                     must fully initialize the new domain before return.
+ + *                     Upon success, if the @user_data is valid and the @parent
+ + *                     points to a kernel-managed domain, the new domain must be
+ + *                     IOMMU_DOMAIN_NESTED type; otherwise, the @parent must be
+ + *                     NULL while the @user_data can be optionally provided, the
+ + *                     new domain must support __IOMMU_DOMAIN_PAGING.
+ + *                     Upon failure, ERR_PTR must be returned.
++  * @domain_alloc_paging: Allocate an iommu_domain that can be used for
++  *                       UNMANAGED, DMA, and DMA_FQ domain types.
+
+The rest were straightforward.
+
+The tag for-linus-iommufd-merged with my merge resolution to your tree
+is also available to pull.
+
+Thanks,
+Jason
+
+The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
+
+  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git tags/for-linus-iommufd
+
+for you to fetch changes up to b2b67c997bf74453f3469d8b54e4859f190943bd:
+
+  iommufd: Organize the mock domain alloc functions closer to Joerg's tree (2023-10-30 18:01:56 -0300)
+
+----------------------------------------------------------------
+iommufd for 6.7
+
+This branch has three new iommufd capabilities:
+
+ - Dirty tracking for DMA. AMD/ARM/Intel CPUs can now record if a DMA
+   writes to a page in the IOPTEs within the IO page table. This can be used
+   to generate a record of what memory is being dirtied by DMA activities
+   during a VM migration process. A VMM like qemu will combine the IOMMU
+   dirty bits with the CPU's dirty log to determine what memory to
+   transfer.
+
+   VFIO already has a DMA dirty tracking framework that requires PCI
+   devices to implement tracking HW internally. The iommufd version
+   provides an alternative that the VMM can select, if available. The two
+   are designed to have very similar APIs.
+
+ - Userspace controlled attributes for hardware page
+   tables (HWPT/iommu_domain). There are currently a few generic attributes
+   for HWPTs (support dirty tracking, and parent of a nest). This is an
+   entry point for the userspace iommu driver to control the HW in detail.
+
+ - Nested translation support for HWPTs. This is a 2D translation scheme
+   similar to the CPU where a DMA goes through a first stage to determine
+   an intermediate address which is then translated trough a second stage
+   to a physical address.
+
+   Like for CPU translation the first stage table would exist in VM
+   controlled memory and the second stage is in the kernel and matches the
+   VM's guest to physical map.
+
+   As every IOMMU has a unique set of parameter to describe the S1 IO page
+   table and its associated parameters the userspace IOMMU driver has to
+   marshal the information into the correct format.
+
+   This is 1/3 of the feature, it allows creating the nested translation
+   and binding it to VFIO devices, however the API to support IOTLB and
+   ATC invalidation of the stage 1 io page table, and forwarding of IO
+   faults are still in progress.
+
+The series includes AMD and Intel support for dirty tracking. Intel
+support for nested translation.
+
+Along the way are a number of internal items:
+
+ - New iommu core items: ops->domain_alloc_user(), ops->set_dirty_tracking,
+   ops->read_and_clear_dirty(), IOMMU_DOMAIN_NESTED, and iommu_copy_struct_from_user
+
+ - UAF fix in iopt_area_split()
+
+ - Spelling fixes and some test suite improvement
+
+----------------------------------------------------------------
+GuokaiXu (1):
+      iommufd: Fix spelling errors in comments
+
+Jason Gunthorpe (4):
+      iommufd: Rename IOMMUFD_OBJ_HW_PAGETABLE to IOMMUFD_OBJ_HWPT_PAGING
+      iommufd/device: Wrap IOMMUFD_OBJ_HWPT_PAGING-only configurations
+      iommufd: Add iopt_area_alloc()
+      iommufd: Organize the mock domain alloc functions closer to Joerg's tree
+
+Joao Martins (19):
+      vfio/iova_bitmap: Export more API symbols
+      vfio: Move iova_bitmap into iommufd
+      iommufd/iova_bitmap: Move symbols to IOMMUFD namespace
+      iommu: Add iommu_domain ops for dirty tracking
+      iommufd: Add a flag to enforce dirty tracking on attach
+      iommufd: Add IOMMU_HWPT_SET_DIRTY_TRACKING
+      iommufd: Add IOMMU_HWPT_GET_DIRTY_BITMAP
+      iommufd: Add capabilities to IOMMU_GET_HW_INFO
+      iommufd: Add a flag to skip clearing of IOPTE dirty
+      iommu/amd: Add domain_alloc_user based domain allocation
+      iommu/amd: Access/Dirty bit support in IOPTEs
+      iommu/vt-d: Access/Dirty bit support for SS domains
+      iommufd/selftest: Expand mock_domain with dev_flags
+      iommufd/selftest: Test IOMMU_HWPT_ALLOC_DIRTY_TRACKING
+      iommufd/selftest: Test IOMMU_HWPT_SET_DIRTY_TRACKING
+      iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP
+      iommufd/selftest: Test out_capabilities in IOMMU_GET_HW_INFO
+      iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP_NO_CLEAR flag
+      iommufd/selftest: Fix page-size check in iommufd_test_dirty()
+
+Koichiro Den (1):
+      iommufd: Fix missing update of domains_itree after splitting iopt_area
+
+Lu Baolu (6):
+      iommu: Add IOMMU_DOMAIN_NESTED
+      iommu/vt-d: Extend dmar_domain to support nested domain
+      iommu/vt-d: Add helper for nested domain allocation
+      iommu/vt-d: Add helper to setup pasid nested translation
+      iommu/vt-d: Add nested domain allocation
+      iommu/vt-d: Disallow read-only mappings to nest parent domain
+
+Nicolin Chen (10):
+      iommufd/selftest: Iterate idev_ids in mock_domain's alloc_hwpt test
+      iommufd/selftest: Rework TEST_LENGTH to test min_size explicitly
+      iommufd: Correct IOMMU_HWPT_ALLOC_NEST_PARENT description
+      iommufd: Only enforce cache coherency in iommufd_hw_pagetable_alloc
+      iommufd: Derive iommufd_hwpt_paging from iommufd_hw_pagetable
+      iommufd: Share iommufd_hwpt_alloc with IOMMUFD_OBJ_HWPT_NESTED
+      iommufd: Add a nested HW pagetable object
+      iommu: Add iommu_copy_struct_from_user helper
+      iommufd/selftest: Add nested domain allocation for mock domain
+      iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with nested HWPTs
+
+Yi Liu (11):
+      iommu: Add new iommu op to create domains owned by userspace
+      iommufd: Use the domain_alloc_user() op for domain allocation
+      iommufd: Flow user flags for domain allocation to domain_alloc_user()
+      iommufd: Support allocating nested parent domain
+      iommufd/selftest: Add domain_alloc_user() support in iommu mock
+      iommu/vt-d: Add domain_alloc_user op
+      iommu: Pass in parent domain with user_data to domain_alloc_user op
+      iommu/vt-d: Enhance capability check for nested parent domain allocation
+      iommufd: Add data structure for Intel VT-d stage-1 domain allocation
+      iommu/vt-d: Make domain attach helpers to be extern
+      iommu/vt-d: Set the nested domain to a device
+
+ drivers/iommu/Kconfig                            |   4 +
+ drivers/iommu/amd/Kconfig                        |   1 +
+ drivers/iommu/amd/amd_iommu_types.h              |  12 +
+ drivers/iommu/amd/io_pgtable.c                   |  68 ++++
+ drivers/iommu/amd/iommu.c                        | 147 ++++++++-
+ drivers/iommu/intel/Kconfig                      |   1 +
+ drivers/iommu/intel/Makefile                     |   2 +-
+ drivers/iommu/intel/iommu.c                      | 156 +++++++++-
+ drivers/iommu/intel/iommu.h                      |  64 +++-
+ drivers/iommu/intel/nested.c                     | 117 +++++++
+ drivers/iommu/intel/pasid.c                      | 221 +++++++++++++
+ drivers/iommu/intel/pasid.h                      |   6 +
+ drivers/iommu/iommufd/Makefile                   |   1 +
+ drivers/iommu/iommufd/device.c                   | 174 +++++++----
+ drivers/iommu/iommufd/hw_pagetable.c             | 304 ++++++++++++++----
+ drivers/iommu/iommufd/io_pagetable.c             | 200 +++++++++++-
+ drivers/iommu/iommufd/iommufd_private.h          |  84 ++++-
+ drivers/iommu/iommufd/iommufd_test.h             |  39 +++
+ drivers/{vfio => iommu/iommufd}/iova_bitmap.c    |   5 +-
+ drivers/iommu/iommufd/main.c                     |  17 +-
+ drivers/iommu/iommufd/pages.c                    |   2 +
+ drivers/iommu/iommufd/selftest.c                 | 328 ++++++++++++++++++--
+ drivers/iommu/iommufd/vfio_compat.c              |   6 +-
+ drivers/vfio/Makefile                            |   3 +-
+ drivers/vfio/pci/mlx5/Kconfig                    |   1 +
+ drivers/vfio/pci/mlx5/main.c                     |   1 +
+ drivers/vfio/pci/pds/Kconfig                     |   1 +
+ drivers/vfio/pci/pds/pci_drv.c                   |   1 +
+ drivers/vfio/vfio_main.c                         |   1 +
+ include/linux/io-pgtable.h                       |   4 +
+ include/linux/iommu.h                            | 146 ++++++++-
+ include/linux/iova_bitmap.h                      |  26 ++
+ include/uapi/linux/iommufd.h                     | 180 ++++++++++-
+ tools/testing/selftests/iommu/iommufd.c          | 379 ++++++++++++++++++++++-
+ tools/testing/selftests/iommu/iommufd_fail_nth.c |   7 +-
+ tools/testing/selftests/iommu/iommufd_utils.h    | 233 +++++++++++++-
+ 36 files changed, 2723 insertions(+), 219 deletions(-)
+
+
+--5Nphx7FMM3LpZnMs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZUD9pwAKCRCFwuHvBreF
+YaW/AP9aScHWJufImCwdWpMB4vXCSyWmwR1jaL/NIOvbfGi7bAEAsn9WIIzQWg5b
+jF4j2JpXwAg2W2Vg0aC0KuLYRDtDswA=
+=P1Nt
+-----END PGP SIGNATURE-----
+
+--5Nphx7FMM3LpZnMs--
