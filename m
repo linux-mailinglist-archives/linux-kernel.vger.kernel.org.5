@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8B37DD773
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 22:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F967DD775
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 22:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234025AbjJaVFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 17:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
+        id S232080AbjJaVG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 17:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbjJaVFr (ORCPT
+        with ESMTP id S231287AbjJaVG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 17:05:47 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1237AF3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:05:45 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1e5bc692721so3742801fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698786344; x=1699391144; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ylAWoXi+6yzfzvduSB8hqrTOh1zLBHDnHEqXnt/b0ys=;
-        b=fgSUFs3mbPlBsK5wCQNOa4ndbVCUacyPUo7OR7Lw8h5/PS4WWsckjB/1tLzsOGhp9p
-         rgEJpOZ3UYRoIYEXC5ZI6Zvuh0J68s1KHm10rhdIpp/r0ZVP4Z0UhAU4DAezJ5SBkpux
-         HRuEJmzHuJO3deWyeIqgDtD3fnGRrsN5wsXwbScu7HpFYWuf+KbXMylrk+MNl5KLeSWA
-         yrH4gvqkBB7os5c1JjKRDIWf7io6rqvuAAnZD88Zw/hq+oNy0Iuq28Lv55QFH+bxuxPE
-         LxV8DSNsS1WysAMkC6QeKCtkd6KdscjDcjTEtr7DdZiODzGF7Q19n7SjKP9gqXPR5H84
-         KFnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698786344; x=1699391144;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ylAWoXi+6yzfzvduSB8hqrTOh1zLBHDnHEqXnt/b0ys=;
-        b=vFSb24WkVecUZdINAIhIxI6aVPTv+4Fx0sh/74TqQNo+qmQl1DSgJj3hxJibVrXp2W
-         hpaeQFSCiI/jF0Pp1Xn8um1i6L63I8ubZ5naJEvY5v0KIOl1BdouZ+QY0r1PwOALbVH6
-         WMYJWm0FavYc6ENHwrjEAyLjz2IAKGvZXKR51wjOjn9teanU3aarWwVcAocLdjTL8Txf
-         dqDfNRSzHTgSfZL+aZWtTDiSvfWsBJbhypaM4l+mKMVc3RcrTpLwU7GlacndQ+veGYuz
-         gLwRh2FdsO4Rox6fmQaFQ+tcHL/JKmk0VVv0HiXxXGEvw/RHui48oS5oo2cw5ZsCNNVF
-         2aqg==
-X-Gm-Message-State: AOJu0YyVL67VkfbChLhgVJGWagmPK1gT+d8GVSM0iDpfMOEBiOinjhi/
-        FguIvVdnXabtw74cw/IutD6wqQ==
-X-Google-Smtp-Source: AGHT+IFWeaujTZlxNE99wm4MuEN85B5qR+JpSkHbMT/+0Xuf6ptGT02D91k1HtJZSO/Va6heCnyRVg==
-X-Received: by 2002:a05:6870:200f:b0:1bf:9f6:b810 with SMTP id o15-20020a056870200f00b001bf09f6b810mr16535724oab.36.1698786344044;
-        Tue, 31 Oct 2023 14:05:44 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id ky10-20020a056871c4ca00b001efce0658e6sm24616oac.39.2023.10.31.14.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 14:05:43 -0700 (PDT)
-From:   David Lechner <dlechner@baylibre.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     David Lechner <dlechner@baylibre.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: triggered-buffer: prevent possible freeing of wrong buffer
-Date:   Tue, 31 Oct 2023 16:05:19 -0500
-Message-ID: <20231031210521.1661552-1-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 31 Oct 2023 17:06:27 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCC8F3;
+        Tue, 31 Oct 2023 14:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698786379;
+        bh=of0pl9Zp8MiZ1FNN1AWooh5vOCvzcmEBnYPYq2iyDXI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WXqyOj3NF0VtVdGGfu1pHjkgfNguCFqLhFk2tuU1aupSRAk3gP7h3rVJZ2hPfrdjM
+         0p8CKqArM+SIv2Gg3zvWwahLjLfpcGeHLaxcpvX/4IlmARFYSndR7Pwcb5JNYAnTvB
+         UolXvHJSVREjswmvlvK651DXVMHyuvAru1/D2T/9cyy0y5rLbYjw5uyaK/7P0UC9Mv
+         RgcHJ9BYAi7TFkdsPHXPrLNuS4+N3X9oBacTdbiBi7ji8aAc+mijfmw5VmFhTdSpJ5
+         kZkf4P1O7a8ja7z8ZDPgv7W8/3Nao3zBfBAorNaVsCBg9QGLzX7qaQn4BTMBZB9wR4
+         aFAqPzuE628kw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKjNq3f0Pz4x1v;
+        Wed,  1 Nov 2023 08:06:19 +1100 (AEDT)
+Date:   Wed, 1 Nov 2023 08:06:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the sound-asoc-fixes tree
+Message-ID: <20231101080618.17fd208a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/YxtM1LuF4nRD/U9+MdRczwC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ee708e6baacd ("iio: buffer: introduce support for attaching more
-IIO buffers") introduced support for multiple buffers per indio_dev but
-left indio_dev->buffer for a few legacy use cases.
+--Sig_/YxtM1LuF4nRD/U9+MdRczwC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In the case of the triggered buffer, iio_triggered_buffer_cleanup()
-still assumes that indio_dev->buffer points to the buffer allocated by
-iio_triggered_buffer_setup_ext(). However, since
-iio_triggered_buffer_setup_ext() now calls iio_device_attach_buffer()
-to attach the buffer, indio_dev->buffer will only point to the buffer
-allocated by iio_device_attach_buffer() if it the first buffer attached.
+Hi all,
 
-This adds a check to make sure that no other buffer has been attached
-yet to ensure that indio_dev->buffer will be assigned when
-iio_device_attach_buffer() is called.
+In commit
 
-Fixes: ee708e6baacd ("iio: buffer: introduce support for attaching more IIO buffers")
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/iio/buffer/industrialio-triggered-buffer.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+  ed2232d49187 ("ASoC: amd: acp: fix for i2s mode register field update")
 
-diff --git a/drivers/iio/buffer/industrialio-triggered-buffer.c b/drivers/iio/buffer/industrialio-triggered-buffer.c
-index c7671b1f5ead..c06515987e7a 100644
---- a/drivers/iio/buffer/industrialio-triggered-buffer.c
-+++ b/drivers/iio/buffer/industrialio-triggered-buffer.c
-@@ -46,6 +46,16 @@ int iio_triggered_buffer_setup_ext(struct iio_dev *indio_dev,
- 	struct iio_buffer *buffer;
- 	int ret;
- 
-+	/*
-+	 * iio_triggered_buffer_cleanup() assumes that the buffer allocated here
-+	 * is assigned to indio_dev->buffer but this is only the case if this
-+	 * function is the first caller to iio_device_attach_buffer(). If
-+	 * indio_dev->buffer is already set then we can't proceed otherwise the
-+	 * cleanup function will try to free a buffer that was not allocated here.
-+	 */
-+	if (indio_dev->buffer)
-+		return -EADDRINUSE;
-+
- 	buffer = iio_kfifo_allocate();
- 	if (!buffer) {
- 		ret = -ENOMEM;
--- 
-2.42.0
+Fixes tag
 
+  Fixes: 40f74d5f09d7 ("ASoC: amd: acp: refactor acp i2s clock
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Please do not split Fixes lines over more than one line.  Also, please
+keep all the commit message tags together at the end of the commit
+message.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YxtM1LuF4nRD/U9+MdRczwC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBbEoACgkQAVBC80lX
+0Gxl5Qf/RVzpqUYAcWdKW5aconhiD9YgaZKmofe8tagmQhRTKrZgup0VoiWjQ9tF
+yBcK8xHcM4a4EZcaQk9NNHleDNI2zogMsW28XHcYXLA6Ctz/2x5vOEAJgiI0g2TE
+84MEnmHaSKKS/TdZ11p2tZ6WxfCGVjQO9LZOkw9G4ZGH+/FeX+AZbp28AY0+8NbX
+tUmFdt6qubYydmuXHiI1lh47aRpBJ2rB3AqARHPvJNxy0EMA3pX11lqAxwit26mE
+RG19VN5EDbpg3aqVSEEDwwDzTnvrRwnEW3XgWDqmP9H/KZTqJMQFKpPyhD/8kXVW
+UNboWSjoT9Ym5sENpAhsWXCVV0yeyA==
+=b0FW
+-----END PGP SIGNATURE-----
+
+--Sig_/YxtM1LuF4nRD/U9+MdRczwC--
