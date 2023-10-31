@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C277DCF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D0C7DCEF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343606AbjJaOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
+        id S235216AbjJaOO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235438AbjJaOPE (ORCPT
+        with ESMTP id S234896AbjJaOOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:15:04 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACD7FE
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:15:00 -0700 (PDT)
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        Tue, 31 Oct 2023 10:14:54 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FDFF5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:14:52 -0700 (PDT)
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8B46D40821
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:14:53 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CD47F404AC
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698761693;
-        bh=K+d8FOi611qgqDiSGAqowSPHYlSjp+mGUPNXtAF6OWs=;
+        s=20210705; t=1698761690;
+        bh=XnEjgTb1m78EWwQDGRYEFN4m8CDZaDkjNTK8j9cPE/A=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=Vjy1LLO9xUSCgh0u2jA4PTzzPU+X87yOCqzdD8lE6uurXofu7IU84F0FmNwdYM+Ve
-         LJK+ocPW8VkV+pxqt+jo9LKOEkHf4d9ltAuEo96iJV0plhN9BOjfnF/Ni6aV5Roexj
-         iot3JjB7v0p8g9j7oeJ1ltdvjNv0rUTQPGwCpgTxnjWwbzLjnayMkY7n02fKQ2bt87
-         SvbwR9Esklg3hMlhPVyjPu1ols5hSDDGO/sL/19Xmk3lUolYQRgZr6WJ/hCQQkMDN4
-         QAvsKh6GNbnFS8sHc7tlQcXX2WWSHgeMiZCTtNYrg6Z/kWHoFRLyriIh79JX8j6yvC
-         NQ7/N2srjplAA==
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53e26bbbc63so4140789a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:14:53 -0700 (PDT)
+        b=mItblL9pX0fK7i/haCqp1ZhI0w6m5P2X5dTDZRLPqiikTeRIiCtnGH4LflRTKikmv
+         go+iqOABl5qCintjSQXjTzZcd+SJAZvvPKEIRMnle2Kn7wHxsqtgLUjwNwpzViezE7
+         5A1FAi1y1NXLLx/TxnfqwHmlo5sPHYD+x98wDQ96b0p2Poc8CifPs5ThbqmhQZ6+UV
+         FxmbedNiJtxUP6VpmPPyqOqh7Q4z3dvvzB+TlN8wCuug6blatlh1XdYrr4V7ETE2Ox
+         T5hQ2HwtaUYac9KYvVyIgKctEB333F0rTFryxola0gmTOWQN4OYzBNcc2S0+POkcPH
+         ihCi/hOb4Bydg==
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9c7558b838aso395247966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:14:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698761689; x=1699366489;
+        d=1e100.net; s=20230601; t=1698761690; x=1699366490;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K+d8FOi611qgqDiSGAqowSPHYlSjp+mGUPNXtAF6OWs=;
-        b=n6jjngFeB9ETymmGpStYkBzjqEDU5s8IuUJorGk3nzeYbD935u0TjXCTwYV3g1SM/L
-         0repY10zmwftbH4s4bPtnTDKRvKfvjHGO6gzhIivKuopcYKpJtTlJsa+oBDS3yWEeMcH
-         ZiJPOUjXuml2XfPmG4vVwzc9bWSd829p4EdXX4Eq3gxNIndSBhptl/uolqHxN8NIKz2D
-         IEL7C6ua+COcyP18mCVAsjAaLy9iEFCcZXByn2Pn0Ddj+C5OMAYDJfp06Rf4uVS41eOV
-         By/rQERQvrq2fJpKU0+/y4kivHIIvEOwjzHSQBs7ZG7syt3iCG4LZhan/r8ImBPg1JR2
-         VH8w==
-X-Gm-Message-State: AOJu0YyVJFLaqf6wXoXuC5yorDggPrALKDgfJemlI8DY5cJ7A/JkyFSF
-        AYI7AUW4FvC60Be7jSKjlk/PiDh5A5fBSJ+04R+SfODtktrBd2ErusqL3IO2CtDP/jBKiE/6/+V
-        Ps/t6tHAoE+EcHA3/G/oCSagpFtEb57mRwszon2OE4g==
-X-Received: by 2002:a17:906:ee8c:b0:9bd:dfaa:3f3 with SMTP id wt12-20020a170906ee8c00b009bddfaa03f3mr11080310ejb.7.1698761688997;
-        Tue, 31 Oct 2023 07:14:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFkm4eTftMYL/pLkJ6rc17J8JPzS7UGZtP1W0Jm3fINC348oTDOAtfZqM1Xw64GNQBGyCSGeA==
-X-Received: by 2002:a17:906:ee8c:b0:9bd:dfaa:3f3 with SMTP id wt12-20020a170906ee8c00b009bddfaa03f3mr11080294ejb.7.1698761688788;
-        Tue, 31 Oct 2023 07:14:48 -0700 (PDT)
+        bh=XnEjgTb1m78EWwQDGRYEFN4m8CDZaDkjNTK8j9cPE/A=;
+        b=H4tCePhpF0wMI/xSPc5jhXsobwq+kQevvaQ0rRf0XywCWmez33OmCWkDD6VPUvexNp
+         sNKiihTIhcYwcphaJvO8JFtflXP95XO+22iQbBFG3obs+nTUAGaVmx+3C8p8ODjlJBMF
+         aM08Sooavy0CNfLuAA0lOdweHGfqKppfVHP1UEEtCcgAu4CZ9fHploje0BtbgkgMx+H0
+         VMuXwr7qvvltaf08iIRSGRbcqexNvxy/g9LxGfrAMXEngd3t3dwD2Tu/PtMEBPmW1QDr
+         q03v4EWvmSLtNutOYJ4m+TxmHFCzm+XcIHkz4qDfD6IxbyTdKJb4CluRno6/xc5Y8qjk
+         1GpQ==
+X-Gm-Message-State: AOJu0YwEWgXCoLwL0W40Leh97kKs7an1z3LF5QziRToLmC4I1lhRn0zb
+        5ZRgn27i5YWE1z8F4oyqHKzKWFslCgDJFoj0AUdotZqUghdnISYSoo+BBjCL6GjCQrID2Lkca+L
+        wmV0S37YyNjcG7Nt6VI34KNdt/Jm7KRN0xgA80gmryA==
+X-Received: by 2002:a17:907:3184:b0:9c5:844f:a7f4 with SMTP id xe4-20020a170907318400b009c5844fa7f4mr10802103ejb.35.1698761690435;
+        Tue, 31 Oct 2023 07:14:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEfXx1RuCQtYqjPRoFL8zYiifdddYy2acqzq59Ogj9Q205dxFWWWX8UcYcvHsioLJG5MGwW2w==
+X-Received: by 2002:a17:907:3184:b0:9c5:844f:a7f4 with SMTP id xe4-20020a170907318400b009c5844fa7f4mr10802092ejb.35.1698761690172;
+        Tue, 31 Oct 2023 07:14:50 -0700 (PDT)
 Received: from stitch.. ([2a02:aa7:4003:190e:bd47:7b6e:876:4bdc])
-        by smtp.gmail.com with ESMTPSA id p5-20020a1709061b4500b009d23e00a90esm1037395ejg.24.2023.10.31.07.14.47
+        by smtp.gmail.com with ESMTPSA id p5-20020a1709061b4500b009d23e00a90esm1037395ejg.24.2023.10.31.07.14.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 07:14:48 -0700 (PDT)
+        Tue, 31 Oct 2023 07:14:49 -0700 (PDT)
 From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
 To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Subject: [PATCH v2 1/2] dt-bindings: cache: sifive,ccache0: Add StarFive JH7100 compatible
-Date:   Tue, 31 Oct 2023 15:14:43 +0100
-Message-Id: <20231031141444.53426-2-emil.renner.berthing@canonical.com>
+Subject: [PATCH v2 2/2] soc: sifive: ccache: Add StarFive JH7100 support
+Date:   Tue, 31 Oct 2023 15:14:44 +0100
+Message-Id: <20231031141444.53426-3-emil.renner.berthing@canonical.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231031141444.53426-1-emil.renner.berthing@canonical.com>
 References: <20231031141444.53426-1-emil.renner.berthing@canonical.com>
@@ -77,53 +79,171 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This cache controller is also used on the StarFive JH7100 SoC.
-Unfortunately it needs a quirk to work properly, so add dedicated
-compatible string to be able to match it.
+From: Emil Renner Berthing <kernel@esmil.dk>
 
-Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+This adds support for the StarFive JH7100 SoC which also features this
+SiFive cache controller.
+
+The JH7100 has non-coherent DMAs but predate the standard RISC-V Zicbom
+exension, so instead we need to use this cache controller for
+non-standard cache management operations.
+
+Unfortunately the interrupt for uncorrected data is broken on the JH7100
+and fires continuously, so add a quirk to not register a handler for it.
+
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 ---
- Documentation/devicetree/bindings/cache/sifive,ccache0.yaml | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/soc/sifive/sifive_ccache.c | 62 +++++++++++++++++++++++++++++-
+ 1 file changed, 60 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/cache/sifive,ccache0.yaml b/Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
-index 8a6a78e1a7ab..7e8cebe21584 100644
---- a/Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
-+++ b/Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
-@@ -38,7 +38,9 @@ properties:
-               - sifive,fu740-c000-ccache
-           - const: cache
-       - items:
--          - const: starfive,jh7110-ccache
-+          - enum:
-+              - starfive,jh7100-ccache
-+              - starfive,jh7110-ccache
-           - const: sifive,ccache0
-           - const: cache
-       - items:
-@@ -88,6 +90,7 @@ allOf:
-           contains:
-             enum:
-               - sifive,fu740-c000-ccache
-+              - starfive,jh7100-ccache
-               - starfive,jh7110-ccache
-               - microchip,mpfs-ccache
+diff --git a/drivers/soc/sifive/sifive_ccache.c b/drivers/soc/sifive/sifive_ccache.c
+index 3684f5b40a80..0da3d1bd0866 100644
+--- a/drivers/soc/sifive/sifive_ccache.c
++++ b/drivers/soc/sifive/sifive_ccache.c
+@@ -8,13 +8,16 @@
  
-@@ -111,6 +114,7 @@ allOf:
-           contains:
-             enum:
-               - sifive,fu740-c000-ccache
-+              - starfive,jh7100-ccache
-               - starfive,jh7110-ccache
+ #define pr_fmt(fmt) "CCACHE: " fmt
  
-     then:
++#include <linux/align.h>
+ #include <linux/debugfs.h>
+ #include <linux/interrupt.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_address.h>
+ #include <linux/device.h>
+ #include <linux/bitfield.h>
++#include <asm/cacheflush.h>
+ #include <asm/cacheinfo.h>
++#include <asm/dma-noncoherent.h>
+ #include <soc/sifive/sifive_ccache.h>
+ 
+ #define SIFIVE_CCACHE_DIRECCFIX_LOW 0x100
+@@ -39,10 +42,14 @@
+ #define SIFIVE_CCACHE_CONFIG_SETS_MASK GENMASK_ULL(23, 16)
+ #define SIFIVE_CCACHE_CONFIG_BLKS_MASK GENMASK_ULL(31, 24)
+ 
++#define SIFIVE_CCACHE_FLUSH64 0x200
++#define SIFIVE_CCACHE_FLUSH32 0x240
++
+ #define SIFIVE_CCACHE_WAYENABLE 0x08
+ #define SIFIVE_CCACHE_ECCINJECTERR 0x40
+ 
+ #define SIFIVE_CCACHE_MAX_ECCINTR 4
++#define SIFIVE_CCACHE_LINE_SIZE 64
+ 
+ static void __iomem *ccache_base;
+ static int g_irq[SIFIVE_CCACHE_MAX_ECCINTR];
+@@ -56,6 +63,11 @@ enum {
+ 	DIR_UNCORR,
+ };
+ 
++enum {
++	QUIRK_NONSTANDARD_CACHE_OPS	= BIT(0),
++	QUIRK_BROKEN_DATA_UNCORR	= BIT(1),
++};
++
+ #ifdef CONFIG_DEBUG_FS
+ static struct dentry *sifive_test;
+ 
+@@ -106,6 +118,8 @@ static void ccache_config_read(void)
+ static const struct of_device_id sifive_ccache_ids[] = {
+ 	{ .compatible = "sifive,fu540-c000-ccache" },
+ 	{ .compatible = "sifive,fu740-c000-ccache" },
++	{ .compatible = "starfive,jh7100-ccache",
++	  .data = (void *)(QUIRK_NONSTANDARD_CACHE_OPS | QUIRK_BROKEN_DATA_UNCORR) },
+ 	{ .compatible = "sifive,ccache0" },
+ 	{ /* end of table */ }
+ };
+@@ -124,6 +138,34 @@ int unregister_sifive_ccache_error_notifier(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(unregister_sifive_ccache_error_notifier);
+ 
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++static void ccache_flush_range(phys_addr_t start, size_t len)
++{
++	phys_addr_t end = start + len;
++	phys_addr_t line;
++
++	if (!len)
++		return;
++
++	mb();
++	for (line = ALIGN_DOWN(start, SIFIVE_CCACHE_LINE_SIZE); line < end;
++			line += SIFIVE_CCACHE_LINE_SIZE) {
++#ifdef CONFIG_32BIT
++		writel(line >> 4, ccache_base + SIFIVE_CCACHE_FLUSH32);
++#else
++		writeq(line, ccache_base + SIFIVE_CCACHE_FLUSH64);
++#endif
++		mb();
++	}
++}
++
++static const struct riscv_nonstd_cache_ops ccache_mgmt_ops __initdata = {
++	.wback = &ccache_flush_range,
++	.inv = &ccache_flush_range,
++	.wback_inv = &ccache_flush_range,
++};
++#endif /* CONFIG_RISCV_NONSTANDARD_CACHE_OPS */
++
+ static int ccache_largest_wayenabled(void)
+ {
+ 	return readl(ccache_base + SIFIVE_CCACHE_WAYENABLE) & 0xFF;
+@@ -210,11 +252,15 @@ static int __init sifive_ccache_init(void)
+ 	struct device_node *np;
+ 	struct resource res;
+ 	int i, rc, intr_num;
++	const struct of_device_id *match;
++	unsigned long quirks;
+ 
+-	np = of_find_matching_node(NULL, sifive_ccache_ids);
++	np = of_find_matching_node_and_match(NULL, sifive_ccache_ids, &match);
+ 	if (!np)
+ 		return -ENODEV;
+ 
++	quirks = (uintptr_t)match->data;
++
+ 	if (of_address_to_resource(np, 0, &res)) {
+ 		rc = -ENODEV;
+ 		goto err_node_put;
+@@ -240,6 +286,10 @@ static int __init sifive_ccache_init(void)
+ 
+ 	for (i = 0; i < intr_num; i++) {
+ 		g_irq[i] = irq_of_parse_and_map(np, i);
++
++		if (i == DATA_UNCORR && (quirks & QUIRK_BROKEN_DATA_UNCORR))
++			continue;
++
+ 		rc = request_irq(g_irq[i], ccache_int_handler, 0, "ccache_ecc",
+ 				 NULL);
+ 		if (rc) {
+@@ -249,6 +299,14 @@ static int __init sifive_ccache_init(void)
+ 	}
+ 	of_node_put(np);
+ 
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (quirks & QUIRK_NONSTANDARD_CACHE_OPS) {
++		riscv_cbom_block_size = SIFIVE_CCACHE_LINE_SIZE;
++		riscv_noncoherent_supported();
++		riscv_noncoherent_register_cache_ops(&ccache_mgmt_ops);
++	}
++#endif
++
+ 	ccache_config_read();
+ 
+ 	ccache_cache_ops.get_priv_group = ccache_get_priv_group;
+@@ -269,4 +327,4 @@ static int __init sifive_ccache_init(void)
+ 	return rc;
+ }
+ 
+-device_initcall(sifive_ccache_init);
++arch_initcall(sifive_ccache_init);
 -- 
 2.40.1
 
