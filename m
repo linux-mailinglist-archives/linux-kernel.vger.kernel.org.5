@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3DF7DC64D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6052B7DC645
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbjJaGMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 02:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
+        id S235407AbjJaGIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 02:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235409AbjJaGMU (ORCPT
+        with ESMTP id S234888AbjJaGII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 02:12:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB4B122;
-        Mon, 30 Oct 2023 23:12:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05A26C433CD;
-        Tue, 31 Oct 2023 06:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698732363;
-        bh=DwYhFxPr9b/VXj2JiyRqdz0UfnNGH08F8Q/fCx7bSzA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0I7ufmMSFzzwe8BTghiUBtMi0oxHk7khrkX1XXz5xjK83B5o1iWejwXbPxe5an2Xq
-         dBe/fPGm6/vYIEdygI1j0D4kl0X2c09dZhoj9LSxSBXzoqlvpnfEOPmN+03C4/qPmY
-         KgZzPFYQa+ugsEGBrk6PsLBD28OGOzpweTVHgTg0=
-Date:   Tue, 31 Oct 2023 07:06:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ronald Wahl <rwahl@gmx.de>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Ronald Wahl <ronald.wahl@raritan.com>
-Subject: Re: [PATCH] serial: 8250: 8250_omap: Do not start RX DMA on THRI
- interrupt
-Message-ID: <2023103150-esteemed-deputize-66a0@gregkh>
-References: <20231030183951.15331-1-rwahl@gmx.de>
+        Tue, 31 Oct 2023 02:08:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57DF0C0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 23:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698732486; x=1730268486;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9ANZeDcgmHx9iL3ddFW3DF4jmJ3lz3vvm7zaz2lgJJ4=;
+  b=eYeN/ZvwsyiH/0V8KEO60DdIkQv170G8WZhAv4dbKNKZlSj7X/4kFNf5
+   FDXROcKIi1Tl+mg1iydDVOdQR0uhaE7iLAXCd9iVmkj8mzkfiUh9ko7rQ
+   KueOzzdqa+QYzNNUN1z7WzNhSjrHJ9r0YKF22ICRg2tsmR3mCsKPxzGue
+   I5S0lXuFcOEeW2twgdRA6XPCeAs3T4UTOOcltKVFDg6qRBKXEWundEZzn
+   CZLicsSWOFmNqW21DKPV6XM+QshtpIY49CYeF5TJimGFaF/Il9unV6qaa
+   U+bAowXjAWpc0F5oMZL2NzZBKllLDDQZxFC7CFDOIR9aL2AMq5GnPm8Ik
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1069938"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="1069938"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 23:08:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="904229084"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="904229084"
+Received: from esukhov-mobl2.ccr.corp.intel.com (HELO box.shutemov.name) ([10.252.34.41])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 23:08:02 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id D054E10A2BD; Tue, 31 Oct 2023 09:07:59 +0300 (+03)
+Date:   Tue, 31 Oct 2023 09:07:59 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "Lutomirski, Andy" <luto@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "mikelley@microsoft.com" <mikelley@microsoft.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v2] x86/mm/cpa: Warn if set_memory_XXcrypted() fails
+Message-ID: <20231031060759.xkiwmwuihqvqjizr@box.shutemov.name>
+References: <20231027214744.1742056-1-rick.p.edgecombe@intel.com>
+ <20231030082714.pbma2bg2p354cuft@box.shutemov.name>
+ <f4232326b949f96aa88bd40309389d4b99288fa1.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231030183951.15331-1-rwahl@gmx.de>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <f4232326b949f96aa88bd40309389d4b99288fa1.camel@intel.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 07:39:51PM +0100, Ronald Wahl wrote:
-> Starting RX DMA on THRI interrupt is too early because TX may not have
-> finished yet.
+On Mon, Oct 30, 2023 at 04:58:37PM +0000, Edgecombe, Rick P wrote:
+> > It intended to get upstream alongside with the caller fixes to leak
+> > memory
+> > on failure, right? Maybe get it into one patchset?
 > 
-> This change is inspired by commit 90b8596ac460 ("serial: 8250: Prevent
-> starting up DMA Rx on THRI interrupt") and fixes DMA issues I had with
-> an AM62 SoC that is using the 8250 OMAP variant.
-> 
-> Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-> ---
->  drivers/tty/serial/8250/8250_omap.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> Why do you think? Since the callers are smattered across various
+> drivers, and those changes are now disconnected from the changes to
+> CPA, I thought to just follow up each area separately. For example I
+> was going to put all the hyper-v related changes together, but that
+> part is RFC due to the fact that I can't really test it. The MS folks
+> said they could help out there. So the different areas were feeling
+> like separate series.
 
-What commit id does this fix?
+I am okay with doing it separately. I just was not clear on your plans
+with the fixes.
 
-thanks,
-
-greg k-h
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
