@@ -2,74 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C446A7DD6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 20:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2C27DD6B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 20:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbjJaTnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 15:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S1343568AbjJaTpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 15:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjJaTnK (ORCPT
+        with ESMTP id S231253AbjJaTpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 15:43:10 -0400
-Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B54483;
-        Tue, 31 Oct 2023 12:43:07 -0700 (PDT)
-Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.stoffel.org (Postfix) with ESMTPSA id 5EB591E12B;
-        Tue, 31 Oct 2023 15:43:05 -0400 (EDT)
-Received: by quad.stoffel.org (Postfix, from userid 1000)
-        id 80C85A8B01; Tue, 31 Oct 2023 15:43:04 -0400 (EDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <25921.22728.501691.76305@quad.stoffel.home>
-Date:   Tue, 31 Oct 2023 15:43:04 -0400
-From:   "John Stoffel" <john@stoffel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
+        Tue, 31 Oct 2023 15:45:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2423483;
+        Tue, 31 Oct 2023 12:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=G5oz1i0chmwwFqsr4p6s9d+ur0tfEkZyaByP4TjkcXY=; b=eCh1ij92kzj/qUkX2rA/auAXxT
+        ecQmq1Sc/uXC6Y/xKhXT6FcvOgYojniXF19ClSCzC4bo3544dlqn4fN6JqbwTtO80s+O2n5ToPFlh
+        p8BMkxCnhmB7mEWlf0GRb3PxSetCwe4Nm4sQeBzi0bV2uWr8nP27zLVOPfeNWsK6sRmAFqhL+iRY7
+        xDEyT+Y9f+eUxaVV+NO9rrvJUMbOKbkPpn+RXlF4inaK/s2FpTg0IUFE8MzPaDHwKzfquemn/0UO5
+        LTGjchD+FUQOHESe0Pw72Z8buPrqeJ01XFjsXEyZSvEf3qUMsZXH3KmNtQxtLaunGaceklOfddmrA
+        TzhYXd+Q==;
+Received: from [2001:8b0:10b:5:f213:ff26:c9e:fe3d] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qxuff-00BvC3-OP; Tue, 31 Oct 2023 19:45:03 +0000
+Message-ID: <19cdf9362d469ac6de8503aa335b864ab5fc2553.camel@infradead.org>
+Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Griffoul, Fred" <fgriffo@amazon.com>
+Cc:     Paul Durrant <paul@xen.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-In-Reply-To: <b4c04efdde3bc7d107d0bdc68e100a94942aca3c.camel@kernel.org>
-References: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-        <ZTc8tClCRkfX3kD7@dread.disaster.area>
-        <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-        <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
-        <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-        <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
-        <ZTnNCytHLGoJY9ds@dread.disaster.area>
-        <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-        <ZUAwFkAizH1PrIZp@dread.disaster.area>
-        <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
-        <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
-        <b4c04efdde3bc7d107d0bdc68e100a94942aca3c.camel@kernel.org>
-X-Mailer: VM 8.2.0b under 27.1 (x86_64-pc-linux-gnu)
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Tue, 31 Oct 2023 19:45:02 +0000
+In-Reply-To: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
+References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-aiUNbo1fa+ClKX/hMo3N"
+User-Agent: Evolution 3.44.4-0ubuntu2 
+MIME-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,61 +58,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>> "Jeff" == Jeff Layton <jlayton@kernel.org> writes:
 
-> On Tue, 2023-10-31 at 12:42 +1100, Dave Chinner wrote:
->> On Mon, Oct 30, 2023 at 01:11:56PM -1000, Linus Torvalds wrote:
->> > On Mon, 30 Oct 2023 at 12:37, Dave Chinner <david@fromorbit.com> wrote:
->> > > 
->> > > If XFS can ignore relatime or lazytime persistent updates for given
->> > > situations, then *we don't need to make periodic on-disk updates of
->> > > atime*. This makes the whole problem of "persistent atime update bumps
->> > > i_version" go away because then we *aren't making persistent atime
->> > > updates* except when some other persistent modification that bumps
->> > > [cm]time occurs.
->> > 
->> > Well, I think this should be split into two independent questions:
->> > 
->> >  (a) are relatime or lazytime atime updates persistent if nothing else changes?
->> 
->> They only become persistent after 24 hours or, in the case of
->> relatime, immediately persistent if mtime < atime (i.e. read after a
->> modification). Those are the only times that the VFS triggers
->> persistent writeback of atime, and it's the latter case (mtime <
->> atime) that is the specific trigger that exposed the problem with
->> atime bumping i_version in the first place.
->> 
->> >  (b) do atime updates _ever_ update i_version *regardless* of relatime
->> > or lazytime?
->> > 
->> > and honestly, I think the best answer to (b) would be that "no,
->> > i_version should simply not change for atime updates". And I think
->> > that answer is what it is because no user of i_version seems to want
->> > it.
->> 
->> As I keep repeating: Repeatedly stating that "atime should not bump
->> i_version" does not address the questions I'm asking *at all*.
->> 
->> > Now, the reason it's a single question for you is that apparently for
->> > XFS, the only thing that matters is "inode was written to disk" and
->> > that "di_changecount" value is thus related to the persistence of
->> > atime updates, but splitting di_changecount out to be a separate thing
->> > from i_version seems to be on the table, so I think those two things
->> > really could be independent issues.
->> 
->> Wrong way around - we'd have to split i_version out from
->> di_changecount. It's i_version that has changed semantics, not
->> di_changecount, and di_changecount behaviour must remain unchanged.
->> 
+--=-aiUNbo1fa+ClKX/hMo3N
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> I have to take issue with your characterization of this. The
-> requirements for NFS's change counter have not changed. Clearly there
-> was a breakdown in communications when it was first implemented in Linux
-> that caused atime updates to get counted in the i_version value, but
-> that was never intentional and never by design.
+On Mon, 2023-10-30 at 15:50 +0000, David Woodhouse wrote:
+>=20
+> +static int do_monotonic(s64 *t, u64 *tsc_timestamp)
+> +{
+> +	struct pvclock_gtod_data *gtod =3D &pvclock_gtod_data;
+> +	unsigned long seq;
+> +	int mode;
+> +	u64 ns;
+> +
+> +	do {
+> +		seq =3D read_seqcount_begin(&gtod->seq);
+> +		ns =3D gtod->clock.base_cycles;
+> +		ns +=3D vgettsc(&gtod->clock, tsc_timestamp, &mode);
+> +		ns >>=3D gtod->clock.shift;
+> +		ns +=3D ktime_to_ns(ktime_add(gtod->clock.offset,
+> gtod->offs_boot));
+> +	} while (unlikely(read_seqcount_retry(&gtod->seq, seq)));
+> +	*t =3D ns;
+> +
+> +	return mode;
+> +}
+> +
 
-This has been bugging me, but all the references to NFS really mean
-NFSv4.1 or newer, correct?  I can't see how any of this affects NFSv3
-at all, and that's probably the still dominant form of NFS, right?  
+Hrm, that's basically cargo-culted from do_monotonic_raw() immediately
+above it. Should it be adding gtod->offs_boot?
 
-John
+Empirically the answer would appear to be 'no'. When gtod->offs_boot is
+non-zero, I see kvm_get_monotonic_and_clockread() returning values
+which are precisely that far in advance of what ktime_get() reports.
+
+
+
+--=-aiUNbo1fa+ClKX/hMo3N
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMxMTk0NTAyWjAvBgkqhkiG9w0BCQQxIgQg+kjka6eP
+IPG9rtkuKxyHkBWNPV0chCnq5ZP+lr7lZIYwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB0U/kZI3jsLlzEZhYTWqrGs6EFA383nPpw
+v/34eOvIHHZ74f5g08+OC+m1dEs+doelM4EIc0s+o4jUSlvplAfRcLYfdj5a0DBWgfGadpcB8rrd
+SDSDjcyNpN4g/ScE3lZ8OUx6ZlCNGlTPhbRR4dqYmA0rwdEjUMljx7BHIDZC6kaBVms8tYBgpSg0
+arbfMmrz3TmdDpuly+JXrVeNLvXxHxkFV0bAv+EgiMGCO1eqh5gPEDXJsyYJV2fxH8NjpLDVtvON
+Q6QZ3vVTvwkUV639Xr3vF/go/OOkp6EYmsPjKEpP5lvLosOdygf4qCIsFMqte3YHFBQOeBoTEvKb
+OSapPehVyRKc+xF5cFNqAseH5vn4/i3Ow+wl2qNSmYgSVbq+s9ATkJbSVDYhsWxLyU66NHBSsnC4
+jY6MwXNJvWYfRDdDQgPcYvK0IE4Qoz4o6GtnzdzbPwOqQmUQPVscygN82s9SPAccjObdfkPRe6FC
+X98SLpZqgQkNbUwE0nP7KO6NCbiYexgwHUins6jkE8glsGauNJ4BuMQjTtlfCNVifgQOPGYpbo5l
+f/idgv+rDEiHlvdnTt8jWMVrNsYuYh29yUO+s/EoqWZ9ZzjhbYFYoqB2yKXpogYAQ4eK28TM5OqV
+TKGJvK5mMaFC2Npyd8ILIoWrYZT3QnWzHKyFiJ9GdwAAAAAAAA==
+
+
+--=-aiUNbo1fa+ClKX/hMo3N--
