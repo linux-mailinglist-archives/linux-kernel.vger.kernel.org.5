@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2487DCB04
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF077DCB0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343964AbjJaKig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33350 "EHLO
+        id S234967AbjJaKmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343946AbjJaKie (ORCPT
+        with ESMTP id S229614AbjJaKmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:38:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB35D83;
-        Tue, 31 Oct 2023 03:38:32 -0700 (PDT)
+        Tue, 31 Oct 2023 06:42:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4636783;
+        Tue, 31 Oct 2023 03:42:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698748712; x=1730284712;
+  t=1698748933; x=1730284933;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=3YWDf1NX0vV0KjfCqqHzU9+x4C2KVyU+FzOd4nHXStM=;
-  b=CLSwr6EtM5la8O5+sd1oBF5Rx6g8C77mT0KrasNGgW4ZWIvHHLm99VKW
-   J4DQuqjOxDj5cXqYLvwUv5r7p2Sy1gkwW4HybUrfWjbZBsIuB/Ajw3cys
-   Pvut640gxM1GtPcGshcJLgThCIsUNyLyc5Ia/XHvzbbcf5DW6d5hIto7c
-   N4hv4JTiFX5kjn5Us4b9v4HoHF6HhA1jUX4H1NdBSAaafF2dWbHrvs/Dr
-   XpWxggKo4poquzKg3625BtPBsE2mdXLTwU7kJUI9enfDXKnigiptXD7U7
-   1TeoQ1aEtvD88GcDodMHpSc4N1SISa5YonEojvwHW9ta6fQtAOz7mpQgK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="452535567"
+  bh=9uZ64730+nuirrjXNVNzsndGS/0DAlcsQpQ+mk4LQFU=;
+  b=HYnBXvPke/ccpEkT2ybMlW/FT4l5tnPAaysf7anctaQ4GNDRcXwflgPN
+   ed2jqxzmUDCsf4HeoKXmU0fJd8O3+RV0tapd5wSrELQ/Ni5vrMLts56LA
+   YyDMK6CPEf+aQltgUFt/xH0f0UcpQiSZyJljWQ4HxCXRom/9w7y0WkG1n
+   wjUZ8oo29yu1wvsX5uhGykFlDSndGI4Cy/1Fgmw/ZRy2DhDbFEVpMQFL2
+   4WwergOel5mJjDAj+2fjx0uB0m+IgDagjAi/XinnHnSctu4kK76IEAqaB
+   9k8nrxmmmpxZ8Us1yutZG5IUQ/hPnoWxRb0nv8gwZlcgqca4sKyY8voI2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1108639"
 X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="452535567"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:38:32 -0700
+   d="scan'208";a="1108639"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:42:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="904306946"
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="795536405"
 X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="904306946"
+   d="scan'208";a="795536405"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:38:28 -0700
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:42:09 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qxm8f-0000000A7Cp-0bVz;
-        Tue, 31 Oct 2023 12:38:25 +0200
-Date:   Tue, 31 Oct 2023 12:38:24 +0200
+        id 1qxmCE-0000000A7Eh-1tq2;
+        Tue, 31 Oct 2023 12:42:06 +0200
+Date:   Tue, 31 Oct 2023 12:42:06 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Gazzillo <paul@pgazz.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-Message-ID: <ZUDZIEY_uTVMHh3C@smile.fi.intel.com>
-References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
- <20231028162025.4259f1cc@jic23-huawei>
- <84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com>
- <6a697c62-6a7c-4b31-bc8e-10f40db0363d@gmail.com>
- <d528b45c-123d-4ef7-b110-7efbfef91bc5@gmail.com>
+To:     Hangyu Hua <hbh25y@gmail.com>
+Cc:     kristo@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        tony@atomide.com, claudiu.beznea@microchip.com, robh@kernel.org,
+        dario.binacchi@amarulasolutions.com, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ti: fix possible memory leak in
+ _ti_omap4_clkctrl_setup()
+Message-ID: <ZUDZ_tDvM7oUBfkq@smile.fi.intel.com>
+References: <20231031103010.23792-1-hbh25y@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d528b45c-123d-4ef7-b110-7efbfef91bc5@gmail.com>
+In-Reply-To: <20231031103010.23792-1-hbh25y@gmail.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 09:11:37AM +0200, Matti Vaittinen wrote:
-> On 10/30/23 12:21, Matti Vaittinen wrote:
-> > On 10/29/23 17:51, Matti Vaittinen wrote:
-> > > On 10/28/23 18:20, Jonathan Cameron wrote:
+On Tue, Oct 31, 2023 at 06:30:10PM +0800, Hangyu Hua wrote:
+> kstrndup() and kstrdup_and_replace() in clkctrl_get_name() can perform
+> dynamic memory allocation. So clkctrl_name needs to be freed when
+> provider->clkdm_name is NULL.
 
-...
-
-> 	tmp = gts->max_scale;
+> Fixes: bd46cd0b802d ("clk: ti: clkctrl: check return value of kasprintf()")
+> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+> ---
 > 
-> 	rem = do_div(tmp, total_gain);
-> 	if (total_gain > 1 && rem >= total_gain / 2)
-> 		tmp += 1ULL;
+> 	 v2 and v3: fix commit info.
 
-...which is NIH DIV_ROUND_CLOSEST_ULL()
+I believe I gave you my Rb tag. It's your responsibility to care it on if you
+send a new version. Otherwise, please tell what makes you think that tag should
+not be here?
 
 -- 
 With Best Regards,
