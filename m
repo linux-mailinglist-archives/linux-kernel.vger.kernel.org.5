@@ -2,89 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD8E7DD576
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85527DD57F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347004AbjJaRvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S1347003AbjJaRwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236472AbjJaRvA (ORCPT
+        with ESMTP id S1346995AbjJaRwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:51:00 -0400
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD9F91;
-        Tue, 31 Oct 2023 10:50:58 -0700 (PDT)
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6cf65093780so3891351a34.0;
-        Tue, 31 Oct 2023 10:50:58 -0700 (PDT)
+        Tue, 31 Oct 2023 13:52:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFF8A2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:51:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698774689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SG+40GpplkvNW1CAOdJBVH5eVU8uZEgWxfsItEyklhU=;
+        b=V5rI8xJcp4BuXPoOd6uJtPEQKpwbRYAW87ToqE8drn/1KipJiK4/uvgpid9dLmUXrth2L4
+        a7Xv9BmQOA6M2IhBtAczCEu5Qa3ZEy0S7zkIg+6+KBvc8YZJ34B0M6KOYJ8NrOJJyGV0n+
+        0AmBbbAgS6BbsM9jPnmfiZ3Fxwb2Gio=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-29-faz2wRedN62_q96RTFd_kg-1; Tue, 31 Oct 2023 13:51:07 -0400
+X-MC-Unique: faz2wRedN62_q96RTFd_kg-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-507b0270b7fso6375844e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:51:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774657; x=1699379457;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X6LXEKMIQBHWExNoLzEH7yaoOr9MepvhTk3e16pDybk=;
-        b=Xe9aLxvA5yfiE+zGT6OHI3UGLxHMNC5Bp48ddiAD1+fH+G8SGD81RD4ukFISLlWVX1
-         5/0sqJWc/yBA+F1i6pDjpMarKDOIsWHuCtJFCsSU9fXVaqHrmtTSVD8vt1jvmBNxGlLV
-         09jERYD2HuiopgD3tRqRaXWqqTH8mgiIbcbPMcHN1SqtzM1QrkUVp+bd8aEy10VDyK98
-         NdKT5dyLrKBWtA/K8y7nSXyqxtJYbIfnCfTj7g7d2KJQdvNuuXnWm+2a0H1ujSQ5c5+q
-         MVboXT0kTOYeOv906GPsQgb8mOsHTK0Rh8nEuS7L1JIr3O4hYnPyAKDhk98DpGfKbJJW
-         ymHA==
-X-Gm-Message-State: AOJu0Yxq7nd1iW9WW4EqdJQW1HHbUmnL/bj8+/EXTcuNpyPi+gZozUkI
-        /xEw9PV/RjHvdRRMKefOkQ==
-X-Google-Smtp-Source: AGHT+IF6amwnL96zaqgjWU/gPMPzFFt/FEvX0qd8KigwuyUizv23oH+g+thHN3mTxakQUBWJOkY5Uw==
-X-Received: by 2002:a9d:4f14:0:b0:6b7:43eb:c1a with SMTP id d20-20020a9d4f14000000b006b743eb0c1amr13069731otl.36.1698774657634;
-        Tue, 31 Oct 2023 10:50:57 -0700 (PDT)
-Received: from herring.priv ([4.31.143.193])
-        by smtp.gmail.com with ESMTPSA id v5-20020a4a8c45000000b00581fedcb06csm341637ooj.19.2023.10.31.10.50.56
+        d=1e100.net; s=20230601; t=1698774666; x=1699379466;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SG+40GpplkvNW1CAOdJBVH5eVU8uZEgWxfsItEyklhU=;
+        b=O3R+9Q49EN0hb//oG2QbwI0h+6ZPBUeNqcahDsuVXleY0rCbWMkZH8Puw8e0yihdGm
+         x7Ed67fhuyprElaI8Gx+ffRaXihV6RdLJ/RVBl8U5pD2Dd8CRBE/R1LXtB5S26vOUJui
+         dTM17f1cn6P1g8sIwRIWHdqTdw34bj4eY3HDcF4WBz9dOChhgLYIH2dr+73lHyo83Mg+
+         QrHfW/VUC8n+db+vogCzVIqJRDnczKiNDw2CmUUpVy9z3uH24DeNdO90VQDpHTUL6Vgn
+         I+I6xjMMNC3nU0e4cAzEXv06jjeye9ZGwYB5PbrKcq7DXLr9NNJUGFnwgRNU1SVWmRkS
+         XDTA==
+X-Gm-Message-State: AOJu0YwoXwMcF6G0k4Rt2R+83M1duJzwuugXeAQQ35/hUsHJOOGlJ4CW
+        hDLKlLFHzW0uyUcPWWMHSmtJiLhpjFrBavIyyj/tQuPNVHo4B7XflP4trEK+r2Epu6m1SZ/YbnD
+        di9vw0neZUvTc7GE3SvAFA8ny+oi1SbBs
+X-Received: by 2002:a2e:990a:0:b0:2bc:f41a:d9bc with SMTP id v10-20020a2e990a000000b002bcf41ad9bcmr10231306lji.25.1698774665836;
+        Tue, 31 Oct 2023 10:51:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHaajZM1G/jLAEkI7sQHt++jLqf/BneIH6DsAPsMXOxg7iM1riPSMuMES+LaJat0TY3dBJlLw==
+X-Received: by 2002:a2e:990a:0:b0:2bc:f41a:d9bc with SMTP id v10-20020a2e990a000000b002bcf41ad9bcmr10231290lji.25.1698774665475;
+        Tue, 31 Oct 2023 10:51:05 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id q9-20020a7bce89000000b0040523bef620sm1087120wmj.0.2023.10.31.10.51.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:50:57 -0700 (PDT)
-Received: (nullmailer pid 1803571 invoked by uid 1000);
-        Tue, 31 Oct 2023 17:50:55 -0000
-Date:   Tue, 31 Oct 2023 12:50:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Binbin Zhou <zhoubinbin@loongson.cn>
-Cc:     Binbin Zhou <zhoubb.aaron@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, lvjianmin@loongson.cn,
-        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
+        Tue, 31 Oct 2023 10:51:05 -0700 (PDT)
+Message-ID: <5c5eb1cc92d05fb7717fe3480aeb7b20e7842d05.camel@redhat.com>
+Subject: Re: [PATCH v6 12/25] KVM: x86: Refresh CPUID on write to guest
+ MSR_IA32_XSS
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        pbonzini@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] dt-bindings: interrupt-controller:
- loongson,liointc: Standardize the naming of 'loongson,parent-int-map'
-Message-ID: <20231031175055.GA1801059-robh@kernel.org>
-References: <cover.1698717154.git.zhoubinbin@loongson.cn>
- <dc6621dd09b4710c66140b830d0b345682c7b707.1698717154.git.zhoubinbin@loongson.cn>
+Cc:     dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com,
+        Zhang Yi Z <yi.z.zhang@linux.intel.com>
+Date:   Tue, 31 Oct 2023 19:51:03 +0200
+In-Reply-To: <20230914063325.85503-13-weijiang.yang@intel.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-13-weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc6621dd09b4710c66140b830d0b345682c7b707.1698717154.git.zhoubinbin@loongson.cn>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 10:36:36AM +0800, Binbin Zhou wrote:
-> Since the 'loongson,parent_int_map' attribute naming is non-standard, we
-> should use 'loongson,parent-int-map' instead.
-> Also, 'loongson,parent_int_map' should be marked as deprecated.
+On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+> Update CPUID.(EAX=0DH,ECX=1).EBX to reflect current required xstate size
+> due to XSS MSR modification.
+> CPUID(EAX=0DH,ECX=1).EBX reports the required storage size of all enabled
+> xstate features in (XCR0 | IA32_XSS). The CPUID value can be used by guest
+> before allocate sufficient xsave buffer.
+> 
+> Note, KVM does not yet support any XSS based features, i.e. supported_xss
+> is guaranteed to be zero at this time.
+> 
+> Opportunistically modify XSS write access logic as: if !guest_cpuid_has(),
+> write initiated from host is allowed iff the write is reset operaiton,
+> i.e., data == 0, reject host_initiated non-reset write and any guest write.
 
-While yes, '-' is preferred over '_', I don't think it is worth carrying 
-support (here and in the kernel) for both.
+The commit message is not clear and somewhat misleading because it forces the reader 
+to parse the whole patch before one could understand what '!guest_cpuid_has()'
+means.
+
+Also I don't think that the term 'reset operation' is a good choice, because it is too closely
+related to vCPU reset IMHO. Let's at least call it 'reset to a default value' or something like that.
+Also note that 0 is not always the default/reset value of an MSR.
+
+I suggest this instead:
+
+"If XSAVES is not enabled in the guest CPUID, forbid setting IA32_XSS msr
+to anything but 0, even if the write is host initiated."
+
+Also, isn't this change is at least in theory not backward compatible?
+While KVM didn't report IA32_XSS as one needing save/restore, the userspace
+could before this patch set the IA32_XSS to any value, now it can't.
+
+Maybe it's safer to allow to set any value, ignore the set value and
+issue a WARN_ON_ONCE or something?
+
+Finally, I think that this change is better to be done in a separate patch
+because it is unrelated and might not even be backward compatible.
+
+Best regards,
+	Maxim Levitsky
 
 > 
-> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
 > ---
->  .../interrupt-controller/loongson,liointc.yaml    | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+>  arch/x86/include/asm/kvm_host.h |  1 +
+>  arch/x86/kvm/cpuid.c            | 15 ++++++++++++++-
+>  arch/x86/kvm/x86.c              | 13 +++++++++----
+>  3 files changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 0fc5e6312e93..d77b030e996c 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -803,6 +803,7 @@ struct kvm_vcpu_arch {
+>  
+>  	u64 xcr0;
+>  	u64 guest_supported_xcr0;
+> +	u64 guest_supported_xss;
+>  
+>  	struct kvm_pio_request pio;
+>  	void *pio_data;
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 1f206caec559..4e7a820cba62 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -275,7 +275,8 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+>  	best = cpuid_entry2_find(entries, nent, 0xD, 1);
+>  	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
+>  		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+> -		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+> +		best->ebx = xstate_required_size(vcpu->arch.xcr0 |
+> +						 vcpu->arch.ia32_xss, true);
+>  
+>  	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
+>  	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+> @@ -312,6 +313,17 @@ static u64 vcpu_get_supported_xcr0(struct kvm_vcpu *vcpu)
+>  	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
+>  }
+>  
+> +static u64 vcpu_get_supported_xss(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_cpuid_entry2 *best;
+> +
+> +	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 1);
+> +	if (!best)
+> +		return 0;
+> +
+> +	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
+> +}
+
+Same question as one for patch that added vcpu_get_supported_xcr0()
+Why to have per vCPU supported XSS if we assume that all CPUs have the same
+CPUID?
+
+I mean I am not against supporting hybrid CPU models, but KVM currently doesn't
+support this and this creates illusion that it does.
+
+> +
+>  static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
+>  {
+>  	struct kvm_cpuid_entry2 *entry;
+> @@ -358,6 +370,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	vcpu->arch.guest_supported_xcr0 = vcpu_get_supported_xcr0(vcpu);
+> +	vcpu->arch.guest_supported_xss = vcpu_get_supported_xss(vcpu);
+>  
+>  	/*
+>  	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 1258d1d6dd52..9a616d84bd39 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3795,20 +3795,25 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			vcpu->arch.ia32_tsc_adjust_msr += adj;
+>  		}
+>  		break;
+> -	case MSR_IA32_XSS:
+> -		if (!msr_info->host_initiated &&
+> -		    !guest_cpuid_has(vcpu, X86_FEATURE_XSAVES))
+> +	case MSR_IA32_XSS: {
+> +		bool host_msr_reset = msr_info->host_initiated && data == 0;
+> +
+> +		if (!guest_cpuid_has(vcpu, X86_FEATURE_XSAVES) &&
+> +		    (!host_msr_reset || !msr_info->host_initiated))
+>  			return 1;
+>  		/*
+>  		 * KVM supports exposing PT to the guest, but does not support
+>  		 * IA32_XSS[bit 8]. Guests have to use RDMSR/WRMSR rather than
+>  		 * XSAVES/XRSTORS to save/restore PT MSRs.
+>  		 */
+Just in case.... TODO
+
+> -		if (data & ~kvm_caps.supported_xss)
+> +		if (data & ~vcpu->arch.guest_supported_xss)
+>  			return 1;
+> +		if (vcpu->arch.ia32_xss == data)
+> +			break;
+>  		vcpu->arch.ia32_xss = data;
+>  		kvm_update_cpuid_runtime(vcpu);
+>  		break;
+> +	}
+>  	case MSR_SMI_COUNT:
+>  		if (!msr_info->host_initiated)
+>  			return 1;
+
+
+
+
+
+
