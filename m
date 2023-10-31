@@ -2,95 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6E87E0DE5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 05:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169E97DC833
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbjKDE6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 00:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
+        id S233568AbjJaIeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbjKDE6Q (ORCPT
+        with ESMTP id S229932AbjJaIeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 00:58:16 -0400
-X-Greylist: delayed 4285 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Nov 2023 21:58:11 PDT
-Received: from mail.profitpathwaygo.com (mail.profitpathwaygo.com [141.94.21.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B38C133
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 21:58:11 -0700 (PDT)
-Received: by mail.profitpathwaygo.com (Postfix, from userid 1002)
-        id 2F9F75457E; Tue, 31 Oct 2023 08:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=profitpathwaygo.com;
-        s=mail; t=1698741831;
-        bh=qp3Ofokho6Ql+WtI8ZPVilyHYhskXL7fod7u9CWs8W4=;
-        h=Date:From:To:Subject:From;
-        b=aP1mCvTXsFLmiqAs2TpjCPXRGbyosm14ePuIrMTbA7Ew84gRfSfelIal4uJr8q1uL
-         +yav9bLDSS+P7PxDYNCz8BRipJIBEyOXGHl4lq5qO+kPTcxIuZhb/NEnnoGRIQ7DB2
-         lLXpuabbPBfcP/6yhhyiWCtYKCjZRVpFzNw/Js4K2k7f172OvosvoFAS4O94izYTa/
-         6iTT6k9RC0AoMw+/i7aNA+pCF8at2JrCbzcSxUGDOchzAokEboEFc5n9anuK0aTsMU
-         YNu3JMr+WvXWVlBC4TQDlKkYHvBmUB8W0hqIidrdPvSuGp5z79YTV7qE2fPIddUc4D
-         Zh046HSS6rkXA==
-Received: by mail.profitpathwaygo.com for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:30:48 GMT
-Message-ID: <20231031074500-0.1.2t.15sgy.0.z0tpg61vfx@profitpathwaygo.com>
-Date:   Tue, 31 Oct 2023 08:30:48 GMT
-From:   "Adam Charachuta" <adam.charachuta@profitpathwaygo.com>
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania_?=
-X-Mailer: mail.profitpathwaygo.com
+        Tue, 31 Oct 2023 04:34:07 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48001C9;
+        Tue, 31 Oct 2023 01:34:04 -0700 (PDT)
+X-UUID: 3d1ace8677c811eea33bb35ae8d461a2-20231031
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=2dho3kofawX3gdG2rhey1ygZEL7JRhX4DhhjZ3wIH6A=;
+        b=LndMvSKj7gP+Lr59fJ2DfcOcwMNuk9WhRstVSnJftkRZc/cgwMkp416F0imVZ7RyIABBCOyElNhoO6XLAOiLuTbERKZkBq/myPtnBEkBCKu259RpoKxV7SyIvga4HM/0tbvS+lhAnataVU5RudhD4Z1FgCE/pCsyGpCHAdff+V8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:86f66468-54f8-4690-b8ba-b4e3b49c875f,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:364b77b,CLOUDID:f0db85d7-04a0-4e50-8742-3543eab8cb8e,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 3d1ace8677c811eea33bb35ae8d461a2-20231031
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1990207887; Tue, 31 Oct 2023 16:33:59 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 31 Oct 2023 16:33:58 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 31 Oct 2023 16:33:58 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Moudy Ho" <moudy.ho@mediatek.com>
+Subject: [PATCH v9 00/16] introduce more MDP3 components in MT8195
+Date:   Tue, 31 Oct 2023 16:33:41 +0800
+Message-ID: <20231031083357.13775-1-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--8.189900-8.000000
+X-TMASE-MatchedRID: 8nwnnPisK37NwJnbTIxiVZ1U1lojafr/KFFZAe4nyZ5ZLD9SNJ9sEjfy
+        D4B1B1XwODsAqLXNLAhy3XpFb4YV0BNj8dEIVpt0syNb+yeIRAohHWssEmb8zmq//5Ao1w8uDYX
+        q2a0NnVWRrMe2UQ2pNI8v5ywzoFfttgIE2xggPK+xo9yzdPhMvZJOcXMQc4jBx8cf8zkUc1oCYy
+        wzM82Z8wChddk7F3kP8R18cQDv3dl0lqR8D0fH0e7KTDtx8CggKhNpTcvbdUKbKItl61J/yUGDD
+        kbg1gJkOAawE8JvIaIgBwKKRHe+r6dmDvuXKsTktJGWVKDL1blgNLGTi1Pwg+DcyQ53mukoslWk
+        bbo7nKs=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--8.189900-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 60B4B42383B723072FABE98B6874E704B2139217F9A938259D421BF4D3D557162000:8
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: profitpathwaygo.com]
-        *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: profitpathwaygo.com]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [141.94.21.238 listed in bl.score.senderscore.com]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [141.94.21.238 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: profitpathwaygo.com]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0015]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Changes since v8:
+- Rebase on linux-next.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=797543
+- Depends on:
+  Message ID = 20231024130048.14749-9-shawn.sung@mediatek.com
+- Following Rob's suggestion, the number of 'clocks' and 'mboxes' items are
+  restricted using the 'minItems' in [2/16] and [3/16].
+- Revise the dependent mt8188 disp padding compatible name in [16/16].
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Changes since v7:
+- Rebase on linux-next.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=797543
+- Depends on:
+  Message ID = 20231024130048.14749-9-shawn.sung@mediatek.com
+- Correct the bindings of the four components: FG, TCC, TDSHP and HDR.
+  The names of the first three are expanded in the title, and
+  the descriptions of all four have been enhanced.
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+Changes since v6:
+- Rebase on v6.6-rc5.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=792079
+- Depends on:
+  Message ID = 20231006073831.10402-5-shawn.sung@mediatek.com
+- Discard splitting RDMA's common properties and instead use 'allOf' to
+  isolate different platform features.
+- Revise the incorrect properties in FG, HDR, STITCH, TCC and TDAP bindings.
+- Adding SoC-specific compatible string to components, like WROT and RSZ,
+  that are inherited from MT8183.
+- Fixed typos in TCC patch and enhancing its hardware description.
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+Changes since v5:
+- Rebase on v6.6-rc2.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786511
+- Depends on:
+  Message ID = 20230911074233.31556-5-shawn.sung@mediatek.com
+- Split out common propertis for RDMA.
+- Split each component into independent patches.
 
+Changes since v4:
+- Rebase on v6.6-rc1
+- Organize identical hardware components into their respective files.
 
-Pozdrawiam serdecznie
-Adam Charachuta
+Hi,
+
+The purpose of this patch is to separate the MDP3-related bindings from
+the original mailing list mentioned below:
+https://lore.kernel.org/all/20230208092209.19472-1-moudy.ho@mediatek.com/
+Those binding files describe additional components that
+are present in the mt8195.
+
+Moudy Ho (16):
+  dt-bindings: media: mediatek: mdp3: correct RDMA and WROT node with
+    generic names
+  dt-bindings: media: mediatek: mdp3: merge the indentical RDMA under
+    display
+  dt-bindings: media: mediatek: mdp3: add config for MT8195 RDMA
+  dt-bindings: media: mediatek: mdp3: add compatible for MT8195 RSZ
+  dt-bindings: media: mediatek: mdp3: add compatible for MT8195 WROT
+  dt-bindings: media: mediatek: mdp3: add component FG for MT8195
+  dt-bindings: media: mediatek: mdp3: add component HDR for MT8195
+  dt-bindings: media: mediatek: mdp3: add component STITCH for MT8195
+  dt-bindings: media: mediatek: mdp3: add component TCC for MT8195
+  dt-bindings: media: mediatek: mdp3: add component TDSHP for MT8195
+  dt-bindings: display: mediatek: aal: add compatible for MT8195
+  dt-bindings: display: mediatek: color: add compatible for MT8195
+  dt-bindings: display: mediatek: merge: add compatible for MT8195
+  dt-bindings: display: mediatek: ovl: add compatible for MT8195
+  dt-bindings: display: mediatek: split: add compatible for MT8195
+  dt-bindings: display: mediatek: padding: add compatible for MT8195
+
+ .../display/mediatek/mediatek,aal.yaml        |  1 +
+ .../display/mediatek/mediatek,color.yaml      |  1 +
+ .../display/mediatek/mediatek,mdp-rdma.yaml   | 88 ------------------
+ .../display/mediatek/mediatek,merge.yaml      |  1 +
+ .../display/mediatek/mediatek,ovl.yaml        |  1 +
+ .../display/mediatek/mediatek,padding.yaml    |  4 +-
+ .../display/mediatek/mediatek,split.yaml      | 27 ++++++
+ .../bindings/media/mediatek,mdp3-fg.yaml      | 61 ++++++++++++
+ .../bindings/media/mediatek,mdp3-hdr.yaml     | 61 ++++++++++++
+ .../bindings/media/mediatek,mdp3-rdma.yaml    | 92 +++++++++++++++----
+ .../bindings/media/mediatek,mdp3-rsz.yaml     |  6 +-
+ .../bindings/media/mediatek,mdp3-stitch.yaml  | 61 ++++++++++++
+ .../bindings/media/mediatek,mdp3-tcc.yaml     | 62 +++++++++++++
+ .../bindings/media/mediatek,mdp3-tdshp.yaml   | 61 ++++++++++++
+ .../bindings/media/mediatek,mdp3-wrot.yaml    | 29 ++++--
+ 15 files changed, 440 insertions(+), 116 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-fg.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-hdr.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-stitch.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-tcc.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-tdshp.yaml
+
+-- 
+2.18.0
+
