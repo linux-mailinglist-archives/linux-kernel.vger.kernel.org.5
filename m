@@ -2,211 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DE27DCAAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378127DCAB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343603AbjJaKXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        id S1343653AbjJaKXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234960AbjJaKXE (ORCPT
+        with ESMTP id S234960AbjJaKXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:23:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F709DE;
-        Tue, 31 Oct 2023 03:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698747782; x=1730283782;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=H9zFVEI8p0zuTfe8FHV3+1kamecz6SoGtaFZrftgTiQ=;
-  b=laaMk7GwZQxko8AmJR2s9k2ystMg1A2lE4FaEH6vZOoyTtpFz0vcT/pB
-   q9pqQp/08+G5oOdVGBhvwJyuLftFke9yo+LRGbKZrt3yY+/4QvQqjt40g
-   /dZEn7wmX87YILVW1+HqPNK4qkaJeQbWTrTEfyHiNyeUp494oWkaCWpCI
-   HgToFdLMYZXOC7Ij8aVLFOVknQhYASu1f7ZS5ENVAKGdEkF+N6B8MNWev
-   HSf/5FadAVUVTOv/7Tb2GFdX7Yl/afGamS549OpYDOqyU4uoe7YLMuKGD
-   p/1MbmlUFJTL1EOAPdSBOnYy0vgGGDoz4/IpN2dD7i9BwMck3YJugDt98
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="388080242"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="388080242"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:23:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="1805057"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 03:22:59 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 03:22:59 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 03:22:59 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 03:22:59 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 31 Oct 2023 03:22:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JRdJrtzuCM5mSead4lwoKh8K/o5Bnj0H/7ihpOat+M7WL0j8GFielCbDt9449aUrigPrnQCVUlFHhgSLbjHjeI+wEQvbXc3EbiDm8MMgIEgdx2tQRdpfOgeNgarlL+RYw7vAYdOuNYQzvcKHXaALZZf1Dh7aGlA2OePW2KRWg4QClPhj/F8awuc/V5Oe6LWGOzQqFMw1wZ/biUPJWyu0xWsySPyDnpCLtX+vfLvQkU+LMX8wOtiWDU0Wdsv5auyWRGdGQGsiCOd0AkMCpmkYsxWNOG+kpoiM0FD5KTjxXE0+oBLSWIaG+xAcq1D8OZOOh2kNtS3cbxIZyWJrhaQQ/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZaHpICN7hR90rsMs3w9PFjYdmq5GcQsALrg0TyR7NWo=;
- b=Gb6rQ9QwKvd2XEPXbzFI6WpQzj+gr6nvTpwP32+YutxIfcv7PrI2gJFbwn5b0IFBQKS4oYigAfsmV7v3XH9CEMRLE08y7rvn1kvR4xcWakpUVsrMyR8SAdu1jyGbE5vFbHoNBACAZVkhat8JIdttJe1aGFtyqvRp6QI0r1aJE+Jf9dHNKaAP5TobvDmL4DWqaBf1wQsJUUbTiLkwMKMWwUKbWHSLqUzXs9okvmpZs9V4fPzyEWQhNt++jJLI8ZDIAJTGSvj8mOf5iYAPjo5LTk+9NC14NNKTYUhrdVYgBzMtWAoVPEbrdahn144okxSJjc73lNPs6bARUxYwkKLJJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL0PR11MB3122.namprd11.prod.outlook.com (2603:10b6:208:75::32)
- by CH0PR11MB8191.namprd11.prod.outlook.com (2603:10b6:610:181::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Tue, 31 Oct
- 2023 10:22:56 +0000
-Received: from BL0PR11MB3122.namprd11.prod.outlook.com
- ([fe80::7911:8ae6:fc73:1097]) by BL0PR11MB3122.namprd11.prod.outlook.com
- ([fe80::7911:8ae6:fc73:1097%6]) with mapi id 15.20.6907.032; Tue, 31 Oct 2023
- 10:22:56 +0000
-From:   "Pucha, HimasekharX Reddy" <himasekharx.reddy.pucha@intel.com>
-To:     ivecera <ivecera@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     Eric Dumazet <edumazet@google.com>,
-        "dacampbe@redhat.com" <dacampbe@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: RE: [Intel-wired-lan] [PATCH iwl-next 3/6] i40e: Use DECLARE_BITMAP
- for flags and hw_features fields in i40e_pf
-Thread-Topic: [Intel-wired-lan] [PATCH iwl-next 3/6] i40e: Use DECLARE_BITMAP
- for flags and hw_features fields in i40e_pf
-Thread-Index: AQHaA5P3bOgubmWSP0ePBzjqfldr77BjwIeg
-Date:   Tue, 31 Oct 2023 10:22:56 +0000
-Message-ID: <BL0PR11MB31228D74A9C538CDA9E2E8D3BDA0A@BL0PR11MB3122.namprd11.prod.outlook.com>
-References: <20231020193746.2274379-1-ivecera@redhat.com>
- <20231020193746.2274379-3-ivecera@redhat.com>
-In-Reply-To: <20231020193746.2274379-3-ivecera@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL0PR11MB3122:EE_|CH0PR11MB8191:EE_
-x-ms-office365-filtering-correlation-id: 1c919050-185e-4917-dba8-08dbd9fb5963
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vBJg1l1fQ+2uEoj1UApvYnklZR5EtSaMZzuvD/ugKWOZu7P/pkJT958bVMuXkpmwkZ5TNPqLVku1b0hdfJV7SMNf70v2nGTWfcs3Wcj7PedcuQkzEZ18bTr3bV/EZHvsqsr9uo+Yt/RLy6Aklk5xpRfeQETLAEJp9oQDKnbkN8WVM202EBxKs/G/kfvpRMgvGqsV76Xw/wqqZHmrkykL7iAjAu3XjQDoaY0iygWhBC0qYcW+hVsGLtDjXgPgbp+HCnVvk/t+Mod3rzRaeop6zhet02WETWHZYAeDz8CNUUC6kjvQR0gkjK1p3t22ZhLyb9KrtcGcJa10onJ8XYVqe+AAJWxxcoyz862MfrYjxwZG++BlpvX3Q9YUIXBQiTKz/6Caf9HBLnB45MzfwVXxtTE8d2hr+qlYZzv5U1a3IS2u7dnlRCalUjrZD2yZvH02p3KZfvrYTDilRI/BH/lvC0SdYluplwl0aZMI51t69PgffXr4iyPRFmB2P1+PiCeYU+FoI7qp4pCqICFW9+NNKt2b5kBFtw/PgSQD2C4S1jBdJf0DMNI5XnWb6vbM6+1EvRCW8NGbMsb5y82NiGF3YM7AxPXBxifwk+GiViu/p8fdvNfQIx7hyPVd6xiH4Nlk
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3122.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(376002)(39860400002)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(478600001)(122000001)(5660300002)(4326008)(52536014)(82960400001)(26005)(83380400001)(33656002)(38070700009)(55016003)(71200400001)(8676002)(86362001)(38100700002)(2906002)(7416002)(41300700001)(64756008)(110136005)(54906003)(66446008)(66946007)(66556008)(66476007)(8936002)(316002)(76116006)(6506007)(7696005)(9686003)(53546011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EQkAmR9QS7o7DkE6jJrGsplDeQcMYqwKuQmC9j1vDQKcCPZSSWqRsJ1isBkP?=
- =?us-ascii?Q?m9uzoDU0mLPfSwhj20+EmpYTDBkmDHfkxb/D4JHVD+I1RC6vTCGW+Lk/z2/P?=
- =?us-ascii?Q?8v7TEXoyj77NgOpnxmyqxyIou5zT5SBXLSL3J0qs3cnATk0mUreMl/yWTzwo?=
- =?us-ascii?Q?QWUngpcZN6IBCUvh1QTVNzFGrHJMhYy5Kq6rvBW+8Au+6W5bAerLMVYY4XCq?=
- =?us-ascii?Q?EIcXP3scRZIig1/hJEW7Ug4Ea/xDe54SV3vRJHO/mpa3oaxPB2opUD5kveL9?=
- =?us-ascii?Q?9l6j5zrD383byqyH2qnftHm4oQsJIDFiJkLcZ6bd0ua1NWEp/EnlnUV2CLky?=
- =?us-ascii?Q?BTnLiFqtH+4iMKaCkYtULzRuT9J9wu3pEnE/qYKJE1ZkLooghh+2mT/k8Lts?=
- =?us-ascii?Q?+lycFt/DHHYGYaC/V/G/WHbp9IWgYdOboHSiU4IpFBoc1k+MqjvF0/pzzmwZ?=
- =?us-ascii?Q?61h3JSR5EFxZzV/nbRIE70JUEW9g8syVe2zAcXZ7Tg3PEgKzNhjGJlyFXRRU?=
- =?us-ascii?Q?VqDFiHGzeqffd8GuZL56PCYfSarrulh5bRLN9h1yXePnEoIUH9tdFvfTks4+?=
- =?us-ascii?Q?pS8s/jwLbZoDBdEzxsHQyKt0gz+ihljbJkSxR1E64JFk0ZHeMC3/sIemN+cE?=
- =?us-ascii?Q?Jiih2c96ykAbqvavKFdQbwavqn5n8Aub8JUXUrW4m1fP8ztQUkgtM0m8uNH6?=
- =?us-ascii?Q?BeODfCkX9yfwzEwuvMPAAFr4dfYB2Kb/7T+NWdswssyPzUtm4/UriSMuh0Ui?=
- =?us-ascii?Q?uTU3YRMJvFa3Gl1RYf/DEpSegFoH4M/q1CegKuJj6DEQSLvw4LGipNz+notg?=
- =?us-ascii?Q?ZcAqNKzdepGK9HVaoCOwztr5/7Zrc8VOHLMB7asqstODTRjzizBr77iRwI6Z?=
- =?us-ascii?Q?1lqjGRIdQ4Awee0u//UGgbV++cT1LrHyi4CMBe0erkpDiezYzR6HB1vod0rr?=
- =?us-ascii?Q?jpLnk0ST/x9NchaFssu5iWv8E66pX9Aau+hvtv0rbQ7xveUIi3XEvhbGsj6n?=
- =?us-ascii?Q?8w47xHIUj1J62I3g2ESnPXuZfYaKtkvdpErDHLpCNLSp9BJIMra+uS84G44Y?=
- =?us-ascii?Q?90k1l3Pqejcf/W5OkhNb07T1pzo85rANBLwtJTprBQY1NMujwF5fJBfemTX7?=
- =?us-ascii?Q?TLvf7zl4vW8xbEoO4TE98dEyL7zrANlUHXlJLgo4aENDfw+N9RrhLZfMRymM?=
- =?us-ascii?Q?voWjTPjq7MxvxrTlXILfsUIyer3w+SOd+QUijg4GoLxdDZxYj76FzvFXfQtb?=
- =?us-ascii?Q?r3wjZa8nZJtYgKL0rIFifJ+lqv7AAymvl1Mwuxo51zGOzt0kxcOEt9aT38tS?=
- =?us-ascii?Q?+g0n6N0ZHVVZckhASrONaXGNjZD5uDJnvfrgr8zk4Sz7712d54AZGa/DsiKS?=
- =?us-ascii?Q?ptJhMPyB0XSJF7Gi4bXHeM5Fslq5Sc+JBp2z8lNLjMkBk1OZDQwZ5exbAFM6?=
- =?us-ascii?Q?dHoWHNwVC/9gz/SffKWeeFTvuHoIfXPuJ0E8TEHLNjXGOKMY5PJqTfkd/nyI?=
- =?us-ascii?Q?rPa8UNSYrfb0feYYXkPsSCRJasSfcrcQE0ReRRFz7jMdhZQZtMvOTBWIxIQk?=
- =?us-ascii?Q?1QrdnWy4NcyqniacWj+nhGgg7Hympx1iZj7ZXx41usBTmRM8tW2n4X0vr/Ri?=
- =?us-ascii?Q?1w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 31 Oct 2023 06:23:32 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1C783
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:23:29 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id xlu8q2cnY68frxlu8qL2tt; Tue, 31 Oct 2023 11:23:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698747807;
+        bh=Myq1U3QBIihOjHNsgI08XXFH79QnzufYtuvBE6MQkhA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=kf8g+8rjIE886rXX2+4/OIpkvM4EVEvhQpg+0AcAbrNnBSgNaGwSiHweKxZJAJOPL
+         3O+ivj/aiYrgdIV8e6LEBamJRQi/tzvljz9uu7ijrf5LUqPAWarHjRPFwrTJaPzQyD
+         u/PCo182zFNAvxmTEj9uzTpmIiOestwxttRmMVdQaD3YAq4HUV4Tv9pbnjmYU0JCMZ
+         g4dnOZS4hL2VX65crvux6E+8wGFr+s4Q3jtJNZODAw/98nNTItWWSvmKJe7j2slhD9
+         BBiRWjhE0a8FAZ++O8wfj5sPXqrHCXy4C0Np8wf9yRV8/pDNggmTAkEoeQ0rVA2W23
+         4pNoJjtxarisA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 31 Oct 2023 11:23:27 +0100
+X-ME-IP: 86.243.2.178
+Message-ID: <a98bca80-944c-493b-9872-75b94cd24eea@wanadoo.fr>
+Date:   Tue, 31 Oct 2023 11:23:24 +0100
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3122.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c919050-185e-4917-dba8-08dbd9fb5963
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2023 10:22:56.2524
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8iFEcRu2Lqs3bbD/2Trd25F/r6U+fTb4LV5xdm2+zOsMxtEs6OCaVn4bD7iI08gLnFQJtCeCaIVfIK9AwMa3jQeOMakIgugbsuMxCBaxiU1DRRencexOfvGl58DlOKbm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8191
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     sakari.ailus@linux.intel.com, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
+ <20231020141354.2500602-4-tomm.merciai@gmail.com>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231020141354.2500602-4-tomm.merciai@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of I=
-van Vecera
-> Sent: Saturday, October 21, 2023 1:08 AM
-> To: netdev@vger.kernel.org
-> Cc: Eric Dumazet <edumazet@google.com>; dacampbe@redhat.com; Richard Coch=
-ran <richardcochran@gmail.com>; Brandeburg, Jesse <jesse.brandeburg@intel.c=
-om>; open list <linux-kernel@vger.kernel.org>; Nguyen, Anthony L <anthony.l=
-.nguyen@intel.com>; moderated list:INTEL ETHERNET DRIVERS <intel-wired-lan@=
-lists.osuosl.org>; Keller, Jacob E <jacob.e.keller@intel.com>; Jakub Kicins=
-ki <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; David S. Miller <dav=
-em@davemloft.net>
-> Subject: [Intel-wired-lan] [PATCH iwl-next 3/6] i40e: Use DECLARE_BITMAP =
-for flags and hw_features fields in i40e_pf
->
-> Convert flags and hw_features fields from i40e_pf from u32 to
-> bitmaps and their usage to use bit access functions.
->
-> Changes:
-> - Convert "pf_ptr->(flags|hw_features) & FL" to "test_bit(FL, ...)"
-> - Convert "pf_ptr->(flags|hw_features) |=3D FL" to "set_bit(FL, ...)"
-> - Convert "pf_ptr->(flags|hw_features) &=3D ~FL" to "clear_bit(FL, ...)"
-> - Rename flag field to bitno in i40e_priv_flags and adjust ethtool
->   callbacks to work with flags bitmap
-> - Rename flag names where '_ENABLED'->'_ENA' and '_DISABLED'->'_DIS'
->   like in ice driver
->
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+Le 20/10/2023 à 16:13, Tommaso Merciai a écrit :
+> The Alvium camera is shipped with sensor + isp in the same housing.
+> The camera can be equipped with one out of various sensor and abstract
+> the user from this. Camera is connected via MIPI CSI-2.
+> 
+> Most of the camera module features are supported, with the main exception
+> being fw update.
+> 
+> The driver provides all mandatory, optional and recommended V4L2 controls
+> for maximum compatibility with libcamera
+> 
+> References:
+>   - https://www.alliedvision.com/en/products/embedded-vision-solutions
+> 
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
 > ---
->  drivers/net/ethernet/intel/i40e/i40e.h        | 165 ++---
->  drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c |  24 +-
->  .../net/ethernet/intel/i40e/i40e_debugfs.c    |   4 +-
->  .../net/ethernet/intel/i40e/i40e_ethtool.c    | 209 ++++---
->  drivers/net/ethernet/intel/i40e/i40e_main.c   | 587 +++++++++---------
->  drivers/net/ethernet/intel/i40e/i40e_ptp.c    |  26 +-
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  20 +-
->  drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   4 +-
->  .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  20 +-
->  9 files changed, 544 insertions(+), 515 deletions(-)
->
 
-Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Co=
-ntingent worker at Intel)
+Hi, a few nits and a question at the end.
+
+> +static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
+> +{
+> +	int avail_fmt_cnt = 0;
+> +	int sz = 0;
+> +	int fmt = 0;
+> +
+> +	alvium->alvium_csi2_fmt = NULL;
+> +
+> +	/* calculate fmt array size */
+> +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
+> +		if (alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
+> +			if ((!alvium_csi2_fmts[fmt].is_raw) ||
+> +				  (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]))
+> +				sz++;
+> +	}
+> +
+> +	/* init alvium_csi2_fmt array */
+> +	alvium->alvium_csi2_fmt_n = sz;
+> +	alvium->alvium_csi2_fmt = kmalloc_array(sz,
+> +						     sizeof(struct alvium_pixfmt),
+
+This could be on the previous line.
+
+> +						     GFP_KERNEL);
+> +
+> +	/* Create the alvium_csi2 fmt array from formats available */
+> +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
+> +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
+> +			continue;
+> +
+> +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
+> +				(alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])) {
+> +			alvium->alvium_csi2_fmt[avail_fmt_cnt] =
+> +					alvium_csi2_fmts[fmt];
+> +			avail_fmt_cnt++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_frame_interval *fi)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	int ret;
+> +
+> +	if (alvium->streaming)
+> +		return -EBUSY;
+> +
+> +	ret = alvium_set_frame_interval(alvium, fi);
+> +	if (!ret) {
+> +		ret = alvium_set_frame_rate(alvium);
+> +		if (ret)
+> +			return -EIO;
+
+Why not ret?
+
+> +	}
+> +
+> +	return ret;
+> +}
+
+...
+
+> +static int alvium_get_dt_data(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct fwnode_handle *fwnode = dev_fwnode(dev);
+> +	struct fwnode_handle *endpoint;
+> +	int ret = -EINVAL;
+> +
+> +	if (!fwnode)
+> +		return -EINVAL;
+> +
+> +	/* Only CSI2 is supported for now: */
+> +	alvium->ep.bus_type = V4L2_MBUS_CSI2_DPHY;
+> +
+> +	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
+> +	if (!endpoint) {
+> +		dev_err(dev, "endpoint node not found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (v4l2_fwnode_endpoint_alloc_parse(endpoint, &alvium->ep)) {
+> +		dev_err(dev, "could not parse endpoint\n");
+> +		goto error_out;
+
+This could go to another label to be less confusing, but 
+v4l2_fwnode_endpoint_free() looks to be a no-op here, so good enough.
+
+> +	}
+> +
+> +	if (!alvium->ep.nr_of_link_frequencies) {
+> +		dev_err(dev, "no link frequencies defined");
+> +		goto error_out;
+> +	}
+> +
+> +	return 0;
+> +
+> +error_out:
+> +	v4l2_fwnode_endpoint_free(&alvium->ep);
+> +	fwnode_handle_put(endpoint);
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_power_on(struct alvium_dev *alvium, bool on)
+> +{
+> +	int ret = 0;
+
+Useless init.
+
+> +
+> +	if (!on)
+> +		return regulator_disable(alvium->reg_vcc);
+> +
+> +	ret = regulator_enable(alvium->reg_vcc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* alvium boot time 7s*/
+
+space missing before */
+
+> +	msleep(7000);
+> +	return 0;
+> +}
+
+...
+
+> +static int alvium_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct alvium_dev *alvium;
+> +	int ret;
+> +
+> +	alvium = devm_kzalloc(dev, sizeof(*alvium), GFP_KERNEL);
+> +	if (!alvium)
+> +		return -ENOMEM;
+> +
+> +	alvium->i2c_client = client;
+> +
+> +	alvium->regmap = devm_cci_regmap_init_i2c(client, 16);
+> +	if (IS_ERR(alvium->regmap))
+> +		return PTR_ERR(alvium->regmap);
+> +
+> +	ret = alvium_get_dt_data(alvium);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->reg_vcc = devm_regulator_get_optional(dev, "vcc-ext-in");
+> +	if (IS_ERR(alvium->reg_vcc))
+> +		return dev_err_probe(dev, PTR_ERR(alvium->reg_vcc),
+> +			"no vcc-ext-in regulator provided\n");
+> +
+> +	ret = alvium_power_on(alvium, true);
+> +	if (ret)
+> +		goto err_powerdown;
+> +
+> +	if (!alvium_is_alive(alvium)) {
+> +		dev_err(dev, "Device detection failed: %d\n", ret);
+
+Nit: Here and below, dev_err_probe() could also be used to display the 
+error code in a human readable way.
+
+> +		ret = -ENODEV;
+> +		goto err_powerdown;
+> +	}
+> +
+> +	ret = alvium_get_hw_info(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "get_hw_info fail %d\n", ret);
+> +		goto err_powerdown;
+> +	}
+> +
+> +	ret = alvium_hw_init(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "hw_init fail %d\n", ret);
+> +		goto err_powerdown;
+> +	}
+> +
+> +	ret = alvium_setup_mipi_fmt(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "setup_mipi_fmt fail %d\n", ret);
+> +		goto err_powerdown;
+> +	}
+> +
+> +	/*
+> +	 * Enable runtime PM without autosuspend:
+> +	 *
+> +	 * Don't use pm autosuspend (alvium have ~7s boot time).
+> +	 * Alvium has been powered manually:
+> +	 *  - mark it as active
+> +	 *  - increase the usage count without resuming the device.
+> +	 */
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_get_noresume(dev);
+> +	pm_runtime_enable(dev);
+> +
+> +	/* Initialize the V4L2 subdev. */
+> +	ret = alvium_subdev_init(alvium);
+> +	if (ret)
+> +		goto err_pm;
+> +
+> +	ret = v4l2_async_register_subdev(&alvium->sd);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Could not register v4l2 device\n");
+> +		goto err_subdev;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_subdev:
+> +	alvium_subdev_cleanup(alvium);
+
+Should this also be called by the remove function?
+Or is it already handled by an un-register mechanism?
+
+CJ
+
+> +err_pm:
+> +	pm_runtime_disable(dev);
+> +	pm_runtime_put_noidle(dev);
+> +err_powerdown:
+> +	alvium_power_on(alvium, false);
+> +
+> +	return ret;
+> +}
+> +
+
+...
 
