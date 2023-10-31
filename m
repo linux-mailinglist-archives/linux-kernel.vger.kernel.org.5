@@ -2,241 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B9B7DCCC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D957DCCAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344194AbjJaMKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        id S1344282AbjJaMKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236041AbjJaMJ6 (ORCPT
+        with ESMTP id S1344277AbjJaMK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:09:58 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C6D19F
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:08:15 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231031120812euoutp0172ef0a4133b9ccab65d0e658dec3c7b5~TL9jeTloy2928129281euoutp01K
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 12:08:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231031120812euoutp0172ef0a4133b9ccab65d0e658dec3c7b5~TL9jeTloy2928129281euoutp01K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1698754092;
-        bh=7R+We3/ZotRkN0zNzo4bcBqBdOETuS0p31VdG/ZiSD4=;
-        h=Date:Subject:To:From:Cc:In-Reply-To:References:From;
-        b=Na2R3VBkKye01omh0MTd2uw1FcDuqp/ltJLwgs0QMyeKAHSe/U52ExY/0sqI8R22I
-         oG2jk+C4+/K9s3b0ZABZzqT/nY8c77lf5RBYhrrRbevY7LgsKh9kS8vVrqRm9fU+4Z
-         +KcyF8o2I0sDpWeoz0z3aAjVRgdakAhiyr+p3Qww=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231031120812eucas1p2925bf2ac67e8e654accd6e4260b8119f~TL9jQLEJr2837828378eucas1p2d;
-        Tue, 31 Oct 2023 12:08:12 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id ED.B1.52736.C2EE0456; Tue, 31
-        Oct 2023 12:08:12 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231031120812eucas1p23817b869678ec45bd83f9e7f21ff92a7~TL9i6Bxxq2838328383eucas1p2K;
-        Tue, 31 Oct 2023 12:08:12 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231031120812eusmtrp2de2419fa7c68219ec49cf891b251225b~TL9i5YOh90258902589eusmtrp2s;
-        Tue, 31 Oct 2023 12:08:12 +0000 (GMT)
-X-AuditID: cbfec7f5-ba1ff7000000ce00-54-6540ee2c18b8
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id C9.4E.25043.C2EE0456; Tue, 31
-        Oct 2023 12:08:12 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231031120811eusmtip13c34f44540513f450b5edf34a31d673a~TL9iHyOlN2503025030eusmtip1n;
-        Tue, 31 Oct 2023 12:08:11 +0000 (GMT)
-Message-ID: <7a71e348-f892-4fd4-8857-b72f35ab5134@samsung.com>
-Date:   Tue, 31 Oct 2023 13:08:10 +0100
+        Tue, 31 Oct 2023 08:10:29 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D84E1A7;
+        Tue, 31 Oct 2023 05:09:57 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7d9d357faso54935087b3.0;
+        Tue, 31 Oct 2023 05:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698754196; x=1699358996; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i16ze8qfWztv7zzhvp20b0+Cbubm21cnau1mhZhq2JU=;
+        b=WC20B98pZL6Di+iROgBT0i0d/om8rUr/80tnQYTCkvM/EObMO2HmmXgq0WY6Y657km
+         SV8CYI3PrmC0O2/TFDlVqFJ1nvJa0GL2fdAGKo89aGZc+SMHH8d78GMnjgMWf6fvwOnH
+         ufEM87dm5YxjmBa863C70CdP3i0/pobrKFJLPAzC1EpRxHA6m9+1R08S5zJ2HQw2wwZe
+         6r+bNJpxkym5Jks/s2QnR6Wm/CytM5XmKkZqFz9+Qzl+SiX4MiPF6XgxgEeeUsd1JI0s
+         Vtq3W2qo7+rb/lZv513lAb6JkcqxBLrU4etZuCOGKb1En1TZQdCnslV4CqE7H8FQrRva
+         z8ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698754196; x=1699358996;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i16ze8qfWztv7zzhvp20b0+Cbubm21cnau1mhZhq2JU=;
+        b=QQg+Q/6DQQmzCXxq6fHDViDL+sCQOBgN2nVjfwYMlQlpBGNCJmUaPZI0oJBq4KAU8/
+         skF3JlgGx82CfQ5mndrj+XnaMk/ciyFjX9nT833BHHQbV7jqUUqdtxzt//T/rnmzhj5H
+         LUhXKrMKUprfo3rcZTiTUysIUDfe29ZqqxkYT4AX/7WZknW2BMASEk0UXqAvr6tbKxDe
+         dCKnUqBxmkRz2af/RL4R5WwXUA5zq+Mj+maqRElrQHLWQsjqkY2G91MXu4xzveo+g5oA
+         yBz/lxDCebPuMVB9MU1aQYQrgvrU13KAb3SypGdW0/9G5Njq9iCNAB0Hjd9SJ//UmzUm
+         vyHQ==
+X-Gm-Message-State: AOJu0YxyMfRTvQ5EOsP+9rx4OZLN6cgIzDH0K2tXefqxUWV/GP7L0pSI
+        GCkjQ3VZ0j2x8Nkkf/Y75HEEAYExvrnJwg==
+X-Google-Smtp-Source: AGHT+IFQjjPzleVSBcLEIqFiBfVuqFBxVQFIZCHQbIDOseEQh41ru+rWXDnLXRL2xxy2ejngL+EDMg==
+X-Received: by 2002:a81:c608:0:b0:5ac:fe2d:5edf with SMTP id l8-20020a81c608000000b005acfe2d5edfmr10903984ywi.44.1698754196322;
+        Tue, 31 Oct 2023 05:09:56 -0700 (PDT)
+Received: from localhost.localdomain ([2605:59c8:6244:7600::e27])
+        by smtp.gmail.com with ESMTPSA id f186-20020a0dc3c3000000b00559f1cb8444sm703833ywd.70.2023.10.31.05.09.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 05:09:55 -0700 (PDT)
+From:   David Ober <dober6023@gmail.com>
+To:     linux-hwmon@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jdelvare@suse.com, linux@roeck-us.net, corbet@lwn.net,
+        dober@lenovo.com, mpearson@lenovo.com,
+        David Ober <dober6023@gmail.com>
+Subject: [PATCH v2] hwmon:Add MEC172x Micro Chip driver for Lenovo motherboards
+Date:   Tue, 31 Oct 2023 08:09:42 -0400
+Message-Id: <20231031120942.4404-1-dober6023@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: exynos-mixer 14450000.mixer: [drm:exynos_drm_register_dma]
- *ERROR* Device 14450000.mixer lacks support for IOMMU
-Content-Language: en-US
-To:     Mario Marietto <marietto2008@gmail.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-In-Reply-To: <CA+1FSign611=47=xLRucFhDjvs7A_TeFE9b8qO63WXDU8Pnkjg@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHKsWRmVeSWpSXmKPExsWy7djP87o67xxSDR6/ULN4MG8bm8X8I+dY
-        La58fc9msfHtDyaLTY+vsVpc3jWHzWLG+X1MFoemPGezaH/6ktmB02NWQy+bx85Zd9k9Nq3q
-        ZPO4332cyWPzknqPvi2rGD0+b5ILYI/isklJzcksSy3St0vgyth7byV7QY9RRcuSJtYGxh0a
-        XYycHBICJhK3zyxn6mLk4hASWMEo0dv/gx3C+cIose1lCytIlZDAZ0aJNTMEuhg5wDo+HxCF
-        CC9nlNhxyxqi/iOjxMXN5xlBErwCdhKH905mAbFZBFQlvk68wwYRF5Q4OfMJWFxUQF7i/q0Z
-        7CAzhQXqJVrbeEHCzALiEreezGcCsUUEtCXW7ZjPDmKzCRhKdL3tYgPZxSywk0niTPMMsDmc
-        AoESa668Y4RolpfY/nYOM0iRhMB/Dolt9zqYII52kbg8TQTiY2GJV8e3sEPYMhL/d85ngqhv
-        Z5RY8Ps+lDOBUaLh+S1GiCpriTvnfrGBDGIW0JRYv0sfIuwosfrkR0aI+XwSN94KQtzAJzFp
-        23RmiDCvREebEES1msSs4+vg1h68cIl5AqPSLKRQmYXk/VlIvpmFsHcBI8sqRvHU0uLc9NRi
-        47zUcr3ixNzi0rx0veT83E2MwCR1+t/xrzsYV7z6qHeIkYmD8RCjBAezkgjvYVOHVCHelMTK
-        qtSi/Pii0pzU4kOM0hwsSuK8qinyqUIC6YklqdmpqQWpRTBZJg5OqQamyZFHP/06ero0rs3i
-        wOuW75yfpyTM1JwzbVm6tFJf+bKiDNavoeGebCGOlUqmBwplo+ctk5n589inWbMP7Kyz6V9s
-        Z6Ds7C+jMmuK0N/mUw/yJXPfub3z/jVtn4/RxyX9Xw8sXcZse3na69dHpT5eiNMy+BS39Ms8
-        jRsWvjN2NNbGr/A/u8juh5PmsbSvT/cXJJ1XahCP8vEpy76Uwi+70bp5p65Kppnaun2XBZz/
-        recIup+k+2r+gY5FLRMSrDd5OVhITXtwO5I13mr5kUeBCld4J717qJ2rvET4t/WL8oqgdf+7
-        fK8wHdUSTFu0b6/Kzk/nfMK8vSS2Pf62poY/vH/ZHxvRJye6qjMfP/7wUImlOCPRUIu5qDgR
-        AKpk6PTBAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsVy+t/xu7o67xxSDX7M4rJ4MG8bm8X8I+dY
-        La58fc9msfHtDyaLTY+vsVpc3jWHzWLG+X1MFoemPGezaH/6ktmB02NWQy+bx85Zd9k9Nq3q
-        ZPO4332cyWPzknqPvi2rGD0+b5ILYI/SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaP
-        tTIyVdK3s0lJzcksSy3St0vQy9h7byV7QY9RRcuSJtYGxh0aXYwcHBICJhKfD4h2MXJxCAks
-        ZZQ4sGUWUxcjJ1BcRuLktAZWCFtY4s+1LjaIoveMEntXbWMHSfAK2Ekc3juZBcRmEVCV+Drx
-        DhtEXFDi5MwnYHFRAXmJ+7dmsIMsExaol2ht4wUJMwuIS9x6Mh9sl4iAtsS6HfPZIeYvYZS4
-        sfEw2Bw2AUOJrrcQi5kFdjNJbPk/CewiToFAiTVX3jFCTDKT6NraBWXLS2x/O4d5AqPQLCR3
-        zEKycBaSlllIWhYwsqxiFEktLc5Nzy020itOzC0uzUvXS87P3cQIjM1tx35u2cG48tVHvUOM
-        TByMhxglOJiVRHgPmzqkCvGmJFZWpRblxxeV5qQWH2I0BQbGRGYp0eR8YHLIK4k3NDMwNTQx
-        szQwtTQzVhLn9SzoSBQSSE8sSc1OTS1ILYLpY+LglGpg6jTxvi0yvfD172M313r7Gx8QVDD8
-        8+pNuGmeW8f089e6rs1+zesp6Drf49Su091XAyctknvcwMjbwX8vVy01+5v2udJvnppcx85P
-        EbgzscZ3V8JO5dzcxap/Xpw4P+/ljuentPkjVA3+5kZcPaVge9CT8Wd67/Fvr1SLy2Ztr3x6
-        dvbirWev2sY+EUnzvXwkb4GX3kLG0m/vXk0ztPt8SOfk2mTjW5ezLOSzmtWvS08S+XE6cPJB
-        Hvf61xZndshy9kz7N19v7gXdShEh9Q3Fa7RdjpXJHPM0Ofji2JLsGpYenQkCt/0sF01pfmp5
-        ahPXlFlzrhc+v/pLzUZhn+OTRpXIif3FUpP+/zic8P2n5AslluKMREMt5qLiRADGmobaVgMA
-        AA==
-X-CMS-MailID: 20231031120812eucas1p23817b869678ec45bd83f9e7f21ff92a7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231030230413eucas1p1c061adf636a7e8a58270a00725e1d0a2
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231030230413eucas1p1c061adf636a7e8a58270a00725e1d0a2
-References: <CGME20231030230413eucas1p1c061adf636a7e8a58270a00725e1d0a2@eucas1p1.samsung.com>
-        <CA+1FSign611=47=xLRucFhDjvs7A_TeFE9b8qO63WXDU8Pnkjg@mail.gmail.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This addition adds in the ability for the system to scan the
+MEC172x EC chip in Lenovo ThinkStation systems to get the
+current fan RPM speeds and the Maximum speed value for each
+fan also provides the current CPU and DIMM thermal status
 
-On 31.10.2023 00:03, Mario Marietto wrote:
-> We are a team of linux enthusiasts who are trying to boot Xen on a 
-> Samsung XE303C12 Chromebook aka "snow" following the suggestions in 
-> the slide show presentation here: 
-> https://www.slideshare.net/xen_com_mgr/xpds16-porting-xen-on-arm-to-a-new-soc-julien-grall-arm 
-> This device uses an exynos5250 SOC dual core 1.7 GHz with 2 MB RAM, it 
-> is a Samsung armv7 chip with virtualization extensions. In particular, 
-> we have it working fairly well both on the bare metal with a recent 
-> 6.1.59 Linux LTS kernel and also with a recent 5.4.257 LTS kernel with 
-> KVM, the older LTS kernel version is used to test KVM because support 
-> for KVM on arm v7 was removed from Linux around kernel version 5.7. So 
-> we know we have the hypervisor mode enabled because we were able to 
-> use it with KVM. For Xen, we are using the latest Debian build of Xen 
-> 4.17 for the Debian armhf architecture: (XEN) Xen version 4.17.2-pre 
-> (Debian 4.17.1+2-gb773c48e36-1) 
-> (pkg-xen-devel@xxxxxxxxxxxxxxxxxxxxxxx) (arm-linux-gnueabihf-gcc 
-> (Debian 12.2.0-14) 12.2.0) debug=n Thu May 18 19:26:30 UTC 2023 The 
-> Linux kernel is a custom build that adds the Xen config kernel options 
-> (CONFIG_XEN_DOM0, etc) on top of a kernel that works well on the same 
-> Chromebook model on the bare metal. I can provide the config options 
-> of the kernel that was used if that is helpful. Our method of booting 
-> is to have u-boot boot the Xen hypervisor and load the device tree 
-> after adding the dom0 to the otherwise unaltered device tree from the 
-> Linux kernel using u-boot fdt commands to add a /chosen node, as 
-> described on the Xen wiki and in the pages linked from there. We have 
-> also tried adding and loading an initrd.img using the device tree 
-> /chosen node but that made no difference in our tests. We actually 
-> have the Linux LTS kernel version 6.1.59 working as dom0 with Xen 
-> using the same version of u-boot that we used for KVM, but with a big 
-> problem. The problem we see is that when booting the 6.1.59 kernel 
-> version as dom0 with Xen, the screen is totally dark and the only way 
-> to access the system is remotely through ssh. Logs indicate most 
-> everything else is working, such as the wifi card so we can access it 
-> remotely via ssh and a USB optical mouse lights up when connected so 
-> USB is also working. Obviously, the disk is also working. The 
-> Chromebook is configured to boot from the device's SD card slot by 
-> turning on Chrome OS developer mode options to enable booting from the 
-> SD card slot. The mystery is that when booting the exact same 6.1.59 
-> kernel on the bare metal instead of booting it as dom0 on Xen, it 
-> boots up with full access to the screen and we can interact with the 
-> system using the X.org windows system. But booting as dom0 with Xen, 
-> the screen is totally dark and the only access we have to the system 
-> is through the network via ssh. Also, when booting the 5.4.257 kernel 
-> with KVM in hypervisor mode, the screen works and we can interact with 
-> the system through the X.org windows system. Exploring the log file,we 
-> have seen the errors below :
->
-> With Xen (or in bare metal):
->
-> devuan-bunsen kernel: [drm] Exynos DRM: using 14400000.fimd device for 
-> DMA mapping operations
-> devuan-bunsen kernel: exynos-drm exynos-drm: bound 14400000.fimd (ops 
-> 0xc0d96354)
-> devuan-bunsen kernel: exynos-drm exynos-drm: bound 14450000.mixer (ops 
-> 0xc0d97554)
-> devuan-bunsen kernel: exynos-drm exynos-drm: bound 
-> 145b0000.dp-controller (ops 0xc0d97278)
-> devuan-bunsen kernel: exynos-drm exynos-drm: bound 14530000.hdmi (ops 
-> 0xc0d97bd0)
-> ...
-> devuan-bunsen kernel: Console: switching to colour frame buffer device 
-> 170x48
-> devuan-bunsen kernel: exynos-drm exynos-drm: [drm] fb0: exynosdrmfb 
-> frame buffer device
-> devuan-bunsen kernel: [drm] Initialized exynos 1.1.0 20180330 for 
-> exynos-drm on minor 0
->
-> In this case,the kernel is able to use the exynos-drm kernel to start 
-> the fb0 device. But with Xen we get this error with exynos-drm:
->
-> devuan-bunsen kernel: [drm] Exynos DRM: using 14400000.fimd device for 
-> DMA mapping operations
-> devuan-bunsen kernel: exynos-drm exynos-drm: bound 14400000.fimd (ops 
-> 0xc0d96354)
-> devuan-bunsen kernel: exynos-mixer 14450000.mixer: 
-> [drm:exynos_drm_register_dma] *ERROR* Device 14450000.mixer lacks 
-> support for IOMMU
-> devuan-bunsen kernel: exynos-drm exynos-drm: failed to bind 
-> 14450000.mixer (ops 0xc0d97554): -22
-> devuan-bunsen kernel: exynos-drm exynos-drm: adev bind failed: -22
-> devuan-bunsen kernel: exynos-dp: probe of 145b0000.dp-controller 
-> failed with error -22
->
-> I'm trying to find for a solution and I've googled a little bit and I 
-> found this web site : 
-> https://lore.kernel.org/linux-arm-kernel/20220208171823.226211-8-krzysztof.kozlowski@canonical.com/ 
-> with your email address and I tried to ask for some help for fixing 
-> the bug. Any ideas why booting the same Linux kernel that results in a 
-> working X.org display on the bare metal instead as dom0 on Xen would 
-> cause the display to remain dark, but most other basic functions would 
-> work, such as network, disk, and USB ? thanks.
+Signed-off-by: David Ober <dober6023@gmail.com>
 
+v2 fixed mixcased naming
+v2 add mutex protection
+v2 removed references to ACPI as it is not used
+v2 added comment to explain why returning a -1 is needed
+---
+ drivers/hwmon/lenovo-ec-sensors.c | 81 ++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 34 deletions(-)
 
-Thanks for the detailed description! Good to hear that those boards are 
-still being used for various projects. I also have Snow Chromebook and 
-use it for daily tests of linux-next branch.
-
-Frankly speaking I have no idea what might happen wrong. There have been 
-some changes recently in the Exynos IOMMU driver related to 
-initialization, maybe your changes related to Xen enabling changed 
-somehow the order of device initialization during boot. I assume that 
-the device-tree you use for the bare metal run and Xen enabled run 
-doesn't differ in the areas describing the hardware blocks.
-
-Please check if cherry-picking the commit 
-https://github.com/torvalds/linux/commit/bbc4d205d93f52ee18dfa7858d51489c0506547f 
-to your v6.1.59 based kernel helps anyhow.
-
-If not, then as a temporary workaround please disable 
-CONFIG_DRM_EXYNOS_MIXER and CONFIG_DRM_EXYNOS_HDMI in your kernel config 
-and check what will happen (You will lose the HDMI output, but maybe 
-this won't a big issue).
-
-
-Best regards
+diff --git a/drivers/hwmon/lenovo-ec-sensors.c b/drivers/hwmon/lenovo-ec-sensors.c
+index acf26ed4c96b..e2b14b3aea08 100644
+--- a/drivers/hwmon/lenovo-ec-sensors.c
++++ b/drivers/hwmon/lenovo-ec-sensors.c
+@@ -32,8 +32,8 @@
+ #define MCHP_EMI0_EC_DATA_BYTE2		0x0906
+ #define MCHP_EMI0_EC_DATA_BYTE3		0x0907
+ 
+-#define IoWrite8(a, b)	outb_p(b, a)
+-#define IoRead8(a)	inb_p(a)
++#define io_write8(a, b)	outb_p(b, a)
++#define io_read8(a)	inb_p(a)
+ 
+ static inline uint8_t
+ get_ec_reg(unsigned char page, unsigned char index)
+@@ -42,31 +42,31 @@ get_ec_reg(unsigned char page, unsigned char index)
+ 	unsigned short m_index;
+ 	unsigned short phy_index = page * 256 + index;
+ 
+-	if (IoRead8(MCHP_EMI0_APPLICATION_ID) != 0) /* EMI access locked */
+-		return false;
++	if (io_read8(MCHP_EMI0_APPLICATION_ID) != 0) /* EMI access locked */
++		return -1;
+ 
+-	IoWrite8(MCHP_EMI0_APPLICATION_ID, 0x01);
++	io_write8(MCHP_EMI0_APPLICATION_ID, 0x01);
+ 
+ 	m_index = phy_index & 0x7FFC;
+-	IoWrite8(MCHP_EMI0_EC_ADDRESS_LSB, m_index);
+-	IoWrite8(MCHP_EMI0_EC_ADDRESS_MSB, m_index >> 8);
++	io_write8(MCHP_EMI0_EC_ADDRESS_LSB, m_index);
++	io_write8(MCHP_EMI0_EC_ADDRESS_MSB, m_index >> 8);
+ 
+ 	switch (phy_index & 0x0003) {
+ 	case 0:
+-		onebyte = IoRead8(MCHP_EMI0_EC_DATA_BYTE0);
++		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE0);
+ 		break;
+ 	case 1:
+-		onebyte = IoRead8(MCHP_EMI0_EC_DATA_BYTE1);
++		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE1);
+ 		break;
+ 	case 2:
+-		onebyte = IoRead8(MCHP_EMI0_EC_DATA_BYTE2);
++		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE2);
+ 		break;
+ 	case 3:
+-		onebyte = IoRead8(MCHP_EMI0_EC_DATA_BYTE3);
++		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE3);
+ 		break;
+ 	}
+ 
+-	IoWrite8(MCHP_EMI0_APPLICATION_ID, 0x01);  /* write same data to clean */
++	io_write8(MCHP_EMI0_APPLICATION_ID, 0x01);  /* write same data to clean */
+ 	return onebyte;
+ }
+ 
+@@ -190,19 +190,22 @@ static const char * const p7_amd_ec_fan_label[] = {
+ };
+ 
+ struct ec_sensors_data {
++	struct mutex mec_mutex; /* lock for sensors write */
+ 	u8 platform_id;
+ 	const char *const *fan_labels;
+ 	const char *const *temp_labels;
+ };
+ 
+ static int
+-lenovo_ec_do_read_temp(u32 attr, int channel, long *val)
++lenovo_ec_do_read_temp(struct ec_sensors_data *data, u32 attr, int channel, long *val)
+ {
+ 	u8   LSB;
+ 
+ 	switch (attr) {
+ 	case hwmon_temp_input:
++		mutex_lock(&data->mec_mutex);
+ 		LSB = get_ec_reg(2, 0x81 + channel);
++		mutex_unlock(&data->mec_mutex);
+ 		if (LSB > 0x40) {
+ 			*val = (LSB - 0x40) * 1000;
+ 		} else {
+@@ -217,28 +220,36 @@ lenovo_ec_do_read_temp(u32 attr, int channel, long *val)
+ }
+ 
+ static int
+-lenovo_ec_do_read_fan(u32 attr, int channel, long *val)
++lenovo_ec_do_read_fan(struct ec_sensors_data *data, u32 attr, int channel, long *val)
+ {
+ 	u8    LSB, MSB;
+ 
+ 	channel *= 2;
+ 	switch (attr) {
+ 	case hwmon_fan_input:
++		mutex_lock(&data->mec_mutex);
+ 		LSB = get_ec_reg(4, 0x60 + channel);
+ 		MSB = get_ec_reg(4, 0x61 + channel);
++		mutex_unlock(&data->mec_mutex);
+ 		if ((MSB << 8) + LSB != 0) {
++			mutex_lock(&data->mec_mutex);
+ 			LSB = get_ec_reg(4, 0x20 + channel);
+ 			MSB = get_ec_reg(4, 0x21 + channel);
++			mutex_unlock(&data->mec_mutex);
+ 			*val = (MSB << 8) + LSB;
+ 			return 0;
+ 		}
+-		return -1;
++		return -1; /* Returning -1 here has the sensors tool mark the FAN speed as N/A */
+ 	case hwmon_fan_max:
++		mutex_lock(&data->mec_mutex);
+ 		LSB = get_ec_reg(4, 0x60 + channel);
+ 		MSB = get_ec_reg(4, 0x61 + channel);
++		mutex_unlock(&data->mec_mutex);
+ 		if ((MSB << 8) + LSB != 0) {
++			mutex_lock(&data->mec_mutex);
+ 			LSB = get_ec_reg(4, 0x40 + channel);
+ 			MSB = get_ec_reg(4, 0x41 + channel);
++			mutex_unlock(&data->mec_mutex);
+ 			*val = (MSB << 8) + LSB;
+ 		} else {
+ 			*val = 0;
+@@ -254,14 +265,16 @@ lenovo_ec_do_read_fan(u32 attr, int channel, long *val)
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int get_platform(void)
++static int get_platform(struct ec_sensors_data *data)
+ {
+ 	char system_type[6];
+ 	int ret = -1;
+ 	int idx;
+ 
+ 	for (idx = 0 ; idx < 6 ; idx++)
++		mutex_lock(&data->mec_mutex);
+ 		system_type[idx] = get_ec_reg(0xC, (0x10 + idx));
++		mutex_unlock(&data->mec_mutex);
+ 
+ 	for (idx = 0 ; idx < 4 ; idx++) {
+ 		if (strcmp(systems[idx], system_type) == 0) {
+@@ -296,11 +309,13 @@ static int
+ lenovo_ec_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
+ 		     u32 attr, int channel, long *val)
+ {
++	struct ec_sensors_data *data = dev_get_drvdata(dev);
++
+ 	switch (type) {
+ 	case hwmon_temp:
+-		return lenovo_ec_do_read_temp(attr, channel, val);
++		return lenovo_ec_do_read_temp(data, attr, channel, val);
+ 	case hwmon_fan:
+-		return lenovo_ec_do_read_fan(attr, channel, val);
++		return lenovo_ec_do_read_fan(data, attr, channel, val);
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -312,9 +327,6 @@ static umode_t
+ lenovo_ec_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
+ 			   u32 attr, int channel)
+ {
+-	//if (type != hwmon_fan)
+-//		return 0;
+-
+ 	switch (type) {
+ 	case hwmon_temp:
+ 		if (attr == hwmon_temp_input || attr == hwmon_temp_label)
+@@ -393,17 +405,19 @@ static int lenovo_ec_probe(struct platform_device *pdev)
+ 
+ 	chip_info = &lenovo_ec_chip_info;
+ 
+-	if (IoRead8(0x90C) != 0) {               /* check EMI Application BIT */
+-		IoWrite8(0x90C, IoRead8(0x90C)); /* set EMI Application BIT to 0 */
++	mutex_lock(&ec_data->mec_mutex);
++	if (io_read8(MCHP_EMI0_APPLICATION_ID) != 0) { /* check EMI Application BIT */
++		io_write8(0x90C, io_read8(0x90C)); /* set EMI Application BIT to 0 */
+ 	}
+-	IoWrite8(MCHP_EMI0_EC_ADDRESS_LSB, MCHP_SING_IDX);
+-	IoWrite8(MCHP_EMI0_EC_ADDRESS_MSB, MCHP_SING_IDX >> 8);
+-
+-	if ((IoRead8(MCHP_EMI0_EC_DATA_BYTE0) == 'M') &&
+-	    (IoRead8(MCHP_EMI0_EC_DATA_BYTE1) == 'C') &&
+-	    (IoRead8(MCHP_EMI0_EC_DATA_BYTE2) == 'H') &&
+-	    (IoRead8(MCHP_EMI0_EC_DATA_BYTE3) == 'P')) {
+-		ec_data->platform_id = get_platform();
++	io_write8(MCHP_EMI0_EC_ADDRESS_LSB, MCHP_SING_IDX);
++	io_write8(MCHP_EMI0_EC_ADDRESS_MSB, MCHP_SING_IDX >> 8);
++	mutex_unlock(&ec_data->mec_mutex);
++
++	if ((io_read8(MCHP_EMI0_EC_DATA_BYTE0) == 'M') &&
++	    (io_read8(MCHP_EMI0_EC_DATA_BYTE1) == 'C') &&
++	    (io_read8(MCHP_EMI0_EC_DATA_BYTE2) == 'H') &&
++	    (io_read8(MCHP_EMI0_EC_DATA_BYTE3) == 'P')) {
++		ec_data->platform_id = get_platform(ec_data);
+ 		switch (ec_data->platform_id) {
+ 		case 0:
+ 			ec_data->fan_labels = px_ec_fan_label;
+@@ -431,9 +445,8 @@ static int lenovo_ec_probe(struct platform_device *pdev)
+ 							     chip_info, NULL);
+ 
+ 		return PTR_ERR_OR_ZERO(hwdev);
+-	} else {
+-		return -ENODEV;
+ 	}
++	return -ENODEV;
+ }
+ 
+ static struct platform_driver lenovo_ec_sensors_platform_driver = {
+@@ -467,5 +480,5 @@ module_init(lenovo_ec_init);
+ module_exit(lenovo_ec_exit);
+ 
+ MODULE_AUTHOR("David Ober <dober@lenovo.com>");
+-MODULE_DESCRIPTION("HWMON driver for MEC172x EC sensors accessible via ACPI on LENOVO motherboards");
++MODULE_DESCRIPTION("HWMON driver for MEC172x EC sensors on LENOVO motherboards");
+ MODULE_LICENSE("GPL");
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.34.1
 
