@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 002567DCA7C
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5A67DCA7B
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236176AbjJaKOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236161AbjJaKOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236164AbjJaKOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 31 Oct 2023 06:14:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BF983
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698747205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=pAQbrfQoIJNOhnUYvPhPLxk1gl1ZWcaKec9dUXNoa30=;
-        b=LJSx/l3NzXiwVQeoLDe25h9JjRkPPCV1+odm1TNn/gQJBlT35uJ5SYNsbPDpH2uyOvoJSI
-        azqy6Hm0x8imdWtlYhfplDdAfzcAWPbLYQdgmC+9I1ro9ywr7tw+LthZjgjIMkuQe+KIkG
-        y60C95vvtYjHLpkSEu9f6PLpMdCJBwY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-269-vElku_BlPOOgshYiulhLxw-1; Tue, 31 Oct 2023 06:13:18 -0400
-X-MC-Unique: vElku_BlPOOgshYiulhLxw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4092164ed09so38219895e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:13:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698747196; x=1699351996;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pAQbrfQoIJNOhnUYvPhPLxk1gl1ZWcaKec9dUXNoa30=;
-        b=LL+zHTdCRunthsYfYgg4J0k3Wp69Jti6FV8id2tkAd8AhEhGZ8Ll/jVzvWffMg773m
-         9OdyIgs6O1K8Gw7U43avay/wVYoRPeCvlOqXgqvolRz0NBuWDZ/fjn4aB5TVMGM+lyD6
-         70y4UZtCFY6C0o1Tq9ghg0uvdxD59wjNjRs8als/gxexzzSgdLjt7dunzlXG5dTthvhD
-         BhM0Zk197d478Rtve0wBjE69rnvbh8gGqhdc4Tvpd69g0d1JeftcPV1HqE4DKSxF+ZOX
-         oDPfhAbPHIB5WBfBxjo8vFWBOl2AM8Mnff7ZG6KGgO8S8MdPw+qkTSv6qmHhmLSsC++L
-         Qh8Q==
-X-Gm-Message-State: AOJu0YzJD6U1DSbVDZHC0YtFP3PD20+sVVOt7AQZeZxu001gsZOdh2j7
-        qpmhdbPp7pPWMoaut4tH1peXKmI65or9x/rCmcHFxEQ94uApkJLYraQfOYQrIWn6y1Qby8OArQC
-        iMZ+ztmtFOR/6y2Kv9AcbtYm5
-X-Received: by 2002:a05:600c:4449:b0:408:4120:bab7 with SMTP id v9-20020a05600c444900b004084120bab7mr10499383wmn.15.1698747196426;
-        Tue, 31 Oct 2023 03:13:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHevO5e8NbNMxyxVt2qma4vR7VuBnZ4MDfKV72pDE/YGANv/bYJg45/F0IcpscecHYnjWYxuQ==
-X-Received: by 2002:a05:600c:4449:b0:408:4120:bab7 with SMTP id v9-20020a05600c444900b004084120bab7mr10499373wmn.15.1698747195965;
-        Tue, 31 Oct 2023 03:13:15 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c707:8f00:43b0:1107:57d2:28ee? (p200300cbc7078f0043b0110757d228ee.dip0.t-ipconnect.de. [2003:cb:c707:8f00:43b0:1107:57d2:28ee])
-        by smtp.gmail.com with ESMTPSA id fb12-20020a05600c520c00b00405d9a950a2sm1281801wmb.28.2023.10.31.03.13.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 03:13:15 -0700 (PDT)
-Message-ID: <e5d9423e-5a61-4fbe-b971-52e4283c1afd@redhat.com>
-Date:   Tue, 31 Oct 2023 11:13:14 +0100
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbjJaKON (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Oct 2023 06:14:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28D2C1;
+        Tue, 31 Oct 2023 03:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698747250; x=1730283250;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=f0hEAVEiqXdezJM2XS/++HMElquqKONtRQZRVnkTLTM=;
+  b=G98PbUC+tlBwFIee0E+ZW2q3n1If5Y9OdROCUAVFNVRXO6J/Olu3p2KE
+   HobbQqpn+ZTnNWTZSzskYyllmFjT2g0EmCYLX3QiYfkkKCzYDaoevdfOk
+   Wgc9Lq0pve+9+iDxGu2ZWHfyevTEHEzVaMj1eTRrcXNdhhLbqHdUT16QW
+   ANXo8RTyYNBTb7vSGUKHVd9J/Mj1ll6ZpyzADkHxroL2p9kwVAa5K/TGj
+   f/twxDBNwKcVlM50z4k/HJMWS4LXtPvJCTtAeaCdJUJg/MUlogg+GhtT+
+   kQD+PpnR+m4BVZQ38vgIYgcnoY5wu0Z+Wi12HgiKaM1Gk1QGsKdd1Jack
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="385447560"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="385447560"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:14:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="934064633"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="934064633"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:14:04 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 1561F11F894;
+        Tue, 31 Oct 2023 12:14:02 +0200 (EET)
+Date:   Tue, 31 Oct 2023 10:14:02 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Tommaso Merciai <tomm.merciai@gmail.com>, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZUDTaq9-j1HmqiEp@kekkonen.localdomain>
+References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
+ <20231020141354.2500602-4-tomm.merciai@gmail.com>
+ <ZTpnHdpTgRNll3TC@kekkonen.localdomain>
+ <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <ZUAxoy2cRR6Rm9ig@kekkonen.localdomain>
+ <20231030233809.GD12764@pendragon.ideasonboard.com>
+ <ZUCf_74Z0igCiJ_-@kekkonen.localdomain>
+ <20231031085347.GH12764@pendragon.ideasonboard.com>
+ <ZUDDuoNO5AGjyJLh@kekkonen.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] mm/memory_hotplug: split memmap_on_memory requests
- across memblocks
-Content-Language: en-US
-To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "Hocko, Michal" <mhocko@suse.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "jmoyer@redhat.com" <jmoyer@redhat.com>,
-        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>
-References: <20231025-vv-kmem_memmap-v7-0-4a76d7652df5@intel.com>
- <20231025-vv-kmem_memmap-v7-2-4a76d7652df5@intel.com>
- <4df63333-de57-4a58-a110-77b4fdfa6a9e@redhat.com>
- <cdeef06d81abb3fc4b5f4bea6b3fd5b83972249b.camel@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <cdeef06d81abb3fc4b5f4bea6b3fd5b83972249b.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUDDuoNO5AGjyJLh@kekkonen.localdomain>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -143,103 +86,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.10.23 03:14, Verma, Vishal L wrote:
-> On Mon, 2023-10-30 at 11:20 +0100, David Hildenbrand wrote:
->> On 26.10.23 00:44, Vishal Verma wrote:
->>>
-> [..]
+Hi Laurent,
+
+On Tue, Oct 31, 2023 at 09:07:06AM +0000, Sakari Ailus wrote:
+> On Tue, Oct 31, 2023 at 10:53:47AM +0200, Laurent Pinchart wrote:
+> > On Tue, Oct 31, 2023 at 06:34:39AM +0000, Sakari Ailus wrote:
+> > > On Tue, Oct 31, 2023 at 01:38:09AM +0200, Laurent Pinchart wrote:
+> > > > On Mon, Oct 30, 2023 at 10:43:47PM +0000, Sakari Ailus wrote:
+> > > > > On Mon, Oct 30, 2023 at 01:26:58PM +0100, Tommaso Merciai wrote:
+> > > > > 
+> > > > > ...
+> > > > > 
+> > > > > > > > +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
+> > > > > > > > +{
+> > > > > > > > +	u64 val;
+> > > > > > > > +	int ret = 0;
+> > > > > > > > +
+> > > > > > > > +	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
+> > > > > > > 
+> > > > > > > Missing error checking before the use of the value. The same pattern
+> > > > > > > remains prevalent throughout the driver.
+> > > > > > > 
+> > > > > > > I think it'd be easier if you didn't use a temporary variable for reading,
+> > > > > > > but instead had a register width specific access function. You could even
+> > > > > > > introduce a helper macro to read this information as I suggested in an
+> > > > > > > earlier review.
+> > > > > > 
+> > > > > > oks.
+> > > > > > We are moving to use the following macros:
+> > > > > > 
+> > > > > > #define alvium_read_check(alvium, reg, value) \
+> > > > > > { \
+> > > > > > 	int ret = alvium_read(alvium, reg, value, NULL); \
+> > > > > > 	if (ret) \
+> > > > > > 		return ret; \
+> > > > > > }
+> > > > > > 
+> > > > > 
+> > > > > You could do something like (entirely untested):
+> > > > > 
+> > > > > #define ALVIUM_DECLARE_READ(sign, bits) \
+> > > > > 	static int
+> > > > > 	alvium_read_ ## sign ## bits(struct alvium_dev *alvium, u32 reg, \
+> > > > > 				     sign ## bits *val, int *err) \
+> > > > > 	{ \
+> > > > > 		u64 val64; \
+> > > > > 		int ret; \
+> > > > > 			\
+> > > > > 		if (err && *err < 0) \
+> > > > > 			return *err; \
+> > > > > 			\
+> > > > > 		alvium_read(alvium, reg, &val64, &ret); \
+> > > > > 		if (ret < 0) { \
+> > > > > 			if (err) \
+> > > > > 				*err = ret; \
+> > > > > 			return ret; \
+> > > > > 		}	\
+> > > > > 			\
+> > > > > 		*val = val64; \
+> > > > > 			\
+> > > > > 		return 0; \
+> > > > > 	}
+> > > > > 
+> > > > > ALVIUM_DECLARE_READ(u, 32);
+> > > > > 
+> > > > > And then, e.g. instead of (and failing to check ret):
+> > > > > 
+> > > > > 	u64 val;
+> > > > > 
+> > > > > 	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_RW, &val, &ret);
+> > > > > 	alvium->dft_contrast = val;
+> > > > > 
+> > > > > you'd have a single call:
+> > > > > 
+> > > > > 	alvium_read_u32(alvium, REG_BCRM_CONTRAST_VALUE_RW,
+> > > > > 		        &alvium->dft_contrast, &ret);
+> > > > > 
+> > > > > And so on.
+> > > > > 
+> > > > > You can drop sign if you don't need signed reads but some of the struct
+> > > > > fields you're writing something appear to be signed.
+> > > > > 
+> > > > > It'd be good to check the register size matches with the size of *val, too.
+> > > > > Maybe something like:
+> > > > > 
+> > > > > WARN_ON((CCI_REG ## bits(0) && CCI_REG_WIDTH_MASK) >> CCI_REG_WIDTH_SHIFT
+> > > > > 	!= sizeof(sign ## bits));
+> > > > 
+> > > > I think this could actually be automated, and implemented in v4l2-cci.
+> > > > Something like the following:
+> > > > 
+> > > > diff --git a/drivers/media/v4l2-core/v4l2-cci.c b/drivers/media/v4l2-core/v4l2-cci.c
+> > > > index bc2dbec019b0..27f1eaa7777d 100644
+> > > > --- a/drivers/media/v4l2-core/v4l2-cci.c
+> > > > +++ b/drivers/media/v4l2-core/v4l2-cci.c
+> > > > @@ -16,7 +16,7 @@
+> > > > 
+> > > >  #include <media/v4l2-cci.h>
+> > > > 
+> > > > -int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
+> > > > +int __cci_read(struct regmap *map, u32 reg, void *val, int *err)
+> > > >  {
+> > > >  	unsigned int len;
+> > > >  	u8 buf[8];
+> > > > @@ -37,19 +37,19 @@ int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
+> > > > 
+> > > >  	switch (len) {
+> > > >  	case 1:
+> > > > -		*val = buf[0];
+> > > > +		*(u8 *)val = buf[0];
+> > > >  		break;
+> > > >  	case 2:
+> > > > -		*val = get_unaligned_be16(buf);
+> > > > +		*(u16 *)val = get_unaligned_be16(buf);
+> > > >  		break;
+> > > >  	case 3:
+> > > > -		*val = get_unaligned_be24(buf);
+> > > > +		*(u32 *)val = get_unaligned_be24(buf);
+> > > >  		break;
+> > > >  	case 4:
+> > > > -		*val = get_unaligned_be32(buf);
+> > > > +		*(u32 *)val = get_unaligned_be32(buf);
+> > > >  		break;
+> > > >  	case 8:
+> > > > -		*val = get_unaligned_be64(buf);
+> > > > +		*(u64 *)val = get_unaligned_be64(buf);
+> > > >  		break;
+> > > >  	default:
+> > > >  		dev_err(regmap_get_device(map), "Error invalid reg-width %u for reg 0x%04x\n",
+> > > > @@ -64,7 +64,7 @@ int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
+> > > > 
+> > > >  	return ret;
+> > > >  }
+> > > > -EXPORT_SYMBOL_GPL(cci_read);
+> > > > +EXPORT_SYMBOL_GPL(__cci_read);
+> > > > 
+> > > >  int cci_write(struct regmap *map, u32 reg, u64 val, int *err)
+> > > >  {
+> > > > @@ -119,7 +119,7 @@ int cci_update_bits(struct regmap *map, u32 reg, u64 mask, u64 val, int *err)
+> > > >  	u64 readval;
+> > > >  	int ret;
+> > > > 
+> > > > -	ret = cci_read(map, reg, &readval, err);
+> > > > +	ret = __cci_read(map, reg, &readval, err);
+> > > >  	if (ret)
+> > > >  		return ret;
+> > > > 
+> > > > diff --git a/include/media/v4l2-cci.h b/include/media/v4l2-cci.h
+> > > > index 0f6803e4b17e..31223ce8d741 100644
+> > > > --- a/include/media/v4l2-cci.h
+> > > > +++ b/include/media/v4l2-cci.h
+> > > > @@ -7,6 +7,9 @@
+> > > >  #ifndef _V4L2_CCI_H
+> > > >  #define _V4L2_CCI_H
+> > > > 
+> > > > +#include <linux/bitfield.h>
+> > > > +#include <linux/build_bug.h>
+> > > > +#include <linux/log2.h>
+> > > >  #include <linux/types.h>
+> > > > 
+> > > >  struct i2c_client;
+> > > > @@ -39,6 +42,8 @@ struct cci_reg_sequence {
+> > > >  #define CCI_REG32(x)			((4 << CCI_REG_WIDTH_SHIFT) | (x))
+> > > >  #define CCI_REG64(x)			((8 << CCI_REG_WIDTH_SHIFT) | (x))
+> > > > 
+> > > > +int __cci_read(struct regmap *map, u32 reg, void *val, int *err);
+> > > > +
+> > > >  /**
+> > > >   * cci_read() - Read a value from a single CCI register
+> > > >   *
+> > > > @@ -48,9 +53,17 @@ struct cci_reg_sequence {
+> > > >   * @err: Optional pointer to store errors, if a previous error is set
+> > > >   *       then the read will be skipped
+> > > >   *
+> > > > + * The type of the @val pointer must match the size of the register being read.
+> > > > + * Mismatches will result in compile-time errors.
+> > > > + *
+> > > >   * Return: %0 on success or a negative error code on failure.
+> > > >   */
+> > > > -int cci_read(struct regmap *map, u32 reg, u64 *val, int *err);
+> > > > +#define cci_read(map, reg, val, err) ({					\
+> > > > +	u32 __reg = (reg);						\
+> > > > +	u32 __size = FIELD_GET(CCI_REG_WIDTH_MASK, __reg);		\
+> > > > +	BUILD_BUG_ON(sizeof(*(val)) != roundup_pow_of_two(__size));	\
+> > > > +	__cci_read(map, __reg, (void *)(val), err);			\
+> > > > +})
+> > > > 
+> > > >  /**
+> > > >   * cci_write() - Write a value to a single CCI register
+> > > > 
+> > > > The change to cci_update_bits() is obviously wrong, I've hacked that to
+> > > > compile-test the rest with the drivers using cci_read(), and I get nice
+> > > > build-time errors due to usage of the wrong type :-)
+> > > > 
+> > > > Is this something that would be considered ? Bonus points to anyone who
+> > > > would fix cci_update_bits() :-)
+> > > 
+> > > I like the idea of moving this to v4l2-cci.
+> > > 
+> > > I'd prefer _Generic() based solution as we'd have exact types there instead
+> > > of just size. E.g. with the above code, reading a value to a long variable
+> > > would work on some archs but fail on others.
+> > 
+> > Doesn't _Generic() treat compatible types identically ?
 > 
->>> @@ -2146,11 +2186,69 @@ void try_offline_node(int nid)
->>>    }
->>>    EXPORT_SYMBOL(try_offline_node);
->>>    
->>> -static int __ref try_remove_memory(u64 start, u64 size)
->>> +static void __ref remove_memory_blocks_and_altmaps(u64 start, u64 size)
->>>    {
->>> -       struct memory_block *mem;
->>> -       int rc = 0, nid = NUMA_NO_NODE;
->>> +       unsigned long memblock_size = memory_block_size_bytes();
->>>          struct vmem_altmap *altmap = NULL;
->>> +       struct memory_block *mem;
->>> +       u64 cur_start;
->>> +       int rc;
->>> +
->>> +       /*
->>> +        * For memmap_on_memory, the altmaps could have been added on
->>> +        * a per-memblock basis. Loop through the entire range if so,
->>> +        * and remove each memblock and its altmap.
->>> +        */
->>
->> /*
->>    * altmaps where added on a per-memblock basis; we have to process
->>    * each individual memory block.
->>    */
->>
->>> +       for (cur_start = start; cur_start < start + size;
->>> +            cur_start += memblock_size) {
->>> +               rc = walk_memory_blocks(cur_start, memblock_size, &mem,
->>> +                                       test_has_altmap_cb);
->>> +               if (rc) {
->>> +                       altmap = mem->altmap;
->>> +                       /*
->>> +                        * Mark altmap NULL so that we can add a debug
->>> +                        * check on memblock free.
->>> +                        */
->>> +                       mem->altmap = NULL;
->>> +               }
->>
->> Simpler (especially, we know that there must be an altmap):
->>
->> mem = find_memory_block(pfn_to_section_nr(cur_start));
->> altmap = mem->altmap;
->> mem->altmap = NULL;
->>
->> I think we might be able to remove test_has_altmap_cb() then.
->>
->>> +
->>> +               remove_memory_block_devices(cur_start, memblock_size);
->>> +
->>> +               arch_remove_memory(cur_start, memblock_size, altmap);
->>> +
->>> +               /* Verify that all vmemmap pages have actually been freed. */
->>> +               if (altmap) {
->>
->> There must be an altmap, so this can be done unconditionally.
+> Ah, it does, indeed. So that doesn't solve the long problem.
 > 
-> Hi David,
-
-Hi!
-
+> I guess the code will be more compact with just void *, on the expense of
+> (some) type checking.
 > 
-> All other comments make sense, making those changes now.
-> 
-> However for this one, does the WARN() below go away then?
-> 
-> I was wondering if maybe arch_remove_memory() is responsible for
-> freeing the altmap here, and at this stage we're just checking if that
-> happened. If it didn't WARN and then free it.
+> I'm fine with either.
 
-I think that has to stay, to make sure arch_remove_memory() did the 
-right thing and we don't -- by BUG -- still have some altmap pages in 
-use after they should have been completely freed.
+You can't check the variable size matches the register width by using a
+void pointer. That'd be a source for possibly difficult to debug problems:
+passing a pointer to u8 variable while reading a 64-bit register overwrites
+seven bytes on the stack outside the variable itself.
 
-> 
-> I drilled down the path, and I don't see altmap actually getting freed
-> in vmem_altmap_free(), but I wasn't sure if <something else> was meant
-> to free it as altmap->alloc went down to 0.
-
-
-vmem_altmap_free() does the "altmap->alloc -= nr_pfns", which is called 
-when arch_remove_memory() frees the vmemmap pages and detects that they 
-actually come from the altmap reserve and not from the buddy/earlyboot 
-allocator.
-
-Freeing an altmap is just unaccounting it in the altmap structure; and 
-here we make sure that we are actually back down to 0 and don't have 
-some weird altmap freeing BUG in arch_remove_memory().
+Let's use _Generic().
 
 -- 
-Cheers,
+Regards,
 
-David / dhildenb
-
+Sakari Ailus
