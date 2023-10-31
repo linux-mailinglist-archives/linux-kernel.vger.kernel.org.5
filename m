@@ -2,149 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9967DD4D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1B37DD4D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346920AbjJaRoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S1346944AbjJaRo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346874AbjJaRoI (ORCPT
+        with ESMTP id S1346874AbjJaRoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:44:08 -0400
+        Tue, 31 Oct 2023 13:44:24 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D65992
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA15A6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698774200;
+        s=mimecast20190719; t=1698774215;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fjb6Yoc/YD3246622wziQ1x01TRFPcmtkNRame8jp4I=;
-        b=HhxuI0y+hqjchQZgIt8wrmXuwKRlhWBi+ExWqEpPCkZSy+JJg0QwQDUQ2lvFAJ2lWCfuQq
-        N3TUF+beSdGtXtFthXh2jyGfvs13VKTuXx9FEzuJGqHYkxa6SfF68ux0DEIDxz0gyVnfSL
-        Sg+lEXgfYMOQ6GmrfFjF3tpAZhI5rag=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=iUnO9/SZ6ap+H+Ma/kTTfFeGQM3g1ED274282AbLD1g=;
+        b=Qc3Pg1xAX+plpNRddba7k95W9EXWGpSzWIm0/L+q57LN9K0/DPAaLtI/KwXrckavIew+t3
+        kUGDvtjvZa0vuUArcHOEB91hQ3AiSn2Z2ZTqvrJKx+0dg05BlWvL8QDYN/6QB41C+UXo3i
+        hGgriSio5d7LSRxCMemk/9XZe9V9HgQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-55-xlwPX2wHMYW2AjMHZ3X_3A-1; Tue, 31 Oct 2023 13:43:14 -0400
-X-MC-Unique: xlwPX2wHMYW2AjMHZ3X_3A-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9cd789f0284so394551066b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:13 -0700 (PDT)
+ us-mta-371-qbuVQUDAMiGIyypwlsmJZw-1; Tue, 31 Oct 2023 13:43:24 -0400
+X-MC-Unique: qbuVQUDAMiGIyypwlsmJZw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4083c9b426fso40465875e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774193; x=1699378993;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fjb6Yoc/YD3246622wziQ1x01TRFPcmtkNRame8jp4I=;
-        b=rAXjz7Z7dtoCaAUHcnV/LVOV9lY/i0yNW46ZFx9oKjib9Lj46cjDVw56o0WG0PvsJr
-         lj8A+OzmVZ6kHVDeoznVT2nNJBUe5osivMkoWf2e3Dg1mUSXWbbuEFl3R7y62t+RBqFC
-         QiI8QstCT+rAUCeic5qQPmAfWAm/zxFwB7vETKrB/iDlGlKvsf6oQ0F6EROEKrThVFSx
-         S+b6ohqfM2l00VzvU5gD4HjmHMYjMStX3MCO+zIFWVQI+ip1SflKyxwwFg2aZN7x3PY9
-         4E6xW6daTgSmQpA41I5O2hpJ6nlO9qZZNZ8PUk+LCMOUC21buhFAYzNXulET1u1DjxPU
-         0SzA==
-X-Gm-Message-State: AOJu0Yw4f7F+XxkHc4h0Rqed/GoJmXiCl/1uw0Ycpkk32xdLFV+u1qSP
-        UXkisnD6QhtQLQtxNcLC9MOM4uCn2NMphBKlTJk7KnqSXv2Hmszl7tJxQs87dNSxZ9jQZEd/pZk
-        He6dvSASK+m8HHhF4tFccPJ5R
-X-Received: by 2002:a17:907:806:b0:9b2:b269:d563 with SMTP id wv6-20020a170907080600b009b2b269d563mr31357ejb.63.1698774193022;
-        Tue, 31 Oct 2023 10:43:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHBZIn/2FMYdWi84Y1OkpcqPPwyotpPSJ5wkgv3ilk1lzE2lciLdSBr2N55hmshj9afdG5z/w==
-X-Received: by 2002:a17:907:806:b0:9b2:b269:d563 with SMTP id wv6-20020a170907080600b009b2b269d563mr31345ejb.63.1698774192750;
-        Tue, 31 Oct 2023 10:43:12 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id pk24-20020a170906d7b800b009c74c56d71dsm1334995ejb.13.2023.10.31.10.43.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 10:43:12 -0700 (PDT)
-Message-ID: <3b78aa2c-91a8-4031-a4e8-1f330139cd9f@redhat.com>
-Date:   Tue, 31 Oct 2023 18:43:10 +0100
+        d=1e100.net; s=20230601; t=1698774203; x=1699379003;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iUnO9/SZ6ap+H+Ma/kTTfFeGQM3g1ED274282AbLD1g=;
+        b=vD/hOhr6cwLzDtS4EXctsqvDeYjS3w4D3i18+5wdnLnyAQfnO3auehuktGedQeFqCy
+         ASZjir4xGH0BncsrofyXKOuTAZuwbSMMY6btnxsgDIY3Y8mr9/qPhl6cVKoBuzLkkIzN
+         XH6OUvGahHQogvjngex42Mgk7lJ60opNcp5/IuC5x7iBnKtGBx1Mf3mokKIe5FacqbdG
+         Tmd1E6UXEhjBfo5QbvGWIAVrgeeRdSvXS/jAs1FRypQQzofFEiOtcne/fez6SRN2k9Yb
+         d7l5NdlNGdjduTd253aMJkv7nctXYDztl3daUHdYjtZOJycyfa0JyBv9K5iTAYaFlLCi
+         3oNw==
+X-Gm-Message-State: AOJu0YygGWS/tDBWR7R7dX+UyphShjXhw800JmC8rsSimd/nmNUtH1Lj
+        7hzbrWNkC/qL91enQAHq5nYfDMZtVzhAZmQQ+1cU4wMGO52SJ+SaYwJDeROJGXnM18ULdax9ckG
+        Kf5B7pN8LknjyeUNMkKRgFylv
+X-Received: by 2002:a05:6000:1566:b0:32f:92f3:dbbb with SMTP id 6-20020a056000156600b0032f92f3dbbbmr2910202wrz.70.1698774203074;
+        Tue, 31 Oct 2023 10:43:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE8rn9CSehfODrcFmZD5QheiiN4lzDXyj4HypO00ymz85ULxp1cgvjUsluFYDBcQidkpb8kqw==
+X-Received: by 2002:a05:6000:1566:b0:32f:92f3:dbbb with SMTP id 6-20020a056000156600b0032f92f3dbbbmr2910191wrz.70.1698774202709;
+        Tue, 31 Oct 2023 10:43:22 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id t1-20020a05600001c100b0032415213a6fsm1984587wrx.87.2023.10.31.10.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 10:43:22 -0700 (PDT)
+Message-ID: <0ad2b2b4d394ca4c8b805535444f97db4e9cc690.camel@redhat.com>
+Subject: Re: [PATCH v6 01/25] x86/fpu/xstate: Manually check and add
+ XFEATURE_CET_USER xstate bit
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Tue, 31 Oct 2023 19:43:20 +0200
+In-Reply-To: <20230914063325.85503-2-weijiang.yang@intel.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-2-weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v7 4/7] drm/gpuvm: add an abstraction for a
- VM / BO combination
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20231023201659.25332-1-dakr@redhat.com>
- <20231023201659.25332-5-dakr@redhat.com>
- <f00a4975cf32c3ae28124343a2c994acda083829.camel@linux.intel.com>
- <87zfzz3thp.fsf@intel.com> <1e2acafb-fbc3-4256-b1e1-3fe6c47b1ef2@redhat.com>
- <6cf7459aa0332d6fc3c4764f66a83c6a3825348f.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <6cf7459aa0332d6fc3c4764f66a83c6a3825348f.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 17:50, Thomas Hellström wrote:
-> On Tue, 2023-10-31 at 17:30 +0100, Danilo Krummrich wrote:
->> On 10/31/23 12:45, Jani Nikula wrote:
->>> On Tue, 31 Oct 2023, Thomas Hellström
->>> <thomas.hellstrom@linux.intel.com> wrote:
->>>> On Mon, 2023-10-23 at 22:16 +0200, Danilo Krummrich wrote:
->>>>> + * Returns: a pointer to the &drm_gpuvm_bo on success, NULL on
->>>>
->>>> Still needs s/Returns:/Return:/g
->>>
->>> FWIW, both work to accommodate the variance across the kernel,
->>> although
->>> I think only the latter is documented and recommended. It's also
->>> the
->>> most popular:
->>>
->>>     10577 Return
->>>      3596 Returns
->>
->> I'd like to keep "Returns", since that's what GPUVM uses already
->> everywhere else.
+On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+> Remove XFEATURE_CET_USER entry from dependency array as the entry doesn't
+> reflect true dependency between CET features and the xstate bit, instead
+> manually check and add the bit back if either SHSTK or IBT is supported.
 > 
-> Ok. It looks like the Returns: are converted to Return in the rendered
-> output so I guess that's why it's the form that is documented.
+> Both user mode shadow stack and indirect branch tracking features depend
+> on XFEATURE_CET_USER bit in XSS to automatically save/restore user mode
+> xstate registers, i.e., IA32_U_CET and IA32_PL3_SSP whenever necessary.
 > 
-> I pointed this out since in the last review you replied you were going
-> to change it, and also when the code starts seeing updates from other,
-> it might become inconsistent if those patches follow the documented
-> way.
+> Although in real world a platform with IBT but no SHSTK is rare, but in
+> virtualization world it's common, guest SHSTK and IBT can be controlled
+> independently via userspace app.
+> 
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kernel/fpu/xstate.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index cadf68737e6b..12c8cb278346 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -73,7 +73,6 @@ static unsigned short xsave_cpuid_features[] __initdata = {
+>  	[XFEATURE_PT_UNIMPLEMENTED_SO_FAR]	= X86_FEATURE_INTEL_PT,
+>  	[XFEATURE_PKRU]				= X86_FEATURE_OSPKE,
+>  	[XFEATURE_PASID]			= X86_FEATURE_ENQCMD,
+> -	[XFEATURE_CET_USER]			= X86_FEATURE_SHSTK,
+>  	[XFEATURE_XTILE_CFG]			= X86_FEATURE_AMX_TILE,
+>  	[XFEATURE_XTILE_DATA]			= X86_FEATURE_AMX_TILE,
+>  };
+> @@ -798,6 +797,14 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+>  			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+>  	}
+>  
+> +	/*
+> +	 * Manually add CET user mode xstate bit if either SHSTK or IBT is
+> +	 * available. Both features depend on the xstate bit to save/restore
+> +	 * CET user mode state.
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_SHSTK) || boot_cpu_has(X86_FEATURE_IBT))
+> +		fpu_kernel_cfg.max_features |= BIT_ULL(XFEATURE_CET_USER);
+> +
+>  	if (!cpu_feature_enabled(X86_FEATURE_XFD))
+>  		fpu_kernel_cfg.max_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+>  
 
-Sorry for that. I think I wrote this answer when I was at XDC and hence was
-a little bit distracted.
 
-> 
-> But I'm OK either way.
+The goal of the xsave_cpuid_features is to disable xfeature state bits which are enabled
+in CPUID, but their parent feature bit (e.g X86_FEATURE_AVX512) is disabled in CPUID, 
+something that should not happen on real CPU, but can happen if the user explicitly
+disables the feature on the kernel command line and/or due to virtualization.
 
-Ok, then let's just keep it as it is.
+However the above code does the opposite, it will enable XFEATURE_CET_USER xsaves component,
+when in fact, it might be disabled in the CPUID (and one can say that in theory such
+configuration is even useful, since the kernel can still context switch CET msrs manually).
 
-> 
-> /Thomas
-> 
-> 
->>
->>>      1104 RETURN
->>>       568 return
->>>       367 returns
->>>       352 RETURNS
->>>         1 RETURNs
->>>
->>> BR,
->>> Jani.
->>>
->>>
->>
-> 
+
+So I think that the code should do this instead:
+
+if (!boot_cpu_has(X86_FEATURE_SHSTK) && !boot_cpu_has(X86_FEATURE_IBT))
+ 	fpu_kernel_cfg.max_features &= ~BIT_ULL(XFEATURE_CET_USER);
+
+
+Best regards,
+	Maxim Levitsky
+
+
+
 
