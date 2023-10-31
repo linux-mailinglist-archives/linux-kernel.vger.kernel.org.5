@@ -2,164 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8667DCBEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BF87DCBF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343801AbjJaLiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        id S1343823AbjJaLi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343737AbjJaLh7 (ORCPT
+        with ESMTP id S1343817AbjJaLiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:37:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8766991
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:37:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 44BF921AAA;
-        Tue, 31 Oct 2023 11:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698752275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfLI2Ea9iwLsMXt5JTOZAb47Iwb3cS2viegGU7EDkxA=;
-        b=JML1AAISJiwqSEdEjAJQK85JfR2XnaXwtKeUUIpOL7nPOqCuW36VAmUdbhpZDwH1dxvcDO
-        +1k7juVlFAbGwQwVEu928dpL2wdOJt2ZWplhf9AbUM8VUoSEJPU/uRV6ULZDMNq+EYUM63
-        t9tWi1dXKaesC+fgHxodEYA7BI508K8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698752275;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfLI2Ea9iwLsMXt5JTOZAb47Iwb3cS2viegGU7EDkxA=;
-        b=9nGafFpcugoAKbVTFtCANC7aGAp6LfVUC/404Ya4zSToFFvBUBJoRQblmcJ6KyiUdJ+otu
-        HUaNFQuytPZFYKDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C875138EF;
-        Tue, 31 Oct 2023 11:37:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fBgYChPnQGWZLwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 31 Oct 2023 11:37:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A6A25A06E5; Tue, 31 Oct 2023 12:37:54 +0100 (CET)
-Date:   Tue, 31 Oct 2023 12:37:54 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     jack@suse.com, linux-kernel@vger.kernel.org, kernel@collabora.com,
-        groeck@google.com, zsm@google.com,
-        syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-Subject: Re: [PATCH] fs: udf: super.c: Fix a use-after-free issue in
- udf_finalize_lvid
-Message-ID: <20231031113754.vwrj3pubynb6bnef@quack3>
-References: <20231030202418.847494-1-shreeya.patel@collabora.com>
+        Tue, 31 Oct 2023 07:38:23 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1076ED8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:38:21 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40859c466efso42984915e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698752299; x=1699357099; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K0Atp27LZfRzmnYpBx5CazxCFjGuBvxzQl4UQFiRe54=;
+        b=a9zgCis12cTMtE9IP7VOjnYivak3ftoij7/y8Ys1LFWm3U9cQ7UgnvWPv4fleY/VyE
+         cYWE1BXcdgQCDzal2ttZyRq3vlbsgWugQ67fAnqVoK6QizFA+UO4pEHQRRWPqynY8IvS
+         aIUJahrYCPxvG0ylgF06KW1e00j38v8BRUNavEWr8MPDkgrobJeJ05xRvwfQQOXzO8WH
+         e33juV62vG2Je6bXfsrKYjtqkObbsRFpE67QT4xzITM2P5KiA2oXx/9AmBGli2aNh1Yw
+         wfVgGSebpa74R9xcKc5xTaKst+9nUOFv44ZTTb78/bJT04mnbXqRHbdRR32D+sxTLLfi
+         2fOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698752299; x=1699357099;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K0Atp27LZfRzmnYpBx5CazxCFjGuBvxzQl4UQFiRe54=;
+        b=lzQETIdGUdPzRzMBPXrGMFrJZEHKMlDAHJFFNp7Qwnf4mI/1csSMeqZ6y62Er+lsAq
+         80BcxQenugZ2KD+k0JN/mKi2YaiOy2U/a4RSbGlxX7MDMpIuaIlIonG7bvM1H90gVjMA
+         K7spGIg/Np4BgMGapM9crzLSVHTu/Dlfg2lmc4RebFsz9U5SY3NSMrzoPfTEDcmLPnRV
+         /pDVDwMgL0kKux1h094ahN/hA+0et087MRXTOACWme+yPARdqoBd4DAunb2Q4WO0peQx
+         qa6A47WtZNyBYGiIiKvRy9IO1BoHeA79u3rt+Oo/FLhsWmj8e960+rlJ5esaUpqWrpyd
+         gV/g==
+X-Gm-Message-State: AOJu0YzPK5+yWHsQai3QYFdvtbXfUQCqSshP5V4Mehb4LKbl4IhnsvoL
+        2KNmW80TxiePKvhVv1jqRA3kGg==
+X-Google-Smtp-Source: AGHT+IGb/PBBH9uX4ZCP3I3lEgbPgZQf8px9qSYMcl1XUQI1jOkACWOw0SL+ILGYpQcTWBsY9KGXlw==
+X-Received: by 2002:a05:600c:3501:b0:404:757e:c5ba with SMTP id h1-20020a05600c350100b00404757ec5bamr9487672wmq.26.1698752299429;
+        Tue, 31 Oct 2023 04:38:19 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id 8-20020a05600c248800b004060f0a0fdbsm1490423wms.41.2023.10.31.04.38.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 04:38:19 -0700 (PDT)
+Message-ID: <5a6ba550-6115-47ab-b724-5e29d64a1b2e@linaro.org>
+Date:   Tue, 31 Oct 2023 11:38:18 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030202418.847494-1-shreeya.patel@collabora.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] media: qcom: camss: Add support for named
+ power-domains
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, andersson@kernel.org,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026155042.551731-1-bryan.odonoghue@linaro.org>
+ <20231026155042.551731-6-bryan.odonoghue@linaro.org>
+ <d411e561-b0d0-48db-959e-3347006bce77@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <d411e561-b0d0-48db-959e-3347006bce77@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 31-10-23 01:54:18, Shreeya Patel wrote:
-> Add some error handling cases in udf_sb_lvidiu() and redefine
-> the descCRCLength in order to avoid use-after-free issue in
-> udf_finalize_lvid.
+On 31/10/2023 10:53, Konrad Dybcio wrote:
+> On 26.10.2023 17:50, Bryan O'Donoghue wrote:
+>> Right now we use fixed indexes to assign power-domains, with a
+>> requirement for the TOP GDSC to come last in the list.
+>>
+>> Adding support for named power-domains means the declaration in the dtsi
+>> can come in any order.
+>>
+>> After this change we continue to support the old indexing - if a SoC
+>> resource declration or the in-use dtb doesn't declare power-domain names
+>> we fall back to the default legacy indexing.
+>>
+>>  From this point on though new SoC additions should contain named
+>> power-domains, eventually we will drop support for legacy indexing.
+>>
+>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> ---
+>>   drivers/media/platform/qcom/camss/camss-vfe.c | 24 ++++++++++++++++-
+>>   drivers/media/platform/qcom/camss/camss.c     | 26 +++++++++++++++----
+>>   drivers/media/platform/qcom/camss/camss.h     |  2 ++
+>>   3 files changed, 46 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+>> index ebd5da6ad3f2f..cb48723efd8a0 100644
+>> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+>> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+>> @@ -1381,7 +1381,29 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+>>   	if (!res->line_num)
+>>   		return -EINVAL;
+>>   
+>> -	if (res->has_pd) {
+>> +	/* Power domain */
+> Unnecessary, I think
 > 
-> Following use-after-free issue was reported by syzbot :-
-> 
-> https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
-> 
-> BUG: KASAN: use-after-free in crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
-> Read of size 1 at addr ffff88816fba0000 by task syz-executor.0/32133
-> 
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:88 [inline]
-> dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
-> print_address_description mm/kasan/report.c:284 [inline]
-> print_report+0x13c/0x462 mm/kasan/report.c:395
-> kasan_report+0xa9/0xd5 mm/kasan/report.c:495
-> crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
-> udf_finalize_lvid+0x111/0x23b fs/udf/super.c:2022
-> udf_sync_fs+0xba/0x123 fs/udf/super.c:2378
-> sync_filesystem+0xe8/0x216 fs/sync.c:56
-> generic_shutdown_super+0x6b/0x334 fs/super.c:474
-> kill_block_super+0x79/0xd6 fs/super.c:1459
-> deactivate_locked_super+0xa0/0x101 fs/super.c:332
-> cleanup_mnt+0x2de/0x361 fs/namespace.c:1192
-> task_work_run+0x22b/0x2d4 kernel/task_work.c:179
-> resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-> exit_to_user_mode_loop+0xc4/0xd3 kernel/entry/common.c:171
-> exit_to_user_mode_prepare+0xb4/0x115 kernel/entry/common.c:204
-> __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
-> syscall_exit_to_user_mode+0xae/0x278 kernel/entry/common.c:297
-> do_syscall_64+0x5d/0x93 arch/x86/entry/common.c:99
-> entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7e8195fb6e17
-> 
-> Fixes: ebbd5e99f60a ("udf: factor out LVID finalization for reuse")
-> Reported-by: syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 
-Thanks for the patch but not every syzbot report is actually a bug. In this
-case you can notice that udf_load_logicalvolint() is actually checking
-validity of the Logical Volume Integrity Descriptor. The fact that later
-udf_sb_lvidiu() call overflows the buffer size is caused by the fact that
-syzbot overwrites the UDF filesystem while it is mounted and so the values
-we checked are not the same as the value we later use. That is not a
-problem we try to protect against (it is equivalent to corrupting memory). 
-I'm working on patches to so that syzbot can reasonably easily avoid
-creating such invalid scenarios but so far they did not land. So I'm sorry
-but I will not apply your fix.
+Consistent with existing commentary in this function ->
 
-								Honza
+/* Memory */
 
+/* Interrupts */
 
-> ---
->  fs/udf/super.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/udf/super.c b/fs/udf/super.c
-> index 928a04d9d9e0..ca8f10eaa748 100644
-> --- a/fs/udf/super.c
-> +++ b/fs/udf/super.c
-> @@ -114,6 +114,10 @@ struct logicalVolIntegrityDescImpUse *udf_sb_lvidiu(struct super_block *sb)
->  	partnum = le32_to_cpu(lvid->numOfPartitions);
->  	/* The offset is to skip freeSpaceTable and sizeTable arrays */
->  	offset = partnum * 2 * sizeof(uint32_t);
-> +	if (sb->s_blocksize < sizeof(*lvid) || (sb->s_blocksize - sizeof(*lvid)) <
-> +	    (offset + sizeof(struct logicalVolIntegrityDescImpUse)))
-> +		return NULL;
-> +
->  	return (struct logicalVolIntegrityDescImpUse *)
->  					(((uint8_t *)(lvid + 1)) + offset);
->  }
-> @@ -2337,6 +2341,8 @@ static int udf_sync_fs(struct super_block *sb, int wait)
->  		struct logicalVolIntegrityDesc *lvid;
->  
->  		lvid = (struct logicalVolIntegrityDesc *)bh->b_data;
-> +		if ((le16_to_cpu(lvid->descTag.descCRCLength) + sizeof(struct tag)) > sb->s_blocksize)
-> +			lvid->descTag.descCRCLength = cpu_to_le16(sb->s_blocksize - sizeof(struct tag));
->  		udf_finalize_lvid(lvid);
->  
->  		/*
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>> +
+>> +	if (res->pd_name) {
+> No need to nullcheck, dev_pm_domain_attach_by_name seems to return
+> NULL when the name is NULL
+
+It looks so. Then again I'm sure checking here saves a few instructions 
+and stack operations..
+
+---
+bod
