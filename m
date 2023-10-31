@@ -2,191 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C1F7DCF78
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEFA7DCF79
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343895AbjJaO3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S1344242AbjJaOal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbjJaO3I (ORCPT
+        with ESMTP id S231286AbjJaOai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:29:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5DADA
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:29:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319A0C433C8;
-        Tue, 31 Oct 2023 14:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698762545;
-        bh=guw3dfZozSqjhDDwvIz1fj5XioYuk97iCOFTzn8X/W0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LWaBzzWXpnobF1TT0GSQzsJkt/2upHJyvgwHlpl+qf6E4uWQWhU0MVIFhxpUTiSho
-         PoBZdS4xeCr5Ql0fLxDcddgZrTqRb92hkGkRrPCqoBHXfBUL4jGGyVfBIP22uAUMru
-         qHI1YYSE2LR4HIz5eUiYKxubqUuTPw0/eIqh+ORUs/4/hHuhsw/31CDtuslTghIzQw
-         0Br6HeLl6qDlKK5+TGyTI455D9iusV9DWUDHUoEK9ATFU3tMuPHe/VDqh9uOQBux2U
-         0CJiD1iKjkgZZT3J+Ytl/D0UvhICpsBicvdki/X1KOldXfDwofpW3bNag5lMabkIPi
-         W6Or0u8VmLKtw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B9135CE0DD0; Tue, 31 Oct 2023 07:29:04 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:29:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        aubrey.li@linux.intel.com, yu.c.chen@intel.com,
-        frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        boqun.feng@gmail.com, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com
-Subject: Re: [PATCH] sched: Don't call any kfree*() API in
- do_set_cpus_allowed()
-Message-ID: <a46f5614-53ec-49fb-86d0-fa5aea4d0a42@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231031001418.274187-1-longman@redhat.com>
- <20231031085308.GB35651@noisy.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031085308.GB35651@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 10:30:38 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A857FDA;
+        Tue, 31 Oct 2023 07:30:35 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E39C240003;
+        Tue, 31 Oct 2023 14:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698762634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SjOGE62KGqyY3N71na39yHJ0YOnyX5TL/3wHgzUTP/8=;
+        b=NoLpvVHH3MSIfsCf0iOpECRB4omBKIBVCnSXPLUg1MEmEOESPXlRDmbqIBVNoLBS3/5MTn
+        tIP5CDC0mWLjCd8f3OhiAZ9jFZvUAYFjRk/xzE59IPH/TvGXfeNv833u+wzOXZpSh3607t
+        0tDzfGDEbG5lEN0QDhwgICpWXIMwuLhPaSWJAAPVVggzovzV13jaeSCxliAoEVVjMUQAfn
+        iD2WGpkEHToB6YhJO3eOm6gq4Jpe+Z2qZp/+JOE+hRNHKBNSCl8xzdWxyZ1g0Ahg8FMjNW
+        qRVtjGGvuaI4vMnMolWqmehXwo/pf5pifD5BFcnqofTUmzz7jKEtZx75/GQnqg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 31 Oct 2023 15:30:32 +0100
+Message-Id: <CWMP3FX78B9O.9GVKCAH3OFGZ@tleb-bootlin-xps13-01>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
+ 7 or 8 in _get_options
+Cc:     "Hugo Villeneuve" <hugo@hugovil.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>
+X-Mailer: aerc 0.15.2
+References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
+ <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
+ <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
+ <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
+ <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
+ <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
+ <ZUDjhpQKgUgqVeBh@shell.armlinux.org.uk>
+ <CWMNJ47MO8E6.7CXJRZ181PXJ@tleb-bootlin-xps13-01>
+ <ZUEJjdfk/vmH8XTR@shell.armlinux.org.uk>
+In-Reply-To: <ZUEJjdfk/vmH8XTR@shell.armlinux.org.uk>
+X-GND-Sasl: theo.lebrun@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 09:53:08AM +0100, Peter Zijlstra wrote:
-> On Mon, Oct 30, 2023 at 08:14:18PM -0400, Waiman Long wrote:
-> > Commit 851a723e45d1 ("sched: Always clear user_cpus_ptr in
-> > do_set_cpus_allowed()") added a kfree() call to free any user
-> > provided affinity mask, if present. It was changed later to use
-> > kfree_rcu() in commit 9a5418bc48ba ("sched/core: Use kfree_rcu()
-> > in do_set_cpus_allowed()") to avoid a circular locking dependency
-> > problem.
-> > 
-> > It turns out that even kfree_rcu() isn't safe for avoiding
-> > circular locking problem. As reported by kernel test robot,
-> > the following circular locking dependency still exists:
-> > 
-> >   &rdp->nocb_lock --> rcu_node_0 --> &rq->__lock
-> > 
-> > So no kfree*() API can be used in do_set_cpus_allowed(). To prevent
-> > memory leakage, the unused user provided affinity mask is now saved in a
-> > lockless list to be reused later by subsequent sched_setaffinity() calls.
-> > 
-> > Without kfree_rcu(), the internal cpumask_rcuhead union can be removed
-> > too as a lockless list entry only holds a single pointer.
-> > 
-> > Fixes: 851a723e45d1 ("sched: Always clear user_cpus_ptr in do_set_cpus_allowed()")
-> 
-> Bah, or we fix RCU...  Paul, how insane is the below?
+Hello,
 
-Other than the de-alphabetization of the local variables, it looks
-plausible to me.  Frederic's suggestion also sounds plausible to me.
+On Tue Oct 31, 2023 at 3:05 PM CET, Russell King (Oracle) wrote:
+> On Tue, Oct 31, 2023 at 02:51:45PM +0100, Th=C3=A9o Lebrun wrote:
+> > On Tue Oct 31, 2023 at 12:22 PM CET, Russell King (Oracle) wrote:
+> > > On Tue, Oct 31, 2023 at 12:04:11PM +0100, Th=C3=A9o Lebrun wrote:
+> > > > On Tue Oct 31, 2023 at 11:11 AM CET, Russell King (Oracle) wrote:
+> > > > > There is no point in supporting 5 or 6 bits for console usage. Th=
+ink
+> > > > > about it. What values are going to be sent over the console? It'l=
+l be
+> > > > > ASCII, which requires at _least_ 7-bit. 6-bit would turn alpha
+> > > > > characters into control characters, punctuation and numbers. 5-bi=
+t
+> > > > > would be all control characters.
+> > > > >
+> > > > > So there's no point trying to do anything with 5 or 6 bits per by=
+te,
+> > > > > and I decided we might as well take that as an error (or maybe a
+> > > > > case that the hardware has not been setup) and default to 8 bits =
+per
+> > > > > byte.
+> > > >=20
+> > > > I see your point. Two things come to mind:
+> > > >=20
+> > > >  - I added this parsing of 5/6 bits to be symmetrical with
+> > > >    pl011_set_termios that handles 5/6 properly. Should pl011_set_te=
+rmios
+> > > >    be modified then?
+> > >
+> > > Why should it? Note that I said above about _console_ usage which is
+> > > what you were referring to - the early code that sets up the console
+> > > by either reading the current settings (so that we can transparently
+> > > use the UART when its handed over already setup by a boot loader).
+> > >
+> > > This is completely different to what happens once the kernel is runni=
+ng.
+> > > Userspace might very well have a reason to set 5 or 6 bits if it want=
+s
+> > > to communicate with a device that uses those sizes.
+> > >
+> > > However, such a device won't be a console for the reasons I outlined
+> > > above (it will truncate the ASCII characters turning console messages
+> > > into garbage.)
+> >=20
+> > I'm not sure I get it. (1) We assume it is a console so it's ASCII so n=
+o
+> > reason to set to 5 or 6 bits per word. But (2) there might be a reason
+> > to set the UART to 5 or 6 bits, the userspace decides.
+>
+> Precisely.
+>
+> > How do the two interact? Say we boot to Linux, userspace configures to =
+6
+> > bits because reasons and we reset. At second probe we see a config of 6
+> > bits per word but assume that can't be logical, even though it is.
+>
+> I think you're conflating "serial console" with "serial port". A
+> "serial port" can support multiple different formats, and in this case,
+> such as 5, 6, 7, and 8 bits. 5 and 6 bits are likely to be a specialised
+> application which uses a binary protocol, not ASCII.
+>
+> A "serial console" is one application of a "serial port" and a "serial
+> console" is used to send ASCII characters, not a binary protocol.
 
-							Thanx, Paul
+That was all clear in my mind; I was missing the following bit:
 
-> ---
->  kernel/rcu/tree.c | 31 +++++++++++++++++++++----------
->  1 file changed, 21 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cb1caefa8bd0..4b8e26a028ee 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -754,15 +754,20 @@ static int dyntick_save_progress_counter(struct rcu_data *rdp)
->  }
->  
->  /*
-> - * Return true if the specified CPU has passed through a quiescent
-> - * state by virtue of being in or having passed through an dynticks
-> - * idle state since the last call to dyntick_save_progress_counter()
-> - * for this same CPU, or by virtue of having been offline.
-> + * Returns positive if the specified CPU has passed through a quiescent state
-> + * by virtue of being in or having passed through an dynticks idle state since
-> + * the last call to dyntick_save_progress_counter() for this same CPU, or by
-> + * virtue of having been offline.
-> + *
-> + * Returns negative if the specified CPU needs a force resched.
-> + *
-> + * Returns zero otherwise.
->   */
->  static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
->  {
-> -	unsigned long jtsq;
->  	struct rcu_node *rnp = rdp->mynode;
-> +	unsigned long jtsq;
-> +	int ret = 0;
->  
->  	/*
->  	 * If the CPU passed through or entered a dynticks idle phase with
-> @@ -847,8 +852,8 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
->  	    (time_after(jiffies, READ_ONCE(rdp->last_fqs_resched) + jtsq * 3) ||
->  	     rcu_state.cbovld)) {
->  		WRITE_ONCE(rdp->rcu_urgent_qs, true);
-> -		resched_cpu(rdp->cpu);
->  		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-> +		ret = -1;
->  	}
->  
->  	/*
-> @@ -891,7 +896,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
->  		}
->  	}
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  /* Trace-event wrapper function for trace_rcu_future_grace_period.  */
-> @@ -2255,11 +2260,11 @@ void rcu_sched_clock_irq(int user)
->   */
->  static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->  {
-> -	int cpu;
-> +	unsigned long mask, rsmask = 0;
->  	unsigned long flags;
-> -	unsigned long mask;
->  	struct rcu_data *rdp;
->  	struct rcu_node *rnp;
-> +	int cpu, ret;
->  
->  	rcu_state.cbovld = rcu_state.cbovldnext;
->  	rcu_state.cbovldnext = false;
-> @@ -2284,10 +2289,13 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->  		}
->  		for_each_leaf_node_cpu_mask(rnp, cpu, rnp->qsmask) {
->  			rdp = per_cpu_ptr(&rcu_data, cpu);
-> -			if (f(rdp)) {
-> +			ret = f(rdp);
-> +			if (ret > 0) {
->  				mask |= rdp->grpmask;
->  				rcu_disable_urgency_upon_qs(rdp);
->  			}
-> +			if (ret < 0)
-> +				rsmask |= 1UL << (cpu - rnp->grplo);
->  		}
->  		if (mask != 0) {
->  			/* Idle/offline CPUs, report (releases rnp->lock). */
-> @@ -2296,6 +2304,9 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->  			/* Nothing to do here, so just drop the lock. */
->  			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  		}
-> +
-> +		for_each_leaf_node_cpu_mask(rnp, cpu, rsmask)
-> +			resched_cpu(cpu);
->  	}
->  }
->  
+> Sorry, but no, we don't assume every serial port is a serial console.
+> Unless something has changed since I was involved with the serial
+> layer, **we only read the parameters from a serial port _if_ and only
+> if that port is being used as a serial console.**
+
+Thank you for the time you took; I'll get rid of the patch and send a V2
+fixing nits for other patches.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
