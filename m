@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09907DC658
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A027DC637
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236011AbjJaGPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 02:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
+        id S235565AbjJaGEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 02:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235866AbjJaGPW (ORCPT
+        with ESMTP id S234811AbjJaGD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 02:15:22 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45193127;
-        Mon, 30 Oct 2023 23:15:15 -0700 (PDT)
+        Tue, 31 Oct 2023 02:03:57 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BCC91;
+        Mon, 30 Oct 2023 22:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
         s=201702; t=1698731708;
         bh=5/UEJQnbRjZCXEnJVaEUPdCRIKyy1zb0Lwt61xFe/R0=;
@@ -40,9 +40,10 @@ Message-ID: <20231031165508.46cf753f@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="Sig_/N5hcW2Vam95MPI+XZFuLVnH";
  protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,LOCALPART_IN_SUBJECT,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,LOCALPART_IN_SUBJECT,RCVD_IN_DNSWL_BLOCKED,
+        T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
