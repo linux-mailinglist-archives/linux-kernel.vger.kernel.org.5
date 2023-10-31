@@ -2,158 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F4F7DC491
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAA87DC493
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbjJaChj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 22:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S231228AbjJaCj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 22:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235994AbjJaCh3 (ORCPT
+        with ESMTP id S229766AbjJaCj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 22:37:29 -0400
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F7A6126
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 19:37:13 -0700 (PDT)
-X-AuditID: a67dfc5b-d6dff70000001748-98-654068553d78
-Date:   Tue, 31 Oct 2023 11:37:04 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel_team@skhynix.com, akpm@linux-foundation.org,
-        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com, peterz@infradead.org, luto@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Subject: Re: [v3 0/3] Reduce TLB flushes under some specific conditions
-Message-ID: <20231031023704.GA39338@system.software.com>
-References: <20231030072540.38631-1-byungchul@sk.com>
- <08c82a91-87d1-42c7-93c4-4028f3725340@intel.com>
+        Mon, 30 Oct 2023 22:39:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7E19F;
+        Mon, 30 Oct 2023 19:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698719994; x=1730255994;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=KLPGkNh1JlKK1tqB/kStPW3DB6ATzM/u8OKsSTXyZeo=;
+  b=arzxUN0aLFVozySqV+lept9ne+VdcVteYG23DXB7n+z7rfCmb1+1KFpl
+   L0m4tXesAzKtW6eGaoE7XltFmnO05TR49vmb3rRYrREnP6iymbt5UtJQ9
+   RybgQ5wVwcHXEN6ty2HxdoAvH9KRuQpW3gSzpYuwnw2mEUm5kdjOL3j5Z
+   3Q+A2OXp2R1ZIAYu3k5eHbDaCfYMx8VZqu7VJFYSQWYku0QE9lSH7IhIH
+   4KPPJAv7V5TIfA4M9aLbCwZyOK/SQ9xHJ4pbm2nO0bJGlgH8VpM7hqYZ0
+   yCGkSe0PIHRBmKdzTDbr+J52hk45ntR6GQ59OuhTw9jverW2d5Y7Ja6q0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="368408561"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="368408561"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 19:39:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1007623787"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="1007623787"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 19:39:54 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 19:39:53 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 19:39:52 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 19:39:52 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 30 Oct 2023 19:39:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d77VWVcNh/GtJrowSttui+OG7uChJxe3+UD0v399b7CaoFjfuAPUvvl9RNkAReUZJlOL6XE8++4LH44/G//WfpbOsEjDdozyGkW17srmDKqNiYjnVEzOKSQ0NrOpkkAox6IxX+EI0kNwoPuHLOcfzUHDuI7FOz2HwGSkR3OGhOgXGFe/KM84pf7Oo8qo+nxVzZbgWEtn65FUGOFjZ7MMYEs5M3V1gYFPqNAayF0T/31T+xObCs8nGLoYJNK7qzOnJuY1uJwacrAm15TwrLXvzMStFf+mdcFujZzDVn8PQwCRkM5sPyW48efezaRrGCL0GlS/piiaRAIL5hqK6ZSBCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N5TKsVOeyoqiuyrCcEtxx2nblAAKcF9Pc5jZYEdldYM=;
+ b=Mdz70pLwm/aimZN/flZ7tWBShccdM6REdqh0l/W9mp+nPj3zrBvjGUfHNMlVFtReEuo+n1hMeS+uTd5a7aHqf+S8prK8Jcpt3UwB7mCdpaq4dFuPsO3q/f9bRJOacO4c/FJPvdVpTVhOfbJ5DlHis9MkcDuJJ3vIpPg0G8a0xJrOBYQTy72w4ctJbXW0Gpu1ANIdcl09FORPY0nEaFGTzQvwWpxFj+WQlTnlyYr76XkX6N+214+eesJ6l90PC2FXkpQwEqh7qZ+IVdEPfQ/li8hoVQOqDAhQFy0kmfJ7Wgt/ETKoDfV7+jos3UE4d0RjPcXJc5NyCni+JO6UIFMslw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
+ by DS0PR11MB8666.namprd11.prod.outlook.com (2603:10b6:8:1bd::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.26; Tue, 31 Oct
+ 2023 02:39:51 +0000
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::92ef:1d38:2ad6:5e29]) by IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::92ef:1d38:2ad6:5e29%6]) with mapi id 15.20.6933.027; Tue, 31 Oct 2023
+ 02:39:51 +0000
+Message-ID: <656d4735-0e24-c9d8-ba9c-97f079d95475@intel.com>
+Date:   Mon, 30 Oct 2023 19:39:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH v3 2/2] dmaengine: idxd: Fix incorrect descriptions for
+ GRPCFG register
+Content-Language: en-US
+To:     'Guanjun' <guanjun@linux.alibaba.com>, <dave.jiang@intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vkoul@kernel.org>, <tony.luck@intel.com>
+CC:     <jing.lin@intel.com>, <ashok.raj@intel.com>,
+        <sanjay.k.kumar@intel.com>, <megha.dey@intel.com>,
+        <jacob.jun.pan@intel.com>, <yi.l.liu@intel.com>,
+        <tglx@linutronix.de>
+References: <20231031023700.1515974-1-guanjun@linux.alibaba.com>
+ <20231031023700.1515974-3-guanjun@linux.alibaba.com>
+From:   Fenghua Yu <fenghua.yu@intel.com>
+In-Reply-To: <20231031023700.1515974-3-guanjun@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR20CA0014.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::27) To IA1PR11MB6097.namprd11.prod.outlook.com
+ (2603:10b6:208:3d7::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08c82a91-87d1-42c7-93c4-4028f3725340@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsXC9ZZnoW5ohkOqwf5GFYs569ewWXze8I/N
-        4tPLB4wWLza0M1p8Xf+L2eLppz4Wi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
-        jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
-        sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPrb/sPD5vkvN4N/8tWwBfFJdNSmpOZllqkb5d
-        AlfGinWbWQpWS1Xse7iatYGxW6iLkZNDQsBEYuKJJyww9pEHE5hAbBYBVYn+jr9gNpuAusSN
-        Gz+ZQWwRIPvUyuXsXYxcHMwCTcwS19ZvZgVJCAu4S7zs2MIIYvMKWEhc+bQMzBYSyJD40tzJ
-        BBEXlDg5E2IZs4CWxI1/L4HiHEC2tMTyfxwgYU4BW4mHvb/BSkQFlCUObDvOBLJLQmAdu8SD
-        Ny/ZIA6VlDi44gbLBEaBWUjGzkIydhbC2AWMzKsYhTLzynITM3NM9DIq8zIr9JLzczcxAuNx
-        We2f6B2Mny4EH2IU4GBU4uHd0GOfKsSaWFZcmXuIUYKDWUmE97CpQ6oQb0piZVVqUX58UWlO
-        avEhRmkOFiVxXqNv5SlCAumJJanZqakFqUUwWSYOTqkGRvmLy/f/rLd7uPBE0bLJS1cHNumy
-        JqnpZnbO99dmMIg5MCtRZoVph1Pu11Zrs4QvKpdbzNgM2tc8qWg5/Mxvt+HsSNkp7q+fMb72
-        ncb+8kubQ4nK7aJXizeIbPRSWMhgE51Y+C7u/wKB1Vu2i5eGlFx6LFvO82OZ/IYqDuaoal7d
-        +L+Hfj2vVGIpzkg01GIuKk4EAFzyABvDAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOIsWRmVeSWpSXmKPExsXC5WfdrBua4ZBq0D5LwGLO+jVsFp83/GOz
-        +PTyAaPFiw3tjBZf1/9itnj6qY/F4vDck6wWl3fNYbO4t+Y/q8X5XWtZLXYs3cdkcenAAiaL
-        67seMloc7z3AZLF501Rmi98/gOrmTLGyODlrMouDkMf31j4WjwWbSj02r9DyWLznJZPHplWd
-        bB6bPk1i93h37hy7x4kZv1k8dj609Jh3MtDj/b6rbB6LX3xg8tj6y87j8yY5j3fz37IF8Edx
-        2aSk5mSWpRbp2yVwZaxYt5mlYLVUxb6Hq1kbGLuFuhg5OSQETCSOPJjABGKzCKhK9Hf8BbPZ
-        BNQlbtz4yQxiiwDZp1YuZ+9i5OJgFmhilri2fjMrSEJYwF3iZccWRhCbV8BC4sqnZWC2kECG
-        xJfmTiaIuKDEyZlPWEBsZgEtiRv/XgLFOYBsaYnl/zhAwpwCthIPe3+DlYgKKEsc2HacaQIj
-        7ywk3bOQdM9C6F7AyLyKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMjMLqW1f6ZuIPxy2X3Q4wC
-        HIxKPLwVNg6pQqyJZcWVuYcYJTiYlUR4D5sChXhTEiurUovy44tKc1KLDzFKc7AoifN6hacm
-        CAmkJ5akZqemFqQWwWSZODilGhhtlO48vWctqSvo2+Dz/ps/270ni+w2Mq/wWciqEHKw9fvp
-        GYrXQjbdn7uIeeXd8p7Zqg/XPzUsqEkNq+b4fqFxEteeG7P3v56yhzuixrHkxvKWo+oPbhyu
-        envR/4M+Q/O87T6WD/ZOuP5GiM/7TiKnfeLGnLqL9W2bDOLEP2y8+jmneeqZOY5blFiKMxIN
-        tZiLihMBaA/TCaoCAAA=
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|DS0PR11MB8666:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3f16601-8e68-4ec6-7308-08dbd9baa809
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mqVpqDyJOe4L+Thb05Wn1i7ziufKPOBO9P1Pe0I28fm8O2QWq4bhslmDAndnujYkYF8W/K9ccW93Pe+xkWUSbRIQMfpV1uyHOFwoXLI1/tIwizoav0WvT5Gd67u+y99oi4BcuBkt0deaqa8xna8TIcx/GIBThdkEwKPTCLj57LmoS/E/eJPRAOopoD2lqO9LBwUwa6EGDEWsbBgVMBD1769Koovl1Qm8IBW6uPvYOz8D1Zn/joiHsD2EVVTjts6JzDcNzXlyx8LNXb0l9XwDu9/C7Dz28C/2IFHvNe7lbUdQCiLThQRqjMVfY0Ek8tFlzXaCeEQzYnwGBznrlr1AAhOKPoVjY+YHLbf4vzzTiO1QBumgbGRdlEUSsRY0QsZXfwk3GQCF9NbGYQSEsEXlp0vs9OSrzbQVbRlZUj0jIvV3gSEH76+XVg0xU4zsHKhDwTV+aZBImT3lxdmiOTvrscpftoe4nkdCGPHCYDGytWrbh5EkE1YysPGIQ9TLcUdqnHS5N+rQAyWu17Uw2+tctf1zv36bZlJBBOT6+52CQH9ZMVKUXsu02AyKlTyLQa9jB5AcXb1j25sdoEyWqbvy/z1vwsZoNbzPJ7leu0Y7vDTzmEPnLsUXFlHSd221DOVgeeV4QPcOcvWirD2iyHlbzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(396003)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(82960400001)(38100700002)(6512007)(478600001)(6486002)(6506007)(53546011)(6636002)(4326008)(8936002)(8676002)(44832011)(66476007)(66556008)(316002)(66946007)(4744005)(2906002)(41300700001)(2616005)(26005)(5660300002)(86362001)(31686004)(31696002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NE9sd0kzZHJYeDh1cGQ3SHJrWlNaZ2h5WVZ3VlJQRlZUTld4b0FnM0tjSEhJ?=
+ =?utf-8?B?V1lvRTkvOFZzY2p6WkxJa3VVTExNV1dmQ1BWaDI0LzlUTHM2b0Z3aTNtTE8v?=
+ =?utf-8?B?eW1RQVduYzR2Q3pLVitIWGRRMU5DYVE3eTZCQnFyUkNYREk0QWx3alNEYURB?=
+ =?utf-8?B?Ym1zdENKKzhvdGpJNG95Zkg0Wm1pZFhobUtCaDdVRDI0OEFQaWxMRE56dHN1?=
+ =?utf-8?B?bkZzUkVZK2IzeFMzc1p1cDgzRFcrTDRrYnVLR1FGQncvUGZvaitCcm5pZWw2?=
+ =?utf-8?B?QlFDSTl3TTNYU0MrSjZUbWRtK2JFMjhmSVA3WjBER0s0WkpNUCtwQkV2aDE5?=
+ =?utf-8?B?S3hFNytqT0V0bVhWYVZwcnN5QmFFTk9sTnZDSWtvRE1ZYW1MZ1FlbmZIdHhh?=
+ =?utf-8?B?ZEwvSnN2VnpiajVVWDZHV2wwaHllQjhBTW5jYlBDa3lyQmxiM1dzaThhSmFU?=
+ =?utf-8?B?ZnRFQXdqaFVoeUFWbW1nd2owRmg4ZTMvQTFvd05DQm5zRTZncW9YQ21yUjdT?=
+ =?utf-8?B?V09SV0F1dEE5QWE3UkpRN1EveGxubk9odWVNVzdvdHVGTVNTcmpaWnZlNWNR?=
+ =?utf-8?B?WS9CbXZvSTVXN3QzRUZZaXg4V0pGc3FyeVdYcVlqMm5hZUhLQWN5a0tMSlFy?=
+ =?utf-8?B?VHFQQm1uY3JVaXVkRHlOVFdINUlhakdNaHh4Nkp4VHgwcG5CRnNjRm9WM29F?=
+ =?utf-8?B?Yko2cjR5YUxEeEF0S0VtZlBJRnBMNzhweUFvSkQvQVlRTmZZVVZLNG5Qelp5?=
+ =?utf-8?B?TCtTQU5WZ25XUnVLdGQyb2loWjJLd2p0eTRvZXBvVEVDRWZ4TFYwdDZWcWFm?=
+ =?utf-8?B?Rk1DbTlvMlZER29qcWVUNTQvVEd3Q1BKS0xhbzVhVWdSa1hyV3dibDJXSklM?=
+ =?utf-8?B?ckJlZVQveXh3OHlaeWxWbEtBNk8zQ2lOUVNPSmg2WUZtbS8zMitSa0tkZTFH?=
+ =?utf-8?B?MG5LTkNLcmNUWlYxQ3RtckU5NlhWV2pHemZSQzhCQjFPMzNUNEdJS0dQMUgx?=
+ =?utf-8?B?RC9meUk0VGdpdFpNcEUrdmM5SkNsbUpyYVcxSFRRekRZRGVuQVNrNGVaZHFl?=
+ =?utf-8?B?YStXMWJkbWVmUFBzNnJYcTBnTXM2bTUzblJTc0VLdk5jVmYwdVcvRFBML1Ft?=
+ =?utf-8?B?QU9SWjJWMnJrV0FqSnU5R25DaEwxcTArRVFDYlJteEZhcUp6a2JGcFVmSHVE?=
+ =?utf-8?B?Q2d3YWp0eXkvaWJ6ZG9lcmhUYVlySnZzYU9sUzJ1aGxzTUtYMmdQM2lzZkFl?=
+ =?utf-8?B?Ump6VHhZTHY4SFdVaFMzTTdYM0xCcDRPd2I1S0xFdkdDckRJRmEyUTJmcWlY?=
+ =?utf-8?B?YlZYNW9DMDUwbUR4RGc2V2lmZkszTU12RTRlMEpnU3h5Nk9nYk5KQnRZaEQ1?=
+ =?utf-8?B?T3VzNWNKRWxFRzBXS2Y5eUUwT25RZnBOVVkrNGVzZThpeks4ZzBjK3A5V0pt?=
+ =?utf-8?B?dkR3WVNSc2p1ai9nM1NYMytNMXV0eTBPbk5hUUZCaWYwc3hrYkcrRzRQd251?=
+ =?utf-8?B?MkNWTFNqYm5WUHdSUU5MSXJPa3Y3SENjNFQ5V0hGdTNhMytoK29mMHRPbnFX?=
+ =?utf-8?B?a3pSTTNvV29qWVIrSDFzelZDbkxLbHdiQXZtbUpNbGpkd0pzTFRsYWlMUER3?=
+ =?utf-8?B?ZlJQYUVUZ0dRWWFjQ0c1YnM1NlZPbWc0WnBhUDVwanMvRjJUc2R1Q29mN1hq?=
+ =?utf-8?B?MlVIamg1bFY0YXhmWGFPZjduVzQvdW9SdUptOVNaQzA2bVRkUjkwczI0dC9H?=
+ =?utf-8?B?SXdwQ3hJODh6VVBpaUJCT0RubjNZQXdPbVI4dGdYRWRweHphektGTHFIdzhS?=
+ =?utf-8?B?ajhLVW1tZmFVODAyaloxMW1hWGNSSzQ3K2tlWm9mOWsvNHV2aE1yVzJYZ1lv?=
+ =?utf-8?B?cmM4S0Y2RytMekNuVTVmbHVvSjgrWUNCK0ZVY0N5QUNPMHhNcEJ6Qko1c2Na?=
+ =?utf-8?B?UndsTGpRdExDTVlGSnh2dzVDWVFSY2c3QXh5bWttaDMyZ0VSZjR4aVJrcHFH?=
+ =?utf-8?B?UWRxalY4cHc0RDFoTWpqVTNsNE9yNXhROGFyelNTd2M3dmdnbTFTRUtrem4v?=
+ =?utf-8?B?MTRiNUxqQnpaSUtDMERuYi9qeVdaWUlnVXZsb2VRZ3pMMktuNDZHRURYVzBw?=
+ =?utf-8?Q?PbwVKJw+fx2q/wRJkVTm8ewPR?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3f16601-8e68-4ec6-7308-08dbd9baa809
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 02:39:51.1521
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XZpumhSdiJQ61mTqxF9xUMHQW8ruHCur1UHihGJ9i2G9MUgjxYvW1EtpPdo46/dx/eqft1RVi4qmUlK2j9coVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8666
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 10:55:07AM -0700, Dave Hansen wrote:
-> On 10/30/23 00:25, Byungchul Park wrote:
-> > I'm suggesting a mechanism to reduce TLB flushes by keeping source and
-> > destination of folios participated in the migrations until all TLB
-> > flushes required are done, only if those folios are not mapped with
-> > write permission PTE entries at all. I worked Based on v6.6-rc5.
+
+
+On 10/30/23 19:37, 'Guanjun' wrote:
+> From: Guanjun <guanjun@linux.alibaba.com>
 > 
-> There's a lot of common overhead here, on top of the complexity in general:
+> Fix incorrect descriptions for the GRPCFG register which has three
+> sub-registers (GRPWQCFG, GRPENGCFG and GRPFLGCFG).
+> No functional changes
 > 
->  * A new page flag
->  * A new cpumask_t in task_struct
->  * A new zone list
->  * Extra (temporary) memory consumption
-> 
-> and the benefits are ... "performance improved a little bit" on one
-> workload.  That doesn't seem like a good overall tradeoff to me.
+> Signed-off-by: Guanjun <guanjun@linux.alibaba.com>
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 
-I tested it under limited conditions to get stable results e.g. not to
-use hyper-thread, dedicate cpu times to the test and so on. However, I'm
-conviced that this patch set is more worth developing than you think it
-is. Lemme share the results I've just got after changing # of CPUs
-participated in the test, 16 -> 80, in the system with 80 CPUs. This is
-just for your information - not that stable tho.
+Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
 
-	Byungchul
+Thanks.
 
----
-
-Architecture - x86_64                                               
-QEMU - kvm enabled, host cpu                                        
-Numa - 2 nodes (80 CPUs 1GB, no CPUs 8GB)                           
-Linux Kernel - v6.6-rc5, numa balancing tiering on, demotion enabled
-Benchmark - XSBench -p 50000000 (-p option makes the runtime longer)
-
-mainline kernel
-===============
-
-   The 1st try)
-   =====================================
-   Threads:     64                      
-   Runtime:     233.118 seconds         
-   =====================================
-   numa_pages_migrated 758334           
-   pgmigrate_success 1724964            
-   nr_tlb_remote_flush 305706           
-   nr_tlb_remote_flush_received 18598543
-   nr_tlb_local_flush_all 19092         
-   nr_tlb_local_flush_one 4518717       
-   
-   The 2nd try)
-   =====================================
-   Threads:     64                      
-   Runtime:     221.725 seconds         
-   =====================================
-   numa_pages_migrated 633209           
-   pgmigrate_success 2156509            
-   nr_tlb_remote_flush 261977           
-   nr_tlb_remote_flush_received 14289256
-   nr_tlb_local_flush_all 11738         
-   nr_tlb_local_flush_one 4520317       
-   
-mainline kernel + migrc
-=======================
-
-   The 1st try)
-   =====================================
-   Threads:     64                     
-   Runtime:     212.522 seconds        
-   ====================================
-   numa_pages_migrated 901264          
-   pgmigrate_success 1990814           
-   nr_tlb_remote_flush 151280          
-   nr_tlb_remote_flush_received 9031376
-   nr_tlb_local_flush_all 21208        
-   nr_tlb_local_flush_one 4519595      
-   
-   The 2nd try)
-   =====================================
-   Threads:     64                     
-   Runtime:     204.410 seconds        
-   ====================================
-   numa_pages_migrated 929260          
-   pgmigrate_success 2729868           
-   nr_tlb_remote_flush 166722          
-   nr_tlb_remote_flush_received 8238273
-   nr_tlb_local_flush_all 13717        
-   nr_tlb_local_flush_one 4519582      
+-Fenghua
