@@ -2,57 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E4A7DC8D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B6D7DC8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343587AbjJaI7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 04:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        id S1343539AbjJaI7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235760AbjJaI7Q (ORCPT
+        with ESMTP id S235761AbjJaI7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 04:59:16 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C32E8
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:59:09 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 063E4660739D;
-        Tue, 31 Oct 2023 08:59:06 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698742747;
-        bh=rD8PP3u/GqGBMniaavO889b/dhMgD+QWKSfzmtD5T90=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=AJZAqppgGB69AypOQfIrwaz0KH7ccbpkmboKuUBTBdbJbrMKUbYnYH1sRQ/tfP3lB
-         UuHr8F2u1HPYM5KZQgfh7x4dKXsd/ZpCNSlk3BNoU0OgkM1JpsU7dPkjSjCJ0TEn0g
-         xnnOxlhxJlB/wub1RKgiU1tXC7HUWktEpt+LkUOYPJwQg7ZZmfHXMppQ7XZtdyEGhv
-         Flu/a7ncjvZ5IFmzSqQzDyiNjfF5aURNTF/CuGYTGPIDeU2cQRMg29FbJCh3LolLft
-         MKodOSOTO/RGlynv8UREzkWR56ByUJe0KwvDU0I5Fa5iRLqSkPE7KH/t96oHf9X3Am
-         X1SUi259ZkFew==
-Message-ID: <44c81015-26bf-476a-afbd-45b8c6e42d4b@collabora.com>
-Date:   Tue, 31 Oct 2023 09:59:04 +0100
+        Tue, 31 Oct 2023 04:59:42 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C517611B
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:59:39 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50797cf5b69so7458651e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698742778; x=1699347578; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tNOnxQseUn+sdzcn++tRPmK5DAb/ytwQ21KP2ZD3yF8=;
+        b=J6nCG4YFqgEFdX1t0NzbCF48/yxhDKHE3rp2/7yzhr40yH+l7JCa9OQFMwidONwCHc
+         apjDRXhPwaB1imBLjzuRvuVZSj3rS0RDE2fNLLOU6NM1zY4M/4/uvtn3ohhJ5AxjxvIa
+         FM8yfqNknfNjS0CV0Em5Z4ZwRAnQzu/+qtWY4pxuV0rWWiXD5oLQ1AY86TrSdH4jHIRy
+         F0J1z+0nWURU4gcYgRj/XG06iubZOHM6wHAXCIuptqZHJDJXBrGlb6FDvxul7IJRpXDn
+         Ph32JhVrXN896YkHGrGPl3ghD/+QCXcdPiep/8kALWMpB3ZmrIct91FaUrlrCli30jgh
+         5LvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698742778; x=1699347578;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tNOnxQseUn+sdzcn++tRPmK5DAb/ytwQ21KP2ZD3yF8=;
+        b=rKffavWAPJDuXa0yerV0VnZfPM0IBwl1KTTy2FbLXNVSdjDe4vmawuF3466pepwT7A
+         eWjJ7Yp1ghCEyJhMf8V2mmcFSfbse2oUVK6e+TBxpO354Bju5vdZgYXzzfegAjLmTCV8
+         aH5xkzG6rXa9xVZWMmC6ftYPM+kHiuJLqk4wLgexxGMa9k3dwXVD8kNT+bAHbItYu6OC
+         wvksYvaoMHEyCpVlxS0IsLlKqJyl4kj6wfsvv+o3NVuucr7khLtHuu9W2DJO8gMXkhYm
+         YnBGrbaDo+BJVO/7UJkuFmXC8rSPzzr/fOrTtGqYKo61y4WODVtqfISwhynyroFAs3xP
+         fHqw==
+X-Gm-Message-State: AOJu0YxhFJP+A5Bu/RV7g+jw09MA+l3XK/vVL3lO7yQULHsqf1eMKSok
+        UyQidSOcjc1k0ppEgngRlyY2iQ==
+X-Google-Smtp-Source: AGHT+IEz7RBymWwGaxhsiouoy6qvMnV1G4Gz7ZzpjpSRrBR9AiCIjw9PoA1bkmrCkpDthe9/kykFuw==
+X-Received: by 2002:a05:6512:ea8:b0:507:ac56:66a0 with SMTP id bi40-20020a0565120ea800b00507ac5666a0mr8295514lfb.56.1698742778001;
+        Tue, 31 Oct 2023 01:59:38 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id o11-20020a5d684b000000b0032f9a0fe0absm103388wrw.96.2023.10.31.01.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 01:59:37 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 11:59:34 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Umang Jain <umang.jain@ideasonboard.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] staging: vc04_services: remove unnecessary NULL check
+Message-ID: <1dff4d9b-d067-4525-95e0-ffdc1185cccd@moroto.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] drm/panfrost: Implement ability to turn on/off GPU
- clocks in suspend
-Content-Language: en-US
-To:     Steven Price <steven.price@arm.com>, boris.brezillon@collabora.com
-Cc:     robh@kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, wenst@chromium.org,
-        kernel@collabora.com
-References: <20231030132257.85379-1-angelogioacchino.delregno@collabora.com>
- <20231030132257.85379-2-angelogioacchino.delregno@collabora.com>
- <f6b0d965-f386-48ad-80a7-072c81a9e4a8@arm.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <f6b0d965-f386-48ad-80a7-072c81a9e4a8@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,220 +78,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 30/10/23 15:57, Steven Price ha scritto:
-> On 30/10/2023 13:22, AngeloGioacchino Del Regno wrote:
->> Currently, the GPU is being internally powered off for runtime suspend
->> and turned back on for runtime resume through commands sent to it, but
->> note that the GPU doesn't need to be clocked during the poweroff state,
->> hence it is possible to save some power on selected platforms.
-> 
-> Looks like a good addition - I suspect some implementations are quite
-> leaky so this could have a meaningful power saving in some cases.
-> 
->> Add suspend and resume handlers for full system sleep and then add
->> a new panfrost_gpu_pm enumeration and a pm_features variable in the
->> panfrost_compatible structure: BIT(GPU_PM_CLK_DIS) will be used to
->> enable this power saving technique only on SoCs that are able to
->> safely use it.
->>
->> Note that this was implemented only for the system sleep case and not
->> for runtime PM because testing on one of my MediaTek platforms showed
->> issues when turning on and off clocks aggressively (in PM runtime),
->> with the GPU locking up and unable to soft reset, eventually resulting
->> in a full system lockup.
-> 
-> I think I know why you saw this - see below.
-> 
->> Doing this only for full system sleep never showed issues in 3 days
->> of testing by suspending and resuming the system continuously.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/gpu/drm/panfrost/panfrost_device.c | 61 ++++++++++++++++++++--
->>   drivers/gpu/drm/panfrost/panfrost_device.h | 11 ++++
->>   2 files changed, 68 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
->> index 28f7046e1b1a..2022ed76a620 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
->> @@ -403,7 +403,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
->>   	panfrost_job_enable_interrupts(pfdev);
->>   }
->>   
->> -static int panfrost_device_resume(struct device *dev)
->> +static int panfrost_device_runtime_resume(struct device *dev)
->>   {
->>   	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->>   
->> @@ -413,7 +413,7 @@ static int panfrost_device_resume(struct device *dev)
->>   	return 0;
->>   }
->>   
->> -static int panfrost_device_suspend(struct device *dev)
->> +static int panfrost_device_runtime_suspend(struct device *dev)
->>   {
->>   	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->>   
-> 
-> So this function calls panfrost_gpu_power_off() which is simply:
-> 
-> void panfrost_gpu_power_off(struct panfrost_device *pfdev)
-> {
-> 	gpu_write(pfdev, TILER_PWROFF_LO, 0);
-> 	gpu_write(pfdev, SHADER_PWROFF_LO, 0);
-> 	gpu_write(pfdev, L2_PWROFF_LO, 0);
-> }
-> 
-> So we instruct the GPU to turn off, but don't wait for it to complete.
-> 
->> @@ -426,5 +426,58 @@ static int panfrost_device_suspend(struct device *dev)
->>   	return 0;
->>   }
->>   
->> -EXPORT_GPL_RUNTIME_DEV_PM_OPS(panfrost_pm_ops, panfrost_device_suspend,
->> -			      panfrost_device_resume, NULL);
->> +static int panfrost_device_resume(struct device *dev)
->> +{
->> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->> +	int ret;
->> +
->> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
->> +		ret = clk_enable(pfdev->clock);
->> +		if (ret)
->> +			return ret;
->> +
->> +		if (pfdev->bus_clock) {
->> +			ret = clk_enable(pfdev->bus_clock);
->> +			if (ret)
->> +				goto err_bus_clk;
->> +		}
->> +	}
->> +
->> +	ret = pm_runtime_force_resume(dev);
->> +	if (ret)
->> +		goto err_resume;
->> +
->> +	return 0;
->> +
->> +err_resume:
->> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS) && pfdev->bus_clock)
->> +		clk_disable(pfdev->bus_clock);
->> +err_bus_clk:
->> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS))
->> +		clk_disable(pfdev->clock);
->> +	return ret;
->> +}
->> +
->> +static int panfrost_device_suspend(struct device *dev)
->> +{
->> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->> +	int ret;
->> +
->> +	ret = pm_runtime_force_suspend(dev);
->> +	if (ret)
->> +		return ret;
-> 
-> So here we've started shutting down the GPU (pm_runtime_force_suspend
-> eventually calls panfrost_gpu_power_off). But nothing here waits for the
-> GPU to actually finish shutting down. If we're unlucky there's dirty
-> data in the caches (or coherency which can snoop into the caches) so the
-> GPU could be actively making bus cycles...
-> 
->> +
->> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
->> +		clk_disable(pfdev->clock);
-> 
-> ... until its clock goes and everything locks up.
-> 
-> Something should be waiting for the power down to complete. Either poll
-> the L2_PWRTRANS_LO register to detect that the L2 is no longer
-> transitioning, or wait for the GPU_IRQ_POWER_CHANGED_ALL interrupt to fire.
-> 
-> It would be good to test this with the system suspend doing the full
-> power off, it should be safe so it would be a good stress test. Although
-> whether we want the overhead in normal operation is another matter - so
-> I suspect it should just be for testing purposes.
-> 
-> I would hope that we don't actually need the GPU_PM_CLK_DIS feature -
-> this should work as long as the GPU is given the time to shutdown.
-> Although note that actually cutting the power (patches 3 & 4) may expose
-> us to implementation errata - there have been issues with designs not
-> resetting correctly. I'm not sure if those made it into real products or
-> if such bugs are confined to test chips. So for the sake of not causing
-> regressions it's probably not a bad thing to have ;)
-> 
+We ensured that "service" as non-NULL in the previous if statement so
+there is no need to check again here.
 
-Huge thanks for this analysis of that lockup issue. That was highly appreciated.
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I've seen that anyway disabling the clocks during *runtime* suspend will make us
-lose only a few nanoseconds (without polling for that register, nor waiting for
-the interrupt you mentioned).... so I'd say that if L2_PWRTRANS_LO takes as well
-just nanoseconds, I could put those clk_disable()/clk_enable() calls back to the
-Runtime PM handlers as per my original idea.
-
-I'll go on with checking if it is feasible to poll-wait to do this in runtime pm,
-otherwise the v2 will still have this in system sleep handlers...
-
-Anyway, as for the GPU_PM_CLK_DIS feature - I feel like being extremely careful
-with this is still a good idea... thing is, even if we're sure that the GPU itself
-is fine with us turning off/on clocks (even aggressively), I'm not sure that *all*
-of the SoCs using Mali GPUs don't have any kind of quirk and for safety I don't
-want to place any bets.
-
-My idea is to add this with feature opt-in - then, if after some time we discover
-that all SoCs want it and can safely use it, we can simplify the flow by removing
-the feature bit.
-
-Cheers,
-Angelo
-
-> Steve
-> 
->> +
->> +		if (pfdev->bus_clock)
->> +			clk_disable(pfdev->bus_clock);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +EXPORT_GPL_DEV_PM_OPS(panfrost_pm_ops) = {
->> +	RUNTIME_PM_OPS(panfrost_device_runtime_suspend, panfrost_device_runtime_resume, NULL)
->> +	SYSTEM_SLEEP_PM_OPS(panfrost_device_suspend, panfrost_device_resume)
->> +};
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
->> index 1ef38f60d5dc..d7f179eb8ea3 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
->> @@ -25,6 +25,14 @@ struct panfrost_perfcnt;
->>   #define NUM_JOB_SLOTS 3
->>   #define MAX_PM_DOMAINS 5
->>   
->> +/**
->> + * enum panfrost_gpu_pm - Supported kernel power management features
->> + * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
->> + */
->> +enum panfrost_gpu_pm {
->> +	GPU_PM_CLK_DIS,
->> +};
->> +
->>   struct panfrost_features {
->>   	u16 id;
->>   	u16 revision;
->> @@ -75,6 +83,9 @@ struct panfrost_compatible {
->>   
->>   	/* Vendor implementation quirks callback */
->>   	void (*vendor_quirk)(struct panfrost_device *pfdev);
->> +
->> +	/* Allowed PM features */
->> +	u8 pm_features;
->>   };
->>   
->>   struct panfrost_device {
-> 
-> _______________________________________________
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+index 39b857da2d42..a0117efa2991 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+@@ -2040,8 +2040,7 @@ sync_func(void *v)
+ 			continue;
+ 		}
+ 
+-		svc_fourcc = service ? service->base.fourcc
+-				     : VCHIQ_MAKE_FOURCC('?', '?', '?', '?');
++		svc_fourcc = service->base.fourcc;
+ 
+ 		vchiq_log_trace(state->dev, VCHIQ_SYNC,
+ 				"Rcvd Msg %s from %p4cc s:%d d:%d len:%d",
+-- 
+2.42.0
 
