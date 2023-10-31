@@ -2,144 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F07947DCDB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61187DCDB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344486AbjJaNTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52030 "EHLO
+        id S1344483AbjJaNUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344449AbjJaNTh (ORCPT
+        with ESMTP id S1344449AbjJaNUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:19:37 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9D7E6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:19:31 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1e0ee4e777bso3714672fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698758371; x=1699363171; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BtWJYaqzVCuAB1FYlsIzdtoi66Ke7zjmsu4PHOZOvs0=;
-        b=IHbMVC6ElDtO7R2fV01G91I7ZOlm1MSIfM4+uEkHkvFEvLgAoen2hOtnOsV3mg8uKN
-         xYR/22ygfO93Ir4T+qMle+MQ0V7SIR6Etdv4STyBXVlcRqHgTxlwa4wqM1yUi7UlmrGo
-         iNkTEmR2QgKtsDEO/VdQZVbkyTvroF+wtI/V4TPUB1PKFGpsZAzyCKVYD0E2TucMox6v
-         tUhXMe6WBUfCX5VyPo4/vdwHQkC0xVR/epOS7VbkLGoVu9mXZ9S0cJ/ySoiU6KNxDaFf
-         a+Jlowhcf4ixBjzEXOgAR1xfAw86f8L9LbVQa8oyPj+sdykC9K45IlIW+UIzljZFiFOx
-         Uk+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698758371; x=1699363171;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BtWJYaqzVCuAB1FYlsIzdtoi66Ke7zjmsu4PHOZOvs0=;
-        b=YFXzeXHLukKGRBH2Sv6V3qXzK0BK6AwFnaNO60xObKYsIfHNcx4677nW8Iwkcg+Qli
-         xV3phS7Wmw+LNiOUEFeK6IFut8S3+1J55qLqyZC8oNmJ5Gx5BW3XXIdjuNcU8MNab4bE
-         Ik/Umox+sljdqjrOgqCIzpzzDzmyGsHXaPXuXr9nCbsgF5Yqo3TvR+c6QMyWsWDIS+nj
-         55wE1maNCeYn4cKJQcVR8vq7rzMIaD6wzGc8ycs4qCF41G5lesSI/eU/Ynqbfz8VS4ZY
-         NHv9cEsDYfMGP1Xla76kqxAcoGafIONa/lpkwp7mhWyEbfOE9mgZ9riLEQEWWlkGdEuO
-         T+0A==
-X-Gm-Message-State: AOJu0Yz/QWmQV//P7kM4FgbJh7UILxMEZKalYAQFmDhKHN6m5YQAqDhI
-        BXbcJiN9tvHRcslwHIFZMVWlxg==
-X-Google-Smtp-Source: AGHT+IGobMzcpmUVEatZpnPLLSMhma3hu4rk+HEtm3dT5rrB5fQjHHicvBPXnBa6d9YXWfbq6fOjUQ==
-X-Received: by 2002:a05:6870:78b:b0:1d6:439d:d03e with SMTP id en11-20020a056870078b00b001d6439dd03emr15262386oab.18.1698758371098;
-        Tue, 31 Oct 2023 06:19:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id ml19-20020a056214585300b00671b009412asm500861qvb.141.2023.10.31.06.19.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 06:19:29 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qxoeW-007cYl-IU;
-        Tue, 31 Oct 2023 10:19:28 -0300
-Date:   Tue, 31 Oct 2023 10:19:28 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>
-Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
-Message-ID: <20231031131928.GH691768@ziepe.ca>
-References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
- <4da48f85-a72f-4f6b-900f-fc293d63b5ae@fujitsu.com>
- <20231030124041.GE691768@ziepe.ca>
- <7c5dd149-395a-46a2-96a0-89c182105eaf@linux.dev>
+        Tue, 31 Oct 2023 09:20:47 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2E6DE
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:20:44 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E522A66073A3;
+        Tue, 31 Oct 2023 13:20:42 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698758443;
+        bh=QnmE4Ern4NeUDthiCkxZFXVHc4ml/cBbNmjxDIZdl88=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Lgooypwv8KNm90QUPD80duJntBaA4qLPjk3zwJsPHnOspk8mQebRCI32elJg3MUeI
+         VmD1Y+5jrFqjqluFsbQVnasJV8+y5GmBsV1mEPLpppIK5wGqXT35j3iHu23pqHi0sb
+         0CINcilVYMGw4rIYzSUWKekEPVB+9++S0By2lNEYOqaESRIgWC2OTfWYt3qhNWeF6X
+         NE2ZbMEYOrUoS6sNPU0BwWW9MK9K7qPhL4BWqE7l2fYSWrZ2jkDpbcRVCh5jhB8Rws
+         2KR+5lmVBRqTa0r1V2nn5Uji9/VBsEmujmJUhn9aR2+nrhjKEum+tdaHlqJBsPnRz9
+         l1MeLNzfnuVHw==
+Message-ID: <38b62659-dcef-4b49-9b4c-e055ed9a215a@collabora.com>
+Date:   Tue, 31 Oct 2023 14:20:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] drm/panfrost: Implement ability to turn on/off GPU
+ clocks in suspend
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     boris.brezillon@collabora.com, robh@kernel.org,
+        steven.price@arm.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231030132257.85379-1-angelogioacchino.delregno@collabora.com>
+ <20231030132257.85379-2-angelogioacchino.delregno@collabora.com>
+ <CAGXv+5EhRUz6qptSzhzbcq4-qQKDzN5xFtS0WMNUCOH5JSL0Jw@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAGXv+5EhRUz6qptSzhzbcq4-qQKDzN5xFtS0WMNUCOH5JSL0Jw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7c5dd149-395a-46a2-96a0-89c182105eaf@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:52:23PM +0800, Zhu Yanjun wrote:
-> 在 2023/10/30 20:40, Jason Gunthorpe 写道:
-> > On Mon, Oct 30, 2023 at 07:51:41AM +0000, Zhijian Li (Fujitsu) wrote:
-> > > 
-> > > 
-> > > On 27/10/2023 13:41, Li Zhijian wrote:
-> > > > mr->page_list only encodes *page without page offset, when
-> > > > page_size != PAGE_SIZE, we cannot restore the address with a wrong
-> > > > page_offset.
-> > > > 
-> > > > Note that this patch will break some ULPs that try to register 4K
-> > > > MR when PAGE_SIZE is not 4K.
-> > > > SRP and nvme over RXE is known to be impacted.
-> > > > 
-> > > > Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> > > > ---
-> > > >    drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
-> > > >    1 file changed, 6 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > > index f54042e9aeb2..61a136ea1d91 100644
-> > > > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > > @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
-> > > >    	struct rxe_mr *mr = to_rmr(ibmr);
-> > > >    	unsigned int page_size = mr_page_size(mr);
-> > > > +	if (page_size != PAGE_SIZE) {
-> > > 
-> > > It seems this condition is too strict, it should be:
-> > > 	if (!IS_ALIGNED(page_size, PAGE_SIZE))
-> > > 
-> > > So that, page_size with (N * PAGE_SIZE) can work as previously.
-> > > Because the offset(mr.iova & page_mask) will get lost only when !IS_ALIGNED(page_size, PAGE_SIZE)
-> > 
-> > That makes sense
+Il 31/10/23 04:18, Chen-Yu Tsai ha scritto:
+> On Mon, Oct 30, 2023 at 9:23 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Currently, the GPU is being internally powered off for runtime suspend
+>> and turned back on for runtime resume through commands sent to it, but
+>> note that the GPU doesn't need to be clocked during the poweroff state,
+>> hence it is possible to save some power on selected platforms.
+>>
+>> Add suspend and resume handlers for full system sleep and then add
+>> a new panfrost_gpu_pm enumeration and a pm_features variable in the
+>> panfrost_compatible structure: BIT(GPU_PM_CLK_DIS) will be used to
+>> enable this power saving technique only on SoCs that are able to
+>> safely use it.
+>>
+>> Note that this was implemented only for the system sleep case and not
+>> for runtime PM because testing on one of my MediaTek platforms showed
+>> issues when turning on and off clocks aggressively (in PM runtime),
+>> with the GPU locking up and unable to soft reset, eventually resulting
+>> in a full system lockup.
+>>
+>> Doing this only for full system sleep never showed issues in 3 days
+>> of testing by suspending and resuming the system continuously.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/gpu/drm/panfrost/panfrost_device.c | 61 ++++++++++++++++++++--
+>>   drivers/gpu/drm/panfrost/panfrost_device.h | 11 ++++
+>>   2 files changed, 68 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> index 28f7046e1b1a..2022ed76a620 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> @@ -403,7 +403,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
+>>          panfrost_job_enable_interrupts(pfdev);
+>>   }
+>>
+>> -static int panfrost_device_resume(struct device *dev)
+>> +static int panfrost_device_runtime_resume(struct device *dev)
+>>   {
+>>          struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>
+>> @@ -413,7 +413,7 @@ static int panfrost_device_resume(struct device *dev)
+>>          return 0;
+>>   }
+>>
+>> -static int panfrost_device_suspend(struct device *dev)
+>> +static int panfrost_device_runtime_suspend(struct device *dev)
+>>   {
+>>          struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>
+>> @@ -426,5 +426,58 @@ static int panfrost_device_suspend(struct device *dev)
+>>          return 0;
+>>   }
+>>
+>> -EXPORT_GPL_RUNTIME_DEV_PM_OPS(panfrost_pm_ops, panfrost_device_suspend,
+>> -                             panfrost_device_resume, NULL);
+>> +static int panfrost_device_resume(struct device *dev)
+>> +{
+>> +       struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> +       int ret;
+>> +
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
+>> +               ret = clk_enable(pfdev->clock);
+>> +               if (ret)
+>> +                       return ret;
+>> +
+>> +               if (pfdev->bus_clock) {
+>> +                       ret = clk_enable(pfdev->bus_clock);
+>> +                       if (ret)
+>> +                               goto err_bus_clk;
+>> +               }
+>> +       }
+>> +
+>> +       ret = pm_runtime_force_resume(dev);
+>> +       if (ret)
+>> +               goto err_resume;
+>> +
+>> +       return 0;
+>> +
+>> +err_resume:
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS) && pfdev->bus_clock)
+>> +               clk_disable(pfdev->bus_clock);
+>> +err_bus_clk:
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS))
+>> +               clk_disable(pfdev->clock);
+>> +       return ret;
+>> +}
+>> +
+>> +static int panfrost_device_suspend(struct device *dev)
+>> +{
+>> +       struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> +       int ret;
+>> +
+>> +       ret = pm_runtime_force_suspend(dev);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
+>> +               clk_disable(pfdev->clock);
+>> +
+>> +               if (pfdev->bus_clock)
+>> +                       clk_disable(pfdev->bus_clock);
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +EXPORT_GPL_DEV_PM_OPS(panfrost_pm_ops) = {
+>> +       RUNTIME_PM_OPS(panfrost_device_runtime_suspend, panfrost_device_runtime_resume, NULL)
+>> +       SYSTEM_SLEEP_PM_OPS(panfrost_device_suspend, panfrost_device_resume)
+>> +};
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index 1ef38f60d5dc..d7f179eb8ea3 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -25,6 +25,14 @@ struct panfrost_perfcnt;
+>>   #define NUM_JOB_SLOTS 3
+>>   #define MAX_PM_DOMAINS 5
+>>
+>> +/**
+>> + * enum panfrost_gpu_pm - Supported kernel power management features
+>> + * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+>> + */
+>> +enum panfrost_gpu_pm {
+>> +       GPU_PM_CLK_DIS,
+>> +};
+>> +
+>>   struct panfrost_features {
+>>          u16 id;
+>>          u16 revision;
+>> @@ -75,6 +83,9 @@ struct panfrost_compatible {
+>>
+>>          /* Vendor implementation quirks callback */
+>>          void (*vendor_quirk)(struct panfrost_device *pfdev);
+>> +
+>> +       /* Allowed PM features */
+>> +       u8 pm_features;
 > 
-> I read all the discussions very carefully.
+> Nit: I'd just use bitfields. They are easier to set and get without
+> extra macros, and the naming would be self-explanatory. Unless you
+> expect a need to do mask checking (though the compiler might be able
+> to optimize this).
 > 
-> Thanks, Greg.
+
+I don't expect a need to do mask checking, but I don't expect the opposite either..
+...this could happen in the future, or maybe not, and this becomes a bool, even.
+
+That's why I went with a u8 :-)
+
+Let's keep it flexible.
+
+Thanks,
+Angelo
+
+> ChenYu
 > 
-> Because RXE only supports PAGE_SIZE, when CONFIG_ARM64_64K_PAGES is enabled,
-> the PAGE_SIZE is 64K, when CONFIG_ARM64_64K_PAGES is disabled, PAGE_SIZE is
-> 4K.
-> 
-> But NVMe calls ib_map_mr_sg with a fixed size SZ_4K. When
-> CONFIG_ARM64_64K_PAGES is enabled, it is still 4K. This is not a problem in
-> RXE. This problem is in NVMe.
+>>   };
+>>
+>>   struct panfrost_device {
+>> --
+>> 2.42.0
+>>
 
-Maybe, but no real RDMA devices don't support 4K.
-
-The xarray conversion may need revision to use physical addresses
-instead of storing struct pages so it can handle this kind of
-segmentation.
-
-Certainly in the mean time it should be rejected.
-
-Jason
