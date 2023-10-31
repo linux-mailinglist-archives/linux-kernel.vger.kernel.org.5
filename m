@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C61367DC508
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 04:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8532F7DC509
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 04:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236789AbjJaDwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 23:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
+        id S235689AbjJaDwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 23:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236382AbjJaDw1 (ORCPT
+        with ESMTP id S236367AbjJaDw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Oct 2023 23:52:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7D8DD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B2BDF
         for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 20:52:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C5B92C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E2D6CC433CD;
         Tue, 31 Oct 2023 03:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1698724344;
-        bh=8OOwWbqn0u242XLPajB028qRQqOaf5WRltHuDLH2D6k=;
+        bh=IsHx8ZwQnWUwc/DZSRmS7W5pU1Spe/f6FdjmqWW7A6w=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GxboE7bz4MuA379B29SHlt+XcS3+EYt8T4k+ODnGhvQGnP1ED9PbY8kb9HBJlCoV8
-         V+1oPOYWAZKt2e27XMSLBRn1tdklGIFPeS+EIizI4DNRr4VdrP5MZkmaoqhvjb3+MD
-         x88tOGCffxnV2zNEsRPgBYyvHHdAu9LkPxbkn+bbYTUfGvSlDuN7reTCcgE0PPcjaP
-         Dqvxhu8WWw5xklevARwRNcKhp5D3SSx8FnlwDfEEgGczTlIjWEW+e7nPuulSqw31tx
-         AwzsNK/yWdLX2/4eTJyCIQ01WOYn4mT8nGqBJbHkbW+rUm3K0nbecrtpaPbrnKhZ4c
-         F/v21ye4VV+hw==
+        b=fouqOWi4hGFKK01YXNSXnRn2ki4GY9uPie1rgny/dn6A8cd9gz0s/b3aa/KkPWNua
+         XoZ6+X0iUlntIsty+XG46VCpaPWOo8rDhVtcvZ0u4XnFdvKzB8jvGkqFo1xPtKMwwE
+         qv3e5CbZ5m3aSGNYrvgs4dOBowxdq+0WOFB+qzTCWe1HSfWYBYepxNATjSNg7TuMRY
+         03gcFSWgNx3aesvKXjrfhk+M494/QOhlgFpSgIg9sSvh5bAqkr8HpPfnzknLkgZ9xh
+         h/gf0zSvqk8nf1CatRcHC78wB47Z5L3FJoSIsscZQGkpxiE5BfmMfJxvHIFFsqfOro
+         5xaGGdRHGJARw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ADBE0EAB08C;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D01D2C595D7;
         Tue, 31 Oct 2023 03:52:24 +0000 (UTC)
-Subject: Re: [GIT pull] smp/core for v6.7-rc1
+Subject: Re: [GIT pull] x86/apic for v6.7-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <169861501025.181063.9297786167357798627.tglx@xen13>
-References: <169861500709.181063.7816209662289132093.tglx@xen13> <169861501025.181063.9297786167357798627.tglx@xen13>
+In-Reply-To: <169861501334.181063.3078165562616801860.tglx@xen13>
+References: <169861500709.181063.7816209662289132093.tglx@xen13> <169861501334.181063.3078165562616801860.tglx@xen13>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <169861501025.181063.9297786167357798627.tglx@xen13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-2023-10-29-v2
-X-PR-Tracked-Commit-Id: 38685e2a0476127db766f81b1c06019ddc4c9ffa
+X-PR-Tracked-Message-Id: <169861501334.181063.3078165562616801860.tglx@xen13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-apic-2023-10-29-v2
+X-PR-Tracked-Commit-Id: b56ebe7c896dc78b5865ec2c4b1dae3c93537517
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c891e98ab32d55b25d87e380d919c279a8b228e0
-Message-Id: <169872434470.24385.11294797935689355491.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 943af0e73a370b0c856340fd873c140e42822ec7
+Message-Id: <169872434484.24385.8033993256233758828.pr-tracker-bot@kernel.org>
 Date:   Tue, 31 Oct 2023 03:52:24 +0000
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -55,12 +55,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 29 Oct 2023 22:33:27 +0100 (CET):
+The pull request you sent on Sun, 29 Oct 2023 22:33:30 +0100 (CET):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-2023-10-29-v2
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-apic-2023-10-29-v2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c891e98ab32d55b25d87e380d919c279a8b228e0
+https://git.kernel.org/torvalds/c/943af0e73a370b0c856340fd873c140e42822ec7
 
 Thank you!
 
