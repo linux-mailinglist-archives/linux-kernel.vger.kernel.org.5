@@ -2,97 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F06C7DD11F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD507DD5EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344886AbjJaQCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        id S231700AbjJaSPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 14:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344803AbjJaQCA (ORCPT
+        with ESMTP id S1344909AbjJaQDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:02:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF37F4;
-        Tue, 31 Oct 2023 09:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AxFRKm6HPoBH+ZXu12vS/5bpNGLAyx3w22Bu1ude2cM=; b=vubEH9ftjuQuNiRkV31eAfjf0l
-        X/7OHqN7Bw114j76oJUn1aJeLGkfxeFJ6HvMxt14meYZthI/pJtLEKt/MqaUYsD/rCw4hrtDfKEy/
-        MpmtouENeJQCjIzT3HpNc9XtUy26QJV0aSbfsdajmhwEymTlRm1uXEq2wWsKZPK7hd9yJj679h+BY
-        U5t1scmWDaJ0jFV/o7I1ozZMubGV4HWwYTVKTSEj5Pk3mp9CZH2gUmFPCSZSXzBCoHCKhEpgv2nDe
-        +yvxkjP/jBBlhME3dlKfUexxMm9yztZPXwdW4NGdfr82pVIZyvPeTKKlLw2vqQnaXrAwnUWE4KK8T
-        O2jFPoLg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qxrBA-00B05n-JP; Tue, 31 Oct 2023 16:01:20 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3F576300473; Tue, 31 Oct 2023 17:01:20 +0100 (CET)
-Date:   Tue, 31 Oct 2023 17:01:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tomas Glozar <tglozar@redhat.com>
-Subject: Re: [PATCH] sched/fair: Make the BW replenish timer expire in
- hardirq context for PREEMPT_RT
-Message-ID: <20231031160120.GE15024@noisy.programming.kicks-ass.net>
-References: <20231030145104.4107573-1-vschneid@redhat.com>
+        Tue, 31 Oct 2023 12:03:36 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A30E8F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:03:32 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39VG31fm016531;
+        Tue, 31 Oct 2023 11:03:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698768181;
+        bh=d6XCKoIX+3E3TBFJdEYzPt7lI+PEkS1xWwCznuSQDKE=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=UFmdfjm6Gj8t/1emNUaYxJZf+UCy8IWYrgPnG8RGmVweNfVz/xUs0XLlknY4mFw5z
+         7cdEccnOoYSimkxg/hJRybPeZhc+XuxHPR/mJs2018VQ4Pwq0yJTmAaufWR0GJTd0w
+         wDPYySna7tM1Hdv56IEJxr1DcQ6zNG9yIS+v+7/E=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39VG31an079771
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 31 Oct 2023 11:03:01 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 31
+ Oct 2023 11:03:01 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 31 Oct 2023 11:03:01 -0500
+Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39VG2p9X103201;
+        Tue, 31 Oct 2023 11:02:52 -0500
+Message-ID: <a3985aca-c5a9-c0e9-f30d-79ba0196e094@ti.com>
+Date:   Tue, 31 Oct 2023 21:32:51 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030145104.4107573-1-vschneid@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/2] drm/bridge: tc358767: Fix link properties discovery
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20231031-tc358767-v1-0-392081ad9f4b@ideasonboard.com>
+ <20231031-tc358767-v1-2-392081ad9f4b@ideasonboard.com>
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20231031-tc358767-v1-2-392081ad9f4b@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 03:51:04PM +0100, Valentin Schneider wrote:
-> Consider the following scenario under PREEMPT_RT:
-> o A CFS task p0 gets throttled while holding read_lock(&lock)
-> o A task p1 blocks on write_lock(&lock), making further readers enter the
->   slowpath
-> o A ktimers or ksoftirqd task blocks on read_lock(&lock)
-> 
-> If the cfs_bandwidth.period_timer to replenish p0's runtime is enqueued on
-> the same CPU as one where ktimers/ksoftirqd is blocked on read_lock(&lock),
-> this creates a circular dependency.
-> 
-> This has been observed to happen with:
-> o fs/eventpoll.c::ep->lock
-> o net/netlink/af_netlink.c::nl_table_lock (after hand-fixing the above)
-> but can trigger with any rwlock that can be acquired in both process and
-> softirq contexts.
-> 
-> The linux-rt tree has had
->   1ea50f9636f0 ("softirq: Use a dedicated thread for timer wakeups.")
-> which helped this scenario for non-rwlock locks by ensuring the throttled
-> task would get PI'd to FIFO1 (ktimers' default priority). Unfortunately,
-> rwlocks cannot sanely do PI as they allow multiple readers.
-> 
-> Make the period_timer expire in hardirq context under PREEMPT_RT. The
-> callback for this timer can end up doing a lot of work, but this is
-> mitigated somewhat when using nohz_full / CPU isolation: the timers *are*
-> pinned, but on the CPUs the taskgroups are created on, which is usually
-> going to be HK CPUs.
 
-Moo... so I think 'people' have been pushing towards changing the
-bandwidth thing to only throttle on the return-to-user path. This solves
-the kernel side of the lock holder 'preemption' issue.
 
-I'm thinking working on that is saner than adding this O(n) cgroup loop
-to hard-irq context. Hmm?
+On 31-Oct-23 18:56, Tomi Valkeinen wrote:
+> When a display controller driver uses DRM_BRIDGE_ATTACH_NO_CONNECTOR,
+> tc358767 will behave properly and skip the creation of the connector.
+> 
+> However, tc_get_display_props(), which is used to find out about the DP
+> monitor and link, is only called from two places: .atomic_enable() and
+> tc_connector_get_modes(). The latter is only used when tc358767 creates
+> its own connector, i.e. when DRM_BRIDGE_ATTACH_NO_CONNECTOR is _not_
+> set.
+> 
+> Thus, the driver never finds out the link properties before get_edid()
+> is called. With num_lanes of 0 and link_rate of 0 there are not many
+> valid modes...
+> 
+> Fix this by adding tc_connector_get_modes() call at the beginning of
+> get_edid(), so that we have up to date information before looking at the
+> modes.
+> 
+> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+> Closes: https://lore.kernel.org/all/24282420-b4dd-45b3-bb1c-fc37fe4a8205@siemens.com/
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+
+Thank you, Tomi, for quickly debugging this!
+
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+
+Regards
+Aradhya
+
+>  drivers/gpu/drm/bridge/tc358767.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
+> index 0affcefdeb1c..137a9f5e3cad 100644
+> --- a/drivers/gpu/drm/bridge/tc358767.c
+> +++ b/drivers/gpu/drm/bridge/tc358767.c
+> @@ -1579,6 +1579,13 @@ static struct edid *tc_get_edid(struct drm_bridge *bridge,
+>  				struct drm_connector *connector)
+>  {
+>  	struct tc_data *tc = bridge_to_tc(bridge);
+> +	int ret;
+> +
+> +	ret = tc_get_display_props(tc);
+> +	if (ret < 0) {
+> +		dev_err(tc->dev, "failed to read display props: %d\n", ret);
+> +		return 0;
+> +	}
+>  
+>  	return drm_get_edid(connector, &tc->aux.ddc);
+>  }
+> 
+
