@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 204617DD1DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9733E7DD221
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346258AbjJaQcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
+        id S1346289AbjJaQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345270AbjJaQcI (ORCPT
+        with ESMTP id S1345940AbjJaQcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:32:08 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D8B1B5;
-        Tue, 31 Oct 2023 09:31:45 -0700 (PDT)
+        Tue, 31 Oct 2023 12:32:09 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0843D1BF;
+        Tue, 31 Oct 2023 09:31:47 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:c562:2ef4:80c0:92f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DBA9866073C6;
-        Tue, 31 Oct 2023 16:31:43 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 63CAD66073AE;
+        Tue, 31 Oct 2023 16:31:45 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698769904;
-        bh=mNj/uXX2BkOwU+t/CAhw8+caswKl9nv73YeSkh4q3yA=;
+        s=mail; t=1698769905;
+        bh=7OP/lnsbD5MzPZ4L/gceSmxIzda3Ng9eLtu0phjni7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aW+gOBlKVm4CrU6qFiH+hj5sWD0UalI04+iJj4eFob+S86dBwIbLl0KxpRFPwB0/j
-         4B9IHVZTXs3Px0DotdDYxRX3kqMNML6mUfySpnezIxx1Pt8w+shrU8Y5LPONs4SZ60
-         oPs5TEIsAV0dyF4ltkCvWoAH4ekLZqx1cvMoXY4CszHLBJdx2l+iN7a/qTUjq7d+ci
-         qtZPyrMJovfnhGwoON4sAzlxFyKwAshZI300AHckoWZl5SZlZhR1Wa+CDkDQRvYrvM
-         0ts5s4Avyutrihi0xTCeoQrZDGXjqSk7YNOne9xRgyDz5U0e7Fo2rJe1Yz4kY+n/Sd
-         eUTEjSePSeQFw==
+        b=RhZvI0Wm6tpsneCvOt5IoGfJVyNH+/OpU7UlOjcjY4UZsgk8dc55BjoI7wX3bDJFV
+         ytEiqyn297DiwwaX5+GRYPGpFp0teKBvBcmNWxK+875xqHhycAZvcqPp0EiFUODr7J
+         KdVhF0I1TMLct5mfJoehCzcPqx8xXFKUuIhWW3VBnnh4vsUVovTYgt/OaXI/ijgKeC
+         LohvT/M1/kWGGVMTo8JDrffuBGneRtcx98g+xzdTC6EOZnSaIYQ3JnVBfsUHY/MZZt
+         t4xZlFmA7/JF1t/HhPSVK/0K9Z3fvefHBhXoEUmqdGtTLiExuS/OxRTC4hQUMdEAn7
+         uL14uvLIcbJww==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -42,11 +42,10 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Antti Palosaari <crope@iki.fi>
-Subject: [PATCH v14 20/56] media: dvb-frontends: rtl2832: Stop direct calls to queue num_buffers field
-Date:   Tue, 31 Oct 2023 17:30:28 +0100
-Message-Id: <20231031163104.112469-21-benjamin.gaignard@collabora.com>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v14 21/56] media: pci: dt3155: Remove useless check
+Date:   Tue, 31 Oct 2023 17:30:29 +0100
+Message-Id: <20231031163104.112469-22-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
 References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
@@ -61,36 +60,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-This allows us to change how the number of buffers is computed in the
-future.
+min_buffers_needed is already set to 2 so remove this useless
+check.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Antti Palosaari <crope@iki.fi>
 ---
- drivers/media/dvb-frontends/rtl2832_sdr.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/pci/dt3155/dt3155.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/rtl2832_sdr.c b/drivers/media/dvb-frontends/rtl2832_sdr.c
-index 02c619e51641..023db6e793f8 100644
---- a/drivers/media/dvb-frontends/rtl2832_sdr.c
-+++ b/drivers/media/dvb-frontends/rtl2832_sdr.c
-@@ -439,12 +439,13 @@ static int rtl2832_sdr_queue_setup(struct vb2_queue *vq,
- {
- 	struct rtl2832_sdr_dev *dev = vb2_get_drv_priv(vq);
- 	struct platform_device *pdev = dev->pdev;
-+	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+diff --git a/drivers/media/pci/dt3155/dt3155.c b/drivers/media/pci/dt3155/dt3155.c
+index 548156b199cc..d09cde2f6ee4 100644
+--- a/drivers/media/pci/dt3155/dt3155.c
++++ b/drivers/media/pci/dt3155/dt3155.c
+@@ -128,8 +128,6 @@ dt3155_queue_setup(struct vb2_queue *vq,
+ 	struct dt3155_priv *pd = vb2_get_drv_priv(vq);
+ 	unsigned size = pd->width * pd->height;
  
- 	dev_dbg(&pdev->dev, "nbuffers=%d\n", *nbuffers);
- 
- 	/* Need at least 8 buffers */
--	if (vq->num_buffers + *nbuffers < 8)
--		*nbuffers = 8 - vq->num_buffers;
-+	if (q_num_bufs + *nbuffers < 8)
-+		*nbuffers = 8 - q_num_bufs;
- 	*nplanes = 1;
- 	sizes[0] = PAGE_ALIGN(dev->buffersize);
- 	dev_dbg(&pdev->dev, "nbuffers=%d sizes[0]=%d\n", *nbuffers, sizes[0]);
+-	if (vq->num_buffers + *nbuffers < 2)
+-		*nbuffers = 2 - vq->num_buffers;
+ 	if (*num_planes)
+ 		return sizes[0] < size ? -EINVAL : 0;
+ 	*num_planes = 1;
 -- 
 2.39.2
 
