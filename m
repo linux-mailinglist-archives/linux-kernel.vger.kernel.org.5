@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076207DCF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EEA7DCF10
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343741AbjJaOQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
+        id S235656AbjJaOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343636AbjJaOQU (ORCPT
+        with ESMTP id S235509AbjJaOQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:16:20 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE077F7
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:16:17 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc1ddb34ccso31626065ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698761777; x=1699366577; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+SCWDVcx1K76tZHWI6JguONJ6NnGeKLP7+QbYfrb3Rs=;
-        b=3LTiG76GVOEc8lRq/TWhVMCBV8LuspBYlB/0ZIqRRak+sx2n46riS4bQtfSIk4aJnK
-         ntUUHuodNmr6cOqafV7BjMw8U5tKd+L0HzhZeZsO1dOTZIcaN83bqsc5u0PJrHIXnUdH
-         APf4M1tVvArfQk9bmox4Dgl8MvFDpXVQpuSqG1VX6yeO5/kYbwCjbCcT78UghJs4YwnI
-         GPr3vgcKx3TG8dDPsz4v7hYyYBhF9AX1XGKsRyoQ1D8y2xbDFp/W/DVu5jXfFLA15Joz
-         bGeQrIXuFRBDriN1OItvIqOh0QyQ3CMm62EVBPD98LhSaU/AWmprxKRG1r3hTvx/H04n
-         o+Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698761777; x=1699366577;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+SCWDVcx1K76tZHWI6JguONJ6NnGeKLP7+QbYfrb3Rs=;
-        b=AgcaeTFY0F/tkoSqCCPqJ0xWbh+qiceODeWlDEHQqKwqITV8Glc3Jw9uU8EiHzMxX3
-         OhbSnx4PftAYjrhcmgGEbEQYADU5rS1MWI2SVhukGdiMOQynkFD9CPqmnZkfW82U4fLO
-         GSUTuHpXTtlwawWxtULxIHweH/LKlsJz+0alvOshz2VGVpk7LBxtDjqbf3OyanwfZBoP
-         xBJC7hERaD2GqV+35n6Afy6JB0pSLOfWggRp7mlPI5L+j5l7uwrS1FPeLOfEZj07tzXM
-         PUopk7uhqVvcjyJIAy7L5DwFY9uOAonNaURxjfpgrOEeU/auiZQSD2Sc2T6m70vbXYVC
-         JRGg==
-X-Gm-Message-State: AOJu0Yx7ovWp3pkAq4mibhQEiSLyIw1FnINyNejM34qUJHmy/k1q9n8+
-        sf2eSLAXgD51wh6CPm4IVfqOh7tJPfY=
-X-Google-Smtp-Source: AGHT+IG8tFKfIuO6cbI6ukftnUzYB8muWE8fOHZgWpajrHJaT+RkL+zDaTOo8ZNIlEatfvapWXD9jFRr58g=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:2616:b0:1cc:2549:c281 with SMTP id
- jd22-20020a170903261600b001cc2549c281mr206233plb.13.1698761777291; Tue, 31
- Oct 2023 07:16:17 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:16:15 -0700
-In-Reply-To: <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
- <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com>
-Message-ID: <ZUEML6oJXDCFJ9fg@google.com>
-Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
- dedicated guest memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 10:16:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3C6101;
+        Tue, 31 Oct 2023 07:16:38 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B60ED21AC1;
+        Tue, 31 Oct 2023 14:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1698761796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d1DPyubupoPQN73YGtcNTutaeN3pRw7nAotqztrut50=;
+        b=ph1zRWBKluhacuBqyjQIBw/46RbVjstdg9Kl0h43OpiYDRdduupdG6Azf4o4zAtMeLBPEN
+        tOR3Q2glLkUIs7BknEur/BBWpCUDCL9IdgVS0DA91qszslp6hg9OrSB9dLHx0wyjiAb/Pg
+        sHbJUwpKMXe4UEENW41VDIP7jTg8fI0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1698761796;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d1DPyubupoPQN73YGtcNTutaeN3pRw7nAotqztrut50=;
+        b=ocHg07GBqvanbx4T5IVuISSH+5OBJoaY5aijbvVUAtUNUzvxd+/o3x6nXjWwztaCwYO2e4
+        a3iCq1In3YlHJmAg==
+Received: from wotan.suse.de (wotan.suse.de [10.160.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id DFD622CE02;
+        Tue, 31 Oct 2023 14:16:34 +0000 (UTC)
+Received: by wotan.suse.de (Postfix, from userid 10510)
+        id 21B116782; Tue, 31 Oct 2023 14:16:35 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by wotan.suse.de (Postfix) with ESMTP id 1F96D6050;
+        Tue, 31 Oct 2023 14:16:35 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 14:16:34 +0000 (UTC)
+From:   Michael Matz <matz@suse.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+In-Reply-To: <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+Message-ID: <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
+References: <20231027144050.110601-1-frederic@kernel.org> <20231027144050.110601-3-frederic@kernel.org> <20231027192026.GG26550@noisy.programming.kicks-ass.net> <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop> <20231027224628.GI26550@noisy.programming.kicks-ass.net>
+ <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop> <20231030082138.GJ26550@noisy.programming.kicks-ass.net> <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop> <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+User-Agent: Alpine 2.20 (LSU 67 2015-01-07)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023, Xiaoyao Li wrote:
-> On 10/28/2023 2:21 AM, Sean Christopherson wrote:
-> > Extended guest_memfd to allow backing guest memory with transparent
-> > hugepages. Require userspace to opt-in via a flag even though there's no
-> > known/anticipated use case for forcing small pages as THP is optional,
-> > i.e. to avoid ending up in a situation where userspace is unaware that
-> > KVM can't provide hugepages.
-> 
-> Personally, it seems not so "transparent" if requiring userspace to opt-in.
-> 
-> People need to 1) check if the kernel built with TRANSPARENT_HUGEPAGE
-> support, or check is the sysfs of transparent hugepage exists; 2)get the
-> maximum support hugepage size 3) ensure the size satisfies the alignment;
-> before opt-in it.
-> 
-> Even simpler, userspace can blindly try to create guest memfd with
-> transparent hugapage flag. If getting error, fallback to create without the
-> transparent hugepage flag.
-> 
-> However, it doesn't look transparent to me.
+Hello,
 
-The "transparent" part is referring to the underlying kernel mechanism, it's not
-saying anything about the API.  The "transparent" part of THP is that the kernel
-doesn't guarantee hugepages, i.e. whether or not hugepages are actually used is
-(mostly) transparent to userspace.
+On Tue, 31 Oct 2023, Peter Zijlstra wrote:
 
-Paolo also isn't the biggest fan[*], but there are also downsides to always
-allowing hugepages, e.g. silent failure due to lack of THP or unaligned size,
-and there's precedent in the form of MADV_HUGEPAGE.
+(I can't say anything about the WRITE_ONCE/rcu code, just about the below 
+codegen part)
 
-[*] https://lore.kernel.org/all/84a908ae-04c7-51c7-c9a8-119e1933a189@redhat.com
+> Welcome is not the right word. What bugs me most is that this was never
+> raised when this code was written :/
+> 
+> Mostly my problem is that GCC generates such utter shite when you
+> mention volatile. See, the below patch changes the perfectly fine and
+> non-broken:
+> 
+> 0148  1d8:      49 83 06 01             addq   $0x1,(%r14)
+
+What is non-broken here that is ...
+
+> into:
+> 
+> 0148  1d8:	49 8b 06             	mov    (%r14),%rax
+> 014b  1db:	48 83 c0 01          	add    $0x1,%rax
+> 014f  1df:	49 89 06             	mov    %rax,(%r14)
+
+... broken here?  (Sure code size and additional register use, but I don't 
+think you mean this with broken).
+
+> For absolutely no reason :-(
+
+The reason is simple (and should be obvious): to adhere to the abstract 
+machine regarding volatile.  When x is volatile then x++ consists of a 
+read and a write, in this order.  The easiest way to ensure this is to 
+actually generate a read and a write instruction.  Anything else is an 
+optimization, and for each such optimization you need to actively find an 
+argument why this optimization is correct to start with (and then if it's 
+an optimization at all).  In this case the argument needs to somehow 
+involve arguing that an rmw instruction on x86 is in fact completely 
+equivalent to the separate instructions, from read cycle to write cycle 
+over all pipeline stages, on all implementations of x86.  I.e. that a rmw 
+instruction is spec'ed to be equivalent.
+
+You most probably can make that argument in this specific case, I'll give 
+you that.  But why bother to start with, in a piece of software that is 
+already fairly complex (the compiler)?  It's much easier to just not do 
+much anything with volatile accesses at all and be guaranteed correct.
+Even more so as the software author, when using volatile, most likely is 
+much more interested in correct code (even from a abstract machine 
+perspective) than micro optimizations.
+
+> At least clang doesn't do this, it stays:
+> 
+> 0403  413:      49 ff 45 00             incq   0x0(%r13)
+> 
+> irrespective of the volatile.
+
+And, are you 100% sure that this is correct?  Even for x86 CPU 
+pipeline implementations that you aren't intimately knowing about? ;-)
+
+But all that seems to be a side-track anyway, what's your real worry with  
+the code sequence generated by GCC?
+
+
+Ciao,
+Michael.
