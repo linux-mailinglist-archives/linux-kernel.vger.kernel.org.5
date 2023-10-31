@@ -2,117 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EA27DD826
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3EE7DD82B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346475AbjJaWT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S1346498AbjJaWVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344925AbjJaWTY (ORCPT
+        with ESMTP id S1346453AbjJaWVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:19:24 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792CCFE;
-        Tue, 31 Oct 2023 15:19:21 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VJOBuL029799;
-        Tue, 31 Oct 2023 22:19:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Aphlc6s8NtUMz0AnqPtvlfqApJgy5j7VA/4sgYsahRU=;
- b=a+TcgrrRXjpCN5SqROM/bvVf8A6ELksisLPxyrzPnKzvxS5+/JmhvJmvNvEXcXrdcJ87
- O7zUFbzID42C88I7t5x5Ci6H20sTRkMhmvgY5kpy4pnaQuAcviHKWf1fG8E6Ul8V2O16
- SquzGStAoaq5vWx6Mm1yZAxvMv/TKH3UANC8NINeUwAbYe7vDV0zPTRb7cke/jG9o6d/
- hbmsLITZJQ2/NYldQmEsVdgJBls1qkSanPpq7ZeKRbv5QpLS1U4eLkE61e4VfwR+pm75
- wMe/CNyCCGv3UkY/2wZDht21WkwoFA/JBMdS/he6p9a14VkhHLeb47fjdQMc2SIKSnbM IQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u34sc0v4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 22:19:09 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39VMJ8dP020242
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 22:19:08 GMT
-Received: from [10.110.20.112] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 31 Oct
- 2023 15:19:07 -0700
-Message-ID: <7b074eaf-ab65-c03b-dcb6-92a0848c2291@quicinc.com>
-Date:   Tue, 31 Oct 2023 15:18:59 -0700
+        Tue, 31 Oct 2023 18:21:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E6C103
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698790858; x=1730326858;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=osGCNnHSWoccgR6iWXJsiQk+I62shHuLwIhpqQAxvqQ=;
+  b=D+kXruUmlsjUoWvyvOmVbepXB5vXJP0lUEWPRUbW7WmBlvePbxhLouZU
+   t2b12/yupoeudK4hWJgOAO/mtLXZGwDfIGdZympg1AHHraW2oUu3g5/6l
+   sAw8x3APpxYq6LzhjAl+J1mi/rxZ2K3elojH4F78kFvcWk9D60XhqkmHn
+   cX0XjoQvPR6DkFHvPYWkzPP7aO1k4lIZlbxLKxy0Ey502SKPjtlQ4e8+E
+   +R7fk8MffEQuncFCMdUErVYF8+FXUpuTdrtSRp4UIafGu6D5rhF/DK53+
+   P53W8u+neK02/MCv5it8TFPUecNsFXPIGAGBS7evQOlTEcKZBSjwx2DBC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="454854290"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="454854290"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 15:20:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="831191463"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="831191463"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Oct 2023 15:20:56 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qxx6U-0000Q7-04;
+        Tue, 31 Oct 2023 22:20:54 +0000
+Date:   Wed, 1 Nov 2023 06:20:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades
+ to integer
+Message-ID: <202311010654.LEo7oBW4-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6 3/7] soc: qcom: add QCOM PBS driver
-Content-Language: en-US
-To:     Lee Jones <lee@kernel.org>
-CC:     <pavel@ucw.cz>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>
-References: <20231020182218.22217-1-quic_amelende@quicinc.com>
- <20231020182218.22217-4-quic_amelende@quicinc.com>
- <20231025121255.GM8909@google.com>
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-In-Reply-To: <20231025121255.GM8909@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6iHWD_z0aisOaV3YVZEc3yd2VvNJ9BrR
-X-Proofpoint-GUID: 6iHWD_z0aisOaV3YVZEc3yd2VvNJ9BrR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-31_09,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=749 bulkscore=0 phishscore=0 priorityscore=1501
- mlxscore=0 spamscore=0 clxscore=1011 adultscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310310184
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5a6a09e97199d6600d31383055f9d43fbbcbe86f
+commit: caf1aeaffc3b09649a56769e559333ae2c4f1802 eventpoll: add EPOLL_URING_WAKE poll wakeup flag
+date:   11 months ago
+config: x86_64-randconfig-r031-20230909 (https://download.01.org/0day-ci/archive/20231101/202311010654.LEo7oBW4-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311010654.LEo7oBW4-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311010654.LEo7oBW4-lkp@intel.com/
 
-On 10/25/2023 5:12 AM, Lee Jones wrote:
-> On Fri, 20 Oct 2023, Anjelique Melendez wrote:
-> 
->> Add the Qualcomm PBS (Programmable Boot Sequencer) driver. The QCOM PBS
->> driver supports configuring software PBS trigger events through PBS RAM
->> on Qualcomm Technologies, Inc (QTI) PMICs.
->>
->> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
->> ---
->>  drivers/soc/qcom/Kconfig          |   9 ++
->>  drivers/soc/qcom/Makefile         |   1 +
->>  drivers/soc/qcom/qcom-pbs.c       | 243 ++++++++++++++++++++++++++++++
->>  include/linux/soc/qcom/qcom-pbs.h |  30 ++++
->>  4 files changed, 283 insertions(+)
->>  create mode 100644 drivers/soc/qcom/qcom-pbs.c
->>  create mode 100644 include/linux/soc/qcom/qcom-pbs.h
-> 
-> The LED patches look good to go.
-> 
-> What's the plan for the SoC driver?
-> 
->   * Who will review it?
->   * Shall I take it via LED with an Ack?
-> 
-QCOM PBS driver should be reviewed by linux-arm-msm maintainers/reviewers.
-Will give them another week or so to take a look at this series before I
-resend to them.
+sparse warnings: (new ones prefixed by >>)
+>> fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades to integer
+>> fs/eventpoll.c:526:9: sparse: sparse: cast to restricted __poll_t
+>> fs/eventpoll.c:1213:53: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int pollflags @@     got restricted __poll_t @@
+   fs/eventpoll.c:1213:53: sparse:     expected unsigned int pollflags
+   fs/eventpoll.c:1213:53: sparse:     got restricted __poll_t
+
+vim +526 fs/eventpoll.c
+
+   493	
+   494	static void ep_poll_safewake(struct eventpoll *ep, struct epitem *epi,
+   495				     unsigned pollflags)
+   496	{
+   497		struct eventpoll *ep_src;
+   498		unsigned long flags;
+   499		u8 nests = 0;
+   500	
+   501		/*
+   502		 * To set the subclass or nesting level for spin_lock_irqsave_nested()
+   503		 * it might be natural to create a per-cpu nest count. However, since
+   504		 * we can recurse on ep->poll_wait.lock, and a non-raw spinlock can
+   505		 * schedule() in the -rt kernel, the per-cpu variable are no longer
+   506		 * protected. Thus, we are introducing a per eventpoll nest field.
+   507		 * If we are not being call from ep_poll_callback(), epi is NULL and
+   508		 * we are at the first level of nesting, 0. Otherwise, we are being
+   509		 * called from ep_poll_callback() and if a previous wakeup source is
+   510		 * not an epoll file itself, we are at depth 1 since the wakeup source
+   511		 * is depth 0. If the wakeup source is a previous epoll file in the
+   512		 * wakeup chain then we use its nests value and record ours as
+   513		 * nests + 1. The previous epoll file nests value is stable since its
+   514		 * already holding its own poll_wait.lock.
+   515		 */
+   516		if (epi) {
+   517			if ((is_file_epoll(epi->ffd.file))) {
+   518				ep_src = epi->ffd.file->private_data;
+   519				nests = ep_src->nests;
+   520			} else {
+   521				nests = 1;
+   522			}
+   523		}
+   524		spin_lock_irqsave_nested(&ep->poll_wait.lock, flags, nests);
+   525		ep->nests = nests + 1;
+ > 526		wake_up_locked_poll(&ep->poll_wait, EPOLLIN | pollflags);
+   527		ep->nests = 0;
+   528		spin_unlock_irqrestore(&ep->poll_wait.lock, flags);
+   529	}
+   530	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
