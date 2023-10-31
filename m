@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 513987DD94A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 565417DD953
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346949AbjJaXgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 19:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
+        id S1346960AbjJaXhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 19:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbjJaXgo (ORCPT
+        with ESMTP id S230375AbjJaXhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:36:44 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEEDB9;
-        Tue, 31 Oct 2023 16:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=rmDBg442GPXbpmQYDhM9m5rfvjZvnyUa7KdVKTxDqDI=; b=bkMl9bXQltns243D5IbE6Ep0QH
-        nv13VO6dxyB/cnpIxswcNSfpZq9wVh/vlEHHxO91Qkgmev9TFvUrW0S8801hVtfOdnjvnhW4lcQQ9
-        4XdAOJ+GBrSxwz147v/D4/0248m6t/SdSwkalUhUxriy4giennW0pfj16uN3Xal4LskOJB0yUexob
-        mlwfOgU86zJxGhwCQP9Lt14c5MOOS+Tqk1EybEw8NuK0+UgBs6SDvr1d73Iv8EslRHxffWZip7yxJ
-        A7eiFXkb7gOIEJSmbWDcOEuI8mTcwVmrZmpt+9OjZ++d/1UaHfH+5qLSejNH/h81cTTmPwX0ZWbWx
-        BbtmyaPg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qxyHc-006KX6-1M;
-        Tue, 31 Oct 2023 23:36:28 +0000
-Message-ID: <cd18356e-51dc-4054-afbb-7f92a45833a7@infradead.org>
-Date:   Tue, 31 Oct 2023 16:36:26 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Oct 30 [drivers/cxl/core/cxl_core.ko]
-Content-Language: en-US
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <20231030163344.5a39a625@canb.auug.org.au>
- <dc312544-6070-4299-b9ee-903b34d7cf21@infradead.org>
- <e3e9bcc3-e026-43d3-964c-5f5b51916782@leemhuis.info>
- <65413d5ae720c_244c782942a@dwillia2-xfh.jf.intel.com.notmuch>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <65413d5ae720c_244c782942a@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 19:37:11 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AEBC9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:37:09 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b9615ecd47so1945404a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698795428; x=1699400228; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZwHYdHsj6Uwfawhe3YKJrgXMDrso8FFgWnxbTx5mjPc=;
+        b=sv272kgLIXd+aMp9oEOAjPhiw+fyr1USMGCP4TarM/5D3mO6spRwzZQNJDXXeqCFre
+         JF279z+F0Xh+CV/0r4CG8xFPJQaflsCFMuwZsTjMQw5TM28E59DeUho2f/WNucO77I+K
+         rUQsaAX4xGdY5z6t48tz9rs3sC2xqn/GJlQRoeV6EzURzP18Y2fAjLJxtbGzanXpyo3Q
+         IciN3QoCezTDDEXlMtQYitm0zaPhZgrHvFk4HEn914QLkuCPDxoIuF5auiG0Tg7Qe3Wx
+         zGtb92X0AD3wsJ5RZPjOkpZ1CiJ/Ukm8LvqZ14AX6BB//0YRNvckxZsWBG4iP6g1Cx/5
+         lkfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698795428; x=1699400228;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZwHYdHsj6Uwfawhe3YKJrgXMDrso8FFgWnxbTx5mjPc=;
+        b=DSERh1AVo2wWC2Idqv3G9IpWxmz3bc9FFQc5GF/AkE/JeiottNaixD2h41m54gbVRR
+         l7FNaC8rb7b4SpdQRjXB+YgSiRwZpb0ObNV2zWdry1oP1gjppnPZmWkISWUwr/e8St6E
+         wUUmAls7CnsaLPSo2TYVaBW83J3S7sj/0zP1+obtIIph9pu7fQ7L8FBt/JfOHKxU6Utz
+         cntJBh63vQXFvsTfYQiRbM4MJGsmXK5rmvlSmznOp1mHqn8wTI0CmSBEig0r8FX7+nbc
+         GtpsIKt99bTxzUr1ypQCGrHpfWrTIUAF6L72AHWvF59PLrYwh30x39SRVQnO+HyYuI3d
+         HPJw==
+X-Gm-Message-State: AOJu0Ywq+285S9AnPIZ14HcMyptRRTVA2SCyjKq+z7GT3/N0Go87GXJx
+        0dZBp7msS2kc5rrA14NlfJBGxnTGjuI=
+X-Google-Smtp-Source: AGHT+IGszvICnLgFRTXinSium5kgpeGfrV1GQxnH0N3W2FHBUTPitXFJJYcg6VYoCyFzg6goTjXUCucj0hM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:7293:b0:1ca:8e79:53b7 with SMTP id
+ d19-20020a170902729300b001ca8e7953b7mr235809pll.9.1698795428519; Tue, 31 Oct
+ 2023 16:37:08 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 16:37:06 -0700
+In-Reply-To: <20231002095740.1472907-4-paul@xen.org>
+Mime-Version: 1.0
+References: <20231002095740.1472907-1-paul@xen.org> <20231002095740.1472907-4-paul@xen.org>
+Message-ID: <ZUGPosqRPNf155sX@google.com>
+Subject: Re: [PATCH v7 03/11] KVM: pfncache: add a helper to get the gpa
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paul Durrant <paul@xen.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Durrant <pdurrant@amazon.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan.
-
-On 10/31/23 10:46, Dan Williams wrote:
-> Thorsten Leemhuis wrote:
->> [CCing the CXL maintainers]
->>
->> On 31.10.23 06:04, Randy Dunlap wrote:
->>> On 10/29/23 22:33, Stephen Rothwell wrote:
->>>>
->>>> Please do not add any material not destined to be merged before v6.7-rc1
->>>> into your linux-next included branches until after v6.7-rc1 has been
->>>> released.
->>>>
->>>> Changes since 20231027:
->>>
->>> when CONFIG_ACPI is not set (on various ARCH):
->>>
->>> ERROR: modpost: "pci_print_aer" [drivers/cxl/core/cxl_core.ko] undefined!
->>>
->>> Already fixed?
->>
->> Doesn't seem so, I saw that yesterday and today in my ppc64le builds for
->> Fedora (based on the Fedora rawhide config). Build log, in case anyone
->> cares:
->> https://copr-be.cloud.fedoraproject.org/results/@kernel-vanilla/next/fedora-38-ppc64le/06583955-next-next-all/builder-live.log.gz
->>
->> Seems 0day ran into this, too:
->>
->> https://lore.kernel.org/all/202310281921.W9lzomPk-lkp@intel.com/
->> https://lore.kernel.org/all/202310290131.Z10R00pk-lkp@intel.com/
->> https://lore.kernel.org/all/202310302206.Pkr5eBDi-lkp@intel.com/
->> https://lore.kernel.org/all/202310310457.5LusQqF6-lkp@intel.com/
+On Mon, Oct 02, 2023, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
 > 
-> Yes, apologies for the thrash. This fixes it for me. I will append this
-> to the cxl/next branch:
-> 
+> A subsequent patch will rename this field since it will become overloaded.
 
-Works for me. Thanks.
+Too. Many. Pronouns.
 
-> diff --git a/include/linux/aer.h b/include/linux/aer.h
-> index f6ea2f57d808..3db310c19ab7 100644
-> --- a/include/linux/aer.h
-> +++ b/include/linux/aer.h
-> @@ -43,16 +43,20 @@ struct aer_capability_regs {
->  #if defined(CONFIG_PCIEAER)
->  int pci_aer_clear_nonfatal_status(struct pci_dev *dev);
->  int pcie_aer_is_native(struct pci_dev *dev);
-> +void pci_print_aer(struct pci_dev *dev, int aer_severity,
-> +                   struct aer_capability_regs *aer);
->  #else
->  static inline int pci_aer_clear_nonfatal_status(struct pci_dev *dev)
->  {
->         return -EINVAL;
+  Add a helper to get the gpa of a gpc cache, as a subsequent patch will
+  rename "gpa" to "addr".
+
+> To avoid churn in places that currently retrieve the gpa, add a helper for
+> that purpose now.
+
+This is silly.  If this series added any protection against incorrect usage then
+I could understand the helper, but this just end up being
+
+	return gpc->addr_is_gpa ? gpc->addr : INVALID_GPA;
+
+which is nasty.  IIUC, there's no WARN because kvm_xen_vcpu_get_attr() doesn't
+pre-check that the cache is in the correct mode.  That's a really silly reason
+to not harden the rest of KVM.
+
+> diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
+> index b68ed7fa56a2..17afbb464a70 100644
+> --- a/virt/kvm/pfncache.c
+> +++ b/virt/kvm/pfncache.c
+> @@ -386,6 +386,12 @@ int kvm_gpc_activate(struct gfn_to_pfn_cache *gpc, gpa_t gpa, unsigned long len)
 >  }
->  static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
-> +static inline void pci_print_aer(struct pci_dev *dev, int aer_severity,
-> +                                struct aer_capability_regs *aer)
-> +{
-> +}
->  #endif
+>  EXPORT_SYMBOL_GPL(kvm_gpc_activate);
 >  
-> -void pci_print_aer(struct pci_dev *dev, int aer_severity,
-> -                   struct aer_capability_regs *aer);
->  int cper_severity_to_aer(int cper_severity);
->  void aer_recover_queue(int domain, unsigned int bus, unsigned int devfn,
->                        int severity, struct aer_capability_regs *aer_regs);
+> +gpa_t kvm_gpc_gpa(struct gfn_to_pfn_cache *gpc)
+> +{
+> +	return gpc->gpa;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_gpc_gpa);
 
--- 
-~Randy
+Any reason not to make this static inline?  Even in the final form, not making
+this inlined seems silly.
+
+Belatedly, same question for kvm_gpc_mark_dirty() I suppose.
+
+>  void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache *gpc)
+>  {
+>  	mark_page_dirty_in_slot(gpc->kvm, gpc->memslot, gpc->gpa >> PAGE_SHIFT);
+> -- 
+> 2.39.2
+> 
