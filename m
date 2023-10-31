@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131EC7DD373
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9030D7DD379
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347062AbjJaQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
+        id S1347078AbjJaQxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346859AbjJaQwR (ORCPT
+        with ESMTP id S1346947AbjJaQwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:52:17 -0400
+        Tue, 31 Oct 2023 12:52:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42ECFF5;
-        Tue, 31 Oct 2023 09:49:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 845DEC43391;
-        Tue, 31 Oct 2023 16:49:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A52DD5B;
+        Tue, 31 Oct 2023 09:49:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D85C43397;
+        Tue, 31 Oct 2023 16:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698770988;
-        bh=sK2tTZgQCVdrA7dGNcfvvdSbrmQiwQvQZKEMFhNEDU4=;
+        s=k20201202; t=1698770991;
+        bh=Tsq7e3D9EFCrDXU+KVxek7WzLF5tJh+8D3LvlOttulE=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=SFc4okHiulElFNpkj0mbT+K4wq6TmsBAhXf82R/Si5ldO9/RYjbPSGj6HWlVNFifB
-         odAowEiU8hLo/HnTZS8vcZQwup8h0BbG0qzZvd4mmOkXzgJzN7fV79GgB5qD5uk3rt
-         L99RxhDc8YKJleQ1QAOAbqswZaTM0Iim/1swpeQ5/3Vp2yCKmK5ZRBHo5FYwVBVaRG
-         KP27I8GHhiTgqEUV6mxqAHMdnV2SD9IFbbdp8HNwqWXwjMJtdfl6B8DJDyGRlP0kKI
-         MrB6v4MhAwc4EWb7zIA5EpSXPXRDFysF9VAhRnQzp7tZ73XH4aEoRRBFl5rL1lCA4M
-         LL1XFwlLWqOZQ==
+        b=IxXhL6eH2LAQzA/N/x/N6TE2lgCorCtf5Py61yhu+4VG/kJACZkmXrayoERA/wy8Q
+         abxLk8GBruE4A7oJKt5m8Etjs2Z4wsQVMARrTvhWco+dh3YO/Xgl0KROWRk5d+xZzF
+         PMpLvC6eAkgL3olvobTRqfZIHmzQHUb5DC5GrOhgltDhsE36f8wkCJkz+v7SJTx1Ol
+         jCyXQSmRa3I2l2acgfilue6KeASbQ/a1EdhluIffllOkKW+kJ4tlgk1977i2JfxLws
+         BUF6cuGqFrExjqIV08qsz4Bdn8yv//fMnhU/ML5BshHuXPLEzQPmH3ZwGavdbnljNK
+         Nnz4aoohcL8SA==
 From:   Maxime Ripard <mripard@kernel.org>
-Date:   Tue, 31 Oct 2023 17:48:39 +0100
-Subject: [PATCH RFC v3 26/37] drm/rockchip: inno_hdmi: Remove useless
- coeff_csc matrix
+Date:   Tue, 31 Oct 2023 17:48:40 +0100
+Subject: [PATCH RFC v3 27/37] drm/rockchip: inno_hdmi: Remove useless
+ mode_valid
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231031-kms-hdmi-connector-state-v3-26-328b0fae43a7@kernel.org>
+Message-Id: <20231031-kms-hdmi-connector-state-v3-27-328b0fae43a7@kernel.org>
 References: <20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org>
 In-Reply-To: <20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,12 +53,12 @@ Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
         linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
         Maxime Ripard <mripard@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2860; i=mripard@kernel.org;
- h=from:subject:message-id; bh=sK2tTZgQCVdrA7dGNcfvvdSbrmQiwQvQZKEMFhNEDU4=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmO+vcXJZxYEWVYaKqrctpZJPnFEf4FZwvXnEj8pL/mx
- mTNibvOdJSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAiotMZGfrOuff+L5x6gk9j
- qrhqi6BaQGL2XjcJzb1b9nPKf1t65hcjw5WpnQ4L3W7e3Fy0p0ODvdV/f+CtdfMeKSQWKa56sEB
- /BS8A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1311; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=Tsq7e3D9EFCrDXU+KVxek7WzLF5tJh+8D3LvlOttulE=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmO+venxxocvujLPqNFSmtmTd/Jg/qL7ETcJ+b1a7js2
+ xz8/gxnRykLgxgXg6yYIkuMsPmSuFOzXney8c2DmcPKBDKEgYtTACYyyY7hn73Ay2gXgZZ+UfMz
+ 3pHX3Hqk/Be1JGedf62rtamtWchoOSPDlPr9NWbTZ1a/mrnNvrPts2uejZHmuWWfmthstyy/1Ob
+ CBgA=
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -71,94 +71,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The coeff_csc matrix isn't used anymore, let's remove it.
+The inno_hdmi mode_valid implementation always return MODE_OK which is
+what the core assumes when we don't have an implementation.
+
+Let's get rid of it.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 70 ------------------------------------
- 1 file changed, 70 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 35f44e556fcf..e4fe02b79a98 100644
+index e4fe02b79a98..59b2b676b7b8 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -64,76 +64,6 @@ static struct inno_hdmi *connector_to_inno_hdmi(struct drm_connector *connector)
- 	return container_of(connector, struct inno_hdmi, connector);
+@@ -400,13 +400,6 @@ static int inno_hdmi_connector_get_modes(struct drm_connector *connector)
+ 	return ret;
  }
  
--static const char coeff_csc[][24] = {
--	/*
--	 * YUV2RGB:601 SD mode(Y[16:235], UV[16:240], RGB[0:255]):
--	 *   R = 1.164*Y + 1.596*V - 204
--	 *   G = 1.164*Y - 0.391*U - 0.813*V + 154
--	 *   B = 1.164*Y + 2.018*U - 258
--	 */
--	{
--		0x04, 0xa7, 0x00, 0x00, 0x06, 0x62, 0x02, 0xcc,
--		0x04, 0xa7, 0x11, 0x90, 0x13, 0x40, 0x00, 0x9a,
--		0x04, 0xa7, 0x08, 0x12, 0x00, 0x00, 0x03, 0x02
--	},
--	/*
--	 * YUV2RGB:601 SD mode(YUV[0:255],RGB[0:255]):
--	 *   R = Y + 1.402*V - 248
--	 *   G = Y - 0.344*U - 0.714*V + 135
--	 *   B = Y + 1.772*U - 227
--	 */
--	{
--		0x04, 0x00, 0x00, 0x00, 0x05, 0x9b, 0x02, 0xf8,
--		0x04, 0x00, 0x11, 0x60, 0x12, 0xdb, 0x00, 0x87,
--		0x04, 0x00, 0x07, 0x16, 0x00, 0x00, 0x02, 0xe3
--	},
--	/*
--	 * YUV2RGB:709 HD mode(Y[16:235],UV[16:240],RGB[0:255]):
--	 *   R = 1.164*Y + 1.793*V - 248
--	 *   G = 1.164*Y - 0.213*U - 0.534*V + 77
--	 *   B = 1.164*Y + 2.115*U - 289
--	 */
--	{
--		0x04, 0xa7, 0x00, 0x00, 0x07, 0x2c, 0x02, 0xf8,
--		0x04, 0xa7, 0x10, 0xda, 0x12, 0x22, 0x00, 0x4d,
--		0x04, 0xa7, 0x08, 0x74, 0x00, 0x00, 0x03, 0x21
--	},
+-static enum drm_mode_status
+-inno_hdmi_connector_mode_valid(struct drm_connector *connector,
+-			       struct drm_display_mode *mode)
+-{
+-	return MODE_OK;
+-}
 -
--	/*
--	 * RGB2YUV:601 SD mode:
--	 *   Cb = -0.291G - 0.148R + 0.439B + 128
--	 *   Y  = 0.504G  + 0.257R + 0.098B + 16
--	 *   Cr = -0.368G + 0.439R - 0.071B + 128
--	 */
--	{
--		0x11, 0x5f, 0x01, 0x82, 0x10, 0x23, 0x00, 0x80,
--		0x02, 0x1c, 0x00, 0xa1, 0x00, 0x36, 0x00, 0x1e,
--		0x11, 0x29, 0x10, 0x59, 0x01, 0x82, 0x00, 0x80
--	},
--	/*
--	 * RGB2YUV:709 HD mode:
--	 *   Cb = - 0.338G - 0.101R + 0.439B + 128
--	 *   Y  = 0.614G   + 0.183R + 0.062B + 16
--	 *   Cr = - 0.399G + 0.439R - 0.040B + 128
--	 */
--	{
--		0x11, 0x98, 0x01, 0xc1, 0x10, 0x28, 0x00, 0x80,
--		0x02, 0x74, 0x00, 0xbb, 0x00, 0x3f, 0x00, 0x10,
--		0x11, 0x5a, 0x10, 0x67, 0x01, 0xc1, 0x00, 0x80
--	},
--	/*
--	 * RGB[0:255]2RGB[16:235]:
--	 *   R' = R x (235-16)/255 + 16;
--	 *   G' = G x (235-16)/255 + 16;
--	 *   B' = B x (235-16)/255 + 16;
--	 */
--	{
--		0x00, 0x00, 0x03, 0x6F, 0x00, 0x00, 0x00, 0x10,
--		0x03, 0x6F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10,
--		0x00, 0x00, 0x00, 0x00, 0x03, 0x6F, 0x00, 0x10
--	},
--};
--
- static inline u8 hdmi_readb(struct inno_hdmi *hdmi, u16 offset)
- {
- 	return readl_relaxed(hdmi->regs + (offset) * 0x04);
+ static int
+ inno_hdmi_probe_single_connector_modes(struct drm_connector *connector,
+ 				       uint32_t maxX, uint32_t maxY)
+@@ -431,7 +424,6 @@ static const struct drm_connector_funcs inno_hdmi_connector_funcs = {
+ 
+ static struct drm_connector_helper_funcs inno_hdmi_connector_helper_funcs = {
+ 	.get_modes = inno_hdmi_connector_get_modes,
+-	.mode_valid = inno_hdmi_connector_mode_valid,
+ };
+ 
+ static int inno_hdmi_register(struct drm_device *drm, struct inno_hdmi *hdmi)
 
 -- 
 2.41.0
