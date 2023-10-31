@@ -2,79 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9937DD701
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4C17DD704
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbjJaUWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
+        id S233051AbjJaUXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjJaUWG (ORCPT
+        with ESMTP id S232357AbjJaUXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:22:06 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7095EF7
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:22:04 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b2d8caadfbso242012b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:22:04 -0700 (PDT)
+        Tue, 31 Oct 2023 16:23:45 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75629E4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:23:41 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b2f5aed39cso3682975b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1698783820; x=1699388620; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cAl1Hg4JRuGCSI5hrrAD0peIOWwe7ctUsvKwLVEKWuM=;
+        b=Ww5RToF8tPdI/7bdA8sT3SxBJVtExcczZ1YfrahMteF7mwBKNU1wN2YMGCt/uBLGqv
+         PC6cs+e5aXLLOlKt+jMHrWl7u07bqW5f/6lPWnkw+gYbO5/hkradHBtSB4qmgYDqg5tl
+         sVgcPEdaIz/kGPJHEoqD0Cv+Dpnq+FmD+F0I6uA2PRLtFP7PxQrAsgpEWDJZU4Ylp0xT
+         m0TuSwy3D2q/w8X+oei6d4UqCAgR7tussYn6sjrXlik27O4MeJsZkaDWiKBobhnK2tuz
+         BKd401R8i50AP8LGHVYGPSHef6/p9evuZtobljnWS4uX3A8gGJBrfT2RQmVlDXxm0Gad
+         AkVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698783723; x=1699388523;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ABxS/Y/dEawUUeKH6gAmQ1oQDLcOIlAS+uqExwFT3Yw=;
-        b=n00FeHSnkTDMGWtYsJMyNg7AOdEoM4UifgkZj4WlStwTAPdtgu/RHdge5x5fvXK4Ha
-         njk2OeOqqmxjqSMoTScSFq/9SPJN1dj2H4XeqZNSGsjijQfIBIK6DThgxCN2BYMf8TJG
-         UV7Ai/VROBNJZhRmIl9AXtBYEkdOI0FWOauIG36vOATHkucPqgTyv205STMS8XlvyfI4
-         5wqFwvqo5RQYI/mUIoijrsK50Chy1lJqHkwApKhpWwT9iFAKgdDyEqyCGek3tZfh2zZK
-         f8eYI7SR1s8k5dtTtfYPSzokoajIlOUrO6cH8dZxQxsKlfd0QGpSAFgg3NcFyKjI367W
-         avbw==
-X-Gm-Message-State: AOJu0Yw9LuKPGT/ppH7GIBM2uewpWcVy4uV+pHvJUXtEAm/rWnIjIiE9
-        pTzpSrKxQfNfYbd4p8VsPk7Gqbw5aRXfjbrFgQrMSK9PjxlT
-X-Google-Smtp-Source: AGHT+IGb7b5+s5UWXuPaOfwbI5gjTxsrXeswNqM5+abNosVgXBYVP27oyqTOzSqlnYSpScnMXbpfJavMqzWhIqrVn1kjNJ71QDEp
+        d=1e100.net; s=20230601; t=1698783820; x=1699388620;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cAl1Hg4JRuGCSI5hrrAD0peIOWwe7ctUsvKwLVEKWuM=;
+        b=h3qPo9ynDdoSzs8wbCRMV4TintVC2ZiwRGyaeTw29DImdOIIDClFsQIiRxkiR6iwI1
+         V9F6lPWVMp3GWXlPQPIHIVt8Veg6FCXlUvSmMvMBWhXFGrecWwaEbbhy9mA4nOrv7IyZ
+         ucVQDceuTUHDP4//8qyBujqoXVuAytepTFsJQAI+XKTzX3GjpwJnnXhu3zIPWkQcILUA
+         /9OfZzb5IGybWh7lVZN0oPbjI7OvUB5OFn6YU1M3314EdpI+oq0AZRzceMLTKraltoco
+         W/z9jsOvhanIOA+Rzp9KhRPLRRamdid/l808s68uQMf3dyfZn9uzsJ4GVcNmRFj2pDUG
+         0a+A==
+X-Gm-Message-State: AOJu0YyA8KebjVlWOr+xY+IV0N/Ze2U7IST8+At5hnacRlkD+QP5K1fZ
+        YTxnilQT40ngQJ1Hng2OyVSRutZ6NfgsFzOElNk=
+X-Google-Smtp-Source: AGHT+IEt7qAE2Ka+HQ0x4uZ6Au8f4gm1teKJ49wlOFD/ShxnaQl9zyzTD4bTYRvzDxZM0PpRFJ0X0w==
+X-Received: by 2002:a05:6808:22a3:b0:3b5:6467:8cf5 with SMTP id bo35-20020a05680822a300b003b564678cf5mr2916382oib.54.1698783819996;
+        Tue, 31 Oct 2023 13:23:39 -0700 (PDT)
+Received: from localhost.localdomain ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id qr7-20020a05620a390700b007788bb0ab8esm806628qkn.19.2023.10.31.13.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 13:23:39 -0700 (PDT)
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH] scripts/gdb/vmalloc: disable on no-MMU
+Date:   Tue, 31 Oct 2023 16:22:36 -0400
+Message-ID: <20231031202235.2655333-2-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:150e:b0:3b2:e7b3:5fc5 with SMTP id
- u14-20020a056808150e00b003b2e7b35fc5mr1621301oiw.3.1698783723868; Tue, 31 Oct
- 2023 13:22:03 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 13:22:03 -0700
-In-Reply-To: <00000000000019db4e05e9712237@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000695613060908e8ed@google.com>
-Subject: Re: [syzbot] [ntfs3] kernel panic: stack is corrupted in lock_acquire (2)
-From:   syzbot <syzbot+db99576f362a5c1e9f7a@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+vmap_area does not exist on no-MMU, therefore the GDB scripts fail to
+load:
 
-commit 4ad5c924df6cd6d85708fa23f9d9a2b78a2e428e
-Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Date:   Fri Sep 22 10:07:59 2023 +0000
+Traceback (most recent call last):
+  File "<...>/vmlinux-gdb.py", line 51, in <module>
+    import linux.vmalloc
+  File "<...>/scripts/gdb/linux/vmalloc.py", line 14, in <module>
+    vmap_area_ptr_type = vmap_area_type.get_type().pointer()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<...>/scripts/gdb/linux/utils.py", line 28, in get_type
+    self._type = gdb.lookup_type(self._name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdb.error: No struct type named vmap_area.
 
-    fs/ntfs3: Allow repeated call to ntfs3_put_sbi
+To fix this, disable the command and add an informative error message if
+CONFIG_MMU is not defined, following the example of lx-slabinfo.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125d173b680000
-start commit:   45a3e24f65e9 Linux 6.4-rc7
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e74b395fe4978721
-dashboard link: https://syzkaller.appspot.com/bug?extid=db99576f362a5c1e9f7a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1734eb5b280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ddb22f280000
+Fixes: 852622bf3616 ("scripts/gdb/vmalloc: add vmallocinfo support")
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+---
+ scripts/gdb/linux/constants.py.in | 1 +
+ scripts/gdb/linux/vmalloc.py      | 8 ++++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-If the result looks correct, please mark the issue as fixed by replying with:
+diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/constants.py.in
+index e3517d4ab8ec..b5ba9682fc6b 100644
+--- a/scripts/gdb/linux/constants.py.in
++++ b/scripts/gdb/linux/constants.py.in
+@@ -157,3 +157,4 @@ LX_CONFIG(CONFIG_STACKDEPOT)
+ LX_CONFIG(CONFIG_PAGE_OWNER)
+ LX_CONFIG(CONFIG_SLUB_DEBUG)
+ LX_CONFIG(CONFIG_SLAB_FREELIST_HARDENED)
++LX_CONFIG(CONFIG_MMU)
+diff --git a/scripts/gdb/linux/vmalloc.py b/scripts/gdb/linux/vmalloc.py
+index 48e4a4fae7bb..d3c8a0274d1e 100644
+--- a/scripts/gdb/linux/vmalloc.py
++++ b/scripts/gdb/linux/vmalloc.py
+@@ -10,8 +10,9 @@ import gdb
+ import re
+ from linux import lists, utils, stackdepot, constants, mm
+ 
+-vmap_area_type = utils.CachedType('struct vmap_area')
+-vmap_area_ptr_type = vmap_area_type.get_type().pointer()
++if constants.LX_CONFIG_MMU:
++    vmap_area_type = utils.CachedType('struct vmap_area')
++    vmap_area_ptr_type = vmap_area_type.get_type().pointer()
+ 
+ def is_vmalloc_addr(x):
+     pg_ops = mm.page_ops().ops
+@@ -25,6 +26,9 @@ class LxVmallocInfo(gdb.Command):
+         super(LxVmallocInfo, self).__init__("lx-vmallocinfo", gdb.COMMAND_DATA)
+ 
+     def invoke(self, arg, from_tty):
++        if not constants.LX_CONFIG_MMU:
++            raise gdb.GdbError("Requires MMU support")
++
+         vmap_area_list = gdb.parse_and_eval('vmap_area_list')
+         for vmap_area in lists.list_for_each_entry(vmap_area_list, vmap_area_ptr_type, "list"):
+             if not vmap_area['vm']:
+-- 
+2.42.0
 
-#syz fix: fs/ntfs3: Allow repeated call to ntfs3_put_sbi
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
