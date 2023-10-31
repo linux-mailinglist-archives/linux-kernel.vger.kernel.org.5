@@ -2,196 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F117DC562
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282A57DD3C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236280AbjJaEdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 00:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        id S232569AbjJaRCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjJaEdT (ORCPT
+        with ESMTP id S231698AbjJaRCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 00:33:19 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6EA1A9;
-        Mon, 30 Oct 2023 21:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=+tVgY
-        gLvSUt79F9deEr1RjBBDXQuJPY7Sdg5IY3CCU0=; b=CuhLN7408Ihy4Bi339UBp
-        yNm84LT66jOyjchWRLhHij1/pQJTHn/+2dQubJ4VvrTz33QoymrRObooZoRzW1mT
-        5GOp5S8Dz4bE/ws8vkd69kV73cjijE93MVOdtZMwxIDnnGG3GKOXAjPovpWmdcE1
-        Gz8CvD5J9Li/8u1FfQD19k=
-Received: from ubuntu.. (unknown [171.83.47.188])
-        by zwqz-smtp-mta-g0-4 (Coremail) with SMTP id _____wCHD1p5g0BlfEPABw--.59861S2;
-        Tue, 31 Oct 2023 12:32:57 +0800 (CST)
-From:   Charles Yi <be286@163.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Charles Yi <be286@163.com>
-Subject: [PATCH v2] HID: fix a crash in hid_debug_events_release
-Date:   Tue, 31 Oct 2023 12:32:39 +0800
-Message-Id: <20231031043239.157943-1-be286@163.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 31 Oct 2023 13:02:44 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C34183
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:02:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VZbNFKUCNvN7UywkgQFgOEyBdk5Ykv9D6ke62xcxUeHsPiY4ZVD3w03uYAGiNmwVckOd3scHX9svAH+mlZabVTJDH+/fxGpCwQtkm3CSLIDhaF1MS/Xm00zwCYYGFW4aHxTgz8xgdwthNBlLeXu/AxYWXfT2VLZJAyHEI6NuQNLB2EbDfqpES5cfhkxPYZ/cTzOxBqqUeTpWQf5s+zd8nsKB2y/jXdHkv+6KLUwbE5nyo4u1YGkhLJd5e1b3dfCmDwvW3DE19iXt3tS3zWxT+7TAtx+cWoFrDs/bFVqsD5xbyqHunmh1N1QfTj4YnveKcr7gGKV2TIMzsBk7GWhIcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lFgf2S8ET76HACcqHN0EKVE7QG+sXKNnVNdN2ze0pRM=;
+ b=bHvcQzJxe680qoCO5ibKyb+Nn8QZM2vXHKDkNwK9bb+OMyVX1PKbWas3ULc4xyWVqOuKiQU3Ps12DSmcCtx2ka1qqsHJJWmj55zJ5BtgIgNs2/1zDBCaOttdaJR/qVQYOU3dTnEPi6JrQwl16gp13bJbW5QZAnb/3lGRXU9N9esvMDaAsProVKvKfvUEeKexegzzEPlaQ7Fv8QGyb97wRHIoyiB4lsMZumOQAHcO92GeuT0Ip0M+Y0GIObuQ74pdO8CG/ELwYPNusv544O0V99hTsQjDWUP8hVX7Jb955I36m83eorYAMLDtWZboXZGvPVoBx7V8vjymws8fUL/5WQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lFgf2S8ET76HACcqHN0EKVE7QG+sXKNnVNdN2ze0pRM=;
+ b=aCJ9c8fRvdBOVhdUjA7XDE7AmNPzU5rCUaMHbD6lVfmzDwn3qI1l9BXIF1/nqniu4PZR9LmKUvu+Tw/9Sfk7OhlJje18yADRzi0AbSMqfeXFMpVunnr3l0Rz5CBNEojUBI57N+HkdXsaiBdrRzvryyDcpo5FHgloeAEFXpCDHT8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by LV3PR17MB7214.namprd17.prod.outlook.com (2603:10b6:408:1a4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.17; Tue, 31 Oct
+ 2023 17:02:38 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%4]) with mapi id 15.20.6954.015; Tue, 31 Oct 2023
+ 17:02:38 +0000
+Date:   Tue, 31 Oct 2023 00:34:29 -0400
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
+        naoya.horiguchi@linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kpageflags: respect folio head-page flag placement
+Message-ID: <ZUCD1dsbrFjdZgVv@memverge.com>
+References: <20231030180005.2046-1-gregory.price@memverge.com>
+ <ZUA6qq6zXuc0fqOE@casper.infradead.org>
+ <ZUA/IzTMokFsXS5Y@memverge.com>
+ <ZUDFSEvpxxoGWmdG@casper.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUDFSEvpxxoGWmdG@casper.infradead.org>
+X-ClientProxiedBy: BY3PR03CA0021.namprd03.prod.outlook.com
+ (2603:10b6:a03:39a::26) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCHD1p5g0BlfEPABw--.59861S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKrWDXr45Zr1kWw1kWr47CFg_yoW7ZFWxpr
-        18tFZrCrW8Jrn7G34UCr4Dur9xK3W0ka4UuryxC3s3Wrn5WF98tFW8tFyY9rs5WrWkJFW3
-        GFs5Xr48KFW8Xw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRn2-nUUUUU=
-X-Originating-IP: [171.83.47.188]
-X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiMhQa0lWB6W20IwAAsp
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|LV3PR17MB7214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 910f2cf3-d8d4-4957-e1ce-08dbda332fca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 65oHS9RaCaQTB7gMRCA0Fj0REtLsY2Q002/f+NP/cDSgIKkDy/uQ7ZoxcAYwC0HlFbh+WcekUmLOElHFLnzu5qXQgIF7P9HMOzY+UdEuXzuymunifXY6Q/DqLOo9YM4XgSriE7joASvdrmBZv7y/n99cxDXOj3RkbXmQnygZaFBDqCtFOQAn6sc2ZI1cYO6c4U24+Xtb+KyXCHCTajq3lvu97nLop4S5Z6s4sSGc9HYGkRJeR7trPZhgzGa4KdNAneqwxFJ/QJVfiId1mmOELTQ7UhU/lRkYSKtwZ64hiN4B73abHIjcoPTtEScMu0Y6FsoY9CvhTpS0eJY53FixqJ6+vyj+dCRyCDc3PttmVfM1uwE6Cxz5GnTKOeBkrMZxC4h1dVtSe6JW4fBydTFrjwaS9g8h37pJ238JWWCuQpL8wlwMQjkUD/NWdWYw884Toj4cWLcIQnSbSgI5LBwXR2ryQ99ITmkho4Cau4povqWSFa5LKUFTm5ft/FPSyOrNqZEsOc6LabkP1nqpo8uLeO+kpUx5Axwq7hxl4aaB6FpqvYBK3jwBxZf8/xKb1+LluK/vPGudwEieYCRlG61dkHAK+cIxbhmmdHfw0V486AFjFCr06a6SZP30fVvf7yB0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(39840400004)(376002)(230273577357003)(230922051799003)(230173577357003)(186009)(1800799009)(64100799003)(451199024)(26005)(83380400001)(6506007)(6666004)(2616005)(6512007)(38100700002)(86362001)(66476007)(66946007)(66556008)(6916009)(36756003)(316002)(6486002)(478600001)(5660300002)(2906002)(8936002)(8676002)(4326008)(41300700001)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?l1PxBFa28dKcznTdDYEIgYn+WFC2QMp26ZmsPp58n9ZPphc8xM5XVaoeOP4M?=
+ =?us-ascii?Q?1qImVrPszwRKJ6t2wk8UuFuPLnZZghGSTBd1GxEfvdGA09I9K3A9YhX+JciG?=
+ =?us-ascii?Q?gUlGc8T9VITGI19Boas7F/PyazR7lNY5QooVvWelhGFOiK3RMLjfoK5QDz84?=
+ =?us-ascii?Q?Cr2zgNQacfRkNCt0olg3HpdMz6RgcR7BNjVN0S+luIZL6/Eo/K4WYRy8KTxe?=
+ =?us-ascii?Q?Ne79jVA6xpFgHQog+A4LHjrwyUIKCQ0VfulSH5dU7tzpNxRx3DDDMspy0w8v?=
+ =?us-ascii?Q?B2wkccfqsVt1bFw9CR3+zJXPgLgRZlo012DgOxq6Dq9PX0vyUBipaaFiif+F?=
+ =?us-ascii?Q?CKgBwmNZ1pipj0aRZ924krYOh97aInaUep0h5r9lBuGSj8TKMTHGX064v3SL?=
+ =?us-ascii?Q?/MSAjlGSw4PreaUus6s39wb6eYB3/oFdE5Nh8E83J96GMpEszIGvBekSJ323?=
+ =?us-ascii?Q?H9C5GyJRFIh8TG/ARDlG7suNz9EWV9kbGbOFNBAtFgAUt5MVOkcWf3pdhVml?=
+ =?us-ascii?Q?2rLbg8KQzJ7e7Z1oq1fcG5//wj3V7pdGtUs5kp1wJdo9XdOv3UVeCy4cobtp?=
+ =?us-ascii?Q?dgDdTGK53TRz5g9PeBcLbvzZ8f41IrA1mGUCbVu+y9jmR52uyfubDbU2kHK2?=
+ =?us-ascii?Q?fkfPK280SITbbl9eYuucgGRgU+synu+NCsbKXsxFUntTckXmxT8Cm9uMg+Ev?=
+ =?us-ascii?Q?dUQ+ACTlSRWdU01c5m1/TYgyjsSh0kdAnv/LJB9HKvu7DxDc6W+d/mOqwdQC?=
+ =?us-ascii?Q?bPcxPal11ZtH8N7yi1CPOqiV/R3l39dSuB2A7Xbm15im8o20YUsZ8b4//Ok6?=
+ =?us-ascii?Q?rOrCJ7Z1HrZNiP3qu8OSYwcxQtsmO1RT+bfUxUeD03POKlB622YVcQxfa91i?=
+ =?us-ascii?Q?87BsqKVekbNxCFKZFJtBE7diuA24RCHV3iwoZyCCS0ZHzh6ZLWRJ9wCl7OXh?=
+ =?us-ascii?Q?QVlH6+qx+fy7+KYBYCJgQ1ciN8wyIpxB6FUl71ySL9WKBWkof7aFH+7oVtY4?=
+ =?us-ascii?Q?1mkbtwav2+stOvR+irvPPE7grt8v61xp/PwQilSGElu0RsN71xKJ+uBtYMbJ?=
+ =?us-ascii?Q?uoICRdXaN8MT6w5jPcFesh834mkecPaHoRGv7QVWnFjN20jlqmnYpwZkGPFW?=
+ =?us-ascii?Q?HRMhieW+T5Dk1Ir5asN9uwgi/PzX88tPIpJxAueICTdKFUXzYNPWFwp8XY81?=
+ =?us-ascii?Q?swpsctZ21PBLmNuzC2xIzxvw1BwOYOupihHO2E3lpSuZita1cYhsT/jG334F?=
+ =?us-ascii?Q?dXDXSrbqVX/eCCJryJ+SrJbqyrBMK7TjwdU+q2JGG9EAuZmmUuQJjWtRA4Mh?=
+ =?us-ascii?Q?ZVJcG90DaJXs/wMm0PBNpYpbt9LTddFfjQ/pHfAx9fHhywbWY8GR7sFeY+f2?=
+ =?us-ascii?Q?dEUGQBV93mAs36MsefWtsmfUSk/Sq73E61C51dlfmy7ZaCubOh8jPMf1WWOY?=
+ =?us-ascii?Q?aJ6XEi8HEqYLv2jY4ZJk5VdZhFT7zmKTPV4grAAMMZg0YSX8E2fV+c8b+fo3?=
+ =?us-ascii?Q?5ZMWx086/u9XfUX5Ybw9IpbTGW2ZIisXEi4s2kEOMXG8SD7S2a2IT6duqzut?=
+ =?us-ascii?Q?Dr5smo/DFZ20gR9UF+1gRm7U/DYbOgwqjspMmGK0EMkay1wWiI/YfrSpsAGY?=
+ =?us-ascii?Q?zg=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 910f2cf3-d8d4-4957-e1ce-08dbda332fca
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 17:02:38.5739
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7zVY5LF7w3ZO8uEyLwnDxn/FXVVeGuP5oXLUtGNHgSLkNzvESAWRz4pLzZej9pUZaxjDYSvoihNv70fB+WbPDrvxZErJE5JOzO2WaYEOxEI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR17MB7214
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hid_debug_events_release() access released memory by
-hid_device_release(). This is fixed by the patch.
+On Tue, Oct 31, 2023 at 09:13:44AM +0000, Matthew Wilcox wrote:
+> On Mon, Oct 30, 2023 at 07:41:23PM -0400, Gregory Price wrote:
+> > On Mon, Oct 30, 2023 at 11:22:18PM +0000, Matthew Wilcox wrote:
+> > > On Mon, Oct 30, 2023 at 02:00:05PM -0400, Gregory Price wrote:
+> > > > kpageflags reads page-flags directly from the page, even when the
+> > > > respective flag is only updated on the headpage of a folio.
+> > > > 
+> > > > Update bitchecks to use PAGEFLAG() interfaces to check folio for the
+> > > > referenced, dirty, lru, active, and unevictable bits.
+> > > 
+> > > But uptodate, writeback and reclaim (amongst others) are also defined
+> > > only on the head page.
+> > > 
+> > 
+> > Ah yes i was only looking at the things defined w/ PAGEFLAG defines in
+> > page-flags.h. I'll give it full once over can collect them all, my bad.
+> > 
+> > (also i forgot to update my commit message)
+> > 
+> > Quick question here since i have your attention: any recommendation on
+> > what to do for ONLY_HEAD flags?  If the provided page is not the head,
+> > should the flag report 0... or whatever the head says?
+> 
+> Thinking about it some more, really almost all flags are per-folio, not
+> per-page.  The only exceptions are HWPoison and AnonExclusive.  So
+> probably the right way to do this is to make k = folio->flags, and
+> then just change a few places rather than changing all the places that
+> test 'k'.
 
-When hid_debug_events_release() was being called, in most case,
-hid_device_release() finish already, the memory of list->hdev
-freed by hid_device_release(), if list->hdev memory
-reallocate by others, and it's modified, zeroed, then
-list->hdev->debug_list_lock occasioned crash come out.
+Funny enough that's what i originally did but was confident it was
+correct so walked it back.  I'll take another crack at it.
 
-The crash:
-
-[  120.728477][ T4396] kernel BUG at lib/list_debug.c:53!
-[  120.728505][ T4396] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-[  120.739806][ T4396] Modules linked in: bcmdhd dhd_static_buf 8822cu pcie_mhi r8168
-[  120.747386][ T4396] CPU: 1 PID: 4396 Comm: hidt_bridge Not tainted 5.10.110 #257
-[  120.754771][ T4396] Hardware name: Rockchip RK3588 EVB4 LP4 V10 Board (DT)
-[  120.761643][ T4396] pstate: 60400089 (nZCv daIf +PAN -UAO -TCO BTYPE=--)
-[  120.768338][ T4396] pc : __list_del_entry_valid+0x98/0xac
-[  120.773730][ T4396] lr : __list_del_entry_valid+0x98/0xac
-[  120.779120][ T4396] sp : ffffffc01e62bb60
-[  120.783126][ T4396] x29: ffffffc01e62bb60 x28: ffffff818ce3a200
-[  120.789126][ T4396] x27: 0000000000000009 x26: 0000000000980000
-[  120.795126][ T4396] x25: ffffffc012431000 x24: ffffff802c6d4e00
-[  120.801125][ T4396] x23: ffffff8005c66f00 x22: ffffffc01183b5b8
-[  120.807125][ T4396] x21: ffffff819df2f100 x20: 0000000000000000
-[  120.813124][ T4396] x19: ffffff802c3f0700 x18: ffffffc01d2cd058
-[  120.819124][ T4396] x17: 0000000000000000 x16: 0000000000000000
-[  120.825124][ T4396] x15: 0000000000000004 x14: 0000000000003fff
-[  120.831123][ T4396] x13: ffffffc012085588 x12: 0000000000000003
-[  120.837123][ T4396] x11: 00000000ffffbfff x10: 0000000000000003
-[  120.843123][ T4396] x9 : 455103d46b329300 x8 : 455103d46b329300
-[  120.849124][ T4396] x7 : 74707572726f6320 x6 : ffffffc0124b8cb5
-[  120.855124][ T4396] x5 : ffffffffffffffff x4 : 0000000000000000
-[  120.861123][ T4396] x3 : ffffffc011cf4f90 x2 : ffffff81fee7b948
-[  120.867122][ T4396] x1 : ffffffc011cf4f90 x0 : 0000000000000054
-[  120.873122][ T4396] Call trace:
-[  120.876259][ T4396]  __list_del_entry_valid+0x98/0xac
-[  120.881304][ T4396]  hid_debug_events_release+0x48/0x12c
-[  120.886617][ T4396]  full_proxy_release+0x50/0xbc
-[  120.891323][ T4396]  __fput+0xdc/0x238
-[  120.895075][ T4396]  ____fput+0x14/0x24
-[  120.898911][ T4396]  task_work_run+0x90/0x148
-[  120.903268][ T4396]  do_exit+0x1bc/0x8a4
-[  120.907193][ T4396]  do_group_exit+0x8c/0xa4
-[  120.911458][ T4396]  get_signal+0x468/0x744
-[  120.915643][ T4396]  do_signal+0x84/0x280
-[  120.919650][ T4396]  do_notify_resume+0xd0/0x218
-[  120.924262][ T4396]  work_pending+0xc/0x3f0
-
-Fixes: <cd667ce24796> (HID: use debugfs for events/reports dumping)
-
-Signed-off-by: Charles Yi <be286@163.com>
-
----
-Changes in V2:
-- Add "Fixes:" tag and call trace to commit message.
----
- drivers/hid/hid-core.c  | 12 ++++++++++--
- drivers/hid/hid-debug.c |  3 +++
- include/linux/hid.h     |  3 +++
- 3 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 8992e3c1e769..e0181218ad85 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -702,15 +702,22 @@ static void hid_close_report(struct hid_device *device)
-  * Free a device structure, all reports, and all fields.
-  */
- 
--static void hid_device_release(struct device *dev)
-+void hiddev_free(struct kref *ref)
- {
--	struct hid_device *hid = to_hid_device(dev);
-+	struct hid_device *hid = container_of(ref, struct hid_device, ref);
- 
- 	hid_close_report(hid);
- 	kfree(hid->dev_rdesc);
- 	kfree(hid);
- }
- 
-+static void hid_device_release(struct device *dev)
-+{
-+	struct hid_device *hid = to_hid_device(dev);
-+
-+	kref_put(&hid->ref, hiddev_free);
-+}
-+
- /*
-  * Fetch a report description item from the data stream. We support long
-  * items, though they are not used yet.
-@@ -2846,6 +2853,7 @@ struct hid_device *hid_allocate_device(void)
- 	spin_lock_init(&hdev->debug_list_lock);
- 	sema_init(&hdev->driver_input_lock, 1);
- 	mutex_init(&hdev->ll_open_lock);
-+	kref_init(&hdev->ref);
- 
- 	hid_bpf_device_init(hdev);
- 
-diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index e7ef1ea107c9..7dd83ec74f8a 100644
---- a/drivers/hid/hid-debug.c
-+++ b/drivers/hid/hid-debug.c
-@@ -1135,6 +1135,7 @@ static int hid_debug_events_open(struct inode *inode, struct file *file)
- 		goto out;
- 	}
- 	list->hdev = (struct hid_device *) inode->i_private;
-+	kref_get(&list->hdev->ref);
- 	file->private_data = list;
- 	mutex_init(&list->read_mutex);
- 
-@@ -1227,6 +1228,8 @@ static int hid_debug_events_release(struct inode *inode, struct file *file)
- 	list_del(&list->node);
- 	spin_unlock_irqrestore(&list->hdev->debug_list_lock, flags);
- 	kfifo_free(&list->hid_debug_fifo);
-+
-+	kref_put(&list->hdev->ref, hiddev_free);
- 	kfree(list);
- 
- 	return 0;
-diff --git a/include/linux/hid.h b/include/linux/hid.h
-index 964ca1f15e3f..3b08a2957229 100644
---- a/include/linux/hid.h
-+++ b/include/linux/hid.h
-@@ -679,6 +679,7 @@ struct hid_device {							/* device report descriptor */
- 	struct list_head debug_list;
- 	spinlock_t  debug_list_lock;
- 	wait_queue_head_t debug_wait;
-+	struct kref			ref;
- 
- 	unsigned int id;						/* system unique id */
- 
-@@ -687,6 +688,8 @@ struct hid_device {							/* device report descriptor */
- #endif /* CONFIG_BPF */
- };
- 
-+void hiddev_free(struct kref *ref);
-+
- #define to_hid_device(pdev) \
- 	container_of(pdev, struct hid_device, dev)
- 
--- 
-2.34.1
-
+~Gregory
