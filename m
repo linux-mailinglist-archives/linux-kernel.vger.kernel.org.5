@@ -2,216 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C387DCCBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2ECE7DCCBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbjJaMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
+        id S1344141AbjJaMEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236205AbjJaMIC (ORCPT
+        with ESMTP id S1344182AbjJaMEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:08:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BD14239
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698753537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=9TY9BTlqFgLhZbIpjJcIPfstT96f2DSA0CuHLc5kNN4=;
-        b=DlD/kB7lWf8fQ4oGbtuW8sZcRK2DHJBR9mLslLmkNKVfqMXuT+CrsLmuGY1g/X78wuSTw5
-        W8VFDKC8+62F1lS+6c2OjAm1vvLk6cy0t1V9FuqDwVkRmU69D8sNjjlhN/cgLteQxnWrVb
-        sMH29hMkaqf3dsegJBEMk6p4MKiiMWk=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-573-1Kbw8GHuN3K7yOsjj3PCKQ-1; Tue, 31 Oct 2023 07:58:55 -0400
-X-MC-Unique: 1Kbw8GHuN3K7yOsjj3PCKQ-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5a7cc433782so53467327b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:58:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698753535; x=1699358335;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9TY9BTlqFgLhZbIpjJcIPfstT96f2DSA0CuHLc5kNN4=;
-        b=iXaaTeBb8MMlj7v7uyed7xxSNhOsunWF79DHTXF/DvmH6/s7wVhYYtmMMgn2ylYHHA
-         cKqbt1+sdSRVAf0ov65UB/khCvMFyRRZNsUACFez7JfNgqXkKUQs73Tzu61v4o3IqcX0
-         iHEJo1jfiuAZcYsRNN77U0zbL23j/59yqZ0NIp6FaK4PHp9Atu1r13HtLZqW0yH7tgwY
-         AimNXrHElQaTvMWFUnOqPdDkQ74iZJ8Q8GBUcLwF+NZM9hn+FcgV5FrPp0A+bIy7uZ7t
-         3ru6pskA5suzwETEyk91iJSdk7X1krwKlHrflDYCfkutDn/rPp5oOZJxN08/3dD1gcwi
-         cMOw==
-X-Gm-Message-State: AOJu0YweUh8dk6eeO/xu125KBIfqNcz7BbHB73VW/pk7Qm7uMVJA9UBC
-        4mvkHFqFAi317BulzLePET7YNUeDTlkjG/3cGQlQuevxYpgMaxBrK1SmEbHvcb+mdnZfdyEJNZT
-        oOXA1HM3ZNP98bv1WOzjXgpU6
-X-Received: by 2002:a81:d206:0:b0:59c:a7f:ca7b with SMTP id x6-20020a81d206000000b0059c0a7fca7bmr8332258ywi.51.1698753534867;
-        Tue, 31 Oct 2023 04:58:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IELCEpiLOVQnaJQz27k7IYUw0zZaIBb05+G3bRfzR/pHZOZDHVZfXfQXdZ+PRJSBB5J0q/kAA==
-X-Received: by 2002:a81:d206:0:b0:59c:a7f:ca7b with SMTP id x6-20020a81d206000000b0059c0a7fca7bmr8332242ywi.51.1698753534456;
-        Tue, 31 Oct 2023 04:58:54 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c707:8f00:43b0:1107:57d2:28ee? (p200300cbc7078f0043b0110757d228ee.dip0.t-ipconnect.de. [2003:cb:c707:8f00:43b0:1107:57d2:28ee])
-        by smtp.gmail.com with ESMTPSA id n18-20020ad444b2000000b0067169e210b3sm458681qvt.70.2023.10.31.04.58.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 04:58:54 -0700 (PDT)
-Message-ID: <fbea7d70-d9fa-4322-99c6-1ad56bfbbb8c@redhat.com>
-Date:   Tue, 31 Oct 2023 12:58:50 +0100
+        Tue, 31 Oct 2023 08:04:00 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294235585;
+        Tue, 31 Oct 2023 05:03:58 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VAAe1l025386;
+        Tue, 31 Oct 2023 12:03:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=qcppdkim1; bh=llA1mruceqzWtsjBtNGzppf1koFXpqBRTnaDNw4knRg=;
+ b=GhrB0fHEC/PZ/L8bqR8tq8xVgkueOy0nhxBuy4KPHqGicHPplHyQe3pycNYhpTADvHSH
+ Gond4VZiym8qJIhmGODCQprETjWkMJDK90PlPj/hIsoNEQomDFgPv01InUwUlrO8FbCO
+ L5k6Ch4w6vwgwqIs/cpjpSowQyW5yLafJ7pdw+hxwYtyrBtf3q+fWuvvyDv7G+1O6348
+ 230SRviKRXHvL+401d5rYj7hBBE1DsUzFoKcvejxL0kICMo1NK3d5dJG/tEVTMIT3p19
+ 2cHkEubJ0BjHOcEBB837bnreA2/OWa5AH/xhFM5ryZ6aOhhU+GqUyqsEudH1jhmCH6UP Ew== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2fuvjc1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 12:03:13 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 39VC395s005243;
+        Tue, 31 Oct 2023 12:03:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3u0uckvvnw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 12:03:09 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39VC39uW005238;
+        Tue, 31 Oct 2023 12:03:09 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 39VC39iF005237
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 12:03:09 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+        id D1F82414B1; Tue, 31 Oct 2023 17:33:08 +0530 (+0530)
+From:   Md Sadre Alam <quic_mdalam@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, quic_srichara@quicinc.com,
+        qpic_varada@quicinc.com
+Cc:     quic_mdalam@quicinc.com
+Subject: [RFC PATCH 0/5] Add QPIC SPI NAND driver support
+Date:   Tue, 31 Oct 2023 17:33:02 +0530
+Message-Id: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com>
- <7a3a2d49-528d-4297-ae19-56aa9e6c59c6@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <7a3a2d49-528d-4297-ae19-56aa9e6c59c6@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 7JBJdyffZDxCCJL6xqn39Pao-CvL2emj
+X-Proofpoint-GUID: 7JBJdyffZDxCCJL6xqn39Pao-CvL2emj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_01,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ spamscore=0 suspectscore=0 lowpriorityscore=0 clxscore=1011 mlxscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=607 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310094
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.10.23 12:50, Ryan Roberts wrote:
-> On 06/10/2023 21:06, David Hildenbrand wrote:
-> [...]
->>
->> Change 2: sysfs interface.
->>
->> If we call it THP, it shall go under "/sys/kernel/mm/transparent_hugepage/", I
->> agree.
->>
->> What we expose there and how, is TBD. Again, not a friend of "orders" and
->> bitmaps at all. We can do better if we want to go down that path.
->>
->> Maybe we should take a look at hugetlb, and how they added support for multiple
->> sizes. What *might* make sense could be (depending on which values we actually
->> support!)
->>
->>
->> /sys/kernel/mm/transparent_hugepage/hugepages-64kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-128kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-256kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-512kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-1024kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/
->>
->> Each one would contain an "enabled" and "defrag" file. We want something minimal
->> first? Start with the "enabled" option.
->>
->>
->> enabled: always [global] madvise never
->>
->> Initially, we would set it for PMD-sized THP to "global" and for everything else
->> to "never".
-> 
-> Hi David,
+Hi Miquel,
 
-Hi!
+This series is RFC for QPIC NAND driver design for
+both SPI NAND and RAW NAND.
 
-> 
-> I've just started coding this, and it occurs to me that I might need a small
-> clarification here; the existing global "enabled" control is used to drive
-> decisions for both anonymous memory and (non-shmem) file-backed memory. But the
-> proposed new per-size "enabled" is implicitly only controlling anon memory (for
-> now).
+We have already discuss this design in the below link
 
-Anon was (way) first, and pagecache later decided to reuse that one as 
-an indication whether larger folios are desired.
+https://patchwork.kernel.org/project/linux-arm-msm/patch/1602307902-16761-3-git-send-email-mdalam@codeaurora.org/#25270814
 
-For the pagecache, it's just a way to enable/disable it globally. As 
-there is no memory waste, nobody currently really cares about the exact 
-sized the pagecache is allocating (maybe that will change at some point, 
-maybe not, who knows).
+Since QPIC controller support both raw and as wel as
+serial nand, In these patch series I am trying to write
+these driver as per above discussion.
 
-> 
-> 1) Is this potentially confusing for the user? Should we rename the per-size
-> controls to "anon_enabled"? Or is it preferable to jsut keep it vague for now so
-> we can reuse the same control for file-backed memory in future?
+As per this design we are having new drivrs for:
 
-The latter would be my take. Just like we did with the global toggle.
+1) SPI-NAND Driver
+2) RAW-NAND Driver
+3) QPIC-COMMON-API Driver
+4) ECC ENGINE Driver
 
-> 
-> 2) The global control will continue to drive the file-backed memory decision
-> (for now), even when hugepages-2048kB/enabled != "global"; agreed?
+Could you plese review these RFC patches and let me know
+if i am doing as per design and my code are proper so that
+i can proceed further.
 
-That would be my take; it will allocate other sizes already, so just 
-glue it to the global toggle and document for the other toggles that 
-they only control anonymous THP for now.
+I have testd SPI NAND enumeration with this new design.
+
+Command supported currently by spi nand driver
+1) RESET
+2) READ ID
+3) GET FEATURE
+4) SET FEATURE
+
+Currently READ_PAGE, WRITE_PAGE are dummy API. Will write
+this later on after your review.
+
+One more thisng wanted to add here Since for QPIC ECC engine
+its not a separte HW IP, and only one register is there to control ECC
+enable/disable. So for just for one register writing a separte driver
+is fine or not?
+In dt I have added like as below 
+
+ bch: qpic_ecc {
+                      compatible = "qcom,ipq9574-ecc";
+                      status = "ok";
+              };
+
+Is this ok ?
+
+Thanks,
+Alam.
+
+Md Sadre Alam (5):
+  mtd: nand: ecc-qcom: Add support for ECC Engine Driver
+  arm64: dts: qcom: ipq9574: Add ecc engine support
+  mtd: nand: qpic_common: Add support for qpic common API
+  spi: qpic: Add support for qpic spi nand driver
+  arm64: dts: qcom: ipq9574: Add support for SPI nand
+
+ arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts |  56 +-
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi       |  33 +
+ drivers/mtd/nand/Kconfig                    |   7 +
+ drivers/mtd/nand/Makefile                   |   1 +
+ drivers/mtd/nand/ecc-qcom.c                 | 198 +++++
+ drivers/mtd/nand/qpic_common.c              | 840 ++++++++++++++++++++
+ drivers/spi/Kconfig                         |   7 +
+ drivers/spi/Makefile                        |   1 +
+ drivers/spi/spi-qpic-snand.c                | 604 ++++++++++++++
+ include/linux/mtd/nand-qpic-common.h        | 641 +++++++++++++++
+ 10 files changed, 2360 insertions(+), 28 deletions(-)
+ create mode 100644 drivers/mtd/nand/ecc-qcom.c
+ create mode 100644 drivers/mtd/nand/qpic_common.c
+ create mode 100644 drivers/spi/spi-qpic-snand.c
+ create mode 100644 include/linux/mtd/nand-qpic-common.h
 
 -- 
-Cheers,
-
-David / dhildenb
+2.34.1
 
