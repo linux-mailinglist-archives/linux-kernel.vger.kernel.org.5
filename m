@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2061F7DCFB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001787DCFC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344335AbjJaOok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
+        id S1344387AbjJaO4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344319AbjJaOoj (ORCPT
+        with ESMTP id S233467AbjJaO4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:44:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594AADA
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698763426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xXlUwrZ8a+TiVbwN/xlzrhXNH8IBziMOpwtSPkVcE7I=;
-        b=GJ1iqCbApRyL0eJNzcCjKXNxC6l+11DD9o3fYtGEKRLgYe7qK11H94n59EHcPgF68235ZW
-        ipfNUfza9asXB6bqGMsXBD9VpykJCUxN77gW9yCLMdAmrAGFLtlX5kd+IQ9jYzpFn49jAX
-        dmxqu2uraoIZbKD02XE0aevBi88tBhE=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-440-vpOiIKskOfKYgd17sxPdxg-1; Tue, 31 Oct 2023 10:43:44 -0400
-X-MC-Unique: vpOiIKskOfKYgd17sxPdxg-1
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d30af2399bso1077096a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:43:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698763424; x=1699368224;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xXlUwrZ8a+TiVbwN/xlzrhXNH8IBziMOpwtSPkVcE7I=;
-        b=Z9EkhRvFmey9aUsPm6kDeY3DhhJ+MVthX46F76rjDEEpThtcox6LpsSC0SgIt5uA1Y
-         tTnDX98e2hpJDMX4qOC23/MS1U1dBYy9KzPckQ5Q0Inln7h93pA22GFCyLNdtA2FKM42
-         QBHxcVilD14kWOlESM9tIApwGTLhPcJmeLstEpWwtigeBbaUJRoTlvj4ijdCusRATGM/
-         cfcn6gfgsJBf5odRzMpvYSSBFNOlvqE18Yd8O1hV+uLWyq25kP2w829tnPdhRRd8Gj16
-         VvD0Bbk9rkrgb4aO5whXwiemGc9Iwl+YA0YUkRFwWcbg4ZitX5AJOpCKZLR3iKdHH9A0
-         NN/w==
-X-Gm-Message-State: AOJu0Yy5ZvVzoeNWjiz9zrHxqXNAKa76x/XJ3y9TLuBDyCdt3rPxzN/t
-        EQQbds10QhrYjByHVxavv0uQem+Z2zTmv+dxNUz4LG4cERxua5JXeIXMkK+cf0mzsvt+8bMBdoC
-        mi+QROou/7c5zrES7gSLUlvXH
-X-Received: by 2002:a05:6830:1e35:b0:6d3:a14:f3f1 with SMTP id t21-20020a0568301e3500b006d30a14f3f1mr2374206otr.7.1698763424288;
-        Tue, 31 Oct 2023 07:43:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGFBHVEKDScky83TG83898xQYY2ysehM/b/1rfoz+oNpMActtM8216vJOH2Z5EptpCShbw5hQ==
-X-Received: by 2002:a05:6830:1e35:b0:6d3:a14:f3f1 with SMTP id t21-20020a0568301e3500b006d30a14f3f1mr2374193otr.7.1698763424028;
-        Tue, 31 Oct 2023 07:43:44 -0700 (PDT)
-Received: from step1.redhat.com ([5.179.178.82])
-        by smtp.gmail.com with ESMTPSA id j7-20020ac84c87000000b004181e5a724csm544231qtv.88.2023.10.31.07.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 07:43:43 -0700 (PDT)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     Stefano Garzarella <sgarzare@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, Qing Wang <qinwang@redhat.com>
-Subject: [PATCH] vdpa_sim_blk: allocate the buffer zeroed
-Date:   Tue, 31 Oct 2023 15:43:39 +0100
-Message-ID: <20231031144339.121453-1-sgarzare@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 31 Oct 2023 10:56:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5529EA;
+        Tue, 31 Oct 2023 07:56:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DBB3C433C8;
+        Tue, 31 Oct 2023 14:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698764168;
+        bh=O+lk/MXMtV5u3UvRYzKW2LTcMBsvBkcGlPzOqhO3RYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=folYaGn1VPqbgvmsSCJ/z0B5fzNxc/RZtLJVgs0p6qLsQ5xp9n5bsqegbXwNvg9fW
+         Q064aRd5fPOcOx6zWjMW8zjB0s7mCP4U+aC3qSTTptqGt6pR1TQEusQumAfvzaQreg
+         PgoLP5jFoqJqPDHFoHTNaKMIKjc/k8dUeQvArt2dVNz13/vrHWXK+v/jOgFzX208RQ
+         H9ZbZPLkSK4A8WiDl72tCGL+n1X5+/kZO1OsNV3+Ou5w/5Z8IUoJKAWMyZp+BDH+Ls
+         qic8sk0OYVsyf4YDhLWXK5Jh4qTTLor36JEMxMcBq0bJQS3RCItt77UXJoNhPmMTZp
+         rbxsqT2t81tTA==
+Date:   Tue, 31 Oct 2023 22:43:52 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Schaffner, Tobias" <tobias.schaffner@siemens.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "minda.chen@starfivetech.com" <minda.chen@starfivetech.com>
+Subject: Re: [PATCH RT 0/3] riscv: add PREEMPT_RT support
+Message-ID: <ZUESqBTSS/s47qM/@xhacker>
+References: <20230510162406.1955-1-jszhang@kernel.org>
+ <a37fc706-78cd-4721-9af3-aabb610f49b1@siemens.com>
+ <ZTah9NOMbZkf6dfL@xhacker>
+ <20231024061852.7BzoCFwW@linutronix.de>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231024061852.7BzoCFwW@linutronix.de>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deleting and recreating a device can lead to having the same
-content as the old device, so let's always allocate buffers
-completely zeroed out.
+On Tue, Oct 24, 2023 at 08:18:52AM +0200, Sebastian Andrzej Siewior wrote:
+> On 2023-10-24 00:40:20 [+0800], Jisheng Zhang wrote:
+> > Hi Thomas, Sebastian
+> > 
+> > could you please review? Any comments are appreciated. or do you want a
+> > rebase on linux-6.5.y-rt?
+> 
+> Please resend on top of latest v6.6-RT. Lazy preempt is gone so only
+> PREEMPT_RT config switch remains from your three patch series. If you
+> have generic-entry then you could use the new PREEMPT_AUTO.
 
-Fixes: abebb16254b3 ("vdpa_sim_blk: support shared backend")
-Suggested-by: Qing Wang <qinwang@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Sebastian,
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-index b3a3cb165795..b137f3679343 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-@@ -437,7 +437,7 @@ static int vdpasim_blk_dev_add(struct vdpa_mgmt_dev *mdev, const char *name,
- 	if (blk->shared_backend) {
- 		blk->buffer = shared_buffer;
- 	} else {
--		blk->buffer = kvmalloc(VDPASIM_BLK_CAPACITY << SECTOR_SHIFT,
-+		blk->buffer = kvzalloc(VDPASIM_BLK_CAPACITY << SECTOR_SHIFT,
- 				       GFP_KERNEL);
- 		if (!blk->buffer) {
- 			ret = -ENOMEM;
-@@ -495,7 +495,7 @@ static int __init vdpasim_blk_init(void)
- 		goto parent_err;
- 
- 	if (shared_backend) {
--		shared_buffer = kvmalloc(VDPASIM_BLK_CAPACITY << SECTOR_SHIFT,
-+		shared_buffer = kvzalloc(VDPASIM_BLK_CAPACITY << SECTOR_SHIFT,
- 					 GFP_KERNEL);
- 		if (!shared_buffer) {
- 			ret = -ENOMEM;
--- 
-2.41.0
+Thank you so much for pointing out PREEMPT_AUTO, I read the discussions
+last weekend, glad to know PREEMPT_AUTO. And riscv has switched to
+generic entry, so it's easy to support PREEMPT_AUTO for riscv. V2 was
+sent out a few mintues ago. Could you please review?
 
+> 
+> Are there any reports of this booting without warnings with LOCKDEP and
+> CONFIG_DEBUG_ATOMIC_SLEEP enabled? I remember there was something
+> earlier.
+
+IIRC, Conor reported the warning and stack trace is ext4 related. But
+I didn't reproduce the warning. And Schaffner also tried the series
+but it seems he didn't see the warning either. So I'm asking for Conor's
+help to retry v2.
+
+Thanks
+> 
+> > Thanks
+> 
+> Sebastian
