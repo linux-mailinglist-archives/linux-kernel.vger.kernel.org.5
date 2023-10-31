@@ -2,92 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D857DD17C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06E57DD183
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345127AbjJaQXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S1344836AbjJaQYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344836AbjJaQXm (ORCPT
+        with ESMTP id S1345130AbjJaQYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:23:42 -0400
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49522A6;
-        Tue, 31 Oct 2023 09:23:40 -0700 (PDT)
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5bcf83a8f6cso20792a12.2;
-        Tue, 31 Oct 2023 09:23:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698769420; x=1699374220;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CBWUu0tjqfzQQcXAkjZScnGhPDhYF0A6SWvhtDvbljg=;
-        b=e5/0B01YuUwb7dshMbzA+LN1JbglN6ZXHnSln0m/7bciiMynhBR+4CFUghL3B/4AcP
-         IdLxaDWkZsvzYO1q2taB3AUQ8rw1epZcYrtcfPzUENkhBRD7Ov+YFiIGjbhotaZ1u2ii
-         039/rNleRCkIdCxcmtLf3slTpdlVkkatuq0uZjpuLTWbPAfwpIKwnHWhHHopDa408hrK
-         3i3PR5OKi7F+O2NT5lRYhgE0YRq5HI38elxvTISd8LU2/hukHhOUElJTXDi4KhSWzLur
-         hIRWpbbxYS1JsXoortwrphx7V6iaDOHAA3TQzOd0DNSrHeCDNDWkfM7HN0rjZ7TuLYIy
-         7OKg==
-X-Gm-Message-State: AOJu0YxEIqeFnDRCe5g6jVvsczEhwTNwrBqAiNPh2axgEmHdjbwsgLdw
-        njBcZr3ky25RPcK/f/zO3yr07DyWjyg=
-X-Google-Smtp-Source: AGHT+IEiqyEA5Jo7RoN3JI58BhuOtNEOxzgSgsyGJ3lhVwY14vx0QWk1I5bxtuTa8wFF2fi+BzbNVQ==
-X-Received: by 2002:a17:902:f68f:b0:1cc:25b7:e30d with SMTP id l15-20020a170902f68f00b001cc25b7e30dmr10024790plg.60.1698769419503;
-        Tue, 31 Oct 2023 09:23:39 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:3a79:8603:fbab:a9fd? ([2620:15c:211:201:3a79:8603:fbab:a9fd])
-        by smtp.gmail.com with ESMTPSA id ik22-20020a170902ab1600b001c5eb2c4d8csm1560142plb.160.2023.10.31.09.23.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 09:23:38 -0700 (PDT)
-Message-ID: <fe022e5f-e7da-480b-9d1c-ce2a6388d768@acm.org>
-Date:   Tue, 31 Oct 2023 09:23:37 -0700
+        Tue, 31 Oct 2023 12:24:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCD4F5;
+        Tue, 31 Oct 2023 09:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=v/CK60RnmTzQkU5gQA5qKkb6Qyt3ppDzv6Lk+OdmbjM=; b=hljEqshcvR0IR3gQTFPeGPK6qo
+        ijZV1UvLaxMwoqE/sKXg+PT1e7Alstz54A7mHAPGxSFFSxM7V8a2kgt7sgvwqMBdBoenv9RsKXBbe
+        rP7Tp/mssCTCAZ6lUyLbq5QjwdZksIoKnIJJmWeHVDadDtfBgmdWJWGCdEGD7alZU4UqvOgT2SbJ5
+        dUYsrjdJzSqvsZ/MLdveTT4BJ7k73eOx+SDPWxq6wSXzNx2M8q30zNInR8ldsEPMzAyhptsuwFqDv
+        MBy8Wg1EjNeDiNN4/3P+K8oeaVUGFhkO1sRS+JaRdxJ46U5TaGTMNZjXZYxLUH+A1eyvOpSBb/Usw
+        eIriSapQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qxrX0-00B5Ij-If; Tue, 31 Oct 2023 16:23:54 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EC4CA300473; Tue, 31 Oct 2023 17:23:53 +0100 (CET)
+Date:   Tue, 31 Oct 2023 17:23:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michael Matz <matz@suse.de>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+Message-ID: <20231031162353.GF15024@noisy.programming.kicks-ass.net>
+References: <20231027192026.GG26550@noisy.programming.kicks-ass.net>
+ <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop>
+ <20231027224628.GI26550@noisy.programming.kicks-ass.net>
+ <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
+ <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
+ <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
+ <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+ <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
+ <20231031151645.GB15024@noisy.programming.kicks-ass.net>
+ <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] scsi: ufs: ufs-sysfs: Expose UFS power info
-Content-Language: en-US
-To:     Can Guo <quic_cang@quicinc.com>, mani@kernel.org,
-        stanley.chu@mediatek.com, adrian.hunter@intel.com,
-        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Lu Hongfei <luhongfei@vivo.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1698745992-5699-1-git-send-email-quic_cang@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1698745992-5699-1-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 02:53, Can Guo wrote:
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/mode
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the UniPro power mode of UFS link:
-> +		==  ====================================================
-> +		1   FAST_MODE
-> +		2   SLOW_MODE
-> +		4   FASTAUTO_MODE
-> +		5   SLOWAUTO_MODE
-> +		==  ====================================================
-> +
-> +		The file is read only.
+On Tue, Oct 31, 2023 at 03:55:20PM +0000, Michael Matz wrote:
 
-For this attribute and the attributes below, shouldn't these be exported
-as text instead of as numbers? Shell scripts that read and use these
-attributes will be much easier to read if these attributes are changed
-from numeric into a textual.
+> > There's a pile of situations where a RmW instruction is actively
+> > different vs a load-store split, esp for volatile variables that are
+> > explicitly expected to change asynchronously.
+> > 
+> > The original RmW instruction is IRQ-safe, while the load-store version
+> > is not. If an interrupt lands in between the load and store and also
+> > modifies the variable then the store after interrupt-return will
+> > over-write said modification.
+> > 
+> > These are not equivalent.
+> 
+> Okay, then there you have it.  Namely that LLVM has a bug (but see next 
+> paragraph).  For volatile x, x++ _must_ expand to a separate read and 
+> write, because the abstract machine of C says so.  If a RmW isn't 
+> equivalent to that, then it can't be used in this situation.  If you 
+> _have_ to use a RmW for other reasons like interrupt safety, then a 
+> volatile variable is not the way to force this, as C simply doesn't have 
+> that concept and hence can't talk about it.  (Of course it can't, as not 
+> all architectures could implement such, if it were required).
 
-Thanks,
+Yeah, RISC archs typically lack the RmW ops. I can understand C not
+mandating their use. However, on architectures that do have them, using
+them makes a ton of sense.
 
-Bart.
+For us living in the real world, this C abstract machine is mostly a
+pain in the arse :-)
+
+> (If an RmW merely gives you more guarantees than a split load-store then 
+> of course LLVM doesn't have a bug, but you said not-equivalent, so I'm 
+> assuming the worst, that RmW also has fewer (other) guarantees)
+
+RmW is strict superset of load-store, and as such not equivalent :-)
+
+Specifically, using volatile degrades the guarantees -- which is counter
+intuitive.
+
+> So, are RMW ops a strict superset (vis the guarantees they give) of split 
+> load-store?  If so we can at least say that using RMW is a valid 
+> optimization :)  Still, an optmization only.
+
+This.
+
+> > > But all that seems to be a side-track anyway, what's your real worry with  
+> > > the code sequence generated by GCC?
+> > 
+> > In this case it's sub-optimal code, both larger and possibly slower for
+> > having two memops.
+> > 
+> > The reason to have volatile is because that's what Linux uses to
+> > dis-allow store-tearing, something that doesn't happen in this case. A
+> > suitably insane but conforming compiler could compile a non-volatile
+> > memory increment into something insane like:
+> > 
+> > 	load byte-0, r1
+> > 	increment r1
+> > 	store r1, byte-0
+> > 	jno done
+> > 	load byte-1, r1
+> > 	increment ri
+> > 	store r1, byte 1
+> > 	jno done
+> > 	...
+> > done:
+> > 
+> > We want to explicitly dis-allow this.
+> 
+> Yeah, I see.  Within C you don't have much choice than volatile for this 
+> :-/  Funny thing: on some architectures this is actually what is generated 
+> sometimes, even if it has multi-byte loads/stores.  This came up 
+> recently on the gcc list and the byte-per-byte sequence was faster ;-) 
+> (it was rather: load-by-bytes, form whole value via shifts, increment, 
+> store-by-bytes)
+> Insane codegen for insane micro-architectures!
+
+*groan*
+
+> > I know C has recently (2011) grown this _Atomic thing, but that has 
+> > other problems.
+> 
+> Yeah.
+> 
+> So, hmm, I don't quite know what to say, you're between a rock and a hard 
+> place, I guess.  You have to use volatile for its effects but then are 
+> unhappy about its effects :)
+
+Notably, Linux uses a *ton* of volatile and there has historically been
+a lot of grumbling about the GCC stance of 'stupid' codegen the moment
+it sees volatile.
+
+It really would help us (the Linux community) if GCC were to be less
+offended by the whole volatile thing and would try to generate better
+code.
+
+Paul has been on the C/C++ committee meetings and keeps telling me them
+folks hate volatile with a passion up to the point of proposing to
+remove it from the language or somesuch. But the reality is that Linux
+very heavily relies on it and _Atomic simply cannot replace it.
+
+> If you can confirm the above about validity of the optimization, then at 
+> least there'd by a point for adding a peephole in GCC for this, even if 
+> current codegen isn't a bug, but I still wouldn't hold my breath.  
+> volatile is so ... ewww, it's best left alone.
+
+Confirmed, and please, your SMP computer only works becuase of volatile,
+it *is* important.
