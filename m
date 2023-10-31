@@ -2,161 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3F97DD10E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A54D7DD111
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344869AbjJaP4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
+        id S1344832AbjJaP6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344808AbjJaP4c (ORCPT
+        with ESMTP id S1344575AbjJaP6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:56:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9853ADA;
-        Tue, 31 Oct 2023 08:56:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B98021847;
-        Tue, 31 Oct 2023 15:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698767788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcqO6QLqoWLHFsYYNG8GZ2WufbipJ9PS9Z8s132JUF0=;
-        b=PjG5beWQTeTrQUOfOjdE55R4tYzVI+HBaDqg4F9XzTIUY3xCwOvp/da4SK6M24HVLB0e4I
-        y3B1VUk/LfDwQXmmeQDB2K7m7IT01FTfR7/i/tMqUhI9VRq23bieV6SV9CKvYDgAoUwfoC
-        6oH5WsqCKz6cK23Mgf/Ls7Np+1d6f8Y=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16AC2138EF;
-        Tue, 31 Oct 2023 15:56:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ntLLAqwjQWUsQwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 31 Oct 2023 15:56:28 +0000
-Date:   Tue, 31 Oct 2023 16:56:27 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Gregory Price <gourry.memverge@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-mm@kvack.org, ying.huang@intel.com,
-        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
-        weixugc@google.com, apopple@nvidia.com, tim.c.chen@intel.com,
-        dave.hansen@intel.com, shy828301@gmail.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-Message-ID: <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
-References: <20231031003810.4532-1-gregory.price@memverge.com>
- <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
- <20231031152142.GA3029315@cmpxchg.org>
+        Tue, 31 Oct 2023 11:58:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD64B98;
+        Tue, 31 Oct 2023 08:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698767883; x=1730303883;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=q8wxOofkkN0NCFiGpANUJpMUDCszjmqXINC1hNMgNRQ=;
+  b=Crgi5y1mfcmF6uucIlw4X5DnjRAI3f6DyIXVm00zXKETa6FElO7o9n9l
+   f412qXuWaEjFT9LC2xgvkAGDzLqyCxAVoHV+p/l/Eof5OHKYMc9G00PXC
+   TP1tZVcMOhZtxLqKA/jdez83icY3D/IzPsH5P9ykZhPi8mdsXw+R1k2II
+   JxL8Z453iCqV080TDd/65BVN5k3hDdupn1Dk6ez2ZzXVMaF712c2Kvm2/
+   VWD3TfoXvB1Xk3GSgNGcFvOuBgTAS8rj2W/Un+1LW54WXgZ/RjyyFOEKl
+   LhquifibPzYlSCTaKeucAQp+fn0ohEhgWQsPbQ3ITo8YBvIA0J1uk1lz5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="368522091"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="368522091"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 08:57:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="1818816"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 08:57:55 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 31 Oct 2023 08:57:54 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 08:57:54 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 31 Oct 2023 08:57:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eM0K0yisJiT2VIbWFzZdkfSzI74WRauVqBt8/D9lrXn9dxlKSoR4+cteMEjfBNGo0LRYGNKGErsUmkbTzYVUtvgJxZB2bwXpGpEAkc9U2reo2Atnm56ywNhl2cvhRjTpEHnFJmLN8K17DzVaufuNNIzVQmkMJS/XFj/CDixHNx9Er9MQdXaie/CHGZH4kIvHURW1m5Abx3S2oCkim4kb97W9owzZ4anbavvqV7SihU/z+KfOVFyLmsfmwhG+XFWpMfCBDRVXvJojW2c/KpW9dMuohvRBzrX3CZWiaTOoqxb/m/6sopkgVE9SHFQoE55lqIQr+S3HDDBFHZh9eCZSew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CVVYnrPkEyc5S1ouMVTI+bv2mVdrAj52K7UCNQ9IVCs=;
+ b=CRii8ITthOJlZNH2hS/9giyMPxV7LvSNowqsWW2o3866RGGoH9nH8RBMe1wFgsJ+S7mJmwxWUne3dagCKpKYx4Gut6Kfp2qi1VPFXXfnK9kwZZiwanMiOs7Uz2v2Uq4xL47DAGkkEAu/nv4f5FW1XRCAOmBI+cMzWAdxuyeCjTivLxzTSrZus8HrTM4TDVhMs5jsrb2llVKmxl5R4MY289i53FcK94c3CJtAQWuYzdErAiRfrNmR9NaCRDM1eozOTcu7dWWoarpoWvfAM0vyvDkD8wKcDTzdB7kusQtVTLWnluaKx/4w/gVpm1pQ+qqA6wlyT0z/gowVqlLRhS38Nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB7141.namprd11.prod.outlook.com (2603:10b6:510:22f::14)
+ by SA2PR11MB5066.namprd11.prod.outlook.com (2603:10b6:806:110::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
+ 2023 15:57:52 +0000
+Received: from PH8PR11MB7141.namprd11.prod.outlook.com
+ ([fe80::3db4:cdd5:b541:b435]) by PH8PR11MB7141.namprd11.prod.outlook.com
+ ([fe80::3db4:cdd5:b541:b435%4]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
+ 15:57:52 +0000
+Message-ID: <5dca6853-cd14-a8fc-ce1b-b64b1b8b3412@intel.com>
+Date:   Tue, 31 Oct 2023 10:57:46 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [PATCH v4 1/2] dmaengine: idxd: Protect int_handle field in hw
+ descriptor
+To:     'Guanjun' <guanjun@linux.alibaba.com>, <dave.jiang@intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vkoul@kernel.org>, <tony.luck@intel.com>, <fenghua.yu@intel.com>
+CC:     <jing.lin@intel.com>, <ashok.raj@intel.com>,
+        <sanjay.k.kumar@intel.com>, <megha.dey@intel.com>,
+        <jacob.jun.pan@intel.com>, <yi.l.liu@intel.com>,
+        <tglx@linutronix.de>
+References: <20231031025511.1516342-1-guanjun@linux.alibaba.com>
+ <20231031025511.1516342-2-guanjun@linux.alibaba.com>
+Content-Language: en-US
+From:   Lijun Pan <lijun.pan@intel.com>
+In-Reply-To: <20231031025511.1516342-2-guanjun@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0311.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::16) To PH8PR11MB7141.namprd11.prod.outlook.com
+ (2603:10b6:510:22f::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031152142.GA3029315@cmpxchg.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB7141:EE_|SA2PR11MB5066:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8cc6880b-c23a-4991-0e03-08dbda2a2304
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0rSHnViFVLylMZ1uR5huaoT3yqhTXGQpAE4CSRRUJVog2eCZYCdisUZFkS4QRou9ejiMDckzKZY9EfOw7MKSG6V18Ls9zKe583VQIMJgxl5S1IsoAFliFjrUkhlwb0Q6mvONF4FEE24Jt4qFJqfDJ3fiRwDOpo1SpBQUuFJrGdlRaF/EYWyHAl3ont9qYl8h8x+BZaz+Kpq9h/p8ElzjeKp1y6qSjTekffz0CxLce04dVy0appitL2VJDH6RAJzwVsvANFU6MTJFTr+G4mJGj7iUmZqpxx98u3NETLA4L3RfXmLXfFWvLvsXqUVCyRMArmw1yFNmZywjMKmxnF1qBJoskEexswH+1fR1wNOk7JNDWIiRMzIqQL9A1wi+Q2gsnRuTq6URUaGeJqp2wy3E5hlW17gtPWrI5P2eGutXCJFHsPanznI2pnQi6QrHMbp3QlqBuV2sQmLsAwg7BGrCyiUVVNNywW60IraXvdE4mcBCA9tPQucW+M7OQ1N3uwXWN9biseJh/l+7SWECIcYVXdkAYUflr+9FyA9HbCDheI1YlJvdlqR+HeiPe1mNl37lDQckaVg9p2c4lyS1tzWtOPOCdYW/VJ4ndA4Gc1L3MR47+H25ft+RvLEOtXCCdxvvWujkHtEQWW7N7qTRgxODYQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB7141.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(396003)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(86362001)(6512007)(31696002)(31686004)(6666004)(6486002)(478600001)(82960400001)(44832011)(53546011)(38100700002)(6506007)(2906002)(36756003)(2616005)(41300700001)(6636002)(66476007)(66556008)(26005)(316002)(66946007)(8936002)(83380400001)(4326008)(8676002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WkoxYUM1LzJqcE4vazRKVmFwd1NjTnZZZGZQNmRaK2dCNWhRVVZYNUE2U0xq?=
+ =?utf-8?B?dTkzWVFZTUJ3dS92eVZkbG5idlRhYWZFaldFOC9lSi9NV1QxaDZWaG9JZ1Er?=
+ =?utf-8?B?T01LbG41amt1bEdacnZOeUdoVnVlU1lmZVQ3ZVFvWU1tOWFpRGhLY2xtVDBG?=
+ =?utf-8?B?a1ZiTGlSZzRuQ1RZR1FackJGZDMzM2gra0pOTUZLSTQrb2RIL1NLbHlXNk5v?=
+ =?utf-8?B?VnNlb3MreGV6TzBjZXFkM29zbCtwaGlLWWIvazRZTUVNS3NVTjNrMGEydkpL?=
+ =?utf-8?B?TXR2U3VTdFFxL3BVWUNaNFpWZTdyUGtHV2RjaUNNTXlsSWpmcjZ6Mmw4ZEV3?=
+ =?utf-8?B?MEl5UE9WN3c4ZU92bStrSWcyR3VGTzVudi9JSURzUi9TaFRzYzM3VHFhVnJs?=
+ =?utf-8?B?UjBJU2V4TWhic3FkVlFRczJjR3Q4cGpwd0JRNlp6RkVyR0M1ZzhISDZOVmJu?=
+ =?utf-8?B?UnlCVXFBY1gvVk5sb0MyaTdYVkEyOE5CdUh3bC8yTC85RXZBNWUvVllNdTZF?=
+ =?utf-8?B?UmZrZ2dEYzNVVmRyOEVKRm45OGZYSnJmVzBHMkp2VEJ5TStkaEVacUlVQXNr?=
+ =?utf-8?B?UnI0OVNXRFpmbmk0UEFCR3FzNnR0b1d6NGFvd2Z3TXlZcmdEeWJKMUNLNUFM?=
+ =?utf-8?B?TnZVRmxkVEF4cDZNeG1BblZ3REhqTXY5TmJpN3YvVlZ2ZHJ1VXZmZi8wbE1S?=
+ =?utf-8?B?d1lEV1ZBOWVQWlJQWk9SeG9CaUhyc0FJSk5WM0d2eGxaWnJNMHE0OHNSYjZ1?=
+ =?utf-8?B?aUJ0UUpMRGNCQWtDM3FmeSswMzFLd3I5RFh3YmhsQjR6c05DeTlFb2pKU09H?=
+ =?utf-8?B?R0dPa1JwS2ZzKzFrOGw2OE1hbEgxdTlobThlY1lHeDY0RkxpYStvSTFVS2dF?=
+ =?utf-8?B?QTNDaXQzRk1DT0Y5V3I4RUFpY2IxNXJRb05Scy9MTmhnNGRCN2pDbUp4SDFu?=
+ =?utf-8?B?ZGRkcHdvU0dJRERPSzRMek5sa3Z2NSs2REtqdVd0TFg5WDg0b2d0Rk51cU95?=
+ =?utf-8?B?Y2dVeWF4Wjk4QVdKcDlSc1VGNXZsU2VVWGtRcExvODJJWDhtZkdlTEFCVnlO?=
+ =?utf-8?B?Ym9QUzMycFVlTlN4Z0VFbXJyN2VQZWdFSXdEbXpaUHBlLzJ1SytKQkRoa1FD?=
+ =?utf-8?B?cWYxVGRPOWozODVlSzZ0UlZDbWozeWFzRlREdEJVY1cwRytBNmUzN2trcnBP?=
+ =?utf-8?B?V1RDZWZ4azhNK0JqK3Zhc2YzOURLUVRVRklkKzNyVXVQMmR1dEE3NEtIdWJD?=
+ =?utf-8?B?V001L3hncGJWdFZEL05CM3RWOW5tT3FtTnV6WGlzWTdpYjg4VmZROTZwbWg0?=
+ =?utf-8?B?R2RaR1dtZHlOOVN1NFJ4TzZpMHNCTDEvYjZyZWVVZ01rdHZlelVpRGdabXlT?=
+ =?utf-8?B?bG42Wms2NEdNem5BTTFUb0FXQk1LR0pGVE93RVFHOVE2MGNXK0p6MWNtN0ZT?=
+ =?utf-8?B?MWRtWjRzeUl2cnhlaFI2T2kyTEpsV3lhZHhueWRzV2ZXNE1WTXYxaEZXTFFy?=
+ =?utf-8?B?QmExWkVaRmFHN0ZuMzVLa1FDbjcveVM5NDRwaVg0cVZ1S2pueUd0dE9SRDVs?=
+ =?utf-8?B?U2RBd1JIaHkyai9SYmJSa3hmUlpQMlE5Sk16N0tGRjd4d05xaGU5bnpVcGZO?=
+ =?utf-8?B?SC9UaVluYzF5alFleTgwdWJ3Y0kvZFpkL2o4cm53cGFrcW1vaVlsNFAzYWRS?=
+ =?utf-8?B?bXBMM205RnlLcmZ1amZ1dG5Gd2taWWhEY0FnaTBXbC9vOGU3T1ZTMzQyOUU1?=
+ =?utf-8?B?QXNYRHlDbEZUU003aTA2bkN4MFUvNTMwdUIwU1RvWkxVeUxzNWViRGVUQjVE?=
+ =?utf-8?B?TXA0WlFScGxqM1VGRlhEbkk4a1VVNmQ5MFNSbVJCM1kxaWlZSWhKN0Z4dHcr?=
+ =?utf-8?B?QTN1b0VTczNyTWVKM3JNVi93QXRVZmt1Sk1lczFLRUErZEcwYVhHa2JVWjBE?=
+ =?utf-8?B?MjFvV2pJWEtKRkhUWW5IdlFib3ptc0Z3OHk2ampROHVXSWI5dlJmZWExMjZ1?=
+ =?utf-8?B?K2RaNU9XZHc0OEYxcURhRHhTNUlrMXcvQS9vQUZSeDlVUXRTcER3cDV5aXp0?=
+ =?utf-8?B?eEZwc0J0NEpFZUZwVDJvZ0hIbzVvRlNKVVN5RmRRbHYxc2ZBblNYdVFXQWtG?=
+ =?utf-8?Q?G7z9RrLXxD+iBgkfiiWlq2oRd?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8cc6880b-c23a-4991-0e03-08dbda2a2304
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB7141.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 15:57:51.5725
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oAKDGkE7efkGO/jQxpkLBvhchubwuoFlYkEordBFsAy5vhkzzgBRWAdB2NmBBvpwXOMLV3Gc6Pyg5a6ear80IA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5066
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 31-10-23 11:21:42, Johannes Weiner wrote:
-> On Tue, Oct 31, 2023 at 10:53:41AM +0100, Michal Hocko wrote:
-> > On Mon 30-10-23 20:38:06, Gregory Price wrote:
-> > > This patchset implements weighted interleave and adds a new sysfs
-> > > entry: /sys/devices/system/node/nodeN/accessM/il_weight.
-> > > 
-> > > The il_weight of a node is used by mempolicy to implement weighted
-> > > interleave when `numactl --interleave=...` is invoked.  By default
-> > > il_weight for a node is always 1, which preserves the default round
-> > > robin interleave behavior.
-> > > 
-> > > Interleave weights may be set from 0-100, and denote the number of
-> > > pages that should be allocated from the node when interleaving
-> > > occurs.
-> > > 
-> > > For example, if a node's interleave weight is set to 5, 5 pages
-> > > will be allocated from that node before the next node is scheduled
-> > > for allocations.
-> > 
-> > I find this semantic rather weird TBH. First of all why do you think it
-> > makes sense to have those weights global for all users? What if
-> > different applications have different view on how to spred their
-> > interleaved memory?
-> > 
-> > I do get that you might have a different tiers with largerly different
-> > runtime characteristics but why would you want to interleave them into a
-> > single mapping and have hard to predict runtime behavior?
-> > 
-> > [...]
-> > > In this way it becomes possible to set an interleaving strategy
-> > > that fits the available bandwidth for the devices available on
-> > > the system. An example system:
-> > > 
-> > > Node 0 - CPU+DRAM, 400GB/s BW (200 cross socket)
-> > > Node 1 - CPU+DRAM, 400GB/s BW (200 cross socket)
-> > > Node 2 - CXL Memory. 64GB/s BW, on Node 0 root complex
-> > > Node 3 - CXL Memory. 64GB/s BW, on Node 1 root complex
-> > > 
-> > > In this setup, the effective weights for nodes 0-3 for a task
-> > > running on Node 0 may be [60, 20, 10, 10].
-> > > 
-> > > This spreads memory out across devices which all have different
-> > > latency and bandwidth attributes at a way that can maximize the
-> > > available resources.
-> > 
-> > OK, so why is this any better than not using any memory policy rely
-> > on demotion to push out cold memory down the tier hierarchy?
-> > 
-> > What is the actual real life usecase and what kind of benefits you can
-> > present?
-> 
-> There are two things CXL gives you: additional capacity and additional
-> bus bandwidth.
-> 
-> The promotion/demotion mechanism is good for the capacity usecase,
-> where you have a nice hot/cold gradient in the workingset and want
-> placement accordingly across faster and slower memory.
-> 
-> The interleaving is useful when you have a flatter workingset
-> distribution and poorer access locality. In that case, the CPU caches
-> are less effective and the workload can be bus-bound. The workload
-> might fit entirely into DRAM, but concentrating it there is
-> suboptimal. Fanning it out in proportion to the relative performance
-> of each memory tier gives better resuls.
-> 
-> We experimented with datacenter workloads on such machines last year
-> and found significant performance benefits:
-> 
-> https://lore.kernel.org/linux-mm/YqD0%2FtzFwXvJ1gK6@cmpxchg.org/T/
 
-Thanks, this is a useful insight.
- 
-> This hopefully also explains why it's a global setting. The usecase is
-> different from conventional NUMA interleaving, which is used as a
-> locality measure: spread shared data evenly between compute
-> nodes. This one isn't about locality - the CXL tier doesn't have local
-> compute. Instead, the optimal spread is based on hardware parameters,
-> which is a global property rather than a per-workload one.
 
-Well, I am not convinced about that TBH. Sure it is probably a good fit
-for this specific CXL usecase but it just doesn't fit into many others I
-can think of - e.g. proportional use of those tiers based on the
-workload - you get what you pay for.
+On 10/30/2023 9:55 PM, 'Guanjun' wrote:
+> From: Guanjun <guanjun@linux.alibaba.com>
+> 
+> The int_handle field in hw descriptor should also be protected
+> by wmb() before possibly triggering a DMA read.
+> 
+> Fixes: ec0d64231615 (dmaengine: idxd: embed irq_entry in idxd_wq struct)
 
-Is there any specific reason for not having a new interleave interface
-which defines weights for the nodemask? Is this because the policy
-itself is very dynamic or is this more driven by simplicity of use?
+I think the direct fix is to eb0cf33a91b4 which moves the interrupt 
+handle assignment to idxd_submit_desc() and has a write to 
+desc->hw->int_handle before submission of desc->hw.
 
--- 
-Michal Hocko
-SUSE Labs
+Fixes: eb0cf33a91b4 ("dmaengine: idxd: move interrupt handle assignment")
+
+Other than that,
+Reviewed-by: Lijun Pan <lijun.pan@intel.com>
+
+
+> Signed-off-by: Guanjun <guanjun@linux.alibaba.com>
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+> ---
+>   drivers/dma/idxd/submit.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/dma/idxd/submit.c b/drivers/dma/idxd/submit.c
+> index c01db23e3333..3f922518e3a5 100644
+> --- a/drivers/dma/idxd/submit.c
+> +++ b/drivers/dma/idxd/submit.c
+> @@ -182,13 +182,6 @@ int idxd_submit_desc(struct idxd_wq *wq, struct idxd_desc *desc)
+>   
+>   	portal = idxd_wq_portal_addr(wq);
+>   
+> -	/*
+> -	 * The wmb() flushes writes to coherent DMA data before
+> -	 * possibly triggering a DMA read. The wmb() is necessary
+> -	 * even on UP because the recipient is a device.
+> -	 */
+> -	wmb();
+> -
+>   	/*
+>   	 * Pending the descriptor to the lockless list for the irq_entry
+>   	 * that we designated the descriptor to.
+> @@ -199,6 +192,13 @@ int idxd_submit_desc(struct idxd_wq *wq, struct idxd_desc *desc)
+>   		llist_add(&desc->llnode, &ie->pending_llist);
+>   	}
+>   
+> +	/*
+> +	 * The wmb() flushes writes to coherent DMA data before
+> +	 * possibly triggering a DMA read. The wmb() is necessary
+> +	 * even on UP because the recipient is a device.
+> +	 */
+> +	wmb();
+> +
+>   	if (wq_dedicated(wq)) {
+>   		iosubmit_cmds512(portal, desc->hw, 1);
+>   	} else {
