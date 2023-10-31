@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F34E87DCB50
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15537DCB52
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234942AbjJaLDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        id S233799AbjJaLES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233724AbjJaLDK (ORCPT
+        with ESMTP id S231165AbjJaLER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:03:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080F5DF
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:03:08 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698750186;
+        Tue, 31 Oct 2023 07:04:17 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36FADF;
+        Tue, 31 Oct 2023 04:04:13 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B274DC0004;
+        Tue, 31 Oct 2023 11:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698750252;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PeHZSGXM4bl+7TvHf+imBwmSlwDpBeiyw/4cbjgQNxE=;
-        b=DuNso0CwhDRlRwpk0nAAgLQiMT52Kb+gx5YjPJr/Fa74+asuQCg2Ao0qbr+OGNBVRyWVsj
-        gdGQlv8pQAQUnCy/0AeQGMZ1IZYRkwPscrAS9I+u2P0mIs5gv5cuM82cmCoIBJbcGpsfXC
-        u39dv374DpeRkrjYtI38jWMFs723FezYlgJhbFhVM5PTxAAvSzOaLZQche/fCkBXAuNErA
-        6mgGID7C2Pl1BUeSevGZH72+pcgS2nAX6wjAZTOe9vEcg0sv6Sx8zky4jV6ivAB3oOq2jP
-        MfPTLcCpP2sI6TBgElBlNNFOcgC+lQs0s0fFWm4InSEGaTX+cDgyr/HtImjNUQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698750186;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PeHZSGXM4bl+7TvHf+imBwmSlwDpBeiyw/4cbjgQNxE=;
-        b=IUZrkxhew3RfrVnGtU7pjhl1RnjJopuKDQL1ZgI1lLafon0o6WodBg+HMjwY2vRy9aWxo1
-        QNbAprQpF79Wt5Ag==
-To:     Martin =?utf-8?Q?Hundeb=C3=B8ll?= <martin@geanix.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Martin =?utf-8?Q?Hundeb=C3=B8ll?= <martin@geanix.com>
-Subject: Re: [PATCH 1/2] printk: export pr_flush()
-In-Reply-To: <20231030092432.3434623-1-martin@geanix.com>
-References: <20231030092432.3434623-1-martin@geanix.com>
-Date:   Tue, 31 Oct 2023 12:09:04 +0106
-Message-ID: <87h6m7f40n.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        bh=gdH4ndnFFRWypp8VD9egRiAHe4ArCrVlink+NxvjNco=;
+        b=no2UbQfmYmQ2oPoObwHZxxMVuHKMSVsWQe132gKW10ZGKFXxzq0kwps2F6wSOZIaIO64ik
+        VZG2v1zF6eCg8tDHWodzkVlLvniRTEpZQgOTCQc+az8n+3UA4FjLvnk0KsIr1LQBzBzdf5
+        O+EPcNvxzAR+Bhfw6dkmZ4jrLuGongRNvs5O6hybHt0tLzUrC9VZ8KytwLVd+v5F2G8GmF
+        NCMJjPTemcZJSnfyeOGCADmvePqv/hIdGTQwiHeoVLfeEbfROqBgpIlbbwDvTT3Gjdu31R
+        rP0eA33xpw8kQop64lorh9I8+fHoz61QCfzCFi7iL7peifhHnI4ZEEz1sygWzw==
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 31 Oct 2023 12:04:11 +0100
+Message-Id: <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
+ 7 or 8 in _get_options
+Cc:     "Hugo Villeneuve" <hugo@hugovil.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>
+X-Mailer: aerc 0.15.2
+References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
+ <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
+ <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
+ <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
+ <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
+In-Reply-To: <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
+X-GND-Sasl: theo.lebrun@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-30, Martin Hundeb=C3=B8ll <martin@geanix.com> wrote:
-> Printk users might want to assure whatever printed has reached its
-> destination before continuing. E.g. during the shutdown-procedure, where
-> printk-buffers aren't necessarily emptied before the system goes down.
+Hello,
 
-This is reverting:
+On Tue Oct 31, 2023 at 11:11 AM CET, Russell King (Oracle) wrote:
+> There is no point in supporting 5 or 6 bits for console usage. Think
+> about it. What values are going to be sent over the console? It'll be
+> ASCII, which requires at _least_ 7-bit. 6-bit would turn alpha
+> characters into control characters, punctuation and numbers. 5-bit
+> would be all control characters.
+>
+> So there's no point trying to do anything with 5 or 6 bits per byte,
+> and I decided we might as well take that as an error (or maybe a
+> case that the hardware has not been setup) and default to 8 bits per
+> byte.
 
-commit c60ba2d34608 ("printk: Make pr_flush() static")
+I see your point. Two things come to mind:
 
-I agree that it should be exported at some point, but we need to have
-outside users.
+ - I added this parsing of 5/6 bits to be symmetrical with
+   pl011_set_termios that handles 5/6 properly. Should pl011_set_termios
+   be modified then?
 
-John Ogness
+ - If a value of 5 or 6 means the hardware has not been setup, shouldn't
+   we ignore all other parsed values?
+
+If you decide to keep the current behavior, I'd be down to adding a
+comment to explicit this choice in pl011_console_get_options.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
+------------------------------------------------------------------------
+
