@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAA67DC90D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BAC7DC91C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343744AbjJaJIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
+        id S1343753AbjJaJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235768AbjJaJIJ (ORCPT
+        with ESMTP id S235349AbjJaJJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:08:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE6191;
-        Tue, 31 Oct 2023 02:08:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EEBC433C8;
-        Tue, 31 Oct 2023 09:08:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698743286;
-        bh=feIBOznLOh65axwYyiiYpq9McN8nBddJCuTkou94EY8=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=VblEe006dkOhHKFV8lXYkjBoV+/BKggu8KsI5kMIAb2Q1426nw4dRAAVoYwb69UEw
-         G4GLrarHQQVvZuXCYCZpQm3MzyKeWeBmJjvlgQ6PMCq7xr4I4hB0HHfGshV2oZUG15
-         X6DMTAU3M/qqtSGFor+HnXWdZfMMByBst6bHmnUyfk/boW/rAygCoryItoD82ouGdQ
-         F5rgczw5G1IKtPxgez4yKfn8OvhBZ5q4umOXcv+za1DnTK33HU98GoVwOWr045jrBq
-         m/rH+Oca3fkh8qYaRN6iMziupF3suM3KgYmJZfX4wsLpF+TVmwMsBaFclHecefyoKM
-         WMmuIxn5gT6Nw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tue, 31 Oct 2023 05:09:11 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050C4B3;
+        Tue, 31 Oct 2023 02:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=IMJYz5PL4lee6U7IF6ZC/L+9tCsfFfPvBLsrgdkwPIk=; b=sUZmG/RFEtT5CUSTwWE84dNfmj
+        Lu7041AN7U9klqaW8qufPLdh7gVEr/ZttDINRJsQeInEQtiIoabyLVUanZcXffJzzUVd96iQvvYUq
+        sj0QBZbpJHd0kFjId7JBvALESJjns77y0mHAIctZa8yWM1gIlVkTRkkdj/KULHoRtV/Y7wYUWhDtO
+        xS3ZRlsrjYMja2FXFObosjqMAceNoaU8FvOL044cJnhW8Sfu9b27Q4ab+4hPezKHPAdGf/wrtsVJ0
+        gio1oRWo/stVF+v137iItzb57Vav67q3/e+5cFrrFR9LyY/FcJUihQwZdE94xxH+z96kSEzGoXVTx
+        1hrCZMxA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44018)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qxkjy-0002V5-1u;
+        Tue, 31 Oct 2023 09:08:50 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qxkjx-0004yS-7I; Tue, 31 Oct 2023 09:08:49 +0000
+Date:   Tue, 31 Oct 2023 09:08:49 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Gan, Yi Fang" <yi.fang.gan@intel.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>, Stanislaw Gruszka <stf_xl@wp.pl>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 00/10] Remove obsolete and orphaned wifi drivers
-References: <20231023131953.2876682-1-arnd@kernel.org>
-Date:   Tue, 31 Oct 2023 11:08:00 +0200
-In-Reply-To: <20231023131953.2876682-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Mon, 23 Oct 2023 15:19:42 +0200")
-Message-ID: <874ji7w45r.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Looi, Hong Aun" <hong.aun.looi@intel.com>,
+        "Voon, Weifeng" <weifeng.voon@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Ahmad Tarmizi, Noor Azura" <noor.azura.ahmad.tarmizi@intel.com>
+Subject: Re: [PATCH net-next 1/1] net: stmmac: add check for advertising
+ linkmode request for set-eee
+Message-ID: <ZUDEIZwKMl88hGcX@shell.armlinux.org.uk>
+References: <20231027065054.3808352-1-yi.fang.gan@intel.com>
+ <ZTtpBCZuB+bjVt9D@shell.armlinux.org.uk>
+ <DM6PR11MB3306A3162F6A6086A4CBA049B9A0A@DM6PR11MB3306.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB3306A3162F6A6086A4CBA049B9A0A@DM6PR11MB3306.namprd11.prod.outlook.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+On Tue, Oct 31, 2023 at 08:44:23AM +0000, Gan, Yi Fang wrote:
+> Hi Russell King,
+> 
+> > Why should this functionality be specific to stmmac?
+> This functionality is not specific to stmmac but other drivers can have their
+>  own implementation. 
+> (e.g. https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/qlogic/qede/qede_ethtool.c#L1855)
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> As discussed previously, a lot of the older wifi drivers are likely
-> entirely unused, Though we can't know for sure.
->
-> As suggested by both Greg and Jakub, let's remove the ones that look
-> are most likely to have no users left and also get in the way of the
-> wext cleanup. If anyone is still using any of these, we can revert the
-> driver removal individually.
->
-> I would suggest merging these for net-next after 6.7-rc1 is out, to give
-> them the maximum amount of time for users to speak up before a release
-> comes out.
->
-> This kills off all pcmcia wifi drivers, and all wext users in
-> drivers/net/wireless, but not the ps3-gelic-wireless driver in
-> drivers/net/ethernet, or the staging drivers.
->
-> In staging, rtl8192u was already removed in the meantime, while rtl8712
-> and rtl8192e are apparently still used.  I have not been able to find
-> out whether ks7010 is still in use.
->
-> 	Arnd
->
-> Link: https://lore.kernel.org/lkml/20231011080955.1beeb010@kernel.org/
->
->
-> Arnd Bergmann (10):
->   wifi: libertas: drop 16-bit PCMCIA support
->   wifi: atmel: remove wext style at76c50x drivers
->   wifi: remove orphaned cisco/aironet driver
->   wifi: remove obsolete hostap driver
->   wifi: remove orphaned zd1201 driver
->   wifi: remove orphaned orinoco driver
->   wifi: remove orphaned ray_cs driver
->   wifi: remove orphaned wl3501 driver
->   wifi: remove orphaned rndis_wlan driver
->   [RFC] wifi: remove ipw2100/ipw2200 drivers
+This is probably wrong (see below.)
 
-I manually applied these 9 to wireless-next:
+> 
+> > Why do we need this?
+> Current implementation will not take any effect if user enters unsupported value but user might
+> not aware. With this, an error will be prompted if unsupported value is given.
 
-4b478bf6bdd8 wifi: libertas: drop 16-bit PCMCIA support
-77e49bec6414 wifi: atmel: remove wext style at76c50x drivers
-6853c70ba5ed wifi: remove orphaned cisco/aironet driver
-d0172d5f7576 wifi: remove obsolete hostap driver
-757a46c2a7a9 wifi: remove orphaned zd1201 driver
-1535d5962d79 wifi: remove orphaned orinoco driver
-6b9dbaff83d6 wifi: remove orphaned ray_cs driver
-238349207cd3 wifi: remove orphaned wl3501 driver
-bec95598b24a wifi: remove orphaned rndis_wlan driver
+Why can't the user read back what settings were actually set like the
+other ethtool APIs? This is how ETHTOOL_GLINKSETTINGS works.
 
-I dropped this patch as we got several reports about people using the
-driver:
+> > What is wrong with the checking and masking that phylib is doing?
+> Nothing wrong with the phylib but there is no error return back to ethtool commands 
+> if unsupported value is given.
 
-[RFC] wifi: remove ipw2100/ipw2200 drivers
+Maybe because that is the correct implementation?
 
-The patches are queued for v6.8. Arnd, thanks a lot for cleaning this
-up!
+> > Why should we trust the value in edata->supported provided by the user?
+> The edata->supported is getting from the current setting and the value is set upon bootup.
+> Users are not allowed to change it.
+
+"not allowed" but there is nothing that prevents it. So an easy way to
+bypass your check is:
+
+	struct ethtool_eee eeecmd;
+
+	eeecmd.cmd = ETHTOOL_GEEE;
+	send_ioctl(..., &eeecmd);
+
+	eeecmd.cmd = ETHTOOL_SEEE;
+	eeecmd.supported = ~0;
+	eeecmd.advertised = ~0;
+	error = send_ioctl(..., &eeecmd);
+
+and that won't return any error. So your check is weak at best, and
+relies upon the user doing the right thing.
+
+> > Sorry, but no. I see no reason that this should be done, especially not in the stmmac driver.
+> I understand your reasoning. From your point of view, is this kind of error message/ error handling 
+> not needed?
+
+It is not - ethtool APIs don't return errors if the advertise mask is
+larger than the supported mask - they merely limit to what is supported
+and set that. When subsequently querying the settings, they return what
+is actually set (so the advertise mask will always be a subset of the
+supported mask at that point.)
+
+So, if in userspace you really want to know if some modes were dropped,
+then you have to do a set-get-check sequence.
+
+Thanks.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
