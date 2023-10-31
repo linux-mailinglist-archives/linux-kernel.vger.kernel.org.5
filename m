@@ -2,468 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211D67DC905
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60907DC8C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343764AbjJaJH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S235457AbjJaI6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235765AbjJaJHX (ORCPT
+        with ESMTP id S234894AbjJaI6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:07:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F41A2;
-        Tue, 31 Oct 2023 02:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698743240; x=1730279240;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eqHmgi7daxr3/IGkgnLFwT7/+fsO4uBKjo5lF73zSUA=;
-  b=La6GSWmNOC8E15bTjTvzy37BBjgwE1I2CeScM3GQAG9OjF/MjkV5WGZ2
-   U2mm8mOxy42vlUQ0He9viWN94l/gjOCLJ3P0dKQY8ZLFBQ41uXYLlll/g
-   k2dNiekZ83svV+M3wiLYzWspfvogf1dQFkQxPsVtVKzJjZ6oUngkYo0VS
-   BKSf/6WigHsgJHJPYcxgEqTZsv58Fagc0EmR5dgyT1y7UVMNH7n2UlN9/
-   eUPidgiGyhioZx+UcRZpjz9x90yKuGxQeRLUTrhXZSb/CXWh0cMG7VVO/
-   2GTGfF+V3jXGw56ESjvU9weMl3ahQ2vv+ROnUqonAPIYAu+wuD071CBLU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="378629337"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="378629337"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 02:07:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="884140841"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="884140841"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 02:07:18 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 4570311F894;
-        Tue, 31 Oct 2023 10:58:04 +0200 (EET)
-Date:   Tue, 31 Oct 2023 08:58:04 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/6] ACPI: scan: Extract MIPI DiSco for Imaging data
- into swnodes
-Message-ID: <ZUDBnEJ41tc7nnka@kekkonen.localdomain>
-References: <2187487.irdbgypaU6@kreacher>
- <7609686.EvYhyI6sBW@kreacher>
+        Tue, 31 Oct 2023 04:58:18 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2068.outbound.protection.outlook.com [40.107.215.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB08C2;
+        Tue, 31 Oct 2023 01:58:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KFh+ZcLD8hfGnVP27l4iKO2u3Dn5wVQwNb8K+IOwdyXmwQIzPD+PV5ocvy9R58hJbJOG8lVK7zmdR10D1hggS6Sb4Y9W3TatL+SrxV6A8XlWV+9QwbmhOr1VWffW30zhhb6DBJh1JKeLxjPfadB1jd/DdOSp182vI7hufDJiisfZaNNur8+X8DFcx557vgpob7Nkj2ISCKJh1ty6n7XBGHQJ9IPdj1ZoebW9X7ZM20V/4OAaoXr4vJxnOPQQEemylBW8i+/YSlkhQqyomWL8mlCeZNyImEuqFk565sIQphlKkijtcYdhRE0TyYuLRxzDtb+5JKnc9DrP9omDpenkVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=W5tZDsk9Y8+0YlwhhI/qyiE11J0X2fieajcZ84TAajw=;
+ b=kF/mfUu5wOAmqloGE821PQyXNmnC10IAA4HB7pyps3ox2IuCk0pBVq+W6sSdFWCywkhEuBPkQXKwTE29jCVaCKxMM7wsJi7bksbHepj60C/DLCDC3aj8kkKt/c1EXFXfpTeeaEY33tFJ6VEhNx3M+J5aDrJiFcNYeBnFwBHbEAB784NZ70yen2376nRHnMgl8QvqDJkP1x3ZlLXRl6wrJaYTM9ozZaDQTmJDJG8J3hmAMNZwf9yumfZBuBKcoQEz4K1/x/aSOpxsYHdY1H6uL9Wka1wM2u3sJaNRb7LoIy4OzB+nPL89elkpGLf6NtDH9Ck5QxpsdSAiG0etKnOIrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W5tZDsk9Y8+0YlwhhI/qyiE11J0X2fieajcZ84TAajw=;
+ b=edGw6k9rNKWqud3kb6Ihz7bPZm8iRrBc21zgnOxwIp4fb5YBZ6VyeTP7FaBCVfzvYdPxKXDjt66//9m16CmqqPZGBRz7wxv4flGvcEmTjxEMTpNhA3HKTXqFqIodqGtyrrUX4EeH3d8OG2695Yc2EOBoggW8oZOWGib+K23JL82EdenBl+AlGfRgbxae0eBUn3m4sVtSpXp74Y77RW4oeNp0Mdp4MxRDTlFlTXtQ3ckFbf76sBnC4ZNeFNCl+AFWUwN/Bcr4eKPXQjGi7kamINa7P4NFnQ57gJPUKUtRKPJg3oxJ07F2HeMe7gKKXaxkqniVFyeddBO80Yr7nYKLWg==
+Received: from SI2PR01CA0043.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::12) by TYZPR04MB4477.apcprd04.prod.outlook.com
+ (2603:1096:400:23::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.25; Tue, 31 Oct
+ 2023 08:58:11 +0000
+Received: from SG2PEPF000B66CD.apcprd03.prod.outlook.com
+ (2603:1096:4:193:cafe::f2) by SI2PR01CA0043.outlook.office365.com
+ (2603:1096:4:193::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29 via Frontend
+ Transport; Tue, 31 Oct 2023 08:58:10 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ SG2PEPF000B66CD.mail.protection.outlook.com (10.167.240.27) with Microsoft
+ SMTP Server id 15.20.6954.19 via Frontend Transport; Tue, 31 Oct 2023
+ 08:58:09 +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] hwmon: emc1403: Add support for EMC1442
+Date:   Tue, 31 Oct 2023 16:58:06 +0800
+Message-Id: <20231031085807.618827-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7609686.EvYhyI6sBW@kreacher>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CD:EE_|TYZPR04MB4477:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: a84f87bb-aff3-4d07-c8a2-08dbd9ef8184
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6WAq7jZZnNzwXZj7W3CM0lTdZ69faCFIDXHJvu0cw1i9eDtJDdD65vLx2ATEpf057VZ4Q2U9YuOmPxKYwU+SAvLQkaNVGCV6WVI3rAxDORXhhnbte+AxOfGF83GxdFNj2Lmzz1GFTASlFk9nGQgNRxPkAm25vUeQPCdcqPKO5H+VZxDGStFQy85SpDsPn8PxUCUChxNwZofQhs0y2rZ6KW8XYUqlP4d1OtNIb/XSvn5vxS1l8O46Ao2txILqXx+OR+9BUYnW8eN3D3m9ChI7DPwoFV4iy7Vl7jy6NxGoH7rp1o1RpWhUH3a9GR/wsDEEkRItkV5FZB3kTk+/qQSU8aJ/xJvCO7cnHcor/3g1GNUsjMp7Q/ss+r9uvi+jA7RyzaH7lnt8BvedGUnujYFGm1FPJPqyHULwbS/wBfm7za8TI2HK9RmOPNa3gPGldthCUWrRn7npOqsl5L2gnl8OZdX0h2OeY7UDT/JznhwEJoebAdu/xQ6Mib0wHl6ZemdO4N6VelY7eTu54d5gH1eRwiINikosS1589WpQ54GlZg8Ec5yTHSxpC8ysOHZNbKKZq7u7coFe43+ezucrN4DeNW4SNlb7SyygSGoQ3lWK1nxuL2MZmxPBPwzBwY/zgo8C84Lfw6phhbnRGBQaGTR1nXwv440etpEb+xyqsIZi6uMvEvSYNqPhzLiKJxAhhxrOj9dg3RumLmWGjWcjVVHh5Q==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(376002)(346002)(396003)(39850400004)(136003)(451199024)(64100799003)(1800799009)(186009)(82310400011)(36840700001)(46966006)(6506007)(47076005)(2906002)(478600001)(6486002)(6666004)(6512007)(36860700001)(86362001)(36756003)(82740400003)(110136005)(40480700001)(356005)(81166007)(2616005)(956004)(1076003)(336012)(70586007)(26005)(5660300002)(316002)(36736006)(70206006)(41300700001)(8676002)(8936002)(83380400001)(4326008)(9316004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 08:58:09.2368
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a84f87bb-aff3-4d07-c8a2-08dbd9ef8184
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: SG2PEPF000B66CD.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB4477
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+Add support for EMC1442 which is compatible with EMC1403.
 
-On subject:
+Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+---
+ drivers/hwmon/emc1403.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-s/DiSco/DisCo/
-
-On Fri, Oct 20, 2023 at 04:39:27PM +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Add information extracted from the MIPI DiSco for Imaging device
-
-Ditto.
-
-> properties to software nodes created during the CSI-2 connection graph
-> discovery.
-> 
-> Link: https://www.mipi.org/specifications/mipi-di
-
-This URL is broken. The correct URL is:
-
-	https://www.mipi.org/specifications/mipi-disco-imaging
-
-> Co-developed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/acpi/internal.h |    1 
->  drivers/acpi/mipi-di.c  |  240 +++++++++++++++++++++++++++++++++++++++++++++++-
-
-How about mipi-disco.c? I wouldn't mind having mipi-disco-imaging.c either.
-
->  drivers/acpi/scan.c     |   12 ++
->  include/acpi/acpi_bus.h |   10 ++
->  4 files changed, 259 insertions(+), 4 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/mipi-di.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/mipi-di.c
-> +++ linux-pm/drivers/acpi/mipi-di.c
-> @@ -6,12 +6,16 @@
->   *
->   * Support MIPI DisCo for Imaging by parsing ACPI _CRS CSI-2 records defined in
->   * Section 6.4.3.8.2.4 "Camera Serial Interface (CSI-2) Connection Resource
-> - * Descriptor" of ACPI 6.5.
-> + * Descriptor" of ACPI 6.5 and using device properties defined by the MIPI DisCo
-> + * for Imaging specification.
->   *
->   * The implementation looks for the information in the ACPI namespace (CSI-2
->   * resource descriptors in _CRS) and constructs software nodes compatible with
->   * Documentation/firmware-guide/acpi/dsd/graph.rst to represent the CSI-2
-> - * connection graph.
-> + * connection graph.  The software nodes are then populated with the data
-> + * extracted from the _CRS CSI-2 resource descriptors and the MIPI DisCo
-> + * for Imaging device properties present in _DSD for the ACPI device objects
-> + * with CSI-2 connections.
->   */
->  
->  #include <linux/acpi.h>
-> @@ -434,6 +438,238 @@ void acpi_mipi_scan_crs_csi2(void)
->  		prepare_crs_csi2_swnodes(csi2);
->  }
->  
-> +/*
-> + * Get the index of the next property in the property array, with a given
-> + * maximum value.
-> + */
-> +#define NEXT_PROPERTY(index, max)			\
-> +	(WARN_ON((index) > ACPI_DEVICE_SWNODE_##max) ?	\
-> +	 ACPI_DEVICE_SWNODE_##max : (index)++)
-> +
-> +static void init_csi2_port_local(struct acpi_device *adev,
-> +				 struct acpi_device_software_node_port *port,
-> +				 struct fwnode_handle *port_fwnode,
-> +				 unsigned int index)
-> +{
-> +	acpi_handle handle = acpi_device_handle(adev);
-> +	unsigned int num_link_freqs;
-> +	int ret;
-> +
-> +	ret = fwnode_property_count_u64(port_fwnode, "mipi-img-link-frequencies");
-> +	if (ret <= 0)
-> +		return;
-> +
-> +	num_link_freqs = ret;
-> +	if (num_link_freqs > ARRAY_SIZE(port->link_frequencies)) {
-> +		acpi_handle_info(handle, "Too many link frequencies: %u\n",
-> +				 num_link_freqs);
-> +		num_link_freqs = ARRAY_SIZE(port->link_frequencies);
-> +	}
-> +
-> +	ret = fwnode_property_read_u64_array(port_fwnode,
-> +					     "mipi-img-link-frequencies",
-> +					     port->link_frequencies,
-> +					     num_link_freqs);
-> +	if (ret) {
-> +		acpi_handle_info(handle, "Unable to get link frequencies (%d)\n",
-> +				 ret);
-> +		return;
-> +	}
-> +
-> +	port->ep_props[NEXT_PROPERTY(index, EP_LINK_FREQUENCIES)] =
-> +				PROPERTY_ENTRY_U64_ARRAY_LEN("link-frequencies",
-> +							     port->link_frequencies,
-> +							     num_link_freqs);
-> +}
-> +
-> +static void init_csi2_port(struct acpi_device *adev,
-> +			   struct acpi_device_software_nodes *swnodes,
-> +			   struct acpi_device_software_node_port *port,
-> +			   struct fwnode_handle *port_fwnode,
-> +			   unsigned int port_index)
-> +{
-> +	unsigned int ep_prop_index = ACPI_DEVICE_SWNODE_EP_CLOCK_LANES;
-> +	acpi_handle handle = acpi_device_handle(adev);
-> +	u8 val[ARRAY_SIZE(port->data_lanes)];
-> +	unsigned int num_lanes = 0;
-> +	int ret;
-> +
-> +	if (GRAPH_PORT_NAME(port->port_name, port->port_nr))
-> +		return;
-> +
-> +	swnodes->nodes[ACPI_DEVICE_SWNODE_PORT(port_index)] =
-> +			SOFTWARE_NODE(port->port_name, port->port_props,
-> +				      &swnodes->nodes[ACPI_DEVICE_SWNODE_ROOT]);
-> +
-> +	ret = fwnode_property_read_u8(port_fwnode, "mipi-img-clock-lane", val);
-> +	if (!ret)
-> +		port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_CLOCK_LANES)] =
-> +			PROPERTY_ENTRY_U32("clock-lanes", val[0]);
-> +
-> +	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-data-lanes");
-> +	if (ret > 0) {
-> +		num_lanes = ret;
-> +
-> +		if (num_lanes > ARRAY_SIZE(port->data_lanes)) {
-> +			acpi_handle_info(handle, "Too many data lanes: %u\n",
-> +					 num_lanes);
-> +			num_lanes = ARRAY_SIZE(port->data_lanes);
-> +		}
-> +
-> +		ret = fwnode_property_read_u8_array(port_fwnode,
-> +						    "mipi-img-data-lanes",
-> +						    val, num_lanes);
-> +		if (!ret) {
-> +			unsigned int i;
-> +
-> +			for (i = 0; i < num_lanes; i++)
-> +				port->data_lanes[i] = val[i];
-> +
-> +			port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_DATA_LANES)] =
-> +				PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
-> +							     port->data_lanes,
-> +							     num_lanes);
-> +		}
-> +	}
-> +
-> +	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-lane-polarities");
-> +	if (ret > 0) {
-> +		unsigned long mask;
-> +		unsigned int i;
-> +
-> +		/*
-> +		 * Total number of lanes here is clock lane + data lanes.
-> +		 * Require that number to be low enough so they all can be
-> +		 * covered by the bits in one byte.
-> +		 */
-> +		BUILD_BUG_ON(BITS_PER_TYPE(u8) <= ARRAY_SIZE(port->data_lanes));
-> +
-> +		fwnode_property_read_u8_array(port_fwnode,
-> +					      "mipi-img-lane-polarities",
-> +					      val, 1);
-> +
-> +		for (mask = val[0], i = 0; i < num_lanes + 1; i++)
-> +			port->lane_polarities[i] = test_bit(i, &mask);
-
-This works only up to seven lanes. I guess this can be addressed later in
-case we get devices with 8 lanes. But adding a comment here (or where the
-maximum number of lanes is defined) that this needs to be fixed would be
-prudent to avoid introducing a bug later on.
-
-> +
-> +		port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_LANE_POLARITIES)] =
-> +				PROPERTY_ENTRY_U32_ARRAY_LEN("lane-polarities",
-> +							     port->lane_polarities,
-> +							     1 + num_lanes);
-> +	} else {
-> +		acpi_handle_info(handle, "No lane polarity bytes\n");
-> +	}
-> +
-> +	swnodes->nodes[ACPI_DEVICE_SWNODE_EP(port_index)] =
-> +		SOFTWARE_NODE("endpoint@0", swnodes->ports[port_index].ep_props,
-> +			      &swnodes->nodes[ACPI_DEVICE_SWNODE_PORT(port_index)]);
-> +
-> +	if (port->crs_csi2_local)
-> +		init_csi2_port_local(adev, port, port_fwnode, ep_prop_index);
-> +}
-> +
-> +#define MIPI_IMG_PORT_PREFIX "mipi-img-port-"
-> +
-> +static struct fwnode_handle *get_mipi_port_handle(struct fwnode_handle *adev_fwnode,
-> +						  unsigned int port_nr)
-> +{
-> +	char port_name[sizeof(MIPI_IMG_PORT_PREFIX) + 2];
-> +
-> +	if (snprintf(port_name, sizeof(port_name), "%s%u",
-> +		     MIPI_IMG_PORT_PREFIX, port_nr) >= sizeof(port_name))
-> +		return NULL;
-> +
-> +	return fwnode_get_named_child_node(adev_fwnode, port_name);
-> +}
-> +
-> +static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
-> +{
-> +	struct acpi_buffer buffer = { .length = ACPI_ALLOCATE_BUFFER };
-> +	struct acpi_device_software_nodes *swnodes = csi2->swnodes;
-> +	acpi_handle handle = csi2->handle;
-> +	struct fwnode_handle *adev_fwnode;
-> +	struct acpi_device *adev;
-> +	acpi_status status;
-> +	unsigned int i;
-> +	int ret;
-> +
-> +	/*
-> +	 * Bail out if the swnodes are not available (either they have not been
-> +	 * allocated or they have been assigned to the device already).
-> +	 */
-> +	if (!swnodes)
-> +		return;
-> +
-> +	adev = acpi_fetch_acpi_dev(handle);
-> +	if (!adev)
-> +		return;
-> +
-> +	adev_fwnode = acpi_fwnode_handle(adev);
-> +
-> +	status = acpi_get_name(handle, ACPI_FULL_PATHNAME, &buffer);
-> +	if (ACPI_FAILURE(status)) {
-> +		acpi_handle_info(handle, "Unable to get the path name\n");
-> +		return;
-> +	}
-> +
-> +	swnodes->nodes[ACPI_DEVICE_SWNODE_ROOT] =
-> +			SOFTWARE_NODE(buffer.pointer, swnodes->dev_props, NULL);
-> +
-> +	for (i = 0; i < swnodes->num_ports; i++) {
-> +		struct acpi_device_software_node_port *port = &swnodes->ports[i];
-> +		struct fwnode_handle *port_fwnode;
-> +
-> +		/*
-> +		 * The MIPI DisCo for Imaging specification defines _DSD device
-> +		 * properties for providing CSI-2 port parameters that can be
-> +		 * accessed through the generic device properties framework.  To
-> +		 * access them, it is first necessary to find the data node
-> +		 * representing the port under the given ACPI device object.
-> +		 */
-> +		port_fwnode = get_mipi_port_handle(adev_fwnode, port->port_nr);
-> +		if (!port_fwnode) {
-> +			acpi_handle_info(handle,
-> +					 "MIPI port name too long for port %u\n",
-> +					 port->port_nr);
-> +			continue;
-> +		}
-> +
-> +		init_csi2_port(adev, swnodes, port, port_fwnode, i);
-> +
-> +		fwnode_handle_put(port_fwnode);
-> +	}
-> +
-> +	ret = software_node_register_node_group(swnodes->nodeptrs);
-> +	if (ret < 0) {
-> +		acpi_handle_info(handle,
-> +				 "Unable to register software nodes (%d)\n", ret);
-> +		return;
-> +	}
-> +
-> +	adev->swnodes = swnodes;
-> +	adev_fwnode->secondary = software_node_fwnode(swnodes->nodes);
-> +
-> +	/*
-> +	 * Prevents the swnodes from this csi2 entry from being assigned again
-> +	 * or freed prematurely.
-> +	 */
-> +	csi2->swnodes = NULL;
-> +}
-> +
-> +/**
-> + * acpi_mipi_init_crs_csi2_swnodes - Initialize _CRS CSI-2 software nodes
-> + *
-> + * Use MIPI DiSco for Imaging device properties to finalize the initialization
-> + * of CSI-2 software nodes for all ACPI device objects that have been already
-> + * enumerated.
-> + */
-> +void acpi_mipi_init_crs_csi2_swnodes(void)
-> +{
-> +	struct crs_csi2 *csi2, *csi2_tmp;
-> +
-> +	list_for_each_entry_safe(csi2, csi2_tmp, &acpi_mipi_crs_csi2_list, entry)
-> +		init_crs_csi2_swnodes(csi2);
-> +}
-> +
->  /**
->   * acpi_mipi_crs_csi2_cleanup - Free _CRS CSI-2 temporary data
->   */
-> Index: linux-pm/drivers/acpi/internal.h
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/internal.h
-> +++ linux-pm/drivers/acpi/internal.h
-> @@ -287,6 +287,7 @@ static inline void acpi_init_lpit(void)
->  
->  void acpi_mipi_check_crs_csi2(acpi_handle handle);
->  void acpi_mipi_scan_crs_csi2(void);
-> +void acpi_mipi_init_crs_csi2_swnodes(void);
->  void acpi_mipi_crs_csi2_cleanup(void);
->  
->  #endif /* _ACPI_INTERNAL_H_ */
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -2447,6 +2447,13 @@ static void acpi_scan_postponed_branch(a
->  
->  	acpi_walk_namespace(ACPI_TYPE_ANY, handle, ACPI_UINT32_MAX,
->  			    acpi_bus_check_add_2, NULL, NULL, (void **)&adev);
-> +
-> +	/*
-> +	 * Populate the ACPI _CRS CSI-2 software nodes for the ACPI devices that
-> +	 * have been added above.
-> +	 */
-> +	acpi_mipi_init_crs_csi2_swnodes();
-> +
->  	acpi_bus_attach(adev, NULL);
->  }
->  
-> @@ -2516,11 +2523,12 @@ int acpi_bus_scan(acpi_handle handle)
->  		return -ENODEV;
->  
->  	/*
-> -	 * Allocate ACPI _CRS CSI-2 software nodes using information extracted
-> +	 * Set up ACPI _CRS CSI-2 software nodes using information extracted
->  	 * from the _CRS CSI-2 resource descriptors during the ACPI namespace
-> -	 * walk above.
-> +	 * walk above and MIPI DiSco for Imaging device properties.
->  	 */
->  	acpi_mipi_scan_crs_csi2();
-> +	acpi_mipi_init_crs_csi2_swnodes();
->  
->  	acpi_bus_attach(device, (void *)true);
->  
-> Index: linux-pm/include/acpi/acpi_bus.h
-> ===================================================================
-> --- linux-pm.orig/include/acpi/acpi_bus.h
-> +++ linux-pm/include/acpi/acpi_bus.h
-> @@ -366,10 +366,17 @@ struct acpi_device_data {
->  
->  struct acpi_gpio_mapping;
->  
-> +#define ACPI_DEVICE_SWNODE_ROOT			0
-> +
->  #define ACPI_DEVICE_CSI2_DATA_LANES		4
->  
->  #define ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH	8
->  
-> +enum acpi_device_swnode_dev_props {
-> +	ACPI_DEVICE_SWNODE_DEV_NUM_OF,
-> +	ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES
-> +};
-> +
->  enum acpi_device_swnode_port_props {
->  	ACPI_DEVICE_SWNODE_PORT_REG,
->  	ACPI_DEVICE_SWNODE_PORT_NUM_OF,
-> @@ -425,12 +432,14 @@ struct acpi_device_software_node_port {
->  
->  /**
->   * struct acpi_device_software_nodes - Software nodes for an ACPI device
-> + * @dev_props: Device properties.
->   * @nodes: Software nodes for root as well as ports and endpoints.
->   * @nodeprts: Array of software node pointers, for (un)registering them.
->   * @ports: Information related to each port and endpoint within a port.
->   * @num_ports: The number of ports.
->   */
->  struct acpi_device_software_nodes {
-> +	struct property_entry dev_props[ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES];
->  	struct software_node *nodes;
->  	const struct software_node **nodeptrs;
->  	struct acpi_device_software_node_port *ports;
-> @@ -455,6 +464,7 @@ struct acpi_device {
->  	struct acpi_device_data data;
->  	struct acpi_scan_handler *handler;
->  	struct acpi_hotplug_context *hp;
-> +	struct acpi_device_software_nodes *swnodes;
->  	const struct acpi_gpio_mapping *driver_gpios;
->  	void *driver_data;
->  	struct device dev;
-> 
-> 
-> 
-
+diff --git a/drivers/hwmon/emc1403.c b/drivers/hwmon/emc1403.c
+index bb7c859e799d..c0d2e96c5077 100644
+--- a/drivers/hwmon/emc1403.c
++++ b/drivers/hwmon/emc1403.c
+@@ -346,6 +346,9 @@ static int emc1403_detect(struct i2c_client *client,
+ 	case 0x27:
+ 		strscpy(info->type, "emc1424", I2C_NAME_SIZE);
+ 		break;
++	case 0x60:
++		strscpy(info->type, "emc1442", I2C_NAME_SIZE);
++		break;
+ 	default:
+ 		return -ENODEV;
+ 	}
+@@ -430,7 +433,7 @@ static int emc1403_probe(struct i2c_client *client)
+ }
+ 
+ static const unsigned short emc1403_address_list[] = {
+-	0x18, 0x1c, 0x29, 0x4c, 0x4d, 0x5c, I2C_CLIENT_END
++	0x18, 0x1c, 0x29, 0x3c, 0x4c, 0x4d, 0x5c, I2C_CLIENT_END
+ };
+ 
+ /* Last digit of chip name indicates number of channels */
+@@ -444,6 +447,7 @@ static const struct i2c_device_id emc1403_idtable[] = {
+ 	{ "emc1422", emc1402 },
+ 	{ "emc1423", emc1403 },
+ 	{ "emc1424", emc1404 },
++	{ "emc1442", emc1403 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, emc1403_idtable);
 -- 
-Regards,
+2.25.1
 
-Sakari Ailus
