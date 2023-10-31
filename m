@@ -2,161 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 823DE7DCEB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA40F7DCEBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbjJaOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S235008AbjJaOFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbjJaOE4 (ORCPT
+        with ESMTP id S229974AbjJaOFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:04:56 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA1F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:04:53 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5af9b0850fdso53222407b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698761092; x=1699365892; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZsemryN+7v+wOBolNu7Hy0wHrULeaB9eFsfVkGp1/e8=;
-        b=FrCK2BdFm4j45mpD+yVokt411jGTt+mhy/sd2Vi1orDmdUK8qPAg6Jm9kdANvFkCjX
-         D442v8pY1sA/+tReHxcAfbkggmdQRySJHmw3dTDtt9FzVamFAh2sclv3iu1KjT281u72
-         7OuE3iL6KlaPE3tSJOcImXWWHQaTRoacU/ptNs1BHPkG77XA6Bw0RcLbLqKCAeiMEx7Q
-         8mt4dKfkx4h/coDYAysMLp5puGQCmD7YT6/nDvz6i+9Nya+wAS0B2PwzR10/ytE10XVW
-         damMDw/uLdR0ixdVowm64jHzCLEN7U/q9ybNbp3O+mIRh/VfbCYgW3gtAP5+mBumgGnY
-         MPlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698761092; x=1699365892;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZsemryN+7v+wOBolNu7Hy0wHrULeaB9eFsfVkGp1/e8=;
-        b=sYaJ/gILDp6pWrScJfbOE4cLY+qMhctAgjZmkmzwtRRkIp6hPypS3luRWguQkLOaMq
-         rywJO+5XPIPRsmV96UfHPYgvV3FYiNkYnntBQnz2gZIjr1n+oIo0mAO+4ddScZO3uKSr
-         9RbmUpC0raSGZuOINus1iCC1vwaxS7vcEzsTZ02FDzrubnCM4N7z3RQGeNtE2Icw+QII
-         m0ewcwCP2VWc+Ec8SgGsHbTy5byQjBecEcnEJGzbVInFergEfrf5E4eMKoKtCWu2QCQp
-         8FmFp00wbM1Pydp/m07ujsj+twCcd/oW6TmUo2+yU8eDrEae9QdsllLKhBbFsLguqMO7
-         e03g==
-X-Gm-Message-State: AOJu0YwmUe8UbaIFiWMl2HUl/W2VgNvcOD8Njes+y2sl+SxGcxassHcA
-        QKrBSD8tIEf5DJWAPWD15Di+eZHOz1g=
-X-Google-Smtp-Source: AGHT+IGMRYf422gsAhq04hJnKRMCzmHg+RO6tAl4JuMhPFGeve1lxsPBrReypZbUvK9g95iFN5O303NMZlw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP id
- v3-20020a056902108300b00d9ac3b84274mr301710ybu.7.1698761092559; Tue, 31 Oct
- 2023 07:04:52 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:04:51 -0700
-In-Reply-To: <2edd908a-9699-4d8e-9063-c655f1fc9712@intel.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-9-seanjc@google.com>
- <2edd908a-9699-4d8e-9063-c655f1fc9712@intel.com>
-Message-ID: <ZUEJg_rBf35NyCG3@google.com>
-Subject: Re: [PATCH v13 08/35] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 10:05:08 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE6AF1;
+        Tue, 31 Oct 2023 07:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=n82YEEI1FUC/itM1tuyemVtoc1RFlGBRO7Oj8tFvb3E=; b=BjwlepdiJ/TN4Lz2ozay2zVLr0
+        hTTPnAj7fDuNYBCXSa/xzHEWFhsgdfIZo7BHAowmfuiF9zpCweIxoe94EX+QRHVZ0z0VqJkPljmLu
+        tLdtFZuyrQyDavc6wgsEJ0EzQJzGL2IqqTd96+b7GBRKbytUYmtcJKJMab4jViuUPyuFcPUZFiTzS
+        C+w+FiG4x2KY0tdUQQNnFCHaBRzQXgnL+5C+eq2DvuqnyEerzA7sypK0UVg9TY1JGm5/NXW+YuE//
+        v5U0vmDQfg/h1YPEpefePs37B/FZCUV+20JKgUUFMnE/9PZYbUi9gW8Vp6sO/8pjizZzlT3bmstHa
+        3dSJ8JDA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50578)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qxpMa-0002it-13;
+        Tue, 31 Oct 2023 14:05:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qxpMb-00059x-5a; Tue, 31 Oct 2023 14:05:01 +0000
+Date:   Tue, 31 Oct 2023 14:05:01 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc:     Hugo Villeneuve <hugo@hugovil.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
+ 7 or 8 in _get_options
+Message-ID: <ZUEJjdfk/vmH8XTR@shell.armlinux.org.uk>
+References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
+ <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
+ <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
+ <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
+ <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
+ <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
+ <ZUDjhpQKgUgqVeBh@shell.armlinux.org.uk>
+ <CWMNJ47MO8E6.7CXJRZ181PXJ@tleb-bootlin-xps13-01>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CWMNJ47MO8E6.7CXJRZ181PXJ@tleb-bootlin-xps13-01>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023, Xiaoyao Li wrote:
-> On 10/28/2023 2:21 AM, Sean Christopherson wrote:
-> > Introduce a "version 2" of KVM_SET_USER_MEMORY_REGION so that additional
-> > information can be supplied without setting userspace up to fail.  The
-> > padding in the new kvm_userspace_memory_region2 structure will be used to
-> > pass a file descriptor in addition to the userspace_addr, i.e. allow
-> > userspace to point at a file descriptor and map memory into a guest that
-> > is NOT mapped into host userspace.
-> > 
-> > Alternatively, KVM could simply add "struct kvm_userspace_memory_region2"
-> > without a new ioctl(), but as Paolo pointed out, adding a new ioctl()
-> > makes detection of bad flags a bit more robust, e.g. if the new fd field
-> > is guarded only by a flag and not a new ioctl(), then a userspace bug
-> > (setting a "bad" flag) would generate out-of-bounds access instead of an
-> > -EINVAL error.
-> > 
-> > Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> > Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   Documentation/virt/kvm/api.rst | 21 +++++++++++++++++++
-> >   arch/x86/kvm/x86.c             |  2 +-
-> >   include/linux/kvm_host.h       |  4 ++--
-> >   include/uapi/linux/kvm.h       | 13 ++++++++++++
-> >   virt/kvm/kvm_main.c            | 38 +++++++++++++++++++++++++++-------
-> >   5 files changed, 67 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> > index 21a7578142a1..ace984acc125 100644
-> > --- a/Documentation/virt/kvm/api.rst
-> > +++ b/Documentation/virt/kvm/api.rst
-> > @@ -6070,6 +6070,27 @@ writes to the CNTVCT_EL0 and CNTPCT_EL0 registers using the SET_ONE_REG
-> >   interface. No error will be returned, but the resulting offset will not be
-> >   applied.
-> > +4.139 KVM_SET_USER_MEMORY_REGION2
-> > +---------------------------------
-> > +
-> > +:Capability: KVM_CAP_USER_MEMORY2
-> > +:Architectures: all
-> > +:Type: vm ioctl
-> > +:Parameters: struct kvm_userspace_memory_region2 (in)
-> > +:Returns: 0 on success, -1 on error
-> > +
-> > +::
-> > +
-> > +  struct kvm_userspace_memory_region2 {
-> > +	__u32 slot;
-> > +	__u32 flags;
-> > +	__u64 guest_phys_addr;
-> > +	__u64 memory_size; /* bytes */
-> > +	__u64 userspace_addr; /* start of the userspace allocated memory */
+On Tue, Oct 31, 2023 at 02:51:45PM +0100, Théo Lebrun wrote:
+> On Tue Oct 31, 2023 at 12:22 PM CET, Russell King (Oracle) wrote:
+> > On Tue, Oct 31, 2023 at 12:04:11PM +0100, Théo Lebrun wrote:
+> > > On Tue Oct 31, 2023 at 11:11 AM CET, Russell King (Oracle) wrote:
+> > > > There is no point in supporting 5 or 6 bits for console usage. Think
+> > > > about it. What values are going to be sent over the console? It'll be
+> > > > ASCII, which requires at _least_ 7-bit. 6-bit would turn alpha
+> > > > characters into control characters, punctuation and numbers. 5-bit
+> > > > would be all control characters.
+> > > >
+> > > > So there's no point trying to do anything with 5 or 6 bits per byte,
+> > > > and I decided we might as well take that as an error (or maybe a
+> > > > case that the hardware has not been setup) and default to 8 bits per
+> > > > byte.
+> > > 
+> > > I see your point. Two things come to mind:
+> > > 
+> > >  - I added this parsing of 5/6 bits to be symmetrical with
+> > >    pl011_set_termios that handles 5/6 properly. Should pl011_set_termios
+> > >    be modified then?
+> >
+> > Why should it? Note that I said above about _console_ usage which is
+> > what you were referring to - the early code that sets up the console
+> > by either reading the current settings (so that we can transparently
+> > use the UART when its handed over already setup by a boot loader).
+> >
+> > This is completely different to what happens once the kernel is running.
+> > Userspace might very well have a reason to set 5 or 6 bits if it wants
+> > to communicate with a device that uses those sizes.
+> >
+> > However, such a device won't be a console for the reasons I outlined
+> > above (it will truncate the ASCII characters turning console messages
+> > into garbage.)
 > 
-> missing
-> 
-> 	__u64 pad[16];
+> I'm not sure I get it. (1) We assume it is a console so it's ASCII so no
+> reason to set to 5 or 6 bits per word. But (2) there might be a reason
+> to set the UART to 5 or 6 bits, the userspace decides.
 
-I can't even copy+paste correctly :-(
+Precisely.
+
+> How do the two interact? Say we boot to Linux, userspace configures to 6
+> bits because reasons and we reset. At second probe we see a config of 6
+> bits per word but assume that can't be logical, even though it is.
+
+I think you're conflating "serial console" with "serial port". A
+"serial port" can support multiple different formats, and in this case,
+such as 5, 6, 7, and 8 bits. 5 and 6 bits are likely to be a specialised
+application which uses a binary protocol, not ASCII.
+
+A "serial console" is one application of a "serial port" and a "serial
+console" is used to send ASCII characters, not a binary protocol.
+
+> What makes us suppose at probe that it must be a console?
+
+Sorry, but no, we don't assume every serial port is a serial console.
+Unless something has changed since I was involved with the serial
+layer, we only read the parameters from a serial port _if_ and only
+if that port is being used as a serial console.
+
+TTYs under Linux have a standard initial set of parameters at boot -
+9600 baud, 8 bits, etc. The exception to this is if a serial port *is
+being used* as a serial console, where these settings are overriden by
+the serial console configuration. The reason for that is... imagine
+the chaos that would occur if:
+
+- Your boot loader configures (through user configuration) the serial
+  port for 115200 baud.
+- The boot loader loads the kernel and passes control to it, with
+  a command line specifying that this serial port is to be used for
+  the serial console, but not specifying any parameters.
+- The kernel boots, and starts outputting messages at 115200 baud.
+- Userspace starts running, opens /dev/console, and switches the port
+  to 9600 baud. Now you have utter garbage being received from the
+  serial console.
+
+So, the serial console is special in that regard.
+
+Now, when we configure the serial console, we attempt to:
+
+1) parse the options provided on the console= line to set the serial
+port appropriately, or
+2) if there are no options, then we attempt to set the serial port to
+something sane *for use as a serial console*, which uses ASCII protocol
+not some random binary protocol. 5 and 6 bits make no sense here.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
