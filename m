@@ -2,235 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AA27DC67D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172B87DC680
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbjJaGZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 02:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
+        id S235874AbjJaGZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 02:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjJaGY6 (ORCPT
+        with ESMTP id S229517AbjJaGZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 02:24:58 -0400
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2085.outbound.protection.outlook.com [40.107.249.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E049C9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 23:24:49 -0700 (PDT)
+        Tue, 31 Oct 2023 02:25:11 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2067.outbound.protection.outlook.com [40.107.215.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CF6A9;
+        Mon, 30 Oct 2023 23:25:08 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JC8unrdhKOK5N+r9Vj+QSwYlpSqfdWdbw0s0nIkpiDsPedplaMNuwDNuxhdfL0Iy0cXVWzNtkXIJcY/F7YAyBsQYwLsGlWkNf/OceDZqhtN7s6Gx++TCXMpzV2AFjt3v98w2dzRWKe1cIF0CuKkFMT41+qxhuyhv0N2sQbALKjFA+3Nrv3NXNAEflyQf22381Md7ZTp6vYhoXsrCE8/hwv1McHPaB9qZNbyK3EoTJMnQCRTFSBaoYVXejPWAndPRb6nUpDx01fxWCFlyPmk12HP9k+hny56nhUaYza9ozwFoqmEIL0PChMIJhVCIgoR96wqVldT10BaYPgJ2prWflQ==
+ b=JSLoJSq78I3od6FDlFIFQ8zJ95iyrpfHVk7TV8eVC9fHwehQCafes8Emunz6ZlU53x9fujxNYSLge1r3a1XCS8Yk4/Lzk60QajrZJ5veABboNV2Tkgd506TOM3FwuNma+nY3uBvQp2T/+xNEemFzj8pbe+PC7zMi9CtwECNZ4P8SYMkRXPPAItwf5kIILkaliyWqcqmXNdXd52kkTus7TcyHd1HQPq8fS4Hvci26Hcze1Sc4Mvg4kCvWhbrPo3oY6Qxq//H/x3S9tyI/euUBAlshZv4L9PWlvHw+Pn0bDtf3Gc+0PHuYU7VAkRXhuPnzq1B33UYLh7xUMfjbgoprHA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c6F8ijHYiGNZYxAT2UYv51+fY3lh/6NOIcgZ3rBJfSM=;
- b=SLYPQ1xYOvAgqHFtrsN0G/1Yu1LJFJopdt7M9LmF7U4N/1+XtgT6gF6oiubmhPzkGwY7cfrWOWzQu52atBc7r2dC1xJO5zhPkI6O8YYBVAsSduv4LjVmkq8yTmX/WRauJn//kXK+7eoM+r7KyFHzaG5kJ/V3X/p6JZtMefttrD9C9948FzLOtYOEDxG6Z68t6SdyPhDBsOpqosHaylpYGjVev0q1ZwgCBpuTgIqfI4cCjGog6vnipFuw3qeQFIF7nvBBJL7PB5MnvrLuJwPlHFwqKDDpc4zeeYgVEAmxbC6SYe8t2oTbh1BFwN9khgTixVg/NPbVydmXGW2lRfFhDg==
+ bh=WfkGenU4bKBA7QEfM322remw1xtka+VMUCmeplwPt+k=;
+ b=E1If1GHYzCZ8SZNvlcdU2OANnvVxeUZLbEA3WyXK3ek3zLqxC7Vyxqm5T1i6cIgxU9BP3WVKqc06lF+RDBG7sqq3rM4nUUxcrU2WxoKk/UqzjYsQUlYhQb0gKrd2bBZR2snR9mO/UmWwa7hypDPowLWQqSjsI+RXA5tifnlRoU11/QV9FqWSt8pQRvJuiW9tspSFMqj33tEW8NBWN6vBWSBEGc5SmymTl+n0MMG2GwXbN6c1tj91wPVlKEhyers7eoPGX52YNHTN9q/4U03UfCGozsmzNPYRg5YAt4QDkkKDmvF0b2WlcsF4h+Vjz4COxGQXP6dampp81Fq5Yeiu5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ smtp.mailfrom=wiwynn.com; dmarc=pass action=none header.from=wiwynn.com;
+ dkim=pass header.d=wiwynn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c6F8ijHYiGNZYxAT2UYv51+fY3lh/6NOIcgZ3rBJfSM=;
- b=z3t/6EPn7A/eDSW6Wsb/EupOoe++vj8uFKmfGsrGbpKM2GGVHFotS52xCBl51O+wqtyipX/J6DSuyMaHcctYQ524a2Tl2wGgURfiR1jzpUa7U8eGb5E0ieoNV4tYMkMtx531DZN+eyHaGJTj0GkFdV3AwOzOtwij9wbpKd4DzcOP2nKDYFo+8kMozSsqdwB5XRxKgWf1UyGryV6Y2gnkSD5Mv5M5zQHA24ngFCEqkq9m9XfTLPoi1BrhpxQUelOE1Q/2nXf8SGpP05BNEuSU1vw5ribCsPvcU/9BuWi6WP2ukADsfIMCypMxfwUF9MktcvjSPNZJYX32QTVDbPFEfw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
- by GV1PR10MB5937.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:59::13) with
+ bh=WfkGenU4bKBA7QEfM322remw1xtka+VMUCmeplwPt+k=;
+ b=psM4sJ2cvDYDdE4zdx/nKUNqi4kjaLO+DTnq/fknMREwKFcPGV3FUFGfAq+ME5u7LL5sEpFm1tMfxDPRaOLtTzj7hCmp/bVy6Qg0VXxGNCT1sE2U0c4hPJ5UMGiV1xzhMmPWS4zNdLF4DTLZ0MirAcKGLzJCqaSbDESe5qWldXrT1Qr2V5OHKNkHMfP+x7dyCMBCLpEkbV2MeoGxrSQkO0nFdHr8Oqqnb6vq6fH6/S3XY9rEckw0hJQuoBcS4O+bnQCpAQvzcQcF/aYCbNYuCvMPwo07i+lXZ5doAHMtVL6u2BykRm+yiDID0KKm8KF9C5euhCQYvX2kOoTCYxhA/g==
+Received: from SG2PR04MB5543.apcprd04.prod.outlook.com (2603:1096:4:172::14)
+ by PSAPR04MB4151.apcprd04.prod.outlook.com (2603:1096:301:3b::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
- 2023 06:24:46 +0000
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::8496:a3a3:d7a8:b24d]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::8496:a3a3:d7a8:b24d%4]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
- 06:24:45 +0000
-Message-ID: <fc113f51-35e9-49ff-8299-e7fc11b81c31@siemens.com>
-Date:   Tue, 31 Oct 2023 07:24:41 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/bridge: tc358767: Support input format negotiation
- hook
-Content-Language: en-US
-To:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     DRI Development List <dri-devel@lists.freedesktop.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>
-References: <20231030192846.27934-1-a-bhatia1@ti.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-In-Reply-To: <20231030192846.27934-1-a-bhatia1@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0164.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ba::11) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:588::19)
+ 2023 06:25:02 +0000
+Received: from SG2PR04MB5543.apcprd04.prod.outlook.com
+ ([fe80::4c7a:8fd8:1527:9287]) by SG2PR04MB5543.apcprd04.prod.outlook.com
+ ([fe80::4c7a:8fd8:1527:9287%4]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
+ 06:25:01 +0000
+From:   Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
+To:     Guenter Roeck <linux@roeck-us.net>, Conor Dooley <conor@kernel.org>
+CC:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+Thread-Topic: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+Thread-Index: AQHaB+SV8Z0lWuQfqk2pb+fPvv8kdLBcIN+AgAAMSACAAASRgIAAFwGAgAcsfFA=
+Date:   Tue, 31 Oct 2023 06:25:00 +0000
+Message-ID: <SG2PR04MB55438AA9A2989F406012A4D4A1A0A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+References: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026081514.3610343-2-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026-dicing-crispy-a10af575d3e5@spud>
+ <fffa4330-8d01-8498-4c5f-772ebf2a6b5a@roeck-us.net>
+ <20231026-poison-encrypt-1df55e023867@spud>
+ <c734e26a-6fad-bc23-ec58-10c6a440ec83@roeck-us.net>
+In-Reply-To: <c734e26a-6fad-bc23-ec58-10c6a440ec83@roeck-us.net>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wiwynn.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SG2PR04MB5543:EE_|PSAPR04MB4151:EE_
+x-ms-office365-filtering-correlation-id: 5b47aab6-477b-429f-a337-08dbd9da1c6b
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yJmnwXYMXpMkOsmnixPQ4QzuE4PdH4CR+bQXYRWWqWmAZItbwmSRv5OF0Al1bvv0IvLfIyfOKMfRe25ewW0L7AHH4iSMnquIPeXI7vUQNb/whFl9qUbO9PsUIVG/cuqoOSYROOB54xfQKn9OJFo5EI+YA8GCFrT9j8hxK/xzbKWxP3/dhfqhMBBd8AbqbJGyhkV6R6mFusNiUECITPOy8D2e/oheyfewi6J/4dJQnYq8LuwQ8MzhH/+4EoauWkDndR8+zA8a4f8/4e1bjcv57VQ1S6rB1xpaUaap/guGRtqEsbTpaqWFFODsnodEaWLW+RZNoELHwxqA63iAloZw31rOGhQEOyYI4ubi5HIBz8dT7yRIwz+fDYCQg7PfCdEj456zsCGUV0F3ejbcggek0qCc4YlhTmnBD48wCsRqLnZrGEng9d811StX66tp20xfHIxP7gE9YJwj8WK/voMBg2ihDjEbzztAU+0lb+SGchHJEDvDb7V4KLB0bW1Z9bFBPeWFAlkTJG+44HGgaI+Y9t4aG42B6kGYm/3VvO41VyLNcoegjLJnL3XOg79i86lnN7zgYgZ6x5LV67LVRm1l6s7p8CoyRYPw9HWfXTY9Cc73f0MkjFNaerUilw17g8vBA0INoDP5CRflXZD0Q1h92XeXZYJNsDgk+9E3Aw5x4vM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR04MB5543.apcprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39850400004)(366004)(136003)(230173577357003)(230273577357003)(186009)(64100799003)(1800799009)(451199024)(38070700009)(9686003)(26005)(55016003)(38100700002)(86362001)(33656002)(122000001)(7416002)(2906002)(83380400001)(6506007)(7696005)(45080400002)(53546011)(478600001)(71200400001)(52536014)(8936002)(64756008)(66446008)(8676002)(66476007)(966005)(4326008)(316002)(54906003)(41300700001)(110136005)(66556008)(5660300002)(66946007)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?prASRZmy8W06DSjO2NUrHYUw8MKEb9RiOS3q1Qhtd/vArfFabaAZoOKdFgV7?=
+ =?us-ascii?Q?+++1frx7Jn3Qw3IwSzt0Vd9Q6VB4a970uQf1IGrxZUj5qt6okbqS2enbsHfr?=
+ =?us-ascii?Q?m+YzvAPXhKhs5Ia0rMcmuev9JCfn/3rXXtgmjY8V1COFskjn15E+mYgvbYch?=
+ =?us-ascii?Q?Vbolv0x6fsyAe+oD1zXQsOjisZd4nzITgyiPRcv7KBxv9+KdA3G8rH7Tq/Q4?=
+ =?us-ascii?Q?atPztpuupKhCQ5PI1z+83h9b6jPAxTj8kuVEOi2OZBn5+FwL9lI5vljCcMlG?=
+ =?us-ascii?Q?5R0YLIU6sqDkGCZpYjd9bi0SdozrZ9etNkEMfxkGaTfbSgIs6wEI/0etCPYT?=
+ =?us-ascii?Q?C2zJY+OMNkoRZxYT9VSHrOVvAHT5NK8+IjUo2k17b4Zqx/KWLX6Iqk+Ttqm2?=
+ =?us-ascii?Q?wTtajUD5wC+0qs9pCLPTRrn4JEeJuon3LKkQZQOtwfkE5AiH9cc5XNmu80ca?=
+ =?us-ascii?Q?3lu7NFxSFFmJmM98Lv27d7p8xh5Iresx1ftP7OILB9Orypmwkwbq9rnmdfMV?=
+ =?us-ascii?Q?+GB9Rp8HzYW6e+g3pEcWci9DAIcmTX18TlmGyNV7wYj+MWAAnPlQDE1tnNK8?=
+ =?us-ascii?Q?MCHXUBCvCJJ+nhk59Qg8fG1eZBs2mGbFgRMTooqKKlm3/7ArkgwKVU3nm4Y4?=
+ =?us-ascii?Q?XQkGRQIr+JwVWrUMegTu75JhJ/HhxtX+fqS8pPmEHn262DbLazHo5dd99/0D?=
+ =?us-ascii?Q?uZkd5N60/NuZKO2AnIQeA1q7Pq57G1Jfz+NqbEkCby/ckoSksCcRZrYzVnZx?=
+ =?us-ascii?Q?pFWlPsNo8yz3xC1npo0IvbOhooGHwwbeK5j3cT5KLFovP2GrN7+cD3WLxoUg?=
+ =?us-ascii?Q?iHfRvi73Ohq+kH1qVKLEWF92MNRGL8ykg/I2tfCPfHb4eR4l7zGas+KATeRv?=
+ =?us-ascii?Q?ejw2rege1HbbtdHQFJpkZE8yfg0h/67zWcKVJ06R8uO2yEJgteajIT43On4v?=
+ =?us-ascii?Q?JwB4HsO5JKPOxKJe19C1EwVI051iW3izuSXeNUU97Aae8yYgsaQ2l1mMFpBo?=
+ =?us-ascii?Q?YlPm8CgeVzGT23N5MweFi08HY0O9hEZPMLS8gvQAXwhz+rF6qk39YMdaWL5R?=
+ =?us-ascii?Q?YE0uhmJzudQh4YvUJiJKxinKairEpn8j/H3UUXReRGX1FGgzkaIj8oGtfeo1?=
+ =?us-ascii?Q?i923lfl/kAXJk2wSQq0O2hKkb0BhbwBmTrCT15FRWYO78F/uCGXVWNz4ZVZe?=
+ =?us-ascii?Q?8dHe+LLIjUpvTp3okf/oU+gV/ruSILimIBycKsWAoilnrI6aWHmKvgH7mT8p?=
+ =?us-ascii?Q?FK2GEmHa3N53v0Ns6FuSHOIqpkdRo3pqp3YHC6pLlwFK4TJwYqlHXgqfGQte?=
+ =?us-ascii?Q?zvM/gFJTUAWWtm9NrLOVMqSwOEUHCGwahzq8u68738PmeFE/engzZ6wWBQqL?=
+ =?us-ascii?Q?6cQ7dltjTg/MtCTNErUM5AiUNS0pOfWR2o9NRY5TKDK6y0UelKRT9USkrZmf?=
+ =?us-ascii?Q?J6KYSdeU4LTQn9dxdaq5ZNf0/UaPxAxzAKj9miGKLDjE7z3N/2rMbVdtUnG7?=
+ =?us-ascii?Q?s4x4pO8OSInpiLfkDJzHwaaDPtoQXw4+yuloRKrbu7vmO74w+WEx108AVbJ+?=
+ =?us-ascii?Q?NEOaRyEriWJfpqLYRkJ1ayN4tyEKM2phdhWF0BL+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|GV1PR10MB5937:EE_
-X-MS-Office365-Filtering-Correlation-Id: 83a71d4d-e6c4-47c4-43d5-08dbd9da1316
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: woR3d5MXGFtwPhUaLFGrB6qmiI37iVRmqCKBqu8rXvazd3FNnq9VuJhiqWi26riaFaQkDHyKl5rKr37AlKYb1sF5thH0EX4DgdrkHe8hD+02c4hy3L9mwqrOadrXkzzP5FrXRu8vEcS8OXKc1yzF5oOy9PF4hdlkGhPugDLUJSVcANo4r3T6v9LOX+OikMX+0dRTYFKcutKuKS8plw6OnMjZ3SYDPA7ALePwc7qtXM1QgTsabitHc6lIXUkA4PtApfNy+E8e8WXR4iROaJtswZX5MpixSBKiUe+JjpUcEhqZeQ2FlwYcXS/PV8Ki3L/jDLlB8MV+xQoaH3gTFyz2bOkMz282NF1G/WZKzfXRHXSZL9ktOFcdU/iC9B/jguTxBDZv59b0t1F0z2aeuC171PMU4YO/jumg8nhxobgsW/DHOW/PHZbrf/MFuuhGjRkGlP/MGlZUVP7kgex1GXxO+gOWbq23M8o9J+Mf1qvQJi9c7if17ftH3b1OXTHXhlG1W9EK6KHxqSjglCvyHetb79DFgZAN46PwtOU/lWb080FPmJEUzRO2FTRSUeZIkusyLt1icmlHu9llf153OJefM/2/fWr48u76nvv2J3TORiWShercof3WjkGSdrp1oeGGptWV7FYlY+aZG5S0CcaEY3wzYtrs9oVnl/wbEsPId/0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(396003)(346002)(376002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(2616005)(26005)(53546011)(6506007)(6512007)(38100700002)(31696002)(86362001)(36756003)(82960400001)(921008)(83380400001)(8676002)(4326008)(2906002)(8936002)(31686004)(44832011)(7416002)(5660300002)(316002)(110136005)(66476007)(54906003)(66946007)(66556008)(6666004)(478600001)(41300700001)(6486002)(966005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TWQxaGxUaDZPU1lBVXo1RHFTc1llWmhsL1lKRkV2QmJ6WTJ3RXVQZXlmVlc4?=
- =?utf-8?B?OHhTVXcvSGJOdzNkWHR2ODR2elhXTjlOMGh1d3JLWUYxcGh2SUU1VllWV3lP?=
- =?utf-8?B?VXRiRkRyN0ZsaHlJZlVUbThoM0JZUEc3NFFZNGYrYnlBZ2dTUTJFMXRxLzk0?=
- =?utf-8?B?Ni96NUVQNVZvS0VZUjZMQnM5LzBDbU5KOUhVZWhrNGlDUytjY2ZDbDFkV2Q4?=
- =?utf-8?B?QXR1bkoyWDUvMEdhNVo2emJIeXltNUFtRHg2NlpicWNoY2NHazdqYmxGWU96?=
- =?utf-8?B?QXVxV1UwTy9DUkh4Y1NpU1hPNm1YRldaa1VZSXd6Tm5BZFRLdmU4a0tXZklF?=
- =?utf-8?B?UEQ1WTEyUmVRWUpaUG90eTI0ZDRNKzNnYzNjSjRMd09sK0ppUm1uckEwVEt4?=
- =?utf-8?B?cVBITU9RTkdvSGo2aVZXSlQ5OHJPK3E4WkNOTXh4N1cxRVZYSzA3b0Urc1Fy?=
- =?utf-8?B?bTR1eFB3Ri9VWkNrM1dnQjN6VStjeHhaeHlRM3pvREs4ZTl3MkFHVjAxbHVM?=
- =?utf-8?B?dG1JZVRxQ2hNNllmRTg2R09OZU1pcmYzcTYxd2pWdXdmT0p4ZTlBK1Z1TlVw?=
- =?utf-8?B?SFcwVFBzWVAybmVzZS8yTFBzL3o3dkI2WlpkZkgzSFB3bThjMVhHMEJnU1lm?=
- =?utf-8?B?U2JucEhsYWpwYjJiWVVxTGx4ekpMVWxEM1RRQzNoK005dDdPVWg3L0h4akc5?=
- =?utf-8?B?OUhITFJSNXM0NlIzQldyaXd4NFRVMnZoMEZPbWRMZnN2VFdvbFBQTlpnT1lh?=
- =?utf-8?B?LytYM3QvSVNQVE54VVkyU0t0dzZEN1ZpcEhZd3h4bk5UOHdKSk1BYTYwbldF?=
- =?utf-8?B?SjM3Q0N2YmxyT01zR3B5M2JxdUQ1OE1yREdObFBYZjJleGk0WW5JOW1Mczhk?=
- =?utf-8?B?K0MwQW1OdTVya085WE5KdUlmWXUxbmx4VTd1VmtwSk1HcnM0Z2tQaHhOMGhq?=
- =?utf-8?B?TFRkQVBIT1ZhTXptQnBnVWpQOFBUbU9EZ0EwdnQxZjN6eWd6WFlqOFhJR0F3?=
- =?utf-8?B?Z2lWQ0dvMUdxS0NNUWdJS3BGSXU2eHcxeGxSRi9CZStNakZqUEhSaEFDK3lj?=
- =?utf-8?B?YWZiWGduOTlVdlUwemJFN1Y3eHJ5bUpCU3V6OHFEZmI3SHM0SDV6YXU3ZDd2?=
- =?utf-8?B?eDR2M1NxS2V0UldJN0ZqME5OaHlCUWYwWlBEMWJ3dldoSkVIUmxpME5HOHRI?=
- =?utf-8?B?OUUrQXltUm1nc2Nua3BobUtmUDRYWEFWdDNyRG5kMkYyQ0RlbThrUXBBT05V?=
- =?utf-8?B?K2l1WDU2cWZEMDlJSnpzQzhVdlB0cnVGWUJSeHdRdUNOM2FmSHFLcGtPS3p4?=
- =?utf-8?B?T0VjN3ZNYUFFNW52d2NzY0R6elNPWmFmM2FpYXQ0UTNqRS90RUFmTTJKeGZV?=
- =?utf-8?B?QTAzQ2pwYWNlVzQzMGEwMG1HUHBGbEdDV0N5M2xZRlZ2N3JZVkVIanp3U1gy?=
- =?utf-8?B?UERvMlA4UGRUZGszcHhoUXZDd2ZhTERQRll0RkZCYU55bFhsa3NjeENCWk1l?=
- =?utf-8?B?NUNpdnRSS2ZsWjIwM21jbzhqeHNCRERtcDdqVE1wdm4xMU95NXhKc3Y1MStM?=
- =?utf-8?B?dDBSVmU2YkpZTFZoN1lOeEVES2ZZdk5ibmU4eUhNWGZVS3RCQmxZSStiNVhl?=
- =?utf-8?B?YlZDNGJSMlRwZWVCU0N5WXN5SURoQU5md3RVRlFsbnFRTkhhaTNnVnhSaGMz?=
- =?utf-8?B?TjRnVHJsNU0vZkh5WHRWUk4xNFdkUTFCUE1OemZqM015L1lxcTJ6eUExTFBB?=
- =?utf-8?B?SHcwaHF4Z2dkdXM5Z0EyaFVoc2xDR2FWY24wSkxBRmg3TXJESFJLQjhlQ055?=
- =?utf-8?B?ek9JKzluSUo0cmwvNmZxNmFmWmZObCtPaEFrSHdPVmp2eEw5TkpmTjRCMGNI?=
- =?utf-8?B?cS91R2dnZHM1MjZrSGJWOUhHTnlGblVhL1Qrbll5Y09Wamo4MWV6TE1EMXd5?=
- =?utf-8?B?SjN0R0UvNkJjcTRqT3hReEM3UDFTT2dxcUlSM25PczVKWlpHakplT3g1Z3Yx?=
- =?utf-8?B?YjV4NDJBR3NFSWVYeGcreVhtN2szcmNYTFRDY2FUSTByMmhPYjFmYTJPTE9v?=
- =?utf-8?B?OXRaK3cvajdrRkh6eElybHJ6WExvUUhhNm5ZUGJleXhBMFlycFRUcXM2aG9h?=
- =?utf-8?B?ZnUzbE9BM1NvSGNtTm9ha3dUYkhhckpKNzVRR2hzQTVKTzRCUXhIZDF2TDNw?=
- =?utf-8?B?U2c9PQ==?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83a71d4d-e6c4-47c4-43d5-08dbd9da1316
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+X-OriginatorOrg: wiwynn.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 06:24:45.0961
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR04MB5543.apcprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b47aab6-477b-429f-a337-08dbd9da1c6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2023 06:25:00.5850
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EduTjyWHcPSQgQi6ljzRxqgo+1iR264k9TuGe4ovFDm68+VFC1yvrfkyd+S1NtiyPAIOmyfApxVrx7bbgC3yRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR10MB5937
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xVt7SBrw5r+mX3MfKVbgq60XuyM40yUAn0lT1CW9SCY2Mg5oeGFi/hpRxabwAPz+vGCqB8CNQZjEabbek4vFeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR04MB4151
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.10.23 20:28, Aradhya Bhatia wrote:
-> With new connector model, tc358767 will not create the connector, when
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR is set and display-controller driver will
-> rely on format negotiation to setup the encoder format.
-> 
-> Add the missing input-format negotiation hook in the
-> drm_bridge_funcs to complete DRM_BRIDGE_ATTACH_NO_CONNECTOR support.
-> 
-> Input format is selected to MEDIA_BUS_FMT_RGB888_1X24 as default, as is
-> the case with older model.
-> 
-> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
-> ---
-> 
-> Notes:
-> 
->   * Since I do not have hardware with me, this was just build tested. I would
->     appreciate it if someone could test and review it, especically somebody, who
->     uses the bridge for DPI/DSI to eDP format conversion.
-> 
->   * The Toshiba TC358767 bridge is not enabled in arm64 defconfig by default,
->     when it should be. Hence, I sent a quick patch[0] earlier.
-> 
-> [0]: https://lore.kernel.org/all/20231030152834.18450-1-a-bhatia1@ti.com/
-> 
->  drivers/gpu/drm/bridge/tc358767.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
-> index ef2e373606ba..0affcefdeb1c 100644
-> --- a/drivers/gpu/drm/bridge/tc358767.c
-> +++ b/drivers/gpu/drm/bridge/tc358767.c
-> @@ -1751,6 +1751,30 @@ tc_dpi_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->  	return input_fmts;
->  }
->  
-> +static u32 *
-> +tc_edp_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
-> +				 struct drm_bridge_state *bridge_state,
-> +				 struct drm_crtc_state *crtc_state,
-> +				 struct drm_connector_state *conn_state,
-> +				 u32 output_fmt,
-> +				 unsigned int *num_input_fmts)
-> +{
-> +	u32 *input_fmts;
-> +
-> +	*num_input_fmts = 0;
-> +
-> +	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
-> +			     GFP_KERNEL);
-> +	if (!input_fmts)
-> +		return NULL;
-> +
-> +	/* This is the DSI/DPI-end bus format */
-> +	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
-> +	*num_input_fmts = 1;
-> +
-> +	return input_fmts;
-> +}
-> +
->  static const struct drm_bridge_funcs tc_dpi_bridge_funcs = {
->  	.attach = tc_dpi_bridge_attach,
->  	.mode_valid = tc_dpi_mode_valid,
-> @@ -1777,6 +1801,7 @@ static const struct drm_bridge_funcs tc_edp_bridge_funcs = {
->  	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
->  	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
->  	.atomic_reset = drm_atomic_helper_bridge_reset,
-> +	.atomic_get_input_bus_fmts = tc_edp_atomic_get_input_bus_fmts,
->  };
->  
->  static bool tc_readable_reg(struct device *dev, unsigned int reg)
-> 
-> base-commit: c503e3eec382ac708ee7adf874add37b77c5d312
+> -----Original Message-----
+> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
+> Sent: Friday, October 27, 2023 12:49 AM
+> To: Conor Dooley <conor@kernel.org>
+> Cc: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>;
+> patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Rob Herring
+> <robh+dt@kernel.org>; Krzysztof Kozlowski
+> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+> Jonathan Corbet <corbet@lwn.net>; linux-i2c@vger.kernel.org;
+> linux-hwmon@vger.kernel.org; devicetree@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-doc@vger.kernel.org
+> Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+> bindings
+>=20
+>   Security Reminder: Please be aware that this email is sent by an extern=
+al
+> sender.
+>=20
+> On 10/26/23 08:26, Conor Dooley wrote:
+> > On Thu, Oct 26, 2023 at 08:09:52AM -0700, Guenter Roeck wrote:
+> >> On 10/26/23 07:25, Conor Dooley wrote:
+> >>> Hey,
+> >>>
+> >>> On Thu, Oct 26, 2023 at 04:15:11PM +0800, Delphine CC Chiu wrote:
+> >>>> Add a device tree bindings for ltc4286 driver.
+> >>>
+> >>> Bindings are for devices, not for drivers.
+> >>>
+> >>>>
+> >>>> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> >>>>
+> >>>> Changelog:
+> >>>>     v2 - Revise vrange_select_25p6 to adi,vrange-select-25p6
+> >>>>        - Add type for adi,vrange-select-25p6
+> >>>>        - Revise rsense-micro-ohms to shunt-resistor-micro-ohms
+> >>>> ---
+> >>>>    .../bindings/hwmon/lltc,ltc4286.yaml          | 50
+> +++++++++++++++++++
+> >>>>    MAINTAINERS                                   | 10 ++++
+> >>>>    2 files changed, 60 insertions(+)
+> >>>>    create mode 100644
+> >>>> Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> >>>>
+> >>>> diff --git
+> >>>> a/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> >>>> b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> >>>> new file mode 100644
+> >>>> index 000000000000..17022de657bb
+> >>>> --- /dev/null
+> >>>> +++ b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> >>>> @@ -0,0 +1,50 @@
+> >>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML
+> >>>> +1.2
+> >>>> +---
+> >>>> +$id:
+> >>>> +https://apc01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2F=
+d
+> >>>>
+> +evicetree.org%2Fschemas%2Fhwmon%2Flltc%2Cltc4286.yaml%23&data=3D05%
+> 7
+> >>>>
+> +C01%7CWayne_SC_Liu%40wiwynn.com%7Cf555db9618454d17e0b508dbd64
+> 36721
+> >>>>
+> +%7Cda6e0628fc834caf9dd273061cbab167%7C0%7C0%7C6383393572109674
+> 95%7
+> >>>>
+> +CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJB
+> TiI
+> >>>>
+> +6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DcPOOqJ5y3K%2B
+> D%2Frsp
+> >>>> +gVhpKDIC0gC5nKBbRp7Up0OxDpM%3D&reserved=3D0
+> >>>> +$schema:
+> >>>> +https://apc01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2F=
+d
+> >>>>
+> +evicetree.org%2Fmeta-schemas%2Fcore.yaml%23&data=3D05%7C01%7CWayne
+> _S
+> >>>>
+> +C_Liu%40wiwynn.com%7Cf555db9618454d17e0b508dbd6436721%7Cda6e06
+> 28fc
+> >>>>
+> +834caf9dd273061cbab167%7C0%7C0%7C638339357210967495%7CUnknown
+> %7CTW
+> >>>>
+> +FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> >>>>
+> +VCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DHjOhDm8bwPaNpWgumCSlak%2
+> FiqoagwZc
+> >>>> +0eb95J1wnKUE%3D&reserved=3D0
+> >>>> +
+> >>>> +title: LTC4286 power monitors
+> >>>> +
+> >>>> +maintainers:
+> >>>> +  - Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> >>>> +
+> >>>> +properties:
+> >>>> +  compatible:
+> >>>> +    enum:
+> >>>> +      - lltc,ltc4286
+> >>>> +      - lltc,ltc4287
+> >>>
+> >>> I don't recall seeing an answer to Guenter about this ltc4287 device:
+> >>> https://apc01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fl=
+o
+> >>>
+> re.kernel.org%2Fall%2F22f6364c-611c-ffb6-451c-9ddc20418d0a%40roeck-u
+> >>>
+> s.net%2F&data=3D05%7C01%7CWayne_SC_Liu%40wiwynn.com%7Cf555db96184
+> 54d17
+> >>>
+> e0b508dbd6436721%7Cda6e0628fc834caf9dd273061cbab167%7C0%7C0%7C6
+> 38339
+> >>>
+> 357210967495%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQI
+> joiV2l
+> >>>
+> uMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DoekIX
+> %2FlP
+> >>> %2B%2F4KhrSlK8Xp1zR0fdX1Emmr0Ox5GPS9Dz0%3D&reserved=3D0
+> >>>
+> >>
+> >> At least the chip does officially exist now, and a datasheet is availa=
+ble.
+> >>
+> >> https://apc01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fww=
+w
+> >> .analog.com%2Fen%2Fproducts%2Fltc4287.html&data=3D05%7C01%7CWayne
+> _SC_Li
+> >>
+> u%40wiwynn.com%7Cf555db9618454d17e0b508dbd6436721%7Cda6e0628fc8
+> 34caf9
+> >>
+> dd273061cbab167%7C0%7C0%7C638339357210967495%7CUnknown%7CTWF
+> pbGZsb3d8
+> >>
+> eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
+> %7C
+> >>
+> 3000%7C%7C%7C&sdata=3DFqRheGXFi%2FmSH3cnRZ7eSbwD3JfZj8powcGBCJcP
+> wWQ%3D&
+> >> reserved=3D0
+> >>
+> >> It shows that coefficients for the telemetry commands are different,
+> >> meaning that indeed both chips need to be explicitly referenced in
+> >> the properties description (and handled in the driver, which proves
+> >> my point of needing a datasheet before accepting such a driver).
+> >
+> > Oh neat, would've been good if that'd been mentioned!
+> >
+>=20
+> Actually, turns out there is some contradiction in the LTC4286 datasheet.
+> It mentions different coefficients in different places. It is all but imp=
+ossible to
+> determine if the datasheet is wrong or if the chip uses a variety of coef=
+ficients
+> unless one has a real chip available. Sigh :-(.
+We are not the chip vendor, but we could forward your question to vendor.
+Could you point out the exact places (which pages) where are the contradict=
+ion in LTC4286 datasheet?
 
-Doesn't help, callback is never invoked. There must be more missing.
+>=20
+> >>>> +
+> >>>> +  reg:
+> >>>> +    maxItems: 1
+> >>>> +
+> >>>> +  adi,vrange-select-25p6:
+> >>>> +    description:
+> >>>> +      This property is a bool parameter to represent the
+> >>>> +      voltage range is 25.6 or not for this chip.
+> >>>
+> >>> 25.6 what? Volts? microvolts?
+> >>> What about Guenter's suggestion to name this so that it better
+> >>> matches the other, similar properties?
+> >>>
+> >>
+> >> I still would prefer one of the more common properties.
+> >> I still prefer adi,vrange-high-enable.
+> >
+> > I think, from reading the previous version, that this is actually the
+> > lower voltage range, as there is a 102.x $unit range too that is the
+> > default in the hardware. Obviously, the use of the property could be
+> > inverted to match that naming however.
+> >
+>=20
+> It needs to be programmed either way because it is unknown how the chip h=
+as
+> been programmed before. That means some action is needed no matter if the
+> property is provided or not.
+>=20
+> Sure, we could add something like adi,vrange-low-enable. Not sure if that
+> would be any better.
+>=20
+> Actually, after looking at the datasheets, I'd be more interested in the =
+impact
+> of other configuration buts such as VPWR_SELECT which selects the voltage
+> used for power calculations, or all the settings in MFR_ADC_CONFIG. The
+> datasheet doesn't really explain (or I can't figure out how it does) how =
+the
+> different configurations affect the reported telemetry values. But that i=
+s a
+> question for the driver, not for the property description.
+We have sent an e-mail about this question.
 
-Regarding test setup: Maybe your colleague Preneeth can help to give you
-access, he just received some devices from us. Otherwise, drop me
-instrumentation patches.
-
-Jan
-
--- 
-Siemens AG, Technology
-Linux Expert Center
+>=20
+> Guenter
 
