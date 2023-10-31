@@ -2,232 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2500E7DC730
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D45F7DC731
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343630AbjJaHYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S1343639AbjJaHYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343598AbjJaHYP (ORCPT
+        with ESMTP id S1343598AbjJaHYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:24:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DA78F;
-        Tue, 31 Oct 2023 00:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698737052; x=1730273052;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=NA4Z+HXyxVnSMiUeJ0z1kK2c8T0Wx5IYIBWB2a8Q0RM=;
-  b=lolZT6q2PoG83E/B9FwSmMsmNf/lImT636iKdvMbLUHKyCpn7P/SdFcR
-   uFTYD/PSlLErcnM/vbQ5OfPcLiNOA4QZkpBgk3567w5VLVb+3qEjxfgfo
-   5Se8h5YVBpQA/CRxNIduzoMhitsAKBqENGvCb8Fx2KYzjzcc/XvDDwIc9
-   ds6PPlxxL/V/lPWW2263UVSaw0enapm4Hnqfz0doZCnNTCsc7dvlqyZQp
-   oh596GAccHWP8bcRIYGA/tXeEDtbBWvaOKF6ZFxbKgKUQJrrs9zFvS3Bf
-   LzgQES91MizwtSbF9U8R0J1dYmKqZumhMZfIDbEPTDM/eTbAmqSAPuyMo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="387112497"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="387112497"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 00:24:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="764154367"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="764154367"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 00:24:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 00:24:12 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 00:24:12 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 31 Oct 2023 00:24:11 -0700
+        Tue, 31 Oct 2023 03:24:35 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2065.outbound.protection.outlook.com [40.107.95.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD5B8F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 00:24:31 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ChyJtqXLRSEn2jtfIl/PczgwBvon0xhSyo/KYRb3J74av+bIYaRAR20xRZEXp/wynnaSjl6XCMppiaHGMor35CjhtE1vjlJWCBOgFondChiG7eqCheg8aF/yeE9FEkqoGupCqfs5ViazGUSehkvQ+p+xmu7ZXtX9RT/3AEKu3++3sZVcGgLCq4vIcZYMQ2LQyfUvxNW7qVPyxA1igJmvm6j1P2fqVerNSv3mhLIlD098MjIwsSIs94+QG9hDfj2oKQs5cUvr//mDBwZMaCdKUvbeJ4bAKdh7Ooa8YZQ/qrBShmKMIREDetf7SJobheyU+KJryGGU2qMZctubW3lSLQ==
+ b=WZCwanBakF01aWLsS+26TM1NERYLEa4tSmbd+pt4XVugMNIZLJWAoEn3U20BDBe1vnlcSs0OyU4rhk4TXRXu2d5OPPPh5SXISfi14b9hHu9KJhNNXLWm0YgCFr+AN/uXiY3xgCELprunJCwCpcJ9C01adKyhSp1E3AjrRrZLULN6yrnZvrwZRHCToncOr4Z5uj7BodRNuKfolAT+5q9KDWv6AISmbHeIQF/Dqb7oMWZClrjBr9Tqb+6csohAEB5PtTitg17wJ6slUkwGrCkpipnoTJjQrQalrA5VJKKlAW/FMSXwd+Wd4YqgIefFQ7GWAErSASd837hk5N2cs/QjoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FLOCo3AaBBvpgAuku8reYzQGtBPiDUNPHjqwoi0PF+M=;
- b=Tfbv3xjmQfvff4qG5SLOClcKNmMoDeQq6h2lZ1NpY6fHxXNzspTN2fD9h3IRXo9B/MnXW6ajI+pzWdc593PkLCTmDs9Ks5a8mPK7Ab2vUUIMU0S53zzWJD4GhhFtjmZUCY0cKFo+FeW/WQbhMslGvUi6JG/0sArKbN9S4q10uJZUrzE2h47VVrklHF/JU8k7PnL6vi5LNd9Fa/l3A5jL34hIpVH+KP4K1PcwTelcVZKJb0QvfMEIzfwIvs7xIkp2o/dBltSw7+dRn1881aNIowm92X6Mh196u0495vaSTIxDufcFnHSRhdnG5LhDHLbFIG71FXJwFMCAgf250AbRPw==
+ bh=KMoImlxa2rP4ZylcxJpCNZ1nkjVs1E7E+iqCazGYKhk=;
+ b=K4hBrOHG83bJyhYuZjKjbhBjCMgJzHO/CrX7EGNfCLvSfJ1AoblNQOlZRcFvAhH1Jkn6XJqIUYzjU0Eg6dVLOh7M4AT0rVo4jzVPPoU/por6xL9OeaRZ6jorX9XKJekIYBCofjMvO2gH4CCS/cjy0NdAl7avUTpTGhyTOXTGzy4PD9tUIVpEGYhMPP2uDFMZl0SAH/qPUj0k5MnuZUzQHkPuQci5VfsA0KVO9nuPfXRlN6ByWlp9rbHQQ0MG2cujoqRf0bmGUFPhxS5soXFiBSNqOi8N64F48YveggHn3DmzMqn3rdpWRU5t/X/ELeIhJiOnxuz8iXzieeMQuhe2wA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KMoImlxa2rP4ZylcxJpCNZ1nkjVs1E7E+iqCazGYKhk=;
+ b=MGSRaE9Z+tAiV4olgV4iUOfy/KraYQX872mE+2/1JKRY5+vvc1cvc4AabGeHi+Dca+aL1J7r/R1xWkZ2WK8hVuTt5mwuqMqVPBEstLUyXZy/UrJPYI9ZmZMcEsn7vRT1aqHnrOem+rdKh3tIZFA7DrTcRqBMAfm9xUjb6JrZ3OM=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by CH3PR11MB8343.namprd11.prod.outlook.com (2603:10b6:610:180::19) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB8249.namprd12.prod.outlook.com (2603:10b6:8:ea::16) by
+ MW4PR12MB7192.namprd12.prod.outlook.com (2603:10b6:303:22a::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
- 2023 07:24:08 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::f4b7:72ae:86f6:450a]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::f4b7:72ae:86f6:450a%4]) with mapi id 15.20.6954.019; Tue, 31 Oct 2023
- 07:24:08 +0000
-Date:   Tue, 31 Oct 2023 08:24:04 +0100
-From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-CC:     <linux-kselftest@vger.kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 16/24] selftests/resctrl: Rewrite Cache Allocation
- Technology (CAT) test
-Message-ID: <o4tsktjvcey7wjb6pkrp7fp7v3m2sgqqhsuzgsdyigypr2tlxa@me4fl5mjrhig>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
- <20231024092634.7122-17-ilpo.jarvinen@linux.intel.com>
- <kq6qds2hgcg3vlgokgyr4lukm7weuj3thvl7p2panfmk72ovpy@nshm6iva5wfr>
- <fb5e1a50-ba7-1ee8-8bf2-bb8b64b27b1@linux.intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.24; Tue, 31 Oct
+ 2023 07:24:28 +0000
+Received: from DS7PR12MB8249.namprd12.prod.outlook.com
+ ([fe80::352f:a52:4008:441e]) by DS7PR12MB8249.namprd12.prod.outlook.com
+ ([fe80::352f:a52:4008:441e%5]) with mapi id 15.20.6933.025; Tue, 31 Oct 2023
+ 07:24:27 +0000
+Message-ID: <dbdafdf5-10cd-fd66-1691-e4ec600bead5@amd.com>
+Date:   Tue, 31 Oct 2023 12:54:18 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: arch/microblaze/kernel/entry.S:945: Error: unknown opcode
+ "suspend"
+To:     Michal Simek <monstr@monstr.eu>, kernel test robot <lkp@intel.com>,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+References: <202310310151.UhB396Qs-lkp@intel.com>
+ <144951b1-b158-4591-ab88-a1c71af51bf2@monstr.eu>
+Content-Language: en-US
+From:   "Rao, Appana Durga Kedareswara" <appanad@amd.com>
+In-Reply-To: <144951b1-b158-4591-ab88-a1c71af51bf2@monstr.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <fb5e1a50-ba7-1ee8-8bf2-bb8b64b27b1@linux.intel.com>
-X-ClientProxiedBy: FR4P281CA0281.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e6::14) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+X-ClientProxiedBy: BMXPR01CA0094.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:54::34) To DS7PR12MB8249.namprd12.prod.outlook.com
+ (2603:10b6:8:ea::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|CH3PR11MB8343:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f0c2cc8-2fe5-46b0-fe18-08dbd9e25f05
+X-MS-TrafficTypeDiagnostic: DS7PR12MB8249:EE_|MW4PR12MB7192:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5b64e169-30dc-4b85-75e3-08dbd9e26a2e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X/b9BTDwRnfQB8qI1zxwYv62av9HoGqqQGN2D5F2dYJ09HmBxjGxHproQd/mWzu+ZiPNFLWS0GlS3glHIqvrX6yzru7PZMS/ozEKbDuMMsVuiPga4eM6+tOFMMZKPZm31gVav42kO5n/edg1xV5yxMLS/hz8jAPwjaVQ1HOJ6JCct5qy9/7tvnq99p1iEAsaDuSJA/bpVB0Wg1eaoFwFw0Amm+qF5Irt5oNICu0LoEGz+MvANaHK+L3zAr2SdEHLzFoAF9x9H1cO1pHv+8AYXcOkwODvyMDog7I4TlEMRN1JFCoZSAtr50tydIxF7ET8gUMYe4S160fzFPExC7bChI+pXXH9egEVVDPByP1vNDndb2E8f2Foub6sRtDqliV8OJwnpGXWVYyyzdoRh+N/L9VJePG1L55Fekb+B0aWfF7yFVr/UjpNmCaYVlXGVkFONtFJYis/9StfBy5U8YaPRgCeCl+bxCtWdDFz46j2pdZf2nssQkaUjkage9YFhY6Tcr8PlKfEubnilkl+oT1x/BS+QCg8ppqzXKkJsrB9iDFt0Bwar3oFrmZf+4Dochbs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39860400002)(396003)(346002)(376002)(366004)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(9686003)(83380400001)(26005)(5660300002)(66574015)(38100700002)(316002)(66946007)(54906003)(66556008)(66476007)(6916009)(4326008)(8936002)(8676002)(6666004)(53546011)(6506007)(6512007)(2906002)(6486002)(41300700001)(4001150100001)(478600001)(33716001)(86362001)(82960400001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: R4cYwQTC4M+DF5DSF0tNSru5hUAv6hxjeSaELZF4Tx/m38WARC616sumRM6PCQrGRn+V1lzOHjZjN3w6E1qv7sx5Yd82Rnhj7rVeaLML3+NWXvT0qf+70c19bCqZGSS4IsQcs5dz5OVdhUjJYP1XwTnOrA6YdiHVN0ZwggJZwyZyzCjg37dVxYWmsrdW3GNHArHdhMv03nDv5W2gNWG5wbii7GZam/n4KsvdvWC8xrB2vjZkifwNNed9XenHmDGim827w24BV9qiWbk+KUgUn40NxsKZfr4X4NZBu0goRIjfQi/C53QCtEVPyKPM09stZhbLHIpCXz7GKxB7e+iIJor8wTaSzCeIS4UDJykHZ2M0Knb8UEfKW6yzV/6TUQIcsNaE6Tpo7HVMYTdlhWI+Cmf5FkVPL9AYTCQwh3+KqfnAU5Yq+Slk9XKZPDjEal/rDZcROF76OaM586ipWVUhlorCyQbAp6mw//YBafbGR+Jh5QjOgGms1R9wCM1RVf8xSR74LNI7hnfELwroZRugRPu8I26ueiOvKuRvpZXl3INbYpdxJnFx9kmP3xm9Xq+tTXsUzEs167mYWAHwoVYqWwp96zv3/gNGdtfhOD3txj49QdF/+vjn343LTsx2lDN950Ar9MV3dr0F2FKy3iIkW+bwLEHtoHQwHWfqgnzOxyNAmthwzLk+bO72fKp5Pv1lt7qCnc6ABksfvdE/1/liWA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB8249.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230273577357003)(230922051799003)(230173577357003)(186009)(1800799009)(451199024)(64100799003)(8676002)(478600001)(6486002)(6506007)(5660300002)(6666004)(83380400001)(966005)(2616005)(26005)(41300700001)(15650500001)(2906002)(316002)(6512007)(15974865002)(66476007)(66556008)(110136005)(66946007)(8936002)(4326008)(36756003)(31696002)(38100700002)(31686004)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?W7ZYVhy7EV67P9EplVjtauzm+jWR5KDNIHVqV1q/wWwAa90QjjkfpTlnMF?=
- =?iso-8859-1?Q?VQSqfAD6CFs5e3Ki9mUsaQyJHyB5M7v4pSh4IwTADSV+fjFqx/yRuK2ZU6?=
- =?iso-8859-1?Q?NjAn3f5V/fnIslcK+6YinAdjh0tlYmORmt25GXX7R3OuZIeLvv39NduE6P?=
- =?iso-8859-1?Q?fuvkeynDsoSNrZyyBELMt0KDblUOJdcWR2+ahfbkxtlkqNxIONnb95hIWb?=
- =?iso-8859-1?Q?Mei9o5KXXR1Y8yRnzbSzYzWsIh9CQLO0k526fqQw/8TsVvFf4lVbxVU2Sg?=
- =?iso-8859-1?Q?lVVnvAkR0whTrmr7ApKohfHnmIR7BfNrgntJDORDihuhDQDKG/iblCWmZm?=
- =?iso-8859-1?Q?IAOiBmqqZmCSHmTjVz30KHEx+8IDG0tDR7wmhFcphHA10h5X1ZBiigN8p9?=
- =?iso-8859-1?Q?5WGdR+kfQKFzemgJU0Cent32189Gcb+J3Jdod/HuyUnPJeEKqD5IdP+jXT?=
- =?iso-8859-1?Q?rvXcFcNuW8v2wdB3CwNh/EFhFi3MmmVXVjPQd35XPQDMwcAN+nfzIZ1oYu?=
- =?iso-8859-1?Q?RS9Aed5C1SCdAOOCAXL0kskJ9SwFRoNLQkxPZNDt9l4mKYZwH9P3ECNWQ9?=
- =?iso-8859-1?Q?/KQyXZJkUGxuzChCmO2EWc6lAvpa+XYkT37SsR53CbY0TCJiodau3jnIKx?=
- =?iso-8859-1?Q?/TdvKtTTydBkH0tR7HdKwGMIade5vEj9bKXqCKNOAn8fnm3iBjTdzAXWpb?=
- =?iso-8859-1?Q?3JYz3gKR/oq+ClI6Q8RbberRJL0HpYp07EhnEVqdmeFvbxzNUseXodAGUS?=
- =?iso-8859-1?Q?Jaf0UQ/uBRhi//p7AuSTpjac8OaZ4k/PeMzhFNdxN1T7vx6H25DJcGmaDr?=
- =?iso-8859-1?Q?P8+UStCJBWTdOA25uAry5ILO59au2PCOhs+D7zj1Y3jsmjRwAwvqfTn3p8?=
- =?iso-8859-1?Q?ewPSMlNxNkRU95XszGbfZ7LROyXltM0j09gVL01Ik7c8pnVDqn61C6h6gi?=
- =?iso-8859-1?Q?hMax7Us8pwohTYQRmccxXAxBjWPfXsiqq1/Mm+yBG0pgkz45NBS+HcfN9e?=
- =?iso-8859-1?Q?xY90FMVlnx1p0cGWxGikMVvuy1eB0RkYGOu4YIg/NxAoMVSQi0ten0hbMj?=
- =?iso-8859-1?Q?GSt86GNZkXpfb2JDoGcb2oqEWdxzF4y01OhM+xC6wWMy4FOObRjO1TIOlF?=
- =?iso-8859-1?Q?W5IGC3kzM7/le1u4ZkJUPLaQAjFQrZ5SU9Nk3NPRKy0ZrnsgGAYt8o0//1?=
- =?iso-8859-1?Q?mHVkoYAfXa7A1RjezVIo8llg+SwrjS8wAcg+bxU1dT1JbxM+T1TGXTG0zH?=
- =?iso-8859-1?Q?G0T7G5zgyEuQmbgNohTXVPnTCBiqIaeHqQnH0d2hwRe2uT8Fkavc1um9QX?=
- =?iso-8859-1?Q?m3tDHO5Ql62nq7uoKOvvQEVhQ01PhE73z3BF/sU3v27+I4rVYc79aVyTy8?=
- =?iso-8859-1?Q?N8YwVYCkfXode+AGJF1M8/S3eEdtgn4epovVZ+NOjKiPeEoqPWkYORp42Y?=
- =?iso-8859-1?Q?xiwQ+g4Zn5UfUs65OUhAgHEvMLwnrZGhFPX7qflr8aAHKp3dh8McpJBEfj?=
- =?iso-8859-1?Q?IdoxfVM6enCtnmTFWYfWZJXf24spkhpsWFu84Y4O1ZmyfINviuG3jQCOQa?=
- =?iso-8859-1?Q?3UjtzBH4OB7xxOMP/6tlZMjLF4kYfQNaPSxOH71Tpg4Vxr7uq4dyq/asYp?=
- =?iso-8859-1?Q?kYnhG15w3Nw89t+cFQH4BOkY2fW1zknfqLSEuIq12wvyans4C+rujalTKm?=
- =?iso-8859-1?Q?Q/QMiTpJaAn+BYVDpvY=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f0c2cc8-2fe5-46b0-fe18-08dbd9e25f05
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N2tMMTloQ2MxaXM5RXpwM1FWOFNiOHZ1cUtYZWY4M1I5VmgxWXpXZmFRKzlL?=
+ =?utf-8?B?RXBGYUpET3RHb1BtV1ZTTWcxQ0o5cDVFT2NGc0c3R1lnV2llb0VCcjhOcGQ2?=
+ =?utf-8?B?UW03ODQ1c3BzdFN5V0ZUTjFKRUpHaGFxeWd2aUtzZ3loODlzZ29lR0JXTU94?=
+ =?utf-8?B?ZzcvVjMrcWU1RXRkM1VHcjdzczRpT1dodG1KZ1ZRRkIvTjB0anNQVXpyNkZP?=
+ =?utf-8?B?RGFIWDJST1ZhYTZhak5xdGpHbUpYT2lvNlVUN0FHRHdhdHQwc0oxV1Z5QlhD?=
+ =?utf-8?B?b3l1T0l5ei9LNllyMTVnSTlMQmZlc1BiTU9SSDlsWDdwaU82M1B6akZ4am1m?=
+ =?utf-8?B?QTVhaXREYkRDaFpJL21XOWY4a1lmRG15S0M0WEV5SnBQdXdLSWlEU0ZUdkRB?=
+ =?utf-8?B?czUrNTJMcjlibkZaZHBFdlVIOVBFWDRsdHBHM1FMNHIxakRBTFRmRlVhS1Vn?=
+ =?utf-8?B?TWFEWTZyMDN3amIxSEFWU1B4ZjZ2b0d5SjhmbmV0UDdTN2ErKzUydUZ5WVpS?=
+ =?utf-8?B?SkpFdW9YeG9hSXlmaU9VUFovc1pVdkorUnJGTDhnY1VNY2FRVG1raUNDUHlI?=
+ =?utf-8?B?a1FCb2sxOGFhaHdWNy9iemhmRDJGM3Z4VCsxYkJ4alpuZHVXM25OMGNGSmRY?=
+ =?utf-8?B?Q0Vmbkh3dGwzenlCVVB5YmFFT3ZHeWV5VFFXWEw2U2xrNXFFeVowTWJHamNP?=
+ =?utf-8?B?czBXWWRQZ2lmSDIvTEcwYXRRQSs2OTlhR3c1bzZlRUxVUHB1YW54cDJDYS9x?=
+ =?utf-8?B?NGphd0VtZmNGK3ZvL3lZbm9VMnl1SU1rSnZ2KzZjZGxFbmd2aDZtUmhqTWNZ?=
+ =?utf-8?B?Szd1cmQ1akpRd1hpOXMrREFQUDhLNklEU0d3L0dKbGc2SnlLL2V0L3Awb1Jy?=
+ =?utf-8?B?ZTNCa3E5aE05MUUrSkR2MXdwZm1nanBIOXlwQk9EM3E3RUxJdnYwT0JJUnlM?=
+ =?utf-8?B?dlZOWGhNWm9zSkZTMkF2Tm5pUVZaZU9paTZUWVNxQ3V0THJDa3RIYUxwWUdi?=
+ =?utf-8?B?UkJIaU1Da1JVbi9JZjVOOUxjNjBvN0VRY2pIQ2NHRVlJWllCKzJ2b0NlcnZa?=
+ =?utf-8?B?bmp4TDZ0QlpPNkpIVmluY1NhRVF4YVRZUjNIaEU2aVVaZng3aEk2WGNUTWpo?=
+ =?utf-8?B?SlNNb1JONFBJdXZ5YmtmYm54eXJyT0xwamplTC9OUnlYMzlIWDBWTUZMTk8v?=
+ =?utf-8?B?amhZNHU0RzRmNmdicGlNdDM2NkIvZHE4L05uQVA5YURSWFo2RWxuaUZiU0dt?=
+ =?utf-8?B?dVovMHdXd1ZuL0dXN3l3RXEzRC8wSlNvY1V3WElNZmhpb2hreTQwYldjeWcv?=
+ =?utf-8?B?ZDdScnE5UHRDVXNLNGxjVVJxbWNiMUxRdk9Lb1ZXSHNLcHI5WEcvbC9OaUVS?=
+ =?utf-8?B?VW9saFUrLytKczM5U1Y2dnlUd2xBZGQrQVZmSzFsRGM3aFBIV1Q2K0xaS1g0?=
+ =?utf-8?B?bzBKdXV1eGdXU05iUlBEZ2lCb09tcVVpSGF4UVh1WU53Z0l6VXBQbkNwTUo4?=
+ =?utf-8?B?V0RibTF5SVVYK3dHTlBJbWhwTC80ZlRsNDh3b3J2RE1LZmJJOEpVa3VPWWUz?=
+ =?utf-8?B?SzN6eGljOWNNcWFGOG9qdjl4c0NBRDdjVHR1VE51YzA1cXFJS3ZVTHZPVFZl?=
+ =?utf-8?B?b2JzRFRvOW1SRHBQUVRXeEhneEUzV0VWZFRnYTFqV1d1c0FiQ1RXdTZSa21R?=
+ =?utf-8?B?WjZXczl5dk13SW5sSlZWclV5WnZHR1p6bDJkV2pBUWpoSG9YbkVIN3BoYUpV?=
+ =?utf-8?B?dndSU2w1Rkl3MEZsRzQyVmQyU2Q5KzBmSkNybkRTcXJJUUtZVmNVZUYzS1ZW?=
+ =?utf-8?B?MkFOTWUxZEhvMDhrb3d2QTZRWEFLdmFtZXBudTNzNk45Z01kNUNOU1hFMlB3?=
+ =?utf-8?B?RkxWQmV6cUZKMTdTOU9wSGUxbkZDNXZXbHRhYy9TNnFWOHVjRnNMbmcxVk1K?=
+ =?utf-8?B?OHAxZFRvL25vQnQydmp2bFJ5bGNmN2tYZVdxNExtOUk0N1g0cmpQNXNwa3hl?=
+ =?utf-8?B?bzkyaERXb2RnZ1BheWpuN213dFM5Y1RIVzhPQys5QVI5b2VXazA3bW9yeWtF?=
+ =?utf-8?B?eGxLL2NvWnR5RjRWWUFwNC9OSUtXWjlVRG8zVHoxb3lrejBLazFnc200RHc2?=
+ =?utf-8?Q?4XUxlKnkwxh+ooKKUlxrC+4ki?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b64e169-30dc-4b85-75e3-08dbd9e26a2e
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB8249.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 07:24:08.4932
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 07:24:27.4206
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SMCGmFVriiMaTzYC3rZPUBNTaZ/YWVh1KQAB187YhmlSKiJT0JH/flYz8p/ahN/zsEmr8lsvF2ad12FQCyIhP1nQy/d3s3O6lqpDsROrYDs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8343
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: SkhBeJ1QqCDbP5R26qgjFnKglSss/gOPYaf5rSOFNM6fG1VLNPGodSVW5tDCy05p
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7192
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-27 at 15:32:58 +0300, Ilpo J�rvinen wrote:
->On Fri, 27 Oct 2023, Maciej Wiecz�r-Retman wrote:
->> On 2023-10-24 at 12:26:26 +0300, Ilpo J�rvinen wrote:
->> >-	ksft_print_msg("%s Check cache miss rate within %lu%%\n",
->> >-		       ret ? "Fail:" : "Pass:", max_diff_percent);
->> >+		ksft_print_msg("%s Check cache miss rate changed more than %.1f%%\n",
->> >+			       ret ? "Fail:" : "Pass:", (float)min_diff_percent);
->> 
->> Shouldn't "Fail" and "Pass" be flipped in the ternary operator? Or the condition
->> sign above "<" should be ">"?
->
->I must not touch ret ? "Fail:" : "Pass:" logic, it's the correct way 
->around. If I'd touch it, it'd break what the calling code assumes about 
->the return value.
->
->(More explanation below).
->
->> Now it looks like if (avg_diff * 100) is smaller than the min_diff_percent the
->> test is supposed to fail but the text suggests it's the other way around.
+Hi Michal,
+
+On 31/10/23 12:28 pm, Michal Simek wrote:
+> CAUTION: This message has originated from an External Source. Please use proper judgment and caution when opening attachments, clicking links, or 
+> responding to this email.
+> 
+> 
+> Hi Kedar,
+> 
+> On 10/30/23 18:12, kernel test robot wrote:
+>> Hi Appana,
 >>
->> I also ran this selftest and that's the output:
->> 
->> # Pass: Check cache miss rate changed more than 3.0%
->> # Percent diff=45.8
->> # Number of bits: 4
->> # Average LLC val: 322489
->> # Cache span (lines): 294912
->> # Pass: Check cache miss rate changed more than 2.0%
->> # Percent diff=38.0
->> # Number of bits: 3
->> # Average LLC val: 445005
->> # Cache span (lines): 221184
->> # Pass: Check cache miss rate changed more than 1.0%
->> # Percent diff=27.2
->> # Number of bits: 2
->> # Average LLC val: 566145
->> # Cache span (lines): 147456
->> # Pass: Check cache miss rate changed more than 0.0%
->> # Percent diff=18.3
->> # Number of bits: 1
->> # Average LLC val: 669657
->> # Cache span (lines): 73728
->> ok 1 CAT: test
->> 
->> The diff percentages are much larger than the thresholds they're supposed to
->> be within and the test is passed.
->
->No, the whole test logic is changed dramatically by this patch and 
->failure logic is reverse now because of it. Note how I also altered these 
->things:
->
->- MAX_DIFF_PERCENT -> MIN_DIFF_PERCENT_PER_BIT
->- max_diff_percent -> min_diff_percent
->- "cache miss rate within" -> "cache miss rate changed more than"
->
->The new CAT test measures the # of cache misses (or in case of L2 CAT 
->test, LLC accesses which is used as a proxy for L2 misses). Then it takes 
->one bit away from the allocation mask and repeats the measurement.
->
->If the # of LLC misses changes more than min_diff_precent when the 
->number of bits in the allocation was changed, it is a strong indicator CAT 
->is working like it should. Based on your numbers above, I'm extremely 
->confident CAT works as expected!
->
->I know for a fact that when the selftest is bound to a wrong resource id 
->(which actually occurs on broadwell's with CoD enabled without one of the 
->later patches in this series), this test is guaranteed to fail 100%, 
->there's no noticeable difference measured in LLC misses in that case.
+>> FYI, the error/warning still remains.
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   ffc253263a1375a65fa6c9f62a893e9767fbebfa
+>> commit: 88707ebe77e23e856981e597f322cabbf6415662 microblaze: Add custom break vector handler for mb manager
+>> date:   1 year, 1 month ago
+>> config: microblaze-buildonly-randconfig-r003-20230509 (https://download.01.org/0day-ci/archive/20231031/202310310151.UhB396Qs-lkp@intel.com/config)
+>> compiler: microblaze-linux-gcc (GCC) 13.2.0
+>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310310151.UhB396Qs-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202310310151.UhB396Qs-lkp@intel.com/
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     arch/microblaze/kernel/entry.S: Assembler messages:
+>>>> arch/microblaze/kernel/entry.S:945: Error: unknown opcode "suspend"
+>>
+>>
+>> vim +/suspend +945 arch/microblaze/kernel/entry.S
+>>
+>>     825
+>>     826               /* restore all the tlb's */
+>>     827               addik   r3, r0, TOPHYS(tlb_skip)
+>>     828               addik   r6, r0, PT_TLBL0
+>>     829               addik   r7, r0, PT_TLBH0
+>>     830       restore_tlb:
+>>     831               add     r6, r6, r1
+>>     832               add     r7, r7, r1
+>>     833               lwi     r2, r6, 0
+>>     834               mts     rtlblo, r2
+>>     835               lwi     r2, r7, 0
+>>     836               mts     rtlbhi, r2
+>>     837               addik   r6, r6, 4
+>>     838               addik   r7, r7, 4
+>>     839               bgtid   r3, restore_tlb
+>>     840               addik   r3, r3, -1
+>>     841
+>>     842               lwi     r5, r0, TOPHYS(xmb_manager_dev)
+>>     843               lwi     r8, r0, TOPHYS(xmb_manager_reset_callback)
+>>     844               set_vms
+>>     845               /* return from reset need -8 to adjust for rtsd r15, 8 */
+>>     846               addik   r15, r0, ret_from_reset - 8
+>>     847               rtbd    r8, 0
+>>     848               nop
+>>     849
+>>     850       ret_from_reset:
+>>     851               set_bip /* Ints masked for state restore */
+>>     852               VM_OFF
+>>     853               /* MS: Restore all regs */
+>>     854               RESTORE_REGS
+>>     855               lwi     r14, r1, PT_R14
+>>     856               lwi     r16, r1, PT_PC
+>>     857               addik   r1, r1, PT_SIZE + 36
+>>     858               rtbd    r16, 0
+>>     859               nop
+>>     860
+>>     861       /*
+>>     862        * Break handler for MB Manager. Enter to _xmb_manager_break by
+>>     863        * injecting fault in one of the TMR Microblaze core.
+>>     864        * FIXME: This break handler supports getting
+>>     865        * called from kernel space only.
+>>     866        */
+>>     867       C_ENTRY(_xmb_manager_break):
+>>     868               /*
+>>     869                * Reserve memory in the stack for context store/restore
+>>     870                * (which includes memory for storing tlbs (max two tlbs))
+>>     871                */
+>>     872               addik   r1, r1, -PT_SIZE - 36
+>>     873               swi     r1, r0, xmb_manager_stackpointer
+>>     874               SAVE_REGS
+>>     875               swi     r14, r1, PT_R14 /* rewrite saved R14 value */
+>>     876               swi     r16, r1, PT_PC; /* PC and r16 are the same */
+>>     877
+>>     878               lwi     r6, r0, TOPHYS(xmb_manager_baseaddr)
+>>     879               lwi     r7, r0, TOPHYS(xmb_manager_crval)
+>>     880               /*
+>>     881                * When the break vector gets asserted because of error injection,
+>>     882                * the break signal must be blocked before exiting from the
+>>     883                * break handler, below code configures the tmr manager
+>>     884                * control register to block break signal.
+>>     885                */
+>>     886               swi     r7, r6, 0
+>>     887
+>>     888               /* Save the special purpose registers  */
+>>     889               mfs     r2, rpid
+>>     890               swi     r2, r1, PT_PID
+>>     891
+>>     892               mfs     r2, rtlbx
+>>     893               swi     r2, r1, PT_TLBI
+>>     894
+>>     895               mfs     r2, rzpr
+>>     896               swi     r2, r1, PT_ZPR
+>>     897
+>>     898       #if CONFIG_XILINX_MICROBLAZE0_USE_FPU
+>>     899               mfs     r2, rfsr
+>>     900               swi     r2, r1, PT_FSR
+>>     901       #endif
+>>     902               mfs     r2, rmsr
+>>     903               swi     r2, r1, PT_MSR
+>>     904
+>>     905               /* Save all the tlb's */
+>>     906               addik   r3, r0, TOPHYS(tlb_skip)
+>>     907               addik   r6, r0, PT_TLBL0
+>>     908               addik   r7, r0, PT_TLBH0
+>>     909       save_tlb:
+>>     910               add     r6, r6, r1
+>>     911               add     r7, r7, r1
+>>     912               mfs     r2, rtlblo
+>>     913               swi     r2, r6, 0
+>>     914               mfs     r2, rtlbhi
+>>     915               swi     r2, r7, 0
+>>     916               addik   r6, r6, 4
+>>     917               addik   r7, r7, 4
+>>     918               bgtid   r3, save_tlb
+>>     919               addik   r3, r3, -1
+>>     920
+>>     921               lwi     r5, r0, TOPHYS(xmb_manager_dev)
+>>     922               lwi     r8, r0, TOPHYS(xmb_manager_callback)
+>>     923               /* return from break need -8 to adjust for rtsd r15, 8 */
+>>     924               addik   r15, r0, ret_from_break - 8
+>>     925               rtbd    r8, 0
+>>     926               nop
+>>     927
+>>     928       ret_from_break:
+>>     929               /* flush the d-cache */
+>>     930               bralid  r15, mb_flush_dcache
+>>     931               nop
+>>     932
+>>     933               /*
+>>     934                * To make sure microblaze i-cache is in a proper state
+>>     935                * invalidate the i-cache.
+>>     936                */
+>>     937               bralid  r15, mb_invalidate_icache
+>>     938               nop
+>>     939
+>>     940               set_bip; /* Ints masked for state restore */
+>>     941               VM_OFF;
+>>     942               mbar    1
+>>     943               mbar    2
+>>     944               bri     4
+>>   > 945               suspend
+> 
+> Older toolchain don't need to have this pseudo code.
+> What about to change it like this?
+> 
+> mbar 24 /* suspend */
 
-Thanks for explaining. Looking at it again the patch makes sense and seems very
-coherent.
+Okay will test and post a patch...
 
--- 
-Kind regards
-Maciej Wiecz�r-Retman
+Regards,
+Kedar.
+
+> 
+> Thanks,
+> Michal
+> 
+> -- 
+> Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+> w: www.monstr.eu p: +42-0-721842854
+> Maintainer of Linux kernel - Xilinx Microblaze
+> Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP/Versal ARM64 SoCs
+> U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal/Versal NET SoCs
+> TF-A maintainer - Xilinx ZynqMP/Versal/Versal NET SoCs
