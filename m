@@ -2,89 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D098D7DC778
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EB97DC779
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343670AbjJaHj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S1343654AbjJaHkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343654AbjJaHjv (ORCPT
+        with ESMTP id S1343665AbjJaHjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:39:51 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC89DE;
-        Tue, 31 Oct 2023 00:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
-        In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=De/PIfkZVAOyTSP91PR0+gMsXQuIhR9hutDnDNGhWn0=; b=G9hUHRdT++O/1+D/N4JHwi3uc2
-        Xjhi2sFxsq8Q8KQ3DVXLthnFFMWoMivphquUM3Ny0736uudakbPTHSVpmylOwfZoZNKxyqTTnNezl
-        TRdyr+5W8kyeqhAZf/RFmXeA7eQCoO9Gbdg3w1Ko783OZlmu/R0WZ1BZVdgKvWk7ATraiK5dQ/DWU
-        f66SFF8UzOBkjwM1PPBurTRg4Q/9dXaWPwv5SpoWEKV0Wyy8do3NnMzvrUPWQXJoDqFjlHGhpVc2P
-        tbzFNs/tClt37KVqN8RGScscZ/4QNDFHlXTraL/vOV7jjsZHGRhMuw6GOKD2DzXmsiDJM2jQDdEOZ
-        rHW10Djw==;
-Received: from 251.48.60.213.dynamic.reverse-mundo-r.com ([213.60.48.251] helo=vega.mundo-R.com)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qxjLW-00FHU5-Fz; Tue, 31 Oct 2023 08:39:30 +0100
-From:   Iago Toral Quiroga <itoral@igalia.com>
-To:     dri-devel@lists.freedesktop.org, Maira Canal <mcanal@igalia.com>
-Cc:     Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
-        Iago Toral Quiroga <itoral@igalia.com>
-Subject: [PATCH v3 4/4] drm/v3d: add brcm,2712-v3d as a compatible V3D device
-Date:   Tue, 31 Oct 2023 08:38:59 +0100
-Message-Id: <20231031073859.25298-5-itoral@igalia.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231031073859.25298-1-itoral@igalia.com>
-References: <20231031073859.25298-1-itoral@igalia.com>
+        Tue, 31 Oct 2023 03:39:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A61DE4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 00:39:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A8EC433C7;
+        Tue, 31 Oct 2023 07:39:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698737991;
+        bh=PLiJWGcQnJJIY9KElBB7spYb5zyAFF0UnMwZaD/7wLo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hVjQ5x97O9tfcpazKSYhEO2dwc3HE/jhrKrr/tctrgNWhTwpmgTbPDY5JidqU/vGf
+         X/0LmqizeMDATAVPAPga+HAvAw64ftw8MbR/oiZUDprXF3Rwob0vYpcFMSDbwr4H6w
+         l5QtxwCT3z66wxnTz0+JPACnKM4Do/DtiIk/P9kA=
+Date:   Tue, 31 Oct 2023 08:39:48 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yu Wang <quic_yyuwang@quicinc.com>
+Cc:     johannes@sipsolutions.net, rafael@kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [PATCH] Devcoredump: fix use-after-free issue when releasing
+ devcd device
+Message-ID: <2023103126-matchless-overview-3558@gregkh>
+References: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
+ <2023102757-spree-unruly-dcd6@gregkh>
+ <df7d1881-2e8f-43e5-a589-cacfb26138ab@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df7d1881-2e8f-43e5-a589-cacfb26138ab@quicinc.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is required to get the V3D module to load with Raspberry Pi 5.
+On Tue, Oct 31, 2023 at 03:15:12PM +0800, Yu Wang wrote:
+> 
+> 
+> On 10/27/2023 7:12 PM, Greg KH wrote:
+> > On Thu, Oct 26, 2023 at 10:55:21PM -0700, Yu Wang wrote:
+> >> With sample code as below, it may hit use-after-free issue when
+> >> releasing devcd device.
+> >>
+> >>     struct my_coredump_state {
+> >>         struct completion dump_done;
+> >>         ...
+> >>     };
+> >>
+> >>     static void my_coredump_free(void *data)
+> >>     {
+> >>         struct my_coredump_state *dump_state = data;
+> >>         ...
+> >>         complete(&dump_state->dump_done);
+> >>     }
+> >>
+> >>     static void my_dev_release(struct device *dev)
+> >>     {
+> >>         kfree(dev);
+> >>     }
+> >>
+> >>     static void my_coredump()
+> >>     {
+> >>         struct my_coredump_state dump_state;
+> >>         struct device *new_device =
+> >>             kzalloc(sizeof(*new_device), GFP_KERNEL);
+> >>
+> >>         ...
+> >>         new_device->release = my_dev_release;
+> >>         device_initialize(new_device);
+> >>         ...
+> >>         device_add(new_device);
+> >>         ...
+> >>         init_completion(&dump_state.dump_done);
+> >>         dev_coredumpm(new_device, NULL, &dump_state, datalen, GFP_KERNEL,
+> >>                       my_coredump_read, my_coredump_free);
+> >>         wait_for_completion(&dump_state.dump_done);
+> >>         device_del(new_device);
+> >>         put_device(new_device);
+> >>     }
+> >>
+> >> In devcoredump framework, devcd_dev_release() will be called when
+> >> releasing the devcd device, it will call the free() callback first
+> >> and try to delete the symlink in sysfs directory of the failing device.
+> >> Eventhough it has checked 'devcd->failing_dev->kobj.sd' before that,
+> >> there is no mechanism to ensure it's still available when accessing
+> >> it in kernfs_find_ns(), refer to the diagram as below:
+> >>
+> >>     Thread A was waiting for 'dump_state.dump_done' at #A-1-2 after
+> >>     calling dev_coredumpm().
+> >>     When thread B calling devcd->free() at #B-2-1, it wakes up
+> >>     thread A from point #A-1-2, which will call device_del() to
+> >>     delete the device.
+> >>     If #B-2-2 comes before #A-3-1, but #B-4 comes after #A-4, it
+> >>     will hit use-after-free issue when trying to access
+> >>     'devcd->failing_dev->kobj.sd'.
+> >>
+> >>     #A-1-1: dev_coredumpm()
+> >>       #A-1-2: wait_for_completion(&dump_state.dump_done)
+> >>       #A-1-3: device_del()
+> >>         #A-2: kobject_del()
+> >>           #A-3-1: sysfs_remove_dir() --> set kobj->sd=NULL
+> >>           #A-3-2: kernfs_put()
+> >>             #A-4: kmem_cache_free() --> free kobj->sd
+> >>
+> >>     #B-1: devcd_dev_release()
+> >>       #B-2-1: devcd->free(devcd->data)
+> >>       #B-2-2: check devcd->failing_dev->kobj.sd
+> >>       #B-2-3: sysfs_delete_link()
+> >>         #B-3: kernfs_remove_by_name_ns()
+> >>           #B-4: kernfs_find_ns() --> access devcd->failing_dev->kobj.sd
+> >>
+> >> To fix this issue, put operations on devcd->failing_dev before
+> >> calling the free() callback in devcd_dev_release().
+> >>
+> >> Signed-off-by: Yu Wang <quic_yyuwang@quicinc.com>
+> >> ---
+> >>  drivers/base/devcoredump.c | 5 ++---
+> >>  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > Also, what commit id does this fix?
+> 
+> Thanks for your comment :)
+> Do you mean the commit which introduced this issue? It's from initial version of devcoredump.c.
 
-Signed-off-by: Iago Toral Quiroga <itoral@igalia.com>
-Reviewed-by: Stefan Wahren <wahrenst@gmx.net>
-Reviewed-by: Maíra Canal <mcanal@igalia.com>
----
- drivers/gpu/drm/v3d/v3d_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+Ok, but then what in-kernel code has the above pattern to cause this
+"problem"?  Why not fix that up?
 
-diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.c
-index ffbbe9d527d3..1ab46bdf8ad7 100644
---- a/drivers/gpu/drm/v3d/v3d_drv.c
-+++ b/drivers/gpu/drm/v3d/v3d_drv.c
-@@ -187,6 +187,7 @@ static const struct drm_driver v3d_drm_driver = {
- 
- static const struct of_device_id v3d_of_match[] = {
- 	{ .compatible = "brcm,2711-v3d" },
-+	{ .compatible = "brcm,2712-v3d" },
- 	{ .compatible = "brcm,7268-v3d" },
- 	{ .compatible = "brcm,7278-v3d" },
- 	{},
--- 
-2.39.2
+thanks,
 
+greg k-h
