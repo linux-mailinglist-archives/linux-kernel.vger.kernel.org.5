@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCA17DCB72
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5C27DCB70
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344022AbjJaLJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        id S1344019AbjJaLIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344008AbjJaLJO (ORCPT
+        with ESMTP id S1344008AbjJaLIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:09:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A21A6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698750551; x=1730286551;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qvrwnc35erdZoVBiQV02YhA2bWWfgE0gKFuh2GpCkNs=;
-  b=gXx4Wzam0u8HjNFdhOFl8+NYih1FaQv1NEa4gB1Jes64AYeCNI3Hs/+n
-   yWXeODU9g+CuGZpUrHt2oj0Cb7QtZFd1A6LB6MRqL+81N5HtNRJEbM+4b
-   CmCuWNA70O12owT2TU+hEkw3hSDyt7HWxoCjqvJYHS4TsGNWnDDwQJKXS
-   M5BAjHh9twbkWmHw2cyxVHDgDlyYpiwWBdYMkAL/JY9pQCPboaqLR64rs
-   8ugOmmRWORuH4xANHDFFoQXT+Kz1g61KDbg9cJG4JPcXijfw7gSXq/R/G
-   dHivziOKCvVvaHM+ROkaLmiqJGzMWHbim6wGRHmZ522ElqAsvmQb8B2L4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="373316755"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="373316755"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 04:09:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="8298958"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 31 Oct 2023 04:09:08 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qxmcL-00007a-1t;
-        Tue, 31 Oct 2023 11:09:05 +0000
-Date:   Tue, 31 Oct 2023 19:08:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Baojun Xu <baojun.xu@ti.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, perex@perex.cz
-Cc:     oe-kbuild-all@lists.linux.dev,
-        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kevin-lu@ti.com,
-        shenghao-ding@ti.com, baojun.xu@ti.com, peeyush@ti.com,
-        navada@ti.com, tiwai@suse.de
-Subject: Re: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
-Message-ID: <202310311857.BgEnJVnO-lkp@intel.com>
-References: <20231028092409.96813-1-baojun.xu@ti.com>
+        Tue, 31 Oct 2023 07:08:51 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2388CC9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:08:48 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c503da4fd6so80966201fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698750526; x=1699355326; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2E/HffewE6KsJAEVSQY7eINz/vdl4lb6Eptw+I+yfwQ=;
+        b=muPGms0F++qsu8t81YChvZgWogdG/y+02gW/Tokvx9P9OW9xekncTBzuavA3YBn9od
+         rNnDSOOw7WzJ3QuN/asLYY9E4abC22g27vGtvBoJrIWuSu1Yw3FOcwUjnbic56JIX+sP
+         B2qZzMVAYb4lEnolHOXRRkMtp9mK1MC8/AZELdTw6Ez3TX0QeJ6Y1g3h+AIYVuVhdm0p
+         8O2qu8d61lTu++6fIp+YIHyhP4XdDAaqSUCJHcoG8xIzmWU7nI1/kp49XWXWbOLg7o+F
+         bS3ZWKVYfAn+GCKwGmUzOxSdO+DZrVWZYhCW95J3BAl1G5vjUOPuVUmKB3H/DVwS2pD2
+         3PGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698750526; x=1699355326;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2E/HffewE6KsJAEVSQY7eINz/vdl4lb6Eptw+I+yfwQ=;
+        b=TpQoTggF0/j3QnJncvNETkqTbyY+nenF3VsBmwmXZn8awh1no798qfvXcW22UBIZI1
+         gAyzURy7tq2AI9BymlCZ31XT3NZT+cjUsHYd/vhsvC/p8XS8g1reZzNuxGfo2ZBz9r95
+         45IQWgj/lK4ydXTkD9mmUVr6VJb7FsNio+eUWqdsvphuEX6UA8d7m+WHkRkJoHOrMp/z
+         n8OJvDHv9myW19KO8Tl/9cwJibW06BnjXl0g8O1dVIek/j2ImGe3o4CUVzjAZJth+wvm
+         HdjV+rp1i41ymniKb06rG04y/e3Sf+ON9Vx1bNQrEraVAnZrfVJNR19oixhtxDTLqOcw
+         ermQ==
+X-Gm-Message-State: AOJu0YwHNQudxuU3ZBS44fsL+ClPGCvV6OaUyNeyKlwYg0+Kx8bGq09r
+        USG69qu0dWyvc51JxYfR6wlJWA==
+X-Google-Smtp-Source: AGHT+IG4OmsQZm18Xh/ciqzC8Bw4x5C0RakLOoYjK2yKCqMz3/y/2aGXM0LpeEXLJDgiFMxyhW2kPw==
+X-Received: by 2002:a2e:9f08:0:b0:2c5:1d9a:4dc1 with SMTP id u8-20020a2e9f08000000b002c51d9a4dc1mr9191621ljk.5.1698750526295;
+        Tue, 31 Oct 2023 04:08:46 -0700 (PDT)
+Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
+        by smtp.gmail.com with ESMTPSA id 9-20020a2e0e09000000b002c12c2094e4sm174289ljo.74.2023.10.31.04.08.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 04:08:45 -0700 (PDT)
+Message-ID: <037fb8ed-3ec8-449e-9893-a45ed172b389@linaro.org>
+Date:   Tue, 31 Oct 2023 12:08:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231028092409.96813-1-baojun.xu@ti.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] ARM: dts: qcom: samsung-matisse-common: Add UART
+Content-Language: en-US
+To:     Stefan Hansson <newbyte@postmarketos.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20231025083952.12367-1-newbyte@postmarketos.org>
+ <20231025083952.12367-5-newbyte@postmarketos.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231025083952.12367-5-newbyte@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baojun,
+On 25.10.2023 10:37, Stefan Hansson wrote:
+> This was not enabled in the matisse-wifi tree. Without this, it is not
+> possible to use the USB port for serial debugging via a "Carkit debug
+> cable".
+> 
+> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on linus/master v6.6 next-20231030]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ASoC-tas2783-Add-source-files-for-tas2783-driver/20231028-172643
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20231028092409.96813-1-baojun.xu%40ti.com
-patch subject: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
-config: nios2-allyesconfig (https://download.01.org/0day-ci/archive/20231031/202310311857.BgEnJVnO-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310311857.BgEnJVnO-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310311857.BgEnJVnO-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   nios2-linux-ld: sound/soc/codecs/tas2783-sdw.o: in function `tas2783_calibration.isra.0':
-   tas2783-sdw.c:(.text+0xd48): undefined reference to `efi'
->> nios2-linux-ld: tas2783-sdw.c:(.text+0xd50): undefined reference to `efi'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
