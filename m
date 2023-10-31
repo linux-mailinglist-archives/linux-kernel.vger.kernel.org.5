@@ -2,222 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E87DCB5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F23D7DCB68
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343983AbjJaLFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        id S1344005AbjJaLHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbjJaLFA (ORCPT
+        with ESMTP id S1343995AbjJaLHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:05:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E0EE4;
-        Tue, 31 Oct 2023 04:04:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7655DC433C8;
-        Tue, 31 Oct 2023 11:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698750297;
-        bh=seof9F/T3buCREfnRaM8n/SGCO7U8Q7G81Pbh+MqLSc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=B0/jmFqpkWT9SLBYRDZGYIX/pJjNs4MsJ8bvvsaA4U4aW11phg5v1ZDR7id8JsNUd
-         zw7wKFBCoOozkUMgXREp3NScaoG75PhGVvyT0DRWC4CndqXfatxmQYN7afSYzvYzxl
-         Ew7aofGgt6KnA+bRoHMQRacfMT4SYz6jJClpQc4An/W3pqbp0PvDWQ0UFMhO3l6/uK
-         KlW1kzDr8H8qNnylIjSfelxj+IdLb9WebVPPRYxrpln//fJ9fD57xi8zLr4p9dCDnG
-         V9CUqL2LTaeMvAOIBUYTnePoIIgDRfOTBSgaPm/0Vsr0resDDxv6fsqVKLu0+aoWQe
-         uU5kVJIfA5VRg==
-Message-ID: <d5965ba7ed012433a9914ba38a6046f2ddb015ac.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Tue, 31 Oct 2023 07:04:53 -0400
-In-Reply-To: <ZUAwFkAizH1PrIZp@dread.disaster.area>
-References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <ZTc8tClCRkfX3kD7@dread.disaster.area>
-         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-         <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
-         <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-         <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
-         <ZTnNCytHLGoJY9ds@dread.disaster.area>
-         <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-         <ZUAwFkAizH1PrIZp@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
+        Tue, 31 Oct 2023 07:07:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81421A1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698750392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qeNTgEg8tsCK+iB2JBATlgJcpJ/vml1SpbMe3EquNfs=;
+        b=bgkXzrgIqqF9eDc43BcNg/G6eEZy0PwVTlsuc/lg/npraX5Nn6Ywy2OdoNOk5JEDn7QY6v
+        hVBrC2HFFttOUYOyTGNnq2wbv7cmffD6P0wedgGbmbZ9hjj0fvE7QiZjqj2uQJRHd7bX8Z
+        fFJOZKyevuG++EsT2Eng8bZxXDChmtQ=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-232-h6_GJDEiNtSDeeRuhpUALQ-1; Tue, 31 Oct 2023 07:06:31 -0400
+X-MC-Unique: h6_GJDEiNtSDeeRuhpUALQ-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-534838150afso976058a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:06:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698750390; x=1699355190;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qeNTgEg8tsCK+iB2JBATlgJcpJ/vml1SpbMe3EquNfs=;
+        b=hO5sS7flUlLmFC4lkemDxDtVzZJdohuRJkwUuWJ9GNmAl87GjXBXn+AEWA6pSCVsXY
+         Icp/WH7Mzcsluv4tjid0p3pOlYBrVQLCZ98F4VMTiKCEprs2Ko2TbNR4ADJYN0kMERjm
+         yD9HOPYkn1smGKK7m+Sl2SWIsiuoGkc0qo/QDFqFRsCFwOOb8uK75udIKV0cKd7Jt1y6
+         JvEFbIdrasxZdMR1UmGBC9Pkcnj8FDqjM8Palru9cIfElvStyr966vYDHuWtahdH5tMZ
+         7hLQCKDqahI52IUM8FUeLucWoEOVkkTcdMhMywaGGnasSg0d6wGtOOEbvFLodkDsGl8z
+         qDNA==
+X-Gm-Message-State: AOJu0YwNXU2pQDNFRv8IvX/m1jQ+9iReY5WF8bWpVnE9OD4++WWyoNmM
+        GF1tNZ7UvI+ct7ba536gnbWQ9d8kWsgk0wTljZ21xQQPmEqO4CsLmG8mAG2EZ8u5dNb4SHq8a0r
+        YxajYBPy3HUEwQ7Eq1H0mXVHE
+X-Received: by 2002:a50:d49e:0:b0:53f:18f6:a153 with SMTP id s30-20020a50d49e000000b0053f18f6a153mr9697626edi.3.1698750389878;
+        Tue, 31 Oct 2023 04:06:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFU3fW9CjMF9NxM2NJf+1GvsoCwESzcm25+DVXEtCmrvZvzCFMKH+ZzuSFKY7gpsIMYtpRC6w==
+X-Received: by 2002:a50:d49e:0:b0:53f:18f6:a153 with SMTP id s30-20020a50d49e000000b0053f18f6a153mr9697604edi.3.1698750389448;
+        Tue, 31 Oct 2023 04:06:29 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-227-179.dyn.eolo.it. [146.241.227.179])
+        by smtp.gmail.com with ESMTPSA id 28-20020a508e5c000000b005434095b179sm942853edx.92.2023.10.31.04.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 04:06:29 -0700 (PDT)
+Message-ID: <5a46ffb675addbed8a3dac176effb96eb2c8ca3e.camel@redhat.com>
+Subject: Re: [PATCH net v1 2/2] octeontx2-pf: Fix holes in error code
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Ratheesh Kannoth <rkannoth@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, wojciech.drewek@intel.com
+Date:   Tue, 31 Oct 2023 12:06:27 +0100
+In-Reply-To: <20231027021953.1819959-2-rkannoth@marvell.com>
+References: <20231027021953.1819959-1-rkannoth@marvell.com>
+         <20231027021953.1819959-2-rkannoth@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-31 at 09:37 +1100, Dave Chinner wrote:
-> On Fri, Oct 27, 2023 at 06:35:58AM -0400, Jeff Layton wrote:
-> > On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
-> > > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
-> > > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
-> > > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
-> > > > In earlier discussions you alluded to some repair and/or analysis t=
-ools
-> > > > that depended on this counter.
-> > >=20
-> > > Yes, and one of those "tools" is *me*.
-> > >=20
-> > > I frequently look at the di_changecount when doing forensic and/or
-> > > failure analysis on filesystem corpses.  SOE analysis, relative
-> > > modification activity, etc all give insight into what happened to
-> > > the filesystem to get it into the state it is currently in, and
-> > > di_changecount provides information no other metadata in the inode
-> > > contains.
-> > >=20
-> > > > I took a quick look in xfsprogs, but I
-> > > > didn't see anything there. Is there a library or something that the=
-se
-> > > > tools use to get at this value?
-> > >=20
-> > > xfs_db is the tool I use for this, such as:
-> > >=20
-> > > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/ma=
-pper/fast
-> > > v3.change_count =3D 35
-> > > $
-> > >=20
-> > > The root inode in this filesystem has a change count of 35. The root
-> > > inode has 32 dirents in it, which means that no entries have ever
-> > > been removed or renamed. This sort of insight into the past history
-> > > of inode metadata is largely impossible to get any other way, and
-> > > it's been the difference between understanding failure and having no
-> > > clue more than once.
-> > >=20
-> > > Most block device parsing applications simply write their own
-> > > decoder that walks the on-disk format. That's pretty trivial to do,
-> > > developers can get all the information needed to do this from the
-> > > on-disk format specification documentation we keep on kernel.org...
-> > >=20
-> >=20
-> > Fair enough. I'm not here to tell you that you guys that you need to
-> > change how di_changecount works. If it's too valuable to keep it
-> > counting atime-only updates, then so be it.
-> >=20
-> > If that's the case however, and given that the multigrain timestamp wor=
-k
-> > is effectively dead, then I don't see an alternative to growing the on-
-> > disk inode. Do you?
+On Fri, 2023-10-27 at 07:49 +0530, Ratheesh Kannoth wrote:
+> Error code strings are not getting printed properly
+> due to holes. Print error code as well.
 >=20
-> Yes, I do see alternatives. That's what I've been trying
-> (unsuccessfully) to describe and get consensus on. I feel like I'm
-> being ignored and rail-roaded here, because nobody is even
-> acknowledging that I'm proposing alternatives and keeps insisting
-> that the only solution is a change of on-disk format.
+> Fixes: 51afe9026d0c ("octeontx2-pf: NIX TX overwrites SQ_CTX_HW_S[SQ_INT]=
+")
+> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
 >=20
-> So, I'll summarise the situation *yet again* in the hope that this
-> time I won't get people arguing about atime vs i-version and what
-> constitutes an on-disk format change because that goes nowhere and
-> does nothing to determine which solution might be acceptible.
+> ---
+> ChangeLog:
 >=20
-> The basic situation is this:
+> v0 -> v1: Splitted patch into two
+> ---
+>  .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 80 +++++++++++--------
+>  1 file changed, 46 insertions(+), 34 deletions(-)
 >=20
-> If XFS can ignore relatime or lazytime persistent updates for given
-> situations, then *we don't need to make periodic on-disk updates of
-> atime*. This makes the whole problem of "persistent atime update bumps
-> i_version" go away because then we *aren't making persistent atime
-> updates* except when some other persistent modification that bumps
-> [cm]time occurs.
->=20
-> But I don't want to do this unconditionally - for systems not
-> running anything that samples i_version we want relatime/lazytime
-> to behave as they are supposed to and do periodic persistent updates
-> as per normal. Principle of least surprise and all that jazz.
->=20
-> So we really need an indication for inodes that we should enable this
-> mode for the inode. I have asked if we can have per-operation
-> context flag to trigger this given the needs for io_uring to have
-> context flags for timestamp updates to be added.=20
->=20
-> I have asked if we can have an inode flag set by the VFS or
-> application code for this. e.g. a flag set by nfsd whenever it accesses a
-> given inode.
->=20
-> I have asked if this inode flag can just be triggered if we ever see
-> I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
-> and whether this is a reliable mechanism for setting such a flag.
->=20
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drive=
+rs/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> index 6daf4d58c25d..125fe231702a 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> @@ -1193,31 +1193,32 @@ static char *nix_mnqerr_e_str[NIX_MNQERR_MAX] =3D=
+ {
+>  };
+> =20
+>  static char *nix_snd_status_e_str[NIX_SND_STATUS_MAX] =3D  {
+> -	"NIX_SND_STATUS_GOOD",
+> -	"NIX_SND_STATUS_SQ_CTX_FAULT",
+> -	"NIX_SND_STATUS_SQ_CTX_POISON",
+> -	"NIX_SND_STATUS_SQB_FAULT",
+> -	"NIX_SND_STATUS_SQB_POISON",
+> -	"NIX_SND_STATUS_HDR_ERR",
+> -	"NIX_SND_STATUS_EXT_ERR",
+> -	"NIX_SND_STATUS_JUMP_FAULT",
+> -	"NIX_SND_STATUS_JUMP_POISON",
+> -	"NIX_SND_STATUS_CRC_ERR",
+> -	"NIX_SND_STATUS_IMM_ERR",
+> -	"NIX_SND_STATUS_SG_ERR",
+> -	"NIX_SND_STATUS_MEM_ERR",
+> -	"NIX_SND_STATUS_INVALID_SUBDC",
+> -	"NIX_SND_STATUS_SUBDC_ORDER_ERR",
+> -	"NIX_SND_STATUS_DATA_FAULT",
+> -	"NIX_SND_STATUS_DATA_POISON",
+> -	"NIX_SND_STATUS_NPC_DROP_ACTION",
+> -	"NIX_SND_STATUS_LOCK_VIOL",
+> -	"NIX_SND_STATUS_NPC_UCAST_CHAN_ERR",
+> -	"NIX_SND_STATUS_NPC_MCAST_CHAN_ERR",
+> -	"NIX_SND_STATUS_NPC_MCAST_ABORT",
+> -	"NIX_SND_STATUS_NPC_VTAG_PTR_ERR",
+> -	"NIX_SND_STATUS_NPC_VTAG_SIZE_ERR",
+> -	"NIX_SND_STATUS_SEND_STATS_ERR",
+> +	[NIX_SND_STATUS_GOOD] =3D "NIX_SND_STATUS_GOOD",
+> +	[NIX_SND_STATUS_SQ_CTX_FAULT] =3D "NIX_SND_STATUS_SQ_CTX_FAULT",
+> +	[NIX_SND_STATUS_SQ_CTX_POISON] =3D "NIX_SND_STATUS_SQ_CTX_POISON",
+> +	[NIX_SND_STATUS_SQB_FAULT] =3D "NIX_SND_STATUS_SQB_FAULT",
+> +	[NIX_SND_STATUS_SQB_POISON] =3D "NIX_SND_STATUS_SQB_POISON",
+> +	[NIX_SND_STATUS_HDR_ERR] =3D "NIX_SND_STATUS_HDR_ERR",
+> +	[NIX_SND_STATUS_EXT_ERR] =3D "NIX_SND_STATUS_EXT_ERR",
+> +	[NIX_SND_STATUS_JUMP_FAULT] =3D "NIX_SND_STATUS_JUMP_FAULT",
+> +	[NIX_SND_STATUS_JUMP_POISON] =3D "NIX_SND_STATUS_JUMP_POISON",
+> +	[NIX_SND_STATUS_CRC_ERR] =3D "NIX_SND_STATUS_CRC_ERR",
+> +	[NIX_SND_STATUS_IMM_ERR] =3D "NIX_SND_STATUS_IMM_ERR",
+> +	[NIX_SND_STATUS_SG_ERR] =3D "NIX_SND_STATUS_SG_ERR",
+> +	[NIX_SND_STATUS_MEM_ERR] =3D "NIX_SND_STATUS_MEM_ERR",
+> +	[NIX_SND_STATUS_INVALID_SUBDC] =3D "NIX_SND_STATUS_INVALID_SUBDC",
+> +	[NIX_SND_STATUS_SUBDC_ORDER_ERR] =3D "NIX_SND_STATUS_SUBDC_ORDER_ERR",
+> +	[NIX_SND_STATUS_DATA_FAULT] =3D "NIX_SND_STATUS_DATA_FAULT",
+> +	[NIX_SND_STATUS_DATA_POISON] =3D "NIX_SND_STATUS_DATA_POISON",
+> +	[NIX_SND_STATUS_NPC_DROP_ACTION] =3D "NIX_SND_STATUS_NPC_DROP_ACTION",
+> +	[NIX_SND_STATUS_LOCK_VIOL] =3D "NIX_SND_STATUS_LOCK_VIOL",
+> +	[NIX_SND_STATUS_NPC_UCAST_CHAN_ERR] =3D "NIX_SND_STAT_NPC_UCAST_CHAN_ER=
+R",
+> +	[NIX_SND_STATUS_NPC_MCAST_CHAN_ERR] =3D "NIX_SND_STAT_NPC_MCAST_CHAN_ER=
+R",
+> +	[NIX_SND_STATUS_NPC_MCAST_ABORT] =3D "NIX_SND_STATUS_NPC_MCAST_ABORT",
+> +	[NIX_SND_STATUS_NPC_VTAG_PTR_ERR] =3D "NIX_SND_STATUS_NPC_VTAG_PTR_ERR"=
+,
+> +	[NIX_SND_STATUS_NPC_VTAG_SIZE_ERR] =3D "NIX_SND_STATUS_NPC_VTAG_SIZE_ER=
+R",
+> +	[NIX_SND_STATUS_SEND_MEM_FAULT] =3D "NIX_SND_STATUS_SEND_MEM_FAULT",
+> +	[NIX_SND_STATUS_SEND_STATS_ERR] =3D "NIX_SND_STATUS_SEND_STATS_ERR",
+>  };
+> =20
+>  static irqreturn_t otx2_q_intr_handler(int irq, void *data)
+> @@ -1238,14 +1239,16 @@ static irqreturn_t otx2_q_intr_handler(int irq, v=
+oid *data)
+>  			continue;
+> =20
+>  		if (val & BIT_ULL(42)) {
+> -			netdev_err(pf->netdev, "CQ%lld: error reading NIX_LF_CQ_OP_INT, NIX_L=
+F_ERR_INT 0x%llx\n",
+> +			netdev_err(pf->netdev,
+> +				   "CQ%lld: error reading NIX_LF_CQ_OP_INT, NIX_LF_ERR_INT 0x%llx\n"=
+,
+>  				   qidx, otx2_read64(pf, NIX_LF_ERR_INT));
+>  		} else {
+>  			if (val & BIT_ULL(NIX_CQERRINT_DOOR_ERR))
+>  				netdev_err(pf->netdev, "CQ%lld: Doorbell error",
+>  					   qidx);
+>  			if (val & BIT_ULL(NIX_CQERRINT_CQE_FAULT))
+> -				netdev_err(pf->netdev, "CQ%lld: Memory fault on CQE write to LLC/DRA=
+M",
+> +				netdev_err(pf->netdev,
+> +					   "CQ%lld: Memory fault on CQE write to LLC/DRAM",
+>  					   qidx);
+>  		}
 
-Ok, so to make sure I understand what you're proposing:
+It's not a big deal (no need to repost just for this), but the above
+chunk (and a couple below, too) is not related to the current fix, you
+should have not included it here.
 
-This would be a new inode flag that would be set in conjunction with
-I_VERSION_QUERIED (but presumably is never cleared)? When XFS sees this
-flag set, it would skip sending the atime to disk.
+Cheers,
 
-Given that you want to avoid on-disk changes, I assume this flag will
-not be stored on disk. What happens after the NFS server reboots?
+Paolo
 
-Consider:
+> =20
+> @@ -1272,7 +1275,8 @@ static irqreturn_t otx2_q_intr_handler(int irq, voi=
+d *data)
+>  			     (val & NIX_SQINT_BITS));
+> =20
+>  		if (val & BIT_ULL(42)) {
+> -			netdev_err(pf->netdev, "SQ%lld: error reading NIX_LF_SQ_OP_INT, NIX_L=
+F_ERR_INT 0x%llx\n",
+> +			netdev_err(pf->netdev,
+> +				   "SQ%lld: error reading NIX_LF_SQ_OP_INT, NIX_LF_ERR_INT 0x%llx\n"=
+,
+>  				   qidx, otx2_read64(pf, NIX_LF_ERR_INT));
+>  			goto done;
+>  		}
+> @@ -1282,8 +1286,11 @@ static irqreturn_t otx2_q_intr_handler(int irq, vo=
+id *data)
+>  			goto chk_mnq_err_dbg;
+> =20
+>  		sq_op_err_code =3D FIELD_GET(GENMASK(7, 0), sq_op_err_dbg);
+> -		netdev_err(pf->netdev, "SQ%lld: NIX_LF_SQ_OP_ERR_DBG(%llx)  err=3D%s\n=
+",
+> -			   qidx, sq_op_err_dbg, nix_sqoperr_e_str[sq_op_err_code]);
+> +		netdev_err(pf->netdev,
+> +			   "SQ%lld: NIX_LF_SQ_OP_ERR_DBG(0x%llx)  err=3D%s(%#x)\n",
+> +			   qidx, sq_op_err_dbg,
+> +			   nix_sqoperr_e_str[sq_op_err_code],
+> +			   sq_op_err_code);
+> =20
+>  		otx2_write64(pf, NIX_LF_SQ_OP_ERR_DBG, BIT_ULL(44));
+> =20
+> @@ -1300,16 +1307,21 @@ static irqreturn_t otx2_q_intr_handler(int irq, v=
+oid *data)
+>  			goto chk_snd_err_dbg;
+> =20
+>  		mnq_err_code =3D FIELD_GET(GENMASK(7, 0), mnq_err_dbg);
+> -		netdev_err(pf->netdev, "SQ%lld: NIX_LF_MNQ_ERR_DBG(%llx)  err=3D%s\n",
+> -			   qidx, mnq_err_dbg,  nix_mnqerr_e_str[mnq_err_code]);
+> +		netdev_err(pf->netdev,
+> +			   "SQ%lld: NIX_LF_MNQ_ERR_DBG(0x%llx)  err=3D%s(%#x)\n",
+> +			   qidx, mnq_err_dbg,  nix_mnqerr_e_str[mnq_err_code],
+> +			   mnq_err_code);
+>  		otx2_write64(pf, NIX_LF_MNQ_ERR_DBG, BIT_ULL(44));
+> =20
+>  chk_snd_err_dbg:
+>  		snd_err_dbg =3D otx2_read64(pf, NIX_LF_SEND_ERR_DBG);
+>  		if (snd_err_dbg & BIT(44)) {
+>  			snd_err_code =3D FIELD_GET(GENMASK(7, 0), snd_err_dbg);
+> -			netdev_err(pf->netdev, "SQ%lld: NIX_LF_SND_ERR_DBG:0x%llx err=3D%s\n"=
+,
+> -				   qidx, snd_err_dbg, nix_snd_status_e_str[snd_err_code]);
+> +			netdev_err(pf->netdev,
+> +				   "SQ%lld: NIX_LF_SND_ERR_DBG:0x%llx err=3D%s(%#x)\n",
+> +				   qidx, snd_err_dbg,
+> +				   nix_snd_status_e_str[snd_err_code],
+> +				   snd_err_code);
+>  			otx2_write64(pf, NIX_LF_SEND_ERR_DBG, BIT_ULL(44));
+>  		}
+> =20
 
-1/ NFS server queries for the i_version and we set the
-I_NO_ATIME_UPDATES_ON_DISK flag (or whatever) in conjunction with
-I_VERSION_QUERIED. Some atime updates occur and the i_version isn't
-bumped (as you'd expect).
-
-2/ The server then reboots.
-
-3/ Server comes back up, and some local task issues a read against the
-inode. I_NO_ATIME_UPDATES_ON_DISK never had a chance to be set after the
-reboot, so that atime update ends up incrementing the i_version counter.
-
-4/ client cache invalidation occurs even though there was no write to
-the file
-
-This might reduce some of the spurious i_version bumps, but I don't see
-how it can eliminate them entirely.
-
-> I have suggested mechanisms for using masked off bits of timestamps
-> to encode sub-timestamp granularity change counts and keep them
-> invisible to userspace and then not using i_version at all for XFS.
-> This avoids all the problems that the multi-grain timestamp
-> infrastructure exposed due to variable granularity of user visible
-> timestamps and ordering across inodes with different granularity.
-> This is potentially a general solution, too.
->=20
-
-I don't really understand this at all, but trying to do anything with
-fine-grained timestamps will just run into a lot of the same problems we
-hit with the multigrain work. If you still see this as a path forward,
-maybe you can describe it more detail?
-
-
-> So, yeah, there are *lots* of ways we can solve this problem without
-> needing to change on-disk formats.
->=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
