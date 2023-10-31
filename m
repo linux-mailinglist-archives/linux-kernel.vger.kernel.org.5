@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092667DD52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96D77DD538
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376444AbjJaRsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57644 "EHLO
+        id S1376493AbjJaRsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376427AbjJaRr7 (ORCPT
+        with ESMTP id S1376487AbjJaRsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:47:59 -0400
+        Tue, 31 Oct 2023 13:48:18 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5202792
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:47:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE42DF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698774431;
+        s=mimecast20190719; t=1698774449;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q8gN1E0qkL8gM8KwD/+d6NxFSXLY+pIiGeicsPrALt8=;
-        b=J3oEgKj2BthzPTKbgfru6vCGZoaAH7IE6qj1JP3jnnha6R43qGOeid6j3lw0WIy7d6C9ZB
-        00f/rvrhmnmJpaWwoLfgQ9tfDc4qWmc0wO9cIThMKxetD0XUHjOz1a/W7mSqZebf2TedCx
-        ezrWowknbq9UVmfdJdS4L8BjkoM1cTo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=YGq193LtBbfYWxLteF7JwAWgv8pm+P/KLCPfheg7LiM=;
+        b=D5ewZFrrOguPTItseNFCrjRe3wg6KqM7hPBCj3B0WvgITuPu8Fj2oWn3yiyLvIj7eRZlcv
+        LnPBHTI06wNjYT/deBHWPlRr0K3QEoKLuEbciQaQrWAzdiQTEyzB8PkjifykT/kCWm2eiF
+        4TRAWDaj2n0M+9ctna8KuuyUH2NGCyo=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-101-39EliakqPOmzsrubIa3lHw-1; Tue, 31 Oct 2023 13:47:05 -0400
-X-MC-Unique: 39EliakqPOmzsrubIa3lHw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32f790a39d2so1623076f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:47:04 -0700 (PDT)
+ us-mta-67-G56q-I8xOmiMZKVwNwBQhg-1; Tue, 31 Oct 2023 13:47:22 -0400
+X-MC-Unique: G56q-I8xOmiMZKVwNwBQhg-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-507cafb69e8so6370793e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:47:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774424; x=1699379224;
+        d=1e100.net; s=20230601; t=1698774441; x=1699379241;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q8gN1E0qkL8gM8KwD/+d6NxFSXLY+pIiGeicsPrALt8=;
-        b=XD2pwixDeZxuau9VCxCP3cR1fp2OyiHzP9jlAw1TuxunQw/qqkPGlJmp89nhkrfw4k
-         ayC9TLpRoNNlwGcemTNhh+Wk0TewTUhC4Lr6++4eFRMAbmefLV5AFRjAEXAa5+5LkZww
-         0yPCBOMtMkrTkd5QqUt9xnYJJXOaXIaVJ49NGbMCdpTQOAakET4yA9I3MFVwtoDmKsBh
-         GJo6PMgmAiBYjMLERSRcIzo25sBscPvRaE0WojqpYy1ryJ+NW1l8vjdG7mOd6TMK4Omq
-         JQfP9pThkfxs3JRz36X33Gz9eS2LTpRNbdC/3iHf6CaUHIPPw76cDbc/U6bLxSOCG6Xm
-         oPcA==
-X-Gm-Message-State: AOJu0YzIIvHHK/z2kIPmhqWTGZ+WNRD01JD8tVb9uvdEotBgaGDdb4m1
-        YHnGi/3pr7mW5hIbW/wM/xTmV15gSxmf5yYuugwfvm0v+RoLYmNyZs89AQetE5rYAcSzwsDJ073
-        dQdnUpqWbiI46sOBAxe4q2bTf
-X-Received: by 2002:adf:f286:0:b0:31a:d450:c513 with SMTP id k6-20020adff286000000b0031ad450c513mr11142586wro.26.1698774423891;
-        Tue, 31 Oct 2023 10:47:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHP9BCCeLEq6xdvs0Wx3pQhh6AItnLCO3wuz6+zvdhlWsIln3ZP18nlHwSoZ2VX9KH84ZLWTQ==
-X-Received: by 2002:adf:f286:0:b0:31a:d450:c513 with SMTP id k6-20020adff286000000b0031ad450c513mr11142577wro.26.1698774423599;
-        Tue, 31 Oct 2023 10:47:03 -0700 (PDT)
+        bh=YGq193LtBbfYWxLteF7JwAWgv8pm+P/KLCPfheg7LiM=;
+        b=JGw9x+XAUJ6yidKMLHLrD9h2KH9F7OEjAjnpRybl5l+yfbMECU+yV8pfnlbxrbrhDm
+         h+lwCvpEoSgKShVGsOTnsCojUl9q5lqdAwUbqyqOrKyn2VPdsWe4ykCmEMdQPs/znZ4D
+         IKZr9tYfmM01cp2eojZbEQriWAcYwky0i4aEPqEoM8Q1M3gUB5TEGLtrrNel7So/gAwJ
+         ksNkBcmT8M7tvjesonWfiWLy6NqNdOEwbybxdcKdvAD0UIAUQ2qnpSG+K1xt8TSFJgbt
+         21JTNimeJhe1oX3ABSTiwS+C6t3c4lCrq+AjtJZrFt4lViycLxFBx8Ia73XW1jCUgVVF
+         Hy4g==
+X-Gm-Message-State: AOJu0Yx50lIWmwnSgy51sz2DHsG0auWDeNSlTlx/az1ghan2LpQPvmHe
+        oFw42PLQJ6uVpv6WO7eVz/reWwleIZjRJuKQ11umJozCLjihQqmBt4ZXyQZTYv1G1HBkTpvkj01
+        MOTNxhGSoCHiZpmCe7jClMJxLjYPfvlFX
+X-Received: by 2002:a19:a411:0:b0:502:fff9:64da with SMTP id q17-20020a19a411000000b00502fff964damr9806286lfc.53.1698774441070;
+        Tue, 31 Oct 2023 10:47:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHr4+e3yKcsTlIJFrosy++mDAX9Uum8J6H9NAhaA9CLQBuU5y9jo8eO0pSEv7wj5sQ4lmH25Q==
+X-Received: by 2002:a19:a411:0:b0:502:fff9:64da with SMTP id q17-20020a19a411000000b00502fff964damr9806266lfc.53.1698774440720;
+        Tue, 31 Oct 2023 10:47:20 -0700 (PDT)
 Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id w5-20020adfec45000000b0032d9523de65sm2008194wrn.48.2023.10.31.10.47.02
+        by smtp.gmail.com with ESMTPSA id b17-20020a5d4b91000000b0032dba85ea1bsm2012068wrt.75.2023.10.31.10.47.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:47:03 -0700 (PDT)
-Message-ID: <92faa0085d1450537a111ed7d90faa8074201bed.camel@redhat.com>
-Subject: Re: [PATCH v6 10/25] KVM: x86: Add kvm_msr_{read,write}() helpers
+        Tue, 31 Oct 2023 10:47:20 -0700 (PDT)
+Message-ID: <e10fb116aa67509f7a63660a6b0731e28935c820.camel@redhat.com>
+Subject: Re: [PATCH v6 11/25] KVM: x86: Report XSS as to-be-saved if there
+ are supported features
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
         pbonzini@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
         rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Tue, 31 Oct 2023 19:47:01 +0200
-In-Reply-To: <20230914063325.85503-11-weijiang.yang@intel.com>
+Date:   Tue, 31 Oct 2023 19:47:18 +0200
+In-Reply-To: <20230914063325.85503-12-weijiang.yang@intel.com>
 References: <20230914063325.85503-1-weijiang.yang@intel.com>
-         <20230914063325.85503-11-weijiang.yang@intel.com>
+         <20230914063325.85503-12-weijiang.yang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
@@ -83,127 +84,76 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> Wrap __kvm_{get,set}_msr() into two new helpers for KVM usage and use the
-> helpers to replace existing usage of the raw functions.
-> kvm_msr_{read,write}() are KVM-internal helpers, i.e. used when KVM needs
-> to get/set a MSR value for emulating CPU behavior.
-
-I am not sure if I like this patch or not. On one hand the code is cleaner this way,
-but on the other hand now it is easier to call kvm_msr_write() on behalf of the guest.
-
-For example we also have the 'kvm_set_msr()' which does actually set the msr on behalf of the guest.
-
-How about we call the new function kvm_msr_set_host() and rename kvm_set_msr() to kvm_msr_set_guest(),
-together with good comments explaning what they do?
+> From: Sean Christopherson <seanjc@google.com>
+> 
+> Add MSR_IA32_XSS to list of MSRs reported to userspace if supported_xss
+> is non-zero, i.e. KVM supports at least one XSS based feature.
 
 
-Also functions like kvm_set_msr_ignored_check(), kvm_set_msr_with_filter() and such,
-IMHO have names that are not very user friendly. 
+I can't believe that CET is the first supervisor feature that KVM supports...
 
-A refactoring is very welcome in this area. At the very least they should gain 
-thoughtful comments about what they do.
+Ah, now I understand why:
+
+1. XSAVES on AMD can't really be intercepted (other than clearing CR4.OSXSAVE bit, which isn't an option if you want to support AVX for example)
+   On VMX however you can intercept XSAVES and even intercept it only when it touches specific bits of state that you don't want the guest to read/write
+   freely.
+
+2. Even if it was possible to intercept it, guests use XSAVES on every context switch if available and emulating it might be costly.
+
+3. Emulating XSAVES is also not that easy to do correctly.
+
+However XSAVES touches various MSRs, thus letting the guest use it unintercepted means giving access to host MSRs,
+which might be wrong security wise in some cases.
+
+Thus I see that KVM hardcodes the IA32_XSS to 0, and that makes the XSAVES work exactly like XSAVE.
+
+And for some features which would benefit from XSAVES state components,
+KVM likely won't even be able to do so due to this limitation.
+(this is allowed thankfully by the CPUID), forcing the guests to use rdmsr/wrmsr instead.
 
 
-For reading msrs API, I can suggest similar names and comments:
+However it is possible to enable IA32_XSS bits in case the msrs XSAVES reads/writes can't do harm to the host, and then KVM
+can context switch these MSRs when the guest exits and that is what is done here with CET.
 
-/* 
- * Read a value of a MSR. 
- * Some MSRs exist in the KVM model even when the guest can't read them.
- */
-int kvm_get_msr_value(struct kvm_vcpu *vcpu, u32 index, u64 *data);
+If you think that a short summary of the above can help the future reader to understand why IA32_XSS support is added only now,
+it might be a good idea to add a few lines to the changelog of this patch.
+
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/x86.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e0b55c043dab..1258d1d6dd52 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1464,6 +1464,7 @@ static const u32 msrs_to_save_base[] = {
+>  	MSR_IA32_UMWAIT_CONTROL,
+>  
+>  	MSR_IA32_XFD, MSR_IA32_XFD_ERR,
+> +	MSR_IA32_XSS,
+>  };
+>  
+>  static const u32 msrs_to_save_pmu[] = {
+> @@ -7195,6 +7196,10 @@ static void kvm_probe_msr_to_save(u32 msr_index)
+>  		if (!(kvm_get_arch_capabilities() & ARCH_CAP_TSX_CTRL_MSR))
+>  			return;
+>  		break;
+> +	case MSR_IA32_XSS:
+> +		if (!kvm_caps.supported_xss)
+> +			return;
+> +		break;
+>  	default:
+>  		break;
+>  	}
 
 
-/*  Read a value of a MSR on the behalf of the guest */
-
-int kvm_get_guest_msr_value(struct kvm_vcpu *vcpu, u32 index, u64 *data);
-
-
-Although I am not going to argue over this, there are multiple ways to improve this,
-and also keeping things as is, or something similar to this patch is also fine with me.
-
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
 Best regards,
 	Maxim Levitsky
-
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  4 +++-
->  arch/x86/kvm/cpuid.c            |  2 +-
->  arch/x86/kvm/x86.c              | 16 +++++++++++++---
->  3 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 1a4def36d5bb..0fc5e6312e93 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1956,7 +1956,9 @@ void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu);
->  
->  void kvm_enable_efer_bits(u64);
->  bool kvm_valid_efer(struct kvm_vcpu *vcpu, u64 efer);
-> -int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data, bool host_initiated);
-> +
-> +int kvm_msr_read(struct kvm_vcpu *vcpu, u32 index, u64 *data);
-> +int kvm_msr_write(struct kvm_vcpu *vcpu, u32 index, u64 data);
->  int kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data);
->  int kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data);
->  int kvm_emulate_rdmsr(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 7c3e4a550ca7..1f206caec559 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -1531,7 +1531,7 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
->  		*edx = entry->edx;
->  		if (function == 7 && index == 0) {
->  			u64 data;
-> -		        if (!__kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data, true) &&
-> +		        if (!kvm_msr_read(vcpu, MSR_IA32_TSX_CTRL, &data) &&
->  			    (data & TSX_CTRL_CPUID_CLEAR))
->  				*ebx &= ~(F(RTM) | F(HLE));
->  		} else if (function == 0x80000007) {
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 6c9c81e82e65..e0b55c043dab 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1917,8 +1917,8 @@ static int kvm_set_msr_ignored_check(struct kvm_vcpu *vcpu,
->   * Returns 0 on success, non-0 otherwise.
->   * Assumes vcpu_load() was already called.
->   */
-> -int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
-> -		  bool host_initiated)
-> +static int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
-> +			 bool host_initiated)
->  {
->  	struct msr_data msr;
->  	int ret;
-> @@ -1944,6 +1944,16 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
->  	return ret;
->  }
->  
-> +int kvm_msr_write(struct kvm_vcpu *vcpu, u32 index, u64 data)
-> +{
-> +	return __kvm_set_msr(vcpu, index, data, true);
-> +}
-> +
-> +int kvm_msr_read(struct kvm_vcpu *vcpu, u32 index, u64 *data)
-> +{
-> +	return __kvm_get_msr(vcpu, index, data, true);
-> +}
-> +
->  static int kvm_get_msr_ignored_check(struct kvm_vcpu *vcpu,
->  				     u32 index, u64 *data, bool host_initiated)
->  {
-> @@ -12082,7 +12092,7 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->  						  MSR_IA32_MISC_ENABLE_BTS_UNAVAIL;
->  
->  		__kvm_set_xcr(vcpu, 0, XFEATURE_MASK_FP);
-> -		__kvm_set_msr(vcpu, MSR_IA32_XSS, 0, true);
-> +		kvm_msr_write(vcpu, MSR_IA32_XSS, 0);
->  	}
->  
->  	/* All GPRs except RDX (handled below) are zeroed on RESET/INIT. */
-
 
 
 
