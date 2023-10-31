@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0BE7DD59B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF8E7DD59F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376382AbjJaRzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
+        id S1376562AbjJaRzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236497AbjJaRzK (ORCPT
+        with ESMTP id S1345368AbjJaRzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:55:10 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D86A6;
-        Tue, 31 Oct 2023 10:55:08 -0700 (PDT)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ce2cc39d12so3744138a34.1;
-        Tue, 31 Oct 2023 10:55:08 -0700 (PDT)
+        Tue, 31 Oct 2023 13:55:33 -0400
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF58FC1;
+        Tue, 31 Oct 2023 10:55:28 -0700 (PDT)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b2f2b9a176so3871891b6e.0;
+        Tue, 31 Oct 2023 10:55:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774907; x=1699379707;
+        d=1e100.net; s=20230601; t=1698774928; x=1699379728;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3sOmvixHfQMEf6cSX5X+V5dJf4sK0eb9T02qoOsLX1I=;
-        b=FO0DL21WDHCdAGVFATNdly/5OFFh7Hpt5U+TFHNvqjR9/0Zgti8LWEsn2Ef24T6U56
-         354MzH3xoZoUeHAtEFXV/OD55uB/bC6unjDq/Zc5XOoaTH+gTSfFMEP+/DgCVRX0IbvM
-         CjWBw/9Fjcd2cLpApgMhjXOXpNMctqSdWVERjgwzvJlxJRlrRopVlOL5J3hZ4UHEooJF
-         XWa4jAGFrtoGmCtExfsKGultsJC3xsa4F7lixn8hSanFtNuUUwA/y9dinlRsH9QFJnk9
-         GIQIvcWSUrt0EPujfz2EHtIAbRP11WCVSpjlu+qpy9tMlIBXQVF9L9fG7rYjO6eWhsJi
-         94RQ==
-X-Gm-Message-State: AOJu0YyWGzmDI4JuRCZg4GAEdd3CmWP6JQ8kDyt2nm0y4QKBSoDvTOEJ
-        hiKZxbrCQ8IbuBp/TyqCWA==
-X-Google-Smtp-Source: AGHT+IFmuj30SZPqXu2EIXyI7kKLettnOwn2LVc9BC4D5MXj13OHIw3L94S9nKTG5g66A8WPtZAtEA==
-X-Received: by 2002:a05:6870:cd93:b0:1e9:97cc:59ff with SMTP id xb19-20020a056870cd9300b001e997cc59ffmr16786765oab.9.1698774907268;
-        Tue, 31 Oct 2023 10:55:07 -0700 (PDT)
+        bh=cghi8HzRqMQtZYMVfq+8g/GwoACch6SchmkRjnW1zRM=;
+        b=wlD4gYilShyvpxIcWnXmiZo8ftYC563a84DEvWEiJ7hzs2sJEG+lKwk3undp/gCW92
+         8LjF0Y4Vy+Y2vCuFnFZSo0K5owgzwQd7/maLL19KNbOyrhwwEXtB3crPMAV2kgp3IpqD
+         fTjCqq2YTfhYbB4askukA/mVmQm8yWFzV/zeftQZr1Rhb/5WVGXoCV1ji9d72hhR8jzV
+         PFXk4va3QA+NiH6ryVzo13RYU+RNUsh4oBpN6KvmMFCc6gk7FL3fdDArgxwGpwOqXVgX
+         9T4WOjbP6s0sFAWqdqe0yoOL9aYf+D2sR4bh8Scd102C7ZPra3jDi1T1Zc50GNUSY5Xf
+         Zy3A==
+X-Gm-Message-State: AOJu0YxmMDCrfRsP1pAI9iXIWCTW7qaCM4VYxX6NoxzqzocnERxLStGJ
+        EqM44dVryih+cOUyIxf0ZA==
+X-Google-Smtp-Source: AGHT+IEzgDoWb29ZJLyxAQR/UtzwH60FOikEPz4ULoPEiWOeX2qzVl3h09iHl3uA/9qvyP/m3aTQpw==
+X-Received: by 2002:aca:d03:0:b0:3ae:126b:8bfc with SMTP id 3-20020aca0d03000000b003ae126b8bfcmr13403099oin.4.1698774928201;
+        Tue, 31 Oct 2023 10:55:28 -0700 (PDT)
 Received: from herring.priv ([4.31.143.193])
-        by smtp.gmail.com with ESMTPSA id n1-20020a056870034100b001e9b02b00e9sm368369oaf.22.2023.10.31.10.55.05
+        by smtp.gmail.com with ESMTPSA id z3-20020a056808048300b003b2e7231faasm328109oid.28.2023.10.31.10.55.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:55:06 -0700 (PDT)
-Received: (nullmailer pid 1809590 invoked by uid 1000);
-        Tue, 31 Oct 2023 17:55:05 -0000
-Date:   Tue, 31 Oct 2023 12:55:05 -0500
+        Tue, 31 Oct 2023 10:55:27 -0700 (PDT)
+Received: (nullmailer pid 1810151 invoked by uid 1000);
+        Tue, 31 Oct 2023 17:55:26 -0000
+Date:   Tue, 31 Oct 2023 12:55:26 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        David Airlie <airlied@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
+Cc:     Conor Dooley <conor+dt@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH v9 02/16] dt-bindings: media: mediatek: mdp3: merge the
- indentical RDMA under display
-Message-ID: <169877490486.1809532.9023561200743242448.robh@kernel.org>
+        David Airlie <airlied@gmail.com>, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Subject: Re: [PATCH v9 03/16] dt-bindings: media: mediatek: mdp3: add config
+ for MT8195 RDMA
+Message-ID: <169877492598.1810050.14443640728512842209.robh@kernel.org>
 References: <20231031083357.13775-1-moudy.ho@mediatek.com>
- <20231031083357.13775-3-moudy.ho@mediatek.com>
+ <20231031083357.13775-4-moudy.ho@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031083357.13775-3-moudy.ho@mediatek.com>
+In-Reply-To: <20231031083357.13775-4-moudy.ho@mediatek.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,23 +83,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 31 Oct 2023 16:33:43 +0800, Moudy Ho wrote:
-> To simplify maintenance and avoid branches, the identical component
-> should be merged and placed in the path belonging to the MDP
-> (from display/* to media/*).
-> 
-> In addition, currently only MDP utilizes RDMA through CMDQ, and the
-> necessary properties for "mediatek,gce-events", and "mboxes" have been
-> set up for this purpose.
-> Within DISP, it directly receives component interrupt signals.
+On Tue, 31 Oct 2023 16:33:44 +0800, Moudy Ho wrote:
+> Added the configuration for MT8195 RDMA. In comparison to MT8183, it
+> no longer shares SRAM with RSZ, and there are now preconfigured 5 mbox.
 > 
 > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
 > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
->  .../display/mediatek/mediatek,mdp-rdma.yaml   | 88 -------------------
->  .../bindings/media/mediatek,mdp3-rdma.yaml    | 42 ++++++++-
->  2 files changed, 38 insertions(+), 92 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
+>  .../bindings/media/mediatek,mdp3-rdma.yaml    | 21 +++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
