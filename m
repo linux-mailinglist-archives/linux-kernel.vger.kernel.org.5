@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33587DD839
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A497DD83A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346746AbjJaWZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
+        id S1346761AbjJaWZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346613AbjJaWZ2 (ORCPT
+        with ESMTP id S1346659AbjJaWZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:25:28 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAA0109
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:25:24 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b2e22f1937so3345942b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:25:24 -0700 (PDT)
+        Tue, 31 Oct 2023 18:25:29 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06609ED
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:25:26 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2f28caab9so3634606b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:25:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698791123; x=1699395923; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698791125; x=1699395925; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0zncT9czs3Kf1mLIz6jNPx2fSeuRY89kkdJQNWH+fw8=;
-        b=TGNPOvHx5V8n1sHwzCWB/XftsBMwT2mXATXBV2R6ItjPz02eePcUcTQeZQrlEGoQTZ
-         30R8crqOtPDnmksbV9Dj6XLxHjHUT3q/S0mLSWbC4AWlt8XHbQOYo+j5srVn4VsfZexP
-         cTE4Db3yoMRNEkVMn2vbWMQ7KXXYx0OymmQF+3n+WL9NaGlSHwPV9inaawU041R0Ebge
-         uzD7fRx66CG3hRn30VgtkWkIAXU/rr1KFTtJWgFJrgLR4DOygIAPiUofPJsq6PeY1sqa
-         +0jJSK11ky2WHXongIqAj9bQeZ/eKkcQbIQA+0OCS88+vUmskp4W5PxhSdqD97RjNaSk
-         PJKA==
+        bh=kzym5qAuTfM0R7xLqOGuP3tKqEclOj4G4PtzJ407Bo8=;
+        b=UNVYoOqZfaMPfA8TeUyeVu8//vE0mffUjIBelDoWUp0rRtboQnCjLySyVVTENIrunh
+         /MD9pLNA/rB6Vksn1+PHDthilviou51Oq2M6qqBeJkUTsvztFNITZHPHCD2aVL4wCz9r
+         3VTKdg0EHRQTecf5Eb39zu8jpvWfxnwfh09xQpi5Jq7Tv6a2hKpBa/3wQNXpKxoH5hYY
+         YwII+eoEi0fIQRR4fmIxGlPwlVk1u4HjVi6Rtfwy4AHr7hvA1UezQU8DstYsFYrHReLg
+         +2wn9ypyjhZsE/nKla66/epMfILJeSfqwnIbqB5prrHDICes001SsVOCRTXGyZNhJf0S
+         mtqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698791123; x=1699395923;
+        d=1e100.net; s=20230601; t=1698791125; x=1699395925;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0zncT9czs3Kf1mLIz6jNPx2fSeuRY89kkdJQNWH+fw8=;
-        b=Eh/ZEaFtMGrYM9351QEd9vmHam8HJD0SinIHfUExeXuRJ/obiP6kKNZgWq7M6hNATG
-         Q0Sn91wxCztACMbO0HiM7Iy9OIpHTZpUCIyxIl/YDWH4Qu2FOIAau0DBEhO3OzNWmVUO
-         xd6QzSgwJZyWPYeA8tVyZlup8ACdycoYVUKdjRCk2e5RJbbfqEH03Zvdnd+bs2dED8QO
-         Iot895gPfnwyePtRD7Duik97df21krwWJbcwJW/0OZ0XvRQenc2y8pDyVZMgy9dpSoGm
-         pdYelicfoRaROZn2mrkCD09+Cmo4O49I0sMUF57CgX2OfY6Pu3dOKtUi4ieAZ21aExAm
-         /N+Q==
-X-Gm-Message-State: AOJu0YzNQ28cdDIh9qOTcKxg4rstwPFsEUiOjUUlxskotLSRjo+kKDIm
-        q46Cw/KhWyVCrQtSU84/v2UJAU16IF3Dy3tRuGs=
-X-Google-Smtp-Source: AGHT+IFqrdUHHfocLDjUQx5OZ85+8lDJ+lkqhXSMiGkGGzLTQoXOpDZqTKHwWMXlmvKYh717OAFipg==
-X-Received: by 2002:a05:6808:3a85:b0:3a9:cfb5:4641 with SMTP id fb5-20020a0568083a8500b003a9cfb54641mr13527765oib.48.1698791123645;
-        Tue, 31 Oct 2023 15:25:23 -0700 (PDT)
+        bh=kzym5qAuTfM0R7xLqOGuP3tKqEclOj4G4PtzJ407Bo8=;
+        b=GokXe7U0F8kUk6m3AJ599dgtobK97V6R1T7wUZzetuHamBDH10NxP7wHatui7rgm+v
+         MqHVAwelPG7YORQtj9tCNjiPVn3AQ+5jei4dxmhGSHRIO9xh10YNRKJDV28WmHvxcXaU
+         p8/hiPk71yLWj0XPwZyAI8b/JMccIkJ4Hbh2/lIZJHBFyiMbFme/ESYMOiQuvYnuFyg0
+         AgYBpNj1NioS8t+4XVg4UL4D092bhl9ILhPkjOe22hoUMltru+t8cil73kH/OaCJo/o5
+         Z+44K9UcH4NQrGAeGhqBblgI0XsLkdQv3BVYBcFZt/IxTNz4GhHSl79gH/hUoxU2IG/c
+         eHXw==
+X-Gm-Message-State: AOJu0Ywom1IpsaGOrUb6EGc3dDqK1DUH6o2C4syuXOKxTzUtloHLJ0m0
+        WGir1Hmb2N3zl3hAfPnP7UCB8R/DzXdJZ4T4FRg=
+X-Google-Smtp-Source: AGHT+IEgf8FqaI2mE6N4OT1MkxdbqtQpJvNgpToalqj732mWTMseJddPm5QirOV8siYAD8zcD8gNbA==
+X-Received: by 2002:a05:6808:2395:b0:3ae:5c36:99b2 with SMTP id bp21-20020a056808239500b003ae5c3699b2mr18350793oib.55.1698791124991;
+        Tue, 31 Oct 2023 15:25:24 -0700 (PDT)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id k16-20020a544410000000b003b2e7231faasm42975oiw.28.2023.10.31.15.25.22
+        by smtp.gmail.com with ESMTPSA id k16-20020a544410000000b003b2e7231faasm42975oiw.28.2023.10.31.15.25.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 15:25:23 -0700 (PDT)
+        Tue, 31 Oct 2023 15:25:24 -0700 (PDT)
 From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Tue, 31 Oct 2023 15:25:14 -0700
-Subject: [PATCH v8 2/3] riscv: Add remaining module relocations
+Date:   Tue, 31 Oct 2023 15:25:15 -0700
+Subject: [PATCH v8 3/3] riscv: Add tests for riscv module loading
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231031-module_relocations-v8-2-09b5b720c1fe@rivosinc.com>
+Message-Id: <20231031-module_relocations-v8-3-09b5b720c1fe@rivosinc.com>
 References: <20231031-module_relocations-v8-0-09b5b720c1fe@rivosinc.com>
 In-Reply-To: <20231031-module_relocations-v8-0-09b5b720c1fe@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
@@ -81,634 +81,495 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add all final module relocations and add error logs explaining the ones
-that are not supported. Implement overflow checks for
-ADD/SUB/SET/ULEB128 relocations.
+Add test cases for the two main groups of relocations added: SUB and
+SET, along with uleb128.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/riscv/include/uapi/asm/elf.h |   5 +-
- arch/riscv/kernel/module.c        | 503 +++++++++++++++++++++++++++++++++++---
- 2 files changed, 476 insertions(+), 32 deletions(-)
+ arch/riscv/Kconfig.debug                           |  1 +
+ arch/riscv/kernel/Makefile                         |  1 +
+ arch/riscv/kernel/tests/Kconfig.debug              | 35 +++++++++
+ arch/riscv/kernel/tests/Makefile                   |  1 +
+ arch/riscv/kernel/tests/module_test/Makefile       | 15 ++++
+ .../tests/module_test/test_module_linking_main.c   | 88 ++++++++++++++++++++++
+ arch/riscv/kernel/tests/module_test/test_set16.S   | 23 ++++++
+ arch/riscv/kernel/tests/module_test/test_set32.S   | 20 +++++
+ arch/riscv/kernel/tests/module_test/test_set6.S    | 23 ++++++
+ arch/riscv/kernel/tests/module_test/test_set8.S    | 23 ++++++
+ arch/riscv/kernel/tests/module_test/test_sub16.S   | 20 +++++
+ arch/riscv/kernel/tests/module_test/test_sub32.S   | 20 +++++
+ arch/riscv/kernel/tests/module_test/test_sub6.S    | 20 +++++
+ arch/riscv/kernel/tests/module_test/test_sub64.S   | 25 ++++++
+ arch/riscv/kernel/tests/module_test/test_sub8.S    | 20 +++++
+ arch/riscv/kernel/tests/module_test/test_uleb128.S | 31 ++++++++
+ 16 files changed, 366 insertions(+)
 
-diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
-index d696d6610231..11a71b8533d5 100644
---- a/arch/riscv/include/uapi/asm/elf.h
-+++ b/arch/riscv/include/uapi/asm/elf.h
-@@ -49,6 +49,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
- #define R_RISCV_TLS_DTPREL64	9
- #define R_RISCV_TLS_TPREL32	10
- #define R_RISCV_TLS_TPREL64	11
-+#define R_RISCV_IRELATIVE	58
+diff --git a/arch/riscv/Kconfig.debug b/arch/riscv/Kconfig.debug
+index e69de29bb2d1..eafe17ebf710 100644
+--- a/arch/riscv/Kconfig.debug
++++ b/arch/riscv/Kconfig.debug
+@@ -0,0 +1 @@
++source "arch/riscv/kernel/tests/Kconfig.debug"
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 95cf25d48405..bb99657252f4 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -57,6 +57,7 @@ obj-y	+= stacktrace.o
+ obj-y	+= cacheinfo.o
+ obj-y	+= patch.o
+ obj-y	+= probes/
++obj-y	+= tests/
+ obj-$(CONFIG_MMU) += vdso.o vdso/
  
- /* Relocation types not used by the dynamic linker */
- #define R_RISCV_BRANCH		16
-@@ -81,7 +82,6 @@ typedef union __riscv_fp_state elf_fpregset_t;
- #define R_RISCV_ALIGN		43
- #define R_RISCV_RVC_BRANCH	44
- #define R_RISCV_RVC_JUMP	45
--#define R_RISCV_LUI		46
- #define R_RISCV_GPREL_I		47
- #define R_RISCV_GPREL_S		48
- #define R_RISCV_TPREL_I		49
-@@ -93,6 +93,9 @@ typedef union __riscv_fp_state elf_fpregset_t;
- #define R_RISCV_SET16		55
- #define R_RISCV_SET32		56
- #define R_RISCV_32_PCREL	57
-+#define R_RISCV_PLT32		59
-+#define R_RISCV_SET_ULEB128	60
-+#define R_RISCV_SUB_ULEB128	61
- 
- 
- #endif /* _UAPI_ASM_RISCV_ELF_H */
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index a9e94e939cb5..0f5d41eaa596 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -7,6 +7,9 @@
- #include <linux/elf.h>
- #include <linux/err.h>
- #include <linux/errno.h>
-+#include <linux/hashtable.h>
-+#include <linux/kernel.h>
-+#include <linux/log2.h>
- #include <linux/moduleloader.h>
- #include <linux/vmalloc.h>
- #include <linux/sizes.h>
-@@ -14,6 +17,39 @@
- #include <asm/alternative.h>
- #include <asm/sections.h>
- 
-+struct used_bucket {
-+	struct list_head head;
-+	struct hlist_head *bucket;
-+};
+ obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
+diff --git a/arch/riscv/kernel/tests/Kconfig.debug b/arch/riscv/kernel/tests/Kconfig.debug
+new file mode 100644
+index 000000000000..5dba64e8e977
+--- /dev/null
++++ b/arch/riscv/kernel/tests/Kconfig.debug
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: GPL-2.0-only
++menu "arch/riscv/kernel Testing and Coverage"
 +
-+struct relocation_head {
-+	struct hlist_node node;
-+	struct list_head *rel_entry;
-+	void *location;
-+};
++config AS_HAS_ULEB128
++	def_bool $(as-instr,.reloc label$(comma) R_RISCV_SET_ULEB128$(comma) 127\n.reloc label$(comma) R_RISCV_SUB_ULEB128$(comma) 127\nlabel:\n.word 0)
 +
-+struct relocation_entry {
-+	struct list_head head;
-+	Elf_Addr value;
-+	unsigned int type;
-+};
++menuconfig RUNTIME_KERNEL_TESTING_MENU
++       bool "arch/riscv/kernel runtime Testing"
++       def_bool y
++       help
++         Enable riscv kernel runtime testing.
 +
-+struct relocation_handlers {
-+	int (*reloc_handler)(struct module *me, void *location, Elf_Addr v);
-+	bool accumulate_relocations;
-+	int (*accumulate_handler)(struct module *me, void *location,
-+				  long buffer);
-+};
++if RUNTIME_KERNEL_TESTING_MENU
 +
-+unsigned int initialize_relocation_hashtable(unsigned int num_relocations);
-+void process_accumulated_relocations(struct module *me);
-+int add_relocation_to_accumulate(struct module *me, int type, void *location,
-+				 unsigned int hashtable_bits, Elf_Addr v);
++config RISCV_MODULE_LINKING_KUNIT
++       bool "KUnit test riscv module linking at runtime" if !KUNIT_ALL_TESTS
++       depends on KUNIT
++       default KUNIT_ALL_TESTS
++       help
++         Enable this option to test riscv module linking at boot. This will
++	 enable a module called "test_module_linking".
 +
-+struct hlist_head *relocation_hashtable;
++         KUnit tests run during boot and output the results to the debug log
++         in TAP format (http://testanything.org/). Only useful for kernel devs
++         running the KUnit test harness, and not intended for inclusion into a
++         production build.
 +
-+struct list_head used_buckets_list;
++         For more information on KUnit and unit tests in general please refer
++         to the KUnit documentation in Documentation/dev-tools/kunit/.
 +
- /*
-  * The auipc+jalr instruction pair can reach any PC-relative offset
-  * in the range [-2^31 - 2^11, 2^31 - 2^11)
-@@ -35,7 +71,7 @@ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
- 	insn &= keep;
- 	insn |= set;
- 
--	parcel[0] = cpu_to_le32(insn);
-+	parcel[0] = cpu_to_le16(insn);
- 	parcel[1] = cpu_to_le16(insn >> 16);
- 	return 0;
- }
-@@ -43,8 +79,12 @@ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
- static int riscv_insn_rvc_rmw(void *location, u16 keep, u16 set)
- {
- 	u16 *parcel = location;
-+	u16 insn = le16_to_cpu(*parcel);
- 
--	*parcel = cpu_to_le16((le16_to_cpu(*parcel) & keep) | set);
-+	insn &= keep;
-+	insn |= set;
++         If unsure, say N.
 +
-+	*parcel = cpu_to_le16(insn);
- 	return 0;
- }
- 
-@@ -269,6 +309,12 @@ static int apply_r_riscv_align_rela(struct module *me, void *location,
- 	return -EINVAL;
- }
- 
-+static int apply_r_riscv_add8_rela(struct module *me, void *location, Elf_Addr v)
-+{
-+	*(u8 *)location += (u8)v;
-+	return 0;
-+}
++endif # RUNTIME_TESTING_MENU
 +
- static int apply_r_riscv_add16_rela(struct module *me, void *location,
- 				    Elf_Addr v)
- {
-@@ -290,6 +336,12 @@ static int apply_r_riscv_add64_rela(struct module *me, void *location,
- 	return 0;
- }
- 
-+static int apply_r_riscv_sub8_rela(struct module *me, void *location, Elf_Addr v)
-+{
-+	*(u8 *)location -= (u8)v;
-+	return 0;
-+}
++endmenu # "arch/riscv/kernel runtime Testing"
+diff --git a/arch/riscv/kernel/tests/Makefile b/arch/riscv/kernel/tests/Makefile
+new file mode 100644
+index 000000000000..7d6c76cffe20
+--- /dev/null
++++ b/arch/riscv/kernel/tests/Makefile
+@@ -0,0 +1 @@
++obj-$(CONFIG_RISCV_MODULE_LINKING_KUNIT)	+= module_test/
+diff --git a/arch/riscv/kernel/tests/module_test/Makefile b/arch/riscv/kernel/tests/module_test/Makefile
+new file mode 100644
+index 000000000000..d7a6fd8943de
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/Makefile
+@@ -0,0 +1,15 @@
++obj-m += test_module_linking.o
 +
- static int apply_r_riscv_sub16_rela(struct module *me, void *location,
- 				    Elf_Addr v)
- {
-@@ -311,33 +363,415 @@ static int apply_r_riscv_sub64_rela(struct module *me, void *location,
- 	return 0;
- }
- 
--static int (*reloc_handlers_rela[]) (struct module *me, void *location,
--				Elf_Addr v) = {
--	[R_RISCV_32]			= apply_r_riscv_32_rela,
--	[R_RISCV_64]			= apply_r_riscv_64_rela,
--	[R_RISCV_BRANCH]		= apply_r_riscv_branch_rela,
--	[R_RISCV_JAL]			= apply_r_riscv_jal_rela,
--	[R_RISCV_RVC_BRANCH]		= apply_r_riscv_rvc_branch_rela,
--	[R_RISCV_RVC_JUMP]		= apply_r_riscv_rvc_jump_rela,
--	[R_RISCV_PCREL_HI20]		= apply_r_riscv_pcrel_hi20_rela,
--	[R_RISCV_PCREL_LO12_I]		= apply_r_riscv_pcrel_lo12_i_rela,
--	[R_RISCV_PCREL_LO12_S]		= apply_r_riscv_pcrel_lo12_s_rela,
--	[R_RISCV_HI20]			= apply_r_riscv_hi20_rela,
--	[R_RISCV_LO12_I]		= apply_r_riscv_lo12_i_rela,
--	[R_RISCV_LO12_S]		= apply_r_riscv_lo12_s_rela,
--	[R_RISCV_GOT_HI20]		= apply_r_riscv_got_hi20_rela,
--	[R_RISCV_CALL_PLT]		= apply_r_riscv_call_plt_rela,
--	[R_RISCV_CALL]			= apply_r_riscv_call_rela,
--	[R_RISCV_RELAX]			= apply_r_riscv_relax_rela,
--	[R_RISCV_ALIGN]			= apply_r_riscv_align_rela,
--	[R_RISCV_ADD16]			= apply_r_riscv_add16_rela,
--	[R_RISCV_ADD32]			= apply_r_riscv_add32_rela,
--	[R_RISCV_ADD64]			= apply_r_riscv_add64_rela,
--	[R_RISCV_SUB16]			= apply_r_riscv_sub16_rela,
--	[R_RISCV_SUB32]			= apply_r_riscv_sub32_rela,
--	[R_RISCV_SUB64]			= apply_r_riscv_sub64_rela,
-+static int dynamic_linking_not_supported(struct module *me, void *location,
-+					 Elf_Addr v)
-+{
-+	pr_err("%s: Dynamic linking not supported in kernel modules PC = %p\n",
-+	       me->name, location);
-+	return -EINVAL;
-+}
++test_sub := test_sub6.o test_sub8.o test_sub16.o test_sub32.o test_sub64.o
 +
-+static int tls_not_supported(struct module *me, void *location, Elf_Addr v)
-+{
-+	pr_err("%s: Thread local storage not supported in kernel modules PC = %p\n",
-+	       me->name, location);
-+	return -EINVAL;
-+}
++test_set := test_set6.o test_set8.o test_set16.o test_set32.o
 +
-+static int apply_r_riscv_sub6_rela(struct module *me, void *location, Elf_Addr v)
-+{
-+	u8 *byte = location;
-+	u8 value = v;
++test_module_linking-objs += $(test_sub)
 +
-+	*byte = (*byte - (value & 0x3f)) & 0x3f;
-+	return 0;
-+}
++test_module_linking-objs += $(test_set)
 +
-+static int apply_r_riscv_set6_rela(struct module *me, void *location, Elf_Addr v)
-+{
-+	u8 *byte = location;
-+	u8 value = v;
++ifeq ($(CONFIG_AS_HAS_ULEB128),y)
++test_module_linking-objs += test_uleb128.o
++endif
 +
-+	*byte = (*byte & 0xc0) | (value & 0x3f);
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set8_rela(struct module *me, void *location, Elf_Addr v)
-+{
-+	*(u8 *)location = (u8)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set16_rela(struct module *me, void *location,
-+				    Elf_Addr v)
-+{
-+	*(u16 *)location = (u16)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set32_rela(struct module *me, void *location,
-+				    Elf_Addr v)
-+{
-+	*(u32 *)location = (u32)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_32_pcrel_rela(struct module *me, void *location,
-+				       Elf_Addr v)
-+{
-+	*(u32 *)location = v - (unsigned long)location;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_plt32_rela(struct module *me, void *location,
-+				    Elf_Addr v)
-+{
-+	ptrdiff_t offset = (void *)v - location;
-+
-+	if (!riscv_insn_valid_32bit_offset(offset)) {
-+		/* Only emit the plt entry if offset over 32-bit range */
-+		if (IS_ENABLED(CONFIG_MODULE_SECTIONS)) {
-+			offset = (void *)module_emit_plt_entry(me, v) - location;
-+		} else {
-+			pr_err("%s: target %016llx can not be addressed by the 32-bit offset from PC = %p\n",
-+			       me->name, (long long)v, location);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	*(u32 *)location = (u32)offset;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set_uleb128(struct module *me, void *location, Elf_Addr v)
-+{
-+	*(long *)location = v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_sub_uleb128(struct module *me, void *location, Elf_Addr v)
-+{
-+	*(long *)location -= v;
-+	return 0;
-+}
-+
-+static int accumulation_not_supported(struct module *me, void *location, long buffer)
-+{
-+	pr_err("%s: Internal error. Only ADD/SUB/SET/ULEB128 should be accumulated.", me->name);
-+	return -EINVAL;
-+}
-+
-+static int apply_6_bit_accumulation(struct module *me, void *location, long buffer)
-+{
-+	u8 *byte = location;
-+	u8 value = buffer;
-+
-+	if (buffer > 0x3f) {
-+		pr_err("%s: value %ld out of range for 6-bit relocation.\n",
-+		       me->name, buffer);
-+		return -EINVAL;
-+	}
-+
-+	*byte = (*byte & 0xc0) | (value & 0x3f);
-+	return 0;
-+}
-+
-+static int apply_8_bit_accumulation(struct module *me, void *location, long buffer)
-+{
-+	if (buffer > U8_MAX) {
-+		pr_err("%s: value %ld out of range for 8-bit relocation.\n",
-+		       me->name, buffer);
-+		return -EINVAL;
-+	}
-+	*(u8 *)location = (u8)buffer;
-+	return 0;
-+}
-+
-+static int apply_16_bit_accumulation(struct module *me, void *location, long buffer)
-+{
-+	if (buffer > U16_MAX) {
-+		pr_err("%s: value %ld out of range for 16-bit relocation.\n",
-+		       me->name, buffer);
-+		return -EINVAL;
-+	}
-+	*(u16 *)location = (u16)buffer;
-+	return 0;
-+}
-+
-+static int apply_32_bit_accumulation(struct module *me, void *location, long buffer)
-+{
-+	if (buffer > U32_MAX) {
-+		pr_err("%s: value %ld out of range for 32-bit relocation.\n",
-+		       me->name, buffer);
-+		return -EINVAL;
-+	}
-+	*(u32 *)location = (u32)buffer;
-+	return 0;
-+}
-+
-+static int apply_64_bit_accumulation(struct module *me, void *location, long buffer)
-+{
-+	*(u64 *)location = (u64)buffer;
-+	return 0;
-+}
-+
-+static int apply_uleb128_accumulation(struct module *me, void *location, long buffer)
-+{
-+	/*
-+	 * ULEB128 is a variable length encoding. Encode the buffer into
-+	 * the ULEB128 data format.
-+	 */
-+	u8 *p = location;
-+
-+	while (buffer != 0) {
-+		u8 value = buffer & 0x7f;
-+
-+		buffer >>= 7;
-+		value |= (!!buffer) << 7;
-+
-+		*p++ = value;
-+	}
-+	return 0;
-+}
-+
++test_module_linking-objs += test_module_linking_main.o
+diff --git a/arch/riscv/kernel/tests/module_test/test_module_linking_main.c b/arch/riscv/kernel/tests/module_test/test_module_linking_main.c
+new file mode 100644
+index 000000000000..8df5fa5b834e
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_module_linking_main.c
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Relocations defined in the riscv-elf-psabi-doc.
-+ * This handles static linking only.
++ * Copyright (C) 2023 Rivos Inc.
 + */
-+static struct relocation_handlers reloc_handlers[] = {
-+	[R_RISCV_32] = { apply_r_riscv_32_rela, false,
-+			 accumulation_not_supported },
-+	[R_RISCV_64] = { apply_r_riscv_64_rela, false,
-+			 accumulation_not_supported },
-+	[R_RISCV_RELATIVE] = { dynamic_linking_not_supported, false,
-+			       accumulation_not_supported },
-+	[R_RISCV_COPY] = { dynamic_linking_not_supported, false,
-+			   accumulation_not_supported },
-+	[R_RISCV_JUMP_SLOT] = { dynamic_linking_not_supported, false,
-+				accumulation_not_supported },
-+	[R_RISCV_TLS_DTPMOD32] = { dynamic_linking_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TLS_DTPMOD64] = { dynamic_linking_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TLS_DTPREL32] = { dynamic_linking_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TLS_DTPREL64] = { dynamic_linking_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TLS_TPREL32] = { dynamic_linking_not_supported, false,
-+				  accumulation_not_supported },
-+	[R_RISCV_TLS_TPREL64] = { dynamic_linking_not_supported, false,
-+				  accumulation_not_supported },
-+	/* 12-15 undefined */
-+	[R_RISCV_BRANCH] = { apply_r_riscv_branch_rela, false,
-+			     accumulation_not_supported },
-+	[R_RISCV_JAL] = { apply_r_riscv_jal_rela, false,
-+			  accumulation_not_supported },
-+	[R_RISCV_CALL] = { apply_r_riscv_call_rela, false,
-+			   accumulation_not_supported },
-+	[R_RISCV_CALL_PLT] = { apply_r_riscv_call_plt_rela, false,
-+			       accumulation_not_supported },
-+	[R_RISCV_GOT_HI20] = { apply_r_riscv_got_hi20_rela, false,
-+			       accumulation_not_supported },
-+	[R_RISCV_TLS_GOT_HI20] = { tls_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TLS_GD_HI20] = { tls_not_supported, false,
-+				  accumulation_not_supported },
-+	[R_RISCV_PCREL_HI20] = { apply_r_riscv_pcrel_hi20_rela, false,
-+				 accumulation_not_supported },
-+	[R_RISCV_PCREL_LO12_I] = { apply_r_riscv_pcrel_lo12_i_rela, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_PCREL_LO12_S] = { apply_r_riscv_pcrel_lo12_s_rela, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_HI20] = { apply_r_riscv_hi20_rela, false,
-+			   accumulation_not_supported },
-+	[R_RISCV_LO12_I] = { apply_r_riscv_lo12_i_rela, false,
-+			     accumulation_not_supported },
-+	[R_RISCV_LO12_S] = { apply_r_riscv_lo12_s_rela, false,
-+			     accumulation_not_supported },
-+	[R_RISCV_TPREL_HI20] = { tls_not_supported, false,
-+				 accumulation_not_supported },
-+	[R_RISCV_TPREL_LO12_I] = { tls_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TPREL_LO12_S] = { tls_not_supported, false,
-+				   accumulation_not_supported },
-+	[R_RISCV_TPREL_ADD] = { tls_not_supported, false,
-+				accumulation_not_supported },
-+	[R_RISCV_ADD8] = { apply_r_riscv_add8_rela, true,
-+			   apply_8_bit_accumulation },
-+	[R_RISCV_ADD16] = { apply_r_riscv_add16_rela, true,
-+			    apply_16_bit_accumulation },
-+	[R_RISCV_ADD32] = { apply_r_riscv_add32_rela, true,
-+			    apply_32_bit_accumulation },
-+	[R_RISCV_ADD64] = { apply_r_riscv_add64_rela, true,
-+			    apply_64_bit_accumulation },
-+	[R_RISCV_SUB8] = { apply_r_riscv_sub8_rela, true,
-+			   apply_8_bit_accumulation },
-+	[R_RISCV_SUB16] = { apply_r_riscv_sub16_rela, true,
-+			    apply_16_bit_accumulation },
-+	[R_RISCV_SUB32] = { apply_r_riscv_sub32_rela, true,
-+			    apply_32_bit_accumulation },
-+	[R_RISCV_SUB64] = { apply_r_riscv_sub64_rela, true,
-+			    apply_64_bit_accumulation },
-+	/* 41-42 reserved for future standard use */
-+	[R_RISCV_ALIGN] = { apply_r_riscv_align_rela, false,
-+			    accumulation_not_supported },
-+	[R_RISCV_RVC_BRANCH] = { apply_r_riscv_rvc_branch_rela, false,
-+				 accumulation_not_supported },
-+	[R_RISCV_RVC_JUMP] = { apply_r_riscv_rvc_jump_rela, false,
-+			       accumulation_not_supported },
-+	/* 46-50 reserved for future standard use */
-+	[R_RISCV_RELAX] = { apply_r_riscv_relax_rela, false,
-+			    accumulation_not_supported },
-+	[R_RISCV_SUB6] = { apply_r_riscv_sub6_rela, true,
-+			   apply_6_bit_accumulation },
-+	[R_RISCV_SET6] = { apply_r_riscv_set6_rela, true,
-+			   apply_6_bit_accumulation },
-+	[R_RISCV_SET8] = { apply_r_riscv_set8_rela, true,
-+			   apply_8_bit_accumulation },
-+	[R_RISCV_SET16] = { apply_r_riscv_set16_rela, true,
-+			    apply_16_bit_accumulation },
-+	[R_RISCV_SET32] = { apply_r_riscv_set32_rela, true,
-+			    apply_32_bit_accumulation },
-+	[R_RISCV_32_PCREL] = { apply_r_riscv_32_pcrel_rela, false,
-+			       accumulation_not_supported },
-+	[R_RISCV_IRELATIVE] = { dynamic_linking_not_supported, false,
-+				accumulation_not_supported },
-+	[R_RISCV_PLT32] = { apply_r_riscv_plt32_rela, false,
-+			    accumulation_not_supported },
-+	[R_RISCV_SET_ULEB128] = { apply_r_riscv_set_uleb128, true,
-+				  apply_uleb128_accumulation },
-+	[R_RISCV_SUB_ULEB128] = { apply_r_riscv_sub_uleb128, true,
-+				  apply_uleb128_accumulation },
-+	/* 62-191 reserved for future standard use */
-+	/* 192-255 nonstandard ABI extensions  */
- };
- 
-+void process_accumulated_relocations(struct module *me)
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <kunit/test.h>
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Test module linking");
++
++extern int test_set32(void);
++extern int test_set16(void);
++extern int test_set8(void);
++extern int test_set6(void);
++extern long test_sub64(void);
++extern int test_sub32(void);
++extern int test_sub16(void);
++extern int test_sub8(void);
++extern int test_sub6(void);
++
++#ifdef CONFIG_AS_HAS_ULEB128
++extern int test_uleb_basic(void);
++extern int test_uleb_large(void);
++#endif
++
++#define CHECK_EQ(lhs, rhs) KUNIT_ASSERT_EQ(test, lhs, rhs)
++
++void run_test_set(struct kunit *test);
++void run_test_sub(struct kunit *test);
++void run_test_uleb(struct kunit *test);
++
++void run_test_set(struct kunit *test)
 +{
-+	/*
-+	 * Only ADD/SUB/SET/ULEB128 should end up here.
-+	 *
-+	 * Each bucket may have more than one relocation location. All
-+	 * relocations for a location are stored in a list in a bucket.
-+	 *
-+	 * Relocations are applied to a temp variable before being stored to the
-+	 * provided location to check for overflow. This also allows ULEB128 to
-+	 * properly decide how many entries are needed before storing to
-+	 * location. The final value is stored into location using the handler
-+	 * for the last relocation to an address.
-+	 *
-+	 * Three layers of indexing:
-+	 *	- Each of the buckets in use
-+	 *	- Groups of relocations in each bucket by location address
-+	 *	- Each relocation entry for a location address
-+	 */
-+	struct used_bucket *bucket_iter;
-+	struct relocation_head *rel_head_iter;
-+	struct relocation_entry *rel_entry_iter;
-+	int curr_type;
-+	void *location;
-+	long buffer;
++	int val32 = test_set32();
++	int val16 = test_set16();
++	int val8 = test_set8();
++	int val6 = test_set6();
 +
-+	list_for_each_entry(bucket_iter, &used_buckets_list, head) {
-+		hlist_for_each_entry(rel_head_iter, bucket_iter->bucket, node) {
-+			buffer = 0;
-+			location = rel_head_iter->location;
-+			list_for_each_entry(rel_entry_iter,
-+					    rel_head_iter->rel_entry, head) {
-+				curr_type = rel_entry_iter->type;
-+				reloc_handlers[curr_type].reloc_handler(
-+					me, &buffer, rel_entry_iter->value);
-+				kfree(rel_entry_iter);
-+			}
-+			reloc_handlers[curr_type].accumulate_handler(
-+				me, location, buffer);
-+			kfree(rel_head_iter);
-+		}
-+		kfree(bucket_iter);
-+	}
-+
-+	kfree(relocation_hashtable);
++	CHECK_EQ(val32, 0);
++	CHECK_EQ(val16, 0);
++	CHECK_EQ(val8, 0);
++	CHECK_EQ(val6, 0);
 +}
 +
-+int add_relocation_to_accumulate(struct module *me, int type, void *location,
-+				 unsigned int hashtable_bits, Elf_Addr v)
++void run_test_sub(struct kunit *test)
 +{
-+	struct relocation_entry *entry;
-+	struct relocation_head *rel_head;
-+	struct hlist_head *current_head;
-+	struct used_bucket *bucket;
-+	unsigned long hash;
++	int val64 = test_sub64();
++	int val32 = test_sub32();
++	int val16 = test_sub16();
++	int val8 = test_sub8();
++	int val6 = test_sub6();
 +
-+	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-+	INIT_LIST_HEAD(&entry->head);
-+	entry->type = type;
-+	entry->value = v;
-+
-+	hash = hash_min((unsigned long)location, hashtable_bits);
-+
-+	current_head = &relocation_hashtable[hash];
-+
-+	/* Find matching location (if any) */
-+	bool found = false;
-+	struct relocation_head *rel_head_iter;
-+
-+	hlist_for_each_entry(rel_head_iter, current_head, node) {
-+		if (rel_head_iter->location == location) {
-+			found = true;
-+			rel_head = rel_head_iter;
-+			break;
-+		}
-+	}
-+
-+	if (!found) {
-+		rel_head = kmalloc(sizeof(*rel_head), GFP_KERNEL);
-+		rel_head->rel_entry =
-+			kmalloc(sizeof(struct list_head), GFP_KERNEL);
-+		INIT_LIST_HEAD(rel_head->rel_entry);
-+		rel_head->location = location;
-+		INIT_HLIST_NODE(&rel_head->node);
-+		if (!current_head->first) {
-+			bucket =
-+				kmalloc(sizeof(struct used_bucket), GFP_KERNEL);
-+			INIT_LIST_HEAD(&bucket->head);
-+			bucket->bucket = current_head;
-+			list_add(&bucket->head, &used_buckets_list);
-+		}
-+		hlist_add_head(&rel_head->node, current_head);
-+	}
-+
-+	/* Add relocation to head of discovered rel_head */
-+	list_add_tail(&entry->head, rel_head->rel_entry);
-+
-+	return 0;
++	CHECK_EQ(val64, 0);
++	CHECK_EQ(val32, 0);
++	CHECK_EQ(val16, 0);
++	CHECK_EQ(val8, 0);
++	CHECK_EQ(val6, 0);
 +}
 +
-+unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
++#ifdef CONFIG_AS_HAS_ULEB128
++void run_test_uleb(struct kunit *test)
 +{
-+	/* Can safely assume that bits is not greater than sizeof(long) */
-+	unsigned long hashtable_size = roundup_pow_of_two(num_relocations);
-+	unsigned int hashtable_bits = ilog2(hashtable_size);
++	int val_uleb = test_uleb_basic();
++	int val_uleb2 = test_uleb_large();
 +
-+	/*
-+	 * Double size of hashtable if num_relocations * 1.25 is greater than
-+	 * hashtable_size.
-+	 */
-+	int should_double_size = ((num_relocations + (num_relocations >> 2)) > (hashtable_size));
-+
-+	hashtable_bits += should_double_size;
-+
-+	hashtable_size <<= should_double_size;
-+
-+	relocation_hashtable = kmalloc_array(hashtable_size,
-+					     sizeof(*relocation_hashtable),
-+					     GFP_KERNEL);
-+	__hash_init(relocation_hashtable, hashtable_size);
-+
-+	INIT_LIST_HEAD(&used_buckets_list);
-+
-+	return hashtable_bits;
++	CHECK_EQ(val_uleb, 0);
++	CHECK_EQ(val_uleb2, 0);
 +}
++#endif
 +
- int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 		       unsigned int symindex, unsigned int relsec,
- 		       struct module *me)
-@@ -349,11 +783,13 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 	unsigned int i, type;
- 	Elf_Addr v;
- 	int res;
-+	unsigned int num_relocations = sechdrs[relsec].sh_size / sizeof(*rel);
-+	unsigned int hashtable_bits = initialize_relocation_hashtable(num_relocations);
- 
- 	pr_debug("Applying relocate section %u to %u\n", relsec,
- 	       sechdrs[relsec].sh_info);
- 
--	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-+	for (i = 0; i < num_relocations; i++) {
- 		/* This is where to make the change */
- 		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
- 			+ rel[i].r_offset;
-@@ -371,8 +807,8 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 
- 		type = ELF_RISCV_R_TYPE(rel[i].r_info);
- 
--		if (type < ARRAY_SIZE(reloc_handlers_rela))
--			handler = reloc_handlers_rela[type];
-+		if (type < ARRAY_SIZE(reloc_handlers))
-+			handler = reloc_handlers[type].reloc_handler;
- 		else
- 			handler = NULL;
- 
-@@ -428,11 +864,16 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 			}
- 		}
- 
--		res = handler(me, location, v);
-+		if (reloc_handlers[type].accumulate_relocations)
-+			res = add_relocation_to_accumulate(me, type, location, hashtable_bits, v);
-+		else
-+			res = handler(me, location, v);
- 		if (res)
- 			return res;
- 	}
- 
-+	process_accumulated_relocations(me);
++static struct kunit_case __refdata riscv_module_linking_test_cases[] = {
++	KUNIT_CASE(run_test_set),
++	KUNIT_CASE(run_test_sub),
++#ifdef CONFIG_AS_HAS_ULEB128
++	KUNIT_CASE(run_test_uleb),
++#endif
++	{}
++};
 +
- 	return 0;
- }
- 
++static struct kunit_suite riscv_module_linking_test_suite = {
++	.name = "riscv_checksum",
++	.test_cases = riscv_module_linking_test_cases,
++};
++
++kunit_test_suites(&riscv_module_linking_test_suite);
+diff --git a/arch/riscv/kernel/tests/module_test/test_set16.S b/arch/riscv/kernel/tests/module_test/test_set16.S
+new file mode 100644
+index 000000000000..2be0e441a12e
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_set16.S
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_set16
++test_set16:
++	lw	a0, set16
++	la	t0, set16
++#ifdef CONFIG_32BIT
++	slli	t0, t0, 16
++	srli	t0, t0, 16
++#else
++	slli	t0, t0, 48
++	srli	t0, t0, 48
++#endif
++	sub	a0, a0, t0
++	ret
++.data
++set16:
++	.reloc set16, R_RISCV_SET16, set16
++	.word 0
+diff --git a/arch/riscv/kernel/tests/module_test/test_set32.S b/arch/riscv/kernel/tests/module_test/test_set32.S
+new file mode 100644
+index 000000000000..de0444537e67
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_set32.S
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_set32
++test_set32:
++	lw	a0, set32
++	la	t0, set32
++#ifndef CONFIG_32BIT
++	slli	t0, t0, 32
++	srli	t0, t0, 32
++#endif
++	sub	a0, a0, t0
++	ret
++.data
++set32:
++	.reloc set32, R_RISCV_SET32, set32
++	.word 0
+diff --git a/arch/riscv/kernel/tests/module_test/test_set6.S b/arch/riscv/kernel/tests/module_test/test_set6.S
+new file mode 100644
+index 000000000000..c39ce4c219eb
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_set6.S
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_set6
++test_set6:
++	lw	a0, set6
++	la	t0, set6
++#ifdef CONFIG_32BIT
++	slli	t0, t0, 26
++	srli	t0, t0, 26
++#else
++	slli	t0, t0, 58
++	srli	t0, t0, 58
++#endif
++	sub	a0, a0, t0
++	ret
++.data
++set6:
++	.reloc set6, R_RISCV_SET6, set6
++	.word 0
+diff --git a/arch/riscv/kernel/tests/module_test/test_set8.S b/arch/riscv/kernel/tests/module_test/test_set8.S
+new file mode 100644
+index 000000000000..a656173f6f99
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_set8.S
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_set8
++test_set8:
++	lw	a0, set8
++	la	t0, set8
++#ifdef CONFIG_32BIT
++	slli	t0, t0, 24
++	srli	t0, t0, 24
++#else
++	slli	t0, t0, 56
++	srli	t0, t0, 56
++#endif
++	sub	a0, a0, t0
++	ret
++.data
++set8:
++	.reloc set8, R_RISCV_SET8, set8
++	.word 0
+diff --git a/arch/riscv/kernel/tests/module_test/test_sub16.S b/arch/riscv/kernel/tests/module_test/test_sub16.S
+new file mode 100644
+index 000000000000..80f731d599ba
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_sub16.S
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_sub16
++test_sub16:
++	lh	a0, sub16
++	addi	a0, a0, -32
++	ret
++first:
++	.space 32
++second:
++
++.data
++sub16:
++	.reloc		sub16, R_RISCV_ADD16, second
++	.reloc		sub16, R_RISCV_SUB16, first
++	.half		0
+diff --git a/arch/riscv/kernel/tests/module_test/test_sub32.S b/arch/riscv/kernel/tests/module_test/test_sub32.S
+new file mode 100644
+index 000000000000..a341686e12df
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_sub32.S
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_sub32
++test_sub32:
++	lw	a0, sub32
++	addi	a0, a0, -32
++	ret
++first:
++	.space 32
++second:
++
++.data
++sub32:
++	.reloc		sub32, R_RISCV_ADD32, second
++	.reloc		sub32, R_RISCV_SUB32, first
++	.word		0
+diff --git a/arch/riscv/kernel/tests/module_test/test_sub6.S b/arch/riscv/kernel/tests/module_test/test_sub6.S
+new file mode 100644
+index 000000000000..e8b61c1ec527
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_sub6.S
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_sub6
++test_sub6:
++	lb	a0, sub6
++	addi	a0, a0, -32
++	ret
++first:
++	.space 32
++second:
++
++.data
++sub6:
++	.reloc		sub6, R_RISCV_SET6, second
++	.reloc		sub6, R_RISCV_SUB6, first
++	.byte		0
+diff --git a/arch/riscv/kernel/tests/module_test/test_sub64.S b/arch/riscv/kernel/tests/module_test/test_sub64.S
+new file mode 100644
+index 000000000000..a59e8afa88fd
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_sub64.S
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_sub64
++test_sub64:
++#ifdef CONFIG_32BIT
++	lw	a0, sub64
++#else
++	ld	a0, sub64
++#endif
++	addi	a0, a0, -32
++	ret
++first:
++	.space 32
++second:
++
++.data
++sub64:
++	.reloc		sub64, R_RISCV_ADD64, second
++	.reloc		sub64, R_RISCV_SUB64, first
++	.word		0
++	.word		0
+diff --git a/arch/riscv/kernel/tests/module_test/test_sub8.S b/arch/riscv/kernel/tests/module_test/test_sub8.S
+new file mode 100644
+index 000000000000..ac5d0ec98de3
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_sub8.S
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_sub8
++test_sub8:
++	lb	a0, sub8
++	addi	a0, a0, -32
++	ret
++first:
++	.space 32
++second:
++
++.data
++sub8:
++	.reloc		sub8, R_RISCV_ADD8, second
++	.reloc		sub8, R_RISCV_SUB8, first
++	.byte		0
+diff --git a/arch/riscv/kernel/tests/module_test/test_uleb128.S b/arch/riscv/kernel/tests/module_test/test_uleb128.S
+new file mode 100644
+index 000000000000..90f22049d553
+--- /dev/null
++++ b/arch/riscv/kernel/tests/module_test/test_uleb128.S
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 Rivos Inc.
++ */
++
++.text
++.global test_uleb_basic
++test_uleb_basic:
++	ld	a0, second
++	addi	a0, a0, -127
++	ret
++
++.global test_uleb_large
++test_uleb_large:
++	ld	a0, fourth
++	addi	a0, a0, -0x07e8
++	ret
++
++.data
++first:
++	.space 127
++second:
++	.reloc second, R_RISCV_SET_ULEB128, second
++	.reloc second, R_RISCV_SUB_ULEB128, first
++	.dword 0
++third:
++	.space 1000
++fourth:
++	.reloc fourth, R_RISCV_SET_ULEB128, fourth
++	.reloc fourth, R_RISCV_SUB_ULEB128, third
++	.dword 0
 
 -- 
 2.34.1
