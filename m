@@ -2,123 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 934E67DD276
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B632C7DD32C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346707AbjJaQpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
+        id S1346989AbjJaQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346306AbjJaQov (ORCPT
+        with ESMTP id S1346944AbjJaQv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:44:51 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556251BD3;
-        Tue, 31 Oct 2023 09:34:44 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a6190af24aso918176066b.0;
-        Tue, 31 Oct 2023 09:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698770082; x=1699374882; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=npROlWWHLd9eG8P7dCgq4irOOFIkyMuBg6D6zLA4SMA=;
-        b=X8ZqAomZ/bF42tIkKKkMdrPuoOhhCr6dllw6SZFKcB1X7wm4mQouYKLYaI07VwRV9J
-         J3BYFZ0NTBA+5oyebgA3PuOdrAg8Rp+AnzJUUze/3HgPSoX893fPttYWBWghKGk5+sWC
-         37c+pcXU/MO/wbyb3GD7JExLdWszs0zycQthtw/PEbMRkn6wvwkDi14SX9tnpL/hofx5
-         UEMx+rvaNGvHWeASlMdgI7GkAkRfvapiCo0RubYM1inKmaPg8ZkTcGzdAvyO5Zqef61R
-         BlZkR3ey6neZ06pC7XQqNYpk2rW/5Y16fxau+tvDjWwNCKy72/5f8Q3D/Y8AHAkERUXr
-         30Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698770082; x=1699374882;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=npROlWWHLd9eG8P7dCgq4irOOFIkyMuBg6D6zLA4SMA=;
-        b=AGBNAELniBgXRNXrT+PpydvMNgxz3gT2vSQ/zxOg/T+EX/P63DcEam6PheCOMllMYC
-         GfjtmOECwb5cZCPm8ud1T8/75OqYxkyzpF9dJoiZ62yHDNj0UAV4Mu8CKa0gbvmytfLq
-         1WzQcchrM6BGPnVtGZtXXNsKP4jFUrVRPAiWIXfUBNrHAKjFMQyk953OeXQJjlu5C4uu
-         FDpL9eKKg/FNEtVKb6SId+12dk4LIDtZR6yijDnaXMZPP0G9XvaHw6tSXcdI+eZHYcIB
-         VxL7l9nFA19GKy1hoSiZUenrPelygz3Mx9ule4dNf4V3+RQSlwivYU9R0VgbIVxHjpHG
-         wqsw==
-X-Gm-Message-State: AOJu0YyQTriqEd4PdH3xoGKg3u68tEcRuTmekPRDWt6y6t71wVXysAGL
-        Njz8pAbp5h07XeIVflZvetw=
-X-Google-Smtp-Source: AGHT+IH5USwQhwT8MSNugtJz/VViP8UM4cwRku7P9ocJAQmWum5AXQA72zfDiIRxnh4dXacOdD3dag==
-X-Received: by 2002:a17:907:6e93:b0:9b9:facb:d950 with SMTP id sh19-20020a1709076e9300b009b9facbd950mr11850982ejc.72.1698770082298;
-        Tue, 31 Oct 2023 09:34:42 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id l19-20020a170906a41300b009ad81554c1bsm1215532ejz.55.2023.10.31.09.34.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 09:34:41 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 18:34:39 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <20231031163439.tqab5axhk5q2r62i@skbuf>
-References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
- <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
- <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
- <20231030222035.oqos7v7sdq5u6mti@skbuf>
- <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
- <20231030233334.jcd5dnojruo57hfk@skbuf>
- <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
+        Tue, 31 Oct 2023 12:51:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF8B3A97;
+        Tue, 31 Oct 2023 09:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GOVRCwbjS2+Vyp5h9ZzGjoMP9lCkkl8D/iU/MwGDsDw=; b=eXlxhJXSgeNrpXzOMILj8ZLLG4
+        F6vC2BmUus/xx+HFWRMS5qsKAVVv693EMsvg5XFc6zB6QaIc960uilkbFN0epjVOQkaleVWaS7Atn
+        qUB/H/ZIOP4sKy04TN0v0Eos5px2dOTPEUWKLnl4r494DLIWpMgs90Lx+6U+FvBv63ib9p/GQ2n7W
+        XfocYGf7old3FCMijfIv6j8Gra4A77bsI6V3fSUe6vem/HZKjdbuCm4eC5qwMexqEa+zrqr1uaW3D
+        0S3MA/1KAro4G+FY91iRYIBYFIrmFjkTGOAuRTbZ6Go0ER08jvCeclK1iUZrJH4w4QBk74WkIr8sm
+        gQzqzJdw==;
+Received: from [2001:8b0:10b:5:7a00:e590:2205:b5e1] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qxrhX-00B7wz-Le; Tue, 31 Oct 2023 16:34:47 +0000
+Message-ID: <908ad29b56fbe5e5f4d99e477e96fbd9d03ba4c6.camel@infradead.org>
+Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     paul@xen.org, Paul Durrant <xadimgnik@gmail.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Tue, 31 Oct 2023 16:34:46 +0000
+In-Reply-To: <a2a13598-6d37-47a2-8a13-9963acb0f1e5@xen.org>
+References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
+         <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
+         <F80266DD-D7EF-4A26-B9F8-BC33EC65F444@infradead.org>
+         <6c9671b4-d997-42ac-9821-06accb97357f@xen.org>
+         <1DCDC3DB-81E8-426C-AF4B-AA7CA2C1271E@infradead.org>
+         <a2a13598-6d37-47a2-8a13-9963acb0f1e5@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-xID9vXOJmXBHPB0OpzV/"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 03:16:50PM +0100, Linus Walleij wrote:
-> On Tue, Oct 31, 2023 at 12:33 AM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > On Mon, Oct 30, 2023 at 11:57:33PM +0100, Linus Walleij wrote:
-> > > Here you can incidentally also see what happens if we don't pad the big packets:
-> > > the packet gets truncated.
-> >
-> > Are we sure we are debugging a switch problem? On how many platforms
-> > with the RTL8366RB can the issue be seen? Is the conduit interface the
-> > same on all these platforms, or is it different and that makes no
-> > difference?
-> 
-> I don't have any other RTL8366RB systems than the D-Link DIR-685.
-> 
-> I however have several systems with the same backing ethernet controller
-> connected directly to a PHY and they all work fine.
-> 
-> Yours,
-> Linus Walleij
 
-Ok, so we don't have a confirmation of breakage with other conduit
-interface than the Gemini driver, either. So a problem there is still
-not off the table.
+--=-xID9vXOJmXBHPB0OpzV/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So on the gemini-dlink-dir-685.dts platform, you can also use &gmac1 as
-a plain Ethernet port, right?
+On Tue, 2023-10-31 at 12:22 +0000, Paul Durrant wrote:
+>=20
+> >=20
+> > As I said, this patch stands even *after* we fix kvmclock, because
+> > it handles the timer delta calculation from an single TSC read.
+> >=20
+> > But overengineering a timer reset on KVM_REQ_CLOCK_UPDATE would not.
+>=20
+> I'm not sure what you intend to do to kvmlock, so not sure whether we'll=
+=20
+> still need the __pvclock_read_cycles(&vcpu->arch.hv_clock, guest_tsc)
+> but this patch (with the extra check on validity of hv_clock) does fix=
+=20
+> the drift so...
+>=20
+> Reviewed-by: Paul Durrant <paul@xen.org>
 
-If possible, could you set up dsa_loop (enable CONFIG_NET_DSA_LOOP, replace
-"eth0" in dsa_loop_pdata with the netdev name of &gmac1, replace DSA_TAG_PROTO_NONE
-in dsa_loop_get_protocol() with your tagging protocol) and put a tcpdump
-on the remote end of the gmac1 port, to see if the issue isn't, in fact,
-somewhere else, maybe gmac_start_xmit()?
+Ta. And no, I'm not quite sure what I'm going to do with kvmclock for
+the general case yet. The more I look at it, the more I realise how
+broken it is.
 
-With dsa_loop, you turn &gmac1 into a conduit interface of sorts, except
-for the fact that there is no switch to process the DSA-tagged packets,
-you see those packets on the remote end, and you can investigate there
-whether it's the switch who's corrupting/truncating, or if they're
-somehow sent corrupted/truncated by Gemini on the wire (which would not
-be visible in a local tcpdump).
+Last week I thought it was just about the way KVM 'jumps' the kvmclock
+and yanks it back to the host's CLOCK_MONOTONIC_RAW, but I thought KVM
+at *least* managed to do it right between those times. But no, this
+patch is addressing the fact that even *without* those clock jumps, KVM
+doesn't manage to calculate the guest clock the same way that it tells
+the guest to... and thus doesn't get the same results :)
+
+I think it involves get_kvmclock_ns() using the frequency given in the
+KVM-wide (not per-vCPU) KVM_SET_TSC_KHZ ioctl, and scaling via that to
+get the guest clock. That should match, without having to have a
+specific vCPU's hv_clock to play with. And maybe we can also have a
+get_kvmclock_ns_at() which takes a host TSC value, and the timer code
+from this patch can use that instead of using __pvclock_read_cycles()
+directly.
+
+That's probably the easy part. Fixing the 'resync' to
+CLOCK_MONOTONIC_RAW, while keeping things working for the now-
+considered-pathological !CONSTANT_TSC case, will be slightly more fun.
+As well as suspend etc. in the CONSTANT_TSC case, of course.
+
+And replacing that stupid KVM_CLOCK_REALTIME with something that uses
+CLOCK_TAI. Or maybe just making it export the tai_offset at the same
+moment?
+
+--=-xID9vXOJmXBHPB0OpzV/
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMxMTYzNDQ2WjAvBgkqhkiG9w0BCQQxIgQg+rL79WmU
+VOYvVweQB8+zeylQYSvgKiZeAgwZnSzF02Qwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCNUoWlPHfuNLLGruydDpcAQsIejZX1hpbg
+Luf51+HjMD8cWT/NJvp9w7ntGetks9sqo9+vcvximFnzZMwFYCgbZWzCHw1WrnoVjbCF12PG4PxP
+E+E3SHgyyfYgjIco/xEiA+7e1kkIxPZNPv0916TdeuQA3lPf0fnAHmG+la4B4bz/SJTAKXgif9Mr
+DhYJel4fpubgauMGP4e6WSHZCBOP86zSo00Y+VsQjUmcjqbMWX48j/r1PDw0HZhmtNfFCr2F5Kkt
+VuNTaEMbhOOhYQbhianzlqKFaiqX3M1QlXl7LeuSVGep5julqqcWAB60heDCW8BfmAEkiZ8Bmexr
+PaNdy764EIZKaOdTZQjWWEsHrsfbPwqxMKNBZPX4qRCJsU/ST9JfjqxG58q5OL6QjGNbkF4ZfGAT
+io95jteZcNuQEU1V5ImIJQla6mEOnUG4l4Lanp+EbFQ4O8PvK3DKoUtOttizbEd6AaANa3t26LBR
+SrXk+SAeLdmKbnUbjurGzgrSs5YX7lLomw2Hr8kRv7GOLcCuaPsb28wUiWtgLy0VBc8Pj/uTqawk
+0Q6+rIReNE390EizFc/xD51P3fFOMbsc2WdhxsauUc9+MHEaEkmyz/LiVauUHnNMLww+rmpMZIri
+Ok9GxCVeKgX7BRXt/eUw4HSN4cn5OW7Wc88rCQDoBgAAAAAAAA==
+
+
+--=-xID9vXOJmXBHPB0OpzV/--
