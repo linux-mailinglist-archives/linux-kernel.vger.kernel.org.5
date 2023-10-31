@@ -2,106 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C45A27DC795
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527917DC798
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343742AbjJaHsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S1343752AbjJaHvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236654AbjJaHsO (ORCPT
+        with ESMTP id S236663AbjJaHvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:48:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97000C1;
-        Tue, 31 Oct 2023 00:48:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C27C433C7;
-        Tue, 31 Oct 2023 07:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698738492;
-        bh=u5OhuMhZzR6JXuvhNC/KDrltMRDZ6tM7BPip6bBNUic=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cqfsXm/cvPDFyWtJcarQZbOA+Ra2DBzhwm1Xm2FVKaBARc8FW0bceA+lQShI5GQAI
-         WvjnPpUor4s7F/lyhTRkAHt5AsHeHRZerxG/pCNDxIPO1YZKs44wLMAi7eaRxQFpZD
-         S4DKTU1kUJPL40Sg8nJ0O8FOgsqxDZeaX3G4TBJA4fuLZpfjl33gBDnADEz9k0B0Hz
-         Rs1Lhpb+rV3QkBO6PkmIGcwIpXUgMBLonhFQNP99k9P+lWbPVyIM3B2RhcW1Q7YprL
-         EqkLUalBBH/LGoJ8U1q5MNcB9oytnJ8ZiEMHb3KDuCp23uUGUDZRg06TWN0Bky/cxQ
-         S55p9ERkgGmBA==
-Date:   Tue, 31 Oct 2023 07:48:07 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev
-Subject: Re: [RESEND PATCH v7 2/5] leds: sun50i-a100: New driver for the A100
- LED controller
-Message-ID: <20231031074807.GQ8909@google.com>
-References: <20221231235541.13568-1-samuel@sholland.org>
- <20221231235541.13568-3-samuel@sholland.org>
- <20230316133422.GM9667@google.com>
- <a1adbe50-3400-fd10-1856-8c1d0ed82276@sholland.org>
- <f5468eac-96ec-e8c9-bcc1-9ec219bf3352@sholland.org>
+        Tue, 31 Oct 2023 03:51:08 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D83DE;
+        Tue, 31 Oct 2023 00:51:02 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V6GtCo028034;
+        Tue, 31 Oct 2023 07:50:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=K6chD/shS+2nuxb3muBTcToPEHVuKnDqJk9aUOjQttg=;
+ b=LdbzxT5B7TqIuCEglJ5U+wWpSKlqjIHo0riAMzonKdv2nGwn6TXv6FOxAn+4LSBWiBBB
+ hotSKSrh51ATMLUoyWa7AUusJ/1sttjlQwqSU28mqVxTPGaI85dPKF0kZr+mAlW2tFUF
+ jwAE+NXhoyxYGZPE69uvN/ROO+TyFu74KG+GhQn+byiIBIS/Jj5h8i+Lb42f4bA7BtkB
+ JiWD1dpUJoqquNF/y5hYoS46Wz2TsODpwZzWUN6G0KMZUj8soMvqgINEt3JCapQLCgvk
+ 9eovsNJbhr0gEOZ2FfHCBLINybMA7QeZtNxIcOR7axGvyzV18VgCMk8Vsi/0kGivpKx7 lA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u29fetnxx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 07:50:36 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V7oZuR013205
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 07:50:35 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 31 Oct 2023 00:50:27 -0700
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <dmitry.baryshkov@linaro.org>,
+        <nfraprado@collabora.com>, <m.szyprowski@samsung.com>,
+        <u-kumar1@ti.com>, <peng.fan@nxp.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+        Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH v6 0/6] soc: qcom: Add uart console support for SM4450
+Date:   Tue, 31 Oct 2023 15:49:58 +0800
+Message-ID: <20231031075004.3850-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f5468eac-96ec-e8c9-bcc1-9ec219bf3352@sholland.org>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _9hEAuE4e9-GFilZ6tRnVsBR31lbOvl5
+X-Proofpoint-ORIG-GUID: _9hEAuE4e9-GFilZ6tRnVsBR31lbOvl5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 impostorscore=0 spamscore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 clxscore=1011 bulkscore=0 mlxlogscore=582 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310060
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Oct 2023, Samuel Holland wrote:
+This series add base description of UART, TLMM, RPMHCC, GCC and RPMh PD
+nodes which helps SM4450 boot to shell with console on boards with this
+SoC.
 
-> Hi Lee,
-> 
-> On 10/17/23 19:38, Samuel Holland wrote:
-> > On 3/16/23 08:34, Lee Jones wrote:
-> >> On Sat, 31 Dec 2022, Samuel Holland wrote:
-> >>> +	for_each_available_child_of_node(np, child) {
-> >>> +		struct sun50i_a100_ledc_led *led;
-> >>> +		struct led_classdev *cdev;
-> >>> +		u32 addr, color;
-> >>> +
-> >>> +		ret = of_property_read_u32(child, "reg", &addr);
-> >>> +		if (ret || addr >= count) {
-> >>> +			dev_err(dev, "LED 'reg' values must be from 0 to %d\n",
-> >>
-> >> Doesn't sounds like an address.
-> > 
-> > The one-wire protocol involves the first LED responding to the first 24
-> > bits of the transfer, then forwarding the rest to the next LED. The
-> > address is the ordinal position in the chain. So I don't think there is
-> > any reason to have gaps in the addresses--the LEDs would still have to
-> > physically be there, but you would not be able to control them. That
-> > said, the driver doesn't need to enforce this, so I can remove the check.
-> 
-> There's actually a reason for the driver enforcing that LED addresses
-> are contiguous. Removing this check decouples the largest address from
-> the number of LED class devices. Unfortunately, there's a register field
-> (LEDC_RESET_TIMING_CTRL_REG_LED_NUM) that must be set to the largest
-> address for transfers to work correctly.
-> 
-> This means the driver would need to iterate through the child nodes in
-> two passes inside the probe function: first to find the largest reg
-> value, and second to actually register the LED class devices.
-> 
-> Since I don't think having gaps in the addresses is a realistic use
-> case, I'd like to keep this restriction for now (with a comment). We
-> could always pay the complexity cost later if someone really does want
-> to relax this check.
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+---
+"[PATCH v4 0/2] pinctl: qcom: Add SM4450 pinctrl driver"
+https://lore.kernel.org/linux-arm-msm/20230920082102.5744-1-quic_tengfan@quicinc.com/
 
-You're replying to a review conducted 7 months ago which in turn was for
-a patch submitted nearly a year ago!
+v5 -> v6:
+  - remove link that depend on clock patch from cover letter
+  - remove patch which already mainline
 
-Also the review comment was simple - if it's not an address, rename the
-variable.
+v4 -> v5:
+  - separate reserved gpios setting from enable UART console patch
 
+v3 -> v4:
+  - adjustment the sequence of property and property-names
+  - update 0 to 0x0 for reg params
+  - remove unrelated change
+  - separate SoC change and board change
+
+v2 -> v3:
+  - fix dtbs_check warning
+  - remove interconnect, iommu, scm and tcsr related code
+  - rearrangement dt node
+  - remove smmu, scm and tcsr related documentation update
+  - enable CONFIG_SM_GCC_4450 in defconfig related patch
+
+v1 -> v2:
+  - setting "qcom,rpmh-rsc" compatible to the first property
+  - keep order by unit address
+  - move tlmm node into soc node
+  - update arm,smmu.yaml
+  - add enable pinctrl and interconnect defconfig patches
+  - remove blank line
+  - redo dtbs_check check
+
+previous discussion here:
+[1] v5: https://lore.kernel.org/linux-arm-msm/20231011031415.3360-1-quic_tengfan@quicinc.com
+[2] v4: https://lore.kernel.org/linux-arm-msm/20230922081026.2799-1-quic_tengfan@quicinc.com
+[3] v3: https://lore.kernel.org/linux-arm-msm/20230920082102.5744-1-quic_tengfan@quicinc.com
+[4] v2: https://lore.kernel.org/linux-arm-msm/20230915021509.25773-1-quic_tengfan@quicinc.com
+[4] v1: https://lore.kernel.org/linux-arm-msm/20230908065847.28382-1-quic_tengfan@quicinc.com
+
+Ajit Pandey (1):
+  arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db node
+
+Tengfei Fan (5):
+  arm64: dts: qcom: sm4450: Add RPMH and Global clock
+  arm64: dts: qcom: add uart console support for SM4450
+  arm64: dts: qcom: sm4450-qrd: add QRD4450 uart support
+  arm64: dts: qcom: sm4450-qrd: mark QRD4450 reserved gpios
+  arm64: defconfig: enable clock controller and pinctrl
+
+ arch/arm64/boot/dts/qcom/sm4450-qrd.dts |  19 ++++-
+ arch/arm64/boot/dts/qcom/sm4450.dtsi    | 107 ++++++++++++++++++++++++
+ arch/arm64/configs/defconfig            |   2 +
+ 3 files changed, 126 insertions(+), 2 deletions(-)
+
+
+base-commit: c503e3eec382ac708ee7adf874add37b77c5d312
 -- 
-Lee Jones [李琼斯]
+2.17.1
+
