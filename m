@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55417DD1E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A020B7DD224
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345292AbjJaQeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
+        id S1346291AbjJaQeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346430AbjJaQdU (ORCPT
+        with ESMTP id S1346482AbjJaQdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:33:20 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BC91722;
-        Tue, 31 Oct 2023 09:32:10 -0700 (PDT)
+        Tue, 31 Oct 2023 12:33:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806B719F;
+        Tue, 31 Oct 2023 09:32:19 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:c562:2ef4:80c0:92f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D37BE66073D2;
-        Tue, 31 Oct 2023 16:32:06 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id F311666073B6;
+        Tue, 31 Oct 2023 16:32:16 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698769927;
-        bh=qQNeAhJBC9caR9+SHO5bRaHlsjRbtaBcnQ4MqubG9oU=;
+        s=mail; t=1698769937;
+        bh=Cxne9UW1Rdv3DqE7yxtW6lkbxfpON9tV+mkocfttCkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KGDwsSyex4h//bF3xFiL7LsGvZnB2p5AQvTDn/EOKZq5TV+PEafSVzMB8vvMM5HMK
-         I5Q09T4zvnj5Y6eMgh3Q1rDi7sDv6ManTDoQtW9hk1c9eh5gShBR+evkATdPYaHHsk
-         aWFftRCqYabB+M+sino4qs3ojBc6b+x4jsScac/vXnVxOpq9SXBKC/0xQXe/6JN7xP
-         1WBKYkKWyRcTRg3lDpNv92DbjcZsmQiAZVpUDVZ6F2xbaF3UPuNCKi1Wb7TyxAM2ms
-         aLZ1vEHUZxRwOKX2fbqX7S+6kcvLIdfGyJq+3DdhQ0LfpB9JOaz9xT9+I2jLEMOvVK
-         ktKuPL3T6vPUg==
+        b=ibBGN8Bae+pP6U4s2NEEt1GhmGXLPJHYZds8+XgsYyuh+B+/RNXZpHcKH35eWZ+mW
+         9FPGubhRKV5J7DawvFR16fVUG2k5ZIGhRwg4liZIrpcDDb7cEJFpt6qF+m3kcrFsoB
+         jsUbmu1HtPwZONE/xdGQKTzaJLs5M1/E3+VgdTfrbT+7Cy0emGwEJ499C8N5btXj7q
+         nyd3ruy3L9NjkE4tKB7yqXCJbwnMKrjqeoHnfsDCvSIyDervf/Hts5r8sJ1g5IZGJ6
+         yM9fqCihqm4Mw7k+V4VEy7RZdI71Ze8z1QcY4ingdkl7+Rp6JTtAWYa4Jp36xiZjwE
+         TlvPtSrMa4qfw==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -42,11 +42,10 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH v14 33/56] touchscreen: sur40: Stop direct calls to queue num_buffers field
-Date:   Tue, 31 Oct 2023 17:30:41 +0100
-Message-Id: <20231031163104.112469-34-benjamin.gaignard@collabora.com>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v14 34/56] sample: v4l: Stop direct calls to queue num_buffers field
+Date:   Tue, 31 Oct 2023 17:30:42 +0100
+Message-Id: <20231031163104.112469-35-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
 References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
@@ -66,28 +65,33 @@ This allows us to change how the number of buffers is computed in the
 future.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/touchscreen/sur40.c | 5 +++--
+ samples/v4l/v4l2-pci-skeleton.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
-index 8ddb3f7d307a..e7d2a52169a0 100644
---- a/drivers/input/touchscreen/sur40.c
-+++ b/drivers/input/touchscreen/sur40.c
-@@ -847,9 +847,10 @@ static int sur40_queue_setup(struct vb2_queue *q,
+diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
+index a61f94db18d9..a65aa9d1e9da 100644
+--- a/samples/v4l/v4l2-pci-skeleton.c
++++ b/samples/v4l/v4l2-pci-skeleton.c
+@@ -155,6 +155,7 @@ static int queue_setup(struct vb2_queue *vq,
  		       unsigned int sizes[], struct device *alloc_devs[])
  {
- 	struct sur40_state *sur40 = vb2_get_drv_priv(q);
-+	unsigned int q_num_bufs = vb2_get_num_buffers(q);
+ 	struct skeleton *skel = vb2_get_drv_priv(vq);
++	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
  
--	if (q->num_buffers + *nbuffers < 3)
--		*nbuffers = 3 - q->num_buffers;
+ 	skel->field = skel->format.field;
+ 	if (skel->field == V4L2_FIELD_ALTERNATE) {
+@@ -167,8 +168,8 @@ static int queue_setup(struct vb2_queue *vq,
+ 		skel->field = V4L2_FIELD_TOP;
+ 	}
+ 
+-	if (vq->num_buffers + *nbuffers < 3)
+-		*nbuffers = 3 - vq->num_buffers;
 +	if (q_num_bufs + *nbuffers < 3)
 +		*nbuffers = 3 - q_num_bufs;
  
  	if (*nplanes)
- 		return sizes[0] < sur40->pix_fmt.sizeimage ? -EINVAL : 0;
+ 		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
 -- 
 2.39.2
 
