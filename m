@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7BF7DD679
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 20:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1827DD693
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 20:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbjJaTCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 15:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S234315AbjJaTKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 15:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbjJaTCo (ORCPT
+        with ESMTP id S231281AbjJaTKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 15:02:44 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EF2E6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 12:02:41 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9cbba16084so5087971276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 12:02:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698778961; x=1699383761; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H4KGArxAse9OlmNDHK67l7i0Cf0qekzekrdh/xlwJmQ=;
-        b=yQz4eMEItzBmFMC4dabipGKrJS1ip23YbP8+4da9G2lnbELZFRJaCROodOwdtrGgha
-         cUY9sB+uLHDXjaSlo0M570FH62VcuBCTk1UfPiCchgOyGp+peuL1iawzEnWqViPVcqMH
-         vtdh8E4g39daL/AlMHA/fBUM9RtOF25BcoZbW/NCnj+FaZ7wkIhOJGibL/aIY252AiAS
-         o+q5t/QNOsS9Dv/HXnhpadiWupdGzwv7zOTyywOdiOelUfym/Fr+XN2orVQ4DPDfT34M
-         6xbg6GWxRUKfki3n2HoB6GZrh+48OUaOzDsUdIrn/sUWDaYlJ57yd6XfeqTguzQhBBu6
-         cB8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698778961; x=1699383761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H4KGArxAse9OlmNDHK67l7i0Cf0qekzekrdh/xlwJmQ=;
-        b=d9PRRzh0yv72hIMYsL1s3L/3+nJwgIu2z3lkqKlOOvXoqeowyr8bElWMjhax5oAkcu
-         /IxtppkyoG2RE/Te77fF6mXjfxJ21JAmWWShvKmP0fnxgVzEertQStdhZFO1jba5LXLp
-         OnUkAE+d6ogQVwry0Qcb5z/jtNgJyTpP3R8JzGFbHDqFFMLOOugdRwyoKQaoKLD/OQmw
-         NWGr1/EdmBjcpsiCr/PqPRfQt1DUVwVO4ZD4XFYOFkO23QUN5hMaX99pubh50+zUuG2f
-         F0QqFwq7dexm+/rNAr71n83cSRyOce/WxtS8k67feRxHp55EAnyiIMX3kcdnWDO8Zcyu
-         Vgdg==
-X-Gm-Message-State: AOJu0Yyremo3uFcCl5k/cfnxS68cxbIz2Z+qlEZ+qOjb0Hda/tuWaMJU
-        N6tKgGQFXIE/IZhd2uieQwPdTJWpg/qKscTDvOCLrQ==
-X-Google-Smtp-Source: AGHT+IFr3vYMDVg5evYLFpLKM2lZT9hhsdNKErYMijLOZGzm/zFiSNML75lGDwp7FixY5bxqeWQAteCakEzmlrwjtcc=
-X-Received: by 2002:a25:ab73:0:b0:da0:48df:cafa with SMTP id
- u106-20020a25ab73000000b00da048dfcafamr12634653ybi.16.1698778960745; Tue, 31
- Oct 2023 12:02:40 -0700 (PDT)
+        Tue, 31 Oct 2023 15:10:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68298F4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 12:10:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75CE3C433C7;
+        Tue, 31 Oct 2023 19:10:35 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 15:10:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] tracing: Have the user copy of synthetic event address use
+ correct context
+Message-ID: <20231031151033.73c42e23@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
- <20231030141623.ufzhb4ttvxi3ukbj@skbuf> <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
- <20231030222035.oqos7v7sdq5u6mti@skbuf> <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
- <20231030233334.jcd5dnojruo57hfk@skbuf> <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
- <20231031163439.tqab5axhk5q2r62i@skbuf>
-In-Reply-To: <20231031163439.tqab5axhk5q2r62i@skbuf>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 31 Oct 2023 20:02:29 +0100
-Message-ID: <CACRpkdb=16uLhsXhktLCwUByDAMv9Arg2zzCA+oJW2HBJ35-Bg@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 5:34=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com>=
- wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Ok, so we don't have a confirmation of breakage with other conduit
-> interface than the Gemini driver, either. So a problem there is still
-> not off the table.
+A synthetic event is created by the synthetic event interface that can
+read both user or kernel address memory. In reality, it reads any
+arbitrary memory location from within the kernel. If the address space is
+in USER (where CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE is set) then
+it uses strncpy_from_user_nofault() to copy strings otherwise it uses
+strncpy_from_kernel_nofault().
 
-True!
+But since both functions use the same variable there's no annotation to
+what that variable is (ie. __user). This makes sparse complain.
 
-> So on the gemini-dlink-dir-685.dts platform, you can also use &gmac1 as
-> a plain Ethernet port, right?
+Quiet sparse by typecasting the strncpy_from_user_nofault() variable to
+a __user pointer.
 
-As a port it exist on the SoC yes but it is not connected physically
-to anything.
+Cc: stable@vger.kernel.org
+Fixes: 0934ae9977c2 ("tracing: Fix reading strings from synthetic events");
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311010013.fm8WTxa5-lkp@intel.com/
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_synth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-&gmac0 is connected to the switch, and the switch has all the PHYs.
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 14cb275a0bab..846e02c0fb59 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -452,7 +452,7 @@ static unsigned int trace_string(struct synth_trace_event *entry,
+ 
+ #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 		if ((unsigned long)str_val < TASK_SIZE)
+-			ret = strncpy_from_user_nofault(str_field, str_val, STR_VAR_LEN_MAX);
++			ret = strncpy_from_user_nofault(str_field, (const void __user *)str_val, STR_VAR_LEN_MAX);
+ 		else
+ #endif
+ 			ret = strncpy_from_kernel_nofault(str_field, str_val, STR_VAR_LEN_MAX);
+-- 
+2.42.0
 
-(I don't know if I misunderstand the question...)
-
-> If possible, could you set up dsa_loop (enable CONFIG_NET_DSA_LOOP, repla=
-ce
-> "eth0" in dsa_loop_pdata with the netdev name of &gmac1, replace DSA_TAG_=
-PROTO_NONE
-> in dsa_loop_get_protocol() with your tagging protocol) and put a tcpdump
-> on the remote end of the gmac1 port, to see if the issue isn't, in fact,
-> somewhere else, maybe gmac_start_xmit()?
-
-If you by remote end mean the end of a physical cable there is
-no way I can do that, as I have no PHY on gmac1.
-
-But I have other Gemini platforms, so I will try to do it on one
-of them! Let's see if I can do this thing....
-
-Yours,
-Linus Walleij
