@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10AB7DC621
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 06:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338F97DC623
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 06:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbjJaFwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 01:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58968 "EHLO
+        id S233286AbjJaFy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 01:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjJaFwg (ORCPT
+        with ESMTP id S233004AbjJaFy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 01:52:36 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F82DE
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 22:52:33 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e04b17132so8585796a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 22:52:33 -0700 (PDT)
+        Tue, 31 Oct 2023 01:54:26 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3D1BD
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 22:54:21 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so8925840a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 22:54:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698731552; x=1699336352; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698731649; x=1699336449; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1HL2/AT7/PZUXkao0bY/DaiTw9iiwVQwGoOkH/xt9cM=;
-        b=XRVKIXwbkK5LVV4DB8wokdzyfzhipHowkoNNJ9jtcEJ0dO/zEUFXpReRQyqbvcdz9Z
-         9hsMMM5lsyVRnFED98zp07Ej9pifH6rJ4z+04eNpHxjbiJ0QGCoM0hp+1UnmeEojdvpq
-         Nkd+WgP5zHsMOAzI7J1T17qrm6T5coW/C6oecNwmjsaC2vqVTXD9q3BOZYpSdSqnz88B
-         fdJV2IPOYOC9rPsbeQY+cZDIPQRtANr8l3EE9z3ntSVdYj8As4GrQlLghHWRgcmyrens
-         ZTqVnTe+lemfQW5CKAZFQRMZCXKX4kWFgcxT3lYYGc5+WhoJYZ5OKhviHXTrm0z4TT+C
-         H5AA==
+        bh=2xhFLjwtVvK6+n9TMcKsvUMKJQSm2sfqgVI/mImUnJM=;
+        b=v4E+L0goOjqhExWmrGME6vhpF3FNxpih8VHtCHjkmYadzModIuKu9dbK9ThPRhkzYt
+         0U+AHqa4WpgEgXGJP8DMzWot/Ep33HL+4hWVBr2VXTgIrMrE/tBXG0zZu+1Gf1nP6Cs8
+         FrVbcrprp9WNCbCPsilfHcXk597Dh0Vujt5j/nvQPdFR1sVjkHhLhIhiFygRs5zKZMUv
+         Q2sZyDWNCC82waS9KXeXeYixRQNrlj3oVSp73IBzAFTRVEMaEGcOSl6/q6KA5m7tIKiR
+         La6rbvi36K67xw22mTar2OiENxlIalZvK0Ub3m9zpogW8VRA61E6Rjgcmtbz+Tg6GVlV
+         9aiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698731552; x=1699336352;
+        d=1e100.net; s=20230601; t=1698731649; x=1699336449;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1HL2/AT7/PZUXkao0bY/DaiTw9iiwVQwGoOkH/xt9cM=;
-        b=u56INwa7r9pRJx9o/QBz4NX3cA0Ccb0gxkIJZSnvWaCzWR62OVRFYzIu7HKepZ+T6e
-         WDqodDkwx4yZP1rpa27cGtUqTXIzA3NqAHlXKWilMJL4oascSQVEseJRE9NTr1oNIRrC
-         plsoAvt8sLrMn1qAn0cxsYJ+VEHESQeRxcUwJo7yDDJrL1iiMQ1tisrwrQI61LAjfH2N
-         iELu2B7u5aAIqhtNW25npP+92Fk+g96f2vJbs5dVSmD/Sbm2SJQN12lF3luinGqeAuGS
-         cB30U8tUT01nuz0VSgfJokwZBe2Y9DN6TuyiGtrgDIw4cBkqqbRWGK8CUXEaQLF6bvXE
-         D2NQ==
-X-Gm-Message-State: AOJu0YxDBJ6XXVaPAI9XLHWBsCsad217Ij0+T6qku3qMmb0t3Wvq7C2f
-        8lySQyBNIHhyuY3potHK1lBirA==
-X-Google-Smtp-Source: AGHT+IGXy/fC3RO6Rnklq5Wq9aOUTYe1O9YovjUTxvkol+Hq6ailcSu3RYdF84LIZs1799FWxWulWA==
-X-Received: by 2002:a50:aad8:0:b0:543:6444:ef2a with SMTP id r24-20020a50aad8000000b005436444ef2amr815817edc.32.1698731551517;
-        Mon, 30 Oct 2023 22:52:31 -0700 (PDT)
+        bh=2xhFLjwtVvK6+n9TMcKsvUMKJQSm2sfqgVI/mImUnJM=;
+        b=fWkAnNmFOI5ybiizkI5qM7gz8nujr3A0tR0Ngy0R1/5RWFsUzIxpaDiJrw6UgHWgKn
+         Vyo5xOmrXDr+qqYeApU6nh0+gbkkroEEN6oLjF0gos+HaR9hgrTjBim6O/6PfP+9oV62
+         eZ93Vpq/GzbBJXEEt8D1gFtkEr2b/H5F85/jJuKniqU6th2B/iZC81zJ9/OeeDFzsHDS
+         ZGUAX9rpR8d6EFoo2XoEg0NZ02BqfBpKHNp7lyMbS/FvHrMdsTC6kPzo7amyltB9lc7M
+         ABEUglpTngoQ2aH+yUtx4NVncJosRcRh34sSCnSVEybHoRyHVlGv4Xtu1zz3KkT5bdYT
+         a5Ig==
+X-Gm-Message-State: AOJu0YxwLJIF9EkpBwRLWoGV/FchplHSS0RIGKyXCDMJhjuI6hsNkV9p
+        5Bl3NG2JS5NW/ZM8c3adQWsj/Q==
+X-Google-Smtp-Source: AGHT+IGfi6zbBV2ALB09yK5iPRN0y4tq7NDfkYgNb1IAHDoWKjOr9rck0/WHmVtlko+a7b+h9P/bcw==
+X-Received: by 2002:a50:c304:0:b0:543:714b:5368 with SMTP id a4-20020a50c304000000b00543714b5368mr567693edb.20.1698731648814;
+        Mon, 30 Oct 2023 22:54:08 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id q19-20020a056402033300b0054354da96e5sm497333edw.55.2023.10.30.22.52.29
+        by smtp.gmail.com with ESMTPSA id q19-20020a056402033300b0054354da96e5sm497333edw.55.2023.10.30.22.54.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 22:52:31 -0700 (PDT)
-Message-ID: <5a906074-5c1e-4c1c-8023-5346e7fe9738@linaro.org>
-Date:   Tue, 31 Oct 2023 06:52:29 +0100
+        Mon, 30 Oct 2023 22:54:08 -0700 (PDT)
+Message-ID: <a0742798-982d-4461-9731-aac41fcf8be3@linaro.org>
+Date:   Tue, 31 Oct 2023 06:54:07 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: mfd: brcm,bcm59056: Convert to YAML
+Subject: Re: [PATCH 2/6] dt-bindings: mfd: brcm,bcm59056: Add compatible for
+ BCM59054
 Content-Language: en-US
 To:     Artur Weber <aweber.kernel@gmail.com>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -72,7 +73,7 @@ Cc:     Stanislav Jakubek <stano.jakubek@gmail.com>,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
 References: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
- <20231030-bcm59054-v1-1-3517f980c1e3@gmail.com>
+ <20231030-bcm59054-v1-2-3517f980c1e3@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,12 +119,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231030-bcm59054-v1-1-3517f980c1e3@gmail.com>
+In-Reply-To: <20231030-bcm59054-v1-2-3517f980c1e3@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -131,179 +133,78 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/10/2023 20:36, Artur Weber wrote:
-> Convert devicetree bindings for the Broadcom BCM59056 PMU MFD from
-> TXT to YAML format. This patch does not change any functionality;
-> the bindings remain the same.
+> The BCM59054 MFD is fairly similar to the BCM59056, and will use
+> the same driver. Add compatible and specify the allowed regulator
+> nodes.
 > 
 > Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 > ---
->  .../devicetree/bindings/mfd/brcm,bcm59056.txt      | 39 ----------
->  .../devicetree/bindings/mfd/brcm,bcm59056.yaml     | 91 ++++++++++++++++++++++
->  2 files changed, 91 insertions(+), 39 deletions(-)
+>  .../devicetree/bindings/mfd/brcm,bcm59056.yaml     | 125 +++++++++++++++------
+>  1 file changed, 88 insertions(+), 37 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.txt b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.txt
-> deleted file mode 100644
-> index be51a15e05f9..000000000000
-> --- a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.txt
-> +++ /dev/null
-> @@ -1,39 +0,0 @@
-> --------------------------------
-> -BCM590xx Power Management Units
-> --------------------------------
-> -
-> -Required properties:
-> -- compatible: "brcm,bcm59056"
-> -- reg: I2C slave address
-> -- interrupts: interrupt for the PMU. Generic interrupt client node bindings
-> -  are described in interrupt-controller/interrupts.txt
-> -
-> -------------------
-> -Voltage Regulators
-> -------------------
-> -
-> -Optional child nodes:
-> -- regulators: container node for regulators following the generic
-> -  regulator binding in regulator/regulator.txt
-> -
-> -  The valid regulator node names for BCM59056 are:
-> -  	rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
-> -	mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
-> -	csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
-> -	gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
-> -	vbus
-> -
-> -Example:
-> -	pmu: bcm59056@8 {
-> -		compatible = "brcm,bcm59056";
-> -		reg = <0x08>;
-> -		interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-> -		regulators {
-> -			rfldo_reg: rfldo {
-> -				regulator-min-microvolt = <1200000>;
-> -				regulator-max-microvolt = <3300000>;
-> -			};
-> -
-> -			...
-> -		};
-> -	};
 > diff --git a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
-> new file mode 100644
-> index 000000000000..6d6acc9fd312
-> --- /dev/null
+> index 6d6acc9fd312..5b5044867eca 100644
+> --- a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
 > +++ b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
-> @@ -0,0 +1,91 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/brcm,bcm59056.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: BCM590xx Power Management Unit MFD
+> @@ -12,6 +12,7 @@ maintainers:
+>  properties:
+>    compatible:
+>      enum:
+> +      - "brcm,bcm59054"
 
-Drop "MFD". That's Linux term.
+Where do you see syntax with quotes?
 
-> +
-> +maintainers:
-> +  - Artur Weber <aweber.kernel@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - "brcm,bcm59056"
+>        - "brcm,bcm59056"
+>  
+>    reg:
+> @@ -24,43 +25,93 @@ properties:
+>      type: object
+>      description: Container node for regulators.
+>  
+> -    # The valid regulator node names for BCM59056 are:
+> -    #   rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
+> -    #   mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
+> -    #   csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
+> -    #   gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
+> -    #   vbus
+> -    patternProperties:
+> -      "^(cam|sim|mmc)ldo[1-2]$":
+> -        type: object
+> -        $ref: /schemas/regulator/regulator.yaml#
+> -        unevaluatedProperties: false
+> -
+> -      "^(rf|sd|sdx|aud|mic|usb|vib)ldo$":
+> -        type: object
+> -        $ref: /schemas/regulator/regulator.yaml#
+> -        unevaluatedProperties: false
+> -
+> -      "^(c|m|v)sr$":
+> -        type: object
+> -        $ref: /schemas/regulator/regulator.yaml#
+> -        unevaluatedProperties: false
+> -
+> -      "^(io|sd)sr[1-2]$":
+> -        type: object
+> -        $ref: /schemas/regulator/regulator.yaml#
+> -        unevaluatedProperties: false
+> -
+> -      "^gpldo[1-6]$":
+> -        type: object
+> -        $ref: /schemas/regulator/regulator.yaml#
+> -        unevaluatedProperties: false
+> -
+> -    properties:
+> -      "vbus":
+> -        type: object
+> -        $ref: /schemas/regulator/regulator.yaml#
+> -        unevaluatedProperties: false
+> +allOf:
 
-No quotes. Please copy some existing DT schema as your template. None of
-them use such syntax.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-
-There is no other feature here, so this should go to regulators directory.
-
-> +  regulators:
-> +    type: object
-> +    description: Container node for regulators.
-> +
-> +    # The valid regulator node names for BCM59056 are:
-> +    #   rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
-> +    #   mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
-> +    #   csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
-> +    #   gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
-> +    #   vbus
-> +    patternProperties:
-> +      "^(cam|sim|mmc)ldo[1-2]$":
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +      "^(rf|sd|sdx|aud|mic|usb|vib)ldo$":
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +      "^(c|m|v)sr$":
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +      "^(io|sd)sr[1-2]$":
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +      "^gpldo[1-6]$":
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +    properties:
-> +      "vbus":
-
-Drop quotes
-
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        pmu: bcm59056@8 {
-
-Generic node names, so "pmic". You can also drop unused label.
+No. We do not define properties in allOf:if: block. If there are just
+few differences, define all at the top level and disallow few (foo-bar:
+false). If there are more, just create separate bindings.
 
 
-> +            compatible = "brcm,bcm59056";
-> +            reg = <0x08>;
-> +            interrupts = <0 215 IRQ_TYPE_LEVEL_HIGH>;
-
-Does 0 stand for some GIC flag?
-
-> +            regulators {
-> +                rfldo_reg: rfldo {
-> +                    regulator-min-microvolt = <1200000>;
-> +                    regulator-max-microvolt = <3300000>;
-> +                };
-> +            };
-> +        };
-> +    };
-> 
 
 Best regards,
 Krzysztof
