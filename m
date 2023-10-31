@@ -2,60 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 584277DD71B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4537DD724
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbjJaUdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        id S234011AbjJaUhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjJaUdo (ORCPT
+        with ESMTP id S229991AbjJaUhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:33:44 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7D1F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:33:42 -0700 (PDT)
-Received: from [127.0.0.1] ([98.35.210.218])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39VKXRM9762787
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 31 Oct 2023 13:33:28 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39VKXRM9762787
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023101201; t=1698784410;
-        bh=Hvkle5GQ+dtE2eXumoN/58pNx6VdHfIVp/amixRhIzk=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=AGDy8tJm82myZ2rABOTRHQU9++npFJ/61lIltbNUtMiBOhF0/K+2Yf/T3amaS6rfy
-         LMjshjjauoc3A34/aO/1BjacjGI3zGfhHOf5PYTmNzhz5qBQinbJisxCghAbW3xO6s
-         uu7hZMxUfzJ9Lkb2xbTCA2TyO7QoINoVCiB2h1EmICrKKqD8daAI+zkuJe50paksnj
-         gfvSdQ6/Wv72kUahG+CSMlt34cd+fAj51vKzBHuDOtJdfbJNrUhZ0OeCe1q/+LCFar
-         se5DtyVSzaulVJM7Gez1tysShwwy5TyvPqCowtNwA/fUyC+/zxXX6X/n44LzqBPhHS
-         cSFa4usG/e2Sg==
-Date:   Tue, 31 Oct 2023 13:33:22 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Stefan Berger <stefanb@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     linux-kernel@vger.kernel.org,
-        "Milton D. Miller II" <mdmii@outlook.com>,
-        Rob Landley <rob@landley.net>,
-        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Jim Cromie <jim.cromie@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: Re: [RFC PATCH] rootfs: Use tmpfs for rootfs even if root= is given
-User-Agent: K-9 Mail for Android
-In-Reply-To: <b035a00f-865a-453c-bb27-0916aada0594@linux.ibm.com>
-References: <20231031154417.621742-1-stefanb@linux.ibm.com> <2023103159-punctuate-amount-f09d@gregkh> <b035a00f-865a-453c-bb27-0916aada0594@linux.ibm.com>
-Message-ID: <3FBB731F-2A45-4EC6-AF8C-76C21B8607BC@zytor.com>
+        Tue, 31 Oct 2023 16:37:06 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA72F5;
+        Tue, 31 Oct 2023 13:37:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1698784621;
+        bh=jlAbfNYACjNJjKtpx27+AybaIT1vLObKwRQCYdPObvM=;
+        h=From:Subject:Date:To:Cc:From;
+        b=hNWbXGf5HtjYYV+0IjPNEgLqRpHSl9Dq9AJ1js9ZF8ziFGmwgYpABdF/nQTpRvKcw
+         2bLFuZQAdVJuKaATCkOskOPNK1Rs5i0Gp9Gz2/LfaZriwtmZrQHwrgr9OMLTqQsS2F
+         lFStoFFVCnTGcyjt1PZM45ZLoIuK4hi2EFLu5HyE=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH 0/3] selftests/nolibc: various build improvements
+Date:   Tue, 31 Oct 2023 21:36:57 +0100
+Message-Id: <20231031-nolibc-out-of-tree-v1-0-47c92f73590a@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAGllQWUC/x3MQQqAIBBA0avErBvQDImuEi1qGmsgNLQiCO+et
+ HyL/19IHIUT9NULkW9JEnyBriugbfIroyzF0KjGaKUV+rDLTBiuE4PDMzLjbG3XkiWn2EAJj8h
+ Onn86jDl/NR3GN2QAAAA=
+To:     Willy Tarreau <w@1wt.eu>,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698784620; l=1914;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=jlAbfNYACjNJjKtpx27+AybaIT1vLObKwRQCYdPObvM=;
+ b=39z+cJviAk93z1WR2YzBPJR6rzhr9MZIud9TBlyeTMawOGUrta8txC71uaEvxzf3aXef1AnSO
+ dMLBlwcnhNHBf2cdpFaKzfGfDeidtx0+sQJQqfd8mPdKGx68QMDUrFy
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,31 +55,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On October 31, 2023 10:11:01 AM PDT, Stefan Berger <stefanb@linux=2Eibm=2Ec=
-om> wrote:
->
->On 10/31/23 12:56, Greg Kroah-Hartman wrote:
->> On Tue, Oct 31, 2023 at 11:44:17AM -0400, Stefan Berger wrote:
->>> rootfs currently does not use tmpfs if the root=3D boot option is pass=
-ed
->>> even though the documentation about rootfs (added in 6e19eded3684) in
->>> Documentation/filesystems/ramfs-rootfs-initramfs=2Erst states:
->>>=20
->>>    If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs =
-by
->>>    default=2E  To force ramfs, add "rootfstype=3Dramfs" to the kernel =
-command
->>>    line=2E
->> At this point in time, is there even any difference between ramfs and
->> tmpfs anymore?  Why would you want to choose one over the other here?
->
->CONFIG_TPMFS_XATTRS allows us to set xattrs, such as security=2Eima=2E
->
->=C2=A0=C2=A0 Stefan
->
->>=20
->> thanks,
->>=20
->> greg k-h
-Why do we even keep ramfs as a standalone file system? To guarantee it can=
-not be swapped out? Does anyone actually use it?
+With the out-of-tree builds it's possible do incremental tests fairly fast:
+
+time ./run-tests.sh 
+i386:          162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+x86_64:        162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+arm64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+arm:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+mips:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+ppc:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+ppc64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+ppc64le:       162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+riscv:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+s390:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+loongarch:     162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+
+real	1m56.226s
+user	2m42.457s
+sys	0m57.979s
+
+This is with an incremental kernel rebuild and testrun inside qemu.
+
+---
+Changes in v2:
+- Drop already applied qemu-system-ppc64le patch
+- Drop config generation patch
+- Add Co-developed-by for out-of-tree patch
+- Link to v1: https://lore.kernel.org/lkml/20231010-nolibc-out-of-tree-v1-0-b6a263859596@weissschuh.net/
+
+---
+Thomas Weißschuh (3):
+      selftests/nolibc: use EFI -bios for LoongArch qemu
+      selftests/nolibc: anchor paths in $(srcdir) if possible
+      selftests/nolibc: support out-of-tree builds
+
+ tools/testing/selftests/nolibc/Makefile | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
+---
+base-commit: 5a6a09e97199d6600d31383055f9d43fbbcbe86f
+change-id: 20231010-nolibc-out-of-tree-b6684c6cf0e3
+
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
+
