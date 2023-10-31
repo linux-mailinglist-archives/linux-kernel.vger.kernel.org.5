@@ -2,226 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B632C7DD32C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D617DD28F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346989AbjJaQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        id S236451AbjJaQrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346944AbjJaQv4 (ORCPT
+        with ESMTP id S236496AbjJaQrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:51:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF8B3A97;
-        Tue, 31 Oct 2023 09:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GOVRCwbjS2+Vyp5h9ZzGjoMP9lCkkl8D/iU/MwGDsDw=; b=eXlxhJXSgeNrpXzOMILj8ZLLG4
-        F6vC2BmUus/xx+HFWRMS5qsKAVVv693EMsvg5XFc6zB6QaIc960uilkbFN0epjVOQkaleVWaS7Atn
-        qUB/H/ZIOP4sKy04TN0v0Eos5px2dOTPEUWKLnl4r494DLIWpMgs90Lx+6U+FvBv63ib9p/GQ2n7W
-        XfocYGf7old3FCMijfIv6j8Gra4A77bsI6V3fSUe6vem/HZKjdbuCm4eC5qwMexqEa+zrqr1uaW3D
-        0S3MA/1KAro4G+FY91iRYIBYFIrmFjkTGOAuRTbZ6Go0ER08jvCeclK1iUZrJH4w4QBk74WkIr8sm
-        gQzqzJdw==;
-Received: from [2001:8b0:10b:5:7a00:e590:2205:b5e1] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qxrhX-00B7wz-Le; Tue, 31 Oct 2023 16:34:47 +0000
-Message-ID: <908ad29b56fbe5e5f4d99e477e96fbd9d03ba4c6.camel@infradead.org>
-Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     paul@xen.org, Paul Durrant <xadimgnik@gmail.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Date:   Tue, 31 Oct 2023 16:34:46 +0000
-In-Reply-To: <a2a13598-6d37-47a2-8a13-9963acb0f1e5@xen.org>
-References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
-         <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
-         <F80266DD-D7EF-4A26-B9F8-BC33EC65F444@infradead.org>
-         <6c9671b4-d997-42ac-9821-06accb97357f@xen.org>
-         <1DCDC3DB-81E8-426C-AF4B-AA7CA2C1271E@infradead.org>
-         <a2a13598-6d37-47a2-8a13-9963acb0f1e5@xen.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-xID9vXOJmXBHPB0OpzV/"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Tue, 31 Oct 2023 12:47:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97F6468E
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698770155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V8RNrz/Yva6AAXDhSbIVEu5DSJqLVVmt8DdeJIQrB/I=;
+        b=XFB3/td4WwpQoWVwASiSjV59GEmSjL7c16qDtQTPEgg5GelEzqG33f1pShScgvi2KH67w4
+        kzcfKMiaQ6zS/iLOn9tJNHPX/YNOcOQWlXBCJsilkHlCkjEvDhg02poRpL6YyRFLpOE1mi
+        Be1z0z+OnnkEt3eCMpjD3EoUeo/Im2M=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-czRgGzCpO267_XlNWsZOZQ-1; Tue, 31 Oct 2023 12:35:49 -0400
+X-MC-Unique: czRgGzCpO267_XlNWsZOZQ-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-542fe446d45so2156160a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:35:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698770148; x=1699374948;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V8RNrz/Yva6AAXDhSbIVEu5DSJqLVVmt8DdeJIQrB/I=;
+        b=IZVbKMAwxc+MGW6vyg0GPzGuEpelJ18Ys6F65rXlDQ+dBVfYcsaJC+sGSML/o5hkbA
+         rG3USq7kD2becUNU3O5T1O+Emp4Erl6vzE4VXuT1KvEjvjBIHWrYx23Ul8sNgqYWhx6i
+         SWcI7IxR8ZZNQDWyxzRc6M4zn39/1X79dSPHo2VJkNVrwvKEvmZekovYf21V+J2hNggy
+         sIu4PsEOyL2ZAMcpijV172H3H9idojyXNLSPIk61CJr2nwK+dfqtv4+5/tKVpiUFqlFt
+         TN7HQk+ovBcwnllyoeF72O6oUfkfUSrls+9ezoZWBaysY2cwjilPnjAmdB8Sap7OOQKs
+         HGYw==
+X-Gm-Message-State: AOJu0YzP6hojbWEnEo3KQbueTugLpq5ttrYscVc7keu6UwKNxFBEGfza
+        EXb6NjpcEP6YTMqkX7l1Fns371PZ/rDPSYRy1nNUq27+bi1AGEzFj+TRA5vuriLEy2UrNwh/5gb
+        HBO8L11A3+r81GxS3o5wO/Wr4
+X-Received: by 2002:a05:6402:221a:b0:53e:3d9f:3c72 with SMTP id cq26-20020a056402221a00b0053e3d9f3c72mr10202179edb.18.1698770148015;
+        Tue, 31 Oct 2023 09:35:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG23z5vX3pCUte1bczUsVj5YelU4MviK3+Zf1D5qHUrCaDe+xind2RjKzLc9AzkbRpkpnJ+RA==
+X-Received: by 2002:a05:6402:221a:b0:53e:3d9f:3c72 with SMTP id cq26-20020a056402221a00b0053e3d9f3c72mr10202159edb.18.1698770147712;
+        Tue, 31 Oct 2023 09:35:47 -0700 (PDT)
+Received: from sgarzare-redhat ([5.179.178.82])
+        by smtp.gmail.com with ESMTPSA id z7-20020a50cd07000000b0053e5a1bf77dsm1412398edi.88.2023.10.31.09.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 09:35:47 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 17:35:42 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Matias Ezequiel Vara Larsen <mvaralar@redhat.com>,
+        anton.yakovlev@opensynergy.com, perex@perex.cz, tiwai@suse.com,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: Re: [PATCH v4] ALSA: virtio: use ack callback
+Message-ID: <7agwvbpra7ywyeghawq6xs4l2rxyksyyarborezzndb73wfd6t@bxtb2n4dsrfa>
+References: <ZTjkn1YAFz67yfqx@fedora>
+ <87cyx0xvn7.wl-tiwai@suse.de>
+ <jmuevryxo2nlqriqbwz6y2ttwzxwajfsnb5vaez2oqu7etkrd3@lu3pgnfushmr>
+ <20231027100703-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231027100703-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 27, 2023 at 10:10:30AM -0400, Michael S. Tsirkin wrote:
+>On Fri, Oct 27, 2023 at 12:18:00PM +0200, Stefano Garzarella wrote:
+>> On Fri, Oct 27, 2023 at 11:27:40AM +0200, Takashi Iwai wrote:
+>> > On Wed, 25 Oct 2023 11:49:19 +0200,
+>> > Matias Ezequiel Vara Larsen wrote:
+>> > >
+>> > > This commit uses the ack() callback to determine when a buffer has been
+>> > > updated, then exposes it to guest.
+>> > >
+>> > > The current mechanism splits a dma buffer into descriptors that are
+>> > > exposed to the device. This dma buffer is shared with the user
+>> > > application. When the device consumes a buffer, the driver moves the
+>> > > request from the used ring to available ring.
+>> > >
+>> > > The driver exposes the buffer to the device without knowing if the
+>> > > content has been updated from the user. The section 2.8.21.1 of the
+>> > > virtio spec states that: "The device MAY access the descriptor chains
+>> > > the driver created and the memory they refer to immediately". If the
+>> > > device picks up buffers from the available ring just after it is
+>> > > notified, it happens that the content may be old.
+>> > >
+>> > > When the ack() callback is invoked, the driver exposes only the buffers
+>> > > that have already been updated, i.e., enqueued in the available ring.
+>> > > Thus, the device always picks up a buffer that is updated.
+>> > >
+>> > > For capturing, the driver starts by exposing all the available buffers
+>> > > to device. After device updates the content of a buffer, it enqueues it
+>> > > in the used ring. It is only after the ack() for capturing is issued
+>> > > that the driver re-enqueues the buffer in the available ring.
+>> > >
+>> > > Co-developed-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+>> > > Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+>> > > Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+>> >
+>> > Applied now to for-next branch.
+>>
+>> Cool, thanks for that!
+>>
+>> I just wonder if we should CC stable since we are fixing a virtio
+>> specification violation.
+>>
+>> @Michael what do you think?
+>>
+>> Thanks,
+>> Stefano
+>
+>
+>Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>Fixes: de3a9980d8c3 ("ALSA: virtio: add virtio sound driver")
+>
+>
+>The patch is too big for stable - more than 100 lines added. See:
+>Documentation/process/stable-kernel-rules.rst
 
---=-xID9vXOJmXBHPB0OpzV/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Yeah, I see, thanks for sharing!
 
-On Tue, 2023-10-31 at 12:22 +0000, Paul Durrant wrote:
->=20
-> >=20
-> > As I said, this patch stands even *after* we fix kvmclock, because
-> > it handles the timer delta calculation from an single TSC read.
-> >=20
-> > But overengineering a timer reset on KVM_REQ_CLOCK_UPDATE would not.
->=20
-> I'm not sure what you intend to do to kvmlock, so not sure whether we'll=
-=20
-> still need the __pvclock_read_cycles(&vcpu->arch.hv_clock, guest_tsc)
-> but this patch (with the extra check on validity of hv_clock) does fix=
-=20
-> the drift so...
->=20
-> Reviewed-by: Paul Durrant <paul@xen.org>
+Stefano
 
-Ta. And no, I'm not quite sure what I'm going to do with kvmclock for
-the general case yet. The more I look at it, the more I realise how
-broken it is.
-
-Last week I thought it was just about the way KVM 'jumps' the kvmclock
-and yanks it back to the host's CLOCK_MONOTONIC_RAW, but I thought KVM
-at *least* managed to do it right between those times. But no, this
-patch is addressing the fact that even *without* those clock jumps, KVM
-doesn't manage to calculate the guest clock the same way that it tells
-the guest to... and thus doesn't get the same results :)
-
-I think it involves get_kvmclock_ns() using the frequency given in the
-KVM-wide (not per-vCPU) KVM_SET_TSC_KHZ ioctl, and scaling via that to
-get the guest clock. That should match, without having to have a
-specific vCPU's hv_clock to play with. And maybe we can also have a
-get_kvmclock_ns_at() which takes a host TSC value, and the timer code
-from this patch can use that instead of using __pvclock_read_cycles()
-directly.
-
-That's probably the easy part. Fixing the 'resync' to
-CLOCK_MONOTONIC_RAW, while keeping things working for the now-
-considered-pathological !CONSTANT_TSC case, will be slightly more fun.
-As well as suspend etc. in the CONSTANT_TSC case, of course.
-
-And replacing that stupid KVM_CLOCK_REALTIME with something that uses
-CLOCK_TAI. Or maybe just making it export the tai_offset at the same
-moment?
-
---=-xID9vXOJmXBHPB0OpzV/
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMxMTYzNDQ2WjAvBgkqhkiG9w0BCQQxIgQg+rL79WmU
-VOYvVweQB8+zeylQYSvgKiZeAgwZnSzF02Qwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCNUoWlPHfuNLLGruydDpcAQsIejZX1hpbg
-Luf51+HjMD8cWT/NJvp9w7ntGetks9sqo9+vcvximFnzZMwFYCgbZWzCHw1WrnoVjbCF12PG4PxP
-E+E3SHgyyfYgjIco/xEiA+7e1kkIxPZNPv0916TdeuQA3lPf0fnAHmG+la4B4bz/SJTAKXgif9Mr
-DhYJel4fpubgauMGP4e6WSHZCBOP86zSo00Y+VsQjUmcjqbMWX48j/r1PDw0HZhmtNfFCr2F5Kkt
-VuNTaEMbhOOhYQbhianzlqKFaiqX3M1QlXl7LeuSVGep5julqqcWAB60heDCW8BfmAEkiZ8Bmexr
-PaNdy764EIZKaOdTZQjWWEsHrsfbPwqxMKNBZPX4qRCJsU/ST9JfjqxG58q5OL6QjGNbkF4ZfGAT
-io95jteZcNuQEU1V5ImIJQla6mEOnUG4l4Lanp+EbFQ4O8PvK3DKoUtOttizbEd6AaANa3t26LBR
-SrXk+SAeLdmKbnUbjurGzgrSs5YX7lLomw2Hr8kRv7GOLcCuaPsb28wUiWtgLy0VBc8Pj/uTqawk
-0Q6+rIReNE390EizFc/xD51P3fFOMbsc2WdhxsauUc9+MHEaEkmyz/LiVauUHnNMLww+rmpMZIri
-Ok9GxCVeKgX7BRXt/eUw4HSN4cn5OW7Wc88rCQDoBgAAAAAAAA==
-
-
---=-xID9vXOJmXBHPB0OpzV/--
