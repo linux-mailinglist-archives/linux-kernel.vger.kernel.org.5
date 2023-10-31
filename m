@@ -2,145 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE357DC8A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6C67DC8A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235300AbjJaIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 04:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
+        id S235308AbjJaIv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233576AbjJaIsd (ORCPT
+        with ESMTP id S234874AbjJaIv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 04:48:33 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21C611C
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:48:21 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c5056059e0so77688621fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698742100; x=1699346900; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cG4EE29cAjXRzXvYDBFaYt+5mPgyNvzxfZ1oi/PfDXw=;
-        b=k+iG80S7JGJEL79DLrdPCmVpADqQWKcsRuQalAWUTGilmEUuMHnTkdSjGJ9ThEtTDE
-         ZmJcv9M07A4RV18dOT+qZR3iPQqDWuym7bEug7h85eygmq2BaD48RXqRID0ILpT4/FFz
-         CbIYCoctXOTKDbtKXKFalacHhYVSAmyFAmZjOfXh5ytbMTRd+O5QuJ+FzQUm0FyoqRON
-         OEaxA4YxPJQrqkcL2t3bFBDYQejya4H83HVy9H1PCFn5eT/vwkzXWG46JJFf5DVmSw31
-         JoqV3llIlBP+5NQJzYrakNdKa8z+0c27ScebOP92Hn8wk3XRqm/yNIi8Ql3q/22pSUJO
-         L6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698742100; x=1699346900;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cG4EE29cAjXRzXvYDBFaYt+5mPgyNvzxfZ1oi/PfDXw=;
-        b=HVQURVj40blTtTHS+27HFW3XO2B60PQx1SmXte2d161zwhpjpCSZzXcJSIq9ettnv/
-         RZntK/RTqkAM0KONZ6fxgcATE6sQibdhzEmVKcG4fPvDOXDJGfaTly0AM5kZwVmZkrZl
-         HrjV1qCgsajC2nHY0mhWIxTcQhUTIePGyh9eSTpVqLInZWzHZVuWtMrdmTKbI+5QPxsx
-         FWNGWQ8hzUr3ZZJmTicNi7DYKgKyeCJQsR4cfxQOz04NbHewiYBmI7X7Oog6Yl9VYlzl
-         eYfSQsj4CDTq5cJZQSxKyyIxqGOA0ZiUfXVrCls4epNOt5RpqtsOKMFR+9chIoelU6mf
-         4SDg==
-X-Gm-Message-State: AOJu0Yyx3a0Y6PiHjwI/De81ms3UEkil72izVNR8DMBCRJ3vJkgvaLTk
-        svzm/8N2gkoj3Zw6e1z6lSjVUQ==
-X-Google-Smtp-Source: AGHT+IGgOEHfsUB0V6pXvzD+1n1jDUAlnpzvFZ4WRL4TX5gVOP1pWxpVnv2PnzhVYxO9EB6O3Vhb9w==
-X-Received: by 2002:a05:651c:10d4:b0:2c5:4956:5112 with SMTP id l20-20020a05651c10d400b002c549565112mr9539589ljn.35.1698742099719;
-        Tue, 31 Oct 2023 01:48:19 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id k9-20020a05600c1c8900b00405bbfd5d16sm1130180wms.7.2023.10.31.01.48.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 01:48:19 -0700 (PDT)
-Message-ID: <6e7048bf-3fce-4c59-96e2-a3169a3597bd@linaro.org>
-Date:   Tue, 31 Oct 2023 09:48:16 +0100
+        Tue, 31 Oct 2023 04:51:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D7FD8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698742314; x=1730278314;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=0rcELH9wTkygIGf5Hlhr+4M1BwdozgJqHutiY4kxTbE=;
+  b=HKVkQIuQUgczvrLG0j03/UIw1S+vd78c8dp8bQQZJ4N1/LrfoESBp1ry
+   htrRKNOJZdNBIC/U3nNNuMLVkp7llOGgpZOV2p4Mj6RL5wyEWLohyjcCm
+   bGvNsgmgz0cWHNt0LhAIKxMAovCrrHbKb+unUV3cXlxeCyiITndtVzwVo
+   SxgrWG2YF86bQ56Uegh7NV8NV7zVfOnoGWH6oh3iKr7gk/nMRlu0Xp1pf
+   4Y/jwyF96UBrRU03So6m0LYVWdgyv5aqPNzvTIgjt8lk/2EwG6dTURFmN
+   Ofj0FPAz3YWVNuDKnZ5vuTGJ6/6N8/XD0Ujf6icX3WOudolnWlwyC+RM/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="368449899"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="368449899"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:51:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="789723342"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="789723342"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 31 Oct 2023 01:51:34 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qxkTE-000040-1B;
+        Tue, 31 Oct 2023 08:51:32 +0000
+Date:   Tue, 31 Oct 2023 16:51:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        boris.brezillon@collabora.com, christian.koenig@amd.com,
+        faith@gfxstrand.net, luben.tuikov@amd.com
+Cc:     oe-kbuild-all@lists.linux.dev, Danilo Krummrich <dakr@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next v4] drm/sched: implement dynamic job-flow
+ control
+Message-ID: <202310311632.RpEHvHMk-lkp@intel.com>
+References: <20231031002655.38707-1-dakr@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 6/6] arm64: defconfig: enable clock controller and
- pinctrl
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org
-Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
-        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_tsoni@quicinc.com,
-        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
-        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
-        quic_aiquny@quicinc.com, kernel@quicinc.com
-References: <20231031075004.3850-1-quic_tengfan@quicinc.com>
- <20231031075004.3850-7-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231031075004.3850-7-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231031002655.38707-1-dakr@redhat.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 08:50, Tengfei Fan wrote:
-> Enable global clock controller and pinctrl for support the Qualcomm
-> SM4450 platform to boot to UART console.
-> 
-> The serial engine depends on some global clock controller and pinctrl, but
-> as the serial console driver is only available as built-in, so the global
-> clock controller and pinctrl also needs be built-in for the UART device to
-> probe and register the console.
-> 
+Hi Danilo,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+kernel test robot noticed the following build errors:
 
-Best regards,
-Krzysztof
+[auto build test ERROR on b2139fb5051554a7f297e4ad584ef1bc26c76d5d]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-sched-implement-dynamic-job-flow-control/20231031-082915
+base:   b2139fb5051554a7f297e4ad584ef1bc26c76d5d
+patch link:    https://lore.kernel.org/r/20231031002655.38707-1-dakr%40redhat.com
+patch subject: [PATCH drm-misc-next v4] drm/sched: implement dynamic job-flow control
+config: loongarch-randconfig-002-20231031 (https://download.01.org/0day-ci/archive/20231031/202310311632.RpEHvHMk-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310311632.RpEHvHMk-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310311632.RpEHvHMk-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/gpu/drm/etnaviv/etnaviv_gpu.c: In function 'etnaviv_gpu_rpm_suspend':
+>> drivers/gpu/drm/etnaviv/etnaviv_gpu.c:1920:36: error: 'struct drm_gpu_scheduler' has no member named 'hw_rq_count'
+    1920 |         if (atomic_read(&gpu->sched.hw_rq_count))
+         |                                    ^
+
+
+vim +1920 drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+
+a8c21a5451d831 The etnaviv authors 2015-12-03  1913  
+a8c21a5451d831 The etnaviv authors 2015-12-03  1914  static int etnaviv_gpu_rpm_suspend(struct device *dev)
+a8c21a5451d831 The etnaviv authors 2015-12-03  1915  {
+a8c21a5451d831 The etnaviv authors 2015-12-03  1916  	struct etnaviv_gpu *gpu = dev_get_drvdata(dev);
+a8c21a5451d831 The etnaviv authors 2015-12-03  1917  	u32 idle, mask;
+a8c21a5451d831 The etnaviv authors 2015-12-03  1918  
+f4163814813fb3 Lucas Stach         2018-11-05  1919  	/* If there are any jobs in the HW queue, we're not idle */
+f4163814813fb3 Lucas Stach         2018-11-05 @1920  	if (atomic_read(&gpu->sched.hw_rq_count))
+a8c21a5451d831 The etnaviv authors 2015-12-03  1921  		return -EBUSY;
+a8c21a5451d831 The etnaviv authors 2015-12-03  1922  
+1a910c11d35bfa Guido Günther       2020-03-02  1923  	/* Check whether the hardware (except FE and MC) is idle */
+1a910c11d35bfa Guido Günther       2020-03-02  1924  	mask = gpu->idle_mask & ~(VIVS_HI_IDLE_STATE_FE |
+1a910c11d35bfa Guido Günther       2020-03-02  1925  				  VIVS_HI_IDLE_STATE_MC);
+a8c21a5451d831 The etnaviv authors 2015-12-03  1926  	idle = gpu_read(gpu, VIVS_HI_IDLE_STATE) & mask;
+78f2bfa3181cd7 Guido Günther       2020-03-02  1927  	if (idle != mask) {
+78f2bfa3181cd7 Guido Günther       2020-03-02  1928  		dev_warn_ratelimited(dev, "GPU not yet idle, mask: 0x%08x\n",
+78f2bfa3181cd7 Guido Günther       2020-03-02  1929  				     idle);
+a8c21a5451d831 The etnaviv authors 2015-12-03  1930  		return -EBUSY;
+78f2bfa3181cd7 Guido Günther       2020-03-02  1931  	}
+a8c21a5451d831 The etnaviv authors 2015-12-03  1932  
+7cb544946a138d Lucas Stach         2023-06-07  1933  	etnaviv_gpu_hw_suspend(gpu);
+7cb544946a138d Lucas Stach         2023-06-07  1934  
+647d817d807127 Lucas Stach         2023-06-07  1935  	gpu->state = ETNA_GPU_STATE_IDENTIFIED;
+647d817d807127 Lucas Stach         2023-06-07  1936  
+7cb544946a138d Lucas Stach         2023-06-07  1937  	return etnaviv_gpu_clk_disable(gpu);
+a8c21a5451d831 The etnaviv authors 2015-12-03  1938  }
+a8c21a5451d831 The etnaviv authors 2015-12-03  1939  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
