@@ -2,155 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBB27DD89B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7AB7DD89F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344888AbjJaWuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
+        id S1344937AbjJaWvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344196AbjJaWuI (ORCPT
+        with ESMTP id S1344196AbjJaWvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:50:08 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B42B9;
-        Tue, 31 Oct 2023 15:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698792603;
-        bh=TGLDyaxbXwrRXxeoq6uzWjCu5hnLNuWS15sOBL5JZQc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QcdMIQWLryv6F7kJHQ3a3WJ8m3eoXkiVKHzBWp3KRWu2YNdQS5Oq6jvtDFxZNP5Iv
-         9K3Akj9WRTNbZdS0dGmJ07LlTXRd5NI2z+6v47CnaSF+AKWzOWF7Bh0JLsDf12KBRM
-         +9afXB39vH5tYA0Zi/YJxyh/eQHGwK7EL5YoCEUag15Yrvb/hrN/q8kml2jnq7e2Pc
-         XKVgHqY2EQzdJ8nywqyFJM67Nk1P1nJO3QTY7E2enQdc9b1eNGzxSRW3MySqyVDlyf
-         IS9vttrG0c7dO3oCSXorljBWlQqOoLuL/98iZRnSbytj6P3AFMk7ZY8N6g+Pap9faF
-         +DHY7X1IE8GQw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKlhW1dykz4wcH;
-        Wed,  1 Nov 2023 09:50:03 +1100 (AEDT)
-Date:   Wed, 1 Nov 2023 09:50:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the bcachefs tree with the mm tree
-Message-ID: <20231101095002.737cedb8@canb.auug.org.au>
+        Tue, 31 Oct 2023 18:51:48 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F42B9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:51:45 -0700 (PDT)
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+        by cmsmtp with ESMTPS
+        id xtGhqAG2DhqFdxxaLqu1pz; Tue, 31 Oct 2023 22:51:45 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id xxaKqb3lwGYrgxxaKqBfHA; Tue, 31 Oct 2023 22:51:44 +0000
+X-Authority-Analysis: v=2.4 cv=bYd47cDB c=1 sm=1 tr=0 ts=65418500
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=BZ6ONlOXkBpYPFFA8NQA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:In-Reply-To:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3rpYGiaoo5zucxoVeBYC5Mx0GLDamigQVQRPlkiYVm4=; b=0OqWRKLdl6mnZF4UELRZD3jP9o
+        qOZdsc9eSG5Er/L5Wj6v5FGKIE+TC4k+83GVyPcpiq3ByHSWHRpkHgCY/HK22PpWWtuOvNkHrpER5
+        3xntmi68gK+29WFgBXouQSfQ7oSj7gvE7k5AhdB9FIJ7BE+pF292Vx66SLti5kF4Fu5I8WW6CcApG
+        vZggJ7HWL4/j38sXue1kMukGkwgKBjwInojgCk2bG3y5HMgWTIRm7kbw0UHIfFqEHebSxAvSLnP/y
+        Eopq6aHjQ/17mICTjQ4oimZ+VU3peJQ/jHUZsynl0op1l3fC0jBQDznWkvV8128ivmFno77KAwfE2
+        7zlPf5xg==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:53446 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <re@w6rz.net>)
+        id 1qxxaH-0040s9-3A;
+        Tue, 31 Oct 2023 16:51:42 -0600
+Subject: Re: [PATCH 6.5 000/112] 6.5.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20231031165901.318222981@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+In-Reply-To: <20231031165901.318222981@linuxfoundation.org>
+Message-ID: <38fbd463-1160-0212-b9d2-6efeaaa6548e@w6rz.net>
+Date:   Tue, 31 Oct 2023 15:51:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UjKdMn7cI9InZx1MbFBjZO4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1qxxaH-0040s9-3A
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:53446
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfH6JXkCKYuceOoaxOAxbkJwCmimWu7oVAuBW1CPUtlGizk1BlOCrgrr6nZBM8VVy+fjkq+cBP4luMbUVYtKFKXK46zmkpCInWZhlaBMZhHuT6qp/J5M7
+ pxQI3opTalJOfiJwc2gokwdcHP5PU0Ff6dPYxLwLhnLGWcCSH1/h3VhLC/IVve15+cIYxc38DnxuN6stdhemtMZPl+xCXeJRCyA=
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UjKdMn7cI9InZx1MbFBjZO4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/31/23 10:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.10 release.
+> There are 112 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 02 Nov 2023 16:58:38 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.10-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi all,
+The build fails on RISC-V.
 
-Today's linux-next merge of the bcachefs tree got conflicts in:
+arch/riscv/mm/hugetlbpage.c: In function ‘set_huge_pte_at’:
+arch/riscv/mm/hugetlbpage.c:188:13: error: ‘sz’ undeclared (first use in 
+this function); did you mean ‘s8’?
+   188 |         if (sz >= PGDIR_SIZE)
+       |             ^~
+       |             s8
+arch/riscv/mm/hugetlbpage.c:188:13: note: each undeclared identifier is 
+reported only once for each function it appears in
 
-  fs/bcachefs/btree_cache.c
-  fs/bcachefs/btree_key_cache.c
+Caused by commit 16b6f77970f7a690c61de142511c9ac488d83e04
 
-between commit:
+riscv: fix set_huge_pte_at() for NAPOT mappings when a swap entry is set
 
-  e1ae18bfd5bc ("Merge branch 'mm-everything' of git://git.kernel.org/pub/s=
-cm/linux/kernel/git/akpm/mm")
-(this merge commit includes fix up for the shrinker allocation changes)
+This patch requires mainline commit 62ba41d2761206664a1fdc998051324457da2dd6
 
-from the mm tree and commit:
+mm: riscv: fix an unsafe pte read in huge_pte_alloc()
 
-  a1d97d8417d3 ("bcachefs: Fix shrinker names")
 
-from the bcachefs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/bcachefs/btree_cache.c
-index 5e5858191905,0b084fbc478a..000000000000
---- a/fs/bcachefs/btree_cache.c
-+++ b/fs/bcachefs/btree_cache.c
-@@@ -472,15 -473,12 +472,15 @@@ int bch2_fs_btree_cache_init(struct bch
- =20
-  	mutex_init(&c->verify_lock);
- =20
-- 	shrink =3D shrinker_alloc(0, "%s/btree_cache", c->name);
- -	bc->shrink.count_objects	=3D bch2_btree_cache_count;
- -	bc->shrink.scan_objects		=3D bch2_btree_cache_scan;
- -	bc->shrink.seeks		=3D 4;
- -	ret =3D register_shrinker(&bc->shrink, "%s-btree_cache", c->name);
- -	if (ret)
-++	shrink =3D shrinker_alloc(0, "%s-btree_cache", c->name);
- +	if (!shrink)
-  		goto err;
- +	bc->shrink =3D shrink;
- +	shrink->count_objects	=3D bch2_btree_cache_count;
- +	shrink->scan_objects	=3D bch2_btree_cache_scan;
- +	shrink->seeks		=3D 4;
- +	shrink->private_data	=3D c;
- +	shrinker_register(shrink);
- =20
-  	return 0;
-  err:
-diff --cc fs/bcachefs/btree_key_cache.c
-index f9a5e38a085b,3304bff7d464..000000000000
---- a/fs/bcachefs/btree_key_cache.c
-+++ b/fs/bcachefs/btree_key_cache.c
-@@@ -1038,15 -1039,11 +1038,15 @@@ int bch2_fs_btree_key_cache_init(struc
- =20
-  	bc->table_init_done =3D true;
- =20
-- 	shrink =3D shrinker_alloc(0, "%s/btree_key_cache", c->name);
- -	bc->shrink.seeks		=3D 0;
- -	bc->shrink.count_objects	=3D bch2_btree_key_cache_count;
- -	bc->shrink.scan_objects		=3D bch2_btree_key_cache_scan;
- -	if (register_shrinker(&bc->shrink, "%s-btree_key_cache", c->name))
-++	shrink =3D shrinker_alloc(0, "%s-btree_key_cache", c->name);
- +	if (!shrink)
-  		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
- +	bc->shrink =3D shrink;
- +	shrink->seeks		=3D 0;
- +	shrink->count_objects	=3D bch2_btree_key_cache_count;
- +	shrink->scan_objects	=3D bch2_btree_key_cache_scan;
- +	shrink->private_data	=3D c;
- +	shrinker_register(shrink);
-  	return 0;
-  }
- =20
-
---Sig_/UjKdMn7cI9InZx1MbFBjZO4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBhJoACgkQAVBC80lX
-0GxZzQf/c88Z/IHte83IQmkmqGnYLsMXRdNUPY2G0sWJwKdWqPtuPqfjNEhIwqp7
-RKvB35VGrt+FWiWEyXa9QGLvH3JT6/CNJrG43eBJCLFkrUCNw0a3na0r+AEYBtcY
-YGSwW1mx4nGyAU03wZfHXx1DDiAdedhKUPO0B0eUI5vTklCBCUUOGKIe8My8lY4z
-D02BnOnvcKfJ5AIhNQSYsW+5+iCDyLW8uEuY9dOhTUKQL8aqRhIbLyUmYb3xTTa9
-pxqYs4YNV2nnlUkPO6WOgN6Wn06iD3fE4Msxi+NCP+XrJYD/K+Za1wUsiNJZs1nJ
-2DtZSoh8ecuWBmk19fBQDpMnjizD9A==
-=U57/
------END PGP SIGNATURE-----
-
---Sig_/UjKdMn7cI9InZx1MbFBjZO4--
