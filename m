@@ -2,167 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7CC7DCA45
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC38F7DCA4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235605AbjJaJ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        id S235911AbjJaJ6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbjJaJ51 (ORCPT
+        with ESMTP id S230464AbjJaJ6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:57:27 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E9AA1;
-        Tue, 31 Oct 2023 02:57:25 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39V7VJmb030860;
-        Tue, 31 Oct 2023 05:57:08 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3u1fef689q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 05:57:08 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 39V9v7D5039683
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 31 Oct 2023 05:57:07 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 31 Oct 2023 05:57:06 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 31 Oct 2023 05:57:06 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 31 Oct 2023 05:57:06 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.145])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39V9usbA024643;
-        Tue, 31 Oct 2023 05:56:56 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] hwmon: ltc2991: remove device reference from state
-Date:   Tue, 31 Oct 2023 11:56:46 +0200
-Message-ID: <20231031095647.48376-1-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 31 Oct 2023 05:58:45 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D03D8;
+        Tue, 31 Oct 2023 02:58:43 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 85EE93200A30;
+        Tue, 31 Oct 2023 05:58:41 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Tue, 31 Oct 2023 05:58:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1698746321; x=1698832721; bh=hGHPH0otSQhb+ezuJFb5cOt3lM/d83wh5j3
+        /Ve+BNBg=; b=fNmbxvMlV55NZdolsFP5rPiCIgl3z9Odq+LczgeiP88OIpZjoo4
+        K6ASsJhKOYnKYfbBXk66lAIEEpQsiNbC7dX7jE9CecC1NvEiNHbawsAkIBvdhDn7
+        ArT6/ep/q07FIM7nUBHEkA+0cLKNfh8hDaim4bRexdTYNmQw2d6dJ9gD8SpNAfsK
+        kxCuwgPD833Sj/vOC18tTdgCE0JSqoCur1CAY7IGlCWSz/umsBEuTn2wGW6Mpl6p
+        /QE28tMkQEKNBcL6WDln08Ig1YNdNmiuOqCBc6uwUQiOJBSaPJosJEyC8iCG2WSD
+        JoOJZAjZAwoTZ2bn7YhfxNy2qkz9TJLtQig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698746321; x=1698832721; bh=hGHPH0otSQhb+ezuJFb5cOt3lM/d83wh5j3
+        /Ve+BNBg=; b=M0nMIz5OBIz6py8D1Q+FhV08TDzEuLzN3EnFN4TtYWf34IoioQf
+        bBX6dLiBxA+ed3muDRoFrMH89zBoaWtr73lxsYRCWQXi8zad6vkWn12U81SXQATI
+        3wJBQ979KT4h3rWMuyWQZBrqwNup/3InH52qNxNghPZ0OuYDwqIOUiQTHl7IyX1b
+        2okJjqqqY5yPdyZkv1SqqYHjyePuuWoA5dnu7hcTY8cAyDaBHlEhmtSfCopK5BaE
+        hzpCHsfBceF83o8nQasdYHeN7bH8ivuH/GKQr0vJ7nFku9KYDF6sh/ExcJb0GKBa
+        8h2zfV1F5KjlrSqIp083PBk76w5BqKsYkUw==
+X-ME-Sender: <xms:z89AZRan5mhkNFr0oE97S49XgmLqrk9K-pqu2fcTJB1dVvQxNfZjdA>
+    <xme:z89AZYYEkUg_eOs-ONb7B00c-T-Ncd-JT_RTwzSbo6tIwnRRM7q9BL-t_lEIP7wct
+    xRWdxMCJbVOYnRnvJk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtvddgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
+    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpedufeegfeetudeghefftdehfefgveffleefgfehhfej
+    ueegveethfduuddvieehgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:z89AZT-pt4ajXvIucm5TTh-V5z2_iSj_O0c1_ybx1j1UTE5pgtoTHQ>
+    <xmx:z89AZfoVOUuspXOJ5tuxGE-yo96_0SZ6jWNPoTBgK2xuOpjUb0TyRQ>
+    <xmx:z89AZcq7yJuHCW29WDkcWogiK4Fxt9CGDlV2s_KeeZpO0cyXtc8EMw>
+    <xmx:0c9AZZ6VoWbK1NBjvwRbHms9EOjMXb7V7h7wPrPHhMKUGlTBu8Yu7w>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3082C36A0075; Tue, 31 Oct 2023 05:58:39 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: vlt0LP1E8CL2YEfj4nxWHBODGB3h0aeV
-X-Proofpoint-GUID: vlt0LP1E8CL2YEfj4nxWHBODGB3h0aeV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 bulkscore=0 adultscore=0
- mlxscore=0 impostorscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2310240000
- definitions=main-2310310077
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <83e32f3a-75c4-4a72-a523-ecef501f9605@app.fastmail.com>
+In-Reply-To: <fd5efc8a21b94e044e4e225255655fc92beb0c63.1698717154.git.zhoubinbin@loongson.cn>
+References: <cover.1698717154.git.zhoubinbin@loongson.cn>
+ <fd5efc8a21b94e044e4e225255655fc92beb0c63.1698717154.git.zhoubinbin@loongson.cn>
+Date:   Tue, 31 Oct 2023 09:58:18 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Binbin Zhou" <zhoubinbin@loongson.cn>,
+        "Binbin Zhou" <zhoubb.aaron@gmail.com>,
+        "Huacai Chen" <chenhuacai@loongson.cn>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>
+Cc:     "Huacai Chen" <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Jianmin Lv" <lvjianmin@loongson.cn>,
+        "WANG Xuerui" <git@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] dt-bindings: interrupt-controller: loongson,liointc: Fix
+ dtbs_check warning for reg-names
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove device reference from struct ltc2991_state since it is used only
-inside the init function.
 
-Pass the struct device as parameter to the init function instead.
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- drivers/hwmon/ltc2991.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+=E5=9C=A82023=E5=B9=B410=E6=9C=8831=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8A=
+=E5=8D=882:36=EF=BC=8CBinbin Zhou=E5=86=99=E9=81=93=EF=BC=9A
+> As we know, the Loongson-2K0500 is a single-core CPU, and the
+> core1-related register (isr1) does not exist, and we need a separate
+> declaration.
+>
+> This fixes dtbs_check warning:
+>
+> DTC_CHK arch/loongarch/boot/dts/loongson-2k0500-ref.dtb
+> arch/loongarch/boot/dts/loongson-2k0500-ref.dtb:=20
+> interrupt-controller@1fe11400: reg-names: ['main', 'isr0'] is too short
+>         From schema:=20
+> Documentation/devicetree/bindings/interrupt-controller/loongson,lioint=
+c.yaml
+> arch/loongarch/boot/dts/loongson-2k0500-ref.dtb:=20
+> interrupt-controller@1fe11400: Unevaluated properties are not allowed=20
+> ('reg-names' was unexpected)
+>         From schema:=20
+> Documentation/devicetree/bindings/interrupt-controller/loongson,lioint=
+c.yaml
+> arch/loongarch/boot/dts/loongson-2k0500-ref.dtb:=20
+> interrupt-controller@1fe11400: reg: [[0, 534844416, 0, 64], [0,=20
+> 534843456, 0, 8]] is too short
+>         From schema:=20
+> Documentation/devicetree/bindings/interrupt-controller/loongson,lioint=
+c.yaml
+> arch/loongarch/boot/dts/loongson-2k0500-ref.dtb:=20
+> interrupt-controller@1fe11440: reg-names: ['main', 'isr0'] is too short
+>         From schema:=20
+> Documentation/devicetree/bindings/interrupt-controller/loongson,lioint=
+c.yaml
+>
+> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> ---
+Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-diff --git a/drivers/hwmon/ltc2991.c b/drivers/hwmon/ltc2991.c
-index bd63c61129a9..773e7211643f 100644
---- a/drivers/hwmon/ltc2991.c
-+++ b/drivers/hwmon/ltc2991.c
-@@ -54,7 +54,6 @@
- #define LTC2991_VCC_CH_NR		0
- 
- struct ltc2991_state {
--	struct device		*dev;
- 	struct regmap		*regmap;
- 	u32			r_sense_uohm[LTC2991_MAX_CHANNEL];
- 	bool			temp_en[LTC2991_MAX_CHANNEL];
-@@ -283,19 +282,19 @@ static const struct regmap_config ltc2991_regmap_config = {
- 	.max_register = 0x1D,
- };
- 
--static int ltc2991_init(struct ltc2991_state *st)
-+static int ltc2991_init(struct ltc2991_state *st, struct device *dev)
- {
- 	struct fwnode_handle *child;
- 	int ret;
- 	u32 val, addr;
- 	u8 v5_v8_reg_data = 0, v1_v4_reg_data = 0;
- 
--	ret = devm_regulator_get_enable(st->dev, "vcc");
-+	ret = devm_regulator_get_enable(dev, "vcc");
- 	if (ret)
--		return dev_err_probe(st->dev, ret,
-+		return dev_err_probe(dev, ret,
- 				     "failed to enable regulator\n");
- 
--	device_for_each_child_node(st->dev, child) {
-+	device_for_each_child_node(dev, child) {
- 		ret = fwnode_property_read_u32(child, "reg", &addr);
- 		if (ret < 0) {
- 			fwnode_handle_put(child);
-@@ -312,7 +311,7 @@ static int ltc2991_init(struct ltc2991_state *st)
- 					       &val);
- 		if (!ret) {
- 			if (!val)
--				return dev_err_probe(st->dev, -EINVAL,
-+				return dev_err_probe(dev, -EINVAL,
- 						     "shunt resistor value cannot be zero\n");
- 
- 			st->r_sense_uohm[addr] = val;
-@@ -361,18 +360,18 @@ static int ltc2991_init(struct ltc2991_state *st)
- 
- 	ret = regmap_write(st->regmap, LTC2991_V5_V8_CTRL, v5_v8_reg_data);
- 	if (ret)
--		return dev_err_probe(st->dev, ret,
-+		return dev_err_probe(dev, ret,
- 				     "Error: Failed to set V5-V8 CTRL reg.\n");
- 
- 	ret = regmap_write(st->regmap, LTC2991_V1_V4_CTRL, v1_v4_reg_data);
- 	if (ret)
--		return dev_err_probe(st->dev, ret,
-+		return dev_err_probe(dev, ret,
- 				     "Error: Failed to set V1-V4 CTRL reg.\n");
- 
- 	ret = regmap_write(st->regmap, LTC2991_PWM_TH_LSB_T_INT,
- 			   LTC2991_REPEAT_ACQ_EN);
- 	if (ret)
--		return dev_err_probe(st->dev, ret,
-+		return dev_err_probe(dev, ret,
- 				     "Error: Failed to set contiuous mode.\n");
- 
- 	/* Enable all channels and trigger conversions */
-@@ -392,12 +391,11 @@ static int ltc2991_i2c_probe(struct i2c_client *client)
- 	if (!st)
- 		return -ENOMEM;
- 
--	st->dev = &client->dev;
- 	st->regmap = devm_regmap_init_i2c(client, &ltc2991_regmap_config);
- 	if (IS_ERR(st->regmap))
- 		return PTR_ERR(st->regmap);
- 
--	ret = ltc2991_init(st);
-+	ret = ltc2991_init(st, &client->dev);
- 	if (ret)
- 		return ret;
- 
--- 
-2.42.0
-
+[...]
+--=20
+- Jiaxun
