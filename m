@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A497DD83A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878E17DD83E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346761AbjJaWZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
+        id S1346630AbjJaW1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346659AbjJaWZ3 (ORCPT
+        with ESMTP id S1344905AbjJaW1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:25:29 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06609ED
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:25:26 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2f28caab9so3634606b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698791125; x=1699395925; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kzym5qAuTfM0R7xLqOGuP3tKqEclOj4G4PtzJ407Bo8=;
-        b=UNVYoOqZfaMPfA8TeUyeVu8//vE0mffUjIBelDoWUp0rRtboQnCjLySyVVTENIrunh
-         /MD9pLNA/rB6Vksn1+PHDthilviou51Oq2M6qqBeJkUTsvztFNITZHPHCD2aVL4wCz9r
-         3VTKdg0EHRQTecf5Eb39zu8jpvWfxnwfh09xQpi5Jq7Tv6a2hKpBa/3wQNXpKxoH5hYY
-         YwII+eoEi0fIQRR4fmIxGlPwlVk1u4HjVi6Rtfwy4AHr7hvA1UezQU8DstYsFYrHReLg
-         +2wn9ypyjhZsE/nKla66/epMfILJeSfqwnIbqB5prrHDICes001SsVOCRTXGyZNhJf0S
-         mtqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698791125; x=1699395925;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kzym5qAuTfM0R7xLqOGuP3tKqEclOj4G4PtzJ407Bo8=;
-        b=GokXe7U0F8kUk6m3AJ599dgtobK97V6R1T7wUZzetuHamBDH10NxP7wHatui7rgm+v
-         MqHVAwelPG7YORQtj9tCNjiPVn3AQ+5jei4dxmhGSHRIO9xh10YNRKJDV28WmHvxcXaU
-         p8/hiPk71yLWj0XPwZyAI8b/JMccIkJ4Hbh2/lIZJHBFyiMbFme/ESYMOiQuvYnuFyg0
-         AgYBpNj1NioS8t+4XVg4UL4D092bhl9ILhPkjOe22hoUMltru+t8cil73kH/OaCJo/o5
-         Z+44K9UcH4NQrGAeGhqBblgI0XsLkdQv3BVYBcFZt/IxTNz4GhHSl79gH/hUoxU2IG/c
-         eHXw==
-X-Gm-Message-State: AOJu0Ywom1IpsaGOrUb6EGc3dDqK1DUH6o2C4syuXOKxTzUtloHLJ0m0
-        WGir1Hmb2N3zl3hAfPnP7UCB8R/DzXdJZ4T4FRg=
-X-Google-Smtp-Source: AGHT+IEgf8FqaI2mE6N4OT1MkxdbqtQpJvNgpToalqj732mWTMseJddPm5QirOV8siYAD8zcD8gNbA==
-X-Received: by 2002:a05:6808:2395:b0:3ae:5c36:99b2 with SMTP id bp21-20020a056808239500b003ae5c3699b2mr18350793oib.55.1698791124991;
-        Tue, 31 Oct 2023 15:25:24 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id k16-20020a544410000000b003b2e7231faasm42975oiw.28.2023.10.31.15.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 15:25:24 -0700 (PDT)
-From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Tue, 31 Oct 2023 15:25:15 -0700
-Subject: [PATCH v8 3/3] riscv: Add tests for riscv module loading
+        Tue, 31 Oct 2023 18:27:10 -0400
+Received: from dispatch1-us1.ppe-hosted.com (dispatch1-us1.ppe-hosted.com [148.163.129.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AFEF3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:27:06 -0700 (PDT)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id E91A8400075
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 22:26:16 +0000 (UTC)
+Received: from [192.168.100.159] (50-251-239-81-static.hfc.comcastbusiness.net [50.251.239.81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail3.candelatech.com (Postfix) with ESMTPSA id 7528013C2B0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:26:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 7528013C2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+        s=default; t=1698791176;
+        bh=0m2bl44BZA+YhfXzP4MnZHjzMkLKjdT0HSdz+73qDj0=;
+        h=Date:To:From:Subject:From;
+        b=b847f1dP3KKJ3DmJ39UgqBnocXyGsIZ7jjnxcwq1nwKRCYx1cdqHjR0Aa96C/637P
+         Xku+Fjogyz3ylxeqODJ6JMWaZXwmKZ4qklWWhcwzgJYiwP3gboi21P1bjAzQoozHrq
+         icftTNGhd3yvkfoNTlrgXkTpjs30tte7efoXWg5s=
+Message-ID: <ee92ea59-440e-5f7e-1dc1-f9a77c06d6e2@candelatech.com>
+Date:   Tue, 31 Oct 2023 15:26:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US
+To:     LKML <linux-kernel@vger.kernel.org>
+From:   Ben Greear <greearb@candelatech.com>
+Subject: wireless-next (6.6.0-rc5+) lockdep splat related to console_sem,
+ hrtimer_bases.lock, n->list_lock.
+Organization: Candela Technologies
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231031-module_relocations-v8-3-09b5b720c1fe@rivosinc.com>
-References: <20231031-module_relocations-v8-0-09b5b720c1fe@rivosinc.com>
-In-Reply-To: <20231031-module_relocations-v8-0-09b5b720c1fe@rivosinc.com>
-To:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Nelson Chu <nelson@rivosinc.com>,
-        Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-MDID: 1698791224-IzmGAGp2moML
+X-MDID-O: us5;ut7;1698791224;IzmGAGp2moML;<greearb@candelatech.com>;c71d53d8b4bf163c84f4470b0e4d7294
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,496 +57,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test cases for the two main groups of relocations added: SUB and
-SET, along with uleb128.
+On a kernel fully larded up with debugging.  No idea how legit this is...
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/Kconfig.debug                           |  1 +
- arch/riscv/kernel/Makefile                         |  1 +
- arch/riscv/kernel/tests/Kconfig.debug              | 35 +++++++++
- arch/riscv/kernel/tests/Makefile                   |  1 +
- arch/riscv/kernel/tests/module_test/Makefile       | 15 ++++
- .../tests/module_test/test_module_linking_main.c   | 88 ++++++++++++++++++++++
- arch/riscv/kernel/tests/module_test/test_set16.S   | 23 ++++++
- arch/riscv/kernel/tests/module_test/test_set32.S   | 20 +++++
- arch/riscv/kernel/tests/module_test/test_set6.S    | 23 ++++++
- arch/riscv/kernel/tests/module_test/test_set8.S    | 23 ++++++
- arch/riscv/kernel/tests/module_test/test_sub16.S   | 20 +++++
- arch/riscv/kernel/tests/module_test/test_sub32.S   | 20 +++++
- arch/riscv/kernel/tests/module_test/test_sub6.S    | 20 +++++
- arch/riscv/kernel/tests/module_test/test_sub64.S   | 25 ++++++
- arch/riscv/kernel/tests/module_test/test_sub8.S    | 20 +++++
- arch/riscv/kernel/tests/module_test/test_uleb128.S | 31 ++++++++
- 16 files changed, 366 insertions(+)
 
-diff --git a/arch/riscv/Kconfig.debug b/arch/riscv/Kconfig.debug
-index e69de29bb2d1..eafe17ebf710 100644
---- a/arch/riscv/Kconfig.debug
-+++ b/arch/riscv/Kconfig.debug
-@@ -0,0 +1 @@
-+source "arch/riscv/kernel/tests/Kconfig.debug"
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 95cf25d48405..bb99657252f4 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -57,6 +57,7 @@ obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
- obj-y	+= patch.o
- obj-y	+= probes/
-+obj-y	+= tests/
- obj-$(CONFIG_MMU) += vdso.o vdso/
- 
- obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
-diff --git a/arch/riscv/kernel/tests/Kconfig.debug b/arch/riscv/kernel/tests/Kconfig.debug
-new file mode 100644
-index 000000000000..5dba64e8e977
---- /dev/null
-+++ b/arch/riscv/kernel/tests/Kconfig.debug
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menu "arch/riscv/kernel Testing and Coverage"
-+
-+config AS_HAS_ULEB128
-+	def_bool $(as-instr,.reloc label$(comma) R_RISCV_SET_ULEB128$(comma) 127\n.reloc label$(comma) R_RISCV_SUB_ULEB128$(comma) 127\nlabel:\n.word 0)
-+
-+menuconfig RUNTIME_KERNEL_TESTING_MENU
-+       bool "arch/riscv/kernel runtime Testing"
-+       def_bool y
-+       help
-+         Enable riscv kernel runtime testing.
-+
-+if RUNTIME_KERNEL_TESTING_MENU
-+
-+config RISCV_MODULE_LINKING_KUNIT
-+       bool "KUnit test riscv module linking at runtime" if !KUNIT_ALL_TESTS
-+       depends on KUNIT
-+       default KUNIT_ALL_TESTS
-+       help
-+         Enable this option to test riscv module linking at boot. This will
-+	 enable a module called "test_module_linking".
-+
-+         KUnit tests run during boot and output the results to the debug log
-+         in TAP format (http://testanything.org/). Only useful for kernel devs
-+         running the KUnit test harness, and not intended for inclusion into a
-+         production build.
-+
-+         For more information on KUnit and unit tests in general please refer
-+         to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+         If unsure, say N.
-+
-+endif # RUNTIME_TESTING_MENU
-+
-+endmenu # "arch/riscv/kernel runtime Testing"
-diff --git a/arch/riscv/kernel/tests/Makefile b/arch/riscv/kernel/tests/Makefile
-new file mode 100644
-index 000000000000..7d6c76cffe20
---- /dev/null
-+++ b/arch/riscv/kernel/tests/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_RISCV_MODULE_LINKING_KUNIT)	+= module_test/
-diff --git a/arch/riscv/kernel/tests/module_test/Makefile b/arch/riscv/kernel/tests/module_test/Makefile
-new file mode 100644
-index 000000000000..d7a6fd8943de
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/Makefile
-@@ -0,0 +1,15 @@
-+obj-m += test_module_linking.o
-+
-+test_sub := test_sub6.o test_sub8.o test_sub16.o test_sub32.o test_sub64.o
-+
-+test_set := test_set6.o test_set8.o test_set16.o test_set32.o
-+
-+test_module_linking-objs += $(test_sub)
-+
-+test_module_linking-objs += $(test_set)
-+
-+ifeq ($(CONFIG_AS_HAS_ULEB128),y)
-+test_module_linking-objs += test_uleb128.o
-+endif
-+
-+test_module_linking-objs += test_module_linking_main.o
-diff --git a/arch/riscv/kernel/tests/module_test/test_module_linking_main.c b/arch/riscv/kernel/tests/module_test/test_module_linking_main.c
-new file mode 100644
-index 000000000000..8df5fa5b834e
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_module_linking_main.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <kunit/test.h>
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Test module linking");
-+
-+extern int test_set32(void);
-+extern int test_set16(void);
-+extern int test_set8(void);
-+extern int test_set6(void);
-+extern long test_sub64(void);
-+extern int test_sub32(void);
-+extern int test_sub16(void);
-+extern int test_sub8(void);
-+extern int test_sub6(void);
-+
-+#ifdef CONFIG_AS_HAS_ULEB128
-+extern int test_uleb_basic(void);
-+extern int test_uleb_large(void);
-+#endif
-+
-+#define CHECK_EQ(lhs, rhs) KUNIT_ASSERT_EQ(test, lhs, rhs)
-+
-+void run_test_set(struct kunit *test);
-+void run_test_sub(struct kunit *test);
-+void run_test_uleb(struct kunit *test);
-+
-+void run_test_set(struct kunit *test)
-+{
-+	int val32 = test_set32();
-+	int val16 = test_set16();
-+	int val8 = test_set8();
-+	int val6 = test_set6();
-+
-+	CHECK_EQ(val32, 0);
-+	CHECK_EQ(val16, 0);
-+	CHECK_EQ(val8, 0);
-+	CHECK_EQ(val6, 0);
-+}
-+
-+void run_test_sub(struct kunit *test)
-+{
-+	int val64 = test_sub64();
-+	int val32 = test_sub32();
-+	int val16 = test_sub16();
-+	int val8 = test_sub8();
-+	int val6 = test_sub6();
-+
-+	CHECK_EQ(val64, 0);
-+	CHECK_EQ(val32, 0);
-+	CHECK_EQ(val16, 0);
-+	CHECK_EQ(val8, 0);
-+	CHECK_EQ(val6, 0);
-+}
-+
-+#ifdef CONFIG_AS_HAS_ULEB128
-+void run_test_uleb(struct kunit *test)
-+{
-+	int val_uleb = test_uleb_basic();
-+	int val_uleb2 = test_uleb_large();
-+
-+	CHECK_EQ(val_uleb, 0);
-+	CHECK_EQ(val_uleb2, 0);
-+}
-+#endif
-+
-+static struct kunit_case __refdata riscv_module_linking_test_cases[] = {
-+	KUNIT_CASE(run_test_set),
-+	KUNIT_CASE(run_test_sub),
-+#ifdef CONFIG_AS_HAS_ULEB128
-+	KUNIT_CASE(run_test_uleb),
-+#endif
-+	{}
-+};
-+
-+static struct kunit_suite riscv_module_linking_test_suite = {
-+	.name = "riscv_checksum",
-+	.test_cases = riscv_module_linking_test_cases,
-+};
-+
-+kunit_test_suites(&riscv_module_linking_test_suite);
-diff --git a/arch/riscv/kernel/tests/module_test/test_set16.S b/arch/riscv/kernel/tests/module_test/test_set16.S
-new file mode 100644
-index 000000000000..2be0e441a12e
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set16.S
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set16
-+test_set16:
-+	lw	a0, set16
-+	la	t0, set16
-+#ifdef CONFIG_32BIT
-+	slli	t0, t0, 16
-+	srli	t0, t0, 16
-+#else
-+	slli	t0, t0, 48
-+	srli	t0, t0, 48
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set16:
-+	.reloc set16, R_RISCV_SET16, set16
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_set32.S b/arch/riscv/kernel/tests/module_test/test_set32.S
-new file mode 100644
-index 000000000000..de0444537e67
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set32.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set32
-+test_set32:
-+	lw	a0, set32
-+	la	t0, set32
-+#ifndef CONFIG_32BIT
-+	slli	t0, t0, 32
-+	srli	t0, t0, 32
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set32:
-+	.reloc set32, R_RISCV_SET32, set32
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_set6.S b/arch/riscv/kernel/tests/module_test/test_set6.S
-new file mode 100644
-index 000000000000..c39ce4c219eb
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set6.S
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set6
-+test_set6:
-+	lw	a0, set6
-+	la	t0, set6
-+#ifdef CONFIG_32BIT
-+	slli	t0, t0, 26
-+	srli	t0, t0, 26
-+#else
-+	slli	t0, t0, 58
-+	srli	t0, t0, 58
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set6:
-+	.reloc set6, R_RISCV_SET6, set6
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_set8.S b/arch/riscv/kernel/tests/module_test/test_set8.S
-new file mode 100644
-index 000000000000..a656173f6f99
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_set8.S
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_set8
-+test_set8:
-+	lw	a0, set8
-+	la	t0, set8
-+#ifdef CONFIG_32BIT
-+	slli	t0, t0, 24
-+	srli	t0, t0, 24
-+#else
-+	slli	t0, t0, 56
-+	srli	t0, t0, 56
-+#endif
-+	sub	a0, a0, t0
-+	ret
-+.data
-+set8:
-+	.reloc set8, R_RISCV_SET8, set8
-+	.word 0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub16.S b/arch/riscv/kernel/tests/module_test/test_sub16.S
-new file mode 100644
-index 000000000000..80f731d599ba
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub16.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub16
-+test_sub16:
-+	lh	a0, sub16
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.space 32
-+second:
-+
-+.data
-+sub16:
-+	.reloc		sub16, R_RISCV_ADD16, second
-+	.reloc		sub16, R_RISCV_SUB16, first
-+	.half		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub32.S b/arch/riscv/kernel/tests/module_test/test_sub32.S
-new file mode 100644
-index 000000000000..a341686e12df
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub32.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub32
-+test_sub32:
-+	lw	a0, sub32
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.space 32
-+second:
-+
-+.data
-+sub32:
-+	.reloc		sub32, R_RISCV_ADD32, second
-+	.reloc		sub32, R_RISCV_SUB32, first
-+	.word		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub6.S b/arch/riscv/kernel/tests/module_test/test_sub6.S
-new file mode 100644
-index 000000000000..e8b61c1ec527
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub6.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub6
-+test_sub6:
-+	lb	a0, sub6
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.space 32
-+second:
-+
-+.data
-+sub6:
-+	.reloc		sub6, R_RISCV_SET6, second
-+	.reloc		sub6, R_RISCV_SUB6, first
-+	.byte		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub64.S b/arch/riscv/kernel/tests/module_test/test_sub64.S
-new file mode 100644
-index 000000000000..a59e8afa88fd
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub64.S
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub64
-+test_sub64:
-+#ifdef CONFIG_32BIT
-+	lw	a0, sub64
-+#else
-+	ld	a0, sub64
-+#endif
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.space 32
-+second:
-+
-+.data
-+sub64:
-+	.reloc		sub64, R_RISCV_ADD64, second
-+	.reloc		sub64, R_RISCV_SUB64, first
-+	.word		0
-+	.word		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_sub8.S b/arch/riscv/kernel/tests/module_test/test_sub8.S
-new file mode 100644
-index 000000000000..ac5d0ec98de3
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_sub8.S
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_sub8
-+test_sub8:
-+	lb	a0, sub8
-+	addi	a0, a0, -32
-+	ret
-+first:
-+	.space 32
-+second:
-+
-+.data
-+sub8:
-+	.reloc		sub8, R_RISCV_ADD8, second
-+	.reloc		sub8, R_RISCV_SUB8, first
-+	.byte		0
-diff --git a/arch/riscv/kernel/tests/module_test/test_uleb128.S b/arch/riscv/kernel/tests/module_test/test_uleb128.S
-new file mode 100644
-index 000000000000..90f22049d553
---- /dev/null
-+++ b/arch/riscv/kernel/tests/module_test/test_uleb128.S
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Rivos Inc.
-+ */
-+
-+.text
-+.global test_uleb_basic
-+test_uleb_basic:
-+	ld	a0, second
-+	addi	a0, a0, -127
-+	ret
-+
-+.global test_uleb_large
-+test_uleb_large:
-+	ld	a0, fourth
-+	addi	a0, a0, -0x07e8
-+	ret
-+
-+.data
-+first:
-+	.space 127
-+second:
-+	.reloc second, R_RISCV_SET_ULEB128, second
-+	.reloc second, R_RISCV_SUB_ULEB128, first
-+	.dword 0
-+third:
-+	.space 1000
-+fourth:
-+	.reloc fourth, R_RISCV_SET_ULEB128, fourth
-+	.reloc fourth, R_RISCV_SUB_ULEB128, third
-+	.dword 0
+Oct 31 15:19:37 ct523c-2103 kernel: WARNING: possible circular locking dependency detected
+Oct 31 15:19:37 ct523c-2103 kernel: 6.6.0-rc5+ #8 Tainted: G        W
+Oct 31 15:19:37 ct523c-2103 kernel: ------------------------------------------------------
+Oct 31 15:19:37 ct523c-2103 kernel: pkill/23351 is trying to acquire lock:
+Oct 31 15:19:37 ct523c-2103 kernel: ffffffff83836cf8 ((console_sem).lock){-.-.}-{2:2}, at: down_trylock+0xc/0x40
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     but task is already holding lock:
+Oct 31 15:19:37 ct523c-2103 kernel: ffff8881100407d8 (&n->list_lock){-.-.}-{3:3}, at: free_to_partial_list+0x55/0x5b0
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     which lock already depends on the new lock.
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     the existing dependency chain (in reverse order) is:
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     -> #5 (&n->list_lock){-.-.}-{3:3}:
+Oct 31 15:19:37 ct523c-2103 kernel:        _raw_spin_lock_irqsave+0x3f/0x60
+Oct 31 15:19:37 ct523c-2103 kernel:        get_partial_node.part.0+0x28/0x560
+Oct 31 15:19:37 ct523c-2103 kernel:        ___slab_alloc+0xc4e/0x1210
+Oct 31 15:19:37 ct523c-2103 kernel:        kmem_cache_alloc+0x2e9/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:        fill_pool+0x216/0x330
+Oct 31 15:19:37 ct523c-2103 kernel:        debug_object_activate+0x140/0x380
+Oct 31 15:19:37 ct523c-2103 kernel:        enqueue_hrtimer+0x1b/0x140
+Oct 31 15:19:37 ct523c-2103 kernel:        hrtimer_start_range_ns+0x3bf/0x5e0
+Oct 31 15:19:37 ct523c-2103 kernel:        tick_nohz_restart+0xcb/0xd0
+Oct 31 15:19:37 ct523c-2103 kernel:        tick_nohz_idle_exit+0xdf/0x160
+Oct 31 15:19:37 ct523c-2103 kernel:        do_idle+0x1ec/0x2f0
+Oct 31 15:19:37 ct523c-2103 kernel:        cpu_startup_entry+0x2b/0x30
+Oct 31 15:19:37 ct523c-2103 kernel:        rest_init+0x100/0x1a0
+Oct 31 15:19:37 ct523c-2103 kernel:        arch_call_rest_init+0xa/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:        start_kernel+0x37c/0x3f0
+Oct 31 15:19:37 ct523c-2103 kernel:        x86_64_start_reservations+0x14/0x30
+Oct 31 15:19:37 ct523c-2103 kernel:        x86_64_start_kernel+0x7e/0x80
+Oct 31 15:19:37 ct523c-2103 kernel:        secondary_startup_64_no_verify+0x166/0x16b
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     -> #4 (hrtimer_bases.lock){-.-.}-{2:2}:
+Oct 31 15:19:37 ct523c-2103 kernel:        _raw_spin_lock_irqsave+0x3f/0x60
+Oct 31 15:19:37 ct523c-2103 kernel:        hrtimer_start_range_ns+0x70/0x5e0
+Oct 31 15:19:37 ct523c-2103 kernel:        __enqueue_rt_entity+0x618/0x650
+Oct 31 15:19:37 ct523c-2103 kernel:        enqueue_rt_entity+0x46/0xc0
+Oct 31 15:19:37 ct523c-2103 kernel:        enqueue_task_rt+0x5e/0x1d0
+Oct 31 15:19:37 ct523c-2103 kernel:        __sched_setscheduler+0xcd2/0x1050
+Oct 31 15:19:37 ct523c-2103 kernel:        sched_set_fifo+0xa5/0xf0
+Oct 31 15:19:37 ct523c-2103 kernel:        smpboot_thread_fn+0x1f0/0x340
+Oct 31 15:19:37 ct523c-2103 kernel:        kthread+0x199/0x1e0
+Oct 31 15:19:37 ct523c-2103 kernel:        ret_from_fork+0x28/0x50
+Oct 31 15:19:37 ct523c-2103 kernel:        ret_from_fork_asm+0x11/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     -> #3 (&rt_b->rt_runtime_lock){-.-.}-{2:2}:
+Oct 31 15:19:37 ct523c-2103 kernel:        _raw_spin_lock+0x27/0x40
+Oct 31 15:19:37 ct523c-2103 kernel:        __enqueue_rt_entity+0x332/0x650
+Oct 31 15:19:37 ct523c-2103 kernel:        enqueue_rt_entity+0x46/0xc0
+Oct 31 15:19:37 ct523c-2103 kernel:        enqueue_task_rt+0x5e/0x1d0
+Oct 31 15:19:37 ct523c-2103 kernel:        __sched_setscheduler+0xcd2/0x1050
+Oct 31 15:19:37 ct523c-2103 kernel:        sched_set_fifo+0xa5/0xf0
+Oct 31 15:19:37 ct523c-2103 kernel:        smpboot_thread_fn+0x1f0/0x340
+Oct 31 15:19:37 ct523c-2103 kernel:        kthread+0x199/0x1e0
+Oct 31 15:19:37 ct523c-2103 kernel:        ret_from_fork+0x28/0x50
+Oct 31 15:19:37 ct523c-2103 kernel:        ret_from_fork_asm+0x11/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     -> #2 (&rq->__lock){-.-.}-{2:2}:
+Oct 31 15:19:37 ct523c-2103 kernel:        _raw_spin_lock_nested+0x25/0x30
+Oct 31 15:19:37 ct523c-2103 kernel:        raw_spin_rq_lock_nested+0xc/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:        task_fork_fair+0x31/0x100
+Oct 31 15:19:37 ct523c-2103 kernel:        sched_cgroup_fork+0x298/0x300
+Oct 31 15:19:37 ct523c-2103 kernel:        copy_process+0x2213/0x32c0
+Oct 31 15:19:37 ct523c-2103 kernel:        kernel_clone+0xf6/0x4b0
+Oct 31 15:19:37 ct523c-2103 kernel:        user_mode_thread+0xa1/0xd0
+Oct 31 15:19:37 ct523c-2103 kernel:        rest_init+0x19/0x1a0
+Oct 31 15:19:37 ct523c-2103 kernel:        arch_call_rest_init+0xa/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:        start_kernel+0x37c/0x3f0
+Oct 31 15:19:37 ct523c-2103 kernel:        x86_64_start_reservations+0x14/0x30
+Oct 31 15:19:37 ct523c-2103 kernel:        x86_64_start_kernel+0x7e/0x80
+Oct 31 15:19:37 ct523c-2103 kernel:        secondary_startup_64_no_verify+0x166/0x16b
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     -> #1 (&p->pi_lock){-.-.}-{2:2}:
+Oct 31 15:19:37 ct523c-2103 kernel:        _raw_spin_lock_irqsave+0x3f/0x60
+Oct 31 15:19:37 ct523c-2103 kernel:        try_to_wake_up+0x93/0xd20
+Oct 31 15:19:37 ct523c-2103 kernel:        up+0x49/0x60
+Oct 31 15:19:37 ct523c-2103 kernel:        console_unlock+0x153/0x170
+Oct 31 15:19:37 ct523c-2103 kernel:        vprintk_emit+0xd5/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:        _printk+0xae/0xe0
+Oct 31 15:19:37 ct523c-2103 kernel:        __dynamic_pr_debug+0x1c4/0x220
+Oct 31 15:19:37 ct523c-2103 kernel:        kobject_delayed_cleanup+0x5a/0x140
+Oct 31 15:19:37 ct523c-2103 kernel:        process_one_work+0x475/0x920
+Oct 31 15:19:37 ct523c-2103 kernel:        worker_thread+0x38a/0x680
+Oct 31 15:19:37 ct523c-2103 kernel:        kthread+0x199/0x1e0
+Oct 31 15:19:37 ct523c-2103 kernel:        ret_from_fork+0x28/0x50
+Oct 31 15:19:37 ct523c-2103 kernel:        ret_from_fork_asm+0x11/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     -> #0 ((console_sem).lock){-.-.}-{2:2}:
+Oct 31 15:19:37 ct523c-2103 kernel:        __lock_acquire+0x1de8/0x3210
+Oct 31 15:19:37 ct523c-2103 kernel:        lock_acquire+0x15a/0x3b0
+Oct 31 15:19:37 ct523c-2103 kernel:        _raw_spin_lock_irqsave+0x3f/0x60
+Oct 31 15:19:37 ct523c-2103 kernel:        down_trylock+0xc/0x40
+Oct 31 15:19:37 ct523c-2103 kernel:        __down_trylock_console_sem+0x2a/0x90
+Oct 31 15:19:37 ct523c-2103 kernel:        console_trylock+0x31/0x80
+Oct 31 15:19:37 ct523c-2103 kernel:        vprintk_emit+0xcc/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:        _printk+0xae/0xe0
+Oct 31 15:19:37 ct523c-2103 kernel:        slab_bug+0x65/0xb0
+Oct 31 15:19:37 ct523c-2103 kernel:        check_object+0x140/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:        free_to_partial_list+0x1ff/0x5b0
+Oct 31 15:19:37 ct523c-2103 kernel:        qlist_free_all+0x6d/0x190
+Oct 31 15:19:37 ct523c-2103 kernel:        kasan_quarantine_reduce+0x18a/0x1d0
+Oct 31 15:19:37 ct523c-2103 kernel:        __kasan_slab_alloc+0x46/0x70
+Oct 31 15:19:37 ct523c-2103 kernel:        kmem_cache_alloc+0x111/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:        getname_flags.part.0+0x34/0x240
+Oct 31 15:19:37 ct523c-2103 kernel:        do_sys_openat2+0xc6/0x130
+Oct 31 15:19:37 ct523c-2103 kernel:        __x64_sys_openat+0xe0/0x130
+Oct 31 15:19:37 ct523c-2103 kernel:        do_syscall_64+0x34/0xb0
+Oct 31 15:19:37 ct523c-2103 kernel:        entry_SYSCALL_64_after_hwframe+0x46/0xb0
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     other info that might help us debug this:
+Oct 31 15:19:37 ct523c-2103 kernel: Chain exists of:
+                                       (console_sem).lock --> hrtimer_bases.lock --> &n->list_lock
+Oct 31 15:19:37 ct523c-2103 kernel:  Possible unsafe locking scenario:
+Oct 31 15:19:37 ct523c-2103 kernel:        CPU0                    CPU1
+Oct 31 15:19:37 ct523c-2103 kernel:        ----                    ----
+Oct 31 15:19:37 ct523c-2103 kernel:   lock(&n->list_lock);
+Oct 31 15:19:37 ct523c-2103 kernel:                                lock(hrtimer_bases.lock);
+Oct 31 15:19:37 ct523c-2103 kernel:                                lock(&n->list_lock);
+Oct 31 15:19:37 ct523c-2103 kernel:   lock((console_sem).lock);
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                      *** DEADLOCK ***
+Oct 31 15:19:37 ct523c-2103 kernel: 2 locks held by pkill/23351:
+Oct 31 15:19:37 ct523c-2103 kernel:  #0: ffffffff8392de30 (remove_cache_srcu){.+.+}-{0:0}, at: kasan_quarantine_reduce+0x7d/0x1d0
+Oct 31 15:19:37 ct523c-2103 kernel:  #1: ffff8881100407d8 (&n->list_lock){-.-.}-{3:3}, at: free_to_partial_list+0x55/0x5b0
+Oct 31 15:19:37 ct523c-2103 kernel:
+                                     stack backtrace:
+Oct 31 15:19:37 ct523c-2103 kernel: CPU: 0 PID: 23351 Comm: pkill Tainted: G        W          6.6.0-rc5+ #8
+Oct 31 15:19:37 ct523c-2103 kernel: Hardware name: Default string Default string/SKYBAY, BIOS 5.12 02/21/2023
+Oct 31 15:19:37 ct523c-2103 kernel: Call Trace:
+Oct 31 15:19:37 ct523c-2103 kernel:  <TASK>
+Oct 31 15:19:37 ct523c-2103 kernel:  dump_stack_lvl+0x57/0x90
+Oct 31 15:19:37 ct523c-2103 kernel:  check_noncircular+0x24b/0x290
+Oct 31 15:19:37 ct523c-2103 kernel:  ? print_circular_bug+0x430/0x430
+Oct 31 15:19:37 ct523c-2103 kernel:  ? format_decode+0xb2/0x520
+Oct 31 15:19:37 ct523c-2103 kernel:  ? fill_ptr_key+0x20/0x20
+Oct 31 15:19:37 ct523c-2103 kernel:  ? lockdep_lock+0xa3/0x150
+Oct 31 15:19:37 ct523c-2103 kernel:  ? usage_skip+0xa0/0xa0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? add_chain_block+0x2cc/0x2f0
+Oct 31 15:19:37 ct523c-2103 kernel:  __lock_acquire+0x1de8/0x3210
+Oct 31 15:19:37 ct523c-2103 kernel:  ? lockdep_hardirqs_on_prepare+0x200/0x200
+Oct 31 15:19:37 ct523c-2103 kernel:  ? prb_final_commit+0x42/0x50
+Oct 31 15:19:37 ct523c-2103 kernel:  ? vprintk_store+0x3a9/0x630
+Oct 31 15:19:37 ct523c-2103 kernel:  lock_acquire+0x15a/0x3b0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? down_trylock+0xc/0x40
+Oct 31 15:19:37 ct523c-2103 kernel:  ? lock_sync+0xf0/0xf0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? is_bpf_text_address+0x60/0xf0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? reacquire_held_locks+0x270/0x270
+Oct 31 15:19:37 ct523c-2103 kernel:  _raw_spin_lock_irqsave+0x3f/0x60
+Oct 31 15:19:37 ct523c-2103 kernel:  ? down_trylock+0xc/0x40
+Oct 31 15:19:37 ct523c-2103 kernel:  down_trylock+0xc/0x40
+Oct 31 15:19:37 ct523c-2103 kernel:  ? vprintk_emit+0xcc/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:  __down_trylock_console_sem+0x2a/0x90
+Oct 31 15:19:37 ct523c-2103 kernel:  console_trylock+0x31/0x80
+Oct 31 15:19:37 ct523c-2103 kernel:  vprintk_emit+0xcc/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:  ? lockdep_hardirqs_on_prepare+0x200/0x200
+Oct 31 15:19:37 ct523c-2103 kernel:  _printk+0xae/0xe0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? syslog_print+0x3d0/0x3d0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? free_to_partial_list+0x55/0x5b0
+Oct 31 15:19:37 ct523c-2103 kernel:  slab_bug+0x65/0xb0
+Oct 31 15:19:37 ct523c-2103 kernel:  check_object+0x140/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:  free_to_partial_list+0x1ff/0x5b0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? qlist_free_all+0x68/0x190
+Oct 31 15:19:37 ct523c-2103 kernel:  qlist_free_all+0x6d/0x190
+Oct 31 15:19:37 ct523c-2103 kernel:  ? _raw_spin_unlock_irqrestore+0x2b/0x50
+Oct 31 15:19:37 ct523c-2103 kernel:  kasan_quarantine_reduce+0x18a/0x1d0
+Oct 31 15:19:37 ct523c-2103 kernel:  __kasan_slab_alloc+0x46/0x70
+Oct 31 15:19:37 ct523c-2103 kernel:  kmem_cache_alloc+0x111/0x310
+Oct 31 15:19:37 ct523c-2103 kernel:  ? mntput_no_expire+0xf0/0x5d0
+Oct 31 15:19:37 ct523c-2103 kernel:  ? getname_flags.part.0+0x34/0x240
+Oct 31 15:19:37 ct523c-2103 kernel:  ? mark_held_locks+0x24/0x90
+Oct 31 15:19:37 ct523c-2103 kernel:  getname_flags.part.0+0x34/0x240
+Oct 31 15:19:37 ct523c-2103 kernel:  ? build_open_flags+0x1d9/0x240
+Oct 31 15:19:37 ct523c-2103 kernel:  do_sys_openat2+0xc6/0x130
+Oct 31 15:19:37 ct523c-2103 kernel:  ? build_open_flags+0x240/0x240
+Oct 31 15:19:37 ct523c-2103 kernel:  ? debug_objects_oom+0x220/0x220
+Oct 31 15:19:37 ct523c-2103 kernel:  ? lockdep_hardirqs_on_prepare+0x132/0x200
+Oct 31 15:19:37 ct523c-2103 kernel:  ? percpu_counter_add_batch+0xd0/0x120
+Oct 31 15:19:37 ct523c-2103 kernel:  __x64_sys_openat+0xe0/0x130
+Oct 31 15:19:38 ct523c-2103 kernel:  ? __x64_compat_sys_openat+0x130/0x130
+Oct 31 15:19:38 ct523c-2103 kernel:  ? __call_rcu_common.constprop.0+0x220/0x480
+Oct 31 15:19:38 ct523c-2103 kernel:  ? lockdep_hardirqs_on_prepare+0x132/0x200
+Oct 31 15:19:38 ct523c-2103 kernel:  ? syscall_enter_from_user_mode+0x1c/0x50
+Oct 31 15:19:38 ct523c-2103 kernel:  do_syscall_64+0x34/0xb0
+Oct 31 15:19:38 ct523c-2103 kernel:  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+Oct 31 15:19:38 ct523c-2103 kernel: RIP: 0033:0x7fbc6c9018e8
+Oct 31 15:19:38 ct523c-2103 kernel: Code: f0 25 00 00 41 00 3d 00 00 41 00 74 45 64 8b 04 25 18 00 00 00 85 c0 75 69 89 da 48 89 ee bf 9c ff ff ff b8 01 01 00 
+00 0f 05 <48> 3d 00 f0 ff ff 0f 87 8c 00 00 00 48 8b 54 24 28 64 48 2b 14 25
+Oct 31 15:19:38 ct523c-2103 kernel: RSP: 002b:00007ffcd6384370 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+Oct 31 15:19:38 ct523c-2103 kernel: RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fbc6c9018e8
+Oct 31 15:19:38 ct523c-2103 kernel: RDX: 0000000000000000 RSI: 00007ffcd6384400 RDI: 00000000ffffff9c
+Oct 31 15:19:38 ct523c-2103 kernel: RBP: 00007ffcd6384400 R08: 0000000000000000 R09: 0000000000000073
+Oct 31 15:19:38 ct523c-2103 kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 0000562d00eb8ac0
+Oct 31 15:19:38 ct523c-2103 kernel: R13: 0000000000000000 R14: 0000000000000020 R15: 000000000001ffc5
+Oct 31 15:19:38 ct523c-2103 kernel:  </TASK>
+
+Thanks,
+Ben
 
 -- 
-2.34.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
