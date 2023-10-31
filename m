@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A447DCB7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE607DCB82
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235923AbjJaLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S235758AbjJaLMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235971AbjJaLLS (ORCPT
+        with ESMTP id S233785AbjJaLMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:11:18 -0400
-Received: from hmat.qianxin.com (hmat.qianxin.com [220.181.41.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C33C1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:10:47 -0700 (PDT)
-Received: from hmat.qianxin.com (unknown [10.44.121.89])
-        by hmat.qianxin.com (SkyGuard) with ESMTPS id 4SKS9c5kS5z2LZp4;
-        Tue, 31 Oct 2023 19:10:44 +0800 (CST)
-Received: from qax-bjmail06.ESG.360ES.CN
- (2402:d040:0:8425:2849:52e7:3abe:7096) by qax-bjmail03.ESG.360ES.CN
- (2402:d040:0:8425:dab:9a82:67c8:970d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 31 Oct 2023 19:10:45 +0800
-Received: from qax-bjmail06.ESG.360ES.CN ([fe80::2849:52e7:3abe:7096]) by
- qax-bjmail06.ESG.360ES.CN ([fe80::2849:52e7:3abe:7096%5]) with mapi id
- 15.01.2507.031; Tue, 31 Oct 2023 19:10:45 +0800
-From:   =?utf-8?B?5p+z6I+B5bOw?= <liujingfeng@qianxin.com>
-To:     Marco Elver <elver@google.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "security@kernel.org" <security@kernel.org>,
-        "secalert@redhat.com" <secalert@redhat.com>,
-        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>
-Subject: Re: A null-ptr crash in linux-6.4 usb driver
-Thread-Topic: A null-ptr crash in linux-6.4 usb driver
-Thread-Index: AdoL6r5FKpnYmf2vSnCXUQyf7Z0zPw==
-Date:   Tue, 31 Oct 2023 11:10:45 +0000
-Message-ID: <b60e7642b76b464ca4acddcba5329a3d@qianxin.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.110.51.215]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 31 Oct 2023 07:12:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF757C9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:12:09 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698750727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uY/e7u3SiLygPlUFD9YVUFybmqC/ruRtouz4/00CRUk=;
+        b=EfQ2DMdLWp8IRDsaore3eSAk3FqLxj4ROJPNmsgrd2fd0RQikJE/1xsPvaUirAeaShaQgg
+        u6cwaC21uNvTbtus1/5lY0kj476tn1pxkZDzzHj1S9+R9J8cVJMS5zn/MxQb5mAmc1FNrO
+        kXqXSCdh8iHybYpv2r2bmLCI6gKwnj7zar5fDN/mm5zIrH99sInEe0wb3V2VSwpjbvJkNw
+        W15E4TLWPQCYNYkV9490fvh0WtD6aH6BCzD8E2rMXlPc1XxdD1E6bf4thIT2499a396LUS
+        IW5jDodDfLTuI8vwn2WTTIDDkXM8Hs7UXBB+hCZsRUVT1SZ+FGrPdZozKqAyNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698750727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uY/e7u3SiLygPlUFD9YVUFybmqC/ruRtouz4/00CRUk=;
+        b=2A3l/JwhTqgIYye8kWGvktXzq/DHPiIfrKsEgHA/VkRzkQCzxOMP0irfh84Gq9NtzghGuI
+        cN4dvnGgTwi11dBw==
+To:     Martin =?utf-8?Q?Hundeb=C3=B8ll?= <martin@geanix.com>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Martin =?utf-8?Q?Hundeb=C3=B8ll?= <martin@geanix.com>
+Subject: Re: [PATCH 2/2] reboot: flush printk buffers before final shutdown
+In-Reply-To: <20231030092432.3434623-2-martin@geanix.com>
+References: <20231030092432.3434623-1-martin@geanix.com>
+ <20231030092432.3434623-2-martin@geanix.com>
+Date:   Tue, 31 Oct 2023 12:18:05 +0106
+Message-ID: <87edhbf3lm.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T0ssIEkgdG9vayBhIGxvb2sgYW5kIGl0IG1heSBiZSB0aGUgc2FtZSByZWFzb24gdGhhdCBjYXVz
-ZWQgdGhlIGNyYXNoLGJ1dCBJIGp1c3QgdGVzdGVkIGl0IG9uIHRoZSBsYXRlc3QgTGludXgtNi42
-LGl0IGFsc28gY3Jhc2hlZCB3aGlsZSBydW5uaW5nIHRoZSByZXByb2R1Y2VyLGl0IGRpZG4ndCBi
-ZSBmaXhlZC4NCg0KPiBMb29rcyBsaWtlIHRoaXMgcmVwb3J0IGZyb20gb3ZlciBhIHllYXIgYWdv
-Og0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMDAwMDAwMDAwMDAwYmI3ZjFjMDVkYTI5
-YjYwMUBnb29nbGUuY29tLw0KDQoNCkl0IHNlZW1zIHRoYXQgdGhpcyBpc3N1ZSB3aWxsIG5vdCBi
-ZSBmaXhlZCBiZWNhdXNlIGl0IG11c3QgcmVseSBvbiBmYXVsdC1pbmplY3QsIHJpZ2h0Pw0KSSBh
-bSBub3QgZmFtaWxpYXIgd2l0aCB0aGlzIHBhcnQgb2YgdGhlIGtlcm5lbCBjb2RlLCBhbmQgaWYg
-Zml4aW5nIHRoaXMgaXNzdWUgaXMgdmVyeSBkaWZmaWN1bHQsIEkgbWF5IG5vdCBiZSBhYmxlIHRv
-IHByb3ZpZGUgYW4gdXNlZnVsIHBhdGNoLHNvcnJ5Lg0KDQo+IEdyZWF0LCBwbGVhc2Ugc3VibWl0
-IGEgcGF0Y2ggdG8gcmVzb2x2ZSB0aGlzIGFuZCB3ZSB3aWxsIGJlIGdsYWQgdG8gcmV2aWV3IGl0
-Lg0KDQo=
+On 2023-10-30, Martin Hundeb=C3=B8ll <martin@geanix.com> wrote:
+> Make sure printed messages are in fact printed before putting the system
+> down.
+>
+> Signed-off-by: Martin Hundeb=C3=B8ll <martin@geanix.com>
+> ---
+>  kernel/reboot.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/reboot.c b/kernel/reboot.c
+> index 3bba88c7ffc6..bab8350d5dae 100644
+> --- a/kernel/reboot.c
+> +++ b/kernel/reboot.c
+> @@ -273,6 +273,7 @@ void kernel_restart(char *cmd)
+>  	else
+>  		pr_emerg("Restarting system with command '%s'\n", cmd);
+>  	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+> +	pr_flush(1000, false);
+
+printk() tries to print directly from the calling context. Are you
+experiencing problems where you do not see the restarting message?
+
+John Ogness
