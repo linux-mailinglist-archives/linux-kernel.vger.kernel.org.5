@@ -2,148 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC5B7DC7B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FA47DC7B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343829AbjJaHy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S1343862AbjJaHzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343816AbjJaHyZ (ORCPT
+        with ESMTP id S1343757AbjJaHy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:54:25 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7209ADF;
-        Tue, 31 Oct 2023 00:54:15 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a82c2eb50cso45584227b3.2;
-        Tue, 31 Oct 2023 00:54:15 -0700 (PDT)
+        Tue, 31 Oct 2023 03:54:56 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7610C
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 00:54:44 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d865854ef96so4757218276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 00:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698738854; x=1699343654; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BxgfRq08akdKpYPvawQ/qmWvcE1o35b6GhP90H8S4Mw=;
-        b=eZSxllZ0b7Eit4t59bPFoYnEC3CrOLynCaHi8tW93TTyfNrH4ZfBz0ezgc2Wmt751v
-         45jeZ4kqhS1XdbhlbIuZUBVN0fSMPRKR4LR3ZnxzUBOLccqAY5XxynnV2YbYkbMac/jT
-         rD1M65b6ZbcOFsyVxiCDpDvag2K914ckC86aspDdkOCPALUl0QDJOBRV7EzaVyF65idd
-         4Xn0F/MWt/bCelRXYHxjJmqEvPpABykMeWxzibI3iNqO+tn7xPdgMnCQUmnyBfhpVy3u
-         Q7tYLGMgCUUSVlS6K3yRaJaYq/jA1oaYpsDkfcaJfrEyyMc8YD6VmFuP64sitYlwHDOy
-         4h8g==
+        d=amarulasolutions.com; s=google; t=1698738883; x=1699343683; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=imGUTfdIv1UEQvIw5qZ3sOkWlbHODvlpW7n7ZTnXfW4=;
+        b=oBtG90Sb6gOeIZfWGLPc5o/DwbAgCs92Eg2QzymX1sMlA/ktWqUZ86pKwYGiboXjhG
+         Dv4l9FCSV8pNumMwjK54QcXqAvLD92vQ98w98Ih7mVYStJECwYHOw9PG0YWuwCHUHHPB
+         TjW6XupL3Sv3c6GrbUgOazsbwlWao6oPhZnx0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698738854; x=1699343654;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BxgfRq08akdKpYPvawQ/qmWvcE1o35b6GhP90H8S4Mw=;
-        b=VRpwxnEsy4INdzi1YXz2Arrq0XmnWxQrJ87l9j/28B0av+fIEJSxFPkZFsxS0qbHFk
-         8nszRxORbLJKS+HBJFFycWaubIKCE2MQHyhhl4zncqR6VpE1wAcfbPnOUhcbFKGjKvfR
-         Zm8bRO8jfnmo276xOh5bI01ifGdbhAUT8tyIm6R0w71YzkVEtfTBbyPII6/EZ6Sd3F0G
-         lfX+8CeShOtWSWvr2dH4IcLgq5e60pJkCNnwkE499ZDTTxUoIRYN8dZjgq+RC6s5bzk2
-         boj3wFv+bsx6ct35JjvvV+eoMM1MITealcam7iFwDxvbjoezI+GfPY00X9pLQdpCBX00
-         K2LA==
-X-Gm-Message-State: AOJu0YxGt7uTyez5Fk13q5tDjBAAXW6guoNhdmxwtj4phTDNHNV7C5tN
-        cwEgc+0IuCP0DQpioU+H/zYF58eQOE4KNGyPM6w=
-X-Google-Smtp-Source: AGHT+IFrhKKyprJBm7nHBd4Rydqf0TOpZaL4oUpk4f4I19bsjnxQTcsk67zFEJtpBYSlcIgoeVc3brPEWGbY86zKMbg=
-X-Received: by 2002:a81:ad62:0:b0:5a7:c01d:268 with SMTP id
- l34-20020a81ad62000000b005a7c01d0268mr10163703ywk.18.1698738854542; Tue, 31
- Oct 2023 00:54:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698738883; x=1699343683;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=imGUTfdIv1UEQvIw5qZ3sOkWlbHODvlpW7n7ZTnXfW4=;
+        b=mdt9dPhUEh7+3YM2X9m90xgVPFrt9rCjFgeOJtvH5MXEXBUdR0PE10l+o008Pky1wl
+         hdb1X4/pFTt6edwCJTY5NV5irwNpWwVNC1Vac4yiiv7QsGVND0FGBYkDfCmoxwyKuSxh
+         hnSrI7Mak3XNg5RiV6Nijegr1z06rvFI8/divBNOIPdO71hE+PXAAQqblgB5cxdL5IKW
+         uPwsjsAPZOZr6OzwcVmIk1FFK4EUC2+PteVv0Gsb2egOizYlLVP9OUm6eswo0dBuepeS
+         /sZSSM/X55qwFD0MLDqRehsmfrSiPpdOUzPV4XaOPPnM5BPPbCZ7CSQr4zp6pQFpL8US
+         96pA==
+X-Gm-Message-State: AOJu0Yz1duSCJFTFL3dKk5qSYO1QPCVBtc8R3rjYTg+9UWe3B1StEeD9
+        znO1tKej8l312d7HtyEuMNFl4pHtUKmnaCzjd3FKpQ==
+X-Google-Smtp-Source: AGHT+IGuq0HOWs5OUTkDduu4V89OJcaIxGppI4qyD54zITZougK0zbZNP1p83UdXtqz7X/Iv55M353/8oTA/1gDd+B8=
+X-Received: by 2002:a25:aa27:0:b0:da0:3c22:8374 with SMTP id
+ s36-20020a25aa27000000b00da03c228374mr12109008ybi.5.1698738883370; Tue, 31
+ Oct 2023 00:54:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231030150119.342791-1-tmaimon77@gmail.com> <20231030150119.342791-2-tmaimon77@gmail.com>
- <e3de2c1f-3a05-4ffc-a50e-0b5522cf7740@roeck-us.net>
-In-Reply-To: <e3de2c1f-3a05-4ffc-a50e-0b5522cf7740@roeck-us.net>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Tue, 31 Oct 2023 09:54:03 +0200
-Message-ID: <CAP6Zq1hEFN==n3Um6MCvR-MqPERxwrm8Qd0DrKudA6L4xynDZA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] hwmon: npcm750-pwm-fan: Add NPCM8xx support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     jdelvare@suse.com, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, andrew@codeconstruct.com.au, venture@google.com,
-        yuenn@google.com, benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231025110140.2034650-1-dario.binacchi@amarulasolutions.com>
+ <1acd75d0-67a7-4a17-99c7-707cca305f37@linux.intel.com> <ZT_MKDVkqMECiv4I@orome.fritz.box>
+In-Reply-To: <ZT_MKDVkqMECiv4I@orome.fritz.box>
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Date:   Tue, 31 Oct 2023 08:54:31 +0100
+Message-ID: <CABGWkvrG8OWKpkY3g46XEje196zSXZ5rfekMRRDWMtp-uMrw-g@mail.gmail.com>
+Subject: Re: [PATCH] iommu/tegra-smmu: fix error checking for debugfs_create_dir()
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Baolu Lu <baolu.lu@linux.intel.com>, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+Hello Thierry,
 
-Thanks for your comments
-
-On Mon, 30 Oct 2023 at 17:57, Guenter Roeck <linux@roeck-us.net> wrote:
+On Mon, Oct 30, 2023 at 4:30=E2=80=AFPM Thierry Reding <thierry.reding@gmai=
+l.com> wrote:
 >
-> On 10/30/23 08:01, Tomer Maimon wrote:
-> > Adding Pulse Width Modulation (PWM) and fan tacho NPCM8xx support to
-> > NPCM PWM and fan tacho driver.
-> > NPCM8xx uses a different number of PWM devices.
+> On Wed, Oct 25, 2023 at 07:25:50PM +0800, Baolu Lu wrote:
+> > On 2023/10/25 19:01, Dario Binacchi wrote:
+> > > The return value of debugfs_create_dir() should be checked using the
+> > > IS_ERR() function.
+> > >
+> > > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> > > ---
+> > >
+> > >   drivers/iommu/tegra-smmu.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> > > index e445f80d0226..cd1d80c4c673 100644
+> > > --- a/drivers/iommu/tegra-smmu.c
+> > > +++ b/drivers/iommu/tegra-smmu.c
+> > > @@ -1056,7 +1056,7 @@ DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
+> > >   static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
+> > >   {
+> > >     smmu->debugfs =3D debugfs_create_dir("smmu", NULL);
+> > > -   if (!smmu->debugfs)
+> > > +   if (IS_ERR(smmu->debugfs))
+> > >             return;
 > >
-> > As part of adding NPCM8XX support:
-> > - Add NPCM8xx specific compatible string.
-> > - Add data to handle architecture-specific PWM and fan tacho parameters.
-> >
-> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> > ---
-> >   drivers/hwmon/npcm750-pwm-fan.c | 34 +++++++++++++++++++++++++++++----
-> >   1 file changed, 30 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/hwmon/npcm750-pwm-fan.c b/drivers/hwmon/npcm750-pwm-fan.c
-> > index 10ed3f4335d4..765b08fa0396 100644
-> > --- a/drivers/hwmon/npcm750-pwm-fan.c
-> > +++ b/drivers/hwmon/npcm750-pwm-fan.c
-> > @@ -46,9 +46,9 @@
-> >   #define NPCM7XX_PWM_CTRL_CH3_EN_BIT         BIT(16)
-> >
-> >   /* Define the maximum PWM channel number */
-> > -#define NPCM7XX_PWM_MAX_CHN_NUM                      8
-> > +#define NPCM7XX_PWM_MAX_CHN_NUM                      12
-> >   #define NPCM7XX_PWM_MAX_CHN_NUM_IN_A_MODULE 4
-> > -#define NPCM7XX_PWM_MAX_MODULES                 2
-> > +#define NPCM7XX_PWM_MAX_MODULES                 3
-> >
-> >   /* Define the Counter Register, value = 100 for match 100% */
-> >   #define NPCM7XX_PWM_COUNTER_DEFAULT_NUM             255
-> > @@ -171,6 +171,10 @@
-> >   #define FAN_PREPARE_TO_GET_FIRST_CAPTURE    0x01
-> >   #define FAN_ENOUGH_SAMPLE                   0x02
-> >
-> > +struct npcm_hwmon_info {
-> > +     u32 pwm_max_channel;
-> > +};
-> > +
-> >   struct npcm7xx_fan_dev {
-> >       u8 fan_st_flg;
-> >       u8 fan_pls_per_rev;
-> > @@ -204,6 +208,7 @@ struct npcm7xx_pwm_fan_data {
-> >       struct timer_list fan_timer;
-> >       struct npcm7xx_fan_dev fan_dev[NPCM7XX_FAN_MAX_CHN_NUM];
-> >       struct npcm7xx_cooling_device *cdev[NPCM7XX_PWM_MAX_CHN_NUM];
-> > +     const struct npcm_hwmon_info *info;
-> >       u8 fan_select;
-> >   };
-> >
-> > @@ -619,9 +624,13 @@ static umode_t npcm7xx_is_visible(const void *data,
-> >                                 enum hwmon_sensor_types type,
-> >                                 u32 attr, int channel)
-> >   {
-> > +     const struct npcm7xx_pwm_fan_data *hwmon_data = data;
-> > +
-> >       switch (type) {
-> >       case hwmon_pwm:
-> > -             return npcm7xx_pwm_is_visible(data, attr, channel);
-> > +             if (channel < hwmon_data->info->pwm_max_channel)
-> > +                     return npcm7xx_pwm_is_visible(data, attr, channel);
+> > This check can be removed, as debugfs_create_file() can handle the case
+> > where @parent is an error pointer.
 >
-> I would have expected this check to be handled in npcm7xx_pwm_is_visible().
-I will change the handle in npcm7xx_pwm_is_visible
+> A patch for this has been in linux-next for a few weeks, see:
 >
-> Guenter
+> commit f7da9c081517daba70f9f9342e09d7a6322ba323
+> Author: Jinjie Ruan <ruanjinjie@huawei.com>
+> Date:   Fri Sep 1 15:30:56 2023 +0800
+>
+>     iommu/tegra-smmu: Drop unnecessary error check for for debugfs_create=
+_dir()
+>
+>     The debugfs_create_dir() function returns error pointers.
+>     It never returns NULL.
+>
+>     As Baolu suggested, this patch removes the error checking for
+>     debugfs_create_dir in tegra-smmu.c. This is because the DebugFS kerne=
+l API
+>     is developed in a way that the caller can safely ignore the errors th=
+at
+>     occur during the creation of DebugFS nodes. The debugfs APIs have
+>     a IS_ERR() judge in start_creating() which can handle it gracefully. =
+So
+>     these checks are unnecessary.
+>
+>     Fixes: d1313e7896e9 ("iommu/tegra-smmu: Add debugfs support")
+>     Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+>     Suggested-by: Baolu Lu <baolu.lu@linux.intel.com>
+>     Acked-by: Thierry Reding <treding@nvidia.com>
+>     Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>     Link: https://lore.kernel.org/r/20230901073056.1364755-1-ruanjinjie@h=
+uawei.com
+>     Signed-off-by: Joerg Roedel <jroedel@suse.de>
 >
 
-Thanks,
+Thanks for the explanation,
+regards
+Dario
 
-Tomer
+> Thierry
+
+
+
+--=20
+
+Dario Binacchi
+
+Senior Embedded Linux Developer
+
+dario.binacchi@amarulasolutions.com
+
+__________________________________
+
+
+Amarula Solutions SRL
+
+Via Le Canevare 30, 31100 Treviso, Veneto, IT
+
+T. +39 042 243 5310
+info@amarulasolutions.com
+
+www.amarulasolutions.com
