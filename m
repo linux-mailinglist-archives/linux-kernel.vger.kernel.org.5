@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF947DD57D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3587DD585
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236502AbjJaRwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
+        id S1376464AbjJaRxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236472AbjJaRwK (ORCPT
+        with ESMTP id S1347019AbjJaRw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:52:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D9F91
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:51:21 -0700 (PDT)
+        Tue, 31 Oct 2023 13:52:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D640EF9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698774680;
+        s=mimecast20190719; t=1698774730;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8SueeyoA5l3+NPz+H4PFR4IPPiYp17+NNZKETDXfz4I=;
-        b=QMBDZHMlLFmSTUTcz8eHvRay5bDFcUoRW7ZDZtjR7TQOrlYr+UIXThRWeeEVlimUfm8Lf3
-        clBT1/Oh4WD2fPskDVDun6xYKLtmd+YS4EyiqZTUXzKYXwPj0A/bs5JdaapkWFeQAAmgTM
-        jBNlzz3K+Yhk7hYRWOkN2frPU4MmL9w=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=JiBQgapXFQfoour8NRSPRcoo4HDysBjciUG+BLpDfpk=;
+        b=Gy3ZN2szb7RH97fdrwejKSpAoSzimgp8VJiLAXUQY8cu1MNN4wV7YgBLqc2I75k414Co9U
+        mBI29yamU2HLcETOegNBFbO7mkyRytOtsv3PyB/qynevAyjA4x0+GTD3OiEMZ+WM5nr+BH
+        Qp3xe3YWW28b6GuDdmzsT71wD9XVe/w=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-448-MbmDDLvvOuui58MXBnOdDg-1; Tue, 31 Oct 2023 13:51:17 -0400
-X-MC-Unique: MbmDDLvvOuui58MXBnOdDg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32f7943913aso1722745f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:51:17 -0700 (PDT)
+ us-mta-473-DE_GBTUhNzm-f1Bok4mB1g-1; Tue, 31 Oct 2023 13:51:59 -0400
+X-MC-Unique: DE_GBTUhNzm-f1Bok4mB1g-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5a7c97d5d5aso70070997b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:51:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774676; x=1699379476;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8SueeyoA5l3+NPz+H4PFR4IPPiYp17+NNZKETDXfz4I=;
-        b=WhIp31S9PBqDA06yzTDiYwlEATXRSI6JxiOV5tlAaKo9C0unwPGWeXTN2udE5LxL5A
-         tjX169NUUdljy34A5vzjh3Pvj9HXkrkpokiDh1hHy9VwcXGDUrMEieF7QIf8U/XehhAo
-         erWn/SIp63zLOb1ybPMk55aLGmv5jmTD3nusKh97xK0TxvPuTcUfV71Gf5WwJ16iXTCH
-         UdNc8RTqXStZI5ay8XGWlT49v6wzCBEAmZ7LhwUea2Bdj9DcHMK69/oy7qi+f+UdRs6C
-         w9bdiDP1cBdcows0kJNw+GzQkaJ3BuC3dvl3J8bhIKjmS/gOUWMbcFz89aojkTYo2ZEB
-         iPGg==
-X-Gm-Message-State: AOJu0YxNVzYDIEyGiWUv92T4k3tmnOtu3sa5zYTLwMRW+3CgGSysxTtq
-        OAjOfqF4RK45jyklvB7jecKIh+5njgJncmPMnrlaJoZtw61tVMcjorrGJdTlwP/kNjQbSii5i4d
-        /il1m6LhvYuFHmUhxTmik1RG8
-X-Received: by 2002:a5d:47af:0:b0:32f:8085:73f8 with SMTP id 15-20020a5d47af000000b0032f808573f8mr6478776wrb.18.1698774676367;
-        Tue, 31 Oct 2023 10:51:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGkCbM75bWqZ+oLxgMQHEz9Csq8A+q8FpCePzqItnI8N2+bPrxGlu1MWWo57WPrcTxgXvbQpA==
-X-Received: by 2002:a5d:47af:0:b0:32f:8085:73f8 with SMTP id 15-20020a5d47af000000b0032f808573f8mr6478757wrb.18.1698774676021;
-        Tue, 31 Oct 2023 10:51:16 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id w7-20020a5d5447000000b003176c6e87b1sm2018881wrv.81.2023.10.31.10.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:51:15 -0700 (PDT)
-Message-ID: <3f704ac87db03493a1d1bf8b7ae74b5a586ddbaf.camel@redhat.com>
-Subject: Re: [PATCH v6 13/25] KVM: x86: Initialize kvm_caps.supported_xss
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Tue, 31 Oct 2023 19:51:13 +0200
-In-Reply-To: <20230914063325.85503-14-weijiang.yang@intel.com>
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
-         <20230914063325.85503-14-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        d=1e100.net; s=20230601; t=1698774719; x=1699379519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JiBQgapXFQfoour8NRSPRcoo4HDysBjciUG+BLpDfpk=;
+        b=ZqANSeG8+vFYJJuH8ufdA4Q78JV69nr7oIV7RI39vr6Iyf/7JBbeDrjYuVGUk/jvtL
+         DQIl8uAl4B0l3XIhnQU7IrMhDXXnbOawdQh+8Fz6evtNmMS+RCNtbmef1OMKw+VtdS4M
+         Jo5ilrBSf9Mf2ObSk+hFJyY+L8KDb+6NFftuMolbi94u02+iwGIDuoSwHCBM+mIgn2zI
+         Be//Vg8HOG3nWrNVGGvd4rosxEfBZfv6JcC/NqyV4CEjIP8nE0sn5YfkJ9SKB5lJ3DxG
+         gV8qiTYm7HoDr2NkPd7liHeWf7gbHF9eHbX8ksdFhLLbmotypeAYKUlEzdU8EEfAB8pl
+         yl8g==
+X-Gm-Message-State: AOJu0YzzfvOAbKH2NCNKuY5z79VzUBBwXCIjSYszN9HBzZZ1v2i230dF
+        xvurOwpPfUTFMvFMoGNQ99rzJY6IAYaXwOQESk0HAlyRD4jbv2DaMtlAKjv5JLdV3I9fns8fVmX
+        hoAvS82Y7xp0SaMjf1Ejw0RzdoGD8NGgDSH9EkREH
+X-Received: by 2002:a81:c946:0:b0:5a7:b464:ff1a with SMTP id c6-20020a81c946000000b005a7b464ff1amr13260744ywl.6.1698774718809;
+        Tue, 31 Oct 2023 10:51:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEpyd5UuoJZhDSyJz62BuM8WGy64dORcaXjgDDTBdYN6Y/kC0zq6u0JzoBXj8CQkvjTEKb048eWzWcDOcSuMik=
+X-Received: by 2002:a81:c946:0:b0:5a7:b464:ff1a with SMTP id
+ c6-20020a81c946000000b005a7b464ff1amr13260726ywl.6.1698774718519; Tue, 31 Oct
+ 2023 10:51:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20231031144339.121453-1-sgarzare@redhat.com>
+In-Reply-To: <20231031144339.121453-1-sgarzare@redhat.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Tue, 31 Oct 2023 18:51:22 +0100
+Message-ID: <CAJaqyWfr123zWdM8E+H4bnfrdvv-KEvZ7r5eN+fY428G6v95Hg@mail.gmail.com>
+Subject: Re: [PATCH] vdpa_sim_blk: allocate the buffer zeroed
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, Qing Wang <qinwang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> Set original kvm_caps.supported_xss to (host_xss & KVM_SUPPORTED_XSS) if
-> XSAVES is supported. host_xss contains the host supported xstate feature
-> bits for thread FPU context switch, KVM_SUPPORTED_XSS includes all KVM
-> enabled XSS feature bits, the resulting value represents the supervisor
-> xstates that are available to guest and are backed by host FPU framework
-> for swapping {guest,host} XSAVE-managed registers/MSRs.
-> 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+On Tue, Oct 31, 2023 at 3:44=E2=80=AFPM Stefano Garzarella <sgarzare@redhat=
+.com> wrote:
+>
+> Deleting and recreating a device can lead to having the same
+> content as the old device, so let's always allocate buffers
+> completely zeroed out.
+>
+> Fixes: abebb16254b3 ("vdpa_sim_blk: support shared backend")
+> Suggested-by: Qing Wang <qinwang@redhat.com>
+
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 > ---
->  arch/x86/kvm/x86.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9a616d84bd39..66edbed25db8 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -226,6 +226,8 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
->  				| XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
->  				| XFEATURE_MASK_PKRU | XFEATURE_MASK_XTILE)
->  
-> +#define KVM_SUPPORTED_XSS     0
-> +
->  u64 __read_mostly host_efer;
->  EXPORT_SYMBOL_GPL(host_efer);
->  
-> @@ -9515,12 +9517,13 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
->  		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
->  		kvm_caps.supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
->  	}
-> +	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
-> +		rdmsrl(MSR_IA32_XSS, host_xss);
-> +		kvm_caps.supported_xss = host_xss & KVM_SUPPORTED_XSS;
-> +	}
->  
->  	rdmsrl_safe(MSR_EFER, &host_efer);
->  
-> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -		rdmsrl(MSR_IA32_XSS, host_xss);
-> -
->  	kvm_init_pmu_capability(ops->pmu_ops);
->  
->  	if (boot_cpu_has(X86_FEATURE_ARCH_CAPABILITIES))
-
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
-
-
-
+>  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim=
+/vdpa_sim_blk.c
+> index b3a3cb165795..b137f3679343 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> @@ -437,7 +437,7 @@ static int vdpasim_blk_dev_add(struct vdpa_mgmt_dev *=
+mdev, const char *name,
+>         if (blk->shared_backend) {
+>                 blk->buffer =3D shared_buffer;
+>         } else {
+> -               blk->buffer =3D kvmalloc(VDPASIM_BLK_CAPACITY << SECTOR_S=
+HIFT,
+> +               blk->buffer =3D kvzalloc(VDPASIM_BLK_CAPACITY << SECTOR_S=
+HIFT,
+>                                        GFP_KERNEL);
+>                 if (!blk->buffer) {
+>                         ret =3D -ENOMEM;
+> @@ -495,7 +495,7 @@ static int __init vdpasim_blk_init(void)
+>                 goto parent_err;
+>
+>         if (shared_backend) {
+> -               shared_buffer =3D kvmalloc(VDPASIM_BLK_CAPACITY << SECTOR=
+_SHIFT,
+> +               shared_buffer =3D kvzalloc(VDPASIM_BLK_CAPACITY << SECTOR=
+_SHIFT,
+>                                          GFP_KERNEL);
+>                 if (!shared_buffer) {
+>                         ret =3D -ENOMEM;
+> --
+> 2.41.0
+>
 
