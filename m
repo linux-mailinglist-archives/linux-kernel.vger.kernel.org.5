@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D887DD4E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A397DD4EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376293AbjJaRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
+        id S1346999AbjJaRpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376261AbjJaRpJ (ORCPT
+        with ESMTP id S1376307AbjJaRpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:45:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90406A6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:44:26 -0700 (PDT)
+        Tue, 31 Oct 2023 13:45:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2697C9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698774265;
+        s=mimecast20190719; t=1698774276;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vjtWvsFj0am0rYDH+Q7lI+mXlwPeVNGi1NsELi1tHIo=;
-        b=eOb1SLAd8nPog06t5PBqbJ1qNJyn5ldW1UIvcfEPk2+vlh2Na4gQHRV/2YN6Wgi2eAXb7F
-        35EanLqNHnugJIP+IMDPOQnVUKtgSJxSjDQOVD6tLY25bud9EL+nLcVaDHmSd00lHeH2j7
-        UHrmkDotsOpqz37Psm6/s3Z1laKsRdM=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=K9ATk+xEEF9iVCbTQHY9aknrLQ4S9DPQjw7UE6MLIMM=;
+        b=hAqk9KCUhwkqSdx94acdxMtKGbhStVWi4tlD4cosNccMtpij80e83uoNlLcc5nKUcIL6Cg
+        MDzlLqbU/EX3rs9oj5HX+MR4F3LuUX47BRxVbRnx+C3tDxKXsILcWdQyIE7j6G3DENhcCD
+        X4DYx8SICzFypoK5hw5EStGaMd2XM+s=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-531-IZAlu8ZIOnqt0esWeprWWQ-1; Tue, 31 Oct 2023 13:44:24 -0400
-X-MC-Unique: IZAlu8ZIOnqt0esWeprWWQ-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5091368e043so3797805e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:44:23 -0700 (PDT)
+ us-mta-156-TLJNN2sTObec82ZtpiTBjg-1; Tue, 31 Oct 2023 13:44:34 -0400
+X-MC-Unique: TLJNN2sTObec82ZtpiTBjg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4093a561f7eso21618475e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:44:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774262; x=1699379062;
+        d=1e100.net; s=20230601; t=1698774273; x=1699379073;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vjtWvsFj0am0rYDH+Q7lI+mXlwPeVNGi1NsELi1tHIo=;
-        b=eeVyePy1+2kh5TmXbMank5ZkcUErnmVG0grju3SF6SW+fONe5tNHiiTO9YBQbw8mN7
-         FYj3ksubFmCO6I6wTBhAbHoZ8D6+Di6y+YqluA4shITGJ6TYsEOq8z14XNMmn8X2jbZw
-         KlUAeO/l1RtgvZlT8ZOsx+bM0V35z4Ccxm2ekfSeAFDZ3zEbEI63dmvTTLlnU366Knjs
-         nxMcIQgwlcDzBHUypwIVgJUqSzgkuaTP3Bgh2i/3IXAgkToStAddnCvrZ2eM1BouIZ9y
-         BjnvVUvbrlVSe7Q9ctirW6oW4umBhcbdVBi2A9N3aCEuucEx+Dd3DZpsHe+K7beIg1TG
-         mw7g==
-X-Gm-Message-State: AOJu0Ywq7tJnDkT8ePtJ597ZQsGe/LhOh/9D6YVW8z41lMi3/lL5ClMn
-        N0oAql4E9nKRY0is06RmQ3g0oAKwbox7Df0in68y6BDlVrJYdkl0u8THBGDYeZC0mqkfr360gaz
-        Bgo7YPRWleHsV2K+iSZgDLjWe
-X-Received: by 2002:a05:6512:3b3:b0:507:99d6:95fc with SMTP id v19-20020a05651203b300b0050799d695fcmr9172418lfp.45.1698774262707;
-        Tue, 31 Oct 2023 10:44:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFV6sOHpaJ3EyONEX+ohOPSasXf97pDEXBx9ljvLy8uz4xZRam6mOr1a98gGLj4gQyTHZMpA==
-X-Received: by 2002:a05:6512:3b3:b0:507:99d6:95fc with SMTP id v19-20020a05651203b300b0050799d695fcmr9172404lfp.45.1698774262513;
-        Tue, 31 Oct 2023 10:44:22 -0700 (PDT)
+        bh=K9ATk+xEEF9iVCbTQHY9aknrLQ4S9DPQjw7UE6MLIMM=;
+        b=P1HdpBByR7X4Fyatx23lgAVcuMzBsIfHf516U4T/xKGzyPMbFZOtRfNXqbPvmrk4yh
+         T5GF4cAzxsZkV7M9yVRTKDQV4BtvkICDQZp4VHbJ2KjwjAi+fpf1sN9xwN01EB/C7jsu
+         776Eg44cwFa8RDDIJZHvRXZI2DjXuxPVY/XRwbay2NwOhCznGwUs38xzrDtVoUuoiN+0
+         9VRPYiWL9PMEnFdpGGB2EmLz40+tNYkxfwnr0lCyndspuXDwYAplXIEjKMHlYwERD3Mu
+         +/Qab/4LAwd8yIWaiwHiF+qk831CvHuwpxcuqs/0S6Ep45iViATmVGf3ngcwhZg9ylpU
+         WubQ==
+X-Gm-Message-State: AOJu0Yy2XGyJVE5RHRuwAAnatIXizCGTqI/HRhD2zsV7TMH9DdR2ka+C
+        n0c+tZ8JfFKwVaWTiGlR4OodgD1z35KuoI1pdyqBA2zCpHCHciWNX8v0Brcx0gw1VFYaw+UW/BN
+        tis7dCF761OYQdNs4Ll5zIID2
+X-Received: by 2002:adf:fa88:0:b0:31f:f65f:74ac with SMTP id h8-20020adffa88000000b0031ff65f74acmr8266451wrr.70.1698774273665;
+        Tue, 31 Oct 2023 10:44:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEeysvPYg4MaZZIdSgqpx65k49R9Wi9ixUa/a8pT03ZkRiB0O0l996DGT5K6AOj66/xKarLLw==
+X-Received: by 2002:adf:fa88:0:b0:31f:f65f:74ac with SMTP id h8-20020adffa88000000b0031ff65f74acmr8266441wrr.70.1698774273433;
+        Tue, 31 Oct 2023 10:44:33 -0700 (PDT)
 Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id a8-20020adffac8000000b003296b488961sm1997228wrs.31.2023.10.31.10.44.21
+        by smtp.gmail.com with ESMTPSA id p14-20020adfcc8e000000b0032dbf32bd56sm2015046wrj.37.2023.10.31.10.44.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:44:22 -0700 (PDT)
-Message-ID: <17c85a216c87a2a91bdfd8f34659df1dfb1d8f63.camel@redhat.com>
-Subject: Re: [PATCH v6 04/25] x86/fpu/xstate: Introduce kernel dynamic
- xfeature set
+        Tue, 31 Oct 2023 10:44:33 -0700 (PDT)
+Message-ID: <bb2fab66ced849d739ab08cef1772e0c335d64eb.camel@redhat.com>
+Subject: Re: [PATCH v6 05/25] x86/fpu/xstate: Remove kernel dynamic
+ xfeatures from kernel default_features
 From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     "Yang, Weijiang" <weijiang.yang@intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "john.allen@amd.com" <john.allen@amd.com>
-Date:   Tue, 31 Oct 2023 19:44:20 +0200
-In-Reply-To: <eea8bf26-1c86-8e2b-9ded-cb0d09c08fcf@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Tue, 31 Oct 2023 19:44:31 +0200
+In-Reply-To: <d8c3888c-4266-d781-5d0a-381a57a9c35c@intel.com>
 References: <20230914063325.85503-1-weijiang.yang@intel.com>
-         <20230914063325.85503-5-weijiang.yang@intel.com>
-         <f16beeec3fba23a34c426f311239935c5be920ab.camel@intel.com>
-         <eea8bf26-1c86-8e2b-9ded-cb0d09c08fcf@intel.com>
+         <20230914063325.85503-6-weijiang.yang@intel.com>
+         <d8c3888c-4266-d781-5d0a-381a57a9c35c@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-15 at 14:42 +0800, Yang, Weijiang wrote:
-> On 9/15/2023 8:24 AM, Edgecombe, Rick P wrote:
-> > On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> > > +static void __init init_kernel_dynamic_xfeatures(void)
-> > > +{
-> > > +       unsigned short cid;
-> > > +       int i;
-> > > +
-> > > +       for (i = 0; i < ARRAY_SIZE(xsave_kernel_dynamic_xfeatures);
-> > > i++) {
-> > > +               cid = xsave_kernel_dynamic_xfeatures[i];
-> > > +
-> > > +               if (cid && boot_cpu_has(cid))
-> > > +                       fpu_kernel_dynamic_xfeatures |= BIT_ULL(i);
-> > > +       }
-> > > +}
-> > > +
-> > I think this can be part of the max_features calculation that uses
-> > xsave_cpuid_features when you use use a fixed mask like Dave suggested
-> > in the other patch.
+On Thu, 2023-09-14 at 09:22 -0700, Dave Hansen wrote:
+> On 9/13/23 23:33, Yang Weijiang wrote:
+> > --- a/arch/x86/kernel/fpu/xstate.c
+> > +++ b/arch/x86/kernel/fpu/xstate.c
+> > @@ -845,6 +845,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+> >  	/* Clean out dynamic features from default */
+> >  	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
+> >  	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> > +	fpu_kernel_cfg.default_features &= ~fpu_kernel_dynamic_xfeatures;
 > 
-> Yes, the max_features has already included CET supervisor state bit. After  use
-> fixed mask, this function is not needed.
+> I'd much rather that this be a closer analog to XFEATURE_MASK_USER_DYNAMIC.
 > 
+> Please define a XFEATURE_MASK_KERNEL_DYNAMIC value and use it here.
+> Don't use a dynamically generated one.
 > 
-My 0.2 cents are also on having XFEATURE_MASK_KERNEL_DYNAMIC macro instead.
+
+I also think so.
 
 Best regards,
 	Maxim Levitsky
