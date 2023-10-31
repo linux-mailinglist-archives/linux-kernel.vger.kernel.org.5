@@ -2,73 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA657DC4E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 04:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1A57DC4E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 04:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbjJaDff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 23:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
+        id S234857AbjJaDh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 23:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjJaDfd (ORCPT
+        with ESMTP id S230084AbjJaDh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 23:35:33 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A97C6;
-        Mon, 30 Oct 2023 20:35:28 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id EA4BD60173;
-        Tue, 31 Oct 2023 04:35:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1698723324; bh=iNtfxNB5pt2eCNNHJFfnKIbTVqU89Z6PVc3EJaMDuN8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YcpsOHX6tS3WnlRciLwR2cLukVL2s6JR5doHLpA1qMqN5EnJZ8D0JpvoMlk0yyW+t
-         oEA5D+ROOTB1BwQkQHzs74ddJLmb4aGad8nKk0NLaGCKZmLTWBIX93k+ZUEqUcRVJu
-         7RjQVO33OuBOQl7ScYh44d8v2N+9zUftC7d2TK/3r7/Zrutxz0Qwm3jVAVsvNYZDoj
-         7a+N+pmbJghWKl+PczQUEcU7ApY4mB8EliHk/KKirNjmu+Bgt6DuPLhWbRqHaTe6y+
-         1qRoyhIJvNTjlAD/xQyEzcIsXPJRaMfDA81DT2/Fi/TqfG9zuhOjlZKVLD8EyCqUn/
-         YP3y6YAdy02LA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Sw94jxlZRWTT; Tue, 31 Oct 2023 04:35:21 +0100 (CET)
-Received: from [192.168.1.6] (78-3-40-166.adsl.net.t-com.hr [78.3.40.166])
-        by domac.alu.hr (Postfix) with ESMTPSA id EF9CF60171;
-        Tue, 31 Oct 2023 04:35:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1698723321; bh=iNtfxNB5pt2eCNNHJFfnKIbTVqU89Z6PVc3EJaMDuN8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=s4jJX3oCn3a/bhmI5FUq8L0sdoKWz7PTg2N/WhftWsq9j6NdA1mJBk1uhIGBqsB9W
-         zuYAu0QsZqru3o9LETWpnn8GuAXlcZtMhNeb9en/y/SlHt8uIyeZ6SGVrIhfA4mhqZ
-         IzlYnPnEvRkxSpPhM8j6imf/J69EWiDn918SQxVDT+BxyBUBn/+wfD/qhd38ZDZ2hi
-         l1NI+prPMnIoOwPPG7gETIIepGnw8wJtwtjX9pUHGyLU59fXFQ15kyn/tS4is6Pfa3
-         UES8gWIQlsG/vptg+aj1uivn7Z08wpJIkEm066COozJuzXvEUT/lA7Lx4rosGEVkGL
-         AlZgFvAJ3sX8Q==
-Message-ID: <11f59506-406a-463b-94c1-fe20246a102f@alu.unizg.hr>
-Date:   Tue, 31 Oct 2023 04:35:19 +0100
+        Mon, 30 Oct 2023 23:37:57 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70FBD8;
+        Mon, 30 Oct 2023 20:37:54 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso34673105ad.3;
+        Mon, 30 Oct 2023 20:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698723474; x=1699328274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zvYVTOxygpDMFxEkA+0MFbz5lSVNPQro1gFBUZN0XI0=;
+        b=gtNj++HVI+K+uUAfToiLMex6al1Y570sFOiiZSjqIJ0+aSfVJNQyoZGTFTyG4Mf7Zm
+         BYOCGxYZKKGfjCdrtk5JX+d3sYBi9x4wfqC87KkBPv+ZB7i3Gsimb1M/t1NqY7q4j2vc
+         Gp6YxHn/jW0x07YdN+E4aEv7QGX6MQ9KmSCpHPR3yBLWCB3I4mmT76GPdBXofmLh8x6H
+         SjejTZBPpEvMaa6e8vkU1M3ffIVnglIcoNtuKBMaUO2pnbmLA/1Y9yAhWV6wBaQTEBKW
+         PmAzlB/N8Bb5rZVS+3SzhYEugOY302PzPYG1SpsYwmaLd338DLByaGSN8LgGUgz1+C4u
+         L1Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698723474; x=1699328274;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zvYVTOxygpDMFxEkA+0MFbz5lSVNPQro1gFBUZN0XI0=;
+        b=ncgKc9oCtEv1rNXniBGPY4fRJWJvzYdK72m0/sKmGsoo4WaG6Ge6msvOVRihc/fkGd
+         LVAl5r5nGvAk34POn/KW/2nq96Lx5yDoiUUUiaUfPpS5fv3tKwKLN7TdBNg71Yeh8xPl
+         pxTKYhuF43g0BD+t8KBznVmqzXZEzXwU2pQ0goMZwreJHWxEP9/VuuIng7Pi+SboiYbK
+         dEtYxBWTuBQG5bkS3/hE8fi35yEhzO/NhHBxl+lEMgHR934cACdoegVWnnTibnTMlvlP
+         N7iyzNVF5Eg79Yhx/rzDmtCyZd32fCWkSDcNcbrHFfQRQKTQobRqKsIVsx0z/jl2089w
+         LOKQ==
+X-Gm-Message-State: AOJu0YzfUVy1GH5Ddselq+1Qxud10Ug/lgEo3aBs4FKZ0hEmw6uTNhqv
+        kbTStrVgsOqbK0qcfVaJ+cU=
+X-Google-Smtp-Source: AGHT+IEy48aubkhsZcsj3X45wbid7v/Mu3v/D1UDawjc++LyXiOmMyrRr+qBb0tdQmvAREVLECXl3Q==
+X-Received: by 2002:a17:903:32c3:b0:1cc:45d0:470b with SMTP id i3-20020a17090332c300b001cc45d0470bmr6573426plr.7.1698723474158;
+        Mon, 30 Oct 2023 20:37:54 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id ja1-20020a170902efc100b001b895336435sm239276plb.21.2023.10.30.20.37.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 20:37:53 -0700 (PDT)
+Message-ID: <0d4cd98f-6f5f-4fc3-b55d-c1351054b667@gmail.com>
+Date:   Mon, 30 Oct 2023 20:37:51 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] r8169: Coalesce RTL8411b PHY power-down recovery
- programming instructions to reduce spinlock stalls
+Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
 Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
+To:     Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
-References: <20231028110459.2644926-1-mirsad.todorovac@alu.unizg.hr>
- <376db5ae-1bb0-4682-b132-b9852be3c7aa@gmail.com>
- <23428695-fcff-495b-ac43-07639b4f5d08@alu.unizg.hr>
- <30e15e9a-d82e-4d24-be37-1b9d1534c082@gmail.com>
- <9f99c3a4-2752-464b-b37d-58a4f8041804@alu.unizg.hr>
- <bd4a59be-c393-4302-9d32-759e7cbfe255@lunn.ch>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <bd4a59be-c393-4302-9d32-759e7cbfe255@lunn.ch>
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+ <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
+ <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
+ <20231030222035.oqos7v7sdq5u6mti@skbuf>
+ <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
+ <20231030230906.s5feepjcvgbg5e7v@skbuf>
+ <494a8bb7-7ca1-40bd-b3a7-babeadfd88a0@lunn.ch>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <494a8bb7-7ca1-40bd-b3a7-babeadfd88a0@lunn.ch>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,171 +117,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 02:21, Andrew Lunn wrote:
->> I will not contradict, but the cummulative amount of memory barriers on each MMIO read/write
->> in each single one of the drivers could amount to some degrading of overall performance and
->> latency in a multicore system.
+
+
+On 10/30/2023 5:37 PM, Andrew Lunn wrote:
+> On Tue, Oct 31, 2023 at 01:09:06AM +0200, Vladimir Oltean wrote:
+>> On Mon, Oct 30, 2023 at 11:57:33PM +0100, Linus Walleij wrote:
+>>> This of course make no sense, since the padding function should do nothing
+>>> when the packet is bigger than 60 bytes.
+>>
+>> Indeed, this of course makes no sense. Ping doesn't work, or ARP doesn't
+>> work? Could you add a static ARP entry for the 192.168.1.137 IP address?
 > 
-> For optimisations, we like to see benchmark results which show some
-> improvements. Do you have any numbers?
+> Probably the ARP, since they are short packets and probably need the
+> padding.
 
-Hi, Andrew,
-
-Thank you for your interest in RTL NIC driver optimisations.
-
-My knowledge about the timing costs of synchronisation is mostly theoretical.
-
-By the table below, the cost of LOCK CHPXCHG m,616/32/64 is 52 cycles (in case the
-memory location is already in the L3 cache I suppose, cache miss can makes things worse,
-but we are hitting the same lock repeatedly).
-
-So, we have (in the best case) 52 clocks for lock, 52 for unlock (for the uncontentended
-case).
-
-This means 104 cycle x 130 sequential lock+unlock pairs = 13520 clk ~ 3.38 us on a 4 GHz
-machine (5.633 us on a 2.4 GHz CPU) while the multicore system does nothing but locking
-and unclocking after therecovery from the loss of PHY.
-
-We are talking about the RTl8411b.
-
-The other case it the rather new 8125/8125b.
-
-     static void rtl_hw_start_8125_common(struct rtl8169_private *tp)
-     {
-         rtl_pcie_state_l2l3_disable(tp);
-
-         RTL_W16(tp, 0x382, 0x221b);
-         RTL_W8(tp, 0x4500, 0);
-         RTL_W16(tp, 0x4800, 0);
-
-         /* disable UPS */
-         r8168_mac_ocp_modify(tp, 0xd40a, 0x0010, 0x0000);
-
-         RTL_W8(tp, Config1, RTL_R8(tp, Config1) & ~0x10);
-
-         r8168_mac_ocp_write(tp, 0xc140, 0xffff);
-         r8168_mac_ocp_write(tp, 0xc142, 0xffff);
-
-         r8168_mac_ocp_modify(tp, 0xd3e2, 0x0fff, 0x03a9);
-         r8168_mac_ocp_modify(tp, 0xd3e4, 0x00ff, 0x0000);
-         r8168_mac_ocp_modify(tp, 0xe860, 0x0000, 0x0080);
-
-         /* disable new tx descriptor format */
-         r8168_mac_ocp_modify(tp, 0xeb58, 0x0001, 0x0000);
-
-         if (tp->mac_version == RTL_GIGA_MAC_VER_63)
-                 r8168_mac_ocp_modify(tp, 0xe614, 0x0700, 0x0200);
-         else
-                 r8168_mac_ocp_modify(tp, 0xe614, 0x0700, 0x0400);
-
-         if (tp->mac_version == RTL_GIGA_MAC_VER_63)
-                 r8168_mac_ocp_modify(tp, 0xe63e, 0x0c30, 0x0000);
-         else
-                 r8168_mac_ocp_modify(tp, 0xe63e, 0x0c30, 0x0020);
-
-         r8168_mac_ocp_modify(tp, 0xc0b4, 0x0000, 0x000c);
-         r8168_mac_ocp_modify(tp, 0xeb6a, 0x00ff, 0x0033);
-         r8168_mac_ocp_modify(tp, 0xeb50, 0x03e0, 0x0040);
-         r8168_mac_ocp_modify(tp, 0xe056, 0x00f0, 0x0030);
-         r8168_mac_ocp_modify(tp, 0xe040, 0x1000, 0x0000);
-         r8168_mac_ocp_modify(tp, 0xea1c, 0x0003, 0x0001);
-         r8168_mac_ocp_modify(tp, 0xe0c0, 0x4f0f, 0x4403);
-         r8168_mac_ocp_modify(tp, 0xe052, 0x0080, 0x0068);
-         r8168_mac_ocp_modify(tp, 0xd430, 0x0fff, 0x047f);
-
-         r8168_mac_ocp_modify(tp, 0xea1c, 0x0004, 0x0000);
-         r8168_mac_ocp_modify(tp, 0xeb54, 0x0000, 0x0001);
-         udelay(1);
-         r8168_mac_ocp_modify(tp, 0xeb54, 0x0001, 0x0000);
-         RTL_W16(tp, 0x1880, RTL_R16(tp, 0x1880) & ~0x0030);
-
-         r8168_mac_ocp_write(tp, 0xe098, 0xc302);
-
-         rtl_loop_wait_low(tp, &rtl_mac_ocp_e00e_cond, 1000, 10);
-
-         if (tp->mac_version == RTL_GIGA_MAC_VER_63)
-                 rtl8125b_config_eee_mac(tp);
-         else
-                 rtl8125a_config_eee_mac(tp);
-
-         rtl_disable_rxdvgate(tp);
-    }
-
-There are 22 calls to mac ocp write/modify, each having a raw_spin_lock_irqsave()/
-raw_spin_unlock_irqrestore() pair.
-
-The minimal timing cost is 22x104 = 2288 cycles or a total of 0.572 us on a 4 GHz CPU,
-preventing all cores from the memory access. (0.953 us on a 2.4 GHz system).
-
-This does happen only at the startup apparently, but also at each rtl_reset_work(tp)
-and rtl8169_up(tp), rtl_open() at driver load, and rtl8169_runtime_resume() called by
-the rtl8169_resume().
-
-The revised version does only 2 pairs of raw_spin_lock_irqsave()/
-raw_sping_unlock_irqrestore(), but I admit it might be harder to read and maintain.
-
-My knowledge of the Linux kernel network stack isn't that deep, and I can't tell how
-often rtl8169_resume() is called in real life and how to reproduce and benchmark that
-call.
-
-This is a sort of a "loophole optimisation", I don't have the numbers on the impact
-on the entire Linux on i.e. 16 core/32 threads Ryzen 9 7950X CPU.
-
-Probably things would be worse on a 64 core CPU, because the 5.633 us and 0.953 us
-would have to be multiplied by the number of blocked cores, amounting to estimated
-total CPU cost of 360 us and 61 us respectively. Per NIC reset.
-
-However, I am relatively new to the r8169 driver, I came across while analysing
-KCSAN reports since the beginning of August. So ATM I don't have any benchmarks
-to confirm the theoretical findings.
-
-I realise that maintainers have to cherry pick patches or the kernel of +35M lines
-would become way too cluttered and unmaintainable.
-
-NOTE: The numbers are only valid for a x86_64 system.
-
-Regards,
-Mirsad
-
-SOURCE AND REFERENCES:
-
-Synchronization (Source: [1])
-===============================================
-instruction	operands	ops	latency			
-===============================================	
-LOCK ADD 	m,r		1	 ~55
-XADD 		m,r		4	 10
-LOCK XADD 	m,r 		4	 ~51
-CMPXCHG 	m8,r8		5	 15
-LOCK CMPXCHG 	m8,r8		5	 ~51
-CMPXCHG 	m,r16/32/64	6	 14
-LOCK CMPXCHG 	m,r16/32/64	6	 ~52
-CMPXCHG8B 	m64		18	 15
-LOCK CMPXCHG8B 	m64		18	 ~53
-CMPXCHG16B 	m128		22	 52
-LOCK CMPXCHG16B m128		22	 ~94
-===============================================
-
-Explanation of column headings:
-Instruction:
-	Instruction name. cc means any condition code. For example, Jcc can be JB, JNE,
-	etc.
-
-Operands:
-	i = immediate constant, r = any register, r32 = 32-bit register, etc., mm = 64 bit
-	mmx register, x = 128 bit xmm register, y = 256 bit ymm register, m = any memory
-	operand including indirect operands, m64 means 64-bit memory operand, etc.
-Ops:
-	Number of macro-operations issued from instruction decoder to schedulers. In-
-	structions with more than 2 macro-operations use microcode.
-Latency:
-	This is the delay that the instruction generates in a dependency chain. The num-
-	bers are minimum values. Cache misses, misalignment, and exceptions may in-
-	crease the clock counts considerably. Floating point operands are presumed to be
-	normal numbers. Denormal numbers, NAN's, infinity and exceptions increase the
-	delays. The latency listed does not include the memory operand where the listing
-	for register and memory operand are joined (r/m).
-
-[1] TL;DR https://www.agner.org/optimize/instruction_tables.pdf
-[2] TL;DR http://www.rdrop.com/users/paulmck/scalability/paper/whymb.2010.07.23a.pdf
-
+Does this also mean that there is a general problem with unicast 
+packets, and that broadcast packets happen to work by accident? Could 
+you check whether a broadcast ping (ping -b) size sweep is immune to 
+what you are reporting?
+-- 
+Florian
