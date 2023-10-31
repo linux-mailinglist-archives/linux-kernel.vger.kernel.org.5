@@ -2,131 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DAE7DC40F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5127C7DC41C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjJaCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 22:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
+        id S230417AbjJaCCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 22:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJaCAu (ORCPT
+        with ESMTP id S230084AbjJaCCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 22:00:50 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8A8EA
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 19:00:47 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5b856d73a12so4117625a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 19:00:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698717647; x=1699322447; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ysFHtwfLEtis2HEwrxQHDKnfNsPImE2g/7GGtzNp+Cs=;
-        b=RA0zuQurBpzYYfjoncjl1kshFj3iAGNIw3NKTxySaBBPtVj/wd5SKoIIAEqT071n2g
-         u8J8MlnD8DYzzR4sOIQPxbwdVqRqjyN1CPa2FTv+5p0A6cWkQqe9e5/wx7ZoTZre/dws
-         n6YeCGYiyXr0yQYwjly+z4aEl4jxOH/7s1dtkQ7y7hoyy7/7jUM0j5ddNVd+B/zJadk+
-         sb1a++EwzSH11of0XYBZmkazOmcCqjL4Exyyk7ZJHvpsCehjyowvTW8DWITyYOvg6fUw
-         sr5RJmpYKdB0yuSm6ixVX0ixxlNR3G2v9EyVqHnquwekNJ0sboVSZB30lCkWvcA1EI//
-         Nziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698717647; x=1699322447;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ysFHtwfLEtis2HEwrxQHDKnfNsPImE2g/7GGtzNp+Cs=;
-        b=PyIYajQixLu5pQy9esCYQ7bw0kWrJzi1vH2nrp5volffu55SEZ8z3yoO+GsGen2Ntp
-         LcRcqzi8TbyQIRmGFIgO+IgZZ2pQp6rBUgLI/ICbmhfry70/dskqZLZT7H6Ra+CO1Exc
-         YLWOl94NlIU/DHVoTEWJWr5n7Bn9zWS7qaOA2pEgaG5C8lBC7LW21msyLUWrTOvJrqyr
-         Z9GBwmTixRqIWigFi8Q+xNjniT5Dictm3tUyAU0KshlueK0C9ApY5qz7pxSIZAChgUJm
-         5aOrxjK7Nr89JfJk/VBbcNsrnTo3wrl9LOXCyjC2kzPlCLL6WFK73MSfM6umYo4UFs4Z
-         KDfg==
-X-Gm-Message-State: AOJu0YzXn3egOAqPKRGiXr1UcW95ua+/OKWBacHc2vXRXNiEWvt8nqAz
-        QKPFt8cR7znqjGPmxpnyYyw+vg==
-X-Google-Smtp-Source: AGHT+IEf0KaLXQATJy7Y+aQfRDpTBjnOxd6k1XM+fNDmCwu9+0PAZyGarOs4HgtrLS/PIbK2VfXdgQ==
-X-Received: by 2002:a05:6a20:a220:b0:17b:e0a3:f6f4 with SMTP id u32-20020a056a20a22000b0017be0a3f6f4mr9170362pzk.25.1698717647083;
-        Mon, 30 Oct 2023 19:00:47 -0700 (PDT)
-Received: from sunil-laptop ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id b17-20020a056a000a9100b006934e7ceb79sm159585pfl.32.2023.10.30.19.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 19:00:46 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:30:35 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Haibo Xu <haibo1.xu@intel.com>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [RFC PATCH v2 11/21] PCI: MSI: Add helper function to set system
- wide MSI support
-Message-ID: <ZUBfw2vrzc+GyAny@sunil-laptop>
-References: <20231025202344.581132-1-sunilvl@ventanamicro.com>
- <20231025202344.581132-12-sunilvl@ventanamicro.com>
- <87a5s0yyje.ffs@tglx>
- <ZT/t0UY5rbudhjfH@sunil-laptop>
- <874ji7zz7a.ffs@tglx>
+        Mon, 30 Oct 2023 22:02:22 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 3059CFC;
+        Mon, 30 Oct 2023 19:02:18 -0700 (PDT)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 6E688602A9D36;
+        Tue, 31 Oct 2023 10:02:13 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org
+Cc:     Su Hui <suhui@nfschina.com>, mike.looijmans@topic.nl,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] clk: si5341: fix an error code problem in si5341_output_clk_set_rate
+Date:   Tue, 31 Oct 2023 10:02:00 +0800
+Message-Id: <20231031020159.587686-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874ji7zz7a.ffs@tglx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 08:29:13PM +0100, Thomas Gleixner wrote:
-> On Mon, Oct 30 2023 at 23:24, Sunil V. L. wrote:
-> > On Mon, Oct 30, 2023 at 03:28:53PM +0100, Thomas Gleixner wrote:
-> > Just noting related discussion :
-> > https://www.spinics.net/lists/linux-serial/msg57616.html
-> >
-> > The MSI controller on RISC-V (IMSIC) is optional for the platform. So,
-> > when by default pci_msi_enable = 1 and the MSI controller is not
-> > discovered, we get stack trace like below.
-> 
-> <SNIP>
-> 
-> > So, what I did was, by default call pci_no_msi() to disable MSI and then
-> > call pci_set_msi() to enable when MSI controller is probed.
-> 
-> Your taste sensors should have gone out of range ...
-> 
-> > But I think Bjorn's suggestion to depend on PCI_BUS_FLAGS_NO_MSI may be
-> > better idea. In that case, we need to set bridge->msi_domain to true in
-> > pci_create_root_bus(). Let me know what do you prefer or if I am
-> > completely missing something here.
-> 
-> That's definitely more sensible, but as I said in the other thread, Marc
-> is the one who did the PCI core/bridge setup magic and he is definitely
-> in a better position to answer that bridge->msi_domain question.
-> 
-Thanks!. It looks like Marc introduced bridge->msi_domain in [1] for
-exactly the same problem we have with RISC-V + ACPI. Let me remove this
-hack and do similar to pci_host_common_probe() in next revision unless I
-get objections to that approach.
+regmap_bulk_write() return zero or negative error code, return 'err'
+rather than '0'.
 
-Sorry, somehow my script didn't copy Marc in the series. Will make sure
-I copy him explicitly in next revision.
+Fixes: 3044a860fd09 ("clk: Add Si5341/Si5340 driver")
+Signed-off-by: Su Hui <suhui@nfschina.com>
+---
+ drivers/clk/clk-si5341.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1] - https://lore.kernel.org/all/20210330151145.997953-12-maz@kernel.org/
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index 9599857842c7..9b1cc5a83b5b 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -898,7 +898,7 @@ static int si5341_output_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	err = regmap_bulk_write(output->data->regmap,
+ 			SI5341_OUT_R_REG(output), r, 3);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ static int si5341_output_reparent(struct clk_si5341_output *output, u8 index)
+-- 
+2.30.2
 
-Thanks!
-Sunil
