@@ -2,185 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302117DCCFF
+	by mail.lfdr.de (Postfix) with ESMTP id 8879B7DCD00
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344250AbjJaM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
+        id S1344245AbjJaMX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344124AbjJaM1e (ORCPT
+        with ESMTP id S1344165AbjJaMXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:27:34 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2077.outbound.protection.outlook.com [40.107.8.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE9D97;
-        Tue, 31 Oct 2023 05:27:31 -0700 (PDT)
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=fail;
- b=IqQZninKB2vqGHEeBuomgvtjoOu2wXIjTdN8aK5yXkLN6/ZtXu9skSA83hC9cqyP9mLHMzRT/l+uZK3Cx1EFCvV4gRGrw18+1F93jylhO6QVcDbHeCXf3UgI8WFf03MWOF5pT7yWvmAeHVTWsiCCaGBzRV6msRaufif6sRpCGUeH3ud9BsBgQc45ou/NTiuqOWUi95om9qE87uuCrDLbg/Y04BO6Dzy4Xto0934Y3CU9bbqEKvg733Y6P8hvQpKW3dv7AJZGZ9kyPuITYBBpD3WXbRA00vGzsaMlhzigsAprhvg526F5uOE//CcFnd3DdsIfJG2LKwibBdRIAJixVw==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9mK4CcJp4+wmlvTuNwph8ardOz5tdSWbEZhLlMdtD1c=;
- b=nGnoXMqen6SCE17B7+j+n5Q9XoFmNX/0GSjLwcIq+z3lr4qHn6gjeb5Hkm1n5kdn2FCfjQG+tv0HNO4jHZtnt2mYeZJ6uTv609xWwHTR+dZge78FOP/OKE/1HwY8ER2N6qlmwm5H2pNUGGQiOtH4lWaYng7mw/bmJ2LcE2s7ZfHj69mIX84VuyBfZydW+/INcOEKImUZ0kWUOjhUXnKcZ58Qrwt4uFE8P93D4/Sz4OSexVTIjw7RCrQDzagNTMr6zgtmm++2WXAcp1fo5AdeYI+rLaGo4h5oF9scUP1+oTEPBxyiWll9Q9NtdxTZB24ZM17fBxEsbLv70wyjTPpvnw==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 13.93.42.39) smtp.rcpttodomain=nfschina.com smtp.mailfrom=topic.nl;
- dmarc=bestguesspass action=none header.from=topic.nl; dkim=fail (signature
- did not verify) header.d=topic.nl; arc=fail (47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mK4CcJp4+wmlvTuNwph8ardOz5tdSWbEZhLlMdtD1c=;
- b=Y+mHEaivWu9VK+DfA0r+184rLNIV7WYzl3jwrnbCgE7kSbo/ZgNF7KH+g/TBED07EQ3ZV2apgM4NAfBbZXYXqmRY3g9mP0BTxsc5EYRYxa7rCGKchojevWOKCongXeMdGrBt6lj9xcF7lThEs645H04cGsxVJgWnxCToFGcqUD/BOaVZ7Nnp82S2ubpcmLu2Va4DMenIKGDIC9GMGIiDGi7aQ/mzlJF2EImKmay3MwlaY22Ez5IvLJK7Sg6+uQRqzgX5ZEu0AfxR7J8c0MgdPsoBbBb7UiP2wurmfZzNwjeaa7iiqYwbyJq0tRMlFgcRjVlYQWMCkLIyGqmyXHZwEg==
-Received: from AS8PR07CA0043.eurprd07.prod.outlook.com (2603:10a6:20b:459::12)
- by DU2PR04MB9099.eurprd04.prod.outlook.com (2603:10a6:10:2f2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.17; Tue, 31 Oct
- 2023 12:27:28 +0000
-Received: from AM2PEPF0001C70A.eurprd05.prod.outlook.com
- (2603:10a6:20b:459:cafe::b3) by AS8PR07CA0043.outlook.office365.com
- (2603:10a6:20b:459::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.15 via Frontend
- Transport; Tue, 31 Oct 2023 12:27:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 13.93.42.39)
- smtp.mailfrom=topic.nl; dkim=fail (signature did not verify)
- header.d=topic.nl;dmarc=bestguesspass action=none header.from=topic.nl;
-Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
- 13.93.42.39 as permitted sender) receiver=protection.outlook.com;
- client-ip=13.93.42.39; helo=westeu12-emailsignatures-cloud.codetwo.com; pr=C
-Received: from westeu12-emailsignatures-cloud.codetwo.com (13.93.42.39) by
- AM2PEPF0001C70A.mail.protection.outlook.com (10.167.16.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6954.19 via Frontend Transport; Tue, 31 Oct 2023 12:27:26 +0000
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (104.47.51.233) by westeu12-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 31 Oct 2023 12:27:25 +0000
+        Tue, 31 Oct 2023 08:23:25 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2041.outbound.protection.outlook.com [40.107.6.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C0BA2;
+        Tue, 31 Oct 2023 05:23:22 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LUvAjiT/J11XEd6Na/T1FuD7wF8vxSW+6P5ohYfYKXa5NxygjVkaZVFsf7ty65J9Ra/q7xBouWwzy0PpDAH+FA/F4DkUs/dnCSteBXrvKlYgcqtF/QZwP+EQVBEOJZJv7vZvMQ0KZuu2P+ch/8C1VWMC2/1NMkYf0wC7Etjb5LyH4/4/NCrVtIdeh+wJ9GMiThRNe/fsBwbG6fRNUs+T9xDy2CdMuMQ2TtzOmDNPqGYZQd03P3FMEuvLKyTNQm3hTTSJKPwun6OV3H7qYn4HOV3FcqGmLE5lS6Ro+P4A6IfMNPyopxNWHmPMYvIx0Ia1lCS1LooU5cRBaZpnLWne8A==
+ b=B6C1rOafQR8/tJKrNytGcRe4wZTsnp94S3pbtBhAg/5vzI//mL4x5tHNCATMpD4n7Ap3K1aL78asl5ifBEcA+Gc/I+7YbP8JKGlTQbK35p3u0K/sJYVqyPFjIitvRok6a+1+4G/TRt1mxVLf9dD+BFze6D9l+t3RWiZjGKKa/xRqDveHvCY65+jYbWivepqIxXva+FqB1qalUkpq2Zuc59LsS/wGdCzBAcyQSZIqljouau6YYywBffbst9N2fuT4P4fHTF1R49Hc+4xoIvYN5FCebl1WmnZb0jIObkmKzB3sZ6tO5S/x+i5arUivBzV1qcqJo93gHn1iy7PhX8zruw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wAjAVGdx5QH3LxEkjOOgoV6ZqVizLXLnEfWGdPhjmS0=;
- b=oX3kvis1q3SImNv8I/2V4451bscMqBs41A2O7Mgz9oQ0oQNz+LshDI2igWy8swENrwLtIY0GpH9YVWLBRGg3vO8yBVLHvGqbwgZglxVpOAab5yjOpQJ36zBTXzAr4xVj/Q5b99xSFHLmmszUhyCtGgyLjme2CiMYKkggS+MikpXqsA4jSWmgbObK2y279teIIopPpZVtSbHTEz15wHw/seydX9nDau53sWRWEwZywWLsQnSCQLtmAJfJYfMehEv4bWR4YPfKzSF5BaGRs5yVTu1fnwCixGpfpBvmYPU/3qhnzMU7q5xBjCoPkeOBJsTDtCxKN/hL1rBSZystOQf4vQ==
+ bh=SbWuE50dOnZ5CeLlA2h9bekBJeYdoUnPU++PS7067hQ=;
+ b=XXJRTKTBVfBKurb3JnKo2CaM4r1sDuiBceaP6XIJka2wWoHyTDAmJ94Xq5V351AhTZEJ/1RWMac21Jm6BNBzEgvtH+pRQK6zE0A/fB8JcIcP8zqetENdqUjaYdQzvsEgS4f9f57CsJo0CYLItLW6hcGA6pb9l3nXWNz1A4Sm1hx3+ASi2vXhi2qBD0FBnRfw3+EK3enxbCo8VPjzGK/UbBmFBturrjs/zIhiUDJVuFwTS6WBkf/zE9dTRMiiCWQgQKle2uB7D6ElAf/J+4hbNyV5CDGdR4ZD8jtJtR0JMznxGzY5C81j3EYBxvE2Db7u8Gk/aPtA2L5/HBWgIZId3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=topic.nl; dmarc=pass action=none header.from=topic.nl;
- dkim=pass header.d=topic.nl; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wAjAVGdx5QH3LxEkjOOgoV6ZqVizLXLnEfWGdPhjmS0=;
- b=uDIgxu0RDwlXw0+ywBuT4s3tEVvbqE6oZLzFzvbjsgC+fzgNyP9r8UAAlgB8vbldtuBhd2DlJWWRN+VY1tqRlqYsj0Y0fMQLtjvi9wZ/DPFAVtJZ5Q0AwszFzvqx4e2Jdf0PQmZu9JKZ77CS5prTYqVnEQm3R0I7F56/o/aillLGPQ/A8VwJ62cxT5gYyF6vyGeKmtFFWwuE2NeHMWMv6vaVA2kVutv82Om7v/+Dns4vLDFYbIg5c5BhcgXz5OUeN/JoGHuN1S3CUlDsvhVk3Bgdb1ndamO54BSEBKoWm/IU3QbNydrKqPxpwwNKBJnN9mTp8zCJFazu97esQmZsRQ==
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=topic.nl;
-Received: from VE1PR04MB7471.eurprd04.prod.outlook.com (2603:10a6:800:1a7::11)
- by DBAPR04MB7368.eurprd04.prod.outlook.com (2603:10a6:10:1ad::19) with
+ bh=SbWuE50dOnZ5CeLlA2h9bekBJeYdoUnPU++PS7067hQ=;
+ b=J4t8rD5tuy0NCn4mMpNoufahr/EpnuMU8G5EmAB9oTBfotWKm3sWHKpSMeSyc0lmBBpAqqujf0OFllcUNMva6kuVD2TLju6GdZioHHxpvS4F7/OP3xwW2K0P1aucpOwg0ZVz6cqGEsjMtOy0G/D5DWyMdteBwdz0ZWzvngqoLZU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB7845.eurprd04.prod.outlook.com (2603:10a6:20b:2a7::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 31 Oct
- 2023 12:27:23 +0000
-Received: from VE1PR04MB7471.eurprd04.prod.outlook.com
- ([fe80::e398:b6ba:35a9:cde0]) by VE1PR04MB7471.eurprd04.prod.outlook.com
- ([fe80::e398:b6ba:35a9:cde0%6]) with mapi id 15.20.6933.018; Tue, 31 Oct 2023
- 12:27:23 +0000
-Message-ID: <b5b3abbd-1551-34ac-65b4-4fb14e24d3f2@topic.nl>
-Date:   Tue, 31 Oct 2023 13:27:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-From:   <mike.looijmans@topic.nl>
-Subject: Re: [PATCH] clk: si5341: fix an error code problem in
- si5341_output_clk_set_rate
-Content-Language: en-US
-To:     Su Hui <suhui@nfschina.com>, mturquette@baylibre.com,
-        sboyd@kernel.org
-CC:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20231031020159.587686-1-suhui@nfschina.com>
-Organization: Topic
-In-Reply-To: <20231031020159.587686-1-suhui@nfschina.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: AS4P190CA0018.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d0::11) To VE1PR04MB7471.eurprd04.prod.outlook.com
- (2603:10a6:800:1a7::11)
+ 2023 12:23:18 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::50bf:dcd6:885e:32c4]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::50bf:dcd6:885e:32c4%4]) with mapi id 15.20.6933.011; Tue, 31 Oct 2023
+ 12:23:17 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     sudeep.holla@arm.com, cristian.marussi@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ranjani.vaidyanathan@nxp.com,
+        glen.wienecke@nxp.com, nitin.garg@nxp.com, chuck.cannon@nxp.com,
+        Souvik.Chakravarty@arm.com, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V1] firmware: arm_scmi: clock: support clock denied flags
+Date:   Tue, 31 Oct 2023 20:27:34 +0800
+Message-Id: <20231031122734.1371524-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0040.apcprd02.prod.outlook.com
+ (2603:1096:4:196::6) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7471:EE_|DBAPR04MB7368:EE_|AM2PEPF0001C70A:EE_|DU2PR04MB9099:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4338eca5-4d78-4af9-607f-08dbda0cbe4c
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB7845:EE_
+X-MS-Office365-Filtering-Correlation-Id: de56d880-22c0-4993-49ca-08dbda0c299f
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: LwVPB9zk5oLmykwmRAbu3Q/9GIBrS8wbs4KcFV2JOxwLgnv1x/DSogOLOyb3/a7JuwkgOQ0OF7j6lUXsmof1zHMXo4WFfdabwKVQWLkHrWxFA0UXNcQQ2v34OGyJ1RFyZdlC7KwJXJggUOyQDrLUCUSyRfVxkA1qWqvIhfIwnmQYxF1rr0YsoGsDhD68SP4BvGYcg50/6WESElH4o2TI9gbPru1KbHou0DfxrRRW1R7/KaDH6CYD4olNv8uEmdK27NOzNlIWaCWoKktfoEtjYb806bc7/x2tMevT7mcMHkupC5HGpVVAZBURSb8ccOqS8vKej1i9uBNuD9/t55fBaTMaDaFR9TU/UODun5BbA9RLBGKKcbfPzwdroSThKVwdyM6JL/fhf3PHTLMBxFi4M1ARIoMdmf7jD+ctYesdayQprBbPUQRH4an7HIeiTF6g3s6gAQ983NDhHaWegd9xtplvlYB/Fv4dSbQ5sZ61KCo7+Jjn0E+yeEMRPLirlSB+3It9JGAc9OyNRr2j5T6yfNCnq2enrB1Ncrozs7ndgemsRoE7F6I8mOziws4Vhwia032SnTwpeHxwAqBjmnfBQH8orj0U12bYTp/gJDAcJlU4PzSJsyOZapxfLfjjwupWHMiIDXbVw5nRwEVXe5F1HQ==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB7471.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39830400003)(366004)(136003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(26005)(6506007)(2616005)(6512007)(53546011)(478600001)(9686003)(52116002)(83380400001)(36916002)(38100700002)(2906002)(6486002)(31696002)(86362001)(66476007)(66556008)(316002)(8936002)(4326008)(8676002)(36756003)(41300700001)(66946007)(15974865002)(5660300002)(38350700005)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7368
-X-CodeTwo-MessageID: 0bd4834c-02fa-4747-bae5-8da0e61484c3.20231031122725@westeu12-emailsignatures-cloud.codetwo.com
-X-CodeTwoProcessed: true
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM2PEPF0001C70A.eurprd05.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 1b730248-a5d8-4c01-ea79-08dbda0cbbff
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3ephGz5ozVnNksIX87Sxi9fx2p7g2HJie59wndjAtJnMLYAnjPhu5Z9a4REj9FBuCTkkLD79GBSyKh1SzlGGFEBQrE3dBxFrct1+JzYRuyd7mkKj3uSOlxG9ggvwWtYefCzEmiNXOBgfCb0+WSocE74JJRd4BSwLP2JE7TMlOhPmJz79iJhzLhbocBn+2V3W2MMcEJRQtKulevupgxCqg/9pZndDsE7yLOmqdVj9IAHENCewVHKcoJzarQu5UvXdHZtl6ff78hwJWDr1LGGwVJFPrGAfTQlyZIQaQYq8+1o0ZL7Z9EtTH/gS9l6mXLr3QlEXN4/h0wouYHSz607cZNAs25hr87iA5GEv0odi/2N4M29DeO7WGDrTquwB7QKV+yD0B0Vc9l/lcTzicUt3g0ot1TKDzkcdFKfAiUtRNV3jgYXIHL7bFsN0nIaY4ctDRldfeHOErbn8EdGdWicyKMTcNbRl4MCDckH6F+N9aES423MiWP9zlRlsjVXJYfWUCumsvJTHO6Czo61oqMSzgN+JjsJE5njPZ/y/bmqsoFJtLlcEpgRaqL+Fbj4Jyp9YuSQdxMPxR3/XReIae5seiX4Z5055/bJF4PgBYJ+GJS+2r3wUbYr7tsp2GPShUIwSiN/AfR5FykTv+NfRBR0mU0VpSULeQr3ZG4suKQKPDNf73/M2lTK5Bwxm74Whusl2YcKY7STejwGhUtjRHGrVLq3XczGsEaNe+hlvtVap9OrCsqv1ejwohu3D5VAZCl1GJuLI/U1q96b5CWOjmYpJXg==
-X-Forefront-Antispam-Report: CIP:13.93.42.39;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu12-emailsignatures-cloud.codetwo.com;PTR:westeu12-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39830400003)(376002)(136003)(230922051799003)(186009)(82310400011)(451199024)(64100799003)(1800799009)(36840700001)(46966006)(356005)(7596003)(7636003)(6486002)(70586007)(70206006)(31686004)(47076005)(6512007)(53546011)(36916002)(6506007)(36756003)(478600001)(26005)(83380400001)(336012)(2616005)(4326008)(316002)(8676002)(8936002)(5660300002)(15974865002)(40480700001)(86362001)(2876002)(2906002)(41300700001)(36860700001)(31696002)(43740500002)(18886075002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: topic.nl
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 12:27:26.9727
+X-Microsoft-Antispam-Message-Info: I2ynTEBpt3XkedqHp8llhARtS/d5JnohTU7XwS6X0pnYtwyayOVuOIv18XcREwAxleuQSTj26NWVNtN3zTDnkMuxiwt5IyxUTojW7csTbu0vURh9tql395+kI36KGDooVM0yVH7TXXbnv1qVwcaCKLC0PAGBl+Rsw2qLeh+vt3s7951dXkfHZ0P7NTF9IzkHH/9ZOjNixCjhpPVDe1genPifS19uonuCKNeo+6TD1NUsvda8YnNGZp4Se3Vt8ut4wqWP2vOr31oFmiXasGD/RRbEAXj1SZhi4h7tg4rM8fRertZgw66Yb/f9TZdUkdGITx3hwCs8xidSXVfcSUoD+/GnTvtcUXfPkCNAzEect9JUD/t9RdbPwkew0FyHBTxRPwrY0Y3NTKL97XzpiynJYGjHGB2Dbp29tFsphjzLpPJFblvvUq4ThIy+q/IvfWUGfTqgp1y5+NJ0T5Jxn1YS2Z0cu5GLyCrr58MoRA/zrm53jYD20ETpZlE4PbqjOG/A7kZauYXo+RXHFUiBay7dc8BCb1PtrIgIL+raG8132uP5EKFrmPWDA36yNQ4Yc7ZqJRb1ZdvxBTzylQTjpACxajS/24YsS/SMEfXWfoemaUeF9gKLfX1RAfBV7u5wi9MW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(136003)(366004)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(2906002)(1076003)(6512007)(26005)(6666004)(52116002)(6486002)(6506007)(66476007)(4326008)(66946007)(478600001)(5660300002)(41300700001)(8936002)(66556008)(2616005)(316002)(38100700002)(8676002)(86362001)(83380400001)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b5C/gKs+wKhrlpMcxr0Sy02mW0GT2oDi/vpl5yp2RZGJmLjUG1Xb4koEpx15?=
+ =?us-ascii?Q?maBZ2bnsmuO7XO3bofvXJdotXxoNGqJx7Y3o0SxpIHXPMSP29896EXJ44C1a?=
+ =?us-ascii?Q?6Fn7jUhcIHSIT+LJKIio3pgtREClB8GGJtfS1MbLkuGedDOOpfWbA8KnLqtX?=
+ =?us-ascii?Q?AvRM/C2PeGYl2bqOXVWP0b1Z6aEBH/5jpixb7gwePx1mFYYhg9JududkEr3J?=
+ =?us-ascii?Q?V+Ocms59c7hnj/OpYOwH6eJFCoJZyOsIJSbPQqVhEUlXu5G3rIeu1SzrQkBR?=
+ =?us-ascii?Q?egBMGcDy+/mjq01+limYF7P4tYvR/2rSK5HSDXKi5DHpXFNbPSrZFe16ptsv?=
+ =?us-ascii?Q?wEw0yJS685R+tA1jgRO/L5Er/FpON6nen400mG8+8yuScHAr4xJclQTgGShH?=
+ =?us-ascii?Q?AeodluZIx25AvmnaaTgWPcWSaPF6SQXGBj+XvbFOwFjpD8X5c767s7JN3xCd?=
+ =?us-ascii?Q?KAT3aXrdTib+72iVn+EuYfYIIVumWDk+8+ObL8Ak/AaOM046+HzjKrhTUolA?=
+ =?us-ascii?Q?KJXmkOXuIfOb8wZN+WaW9T2dTAgcliTn5J/L2ktzA8jIYh8DGRt4UxyGYf8Y?=
+ =?us-ascii?Q?hoc73qFT4WDivC5bOcxcAlzxfGUfwYDvqudBK4hihs9DWmzozFkiBvmH0/ue?=
+ =?us-ascii?Q?ko/P2Py0GK0tIqqrDOZeWfwqccPvdYXTjJMxkuV1do2YDRUDYtsW+tt01jP3?=
+ =?us-ascii?Q?Vfjb5f0/Jah476DFtOx7KpAO1L4NqP7njlXCRDXgRs+dhSKBI2EuE1HujrdK?=
+ =?us-ascii?Q?CIBtsRv1mhXzKTXgH+1im3JtOTubos0eXNFYkUTsm/rBaiV5SWrWgvXcmv/G?=
+ =?us-ascii?Q?6GWdyqI2GMu9ZHWnHb6msgAL633o+lgA6YztAjWx2Vi9e4DN9EXmJ/MoZPSA?=
+ =?us-ascii?Q?aYV62AH+XYHm7PHVyrK71D2SUCz7LMduujK9aRGTQ+1FxrO49o57rqAasW9M?=
+ =?us-ascii?Q?S3wtvL/E4LqAx+cvnnN9iRR2OWigUZpS9ze3POdlxzayghlRlaR4xx0W0TLT?=
+ =?us-ascii?Q?K0XyZsDUsiDkCWsmJgJcSGK5jz0h+2qlhbEMcWbeXVqYly8fSnX5zS1xHARD?=
+ =?us-ascii?Q?JjAR27D7EUH/D97Duj83COQyGSoLAu6F4HVEUjddTaS3WV5x3WPQEetsPNFO?=
+ =?us-ascii?Q?DmkrYzzjlDnXcloUmNZg2vFJhZ2zmnbychMoRePqYykmq9zwgsWt5CxIJGNb?=
+ =?us-ascii?Q?o8z7+LSiyoFE0Ih6rkkAyemSXVD9IhH76xPw0Bw/O03rrtHBYd62T4IACGl+?=
+ =?us-ascii?Q?4J6EWy1wtRJH7AJ3v4Edo0b5iG0CeO5U7+DIGMpVQgQx74lc8oZU0rUHEljZ?=
+ =?us-ascii?Q?RKSZkvf6nEP/ENv3yiR9L3flzTFyZxWTTE1xf2lpepfP4STX6BrlBhQIf66z?=
+ =?us-ascii?Q?Ns4IxcLanDGAQnDsfcEU1mA194XS5NmGh4o3AXAVTSuAeVbkxQIb9FK8C4Hx?=
+ =?us-ascii?Q?Upm8uAtHDOyF6+VmWqUvKXvHEKuds4XjWs2xTUwIChKR2h6klm/XBoz8qDeI?=
+ =?us-ascii?Q?oJVO46QVsykE8B5RlT9Bez2S6gTa1gFOePW/Ep0/fU6NKEAwOI1UuAnRckbH?=
+ =?us-ascii?Q?8VyENV9zeW/NensiTarL5aYGKPV1AnCxE77O1yXq?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de56d880-22c0-4993-49ca-08dbda0c299f
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 12:23:17.9255
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4338eca5-4d78-4af9-607f-08dbda0cbe4c
-X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[13.93.42.39];Helo=[westeu12-emailsignatures-cloud.codetwo.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM2PEPF0001C70A.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9099
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QIkfnM9ZbzJC4U5UaZS8FbJm2O3ALg22mKRDvXXzeMlDK/KsMCSfz8z6+/dVx1gL1zf0KkfrgUibxI8EsDT9gw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7845
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FWIW, you have my gratitude...
+From: Peng Fan <peng.fan@nxp.com>
 
-Acked-By: Mike Looijmans <mike.looijmans@topic.nl>
+The firmware may export flags to indicate whether the clock
+is allowed to set rate, set parent, enable/disable from the Agent.
 
-One remark, maybe just "return regmap_...." straightaway and skip the=20
-"err =3D " assignment.
+If Agent is not allowed to enable/disable, directly return success.
+If Agent is not allowed to set rate/parent, directly return -EACCES to
+avoid SCMI RPC calls.
 
-M.
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
 
-On 31-10-2023 03:02, Su Hui wrote:
-> regmap_bulk_write() return zero or negative error code, return 'err'
-> rather than '0'.
->
-> Fixes: 3044a860fd09 ("clk: Add Si5341/Si5340 driver")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->   drivers/clk/clk-si5341.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-> index 9599857842c7..9b1cc5a83b5b 100644
-> --- a/drivers/clk/clk-si5341.c
-> +++ b/drivers/clk/clk-si5341.c
-> @@ -898,7 +898,7 @@ static int si5341_output_clk_set_rate(struct clk_hw *=
-hw, unsigned long rate,
->   	err =3D regmap_bulk_write(output->data->regmap,
->   			SI5341_OUT_R_REG(output), r, 3);
->  =20
-> -	return 0;
-> +	return err;
->   }
->  =20
->   static int si5341_output_reparent(struct clk_si5341_output *output, u8 =
-index)
+V1:
+ drop the changes in clock.c, add an attribute entry in clock info which
+ may be easy for extending new flag.
 
+ SPEC still not have such support, this is for discussion
 
---=20
-Mike Looijmans
-System Expert
+ drivers/firmware/arm_scmi/clock.c | 19 +++++++++++++++++++
+ include/linux/scmi_protocol.h     |  1 +
+ 2 files changed, 20 insertions(+)
 
-TOPIC Embedded Products B.V.
-Materiaalweg 4, 5681 RJ Best
-The Netherlands
-
-T: +31 (0) 499 33 69 69
-E: mike.looijmans@topic.nl
-W: www.topic.nl
-
-
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 42b81c181d68..fad4329a21fc 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -46,6 +46,9 @@ struct scmi_msg_resp_clock_attributes {
+ #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) & BIT(30))
+ #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
+ #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
++#define SCMI_CLOCK_SET_ENABLE_DENIED		BIT(15)
++#define SCMI_CLOCK_SET_RATE_DENIED		BIT(14)
++#define SCMI_CLOCK_SET_PARENT_DENIED		BIT(13)
+ 	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
+ 	__le32 clock_enable_latency;
+ };
+@@ -307,6 +310,7 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
+ 		if (PROTOCOL_REV_MAJOR(version) >= 0x2)
+ 			latency = le32_to_cpu(attr->clock_enable_latency);
+ 		clk->enable_latency = latency ? : U32_MAX;
++		clk->attributes = attributes;
+ 	}
+ 
+ 	ph->xops->xfer_put(ph, t);
+@@ -499,6 +503,10 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+ 	struct scmi_xfer *t;
+ 	struct scmi_clock_set_rate *cfg;
+ 	struct clock_info *ci = ph->get_priv(ph);
++	struct scmi_clock_info *clk = ci->clk + clk_id;
++
++	if (clk->attributes & SCMI_CLOCK_SET_RATE_DENIED)
++		return -EACCES;
+ 
+ 	ret = ph->xops->xfer_get_init(ph, CLOCK_RATE_SET, sizeof(*cfg), 0, &t);
+ 	if (ret)
+@@ -585,6 +593,9 @@ scmi_clock_set_parent(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 	if (parent_id >= clk->num_parents)
+ 		return -EINVAL;
+ 
++	if (clk->attributes & SCMI_CLOCK_SET_PARENT_DENIED)
++		return -EACCES;
++
+ 	ret = ph->xops->xfer_get_init(ph, CLOCK_PARENT_SET,
+ 				      sizeof(*cfg), 0, &t);
+ 	if (ret)
+@@ -668,6 +679,10 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 			     bool atomic)
+ {
+ 	struct clock_info *ci = ph->get_priv(ph);
++	struct scmi_clock_info *clk = ci->clk + clk_id;
++
++	if (clk->attributes & SCMI_CLOCK_SET_ENABLE_DENIED)
++		return 0;
+ 
+ 	return ci->clock_config_set(ph, clk_id, CLK_STATE_ENABLE,
+ 				    NULL_OEM_TYPE, 0, atomic);
+@@ -677,6 +692,10 @@ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 			      bool atomic)
+ {
+ 	struct clock_info *ci = ph->get_priv(ph);
++	struct scmi_clock_info *clk = ci->clk + clk_id;
++
++	if (clk->attributes & SCMI_CLOCK_SET_ENABLE_DENIED)
++		return 0;
+ 
+ 	return ci->clock_config_set(ph, clk_id, CLK_STATE_DISABLE,
+ 				    NULL_OEM_TYPE, 0, atomic);
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index f2f05fb42d28..ddf5363c8cfd 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -58,6 +58,7 @@ struct scmi_clock_info {
+ 			u64 step_size;
+ 		} range;
+ 	};
++	u32 attributes;
+ 	int num_parents;
+ 	u32 *parents;
+ };
+-- 
+2.37.1
 
