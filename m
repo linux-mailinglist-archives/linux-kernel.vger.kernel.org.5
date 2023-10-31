@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CB77DD890
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AF57DD895
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344529AbjJaWpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
+        id S1344818AbjJaWrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjJaWpk (ORCPT
+        with ESMTP id S1344196AbjJaWrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:45:40 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FD8F5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:45:38 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c5056059e0so88567381fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698792336; x=1699397136; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Soi9bdc5kWd4li1fMLa0FWIu2YUGtC28KzHNxVYSHqk=;
-        b=cVCeTWTZnL7SHP+D16KUxvBKzD/KZJD9KnuOWSuaDwiBKUsT+wf68AoVKQbwTcrSvB
-         qTpA3oHjDvpIKMWWH5q6YeEDo1v1yXofETLkAqewYETzqwLUJgjN9BUVSiBzhsG6Yq03
-         d2tf2dAb+MkvfAxAbj4uv3AqEsJM+0dKj0l5yyXyh9yaWhZoFMESxn0w4WAnBsehSfA4
-         ahAqjJ5DSxQWo8SvkcWFtat6gkDrtVXQEcp5Bnf2HbeSGKQxed46p2Gc4B8Vvzyq3hBV
-         kIjB7mMR7jmUCKL+WEU5LHBVYnJr7PtJfBQm5I+7Ox9SHk0caMT4kIWs61LYUI+oKqI3
-         sfMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698792336; x=1699397136;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Soi9bdc5kWd4li1fMLa0FWIu2YUGtC28KzHNxVYSHqk=;
-        b=tRloBXW8LS/5oyZ67uUyT4bBxlN+fVW9zamArgvRE2rmcxfaLGs8XoitSAdzX5ZxFG
-         x47BRjUp8jWrFnNSDvBILe3CDH+O1bqH06VRfwNkkHvzGJICr20CltYgfITcsAYrumYA
-         AutIIVSoZi26qBdgSI0tMowor8SygaU7M/9U3HM7Xb09sYD90dNR0wdU+2ZjhVV5+Ja9
-         TXwhLfYwJKIBZG1XBN9fVb9KKxCid5f/IToNvOMxX0+Q2CY2zcb1XpFiVSuvLBAu3Zbd
-         yhkfYz5gWIbvdxEGgmAhESQaaFq9xZeRJ+gFrcEfwz+u6rSlutzlhl9638NJ+l/peCYR
-         kPDg==
-X-Gm-Message-State: AOJu0YzlVJu6oRc+OjL208TcjrRkR2dapDay85gJSEWhPeZCVCpYJ2Nc
-        aezwBmPLx3TpN5ZECPaU2c3/jg==
-X-Google-Smtp-Source: AGHT+IGPznEGLGzU6iFpaDcchCiVWqFLM9xyWUYU6KiMgcFlh2YdEeuJahDu+93Y44rEpZxbOtgknw==
-X-Received: by 2002:a05:6512:3c91:b0:507:a04c:76e8 with SMTP id h17-20020a0565123c9100b00507a04c76e8mr13028194lfv.46.1698792336166;
-        Tue, 31 Oct 2023 15:45:36 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id i12-20020a0565123e0c00b004fb7848bacbsm39613lfv.46.2023.10.31.15.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 15:45:35 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 31 Oct 2023 23:45:33 +0100
-Subject: [PATCH net v3] net: dsa: tag_rtl4_a: Bump min packet size
+        Tue, 31 Oct 2023 18:47:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5004EB9;
+        Tue, 31 Oct 2023 15:47:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E213AC433C9;
+        Tue, 31 Oct 2023 22:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698792465;
+        bh=uW1kAs4Hu3zlaOFxuayVPq7jvgYsrqUYDI9NXhfEGuo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rNt+AXsTxLmRoM+i2Do/iF1sAU4KhXvDy83JQ+60HSLXrKTsLJVGclCtwydrwoLyY
+         DfJji34SEEEO7tyfNNa3nuB8tcNGcY+TOObTBeJC9uMKJnAz1UpJpf3LQDa7Vyd98E
+         V1RakDJsQx7tEQSQNrGcn8NDvdEvDNdQHjSNkA9jhtgurHIAGOZl7D7CqTRIKUHI4h
+         TxCvEYvOGJfWaSmHDYyeIzAGnE+KLAmHgOeKD3uTdgLkYlWtE7L4+kmYZU2QOZa0+a
+         3pLWlzJtDY/pV5peuW1mav85dJmDKCBGXsTNeucldgS3rsNcDXQJ1rk1kn1btavK+o
+         XTvrMrttx5YsQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 75B1CCE0DE2; Tue, 31 Oct 2023 15:47:44 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 15:47:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] refscale: Optimize process_durations()
+Message-ID: <a6943003-da31-4ac7-8944-c7dc06381148@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
+ <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
+ <bcd6bfe1-9891-4f22-86ad-361330e47e9d@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231031-fix-rtl8366rb-v3-1-04dfc4e7d90e@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAIyDQWUC/3WNywrCMBBFf6XM2kgeJLWu+h/iIm2mbaAkMilBK
- f13Q1YquLxz55y7Q0LymODa7ECYffIxlKBODYyLDTMy70oGyaUSXLZs8k9G23pRxtDAsNVycLr
- jYrRQmAdheai+GwTc4F6Oi09bpFfdyKJWf3RZMMGcNtp1XGulbb/6YCmeI81VleUHrvgvLguOx
- qDAqXWDk1/4cRxvLXtRgO8AAAA=
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bcd6bfe1-9891-4f22-86ad-361330e47e9d@paulmck-laptop>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,113 +63,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was reported that the "LuCI" web UI was not working properly
-with a device using the RTL8366RB switch. Disabling the egress
-port tagging code made the switch work again, but this is not
-a good solution as we want to be able to direct traffic to a
-certain port.
+On Tue, Oct 31, 2023 at 11:21:14AM -0700, Paul E. McKenney wrote:
+> On Mon, Oct 30, 2023 at 09:55:16AM -0700, Davidlohr Bueso wrote:
+> > On Sat, 28 Oct 2023, Christophe JAILLET wrote:
+> > 
+> > > process_durations() is not a hot path, but there is no good reason to
+> > > iterate over and over the data already in 'buf'.
+> > > 
+> > > Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+> > > Data is written directly at the correct place.
+> > 
+> > Makes sense.
+> > 
+> > Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+> 
+> Queued and pushed, thank you all!
 
-It turns out that packets between 1496 and 1500 bytes are
-dropped unless 4 extra blank bytes are added to the tail.
+But an allmodconfig build complains about seq_buf_putc() being undefined,
+that is, not exported.  I suspect that other seq_buf_*() functions in
+this patch might also be complained about.
 
-1496 is the size of a normal data frame minus the internal DSA
-tag. The number is intuitive, the explanation evades me.
-This is not a tail tag since frames below 1496 bytes does
-not need the extra bytes.
+I am dropping this for the moment.  Please make it pass an allmodconfig
+build so that I can pull it in again.  Please see below for the commit.
 
-As we completely lack datasheet or any insight into how this
-switch works, this trial-and-error solution is the best we
-can do. FWIW this bug may very well be the reason why Realteks
-code drops are not using CPU tagging. The vendor routers using
-this switch are all hardwired to disable CPU tagging and all
-packets are pushed to all ports on TX. This is also the case
-in the old OpenWrt driver, derived from the vendor code drops.
+							Thanx, Paul
 
-Modifying the MTU on the switch (one setting affecting all
-ports) has no effect.
+------------------------------------------------------------------------
 
-Before this patch:
+commit a1ef9b4cff53c509f412c354c715449d7f2e159b
+Author: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date:   Sat Oct 28 19:04:44 2023 +0200
 
-PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
-^C
---- 192.168.1.1 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 1048ms
+    refscale: Optimize process_durations()
+    
+    The process_durations() function is not on a hot path, but there is
+    still no good reason to iterate over and over the data already in 'buf',
+    but this is exactly what the current use of strlen() and strcat() do.
+    
+    Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+    Data is written directly at the correct place.
+    
+    Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+    Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
-^C
---- 192.168.1.1 ping statistics ---
-12 packets transmitted, 0 received, 100% packet loss, time 11267ms
-
-After this patch:
-
-PING 192.168.1.1 (192.168.1.1) 1470(1498) bytes of data.
-1478 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.533 ms
-1478 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.630 ms
-
-PING 192.168.1.1 (192.168.1.1) 1472(1500) bytes of data.
-1480 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.527 ms
-1480 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.562 ms
-
-Also LuCI starts working with the 1500 bytes frames it produces
-from the HTTP server.
-
-Fixes: 9eb8bc593a5e ("net: dsa: tag_rtl4_a: fix egress tags")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Changes in v3:
-- Do not pad out to 1518 bytes, just add 4 bytes to the
-  tail consistently when the package is bigger than 1496
-  bytes. Use a combination of __skb_pad() and __skb_put().
-  This works fine.
-- Add tail in the first if-clause and pad to 60 bytes
-  in the else-clause since they are mutually exclusive.
-- Edit comments and commit text.
-- Link to v2: https://lore.kernel.org/r/20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org
-
-Changes in v2:
-- Pad packages >= 1496 bytes after some further tests
-- Use more to-the-point description
-- Provide ping results in the commit message
-- Link to v1: https://lore.kernel.org/r/20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org
----
- net/dsa/tag_rtl4_a.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
-index c327314b95e3..9c7f8a89cb82 100644
---- a/net/dsa/tag_rtl4_a.c
-+++ b/net/dsa/tag_rtl4_a.c
-@@ -41,9 +41,21 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
- 	u8 *tag;
- 	u16 out;
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 2c2648a3ad30..861485d865ec 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -28,6 +28,7 @@
+ #include <linux/rcupdate_trace.h>
+ #include <linux/reboot.h>
+ #include <linux/sched.h>
++#include <linux/seq_buf.h>
+ #include <linux/spinlock.h>
+ #include <linux/smp.h>
+ #include <linux/stat.h>
+@@ -890,31 +891,36 @@ static u64 process_durations(int n)
+ {
+ 	int i;
+ 	struct reader_task *rt;
+-	char buf1[64];
++	struct seq_buf s;
+ 	char *buf;
+ 	u64 sum = 0;
  
--	/* Pad out to at least 60 bytes */
--	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
--		return NULL;
-+	/* Packets over 1496 bytes get dropped unless 4 bytes are added
-+	 * on the tail. 1496 is ETH_DATA_LEN - tag which is hardly
-+	 * a coinicidence, and the 4 bytes correspond to the tag length
-+	 * and this is hardly a coinicidence so we use these defines
-+	 * here.
-+	 */
-+	if (skb->len >= (ETH_DATA_LEN - RTL4_A_HDR_LEN)) {
-+		if (unlikely(__skb_pad(skb, RTL4_A_HDR_LEN, false)))
-+			return NULL;
-+		__skb_put(skb, RTL4_A_HDR_LEN);
-+	} else {
-+		/* Pad out to at least 60 bytes */
-+		if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
-+			return NULL;
-+	}
+ 	buf = kmalloc(800 + 64, GFP_KERNEL);
+ 	if (!buf)
+ 		return 0;
+-	buf[0] = 0;
++
++	seq_buf_init(&s, buf, 800 + 64);
++
+ 	sprintf(buf, "Experiment #%d (Format: <THREAD-NUM>:<Total loop time in ns>)",
+ 		exp_idx);
  
- 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
- 		   dp->index);
-
----
-base-commit: d9e164e4199bc465b3540d5fe3ffc8a9a4fc6157
-change-id: 20231027-fix-rtl8366rb-e752bd5901ca
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
-
+ 	for (i = 0; i < n && !torture_must_stop(); i++) {
+ 		rt = &(reader_tasks[i]);
+-		sprintf(buf1, "%d: %llu\t", i, rt->last_duration_ns);
+ 
+ 		if (i % 5 == 0)
+-			strcat(buf, "\n");
+-		if (strlen(buf) >= 800) {
++			seq_buf_putc(&s, '\n');
++
++		if (seq_buf_used(&s) >= 800) {
++			seq_buf_terminate(&s);
+ 			pr_alert("%s", buf);
+-			buf[0] = 0;
++			seq_buf_clear(&s);
+ 		}
+-		strcat(buf, buf1);
++
++		seq_buf_printf(&s, "%d: %llu\t", i, rt->last_duration_ns);
+ 
+ 		sum += rt->last_duration_ns;
+ 	}
++	seq_buf_terminate(&s);
+ 	pr_alert("%s\n", buf);
+ 
+ 	kfree(buf);
