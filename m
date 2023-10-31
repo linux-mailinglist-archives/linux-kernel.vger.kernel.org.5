@@ -2,94 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F8D7DD8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4AE7DD949
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbjJaW7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S234851AbjJaXeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 19:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237259AbjJaW6N (ORCPT
+        with ESMTP id S237505AbjJaW6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:58:13 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25219F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:58:10 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9d2c54482fbso492506366b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:58:10 -0700 (PDT)
+        Tue, 31 Oct 2023 18:58:54 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA74D10A
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:58:50 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a909b4e079so67949967b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698793088; x=1699397888; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cFlFdFyuZUTwVztV7JYMt/a8X940EneiCRrMOYKDV4E=;
-        b=XsiCjnwCF1KvcLp+iTsVBdm4shw3Sl4ZdEgCyyQQRt5W3HtXu3mwTqP1Ohw+h3QLkz
-         kuRUyf3LX1pxXZoGXk0MzFHPY5NYvo2tlQit3Heoyh4WJ4nYW6Gk3r6aDXjkZC+n6rw5
-         LCSFRddTi5wBmjZS5ExEQ58+oTlDbnhO90K9I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698793088; x=1699397888;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=google.com; s=20230601; t=1698793130; x=1699397930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cFlFdFyuZUTwVztV7JYMt/a8X940EneiCRrMOYKDV4E=;
-        b=g4foJKuoGWU82kcFmapKKASc+YhnwScID9nQrCcicCnoTuJhWeEosbjD8n32Hfy4ve
-         0Jd0h4NetYo6FrZFkTD57xBkXf/u+1q6SWQqq6mD3rMNEIK5+3MPCvg1eSo8rqzIjqRn
-         n8xeX0PKwRkJwJC8OUfxm6vQZW0XrHbCX3Y75L1Ge5LV8hUXzzQUTfNNsdrCRya1EEOV
-         tCkgUKEUOOnPX8PF5Etuo3txQschsHpEbItu9D5j59UQ2q0vYvbfNq4+ZnG1eIlJZMpC
-         VTkfAWK0b86zjXnphzPhRWIOXCJGlD4o73Z/dsLM2zOtonGnXcwHE5MeImGai6m7ktJI
-         bCiQ==
-X-Gm-Message-State: AOJu0YxjOvturv8HGIm2bnIFoMlbhKdJMz8tqR0gfcvL9nbBW2swuc4d
-        K8N+w9KI81V2qoeObwKiFxUpY8xUF4k5VYN3re51DN0B
-X-Google-Smtp-Source: AGHT+IE/nzsEt7WAEXruhAv5p1a07TjYvUeSAv8A5mu3kQoo8I7fc/6R8Z0ko8yUn/+nKhCZWIx9aQ==
-X-Received: by 2002:a17:906:c14f:b0:9bd:f155:eb54 with SMTP id dp15-20020a170906c14f00b009bdf155eb54mr589450ejc.6.1698793088436;
-        Tue, 31 Oct 2023 15:58:08 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id ci18-20020a170906c35200b009887f4e0291sm1600295ejb.27.2023.10.31.15.58.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 15:58:08 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9d23be183c6so534271866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:58:07 -0700 (PDT)
-X-Received: by 2002:a17:907:74d:b0:9a9:e4ba:2da7 with SMTP id
- xc13-20020a170907074d00b009a9e4ba2da7mr483778ejb.49.1698793087553; Tue, 31
- Oct 2023 15:58:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231028011741.2400327-1-kuba@kernel.org> <20231031210948.2651866-1-kuba@kernel.org>
-In-Reply-To: <20231031210948.2651866-1-kuba@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 31 Oct 2023 12:57:50 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjTWHVjEA2wfU+eHMXygyuh4Jf_tqXRxv8VnzqAPB4htg@mail.gmail.com>
-Message-ID: <CAHk-=wjTWHVjEA2wfU+eHMXygyuh4Jf_tqXRxv8VnzqAPB4htg@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Networking for 6.7
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        bh=RLwCVeVI5oZii5Igm5sOUutwRdu695KSX9ADahcPJtY=;
+        b=WFQynxQp05hnL8XhFBi04tOgCx9RA7LAFkrakJ3PFi3/AwIjeva4YGFEgByIOpI78Z
+         fbYay+aozrIbb2KAczvvO0cnIpEBpKoeC5k59g96KYyqwN26HsYtszjACaY0d1Van4Qn
+         h4tZlSQ76UApybTIGQ05hXrTMut+/WD/mzigRu/irUDfQjoGnlCW22BYRB1EEsogDlmb
+         4wcVIXwVSYoh4RKNqtkZOYcp+zqz1qJRyiMOgaxoNgRBCq0bKyUbpp30whDtdu1wZn5Z
+         sSWZEfNNN1Nmck3cJ6DGgFepKuwfYNPlYrB7yhN++eQmOzFT5KaBcNVYUGAv9YwCh7JY
+         w2sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698793130; x=1699397930;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RLwCVeVI5oZii5Igm5sOUutwRdu695KSX9ADahcPJtY=;
+        b=e5LubFdAaslw5w61ohZx5PkyKDKR7fWH0IP1GraWqqWv7jnd+r9Ac1X1uYFARAsVF1
+         69YNRQykd8xMJq9WXER+MrqqETreGhVYjz0YeGMUUMLO9I+SphMI6d5RlI60C6Ipr9t9
+         h1FBsE571ZcG4/joPw2jYj8JGfUQDWtYf6HNjtoj4jlEnAGGyYxjirm1jTeM+QrvhhO7
+         GKpgOPN4RH2wmGEStzQDGQBOr/Siqk/fRJDCg8H+/E2Tnyq+7uZgMA2+7r1K95xfl+qx
+         Z9+RqE2haClUAey5jj4nEyBEm1GsiM52FUU6iqBKrk3VdkB0NRxD2nmvBOv/16m7oGkJ
+         DoHQ==
+X-Gm-Message-State: AOJu0Yy2pTY22QOldJ+v0mSBc3nVYMMFZhUhdAYc3/X6AVsWH00+cMfI
+        st3RLTy/jhkUsF3C6Y0PzvtJTS8MHPQ=
+X-Google-Smtp-Source: AGHT+IGY1W7FwMjtaRYDRWhynFOfQZS+XHB+5i2UhMrEl2n6QjMSYZJDwmzzrnHxUM5lbBdRFIG+tKXAowY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:df82:0:b0:57a:e0b:f63 with SMTP id
+ i124-20020a0ddf82000000b0057a0e0b0f63mr291812ywe.7.1698793130060; Tue, 31 Oct
+ 2023 15:58:50 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 22:58:48 +0000
+In-Reply-To: <028f629d16377f9a7e9fd87ef9564846b0ab4ed9.camel@infradead.org>
+Mime-Version: 1.0
+References: <20231031115748.622578-1-paul@xen.org> <ZUGCPQegUeTutsrb@google.com>
+ <028f629d16377f9a7e9fd87ef9564846b0ab4ed9.camel@infradead.org>
+Message-ID: <ZUGGqOCU7TAU6c6p@google.com>
+Subject: Re: [PATCH v2] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023 at 11:09, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> We ended up with some patches pushed on top of the previous tag over
-> the weekend. So I threw in one well-validated PR from IPsec and
-> the crypto build fix. Crypto people say the removed code was questionable
-> in the first place.
+On Tue, Oct 31, 2023, David Woodhouse wrote:
+> On Tue, 2023-10-31 at 15:39 -0700, Sean Christopherson wrote:
+> > On Tue, Oct 31, 2023, Paul Durrant wrote:
+> > Any reason not to make this a generic "capability" instead of a Xen spe=
+cific flag?
+> > E.g. I assume these problematic guests would mishandle PVCLOCK_TSC_STAB=
+LE_BIT if
+> > it showed up in kvmclock, but they don't use kvmclock so it's not a pro=
+blem in
+> > practice.
+>=20
+> No, those guests are just fine with kvmclock. It's the *Xen* page they
+> forgot to map to userspace for the vDSO to use. And it's Xen (true Xen)
+> which made you jump through hoops to use the TSC that way, such that it
+> would actually expose the PVCLOCK_TSC_STABLE_BIT. We don't expect, and
+> have never seen, such issues with native KVM guests.
 
-Well, I had actually already merged the original pull request, and
-then started a full allmodconfig build.
+Hmm, and I suppose theoretically the guest kernel could choose to ignore th=
+e Xen
+interface for whatever reason.  Mostly out of curiosity, is this flag somet=
+hing
+that'd be set anytime Xen is advertised to the guest?
 
-And because I'm off gallivanting and traveling, that takes 2h on this
-poor little laptop, so I had left to do more fun things than watch
-paint dry.
+> > I doubt there's a real need or use case, but it'd require less churn an=
+d IMO is
+> > simpler overall, e.g.
+> >=20
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index e3eb608b6692..731b201bfd5a 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -3225,7 +3225,7 @@ static int kvm_guest_time_update(struct kvm_vcpu =
+*v)
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* If the host uses TSC cloc=
+ksource, then it is stable */
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pvclock_flags =3D 0;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (use_master_clock)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (use_master_clock && !vcpu->kv=
+m.force_tsc_unstable)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 pvclock_flags |=3D PVCLOCK_TSC_STABLE_BIT;
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vcpu->hv_clock.flags =3D pvc=
+lock_flags;
+> >=20
+> > I also assume this is a "set and forget" thing?=C2=A0 I.e. KVM can requ=
+ire the flag
+> > to be set before any vCPUs are created.
+>=20
+> Hrm, not sure we have previously required that the KVM_XEN_HVM_CONFIG
+> setup be done before any vCPUs were created.
 
-I pushed out my original merge. I'll pull the updates later.
+Oh, I was asking in the context of adding a generic capability.
 
-Thanks,
+> I tend to prefer *not* to push ordering requirements onto userspace.
 
-              Linus
+For per-VM flags that are consumed by vCPUs, it makes reasoning about corre=
+ctness
+and what is/isn't allowed much, much easier.
+
+> Does it need to be a per-vcpu thing?=20
+
+Huh?  No, I was only asking (again, for a generic capability) if we could d=
+o
+
+		mutex_lock(&kvm->lock);
+		if (!kvm->created_vcpus) {
+			kvm->arch.force_tsc_unstable =3D true;
+			r =3D 0;
+		}
+		mutex_unlock(&kvm->lock);
+
+So that it would be blatantly obvious that there's no race with checking a =
+per-VM
+flag without any lock/RCU protections.
