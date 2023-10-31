@@ -2,133 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2CF7DC559
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4647DD397
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236602AbjJaEZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 00:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        id S231679AbjJaQ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbjJaEZI (ORCPT
+        with ESMTP id S232529AbjJaQ6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 00:25:08 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDDBA9;
-        Mon, 30 Oct 2023 21:25:06 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V3ScT5031400;
-        Tue, 31 Oct 2023 04:24:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=vAYy4D4qjOtcU60l74QA9ANtlKZOwFC4NyU3Mci+YF0=;
- b=esjKO9ryV3rvZzOXEVt6qJDWNx2nDI82bOgH6w2DRvqpCzBSU3/UuLZyCForPBIUMftj
- uep+AFhOxYhYjmPQ39VsdmBWy5AgPblDDysR1B4lu8Pin5dCleOc+/QoswhSWtqYAq4g
- AJIs/CjKvtIhpuzi/qMU7mrAn7m2U682UgokAgjUgF1kx3OKs2Mv6YduOaxFexnef6YV
- j47AunfzefCIHzUa1v0/jx2pro5QwAAGAnIDcBP78YNnecayn6aiYseasbkvVv5714jI
- /drc7npSXEQ878u/9UkMQAanhFf8BHTTkb1905/sfYtMV8IfMjg9QfUBPxGKSlC/CxLm YA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0sw7wmsh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 04:24:56 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V4OtZk017242
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 04:24:55 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
- 2023 21:24:50 -0700
-Message-ID: <04680b40-9d2d-403c-93af-9e91a491a053@quicinc.com>
-Date:   Tue, 31 Oct 2023 09:54:46 +0530
+        Tue, 31 Oct 2023 12:58:51 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2047.outbound.protection.outlook.com [40.107.220.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EFE769A;
+        Tue, 31 Oct 2023 09:56:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GxZLTqYFiR/JTDbpKtPNHsNu1i8RoX11SBnkac0P1bLOL+JGOYTqNyAQH4sdkQeyRvi+Iyi5qtTbzg9VIOmQaDZQ6uSCkfASYbmMTrUV34eK5oLX+rtQXPh2G8fDJ3D8wdyOGcEWkmwrKy3A2OUZYR5qUiYNXZ+14qh1T6Qz4BlZWMEbLe2EAc+QgBOgjx9Aey3t2DUPRqA2DL9pjW7SfzT7f+WobMg6SpDAe9mhMVZ+53uyi0T4U3OQYgmXbvx+d8CRdGz4iy3ng7bgWtxECVO2IM7XjhgjuuuRIjSlsik/bazDvTzlCdtMdV1qgQzbvQASCbRnEdkOaJ/cnN75fA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=msg+9xgAdhPpoLXLzD5dP4hmfxNWB7eIUNanfQoyTok=;
+ b=FejL8XAkWQz+j9pL/AE+Q3yHgo2Yy/lhk6r+BerpoI6gakRRSo1B0uQkQ3kz3P035RMl89otCEpBSk8V2xfqYmDcDTTr9V7uekJSTe4oDTBNZiqnVXfQWsqTsT8kpWIEa2y8YbzB2yDiY7akIP7hSpYN20K+Vw2obzeEA1noBZjGp2gRB5StNzHHBwqv7sSYn0BgqsJI0zCDEfsMgC2YHEjWyggLttDMqcGMpSzNP9xKYz4BdByQr4xkG6zd5hmwguVjCM+sXvF7fBJDzYgXqMDBKACZSKDrfLLtELPNJ/v3e3MMrTZNIumT3vSMLbOwPJHMWK8RIRF1tH+6zZPEyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=msg+9xgAdhPpoLXLzD5dP4hmfxNWB7eIUNanfQoyTok=;
+ b=Is2Vstn4rnConKfMdSY8ZnmjycGoVq6nyVs6DDUWZlX9gvBow10z2ky4V9H3axbE4A2NbdAjiAmEQUMIIezU6ee7TrSO1WTIySl41h3qQ2yHX5M9gLdTHx4elybMFqroNwT+sijWwZjm5nylPEEt6pz7mQ8LgLmwGt8RDyR1M/Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SJ0PR17MB6476.namprd17.prod.outlook.com (2603:10b6:a03:4d5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.16; Tue, 31 Oct
+ 2023 16:55:53 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%4]) with mapi id 15.20.6954.015; Tue, 31 Oct 2023
+ 16:55:52 +0000
+Date:   Tue, 31 Oct 2023 00:27:04 -0400
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, ying.huang@intel.com,
+        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        weixugc@google.com, apopple@nvidia.com, tim.c.chen@intel.com,
+        dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <ZUCCGJgrqqk87aGN@memverge.com>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+ <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+ <20231031152142.GA3029315@cmpxchg.org>
+ <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+X-ClientProxiedBy: SJ0PR03CA0297.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::32) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/8] clk: qcom: ipq5332: add gpll0_out_aux clock
-Content-Language: en-US
-To:     Stephen Boyd <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Will Deacon <will@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20231030-ipq5332-nsscc-v1-0-6162a2c65f0a@quicinc.com>
- <20231030-ipq5332-nsscc-v1-4-6162a2c65f0a@quicinc.com>
- <ac223f97efea0d5077a4e3e4dbd805b4.sboyd@kernel.org>
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <ac223f97efea0d5077a4e3e4dbd805b4.sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 1mwe49ikGPIjr72wVEXYuhyG2YPSFk0D
-X-Proofpoint-GUID: 1mwe49ikGPIjr72wVEXYuhyG2YPSFk0D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 bulkscore=0 impostorscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310310032
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SJ0PR17MB6476:EE_
+X-MS-Office365-Filtering-Correlation-Id: 21bba189-a97c-4c83-b2cb-08dbda323deb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cpPfL93qpAcTHwJOjv4IZKVZ7pLRdDKhokM8KSS9pcTnTVfD7u2ziIwSG9uB5+wc95TyIgF1mGEXfq7PatjrOsDtEyoVGr8H6WPMtIqbjjEf7rsv/uFytKWMheKa/fv0wT1WocCnKOE3UlfXgeSUE6WdAuGUsmR7ua1iSEVADwpCKf8wtUlkO5JnBa8qKjmHbeMbDhsYEU4Dmlv+zbbbYxHnkmrQszib/hPNQkY+arfcTl1QSTJYLLfECcCTvpeQKy1e1kkDprozvx+wq5rqoX6wlepulaFQFDrPNY1Mt9rFj/KT8MINBOltugxm+FS+Mk7T5XsQNzu/jznZO0op9QjwYAvZoVZmLJSQHTc2Fbdv0WcHaOa1t9quEpBYWmOmyExqHzsQYC4xUGxyQSkd8WNurEAs8lcl4s4riBkmiolhkwJsMoRvA5TVu+atXXK8DgeTPMqoDuuhPvw2krrGkr8ryKQhW+Etitfb5L5FYqBf6wv5GLqFY9uKv5T3hGftvg5eqw+k8agF/qUL6hdYVX2hOWmpakijJSOizr6nS8ZXRPKw61r5vjsEq4VPHLiL9u5O7M4b0jxfansyZhTlPq+gA1yZlfk0lb2HSi0dkbU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39830400003)(396003)(366004)(136003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(7416002)(66476007)(66556008)(66946007)(2906002)(966005)(6486002)(6506007)(6512007)(86362001)(36756003)(6666004)(38100700002)(26005)(2616005)(5660300002)(6916009)(41300700001)(478600001)(44832011)(8936002)(8676002)(4326008)(54906003)(316002)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n6hHyL5VmSw1thS7sWgdCFikJH2JWIP7PHDo6rocPvNxisnsSGa46+VqPa6c?=
+ =?us-ascii?Q?RomZNsHUtLFYqxUZ+w0YUnvO986mTg2gQFvpSFbKLOCq/Uy5bC8CVCkJ6Dzq?=
+ =?us-ascii?Q?lFz66qtS1nrOWBChCI96Idh2X8eV3yV4zuLeiE6lIOn/khkCinRcR29eM8R4?=
+ =?us-ascii?Q?qDLXpMY40Lx5prOhJ5hWrV70IQaBvNMVZF29Mr97VuCgP99H31dbTtNjXG5d?=
+ =?us-ascii?Q?Mtxk4ZDr66Uvz5GV9ZhcjiZGNov5Vu2qSB5InfpniBL3ZTzNsYIywftSWITK?=
+ =?us-ascii?Q?mvnpE6vTY1Zm9NmJBjIZhM+Y9g8bPL1BSgJf4IsqasooaJMGvLx5c/EFKHCn?=
+ =?us-ascii?Q?aZyZdiZMQTDeYlxyBLFLMui+jitN9Y8/4RY2B+x0rujmq3iA+nzP1gKbI7Nl?=
+ =?us-ascii?Q?VJgirsucLW2c2CL+d39l+PvmU0sw3cqBRaefIja9DhoXJdLqKr+ExLBcSnYj?=
+ =?us-ascii?Q?0G9kZJtBf79WBiIljUhX/lXdi8llFuJrHj3V0xYnwbM2ohEc2+f2G6gbL2P4?=
+ =?us-ascii?Q?7te5XkqP9mCUa2ZbJhQfq7ibuo+C/l8h0nGat1Fztd7ee0GozBCjbE0djfpb?=
+ =?us-ascii?Q?ADm3OboRFHBNbHKtQe8hLcvb7Zqd9/SrpnvbLma8r+zKFGx7Bg+IP/la+Tf0?=
+ =?us-ascii?Q?q2UHCkI/kr/uLulJ5xVvSAoVopNC3EHD16f+zbxpuepjBAUyYu0H6ccOd3Oj?=
+ =?us-ascii?Q?o3bnuOWQfspHH6eRDfDfUSWjhdPgK5zPoPMo3ywLlw4odwcvrYFK06WJcKW8?=
+ =?us-ascii?Q?H8YLPA3OX7pGOJT5srTNhYMM5mhPlVkoU0PrYHlscKc8MVpbJcSgQvhc3zhD?=
+ =?us-ascii?Q?u55vVPkoJkWtD9C3q/uQl6tLlaMI61rflML+S2rBs+CX8C91eMahy65po0zq?=
+ =?us-ascii?Q?A1QbPhrbrKlqY2fVEzdksE1qVF1BMHuY6EjM/21N2tpi1pG+DtUD1se9MPY1?=
+ =?us-ascii?Q?grxLL/rAP8s8LeQYbipC3V8E11gxC0nU0gPY3K371q1lODXdKnPJg9LKz/le?=
+ =?us-ascii?Q?YrPJqEjKPXLKXVMry4YJ+CfV++GwB0DsD0CS8GlWTsbKkUXTtkgxFDugmP35?=
+ =?us-ascii?Q?I27vh+91K6uJ/mraMOQne4S9SI34IZNqn9bBhxnSlGzGgGzb3DWYfE7AHeWR?=
+ =?us-ascii?Q?e2fK4uVknihj8LPlxztnnXhMtIQIY2u8pOjwy6XsjwT2jWDA0JNd/fjgDu9j?=
+ =?us-ascii?Q?trCSbyG0Yt7QSc/xp1xIOMXzqeSQBZq05zopDD0cyXsaRfGficIC85PzAVKZ?=
+ =?us-ascii?Q?jsLoaqn3nmg2LtM0wbWHoB/tdMRDYp8pK1ksjl2WklF+PHThlbhVyblnD36M?=
+ =?us-ascii?Q?6sIhD/Tc2+9NX7oCoInItlVKUHi4KUEVuB3a/bBzFXdkPr1MrkXmpNlDDzTV?=
+ =?us-ascii?Q?1Sh8holsnIG856XkYvevts3fOwgcsg6sKas2a6gmyMDHcJqMWWFuf7+EJn/s?=
+ =?us-ascii?Q?xE1BXl1mHbvBpmxDs4zn8rtVrXgI1r787ROfHn8DEXwfuLOYW+Ad3BegRdGt?=
+ =?us-ascii?Q?UVSQkOzyywttgy+Yg0mBozqMZ/CUZh1NJWDIRpxX0oWe6EswPyLI6EuOd1W7?=
+ =?us-ascii?Q?3kRB6PbFFtmNPBnxq83wRLs1FGnkt0KrGj4MNy8qUdhGFn6lC3l8wMAjElld?=
+ =?us-ascii?Q?Rg=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21bba189-a97c-4c83-b2cb-08dbda323deb
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:55:52.7775
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1XLH9BpTeoolzLPk/hwzHl00RS26OIsOFZYXuEb11yO+imrV7Stm0Xu+7GkVZ26wCf1TQmDcQMiJ475gOarG64ZOfH4tVFLYaOQMzQkAg9I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR17MB6476
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
 
-
-On 10/31/2023 12:27 AM, Stephen Boyd wrote:
-> Quoting Kathiravan Thirumoorthy (2023-10-30 02:47:19)
->> Add support for gpll0_out_aux clock which acts as the parent for
->> certain networking subsystem (NSS) clocks.
->>
->> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
->> ---
->>   drivers/clk/qcom/gcc-ipq5332.c | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/drivers/clk/qcom/gcc-ipq5332.c b/drivers/clk/qcom/gcc-ipq5332.c
->> index 235849876a9a..966bb7ca8854 100644
->> --- a/drivers/clk/qcom/gcc-ipq5332.c
->> +++ b/drivers/clk/qcom/gcc-ipq5332.c
->> @@ -87,6 +87,19 @@ static struct clk_alpha_pll_postdiv gpll0 = {
->>          },
->>   };
->>   
->> +static struct clk_alpha_pll_postdiv gpll0_out_aux = {
->> +       .offset = 0x20000,
->> +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
->> +       .width = 4,
->> +       .clkr.hw.init = &(struct clk_init_data) {
+> > This hopefully also explains why it's a global setting. The usecase is
+> > different from conventional NUMA interleaving, which is used as a
+> > locality measure: spread shared data evenly between compute
+> > nodes. This one isn't about locality - the CXL tier doesn't have local
+> > compute. Instead, the optimal spread is based on hardware parameters,
+> > which is a global property rather than a per-workload one.
 > 
-> const initdata
-
-
-Thanks for pointing it out. Some of the clock structure doesn't have the 
-"const" qualifier. Will fix all those in V2.
-
+> Well, I am not convinced about that TBH. Sure it is probably a good fit
+> for this specific CXL usecase but it just doesn't fit into many others I
+> can think of - e.g. proportional use of those tiers based on the
+> workload - you get what you pay for.
 > 
->> +               .name = "gpll0_out_aux",
->> +               .parent_hws = (const struct clk_hw *[]) {
->> +                               &gpll0_main.clkr.hw },
->> +               .num_parents = 1,
->> +               .ops = &clk_alpha_pll_postdiv_ro_ops,
->> +       },
->> +};
->> +
->>   static struct clk_alpha_pll gpll2_main = {
->>          .offset = 0x21000,
->>          .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
+> Is there any specific reason for not having a new interleave interface
+> which defines weights for the nodemask? Is this because the policy
+> itself is very dynamic or is this more driven by simplicity of use?
+> 
+
+I had originally implemented it this way while experimenting with new
+mempolicies.
+
+https://lore.kernel.org/linux-cxl/20231003002156.740595-5-gregory.price@memverge.com/
+
+The downside of doing it in mempolicy is...
+1) mempolicy is not sysfs friendly, and to make it sysfs friendly is a
+   non-trivial task.  It is very "current-task" centric.
+
+2) Barring a change to mempolicy to be sysfs friendly, the options for
+   implementing weights in the mempolicy are either a) new flag and
+   setting every weight individually in many syscalls, or b) a new
+   syscall (set_mempolicy2), which is what I demonstrated in the RFC.
+
+3) mempolicy is also subject to cgroup nodemasks, and as a result you
+   end up with a rats nest of interactions between mempolicy nodemasks
+   changing as a result of cgroup migrations, nodes potentially coming
+   and going (hotplug under CXL), and others I'm probably forgetting.
+
+   Basically:  If a node leaves the nodemask, should you retain the
+   weight, or should you reset it? If a new node comes into the node
+   mask... what weight should you set? I did not have answers to these
+   questions.
+
+
+It was recommended to explore placing it in tiers instead, so I took a
+crack at it here: 
+
+https://lore.kernel.org/linux-mm/20231009204259.875232-1-gregory.price@memverge.com/
+
+This had similar issue with the idea of hotplug nodes: if you give a
+tier a weight, and one or more of the nodes goes away/comes back... what
+should you do with the weight?  Split it up among the remaining nodes?
+Rebalance? Etc.
+
+The result of this discussion lead us to simply say "What if we place
+the weights directly in the node".  And that lead us to this RFC.
+
+
+I am not against implementing it in mempolicy (as proof: my first RFC).
+I am simply searching for the acceptable way to implement it.
+
+One of the benefits of having it set as a global setting is that weights
+can be automatically generated from HMAT/HMEM information (ACPI tables)
+and programs already using MPOL_INTERLEAVE will have a direct benefit.
+
+I have been considering whether MPOL_WEIGHTED_INTERLEAVE should be added
+along side this patch so that MPOL_INTERLEAVE is left entirely alone.
+
+Happy to discuss more,
+~Gregory
