@@ -2,76 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F0A7DC70C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D267DC711
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343592AbjJaHPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        id S1343591AbjJaHRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343577AbjJaHPb (ORCPT
+        with ESMTP id S229836AbjJaHRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:15:31 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A91CE6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 00:15:28 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V3e4fr005448;
-        Tue, 31 Oct 2023 07:15:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=K554ekeXzlzlqvUJAA60AUYTv33JbBVg7v5lLvR/Dis=;
- b=PZx3Qot4+5pS8AtllIQ7idTPBSOJnLIPHqjbx0Wm57O912F5s7dlvbjEZX8RgtTOAeew
- TxbdB7gP7iR50zFb9TleL7AgC/mkJECoXoWJ9QpbWtnrUqZTcDw4FqgXMe0u38Iuaxp+
- IPHb8GeoFWtiUlSFcdUvBYD1IyEhmkd502lbWqSiHt0tvCXlev6UMH7XUFi5zpfLhMrr
- Ik91WW4ONzFXbO710ePz3qKOaNWNBZpmyu1SFeUnZtAn2r3/VKY/qG75ozRpxkF/HtTd
- /mm+Hf5j6g0FawmzGpdu+CT7MAYzcrJzcsfocfDHA9XLLyLswNXr6hYXpfgG4olBgJGM NA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2b2qtdt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 07:15:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V7FKBS018105
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 07:15:20 GMT
-Received: from [10.231.194.136] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 31 Oct
- 2023 00:15:15 -0700
-Message-ID: <df7d1881-2e8f-43e5-a589-cacfb26138ab@quicinc.com>
-Date:   Tue, 31 Oct 2023 15:15:12 +0800
+        Tue, 31 Oct 2023 03:17:43 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B6D1C0;
+        Tue, 31 Oct 2023 00:17:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=6VOEl
+        ouc2GMG6bSXp2UcAdff2CtTi6AX9Q0p7itVxKA=; b=hNxmtqR1fN7BA3q1g2ICx
+        VRxNm0SfZHNYL8L8HAhhbgtHVZzrPE1itUvu7NgCwp0KV49XJXkpVznmWmoByFuM
+        ZYiUfcvatLYHhxg7N8z/1ySEFYA3dV9lQPRlnpf4eOujyUP0z17QjALMBAKvGuE9
+        +Wfd3c+X9AnW5EUCrnsBaU=
+Received: from leanderwang-LC4.localdomain (unknown [111.206.145.21])
+        by zwqz-smtp-mta-g3-3 (Coremail) with SMTP id _____wBn3ojfqUBlwMj4AQ--.51864S2;
+        Tue, 31 Oct 2023 15:16:48 +0800 (CST)
+From:   Zheng Wang <zyytlz.wz@163.com>
+To:     dmitry.osipenko@collabora.com
+Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, hackerzheng666@gmail.com,
+        1395428693sheep@gmail.com, alex000young@gmail.com,
+        amergnat@baylibre.com, wenst@chromium.org,
+        Zheng Wang <zyytlz.wz@163.com>
+Subject: [PATCH v2 0/3] Fix use-after-free bug in mtk_jpeg_dec_device_run
+Date:   Tue, 31 Oct 2023 15:16:41 +0800
+Message-Id: <20231031071644.20086-1-zyytlz.wz@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Devcoredump: fix use-after-free issue when releasing
- devcd device
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <johannes@sipsolutions.net>, <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
- <2023102757-spree-unruly-dcd6@gregkh>
-From:   Yu Wang <quic_yyuwang@quicinc.com>
-In-Reply-To: <2023102757-spree-unruly-dcd6@gregkh>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uUs_JzDU1hWSXiNCcDRQKg9BkaTajkd7
-X-Proofpoint-ORIG-GUID: uUs_JzDU1hWSXiNCcDRQKg9BkaTajkd7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 clxscore=1015 phishscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2310310054
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wBn3ojfqUBlwMj4AQ--.51864S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jw4xJry8Zw1DWryDtw4DCFg_yoWkArX_WF
+        9Y9wn7uw18G3srJF4ayFy5ZrW8GFy7KF45GFZ8KFs5JFy5XFZIqF1vyrZ3uan3Wa12vF43
+        Gr4FqF4UXw1j9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_1v3UUUUUU==
+X-Originating-IP: [111.206.145.21]
+X-CM-SenderInfo: h2113zf2oz6qqrwthudrp/xtbBdgAaU2DkptftmgAAs9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,95 +58,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+This v2 series fixes the use-after-free bug in mtk_jpeg_dec_device_run.
+It inclues reverting the incomplete fix before and make the right fix.
+Also,it fixes the error of timeout-worker-schedule in multiple-core
+devices.
 
-On 10/27/2023 7:12 PM, Greg KH wrote:
-> On Thu, Oct 26, 2023 at 10:55:21PM -0700, Yu Wang wrote:
->> With sample code as below, it may hit use-after-free issue when
->> releasing devcd device.
->>
->>     struct my_coredump_state {
->>         struct completion dump_done;
->>         ...
->>     };
->>
->>     static void my_coredump_free(void *data)
->>     {
->>         struct my_coredump_state *dump_state = data;
->>         ...
->>         complete(&dump_state->dump_done);
->>     }
->>
->>     static void my_dev_release(struct device *dev)
->>     {
->>         kfree(dev);
->>     }
->>
->>     static void my_coredump()
->>     {
->>         struct my_coredump_state dump_state;
->>         struct device *new_device =
->>             kzalloc(sizeof(*new_device), GFP_KERNEL);
->>
->>         ...
->>         new_device->release = my_dev_release;
->>         device_initialize(new_device);
->>         ...
->>         device_add(new_device);
->>         ...
->>         init_completion(&dump_state.dump_done);
->>         dev_coredumpm(new_device, NULL, &dump_state, datalen, GFP_KERNEL,
->>                       my_coredump_read, my_coredump_free);
->>         wait_for_completion(&dump_state.dump_done);
->>         device_del(new_device);
->>         put_device(new_device);
->>     }
->>
->> In devcoredump framework, devcd_dev_release() will be called when
->> releasing the devcd device, it will call the free() callback first
->> and try to delete the symlink in sysfs directory of the failing device.
->> Eventhough it has checked 'devcd->failing_dev->kobj.sd' before that,
->> there is no mechanism to ensure it's still available when accessing
->> it in kernfs_find_ns(), refer to the diagram as below:
->>
->>     Thread A was waiting for 'dump_state.dump_done' at #A-1-2 after
->>     calling dev_coredumpm().
->>     When thread B calling devcd->free() at #B-2-1, it wakes up
->>     thread A from point #A-1-2, which will call device_del() to
->>     delete the device.
->>     If #B-2-2 comes before #A-3-1, but #B-4 comes after #A-4, it
->>     will hit use-after-free issue when trying to access
->>     'devcd->failing_dev->kobj.sd'.
->>
->>     #A-1-1: dev_coredumpm()
->>       #A-1-2: wait_for_completion(&dump_state.dump_done)
->>       #A-1-3: device_del()
->>         #A-2: kobject_del()
->>           #A-3-1: sysfs_remove_dir() --> set kobj->sd=NULL
->>           #A-3-2: kernfs_put()
->>             #A-4: kmem_cache_free() --> free kobj->sd
->>
->>     #B-1: devcd_dev_release()
->>       #B-2-1: devcd->free(devcd->data)
->>       #B-2-2: check devcd->failing_dev->kobj.sd
->>       #B-2-3: sysfs_delete_link()
->>         #B-3: kernfs_remove_by_name_ns()
->>           #B-4: kernfs_find_ns() --> access devcd->failing_dev->kobj.sd
->>
->> To fix this issue, put operations on devcd->failing_dev before
->> calling the free() callback in devcd_dev_release().
->>
->> Signed-off-by: Yu Wang <quic_yyuwang@quicinc.com>
->> ---
->>  drivers/base/devcoredump.c | 5 ++---
->>  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> Also, what commit id does this fix?
+1. Remove cancel worker in mtk_jpeg_remove for the worker is only
+registered in single-core device but we try to cacnel it in both
+single-core and multiple-core devices.
 
-Thanks for your comment :)
-Do you mean the commit which introduced this issue? It's from initial version of devcoredump.c.
+2. Fix use-after-free bug by delay the schedule_delayed_work only if
+mtk_jpeg_set_dec_dst runs successfully.
 
-> 
-> thanks,
-> 
-> greg k-h
+3. Delay the schedule_delayed_work in mtk_jpegdec_worker as it has same
+code logic in mtk_jpeg_dec_device_run.
+
+version 2 changes
+
+-put the patches into on series suggested by Dmitry
+
+Zheng Wang (3):
+  media: mtk-jpeg: Remove cancel worker in mtk_jpeg_remove to avoid the
+    crash of multi-core JPEG devices
+  media: mtk-jpeg: Fix use after free bug due to error path handling
+    in mtk_jpeg_dec_device_run
+  media: mtk-jpeg: Fix timeout schedule error in mtk_jpegdec_worker.
+
+ .../media/platform/mediatek/jpeg/mtk_jpeg_core.c    | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+-- 
+2.25.1
+
