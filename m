@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B117DD450
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB8D7DD453
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343729AbjJaRLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S1343956AbjJaRLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233230AbjJaRK5 (ORCPT
+        with ESMTP id S235834AbjJaRLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:10:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7085283;
-        Tue, 31 Oct 2023 10:10:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12165C433C7;
-        Tue, 31 Oct 2023 17:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698772255;
-        bh=Th4ywlyLRr/0sxbHZGZwsaz5cKdSrO4tkd9cgckdNZE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eiySwqxXDBXb8eJrdT0Q907b8uHZJAClu3lLh+zZsE1Tr3tTgOKNkoDeK7v0eS03Q
-         v1S5D6/F1Ar93gX0LVDM9JrfcuHe02duLFNplSZdvtotNL3bYg9a6cBnzvUevdXRpQ
-         gfrNCReNjaTx/VnPThSzB+G2HwHG+pWLn+bQQJsoW3LOIxc6dAeOMaDGAbJeER9Ir8
-         HV7LIQRYYXDn3ohi4joM8cQ2FRSUp58TDFvrd/40MIX1q5oetrhsINOE2WWkWw6JOA
-         2K0CeqC5CskInyezSg9LmIiE6wFQnmQsYBUcGAVqfPnYwxlZ8cL5gpHvoGpIABSh70
-         6hBwp8irRMg2A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A7223CE0B6B; Tue, 31 Oct 2023 10:10:54 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 10:10:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Matz <matz@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <e59205b8-d12c-42ba-b0c8-55103a42e917@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231027224628.GI26550@noisy.programming.kicks-ass.net>
- <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
- <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
- <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
- <20231031095202.GC35651@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
- <20231031151645.GB15024@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de>
- <20231031162353.GF15024@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
+        Tue, 31 Oct 2023 13:11:04 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB71B7
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:11:00 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40837ebba42so39086925e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698772258; x=1699377058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+hG5ETkTuNrf6KK1bB0ZgfqAbszVVBfmdYME5EdmIhg=;
+        b=PQOos9T4qPCO/8KJbW//TCGUI17gYbbPEPO+q5pC+3WDAyYgBZvG8FzlKunqrLG1Zi
+         Du5k+f/4ewcZCMn2IHcWcXWSExmnF4olXBaaDsVO+lkm3YFcMkz8+UWzSvihQKANMSMa
+         h5AZVX/OT1HuViXVdNUCFh7ROROHTOiZ9khC24FnSLICjC61Jd1SoYafGKTT6S5ZzQES
+         EWnqwmFMrbCfv61fV+e69VXvjsl+SkO/0O4ZiApKXl9YZyAi9qRA6/Z6rgk0/oqJKpvW
+         Md03qu2Di5AfLYacolbMB98Hg305/kb8uZh9iws6TtNQZrRPYKPDJ7BkYVZ/Ej+Tjjwj
+         npYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698772258; x=1699377058;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+hG5ETkTuNrf6KK1bB0ZgfqAbszVVBfmdYME5EdmIhg=;
+        b=toPt+nYX6oZ2pBBz/D9XLpNCljx+Ca14IzGcBb/JuejYjWph3Fz9URDzAWVRku3fjj
+         Qr2cuWVOYjU9Y2eE2V/APL3+SsBMuYOAK1mdcwjtcDGMX8BYNPYLZuSyBuO/mqjPgjVJ
+         r2KUHdPCKkMdI/i6YKg6eF/eky99kLA+TLSba+Co2wSpsUvC0ofK9bElxJTQrQxDGG95
+         Oyg1zlq3MMyz9zSFaM3F73EDGVFGMUQ1hMFsfSEkdwbaFNRAJ8XuGeGquCED4gO5dHPM
+         d2rP8USBizwcNxZ3Q+T/PZZsA2Ai+aUwSIyL8Ag8DWGxKh+skBiIS1CrbPBlafQIa7pY
+         295A==
+X-Gm-Message-State: AOJu0YwKCjWk9q1iqiNa9WuY+XvFO2yZ12mMuVf/ILFRkxIvHf45Zjip
+        lWPraOxpVbweg+ghuk7l845ncQ==
+X-Google-Smtp-Source: AGHT+IGWkOX2KWxdhnPOaVhZDYxwxShGQt4+bSCz+3ner/geP+bqBZF/CZeQGL2ly06Ea34s9R+Pgg==
+X-Received: by 2002:a05:600c:1d95:b0:409:375:5a44 with SMTP id p21-20020a05600c1d9500b0040903755a44mr10948586wms.24.1698772258547;
+        Tue, 31 Oct 2023 10:10:58 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id q2-20020a05600c2e4200b004064e3b94afsm2230179wmf.4.2023.10.31.10.10.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 10:10:58 -0700 (PDT)
+Message-ID: <4d30de97-597a-47c3-a58f-7034f2e91439@linaro.org>
+Date:   Tue, 31 Oct 2023 17:10:57 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] media: qcom: camss: Add support for named
+ power-domains
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, andersson@kernel.org,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026155042.551731-1-bryan.odonoghue@linaro.org>
+ <20231026155042.551731-6-bryan.odonoghue@linaro.org>
+ <d411e561-b0d0-48db-959e-3347006bce77@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <d411e561-b0d0-48db-959e-3347006bce77@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,96 +81,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:49:56PM +0000, Michael Matz wrote:
-> Hey,
-> 
-> On Tue, 31 Oct 2023, Peter Zijlstra wrote:
-> 
-> > > equivalent to that, then it can't be used in this situation.  If you 
-> > > _have_ to use a RmW for other reasons like interrupt safety, then a 
-> > > volatile variable is not the way to force this, as C simply doesn't have 
-> > > that concept and hence can't talk about it.  (Of course it can't, as not 
-> > > all architectures could implement such, if it were required).
-> > 
-> > Yeah, RISC archs typically lack the RmW ops. I can understand C not
-> > mandating their use. However, on architectures that do have them, using
-> > them makes a ton of sense.
-> > 
-> > For us living in the real world, this C abstract machine is mostly a
-> > pain in the arse :-)
-> 
-> Believe me, without it you would live in a world where only languages like 
-> ECMA script or Rust existed, without any reliable spec at all ("it's 
-> obvious, the language should behave like this-and-that compiler from 2010 
-> implements it! Or was it 2012?").  Even if it sometimes would make life 
-> easier without (also for compilers!), at least you _have_ an arse to feel 
-> pain in! :-)  Ahem.
+On 31/10/2023 10:53, Konrad Dybcio wrote:
+>> +
+>> +	if (res->pd_name) {
+> No need to nullcheck, dev_pm_domain_attach_by_name seems to return
+> NULL when the name is NULL
 
-You mean like Rust volatiles considering conflicting accesses to be
-data races?  That certainly leads me to wonder how a Rust-language device
-driver is supposed to interoperate with Rust-language device firmware.
+So I tried removing the NULL check and of_property_match_string chokes
 
-They currently propose atomics and things like the barrier() asm to make
-that work, and their definition of atomic might just allow it.
+[    9.303798] msm_vfe_subdev_init/1386 camss->dev 000000004c790a88 
+res->pd_name ife0
+[    9.317650] msm_vfe_subdev_init/1386 camss->dev 000000004c790a88 
+res->pd_name ife1
+[    9.328085] msm_vfe_subdev_init/1386 camss->dev 000000004c790a88 
+res->pd_name (null)
+[    9.330602] lt9611uxc 5-002b: LT9611 revision: 0x17.04.93
+[    9.336128] Unable to handle kernel NULL pointer dereference at 
+virtual address 0000000000000000
+[    9.350861] Mem abort info:
+[    9.353751]   ESR = 0x0000000096000004
+[    9.357617]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    9.363083]   SET = 0, FnV = 0
+[    9.366231]   EA = 0, S1PTW = 0
+[    9.368917] remoteproc remoteproc1: powering up 17300000.remoteproc
+[    9.369463]   FSC = 0x04: level 0 translation fault
+[    9.380922] Data abort info:
+[    9.383919]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[    9.389579]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[    9.394775]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[    9.395986] remoteproc remoteproc1: Booting fw image 
+qcom/sm8250/adsp.mbn, size 15515796
+[    9.400187] ax88179_178a 2-1.1:1.0 eth0: register 'ax88179_178a' at 
+usb-xhci-hcd.0.auto-1.1, ASIX AX88179 USB 3.0 Gigabit Ethernet, 
+00:0e:c6:81:79:01
+[    9.400237] user pgtable: 4k pages, 48-bit VAs, pgdp=00000001067b2000
+[    9.400239] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+[    9.400242] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+[    9.400243] Modules linked in: venus_enc venus_dec 
+videobuf2_dma_contig qcom_camss(+) fastrpc qrtr_smd venus_core imx412 
+videobuf2_dma_sg mcp251xfd msm v4l2_fwnode v4l2_mem2mem videc
+[    9.409624] lt9611uxc 5-002b: LT9611 version: 0x43
+[    9.422292]  snd_soc_sm8250 qcom_spmi_adc_tm5 qcom_spmi_adc5 
+videobuf2_common xhci_plat_hcd drm_dp_aux_bus snd_soc_qcom_sdw xhci_hcd 
+crct10dif_ce qrtr rtc_pm8xxx qcom_vadc_common qcs
+[    9.492865] lt9611uxc 5-002b: failed to find dsi host
+[    9.529472] CPU: 7 PID: 205 Comm: (udev-worker) Not tainted 
+6.6.0-rc3-00380-g7b823ffc4ec0-dirty #1
+[    9.529474] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+[    9.529475] pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS 
+BTYPE=--)
+[    9.529477] pc : __pi_strcmp+0x24/0x140
+[    9.529482] lr : of_property_match_string+0x6c/0x130
+[    9.536672] msm_dsi ae94000.dsi: supply refgen not found, using dummy 
+regulator
+[    9.543865] sp : ffff800080d8b6d0
+[    9.543866] x29: ffff800080d8b6d0 x28: ffffd06ec3419ef8 x27: 
+ffff12a54b8660a0
+[    9.543868] x26: 0000000000000000 x25: ffffd06f3cca22b0 x24: 
+ffffd06f3d8e2798
+[    9.543870] x23: 0000000000000000 x22: 0000000000000000 x21: 
+fffffbfffde0e590
+[    9.599837] x20: fffffbfffde0e59e x19: fffffbfffde0e595 x18: 
+ffffffffffffffff
+[    9.607171] x17: 6d616e5f64703e2d x16: ffffd06f3bc66bc4 x15: 
+3937633430303030
+[    9.614503] x14: ffffffffffffffff x13: 0000000000000020 x12: 
+0101010101010101
+[    9.621839] x11: 7f7f7f7f7f7f7f7f x10: fffffbfffde0e590 x9 : 
+7f7f7f7f7f7f7f7f
+[    9.629174] x8 : 0101010101010101 x7 : 0000000080000000 x6 : 
+0000000000000000
+[    9.636507] x5 : 6f63710000000000 x4 : 000000706f740031 x3 : 
+6566760030656676
+[    9.643840] x2 : fffffbfffde0e5a0 x1 : fffffbfffde0e590 x0 : 
+0000000000000000
+[    9.651174] Call trace:
+[    9.653698]  __pi_strcmp+0x24/0x140
+[    9.657285]  genpd_dev_pm_attach_by_name+0x2c/0x64
+[    9.662217]  dev_pm_domain_attach_by_name+0x20/0x2c
+[    9.667231]  msm_vfe_subdev_init+0x78/0x50c [qcom_camss]
+[    9.672704]  camss_probe+0x288/0xc8c [qcom_camss]
+[    9.677542]  platform_probe+0x68/0xc0
+[    9.681311]  really_probe+0x184/0x3c8
+[    9.685081]  __driver_probe_device+0x7c/0x16c
+[    9.689562]  driver_probe_device+0x3c/0x110
+[    9.693862]  __driver_attach+0xf4/0x1fc
+[    9.697811]  bus_for_each_dev+0x74/0xd4
+[    9.701762]  driver_attach+0x24/0x30
+[    9.705446]  bus_add_driver+0x110/0x214
+[    9.709397]  driver_register+0x60/0x128
+[    9.713348]  __platform_driver_register+0x28/0x34
+[    9.718180]  qcom_camss_driver_init+0x20/0x1000 [qcom_camss]
+[    9.723998]  do_one_initcall+0x6c/0x1b0
+[    9.727950]  do_init_module+0x58/0x1e4
+[    9.731804]  load_module+0x1df4/0x1ee0
+[    9.735656]  init_module_from_file+0x84/0xc4
+[    9.740041]  __arm64_sys_finit_module+0x1f4/0x300
+[    9.744871]  invoke_syscall+0x48/0x114
+[    9.748724]  el0_svc_common.constprop.0+0xc0/0xe0
+[    9.753555]  do_el0_svc+0x1c/0x28
+[    9.756962]  el0_svc+0x40/0xe8
+[    9.760102]  el0t_64_sync_handler+0x100/0x12c
+[    9.764583]  el0t_64_sync+0x190/0x194
+[    9.768352] Code: 54000401 b50002c6 d503201f f86a6803 (f8408402)
+[    9.774609] ---[ end trace 0000000000000000 ]---
 
-> > > So, hmm, I don't quite know what to say, you're between a rock and a hard 
-> > > place, I guess.  You have to use volatile for its effects but then are 
-> > > unhappy about its effects :)
-> > 
-> > Notably, Linux uses a *ton* of volatile and there has historically been
-> > a lot of grumbling about the GCC stance of 'stupid' codegen the moment
-> > it sees volatile.
-> > 
-> > It really would help us (the Linux community) if GCC were to be less
-> > offended by the whole volatile thing and would try to generate better
-> > code.
-> > 
-> > Paul has been on the C/C++ committee meetings and keeps telling me them
-> > folks hate volatile with a passion up to the point of proposing to
-> > remove it from the language or somesuch. But the reality is that Linux
-> > very heavily relies on it and _Atomic simply cannot replace it.
-> 
-> Oh yeah, I agree.  People trying to get rid of volatile are misguided.  
-> Of course one can try to capture all the individual aspects of it, and 
-> make individual language constructs for them (_Atomic is one).  It makes 
-> arguing about and precisely specifying the aspects much easier.  But it 
-> also makes the feature-interoperability matrix explode and the language 
-> more complicated in areas that were already arcane to start with.
-
-Agreed, and I have personally witnessed some primal-scream therapy
-undertaken in response to attempts to better define volatile.
-
-> But it's precisely _because_ of the large-scale feature set of volatile 
-> and the compilers wish to cater for the real world, that it's mostly left 
-> alone, as is, as written by the author.  Sure, one can wish for better 
-> codegen related to volatile.  But it's a slippery slope: "here I have 
-> volatile, because I don't want optimizations to happen." - "but here I 
-> want a little optimization to happen" - "but not these" - ... It's ... not 
-> so easy :)
-
-And to your point, there really have been optimization bugs that have
-broken volatile.  So I do very much appreciate your careful attention
-to this matter.
-
-> In this specific case I think we have now sufficiently argued that 
-> "load-modify-store --> rmw" on x86 even for volatile accesses is a correct 
-> transformation (and one that has sufficiently local effects that our heads 
-> don't explode while thinking about all consequences).  You'd have to do 
-> that for each and every transformation where volatile stuff is involved, 
-> just so to not throw out the baby with the water.
-
-Understood!
-
-> > > If you can confirm the above about validity of the optimization, then at 
-> > > least there'd by a point for adding a peephole in GCC for this, even if 
-> > > current codegen isn't a bug, but I still wouldn't hold my breath.  
-> > > volatile is so ... ewww, it's best left alone.
-> > 
-> > Confirmed, and please, your SMP computer only works becuase of volatile,
-> > it *is* important.
-> 
-> Agreed.
-
-Good to hear!!!
-
-							Thanx, Paul
+---
+bod
