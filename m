@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D607DD19B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E595A7DD232
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345153AbjJaQbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
+        id S1346128AbjJaQff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbjJaQbL (ORCPT
+        with ESMTP id S1346630AbjJaQev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:31:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55A5F1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:31:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F938C433C9;
-        Tue, 31 Oct 2023 16:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698769868;
-        bh=Opu3JDYBPCoRNGFn0xHjErSlJeCKvHxFHszXMcL0FHY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T3BeNkl8nju6P2+MI5e0/95aJuR/VEVyzci11tafyEPpg2vdRXqOVZTp1zN8XbYWW
-         OX5ErgTbJr4LJhZP7nYcz9TM3of3N5KvKvmKLchf9KogPccaqADR1yZ4SVgCjzEFIM
-         doxWz7ls1xU2vJY0yUYruxxh/2TkmvwayEEiLo9mm0VyTJoIUhT4naxBYY0HxuU7e6
-         i0/KQyankK9r5KDTDvq6BEc5bqnIPOYaqWdEGs2DuMbqfYAClh/OAZbe2JPC7wdIVU
-         35oOBr2Oh0E07N9GhzYD3bJ/XfVNh143LQIoXFwL9DoNXJUXHQQc8/mJ4eFiokd4gs
-         10bq2Oaj+f7sA==
-Date:   Tue, 31 Oct 2023 17:31:05 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Sarah Walker <sarah.walker@imgtec.com>, frank.binns@imgtec.com,
-        faith.ekstrand@collabora.com
-Cc:     boris.brezillon@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, afd@ti.com,
-        hns@goldelico.com, matthew.brost@intel.com,
-        christian.koenig@amd.com, luben.tuikov@amd.com, dakr@redhat.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 00/20] Imagination Technologies PowerVR DRM driver
-Message-ID: <lg7cdw3qlak74zefbx25f5pnazrburteldueoqz7o7cphydqp7@q56er3qa5muf>
-References: <20231031151257.90350-1-sarah.walker@imgtec.com>
+        Tue, 31 Oct 2023 12:34:51 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74AA5213B;
+        Tue, 31 Oct 2023 09:32:47 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31F762F4;
+        Tue, 31 Oct 2023 09:33:28 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.36.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F02DA3F67D;
+        Tue, 31 Oct 2023 09:32:43 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 16:32:41 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>
+Subject: Re: qemu-arm64: handle_futex_death - kernel/futex/core.c:661 -
+ Unable to handle kernel unknown 43 at virtual address
+Message-ID: <ZUEsKUVENQXftM4I@FVFF77S0Q05N>
+References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
+ <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
+ <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="h6eqzan6yg37toag"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031151257.90350-1-sarah.walker@imgtec.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,114 +56,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 26, 2023 at 05:39:11PM +0200, Ard Biesheuvel wrote:
+> On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
+> > > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
+> > > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 and
+> > > 6.6.0-rc7-next-20231025.
+> > >
+> > > BAD: next-20231025
+> > > Good: next-20231024
+> > >
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > >
+> > > Log:
+> > > ----
+> > > <1>[  203.119139] Unable to handle kernel unknown 43 at virtual
+> > > address 0001ffff9e2e7d78
+> > > <1>[  203.119838] Mem abort info:
+> > > <1>[  203.120064]   ESR = 0x000000009793002b
+> > > <1>[  203.121040]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > > set_robust_list01    1  TPASS  :  set_robust_list: retval = -1
+> > > (expected -1), errno = 22 (expected 22)
+> > > set_robust_list01    2  TPASS  :  set_robust_list: retval = 0
+> > > (expected 0), errno = 0 (expected 0)
+> > > <1>[  203.124496]   SET = 0, FnV = 0
+> > > <1>[  203.124778]   EA = 0, S1PTW = 0
+> > > <1>[  203.125029]   FSC = 0x2b: unknown 43
+> >
+> > It looks like this is fallout from the LPA2 enablement.
+> >
+> > According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
+> > 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
+> >
+> >         0b101011 When FEAT_LPA2 is implemented:
+> >                  Translation fault, level -1.
+> >
+> > It's triggered here by an LDTR in a get_user() on a bogus userspace address.
+> > The exception is expected, and it's supposed to be handled via the exception
+> > fixups, but the LPA2 patches didn't update the fault_info table entries for all
+> > the level -1 faults, and so those all get handled by do_bad() and don't call
+> > fixup_exception(), causing them to be fatal.
+> >
+> > It should be relatively simple to update the fault_info table for the level -1
+> > faults, but given the other issues we're seeing I think it's probably worth
+> > dropping the LPA2 patches for the moment.
+> >
+> 
+> Thanks for the analysis Mark.
+> 
+> I agree that this should not be difficult to fix, but given the other
+> CI problems and identified loose ends, I am not going to object to
+> dropping this partially or entirely at this point. I'm sure everybody
+> will be thrilled to go over those 60 patches again after I rebase them
+> onto v6.7-rc1 :-)
 
---h6eqzan6yg37toag
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+FWIW, I'm more than happy to try; the issue has lagely been finding the time.
+Hopefully that'll be a bit easier after LPC!
 
-Hi Sarah, Faith, Frank,
-
-On Tue, Oct 31, 2023 at 03:12:37PM +0000, Sarah Walker wrote:
-> This patch series adds the initial DRM driver for Imagination Technologie=
-s PowerVR
-> GPUs, starting with those based on our Rogue architecture. It's worth poi=
-nting
-> out that this is a new driver, written from the ground up, rather than a
-> refactored version of our existing downstream driver (pvrsrvkm).
->=20
-> This new DRM driver supports:
-> - GEM shmem allocations
-> - dma-buf / PRIME
-> - Per-context userspace managed virtual address space
-> - DRM sync objects (binary and timeline)
-> - Power management suspend / resume
-> - GPU job submission (geometry, fragment, compute, transfer)
-> - META firmware processor
-> - MIPS firmware processor
-> - GPU hang detection and recovery
->=20
-> Currently our main focus is on the AXE-1-16M GPU. Testing so far has been=
- done
-> using a TI SK-AM62 board (AXE-1-16M GPU). The driver has also been confir=
-med to
-> work on the BeaglePlay board. Firmware for the AXE-1-16M can befound here:
-> https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/tree/powervr
->=20
-> A Vulkan driver that works with our downstream kernel driver has already =
-been
-> merged into Mesa [1][2]. Support for this new DRM driver is being maintai=
-ned in
-> a merge request [3], with the branch located here:
-> https://gitlab.freedesktop.org/frankbinns/mesa/-/tree/powervr-winsys
->=20
-> Job stream formats are documented at:
-> https://gitlab.freedesktop.org/mesa/mesa/-/blob/f8d2b42ae65c2f16f36a43e0a=
-e39d288431e4263/src/imagination/csbgen/rogue_kmd_stream.xml
->=20
-> The Vulkan driver is progressing towards Vulkan 1.0. The current combinat=
-ion of this
-> kernel driver with the Mesa Vulkan driver (powervr-mesa-next branch) succ=
-essfully
-> completes Vulkan CTS 1.3.4.1 in our local runs. The driver is expected to=
- pass the
-> Khronos Conformance Process once the submission is made.
->=20
-> The code in this patch series, along with the needed dts changes can be f=
-ound here:
-> https://gitlab.freedesktop.org/sarah-walker-imgtec/powervr/-/tree/dev/v8_=
-dts
-> The full development history can be found here:
-> https://gitlab.freedesktop.org/frankbinns/powervr/-/tree/powervr-next
-
-Awesome, thanks for sending a new version of that series.
-
-At XDC, we all agreed that we would merge this version if the changes
-requested by Faith were fixed, and if the Mesa PR was updated to match
-that new kernel series.
-
-Are we there yet?
-
-If so, Faith, should we add your Reviewed-by/Acked-by tag to the UAPI patch?
-
-> This patch series has dependencies on a number of patches not yet merged.=
- They
-> are listed below :
->=20
-> drm/sched: Convert drm scheduler to use a work queue rather than kthread:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-2-matthew.bros=
-t@intel.com/
-> drm/sched: Move schedule policy to scheduler / entity:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-3-matthew.bros=
-t@intel.com/
-> drm/sched: Add DRM_SCHED_POLICY_SINGLE_ENTITY scheduling policy:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-4-matthew.bros=
-t@intel.com/
-> drm/sched: Start run wq before TDR in drm_sched_start:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-6-matthew.bros=
-t@intel.com/
-> drm/sched: Submit job before starting TDR:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-7-matthew.bros=
-t@intel.com/
-> drm/sched: Add helper to set TDR timeout:
->   https://lore.kernel.org/dri-devel/20230404002211.3611376-8-matthew.bros=
-t@intel.com/
-
-What is the state of those patches? Iirc, we were expecting them to be
-merged soon at XDC
-
-Thanks,
-Maxime
-
---h6eqzan6yg37toag
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUEryQAKCRDj7w1vZxhR
-xTp9AP48QDAKYOfrziKxyJhD0jPjF1kfqNNf6jYxHagxVE+b3gD9HUbcKZsRyVJZ
-myv8rg5pwmzcvrMBx9Irutk/GY6w1Aw=
-=57Kh
------END PGP SIGNATURE-----
-
---h6eqzan6yg37toag--
+Mark.
