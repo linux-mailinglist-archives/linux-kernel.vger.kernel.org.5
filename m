@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A4C7DCE4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D60A17DCE53
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344678AbjJaNxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        id S1344682AbjJaNyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344661AbjJaNxR (ORCPT
+        with ESMTP id S1344661AbjJaNya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:53:17 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE673F4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:53:14 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32ddfb38c02so4089602f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:53:14 -0700 (PDT)
+        Tue, 31 Oct 2023 09:54:30 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF679F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:54:28 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so3368501f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698760393; x=1699365193; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ialy9jtL+fHbY4kBB8RqEvA0usTWIEvweFyleTxXxQ=;
-        b=g0Y3A+S8qfxrPoBqZYODAX8BBSBdEbWmdHOVePTwYHiZUzZi6qxEb4uqnz15dUl1uB
-         EqeE25X6uXPJcmHCZs6WqAXeTto1ndf2Q+80qDEqCfMHX9aBG+pzmPe9263S19F2eutV
-         9vh+QgkSASn9GS8tLD+l2bFT1sExphTbHrGdbQE/QbyA1jKUHUkK8Fwd6adU8zP/C+FD
-         QyeCkjYWZKL4AndQtBCERDFdg5xydN+eCGpfetO2b6csJZO0yRrhefv0nGOPwe/6SU9r
-         IwNljSbDz+FDIrSbPhhFfxfvh6LdnmlVZ7PDO4CqBe8h0aw6VqZhScEVbtpUZsUJY73i
-         qnpQ==
+        d=linaro.org; s=google; t=1698760467; x=1699365267; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PV3b7GreqW9Z28/dg3IbbCDWHrgqAOVfM3tZgWTiNKE=;
+        b=aiK/+jjo6yvl4uErKKWddt0JrkBhfAMewXyaVuCqMaMHffyoXO+6MUhfX6g3PbzVyR
+         ZZqM//vUTCRvYRyGqfQv0nFxBQlVNlqgGGmO/Bt1vDe4iu5+0WjuavTyEqCTzk99XCZm
+         EkHAN2y6VUKNQTEUtkEMLLbhhqcZy3V7dJp04IEJ1xoXizEjWRhILtR5gEiruCJmoE09
+         i5MF/V2tq7IgQtpSJCELUas5aDA3UZMwz93J5a44CaduttsaK9xCxcboVfsvkHRE2e9n
+         xGIXjH1CFRGGX8nmU2VCoFRb3Fn7aT+ec9FdIlub1/FEsK9UX5aZVnic7mFrb6Kgb/vo
+         Wrkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698760393; x=1699365193;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3ialy9jtL+fHbY4kBB8RqEvA0usTWIEvweFyleTxXxQ=;
-        b=Vfo2Zhn1jU+lwEZRIs5L3igGJTtDD+zSWqZgUNeqfopFTan7tG0ond3ceqO4nllG4F
-         d6waVrv8MnPk0dfZrDkti98vWJrNYvH+fsgRq4lpXvnqZGMhQCwBYFfNxhOJRp5jUX2o
-         SYO2KUrVouPtF98kJ13L/j5WQw+Tsq5Zjg8INI+whMPbN9VzhqGr3/feajDqjKa16/7M
-         qJuy5GuMJLAApa9DQfA5Q6p8GfiY0BLhY793W81gmLtRp9SD/I1zHoGsUwFErI3t0joM
-         l8bHyYSC5ZoGzoZ0Eg8fVfPUy78MlgrkCtDYE669ePOszkNCl6ukz8/GRXvC3Y3htiSR
-         He8w==
-X-Gm-Message-State: AOJu0YzJZ0fkJ01qnOar11AA6FaZJLWcrZuIDQkOxri84qZszA9iM+Rc
-        kNgmwJnIi9Qm7jPNjWQjxQ4TqA==
-X-Google-Smtp-Source: AGHT+IFmkoELQ0qKzhgxP+Rzlrp15BD4nx+IDxcVtuyAaXSaaSRCSXDDGSGwdBrl02YGwGMmE5Xh5g==
-X-Received: by 2002:a5d:670c:0:b0:32d:8431:341e with SMTP id o12-20020a5d670c000000b0032d8431341emr8137132wru.62.1698760393295;
-        Tue, 31 Oct 2023 06:53:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698760467; x=1699365267;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PV3b7GreqW9Z28/dg3IbbCDWHrgqAOVfM3tZgWTiNKE=;
+        b=nEpec1k/diMn50BCRsNrAwjijt3szb/CQoGqR2AHp3S7lg71L5ZXUrNiZUnnMCVQi1
+         tqzyFKD0IfGVBW97VJ4Ffjz9F5DeifXn8jCmllTIuobueLbYVUYLPxfw4GFumqqaLb0D
+         ZT1sFpEBiiLSzYfBOwbQYvJWek7+d9bX8IyTccpYU5qJyj/m8D7WvraRpFbXJdplcjj2
+         yc/raPB6AiQP6nKgAYIiZcRRIAvbQ6nZEnjA8zpiX21hz6Q47cIvdccPm5AIdAt1Q13H
+         /Dv1VxDfP+cmF5rSITJ3Ge/KdGVOQq5oR5ghukRebj7QkOz3OE5i/HsRetZVo/tafmf/
+         KcKg==
+X-Gm-Message-State: AOJu0YycLaPU2ngk7MBHv/QKSksEMNQPVhA+yDZmowsU8OhWW/Q9w2np
+        YHNZ0f2LysjsjM0IcqBsvzaXPQ==
+X-Google-Smtp-Source: AGHT+IGhtpb96TEt0QvL5vdhhWhkPdDz8p4JMp2P1yUvdjETjW1OTQCZPwoz4snPihGzkoGMMaoI8A==
+X-Received: by 2002:a05:6000:2a2:b0:32f:803e:3a06 with SMTP id l2-20020a05600002a200b0032f803e3a06mr3278556wry.7.1698760466702;
+        Tue, 31 Oct 2023 06:54:26 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id dk6-20020a0560000b4600b0032f7f4089b7sm1579614wrb.43.2023.10.31.06.53.11
+        by smtp.gmail.com with ESMTPSA id dk6-20020a0560000b4600b0032f7f4089b7sm1579614wrb.43.2023.10.31.06.54.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 06:53:12 -0700 (PDT)
-Message-ID: <680e77cf-a930-4eb8-9987-67f748a424e3@linaro.org>
-Date:   Tue, 31 Oct 2023 14:53:10 +0100
+        Tue, 31 Oct 2023 06:54:26 -0700 (PDT)
+Message-ID: <2ae3d997-7a3e-487b-9d18-0101c3ba8e8e@linaro.org>
+Date:   Tue, 31 Oct 2023 14:54:24 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: rtc: max31335: add max31335 bindings
-To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+Subject: Re: [PATCH 1/6] dt-bindings: mfd: brcm,bcm59056: Convert to YAML
+Content-Language: en-US
+To:     Artur Weber <aweber.kernel@gmail.com>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-References: <20231030115016.97823-1-antoniu.miclaus@analog.com>
- <20231030115016.97823-2-antoniu.miclaus@analog.com>
- <11906efc-e16a-40bc-98a5-db32fefbf355@linaro.org>
- <CY4PR03MB3399A0D6DCA419936B024D759BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
-Content-Language: en-US
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Stanislav Jakubek <stano.jakubek@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
+ <20231030-bcm59054-v1-1-3517f980c1e3@gmail.com>
+ <5a906074-5c1e-4c1c-8023-5346e7fe9738@linaro.org>
+ <0a4ae01e-fd47-4468-b7c1-527977e53965@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,12 +120,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CY4PR03MB3399A0D6DCA419936B024D759BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
+In-Reply-To: <0a4ae01e-fd47-4468-b7c1-527977e53965@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,28 +133,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 11:29, Miclaus, Antoniu wrote:
-
+On 31/10/2023 10:36, Artur Weber wrote:
+> 
+> 
+> On 31.10.2023 06:52, Krzysztof Kozlowski wrote:
+>> On 30/10/2023 20:36, Artur Weber wrote:
+>>> Convert devicetree bindings for the Broadcom BCM59056 PMU MFD from
+>>> TXT to YAML format. This patch does not change any functionality;
+>>> the bindings remain the same.
+>>> ...
+>>> +
+>>> +  reg:
 >>> +    maxItems: 1
 >>> +
 >>> +  interrupts:
 >>> +    maxItems: 1
 >>> +
->>> +  "#clock-cells":
->>> +    description:
->>> +      RTC can be used as a clock source through its clock output pin.
->>> +    const: 0
->>> +
->>> +  trickle-resistor-ohms:
->>> +    description: Selected resistor for trickle charger.
->>> +    enum: [3000, 6000, 11000]
 >>
->> default? Or missing property has other meaning...
+>> There is no other feature here, so this should go to regulators directory.
 > 
-> If trickle-resistor-ohms property is missing, then the trickle charger setup is skipped.
+> There are no other features *yet*, but the driver will eventually be 
+> expanded to support the other features of the PMIC (charger, fuel gauge, 
+> rtc, etc.).
 
-Then mention this.
+The bindings should be complete regardless of driver support, but if
+things are missing then it's okay. It can be in MFD.
 
+> 
+> In that case, should I move the bindings to regulators for now, and move 
+> them back when the other features are added, or would it be fine to keep 
+> it in mfd?
 Best regards,
 Krzysztof
 
