@@ -2,224 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D78587DD86C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C43837DD876
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376260AbjJaWik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
+        id S1376281AbjJaWiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346780AbjJaWij (ORCPT
+        with ESMTP id S1346824AbjJaWiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:38:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C24EED;
-        Tue, 31 Oct 2023 15:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gtzH/LwfPAcwGEcrGX3whesveraTkeRgzcfxoZ04UPY=; b=T7H89gxu59ySl55of2paDJ/HF1
-        9To7Xk00iTXF8WvGoePj/AY6ypNXl4bijCHjYt38hBbuXnb2+v1Ugwmu1ee4Fqpq2f02YkSd5GoMp
-        dhNOlerznk3a92VnFCFzbsC2GKk+By+EeYZMtJ5jh9HI/kD5nSK+OPlZBbC0pwnyanLsR0c6sWR19
-        7jzzcLUfPINyDmYmtSUaDch1asARoX1JC48eW2hMRsyW8n5qw+IgSzzQmHAi6Dfl9BgEOeiHgl26I
-        usmFpzHzBVMf1Gatn2tq/xdUk0v5xtCScqFSCjQICNuc0UdwRpaPsP4t2VWBP67Z4VtBJi0IoTK55
-        SsmMQEVQ==;
-Received: from [2001:8b0:10b:5:f213:ff26:c9e:fe3d] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qxxNY-00CcXs-O7; Tue, 31 Oct 2023 22:38:32 +0000
-Message-ID: <ae179410922c40cbca7a2e9a94a6695db6eae069.camel@infradead.org>
-Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Griffoul, Fred" <fgriffo@amazon.com>
-Cc:     Paul Durrant <paul@xen.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Date:   Tue, 31 Oct 2023 22:38:31 +0000
-In-Reply-To: <19cdf9362d469ac6de8503aa335b864ab5fc2553.camel@infradead.org>
-References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
-         <19cdf9362d469ac6de8503aa335b864ab5fc2553.camel@infradead.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-udTfF7/8K5MbSbxorQeR"
-User-Agent: Evolution 3.44.4-0ubuntu2 
-MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 31 Oct 2023 18:38:51 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000C510D
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:38:48 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afa77f9a33so55477997b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698791928; x=1699396728; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=E4k1hGGxw36dmwLt1HOw2cRLPR7SfORP0QkzJq8sNG4=;
+        b=w7yoISG9OB6UaATuaOUv8CjI+FKuWQ4OKjpuN6ItWeh7++/hY9b8JadKneKShLnXxx
+         YtEp/DajeMcikLarLTeD6J55jnSuypp/1UyvPW67Fzw6QsuA6lXVq5eRfA0jzQkMBIEU
+         7OX0fC02G0HKrzagh2K4bW2z55czxsIq3h2DyFB1GpFeALTf9GVQXzYsQdU0swAZ/q+I
+         5g36KrwXngDBFTYnEIdnhk0ejiTTkOCR3GurD8T2+Gynat1n6XTshXGHLT5xjmiHEfh1
+         XN2KZBaZO0dPtI/4Ii70g4rb1fYk9CXkrwKekzvdVatPxA1EoijiQdZuxDNsHIezg64Z
+         GTvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698791928; x=1699396728;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E4k1hGGxw36dmwLt1HOw2cRLPR7SfORP0QkzJq8sNG4=;
+        b=XwP7dU8ytP0jqPxewBkSggR4jtvRu5t5e0jeDKUXnaPad53rWnKtVb4HkFt+GCOWe2
+         ThrLidJo+Mmp66oeWorQ1C9T8p0IKDx1pxLp3YPBIUk3Z33UPRJ7h9vbcj2WzGENeOor
+         3lshbnlUBcvbqM/IDSKNkP9YmfGxHaginxAQeLfmszGYiTT1RIGTdVEFkwyRieBj4MvG
+         08eYvVDWotzQrXqZemdnm2Hbdlaix0smAjuWaRLVrKr9cMAGicyT1qlFrDRpql68bGeX
+         /CFXQolOY4pyGoYuOYnEE4B55EW2KqqdQH2399NMbquyP84ANs9jmN5yIFYGewKF6756
+         I5ng==
+X-Gm-Message-State: AOJu0YxQXnt+IJagem6ByHTHNBWGivr/c9UQPzTNOJky6D+xfewAiaAE
+        SHDasgYqPYsNHBgCCier/+zSjCfhXwZHRy3VQw==
+X-Google-Smtp-Source: AGHT+IFM2W41gegeIUvzp7uUlh/DfO8Ica5ODCIQO4qan/QTBGDN4jXaqaSexGBwblyANavfH28+tAwYTUKQP15dBg==
+X-Received: from souravpanda.svl.corp.google.com ([2620:15c:2a3:200:84c2:bfa0:7c62:5d77])
+ (user=souravpanda job=sendgmr) by 2002:a05:6902:549:b0:da3:b96c:6c48 with
+ SMTP id z9-20020a056902054900b00da3b96c6c48mr2053ybs.9.1698791928152; Tue, 31
+ Oct 2023 15:38:48 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 15:38:45 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231031223846.827173-1-souravpanda@google.com>
+Subject: [PATCH v4 0/1] mm: report per-page metadata information
+From:   Sourav Panda <souravpanda@google.com>
+To:     corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, david@redhat.com,
+        rdunlap@infradead.org, chenlinxuan@uniontech.com,
+        yang.yang29@zte.com.cn, souravpanda@google.com,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@Oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-udTfF7/8K5MbSbxorQeR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2023-10-31 at 19:45 +0000, David Woodhouse wrote:
-> On Mon, 2023-10-30 at 15:50 +0000, David Woodhouse wrote:
-> >=20
-> > +static int do_monotonic(s64 *t, u64 *tsc_timestamp)
-> > +{
-> > +	struct pvclock_gtod_data *gtod =3D &pvclock_gtod_data;
-> > +	unsigned long seq;
-> > +	int mode;
-> > +	u64 ns;
-> > +
-> > +	do {
-> > +		seq =3D read_seqcount_begin(&gtod->seq);
-> > +		ns =3D gtod->clock.base_cycles;
-> > +		ns +=3D vgettsc(&gtod->clock, tsc_timestamp, &mode);
-> > +		ns >>=3D gtod->clock.shift;
-> > +		ns +=3D ktime_to_ns(ktime_add(gtod->clock.offset, gtod->offs_boot));
-> > +	} while (unlikely(read_seqcount_retry(&gtod->seq, seq)));
-> > +	*t =3D ns;
-> > +
-> > +	return mode;
-> > +}
-> > +
->=20
-> Hrm, that's basically cargo-culted from do_monotonic_raw() immediately
-> above it. Should it be adding gtod->offs_boot?
->=20
-> Empirically the answer would appear to be 'no'. When gtod->offs_boot is
-> non-zero, I see kvm_get_monotonic_and_clockread() returning values
-> which are precisely that far in advance of what ktime_get() reports.
+Changelog:
+v4:
+	- Addressed comment from Matthew Wilcox.
+		- Used __node_stat_sub_folio and __node_stat_add_folio
+		  instead of __mod_node_page_state in mm/hugetlb.c.
+		- Used page_pgdat wherever possible in the entire patch.
+		- Used DIV_ROUND_UP() wherever possible in the entire
+		  patch.
+v3:
+	- Addressed comment from Matthew Wilcox.
+	  	- In free_page_ext, page_pgdat() is now extracted
+		  prior to freeing the memory.
+v2:
+	- Fixed the three bugs reported by kernel test robot.
+	- Enhanced the commit message as recommended by David Hildenbrand.
+	- Addressed comments from Matthew Wilcox:
+	  	- Simplified alloc_vmemmap_page_list() and
+		  free_page_ext() as recommended.
+		- Used the appropriate comment style in mm/vmstat.c.
+		- Replaced writeout_early_perpage_metadata() with
+		  store_early_perpage_metadata() to reduce ambiguity
+		  with what swap does.
+	- Addressed comments from Mike Rapoport:
+	  	- Simplified the loop in alloc_vmemmap_page_list().
+		- Could NOT address a comment to move
+		  store_early_perpage_metadata() near where nodes
+		  and page allocator are initialized.
+		- Included the vmalloc()ed page_ext in accounting
+		  within free_page_ext().
+		- Made early_perpage_metadata[MAX_NUMNODES] static.
 
 
-.... because the do_monotonic_raw() function, despite the simple
-clarity of its name... doesn't actually return the CLOCK_MONOTONIC_RAW
-time. Of course it doesn't. Why would a function with that name return
-the MONOTONIC_RAW clock?
+Previous approaches and discussions
+-----------------------------------
+v3:
+https://lore.kernel.org/all/20231031174459.459480-1-souravpanda@google.com
+v2:
+https://lore.kernel.org/all/20231018005548.3505662-1-souravpanda@google.com
+v1:
+https://lore.kernel.org/r/20230913173000.4016218-2-souravpanda@google.com
 
-It actually returns the same as get_kvmclock_base_ns(), which is
+Hi!
 
-	/* Count up from boot time, but with the frequency of the raw clock.  */
-	return ktime_to_ns(ktime_add(ktime_get_raw(), pvclock_gtod_data.offs_boot)=
-);
+This patch adds a new per-node PageMetadata field to
+/sys/devices/system/node/nodeN/meminfo and a global PageMetadata field
+to /proc/meminfo. This information can be used by users to see how much
+memory is being used by per-page metadata, which can vary depending on
+build configuration, machine architecture, and system use.
 
-I feel that Grey's Law is starting to apply to this clock stuff. This
-is starting to be indistinguishable from malice ;)
-
-
---=-udTfF7/8K5MbSbxorQeR
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMxMjIzODMxWjAvBgkqhkiG9w0BCQQxIgQg7aLazdNx
-HOU/UHWU3HGneYxmpHxeRaJLuPgldg1HyqUwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAlERWiTQhXsFTi2FZ3eJc6ivgsOyIdPVOj
-8gHpgV3hxjNS43LDAMolTCKiU4Ib7/qEbHRmTJAcFXteudf5R50xzxbvHMxdLkuQ2GlyYzFkJpbo
-o2GqtNffB+FHr9o3YAUbxPRvof5cCLZiPx960iWFIJueDqTBU1tJsp1hj+Sg7KPIo0R7YLnLycSu
-+o915UQ7fH43RBh7Wxsh2LvYK8+D0CaxVNGCNY8KqxycsCe9SxYHaB9ztBHOVI36VJJLYnYYUtQY
-6p2DKqX2zrUZqgNPz4Q6vtSxK//PA6+cyJDUCQGOwHmqJ7jRCPUP+J2WM2wO/wYwKs5eusvS12oF
-8TEVqMhQOyoui3Ab7wQ8onMhbilxNcv9Px5Kneh7DXYLtbYyGp+k6QAWDWBRfDrOjtsvZjhvp3t2
-NhoahgvWdgunEjF/A3IvtCT1qlp00kfDKGvj6JTlJv7FGfmifdoip6nzQTtDT0XqIXVDnK9Xknua
-myjQFEs94gCWVcaa5sEcqOt9YWg/PxJqkkVX+jUyRhxWvmJxv+n0RkleSoorKJ9lwkgqpSzZFP+y
-PCTm7c3MG3DgGv2h1vOzzWTfDbenYpMXldcs5f9J+MjsqdHP/xT32TjBOJ7nQOtWowQI96TKkcx1
-8Ar8JoXXrdG0LRO4oADuCvGJ8tIbpNvPe9Le4rDQdwAAAAAAAA==
+Per-page metadata is the amount of memory that Linux needs in order to
+manage memory at the page granularity. The majority of such memory is
+used by "struct page" and "page_ext" data structures.
 
 
---=-udTfF7/8K5MbSbxorQeR--
+Background
+----------
+
+Kernel overhead observability is missing some of the largest
+allocations during runtime, including vmemmap (struct pages) and
+page_ext. This patch aims to address this problem by exporting a
+new metric PageMetadata.
+
+On the contrary, the kernel does provide observibility for boot memory
+allocations. For example, the metric reserved_pages depicts the pages
+allocated by the bootmem allocator. This can be simply calculated as
+present_pages - managed_pages, which are both exported in /proc/zoneinfo.
+The metric reserved_pages is primarily composed of struct pages and
+page_ext.
+
+What about the struct pages (allocated by bootmem allocator) that are
+free'd during hugetlbfs allocations and then allocated by buddy-allocator
+once hugtlbfs pages are free'd?
+
+/proc/meminfo MemTotal changes: MemTotal does not include memblock
+allocations but includes buddy allocations. However, during runtime
+memblock allocations can be shifted into buddy allocations, and therefore
+become part of MemTotal.
+
+Once the struct pages get allocated by buddy allocator, we lose track of
+these struct page allocations overhead accounting. Therefore, we must
+export a new metric that we shall refer to as PageMetadata (exported by
+node). This shall also comprise the struct page and page_ext allocations
+made during runtime.
+
+Results and analysis
+--------------------
+
+Memory model: Sparsemem-vmemmap
+$ echo 1 > /proc/sys/vm/hugetlb_optimize_vmemmap
+
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       32918196 kB
+$ cat /proc/meminfo | grep Meta
+	PageMetadata:     589824 kB
+$ cat /sys/devices/system/node/node0/meminfo | grep Meta
+	Node 0 PageMetadata:     294912 kB
+$ cat /sys/devices/system/node/node1/meminfo | grep Meta
+	Node 1 PageMetadata:     294912 kB
+
+
+AFTER HUGTLBFS RESERVATION
+$ echo 512 > /proc/sys/vm/nr_hugepages
+
+$ cat /proc/meminfo | grep MemTotal
+
+MemTotal:       32934580 kB
+$ cat /proc/meminfo | grep Meta
+PageMetadata:     575488 kB
+$ cat /sys/devices/system/node/node0/meminfo | grep Meta
+Node 0 PageMetadata:     287744 kB
+$ cat /sys/devices/system/node/node1/meminfo | grep Meta
+Node 1 PageMetadata:     287744 kB
+
+AFTER FREEING HUGTLBFS RESERVATION
+$ echo 0 > /proc/sys/vm/nr_hugepages
+$ cat /proc/meminfo | grep MemTotal
+MemTotal:       32934580 kB
+$ cat /proc/meminfo | grep Meta
+PageMetadata:    589824 kB
+$ cat /sys/devices/system/node/node0/meminfo | grep Meta
+Node 0 PageMetadata:       294912 kB
+$ cat /sys/devices/system/node/node1/meminfo | grep Meta
+Node 1 PageMetadata:       294912 kB
+
+
+
+Sourav Panda (1):
+  mm: report per-page metadata information
+
+ Documentation/filesystems/proc.rst |  3 +++
+ drivers/base/node.c                |  2 ++
+ fs/proc/meminfo.c                  |  7 +++++++
+ include/linux/mmzone.h             |  3 +++
+ include/linux/vmstat.h             |  4 ++++
+ mm/hugetlb.c                       | 11 ++++++++--
+ mm/hugetlb_vmemmap.c               |  8 ++++++--
+ mm/mm_init.c                       |  3 +++
+ mm/page_alloc.c                    |  1 +
+ mm/page_ext.c                      | 32 +++++++++++++++++++++---------
+ mm/sparse-vmemmap.c                |  3 +++
+ mm/sparse.c                        |  7 ++++++-
+ mm/vmstat.c                        | 24 ++++++++++++++++++++++
+ 13 files changed, 94 insertions(+), 14 deletions(-)
+
+-- 
+2.42.0.820.g83a721a137-goog
+
