@@ -2,109 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD2A7DCA42
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7CC7DCA45
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbjJaJ4d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 05:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        id S235605AbjJaJ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbjJaJ4b (ORCPT
+        with ESMTP id S230464AbjJaJ51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:56:31 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A9E102
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:56:29 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5a8ada42c2aso53216457b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:56:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698746188; x=1699350988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YNZBHyiLRY+gCpq29CudcvsFOdjkuZ4E9FiQic5rKGY=;
-        b=iMbj29o96aJVutXNZinHF+4dq/nLf1DUY3jWUfSDWUjSy04xBX5Clb+LZvJumHkZN7
-         /9O+E+TZvu5KimrXMJnDkhpyrr7+k8yvoNLQXav/jmL86iXRWHcPw/oDnvHemBrME5Tk
-         kDSC8oITAIowk++pROraLOHO0JswBKWrj+wFOIoRtPbhmQ6EborEUq/wL24GD9LvGP2u
-         nSpOK2bmzrGKBIDmigqGfJ4NOT7JYL8nT74/UTWVeVMFj7MJ5K4O3ymILdDcti0ZhNXj
-         oa1ULOlw3C6/DfOKfTKghf5Gd1hWjpkx6LcVGTBUGxlreX4qw8Gb7Vv9JdJg98Crwy0h
-         XGHg==
-X-Gm-Message-State: AOJu0Yye8CviNrRU2kTlkI18mt1XeOOheEqRbULmkUfSbJPacul04BJo
-        0UUQ95ScgBHyig+3huVU6jflVlWc4ox40A==
-X-Google-Smtp-Source: AGHT+IG8fupv/Avrdzu9/SeZprqQkLtbWXITz8BtocIp9npR4isrpSGAj725cAFzQsK9xfHeqnSo8Q==
-X-Received: by 2002:a0d:dd0e:0:b0:583:d8d4:7dfe with SMTP id g14-20020a0ddd0e000000b00583d8d47dfemr12381042ywe.31.1698746188011;
-        Tue, 31 Oct 2023 02:56:28 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id k186-20020a816fc3000000b0058427045833sm578890ywc.133.2023.10.31.02.56.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 02:56:27 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d84f18e908aso4855329276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:56:27 -0700 (PDT)
-X-Received: by 2002:a25:cb47:0:b0:d9a:6855:14cd with SMTP id
- b68-20020a25cb47000000b00d9a685514cdmr11085901ybg.39.1698746187360; Tue, 31
- Oct 2023 02:56:27 -0700 (PDT)
+        Tue, 31 Oct 2023 05:57:27 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E9AA1;
+        Tue, 31 Oct 2023 02:57:25 -0700 (PDT)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39V7VJmb030860;
+        Tue, 31 Oct 2023 05:57:08 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3u1fef689q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 05:57:08 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 39V9v7D5039683
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 31 Oct 2023 05:57:07 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 31 Oct 2023 05:57:06 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 31 Oct 2023 05:57:06 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Tue, 31 Oct 2023 05:57:06 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.145])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39V9usbA024643;
+        Tue, 31 Oct 2023 05:56:56 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] hwmon: ltc2991: remove device reference from state
+Date:   Tue, 31 Oct 2023 11:56:46 +0200
+Message-ID: <20231031095647.48376-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231020225338.1686974-1-javierm@redhat.com> <b048247c-75e9-488e-a4f3-b227a38bca5e@redhat.com>
- <87v8aso1ha.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <87v8aso1ha.fsf@minerva.mail-host-address-is-not-set>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 Oct 2023 10:56:14 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVLf=H7QWaUXrN17ABw9eE1MjBdzFEM0AhMNj8_ULSz+Q@mail.gmail.com>
-Message-ID: <CAMuHMdVLf=H7QWaUXrN17ABw9eE1MjBdzFEM0AhMNj8_ULSz+Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/ssd130x: Fix possible uninitialized usage of
- crtc_state variable
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Jocelyn Falempe <jfalempe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: vlt0LP1E8CL2YEfj4nxWHBODGB3h0aeV
+X-Proofpoint-GUID: vlt0LP1E8CL2YEfj4nxWHBODGB3h0aeV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 clxscore=1015 malwarescore=0 bulkscore=0 adultscore=0
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2310240000
+ definitions=main-2310310077
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+Remove device reference from struct ltc2991_state since it is used only
+inside the init function.
 
-On Fri, Oct 27, 2023 at 11:33 AM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> Jocelyn Falempe <jfalempe@redhat.com> writes:
-> > On 21/10/2023 00:52, Javier Martinez Canillas wrote:
-> >> Avoid a possible uninitialized use of the crtc_state variable in function
-> >> ssd132x_primary_plane_atomic_check() and avoid the following Smatch warn:
-> >>
-> >>      drivers/gpu/drm/solomon/ssd130x.c:921 ssd132x_primary_plane_atomic_check()
-> >>      error: uninitialized symbol 'crtc_state'.
-> >
-> > That looks trivial, so you can add:
-> >
-> > Acked-by: Jocelyn Falempe <jfalempe@redhat.com>
-> >
->
-> Pushed to drm-misc (drm-misc-next). Thanks!
+Pass the struct device as parameter to the init function instead.
 
-Looks like you introduced an unintended
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+ drivers/hwmon/ltc2991.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-    (cherry picked from commit 9e4db199e66d427c50458f4d72734cc4f0b92948)
-
-?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/hwmon/ltc2991.c b/drivers/hwmon/ltc2991.c
+index bd63c61129a9..773e7211643f 100644
+--- a/drivers/hwmon/ltc2991.c
++++ b/drivers/hwmon/ltc2991.c
+@@ -54,7 +54,6 @@
+ #define LTC2991_VCC_CH_NR		0
+ 
+ struct ltc2991_state {
+-	struct device		*dev;
+ 	struct regmap		*regmap;
+ 	u32			r_sense_uohm[LTC2991_MAX_CHANNEL];
+ 	bool			temp_en[LTC2991_MAX_CHANNEL];
+@@ -283,19 +282,19 @@ static const struct regmap_config ltc2991_regmap_config = {
+ 	.max_register = 0x1D,
+ };
+ 
+-static int ltc2991_init(struct ltc2991_state *st)
++static int ltc2991_init(struct ltc2991_state *st, struct device *dev)
+ {
+ 	struct fwnode_handle *child;
+ 	int ret;
+ 	u32 val, addr;
+ 	u8 v5_v8_reg_data = 0, v1_v4_reg_data = 0;
+ 
+-	ret = devm_regulator_get_enable(st->dev, "vcc");
++	ret = devm_regulator_get_enable(dev, "vcc");
+ 	if (ret)
+-		return dev_err_probe(st->dev, ret,
++		return dev_err_probe(dev, ret,
+ 				     "failed to enable regulator\n");
+ 
+-	device_for_each_child_node(st->dev, child) {
++	device_for_each_child_node(dev, child) {
+ 		ret = fwnode_property_read_u32(child, "reg", &addr);
+ 		if (ret < 0) {
+ 			fwnode_handle_put(child);
+@@ -312,7 +311,7 @@ static int ltc2991_init(struct ltc2991_state *st)
+ 					       &val);
+ 		if (!ret) {
+ 			if (!val)
+-				return dev_err_probe(st->dev, -EINVAL,
++				return dev_err_probe(dev, -EINVAL,
+ 						     "shunt resistor value cannot be zero\n");
+ 
+ 			st->r_sense_uohm[addr] = val;
+@@ -361,18 +360,18 @@ static int ltc2991_init(struct ltc2991_state *st)
+ 
+ 	ret = regmap_write(st->regmap, LTC2991_V5_V8_CTRL, v5_v8_reg_data);
+ 	if (ret)
+-		return dev_err_probe(st->dev, ret,
++		return dev_err_probe(dev, ret,
+ 				     "Error: Failed to set V5-V8 CTRL reg.\n");
+ 
+ 	ret = regmap_write(st->regmap, LTC2991_V1_V4_CTRL, v1_v4_reg_data);
+ 	if (ret)
+-		return dev_err_probe(st->dev, ret,
++		return dev_err_probe(dev, ret,
+ 				     "Error: Failed to set V1-V4 CTRL reg.\n");
+ 
+ 	ret = regmap_write(st->regmap, LTC2991_PWM_TH_LSB_T_INT,
+ 			   LTC2991_REPEAT_ACQ_EN);
+ 	if (ret)
+-		return dev_err_probe(st->dev, ret,
++		return dev_err_probe(dev, ret,
+ 				     "Error: Failed to set contiuous mode.\n");
+ 
+ 	/* Enable all channels and trigger conversions */
+@@ -392,12 +391,11 @@ static int ltc2991_i2c_probe(struct i2c_client *client)
+ 	if (!st)
+ 		return -ENOMEM;
+ 
+-	st->dev = &client->dev;
+ 	st->regmap = devm_regmap_init_i2c(client, &ltc2991_regmap_config);
+ 	if (IS_ERR(st->regmap))
+ 		return PTR_ERR(st->regmap);
+ 
+-	ret = ltc2991_init(st);
++	ret = ltc2991_init(st, &client->dev);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.42.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
