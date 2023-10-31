@@ -2,276 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 188ED7DD4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B117DD450
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344562AbjJaR3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
+        id S1343729AbjJaRLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbjJaR3H (ORCPT
+        with ESMTP id S233230AbjJaRK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:29:07 -0400
-Received: from 16.mo550.mail-out.ovh.net (16.mo550.mail-out.ovh.net [178.33.104.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251BB91
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:29:04 -0700 (PDT)
-Received: from director2.ghost.mail-out.ovh.net (unknown [10.109.143.183])
-        by mo550.mail-out.ovh.net (Postfix) with ESMTP id B195224A85
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:09:17 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-rjwh7 (unknown [10.108.1.233])
-        by director2.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 2E18C1FE88;
-        Tue, 31 Oct 2023 17:09:12 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.109])
-        by ghost-submission-6684bf9d7b-rjwh7 with ESMTPSA
-        id VI0wBLg0QWWXLgEATp+Mog
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 31 Oct 2023 17:09:12 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-109S003fe2eeb36-42a8-47b4-a769-4c5c4cb96913,
-                    68EF3BC41A3FAA3930AA1D7F8F8F567988DEB53B) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 213.216.208.215
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, skhan@linuxfoundation.org
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v2] drm/radeon: replace 1-element arrays with flexible-array members
-Date:   Tue, 31 Oct 2023 19:08:47 +0200
-Message-Id: <20231031170847.23458-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
+        Tue, 31 Oct 2023 13:10:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7085283;
+        Tue, 31 Oct 2023 10:10:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12165C433C7;
+        Tue, 31 Oct 2023 17:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698772255;
+        bh=Th4ywlyLRr/0sxbHZGZwsaz5cKdSrO4tkd9cgckdNZE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eiySwqxXDBXb8eJrdT0Q907b8uHZJAClu3lLh+zZsE1Tr3tTgOKNkoDeK7v0eS03Q
+         v1S5D6/F1Ar93gX0LVDM9JrfcuHe02duLFNplSZdvtotNL3bYg9a6cBnzvUevdXRpQ
+         gfrNCReNjaTx/VnPThSzB+G2HwHG+pWLn+bQQJsoW3LOIxc6dAeOMaDGAbJeER9Ir8
+         HV7LIQRYYXDn3ohi4joM8cQ2FRSUp58TDFvrd/40MIX1q5oetrhsINOE2WWkWw6JOA
+         2K0CeqC5CskInyezSg9LmIiE6wFQnmQsYBUcGAVqfPnYwxlZ8cL5gpHvoGpIABSh70
+         6hBwp8irRMg2A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A7223CE0B6B; Tue, 31 Oct 2023 10:10:54 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 10:10:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michael Matz <matz@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+Message-ID: <e59205b8-d12c-42ba-b0c8-55103a42e917@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231027224628.GI26550@noisy.programming.kicks-ass.net>
+ <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
+ <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
+ <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
+ <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+ <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
+ <20231031151645.GB15024@noisy.programming.kicks-ass.net>
+ <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de>
+ <20231031162353.GF15024@noisy.programming.kicks-ass.net>
+ <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 3800193661057803942
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddtvddgleehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpedtudethfeghfegfffhtdeuhedukeduudeuieeiteegkedtudegvdektefftedvffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupddvudefrddvudeirddvtdekrddvudehpdefjedrheelrddugedvrddutdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehhedtpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reported by coccinelle, the following patch will move the
-following 1 element arrays to flexible arrays.
+On Tue, Oct 31, 2023 at 04:49:56PM +0000, Michael Matz wrote:
+> Hey,
+> 
+> On Tue, 31 Oct 2023, Peter Zijlstra wrote:
+> 
+> > > equivalent to that, then it can't be used in this situation.  If you 
+> > > _have_ to use a RmW for other reasons like interrupt safety, then a 
+> > > volatile variable is not the way to force this, as C simply doesn't have 
+> > > that concept and hence can't talk about it.  (Of course it can't, as not 
+> > > all architectures could implement such, if it were required).
+> > 
+> > Yeah, RISC archs typically lack the RmW ops. I can understand C not
+> > mandating their use. However, on architectures that do have them, using
+> > them makes a ton of sense.
+> > 
+> > For us living in the real world, this C abstract machine is mostly a
+> > pain in the arse :-)
+> 
+> Believe me, without it you would live in a world where only languages like 
+> ECMA script or Rust existed, without any reliable spec at all ("it's 
+> obvious, the language should behave like this-and-that compiler from 2010 
+> implements it! Or was it 2012?").  Even if it sometimes would make life 
+> easier without (also for compilers!), at least you _have_ an arse to feel 
+> pain in! :-)  Ahem.
 
-drivers/gpu/drm/radeon/atombios.h:5523:32-48: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:5545:32-48: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:5461:34-44: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4447:30-40: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4236:30-41: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7095:28-45: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:3896:27-37: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:5443:16-25: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:5454:34-43: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4603:21-32: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4628:32-46: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:6285:29-39: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4296:30-36: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4756:28-36: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:4064:22-35: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7327:9-24: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7332:32-53: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7362:26-41: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7369:29-44: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7349:24-32: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-drivers/gpu/drm/radeon/atombios.h:7355:27-35: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+You mean like Rust volatiles considering conflicting accesses to be
+data races?  That certainly leads me to wonder how a Rust-language device
+driver is supposed to interoperate with Rust-language device firmware.
 
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
----
-[v1 -> v2] removed padding and hinted sensitive cases from original patch
+They currently propose atomics and things like the barrier() asm to make
+that work, and their definition of atomic might just allow it.
 
- drivers/gpu/drm/radeon/atombios.h | 42 +++++++++++++++----------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+> > > So, hmm, I don't quite know what to say, you're between a rock and a hard 
+> > > place, I guess.  You have to use volatile for its effects but then are 
+> > > unhappy about its effects :)
+> > 
+> > Notably, Linux uses a *ton* of volatile and there has historically been
+> > a lot of grumbling about the GCC stance of 'stupid' codegen the moment
+> > it sees volatile.
+> > 
+> > It really would help us (the Linux community) if GCC were to be less
+> > offended by the whole volatile thing and would try to generate better
+> > code.
+> > 
+> > Paul has been on the C/C++ committee meetings and keeps telling me them
+> > folks hate volatile with a passion up to the point of proposing to
+> > remove it from the language or somesuch. But the reality is that Linux
+> > very heavily relies on it and _Atomic simply cannot replace it.
+> 
+> Oh yeah, I agree.  People trying to get rid of volatile are misguided.  
+> Of course one can try to capture all the individual aspects of it, and 
+> make individual language constructs for them (_Atomic is one).  It makes 
+> arguing about and precisely specifying the aspects much easier.  But it 
+> also makes the feature-interoperability matrix explode and the language 
+> more complicated in areas that were already arcane to start with.
 
-diff --git a/drivers/gpu/drm/radeon/atombios.h b/drivers/gpu/drm/radeon/atombios.h
-index 8a6621f1e82c..2db40789235c 100644
---- a/drivers/gpu/drm/radeon/atombios.h
-+++ b/drivers/gpu/drm/radeon/atombios.h
-@@ -3893,7 +3893,7 @@ typedef struct _ATOM_GPIO_PIN_ASSIGNMENT
- typedef struct _ATOM_GPIO_PIN_LUT
- {
-   ATOM_COMMON_TABLE_HEADER  sHeader;
--  ATOM_GPIO_PIN_ASSIGNMENT	asGPIO_Pin[1];
-+  ATOM_GPIO_PIN_ASSIGNMENT	asGPIO_Pin[];
- }ATOM_GPIO_PIN_LUT;
- 
- /****************************************************************************/	
-@@ -4061,7 +4061,7 @@ typedef struct _ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT         //usSrcDstTableOffset
-   UCHAR               ucNumberOfSrc;
-   USHORT              usSrcObjectID[1];
-   UCHAR               ucNumberOfDst;
--  USHORT              usDstObjectID[1];
-+  USHORT              usDstObjectID[];
- }ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT;
- 
- 
-@@ -4233,7 +4233,7 @@ typedef struct  _ATOM_CONNECTOR_DEVICE_TAG_RECORD
-   ATOM_COMMON_RECORD_HEADER   sheader;
-   UCHAR                       ucNumberOfDevice;
-   UCHAR                       ucReserved;
--  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[1];         //This Id is same as "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
-+  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[];          //This Id is same as "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
- }ATOM_CONNECTOR_DEVICE_TAG_RECORD;
- 
- 
-@@ -4293,7 +4293,7 @@ typedef struct  _ATOM_OBJECT_GPIO_CNTL_RECORD
-   ATOM_COMMON_RECORD_HEADER   sheader;
-   UCHAR                       ucFlags;                // Future expnadibility
-   UCHAR                       ucNumberOfPins;         // Number of GPIO pins used to control the object
--  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[1];              // the real gpio pin pair determined by number of pins ucNumberOfPins
-+  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[];               // the real gpio pin pair determined by number of pins ucNumberOfPins
- }ATOM_OBJECT_GPIO_CNTL_RECORD;
- 
- //Definitions for GPIO pin state 
-@@ -4444,7 +4444,7 @@ typedef struct  _ATOM_BRACKET_LAYOUT_RECORD
-   UCHAR                       ucWidth;
-   UCHAR                       ucConnNum;
-   UCHAR                       ucReserved;
--  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[1];
-+  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[];
- }ATOM_BRACKET_LAYOUT_RECORD;
- 
- /****************************************************************************/	
-@@ -4600,7 +4600,7 @@ typedef struct  _ATOM_I2C_VOLTAGE_OBJECT_V3
-    UCHAR    ucVoltageControlAddress;
-    UCHAR    ucVoltageControlOffset;	 	
-    ULONG    ulReserved;
--   VOLTAGE_LUT_ENTRY asVolI2cLut[1];        // end with 0xff
-+   VOLTAGE_LUT_ENTRY asVolI2cLut[];         // end with 0xff
- }ATOM_I2C_VOLTAGE_OBJECT_V3;
- 
- // ATOM_I2C_VOLTAGE_OBJECT_V3.ucVoltageControlFlag
-@@ -4625,7 +4625,7 @@ typedef struct  _ATOM_LEAKAGE_VOLTAGE_OBJECT_V3
-    UCHAR    ucLeakageEntryNum;           // indicate the entry number of LeakageId/Voltage Lut table
-    UCHAR    ucReserved[2];               
-    ULONG    ulMaxVoltageLevel;
--   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[1];   
-+   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[];
- }ATOM_LEAKAGE_VOLTAGE_OBJECT_V3;
- 
- 
-@@ -4753,7 +4753,7 @@ typedef struct _ATOM_POWER_SOURCE_INFO
- {
- 		ATOM_COMMON_TABLE_HEADER		asHeader;
- 		UCHAR												asPwrbehave[16];
--		ATOM_POWER_SOURCE_OBJECT		asPwrObj[1];
-+		ATOM_POWER_SOURCE_OBJECT		asPwrObj[];
- }ATOM_POWER_SOURCE_INFO;
- 
- 
-@@ -5440,7 +5440,7 @@ typedef struct _ATOM_FUSION_SYSTEM_INFO_V2
- typedef struct _ATOM_I2C_DATA_RECORD
- {
-   UCHAR         ucNunberOfBytes;                                              //Indicates how many bytes SW needs to write to the external ASIC for one block, besides to "Start" and "Stop"
--  UCHAR         ucI2CData[1];                                                 //I2C data in bytes, should be less than 16 bytes usually
-+  UCHAR         ucI2CData[];                                                  //I2C data in bytes, should be less than 16 bytes usually
- }ATOM_I2C_DATA_RECORD;
- 
- 
-@@ -5451,14 +5451,14 @@ typedef struct _ATOM_I2C_DEVICE_SETUP_INFO
-   UCHAR		                        ucSSChipID;             //SS chip being used
-   UCHAR		                        ucSSChipSlaveAddr;      //Slave Address to set up this SS chip
-   UCHAR                           ucNumOfI2CDataRecords;  //number of data block
--  ATOM_I2C_DATA_RECORD            asI2CData[1];  
-+  ATOM_I2C_DATA_RECORD            asI2CData[];
- }ATOM_I2C_DEVICE_SETUP_INFO;
- 
- //==========================================================================================
- typedef struct  _ATOM_ASIC_MVDD_INFO
- {
-   ATOM_COMMON_TABLE_HEADER	      sHeader; 
--  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[1];
-+  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[];
- }ATOM_ASIC_MVDD_INFO;
- 
- //==========================================================================================
-@@ -5520,7 +5520,7 @@ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO
- typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V2
- {
-   ATOM_COMMON_TABLE_HEADER	      sHeader; 
--  ATOM_ASIC_SS_ASSIGNMENT_V2		  asSpreadSpectrum[1];      //this is point only. 
-+  ATOM_ASIC_SS_ASSIGNMENT_V2		  asSpreadSpectrum[];       //this is point only.
- }ATOM_ASIC_INTERNAL_SS_INFO_V2;
- 
- typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3
-@@ -5542,7 +5542,7 @@ typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3
- typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V3
- {
-   ATOM_COMMON_TABLE_HEADER	      sHeader; 
--  ATOM_ASIC_SS_ASSIGNMENT_V3		  asSpreadSpectrum[1];      //this is pointer only. 
-+  ATOM_ASIC_SS_ASSIGNMENT_V3		  asSpreadSpectrum[];       //this is pointer only.
- }ATOM_ASIC_INTERNAL_SS_INFO_V3;
- 
- 
-@@ -6282,7 +6282,7 @@ typedef union _ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS
- 
- typedef struct _ATOM_MEMORY_SETTING_DATA_BLOCK{
- 	ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS			ulMemoryID;
--	ULONG															        aulMemData[1];
-+	ULONG															        aulMemData[];
- }ATOM_MEMORY_SETTING_DATA_BLOCK;
- 
- 
-@@ -7092,7 +7092,7 @@ typedef struct _ATOM_DISP_OUT_INFO_V3
-   UCHAR  ucCoreRefClkSource;                    // value of CORE_REF_CLK_SOURCE
-   UCHAR  ucDispCaps;
-   UCHAR  ucReserved[2];
--  ASIC_TRANSMITTER_INFO_V2  asTransmitterInfo[1];     // for alligment only
-+  ASIC_TRANSMITTER_INFO_V2  asTransmitterInfo[];      // for alligment only
- }ATOM_DISP_OUT_INFO_V3;
- 
- //ucDispCaps
-@@ -7324,12 +7324,12 @@ typedef struct _CLOCK_CONDITION_SETTING_ENTRY{
-   USHORT usMaxClockFreq;
-   UCHAR  ucEncodeMode;
-   UCHAR  ucPhySel;
--  ULONG  ulAnalogSetting[1];
-+  ULONG  ulAnalogSetting[];
- }CLOCK_CONDITION_SETTING_ENTRY;
- 
- typedef struct _CLOCK_CONDITION_SETTING_INFO{
-   USHORT usEntrySize;
--  CLOCK_CONDITION_SETTING_ENTRY asClkCondSettingEntry[1];
-+  CLOCK_CONDITION_SETTING_ENTRY asClkCondSettingEntry[];
- }CLOCK_CONDITION_SETTING_INFO;
- 
- typedef struct _PHY_CONDITION_REG_VAL{
-@@ -7346,27 +7346,27 @@ typedef struct _PHY_CONDITION_REG_VAL_V2{
- typedef struct _PHY_CONDITION_REG_INFO{
-   USHORT usRegIndex;
-   USHORT usSize;
--  PHY_CONDITION_REG_VAL asRegVal[1];
-+  PHY_CONDITION_REG_VAL asRegVal[];
- }PHY_CONDITION_REG_INFO;
- 
- typedef struct _PHY_CONDITION_REG_INFO_V2{
-   USHORT usRegIndex;
-   USHORT usSize;
--  PHY_CONDITION_REG_VAL_V2 asRegVal[1];
-+  PHY_CONDITION_REG_VAL_V2 asRegVal[];
- }PHY_CONDITION_REG_INFO_V2;
- 
- typedef struct _PHY_ANALOG_SETTING_INFO{
-   UCHAR  ucEncodeMode;
-   UCHAR  ucPhySel;
-   USHORT usSize;
--  PHY_CONDITION_REG_INFO  asAnalogSetting[1];
-+  PHY_CONDITION_REG_INFO  asAnalogSetting[];
- }PHY_ANALOG_SETTING_INFO;
- 
- typedef struct _PHY_ANALOG_SETTING_INFO_V2{
-   UCHAR  ucEncodeMode;
-   UCHAR  ucPhySel;
-   USHORT usSize;
--  PHY_CONDITION_REG_INFO_V2  asAnalogSetting[1];
-+  PHY_CONDITION_REG_INFO_V2  asAnalogSetting[];
- }PHY_ANALOG_SETTING_INFO_V2;
- 
- typedef struct _GFX_HAVESTING_PARAMETERS {
--- 
-2.39.2
+Agreed, and I have personally witnessed some primal-scream therapy
+undertaken in response to attempts to better define volatile.
 
+> But it's precisely _because_ of the large-scale feature set of volatile 
+> and the compilers wish to cater for the real world, that it's mostly left 
+> alone, as is, as written by the author.  Sure, one can wish for better 
+> codegen related to volatile.  But it's a slippery slope: "here I have 
+> volatile, because I don't want optimizations to happen." - "but here I 
+> want a little optimization to happen" - "but not these" - ... It's ... not 
+> so easy :)
+
+And to your point, there really have been optimization bugs that have
+broken volatile.  So I do very much appreciate your careful attention
+to this matter.
+
+> In this specific case I think we have now sufficiently argued that 
+> "load-modify-store --> rmw" on x86 even for volatile accesses is a correct 
+> transformation (and one that has sufficiently local effects that our heads 
+> don't explode while thinking about all consequences).  You'd have to do 
+> that for each and every transformation where volatile stuff is involved, 
+> just so to not throw out the baby with the water.
+
+Understood!
+
+> > > If you can confirm the above about validity of the optimization, then at 
+> > > least there'd by a point for adding a peephole in GCC for this, even if 
+> > > current codegen isn't a bug, but I still wouldn't hold my breath.  
+> > > volatile is so ... ewww, it's best left alone.
+> > 
+> > Confirmed, and please, your SMP computer only works becuase of volatile,
+> > it *is* important.
+> 
+> Agreed.
+
+Good to hear!!!
+
+							Thanx, Paul
