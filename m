@@ -2,134 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7AB7DD89F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AC97DD8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344937AbjJaWvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        id S1344970AbjJaWxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344196AbjJaWvs (ORCPT
+        with ESMTP id S1344906AbjJaWxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:51:48 -0400
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F42B9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:51:45 -0700 (PDT)
-Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
-        by cmsmtp with ESMTPS
-        id xtGhqAG2DhqFdxxaLqu1pz; Tue, 31 Oct 2023 22:51:45 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id xxaKqb3lwGYrgxxaKqBfHA; Tue, 31 Oct 2023 22:51:44 +0000
-X-Authority-Analysis: v=2.4 cv=bYd47cDB c=1 sm=1 tr=0 ts=65418500
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=BZ6ONlOXkBpYPFFA8NQA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:In-Reply-To:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=3rpYGiaoo5zucxoVeBYC5Mx0GLDamigQVQRPlkiYVm4=; b=0OqWRKLdl6mnZF4UELRZD3jP9o
-        qOZdsc9eSG5Er/L5Wj6v5FGKIE+TC4k+83GVyPcpiq3ByHSWHRpkHgCY/HK22PpWWtuOvNkHrpER5
-        3xntmi68gK+29WFgBXouQSfQ7oSj7gvE7k5AhdB9FIJ7BE+pF292Vx66SLti5kF4Fu5I8WW6CcApG
-        vZggJ7HWL4/j38sXue1kMukGkwgKBjwInojgCk2bG3y5HMgWTIRm7kbw0UHIfFqEHebSxAvSLnP/y
-        Eopq6aHjQ/17mICTjQ4oimZ+VU3peJQ/jHUZsynl0op1l3fC0jBQDznWkvV8128ivmFno77KAwfE2
-        7zlPf5xg==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:53446 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <re@w6rz.net>)
-        id 1qxxaH-0040s9-3A;
-        Tue, 31 Oct 2023 16:51:42 -0600
-Subject: Re: [PATCH 6.5 000/112] 6.5.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231031165901.318222981@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-In-Reply-To: <20231031165901.318222981@linuxfoundation.org>
-Message-ID: <38fbd463-1160-0212-b9d2-6efeaaa6548e@w6rz.net>
-Date:   Tue, 31 Oct 2023 15:51:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 31 Oct 2023 18:53:34 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C86A2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:53:31 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc2575dfc7so33985875ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698792811; x=1699397611; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=87511vkM5pQLS/sY+Xc2jbRWOxXQCc9BpRYK++HTkxM=;
+        b=qhqXoDE6R+9+4Um4Qfay9xmyC/b7FYsk34axw1w1Ov7XxcuEiOiGsvVWOWlA1PFeFg
+         8kgx+B9bJxI+u608pXefG3uB70wABC71dCx4LozAlOL0KKw/DXPu2DTO0kXpZznFsQpm
+         Z/TWl1gykU1aWMBWXgCvp8UqTh3sHopabyI2L4Ej6oa8egj0/4Y6EN4/FsEl4sWuDZRl
+         x/xz9lSONts/gkQeLNVUcV+d8HzZ/mjy69wOXwh7VzWSFaMAa9X1wm3k6TQwuMR7F3aP
+         3NHA79vlP9dzh0fSnlQmPR5osJxYfeVuw6UpKHunCr00fo5AUv6ZfS0ruWlbFFvZwCiM
+         TVpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698792811; x=1699397611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=87511vkM5pQLS/sY+Xc2jbRWOxXQCc9BpRYK++HTkxM=;
+        b=DcJ2rKuJFri4iQLiNkZf1zKAphhX+L/B8dOCxfieAAOsPwACbbhqsE0NUTbw8PG7S5
+         0lsL17/NhopyiSYH8MVBV2FwVEDdTRKjWwq1Co67AX71f1QJnP9IvJdV+78nOc13sGQR
+         +yurghv2ey/OhjaPx5vZ86tn6xw+6iFWBvcNXUuEJ5/vTAzQSE+lZn5eXmg8x0KTiZV6
+         iP44lBax3mCeNkNYkvo5oypt3I+uX9AGtRRls4ttYBRZ0CLhl77mWF8xoZTUdffcOBbM
+         OimGH1G2c2fLvxWKOmYNaeE2OzoHyWmqSf43lbuib7KqOfMR4QHcOBsgWZUIYo2hI0z1
+         OujA==
+X-Gm-Message-State: AOJu0YxwPfnVOAYKvEAZ18xP4WHs98KLcyn1MmshMVITVgQ+nb2ydgLP
+        egDxMOF/XWyj2bmj5fiK5IO4aAoxOp8NqSHdhL0=
+X-Google-Smtp-Source: AGHT+IFkJBny1MzTOAbm3yqjjyqntKNn/QvQV635wjKHR1BORDo8BaW/HAraINKF0pHrz+lkKQOcKA==
+X-Received: by 2002:a17:902:e1cd:b0:1ca:8541:e1ea with SMTP id t13-20020a170902e1cd00b001ca8541e1eamr9793668pla.0.1698792810859;
+        Tue, 31 Oct 2023 15:53:30 -0700 (PDT)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id e19-20020a170902ed9300b001bbb8d5166bsm75583plj.123.2023.10.31.15.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 15:53:30 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 15:53:28 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        Evan Green <evan@rivosinc.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v8 3/5] riscv: Checksum header
+Message-ID: <ZUGFaCihPOnlc6Uy@ghost>
+References: <20231027-optimize_checksum-v8-0-feb7101d128d@rivosinc.com>
+ <20231027-optimize_checksum-v8-3-feb7101d128d@rivosinc.com>
+ <DM8PR11MB5751FE93CB74EDE4A2F4876BB8A0A@DM8PR11MB5751.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1qxxaH-0040s9-3A
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:53446
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfH6JXkCKYuceOoaxOAxbkJwCmimWu7oVAuBW1CPUtlGizk1BlOCrgrr6nZBM8VVy+fjkq+cBP4luMbUVYtKFKXK46zmkpCInWZhlaBMZhHuT6qp/J5M7
- pxQI3opTalJOfiJwc2gokwdcHP5PU0Ff6dPYxLwLhnLGWcCSH1/h3VhLC/IVve15+cIYxc38DnxuN6stdhemtMZPl+xCXeJRCyA=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB5751FE93CB74EDE4A2F4876BB8A0A@DM8PR11MB5751.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 10:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.10 release.
-> There are 112 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 02 Nov 2023 16:58:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Oct 31, 2023 at 09:11:07AM +0000, Wang, Xiao W wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Charlie Jenkins <charlie@rivosinc.com>
+> > Sent: Saturday, October 28, 2023 6:44 AM
+> > To: Charlie Jenkins <charlie@rivosinc.com>; Palmer Dabbelt
+> > <palmer@dabbelt.com>; Conor Dooley <conor@kernel.org>; Samuel Holland
+> > <samuel.holland@sifive.com>; David Laight <David.Laight@aculab.com>;
+> > Wang, Xiao W <xiao.w.wang@intel.com>; Evan Green <evan@rivosinc.com>;
+> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+> > arch@vger.kernel.org
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>; Albert Ou
+> > <aou@eecs.berkeley.edu>; Arnd Bergmann <arnd@arndb.de>; Conor Dooley
+> > <conor.dooley@microchip.com>
+> > Subject: [PATCH v8 3/5] riscv: Checksum header
+> > 
+> > Provide checksum algorithms that have been designed to leverage riscv
+> > instructions such as rotate. In 64-bit, can take advantage of the larger
+> > register to avoid some overflow checking.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > ---
+> >  arch/riscv/include/asm/checksum.h | 92
+> > +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 92 insertions(+)
+> > 
+> > diff --git a/arch/riscv/include/asm/checksum.h
+> > b/arch/riscv/include/asm/checksum.h
+> > new file mode 100644
+> > index 000000000000..9fd4b1b80641
+> > --- /dev/null
+> > +++ b/arch/riscv/include/asm/checksum.h
+> > @@ -0,0 +1,92 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * IP checksum routines
+> 
+> The checksum helpers' usage may not be limited to IP protocol.
+> 
 
-The build fails on RISC-V.
+Will remove IP from the wording.
 
-arch/riscv/mm/hugetlbpage.c: In function ‘set_huge_pte_at’:
-arch/riscv/mm/hugetlbpage.c:188:13: error: ‘sz’ undeclared (first use in 
-this function); did you mean ‘s8’?
-   188 |         if (sz >= PGDIR_SIZE)
-       |             ^~
-       |             s8
-arch/riscv/mm/hugetlbpage.c:188:13: note: each undeclared identifier is 
-reported only once for each function it appears in
+> > + *
+> > + * Copyright (C) 2023 Rivos Inc.
+> > + */
+> > +#ifndef __ASM_RISCV_CHECKSUM_H
+> > +#define __ASM_RISCV_CHECKSUM_H
+> > +
+> > +#include <linux/in6.h>
+> > +#include <linux/uaccess.h>
+> > +
+> > +#define ip_fast_csum ip_fast_csum
+> > +
+> > +extern unsigned int do_csum(const unsigned char *buff, int len);
+> > +#define do_csum do_csum
+> > +
+> > +/* Default version is sufficient for 32 bit */
+> > +#ifdef CONFIG_64BIT
+> > +#define _HAVE_ARCH_IPV6_CSUM
+> > +__sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+> > +			const struct in6_addr *daddr,
+> > +			__u32 len, __u8 proto, __wsum sum);
+> > +#endif
+> 
+> The do_csum and csum_ipv6_magic helpers are implemented in patch 4/5, so the
+> declarations should be moved there. Otherwise, build would fail at this patch.
+> 
 
-Caused by commit 16b6f77970f7a690c61de142511c9ac488d83e04
+Oops, that snuck into this patch somehow.
 
-riscv: fix set_huge_pte_at() for NAPOT mappings when a swap entry is set
+> > +
+> > +/* Define riscv versions of functions before importing asm-
+> > generic/checksum.h */
+> > +#include <asm-generic/checksum.h>
+> > +
+> > +/*
+> > + * Quickly compute an IP checksum with the assumption that IPv4 headers
+> > will
+> > + * always be in multiples of 32-bits, and have an ihl of at least 5.
+> > + * @ihl is the number of 32 bit segments and must be greater than or equal
+> > to 5.
+> > + * @iph is assumed to be word aligned given that NET_IP_ALIGN is set to 2 on
+> > + *	riscv, defining IP headers to be aligned.
+> > + */
+> > +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+> > +{
+> > +	unsigned long csum = 0;
+> > +	int pos = 0;
+> > +
+> > +	do {
+> > +		csum += ((const unsigned int *)iph)[pos];
+> > +		if (IS_ENABLED(CONFIG_32BIT))
+> > +			csum += csum < ((const unsigned int *)iph)[pos];
+> > +	} while (++pos < ihl);
+> > +
+> > +	/*
+> > +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
+> > +	 * worth checking if supported without Alternatives.
+> > +	 */
+> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
+> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
+> > +		unsigned long fold_temp;
+> > +
+> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
+> > +					      RISCV_ISA_EXT_ZBB, 1)
+> > +		    :
+> > +		    :
+> > +		    :
+> > +		    : no_zbb);
+> > +
+> > +		if (IS_ENABLED(CONFIG_32BIT)) {
+> > +			asm(".option push				\n\
+> > +			.option arch,+zbb				\n\
+> > +				not	%[fold_temp], %[csum]
+> > 	\n\
+> > +				rori	%[csum], %[csum], 16		\n\
+> > +				sub	%[csum], %[fold_temp], %[csum]
+> > 	\n\
+> > +			.option pop"
+> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
+> > +		} else {
+> > +			asm(".option push				\n\
+> > +			.option arch,+zbb				\n\
+> > +				rori	%[fold_temp], %[csum], 32	\n\
+> > +				add	%[csum], %[fold_temp], %[csum]
+> > 	\n\
+> > +				srli	%[csum], %[csum], 32		\n\
+> > +				not	%[fold_temp], %[csum]
+> > 	\n\
+> > +				roriw	%[csum], %[csum], 16		\n\
+> > +				subw	%[csum], %[fold_temp], %[csum]
+> > 	\n\
+> > +			.option pop"
+> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
+> > +		}
+> > +		return csum >> 16;
+> > +	}
+> > +no_zbb:
+> > +#ifndef CONFIG_32BIT
+> > +	csum += (csum >> 32) | (csum << 32);
+> 
+> Just like the next patch does, we can call ror64(csum, 32).
 
-This patch requires mainline commit 62ba41d2761206664a1fdc998051324457da2dd6
+I meant to change this last time, thank you for pointing it out again.
 
-mm: riscv: fix an unsafe pte read in huge_pte_alloc()
+- Charlie
 
-
+> 
+> BRs,
+> Xiao
+> 
+> > +	csum >>= 32;
+> > +#endif
+> > +	return csum_fold((__force __wsum)csum);
+> > +}
+> > +
+> > +#endif /* __ASM_RISCV_CHECKSUM_H */
+> > 
+> > --
+> > 2.42.0
+> 
