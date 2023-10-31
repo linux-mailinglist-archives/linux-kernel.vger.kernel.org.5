@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADD97DC590
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A619B7DC592
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234929AbjJaE6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 00:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
+        id S236809AbjJaE6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 00:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbjJaE6B (ORCPT
+        with ESMTP id S232876AbjJaE6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 00:58:01 -0400
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4470CC9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 21:57:58 -0700 (PDT)
-Message-ID: <82797556-eb7b-4867-86a1-859d11598fc9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698728276;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=glWEhzZHw9Q8o2NIQUVWc3t/rkBW4T0mk7G578550ZM=;
-        b=NJhb/Usj6xad87QL0WNtaCOAmbeXuKQfq+jsoJOwO7gOwL4fogLqIAPnNnjrVQuTZT1AG4
-        GxP2z/vcct3bhuY5AnRe2M4gD2trbrWGyqpZQmh1kTJxpDrL/ktryO6GrXi4U2Tpb5jev7
-        2ybIqJFQAOWF3aAXyb4ImbrEcAJD970=
-Date:   Tue, 31 Oct 2023 12:57:23 +0800
+        Tue, 31 Oct 2023 00:58:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3428C9E;
+        Mon, 30 Oct 2023 21:58:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7551EC433C7;
+        Tue, 31 Oct 2023 04:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698728279;
+        bh=vPWQWJfyhiQnh4+ZjNGf+AuE1H2xx2JWs58swbGwmp4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LAPSYSqTmzZarZx3thoV1X9VqFpYA+u6JdtjVT6jpI0uqAX7HT7qjuO62Cu8FYVEu
+         nYqBZvTgzhq8DQVIf5PuwSxNy08mJHaGRL/OYPT5jjQlOoS31KbcNTx5lIeD2KBs5r
+         nXPabgvVYIFuExbE1toMXbEja+XmVb3/YIFpLmP3Gdl0bJWH4UD5TSWx068A5KewaJ
+         c5+pFsYRLUUK8E7HPM9N4YkOyb7RvXE2XMc+fDXAHuUTQqLlBSu5vVOEA7RCq0lCON
+         C9fgn3Hp+Tao4suXnvwxpMNX9RS+1lUnvZUZzWZOYZZo91Lj07nWdcST3yF97cbCxq
+         WXtRfTcUuzang==
+Date:   Tue, 31 Oct 2023 10:27:40 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mhi@lists.linux.dev
+Subject: Re: [PATCH v5 0/4] arm64: qcom: sa8775p: add cache coherency support
+ for SA8775P
+Message-ID: <20231031045740.GA11778@thinkpad>
+References: <1698727267-22131-1-git-send-email-quic_msarkar@quicinc.com>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3 0/7] slub: Delay freezing of CPU partial slabs
-Content-Language: en-US
-To:     Christoph Lameter <cl@linux.com>
-Cc:     vbabka@suse.cz, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
- <d5e40e42-ad02-e53d-c38f-09a4fdf1be88@linux.com>
- <1199315b-63ce-4be4-8cde-b8b2fd29f91a@linux.dev>
- <7f70d130-c05a-3cb7-9509-41c21c3014fb@linux.com>
- <1dcc9969-da5b-4384-96d8-d03c835f198e@linux.dev>
- <edd0197b-7a79-9cb5-8ac5-5d202c2ed51b@linux.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <edd0197b-7a79-9cb5-8ac5-5d202c2ed51b@linux.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1698727267-22131-1-git-send-email-quic_msarkar@quicinc.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/31 11:47, Christoph Lameter wrote:
-> On Tue, 31 Oct 2023, Chengming Zhou wrote:
-> 
->> The current scheme (which this series implemented) is:
->>
->> - node partial slabs: PG_Workingset (set or clear with per-node list_lock protection)
->> - cpu partial slabs: !PG_Workingset
-> 
-> And then the frozen flag needs to be set. Otherwise slab_free() would conclude it is on a partial list?
+On Tue, Oct 31, 2023 at 10:11:02AM +0530, Mrinmay Sarkar wrote:
+> This series is to enable cache snooping logic in both RC and EP
+> driver and add the "dma-coherent" property in dtsi to support
+> cache coherency in SA8775P.
 > 
 
-- cpu partial slabs: !PG_Workingset && !frozen
+You just merged the cover letter of two different series. No, you are not
+enabling cache snooping in this series.
 
-Here comes the optimization that "frozen" is not set for the cpu partial slabs,
-slab_free() will grab node list_lock then check by !PG_Workingset that it's not
-on a node partial list.
+Please take time to review all the changes and cover letter before posting.
 
->> - cpu slabs: !PG_Workingset && frozen (set or clear using cmpxchg together with freelist)
+- Mani
+
+> 
+> This series adds the relavent DT bindings, new compatible string,
+> add support to EPF driver and add EP PCIe node in dtsi file for
+> ep pcie0 controller.
+> 
+> v4 -> v5:
+> - add maxItems to the respective field to constrain io space and
+>   interrupt in all variants.
+> 
+> v3 -> v4:
+> - add maxItems field in dt bindings
+> - update comment in patch2
+> - dropped PHY driver patch as it is already applied [1]
+> - update comment in EPF driver patch
+> - update commect in dtsi and add iommus instead of iommu-map
+> 
+> [1] https://lore.kernel.org/all/169804254205.383714.18423881810869732517.b4-ty@kernel.org/
+> 
+> v2 -> v3:
+> - removed if/then schemas, added minItems for reg,
+>   reg-bnames, interrupt and interrupt-names instead.
+> - adding qcom,sa8775p-pcie-ep compitable for sa8775p
+>   as we have some specific change to add.
+> - reusing sm8450's pcs_misc num table as it is same as sa8775p.
+>   used appropriate namespace for pcs.
+> - remove const from sa8775p_header as kernel test robot
+>   throwing some warnings due to this.
+> - remove fallback compatiable as we are adding compatiable for sa8775p.
+> 
+> v1 -> v2:
+> - update description for dma
+> - Reusing qcom,sdx55-pcie-ep compatibe so remove compaitable
+>   for sa8775p
+> - sort the defines in phy header file and remove extra defines
+> - add const in return type pci_epf_header and remove MHI_EPF_USE_DMA
+>   flag as hdma patch is not ready
+> - add fallback compatiable as qcom,sdx55-pcie-ep, add iommu property
 > 
 > 
+> Mrinmay Sarkar (4):
+>   dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+>   PCI: qcom-ep: Add support for SA8775P SOC
+>   PCI: epf-mhi: Add support for SA8775P
+>   arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
 > 
->> - full slabs: !PG_Workingset
+>  .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 46 ++++++++++++++++
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c          |  1 +
+>  drivers/pci/endpoint/functions/pci-epf-mhi.c       | 17 ++++++
+>  4 files changed, 126 insertions(+), 2 deletions(-)
 > 
-> And frozen is clear? Otherwise it is the same as a cpu partial slab.
+> -- 
+> 2.7.4
+> 
 > 
 
-Right, - full slabs: !PG_Workingset && !frozen
-
-Yes, it's the same as a cpu partial slab from only these two flags, but
-slab_free() also know whether it was full or not.
-
->> As Vlastimil noted, it's possible to drop "frozen" bit for cpu slabs, but
->> we keep it for performance, since we don't need to grab node list_lock to
->> check whether PG_Workingset is set or not if the "frozen" bit is set.
->>
->> Thanks!
->>
+-- 
+மணிவண்ணன் சதாசிவம்
