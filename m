@@ -2,124 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 232917DCE00
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 051557DCE02
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344618AbjJaNjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
+        id S1344629AbjJaNjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344599AbjJaNjP (ORCPT
+        with ESMTP id S1344599AbjJaNj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:39:15 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D34E6;
-        Tue, 31 Oct 2023 06:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=E/yUX/f4ZCe3DyW2zI4fL8vzPIun1wWgfcaAJyJfsSA=; b=K6C6qQbMSnrXsvrXDh8sNCgaUe
-        EHjQ50sGgULoNbjtSR7S8tzUutGq/zji5Iiq74+KyaChkfPgTX1Qb5oN/RE7jAtkJJJrQZMas1r+y
-        cyETvV7KrlgMtpCPIOD3xc4Gl9F8PNrSY+5vrMKTTKJhU8Z/r2Zyec5xacPEOUFZXTM0=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52896 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qxoxS-00067I-Kz; Tue, 31 Oct 2023 09:39:04 -0400
-Date:   Tue, 31 Oct 2023 09:39:01 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     =?ISO-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc:     "Russell King" <linux@armlinux.org.uk>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Jiri Slaby" <jirislaby@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Gregory CLEMENT" <gregory.clement@bootlin.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
-        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>
-Message-Id: <20231031093901.aa085ec1316ab0d008cb0080@hugovil.com>
-In-Reply-To: <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
-        <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
-        <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
-        <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Tue, 31 Oct 2023 09:39:29 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4611DF5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:39:26 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 47B1160173;
+        Tue, 31 Oct 2023 14:39:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+        t=1698759564; bh=pZ/sgbtwHqidxHOPdy7eds8j+rmF6Dny4sFR2wQMQFc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=n/BTwPaHXWnl5PmWe9VigUcRoCqCgKwMDoRrjSAIUynbgMe33G8hvUAAKZMQLc3VN
+         s5l6d5i8aZXs7qr4ZTO4qmSnmxqu/Gq02ysh/8/bBOccZRkCv4DD66z6zrIGDR/dNy
+         z+93IEqITFFJsz/0Lqr+DnBiJP7vulUJsjvD7QgUe7QxvKC/U7rrRheJj/rpGvfLAR
+         xKYVtVBxwUvvLFVvmDnAZnhhaCO4hobNuMQq+GMlLiyfxHKpnaGlCUWHOi32a6JbeW
+         GW0d9BEC6xH440VRZA4CVZo+qmp+4Xliz2mmUZfPevW/VtIFwa5ZLFmRLbAIYmezp+
+         /LJTK5sIRXG1Q==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RxZScxsGEJQT; Tue, 31 Oct 2023 14:39:21 +0100 (CET)
+Received: from [IPV6:2001:b68:2:2600:14cd:7d53:817e:e1c2] (unknown [IPv6:2001:b68:2:2600:14cd:7d53:817e:e1c2])
+        by domac.alu.hr (Postfix) with ESMTPSA id 21C1C60171;
+        Tue, 31 Oct 2023 14:39:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698759561; bh=pZ/sgbtwHqidxHOPdy7eds8j+rmF6Dny4sFR2wQMQFc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=W+VUHxir6tu3CUZAq5wV5ItKdlLWb6QjkRwI4i0aB2lItHpT0Hk6pxycIHY4W9tSV
+         HTp3qucWtzydjW6fEMW7VnSpREI0M5+PvJqShBmMpy3ZKvraVJmbJeWIN0GbLc6kmx
+         X56ISaX0ATI3BXZmynlHu/YNXSJIEnziDE62Wj3gleDSN7kWVNTbJghLxI+FJD1Vrq
+         Fj9SlxbzlCkA3H44d0W2l2Pm0iSzQFBGpj2OjhKPAUEPPkTLvEDMbAKam9aLk227iG
+         l7ZkvJP1T7RCPWxgDDsCUJIvWhrvcmgLd6Lr+4sq0KbWlu/bgQNoX7v6XVERiRH1vp
+         +FVL8l9Odvuzg==
+Message-ID: <d9206b2b-64da-41f0-bc64-f2807129277a@alu.unizg.hr>
+Date:   Tue, 31 Oct 2023 14:39:19 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 6/7] r8169: Coalesce mac ocp write and modify for 8125
+ and 8125B start to reduce spinlocks
+Content-Language: en-US
+To:     Akira Yokosawa <akiyks@gmail.com>, mirsad.todorovac@alu.unizg.hr
+Cc:     hkallweit1@gmail.com, linux-kernel@vger.kernel.org
+References: <e9cb3842-3492-4b85-b7ad-77605a5836c3@alu.unizg.hr>
+ <11941121-205b-44fd-86ee-1b86a52a3211@gmail.com>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <11941121-205b-44fd-86ee-1b86a52a3211@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
- 7 or 8 in _get_options
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023 10:35:29 +0100
-Th=E9o Lebrun <theo.lebrun@bootlin.com> wrote:
+On 10/31/2023 9:23 AM, Akira Yokosawa wrote:
+> Hello Mirsad,
+> 
+> [most CCs dropped]
+> 
+> I'm responding to your comment quoted below.  It caught eyes of me
+> who happens to be a reviewer of LKMM and a LaTeX advisor to perfbook.
+> 
+> On Mon, 30 Oct 2023 16:02:28 +0100, Mirsad Todorovac wrote:
+>> On 10/30/23 15:02, Heiner Kallweit wrote:
+> [...]
+>>>
+>>> All this manual locking and unlocking makes the code harder
+>>> to read and more error-prone. Maybe, as a rule of thumb:
+>>> If you can replace a block with more than 10 mac ocp ops,
+>>> then fine with me
+>> As I worked with another German developer, Mr. Frank Heckenbach from the GNU Pascal project,
+>> I know that Germans are pedantic and reliable :-)
+>>
+>> If this rtl_hw_start_8125_common() is called only once, then maybe every memory bus cycle
+>> isn't worth saving, and then maybe the additional complexity isn't worth adding (but it
+>> was fun doing, and it works with my NIC).
+>>
+>> AFAIK, a spin_lock_irqsave()/spin_unlock_irqrestore() isn't a free lunch as you know, and I read
+>> from the manuals that on modern CPUs a locked ADD $0, -128(%esp) or something takes about 50
+>> clock cycles, in which all cores have to wait.
+> 
+> Do you mean, while one of x86 CPUs is executing "lock; addl $0, -4(%esp)"
+> aka smp_mb(), bus locking prevents all the other CPUs in the system
+> connected to the bus from doing any memory accesses ???
+> 
+> If it is the case, I believe you are missing the state of the art
+> optimization of x86 memory system architecture, where most of atomic
+> operations are done using cache locking.  Bus locking is used only
+> when it is unavoidable.
+> 
+> Hint: A short introduction can be found at stackoverflow.com [1].
+> Quote of (then) section 7.1.4 from Intel's SDM vol 3A in the answer
+> should suffice.
+> 
+> [1]: https://stackoverflow.com/questions/3339141/x86-lock-question-on-multi-core-cpus
+> 
+> A reachable link to Intel SDM should be somewhere in perfbook's bibliography.
+> The relevant section in Vol 3A is now "2.8.5 Controlling the Processor".
+> 
+> Hope this helps,
+> Akira
 
-> Hello,
->=20
-> On Thu Oct 26, 2023 at 4:53 PM CEST, Hugo Villeneuve wrote:
-> > On Thu, 26 Oct 2023 12:41:23 +0200
-> > Th=E9o Lebrun <theo.lebrun@bootlin.com> wrote:
-> >
-> > Hi,
-> > I would change the commit title to better indicate that you add support
-> > for bits 5 and 6, which was missing.
-> >
-> > Maybe "Add support for 5 and 6 bits in..." ?
-> >
-> > > pl011_console_get_options() gets called to retrieve currently configu=
-red
-> > > options from the registers. Previously, LCRH_TX.WLEN was being parsed
-> >
-> > It took me some time to understand your explanation :) Maybe change
-> > to:
-> >
-> > "Previously, only 7 or 8 bits were supported."
-> >
-> > > as either 7 or 8 (fallback). Hardware supports values from 5 to 8
-> >
-> > Add bits:
-> >
-> > "5 to 8 bits..."
-> >
-> > And indicate that this patch adds support for 5 and 6 bits.
->=20
-> I agree the whole commit message is unclear. Let's rewrite it. What do
-> you think of the following:
->=20
->    tty: serial: amba-pl011: Allow parsing word length of 5/6 bits at cons=
-ole setup
->=20
->    If no options are given at console setup, we parse hardware register
->    LCRH_TX.WLEN for bits per word. We compare the value to the 7 bits
->    value (UART01x_LCRH_WLEN_7). If the hardware is configured for 5, 6
->    or 8 bits per word, we fallback to 8 bits.
->=20
->    Change that behavior to parse the whole range available: from 5 to 8
->    bits per word.
->=20
-> Note that we don't add support for 5/6 bits, we only update the parsing
-> of the regs (if no options are passed at setup) to reflect the current
-> hardware config. The behavior will be different only if the inherited
-> value (from reset/bootloader) is 5 or 6: previously we guessed 8 bits
-> word length, now we guess the right value.
->=20
-> What's your opinion on this new commit message?
+Thanks for the tip. I really need to catch up with my homework and the 
+documentation.
 
-Hi,
-that's fine with me.
+Yesterday I've lost a friend who worked very hard for her PhD, so I 
+wonder again about the purpose of meaning. :-/
 
-Hugo.
+Thanks,
+Mirsad
+
+>> Doing that in storm of 10 lock/unlock pairs amounts to 500 cycles or 125 ns in the best case
+>> on a 4 GHz CPU.
+>>
+>> But I trust that you as the maintainer have the big picture and greater insight in the actual hw.
+> 
