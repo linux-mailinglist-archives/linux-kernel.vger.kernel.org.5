@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB327DD6E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67D17DD6E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343858AbjJaUDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
+        id S231316AbjJaUFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234890AbjJaUDQ (ORCPT
+        with ESMTP id S231253AbjJaUFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:03:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EEEF7;
-        Tue, 31 Oct 2023 13:03:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34190C433C9;
-        Tue, 31 Oct 2023 20:03:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698782594;
-        bh=2aV6IcuNuc4VZa9a7hwgLV8gteCTymOcvVS85W7p4oU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=awg5+Ps4V1xjtT+IA5wregK3t8Xmhvgs5CiZFN/K4wNY3yPHZmDvTVkkD1D6mBG3g
-         rPgsfiWMUJwdqMg5ZPb+FehIVIN9IdejQgMik6WbmRqv9M83lHctTynaePH7Ne0/DE
-         Mv7suJrW3+iSBV/pVpsLekNNigZuDO78L99G8P89XfiHrtwyf8UY9GfJb88RcMN9Jd
-         xLxFZc7k5yftOF/VxdnZe+P/Lc6BKITq8GERBI4Ej284JJCDCwqVR3dU1pQH3o9NSj
-         I3JF56VJ7fdxgBP8C7I8LzoPrpcpcVZtYPlR1aU8Cwsp7UvE2mY9H3ve1grvaCPgLe
-         RKtQiQjeR02rw==
-Date:   Tue, 31 Oct 2023 15:03:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI: Use FIELD_PREP() and remove *_SHIFT defines
-Message-ID: <20231031200312.GA25127@bhelgaas>
+        Tue, 31 Oct 2023 16:05:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B57C9;
+        Tue, 31 Oct 2023 13:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wN7hoCdZjW2Qi5EV2D6vN+0xz2qgaPB0lFfQQA1NDJc=; b=CCPQqz/OCjQy8Bu7hLe6nE3rKM
+        WyqY+s0CxwA4JgbLPJomToXKheGbdKMG3rznfeNS3Pyu4ZJ3dFezHFMrkEMXAHolsZ6ae2nUYO8N3
+        gT6bfkYCTC/m+vtJj0S7Q3KAW/k916z0LNu/fq8UR3bGs1g0h8Ao/lAwSB/cxQJc5C1T32zj0wTej
+        ZEEiXYsLbm1AdOxHRSyHXTW5bdsZPFvhSyY7x1/12Ew1C8zkdKqgjYiqC/aPblw6SltPUI42G92is
+        /c1ErYiK8sSAYLhuJoPbQ0b+K1eHUV98f/RQlpvHA5VbAsBBM+8tW+Gewg0Qkl37pkNwRVJhmqygx
+        qMuwoUPw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qxuzO-0053Q4-2l;
+        Tue, 31 Oct 2023 20:05:27 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 784E8300473; Tue, 31 Oct 2023 21:05:26 +0100 (CET)
+Date:   Tue, 31 Oct 2023 21:05:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Luca Boccassi <bluca@debian.org>
+Subject: Re: [PATCH] sched: psi: fix unprivileged polling against cgroups
+Message-ID: <20231031200526.GH15024@noisy.programming.kicks-ass.net>
+References: <20231026164114.2488682-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231027083811.9200-1-ilpo.jarvinen@linux.intel.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231026164114.2488682-1-hannes@cmpxchg.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 11:38:11AM +0300, Ilpo Järvinen wrote:
-> Instead of open-coded masking and shifting with PCI_CONF1_* bitfields,
-> use GENMASK() and FIELD_PREP(), and then remove the *_SHIFT defines
-> that are no longer needed.
+
++cc tj because cgroup
+
+On Thu, Oct 26, 2023 at 12:41:14PM -0400, Johannes Weiner wrote:
+> 519fabc7aaba ("psi: remove 500ms min window size limitation for
+> triggers") breaks unprivileged psi polling on cgroups.
 > 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Historically, we had a privilege check for polling in the open() of a
+> pressure file in /proc, but were erroneously missing it for the open()
+> of cgroup pressure files.
+> 
+> When unprivileged polling was introduced in d82caa273565 ("sched/psi:
+> Allow unprivileged polling of N*2s period"), it needed to filter
+> privileges depending on the exact polling parameters, and as such
+> moved the CAP_SYS_RESOURCE check from the proc open() callback to
+> psi_trigger_create(). Both the proc files as well as cgroup files go
+> through this during write(). This implicitly added the missing check
+> for privileges required for HT polling for cgroups.
+> 
+> When 519fabc7aaba ("psi: remove 500ms min window size limitation for
+> triggers") followed right after to remove further restrictions on the
+> RT polling window, it incorrectly assumed the cgroup privilege check
+> was still missing and added it to the cgroup open(), mirroring what we
+> used to do for proc files in the past.
+> 
+> As a result, unprivileged poll requests that would be supported now
+> get rejected when opening the cgroup pressure file for writing.
+> 
+> Remove the cgroup open() check. psi_trigger_create() handles it.
+> 
+> Fixes: 519fabc7aaba ("psi: remove 500ms min window size limitation for triggers")
+> Cc: stable@vger.kernel.org # 6.5+
+> Reported-by: Luca Boccassi <bluca@debian.org>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Since merge window is upon is, I've queued this with the intent to stick
+into sched/urgent after rc1.
+
 > ---
+>  kernel/cgroup/cgroup.c | 12 ------------
+>  1 file changed, 12 deletions(-)
 > 
->  drivers/pci/pci.h | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 39a8932dc340..31da9fde8aca 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -2,6 +2,8 @@
->  #ifndef DRIVERS_PCI_H
->  #define DRIVERS_PCI_H
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index f11488b18ceb..2069ee98da60 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -3879,14 +3879,6 @@ static __poll_t cgroup_pressure_poll(struct kernfs_open_file *of,
+>  	return psi_trigger_poll(&ctx->psi.trigger, of->file, pt);
+>  }
 >  
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
->  #include <linux/pci.h>
->  
->  /* Number of possible devfns: 0.0 to 1f.7 inclusive */
-> @@ -797,19 +799,15 @@ static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
->   * Section 3.2.2.3.2, Figure 3-2, p. 50.
->   */
->  
-> -#define PCI_CONF1_BUS_SHIFT	16 /* Bus number */
-> -#define PCI_CONF1_DEV_SHIFT	11 /* Device number */
-> -#define PCI_CONF1_FUNC_SHIFT	8  /* Function number */
+> -static int cgroup_pressure_open(struct kernfs_open_file *of)
+> -{
+> -	if (of->file->f_mode & FMODE_WRITE && !capable(CAP_SYS_RESOURCE))
+> -		return -EPERM;
 > -
-> -#define PCI_CONF1_BUS_MASK	0xff
-> -#define PCI_CONF1_DEV_MASK	0x1f
-> -#define PCI_CONF1_FUNC_MASK	0x7
-> +#define PCI_CONF1_BUS_MASK	GENMASK(23, 16)
-> +#define PCI_CONF1_DEV_MASK	GENMASK(15, 11)
-> +#define PCI_CONF1_FUNC_MASK	GENMASK(10, 8)
->  #define PCI_CONF1_REG_MASK	0xfc /* Limit aligned offset to a maximum of 256B */
->  
->  #define PCI_CONF1_ENABLE	BIT(31)
-> -#define PCI_CONF1_BUS(x)	(((x) & PCI_CONF1_BUS_MASK) << PCI_CONF1_BUS_SHIFT)
-> -#define PCI_CONF1_DEV(x)	(((x) & PCI_CONF1_DEV_MASK) << PCI_CONF1_DEV_SHIFT)
-> -#define PCI_CONF1_FUNC(x)	(((x) & PCI_CONF1_FUNC_MASK) << PCI_CONF1_FUNC_SHIFT)
-> +#define PCI_CONF1_BUS(x)	FIELD_PREP(PCI_CONF1_BUS_MASK, (x))
-> +#define PCI_CONF1_DEV(x)	FIELD_PREP(PCI_CONF1_DEV_MASK, (x))
-> +#define PCI_CONF1_FUNC(x)	FIELD_PREP(PCI_CONF1_FUNC_MASK, (x))
->  #define PCI_CONF1_REG(x)	((x) & PCI_CONF1_REG_MASK)
-
-I love getting rid of the _SHIFT #defines.
-
-I'm a dinosaur and haven't been completely converted to the wonders of
-GENMASK yet.  PCI_CONF1_ADDRESS is the only user of PCI_CONF1_BUS etc,
-so I think this would be simpler overall:
-
-  #define PCI_CONF1_BUS  0x00ff0000
-  #define PCI_CONF1_DEV  0x0000f800
-  #define PCI_CONF1_FUNC 0x00000700
-  #define PCI_CONF1_REG  0x000000ff
-
-  #define PCI_CONF1_ADDRESS(bus, dev, func, reg) \
-    (FIELD_PREP(PCI_CONF1_BUS, (bus)) | \
-     FIELD_PREP(PCI_CONF1_DEV, (dev)) | \
-     FIELD_PREP(PCI_CONF1_FUNC, (func)) | \
-     FIELD_PREP(PCI_CONF1_REG, (reg & ~0x3)))
-
-The v6.7 merge window just opened, and I won't start merging v6.8
-material until v6.7-rc1 (probably Nov 12), so no hurry on this.
-
-Bjorn
+> -	return 0;
+> -}
+> -
+>  static void cgroup_pressure_release(struct kernfs_open_file *of)
+>  {
+>  	struct cgroup_file_ctx *ctx = of->priv;
+> @@ -5287,7 +5279,6 @@ static struct cftype cgroup_psi_files[] = {
+>  	{
+>  		.name = "io.pressure",
+>  		.file_offset = offsetof(struct cgroup, psi_files[PSI_IO]),
+> -		.open = cgroup_pressure_open,
+>  		.seq_show = cgroup_io_pressure_show,
+>  		.write = cgroup_io_pressure_write,
+>  		.poll = cgroup_pressure_poll,
+> @@ -5296,7 +5287,6 @@ static struct cftype cgroup_psi_files[] = {
+>  	{
+>  		.name = "memory.pressure",
+>  		.file_offset = offsetof(struct cgroup, psi_files[PSI_MEM]),
+> -		.open = cgroup_pressure_open,
+>  		.seq_show = cgroup_memory_pressure_show,
+>  		.write = cgroup_memory_pressure_write,
+>  		.poll = cgroup_pressure_poll,
+> @@ -5305,7 +5295,6 @@ static struct cftype cgroup_psi_files[] = {
+>  	{
+>  		.name = "cpu.pressure",
+>  		.file_offset = offsetof(struct cgroup, psi_files[PSI_CPU]),
+> -		.open = cgroup_pressure_open,
+>  		.seq_show = cgroup_cpu_pressure_show,
+>  		.write = cgroup_cpu_pressure_write,
+>  		.poll = cgroup_pressure_poll,
+> @@ -5315,7 +5304,6 @@ static struct cftype cgroup_psi_files[] = {
+>  	{
+>  		.name = "irq.pressure",
+>  		.file_offset = offsetof(struct cgroup, psi_files[PSI_IRQ]),
+> -		.open = cgroup_pressure_open,
+>  		.seq_show = cgroup_irq_pressure_show,
+>  		.write = cgroup_irq_pressure_write,
+>  		.poll = cgroup_pressure_poll,
+> -- 
+> 2.42.0
+> 
