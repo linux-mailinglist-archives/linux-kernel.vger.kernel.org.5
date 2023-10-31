@@ -2,162 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A157DC57B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 612C47DC581
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236872AbjJaEl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 00:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
+        id S236848AbjJaEne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 00:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235989AbjJaElu (ORCPT
+        with ESMTP id S234735AbjJaEnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 00:41:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D430BC0;
-        Mon, 30 Oct 2023 21:41:47 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V1Jce5011097;
-        Tue, 31 Oct 2023 04:41:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=RsQx3p3Jdt45deKD8q2naBRmwFH/7pLMEOjfr52W8xs=;
- b=Y7LVzWvxImTNUVeFVn+35pFz8zckToDtCDvvPWC9hscEdNM1F9wuqlys+0t/7cLfTTug
- BAZfZknYPEGsG7BxoO65rnmiyX/qojAxJ9WwqFkfjCZthkVMTCYQx909sccQYPaQZ09t
- +iXp5wffbEeH1ESWWX7bzzSjMDx7StJ0I+jjl3sEY0kql2b9ieLI7Jdeu3sPpSn3p+JL
- iJe9seqwIxmZh1NiUuyuGUyXyCyFyggwODR8uta8kTumvRl0t+K4n8PbbjLcrEwUjl+D
- FFaAjM7q9tUOHQB/ib6N2iHAdUbe65nONJOZbzW9uQCDHVHeULqc5oNnQd1eaqwdkTBa 6Q== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u29fet9wb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 04:41:19 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 39V4fCTv012165;
-        Tue, 31 Oct 2023 04:41:16 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3u0uckttaw-1;
-        Tue, 31 Oct 2023 04:41:16 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39V4fDA6012177;
-        Tue, 31 Oct 2023 04:41:16 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 39V4fD4u012170;
-        Tue, 31 Oct 2023 04:41:16 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
-        id E7CDD449C; Tue, 31 Oct 2023 10:11:14 +0530 (+0530)
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org
-Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijose@quicinc.com,
-        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev
-Subject: [PATCH v5 4/4] arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
-Date:   Tue, 31 Oct 2023 10:11:06 +0530
-Message-Id: <1698727267-22131-5-git-send-email-quic_msarkar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1698727267-22131-1-git-send-email-quic_msarkar@quicinc.com>
-References: <1698727267-22131-1-git-send-email-quic_msarkar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7bjdhfygAblCPrZSj_RQ1yYrKCUA08xe
-X-Proofpoint-ORIG-GUID: 7bjdhfygAblCPrZSj_RQ1yYrKCUA08xe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 spamscore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310310034
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 00:43:32 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2116.outbound.protection.outlook.com [40.107.237.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140EBAB
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 21:43:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yn7Uz/+/QgmxdNFLXXDoB4b6LZ6+A7DIraHTvkQvnSVXcSp0PPyrcPe8pUe0ooyPv6udfNk5BYeIi1TpPOlp2/Kut1hvZBtFb5WkZA0bC7hrw+nfcGU67gZY9Gg9nG5iiRix+H2c2+HzWrAwLnMm8lxP554wOTA1WzVZoJDV+5f020SCmxi1QZ34EZB4oh2LAlOM8C1CM//jRF0gLrxXG5+jmq4eUxgSbxvRNt92vKE9L4Ndyq+MNhUmKOBzeFJlXNZcEfcHrmsOrxSxxeQGoTyNtN6GsWaRuQDsp6bY2dWhYq4Z1BgnwNFMo55wWg49jNjG2t/UfG7V51ZBAtqOYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5FCo75nzb9xj7+I4bOo+vdLR6H+vsSQZZ7CdTH1Fz1c=;
+ b=AMqFi1qftFwkJxMOytuIjzYCTTR3xbqRraR/jSnveOU4bTnO1kRqfgHgXFCtJgCF4CChViXLvnZbaD44NWtond+qiIduUgiNIi97+k1ltyYivfXA0YeaFdxOjG/3F8JiWuq4rfE3m7kGfuoICxo7PX5KHqrJ3V/UyB/JcgV3HxzSshBEvSzMFpKDOuhen6GjV81pUDkPI63zr2qG4XtQ/WbrBNb7yu0JtLV8gk9cQhmsEceRwZioaZWxjgIXifNCUlP9TCn7Hh+8/j/Pe5e3GSS0sZz9WtWaa7DS2SlvLfha2Kx8m6VSScHzDjuHkoFanvQXN8VMeJCeDFVWRJOi+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5FCo75nzb9xj7+I4bOo+vdLR6H+vsSQZZ7CdTH1Fz1c=;
+ b=GUMnDJi1928vs4hBApOmAE80I+myc1beUZy3oouBJi2Ol3SNMuHGKHZcwR/qJ5xas5D7Lo8jDiDmsMrRMC8sSZv+mLa+4MjLJD7PWD5DqZ+ZYJAXuMNZZ+2FteOmoV5WEnpIWuwp5qLhTJZ2iC3ZuaJYHiPblNdXkihKIONsfuM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ SJ2PR01MB8507.prod.exchangelabs.com (2603:10b6:a03:55e::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.33; Tue, 31 Oct 2023 04:43:23 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::f7a2:1a96:ba3f:d70f]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::f7a2:1a96:ba3f:d70f%4]) with mapi id 15.20.6933.024; Tue, 31 Oct 2023
+ 04:43:22 +0000
+Date:   Mon, 30 Oct 2023 21:43:10 -0700 (PDT)
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64/arm: perf: Don't discard upper 32 bits from
+ PMCEID0/1 registers
+In-Reply-To: <ZTuVEXnvqfIPMtmF@FVFF77S0Q05N>
+Message-ID: <29b2ffc-82f2-bfce-d44a-c3363f4af83@os.amperecomputing.com>
+References: <20231027012243.111070-1-ilkka@os.amperecomputing.com> <ZTuVEXnvqfIPMtmF@FVFF77S0Q05N>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-ClientProxiedBy: CH2PR12CA0009.namprd12.prod.outlook.com
+ (2603:10b6:610:57::19) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SJ2PR01MB8507:EE_
+X-MS-Office365-Filtering-Correlation-Id: 325ceb28-a4c4-47c4-1c82-08dbd9cbe9b1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9vppj2YXiFfd7TqUgFXzWKvZG+aTriIqJ1JymB++UT/Z7Pv8YIr03SUn+l+RuMQ+MCKl2UAMr6EInip48UfcuRVUtTeoZJevliQ4CkOlopwQWCPCKqVYAlliYSykHVCmNOoRRxx4M1uMg1Fe0v+7N9NMBt8R6N+9sRWGwX215Fdlk5bg02/pPUj/kuwKnNwdmbw7AHg83TYeuIaii8oqAkNANBJG0sEvDF55dsH+g5UOs6S87z/L5Cwv5aajRlIJ1pcDXShq0UBBfGYEXJ39eTE1ain4879gaQpfu1eS3blOcfCQFLNrHIhugQVM5S1rqd6OIrL6SfPN+B1F2OivwiTRCOsnZLg45GqR8ykkdB7KLs7fR7PkMl+/4Z18v2FttN590ZsHtmD5mZU+7mOnt7V9mBw4wJWiLW72cmCEpJtuLDaKpUgqH5ag61nGgc2iHF6SKn1ZJBELSRLm0L2u9EW7env7iEZgwflqRJqXc4c8nM9GHjkOri/c/HKTYJIGXEu1XPJr3n6/ALRI/PGLAiRKrELCPqLzlqHqM9EDVIftcsD2v+jUpYsObZ1RcJBe8LOJGsGAyCcRJuNwvt4jP0Bf1ENHz0l6MzDiMMG/l9GN2nC8ggmc+7IhPLeR6AiE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39850400004)(346002)(396003)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6666004)(83380400001)(6506007)(52116002)(26005)(8676002)(5660300002)(2616005)(4326008)(8936002)(38350700005)(41300700001)(6486002)(2906002)(6512007)(966005)(6916009)(478600001)(66556008)(86362001)(316002)(38100700002)(66476007)(54906003)(66946007)(277424003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BBsxDaIdumCyheqUbpMd7gHh2eYj0XB+Y5Zh/F56uqa7y+ZF+nifB4KQc7i6?=
+ =?us-ascii?Q?uSFEPTfHzqqHJtm4Q0DzvbxFtNb54RfnO60MAqZ/0E3TE8Gklc96xxLDiaLJ?=
+ =?us-ascii?Q?OprzNi3i3GDhxg/xvP/RKhmutBTe564rQ98VwTCCQ5ERUz6RRH4pjl96Io0n?=
+ =?us-ascii?Q?AGYk9NG6wGkrhKDzD+zvlGgsJY19mJp9gWr8eCAwlvoVDqjmKJsunUFVM3gE?=
+ =?us-ascii?Q?qGhoigiyKWUsWMiDNIccj5IwCYtRmwULX/7zlGCNw5VIQSmKYrLxN9W8kc9c?=
+ =?us-ascii?Q?cb7WTP5N6p5P5jBMPRO9EEssd4mWxLaaz+/tPRc2r3EXO+cPL+hx6berZcoC?=
+ =?us-ascii?Q?CwCgQDIaos/AIbSjfoHTpXJuenUpLGE2G/UB6cKbLphhYhBtHdRLGHTamAX+?=
+ =?us-ascii?Q?lLX1TcVGsuxD+ApTa4VJBxdEEvNoe4x55IcMVWbdR50EAESlLDwMuyjW+DNc?=
+ =?us-ascii?Q?7hQkk5LGir1qV7QFYIiW/CW32zXBvmaOH0+NvaUAJecGgTdmCkFAk6re1tnc?=
+ =?us-ascii?Q?If+z4D5QZH3st1CKRMXY8NzOw/ZiQ1KqDN2bOJNdUIqfZadXrV3QE8XvA9EZ?=
+ =?us-ascii?Q?zDJM95dHrBvcgzFE3LMYk17vqEq3RRBmNalxUhMpttbqqIMhcHqSVo1NyieL?=
+ =?us-ascii?Q?qiemsgD51pZMFNdEeyvS2uPZI2cZR+yur/CrlpiDV3hL1SxHETIytzhyKsku?=
+ =?us-ascii?Q?oMO0QO0tqu8KQVg3lJpozQQnZyK/+mVTsdtmydfV7MIayrZ2TGnODy9mS/6U?=
+ =?us-ascii?Q?AYD7sCU1O5yQ+44cK0XhUAhy/XjnRXeYWbwit3yARW8vZRrlRw7WMFJlzBxC?=
+ =?us-ascii?Q?rzv6uZRUPeUBScjheIbuknubXIwaSDYFzSGnLkwQkjFiZOpI5rha2znQrVEm?=
+ =?us-ascii?Q?GSltMkBVNR6MNz36PSu13qj115eWahoypCPR1RNKJFpcNxo8YSIGf68xeQll?=
+ =?us-ascii?Q?wc4avsuz6Aa2dvoqWw1mufIyBmcvwG09G1R6mhLRSDCUBmXi9uy8IzU9mgFv?=
+ =?us-ascii?Q?d1ehALi9gzK1RtUKvBo+qe9+hL8LLNK1/0BYuAn1Ar4ySB6VMcDu/RzZ72mj?=
+ =?us-ascii?Q?F8EwaA1eF0J6jS4fxLIkdBiKDpAbjYWuBgn/gnjTZtZ2nvhM1rffU2fRAnoM?=
+ =?us-ascii?Q?qTppvwkJlXdRrB6x/0WpczkRDYqaH5xTg5yQ9pmr9cBN85bl9Gxl9rWIIzYo?=
+ =?us-ascii?Q?zfcS4jutGIse6rklKWb55zU/XKQ5ZchxaP/NO8dERfTni++F0PwBszH1uxip?=
+ =?us-ascii?Q?rlmu+whF6NfOq3nozE72klpoam+MzO+Porl4prcTmYNITPFxDbhwGRVWEf0v?=
+ =?us-ascii?Q?A6mt9yqP+djqZ0BPP9hG26eFZQr2JMNz26lDliMBeuNDc1Y5rF5Kd86aCUq4?=
+ =?us-ascii?Q?pArypasJIqtcj2Xg1bG9zXhz5IIFup8mkqIYuTOBC1+luB/yUbT35QJncE/X?=
+ =?us-ascii?Q?sBDNcFtvMGHIu+LNbDt9GfRCEc1QiwSGHyGwE41pXuSUrRFkNU1pXdrf5Ncd?=
+ =?us-ascii?Q?klSxOJ+izoWnczC5YcmsXbj70Vg1M0PEAnovIScdUQDXwkGjXraChliM7DXe?=
+ =?us-ascii?Q?2z840Po7rlOr1jxeESkjKyGs5i+cVR2OZidPsFICjLY6doC6OAspqRy3GD4h?=
+ =?us-ascii?Q?VN+NqLH6mU3pQlWDCknxVRE=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 325ceb28-a4c4-47c4-1c82-08dbd9cbe9b1
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 04:43:22.7917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zheE0ZaHfKmYkGQy69DflZW1ygokBb5d15JqMIVSTCHlLGoY3xkw7H7LrVXtW4mNP/QP81mNXs8CM1yMfm6bDTqG3Wg7aXS2iGi1javc9M6JOadDBVxfeocJZQWXvO+I
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR01MB8507
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
-It supports gen4 and x2 link width. Limiting the speed to Gen3 due to
-stability issues.
 
-Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 46 +++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+Hi Mark,
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 13dd44d..7eab458 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -3586,6 +3586,52 @@
- 		status = "disabled";
- 	};
- 
-+	pcie0_ep: pcie-ep@1c00000 {
-+		compatible = "qcom,sa8775p-pcie-ep";
-+		reg = <0x0 0x01c00000 0x0 0x3000>,
-+		      <0x0 0x40000000 0x0 0xf20>,
-+		      <0x0 0x40000f20 0x0 0xa8>,
-+		      <0x0 0x40001000 0x0 0x4000>,
-+		      <0x0 0x40200000 0x0 0x100000>,
-+		      <0x0 0x01c03000 0x0 0x1000>,
-+		      <0x0 0x40005000 0x0 0x2000>;
-+		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-+			    "mmio", "dma";
-+
-+		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
-+			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
-+			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
-+
-+		clock-names = "aux",
-+			      "cfg",
-+			      "bus_master",
-+			      "bus_slave",
-+			      "slave_q2a";
-+
-+		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		interrupt-names = "global", "doorbell", "dma";
-+
-+		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
-+				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
-+		interconnect-names = "pcie-mem", "cpu-pcie";
-+
-+		iommus = <&pcie_smmu 0x0000 0x7f>;
-+		resets = <&gcc GCC_PCIE_0_BCR>;
-+		reset-names = "core";
-+		power-domains = <&gcc PCIE_0_GDSC>;
-+		phys = <&pcie0_phy>;
-+		phy-names = "pciephy";
-+		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
-+		num-lanes = <2>;
-+
-+		status = "disabled";
-+	};
-+
- 	pcie0_phy: phy@1c04000 {
- 		compatible = "qcom,sa8775p-qmp-gen4x2-pcie-phy";
- 		reg = <0x0 0x1c04000 0x0 0x2000>;
--- 
-2.7.4
+On Fri, 27 Oct 2023, Mark Rutland wrote:
+> On Thu, Oct 26, 2023 at 06:22:43PM -0700, Ilkka Koskinen wrote:
+>> The upper 32 bits of PMCEID[n] registers are used to describe whether
+>> architectural and microarchitectural events in range 0x4000-0x401f
+>> exist. Due to discarding the bits, the driver made the events invisible,
+>> even if they existed.
+>>
+>> Fixes: df29ddf4f04b ("arm64: perf: Abstract system register accesses away")
+>
+> Hmm... are we silently truncating anything else?
+>
+> I see that read_pmxevcntr() and write_pmxevcntr() treat PMXEVCNTR_EL0 as 32-bit
+> despite it being 64-bit with PMUv3.5, but it doesn't matter as those functions
+> are never used, and should just be deleted.
+>
+> Similarly PMCR_EL0 is 64-bit, with bit 32 bit FZS when FEAT_SPEv1p2 is
+> implemented. That doesn't matter to us right now as we don't use FZS, but it's
+> something that could catch us out in future if new bitss get added.
+>
+> Could we please go check all the accessors added in df29ddf4f04b, and fix those
+> in one go?
 
+I quickly look at the registers and unless I'm mistaken there's just one 
+more register, PMCCFILTR_EL0, that needs to be taken care. It seems to 
+have VS bits [57:56], if FEAT_PMUv3_SME is implemented.
+
+I'll try to submit a new patch that handles all of them tomorrow.
+
+Cheers, Ilkka
+
+>
+>> Reported-by: Carl Worth <carl@os.amperecomputing.com>
+>> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+>> ---
+>>
+>> Changes since v1:
+>>
+>>   * Took arm32 specific code from Marc Zyngier's review comment
+>>   * Fixed a couple of typos in the commit message
+>>
+>> I have tested the patch on Arm64. However, what comes to Arm32 part, I have
+>> only compared the code with Arm32 specification and cross compiled it.
+>>
+>> v1: https://lore.kernel.org/all/20231025200815.104017-1-ilkka@os.amperecomputing.com/
+>>
+>> ---
+>>
+>>  arch/arm/include/asm/arm_pmuv3.h   | 33 +++++++++++++++++++++---------
+>>  arch/arm64/include/asm/arm_pmuv3.h |  4 ++--
+>>  2 files changed, 25 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/arch/arm/include/asm/arm_pmuv3.h b/arch/arm/include/asm/arm_pmuv3.h
+>> index 72529f5e2bed..90841cb7ce43 100644
+>> --- a/arch/arm/include/asm/arm_pmuv3.h
+>> +++ b/arch/arm/include/asm/arm_pmuv3.h
+>> @@ -23,6 +23,8 @@
+>>  #define PMUSERENR		__ACCESS_CP15(c9,  0, c14, 0)
+>>  #define PMINTENSET		__ACCESS_CP15(c9,  0, c14, 1)
+>>  #define PMINTENCLR		__ACCESS_CP15(c9,  0, c14, 2)
+>> +#define PMCEID2			__ACCESS_CP15(c9,  0, c14, 4)
+>> +#define PMCEID3			__ACCESS_CP15(c9,  0, c14, 5)
+>>  #define PMMIR			__ACCESS_CP15(c9,  0, c14, 6)
+>>  #define PMCCFILTR		__ACCESS_CP15(c14, 0, c15, 7)
+>>
+>> @@ -205,16 +207,6 @@ static inline void write_pmuserenr(u32 val)
+>>  	write_sysreg(val, PMUSERENR);
+>>  }
+>>
+>> -static inline u32 read_pmceid0(void)
+>> -{
+>> -	return read_sysreg(PMCEID0);
+>> -}
+>> -
+>> -static inline u32 read_pmceid1(void)
+>> -{
+>> -	return read_sysreg(PMCEID1);
+>> -}
+>> -
+>>  static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+>>  static inline void kvm_clr_pmu_events(u32 clr) {}
+>>  static inline bool kvm_pmu_counter_deferred(struct perf_event_attr *attr)
+>> @@ -231,6 +223,7 @@ static inline void kvm_vcpu_pmu_resync_el0(void) {}
+>>
+>>  /* PMU Version in DFR Register */
+>>  #define ARMV8_PMU_DFR_VER_NI        0
+>> +#define ARMV8_PMU_DFR_VER_V3P1      0x4
+>>  #define ARMV8_PMU_DFR_VER_V3P4      0x5
+>>  #define ARMV8_PMU_DFR_VER_V3P5      0x6
+>>  #define ARMV8_PMU_DFR_VER_IMP_DEF   0xF
+>> @@ -251,4 +244,24 @@ static inline bool is_pmuv3p5(int pmuver)
+>>  	return pmuver >= ARMV8_PMU_DFR_VER_V3P5;
+>>  }
+>>
+>> +static inline u64 read_pmceid0(void)
+>> +{
+>> +	u64 val = read_sysreg(PMCEID0);
+>> +
+>> +	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
+>> +		val |= (u64)read_sysreg(PMCEID2) << 32;
+>> +
+>> +	return val;
+>> +}
+>> +
+>> +static inline u64 read_pmceid1(void)
+>> +{
+>> +	u64 val = read_sysreg(PMCEID1);
+>> +
+>> +	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
+>> +		val |= (u64)read_sysreg(PMCEID3) << 32;
+>> +
+>> +	return val;
+>> +}
+>> +
+>>  #endif
+>> diff --git a/arch/arm64/include/asm/arm_pmuv3.h b/arch/arm64/include/asm/arm_pmuv3.h
+>> index 18dc2fb3d7b7..3e92b7cb57a4 100644
+>> --- a/arch/arm64/include/asm/arm_pmuv3.h
+>> +++ b/arch/arm64/include/asm/arm_pmuv3.h
+>> @@ -126,12 +126,12 @@ static inline void write_pmuserenr(u32 val)
+>>  	write_sysreg(val, pmuserenr_el0);
+>>  }
+>>
+>> -static inline u32 read_pmceid0(void)
+>> +static inline u64 read_pmceid0(void)
+>>  {
+>>  	return read_sysreg(pmceid0_el0);
+>>  }
+>>
+>> -static inline u32 read_pmceid1(void)
+>> +static inline u64 read_pmceid1(void)
+>>  {
+>>  	return read_sysreg(pmceid1_el0);
+>>  }
+>> --
+>> 2.41.0
+>>
+>
