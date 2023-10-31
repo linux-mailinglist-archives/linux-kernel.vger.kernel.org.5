@@ -2,143 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D147DC3DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ACF7DC3DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbjJaBXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 21:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
+        id S236251AbjJaB0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 21:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJaBXt (ORCPT
+        with ESMTP id S229583AbjJaB0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 21:23:49 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F22C1;
-        Mon, 30 Oct 2023 18:23:46 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8DFAB5C02B7;
-        Mon, 30 Oct 2023 21:23:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Mon, 30 Oct 2023 21:23:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1698715424; x=1698801824; bh=ECJVLlwFCF/F13QtKPM5WP7/K4iiTwcNU6h
-        5mUohoTo=; b=nhepGC7V5AVwfIUrdbvCdHNrqipLAurfvLbQehLFlJ53PiUjGoZ
-        YQNs45CB7LtqeuVosRrGDSCuNaN0knFyLHWoleezyEpj6oloWy1y5T8EzTMn6wib
-        qgRnbta7rHMoy6m2/X/nmzMo9p7hgeZL/CyqTvzZLRYo08N/IYYZBHv34K4ZEDiM
-        8F0SAyY4pTpoweMqbam8L6MaDOFST2SHTpkK2SyA7tjPSAtVu0Th86zROcl/daSv
-        ZaHowa3QE+DWxnLYTZxxPuExD2IDfLP4EkxVLOFwlZmw/CERmalaW+PssNvFlqyh
-        Vf0zb0jlh87nSrFAEnyfYZbG0spHqcDbqPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698715424; x=1698801824; bh=ECJVLlwFCF/F13QtKPM5WP7/K4iiTwcNU6h
-        5mUohoTo=; b=V8vq+xXih7rt9zzoQ8UjyrZgqbTJ3TvTAvP874IAxlU1ZKueUtG
-        9rbs1eKo1yjw0lpwbgLt1duEkvmUkBEXFzytHMf6+add0oa6AIGM54KmG8ghAUjW
-        wT5BCE2sTlUGsZ/xjujq3pzW8sNzTH3g+RE77BA+KeDTnakzcIb0TLiC02ppEb6R
-        Fpt1fTHiuGTI6fzluPvumknJRDzLCMcooAHnrHXeUtgLJZ/hel1/HGECO+m8i7Xf
-        bPwv4NJnSkmopsngxXmfUSZSSftmxvTDJsazZhukrALWo0AqKRoCHxj/dz6IxAoG
-        eD+h1q7A1dmGBYdgnl256NOMTlb15CG87gQ==
-X-ME-Sender: <xms:IFdAZbdzt5swDur9SJgkwlMlM9x9fPbrVufTYtnT3DsCCZqPw-ykZg>
-    <xme:IFdAZRPLvMUYngRg_04AFTNgQQB6N5rOM7SRkWn3-0sNFmpt5s2W-xJdQW19rX4lj
-    mzvcj7duPMx>
-X-ME-Received: <xmr:IFdAZUjhuXbqySMP7cq0xc9Y1HFDOcYPDH7gIIXImH6bWiQrkLDZUDATqZx8BuTDAdOlvlWbbR9_k-zzhwgcav07ePI69O050hrpKLoL9H4fKb6Y3gRB8p59>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtuddgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpefkrghn
-    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
-    epgedvteevvdefiedvueeujeegtedvheelhfehtefhkefgjeeuffeguefgkeduhfejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
-    esthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:IFdAZc8Hz_CAmHd6_QT7WICbJlGEOQJa5RjU7i9Ek7WjkG18ursrIg>
-    <xmx:IFdAZXsRQnpZMiYFcq_s2XhDgYHths2h5mX8fHb5jGCOF1NLLRNbAQ>
-    <xmx:IFdAZbGPILKcM2IMg8Uch2zKFbdeoyY1WTx8T6scyqyFwSfTBFv8Vg>
-    <xmx:IFdAZQEFxaEAMEdtJXVJxFFpaZ5MEiZJF7H_gGVvB9NURssBzd_PZw>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 30 Oct 2023 21:23:38 -0400 (EDT)
-Message-ID: <e9ceb034-e37e-f0af-aee1-85f573a41418@themaw.net>
-Date:   Tue, 31 Oct 2023 09:23:34 +0800
+        Mon, 30 Oct 2023 21:26:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EEDEE
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 18:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698715523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o31v5GZG9TcPdikJNjmUFZp5YmRhl08i97z1mloYIzw=;
+        b=AxLSqds0DosISLMqayf9eg1MA0UKuBoIHCvNI2rjgWzOF4d0x2xo/g2ULCQF+pNuUpPAgQ
+        fVwZr26rOIyFbY4JFAL5DAhO1soaZcwerlEhueSN5HqAe3E72whkqJuPL7RNAQ9PB/h6jK
+        +pCeOjM249p3NKcSEA8xYq82NIyxuGY=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-245-oUEMAyC0NPmBTimakqKP0w-1; Mon, 30 Oct 2023 21:25:21 -0400
+X-MC-Unique: oUEMAyC0NPmBTimakqKP0w-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50798a25ebaso3135532e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 18:25:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698715520; x=1699320320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o31v5GZG9TcPdikJNjmUFZp5YmRhl08i97z1mloYIzw=;
+        b=beLhcW/LE1WQP3mFcrxM6jMl/kekGRa9Q6Rbia7H6XoGxbcpc0sMLsD7raydYazHrb
+         q67dyTPzwTTZiEQSIRElBkUVEv0oaALJtFdseaoyKyqlEORarSrUfCXVDlfUVmpG5y1r
+         ub6fJ3q0wjtwlGb3wSIdrCke4SIZtZd0XChtl4gzUePFD1xov+jAxDCjjogdfiAXrpKW
+         7eENPmnrfy6r40jOViYmamSTbWpxN2VGSvr1ShvwUzVHABC1pagemAzmN5JunCWc8/b3
+         LzuZay0fR0hGEQgZre6hDUoh1f/NCKh9SBL4Wl5v8X2oMnN6DqAaNh7SkffgQw9TJbzb
+         Ie4A==
+X-Gm-Message-State: AOJu0Yx2InFRSyDRb+f7yaKTklxFMG9eP963TyBRVhm31jlnuGNl6L6i
+        wolQc0Zb9WJj6wsZQB46RomnCUuIQCKQqZKFGhT893RJ+x2xIJsCFbBoEu2v2hLYZvl1DrZDcbF
+        6dnIffCXgctgR4WEp7ULkCn3gGs6Fy6S2myITunON
+X-Received: by 2002:a19:a40f:0:b0:509:1eca:4ae2 with SMTP id q15-20020a19a40f000000b005091eca4ae2mr360830lfc.16.1698715519646;
+        Mon, 30 Oct 2023 18:25:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHeai5LJ8RYz/4lU5unyi1wyO3RJWvByf6J/J2Epj9d2rm9T2A3D6AJvt2Snb2kBIb7yUnQ+HV7FU3UcPY9IkU=
+X-Received: by 2002:a19:a40f:0:b0:509:1eca:4ae2 with SMTP id
+ q15-20020a19a40f000000b005091eca4ae2mr360825lfc.16.1698715519287; Mon, 30 Oct
+ 2023 18:25:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/6] mounts: keep list of mounts in an rbtree
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-3-mszeredi@redhat.com>
- <b69c1c17-35f9-351e-79a9-ef3ef5481974@themaw.net>
- <CAOssrKe76uZ5t714=Ta7GMLnZdS4QGm-fOfT9q5hNFe1fsDMVg@mail.gmail.com>
- <c938a7d9-aa9e-a3ad-a001-fb9022d21475@themaw.net>
- <dfb5f3d5-8db8-34af-d605-14112e8cc485@themaw.net>
- <cbc065c0-1dc3-974f-6e48-483baaf750a3@themaw.net>
- <CAOssrKdvTrPbnicFTiCiMNhKfdfwFEv4r_y1JeEe+H5V6LpkKg@mail.gmail.com>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <CAOssrKdvTrPbnicFTiCiMNhKfdfwFEv4r_y1JeEe+H5V6LpkKg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
+ <CACGkMEuO6o3Ys9NcHJpa9w5EiS-ugsiaBbBKEHKHpPSrKBKJow@mail.gmail.com> <de5e15c0-0dcb-4cf1-bd4b-bd48c3c59c80@oracle.com>
+In-Reply-To: <de5e15c0-0dcb-4cf1-bd4b-bd48c3c59c80@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 31 Oct 2023 09:25:07 +0800
+Message-ID: <CACGkMEvo5-Pj2WUWiJ5RoESA3h7hN6eOErGiNO0DYRnBS5aPhg@mail.gmail.com>
+Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
+To:     Steven Sistare <steven.sistare@oracle.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Dragos Tatulea <dtatulea@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/10/23 17:06, Miklos Szeredi wrote:
-> On Mon, Oct 30, 2023 at 6:45 AM Ian Kent <raven@themaw.net> wrote:
+On Mon, Oct 30, 2023 at 10:06=E2=80=AFPM Steven Sistare
+<steven.sistare@oracle.com> wrote:
 >
->> Is fs/namespace.c:iterate_mounts() a problem?
->>
->> It's called from:
->>
->> 1) ./kernel/audit_tree.c:709: if (iterate_mounts(compare_root,
->> 2) ./kernel/audit_tree.c:839:    err = iterate_mounts(tag_mount, tree, mnt);
->> 3) ./kernel/audit_tree.c:917:        failed = iterate_mounts(tag_mount,
->> tree, tagged);
->>
->>
->>   From functions 1) audit_trim_trees(), 2) audit_add_tree_rule() and
->>
->> 3) audit_tag_tree().
-> So that interface works like this:
+> On 10/27/2023 2:31 AM, Jason Wang wrote:
+> > On Fri, Oct 27, 2023 at 4:07=E2=80=AFAM Steve Sistare <steven.sistare@o=
+racle.com> wrote:
+> >>
+> >> mlx5_vdpa does not preserve userland's view of vring base for the cont=
+rol
+> >> queue in the following sequence:
+> >>
+> >> ioctl VHOST_SET_VRING_BASE
+> >> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
+> >>   mlx5_vdpa_set_status()
+> >>     setup_cvq_vring()
+> >>       vringh_init_iotlb()
+> >>         vringh_init_kern()
+> >>           vrh->last_avail_idx =3D 0;
+> >> ioctl VHOST_GET_VRING_BASE
+> >>
+> >> To fix, restore the value of cvq->vring.last_avail_idx after calling
+> >> vringh_init_iotlb.
+> >>
+> >> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> >> ---
+> >>  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
+> >>  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
+> >>  include/linux/vringh.h            |  2 ++
+> >>  3 files changed, 38 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net=
+/mlx5_vnet.c
+> >> index 946488b8989f..f64758143115 100644
+> >> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> >> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> >> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_de=
+v *mvdev)
+> >>         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
+> >>         int err =3D 0;
+> >>
+> >> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
+> >> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
+> >> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
+> >> +
+> >>                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_f=
+eatures,
+> >>                                         MLX5_CVQ_MAX_ENT, false,
+> >>                                         (struct vring_desc *)(uintptr_=
+t)cvq->desc_addr,
+> >>                                         (struct vring_avail *)(uintptr=
+_t)cvq->driver_addr,
+> >>                                         (struct vring_used *)(uintptr_=
+t)cvq->device_addr);
+> >>
+> >> +               if (!err)
+> >> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_=
+idx);
+> >
+> > Btw, vringh_set_base_iotlb() deserves an independent patch and it
+> > seems it is not specific to IOTLB,
 >
->   - collect_mounts() creates a temporary copy of a mount tree, mounts
-> are chained on mnt_list.
+> Agreed on both.  I initially submitted the smallest change needed to show=
+ the problem.
+>
+> so we probably need an indirection
+> > to have vringh_set_base() first.
+>
+> Not sure what you mean.  I have defined:
+>
+>     static inline int __vringh_set_base() ...
+>
+>     int vringh_set_base_iotlb()
+>         return __vringh_set_base(vrh, idx, putu16_iotlb);
+>
+> to which I would add:
+>
+>     int vringh_set_base_user()
+>         return __vringh_set_base(vrh, idx, putu16_user);
+>
+>     int vringh_set_base_kern()
+>         return __vringh_set_base(vrh, idx, putu16_kern;
+>
+> all in the same patch.
+>
+> The call site in mlx5_vnet.c would be a 2nd patch.
 
-Right, sorry for the noise, I didn't look far enough.
-
-
-Ian
+Right, so we just need to split it.
 
 >
->   - iterate_mounts() is used to do some work on the temporary tree
+> - Steve
 >
->   - drop_collected_mounts() frees the temporary tree
+> > Or I wonder if it's better to just introduce a new parameter to
+> > vringh_init_iotlb()...
 >
-> These mounts are never installed in a namespace.  My guess is that a
-> private copy is used instead of the original mount tree to prevent
-> races.
+> I considered that, but IMO the parameter list there is already large, and=
+ it would
+> be strange to add a parameter for the initial value of avail, but not for=
+ used, and
+> no one needs the latter.
+
+Fine.
+
+Thanks
+
 >
-> Thanks,
-> Miklos
+> - Steve
 >
+> >> +       }
+> >>         return err;
+> >>  }
+> >>
+> >> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> >> index 7b8fd977f71c..799762c83007 100644
+> >> --- a/drivers/vhost/vringh.c
+> >> +++ b/drivers/vhost/vringh.c
+> >> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct=
+ vringh *vrh,
+> >>         }
+> >>  }
+> >>
+> >> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
+> >> +                           int (*putu16)(const struct vringh *vrh,
+> >> +                               __virtio16 *p, u16 val))
+> >> +{
+> >> +    int ret;
+> >> +
+> >> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
+> >> +    if (ret)
+> >> +        return ret;
+> >> +
+> >> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
+> >> +    if (ret)
+> >> +        return ret;
+> >> +
+> >> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
+> >> +    return 0;
+> >> +}
+> >> +
+> >>  /* Userspace access helpers: in this case, addresses are really users=
+pace. */
+> >>  static inline int getu16_user(const struct vringh *vrh, u16 *val, con=
+st __virtio16 *p)
+> >>  {
+> >> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struc=
+t vhost_iotlb *iotlb,
+> >>  }
+> >>  EXPORT_SYMBOL(vringh_set_iotlb);
+> >>
+> >> +/**
+> >> + * vringh_set_base_iotlb - set avail_idx and used_idx
+> >> + * @vrh: the vring
+> >> + * @idx: the value to set
+> >> + */
+> >> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
+> >> +{
+> >> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
+> >> +}
+> >> +EXPORT_SYMBOL(vringh_set_base_iotlb);
+> >> +
+> >> +
+> >>  /**
+> >>   * vringh_getdesc_iotlb - get next available descriptor from ring wit=
+h
+> >>   * IOTLB.
+> >> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
+> >> index c3a8117dabe8..e9b8af4e6a5e 100644
+> >> --- a/include/linux/vringh.h
+> >> +++ b/include/linux/vringh.h
+> >> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 f=
+eatures,
+> >>                          struct vring_avail *avail,
+> >>                          struct vring_used *used);
+> >>
+> >> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
+> >> +
+> >>  int vringh_getdesc_iotlb(struct vringh *vrh,
+> >>                          struct vringh_kiov *riov,
+> >>                          struct vringh_kiov *wiov,
+> >> --
+> >> 2.39.3
+> >>
+> >
+>
+
