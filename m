@@ -2,89 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEE77DC5C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 06:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8147DC5C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 06:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjJaFM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 01:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        id S231344AbjJaFMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 01:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbjJaFMR (ORCPT
+        with ESMTP id S231995AbjJaFMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 01:12:17 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598F2F5;
-        Mon, 30 Oct 2023 22:12:15 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V4PHQw025204;
-        Tue, 31 Oct 2023 05:12:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=RsQx3p3Jdt45deKD8q2naBRmwFH/7pLMEOjfr52W8xs=;
- b=eMtccMgJrp9IZ0kTdJSRgf4TEIWhka46NAaZN80JDV9hkwrsgkUEhBPVxYtPUsXY0NeO
- /3uEdYybTZdTpMyHDehAwsofTq865mBIzyznhKigwhwZjngOw6eUnFedXN1cc1GBkE1B
- Wi8kQ6oCrbw1AXdd6TRDzwiU5xgjpV4m/9vI1PiKp14SBvg4mMta42fMrx3CX0V+4QSe
- +UQ8o9AfCTiM4E8STQEM2WQKdSAXMQZo/YV7jFHYW4k32eVsUclADXnYwsGTXNV1L91R
- qAS9m9BIWTaiR0HW4aVEl9zQ13IwdFvFgPBWWTp773uoxgS9Od5qkFOSpfFNNMN84ZOm Ng== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2egssn98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 05:12:07 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 39V5C3p3010087;
-        Tue, 31 Oct 2023 05:12:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3u0ucktxaj-1;
-        Tue, 31 Oct 2023 05:12:03 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39V5C3Ne010081;
-        Tue, 31 Oct 2023 05:12:03 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 39V5C3mJ010079;
-        Tue, 31 Oct 2023 05:12:03 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
-        id F237C450D; Tue, 31 Oct 2023 10:42:01 +0530 (+0530)
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org
-Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijose@quicinc.com,
-        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev
-Subject: [PATCH v6 4/4] arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
-Date:   Tue, 31 Oct 2023 10:41:48 +0530
-Message-Id: <1698729108-27356-5-git-send-email-quic_msarkar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1698729108-27356-1-git-send-email-quic_msarkar@quicinc.com>
-References: <1698729108-27356-1-git-send-email-quic_msarkar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: nJT0Zd_xpoxTGLx4nMS-Vzwk7I6Pjsrc
-X-Proofpoint-GUID: nJT0Zd_xpoxTGLx4nMS-Vzwk7I6Pjsrc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxlogscore=999 adultscore=0 mlxscore=0 malwarescore=0 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 spamscore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2310310039
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Tue, 31 Oct 2023 01:12:38 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFA511D;
+        Mon, 30 Oct 2023 22:12:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698729138;
+        bh=bxStzz6nOrEXdZNDwkU7etS4G1iLolFxrkKrbs09ZDM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=psu1CyEJqPHl0uI9x4wig77w/YMF4e7kS55Q/oetq9n4VoNC6IgRlPlmujk29mTzC
+         5CLo2TB9kvc7rCGOC7A4vWfHVdPfQZyAFczaJ0+fQL+ER9ITMoI6ysnOhV2WYs10rz
+         u/IRas3KU/Y+GJBf+17qQQqFgoH1im0QQhBrmVA9xr7H3E87LjPh9ewQ18gB6a2JQQ
+         0LI2gNRMapkTiL9KHQyLuvRxrPLP7ebvw3j76HK8Ruptuc+sg84eo/Lf2kwOiFvznm
+         BtHfBnUpsf8NMSdKLJFKCcp+773MxhH+caDabIfau1H8XgBlczEvDoiAra4jJ7VC6F
+         VaU9w8dJs1S5w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKJD00c9dz4x5k;
+        Tue, 31 Oct 2023 16:12:15 +1100 (AEDT)
+Date:   Tue, 31 Oct 2023 16:12:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
+Subject: Re: linux-next: manual merge of the iommufd tree with the iommu
+ tree
+Message-ID: <20231031161214.25560598@canb.auug.org.au>
+In-Reply-To: <20231030182621.GV3952@nvidia.com>
+References: <20231027155522.6b2863a4@canb.auug.org.au>
+        <20231027171522.692a58ec@canb.auug.org.au>
+        <20231030182621.GV3952@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/suJhAFsV/.WPioJKy0M+F+_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,72 +59,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
-It supports gen4 and x2 link width. Limiting the speed to Gen3 due to
-stability issues.
+--Sig_/suJhAFsV/.WPioJKy0M+F+_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 46 +++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+Hi all,
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 13dd44d..7eab458 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -3586,6 +3586,52 @@
- 		status = "disabled";
- 	};
- 
-+	pcie0_ep: pcie-ep@1c00000 {
-+		compatible = "qcom,sa8775p-pcie-ep";
-+		reg = <0x0 0x01c00000 0x0 0x3000>,
-+		      <0x0 0x40000000 0x0 0xf20>,
-+		      <0x0 0x40000f20 0x0 0xa8>,
-+		      <0x0 0x40001000 0x0 0x4000>,
-+		      <0x0 0x40200000 0x0 0x100000>,
-+		      <0x0 0x01c03000 0x0 0x1000>,
-+		      <0x0 0x40005000 0x0 0x2000>;
-+		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-+			    "mmio", "dma";
-+
-+		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
-+			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
-+			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
-+
-+		clock-names = "aux",
-+			      "cfg",
-+			      "bus_master",
-+			      "bus_slave",
-+			      "slave_q2a";
-+
-+		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		interrupt-names = "global", "doorbell", "dma";
-+
-+		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
-+				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
-+		interconnect-names = "pcie-mem", "cpu-pcie";
-+
-+		iommus = <&pcie_smmu 0x0000 0x7f>;
-+		resets = <&gcc GCC_PCIE_0_BCR>;
-+		reset-names = "core";
-+		power-domains = <&gcc PCIE_0_GDSC>;
-+		phys = <&pcie0_phy>;
-+		phy-names = "pciephy";
-+		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
-+		num-lanes = <2>;
-+
-+		status = "disabled";
-+	};
-+
- 	pcie0_phy: phy@1c04000 {
- 		compatible = "qcom,sa8775p-qmp-gen4x2-pcie-phy";
- 		reg = <0x0 0x1c04000 0x0 0x2000>;
--- 
-2.7.4
+On Mon, 30 Oct 2023 15:26:21 -0300 Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Fri, Oct 27, 2023 at 05:15:22PM +1100, Stephen Rothwell wrote:
+> >=20
+> > On Fri, 27 Oct 2023 15:55:22 +1100 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote: =20
+> > >
+> > > Today's linux-next merge of the iommufd tree got a conflict in:
+> > >=20
+> > >   drivers/iommu/iommufd/selftest.c
+> > >=20
+> > > between commits:
+> > >=20
+> > >   1c68cbc64fe6 ("iommu: Add IOMMU_DOMAIN_PLATFORM")
+> > >   13fbceb1b8e9 ("iommufd: Convert to alloc_domain_paging()")
+> > >=20
+> > > from the iommu tree and commits:
+> > >=20
+> > >   408663619fcf ("iommufd/selftest: Add domain_alloc_user() support in=
+ iommu mock")
+> > >   266ce58989ba ("iommufd/selftest: Test IOMMU_HWPT_ALLOC_DIRTY_TRACKI=
+NG")
+> > >   7adf267d66d1 ("iommufd/selftest: Test IOMMU_HWPT_SET_DIRTY_TRACKING=
+")
+> > >   a9af47e382a4 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP")
+> > >   0795b305da89 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP_N=
+O_CLEAR flag")
+> > >   65fe32f7a447 ("iommufd/selftest: Add nested domain allocation for m=
+ock domain")
+> > >=20
+> > > from the iommufd tree.
+> > >=20
+> > > I fixed it up (see below) and can carry the fix as necessary. This
+> > > is now fixed as far as linux-next is concerned, but any non trivial
+> > > conflicts should be mentioned to your upstream maintainer when your t=
+ree
+> > > is submitted for merging.  You may also want to consider cooperating
+> > > with the maintainer of the conflicting tree to minimise any particula=
+rly
+> > > complex conflicts. =20
+> >=20
+> > The resolution should have been as below (I think). =20
+>=20
+> This was too horrible, I pushed a patch to reorganize the new iommufd side
+> code to more closely match how the domain_alloc_paging stuff is
+> supposed to work
 
+I have used the conflict resolution below now.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/iommu/iommufd/selftest.c
+index ee6079847091,d43a87737c1e..5d93434003d8
+--- a/drivers/iommu/iommufd/selftest.c
++++ b/drivers/iommu/iommufd/selftest.c
+@@@ -155,6 -240,81 +235,72 @@@ static struct iommu_domain *mock_domain
+  	return &mock->domain;
+  }
+ =20
++ static struct iommu_domain *
++ __mock_domain_alloc_nested(struct mock_iommu_domain *mock_parent,
++ 			   const struct iommu_hwpt_selftest *user_cfg)
++ {
++ 	struct mock_iommu_domain_nested *mock_nested;
++ 	int i;
++=20
++ 	mock_nested =3D kzalloc(sizeof(*mock_nested), GFP_KERNEL);
++ 	if (!mock_nested)
++ 		return ERR_PTR(-ENOMEM);
++ 	mock_nested->parent =3D mock_parent;
++ 	mock_nested->domain.ops =3D &domain_nested_ops;
++ 	mock_nested->domain.type =3D IOMMU_DOMAIN_NESTED;
++ 	for (i =3D 0; i < MOCK_NESTED_DOMAIN_IOTLB_NUM; i++)
++ 		mock_nested->iotlb[i] =3D user_cfg->iotlb;
++ 	return &mock_nested->domain;
++ }
++=20
+ -static struct iommu_domain *mock_domain_alloc(unsigned int iommu_domain_t=
+ype)
+ -{
+ -	if (iommu_domain_type =3D=3D IOMMU_DOMAIN_BLOCKED)
+ -		return &mock_blocking_domain;
+ -	if (iommu_domain_type =3D=3D IOMMU_DOMAIN_UNMANAGED)
+ -		return mock_domain_alloc_paging(NULL);
+ -	return NULL;
+ -}
+ -
++ static struct iommu_domain *
++ mock_domain_alloc_user(struct device *dev, u32 flags,
++ 		       struct iommu_domain *parent,
++ 		       const struct iommu_user_data *user_data)
++ {
++ 	struct mock_iommu_domain *mock_parent;
++ 	struct iommu_hwpt_selftest user_cfg;
++ 	int rc;
++=20
++ 	/* must be mock_domain */
++ 	if (!parent) {
++ 		struct mock_dev *mdev =3D container_of(dev, struct mock_dev, dev);
++ 		bool has_dirty_flag =3D flags & IOMMU_HWPT_ALLOC_DIRTY_TRACKING;
++ 		bool no_dirty_ops =3D mdev->flags & MOCK_FLAGS_DEVICE_NO_DIRTY;
++ 		struct iommu_domain *domain;
++=20
++ 		if (flags & (~(IOMMU_HWPT_ALLOC_NEST_PARENT |
++ 			       IOMMU_HWPT_ALLOC_DIRTY_TRACKING)))
++ 			return ERR_PTR(-EOPNOTSUPP);
++ 		if (user_data || (has_dirty_flag && no_dirty_ops))
++ 			return ERR_PTR(-EOPNOTSUPP);
++ 		domain =3D mock_domain_alloc_paging(NULL);
++ 		if (!domain)
++ 			return ERR_PTR(-ENOMEM);
++ 		if (has_dirty_flag)
++ 			container_of(domain, struct mock_iommu_domain, domain)
++ 				->domain.dirty_ops =3D &dirty_ops;
++ 		return domain;
++ 	}
++=20
++ 	/* must be mock_domain_nested */
++ 	if (user_data->type !=3D IOMMU_HWPT_DATA_SELFTEST || flags)
++ 		return ERR_PTR(-EOPNOTSUPP);
++ 	if (!parent || parent->ops !=3D mock_ops.default_domain_ops)
++ 		return ERR_PTR(-EINVAL);
++=20
++ 	mock_parent =3D container_of(parent, struct mock_iommu_domain, domain);
++ 	if (!mock_parent)
++ 		return ERR_PTR(-EINVAL);
++=20
++ 	rc =3D iommu_copy_struct_from_user(&user_cfg, user_data,
++ 					 IOMMU_HWPT_DATA_SELFTEST, iotlb);
++ 	if (rc)
++ 		return ERR_PTR(rc);
++=20
++ 	return __mock_domain_alloc_nested(mock_parent, &user_cfg);
++ }
++=20
+  static void mock_domain_free(struct iommu_domain *domain)
+  {
+  	struct mock_iommu_domain *mock =3D
+@@@ -272,9 -432,28 +418,20 @@@ static phys_addr_t mock_domain_iova_to_
+ =20
+  static bool mock_domain_capable(struct device *dev, enum iommu_cap cap)
+  {
+- 	return cap =3D=3D IOMMU_CAP_CACHE_COHERENCY;
++ 	struct mock_dev *mdev =3D container_of(dev, struct mock_dev, dev);
++=20
++ 	switch (cap) {
++ 	case IOMMU_CAP_CACHE_COHERENCY:
++ 		return true;
++ 	case IOMMU_CAP_DIRTY_TRACKING:
++ 		return !(mdev->flags & MOCK_FLAGS_DEVICE_NO_DIRTY);
++ 	default:
++ 		break;
++ 	}
++=20
++ 	return false;
+  }
+ =20
+ -static void mock_domain_set_plaform_dma_ops(struct device *dev)
+ -{
+ -	/*
+ -	 * mock doesn't setup default domains because we can't hook into the
+ -	 * normal probe path
+ -	 */
+ -}
+ -
+  static struct iommu_device mock_iommu_device =3D {
+  };
+ =20
+@@@ -293,8 -466,10 +450,9 @@@ static const struct iommu_ops mock_ops=20
+  	.owner =3D THIS_MODULE,
+  	.pgsize_bitmap =3D MOCK_IO_PAGE_SIZE,
+  	.hw_info =3D mock_domain_hw_info,
+ -	.domain_alloc =3D mock_domain_alloc,
+ +	.domain_alloc_paging =3D mock_domain_alloc_paging,
++ 	.domain_alloc_user =3D mock_domain_alloc_user,
+  	.capable =3D mock_domain_capable,
+ -	.set_platform_dma_ops =3D mock_domain_set_plaform_dma_ops,
+  	.device_group =3D generic_device_group,
+  	.probe_device =3D mock_probe_device,
+  	.default_domain_ops =3D
+
+--Sig_/suJhAFsV/.WPioJKy0M+F+_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVAjK4ACgkQAVBC80lX
+0GzB7Af6Ajc3Y1Rc9nIBa+dW+jo55qcKzEHZB4P/ew9JiF4O/vA1V+tLFeqEcrzQ
+n2WSJEEq7qYw9UC0iQosC3l6lqEgCfq2BFEltAx2fC+IiaMK8Ewg6yqsq4blZtVk
+dyTIztTyDKr6qF3RJcW4KvVsD4YYoKCM//g25WbTrvEQ+6fYv92kCQ91Q09kg8M6
+DpruHLfAtNzPDRJzUAsbqwEMPl++YsoHt6MPm+fHN0iTKTq4tHe9374qbTF0yzwv
+Qez+po+kzbC+D4LQBMArw0t3Zpp6E0yap3S1YHy+6Mv2I0DT3bh5mqeYx/TCol9L
+LfEvWxI1CawibzJMttOPaqf2TZh3XA==
+=uZ6P
+-----END PGP SIGNATURE-----
+
+--Sig_/suJhAFsV/.WPioJKy0M+F+_--
