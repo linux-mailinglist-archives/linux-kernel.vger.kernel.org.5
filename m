@@ -2,153 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB537DD725
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD777DD757
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbjJaUhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        id S1344246AbjJaUr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbjJaUhG (ORCPT
+        with ESMTP id S234013AbjJaUrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:37:06 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62480F9;
-        Tue, 31 Oct 2023 13:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1698784621;
-        bh=LNx+nj4jlE223VhzZ9GFi7fWQ5Fyb/XHvEpIBKCFyVM=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=GHEQO9ebq4PLKKuavypuPdsKYAWA8jQ3FdQE572za9KmzKD/5aHkznU/oKFr+nvAA
-         wHIZQ55uC4ZX8MAZWYAoXOUGqp2p4dNd2h5pWZ59WxUauUdl21qw5+f1Lm0V0nK8o+
-         unVBlzuKOc3qS32OuEc0ZTDD7jTZN0/RzvBRgrmk=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Tue, 31 Oct 2023 21:37:00 +0100
-Subject: [PATCH 3/3] selftests/nolibc: support out-of-tree builds
+        Tue, 31 Oct 2023 16:47:16 -0400
+Received: from mail.fris.de (unknown [IPv6:2a01:4f8:c2c:390b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59633102;
+        Tue, 31 Oct 2023 13:47:11 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 76C5DC015D;
+        Tue, 31 Oct 2023 21:38:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
+        t=1698784743; h=from:subject:date:message-id:to:cc:mime-version:
+         content-transfer-encoding; bh=zJqjQl37oqSU7hpiBGUJniZ1omvW45N+RUaTYh4Bj3A=;
+        b=WbxX3QoR721ZrzUVN7wavQWMBaJZ54krK9EkpDPJiy9z7yEnruvNqXWoHb+aPmwEs4oL/0
+        vN/z9/sTU2T50eaKyKsYoZp6f03Pg4Zy4oKCSBABtqzbR+66mqgV9up0kW0ca72VeK2cTs
+        EUDABxvdk882uxi344mfXCozl8txWsEuMPvqm0+ddByG+QMz/kNqlsRkys3sU+kPp6F7V9
+        xdoR04MFe41gw11vcD5RkCPXSCk8crfEkrNssHGRdqIntXYo4tyQ3iDC47onuebcbak1fm
+        Z3rE02vNKGDVZoPBDDNJa9eII993UvG+C5YWMzCqk9zZI/c47uAzOK6XEo/xRw==
+From:   Frieder Schrempf <frieder@fris.de>
+To:     Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Marek Vasut <marex@denx.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH 00/14] arm64: dts: imx8mm-kontron: DT updates
+Date:   Tue, 31 Oct 2023 21:37:37 +0100
+Message-ID: <20231031203836.3888404-1-frieder@fris.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231031-nolibc-out-of-tree-v1-3-47c92f73590a@weissschuh.net>
-References: <20231031-nolibc-out-of-tree-v1-0-47c92f73590a@weissschuh.net>
-In-Reply-To: <20231031-nolibc-out-of-tree-v1-0-47c92f73590a@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698784620; l=4087;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=LNx+nj4jlE223VhzZ9GFi7fWQ5Fyb/XHvEpIBKCFyVM=;
- b=TyJDLtPEizhFex+t38T4ccb988q2/Hc4CqgbIfibOz8zcilrEO/oxpLY4PuAYAfPLiZ9Q5QzK
- /633oAtcuJ/AQUmBFWa6JJqhBE+U6Fxh8nQtdlKHFMuYgBkK4ZOqrdX
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Last-TLS-Session-Version: TLSv1.3
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,TO_EQ_FM_DIRECT_MX,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Out of tree builds are much more convenient when building for multiple
-architectures or configurations in parallel.
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Only absolute O= parameters are supported as Makefile.include will
-always resolve relative paths in relation to $(srctree) instead of the
-current directory.
+This patchset contains several improvements and updates for the devicetrees
+for the i.MX8MM modules and boards by Kontron Electronics GmbH.
 
-Add a call to "make outputmakefile" to verify that the sourcetree is
-clean.
+* HDMI/LVDS support for the BL/DL i.MX8MM
+* Misc cleanups and small fixes
+* OSM-S i.MX8MM module refactoring and update to latest HW revision
 
-This is based on Zhangjins out-of-tree patch.
-It extends that work for get_init_cpio support and also drops relative
-O= specifications explicitly.
+Frieder Schrempf (14):
+  arm64: dts: imx8mm-kontron: Add support for display bridges on BL
+    i.MX8MM
+  arm64: dts: imx8mm-kontron: Add DL (Display-Line) overlay with LVDS
+    support
+  arm64: dts: imx8mm-kontron: Disable pullups for I2C signals on OSM-S
+    i.MX8MM
+  arm64: dts: imx8mm-kontron: Disable pullups for I2C signals on SL/BL
+    i.MX8MM
+  arm64: dts: imx8mm-kontron: Disable pullups for onboard UART signals
+    on BL OSM-S board
+  arm64: dts: imx8mm-kontron: Disable pullups for onboard UART signals
+    on BL board
+  arm64: dts: imx8mm-kontron: Disable pull resistors for SD card signals
+    on BL OSM-S board
+  arm64: dts: imx8mm-kontron: Disable pull resistors for SD card signals
+    on BL board
+  arm64: dts: imx8mm-kontron: Fix interrupt for RTC on OSM-S i.MX8MM
+    module
+  arm64: dts: imx8mm-kontron: Fix OSM-S devicetrees to match latest
+    hardware
+  arm64: dts: imx8mm-kontron: Disable uneffective PUE bit in SDIO IOMUX
+  arm64: dts: imx8mm-kontron: Remove useless trickle-diode-disable from
+    RTC node
+  arm64: dts: imx8mm-kontron: Add I2C EEPROM on OSM-S Kontron i.MX8MM
+  arm64: dts: imx8mm-kontron: Refactor devicetree for OSM-S module and
+    board
 
-Link: https://lore.kernel.org/lkml/06d96bd81fe812a9718098a383678ad3beba98b1.1691215074.git.falcon@tinylab.org/
-Co-developed-by: Zhangjin Wu <falcon@tinylab.org>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-Acked-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- tools/testing/selftests/nolibc/Makefile | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index b1129be98376..c5df1617cbc3 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -1,9 +1,16 @@
- # SPDX-License-Identifier: GPL-2.0
- # Makefile for nolibc tests
- include ../../../scripts/Makefile.include
-+include ../../../scripts/utilities.mak
- # We need this for the "cc-option" macro.
- include ../../../build/Build.include
- 
-+ifneq ($(O),)
-+ifneq ($(call is-absolute,$(O)),y)
-+$(error Only absolute O= parameters are supported)
-+endif
-+endif
-+
- # we're in ".../tools/testing/selftests/nolibc"
- ifeq ($(srctree),)
- srctree := $(patsubst %/tools/testing/selftests/,%,$(dir $(CURDIR)))
-@@ -14,6 +21,8 @@ include $(srctree)/scripts/subarch.include
- ARCH = $(SUBARCH)
- endif
- 
-+objtree ?= $(srctree)
-+
- # XARCH extends the kernel's ARCH with a few variants of the same
- # architecture that only differ by the configuration, the toolchain
- # and the Qemu program used. It is copied as-is into ARCH except for
-@@ -52,7 +61,7 @@ IMAGE_ppc64le    = arch/powerpc/boot/zImage
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
- IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
--IMAGE            = $(IMAGE_$(XARCH))
-+IMAGE            = $(objtree)/$(IMAGE_$(XARCH))
- IMAGE_NAME       = $(notdir $(IMAGE))
- 
- # default kernel configurations that appear to be usable
-@@ -174,6 +183,7 @@ sysroot: sysroot/$(ARCH)/include
- sysroot/$(ARCH)/include:
- 	$(Q)rm -rf sysroot/$(ARCH) sysroot/sysroot
- 	$(QUIET_MKDIR)mkdir -p sysroot
-+	$(Q)$(MAKE) -C $(srctree) outputmakefile
- 	$(Q)$(MAKE) -C $(srctree)/tools/include/nolibc ARCH=$(ARCH) OUTPUT=$(CURDIR)/sysroot/ headers_standalone
- 	$(Q)mv sysroot/sysroot sysroot/$(ARCH)
- 
-@@ -206,7 +216,7 @@ run-user: nolibc-test
- 	$(Q)$(REPORT) $(CURDIR)/run.out
- 
- initramfs.cpio: kernel nolibc-test
--	$(QUIET_GEN)echo 'file /init nolibc-test 755 0 0' | $(srctree)/usr/gen_init_cpio - > initramfs.cpio
-+	$(QUIET_GEN)echo 'file /init nolibc-test 755 0 0' | $(objtree)/usr/gen_init_cpio - > initramfs.cpio
- 
- initramfs: nolibc-test
- 	$(QUIET_MKDIR)mkdir -p initramfs
-@@ -224,12 +234,12 @@ kernel-standalone: initramfs
- 
- # run the tests after building the kernel
- run: kernel initramfs.cpio
--	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -initrd initramfs.cpio -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-+	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -initrd initramfs.cpio -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
- 	$(Q)$(REPORT) $(CURDIR)/run.out
- 
- # re-run the tests from an existing kernel
- rerun:
--	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -initrd initramfs.cpio -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-+	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -initrd initramfs.cpio -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
- 	$(Q)$(REPORT) $(CURDIR)/run.out
- 
- # report with existing test log
+ arch/arm64/boot/dts/freescale/Makefile        |   4 +
+ .../dts/freescale/imx8mm-kontron-bl-osm-s.dts | 295 +++------
+ .../boot/dts/freescale/imx8mm-kontron-bl.dts  | 187 +++++-
+ .../boot/dts/freescale/imx8mm-kontron-dl.dtso | 197 ++++++
+ .../dts/freescale/imx8mm-kontron-osm-s.dtsi   | 567 +++++++++++++++++-
+ .../boot/dts/freescale/imx8mm-kontron-sl.dtsi |   4 +-
+ 6 files changed, 1020 insertions(+), 234 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
 
 -- 
 2.42.0
-
