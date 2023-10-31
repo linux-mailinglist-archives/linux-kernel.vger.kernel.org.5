@@ -2,258 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED4A7DC971
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE2C7DC97A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343871AbjJaJZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        id S1343879AbjJaJ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343853AbjJaJZl (ORCPT
+        with ESMTP id S1343867AbjJaJ2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:25:41 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E81EB7;
-        Tue, 31 Oct 2023 02:25:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBDF3C15;
-        Tue, 31 Oct 2023 02:26:11 -0700 (PDT)
-Received: from [10.57.4.28] (unknown [10.57.4.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C053E3F67D;
-        Tue, 31 Oct 2023 02:25:27 -0700 (PDT)
-Message-ID: <2c4b6c1b-b9e7-42b2-8f7b-446ebe9d15ac@arm.com>
-Date:   Tue, 31 Oct 2023 09:26:19 +0000
+        Tue, 31 Oct 2023 05:28:35 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA5EB7;
+        Tue, 31 Oct 2023 02:28:32 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso42479475e9.3;
+        Tue, 31 Oct 2023 02:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698744511; x=1699349311; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hpuRphvrVf3Tpf7glDCxXzY38aB78+VCSilpy3ruTaY=;
+        b=YBr4mz3YcPmGMEAEE6tat5OIzAh2b1/UbbvPf++xXgXT70PLHASArOlI+/bqp2jvai
+         tFeevx+v2Qf0bGPTSByK4iUtRN1c2eACxQdLJoHmSUJ7goZZNjaIwmYJPyFzhASRf/gh
+         GczK90sCmpdFLnE6Gz5fN9+aag+yVaeRqkgTNF7jdbKRBuYn8yxk+TQV5qhtwxbQc2Rp
+         l4oFFp5QOYBJ20qb/97knE03pnH8CmwUOGVu7SYrem+d+trio1MDuP4r2mPkF8U5BgnA
+         00fcOBZWD305u0Bn2qWNaRnuqqGo8OlBvbg245R+LA/WyiGNFgj3CWY/QV/mSOF06qxG
+         a4ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698744511; x=1699349311;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hpuRphvrVf3Tpf7glDCxXzY38aB78+VCSilpy3ruTaY=;
+        b=ELKV/2DlQvSCjOo5XegBHJ4f8R40OKXB0DfHFu6k8R980xj4YegprzwUKaoes8Rvme
+         AjiGFBAtrauTcyi2Xi1Ns5a2w6hcgaqi7tz+TqqWiFpK+gW/0SXpvIIoMYejEBwocmaY
+         KTSkYcRfoApJFv02l/2GNyj7jSnXQrKaX76J85wDV4S3bvg0NqOJ20Kj/MY43TVlQw08
+         jUnfGoJVqbTsC+Y+QqsVvFLtBnZgetI6uT6DH4TWRfSPy0XTpmRWJ7mYPnmv9nVZ6wb9
+         HkDtbElqLpmO1u8brvkeD/EC7r9ab7IpFmz4AaTOlzdNAmXPgu9L75gFG6hScZS+2YPR
+         hUfA==
+X-Gm-Message-State: AOJu0YwRE4vEAR7i9AqMXhdFK71dc0txv9qtci25DVUCmTxjXuEhAYiI
+        /Lq5JPOvjI/2LrB+ntAekRI=
+X-Google-Smtp-Source: AGHT+IG9sjyORQpnyRpUZGDbIloDngb7K78xGL29SX64bRU+POWXPr1HNK0FPT2EiIefUXqaesYC2Q==
+X-Received: by 2002:a5d:690c:0:b0:32d:8da0:48d0 with SMTP id t12-20020a5d690c000000b0032d8da048d0mr8072746wru.68.1698744510694;
+        Tue, 31 Oct 2023 02:28:30 -0700 (PDT)
+Received: from localhost ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id c8-20020a5d63c8000000b0032f7cfac0fesm1042299wrw.51.2023.10.31.02.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 02:28:30 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 09:28:30 +0000
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     richardcochran@gmail.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        reibax@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net-next V2] ptp: fix corrupted list in ptp_open
+Message-ID: <20231031092830.GA20431@gmail.com>
+Mail-Followup-To: Edward Adam Davis <eadavis@qq.com>,
+        richardcochran@gmail.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        reibax@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+References: <ZT65J4mvFe1yx5_3@hoboy.vegasvil.org>
+ <tencent_24C96E7894D0EBA2EDD2CFB87BB66EC02D0A@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 8/8] thermal: exynos: use set_trips
-Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>
-Cc:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-pm@vger.kernel.org
-References: <20231025133027.524152-1-m.majewski2@samsung.com>
- <CGME20231025133100eucas1p14e6de58e52560d165bdb8b809e406278@eucas1p1.samsung.com>
- <20231025133027.524152-9-m.majewski2@samsung.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231025133027.524152-9-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_24C96E7894D0EBA2EDD2CFB87BB66EC02D0A@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Please use a separate mail thread for a new patch revision.
+See the section "Resending after review" in
+Documentation/process/maintainer-netdev.rst.
 
+Martin
 
-On 10/25/23 14:30, Mateusz Majewski wrote:
-> Currently, each trip point defined in the device tree corresponds to a
-> single hardware interrupt. This commit instead switches to using two
-> hardware interrupts, whose values are set dynamically using the
-> set_trips callback. Additionally, the critical temperature threshold is
-> handled specifically.
+On Tue, Oct 31, 2023 at 05:07:08AM +0800, Edward Adam Davis wrote:
+> There is no lock protection when writing ptp->tsevqs in ptp_open(),
+> ptp_release(), which can cause data corruption, use mutex lock to avoid this 
+> issue.
 > 
-
-[snip]
-
->   
-> -static void exynos4210_tmu_set_trip_temp(struct exynos_tmu_data *data,
-> -					 int trip_id, u8 temp)
-> +static void exynos_tmu_update_bit(struct exynos_tmu_data *data, int reg_off,
-> +				  int bit_off, bool enable)
->   {
-> -	temp = temp_to_code(data, temp);
-> -	writeb(temp, data->base + EXYNOS4210_TMU_REG_TRIG_LEVEL0 + trip_id * 4);
-> +	u32 interrupt_en;
+> Moreover, ptp_release() should not be used to release the queue in ptp_read(),
+> and it should be deleted together.
+> 
+> Reported-and-tested-by: syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
+> Fixes: 8f5de6fb2453 ("ptp: support multiple timestamp event readers")
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  drivers/ptp/ptp_chardev.c | 11 +++++++++--
+>  drivers/ptp/ptp_clock.c   |  3 +++
+>  drivers/ptp/ptp_private.h |  1 +
+>  3 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+> index 282cd7d24077..e31551d2697d 100644
+> --- a/drivers/ptp/ptp_chardev.c
+> +++ b/drivers/ptp/ptp_chardev.c
+> @@ -109,6 +109,9 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+>  	struct timestamp_event_queue *queue;
+>  	char debugfsname[32];
+>  
+> +	if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
+> +		return -ERESTARTSYS;
 > +
-> +	interrupt_en = readl(data->base + reg_off);
-> +	if (enable)
-> +		interrupt_en |= 1 << bit_off;
-> +	else
-> +		interrupt_en &= ~(1 << bit_off);
-
-Why not to use dedicated stuff for this?
-val |= BIT(x)
-val &= ~BIT(x)
-You can find plenty of example in the kernel
-
-> +	writel(interrupt_en, data->base + reg_off);
->   }
->   
-
-[snip]
-
-> -static void exynos4412_tmu_set_trip_temp(struct exynos_tmu_data *data,
-> -					 int trip, u8 temp)
-> -{
-> -	u32 th, con;
-> -
-> -	th = readl(data->base + EXYNOS_THD_TEMP_RISE);
-> -	th &= ~(0xff << 8 * trip);
-> -	th |= temp_to_code(data, temp) << 8 * trip;
-> -	writel(th, data->base + EXYNOS_THD_TEMP_RISE);
-> -
-> -	if (trip == 3) {
-> -		con = readl(data->base + EXYNOS_TMU_REG_CONTROL);
-> -		con |= (1 << EXYNOS_TMU_THERM_TRIP_EN_SHIFT);
-> -		writel(con, data->base + EXYNOS_TMU_REG_CONTROL);
-> -	}
-> -}
-> -
-> -static void exynos4412_tmu_set_trip_hyst(struct exynos_tmu_data *data,
-> -					 int trip, u8 temp, u8 hyst)
-> +static void exynos4412_tmu_set_low_temp(struct exynos_tmu_data *data, u8 temp)
->   {
->   	u32 th;
->   
->   	th = readl(data->base + EXYNOS_THD_TEMP_FALL);
-> -	th &= ~(0xff << 8 * trip);
-> -	if (hyst)
-> -		th |= temp_to_code(data, temp - hyst) << 8 * trip;
-> +	th &= ~(0xff << 0);
-> +	th |= temp_to_code(data, temp) << 0;
-
-This 2-line pattern repeats a few times. It looks like a nice cadidate
-for an inline function which can abstract that. Something like:
-
-val = update_temp_value(data, temp, threshold, LOW_TEMP_SHIFT)
-
-Assisted with the macros {LOW|HIGH|CRIT}_TEMP_SHIFT, the code
-would look less convoluted IMO.
-(The old code with the multiplication for the shift value wasn't
-cleaner nor faster).
-
->   	writel(th, data->base + EXYNOS_THD_TEMP_FALL);
-> +
-> +	exynos_tmu_update_bit(data, EXYNOS_TMU_REG_INTEN,
-> +			      EXYNOS_TMU_INTEN_FALL0_SHIFT, true);
-> +}
-
-[snip]
-
-> -static void exynos7_tmu_set_trip_temp(struct exynos_tmu_data *data,
-> -				      int trip, u8 temp)
-> +static void exynos7_tmu_update_temp(struct exynos_tmu_data *data, u8 temp,
-> +				    int idx, bool rise)
->   {
->   	unsigned int reg_off, bit_off;
->   	u32 th;
-> +	void __iomem *reg;
->   
-> -	reg_off = ((7 - trip) / 2) * 4;
-> -	bit_off = ((8 - trip) % 2);
-> +	reg_off = ((7 - idx) / 2) * 4;
-
-Why can't we just have a set of defined register macros and pick one
-in some small function?
-A lot of operations here, also some assumption.
-
-> +	bit_off = ((8 - idx) % 2);
-
-So this can only be 0 or 1 and than it's used for the shift
-multiplication. Also I don't know the history of older code and
-if it was missed after some cleaning, but 'idx % 2' gives
-equal values but w/o subtraction.
-
-BTW, the code assumes the 'idx' values are under control somewhere else.
-Is that because the DT make sure in the schema that the range cannot be
-too big?
-What are the possible values for 'idx'?
-
->   
-> -	th = readl(data->base + EXYNOS7_THD_TEMP_RISE7_6 + reg_off);
-> +	reg = data->base +
-> +	      (rise ? EXYNOS7_THD_TEMP_RISE7_6 : EXYNOS7_THD_TEMP_FALL7_6) +
-> +	      reg_off;
-> +	th = readl(reg);
->   	th &= ~(EXYNOS7_TMU_TEMP_MASK << (16 * bit_off));
->   	th |= temp_to_code(data, temp) << (16 * bit_off);
-
-Can you simplify and abstract those bit_off usage and use some
-macros and less math operations?
-
-> -	writel(th, data->base + EXYNOS7_THD_TEMP_RISE7_6 + reg_off);
-> +	writel(th, reg);
-> +
-> +	exynos_tmu_update_bit(data, EXYNOS5433_TMU_REG_INTEN,
-> +			      (rise ? EXYNOS7_TMU_INTEN_RISE0_SHIFT :
-> +				      EXYNOS_TMU_INTEN_FALL0_SHIFT) +
-> +				      idx,
-> +			      true);
->   }
-
-[snip]
-
->   
-> -	if (on) {
-> -		for (i = 0; i < data->ntrip; i++) {
-> -			if (thermal_zone_get_trip(tz, i, &trip))
-> -				continue;
-> -
-> -			interrupt_en |=
-> -				(1 << (EXYNOS_TMU_INTEN_RISE0_SHIFT + i * 4));
-> -		}
-> -
-> -		if (data->soc != SOC_ARCH_EXYNOS4210)
-> -			interrupt_en |=
-> -				interrupt_en << EXYNOS_TMU_INTEN_FALL0_SHIFT;
-> -
-> +	if (on)
->   		con |= (1 << EXYNOS_TMU_CORE_EN_SHIFT);
-> -	} else {
-> +	else
->   		con &= ~(1 << EXYNOS_TMU_CORE_EN_SHIFT);
-
-Please also consider the BIT() helper here and above...
-
-> -	}
->   
-> -	writel(interrupt_en, data->base + EXYNOS_TMU_REG_INTEN);
->   	writel(con, data->base + EXYNOS_TMU_REG_CONTROL);
->   }
->   
->   static void exynos5433_tmu_control(struct platform_device *pdev, bool on)
->   {
->   	struct exynos_tmu_data *data = platform_get_drvdata(pdev);
-> -	struct thermal_zone_device *tz = data->tzd;
-> -	struct thermal_trip trip;
-> -	unsigned int con, interrupt_en = 0, pd_det_en, i;
-> +	unsigned int con, pd_det_en;
->   
->   	con = get_con_reg(data, readl(data->base + EXYNOS_TMU_REG_CONTROL));
->   
-> -	if (on) {
-> -		for (i = 0; i < data->ntrip; i++) {
-> -			if (thermal_zone_get_trip(tz, i, &trip))
-> -				continue;
-> -
-> -			interrupt_en |=
-> -				(1 << (EXYNOS7_TMU_INTEN_RISE0_SHIFT + i));
-> -		}
-> -
-> -		interrupt_en |=
-> -			interrupt_en << EXYNOS_TMU_INTEN_FALL0_SHIFT;
-> -
-> +	if (on)
->   		con |= (1 << EXYNOS_TMU_CORE_EN_SHIFT);
-> -	} else
-> +	else
->   		con &= ~(1 << EXYNOS_TMU_CORE_EN_SHIFT);
-
-... and here. Basically in all places where it's possible.
-
-Regards,
-Lukasz
+>  	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
+>  	if (!queue)
+>  		return -EINVAL;
+> @@ -132,15 +135,20 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+>  	debugfs_create_u32_array("mask", 0444, queue->debugfs_instance,
+>  				 &queue->dfs_bitmap);
+>  
+> +	mutex_unlock(&ptp->tsevq_mux);
+>  	return 0;
+>  }
+>  
+>  int ptp_release(struct posix_clock_context *pccontext)
+>  {
+>  	struct timestamp_event_queue *queue = pccontext->private_clkdata;
+> +	struct ptp_clock *ptp =
+> +		container_of(pccontext->clk, struct ptp_clock, clock);
+>  	unsigned long flags;
+>  
+>  	if (queue) {
+> +		if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
+> +			return -ERESTARTSYS;
+>  		debugfs_remove(queue->debugfs_instance);
+>  		pccontext->private_clkdata = NULL;
+>  		spin_lock_irqsave(&queue->lock, flags);
+> @@ -148,6 +156,7 @@ int ptp_release(struct posix_clock_context *pccontext)
+>  		spin_unlock_irqrestore(&queue->lock, flags);
+>  		bitmap_free(queue->mask);
+>  		kfree(queue);
+> +		mutex_unlock(&ptp->tsevq_mux);
+>  	}
+>  	return 0;
+>  }
+> @@ -585,7 +594,5 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
+>  free_event:
+>  	kfree(event);
+>  exit:
+> -	if (result < 0)
+> -		ptp_release(pccontext);
+>  	return result;
+>  }
+> diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+> index 3d1b0a97301c..7930db6ec18d 100644
+> --- a/drivers/ptp/ptp_clock.c
+> +++ b/drivers/ptp/ptp_clock.c
+> @@ -176,6 +176,7 @@ static void ptp_clock_release(struct device *dev)
+>  
+>  	ptp_cleanup_pin_groups(ptp);
+>  	kfree(ptp->vclock_index);
+> +	mutex_destroy(&ptp->tsevq_mux);
+>  	mutex_destroy(&ptp->pincfg_mux);
+>  	mutex_destroy(&ptp->n_vclocks_mux);
+>  	/* Delete first entry */
+> @@ -247,6 +248,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+>  	if (!queue)
+>  		goto no_memory_queue;
+>  	list_add_tail(&queue->qlist, &ptp->tsevqs);
+> +	mutex_init(&ptp->tsevq_mux);
+>  	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
+>  	if (!queue->mask)
+>  		goto no_memory_bitmap;
+> @@ -356,6 +358,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+>  	if (ptp->kworker)
+>  		kthread_destroy_worker(ptp->kworker);
+>  kworker_err:
+> +	mutex_destroy(&ptp->tsevq_mux);
+>  	mutex_destroy(&ptp->pincfg_mux);
+>  	mutex_destroy(&ptp->n_vclocks_mux);
+>  	bitmap_free(queue->mask);
+> diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+> index 52f87e394aa6..1525bd2059ba 100644
+> --- a/drivers/ptp/ptp_private.h
+> +++ b/drivers/ptp/ptp_private.h
+> @@ -44,6 +44,7 @@ struct ptp_clock {
+>  	struct pps_device *pps_source;
+>  	long dialed_frequency; /* remembers the frequency adjustment */
+>  	struct list_head tsevqs; /* timestamp fifo list */
+> +	struct mutex tsevq_mux; /* one process at a time reading the fifo */
+>  	struct mutex pincfg_mux; /* protect concurrent info->pin_config access */
+>  	wait_queue_head_t tsev_wq;
+>  	int defunct; /* tells readers to go away when clock is being removed */
+> -- 
+> 2.25.1
+> 
