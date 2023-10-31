@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8014A7DCE5A
+	by mail.lfdr.de (Postfix) with ESMTP id D803D7DCE5B
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344706AbjJaNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        id S1344707AbjJaNzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344691AbjJaNyh (ORCPT
+        with ESMTP id S1344672AbjJaNzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:54:37 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4AFE6;
-        Tue, 31 Oct 2023 06:54:34 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 924EBE0007;
-        Tue, 31 Oct 2023 13:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698760473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5rUHRQv73AIrtd35QNYvGvh4LBovqhhzdBrWZKCti2w=;
-        b=iwqxiKdpn7JuId1ORGHScXnbczVUO2o7i2nH+wlQYZ5ECVmdGhJMvkx9PvZl66fr6cBFM2
-        JLAM1dwn6CiUQq2sMi+/GMGQupOb2u/xld0QYEd14ieHFXhwbRbaFn7DL4DfffbQS7t47+
-        pBDQTBQ3LDkApcVP3soGkniQ52E/lyFX8RmLXT3kL2Rmc2kvZCsMY/n/ttLQ+wx5NI81k2
-        JM7UyqOX0wrMOwGZF5HpMxvpgGc97YdW+4go1TrghY7NvDSwQVZpM+vGI32m12uWVVCWTh
-        NEhJV6+/M8rs/hq513YGbNjA8bH73ZWAKhKHzeoeT60t6gjroEdfpqW2dYkytg==
-Date:   Tue, 31 Oct 2023 14:54:32 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-Subject: Re: [PATCH 2/2] drivers: rtc: max31335: initial commit
-Message-ID: <202310311354329a21a9d0@mail.local>
-References: <20231030115016.97823-1-antoniu.miclaus@analog.com>
- <20231030115016.97823-3-antoniu.miclaus@analog.com>
- <ce07d951-f492-4137-9588-1d55001e0003@roeck-us.net>
- <CY4PR03MB339979DBB7ADBFC3872156019BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
+        Tue, 31 Oct 2023 09:55:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D377F9;
+        Tue, 31 Oct 2023 06:55:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C6C433C8;
+        Tue, 31 Oct 2023 13:55:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698760512;
+        bh=qIx7b2aoxjsw7TSGPFkMkmmuPqzNI4IGu1YwuirwcKE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BlTYxX8bg/TyNm9k1G7hqu+6cgvScqLMmrYdwjXbvP2dLhoZwu81/Hd86RFZNrRU0
+         1xr5Y7vFw1ElqKWf1uTmJEmuJvF5L9j3yFfh7ymcf50H/LGvdULGaZ9r81Rim15VMH
+         4BUULsumVrnHeBwimSaTDD/NGbj2ueM3Eg/nxhkdFB1V+ajGM0vsdulmLTlFZNgwMn
+         vt13jgmtUQuW2BcVFTQDAsGHT0Gmcoujtaha2sh9SXpVB++uDD9vrm6H7Cx6inillP
+         sk1nXdn297tkqDQqx2pR+3iapmU6fN1aVLAWEUbQ/flcaA2j5xZmgzrdZMzAsb7osR
+         s91m60OYKHeag==
+Message-ID: <b0cd1f921c2c9d9e76cb324c6fa7c48747eafaed.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 31 Oct 2023 09:55:09 -0400
+In-Reply-To: <20231031-stark-klar-0bab5f9ab4dc@brauner>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <20231031-stark-klar-0bab5f9ab4dc@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR03MB339979DBB7ADBFC3872156019BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,31 +77,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 11:23:49+0000, Miclaus, Antoniu wrote:
-> > > +	if (status != MAX31335_STATUS1_DEFAULT)
-> > > +		dev_err_probe(&client->dev, -EINVAL,
-> > > +			      "Unable to read from device.\n");
-> > > +
-> > 
-> > That is misleading. The device returned an unexpected status.
-> > I don't know if this really reflects a problem, but it is not
-> > "Unable to read from device".
-> > 
-> 
-> Since the device lacks an ID register, I found this as a suitable 
-> replacement for checking that the communication with the
-> device actually works before the probe function finishes
-> successfully.
-> 
-> I will be more specific in the dev_err_probe message in the 
-> upcoming patch version.
-> 
+On Tue, 2023-10-31 at 11:26 +0100, Christian Brauner wrote:
+> On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
+> > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > > > Back to your earlier point though:
+> > > >=20
+> > > > Is a global offset really a non-starter? I can see about doing some=
+thing
+> > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as c=
+heap
+> > > > as ktime_get_coarse_ts64. I don't see the downside there for the no=
+n-
+> > > > multigrain filesystems to call that.
+> > >=20
+> > > I have to say that this doesn't excite me. This whole thing feels a b=
+it
+> > > hackish. I think that a change version is the way more sane way to go=
+.
+> > >=20
+> >=20
+> > What is it about this set that feels so much more hackish to you? Most
+> > of this set is pretty similar to what we had to revert. Is it just the
+> > timekeeper changes? Why do you feel those are a problem?
+>=20
+> So I think that the multi-grain timestamp work was well intended but it
+> was ultimately a mistake. Because we added code that complicated
+> timestamp timestamp handling in the vfs to a point where the costs
+> clearly outweighed the benefits.
+>=20
+> And I don't think that this direction is worth going into. This whole
+> thread ultimately boils down to complicating generic infrastructure
+> quite extensively for nfs to handle exposing xfs without forcing an
+> on-disk format change. That's even fine.
+>=20
+> That's not a problem but in the same way I don't think the solution is
+> just stuffing this complexity into the vfs. IOW, if we make this a vfs
+> problem then at the lowest possible cost and not by changing how
+> timestamps work for everyone even if it's just internal.
 
-What if this is a transient bus error and the device is actually present
-and working?
- don't like this kind of check, they are not usually useful.
+I'll point out that this last posting I did was an RFC. It was invasive
+to the timekeeping code, but I don't think that's a hard requirement for
+doing this.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I do appreciate the feedback on this version of the series (particularly
+from Thomas who gave a great technical reason why this approach was
+wrong), but I don't think we necessarily have to give up on the whole
+idea because this particular implementation was too costly.
+
+The core idea for fixing the problem with the original series is sane,
+IMO. There is nothing wrong with simply making it that when we stamp a
+file with a fine-grained timestamp that we consider that a floor for all
+later timestamp updates. The only real question is how to keep that
+(global) fine-grained floor offset at a low cost. I think that's a
+solvable problem.
+
+I also believe that real, measurable fine-grained timestamp differences
+are worthwhile for other use cases beyond NFS. Everyone was pointing out
+the problems with lagging timestamps vs. make and rsync, but that's a
+double-edged sword. With the current always coarse-grained timestamps,
+the ordering of files written within the same jiffy can't be determined
+since their timestamps will be identical. We could conceivably change
+that with this series.
+
+That said, if this has no chance of ever being merged, then I won't
+bother working on it further, and we can try to pursue something that is
+(maybe) XFS-specific.
+
+Let me know, either way.
+--
+Jeff Layton <jlayton@kernel.org>
