@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7D87DD6F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15C77DD6FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbjJaUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        id S232599AbjJaUSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbjJaUQe (ORCPT
+        with ESMTP id S231719AbjJaUSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:16:34 -0400
-X-Greylist: delayed 424 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 13:16:31 PDT
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A8AF3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:16:31 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=novastrider.com;
-        s=key1; t=1698782965;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=McCJc14guP8yKKFOSL2omkE6jgC9UadK7MEeeUAlNhk=;
-        b=IQZigNqD37TIb9IuCV/22K6EP+dlhwlI0naHdHE9IjOPoetSpvoeFYgm0ETDxnHT02mnfd
-        ok40q5IZGM9tfJ+7z+m5uhYNRVrxohZ+yIW7s3xQbFRZr2333FKxvOEzyjWy/u0V/AqNk1
-        OOvmxxfj5cY1gm3+dZCUGi6IU2NFOdj7SpP347un1BxvjkKXg9IUTyMgvr31Uatisxbpvz
-        ynM3qna7we0wQLBVeaYPSMQA1HHkYmDNLAxG7Z9uHe2IJXSbw8LvpwgHiZ6VD2tDyb2/dw
-        +ZcowgRcyHFhItQeoVmjgneS53WTPCoxjR4VJDWZ8WXRu/+x50HCWEMIeoIeFA==
-From:   Marielle Novastrider <marielle@novastrider.com>
-To:     linux-doc@vger.kernel.org
-Cc:     marielle@novastrider.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation/arm64: Fix typos in elf_hwcaps
-Date:   Tue, 31 Oct 2023 20:08:38 +0000
-Message-Id: <20231031200838.55569-1-marielle@novastrider.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 16:18:20 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718C9ED
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:18:18 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7b9e83b70so1994267b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:18:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698783497; x=1699388297; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ztq39AVKtcPBQkDEgvD9lSUG5ylL2QPNBxZOTT2U9hc=;
+        b=EGHI4CJywkrKHWz4oREJwLIPp6QyfyEiQeyA23EfZYk0zf+UB8FaTgGtnIX4Yz/5zq
+         0wfaPxBX7kOFTa7t8SErD2Hdr9/BpS/09YMO+DydsO14aCCNLpEF5gRDbAdvSyeOlVqc
+         UPdwDfxNFzQZxJxlIYSyVEJZg41aUPEyzyBuf8phKhuMelMvnPjr5Pz6KgLXeK4ZyOyT
+         +hM/LYAkG4A9YLNg1vZwyyDl7cXlnZ1Ny2Pzc8JTvWpSyKt02vk6NaI7jNgmL1ZlNAAc
+         3b2rz5CYEcRrjjIGqzCRVZFOm/ke01G8uUhp01YYpIQ64333Vi174EbMtHL1aCTM9ObF
+         psUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698783497; x=1699388297;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ztq39AVKtcPBQkDEgvD9lSUG5ylL2QPNBxZOTT2U9hc=;
+        b=CY7v1a2zrJvTFDFvtXIPFrM9j3EekomGA8HMFL7acqt10EIi/DH3j0QoHHjhnN36jF
+         PUGv2reDlG+LuFdKwccFrA1OiB39bMGuocxB6fSHE2Qjo9GOVY5oB8VT9OSbmo1T+Lvb
+         1/1UrsBIVq5wHjbO0ruhx6hxxG02YNEZSEhnrEgUFPq3vCA1aQrzJ47pQYiIvnr7yHvs
+         H8TlmHh1UiUkYKT+aplX6SUnd7UJQSW+ovEsLMY+heikC6wJKgFmCso+TC/TL4uGOFsR
+         GUbh4p8IuMKE4yO7oFlDu9GQJabWVO/6IM8xPzg64D6+htpLmSj8pb5cRTPhlZ4tqGfQ
+         bPww==
+X-Gm-Message-State: AOJu0Yx56h9sIBOTiF064b5aGfztW7M9KE9DVgAIprDHQHALlceoGL1M
+        PDjpu8GoAPARDQjOiGafhk82V6FLs4ZG
+X-Google-Smtp-Source: AGHT+IE8r9R0/YNE2aMmXBt/5jdVEq82GPS8cQwktw+16arRhB9NYq/NvvqS8Dt8j29bFV2jrKzq4QjdO3vj
+X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
+ (user=mmaurer job=sendgmr) by 2002:a0d:d684:0:b0:58c:e8da:4d1a with SMTP id
+ y126-20020a0dd684000000b0058ce8da4d1amr89719ywd.2.1698783497681; Tue, 31 Oct
+ 2023 13:18:17 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 20:10:14 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231031201752.1189213-1-mmaurer@google.com>
+Subject: [PATCH] rust: Suppress searching builtin sysroot
+From:   Matthew Maurer <mmaurer@google.com>
+To:     Jamie.Cunliffe@arm.com, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     will@kernel.org, Matthew Maurer <mmaurer@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Small typos in register and field names.
+By default, if Rust is passed `--target=foo` rather than a target.json
+file, it will infer a default sysroot if that component is installed. As
+the proposed aarch64 support uses `aarch64-unknown-none` rather than a
+target.json file, this is needed to prevent rustc from being confused
+between the custom kernel sysroot and the pre-installed one.
 
-Signed-off-by: Marielle Novastrider <marielle@novastrider.com>
+Signed-off-by: Matthew Maurer <mmaurer@google.com>
 ---
- Documentation/arch/arm64/elf_hwcaps.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/arch/arm64/elf_hwcaps.rst b/Documentation/arch/arm64/elf_hwcaps.rst
-index 76ff9d7398fd..9d51f0d72fc4 100644
---- a/Documentation/arch/arm64/elf_hwcaps.rst
-+++ b/Documentation/arch/arm64/elf_hwcaps.rst
-@@ -174,7 +174,7 @@ HWCAP2_DCPODP
-     Functionality implied by ID_AA64ISAR1_EL1.DPB == 0b0010.
+This patch is prompted by the issue I encountered at
+https://lore.kernel.org/all/CAGSQo01pOixiPXkW867h4vPUaAjtKtHGKhkV-rpifJvKxAf4Ww@mail.gmail.com/
+but should be generically more hermetic even if we don't end up landing
+that patch.
+
+ rust/Makefile          | 1 +
+ scripts/Makefile.build | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/rust/Makefile b/rust/Makefile
+index a27f35f924ec..0403e88e19fd 100644
+--- a/rust/Makefile
++++ b/rust/Makefile
+@@ -400,6 +400,7 @@ quiet_cmd_rustc_library = $(if $(skip_clippy),RUSTC,$(RUSTC_OR_CLIPPY_QUIET)) L
+ 		--emit=metadata=$(dir $@)$(patsubst %.o,lib%.rmeta,$(notdir $@)) \
+ 		--crate-type rlib -L$(objtree)/$(obj) \
+ 		--crate-name $(patsubst %.o,%,$(notdir $@)) $< \
++		--sysroot=/dev/null \
+ 	$(if $(rustc_objcopy),;$(OBJCOPY) $(rustc_objcopy) $@)
  
- HWCAP2_SVE2
--    Functionality implied by ID_AA64ZFR0_EL1.SVEVer == 0b0001.
-+    Functionality implied by ID_AA64ZFR0_EL1.SVEver == 0b0001.
+ rust-analyzer:
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 82e3fb19fdaf..6e4ee513cc3c 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -275,6 +275,7 @@ rust_common_cmd = \
+ 	--extern alloc --extern kernel \
+ 	--crate-type rlib -L $(objtree)/rust/ \
+ 	--crate-name $(basename $(notdir $@)) \
++	--sysroot=/dev/null \
+ 	--out-dir $(dir $@) --emit=dep-info=$(depfile)
  
- HWCAP2_SVEAES
-     Functionality implied by ID_AA64ZFR0_EL1.AES == 0b0001.
-@@ -222,7 +222,7 @@ HWCAP2_RNG
-     Functionality implied by ID_AA64ISAR0_EL1.RNDR == 0b0001.
- 
- HWCAP2_BTI
--    Functionality implied by ID_AA64PFR0_EL1.BT == 0b0001.
-+    Functionality implied by ID_AA64PFR1_EL1.BT == 0b0001.
- 
- HWCAP2_MTE
-     Functionality implied by ID_AA64PFR1_EL1.MTE == 0b0010, as described
-@@ -232,7 +232,7 @@ HWCAP2_ECV
-     Functionality implied by ID_AA64MMFR0_EL1.ECV == 0b0001.
- 
- HWCAP2_AFP
--    Functionality implied by ID_AA64MFR1_EL1.AFP == 0b0001.
-+    Functionality implied by ID_AA64MMFR1_EL1.AFP == 0b0001.
- 
- HWCAP2_RPRES
-     Functionality implied by ID_AA64ISAR2_EL1.RPRES == 0b0001.
+ # `--emit=obj`, `--emit=asm` and `--emit=llvm-ir` imply a single codegen unit
 -- 
-2.39.3 (Apple Git-145)
+2.42.0.820.g83a721a137-goog
 
