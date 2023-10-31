@@ -2,153 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1B37DD4D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3557DD4DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346944AbjJaRo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        id S1346971AbjJaRo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346874AbjJaRoY (ORCPT
+        with ESMTP id S1346874AbjJaRo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:44:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA15A6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:36 -0700 (PDT)
+        Tue, 31 Oct 2023 13:44:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9587FC1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698774215;
+        s=mimecast20190719; t=1698774245;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iUnO9/SZ6ap+H+Ma/kTTfFeGQM3g1ED274282AbLD1g=;
-        b=Qc3Pg1xAX+plpNRddba7k95W9EXWGpSzWIm0/L+q57LN9K0/DPAaLtI/KwXrckavIew+t3
-        kUGDvtjvZa0vuUArcHOEB91hQ3AiSn2Z2ZTqvrJKx+0dg05BlWvL8QDYN/6QB41C+UXo3i
-        hGgriSio5d7LSRxCMemk/9XZe9V9HgQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=oKEmMRTzzezdIfeKLIaMmMSqgcMCI7WPrINjDc8nqho=;
+        b=Os50f/oZk5FRUGR6XS08aceSb9qoAYKfvMkT9a1DSdTZXWXhOBVZO4GvfqQ1FvLJ9DMY5F
+        zv9F9M9kumM2qxuI1ltsGJs2Cij+hdSIlLYDc0sQ59iVuqnYykcQ/nISiDscq4T6sMdfvm
+        u1FRPIKo8rxvUQ7r4cQpdpudmCSaPfc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-qbuVQUDAMiGIyypwlsmJZw-1; Tue, 31 Oct 2023 13:43:24 -0400
-X-MC-Unique: qbuVQUDAMiGIyypwlsmJZw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4083c9b426fso40465875e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:24 -0700 (PDT)
+ us-mta-654-t3c3rxK1MiuzCFHaMrfxUA-1; Tue, 31 Oct 2023 13:43:58 -0400
+X-MC-Unique: t3c3rxK1MiuzCFHaMrfxUA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-408524e2368so41359475e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:43:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774203; x=1699379003;
+        d=1e100.net; s=20230601; t=1698774237; x=1699379037;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iUnO9/SZ6ap+H+Ma/kTTfFeGQM3g1ED274282AbLD1g=;
-        b=vD/hOhr6cwLzDtS4EXctsqvDeYjS3w4D3i18+5wdnLnyAQfnO3auehuktGedQeFqCy
-         ASZjir4xGH0BncsrofyXKOuTAZuwbSMMY6btnxsgDIY3Y8mr9/qPhl6cVKoBuzLkkIzN
-         XH6OUvGahHQogvjngex42Mgk7lJ60opNcp5/IuC5x7iBnKtGBx1Mf3mokKIe5FacqbdG
-         Tmd1E6UXEhjBfo5QbvGWIAVrgeeRdSvXS/jAs1FRypQQzofFEiOtcne/fez6SRN2k9Yb
-         d7l5NdlNGdjduTd253aMJkv7nctXYDztl3daUHdYjtZOJycyfa0JyBv9K5iTAYaFlLCi
-         3oNw==
-X-Gm-Message-State: AOJu0YygGWS/tDBWR7R7dX+UyphShjXhw800JmC8rsSimd/nmNUtH1Lj
-        7hzbrWNkC/qL91enQAHq5nYfDMZtVzhAZmQQ+1cU4wMGO52SJ+SaYwJDeROJGXnM18ULdax9ckG
-        Kf5B7pN8LknjyeUNMkKRgFylv
-X-Received: by 2002:a05:6000:1566:b0:32f:92f3:dbbb with SMTP id 6-20020a056000156600b0032f92f3dbbbmr2910202wrz.70.1698774203074;
-        Tue, 31 Oct 2023 10:43:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE8rn9CSehfODrcFmZD5QheiiN4lzDXyj4HypO00ymz85ULxp1cgvjUsluFYDBcQidkpb8kqw==
-X-Received: by 2002:a05:6000:1566:b0:32f:92f3:dbbb with SMTP id 6-20020a056000156600b0032f92f3dbbbmr2910191wrz.70.1698774202709;
-        Tue, 31 Oct 2023 10:43:22 -0700 (PDT)
+        bh=oKEmMRTzzezdIfeKLIaMmMSqgcMCI7WPrINjDc8nqho=;
+        b=Tt6mt32u7Yf/vpx9fEX8czWr5GUAx/TK8Y7bHdSjbrPA+GQhrKmpX87qnTOl5yIHmH
+         eWPm0IBcgG3hFuzFgsa7mtbEtyLhPNnVQN1fAz75CkpRiND9JxAillvDqANgrr8oMJEv
+         Dr7QSDQ8fhf6QtkyBj/+pOvuvVCidfGMEBBZo0iI+5C1F5BtcQgGl4uERvP8NTir9rm6
+         r/Z8YIwhsTe8lAR9mjl3IEnSyRPKkLou855CfcZ2Vsvv7fkhfXFyeioLFeNz/54y4Fqs
+         5KULXtnHt6iiUy6QZFDjSbkzWHtzihxtUZBxgDJR8WIzXndNRGADWOogtZDNGzSR1r5i
+         bMEw==
+X-Gm-Message-State: AOJu0YzQ00zUYxrYIKE/iH9Ph2pevT2/CElSi+xZusL+PYoRWqK38Dwl
+        /Fh3XOlbeoJyTDlWsTrzSd2u9F+K27vLe4mSvh/N2hmzCd0v0QObgX89CQAWlIQDC6jGYkcYP0T
+        8L8/py6RLOHCmHRqvr64tHI+5
+X-Received: by 2002:a05:600c:4f8a:b0:401:daf2:2737 with SMTP id n10-20020a05600c4f8a00b00401daf22737mr10897278wmq.30.1698774236980;
+        Tue, 31 Oct 2023 10:43:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGGFc///QXd0FGNNDxlPwzffK54+k3OPnV0SfFsCLqWpeFYsOLUHjUAinEW/IAPFQWyA/BA5g==
+X-Received: by 2002:a05:600c:4f8a:b0:401:daf2:2737 with SMTP id n10-20020a05600c4f8a00b00401daf22737mr10897264wmq.30.1698774236579;
+        Tue, 31 Oct 2023 10:43:56 -0700 (PDT)
 Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id t1-20020a05600001c100b0032415213a6fsm1984587wrx.87.2023.10.31.10.43.21
+        by smtp.gmail.com with ESMTPSA id h10-20020a05600c350a00b004064cd71aa8sm2370954wmq.34.2023.10.31.10.43.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:43:22 -0700 (PDT)
-Message-ID: <0ad2b2b4d394ca4c8b805535444f97db4e9cc690.camel@redhat.com>
-Subject: Re: [PATCH v6 01/25] x86/fpu/xstate: Manually check and add
- XFEATURE_CET_USER xstate bit
+        Tue, 31 Oct 2023 10:43:56 -0700 (PDT)
+Message-ID: <af972fe5981b9e7101b64de43c7be0a8cc165323.camel@redhat.com>
+Subject: Re: [PATCH v6 02/25] x86/fpu/xstate: Fix guest fpstate allocation
+ size calculation
 From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+To:     Sean Christopherson <seanjc@google.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        peterz@infradead.org, chao.gao@intel.com,
         rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Tue, 31 Oct 2023 19:43:20 +0200
-In-Reply-To: <20230914063325.85503-2-weijiang.yang@intel.com>
+Date:   Tue, 31 Oct 2023 19:43:54 +0200
+In-Reply-To: <ZTfxly8573xdnruS@google.com>
 References: <20230914063325.85503-1-weijiang.yang@intel.com>
-         <20230914063325.85503-2-weijiang.yang@intel.com>
+         <20230914063325.85503-3-weijiang.yang@intel.com>
+         <ZTMdyR8e63sCTKWc@google.com>
+         <e02b39c1-96aa-faf9-5750-4c53b5a5fb46@intel.com>
+         <ZTfxly8573xdnruS@google.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> Remove XFEATURE_CET_USER entry from dependency array as the entry doesn't
-> reflect true dependency between CET features and the xstate bit, instead
-> manually check and add the bit back if either SHSTK or IBT is supported.
+On Tue, 2023-10-24 at 09:32 -0700, Sean Christopherson wrote:
+> On Tue, Oct 24, 2023, Weijiang Yang wrote:
+> > On 10/21/2023 8:39 AM, Sean Christopherson wrote:
+> > > On Thu, Sep 14, 2023, Yang Weijiang wrote:
+> > > > Fix guest xsave area allocation size from fpu_user_cfg.default_size to
+> > > > fpu_kernel_cfg.default_size so that the xsave area size is consistent
+> > > > with fpstate->size set in __fpstate_reset().
+> > > > 
+> > > > With the fix, guest fpstate size is sufficient for KVM supported guest
+> > > > xfeatures.
+> > > > 
+> > > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > > ---
+> > > >   arch/x86/kernel/fpu/core.c | 4 +++-
+> > > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> > > > index a86d37052a64..a42d8ad26ce6 100644
+> > > > --- a/arch/x86/kernel/fpu/core.c
+> > > > +++ b/arch/x86/kernel/fpu/core.c
+> > > > @@ -220,7 +220,9 @@ bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu)
+> > > >   	struct fpstate *fpstate;
+> > > >   	unsigned int size;
+> > > > -	size = fpu_user_cfg.default_size + ALIGN(offsetof(struct fpstate, regs), 64);
+> > > > +	size = fpu_kernel_cfg.default_size +
+> > > > +	       ALIGN(offsetof(struct fpstate, regs), 64);
+> > > Shouldn't all the other calculations in this function also switch to fpu_kernel_cfg?
+> > > At the very least, this looks wrong when paired with the above:
+> > > 
+> > > 	gfpu->uabi_size		= sizeof(struct kvm_xsave);
+> > > 	if (WARN_ON_ONCE(fpu_user_cfg.default_size > gfpu->uabi_size))
+> > > 		gfpu->uabi_size = fpu_user_cfg.default_size;
+> > 
+> > Hi, Sean,
+> > Not sure what's your concerns.
+> > From my understanding fpu_kernel_cfg.default_size should include all enabled
+> > xfeatures in host (XCR0 | XSS), this is also expected for supporting all
+> > guest enabled xfeatures. gfpu->uabi_size only includes enabled user xfeatures
+> > which are operated via KVM uABIs(KVM_GET_XSAVE/KVM_SET_XSAVE/KVM_GET_XSAVE2),
+> > so the two sizes are relatively independent since guest supervisor xfeatures
+> > are saved/restored via GET/SET_MSRS interfaces.
 > 
-> Both user mode shadow stack and indirect branch tracking features depend
-> on XFEATURE_CET_USER bit in XSS to automatically save/restore user mode
-> xstate registers, i.e., IA32_U_CET and IA32_PL3_SSP whenever necessary.
+> Ah, right, I keep forgetting that KVM's ABI can't use XRSTOR because it forces
+> the compacted format.
 > 
-> Although in real world a platform with IBT but no SHSTK is rare, but in
-> virtualization world it's common, guest SHSTK and IBT can be controlled
-> independently via userspace app.
+> This part still looks odd to me:
 > 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/kernel/fpu/xstate.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index cadf68737e6b..12c8cb278346 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -73,7 +73,6 @@ static unsigned short xsave_cpuid_features[] __initdata = {
->  	[XFEATURE_PT_UNIMPLEMENTED_SO_FAR]	= X86_FEATURE_INTEL_PT,
->  	[XFEATURE_PKRU]				= X86_FEATURE_OSPKE,
->  	[XFEATURE_PASID]			= X86_FEATURE_ENQCMD,
-> -	[XFEATURE_CET_USER]			= X86_FEATURE_SHSTK,
->  	[XFEATURE_XTILE_CFG]			= X86_FEATURE_AMX_TILE,
->  	[XFEATURE_XTILE_DATA]			= X86_FEATURE_AMX_TILE,
->  };
-> @@ -798,6 +797,14 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
->  			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
->  	}
->  
-> +	/*
-> +	 * Manually add CET user mode xstate bit if either SHSTK or IBT is
-> +	 * available. Both features depend on the xstate bit to save/restore
-> +	 * CET user mode state.
-> +	 */
-> +	if (boot_cpu_has(X86_FEATURE_SHSTK) || boot_cpu_has(X86_FEATURE_IBT))
-> +		fpu_kernel_cfg.max_features |= BIT_ULL(XFEATURE_CET_USER);
-> +
->  	if (!cpu_feature_enabled(X86_FEATURE_XFD))
->  		fpu_kernel_cfg.max_features &= ~XFEATURE_MASK_USER_DYNAMIC;
->  
+> 	gfpu->xfeatures		= fpu_user_cfg.default_features;
+
+That should be indeed fpu_kernel_cfg.default_features. 
+This variable is also currently hardly used, it only tracks which dynamic userspace features
+are enabled and KVM only uses it once (in fpu_enable_guest_xfd_features)
 
 
-The goal of the xsave_cpuid_features is to disable xfeature state bits which are enabled
-in CPUID, but their parent feature bit (e.g X86_FEATURE_AVX512) is disabled in CPUID, 
-something that should not happen on real CPU, but can happen if the user explicitly
-disables the feature on the kernel command line and/or due to virtualization.
 
-However the above code does the opposite, it will enable XFEATURE_CET_USER xsaves component,
-when in fact, it might be disabled in the CPUID (and one can say that in theory such
-configuration is even useful, since the kernel can still context switch CET msrs manually).
+> 	gfpu->perm		= fpu_user_cfg.default_features;
 
 
-So I think that the code should do this instead:
+This variable I think is currently only set and never read.
 
-if (!boot_cpu_has(X86_FEATURE_SHSTK) && !boot_cpu_has(X86_FEATURE_IBT))
- 	fpu_kernel_cfg.max_features &= ~BIT_ULL(XFEATURE_CET_USER);
+Note that current->group_leader->thread.fpu.guest_perm is actually initialized to fpu_kernel_cfg.default_features
+but the kernel components of it masked in the corresponding prctl 
+(ARCH_GET_XCOMP_SUPP/ARCH_GET_XCOMP_GUEST_PERM/ARCH_REQ_XCOMP_GUEST_PERM).
+
+So I think that we also should use fpu_kernel_cfg.default_features here for the sake of not having uninitilized
+variable on 32 bit kernels, because the whole FPU permission thing I see is implemented for 64 bit kernels only.
+
+Or even better IMHO is to remove both variables and in fpu_enable_guest_xfd_features,
+just mask the xfeatures with the XFEATURE_MASK_USER_DYNAMIC instead.
 
 
 Best regards,
 	Maxim Levitsky
+
+> 
+> but I'm probably just not understanding something in the other patches changes yet.
+> 
+
+
+
 
 
 
