@@ -2,208 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6257DCDF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46F07DCDF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344581AbjJaNfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        id S1344590AbjJaNfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344557AbjJaNfG (ORCPT
+        with ESMTP id S1344583AbjJaNfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:35:06 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2064.outbound.protection.outlook.com [40.107.102.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADFBE6;
-        Tue, 31 Oct 2023 06:35:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cTsySws2OJ3bMQjr0ad65pX68U7bdzVE8MptyyzeYnQmZGPzLB1zUF3QdfQAhArAPM3RRqPWo9Mvm71KRlXz4m41aRvMgOXFXNzd8NFcaknC137qnWLCtIR83Sh1KTREc+lD53myRtEfaN2QHdvc/gB7FUMoE0SvLylIojvvwacLLuqoq27lPqmCUXsNsujY9m9+Z2JcWVAzfT2LcLj5tXN67Aaj0BOWRdpkvlePooy5tGF8A5ftcMqkcG09mVjYDSYtvXokxXPdQtibPhsWOLpkBFqOgNBOq+GF+P/FwUwx74oP4ve11aspet1OLdiD8VQ118ZZqHIfvPAFC15jHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vbgtSTY1GCwLhGQB/wIgn0aNJUxw+ac+GvxL1xpS73g=;
- b=i3Uyib7P0n1sPnFjZiWDBiUyg5BaFJenFjFqO+S6TSoZRyEHGmqPPaofzy0gMbl2ksjd8BnIrp6/tRgHqhUMLd0yCV5C0PJgCICMz+ZWLQlFldJtXiNF9Hfut8+G3NEdbQsbu6zS/IyeNQ893yXd+ct+Z7pmdDRKvQCQcAGQ1lAOiyusfEE+lf4L1DSVDYsn8h4F1eMkSrLYsiSUz4RtZySS/x9DaZduLSvcbD9kk4L7MDe0PVC4wnQEhXCY73em3RNtkjWALD841jZN4gdGWXDfcshBnT5QB2yshVh1r/VCHdtUEPyquyjJKW1pdLfBPeND7SzJY8kRsgrTIRaT9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vbgtSTY1GCwLhGQB/wIgn0aNJUxw+ac+GvxL1xpS73g=;
- b=NzS8g0GWTfF8Cmy7r9PRT7S/GEyZNGzkDqYn9fH2wYYI4hnnoH01V5xP1o0Dzf6/Qtuu5dJrpCU110lxj/nlUPRzdyOPx5zCMANn/Vjy/XkgZ0MYXs8/1IIlQCo+H9Zms4wet/e3ttP9lF3xEaDv5et08yYKoHEa+mGEOqH9L3A=
-Received: from DM6PR07CA0110.namprd07.prod.outlook.com (2603:10b6:5:330::26)
- by MN0PR12MB6294.namprd12.prod.outlook.com (2603:10b6:208:3c1::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Tue, 31 Oct
- 2023 13:35:00 +0000
-Received: from CY4PEPF0000E9D8.namprd05.prod.outlook.com
- (2603:10b6:5:330:cafe::97) by DM6PR07CA0110.outlook.office365.com
- (2603:10b6:5:330::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
- Transport; Tue, 31 Oct 2023 13:35:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D8.mail.protection.outlook.com (10.167.241.83) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6954.19 via Frontend Transport; Tue, 31 Oct 2023 13:35:00 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 31 Oct
- 2023 08:34:59 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     <bhelgaas@google.com>, <mika.westerberg@linux.intel.com>
-CC:     <andreas.noever@gmail.com>, <michael.jamet@intel.com>,
-        <YehezkelShB@gmail.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <Alexander.Deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in pcie_bandwidth_available()
-Date:   Tue, 31 Oct 2023 08:34:38 -0500
-Message-ID: <20231031133438.5299-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231031133438.5299-1-mario.limonciello@amd.com>
-References: <20231031133438.5299-1-mario.limonciello@amd.com>
+        Tue, 31 Oct 2023 09:35:17 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A50DE;
+        Tue, 31 Oct 2023 06:35:13 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9A7D540E0199;
+        Tue, 31 Oct 2023 13:35:11 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 5K4SqGA76OhW; Tue, 31 Oct 2023 13:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698759309; bh=dxj8fhRzPwH8/JFJjxqLFgA5VsrRSPOlPjjVeAxOH84=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TiUmT2IqFvFQsrHFfFebr3RX8IY65pAta2roA7X2QYyP+qMXF1/9KQRYygqUsbLg7
+         fr3aDvJyezudutupPghVQiRBEdxG/HmbqB9T9PbtOAJ2N5/ic+v78Wnt8J3NHFxK56
+         ucb3W4HPImWYTOkDN2yfAWJR9VKAmcH77cWRstrA9Eh2JMvVUA+YOaMTJkfDygREjB
+         YLnw90DJODFmcgQ2Ggm3V97DUi6+U/jvhNnrzFs5LE5qmEMzb0e8u8McbYsN+rAR+R
+         eXwxkdWDsFh/1YnyoKYMnMh2lrOtLFCkBQarlGOEzmw9GX5xCpC8+jCm4BHcuYksEe
+         OuIz8Bu4ZPmFiarwSC0jfKLBThfhM5rTnZ5XdLQgtQ5op7eLTEujcVoaNk28s29gxX
+         9eBp1KMIoXzN/Q0tuinCXqU9W5qkWhVMaTS6hp0ELKttzcPQ3ZGWx2rlt9AbYuYxRw
+         LAYKjaBi7DS1nPmf+cbq3c3AxunIAfoq1POu6tk0+1EMB26qY8GPuok61oGJvagB/J
+         hGHRomfWYtRPcZwmJEILRiO7eWP8DyWDNcSHdQ8ctxDhaExjaegRnTfRfKA8x9uoT5
+         m1er16Q53gWCgwjvdGdiYUjRpicmBnNNpz6XAQ0aj+/mNA/xRFY6MgiYBGvFEpBlDP
+         LakxItjMf3+p7jylivDzvfdI=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3840E40E0173;
+        Tue, 31 Oct 2023 13:34:53 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 14:34:47 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        John Allen <john.allen@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] x86: Let AS_WRUSS depend on X86_64
+Message-ID: <20231031133447.GBZUECd12o2sw7E4Re@fat_crate.local>
+References: <20231031102111.32142-1-jirislaby@kernel.org>
+ <20231031112558.GAZUDkRrkEStZqDnz4@fat_crate.local>
+ <CAK7LNAS+Ej9q7Tw7Op8J27KUeFUEg6VvytWm6SXd1qB-ocUJ8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D8:EE_|MN0PR12MB6294:EE_
-X-MS-Office365-Filtering-Correlation-Id: 497cd936-cdd8-4f57-da61-08dbda162e83
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CHgyu0F9x330QltXnYPrHvfXR7OLvWqgYha2lGg5M5tuxDd0o7KD6HqWdu1N/owFlg0sdwvBmmE4LyNOP6FY9H9kDhKGww6FakVzKuASVluHXSc/xNntuaG0S9TxG+wpDQZiUk6Qcf0E/F/jRhs2m+Mavs9DJXTjzVnepfPQIIsQgT0esq/Mkjl7un5ZVurCqXp5zZ1MAycVUvTFrwIjuqMRD6E6X/sFxlYaccL/BcXOs2MaAnBSjn/8lbGH2D7aQ1m8M0FYTlDPQNs8cYbZj5VauDY3ZpENaTGZ+gI87LNPg2YHjgd5qfYiSkHqBUfm9BKXEAdQOqF/sOugbEtkcMQgeKK9rxBJU81WpW7SNh63qeBSTKE378yyouvfSCZ+AVRDOVxk1ncUJvAn6VGL6WX98pluWWrm0GI/vQ+D0JEJTg7RXPHI5c/jCXEWZRVrT+thYtihOZOo4fStKS2ycukYq21HWLAzzc6S+4DhqSiehCdnPMFAIgstPoRSgfkwirw6ZONcE8Thl4T9hEHLa4POF6xu+VFneEfHSLmD63KeB6eyMiCWQw03wDBGcDZ5FMqnIiz1X9L9d+jXLzNn3xuTeMsgxPPuutEuYbGfdd2G2GhwU+xD8pJuSyYKo1xaid9k1j5xbMWlH3SYVcYgL5edfpuVmA2QH+Us4uUxlqNgMCk21lGcdddZuwnUEChalUM4mGfaKwDU1CHqw8fBOEpA/QGEvhCZoq/m+IW0xYAOMi+30pIpbVVoprTx2zFEtAnpnVI71YsVLUGLNbh0cmJvkZlb6td90KyjSYfapvA=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(396003)(376002)(346002)(230922051799003)(451199024)(82310400011)(186009)(64100799003)(1800799009)(36840700001)(46966006)(40470700004)(40460700003)(1076003)(16526019)(26005)(6666004)(7696005)(478600001)(66574015)(47076005)(36860700001)(336012)(426003)(83380400001)(5660300002)(2906002)(4326008)(8936002)(70586007)(44832011)(110136005)(41300700001)(70206006)(966005)(8676002)(316002)(54906003)(356005)(81166007)(2616005)(82740400003)(86362001)(40480700001)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 13:35:00.6648
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 497cd936-cdd8-4f57-da61-08dbda162e83
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D8.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6294
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAS+Ej9q7Tw7Op8J27KUeFUEg6VvytWm6SXd1qB-ocUJ8A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB4 spec specifies that PCIe ports that are used for tunneling
-PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s.
+On Tue, Oct 31, 2023 at 09:20:33PM +0900, Masahiro Yamada wrote:
+> Please note "depends on X86_64" cannot prevent gcc
+> from running here.
+> 
+> $(as-instr,wrussq %rax$(comma)(%rbx)) is replaced with 'y'
+> while parsing the Kconfig files.
+>
+Then what is this fixing?
 
-In reality these ports speed is controlled by the fabric implementation.
+Jiri, what openSUSE kernel build issues were you referring to on IRC?
 
-Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
-to program the device will always find the PCIe ports used for
-tunneling as a limiting factor and may make incorrect decisions.
-
-To prevent problems in downstream drivers check explicitly for ports
-being used for PCIe tunneling and skip them when looking for bandwidth
-limitations.
-
-2 types of devices are detected:
-1) PCIe root port used for PCIe tunneling
-2) Intel Thunderbolt 3 bridge
-
-Downstream drivers could make this change on their own but then they
-wouldn't be able to detect other potential speed bottlenecks.
-
-Link: https://lore.kernel.org/linux-pci/7ad4b2ce-4ee4-429d-b5db-3dfc360f4c3e@amd.com/
-Link: https://www.usb.org/document-library/usb4r-specification-v20
-      USB4 V2 with Errata and ECN through June 2023 - CLEAN p710
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/pci/pci.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 59c01d68c6d5..4a7dc9c2b8f4 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -6223,6 +6223,40 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
- }
- EXPORT_SYMBOL(pcie_set_mps);
- 
-+/**
-+ * pcie_is_tunneling_port - Check if a PCI device is used for TBT3/USB4 tunneling
-+ * @dev: PCI device to check
-+ *
-+ * Returns true if the device is used for PCIe tunneling, false otherwise.
-+ */
-+static bool
-+pcie_is_tunneling_port(struct pci_dev *pdev)
-+{
-+	struct device_link *link;
-+	struct pci_dev *supplier;
-+
-+	/* Intel TBT3 bridge */
-+	if (pdev->is_thunderbolt)
-+		return true;
-+
-+	if (!pci_is_pcie(pdev))
-+		return false;
-+
-+	if (pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
-+		return false;
-+
-+	/* PCIe root port used for tunneling linked to USB4 router */
-+	list_for_each_entry(link, &pdev->dev.links.suppliers, c_node) {
-+		supplier = to_pci_dev(link->supplier);
-+		if (!supplier)
-+			continue;
-+		if (supplier->class == PCI_CLASS_SERIAL_USB_USB4)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * pcie_bandwidth_available - determine minimum link settings of a PCIe
-  *			      device and its bandwidth limitation
-@@ -6236,6 +6270,8 @@ EXPORT_SYMBOL(pcie_set_mps);
-  * limiting_dev, speed, and width pointers are supplied) information about
-  * that point.  The bandwidth returned is in Mb/s, i.e., megabits/second of
-  * raw bandwidth.
-+ *
-+ * This function excludes root ports and bridges used for USB4 and TBT3 tunneling.
-  */
- u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
- 			     enum pci_bus_speed *speed,
-@@ -6254,6 +6290,10 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
- 	bw = 0;
- 
- 	while (dev) {
-+		/* skip root ports and bridges used for tunneling */
-+		if (pcie_is_tunneling_port(dev))
-+			goto skip;
-+
- 		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
- 
- 		next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
-@@ -6274,6 +6314,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
- 				*width = next_width;
- 		}
- 
-+skip:
- 		dev = pci_upstream_bridge(dev);
- 	}
- 
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
