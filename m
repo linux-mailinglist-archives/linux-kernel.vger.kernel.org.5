@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752067DCAA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2237DCAA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343624AbjJaKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S1343643AbjJaKW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235003AbjJaKWm (ORCPT
+        with ESMTP id S235954AbjJaKWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:22:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C8083;
-        Tue, 31 Oct 2023 03:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1698747750; x=1699352550; i=rwahl@gmx.de;
-        bh=poR96OMC9RD1sAVRSzLW30bdnlCU5++9LFuhwd2akO4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=GEPr1Lft9tUDxT4PHrPxB1PBdSBh1t2igbDjHYoS5QrqunPe/kttbTzqE6aUwruy
-         SwzKTcAxKy9G2/8Ew7drzJoyBm0d5PYByPFk0kVQS6+iYA0zBAs9Cc1DHxXNXd7uw
-         Dnx+/FUOpjAofl4mCW6u999yr1IruT4q2M0Qkvo7F2GJnW9/az3LyZyiX8uxdjotq
-         MevKs/lrd0KnIk2N0VaBxBUeVyovCygZiE3PEBVGl3y595rFXt8hIuKZ1UMenUH5C
-         7QI8FvILKiyodpOHBBzqTuZvtoLAagRjMHc9MFk62G1vFBQW0pIGIcG16aflKNc1B
-         N8z0LKJlIeFfUtFeFQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MKsnF-1qjgJn00gX-00LGFu; Tue, 31
- Oct 2023 11:22:30 +0100
-From:   Ronald Wahl <rwahl@gmx.de>
-To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Ronald Wahl <ronald.wahl@raritan.com>
-Subject: [PATCH v2] serial: 8250: 8250_omap: Do not start RX DMA on THRI interrupt
-Date:   Tue, 31 Oct 2023 11:22:20 +0100
-Message-ID: <20231031102220.9997-1-rwahl@gmx.de>
-X-Mailer: git-send-email 2.41.0
+        Tue, 31 Oct 2023 06:22:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7D583;
+        Tue, 31 Oct 2023 03:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698747772; x=1730283772;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VISwYifRZkoN4jWwcGitg4uU+PDhruRG2nnbbHQj4JI=;
+  b=QlsckmpkJlr4OaomiK2xaLpSgtTh/6oK//8h8P6gQeE/PRSRJ3nar/l+
+   wGQDCM9sXBXaLlmMA3R2inLls7GmGX509DxeFlPbCLpjMlVWKsDFHbkEv
+   5xw8hYX6h9+RG6xAJpHJ+kpGlmDho1KlXFmPDEpOPJirKhPk7q7AcJBFY
+   /Ab3WRgtshFo/ShP7szK35zVTNLV4a1LZ4A1C+GPJQvldBQphn1EQpZep
+   /SpHultyQSBn+yYvdvKfcqN625UOsNc1uH8W16YUHb9ikYgqbwqx/STeh
+   LX6zeaSgMom+rjQRs8Y1Q2Lpd5D0VyZcWEvzhGi6gk7jnRaqECsqEGHxs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="391128353"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="391128353"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:22:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="754097005"
+X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
+   d="scan'208";a="754097005"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 03:22:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qxltX-0000000A6wI-1TV6;
+        Tue, 31 Oct 2023 12:22:47 +0200
+Date:   Tue, 31 Oct 2023 12:22:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1 1/1] pinctrl: tangier: Move default strength
+ assignment to a switch-case
+Message-ID: <ZUDVdyAXr8SlJlnx@smile.fi.intel.com>
+References: <20231030155340.3468528-1-andriy.shevchenko@linux.intel.com>
+ <ZUAcffriaEkNcRH_@black.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:e6HHOuYrVh0LnuIqFJOV7BWCEgiS7pY1+DFs5Yv8/8/FH0zXKQT
- S4NK4QfQEtWegBMcf8v3XvmPj0fgS7kUm8gpqtyHgPiGrhrAwzMksLKIhq9pqkpRSIbfyY4
- G5KlUp9pMBPVC9c06EW+yU7FkJdlIacD+oTDGESL4Jv2jR5ZPzP+o53dJ6bEAfV+VD2RQsW
- 0dp96thYghDJk3hqNuZ+A==
-UI-OutboundReport: notjunk:1;M01:P0:HVl3KigxaB4=;yt2TC2UrYuhv6Z3xrSiB/idYLFZ
- R6ixz0tqwYy+Z8XEavbVpHlurd9C0WE5MY/mubAPpy9UIh6E8KtTO9/N8Pu8R7t+OKMxsIg4b
- RgeDylFltbB/13tq/Hcp7LfS+TLbVmIBAa4FZA7qbhjrtJafiYeKfXSIrc3A8xckHNr8tWhuT
- Kww4ySgEbIyKWLOfqUW0NlauWvgort4bZypVTA8KpKv/6n8J/Dea5y2+2Kw/vfnY5Zb7z5VCk
- lLqi5VGxkrDN599MiB6kmUP+hCOpLE03fYDuxJkl9HrlS/6+P39sJCMJGeH6/sXTVSflT7pj2
- Wh6/R1dGLhKjiQCV8FJKS7twPsL1iydOwpIjSK0w/0vsnxq2anRMR3YgRbr/pNaAQH3CkW00B
- pRTq8eOetqbkiloimJE3zVv4JmNI0yBQ8c+EwgT+RiRZr2uxyW/ybWVqXxaSn9Rti9P9Izwvk
- +57J40ZYW7C6XFI9VuxMV85/jYO2R8Xteb02LVNtFyqxpBpc6t8rK+ABq7cXOrzLLh4KGTRsN
- 2/VxPBdCVAzqkz0py5YzoDMga008qImDlfH1rYfV6XLvQAE3msPmyoXGC5Y5q4i5R9FJAfGDL
- DrZZfq6kp9vpL0hSjvmVpZdODbylzzUGUXV282Wk2vhlKshk6Tk1urI1+d99CcTnOmXciVY5O
- +wGx5RATALF4l1+0f2Zt1pryV7ehBICRyysnT26Yl7EabOJhpmu6+XFzQd6Bk65WtXA9xQZvR
- Ascg9I+Nr2gfu9x3yv+kxOG6vZMadTumFCOwvkw0uMffQC8K0Zy3YIl9vNgkMKa+AJvosU/VQ
- /Tp6bbatcga53UBVsPhE11OCbcNXpR86ktbiRcQosVOjf/xqXwppnqfWoH4f2YBdlrZisVOAQ
- GgT8uW27L0simRlQxTi4yJOde2nU/ME6Yhyt/TT5nKlT75AFhI1vTFv0iiSkZuP2jxCwaOYv4
- +tQSB2uphBtOfjiwbxGFQo2V4cQ=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUAcffriaEkNcRH_@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+On Mon, Oct 30, 2023 at 11:14:11PM +0200, Raag Jadav wrote:
+> On Mon, Oct 30, 2023 at 05:53:40PM +0200, Andy Shevchenko wrote:
+> > iWhen ->pin_config_set() is called from the GPIO library (assumed
+> > GpioIo() ACPI resource), the argument can be 1, when, for example,
+> > PullDefault is provided. In such case we supply sane default in
+> > the driver. Move that default assingment to a switch-case, so
+> > it will be consolidated in one place.
+> 
+> Looks good.
 
-Starting RX DMA on THRI interrupt is too early because TX may not have
-finished yet.
+Thank you for review. Can you give your Rb tag then?
 
-This change is inspired by commit 90b8596ac460 ("serial: 8250: Prevent
-starting up DMA Rx on THRI interrupt") and fixes DMA issues I had with
-an AM62 SoC that is using the 8250 OMAP variant.
+> iWhen -> When
 
-Fixes: c26389f998a8 ("serial: 8250: 8250_omap: Add DMA support for UARTs o=
-n K3 SoCs")
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-=2D--
-V2: - add Fixes: tag
-    - fix author
+I'll fix it locally.
 
- drivers/tty/serial/8250/8250_omap.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+-- 
+With Best Regards,
+Andy Shevchenko
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250=
-/8250_omap.c
-index c7ab2963040b..f2f59ec6b50b 100644
-=2D-- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -1282,10 +1282,11 @@ static int omap_8250_dma_handle_irq(struct uart_po=
-rt *port)
-
- 	status =3D serial_port_in(port, UART_LSR);
-
--	if (priv->habit & UART_HAS_EFR2)
--		am654_8250_handle_rx_dma(up, iir, status);
--	else
--		status =3D omap_8250_handle_rx_dma(up, iir, status);
-+	if ((iir & 0x3f) !=3D UART_IIR_THRI)
-+		if (priv->habit & UART_HAS_EFR2)
-+			am654_8250_handle_rx_dma(up, iir, status);
-+		else
-+			status =3D omap_8250_handle_rx_dma(up, iir, status);
-
- 	serial8250_modem_status(up);
- 	if (status & UART_LSR_THRE && up->dma->tx_err) {
-=2D-
-2.41.0
 
