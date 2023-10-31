@@ -2,437 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CA77DD439
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EF77DD3B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343576AbjJaRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
+        id S229692AbjJaRCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbjJaRHv (ORCPT
+        with ESMTP id S232529AbjJaRBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:07:51 -0400
-Received: from 13.mo582.mail-out.ovh.net (13.mo582.mail-out.ovh.net [188.165.56.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9F2E4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:07:43 -0700 (PDT)
-Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.138.54])
-        by mo582.mail-out.ovh.net (Postfix) with ESMTP id C7301281B0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:00:39 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-cgrz2 (unknown [10.110.171.20])
-        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 468BC1FD22;
-        Tue, 31 Oct 2023 17:00:39 +0000 (UTC)
-Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
-        by ghost-submission-6684bf9d7b-cgrz2 with ESMTPSA
-        id USdVEbcyQWVsPwEAnliliw
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 31 Oct 2023 17:00:39 +0000
+        Tue, 31 Oct 2023 13:01:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7544C3263;
+        Tue, 31 Oct 2023 10:01:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CAFCC433C9;
+        Tue, 31 Oct 2023 17:01:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698771696;
+        bh=wOrkJgpCxsbVKesxU40XQnRtmpfI/QSBorN3wky9v9k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oA2bxILiwPXYgcaZ+u2F0ndZdS8Mj5u+NZ0vIcsMQCN8tM0Bgpvq4VACcB5ywH5pp
+         sRhdOLf8SYvj6MTNGPxbKT34E5omwfKBdp/E9yJ0L+gZ3PkNY4fe2LlMCWvPq0BDxn
+         1CBaw+/5MNi1txr9wB3QiMj89kgTO3Lk8nQHJBXDfr9zj4h5xvxYuzRFv816a+7HbO
+         hKjzCLq1NfmwjhOaSCLfwhhqoseYEAObM68kxZNCFK65dirP5Ovv8/LudtMhmMu2lX
+         mN8ng4O75AU6v+FqQWR1XpNCKHlbJZCtPGJ80Ptz3QlJaw2ccwYzPRJmT0jkVXdXQZ
+         vJTf2TELDTMJw==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] mm/damon/sysfs: update monitoring target regions for online input commit
+Date:   Tue, 31 Oct 2023 17:01:31 +0000
+Message-Id: <20231031170131.46972-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Date:   Tue, 31 Oct 2023 19:00:39 +0200
-From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        skhan@linuxfoundation.org,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: Re: [PATCH] drm/radeon: replace 1-element arrays with flexible-array
- members
-In-Reply-To: <CADnq5_M237bNMn=RZvBvPm4vymmUO07Xum7OQehhtAq2Yz55oA@mail.gmail.com>
-References: <20231027165841.71810-1-jose.pekkarinen@foxhound.fi>
- <BL1PR12MB5144FA51BCB5DFD9A9F88A5BF7DCA@BL1PR12MB5144.namprd12.prod.outlook.com>
- <634f769b7f723795180d5bd2186943b9@foxhound.fi>
- <CADnq5_M237bNMn=RZvBvPm4vymmUO07Xum7OQehhtAq2Yz55oA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <8e97338fecfe92eec24c2bc27d6e9eac@foxhound.fi>
-X-Sender: jose.pekkarinen@foxhound.fi
-Organization: Foxhound Ltd.
-X-Originating-IP: 185.241.208.71
-X-Webmail-UserID: jose.pekkarinen@foxhound.fi
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 3654389624392164959
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddtvddgleegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeehieduleeufeeggfeuhefgueekjeegtdehudefvdduteefudevkeelfeduheejtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupddukeehrddvgedurddvtdekrdejuddpudehuddrkedtrddvledrvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkedvpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-31 17:45, Alex Deucher wrote:
-> On Sat, Oct 28, 2023 at 8:05 AM José Pekkarinen
-> <jose.pekkarinen@foxhound.fi> wrote:
->> 
->> On 2023-10-27 20:55, Deucher, Alexander wrote:
->> > [Public]
->> >
->> >> -----Original Message-----
->> >> From: José Pekkarinen <jose.pekkarinen@foxhound.fi>
->> >> Sent: Friday, October 27, 2023 12:59 PM
->> >> To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
->> >> <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
->> >> skhan@linuxfoundation.org
->> >> Cc: José Pekkarinen <jose.pekkarinen@foxhound.fi>; airlied@gmail.com;
->> >> daniel@ffwll.ch; amd-gfx@lists.freedesktop.org; dri-
->> >> devel@lists.freedesktop.org; linux-kernel@vger.kernel.org;
->> >> linux-kernel-
->> >> mentees@lists.linuxfoundation.org
->> >> Subject: [PATCH] drm/radeon: replace 1-element arrays with
->> >> flexible-array
->> >> members
->> >>
->> >> Reported by coccinelle, the following patch will move the following 1
->> >> element
->> >> arrays to flexible arrays.
->> >>
->> >> drivers/gpu/drm/radeon/atombios.h:5523:32-48: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:5545:32-48: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:5461:34-44: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4447:30-40: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4236:30-41: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7044:24-37: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7054:24-37: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7095:28-45: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7553:8-17: WARNING use
->> >> flexible-array
->> >> member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7559:8-17: WARNING use
->> >> flexible-array
->> >> member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:3896:27-37: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:5443:16-25: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:5454:34-43: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4603:21-32: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:6299:32-44: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4628:32-46: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:6285:29-39: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4296:30-36: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4756:28-36: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:4064:22-35: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7327:9-24: WARNING use
->> >> flexible-array
->> >> member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7332:32-53: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:6030:8-17: WARNING use
->> >> flexible-array
->> >> member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7362:26-41: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7369:29-44: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7349:24-32: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >> drivers/gpu/drm/radeon/atombios.h:7355:27-35: WARNING use flexible-
->> >> array member instead
->> >> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
->> >> length-and-one-element-arrays)
->> >>
->> >> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
->> >
->> > Please verify that changing these to variable sized arrays does not
->> > break any calculations based on the old size in the driver.  More
->> > below.
->> >
->> >> ---
->> >>  drivers/gpu/drm/radeon/atombios.h | 54
->> >> +++++++++++++++----------------
->> >>  1 file changed, 27 insertions(+), 27 deletions(-)
->> >>
->> >> diff --git a/drivers/gpu/drm/radeon/atombios.h
->> >> b/drivers/gpu/drm/radeon/atombios.h
->> >> index 8a6621f1e82c..7fa1606be92c 100644
->> >> --- a/drivers/gpu/drm/radeon/atombios.h
->> >> +++ b/drivers/gpu/drm/radeon/atombios.h
->> >> @@ -3893,7 +3893,7 @@ typedef struct _ATOM_GPIO_PIN_ASSIGNMENT
->> >> typedef struct _ATOM_GPIO_PIN_LUT  {
->> >>    ATOM_COMMON_TABLE_HEADER  sHeader;
->> >> -  ATOM_GPIO_PIN_ASSIGNMENT   asGPIO_Pin[1];
->> >> +  ATOM_GPIO_PIN_ASSIGNMENT   asGPIO_Pin[];
->> >>  }ATOM_GPIO_PIN_LUT;
->> >>
->> >>
->> >> /******************************************************************
->> >> **********/
->> >> @@ -4061,7 +4061,7 @@ typedef struct
->> >> _ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT         //usSrcDstTableOffset
->> >>    UCHAR               ucNumberOfSrc;
->> >>    USHORT              usSrcObjectID[1];
->> >>    UCHAR               ucNumberOfDst;
->> >> -  USHORT              usDstObjectID[1];
->> >> +  USHORT              usDstObjectID[];
->> >>  }ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT;
->> >>
->> >>
->> >> @@ -4233,7 +4233,7 @@ typedef struct
->> >> _ATOM_CONNECTOR_DEVICE_TAG_RECORD
->> >>    ATOM_COMMON_RECORD_HEADER   sheader;
->> >>    UCHAR                       ucNumberOfDevice;
->> >>    UCHAR                       ucReserved;
->> >> -  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[1];         //This Id is
->> >> same as
->> >> "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
->> >> +  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[];          //This Id is
->> >> same as
->> >> "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
->> >>  }ATOM_CONNECTOR_DEVICE_TAG_RECORD;
->> >>
->> >>
->> >> @@ -4293,7 +4293,7 @@ typedef struct
->> >> _ATOM_OBJECT_GPIO_CNTL_RECORD
->> >>    ATOM_COMMON_RECORD_HEADER   sheader;
->> >>    UCHAR                       ucFlags;                // Future
->> >> expnadibility
->> >>    UCHAR                       ucNumberOfPins;         // Number of
->> >> GPIO pins used to
->> >> control the object
->> >> -  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[1];              // the real
->> >> gpio pin pair
->> >> determined by number of pins ucNumberOfPins
->> >> +  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[];               // the real
->> >> gpio pin pair
->> >> determined by number of pins ucNumberOfPins
->> >>  }ATOM_OBJECT_GPIO_CNTL_RECORD;
->> >>
->> >>  //Definitions for GPIO pin state
->> >> @@ -4444,7 +4444,7 @@ typedef struct
->> >> _ATOM_BRACKET_LAYOUT_RECORD
->> >>    UCHAR                       ucWidth;
->> >>    UCHAR                       ucConnNum;
->> >>    UCHAR                       ucReserved;
->> >> -  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[1];
->> >> +  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[];
->> >>  }ATOM_BRACKET_LAYOUT_RECORD;
->> >>
->> >>
->> >> /******************************************************************
->> >> **********/
->> >> @@ -4600,7 +4600,7 @@ typedef struct  _ATOM_I2C_VOLTAGE_OBJECT_V3
->> >>     UCHAR    ucVoltageControlAddress;
->> >>     UCHAR    ucVoltageControlOffset;
->> >>     ULONG    ulReserved;
->> >> -   VOLTAGE_LUT_ENTRY asVolI2cLut[1];        // end with 0xff
->> >> +   VOLTAGE_LUT_ENTRY asVolI2cLut[];         // end with 0xff
->> >>  }ATOM_I2C_VOLTAGE_OBJECT_V3;
->> >>
->> >>  // ATOM_I2C_VOLTAGE_OBJECT_V3.ucVoltageControlFlag
->> >> @@ -4625,7 +4625,7 @@ typedef struct
->> >> _ATOM_LEAKAGE_VOLTAGE_OBJECT_V3
->> >>     UCHAR    ucLeakageEntryNum;           // indicate the entry number
->> >> of
->> >> LeakageId/Voltage Lut table
->> >>     UCHAR    ucReserved[2];
->> >>     ULONG    ulMaxVoltageLevel;
->> >> -   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[1];
->> >> +   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[];
->> >>  }ATOM_LEAKAGE_VOLTAGE_OBJECT_V3;
->> >>
->> >>
->> >> @@ -4753,7 +4753,7 @@ typedef struct _ATOM_POWER_SOURCE_INFO  {
->> >>               ATOM_COMMON_TABLE_HEADER                asHeader;
->> >>               UCHAR
->> >>                                       asPwrbehave[16];
->> >> -             ATOM_POWER_SOURCE_OBJECT                asPwrObj[1];
->> >> +             ATOM_POWER_SOURCE_OBJECT                asPwrObj[];
->> >>  }ATOM_POWER_SOURCE_INFO;
->> >>
->> >>
->> >> @@ -5440,7 +5440,7 @@ typedef struct _ATOM_FUSION_SYSTEM_INFO_V2
->> >> typedef struct _ATOM_I2C_DATA_RECORD  {
->> >>    UCHAR         ucNunberOfBytes;
->> >>         //Indicates how many
->> >> bytes SW needs to write to the external ASIC for one block, besides to
->> >> "Start"
->> >> and "Stop"
->> >> -  UCHAR         ucI2CData[1];
->> >>         //I2C data in bytes,
->> >> should be less than 16 bytes usually
->> >> +  UCHAR         ucI2CData[];
->> >>         //I2C data in bytes, should
->> >> be less than 16 bytes usually
->> >>  }ATOM_I2C_DATA_RECORD;
->> >>
->> >>
->> >> @@ -5451,14 +5451,14 @@ typedef struct
->> >> _ATOM_I2C_DEVICE_SETUP_INFO
->> >>    UCHAR                                      ucSSChipID;
->> >> //SS chip being used
->> >>    UCHAR                                      ucSSChipSlaveAddr;
->> >> //Slave Address to
->> >> set up this SS chip
->> >>    UCHAR                           ucNumOfI2CDataRecords;  //number of
->> >> data block
->> >> -  ATOM_I2C_DATA_RECORD            asI2CData[1];
->> >> +  ATOM_I2C_DATA_RECORD            asI2CData[];
->> >>  }ATOM_I2C_DEVICE_SETUP_INFO;
->> >>
->> >>
->> >> //=================================================================
->> >> =========================
->> >>  typedef struct  _ATOM_ASIC_MVDD_INFO
->> >>  {
->> >>    ATOM_COMMON_TABLE_HEADER         sHeader;
->> >> -  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[1];
->> >> +  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[];
->> >>  }ATOM_ASIC_MVDD_INFO;
->> >>
->> >>
->> >> //=================================================================
->> >> =========================
->> >> @@ -5520,7 +5520,7 @@ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO
->> >> typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V2  {
->> >>    ATOM_COMMON_TABLE_HEADER         sHeader;
->> >> -  ATOM_ASIC_SS_ASSIGNMENT_V2           asSpreadSpectrum[1];
->> >> //this is point only.
->> >> +  ATOM_ASIC_SS_ASSIGNMENT_V2           asSpreadSpectrum[];
->> >> //this is point only.
->> >>  }ATOM_ASIC_INTERNAL_SS_INFO_V2;
->> >>
->> >>  typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3 @@ -5542,7 +5542,7 @@
->> >> typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3  typedef struct
->> >> _ATOM_ASIC_INTERNAL_SS_INFO_V3  {
->> >>    ATOM_COMMON_TABLE_HEADER         sHeader;
->> >> -  ATOM_ASIC_SS_ASSIGNMENT_V3           asSpreadSpectrum[1];
->> >> //this is pointer only.
->> >> +  ATOM_ASIC_SS_ASSIGNMENT_V3           asSpreadSpectrum[];
->> >> //this is pointer only.
->> >>  }ATOM_ASIC_INTERNAL_SS_INFO_V3;
->> >>
->> >>
->> >> @@ -6027,7 +6027,7 @@ typedef struct _ENABLE_SCALER_PARAMETERS
->> >>    UCHAR ucScaler;            // ATOM_SCALER1, ATOM_SCALER2
->> >>    UCHAR ucEnable;            // ATOM_SCALER_DISABLE or
->> >> ATOM_SCALER_CENTER or ATOM_SCALER_EXPANSION
->> >>    UCHAR ucTVStandard;        //
->> >> -  UCHAR ucPadding[1];
->> >> +  UCHAR ucPadding[];
->> >
->> > This may actually be a 1 element array.  It’s just padding at the end
->> > of the table.
->> >
->> >>  }ENABLE_SCALER_PARAMETERS;
->> >>  #define ENABLE_SCALER_PS_ALLOCATION ENABLE_SCALER_PARAMETERS
->> >>
->> >> @@ -6282,7 +6282,7 @@ typedef union
->> >> _ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS
->> >>
->> >>  typedef struct _ATOM_MEMORY_SETTING_DATA_BLOCK{
->> >>       ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS
->> >>       ulMemoryID;
->> >> -     ULONG
->> >>
->> >> aulMemData[1];
->> >> +     ULONG
->> >>
->> >> aulMemData[];
->> >>  }ATOM_MEMORY_SETTING_DATA_BLOCK;
->> >>
->> >>
->> >> @@ -6296,7 +6296,7 @@ typedef struct _ATOM_INIT_REG_BLOCK{
->> >>       USHORT
->> >>                                               usRegIndexTblSize;
->> >>
->> >>                       //size of asRegIndexBuf
->> >>       USHORT
->> >>                                               usRegDataBlkSize;
->> >>
->> >>                               //size of
->> >> ATOM_MEMORY_SETTING_DATA_BLOCK
->> >>       ATOM_INIT_REG_INDEX_FORMAT
->> >>       asRegIndexBuf[1];
->> >> -     ATOM_MEMORY_SETTING_DATA_BLOCK  asRegDataBuf[1];
->> >> +     ATOM_MEMORY_SETTING_DATA_BLOCK  asRegDataBuf[];
->> >>  }ATOM_INIT_REG_BLOCK;
->> >>
->> >
->> > This one needs special handling as you have multiple variable sized
->> > arrays.
->> 
->>      I'm happy to add any special handling in v2, though
->> I may need to understand what that special handling would
->> be. Would you mind to elaborate? Otherwise I can just leave
->> the sensitive cases and the paddings untouched and resend
->> the patch with the rest of cases converted.
-> 
-> 
-> I'm not sure how we want to handle back to back variable sized arrays.
-> I'd say just skip these cases for now.
+When user input is committed online, DAMON sysfs interface is ignoring
+the user input for the monitoring target regions.  Such request is valid
+and useful for fixed monitoring target regions-based monitoring ops like
+'paddr' or 'fvaddr'.
 
-     Very good, I'll be sending v2 soon. thanks for the comments!
+Update the region boundaries as user specified, too.  Note that the
+monitoring results of the regions that overlap between the latest
+monitoring target regions and the new target regions are preserved.
 
-     José.
+Treat empty monitoring target regions user request as a request to just
+make no change to the monitoring target regions.  Otherwise, users
+should set the monitoring target regions same to current one for every
+online input commit, and it could be challenging for dynamic monitoring
+target regions update DAMON ops like 'vaddr'.  If the user really need
+to remove all monitoring target regions, they can simply remove the
+target and then create the target again with empty target regions.
+
+Fixes: da87878010e5 ("mm/damon/sysfs: support online inputs update")
+Cc: <stable@vger.kernel.org> # 5.19.x
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ mm/damon/sysfs.c | 47 ++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 30 insertions(+), 17 deletions(-)
+
+diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
+index 1a231bde18f9..e27846708b5a 100644
+--- a/mm/damon/sysfs.c
++++ b/mm/damon/sysfs.c
+@@ -1150,34 +1150,47 @@ static int damon_sysfs_add_target(struct damon_sysfs_target *sys_target,
+ 	return err;
+ }
+ 
+-static int damon_sysfs_update_target(struct damon_target *target,
+-		struct damon_ctx *ctx,
+-		struct damon_sysfs_target *sys_target)
++static int damon_sysfs_update_target_pid(struct damon_target *target, int pid)
+ {
+-	struct pid *pid;
+-	struct damon_region *r, *next;
+-
+-	if (!damon_target_has_pid(ctx))
+-		return 0;
++	struct pid *pid_new;
+ 
+-	pid = find_get_pid(sys_target->pid);
+-	if (!pid)
++	pid_new = find_get_pid(pid);
++	if (!pid_new)
+ 		return -EINVAL;
+ 
+-	/* no change to the target */
+-	if (pid == target->pid) {
+-		put_pid(pid);
++	if (pid_new == target->pid) {
++		put_pid(pid_new);
+ 		return 0;
+ 	}
+ 
+-	/* remove old monitoring results and update the target's pid */
+-	damon_for_each_region_safe(r, next, target)
+-		damon_destroy_region(r, target);
+ 	put_pid(target->pid);
+-	target->pid = pid;
++	target->pid = pid_new;
+ 	return 0;
+ }
+ 
++static int damon_sysfs_update_target(struct damon_target *target,
++		struct damon_ctx *ctx,
++		struct damon_sysfs_target *sys_target)
++{
++	int err;
++
++	if (damon_target_has_pid(ctx)) {
++		err = damon_sysfs_update_target_pid(target, sys_target->pid);
++		if (err)
++			return err;
++	}
++
++	/*
++	 * Do monitoring target region boundary update only if one or more
++	 * regions are set by the user.  This is for keeping current monitoring
++	 * target results and range easier, especially for dynamic monitoring
++	 * target regions update ops like 'vaddr'.
++	 */
++	if (sys_target->regions->nr)
++		err = damon_sysfs_set_regions(target, sys_target->regions);
++	return err;
++}
++
+ static int damon_sysfs_set_targets(struct damon_ctx *ctx,
+ 		struct damon_sysfs_targets *sysfs_targets)
+ {
+-- 
+2.34.1
+
