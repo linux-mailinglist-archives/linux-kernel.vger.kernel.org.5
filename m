@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C86D7DC966
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD847DC95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343858AbjJaJXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S1343840AbjJaJXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235763AbjJaJXj (ORCPT
+        with ESMTP id S235349AbjJaJXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:23:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0CB10E2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698744148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dmd8h3KmMTuLMQdZh3MBzTGUulf/MEu6C/sdxdxaqVw=;
-        b=Cz1qjw34jE5Gu3OhJ4cUFTaizkaAS0MZXZ65eo3VY17V3jV6uUpJ+YV2J/GWVjXeExckMq
-        f+wXlNNrbpkgZbc2+ddhB6Qhg4eBEszyxtkaRe24wr+UkFvoIZq/HgTjJEoxdivWewtY72
-        6Ym64IgEOgiTPuzVMVs9wRdq47M7j18=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-Og6Ek-VRPlWtjVXhFDY-TQ-1; Tue, 31 Oct 2023 05:22:27 -0400
-X-MC-Unique: Og6Ek-VRPlWtjVXhFDY-TQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32d89debaabso485536f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:22:26 -0700 (PDT)
+        Tue, 31 Oct 2023 05:23:14 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6FAF9;
+        Tue, 31 Oct 2023 02:23:09 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507ad511315so7867936e87.0;
+        Tue, 31 Oct 2023 02:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698744187; x=1699348987; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=83hI3IthXitVFJn8u476FdqBHYxtbPhy7jmETDS38UE=;
+        b=LyPIPUcWNad0hyT5TaErM8JFFE3hQ3SQzJWAPj7HUYAuBiJ8PcNZbeEEArabdrIJEK
+         i4PP4E66BsvraFZiG2Ie0C+MNRpHL8n+g3YT3koA3DI2VG34UJO/XorC5HQRVdeaaxhY
+         ZhDsYEz79tuEk/z+LFTBM1bNTADjIH2NZloHfEkge2xZOgLgzm80rzDx/YqICUczGDCT
+         +rQ0H8ffWHzCGyEOCDFarGlfolan2xCXec5QNJ/Ah6C/CaM1YF/ADC40qKBnZZgw6V56
+         Np+FMvpfBStDAfrD7adC4sLby7wC0C7pY+qnYAHPwtgkGe3t8hhd+ewC9A668oVsFbGT
+         Vnhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698744145; x=1699348945;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Dmd8h3KmMTuLMQdZh3MBzTGUulf/MEu6C/sdxdxaqVw=;
-        b=C29cswdLhuTEHJMFN/CB/SofIS0ZleSnEsvG1La7cLe+Gh9PA+l4k/lyRUluNJRbAZ
-         tJKVuE7BvjE1Dq0mkJhkXfYIEmhL6HYNw9K7CacMCMIRRjISbZ0S+VGK8Qbb7O6wByjM
-         F+SfoN+fRssuNwmaCS610D57zCuWWWimazYPurwn/6O0xlx7G1FJf1Q7q12GTLAxM+OZ
-         Ann8EadPyfJCC9adfGRuUTmjhla0F1nqg2yM/hbP4pcxBT42YfqS8KEilpE6AAiE6L2G
-         WkiVoooan4hD9yVI4nwHbBtsugS0C48kccwpv81bhicvDALXW53bpJHl6avB0/KiFZW/
-         P5tQ==
-X-Gm-Message-State: AOJu0YxCsvAbSXAN9Sn7SnPWgGLN67RS888zX2JlycD9km0lCWZzfWho
-        ryEh/i2mJRst25IJ+MrkxqFLRXNNz0z+nYKBikfv4Lk9r6VjUJoStzCp8i5Z6ywgPpYaKSIe2Mn
-        D6MXcbR6+E3ln2L83Dji4wtB3WxjVDZA9
-X-Received: by 2002:a5d:6984:0:b0:32f:76bb:a851 with SMTP id g4-20020a5d6984000000b0032f76bba851mr6653855wru.1.1698744145737;
-        Tue, 31 Oct 2023 02:22:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG3YPSSkH5TbNjuvw0t3bHYUKojT0tYZOUPP9YmmH3AfQTF5JOqLokssO3dUvLJ6/Z8k05axg==
-X-Received: by 2002:a5d:6984:0:b0:32f:76bb:a851 with SMTP id g4-20020a5d6984000000b0032f76bba851mr6653837wru.1.1698744145407;
-        Tue, 31 Oct 2023 02:22:25 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-227-179.dyn.eolo.it. [146.241.227.179])
-        by smtp.gmail.com with ESMTPSA id n6-20020a5d67c6000000b00323293bd023sm1030605wrw.6.2023.10.31.02.22.24
+        d=1e100.net; s=20230601; t=1698744187; x=1699348987;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=83hI3IthXitVFJn8u476FdqBHYxtbPhy7jmETDS38UE=;
+        b=fOxG/FKqBs8dWtAp81jr2ZKRf+KhKdB4qNkw3KnfoMvWKOhIZStEGUroKrOuOi52oz
+         VOM6miLfV8LlQHNiqtXkWHAXMmZrxVJa8wouWCpBszXKa/GW0aRlZjfe9Uh5+b+eP1Kl
+         YJAFnPUaIsMLw4nxfhOHWn7N7ipUhBnNtYAb6d13L2BwyAGdAE7kn810a/up/XrVaUkB
+         ahYSOULmMX+IRW+Yq71Wjil4uXJ1exBp9CdiGBl/MKkkqY/V9TtnKghPbSAlB0IQBoWm
+         a+inlUhv+tPyfS/OVElxp03myYiwo3rXM/x5lN2klc6xlOY1NnIi2Ps0zgUPZFJKkWmj
+         DmyQ==
+X-Gm-Message-State: AOJu0YymRCjtD79G8D0WZUplhOA66NNgOgdif3mNd8jFUa+u0riR2BQA
+        kbGAcWFbfzG8byLruafxkSeIcjWLKtdS6Z79
+X-Google-Smtp-Source: AGHT+IHLDywNZOner6h9PzKWR5lzyJQL2hcpMOxfeFXTLCb5fL9Ib3Ha88oCiIzSfZS97LeJGZubNw==
+X-Received: by 2002:a19:ae08:0:b0:507:a58d:24ba with SMTP id f8-20020a19ae08000000b00507a58d24bamr8756733lfc.63.1698744186954;
+        Tue, 31 Oct 2023 02:23:06 -0700 (PDT)
+Received: from skhimich.dev.yadro.com ([185.15.172.210])
+        by smtp.gmail.com with ESMTPSA id r6-20020ac252a6000000b004ff725d1a27sm149316lfm.234.2023.10.31.02.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 02:22:25 -0700 (PDT)
-Message-ID: <90def1f008a5c343ad6b0b2151c8ff972d2f468f.camel@redhat.com>
-Subject: Re: [PATCH v2] selftests/net: synchronize udpgso_bench rx and tx
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Lucas Karpinski <lkarpins@redhat.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, shuah@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 31 Oct 2023 10:22:23 +0100
-In-Reply-To: <6ceki76bcv7qz6de5rxc26ot6aezdmeoz2g4ubtve7qwozmyyw@zibbg64wsdjp>
-References: <6ceki76bcv7qz6de5rxc26ot6aezdmeoz2g4ubtve7qwozmyyw@zibbg64wsdjp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 31 Oct 2023 02:23:06 -0700 (PDT)
+From:   Sergey Khimich <serghox@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dmaengine@vger.kernel.org
+Subject: [PATCH] dmaengine: dw-axi-dmac: Fix inconsistent indenting
+Date:   Tue, 31 Oct 2023 12:23:03 +0300
+Message-Id: <20231031092303.129351-1-serghox@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-30 at 13:40 -0400, Lucas Karpinski wrote:
-> The sockets used by udpgso_bench_tx aren't always ready when
-> udpgso_bench_tx transmits packets. This issue is more prevalent in -rt
-> kernels, but can occur in both. Replace the hacky sleep calls with a
-> function that checks whether the ports in the namespace are ready for
-> use.
->=20
-> Suggested-by: Paolo Abeni <pabeni@redhat.com>
-> Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
-> ---
-> https://lore.kernel.org/all/t7v6mmuobrbucyfpwqbcujtvpa3wxnsrc36cz5rr6kzzr=
-zkwtj@toz6mr4ggnyp/
->=20
-I almost forgot ...
-> Changelog v2:=20
-> - applied synchronization method suggested by Pablo
-                                                ^^^^^ most common typo
-since match 2022 ;)
+From: Sergey Khimich <serghox@gmail.com>
 
-Less irrelevant, please include the target tree in the next submission,
-in this case 'net-next'.
+Fixed a wrong indentation before axi_dma_iowrite64 in 2 places.
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310231733.tM3xW1hV-lkp@intel.com/
 
-Thanks,
+Fixes: 495e18b16e3d ("dmaengine: dw-axi-dmac: Add support DMAX_NUM_CHANNELS > 16")
+Signed-off-by: Sergey Khimich <serghox@gmail.com>
+---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Paolo
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index f2587159bf5a..723620d0d816 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -1236,7 +1236,7 @@ static int dma_chan_pause(struct dma_chan *dchan)
+ 			val |= BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT |
+ 			       BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT;
+ 			}
+-			axi_dma_iowrite64(chan->chip, DMAC_CHSUSPREG, val);
++		axi_dma_iowrite64(chan->chip, DMAC_CHSUSPREG, val);
+ 	} else {
+ 		if (chan->chip->dw->hdata->reg_map_8_channels) {
+ 			val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+@@ -1283,7 +1283,7 @@ static inline void axi_chan_resume(struct axi_dma_chan *chan)
+ 			val &= ~(BIT(chan->id) << DMAC_CHAN_SUSP2_SHIFT);
+ 			val |=  (BIT(chan->id) << DMAC_CHAN_SUSP2_WE_SHIFT);
+ 		}
+-			axi_dma_iowrite64(chan->chip, DMAC_CHSUSPREG, val);
++		axi_dma_iowrite64(chan->chip, DMAC_CHSUSPREG, val);
+ 	} else {
+ 		if (chan->chip->dw->hdata->reg_map_8_channels) {
+ 			val = axi_dma_ioread32(chan->chip, DMAC_CHEN);
+-- 
+2.30.2
 
