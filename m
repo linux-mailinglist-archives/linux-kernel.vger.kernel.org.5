@@ -2,165 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA40F7DCEBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B717DCEBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbjJaOFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
+        id S236344AbjJaOFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjJaOFI (ORCPT
+        with ESMTP id S236283AbjJaOFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:05:08 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE6AF1;
-        Tue, 31 Oct 2023 07:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=n82YEEI1FUC/itM1tuyemVtoc1RFlGBRO7Oj8tFvb3E=; b=BjwlepdiJ/TN4Lz2ozay2zVLr0
-        hTTPnAj7fDuNYBCXSa/xzHEWFhsgdfIZo7BHAowmfuiF9zpCweIxoe94EX+QRHVZ0z0VqJkPljmLu
-        tLdtFZuyrQyDavc6wgsEJ0EzQJzGL2IqqTd96+b7GBRKbytUYmtcJKJMab4jViuUPyuFcPUZFiTzS
-        C+w+FiG4x2KY0tdUQQNnFCHaBRzQXgnL+5C+eq2DvuqnyEerzA7sypK0UVg9TY1JGm5/NXW+YuE//
-        v5U0vmDQfg/h1YPEpefePs37B/FZCUV+20JKgUUFMnE/9PZYbUi9gW8Vp6sO/8pjizZzlT3bmstHa
-        3dSJ8JDA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50578)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qxpMa-0002it-13;
-        Tue, 31 Oct 2023 14:05:00 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qxpMb-00059x-5a; Tue, 31 Oct 2023 14:05:01 +0000
-Date:   Tue, 31 Oct 2023 14:05:01 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc:     Hugo Villeneuve <hugo@hugovil.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
- 7 or 8 in _get_options
-Message-ID: <ZUEJjdfk/vmH8XTR@shell.armlinux.org.uk>
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
- <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
- <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
- <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
- <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
- <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
- <ZUDjhpQKgUgqVeBh@shell.armlinux.org.uk>
- <CWMNJ47MO8E6.7CXJRZ181PXJ@tleb-bootlin-xps13-01>
+        Tue, 31 Oct 2023 10:05:33 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80192F1;
+        Tue, 31 Oct 2023 07:05:31 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 51AED40E0199;
+        Tue, 31 Oct 2023 14:05:29 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tuqewIV_ganz; Tue, 31 Oct 2023 14:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698761126; bh=fFVuYYWadDmi8VgiNlTQK09zIwoB4UQfVZxwG2NDq3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jz4CzFkSYOAkxl8XgnPADK/qaBHrCbwTMd0IoPGCU1ffqiJC1uAIktt5pCgg0jhI8
+         1EPvSkU+9omXeNo8lx/4/zFzV8JnHzW4Jmeh6n6ctyMkRnjs90iuhvWbbAOQPNVoTJ
+         +P7w5FiZum898gYirXHWulmAqNejusDeJwyCuwlP+LZiNA3rKSFQmLEPyaBrtOJexf
+         xxNTAVQ/HLonbhExZ2RaAEJVtCNdd5t8X+xWtDgc5j7HNJKgk+XbhegwVJw3YSMsFP
+         oggC1RKVZmocbG7moCR7AjOhW9M1S5eMQ8vnXZT1SaAPcIsaDcZ96mxEiga2ALrC+L
+         /0dTDef/g6hSS6UrzxWQZV2VzMzoWne1yf6dik/dOaik/2XQDDcOd7ibtFoO2rY2Nt
+         7igkVsJ63ZIgpO6nNW6F0+lNitOvaBqyqGzif+R78xqmA0fyI6JpezIxovpiH7xaDY
+         6b/c2F1h5vv6llsqHRnR/7n0KHTU4nqcwpKQcf8lnffTnZjnkgONm7mhg4bvB7ytLx
+         yItCrbL8LDWXuZRsSVy+GMk/bhQo/RyQGZkahUPv+Q470l4LGe/0eSBOrQ3Rq2SAU4
+         3GoIhFjGEsDiXQBUOa61AbWEgw4nhLEdX97FaR/FeYKG5fa33hd2dQwRLLl+OyEUk6
+         M0era9vYfjz3bn6Z0JHcRfOE=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 43F3940E0171;
+        Tue, 31 Oct 2023 14:05:10 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 15:05:04 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        John Allen <john.allen@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] x86: Let AS_WRUSS depend on X86_64
+Message-ID: <20231031140504.GCZUEJkMPXSrEDh3MA@fat_crate.local>
+References: <20231031102111.32142-1-jirislaby@kernel.org>
+ <20231031112558.GAZUDkRrkEStZqDnz4@fat_crate.local>
+ <CAK7LNAS+Ej9q7Tw7Op8J27KUeFUEg6VvytWm6SXd1qB-ocUJ8A@mail.gmail.com>
+ <20231031133447.GBZUECd12o2sw7E4Re@fat_crate.local>
+ <80496187-8392-4c9e-ba05-89edea53e6e0@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CWMNJ47MO8E6.7CXJRZ181PXJ@tleb-bootlin-xps13-01>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <80496187-8392-4c9e-ba05-89edea53e6e0@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 02:51:45PM +0100, Théo Lebrun wrote:
-> On Tue Oct 31, 2023 at 12:22 PM CET, Russell King (Oracle) wrote:
-> > On Tue, Oct 31, 2023 at 12:04:11PM +0100, Théo Lebrun wrote:
-> > > On Tue Oct 31, 2023 at 11:11 AM CET, Russell King (Oracle) wrote:
-> > > > There is no point in supporting 5 or 6 bits for console usage. Think
-> > > > about it. What values are going to be sent over the console? It'll be
-> > > > ASCII, which requires at _least_ 7-bit. 6-bit would turn alpha
-> > > > characters into control characters, punctuation and numbers. 5-bit
-> > > > would be all control characters.
-> > > >
-> > > > So there's no point trying to do anything with 5 or 6 bits per byte,
-> > > > and I decided we might as well take that as an error (or maybe a
-> > > > case that the hardware has not been setup) and default to 8 bits per
-> > > > byte.
-> > > 
-> > > I see your point. Two things come to mind:
-> > > 
-> > >  - I added this parsing of 5/6 bits to be symmetrical with
-> > >    pl011_set_termios that handles 5/6 properly. Should pl011_set_termios
-> > >    be modified then?
-> >
-> > Why should it? Note that I said above about _console_ usage which is
-> > what you were referring to - the early code that sets up the console
-> > by either reading the current settings (so that we can transparently
-> > use the UART when its handed over already setup by a boot loader).
-> >
-> > This is completely different to what happens once the kernel is running.
-> > Userspace might very well have a reason to set 5 or 6 bits if it wants
-> > to communicate with a device that uses those sizes.
-> >
-> > However, such a device won't be a console for the reasons I outlined
-> > above (it will truncate the ASCII characters turning console messages
-> > into garbage.)
+On Tue, Oct 31, 2023 at 02:59:39PM +0100, Jiri Slaby wrote:
+> As I wrote, we have a config which maintainers feed through oldconfig when
+> updating the kernel. This time we got WRUSS=y. It was stored in git and
+> later passed to build the kernel. And we received a different config from
+> the build (WRUSS=n).
 > 
-> I'm not sure I get it. (1) We assume it is a console so it's ASCII so no
-> reason to set to 5 or 6 bits per word. But (2) there might be a reason
-> to set the UART to 5 or 6 bits, the userspace decides.
+> We diff the two and error out if the built kernel differs from the passed
+> configuration. Which is the case here.
 
-Precisely.
-
-> How do the two interact? Say we boot to Linux, userspace configures to 6
-> bits because reasons and we reset. At second probe we see a config of 6
-> bits per word but assume that can't be logical, even though it is.
-
-I think you're conflating "serial console" with "serial port". A
-"serial port" can support multiple different formats, and in this case,
-such as 5, 6, 7, and 8 bits. 5 and 6 bits are likely to be a specialised
-application which uses a binary protocol, not ASCII.
-
-A "serial console" is one application of a "serial port" and a "serial
-console" is used to send ASCII characters, not a binary protocol.
-
-> What makes us suppose at probe that it must be a console?
-
-Sorry, but no, we don't assume every serial port is a serial console.
-Unless something has changed since I was involved with the serial
-layer, we only read the parameters from a serial port _if_ and only
-if that port is being used as a serial console.
-
-TTYs under Linux have a standard initial set of parameters at boot -
-9600 baud, 8 bits, etc. The exception to this is if a serial port *is
-being used* as a serial console, where these settings are overriden by
-the serial console configuration. The reason for that is... imagine
-the chaos that would occur if:
-
-- Your boot loader configures (through user configuration) the serial
-  port for 115200 baud.
-- The boot loader loads the kernel and passes control to it, with
-  a command line specifying that this serial port is to be used for
-  the serial console, but not specifying any parameters.
-- The kernel boots, and starts outputting messages at 115200 baud.
-- Userspace starts running, opens /dev/console, and switches the port
-  to 9600 baud. Now you have utter garbage being received from the
-  serial console.
-
-So, the serial console is special in that regard.
-
-Now, when we configure the serial console, we attempt to:
-
-1) parse the options provided on the console= line to set the serial
-port appropriately, or
-2) if there are no options, then we attempt to set the serial port to
-something sane *for use as a serial console*, which uses ASCII protocol
-not some random binary protocol. 5 and 6 bits make no sense here.
+I sure hope that diffing script can ignore Kconfig items. Because this
+doesn't sound like a reason to "fix" the upstream kernel and as Masahiro
+says, it doesn't change anything anyway.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
