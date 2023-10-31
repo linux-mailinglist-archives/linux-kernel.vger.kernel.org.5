@@ -2,70 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC66E7DC688
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7157DC68A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbjJaG1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 02:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        id S235706AbjJaG15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 02:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjJaG1J (ORCPT
+        with ESMTP id S230298AbjJaG14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 02:27:09 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FC4C0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 23:27:04 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VvGHJmL_1698733618;
-Received: from 30.221.133.171(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VvGHJmL_1698733618)
-          by smtp.aliyun-inc.com;
-          Tue, 31 Oct 2023 14:27:00 +0800
-Message-ID: <59d16fd0-4a9f-b293-18f8-58ed3250ea6c@linux.alibaba.com>
-Date:   Tue, 31 Oct 2023 14:26:57 +0800
+        Tue, 31 Oct 2023 02:27:56 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7552CA9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 23:27:53 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qxiE7-0001r6-JT; Tue, 31 Oct 2023 07:27:47 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qxiE5-005Vb1-UP; Tue, 31 Oct 2023 07:27:45 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qxiE5-00HCwB-Rd; Tue, 31 Oct 2023 07:27:45 +0100
+Date:   Tue, 31 Oct 2023 07:27:45 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Ante Knezic <ante.knezic@helmholz.de>, conor+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch, davem@davemloft.net,
+        devicetree@vger.kernel.org, edumazet@google.com,
+        f.fainelli@gmail.com, krzysztof.kozlowski+dt@linaro.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, marex@denx.de,
+        netdev@vger.kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        woojung.huh@microchip.com
+Subject: Re: [PATCH net-next v4 2/2] net:dsa:microchip: add property to select
+Message-ID: <20231031062745.GO3803936@pengutronix.de>
+References: <20231024142426.GE3803936@pengutronix.de>
+ <20231027063743.28747-1-ante.knezic@helmholz.de>
+ <20231030174225.hqhc3afbayi7dmos@skbuf>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH] erofs: fix erofs_insert_workgroup() lockref usage
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
-References: <20231031060524.1103921-1-hsiangkao@linux.alibaba.com>
- <CAHk-=wiDZXndsFtCCebQGCxg+y24WtOEMF0P24W4zPMA6VPiyQ@mail.gmail.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <CAHk-=wiDZXndsFtCCebQGCxg+y24WtOEMF0P24W4zPMA6VPiyQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-14.3 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231030174225.hqhc3afbayi7dmos@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/31 14:20, Linus Torvalds wrote:
-> On Mon, 30 Oct 2023 at 20:08, Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
->>
->> As Linus pointed out [1], lockref_put_return() is fundamentally
->> designed to be something that can fail.  It behaves as a fastpath-only
->> thing, and the failure case needs to be handled anyway.
->>
->> Actually, since the new pcluster was just allocated without being
->> populated, it won't be accessed by others until it is inserted into
->> XArray, so lockref helpers are actually unneeded here.
->>
->> Let's just set the proper reference count on initializing.
+On Mon, Oct 30, 2023 at 07:42:25PM +0200, Vladimir Oltean wrote:
+> On Fri, Oct 27, 2023 at 08:37:43AM +0200, Ante Knezic wrote:
+> > On Tue, 24 Oct 2023 16:24:26 +0200, Oleksij Rampel wrote:
+> > 
+> > > > That is correct, I guess its a matter of nomenclature, but how do you 
+> > > > "tell" the switch whether it has REFCLKI routed externally or not if not by 
+> > > > setting the 0xC6 bit 3? Is there another way to achieve this?
+> > > 
+> > > I do not see any other way to "tell" it. The only thing to change in you
+> > > patches is a different way to tell it to the kernel.
+> > > Instead of introducing a new devicetree property, you need to reuse
+> > > phy-mode property.
+> > 
+> > > ...
+> > 
+> > > Since phy-mode for RMII was never set correctly, it will most probably
+> > > break every single devicetree using KSZ switches. It is the price of fixing
+> > > things :/
+> > 
+> > To Vladimir Oltean: What are your thoughts on this?
+> > 
 > 
->  From a quick superficial look this looks like the right approach.
-> Thanks for the quick response.
+> In addition to all of that, the MAC/PHY roles are not just about the
+> direction of the REF_CLK, but also about the /J/ /K/ codewords that are
+> placed by the PHY in the inter packet gap on RXD[1:0]. A MAC doesn't do
+> this, and if it did, the PHY wouldn't expect it, and AFAIK, would
+> blindly propagate those code words onto the BASE-T wire, which is
+> undesirable.
 
-Thanks, I will trigger a stress test for this and it will be included
-in this pull request...
+Interesting detail. I didn't knew it, it would be good to document
+it somewhere near to revrmii binding :)
 
-Thanks,
-Gao Xiang
-
-> 
->                Linus
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
