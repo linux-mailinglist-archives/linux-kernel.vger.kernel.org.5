@@ -2,123 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B05577DC50D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 04:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAE37DC522
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235677AbjJaDyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 23:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S236003AbjJaEAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 00:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236848AbjJaDyO (ORCPT
+        with ESMTP id S229436AbjJaEAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 23:54:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1473DDF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 20:54:11 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5a16fa94so4486037276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 20:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698724450; x=1699329250; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2cP+jDgw/2kP2sqdhKr1b6gogBv0upq1OLhtOXXb4qE=;
-        b=hUMsp+3QTspn4HUPM16z6tezTZjk0W3dKrjhgyZj0xhrDpWfO8quLgRh4qDfzsfXWR
-         /VemPdm0axb9IIEgcy5VUBYtoCWFtj9porV94st3kEAHCpDyZHR09Y7IbKQpgk9BRyxG
-         M/eKDMc18yVf3xmBUOIWsTL5e3Vm44JGb3k9yJFYyEZDiYFSrbkfU2BQ/4+0bXe8aQka
-         5mzIJtTaK+XsXuc/AhQxM5nz97o2yh1El/nTcwU/mbvQvP/3MklDgFzXYIV8YJ0sAtPD
-         Yw6cv2++sX9PaggHpx4A6fo8UPA4oe0CByzz8HJQkDVDa8TEOTb0BaCCu8mFyu2u5PB9
-         cVIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698724450; x=1699329250;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2cP+jDgw/2kP2sqdhKr1b6gogBv0upq1OLhtOXXb4qE=;
-        b=S4XWEDn0nyaz5q1e8Rhwa1VrRaRtnby4LSltgJoRsIFYiQmG9eJNeWeTcmPhnkLkwv
-         oAuC83kNknVKzZX50Wb2faRAOnhtMmRLqNLY47mrMk1L4DBtlLDTnCdMCxySt+YjNf80
-         uhfbVywRImDVQSxQPhbC20LgCWk50sCoUL5Xjo0D3NV7Aoak8MGMqish9Hy/PTHs+fj+
-         KQQ3CIfPyPvvKMVHKBTk3HF3QkC+CCYFsU8iLFO2labeRt6RBIMj5tZklS1mAgnTHcy5
-         6lxRKYBWgBljFADcdi143Px2y33WzQcsaWtIlJbpEkaBh3ekk/lECXz0X8XFv0epgnny
-         /BMg==
-X-Gm-Message-State: AOJu0YwdRAiC5804gDVw4IZh9BJiiDLVHR44BDAAWiwno9sSlGWsyCgI
-        Og3CN2hWmMBI7XKDSPBUgVIN6Qj6ltRp
-X-Google-Smtp-Source: AGHT+IHGg0y7OU+iyHQXVt+LK3C1hQ4yiq0V2qpg6y69gt9i7uZwJItKrRflBjP8X+XmHUqg3XuSC9o3kcoZ
-X-Received: from maurora-apa.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:1184])
- (user=maurora job=sendgmr) by 2002:a5b:e83:0:b0:da0:6876:a8f4 with SMTP id
- z3-20020a5b0e83000000b00da06876a8f4mr37799ybr.2.1698724450352; Mon, 30 Oct
- 2023 20:54:10 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 03:54:02 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231031035403.661938-1-maurora@google.com>
-Subject: [PATCH] usb: gadget: Support transfers from device memory
-From:   Manan Aurora <maurora@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        manugautam@google.com, Manan Aurora <maurora@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 00:00:46 -0400
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC56B4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 21:00:41 -0700 (PDT)
+Received: from localhost (unknown [124.16.138.129])
+        by APP-01 (Coremail) with SMTP id qwCowAAHDx8ke0BldmfOAQ--.28967S2;
+        Tue, 31 Oct 2023 11:57:24 +0800 (CST)
+From:   Chen Ni <nichen@iscas.ac.cn>
+To:     s.shtylyov@omp.ru, dlemoal@kernel.org, jeff@garzik.org,
+        htejun@gmail.com
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] pata_isapnp: Add check for devm_ioport_map
+Date:   Tue, 31 Oct 2023 04:00:07 +0000
+Message-Id: <20231031040007.2498659-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: qwCowAAHDx8ke0BldmfOAQ--.28967S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw4xWw1UKrW5XF1rZF15twb_yoWfJFX_Aa
+        yUZF4fW3yvyry5Gw13XF1fZFySgws5ursxXrZYgF93Jry5Zw47WFWYvwnxZayDZ3WrWFn8
+        AF1Ut3s8uF15JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUUEfO7UUUUU==
+X-Originating-IP: [124.16.138.129]
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB gadget stack only supports usb_request objects that point to buffers
-located in memory. Support use cases where data is transferred from
-physical addresses in device mmio regions
+Add check for devm_ioport_map() and return the error if it fails in
+order to guarantee the success of devm_ioport_map().
 
-Added a bit "pre_mapped" to usb_request to bypass dma_map_single and
-dma_map_sg for such requests
-
-The caller must determine the dma address for the request before queuing
-it
-
-Signed-off-by: Manan Aurora <maurora@google.com>
+Fixes: 0d5ff566779f ("libata: convert to iomap")
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
 ---
- drivers/usb/gadget/udc/core.c | 4 ++--
- include/linux/usb/gadget.h    | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/ata/pata_isapnp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
-index ded9531f141b..236165ba08f4 100644
---- a/drivers/usb/gadget/udc/core.c
-+++ b/drivers/usb/gadget/udc/core.c
-@@ -900,7 +900,7 @@ EXPORT_SYMBOL_GPL(usb_gadget_activate);
- int usb_gadget_map_request_by_dev(struct device *dev,
- 		struct usb_request *req, int is_in)
- {
--	if (req->length == 0)
-+	if (req->pre_mapped || req->length == 0)
- 		return 0;
- 
- 	if (req->num_sgs) {
-@@ -948,7 +948,7 @@ EXPORT_SYMBOL_GPL(usb_gadget_map_request);
- void usb_gadget_unmap_request_by_dev(struct device *dev,
- 		struct usb_request *req, int is_in)
- {
--	if (req->length == 0)
-+	if (req->pre_mapped || req->length == 0)
- 		return;
- 
- 	if (req->num_mapped_sgs) {
-diff --git a/include/linux/usb/gadget.h b/include/linux/usb/gadget.h
-index a771ccc038ac..6bc035439098 100644
---- a/include/linux/usb/gadget.h
-+++ b/include/linux/usb/gadget.h
-@@ -111,6 +111,7 @@ struct usb_request {
- 	unsigned		zero:1;
- 	unsigned		short_not_ok:1;
- 	unsigned		dma_mapped:1;
-+	unsigned		pre_mapped:1;
- 
- 	void			(*complete)(struct usb_ep *ep,
- 					struct usb_request *req);
+diff --git a/drivers/ata/pata_isapnp.c b/drivers/ata/pata_isapnp.c
+index 25a63d043c8e..0f77e0424066 100644
+--- a/drivers/ata/pata_isapnp.c
++++ b/drivers/ata/pata_isapnp.c
+@@ -82,6 +82,9 @@ static int isapnp_init_one(struct pnp_dev *idev, const struct pnp_device_id *dev
+ 	if (pnp_port_valid(idev, 1)) {
+ 		ctl_addr = devm_ioport_map(&idev->dev,
+ 					   pnp_port_start(idev, 1), 1);
++		if (!ctl_addr)
++			return -ENOMEM;
++
+ 		ap->ioaddr.altstatus_addr = ctl_addr;
+ 		ap->ioaddr.ctl_addr = ctl_addr;
+ 		ap->ops = &isapnp_port_ops;
 -- 
-2.42.0.820.g83a721a137-goog
+2.25.1
 
