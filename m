@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D56957DCC18
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C5D7DCC1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344063AbjJaLq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
+        id S1344076AbjJaLrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344042AbjJaLq5 (ORCPT
+        with ESMTP id S1344042AbjJaLrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:46:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9AE2591;
-        Tue, 31 Oct 2023 04:46:54 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E613EC15;
+        Tue, 31 Oct 2023 07:47:37 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AF991;
         Tue, 31 Oct 2023 04:47:35 -0700 (PDT)
-Received: from [192.168.1.102] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B92C33F64C;
-        Tue, 31 Oct 2023 04:46:52 -0700 (PDT)
-Message-ID: <3fc50cc1-e4b1-49f9-a0f3-cc527d942e00@arm.com>
-Date:   Tue, 31 Oct 2023 11:46:47 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc58219376so15104295ad.1;
+        Tue, 31 Oct 2023 04:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698752855; x=1699357655; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3C17UJiVwd6DOa03RYkc0No/IhhZUWEzgYPRcFfwfdM=;
+        b=EJgcO3uJFikFayJPOBxdndx2o1Y81EMmkHIhmkF42b1a6A14uoFIhsX1oUBYNEWBt4
+         2iqxfqkyOo4pDcsunXaxsAxhu9Dk+Favvp8G1m8ZuW3imREFfh5UxhgQ58VA+cRIkItf
+         UwafJ9/SdlRS5DM1XNuZa+DLktMdYkEsl7I7l3s29AzqgTQX/2RacolIIfIHOs1PrdBf
+         wHf6W8tUQQ3EM7xZt17Q2sqxkwUYDRk0mPv9uwVd2p+sRpfEXMJjznbadfOADTnjYniX
+         4SMdwIMkzXJ33Z+YN7kS1/9cIUDQ8bsNZFMMsGIkC84OFdD16lSEqppIduyCBamu7yOF
+         OCHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698752855; x=1699357655;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3C17UJiVwd6DOa03RYkc0No/IhhZUWEzgYPRcFfwfdM=;
+        b=uKPTgG+sRhBiYhx60YHO18kOQE761hAYKOlW7NvDJ6afsqXWa0pZyejE8lQCTd8Mjk
+         TdvKOxL2qh27E5Nu98WNJ5PxwB37AqvkI8ssDDKqtonxmYfcr6sffWBCHs+BHI63jHYh
+         aobJcoQVXuxdO28gwSBGPGMyZJVoUG1Jpr9GxbJSuAVDsE3WMMxDIqqb3qqlPDz5AwoK
+         pLw08DYz+qR/b6bIFowtjwCr2mrFh80zgSsrk6owKb1Uqutyz9svFSr67okwQVY2lWwZ
+         0wwygv8egHXF0WRVcUE5esBdr1CBqOa/E+2Pse7wi60ZxPUpP0uYnTD/7KcLlYs9JZBs
+         p7kg==
+X-Gm-Message-State: AOJu0Yzs/zESH+Sj9ljfZhk/TNW7vBT5muUZap9nGBI2ZGUeEG1YlV5T
+        TYHKAl6pUD6r1FEo58cKOLs=
+X-Google-Smtp-Source: AGHT+IHGD0OVTJ2k1R9HRR8YcAOyu3CWnt5QT3tNviymPi26+SleD2bMuWNlKjwZksiHiC2sIXi8dw==
+X-Received: by 2002:a17:903:807:b0:1cc:2a23:cbab with SMTP id kr7-20020a170903080700b001cc2a23cbabmr10730665plb.27.1698752855137;
+        Tue, 31 Oct 2023 04:47:35 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001c9b8f76a89sm1165904plg.82.2023.10.31.04.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 04:47:34 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 98CE8819BFD9; Tue, 31 Oct 2023 18:47:31 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Filesystems Development <linux-fsdevel@vger.kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>, Yusong Gao <a869920004@163.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH] fs: Clarify "non-RCY" in access_override_creds() comment
+Date:   Tue, 31 Oct 2023 18:47:28 +0700
+Message-ID: <20231031114728.41485-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: IOVA address range
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Eric Pilmore <epilmore@gigaio.com>
-Cc:     linux-pci@vger.kernel.org, dmaengine@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231030181622.GA1878727@bhelgaas>
-Content-Language: en-GB
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231030181622.GA1878727@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1037; i=bagasdotme@gmail.com; h=from:subject; bh=u5ekTWI8pmEnF9ckTR+SSRBAZyiP/895cBZE6O+O9IE=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKkOL7585ZvKVbn7cL/DDeUtT30jX25+fFTS6/yK7z2yZ ibMSxQdOkpZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjAR810M/+MP7PR/1MgsPqcv 4avC3T+rFKT3FTvZGS9xmsPWZFZo3sjIcLQq2dJmnUTCqYzu6P4W3TMvL6w7pWnNKb59q9VrFUE mbgA=
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-30 6:19 pm, Bjorn Helgaas wrote:
-> [+cc folks from ./scripts/get_maintainer.pl -f drivers/iommu]
-> 
-> On Fri, Oct 27, 2023 at 12:17:17PM -0700, Eric Pilmore wrote:
->> Need a little IOVA/IOMMU help.
->>
->> Is it correct that the IOVA address range for a device goes from
->> address 0x0 up to the dma-mask of the respective device?
->>
->> Is it correct to assume that the base of the IOVA address space for a
->> device will always be zero (0x0)? Is there any reason to think that
->> this has changed in some newer iteration of the kernel, perhaps 5.10,
->> and that the base could be non-zero?
->>
->> I realize an IOVA itself can be non-zero. I'm trying to verify what
->> the base address is of the IOVA space as a whole on a per device
->> basis.
+The term is originally intended as a joke that stands for "non-racy".
+This trips new contributors who mistake it for RCU typo [1].
 
-In short, "No."
+Replace the term with more-explicit wording.
 
-In detail, it depends on the architecture, since there are still a 
-number of different IOMMU-based DMA API backends. Off-hand I do know 
-that 32-bit Arm allocates upwards from 0, since there are some drivers 
-annoyingly relying on that behaviour. I've never looked too closely at 
-what the likes of Alpha, Sparc and PowerPC do. The generic IOVA 
-allocator used by iommu-dma on x86, arm64, and soon s390, allocates 
-top-down, but for historical reasons has a special behaviour for PCI 
-devices where it tries to stay below the 32-bit boundary and only goes 
-up to the full DMA mask (if larger) once that space is full. iommu-dma 
-also always reserves 0 as an invalid IOVA - initially this was more of a 
-convenience measure to help catch certain potential bugs, but it's long 
-since also been relied upon as a special value in the internal caching 
-mechanism. Note also that any device may have holes reserved anywhere in 
-its otherwise-usable address space, and/or its entire notion of usable 
-ranges constrained as described by firmware (e.g. a devicetree 
-"dma-ranges" property or ACPI "_DMA" method).
+Link: https://lore.kernel.org/r/20231030-debatten-nachrangig-f58abcdac530@brauner/
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
+ fs/open.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-Robin.
+diff --git a/fs/open.c b/fs/open.c
+index 98f6601fbac65e..a89c64629aacf4 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -442,7 +442,8 @@ static const struct cred *access_override_creds(void)
+ 	 * 'get_current_cred()' function), that will clear the
+ 	 * non_rcu field, because now that other user may be
+ 	 * expecting RCU freeing. But normal thread-synchronous
+-	 * cred accesses will keep things non-RCY.
++	 * cred accesses will keep things non-racy to avoid RCU
++	 * freeing.
+ 	 */
+ 	override_cred->non_rcu = 1;
+ 
+
+base-commit: 7f680e5f256f346a5d3cd83a17c84bb6bc950008
+-- 
+An old man doll... just what I always wanted! - Clara
+
