@@ -2,204 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0827DD6E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB327DD6E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343496AbjJaUDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
+        id S1343858AbjJaUDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234890AbjJaUDJ (ORCPT
+        with ESMTP id S234890AbjJaUDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:03:09 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE80C9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tPacMkZH0y8QWW+lHcXmKmF01kbsT/kTr2EnDLWNeP0=; b=oVhlQrgg6x3TUP0JGmdbYox9k8
-        B3JjbRLlvD7ntmQkP9jXeQ2HEcAkK4BQO3Y6BixG6Z2p3lU7+158vukdqZmoYW1NEwiWaitpyndcg
-        WKAPna0YyQYfuh+aR1Ekt5oyccneNbST9eYr2DsuhXuCe9JS89nR5d4ZcIIohzoxCm9+rZ1NchPVA
-        8TCnuFvLEjAkE8ROvXr8ACM91n57CbndfEsaAFpkcGooz7haW2XZVhTInRjjSpVwWfumPidWuWhTo
-        Ru182GqN7/TpErKptJtahh0ALG4CrnCUyXjE/fjE4hIIVv5nkbFg5yXndtGuLHzpljCuVRf7sYfjK
-        WxzGYYeA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qxuwX-0053M6-1Y;
-        Tue, 31 Oct 2023 20:02:29 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DFB51300451; Tue, 31 Oct 2023 21:02:28 +0100 (CET)
-Date:   Tue, 31 Oct 2023 21:02:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        aubrey.li@linux.intel.com, yu.c.chen@intel.com,
-        frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        boqun.feng@gmail.com, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com
-Subject: [PATCH] rcu: Break rcu_node_0 --> &rq->__lock order
-Message-ID: <20231031200228.GG15024@noisy.programming.kicks-ass.net>
-References: <20231031001418.274187-1-longman@redhat.com>
- <20231031085308.GB35651@noisy.programming.kicks-ass.net>
- <a46f5614-53ec-49fb-86d0-fa5aea4d0a42@paulmck-laptop>
+        Tue, 31 Oct 2023 16:03:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EEEF7;
+        Tue, 31 Oct 2023 13:03:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34190C433C9;
+        Tue, 31 Oct 2023 20:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698782594;
+        bh=2aV6IcuNuc4VZa9a7hwgLV8gteCTymOcvVS85W7p4oU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=awg5+Ps4V1xjtT+IA5wregK3t8Xmhvgs5CiZFN/K4wNY3yPHZmDvTVkkD1D6mBG3g
+         rPgsfiWMUJwdqMg5ZPb+FehIVIN9IdejQgMik6WbmRqv9M83lHctTynaePH7Ne0/DE
+         Mv7suJrW3+iSBV/pVpsLekNNigZuDO78L99G8P89XfiHrtwyf8UY9GfJb88RcMN9Jd
+         xLxFZc7k5yftOF/VxdnZe+P/Lc6BKITq8GERBI4Ej284JJCDCwqVR3dU1pQH3o9NSj
+         I3JF56VJ7fdxgBP8C7I8LzoPrpcpcVZtYPlR1aU8Cwsp7UvE2mY9H3ve1grvaCPgLe
+         RKtQiQjeR02rw==
+Date:   Tue, 31 Oct 2023 15:03:12 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI: Use FIELD_PREP() and remove *_SHIFT defines
+Message-ID: <20231031200312.GA25127@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a46f5614-53ec-49fb-86d0-fa5aea4d0a42@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231027083811.9200-1-ilpo.jarvinen@linux.intel.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 07:29:04AM -0700, Paul E. McKenney wrote:
-> Other than the de-alphabetization of the local variables, it looks
-> plausible to me.  Frederic's suggestion also sounds plausible to me.
+On Fri, Oct 27, 2023 at 11:38:11AM +0300, Ilpo Järvinen wrote:
+> Instead of open-coded masking and shifting with PCI_CONF1_* bitfields,
+> use GENMASK() and FIELD_PREP(), and then remove the *_SHIFT defines
+> that are no longer needed.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+> 
+>  drivers/pci/pci.h | 23 ++++++++++-------------
+>  1 file changed, 10 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 39a8932dc340..31da9fde8aca 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -2,6 +2,8 @@
+>  #ifndef DRIVERS_PCI_H
+>  #define DRIVERS_PCI_H
+>  
+> +#include <linux/bitfield.h>
+> +#include <linux/bits.h>
+>  #include <linux/pci.h>
+>  
+>  /* Number of possible devfns: 0.0 to 1f.7 inclusive */
+> @@ -797,19 +799,15 @@ static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
+>   * Section 3.2.2.3.2, Figure 3-2, p. 50.
+>   */
+>  
+> -#define PCI_CONF1_BUS_SHIFT	16 /* Bus number */
+> -#define PCI_CONF1_DEV_SHIFT	11 /* Device number */
+> -#define PCI_CONF1_FUNC_SHIFT	8  /* Function number */
+> -
+> -#define PCI_CONF1_BUS_MASK	0xff
+> -#define PCI_CONF1_DEV_MASK	0x1f
+> -#define PCI_CONF1_FUNC_MASK	0x7
+> +#define PCI_CONF1_BUS_MASK	GENMASK(23, 16)
+> +#define PCI_CONF1_DEV_MASK	GENMASK(15, 11)
+> +#define PCI_CONF1_FUNC_MASK	GENMASK(10, 8)
+>  #define PCI_CONF1_REG_MASK	0xfc /* Limit aligned offset to a maximum of 256B */
+>  
+>  #define PCI_CONF1_ENABLE	BIT(31)
+> -#define PCI_CONF1_BUS(x)	(((x) & PCI_CONF1_BUS_MASK) << PCI_CONF1_BUS_SHIFT)
+> -#define PCI_CONF1_DEV(x)	(((x) & PCI_CONF1_DEV_MASK) << PCI_CONF1_DEV_SHIFT)
+> -#define PCI_CONF1_FUNC(x)	(((x) & PCI_CONF1_FUNC_MASK) << PCI_CONF1_FUNC_SHIFT)
+> +#define PCI_CONF1_BUS(x)	FIELD_PREP(PCI_CONF1_BUS_MASK, (x))
+> +#define PCI_CONF1_DEV(x)	FIELD_PREP(PCI_CONF1_DEV_MASK, (x))
+> +#define PCI_CONF1_FUNC(x)	FIELD_PREP(PCI_CONF1_FUNC_MASK, (x))
+>  #define PCI_CONF1_REG(x)	((x) & PCI_CONF1_REG_MASK)
 
-Having spend the better part of the past two decades using upside down
-xmas trees for local variables, this alphabet thing is obnoxious :-)
+I love getting rid of the _SHIFT #defines.
 
-But your code, your rules.
+I'm a dinosaur and haven't been completely converted to the wonders of
+GENMASK yet.  PCI_CONF1_ADDRESS is the only user of PCI_CONF1_BUS etc,
+so I think this would be simpler overall:
 
-To reduce the number of alphabet songs required, I've taken the liberty
-to move a few variables into a narrower scope, hope that doesn't offend.
+  #define PCI_CONF1_BUS  0x00ff0000
+  #define PCI_CONF1_DEV  0x0000f800
+  #define PCI_CONF1_FUNC 0x00000700
+  #define PCI_CONF1_REG  0x000000ff
 
----
-Subject: rcu: Break rcu_node_0 --> &rq->__lock order
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Tue, 31 Oct 2023 09:53:08 +0100
+  #define PCI_CONF1_ADDRESS(bus, dev, func, reg) \
+    (FIELD_PREP(PCI_CONF1_BUS, (bus)) | \
+     FIELD_PREP(PCI_CONF1_DEV, (dev)) | \
+     FIELD_PREP(PCI_CONF1_FUNC, (func)) | \
+     FIELD_PREP(PCI_CONF1_REG, (reg & ~0x3)))
 
-Commit 851a723e45d1 ("sched: Always clear user_cpus_ptr in
-do_set_cpus_allowed()") added a kfree() call to free any user
-provided affinity mask, if present. It was changed later to use
-kfree_rcu() in commit 9a5418bc48ba ("sched/core: Use kfree_rcu()
-in do_set_cpus_allowed()") to avoid a circular locking dependency
-problem.
+The v6.7 merge window just opened, and I won't start merging v6.8
+material until v6.7-rc1 (probably Nov 12), so no hurry on this.
 
-It turns out that even kfree_rcu() isn't safe for avoiding
-circular locking problem. As reported by kernel test robot,
-the following circular locking dependency now exists:
-
-  &rdp->nocb_lock --> rcu_node_0 --> &rq->__lock
-
-Solve this by breaking the rcu_node_0 --> &rq->__lock chain by moving
-the resched_cpu() out from under rcu_node lock.
-
-[peterz: heavily borrowed from Waiman's Changelog]
-Fixes: 851a723e45d1 ("sched: Always clear user_cpus_ptr in do_set_cpus_allowed()")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/oe-lkp/202310302207.a25f1a30-oliver.sang@intel.com
----
- kernel/rcu/tree.c |   34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
-
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -754,14 +754,19 @@ static int dyntick_save_progress_counter
- }
- 
- /*
-- * Return true if the specified CPU has passed through a quiescent
-- * state by virtue of being in or having passed through an dynticks
-- * idle state since the last call to dyntick_save_progress_counter()
-- * for this same CPU, or by virtue of having been offline.
-+ * Returns positive if the specified CPU has passed through a quiescent state
-+ * by virtue of being in or having passed through an dynticks idle state since
-+ * the last call to dyntick_save_progress_counter() for this same CPU, or by
-+ * virtue of having been offline.
-+ *
-+ * Returns negative if the specified CPU needs a force resched.
-+ *
-+ * Returns zero otherwise.
-  */
- static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- {
- 	unsigned long jtsq;
-+	int ret = 0;
- 	struct rcu_node *rnp = rdp->mynode;
- 
- 	/*
-@@ -847,8 +852,8 @@ static int rcu_implicit_dynticks_qs(stru
- 	    (time_after(jiffies, READ_ONCE(rdp->last_fqs_resched) + jtsq * 3) ||
- 	     rcu_state.cbovld)) {
- 		WRITE_ONCE(rdp->rcu_urgent_qs, true);
--		resched_cpu(rdp->cpu);
- 		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-+		ret = -1;
- 	}
- 
- 	/*
-@@ -891,7 +896,7 @@ static int rcu_implicit_dynticks_qs(stru
- 		}
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- /* Trace-event wrapper function for trace_rcu_future_grace_period.  */
-@@ -2257,15 +2262,15 @@ static void force_qs_rnp(int (*f)(struct
- {
- 	int cpu;
- 	unsigned long flags;
--	unsigned long mask;
--	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
- 
- 	rcu_state.cbovld = rcu_state.cbovldnext;
- 	rcu_state.cbovldnext = false;
- 	rcu_for_each_leaf_node(rnp) {
-+		unsigned long mask = 0;
-+		unsigned long rsmask = 0;
-+
- 		cond_resched_tasks_rcu_qs();
--		mask = 0;
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		rcu_state.cbovldnext |= !!rnp->cbovldmask;
- 		if (rnp->qsmask == 0) {
-@@ -2283,11 +2288,17 @@ static void force_qs_rnp(int (*f)(struct
- 			continue;
- 		}
- 		for_each_leaf_node_cpu_mask(rnp, cpu, rnp->qsmask) {
-+			struct rcu_data *rdp;
-+			int ret;
-+
- 			rdp = per_cpu_ptr(&rcu_data, cpu);
--			if (f(rdp)) {
-+			ret = f(rdp);
-+			if (ret > 0) {
- 				mask |= rdp->grpmask;
- 				rcu_disable_urgency_upon_qs(rdp);
- 			}
-+			if (ret < 0)
-+				rsmask |= rdp->grpmask;
- 		}
- 		if (mask != 0) {
- 			/* Idle/offline CPUs, report (releases rnp->lock). */
-@@ -2296,6 +2307,9 @@ static void force_qs_rnp(int (*f)(struct
- 			/* Nothing to do here, so just drop the lock. */
- 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		}
-+
-+		for_each_leaf_node_cpu_mask(rnp, cpu, rsmask)
-+			resched_cpu(cpu);
- 	}
- }
- 
+Bjorn
