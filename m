@@ -2,66 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5937DC531
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 268A17DC536
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 05:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbjJaENX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 00:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
+        id S235978AbjJaEQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 00:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjJaENU (ORCPT
+        with ESMTP id S230503AbjJaEQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 00:13:20 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB7AC0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 21:13:17 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso40777545e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 21:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698725596; x=1699330396; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JWzjKL8EVaea5V4HLaN3vFp8o2Efb8rSuCQYLqGhPNM=;
-        b=UJqJsr4IY8SWQWHQrwo63Cdu9z855WLD6CI5CPNWuuz4z6QaTYbBEgilaoeGh7zsjl
-         1gJ/fm0wYHwmRLB/IIx30arW5ndhbmVjtUKymvw6aws5zoFXpr+L5uYIQSf6u1Ipjoqc
-         wglG/2fvWf8fuJGNDVhOIi+AlMxk7jUdltUnzXCyK9cNMEnrk3cDwtHp/h3ph4XhZoth
-         uIAJllqNYsXjE8/GowbZ7/uUuItuxz0v8/bpVtBrjj4ipLU/LbI+Pddl6pJfBYe2HMlg
-         6nmZF91Q0Ue0YRZHt/6siz64UY1pjWjUpPFEevZHK/+BNo1VHkDCfg6I/qzvHMNOdWn6
-         7zaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698725596; x=1699330396;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JWzjKL8EVaea5V4HLaN3vFp8o2Efb8rSuCQYLqGhPNM=;
-        b=okW44lwr61W/BcUKb7FYugew55W1M8nXZrIphP37VhheNnIXzJpyquL5R/edEnhtAP
-         vMDG+OnhLJzARsk9XRmNwOjUZJGTHv/3pd94kGYjPT5eZCYsEpgkD+X9HLiaBi9dMUTu
-         9wDZa1mMxOQOZtVak5qSWOhn6wbpbUAjwAqw4egyu6X3q3K8kROR2/zkY7BJDx/vkAvZ
-         kMOTHg9TVqqMnzmy7IjMzhtrs3Mi8BOR6EE7HqNTVZ8Au7MJ0jBgKudYatFJ03BHoK5Y
-         HuLqOQh2JiWwIfK105KuwwodDlJQhxBiz0ehGBt7FdQPkY45FNI+TMGCDOXanj+B7JnT
-         pbcQ==
-X-Gm-Message-State: AOJu0YznQtnPe+u9DySLqDCOprukXNfzUlp4X/ZcYXNLc0Pd/GRqUFCT
-        r++xVHFaQKNnG8V5kug/vMCT2g==
-X-Google-Smtp-Source: AGHT+IEPDxyOOgvptCIl3Y4Jak1XAQ25YdaQBYIEe+oAxOQClDi6eyZMDdGcKmIP/s9FKFQJNYn1og==
-X-Received: by 2002:a05:600c:458f:b0:408:3ac4:dc3f with SMTP id r15-20020a05600c458f00b004083ac4dc3fmr10053328wmo.29.1698725595302;
-        Mon, 30 Oct 2023 21:13:15 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 16-20020a05600c229000b0040596352951sm549895wmf.5.2023.10.30.21.13.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 21:13:14 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:13:12 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Nancy Nyambura <nicymimz@gmail.com>
-Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] Staging: rts5208: Replace strncpy() with strscpy()
-Message-ID: <191cf6e2-6a46-4813-a0c4-c86bcf9bd0b2@kadam.mountain>
-References: <20231030142751.49913-1-nicymimz@gmail.com>
+        Tue, 31 Oct 2023 00:16:40 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4C0C0;
+        Mon, 30 Oct 2023 21:16:37 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V1DlXX023759;
+        Tue, 31 Oct 2023 04:16:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Mr9UzqvLhnzLnqru6L2w2RDsyzGZuGqsh2flGIiGQxM=;
+ b=Ge9ZRhHcKz1a5jEKuPbpJbXQpoN09ZD715A1ZfuaCHOcIv8FwbsOXsVa2sUqnaX/HBsW
+ ewEwCasnzEievJCIyl669/RZ4tUYx4qPoRMLdSvW9O4iy/P2ktRWodMH6CobsmPnYaFY
+ Vm+ySLl9joorm9mvUCtjzZ5/OEIBNktUUTkulCaHzj2DmIon+uSKXn5TeFNxd57vefMP
+ HzPHuKNuuxgGY1SNxsfORbC2of6AQGAzi8+gXoSZFRi3v24UXOP8e6BApUtTE/as0ovr
+ 0sSmnbCRdouadcHLg1PallNgkkQCcas98Pde+MFsUFwrz9X4jmkXIbGVtyZvAb48R9Us yg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2mcygkvm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 04:16:26 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V4GPUn001733
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 04:16:25 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
+ 2023 21:16:19 -0700
+Message-ID: <7904c396-c11e-40eb-b82c-eb187818b602@quicinc.com>
+Date:   Tue, 31 Oct 2023 09:46:16 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030142751.49913-1-nicymimz@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 8/8] arm64: defconfig: build NSS Clock Controller driver
+ for IPQ5332
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+References: <20231030-ipq5332-nsscc-v1-0-6162a2c65f0a@quicinc.com>
+ <20231030-ipq5332-nsscc-v1-8-6162a2c65f0a@quicinc.com>
+ <18ca181a-8aee-46f5-9e2d-bfba4c8bd99e@linaro.org>
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <18ca181a-8aee-46f5-9e2d-bfba4c8bd99e@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4BwK5Ub-NFxCi3ptb6Sgyu7ORcT8Q65h
+X-Proofpoint-ORIG-GUID: 4BwK5Ub-NFxCi3ptb6Sgyu7ORcT8Q65h
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 mlxlogscore=710 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310031
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,62 +92,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 05:27:47PM +0300, Nancy Nyambura wrote:
-> Warning found by checkpath.pl
-> I replaced strncpy with strscpy because strscpy is suitable when the
-> destination buffer is NUL-terminated, which is often the case when
-> copying strings. Strscpy ensures that the destination buffer is
-> properly NUL-terminated without padding.
 
-The same is basically true for strncpy()...  In olden days strncpy()
-was the only "safe" function we had so we used it exactly how we use
-strscpy() today except we manually added a NUL terminator to the end.
 
-	new = kzalloc(len + 1, GFP_KERNEL);
-	strncpy(new, old, len);
-
-> In the code, the objective is to copy a string (inquiry_string) to the
-> buf buffer, and it's likely that the buf buffer is NUL-terminated
-> since it is handling a string. Strscpy_pad is used when you have
-> afixed-size buffer, and you want to copy a string into it while
-> ensuring the remaining space is padded with a specific character
-> (like '\0') hence not appropriate for this context.
+On 10/30/2023 4:38 PM, Krzysztof Kozlowski wrote:
+> On 30/10/2023 10:47, Kathiravan Thirumoorthy wrote:
+>> Build Qualcomm IPQ9574 NSSCC driver as module.
 > 
+> Why? Commit msg should answer this.
 
-You need to run your patches through checkpatch.
 
-"it's likely that the buf buffer is NUL-terminated since it is handling
-a string."  That's not analysis.  That's just guessing.  Take what time
-you need and do the analysis.
+Sure, will fix it in V2.
 
-"Strscpy_pad is used when you have afixed-size buffer, and you want to
-copy a string into it while ensuring the remaining space is padded with
-a specific character (like '\0') hence not appropriate for this context."
-
-It's not "like '\0'" it's specifically '\0'...  This explains what
-strscpy_pad() does.  We all know what it does.  No need to explain that.
-However this doesn't explain *why* it's not appropriate.
-
-1) Look at buf.  How big is it?  What data is stored in buf before we do
-   the strncpy().
-2) Look at inquiry_string.  Where does it come from?  Is it NUL
-   terminated?  How long is it?
-3) Look at sendbytes.  What length is it?  Is it longer than the size of
-   buf + 8?  Is it longer than the size of inquiry_string?
-4) What do we do with buf after the strncpy()?  Does the surrounding
-   code assume that it is NUL terminated?  Do we copy the code to the
-   user?
-
-Once you know the answers to all these questions, then figure out which
-of the questions matter in this context.  Re-write the commit message
-with the relevant information.
-
-I'm going to give you a hint here.
-
-	rtsx_stor_set_xfer_buf(buf, scsi_bufflen(srb), srb);
-
-This function copies "buf" to the user.
-
-regards,
-dan carpenter
-
+> 
+> Best regards,
+> Krzysztof
+> 
