@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AE37DCE3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A0A7DCE4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344667AbjJaNvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
+        id S1344702AbjJaNyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344592AbjJaNvv (ORCPT
+        with ESMTP id S1344661AbjJaNyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:51:51 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAB3DE;
-        Tue, 31 Oct 2023 06:51:48 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D7CE16000C;
-        Tue, 31 Oct 2023 13:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698760306;
+        Tue, 31 Oct 2023 09:54:35 -0400
+Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [213.239.216.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 585009F;
+        Tue, 31 Oct 2023 06:54:32 -0700 (PDT)
+Message-ID: <714040ef-a032-41b4-9612-c739ecc25d33@postmarketos.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
+        s=donut; t=1698760470;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lh/+wUApvt6UyuoxEjUcgfFXqmHXTrUff3SZed4i+ZQ=;
-        b=PEc+Z5Itp+zlf1r7FsF2KO7B4aIZ1aW+icMbCRQbtwpEuvX1DiuPxQpdzD3T+9YDkuLaZc
-        yfup0SWyCDs5LMWAZQgZGSEWw/1NWkZKPGqalzhxhBI7L+0VBW0GbFLd5pYqyP7Yg2AY0r
-        lT1ZFOy2IhtZqcL0HyepYmIGFAsQB8IjZ4vEzLwHBnl0nPJUkatqcljXWBMLX+v3I+KqYh
-        lyF5eB7C8DSGqjpFCd0XOHy3whIzaEG3bc0IvPzcwWxkfNMn+1PtPN2v1txMBe/b5K80hU
-        lUdUE9TtbHMmieEj/IQXc1LEtXy40jQ/2p95fTYuf8BLS6xqOcz4OORODuJ66Q==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 31 Oct 2023 14:51:45 +0100
-Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
- 7 or 8 in _get_options
-Cc:     "Hugo Villeneuve" <hugo@hugovil.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Jiri Slaby" <jirislaby@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Gregory CLEMENT" <gregory.clement@bootlin.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
-        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Message-Id: <CWMNJ47MO8E6.7CXJRZ181PXJ@tleb-bootlin-xps13-01>
-X-Mailer: aerc 0.15.2
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
- <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
- <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
- <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
- <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
- <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
- <ZUDjhpQKgUgqVeBh@shell.armlinux.org.uk>
-In-Reply-To: <ZUDjhpQKgUgqVeBh@shell.armlinux.org.uk>
-X-GND-Sasl: theo.lebrun@bootlin.com
+        bh=MZUERBcJomGwI5V072etc02VGxK584H2du5hts/zKNc=;
+        b=t9vBByn8fT/MAyShle8FMOMGPVDJgIICMdv+HbKIAILqNWsgHZrJQkHop3pB60d8TWiQ4t
+        KT6sC/EBXR0filNeqNPCFz0rhYmDy7W9p6C4TxHVGy8oGmF6iCQrJ5bM3DBRIf6RYuBkrq
+        Xc/kTh1y7XmTheMeQtK4xg15qYBfhhk=
+Date:   Tue, 31 Oct 2023 14:52:15 +0100
+MIME-Version: 1.0
+Subject: Re: [PATCH v3 3/4] ARM: dts: qcom: Add support for Samsung Galaxy Tab
+ 4 10.1 LTE (SM-T535)
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20231025083952.12367-1-newbyte@postmarketos.org>
+ <20231025083952.12367-4-newbyte@postmarketos.org>
+ <a3162513-c4d0-4db6-9ff9-447f4249fc67@linaro.org>
+Content-Language: en-US
+From:   Stefan Hansson <newbyte@postmarketos.org>
+In-Reply-To: <a3162513-c4d0-4db6-9ff9-447f4249fc67@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Oct 31, 2023 at 12:22 PM CET, Russell King (Oracle) wrote:
-> On Tue, Oct 31, 2023 at 12:04:11PM +0100, Th=C3=A9o Lebrun wrote:
-> > On Tue Oct 31, 2023 at 11:11 AM CET, Russell King (Oracle) wrote:
-> > > There is no point in supporting 5 or 6 bits for console usage. Think
-> > > about it. What values are going to be sent over the console? It'll be
-> > > ASCII, which requires at _least_ 7-bit. 6-bit would turn alpha
-> > > characters into control characters, punctuation and numbers. 5-bit
-> > > would be all control characters.
-> > >
-> > > So there's no point trying to do anything with 5 or 6 bits per byte,
-> > > and I decided we might as well take that as an error (or maybe a
-> > > case that the hardware has not been setup) and default to 8 bits per
-> > > byte.
-> >=20
-> > I see your point. Two things come to mind:
-> >=20
-> >  - I added this parsing of 5/6 bits to be symmetrical with
-> >    pl011_set_termios that handles 5/6 properly. Should pl011_set_termio=
-s
-> >    be modified then?
->
-> Why should it? Note that I said above about _console_ usage which is
-> what you were referring to - the early code that sets up the console
-> by either reading the current settings (so that we can transparently
-> use the UART when its handed over already setup by a boot loader).
->
-> This is completely different to what happens once the kernel is running.
-> Userspace might very well have a reason to set 5 or 6 bits if it wants
-> to communicate with a device that uses those sizes.
->
-> However, such a device won't be a console for the reasons I outlined
-> above (it will truncate the ASCII characters turning console messages
-> into garbage.)
 
-I'm not sure I get it. (1) We assume it is a console so it's ASCII so no
-reason to set to 5 or 6 bits per word. But (2) there might be a reason
-to set the UART to 5 or 6 bits, the userspace decides.
 
-How do the two interact? Say we boot to Linux, userspace configures to 6
-bits because reasons and we reset. At second probe we see a config of 6
-bits per word but assume that can't be logical, even though it is.
+On 2023-10-31 12:08, Konrad Dybcio wrote:
+> On 25.10.2023 10:37, Stefan Hansson wrote:
+>> Add a device tree for the Samsung Galaxy Tab 4 10.1 (SM-T535) LTE tablet
+>> based on the MSM8926 platform.
+>>
+>> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
+>> ---
+>>   arch/arm/boot/dts/qcom/Makefile               |  1 +
+>>   .../qcom/qcom-msm8926-samsung-matisselte.dts  | 36 +++++++++++++++++++
+>>   2 files changed, 37 insertions(+)
+>>   create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
+>>
+>> diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
+>> index a3d293e40820..cab35eeb30f6 100644
+>> --- a/arch/arm/boot/dts/qcom/Makefile
+>> +++ b/arch/arm/boot/dts/qcom/Makefile
+>> @@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+>>   	qcom-msm8916-samsung-serranove.dtb \
+>>   	qcom-msm8926-microsoft-superman-lte.dtb \
+>>   	qcom-msm8926-microsoft-tesla.dtb \
+>> +	qcom-msm8926-samsung-matisselte.dtb \
+>>   	qcom-msm8960-cdp.dtb \
+>>   	qcom-msm8960-samsung-expressatt.dtb \
+>>   	qcom-msm8974-lge-nexus5-hammerhead.dtb \
+>> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
+>> new file mode 100644
+>> index 000000000000..6e25b1a74ce5
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
+>> @@ -0,0 +1,36 @@
+>> +// SPDX-License-Identifier: BSD-3-Clause
+>> +/*
+>> + * Copyright (c) 2022, Matti Lehtimäki <matti.lehtimaki@gmail.com>
+>> + * Copyright (c) 2023, Stefan Hansson <newbyte@postmarketos.org>
+>> + */
+>> +
+>> +/dts-v1/;
+>> +
+>> +#include "qcom-msm8226-samsung-matisse-common.dtsi"
+>> +
+>> +/ {
+>> +	model = "Samsung Galaxy Tab 4 10.1 LTE";
+>> +	compatible = "samsung,matisselte", "qcom,msm8926", "qcom,msm8226";
+>> +	chassis-type = "tablet";
+>> +};
+>> +
+>> +&pm8226_l3 {
+>> +	regulator-max-microvolt = <1350000>;
+>> +};
+>> +
+>> +&pm8226_s4 {
+>> +	regulator-max-microvolt = <2200000>;
+>> +};
+>> +
+>> +&reg_tsp_3p3v {
+>> +	gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
+>> +};
+>> +
+>> +&sdhc_2 {
+>> +	/* SD card fails to probe with error -110 */
+>> +	status = "disabled";
+> Can you give us some logs?
 
-What makes us suppose at probe that it must be a console?
+I tested it again just now, and it worked without issues. Maybe I used a 
+defective SD card to test it or hadn't inserted it properly. I'll send 
+another revision fixing this.
 
-I won't die on a hill for this topic; we'll go the way you prefer!
+> Konrad
 
-Regards,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Stefan
