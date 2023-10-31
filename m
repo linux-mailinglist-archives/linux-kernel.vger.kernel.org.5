@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D926F7DD203
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A907DD1CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345501AbjJaQcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S1346253AbjJaQcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345650AbjJaQcH (ORCPT
+        with ESMTP id S1345827AbjJaQcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Oct 2023 12:32:07 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD35F1;
-        Tue, 31 Oct 2023 09:31:42 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512D911B;
+        Tue, 31 Oct 2023 09:31:43 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:c562:2ef4:80c0:92f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DC8B066073C3;
-        Tue, 31 Oct 2023 16:31:40 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 504AF66073C5;
+        Tue, 31 Oct 2023 16:31:42 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698769901;
-        bh=/R1pnW8jfIuOE9V1pOiXWbvwVFtKNqZCCdQZpnNVq6E=;
+        s=mail; t=1698769902;
+        bh=o2sVtoPPYvq8hM/qyihWIqN4hasDvFA4zhZmTyTxJEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJdL/D3BN3Iq1rwhxAMP52DsF7g6nqTXEX6MidFeQ7YvF7KnXRfyRkTnbqFCnxr75
-         5syvNy5QSP6wFmFjBCRBNmJPgB+N49Z6nKVKACwOU9DxuHsDgd4VEAM09Cz+F6mP/K
-         8eBHU0Or/egtSXtSKUv8H/88FvwGHiTkcHK7IrUCzSitmK/HO23ZAQc170Dvr9HmMf
-         8bUDKZmiO9DCvI6B2LmlKRuEkTLK4jeXX2R+VxnX55VaOXYd1CobEeVlw0H5EwUhDL
-         cKBML90kYwHJ9VatjqYDTRGlp4kcvx6JTRx5QmfeIu7B6mbDahp9YHqQ9RPVRHdYr6
-         jVQzv95iy65EQ==
+        b=BcgGAMQCAd2SKRZWEVGqstcDhFsNkTEZCc+2A9vHHwhpV3vLPw/xsK+O2kOh0FWkq
+         BKFcCPblJtIOJ3CJKYgO5babpuggAMFjyFtiod0SbyIRyxAuds13usLyWbCqTZtrlL
+         QFMWtDt7w4+3Lh8erPtgWMV0ysfNkhjnyZ+cLQ6ADJD1G83uc8P6FQFQRkPITf2iWh
+         2VE1bFbG548bted2Es4DmC8th/f1sN+kePa3sZFK0fycpKZSYGdgRxyqtHWQZxsUKX
+         iaQ+ACsXekZqvVVv1pr1zUBshMmJ1RATK0IPDIMTPTPFIcDHZn0UsmKsMLRSgouAk3
+         EymbLhbNz1IwQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v14 18/56] media: dvb-core: Use vb2_get_buffer() instead of directly access to buffers array
-Date:   Tue, 31 Oct 2023 17:30:26 +0100
-Message-Id: <20231031163104.112469-19-benjamin.gaignard@collabora.com>
+Subject: [PATCH v14 19/56] media: dvb-core: Do not initialize twice queue num_buffer field
+Date:   Tue, 31 Oct 2023 17:30:27 +0100
+Message-Id: <20231031163104.112469-20-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
 References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
@@ -60,55 +60,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vb2_get_buffer() instead of direct access to the vb2_queue bufs array.
-This allows us to change the type of the bufs in the future.
-After each call to vb2_get_buffer() we need to be sure that we get
-a valid pointer so check the return value of all of them.
+The above memset already zeroed all the ctx fields, it is useless
+to do it here again.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/dvb-core/dvb_vb2.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/media/dvb-core/dvb_vb2.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/media/dvb-core/dvb_vb2.c b/drivers/media/dvb-core/dvb_vb2.c
-index b322ef179f05..3a966fdf814c 100644
+index 3a966fdf814c..a731b755a0b9 100644
 --- a/drivers/media/dvb-core/dvb_vb2.c
 +++ b/drivers/media/dvb-core/dvb_vb2.c
-@@ -355,12 +355,13 @@ int dvb_vb2_reqbufs(struct dvb_vb2_ctx *ctx, struct dmx_requestbuffers *req)
- int dvb_vb2_querybuf(struct dvb_vb2_ctx *ctx, struct dmx_buffer *b)
- {
- 	struct vb2_queue *q = &ctx->vb_q;
-+	struct vb2_buffer *vb2 = vb2_get_buffer(q, b->index);
- 
--	if (b->index >= q->num_buffers) {
--		dprintk(1, "[%s] buffer index out of range\n", ctx->name);
-+	if (!vb2) {
-+		dprintk(1, "[%s] invalid buffer index\n", ctx->name);
- 		return -EINVAL;
- 	}
--	vb2_core_querybuf(&ctx->vb_q, q->bufs[b->index], b);
-+	vb2_core_querybuf(&ctx->vb_q, vb2, b);
- 	dprintk(3, "[%s] index=%d\n", ctx->name, b->index);
- 	return 0;
- }
-@@ -385,13 +386,14 @@ int dvb_vb2_expbuf(struct dvb_vb2_ctx *ctx, struct dmx_exportbuffer *exp)
- int dvb_vb2_qbuf(struct dvb_vb2_ctx *ctx, struct dmx_buffer *b)
- {
- 	struct vb2_queue *q = &ctx->vb_q;
-+	struct vb2_buffer *vb2 = vb2_get_buffer(q, b->index);
- 	int ret;
- 
--	if (b->index >= q->num_buffers) {
--		dprintk(1, "[%s] buffer index out of range\n", ctx->name);
-+	if (!vb2) {
-+		dprintk(1, "[%s] invalid buffer index\n", ctx->name);
- 		return -EINVAL;
- 	}
--	ret = vb2_core_qbuf(&ctx->vb_q, q->bufs[b->index], b, NULL);
-+	ret = vb2_core_qbuf(&ctx->vb_q, vb2, b, NULL);
+@@ -177,7 +177,6 @@ int dvb_vb2_init(struct dvb_vb2_ctx *ctx, const char *name, int nonblocking)
+ 	q->ops = &dvb_vb2_qops;
+ 	q->mem_ops = &vb2_vmalloc_memops;
+ 	q->buf_ops = &dvb_vb2_buf_ops;
+-	q->num_buffers = 0;
+ 	ret = vb2_core_queue_init(q);
  	if (ret) {
- 		dprintk(1, "[%s] index=%d errno=%d\n", ctx->name,
- 			b->index, ret);
+ 		ctx->state = DVB_VB2_STATE_NONE;
 -- 
 2.39.2
 
