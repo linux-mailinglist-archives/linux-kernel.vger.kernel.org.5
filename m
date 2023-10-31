@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3EE7DD82B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4AB7DD828
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346498AbjJaWVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
+        id S1346450AbjJaWUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346453AbjJaWVB (ORCPT
+        with ESMTP id S1344917AbjJaWUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:21:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E6C103
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698790858; x=1730326858;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=osGCNnHSWoccgR6iWXJsiQk+I62shHuLwIhpqQAxvqQ=;
-  b=D+kXruUmlsjUoWvyvOmVbepXB5vXJP0lUEWPRUbW7WmBlvePbxhLouZU
-   t2b12/yupoeudK4hWJgOAO/mtLXZGwDfIGdZympg1AHHraW2oUu3g5/6l
-   sAw8x3APpxYq6LzhjAl+J1mi/rxZ2K3elojH4F78kFvcWk9D60XhqkmHn
-   cX0XjoQvPR6DkFHvPYWkzPP7aO1k4lIZlbxLKxy0Ey502SKPjtlQ4e8+E
-   +R7fk8MffEQuncFCMdUErVYF8+FXUpuTdrtSRp4UIafGu6D5rhF/DK53+
-   P53W8u+neK02/MCv5it8TFPUecNsFXPIGAGBS7evQOlTEcKZBSjwx2DBC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="454854290"
-X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
-   d="scan'208";a="454854290"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 15:20:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="831191463"
-X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
-   d="scan'208";a="831191463"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Oct 2023 15:20:56 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qxx6U-0000Q7-04;
-        Tue, 31 Oct 2023 22:20:54 +0000
-Date:   Wed, 1 Nov 2023 06:20:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades
- to integer
-Message-ID: <202311010654.LEo7oBW4-lkp@intel.com>
+        Tue, 31 Oct 2023 18:20:47 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AC2F3;
+        Tue, 31 Oct 2023 15:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=NfaUNK9Gnj3jV65G++Jz1u69ma76y4R62RU6zrUykfs=; b=B3fP9cX5+GEozlK4l6bigX6CuZ
+        lT42tJF+EPt9WJw7oBh4z+EYjqV7oH36njpu2YEbN9FbWoiy7sA3lDs8maIXRAukKSxNyCYOOrUwV
+        4geNMJlQWeM7PXdUsBgxX27DIxZIVyRgbxq5FfwS2KPJMik5q0mqRLzB5sO3FaELAgjQCpSMxTx2f
+        geSMoqnlkcrGbIwXXdT7cawzaVuTRqk9bronV7WiEnh1bcRvMIrB4xFkeoCZU63WVcK2583hlOt9g
+        DCgSPdOXP9nEh9nNtm9Zz7jZTI+Q+1//WfCZHt2lNGq0k7Yv/GnKA1M/imfWIfxOhgRatcCVlCnz/
+        shy3DGWg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qxx60-000N13-Lj; Tue, 31 Oct 2023 23:20:24 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qxx5z-000GcY-Rd; Tue, 31 Oct 2023 23:20:23 +0100
+Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Youlun Zhang <zhangyoulun@bytedance.com>
+References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
+ <20231027190254.GA88444@n191-129-154.byted.org>
+ <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+ <20231028231135.GA2236124@n191-129-154.byted.org>
+ <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
+ <20231031125348.70fc975e@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6d5cb0ef-fabc-7ca3-94b2-5b1925a6805f@iogearbox.net>
+Date:   Tue, 31 Oct 2023 23:20:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231031125348.70fc975e@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27078/Tue Oct 31 08:41:25 2023)
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5a6a09e97199d6600d31383055f9d43fbbcbe86f
-commit: caf1aeaffc3b09649a56769e559333ae2c4f1802 eventpoll: add EPOLL_URING_WAKE poll wakeup flag
-date:   11 months ago
-config: x86_64-randconfig-r031-20230909 (https://download.01.org/0day-ci/archive/20231101/202311010654.LEo7oBW4-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311010654.LEo7oBW4-lkp@intel.com/reproduce)
+On 10/31/23 8:53 PM, Jakub Kicinski wrote:
+> On Mon, 30 Oct 2023 15:19:26 +0100 Daniel Borkmann wrote:
+>>> Since I didn't want to update host-veth's TX counters.  If we
+>>> bpf_redirect_peer()ed a packet from NIC TC ingress to Pod-veth TC ingress,
+>>> I think it means we've bypassed host-veth TX?
+>>
+>> Yes. So the idea is to transition to tstats replace the location where
+>> we used to bump lstats with tstat's tx counter, and only the peer redirect
+>> would bump the rx counter.. then upon stats traversal we fold the latter into
+>> the rx stats which was populated by the opposite's tx counters. Makes sense.
+>>
+>> OT: does cadvisor run inside the Pod to collect the device stats? Just
+>> curious how it gathers them.
+> 
+> Somewhat related - where does netkit count stats?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311010654.LEo7oBW4-lkp@intel.com/
+Yeap, it needs it as well, I have a local branch here where I pushed all
+of it - coming out soon; I was planning to add some selftests in addition
+till end of this week:
 
-sparse warnings: (new ones prefixed by >>)
->> fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades to integer
->> fs/eventpoll.c:526:9: sparse: sparse: cast to restricted __poll_t
->> fs/eventpoll.c:1213:53: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int pollflags @@     got restricted __poll_t @@
-   fs/eventpoll.c:1213:53: sparse:     expected unsigned int pollflags
-   fs/eventpoll.c:1213:53: sparse:     got restricted __poll_t
+https://github.com/cilium/linux/commits/pr/ndo_peer
 
-vim +526 fs/eventpoll.c
+>>>> Definitely no new stats ndo resp indirect call in fast path.
+>>>
+>>> Yeah, I think I'll put a comment saying that all devices that support
+>>> BPF_F_PEER must use tstats (or must use lstats), then.
+>>
+>> sgtm.
+> 
+> Is comment good enough? Can we try to do something more robust?
+> Move the allocation of stats into the core at registration based
+> on some u8 assigned in the driver? (I haven't looked at the code TBH)
+Hm, not sure. One thing that comes to mind is lazy one-time allocation
+like in case of netdev_core_stats_inc(), so whenever one of the helpers
+like dev_sw_netstats_{rx,tx}_add() are called and dev->tstats are still
+NULL, the core knows about the driver's intent, but tbh that doesn't
+feel overly clean and in case of netdev_core_stats_inc() it's more in
+the exception case rather than fast-path.
 
-   493	
-   494	static void ep_poll_safewake(struct eventpoll *ep, struct epitem *epi,
-   495				     unsigned pollflags)
-   496	{
-   497		struct eventpoll *ep_src;
-   498		unsigned long flags;
-   499		u8 nests = 0;
-   500	
-   501		/*
-   502		 * To set the subclass or nesting level for spin_lock_irqsave_nested()
-   503		 * it might be natural to create a per-cpu nest count. However, since
-   504		 * we can recurse on ep->poll_wait.lock, and a non-raw spinlock can
-   505		 * schedule() in the -rt kernel, the per-cpu variable are no longer
-   506		 * protected. Thus, we are introducing a per eventpoll nest field.
-   507		 * If we are not being call from ep_poll_callback(), epi is NULL and
-   508		 * we are at the first level of nesting, 0. Otherwise, we are being
-   509		 * called from ep_poll_callback() and if a previous wakeup source is
-   510		 * not an epoll file itself, we are at depth 1 since the wakeup source
-   511		 * is depth 0. If the wakeup source is a previous epoll file in the
-   512		 * wakeup chain then we use its nests value and record ours as
-   513		 * nests + 1. The previous epoll file nests value is stable since its
-   514		 * already holding its own poll_wait.lock.
-   515		 */
-   516		if (epi) {
-   517			if ((is_file_epoll(epi->ffd.file))) {
-   518				ep_src = epi->ffd.file->private_data;
-   519				nests = ep_src->nests;
-   520			} else {
-   521				nests = 1;
-   522			}
-   523		}
-   524		spin_lock_irqsave_nested(&ep->poll_wait.lock, flags, nests);
-   525		ep->nests = nests + 1;
- > 526		wake_up_locked_poll(&ep->poll_wait, EPOLLIN | pollflags);
-   527		ep->nests = 0;
-   528		spin_unlock_irqrestore(&ep->poll_wait.lock, flags);
-   529	}
-   530	
+Other option could be to have two small helpers in the core which then
+set a flag as well:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+static inline int netdev_tstats_alloc(struct net_device *dev)
+{
+	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+	if (!dev->tstats)
+		return -ENOMEM;
+	dev->priv_flags |= IFF_USES_TSTATS;
+	return 0;
+}
+
+static inline void netdev_tstats_free(struct net_device *dev)
+{
+	free_percpu(dev->tstats);
+}
+
+They can then be used from .ndo_init/uninit - not sure if this would
+be overall nicer.. or just leaving it at the .ndo callback comment for
+the time being until really more users show up (which I doubt tbh).
+
+Thanks,
+Daniel
