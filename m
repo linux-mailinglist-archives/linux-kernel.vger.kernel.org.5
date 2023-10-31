@@ -2,126 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2378F7DCBAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D937DCBB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbjJaLW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S235374AbjJaLYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjJaLWy (ORCPT
+        with ESMTP id S234894AbjJaLYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:22:54 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F2F97;
-        Tue, 31 Oct 2023 04:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Nl4LFqAC2Uv3TVZuzpPEiO7Jkauztt8lcPvawy8/0uQ=; b=Kp6zpNUs6KcfyhFpW5tSRUsQZF
-        WpmYkBuWO1HqYKkZXTDiQ2b0NbeDN7e2SoF5+Em0fB7YOPCZu6LNR8eckskhLN5Q/sWFhbKukYVjD
-        RfAudewliQ3zZcnklKfZMcRcCBSbCR5XnqfHaHH5DoApCCR7Jrikh5vboSXnWZ0WanTZXY2ccUOrk
-        arAIQH7DAPcNOj6Y6fbCahsq1+qEd1pmoog3i1+4mfQWywrqROclHVFdWmqMvwSgA6Vam5nZ6Z/Fq
-        h2+1U7N2/43lWSO1TczzWjHFmQKscUGAgcqJHvsTwJLJeGyYMzEtF0CwA3rRRC+jpciiUl0yTNQLz
-        BcOpjwoA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35478)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qxmpZ-0002by-2c;
-        Tue, 31 Oct 2023 11:22:45 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qxmpa-00053o-OJ; Tue, 31 Oct 2023 11:22:46 +0000
-Date:   Tue, 31 Oct 2023 11:22:46 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc:     Hugo Villeneuve <hugo@hugovil.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
- 7 or 8 in _get_options
-Message-ID: <ZUDjhpQKgUgqVeBh@shell.armlinux.org.uk>
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
- <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
- <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
- <CWMITJ9VX9IP.1WPQCX981VRDE@tleb-bootlin-xps13-01>
- <ZUDS5UpWlo+DUZc4@shell.armlinux.org.uk>
- <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
+        Tue, 31 Oct 2023 07:24:18 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D7697;
+        Tue, 31 Oct 2023 04:24:16 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V7TvKx004769;
+        Tue, 31 Oct 2023 04:23:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=jxcYiC94VBU9IMPI8prqBSJJjwC0PAd9u+mtlkrs+Fs=;
+ b=as3m0Wv8gTcoTk/1kNywYxQcXaflIzxeYOGl1cY+uY6ApsXCTNYCWKD/WSFNVSE8/Wsh
+ xHDG4xafLZt9z/ifvqamOaQnc6icyNS1wNi9qUs895wZ3NlsaigJLzXDD+ZmqEo3FsEd
+ Dwi/pyq1qmuM+7YisCuCH7H5QzUf8gE7tesFl4PpWAIPOLcuLsUkhRFb8E3VMHPtHCdM
+ q5GCRPs1Pf73lnX5zkJfKz4/R0R0faDkEFkI7oRB/bHzSyKcEepC6Y9F0lEHPVBy9m3u
+ GZL8La8zZSDL6/gG/mhj2e8xb3T0k6+GmR44tk5ONfQFXqWWSHkmlRHv3zOjvGrLS0HL CQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3u11tpa8bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 04:23:53 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 31 Oct
+ 2023 04:23:51 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 31 Oct 2023 04:23:51 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id DCF723F70C2;
+        Tue, 31 Oct 2023 04:23:46 -0700 (PDT)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net PATCH] octeontx2-pf: Free pending and dropped SQEs
+Date:   Tue, 31 Oct 2023 16:53:45 +0530
+Message-ID: <20231031112345.25291-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CWMKPFZ9LOVD.2756QU9AP6U3W@tleb-bootlin-xps13-01>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: U1Q4Db0ML9vmH-0MZvETkm2VQxOMh4dZ
+X-Proofpoint-ORIG-GUID: U1Q4Db0ML9vmH-0MZvETkm2VQxOMh4dZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_01,2023-10-31_03,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 12:04:11PM +0100, Théo Lebrun wrote:
-> Hello,
-> 
-> On Tue Oct 31, 2023 at 11:11 AM CET, Russell King (Oracle) wrote:
-> > There is no point in supporting 5 or 6 bits for console usage. Think
-> > about it. What values are going to be sent over the console? It'll be
-> > ASCII, which requires at _least_ 7-bit. 6-bit would turn alpha
-> > characters into control characters, punctuation and numbers. 5-bit
-> > would be all control characters.
-> >
-> > So there's no point trying to do anything with 5 or 6 bits per byte,
-> > and I decided we might as well take that as an error (or maybe a
-> > case that the hardware has not been setup) and default to 8 bits per
-> > byte.
-> 
-> I see your point. Two things come to mind:
-> 
->  - I added this parsing of 5/6 bits to be symmetrical with
->    pl011_set_termios that handles 5/6 properly. Should pl011_set_termios
->    be modified then?
+On interface down, the pending SQEs in the NIX get dropped
+or drained out during SMQ flush. But skb's pointed by these
+SQEs never get free or updated to the stack as respective CQE
+never get added.
+This patch fixes the issue by freeing all valid skb's in SQ SG list.
 
-Why should it? Note that I said above about _console_ usage which is
-what you were referring to - the early code that sets up the console
-by either reading the current settings (so that we can transparently
-use the UART when its handed over already setup by a boot loader).
+Fixes: b1bc8457e9d0 ("octeontx2-pf: Cleanup all receive buffers in SG descriptor")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+---
+ .../marvell/octeontx2/nic/otx2_common.c       | 15 +++----
+ .../marvell/octeontx2/nic/otx2_common.h       |  1 +
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  1 +
+ .../marvell/octeontx2/nic/otx2_txrx.c         | 42 +++++++++++++++++++
+ 4 files changed, 49 insertions(+), 10 deletions(-)
 
-This is completely different to what happens once the kernel is running.
-Userspace might very well have a reason to set 5 or 6 bits if it wants
-to communicate with a device that uses those sizes.
-
-However, such a device won't be a console for the reasons I outlined
-above (it will truncate the ASCII characters turning console messages
-into garbage.)
-
-> If you decide to keep the current behavior, I'd be down to adding a
-> comment to explicit this choice in pl011_console_get_options.
-
-Well, honestly I don't think it needs a comment _if_ one thinks about
-what these sizes mean for what is supposed to be a console displaying
-ASCII characters. It feels to me like pointing out the obvious, and
-would be on the level of teaching people how to suck eggs... but then
-again, maybe there are times when people need to be taught how to
-suck eggs...
-
-So yes, add a comment if you think it's a good idea, but should that
-comment be replicated in almost every driver or should it be documented
-elsewhere?
-
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 1a42bfded872..7ca6941ea0b9 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -818,7 +818,6 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
+ 	int qidx, sqe_tail, sqe_head;
+ 	struct otx2_snd_queue *sq;
+ 	u64 incr, *ptr, val;
+-	int timeout = 1000;
+ 
+ 	ptr = (u64 *)otx2_get_regaddr(pfvf, NIX_LF_SQ_OP_STATUS);
+ 	for (qidx = 0; qidx < otx2_get_total_tx_queues(pfvf); qidx++) {
+@@ -827,15 +826,11 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
+ 			continue;
+ 
+ 		incr = (u64)qidx << 32;
+-		while (timeout) {
+-			val = otx2_atomic64_add(incr, ptr);
+-			sqe_head = (val >> 20) & 0x3F;
+-			sqe_tail = (val >> 28) & 0x3F;
+-			if (sqe_head == sqe_tail)
+-				break;
+-			usleep_range(1, 3);
+-			timeout--;
+-		}
++		val = otx2_atomic64_add(incr, ptr);
++		sqe_head = (val >> 20) & 0x3F;
++		sqe_tail = (val >> 28) & 0x3F;
++		if (sqe_head != sqe_tail)
++			usleep_range(50, 60);
+ 	}
+ }
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index c04a8ee53a82..e7c69b57147e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -977,6 +977,7 @@ int otx2_txschq_config(struct otx2_nic *pfvf, int lvl, int prio, bool pfc_en);
+ int otx2_txsch_alloc(struct otx2_nic *pfvf);
+ void otx2_txschq_stop(struct otx2_nic *pfvf);
+ void otx2_txschq_free_one(struct otx2_nic *pfvf, u16 lvl, u16 schq);
++void otx2_free_pending_sqe(struct otx2_nic *pfvf);
+ void otx2_sqb_flush(struct otx2_nic *pfvf);
+ int otx2_alloc_rbuf(struct otx2_nic *pfvf, struct otx2_pool *pool,
+ 		    dma_addr_t *dma);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index 6daf4d58c25d..8e82db6092af 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1589,6 +1589,7 @@ static void otx2_free_hw_resources(struct otx2_nic *pf)
+ 		else
+ 			otx2_cleanup_tx_cqes(pf, cq);
+ 	}
++	otx2_free_pending_sqe(pf);
+ 
+ 	otx2_free_sq_res(pf);
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index 53b2a4ef5298..6ee15f3c25ed 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -1247,9 +1247,11 @@ void otx2_cleanup_rx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq, int q
+ 
+ void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
+ {
++	int tx_pkts = 0, tx_bytes = 0;
+ 	struct sk_buff *skb = NULL;
+ 	struct otx2_snd_queue *sq;
+ 	struct nix_cqe_tx_s *cqe;
++	struct netdev_queue *txq;
+ 	int processed_cqe = 0;
+ 	struct sg_list *sg;
+ 	int qidx;
+@@ -1270,12 +1272,20 @@ void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
+ 		sg = &sq->sg[cqe->comp.sqe_id];
+ 		skb = (struct sk_buff *)sg->skb;
+ 		if (skb) {
++			tx_bytes += skb->len;
++			tx_pkts++;
+ 			otx2_dma_unmap_skb_frags(pfvf, sg);
+ 			dev_kfree_skb_any(skb);
+ 			sg->skb = (u64)NULL;
+ 		}
+ 	}
+ 
++	if (likely(tx_pkts)) {
++		if (qidx >= pfvf->hw.tx_queues)
++			qidx -= pfvf->hw.xdp_queues;
++		txq = netdev_get_tx_queue(pfvf->netdev, qidx);
++		netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
++	}
+ 	/* Free CQEs to HW */
+ 	otx2_write64(pfvf, NIX_LF_CQ_OP_DOOR,
+ 		     ((u64)cq->cq_idx << 32) | processed_cqe);
+@@ -1302,6 +1312,38 @@ int otx2_rxtx_enable(struct otx2_nic *pfvf, bool enable)
+ 	return err;
+ }
+ 
++void otx2_free_pending_sqe(struct otx2_nic *pfvf)
++{
++	int tx_pkts = 0, tx_bytes = 0;
++	struct sk_buff *skb = NULL;
++	struct otx2_snd_queue *sq;
++	struct netdev_queue *txq;
++	struct sg_list *sg;
++	int sq_idx, sqe;
++
++	for (sq_idx = 0; sq_idx < pfvf->hw.tx_queues; sq_idx++) {
++		sq = &pfvf->qset.sq[sq_idx];
++		for (sqe = 0; sqe < sq->sqe_cnt; sqe++) {
++			sg = &sq->sg[sqe];
++			skb = (struct sk_buff *)sg->skb;
++			if (skb) {
++				tx_bytes += skb->len;
++				tx_pkts++;
++				otx2_dma_unmap_skb_frags(pfvf, sg);
++				dev_kfree_skb_any(skb);
++				sg->skb = (u64)NULL;
++			}
++		}
++
++		if (!tx_pkts)
++			continue;
++		txq = netdev_get_tx_queue(pfvf->netdev, sq_idx);
++		netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
++		tx_pkts = 0;
++		tx_bytes = 0;
++	}
++}
++
+ static void otx2_xdp_sqe_add_sg(struct otx2_snd_queue *sq, u64 dma_addr,
+ 				int len, int *offset)
+ {
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.25.1
+
