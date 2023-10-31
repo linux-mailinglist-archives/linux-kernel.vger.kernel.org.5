@@ -2,134 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A937DC899
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D537DC89E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235007AbjJaIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 04:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S234968AbjJaIr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjJaIpi (ORCPT
+        with ESMTP id S229888AbjJaIrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 04:45:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53C4C1;
-        Tue, 31 Oct 2023 01:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698741935; x=1730277935;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9L4mxlspwhWbHo4tAtmrYB/SxGPjbl1D/9kB+dCYtRM=;
-  b=f7SwnrajLiDYhVgVqd/Z3suhTRlZ3nIF+hJ70qUbvBnPEqYHCVn7wOMn
-   4DkO3vPzr5umIpWAwQHtGp7t3X3S7sKkLBovJzUIuORsi6wa7uEnQctdN
-   xUTbdPg+FmRc9RYXlfbEwMwX6wLv8TmJ4V4ft3AxRwGlgIqiSrLmo+qD8
-   SgQXhYePnrBe6ZtY+71Dffk25CpBrVqMAC4VojmuU4QDnZOhuYUU7QBo9
-   dVOhdp91Jqe+1Yk4EE7gwnTG1Wds613dz/O5coOAcH3suHH5QK29WiGva
-   q1ewAOX79CNI/9RbilE0fVT/G+0VXSRyVASl+jFuEoO02aj2UeN1fiQma
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="419352215"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="419352215"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:45:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="934037016"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="934037016"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:45:33 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 302C411F894;
-        Tue, 31 Oct 2023 10:45:30 +0200 (EET)
-Date:   Tue, 31 Oct 2023 08:45:30 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] ACPI: scan: MIPI DiSco for Imaging support
-Message-ID: <ZUC-qvk_c3SXIhHC@kekkonen.localdomain>
-References: <2187487.irdbgypaU6@kreacher>
+        Tue, 31 Oct 2023 04:47:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2CCDA
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698742020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=sCDwEeF9ciZSnQbhCdM1/zBzOj7Acze84Lk3y+xcTEM=;
+        b=AOQp/qoPKTpjxo05lnK+7N3uYIhL3DNpPVYqQSiIgCr7t6WKwqbbVDrkEwtovZ34rUxL/5
+        LLrz4bz/yHBwPbq4Nw89eUx2jNWvjkrtoKOC8uOEEsKmfWudneEAHLYb/0G+32Ak5TI75T
+        94mXiHOTO7Hs6UwRpZm+lY517KK1gZg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-578-CaO65-NAN7Wx3K6A9qCgrw-1; Tue, 31 Oct 2023 04:46:58 -0400
+X-MC-Unique: CaO65-NAN7Wx3K6A9qCgrw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-408597a1ae3so39530545e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:46:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698742017; x=1699346817;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sCDwEeF9ciZSnQbhCdM1/zBzOj7Acze84Lk3y+xcTEM=;
+        b=uMDgxTiwMzBIrThkDoi/tQZgey7+l3fb9srQBWIwBQnMSCTH195caxS4tGEA+gr+rj
+         juVqPcLmnaoHrBuC/3GPmUQVmvtqCMygV0VJutg/o4oreHJLYJAcg5SCEGMM3QE4na9D
+         gMf8XzwFC3/TqcVFDKpwwUetOOh9DRcnwTcUwJowfc4q0IAhF+BcJghNNtWWeLV6sEMy
+         gynQEzsmp2tTxUo0JusYxt+IKMrBkXFYaX3Q5hFAP6KOnELd3NG/wnmk43ZxnlXfabFF
+         waKybboSmI7lzxB2UvA+S2jlN3ekLwKjJkf7n3xtgJMW6eAjI2F2O1mzCM07ff0ESAF+
+         okZA==
+X-Gm-Message-State: AOJu0YwThTzyhMBxC/oGem61kQXxmiIesz14b/Ki5/I6cbl+HOwKcB41
+        AWwJ2xqQ39+vr80+t43Cd0k2d2zx88Db9cbSLvZWJfOdRybaGlnNlgyvmr6/D60gZf0AtS1fJJn
+        b3mMDb4raMKtRa7NBV6GR2fXC
+X-Received: by 2002:a05:600c:468e:b0:3fe:e7b2:c97f with SMTP id p14-20020a05600c468e00b003fee7b2c97fmr9371640wmo.36.1698742017430;
+        Tue, 31 Oct 2023 01:46:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgE83XUkIDrRqqjUNlxdzyJJ3ixVUG9nOhnR8LDm1jWWRh2LM2ZNUxK/xCugIPRrsyxHa98Q==
+X-Received: by 2002:a05:600c:468e:b0:3fe:e7b2:c97f with SMTP id p14-20020a05600c468e00b003fee7b2c97fmr9371615wmo.36.1698742016998;
+        Tue, 31 Oct 2023 01:46:56 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c707:8f00:43b0:1107:57d2:28ee? (p200300cbc7078f0043b0110757d228ee.dip0.t-ipconnect.de. [2003:cb:c707:8f00:43b0:1107:57d2:28ee])
+        by smtp.gmail.com with ESMTPSA id v19-20020a05600c471300b0040303a9965asm1093169wmo.40.2023.10.31.01.46.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 01:46:56 -0700 (PDT)
+Message-ID: <9e73d6af-47a8-43bf-8ffa-9525bc8c747b@redhat.com>
+Date:   Tue, 31 Oct 2023 09:46:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2187487.irdbgypaU6@kreacher>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 0/3] Reduce TLB flushes under some specific conditions
+Content-Language: en-US
+To:     Byungchul Park <byungchul@sk.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <08c82a91-87d1-42c7-93c4-4028f3725340@intel.com>
+ <20231030225548.GB900@system.software.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231030225548.GB900@system.software.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On 30.10.23 23:55, Byungchul Park wrote:
+> On Mon, Oct 30, 2023 at 10:55:07AM -0700, Dave Hansen wrote:
+>> On 10/30/23 00:25, Byungchul Park wrote:
+>>> I'm suggesting a mechanism to reduce TLB flushes by keeping source and
+>>> destination of folios participated in the migrations until all TLB
+>>> flushes required are done, only if those folios are not mapped with
+>>> write permission PTE entries at all. I worked Based on v6.6-rc5.
+>>
+>> There's a lot of common overhead here, on top of the complexity in general:
+>>
+>>   * A new page flag
+>>   * A new cpumask_t in task_struct
+>>   * A new zone list
+>>   * Extra (temporary) memory consumption
+>>
+>> and the benefits are ... "performance improved a little bit" on one
+>> workload.  That doesn't seem like a good overall tradeoff to me.
+>>
+>> There will certainly be workloads that, before this patch, would have
+>> little or no memory pressure and after this patch would need to do reclaim.
+> 
+> 'if (gain - cost) > 0 ?'" is a difficult problem. I think the followings
+> are already big benefit in general:
+> 
+> 	1. big reduction of IPIs #
+> 	2. big reduction of TLB flushes #
+> 	3. big reduction of TLB misses #
+> 
+> Of course, I or we need to keep trying to see a better number in
+> end-to-end performance.
 
-On Fri, Oct 20, 2023 at 04:33:56PM +0200, Rafael J. Wysocki wrote:
-> Hi Folks,
-> 
-> This is a new revision of
-> 
-> https://lore.kernel.org/linux-acpi/13276375.uLZWGnKmhe@kreacher/
-> 
-> which was reported to have issues and it took time to revisit it.
-> 
-> > The main points from the original cover letter are still valid:
-> > 
-> > The general idea is the same - CSI-2 resource descriptors, introduced in
-> > ACPI 6.4 and defined by
-> > 
-> > https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#camera-serial-i
-> > nterface-csi-2-connection-resource-descriptor
-> > 
-> > are found and used for creating a set of software nodes that represent the
-> > CSI-2 connection graph.
-> > 
-> > These software nodes need to be available before any scan handlers or ACPI
-> > drivers are bound to any struct acpi_device objects, so all of that is done
-> > at the early stage of ACPI device enumeration, but unnecessary ACPI
-> > namespace walks are avoided.
-> > 
-> > The CSI-2 software nodes are populated with data extracted from the CSI-2
-> > resource descriptors themselves and from device properties defined by the
-> > MIPI DiSco for Imaging specification (see
-> > https://www.mipi.org/specifications/mipi-disco-imaging).
-> > 
-> > Patches [4,6/6] come from the original series directly, but the other
-> > patches have been changes substantially, so I've decided to re-start patch
-> > series versioning from scratch.
-> 
-> The v2 addresses at least 3 issues found in the v1 by code inspection:
-> 
-> * A port_count field incrementation was missing in acpi_mipi_scan_crs_csi2(),
->   so its value for all of the devices having CSI2 resources in _CRS was always
->   1 (and it should be equal to the number of valid CSI2 connection resources).
-> 
-> * Some acpi_mipi_crs_csi2_list members could be freed prematurely, so they were
->   inaccessible when extract_crs_csi2_conn_info() attempted to access them.
-> 
-> * A check of remote_swnodes() against NULL was missing, which could result in
->   a crash in a case when the swnodes memory could not be allocated for some
->   acpi_mipi_crs_csi2_list entries.
-> 
-> Apart from that, it rearranges the code somewhat to make it easier to follow
-> and to avoid premature freeing of memory in it in general and the new file
-> added by it is now called mipi-di.c (instead of mipi-disco-imaging.c) for
-> compactness.
-> 
-> The series is based on current linux-next.
+You'll have to show convincing, real numbers, for use cases people care 
+about, to even motivate why people should consider looking at this in 
+more detail.
 
-Thanks for the update. I've tested this and I can confirm it works, to the
-extent implemented in the set. The rest can be implemented on top
-(mainly replicating properties).
+If you can't measure it and only speculate, nobody cares.
 
-I'll comment on a few patches in the set.
-
-Do you prefer to make the changes or shall I? I presume them to be fairly
-minor.
+The numbers you provided were so far not convincing, and it's 
+questionable if the single benchmark you are presenting represents a 
+reasonable real workload that ends up improving *real* workloads. A 
+better description of the whole benchmark and why it represents a real 
+workload behavior might help.
 
 -- 
-Regards,
+Cheers,
 
-Sakari Ailus
+David / dhildenb
+
