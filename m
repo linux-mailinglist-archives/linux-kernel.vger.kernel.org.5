@@ -2,228 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61187DCDB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D527DCDB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344483AbjJaNUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        id S1344527AbjJaNVp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 09:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344449AbjJaNUr (ORCPT
+        with ESMTP id S1344449AbjJaNVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:20:47 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2E6DE
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:20:44 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E522A66073A3;
-        Tue, 31 Oct 2023 13:20:42 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698758443;
-        bh=QnmE4Ern4NeUDthiCkxZFXVHc4ml/cBbNmjxDIZdl88=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Lgooypwv8KNm90QUPD80duJntBaA4qLPjk3zwJsPHnOspk8mQebRCI32elJg3MUeI
-         VmD1Y+5jrFqjqluFsbQVnasJV8+y5GmBsV1mEPLpppIK5wGqXT35j3iHu23pqHi0sb
-         0CINcilVYMGw4rIYzSUWKekEPVB+9++S0By2lNEYOqaESRIgWC2OTfWYt3qhNWeF6X
-         NE2ZbMEYOrUoS6sNPU0BwWW9MK9K7qPhL4BWqE7l2fYSWrZ2jkDpbcRVCh5jhB8Rws
-         2KR+5lmVBRqTa0r1V2nn5Uji9/VBsEmujmJUhn9aR2+nrhjKEum+tdaHlqJBsPnRz9
-         l1MeLNzfnuVHw==
-Message-ID: <38b62659-dcef-4b49-9b4c-e055ed9a215a@collabora.com>
-Date:   Tue, 31 Oct 2023 14:20:39 +0100
+        Tue, 31 Oct 2023 09:21:44 -0400
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FACFDE;
+        Tue, 31 Oct 2023 06:21:42 -0700 (PDT)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5872c652a66so21147eaf.1;
+        Tue, 31 Oct 2023 06:21:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698758501; x=1699363301;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y+r90o1CDouOKGHO6NRz2WLKIow4NkDrRiEkM6bVHFk=;
+        b=Pz8rljtPlNL1V5GEtuv9BAqT24kpYwiPWjWclKMJ+BfXB6dprAJwUW+b4YNgZB+lLo
+         sroGUoZg3ncgahm3JXBMr0TAtpsxL+SOoI6K0pUnZilOAX2ZTNkwsEtSmvDPqQgcc7Lm
+         t9hxgBXEYjpE+wSgEe1bwwSYUsbctkBKKJUftyK7nhcU4UNINpDe57a/V3dV3brq9Usa
+         FJkZvU2knUcFglT+k/VjTmmTk/+WaGwx6SHqwF/rzQmzrf9nhtWoLwcX4LG4Q8UJKInx
+         XDtKuz7j5Ae21snYsKQQ0JNLvRmGRcLTI7sIAz64/6PSxthlL04OQIvV9XC6seOHDcbZ
+         fPZA==
+X-Gm-Message-State: AOJu0YyiENe3QbdnbYOaj0sl5SU/3GdKyhENshx+HypeFw/9hDpvH3GR
+        EtabAZowmbsSXMflygd6ZPWXGY3okhidqpjcbOt4mIhh
+X-Google-Smtp-Source: AGHT+IFtpOgXt3r7OSc5ucl8PMFuCYIhDhsFhXiCDEBbIiin6akd/2vmNz/H7/JvsovKs6MDlIKjFbiZH5tMqwbO8Vo=
+X-Received: by 2002:a4a:dbd8:0:b0:583:ec88:e0 with SMTP id t24-20020a4adbd8000000b00583ec8800e0mr13645973oou.0.1698758501536;
+ Tue, 31 Oct 2023 06:21:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] drm/panfrost: Implement ability to turn on/off GPU
- clocks in suspend
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     boris.brezillon@collabora.com, robh@kernel.org,
-        steven.price@arm.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20231030132257.85379-1-angelogioacchino.delregno@collabora.com>
- <20231030132257.85379-2-angelogioacchino.delregno@collabora.com>
- <CAGXv+5EhRUz6qptSzhzbcq4-qQKDzN5xFtS0WMNUCOH5JSL0Jw@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CAGXv+5EhRUz6qptSzhzbcq4-qQKDzN5xFtS0WMNUCOH5JSL0Jw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <2187487.irdbgypaU6@kreacher> <ZUC-qvk_c3SXIhHC@kekkonen.localdomain>
+In-Reply-To: <ZUC-qvk_c3SXIhHC@kekkonen.localdomain>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 31 Oct 2023 14:21:30 +0100
+Message-ID: <CAJZ5v0jteOR-tY91qUsXUmWvxWYCavUBBxa=zc_a2hN+Udn7pQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] ACPI: scan: MIPI DiSco for Imaging support
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 31/10/23 04:18, Chen-Yu Tsai ha scritto:
-> On Mon, Oct 30, 2023 at 9:23 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
->>
->> Currently, the GPU is being internally powered off for runtime suspend
->> and turned back on for runtime resume through commands sent to it, but
->> note that the GPU doesn't need to be clocked during the poweroff state,
->> hence it is possible to save some power on selected platforms.
->>
->> Add suspend and resume handlers for full system sleep and then add
->> a new panfrost_gpu_pm enumeration and a pm_features variable in the
->> panfrost_compatible structure: BIT(GPU_PM_CLK_DIS) will be used to
->> enable this power saving technique only on SoCs that are able to
->> safely use it.
->>
->> Note that this was implemented only for the system sleep case and not
->> for runtime PM because testing on one of my MediaTek platforms showed
->> issues when turning on and off clocks aggressively (in PM runtime),
->> with the GPU locking up and unable to soft reset, eventually resulting
->> in a full system lockup.
->>
->> Doing this only for full system sleep never showed issues in 3 days
->> of testing by suspending and resuming the system continuously.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/gpu/drm/panfrost/panfrost_device.c | 61 ++++++++++++++++++++--
->>   drivers/gpu/drm/panfrost/panfrost_device.h | 11 ++++
->>   2 files changed, 68 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
->> index 28f7046e1b1a..2022ed76a620 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
->> @@ -403,7 +403,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
->>          panfrost_job_enable_interrupts(pfdev);
->>   }
->>
->> -static int panfrost_device_resume(struct device *dev)
->> +static int panfrost_device_runtime_resume(struct device *dev)
->>   {
->>          struct panfrost_device *pfdev = dev_get_drvdata(dev);
->>
->> @@ -413,7 +413,7 @@ static int panfrost_device_resume(struct device *dev)
->>          return 0;
->>   }
->>
->> -static int panfrost_device_suspend(struct device *dev)
->> +static int panfrost_device_runtime_suspend(struct device *dev)
->>   {
->>          struct panfrost_device *pfdev = dev_get_drvdata(dev);
->>
->> @@ -426,5 +426,58 @@ static int panfrost_device_suspend(struct device *dev)
->>          return 0;
->>   }
->>
->> -EXPORT_GPL_RUNTIME_DEV_PM_OPS(panfrost_pm_ops, panfrost_device_suspend,
->> -                             panfrost_device_resume, NULL);
->> +static int panfrost_device_resume(struct device *dev)
->> +{
->> +       struct panfrost_device *pfdev = dev_get_drvdata(dev);
->> +       int ret;
->> +
->> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
->> +               ret = clk_enable(pfdev->clock);
->> +               if (ret)
->> +                       return ret;
->> +
->> +               if (pfdev->bus_clock) {
->> +                       ret = clk_enable(pfdev->bus_clock);
->> +                       if (ret)
->> +                               goto err_bus_clk;
->> +               }
->> +       }
->> +
->> +       ret = pm_runtime_force_resume(dev);
->> +       if (ret)
->> +               goto err_resume;
->> +
->> +       return 0;
->> +
->> +err_resume:
->> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS) && pfdev->bus_clock)
->> +               clk_disable(pfdev->bus_clock);
->> +err_bus_clk:
->> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS))
->> +               clk_disable(pfdev->clock);
->> +       return ret;
->> +}
->> +
->> +static int panfrost_device_suspend(struct device *dev)
->> +{
->> +       struct panfrost_device *pfdev = dev_get_drvdata(dev);
->> +       int ret;
->> +
->> +       ret = pm_runtime_force_suspend(dev);
->> +       if (ret)
->> +               return ret;
->> +
->> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
->> +               clk_disable(pfdev->clock);
->> +
->> +               if (pfdev->bus_clock)
->> +                       clk_disable(pfdev->bus_clock);
->> +       }
->> +
->> +       return 0;
->> +}
->> +
->> +EXPORT_GPL_DEV_PM_OPS(panfrost_pm_ops) = {
->> +       RUNTIME_PM_OPS(panfrost_device_runtime_suspend, panfrost_device_runtime_resume, NULL)
->> +       SYSTEM_SLEEP_PM_OPS(panfrost_device_suspend, panfrost_device_resume)
->> +};
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
->> index 1ef38f60d5dc..d7f179eb8ea3 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
->> @@ -25,6 +25,14 @@ struct panfrost_perfcnt;
->>   #define NUM_JOB_SLOTS 3
->>   #define MAX_PM_DOMAINS 5
->>
->> +/**
->> + * enum panfrost_gpu_pm - Supported kernel power management features
->> + * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
->> + */
->> +enum panfrost_gpu_pm {
->> +       GPU_PM_CLK_DIS,
->> +};
->> +
->>   struct panfrost_features {
->>          u16 id;
->>          u16 revision;
->> @@ -75,6 +83,9 @@ struct panfrost_compatible {
->>
->>          /* Vendor implementation quirks callback */
->>          void (*vendor_quirk)(struct panfrost_device *pfdev);
->> +
->> +       /* Allowed PM features */
->> +       u8 pm_features;
-> 
-> Nit: I'd just use bitfields. They are easier to set and get without
-> extra macros, and the naming would be self-explanatory. Unless you
-> expect a need to do mask checking (though the compiler might be able
-> to optimize this).
-> 
+Hi Sakari,
 
-I don't expect a need to do mask checking, but I don't expect the opposite either..
-...this could happen in the future, or maybe not, and this becomes a bool, even.
+On Tue, Oct 31, 2023 at 11:33 AM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Rafael,
 
-That's why I went with a u8 :-)
+[cut]
 
-Let's keep it flexible.
+> > The v2 addresses at least 3 issues found in the v1 by code inspection:
+> >
+> > * A port_count field incrementation was missing in acpi_mipi_scan_crs_csi2(),
+> >   so its value for all of the devices having CSI2 resources in _CRS was always
+> >   1 (and it should be equal to the number of valid CSI2 connection resources).
+> >
+> > * Some acpi_mipi_crs_csi2_list members could be freed prematurely, so they were
+> >   inaccessible when extract_crs_csi2_conn_info() attempted to access them.
+> >
+> > * A check of remote_swnodes() against NULL was missing, which could result in
+> >   a crash in a case when the swnodes memory could not be allocated for some
+> >   acpi_mipi_crs_csi2_list entries.
+> >
+> > Apart from that, it rearranges the code somewhat to make it easier to follow
+> > and to avoid premature freeing of memory in it in general and the new file
+> > added by it is now called mipi-di.c (instead of mipi-disco-imaging.c) for
+> > compactness.
+> >
+> > The series is based on current linux-next.
+>
+> Thanks for the update. I've tested this and I can confirm it works, to the
+> extent implemented in the set. The rest can be implemented on top
+> (mainly replicating properties).
 
-Thanks,
-Angelo
+Thanks for testing!
 
-> ChenYu
-> 
->>   };
->>
->>   struct panfrost_device {
->> --
->> 2.42.0
->>
+> I'll comment on a few patches in the set.
+>
+> Do you prefer to make the changes or shall I? I presume them to be fairly
+> minor.
 
+I can make the changes.
