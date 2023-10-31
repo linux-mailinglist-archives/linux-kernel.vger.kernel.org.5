@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9733E7DD221
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3856F7DD1B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346289AbjJaQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S1345462AbjJaQc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345940AbjJaQcJ (ORCPT
+        with ESMTP id S1345979AbjJaQcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:32:09 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0843D1BF;
-        Tue, 31 Oct 2023 09:31:47 -0700 (PDT)
+        Tue, 31 Oct 2023 12:32:10 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D9CD46;
+        Tue, 31 Oct 2023 09:31:48 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:c562:2ef4:80c0:92f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 63CAD66073AE;
-        Tue, 31 Oct 2023 16:31:45 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AA99A66073CA;
+        Tue, 31 Oct 2023 16:31:46 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698769905;
-        bh=7OP/lnsbD5MzPZ4L/gceSmxIzda3Ng9eLtu0phjni7k=;
+        s=mail; t=1698769907;
+        bh=E5t1fwehdK/+tA+H+9HRw8QC5ks/Zk2E0Mm8Cosvu64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RhZvI0Wm6tpsneCvOt5IoGfJVyNH+/OpU7UlOjcjY4UZsgk8dc55BjoI7wX3bDJFV
-         ytEiqyn297DiwwaX5+GRYPGpFp0teKBvBcmNWxK+875xqHhycAZvcqPp0EiFUODr7J
-         KdVhF0I1TMLct5mfJoehCzcPqx8xXFKUuIhWW3VBnnh4vsUVovTYgt/OaXI/ijgKeC
-         LohvT/M1/kWGGVMTo8JDrffuBGneRtcx98g+xzdTC6EOZnSaIYQ3JnVBfsUHY/MZZt
-         t4xZlFmA7/JF1t/HhPSVK/0K9Z3fvefHBhXoEUmqdGtTLiExuS/OxRTC4hQUMdEAn7
-         uL14uvLIcbJww==
+        b=aOLb/kZi84KwygRqKPOTlZTb8hehC2pipcTIVM4XC7p4yzcFYVasbGADTTfDNl6LN
+         Fbhms33tFrb17yu2BwejjQ6Qe9qasy/Ty2iseT8B5j958MDVwMZJnwgJLR8zflO1ZY
+         iSEQuPzjuOuOg6rMQruhMv1IM2ABUi410FwFca/l5ZylPitJuPaY7eGp6l/ySqg7Eu
+         P+tDHT8C+Gu3yhy3Sk4O5XEzWMrLS3k2h9xMtgbsxWxFj5VMCqcjlCs7nFRiDF0aZe
+         wWByhFzn7U6UibrAq/9nSPp4UfEnTefMFSjxkoScGLwHkw8WgTc3Q9eXueErIOVvCv
+         zWzUOhLREPfrQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v14 21/56] media: pci: dt3155: Remove useless check
-Date:   Tue, 31 Oct 2023 17:30:29 +0100
-Message-Id: <20231031163104.112469-22-benjamin.gaignard@collabora.com>
+Subject: [PATCH v14 22/56] media: pci: tw686x: Stop direct calls to queue num_buffers field
+Date:   Tue, 31 Oct 2023 17:30:30 +0100
+Message-Id: <20231031163104.112469-23-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
 References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
@@ -60,27 +60,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-min_buffers_needed is already set to 2 so remove this useless
-check.
+Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+This allows us to change how the number of buffers is computed in the
+future.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
- drivers/media/pci/dt3155/dt3155.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/media/pci/tw686x/tw686x-video.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/pci/dt3155/dt3155.c b/drivers/media/pci/dt3155/dt3155.c
-index 548156b199cc..d09cde2f6ee4 100644
---- a/drivers/media/pci/dt3155/dt3155.c
-+++ b/drivers/media/pci/dt3155/dt3155.c
-@@ -128,8 +128,6 @@ dt3155_queue_setup(struct vb2_queue *vq,
- 	struct dt3155_priv *pd = vb2_get_drv_priv(vq);
- 	unsigned size = pd->width * pd->height;
+diff --git a/drivers/media/pci/tw686x/tw686x-video.c b/drivers/media/pci/tw686x/tw686x-video.c
+index 3ebf7a2c95f0..6bc6d143d18c 100644
+--- a/drivers/media/pci/tw686x/tw686x-video.c
++++ b/drivers/media/pci/tw686x/tw686x-video.c
+@@ -423,6 +423,7 @@ static int tw686x_queue_setup(struct vb2_queue *vq,
+ 			      unsigned int sizes[], struct device *alloc_devs[])
+ {
+ 	struct tw686x_video_channel *vc = vb2_get_drv_priv(vq);
++	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+ 	unsigned int szimage =
+ 		(vc->width * vc->height * vc->format->depth) >> 3;
  
--	if (vq->num_buffers + *nbuffers < 2)
--		*nbuffers = 2 - vq->num_buffers;
- 	if (*num_planes)
- 		return sizes[0] < size ? -EINVAL : 0;
- 	*num_planes = 1;
+@@ -430,8 +431,8 @@ static int tw686x_queue_setup(struct vb2_queue *vq,
+ 	 * Let's request at least three buffers: two for the
+ 	 * DMA engine and one for userspace.
+ 	 */
+-	if (vq->num_buffers + *nbuffers < 3)
+-		*nbuffers = 3 - vq->num_buffers;
++	if (q_num_bufs + *nbuffers < 3)
++		*nbuffers = 3 - q_num_bufs;
+ 
+ 	if (*nplanes) {
+ 		if (*nplanes != 1 || sizes[0] < szimage)
 -- 
 2.39.2
 
