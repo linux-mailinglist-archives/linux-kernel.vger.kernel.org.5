@@ -2,145 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87CF7DC40B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DAE7DC40F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjJaB4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 21:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
+        id S229817AbjJaCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 22:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJaB4k (ORCPT
+        with ESMTP id S229688AbjJaCAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 21:56:40 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2106.outbound.protection.outlook.com [40.92.23.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D7CE6;
-        Mon, 30 Oct 2023 18:56:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EcV5V6FC6EulIzNRc50kBa6XC88bu25hbMjGeN3GkFMaF4/BcydS8+ciAnNgw3wf24zA+p+Zw8P/jabCHNGF7BWEQd9MxdWpOGmKxiLEHDmDcbX8bcqOPgx+Li+KHyTzvDepYNC00xLI9MHGNdB1+JDmrj5JCvoGO0olmKD/X6/ZnJmf/6iAyzADcj/oF1JQceGARV9eGBVR4iFkwk2C0EDKxAtAefiCuH3ZCfV+DKZEPsV8uvjVUkZBJOOGgu2t9K0KASZuqe0G3uQWNIaclA6BzYwIYsh56Mf5ZRmuYFIP9C1x5wzwGoHFT9r5PbvIpaFry2b449eZ0Fp9gFQYpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k1cKIt4YTjl+JgtpYfp+qBWwMmlTfYpok9wlLMu/M4Y=;
- b=R00Szw7gNJJM2DTqNHRiB6PCXNPJ0Zwe8IMLb3ybOYcO8fGn8t1We1PDP4CA869QUYsTeJod/u2AmEqkb/0ItzR+PgesUtefY81WskIvX1dp+Q3vbUhmZvvYK+DiH30C0jsy88/dC1Xh5VefRJSQlI3NDJjCUeJ27H8UCC/Ps0zXPOBT/7v8E7eQdl7JZZYXwJ56UmU7cx7gY6BC8TiLfTou1BsZxwbE8gg3Ya4qLmTivVSftaRLGBJFCl+P0qOQUEEG7g/0s8nC4hyKMH1qt5cmTQWH0hBzbbOtavzzggCJ6gMvKLs04mltEL+egooRcdSaC6jO90PJV1KRRdxn5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k1cKIt4YTjl+JgtpYfp+qBWwMmlTfYpok9wlLMu/M4Y=;
- b=rELrATADzmmdzC0cwQbWhGSW2FXkBNVu5V77TqPvEG15xAZEEGi1b48NsK8fvvQ641uy1pfOh45YgQnlmGzGjw0WNPvMjhgs3BHy5YYRZPTvcXOuH/HtbjvFIEArb4sP5ynIx65r7J2elLK3OQHsiPyY9xj9wjnCdZ9C4eBd2CpxOhfFFV/615+Lsl3WW47JbcERjsSc9L3ULMngbY2FLI3l6lY3mkyp1ep8iJIWRZfHQF+bFaiNggC+3npktOLuNs9rndcqlx/Ied1lUfZY8DtX3Rv278AIqBRAx6u6/f3ojtdqrNyWeTUPTgfsDFzFFUqFfi1imxmQNuJZO0yWkw==
-Received: from MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1e1::10)
- by DS0PR84MB3626.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:8:1bd::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Tue, 31 Oct
- 2023 01:56:35 +0000
-Received: from MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::6761:2623:329a:27d6]) by MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::6761:2623:329a:27d6%3]) with mapi id 15.20.6933.027; Tue, 31 Oct 2023
- 01:56:34 +0000
-Subject: Re: [PATCH] readahead: Update the file_ra_state.ra_pages with each
- readahead operation
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, tangyouling@kylinos.cn
-References: <MW4PR84MB3145AFD512F2C777635765B381A1A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
- <ZT/eCvQ/Iug8GB1l@casper.infradead.org>
-From:   Youling Tang <youling.tang@outlook.com>
-Message-ID: <MW4PR84MB31450CAB2035C820B016E3F581A0A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
-Date:   Tue, 31 Oct 2023 09:56:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <ZT/eCvQ/Iug8GB1l@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TMN:  [0uJCwnfJvWWNhEPOzfmNh9bv4r58Nz0A]
-X-ClientProxiedBy: TY2PR04CA0017.apcprd04.prod.outlook.com
- (2603:1096:404:f6::29) To MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
- (2603:10b6:303:1e1::10)
-X-Microsoft-Original-Message-ID: <68aef890-5239-df10-5819-753f144e724c@outlook.com>
+        Mon, 30 Oct 2023 22:00:50 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8A8EA
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 19:00:47 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5b856d73a12so4117625a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 19:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1698717647; x=1699322447; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ysFHtwfLEtis2HEwrxQHDKnfNsPImE2g/7GGtzNp+Cs=;
+        b=RA0zuQurBpzYYfjoncjl1kshFj3iAGNIw3NKTxySaBBPtVj/wd5SKoIIAEqT071n2g
+         u8J8MlnD8DYzzR4sOIQPxbwdVqRqjyN1CPa2FTv+5p0A6cWkQqe9e5/wx7ZoTZre/dws
+         n6YeCGYiyXr0yQYwjly+z4aEl4jxOH/7s1dtkQ7y7hoyy7/7jUM0j5ddNVd+B/zJadk+
+         sb1a++EwzSH11of0XYBZmkazOmcCqjL4Exyyk7ZJHvpsCehjyowvTW8DWITyYOvg6fUw
+         sr5RJmpYKdB0yuSm6ixVX0ixxlNR3G2v9EyVqHnquwekNJ0sboVSZB30lCkWvcA1EI//
+         Nziw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698717647; x=1699322447;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ysFHtwfLEtis2HEwrxQHDKnfNsPImE2g/7GGtzNp+Cs=;
+        b=PyIYajQixLu5pQy9esCYQ7bw0kWrJzi1vH2nrp5volffu55SEZ8z3yoO+GsGen2Ntp
+         LcRcqzi8TbyQIRmGFIgO+IgZZ2pQp6rBUgLI/ICbmhfry70/dskqZLZT7H6Ra+CO1Exc
+         YLWOl94NlIU/DHVoTEWJWr5n7Bn9zWS7qaOA2pEgaG5C8lBC7LW21msyLUWrTOvJrqyr
+         Z9GBwmTixRqIWigFi8Q+xNjniT5Dictm3tUyAU0KshlueK0C9ApY5qz7pxSIZAChgUJm
+         5aOrxjK7Nr89JfJk/VBbcNsrnTo3wrl9LOXCyjC2kzPlCLL6WFK73MSfM6umYo4UFs4Z
+         KDfg==
+X-Gm-Message-State: AOJu0YzXn3egOAqPKRGiXr1UcW95ua+/OKWBacHc2vXRXNiEWvt8nqAz
+        QKPFt8cR7znqjGPmxpnyYyw+vg==
+X-Google-Smtp-Source: AGHT+IEf0KaLXQATJy7Y+aQfRDpTBjnOxd6k1XM+fNDmCwu9+0PAZyGarOs4HgtrLS/PIbK2VfXdgQ==
+X-Received: by 2002:a05:6a20:a220:b0:17b:e0a3:f6f4 with SMTP id u32-20020a056a20a22000b0017be0a3f6f4mr9170362pzk.25.1698717647083;
+        Mon, 30 Oct 2023 19:00:47 -0700 (PDT)
+Received: from sunil-laptop ([106.51.188.78])
+        by smtp.gmail.com with ESMTPSA id b17-20020a056a000a9100b006934e7ceb79sm159585pfl.32.2023.10.30.19.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 19:00:46 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 07:30:35 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Haibo Xu <haibo1.xu@intel.com>, Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC PATCH v2 11/21] PCI: MSI: Add helper function to set system
+ wide MSI support
+Message-ID: <ZUBfw2vrzc+GyAny@sunil-laptop>
+References: <20231025202344.581132-1-sunilvl@ventanamicro.com>
+ <20231025202344.581132-12-sunilvl@ventanamicro.com>
+ <87a5s0yyje.ffs@tglx>
+ <ZT/t0UY5rbudhjfH@sunil-laptop>
+ <874ji7zz7a.ffs@tglx>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR84MB3145:EE_|DS0PR84MB3626:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed52238f-2062-4e31-5b21-08dbd9b49c66
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P6VW6ITg9Kdoy4x8FZoY3hU+vfQXudakX7PLzyGDrNs/H/Do1zxJOGwqwglbk2JEFDs1nZwBJrqG2uXxb4g8Tm/spGTtuM4x6UKjKA1yJ1rN8o7w0rVloAspna3y35ywwttFJVAlnZT9M8JIs18kOqZFEssU0HP98nI2+QkJ0Bl/oH0hguzUyJlTPk4qw36xzQADYY+ivPLPFJ3y2t7xDMRarjaVBHlAURrN8eRaJ/eVawXoVsfvZ8XGRVAQjOjXWgQnOiNMAoA3tFTizT0td2gOnWdFTsFjusnGwjFFoAtywGut1lfa3Vo3wxurjowxGSQvtbVNT0NpcJ/9h3he2zvUhB2O77Zw1H+PD7pPh3p2dQJ4pZWbnazn7K6MSfKa4hSkMB1BCrxbuzKl2pmQB5d5iN9g3uN6+NqZVLjVxNIlLxfbkkNCbLRJyIOGMqFczSf4yVcQU1Uqoo/eb09wl9D8AJaGREXdKndRmzgplusBReMjEo167OmWY9Ipqc+wN0UzacrmuJB8UQmHrRXX8kHkyjdNiXMMgxbxk+BVKO82JzpcR94rcWhANC44gUP3
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGJpWk5hUnI5MTM3SmxnM2ZVd01EWU02dXlqNE9OTUl6T3JiVmRLdUwvdlUv?=
- =?utf-8?B?Z3V3ZjRyWXBiNEUrMjVHdGxBU2JsLzd2RUxURlRLNE5OOEhxaHJHRi9WSGhE?=
- =?utf-8?B?S2l4a09zWFRZNWtQZXFFQ0JKb2dKS1ZRa2hoMFdmS1A0MkxuWVFiZzNOeS9Y?=
- =?utf-8?B?NTczS3E0ZGc5N2x6RGVpR2J6NVZtc1Rqejloc2Z6bHlxb01XOGpZaEJTL2Jz?=
- =?utf-8?B?Mzd3OTZpSVRqaTFLVE1IbGkrWVlHYUJ1RHNncHZJTDZOWERrdjBrT3VxQWpN?=
- =?utf-8?B?dW5MQ25EMzhQZE8yblZLQ3FiMVNGdm1VNlhXaVErMkV1NGFtejBnN1RicmNh?=
- =?utf-8?B?ZjQ3NnZZbS9sZGM4Z0hZMXpwejVNS29id0JVNjFvTVlKNitxV1dqT09neGQ5?=
- =?utf-8?B?TzFZRmJmTUlaeURsdXRDMmNlVTBxN0FGcVArbmlZZXo1Mlh5SzBuMEpvY0dE?=
- =?utf-8?B?Wk1SeTUyRkxLdkFHUmJlenZ1Q3NqS25VOUtiN0g0azFqdzhVdmNNTCt1NjZD?=
- =?utf-8?B?S1NSNjVVTklRRWEwekRxV1VzUWVWQStnVXczZTUvM080Y3o3bS84TXhSbk9u?=
- =?utf-8?B?bUowWU9yWkVPRkNpL1RKekxLSVdVdXFXZnhCN2phWVBCSFc2STBpWSswNlVB?=
- =?utf-8?B?bldkdzBWRTErMGpWNG00NUVvcFZSRGYycU1Kd2FpQzRoZ1o0Tm9VS2tudjFo?=
- =?utf-8?B?N2d2OWZSUzlEMlY1VkZpanZQVis1bTRUZEwrTTY4UVN4NTcrVkduWS9tOFQx?=
- =?utf-8?B?ZXdhYW16RTBLVTF6MnJGSGVBL1o3bG1BUktUTnBGbE1WU3YvSXJsNzVnNk1j?=
- =?utf-8?B?TGRyVWdXTy80NXpWcHdRUDlUK09QendLV3R1MGFHZURjYUJUbTdZY01FZVBw?=
- =?utf-8?B?bisyWUJHVDdqd0p1RkJhOHJ3dkROMDErR2JXVUd0SlVsa3lkQmxCSTRkcDM2?=
- =?utf-8?B?T1R0b21od3FmTThDMEVrWlR6dWx1Q1VwY002eWlsSk4yVjhuQnFQUy9iSmFh?=
- =?utf-8?B?amVLRk54ZlFsMGU1czBncVczRnJmYkRvR0Zha0FSKzQ2ZVBwNkFMMUlVcXY5?=
- =?utf-8?B?UkNRc1ZHRHhoNjV6WCtXNis0OVk2ZFlNbk5mckhKdXdicHRBazdkemRCUUMx?=
- =?utf-8?B?MHpHT0FkVXkyUitvZjcrdjBOOVBvNTdUVHhlbTM5bGNSR2xuTkExUHFEdVV4?=
- =?utf-8?B?VlAwUTBJalJScWMvV0EyVTNTUDZ5NWJnS0F2SUszOUUydW1BakVMOUdYaFJG?=
- =?utf-8?B?NVpacEVwRzVxOXNhR21zV1ZXWlhIdzNsQnlzRFQ5aWJZVUdqeDVpWjNqNHhG?=
- =?utf-8?B?RjF6N3hLeEZ4WDBBbHNkQytNaHRkOXVLSS9Cbmp2SzZLWi84MEY3b3Zic1NB?=
- =?utf-8?B?NXQzeitKUW9oMTkvbTNzTnpkQUYrVnZIVnI2Q2tPUXlKbmxLUlpVbmFycnF3?=
- =?utf-8?B?VDlINDFqQy9WYjNxd2lnY0xvalFrNEdycDlxekx5Uy9jTm1wbU9PcGlSc05V?=
- =?utf-8?B?MkJraDRrWnJJTjVOY3BNTnRKNVFpUFYrNXg2WkRKSzBnMS9MWThHaDRCakl6?=
- =?utf-8?B?NytjWjVlcWZ5Nm5pR00xWCt1NnFvbUx5S0JZYllxSG9pWmhTaktQR0d0b1Jh?=
- =?utf-8?Q?yI1skrjNQiou7TH65mxFtXVvd6Q7n0xco4PqHYY4WpRg=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed52238f-2062-4e31-5b21-08dbd9b49c66
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 01:56:34.8056
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR84MB3626
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874ji7zz7a.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthew
+On Mon, Oct 30, 2023 at 08:29:13PM +0100, Thomas Gleixner wrote:
+> On Mon, Oct 30 2023 at 23:24, Sunil V. L. wrote:
+> > On Mon, Oct 30, 2023 at 03:28:53PM +0100, Thomas Gleixner wrote:
+> > Just noting related discussion :
+> > https://www.spinics.net/lists/linux-serial/msg57616.html
+> >
+> > The MSI controller on RISC-V (IMSIC) is optional for the platform. So,
+> > when by default pci_msi_enable = 1 and the MSI controller is not
+> > discovered, we get stack trace like below.
+> 
+> <SNIP>
+> 
+> > So, what I did was, by default call pci_no_msi() to disable MSI and then
+> > call pci_set_msi() to enable when MSI controller is probed.
+> 
+> Your taste sensors should have gone out of range ...
+> 
+> > But I think Bjorn's suggestion to depend on PCI_BUS_FLAGS_NO_MSI may be
+> > better idea. In that case, we need to set bridge->msi_domain to true in
+> > pci_create_root_bus(). Let me know what do you prefer or if I am
+> > completely missing something here.
+> 
+> That's definitely more sensible, but as I said in the other thread, Marc
+> is the one who did the PCI core/bridge setup magic and he is definitely
+> in a better position to answer that bridge->msi_domain question.
+> 
+Thanks!. It looks like Marc introduced bridge->msi_domain in [1] for
+exactly the same problem we have with RISC-V + ACPI. Let me remove this
+hack and do similar to pci_host_common_probe() in next revision unless I
+get objections to that approach.
 
-On 2023/10/31 上午12:47, Matthew Wilcox wrote:
-> On Mon, Oct 30, 2023 at 03:41:30PM +0800, Youling Tang wrote:
->> From: Youling Tang <tangyouling@kylinos.cn>
->>
->> Changing the read_ahead_kb value midway through a sequential read of a
->> large file found that the ra->ra_pages value remained unchanged (new
->> ra_pages can only be detected the next time the file is opened). Because
->> file_ra_state_init() is only called once in do_dentry_open() in most
->> cases.
->>
->> In ondemand_readahead(), update bdi->ra_pages to ra->ra_pages to ensure
->> that the maximum pages that can be allocated by the readahead algorithm
->> are the same as (read_ahead_kb * 1024) / PAGE_SIZE after read_ahead_kb
->> is modified.
-> Explain to me why this is the correct behaviour.
-Because I initially expected to immediately improve the current read 
-performance
-by modifying read_ahead_kb when reading large files sequentially.
-> Many things are only initialised at open() time and are not updated until
-> the next open().  This is longstanding behaviour that some apps expect.
-Thanks for your explanation. I will discard this change if the next open 
-update is in line with the
-apps expectation.
+Sorry, somehow my script didn't copy Marc in the series. Will make sure
+I copy him explicitly in next revision.
 
-Thanks,
-Youling.
+[1] - https://lore.kernel.org/all/20210330151145.997953-12-maz@kernel.org/
+
+Thanks!
+Sunil
