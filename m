@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED847DCA6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67547DCA76
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbjJaKJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38566 "EHLO
+        id S235935AbjJaKMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjJaKJ4 (ORCPT
+        with ESMTP id S229823AbjJaKMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:09:56 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3676A1;
-        Tue, 31 Oct 2023 03:09:53 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V8stnD014473;
-        Tue, 31 Oct 2023 11:09:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:references:cc:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=4teyTP8wthQuYWyxvRw9scjnKMkSjcXFG9zTOb3dtFo=; b=y6
-        8CxtLD2QDXlZmSTxJz9tLVRx+DWoFOzsd5deHSlX8594VX7dvCg8qSYgAnfF8dMl
-        NTs8g0dh0aS1EB+xVbybXf0relr6lYKz7KKsuZSQVRCma/9+Dul8St+5YcTD+Rwm
-        cLK1vG56vUjQcZ08zW91OwOe5F9ruIh/bD/02KErp/i2aqKhOW3vN7owjJYjwozA
-        VwxCTTZ8oPx44BzUXDLn202iCqfgRswYNxem1vtzcrd8g0yHPzvnBr2xjMaFguFi
-        A2oiwAxMMIDENUm3leymlwhcanqFxdZ4Ug+5i8BamxmRv4Je+F24pMNFSxsQLqk5
-        MUvI5emzNnqD2IIIYklw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u29yanhrx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 11:09:26 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9D24A100050;
-        Tue, 31 Oct 2023 11:09:21 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8F76621ED27;
-        Tue, 31 Oct 2023 11:09:21 +0100 (CET)
-Received: from [10.201.20.136] (10.201.20.136) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 31 Oct
- 2023 11:09:20 +0100
-Message-ID: <77e47143-2351-4f78-81b6-35ed4664f358@foss.st.com>
-Date:   Tue, 31 Oct 2023 11:09:16 +0100
+        Tue, 31 Oct 2023 06:12:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736B4DF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698747089;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PzDDRWNXtvF0AiHkzgS2GcOo69dWjTdD9mgnyNtPC9Q=;
+        b=XedIwXIDonZna4qP1PDBoxGZxb+HAcmf8jXKkeIkGAckVtacU5IoI+x87uJNToIJ/xc84i
+        NPveTCzYuD2elsRl0ixcIneqhZAIExjsnMVOGEmxzevY4vS34eYOsh8Tvu6zFnWwOe3CwQ
+        EGwZxN9v4dFRPWP3nfTJ3hMYzouNqs0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-536-llLkH3lFM76WHGdUPFYm0w-1; Tue, 31 Oct 2023 06:11:28 -0400
+X-MC-Unique: llLkH3lFM76WHGdUPFYm0w-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40839252e81so38882455e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:11:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698747086; x=1699351886;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PzDDRWNXtvF0AiHkzgS2GcOo69dWjTdD9mgnyNtPC9Q=;
+        b=PmkcKDw32U7EWl9ypDR3e4+JK+j9Ew1UBf9QpdujuaJi8IUngzMetKGCDi+MXSY8XG
+         ZQ0Tcbh7lXRAbW/9xYOSdUldk7nWlm1uwiI4XHKkX6r1u1qHEtZ2LeJL8bEOtqLMy+s8
+         12cXx+31c+vaggydD6K1NWogGFQax7zvefCJ9ufTG7bAP5xNxopzmRBXZGc8lWIjZ/kp
+         RsJ6Od6dRKOTACwqOID4C7WJj79y648vLJ7Y6QXEX4HegZvaeGUvX+xoai0bbW/gjL6B
+         d3eE7CUBmZjPMG+E8VPQKzGFHyoyjaTUX25rKO9zDO50vxlXyEieGSltWciyiDNnW+kg
+         fO6g==
+X-Gm-Message-State: AOJu0Yy6HfzmNr73EVP7LIl6jaiAfqrnCCwIEZk0wNVBYzRzhhO2qXJo
+        mlSvjzCEdEVk7kwxBQk9CP2JnjqyzjD43nzbmeEZjl//nqQ48SPYLyAv4q3eay58uL0jW+l4jSw
+        vI7h1nmTeyeuJ+7m0MPqFGyy/AQj3m8Qa
+X-Received: by 2002:a5d:5191:0:b0:32f:9709:df75 with SMTP id k17-20020a5d5191000000b0032f9709df75mr845859wrv.24.1698747086670;
+        Tue, 31 Oct 2023 03:11:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFCrFfBWko6jbrSVOEoQNO1U5Ek3OR2diEsBd5CV4xGBcmuAciNM/F+1O/7eI0IwAJOI8X+sw==
+X-Received: by 2002:a5d:5191:0:b0:32f:9709:df75 with SMTP id k17-20020a5d5191000000b0032f9709df75mr845843wrv.24.1698747086364;
+        Tue, 31 Oct 2023 03:11:26 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id a8-20020adffac8000000b003296b488961sm1127397wrs.31.2023.10.31.03.11.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 03:11:25 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] drm/ssd130x: Fix possible uninitialized usage of
+ crtc_state variable
+In-Reply-To: <CAMuHMdVLf=H7QWaUXrN17ABw9eE1MjBdzFEM0AhMNj8_ULSz+Q@mail.gmail.com>
+References: <20231020225338.1686974-1-javierm@redhat.com>
+ <b048247c-75e9-488e-a4f3-b227a38bca5e@redhat.com>
+ <87v8aso1ha.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdVLf=H7QWaUXrN17ABw9eE1MjBdzFEM0AhMNj8_ULSz+Q@mail.gmail.com>
+Date:   Tue, 31 Oct 2023 11:11:24 +0100
+Message-ID: <87lebjksoj.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pinctrl: stm32: Add check for devm_kcalloc
-Content-Language: en-US
-To:     Chen Ni <nichen@iscas.ac.cn>, <linus.walleij@linaro.org>
-References: <20231031080807.3600656-1-nichen@iscas.ac.cn>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <robh@kernel.org>, <geert+renesas@glider.be>, <bero@baylibre.com>,
-        <jernej.skrabec@gmail.com>, <dario.binacchi@amarulasolutions.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Valentin CARON <valentin.caron@foss.st.com>
-In-Reply-To: <20231031080807.3600656-1-nichen@iscas.ac.cn>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.136]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen,
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Thank you for your patch:
+Hello Geert,
 
-Acked-by: Valentin Caron <valentin.caron@foss.st.com>
-
-Regards,
-Valentin
-
-On 10/31/23 09:08, Chen Ni wrote:
-> Add check for the return value of devm_kcalloc() and return the error
-> if it fails in order to avoid NULL pointer dereference.
+> Hi Javier,
 >
-> Fixes: 32c170ff15b0 ("pinctrl: stm32: set default gpio line names using pin names")
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
->   drivers/pinctrl/stm32/pinctrl-stm32.c | 5 +++++
->   1 file changed, 5 insertions(+)
+> On Fri, Oct 27, 2023 at 11:33=E2=80=AFAM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>> Jocelyn Falempe <jfalempe@redhat.com> writes:
+>> > On 21/10/2023 00:52, Javier Martinez Canillas wrote:
+>> >> Avoid a possible uninitialized use of the crtc_state variable in func=
+tion
+>> >> ssd132x_primary_plane_atomic_check() and avoid the following Smatch w=
+arn:
+>> >>
+>> >>      drivers/gpu/drm/solomon/ssd130x.c:921 ssd132x_primary_plane_atom=
+ic_check()
+>> >>      error: uninitialized symbol 'crtc_state'.
+>> >
+>> > That looks trivial, so you can add:
+>> >
+>> > Acked-by: Jocelyn Falempe <jfalempe@redhat.com>
+>> >
+>>
+>> Pushed to drm-misc (drm-misc-next). Thanks!
 >
-> diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-> index a73385a431de..419eca49ccec 100644
-> --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-> +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-> @@ -1378,6 +1378,11 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl, struct fwnode
->   	}
->   
->   	names = devm_kcalloc(dev, npins, sizeof(char *), GFP_KERNEL);
-> +	if (!names) {
-> +		err = -ENOMEM;
-> +		goto err_clk;
-> +	}
-> +
->   	for (i = 0; i < npins; i++) {
->   		stm32_pin = stm32_pctrl_get_desc_pin_from_gpio(pctl, bank, i);
->   		if (stm32_pin && stm32_pin->pin.name)
+> Looks like you introduced an unintended
+>
+>     (cherry picked from commit 9e4db199e66d427c50458f4d72734cc4f0b92948)
+>
+> ?
+>
+
+No, that's intended. It's added by the `dim cherry-pick` command, since I
+had to cherry-pick to drm-misc-next-fixes the commit that was already in
+the drm-misc-next branch.
+
+You will find that message in many drm commits, i.e:
+
+$ git log --oneline --grep=3D"(cherry picked from commit" drivers/gpu/drm/ =
+| wc -l
+1708
+
+> Gr{oetje,eeting}s,
+>
+
+--=20
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
