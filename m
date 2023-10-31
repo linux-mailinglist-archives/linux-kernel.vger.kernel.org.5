@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A79B7DD37B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE0D7DD369
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376357AbjJaQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        id S1346994AbjJaQzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346927AbjJaQw1 (ORCPT
+        with ESMTP id S1346739AbjJaQw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:52:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780D6132;
-        Tue, 31 Oct 2023 09:49:59 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 159411F460;
-        Tue, 31 Oct 2023 16:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1698770998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LWsQIn7ZkGzO6NK5PHMSWSWR/jIKE/XBQ2VgQvF6oWU=;
-        b=bnitcGCe3p+/SPIabZB6USeL/VymqpPJ4x/HtwHu9ibIjcuMhj2865GvxdFZzXXf/QL3Uj
-        TewihLVBj8H7HsomFJ8uhcu/QngN4suBP6mOHJiR22TaIEBwiyVNQqtow+iwhohaVsuMKO
-        UbRWSd3DJ4Vx1T9RCpC50Xh8obATvEY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1698770998;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LWsQIn7ZkGzO6NK5PHMSWSWR/jIKE/XBQ2VgQvF6oWU=;
-        b=vQb9t+qZHj89dN/KqgASgTL8JomW7MDHPiXGfIcN1cC3avRXpFFdk7IQ9XcFH3C9WXKf4x
-        EaABCAWmB+iEVtDQ==
-Received: from wotan.suse.de (wotan.suse.de [10.160.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A37E32C36A;
-        Tue, 31 Oct 2023 16:49:56 +0000 (UTC)
-Received: by wotan.suse.de (Postfix, from userid 10510)
-        id D6D9666B2; Tue, 31 Oct 2023 16:49:56 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by wotan.suse.de (Postfix) with ESMTP id D442C6050;
-        Tue, 31 Oct 2023 16:49:56 +0000 (UTC)
-Date:   Tue, 31 Oct 2023 16:49:56 +0000 (UTC)
-From:   Michael Matz <matz@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-In-Reply-To: <20231031162353.GF15024@noisy.programming.kicks-ass.net>
-Message-ID: <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
-References: <20231027192026.GG26550@noisy.programming.kicks-ass.net> <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop> <20231027224628.GI26550@noisy.programming.kicks-ass.net> <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
- <20231030082138.GJ26550@noisy.programming.kicks-ass.net> <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop> <20231031095202.GC35651@noisy.programming.kicks-ass.net> <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de> <20231031151645.GB15024@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de> <20231031162353.GF15024@noisy.programming.kicks-ass.net>
-User-Agent: Alpine 2.20 (LSU 67 2015-01-07)
+        Tue, 31 Oct 2023 12:52:58 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ED0171C
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:50:26 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507ad511315so8541389e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698771024; x=1699375824; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d73v9cfketw/ArDcT80Q+U6ac8cwJQ83f2L/6k+AOxU=;
+        b=fSrkm81u9KvGs3w4t9T7AScPGLJkfv92JdfaQKLl1FxqHuE3SnfpnMYYPvHp49bIZX
+         GjNBCYYfC5OcCQbl/dJOfaFT3BZ+UNiIr9BRFmLLyn67ZIUrmgEjWXemwjBY1qDhYVsJ
+         ov55OSVPVDV748Gv4PFf9jdF9pq1nh6js5Q+TbAI/Dzz4DIuNow3q525egHJYUKvsL9c
+         tuFTrxwlMxI7wBAGV2EolPOTFvirld6jJWQpE0x2l/A4StI1QhOAYCQ0Shhwfzh8Ouf4
+         tbEqFU1XAXmtmlE3W7oU2yCx6em8vBqXr6ycco7oZ/n4mKwepHmmy69TE+FMvFApfqL7
+         cPNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698771024; x=1699375824;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d73v9cfketw/ArDcT80Q+U6ac8cwJQ83f2L/6k+AOxU=;
+        b=rGUtf5LosFC+ifaREqxUVDn6x/BHx0krQki3U6PnZyz2l+sMBBUDX2VE+U352ssR94
+         KczzXLeNOk2WH/GNegwYdkGM8PTtfs9eOlMxXqFlyRRW/U1Jsh062VAap/LyQZWe3Ero
+         084tYneBHd0lbgM7U3N60nHAaq+Z8f4K+2HsMyb/OmxmDzkDEEXG/i75tM/wgV6mcGJK
+         9p5cLxY9yIvxjjbpd9Kz8Ui/XcKu92NXXplJn6watXuaYmqPZSsqB4AuXAn7ldLQ6tF7
+         tiM6Annu0C6aSYkzyjODtac8LLlkP3N8v/CwO5n9nzQy0wF6c0JRfnYDNLne3WAF7amb
+         i3WQ==
+X-Gm-Message-State: AOJu0Yx3058ZhLTIxNwfgzs8clYd4k3VIdBqC5MmA03b1FocyUyFXzQi
+        fKuFsdZuool5eHH2JzrF9BJUJw==
+X-Google-Smtp-Source: AGHT+IGj8Fy0pJ05EoAIRZ55sWvm/g7whZcYv7i8aYj7QQHleGaGK92mxaglJWinHZajCCS/iMiSBQ==
+X-Received: by 2002:a05:6512:1282:b0:505:6ede:20a9 with SMTP id u2-20020a056512128200b005056ede20a9mr12384328lfs.65.1698771024156;
+        Tue, 31 Oct 2023 09:50:24 -0700 (PDT)
+Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
+        by smtp.gmail.com with ESMTPSA id j19-20020a056512345300b005079a61a182sm256853lfr.143.2023.10.31.09.50.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 09:50:23 -0700 (PDT)
+Message-ID: <e5ee7051-d867-453f-98a7-3a8aea402607@linaro.org>
+Date:   Tue, 31 Oct 2023 17:50:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
+Content-Language: en-US
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, mani@kernel.org, robh+dt@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijjose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+References: <1698767186-5046-1-git-send-email-quic_msarkar@quicinc.com>
+ <1698767186-5046-2-git-send-email-quic_msarkar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <1698767186-5046-2-git-send-email-quic_msarkar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,79 +121,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+On 31.10.2023 16:46, Mrinmay Sarkar wrote:
+> This change will enable cache snooping logic to support
+> cache coherency for SA8755P RC platform.
+8775
 
-On Tue, 31 Oct 2023, Peter Zijlstra wrote:
-
-> > equivalent to that, then it can't be used in this situation.  If you 
-> > _have_ to use a RmW for other reasons like interrupt safety, then a 
-> > volatile variable is not the way to force this, as C simply doesn't have 
-> > that concept and hence can't talk about it.  (Of course it can't, as not 
-> > all architectures could implement such, if it were required).
 > 
-> Yeah, RISC archs typically lack the RmW ops. I can understand C not
-> mandating their use. However, on architectures that do have them, using
-> them makes a ton of sense.
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> For us living in the real world, this C abstract machine is mostly a
-> pain in the arse :-)
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 6902e97..6f240fc 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -51,6 +51,7 @@
+>  #define PARF_SID_OFFSET				0x234
+>  #define PARF_BDF_TRANSLATE_CFG			0x24c
+>  #define PARF_SLV_ADDR_SPACE_SIZE		0x358
+> +#define PCIE_PARF_NO_SNOOP_OVERIDE		0x3d4
+>  #define PARF_DEVICE_TYPE			0x1000
+>  #define PARF_BDF_TO_SID_TABLE_N			0x2000
+>  
+> @@ -117,6 +118,9 @@
+>  /* PARF_LTSSM register fields */
+>  #define LTSSM_EN				BIT(8)
+>  
+> +/* PARF_NO_SNOOP_OVERIDE register value */
+override
+> +#define NO_SNOOP_OVERIDE_EN			0xa
+is this actually some magic value and not BIT(1) | BIT(3)?
 
-Believe me, without it you would live in a world where only languages like 
-ECMA script or Rust existed, without any reliable spec at all ("it's 
-obvious, the language should behave like this-and-that compiler from 2010 
-implements it! Or was it 2012?").  Even if it sometimes would make life 
-easier without (also for compilers!), at least you _have_ an arse to feel 
-pain in! :-)  Ahem.
+>  /* PARF_DEVICE_TYPE register fields */
+>  #define DEVICE_TYPE_RC				0x4
+>  
+> @@ -961,6 +965,13 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+>  
+>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>  {
+> +	struct dw_pcie *pci = pcie->pci;
+> +	struct device *dev = pci->dev;
+> +
+> +	/* Enable cache snooping for SA8775P */
+> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sa8775p"))
+> +		writel(NO_SNOOP_OVERIDE_EN, pcie->parf + PCIE_PARF_NO_SNOOP_OVERIDE);
+Why only for 8775 and not for other v2.7, or perhaps all other
+revisions?
 
-> > So, hmm, I don't quite know what to say, you're between a rock and a hard 
-> > place, I guess.  You have to use volatile for its effects but then are 
-> > unhappy about its effects :)
-> 
-> Notably, Linux uses a *ton* of volatile and there has historically been
-> a lot of grumbling about the GCC stance of 'stupid' codegen the moment
-> it sees volatile.
-> 
-> It really would help us (the Linux community) if GCC were to be less
-> offended by the whole volatile thing and would try to generate better
-> code.
-> 
-> Paul has been on the C/C++ committee meetings and keeps telling me them
-> folks hate volatile with a passion up to the point of proposing to
-> remove it from the language or somesuch. But the reality is that Linux
-> very heavily relies on it and _Atomic simply cannot replace it.
-
-Oh yeah, I agree.  People trying to get rid of volatile are misguided.  
-Of course one can try to capture all the individual aspects of it, and 
-make individual language constructs for them (_Atomic is one).  It makes 
-arguing about and precisely specifying the aspects much easier.  But it 
-also makes the feature-interoperability matrix explode and the language 
-more complicated in areas that were already arcane to start with.
-
-But it's precisely _because_ of the large-scale feature set of volatile 
-and the compilers wish to cater for the real world, that it's mostly left 
-alone, as is, as written by the author.  Sure, one can wish for better 
-codegen related to volatile.  But it's a slippery slope: "here I have 
-volatile, because I don't want optimizations to happen." - "but here I 
-want a little optimization to happen" - "but not these" - ... It's ... not 
-so easy :)
-
-In this specific case I think we have now sufficiently argued that 
-"load-modify-store --> rmw" on x86 even for volatile accesses is a correct 
-transformation (and one that has sufficiently local effects that our heads 
-don't explode while thinking about all consequences).  You'd have to do 
-that for each and every transformation where volatile stuff is involved, 
-just so to not throw out the baby with the water.
-
-> > If you can confirm the above about validity of the optimization, then at 
-> > least there'd by a point for adding a peephole in GCC for this, even if 
-> > current codegen isn't a bug, but I still wouldn't hold my breath.  
-> > volatile is so ... ewww, it's best left alone.
-> 
-> Confirmed, and please, your SMP computer only works becuase of volatile,
-> it *is* important.
-
-Agreed.
-
-
-Ciao,
-Michael.
+Konrad
