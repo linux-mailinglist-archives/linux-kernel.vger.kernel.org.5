@@ -2,282 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875937DD91A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956587DD925
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376575AbjJaXH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 19:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
+        id S1376865AbjJaXM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 19:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbjJaXH1 (ORCPT
+        with ESMTP id S1345439AbjJaXMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:07:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DE4B9;
-        Tue, 31 Oct 2023 16:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EEJK2AQIAZhUmyQg0/7F/3MDAbc72UamZQPO495qB4Q=; b=kiPqgBSU06H0ZWQr6P/ca+iUyA
-        0Af8+hf4DQ5M1QHeQNjZq7mvzW6BJ9NgN2iFzCKS6pEBFZ4o5V1s0k1PyvD5gvVvCIhdlFzKNVUqV
-        wJCn5Rh0drBEdgTQIS+RbWw8tuJgb/hrXN1rEgl8sWeMmvSNUIKhyP3RyVQErpIxQ3oqlI3+g8QPz
-        FRq+N1ght+P005QIaJsaWv0ys7gMx/Ga09OfrOSAdZrTLDVwTavscZ6fNmolYp288Tt4EVI7RCGLG
-        Ho6Bh9jIuuakP1QvQEbQ7Njtee+n0Zvsg2aFddl0o2CqwOLvrj1Sc4VgVZMZDZJE4j0s1Uvj0Z8QI
-        y+3aQe5Q==;
-Received: from [2001:8b0:10b:5:f213:ff26:c9e:fe3d] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qxxp6-00Ck6i-10; Tue, 31 Oct 2023 23:07:00 +0000
-Message-ID: <3c71731a4f3390dc0c660f854e732df793d78bb4.camel@infradead.org>
-Subject: Re: [PATCH v2] KVM x86/xen: add an override for
- PVCLOCK_TSC_STABLE_BIT
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+        Tue, 31 Oct 2023 19:12:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9392DB9;
+        Tue, 31 Oct 2023 16:12:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F876C433C7;
+        Tue, 31 Oct 2023 23:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698793971;
+        bh=HUHN15gYL1zUQAZ/9kbQyYuReBV1adG4NcrFQI5O1EA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UWVsN5tO54rx3f5rm/2Q31gDwhbSjKfQC6V5qBLtEVr4Rwpj7I7yMkvepTMR/lTtT
+         VZqTAW/Ni44oDy4DxIjDO6jVJnB3XhJ1iXh/jS/mwEM6mkBwXfzeYhmhhzk0O3GH1C
+         FpD5ET6CpsJs564xQRPuK4enmdSn0K5L9FR73kX/HjPNJDmk0zU7wpeb5rhu5lYajK
+         tqce7Z3t64Zk3H+3LHPpkEK22xLM57Jc8HFHfmu9721nBL0Xsq/svRRP9VsvB3XdNt
+         WDyDN0dl8KXCOPtrduLbhpDz2EwAI3OEgEsUZRP0GYvAfodXBg89A0KEIH+Eygdi1J
+         T4yRHuxrW0+lQ==
+Date:   Tue, 31 Oct 2023 16:12:50 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 31 Oct 2023 23:06:59 +0000
-In-Reply-To: <ZUGGqOCU7TAU6c6p@google.com>
-References: <20231031115748.622578-1-paul@xen.org>
-         <ZUGCPQegUeTutsrb@google.com>
-         <028f629d16377f9a7e9fd87ef9564846b0ab4ed9.camel@infradead.org>
-         <ZUGGqOCU7TAU6c6p@google.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-vfBLl56V5HLOW9jSMt8W"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <20231031231250.GA1205221@frogsfrogsfrogs>
+References: <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+ <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area>
+ <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area>
+ <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+ <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+ <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 31, 2023 at 09:03:57AM +0200, Amir Goldstein wrote:
+> On Tue, Oct 31, 2023 at 3:42 AM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> [...]
+> > .... and what is annoying is that that the new i_version just a
+> > glorified ctime change counter. What we should be fixing is ctime -
+> > integrating this change counting into ctime would allow us to make
+> > i_version go away entirely. i.e. We don't need a persistent ctime
+> > change counter if the ctime has sufficient resolution or persistent
+> > encoding that it does not need an external persistent change
+> > counter.
+> >
+> > That was reasoning behind the multi-grain timestamps. While the mgts
+> > implementation was flawed, the reasoning behind it certainly isn't.
+> > We should be trying to get rid of i_version by integrating it into
+> > ctime updates, not arguing how atime vs i_version should work.
+> >
+> > > So I don't think the issue here is "i_version" per se. I think in a
+> > > vacuum, the best option of i_version is pretty obvious.  But if you
+> > > want i_version to track di_changecount, *then* you end up with that
+> > > situation where the persistence of atime matters, and i_version needs
+> > > to update whenever a (persistent) atime update happens.
+> >
+> > Yet I don't want i_version to track di_changecount.
+> >
+> > I want to *stop supporting i_version altogether* in XFS.
+> >
+> > I want i_version as filesystem internal metadata to die completely.
+> >
+> > I don't want to change the on disk format to add a new i_version
+> > field because we'll be straight back in this same siutation when the
+> > next i_version bug is found and semantics get changed yet again.
+> >
+> > Hence if we can encode the necessary change attributes into ctime,
+> > we can drop VFS i_version support altogether.  Then the "atime bumps
+> > i_version" problem also goes away because then we *don't use
+> > i_version*.
+> >
+> > But if we can't get the VFS to do this with ctime, at least we have
+> > the abstractions available to us (i.e. timestamp granularity and
+> > statx change cookie) to allow XFS to implement this sort of
+> > ctime-with-integrated-change-counter internally to the filesystem
+> > and be able to drop i_version support....
+> >
+> 
+> I don't know if it was mentioned before in one of the many threads,
+> but there is another benefit of ctime-with-integrated-change-counter
+> approach - it is the ability to extend the solution with some adaptations
+> also to mtime.
+> 
+> The "change cookie" is used to know if inode metadata cache should
+> be invalidated and mtime is often used to know if data cache should
+> be invalidated, or if data comparison could be skipped (e.g. rsync).
+> 
+> The difference is that mtime can be set by user, so using lower nsec
+> bits for modification counter would require to truncate the user set
+> time granularity to 100ns - that is probably acceptable, but only as
+> an opt-in behavior.
+> 
+> The special value 0 for mtime-change-counter could be reserved for
+> mtime that was set by the user or for upgrade of existing inode,
+> where 0 counter means that mtime cannot be trusted as an accurate
+> data modification-cookie.
 
---=-vfBLl56V5HLOW9jSMt8W
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+What about write faults on an mmap region?  The first ro->rw transition
+results in an mtime update, but not again until the page gets cleaned.
 
-On Tue, 2023-10-31 at 22:58 +0000, Sean Christopherson wrote:
-> On Tue, Oct 31, 2023, David Woodhouse wrote:
-> > On Tue, 2023-10-31 at 15:39 -0700, Sean Christopherson wrote:
-> > > On Tue, Oct 31, 2023, Paul Durrant wrote:
-> > > Any reason not to make this a generic "capability" instead of a Xen s=
-pecific flag?
-> > > E.g. I assume these problematic guests would mishandle PVCLOCK_TSC_ST=
-ABLE_BIT if
-> > > it showed up in kvmclock, but they don't use kvmclock so it's not a p=
-roblem in
-> > > practice.
-> >=20
-> > No, those guests are just fine with kvmclock. It's the *Xen* page they
-> > forgot to map to userspace for the vDSO to use. And it's Xen (true Xen)
-> > which made you jump through hoops to use the TSC that way, such that it
-> > would actually expose the PVCLOCK_TSC_STABLE_BIT. We don't expect, and
-> > have never seen, such issues with native KVM guests.
->=20
-> Hmm, and I suppose theoretically the guest kernel could choose to ignore =
-the Xen
-> interface for whatever reason.=C2=A0 Mostly out of curiosity, is this fla=
-g something
-> that'd be set anytime Xen is advertised to the guest?
+> This feature is going to be useful for the vfs HSM implementation [1]
+> that I am working on and it actually rhymes with the XFS DMAPI
+> patches that were never fully merged upstream.
 
-Probably not in QEMU; I'll make it optional there.
+Kudos, I cannot figure out a non-pejorative word that rhymes with
+"**API". ;)
 
-Hosting providers who are migrating millions of Xen guests to KVM and
-want to do so with as little customer pain as possible, and who have
-already had customer failures due to this guest kernel bug... are more
-likely to turn it on for all "Xen" guests.
+--D
 
-> > > I doubt there's a real need or use case, but it'd require less churn =
-and IMO is
-> > > simpler overall, e.g.
-> > >=20
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index e3eb608b6692..731b201bfd5a 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -3225,7 +3225,7 @@ static int kvm_guest_time_update(struct kvm_vcp=
-u *v)
-> > > =C2=A0
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* If the host uses TSC cl=
-ocksource, then it is stable */
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pvclock_flags =3D 0;
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (use_master_clock)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (use_master_clock && !vcpu->=
-kvm.force_tsc_unstable)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 pvclock_flags |=3D PVCLOCK_TSC_STABLE_BIT;
-> > > =C2=A0
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vcpu->hv_clock.flags =3D p=
-vclock_flags;
-> > >=20
-> > > I also assume this is a "set and forget" thing?=C2=A0 I.e. KVM can re=
-quire the flag
-> > > to be set before any vCPUs are created.
-> >=20
-> > Hrm, not sure we have previously required that the KVM_XEN_HVM_CONFIG
-> > setup be done before any vCPUs were created.
->=20
-> Oh, I was asking in the context of adding a generic capability.
-
-Yeah, it's saner for it to be set-and-forget. We *could* contrive some
-kind of detection for the affected guest kernels and turn it off just
-for them... but no, I just don't want to.
-
-> > I tend to prefer *not* to push ordering requirements onto userspace.
->=20
-> For per-VM flags that are consumed by vCPUs, it makes reasoning about cor=
-rectness
-> and what is/isn't allowed much, much easier.
->=20
-> > Does it need to be a per-vcpu thing?=20
->=20
-> Huh?=C2=A0 No, I was only asking (again, for a generic capability) if we =
-could do
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&kvm->lock);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0if (!kvm->created_vcpus) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kvm=
-->arch.force_tsc_unstable =3D true;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0r =
-=3D 0;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0mutex_unlock(&kvm->lock);
->=20
-> So that it would be blatantly obvious that there's no race with checking =
-a per-VM
-> flag without any lock/RCU protections.
-
-Makes sense. Although TBH if the VMM wants to flip this bit on and off
-at runtime while the guest clocks are being updated, it deserves what
-it gets. It's not a problem for KVM.
-
-
---=-vfBLl56V5HLOW9jSMt8W
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDMxMjMwNjU5WjAvBgkqhkiG9w0BCQQxIgQgihGs4hXs
-4PBbc91FI1IIkAP5JbGR9+dxZSAg5fDmOf8wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBCP1QoX0zvdbjt6dIiOAB7eXk16TZNHjGp
-HSH5tp1vXJpTTV5eY6E+nMFrTXtCoPjBVkVISxWyJ6lSzKE5NnW+cMPd2lXdsBte598qRgzhWW39
-UxEWdDifxAtUIdb+CDRKRzVyHrAQDYCn9cmriAH0RAKr0eTZx3EKg0MyyYFF/vQAXrwaqJciJb+y
-ZjnQiy3obTO5nqPAVDheVTSpurk2siL4J3OtofecTnKwjKpNQhjcSFSOTozCk2sY37+HNU0lApGC
-SpVttC0qg/fIvkd00x0avPSUs3DEqQWrgF6fFCLRMSFUeCbra5PQLGtwY6V7PKP8WVn6TSmBW+rC
-f4dYkRAxkeK8nvQozkuEY6Fu8vBK2iZunA381cS/dYJnFDGkQ7j5jJISkon9LZxp7b65tnKTBqYG
-zFzPP1kZdSj6Im/E13JhqKnAfCAWFtY2Uk6xmhwQd8GSmCUMVbRLNw0G7sLneN2+sq2TQZ/VdGHC
-52P2a8MxT/SIYKAXD7G58Ok17lNoib6em2BhXnHJrskPurLAJZAK1DwRNOUqJiZZxa7OX4tPVpyr
-hwBsK1/FX4EsImgFN8ByuFe2krlvckmR+0AqE+h/UVC2gwBVwWEyxeXpjKiSw4uLY6ZkB1iqniBq
-Uh22wDeJujyOXJ9PlHwodBA/RnoreIVRfGZVoxya7AAAAAAAAA==
-
-
---=-vfBLl56V5HLOW9jSMt8W--
+> Speaking on behalf of my employer, we would love to see the data
+> modification-cookie feature implemented, whether in vfs or in xfs.
+> 
+> *IF* the result on this thread is that the chosen solution is
+> ctime-with-change-counter in XFS
+> *AND* if there is agreement among XFS developers to extend it with
+> an opt-in mkfs/mount option to 100ns-mtime-with-change-counter in XFS
+> *THEN* I think I will be able to allocate resources to drive this xfs work.
+> 
+> Thanks,
+> Amir.
+> 
+> [1] https://github.com/amir73il/fsnotify-utils/wiki/Hierarchical-Storage-Management-API
+> 
