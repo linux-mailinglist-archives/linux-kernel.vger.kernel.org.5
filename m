@@ -2,98 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E83B77DD064
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7AC7DCC09
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344778AbjJaPU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
+        id S1344029AbjJaLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344620AbjJaPUV (ORCPT
+        with ESMTP id S1344003AbjJaLmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:20:21 -0400
-X-Greylist: delayed 12000 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 08:18:57 PDT
-Received: from 16.mo550.mail-out.ovh.net (16.mo550.mail-out.ovh.net [178.33.104.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D164A10E7
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:18:57 -0700 (PDT)
-Received: from director5.ghost.mail-out.ovh.net (unknown [10.108.4.105])
-        by mo550.mail-out.ovh.net (Postfix) with ESMTP id E340E2884F
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 11:42:18 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-rsqbf (unknown [10.110.103.49])
-        by director5.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 03A651FEB0;
-        Tue, 31 Oct 2023 11:42:17 +0000 (UTC)
-Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
-        by ghost-submission-6684bf9d7b-rsqbf with ESMTPSA
-        id xNv7ORnoQGUrvQAA/A58uA
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 31 Oct 2023 11:42:17 +0000
+        Tue, 31 Oct 2023 07:42:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45691;
+        Tue, 31 Oct 2023 04:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=VlN8p3RfYXpXh6bENRI9S68YgJgpcAwvfutYsLKoRF8=; b=iGQM8KHo53UcuP/wjvDnraWCAV
+        +cK8IC6VobUa7A1LGj5o1rYNKBzU7e2CPUH3yazhrqfKrj0odV/auJ8v2ZG7AUJmdviuvjozHRzVX
+        a+nGB63sCxSFYXUBhpu20H37NPhNMWgCDQYSbl1oQ3DnYk8zUa7sW4gqRqv3LJJW+Y3unaQCUwGfl
+        OqRWJAE5/GLny+lqvaOERSTGUUfCYazW0nBf40A7ACDIC0PLuz41sZEo1BAAd0S1mnHYgN68Fxv2X
+        z1/JTXkulD1nAwKvg7y2/m2SzivuGJJ3al8MwwTsH8OOrrZNJmOlI40kI9i4Jmu36D4vHx3xlGOEw
+        6ttE7z6g==;
+Received: from [46.18.216.58] (helo=[127.0.0.1])
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qxn8W-004mxB-1n;
+        Tue, 31 Oct 2023 11:42:22 +0000
+Date:   Tue, 31 Oct 2023 11:42:19 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     paul@xen.org, Paul Durrant <xadimgnik@gmail.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+CC:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
+User-Agent: K-9 Mail for Android
+In-Reply-To: <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
+References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org> <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
+Message-ID: <F80266DD-D7EF-4A26-B9F8-BC33EC65F444@infradead.org>
 MIME-Version: 1.0
-Date:   Tue, 31 Oct 2023 13:42:17 +0200
-From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, skhan@linuxfoundation.org,
-        dillon.varone@amd.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, Xinhui.Pan@amd.com,
-        linux-kernel@vger.kernel.org, samson.tam@amd.com,
-        SyedSaaem.Rizvi@amd.com, aurabindo.pillai@amd.com,
-        stable@vger.kernel.org, daniel@ffwll.ch, george.shen@amd.com,
-        alexander.deucher@amd.com, Jun.Lei@amd.com, airlied@gmail.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH] drm/amd/display: remove redundant check
-In-Reply-To: <2023103115-obstruct-smudgy-6cc6@gregkh>
-References: <20231030171748.35482-1-jose.pekkarinen@foxhound.fi>
- <2023103115-obstruct-smudgy-6cc6@gregkh>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <3ab58c1e48447798d7525e7d2f42f1a2@foxhound.fi>
-X-Sender: jose.pekkarinen@foxhound.fi
-Organization: Foxhound Ltd.
-X-Originating-IP: 185.220.101.158
-X-Webmail-UserID: jose.pekkarinen@foxhound.fi
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 16724680167312303623
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddtvddgfedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeetveejleefudduueehfedvjeekteevhefhtdffkedvffegieejgeettdeuueeiteenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghenucfkphepuddvjedrtddrtddruddpudekhedrvddvtddruddtuddrudehkedpudehuddrkedtrddvledrvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehhedtpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,
-        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-31 07:48, Greg KH wrote:
-> On Mon, Oct 30, 2023 at 07:17:48PM +0200, José Pekkarinen wrote:
->> This patch addresses the following warning spotted by
->> using coccinelle where the case checked does the same
->> than the else case.
->> 
->> drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c:4664:8-10: 
->> WARNING: possible condition with no effect (if == else)
->> 
->> Fixes: 974ce181 ("drm/amd/display: Add check for PState change in 
->> DCN32")
->> 
->> Cc: stable@vger.kernel.org
-> 
-> Why is this relevant for stable?
 
-     Hi,
 
-     I was asked to send it for stable because this code
-looks different in amd-staging-drm-next, see here.
+On 31 October 2023 10:42:42 GMT, Paul Durrant <xadimgnik@gmail=2Ecom> wrot=
+e:
+>There is no documented ordering requirement on setting KVM_XEN_VCPU_ATTR_=
+TYPE_TIMER versus KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO or KVM_XEN_ATTR_TYPE_SHA=
+RED_INFO but kvm_xen_start_timer() now needs the vCPU's pvclock to be valid=
+=2E Should actually starting the timer not be deferred until then? (Or simp=
+ly add a check here and have the attribute setting fail if the pvclock is n=
+ot valid)=2E
 
-https://gitlab.freedesktop.org/agd5f/linux/-/blob/amd-staging-drm-next/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c#L4661
 
-     Feel free to let me know if this is wrong, or if I
-need to review some other guidelines I may have missed.
+There are no such dependencies and I don't want there to be=2E That would =
+be the *epitome* of what my "if it needs documenting, fix it first" mantra =
+is intended to correct=2E
 
-     Thanks!
+The fact that this broke on migration because the hv_clock isn't set up ye=
+t, as we saw in our overnight testing, is just a bug=2E In my tree I've fix=
+ed it thus:
 
-     José.
+index 63531173dad1=2E=2Ee3d2d63eef34 100644
+--- a/arch/x86/kvm/xen=2Ec
++++ b/arch/x86/kvm/xen=2Ec
+@@ -182,7 +182,7 @@ static void kvm_xen_start_timer(st
+ruct kvm_vcpu *vcpu, u64 guest_abs,
+         * the absolute CLOCK_MONOTONIC time at which
+the timer should
+         * fire=2E
+         */
+-       if (vcpu->kvm->arch=2Euse_master_clock &&
++       if (vcpu->arch=2Ehv_clock=2Eversion && vcpu->kvm->
+arch=2Euse_master_clock &&
+            static_cpu_has(X86_FEATURE_CONSTANT_TSC))
+{
+                uint64_t host_tsc, guest_tsc;
+
+@@ -206,9 +206,23 @@ static void kvm_xen_start_timer(s
+truct kvm_vcpu *vcpu, u64 guest_abs,
+
+                /* Calculate the guest kvmclock as the
+ guest would do it=2E */
+                guest_tsc =3D kvm_read_l1_tsc(vcpu, host
+_tsc);
+-               guest_now =3D __pvclock_read_cycles(&vcp
+u->arch=2Ehv_clock, guest_tsc);
++               guest_now =3D __pvclock_read_cycles(&vcp
+u->arch=2Ehv_clock,
++                                                 gues
+t_tsc);
+        } else {
+-               /* Without CONSTANT_TSC, get_kvmclock_
+ns() is the only option */
++               /*
++                * Without CONSTANT_TSC, get_kvmclock_
+ns() is the only option=2E
++                *
++                * Also if the guest PV clock hasn't b
+een set up yet, as is
++                * likely to be the case during migrat
+ion when the vCPU has
++                * not been run yet=2E It would be possi
+ble to calculate the
++                * scaling factors properly in that ca
+se but there's not much
++                * point in doing so=2E The get_kvmclock
+_ns() drift accumulates
++                * over time, so it's OK to use it at
+startup=2E Besides, on
++                * migration there's going to be a lit
+tle bit of skew in the
++                * precise moment at which timers fire
+ anyway=2E Often they'll
++                * be in the "past" by the time the VM
+ is running again after
++                * migration=2E
++                */
+                guest_now =3D get_kvmclock_ns(vcpu->kvm)
+;
+                kernel_now =3D ktime_get();
+        }
+--
+2=2E41=2E0
+
+We *could* reset the timer when the vCPU starts to run and handles the KVM=
+_REQ_CLOCK_UPDATE event, but I don't want to for two reasons=2E
+
+Firstly, we just don't need that complexity=2E This approach is OK, as the=
+ newly-added comment says=2E And we do need to fix get_kvmclock_ns() anyway=
+, so it should work fine=2E Most of this patch will still be useful as it u=
+ses a single TSC read and we *do* need to do that part even after all the k=
+vmclock brokenness is fixed=2E But the complexity on KVM_REQ_CLOCK_UPDATE i=
+sn't needed in the long term=2E
+
+Secondly, it's also wrong thing to do in the general case=2E Let's say KVM=
+ does its thing and snaps the kvmclock backwards in time on a KVM_REQ_CLOCK=
+_UPDATE=2E=2E=2E do we really want to reinterpret existing timers against t=
+he new kvmclock? They were best left alone, I think=2E=20
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00
