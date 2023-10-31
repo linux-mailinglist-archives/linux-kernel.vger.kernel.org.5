@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2197DC92E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF227DC933
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343771AbjJaJMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        id S1343796AbjJaJO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343765AbjJaJMn (ORCPT
+        with ESMTP id S1343706AbjJaJOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:12:43 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395CA9F
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:12:41 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41cd7a3e8f8so39757331cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698743560; x=1699348360; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0BRx8gZoE9fOWKsHw60pqFlz6sDQAcL5kgFNRqM8gpY=;
-        b=EE8/N5AcZs5D6R5XBDm7Gwh3piwUMoP3wZyctDyP0+AMSgL8WBMtLqrbQwRa1rkx+n
-         vsAI/u0U8t20NJgq33LeAXTNiqlc874ziZ//StMo9RfwpJD2zqxkW+shk6Mn0PD8Kdr7
-         xQSmxOf1AAXQPpkNWKyJFrnq95xyQlhJNfYns=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698743560; x=1699348360;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0BRx8gZoE9fOWKsHw60pqFlz6sDQAcL5kgFNRqM8gpY=;
-        b=LgvEG2ss+HSQWXJxL1aId4/6YzzRq2RtP33RcXE+gwi2Amjl4Rk+eH7+ofEF0KXuDd
-         gfduC7+yjL12/lfnuEekQWRyPP+CT9ZOZsdldg5orbBnODy/jZ6NpTfZO/i8UhQqqMUx
-         t+5Q+nDcvCfVQUoDyXc8chYgAytMF+lFWK9Hmcv9vtaAhSOk4tR5pZg+eSihr0dM2fCe
-         pLQujNv9quOd9OVFUNZhSmhtmfTHdI1/wv/BsfhTU5yQwMYiT7JBHjRF4F9Vx7ur03MR
-         cyk3+sznqqaZg5nb8sBF8gxo6CI4NewFafb7qDKPfC9xHig/QVmY7IO5ROCsTO4Q8YaS
-         ejwA==
-X-Gm-Message-State: AOJu0YxvZg+7cuhXDPYxFS7erGYyaL2spfENL8KE7gZ19/I2xqdfJIuY
-        vy7dMxSzkbT5yA7cTTIPW0qvUT2842lMbdVRQSY=
-X-Google-Smtp-Source: AGHT+IFBLsHOG6JQncEXzvoZ+IzeRLZ052FYOz+Epy6y9itpTWi4x5nD6W89dEcLnEcDx76vQl/z1Q==
-X-Received: by 2002:a05:622a:3d0:b0:418:110e:6179 with SMTP id k16-20020a05622a03d000b00418110e6179mr15579816qtx.1.1698743560085;
-        Tue, 31 Oct 2023 02:12:40 -0700 (PDT)
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com. [209.85.219.42])
-        by smtp.gmail.com with ESMTPSA id h9-20020ac81389000000b004195faf1e2csm327853qtj.97.2023.10.31.02.12.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 02:12:39 -0700 (PDT)
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-66d093265dfso35090946d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:12:39 -0700 (PDT)
-X-Received: by 2002:a05:6214:627:b0:66d:63d6:3600 with SMTP id
- a7-20020a056214062700b0066d63d63600mr15176670qvx.55.1698743558964; Tue, 31
- Oct 2023 02:12:38 -0700 (PDT)
+        Tue, 31 Oct 2023 05:14:24 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223D1C1;
+        Tue, 31 Oct 2023 02:14:22 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39V83TgI021735;
+        Tue, 31 Oct 2023 05:14:07 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3u1f5hwuc1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 05:14:06 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 39V9E5fl038412
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 31 Oct 2023 05:14:05 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Tue, 31 Oct
+ 2023 05:14:04 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Tue, 31 Oct 2023 05:14:04 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.145])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39V9DqZq023053;
+        Tue, 31 Oct 2023 05:13:55 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     Daniel Matyas <daniel.matyas@analog.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH] hwmon: max31827: include regulator header
+Date:   Tue, 31 Oct 2023 11:13:24 +0200
+Message-ID: <20231031091324.23991-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231028-uvc-power-v1-1-fa5c376abe78@chromium.org> <20231031002545.GF12764@pendragon.ideasonboard.com>
-In-Reply-To: <20231031002545.GF12764@pendragon.ideasonboard.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 31 Oct 2023 10:12:24 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuiUWEQ292Lt2RnZ2OjXA4pATxdEufkLDBzpYLk74yY+g@mail.gmail.com>
-Message-ID: <CANiDSCuiUWEQ292Lt2RnZ2OjXA4pATxdEufkLDBzpYLk74yY+g@mail.gmail.com>
-Subject: Re: [PATCH] media: uvcvideo: Fix power line control for SunplusIT camera
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yunke Cao <yunkec@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: 7X88-FrYKT8avtxWljMheJjK5HLILKYl
+X-Proofpoint-ORIG-GUID: 7X88-FrYKT8avtxWljMheJjK5HLILKYl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 adultscore=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 mlxscore=0 mlxlogscore=898 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2310240000 definitions=main-2310310071
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,10 +69,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+Include `linux/regulator/consumer.h` since the driver is using
+`devm_regulator_get_enable` function.
 
->
-> No need to resend for the typo, I'll fix it locally.
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+ drivers/hwmon/max31827.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks!
->
+diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
+index 0508b020a408..b29f25321dc4 100644
+--- a/drivers/hwmon/max31827.c
++++ b/drivers/hwmon/max31827.c
+@@ -12,6 +12,7 @@
+ #include <linux/i2c.h>
+ #include <linux/mutex.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
+ 
+ #define MAX31827_T_REG			0x0
+ #define MAX31827_CONFIGURATION_REG	0x2
+-- 
+2.42.0
+
