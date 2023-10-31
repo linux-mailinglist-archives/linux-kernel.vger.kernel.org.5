@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4C17DD704
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900EB7DD706
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbjJaUXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
+        id S233391AbjJaUX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjJaUXp (ORCPT
+        with ESMTP id S234097AbjJaUX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:23:45 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75629E4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:23:41 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b2f5aed39cso3682975b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1698783820; x=1699388620; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cAl1Hg4JRuGCSI5hrrAD0peIOWwe7ctUsvKwLVEKWuM=;
-        b=Ww5RToF8tPdI/7bdA8sT3SxBJVtExcczZ1YfrahMteF7mwBKNU1wN2YMGCt/uBLGqv
-         PC6cs+e5aXLLOlKt+jMHrWl7u07bqW5f/6lPWnkw+gYbO5/hkradHBtSB4qmgYDqg5tl
-         sVgcPEdaIz/kGPJHEoqD0Cv+Dpnq+FmD+F0I6uA2PRLtFP7PxQrAsgpEWDJZU4Ylp0xT
-         m0TuSwy3D2q/w8X+oei6d4UqCAgR7tussYn6sjrXlik27O4MeJsZkaDWiKBobhnK2tuz
-         BKd401R8i50AP8LGHVYGPSHef6/p9evuZtobljnWS4uX3A8gGJBrfT2RQmVlDXxm0Gad
-         AkVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698783820; x=1699388620;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cAl1Hg4JRuGCSI5hrrAD0peIOWwe7ctUsvKwLVEKWuM=;
-        b=h3qPo9ynDdoSzs8wbCRMV4TintVC2ZiwRGyaeTw29DImdOIIDClFsQIiRxkiR6iwI1
-         V9F6lPWVMp3GWXlPQPIHIVt8Veg6FCXlUvSmMvMBWhXFGrecWwaEbbhy9mA4nOrv7IyZ
-         ucVQDceuTUHDP4//8qyBujqoXVuAytepTFsJQAI+XKTzX3GjpwJnnXhu3zIPWkQcILUA
-         /9OfZzb5IGybWh7lVZN0oPbjI7OvUB5OFn6YU1M3314EdpI+oq0AZRzceMLTKraltoco
-         W/z9jsOvhanIOA+Rzp9KhRPLRRamdid/l808s68uQMf3dyfZn9uzsJ4GVcNmRFj2pDUG
-         0a+A==
-X-Gm-Message-State: AOJu0YyA8KebjVlWOr+xY+IV0N/Ze2U7IST8+At5hnacRlkD+QP5K1fZ
-        YTxnilQT40ngQJ1Hng2OyVSRutZ6NfgsFzOElNk=
-X-Google-Smtp-Source: AGHT+IEt7qAE2Ka+HQ0x4uZ6Au8f4gm1teKJ49wlOFD/ShxnaQl9zyzTD4bTYRvzDxZM0PpRFJ0X0w==
-X-Received: by 2002:a05:6808:22a3:b0:3b5:6467:8cf5 with SMTP id bo35-20020a05680822a300b003b564678cf5mr2916382oib.54.1698783819996;
-        Tue, 31 Oct 2023 13:23:39 -0700 (PDT)
-Received: from localhost.localdomain ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id qr7-20020a05620a390700b007788bb0ab8esm806628qkn.19.2023.10.31.13.23.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 13:23:39 -0700 (PDT)
-From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH] scripts/gdb/vmalloc: disable on no-MMU
-Date:   Tue, 31 Oct 2023 16:22:36 -0400
-Message-ID: <20231031202235.2655333-2-ben.wolsieffer@hefring.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 31 Oct 2023 16:23:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF8C10A
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:23:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC330C433C7;
+        Tue, 31 Oct 2023 20:23:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698783833;
+        bh=kWiaXu3zrQZh2hYqfEmW4X7fxyTTU9Vm8/7Xl0jbDBA=;
+        h=From:Date:Subject:To:Cc:From;
+        b=s5sH2Uci1k2u4vWV23OrrzgnwwQKx+y5oaE0RpqzJ6Twf7lV29B/bkx2x9CbcHhgn
+         Hfd01CAIq4EtfvIWkc1Z1uGI+U2bw5mIEmczPNeG9ThqFF59TgRArd+ZG48aTt/xQO
+         8YhKl5stfQntyVPcWA/n+sG96SC7KQ+v4r6KyyjP65sVayY4vxc7OtPoNZZG33e5Rq
+         seCYRCmchOws3UuX2GEynHkpSlssIUm2Xt5uwMQyf8S/Ad1tvFFudq5lDlcboCi0+T
+         YEbawG7N7XeSujIVQIduOldpcybF3VriG1dlAyZU6iS+kx1M2qvC6MmTR7NSgZBFbt
+         Eex9Tbeiqjthg==
+From:   Nathan Chancellor <nathan@kernel.org>
+Date:   Tue, 31 Oct 2023 13:23:35 -0700
+Subject: [PATCH net] tcp: Fix -Wc23-extensions in tcp_options_write()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231031-tcp-ao-fix-label-in-compound-statement-warning-v1-1-c9731d115f17@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAEdiQWUC/x2NywqDMBAAf0X23AWjxZr+SvGwJlu7oJuQpA8Q/
+ 73B4xxmZofMSTjDvdkh8UeyBK1gLg24F+nCKL4ydG3Xm7Y3WFxECviUH64084qi6MIWw1s95kK
+ FN9aCX0oquiDPfnDW3sarHaFGY+KqnsMHKBeYjuMPgHtvwIUAAAA=
+To:     edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     ndesaulniers@google.com, trix@redhat.com, 0x7f454c46@gmail.com,
+        fruggeri@arista.com, noureddine@arista.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1514; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=kWiaXu3zrQZh2hYqfEmW4X7fxyTTU9Vm8/7Xl0jbDBA=;
+ b=owGbwMvMwCEmm602sfCA1DTG02pJDKmOSREXvu1tr+8+bHVSuOeh38onXBunXjs4y4cn7rHcg
+ Za26s9POkpZGMQ4GGTFFFmqH6seNzScc5bxxqlJMHNYmUCGMHBxCsBErl9gZNh04/vrW5sNPmfM
+ aXzGUKT2ZEVGzo5L0ccv7ubqSViXlHqUkWGt9YUSyxlBEl+f7VFIuhPVxS8b+8PzTKPVTYYTk//
+ lC/ADAA==
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmap_area does not exist on no-MMU, therefore the GDB scripts fail to
-load:
+Clang warns (or errors with CONFIG_WERROR=y) when CONFIG_TCP_AO is set:
 
-Traceback (most recent call last):
-  File "<...>/vmlinux-gdb.py", line 51, in <module>
-    import linux.vmalloc
-  File "<...>/scripts/gdb/linux/vmalloc.py", line 14, in <module>
-    vmap_area_ptr_type = vmap_area_type.get_type().pointer()
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<...>/scripts/gdb/linux/utils.py", line 28, in get_type
-    self._type = gdb.lookup_type(self._name)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-gdb.error: No struct type named vmap_area.
+  net/ipv4/tcp_output.c:663:2: error: label at end of compound statement is a C23 extension [-Werror,-Wc23-extensions]
+    663 |         }
+        |         ^
+  1 error generated.
 
-To fix this, disable the command and add an informative error message if
-CONFIG_MMU is not defined, following the example of lx-slabinfo.
+On earlier releases (such as clang-11, the current minimum supported
+version for building the kernel) that do not support C23, this was a
+hard error unconditionally:
 
-Fixes: 852622bf3616 ("scripts/gdb/vmalloc: add vmallocinfo support")
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+  net/ipv4/tcp_output.c:663:2: error: expected statement
+          }
+          ^
+  1 error generated.
+
+Add a semicolon after the label to create an empty statement, which
+resolves the warning or error for all compilers.
+
+Closes: https://github.com/ClangBuiltLinux/linux/issues/1953
+Fixes: 1e03d32bea8e ("net/tcp: Add TCP-AO sign to outgoing packets")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- scripts/gdb/linux/constants.py.in | 1 +
- scripts/gdb/linux/vmalloc.py      | 8 ++++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ net/ipv4/tcp_output.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/constants.py.in
-index e3517d4ab8ec..b5ba9682fc6b 100644
---- a/scripts/gdb/linux/constants.py.in
-+++ b/scripts/gdb/linux/constants.py.in
-@@ -157,3 +157,4 @@ LX_CONFIG(CONFIG_STACKDEPOT)
- LX_CONFIG(CONFIG_PAGE_OWNER)
- LX_CONFIG(CONFIG_SLUB_DEBUG)
- LX_CONFIG(CONFIG_SLAB_FREELIST_HARDENED)
-+LX_CONFIG(CONFIG_MMU)
-diff --git a/scripts/gdb/linux/vmalloc.py b/scripts/gdb/linux/vmalloc.py
-index 48e4a4fae7bb..d3c8a0274d1e 100644
---- a/scripts/gdb/linux/vmalloc.py
-+++ b/scripts/gdb/linux/vmalloc.py
-@@ -10,8 +10,9 @@ import gdb
- import re
- from linux import lists, utils, stackdepot, constants, mm
- 
--vmap_area_type = utils.CachedType('struct vmap_area')
--vmap_area_ptr_type = vmap_area_type.get_type().pointer()
-+if constants.LX_CONFIG_MMU:
-+    vmap_area_type = utils.CachedType('struct vmap_area')
-+    vmap_area_ptr_type = vmap_area_type.get_type().pointer()
- 
- def is_vmalloc_addr(x):
-     pg_ops = mm.page_ops().ops
-@@ -25,6 +26,9 @@ class LxVmallocInfo(gdb.Command):
-         super(LxVmallocInfo, self).__init__("lx-vmallocinfo", gdb.COMMAND_DATA)
- 
-     def invoke(self, arg, from_tty):
-+        if not constants.LX_CONFIG_MMU:
-+            raise gdb.GdbError("Requires MMU support")
-+
-         vmap_area_list = gdb.parse_and_eval('vmap_area_list')
-         for vmap_area in lists.list_for_each_entry(vmap_area_list, vmap_area_ptr_type, "list"):
-             if not vmap_area['vm']:
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index f558c054cf6e..6064895daece 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -658,7 +658,7 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
+ 			memset(ptr, TCPOPT_NOP, sizeof(*ptr));
+ 			ptr++;
+ 		}
+-out_ao:
++out_ao:;
+ #endif
+ 	}
+ 	if (unlikely(opts->mss)) {
+
+---
+base-commit: 55c900477f5b3897d9038446f72a281cae0efd86
+change-id: 20231031-tcp-ao-fix-label-in-compound-statement-warning-ebd6c9978498
+
+Best regards,
 -- 
-2.42.0
+Nathan Chancellor <nathan@kernel.org>
 
