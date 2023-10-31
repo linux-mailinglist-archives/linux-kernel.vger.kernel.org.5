@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D14D07DCD56
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1457DCD66
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344415AbjJaMzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
+        id S1344370AbjJaM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344383AbjJaMzf (ORCPT
+        with ESMTP id S229642AbjJaM5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:55:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C9DC2;
-        Tue, 31 Oct 2023 05:55:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33947C433C8;
-        Tue, 31 Oct 2023 12:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698756932;
-        bh=s7UBSmOan5oLtMhAz9UbCJu2Vxkj6b+7mYph/6f2OQ4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Fc9r3HnhP2vrDNKoCbIYyj3IJrXZ1Gm3bIlLEPBLpBVAkLstdVfLk6/LS2vex+SSO
-         IditxlTPlqhQJJBWOO4+9OnQvTpiyYVst57FnePcyEXPbPf6WafvGffAsLZsmjSeLk
-         TA7XVfrRoSpIxjCKtKIzdMUQZaDByKBL3fVP/bni2e6bgRUy0dsa2oaqhYVI3GaSD5
-         PGrVhNmfxijl1WfwMkaFeLulhpH5WRmskhcrN5LVFtQ9v9FPE8kO4eFEI9JeukVXxV
-         Gz1bmq0XjkkizrBM9/eo9IILVDmb28ZOBoHHxY6PHPZm35yM391OYl8lssPbx3jcZG
-         dGJal2gIxTzgQ==
-Message-ID: <34e2c1231f54309c204c5b67e1999dfe1a00fceb.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Tue, 31 Oct 2023 08:55:28 -0400
-In-Reply-To: <20231031122201.kmxzttzfbearu6iu@quack3>
-References: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <ZTc8tClCRkfX3kD7@dread.disaster.area>
-         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-         <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
-         <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-         <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
-         <ZTnNCytHLGoJY9ds@dread.disaster.area>
-         <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-         <ZUAwFkAizH1PrIZp@dread.disaster.area>
-         <d5965ba7ed012433a9914ba38a6046f2ddb015ac.camel@kernel.org>
-         <20231031122201.kmxzttzfbearu6iu@quack3>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 31 Oct 2023 08:57:10 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA182BD;
+        Tue, 31 Oct 2023 05:57:07 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6cd0a8bc6dcso3763144a34.2;
+        Tue, 31 Oct 2023 05:57:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698757027; x=1699361827;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FtG9QhzR7J+O+f8JayPYsLnoKybZwF7lAbt6Ys0d80s=;
+        b=Fij7LAdLyV6JR7HDfkTGoGhzGIprx6uaCjQglcF/G25OSy12PMAeod1spQa9zoe2Mq
+         0cuupnnmOhM70vh9vtxkjjGaVVWqd0WPwkhu+D8aYxjwUA5MkQU4WQhZ9ojQtpKKGtZP
+         rkJCm0185FRskSrY85r9BYV8LWpBtH2uV8pd4FzH1q2B3rPn3TSxpmJcaQgAyMMgqHBc
+         pWQsnhoSFBMRr6ZJrDHVwEX9RDezmf09kdFF8l5o0Gj9HRZxWAWFXpywmcD544j7yw3I
+         g3+eCqjWeSF8IMxX7EvRzMpCtycRMKKM2p8w3jlUjlr0qrIBsAh8V5uhbmIS6xQ9ROA7
+         T0Ow==
+X-Gm-Message-State: AOJu0YxyW64h0Db5sWGwXDrk+O5UFju6DzKdRXveNxw2q9LpzS6eaLYA
+        vbMO8g2jkPc2CZs80/nKLA==
+X-Google-Smtp-Source: AGHT+IF3pfx/dun0ty4hvZSHtDRvIH6ofJEzghjkTJbFoMU8eC+a+vIrPaBJx5So39dUszTj/6Y5og==
+X-Received: by 2002:a05:6830:4117:b0:6ce:2985:a8c1 with SMTP id w23-20020a056830411700b006ce2985a8c1mr16529459ott.2.1698757027094;
+        Tue, 31 Oct 2023 05:57:07 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id q19-20020a9d6553000000b006ce2e6eb5bfsm210956otl.0.2023.10.31.05.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 05:57:06 -0700 (PDT)
+Received: (nullmailer pid 1364958 invoked by uid 1000);
+        Tue, 31 Oct 2023 12:57:05 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     "Yuxi (Yuxi) Wang" <Yuxi.Wang@monolithicpower.com>
+Cc:     conor+dt@kernel.org, pavel@ucw.cz,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        lee@kernel.org, linux-leds@vger.kernel.org, wyx137120466@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <c8bbeb3c3d9b44049d790e90d9738a83@monolithicpower.com>
+References: <c8bbeb3c3d9b44049d790e90d9738a83@monolithicpower.com>
+Message-Id: <169875521165.1325395.12809005225623147568.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: leds: add mps mp3326 LED
+Date:   Tue, 31 Oct 2023 07:57:05 -0500
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-31 at 13:22 +0100, Jan Kara wrote:
-> On Tue 31-10-23 07:04:53, Jeff Layton wrote:
-> > On Tue, 2023-10-31 at 09:37 +1100, Dave Chinner wrote:
-> > > I have suggested mechanisms for using masked off bits of timestamps
-> > > to encode sub-timestamp granularity change counts and keep them
-> > > invisible to userspace and then not using i_version at all for XFS.
-> > > This avoids all the problems that the multi-grain timestamp
-> > > infrastructure exposed due to variable granularity of user visible
-> > > timestamps and ordering across inodes with different granularity.
-> > > This is potentially a general solution, too.
-> >=20
-> > I don't really understand this at all, but trying to do anything with
-> > fine-grained timestamps will just run into a lot of the same problems w=
-e
-> > hit with the multigrain work. If you still see this as a path forward,
-> > maybe you can describe it more detail?
->=20
-> Dave explained a bit more details here [1] like:
->=20
-> Another options is for XFS to play it's own internal tricks with
-> [cm]time granularity and turn off i_version. e.g. limit external
-> timestamp visibility to 1us and use the remaining dozen bits of the
-> ns field to hold a change counter for updates within a single coarse
-> timer tick. This guarantees the timestamp changes within a coarse
-> tick for the purposes of change detection, but we don't expose those
-> bits to applications so applications that compare timestamps across
-> inodes won't get things back to front like was happening with the
-> multi-grain timestamps....
-> -
->=20
-> So as far as I understand Dave wants to effectively persist counter in lo=
-w
-> bits of ctime and expose ctime+counter as its change cookie. I guess that
-> could work and what makes the complexity manageable compared to full
-> multigrain timestamps is the fact that we have one filesystem, one on-dis=
-k
-> format etc. The only slight trouble could be that if we previously handed
-> out something in low bits of ctime for XFS, we need to keep handing the
-> same thing out until the inode changes (i.e., no rounding until the momen=
-t
-> inode changes) as the old timestamp could be stored somewhere externally
-> and compared.
->=20
-> 								Honza
->=20
-> [1] https://lore.kernel.org/all/ZTjMRRqmlJ+fTys2@dread.disaster.area/
->=20
->=20
 
-Got it. That makes sense and could probably be made to work.
-Doing that all in XFS won't be simple though. You'll need to reimplement
-stuff like file_modified() and file_update_time(). Those get called from
-deep within the VFS and from page fault handlers.
+On Tue, 31 Oct 2023 06:59:50 +0000, Yuxi (Yuxi) Wang wrote:
+> 
+> Document mps mp3326 LED driver devicetree bindings.
+> 
+> Signed-off-by: Yuxi Wang <Yuxi.Wang@monolithicpower.com>
+> ---
+>  .../devicetree/bindings/leds/leds-mp3326.yaml | 184 ++++++++++++++++++
+>  1 file changed, 184 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+> 
 
-FWIW, that's the main reason the multigrain work was so invasive, even
-though it was a filesystem-specific feature.
---=20
-Jeff Layton <jlayton@kernel.org>
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:compatible: [{'const': 'mps,mp3326'}] is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_r:properties:required: ['reg', 'color'] is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties: 'patternProperties' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+	hint: A json-schema keyword was found instead of a DT property name.
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:patternProperties: 'anyOf' conditional failed, one must be fixed:
+	'^led@[0-3]$' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:compatible: [{'const': 'mps,mp3326'}] is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'anyOf' conditional failed, one must be fixed:
+	'reg' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'anyOf' conditional failed, one must be fixed:
+	'color' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'anyOf' conditional failed, one must be fixed:
+	'reg' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'anyOf' conditional failed, one must be fixed:
+	'color' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_r:properties: 'required' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+	hint: A json-schema keyword was found instead of a DT property name.
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_r:properties:required: ['reg', 'color'] is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: 'oneOf' conditional failed, one must be fixed:
+	'unevaluatedProperties' is a required property
+	'additionalProperties' is a required property
+	hint: Either unevaluatedProperties or additionalProperties must be present
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'reg' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'color' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'reg' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'color' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: mps,led-protect: missing type definition
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: patternProperties: missing type definition
+Documentation/devicetree/bindings/leds/leds-mp3326.example.dtb: /example-0/i2c/mp3326@30: failed to match any schema with compatible: ['mps,mp3326']
+Documentation/devicetree/bindings/leds/leds-mp3326.example.dtb: /example-1/i2c/mp3326@30: failed to match any schema with compatible: ['mps,mp3326']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/c8bbeb3c3d9b44049d790e90d9738a83@monolithicpower.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
