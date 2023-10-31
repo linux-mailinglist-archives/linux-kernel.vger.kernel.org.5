@@ -2,58 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B867DCA3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6722B7DCB8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjJaJyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        id S230264AbjJaLPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233751AbjJaJy0 (ORCPT
+        with ESMTP id S235949AbjJaJy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Oct 2023 05:54:26 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FE91B4;
-        Tue, 31 Oct 2023 02:53:36 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 772AE1BF206;
-        Tue, 31 Oct 2023 09:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698746012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C206D61;
+        Tue, 31 Oct 2023 02:53:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3FF341F38A;
+        Tue, 31 Oct 2023 09:53:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1698746022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+ChJmbwu9VOnS+POuHp63gRk5wbYb/ywo5ZD9wSaeEs=;
-        b=JgjwshREE8Ep4u5oBUOhPDbbNTHxfx0Z0WE37PioXBaiJ9B/irqONtAXNFueoA0H8LSIk7
-        W/QZH9YcMhG/mvGUa8ZNPCKR5HWzorw/ASJOBLiNw0jXToKCR9xKli6ZWK9T0cruBVWooh
-        OCMN/24k2VgD0AKzf3Cm0O+mjGxRYzoaXYwftBXcOesV+CPwWG6wy+2Rxqqjhv0+txGObD
-        E0Y4ZWcNNrHRROiMom3iaKwC85TkbRTsLmTRIEJWcf6iXDHZ3fEVtZ4HOTl4OsKY4SYfnv
-        IQwB+IbERhT2lQRIK2SxM1Nc+22WSPOmoDpP7l5oXPJffTEgtkIyWVZyLwKy3w==
-Date:   Tue, 31 Oct 2023 10:53:30 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Mehdi Djait <mehdi.djait@bootlin.com>, mchehab@kernel.org,
-        heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
-        maxime.chevallier@bootlin.com, michael.riesch@wolfvision.net
-Subject: Re: [PATCH v9 2/3] media: rockchip: Add a driver for Rockchip's
- camera interface
-Message-ID: <ZUDOmgmkIifE2w87@aptenodytes>
-References: <cover.1698666612.git.mehdi.djait@bootlin.com>
- <f7367726eb077d43446c83591ecbf9acbc77ef5f.1698666612.git.mehdi.djait@bootlin.com>
- <ad346052-ec62-4d68-903e-fccd7ad989bd@wanadoo.fr>
- <ZUDKAB+zQYS9aLpB@pc-70.home>
- <79231ec3-8da1-4c73-8f5b-efa445e6c35d@wanadoo.fr>
+        bh=hldBQeVlnzcxJxh6wOmSdWjQZeq5v7flC9grgdCposU=;
+        b=jXbhZ5At6n6gg1nSVJhvzsaRTbKUfxTAg6z30byugTH7CgJY4vtLEdIvBPpGF/tP27lR9z
+        MoblyO7DrwG11ZV3MX0jQwLEgI05yeFeZQRqga0Vue3SJ5OdlFW/+k42xv1jD+MAM8U1WR
+        eLAY64j/+JGgspqmSLOwvHa88ruOnpc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 17C2F1391B;
+        Tue, 31 Oct 2023 09:53:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GhjLAqbOQGWDcQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 31 Oct 2023 09:53:42 +0000
+Date:   Tue, 31 Oct 2023 10:53:41 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Gregory Price <gourry.memverge@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, ying.huang@intel.com,
+        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        weixugc@google.com, apopple@nvidia.com, hannes@cmpxchg.org,
+        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dYFHt+x1tKrOKW1+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <79231ec3-8da1-4c73-8f5b-efa445e6c35d@wanadoo.fr>
-X-GND-Sasl: paul.kocialkowski@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+In-Reply-To: <20231031003810.4532-1-gregory.price@memverge.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,104 +66,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 30-10-23 20:38:06, Gregory Price wrote:
+> This patchset implements weighted interleave and adds a new sysfs
+> entry: /sys/devices/system/node/nodeN/accessM/il_weight.
+> 
+> The il_weight of a node is used by mempolicy to implement weighted
+> interleave when `numactl --interleave=...` is invoked.  By default
+> il_weight for a node is always 1, which preserves the default round
+> robin interleave behavior.
+> 
+> Interleave weights may be set from 0-100, and denote the number of
+> pages that should be allocated from the node when interleaving
+> occurs.
+> 
+> For example, if a node's interleave weight is set to 5, 5 pages
+> will be allocated from that node before the next node is scheduled
+> for allocations.
 
---dYFHt+x1tKrOKW1+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I find this semantic rather weird TBH. First of all why do you think it
+makes sense to have those weights global for all users? What if
+different applications have different view on how to spred their
+interleaved memory?
 
-Hi,
+I do get that you might have a different tiers with largerly different
+runtime characteristics but why would you want to interleave them into a
+single mapping and have hard to predict runtime behavior?
 
-On Tue 31 Oct 23, 10:46, Christophe JAILLET wrote:
-> Le 31/10/2023 =C3=A0 10:33, Mehdi Djait a =C3=A9crit=C2=A0:
-> > Hello Christophe,
-> >=20
-> > On Mon, Oct 30, 2023 at 01:47:17PM +0100, Christophe JAILLET wrote:
-> > > > +	/* Create & register platform subdev. */
-> > > > +	ret =3D cif_register_stream_vdev(cif_dev);
-> > > > +	if (ret < 0)
-> > > > +		goto err_unreg_media_dev;
-> > > > +
-> > > > +	ret =3D cif_subdev_notifier(cif_dev);
-> > > > +	if (ret < 0) {
-> > > > +		v4l2_err(&cif_dev->v4l2_dev,
-> > > > +			 "Failed to register subdev notifier(%d)\n", ret);
-> > > > +		cif_unregister_stream_vdev(cif_dev);
-> > > > +		goto err_unreg_media_dev;
-> > >=20
-> > > Should there be another label with cif_unregister_stream_vdev(cif_dev=
-); if
-> > > an error occurs here?
-> > >=20
-> > > CJ
-> >=20
-> > cif_subdev_notifier() is the last function call in the probe with error
-> > handling. So it will undo the last successful register:
-> > cif_register_stream_vdev and use the goto to unregister the rest.
->=20
-> Ah, I didn't see the cif_unregister_stream_vdev() call here.
-> Sorry for the noise.
->=20
-> >=20
-> > I can add a label err_unreg_stream_vdev but it will be only used in the
-> > error handling of cif_subdev_notifier() and I don't see the benefit.
->=20
-> The main benefit is to be more consistent in the way the error path is
-> written, and to be more future proof.
+[...]
+> In this way it becomes possible to set an interleaving strategy
+> that fits the available bandwidth for the devices available on
+> the system. An example system:
+> 
+> Node 0 - CPU+DRAM, 400GB/s BW (200 cross socket)
+> Node 1 - CPU+DRAM, 400GB/s BW (200 cross socket)
+> Node 2 - CXL Memory. 64GB/s BW, on Node 0 root complex
+> Node 3 - CXL Memory. 64GB/s BW, on Node 1 root complex
+> 
+> In this setup, the effective weights for nodes 0-3 for a task
+> running on Node 0 may be [60, 20, 10, 10].
+> 
+> This spreads memory out across devices which all have different
+> latency and bandwidth attributes at a way that can maximize the
+> available resources.
 
-Indeed the fact that there is only a single user of the label is not a reas=
-on
-to avoid the label. As soon as you need to use labels/gotos for error handl=
-ing,
-you should do it for all steps involved and avoid mixing unregistration in =
-the
-error-checking condition and using a previous label.
+OK, so why is this any better than not using any memory policy rely
+on demotion to push out cold memory down the tier hierarchy?
 
-Cheers,
-
-Paul
-
->=20
-> CJ
-> >=20
-> > --
-> > Kind Regards
-> > Mehdi Djait
-> >=20
-> > > > +	}
-> > > > +
-> > > > +	cif_set_default_format(cif_dev);
-> > > > +	pm_runtime_enable(&pdev->dev);
-> > > > +
-> > > > +	return 0;
-> > > > +
-> > > > +err_unreg_media_dev:
-> > > > +	media_device_unregister(&cif_dev->media_dev);
-> > > > +err_unreg_v4l2_dev:
-> > > > +	v4l2_device_unregister(&cif_dev->v4l2_dev);
-> > > > +	return ret;
-> > > > +}
-> >=20
->=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---dYFHt+x1tKrOKW1+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmVAzpoACgkQ3cLmz3+f
-v9Hw3Af+I1RiSM4LM+oLdDR2amN3CH8ODW0RSGGF7ynMWEsTPk0rceP6WGxD96ie
-BnwJAudOqNLFhVdgTib8wfZnJqljpQG+0SeVpprlAHI7GooAZ0i3YywzfbrMhUnO
-rRuCvdpl3aLAJ4kx05AMm0myRhNr8J69DjtADmQmaWWhXka1cWm6ZCZQLuBzHcv3
-29AzkE7jXcFPmtDsJO/DbGI6b5/tYBcoOPYSJjiOYD3EI/fcoINv8DGRQY66vVaL
-wbZpV72MdselOHkaGvnD1VCYVgvJ8ARfOSjpiwY6L59bM7+1aS4opnSEY3xf9nmS
-YiARdyCLIQs3aHbuFCQVyUAMzs2doQ==
-=/LT8
------END PGP SIGNATURE-----
-
---dYFHt+x1tKrOKW1+--
+What is the actual real life usecase and what kind of benefits you can
+present?
+-- 
+Michal Hocko
+SUSE Labs
