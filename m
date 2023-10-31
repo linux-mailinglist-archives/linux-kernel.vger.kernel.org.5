@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98CD7DC716
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421C97DC71B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343625AbjJaHSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S1343604AbjJaHVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343603AbjJaHSW (ORCPT
+        with ESMTP id S236599AbjJaHVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:18:22 -0400
+        Tue, 31 Oct 2023 03:21:00 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14F8DB;
-        Tue, 31 Oct 2023 00:18:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ECAC0;
+        Tue, 31 Oct 2023 00:20:58 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 2A8D84140C;
-        Tue, 31 Oct 2023 12:18:11 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id 3B01542363;
+        Tue, 31 Oct 2023 12:20:51 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698736692; bh=xnyRWdL+NdKNQmT5h3gBkSuEgvXkNp1V2Sk1J7cHl3Y=;
+        t=1698736852; bh=PqxIDlMZlqQcrUHtOkXEHC1O2DOStY7qgo4b7QqHNLc=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s5lauFYUlfv9MNE4zi6/ThT/z69ngFC1oupMRy7Yz3R/DPrb2Y5M4pDOqCskY3igK
-         8J+gdc4BXEyDkh6nsWvtrn/FC5X+EtIpsJ3dycb3mNL99NEuToOg8D3SD99XqUrBH4
-         kOXH/LJUrhls/MtxkyQfs17W/I6k2CClZBkvFnIsDLg1Ttdb7B1iOOAYLFBeT38msG
-         kGrA/jB+3K3xeGV+HFxuHxZEMDPGTGh0D2+xve5pd5cvC3Jwp3vrggCZTcPuGNFOyK
-         QhJIDZxf86rhpLNFcuK/ZHT3Oi+jvn8vlODMqcVKeHwO74khnBxQq7buHJABnQ+Dac
-         qsaA2RHv1XUfQ==
+        b=BUFsNtKIrTxlRHBs4mnoUliDpX1RSmRU92ssscvzPoGAjsc0Db2DsR4Y7YW15mR/N
+         m+fuvh7JKZ7MVp82SCwhMXPNpFopHNjvtUC7k/WxPhH0nvRUtfBwvkjiEtTUqkWRYe
+         OPM0g6kujjv36yaK7kgvsO1cVtjXodOO848TqE7vD/aBB5N2Tod4GLdi2A5DycZpfo
+         wH4uDec93yhlgnA1Y4Bi2faDt1IAedDEqDPdOFfpGt21V3dAr8nxSAh8V63JeBGjLC
+         lHAAIDrkNcRdX0L962JunpvRlLOnOLHJizOe18FOHtYAN7X3yHS2UOZNa9afuN+XAs
+         h8B0ToRE4XvkQ==
 MIME-Version: 1.0
-Date:   Tue, 31 Oct 2023 12:18:08 +0500
+Date:   Tue, 31 Oct 2023 12:20:49 +0500
 From:   Nikita Travkin <nikita@trvn.ru>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        cros-qcom-dts-watchers@chromium.org,
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     cros-qcom-dts-watchers@chromium.org,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -42,13 +41,13 @@ Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: acer-aspire1: Enable RTC
-In-Reply-To: <CAD=FV=UigovpD_s89j6V7MhCXOVHVVXLRtH3XGEHtcHKbwVgBA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: acer-aspire1: Correct audio codec
+ definition
+In-Reply-To: <3a423cb7-cdf1-433a-a848-8636917640bb@linaro.org>
 References: <20231027-aspire1-sound-v1-0-5ff3cf8b5701@trvn.ru>
- <20231027-aspire1-sound-v1-1-5ff3cf8b5701@trvn.ru>
- <d6b63a3c-d171-4b6b-b222-8c619d90f51b@linaro.org>
- <CAD=FV=UigovpD_s89j6V7MhCXOVHVVXLRtH3XGEHtcHKbwVgBA@mail.gmail.com>
-Message-ID: <9157b1f2ffc28f00da4d40b1baedb4b9@trvn.ru>
+ <20231027-aspire1-sound-v1-2-5ff3cf8b5701@trvn.ru>
+ <3a423cb7-cdf1-433a-a848-8636917640bb@linaro.org>
+Message-ID: <eda1c91bd2dce76e633dd82ad3105355@trvn.ru>
 X-Sender: nikita@trvn.ru
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -62,35 +61,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doug Anderson писал(а) 31.10.2023 02:55:
-> Hi,
-> 
-> On Mon, Oct 30, 2023 at 2:47 PM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+Konrad Dybcio писал(а) 31.10.2023 02:48:
+> On 27.10.2023 16:42, Nikita Travkin wrote:
+>> When initially added, a mistake was made in the definition of the codec.
 >>
->> On 27.10.2023 16:42, Nikita Travkin wrote:
->> > pm6150 has a read-only RTC that can be used to keep the time with some
->> > extra userspace tools. Enable it.
->> >
->> > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->> > ---
->> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> Despite the fact that the DMIC line is connected on the side of the
+>> codec chip, and relevant passive components, including 0-ohm resistors
+>> connecting the dmics, are present, the dmic line is still cut in
+>> another place on the board, which was overlooked.
 >>
->> kinda unsure why it'd ever be disabled
+>> Correct this by replacing the dmic configuration with a comment
+>> describing this hardware detail.
 >>
->> Konrad
-> 
-> FWIW we don't use the PMIC RTC in Chrome boards. I can't quite
-> remember why, but I _think_ that the power lines aren't hooked up to
-> the PMIC to keep power on for the board's lowest power states.
-> Instead we use the RTC that's on the EC (Embedded Controller).
-> 
+>> While at it, also add missing regulators definitions. This is not a
+>> functional change as all the relevant regulators were already added via
+>> the other rail supplies.
+>>
+>> Fixes: 4a9f8f8f2ada ("arm64: dts: qcom: Add Acer Aspire 1")
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts | 17 +++++++++++++++--
+>>  1 file changed, 15 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts b/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts
+>> index cfde8cd47107..00b442696618 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts
+>> @@ -209,9 +209,22 @@ alc5682: codec@1a {
+>>  		AVDD-supply = <&vreg_l15a_1p8>;
+>>  		MICVDD-supply = <&reg_codec_3p3>;
+>>  		VBAT-supply = <&reg_codec_3p3>;
+>> +		DBVDD-supply = <&vreg_l15a_1p8>;
+>> +		LDO1-IN-supply = <&vreg_l15a_1p8>;
+>> +
+>> +		/*
+>> +		 * NOTE: The board has a path from this codec to the
+>> +		 * DMIC microphones in the lid, however some of the option
+>> +		 * resistors are absent and the microphones are connected
+>> +		 * to the SoC instead.
+> Would that not also require more DT changes and maybe UCM?
 
-When it was submitted, I suggested to keep it disabled by default
-because of the firmware mess qcom has - the rtc is set to
-read-only and if one enables it on cros without allow-set-time;
-and validating that qtiseclib doesn't block it too, it would
-likely cause issues by taking devices back to 1970s :D
+I don't think I had any other descriptions to support the dmic in
+the initial set (first audio support for this board is 3/3 here)
+and there is no upstream UCM yet - I will probably hold it off until
+I get vamacro and dmic on it working.
 
 Nikita
 
-> -Doug
+> 
+> Konrad
