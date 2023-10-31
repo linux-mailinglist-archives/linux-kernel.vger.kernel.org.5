@@ -2,207 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D9E7DCD19
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7A47DCDA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344302AbjJaMi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53922 "EHLO
+        id S1344487AbjJaNS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344324AbjJaMiz (ORCPT
+        with ESMTP id S1344461AbjJaNS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:38:55 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05389BD
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:38:51 -0700 (PDT)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 548D666073A3;
-        Tue, 31 Oct 2023 12:38:49 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698755930;
-        bh=CUoxGhlVd6jYsDuuATdbi+tc7UVUEDIHrFb8+QfclKw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mee3++hIdBgR35N3mIlOJGmWWJ2rINg5K32mJqZ8L2cvLIn86jpMVXWiFXhxYsMF7
-         hli4eKV95M0V2qx/8/pxtHleqR344vReYf7nfMRkFhyawXUD/GGbvSyNF1PBTV0PUz
-         UmwTqZ2WOB4nPT6sY4iBJ2TFitRfvWZVx5BiXfB6QbahZjS7hvIj7mywPPtnxcgWQs
-         zkqbDWGdw93AciSKz6gF0UqdW6blJ7FTc54xSZ4REW/fY75luZR8Y2Zqg8eLXBhm5J
-         6xGQCDE9kxO3dr6H/+PpvsufHcMnuEcHZWDM5i/bPbt1bX0SfaiCyR5PsH1wVJA5dP
-         KTjxHdeb+V60g==
-Date:   Tue, 31 Oct 2023 13:38:45 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith@gfxstrand.net, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v7 0/7] [RFC] DRM GPUVM features
-Message-ID: <20231031133845.7915c814@collabora.com>
-In-Reply-To: <20231023201659.25332-1-dakr@redhat.com>
-References: <20231023201659.25332-1-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 31 Oct 2023 09:18:26 -0400
+X-Greylist: delayed 2351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 06:18:23 PDT
+Received: from 10.mo575.mail-out.ovh.net (10.mo575.mail-out.ovh.net [46.105.79.203])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53303DE
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:18:23 -0700 (PDT)
+Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.143.209])
+        by mo575.mail-out.ovh.net (Postfix) with ESMTP id 9CA7F26858
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 12:39:10 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-ccsb6 (unknown [10.110.103.253])
+        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 45CA71FD23;
+        Tue, 31 Oct 2023 12:39:10 +0000 (UTC)
+Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
+        by ghost-submission-6684bf9d7b-ccsb6 with ESMTPSA
+        id oaz+C271QGXitwAArYvRAA
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 31 Oct 2023 12:39:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Date:   Tue, 31 Oct 2023 14:39:09 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     dmitry.torokhov@gmail.com, rydberg@bitmath.org,
+        skhan@linuxfoundation.org
+Cc:     rrangel@chromium.org, amandhoot12@gmail.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH] Input: synaptics: enable InterTouch for ThinkPad L14 G1
+In-Reply-To: <5d857ff972e9203ef65ae2396c7285c0@foxhound.fi>
+References: <20231008080129.17931-1-jose.pekkarinen@foxhound.fi>
+ <5d857ff972e9203ef65ae2396c7285c0@foxhound.fi>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <77a53e59cc4151c95942f37c88db8c75@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 192.42.116.198
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 17685072787369993833
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddtvddggedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepjeduhefhveffueevfeejueeljeegvedtgffhheelffekjeeuteffkeethfekteejnecuffhomhgrihhnpehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgnecukfhppeduvdejrddtrddtrddupdduledvrdegvddrudduiedrudelkedpudehuddrkedtrddvledrvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 22:16:46 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+On 2023-10-16 18:51, José Pekkarinen wrote:
+> On 2023-10-08 11:01, José Pekkarinen wrote:
+>> Observed on dmesg of my laptop I see the following
+>> output:
+>> 
+>> [   19.898700] psmouse serio1: synaptics: queried max coordinates: x
+>> [..5678], y [..4694]
+>> [   19.936057] psmouse serio1: synaptics: queried min coordinates: x
+>> [1266..], y [1162..]
+>> [   19.936076] psmouse serio1: synaptics: Your touchpad (PNP: LEN0411
+>> PNP0f13) says it can support a different bus. If i2c-hid and hid-rmi
+>> are not used, you might want to try setting
+>> psmouse.synaptics_intertouch to 1 and report this to
+>> linux-input@vger.kernel.org.
+>> [   20.008901] psmouse serio1: synaptics: Touchpad model: 1, fw:
+>> 10.32, id: 0x1e2a1, caps: 0xf014a3/0x940300/0x12e800/0x500000, board
+>> id: 3471, fw id: 2909640
+>> [   20.008925] psmouse serio1: synaptics: serio: Synaptics
+>> pass-through port at isa0060/serio1/input0
+>> [   20.053344] input: SynPS/2 Synaptics TouchPad as
+>> /devices/platform/i8042/serio1/input/input7
+>> [   20.397608] mousedev: PS/2 mouse device common for all mice
+>> 
+>> This patch will add its pnp id to the smbus list to
+>> produce the setup of intertouch for the device. After
+>> applying, the ouput will look like:
+>> 
+>> [   19.168664] psmouse serio1: synaptics: queried max coordinates: x
+>> [..5678], y [..4694]
+>> [   19.206311] psmouse serio1: synaptics: queried min coordinates: x
+>> [1266..], y [1162..]
+>> [   19.206325] psmouse serio1: synaptics: Trying to set up SMBus 
+>> access
+>> [   19.209545] psmouse serio1: synaptics: SMbus companion is not ready 
+>> yet
+>> [   19.283845] psmouse serio1: synaptics: Touchpad model: 1, fw:
+>> 10.32, id: 0x1e2a1, caps: 0xf014a3/0x940300/0x12e800/0x500000, board
+>> id: 3471, fw id: 2909640
+>> [   19.283863] psmouse serio1: synaptics: serio: Synaptics
+>> pass-through port at isa0060/serio1/input0
+>> [   19.328959] input: SynPS/2 Synaptics TouchPad as
+>> /devices/platform/i8042/serio1/input/input8
+>> [   19.706164] mousedev: PS/2 mouse device common for all mice
+>> 
+>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>> ---
+>>  drivers/input/mouse/synaptics.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/drivers/input/mouse/synaptics.c 
+>> b/drivers/input/mouse/synaptics.c
+>> index ada299ec5bba..376a041c80b2 100644
+>> --- a/drivers/input/mouse/synaptics.c
+>> +++ b/drivers/input/mouse/synaptics.c
+>> @@ -183,6 +183,7 @@ static const char * const smbus_pnp_ids[] = {
+>>  	"LEN009b", /* T580 */
+>>  	"LEN0402", /* X1 Extreme Gen 2 / P1 Gen 2 */
+>>  	"LEN040f", /* P1 Gen 3 */
+>> +	"LEN0411", /* L14 Gen 1 */
+>>  	"LEN200f", /* T450s */
+>>  	"LEN2044", /* L470  */
+>>  	"LEN2054", /* E480 */
+> 
+>     Any comments here?
+> 
+>     Thanks!
+> 
+>     José.
+> _______________________________________________
+> Linux-kernel-mentees mailing list
+> Linux-kernel-mentees@lists.linuxfoundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
 
-> Currently GPUVM offers common infrastructure to track GPU VA allocations
-> and mappings, generically connect GPU VA mappings to their backing
-> buffers and perform more complex mapping operations on the GPU VA space.
-> 
-> However, there are more design patterns commonly used by drivers, which
-> can potentially be generalized in order to make GPUVM represent the
-> basis of a VM implementation. In this context, this patch series aims at
-> generalizing the following elements.
-> 
-> 1) Provide a common dma-resv for GEM objects not being used outside of
->    this GPU-VM.
-> 
-> 2) Provide tracking of external GEM objects (GEM objects which are
->    shared with other GPU-VMs).
-> 
-> 3) Provide functions to efficiently lock all GEM objects dma-resv the
->    GPU-VM contains mappings of.
-> 
-> 4) Provide tracking of evicted GEM objects the GPU-VM contains mappings
->    of, such that validation of evicted GEM objects is accelerated.
-> 
-> 5) Provide some convinience functions for common patterns.
-> 
-> The implementation introduces struct drm_gpuvm_bo, which serves as abstraction
-> combining a struct drm_gpuvm and struct drm_gem_object, similar to what
-> amdgpu does with struct amdgpu_bo_vm. While this adds a bit of complexity it
-> improves the efficiency of tracking external and evicted GEM objects.
-> 
-> This patch series is also available at [3].
-> 
-> [1] https://gitlab.freedesktop.org/nouvelles/kernel/-/commits/gpuvm-next
-> 
-> Changes in V2:
-> ==============
->   - rename 'drm_gpuva_manager' -> 'drm_gpuvm' which generally leads to more
->     consistent naming
->   - properly separate commits (introduce common dma-resv, drm_gpuvm_bo
->     abstraction, etc.)
->   - remove maple tree for tracking external objects, use a list drm_gpuvm_bos
->     per drm_gpuvm instead
->   - rework dma-resv locking helpers (Thomas)
->   - add a locking helper for a given range of the VA space (Christian)
->   - make the GPUVA manager buildable as module, rather than drm_exec
->     builtin (Christian)
-> 
-> Changes in V3:
-> ==============
->   - rename missing function and files (Boris)
->   - warn if vm_obj->obj != obj in drm_gpuva_link() (Boris)
->   - don't expose drm_gpuvm_bo_destroy() (Boris)
->   - unlink VM_BO from GEM in drm_gpuvm_bo_destroy() rather than
->     drm_gpuva_unlink() and link within drm_gpuvm_bo_obtain() to keep
->     drm_gpuvm_bo instances unique
->   - add internal locking to external and evicted object lists to support drivers
->     updating the VA space from within the fence signalling critical path (Boris)
->   - unlink external objects and evicted objects from the GPUVM's list in
->     drm_gpuvm_bo_destroy()
->   - add more documentation and fix some kernel doc issues
-> 
-> Changes in V4:
-> ==============
->   - add a drm_gpuvm_resv() helper (Boris)
->   - add a drm_gpuvm::<list_name>::local_list field (Boris)
->   - remove drm_gpuvm_bo_get_unless_zero() helper (Boris)
->   - fix missing NULL assignment in get_next_vm_bo_from_list() (Boris)
->   - keep a drm_gem_object reference on potential vm_bo destroy (alternatively we
->     could free the vm_bo and drop the vm_bo's drm_gem_object reference through
->     async work)
->   - introduce DRM_GPUVM_RESV_PROTECTED flag to indicate external locking through
->     the corresponding dma-resv locks to optimize for drivers already holding
->     them when needed; add the corresponding lock_assert_held() calls (Thomas)
->   - make drm_gpuvm_bo_evict() per vm_bo and add a drm_gpuvm_bo_gem_evict()
->     helper (Thomas)
->   - pass a drm_gpuvm_bo in drm_gpuvm_ops::vm_bo_validate() (Thomas)
->   - documentation fixes
-> 
-> Changes in V5:
-> ==============
->   - use a root drm_gem_object provided by the driver as a base for the VM's
->     common dma-resv (Christian)
->   - provide a helper to allocate a "dummy" root GEM object in case a driver
->     specific root GEM object isn't available
->   - add a dedicated patch for nouveau to make use of the GPUVM's shared dma-resv
->   - improve documentation (Boris)
->   - the following patches are removed from the series, since they already landed
->     in drm-misc-next
->     - f72c2db47080 ("drm/gpuvm: rename struct drm_gpuva_manager to struct drm_gpuvm")
->     - fe7acaa727e1 ("drm/gpuvm: allow building as module")
->     - 78f54469b871 ("drm/nouveau: uvmm: rename 'umgr' to 'base'")
-> 
-> Changes in V6:
-> ==============
->   - add drm_gpuvm_bo::evicted field protected by the drm_gem_object's dma-resv
->     lock (Thomas)
->     - additionally to the original proposal, always use drm_gpuvm_bo::evicted
->       regardless of the used locking scheme and always keep it up to date
->   - remove unneccesary get->put dance in drm_gpuva_unlink() (Thomas)
->   - fix commit message wording (Thomas)
->   - fix kernel doc warnings (kernel test robot)
-> 
-> Changes in V7:
-> ==============
->   - add a patch converting WARN() macros to drm_WARN() variants
->   - allow drivers to pass the number of fences to reserve and the drm_exec flags
->     through struct drm_gpuvm_exec
->   - rename 'root' GEM object to 'resv' GEM object
->   - fix order of private_usage and extobj_usage in drm_gpuvm_resv_add_fence()
->   - always set drm_gpuvm_bo::evicted accordingly
->   - explicitly clear drm_gpuvm_bo from evict list after successful validation
->   - group reference get() calls with pointer assignments
->   - call drm_gem_object_put() after vm_bo_free() callback
->   - make lockdep checks explicit for drm_gpuvm_bo_* functions
->   - improve documentation of struct drm_gpuvm_bo
->   - fix a few documentation typos and style issues
->   - use BIT() instead of shift ops for enum drm_gpuvm_flags
-> 
-> Danilo Krummrich (7):
->   drm/gpuvm: convert WARN() to drm_WARN() variants
->   drm/gpuvm: add common dma-resv per struct drm_gpuvm
->   drm/gpuvm: add drm_gpuvm_flags to drm_gpuvm
->   drm/gpuvm: add an abstraction for a VM / BO combination
->   drm/gpuvm: track/lock/validate external/evicted objects
->   drm/nouveau: make use of the GPUVM's shared dma-resv
->   drm/nouveau: use GPUVM common infrastructure
+     Ping.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> 
->  drivers/gpu/drm/drm_gpuvm.c             | 1054 +++++++++++++++++++++--
->  drivers/gpu/drm/nouveau/nouveau_bo.c    |   15 +-
->  drivers/gpu/drm/nouveau/nouveau_bo.h    |    5 +
->  drivers/gpu/drm/nouveau/nouveau_exec.c  |   57 +-
->  drivers/gpu/drm/nouveau/nouveau_exec.h  |    4 -
->  drivers/gpu/drm/nouveau/nouveau_gem.c   |   10 +-
->  drivers/gpu/drm/nouveau/nouveau_sched.c |    9 +-
->  drivers/gpu/drm/nouveau/nouveau_sched.h |    7 +-
->  drivers/gpu/drm/nouveau/nouveau_uvmm.c  |  189 ++--
->  drivers/gpu/drm/nouveau/nouveau_uvmm.h  |    1 -
->  include/drm/drm_gem.h                   |   32 +-
->  include/drm/drm_gpuvm.h                 |  492 ++++++++++-
->  12 files changed, 1673 insertions(+), 202 deletions(-)
-> 
-> 
-> base-commit: f5b55f32ce4ba953c270b2e9c3f5d4cd6951b1a1
-
+     José.
