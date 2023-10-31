@@ -2,195 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 411077DD103
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561A67DD10D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344825AbjJaPz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        id S1344861AbjJaP4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344795AbjJaPz0 (ORCPT
+        with ESMTP id S1344842AbjJaP4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:55:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CF4DA;
-        Tue, 31 Oct 2023 08:55:23 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5D93E1F74D;
-        Tue, 31 Oct 2023 15:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1698767722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGDnUmq+DoNfYWfUHq3dmosfieRm74PPa/1eL0fCpDU=;
-        b=UHtwX61pI7PonsdkBZwtiC+/18y3vUFI+sSv2ogbkVQcYvY9qikprRT8OSNuZgKdTn80g3
-        iKMtMU8tzSxUE6d51l7ZRaNtyvbiBTnOowUWbsF7HVjvJc8ee+Y10zN8bZyhhnSvp1lPdO
-        bcSMz/5y726xEJbvLLdDtl3gg3j8VbY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1698767722;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGDnUmq+DoNfYWfUHq3dmosfieRm74PPa/1eL0fCpDU=;
-        b=WinZk0QEnluiWfhEUGTEQiQgq58+wuZhRAAt1BxVah5Wq1OzhB9SZOCmRysMm65ltLiYI3
-        yEpFxMkh28CHstBg==
-Received: from wotan.suse.de (wotan.suse.de [10.160.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8E3C02C23B;
-        Tue, 31 Oct 2023 15:55:20 +0000 (UTC)
-Received: by wotan.suse.de (Postfix, from userid 10510)
-        id C366F64A1; Tue, 31 Oct 2023 15:55:20 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by wotan.suse.de (Postfix) with ESMTP id BFE2963F8;
-        Tue, 31 Oct 2023 15:55:20 +0000 (UTC)
-Date:   Tue, 31 Oct 2023 15:55:20 +0000 (UTC)
-From:   Michael Matz <matz@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-In-Reply-To: <20231031151645.GB15024@noisy.programming.kicks-ass.net>
-Message-ID: <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de>
-References: <20231027144050.110601-1-frederic@kernel.org> <20231027144050.110601-3-frederic@kernel.org> <20231027192026.GG26550@noisy.programming.kicks-ass.net> <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop> <20231027224628.GI26550@noisy.programming.kicks-ass.net>
- <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop> <20231030082138.GJ26550@noisy.programming.kicks-ass.net> <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop> <20231031095202.GC35651@noisy.programming.kicks-ass.net> <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
- <20231031151645.GB15024@noisy.programming.kicks-ass.net>
-User-Agent: Alpine 2.20 (LSU 67 2015-01-07)
+        Tue, 31 Oct 2023 11:56:31 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877E0F1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:56:27 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50930f126b1so1417865e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698767786; x=1699372586; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aHMcOBdFYSE+8bQdxJLdLIEnklj/QhOLRUMvZvnsOnc=;
+        b=GdwsHaQmdAHe2I0Taj1u1mh/wLZt11Jnqi1R62gjEeDVk04NACdjLSzLfaLpGl2LQI
+         6ldScu2mPfJ12+dBMPho8c09y5KVROmb4ZbBn3zD4Dl1lE9AEazMZEBNP/426U8FFXr4
+         WlGjjLbQlFUX6tXA9CFopPbhFUfUu5J4Z9xhY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698767786; x=1699372586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aHMcOBdFYSE+8bQdxJLdLIEnklj/QhOLRUMvZvnsOnc=;
+        b=QBjLuAjL0GN+SHbxwPxg0Q03Tpchl19+qNMkGNqqhBv8vqOVwDs75Bppo5AG8Iib63
+         sAwmM0lNrMIgCcGIGPoQUc93LOOvAwwfmdLozgaELElBCtDLKa3kiio5yymdlTkOthrM
+         ASe5VP8xviBbZr7sUp/TFMxw0KSw/uSueJiooRswFqLBXBqpzgX0Gr1H7lROiC/OMfaq
+         q4rxwYEIyn28FxcdKi1u8pihSTbh5IohoNo3WgjjKzOSSj1Mno//yKY771BXtN6cokz3
+         gRlpL24AAWltopjkVR+EBMpN8nDTQJA7s61eq6vJXNvwiV8JuQjQwIMFjN4TkjzRdq8S
+         5ysw==
+X-Gm-Message-State: AOJu0YwYUEfpnFpy3MbUsrIv/WQabML1Gdn20pJDG5Ug44+CVYnrPtGm
+        NUF57TkEXuEev7f1tcnaS5vrAaZCD+xZUW+A3DHnkhhw4iLFypvQ0hI=
+X-Google-Smtp-Source: AGHT+IGbUvvv2le05LQXmClEzIoa9JudCW13DGRbovqjMaWYeHnLbrMVVPg93bjaAWyIqR5/AodlwAvye0YUGv26j1M=
+X-Received: by 2002:a05:6512:3b87:b0:508:2b98:d6ce with SMTP id
+ g7-20020a0565123b8700b005082b98d6cemr12268778lfv.45.1698767785185; Tue, 31
+ Oct 2023 08:56:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
+ <CAPnjgZ0Xf3U1aj32LbU-xiU1AqwnM3JL1F8xX-wZ18oEmg+irw@mail.gmail.com>
+ <CAMj1kXEXcX7BkDyfy-6_5Vnch=N+onza-yfWfsVaGLE93h2c+Q@mail.gmail.com>
+ <CAPnjgZ2SEby-ndrs=W_afBJH56eqc=-mhp1F1nwkvWks+=B54Q@mail.gmail.com>
+ <CAMj1kXED3S+0cq+VT7naBrmWrUwT=HZAaZOBRMv8Ui1Pey1QNQ@mail.gmail.com>
+ <CAPnjgZ0LrsJ2_ENTYoBrnyFaH3UKdHs3D2XWY=TzBuBpBoTXZA@mail.gmail.com>
+ <CAL_Jsq+DQugkEDESW5wySFbLLN8HNqGDJCio8Wpi6fe0LeHKUA@mail.gmail.com>
+ <CAPnjgZ0cmKP5hoGCyQ_Rp8ZQXUVwaPYJMWyidXuOOjMVkDoMDw@mail.gmail.com>
+ <CAL_JsqJH=vJ40PNTg_i0LoKA-c0hhMJkL8zCC3_bB-tOkFWWsw@mail.gmail.com> <CAPnjgZ1FrdGKjGAxUbkQoL2vHwhC_2Oa2KT+0cm25dQAuAjxAQ@mail.gmail.com>
+In-Reply-To: <CAPnjgZ1FrdGKjGAxUbkQoL2vHwhC_2Oa2KT+0cm25dQAuAjxAQ@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Tue, 31 Oct 2023 09:56:08 -0600
+Message-ID: <CAPnjgZ19-xR6QxS=fR53skz0VuAty2Z2w2vQTjP7g=tbTFpaqw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+To:     Rob Herring <robh@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, devicetree@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        Guo Dong <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
+        ron minnich <rminnich@gmail.com>, Gua Guo <gua.guo@intel.com>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        linux-acpi@vger.kernel.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Rob,
 
-On Tue, 31 Oct 2023, Peter Zijlstra wrote:
+On Mon, 16 Oct 2023 at 15:54, Simon Glass <sjg@chromium.org> wrote:
+>
+> Hi Rob,
+>
+> On Mon, 16 Oct 2023 at 10:50, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Oct 13, 2023 at 4:09=E2=80=AFPM Simon Glass <sjg@chromium.org> =
+wrote:
+> > >
+> > > Hi Rob,
+> > >
+> > > On Fri, 13 Oct 2023 at 13:42, Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Fri, Oct 6, 2023 at 7:03=E2=80=AFPM Simon Glass <sjg@chromium.or=
+g> wrote:
+> > > > >
+> > > > > Hi Ard,
+> > > > >
+> > > > > On Fri, 6 Oct 2023 at 17:00, Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+> > > > > >
+> > > > > > On Fri, 6 Oct 2023 at 20:17, Simon Glass <sjg@chromium.org> wro=
+te:
+> > > > > > >
+> > > > > > > Hi Ard,
+> > > > > > >
+> > > > > > > On Fri, 6 Oct 2023 at 11:33, Ard Biesheuvel <ardb@kernel.org>=
+ wrote:
+> > > > > > > >
+> > > > > > > > On Mon, 2 Oct 2023 at 19:54, Simon Glass <sjg@chromium.org>=
+ wrote:
+> > > > > > > > >
+> > > > > > > > > Hi Rob,
+> > > > > > > > >
+> > > > > > > > > On Tue, 26 Sept 2023 at 13:42, Simon Glass <sjg@chromium.=
+org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > It is common to split firmware into 'Platform Init', wh=
+ich does the
+> > > > > > > > > > initial hardware setup and a "Payload" which selects th=
+e OS to be booted.
+> > > > > > > > > > Thus an handover interface is required between these tw=
+o pieces.
+> > > > > > > > > >
+> > > > > > > > > > Where UEFI boot-time services are not available, but UE=
+FI firmware is
+> > > > > > > > > > present on either side of this interface, information a=
+bout memory usage
+> > > > > > > > > > and attributes must be presented to the "Payload" in so=
+me form.
+> > > > > > > > > >
+> > > > > > > > > > This aims to provide an small schema addition for the m=
+emory mapping
+> > > > > > > > > > needed to keep these two pieces working together well.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > > > > > > > ---
+> > > > > > > > > >
+> > > > > > > > > > Changes in v7:
+> > > > > > > > > > - Rename acpi-reclaim to acpi
+> > > > > > > > > > - Drop individual mention of when memory can be reclaim=
+ed
+> > > > > > > > > > - Rewrite the item descriptions
+> > > > > > > > > > - Add back the UEFI text (with trepidation)
+> > > > > > > > >
+> > > > > > > > > I am again checking on this series. Can it be applied, pl=
+ease?
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > Apologies for the delay in response. I have been away.
+> > > > > > >
+> > > > > > > OK, I hope you had a nice trip.
+> > > > > > >
+> > > > > >
+> > > > > > Thanks, it was wonderful!
+> > > > > >
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > Changes in v6:
+> > > > > > > > > > - Drop mention of UEFI
+> > > > > > > > > > - Use compatible strings instead of node names
+> > > > > > > > > >
+> > > > > > > > > > Changes in v5:
+> > > > > > > > > > - Drop the memory-map node (should have done that in v4=
+)
+> > > > > > > > > > - Tidy up schema a bit
+> > > > > > > > > >
+> > > > > > > > > > Changes in v4:
+> > > > > > > > > > - Make use of the reserved-memory node instead of creat=
+ing a new one
+> > > > > > > > > >
+> > > > > > > > > > Changes in v3:
+> > > > > > > > > > - Reword commit message again
+> > > > > > > > > > - cc a lot more people, from the FFI patch
+> > > > > > > > > > - Split out the attributes into the /memory nodes
+> > > > > > > > > >
+> > > > > > > > > > Changes in v2:
+> > > > > > > > > > - Reword commit message
+> > > > > > > > > >
+> > > > > > > > > >  .../reserved-memory/common-reserved.yaml      | 71 +++=
+++++++++++++++++
+> > > > > > > > > >  1 file changed, 71 insertions(+)
+> > > > > > > > > >  create mode 100644 dtschema/schemas/reserved-memory/co=
+mmon-reserved.yaml
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/dtschema/schemas/reserved-memory/common-re=
+served.yaml b/dtschema/schemas/reserved-memory/common-reserved.yaml
+> > > > > > > > > > new file mode 100644
+> > > > > > > > > > index 0000000..f7fbdfd
+> > > > > > > > > > --- /dev/null
+> > > > > > > > > > +++ b/dtschema/schemas/reserved-memory/common-reserved.=
+yaml
+> > > > > > > > > > @@ -0,0 +1,71 @@
+> > > > > > > > > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Claus=
+e
+> > > > > > > > > > +%YAML 1.2
+> > > > > > > > > > +---
+> > > > > > > > > > +$id: http://devicetree.org/schemas/reserved-memory/com=
+mon-reserved.yaml#
+> > > > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > > > > > +
+> > > > > > > > > > +title: Common memory reservations
+> > > > > > > > > > +
+> > > > > > > > > > +description: |
+> > > > > > > > > > +  Specifies that the reserved memory region can be use=
+d for the purpose
+> > > > > > > > > > +  indicated by its compatible string.
+> > > > > > > > > > +
+> > > > > > > > > > +  Clients may reuse this reserved memory if they under=
+stand what it is for,
+> > > > > > > > > > +  subject to the notes below.
+> > > > > > > > > > +
+> > > > > > > > > > +maintainers:
+> > > > > > > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > > > > > > > +
+> > > > > > > > > > +allOf:
+> > > > > > > > > > +  - $ref: reserved-memory.yaml
+> > > > > > > > > > +
+> > > > > > > > > > +properties:
+> > > > > > > > > > +  compatible:
+> > > > > > > > > > +    description: |
+> > > > > > > > > > +      This describes some common memory reservations, =
+with the compatible
+> > > > > > > > > > +      string indicating what it is used for:
+> > > > > > > > > > +
+> > > > > > > > > > +         acpi: Advanced Configuration and Power Interf=
+ace (ACPI) tables
+> > > > > > > > > > +         acpi-nvs: ACPI Non-Volatile-Sleeping Memory (=
+NVS). This is reserved by
+> > > > > > > > > > +           the firmware for its use and is required to=
+ be saved and restored
+> > > > > > > > > > +           across an NVS sleep
+> > > > > > > > > > +         boot-code: Contains code used for booting whi=
+ch is not needed by the OS
+> > > > > > > > > > +         boot-code: Contains data used for booting whi=
+ch is not needed by the OS
+> > > > > > > > > > +         runtime-code: Contains code used for interact=
+ing with the system when
+> > > > > > > > > > +           running the OS
+> > > > > > > > > > +         runtime-data: Contains data used for interact=
+ing with the system when
+> > > > > > > > > > +           running the OS
+> > > > > > > > > > +
+> > > > > > > > > > +    enum:
+> > > > > > > > > > +      - acpi
+> > > > > > > > > > +      - acpi-nvs
+> > > > > > > > > > +      - boot-code
+> > > > > > > > > > +      - boot-data
+> > > > > > > > > > +      - runtime-code
+> > > > > > > > > > +      - runtime-data
+> > > > > > > > > > +
+> > > > > > > >
+> > > > > > > > As I mentioned a few times already, I don't think these com=
+patibles
+> > > > > > > > should be introduced here.
+> > > > > > > >
+> > > > > > > > A reserved region has a specific purpose, and the compatibl=
+e should be
+> > > > > > > > more descriptive than the enum above. If the consumer does =
+not
+> > > > > > > > understand this purpose, it should simply treat the memory =
+as reserved
+> > > > > > > > and not touch it. Alternatively, these regions can be refer=
+enced from
+> > > > > > > > other DT nodes using phandles if needed.
+> > > > > > >
+> > > > > > > We still need some description of what these regions are used=
+ for, so
+> > > > > > > that the payload can use the correct regions. I do not have a=
+ny other
+> > > > > > > solution to this problem. We are in v7 at present. At least e=
+xplain
+> > > > > > > where you want the compatible strings to be introduced.
+> > > > > > >
+> > > > > >
+> > > > > > My point is really that by themselves, these regions are not us=
+able by
+> > > > > > either a payload or an OS that consumes this information. Unles=
+s there
+> > > > > > is some other information being provided (via DT I imagine) tha=
+t
+> > > > > > describes how these things are supposed to be used, they are no=
+thing
+> > > > > > more than memory reservations that should be honored, and provi=
+ding
+> > > > > > this arbitrary set of labels is unnecessary.
+> > > > > >
+> > > > > > > What sort of extra detail are you looking for? Please be spec=
+ific and
+> > > > > > > preferably add some suggestions so I can close this out ASAP.
+> > > > > > >
+> > > > > >
+> > > > > > A payload or OS can do nothing with a memory reservation called
+> > > > > > 'runtime-code' it it doesn't know what is inside.
+> > > >
+> > > > Agreed. The question is WHAT runtime-code? The compatible needs to =
+answer that.
+> > > >
+> > > > For example, we have 'ramoops' as a compatible in reserved memory.
+> > > > That tells us *exactly* what's there. We know how to parse it. If w=
+e
+> > > > know ramoops is not supported, then we know we can toss it out and
+> > > > reclaim the memory.
+> > >
+> > > So if we said:
+> > >
+> > >    compatible =3D "runtime-code-efi"
+> > >
+> > > would that be OK? We seem to be in catch 22 here, because if I don't
+> > > mention EFI unhappy, but if I do, Ard is unhappy.
+> >
+> > Better yes, because then it is for something specific. However, AIUI,
+> > that's setup for the OS and defining that region is already defined by
+> > the EFI memory map. That's Ard's issue. If there's a need outside of
+> > the EFI to OS handoff,
+>
+> There is a need. Here is part of the commit message again. If there is
+> something else you need to know, please ask.
+>
+> >>>>
+> It is common to split firmware into 'Platform Init', which does the
+> initial hardware setup and a "Payload" which selects the OS to be booted.
+> Thus an handover interface is required between these two pieces.
+>
+> Where UEFI boot-time services are not available, but UEFI firmware is
+> present on either side of this interface, information about memory usage
+> and attributes must be presented to the "Payload" in some form.
+> <<<
+>
+> > then you need to define what that usecase looks
+> > like. Describe the problem rather than present your solution.
+> >
+> > If this is all specific to EDK2 then it should say that rather than
+> > 'efi'. I imagine Ard would be happier with something tied to EDK2 than
+> > *all* UEFI. Though maybe the problem could be any implementation? IDK.
+> > Maybe it's TF-A that needs to define where the EFI runtime services
+> > region is and that needs to be passed all the way thru to the EFI
+> > implementation? So again, define the problem.
+>
+> It is not specific to EDK2. Imagine this boot sequence:
+>
+> - Platform Init (U-Boot) starts up
+> - U-Boot uses its platform knowledge to sets some ACPI tables and put
+> various things in memory
+> - U-Boot sets up some runtime code and data for the OS
+> - U-Boot jumps to the Tianocore payload **
+> - Payload (Tianocore) wants to know where the ACPI tables are, for exampl=
+e
+> - Tianocore needs to provide boot services to the OS, so needs to know
+> the memory map, etc.
+>
+> ** At this point we want to use DT to pass the required information.
+>
+> Of course, Platform Init could be coreboot or Tianocore or some
+> strange private binary. Payload could be U-Boot or something else.
+> That is the point of this effort, to build interoperability.
+>
+> >
+> > > What about the boottime code....you want to know which project it is =
+from?
+> >
+> > I think it is the same.
+> >
+> > >
+> > > +      - acpi
+> > > +      - acpi-nvs
+> > >
+> > > Those two should be enough info, right?
+> >
+> > I think so. NVS is not a term I've heard in relation to ACPI, but that
+> > may just be my limited ACPI knowledge.
+>
+> Perhaps it is only an Intel thing. It stands for Non-Volatile-Sleeping
+> Memory and it has various platform settings in a binary format that is
+> normally SoC-specific.
+>
+> >
+> > > +      - boot-code
+> > > +      - boot-data
+> > >
+> > > For these, they don't pertain to the OS, so perhaps they are OK?
+> >
+> > Hard to tell that just from the name... 'boot' could be any component
+> > involved in booting including the OS.
+>
+>  suggested that 'boot' should mean booting the OS. If the OS does lots
+> of fixup stuff at the start of it, I don't know what that is called.
+>
+> So if boot-code is no good, what do you suggest?
+>
+> Alternatively I could remove these for now, if it will help make progress=
+.
+>
+> >
+> > > In
+> > > any case, using a generic term like this makes some sense to me. We
+> > > can always add a new compatible like "efi-boottime-services" later. I=
+t
+> > > may be that the boottime services would be handled by the payload, so
+> > > not needed in all cases.
+> >
+> > Why later? You have a specific use in mind and I imagine Ard has
+> > thoughts on that.
+>
+> Because we don't need it right away, and just want to make some progress.
+>
+> Perhaps the problem here is that Linux has tied itself up in knots
+> with its EFI stuff and DT fixups and what-not. But this is not that.
+> It is a simple handoff between two pieces of firmware, Platform Init
+> and Payload. It has nothing to do with the OS. With Tianocore they are
+> typically combined, but with this usage they are split, and we can
+> swap out one project for another on either side of the DT interface.
+>
+> I do have views on the 'EFI' opt-out with reserved-memory, if you are
+> interested, but that relates to the OS. If you are wanting to place
+> some constraints on /reserved-memory and /memory we could do that
+> e.g. that the DT and the map returned by EFI boot services must be
+> consistent. But as it is, the nodes are ignored by the OS when booting
+> with EFI, aren't they?
 
-> > > For absolutely no reason :-(
-> > 
-> > The reason is simple (and should be obvious): to adhere to the abstract 
-> > machine regarding volatile.  When x is volatile then x++ consists of a 
-> > read and a write, in this order.  The easiest way to ensure this is to 
-> > actually generate a read and a write instruction.  Anything else is an 
-> > optimization, and for each such optimization you need to actively find an 
-> > argument why this optimization is correct to start with (and then if it's 
-> > an optimization at all).  In this case the argument needs to somehow 
-> > involve arguing that an rmw instruction on x86 is in fact completely 
-> > equivalent to the separate instructions, from read cycle to write cycle 
-> > over all pipeline stages, on all implementations of x86.  I.e. that a rmw 
-> > instruction is spec'ed to be equivalent.
-> > 
-> > You most probably can make that argument in this specific case, I'll give 
-> > you that.  But why bother to start with, in a piece of software that is 
-> > already fairly complex (the compiler)?  It's much easier to just not do 
-> > much anything with volatile accesses at all and be guaranteed correct.
-> > Even more so as the software author, when using volatile, most likely is 
-> > much more interested in correct code (even from a abstract machine 
-> > perspective) than micro optimizations.
-> 
-> There's a pile of situations where a RmW instruction is actively
-> different vs a load-store split, esp for volatile variables that are
-> explicitly expected to change asynchronously.
-> 
-> The original RmW instruction is IRQ-safe, while the load-store version
-> is not. If an interrupt lands in between the load and store and also
-> modifies the variable then the store after interrupt-return will
-> over-write said modification.
-> 
-> These are not equivalent.
+Can this be applied, please? If there are further comments, please let me k=
+now.
 
-Okay, then there you have it.  Namely that LLVM has a bug (but see next 
-paragraph).  For volatile x, x++ _must_ expand to a separate read and 
-write, because the abstract machine of C says so.  If a RmW isn't 
-equivalent to that, then it can't be used in this situation.  If you 
-_have_ to use a RmW for other reasons like interrupt safety, then a 
-volatile variable is not the way to force this, as C simply doesn't have 
-that concept and hence can't talk about it.  (Of course it can't, as not 
-all architectures could implement such, if it were required).
-
-(If an RmW merely gives you more guarantees than a split load-store then 
-of course LLVM doesn't have a bug, but you said not-equivalent, so I'm 
-assuming the worst, that RmW also has fewer (other) guarantees)
-
-> > > At least clang doesn't do this, it stays:
-> > > 
-> > > 0403  413:      49 ff 45 00             incq   0x0(%r13)
-> > > 
-> > > irrespective of the volatile.
-> > 
-> > And, are you 100% sure that this is correct?  Even for x86 CPU 
-> > pipeline implementations that you aren't intimately knowing about? ;-)
-> 
-> It so happens that the x86 architecture does guarantee RmW ops are
-> IRQ-safe or locally atomic. SMP/concurrent loads will observe either
-> pre or post but no intermediate state as well.
-
-So, are RMW ops a strict superset (vis the guarantees they give) of split 
-load-store?  If so we can at least say that using RMW is a valid 
-optimization :)  Still, an optmization only.
-
-> > But all that seems to be a side-track anyway, what's your real worry with  
-> > the code sequence generated by GCC?
-> 
-> In this case it's sub-optimal code, both larger and possibly slower for
-> having two memops.
-> 
-> The reason to have volatile is because that's what Linux uses to
-> dis-allow store-tearing, something that doesn't happen in this case. A
-> suitably insane but conforming compiler could compile a non-volatile
-> memory increment into something insane like:
-> 
-> 	load byte-0, r1
-> 	increment r1
-> 	store r1, byte-0
-> 	jno done
-> 	load byte-1, r1
-> 	increment ri
-> 	store r1, byte 1
-> 	jno done
-> 	...
-> done:
-> 
-> We want to explicitly dis-allow this.
-
-Yeah, I see.  Within C you don't have much choice than volatile for this 
-:-/  Funny thing: on some architectures this is actually what is generated 
-sometimes, even if it has multi-byte loads/stores.  This came up 
-recently on the gcc list and the byte-per-byte sequence was faster ;-) 
-(it was rather: load-by-bytes, form whole value via shifts, increment, 
-store-by-bytes)
-Insane codegen for insane micro-architectures!
-
-> I know C has recently (2011) grown this _Atomic thing, but that has 
-> other problems.
-
-Yeah.
-
-So, hmm, I don't quite know what to say, you're between a rock and a hard 
-place, I guess.  You have to use volatile for its effects but then are 
-unhappy about its effects :)
-
-If you can confirm the above about validity of the optimization, then at 
-least there'd by a point for adding a peephole in GCC for this, even if 
-current codegen isn't a bug, but I still wouldn't hold my breath.  
-volatile is so ... ewww, it's best left alone.
-
-
-Ciao,
-Michael.
+Regards,
+Simon
