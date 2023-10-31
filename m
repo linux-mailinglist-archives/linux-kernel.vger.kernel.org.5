@@ -2,265 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ACF7DC3DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8F37DC3F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 02:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbjJaB0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 21:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
+        id S230034AbjJaBoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 21:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJaB0M (ORCPT
+        with ESMTP id S229583AbjJaBoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 21:26:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EEDEE
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 18:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698715523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o31v5GZG9TcPdikJNjmUFZp5YmRhl08i97z1mloYIzw=;
-        b=AxLSqds0DosISLMqayf9eg1MA0UKuBoIHCvNI2rjgWzOF4d0x2xo/g2ULCQF+pNuUpPAgQ
-        fVwZr26rOIyFbY4JFAL5DAhO1soaZcwerlEhueSN5HqAe3E72whkqJuPL7RNAQ9PB/h6jK
-        +pCeOjM249p3NKcSEA8xYq82NIyxuGY=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-245-oUEMAyC0NPmBTimakqKP0w-1; Mon, 30 Oct 2023 21:25:21 -0400
-X-MC-Unique: oUEMAyC0NPmBTimakqKP0w-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50798a25ebaso3135532e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 18:25:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698715520; x=1699320320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o31v5GZG9TcPdikJNjmUFZp5YmRhl08i97z1mloYIzw=;
-        b=beLhcW/LE1WQP3mFcrxM6jMl/kekGRa9Q6Rbia7H6XoGxbcpc0sMLsD7raydYazHrb
-         q67dyTPzwTTZiEQSIRElBkUVEv0oaALJtFdseaoyKyqlEORarSrUfCXVDlfUVmpG5y1r
-         ub6fJ3q0wjtwlGb3wSIdrCke4SIZtZd0XChtl4gzUePFD1xov+jAxDCjjogdfiAXrpKW
-         7eENPmnrfy6r40jOViYmamSTbWpxN2VGSvr1ShvwUzVHABC1pagemAzmN5JunCWc8/b3
-         LzuZay0fR0hGEQgZre6hDUoh1f/NCKh9SBL4Wl5v8X2oMnN6DqAaNh7SkffgQw9TJbzb
-         Ie4A==
-X-Gm-Message-State: AOJu0Yx2InFRSyDRb+f7yaKTklxFMG9eP963TyBRVhm31jlnuGNl6L6i
-        wolQc0Zb9WJj6wsZQB46RomnCUuIQCKQqZKFGhT893RJ+x2xIJsCFbBoEu2v2hLYZvl1DrZDcbF
-        6dnIffCXgctgR4WEp7ULkCn3gGs6Fy6S2myITunON
-X-Received: by 2002:a19:a40f:0:b0:509:1eca:4ae2 with SMTP id q15-20020a19a40f000000b005091eca4ae2mr360830lfc.16.1698715519646;
-        Mon, 30 Oct 2023 18:25:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHeai5LJ8RYz/4lU5unyi1wyO3RJWvByf6J/J2Epj9d2rm9T2A3D6AJvt2Snb2kBIb7yUnQ+HV7FU3UcPY9IkU=
-X-Received: by 2002:a19:a40f:0:b0:509:1eca:4ae2 with SMTP id
- q15-20020a19a40f000000b005091eca4ae2mr360825lfc.16.1698715519287; Mon, 30 Oct
- 2023 18:25:19 -0700 (PDT)
+        Mon, 30 Oct 2023 21:44:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47E4C6;
+        Mon, 30 Oct 2023 18:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698716646; x=1730252646;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=IIuVeGWprfq3VCuVfxahdPUFqQAabEMjDhoi4ZjKmo4=;
+  b=YDFf3w2VAOAAYZYIgGgrHjhogztYUohyJgBdj1a8gMGUm80DK6/rxuV0
+   YPc7FiM+tBrj3NGvmsKUKPjm4W1nH8lKxdZTJvE/sSf+PgAcqJAYPHww/
+   oxdb+4ZwUjvn0zIO38bSzaKnF6+wLW17eM4Gq4jBIDHlE4clpzl0gKanq
+   YpeK+yPkYkwgjFtQWrLAWFrtQY9iFUOXpOrkLz7jat54gy8gn6QIdR3Rh
+   23x/oDfa/gSMkCCOAcpj5/238Qe0z3h3wvh7m3/L/qljeCqfdnnfsmChQ
+   UBE9C7WGw3CD/UNWEgnO+ua3n0g1piAHni5eRmSzqEdzZ+ZfGmxbNDTE7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="392056336"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="392056336"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 18:44:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="877332168"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="877332168"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 18:44:05 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 18:43:59 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 18:43:59 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 18:43:59 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 30 Oct 2023 18:43:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XRUq9IVdbgI1tq278bGV3PdBaVJF1LouciAIHRn4cudbE8MrnrjfC9mlt+UTIRSg0su9hw4yhhn61i+K/k+UYq4xJF5pkyamP5x7RvBP/MF7YSsLZi1TEaoV2iM1FFm1fFv2KfsXmfGDs1yLJuO8na7e9Fc60vrrrrpYm+EyWROCqPGW2DU2+0D9DmsXCP0LH57xTjlZVgghr464ISE4Zzw/sDhnvMCw5PTqSGu6ep42Spqfmom/jL95ASttC3tROthtHsXXsJkD+Y642xnazuEkb51Tznw1a5MNwf8eejb/UZg9UrVWoesTFmFwEEnX0SLA+iKuAkfKN7nh9Zd5PA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dz8nKEkl2xpXabxmIK+V4ghf9k7cHXugVHrp3EOoA04=;
+ b=cYiloLZxQWFUSVF3qMqWsb4XIgMLFxzZIyktQcOr81NzXK0Zyb+KIewijJ/DAot1NHqxg6sy1ZqMNwDoMsEMmkWoh+7brghkRYO4dt50f3WqxVMftx6Yk0faq4jjq5P/0qBevzgacmpuD6PFHnIldx4tjOqUwV2fVnbWxI5+Q2lQKHaxju5+RpH+SPI4AhEH5GWSLxY0fnYdhz9fjpOBLmdZSAhwVNOYyT9kRnCmVRLCTUqkViMBbRUpH0PSnqP5/+chjUs1qK07XrhlEcKYJ2+URKkiaX7ugMtUw/oRf7RCqVoU2+mC6tVva8JBO9rRsnkI2M3xx7KRgTHTLw65TA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by DS0PR11MB8230.namprd11.prod.outlook.com (2603:10b6:8:158::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
+ 2023 01:43:57 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86%4]) with mapi id 15.20.6933.028; Tue, 31 Oct 2023
+ 01:43:56 +0000
+Date:   Tue, 31 Oct 2023 09:39:10 +0800
+From:   Yujie Liu <yujie.liu@intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     kernel test robot <lkp@intel.com>, <oe-kbuild-all@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        <linux-sh@vger.kernel.org>
+Subject: Re: arch/sh/boot/compressed/misc.c:118:6: warning: no previous
+ prototype for 'arch_ftrace_ops_list_func'
+Message-ID: <ZUBavpdmbsMvbHrr@yujie-X299>
+References: <202310310611.5RteDpO7-lkp@intel.com>
+ <20231030183722.21712d18@gandalf.local.home>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231030183722.21712d18@gandalf.local.home>
+X-ClientProxiedBy: KL1PR01CA0088.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:2::28) To CY5PR11MB6392.namprd11.prod.outlook.com
+ (2603:10b6:930:37::15)
 MIME-Version: 1.0
-References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
- <CACGkMEuO6o3Ys9NcHJpa9w5EiS-ugsiaBbBKEHKHpPSrKBKJow@mail.gmail.com> <de5e15c0-0dcb-4cf1-bd4b-bd48c3c59c80@oracle.com>
-In-Reply-To: <de5e15c0-0dcb-4cf1-bd4b-bd48c3c59c80@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 31 Oct 2023 09:25:07 +0800
-Message-ID: <CACGkMEvo5-Pj2WUWiJ5RoESA3h7hN6eOErGiNO0DYRnBS5aPhg@mail.gmail.com>
-Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
-To:     Steven Sistare <steven.sistare@oracle.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|DS0PR11MB8230:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6dc9f114-e2c5-4105-de9f-08dbd9b2d857
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +jKNdOT6WjUNqhxZDtwp0/aVxnCEuyjH7GEbDW2TeYeNh99CXJDDWJ41ps+fD8SlCRvWAHce0UGjUqB/K2N6LNhFb8hnLfC53PvScRROoOs5fGoEJwUHGw9nEXNHLSC20Awk3VA7WMddZbGNvepGZAWm+MLOYWDL9RFwhuC5lr5WJu9G5bq6WuLPJQZBFaqwlQmhbknpkUvqSuIPnd9lPsGFvhubswLu6Zm2yylDnONtCrP3cgA1lt6m8LQefsP3dfIduryVlRhnqiu9dXMUyElW4Sm/33IqEHZCoNDV3hL6sJL3XCJDSrbPEj12dG0GuZXHYoXbEVvvDqA/zkrADT9cCRH98j0k2zJRSHRn73r5ro/pm4r10iWzaI3cPN7YDopbMOHsNJEo4YnQKrHtHHU58UZY1poWZFoxqOWzIYElcMHdXO0YzXOeWwmSpvDAiA3+Zesf7FVdVj7t8mfb1PI0RrKq49Dl2vvdK8vXkv6yvyqMffHL5R43Mbvbf/J3n3u4/jkCRv+DqxUMcWgw9bhxldSziEdh1xmSJqN+U9DZuJU6YSkmE7T5plW5WPeqd5/AjnhbJ4bjMNVR8jVdCARIZAtZHBOuWW/vbUqwutenYKBEEX8ElNHo3W48zHmZ5MqI+b/StdNsBFdZ4sMbkg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(366004)(346002)(376002)(136003)(230922051799003)(230173577357003)(230273577357003)(451199024)(1800799009)(186009)(64100799003)(6512007)(9686003)(26005)(6506007)(478600001)(6666004)(83380400001)(2906002)(33716001)(44832011)(41300700001)(66946007)(66556008)(66476007)(966005)(6486002)(8936002)(8676002)(316002)(54906003)(6916009)(5660300002)(4326008)(38100700002)(82960400001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YscuTze1MhexXMiJTZgKHMtN9Ww+RHucAoeGhD02+bkM2k3wYX4E2TlPTEhY?=
+ =?us-ascii?Q?3qQHF5WaTM7GJN3gOYGMWBvG7VJVbo3Rvp1Ef70X7H23U12pZwkBSAOZrB6H?=
+ =?us-ascii?Q?BYyiv5riMY6Zf0jKkx3Vdv1YLGiLMXGI31VKBog/vP3CoPa3Siu3N/Bn5T6q?=
+ =?us-ascii?Q?epAxpYaITznYA/BYJkQ3d5l/D2brC8SvHzh6NBaiyIWw7XrtVB10u2nD4BUG?=
+ =?us-ascii?Q?HvQo7CliwysFLYIGWi5hsUv0XiiOrYKWnPLPLTu6fT45jHxAlBorO8gfZVqK?=
+ =?us-ascii?Q?cII3HSFWYAtkD13zKAmLbuFBdudasU3OYlOsuFh7XFszCH6VMiVcfu9hGl9E?=
+ =?us-ascii?Q?Pa8MD2NUcFfZbEfGSebxFdw2l1PskOtzhZC8+3pfzkf8LI3xOTFCj96hFDT0?=
+ =?us-ascii?Q?yP2u6zwBEYXBbAgEVCjb5UOc2lOBOKMqYbPQP+y+2BkcAJm0lp4++pfFp+BG?=
+ =?us-ascii?Q?+5W/Cz7mywP/bBG1tNvjD42uZHXv9ACqOPwvskXsTNo29W8qkqjuR+5FC/vt?=
+ =?us-ascii?Q?LPyOPJAuvSheVK5n/rGujPuBxZHcJg84z4XZiSSJBLcVhkHmiy2MMTGsYCH7?=
+ =?us-ascii?Q?SfyHQHNIU773vBzjXdi+VBKGJnkFt0dVR8PFVUsx4vN5Kk8IpoIdZXn+VBAD?=
+ =?us-ascii?Q?tL29iJy1u7nIpvDfhCHK1I5Z+T4X0j1Ov+kRXRqIXIsPTs1VPfv2gk7LW86p?=
+ =?us-ascii?Q?zIoc4j8EbMMGAXLGtjCLPxRvhGha6v2fF0o0yia/GusfSEC8NnGa8Wrml7nS?=
+ =?us-ascii?Q?/6L5+ibx/BcypAl8eNcGdPf1XEeSySAeOyVePgg8venE3UdpVdb/4zi0oAP2?=
+ =?us-ascii?Q?XVQluLK5wmksA9Rmuam1kCkqVvwejcditQ2PYUXg7vytgzYsycKlK+OJZUaa?=
+ =?us-ascii?Q?S0CGKhltrvvGk4N8HJELnnoYHRsHtOVgPyqZWlBjigC9s9rJJrfNntsmJT2Q?=
+ =?us-ascii?Q?e2ZaTIov45iASXXrhMACQOen0xHkIEtgNJNn3/BshgZEdPZ7WT1ymmmQYO+Q?=
+ =?us-ascii?Q?fdtBFONVVzg8CvfEnqDxZD4kDnmBXtgiTRBAQXMEShFjZGZ3mMn2FH0h7kXJ?=
+ =?us-ascii?Q?eeoTNP9/OgBVE7av3jctuSXQQv+gw0qp/TxmUvKrR7PgvI+YGjhlrMfo5XIR?=
+ =?us-ascii?Q?ONID3+z5tF10+b9liPB7Z8oTPcDf7qUPy6IbtvNhzmTqMv2aO27HvZ5O/Wme?=
+ =?us-ascii?Q?VK1TFEA6rtVXLSK+B8LVEAO2LoP0lphfeOPaoz4RE1ta0FJBiNTOernlMs/8?=
+ =?us-ascii?Q?TK56an5X/UbmEdphSMNz0z1Ys2a5n3pMMEhR2KD2ZkLSoucq5YISsq3iaLKa?=
+ =?us-ascii?Q?hp9x9bD24o88NUR79F6N1FdMX/UNQhIgAsiBwpY21wx52lswxdQ5WYwgykE0?=
+ =?us-ascii?Q?83CV/wzqm6ZC2mZJGEPKMqHtGJgnMbSx/kCAH/jdFvAIJxX9tVym2rFsCDtN?=
+ =?us-ascii?Q?mnj32Hltk4IdjIB45L4kXtqqsnmTz7Dxa3IiZx1raFvgqTmWgHyC2ypVPfBI?=
+ =?us-ascii?Q?cxXU6exI1XDW54Aip5aUyHg7NhE2y8vmj/gbFzia1TPqt9Lu0NzDcIpMh7dZ?=
+ =?us-ascii?Q?BmPPDGrqZX/PeA69BWrIy9WhV4dO576upBERjtDg?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6dc9f114-e2c5-4105-de9f-08dbd9b2d857
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 01:43:56.9130
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: B6DAXn7bRjLa7YMljz9tQ3TOI1BukdIIYpbfag0L6VSJgwf8VnS0/1wK6YN65rPYXp8T9nK7y+sKdP5lUNNlUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8230
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 10:06=E2=80=AFPM Steven Sistare
-<steven.sistare@oracle.com> wrote:
->
-> On 10/27/2023 2:31 AM, Jason Wang wrote:
-> > On Fri, Oct 27, 2023 at 4:07=E2=80=AFAM Steve Sistare <steven.sistare@o=
-racle.com> wrote:
-> >>
-> >> mlx5_vdpa does not preserve userland's view of vring base for the cont=
-rol
-> >> queue in the following sequence:
-> >>
-> >> ioctl VHOST_SET_VRING_BASE
-> >> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
-> >>   mlx5_vdpa_set_status()
-> >>     setup_cvq_vring()
-> >>       vringh_init_iotlb()
-> >>         vringh_init_kern()
-> >>           vrh->last_avail_idx =3D 0;
-> >> ioctl VHOST_GET_VRING_BASE
-> >>
-> >> To fix, restore the value of cvq->vring.last_avail_idx after calling
-> >> vringh_init_iotlb.
-> >>
-> >> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> >> ---
-> >>  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
-> >>  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
-> >>  include/linux/vringh.h            |  2 ++
-> >>  3 files changed, 38 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net=
-/mlx5_vnet.c
-> >> index 946488b8989f..f64758143115 100644
-> >> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> >> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> >> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_de=
-v *mvdev)
-> >>         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
-> >>         int err =3D 0;
-> >>
-> >> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> >> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
-> >> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
-> >> +
-> >>                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_f=
-eatures,
-> >>                                         MLX5_CVQ_MAX_ENT, false,
-> >>                                         (struct vring_desc *)(uintptr_=
-t)cvq->desc_addr,
-> >>                                         (struct vring_avail *)(uintptr=
-_t)cvq->driver_addr,
-> >>                                         (struct vring_used *)(uintptr_=
-t)cvq->device_addr);
-> >>
-> >> +               if (!err)
-> >> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_=
-idx);
-> >
-> > Btw, vringh_set_base_iotlb() deserves an independent patch and it
-> > seems it is not specific to IOTLB,
->
-> Agreed on both.  I initially submitted the smallest change needed to show=
- the problem.
->
-> so we probably need an indirection
-> > to have vringh_set_base() first.
->
-> Not sure what you mean.  I have defined:
->
->     static inline int __vringh_set_base() ...
->
->     int vringh_set_base_iotlb()
->         return __vringh_set_base(vrh, idx, putu16_iotlb);
->
-> to which I would add:
->
->     int vringh_set_base_user()
->         return __vringh_set_base(vrh, idx, putu16_user);
->
->     int vringh_set_base_kern()
->         return __vringh_set_base(vrh, idx, putu16_kern;
->
-> all in the same patch.
->
-> The call site in mlx5_vnet.c would be a 2nd patch.
+On Mon, Oct 30, 2023 at 06:37:22PM -0400, Steven Rostedt wrote:
+> On Tue, 31 Oct 2023 06:15:04 +0800
+> kernel test robot <lkp@intel.com> wrote:
+> 
+> > Hi Steven,
+> > 
+> > FYI, the error/warning still remains.
+> > 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   14ab6d425e80674b6a0145f05719b11e82e64824
+> > commit: 17b251a290ba84a0c2c5c82df9596cb2e7207ca6 ftrace/sh: Add arch_ftrace_ops_list_func stub to have compressed image still link
+> > date:   2 years ago
+> > config: sh-allnoconfig (https://download.01.org/0day-ci/archive/20231031/202310310611.5RteDpO7-lkp@intel.com/config)
+> > compiler: sh4-linux-gcc (GCC) 13.2.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310310611.5RteDpO7-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202310310611.5RteDpO7-lkp@intel.com/
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> >    arch/sh/boot/compressed/misc.c:109:6: warning: no previous prototype for '__stack_chk_fail' [-Wmissing-prototypes]
+> >      109 | void __stack_chk_fail(void)
+> >          |      ^~~~~~~~~~~~~~~~
+> >    arch/sh/boot/compressed/misc.c:115:6: warning: no previous prototype for 'ftrace_stub' [-Wmissing-prototypes]
+> >      115 | void ftrace_stub(void)
+> >          |      ^~~~~~~~~~~
+> > >> arch/sh/boot/compressed/misc.c:118:6: warning: no previous prototype for 'arch_ftrace_ops_list_func' [-Wmissing-prototypes]  
+> >      118 | void arch_ftrace_ops_list_func(void)
+> >          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> As the comment states, this is needed only because the linker script
+> vmlinux.lds.h references them, and it will not build without it.
+> 
+> If someone really cares, they could simply add a header to quiet these
+> warnings, but seriously, these functions are just stubs to allow the sh
+> boot portion use the vmlinux.lds.h linker script. These stubs are only for
+> satisfying linker references and are not used. I'm not going to be the one
+> to bother "fixing" it.
 
-Right, so we just need to split it.
+Thanks a lot for the details. We've configured the bot to ignore this on
+the reported commit.
 
->
-> - Steve
->
-> > Or I wonder if it's better to just introduce a new parameter to
-> > vringh_init_iotlb()...
->
-> I considered that, but IMO the parameter list there is already large, and=
- it would
-> be strange to add a parameter for the initial value of avail, but not for=
- used, and
-> no one needs the latter.
+Best Regards,
+Yujie
 
-Fine.
-
-Thanks
-
->
-> - Steve
->
-> >> +       }
-> >>         return err;
-> >>  }
-> >>
-> >> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> >> index 7b8fd977f71c..799762c83007 100644
-> >> --- a/drivers/vhost/vringh.c
-> >> +++ b/drivers/vhost/vringh.c
-> >> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct=
- vringh *vrh,
-> >>         }
-> >>  }
-> >>
-> >> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
-> >> +                           int (*putu16)(const struct vringh *vrh,
-> >> +                               __virtio16 *p, u16 val))
-> >> +{
-> >> +    int ret;
-> >> +
-> >> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
-> >> +    if (ret)
-> >> +        return ret;
-> >> +
-> >> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
-> >> +    if (ret)
-> >> +        return ret;
-> >> +
-> >> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
-> >> +    return 0;
-> >> +}
-> >> +
-> >>  /* Userspace access helpers: in this case, addresses are really users=
-pace. */
-> >>  static inline int getu16_user(const struct vringh *vrh, u16 *val, con=
-st __virtio16 *p)
-> >>  {
-> >> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struc=
-t vhost_iotlb *iotlb,
-> >>  }
-> >>  EXPORT_SYMBOL(vringh_set_iotlb);
-> >>
-> >> +/**
-> >> + * vringh_set_base_iotlb - set avail_idx and used_idx
-> >> + * @vrh: the vring
-> >> + * @idx: the value to set
-> >> + */
-> >> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
-> >> +{
-> >> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
-> >> +}
-> >> +EXPORT_SYMBOL(vringh_set_base_iotlb);
-> >> +
-> >> +
-> >>  /**
-> >>   * vringh_getdesc_iotlb - get next available descriptor from ring wit=
-h
-> >>   * IOTLB.
-> >> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
-> >> index c3a8117dabe8..e9b8af4e6a5e 100644
-> >> --- a/include/linux/vringh.h
-> >> +++ b/include/linux/vringh.h
-> >> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 f=
-eatures,
-> >>                          struct vring_avail *avail,
-> >>                          struct vring_used *used);
-> >>
-> >> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
-> >> +
-> >>  int vringh_getdesc_iotlb(struct vringh *vrh,
-> >>                          struct vringh_kiov *riov,
-> >>                          struct vringh_kiov *wiov,
-> >> --
-> >> 2.39.3
-> >>
-> >
->
-
+> 
+> -- Steve
+> 
+> 
+> >    arch/sh/boot/compressed/misc.c:128:6: warning: no previous prototype for 'decompress_kernel' [-Wmissing-prototypes]
+> >      128 | void decompress_kernel(void)
+> >          |      ^~~~~~~~~~~~~~~~~
+> > 
+> > 
+> > vim +/arch_ftrace_ops_list_func +118 arch/sh/boot/compressed/misc.c
+> > 
+> >    113	
+> >    114	/* Needed because vmlinux.lds.h references this */
+> >    115	void ftrace_stub(void)
+> >    116	{
+> >    117	}
+> >  > 118	void arch_ftrace_ops_list_func(void)  
+> >    119	{
+> >    120	}
+> >    121	
+> > 
+> 
+> 
