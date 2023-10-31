@@ -2,54 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A0A7DCE4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA2B7DCE3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344702AbjJaNyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        id S1344668AbjJaNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344661AbjJaNyf (ORCPT
+        with ESMTP id S1344661AbjJaNwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:54:35 -0400
-Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [213.239.216.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 585009F;
-        Tue, 31 Oct 2023 06:54:32 -0700 (PDT)
-Message-ID: <714040ef-a032-41b4-9612-c739ecc25d33@postmarketos.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
-        s=donut; t=1698760470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MZUERBcJomGwI5V072etc02VGxK584H2du5hts/zKNc=;
-        b=t9vBByn8fT/MAyShle8FMOMGPVDJgIICMdv+HbKIAILqNWsgHZrJQkHop3pB60d8TWiQ4t
-        KT6sC/EBXR0filNeqNPCFz0rhYmDy7W9p6C4TxHVGy8oGmF6iCQrJ5bM3DBRIf6RYuBkrq
-        Xc/kTh1y7XmTheMeQtK4xg15qYBfhhk=
-Date:   Tue, 31 Oct 2023 14:52:15 +0100
+        Tue, 31 Oct 2023 09:52:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D675E6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:52:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C26C433C8;
+        Tue, 31 Oct 2023 13:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698760355;
+        bh=g4fayFF0H43TgvcTCYi02wLX2Gr05h+rt0FdaIAqyIk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=axDXum61Q5bKSMWXWnV9GKcg5Q/M2cZ4uQHyAAykqtEIXzJDl/n9OZBFXjMvPppo4
+         rGK8jUo+T9hs1xGgX/chjr06pSPobL2iM0HWH+n2iftpqpoe9xRwQoffY/1LvDKEQE
+         CTzIWHdqPxgnegYbF40s22bgt+KaYK+KrXA+shCCsugKaBdg/zcvwLiTgXE/1HmoHH
+         sn0jagA3QGkSIyHwopV71IIP/RlgWGGM33KulHbcB6L6reiW+VlaNA/gCCWtHBkwqL
+         3/u1alCMxTykaYaRVRhIurXCpLqo4bpqqonDite42kCeP7b9jlCwJN3s7HqkawvS5a
+         9x0YQdvNOGX4A==
+Date:   Tue, 31 Oct 2023 14:52:32 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] drm/ssd130x: Fix possible uninitialized usage of
+ crtc_state variable
+Message-ID: <gyf7vluuecx6nfqbm5x7xg2elxeb2zbipszeyjoklu2r7liroc@ntlwe3zkrgqb>
+References: <20231020225338.1686974-1-javierm@redhat.com>
+ <b048247c-75e9-488e-a4f3-b227a38bca5e@redhat.com>
+ <87v8aso1ha.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdVLf=H7QWaUXrN17ABw9eE1MjBdzFEM0AhMNj8_ULSz+Q@mail.gmail.com>
+ <87lebjksoj.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdXdYm6Opyhgte7CaScs_jdPNUqrQTbPCMSQXqkKpKTd8w@mail.gmail.com>
+ <87il6nkp6e.fsf@minerva.mail-host-address-is-not-set>
+ <2eh6i4ttpepnpehw47zucgrs3rvzugxiay7eqy65phktcm2m4r@zwzyn5rn55yl>
+ <CAMuHMdXHq6yE14YqA+GNj=V79Z1rYTK=8Dx5WWw3RczrzMy21A@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 3/4] ARM: dts: qcom: Add support for Samsung Galaxy Tab
- 4 10.1 LTE (SM-T535)
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20231025083952.12367-1-newbyte@postmarketos.org>
- <20231025083952.12367-4-newbyte@postmarketos.org>
- <a3162513-c4d0-4db6-9ff9-447f4249fc67@linaro.org>
-Content-Language: en-US
-From:   Stefan Hansson <newbyte@postmarketos.org>
-In-Reply-To: <a3162513-c4d0-4db6-9ff9-447f4249fc67@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tte2azzi3g6reuun"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXHq6yE14YqA+GNj=V79Z1rYTK=8Dx5WWw3RczrzMy21A@mail.gmail.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,74 +64,76 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--tte2azzi3g6reuun
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2023-10-31 12:08, Konrad Dybcio wrote:
-> On 25.10.2023 10:37, Stefan Hansson wrote:
->> Add a device tree for the Samsung Galaxy Tab 4 10.1 (SM-T535) LTE tablet
->> based on the MSM8926 platform.
->>
->> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
->> ---
->>   arch/arm/boot/dts/qcom/Makefile               |  1 +
->>   .../qcom/qcom-msm8926-samsung-matisselte.dts  | 36 +++++++++++++++++++
->>   2 files changed, 37 insertions(+)
->>   create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
->>
->> diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
->> index a3d293e40820..cab35eeb30f6 100644
->> --- a/arch/arm/boot/dts/qcom/Makefile
->> +++ b/arch/arm/boot/dts/qcom/Makefile
->> @@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
->>   	qcom-msm8916-samsung-serranove.dtb \
->>   	qcom-msm8926-microsoft-superman-lte.dtb \
->>   	qcom-msm8926-microsoft-tesla.dtb \
->> +	qcom-msm8926-samsung-matisselte.dtb \
->>   	qcom-msm8960-cdp.dtb \
->>   	qcom-msm8960-samsung-expressatt.dtb \
->>   	qcom-msm8974-lge-nexus5-hammerhead.dtb \
->> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
->> new file mode 100644
->> index 000000000000..6e25b1a74ce5
->> --- /dev/null
->> +++ b/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
->> @@ -0,0 +1,36 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * Copyright (c) 2022, Matti Lehtimäki <matti.lehtimaki@gmail.com>
->> + * Copyright (c) 2023, Stefan Hansson <newbyte@postmarketos.org>
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include "qcom-msm8226-samsung-matisse-common.dtsi"
->> +
->> +/ {
->> +	model = "Samsung Galaxy Tab 4 10.1 LTE";
->> +	compatible = "samsung,matisselte", "qcom,msm8926", "qcom,msm8226";
->> +	chassis-type = "tablet";
->> +};
->> +
->> +&pm8226_l3 {
->> +	regulator-max-microvolt = <1350000>;
->> +};
->> +
->> +&pm8226_s4 {
->> +	regulator-max-microvolt = <2200000>;
->> +};
->> +
->> +&reg_tsp_3p3v {
->> +	gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
->> +};
->> +
->> +&sdhc_2 {
->> +	/* SD card fails to probe with error -110 */
->> +	status = "disabled";
-> Can you give us some logs?
+On Tue, Oct 31, 2023 at 02:00:06PM +0100, Geert Uytterhoeven wrote:
+> Hi Maxime,
+>=20
+> On Tue, Oct 31, 2023 at 12:53=E2=80=AFPM Maxime Ripard <mripard@kernel.or=
+g> wrote:
+> > On Tue, Oct 31, 2023 at 12:27:05PM +0100, Javier Martinez Canillas wrot=
+e:
+> > > Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> > > >> >> Pushed to drm-misc (drm-misc-next). Thanks!
+> > > >> >
+> > > >> > Looks like you introduced an unintended
+> > > >> >
+> > > >> >     (cherry picked from commit 9e4db199e66d427c50458f4d72734cc4f=
+0b92948)
+> > > >> >
+> > > >> > ?
+> > > >>
+> > > >> No, that's intended. It's added by the `dim cherry-pick` command, =
+since I
+> > > >> had to cherry-pick to drm-misc-next-fixes the commit that was alre=
+ady in
+> > > >> the drm-misc-next branch.
+> > > >>
+> > > >> You will find that message in many drm commits, i.e:
+> > > >>
+> > > >> $ git log --oneline --grep=3D"(cherry picked from commit" drivers/=
+gpu/drm/ | wc -l
+> > > >> 1708
+> > > >
+> > > > Ah, so that's why it's (way too) common to have merge conflicts bet=
+ween
+> > > > the fixes and non-fixes drm branches :-(
+>=20
+> > That's also not as bad as Geert put it: merging two branches with the
+> > exact same commit applied won't create conflict. If the two commits
+> > aren't exactly the same then we can indeed create conflicts, but that
+> > would have been the case anyway with or without the "double-commits"
+>=20
+> Oh it is, as soon as one branch receives more commits that make changes
+> to the same location.  Which is fairly common, too, to the point
+> that I am surprised when merging a drm for-next branch does not trigger
+> a conflict...
+>=20
+> Cfr. the conflict I had to resolve this morning between commit
+> 64ffd2f1d00c6235 ("drm/amd: Disable ASPM for VI w/ all Intel systems")
+> already upstream, and commits e5f52a84bf0a8170 ("drm/amd: Disable ASPM
+> for VI w/ all Intel systems") and follow-up 2757a848cb0f1848
+> ("drm/amd: Explicitly disable ASPM when dynamic switching disabled")
+> in drm/drm-next.
 
-I tested it again just now, and it worked without issues. Maybe I used a 
-defective SD card to test it or hadn't inserted it properly. I'll send 
-another revision fixing this.
+I probably don't get what you're saying, sorry, but those two commits
+would have conflicted anyway when merging the two branches, with or
+without the cherry-pick.
 
-> Konrad
+Maxime
 
-Stefan
+--tte2azzi3g6reuun
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUEGoAAKCRDj7w1vZxhR
+xXQMAQCApHoSIwBvbu9hs/AUWWlu/V0eNuLdDTWiMUAOqIgZVwD/QA4D/xcilfQD
+g/zor+pG8ZvLijw6s4a4XgoARf9AeQU=
+=FGIO
+-----END PGP SIGNATURE-----
+
+--tte2azzi3g6reuun--
