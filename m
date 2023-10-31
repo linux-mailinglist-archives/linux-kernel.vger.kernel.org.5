@@ -2,512 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5AD7DD192
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAD07DD4D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345191AbjJaQ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
+        id S1346905AbjJaRme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345195AbjJaQ2H (ORCPT
+        with ESMTP id S231249AbjJaRmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:28:07 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0792FE
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:28:01 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-457c134a702so1699749137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:28:01 -0700 (PDT)
+        Tue, 31 Oct 2023 13:42:32 -0400
+Received: from mx0b-00128a01.pphosted.com (mx0b-00128a01.pphosted.com [148.163.139.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879AB91;
+        Tue, 31 Oct 2023 10:42:30 -0700 (PDT)
+Received: from pps.filterd (m0167090.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39VHSe92018446;
+        Tue, 31 Oct 2023 13:42:08 -0400
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3u360y06y0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 13:42:07 -0400 (EDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LO8fAN9WZikJdSXF1vWr3ef8eSwUvi/3Ir3D3rQDU85nHJWqCyYiuZqQZZfAL1GQ7zcXb6cxseykQHgwTy5PWcudK7bCmGyRDo65Vd+2KoxRyR8DVVVqcnR4PfOAFaM/KdJTpAfNImh8yZ99X17zVa1nAdlx7BlwMk3uZsTeFyKMN5VvnWuELu47cfbW6oHi4xjzxsjm5t+TRuR6g9biReMBEJqhuhRk1+nuqekwTf72rAZfgzc2fc+qrtomYDpplK9oVwrKU05FI4fcj02YpU1y+G2eaFwSEZXm2ubY2uZM+SZd4ZqZAo01lW3GVsBStTawCcYY1uWZk5oltbHR8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=py40f1bnBzFs4HKfdfBmgSZylRP3s0cKeGprwkpshu8=;
+ b=fKQipKM7DjlFuappgEMeLDOOGIn9+0+UwnrcRjgzYWa1hvGrna1A5GsJ+wDKCDrsRCIdWPbcysEjleIoO7rjZ1qyO8WKGEcLOY+nDhU2lIBF92OwdT/85rl9J6lzbjiPzqu5B/S82AtSsLFKb2fkuwxrSsT1Zs2CpbjycZaypNQNMGhhjXKfWpxKfXECeSZuj0nFRWnVe/5eeL7FL1d1Ssgm0973OGS9e2AfepxzLrH6+NLL3q1GhKN8OcaIhd0OWOWV0ntyh7eMGBvNJVAySUSSjwlT+Qijdfs7IZWudPoAuibXW4ko5u0oooV8q5oqic10WJSpoZe5BTdvM4Ubsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698769681; x=1699374481; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EnirYMb0/SealnyxAtrqPAbgD/M5iu32PEWT4EArxN4=;
-        b=yG4puHE53c+IyNaejmRIGXhFRwubGeKwvabl6mZFGZpPnGhp52S3vRKw9Ofl4SNX/R
-         ZWDBcNxLRlTAunvKDKsY/wGT+mDdBgR21D0fkk/zx9Fmi2FQeBkekQP0q9i8lAjM6Tkz
-         PZxt8HHzB7gC+1WL5LCxnA7WoNPJqzGqOgaJm8t3OL2N9glAGXoTGzudhOAFTbi+R+n4
-         ZLpw8UOXl+7Tk1RWRR8L+yzm99n+2+yRcwB/nRsrwoVaR51CqhjfKYDQr+nIXtEg8uUr
-         AT94tor25Ujjm/Zkn1ZMhs+UmyA/eQpQOPjpkFogIKKmrw87rprTHytqPYjo0QYPzRE4
-         j90w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698769681; x=1699374481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EnirYMb0/SealnyxAtrqPAbgD/M5iu32PEWT4EArxN4=;
-        b=qT32lULdFIW5rF5lUcRbjTl18aysgi6sL0cUlR7ZbGdaOCjbPu+0i0N1/YfanWyi4J
-         rNfFmNTb9Z9nzW9lT3wpAaT00zfoE/cr6R2H3nyQfQVDX8iSxmKHzAiIR21gt2g4FyhM
-         iZvXrq24OisngWbCJ2YCI2NkEv5G5427GjNosXGglE2kP5PrwNnjuQq4epvtAzWxyS+Q
-         Wh/ypLj0x3a6W7e+POeujLEU/SxEtZpqInaJSIWJBum58r7pPPR3xTkwV7FxHrlGLrKv
-         U/F8ygZHXQR5zhvj24GpM9C/t+EtBLpFD0orjw8s2JeI9yhUPLdeZAhJ+3UEsou2XMSn
-         ACOA==
-X-Gm-Message-State: AOJu0Yxx8bKEPgdGq8G6DSNQ51LnXIxvN6vXQ8Z6FPMQZ+vKAHxDbdzu
-        Y1iAH9lWmHLicuTVpJN7aqnIc57GS4mv9FGQ+F1YaQ==
-X-Google-Smtp-Source: AGHT+IETU8E60Bh/4WCGXygwfnJhns7LzXQAo16DH204oQiIzKGqiKrWnorgKsc4NzL2ZOqBnvb+hnY/4MHe4cYpiqg=
-X-Received: by 2002:a67:a205:0:b0:457:d3d1:494b with SMTP id
- l5-20020a67a205000000b00457d3d1494bmr9611347vse.23.1698769680510; Tue, 31 Oct
- 2023 09:28:00 -0700 (PDT)
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=py40f1bnBzFs4HKfdfBmgSZylRP3s0cKeGprwkpshu8=;
+ b=YWzL3bENTEr5Xi5LtDwMlnOn4RhnwILqr2c6K7ksfs6/6e+Bgn8OXLTjj7rs+CVwfrUC3+XSQNkQ6b6UkMBdpIpbNKmAQ37SHFNWKfkx+3iJRrlb/umPjFu5A0SEoTYjJx/HeQJcl9X5lJruaFUkjqPUwqhGLB47DExLYYrzHe4=
+Received: from CY4PR03MB3399.namprd03.prod.outlook.com (2603:10b6:910:57::13)
+ by DM6PR03MB5082.namprd03.prod.outlook.com (2603:10b6:5:1ee::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Tue, 31 Oct
+ 2023 16:28:08 +0000
+Received: from CY4PR03MB3399.namprd03.prod.outlook.com
+ ([fe80::26c3:a563:9b0a:3321]) by CY4PR03MB3399.namprd03.prod.outlook.com
+ ([fe80::26c3:a563:9b0a:3321%3]) with mapi id 15.20.6954.014; Tue, 31 Oct 2023
+ 16:28:07 +0000
+From:   "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Subject: RE: [PATCH v3 2/2] rtc: max31335: add driver support
+Thread-Topic: [PATCH v3 2/2] rtc: max31335: add driver support
+Thread-Index: AQHaDA9c3G+ASfoC90CsVtZgJtJaCLBkDtYAgAABduA=
+Date:   Tue, 31 Oct 2023 16:28:07 +0000
+Message-ID: <CY4PR03MB3399DEF73E052036AC7EDBA99BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
+References: <20231031153100.92939-1-antoniu.miclaus@analog.com>
+ <20231031153100.92939-2-antoniu.miclaus@analog.com>
+ <95e41f16-4b5f-4f2a-bc31-17273032312b@roeck-us.net>
+In-Reply-To: <95e41f16-4b5f-4f2a-bc31-17273032312b@roeck-us.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jWVcxcFkyeGhkWE5jWVhCd1pHRjBZVnh5YjJGdGFXNW5YREE1WkRnME9X?=
+ =?utf-8?B?STJMVE15WkRNdE5HRTBNQzA0TldWbExUWmlPRFJpWVRJNVpUTTFZbHh0YzJk?=
+ =?utf-8?B?elhHMXpaeTAzTnpZeU9XTmpaUzAzT0RCaExURXhaV1V0WVdVM09DMWtORGd4?=
+ =?utf-8?B?WkRjMU1EWmtaR1ZjWVcxbExYUmxjM1JjTnpjMk1qbGpZMll0Tnpnd1lTMHhN?=
+ =?utf-8?B?V1ZsTFdGbE56Z3RaRFE0TVdRM05UQTJaR1JsWW05a2VTNTBlSFFpSUhONlBT?=
+ =?utf-8?B?SXpNakE0SWlCMFBTSXhNek0wTXpJME16STROVGN3TURJd05qQWlJR2c5SW1W?=
+ =?utf-8?B?a0szRmFZblJHUlVZclZHaE9iRFpCTTFsYUswSkJZa0pVVVQwaUlHbGtQU0lp?=
+ =?utf-8?B?SUdKc1BTSXdJaUJpYnowaU1TSWdZMms5SW1OQlFVRkJSVkpJVlRGU1UxSlZS?=
+ =?utf-8?B?azVEWjFWQlFVVnZRMEZCUWsxTlVGVTFSbmQ2WVVGVWVtVlljMUZFVTBSSlFs?=
+ =?utf-8?B?Qk9OV1Y0UVU1SlRXZEZSRUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRklRVUZCUVVSaFFWRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGRlFVRlJRVUpCUVVGQlJVOXdiRTluUVVGQlFVRkJRVUZCUVVGQlFVRkJT?=
+ =?utf-8?B?alJCUVVGQ2FFRkhVVUZoVVVKbVFVaE5RVnBSUW1wQlNGVkJZMmRDYkVGR09F?=
+ =?utf-8?B?RmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNla0ZHT0VGYVowSm9RVWQzUVdO?=
+ =?utf-8?B?M1FteEJSamhCV21kQ2RrRklUVUZoVVVJd1FVZHJRV1JuUW14QlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMFZCV2tGQ2NFRkdPRUZqZDBKc1FVZE5RV1JS?=
+ =?utf-8?B?UW5sQlIxVkJXSGRDZDBGSVNVRmlkMEp4UVVkVlFWbDNRakJCU0UxQldIZENN?=
+ =?utf-8?B?RUZIYTBGYVVVSjVRVVJGUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVZsUlFtdEJSMnRCV0hkQ2Vr?=
+ =?utf-8?B?RkhWVUZaZDBJeFFVaEpRVnBSUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVo?=
+ =?utf-8?B?UlFXTjNRbVpCU0ZGQllWRkNiRUZJU1VGTlowRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZCUFQwaUx6NDhMMjFs?=
+ =?utf-8?Q?dGE+?=
+x-dg-rorf: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY4PR03MB3399:EE_|DM6PR03MB5082:EE_
+x-ms-office365-filtering-correlation-id: e132fa7b-1bcf-4134-bd37-08dbda2e5db8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MY1lW0Bj0RADHfsgj07MfA+DIHD3wig32/3WTstCve+IR87Ao6ZjWeMtGgZyXqc2u3Bl1aqlQXdBfZo8qmojdONdViIqYi8bHYzOGXPyh75asa3mDMQX48ZCGWDWIKlq1mFQTDu+/JrYiXJSfcuGUViftZeKzyXgVDRVZawZOeSxrC4/XEnv9GNhohb03aEyUFWwVcyVNmAGSYqRlJerAO+QGYqgJoeYj3oZTy0AgM6XyJCkp0GcY1NZ0rqtrH2Dj/I4K93eb1NYyXDdbqm9mw3kB/qMkKgGamg+BhOTk3brPh31AV/hi4aUUdjp8i/FVV84KXwOJAAporNUyDduZGXDPFkq9P9aYhdBQXNsUyy4xN3Wuk4I4rkvY3wNkrfF5UgFrFM6sfhybHMiMRvyNI5asAfmAFXg5CF5ibpyuaio4hIv1pFM/ezdUDREK9iAAkz2ACZ5FDDicnTh9PWZ7y/S4dgS04zvNRXj/0qe/1X9nEblsc+ncw51kHMbFvArid+m1QV+PLvvvQuv2QeacXGN0qOg7A04Cgj99I12XgrfCOPMWARkVmV/08c8mLB0EerS8mmdZ9p166fqA703McC274RDxAemEUEnNKwcTJeekrIFUnCkkG8M97JevCt2aGtImYwQeCJaPVtIB98TVQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR03MB3399.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(396003)(136003)(346002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(38070700009)(33656002)(921008)(55016003)(41300700001)(478600001)(7416002)(5660300002)(52536014)(83380400001)(7696005)(2906002)(66946007)(76116006)(110136005)(66556008)(8936002)(53546011)(8676002)(26005)(64756008)(66446008)(66476007)(316002)(86362001)(71200400001)(38100700002)(9686003)(6506007)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cFBKK2s5OTlVTDlSN1crV25XZ1dvdGkwTU5sRjdoUDY2RGxFaVU1NXozMllP?=
+ =?utf-8?B?U2J5RVJ2YmtkMVdySHBHSm9wcWxtZVNHbDF2RHVwbCtNelJoUjg3MjdQUFhr?=
+ =?utf-8?B?emZJVFMzbkg2TDMyUWhhbDVTbVp6Qm1CNHMrWTd1dDR0aWJOQjM2U0c0bTVl?=
+ =?utf-8?B?cEZVL1VPWjRsSmFLMVgxeVFISnNVbzRldGpLK0NlOEJiVEdPYVdHRS84Q0th?=
+ =?utf-8?B?MDFRMk1WeWNMcVYwSXVrNEh3QVNZNjlvQlNncjdEMk80eUdRTUxrOFNEN0pY?=
+ =?utf-8?B?SVVzUVZkQmRqK2tYRWFGeVJ3Qk9JNXY2QjVBY3pDWHNUOWpGUUtKZHg2REov?=
+ =?utf-8?B?WUQyTlJBdy9jaElIbVd5djY5R041MTBLeXdsc3dQek1SemVpaTJveG11Vk9L?=
+ =?utf-8?B?eUtvNFMzcjA5S1lHdXFsL21qWWZjYVdRTktVQllHS0VDRVRlSTN0NmNtZ0FQ?=
+ =?utf-8?B?TVNiVXo5bTQ4UURjcXQrazgwbEYxOFRScE5acWc0cVZqTEhlYnAxNkVRYzlt?=
+ =?utf-8?B?aGp4eUM3QXJoaUlpdEJWMXA4R0d2clJMdWZpYS9HSGdJTUZFRVpiMWx1cUd3?=
+ =?utf-8?B?MkwrK0JzTzBSaVo4dEI0dU9kZW9QNU1pcjBYTjU0ekVDL004cFdJQzVXOVMx?=
+ =?utf-8?B?c2EvTitpVjEzOGtCdEp0Yit5WVg4ZkhKSERsUG92Q0U5WGZZVUhmZUFhV3NX?=
+ =?utf-8?B?OElzTDJNcEdxRnNJY1lUTUZqNkpua2M4MHdKandNSnEyTm9wS2tjeVFKYkE3?=
+ =?utf-8?B?N08xekRCaU1RajB6bUkyQzU0MWRCY1F6V3NCOUlCcXR3SmdaV0huNk10eUtW?=
+ =?utf-8?B?SlRnbXFFSnlZK1g3SC9jaG9RZlppMzVtVS90MDZ6QllhSFMzek1QdXh0NHQx?=
+ =?utf-8?B?bVRpSVBCOTh1OFNDK0NtckJpL3h5dTFXSFVFdG9QdjV0T25YamcvZmhIUVVG?=
+ =?utf-8?B?NHFrMXB1cGRnMmJwK1oyRTZ5dVBSaVBMUUVSanltQ3ZMOEI4STQybU1EeU9Z?=
+ =?utf-8?B?YjdwWnZhclFJRjBzVnNzNXBUYnpBWnVzS2xxaVFETGNpV3BMdkttUHE0QThl?=
+ =?utf-8?B?WEJPRkVCSGVWUEdlMk0vQUJNN3hZUW53blhBQ0E4ZDVNWDUxaFhUaVo0dE9G?=
+ =?utf-8?B?bWZ5Um80U1ZNMXZNS1dEaVY0dnNtMnBhd2UxWGxtQWxkUEJDUDdQV3h5OHo0?=
+ =?utf-8?B?dWpHK2ZrZ1BsRERDRElxWWpSWDJ2MllUOTBaa0c2YjJWckRZR2paUndRUEQx?=
+ =?utf-8?B?OEszQW9tVnh4RjllVmxKZG9obmR3enZBcUxYcE9xc0NYU3RPVlJEeFlQeFdz?=
+ =?utf-8?B?K3luekpiajNvZUx5RXA4SDByRkFJL1dxQlJ2YjNob2RGYXkvNC92dlpWTWEw?=
+ =?utf-8?B?aUxmV1U4UDJ4RXBWcnJxTmVtUEFEdmNraTNGUlVObzJKaEJBcmp1MFBYaEpr?=
+ =?utf-8?B?NTN3RitYdkw5VzlLYytna3Q1VGkxT1lLWnVnL2VDSFNoNGI4eE1HTEFGZmh1?=
+ =?utf-8?B?Q1crVDRGWlhROXZxTHVTeUlSaW9Cd0JDS0ZaNGxtdUdRTnVnQ2NRaUcxc1dQ?=
+ =?utf-8?B?VDFTQktEMUkrVnM3NDN5NUVlWUkyWHFaQmhBMWFWaVQ2T0FxSm9OeG5yVDBm?=
+ =?utf-8?B?TUoxYVJ2NlpkbUVCcXloREhYVlZyZXRwL25rVi9BSjkxTkNZRHE5S21ydERq?=
+ =?utf-8?B?QkIzSGZaN1VHZVRSemlBQWtEZjVCeUJya1JoRi9hZVFyWXY3eDRHMXJTdEhr?=
+ =?utf-8?B?dkJhZEt1K2RqM29sT0dGM3BWdUlHcksva2lhdzhjN1prejh1Z09UbkludktC?=
+ =?utf-8?B?bXk0MTd6WnJtdnM5Q1RlRzNjbkRPZFFQL21NYzJCVHp4MkZtZlNNN2dBd1NY?=
+ =?utf-8?B?RTZ5end6UTlLSjhyb2ZQOFY2WFlIc3g3MVBDK3BoMXV4OVduQ2tDTmU1SHZm?=
+ =?utf-8?B?L09GRzZDempad05iSzBKM3I0QnZkVVhmRVF1SU9NOW9EcENLOWpWSWZkRUcr?=
+ =?utf-8?B?NkhqRG1WUFBTbTVHR0tOV0lWbWg0alkzVExUMVRNRVNVUjdUNVpxTm9GNVps?=
+ =?utf-8?B?M2YvR09CRWllY1J6bXoxeDdWd2ZTNloyNTlwOXlHT2JlSmJEQitQRHpGQWlt?=
+ =?utf-8?B?TUNQdUU5OXF4MkhVTzlnSHo5dFgrdmFQRTF3SW1td1QzQjkyTlc1Q0E4ek5S?=
+ =?utf-8?B?Tnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain>
-In-Reply-To: <02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 31 Oct 2023 21:57:48 +0530
-Message-ID: <CA+G9fYuA643RHHpPnz9Ww7rr3zV5a0y=7_uFcybBSL=QP_sQvQ@mail.gmail.com>
-Subject: Re: [RFC] drm/tests: annotate intentional stack trace in drm_test_rect_calc_hscale()
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        kv-team <kv-team@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR03MB3399.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e132fa7b-1bcf-4134-bd37-08dbda2e5db8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2023 16:28:07.8563
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZqNDbfv+2O9VA5q/Pfx3pwDEvFszk0rAlWg7IWC6q8kp4yw3IpDSqGZl9qBbhCv3bJ42HAT4LDyrYcJlskOS9VQfxUGrM/0JcnwvyL6Ocgc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5082
+X-Proofpoint-ORIG-GUID: 7s947X3vUtoSYdSGBfpoVuXh3l7EcEH4
+X-Proofpoint-GUID: 7s947X3vUtoSYdSGBfpoVuXh3l7EcEH4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_04,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2310240000 definitions=main-2310310141
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 at 14:33, Dan Carpenter <dan.carpenter@linaro.org> wrote:
->
-> We have started printing more and more intentional stack traces.  Whether
-> it's testing KASAN is able to detect use after frees or it's part of a
-> kunit test.
->
-> These stack traces can be problematic.  They suddenly show up as a new
-> failure.  Now the test team has to contact the developers.  A bunch of
-> people have to investigate the bug.  We finally decide that it's
-> intentional so now the test team has to update their filter scripts to
-> mark it as intentional.  These filters are ad-hoc because there is no
-> standard format for warnings.
->
-> A better way would be to mark it as intentional from the start.
->
-> Here, I have marked the beginning and the end of the trace.  It's more
-> tricky for things like lkdtm_FORTIFY_MEM_MEMBER() where the flow doesn't
-> reach the end of the function.  I guess I would print a different
-> warning for stack traces that can't have a
-> "Intentional warning finished\n" message at the end.
->
-> I haven't actually tested this patch...  Daniel, do you have a
-> list of intentional stack traces we could annotate?
-
-[My two cents]
-
-I have been noticing following kernel warnings / BUGs
-These are starting happening from next-20231009.
-I am not sure which are "Intentional warnings" or real regressions.
-
-[   37.378220] BUG: KASAN: slab-out-of-bounds in kmalloc_oob_right+0xc4/0x300
-[   37.645506] BUG: KASAN: slab-out-of-bounds in kmalloc_oob_right+0xec/0x300
-..
-[  632.407425] BUG: KASAN: null-ptr-deref in kobject_namespace+0x3c/0xb0
-
-
-Logs: [Sorry for sharing long logs ]
-==========
-
-------------[ cut here ]------------
-[  629.699281] WARNING: CPU: 0 PID: 2834 at
-drivers/gpu/drm/drm_rect.c:138 drm_rect_calc_hscale+0xbc/0xe8
-[drm_kms_helper]
-[  629.710944] Modules linked in: drm_rect_test(+)
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  629.756007] CPU: 0 PID: 2834 Comm: kunit_try_catch Tainted: G    B
-          N 6.6.0-next-20231031 #1
-[  629.765381] Hardware name: ARM Juno development board (r2) (DT)
-[  629.771343] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  629.778362] pc : drm_rect_calc_hscale+0xbc/0xe8 [drm_kms_helper]
-[  629.785160] lr : drm_rect_calc_hscale+0x60/0xe8 [drm_kms_helper]
-[  629.791955] sp : ffff800088907d20
-[  629.795301] x29: ffff800088907d20 x28: 0000000000000000 x27: 0000000000000000
-[  629.802533] x26: ffff0008270a39c0 x25: ffff8000885673e8 x24: ffff8000809ccf28
-[  629.809770] x23: 0000000000000000 x22: 000000007fffffff x21: 00000000ffff0000
-[  629.817003] x20: ffff80007faf0018 x19: 0000000000010000 x18: 000000007be82992
-[  629.824236] x17: 000000040044ffff x16: 00500072b5503510 x15: 0000000000000000
-[  629.831469] x14: ffff800085d51d00 x13: ffff8008b22e5000 x12: ffff600105778569
-[  629.838704] x11: 1fffe00105778568 x10: ffff600105778568 x9 : ffff80007fae56e4
-[  629.845940] x8 : ffff800088907d08 x7 : 0000000000000000 x6 : 0000000041b58ab3
-[  629.853171] x5 : dfff800000000000 x4 : ffff700011120fb2 x3 : dfff800000000000
-[  629.860406] x2 : 0000000000000003 x1 : 00000000ffff0000 x0 : 0000000000010000
-[  629.867637] Call trace:
-[  629.870108]  drm_rect_calc_hscale+0xbc/0xe8 [drm_kms_helper]
-[  629.876561]  drm_test_rect_calc_hscale+0xac/0x150 [drm_rect_test]
-[  629.882811]  kunit_try_run_case+0x84/0x110
-[  629.886984]  kunit_generic_run_threadfn_adapter+0x38/0x60
-[  629.892445]  kthread+0x18c/0x1a8
-[  629.895723]  ret_from_fork+0x10/0x20
-[  629.899355] ---[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-[  629.914458] WARNING: CPU: 5 PID: 2836 at
-drivers/gpu/drm/drm_rect.c:138 drm_rect_calc_hscale+0xbc/0xe8
-[drm_kms_helper]
-[  629.926098] Modules linked in: drm_rect_test(+)
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  629.971166] CPU: 5 PID: 2836 Comm: kunit_try_catch Tainted: G    B
- W        N 6.6.0-next-20231031 #1
-[  629.980553] Hardware name: ARM Juno development board (r2) (DT)
-[  629.986519] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  629.993545] pc : drm_rect_calc_hscale+0xbc/0xe8 [drm_kms_helper]
-[  630.000401] lr : drm_rect_calc_hscale+0x60/0xe8 [drm_kms_helper]
-[  630.007201] sp : ffff800088957d20
-[  630.010548] x29: ffff800088957d20 x28: 0000000000000000 x27: 0000000000000000
-[  630.017783] x26: ffff0008270a3dc0 x25: ffff8000885673e8 x24: ffff8000809ccf28
-[  630.025019] x23: 0000000000000000 x22: 000000007fffffff x21: 0000000000010000
-[  630.032249] x20: ffff80007faf0050 x19: 00000000ffff0000 x18: 00000000f9b8fcdb
-[  630.039483] x17: 000000040044ffff x16: 00500072b5503510 x15: 0000000000000000
-[  630.046715] x14: ffff0008008fa300 x13: ffff8008b2380000 x12: ffff600105778799
-[  630.053951] x11: 1fffe00105778798 x10: ffff600105778798 x9 : ffff80007fae56e4
-[  630.061187] x8 : ffff800088957d08 x7 : 0000000000000000 x6 : 0000000041b58ab3
-[  630.068417] x5 : dfff800000000000 x4 : ffff70001112afb2 x3 : dfff800000000000
-[  630.075651] x2 : 0000000000000003 x1 : 00000000ffff0000 x0 : 00000000ffff0000
-[  630.082883] Call trace:
-[  630.085355]  drm_rect_calc_hscale+0xbc/0xe8 [drm_kms_helper]
-[  630.091808]  drm_test_rect_calc_hscale+0xac/0x150 [drm_rect_test]
-[  630.098060]  kunit_try_run_case+0x84/0x110
-[  630.102233]  kunit_generic_run_threadfn_adapter+0x38/0x60
-[  630.107694]  kthread+0x18c/0x1a8
-[  630.110973]  ret_from_fork+0x10/0x20
-[  630.114607] ---[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-[  630.172564] WARNING: CPU: 5 PID: 2846 at
-drivers/gpu/drm/drm_rect.c:138 drm_rect_calc_vscale+0xbc/0xe8
-[drm_kms_helper]
-[  630.184211] Modules linked in: drm_rect_test(+)
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  630.229265] CPU: 5 PID: 2846 Comm: kunit_try_catch Tainted: G    B
- W        N 6.6.0-next-20231031 #1
-[  630.238639] Hardware name: ARM Juno development board (r2) (DT)
-[  630.244601] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  630.251621] pc : drm_rect_calc_vscale+0xbc/0xe8 [drm_kms_helper]
-[  630.258417] lr : drm_rect_calc_vscale+0x60/0xe8 [drm_kms_helper]
-[  630.265214] sp : ffff8000889c7d20
-[  630.268560] x29: ffff8000889c7d20 x28: 0000000000000000 x27: 0000000000000000
-[  630.275792] x26: ffff00082e57d440 x25: ffff8000885673e8 x24: ffff8000809ccf28
-[  630.283029] x23: 0000000000000000 x22: 000000007fffffff x21: 00000000ffff0000
-[  630.290261] x20: ffff80007faf0018 x19: 0000000000010000 x18: 000000004d058349
-[  630.297494] x17: 000000040044ffff x16: 00500072b5503510 x15: 0000000000000000
-[  630.304726] x14: ffff0008008fa300 x13: ffff8008b2380000 x12: ffff600105e39569
-[  630.311962] x11: 1fffe00105e39568 x10: ffff600105e39568 x9 : ffff80007fae5594
-[  630.319198] x8 : ffff8000889c7d08 x7 : 0000000000000000 x6 : 0000000041b58ab3
-[  630.326430] x5 : dfff800000000000 x4 : ffff700011138fb2 x3 : dfff800000000000
-[  630.333665] x2 : 0000000000000007 x1 : 00000000ffff0000 x0 : 0000000000010000
-[  630.340894] Call trace:
-[  630.343367]  drm_rect_calc_vscale+0xbc/0xe8 [drm_kms_helper]
-[  630.349818]  drm_test_rect_calc_vscale+0xac/0x150 [drm_rect_test]
-[  630.356068]  kunit_try_run_case+0x84/0x110
-[  630.360240]  kunit_generic_run_threadfn_adapter+0x38/0x60
-[  630.365701]  kthread+0x18c/0x1a8
-[  630.368978]  ret_from_fork+0x10/0x20
-[  630.372611] ---[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-[  630.388003] WARNING: CPU: 3 PID: 2848 at
-drivers/gpu/drm/drm_rect.c:138 drm_rect_calc_vscale+0xbc/0xe8
-[drm_kms_helper]
-[  630.399652] Modules linked in: drm_rect_test(+)
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  630.444724] CPU: 3 PID: 2848 Comm: kunit_try_catch Tainted: G    B
- W        N 6.6.0-next-20231031 #1
-[  630.454107] Hardware name: ARM Juno development board (r2) (DT)
-[  630.460071] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  630.467097] pc : drm_rect_calc_vscale+0xbc/0xe8 [drm_kms_helper]
-[  630.473953] lr : drm_rect_calc_vscale+0x60/0xe8 [drm_kms_helper]
-[  630.480751] sp : ffff8000889e7d20
-[  630.484097] x29: ffff8000889e7d20 x28: 0000000000000000 x27: 0000000000000000
-[  630.491332] x26: ffff00082e57d1c0 x25: ffff8000885673e8 x24: ffff8000809ccf28
-[  630.498568] x23: 0000000000000000 x22: 000000007fffffff x21: 0000000000010000
-[  630.505800] x20: ffff80007faf0050 x19: 00000000ffff0000 x18: 000000007be82992
-[  630.513032] x17: 000000040044ffff x16: 00500072b5503510 x15: 0000000000000000
-[  630.520265] x14: ffff0008008f8000 x13: 6461657268745f68 x12: ffff600104d8cbf9
-[  630.527500] x11: 1fffe00104d8cbf8 x10: ffff600104d8cbf8 x9 : ffff80007fae5594
-[  630.534736] x8 : ffff8000889e7d08 x7 : 0000000000000000 x6 : 0000000041b58ab3
-[  630.541968] x5 : dfff800000000000 x4 : ffff70001113cfb2 x3 : dfff800000000000
-[  630.549202] x2 : 0000000000000007 x1 : 00000000ffff0000 x0 : 00000000ffff0000
-[  630.556433] Call trace:
-[  630.558906]  drm_rect_calc_vscale+0xbc/0xe8 [drm_kms_helper]
-[  630.565357]  drm_test_rect_calc_vscale+0xac/0x150 [drm_rect_test]
-[  630.571609]  kunit_try_run_case+0x84/0x110
-[  630.575782]  kunit_generic_run_threadfn_adapter+0x38/0x60
-[  630.581244]  kthread+0x18c/0x1a8
-[  630.584523]  ret_from_fork+0x10/0x20
-[  630.588156] ---[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-[  631.679963] kobject: '(null)' (00000000f512f33b): is not
-initialized, yet kobject_get() is being called.
-[  631.692367] WARNING: CPU: 2 PID: 2900 at lib/kobject.c:637
-kobject_get+0xa4/0xf0
-[  631.702388] Modules linked in: snd_hda_cirrus_scodec_test(+)
-snd_hda_cirrus_scodec preemptirq_delay_test usbtest pci_epf_test
-pci_endpoint_test hte_tegra194_test drm_rect_test
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  631.760697] CPU: 2 PID: 2900 Comm: modprobe Tainted: G    B   W
-   N 6.6.0-next-20231031 #1
-[  631.772184] Hardware name: ARM Juno development board (r2) (DT)
-[  631.780891] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  631.790639] pc : kobject_get+0xa4/0xf0
-[  631.797169] lr : kobject_get+0xa4/0xf0
-[  631.803699] sp : ffff800088616fa0
-[  631.809794] x29: ffff800088616fa0 x28: ffff800085d42a60 x27: ffff80007fb3a180
-[  631.819718] x26: ffff000830a36968 x25: ffff80007fb3a218 x24: ffff000828158298
-[  631.829642] x23: ffff0008281582a0 x22: ffff80007fb3a1d0 x21: 1ffff000110c2e0c
-[  631.839566] x20: ffff800082bd05a0 x19: ffff80007fb3a1d0 x18: 0000000000000000
-[  631.849490] x17: 6f6b20746579202c x16: 64657a696c616974 x15: 696e6920746f6e20
-[  631.859413] x14: 7369203a29623333 x13: 2e64656c6c616320 x12: ffff7000110c2d95
-[  631.869337] x11: 1ffff000110c2d94 x10: ffff7000110c2d94 x9 : ffff8000801a1018
-[  631.879261] x8 : 00008fffeef3d26c x7 : ffff800088616ca7 x6 : 0000000000000001
-[  631.889185] x5 : ffff800088616ca0 x4 : ffff7000110c2d95 x3 : dfff800000000000
-[  631.899109] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00083c8fb480
-[  631.909033] Call trace:
-[  631.914258]  kobject_get+0xa4/0xf0
-[  631.920440]  kobject_add_internal+0x58/0x438
-[  631.927491]  kobject_add+0x104/0x198
-[  631.933852]  kobject_create_and_add+0x70/0xc8
-[  631.940991]  module_add_driver+0x190/0x1b0
-[  631.947869]  bus_add_driver+0x1ac/0x2d0
-[  631.954490]  driver_register+0xac/0x1f8
-[  631.961107]  __platform_driver_register+0x4c/0x68
-[  631.968595]  cirrus_scodec_test_suite_init+0x34/0xa8
-[snd_hda_cirrus_scodec_test]
-[  631.978867]  kunit_run_tests+0xc8/0x860
-[  631.985484]  __kunit_test_suites_init+0x9c/0xf0
-[  631.992797]  kunit_exec_run_tests+0x9c/0xb8
-[  631.999762]  kunit_module_notify+0x2f0/0x318
-[  632.006819]  notifier_call_chain+0x90/0x1c8
-[  632.013784]  blocking_notifier_call_chain_robust+0xc8/0x148
-[  632.022141]  load_module+0x2950/0x2d30
-[  632.028672]  init_module_from_file+0xdc/0x138
-[  632.035811]  __arm64_sys_finit_module+0x23c/0x458
-[  632.043298]  invoke_syscall+0x68/0x198
-[  632.049828]  el0_svc_common.constprop.0+0x80/0x150
-[  632.057403]  do_el0_svc+0x38/0x50
-[  632.063498]  el0_svc+0x3c/0x80
-[  632.069332]  el0t_64_sync_handler+0x120/0x130
-[  632.076471]  el0t_64_sync+0x190/0x198
-[  632.082915] ---[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-[  632.097826] refcount_t: addition on 0; use-after-free.
-[  632.105742] WARNING: CPU: 2 PID: 2900 at lib/refcount.c:25
-refcount_warn_saturate+0x14c/0x178
-[  632.116955] Modules linked in: snd_hda_cirrus_scodec_test(+)
-snd_hda_cirrus_scodec preemptirq_delay_test usbtest pci_epf_test
-pci_endpoint_test hte_tegra194_test drm_rect_test
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  632.175267] CPU: 2 PID: 2900 Comm: modprobe Tainted: G    B   W
-   N 6.6.0-next-20231031 #1
-[  632.186759] Hardware name: ARM Juno development board (r2) (DT)
-[  632.193900] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  632.200892] pc : refcount_warn_saturate+0x14c/0x178
-[  632.205801] lr : refcount_warn_saturate+0x14c/0x178
-[  632.210703] sp : ffff800088616f80
-[  632.214028] x29: ffff800088616f80 x28: ffff800085d42a60 x27: ffff80007fb3a180
-[  632.221214] x26: ffff000830a36968 x25: ffff80007fb3a218 x24: ffff000828158298
-[  632.228400] x23: ffff0008281582a0 x22: ffff80007fb3a1d0 x21: 1ffff000110c2e0c
-[  632.235582] x20: ffff80007fb3a208 x19: 0000000000000002 x18: 0000000000000000
-[  632.242769] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[  632.249946] x14: 0000000000000000 x13: 2e656572662d7265 x12: ffff7000110c2d91
-[  632.257125] x11: 1ffff000110c2d90 x10: ffff7000110c2d90 x9 : ffff8000801a1018
-[  632.264305] x8 : 00008fffeef3d270 x7 : ffff800088616c87 x6 : 0000000000000001
-[  632.271483] x5 : ffff800088616c80 x4 : ffff7000110c2d91 x3 : dfff800000000000
-[  632.278663] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00083c8fb480
-[  632.285842] Call trace:
-[  632.288296]  refcount_warn_saturate+0x14c/0x178
-[  632.292851]  kobject_get+0xec/0xf0
-[  632.296277]  kobject_add_internal+0x58/0x438
-[  632.300573]  kobject_add+0x104/0x198
-[  632.304171]  kobject_create_and_add+0x70/0xc8
-[  632.308553]  module_add_driver+0x190/0x1b0
-[  632.312674]  bus_add_driver+0x1ac/0x2d0
-[  632.316534]  driver_register+0xac/0x1f8
-[  632.320388]  __platform_driver_register+0x4c/0x68
-[  632.325116]  cirrus_scodec_test_suite_init+0x34/0xa8
-[snd_hda_cirrus_scodec_test]
-[  632.332668]  kunit_run_tests+0xc8/0x860
-[  632.336527]  __kunit_test_suites_init+0x9c/0xf0
-[  632.341084]  kunit_exec_run_tests+0x9c/0xb8
-[  632.345287]  kunit_module_notify+0x2f0/0x318
-[  632.349581]  notifier_call_chain+0x90/0x1c8
-[  632.353788]  blocking_notifier_call_chain_robust+0xc8/0x148
-[  632.359387]  load_module+0x2950/0x2d30
-[  632.363160]  init_module_from_file+0xdc/0x138
-[  632.367542]  __arm64_sys_finit_module+0x23c/0x458
-[  632.372272]  invoke_syscall+0x68/0x198
-[  632.376045]  el0_svc_common.constprop.0+0x80/0x150
-[  632.380863]  do_el0_svc+0x38/0x50
-[  632.384200]  el0_svc+0x3c/0x80
-[  632.387273]  el0t_64_sync_handler+0x120/0x130
-[  632.391653]  el0t_64_sync+0x190/0x198
-[  632.395335] ---[ end trace 0000000000000000 ]---
-
-[  632.400176] ==================================================================
-[  632.407425] BUG: KASAN: null-ptr-deref in kobject_namespace+0x3c/0xb0
-[  632.413902] Read of size 8 at addr 0000000000000018 by task modprobe/2900
-[  632.420715]
-[  632.422214] CPU: 2 PID: 2900 Comm: modprobe Tainted: G    B   W
-   N 6.6.0-next-20231031 #1
-[  632.430946] Hardware name: ARM Juno development board (r2) (DT)
-[  632.436885] Call trace:
-[  632.439338]  dump_backtrace+0x9c/0x128
-[  632.443109]  show_stack+0x20/0x38
-[  632.446441]  dump_stack_lvl+0x60/0xb0
-[  632.450124]  print_report+0x2f0/0x5d8
-[  632.453811]  kasan_report+0xc8/0x118
-[  632.457408]  __asan_load8+0x68/0xc0
-[  632.460918]  kobject_namespace+0x3c/0xb0
-[  632.464866]  kobject_add_internal+0x104/0x438
-[  632.469248]  kobject_add+0x104/0x198
-[  632.472846]  kobject_create_and_add+0x70/0xc8
-[  632.477229]  module_add_driver+0x190/0x1b0
-[  632.481348]  bus_add_driver+0x1ac/0x2d0
-[  632.485208]  driver_register+0xac/0x1f8
-[  632.489063]  __platform_driver_register+0x4c/0x68
-[  632.493790]  cirrus_scodec_test_suite_init+0x34/0xa8
-[snd_hda_cirrus_scodec_test]
-[  632.501337]  kunit_run_tests+0xc8/0x860
-[  632.505197]  __kunit_test_suites_init+0x9c/0xf0
-[  632.509754]  kunit_exec_run_tests+0x9c/0xb8
-[  632.513956]  kunit_module_notify+0x2f0/0x318
-[  632.518251]  notifier_call_chain+0x90/0x1c8
-[  632.522457]  blocking_notifier_call_chain_robust+0xc8/0x148
-[  632.528057]  load_module+0x2950/0x2d30
-[  632.531829]  init_module_from_file+0xdc/0x138
-[  632.536211]  __arm64_sys_finit_module+0x23c/0x458
-[  632.540941]  invoke_syscall+0x68/0x198
-[  632.544713]  el0_svc_common.constprop.0+0x80/0x150
-[  632.549531]  do_el0_svc+0x38/0x50
-[  632.552868]  el0_svc+0x3c/0x80
-[  632.555941]  el0t_64_sync_handler+0x120/0x130
-[  632.560321]  el0t_64_sync+0x190/0x198
-[  632.564002] ==================================================================
-[  632.571398] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000018
-[  632.580388] Mem abort info:
-[  632.583201]   ESR = 0x0000000096000004
-[  632.587023]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  632.592413]   SET = 0, FnV = 0
-[  632.595520]   EA = 0, S1PTW = 0
-[  632.598682]   FSC = 0x04: level 0 translation fault
-[  632.603612] Data abort info:
-[  632.606510]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-[  632.612049]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[  632.617155]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[  632.622524] user pgtable: 4k pages, 48-bit VAs, pgdp=00000008ace48000
-[  632.629044] [0000000000000018] pgd=0000000000000000, p4d=0000000000000000
-[  632.635923] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-[  632.642219] Modules linked in: snd_hda_cirrus_scodec_test(+)
-snd_hda_cirrus_scodec preemptirq_delay_test usbtest pci_epf_test
-pci_endpoint_test hte_tegra194_test drm_rect_test
-drm_probe_helper_test drm_plane_helper_test drm_modes_test drm_mm_test
-drm_managed_test drm_framebuffer_test drm_format_test
-drm_format_helper_test drm_exec_test drm_exec drm_kunit_helpers
-drm_dp_mst_helper_test drm_display_helper drm_damage_helper_test
-drm_connector_test drm_cmdline_parser_test drm_buddy_test
-prime_numbers drm_buddy tda998x onboard_usb_hub hdlcd cec crct10dif_ce
-drm_dma_helper drm_kms_helper drm fuse backlight dm_mod ip_tables
-x_tables
-[  632.698102] CPU: 2 PID: 2900 Comm: modprobe Tainted: G    B   W
-   N 6.6.0-next-20231031 #1
-[  632.706838] Hardware name: ARM Juno development board (r2) (DT)
-[  632.712777] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  632.719767] pc : kobject_namespace+0x3c/0xb0
-[  632.724072] lr : kobject_namespace+0x3c/0xb0
-[  632.728367] sp : ffff800088616f90
-[  632.731692] x29: ffff800088616f90 x28: ffff800085d42a60 x27: ffff80007fb3a180
-[  632.738878] x26: ffff000830a36968 x25: ffff8000831269a0 x24: ffff000828158298
-[  632.746062] x23: ffff0008281582a0 x22: ffff0008281582a8 x21: 0000000000000000
-[  632.753242] x20: ffff80007fb3a1d0 x19: ffff000828158280 x18: 0000000000000000
-[  632.760421] x17: 3d3d3d3d3d3d3d3d x16: 3d3d3d3d3d3d3d3d x15: 3d3d3d3d3d3d3d3d
-[  632.767600] x14: 3d3d3d3d3d3d3d3d x13: 3d3d3d3d3d3d3d3d x12: ffff700010ed19d9
-[  632.774780] x11: 1ffff00010ed19d8 x10: ffff700010ed19d8 x9 : dfff800000000000
-[  632.781967] x8 : 00008fffef12e628 x7 : ffff80008768cec7 x6 : 0000000000000001
-[  632.789151] x5 : ffff80008768cec0 x4 : ffff700010ed19d9 x3 : 0000000000000000
-[  632.796330] x2 : 0000000000040220 x1 : ffff00083c8fb480 x0 : 0000000000000001
-[  632.803508] Call trace:
-[  632.805966]  kobject_namespace+0x3c/0xb0
-[  632.809917]  kobject_add_internal+0x104/0x438
-[  632.814300]  kobject_add+0x104/0x198
-[  632.817898]  kobject_create_and_add+0x70/0xc8
-[  632.822286]  module_add_driver+0x190/0x1b0
-[  632.826408]  bus_add_driver+0x1ac/0x2d0
-[  632.830269]  driver_register+0xac/0x1f8
-[  632.834123]  __platform_driver_register+0x4c/0x68
-[  632.838858]  cirrus_scodec_test_suite_init+0x34/0xa8
-[snd_hda_cirrus_scodec_test]
-[  632.846408]  kunit_run_tests+0xc8/0x860
-[  632.850270]  __kunit_test_suites_init+0x9c/0xf0
-[  632.854828]  kunit_exec_run_tests+0x9c/0xb8
-[  632.859037]  kunit_module_notify+0x2f0/0x318
-[  632.863332]  notifier_call_chain+0x90/0x1c8
-[  632.867541]  blocking_notifier_call_chain_robust+0xc8/0x148
-[  632.873141]  load_module+0x2950/0x2d30
-[  632.876913]  init_module_from_file+0xdc/0x138
-[  632.881295]  __arm64_sys_finit_module+0x23c/0x458
-[  632.886028]  invoke_syscall+0x68/0x198
-[  632.889806]  el0_svc_common.constprop.0+0x80/0x150
-[  632.894625]  do_el0_svc+0x38/0x50
-[  632.897966]  el0_svc+0x3c/0x80
-[  632.901045]  el0t_64_sync_handler+0x120/0x130
-[  632.905428]  el0t_64_sync+0x190/0x198
-[  632.909116] Code: 979a7e35 f9401695 910062a0 979a7e32 (f9400ea1)
-[  632.915238] ---[ end trace 0000000000000000 ]---
-
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231031/testrun/20866349/suite/log-parser-test/test/check-kernel-bug/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231031/testrun/20866349/suite/log-parser-test/tests/
-
-- Naresh
+PiBPbiAxMC8zMS8yMyAwODozMCwgQW50b25pdSBNaWNsYXVzIHdyb3RlOg0KPiA+IFJUQyBkcml2
+ZXIgZm9yIE1BWDMxMzM1IMKxMnBwbSBBdXRvbW90aXZlIFJlYWwtVGltZSBDbG9jayB3aXRoDQo+
+ID4gSW50ZWdyYXRlZCBNRU1TIFJlc29uYXRvci4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEFu
+dG9uaXUgTWljbGF1cyA8YW50b25pdS5taWNsYXVzQGFuYWxvZy5jb20+DQo+ID4gLS0tDQo+ID4g
+Y2hhbmdlcyBpbiB2MzoNCj4gPiAgIC0gZHJvcCBNQVgzMTMzNV9TVEFUVVMxIHJlZ2lzdGVyIGNo
+ZWNrIGluc2lkZSBwcm9iZSBmdW5jdGlvbi4NCj4gPiAgIGRyaXZlcnMvcnRjL0tjb25maWcgICAg
+ICAgIHwgIDExICsNCj4gPiAgIGRyaXZlcnMvcnRjL01ha2VmaWxlICAgICAgIHwgICAxICsNCj4g
+PiAgIGRyaXZlcnMvcnRjL3J0Yy1tYXgzMTMzNS5jIHwgNzY1DQo+ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysNCj4gPiAgIDMgZmlsZXMgY2hhbmdlZCwgNzc3IGluc2VydGlv
+bnMoKykNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3J0Yy9ydGMtbWF4MzEzMzUu
+Yw0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcnRjL0tjb25maWcgYi9kcml2ZXJzL3J0
+Yy9LY29uZmlnDQo+ID4gaW5kZXggZDc1MDI0MzNjNzhhLi4xMWM3ZDdmZTFlODUgMTAwNjQ0DQo+
+ID4gLS0tIGEvZHJpdmVycy9ydGMvS2NvbmZpZw0KPiA+ICsrKyBiL2RyaXZlcnMvcnRjL0tjb25m
+aWcNCj4gPiBAQCAtMzczLDYgKzM3MywxNyBAQCBjb25maWcgUlRDX0RSVl9NQVg4OTk3DQo+ID4g
+ICAJICBUaGlzIGRyaXZlciBjYW4gYWxzbyBiZSBidWlsdCBhcyBhIG1vZHVsZS4gSWYgc28sIHRo
+ZSBtb2R1bGUNCj4gPiAgIAkgIHdpbGwgYmUgY2FsbGVkIHJ0Yy1tYXg4OTk3Lg0KPiA+DQo+ID4g
+K2NvbmZpZyBSVENfRFJWX01BWDMxMzM1DQo+ID4gKwl0cmlzdGF0ZSAiQW5hbG9nIERldmljZXMg
+TUFYMzEzMzUiDQo+ID4gKwlkZXBlbmRzIG9uIEkyQw0KPiA+ICsJc2VsZWN0IFJFR01BUF9JMkMN
+Cj4gPiArCWhlbHANCj4gPiArCSAgSWYgeW91IHNheSB5ZXMgaGVyZSB5b3UgZ2V0IHN1cHBvcnQg
+Zm9yIHRoZSBBbmFsb2cgRGV2aWNlcw0KPiA+ICsJICBNQVgzMTMzNS4NCj4gPiArDQo+ID4gKwkg
+IFRoaXMgZHJpdmVyIGNhbiBhbHNvIGJlIGJ1aWx0IGFzIGEgbW9kdWxlLiBJZiBzbywgdGhlIG1v
+ZHVsZQ0KPiA+ICsJICB3aWxsIGJlIGNhbGxlZCBydGMtbWF4MzEzMzUuDQo+ID4gKw0KPiANCj4g
+SnVzdCBvdXQgb2YgY3VyaW9zaXR5LCBpcyB0aGlzIGFuIHVucmVsZWFzZWQgY2hpcCA/IEkgb25s
+eSBmaW5kDQo+IE1BWDMxMTMzMSBhbmQgTUFYMzEzMzQgb24gdGhlIEFuYWxvZyB3ZWJzaXRlLCBi
+dXQgdGhlIHJlZ2lzdGVyDQo+IG1hcCBmb3IgdGhvc2UgaXMgZGlmZmVyZW50LCBhbmQgdGhleSBk
+b24ndCBzdXBwb3J0IHJlcG9ydGluZw0KPiB0aGUgY2hpcCB0ZW1wZXJhdHVyZS4NCj4gDQo+IFsg
+Li4uIF0NCj4gDQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGh3bW9uX2NoYW5uZWxf
+aW5mbyAqbWF4MzEzMzVfaW5mb1tdID0gew0KPiA+ICsJSFdNT05fQ0hBTk5FTF9JTkZPKHRlbXAs
+IEhXTU9OX1RfSU5QVVQpLA0KPiANCj4gQWNjb3JkaW5nIHRvIHRoZSByZWdpc3RlciBtYXAgYWJv
+dmUsIHRoZSBjaGlwIGRvZXMgc3VwcG9ydA0KPiBsb3cgYW5kIGhpZ2ggdGVtcGVyYXR1cmUgbGlt
+aXRzIGFzIHdlbGwgYXMgb3Zlci0gYW5kIHVuZGVydGVtcGVyYXR1cmUNCj4gYWxhcm1zIGFuZCBp
+bnRlcnJ1cHRzLiBJIHdvdWxkIHN1Z2dlc3QgdG8gYWRkIHN1cHBvcnQgZm9yIGFsbCBvZiB0aG9z
+ZS4NCj4gWW91IG1pZ2h0IGFsc28gY29uc2lkZXIgYWRkaW5nIHN1cHBvcnQgZm9yIHRlbXBlcmF0
+dXJlIGFsYXJtIGludGVycnVwdHMNCj4gYW5kIHJlcG9ydCB0ZW1wZXJhdHVyZSBhbGFybSBldmVu
+dHMgYnkgY2FsbGluZyBod21vbl9ub3RpZnlfZXZlbnQoKQ0KPiBpZiBhIHRoZXJtYWwgZXZlbnQg
+b2NjdXJzLg0KDQpJJ3ZlIHNlbnQgaW4gdGhlIGZpcnN0IHZlcnNpb24gb2YgdGhpcyBwYXRjaCBz
+ZXJpZXMgYSBjb3ZlciBsZXR0ZXI6DQoNCiJBbHRob3VnaCB0aGUgZGF0YXNoZWV0IGlzIG5vdCBw
+dWJsaWMgeWV0LCB0aGUgZHJpdmVyIGNhbiBiZSBtYWRlIHB1YmxpYyAob24NCm90aGVyIGxpbnV4
+IGN1c3RvbSB0cmVlcyBpdCBpcyBhbHJlYWR5KS4NCg0KVGhlIGRyaXZlciB3YXMgdGVzdGVkIHdp
+dGggYWN0dWFsIGhhcmR3YXJlIGFuZCB3b3Jrcy4NCg0KRXZlbiB0aG91Z2ggdGhlIGRhdGFzaGVl
+dCBpcyBub3QgYXZhaWxhYmxlLCBpZiB0aGVyZSBhcmUgYW55IHF1ZXJpZXMgYWJvdXQNCnRoZSBm
+dW5jdGlvbmFsaXR5IG9mIHRoZSBwYXJ0LCB0aGVzZSBjYW4gYmUgcHJvdmlkZWQvaW5zZXJ0ZWQg
+YXMgY29kZSBjb21tZW50cw0KaW5zaWRlIHRoZSBkcml2ZXIuIg0KDQpUaGUgcmVhc29uIHdoeSBJ
+IGFtIHJ1c2hpbmcgdGhpcyBhIGJpdCBpcyBiZWNhdXNlIHRoZSBjdXN0b21lciB0aGF0IHVzZXMg
+dGhlDQpkcml2ZXIgd2FudHMgdGhlIGRyaXZlciByZWxlYXNlZCBhbmQgbWFpbmxpbmUga2VybmVs
+IGNvbXBsaWFudC4NCg0KVGhpcyBpcyBhbiBpbml0aWFsIHZlcnNpb24gb2YgdGhlIGRyaXZlciBj
+b3ZlcmluZyB0aGUgbWFpbiB1c2UgY2FzZXMgKHdoaWNoIHdlcmUNCnJlcXVlc3RlZCwgdGhlcmVm
+b3JlIGFjdHVhbGx5IHVzZWQpLg0KDQpBZGRpdGlvbmFsIGZlYXR1cmVzIGNhbiBiZSBhZGRlZCBh
+ZnRlcndhcmRzLCBpZiByZXF1ZXN0ZWQuDQoNCj4gDQo+ID4gKw0KPiA+ICsJaHdtb24gPSBkZXZt
+X2h3bW9uX2RldmljZV9yZWdpc3Rlcl93aXRoX2luZm8oJmNsaWVudC0+ZGV2LA0KPiBjbGllbnQt
+Pm5hbWUsDQo+ID4gKwkJCQkJCSAgICAgbWF4MzEzMzUsDQo+ID4gKwkJCQkJCSAgICAgJm1heDMx
+MzM1X2NoaXBfaW5mbywNCj4gPiArCQkJCQkJICAgICBOVUxMKTsNCj4gDQo+IFRoZXJlIGlzIG5v
+ICJkZXBlbmRzIG9uIEhXTU9OIiBpbiB0aGUgS2NvbmZpZyBlbnRyeSwgbWVhbmluZyB0aGlzIHdp
+bGwgZmFpbA0KPiB0byBjb21waWxlIGlmIEhXTU9OPW4gb3IgaWYgSFdNT049bSBhbmQgUlRDX0RS
+Vl9NQVgzMTMzNT15Lg0KPg0KDQpXaWxsIGRvIGluIHY0Lg0KDQo+IEd1ZW50ZXINCg==
