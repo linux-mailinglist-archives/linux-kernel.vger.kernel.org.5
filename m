@@ -2,151 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E8D7DCB54
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544E87DCB5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343883AbjJaLE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S1343983AbjJaLFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbjJaLEZ (ORCPT
+        with ESMTP id S233770AbjJaLFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:04:25 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0595CBB
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:04:23 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-408425c7c10so43325665e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698750261; x=1699355061; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KuJmDFcnvNsNtD/SJQI6m9OhMw6aLlvxLn41QzQrOEU=;
-        b=rA+EyrqIoTAa/LxuKxkuWGlgz50dgA7Mr1WXZF+/NwBxp/Qq4LZ1yYSNWKJSn0iiaI
-         kBN3CekpvWuOl3rdLolDsHOW+phSfUuugbHCdigD36Pt333pp3hzOFBhT07gwnCjhkTv
-         orGKcSVNQdhtqq1CVCh0wFuI7OeXnEKJBdNS6KmpXgwAYjR4wSeE2Q4/Ojm+k22CjzsN
-         OQParDrt6YXHTurJsFInFJTcCmdd/bIcDjF/AqaZBU3LKGKRhAKucG1SbcRQfWnGslW+
-         4kgayiAJL48GRqqbfF3A2As1XvO5a332m6veW3YkoxiQIYdSRirey6NGkaIcbKdgTuU4
-         Mn+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698750261; x=1699355061;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KuJmDFcnvNsNtD/SJQI6m9OhMw6aLlvxLn41QzQrOEU=;
-        b=gypkfizyC5yrV/xXX5Q8dr6iiuPnMyPxjqmuxYy5TeB9LJrTcQOrp7TPFMF7E/XsS+
-         mD35FlQ0bd0a5TJollJ/bHSCJohf/yEaGEQj+mpyUjPfLSWAI2C3Ju1fxVU39C8fuNlR
-         S34cbnhvMAoue6XSW3J7ZgJNgLigwLgs2BjpZXQwM5uv9GFGKACpyTu7RZBrZ3zd77cZ
-         tEtNQxPZ5y2niHXr9zNjeS3gvU1wt1YFtIDkKrO6QplMovYO2zPztWyV7V+vOIaB2QFc
-         mk84ST85dlwnfqgikI/HSYSegBlXF/TKxlaTUoNv4u7I3624RqxjsoNYeEa5Acg63Kzu
-         Xvrg==
-X-Gm-Message-State: AOJu0YwAHd1YmVOsAMUCKR40kMok4WDsT2u7PE6U7R735WyZS4GY8S3p
-        ipBVbnfgRkmTI1PZDBaeHT8O/g==
-X-Google-Smtp-Source: AGHT+IFmjN3FzW7syv0iyhFJQ3HZaaedMn6d0WK5ehUDP7cH7BHv+son/CP3tnxzMzRsiz0mliX5Tg==
-X-Received: by 2002:a05:6000:402c:b0:323:2d01:f043 with SMTP id cp44-20020a056000402c00b003232d01f043mr13494065wrb.3.1698750260661;
-        Tue, 31 Oct 2023 04:04:20 -0700 (PDT)
-Received: from [192.168.7.92] (679773502.box.freepro.com. [212.114.21.58])
-        by smtp.gmail.com with ESMTPSA id p3-20020a5d4e03000000b0032da35baf7bsm1233831wrt.113.2023.10.31.04.04.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 04:04:20 -0700 (PDT)
-Message-ID: <a54b6109-5a38-4d72-a197-00fee0162860@linaro.org>
-Date:   Tue, 31 Oct 2023 12:04:19 +0100
+        Tue, 31 Oct 2023 07:05:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E0EE4;
+        Tue, 31 Oct 2023 04:04:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7655DC433C8;
+        Tue, 31 Oct 2023 11:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698750297;
+        bh=seof9F/T3buCREfnRaM8n/SGCO7U8Q7G81Pbh+MqLSc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=B0/jmFqpkWT9SLBYRDZGYIX/pJjNs4MsJ8bvvsaA4U4aW11phg5v1ZDR7id8JsNUd
+         zw7wKFBCoOozkUMgXREp3NScaoG75PhGVvyT0DRWC4CndqXfatxmQYN7afSYzvYzxl
+         Ew7aofGgt6KnA+bRoHMQRacfMT4SYz6jJClpQc4An/W3pqbp0PvDWQ0UFMhO3l6/uK
+         KlW1kzDr8H8qNnylIjSfelxj+IdLb9WebVPPRYxrpln//fJ9fD57xi8zLr4p9dCDnG
+         V9CUqL2LTaeMvAOIBUYTnePoIIgDRfOTBSgaPm/0Vsr0resDDxv6fsqVKLu0+aoWQe
+         uU5kVJIfA5VRg==
+Message-ID: <d5965ba7ed012433a9914ba38a6046f2ddb015ac.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 31 Oct 2023 07:04:53 -0400
+In-Reply-To: <ZUAwFkAizH1PrIZp@dread.disaster.area>
+References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+         <ZTc8tClCRkfX3kD7@dread.disaster.area>
+         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+         <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+         <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+         <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+         <ZTnNCytHLGoJY9ds@dread.disaster.area>
+         <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+         <ZUAwFkAizH1PrIZp@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] tee: optee: Fix supplicant based device
- enumeration
-To:     Sumit Garg <sumit.garg@linaro.org>, jens.wiklander@linaro.org,
-        op-tee@lists.trustedfirmware.org
-Cc:     jan.kiszka@siemens.com, arnd@linaro.org, ardb@kernel.org,
-        ilias.apalodimas@linaro.org, masahisa.kojima@linaro.org,
-        maxim.uvarov@linaro.org, jarkko.sakkinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, diogo.ivo@siemens.com
-References: <20231030155901.80673-1-sumit.garg@linaro.org>
- <20231030155901.80673-2-sumit.garg@linaro.org>
-Content-Language: en-US
-From:   Jerome Forissier <jerome.forissier@linaro.org>
-In-Reply-To: <20231030155901.80673-2-sumit.garg@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-10-31 at 09:37 +1100, Dave Chinner wrote:
+> On Fri, Oct 27, 2023 at 06:35:58AM -0400, Jeff Layton wrote:
+> > On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
+> > > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
+> > > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
+> > > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> > > > In earlier discussions you alluded to some repair and/or analysis t=
+ools
+> > > > that depended on this counter.
+> > >=20
+> > > Yes, and one of those "tools" is *me*.
+> > >=20
+> > > I frequently look at the di_changecount when doing forensic and/or
+> > > failure analysis on filesystem corpses.  SOE analysis, relative
+> > > modification activity, etc all give insight into what happened to
+> > > the filesystem to get it into the state it is currently in, and
+> > > di_changecount provides information no other metadata in the inode
+> > > contains.
+> > >=20
+> > > > I took a quick look in xfsprogs, but I
+> > > > didn't see anything there. Is there a library or something that the=
+se
+> > > > tools use to get at this value?
+> > >=20
+> > > xfs_db is the tool I use for this, such as:
+> > >=20
+> > > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/ma=
+pper/fast
+> > > v3.change_count =3D 35
+> > > $
+> > >=20
+> > > The root inode in this filesystem has a change count of 35. The root
+> > > inode has 32 dirents in it, which means that no entries have ever
+> > > been removed or renamed. This sort of insight into the past history
+> > > of inode metadata is largely impossible to get any other way, and
+> > > it's been the difference between understanding failure and having no
+> > > clue more than once.
+> > >=20
+> > > Most block device parsing applications simply write their own
+> > > decoder that walks the on-disk format. That's pretty trivial to do,
+> > > developers can get all the information needed to do this from the
+> > > on-disk format specification documentation we keep on kernel.org...
+> > >=20
+> >=20
+> > Fair enough. I'm not here to tell you that you guys that you need to
+> > change how di_changecount works. If it's too valuable to keep it
+> > counting atime-only updates, then so be it.
+> >=20
+> > If that's the case however, and given that the multigrain timestamp wor=
+k
+> > is effectively dead, then I don't see an alternative to growing the on-
+> > disk inode. Do you?
+>=20
+> Yes, I do see alternatives. That's what I've been trying
+> (unsuccessfully) to describe and get consensus on. I feel like I'm
+> being ignored and rail-roaded here, because nobody is even
+> acknowledging that I'm proposing alternatives and keeps insisting
+> that the only solution is a change of on-disk format.
+>=20
+> So, I'll summarise the situation *yet again* in the hope that this
+> time I won't get people arguing about atime vs i-version and what
+> constitutes an on-disk format change because that goes nowhere and
+> does nothing to determine which solution might be acceptible.
+>=20
+> The basic situation is this:
+>=20
+> If XFS can ignore relatime or lazytime persistent updates for given
+> situations, then *we don't need to make periodic on-disk updates of
+> atime*. This makes the whole problem of "persistent atime update bumps
+> i_version" go away because then we *aren't making persistent atime
+> updates* except when some other persistent modification that bumps
+> [cm]time occurs.
+>=20
+> But I don't want to do this unconditionally - for systems not
+> running anything that samples i_version we want relatime/lazytime
+> to behave as they are supposed to and do periodic persistent updates
+> as per normal. Principle of least surprise and all that jazz.
+>=20
+> So we really need an indication for inodes that we should enable this
+> mode for the inode. I have asked if we can have per-operation
+> context flag to trigger this given the needs for io_uring to have
+> context flags for timestamp updates to be added.=20
+>=20
+> I have asked if we can have an inode flag set by the VFS or
+> application code for this. e.g. a flag set by nfsd whenever it accesses a
+> given inode.
+>=20
+> I have asked if this inode flag can just be triggered if we ever see
+> I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
+> and whether this is a reliable mechanism for setting such a flag.
+>=20
+
+Ok, so to make sure I understand what you're proposing:
+
+This would be a new inode flag that would be set in conjunction with
+I_VERSION_QUERIED (but presumably is never cleared)? When XFS sees this
+flag set, it would skip sending the atime to disk.
+
+Given that you want to avoid on-disk changes, I assume this flag will
+not be stored on disk. What happens after the NFS server reboots?
+
+Consider:
+
+1/ NFS server queries for the i_version and we set the
+I_NO_ATIME_UPDATES_ON_DISK flag (or whatever) in conjunction with
+I_VERSION_QUERIED. Some atime updates occur and the i_version isn't
+bumped (as you'd expect).
+
+2/ The server then reboots.
+
+3/ Server comes back up, and some local task issues a read against the
+inode. I_NO_ATIME_UPDATES_ON_DISK never had a chance to be set after the
+reboot, so that atime update ends up incrementing the i_version counter.
+
+4/ client cache invalidation occurs even though there was no write to
+the file
+
+This might reduce some of the spurious i_version bumps, but I don't see
+how it can eliminate them entirely.
+
+> I have suggested mechanisms for using masked off bits of timestamps
+> to encode sub-timestamp granularity change counts and keep them
+> invisible to userspace and then not using i_version at all for XFS.
+> This avoids all the problems that the multi-grain timestamp
+> infrastructure exposed due to variable granularity of user visible
+> timestamps and ordering across inodes with different granularity.
+> This is potentially a general solution, too.
+>=20
+
+I don't really understand this at all, but trying to do anything with
+fine-grained timestamps will just run into a lot of the same problems we
+hit with the multigrain work. If you still see this as a path forward,
+maybe you can describe it more detail?
 
 
-On 10/30/23 16:59, Sumit Garg wrote:
-> Currently supplicant dependent optee device enumeration only registers
-> devices whenever tee-supplicant is invoked for the first time. But it
-> forgets to remove devices when tee-supplicant daemon stops running and
-> closes its context gracefully. This leads to following error for fTPM
-> driver during reboot/shutdown:
-> 
-> [   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke error: 0xffff3024
-> 
-> Fix this by separating supplicant dependent devices so that the
-> user-space service can detach supplicant devices before closing the
-> supplicant.
-> 
-> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Link: https://github.com/OP-TEE/optee_os/issues/6094
-> Fixes: 5f178bb71e3a ("optee: enable support for multi-stage bus enumeration")
-> Tested-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Tested-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  drivers/tee/optee/device.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> index 64f0e047c23d..78fc0a15c463 100644
-> --- a/drivers/tee/optee/device.c
-> +++ b/drivers/tee/optee/device.c
-> @@ -60,9 +60,10 @@ static void optee_release_device(struct device *dev)
->  	kfree(optee_device);
->  }
->  
-> -static int optee_register_device(const uuid_t *device_uuid)
-> +static int optee_register_device(const uuid_t *device_uuid, u32 func)
->  {
->  	struct tee_client_device *optee_device = NULL;
-> +	const char *dev_name_fmt = NULL;
->  	int rc;
->  
->  	optee_device = kzalloc(sizeof(*optee_device), GFP_KERNEL);
-> @@ -71,7 +72,13 @@ static int optee_register_device(const uuid_t *device_uuid)
->  
->  	optee_device->dev.bus = &tee_bus_type;
->  	optee_device->dev.release = optee_release_device;
-> -	if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
-> +
-> +	if (func == PTA_CMD_GET_DEVICES_SUPP)
-> +		dev_name_fmt = "optee-ta-supp-%pUb";
-> +	else
-> +		dev_name_fmt = "optee-ta-%pUb";
+> So, yeah, there are *lots* of ways we can solve this problem without
+> needing to change on-disk formats.
+>=20
 
-That's an ABI change, isn't it?
-
-> +
-> +	if (dev_set_name(&optee_device->dev, dev_name_fmt, device_uuid)) {
->  		kfree(optee_device);
->  		return -ENOMEM;
->  	}
-> @@ -142,7 +149,7 @@ static int __optee_enumerate_devices(u32 func)
->  	num_devices = shm_size / sizeof(uuid_t);
->  
->  	for (idx = 0; idx < num_devices; idx++) {
-> -		rc = optee_register_device(&device_uuid[idx]);
-> +		rc = optee_register_device(&device_uuid[idx], func);
->  		if (rc)
->  			goto out_shm;
->  	}
-
--- 
-Jerome
+--=20
+Jeff Layton <jlayton@kernel.org>
