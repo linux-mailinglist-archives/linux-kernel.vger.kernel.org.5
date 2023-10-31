@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299D47DD1E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D926F7DD203
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345334AbjJaQcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33350 "EHLO
+        id S1345501AbjJaQcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345557AbjJaQcG (ORCPT
+        with ESMTP id S1345650AbjJaQcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:32:06 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98B3119;
-        Tue, 31 Oct 2023 09:31:40 -0700 (PDT)
+        Tue, 31 Oct 2023 12:32:07 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD35F1;
+        Tue, 31 Oct 2023 09:31:42 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:c562:2ef4:80c0:92f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 36C7B66073C0;
-        Tue, 31 Oct 2023 16:31:39 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DC8B066073C3;
+        Tue, 31 Oct 2023 16:31:40 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698769899;
-        bh=hEdAN5aNNO1/pDSIenHgJGapeD5q9IeR/wL5fN5tnvk=;
+        s=mail; t=1698769901;
+        bh=/R1pnW8jfIuOE9V1pOiXWbvwVFtKNqZCCdQZpnNVq6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RD/Np8c970zKgt9nhctbRQZjGMEbJnQ5gmrP2+35OGnzkzl79aWQncAQAgbZl9kD2
-         Rn1V4swq74dE6UQ57TpFBU5FohlWOfSTAAwJeSgt2/sLqLwVtWSqdE0IIeWMWtjKgZ
-         IdNJh1MwP0YyuZ5tkdQd0rMCXpEO9D7dAlQfLpZtdWWqW5gMB6CPyWTN4zscuycj+8
-         GinmdKvRUi0FMTr0V4YQ3qgou8upHDVS18z91GUldTuBgzFvj1szBL58SlH7a8mxZG
-         j3hbf4wN7pQ2EdWiQi4RvtKiegRp3Fh3Rzpyanx5fuQBf5WAqw0gdd1OO+MZtlsy+w
-         iyO09VYLa0UOQ==
+        b=AJdL/D3BN3Iq1rwhxAMP52DsF7g6nqTXEX6MidFeQ7YvF7KnXRfyRkTnbqFCnxr75
+         5syvNy5QSP6wFmFjBCRBNmJPgB+N49Z6nKVKACwOU9DxuHsDgd4VEAM09Cz+F6mP/K
+         8eBHU0Or/egtSXtSKUv8H/88FvwGHiTkcHK7IrUCzSitmK/HO23ZAQc170Dvr9HmMf
+         8bUDKZmiO9DCvI6B2LmlKRuEkTLK4jeXX2R+VxnX55VaOXYd1CobEeVlw0H5EwUhDL
+         cKBML90kYwHJ9VatjqYDTRGlp4kcvx6JTRx5QmfeIu7B6mbDahp9YHqQ9RPVRHdYr6
+         jVQzv95iy65EQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -42,12 +42,10 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: [PATCH v14 17/56] media: atomisp: Stop direct calls to queue num_buffers field
-Date:   Tue, 31 Oct 2023 17:30:25 +0100
-Message-Id: <20231031163104.112469-18-benjamin.gaignard@collabora.com>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v14 18/56] media: dvb-core: Use vb2_get_buffer() instead of directly access to buffers array
+Date:   Tue, 31 Oct 2023 17:30:26 +0100
+Message-Id: <20231031163104.112469-19-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
 References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
@@ -62,30 +60,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-This allows us to change how the number of buffers is computed in the
-future.
+Use vb2_get_buffer() instead of direct access to the vb2_queue bufs array.
+This allows us to change the type of the bufs in the future.
+After each call to vb2_get_buffer() we need to be sure that we get
+a valid pointer so check the return value of all of them.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-CC: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
- drivers/staging/media/atomisp/pci/atomisp_ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/dvb-core/dvb_vb2.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-index a8a964b2f1a8..09c0091b920f 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-@@ -1028,7 +1028,7 @@ static int atomisp_qbuf_wrapper(struct file *file, void *fh, struct v4l2_buffer
- 	struct atomisp_device *isp = video_get_drvdata(vdev);
- 	struct atomisp_video_pipe *pipe = atomisp_to_video_pipe(vdev);
+diff --git a/drivers/media/dvb-core/dvb_vb2.c b/drivers/media/dvb-core/dvb_vb2.c
+index b322ef179f05..3a966fdf814c 100644
+--- a/drivers/media/dvb-core/dvb_vb2.c
++++ b/drivers/media/dvb-core/dvb_vb2.c
+@@ -355,12 +355,13 @@ int dvb_vb2_reqbufs(struct dvb_vb2_ctx *ctx, struct dmx_requestbuffers *req)
+ int dvb_vb2_querybuf(struct dvb_vb2_ctx *ctx, struct dmx_buffer *b)
+ {
+ 	struct vb2_queue *q = &ctx->vb_q;
++	struct vb2_buffer *vb2 = vb2_get_buffer(q, b->index);
  
--	if (buf->index >= vdev->queue->num_buffers)
-+	if (buf->index >= vb2_get_num_buffers(vdev->queue))
+-	if (b->index >= q->num_buffers) {
+-		dprintk(1, "[%s] buffer index out of range\n", ctx->name);
++	if (!vb2) {
++		dprintk(1, "[%s] invalid buffer index\n", ctx->name);
  		return -EINVAL;
+ 	}
+-	vb2_core_querybuf(&ctx->vb_q, q->bufs[b->index], b);
++	vb2_core_querybuf(&ctx->vb_q, vb2, b);
+ 	dprintk(3, "[%s] index=%d\n", ctx->name, b->index);
+ 	return 0;
+ }
+@@ -385,13 +386,14 @@ int dvb_vb2_expbuf(struct dvb_vb2_ctx *ctx, struct dmx_exportbuffer *exp)
+ int dvb_vb2_qbuf(struct dvb_vb2_ctx *ctx, struct dmx_buffer *b)
+ {
+ 	struct vb2_queue *q = &ctx->vb_q;
++	struct vb2_buffer *vb2 = vb2_get_buffer(q, b->index);
+ 	int ret;
  
- 	if (buf->reserved2 & ATOMISP_BUFFER_HAS_PER_FRAME_SETTING) {
+-	if (b->index >= q->num_buffers) {
+-		dprintk(1, "[%s] buffer index out of range\n", ctx->name);
++	if (!vb2) {
++		dprintk(1, "[%s] invalid buffer index\n", ctx->name);
+ 		return -EINVAL;
+ 	}
+-	ret = vb2_core_qbuf(&ctx->vb_q, q->bufs[b->index], b, NULL);
++	ret = vb2_core_qbuf(&ctx->vb_q, vb2, b, NULL);
+ 	if (ret) {
+ 		dprintk(1, "[%s] index=%d errno=%d\n", ctx->name,
+ 			b->index, ret);
 -- 
 2.39.2
 
