@@ -2,127 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B027DD92A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7537DD92E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjJaXPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 19:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
+        id S235400AbjJaXPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 19:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbjJaXPQ (ORCPT
+        with ESMTP id S235302AbjJaXP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:15:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8D6F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:15:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD56EC433C8;
-        Tue, 31 Oct 2023 23:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698794113;
-        bh=pejAIftFE2imDJQpddTcrQQ2QqxCdUUSl8uEj814KDg=;
+        Tue, 31 Oct 2023 19:15:28 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F0BE4;
+        Tue, 31 Oct 2023 16:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698794123;
+        bh=/76Xugrew87xiLqcZFqXvqoM0IUWyml2vPqmzgwbdsg=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FQVtNDT6Ryb9s+ZkcHNKvpyiBy3ZLiy8zXZ+Ba69XXSzqWSnWbkcXZ0wk0xtnXMvN
-         L1X21up2oQfWirzDaxoGHJUaEGGNhxMAvmuLfavOXhqvTs5yJPOsnurYcsVadeeVQ6
-         KycDFo3V6Uc7SmlEOOLlI1IbGOuy3pdNvl+NEHcrw7yg/obCRyAyltjMcSaryt5Y5e
-         N8PiJ6xATCT7mcxqpzFvWMrTRkjBpidk3K+T4SVxzdwVKwcEnyAxwIpMegkg0r4nfT
-         oRMOk8poIqDn3V5GtXm+M5xjAFVJ79uXMa/bfefIjeo4FknB1W1qK1wsLCWAg0nqmY
-         0JZtym9UoJV0A==
-Date:   Wed, 1 Nov 2023 08:15:09 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH for-next] tracing/kprobes: Add symbol counting check
- when module loads
-Message-Id: <20231101081509.605080231a2736b91331cb85@kernel.org>
-In-Reply-To: <1868732.tdWV9SEqCh@pwmachine>
-References: <169854904604.132316.12500381416261460174.stgit@devnote2>
-        <1868732.tdWV9SEqCh@pwmachine>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        b=r6yChABplSocrvD2adOhza3xhSf9fQD3NOD4auFXeog+qFTYbjqGVZEVyJMfQ1b4P
+         ZsMg1OKXVq+G3uR9006h9Fh11wS/2OKIbvSVTT6ncFyklS5MkZZcBSxxvxPAicU4gd
+         MO8U4nChIoN998f6EfWQh9fY4AmET5hAfcgyyzxq4J2tdfUWj+6bMb5dmSiRFVJrpO
+         yXy8MtWnFmUkDNbEDVK8doRFM6sdy5Zgz870cEF48CuKc6LSytzTDrQuNOvcbGIabF
+         fH7q/n7zBamp9PleAKJI8M/0yPQQTQfbXZ/j0b1V/DzfYsMZg3+EUvE3yQOqnbtDjc
+         XBy49MznqPnSg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKmFk4rbGz4x1v;
+        Wed,  1 Nov 2023 10:15:22 +1100 (AEDT)
+Date:   Wed, 1 Nov 2023 10:15:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Muralidhara M K <muralidhara.mk@amd.com>,
+        Suma Hegde <suma.hegde@amd.com>, Vicki Pfau <vi@endrift.com>
+Subject: Re: linux-next: manual merge of the tip tree with the pci tree
+Message-ID: <20231101101521.1d28e795@canb.auug.org.au>
+In-Reply-To: <20231009134701.17ab655e@canb.auug.org.au>
+References: <20231009134701.17ab655e@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 31 Oct 2023 23:24:43 +0200
-Francis Laniel <flaniel@linux.microsoft.com> wrote:
+Hi all,
 
-> > @@ -729,17 +744,55 @@ static int count_mod_symbols(void *data, const char
-> > *name, unsigned long unused) return 0;
-> >  }
-> > 
-> > -static unsigned int number_of_same_symbols(char *func_name)
-> > +static unsigned int number_of_same_symbols(const char *mod, const char
-> > *func_name) {
-> >  	struct sym_count_ctx ctx = { .count = 0, .name = func_name };
-> > 
-> > -	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
-> > +	if (!mod)
-> > +		kallsyms_on_each_match_symbol(count_symbols, func_name, 
-> &ctx.count);
-> > 
-> > -	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
-> > +	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
-> 
-> I may be missing something here or reviewing too quickly.
-> Wouldn't this function return count to be 0 if func_name is only part of the 
-> module named mod?
+On Mon, 9 Oct 2023 13:47:01 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> Today's linux-next merge of the tip tree got a conflict in:
+>=20
+>   include/linux/pci_ids.h
+>=20
+> between commit:
+>=20
+>   7e6f3b6d2c35 ("PCI: Prevent xHCI driver from claiming AMD VanGogh USB3 =
+DRD device")
+>=20
+> from the pci tree and commit:
+>=20
+>   24775700eaa9 ("x86/amd_nb: Add AMD Family MI300 PCI IDs")
+>=20
+> from the tip tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc include/linux/pci_ids.h
+> index 3a8e24e9a93f,91b457de262e..000000000000
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@@ -579,7 -579,7 +579,8 @@@
+>   #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3 0x12c3
+>   #define PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3 0x16fb
+>   #define PCI_DEVICE_ID_AMD_MI200_DF_F3	0x14d3
+> + #define PCI_DEVICE_ID_AMD_MI300_DF_F3	0x152b
+>  +#define PCI_DEVICE_ID_AMD_VANGOGH_USB	0x163a
+>   #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+>   #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+>   #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
 
-No, please read below.
+This is now a conflict between the pci tree and Linus' tree.
 
-> Indeed, if the function is not in kernel symbol, 
-> kallsyms_on_each_match_symbol() will not loop.
-> And, by giving mod to module_kallsyms_on_each_symbol(), the corresponding 
-> module will be skipped, so count_mob_symbols() would not be called.
-> Hence, we would have 0 as count, which would lead to ENOENT later.
+--=20
+Cheers,
+Stephen Rothwell
 
-Would you mean the case func_name is on the specific module?
-If 'mod' is specified, module_kallsyms_on_each_symbol() only loops on
-symbols in the module names 'mod'.
+--Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-int module_kallsyms_on_each_symbol(const char *modname,
-                                   int (*fn)(void *, const char *, unsigned long),
-                                   void *data)
-{
-        struct module *mod;
-        unsigned int i;
-        int ret = 0;
+-----BEGIN PGP SIGNATURE-----
 
-        mutex_lock(&module_mutex);
-        list_for_each_entry(mod, &modules, list) {
-                struct mod_kallsyms *kallsyms;
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBiokACgkQAVBC80lX
+0GwJUQf/ULq/xFm5IJ2GvxVUWIgtuit7oh7nVtXXrHo+LfhEdzAIobfscbvjNHtW
+ktQjq3VlzHHim9TssmTxNMX95tl9OvoCiyC+J77hqFOEo77pA9gx/Cq35c8y9bdH
+NW4wNNf8IMY7512xXhn97wGKG7AuQD/DUpYJeZstPMJq6UNuOLGeAvGoXD0XNQFB
+/59E6UqZ0g3KwVVuvc1p1m18Fla0kJhidKxK09yervnGDYDFbUcNF+wJQ3RGGFGN
+8Ei4y8fMwWsHqqPVxtiQqB2/Gg9xmsAB/Z/p4m+l6OrKjCefoSC/KvPb7z/bJAZn
+Tq9lPXqJ8u9KAI6JJHQRYB24lNzUSw==
+=AgUB
+-----END PGP SIGNATURE-----
 
-                if (mod->state == MODULE_STATE_UNFORMED)
-                        continue;
-
-                if (modname && strcmp(modname, mod->name))
-                        continue;
-...
-
-So with above change, 'if mod is not specified, search the symbols in kernel 
-and all modules. If mod is sepecified, search the symbol on the specific
-module'.
-
-Thus, "if func_name is only part of the module named mod", the
-module_kallsyms_on_each_symbol() will count the 'func_name' in 'mod' module
-correctly.
-
-Thank you,
-
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--Sig_/9JZx.ip1=.jBiTY=3Q3Y8PS--
