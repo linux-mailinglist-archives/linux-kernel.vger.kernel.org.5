@@ -2,71 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D803D7DCE5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CD37DCE84
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344707AbjJaNzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
+        id S1344705AbjJaN5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344672AbjJaNzP (ORCPT
+        with ESMTP id S1344672AbjJaN5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:55:15 -0400
+        Tue, 31 Oct 2023 09:57:31 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D377F9;
-        Tue, 31 Oct 2023 06:55:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C6C433C8;
-        Tue, 31 Oct 2023 13:55:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BF2DE;
+        Tue, 31 Oct 2023 06:57:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1B88C433C7;
+        Tue, 31 Oct 2023 13:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698760512;
-        bh=qIx7b2aoxjsw7TSGPFkMkmmuPqzNI4IGu1YwuirwcKE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=BlTYxX8bg/TyNm9k1G7hqu+6cgvScqLMmrYdwjXbvP2dLhoZwu81/Hd86RFZNrRU0
-         1xr5Y7vFw1ElqKWf1uTmJEmuJvF5L9j3yFfh7ymcf50H/LGvdULGaZ9r81Rim15VMH
-         4BUULsumVrnHeBwimSaTDD/NGbj2ueM3Eg/nxhkdFB1V+ajGM0vsdulmLTlFZNgwMn
-         vt13jgmtUQuW2BcVFTQDAsGHT0Gmcoujtaha2sh9SXpVB++uDD9vrm6H7Cx6inillP
-         sk1nXdn297tkqDQqx2pR+3iapmU6fN1aVLAWEUbQ/flcaA2j5xZmgzrdZMzAsb7osR
-         s91m60OYKHeag==
-Message-ID: <b0cd1f921c2c9d9e76cb324c6fa7c48747eafaed.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
+        s=k20201202; t=1698760648;
+        bh=xMTjHScFFr2o8yuO0RmPKlhSKjlfiKYQxGGNU/+pEpQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AYQ2bO43RzIXzw5nz9+nLznLxr9eZ8732uxOGuXAYY6La2DQ8HpYN8gNe37GLxNHe
+         jqWVME/XGDIJ3XFx49te6k0v99e4lynsaQJcBUMKazQ+TbUo54dNAUl3giJXH5uUaH
+         tIHc0QxmP9Sj9hGUSC77IZoFAbuGVRVduWWdqjYqbTDBVIBxmMH1Gaf9gnusHYW2ue
+         rm6hsZTu1t8z6WXEHM1WV53mJqDnDbMV41PmDvzfcVAJZwleC7Uh9514KgDH5j8lP7
+         BVlmSIHuFeRsLVlhyD1eHd0ftgpVu7sFjYBIqLLYF8dKWYxLlZyKfF9Imv3Rz76X57
+         c9jqQ5y2v5WpA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 58C05CE086F; Tue, 31 Oct 2023 06:57:28 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 06:57:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Tue, 31 Oct 2023 09:55:09 -0400
-In-Reply-To: <20231031-stark-klar-0bab5f9ab4dc@brauner>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <20231031-stark-klar-0bab5f9ab4dc@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Z qiang <qiang.zhang1211@gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v6.7
+Message-ID: <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZTuf+xNrfqGjHFDK@lothringen>
+ <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
+ <ZUDUlQq6hEEPBiCR@lothringen>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUDUlQq6hEEPBiCR@lothringen>
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -77,72 +60,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-31 at 11:26 +0100, Christian Brauner wrote:
-> On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
-> > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > > > Back to your earlier point though:
-> > > >=20
-> > > > Is a global offset really a non-starter? I can see about doing some=
-thing
-> > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as c=
-heap
-> > > > as ktime_get_coarse_ts64. I don't see the downside there for the no=
-n-
-> > > > multigrain filesystems to call that.
-> > >=20
-> > > I have to say that this doesn't excite me. This whole thing feels a b=
-it
-> > > hackish. I think that a change version is the way more sane way to go=
-.
-> > >=20
-> >=20
-> > What is it about this set that feels so much more hackish to you? Most
-> > of this set is pretty similar to what we had to revert. Is it just the
-> > timekeeper changes? Why do you feel those are a problem?
->=20
-> So I think that the multi-grain timestamp work was well intended but it
-> was ultimately a mistake. Because we added code that complicated
-> timestamp timestamp handling in the vfs to a point where the costs
-> clearly outweighed the benefits.
->=20
-> And I don't think that this direction is worth going into. This whole
-> thread ultimately boils down to complicating generic infrastructure
-> quite extensively for nfs to handle exposing xfs without forcing an
-> on-disk format change. That's even fine.
->=20
-> That's not a problem but in the same way I don't think the solution is
-> just stuffing this complexity into the vfs. IOW, if we make this a vfs
-> problem then at the lowest possible cost and not by changing how
-> timestamps work for everyone even if it's just internal.
+On Tue, Oct 31, 2023 at 11:19:01AM +0100, Frederic Weisbecker wrote:
+> On Mon, Oct 30, 2023 at 06:12:51PM -1000, Linus Torvalds wrote:
+> > On Fri, 27 Oct 2023 at 01:33, Frederic Weisbecker <frederic@kernel.org> wrote:
+> > >
+> > > rcu/stall: Stall detection updates. Introduce RCU CPU Stall notifiers
+> > >         that allows a subsystem to provide informations to help debugging.
+> > >         Also cure some false positive stalls.
+> > 
+> > I absolutely detest this stall notifier thing.
+> > 
+> > Putting the stall notifier before the stall message does not "help
+> > debugging". Quite the reverse. It ends up being a lovely way to make
+> > sure that the debug message is never printed, because there's some
+> > entirely untested - and thus buggy - notifier on the chain before the
+> > printout from the actual stall code.
+> > 
+> > I've pulled this, but I really want to voice my objection against
+> > these kinds of "debugging aids". I have personally spent way too many
+> > hours debugging a dead machine because some "debug aid" ended up being
+> > untested garbage.
+> > 
+> > If you absolutely think that this is a worthy and useful thing to do,
+> > then at the very least make sure that these "debug aids" will always
+> > come *after* the core output, and can't make things horrendously
+> > worse.
+> > 
+> > But in general, think twice before adding "maybe somebody else wants
+> > to print debug info". Because unless you have a really really REALLY
+> > good reason for it, it's more likely to hurt than to help.
+> > 
+> > Right now I see no users of this except for the rcu torture code, and
+> > it certainly doesn't seem hugely important there. And so I'm wondering
+> > what the actual real use-case would be.
+> 
+> I see, one possibility is to revert this and switch to normal calls
+> for any future debug information to add from another subsystem. I'll
+> wait for Paul's opinion...
 
-I'll point out that this last posting I did was an RFC. It was invasive
-to the timekeeping code, but I don't think that's a hard requirement for
-doing this.
+The use case thus far is where the RCU CPU stall warning is due to
+locks being spun for or held for excessive periods of times, and then
+the called code prints out the relevant debug information.  In this
+particular case, the RCU CPU stall warning message is just added noise.
+And if we were to print the RCU CPU stall warning first, we would
+likely disturb the locking state, thus rendering the corresponding
+debug information useless.
 
-I do appreciate the feedback on this version of the series (particularly
-from Thomas who gave a great technical reason why this approach was
-wrong), but I don't think we necessarily have to give up on the whole
-idea because this particular implementation was too costly.
+But I completely agree that a poorly planned use of this facility would
+have all the problems that Linus has seen in the past.
 
-The core idea for fixing the problem with the original series is sane,
-IMO. There is nothing wrong with simply making it that when we stamp a
-file with a fine-grained timestamp that we consider that a floor for all
-later timestamp updates. The only real question is how to keep that
-(global) fine-grained floor offset at a low cost. I think that's a
-solvable problem.
+Would it help if we make rcu_stall_chain_notifier_register() print a
+suitably obnoxious message saying that future RCU CPU stall warnings
+might be unreliable?
 
-I also believe that real, measurable fine-grained timestamp differences
-are worthwhile for other use cases beyond NFS. Everyone was pointing out
-the problems with lagging timestamps vs. make and rsync, but that's a
-double-edged sword. With the current always coarse-grained timestamps,
-the ordering of files written within the same jiffy can't be determined
-since their timestamps will be identical. We could conceivably change
-that with this series.
-
-That said, if this has no chance of ever being merged, then I won't
-bother working on it further, and we can try to pursue something that is
-(maybe) XFS-specific.
-
-Let me know, either way.
---
-Jeff Layton <jlayton@kernel.org>
+							Thanx, Paul
