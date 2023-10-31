@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71D57DD058
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940297DD063
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344741AbjJaPTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        id S1344586AbjJaPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344689AbjJaPT3 (ORCPT
+        with ESMTP id S1344792AbjJaPUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:19:29 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC38D63
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:17:56 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7fb84f6ceso50751807b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698765469; x=1699370269; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VVokwlv4EgWjfwIfgjLNp6YdLR04B4foMomExEIuPtI=;
-        b=dTlsYB7yCQNNPbKwCCL7jw3O6wasKIAfV4n7FQFi9wahbvoHBxC7N4N8IksVeS8QXu
-         On+TNwr9yuyA2yMd+PrD5YpY8Ztto6aLskVthdgEVdOJyqpipbu8wREZ1VvLWCDmLt99
-         so4dOIzPB6yOqXsDSeDqjzmnmB/Oab2bd61qs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698765469; x=1699370269;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VVokwlv4EgWjfwIfgjLNp6YdLR04B4foMomExEIuPtI=;
-        b=TSKC31E1G6U/4Uv3o27W+uO71gYuS7xsroszsATzoBhoGKiaQj15/VoDmbJQ1vR7jm
-         bQaQ43OLQ7IvoY4ebgC3fboOusBKsJDdUM2MAXDbsnuA/lssV3u1UKe2+DFemipuB9Ea
-         /er9aGRl2kKAcAJ8LeEOdRWugTgugjc+joS5a9jyXI9x20uUW/euI0+auIoxfnSBpUpc
-         g386aQA4279APEsWIghNLKqJV5KybpoyYdjG3i/reP59fIJcQPrVq922RghcpZidAF6e
-         HNS+Ie/Cex5VZ/03Z4yHpzW781yJFV92K1z4430D/wSxhJOGb+4vqw/x4YP6y9vXPwoF
-         Vu8A==
-X-Gm-Message-State: AOJu0YxZOxx4M4mkcKHzCL2C+pN/6ail0JMymIxR7wkxmjIkDNz/hiVz
-        4dPnayWJN5IPMSn0+5JGAJZocNxWkwmc+oZPMIHuHA==
-X-Google-Smtp-Source: AGHT+IFKe4YagDmd1at7aanmi7ofKqUh3QCjbP4e2+xwuTZh0DNpik9W7OCq/p43vUvMc8UXHS7bf1HSWfY/9U03/HA=
-X-Received: by 2002:a81:b143:0:b0:5a7:c72b:812 with SMTP id
- p64-20020a81b143000000b005a7c72b0812mr10331369ywh.17.1698765469004; Tue, 31
- Oct 2023 08:17:49 -0700 (PDT)
+        Tue, 31 Oct 2023 11:20:16 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EFC1707;
+        Tue, 31 Oct 2023 08:18:51 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.75.231) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 31 Oct
+ 2023 18:18:27 +0300
+Subject: Re: [PATCH] pata_isapnp: Add check for devm_ioport_map
+To:     Chen Ni <nichen@iscas.ac.cn>, <dlemoal@kernel.org>,
+        <jeff@garzik.org>, <htejun@gmail.com>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231031040007.2498659-1-nichen@iscas.ac.cn>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <bddabe7b-0d6b-9d10-4bd1-1aec828cf13f@omp.ru>
+Date:   Tue, 31 Oct 2023 18:18:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20231027212916.1035991-1-markhas@chromium.org>
- <2b8335a7-4b9b-825-c1b8-84158aaf2c42@linux.intel.com> <CANg-bXCcNPjmQC9vgd1JJcV4QoruhhbeEg8o=S9K-22kb746kQ@mail.gmail.com>
- <8f1b5075-6b12-4fa8-a173-804d4657415e@amd.com>
-In-Reply-To: <8f1b5075-6b12-4fa8-a173-804d4657415e@amd.com>
-From:   Mark Hasemeyer <markhas@chromium.org>
-Date:   Tue, 31 Oct 2023 09:17:37 -0600
-Message-ID: <CANg-bXA8zSJkO_rgDQCwEFxsFyXHO6Ad2eYwV2xGdxL_vCh04A@mail.gmail.com>
-Subject: Re: [PATCH v1] platform/x86/amd/pmc: Get smu version before reading
- dram size
-To:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Cc:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Sanket Goswami <Sanket.Goswami@amd.com>,
-        platform-driver-x86@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231031040007.2498659-1-nichen@iscas.ac.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.75.231]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/31/2023 15:04:42
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181025 [Oct 31 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.231 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.231 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.231
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/31/2023 15:08:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10/31/2023 12:00:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I have a patch in place that should address the problem you are
-> mentioning. I will send that out next Monday after some tests.
+Hello!
 
-Great, thanks Shyam! I'll hold off on pushing a patch implementing
-what Mario suggested.
+On 10/31/23 7:00 AM, Chen Ni wrote:
+
+> Add check for devm_ioport_map() and return the error if it fails in
+> order to guarantee the success of devm_ioport_map().
+> 
+> Fixes: 0d5ff566779f ("libata: convert to iomap")
+> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+[...]
+
+MBR, Sergey
