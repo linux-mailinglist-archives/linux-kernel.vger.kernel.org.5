@@ -2,222 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C8C7DD632
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 823B07DD642
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbjJaSjy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 14:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38036 "EHLO
+        id S232239AbjJaSo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 14:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbjJaSjx (ORCPT
+        with ESMTP id S230146AbjJaSoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 14:39:53 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D90AA3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 11:39:50 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.2)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qxtdf-0003Nw-1c;
-        Tue, 31 Oct 2023 14:38:55 -0400
-Message-ID: <bce5df0508221ab30a1fb121a219034631abedf5.camel@surriel.com>
-Subject: Re: [syzbot] [mm?] general protection fault in
- hugetlb_vma_lock_write
-From:   Rik van Riel <riel@surriel.com>
-To:     syzbot <syzbot+6ada951e7c0f7bc8a71e@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Date:   Tue, 31 Oct 2023 14:38:55 -0400
-In-Reply-To: <00000000000078d1e00608d7878b@google.com>
-References: <00000000000078d1e00608d7878b@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 31 Oct 2023 14:44:55 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9A98E;
+        Tue, 31 Oct 2023 11:44:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso9418760a12.0;
+        Tue, 31 Oct 2023 11:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698777891; x=1699382691; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lJHySsbqwM8LKerjskZv3P9RxcKDW9ve4iTD8zU8JSU=;
+        b=Rnk9si2uWnU87JIwuJwLg6rqugyshUJ1L9+YhweqV2jRR4ZAj9e7jKSa4U2te9rZyQ
+         tdV1kEkwGJZvSlINNHrLTtm8z3+gl7BpVs2nCX22dfnyydpWgA9fOQjV2dXM3fuluspe
+         3j3bnN9Wkk6oKTeUKiPlgqQ0cXORhEfvnKSjb22risj3SIcRhbb1roTGlY+RLHe+0gMu
+         Kx4YUag4Gdw7yzHNAyfqgXna8Nfr53UBz7RJR3BI6nq0iGrzXl7A0/iaIJ5kFD4Du1DR
+         JBEw3AM8S32TY5w2s9Zi0bcG8J5eF2eZ7z2monzQXSrzovyNj4DJfF7tUtJbYMPavmy2
+         0TCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698777891; x=1699382691;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lJHySsbqwM8LKerjskZv3P9RxcKDW9ve4iTD8zU8JSU=;
+        b=JrWdMPmZApiiaOofbEKYYC1Y5WombUApWspvku24ppC59Gee02U818lyXwXh1/LF6V
+         1jfyO9H7tpezk4ebW9vCPhBqlsYgEkMMHIC3zEQM8OLhaTV6xeq+TIT85Yr6Ojgjb/xU
+         E4Z9LT7UpKQ3r4aQaiLb9SqBIs4vmu1k7vdVUcWTKVUTjuP2+bfU6jHoMMIu3EO0E5Lt
+         B21JuKLcw/9DzStdUFtpZn/9r1Bw8sY4fFFnWNVvl7cuhrGTC6EYGryQY1G4eRUng2So
+         yC/C0CljX8hJUXRvw9Nk7OhVga8VSsV72OCFRBQDHoEvFHGNI2AYwNL/eBHkO03jZU7H
+         fSAg==
+X-Gm-Message-State: AOJu0YwLZMKVTbXfdKoTgMq1/G9IYNelPkPkEdOSqHtT4JLy94whoWY6
+        oKwX310tYe2CQpgtrrZJm22xSW2mXLvXjnmeOmmj7wFGOA0=
+X-Google-Smtp-Source: AGHT+IHtipnwAwzu+4HsAqAwDAaoWAWe7nbQTsCvLAjNQE9aIggOaz6Krqtua3zBz/6AQCNq8+leZmAUlzRAqFDvheo=
+X-Received: by 2002:a17:907:720c:b0:9b7:292:85f6 with SMTP id
+ dr12-20020a170907720c00b009b7029285f6mr157231ejc.12.1698777891225; Tue, 31
+ Oct 2023 11:44:51 -0700 (PDT)
 MIME-Version: 1.0
-Sender: riel@surriel.com
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231018151950.205265-4-masahiroy@kernel.org> <ZTDlrkTXnkVN1cff@krava>
+ <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+ <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+ <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
+ <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
+ <CAEf4BzZqpqo3j33FkH3QJwezbJwarr1dXs4fCsp5So12_5MmTg@mail.gmail.com>
+ <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com>
+ <CAEf4BzbUqNW5UnhV9bzevtsUUeALca7CthBtzz7NjMCu2ZFmsw@mail.gmail.com>
+ <CAK7LNATZJJG1yq1qX7xrvoy4akW2hSAcbrt3mnz=p6F7gMgh1Q@mail.gmail.com> <ZT0ORoEdTP7DYX6m@krava>
+In-Reply-To: <ZT0ORoEdTP7DYX6m@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 31 Oct 2023 11:44:39 -0700
+Message-ID: <CAEf4BzYA8TSmcu+pUN89E4DJ_Um8Moaf=sPa012ZXEX28vOgxw@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-10-29 at 02:27 -0700, syzbot wrote:
-> 
-> commit bf4916922c60f43efaa329744b3eef539aa6a2b2
-> Author: Rik van Riel <riel@surriel.com>
-> Date:   Fri Oct 6 03:59:07 2023 +0000
-> 
->     hugetlbfs: extend hugetlb_vma_lock to private VMAs
-> 
+On Sat, Oct 28, 2023 at 6:36=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Sat, Oct 28, 2023 at 09:00:11PM +0900, Masahiro Yamada wrote:
+> > On Mon, Oct 23, 2023 at 12:19=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Sun, Oct 22, 2023 at 1:24=E2=80=AFPM Masahiro Yamada <masahiroy@ke=
+rnel.org> wrote:
+> > > >
+> > > > On Sun, Oct 22, 2023 at 4:33=E2=80=AFAM Andrii Nakryiko
+> > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > >
+> > > > > On Sat, Oct 21, 2023 at 4:38=E2=80=AFAM Masahiro Yamada <masahiro=
+y@kernel.org> wrote:
+> > > > > >
+> > > > > > On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
+> > > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <mas=
+ahiroy@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+> > > > > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsaji=
+ri@gmail.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yama=
+da wrote:
+> > > > > > > > > > > newer_prereqs_except and if_changed_except are ugly h=
+acks of the
+> > > > > > > > > > > newer-prereqs and if_changed in scripts/Kbuild.includ=
+e.
+> > > > > > > > > > >
+> > > > > > > > > > > Remove.
+> > > > > > > > > > >
+> > > > > > > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > > > > > > > ---
+> > > > > > > > > > >
+> > > > > > > > > > > Changes in v2:
+> > > > > > > > > > >   - Fix if_changed_except to if_changed
+> > > > > > > > > > >
+> > > > > > > > > > >  scripts/Makefile.modfinal | 25 ++++++---------------=
+----
+> > > > > > > > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
+> > > > > > > > > > >
+> > > > > > > > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Make=
+file.modfinal
+> > > > > > > > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > > > > > > > > > --- a/scripts/Makefile.modfinal
+> > > > > > > > > > > +++ b/scripts/Makefile.modfinal
+> > > > > > > > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > > > > > > > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > > > > > > > > > >  ifneq ($(wildcard vmlinux),)
+> > > > > > > > > > >  vmlinux :=3D vmlinux
+> > > > > > > > > > > +cmd_btf =3D ; \
+> > > > > > > > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHO=
+LE_FLAGS) --btf_base vmlinux $@; \
+> > > > > > > > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > > > > > > > > > >  else
+> > > > > > > > > > >  $(warning Skipping BTF generation due to unavailabil=
+ity of vmlinux)
+> > > > > > > > > > >  endif
+> > > > > > > > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > > > > > > > > > >        cmd_ld_ko_o +=3D                              =
+                   \
+> > > > > > > > > > >       $(LD) -r $(KBUILD_LDFLAGS)                     =
+                 \
+> > > > > > > > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODU=
+LE)              \
+> > > > > > > > > > > -             -T scripts/module.lds -o $@ $(filter %.=
+o, $^)
+> > > > > > > > > > > +             -T scripts/module.lds -o $@ $(filter %.=
+o, $^)           \
+> > > > > > > > > > > +     $(cmd_btf)
+> > > > > > > > > > >
+> > > > > > > > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
+> > > > > > > > > >
+> > > > > > > > > > nit not sure it's intentional but we no longer display =
+'BTF [M] ...ko' lines,
+> > > > > > > > > > I don't mind not displaying that, but we should mention=
+ that in changelog
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Thanks for spotting this! I think those messages are usef=
+ul and
+> > > > > > > > > important to keep. Masahiro, is it possible to preserve t=
+hem?
+> > > > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > No, I do not think so.
+> > > > > > > >
+> > > > > > >
+> > > > > > > That's too bad, I think it's a useful one.
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > I prioritize that the code is correct.
+> > > > > >
+> > > > >
+> > > > > Could you please also prioritize not regressing informativeness o=
+f a
+> > > > > build log? With your changes it's not clear now if BTF was genera=
+ted
+> > > > > or not for a kernel module, while previously it was obvious and w=
+as
+> > > > > easy to spot if for some reason BTF was not generated. I'd like t=
+o
+> > > > > preserve this
+> > > > > property, thank you.
+> > > > >
+> > > > > E.g, can we still have BTF generation as a separate command and d=
+o a
+> > > > > separate $(call if_changed,btf_ko)? Or something along those line=
+s.
+> > > > > Would that work?
+> > > >
+> > > > If we have an intermediate file (say, *.no-btf.ko),
+> > > > it would make sense to have separate
+> > > > $(call if_changed,ld_ko_o) and $(call if_changed,btf_ko).
+> > >
+> > > Currently we don't generate intermediate files, but we do rewrite
+> > > original .ko file as a post-processing step.
+> > >
+> > > And that rewriting step might not happen depending on Kconfig and
+> > > toolchain (e.g., too old pahole makes it impossible to generate kerne=
+l
+> > > module BTF). And that's why having a separate BTF [M] message in the
+> > > build log is important.
+> > >
+> > > >
+> > > >
+> > > >            LD                 RESOLVE_BTFIDS
+> > > >  *.mod.o  ------> *.no-btf.ko ------------> *.ko
+> > > >
+> > > >
+> > > > When vmlinux is changed, only the second step would
+> > > > be re-run, but that would require extra file copy.
+> > >
+> > > Today we rewrite .ko with a new .ko ELF file which gains a new ELF
+> > > section (.BTF), so we already pay this price when BTF is enabled (if
+> > > that's your concern).
+> > >
+> > > >
+> > > > Is this what you want to see?
+> > >
+> > > I don't have strong preferences for exact implementation, but what yo=
+u
+> > > propose will work, I think. What I'd like to avoid is unnecessarily
+> > > relinking .ko files if all we need to do is regenerate BTF.
+> >
+> >
+> >
+> >
+> > Is there any way to make pahole/resolve_btfids
+> > take separate input and output files
+> > instead of in-place modification?
+>
+> for pahole I think it'd be possible to get object file with .BTF section
+> and just link it with other module objects (it's done like that for vmlin=
+ux)
+> but I'm not sure which module linking stage this could happen
+>
+> for resolve_btfids it's not possible at the moment, it just updates the
+> .BTF_ids section in the object file
+>
+> I'm working on changing resolve_btfids to actually generate separate obje=
+ct
+> with .BTF_ids section, which is then link-ed with the final object, but w=
+ill
+> take more time.. especially because I'm not sure where to place this logi=
+c
+> in module linking ;-)
 
-I've been trying to reproduce the issue here, but the test
-case has been running for 4+ hours now on a KVM guest, with
-KASAN and CONFIG_PROVE_LOCKING enabled. No crashes yet.
+pahole also supports mode of generating BTF into a separate file
+without modifying the original one. The option is called
+--btf_encode_detached. It was added in v1.22 (currently the minimal
+version is v1.16), though, so depending on whether we are willing to
+bump the minimum pahole version, we might use that. That will allow us
+to also simplify and clean up link-vmlinux.sh a bit, I think.
 
-I'll try adapting the config file from syzkaller so the
-resulting kernel boots here, but this is not looking like
-an easy reproducer so far...
+But I don't know if it's worth the trouble right now.
 
-The crash is also confusing me somewhat, because it looks
-like hugetlb_vma_lock_write() is passing a nonsense (very small
-value) resv_map->rw_sema pointer down to down_write, but the
-code has some protection against that:
 
-static inline bool __vma_private_lock(struct vm_area_struct *vma)
-{               
-        return (!(vma->vm_flags & VM_MAYSHARE)) && vma-
->vm_private_data;
-}    
-
-void hugetlb_vma_lock_write(struct vm_area_struct *vma)
-{
-        if (__vma_shareable_lock(vma)) {
-                struct hugetlb_vma_lock *vma_lock = vma-
->vm_private_data;
-                
-                down_write(&vma_lock->rw_sema);
-        } else if (__vma_private_lock(vma)) {
-                struct resv_map *resv_map = vma_resv_map(vma);
-         
-                down_write(&resv_map->rw_sema);
-        }               
-}
-
-At fork time, vma->vm_private_data gets cleared in the child
-process for MAP_PRIVATE hugetlb VMAs.
-
-I do not see anything that would leave behind a tiny, but
-non-zero value in that pointer.
-
-I'll keep poking at this, but I don't know if it will
-reproduce here.
-
-> general protection fault, probably for non-canonical address
-> 0xdffffc000000001d: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x00000000000000e8-
-> 0x00000000000000ef]
-> CPU: 0 PID: 5048 Comm: syz-executor139 Not tainted 6.6.0-rc7-
-> syzkaller-00142-g888cf78c29e2 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 10/09/2023
-> RIP: 0010:__lock_acquire+0x109/0x5de0 kernel/locking/lockdep.c:5004
-> Code: 45 85 c9 0f 84 cc 0e 00 00 44 8b 05 c1 1e 42 0b 45 85 c0 0f 84
-> be 0d 00 00 48 ba 00 00 00 00 00 fc ff df 4c 89 d1 48 c1 e9 03 <80>
-> 3c 11 00 0f 85 e8 40 00 00 49 81 3a a0 d9 5f 90 0f 84 96 0d 00
-> RSP: 0018:ffffc90003aa7798 EFLAGS: 00010016
-> 
-> RAX: ffff88807a0b9dc0 RBX: 1ffff92000754f23 RCX: 000000000000001d
-> RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 00000000000000e8
-> RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-> R10: 00000000000000e8 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880b9800000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000280 CR3: 00000000758bf000 CR4: 0000000000350ef0
-> Call Trace:
->  <TASK>
->  lock_acquire kernel/locking/lockdep.c:5753 [inline]
->  lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
->  down_write+0x93/0x200 kernel/locking/rwsem.c:1573
->  hugetlb_vma_lock_write mm/hugetlb.c:300 [inline]
->  hugetlb_vma_lock_write+0xae/0x100 mm/hugetlb.c:291
->  __hugetlb_zap_begin+0x1e9/0x2b0 mm/hugetlb.c:5447
->  hugetlb_zap_begin include/linux/hugetlb.h:258 [inline]
->  unmap_vmas+0x2f4/0x470 mm/memory.c:1733
->  exit_mmap+0x1ad/0xa60 mm/mmap.c:3230
->  __mmput+0x12a/0x4d0 kernel/fork.c:1349
->  mmput+0x62/0x70 kernel/fork.c:1371
->  exit_mm kernel/exit.c:567 [inline]
->  do_exit+0x9ad/0x2a20 kernel/exit.c:861
->  __do_sys_exit kernel/exit.c:991 [inline]
->  __se_sys_exit kernel/exit.c:989 [inline]
->  __x64_sys_exit+0x42/0x50 kernel/exit.c:989
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7ff2b7a78ab9
-> Code: Unable to access opcode bytes at 0x7ff2b7a78a8f.
-> RSP: 002b:00007fff926ea6b8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000003c
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff2b7a78ab9
-> RDX: 00007ff2b7ab23f3 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 000000000000cfda R08: 0000000000000000 R09: 0000000000000006
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff926ea6cc
-> R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:__lock_acquire+0x109/0x5de0 kernel/locking/lockdep.c:5004
-> Code: 45 85 c9 0f 84 cc 0e 00 00 44 8b 05 c1 1e 42 0b 45 85 c0 0f 84
-> be 0d 00 00 48 ba 00 00 00 00 00 fc ff df 4c 89 d1 48 c1 e9 03 <80>
-> 3c 11 00 0f 85 e8 40 00 00 49 81 3a a0 d9 5f 90 0f 84 96 0d 00
-> RSP: 0018:ffffc90003aa7798 EFLAGS: 00010016
-> RAX: ffff88807a0b9dc0 RBX: 1ffff92000754f23 RCX: 000000000000001d
-> RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 00000000000000e8
-> RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-> R10: 00000000000000e8 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880b9800000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000280 CR3: 00000000758bf000 CR4: 0000000000350ef0
-> ----------------
-> Code disassembly (best guess):
->    0:   45 85 c9                test   %r9d,%r9d
->    3:   0f 84 cc 0e 00 00       je     0xed5
->    9:   44 8b 05 c1 1e 42 0b    mov    0xb421ec1(%rip),%r8d        #
-> 0xb421ed1
->   10:   45 85 c0                test   %r8d,%r8d
->   13:   0f 84 be 0d 00 00       je     0xdd7
->   19:   48 ba 00 00 00 00 00    movabs $0xdffffc0000000000,%rdx
->   20:   fc ff df
->   23:   4c 89 d1                mov    %r10,%rcx
->   26:   48 c1 e9 03             shr    $0x3,%rcx
-> * 2a:   80 3c 11 00             cmpb   $0x0,(%rcx,%rdx,1) <--
-> trapping instruction
->   2e:   0f 85 e8 40 00 00       jne    0x411c
->   34:   49 81 3a a0 d9 5f 90    cmpq   $0xffffffff905fd9a0,(%r10)
->   3b:   0f                      .byte 0xf
->   3c:   84                      .byte 0x84
->   3d:   96                      xchg   %eax,%esi
->   3e:   0d                      .byte 0xd
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see:
-> https://goo.gl/tpsmEJ#bisection
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before
-> testing.
-> 
-> If you want to overwrite bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
-
--- 
-All Rights Reversed.
+>
+> jirka
