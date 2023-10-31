@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFE67DCD91
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179E67DCD92
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344450AbjJaNL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
+        id S1344456AbjJaNM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344427AbjJaNL4 (ORCPT
+        with ESMTP id S1344447AbjJaNMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:11:56 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165FCDA
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:11:51 -0700 (PDT)
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 955723F1D9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698757909;
-        bh=b2T7hXExx+WhS9Dv9tSkQ0JEJTevpbCwf8KukhTzG9g=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=R/j0hF+yzHC4mSPpdt5KQbhhTTlhtghcZ5ijNHTKXOSaFXWFjLzCMmsiIW/IeGQjE
-         2si+app0Ee7OvW4k5LpELpJQCT/5/+MAFvpAFKs1y9B57HlVquq2A+2JXsPRAElNRM
-         smABtyAMnUmkU/MkZFdahAvbWWPxYG5LFkMwwusdzwjJO3BpK/EhMpvQ69SGL0Vj7V
-         ubxco5g3Tb0sqE8ngZ8+zutJm06c6wFCLkGaVzDT/TNg9puvOlzskhAG6hF9Zi97Gv
-         GAxl/D8+UFlFec5Twb1hc3JZQQM2KbLol5I/qTzcyvzpPbAcgxZZxvQdX8hV5P/xZk
-         pSeL2ca2Y/nLw==
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-41ce372d248so69744111cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:11:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698757908; x=1699362708;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2T7hXExx+WhS9Dv9tSkQ0JEJTevpbCwf8KukhTzG9g=;
-        b=hdRKyx8GA5S51YIh6dZpn0iVDvqFEdw6mfIsnK2XwuQN7/0alHzYJFmY1WPhlKRbyM
-         9kSMeHCxM/knzJyaQfIEfjIcAjdd5VTua6+um7YNCmjhboufJfxyFLRoYyG/WpxxJNgj
-         GKy5SQkNGaeM/2SW39JZOYagJPx3OO+wjgg/hmP5pPritUSB5kduby1kV1fslALooB3W
-         SACOl2H5HD7PJLy+t9ooNNsWl34e77lj8nlMRfQDSGP/u+ZEKtmVUcLCdKmDoWay7PVI
-         J5TQgjlpDcxrsKMW9J9LdKOo2aT97KmYA50cKj7zzCkmcIBp7Xi70NDYq5MUeZsWvfoa
-         vJ2w==
-X-Gm-Message-State: AOJu0YycslN1Z1dssh4yTLWcDMk+vcwj7HxI47bY7CdcDOCpF0ny94nM
-        CMOh3fJ6pBu52LbArh1Gs6kHOto/1vAs6zs2cK0zGg4U4P9PACpJIrmTsYLNwTR2V/Hm/RY2j2a
-        4Fiot4DNQ9wzM38ZxhbiCCsDg/1bBdalTqEz5B7rNfoUJkfUIZSnLh4ibyg==
-X-Received: by 2002:a05:622a:351:b0:418:d3d:30e1 with SMTP id r17-20020a05622a035100b004180d3d30e1mr15984876qtw.4.1698757908409;
-        Tue, 31 Oct 2023 06:11:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGLydeufNQ40CIQK34i2W51RxoHoaC5kevrpJPqzBNZkr96WHN3wruIvi91h0D+mmmgNmgd+N5Yhsyd5FWYItM=
-X-Received: by 2002:a05:622a:351:b0:418:d3d:30e1 with SMTP id
- r17-20020a05622a035100b004180d3d30e1mr15984845qtw.4.1698757908147; Tue, 31
- Oct 2023 06:11:48 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 31 Oct 2023 06:11:47 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231031-module_relocations-v7-1-6f4719b64bf7@rivosinc.com>
-References: <20231031-module_relocations-v7-0-6f4719b64bf7@rivosinc.com> <20231031-module_relocations-v7-1-6f4719b64bf7@rivosinc.com>
-Mime-Version: 1.0
-Date:   Tue, 31 Oct 2023 06:11:47 -0700
-Message-ID: <CAJM55Z-v0EwrZp876DdLSzad2u55nJV_uBs_+MUJDqFW5MTPkA@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] riscv: Avoid unaligned access when relocating modules
-To:     Charlie Jenkins <charlie@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Nelson Chu <nelson@rivosinc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Tue, 31 Oct 2023 09:12:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 365F9E4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:12:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94DFCC15;
+        Tue, 31 Oct 2023 06:13:03 -0700 (PDT)
+Received: from [10.1.34.180] (XHFQ2J9959.cambridge.arm.com [10.1.34.180])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82A713F738;
+        Tue, 31 Oct 2023 06:12:19 -0700 (PDT)
+Message-ID: <bf574f40-613c-4a5c-a20f-44eb2c8444df@arm.com>
+Date:   Tue, 31 Oct 2023 13:12:18 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com>
+ <7a3a2d49-528d-4297-ae19-56aa9e6c59c6@arm.com>
+ <fbea7d70-d9fa-4322-99c6-1ad56bfbbb8c@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <fbea7d70-d9fa-4322-99c6-1ad56bfbbb8c@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,61 +62,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Charlie Jenkins wrote:
-> From: Emil Renner Berthing <kernel@esmil.dk>
->
-> With the C-extension regular 32bit instructions are not
-> necessarily aligned on 4-byte boundaries. RISC-V instructions
-> are in fact an ordered list of 16bit little-endian
-> "parcels", so access the instruction as such.
->
-> This should also make the code work in case someone builds
-> a big-endian RISC-V machine.
->
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/kernel/module.c | 153 +++++++++++++++++++++++----------------------
->  1 file changed, 77 insertions(+), 76 deletions(-)
->
-> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-> index 7c651d55fcbd..a9e94e939cb5 100644
-> --- a/arch/riscv/kernel/module.c
-> +++ b/arch/riscv/kernel/module.c
-> @@ -27,68 +27,86 @@ static bool riscv_insn_valid_32bit_offset(ptrdiff_t val)
->  #endif
->  }
->
-> -static int apply_r_riscv_32_rela(struct module *me, u32 *location, Elf_Addr v)
-> +static int riscv_insn_rmw(void *location, u32 keep, u32 set)
-> +{
-> +	u16 *parcel = location;
-> +	u32 insn = (u32)le16_to_cpu(parcel[0]) | (u32)le16_to_cpu(parcel[1]) << 16;
-> +
-> +	insn &= keep;
-> +	insn |= set;
-> +
-> +	parcel[0] = cpu_to_le32(insn);
+On 31/10/2023 11:58, David Hildenbrand wrote:
+> On 31.10.23 12:50, Ryan Roberts wrote:
+>> On 06/10/2023 21:06, David Hildenbrand wrote:
+>> [...]
+>>>
+>>> Change 2: sysfs interface.
+>>>
+>>> If we call it THP, it shall go under "/sys/kernel/mm/transparent_hugepage/", I
+>>> agree.
+>>>
+>>> What we expose there and how, is TBD. Again, not a friend of "orders" and
+>>> bitmaps at all. We can do better if we want to go down that path.
+>>>
+>>> Maybe we should take a look at hugetlb, and how they added support for multiple
+>>> sizes. What *might* make sense could be (depending on which values we actually
+>>> support!)
+>>>
+>>>
+>>> /sys/kernel/mm/transparent_hugepage/hugepages-64kB/
+>>> /sys/kernel/mm/transparent_hugepage/hugepages-128kB/
+>>> /sys/kernel/mm/transparent_hugepage/hugepages-256kB/
+>>> /sys/kernel/mm/transparent_hugepage/hugepages-512kB/
+>>> /sys/kernel/mm/transparent_hugepage/hugepages-1024kB/
+>>> /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/
+>>>
+>>> Each one would contain an "enabled" and "defrag" file. We want something minimal
+>>> first? Start with the "enabled" option.
+>>>
+>>>
+>>> enabled: always [global] madvise never
+>>>
+>>> Initially, we would set it for PMD-sized THP to "global" and for everything else
+>>> to "never".
+>>
+>> Hi David,
+> 
+> Hi!
+> 
+>>
+>> I've just started coding this, and it occurs to me that I might need a small
+>> clarification here; the existing global "enabled" control is used to drive
+>> decisions for both anonymous memory and (non-shmem) file-backed memory. But the
+>> proposed new per-size "enabled" is implicitly only controlling anon memory (for
+>> now).
+> 
+> Anon was (way) first, and pagecache later decided to reuse that one as an
+> indication whether larger folios are desired.
+> 
+> For the pagecache, it's just a way to enable/disable it globally. As there is no
+> memory waste, nobody currently really cares about the exact sized the pagecache
+> is allocating (maybe that will change at some point, maybe not, who knows).
 
-Why cpu_to_le32(insn)? Unless I've misunderstood something downcasting unsigned
-to unsigned values in C (eg. from u32 to u16) is defined to always discard the
-most signifcant bits, so cpu_to_le16(insn) should be fine.
+Yup. Its not _just_ about allocation though; its also about collapse
+(MADV_COLLAPSE, khugepaged) which is supported for pagecache pages. I can
+imagine value in collapsing to various sizes that are beneficial for HW...
+anyway that's for another day.
 
-> +	parcel[1] = cpu_to_le16(insn >> 16);
-> +	return 0;
-> +}
-> +
-> +static int riscv_insn_rvc_rmw(void *location, u16 keep, u16 set)
-> +{
-> +	u16 *parcel = location;
-> +
-> +	*parcel = cpu_to_le16((le16_to_cpu(*parcel) & keep) | set);
+> 
+>>
+>> 1) Is this potentially confusing for the user? Should we rename the per-size
+>> controls to "anon_enabled"? Or is it preferable to jsut keep it vague for now so
+>> we can reuse the same control for file-backed memory in future?
+> 
+> The latter would be my take. Just like we did with the global toggle.
 
-In this case, maybe consider writing it out like above just so it's easy to see
-that the two functions does the same just for differently sized instructions.
-The compiler should generate the same code.
+ACK
 
-> +	return 0;
-> +}
-> +
-> ...
+> 
+>>
+>> 2) The global control will continue to drive the file-backed memory decision
+>> (for now), even when hugepages-2048kB/enabled != "global"; agreed?
+> 
+> That would be my take; it will allocate other sizes already, so just glue it to
+> the global toggle and document for the other toggles that they only control
+> anonymous THP for now.
+
+ACK
+
+> 
+
