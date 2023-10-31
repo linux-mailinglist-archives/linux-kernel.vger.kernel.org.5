@@ -2,99 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC747DCA7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DDF7DCA7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236239AbjJaKOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        id S1343555AbjJaKPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236182AbjJaKOe (ORCPT
+        with ESMTP id S236158AbjJaKPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:14:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1EE113;
-        Tue, 31 Oct 2023 03:14:28 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 11:14:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698747266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iX/KH2uQ59JkXmBYik5taBnOlkDyh5K27ne0UO08DGU=;
-        b=d4LB31sE1eHw2NCSlos+jWEyMRnRlJzazcmVO7Td+52CglmICB8no/Ax9If8y37tHYIagB
-        jlPIXg8buAenKvW5FjLSkL9197SERdIMwvwye2I5rxz4p6ClJL4P50kTfobmpPqZ+Xy1zL
-        OdnHdmpsmTYDRU9bD6vVutayqkKKdq9jWaAPrvI13CEzCWiHsEUQQFODPX3T/tnBbiOTqE
-        oq4TWRpIOyyKxtoWAr3nrt2dacFvYVLGTy9zeiBNNRwttPJ35zQmYFUi0y7o8LeYizrBeX
-        TEjFunK61uz4NcOG6J+4J4UHNTblde8USIObjPWnIl1NdDT02yiCRbCFPtoPPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698747266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iX/KH2uQ59JkXmBYik5taBnOlkDyh5K27ne0UO08DGU=;
-        b=ziqUWti5quLNaYI35IOsIj84QXu9EEltRruBzXDw6AP4k7Efux/puGFxvYh2y/wOIdrun+
-        ImCCo34RWCha9OCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Wander Lairson Costa <wander@redhat.com>,
-        juri.lelli@redhat.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Come On Now <hawk@kernel.org>
-Subject: Re: [PATCH net-next 0/2] net: Use SMP threads for backlog NAPI (or
- optional).
-Message-ID: <20231031101424.I2hTisNY@linutronix.de>
-References: <20230929162121.1822900-1-bigeasy@linutronix.de>
- <20231004154609.6007f1a0@kernel.org>
- <20231007155957.aPo0ImuG@linutronix.de>
- <20231009180937.2afdc4c1@kernel.org>
- <20231016095321.4xzKQ5Cd@linutronix.de>
- <20231016071756.4ac5b865@kernel.org>
- <20231016145337.4ZIt_sqL@linutronix.de>
+        Tue, 31 Oct 2023 06:15:30 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01366DF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:15:27 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VAAu37002468;
+        Tue, 31 Oct 2023 10:15:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=OJUS+9KjTbdR5em9rRihDJVrcjq7setQKbZNTOU4ovA=;
+ b=GSZjLDZgf+JqpIo8P7Q3l59QzXHlc/Rf2tJ0fqIjixkZluDmN50X6uv+nG1KmS3+mF7m
+ Ck72vhiYAHjlksW4im0WwMZai5zXXdeQDbpJ3hy0rzIlZFDJp4tmrpRBNgei37OJmQ+x
+ is0yLUYvLS5K4NKZmowq4lHM3H6Zp9ASG05rRNC7CzkoynUJWtyeN/oIyzq1/ftKZBwK
+ V7gzQ1CrYERIGWjsvJNp1URzG1uniW1x5JlThyP3c3aMK/tsrwGrbmCe42IpveC6oavC
+ XnopMi5rHGjs0hJ4d4P2MQSTOQsIkMQenetb08RWuV6JUht3qJYnzGzaZ1YtITkGqikR /Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u2xtksqwt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 10:15:17 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39VABtuj007412;
+        Tue, 31 Oct 2023 10:15:17 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u2xtksqw1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 10:15:16 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39V8Ireu011544;
+        Tue, 31 Oct 2023 10:15:15 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1e4kqdve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 10:15:15 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39VAFEYw6554338
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 31 Oct 2023 10:15:14 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D0C85805A;
+        Tue, 31 Oct 2023 10:15:14 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F0345805C;
+        Tue, 31 Oct 2023 10:15:12 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 31 Oct 2023 10:15:11 +0000 (GMT)
+X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 29/37] powerpc/nohash: Replace pte_user() by pte_read()
+In-Reply-To: <72cbb5be595e9ef884140def73815ed0b0b37010.1695659959.git.christophe.leroy@csgroup.eu>
+References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
+ <72cbb5be595e9ef884140def73815ed0b0b37010.1695659959.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 31 Oct 2023 15:45:10 +0530
+Message-ID: <877cn39jyp.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231016145337.4ZIt_sqL@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: JCYExBOwiSDD9TKMNTt1BCt2ouAey2KB
+X-Proofpoint-ORIG-GUID: ZcNCFHo4s6xeuPC-l20x3XEboXBzRwct
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 adultscore=0 phishscore=0 clxscore=1011 suspectscore=0
+ spamscore=0 mlxlogscore=405 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2310310080
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-16 16:53:39 [+0200], To Jakub Kicinski wrote:
-> On 2023-10-16 07:17:56 [-0700], Jakub Kicinski wrote:
-> > On Mon, 16 Oct 2023 11:53:21 +0200 Sebastian Andrzej Siewior wrote:
-> > > > Do we have reason to believe nobody uses RPS?  
-> > > 
-> > > Not sure what you relate to. I would assume that RPS is used in general
-> > > on actual devices and not on loopback where backlog is used. But it is
-> > > just an assumption.
-> > > The performance drop, which I observed with RPS and stress-ng --udp, is
-> > > within the same range with threads and IPIs (based on memory). I can
-> > > re-run the test and provide actual numbers if you want.
-> > 
-> > I was asking about RPS because with your current series RPS processing
-> > is forced into threads. IDK how well you can simulate the kind of
-> > workload which requires RPS. I've seen it used mostly on proxyies 
-> > and gateways. For proxies Meta's experiments with threaded NAPI show
-> > regressions across the board. So "force-threading" RPS will most likely
-> > also cause regressions.
-> 
-> Understood.
-> 
-> Wandere/ Juri: Do you have any benchmark/ workload where you would see
-> whether RPS with IPI (now) vs RPS (this patch) shows any regression?
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-So I poked offlist other RH people and I've been told that they hardly
-ever test RPS since the NICs these days have RSS in hardware.
+> pte_user() is now only used in pte_access_permitted() to check
+> access on vmas. User flag is cleared to make a page unreadable.
+>
+> So rename it pte_read() and remove pte_user() which isn't used
+> anymore.
+>
+> For the time being it checks _PAGE_USER but in the near futur
+> all plateforms will be converted to _PAGE_READ so lets support
+> both for now.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/nohash/32/pte-8xx.h |  7 -------
+>  arch/powerpc/include/asm/nohash/pgtable.h    | 13 +++++++------
+>  arch/powerpc/mm/ioremap.c                    |  4 ----
+>  3 files changed, 7 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> index 62c965a4511a..1ee38befd29a 100644
+> --- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> +++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> @@ -112,13 +112,6 @@ static inline pte_t pte_mkwrite_novma(pte_t pte)
+>  
+>  #define pte_mkwrite_novma pte_mkwrite_novma
+>  
+> -static inline bool pte_user(pte_t pte)
+> -{
+> -	return !(pte_val(pte) & _PAGE_SH);
+> -}
+> -
+> -#define pte_user pte_user
+> -
+>  static inline pte_t pte_mkhuge(pte_t pte)
+>  {
+>  	return __pte(pte_val(pte) | _PAGE_SPS | _PAGE_HUGE);
+> diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/include/asm/nohash/pgtable.h
+> index ee677162f9e6..aba56fe3b1c6 100644
+> --- a/arch/powerpc/include/asm/nohash/pgtable.h
+> +++ b/arch/powerpc/include/asm/nohash/pgtable.h
+> @@ -160,9 +160,6 @@ static inline int pte_write(pte_t pte)
+>  	return pte_val(pte) & _PAGE_WRITE;
+>  }
+>  #endif
+> -#ifndef pte_read
+> -static inline int pte_read(pte_t pte)		{ return 1; }
+> -#endif
+>  static inline int pte_dirty(pte_t pte)		{ return pte_val(pte) & _PAGE_DIRTY; }
+>  static inline int pte_special(pte_t pte)	{ return pte_val(pte) & _PAGE_SPECIAL; }
+>  static inline int pte_none(pte_t pte)		{ return (pte_val(pte) & ~_PTE_NONE_MASK) == 0; }
+> @@ -190,10 +187,14 @@ static inline int pte_young(pte_t pte)
+>   * and PTE_64BIT, PAGE_KERNEL_X contains _PAGE_BAP_SR which is also in
+>   * _PAGE_USER.  Need to explicitly match _PAGE_BAP_UR bit in that case too.
+>   */
+> -#ifndef pte_user
+> -static inline bool pte_user(pte_t pte)
+> +#ifndef pte_read
+> +static inline bool pte_read(pte_t pte)
+>  {
+> +#ifdef _PAGE_READ
+> +	return (pte_val(pte) & _PAGE_READ) == _PAGE_READ;
+> +#else
+>  	return (pte_val(pte) & _PAGE_USER) == _PAGE_USER;
+> +#endif
+>  }
+>  #endif
+>  
+> @@ -208,7 +209,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
+>  	 * A read-only access is controlled by _PAGE_USER bit.
+>  	 * We have _PAGE_READ set for WRITE and EXECUTE
+>  	 */
+> -	if (!pte_present(pte) || !pte_user(pte) || !pte_read(pte))
+> +	if (!pte_present(pte) || !pte_read(pte))
+>  		return false;
+>  
+>  	if (write && !pte_write(pte))
+> diff --git a/arch/powerpc/mm/ioremap.c b/arch/powerpc/mm/ioremap.c
+> index 7823c38f09de..7b0afcabd89f 100644
+> --- a/arch/powerpc/mm/ioremap.c
+> +++ b/arch/powerpc/mm/ioremap.c
+> @@ -50,10 +50,6 @@ void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long flags)
+>  	if (pte_write(pte))
+>  		pte = pte_mkdirty(pte);
+>  
+> -	/* we don't want to let _PAGE_USER leak out */
+> -	if (WARN_ON(pte_user(pte)))
+> -		return NULL;
+>
 
-Sebastian
+This check is still valid right? I understand that we want to remove
+_PAGE_USER. But then loosing this check is ok? 
+
+> -
+>  	if (iowa_is_active())
+>  		return iowa_ioremap(addr, size, pte_pgprot(pte), caller);
+>  	return __ioremap_caller(addr, size, pte_pgprot(pte), caller);
+> -- 
+> 2.41.0
