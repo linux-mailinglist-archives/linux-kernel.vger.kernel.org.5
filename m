@@ -2,161 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6027DC9D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724A17DCA1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbjJaJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
+        id S236279AbjJaJvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjJaJr4 (ORCPT
+        with ESMTP id S234969AbjJaJu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:47:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D448FD8
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698745673; x=1730281673;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=f0KvKdZL3nMkLOaVVzy2J5qOzwJcQ6uAnXGpOcGBptk=;
-  b=c8koGfrx9Dup91zy+naer2vLbcs9NXVjYnQunOc1+RGnRBX2EwBM1I28
-   YjzWwBBabL6V7ohQdocjyvm8WS8wmHX0kohC9x4RyLu9l78jLcy/Sklmb
-   lqYsRJj2XXI3m48HCQjiKZLn5z7eYThqhdrFbOg6FsasSyxdTs5pjMBkg
-   +xvI3NmQ+4s7Gv882K4WWUmYUE0bKkbb3RSldBojOaW2ywN71KMu72oZl
-   3ZN0tNeyVetO/I6LLyiK0VzVzrPY1K4TQMtHDF7K+hgpA+sFS0OAeVeVb
-   bGx8X1c1BIvMiK7zltNjL2shAEoTUcomX2jcSef1YaG+NX900usJ8ZVYq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="419363905"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="419363905"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 02:47:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="877451511"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="877451511"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 02:47:53 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:47:53 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 02:47:53 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:47:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GziCnBPFXcyIj7pq3nfkVgDi1Sl0pvwtC5VrxkLuYSQQ78cmCX273y7INCkaPfgkI1rjn/YWK78xALIQBqlfx3fmtFY6TfP8U3Jm/M84LW9cx3vXd09l6w4gtRe56EeqN3FfQ4clFQAXp9NRZPANJKnv5CRSi2JifLhYTP3dcwPwWONOaPW2V6NV6jDlMl+odKtVqMRlQ+XfXl0ozBjP+PqjHiUHIgXI6lPmtPkNNLEfSd2U0B6cySoFj6O+F52C0bMtRh0ugBQzaXPK7KN0tozL9S/HtwoaSES15QAFjVtqAN2nfCwmkMGULrrAkscVaNOcRGmB3h2IyGiwbQTm4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0VY9lDLbFHgPm2/pj5kSYYFLpwxAHFUdkuh88Bq1JiE=;
- b=VM5CJlRgKDIMD9P3Q4usa6RWMAj0l0KRS9wAlHihkydBMgOoUgKZWEW7S8iPPH1aGaxBV28ZmRrAnkF/bqTbT4XmSId8A8La8vRWszzmikXSJUZ3eecex9ZoYL8FVCDy+rrhNit8fsRJBOM2Ejfn80MziOL/Yngagx61wFsa+Pb4iH/i3HznH8+mS2FFFExiK2HgrdUR2xmhPP4wT9AaG/JQxG6FX1Is7wHfPK8DtVtRncJS5dUPL7/4k7JssxZNQq/or6y9hefevUOgxhk463FgWxsR9b77QohRrnk3iLrair5shA+oy64V6P0foQh7E6mDvQSKnHBBI5b9kUha/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB6375.namprd11.prod.outlook.com (2603:10b6:8:c9::21) by
- DS0PR11MB7850.namprd11.prod.outlook.com (2603:10b6:8:fe::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.28; Tue, 31 Oct 2023 09:47:51 +0000
-Received: from DS0PR11MB6375.namprd11.prod.outlook.com
- ([fe80::ecc0:2a4e:16c3:2019]) by DS0PR11MB6375.namprd11.prod.outlook.com
- ([fe80::ecc0:2a4e:16c3:2019%3]) with mapi id 15.20.6933.026; Tue, 31 Oct 2023
- 09:47:51 +0000
-Message-ID: <9f8acb47-a951-53e8-5bf7-738970184733@intel.com>
-Date:   Tue, 31 Oct 2023 10:47:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] ALSA: hda: intel-dsp-cfg: Use AVS driver on
- SKL/KBL/APL Chromebooks
-Content-Language: en-US
-To:     Takashi Iwai <tiwai@suse.de>,
-        Brady Norander <bradynorander@gmail.com>
-CC:     Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        "Jaroslav Kysela" <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-References: <2f5ffc3b-01be-413d-843e-8654d953f56f@gmail.com>
- <87bkcfw6y8.wl-tiwai@suse.de>
-From:   Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <87bkcfw6y8.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: WA2P291CA0021.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1e::29) To DS0PR11MB6375.namprd11.prod.outlook.com
- (2603:10b6:8:c9::21)
+        Tue, 31 Oct 2023 05:50:58 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB60186
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:50:36 -0700 (PDT)
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231031095018epoutp03da54319791a48e63beec9dbcd1c1c3db~TKFJTQAIh1184711847epoutp03W
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:50:18 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231031095018epoutp03da54319791a48e63beec9dbcd1c1c3db~TKFJTQAIh1184711847epoutp03W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1698745818;
+        bh=biM3/KVU/4+iEafliT3OuoOp8BvOTktRr3DK1804jIs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MKMVOREskarrRDiCfk/bEWEBfBjBr+jltfIvWAyPzFoLQbsE9lT+pPbQreW2fafUE
+         HOiAxexh+2AjDoQUsgMnQin1oTZbAYIvlV+pNSesYdF8HP06SUYHTaJzWVft1exDtj
+         rLQu1AixcRIRsML+0BKHg6ULrxXnMtEzVhWC/9K8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20231031095017epcas2p15bd3689c9cbbd63aa60dec2132f77c6b~TKFIx-cPP2926329263epcas2p1D;
+        Tue, 31 Oct 2023 09:50:17 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.36.69]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4SKQNn2rsyz4x9QC; Tue, 31 Oct
+        2023 09:50:17 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.1E.10022.9DDC0456; Tue, 31 Oct 2023 18:50:17 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20231031095016epcas2p4d975f6a3647d24da606ef168c2b234cf~TKFH5baKK0808208082epcas2p4L;
+        Tue, 31 Oct 2023 09:50:16 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231031095016epsmtrp2b0f7e79b0b753366159565e03fcda9b9~TKFH4c5E41473914739epsmtrp26;
+        Tue, 31 Oct 2023 09:50:16 +0000 (GMT)
+X-AuditID: b6c32a47-9a3ff70000002726-28-6540cdd9ad6f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AF.32.07368.8DDC0456; Tue, 31 Oct 2023 18:50:16 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.229.9.55]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231031095016epsmtip1b1a154a2af3f614110ff1b92841ca099~TKFHDuFjx2314323143epsmtip11;
+        Tue, 31 Oct 2023 09:50:16 +0000 (GMT)
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+        Jaewon Kim <jaewon02.kim@samsung.com>
+Subject: [PATCH 03/10] dt-bindings: serial: samsung: add exynosautov920-uart
+ compatible
+Date:   Tue, 31 Oct 2023 18:47:45 +0900
+Message-ID: <20231031094852.118677-4-jaewon02.kim@samsung.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231031094852.118677-1-jaewon02.kim@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB6375:EE_|DS0PR11MB7850:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4837ae3-21cf-4a9b-581c-08dbd9f6729f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eazCGQ8S2DGSA93BVNprlW/2p3B7gd8FKtJYQcZP6w79Nn25B95uGmjA/U1xSflI0QjWzTPg+Q9VH74KpuzRwwN9xnP+pHvMbybilMTpuSbo5YqGhYSaOLfBPx7UfwDpcvZvh4mQfFxrzX8XSSjqc0+mTGiXjnbRvGlaCcihqebf9mcHRpBXmu6fMUpflzFIbun5QXElbkXttSgPeKHzpSVppBSNaVN6Z4SCKQRQAmvXMBS2RcM+paZ/eAnMnEFiL4Jyo7FCUxlSezXan1KrsNZ6XTyYmpYEXzfBfJtD1xxoj8090IIUMzfOSr/q0/YbncRWK+9TIfmKAtlrO/JoSA1xtDyrS3Zt7fiG0skv+r0eTajtPPg6+Ay8lSUhr9rQu6g60Y3zDIMngqd82FSy9ydpkSVT/XG4p+MLNtQL2zZeMN6cnp9tHNy4A1Hzmf8jWVEKMt8h5A31b8a7rWxFlATY0lhBp8poKdbENM4H2iSoN8U178L7RrVVHJIcCydeKzrC46XpCJfHCjYkTTWt0tB0p/R+DkHVHI4sfNzkXmxg/8qxZjhzfygBUjxgiHaYhPszRnYGVs19QrdqrZ768xxh0n5szUhfffcJ7fCNvHdzlSa1vfaPEVuK3p5KFUSgPEhIGHzdVP5X0qp3214N0m1Ug1fHoH47aLcA7Tv8Py3arHBh2YOhDLAkiz5MIxvo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6375.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(396003)(39860400002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(31686004)(26005)(6512007)(38100700002)(36756003)(86362001)(31696002)(82960400001)(4001150100001)(7416002)(2906002)(83380400001)(53546011)(6506007)(478600001)(6666004)(8936002)(8676002)(2616005)(966005)(66476007)(6486002)(4326008)(54906003)(316002)(5660300002)(66556008)(110136005)(44832011)(41300700001)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a0ZGaUJjVGlmQVhJZjFCTTl5MFFESFQxWndORkNJVHBDZjBZUmx0QmpNQkhV?=
- =?utf-8?B?bmRQY2RoUkFtY3ZORXlzaWZiVjBMcjZlbkxXaFVDMTRFcFlhYkVZTkl4djZm?=
- =?utf-8?B?TUNIczNiM1VJaXY5ZitWK2k1dEV3VFVzV3cwaEU4RWRxTU5ORkNIZldob29v?=
- =?utf-8?B?TFh2SlNmOUwrR05NRFNuWFVPZ1NmNk9ucHRaMUNvdHhZK3J4T1FqWndaclRn?=
- =?utf-8?B?UmIzL205NFpSWEpGcGdnT1Y3c3RIYXNqQnZWVDErZzZDc21WRVBVc1l3aTNl?=
- =?utf-8?B?UGJGVmdWQkZKbFJuZ3ZHM0lmNkZDTlMvS1dQNCs1RnpGaGxnY0NUd3pXL2xL?=
- =?utf-8?B?em9MQ1B1WXU2RGJUL09oVkRKeDYyMjZnaU0rcFpHcUM2dUJ3Nnc2Y29IS2o2?=
- =?utf-8?B?dGNsL0I4cDBScUlWbU9EdVJwNEgrTXI0Q0hncC9BT1kzWGFkQWxaZ0l1M2Vm?=
- =?utf-8?B?Z3JXRUJNUUJvUW1ZYXlJdlZsRFlKYUlFb0xZZzNxSFhkOE1qcmkxSlpiSDY0?=
- =?utf-8?B?TUx3VVhMMWJIb3FQQ3hqcWZTTERmV1lUVnBIRVBBOG1JWGYrRlRUVXl1Tlpm?=
- =?utf-8?B?SFhPaGovN3FmTEJqN0pud1RHM2xPV0RwdUxVNFh4Vzd3NFVubkY5K0pjOE9B?=
- =?utf-8?B?OGFpM243WXdzZmtSSnJqTFlnOHNlbEYxVmV0NGRJMy9PMHF3aUlsVDgrWHlP?=
- =?utf-8?B?QUtlMXBNU0dyblhvSVlTWjNtWVk4dm5xVkVaUlhIRlNFWGM0U0p1MjRJRVJE?=
- =?utf-8?B?SWFLUFRXNForNTREY2JzTVZQdVpRbnUvTUpaQUNLSTEyb25MbDZkSm9qOFA4?=
- =?utf-8?B?bW5oUko5b01CdHdUdStqTlFlWjhXSW9Nb1Zsd2ovd3llRk15SkpZejJTanJk?=
- =?utf-8?B?RU5YMHhxbXVGZjA0cFZzeXh6U1hEZDFiWmRQQWhGQ3lEV0UwQWpkcmpNUGpR?=
- =?utf-8?B?MmxTQit5N0JwQjhxcFhMWkpkRDBnd0YrckdJSW1kekNtUWE3ZWZORVdDN1lO?=
- =?utf-8?B?Q2ZqL1FuR0hwb1dQWk5GMVZlRmZrRTJ4VkM2YTF4VUFtNlc1dXI0dzMyVERK?=
- =?utf-8?B?YVNJWE5xTkRnd1RQUnFkbUk0L1JTR1JjdzRIMHNRRVhLQzVIZnM0b29nVWdt?=
- =?utf-8?B?elVjU20rdjlWRDk2OXhkcVdJdmdkS1AxaWNiekhIaGJmVnFxQ1Z3K2txOUNO?=
- =?utf-8?B?YmpkbzF6NkV4ckMrSnJCcGxQN0psRzY4ekZmaXdib0dVZDAzZmRPQzVTVGwv?=
- =?utf-8?B?WVNSRC8rcGhsY0ZtRWRVTnd2d01XYmVkWlFyTmhHbWx2UDVpbi9DUHJaNDRU?=
- =?utf-8?B?bTZnbmpJdGVwdnRyc3puOEJLREdtU0E3bGJDbEtUclRCQ0FNcnYvUDNldVdI?=
- =?utf-8?B?TzFtNXgrNUp4QkM4bFErVzZwQkVSMVdoMzhheWpWSWo3NVNwcENVV0VJaitK?=
- =?utf-8?B?ZE5LNGhoamFieXN6THIrNWZjUzFidVVlYzRoWjJaNVRSMmNicGtNSnJsSXQ5?=
- =?utf-8?B?SENJMkZPdW1HRnNiWUZOT3hZN0p2dmRSWnF0UVNxQ3Awamgwd3ZLNklrMG9G?=
- =?utf-8?B?d1IwaUhMWXZZUXNtSDQvRW1lUlZYU1pmS24vS0lIb1p0R3JNMWl2Y0k4NUF4?=
- =?utf-8?B?Ui9LWGI3NjFmWVZVeHVHUlNXSGJlK21hRzlvaUlSMEJyQWZmdGhXVkNoMzZk?=
- =?utf-8?B?bS82ZnN6VjFOd3BKRWVDV2p2enlFdEQ2SForZlU4MlpRZXIraHdSeTJkZlJw?=
- =?utf-8?B?QnZzci9zR1hOSnFZdHhtZ1RlOEVycVErME52aDVtckR6aGJiOEVyL01QbTRP?=
- =?utf-8?B?T3RFUlh4b1JXSU1iM0ZDSlZtNjVNaExYNU5odys0aCs5NVhIYmsxUTcwOVF5?=
- =?utf-8?B?bUlnekh6SHBsSGQ3MUNjOUFwSTgxbzNkdXgxbjdSZjlHRjNlY01SdzY1TVhv?=
- =?utf-8?B?UjlRb1NLbU5qdzhwQ08wNjI2SnhkTzZpT0cyd3ovcHkwTHhWNVdpME1sK1Vi?=
- =?utf-8?B?SGd1cTg4QlVTUXRIQmlISzR5QjJ2aTdOODdmbVZnRWUzbmRoejJsVmJ2TTJn?=
- =?utf-8?B?bE4xQ0J3VE5remJ1V0ZWU3JjMEV4MlB6eXlwUTg1aWliemg3bGxoNnNYMWV6?=
- =?utf-8?B?UjV6dHJwc3JRUWtxcGt2cnJPNXUyNzY1ZS9DNXJBRms4cFFnUmh6UDVkWjBT?=
- =?utf-8?B?NFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4837ae3-21cf-4a9b-581c-08dbd9f6729f
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6375.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 09:47:51.3689
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8/ckpibTBSLXz2GzO3aYTyE2BqWhCUr2MkISSwfigvpEUaqLHm0H4aQcgC+8F+1OWhlzfhO13igrZ0T2iBxoO6teqGAu2XBsi3vsop4caCc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7850
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMJsWRmVeSWpSXmKPExsWy7bCmue7Nsw6pBi07hS0ezNvGZrFm7zkm
+        i/lHzrFaNC9ez2axo+EIq8W7uTIWe19vZbeY8mc5k8Wmx9dYLTbP/8NocXnXHDaLu3dXMVrM
+        OL+PyeLM4l52i9a9R9gtDr9pZ7X4uWsei8WqXUB1tydOZnQQ9tg56y67x6ZVnWwed67tYfPY
+        P3cNu8fmJfUe/X8NPPq2rGL0+LxJLoAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX
+        0NLCXEkhLzE31VbJxSdA1y0zB+gdJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6B
+        eYFecWJucWleul5eaomVoYGBkSlQYUJ2xtEN85kK5rJXLPrwm6mB8SFrFyMnh4SAicSLQ58Z
+        uxi5OIQEdjBKXH+8hQnC+cQose7qflYI5xujRM/Cd+wwLU/vnmaDSOxllFhwaRaU85FR4uC/
+        LmaQKjYBbYnv6xeDLRER+MIsMf1RNUgRs0A7k8S8by9ZQBLCApESfX0ngBo4OFgEVCUe/mID
+        CfMK2EncmbkJapu8xJ5F35lAbE4Be4mdPU2MEDWCEidnPgEbwwxU07x1NjNE/QUOiXknrSFs
+        F4nLs86xQdjCEq+Ob4GaKSXx+d1eqHi2RPv0P9DAqJC4uGE2VNxYYtazdkaQ05gFNCXW79IH
+        MSUElCWO3ILayifRcfgvO0SYV6KjTQiiUU3i/lSYpTISk46sZIKwPSR2dN1kgYTUJEaJrjlf
+        mCcwKsxC8swsJM/MQli8gJF5FaNYakFxbnpqsVGBMTyCk/NzNzGCU7eW+w7GGW8/6B1iZOJg
+        PMQowcGsJMJ72NQhVYg3JbGyKrUoP76oNCe1+BCjKTCkJzJLiSbnA7NHXkm8oYmlgYmZmaG5
+        kamBuZI4773WuSlCAumJJanZqakFqUUwfUwcnFINTCIzHkwSdroqfPJYAZ+Pz7Hv3ExXbitX
+        99TcPfuTQ2x3z3P/p0F3fVM81f693zI7f2LJ2x5vYUMpExn/1Jx2u+K5zL3RMdIcTz5mv0+9
+        dLlWxrJvQ/MLlY1aq71sDDM/xJUueOKnEuYiLlQioHsr5tXO7XeXT7m3+OzSgiPq0T3Pg61D
+        eFfveTR7a9DzfefquN5WfNQx/901X+VqjpEhXxb7/aVti78mBaw+PquMLcsyVfqrMb/qnHSX
+        FQzxb1r+/3wvVPTwM/va7vQgLwtpD678OWcKN3+TcLLZqnWvI/3YUtYk4a7ZUjwPJ2ac3s+T
+        EezeGLtJ4/KqJ94y1znYLObXi22Ym58pJX7U78YRJZbijERDLeai4kQABjEfp2YEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnkeLIzCtJLcpLzFFi42LZdlhJTvfGWYdUg43TTC0ezNvGZrFm7zkm
+        i/lHzrFaNC9ez2axo+EIq8W7uTIWe19vZbeY8mc5k8Wmx9dYLTbP/8NocXnXHDaLu3dXMVrM
+        OL+PyeLM4l52i9a9R9gtDr9pZ7X4uWsei8WqXUB1tydOZnQQ9tg56y67x6ZVnWwed67tYfPY
+        P3cNu8fmJfUe/X8NPPq2rGL0+LxJLoAjissmJTUnsyy1SN8ugSvj6Ib5TAVz2SsWffjN1MD4
+        kLWLkZNDQsBE4und02xdjFwcQgK7GSX+HNvPBpGQkVj+rA/KFpa433KEFaLoPaNE69U/jCAJ
+        NgFtie/rF4MlRAR+MUvsnnAXLMEs0M8kcX1TAogtLBAuce7dduYuRg4OFgFViYe/wIbyCthJ
+        3Jm5iR1igbzEnkXfmUBsTgF7iZ09TWBjhIBqLm64yQRRLyhxcuYTFojx8hLNW2czT2AUmIUk
+        NQtJagEj0ypGydSC4tz03GTDAsO81HK94sTc4tK8dL3k/NxNjOA409LYwXhv/j+9Q4xMHIyH
+        GCU4mJVEeA+bOqQK8aYkVlalFuXHF5XmpBYfYpTmYFES5zWcMTtFSCA9sSQ1OzW1ILUIJsvE
+        wSnVwHT+2rkrfUYSVo8O7z/z5uzK0ln8n6Zd0bpvc27DSa9K56tX/kf7Lo7+IOQk8N1cevmR
+        Q4eC9jGckf3DNavh+NJ0O5cXYiaXhSK2Lpapcme/23VodqJunJRE5vxqmTUuEwvtrRueTYt0
+        0LunysP98r+0pbbrt+tfTNq3xV+TSp8Wfsu4W/D6RuFvui5C0dFfZI+zL3Q+tGii09N3scEl
+        bUeXeJyY0nxZkv3TpNyyPe7rXyhOF1b4ElDPECn9udBI6ov9V46Xz7R4+dKu+2idOXDRYZ/W
+        sX13P7O2KPjnL176pciROTEn3a6twbVuNrtlIbedS27aEu+e9r171n+MjdDlaz9oq/rkaq79
+        lzXSckosxRmJhlrMRcWJAIlR9JIiAwAA
+X-CMS-MailID: 20231031095016epcas2p4d975f6a3647d24da606ef168c2b234cf
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231031095016epcas2p4d975f6a3647d24da606ef168c2b234cf
+References: <20231031094852.118677-1-jaewon02.kim@samsung.com>
+        <CGME20231031095016epcas2p4d975f6a3647d24da606ef168c2b234cf@epcas2p4.samsung.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -164,37 +133,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-31 9:07 AM, Takashi Iwai wrote:
-> On Mon, 30 Oct 2023 19:58:52 +0100,
-> Brady Norander wrote:
->>
->> The legacy SKL driver no longer works properly on these Chromebook
->> platforms. Use the new AVS driver by default instead.
->>
->> Signed-off-by: Brady Norander <bradynorander@gmail.com>
-> 
-> It's fine to switch to the new and more maintained AVS (once after the
-> topology is ready), but I wonder how the breakage of SKL happened.
-> Was it our intentional breakage in the past?  If so, why can't we
-> recover it?
+Add samsung,exynosautov9-uart dedicated compatible for representing
+uart of ExynosAutoV920 SoC.
 
-To my knowledge, skylake-driver used in I2S configurations never worked 
-on "bare" upstream. While I and the team have been sending plethora of 
-fixes to upstream, it has always been done "after the fact".
+Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+---
+ Documentation/devicetree/bindings/serial/samsung_uart.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Another topic is the topology. Again, from what I know, skylake-driver 
-topology files were never pushed as an official package to any distro. 
-In most cases, Chromebook-users were taking what we have done during 
-recent up-revs for those devices onto their distros. Eventually 
-avs-topology-xml/for-skylake-driver [1] and avsdk/for-skylake-driver [2] 
-have been created to help downstream users. While the method is not 
-perfect, it is certainly better than forcing users to switch to the 
-avs-driver immediately without addressing any existing skylake-driver 
-issues.
+diff --git a/Documentation/devicetree/bindings/serial/samsung_uart.yaml b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+index 8bd88d5cbb11..3e88722d0793 100644
+--- a/Documentation/devicetree/bindings/serial/samsung_uart.yaml
++++ b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+@@ -19,7 +19,9 @@ properties:
+   compatible:
+     oneOf:
+       - items:
+-          - const: samsung,exynosautov9-uart
++          - enum:
++              - samsung,exynosautov9-uart
++              - samsung,exynosautov920-uart
+           - const: samsung,exynos850-uart
+       - enum:
+           - apple,s5l-uart
+-- 
+2.42.0
 
-
-[1]: 
-https://github.com/thesofproject/avs-topology-xml/tree/for-skylake-driver
-[2]: https://github.com/thesofproject/avsdk/tree/for-skylake-driver
-
-Czarek
