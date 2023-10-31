@@ -2,99 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0A57DD866
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2B67DD86D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376288AbjJaWee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        id S1376283AbjJaWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346804AbjJaWeZ (ORCPT
+        with ESMTP id S1346780AbjJaWim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:34:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CEE101
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 15:34:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1C42C433CA;
-        Tue, 31 Oct 2023 22:34:22 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qxxJV-00EPkD-1D;
-        Tue, 31 Oct 2023 18:34:21 -0400
-Message-ID: <20231031223421.185413077@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 31 Oct 2023 18:33:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v5 7/7] eventfs: Remove special processing of dput() of events directory
-References: <20231031223326.794680978@goodmis.org>
+        Tue, 31 Oct 2023 18:38:42 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1477F4;
+        Tue, 31 Oct 2023 15:38:39 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-407c3adef8eso50468025e9.2;
+        Tue, 31 Oct 2023 15:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698791918; x=1699396718; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6yNnFVQiHIMKBbkJdP4Bo88uYPZR71YVjxbz/oPSYuw=;
+        b=T+30KIRBjXelxp/eUrY79RSq3lnD4/L/JgiGnYGg4RGo5g6Mx72bHsatzJmAvUFT4z
+         Myc5elYlM3vXPRPL2MhKa+ppAUyECudv4Nj1m39lt0Ih5Qgs+wownL3DOutrMTQHORjT
+         LFp2E+8enQwTDnDHCXJGWCyXTYN0ag6BT2PDE1tUXJ7OJv10Qde7Vhx4HZgsGcFFdy7I
+         Aa2PvmqMir0tofk4IpL4kzodncAg65hDw8iHKauYz8+uZdumfIvx2RWwZA+iuCo5uRah
+         /5xFZ1vL1vrS8IRmDJTUI+teE70tms/rYZu9XnaWq9A4+Z1wFqxWPaGHpyBcxitNC74E
+         jPbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698791918; x=1699396718;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6yNnFVQiHIMKBbkJdP4Bo88uYPZR71YVjxbz/oPSYuw=;
+        b=ITToJUzbwVvP3rDxoqCZSkFwMsVT3kLsTd/zUK9sPqOAipW0c9LYBXY2dZh4/V2xLn
+         E+YxRVs2hE55Bu5ABQdUC0AedtdX+yXlGH708M/ksS6MUs5vyHEWNG6KQ5X2OjqX6t09
+         wwbzLcYR8a5T2IRBJxCvgHLJ5bGq6G0XLtlDP3M1cutBPBlyKHeNV09BN4MOWdV/Piaz
+         ECcn/JJ9RM1bM+AIgEeciMw/cEwMf7BffDL4NOey1MqJ9/dYi73bAarEtNV4eunqz76n
+         aWACcKe14R9DKihWt8/4kYMG7fk5BqcEe3DxQw0oELIpzwwWOf23daCmEX6QlujafKRy
+         jFJA==
+X-Gm-Message-State: AOJu0Yw0ZDkRlZwsN3fxXJn8G0DZag0Eqlsgjewmww9BSCPXAcl3b5Di
+        CN+9pf1wChaHqfGEIykVWM8Xgq0eavA07+KOEfE=
+X-Google-Smtp-Source: AGHT+IFEToQ0jaQCfZXrT3l50xsZYDINQsLq8vB9PcCCTGW9BFC0ZBcZbfg9XiVETDdXg4hLeUrkhPB8IZ36tT+SD7U=
+X-Received: by 2002:a05:600c:19d1:b0:401:be5a:989 with SMTP id
+ u17-20020a05600c19d100b00401be5a0989mr10650711wmq.23.1698791918006; Tue, 31
+ Oct 2023 15:38:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1698431765.git.dxu@dxuuu.xyz> <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
+ <CAADnVQ+UUsJvrPp=YhtpwuC6xVWGB=OgwXZwXtHi=2Je6n5a=A@mail.gmail.com> <io26znzyhw4t4drmcqkmvgyykyblxzxpizuntgk5fhqasipfyo@r5tpoqo3djkp>
+In-Reply-To: <io26znzyhw4t4drmcqkmvgyykyblxzxpizuntgk5fhqasipfyo@r5tpoqo3djkp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 31 Oct 2023 15:38:26 -0700
+Message-ID: <CAADnVQJkfAGG9_868tLW9m-9V2husAaRK5afnrLL1HqaxN_3vQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/6] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <edumazet@google.com>, antony.antony@secunet.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Sun, Oct 29, 2023 at 3:55=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Hi Alexei,
+>
+> On Sat, Oct 28, 2023 at 04:49:45PM -0700, Alexei Starovoitov wrote:
+> > On Fri, Oct 27, 2023 at 11:46=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrot=
+e:
+> > >
+> > > This commit adds an unstable kfunc helper to access internal xfrm_sta=
+te
+> > > associated with an SA. This is intended to be used for the upcoming
+> > > IPsec pcpu work to assign special pcpu SAs to a particular CPU. In ot=
+her
+> > > words: for custom software RSS.
+> > >
+> > > That being said, the function that this kfunc wraps is fairly generic
+> > > and used for a lot of xfrm tasks. I'm sure people will find uses
+> > > elsewhere over time.
+> > >
+> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > > ---
+> > >  include/net/xfrm.h        |   9 ++++
+> > >  net/xfrm/Makefile         |   1 +
+> > >  net/xfrm/xfrm_policy.c    |   2 +
+> > >  net/xfrm/xfrm_state_bpf.c | 105 ++++++++++++++++++++++++++++++++++++=
+++
+> > >  4 files changed, 117 insertions(+)
+> > >  create mode 100644 net/xfrm/xfrm_state_bpf.c
+> > >
+> > > diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> > > index 98d7aa78adda..ab4cf66480f3 100644
+> > > --- a/include/net/xfrm.h
+> > > +++ b/include/net/xfrm.h
+> > > @@ -2188,4 +2188,13 @@ static inline int register_xfrm_interface_bpf(=
+void)
+> > >
+> > >  #endif
+> > >
+> > > +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> > > +int register_xfrm_state_bpf(void);
+> > > +#else
+> > > +static inline int register_xfrm_state_bpf(void)
+> > > +{
+> > > +       return 0;
+> > > +}
+> > > +#endif
+> > > +
+> > >  #endif /* _NET_XFRM_H */
+> > > diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> > > index cd47f88921f5..547cec77ba03 100644
+> > > --- a/net/xfrm/Makefile
+> > > +++ b/net/xfrm/Makefile
+> > > @@ -21,3 +21,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) +=3D xfrm_compat.o
+> > >  obj-$(CONFIG_XFRM_IPCOMP) +=3D xfrm_ipcomp.o
+> > >  obj-$(CONFIG_XFRM_INTERFACE) +=3D xfrm_interface.o
+> > >  obj-$(CONFIG_XFRM_ESPINTCP) +=3D espintcp.o
+> > > +obj-$(CONFIG_DEBUG_INFO_BTF) +=3D xfrm_state_bpf.o
+> > > diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> > > index 5cdd3bca3637..62e64fa7ae5c 100644
+> > > --- a/net/xfrm/xfrm_policy.c
+> > > +++ b/net/xfrm/xfrm_policy.c
+> > > @@ -4267,6 +4267,8 @@ void __init xfrm_init(void)
+> > >  #ifdef CONFIG_XFRM_ESPINTCP
+> > >         espintcp_init();
+> > >  #endif
+> > > +
+> > > +       register_xfrm_state_bpf();
+> > >  }
+> > >
+> > >  #ifdef CONFIG_AUDITSYSCALL
+> > > diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
+> > > new file mode 100644
+> > > index 000000000000..a73a17a6497b
+> > > --- /dev/null
+> > > +++ b/net/xfrm/xfrm_state_bpf.c
+> > > @@ -0,0 +1,105 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/* Unstable XFRM state BPF helpers.
+> > > + *
+> > > + * Note that it is allowed to break compatibility for these function=
+s since the
+> > > + * interface they are exposed through to BPF programs is explicitly =
+unstable.
+> > > + */
+> > > +
+> > > +#include <linux/bpf.h>
+> > > +#include <linux/btf_ids.h>
+> > > +#include <net/xdp.h>
+> > > +#include <net/xfrm.h>
+> > > +
+> > > +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> > > + *
+> > > + * Members:
+> > > + * @error      - Out parameter, set for any errors encountered
+> > > + *              Values:
+> > > + *                -EINVAL - netns_id is less than -1
+> > > + *                -EINVAL - Passed NULL for opts
+> > > + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> > > + *                -ENONET - No network namespace found for netns_id
+> > > + * @netns_id   - Specify the network namespace for lookup
+> > > + *              Values:
+> > > + *                BPF_F_CURRENT_NETNS (-1)
+> > > + *                  Use namespace associated with ctx
+> > > + *                [0, S32_MAX]
+> > > + *                  Network Namespace ID
+> > > + * @mark       - XFRM mark to match on
+> > > + * @daddr      - Destination address to match on
+> > > + * @spi                - Security parameter index to match on
+> > > + * @proto      - L3 protocol to match on
+> > > + * @family     - L3 protocol family to match on
+> > > + */
+> > > +struct bpf_xfrm_state_opts {
+> > > +       s32 error;
+> > > +       s32 netns_id;
+> > > +       u32 mark;
+> > > +       xfrm_address_t daddr;
+> > > +       __be32 spi;
+> > > +       u8 proto;
+> > > +       u16 family;
+> > > +};
+> > > +
+> > > +enum {
+> > > +       BPF_XFRM_STATE_OPTS_SZ =3D sizeof(struct bpf_xfrm_state_opts)=
+,
+> > > +};
+> > > +
+> > > +__diag_push();
+> > > +__diag_ignore_all("-Wmissing-prototypes",
+> > > +                 "Global functions as their definitions will be in x=
+frm_state BTF");
+> > > +
+> > > +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> > > + *
+> > > + * Parameters:
+> > > + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> > > + *                 Cannot be NULL
+> > > + * @opts       - Options for lookup (documented above)
+> > > + *                 Cannot be NULL
+> > > + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> > > + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> > > + */
+> > > +__bpf_kfunc struct xfrm_state *
+> > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opt=
+s *opts, u32 opts__sz)
+> > > +{
+> > > +       struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> > > +       struct net *net =3D dev_net(xdp->rxq->dev);
+> > > +
+> > > +       if (!opts || opts__sz !=3D BPF_XFRM_STATE_OPTS_SZ) {
+> > > +               opts->error =3D -EINVAL;
+> > > +               return NULL;
+> > > +       }
+> > > +
+> > > +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> > > +               opts->error =3D -EINVAL;
+> > > +               return NULL;
+> > > +       }
+> > > +
+> > > +       if (opts->netns_id >=3D 0) {
+> > > +               net =3D get_net_ns_by_id(net, opts->netns_id);
+> > > +               if (unlikely(!net)) {
+> > > +                       opts->error =3D -ENONET;
+> > > +                       return NULL;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       return xfrm_state_lookup(net, opts->mark, &opts->daddr, opts-=
+>spi,
+> > > +                                opts->proto, opts->family);
+> > > +}
+> >
+> > Patch 6 example does little to explain how this kfunc can be used.
+> > Cover letter sounds promising, but no code to demonstrate the result.
+>
+> Part of the reason for that is this kfunc is intended to be used with a
+> not-yet-upstreamed xfrm patchset. The other is that the usage is quite
+> trivial. This is the code the experiments were run with:
+>
+> https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357d6ce2=
+863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
+>
+> We intend to upstream that cpumap mode to xdp-tools as soon as the xfrm
+> patches are in. (Note the linked code is a little buggy but the
+> main idea is there).
 
-The top level events directory is no longer special with regards to how it
-should be delete. Remove the extra processing for it in
-eventfs_set_ei_status_free().
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 827ca152cfbe..7cf8f5ebaae7 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -274,28 +274,11 @@ static void free_ei(struct eventfs_inode *ei)
-  */
- void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- {
--	struct tracefs_inode *ti_parent;
- 	struct eventfs_inode *ei;
- 	int i;
- 
--	/* The top level events directory may be freed by this */
--	if (unlikely(ti->flags & TRACEFS_EVENT_TOP_INODE)) {
--		mutex_lock(&eventfs_mutex);
--		ei = ti->private;
--		/* Nothing should access this, but just in case! */
--		ti->private = NULL;
--		mutex_unlock(&eventfs_mutex);
--
--		free_ei(ei);
--		return;
--	}
--
- 	mutex_lock(&eventfs_mutex);
- 
--	ti_parent = get_tracefs(dentry->d_parent->d_inode);
--	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
--		goto out;
--
- 	ei = dentry->d_fsdata;
- 	if (!ei)
- 		goto out;
-@@ -920,6 +903,8 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	inode->i_op = &eventfs_root_dir_inode_operations;
- 	inode->i_fop = &eventfs_file_operations;
- 
-+	dentry->d_fsdata = ei;
-+
- 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
- 	inc_nlink(inode);
- 	d_instantiate(dentry, inode);
--- 
-2.42.0
+I don't understand how it survives anything, but sanity check.
+To measure perf gains it needs to be under traffic for some time,
+but
+x =3D bpf_xdp_get_xfrm_state(ctx, &opts, sizeof(opts));
+will keep refcnt++ that state for every packet.
+Minimum -> memory leak or refcnt overflow.
