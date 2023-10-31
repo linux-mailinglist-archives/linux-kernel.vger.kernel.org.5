@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE377DCB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFCE7DCB33
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343998AbjJaKx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        id S233784AbjJaKyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344016AbjJaKx5 (ORCPT
+        with ESMTP id S230370AbjJaKyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:53:57 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDC6A9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:53:54 -0700 (PDT)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 627203D6;
-        Tue, 31 Oct 2023 11:53:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698749616;
-        bh=DZZPLaWglZoIqGV1Xp+VII40hiGGolB8sQr47FvfpqY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=rJ5rwBhq2hdd68ZSjKKHqb0pz4A7YkNGrT21fuAE+VKiK06jO+epT6SsvbBPkiAl9
-         E/PY2xWGd8f3XozGujWhT2tLOy9PG1/U2DrarpKVi8Me91XqlzoRy0VGnNxBpIvF8z
-         imrDC29qlBUoDMlpXWAM9g9YYkBFSoijb7ffmP1c=
-Message-ID: <9e801f88-a15e-48f1-b103-0305c5807143@ideasonboard.com>
-Date:   Tue, 31 Oct 2023 12:53:48 +0200
+        Tue, 31 Oct 2023 06:54:52 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9557E83
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:54:49 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c6b30aca06so36458871fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698749688; x=1699354488; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iDr/ctWm67YzYt+g3CfNgFL6LyK61BEbr92Hq7GOoZw=;
+        b=KU11823kHT3KzZVZA61zZYeDr3DMqb31zw5h0bLDQTQWvXRt3jBWYCPTJ+y9dP157+
+         cX02OYXu4J14d4NEPe+ks1kNqG4DOZmhd8qF/C3gHCe/ZcUL1Q7XqZcHL4MBNLs1uLKu
+         F9uQ1DxELx/GxsLswGly0uEuseZubO5pqNSTEWkYYBidFumJDG+a4T2RwBo1HjkRzGsv
+         uRkH6Xsshm6An3f9m6wHv9/93lmwUwtji8H+9ygdZo3zLLp5oI6X+Xn4JW2rCig4CpHt
+         6yqlmsQ3SURwpoU9YCS15jIPQpgxvd/e4XbX+rJ044KOiRnLkucRxqhd++GJ6ZgyuVA2
+         IlWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698749688; x=1699354488;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDr/ctWm67YzYt+g3CfNgFL6LyK61BEbr92Hq7GOoZw=;
+        b=Um9xrG8U9KzuF4yH+oP+LdF29X1AyH7+IkRT4oUdFg81iHB8H1bEOUoBLnRMp/IEpL
+         8oPWBqkKyOUalS9+nmj4iHAeNzvDXn9YjBFxZmisagr9VM4sRwXBZkBA27t0FTLOrcjm
+         ujDnySQhm5pfJ95osYlycn0H/mhdcz1yX5jX3PNKlHGeudrDFv05oUXT4lR1E8cw+m+E
+         v0EMJaJ4TCmePhrr3My7v+ZFGCtpkMtz1g+SBG+oVb75HqfDfC1eU/ymCPjr94Sjfc1Z
+         SixJNa80/qYrDwERp13nq+5dkz/VXFTC/C8n3hKt3OEo0xe2hUkAu4QmWgyl3HNF/hhl
+         bZuQ==
+X-Gm-Message-State: AOJu0YyCuyTohUG8FYTqdDa7nBnPRl8suZmiBkw3ynSmR7zAeCllSfkQ
+        pnkUSzb2QdVcNDjrfhn/RY042g==
+X-Google-Smtp-Source: AGHT+IFxP40ZBOhfC0u9rUTuCiT2FZXVkMontbekT7AGAEjyoMyZWKkWCbJSe8BYNrGQVY1xiEWRrw==
+X-Received: by 2002:a05:651c:b06:b0:2c5:1867:b0bc with SMTP id b6-20020a05651c0b0600b002c51867b0bcmr10596557ljr.51.1698749687854;
+        Tue, 31 Oct 2023 03:54:47 -0700 (PDT)
+Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
+        by smtp.gmail.com with ESMTPSA id x12-20020a2ea98c000000b002c0055834b3sm160671ljq.4.2023.10.31.03.54.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 03:54:47 -0700 (PDT)
+Message-ID: <d3faea2a-cc28-434c-ac10-3dd55561674f@linaro.org>
+Date:   Tue, 31 Oct 2023 11:54:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/bridge: tc358767: Support input format negotiation
- hook
+Subject: Re: [PATCH v2 4/5] media: qcom: camss: Move VFE power-domain
+ specifics into vfe.c
 Content-Language: en-US
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     DRI Development List <dri-devel@lists.freedesktop.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>
-References: <20231030192846.27934-1-a-bhatia1@ti.com>
- <fc113f51-35e9-49ff-8299-e7fc11b81c31@siemens.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <fc113f51-35e9-49ff-8299-e7fc11b81c31@siemens.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, andersson@kernel.org,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026155042.551731-1-bryan.odonoghue@linaro.org>
+ <20231026155042.551731-5-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231026155042.551731-5-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,110 +114,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
-
-On 31/10/2023 08:24, Jan Kiszka wrote:
-> On 30.10.23 20:28, Aradhya Bhatia wrote:
->> With new connector model, tc358767 will not create the connector, when
->> DRM_BRIDGE_ATTACH_NO_CONNECTOR is set and display-controller driver will
->> rely on format negotiation to setup the encoder format.
->>
->> Add the missing input-format negotiation hook in the
->> drm_bridge_funcs to complete DRM_BRIDGE_ATTACH_NO_CONNECTOR support.
->>
->> Input format is selected to MEDIA_BUS_FMT_RGB888_1X24 as default, as is
->> the case with older model.
->>
->> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
->> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
->> ---
->>
->> Notes:
->>
->>    * Since I do not have hardware with me, this was just build tested. I would
->>      appreciate it if someone could test and review it, especically somebody, who
->>      uses the bridge for DPI/DSI to eDP format conversion.
->>
->>    * The Toshiba TC358767 bridge is not enabled in arm64 defconfig by default,
->>      when it should be. Hence, I sent a quick patch[0] earlier.
->>
->> [0]: https://lore.kernel.org/all/20231030152834.18450-1-a-bhatia1@ti.com/
->>
->>   drivers/gpu/drm/bridge/tc358767.c | 25 +++++++++++++++++++++++++
->>   1 file changed, 25 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
->> index ef2e373606ba..0affcefdeb1c 100644
->> --- a/drivers/gpu/drm/bridge/tc358767.c
->> +++ b/drivers/gpu/drm/bridge/tc358767.c
->> @@ -1751,6 +1751,30 @@ tc_dpi_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->>   	return input_fmts;
->>   }
->>   
->> +static u32 *
->> +tc_edp_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->> +				 struct drm_bridge_state *bridge_state,
->> +				 struct drm_crtc_state *crtc_state,
->> +				 struct drm_connector_state *conn_state,
->> +				 u32 output_fmt,
->> +				 unsigned int *num_input_fmts)
->> +{
->> +	u32 *input_fmts;
->> +
->> +	*num_input_fmts = 0;
->> +
->> +	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
->> +			     GFP_KERNEL);
->> +	if (!input_fmts)
->> +		return NULL;
->> +
->> +	/* This is the DSI/DPI-end bus format */
->> +	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
->> +	*num_input_fmts = 1;
->> +
->> +	return input_fmts;
->> +}
->> +
->>   static const struct drm_bridge_funcs tc_dpi_bridge_funcs = {
->>   	.attach = tc_dpi_bridge_attach,
->>   	.mode_valid = tc_dpi_mode_valid,
->> @@ -1777,6 +1801,7 @@ static const struct drm_bridge_funcs tc_edp_bridge_funcs = {
->>   	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
->>   	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
->>   	.atomic_reset = drm_atomic_helper_bridge_reset,
->> +	.atomic_get_input_bus_fmts = tc_edp_atomic_get_input_bus_fmts,
->>   };
->>   
->>   static bool tc_readable_reg(struct device *dev, unsigned int reg)
->>
->> base-commit: c503e3eec382ac708ee7adf874add37b77c5d312
+On 26.10.2023 17:50, Bryan O'Donoghue wrote:
+> Moving the location of the hooks to VFE power domains has several
+> advantages.
 > 
-> Doesn't help, callback is never invoked. There must be more missing.
+> 1. Separation of concerns and functional decomposition.
+>    vfe.c should be responsible for and know best how manage
+>    power-domains for a VFE, excising from camss.c follows this
+>    principle.
 > 
-> Regarding test setup: Maybe your colleague Preneeth can help to give you
-> access, he just received some devices from us. Otherwise, drop me
-> instrumentation patches.
+> 2. Embeddeding a pointer to genpd in struct camss_vfe{} meas that we can
+>    dispense with a bunch of kmalloc array inside of camss.c.
+> 
+> 3. Splitting up titan top gdsc from vfe/ife gdsc provides a base for
+>    breaking up magic indexes in dtsi.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+[...]
 
-Can you try with this change:
 
-diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
-index 0affcefdeb1c..137a9f5e3cad 100644
---- a/drivers/gpu/drm/bridge/tc358767.c
-+++ b/drivers/gpu/drm/bridge/tc358767.c
-@@ -1579,6 +1579,13 @@ static struct edid *tc_get_edid(struct drm_bridge *bridge,
-                                 struct drm_connector *connector)
-  {
-         struct tc_data *tc = bridge_to_tc(bridge);
-+       int ret;
-+
-+       ret = tc_get_display_props(tc);
-+       if (ret < 0) {
-+               dev_err(tc->dev, "failed to read display props: %d\n", ret);
-+               return 0;
-+       }
-  
-         return drm_get_edid(connector, &tc->aux.ddc);
-  }
+> +	/*
+> +	 * If the number of power-domains is greather than the number of VFEs
+greater
 
-  Tomi
-
+> +	 * then the additional power-domain is for the entire CAMSS block the
+> +	 * 'top' power-domain.
+> +	 */
+> +	if (camss->genpd_num <= camss->res->vfe_num)
+> +		return 0;
+>  
+Konrad
