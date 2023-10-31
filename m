@@ -2,258 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F23D7DCB68
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5AE7DCB6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344005AbjJaLHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        id S1344010AbjJaLIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343995AbjJaLHW (ORCPT
+        with ESMTP id S1343995AbjJaLI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:07:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81421A1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698750392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qeNTgEg8tsCK+iB2JBATlgJcpJ/vml1SpbMe3EquNfs=;
-        b=bgkXzrgIqqF9eDc43BcNg/G6eEZy0PwVTlsuc/lg/npraX5Nn6Ywy2OdoNOk5JEDn7QY6v
-        hVBrC2HFFttOUYOyTGNnq2wbv7cmffD6P0wedgGbmbZ9hjj0fvE7QiZjqj2uQJRHd7bX8Z
-        fFJOZKyevuG++EsT2Eng8bZxXDChmtQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-232-h6_GJDEiNtSDeeRuhpUALQ-1; Tue, 31 Oct 2023 07:06:31 -0400
-X-MC-Unique: h6_GJDEiNtSDeeRuhpUALQ-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-534838150afso976058a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:06:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698750390; x=1699355190;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        Tue, 31 Oct 2023 07:08:29 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D764DF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:08:25 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c518a1d83fso78175611fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698750504; x=1699355304; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qeNTgEg8tsCK+iB2JBATlgJcpJ/vml1SpbMe3EquNfs=;
-        b=hO5sS7flUlLmFC4lkemDxDtVzZJdohuRJkwUuWJ9GNmAl87GjXBXn+AEWA6pSCVsXY
-         Icp/WH7Mzcsluv4tjid0p3pOlYBrVQLCZ98F4VMTiKCEprs2Ko2TbNR4ADJYN0kMERjm
-         yD9HOPYkn1smGKK7m+Sl2SWIsiuoGkc0qo/QDFqFRsCFwOOb8uK75udIKV0cKd7Jt1y6
-         JvEFbIdrasxZdMR1UmGBC9Pkcnj8FDqjM8Palru9cIfElvStyr966vYDHuWtahdH5tMZ
-         7hLQCKDqahI52IUM8FUeLucWoEOVkkTcdMhMywaGGnasSg0d6wGtOOEbvFLodkDsGl8z
-         qDNA==
-X-Gm-Message-State: AOJu0YwNXU2pQDNFRv8IvX/m1jQ+9iReY5WF8bWpVnE9OD4++WWyoNmM
-        GF1tNZ7UvI+ct7ba536gnbWQ9d8kWsgk0wTljZ21xQQPmEqO4CsLmG8mAG2EZ8u5dNb4SHq8a0r
-        YxajYBPy3HUEwQ7Eq1H0mXVHE
-X-Received: by 2002:a50:d49e:0:b0:53f:18f6:a153 with SMTP id s30-20020a50d49e000000b0053f18f6a153mr9697626edi.3.1698750389878;
-        Tue, 31 Oct 2023 04:06:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFU3fW9CjMF9NxM2NJf+1GvsoCwESzcm25+DVXEtCmrvZvzCFMKH+ZzuSFKY7gpsIMYtpRC6w==
-X-Received: by 2002:a50:d49e:0:b0:53f:18f6:a153 with SMTP id s30-20020a50d49e000000b0053f18f6a153mr9697604edi.3.1698750389448;
-        Tue, 31 Oct 2023 04:06:29 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-227-179.dyn.eolo.it. [146.241.227.179])
-        by smtp.gmail.com with ESMTPSA id 28-20020a508e5c000000b005434095b179sm942853edx.92.2023.10.31.04.06.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 04:06:29 -0700 (PDT)
-Message-ID: <5a46ffb675addbed8a3dac176effb96eb2c8ca3e.camel@redhat.com>
-Subject: Re: [PATCH net v1 2/2] octeontx2-pf: Fix holes in error code
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, wojciech.drewek@intel.com
-Date:   Tue, 31 Oct 2023 12:06:27 +0100
-In-Reply-To: <20231027021953.1819959-2-rkannoth@marvell.com>
-References: <20231027021953.1819959-1-rkannoth@marvell.com>
-         <20231027021953.1819959-2-rkannoth@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        bh=ekMRq7N8w87yosvVmWX+qXyXBeNazRpHmYnMqCG6Xwk=;
+        b=s3T8lMb7RtHvevrV12lEenexMl7bzPpYoHBlODflkm7/lj95/7M2MRiIWK8RW7LD/e
+         V/z9I7yIO1hbGRCbTVacqCGHMEXrPOKnX8exNuFDVu2nQXRUhCyPpoY3j/2iViUAFKoB
+         BnKSNXfl4m9EnvXLiiWSYcqGqq8jEtTR21Adf8FwLk1Rb4CsIVr5W8T8hywEEchPD0lI
+         gma5aVsjl+CpBwvrGjn+rcQ5KQCgI4Z32bAwXzO0SdbzlepTMskUN07/3eWzr+dqTCbS
+         1wpKUdWsruyx0jmpUt+rxDCLQWpJV96Ion76ZGzCvMAGUHKCOe4GEYdH5pZh8murrkAI
+         +vcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698750504; x=1699355304;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ekMRq7N8w87yosvVmWX+qXyXBeNazRpHmYnMqCG6Xwk=;
+        b=ZyxOg2qrnp7qgMjfxmp9BLdPxkQCPl50Zr2O8LcEsEGy94mifFDbFQ6+dN76W4yrfs
+         iBU7QUKHoq6dEDYo8E4Ygsb/av8qS5z90KxHMbG/xsOTKPtM31oOSKSz6NDIdvzs8XpZ
+         Q86A+PsehAHR5PbC4K7sA1wDNX+tengKppaDr/Rjz80yRtS4eZ1FP/EY7CAFV6RlT2Lo
+         iTiYbKT6aYmZA8+2MVOk/cYxmIRcBeY/KHb/q0Ud1oOoUJfdDaifr0mGDQrItZkm1vwF
+         WUp04WDqutQHezCa2+ZQFp70xDcbw+cA7S3y7BvKtPwfc5wpVs0gtey47eA1ltYboIIH
+         u3gA==
+X-Gm-Message-State: AOJu0YwOJvmeXZEBBSBv3890iIj9TlMwbQGTv2GIs04froDhqY3z6Lp+
+        P87rzWwZZR9ZUuyndEOTufnKvA7FfBFeUEbSctg=
+X-Google-Smtp-Source: AGHT+IEr4Af+f59IpW84BOUzXVXar4DKFPz29mDOCa0G9Fwid3R6xyGj4uxuobxvGBTf08kEvQxYIw==
+X-Received: by 2002:a05:651c:1208:b0:2c5:1a40:f26a with SMTP id i8-20020a05651c120800b002c51a40f26amr9332346lja.13.1698750503858;
+        Tue, 31 Oct 2023 04:08:23 -0700 (PDT)
+Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
+        by smtp.gmail.com with ESMTPSA id 9-20020a2e0e09000000b002c12c2094e4sm174289ljo.74.2023.10.31.04.08.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 04:08:23 -0700 (PDT)
+Message-ID: <a3162513-c4d0-4db6-9ff9-447f4249fc67@linaro.org>
+Date:   Tue, 31 Oct 2023 12:08:22 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] ARM: dts: qcom: Add support for Samsung Galaxy Tab
+ 4 10.1 LTE (SM-T535)
+Content-Language: en-US
+To:     Stefan Hansson <newbyte@postmarketos.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20231025083952.12367-1-newbyte@postmarketos.org>
+ <20231025083952.12367-4-newbyte@postmarketos.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231025083952.12367-4-newbyte@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-27 at 07:49 +0530, Ratheesh Kannoth wrote:
-> Error code strings are not getting printed properly
-> due to holes. Print error code as well.
->=20
-> Fixes: 51afe9026d0c ("octeontx2-pf: NIX TX overwrites SQ_CTX_HW_S[SQ_INT]=
-")
-> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
->=20
+On 25.10.2023 10:37, Stefan Hansson wrote:
+> Add a device tree for the Samsung Galaxy Tab 4 10.1 (SM-T535) LTE tablet
+> based on the MSM8926 platform.
+> 
+> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
 > ---
-> ChangeLog:
->=20
-> v0 -> v1: Splitted patch into two
-> ---
->  .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 80 +++++++++++--------
->  1 file changed, 46 insertions(+), 34 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drive=
-rs/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-> index 6daf4d58c25d..125fe231702a 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-> @@ -1193,31 +1193,32 @@ static char *nix_mnqerr_e_str[NIX_MNQERR_MAX] =3D=
- {
->  };
-> =20
->  static char *nix_snd_status_e_str[NIX_SND_STATUS_MAX] =3D  {
-> -	"NIX_SND_STATUS_GOOD",
-> -	"NIX_SND_STATUS_SQ_CTX_FAULT",
-> -	"NIX_SND_STATUS_SQ_CTX_POISON",
-> -	"NIX_SND_STATUS_SQB_FAULT",
-> -	"NIX_SND_STATUS_SQB_POISON",
-> -	"NIX_SND_STATUS_HDR_ERR",
-> -	"NIX_SND_STATUS_EXT_ERR",
-> -	"NIX_SND_STATUS_JUMP_FAULT",
-> -	"NIX_SND_STATUS_JUMP_POISON",
-> -	"NIX_SND_STATUS_CRC_ERR",
-> -	"NIX_SND_STATUS_IMM_ERR",
-> -	"NIX_SND_STATUS_SG_ERR",
-> -	"NIX_SND_STATUS_MEM_ERR",
-> -	"NIX_SND_STATUS_INVALID_SUBDC",
-> -	"NIX_SND_STATUS_SUBDC_ORDER_ERR",
-> -	"NIX_SND_STATUS_DATA_FAULT",
-> -	"NIX_SND_STATUS_DATA_POISON",
-> -	"NIX_SND_STATUS_NPC_DROP_ACTION",
-> -	"NIX_SND_STATUS_LOCK_VIOL",
-> -	"NIX_SND_STATUS_NPC_UCAST_CHAN_ERR",
-> -	"NIX_SND_STATUS_NPC_MCAST_CHAN_ERR",
-> -	"NIX_SND_STATUS_NPC_MCAST_ABORT",
-> -	"NIX_SND_STATUS_NPC_VTAG_PTR_ERR",
-> -	"NIX_SND_STATUS_NPC_VTAG_SIZE_ERR",
-> -	"NIX_SND_STATUS_SEND_STATS_ERR",
-> +	[NIX_SND_STATUS_GOOD] =3D "NIX_SND_STATUS_GOOD",
-> +	[NIX_SND_STATUS_SQ_CTX_FAULT] =3D "NIX_SND_STATUS_SQ_CTX_FAULT",
-> +	[NIX_SND_STATUS_SQ_CTX_POISON] =3D "NIX_SND_STATUS_SQ_CTX_POISON",
-> +	[NIX_SND_STATUS_SQB_FAULT] =3D "NIX_SND_STATUS_SQB_FAULT",
-> +	[NIX_SND_STATUS_SQB_POISON] =3D "NIX_SND_STATUS_SQB_POISON",
-> +	[NIX_SND_STATUS_HDR_ERR] =3D "NIX_SND_STATUS_HDR_ERR",
-> +	[NIX_SND_STATUS_EXT_ERR] =3D "NIX_SND_STATUS_EXT_ERR",
-> +	[NIX_SND_STATUS_JUMP_FAULT] =3D "NIX_SND_STATUS_JUMP_FAULT",
-> +	[NIX_SND_STATUS_JUMP_POISON] =3D "NIX_SND_STATUS_JUMP_POISON",
-> +	[NIX_SND_STATUS_CRC_ERR] =3D "NIX_SND_STATUS_CRC_ERR",
-> +	[NIX_SND_STATUS_IMM_ERR] =3D "NIX_SND_STATUS_IMM_ERR",
-> +	[NIX_SND_STATUS_SG_ERR] =3D "NIX_SND_STATUS_SG_ERR",
-> +	[NIX_SND_STATUS_MEM_ERR] =3D "NIX_SND_STATUS_MEM_ERR",
-> +	[NIX_SND_STATUS_INVALID_SUBDC] =3D "NIX_SND_STATUS_INVALID_SUBDC",
-> +	[NIX_SND_STATUS_SUBDC_ORDER_ERR] =3D "NIX_SND_STATUS_SUBDC_ORDER_ERR",
-> +	[NIX_SND_STATUS_DATA_FAULT] =3D "NIX_SND_STATUS_DATA_FAULT",
-> +	[NIX_SND_STATUS_DATA_POISON] =3D "NIX_SND_STATUS_DATA_POISON",
-> +	[NIX_SND_STATUS_NPC_DROP_ACTION] =3D "NIX_SND_STATUS_NPC_DROP_ACTION",
-> +	[NIX_SND_STATUS_LOCK_VIOL] =3D "NIX_SND_STATUS_LOCK_VIOL",
-> +	[NIX_SND_STATUS_NPC_UCAST_CHAN_ERR] =3D "NIX_SND_STAT_NPC_UCAST_CHAN_ER=
-R",
-> +	[NIX_SND_STATUS_NPC_MCAST_CHAN_ERR] =3D "NIX_SND_STAT_NPC_MCAST_CHAN_ER=
-R",
-> +	[NIX_SND_STATUS_NPC_MCAST_ABORT] =3D "NIX_SND_STATUS_NPC_MCAST_ABORT",
-> +	[NIX_SND_STATUS_NPC_VTAG_PTR_ERR] =3D "NIX_SND_STATUS_NPC_VTAG_PTR_ERR"=
-,
-> +	[NIX_SND_STATUS_NPC_VTAG_SIZE_ERR] =3D "NIX_SND_STATUS_NPC_VTAG_SIZE_ER=
-R",
-> +	[NIX_SND_STATUS_SEND_MEM_FAULT] =3D "NIX_SND_STATUS_SEND_MEM_FAULT",
-> +	[NIX_SND_STATUS_SEND_STATS_ERR] =3D "NIX_SND_STATUS_SEND_STATS_ERR",
->  };
-> =20
->  static irqreturn_t otx2_q_intr_handler(int irq, void *data)
-> @@ -1238,14 +1239,16 @@ static irqreturn_t otx2_q_intr_handler(int irq, v=
-oid *data)
->  			continue;
-> =20
->  		if (val & BIT_ULL(42)) {
-> -			netdev_err(pf->netdev, "CQ%lld: error reading NIX_LF_CQ_OP_INT, NIX_L=
-F_ERR_INT 0x%llx\n",
-> +			netdev_err(pf->netdev,
-> +				   "CQ%lld: error reading NIX_LF_CQ_OP_INT, NIX_LF_ERR_INT 0x%llx\n"=
-,
->  				   qidx, otx2_read64(pf, NIX_LF_ERR_INT));
->  		} else {
->  			if (val & BIT_ULL(NIX_CQERRINT_DOOR_ERR))
->  				netdev_err(pf->netdev, "CQ%lld: Doorbell error",
->  					   qidx);
->  			if (val & BIT_ULL(NIX_CQERRINT_CQE_FAULT))
-> -				netdev_err(pf->netdev, "CQ%lld: Memory fault on CQE write to LLC/DRA=
-M",
-> +				netdev_err(pf->netdev,
-> +					   "CQ%lld: Memory fault on CQE write to LLC/DRAM",
->  					   qidx);
->  		}
+>  arch/arm/boot/dts/qcom/Makefile               |  1 +
+>  .../qcom/qcom-msm8926-samsung-matisselte.dts  | 36 +++++++++++++++++++
+>  2 files changed, 37 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
+> 
+> diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
+> index a3d293e40820..cab35eeb30f6 100644
+> --- a/arch/arm/boot/dts/qcom/Makefile
+> +++ b/arch/arm/boot/dts/qcom/Makefile
+> @@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+>  	qcom-msm8916-samsung-serranove.dtb \
+>  	qcom-msm8926-microsoft-superman-lte.dtb \
+>  	qcom-msm8926-microsoft-tesla.dtb \
+> +	qcom-msm8926-samsung-matisselte.dtb \
+>  	qcom-msm8960-cdp.dtb \
+>  	qcom-msm8960-samsung-expressatt.dtb \
+>  	qcom-msm8974-lge-nexus5-hammerhead.dtb \
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
+> new file mode 100644
+> index 000000000000..6e25b1a74ce5
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8926-samsung-matisselte.dts
+> @@ -0,0 +1,36 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2022, Matti Lehtimäki <matti.lehtimaki@gmail.com>
+> + * Copyright (c) 2023, Stefan Hansson <newbyte@postmarketos.org>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "qcom-msm8226-samsung-matisse-common.dtsi"
+> +
+> +/ {
+> +	model = "Samsung Galaxy Tab 4 10.1 LTE";
+> +	compatible = "samsung,matisselte", "qcom,msm8926", "qcom,msm8226";
+> +	chassis-type = "tablet";
+> +};
+> +
+> +&pm8226_l3 {
+> +	regulator-max-microvolt = <1350000>;
+> +};
+> +
+> +&pm8226_s4 {
+> +	regulator-max-microvolt = <2200000>;
+> +};
+> +
+> +&reg_tsp_3p3v {
+> +	gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
+> +};
+> +
+> +&sdhc_2 {
+> +	/* SD card fails to probe with error -110 */
+> +	status = "disabled";
+Can you give us some logs?
 
-It's not a big deal (no need to repost just for this), but the above
-chunk (and a couple below, too) is not related to the current fix, you
-should have not included it here.
-
-Cheers,
-
-Paolo
-
-> =20
-> @@ -1272,7 +1275,8 @@ static irqreturn_t otx2_q_intr_handler(int irq, voi=
-d *data)
->  			     (val & NIX_SQINT_BITS));
-> =20
->  		if (val & BIT_ULL(42)) {
-> -			netdev_err(pf->netdev, "SQ%lld: error reading NIX_LF_SQ_OP_INT, NIX_L=
-F_ERR_INT 0x%llx\n",
-> +			netdev_err(pf->netdev,
-> +				   "SQ%lld: error reading NIX_LF_SQ_OP_INT, NIX_LF_ERR_INT 0x%llx\n"=
-,
->  				   qidx, otx2_read64(pf, NIX_LF_ERR_INT));
->  			goto done;
->  		}
-> @@ -1282,8 +1286,11 @@ static irqreturn_t otx2_q_intr_handler(int irq, vo=
-id *data)
->  			goto chk_mnq_err_dbg;
-> =20
->  		sq_op_err_code =3D FIELD_GET(GENMASK(7, 0), sq_op_err_dbg);
-> -		netdev_err(pf->netdev, "SQ%lld: NIX_LF_SQ_OP_ERR_DBG(%llx)  err=3D%s\n=
-",
-> -			   qidx, sq_op_err_dbg, nix_sqoperr_e_str[sq_op_err_code]);
-> +		netdev_err(pf->netdev,
-> +			   "SQ%lld: NIX_LF_SQ_OP_ERR_DBG(0x%llx)  err=3D%s(%#x)\n",
-> +			   qidx, sq_op_err_dbg,
-> +			   nix_sqoperr_e_str[sq_op_err_code],
-> +			   sq_op_err_code);
-> =20
->  		otx2_write64(pf, NIX_LF_SQ_OP_ERR_DBG, BIT_ULL(44));
-> =20
-> @@ -1300,16 +1307,21 @@ static irqreturn_t otx2_q_intr_handler(int irq, v=
-oid *data)
->  			goto chk_snd_err_dbg;
-> =20
->  		mnq_err_code =3D FIELD_GET(GENMASK(7, 0), mnq_err_dbg);
-> -		netdev_err(pf->netdev, "SQ%lld: NIX_LF_MNQ_ERR_DBG(%llx)  err=3D%s\n",
-> -			   qidx, mnq_err_dbg,  nix_mnqerr_e_str[mnq_err_code]);
-> +		netdev_err(pf->netdev,
-> +			   "SQ%lld: NIX_LF_MNQ_ERR_DBG(0x%llx)  err=3D%s(%#x)\n",
-> +			   qidx, mnq_err_dbg,  nix_mnqerr_e_str[mnq_err_code],
-> +			   mnq_err_code);
->  		otx2_write64(pf, NIX_LF_MNQ_ERR_DBG, BIT_ULL(44));
-> =20
->  chk_snd_err_dbg:
->  		snd_err_dbg =3D otx2_read64(pf, NIX_LF_SEND_ERR_DBG);
->  		if (snd_err_dbg & BIT(44)) {
->  			snd_err_code =3D FIELD_GET(GENMASK(7, 0), snd_err_dbg);
-> -			netdev_err(pf->netdev, "SQ%lld: NIX_LF_SND_ERR_DBG:0x%llx err=3D%s\n"=
-,
-> -				   qidx, snd_err_dbg, nix_snd_status_e_str[snd_err_code]);
-> +			netdev_err(pf->netdev,
-> +				   "SQ%lld: NIX_LF_SND_ERR_DBG:0x%llx err=3D%s(%#x)\n",
-> +				   qidx, snd_err_dbg,
-> +				   nix_snd_status_e_str[snd_err_code],
-> +				   snd_err_code);
->  			otx2_write64(pf, NIX_LF_SEND_ERR_DBG, BIT_ULL(44));
->  		}
-> =20
-
+Konrad
