@@ -2,274 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1680E7DCA2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DDB7DCA32
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbjJaJw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S235480AbjJaJw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjJaJwD (ORCPT
+        with ESMTP id S236115AbjJaJwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:52:03 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E647710F2;
-        Tue, 31 Oct 2023 02:50:58 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c5071165d5so29954241fa.0;
-        Tue, 31 Oct 2023 02:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698745856; x=1699350656; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pm0E+qHfJ96Z5WGc1StxiY8bt/dlGJYxdkUl7eJLbGA=;
-        b=WeLLHKRZqlFsRTWn8NSO7ls0efZ1CGhoeDRxZHhDJVkeyyQmhD/+3zl8RwJYEbIuwm
-         g3m2L89otpss7EUQ0halGAQmu6Uj8F6TRrdMBResVshDG1RP1Awu7A1XoEin0idy9cmc
-         Z2ac6Rn2OSJsZo5i/WQU4Ms41Rskwo0WmzaUkCI7O2BxL8bmdhIJHyHqarPrm89MYbfi
-         FJh+cTIVuiPAkfCe/6LfUgQHkqmRIK3/uMcTeY5nmbfWoJuOYBO7bC7wD/8i+Ib0VVa9
-         FvXIoeBjjVcA4aShsrI7GZuY184XrWtkxW2D65dfmRlmcKNq9BTrkDtvU7p6kUKbMEWB
-         /bwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698745856; x=1699350656;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pm0E+qHfJ96Z5WGc1StxiY8bt/dlGJYxdkUl7eJLbGA=;
-        b=ZwB/TG9O+cTbcq4J7TJKWQRM21l/L6qXERXkC6jd5ZoiMAzEUsAMSPA1Jeyt2d90fo
-         3peSccMg5UkiovCPef5kg7sQnzqiOcXi52JwnfsTYICVmKVgwF1GY7vevdPZZuo7ExnY
-         4e72jtvXiNkZcSZFKMxNkix5M6yXGW9WAilYU2elP83Y4ph3Q+zFJJEzFqavckVBaETX
-         zKFbUOobZgNcZ5Qlum/IZd8T+PPIs3jEu8IpdftZjtl9+nS270ivzVy6buuR5V5zeCH3
-         RiovQU7o74ebSw0zS3ouo7Y1rA1ISbVm03KDtfSMQcXg0TCyJ+tB5B68tHkRVXAVt4Wd
-         O3dw==
-X-Gm-Message-State: AOJu0YyVtbHz5LuPx6uLaXM/jpXIiFEB+MUM63+7+Vm2gh0TMr8pSf8W
-        TTIASQK/pw9HimN6PtkyXnc=
-X-Google-Smtp-Source: AGHT+IGRGUjLyn0PT8ojXQEGfSIlSLsjn3Syra41p+ZC2HcYufiZeONeBDnQ7P4FA/PvyhwDtGStsg==
-X-Received: by 2002:a2e:bb86:0:b0:2b6:ea3b:f082 with SMTP id y6-20020a2ebb86000000b002b6ea3bf082mr7634854lje.38.1698745856331;
-        Tue, 31 Oct 2023 02:50:56 -0700 (PDT)
-Received: from dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id s25-20020a2e2c19000000b002b70a8478ddsm143509ljs.44.2023.10.31.02.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 02:50:55 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 11:50:46 +0200
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: gts-helpers: Round gains and scales
-Message-ID: <ZUDN9n8iXoNwzifQ@dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi>
+        Tue, 31 Oct 2023 05:52:39 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EB91BE6;
+        Tue, 31 Oct 2023 02:51:29 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V7wkMj028089;
+        Tue, 31 Oct 2023 09:51:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=VZc/kJkcyNEc1ap5ZwAxTxqFo3J/twOnXlrlLnHZTkc=;
+ b=SKGHRn8EqYOhHgq4xradG3SlJPZnFwiFYY/0e3C+KzKRsaf1H6aTVmNanJDOpd2NE1Ff
+ FON3qK6dSpzexR8BfcVPnsTNMsu4IK2rzX8ZXIQUhFkNCc3clnQ4WOCLSG897Adto34z
+ jtTxTjDoAUNx7MEZHx8a9D8K7RIIXzNTlLfUxTjupjCPYCR3JdzlLJFSIVsiuAmFF5ft
+ 5JQy7FM1F+mFVnFw//MgxQ/8MqZZo6LAi95gHysS62wILFpLgRWR6mLXQ9sRcmUFR0av
+ FnZ5je0OkIB42oio0tfCw0VJYxH9pOJYpwX8uPJm8vWSI9ojMR6PXHv/pZWD61nwLa7/ Ow== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2mcyhak1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 09:51:18 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V9pHm1013616
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 09:51:17 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 31 Oct 2023 02:51:14 -0700
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Date:   Tue, 31 Oct 2023 15:21:05 +0530
+Subject: [PATCH v2] bus: mhi: host: Add alignment check for event ring read
+ pointer
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZJOGLzL4y7uQJBvg"
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231031-alignment_check-v2-1-1441db7c5efd@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAAnOQGUC/2WNQQ6CMBBFr0JmbQ1TrEZX3sMQ0wwDnSgttkg0h
+ LtbiTuX7yX//RkSR+EEp2KGyJMkCT6D3hRAzvqOlTSZQZe6whIrZe/S+Z79eCXHdFOUZWvKY6N
+ 3FvJqiNzKay1e6sxO0hjiez2Y8Gt/Lf3fmlCh0mTNAfeNITTnx1NIPG0p9FAvy/IB7/PwarAAA
+ AA=
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>, <stable@vger.kernel.org>,
+        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698745873; l=1707;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=CKEOMvvyozRoZJfJBJGMpin1Es4JoOpllSbaQzNdyaA=;
+ b=I3YG/fvd5//ELBnF7NLqYsUMv3KKz6HRcUSdSXrcwrrLdVF1KPmpfaZJcbkY1wEadNSzjU5JH
+ xi5tiqZMbpmAIHHHqGbPTM0RqWxpfxBQHYCbTfeMMQcBrlCkbyMyoRb
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0GT6pYVTT8ovCuTo1Dvgl4jC-MoTOvYY
+X-Proofpoint-ORIG-GUID: 0GT6pYVTT8ovCuTo1Dvgl4jC-MoTOvYY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 clxscore=1011
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310077
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Though we do check the event ring read pointer by "is_valid_ring_ptr"
+to make sure it is in the buffer range, but there is another risk the
+pointer may be not aligned.  Since we are expecting event ring elements
+are 128 bits(struct mhi_ring_element) aligned, an unaligned read pointer
+could lead to multiple issues like DoS or ring buffer memory corruption.
 
---ZJOGLzL4y7uQJBvg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So add a alignment check for event ring read pointer.
 
-The GTS helpers do flooring of scale when calculating available scales.
-This results available-scales to be reported smaller than they should
-when the division in scale computation resulted remainder greater than
-half of the divider. (decimal part of result > 0.5)
+Fixes: ec32332df764 ("bus: mhi: core: Sanity check values from remote device before use")
+cc: stable@vger.kernel.org
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+Changes in v2:
+- Change the modulus operation to bit-wise & operation as suggested by Jeff.
+- Link to v1: https://lore.kernel.org/r/20231023-alignment_check-v1-1-2ca5716d5c15@quicinc.com
+---
+ drivers/bus/mhi/host/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Furthermore, when gains are computed based on scale, the gain resulting
-=66rom the scale computation is also floored. As a consequence the
-floored scales reported by available scales may not match the gains that
-can be set.
-
-The related discussion can be found from:
-https://lore.kernel.org/all/84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com/
-
-Do rounding when computing scales and gains.
-
-Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
-Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+index 499590437e9b..e765c16a99d1 100644
+--- a/drivers/bus/mhi/host/main.c
++++ b/drivers/bus/mhi/host/main.c
+@@ -268,7 +268,8 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
+ 
+ static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
+ {
+-	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
++	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len &&
++			!(addr & (sizeof(struct mhi_ring_element) - 1));
+ }
+ 
+ int mhi_destroy_device(struct device *dev, void *data)
 
 ---
-Subjahit, is there any chance you test this patch with your driver? Can
-you drop the:
-	if (val2 % 10)
-		val2 +=3D 1;
-=66rom scale setting and do you see written and read scales matching?
+base-commit: 71e68e182e382e951d6248bccc3c960dcec5a718
+change-id: 20231013-alignment_check-c013f509d24a
 
-I did run a few Kunit tests on this change - but I'm still a bit jumpy
-on it... Reviewing/testing is highly appreciated!
+Best regards,
+-- 
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Just in case someone is interested in seeing the Kunit tests, they're
-somewhat unpolished & crude and can emit noisy debug prints - but can
-anyways be found from:
-https://github.com/M-Vaittinen/linux/commits/iio-gts-helpers-test-v6.6
-
----
- drivers/iio/industrialio-gts-helper.c | 58 +++++++++++++++++++++++----
- 1 file changed, 50 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/iio/industrialio-gts-helper.c b/drivers/iio/industrial=
-io-gts-helper.c
-index 7653261d2dc2..7dc144ac10c8 100644
---- a/drivers/iio/industrialio-gts-helper.c
-+++ b/drivers/iio/industrialio-gts-helper.c
-@@ -18,6 +18,32 @@
- #include <linux/iio/iio-gts-helper.h>
- #include <linux/iio/types.h>
-=20
-+static int iio_gts_get_gain_32(u64 full, unsigned int scale)
-+{
-+	unsigned int full32 =3D (unsigned int) full;
-+	unsigned int rem;
-+	int result;
-+
-+	if (full =3D=3D (u64)full32) {
-+		unsigned int rem;
-+
-+		result =3D full32 / scale;
-+		rem =3D full32 - scale * result;
-+		if (rem >=3D scale / 2)
-+			result++;
-+
-+		return result;
-+	}
-+
-+	rem =3D do_div(full, scale);
-+	if ((u64)rem >=3D scale / 2)
-+		result =3D full + 1;
-+	else
-+		result =3D full;
-+
-+	return result;
-+}
-+
- /**
-  * iio_gts_get_gain - Convert scale to total gain
-  *
-@@ -28,30 +54,42 @@
-  *		scale is 64 100 000 000.
-  * @scale:	Linearized scale to compute the gain for.
-  *
-- * Return:	(floored) gain corresponding to the scale. -EINVAL if scale
-+ * Return:	(rounded) gain corresponding to the scale. -EINVAL if scale
-  *		is invalid.
-  */
- static int iio_gts_get_gain(const u64 max, const u64 scale)
- {
--	u64 full =3D max;
-+	u64 full =3D max, half_div;
-+	unsigned int scale32 =3D (unsigned int) scale;
- 	int tmp =3D 1;
-=20
--	if (scale > full || !scale)
-+	if (scale / 2 > full || !scale)
- 		return -EINVAL;
-=20
-+	/*
-+	 * The loop-based implementation below will potentially run _long_
-+	 * if we have a small scale and large 'max' - which may be needed when
-+	 * GTS is used for channels returning specific units. Luckily we can
-+	 * avoid the loop when scale is small and fits in 32 bits.
-+	 */
-+	if ((u64)scale32 =3D=3D scale)
-+		return iio_gts_get_gain_32(full, scale32);
-+
- 	if (U64_MAX - full < scale) {
- 		/* Risk of overflow */
--		if (full - scale < scale)
-+		if (full - scale / 2 < scale)
- 			return 1;
-=20
- 		full -=3D scale;
- 		tmp++;
- 	}
-=20
--	while (full > scale * (u64)tmp)
-+	half_div =3D scale >> 2;
-+
-+	while (full + half_div >=3D scale * (u64)tmp)
- 		tmp++;
-=20
--	return tmp;
-+	return tmp - 1;
- }
-=20
- /**
-@@ -133,6 +171,7 @@ static int iio_gts_linearize(int scale_whole, int scale=
-_nano,
-  * Convert the total gain value to scale. NOTE: This does not separate gain
-  * generated by HW-gain or integration time. It is up to caller to decide =
-what
-  * part of the total gain is due to integration time and what due to HW-ga=
-in.
-+ * Computed gain is rounded to nearest integer.
-  *
-  * Return: 0 on success. Negative errno on failure.
-  */
-@@ -140,10 +179,13 @@ int iio_gts_total_gain_to_scale(struct iio_gts *gts, =
-int total_gain,
- 				int *scale_int, int *scale_nano)
- {
- 	u64 tmp;
-+	int rem;
-=20
- 	tmp =3D gts->max_scale;
-=20
--	do_div(tmp, total_gain);
-+	rem =3D do_div(tmp, total_gain);
-+	if (total_gain > 1 && rem >=3D total_gain / 2)
-+		tmp +=3D 1ULL;
-=20
- 	return iio_gts_delinearize(tmp, NANO, scale_int, scale_nano);
- }
-@@ -192,7 +234,7 @@ static int gain_to_scaletables(struct iio_gts *gts, int=
- **gains, int **scales)
- 		sort(gains[i], gts->num_hwgain, sizeof(int), iio_gts_gain_cmp,
- 		     NULL);
-=20
--		/* Convert gains to scales */
-+		/* Convert gains to scales. */
- 		for (j =3D 0; j < gts->num_hwgain; j++) {
- 			ret =3D iio_gts_total_gain_to_scale(gts, gains[i][j],
- 							  &scales[i][2 * j],
-
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
---=20
-2.41.0
-
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---ZJOGLzL4y7uQJBvg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmVAzfIACgkQeFA3/03a
-ocXy0gf/ergLr28VxrsP+6FGMyLa4L+x7QFUWLVljoPVTq2v/FoT4GOmBizTlQiY
-QxrHuz0W1R4UF0iGzYEm+T/rR4byTYLv6hEG7vKAg40bQ834lnhg/SF381lwNTWx
-w/3RlT4kTQiiO1f8QA0///dPxdVmHlgFJ8HyCHTyE5kc66a6L3NtmpOsHwUAY5g6
-aj13rPnRu+mhrENkfC2gHgdfSZ2kHJsZlvrChcSiBULGN3O2S8TMXCWyUrjwCdT0
-W56C6cUruSh4PzLHeBEUkiZCP2czGObvjHZ8m1dxeEDTYm7UveJ/HvWsjqQtOmgQ
-WR3Euj+3O6UPivay2+qqpoh7qVq1Hw==
-=WlvL
------END PGP SIGNATURE-----
-
---ZJOGLzL4y7uQJBvg--
