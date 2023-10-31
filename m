@@ -2,189 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B739E7DCFD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8B07DCFDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344518AbjJaPCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
+        id S1344600AbjJaPFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344312AbjJaPCg (ORCPT
+        with ESMTP id S1344388AbjJaPFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:02:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12036DB
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698764510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DXoFKDYmMjs1Yhsyi0bsO2NWVGWU+Gcffefv/dGeE/Q=;
-        b=GOrYUmlzzSlpw8/r93y7bL4ulObf6nlI1hhPHsQ4oLxPkUSZCtrXBbC8rW1veWcaSP0kHs
-        XmCrffDRC3HS+d67uRp+C7Zp0Lmh4flaeFzgLM/Lk+X23ar5LjL/KLLqn2FR57UsJRVb/B
-        Mkulvqy4FF5BJJ00aBbmmaP7T9uyzOw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-600-hE6Bt97PPf6CuGz5901ucg-1; Tue, 31 Oct 2023 11:01:48 -0400
-X-MC-Unique: hE6Bt97PPf6CuGz5901ucg-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-531373ea109so4517675a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:01:48 -0700 (PDT)
+        Tue, 31 Oct 2023 11:05:01 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86807DB
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:04:58 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507c5249d55so8323677e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698764697; x=1699369497; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=REiTgH5WwuPmwXllJPHbDqLpOC27shpburgBYONAZcc=;
+        b=UEqhwQg1zfcavHW/b+pgHXJVsry89+i/bODYDtbgSaU239jVov+fOqrkC93Kg5nfCn
+         vZOJksyya6OjW31sjwEfJuMFp6mtBzH9KO8bHjf/18db+TyXi4qmzn7Ix0QFRhPL6i/r
+         qdf+S4/LK53eVYtgn4wGZaKD3mtgqf3Mce9pElliU7O73Fa/g+YkIvtKUgwVE+9sygRj
+         SGUtOGdp1BvInpXtPELcbZTomx76WXMmiZQSJjVpJwVxE9s7gPkiVOOvT2bcC3sDL8BL
+         zcgtofA81Q10P4L2Q4eorDtMMXBuO0lpPxCiSW02DTG67pykDH2NPg3dLal8+s6VSXfG
+         zlQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698764506; x=1699369306;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1698764697; x=1699369497;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DXoFKDYmMjs1Yhsyi0bsO2NWVGWU+Gcffefv/dGeE/Q=;
-        b=kHWOGJofN/Jb5C4jaLxxqO/CNLsO3GYU9H+koYGEHeSK+GzUvZkrI3NMkoZLyjxVNZ
-         8Rovm293kXfX1A8HjzCuGH1+X4X5G1KKAvEq6W4TpS49odjvamL1lU5C45KWMy1CvMFV
-         6fMZMOw/Zu/UmVg0PnZpSa3JBvDBdddX79wgn4IsUxJdF6UudOPGjoSeT0L0pHqHfxyc
-         fAC3pbLdzfDUbc9FNg6NTSF4ZFS6++ZHCafYin+NAHhv7XYgbJjsZ9bDRxCoKDJwbpZB
-         3x3/gZrq2MpMp+s3m8ixD5+vLts/d2n76yjaPveBXxksLl1VBaNBVVBSeC6+e54RpAHR
-         5Asw==
-X-Gm-Message-State: AOJu0YzOc6ga690GKGj3hqmnonuRQTtiKI6vZlv0Dy6lmoV5zA7hwETf
-        lupGLRqfuaE0mrdP7x8tw30cHc7h+mlV2olUT2MBnpuN161lIb+dWn7q1QjoG5oWk66oS6C9QVT
-        2QriwpRYAujtR/3vrTd66wPRHRrsntt4/
-X-Received: by 2002:aa7:c2cf:0:b0:540:54ef:43fd with SMTP id m15-20020aa7c2cf000000b0054054ef43fdmr10503072edp.34.1698764506679;
-        Tue, 31 Oct 2023 08:01:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHuqkldToHheow1GniVmtkiLXlIK/EbWhltsj5NgbydGarbsYVpOhHsbgv/mWdG1dO0mzovzw==
-X-Received: by 2002:aa7:c2cf:0:b0:540:54ef:43fd with SMTP id m15-20020aa7c2cf000000b0054054ef43fdmr10503041edp.34.1698764506255;
-        Tue, 31 Oct 2023 08:01:46 -0700 (PDT)
-Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id d29-20020a50f69d000000b00522828d438csm1305672edn.7.2023.10.31.08.01.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 08:01:45 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 16:01:42 +0100
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Boris Brezillon <boris.brezillon@collabora.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, faith@gfxstrand.net,
-        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
- control
-Message-ID: <ZUEW1mxwGO3bxxGM@pollux>
-References: <20231027093238.2ff8172e@collabora.com>
- <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
- <20231027093943.3f0ae992@collabora.com>
- <98988459-25a8-4ee0-89d4-cb816cbc5bef@amd.com>
- <20231027102237.0cdb85af@collabora.com>
- <190e3ab7-6440-4d41-a79f-5dd4b7d3ca52@amd.com>
- <20231027121707.414810d6@collabora.com>
- <ffb8ff87-a555-42d2-aef1-a21069282227@amd.com>
- <ZT/uPhLK7gan61Ns@pollux>
- <e9c6af32-8d2a-4f04-9c12-1170a3aa1236@amd.com>
+        bh=REiTgH5WwuPmwXllJPHbDqLpOC27shpburgBYONAZcc=;
+        b=d3B8f95yIHgcof0bBgJf9XTiIrZKg2n9albihPXBEhJbCU4gWDbnjm+gyPKrtmgJHP
+         u5ehKyDNiRtyYIaztpwYsfpSYRj7NrreF/S130lDYXOnsZC5pYecZt7J18c2+yjl+rz5
+         Q+Sl0qkJ+RsZRQxgqNmuIEjdlsrbypvHu2QfYsCytkDiwCaVGa4KooG0nyeRp6fFTJCS
+         08b4T2w4qXpAaMk4LeqaSBhjKwXNM6aqEObK6tvYhpl1E+qADmq+pwavQF7D7WHLPElO
+         DaDmZmm5I8etXhlawcJWygPKNCk6bBJUh+I2wTa7lBXwXq7sJX3vEvqbN4iiSX0F+iBc
+         2S8A==
+X-Gm-Message-State: AOJu0Yzvqa17pVVIBSMZ9UnwTllsEOdt9zJhwVWt7qSoWuxEVQ43mb0l
+        xLYWgG3H41m++jMo9HzhCXrnHA==
+X-Google-Smtp-Source: AGHT+IFC6NKWYWsaMn2jSE5MOtnrPNs14l8MVs9DaRLJq2q/JK+VWxx/nUSFV+CLD15vXksxCIxKmA==
+X-Received: by 2002:ac2:4843:0:b0:507:a823:fac5 with SMTP id 3-20020ac24843000000b00507a823fac5mr9428155lfy.8.1698764696613;
+        Tue, 31 Oct 2023 08:04:56 -0700 (PDT)
+Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
+        by smtp.gmail.com with ESMTPSA id g24-20020a0565123b9800b00503555aa934sm231156lfv.11.2023.10.31.08.04.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 08:04:56 -0700 (PDT)
+Message-ID: <a3f3cc0e-59c0-42d9-847e-7fd818cb9a9d@linaro.org>
+Date:   Tue, 31 Oct 2023 16:04:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] media: qcom: camss: Move VFE power-domain
+ specifics into vfe.c
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, andersson@kernel.org,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026155042.551731-1-bryan.odonoghue@linaro.org>
+ <20231026155042.551731-5-bryan.odonoghue@linaro.org>
+ <d3faea2a-cc28-434c-ac10-3dd55561674f@linaro.org>
+ <180d9180-2b1c-43ac-8e5d-20f0ee92b762@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <180d9180-2b1c-43ac-8e5d-20f0ee92b762@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e9c6af32-8d2a-4f04-9c12-1170a3aa1236@amd.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 02:20:50PM +0100, Christian K�nig wrote:
-> Hi Danilo,
+On 31.10.2023 12:51, Bryan O'Donoghue wrote:
+> On 31/10/2023 10:54, Konrad Dybcio wrote:
+>>> +    /*
+>>> +     * If the number of power-domains is greather than the number of VFEs
+>> greater
 > 
-> sorry for splitting up the mail thread. I had to fetch this mail from my
-> spam folder for some reason.
+> Nice.
 > 
-> Am 30.10.23 um 18:56 schrieb Danilo Krummrich:
-> > Hi Christian,
-> > 
-> > [SNIP]
-> > > > And yes, we can live with the overhead of making jobs
-> > > > slightly bigger than they actually are, thus potentially delaying their
-> > > > execution. It's just that I don't quite understand the rational behind
-> > > > this conservatism, as I don't really see what negative impact this extra
-> > > > ->update_job_credits() call in the credit checking path has, other than
-> > > > the slight overhead of an if-check for drivers that don't need it.
-> > >  From experience it showed that we should not make the scheduler more
-> > > complicated than necessary. And I still think that the ring buffers only
-> > > need to be filled enough to keep the hardware busy.
-> > Right, and this callback contributes to exactly that.
-> > 
-> > I don't really think there is much to worry about in terms of introducing more
-> > complexity. The implementation behind this callback is fairly trivial - it's
-> > simply called right before we check whether a job fits on the ring, to fetch
-> > the job's actual size.
-> > 
-> > I would agree if the implementation of that would be bulky, tricky and asking
-> > for a compromise. But, since it actually is simple and straight forward I really
-> > think that if we implement some kind of dynamic job-flow control it should be
-> > implemented as acurate as possible rather than doing it half-baked.
-> 
-> Yeah, I see the intention here and can perfectly relate to it it's just that
-> I have prioritize other things.
+> I just found codepsell
+I think checkpatch catches some of that too
 
-I don't see any work being required from your side for this.
-
-> 
-> Adding this callback allows for the driver to influence the job submission
-> and while this might seems useful now I'm just to much of a burned child to
-> do stuff like this without having a really good reason for it.
-
-It does influence the job submission in the exact same way as the initial credit
-count set through drm_sched_job_init() does. There is absolutely nothing with
-this callback a driver couldn't mess up in the exact same way with the initial
-credit count set through drm_sched_job_init(). Following this logic we'd need to
-abandon the whole patch.
-
-Hence, I don't really understand why you're so focused on this callback.
-Especially, since it's an optional one.
-
-> 
-> > > If this here has some measurable positive effect then yeah we should
-> > > probably do it, but as long as it's only nice to have I have some objections
-> > > to that.
-> > Can't answer this, since Nouveau doesn't support native fence waits. However, I
-> > guess it depends on how many native fences a job carries. So, if we'd have two
-> > jobs with each of them carrying a lot of native fences, but not a lot of actual
-> > work, I can very well imagine that over-accounting can have a measureable
-> > impact.
-> 
-> What I can imagine as well is things like the hardware or firmware is
-> looking at the fullness of the ring buffer to predict how much pending work
-> there is.
-> 
-> > I just wonder if we really want to ask for real measurements given that the
-> > optimization is rather trivial and cheap and we already have enough evidence
-> > that it makes sense conceptually.
-> 
-> Well that's the point I disagree on, this callback isn't trivial. If (for
-> example) the driver returns a value larger than initially estimated for the
-> job we can run into an endless loop.
-
-I agree it doesn't make sense to increase, but it wouldn't break anything,
-unless the job size starts exceeding the capacity of the ring. And this case is
-handled anyway.
-
-> 
-> It's just one more thing which can go boom. At bare minimum we should check
-> that the value is always decreasing.
-
-Considering the above I still agree, such a check makes sense - gonna add one.
-
-- Danilo
-
-> 
-> Christian.
-> 
-> > 
-> > - Danilo
-> > 
-> > > Regards,
-> > > Christian.
-> > > 
-> > > > Regards,
-> > > > 
-> > > > Boris
-
+Konrad
