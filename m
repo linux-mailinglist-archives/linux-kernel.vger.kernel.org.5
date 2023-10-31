@@ -2,273 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBD57DCCE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09C87DCCEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344197AbjJaMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
+        id S1344231AbjJaMTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344094AbjJaMSb (ORCPT
+        with ESMTP id S1344212AbjJaMTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:18:31 -0400
-Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C55EA1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:18:28 -0700 (PDT)
-Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1e98b1bad34so7369928fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:18:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698754707; x=1699359507;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5YKsBhoI1sio+KQS7arIHpaTsMDI5v5cWKzvR/mKBVA=;
-        b=WTX77C1kMBgAAyrujwf9Jwk5jvlmH9amxZ5fi9sTZKQRg1dWF/e96ka5T7gT9MxRuZ
-         6esqcEmkkJlQEhESlYayZY0DW1OoYgG04SoAY6oHKQw5faYIz+MYpHhM8aWvxidrJS85
-         xHW9iC/Evagd4kfF9rJAkl3WwqWQsO7eO7us26YSe576rT6rWv0XE+lzxbDPGyrR7ukZ
-         x13FAPFeJq3D2oijuwQhAlo5fPbkusFwljX072qBZLoW52w4SEUv//zZZjtaU77tQ4OI
-         C6Q78wbe0DcajKoa/pGH31w2IZB5oaGXtJSnJNgD/F9pTysfG43GMLW6wchh1o7bJfbT
-         2Mlw==
-X-Gm-Message-State: AOJu0YyzoDZ1q+bgg/q0zESGOBfPFCasiA/44iPPggVtXVxzE5wZPNDf
-        2EvTStkLBtyFmY+YPDZwyZdtl1YkjFO9nWYiid0bkkASCTRe
-X-Google-Smtp-Source: AGHT+IGTJlyrEt7/3/S707b6OY2WXW1sKwaVgPDQ221dE+bINEaaL1B9a1Gq0YwBrtH/hiHA/iR8q/qHvl5OhI/4z0eUnUWdx6Go
+        Tue, 31 Oct 2023 08:19:03 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2080.outbound.protection.outlook.com [40.107.22.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E632AF5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:18:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DcRmZU52UQgrYRnc8RSoOriGcxzMc2BNOHuqaj7NV8tDFlbxH+bzlDCDmHu0JFt2KGBqtgOoVJyi/6jc+FMvCVe91dweGroCSFYQWvZILyuXCEZmJg62VaMhv5aDHcpm+5fJi2QrGZdZRmyL97mj0vbJeYcnkp5d5wAN/H40t+1cdtJM1nE71YJtSftF/cdvtO9k2vp2MFHPvVEWhrgQoMweFhRa0iLfXWnO27F1M2P0WeNwMpMbrkohoImFUTl5Q1RHYXpAn4aeJhzIXijxcqZ75+iSLXmCTwqIJywPCpWU4oywCUQzJ8RIKc6SAARp1p5IrMig25aOrNYGKkCWQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KBsVcUWTt1BgDfEMFWSgHsaxZwkWuBPkS6u/j+8EGbA=;
+ b=hmppeBFv0PkQqfGwTH0EldAzIBOjuVAk0YcpWf8rwbC5+e17iWONjFvIjKqaTqtg2HJIDKJRg3J/PbYNEr9QGQlJkeb7GV/RC7kCMz/wkhhYX/dNnU4qBgWl1dyS5j3vXgLo9ubRLUdm5R75s60MNoOrpuMyucK+beOyHT1y9usO495oJwyNHHjMu4I6HOk3hfblS3gNpVmGmc6CuHbByaxs42pRL3TToR/cdmKp8qccb7ryK5ELRw+j+ULAo2EQnr5law6KLmQG0FFEsG8Rf7rQof10NTyP3hHJWWAoPwjYK6Ez1xOXbbPbZ8MXCg/3Wh99ogXZKsEQB9TsrnUVrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KBsVcUWTt1BgDfEMFWSgHsaxZwkWuBPkS6u/j+8EGbA=;
+ b=HmYGZ0WqsRaTu9eNH4aDDvjg8LNQQBOtxwXZEJvqn3Nie5V7dADFgV0omCOqH/oekxUfZLN9YOCckvoXqyWZ+gR5fhRAdhPG3yvY0Id1eimvV85PJvTnC2X149i8FqzTnZXcx1blc5liVYmOjaYAWrIN9wnpjPs3C/8KHD518+CII3BVP95my2Lvy0P1sTfpPujwmPTVZonXK6xJyBfrokapPbQuTczLm7mx7hHmkZkvwArMFvB0t9L7WyKPQERf9jxnnD8aQFXCGCAScX1AMwj9utQx8rK3XEyvgO5CjKLNH3jTOiN6x6IJr+4gJZ78ty4DLpHHFwFLFhjlaJzvKg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
+ by AM7PR10MB3876.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:175::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
+ 2023 12:18:56 +0000
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8496:a3a3:d7a8:b24d]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8496:a3a3:d7a8:b24d%4]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
+ 12:18:56 +0000
+Message-ID: <3d8af1e1-e969-4489-90dd-59de1050f39e@siemens.com>
+Date:   Tue, 31 Oct 2023 13:18:52 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/bridge: tc358767: Support input format negotiation
+ hook
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Francesco Dolcini <francesco@dolcini.it>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     DRI Development List <dri-devel@lists.freedesktop.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        "Bajjuri, Praneeth" <praneeth@ti.com>
+References: <20231030192846.27934-1-a-bhatia1@ti.com>
+ <fc113f51-35e9-49ff-8299-e7fc11b81c31@siemens.com>
+ <9e801f88-a15e-48f1-b103-0305c5807143@ideasonboard.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+In-Reply-To: <9e801f88-a15e-48f1-b103-0305c5807143@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR3P281CA0053.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4a::6) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:588::19)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:b523:b0:1dc:e729:66f7 with SMTP id
- v35-20020a056870b52300b001dce72966f7mr6461190oap.8.1698754707758; Tue, 31 Oct
- 2023 05:18:27 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 05:18:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eaa62d0609022600@google.com>
-Subject: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in sco_chan_del
-From:   syzbot <syzbot+8e6467fa0a1a160c9bbb@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|AM7PR10MB3876:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4d28c0f2-89f5-4830-b326-08dbda0b8e03
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lz/uF4wu8TJ4dBjzJkUL7BL+fyxt2qwErobkTFM4PBfiH2WcK5zH6+JKYW+2kuu+4n04w7q2Y96yPvqpQN0eWVDUM1RXLn6J0np463X2ARGgfceS3aLfoO7o/lPYE6t2apiZZgvFNBT26dSl+4+XMlyeO+3VXI40JZlqdMT3OJoO/jmp0M6UNrZeIRRJz+jz5Lx7kl2qpsCUm+fpfbf/2wyPNAn6nL4Ap/p8PnQAvskBUtuEVupoQm2ae+iImDUPhekceZqbl/M3tU/iRht0e0i5KC4l8Q4h32vBX+/B9t/3sseMdugMDoUsjTrInPCPPQwJH18ZXa3KOY24VnSv1hw4NMLV+RZhZtJAonitC6afcQmkfIXrWzxO66/eD0Kv3I9UTeziK9gVzLTs7C6leyBjBq34vv7jIRyH0kC4RTha2cZuACBgQ7IQqIfm4SU00JhqiBYEQp0AEDfARrmY1gE1hxWYYullFoMqzQzWEjLRtp+/OwknQqf2HYvbo1V0ZmUpaeaOgLcVZGHuzMh3yf2HUJidfHO0KmBedXCRhzaHqD6wZq9BOrw5HCHx2nmz5IR4Z1HcA1FFmQsG2UioOK+adUaoaxVDORD48rrPFduLpFEPWTUYr18jnRkyMQwRld+W468JQl8lrvjF6YtDcSfp83LGk2q5ufkEx37Fwv4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(136003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(7416002)(53546011)(6506007)(36756003)(26005)(2616005)(86362001)(921008)(6512007)(31696002)(38100700002)(6666004)(83380400001)(82960400001)(966005)(6486002)(2906002)(478600001)(31686004)(66476007)(66556008)(54906003)(41300700001)(316002)(44832011)(110136005)(66946007)(4326008)(5660300002)(8676002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L1VkZ05WQ08vQWdSV2l3OXZwcDJJRnNCaWpUR0NhZVAyTmlKRkxzSkRVRU5P?=
+ =?utf-8?B?UUs0MEpZdUF5YTNVNU44UmpVWnhsY3NTd2RyOXVJanVxUmNwQW1aM0lBWkth?=
+ =?utf-8?B?a3ZnUGpqaThuWTNaWHVLWmNIYndmNW43d1N1YUhiSTJNb1NjWkQwVzZQL0lV?=
+ =?utf-8?B?S1RMUndHS2VpOG1Ia0NQd3BNTnVSc2VtWGNCUXBZZndjZjh1ODJsSGF1bjc2?=
+ =?utf-8?B?ZkJmZE81SEZ2TmRSRTZFd2h1TXJHTmlwaENVUGV4ZStWRFE5dk4wcm1pSmQ3?=
+ =?utf-8?B?UGtoOTJhTkEwb3psWGNFWG5vUFBCM0Nta2JLSWxNby9lelFRRWVlc3VCdDN3?=
+ =?utf-8?B?Nk5LblNMZ1R1ZlJqU3lYaGRWK0huaFg2U3A5Zm1GYmJES2dzRDhyczE4QW9p?=
+ =?utf-8?B?czN5clk0dmhYck9oVExtRzkzQ1Y1WnJmSElna2JWR1U2VGVkZ1V2ZU5wZ1VZ?=
+ =?utf-8?B?V1NRZHhNWnFSNHJmeU0wdXVwOUJSMWpJay8zTTMwQmpvWWkrTFRHam52NTVq?=
+ =?utf-8?B?NzRISVgwUkhRTy9aYzNJSzd5MDlnMnJzOW9PTXZBK25UcWxXTnNYaWY5a2hD?=
+ =?utf-8?B?ZHYxQUJTZXU5MzhTZVdpb1U5c0VWZ1NiZ3U5ekp3dCtaQVZuWUFjQXByYjQ3?=
+ =?utf-8?B?UUlZclpyQUp0bmQ0T2pYYkxBTmVtbmh3S3Y3NU1ua1RKUW9DVWlpM2ZmNnZN?=
+ =?utf-8?B?dS9MTEtTRndwcENxY1owalRNS0svb0oveUR3MjBKLzBHNHYrNVZKOTRmd09D?=
+ =?utf-8?B?NCswQUd6QXpmR2FFS1BFTGxuQ245VXpscXFWVVppNHZzZ0VPVW9CQlFWRUZD?=
+ =?utf-8?B?dlo1c3VqRElIOWlyTFVjTEpRWFB1dEFrdms4dHRDMVk2SzBoYXIxTmVMMkxI?=
+ =?utf-8?B?VFAweVA5TTJIclkvc2U5UzV6Nkc0akkrcXRyS3AzSU5ONVlybklNNWdqQUZW?=
+ =?utf-8?B?T3Q1K08yYjZlZmNaVzQzTlFSNmpxNlpRWHdmTGNBK3lDcXdLRXBCcVA3eVNy?=
+ =?utf-8?B?QU9EWThPVnQyQ3FTUGZ5bGVSVHNzdHJBMU0wTUpqV0Y1NkdHSUhQRnBmVHU2?=
+ =?utf-8?B?TlNSbitZb2I2aHpUWEVmTy9XWVdGaFRjQllkaW5RdlI2dGhFRm9hYTJXaWUz?=
+ =?utf-8?B?Q0s0eGhrM0c0UFZvNTJlQ2NBemdIMHFCdWdYanFqQVNxZnBJcFk1MkJXQldw?=
+ =?utf-8?B?eEIyVVFRMEtRRUZDaWlKNStpQnhhM20zV1RnUVRxYVEzN054VFRXTlFNM05P?=
+ =?utf-8?B?Wm1kc1hRbWZ6aWphOUxwM3FpV1NVZDd5TkRMVjhzK2RSNzgrTmN0T1JQZVpa?=
+ =?utf-8?B?djVvM0poRDgrMzlHOUtOUFFRZ3BxaEw3TVNZRjRvRzBrVC85TC9qRTh5VTBG?=
+ =?utf-8?B?ZDEzb1N3cXNWVSsxbjZ1cHdIMjFNMkROem9wcEY2NVR4aWpvWlRJS1BmQmJq?=
+ =?utf-8?B?TlJUUENXL1pHdFpzRFFUR0t2SnlDODJHRjNaM2dRMGU1TU5raVlVV0ZpcWxw?=
+ =?utf-8?B?UHAyMVVPOHNDRnNya1dHMnZRcjZWZ0Nyc2xnZ1RiRmdQMDFZMk9qQkRFeGtw?=
+ =?utf-8?B?V3hwTy9GNFFoMjRzOXBSQ0pkZDJFOXRQaXdEUi9maGkwclIzNzM2dXRhUXky?=
+ =?utf-8?B?N2lhNklwYnBUb2Erb0hlL3hxZWNIWlk2aEN1RXlpWU1PT3JReHpNSXorbWp4?=
+ =?utf-8?B?YWVPQUoxZUFETU9US2h2Rkl2d1ZJQVZnQ3Z3LzRCbzVjUG00b213SEpaTVQz?=
+ =?utf-8?B?Y0dWYnM0UnpCM2I5Y0JzWXd3ZXF4dm5paitydGJGTWVlcTE3RVJ5OWhDVGM4?=
+ =?utf-8?B?NG1uc2MyMnFRWkw1YkFNM3pwMll0bzA2TWNnUVovZUY3OFMrbEFJOXVMS3E3?=
+ =?utf-8?B?dGdreHE0TVVVbG1VZDVZdXBLeTZVRUhBSllTM0ZpeERMaHZtaWJBRGN0cWtD?=
+ =?utf-8?B?NmJ0dzE0cXY5TGdaUWc3d09aai9IWndVVE1CdGhkK2N5N2xsUEtPKzIxQ1Ro?=
+ =?utf-8?B?TVB2ajQ1WFpaejU4L1ZBeW9GRUgxYWl0N09CMzhVY2RXWnVUc3J0NmRsVDBD?=
+ =?utf-8?B?bzdOQXlySkhoMzlIRENHZG5MQUkrT01oTXZuejZ5Y0Zra0VmVGEvN3I5TjVj?=
+ =?utf-8?B?YnhOQjl3UkpLMVFYS3J6WllRQ0tTSGJ6VDBuUGNZa0didjUzb3czY2JsOFJ6?=
+ =?utf-8?B?enc9PQ==?=
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d28c0f2-89f5-4830-b326-08dbda0b8e03
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 12:18:56.6282
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TK7HMtwSTy/QRYOESAY8g2FnwrZTfY5n5+J+nyAlya2wkETuI4LGN+m9IECxXOt1gHMA8vvTthT0FH9lRTqoqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR10MB3876
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 31.10.23 11:53, Tomi Valkeinen wrote:
+> Hi Jan,
+> 
+> On 31/10/2023 08:24, Jan Kiszka wrote:
+>> On 30.10.23 20:28, Aradhya Bhatia wrote:
+>>> With new connector model, tc358767 will not create the connector, when
+>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR is set and display-controller driver will
+>>> rely on format negotiation to setup the encoder format.
+>>>
+>>> Add the missing input-format negotiation hook in the
+>>> drm_bridge_funcs to complete DRM_BRIDGE_ATTACH_NO_CONNECTOR support.
+>>>
+>>> Input format is selected to MEDIA_BUS_FMT_RGB888_1X24 as default, as is
+>>> the case with older model.
+>>>
+>>> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+>>> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+>>> ---
+>>>
+>>> Notes:
+>>>
+>>>    * Since I do not have hardware with me, this was just build
+>>> tested. I would
+>>>      appreciate it if someone could test and review it, especically
+>>> somebody, who
+>>>      uses the bridge for DPI/DSI to eDP format conversion.
+>>>
+>>>    * The Toshiba TC358767 bridge is not enabled in arm64 defconfig by
+>>> default,
+>>>      when it should be. Hence, I sent a quick patch[0] earlier.
+>>>
+>>> [0]:
+>>> https://lore.kernel.org/all/20231030152834.18450-1-a-bhatia1@ti.com/
+>>>
+>>>   drivers/gpu/drm/bridge/tc358767.c | 25 +++++++++++++++++++++++++
+>>>   1 file changed, 25 insertions(+)
+>>>
+>>> diff --git a/drivers/gpu/drm/bridge/tc358767.c
+>>> b/drivers/gpu/drm/bridge/tc358767.c
+>>> index ef2e373606ba..0affcefdeb1c 100644
+>>> --- a/drivers/gpu/drm/bridge/tc358767.c
+>>> +++ b/drivers/gpu/drm/bridge/tc358767.c
+>>> @@ -1751,6 +1751,30 @@ tc_dpi_atomic_get_input_bus_fmts(struct
+>>> drm_bridge *bridge,
+>>>       return input_fmts;
+>>>   }
+>>>   +static u32 *
+>>> +tc_edp_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
+>>> +                 struct drm_bridge_state *bridge_state,
+>>> +                 struct drm_crtc_state *crtc_state,
+>>> +                 struct drm_connector_state *conn_state,
+>>> +                 u32 output_fmt,
+>>> +                 unsigned int *num_input_fmts)
+>>> +{
+>>> +    u32 *input_fmts;
+>>> +
+>>> +    *num_input_fmts = 0;
+>>> +
+>>> +    input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
+>>> +                 GFP_KERNEL);
+>>> +    if (!input_fmts)
+>>> +        return NULL;
+>>> +
+>>> +    /* This is the DSI/DPI-end bus format */
+>>> +    input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
+>>> +    *num_input_fmts = 1;
+>>> +
+>>> +    return input_fmts;
+>>> +}
+>>> +
+>>>   static const struct drm_bridge_funcs tc_dpi_bridge_funcs = {
+>>>       .attach = tc_dpi_bridge_attach,
+>>>       .mode_valid = tc_dpi_mode_valid,
+>>> @@ -1777,6 +1801,7 @@ static const struct drm_bridge_funcs
+>>> tc_edp_bridge_funcs = {
+>>>       .atomic_duplicate_state =
+>>> drm_atomic_helper_bridge_duplicate_state,
+>>>       .atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
+>>>       .atomic_reset = drm_atomic_helper_bridge_reset,
+>>> +    .atomic_get_input_bus_fmts = tc_edp_atomic_get_input_bus_fmts,
+>>>   };
+>>>     static bool tc_readable_reg(struct device *dev, unsigned int reg)
+>>>
+>>> base-commit: c503e3eec382ac708ee7adf874add37b77c5d312
+>>
+>> Doesn't help, callback is never invoked. There must be more missing.
+>>
+>> Regarding test setup: Maybe your colleague Preneeth can help to give you
+>> access, he just received some devices from us. Otherwise, drop me
+>> instrumentation patches.
+> 
+> Can you try with this change:
+> 
+> diff --git a/drivers/gpu/drm/bridge/tc358767.c
+> b/drivers/gpu/drm/bridge/tc358767.c
+> index 0affcefdeb1c..137a9f5e3cad 100644
+> --- a/drivers/gpu/drm/bridge/tc358767.c
+> +++ b/drivers/gpu/drm/bridge/tc358767.c
+> @@ -1579,6 +1579,13 @@ static struct edid *tc_get_edid(struct drm_bridge
+> *bridge,
+>                                 struct drm_connector *connector)
+>  {
+>         struct tc_data *tc = bridge_to_tc(bridge);
+> +       int ret;
+> +
+> +       ret = tc_get_display_props(tc);
+> +       if (ret < 0) {
+> +               dev_err(tc->dev, "failed to read display props: %d\n",
+> ret);
+> +               return 0;
+> +       }
+>  
+>         return drm_get_edid(connector, &tc->aux.ddc);
+>  }
+> 
+>  Tomi
+> 
 
-syzbot found the following issue on:
+Yep, that does the trick.
 
-HEAD commit:    4f82870119a4 Merge tag 'mm-hotfixes-stable-2023-10-24-09-4..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b1b5a3680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7d1f30869bb78ec6
-dashboard link: https://syzkaller.appspot.com/bug?extid=8e6467fa0a1a160c9bbb
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Thanks,
+Jan
 
-Unfortunately, I don't have any reproducer for this issue yet.
+PS: Your mail client is mangling tabs - was already suspecting our
+server would reformat again.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cb40650f0163/disk-4f828701.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a1249f360a01/vmlinux-4f828701.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9af85659ca91/bzImage-4f828701.xz
+-- 
+Siemens AG, Technology
+Linux Expert Center
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8e6467fa0a1a160c9bbb@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
-BUG: KASAN: slab-use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
-BUG: KASAN: slab-use-after-free in sco_chan_del+0x4bf/0x4f0 net/bluetooth/sco.c:171
-Read of size 8 at addr ffff88807bd46a58 by task syz-executor.5/23800
-
-CPU: 1 PID: 23800 Comm: syz-executor.5 Not tainted 6.6.0-rc7-syzkaller-00039-g4f82870119a4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- hci_conn_drop include/net/bluetooth/hci_core.h:1549 [inline]
- hci_conn_drop include/net/bluetooth/hci_core.h:1519 [inline]
- sco_chan_del+0x4bf/0x4f0 net/bluetooth/sco.c:171
- __sco_sock_close+0xf2/0x690 net/bluetooth/sco.c:454
- sco_sock_close net/bluetooth/sco.c:469 [inline]
- sco_sock_release+0x6f/0x2c0 net/bluetooth/sco.c:1246
- __sock_release+0xae/0x260 net/socket.c:659
- sock_close+0x1c/0x20 net/socket.c:1419
- __fput+0x3f7/0xa70 fs/file_table.c:384
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- get_signal+0x106f/0x2790 kernel/signal.c:2668
- arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f150d47cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f150e1ff0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: fffffffffffffffc RBX: 00007f150d59c050 RCX: 00007f150d47cae9
-RDX: 0000000000000008 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007f150d4c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f150d59c050 R15: 00007ffc409e1338
- </TASK>
-
-Allocated by task 23800:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- hci_conn_add+0xc2/0x17c0 net/bluetooth/hci_conn.c:957
- hci_connect_sco+0x3a0/0xf80 net/bluetooth/hci_conn.c:1701
- sco_connect net/bluetooth/sco.c:266 [inline]
- sco_sock_connect+0x2c7/0xa80 net/bluetooth/sco.c:591
- __sys_connect_file+0x15b/0x1a0 net/socket.c:2050
- __sys_connect+0x145/0x170 net/socket.c:2067
- __do_sys_connect net/socket.c:2077 [inline]
- __se_sys_connect net/socket.c:2074 [inline]
- __x64_sys_connect+0x72/0xb0 net/socket.c:2074
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 19887:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- device_release+0xa1/0x240 drivers/base/core.c:2484
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1d0/0x440 lib/kobject.c:733
- put_device+0x1f/0x30 drivers/base/core.c:3732
- hci_conn_cleanup_child net/bluetooth/hci_conn.c:1065 [inline]
- hci_conn_unlink+0x71b/0x9e0 net/bluetooth/hci_conn.c:1092
- hci_conn_del+0x59/0xd80 net/bluetooth/hci_conn.c:1118
- hci_abort_conn_sync+0x573/0xe10 net/bluetooth/hci_sync.c:5428
- abort_conn_sync+0x187/0x390 net/bluetooth/hci_conn.c:2910
- hci_cmd_sync_work+0x1a4/0x410 net/bluetooth/hci_sync.c:306
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-The buggy address belongs to the object at ffff88807bd46000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 2648 bytes inside of
- freed 4096-byte region [ffff88807bd46000, ffff88807bd47000)
-
-The buggy address belongs to the physical page:
-page:ffffea0001ef5000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7bd40
-head:ffffea0001ef5000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012c42140 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d2820(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 21210, tgid 21210 (kworker/1:4), ts 1947372032238, free_ts 1947098144795
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0xee0/0x2f20 mm/page_alloc.c:3170
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4426
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2299
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x251/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x131/0x340 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1025 [inline]
- __kmalloc_node_track_caller+0x50/0x100 mm/slab_common.c:1046
- kmalloc_reserve+0xef/0x260 net/core/skbuff.c:581
- __alloc_skb+0x12b/0x330 net/core/skbuff.c:650
- alloc_skb include/linux/skbuff.h:1286 [inline]
- nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:748 [inline]
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:805 [inline]
- nsim_dev_trap_report_work+0x29e/0xc70 drivers/net/netdevsim/dev.c:850
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2312
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2405
- __unfreeze_partials+0x21d/0x240 mm/slub.c:2655
- qlink_free mm/kasan/quarantine.c:166 [inline]
- qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
- kasan_quarantine_reduce+0x18e/0x1d0 mm/kasan/quarantine.c:292
- __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:188 [inline]
- slab_post_alloc_hook mm/slab.h:762 [inline]
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x195/0x340 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1025 [inline]
- __kmalloc+0x4f/0x100 mm/slab_common.c:1039
- kmalloc_array include/linux/slab.h:636 [inline]
- kcalloc include/linux/slab.h:667 [inline]
- iter_file_splice_write+0x167/0xbf0 fs/splice.c:676
- do_splice_from fs/splice.c:933 [inline]
- direct_splice_actor+0x118/0x180 fs/splice.c:1142
- splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
- do_splice_direct+0x1af/0x280 fs/splice.c:1194
- do_sendfile+0xb88/0x1390 fs/read_write.c:1254
- __do_sys_sendfile64 fs/read_write.c:1316 [inline]
- __se_sys_sendfile64 fs/read_write.c:1308 [inline]
- __x64_sys_sendfile64+0x155/0x220 fs/read_write.c:1308
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807bd46900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807bd46980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88807bd46a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                    ^
- ffff88807bd46a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807bd46b00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
