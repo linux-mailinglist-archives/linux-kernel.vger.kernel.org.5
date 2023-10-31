@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3616C7DC705
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B664F7DC70A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343578AbjJaHO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S1343594AbjJaHPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343556AbjJaHOy (ORCPT
+        with ESMTP id S1343556AbjJaHPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:14:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E87C0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 00:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698736492; x=1730272492;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=liUdIdIGIx2wKIEr2EN1EyrxZocBOurqsuzRDZYIzp0=;
-  b=X2f+scN0p8Cs62Sdwp6CFBo1c2h44eRP2AR4F2ebcqUmogqlOrFcUaPQ
-   JyzWE95nsP6+D62Hjec9YBdYFU2CTKVDkGQDJakfl8tIW6FgW7vq+Q8Dd
-   rVq6Xe5j5uQ08wHiXB2R3e8Sn+QQCZOYfKKmJBr3L8lU3H9KMGC4PTK5W
-   tcp/Lm/Nic/j1NzMiqJR90Djtf95fxXKLXkKsMXfx0aE8UnDhNTPxAP6r
-   qJOW7H7p/m4Hj10MwiWOEPvnvhv6De47BAjgbEpLm8uPExb1Nn+Rrqqqs
-   Kq7QXZQMG+K0Mj8wJ49wKyBs9iNGIr6wD/91vGCsy/ng+DAsaFgJRlhiD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="367574478"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="367574478"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 00:14:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="710338098"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="710338098"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 31 Oct 2023 00:14:42 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qxixT-000Du3-1X;
-        Tue, 31 Oct 2023 07:14:39 +0000
-Date:   Tue, 31 Oct 2023 15:14:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com,
-        boris.brezillon@collabora.com, christian.koenig@amd.com,
-        faith@gfxstrand.net, luben.tuikov@amd.com
-Cc:     oe-kbuild-all@lists.linux.dev, Danilo Krummrich <dakr@redhat.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH drm-misc-next v4] drm/sched: implement dynamic job-flow
- control
-Message-ID: <202310311534.I8WQWOK0-lkp@intel.com>
-References: <20231031002655.38707-1-dakr@redhat.com>
+        Tue, 31 Oct 2023 03:15:09 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2575E6;
+        Tue, 31 Oct 2023 00:15:06 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V5vXEm022977;
+        Tue, 31 Oct 2023 07:14:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=fyoVIufeQ3J9szxJL+AgrsKGMVdQwv+n/oXu3lDKeOc=;
+ b=AWnLbQzPccylBfyj2ZJ/ox9RbZISURUy9ustAygx1z5znUUVBWY4/jX+5EJC1XjqXh/u
+ eEJOUlcI6INRas4SQWtu2grdZAbdc6X0duGIPshMiDC+MsOqJPaWKqK9ScovleJaIHBg
+ xJT7/eA4ql9uJ9r3ydrLVjdiWgIMqnOGCnmKhfgESml+h6HfR8WatMoYvhWQwsmHCPJH
+ Avpr/dmA/RcENfX8mp5VU6g7zzS8XvAMhW2ZXBrmx3OpsDTZmHQAil15659WjstMvgSR
+ y/aGDNq9u+eVlMr2GJ+Ki2c0hcNdM0LS+2NfCFooTbLzAx6IE1BLBFCC2cttbtYwm1Hf GQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2c4rt74u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 07:14:32 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V7EVQ1001327
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 07:14:31 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 31 Oct 2023 00:14:26 -0700
+Date:   Tue, 31 Oct 2023 12:44:21 +0530
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <rafael@kernel.org>,
+        <ilia.lin@kernel.org>, <sivaprak@codeaurora.org>,
+        <quic_kathirav@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v5 0/9] Enable cpufreq for IPQ5332 & IPQ9574
+Message-ID: <20231031071420.GA17892@varda-linux.qualcomm.com>
+References: <cover.1697781921.git.quic_varada@quicinc.com>
+ <20231020070947.cwigtaa2haij56hz@vireshk-i7>
+ <20231020080339.GA6197@varda-linux.qualcomm.com>
+ <20231025062508.vccrmkem45p3fnwe@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231031002655.38707-1-dakr@redhat.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231025062508.vccrmkem45p3fnwe@vireshk-i7>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: KBUZYiSlMm5uy4l7aOsAet9Ytnt1rwd8
+X-Proofpoint-GUID: KBUZYiSlMm5uy4l7aOsAet9Ytnt1rwd8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ phishscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxlogscore=671
+ malwarescore=0 mlxscore=0 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310054
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Danilo,
+On Wed, Oct 25, 2023 at 11:55:08AM +0530, Viresh Kumar wrote:
+> On 20-10-23, 13:33, Varadarajan Narayanan wrote:
+> > On Fri, Oct 20, 2023 at 12:39:47PM +0530, Viresh Kumar wrote:
+> > > On 20-10-23, 11:49, Varadarajan Narayanan wrote:
+> > > > Varadarajan Narayanan (9):
+> > > >   cpufreq: qti: Enable cpufreq for ipq53xx
+> > > >   cpufreq: qti: Introduce cpufreq for ipq95xx
+> > >
+> > > Can I pick just these two ?
+> >
+> > ipq53xx patch is dependent on the previous safe source switching
+> > patch, hence not safe to pick that.
+> >
+> > 	No -> cpufreq: qti: Enable cpufreq for ipq53xx
+> > 	Yes -> cpufreq: qti: Introduce cpufreq for ipq95xx
+>
+> The patches don't apply cleanly. Please resend.
 
-kernel test robot noticed the following build errors:
+Have posted v6 with just these two patches and rebased
+to latest top. Please pick that.
 
-[auto build test ERROR on b2139fb5051554a7f297e4ad584ef1bc26c76d5d]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-sched-implement-dynamic-job-flow-control/20231031-082915
-base:   b2139fb5051554a7f297e4ad584ef1bc26c76d5d
-patch link:    https://lore.kernel.org/r/20231031002655.38707-1-dakr%40redhat.com
-patch subject: [PATCH drm-misc-next v4] drm/sched: implement dynamic job-flow control
-config: arc-randconfig-002-20231031 (https://download.01.org/0day-ci/archive/20231031/202310311534.I8WQWOK0-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310311534.I8WQWOK0-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310311534.I8WQWOK0-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/gpu/drm/panfrost/panfrost_job.c: In function 'panfrost_job_is_idle':
->> drivers/gpu/drm/panfrost/panfrost_job.c:966:52: error: 'struct drm_gpu_scheduler' has no member named 'hw_rq_count'
-     966 |                 if (atomic_read(&js->queue[i].sched.hw_rq_count))
-         |                                                    ^
-
-
-vim +966 drivers/gpu/drm/panfrost/panfrost_job.c
-
-f3ba91228e8e91 Rob Herring 2018-09-10  958  
-f3ba91228e8e91 Rob Herring 2018-09-10  959  int panfrost_job_is_idle(struct panfrost_device *pfdev)
-f3ba91228e8e91 Rob Herring 2018-09-10  960  {
-f3ba91228e8e91 Rob Herring 2018-09-10  961  	struct panfrost_job_slot *js = pfdev->js;
-f3ba91228e8e91 Rob Herring 2018-09-10  962  	int i;
-f3ba91228e8e91 Rob Herring 2018-09-10  963  
-f3ba91228e8e91 Rob Herring 2018-09-10  964  	for (i = 0; i < NUM_JOB_SLOTS; i++) {
-f3ba91228e8e91 Rob Herring 2018-09-10  965  		/* If there are any jobs in the HW queue, we're not idle */
-f3ba91228e8e91 Rob Herring 2018-09-10 @966  		if (atomic_read(&js->queue[i].sched.hw_rq_count))
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+Varada
