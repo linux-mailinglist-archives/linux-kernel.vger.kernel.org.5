@@ -2,96 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081627DD819
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6967DD81C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344928AbjJaWPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
+        id S1346360AbjJaWRK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 18:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344732AbjJaWPQ (ORCPT
+        with ESMTP id S1344917AbjJaWRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:15:16 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06E2EA;
-        Tue, 31 Oct 2023 15:15:13 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c5720a321aso79998251fa.1;
-        Tue, 31 Oct 2023 15:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698790512; x=1699395312; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8nZsj+AfOY0spxTisMoArNXhnnKSbd2tnGFeggkpIho=;
-        b=OP2eWD0OSYfksJ+um+RrOYnOWGCxbXtLDh6UrZsrSC9dSEYIUDotKPNTkXdwDeepQ9
-         qiWzrNBocegp2p8mPD5te8tu9Ohl4IIbC1kTGGqawuOmphr1a7CtmT7MXDVR8A/onQmS
-         F9AFlHqvsItxYU9BvAlNrM1XRxwVSU8QTdS1ieWmCjQbrMVhDxiY5/hgufyVNKIlcVNW
-         IOc7SKLWuwGpZ7m+7fWaBLrsShN52USanMobZ43tEY6vNjuWuWdj+yM+uFN+fCGRn96s
-         fYywSBXyVxfjMCswkVCj6FhPY6PrrTeZnHsdPaTIkG/tQYTZkzWIZXQrT/2BMeokPQN4
-         3bOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698790512; x=1699395312;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8nZsj+AfOY0spxTisMoArNXhnnKSbd2tnGFeggkpIho=;
-        b=wyNsjxSUYYGLjaUlNxRXT1Qm0qTUTS5FPlBOcUmwmpoDame3k3Xh4ispMJfRq8BkX8
-         eIXyKXx/fsPI8UU3NRQJhYzIm3EiLKuQHCaF7MZnT7K9xq/EBVOVB47OT8Bno5VStlBE
-         ImbJyaFkIrGNEOd69OLKEA0l8WjFQikoZxaDUJwl7GNXbcvGopUHEPeAFih+EsG1Zlj5
-         UOhjAO8eeGutqhxMT8MXNbXCOB+pGeM66obroPcPmJ7sWYltQ8iU0vsCiuEY38ck3DPx
-         n+NS2QYVaN0xDXE+uE5zZp7BJone3Q0sJgQlo9xT/TVjuhzZDschvIRedmxVcWa92HsQ
-         IJbQ==
-X-Gm-Message-State: AOJu0Yy4tNdEdResaOCxDmZKfGPIlgqNNCC3BoSHZrYk7XJ5rUXBJXLa
-        P02zWhBLPhNW02gT0pTLZNHZwSOiF4o=
-X-Google-Smtp-Source: AGHT+IFUJkmKnTlNM3eRoWukUht05K2CCKE+eMRQXaMITsgnFMh2M95EPetfMMsr28J5oLwNJeSDrg==
-X-Received: by 2002:a2e:1454:0:b0:2c5:169f:ff03 with SMTP id 20-20020a2e1454000000b002c5169fff03mr9751364lju.5.1698790511467;
-        Tue, 31 Oct 2023 15:15:11 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id iv16-20020a05600c549000b003fc16ee2864sm2930790wmb.48.2023.10.31.15.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 15:15:11 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 22:15:09 +0000
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        regressions@lists.linux.dev
-Subject: mainline build failure due to 5cfd69775eb5 ("bcachefs: Array bounds
- fixes")
-Message-ID: <ZUF8bYTl5SBlbBBJ@debian>
+        Tue, 31 Oct 2023 18:17:08 -0400
+Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFF8F4;
+        Tue, 31 Oct 2023 15:17:06 -0700 (PDT)
+Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail.stoffel.org (Postfix) with ESMTPSA id 7A4C01E135;
+        Tue, 31 Oct 2023 18:17:05 -0400 (EDT)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+        id 28373A8B07; Tue, 31 Oct 2023 18:17:05 -0400 (EDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Message-ID: <25921.31969.127938.469728@quad.stoffel.home>
+Date:   Tue, 31 Oct 2023 18:17:05 -0400
+From:   "John Stoffel" <john@stoffel.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     John Stoffel <john@stoffel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [GIT PULL] bcachefs for v6.7
+In-Reply-To: <20231031221126.5wejfggu7gg2y3n4@moria.home.lan>
+References: <25921.30263.150556.245226@quad.stoffel.home>
+        <20231031221126.5wejfggu7gg2y3n4@moria.home.lan>
+X-Mailer: VM 8.2.0b under 27.1 (x86_64-pc-linux-gnu)
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+>>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
 
-The latest mainline kernel branch fails to build arm64 allmodconfig
-with a native build on an arm64 host with the error:
+> On Tue, Oct 31, 2023 at 05:48:39PM -0400, John Stoffel wrote:
+>> 
+>> Using latest HEAD from linux git (commit
+>> 5a6a09e97199d6600d31383055f9d43fbbcbe86f (HEAD -> master,
+>> origin/master, origin/HEAD), and the following config, I get this
+>> failure when compiling on x86_64 Debian Bullseye (11):
+>> 
+>> 
+>> CC      fs/bcachefs/btree_io.o
+>> In file included from fs/bcachefs/btree_io.c:11:
+>> fs/bcachefs/btree_io.c: In function ‘bch2_btree_post_write_cleanup’:
+>> fs/bcachefs/btree_update_interior.h:274:36: error: array subscript 0 is outside the bounds of an interior zero-length array ‘struct bkey_packed[0]’ [-Werror=zero-length-bounds]
+>> 274 |   __bch_btree_u64s_remaining(c, b, &bne->keys.start[0]);
+>> |                                    ^~~~~~~~~~~~~~~~~~~
+>> In file included from fs/bcachefs/bcachefs.h:206,
+>> from fs/bcachefs/btree_io.c:3:
+>> fs/bcachefs/bcachefs_format.h:2344:21: note: while referencing ‘start’
+>> 2344 |  struct bkey_packed start[0];
+>> |                     ^~~~~
+>> In file included from fs/bcachefs/btree_io.c:11:
+>> fs/bcachefs/btree_io.c: In function ‘bch2_btree_init_next’:
+>> fs/bcachefs/btree_update_interior.h:274:36: error: array subscript 0 is outside the bounds of an interior zero-length array ‘struct bkey_packed[0]’ [-Werror=zero-length-bounds]
+>> 274 |   __bch_btree_u64s_remaining(c, b, &bne->keys.start[0]);
+>> |                                    ^~~~~~~~~~~~~~~~~~~
+>> In file included from fs/bcachefs/bcachefs.h:206,
+>> from fs/bcachefs/btree_io.c:3:
+>> fs/bcachefs/bcachefs_format.h:2344:21: note: while referencing ‘start’
+>> 2344 |  struct bkey_packed start[0];
+>> |                     ^~~~~
+>> cc1: all warnings being treated as errors
+>> make[4]: *** [scripts/Makefile.build:243: fs/bcachefs/btree_io.o] Error 1
+>> make[3]: *** [scripts/Makefile.build:480: fs/bcachefs] Error 2
+>> make[2]: *** [scripts/Makefile.build:480: fs] Error 2
+>> make[1]: *** [/local/src/kernel/git/linux/Makefile:1913: .] Error 2
+>> make: *** [Makefile:234: __sub-make] Error 2
 
-In file included from fs/bcachefs/btree_io.c:11:
-fs/bcachefs/btree_update_interior.h: In function 'want_new_bset':
-fs/bcachefs/btree_update_interior.h:274:36: error: array subscript 0 is outside the bounds of an interior zero-length array 'struct bkey_packed[0]' [-Werror=zero-length-bounds]
-  274 |   __bch_btree_u64s_remaining(c, b, &bne->keys.start[0]);
-      |                                    ^~~~~~~~~~~~~~~~~~~
-In file included from fs/bcachefs/bcachefs.h:206,
-                 from fs/bcachefs/btree_io.c:3:
-fs/bcachefs/bcachefs_format.h:2344:21: note: while referencing 'start'
- 2344 |  struct bkey_packed start[0];
-      |                     ^~~~~
+> It seems gcc 10 complains in situations gcc 11 does not.
 
-git bisect pointed to 5cfd69775eb5 ("bcachefs: Array bounds fixes").
+> I've got the following patch running through my testing automation now:
 
-I will be happy to test any patch or provide any extra log if needed.
+> -- >8 --
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> Date: Tue, 31 Oct 2023 18:05:22 -0400
+> Subject: [PATCH] bcachefs: Fix build errors with gcc 10
 
-#regzbot introduced: 5cfd69775eb5460ef78bb5034a37eb0dc52ab65d
+> gcc 10 seems to complain about array bounds in situations where gcc 11
+> does not - curious.
 
--- 
-Regards
-Sudip
+> This unfortunately requires adding some casts for now; we may
+> investigate getting rid of our __u64 _data[] VLA in a future patch so
+> that our start[0] members can be VLAs.
+
+> Reported-by: John Stoffel <john@stoffel.org>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+
+> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+> index 29b000c6b7e1..5b44598b9df9 100644
+> --- a/fs/bcachefs/bcachefs_format.h
+> +++ b/fs/bcachefs/bcachefs_format.h
+> @@ -1617,9 +1617,7 @@ struct journal_seq_blacklist_entry {
+ 
+>  struct bch_sb_field_journal_seq_blacklist {
+>  	struct bch_sb_field	field;
+> -
+> -	struct journal_seq_blacklist_entry start[0];
+> -	__u64			_data[];
+> +	struct journal_seq_blacklist_entry start[];
+>  };
+ 
+>  struct bch_sb_field_errors {
+> diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
+> index 8140b6e6e9a6..32693f7c6221 100644
+> --- a/fs/bcachefs/btree_trans_commit.c
+> +++ b/fs/bcachefs/btree_trans_commit.c
+> @@ -681,7 +681,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+>  						       BCH_JSET_ENTRY_overwrite,
+i-> btree_id, i->level,
+i-> old_k.u64s);
+> -				bkey_reassemble(&entry->start[0],
+> +				bkey_reassemble((struct bkey_i *) entry->start,
+>  						(struct bkey_s_c) { &i->old_k, i->old_v });
+>  			}
+ 
+> @@ -689,7 +689,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+>  					       BCH_JSET_ENTRY_btree_keys,
+i-> btree_id, i->level,
+i-> k->k.u64s);
+> -			bkey_copy(&entry->start[0], i->k);
+> +			bkey_copy((struct bkey_i *) entry->start, i->k);
+>  		}
+ 
+>  		trans_for_each_wb_update(trans, wb) {
+> @@ -697,7 +697,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+>  					       BCH_JSET_ENTRY_btree_keys,
+wb-> btree, 0,
+wb-> k.k.u64s);
+> -			bkey_copy(&entry->start[0], &wb->k);
+> +			bkey_copy((struct bkey_i *) entry->start, &wb->k);
+>  		}
+ 
+>  		if (trans->journal_seq)
+> diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+> index d029e0348c91..89ada89eafe7 100644
+> --- a/fs/bcachefs/btree_update_interior.c
+> +++ b/fs/bcachefs/btree_update_interior.c
+> @@ -2411,7 +2411,7 @@ void bch2_journal_entry_to_btree_root(struct bch_fs *c, struct jset_entry *entry
+ 
+r-> level = entry->level;
+r-> alive = true;
+> -	bkey_copy(&r->key, &entry->start[0]);
+> +	bkey_copy(&r->key, (struct bkey_i *) entry->start);
+ 
+>  	mutex_unlock(&c->btree_root_lock);
+>  }
+> diff --git a/fs/bcachefs/btree_update_interior.h b/fs/bcachefs/btree_update_interior.h
+> index 5e0a467fe905..d92b3cf5f5e0 100644
+> --- a/fs/bcachefs/btree_update_interior.h
+> +++ b/fs/bcachefs/btree_update_interior.h
+> @@ -271,7 +271,7 @@ static inline struct btree_node_entry *want_new_bset(struct bch_fs *c,
+>  	struct btree_node_entry *bne = max(write_block(b),
+>  			(void *) btree_bkey_last(b, bset_tree_last(b)));
+>  	ssize_t remaining_space =
+> -		__bch_btree_u64s_remaining(c, b, &bne->keys.start[0]);
+> +		__bch_btree_u64s_remaining(c, b, bne->keys.start);
+ 
+>  	if (unlikely(bset_written(b, bset(b, t)))) {
+>  		if (remaining_space > (ssize_t) (block_bytes(c) >> 3))
+> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> index f73338f37bf1..9600b8083175 100644
+> --- a/fs/bcachefs/recovery.c
+> +++ b/fs/bcachefs/recovery.c
+> @@ -226,7 +226,7 @@ static int journal_replay_entry_early(struct bch_fs *c,
+ 
+>  		if (entry->u64s) {
+r-> level = entry->level;
+> -			bkey_copy(&r->key, &entry->start[0]);
+> +			bkey_copy(&r->key, (struct bkey_i *) entry->start);
+r-> error = 0;
+>  		} else {
+r-> error = -EIO;
+
+
+So this fixes the compile error, thanks!  Sorry for not reporting the
+gcc version better.  And it also compiles nicely when I remove all the
+BACHEFS .config entries, accept all the defaults from 'make oldconfig'
+and re-compile.
+
+Cheers,
+John
