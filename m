@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9427DC8C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA827DC8CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235460AbjJaI6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 04:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
+        id S1343569AbjJaI6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235470AbjJaI6g (ORCPT
+        with ESMTP id S235752AbjJaI6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 04:58:36 -0400
+        Tue, 31 Oct 2023 04:58:39 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68310C2;
-        Tue, 31 Oct 2023 01:58:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70698E6;
+        Tue, 31 Oct 2023 01:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698742714; x=1730278714;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=pEpzXE0NNcmHwTemudkQ6k8syJET3+LhUaz0WTQrc5c=;
-  b=bjnUZzXaxHp13Dm5qW+AhHMGIwIb5OtyIWb3MHsirDMlpwLuwzkJhfOo
-   wtOMxmHRORjVRRkoBkGPDpT0s6tEe8pNsaCrQ5Rzdw5TGKfHV76kQtxQU
-   dEpkljHmWF1drTzh7BqPijP3utU3xDqp2ixO6ped54MevKvPm/4tCmnb8
-   TH8TjtMuXsrHZ2sGhsDcHnbs3g8ssf/x6EavnYCaEKtnPwkbGk7p/Voc8
-   qIvjVWH5y0wRKziOxuqI4HrwBb2vKzWN7O06445FYLYZAU8zjQ02qLnMi
-   fR1sO3qbsr1ZIHZ/plj4W0hpZ+2FoeF005GZ6Y/+1BNdWwb70Q/YHGfG+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="378627547"
+  t=1698742717; x=1730278717;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=s+JsvEs7Ok+DvIu+DU/KDBtPTG9fSNGUmHldnUjJuQ4=;
+  b=WTXfm0YYVuUYEq7pFLQl/n1dtLhDpTTbt2vtE4Cs5lb1HnO/EhJKN0dK
+   J7dheZWvubuqY0dQAR9SxhpH004ZfgGKLBsnWP/cGl9R9hreF1xt/qxyh
+   1+hQidcOGfBdUGyo6jPPOTojTNsDWEb0BJ5Qm8l4MaqjLKfy0q0Tu1IlI
+   LlSuANBYJNQGxpwChUrn6p7shjkI/aACgISZFCjZ1pHudXtFnptuXbGct
+   WikyLomzmzFHp/7MFcL1OwHUKSu2imDa6imIpGDcWVr9m0LO5BfSlpWFr
+   SaxkFZqS30BqydKndD2+elMC3FIlvueWgTpe4tpmsI/D6Z7+289VysDHV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="378627556"
 X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="378627547"
+   d="scan'208";a="378627556"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:58:33 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:58:37 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="8257894"
+   d="scan'208";a="8257897"
 Received: from dmi-pnp-i7.sh.intel.com ([10.239.159.155])
-  by orviesa001.jf.intel.com with ESMTP; 31 Oct 2023 01:58:31 -0700
+  by orviesa001.jf.intel.com with ESMTP; 31 Oct 2023 01:58:34 -0700
 From:   Dapeng Mi <dapeng1.mi@linux.intel.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -48,11 +48,14 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mingwei Zhang <mizhang@google.com>,
         Like Xu <like.xu.linux@gmail.com>,
         Dapeng Mi <dapeng1.mi@intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [Patch 0/2] Enable topdown slots event in vPMU
-Date:   Tue, 31 Oct 2023 17:06:11 +0800
-Message-Id: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Like Xu <likexu@tencent.com>
+Subject: [Patch 1/2] KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots event
+Date:   Tue, 31 Oct 2023 17:06:12 +0800
+Message-Id: <20231031090613.2872700-2-dapeng1.mi@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
+References: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -65,50 +68,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds support for the architectural topdown slots event which
+is hinted by CPUID.0AH.EBX.
+
 The topdown slots event counts the total number of available slots for
-an unhalted logical processor. Software can use this event to calculate
-the topdown metrics by collaborating with IA32_PERF_METRICS MSR.
+an unhalted logical processor. Software can use this event as the
+denominator for the top-level metrics of the topDown Microarchitecture
+Analysis method.
 
-Since Intel Icelake CPU starts, the topdown slots event can be
-programmed both on GP counters or the exclusive fixed counter 3 but with
-different event & umask code. The event with code (event=0xa4,umask=0x01)
-is an architectural event which is represented in CPUID.0AH.EBX and can
-be programed on any GP counter. Besides, Intel PMU from Icelake
-introduces a new fixed counter (fixed counter 3) to count/sample
-todpown slots event so the precious GP counters can be saved. The fixed
-counter 3 uses an exclusive code (event=0x00,umask=0x04) to count/sample
-the slots event.
+Although the MSR_PERF_METRICS MSR required for topdown events is not
+currently available in the guest, relying only on the data provided by
+the slots event is sufficient for pmu users to perceive differences in
+cpu pipeline machine-width across micro-architectures.
 
-Actually this patchset is a portion of the patchset "Enable fixed counter
- 3 and topdown perf metrics for vPMU"[1]. As this original patchset needs to
-make some fundamental changes on perf code and cause big arguments, it
-leads to the vPMU topdown metrics patchset is hard to be merged in current
-vPMU emulation framework.
+The standalone slots event, like the instruction event, can be counted
+with gp counter or fixed counter 3 (if any). Its availability is also
+controlled by CPUID.AH.EBX. On Linux, perf user may encode
+"-e cpu/event=0xa4,umask=0x01/" or "-e cpu/slots/" to count slots events.
 
-The patches of enabling topdown slots event is simple and doesn't
-touch any perf code. Moreover topdown slots event as an independent
-feature is still valuable even though in no topdown metrics cases, some
-perf metrics depend on slots event and need to be derived from slots
-event.
+This patch only enables slots event on GP counters. The enabling on fixed
+counter 3 will be supported in subsequent patches.
 
-Thus the patches of enabling slots event is extracted as an independent
-patchset and resend.
+Co-developed-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+---
+ arch/x86/kvm/vmx/pmu_intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Ref:
-1. https://lore.kernel.org/all/20230927033124.1226509-1-dapeng1.mi@linux.intel.com/T/
-
-
-Dapeng Mi (2):
-  KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots event
-  KVM: x86/pmu: Support PMU fixed counter 3
-
- arch/x86/include/asm/kvm_host.h |  2 +-
- arch/x86/kvm/vmx/pmu_intel.c    | 12 ++++++++++++
- arch/x86/kvm/x86.c              |  4 ++--
- 3 files changed, 15 insertions(+), 3 deletions(-)
-
-
-base-commit: 35dcbd9e47035f98f3910ae420bf10892c9bdc99
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index 820d3e1f6b4f..e32353f1143f 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -34,6 +34,7 @@ enum intel_pmu_architectural_events {
+ 	INTEL_ARCH_LLC_MISSES,
+ 	INTEL_ARCH_BRANCHES_RETIRED,
+ 	INTEL_ARCH_BRANCHES_MISPREDICTED,
++	INTEL_ARCH_TOPDOWN_SLOTS,
+ 
+ 	NR_REAL_INTEL_ARCH_EVENTS,
+ 
+@@ -58,6 +59,7 @@ static struct {
+ 	[INTEL_ARCH_LLC_MISSES]			= { 0x2e, 0x41 },
+ 	[INTEL_ARCH_BRANCHES_RETIRED]		= { 0xc4, 0x00 },
+ 	[INTEL_ARCH_BRANCHES_MISPREDICTED]	= { 0xc5, 0x00 },
++	[INTEL_ARCH_TOPDOWN_SLOTS]		= { 0xa4, 0x01 },
+ 	[PSEUDO_ARCH_REFERENCE_CYCLES]		= { 0x00, 0x03 },
+ };
+ 
 -- 
 2.34.1
 
