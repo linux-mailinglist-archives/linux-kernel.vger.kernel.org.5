@@ -2,148 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FF77DCB11
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8927DCB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbjJaKnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S236300AbjJaKoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234893AbjJaKna (ORCPT
+        with ESMTP id S230370AbjJaKoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:43:30 -0400
-Received: from bee.tesarici.cz (bee.tesarici.cz [IPv6:2a03:3b40:fe:2d4::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA94C1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:43:26 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id B244D190C97;
-        Tue, 31 Oct 2023 11:43:22 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1698749003; bh=jdCPy8MRdQgBRdIuWsT+HvlNGVFk2v04c88rT8qjyqw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oa8JtXsdnPE4gwCftToiBbqkSMSYruxk7HFOzsgPFJUXN1KiQHmEZIDe7FYcTPyyi
-         iPd2ruOehuiA3Az6MM9lOXB1GWJkpnQ+j9aKMyJwzCGi5Lp1RWh6FzOOvgz5LUYgoI
-         SiZRztBziVKU/KKg1uSgtLTWa0nQPknt/a1qt9VqbPjT20dPJ1M+mnCdfHzPPLkhEk
-         vekx+ktehleXu753zt6LKNMwyN88zJCOmjW9Gol2ANZToAEdT9pPeyHRynkr1CZ5Aa
-         9z7+uDLcktI5MFk85meR7Bjtx+7FZuq3Qu5ZRHLaC9DnjR8+ckQVEw/jMWRqaq6oDV
-         TCBIzrCEp6BLA==
-Date:   Tue, 31 Oct 2023 11:43:16 +0100
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, kirill.shutemov@linux.intel.com,
-        elena.reshetova@intel.com, isaku.yamahata@intel.com,
-        seanjc@google.com, Michael Kelley <mikelley@microsoft.com>,
-        thomas.lendacky@amd.com, decui@microsoft.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev
-Subject: Re: [PATCH 04/10] swiotlb: Use free_decrypted_pages()
-Message-ID: <20231031114316.0bfa8d91@meshulam.tesarici.cz>
-In-Reply-To: <20231017202505.340906-5-rick.p.edgecombe@intel.com>
-References: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
-        <20231017202505.340906-5-rick.p.edgecombe@intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Tue, 31 Oct 2023 06:44:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFE083
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:44:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA6C7C433C7;
+        Tue, 31 Oct 2023 10:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698749062;
+        bh=SawDb3Br63XTC/jdH0M9reH2F8gv8G87HRcLDKod6iY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wMoo4qBs4TItTWCUSjNwcpS54mSu+vPvL1lQCpGujWbAFSqvE1ZZwORlI2gOpqJIj
+         IyaP/03LbbjepUCKxyFwu52zv40jA6bC5skgCpOyP6lZLgKAzo4DloDapXT31jF6ll
+         v2OFSJqM02gurFNMF5cywW4MRhgK2VnZ4OqZhj5A=
+Date:   Tue, 31 Oct 2023 11:44:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tingwei Zhang <quic_tingweiz@quicinc.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, Trilok Soni <quic_tsoni@quicinc.com>,
+        Jinlong Mao <quic_jinlmao@quicinc.com>
+Subject: Re: How to pass software configuration to driver built as module in
+ boot up phase
+Message-ID: <2023103137-dowry-passover-c285@gregkh>
+References: <1c001c6f-9902-4803-9406-39e3325422bf@quicinc.com>
+ <2023103021-revolving-clapper-632d@gregkh>
+ <c244eae0-d3d8-414b-8d1f-c902bd46bd61@quicinc.com>
+ <2023103108-guacamole-neurotic-f59b@gregkh>
+ <b97123bd-7acc-43a7-aff4-e1696511ba05@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b97123bd-7acc-43a7-aff4-e1696511ba05@quicinc.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 13:24:59 -0700
-Rick Edgecombe <rick.p.edgecombe@intel.com> wrote:
+On Tue, Oct 31, 2023 at 06:01:44PM +0800, Tingwei Zhang wrote:
+> > Why do you need this before init?  Specific reasons please.
+> > 
+> There are some case that some driver broke Kernel in development phase and
+> those bad driver could cause device crash in very early boot up phase.
 
-> On TDX it is possible for the untrusted host to cause
-> set_memory_encrypted() or set_memory_decrypted() to fail such that an
-> error is returned and the resulting memory is shared. Callers need to take
-> care to handle these errors to avoid returning decrypted (shared) memory to
-> the page allocator, which could lead to functional or security issues.
-> 
-> Swiotlb could free decrypted/shared pages if set_memory_decrypted() fails.
-> Use the recently added free_decrypted_pages() to avoid this.
-> 
-> In swiotlb_exit(), check for set_memory_encrypted() errors manually,
-> because the pages are not nessarily going to the page allocator.
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: iommu@lists.linux.dev
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> ---
->  kernel/dma/swiotlb.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 394494a6b1f3..ad06786c4f98 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -524,6 +524,7 @@ void __init swiotlb_exit(void)
->  	unsigned long tbl_vaddr;
->  	size_t tbl_size, slots_size;
->  	unsigned int area_order;
-> +	int ret;
->  
->  	if (swiotlb_force_bounce)
->  		return;
-> @@ -536,17 +537,19 @@ void __init swiotlb_exit(void)
->  	tbl_size = PAGE_ALIGN(mem->end - mem->start);
->  	slots_size = PAGE_ALIGN(array_size(sizeof(*mem->slots), mem->nslabs));
->  
-> -	set_memory_encrypted(tbl_vaddr, tbl_size >> PAGE_SHIFT);
-> +	ret = set_memory_encrypted(tbl_vaddr, tbl_size >> PAGE_SHIFT);
->  	if (mem->late_alloc) {
->  		area_order = get_order(array_size(sizeof(*mem->areas),
->  			mem->nareas));
->  		free_pages((unsigned long)mem->areas, area_order);
-> -		free_pages(tbl_vaddr, get_order(tbl_size));
-> +		if (!ret)
-> +			free_pages(tbl_vaddr, get_order(tbl_size));
->  		free_pages((unsigned long)mem->slots, get_order(slots_size));
->  	} else {
->  		memblock_free_late(__pa(mem->areas),
->  			array_size(sizeof(*mem->areas), mem->nareas));
-> -		memblock_free_late(mem->start, tbl_size);
-> +		if (!ret)
-> +			memblock_free_late(mem->start, tbl_size);
->  		memblock_free_late(__pa(mem->slots), slots_size);
->  	}
->  
-> @@ -581,7 +584,7 @@ static struct page *alloc_dma_pages(gfp_t gfp, size_t bytes)
->  	return page;
->  
->  error:
-> -	__free_pages(page, order);
-> +	free_decrypted_pages((unsigned long)vaddr, order);
->  	return NULL;
->  }
+Then work on that in the development phase of your system, don't make it
+a requirement for us for this.
 
-I admit I'm not familiar with the encryption/decryption API, but if a
-__free_pages() is not sufficient here, then it is quite confusing.
-The error label is reached only if set_memory_decrypted() returns
-non-zero. My naive expectation is that the memory is *not* decrypted in
-that case and does not require special treatment. Is this assumption
-wrong?
+thanks,
 
-OTOH I believe there is a bug in the logic. The subsequent
-__free_pages() in swiotlb_alloc_tlb() would have to be changed to a
-free_decrypted_pages(). However, I'm proposing a different approach to
-address the latter issue here:
-
-https://lore.kernel.org/linux-iommu/20231026095123.222-1-petrtesarik@huaweicloud.com/T/
-
-Petr T
+greg k-h
