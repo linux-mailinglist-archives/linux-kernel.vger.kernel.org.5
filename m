@@ -2,179 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2E67DD128
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851787DD131
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344930AbjJaQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
+        id S1344939AbjJaQHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344803AbjJaQFg (ORCPT
+        with ESMTP id S1344881AbjJaQHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:05:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 915AF98;
-        Tue, 31 Oct 2023 09:05:33 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 179881FB;
-        Tue, 31 Oct 2023 09:06:15 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFD013F67D;
-        Tue, 31 Oct 2023 09:05:31 -0700 (PDT)
-Message-ID: <8ea0a404-e9cd-8895-d09f-c543132951e7@arm.com>
-Date:   Tue, 31 Oct 2023 16:05:32 +0000
+        Tue, 31 Oct 2023 12:07:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17838DA;
+        Tue, 31 Oct 2023 09:07:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5210CC433C7;
+        Tue, 31 Oct 2023 16:07:04 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 12:07:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Mark Brown <broonie@kernel.org>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: selftests: user_events: ftrace_test - RIP:
+ 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
+Message-ID: <20231031120702.70dbb21b@gandalf.local.home>
+In-Reply-To: <20231031104551.6e0f3620@gandalf.local.home>
+References: <CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com>
+        <20231027192011.GA436-beaub@linux.microsoft.com>
+        <20231027183640.2529ab68@gandalf.local.home>
+        <20231027223344.3854ac1f@rorschach.local.home>
+        <20231030163102.GA1853-beaub@linux.microsoft.com>
+        <20231030124223.4e4ddeb8@gandalf.local.home>
+        <20231030173151.0631169b@gandalf.local.home>
+        <20231031002707.GA107-beaub@linux.microsoft.com>
+        <20231031000031.1e705592@gandalf.local.home>
+        <20231031104551.6e0f3620@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] perf lock report: Restore aggregation by caller by
- default
-Content-Language: en-US
-To:     Nick Forrington <nick.forrington@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     stable@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-References: <20231031120526.11502-1-nick.forrington@arm.com>
- <20231031120526.11502-2-nick.forrington@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231031120526.11502-2-nick.forrington@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 31 Oct 2023 10:45:51 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
+> @@ -1404,7 +1424,7 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+>  		ret = -ENODEV;
+>  		mutex_lock(&event_mutex);
+>  		file = event_file_data(filp);
+> -		if (likely(file)) {
+> +		if (likely(file && !(file->flags & EVENT_FILE_FL_FREED))) {
+>  			printk("update file = %px\n", file);
+>  			printk("update tr = %px\n", file->tr);
+>  			ret = tracing_update_buffers(file->tr);
 
-On 31/10/2023 12:05, Nick Forrington wrote:
-> This change restores the previous default behaviour for "perf lock
-> report", making the current aggregate-by-address behaviour available via
-> the new "--lock-addr" command line parameter.
-> 
-> This makes the behaviour consistent with "perf lock contention" (which
-> also aggregates by caller by default, or by address when "--lock-addr"
-> is specified).
-> 
-> Commit 688d2e8de231 ("perf lock contention: Add -l/--lock-addr option")
-> introduced aggregation modes for "perf lock contention" and (potentially
-> inadvertently) changed the behaviour of "perf lock report" from
-> aggregate-by-caller to aggregate-by-address (making the prior behaviour
-> inaccessible).
-> 
-> Example aggregate-by-address output:
-> 
-> $ perf lock report -F acquired
->                 Name   acquired
-> 
->          event_mutex         34
->                              21
->                               1
-> 
-> Example aggregate-by-caller output:
-> 
-> $ perf lock report -F acquired
->                 Name   acquired
-> 
->  perf_trace_init+...         34
->  lock_mm_and_find...         20
->  inherit_event.co...          1
->     do_madvise+0x1f8          1
-> 
-> Cc: stable@kernel.org
-> Fixes: 688d2e8de231 ("perf lock contention: Add -l/--lock-addr option")
-> Signed-off-by: Nick Forrington <nick.forrington@arm.com>
-> ---
->  tools/perf/Documentation/perf-lock.txt |  4 ++++
->  tools/perf/builtin-lock.c              | 24 +++++++++++++++++++++---
->  2 files changed, 25 insertions(+), 3 deletions(-)
-> 
+Well, this won't apply because I still had debugging in it when I added
+these changes.
 
-Reviewed-by: James Clark <james.clark@arm.com>
+Here's a better version:
 
-> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-> index 503abcba1438..349333acbbfc 100644
-> --- a/tools/perf/Documentation/perf-lock.txt
-> +++ b/tools/perf/Documentation/perf-lock.txt
-> @@ -80,6 +80,10 @@ REPORT OPTIONS
->  --combine-locks::
->  	Merge lock instances in the same class (based on name).
->  
-> +-l::
-> +--lock-addr::
-> +	Show lock contention stat by address
-> +
->  -t::
->  --threads::
->      The -t option is to show per-thread lock stat like below:
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index fa7419978353..3aa8ba5ad928 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -78,7 +78,7 @@ struct callstack_filter {
->  
->  static struct lock_filter filters;
->  
-> -static enum lock_aggr_mode aggr_mode = LOCK_AGGR_ADDR;
-> +static enum lock_aggr_mode aggr_mode = LOCK_AGGR_CALLER;
->  
->  static bool needs_callstack(void)
->  {
-> @@ -1983,8 +1983,8 @@ static int __cmd_report(bool display_info)
->  	if (select_key(false))
->  		goto out_delete;
->  
-> -	if (show_thread_stats)
-> -		aggr_mode = LOCK_AGGR_TASK;
-> +	aggr_mode = show_thread_stats ? LOCK_AGGR_TASK :
-> +		show_lock_addrs ? LOCK_AGGR_ADDR : LOCK_AGGR_CALLER;
->  
->  	err = perf_session__process_events(session);
->  	if (err)
-> @@ -2008,6 +2008,19 @@ static void sighandler(int sig __maybe_unused)
->  {
->  }
->  
-> +static int check_lock_report_options(const struct option *options,
-> +				     const char * const *usage)
-> +{
-> +	if (show_thread_stats && show_lock_addrs) {
-> +		pr_err("Cannot use thread and addr mode together\n");
-> +		parse_options_usage(usage, options, "threads", 0);
-> +		parse_options_usage(NULL, options, "lock-addr", 0);
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int check_lock_contention_options(const struct option *options,
->  					 const char * const *usage)
->  
-> @@ -2589,6 +2602,7 @@ int cmd_lock(int argc, const char **argv)
->  	/* TODO: type */
->  	OPT_BOOLEAN('c', "combine-locks", &combine_locks,
->  		    "combine locks in the same class"),
-> +	OPT_BOOLEAN('l', "lock-addr", &show_lock_addrs, "show lock stats by address"),
->  	OPT_BOOLEAN('t', "threads", &show_thread_stats,
->  		    "show per-thread lock stats"),
->  	OPT_INTEGER('E', "entries", &print_nr_entries, "display this many functions"),
-> @@ -2680,6 +2694,10 @@ int cmd_lock(int argc, const char **argv)
->  			if (argc)
->  				usage_with_options(report_usage, report_options);
->  		}
-> +
-> +		if (check_lock_report_options(report_options, report_usage) < 0)
-> +			return -1;
-> +
->  		rc = __cmd_report(false);
->  	} else if (!strcmp(argv[0], "script")) {
->  		/* Aliased to 'perf script' */
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 12207dc6722d..696f8dc4aa53 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -492,6 +492,7 @@ enum {
+ 	EVENT_FILE_FL_TRIGGER_COND_BIT,
+ 	EVENT_FILE_FL_PID_FILTER_BIT,
+ 	EVENT_FILE_FL_WAS_ENABLED_BIT,
++	EVENT_FILE_FL_FREED_BIT,
+ };
+ 
+ extern struct trace_event_file *trace_get_event_file(const char *instance,
+@@ -630,6 +631,7 @@ extern int __kprobe_event_add_fields(struct dynevent_cmd *cmd, ...);
+  *  TRIGGER_COND  - When set, one or more triggers has an associated filter
+  *  PID_FILTER    - When set, the event is filtered based on pid
+  *  WAS_ENABLED   - Set when enabled to know to clear trace on module removal
++ *  FREED         - File descriptor is freed, all fields should be considered invalid
+  */
+ enum {
+ 	EVENT_FILE_FL_ENABLED		= (1 << EVENT_FILE_FL_ENABLED_BIT),
+@@ -643,6 +645,7 @@ enum {
+ 	EVENT_FILE_FL_TRIGGER_COND	= (1 << EVENT_FILE_FL_TRIGGER_COND_BIT),
+ 	EVENT_FILE_FL_PID_FILTER	= (1 << EVENT_FILE_FL_PID_FILTER_BIT),
+ 	EVENT_FILE_FL_WAS_ENABLED	= (1 << EVENT_FILE_FL_WAS_ENABLED_BIT),
++	EVENT_FILE_FL_FREED		= (1 << EVENT_FILE_FL_FREED_BIT),
+ };
+ 
+ struct trace_event_file {
+@@ -671,6 +674,7 @@ struct trace_event_file {
+ 	 * caching and such. Which is mostly OK ;-)
+ 	 */
+ 	unsigned long		flags;
++	atomic_t		ref;	/* ref count for opened files */
+ 	atomic_t		sm_ref;	/* soft-mode reference counter */
+ 	atomic_t		tm_ref;	/* trigger-mode reference counter */
+ };
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2539cfc20a97..9aebf904ff97 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4978,6 +4978,20 @@ int tracing_open_file_tr(struct inode *inode, struct file *filp)
+ 	if (ret)
+ 		return ret;
+ 
++	mutex_lock(&event_mutex);
++
++	/* Fail if the file is marked for removal */
++	if (file->flags & EVENT_FILE_FL_FREED) {
++		trace_array_put(file->tr);
++		ret = -ENODEV;
++	} else {
++		event_file_get(file);
++	}
++
++	mutex_unlock(&event_mutex);
++	if (ret)
++		return ret;
++
+ 	filp->private_data = inode->i_private;
+ 
+ 	return 0;
+@@ -4988,6 +5002,7 @@ int tracing_release_file_tr(struct inode *inode, struct file *filp)
+ 	struct trace_event_file *file = inode->i_private;
+ 
+ 	trace_array_put(file->tr);
++	event_file_put(file);
+ 
+ 	return 0;
+ }
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 0e1405abf4f7..b7f4ea25a194 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1669,6 +1669,9 @@ extern void event_trigger_unregister(struct event_command *cmd_ops,
+ 				     char *glob,
+ 				     struct event_trigger_data *trigger_data);
+ 
++extern void event_file_get(struct trace_event_file *file);
++extern void event_file_put(struct trace_event_file *file);
++
+ /**
+  * struct event_trigger_ops - callbacks for trace event triggers
+  *
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index f9e3e24d8796..f29e815ca5b2 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -990,13 +990,35 @@ static void remove_subsystem(struct trace_subsystem_dir *dir)
+ 	}
+ }
+ 
++void event_file_get(struct trace_event_file *file)
++{
++	atomic_inc(&file->ref);
++}
++
++void event_file_put(struct trace_event_file *file)
++{
++	if (WARN_ON_ONCE(!atomic_read(&file->ref))) {
++		if (file->flags & EVENT_FILE_FL_FREED)
++			kmem_cache_free(file_cachep, file);
++		return;
++	}
++
++	if (atomic_dec_and_test(&file->ref)) {
++		/* Count should only go to zero when it is freed */
++		if (WARN_ON_ONCE(!(file->flags & EVENT_FILE_FL_FREED)))
++			return;
++		kmem_cache_free(file_cachep, file);
++	}
++}
++
+ static void remove_event_file_dir(struct trace_event_file *file)
+ {
+ 	eventfs_remove_dir(file->ei);
+ 	list_del(&file->list);
+ 	remove_subsystem(file->system);
+ 	free_event_filter(file->filter);
+-	kmem_cache_free(file_cachep, file);
++	file->flags |= EVENT_FILE_FL_FREED;
++	event_file_put(file);
+ }
+ 
+ /*
+@@ -1369,7 +1391,7 @@ event_enable_read(struct file *filp, char __user *ubuf, size_t cnt,
+ 		flags = file->flags;
+ 	mutex_unlock(&event_mutex);
+ 
+-	if (!file)
++	if (!file || flags & EVENT_FILE_FL_FREED)
+ 		return -ENODEV;
+ 
+ 	if (flags & EVENT_FILE_FL_ENABLED &&
+@@ -1403,7 +1425,7 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 		ret = -ENODEV;
+ 		mutex_lock(&event_mutex);
+ 		file = event_file_data(filp);
+-		if (likely(file)) {
++		if (likely(file && !(file->flags & EVENT_FILE_FL_FREED))) {
+ 			ret = tracing_update_buffers(file->tr);
+ 			if (ret < 0) {
+ 				mutex_unlock(&event_mutex);
+@@ -1683,7 +1705,7 @@ event_filter_read(struct file *filp, char __user *ubuf, size_t cnt,
+ 
+ 	mutex_lock(&event_mutex);
+ 	file = event_file_data(filp);
+-	if (file)
++	if (file && !(file->flags & EVENT_FILE_FL_FREED))
+ 		print_event_filter(file, s);
+ 	mutex_unlock(&event_mutex);
+ 
+@@ -2902,6 +2924,7 @@ trace_create_new_event(struct trace_event_call *call,
+ 	atomic_set(&file->tm_ref, 0);
+ 	INIT_LIST_HEAD(&file->triggers);
+ 	list_add(&file->list, &tr->events);
++	event_file_get(file);
+ 
+ 	return file;
+ }
+diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+index 33264e510d16..0c611b281a5b 100644
+--- a/kernel/trace/trace_events_filter.c
++++ b/kernel/trace/trace_events_filter.c
+@@ -2349,6 +2349,9 @@ int apply_event_filter(struct trace_event_file *file, char *filter_string)
+ 	struct event_filter *filter = NULL;
+ 	int err;
+ 
++	if (file->flags & EVENT_FILE_FL_FREED)
++		return -ENODEV;
++
+ 	if (!strcmp(strstrip(filter_string), "0")) {
+ 		filter_disable(file);
+ 		filter = event_filter(file);
