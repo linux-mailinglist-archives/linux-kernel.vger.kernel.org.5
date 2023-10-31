@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5557DCE14
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9677DCE1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344621AbjJaNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        id S1344638AbjJaNn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344561AbjJaNmt (ORCPT
+        with ESMTP id S1344642AbjJaNnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:42:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6250A9F;
-        Tue, 31 Oct 2023 06:42:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698759767; x=1730295767;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aJcpi54mkMrL0wdJC8MpLSy7I+gdOKYWH8wlzsQiXAI=;
-  b=KLw0FFKk9Nf812PGKvbS1gYGeMnNrbGW1RY1t+nCzM3si+JEYbf1UMzE
-   wasfcIQCoB5KOXo5GjmstJGq6++2Gfr4sBEpmJJ0Lq26eRiTGFuc6m2Wu
-   i5Lo0bM0qHesBhPRrDfWDxIGxng3tu8dj9Ktn7zty9uEUf0FOmTCH8hmS
-   q4n7dd4kO79EyMW52/isPQtsxp8E35YAvwHNz6DIuFHt07g7AMVIBip+c
-   1z5a5Ez9dvxzBgBbemqsJTdik8OxxXvPqoIMvmgL08I+8gXFlLXFnQAym
-   FDQE29DsAMPfgf/mS0Z+utWQ4vgVmfS8QZzvnja+gft0gcLNRsRlI0L3r
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="391158031"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="391158031"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 06:42:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="737070285"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="737070285"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 06:42:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qxp0y-0000000A9sT-0EmV;
-        Tue, 31 Oct 2023 15:42:40 +0200
-Date:   Tue, 31 Oct 2023 15:42:39 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Gazzillo <paul@pgazz.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-Message-ID: <ZUEET34K7AOkFf4A@smile.fi.intel.com>
-References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
- <20231028162025.4259f1cc@jic23-huawei>
- <84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com>
- <6a697c62-6a7c-4b31-bc8e-10f40db0363d@gmail.com>
- <d528b45c-123d-4ef7-b110-7efbfef91bc5@gmail.com>
- <ZUDZIEY_uTVMHh3C@smile.fi.intel.com>
- <b01930d6-5bec-496c-89de-6cf6d178c860@gmail.com>
+        Tue, 31 Oct 2023 09:43:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835FE9F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698759783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwSdYaOUr2kkGu8J8P5xSwLcOrRCIPx0rihuqWdukug=;
+        b=hrN2yzqd58yYJGB2p6o5O29ro08XpBgzJX7NLnPQU8NktyWPEFwBco81/Fb/y9bHx9TJt+
+        XhcqM36PBIAGC+Ipw2ZZmmssMXaSlR+bGFJ5S5mEY09VB+/CnzzADaxL1g/KEXImPrGfr6
+        1rHjhRbSZ8SBWeg33wnKCe+p/NVhgqY=
+Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
+ [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-336-729IKFgnM6Waf9VEznhPwQ-1; Tue, 31 Oct 2023 09:43:02 -0400
+X-MC-Unique: 729IKFgnM6Waf9VEznhPwQ-1
+Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-457cbda3299so1838252137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:43:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698759782; x=1699364582;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YwSdYaOUr2kkGu8J8P5xSwLcOrRCIPx0rihuqWdukug=;
+        b=u3lMjM3hsdeUhrVQiPxiDGtHiKdVnUaVYVLRCvDrkSWKIV+kCv6SLKFzbo7H1qYa5r
+         aQqYOSYJJ2IVT4xopDSMDxgsxiYNP1yNdJUkrEnI9WYMFyn8SAZWwID0eudr0eN+x10D
+         343ixpNYNT2QhVV/FmCIgYuWEXbjXsnEXR5uiagAnpjbDoavnJZDVxUfd+A1lQYPmwzX
+         gH7pkkQkxcdM5RbD3oG8k1/9vmBEa0qyh8rfKs7NiDfZIfInYRPpSpjMX9TjE+oeAiS1
+         pMyWeOmkQNPcqpDQtmOP5NWaJ39oQOhytkwjDaYVyp/VnTb89sQj5bvZBFbI65I5C/NP
+         asEA==
+X-Gm-Message-State: AOJu0Yz5ovrBRQtQfex7rbb6xVmsE+GdR/Cpkqh1YJaYtzMS46HTgbnF
+        8VDOt1Z7h4ByThxETOsx8Dto7t0GQwNpM4GkANsHCKd8aqlks8mD6VgyZynJj0DY77xrRFETrNB
+        XxR84Jh+kWmzHqx0dfpHpyV3Cv0yHY6w3bOW8o53M
+X-Received: by 2002:a67:c309:0:b0:454:5a16:890d with SMTP id r9-20020a67c309000000b004545a16890dmr9314390vsj.24.1698759781857;
+        Tue, 31 Oct 2023 06:43:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHRazy8qcp9t/yo0fBuQc907BQJ2j/Y0Wh4UUVqODMdn1cN5WQIVHfZbUEnhTxW0TsQjpHHlBdX/HV9WIFM0tQ=
+X-Received: by 2002:a67:c309:0:b0:454:5a16:890d with SMTP id
+ r9-20020a67c309000000b004545a16890dmr9314371vsj.24.1698759781573; Tue, 31 Oct
+ 2023 06:43:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b01930d6-5bec-496c-89de-6cf6d178c860@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231030134806.24510492@canb.auug.org.au> <20231030-ignorant-liebschaft-6d603ab43494@brauner>
+ <3ed75fa4-6b49-4fd2-a907-8619ca19a8b8@redhat.com> <20231031073705.512dab4b@canb.auug.org.au>
+ <ZUAaiA0-FNRNy7wJ@google.com> <20231031081035.7f7d860b@canb.auug.org.au>
+In-Reply-To: <20231031081035.7f7d860b@canb.auug.org.au>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Tue, 31 Oct 2023 14:42:49 +0100
+Message-ID: <CABgObfa_-BYrx0s=PAed=S2C-NgoCuvdYaVS_D9Fm6FxSChQNA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kvm-x86 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 02:07:46PM +0200, Matti Vaittinen wrote:
-> On 10/31/23 12:38, Andy Shevchenko wrote:
-> > On Tue, Oct 31, 2023 at 09:11:37AM +0200, Matti Vaittinen wrote:
-> > > On 10/30/23 12:21, Matti Vaittinen wrote:
-> > > > On 10/29/23 17:51, Matti Vaittinen wrote:
-> > > > > On 10/28/23 18:20, Jonathan Cameron wrote:
+On Mon, Oct 30, 2023 at 10:10=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote:
+>
+> Hi Sean,
+>
+> On Mon, 30 Oct 2023 14:05:12 -0700 Sean Christopherson <seanjc@google.com=
+> wrote:
+> >
+> > That's my bad, I wanted to get the guest_memfd code exposure asap and j=
+umped the
+> > gun.  I'll yank the branch out kvm-x86/next.
+>
+> Thanks.
 
-...
+In all fairness, it was only recently pushed back from 6.7 to 6.8 so
+it probably would have made sense to include it _even earlier_. But I
+agree that at this point it's better if we wait for 6.7-rc1 before it
+makes it back into linux-next. At that point I'll include the conflict
+resolution myself.
 
-> > > 	tmp = gts->max_scale;
-> > > 
-> > > 	rem = do_div(tmp, total_gain);
-> > > 	if (total_gain > 1 && rem >= total_gain / 2)
-> > > 		tmp += 1ULL;
-> > 
-> > ...which is NIH DIV_ROUND_CLOSEST_ULL()
-> 
-> There is a difference though. The DIV_ROUND_CLOSEST_ULL() does
-> 
-> tmp + total_gain / 2;
-> 
-> before division - which in theory may overflow.
-
-Then you can fix it there for everybody, no?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Paolo
 
