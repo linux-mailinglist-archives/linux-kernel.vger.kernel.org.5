@@ -2,179 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F967DD141
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1AE7DD14F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344953AbjJaQKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
+        id S1344967AbjJaQND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344890AbjJaQKQ (ORCPT
+        with ESMTP id S1344932AbjJaQNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:10:16 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2027.outbound.protection.outlook.com [40.92.58.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3748BA6;
-        Tue, 31 Oct 2023 09:10:14 -0700 (PDT)
+        Tue, 31 Oct 2023 12:13:01 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AB9B4;
+        Tue, 31 Oct 2023 09:12:55 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bUWEzCX2yLvUiXi0lvKujfKsrspl90piFWQk5prehXbbvI+otCGKyETQqpgvEvW0EoPgOlbjOSuIXu0wEjxrlG3R1cetyFTrTWka7CKg1dRRq19nY+0y0fGC7iCqkFoWn1/YACtIEWk0k07CoZa5EEJiTHcGVUl3VUuVJC/si+Zvey2yv/z+If7JCQjSNKbuHAgAdzPlXz5MD3V3HpC9Z5+iOfDbD44v04yfj8MnSlCdyFADJu4pkVV5SIfV9lPHF9dta86LcAzdcmMukJKGGNkmvW5GfqPGv6hhJvHgWVAm5UMw9A4lChzf7qDLbECAn65e6I98ngGpLmpexqR7Xg==
+ b=LPVwuWON2GGWSEVpdrTH93f5fdeB7OZwMmWP0qaAKxOCtJIvxq5GpseNvqLoEfClCqrQa9wkcE++1/JQ3/SuFkxgN7t0YijahrPToHSgfpiP5X7AcP9gzDHCvnAo4uQyIzjDelIu2y2VBoeHVP8mr4KaaItVp03VEom1DMs5aP/eWTP4W1l5mV8g0At2G8wbd2mtSrjf0B1orsu52V1SzTBTy2mX0Q0t02Dq4fSpYYjY1v3yVp9DUDGHtGKQPzh9JTuLVeAeseWPm/hwjRUo+Evx8EX1SHS8U2cHS6UMPqV3C72t3i8lfS1ofOQyy3CnmkfrgnKuP91lMe1qG9Rt8g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0gfmPxWwXeaM6QWXK4y4FDkrdgrE/dEuHe+DiD9zSqk=;
- b=eq3c6UatFlcMgRddrMi/nHWq8L4KksR4ViVWTnRHkFpgtsODzYBMDZQUfoynR8Wz4tPDCIBdkz4+3XZ9IYsnwDWnmhTvLl5PJrL2HZoIqORX2F+lKMyyJcS9ARgU/w0Crqip02hzJS6IYefCASWsbSyxFHzPd+qYhcqx+cLgyMulg6F37PP5boKSbozKgIw0xjT4GvOryOqlaHMUgbnsGsJRUGqogr95mkvbAZS+S6x2hMbO/yrd+fqKDZLUUrtmjoSiNTwyDThwVzi6Wb42laZ9SJe0VLEKkQiOSnSq4OvlHv27vEx0JM+OI8ZhZ23OAa+wX3WFJShoLd/22V+8Fw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:333::21)
- by DB9P193MB1177.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:23c::17) with
+ bh=wBqhnm858FkMMMTikZwKO/A2KpRT5jvxIeKTQUNmV/I=;
+ b=H4jpiEgUNoMARG9yuMo712hsXImP972mpHpdvjyVAo13+Nly0JFkg+qi1GOvkh2zE8Zkq0TG382LKLKXwtKqFXtYwEwu8ur3Q4hdv4LOmaIv1DiOsjhT3rt/pjnhS+ymVMqCteUNiQuh9eXxVRn0pB0iJalriSm6vq2pJC9pnbdG0Q/HIeflCqaMyv1SOgKWJ7E5bz7xKZ7+7DyJH9sxxCrnblOqpmA3ls79/wmPOakM5QDq76wy8M6F3cLLKnmpuo23hwirmBkM6ZHqCaKQVbKw1F6lG6JBu2LQsRWULovXA9Fm9RIql92kZmfMpgZZlaofi8vnBrN5zrwgTMSbhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linux-foundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wBqhnm858FkMMMTikZwKO/A2KpRT5jvxIeKTQUNmV/I=;
+ b=F7uA1sP8ly21Jq6XodMAlucBbbkM+KmMGZgaKOByGycl+Xwy0B78jc9Q115BAHfjhlk4+R6YWZWT5Ojg7T5ZuJKif9SUo8NXbL09TlNLHeGTIYwk6ZOwNx6+uiaSkkkKf0dAXmpilrym1wO/rmsfyDhEIOoblw7Bg0bCwl93cePGqkrCcBa+U2QOHLxv0NuQIvy2s9WHhXjMAFZs8E6h7jVYdLGFk1ye57NOnSHvNFzOZuMazxOtV1grsy5dp92wGIuHSmHvw5zDztLxsACN/tN9CMAL5qmM0dgEv0XwlF5CcGyCj01awS6KBmHOhMr1945YIVX1C98y+QuyuN4Xog==
+Received: from SA0PR11CA0014.namprd11.prod.outlook.com (2603:10b6:806:d3::19)
+ by SJ2PR12MB9113.namprd12.prod.outlook.com (2603:10b6:a03:560::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
- 2023 16:10:12 +0000
-Received: from AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- ([fe80::b89e:5e18:1a08:409d]) by AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- ([fe80::b89e:5e18:1a08:409d%6]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
- 16:10:12 +0000
-Message-ID: <AS8P193MB1285473EE92FEDB65C08C131E4A0A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
-Date:   Tue, 31 Oct 2023 17:10:24 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: stmmac: Wait a bit for the reset to take effect
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <j37ktiug7vwbb7h7s44zmng5a2bjzbd663p7pfowbehapjv3by@vrxfmapscaln>
-Content-Language: en-US
-From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
-In-Reply-To: <j37ktiug7vwbb7h7s44zmng5a2bjzbd663p7pfowbehapjv3by@vrxfmapscaln>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TMN:  [6BUMgrm7791Q8ukIitnp+kUXt4NXH5ko7uCO9WIm+B+8QZ39lD9bhPkZw20dpltg]
-X-ClientProxiedBy: FR4P281CA0400.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:cf::20) To AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:20b:333::21)
-X-Microsoft-Original-Message-ID: <9fbb31ed-5164-4869-ab18-0a4a93591f53@hotmail.de>
+ 2023 16:12:53 +0000
+Received: from SA2PEPF00001509.namprd04.prod.outlook.com
+ (2603:10b6:806:d3:cafe::b8) by SA0PR11CA0014.outlook.office365.com
+ (2603:10b6:806:d3::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29 via Frontend
+ Transport; Tue, 31 Oct 2023 16:12:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SA2PEPF00001509.mail.protection.outlook.com (10.167.242.41) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.19 via Frontend Transport; Tue, 31 Oct 2023 16:12:53 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 31 Oct
+ 2023 09:12:32 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 31 Oct
+ 2023 09:12:31 -0700
+Received: from 717d7c0-lcedt.nvidia.com (10.127.8.12) by mail.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Tue, 31 Oct 2023 09:12:31 -0700
+From:   Dipen Patel <dipenp@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     <timestamp@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>
+Subject: [GIT PULL] hte: Changes for v6.7-rc1
+Date:   Tue, 31 Oct 2023 09:12:20 -0700
+Message-ID: <20231031161220.978069-1-dipenp@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8P193MB1285:EE_|DB9P193MB1177:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f3a2d28-bb3e-4be5-227e-08dbda2bdc3a
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001509:EE_|SJ2PR12MB9113:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a59abf1-d336-4cb8-a62b-08dbda2c3c81
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YUuRZFdzgSQNqTzmAMxBDixU6J0QC3TjL2f+WWSj1EtSHPJW+veijF/RPY7X2cEEP4curW13L7gPE+VWh4ncwEYxBoNEe+o+Uxqor6RV3Ms36ZQPp+wrC5w+Qd3JJPlpSPFJLvcP7tGbEj4LCWnEjdSgctxtj5IOtfAyOnpfEtCupOHU4L4Z/jG6vmsNkBLb+19wy127KweQhGYgp8ymRFoV8d6iNEEOZgSHr3GssB19cEtw9swD4QEU+rZWss9hW5iE25dhnJ0GnAh/ti8M7yL7Rce1W3AXTcHyREyqBzUk7cYQQodqRwEm3anGKxiymzVVkcNhgZ2o9O5YVf/wjG4aN5AanY1iqHezSbjMDoz/nCvDQvfhQalh4VdJWHl1JZoKsCOzT173r9l+RXy1tY9CNu/G5An2uOeQGJtASvEUe9nxYeU2Q9crt4zh1kxDZr/UGpblXgsuU940Wv4cWTMrPlpO1xsTtWB487ZLtK0e+4diFQeku87yHVBxz4nDm/hSgdmJsBHdnrVT8FC52ZPYwZ9EbjrovNHxhG4oqt3NTWYrNRS8AYxPqd/B94ae
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHpXS0xUeHdGcU45THpFWm5rL25lQS9wVVR2a0hTcHdwWWE2eEpqYkNicmhp?=
- =?utf-8?B?WkJueE9HUG14TkNheGtJNFkwNmIxTjFBYTBVSVUwejlhZTEwdDBsU1FidGNF?=
- =?utf-8?B?eEZMa1d1b3h6QTdWZTNxZEM4VE9nMTRkVjRqLzgzNFRRd2pDTGFDcEYzTWdE?=
- =?utf-8?B?bnNGYU5HUEMzY2FWRmFCNGUwRWRpZ0F4NHAxSW9pZC9yMEVDdkN5TlcxcFBn?=
- =?utf-8?B?Zm03cEJxNU9DRkdtQnY3WmdsWitYWjU2VU5wSXlOWmZnb3p6TGVHbjliRUpS?=
- =?utf-8?B?RGxxL1YzSTByNy9ISFNkdzNNMzI5YXhhcG5YY3BvajNDc1pMSWV5a3I0cTh1?=
- =?utf-8?B?aEVuQUQ4eDVZTjNLNUMxNTNjNWdTRkpSYVJ4RVFBRjllcisvdXczMUZITlk0?=
- =?utf-8?B?VXFaZng4U3lIeUwySXY2K3YwRUpBN2VuZXR0d3BlMEZ1cFNqZ3U1WmRzaExi?=
- =?utf-8?B?UzNBRlhXb0dXbDZGL0YvdmlyVGNkN1g3ZDhmWUo3M2xkNXl6dGluNnFxN2pD?=
- =?utf-8?B?TkI3N0dJejNTUDdjRzBsSTIwT3l5aDh5bXZxTTRaa2lOY3pZV24wSURiY2RG?=
- =?utf-8?B?THo3VVVJejhHVlBKRkdvOEZsUEtySDYydk1HcVR3L2pOQUFUS0U1cmd3MjN4?=
- =?utf-8?B?YVRhU3VBSjdFRWtmM1BXYk9Vc3Z0UTZvbnVEaEVSemY1Q0JreFg3K0lXMnFY?=
- =?utf-8?B?cWNKbW9IekpESVE5czNxdHo4UDI4VkREbFpHLzBUS1I3YTRYdG85NkpCcEVr?=
- =?utf-8?B?c2JWS3Y0Z0t5OWRTdnhsZ21YeUhjaStQQnhlQnBFNXRBZ3REUytNcTNrSWQr?=
- =?utf-8?B?dWFuRWl0bHA1Z2ZyUEppVHJQdndOYVl0Y1ZaaFlJc3h4eGtrQkI3MDh5aGRr?=
- =?utf-8?B?VmUvZlJkV2N2RzQwWTRPUFdsSXlFaEVBY0RKYVVYRmhMNWMvMXpIRGhWblRQ?=
- =?utf-8?B?eXUxZ3lsSm44Q2hzUVl3UHZlT2JiZlBXamowVkJMMkRjSHhIcFpMczZlSTVq?=
- =?utf-8?B?RXZUTUpaVkZSZXUvb1YwNjFLcm1YaW1wWXlIN3VZbzhxN0YvNFQrR1ZDZFBm?=
- =?utf-8?B?QVIwVkVqZzFXRVJYcXg2UHNEWXZMS1JTNGZ3eDNIRjlQclExNC9CRktLdTha?=
- =?utf-8?B?ZGdKTjRLd1lXT0E5aytTNFk3UWZ5QS9yc1BDZEVIVHA3bHdmNWE2R0ZaWHJS?=
- =?utf-8?B?dDRJclljeERZRHBLTmVpejJuSFJKS1oyOVZrcThQTmlHVlNjVEQ3M0ZyYjBy?=
- =?utf-8?B?WDZKQWxUMnFCQVJ0aVFqZ3Azai9PWHc2ZFYxL3hiSXhjL3h6NjRwdmM0OFhM?=
- =?utf-8?B?cGNjSnpDaG9WNzNnaGlkS2xqeFlDYSs4QzA3b3NiTURzZ1U4U2ZlempZUXVO?=
- =?utf-8?B?NHJWTzdMS2xuR3d1N1dOSnNISVhZamxFZkh2V1NxZG9ZSHAzNTl3ZXQxSEo0?=
- =?utf-8?B?UW50VkhFVHo4cmlqM1RldnJhTEVOdWFrWVVYaVM3ajVwZnVvTXpXRUF1aDRn?=
- =?utf-8?B?NHYyUVRPVkhOaE9tcjNTMjV5OEpCalJkaWlpU0JYSytnWEZPbmg5U3VVZlVL?=
- =?utf-8?B?bEVUS1pvdDMxMVBMNEFFMjhlTXBYOUdaMW9RRmVYMjJWUmZNR1dLV0cyaURo?=
- =?utf-8?B?dUpTYWZSeGhSZ1NlMlU0c1ZlbDdWaWF4QUtXS2xXdmlGMXdNSjlvYkVnMHU4?=
- =?utf-8?B?VTBPb2VycDlIYllhdC9FQWFhNUZWZi9BK0c2clZ4em5pMHk1TnEzeHdPaWIx?=
- =?utf-8?Q?sAnUoVdoHeWPNyyAI8=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-80ceb.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f3a2d28-bb3e-4be5-227e-08dbda2bdc3a
-X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:10:12.0736
+X-Microsoft-Antispam-Message-Info: Esv6hQ8HPKDsE8Xy1LazZGnbM+i2Zg6uxMbOE46bP+L4E96uE4QzA7TTg7tTHECH4nDWPZd4spPQa1Bq+8Yn1NRQ6sFvgTIDTxezn/ex2XnZrCy5kekn6I7y+w2n4Xh6eOVSTFD6NOi3O6JqULUWZUWsJ5LRYNoWH0SLZVaLfWoEJGrfdlP7iYdkhnetOLNdVkxRPl7B2MiEQj/UDcIdAMGT8Rnx0yi1eosf2HRq9nDt8/HWpS3Kx8XbFznAoKzT0mFLbH6zHahcZ7z7rYRNy/dy7VU4UxP0YWN9Gga2dwaGMnQn296SObR+siUmjyXDOFDF6eTVWd2q5XrYhRNVsIok0NwAfirAyDq0P0ux7Q5ED8USNt1cwol7raUFzxdhdVBWhXQnJfVpEGoTDyWSpaiqscfHzVtGrWK95frzSvoThHlLWgYsMzaIcZEXpqjvTY9g4UZ1iRG7PA9T8UVveRrEVjGo+iBH4sBExhgB6BR5ef/I9owTwmi0Di3St6tsUPkYOKMq1aTKYAUBRNS7FSl7j8SitZt7Rq6Xv990/t8n4lFpXDvxjaBdOeeSwQ1KI3PHYYhzlj6JvZtGBhLjIVm165iWhJ2Mv7oj7XzHwHej98zTGh/zzPm6NQKBkS25qzlXVLadiGsYhhp72bg91gX9J12bpf8FQF35qcle0sGu+e3Flg+d2p528TcqWZevrBPZJ9tkiv4tBeqKWC6ASPJNLtRSgihVOwwEBZ3GV8Lb4Ml2R6k1Rpw8svKJj+j8
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(39860400002)(396003)(230922051799003)(82310400011)(186009)(451199024)(1800799009)(64100799003)(46966006)(40470700004)(36840700001)(86362001)(82740400003)(36756003)(40480700001)(4001150100001)(478600001)(41300700001)(8936002)(4326008)(8676002)(6666004)(7696005)(83380400001)(2906002)(1076003)(26005)(426003)(2616005)(40460700003)(47076005)(5660300002)(316002)(70206006)(70586007)(54906003)(6916009)(7636003)(356005)(336012)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:12:53.0196
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P193MB1177
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a59abf1-d336-4cb8-a62b-08dbda2c3c81
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001509.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9113
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/pateldipen1984/linux.git tags/for-6.7-rc1
+
+for you to fetch changes up to fc62d5e214df2dd64f5d675f01b609d86a422a2b:
+
+  hte: Use kasprintf() instead of fixed buffer formatting (2023-10-27 14:09:22 -0700)
+
+----------------------------------------------------------------
+hte: Changes for v6.7-rc1
+
+The changes for the hte/timestamp subsystem include the following:
+- Improve comments in the translate function
+- Reflect the GPIOLIB API changes during calculation of the GPIO base
+- Improve error handling in Tegra test and provider drivers
+- Improve code to set the line name
+
+This change set has minor merge conflict with the gpio-brgl tree
+and could be resolved with below details:
+
+diff --cc drivers/hte/Kconfig
+index 8e0fd818a73e,083e67492bf2..000000000000
+--- a/drivers/hte/Kconfig
++++ b/drivers/hte/Kconfig
+@@@ -16,8 -16,7 +16,8 @@@ if HT
+  
+  config HTE_TEGRA194
+  	tristate "NVIDIA Tegra194 HTE Support"
+- 	depends on ARCH_TEGRA_194_SOC
++ 	depends on (ARCH_TEGRA_194_SOC || COMPILE_TEST)
+ +	depends on GPIOLIB
+  	help
+  	  Enable this option for integrated hardware timestamping engine also
+  	  known as generic timestamping engine (GTE) support on NVIDIA Tegra194
 
 
-On 10/31/23 11:32, Serge Semin wrote:
-> On Mon, Oct 30, 2023 at 07:01:11AM +0100, Bernd Edlinger wrote:
->> otherwise the synopsys_id value may be read out wrong,
->> because the GMAC_VERSION register might still be in reset
->> state, for at least 1 us after the reset is de-asserted.
-> 
-> From what have you got that delay value?
-> 
+----------------------------------------------------------------
+Andy Shevchenko (3):
+      hte: tegra194: Remove redundant dev_err()
+      hte: tegra194: Switch to LATE_SIMPLE_DEV_PM_OPS()
+      hte: Use kasprintf() instead of fixed buffer formatting
 
-Just try and error, with very old linux versions and old gcc versions
-the synopsys_id was read out correctly most of the time (but not always),
-with recent linux versions and recnet gcc versions it was read out
-wrongly most of the time, but again not always.
-I don't have access to the VHDL code in question, so I cannot
-tell why it takes so long to get the correct values, I also do not
-have more than a few hardware samples, so I cannot tell how long
-this timeout must be in worst case.
-Experimentally I can tell that the register is read several times
-as zero immediately after the reset is de-asserted, also adding several
-no-ops is not enough, adding a printk is enough, also udelay(1) seems to
-be enough but I tried that not very often, and I have not access to many
-hardware samples to be 100% sure about the necessary delay.
-And since the udelay here is only executed once per device instance,
-it seems acceptable to delay the boot for 10 us.
+Bartosz Golaszewski (2):
+      hte: allow building modules with COMPILE_TEST enabled
+      hte: tegra194: improve the GPIO-related comment
 
-BTW: my hardware's synopsys id is 0x37.
+Harshit Mogalapalli (1):
+      hte: tegra: Fix missing error code in tegra_hte_test_probe()
 
+Kees Cook (1):
+      hte: Annotate struct hte_device with __counted_by
 
-Bernd.
-
-> -Serge(y)
-> 
->>
->> Add a wait for 10 us before continuing to be on the safe side.
->>
->> Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
->> ---
->>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->> index 5801f4d50f95..e485f4db3605 100644
->> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->> @@ -7398,6 +7398,9 @@ int stmmac_dvr_probe(struct device *device,
->>  		dev_err(priv->device, "unable to bring out of ahb reset: %pe\n",
->>  			ERR_PTR(ret));
->>  
->> +	/* Wait a bit for the reset to take effect */
->> +	udelay(10);
->> +
->>  	/* Init MAC and get the capabilities */
->>  	ret = stmmac_hw_init(priv);
->>  	if (ret)
->> -- 
->> 2.39.2
->>
->>
+ drivers/hte/Kconfig             |  4 ++--
+ drivers/hte/hte-tegra194-test.c |  4 +++-
+ drivers/hte/hte-tegra194.c      | 26 +++++++++++++-------------
+ drivers/hte/hte.c               | 15 +++++----------
+ 4 files changed, 23 insertions(+), 26 deletions(-)
