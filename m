@@ -2,236 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6E17DC6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9277DC6FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343547AbjJaHLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S1343570AbjJaHMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343497AbjJaHLn (ORCPT
+        with ESMTP id S1343565AbjJaHMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:11:43 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C27C2;
-        Tue, 31 Oct 2023 00:11:40 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507c91582fdso7692654e87.2;
-        Tue, 31 Oct 2023 00:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698736299; x=1699341099; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WC4FQ8HjBFyDld6QjIj9zYCdwxXzfSzp/WExAXAKuLo=;
-        b=csw6TDJadqiDUA0SVy6o82HPm/nM+acyVp/7Ij1m7Miis9H++OkSwy3QmlLryAPQGV
-         mXrSIMN+PyzxgDIcn0n35QGUf4TCCTrv4bwoKG9ge18ydAbzOpPMPrtxo9FT26a51HJh
-         JxrjENwmP0hZjyyQd2L6FzZ/M1WHJ7wm3bno6QV2zFv0TGUD5YZwWojbjlXBw8NNoHlq
-         S+iSTl1reLxSVGUINx/NOc2stNFce9OrH4DqsaJtSesWuPjMamaAyrnNBYc5FVbKXQ4X
-         3oJDFUYiTOkiWICqL54qldZ1qpFjBhjiKcBDibgyW3SuZygumhS3Wzf5EFdVm/arw30/
-         fqNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698736299; x=1699341099;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WC4FQ8HjBFyDld6QjIj9zYCdwxXzfSzp/WExAXAKuLo=;
-        b=xSyduuYKBnG3fn3zztObmpySyHJ3XvM+xelVHezNy+MS70mHYd9frxb9siRwupAJzS
-         TiUTeoX0cumZF044W25Pil3b7CE7dUDvmliwfLqzL6xAMaJvcbAdDEXC5xW5AR+kDa3R
-         7nV7J1USuBCRNWlMYcoP79injgM7+0yaIwGrEZpPnTFFYKdLJ+y1HWaAKksiI2Dj3PBJ
-         SfXl0RhfxJx5aa10GoSwwjigR670Q2mQDog9CkIZXsRBzqPPaD2o3RsSkl7Gb56ohTjn
-         3tug2WzsaQGKP1jzqzpRH8VBQMf7PbOSuszZzy9j+yloQWfPGFDm4dkRsHd6DhCMLGrf
-         RAPQ==
-X-Gm-Message-State: AOJu0YyMB8jFpXN/m29AhP0uNt8nyUMOTGqeqjExGYTPJ+TSTQxS1SQ+
-        5hPZt3ePexN3ScqKI6m0r6g=
-X-Google-Smtp-Source: AGHT+IFmHnzAN0wVPRXBOF2R+/P2XF0dD34/Bpdf81a0le7DmkR0WcDsG7xh6UnJSo3SqA8j3vfkGg==
-X-Received: by 2002:a19:f70c:0:b0:503:3278:3221 with SMTP id z12-20020a19f70c000000b0050332783221mr8238406lfe.69.1698736298744;
-        Tue, 31 Oct 2023 00:11:38 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::1? (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id o17-20020ac24bd1000000b00501c673e773sm115215lfq.39.2023.10.31.00.11.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 00:11:38 -0700 (PDT)
-Message-ID: <d528b45c-123d-4ef7-b110-7efbfef91bc5@gmail.com>
-Date:   Tue, 31 Oct 2023 09:11:37 +0200
+        Tue, 31 Oct 2023 03:12:54 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870FCD8;
+        Tue, 31 Oct 2023 00:12:51 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V6NIt1015035;
+        Tue, 31 Oct 2023 07:12:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=fI79fCu7u7JtqeAo3O8pgl49D1o129Qrn5JbKv9fzRQ=;
+ b=Y/d2Szs27U43kVCQr8k2z/kdDfYMbf1fQXVvtAxYcAEBEMiwXefEk2r7p4QpAW5Py8bh
+ JjL+K5+RVGP/SJCRU3vwcgRkv3xD6MiOj7Gfig/QvCzu8kQxEcmkQnvpnqyPc1UcHj0K
+ RDrqun1LL8NwcoPwwBj5zPIGvKlQIFgNdS1OVKa8+A21QFNy3pX1mo2op1oCwTST0FeI
+ PVRv2XcjVitZfzT0j+V+IF8vCaNpwxsEBroaSLYZALF5awoutK5EzwStnoXH2XfiCovb
+ +vqlMNMytH9nmMEwhmcbgQeF+2k6YNnUS4FTevA2iOTYh+n7tmxZsKkfN3nASawDfHCU pA== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2mcygwxy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 07:12:18 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V7CHpT004161
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 07:12:17 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 31 Oct 2023 00:12:10 -0700
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <rafael@kernel.org>,
+        <viresh.kumar@linaro.org>, <ilia.lin@kernel.org>,
+        <sivaprak@codeaurora.org>, <quic_kathirav@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>
+CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: [PATCH v6 1/2] cpufreq: qti: Enable cpufreq for ipq53xx
+Date:   Tue, 31 Oct 2023 12:41:38 +0530
+Message-ID: <cce70842d0ea7d46406fa7d25138d3e38018fe3b.1698735972.git.quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1698735972.git.quic_varada@quicinc.com>
+References: <cover.1698735972.git.quic_varada@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-Content-Language: en-US, en-GB
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gazzillo <paul@pgazz.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
- <20231028162025.4259f1cc@jic23-huawei>
- <84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com>
- <6a697c62-6a7c-4b31-bc8e-10f40db0363d@gmail.com>
-In-Reply-To: <6a697c62-6a7c-4b31-bc8e-10f40db0363d@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 30cwzmSCJm0XsI5kH8KCJIyFcJ9oZpF0
+X-Proofpoint-ORIG-GUID: 30cwzmSCJm0XsI5kH8KCJIyFcJ9oZpF0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310054
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 12:21, Matti Vaittinen wrote:
-> Hi dee Ho peeps,
-> 
-> On 10/29/23 17:51, Matti Vaittinen wrote:
->> On 10/28/23 18:20, Jonathan Cameron wrote:
->>> On Fri, 27 Oct 2023 18:15:45 +1030
->>> Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
->>>
->>>> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor 
->>>> with als
->>>> and clear channels with i2c interface. Hardware interrupt 
->>>> configuration is
->>>> optional. It is a low power device with 20 bit resolution and has
->>>> configurable adaptive interrupt mode and interrupt persistence mode.
->>>> The device also features inbuilt hardware gain, multiple integration 
->>>> time
->>>> selection options and sampling frequency selection options.
+IPQ53xx have different OPPs available for the CPU based on
+SoC variant. This can be determined through use of an eFuse
+register present in the silicon.
 
-...
+Added support for ipq53xx on nvmem driver which helps to
+determine OPPs at runtime based on the eFuse register which
+has the CPU frequency limits. opp-supported-hw dt binding
+can be used to indicate the available OPPs for each limit.
 
->>>> +static int apds9306_scale_set(struct apds9306_data *data, int val, 
->>>> int val2)
->>>> +{
->>>> +    int i, ret, time_sel, gain_sel;
->>>> +
->>>> +    /* Rounding up the last digit by one, otherwise matching table 
->>>> fails! */
->>>
->>> Interesting.  Sounds like a question for Matti?
->>
->> Sounds odd indeed. I assume this happens when scale setting is 
->> requested using one of the exact values advertised by the available 
->> scales from the GTS? This does not feel right and the +1 does not ring 
->> a bell to me. I need to investigate what's going on. It would help if 
->> you could provide the values used as val and val2 for the setting.
->>
->> This will take a while from me though - I'll try to get to this next 
->> week. Thanks for pointing out the anomaly!
->>
-> 
-> I think I have a rough understanding. I did a Kunit test which goes 
-> through all the available scales values from the 
-> gts->avail_all_scales_table and all integration times, and feeds them to 
-> the logic below. It seems the first culprit is hit by:
-> val = 0, val2 = 125025502.
-> 
-> Problem is that the 125025502 is rounded. The exact linearized NANO 
-> scale resulting from time multiplier 128, gain multiplier 1 is 
-> 125025502.5 - which means we will see rounding.
-> 
->>>
->>>> +    if (val2 % 10)
->>>> +        val2 += 1;
-> 
-> For a while I was unsure if this check works for all cases because I see 
-> linearized scales:
-> 250051005 - multipliers 1x, 64x
-> 83350335 - multipliers 3x, 64x and 6x, 32x
-> 27783445 - multipliers 9x, 64x.
-> 
-> For those we will get + 1 added to val2 even though there is no 
-> rounding. It appears this is not a problem because the 
-> iio_gts_get_gain() (which is used to figure out the required total gain 
-> to get the desired scale) does not require the scale to be formed by 
-> exact multiples of gain.
+nvmem driver also creates the "cpufreq-dt" platform_device after
+passing the version matching data to the OPP framework so that the
+cpufreq-dt handles the actual cpufreq implementation.
 
-...
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+---
+v6:	Rebase to top of tree
+v5:	Merge IPQ53xx with existing APQ8096 case
+v2:	Move IPQ53xx after APQ8096SG
+---
+ drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+ drivers/cpufreq/qcom-cpufreq-nvmem.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-> I think it would be very nice if the gts-helpers could do the rounding 
-> when computing the available scales, but that'd require some thinking. 
-> Fixup patch is still very welcome ;)
-
-I did some further experimenting. Basically, I did a "hack" which always 
-rounds up the available-scales values if division results a remainder. 
-This way the values advertised by the available_scales did find the 
-matching table.
-
-It is a tiny bit icky because for example the scale 6945861.25 becomes 
-6945862 in available-scales. Also, I assume that if we "hack" just the 
-available-scales and don't fix the rest of the logic, setting 6945862 
-will read back as 6945861 (I haven't tested this though). Also, the 
-20837583.75 will be 20837583 in available-scales but 20837582 when read 
-back, resulting small error. (I haven't tested this either but I assume 
-the current GTS code is flooring the 20837583.75 to 20837583.
-
-I am wondering if changing the iio_gts_get_gain() to do rounding instead 
-of flooring and changing also the iio_gts_total_gain_to_scale() to 
-something like:
-
-int iio_gts_total_gain_to_scale(struct iio_gts *gts, int total_gain,
-				int *scale_int, int *scale_nano)
-{
-	u64 tmp;
-	int rem;
-
-	tmp = gts->max_scale;
-
-	rem = do_div(tmp, total_gain);
-	if (total_gain > 1 && rem >= total_gain / 2)
-		tmp += 1ULL;
-
-	return iio_gts_delinearize(tmp, NANO, scale_int, scale_nano);
-}
-
-would do the trick. It's just that I'm a bit afraid of touching the 
-iio_gts_get_gain() - by the very least I need to fire up the GTS tests 
-which I implemented but are not in-tree due to the test-device 
-dependency... :/
-
-Any thoughts?
-
->>>> +
->>>> +    ret = iio_gts_find_gain_sel_for_scale_using_time(&data->gts,
->>>> +                     data->intg_time_idx, val, val2, &gain_sel);
->>>> +    if (ret) {
->>>> +        for (i = 0; i < data->gts.num_itime; i++) {
->>>> +            time_sel = data->gts.itime_table[i].sel;
->>>> +
->>>> +            if (time_sel == data->intg_time_idx)
->>>> +                continue;
->>>> +
->>>> +            ret = 
->>>> iio_gts_find_gain_sel_for_scale_using_time(&data->gts,
->>>> +                        time_sel, val, val2, &gain_sel);
->>>> +            if (!ret)
->>>> +                break;
->>>> +        }
->>>> +        if (ret)
->>>> +            return -EINVAL;
->>>> +
->>>> +        ret = apds9306_intg_time_set_hw(data, time_sel);
->>>> +        if (ret)
->>>> +            return ret;
->>>> +    }
->>>> +
->>>> +    return apds9306_gain_set_hw(data, gain_sel);
->>>> +}
-
-Yours,
-	-- Matti
-
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index 0718191..53da255 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -180,6 +180,7 @@ static const struct of_device_id blocklist[] __initconst = {
+ 	{ .compatible = "ti,am62a7", },
+ 	{ .compatible = "ti,am62p5", },
+ 
++	{ .compatible = "qcom,ipq5332", },
+ 	{ .compatible = "qcom,ipq6018", },
+ 	{ .compatible = "qcom,ipq8064", },
+ 	{ .compatible = "qcom,ipq8074", },
+diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+index 158c0e1..4f7af70 100644
+--- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
++++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+@@ -183,6 +183,11 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
+ 	switch (msm_id) {
+ 	case QCOM_ID_MSM8996:
+ 	case QCOM_ID_APQ8096:
++	case QCOM_ID_IPQ5332:
++	case QCOM_ID_IPQ5322:
++	case QCOM_ID_IPQ5312:
++	case QCOM_ID_IPQ5302:
++	case QCOM_ID_IPQ5300:
+ 		drv->versions = 1 << (unsigned int)(*speedbin);
+ 		break;
+ 	case QCOM_ID_MSM8996SG:
+@@ -541,6 +546,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
+ 	{ .compatible = "qcom,msm8909", .data = &match_data_msm8909 },
+ 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
+ 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
++	{ .compatible = "qcom,ipq5332", .data = &match_data_kryo },
+ 	{ .compatible = "qcom,ipq6018", .data = &match_data_ipq6018 },
+ 	{ .compatible = "qcom,ipq8064", .data = &match_data_ipq8064 },
+ 	{ .compatible = "qcom,ipq8074", .data = &match_data_ipq8074 },
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+2.7.4
 
