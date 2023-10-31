@@ -2,224 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D04547DC8EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 609F97DC94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343622AbjJaJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S1343828AbjJaJT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjJaJD3 (ORCPT
+        with ESMTP id S1343818AbjJaJTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:03:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F62F91;
-        Tue, 31 Oct 2023 02:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698743007; x=1730279007;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=EGNgA94oXAw09RVBKtnA0YU9qgZQ1tBWJ2ac+m8Ipsw=;
-  b=kJx1bR8CwES67RYFanpm0ngX8tjUWdulUdq/Czg64ZFzgv3ZKbPV5DFb
-   G+YRBmE7bpn/04mz7vQ3JTajngFy8eAI8xIC6TSKB82wWa9sARQONX2Ez
-   pWvd4bqyP3T8k6cYLiSZOGvVsP/51kois8E2LSkFWg58yUPd6ov2v2sd/
-   mXfcUwAvpT+P+mSu/+nKztqj+6VmkI7n+lX9GpRkEQQmKCQ1FqmJMRiVJ
-   MzPtBSuHvaUs2uu3XVSdDlaf7rtICQhUypiRu+nN6dr58C3rAFTaPd8BM
-   jwr/b1Ck/bmHxdVSaNvdaqxS1LQgwkjHETKaLlkVHgE5/qPV1Txa68K/J
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="419355714"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="419355714"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 02:03:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="934040951"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="934040951"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 02:03:25 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:03:25 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 02:03:25 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:03:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KEvmwmKFeDMOT9VK7Chojdwd/8n19d7M8E6kPtVVbBkwz3+hqKxfXQ+inxA94b4BYd6Qv2j5ekf5FQaga3FUDNco5b/XPsB4z1gii0TUFdiHFzw60TuiLtCi6sfeWAcHLV0JOXOT7KjfC1lrjnaUI+lSaIhAzDKTcZjQ/11Y8Cc/RIvvXnvjWfYemaKtMpSsnrgDhL4oAw8FDqPAVJUJ7QbkXMhRS6xTyVYgSmEsAjX/pawrnHZjfxU3MooXsDBWWL+D0XPeigmwt1/eeg66HkgH/xxL9qQnIpRwdwuQcaC/BcC2bair5/DrXlwyuYLC86fXwm2nU7/BJAv1HZ1ozQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EGNgA94oXAw09RVBKtnA0YU9qgZQ1tBWJ2ac+m8Ipsw=;
- b=WOhWBLr4RLcypgHryUn+EkM1CK799TzFstjjNPFwgB4JCKFv5DULY9lxYykHELvWoDh6vFca7j+clZpKo1ZrXI12T0fSPgAyL+xl5gVD8iK560v+59u+JNJRn45NnzeN6HaD1v2nne1C3VLDnQbO80MNdNXomhb1Tu9+hQD/vsFsWgwHFHXyEszrqkh2OPsg7CiblRF8ETSAQ/tqVQOUGCb6ReDgE/7E0MvLhnwMbIISAjS5i8MGxmZIQH74Es8c0Ag6Qe+kpNkY4FfG+OfGLWA7wdrj5bXztt9RGDX2eq0o4LB9olpt3P+EG1S1SMtyVTbgtylTQ3dyEyyjIYo1PQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH7PR11MB5983.namprd11.prod.outlook.com (2603:10b6:510:1e2::13)
- by DS7PR11MB6013.namprd11.prod.outlook.com (2603:10b6:8:70::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 31 Oct
- 2023 09:03:23 +0000
-Received: from PH7PR11MB5983.namprd11.prod.outlook.com
- ([fe80::64e:c72b:e390:6248]) by PH7PR11MB5983.namprd11.prod.outlook.com
- ([fe80::64e:c72b:e390:6248%7]) with mapi id 15.20.6933.027; Tue, 31 Oct 2023
- 09:03:23 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xin@zytor.com" <xin@zytor.com>
-CC:     "Yang, Weijiang" <weijiang.yang@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines
- and usages
-Thread-Topic: [PATCH v3 1/2] KVM: VMX: Cleanup VMX basic information defines
- and usages
-Thread-Index: AQHaC4qIl4qggoTYS0eBXdgT5AVuvLBjmxgA
-Date:   Tue, 31 Oct 2023 09:03:22 +0000
-Message-ID: <2158ef3c5ce2de96c970b49802b7e1dba8b704d6.camel@intel.com>
-References: <20231030233940.438233-1-xin@zytor.com>
-In-Reply-To: <20231030233940.438233-1-xin@zytor.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB5983:EE_|DS7PR11MB6013:EE_
-x-ms-office365-filtering-correlation-id: 9eb3c3ab-fa18-40e8-8c0f-08dbd9f03c40
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ad8PbdAQc5ZoPiNsVvQw3NBKfpEIVIBF505QBUDaQh9O09lU0u/qgU02scsbpNckVflfZsNl4qGLigcvHx7QrHFaZVjdjZ/YOj7DJscrsg3gVxjhbMF/6iwZVHzCF1dBDR1R9HGlTCjlEDT1KYn5PvSymtpCtjXNSiXRVSdSZTAAudtR9YOqBdkBFXCze8i4pWOI+LtsT7G7csEX2HZnp3RF7C/YzKa4ZrtpsgbEMqK/WFo6JhKAjBpqQin/bYcPgrrRvF5QcignK939DZJrH0q5JNAYCCyYGIGZNOaLJeK/Ggfo/TIzZUqoyIFj99YfFUUDg2kBzgY+qTWOyj4zBg+1iq2fR3W+vxg2orA12wDz0hQlzffBu7zZQGkZNqvgQKfjEQALcZvxgpflqaS2i/2gMnDxPyJ3MtIFisYOut0mfpO7N/KYHk3rAx3tdabFaq530GoGQjfHPG5w4OMp0vDhsz2lXTTbRICxuoz8zlKyhcYaipyzAnW3BHAUFDPm5+25dhcXpz2YvnI2LEbhJHl9ulVp0lP9H/TAcm1YsJxIh19o9zx8qRwo1BxmThUERKfRKsKX3iMeko6zJY1eOzO51fl+aUrqYgFceLifXPcNB6I445hFbVXLxqUw9AFe
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5983.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(54906003)(36756003)(2906002)(4001150100001)(5660300002)(7416002)(26005)(66556008)(8936002)(122000001)(4326008)(38070700009)(38100700002)(82960400001)(41300700001)(8676002)(316002)(66946007)(64756008)(76116006)(110136005)(91956017)(2616005)(478600001)(6512007)(71200400001)(66446008)(6486002)(66476007)(86362001)(6506007)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ajRqQkhtMi9vemMwN0QrZDZ6QUJhV1VmWEJYWUhzM2RCY0FmbWtpVEhsbG5T?=
- =?utf-8?B?Z0NEUjc3dGZsOGYxMWhiKzRManFxYUF2eVpadU9iR002UzhtS1RWRjZSMG0y?=
- =?utf-8?B?OTlKSm8xOXA3aDJEOTJTdnJYeGh2YUNTMjNSdjhqcjZ5T3J0eE05UjZ2UzBI?=
- =?utf-8?B?NEcrS3d1eFBsQy9kdkZyaUZJM1k2WGlKWW9ELy85U2tYOVNiNGgxeXJtRTlm?=
- =?utf-8?B?cVFuc1lkWHRvNW56ak44UG5MMXdLVnVJZXc3bmhOb1d4cklEbGRnTjYwU0ZU?=
- =?utf-8?B?UGNmQ2x4OWpETjJ1aVZDUlNSK20rUFBadGZ0bUViSXdPcERRV2htem5paDVF?=
- =?utf-8?B?WVdac2M4OEJwL0ZHSjB0SS93N0wvM3cxdVFrbXNHV29pUFNSdVhWdDNWSS81?=
- =?utf-8?B?N2QzaSswNVkvWW5DMis1ZWVkcWhMbXBwT2J0SWtodEw5a0JITkdwVkhiTkFp?=
- =?utf-8?B?VmhUVnZxUzZ1Y00wS0FUVVowN2ttWmxOSmZod3RLUjIzWWpmc21WTlZDODI3?=
- =?utf-8?B?MEZXTDNJNDVhRlorWVJXbWUzWVZTc2RhT3FXR3dFd29VQ01NL1cwczFwOHJV?=
- =?utf-8?B?bWxIR3EzRmh0UU5YZlI3R1dJSGs0Ym1OVHBpNEpjUVM4WXQ1K1o0cWdqOVBp?=
- =?utf-8?B?a1dpTHJ1Y0hXZFAxeXNqaEh3ZGQ4SUVjRU1aa0RLdmdBU2x6UVZYVWwyUTFF?=
- =?utf-8?B?a29YNFprYjNCWVlCVytxQUxJSVNuRlBOeG84RDAzTWNiNFFTZ296V3NKa0ZL?=
- =?utf-8?B?SEJlMTBFUkM2aklKQWRwT01FWDdCVXlodythemJZMFQ4ZER1Y3A5akM4enpH?=
- =?utf-8?B?SUZIblQ4VWpZMEIxQkVLdXRocWRzUDlwNEpjcWN2OHdxMGZDUXdMd1FpcjB4?=
- =?utf-8?B?aGF5MWRlSTJtamVIMU5WbjZRTU1kL1QzUDI0SDdFSkZiZ1dyc1FPMGF1Z2Mw?=
- =?utf-8?B?aWRXelEwZE5zVGJmbys2RjFYcWttUS9vc3F0S1BON3ByNG84NXFsZmRFMGFj?=
- =?utf-8?B?bTRZTUY5UHRIbDA3NnIwbFdpK2xNaE0vMEhMbnd6dkRmcit0dDd4dVJlQmRT?=
- =?utf-8?B?Q09EcnVvQVpUTS9SQUFWcnNQTWxKaVczVkxmMmhkS0xoWDRMYzd4dFVuRUhl?=
- =?utf-8?B?dnZrcXdyTVE2b213cTczTVpmNUoyNnQwZkk3NFV1bGF5Q3Q0ejhqUnQ1VXhH?=
- =?utf-8?B?cUdGSURzWG5VVW5jMENYODd4ZG5kVXdkaitYQ3p4L1VWdE5xeHR1SS9vaExC?=
- =?utf-8?B?NmtkZUx0RXBDdTFWWXlTMjlDanc3TUNKV3RPZHlyWk9ycEY1clNCK0JxL1kz?=
- =?utf-8?B?OEFYVTRXTTFlYzJCQUVwVFl0cHBpd2lnQzR1Ny9FYzcyRit6bnRNUWFnRlNV?=
- =?utf-8?B?YnVYK2p1em4yU2NEZS8ra1J2dU91Zmk5c1hOS2NYQUdGTVFXOTBvOGJjY0RG?=
- =?utf-8?B?Y25ORWlKOEZvMkxYdXBpcEhLejBCUUttYWpQSXdwMXcxRmV3WUh5NkVZcGJv?=
- =?utf-8?B?N1RVeFM3dUt5dUMyOGU2R0owVElZZ09UUVZha0h0eXBXOXl1QkRoNmFVTzIv?=
- =?utf-8?B?akNENGRSWTZvYW9HaVBkTEFUWkNhNTEvSndOakdWRHkvZzlZU2cxYnV5bmFh?=
- =?utf-8?B?a3U3Qk1BTzlhY0x6dWRqbUNUZjdjUmpndlpmWFNZSTZtOFFJZ2NJV2k1V1N3?=
- =?utf-8?B?MWNSY2J5SnFzRWY0MThocXpKS1ZXcXFiSTlEOThZSmlGYTZlV1dRa3dLdkxW?=
- =?utf-8?B?UkFyNlFvNUhKL3NhUVZRbUZSVCtUNVR2TE9SSEV3K202OSsxTzhBVUo4K2Zl?=
- =?utf-8?B?N1RlWVFDa3o1Q050Q1FnT2RDd2wxUGFyanFlVFYvcGFIcGNMZEpjRG1BYmhX?=
- =?utf-8?B?d2FPM0ZrNGRsRnZFMnNQSFNLeHRqUUxNdytjT1BWWW53VEZXMlk1dVowTGZt?=
- =?utf-8?B?WkV4eTdLSkNmN2syVFNXbnFMTFh6VTh4L1VKOWNxSHlkeGd3dzRjSTNlcTVa?=
- =?utf-8?B?VlRGSzFlNDlKZWNlL3gxc2ZoajcvajFFdURtdXlWdElSK2VTdHgrT2phcHc3?=
- =?utf-8?B?dXdUSXA4VlhUU1JEL3lwbFFGaXh2a1ErRHZqU0tCamx4MFJiRlBBQ0U2ckRt?=
- =?utf-8?B?ZEJzS01NUHpyL3Fod05yVjg0dGN4TnhhWktJYnlOamhyL3ZHaEVTQitZcHlL?=
- =?utf-8?B?SHc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9FAA1EA6D6FF894C8BC323757E9ED365@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 31 Oct 2023 05:19:53 -0400
+X-Greylist: delayed 919 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 02:19:33 PDT
+Received: from msr16.hinet.net (msr16.hinet.net [IPv6:2001:b000:1c9:10:168:95:4:116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C4BED
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:19:33 -0700 (PDT)
+Received: from initramfs.io (2001-b011-4002-3b71-0000-0000-0000-000a.dynamic-ip6.hinet.net [IPv6:2001:b011:4002:3b71:0:0:0:a])
+        by msr16.hinet.net (8.15.2/8.15.2) with ESMTPS id 39V9450Z004392
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Tue, 31 Oct 2023 17:04:05 +0800
+Received: from howl.home.internal.initramfs.io ([10.0.96.176])
+        by initramfs.io with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <initramfs@initramfs.io>)
+        id 1qxkfP-00024O-O0; Tue, 31 Oct 2023 09:04:07 +0000
+Message-ID: <44d23bf5-9875-4ce8-a361-fb4e678f23f2@initramfs.io>
+Date:   Tue, 31 Oct 2023 17:04:07 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5983.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9eb3c3ab-fa18-40e8-8c0f-08dbd9f03c40
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2023 09:03:22.9005
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bhH1MhSQd2g8CjQhasc37hCC11R0wnwzp1A+2H4fne6W592cFj60pX9VlhjpsDsno/8LEkHu/DnvK4vgURvZcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6013
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: ASMedia 2464PD-based SSD enclosure hotplug failure
+Content-Language: en-US
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Andreas Noever <andreas.noever@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <2fd4b2b0-0526-4946-ad05-058366f3127a@initramfs.io>
+ <ZUC3LAxK9Lyf2Rz9@debian.me>
+From:   initramfs <initramfs@initramfs.io>
+Autocrypt: addr=initramfs@initramfs.io; keydata=
+ xjMEXU2jtxYJKwYBBAHaRw8BAQdA32TNgwBRB8zKTUDw+OD3EMHH6l7/9BctyPJZg7flyZrN
+ JEFtaXQgQWduYW5pIDxpbml0cmFtZnNAaW5pdHJhbWZzLmlvPsKxBBMWCgBZAhsDBAsJCAcF
+ FQoJCAsFFgIDAQACHgECF4ACGQEFCQomf3UWIQTmBUi9vIJeEJq2Q9jQE1WLzz4A7QUCXX/Y
+ XBgYaGtwczovL2tleXMub3BlbnBncC5vcmcACgkQ0BNVi88+AO2eqgEAhxrvCxHqcWYCjEl3
+ RtK1uMI5Vl78ADXimnIO3Zx2ZygBAK7SL/m0A87AZOj1x/xMjFqYOfSMfe6a8Up//XB0av8M
+ zjgEXU2k1BIKKwYBBAGXVQEFAQEHQEnBKEjJUS59EzqqgBWZE3/2Q0BIXmGqreBXzeDMizs+
+ AwEIB8J+BBgWCgAmAhsMFiEE5gVIvbyCXhCatkPY0BNVi88+AO0FAl/QqPQFCQomJKAACgkQ
+ 0BNVi88+AO2kRQEAiznrjgTNzeNfudqZz8MzyQqPEj3F0XeiloYOCbsrm8sA/jwF56ff7aRi
+ HfhNFwJQJWzduZL3kmlkCrPxf9EGcvIP
+In-Reply-To: <ZUC3LAxK9Lyf2Rz9@debian.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.4 cv=R/TGpfdX c=1 sm=1 tr=0 ts=6540c309
+        a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=Br9LfDWDAAAA:8
+        a=-UjBj_0-ptFttSrWvF8A:9 a=O5ZNJCrf5vcWmOMJ:21 a=QEXdDO2ut3YA:10
+        a=TRW-o2S9CEoA:10 a=Bg5cootq7XEA:10 a=gR_RJRYUad_6_ruzA8cR:22
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTEwLTMwIGF0IDE2OjM5IC0wNzAwLCBYaW4gTGkgKEludGVsKSB3cm90ZToN
-Cj4gRnJvbTogWGluIExpIDx4aW4zLmxpQGludGVsLmNvbT4NCj4gDQo+IERlZmluZSBWTVggYmFz
-aWMgaW5mb3JtYXRpb24gZmllbGRzIHdpdGggQklUX1VMTCgpL0dFTk1BU0tfVUxMKCksIGFuZA0K
-PiByZXBsYWNlIGhhcmRjb2RlZCBWTVggYmFzaWMgbnVtYmVycyB3aXRoIHRoZXNlIGZpZWxkIG1h
-Y3Jvcy4NCj4gDQo+IFBlciBTZWFuJ3MgYXNrLCBzYXZlIHRoZSBmdWxsL3JhdyB2YWx1ZSBvZiBN
-U1JfSUEzMl9WTVhfQkFTSUMgaW4gdGhlDQo+IGdsb2JhbCB2bWNzX2NvbmZpZyBhcyB0eXBlIHU2
-NCB0byBnZXQgcmlkIG9mIHRoZSBoaS9sbyBjcnVkLCBhbmQgdGhlbg0KPiB1c2UgVk1YX0JBU0lD
-IGhlbHBlcnMgdG8gZXh0cmFjdCBpbmZvIGFzIG5lZWRlZC4NCj4gDQoNClsuLi5dDQoNCkJ0dywg
-aXQncyBiZXR0ZXIgdG8gaGF2ZSBhIGNvdmVyIGxldHRlciBldmVuIGZvciB0aGlzIHNtYWxsIHNl
-cmllcyBhbmQgZ2l2ZSBhDQpsb3JlIGxpbmsgZm9yIG9sZCB2ZXJzaW9ucyBzbyB0aGF0IHBlb3Bs
-ZSBjYW4gZWFzaWx5IGZpbmQgb2xkIGRpc2N1c3Npb25zLg0KDQo+ICANCj4gKy8qIHg4NiBtZW1v
-cnkgdHlwZXMsIGV4cGxpY2l0bHkgdXNlZCBpbiBWTVggb25seSAqLw0KPiArI2RlZmluZSBNRU1f
-VFlQRV9XQgkJCQkweDZVTEwNCj4gKyNkZWZpbmUgTUVNX1RZUEVfVUMJCQkJMHgwVUxMDQoNClRo
-ZSByZW5hbWluZyBvZiBtZW1vcnkgdHlwZSBtYWNyb3MgZGVzZXJ2ZXMgc29tZSBqdXN0aWZpY2F0
-aW9uIGluIHRoZSBjaGFuZ2Vsb2cNCklNSE8sIGJlY2F1c2UgaXQgZG9lc24ndCBiZWxvbmcgdG8g
-d2hhdCB0aGUgcGF0Y2ggdGl0bGUgY2xhaW1zIHRvIGRvLg0KDQpZb3UgY2FuIGV2ZW4gc3BsaXQg
-dGhpcyBwYXJ0IG91dCwgYnV0IHdpbGwgbGVhdmUgdG8gU2Vhbi9QYW9sby4NCg0KPiArDQo+ICsv
-KiBWTVhfQkFTSUMgYml0cyBhbmQgYml0bWFza3MgKi8NCj4gKyNkZWZpbmUgVk1YX0JBU0lDXzMy
-QklUX1BIWVNfQUREUl9PTkxZCQlCSVRfVUxMKDQ4KQ0KPiArI2RlZmluZSBWTVhfQkFTSUNfSU5P
-VVQJCQkJQklUX1VMTCg1NCkNCj4gKw0KPiAgI2RlZmluZSBWTVhfTUlTQ19QUkVFTVBUSU9OX1RJ
-TUVSX1JBVEVfTUFTSwkweDAwMDAwMDFmDQo+ICAjZGVmaW5lIFZNWF9NSVNDX1NBVkVfRUZFUl9M
-TUEJCQkweDAwMDAwMDIwDQo+ICAjZGVmaW5lIFZNWF9NSVNDX0FDVElWSVRZX0hMVAkJCTB4MDAw
-MDAwNDANCj4gQEAgLTE0Myw2ICsxNTEsMTYgQEAgc3RhdGljIGlubGluZSB1MzIgdm14X2Jhc2lj
-X3ZtY3Nfc2l6ZSh1NjQgdm14X2Jhc2ljKQ0KPiAgCXJldHVybiAodm14X2Jhc2ljICYgR0VOTUFT
-S19VTEwoNDQsIDMyKSkgPj4gMzI7DQo+ICB9DQo+ICANCj4gK3N0YXRpYyBpbmxpbmUgdTMyIHZt
-eF9iYXNpY192bWNzX2Jhc2ljX2NhcCh1NjQgdm14X2Jhc2ljKQ0KPiArew0KPiArCXJldHVybiAo
-dm14X2Jhc2ljICYgR0VOTUFTS19VTEwoNjMsIDQ1KSkgPj4gMzI7DQo+ICt9DQoNCklzIHRoaXMg
-c3RpbGwgbmVlZGVkPw0KDQo+ICsNCj4gK3N0YXRpYyBpbmxpbmUgdTMyIHZteF9iYXNpY192bWNz
-X21lbV90eXBlKHU2NCB2bXhfYmFzaWMpDQo+ICt7DQo+ICsJcmV0dXJuICh2bXhfYmFzaWMgJiBH
-RU5NQVNLX1VMTCg1MywgNTApKSA+PiA1MDsNCj4gK30NCg0KWW91IGFscmVhZHkgaGF2ZSBWTVhf
-QkFTSUNfTUVNX1RZUEVfU0hJRlQgZGVmaW5lZCBiZWxvdywgc28gaXQgbG9va3MgYSBsaXR0bGUN
-CmJpdCBvZGQgdG8gc3RpbGwgdXNlIGhhcmQtY29kZWQgdmFsdWVzIGhlcmUuDQoNCkJ1dCBwZXIg
-U2VhbiBJIGFncmVlIGl0J3MgcXVpdGUgbm9pc3kgdG8gaGF2ZSBhbGwgdGhlc2UgX1NISUZUIGRl
-ZmluZWQganVzdCBpbg0Kb3JkZXIgdG8gZ2V0IHJpZCBvZiB0aGVzZSBoYXJkLWNvZGVkIHZhbHVl
-cy4NCg0KSG93IGFib3V0LCAuLi4NCg0KPiArI2RlZmluZSBWTVhfQkFTSUNfVk1DU19TSVpFX1NI
-SUZUCQkzMg0KPiArI2RlZmluZSBWTVhfQkFTSUNfRFVBTF9NT05JVE9SX1RSRUFUTUVOVAlCSVRf
-VUxMKDQ5KQ0KPiArI2RlZmluZSBWTVhfQkFTSUNfTUVNX1RZUEVfU0hJRlQJCTUwDQo+ICsjZGVm
-aW5lIFZNWF9CQVNJQ19UUlVFX0NUTFMJCQlCSVRfVUxMKDU1KQ0KPiArDQo+IA0KDQouLi4gc2lu
-Y2UsIGlmIEkgYW0gcmVhZGluZyBjb3JyZWN0bHksIHRoZSB0d28gX1NISUZUIGFib3ZlIGFyZSBv
-bmx5IHVzZWQgLi4uDQoNClsuLi5dDQoNCj4gQEAgLTY5NjQsNyArNjk3NSw3IEBAIHN0YXRpYyB2
-b2lkIG5lc3RlZF92bXhfc2V0dXBfYmFzaWMoc3RydWN0IG5lc3RlZF92bXhfbXNycyAqbXNycykN
-Cj4gIAkJVk1DUzEyX1JFVklTSU9OIHwNCj4gIAkJVk1YX0JBU0lDX1RSVUVfQ1RMUyB8DQo+ICAJ
-CSgodTY0KVZNQ1MxMl9TSVpFIDw8IFZNWF9CQVNJQ19WTUNTX1NJWkVfU0hJRlQpIHwNCj4gLQkJ
-KFZNWF9CQVNJQ19NRU1fVFlQRV9XQiA8PCBWTVhfQkFTSUNfTUVNX1RZUEVfU0hJRlQpOw0KPiAr
-CQkoTUVNX1RZUEVfV0IgPDwgVk1YX0JBU0lDX01FTV9UWVBFX1NISUZUKTsNCj4gIA0KDQouLi4g
-aGVyZSwgd2UgY2FuIHJlbW92ZSB0aGUgdHdvIF9TSElGVCBidXQgZGVmaW5lIGJlbG93IGluc3Rl
-YWQ6DQoNCiAgI2RlZmluZSBWTVhfQkFTSUNfVk1DUzEyX1NJWkUJKCh1NjQpVk1DUzEyX1NJWkUg
-PDwgMzIpDQogICNkZWZpbmUgVk1YX0JBU0lDX01FTV9UWVBFX1dCCShNRU1fVFlQRV9XQiA8PCA1
-MCkNCg0KQW5kIHVzZSBhYm92ZSB0d28gbWFjcm9zIGluIG5lc3RlZF92bXhfc2V0dXBfYmFzaWMo
-KT8NCg==
+Yes the same issue occurs on the LTS kernel (tried 6.1.60):
+
+    [  125.380911] thunderbolt 0-0:1.1: new retimer found, vendor=0x8087
+    device=0x15ee
+    [  125.404923] thunderbolt 0-1: new device found, vendor=0x187
+    device=0xd666
+    [  125.404935] thunderbolt 0-1: Gopod Group Limited. USB4 SSD Drive
+    Enclosure
+    [  125.511460] thunderbolt 0000:00:0d.2: 1:1: failed to enable lane
+    bonding
+    [  125.511793] thunderbolt 0000:00:0d.2: 1: failed to enable
+    CL0s/CL1 on upstream port
+    [  125.512698] thunderbolt 0000:00:0d.2: 1: failed to enable TMU
+    [  125.514122] thunderbolt 0000:00:0d.2: 1:1: hop deactivation
+    failed for hop 1, index 8
+    [  125.514126] ------------[ cut here ]------------
+    [  125.514126] thunderbolt 0000:00:0d.2: path activation failed
+    [  125.514160] WARNING: CPU: 6 PID: 3029 at
+    drivers/thunderbolt/path.c:573 tb_path_activate+0x10f/0x480
+    [thunderbolt]
+    [  125.514176] Modules linked in: ccm rfcomm snd_seq_dummy
+    snd_hrtimer snd_seq snd_seq_device nft_ct nf_conntrack
+    nf_defrag_ipv6 nf_defrag_ipv4 cmac algif_hash algif_skcipher af_alg
+    bnep nf_tables nfnetlink ntfs3 snd_sof_pci_intel_tgl
+    snd_sof_intel_hda_common soundwire_intel
+    soundwire_generic_allocation soundwire_cadence snd_sof_intel_hda
+    snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils
+    snd_soc_hdac_hda snd_hda_ext_core snd_soc_acpi_intel_match
+    intel_tcc_cooling snd_soc_acpi x86_pkg_temp_thermal soundwire_bus
+    intel_powerclamp coretemp snd_soc_core snd_compress iwlmvm ac97_bus
+    kvm_intel snd_hda_codec_realtek snd_hda_codec_generic
+    snd_hda_codec_hdmi snd_pcm_dmaengine mei_pxp mei_hdcp kvm
+    snd_hda_intel mac80211 uvcvideo snd_intel_dspcfg irqbypass
+    pmt_telemetry processor_thermal_device_pci videobuf2_vmalloc
+    iTCO_wdt snd_intel_sdw_acpi btusb intel_pmc_bxt videobuf2_memops
+    snd_hda_codec processor_thermal_device btrtl rapl libarc4
+    videobuf2_v4l2 videobuf2_common intel_cstate hid_multitouch
+    [  125.514200]  iTCO_vendor_support intel_rapl_msr pmt_class
+    snd_hda_core btbcm processor_thermal_rfim iwlwifi r8169
+    processor_thermal_mbox mei_me btintel ucsi_acpi snd_hwdep
+    intel_uncore dm_zero pcspkr asus_nb_wmi wmi_bmof realtek spi_nor
+    typec_ucsi vfat btmtk processor_thermal_rapl videodev snd_pcm
+    intel_lpss_pci bluetooth i2c_hid_acpi i2c_i801 snd_timer mdio_devres
+    intel_lpss fat mtd cfg80211 i2c_smbus ecdh_generic typec snd libphy
+    idma64 thunderbolt mc mei roles intel_vsec crc16 igen6_edac
+    soundcore intel_rapl_common i2c_hid joydev int3403_thermal mousedev
+    int340x_thermal_zone int3400_thermal acpi_tad acpi_thermal_rel
+    acpi_pad mac_hid pkcs8_key_parser dm_multipath i2c_dev crypto_user
+    fuse loop ip_tables x_tables btrfs blake2b_generic libcrc32c
+    crc32c_generic xor raid6_pq dm_crypt cbc encrypted_keys trusted
+    asn1_encoder tee hid_asus asus_wmi ledtrig_audio sparse_keymap
+    platform_profile rfkill usbhid dm_mod i915 crct10dif_pclmul
+    crc32_pclmul crc32c_intel serio_raw polyval_clmulni atkbd
+    [  125.514230]  polyval_generic libps2 gf128mul vivaldi_fmap
+    ghash_clmulni_intel sdhci_pci drm_buddy sha512_ssse3 nvme intel_gtt
+    cqhci aesni_intel drm_display_helper sdhci crypto_simd nvme_core
+    cryptd spi_intel_pci cec xhci_pci mmc_core spi_intel nvme_common
+    xhci_pci_renesas ttm i8042 video serio wmi
+    [  125.514241] CPU: 6 PID: 3029 Comm: pool-/usr/lib/b Tainted: G
+    S                 6.1.60-1-lts #1
+    788389645ca0dfa4ffa30b1532df8c1764b26b03
+    [  125.514243] Hardware name: ASUSTeK COMPUTER INC. ROG Zephyrus M16
+    GU603ZW_GU603ZW/GU603ZW, BIOS GU603ZW.311 12/22/2022
+    [  125.514244] RIP: 0010:tb_path_activate+0x10f/0x480 [thunderbolt]
+    [  125.514253] Code: 01 00 00 48 85 ed 0f 84 d7 00 00 00 48 81 c7 d0
+    00 00 00 e8 b3 ca d6 eb 48 89 ea 48 c7 c7 18 a6 e9 c0 48 89 c6 e8 b1
+    b0 62 eb <0f> 0b 48 8b 44 24 08 65 48 2b 04 25 28 00 00 00 0f 85 54
+    03 00 00
+    [  125.514254] RSP: 0018:ffffadad859b7cb0 EFLAGS: 00010282
+    [  125.514256] RAX: 0000000000000000 RBX: 00000000ffffff95 RCX:
+    0000000000000027
+    [  125.514257] RDX: ffff8c56eb3a1668 RSI: 0000000000000001 RDI:
+    ffff8c56eb3a1660
+    [  125.514257] RBP: ffff8c4f83121790 R08: 0000000000000000 R09:
+    ffffadad859b7b28
+    [  125.514258] R10: 0000000000000003 R11: ffff8c570b7a5fe8 R12:
+    0000000000000028
+    [  125.514258] R13: ffff8c505a524d00 R14: ffff8c4f8f880000 R15:
+    ffff8c4f851d4da0
+    [  125.514259] FS:  00007f29a19fe6c0(0000) GS:ffff8c56eb380000(0000)
+    knlGS:0000000000000000
+    [  125.514260] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    [  125.514261] CR2: 000056005d26e1d0 CR3: 0000000111ef8000 CR4:
+    0000000000f50ee0
+    [  125.514262] PKRU: 55555554
+    [  125.514262] Call Trace:
+    [  125.514264]  <TASK>
+    [  125.514264]  ? tb_path_activate+0x10f/0x480 [thunderbolt
+    f4f72a0462286342085ff69fa5e3502c86c4ec5a]
+    [  125.514273]  ? __warn+0x7d/0xd0
+    [  125.514277]  ? tb_path_activate+0x10f/0x480 [thunderbolt
+    f4f72a0462286342085ff69fa5e3502c86c4ec5a]
+    [  125.514285]  ? report_bug+0xe6/0x150
+    [  125.514288]  ? handle_bug+0x3c/0x80
+    [  125.514291]  ? exc_invalid_op+0x17/0x70
+    [  125.514292]  ? asm_exc_invalid_op+0x1a/0x20
+    [  125.514295]  ? tb_path_activate+0x10f/0x480 [thunderbolt
+    f4f72a0462286342085ff69fa5e3502c86c4ec5a]
+    [  125.514303]  tb_tunnel_restart+0x99/0x180 [thunderbolt
+    f4f72a0462286342085ff69fa5e3502c86c4ec5a]
+    [  125.514312]  tb_tunnel_pci+0x17b/0x370 [thunderbolt
+    f4f72a0462286342085ff69fa5e3502c86c4ec5a]
+    [  125.514321]  authorized_store+0x289/0x2d0 [thunderbolt
+    f4f72a0462286342085ff69fa5e3502c86c4ec5a]
+    [  125.514330]  kernfs_fop_write_iter+0x133/0x1d0
+    [  125.514333]  vfs_write+0x236/0x3f0
+    [  125.514335]  ksys_write+0x6f/0xf0
+    [  125.514337]  do_syscall_64+0x5d/0x90
+    [  125.514339]  ? exit_to_user_mode_prepare+0x18a/0x1f0
+    [  125.514341]  ? syscall_exit_to_user_mode+0x2b/0x40
+    [  125.514342]  ? do_syscall_64+0x6c/0x90
+    [  125.514343]  ? exit_to_user_mode_prepare+0x18a/0x1f0
+    [  125.514345]  ? syscall_exit_to_user_mode+0x2b/0x40
+    [  125.514345]  ? do_syscall_64+0x6c/0x90
+    [  125.514347]  entry_SYSCALL_64_after_hwframe+0x64/0xce
+    [  125.514349] RIP: 0033:0x7f29a36a906f
+    [  125.514368] Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 19 4d
+    f8 ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00
+    00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 6c 4d
+    f8 ff 48
+    [  125.514369] RSP: 002b:00007f29a19fdc90 EFLAGS: 00000293 ORIG_RAX:
+    0000000000000001
+    [  125.514370] RAX: ffffffffffffffda RBX: 00007f2998008c40 RCX:
+    00007f29a36a906f
+    [  125.514371] RDX: 0000000000000001 RSI: 00007f29a19fdd30 RDI:
+    000000000000000a
+    [  125.514372] RBP: 00007f29a19fdd70 R08: 0000000000000000 R09:
+    00007f29a19fdba0
+    [  125.514372] R10: 0000000000000000 R11: 0000000000000293 R12:
+    00007f2998002e20
+    [  125.514373] R13: 000000000000000a R14: 0000000000000000 R15:
+    00007f29a19fdd28
+    [  125.514374]  </TASK>
+    [  125.514374] ---[ end trace 0000000000000000 ]---
+    [  125.514376] thunderbolt 0000:00:0d.2: 0:8 <-> 1:3 (PCI):
+    activation failed
+    [  125.515359] thunderbolt 0000:00:0d.2: 1:3: PCIe tunnel activation
+    failed, aborting
+    [  125.515397] thunderbolt 0-0:1.1: retimer disconnected
+    [  125.515454] thunderbolt 0-1: device disconnected
+
+On 31/10/2023 16:13, Bagas Sanjaya wrote:
+> On Tue, Oct 31, 2023 at 12:20:08PM +0800, initramfs wrote:
+>> Hi all,
+>>
+>> I own a ZikeDrive USB4 NVMe SSD enclosure and noticed that upon
+>> hotplugging the enclosure I receive the following kernel oops (6.6.0):
+>>
+>>     [  138.597027] thunderbolt 0-0:1.1: new retimer found, vendor=0x8087
+>>     device=0x15ee
+>>     [  138.626031] thunderbolt 0-1: new device found, vendor=0x187
+>>     device=0xd666
+>>     [  138.626046] thunderbolt 0-1: Gopod Group Limited. USB4 SSD Drive
+>>     Enclosure
+>>     [  138.736546] thunderbolt 0000:00:0d.2: 1:1: failed to enable lane
+>>     bonding
+>>     [  138.736888] thunderbolt 0000:00:0d.2: 1: failed to enable CL states
+>>     [  138.737874] thunderbolt 0000:00:0d.2: 1: failed to enable TMU
+>>     [  138.739417] thunderbolt 0000:00:0d.2: 1:1: hop deactivation
+>>     failed for hop 1, index 8
+>>     [  138.739421] ------------[ cut here ]------------
+>>     [  138.739422] thunderbolt 0000:00:0d.2: path activation failed
+>>     [  138.739462] WARNING: CPU: 6 PID: 3845 at
+>>     drivers/thunderbolt/path.c:573 tb_path_activate+0x10f/0x480
+>>     [thunderbolt]
+>>     [  138.739495] Modules linked in: ccm rfcomm snd_seq_dummy
+>>     snd_hrtimer snd_seq snd_seq_device cmac algif_hash algif_skcipher
+>>     af_alg nft_ct nf_conntrack nf_defrag_ipv4 nf_defrag_ipv6 bnep
+>>     nf_tables nfnetlink ntfs3 snd_sof_pci_intel_tgl
+>>     snd_sof_intel_hda_common soundwire_intel snd_sof_intel_hda_mlink
+>>     soundwire_cadence snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp
+>>     snd_sof snd_sof_utils snd_soc_hdac_hda snd_hda_ext_core
+>>     snd_soc_acpi_intel_match snd_soc_acpi soundwire_generic_allocation
+>>     soundwire_bus iwlmvm intel_uncore_frequency snd_soc_core
+>>     intel_uncore_frequency_common intel_tcc_cooling snd_compress
+>>     snd_hda_codec_realtek ac97_bus x86_pkg_temp_thermal intel_powerclamp
+>>     snd_hda_codec_generic snd_hda_codec_hdmi snd_pcm_dmaengine coretemp
+>>     mac80211 snd_hda_intel hid_multitouch kvm_intel snd_intel_dspcfg
+>>     snd_intel_sdw_acpi libarc4 mei_pxp kvm btusb uvcvideo mei_hdcp
+>>     snd_hda_codec btrtl uvc processor_thermal_device_pci videobuf2_v4l2
+>>     btbcm irqbypass snd_hda_core iTCO_wdt processor_thermal_device
+>>     dm_zero btintel videodev btmtk
+>>     [  138.739535]  iTCO_vendor_support processor_thermal_rapl snd_hwdep
+>>     r8169 rapl ucsi_acpi intel_pmc_bxt intel_rapl_msr iwlwifi bluetooth
+>>     realtek videobuf2_vmalloc pmt_telemetry typec_ucsi snd_pcm spi_nor
+>>     intel_cstate vfat mei_me intel_rapl_common intel_lpss_pci
+>>     mdio_devres videobuf2_memops pmt_class snd_timer videobuf2_common
+>>     i2c_i801 intel_lpss intel_uncore wmi_bmof asus_nb_wmi pcspkr typec
+>>     ecdh_generic cfg80211 libphy mtd fat processor_thermal_rfim mc mei
+>>     idma64 i2c_smbus snd thunderbolt crc16 roles i2c_hid_acpi soundcore
+>>     intel_vsec processor_thermal_mbox igen6_edac i2c_hid int3403_thermal
+>>     int340x_thermal_zone int3400_thermal acpi_thermal_rel acpi_tad
+>>     mousedev acpi_pad joydev mac_hid pkcs8_key_parser dm_multipath
+>>     i2c_dev crypto_user fuse loop ip_tables x_tables btrfs
+>>     blake2b_generic libcrc32c crc32c_generic xor raid6_pq dm_crypt cbc
+>>     encrypted_keys trusted tee asn1_encoder hid_asus asus_wmi
+>>     ledtrig_audio sparse_keymap rfkill platform_profile usbhid i915
+>>     crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+>>     [  138.739592]  polyval_generic gf128mul serio_raw
+>>     ghash_clmulni_intel drm_buddy dm_mod sha512_ssse3 intel_gtt atkbd
+>>     ttm sdhci_pci vivaldi_fmap aesni_intel libps2 i2c_algo_bit cqhci
+>>     nvme sdhci crypto_simd drm_display_helper nvme_core xhci_pci cryptd
+>>     spi_intel_pci mmc_core xhci_pci_renesas nvme_common spi_intel cec
+>>     video i8042 serio wmi
+>>     [  138.739610] CPU: 6 PID: 3845 Comm: pool-/usr/lib/b Tainted: G
+>>     S                 6.6.0-1-mainline #1
+>>     a243c5e3c83e72fc2b2243b5ea465e514d6c24c1
+>>     [  138.739614] Hardware name: ASUSTeK COMPUTER INC. ROG Zephyrus M16
+>>     GU603ZW_GU603ZW/GU603ZW, BIOS GU603ZW.311 12/22/2022
+>>     [  138.739615] RIP: 0010:tb_path_activate+0x10f/0x480 [thunderbolt]
+>>     [  138.739637] Code: 01 00 00 48 85 ed 0f 84 d7 00 00 00 48 81 c7 c0
+>>     00 00 00 e8 93 24 7b f8 48 89 ea 48 c7 c7 20 95 db c0 48 89 c6 e8 f1
+>>     78 f4 f7 <0f> 0b 48 8b 44 24 08 65 48 2b 04 25 28 00 00 00 0f 85 54
+>>     03 00 00
+>>     [  138.739639] RSP: 0018:ffffc90005937d30 EFLAGS: 00010282
+>>     [  138.739641] RAX: 0000000000000000 RBX: 00000000ffffff95 RCX:
+>>     0000000000000027
+>>     [  138.739642] RDX: ffff88886b3a1708 RSI: 0000000000000001 RDI:
+>>     ffff88886b3a1700
+>>     [  138.739644] RBP: ffff88810310edc0 R08: 0000000000000000 R09:
+>>     ffffc90005937bb8
+>>     [  138.739644] R10: 0000000000000003 R11: ffff88888b7aac28 R12:
+>>     0000000000000028
+>>     [  138.739645] R13: ffff88813ebc9100 R14: ffff888103fe5800 R15:
+>>     ffff8881701d8fe0
+>>     [  138.739647] FS:  00007fd6231fe6c0(0000) GS:ffff88886b380000(0000)
+>>     knlGS:0000000000000000
+>>     [  138.739648] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>     [  138.739650] CR2: 000055d0bbfe6610 CR3: 0000000141210000 CR4:
+>>     0000000000f50ee0
+>>     [  138.739651] PKRU: 55555554
+>>     [  138.739652] Call Trace:
+>>     [  138.739654]  <TASK>
+>>     [  138.739655]  ? tb_path_activate+0x10f/0x480 [thunderbolt
+>>     c85481cfb2695e02347db36bb54248816593d261]
+>>     [  138.739676]  ? __warn+0x81/0x130
+>>     [  138.739681]  ? tb_path_activate+0x10f/0x480 [thunderbolt
+>>     c85481cfb2695e02347db36bb54248816593d261]
+>>     [  138.739702]  ? report_bug+0x171/0x1a0
+>>     [  138.739706]  ? console_unlock+0x78/0x120
+>>     [  138.739710]  ? handle_bug+0x3c/0x80
+>>     [  138.739718]  ? exc_invalid_op+0x17/0x70
+>>     [  138.739721]  ? asm_exc_invalid_op+0x1a/0x20
+>>     [  138.739725]  ? tb_path_activate+0x10f/0x480 [thunderbolt
+>>     c85481cfb2695e02347db36bb54248816593d261]
+>>     [  138.739746]  tb_tunnel_restart+0xb3/0x220 [thunderbolt
+>>     c85481cfb2695e02347db36bb54248816593d261]
+>>     [  138.739767]  tb_tunnel_pci+0x1b2/0x480 [thunderbolt
+>>     c85481cfb2695e02347db36bb54248816593d261]
+>>     [  138.739787]  authorized_store+0x289/0x2d0 [thunderbolt
+>>     c85481cfb2695e02347db36bb54248816593d261]
+>>     [  138.739806]  kernfs_fop_write_iter+0x133/0x1d0
+>>     [  138.739810]  vfs_write+0x23b/0x420
+>>     [  138.739815]  ksys_write+0x6f/0xf0
+>>     [  138.739818]  do_syscall_64+0x5d/0x90
+>>     [  138.739820]  ? syscall_exit_to_user_mode+0x2b/0x40
+>>     [  138.739824]  ? do_syscall_64+0x6c/0x90
+>>     [  138.739826]  ? do_syscall_64+0x6c/0x90
+>>     [  138.739828]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>>     [  138.739830] RIP: 0033:0x7fd628ec406f
+>>     [  138.739876] Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 19 4d
+>>     f8 ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00
+>>     00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 6c 4d
+>>     f8 ff 48
+>>     [  138.739877] RSP: 002b:00007fd6231fdc90 EFLAGS: 00000293 ORIG_RAX:
+>>     0000000000000001
+>>     [  138.739880] RAX: ffffffffffffffda RBX: 00007fd614008c40 RCX:
+>>     00007fd628ec406f
+>>     [  138.739881] RDX: 0000000000000001 RSI: 00007fd6231fdd30 RDI:
+>>     000000000000000a
+>>     [  138.739882] RBP: 00007fd6231fdd70 R08: 0000000000000000 R09:
+>>     00007fd6231fdba0
+>>     [  138.739883] R10: 0000000000000000 R11: 0000000000000293 R12:
+>>     00007fd614002e20
+>>     [  138.739884] R13: 000000000000000a R14: 0000000000000000 R15:
+>>     00007fd6231fdd28
+>>     [  138.739886]  </TASK>
+>>     [  138.739887] ---[ end trace 0000000000000000 ]---
+>>     [  138.739888] thunderbolt 0000:00:0d.2: 0:8 <-> 1:3 (PCI):
+>>     activation failed
+>>     [  138.740586] thunderbolt 0000:00:0d.2: 1:3: PCIe tunnel activation
+>>     failed, aborting
+>>     [  138.740697] thunderbolt 0-0:1.1: retimer disconnected
+>>     [  138.740791] thunderbolt 0-1: device disconnected
+>>
+>> the device is then rediscovered and the kernel oops reoccurs ad
+>> infinitum (device remaining non-functional the whole time).
+>>
+>> If the device was plugged in during system boot, no such error occurs
+>> and the device is fully functional.
+>> If the device is then unplugged/replugged, the above kernel oops appears
+>> and the device remains unusable.
+>>
+>> I have also tried enrolling the device prior to connect as well as
+>> enabling auto-authorization via udev rules as described in the "USB4 and
+>> Thunderbolt" admin guide, both to no avail.
+>>
+>> The system under test is an Asus ROG Zephyrus M16 GU603ZW (Intel
+>> i9-12900H [Alder Lake]) loaded with Arch Linux (tested under
+>> 6.5.2-arch1-1, 6.5.3-arch1-1, and 6.6.0-1-mainline [vanilla]).
+>>
+>> The external enclosure is fully functional with the same kernel on a
+>> system with a TB3-only port (Intel i7-8750H [Coffee Lake] + Intel® HM370
+>> chipset), including hotplugging support.
+>> The external enclosure is also fully functional on the test system
+>> described above booted into Windows 11 x64.
+>>
+>> The bug was first reported to the Arch Linux forums with no response
+>> (https://bbs.archlinux.org/viewtopic.php?id=288731), more details can be
+>> found there too.
+>>
+> Do you have this issue on kernel v6.1?
+>
