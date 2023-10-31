@@ -2,328 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A387DC463
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE2E7DC470
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbjJaC0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 22:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
+        id S233516AbjJaC2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 22:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbjJaC0n (ORCPT
+        with ESMTP id S229766AbjJaC2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 22:26:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CD5E4;
-        Mon, 30 Oct 2023 19:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698719200; x=1730255200;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1RxaiPSscGnriT5S1YWbGyKo7Yhdv1SBTp2kCHaOJTg=;
-  b=lzqfXbea3Fak2kxKVwVBX2tCid17AqzoBpSJYL6nTbNtA9XBy8tsIntJ
-   WebQmcaai0ZflO+qk66sHPHXUMyUeLkgaUZv56yEXTVhvUMiFm0EN+fe+
-   HEl1Djoxao8IEVeW7rqCye+fyywJcK1yfKUYpYhqeriqC3TbGYyYhbieT
-   womnNXkO0x+HUjh7V981e1kTukPsBqhOf/cP5kiTwu2dLyLrgHVzrkqxx
-   gSoTVJWnrcvpfzbMOW8BiHfylFcVO+f9OzrOAHVuKCzV+zqlfPBXlVG3O
-   viMYQm7xUMO6tFUjZOgET1NltLDG1IGxGNJsXUga0+WaK+lzJ1ohc0SVb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="373249634"
-X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
-   d="scan'208";a="373249634"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 19:26:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
-   d="scan'208";a="8161358"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.9.145]) ([10.93.9.145])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 19:26:27 -0700
-Message-ID: <2edd908a-9699-4d8e-9063-c655f1fc9712@intel.com>
-Date:   Tue, 31 Oct 2023 10:26:22 +0800
+        Mon, 30 Oct 2023 22:28:22 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1521BE9;
+        Mon, 30 Oct 2023 19:28:20 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ce2fc858feso3005733a34.3;
+        Mon, 30 Oct 2023 19:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698719299; x=1699324099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mG+0u22Ez5LjKbUHwcGY134sP+y1ufdTeN3lJfckGbU=;
+        b=czBNFodRM0nQ4TO0P28wvPfq09rY3khzh5xkaJ7iMJxfBg2VmVjvmi0Xnjp49wSp5X
+         LkZXsR0Kc/J+Qvu3LwrK9y6JT46KMVamSLDZGrHE2d2RyyEFqnNroiNcl7R+tD4ex4KH
+         OXsUGGHjGIRvdgG0oNYGEmuhrJdh3+aFOq8XqW7ndvjmbyiD8Db7t/stNxif5orbvea3
+         Ct0iFq1NKcLurjF6GrYEEvlugfqVBxJoppFTXdakUi8pmXc2oUEaeNtiMRZl063ClhkS
+         LgYb16xFED5X/bMmdISISVApfMQbmNZVYqAhsgmRxj/v+4KFeDleAcSbfATgOLVvV4LK
+         UcDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698719299; x=1699324099;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mG+0u22Ez5LjKbUHwcGY134sP+y1ufdTeN3lJfckGbU=;
+        b=GhECQgwZQujTi3MByur7jjNlHdKHbpFj3FLM/GXunxBQZvVdhD1uLV0/Tv3i3JSBl9
+         lqfZsT+gKx6yOV/43H7SjlKPhdzzAMtcwwGLuj8MrDnsKVWYAJUgAsr5K4VhAIdM+v9M
+         6L390XmUiUadSKXpczPY0Strfb4IDtsrwLYx2VADmbdXxkrF2ontYay4CNtz70L5LT+Y
+         RpUNC4iHxusX4ItvmgOfIT2mJTevYHxd737HT0su5sRnPUXB9Qgx2mFb94wfXH5mqdT+
+         bp2m9jTnUGMpwRskzosb8AM2XuwD6SHFcazlUjRIoW4mHDiu2cD++gd2ArSxrBO0MGRw
+         2UKQ==
+X-Gm-Message-State: AOJu0Yx8EFvaM8fh1dMoLeAQGA9lnohQMNpNgUYFeqHadSeP3qht/oqn
+        R3gcHw3YvrfLSidkYwP7sx8=
+X-Google-Smtp-Source: AGHT+IHMXqpHgXM+A1WEBm92w/REB6KgbFUhbItfXimyIXXQ0jypN6c3gADLq5Fd9BbKM7xnIBxl4A==
+X-Received: by 2002:a05:6830:22c8:b0:6b8:7d12:423d with SMTP id q8-20020a05683022c800b006b87d12423dmr10440748otc.18.1698719299250;
+        Mon, 30 Oct 2023 19:28:19 -0700 (PDT)
+Received: from localhost.localdomain ([74.48.130.204])
+        by smtp.googlemail.com with ESMTPSA id fa9-20020a056a002d0900b0068fece2c190sm178510pfb.70.2023.10.30.19.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 19:28:18 -0700 (PDT)
+From:   Furong Xu <0x1207@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Jacob Keller <jacob.e.keller@intel.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>
+Subject: [PATCH net v3] net: stmmac: xgmac: Enable support for multiple Flexible PPS outputs
+Date:   Tue, 31 Oct 2023 10:27:29 +0800
+Message-Id: <20231031022729.2347871-1-0x1207@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 08/35] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-9-seanjc@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20231027182217.3615211-9-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/2023 2:21 AM, Sean Christopherson wrote:
-> Introduce a "version 2" of KVM_SET_USER_MEMORY_REGION so that additional
-> information can be supplied without setting userspace up to fail.  The
-> padding in the new kvm_userspace_memory_region2 structure will be used to
-> pass a file descriptor in addition to the userspace_addr, i.e. allow
-> userspace to point at a file descriptor and map memory into a guest that
-> is NOT mapped into host userspace.
-> 
-> Alternatively, KVM could simply add "struct kvm_userspace_memory_region2"
-> without a new ioctl(), but as Paolo pointed out, adding a new ioctl()
-> makes detection of bad flags a bit more robust, e.g. if the new fd field
-> is guarded only by a flag and not a new ioctl(), then a userspace bug
-> (setting a "bad" flag) would generate out-of-bounds access instead of an
-> -EINVAL error.
-> 
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   Documentation/virt/kvm/api.rst | 21 +++++++++++++++++++
->   arch/x86/kvm/x86.c             |  2 +-
->   include/linux/kvm_host.h       |  4 ++--
->   include/uapi/linux/kvm.h       | 13 ++++++++++++
->   virt/kvm/kvm_main.c            | 38 +++++++++++++++++++++++++++-------
->   5 files changed, 67 insertions(+), 11 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 21a7578142a1..ace984acc125 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6070,6 +6070,27 @@ writes to the CNTVCT_EL0 and CNTPCT_EL0 registers using the SET_ONE_REG
->   interface. No error will be returned, but the resulting offset will not be
->   applied.
->   
-> +4.139 KVM_SET_USER_MEMORY_REGION2
-> +---------------------------------
-> +
-> +:Capability: KVM_CAP_USER_MEMORY2
-> +:Architectures: all
-> +:Type: vm ioctl
-> +:Parameters: struct kvm_userspace_memory_region2 (in)
-> +:Returns: 0 on success, -1 on error
-> +
-> +::
-> +
-> +  struct kvm_userspace_memory_region2 {
-> +	__u32 slot;
-> +	__u32 flags;
-> +	__u64 guest_phys_addr;
-> +	__u64 memory_size; /* bytes */
-> +	__u64 userspace_addr; /* start of the userspace allocated memory */
+From XGMAC Core 3.20 and later, each Flexible PPS has individual PPSEN bit
+to select Fixed mode or Flexible mode. The PPSEN must be set, or it stays
+in Fixed PPS mode by default.
+XGMAC Core prior 3.20, only PPSEN0(bit 4) is writable. PPSEN{1,2,3} are
+read-only reserved, and they are already in Flexible mode by default, our
+new code always set PPSEN{1,2,3} do not make things worse ;-)
 
-missing
+Fixes: 95eaf3cd0a90 ("net: stmmac: dwxgmac: Add Flexible PPS support")
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Furong Xu <0x1207@gmail.com>
+---
+Changes in v3:
+  - Tagged Fixes: and sent through net instead of net-next, thanks Jacob Keller.
 
-	__u64 pad[16];
+Changes in v2:
+  - Add comment for XGMAC_PPSEN description among different XGMAC core versions.
+  - Update commit message, thanks Serge Semin.
+---
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h     |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    | 14 +++++++++++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-> +  };
-> +
-> +See KVM_SET_USER_MEMORY_REGION.
-> +
->   5. The kvm_run structure
->   ========================
->   
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 41cce5031126..6409914428ca 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12455,7 +12455,7 @@ void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
->   	}
->   
->   	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> -		struct kvm_userspace_memory_region m;
-> +		struct kvm_userspace_memory_region2 m;
->   
->   		m.slot = id | (i << 16);
->   		m.flags = 0;
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 5faba69403ac..4e741ff27af3 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1146,9 +1146,9 @@ enum kvm_mr_change {
->   };
->   
->   int kvm_set_memory_region(struct kvm *kvm,
-> -			  const struct kvm_userspace_memory_region *mem);
-> +			  const struct kvm_userspace_memory_region2 *mem);
->   int __kvm_set_memory_region(struct kvm *kvm,
-> -			    const struct kvm_userspace_memory_region *mem);
-> +			    const struct kvm_userspace_memory_region2 *mem);
->   void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot);
->   void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen);
->   int kvm_arch_prepare_memory_region(struct kvm *kvm,
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 13065dd96132..bd1abe067f28 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -95,6 +95,16 @@ struct kvm_userspace_memory_region {
->   	__u64 userspace_addr; /* start of the userspace allocated memory */
->   };
->   
-> +/* for KVM_SET_USER_MEMORY_REGION2 */
-> +struct kvm_userspace_memory_region2 {
-> +	__u32 slot;
-> +	__u32 flags;
-> +	__u64 guest_phys_addr;
-> +	__u64 memory_size;
-> +	__u64 userspace_addr;
-> +	__u64 pad[16];
-> +};
-> +
->   /*
->    * The bit 0 ~ bit 15 of kvm_userspace_memory_region::flags are visible for
->    * userspace, other bits are reserved for kvm internal use which are defined
-> @@ -1192,6 +1202,7 @@ struct kvm_ppc_resize_hpt {
->   #define KVM_CAP_COUNTER_OFFSET 227
->   #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
->   #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
-> +#define KVM_CAP_USER_MEMORY2 230
->   
->   #ifdef KVM_CAP_IRQ_ROUTING
->   
-> @@ -1473,6 +1484,8 @@ struct kvm_vfio_spapr_tce {
->   					struct kvm_userspace_memory_region)
->   #define KVM_SET_TSS_ADDR          _IO(KVMIO,   0x47)
->   #define KVM_SET_IDENTITY_MAP_ADDR _IOW(KVMIO,  0x48, __u64)
-> +#define KVM_SET_USER_MEMORY_REGION2 _IOW(KVMIO, 0x49, \
-> +					 struct kvm_userspace_memory_region2)
->   
->   /* enable ucontrol for s390 */
->   struct kvm_s390_ucas_mapping {
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 6e708017064d..3f5b7c2c5327 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1578,7 +1578,7 @@ static void kvm_replace_memslot(struct kvm *kvm,
->   	}
->   }
->   
-> -static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
-> +static int check_memory_region_flags(const struct kvm_userspace_memory_region2 *mem)
->   {
->   	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
->   
-> @@ -1980,7 +1980,7 @@ static bool kvm_check_memslot_overlap(struct kvm_memslots *slots, int id,
->    * Must be called holding kvm->slots_lock for write.
->    */
->   int __kvm_set_memory_region(struct kvm *kvm,
-> -			    const struct kvm_userspace_memory_region *mem)
-> +			    const struct kvm_userspace_memory_region2 *mem)
->   {
->   	struct kvm_memory_slot *old, *new;
->   	struct kvm_memslots *slots;
-> @@ -2084,7 +2084,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
->   EXPORT_SYMBOL_GPL(__kvm_set_memory_region);
->   
->   int kvm_set_memory_region(struct kvm *kvm,
-> -			  const struct kvm_userspace_memory_region *mem)
-> +			  const struct kvm_userspace_memory_region2 *mem)
->   {
->   	int r;
->   
-> @@ -2096,7 +2096,7 @@ int kvm_set_memory_region(struct kvm *kvm,
->   EXPORT_SYMBOL_GPL(kvm_set_memory_region);
->   
->   static int kvm_vm_ioctl_set_memory_region(struct kvm *kvm,
-> -					  struct kvm_userspace_memory_region *mem)
-> +					  struct kvm_userspace_memory_region2 *mem)
->   {
->   	if ((u16)mem->slot >= KVM_USER_MEM_SLOTS)
->   		return -EINVAL;
-> @@ -4566,6 +4566,7 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
->   {
->   	switch (arg) {
->   	case KVM_CAP_USER_MEMORY:
-> +	case KVM_CAP_USER_MEMORY2:
->   	case KVM_CAP_DESTROY_MEMORY_REGION_WORKS:
->   	case KVM_CAP_JOIN_MEMORY_REGIONS_WORKS:
->   	case KVM_CAP_INTERNAL_ERROR_DATA:
-> @@ -4821,6 +4822,14 @@ static int kvm_vm_ioctl_get_stats_fd(struct kvm *kvm)
->   	return fd;
->   }
->   
-> +#define SANITY_CHECK_MEM_REGION_FIELD(field)					\
-> +do {										\
-> +	BUILD_BUG_ON(offsetof(struct kvm_userspace_memory_region, field) !=		\
-> +		     offsetof(struct kvm_userspace_memory_region2, field));	\
-> +	BUILD_BUG_ON(sizeof_field(struct kvm_userspace_memory_region, field) !=		\
-> +		     sizeof_field(struct kvm_userspace_memory_region2, field));	\
-> +} while (0)
-> +
->   static long kvm_vm_ioctl(struct file *filp,
->   			   unsigned int ioctl, unsigned long arg)
->   {
-> @@ -4843,15 +4852,28 @@ static long kvm_vm_ioctl(struct file *filp,
->   		r = kvm_vm_ioctl_enable_cap_generic(kvm, &cap);
->   		break;
->   	}
-> +	case KVM_SET_USER_MEMORY_REGION2:
->   	case KVM_SET_USER_MEMORY_REGION: {
-> -		struct kvm_userspace_memory_region kvm_userspace_mem;
-> +		struct kvm_userspace_memory_region2 mem;
-> +		unsigned long size;
-> +
-> +		if (ioctl == KVM_SET_USER_MEMORY_REGION)
-> +			size = sizeof(struct kvm_userspace_memory_region);
-> +		else
-> +			size = sizeof(struct kvm_userspace_memory_region2);
-> +
-> +		/* Ensure the common parts of the two structs are identical. */
-> +		SANITY_CHECK_MEM_REGION_FIELD(slot);
-> +		SANITY_CHECK_MEM_REGION_FIELD(flags);
-> +		SANITY_CHECK_MEM_REGION_FIELD(guest_phys_addr);
-> +		SANITY_CHECK_MEM_REGION_FIELD(memory_size);
-> +		SANITY_CHECK_MEM_REGION_FIELD(userspace_addr);
->   
->   		r = -EFAULT;
-> -		if (copy_from_user(&kvm_userspace_mem, argp,
-> -						sizeof(kvm_userspace_mem)))
-> +		if (copy_from_user(&mem, argp, size))
->   			goto out;
->   
-> -		r = kvm_vm_ioctl_set_memory_region(kvm, &kvm_userspace_mem);
-> +		r = kvm_vm_ioctl_set_memory_region(kvm, &mem);
->   		break;
->   	}
->   	case KVM_GET_DIRTY_LOG: {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+index 7a8f47e7b728..a4e8b498dea9 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+@@ -259,7 +259,7 @@
+ 	((val) << XGMAC_PPS_MINIDX(x))
+ #define XGMAC_PPSCMD_START		0x2
+ #define XGMAC_PPSCMD_STOP		0x5
+-#define XGMAC_PPSEN0			BIT(4)
++#define XGMAC_PPSENx(x)			BIT(4 + (x) * 8)
+ #define XGMAC_PPSx_TARGET_TIME_SEC(x)	(0x00000d80 + (x) * 0x10)
+ #define XGMAC_PPSx_TARGET_TIME_NSEC(x)	(0x00000d84 + (x) * 0x10)
+ #define XGMAC_TRGTBUSY0			BIT(31)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+index f352be269deb..453e88b75be0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+@@ -1178,7 +1178,19 @@ static int dwxgmac2_flex_pps_config(void __iomem *ioaddr, int index,
+ 
+ 	val |= XGMAC_PPSCMDx(index, XGMAC_PPSCMD_START);
+ 	val |= XGMAC_TRGTMODSELx(index, XGMAC_PPSCMD_START);
+-	val |= XGMAC_PPSEN0;
++
++	/* XGMAC Core has 4 PPS outputs at most.
++	 *
++	 * Prior XGMAC Core 3.20, Fixed mode or Flexible mode are selectable for
++	 * PPS0 only via PPSEN0. PPS{1,2,3} are in Flexible mode by default,
++	 * and can not be switched to Fixed mode, since PPSEN{1,2,3} are
++	 * read-only reserved to 0.
++	 * But we always set PPSEN{1,2,3} do not make things worse ;-)
++	 *
++	 * From XGMAC Core 3.20 and later, PPSEN{0,1,2,3} are writable and must
++	 * be set, or the PPS outputs stay in Fixed PPS mode by default.
++	 */
++	val |= XGMAC_PPSENx(index);
+ 
+ 	writel(cfg->start.tv_sec, ioaddr + XGMAC_PPSx_TARGET_TIME_SEC(index));
+ 
+-- 
+2.34.1
 
