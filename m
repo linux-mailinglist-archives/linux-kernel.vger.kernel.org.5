@@ -2,178 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A3D7DD938
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F3A7DD93E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 00:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376879AbjJaXU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 19:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S1347384AbjJaXXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 19:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236055AbjJaXUz (ORCPT
+        with ESMTP id S236055AbjJaXXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:20:55 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E1FB9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:20:52 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da04fb79246so5991372276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:20:52 -0700 (PDT)
+        Tue, 31 Oct 2023 19:23:12 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0408C9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:23:09 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id 6a1803df08f44-67540aa0f5bso5503806d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 16:23:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698794452; x=1699399252; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jk3ioDpEtTCZpNsR+wmjni3i8ZxnGGq+dju+UkWGXEw=;
-        b=vMmU8ddbaDiurjtkNPsvdu9HV9cZI9wStrGH1ng/L3+0VIovJ0RR5+ZwPFR0I9Rboj
-         Q65wMfBNBLSngN1jhHtK0ai0JUwHUHMzf+iQqUJ1H0g4EPmIWeCl5B6MmNqUGwpT5ZOQ
-         5v/6+crpkhBR2ioHGB+Z4yM8+ryMMzzlxsOukDOmtbbpm/+AxPbjd3X/EevqiGs7qI5C
-         UbiJz4xQQwbxT2Ypa8tmEE6P3FhNmNJQrgEcG8WdoZ8d0qN3qidgoWsdPs7fCDviwI2A
-         d3gpIlHavPQQ3BY73Hry5bWgZbDJ7iQw1wEE//p+nL/5hdTqSbGb1cumUsQ8A59tFhsz
-         2A/Q==
+        d=chromium.org; s=google; t=1698794589; x=1699399389; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sw2B6vE9G+G7w2w874BluWAOKQISQdBMx0gd2n/sE7M=;
+        b=BW2mFTuv9jDc9OJMZjLLQAknYgReepwrgGsbY8uK98i89x/HVhTTkmQA0pdMa4TbKr
+         /7OD2bos/IzXxe2zvUQ98g4L3lymefDPSQxvp/fe5T5aMFBrKBE61HC3ys9N4j2mXzDO
+         A5IkVcAvl/G927jFfP/GYPYrKfvXTaOOD1+zI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698794452; x=1699399252;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jk3ioDpEtTCZpNsR+wmjni3i8ZxnGGq+dju+UkWGXEw=;
-        b=ZsMpAcLJDv+qJctNmsw+hxj3imPmFbbO/akssSGQh3hfist/Kiu7GyR2vlJnC8kNQc
-         KarCfWsRBmNFoBxhQb9l43fDJZCZwlxeL1IpSJ9O4Ad37sSq61EQz3Sc9KvZF5LIUBn4
-         urq9m5xlUKqQBRUErWFvoZlwL+bzFq7QBO5S1sU/xaYA0sGKkOCl5sccm8KqDvqfF6nt
-         c+sh56WASx6f+WeisEYV9EgMtCm9IrzkKEapTs2zbuX74yoKAaZtaRF3MtWNiiRGhuMR
-         PBaefXCZ4KV9mECB8ueQ2/+I4JDiPk2BlHQm0lIIJ0l9Kw2OIfGPHflCeJfUxbyvtHud
-         lCFw==
-X-Gm-Message-State: AOJu0YyzsjdoXn8hXR+wG+KOrzpGXzptFO4OAv2eD5wnOWb3H5d26rGd
-        02Oc24T+s3FDlqEPMfoLRVypaWtLxus=
-X-Google-Smtp-Source: AGHT+IFsU9imvyeie0l0m5PMcUEsU+Rf2khwwd7959bnnhM2277oOm3olVjq1EcfPc0Yw9dsn+JR+Ivbtlo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:7909:0:b0:da3:ab41:304a with SMTP id
- u9-20020a257909000000b00da3ab41304amr24782ybc.4.1698794451745; Tue, 31 Oct
- 2023 16:20:51 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 16:20:50 -0700
-In-Reply-To: <20231002095740.1472907-2-paul@xen.org>
-Mime-Version: 1.0
-References: <20231002095740.1472907-1-paul@xen.org> <20231002095740.1472907-2-paul@xen.org>
-Message-ID: <ZUGL0syLTH09BbsI@google.com>
-Subject: Re: [PATCH v7 01/11] KVM: pfncache: add a map helper function
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paul Durrant <paul@xen.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Durrant <pdurrant@amazon.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1698794589; x=1699399389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Sw2B6vE9G+G7w2w874BluWAOKQISQdBMx0gd2n/sE7M=;
+        b=xAW4Y/Iek6FovdM6uxQoRQ/MhAYQMMnVszcrS4xXNeFB95wQlMVkXn0I7v9EmWK2uO
+         ZRxk9CKaaN9+uT6+iw69rt7/Ve76mBPA9D9gZn3opVS+GgO/TJ4oFaoGPJIqKHtbK/fA
+         RDUY2voAL3dGvB9fgIEoKXmqn5mHRvRcR7C4G3O6Dt34jHjmosQxLg7PxsTo1EUbOj+B
+         n3TDQp7709MW5LDapaDd87/QZn4Wh8RC2SIHN2Z8MBucs3JEA4odbZrdoG63nkEkmV2b
+         cX1vGWxLeJHb6Z/xAgD/vFPzXpZEMYE6194bxMgC0PkKfx61zS/hAPAfcT4pT6OaZog7
+         lxyQ==
+X-Gm-Message-State: AOJu0YysEEolrfVIXEBFRE4XRZgH4cQcAtAmHjoZktLIu6KHhR50ikj0
+        DwyueRunx+xYrAZrhMG1zZyzxw==
+X-Google-Smtp-Source: AGHT+IELeE7KSX8SDWfKXXFosnM7eJQ87gPQKSBzDxY0zO3dL8fVjd9KroIOSfLXxROs54MZq4uAgw==
+X-Received: by 2002:a05:6214:d09:b0:672:3f54:b94f with SMTP id 9-20020a0562140d0900b006723f54b94fmr7618938qvh.7.1698794589164;
+        Tue, 31 Oct 2023 16:23:09 -0700 (PDT)
+Received: from pazz.c.googlers.com.com (129.177.85.34.bc.googleusercontent.com. [34.85.177.129])
+        by smtp.gmail.com with ESMTPSA id f2-20020a0ccc82000000b0066d1d2242desm937757qvl.120.2023.10.31.16.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 16:23:08 -0700 (PDT)
+From:   Paz Zcharya <pazz@chromium.org>
+X-Google-Original-From: Paz Zcharya <pazz@google.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Subrata Banik <subratabanik@google.com>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Manasi Navare <navaremanasi@chromium.org>,
+        Paz Zcharya <pazz@chromium.org>, Paz Zcharya <pazz@google.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        =?UTF-8?q?Jouni=20H=C3=B6gander?= <jouni.hogander@intel.com>,
+        Khaled Almahallawy <khaled.almahallawy@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Mika Kahola <mika.kahola@intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Suraj Kandpal <suraj.kandpal@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/i915/display: Only fail fastset on PSR2
+Date:   Tue, 31 Oct 2023 23:21:57 +0000
+Message-ID: <20231031232245.1331194-1-pazz@google.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
+Currently, i915 fails fastset if both the sink and the source support
+any version of PSR and regardless of the configuration setting of the
+driver (i.e., i915.enable_psr kernel argument). However, the
+implementation of PSR1 enable sequence is already seamless
+and works smoothly with fastset. Accordingly, do not fail fastset
+if PSR2 is not enabled.
 
-Please make the changelog standalone, i.e. don't rely on the shortlog to provide
-context.  Yeah, it can be silly and repetive sometimes, particularly when viewing
-git commits where the shortlog+changelog are bundled fairly close together, but
-when viewing patches in a mail client, e.g. when I'm doing initial review, the
-shortlog is in the subject which may be far away or even completely hidden (as is
-the case as I'm typing this).
+Signed-off-by: Paz Zcharya <pazz@google.com>
+---
 
-I could have sworn I included this in Documentation/process/maintainer-kvm-x86.rst,
-but I'm not finding it.
+ drivers/gpu/drm/i915/display/intel_dp.c  | 4 ++--
+ drivers/gpu/drm/i915/display/intel_psr.c | 2 +-
+ drivers/gpu/drm/i915/display/intel_psr.h | 1 +
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-> We have an unmap helper but mapping is open-coded. Arguably this is fine
-
-Pronouns.
-
-> because mapping is done in only one place, hva_to_pfn_retry(), but adding
-> the helper does make that function more readable.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  virt/kvm/pfncache.c | 43 +++++++++++++++++++++++++------------------
->  1 file changed, 25 insertions(+), 18 deletions(-)
-> 
-> diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
-> index 2d6aba677830..0f36acdf577f 100644
-> --- a/virt/kvm/pfncache.c
-> +++ b/virt/kvm/pfncache.c
-> @@ -96,17 +96,28 @@ bool kvm_gpc_check(struct gfn_to_pfn_cache *gpc, unsigned long len)
->  }
->  EXPORT_SYMBOL_GPL(kvm_gpc_check);
->  
-> -static void gpc_unmap_khva(kvm_pfn_t pfn, void *khva)
-> +static void *gpc_map(kvm_pfn_t pfn)
-> +{
-> +	if (pfn_valid(pfn))
-> +		return kmap(pfn_to_page(pfn));
-> +#ifdef CONFIG_HAS_IOMEM
-> +	else
-
-There's no need for the "else", the happy path is terminal.
-
-> +		return memremap(pfn_to_hpa(pfn), PAGE_SIZE, MEMREMAP_WB);
-> +#endif
-
-This needs a return for CONFIG_HAS_IOMEM=n.  I haven't tried to compile, but I'm
-guessing s390 won't be happy.
-
-This?
-
-static void *gpc_map(kvm_pfn_t pfn)
-{
-	if (pfn_valid(pfn))
-		return kmap(pfn_to_page(pfn));
-
-#ifdef CONFIG_HAS_IOMEM
-	return memremap(pfn_to_hpa(pfn), PAGE_SIZE, MEMREMAP_WB);
-#else
-	return NULL;
-#endif
-}
-
-> +}
-> +
-> +static void gpc_unmap(kvm_pfn_t pfn, void *khva)
->  {
->  	/* Unmap the old pfn/page if it was mapped before. */
-> -	if (!is_error_noslot_pfn(pfn) && khva) {
-> -		if (pfn_valid(pfn))
-> -			kunmap(pfn_to_page(pfn));
-> +	if (is_error_noslot_pfn(pfn) || !khva)
-> +		return;
-> +
-> +	if (pfn_valid(pfn))
-> +		kunmap(pfn_to_page(pfn));
->  #ifdef CONFIG_HAS_IOMEM
-> -		else
-> -			memunmap(khva);
-> +	else
-> +		memunmap(khva);
->  #endif
-
-I don't mind the refactoring, but it needs to be at least mentioned in the
-changelog.  And if we're going to bother, it probably makes sense to add a WARN
-in the CONFIG_HAS_IOMEM=n path, e.g.
-
-	/* Unmap the old pfn/page if it was mapped before. */
-	if (is_error_noslot_pfn(pfn) || !khva)
-		return;
-
-	if (pfn_valid(pfn))
-		kunmap(pfn_to_page(pfn));
-	else
-#ifdef CONFIG_HAS_IOMEM
-		memunmap(khva);
-#else
-		WARN_ON_ONCE(1);
-#endif
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index e0e4cb529284..a1af96e31518 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -2584,8 +2584,8 @@ bool intel_dp_initial_fastset_check(struct intel_encoder *encoder,
+ 		fastset = false;
+ 	}
+ 
+-	if (CAN_PSR(intel_dp)) {
+-		drm_dbg_kms(&i915->drm, "[ENCODER:%d:%s] Forcing full modeset to compute PSR state\n",
++	if (CAN_PSR(intel_dp) && psr2_global_enabled(intel_dp)) {
++		drm_dbg_kms(&i915->drm, "[ENCODER:%d:%s] Forcing full modeset due to PSR2\n",
+ 			    encoder->base.base.id, encoder->base.name);
+ 		crtc_state->uapi.mode_changed = true;
+ 		fastset = false;
+diff --git a/drivers/gpu/drm/i915/display/intel_psr.c b/drivers/gpu/drm/i915/display/intel_psr.c
+index 97d5eef10130..388bc3246db9 100644
+--- a/drivers/gpu/drm/i915/display/intel_psr.c
++++ b/drivers/gpu/drm/i915/display/intel_psr.c
+@@ -187,7 +187,7 @@ static bool psr_global_enabled(struct intel_dp *intel_dp)
+ 	}
+ }
+ 
+-static bool psr2_global_enabled(struct intel_dp *intel_dp)
++bool psr2_global_enabled(struct intel_dp *intel_dp)
+ {
+ 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_psr.h b/drivers/gpu/drm/i915/display/intel_psr.h
+index 0b95e8aa615f..6f3c36389cd3 100644
+--- a/drivers/gpu/drm/i915/display/intel_psr.h
++++ b/drivers/gpu/drm/i915/display/intel_psr.h
+@@ -21,6 +21,7 @@ struct intel_encoder;
+ struct intel_plane;
+ struct intel_plane_state;
+ 
++bool psr2_global_enabled(struct intel_dp *intel_dp);
+ void intel_psr_init_dpcd(struct intel_dp *intel_dp);
+ void intel_psr_pre_plane_update(struct intel_atomic_state *state,
+ 				struct intel_crtc *crtc);
+-- 
+2.42.0.820.g83a721a137-goog
 
