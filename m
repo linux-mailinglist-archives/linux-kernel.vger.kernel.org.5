@@ -2,295 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDC27DD798
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 22:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A6D7DD79A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 22:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344692AbjJaVQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 17:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S1344722AbjJaVRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 17:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjJaVQu (ORCPT
+        with ESMTP id S231287AbjJaVRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 17:16:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1363883
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698786961;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7upQ/TCDqPQ7/RZT4zXVHcHAhMn0gkigdjeEzC/JmJ0=;
-        b=RGzsakwI6SIkm3OHDX7bzF117dQFDdGWvJTAseRp/OWjRmaU+XHlOahpPbqPBYzpsVxk42
-        /85f0Txm7EVA8s1dkmvklpj3YXgLZLSt7tw7V0rGPcThlEsoJdOzHfOu2kfMrYNQcgahOW
-        J8WwcAcOeqIZY3F1qQtZWPBRK7FmvIw=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-412-FrAbftfcORS7-KirPyF2ww-1; Tue, 31 Oct 2023 17:15:57 -0400
-X-MC-Unique: FrAbftfcORS7-KirPyF2ww-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-507d0e4eedaso6902470e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:15:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698786955; x=1699391755;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7upQ/TCDqPQ7/RZT4zXVHcHAhMn0gkigdjeEzC/JmJ0=;
-        b=DBidjdBE3jt0pRD1Jx3yjTbMnRyslDhzS0kOOaQNRu4AInH4o42+LYzxzWThVd+0KH
-         c812KWOabCTwwygCLRb1dZu7LpyTFNae9c9xwjgKdOHmUeKGDmtAmh3xHw80fecrlRDG
-         wjbpSIRRNEdw9qP0Q6sGwBcHGYI8kQYcYYrvyQsGtL+tynu1HQEjiS16hXWnJdQidC4U
-         IPdQ+9MJqpe9uoEvbRJIk4tMXbOnYTj0ZvU2TAQpeG04kmldxwjx+r62I1N6jzRdRBmX
-         UhYxe3sqzy2RCzlpX9oWJOoz2iGTOmHe3kxusEUh8zQsqDjNOLeblFFgkleTup1xg4LG
-         KF8A==
-X-Gm-Message-State: AOJu0YwmnuXX1iqeLIk8hXeo6P6E+03+53K0xB63JBVPj+WuqE2kau/K
-        ma4Y+xd2vmYGuN2Kakuu93xcs2ByJh1oizifu7Ub0+URFehQv0mPmZACA1AeufHMZ53nUfOjFiU
-        ZBNtUJ/yf/ey1zVm6YW7FFXLm
-X-Received: by 2002:ac2:55b7:0:b0:4ff:ae42:19e2 with SMTP id y23-20020ac255b7000000b004ffae4219e2mr10113699lfg.58.1698786955254;
-        Tue, 31 Oct 2023 14:15:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGRky3KdEseSDE4uqAOpBzi7EnlmKPgY2mct/d4Gy3Y77ZfjIOfTgExy+Ta9yfIaFIeiVbD5g==
-X-Received: by 2002:ac2:55b7:0:b0:4ff:ae42:19e2 with SMTP id y23-20020ac255b7000000b004ffae4219e2mr10113685lfg.58.1698786954875;
-        Tue, 31 Oct 2023 14:15:54 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:2a07:3a01:6c4:9fb2:fbc:7029? (2001-1c00-2a07-3a01-06c4-9fb2-0fbc-7029.cable.dynamic.v6.ziggo.nl. [2001:1c00:2a07:3a01:6c4:9fb2:fbc:7029])
-        by smtp.gmail.com with ESMTPSA id lg17-20020a170906f89100b0098e78ff1a87sm1513087ejb.120.2023.10.31.14.15.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 14:15:54 -0700 (PDT)
-Message-ID: <16e533e2-81bb-47ba-9e23-460a626bcad7@redhat.com>
-Date:   Tue, 31 Oct 2023 22:15:52 +0100
+        Tue, 31 Oct 2023 17:17:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7D3E4;
+        Tue, 31 Oct 2023 14:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698787037; x=1730323037;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4IsjhjVYSNBncvjiDxuNC4YOnUBnAGYPBdW4HBXImVc=;
+  b=f7XqiRFvAeOu0uZWstFYtfMpTX5w+ciwdTAMpECewu2c+uIBF9ZkJJCc
+   fGA9PcV+W69BVe/D1Q7b5EnX4uoaIMm42XanIDRzSiaya0RWqMCXau9V3
+   K94QaCTZjX1sYVE13qcGqQKPGVp1rneOhhiggGVt5DNUJxreNIQatExLZ
+   4lX6bkmM79fbJAEim7ktdEng3kWVf34jvZplWb8CTs+8lsiZMXuR4o5Sq
+   BWGwh+rCX5LF35IrxQbRJfJ+GiFu+dYUR/75cElaKT5Z0x85VLcnRO4pK
+   xsmr0W89Pk79FvmSXkiXCatM0iW7uR0aNPibtoPqTLrY9VtWG8PZEDIKp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="388197060"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="388197060"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 14:17:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="884334986"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="884334986"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 14:17:15 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v10 0/8] Add support for Sub-NUMA cluster (SNC) systems
+Date:   Tue, 31 Oct 2023 14:17:00 -0700
+Message-ID: <20231031211708.37390-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231020213100.123598-1-tony.luck@intel.com>
+References: <20231020213100.123598-1-tony.luck@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] drm/i915/dsi: Replace poking of CHV GPIOs behind
- the driver's back
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
- <20231024155739.3861342-7-andriy.shevchenko@linux.intel.com>
- <ZTfssxRsrDxhzSQ6@smile.fi.intel.com>
- <b489675d-e9de-4bca-9622-78545aa8606d@redhat.com>
-Content-Language: en-US
-In-Reply-To: <b489675d-e9de-4bca-9622-78545aa8606d@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The Sub-NUMA cluster feature on some Intel processors partitions the CPUs
+that share an L3 cache into two or more sets. This plays havoc with the
+Resource Director Technology (RDT) monitoring features.  Prior to this
+patch Intel has advised that SNC and RDT are incompatible.
 
-On 10/31/23 17:07, Hans de Goede wrote:
-> Hi Andy,
-> 
-> On 10/24/23 18:11, Andy Shevchenko wrote:
->> On Tue, Oct 24, 2023 at 06:57:38PM +0300, Andy Shevchenko wrote:
->>> It's a dirty hack in the driver that pokes GPIO registers behind
->>> the driver's back. Moreoever it might be problematic as simultaneous
->>> I/O may hang the system, see the commit 0bd50d719b00 ("pinctrl:
->>> cherryview: prevent concurrent access to GPIO controllers") for
->>> the details. Taking all this into consideration replace the hack
->>> with proper GPIO APIs being used.
->>
->> Ah, just realised that this won't work if it happens to request to GPIOs with
->> the same index but different communities. I will fix that in v3, but will wait
->> for Hans to test VLV and it might even work in most of the cases on CHV as it
->> seems quite unlikely that the above mentioned assertion is going to happen in
->> real life.
-> 
-> I have added patches 1-5 to my personal tree + a small debug patch on top
-> which logs when soc_exec_opaque_gpio() actually gets called.
-> 
-> So these patches will now get run every time I run some tests on
-> one my tablets.
-> 
-> I'll get back to you with testing results when I've found a device where
-> the new soc_exec_opaque_gpio() actually gets called.
-> 
-> As for the CHT support, I have not added that to my tree yet, I would
-> prefer to directly test the correct/fixed patch.
+Some of these CPU support an MSR that can partition the RMID counters in
+the same way. This allows monitoring features to be used. With the caveat
+that users must be aware that Linux may migrate tasks more frequently
+between SNC nodes than between "regular" NUMA nodes, so reading counters
+from all SNC nodes may be needed to get a complete picture of activity
+for tasks.
 
-And I hit the "jackpot" on the first device I tried and the code needed
-some fixing to actually work, so here is something to fold into v3 to
-fix things:
+Cache and memory bandwidth allocation features continue to operate at
+the scope of the L3 cache.
 
-From 144fae4de91a6b5ed993b1722a07cca679f74cbe Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Tue, 31 Oct 2023 17:04:35 +0100
-Subject: [PATCH] drm/i915/dsi: Fix GPIO lookup table used by
- soc_exec_opaque_gpio()
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-There already is a GPIO lookup table for device "0000:00:02.0" and
-there can be only one GPIO lookup per device.
-
-Instead add an extra empty entry to the GPIO lookup table
-registered by intel_dsi_vbt_gpio_init() and use that extra entry
-in soc_exec_opaque_gpio().
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 60 ++++++++++----------
- 1 file changed, 31 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-index 8fc82aceae14..70f1d2c411e8 100644
---- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-+++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-@@ -219,8 +219,7 @@ static void soc_exec_gpio(struct intel_connector *connector, const char *con_id,
- 	} else {
- 		gpio_desc = devm_gpiod_get_index(dev_priv->drm.dev,
- 						 con_id, gpio_index,
--						 value ? GPIOD_OUT_LOW :
--						 GPIOD_OUT_HIGH);
-+						 value ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW);
- 		if (IS_ERR(gpio_desc)) {
- 			drm_err(&dev_priv->drm,
- 				"GPIO index %u request failed (%pe)\n",
-@@ -232,26 +231,20 @@ static void soc_exec_gpio(struct intel_connector *connector, const char *con_id,
- 	}
- }
- 
-+static struct gpiod_lookup *soc_exec_opaque_gpiod_lookup;
-+
- static void soc_exec_opaque_gpio(struct intel_connector *connector,
- 				 const char *chip, const char *con_id,
- 				 u8 gpio_index, bool value)
- {
--	struct gpiod_lookup_table *lookup;
-+	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
- 
--	lookup = kzalloc(struct_size(lookup, table, 2), GFP_KERNEL);
--	if (!lookup)
--		return;
--
--	lookup->dev_id = "0000:00:02.0";
--	lookup->table[0] =
-+	*soc_exec_opaque_gpiod_lookup =
- 		GPIO_LOOKUP_IDX(chip, gpio_index, con_id, gpio_index, GPIO_ACTIVE_HIGH);
- 
--	gpiod_add_lookup_table(lookup);
--
- 	soc_exec_gpio(connector, con_id, gpio_index, value);
- 
--	gpiod_remove_lookup_table(lookup);
--	kfree(lookup);
-+	soc_exec_opaque_gpiod_lookup->key = NULL;
- }
- 
- static void vlv_exec_gpio(struct intel_connector *connector,
-@@ -898,6 +891,7 @@ static struct gpiod_lookup_table pmic_panel_gpio_table = {
- 	.table = {
- 		/* Panel EN/DISABLE */
- 		GPIO_LOOKUP("gpio_crystalcove", 94, "panel", GPIO_ACTIVE_HIGH),
-+		{ }, /* Extra lookup entry for soc_exec_opaque_gpiod_lookup */
- 		{ }
- 	},
- };
-@@ -907,6 +901,15 @@ static struct gpiod_lookup_table soc_panel_gpio_table = {
- 	.table = {
- 		GPIO_LOOKUP("INT33FC:01", 10, "backlight", GPIO_ACTIVE_HIGH),
- 		GPIO_LOOKUP("INT33FC:01", 11, "panel", GPIO_ACTIVE_HIGH),
-+		{ }, /* Extra lookup entry for soc_exec_opaque_gpiod_lookup */
-+		{ }
-+	},
-+};
-+
-+static struct gpiod_lookup_table empty_gpio_table = {
-+	.dev_id = "0000:00:02.0",
-+	.table = {
-+		{ }, /* Extra lookup entry for soc_exec_opaque_gpiod_lookup */
- 		{ }
- 	},
- };
-@@ -916,6 +919,8 @@ static const struct pinctrl_map soc_pwm_pinctrl_map[] = {
- 			  "pwm0_grp", "pwm"),
- };
- 
-+static struct gpiod_lookup_table *gpiod_lookup_table;
-+
- void intel_dsi_vbt_gpio_init(struct intel_dsi *intel_dsi, bool panel_is_on)
- {
- 	struct drm_device *dev = intel_dsi->base.base.dev;
-@@ -926,16 +931,16 @@ void intel_dsi_vbt_gpio_init(struct intel_dsi *intel_dsi, bool panel_is_on)
- 	bool want_backlight_gpio = false;
- 	bool want_panel_gpio = false;
- 	struct pinctrl *pinctrl;
--	int ret;
-+	int i, ret;
- 
- 	if ((IS_VALLEYVIEW(dev_priv) || IS_CHERRYVIEW(dev_priv)) &&
- 	    mipi_config->pwm_blc == PPS_BLC_PMIC) {
--		gpiod_add_lookup_table(&pmic_panel_gpio_table);
-+		gpiod_lookup_table = &pmic_panel_gpio_table;
- 		want_panel_gpio = true;
- 	}
- 
- 	if (IS_VALLEYVIEW(dev_priv) && mipi_config->pwm_blc == PPS_BLC_SOC) {
--		gpiod_add_lookup_table(&soc_panel_gpio_table);
-+		gpiod_lookup_table = &soc_panel_gpio_table;
- 		want_panel_gpio = true;
- 		want_backlight_gpio = true;
- 
-@@ -952,6 +957,15 @@ void intel_dsi_vbt_gpio_init(struct intel_dsi *intel_dsi, bool panel_is_on)
- 				"Failed to set pinmux to PWM\n");
- 	}
- 
-+	if (!gpiod_lookup_table)
-+		gpiod_lookup_table = &empty_gpio_table;
-+
-+	/* Find first empty entry for soc_exec_opaque_gpiod_lookup */
-+	for (i = 0; gpiod_lookup_table->table[i].key; i++) { }
-+	soc_exec_opaque_gpiod_lookup = &gpiod_lookup_table->table[i];
-+
-+	gpiod_add_lookup_table(gpiod_lookup_table);
-+
- 	if (want_panel_gpio) {
- 		intel_dsi->gpio_panel = gpiod_get(dev->dev, "panel", flags);
- 		if (IS_ERR(intel_dsi->gpio_panel)) {
-@@ -974,11 +988,6 @@ void intel_dsi_vbt_gpio_init(struct intel_dsi *intel_dsi, bool panel_is_on)
- 
- void intel_dsi_vbt_gpio_cleanup(struct intel_dsi *intel_dsi)
- {
--	struct drm_device *dev = intel_dsi->base.base.dev;
--	struct drm_i915_private *dev_priv = to_i915(dev);
--	struct intel_connector *connector = intel_dsi->attached_connector;
--	struct mipi_config *mipi_config = connector->panel.vbt.dsi.config;
--
- 	if (intel_dsi->gpio_panel) {
- 		gpiod_put(intel_dsi->gpio_panel);
- 		intel_dsi->gpio_panel = NULL;
-@@ -989,12 +998,5 @@ void intel_dsi_vbt_gpio_cleanup(struct intel_dsi *intel_dsi)
- 		intel_dsi->gpio_backlight = NULL;
- 	}
- 
--	if ((IS_VALLEYVIEW(dev_priv) || IS_CHERRYVIEW(dev_priv)) &&
--	    mipi_config->pwm_blc == PPS_BLC_PMIC)
--		gpiod_remove_lookup_table(&pmic_panel_gpio_table);
--
--	if (IS_VALLEYVIEW(dev_priv) && mipi_config->pwm_blc == PPS_BLC_SOC) {
--		pinctrl_unregister_mappings(soc_pwm_pinctrl_map);
--		gpiod_remove_lookup_table(&soc_panel_gpio_table);
--	}
-+	gpiod_remove_lookup_table(gpiod_lookup_table);
- }
+Dropped Peter's "Reviewed-by" from all but parts 5 & 8 since there
+have been many changes since he provided those.
+
+Other changes since v9 (all from Reinette's comments)
+
+global s/cpu/CPU/ in commit messages and code comments
+
+#1
+New test for invalid domain id before calling rdt_find_domain() means that
+error handling in that function and at all call-sites can be simplified.
+In pseudo_lock_region_init() use the new enum resctrl_scope for local variable.
+
+#2
+Include *all* common fields in the rdt_domain_hdr. Defer adding "type" until it is
+used later in part #3.
+
+#3
+Fix commit to be specific the only the RDT_RESOURCE_L3 resource is going
+to have different monitor and control scope.
+Rename get_domain_from_cpu() -> get_ctrl_domain_from_cpu()
+Rewrite comment for rdt_find_domains().
+Add "type" field to rdt_domain_hdr structure.
+Delete the /* RDT_RESOURCE_MBA is never mon_capable */ comment.
+
+#4
+Comment against patch 4, but now fixed in patch #2. cpu_mask
+is included in common header.
+
+#5
+No comments. No changes.
+
+#6
+Fixed missing word s/monitoring on Intel/monitoring on an Intel/
+Deleted "A later patch" paragraph.
+Expanded description how how values are "adjusted" for mon_scale
+and cache size.
+Changed type of "snc_nodes_per_l3_cache" to "unsigned int".
+
+#7
+Expand h/w to hardware (commit and code comments)
+Remove "earlier commit" reference
+s/counnter/counter/
+Check for offline CPUs and warn user SNC detection may be broken.
+
+#8
+No comments. No changes.
+
+Tony Luck (8):
+  x86/resctrl: Prepare for new domain scope
+  x86/resctrl: Prepare to split rdt_domain structure
+  x86/resctrl: Prepare for different scope for control/monitor
+    operations
+  x86/resctrl: Split the rdt_domain and rdt_hw_domain structures
+  x86/resctrl: Add node-scope to the options for feature scope
+  x86/resctrl: Introduce snc_nodes_per_l3_cache
+  x86/resctrl: Sub NUMA Cluster detection and enable
+  x86/resctrl: Update documentation with Sub-NUMA cluster changes
+
+ Documentation/arch/x86/resctrl.rst        |  23 +-
+ include/linux/resctrl.h                   |  87 +++--
+ arch/x86/include/asm/msr-index.h          |   1 +
+ arch/x86/kernel/cpu/resctrl/internal.h    |  66 ++--
+ arch/x86/kernel/cpu/resctrl/core.c        | 411 +++++++++++++++++-----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  58 +--
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  68 ++--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  26 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 149 ++++----
+ 9 files changed, 607 insertions(+), 282 deletions(-)
+
+
+base-commit: 5a6a09e97199d6600d31383055f9d43fbbcbe86f
 -- 
 2.41.0
-
-
-Regards,
-
-Hans
 
