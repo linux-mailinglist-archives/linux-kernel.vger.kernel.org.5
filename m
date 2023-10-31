@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 378F17DC427
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016337DC42D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 03:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjJaCGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 22:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S230074AbjJaCK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 22:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjJaCGa (ORCPT
+        with ESMTP id S229692AbjJaCKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 22:06:30 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D39B3;
-        Mon, 30 Oct 2023 19:06:26 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc3388621cso17738875ad.1;
-        Mon, 30 Oct 2023 19:06:26 -0700 (PDT)
+        Mon, 30 Oct 2023 22:10:53 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A789FE6;
+        Mon, 30 Oct 2023 19:10:48 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2e44c7941so3564917b6e.2;
+        Mon, 30 Oct 2023 19:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698717986; x=1699322786; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xHz556Zm7uDIyDqflcThIYkwentvkL/bD3ujxb0WOLg=;
-        b=QWzfyOW06OLQrhG4QIMiS9JWt4Lx81LpxKvOEtE5wNS1LEZrwMElT2KlU3JDPRnkdH
-         YCbJM5iHI/Fs/KyS51WX/PGaQ3IYnwfwBECGXcTjzNeJPSvVVq4n1zA4b5XhqEPZUAw9
-         DiJ7eLNKqssXndSEvJbTPgs7+S6iJGDhLC8ztj/Dm3ifAGjOLeG7f3m2t8ciP6djLhi8
-         fJxzvfVjnEh8/6+0CIrqFZ07wAm473mOkpkYjC2A0Qo/S7EXDzBrq6WTqrDNl+MsFPZt
-         8QhpIGmDpgqesOANwQU9YYX3P1akAFZUqOfuQUEHQLl9CLlnQqW3jMC2bd/2VkrqFxVo
-         xpzw==
+        d=gmail.com; s=20230601; t=1698718248; x=1699323048; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HvaTCZaVfa8YOs/0i4vt5upvE/+93PV8qucCPmWYZzM=;
+        b=lE5yUIqqi/s8FtoPKJDhqmhlVNAW1lEMClL5kVwhJnRqdbcLiDxBu762PlZlPS0asj
+         Ls+sFzRDe0OVrpg146pHKOxu0Bfa7K5xyZl6bNu3cqyBET20SjEL8wl/qCHU/aWX7I0D
+         adFkqfONm94A4ztxxXrJlJBPmWK20eYHJ8KyInRyxOqBnuqoiqpwVVpn+8sqxKLQRjnA
+         /LN+qEjuQRLQjrCJkVx7B7DJQO7E95BC7N12UwwxOjgxGJMBPpmWXPOguu/Y7nNp+7Hx
+         vZNapEHTLvFculB33SVeeFei7NsobV2z9i+HSftRbtoJ0Yr+AWXInYG7Qfx23hSq6Qt5
+         PDJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698717986; x=1699322786;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698718248; x=1699323048;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xHz556Zm7uDIyDqflcThIYkwentvkL/bD3ujxb0WOLg=;
-        b=IIgPKx8elT61IxDEHp3+wqwbVUiXd8CnSVrT5qvdNjGC0CpM+u639pi2yLdflVgvCD
-         AbD8ArS0Wj8w/c3rjQSKWp7/VYGARRPJb0NvHuoALGI8mAFtUdGCHU3bLb7ddtO3ODMY
-         vGxYJ0FsYycWzrD0ZmkKgMysxnKT8ZKyQxTPbJuu7pGf3gAb1HvQf10GJvN/tHFLzMN+
-         LZIAaRxGP1jvCDhkN/Jjvaa5n4YHqP9AFt0xcEG9AN18CAB9JYz/OW1irhJLvcWmOsrq
-         0jcup6G6ifRGwEk5Zk8wiQ+VjUB31aSKcKffneVy8++ktdZgNFJofVCalSgxu9zdrfO3
-         YKGg==
-X-Gm-Message-State: AOJu0Yxpzuz+ciBHkRZ2nJF+f63Mkq7u4ykPSXaBOM2JBNHOeywHJJxY
-        Lnp98xEvbY+WF94r4H2R3l8=
-X-Google-Smtp-Source: AGHT+IFUKTjZ/w1q2ApjWu1YlVUYjFDy/lPnscUvLqvgIiMiXw7iGkWIFBQFCl+aKYD4Z+QLnkeXSQ==
-X-Received: by 2002:a17:903:1c6:b0:1cc:4488:afba with SMTP id e6-20020a17090301c600b001cc4488afbamr1752225plh.6.1698717985873;
-        Mon, 30 Oct 2023 19:06:25 -0700 (PDT)
+        bh=HvaTCZaVfa8YOs/0i4vt5upvE/+93PV8qucCPmWYZzM=;
+        b=jxxGz+qu6nIxakrE3aMI0YFe6VDspqvBcxxSjoMNLlKMCc0k58Egjw3oohpeVt3RU4
+         s9ipYqZGEwMEiZMrjjxEUV1hKHZOoqwq4Al1bQvfKLoz+7W20Lj8VxQB2M4X0cm6EX+B
+         CkXEpSDcewTj065mHQVAddrzew9ZXYh/u9xRxcjalLZBUWkfC1tvMCj8PBloVVspf9Df
+         n+QU6T4lH9+xOwXriRDETFwstdrdRfOjLn8ui5Xp75EM17f5ONHuLcuHjZUXi74rDT9L
+         5Imgh5KuiK965Ja/9WtT1+Aug0J2teFvxeFgrQclG3CHVxCMo0t9mMq2KXWIiIAZnVFD
+         p0SQ==
+X-Gm-Message-State: AOJu0YzJYFz8iQN5vel6TSFedDSyFfZSBaI+xyGRANJNQ/McIFCsvuSN
+        eHcqH9wL6Dven4+n+R2o7ZY=
+X-Google-Smtp-Source: AGHT+IGN9eO8LyWf1xKG3Fx7H+WbTQi4R3oKTUC6n64ofAK1rLf7fydn9KmdpkTnvjqpD4pYruJ6iQ==
+X-Received: by 2002:a05:6808:1156:b0:3af:b6d3:cda0 with SMTP id u22-20020a056808115600b003afb6d3cda0mr16201493oiu.40.1698718247655;
+        Mon, 30 Oct 2023 19:10:47 -0700 (PDT)
 Received: from ?IPV6:2401:4900:628c:8ee8:d1a1:4bda:564e:d992? ([2401:4900:628c:8ee8:d1a1:4bda:564e:d992])
-        by smtp.gmail.com with ESMTPSA id u10-20020a17090282ca00b001c74876f032sm156575plz.162.2023.10.30.19.06.22
+        by smtp.gmail.com with ESMTPSA id h18-20020a056a001a5200b0069305627491sm159470pfv.159.2023.10.30.19.10.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 19:06:25 -0700 (PDT)
-Message-ID: <778c68af-b86b-401f-8fc5-0a43abab4dad@gmail.com>
-Date:   Tue, 31 Oct 2023 07:35:06 +0530
+        Mon, 30 Oct 2023 19:10:47 -0700 (PDT)
+Message-ID: <efea5ae2-7e41-4b78-a283-1f907be560b0@gmail.com>
+Date:   Tue, 31 Oct 2023 07:39:29 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+From:   Anshul Dalal <anshulusr@gmail.com>
 Subject: Re: [PATCH v6 2/2] input: joystick: driver for Adafruit Seesaw
  Gamepad
-Content-Language: en-US
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
         Jeff LaBundy <jeff@labundy.com>,
         Shuah Khan <skhan@linuxfoundation.org>,
         linux-kernel-mentees@lists.linuxfoundation.org,
         linux-kernel@vger.kernel.org
 References: <20231027051819.81333-1-anshulusr@gmail.com>
- <20231027051819.81333-2-anshulusr@gmail.com> <ZT9TqX0tfEKpHPV9@google.com>
-From:   Anshul Dalal <anshulusr@gmail.com>
-In-Reply-To: <ZT9TqX0tfEKpHPV9@google.com>
+ <20231027051819.81333-2-anshulusr@gmail.com>
+ <d1dd2142-546f-42b7-8966-ab75fd4f8817@t-8ch.de>
+Content-Language: en-US
+In-Reply-To: <d1dd2142-546f-42b7-8966-ab75fd4f8817@t-8ch.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,15 +84,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry,
+Hello Thomas,
 
-Thanks for the review, the requested changes will be added in the next
-patch version. I have added a few comments below:
+Thanks for the review! The requested changes will be addressed in the
+next patch version though I had a few comments below:
 
-On 10/30/23 12:26, Dmitry Torokhov wrote:
+On 10/27/23 11:44, Thomas Weißschuh wrote:
 > Hi Anshul,
 > 
-> On Fri, Oct 27, 2023 at 10:48:11AM +0530, Anshul Dalal wrote:
+> thanks for the reworks!
+> 
+> Some more comments inline.
+> 
+> On 2023-10-27 10:48:11+0530, Anshul Dalal wrote:
 >> Adds a driver for a mini gamepad that communicates over i2c, the gamepad
 >> has bidirectional thumb stick input and six buttons.
 >>
@@ -182,55 +187,9 @@ On 10/30/23 12:26, Dmitry Torokhov wrote:
 >>  drivers/input/joystick/adafruit-seesaw.c | 310 +++++++++++++++++++++++
 >>  4 files changed, 327 insertions(+)
 >>  create mode 100644 drivers/input/joystick/adafruit-seesaw.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 4cc6bf79fdd8..0595c832c248 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -441,6 +441,13 @@ W:	http://wiki.analog.com/AD7879
->>  W:	https://ez.analog.com/linux-software-drivers
->>  F:	drivers/input/touchscreen/ad7879.c
->>  
->> +ADAFRUIT MINI I2C GAMEPAD
->> +M:	Anshul Dalal <anshulusr@gmail.com>
->> +L:	linux-input@vger.kernel.org
->> +S:	Maintained
->> +F:	Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
->> +F:	drivers/input/joystick/adafruit-seesaw.c
->> +
->>  ADDRESS SPACE LAYOUT RANDOMIZATION (ASLR)
->>  M:	Jiri Kosina <jikos@kernel.org>
->>  S:	Maintained
->> diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
->> index ac6925ce8366..df9cd1830b29 100644
->> --- a/drivers/input/joystick/Kconfig
->> +++ b/drivers/input/joystick/Kconfig
->> @@ -412,4 +412,13 @@ config JOYSTICK_SENSEHAT
->>  	  To compile this driver as a module, choose M here: the
->>  	  module will be called sensehat_joystick.
->>  
->> +config JOYSTICK_SEESAW
->> +	tristate "Adafruit Mini I2C Gamepad with Seesaw"
->> +	depends on I2C
->> +	help
->> +	  Say Y here if you want to use the Adafruit Mini I2C Gamepad.
->> +
->> +	  To compile this driver as a module, choose M here: the module will be
->> +	  called adafruit-seesaw.
->> +
->>  endif
->> diff --git a/drivers/input/joystick/Makefile b/drivers/input/joystick/Makefile
->> index 3937535f0098..9976f596a920 100644
->> --- a/drivers/input/joystick/Makefile
->> +++ b/drivers/input/joystick/Makefile
->> @@ -28,6 +28,7 @@ obj-$(CONFIG_JOYSTICK_N64)		+= n64joy.o
->>  obj-$(CONFIG_JOYSTICK_PSXPAD_SPI)	+= psxpad-spi.o
->>  obj-$(CONFIG_JOYSTICK_PXRC)		+= pxrc.o
->>  obj-$(CONFIG_JOYSTICK_QWIIC)		+= qwiic-joystick.o
->> +obj-$(CONFIG_JOYSTICK_SEESAW)		+= adafruit-seesaw.o
->>  obj-$(CONFIG_JOYSTICK_SENSEHAT)	+= sensehat-joystick.o
->>  obj-$(CONFIG_JOYSTICK_SIDEWINDER)	+= sidewinder.o
->>  obj-$(CONFIG_JOYSTICK_SPACEBALL)	+= spaceball.o
+> 
+> [..]
+> 
 >> diff --git a/drivers/input/joystick/adafruit-seesaw.c b/drivers/input/joystick/adafruit-seesaw.c
 >> new file mode 100644
 >> index 000000000000..1aa6fbe4fda4
@@ -308,9 +267,20 @@ On 10/30/23 12:26, Dmitry Torokhov wrote:
 >> +struct seesaw_data {
 >> +	__be16 x;
 >> +	__be16 y;
+> 
+> The fact that these are big endian is now an implementation detail
+> hidden within seesaw_read_data(), so the __be16 can go away.
+> 
 >> +	u32 button_state;
 >> +} __packed;
->> +
+> 
+> While this was requested by Jeff I don't think it's correct.
+> The struct is never received in this form from the device.
+> I guess he also got confused, like me, by the fact that data is directly
+> read into the fields of the struct.
+> 
+> See my comment seesaw_read_data().
+> 
 >> +struct seesaw_button_description {
 >> +	unsigned int code;
 >> +	unsigned int bit;
@@ -342,32 +312,37 @@ On 10/30/23 12:26, Dmitry Torokhov wrote:
 >> +		.bit = SEESAW_BUTTON_SELECT,
 >> +	},
 >> +};
+> 
+> This looks very much like a sparse keymap which can be implemented with
+> the helpers from <linux/input/sparse-keymap.h>.
+> 
+
+When going through the API provided by sparse-keymap, I could only see
+the use for sparse_keymap_report_entry here. Which leads to the
+following refactored code:
+
+static const struct key_entry seesaw_buttons_new[] = {
+	{KE_KEY, SEESAW_BUTTON_A, {BTN_SOUTH}},
+	{KE_KEY, SEESAW_BUTTON_B, {BTN_EAST}},
+	...
+};
+
+for (i = 0; i < ARRAY_SIZE(seesaw_buttons_new); i++) {
+	sparse_keymap_report_entry(input, &seesaw_buttons_new[i],
+		data.button_state & BIT(seesaw_buttons_new[i].code),
+		false);
+}
+
+I don't think this significantly improves the code unless you had some
+other way to use the API in mind.
+
+> Personally I prefer each keymap entry to be on a single line (without
+> designated initializers, maybe with some alignment) to save a bunch of
+> vertical space.
+> 
 >> +
 >> +static int seesaw_register_read(struct i2c_client *client, u8 register_high,
 >> +				u8 register_low, char *buf, int count)
-> 
-> I am curious why we have 2 u8s instead of u16 that we send as __be16?
-> 
-
-That's done to be consistent with the manufacturer's implementation of
-the seesaw framework from the Arduino driver:
-
-  bool read(uint8_t regHigh, uint8_t regLow, uint8_t *buf, uint8_t num,
-            uint16_t delay = 250);
-
-The spec uses register_high as a namespace for the actual register you
-want to work with: register_low.
-
-For example when reading for the hardware id of the device, we have
-`SEESAW_STATUS_BASE` [0x00] as the register_high and
-`SEESAW_STATUS_HW_ID` [0x01] as the register_low which could also be
-`SEESAW_STATUS_VERSION` [0x02] if instead wanted to get the framework
-version the device is running.
-
-Changing the register_high to say `SEESAW_TIMER_BASE` [0x08] and
-register_low to `SEESAW_TIMER_FREQ` [0x02] would now have the chip
-output the timer frequency.
-
 >> +{
 >> +	int ret;
 >> +	u8 register_buf[2] = { register_high, register_low };
@@ -376,34 +351,6 @@ output the timer frequency.
 >> +	if (ret < 0)
 >> +		return ret;
 >> +	ret = i2c_master_recv(client, buf, count);
-> 
-> I am curious can this be an i2c_transfer() with read/write messages
-> instead (so 1 transaction)?
-> 
-
-Yes! here's what that could look like:
-
-struct i2c_msg message_buf[2] = {
-	{
-		.addr = client->addr,
-		.flags = client->flags,
-		.len = sizeof(register_buf),
-		.buf = register_buf
-	},
-	{
-		.addr = client->addr,
-		.flags = client->flags | I2C_M_RD,
-		.len = count,
-		.buf = buf
-	}
-};
-ret = i2c_transfer(client->adapter, message_buf, ARRAY_SIZE(message_buf));
-if (ret < 0)
-	return ret;
-
-I prefer this to the prior, let me know if I should go ahead with adding
-this change.
-
 >> +	if (ret < 0)
 >> +		return ret;
 >> +
@@ -442,9 +389,6 @@ this change.
 >> +{
 >> +	int ret;
 >> +	u8 read_buf[4];
-> 
-> Why is this u8 buffer and not __be32?
-> 
 >> +
 >> +	ret = seesaw_register_read(client, SEESAW_GPIO_BASE, SEESAW_GPIO_BULK,
 >> +				   read_buf, sizeof(read_buf));
@@ -452,18 +396,14 @@ this change.
 >> +		return ret;
 >> +
 >> +	data->button_state = ~get_unaligned_be32(&read_buf);
-> 
-> If you use __be32 you would not need to use get_unaligned_be32.
-> 
-
-In my testing on a Raspberry Pi Zero 2 W (arm64), that
-get_unaligned_be32 still seems to be required even with read_buf as __be32.
-
-> 
 >> +
 >> +	ret = seesaw_register_read(client, SEESAW_ADC_BASE,
 >> +				   SEESAW_ADC_OFFSET + SEESAW_ANALOG_X,
 >> +				   (char *)&data->x, sizeof(data->x));
+> 
+> Nitpick: read into a dedicated local variable instead of 'data', as it's
+> easier to understand.
+> 
 >> +	if (ret)
 >> +		return ret;
 >> +	/*
@@ -478,33 +418,6 @@ get_unaligned_be32 still seems to be required even with read_buf as __be32.
 >> +	if (ret)
 >> +		return ret;
 >> +	data->y = be16_to_cpu(data->y);
-> 
-> This is endianness violation and sparse should have warned you about
-> this. A variable can either carry BE data, LE data, or CPU-endianness
-> data, but not both.
-
-Would reading the data into an __be16 and then using be16_to_cpu() to
-assign it to data->y and data->x be an acceptable solution?
-
-> I'd recommend combining seesaw_read_data() with
-> seesaw_poll() into something like seesaw_report_events() and using
-> temporaries for x and y and button data, and do not store them in the
-> private structure at all. 
-> 
-
-The `struct seesaw_data` here is already temporary in seesaw_poll()
-which then gets populated by seesaw_read_data(). I think the separation
-of both functions is a better approach since it provides a convenient
-error handler in case anything with the hardware goes wrong as:
-
-err = seesaw_read_data(private->i2c_client, &data);
-if (err) {
-	dev_err_ratelimited(&input->dev,
-			    "failed to read joystick state: %d\n", err);
-	return;
-}
-
-
 >> +
 >> +	return 0;
 >> +}
@@ -517,6 +430,9 @@ if (err) {
 >> +
 >> +	err = seesaw_read_data(private->i2c_client, &data);
 >> +	if (err != 0) {
+> 
+> Everywhere else this is just 'if (err)'.
+> 
 >> +		dev_err_ratelimited(&input->dev,
 >> +				    "failed to read joystick state: %d\n", err);
 >> +		return;
@@ -546,9 +462,6 @@ if (err) {
 >> +
 >> +	/* Wait for the registers to reset before proceeding */
 >> +	mdelay(10);
-> 
-> Can this be usleep_range() instead? No need to block CPU.
-> 
 >> +
 >> +	seesaw = devm_kzalloc(&client->dev, sizeof(*seesaw), GFP_KERNEL);
 >> +	if (!seesaw)
@@ -556,9 +469,6 @@ if (err) {
 >> +
 >> +	err = seesaw_register_read(client, SEESAW_STATUS_BASE,
 >> +				   SEESAW_STATUS_HW_ID, &hardware_id, 1);
-> 
-> sizeof(hardware_id)
-> 
 >> +	if (err)
 >> +		return err;
 >> +
@@ -584,6 +494,10 @@ if (err) {
 >> +
 >> +	seesaw->i2c_client = client;
 >> +	i2c_set_clientdata(client, seesaw);
+> 
+> I'm not familiar with the i2c APIs but this clientdata seems to be
+> unused.
+> 
 >> +
 >> +	seesaw->input_dev = devm_input_allocate_device(&client->dev);
 >> +	if (!seesaw->input_dev)
@@ -612,6 +526,13 @@ if (err) {
 >> +
 >> +	input_set_poll_interval(seesaw->input_dev,
 >> +				SEESAW_GAMEPAD_POLL_INTERVAL);
+> 
+> Why the linebreak on this line and not on the ones below?
+> 
+
+It was clang-format trying to prevent the line from being 81 characters
+long, would be fixed in the next patch.
+
 >> +	input_set_max_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_MAX);
 >> +	input_set_min_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_MIN);
 >> +
@@ -645,6 +566,3 @@ if (err) {
 >> -- 
 >> 2.42.0
 >>
-> 
-> Thanks.
-> 
