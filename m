@@ -2,221 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5E77DC640
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B397DC636
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbjJaGHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 02:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        id S235401AbjJaGGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 02:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235237AbjJaGHB (ORCPT
+        with ESMTP id S230298AbjJaGGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 02:07:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EDDC0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 23:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698732418; x=1730268418;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=iA/dsWjoNxVW71e6mU9dM9nPA3kbfDYVkSXyxVxmEFc=;
-  b=HqbpgyTnqMwyjv660XKk7NGyiMpdIdcDllEUmxiOU/JVbEF+/+YgWu3w
-   92+KSWJNRttT91I6YC3WczhqJTay5VDrR5HOmPGgT3UsrhEIdmSnOU6Ab
-   fAJhp4lw1Eak5N7kn6aBroyjcoD/qjsxf9t1cIlh692inqt/B/FPNAvt1
-   dbXRatCmwlt+hO6l2HhiUXcDMN/tqV4vmUJ31GF5+O01LxSoftuEEzwNn
-   nQM6d7Qbv1z2Ct6vy3XhZH3oXEtCrGBE2ykLaYRpeQHc1mGzEAKV2Y2r3
-   Hm6CQOy5GKk2VT2EfDmyKA/S4eOJbx4yfWI0QUI1Td7kXXgXmOuzcD4P1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="452494197"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="452494197"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 23:00:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1007671222"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="1007671222"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 23:00:02 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 30 Oct 2023 23:00:01 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 30 Oct 2023 23:00:01 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 23:00:01 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 30 Oct 2023 22:59:45 -0700
+        Tue, 31 Oct 2023 02:06:09 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2056.outbound.protection.outlook.com [40.107.255.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C44F5;
+        Mon, 30 Oct 2023 23:05:43 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mYP85259sxs/4Q3aMje/duzJqkPHa24Yjy/DPKdAcA8X095I8jOzGOhMBVrXgq2FPG9Z08JTsGmmaIcxlKZoPykkdjJIXEAWdzcrGQBjOjd5TbwOzGG6FJ8377UrV2NtZRulRk/PRq1Vt3Af5nlM780n26TEjV5n5r26cuBEKAHGExJss73aShXfSzLSuupBEcX7c6mijUH5ktaMhCCc8dyWMRnFmMoCAJIvrRNR894PsW0VT8vLC1IyknraUYyh//EF2zh7l+gli+xMxXZA1FoCHVs4F0ceUqh5lgaRFabHgjECFE4i/71ZRp6XiwitJCMH/6vVI4JVZ/AiLRe9dg==
+ b=T2W/cu7JN8hQRr6daFDeazHWPrVQEAN9KyWdi1dY+JwaIqezPN4nw9eLuwNEfpFt+iLfb3JWw14P1MsHrkoKoFD8tsNBc4/2ZGpEj8XOT2bn5itX9SgD9cI+2pq0ZVJYXO2dEfTSGawh+HV3HPDztcEBhxThYste5FG3/3BBYS6Tvn3MkL0z+CW7A4kjvooWtcJbZ3dUuzOsieO5IQd7uu9FVZ7f+DewZk+k370Bl+G0JlfGAm7CJVa/4QJgJ/fLu5NT89dekqdvYaDJ/aNCOj6WHSq9P9LZ+l6K2blAG+yj0bgIC2FCpr8ycjQBVlIYsKED+j4pbWb8GMAEA+gljA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GlGTT/4Ay2qpZjzvR5r7Z0QxdhExl83OtNCQI9J0bgw=;
- b=CIOCJ8wa493Q7hMS1Ju7IWiLmWHFOVeXpBDF4UVji45mAzhFbbZUEJahiAb2Va6MNNU0+VbK3Zf9BWtJvz3QQO5wKVpKJ2FDtvhAocYdQPBOFjk/YFaBTQ+2SvSw2dTWQFkul9K0RwsKItyODy2NfHo7nGyIwh+d8Xkv+4nXkHGUCAlL1OHjPpDKy8Npg8guZe+oCblRtJXCDZNRYDLT57FPTXina7E/7qRKcbjPM9QbLJdxmlZ2uPII7RSNLns9n8gihXuDhreSvSa/umMYfGjzen6N70UB6Kj41OjNYnCKszzbLNd6HXO4ISm8nrREV5hPWhJWvvxSgowo7IIVDA==
+ bh=8zlaR2nGzIsQ+dXF6OApNIVnP8cLN3aV9RLxVbN20vE=;
+ b=F654EMmd3wCh633ipJIdL3oUuuQZdzTrfzoKCZcROwk20v8lI/fs8eyPK7dnDVHkqRpuNlr1jwjxGSlR5hKGe9545ZcdicND82V3Qj97DRHdqxsfQiGZgzZiZrGGUxQTw8cQJU+jBWfE1/k1nFKOpbWSraXXnlkKXfUtfYZg2MqwLJnwn9B7zu8U8yg+eS8KA1sUjgh/5WNTW3kyCKkoi7KBDPpfcD47t+vEvI/ztMSONKJF2WOXtst1lUhZ2pM9rPPoRoLL95QGw1wZShP36pZcjksK9wdovTbgnBg/U2Evs4ToKhdPd45SHq6utfWpJnTTa69ZTbp+QBfHSaT/sQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
- by CY8PR11MB7687.namprd11.prod.outlook.com (2603:10b6:930:74::14) with
+ smtp.mailfrom=wiwynn.com; dmarc=pass action=none header.from=wiwynn.com;
+ dkim=pass header.d=wiwynn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8zlaR2nGzIsQ+dXF6OApNIVnP8cLN3aV9RLxVbN20vE=;
+ b=n5NunxVdX3SIYQWbuxxKQ16q9D9Opb730M2NpvzpV7RiYXy+22X2LrAz9uZRWQ42owf5tsAqt+u2QW7bhCRqtVVewnfbfZeUr0bleSNL3NS3Qx7zHkk1QkRruW7pKiJoto2GCa/q6U6z43mUNAN9+YxuLDsjzSGM9bp4GBm8ixwA/I8f6NIgrVIsfOPaWKUSnZDtejRE55qt/VzZ9YbZKNRMT6mD032VolSDxj5p/soq7aUWkMwRxR6S5inhwwmxcmdDdOOJUcc4QkWYPbL0DFiZdFM0Zs3pXXxIVg5hdVDTnNeY769hNaK6/bdfW/QooFQHbbT8YFg4t8SyjFcO8A==
+Received: from SG2PR04MB5543.apcprd04.prod.outlook.com (2603:1096:4:172::14)
+ by SEZPR04MB6187.apcprd04.prod.outlook.com (2603:1096:101:cf::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Tue, 31 Oct
- 2023 05:59:43 +0000
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::8c24:7666:7047:d99e]) by MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::8c24:7666:7047:d99e%4]) with mapi id 15.20.6933.024; Tue, 31 Oct 2023
- 05:59:42 +0000
-Date:   Tue, 31 Oct 2023 13:59:30 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Keisuke Nishimura <keisuke.nishimura@inria.fr>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        <linux-kernel@vger.kernel.org>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH v2] sched/fair: Fix the decision for load balance
-Message-ID: <ZUCXwmzaoNbRbNpR@chenyu5-mobl2.ccr.corp.intel.com>
-References: <20231030172945.1505532-1-keisuke.nishimura@inria.fr>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
+ 2023 05:59:46 +0000
+Received: from SG2PR04MB5543.apcprd04.prod.outlook.com
+ ([fe80::4c7a:8fd8:1527:9287]) by SG2PR04MB5543.apcprd04.prod.outlook.com
+ ([fe80::4c7a:8fd8:1527:9287%4]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
+ 05:59:46 +0000
+From:   Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
+To:     Conor Dooley <conor@kernel.org>, Guenter Roeck <linux@roeck-us.net>
+CC:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+Thread-Topic: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+Thread-Index: AQHaB+SV8Z0lWuQfqk2pb+fPvv8kdLBcIN+AgAAMSACAAASRgIAHPWNQ
+Date:   Tue, 31 Oct 2023 05:59:46 +0000
+Message-ID: <SG2PR04MB5543067739D9E579F262CCB2A1A0A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+References: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026081514.3610343-2-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026-dicing-crispy-a10af575d3e5@spud>
+ <fffa4330-8d01-8498-4c5f-772ebf2a6b5a@roeck-us.net>
+ <20231026-poison-encrypt-1df55e023867@spud>
+In-Reply-To: <20231026-poison-encrypt-1df55e023867@spud>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wiwynn.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SG2PR04MB5543:EE_|SEZPR04MB6187:EE_
+x-ms-office365-filtering-correlation-id: 795f84fe-c425-4213-e27e-08dbd9d695bb
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jBfbcqDb9HDq1YRnd13zjXqpD71L+cD+59Dx9bxBeaLCECSVFLx0myHUjjgtpK+7iPoNzCXDnHm4coOXzc3HiNkXUBHdJYB1SJTNrXqKWfusy/+cK/7KOTlrHNNSxkL4Bph7aAsKqsOparAfOpabQWDYufAz43j128XkXR6cwANnjmYF6baSp07+rggAcA7Vme9itq3bvDHEztrEq2tTCxSESbZycD/3vRS3Q88cixtEjMIWKlD2Ax/4m8shkxnKHPK69w7UtLL50LWyMbXmc6UqkZEGOiN6Nuwh8x0CLNZR7o5fbyl4m7GnCjWLaOopP2PHgyCE7OWSWXA+dm8HxsRhDJF1XFtgHMaVdcAjQTb5YxCvlEfGh0A04YdelFkKFn7tWNXrA3lKrWFEurebDEs8P/BHsGlcMu6tWkDc6dKq9oER61XJLNdwRa7wvP9JwNx7CaJ0drlYKCLbeoGLL35LhHM/KCbPYSlhfR0rYB1zY+sFFlwFWUZL1/fvokDeke/KuEX0Ijcq+zAcjWqMl9QNyys6SkVNNJ0Blk1E/P900e+rC2Nikh3wzLMQbaTQhiJe2Bv+rXiKBSycfwtmYVkU1lDTDH1ApIFextYYZ4E=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR04MB5543.apcprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(346002)(376002)(451199024)(186009)(1800799009)(64100799003)(26005)(55016003)(7696005)(6506007)(9686003)(53546011)(38070700009)(38100700002)(33656002)(122000001)(86362001)(83380400001)(7416002)(5660300002)(52536014)(41300700001)(316002)(64756008)(54906003)(66446008)(66556008)(66476007)(66946007)(76116006)(110136005)(71200400001)(4326008)(478600001)(8676002)(8936002)(2906002)(966005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TrkPYPZENdo4Snkd4vmHOIbf4mNssVgwMqfNEXMl1ZzJqWv5uYH+6xEuZDe2?=
+ =?us-ascii?Q?fCSP92G8MwHaDwOAslvc9IrMCoyTKusDMoIwhZvo7ZusvBZdVrMKzvBoGwDD?=
+ =?us-ascii?Q?lF6dhOgb1Qm6wZ+7kVB/1csOHSagATfWT/GbFUYA/81+EJdVsl/lqwOkeIPo?=
+ =?us-ascii?Q?Srl0GTx7KX+1AfLw0qPE1R6SL/1ESl4kslpwRpkv/VmRHD71DItV7M/UgMFI?=
+ =?us-ascii?Q?NDxVLGuoF0gHO54p2KdV8HIvUGDoDHCp6p1Lrc7bvofF0P4inL3l/H5AjDGv?=
+ =?us-ascii?Q?NZxR9KE4s3c/eNyETiNR+azL7fFkF2aId2oErRZ6jyY1gDJlbzO4u4yDk1eJ?=
+ =?us-ascii?Q?MtQhVsOdXVWiY/5l3TES7ds8I+s1sU8qqPPO3Sfi3udCwdcObsK1yqixOoR/?=
+ =?us-ascii?Q?oY2VR+Y9rwK4VkK4PM9wofuBR+6RkknXsXJR3Dr8g81G1cg8PPP6dEaPrbup?=
+ =?us-ascii?Q?OSmvTYFtvDhkxIyJTLDhMYmvlAGgnJoCHSzfESC2CrvtvfbhJVy1P0O69YIx?=
+ =?us-ascii?Q?d6MFV9nNOd8yNEN0hFi9JEJU8o1Kf1bdZ9VUuYTWFTttZ0R2hVpjFDLbI+Jf?=
+ =?us-ascii?Q?i8P4RRMj1PmgGamUjEy3VQU98ymARzBSiiz2jJvr/WBFVFJzv183ARYX1oPy?=
+ =?us-ascii?Q?UjBPULBbkSWd7PC/OP1Pm2G0nlssfELraP5FaP8gdnr5h4JkPvG0izT+Kb/C?=
+ =?us-ascii?Q?XPXgtaLBydKmRMojj/kXNaT1l6w8GIDO8lS1/NjbuCLN0ZAEd7NcUgzz9pOW?=
+ =?us-ascii?Q?Hgw/UYiBw93MXuEd6BdDS6rTmpWHcgvOQZI1/ik2BF/Km5q8fkvqxHxrCfOx?=
+ =?us-ascii?Q?ZvBFD5hjivHrDtIVtWgEoBCEvtOSFzvVyrpISyXtPhrA1YBkZlohjEXEZgZD?=
+ =?us-ascii?Q?FExSdQzIaMt6dvbcGU9lI+wn15kU0dDFKduJILeHQt5xmJncrl/XRSOipUyX?=
+ =?us-ascii?Q?STXdckpiwsKE3PMqHJzOoxSE6OOn/drRos6NlzMVJ/IBMmFJ6ZFTH+c1ckjr?=
+ =?us-ascii?Q?aA72l59Q0Mv6MskJhBvlA4y57rK199A9zduicWbZEUXWMoQ+X4G1e5oDtLsj?=
+ =?us-ascii?Q?xLGA1W1gKRojP0tbsXAE+AT5f/jBhv/exc9GX8zoRO9qT2Ii4taRFcDztyst?=
+ =?us-ascii?Q?mHC5LgILTWCI1OB4ZLUiosIhwvykV8Gjq3ZnjY8hsFHWorfcJzDqou1413KZ?=
+ =?us-ascii?Q?StZQFr3+jaeBpYckZBNbbotbc5oy+DiqBISY6ZclUNoNFvcaXcWZjEe2ITwa?=
+ =?us-ascii?Q?O0g/HOu/5p2tKtrIYyqTInle2z+/44cEjHrQ2EeSSSSlhKeAnSEldvVpbmnK?=
+ =?us-ascii?Q?bCapKmJWt7aa1W/McT0vnAUiG+0C5X/GBF+mtashhW0n1vOveVJoF89Rm747?=
+ =?us-ascii?Q?G1GULbSHUc7dKNCed7NjrhwMxFXzxchFayKoMIx0k0Kv+dXzKc/WyPAgDFt4?=
+ =?us-ascii?Q?umXTbMOohD+TzUVzd+0KawzT0WgAvjkWtgTKpC+fA9PoGmN2GHs3lFb5GJZP?=
+ =?us-ascii?Q?c79j6ZosrnKcdgg8s7b4e+yfPG2hBhvdzxngq1XcYyzWeMfvLTOWIT63tuRj?=
+ =?us-ascii?Q?sqy9Pke8Qs2QDYLbyEbf8re7q5fuD1fNQfl0ZH1W?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231030172945.1505532-1-keisuke.nishimura@inria.fr>
-X-ClientProxiedBy: SI2PR02CA0016.apcprd02.prod.outlook.com
- (2603:1096:4:194::9) To MN0PR11MB6206.namprd11.prod.outlook.com
- (2603:10b6:208:3c6::8)
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|CY8PR11MB7687:EE_
-X-MS-Office365-Filtering-Correlation-Id: b4a84238-860a-4490-4243-08dbd9d69388
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tRmf942fdKAU8DQ/It8VR2+dWwFMqk/7otFg4juulLpgrmOjx6zvaYoN+RGSbLLETyLp2HB8HArEzBGg4Own9QUax273THsgUvdqxFRTBnFrp9upBqcgm6sKRt8DBEWyeQ89oLyuTsu8qJ3ojXEWijxvA8C43WiHN0G3aGTBw1IFQCtlxBnyJvveldiBVL8Jsr8eI6VFpJpagjNIHLQGoj1W/52zeg/6GqqNFAkwbjvag2/f8/wgQ9qRL8oy/KodSm7F3hjUgCbXnGgLKDOyyID719+8qbctcHWtaEYLILZ+Gg8I/n251IIJtW6xaZ7Whehx5GQJ5IyFKIOdjLaLOF9JKdoIy9pfVQnpkLcv0O0LsoNaV4OZo8nLhmYPrJOjrPKbLIqL60GZEElubSvDuLUd+BbNGhHbhNAqqqu6TqZe6rnX50xRfkJpIjLhdmkQeL0J4wgezQUNsYetFuyi1GXI+2I7kVOQq8CjTQs3ZsIM025fPH++df7ZZg3RLosXu8WPtS7zy9YEAGSSWywA6zvaSymVrHJWfC3qxeqrKlp6X2kbnJAcv6X9zpINlLDH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(136003)(396003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6512007)(26005)(4001150100001)(38100700002)(86362001)(82960400001)(316002)(83380400001)(2906002)(6486002)(7416002)(478600001)(6506007)(53546011)(6666004)(4326008)(6916009)(8676002)(8936002)(54906003)(66476007)(66556008)(5660300002)(41300700001)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RVfwN3a71ZVV8spgwbU+AhTP0wetZRzhI8uvfuJSy1q2+sejG2Qsd9jw+CF5?=
- =?us-ascii?Q?4E0bLSQWMv8ktosMjkO6mnb5VEUO2yp4vb4J5RDVCYQzXF4c1tPQPvqmaSBc?=
- =?us-ascii?Q?vAFsopBtjcqU1y332FbGEDqPqRVUyy9YlcFtX4G+6SWtYTOBz35oxFw8F2u2?=
- =?us-ascii?Q?m/ln/uq3L4C54RcfiytIZ7Yh2F5Q1HwKZq+kgMh6iWvRb8ieBEYhQNloBbLL?=
- =?us-ascii?Q?Udkn2ePMAPcHXEjZyPUiBjc2+CoQekL7YTJ19Zq+2sg/NA/Fvl2xwxjfggNI?=
- =?us-ascii?Q?eP7xVhD/0qrRG465EO5xc/MhDSsS/iCw4yqUeHVQus1CTgqYEemWMoNe8j1W?=
- =?us-ascii?Q?BxaZDoonPeg8swlMu61rq1YlQO1dxlyxaUYOQZ/C+s34E8ktnsBwaWX0n72l?=
- =?us-ascii?Q?MmpqbXY9OB2cT0S5iCvTTTutd7wH1Mw8PBn6aLKz4ylyAwyCHqnsTRjnuwsK?=
- =?us-ascii?Q?RJTrHx2h0GbS3S55ZbyGMSf3ADVkKAysyFSbFFeXNlAkFURNFMURZ6ITTeEz?=
- =?us-ascii?Q?05kPaHQdJzoi/onS3Q9jiFdbOKOGvGl9/AqP7/zcNz9O/w7BIUFlzLIo3r7q?=
- =?us-ascii?Q?TQIh/qiUHPdCtwpxoHRfsDUcfYUZo23syYr2tGxClPR/AwKJIao+WferI14P?=
- =?us-ascii?Q?UfJhG2BhoJnofFS9jBz8OT1NLKPpX/fv2AiGsIK4JP/zj6Ecf9lUIFqx7M05?=
- =?us-ascii?Q?v2cF7Kg6cbsdblSxeKx/D/k50Pfm/LG0WFNZudWDNoo5n0FU7dMbQ8h11sNY?=
- =?us-ascii?Q?FXA+SvHLk0yViqngQGpFBLFVs6p32rrPhYnwg77jHxMw4yRaJ3Rgug+2QFFY?=
- =?us-ascii?Q?YkS+MBNsjqBJu1+A92TtRBgb8Vw/l4maUObimHkSeGJZDKmjFgW1xKBo7Mt7?=
- =?us-ascii?Q?aQhoc6ZMfb836nmGW0pm5bOzIPexScGKTduPrcfL/mvPbN2iMAh62rIdmOzW?=
- =?us-ascii?Q?yEA2StRL4wrJ9FEG6e9Cb3QeAuCbUu3vc+Gi7FDOAJa/ho/DNenhsZ5g7sa9?=
- =?us-ascii?Q?CLcz3w+lxxDsEgNwPXdhfYKf58pJ4/gRIFY0dAK3lelRYTxVYU92qRo9pqVw?=
- =?us-ascii?Q?FJa97hIMMKdrxPVQXs38b18OL8QzJwvuo4Xu7WR+JK7nk9oWcW0IWUkCNbv9?=
- =?us-ascii?Q?6YpQXbtV5SEyFq8glyEAlNJYn8XzElBUfBztrEXpLMXKUNsfSfO1PdkHY1DX?=
- =?us-ascii?Q?8cbHd36L96VrHd0F6sz4DpPXauMZFl+jOd2FgAaE37koj3qdPtDzip6cmqnB?=
- =?us-ascii?Q?y00v8fBqsCiI4tD+GTh+693nsCkNA69IdzLzZswPS7tupd8or4b2fYYt2AEb?=
- =?us-ascii?Q?EWHhvL3pRXk47sics7QROH4FHxOnZo9WnbNFQ5fXOEkYxumORmseIAnppQSW?=
- =?us-ascii?Q?/AY/eiU9/AsEJSA7+jNWvqJ8+jWYs1BGU+ClAjlar0qrUXBm8buZabwJvCvb?=
- =?us-ascii?Q?LMIvOirQiICC6AloL4YqO87EPo/ljVOvuT7Bxd4GldQxfGUM78NCnUAdCFq5?=
- =?us-ascii?Q?wqygAQK8cmkskEIV9fBEm14kPw6HO/UiKSxXJsAxWfhInSU1KqlGSHJYjK2G?=
- =?us-ascii?Q?E5YtqGEjv89LhIH1UW32GivFj6U7vMgsMkcsCzWK?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4a84238-860a-4490-4243-08dbd9d69388
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-OriginatorOrg: wiwynn.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 05:59:42.6085
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR04MB5543.apcprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 795f84fe-c425-4213-e27e-08dbd9d695bb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2023 05:59:46.1213
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Qt6dMtFVcR6tHEkVNfO1oE7ntzK68op0Dmr38Uf9ZUR4tv678LitlzRJzFRmtl04U7JkPM9iFL1pZ9RPzB7d6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7687
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: asViWF4TvUL8pNUXRfCmPRSQAmV1as6Si/4OxW5NmQZmqRoQzvgnsZ9IBorxm8lvupwtpQBOTXpMwueWhiA2oA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB6187
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-30 at 18:29:46 +0100, Keisuke Nishimura wrote:
-> should_we_balance is called for the decision to do load-balancing.
-> When sched ticks invoke this function, only one CPU should return
-> true. However, in the current code, two CPUs can return true. The
-> following situation, where b means busy and i means idle, is an
-> example, because CPU 0 and CPU 2 return true.
-> 
->         [0, 1] [2, 3]
->          b  b   i  b
-> 
-> This fix checks if there exists an idle CPU with busy sibling(s)
-> after looking for a CPU on an idle core. If some idle CPUs with busy
-> siblings are found, just the first one should do load-balancing.
-> 
-> Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
-> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-> ---
->  kernel/sched/fair.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 2048138ce54b..69d63fae34f4 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11079,12 +11079,16 @@ static int should_we_balance(struct lb_env *env)
->  			continue;
->  		}
->  
-> -		/* Are we the first idle CPU? */
-> +		/*
-> +		 * Are we the first idle core in a MC or higher domain
+> -----Original Message-----
+> From: Conor Dooley <conor@kernel.org>
+> Sent: Thursday, October 26, 2023 11:26 PM
+> To: Guenter Roeck <linux@roeck-us.net>
+> Cc: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>;
+> patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Rob Herring
+> <robh+dt@kernel.org>; Krzysztof Kozlowski
+> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+> Jonathan Corbet <corbet@lwn.net>; linux-i2c@vger.kernel.org;
+> linux-hwmon@vger.kernel.org; devicetree@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-doc@vger.kernel.org
+> Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+> bindings
+>=20
+> On Thu, Oct 26, 2023 at 08:09:52AM -0700, Guenter Roeck wrote:
+> > On 10/26/23 07:25, Conor Dooley wrote:
+> > > Hey,
+> > >
+> > > On Thu, Oct 26, 2023 at 04:15:11PM +0800, Delphine CC Chiu wrote:
+> > > > Add a device tree bindings for ltc4286 driver.
+> > >
+> > > Bindings are for devices, not for drivers.
+> > >
+> > > >
+> > > > Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> > > >
+> > > > Changelog:
+> > > >    v2 - Revise vrange_select_25p6 to adi,vrange-select-25p6
+> > > >       - Add type for adi,vrange-select-25p6
+> > > >       - Revise rsense-micro-ohms to shunt-resistor-micro-ohms
+> > > > ---
+> > > >   .../bindings/hwmon/lltc,ltc4286.yaml          | 50
+> +++++++++++++++++++
+> > > >   MAINTAINERS                                   | 10 ++++
+> > > >   2 files changed, 60 insertions(+)
+> > > >   create mode 100644
+> > > > Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> > > >
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> > > > b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..17022de657bb
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> > > > @@ -0,0 +1,50 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML
+> > > > +1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/hwmon/lltc,ltc4286.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: LTC4286 power monitors
+> > > > +
+> > > > +maintainers:
+> > > > +  - Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - lltc,ltc4286
+> > > > +      - lltc,ltc4287
+> > >
+> > > I don't recall seeing an answer to Guenter about this ltc4287 device:
+> > > https://lore.kernel.org/all/22f6364c-611c-ffb6-451c-9ddc20418d0a@roe
+> > > ck-us.net/
+> > >
+> >
+> > At least the chip does officially exist now, and a datasheet is availab=
+le.
+> >
+> > https://www.analog.com/en/products/ltc4287.html
+> >
+> > It shows that coefficients for the telemetry commands are different,
+> > meaning that indeed both chips need to be explicitly referenced in the
+> > properties description (and handled in the driver, which proves my
+> > point of needing a datasheet before accepting such a driver).
+>=20
+> Oh neat, would've been good if that'd been mentioned!
+>=20
+> > > > +
+> > > > +  reg:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  adi,vrange-select-25p6:
+> > > > +    description:
+> > > > +      This property is a bool parameter to represent the
+> > > > +      voltage range is 25.6 or not for this chip.
+> > >
+> > > 25.6 what? Volts? microvolts?
+> > > What about Guenter's suggestion to name this so that it better
+> > > matches the other, similar properties?
+> > >
+> >
+> > I still would prefer one of the more common properties.
+> > I still prefer adi,vrange-high-enable.
+>=20
+> I think, from reading the previous version, that this is actually the low=
+er voltage
+> range, as there is a 102.x $unit range too that is the default in the har=
+dware.
+> Obviously, the use of the property could be inverted to match that naming
+> however.
+We will use adi,vrange-low-enable instead of adi,vrange-select-25p6
 
-It is possible that the Cluster domain is lower than a MC.
-cluser domain: CPUs share the same L2
-MC domain: CPUs share the same LLC
-
- grep . domain*/{name,flags}
-domain0/name:CLS
-domain1/name:MC
-domain2/name:NUMA
-domain0/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_PKG_RESOURCES SD_PREFER_SIBLING 
-domain1/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_PKG_RESOURCES SD_PREFER_SIBLING 
-domain2/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-
-So, maybe:
-Are we the first idle core in a non-SMT domain or higher,
-
-thanks,
-Chenyu
-
-> +		 * or the first idle CPU in a SMT domain?
-> +		 */
->  		return cpu == env->dst_cpu;
->  	}
->  
-> -	if (idle_smt == env->dst_cpu)
-> -		return true;
-> +	/* Are we the first idle CPU with busy siblings? */
-> +	if (idle_smt != -1)
-> +		return idle_smt == env->dst_cpu;
->  
->  	/* Are we the first CPU of this group ? */
->  	return group_balance_cpu(sg) == env->dst_cpu;
-> -- 
-> 2.34.1
-> 
+>=20
+> Cheers,
+> Conor.
