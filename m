@@ -2,158 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 280B07DCADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6417F7DCAE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbjJaKap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S234937AbjJaKb1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 06:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234974AbjJaKai (ORCPT
+        with ESMTP id S231169AbjJaKbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:30:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2FDE6;
-        Tue, 31 Oct 2023 03:30:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90139C433C7;
-        Tue, 31 Oct 2023 10:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698748235;
-        bh=qK3DGIVN30CKCk3p1WZsI6EB6xDHe02lYO5vyQjhTno=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ev4ne27UuOjVqfb069C6Kp8q4wAkmqKcHOZnhZaz5Lffycjx2yIUBuXCcCDsZ3siX
-         G6uZQ1wsxRqji+Ao4acLNfn7DtHmozcJ0m7EO8jW5X/YYhq22IFP39o7dmX++eG8GZ
-         IZwju4kgUE3lclL0INhItoadbL3vBe4mee/EtII7AqeLfU5XHjH0nOWc0QYeshRPcF
-         FGChyjaNxpd0vtlynXUqoMiMbw8j9kPCxNzUPey3vCutJlX2MPWSiD4TdqWdGGL/iw
-         gK6TpA/2/Xvo0xlstAK5oDPQpbyVNuK44iuuzwyWOkwPH25mCgGfBluTv4lRxgt4gO
-         /MmCASuSt/BVQ==
-Date:   Tue, 31 Oct 2023 11:30:21 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <20231031-jobverlust-auberginen-04f47d380f59@brauner>
-References: <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
- <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
- <ZTjMRRqmlJ+fTys2@dread.disaster.area>
- <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area>
- <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area>
- <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
- <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
- <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
+        Tue, 31 Oct 2023 06:31:24 -0400
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFED0A2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:31:22 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5a8628e54d4so48662907b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:31:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698748282; x=1699353082;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/sHseqslpAHK7KgV7P/BcLuw8uc0JkMkTgTl4k752Ts=;
+        b=Lt1Re2EFNqNvFqk2hYpOh9mifGpsffEiZq5VoY6o7hfLPBaOT36lqd20BV9bs6aRXe
+         eat2xBfrN/WIJ7fkxtwxXh1z2Cysx8QaCsU41AX1CM+tP3Z5Gb0bGc9L/ggLI4Iegcvr
+         pI/JuuCoLgPVFjkMVAFb/OEUU4iZrxVtWivl82Cct0aBg/pCB55Plg9Nn1mqt/GTc0Hp
+         wvrFEKcTZNyL8gIJCJbuL4rK0e9V1tkEMAGbc4aGMBp69roOxch+V/MMeNUf8oNhCUFa
+         tZ4uO8pNcEmhRJWyL6WTOFY8/pt/Etx7jGpjkIeY45JX1D8zNIf7++hSMwX2ud6NmefU
+         hLUA==
+X-Gm-Message-State: AOJu0YwJfNc/NPac8gO5lyqJR3NZVxRCGELwn0c+uwAowSpX63zYL5Ye
+        Qcsy5H3jEORcqQD8U6SB1Gr5zWqIFOUxnA==
+X-Google-Smtp-Source: AGHT+IHjBzdMtahxdomPDz9IEPVkmXMHm5jjalGGgj+z8OJSN9XVvJ33rfHN5lGdOt2jpjfMU2DSHA==
+X-Received: by 2002:a81:8d48:0:b0:59f:699b:c3b3 with SMTP id w8-20020a818d48000000b0059f699bc3b3mr1511766ywj.0.1698748281759;
+        Tue, 31 Oct 2023 03:31:21 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id v62-20020a0dd341000000b005950e1bbf11sm604042ywd.60.2023.10.31.03.31.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 03:31:21 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d9a6399cf78so4820331276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 03:31:20 -0700 (PDT)
+X-Received: by 2002:a5b:ec1:0:b0:da0:3a37:61d5 with SMTP id
+ a1-20020a5b0ec1000000b00da03a3761d5mr1526353ybs.4.1698748280706; Tue, 31 Oct
+ 2023 03:31:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231020225338.1686974-1-javierm@redhat.com> <b048247c-75e9-488e-a4f3-b227a38bca5e@redhat.com>
+ <87v8aso1ha.fsf@minerva.mail-host-address-is-not-set> <CAMuHMdVLf=H7QWaUXrN17ABw9eE1MjBdzFEM0AhMNj8_ULSz+Q@mail.gmail.com>
+ <87lebjksoj.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <87lebjksoj.fsf@minerva.mail-host-address-is-not-set>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 31 Oct 2023 11:31:06 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXdYm6Opyhgte7CaScs_jdPNUqrQTbPCMSQXqkKpKTd8w@mail.gmail.com>
+Message-ID: <CAMuHMdXdYm6Opyhgte7CaScs_jdPNUqrQTbPCMSQXqkKpKTd8w@mail.gmail.com>
+Subject: Re: [PATCH] drm/ssd130x: Fix possible uninitialized usage of
+ crtc_state variable
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 09:03:57AM +0200, Amir Goldstein wrote:
-> On Tue, Oct 31, 2023 at 3:42 AM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> [...]
-> > .... and what is annoying is that that the new i_version just a
-> > glorified ctime change counter. What we should be fixing is ctime -
-> > integrating this change counting into ctime would allow us to make
-> > i_version go away entirely. i.e. We don't need a persistent ctime
-> > change counter if the ctime has sufficient resolution or persistent
-> > encoding that it does not need an external persistent change
-> > counter.
-> >
-> > That was reasoning behind the multi-grain timestamps. While the mgts
-> > implementation was flawed, the reasoning behind it certainly isn't.
-> > We should be trying to get rid of i_version by integrating it into
-> > ctime updates, not arguing how atime vs i_version should work.
-> >
-> > > So I don't think the issue here is "i_version" per se. I think in a
-> > > vacuum, the best option of i_version is pretty obvious.  But if you
-> > > want i_version to track di_changecount, *then* you end up with that
-> > > situation where the persistence of atime matters, and i_version needs
-> > > to update whenever a (persistent) atime update happens.
-> >
-> > Yet I don't want i_version to track di_changecount.
-> >
-> > I want to *stop supporting i_version altogether* in XFS.
-> >
-> > I want i_version as filesystem internal metadata to die completely.
-> >
-> > I don't want to change the on disk format to add a new i_version
-> > field because we'll be straight back in this same siutation when the
-> > next i_version bug is found and semantics get changed yet again.
-> >
-> > Hence if we can encode the necessary change attributes into ctime,
-> > we can drop VFS i_version support altogether.  Then the "atime bumps
-> > i_version" problem also goes away because then we *don't use
-> > i_version*.
-> >
-> > But if we can't get the VFS to do this with ctime, at least we have
-> > the abstractions available to us (i.e. timestamp granularity and
-> > statx change cookie) to allow XFS to implement this sort of
-> > ctime-with-integrated-change-counter internally to the filesystem
-> > and be able to drop i_version support....
-> >
-> 
-> I don't know if it was mentioned before in one of the many threads,
-> but there is another benefit of ctime-with-integrated-change-counter
-> approach - it is the ability to extend the solution with some adaptations
-> also to mtime.
-> 
-> The "change cookie" is used to know if inode metadata cache should
-> be invalidated and mtime is often used to know if data cache should
-> be invalidated, or if data comparison could be skipped (e.g. rsync).
-> 
-> The difference is that mtime can be set by user, so using lower nsec
-> bits for modification counter would require to truncate the user set
-> time granularity to 100ns - that is probably acceptable, but only as
-> an opt-in behavior.
-> 
-> The special value 0 for mtime-change-counter could be reserved for
-> mtime that was set by the user or for upgrade of existing inode,
-> where 0 counter means that mtime cannot be trusted as an accurate
-> data modification-cookie.
-> 
-> This feature is going to be useful for the vfs HSM implementation [1]
-> that I am working on and it actually rhymes with the XFS DMAPI
-> patches that were never fully merged upstream.
-> 
-> Speaking on behalf of my employer, we would love to see the data
-> modification-cookie feature implemented, whether in vfs or in xfs.
-> 
-> *IF* the result on this thread is that the chosen solution is
-> ctime-with-change-counter in XFS
-> *AND* if there is agreement among XFS developers to extend it with
-> an opt-in mkfs/mount option to 100ns-mtime-with-change-counter in XFS
-> *THEN* I think I will be able to allocate resources to drive this xfs work.
+Hi Javier,
 
-If it can be solved within XFS then this would be preferable.
+On Tue, Oct 31, 2023 at 11:11 AM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> > On Fri, Oct 27, 2023 at 11:33 AM Javier Martinez Canillas
+> > <javierm@redhat.com> wrote:
+> >> Jocelyn Falempe <jfalempe@redhat.com> writes:
+> >> > On 21/10/2023 00:52, Javier Martinez Canillas wrote:
+> >> >> Avoid a possible uninitialized use of the crtc_state variable in function
+> >> >> ssd132x_primary_plane_atomic_check() and avoid the following Smatch warn:
+> >> >>
+> >> >>      drivers/gpu/drm/solomon/ssd130x.c:921 ssd132x_primary_plane_atomic_check()
+> >> >>      error: uninitialized symbol 'crtc_state'.
+> >> >
+> >> > That looks trivial, so you can add:
+> >> >
+> >> > Acked-by: Jocelyn Falempe <jfalempe@redhat.com>
+> >> >
+> >>
+> >> Pushed to drm-misc (drm-misc-next). Thanks!
+> >
+> > Looks like you introduced an unintended
+> >
+> >     (cherry picked from commit 9e4db199e66d427c50458f4d72734cc4f0b92948)
+> >
+> > ?
+> >
+>
+> No, that's intended. It's added by the `dim cherry-pick` command, since I
+> had to cherry-pick to drm-misc-next-fixes the commit that was already in
+> the drm-misc-next branch.
+>
+> You will find that message in many drm commits, i.e:
+>
+> $ git log --oneline --grep="(cherry picked from commit" drivers/gpu/drm/ | wc -l
+> 1708
+
+Ah, so that's why it's (way too) common to have merge conflicts between
+the fixes and non-fixes drm branches :-(
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
