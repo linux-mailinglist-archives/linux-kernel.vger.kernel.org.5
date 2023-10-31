@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5C27DCB70
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA7B7DCB75
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344019AbjJaLIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        id S1344015AbjJaLJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344008AbjJaLIv (ORCPT
+        with ESMTP id S1344026AbjJaLJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:08:51 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2388CC9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:08:48 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c503da4fd6so80966201fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698750526; x=1699355326; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2E/HffewE6KsJAEVSQY7eINz/vdl4lb6Eptw+I+yfwQ=;
-        b=muPGms0F++qsu8t81YChvZgWogdG/y+02gW/Tokvx9P9OW9xekncTBzuavA3YBn9od
-         rNnDSOOw7WzJ3QuN/asLYY9E4abC22g27vGtvBoJrIWuSu1Yw3FOcwUjnbic56JIX+sP
-         B2qZzMVAYb4lEnolHOXRRkMtp9mK1MC8/AZELdTw6Ez3TX0QeJ6Y1g3h+AIYVuVhdm0p
-         8O2qu8d61lTu++6fIp+YIHyhP4XdDAaqSUCJHcoG8xIzmWU7nI1/kp49XWXWbOLg7o+F
-         bS3ZWKVYfAn+GCKwGmUzOxSdO+DZrVWZYhCW95J3BAl1G5vjUOPuVUmKB3H/DVwS2pD2
-         3PGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698750526; x=1699355326;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2E/HffewE6KsJAEVSQY7eINz/vdl4lb6Eptw+I+yfwQ=;
-        b=TpQoTggF0/j3QnJncvNETkqTbyY+nenF3VsBmwmXZn8awh1no798qfvXcW22UBIZI1
-         gAyzURy7tq2AI9BymlCZ31XT3NZT+cjUsHYd/vhsvC/p8XS8g1reZzNuxGfo2ZBz9r95
-         45IQWgj/lK4ydXTkD9mmUVr6VJb7FsNio+eUWqdsvphuEX6UA8d7m+WHkRkJoHOrMp/z
-         n8OJvDHv9myW19KO8Tl/9cwJibW06BnjXl0g8O1dVIek/j2ImGe3o4CUVzjAZJth+wvm
-         HdjV+rp1i41ymniKb06rG04y/e3Sf+ON9Vx1bNQrEraVAnZrfVJNR19oixhtxDTLqOcw
-         ermQ==
-X-Gm-Message-State: AOJu0YwHNQudxuU3ZBS44fsL+ClPGCvV6OaUyNeyKlwYg0+Kx8bGq09r
-        USG69qu0dWyvc51JxYfR6wlJWA==
-X-Google-Smtp-Source: AGHT+IG4OmsQZm18Xh/ciqzC8Bw4x5C0RakLOoYjK2yKCqMz3/y/2aGXM0LpeEXLJDgiFMxyhW2kPw==
-X-Received: by 2002:a2e:9f08:0:b0:2c5:1d9a:4dc1 with SMTP id u8-20020a2e9f08000000b002c51d9a4dc1mr9191621ljk.5.1698750526295;
-        Tue, 31 Oct 2023 04:08:46 -0700 (PDT)
-Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
-        by smtp.gmail.com with ESMTPSA id 9-20020a2e0e09000000b002c12c2094e4sm174289ljo.74.2023.10.31.04.08.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 04:08:45 -0700 (PDT)
-Message-ID: <037fb8ed-3ec8-449e-9893-a45ed172b389@linaro.org>
-Date:   Tue, 31 Oct 2023 12:08:44 +0100
+        Tue, 31 Oct 2023 07:09:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E04FC;
+        Tue, 31 Oct 2023 04:09:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1698750563; x=1699355363; i=rwahl@gmx.de;
+        bh=pWFUU3PD5OIMpvpaP0tb8mgejL5DJ4aG473dM5x6J60=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=eQX/xwUNW7BAL24QBW8O6482LJiRlFB0Raj7BCYxuAUUH3ZWFOVT6X9F7ZpTNI5G
+         HKHzwO7WZ6Br5+Re6ET+4gzkYJGJO7iDrHuKOZaFmavSmdAEH5JknuWvr8hy8qV1K
+         ve8Ece1+5Ak17yHMiCJ34qRh0nonLYtphAuUVJqF8fkyjdvcfwMySjdK+rPAcAd/n
+         INb7CKFZYMnl6zsrAOKWzfkpeoH6aXGfotOL3zCQiHoLIzczvgSNbg+/EVXQ+u5fl
+         5PSsfMyc+5VKrSQzkH7ftavtYIAiC2zUhYxQa1E8HPqgzd/QXxuZx4uhHYaTw4tWT
+         JV0/4dctKeHnzhyT1g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1po0-1qzzY32d20-002Dpa; Tue, 31
+ Oct 2023 12:09:23 +0100
+From:   Ronald Wahl <rwahl@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ronald Wahl <ronald.wahl@raritan.com>, stable@vger.kernel.org
+Subject: [PATCH v3] serial: 8250: 8250_omap: Clear UART_HAS_RHR_IT_DIS bit
+Date:   Tue, 31 Oct 2023 12:09:09 +0100
+Message-ID: <20231031110909.11695-1-rwahl@gmx.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] ARM: dts: qcom: samsung-matisse-common: Add UART
-Content-Language: en-US
-To:     Stefan Hansson <newbyte@postmarketos.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20231025083952.12367-1-newbyte@postmarketos.org>
- <20231025083952.12367-5-newbyte@postmarketos.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231025083952.12367-5-newbyte@postmarketos.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gOseK3Km/gFJ2PhS/d+snCZm/h4A1zwOObjyPd+e6edCohA+d/u
+ TFHOuTMyF2mi9J5IEyI4DKEAOw88rn8T07MwEJmU2VIhuAQzbD35usznfrfCx5TDnzE9Pah
+ 7DSB5T82gk8Ujy033l5tgjjZEpq8GyJ9+H4wk6lBNaW/qwlFlyg6C1h+YG+qOrMP9+GVmqY
+ R1chUDQ8wob0VXJBwrRSg==
+UI-OutboundReport: notjunk:1;M01:P0:hxMtm8BXEcE=;rD2x+s6ILz5ut8nptxKwF2SiYow
+ BQ/0njUICFKwRDm4FtE+V/qOwgd12/qv0ZIcAxm/XFLAwt5hpTtlFN/SO2RCJ4b4/bKHiFrlf
+ iPsYjXQhdOBxuvCEd38lVR1GQoGQZYIpXcHgnIhjcsV9ee1+vF2j70JG3cBzQa8/6vfBnLLfP
+ Do5RPf867B9254xoriKWif0ssl0pTi58t+6DxV2vUK/wG6MNJGOs3HwTMtzCV63m2c6/dfBJ2
+ 06mo5iLK21ZNiGy1sZ2SqNHECWmvXm8mKY8AfGPLlo+QclgcM8cmO5PNOIef/DLZ3faVxnhX0
+ +iZGZ2+3EzDf7vYGAnmzzo1mRDOMfn7R5swXgDLyN9aVsGtzmSpLUekX085utE4ulWEI3n3Io
+ wLftFm63ZPCpOD9w5WdI6LOkU1K8dB3KrYPLgtylxUWhhFjlT9oNQe25u4sOTcSywCGxNV8fa
+ jZFSCjrBzgwyOYBqqXbXCBz8Tm17XSNamj7yVI7fTy8E0JoqWmRm6LmeybHAGGZRMY5JWKv8c
+ eVPeAiNcnCOfqHdJ3VTanxfr9PwG/GnNp+VlcA5QOFdE0u3icOwHb3HwiKbPlpQhEcslGkvJV
+ cCXXvRFyZKMl4AQgIHNvifBoGArUVXUbxaUZAxGEnHzCNZPAC1/27e3WvsiptCOl4xk7G4BBf
+ IDyiKSXZu09eF4QGcpfkN95/2nq/9Q8CVGYJz1PLMyJHb8wKF1Buf/EDjuvh8uxztjThGHmqU
+ sm0zwV7/ZY6E8xfkJqq1yhJ4RzV2XH79V9PFqc+ea57gHZobaOpb0uan/CXkbWTqSzwIG7QUt
+ o8US7l+NmNbS5ueJe1Y5+HIRDx/7tfHVWWzQicmHn9m6Vf8V4UWdANpHnopEmcZH/WiI39/yF
+ Epv/9R0XcFxZfiVmfp/edVY4is7ZzarkSYkq8GykqF7CXwwJwyCxh9KhM5l29jU7EtcL1a7xW
+ DSVlVSaDtRJeA1igZgNhIDtKQT8=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.10.2023 10:37, Stefan Hansson wrote:
-> This was not enabled in the matisse-wifi tree. Without this, it is not
-> possible to use the USB port for serial debugging via a "Carkit debug
-> cable".
-> 
-> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Ronald Wahl <ronald.wahl@raritan.com>
 
-Konrad
+This fixes commit 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX
+interrupt after DMA enable") which unfortunately set the
+UART_HAS_RHR_IT_DIS bit in the UART_OMAP_IER2 register and never
+cleared it.
+
+Cc: stable@vger.kernel.org
+Fixes: 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after =
+DMA enable")
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+=2D--
+V3: - add Cc: stable@vger.kernel.org
+
+V2: - add Fixes: tag
+    - fix author
+
+ drivers/tty/serial/8250/8250_omap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250=
+/8250_omap.c
+index ca972fd37725..c7ab2963040b 100644
+=2D-- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -914,7 +914,7 @@ static void __dma_rx_do_complete(struct uart_8250_port=
+ *p)
+ 	if (priv->habit & UART_HAS_RHR_IT_DIS) {
+ 		reg =3D serial_in(p, UART_OMAP_IER2);
+ 		reg &=3D ~UART_OMAP_IER2_RHR_IT_DIS;
+-		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
++		serial_out(p, UART_OMAP_IER2, reg);
+ 	}
+
+ 	dmaengine_tx_status(rxchan, cookie, &state);
+@@ -1060,7 +1060,7 @@ static int omap_8250_rx_dma(struct uart_8250_port *p=
+)
+ 	if (priv->habit & UART_HAS_RHR_IT_DIS) {
+ 		reg =3D serial_in(p, UART_OMAP_IER2);
+ 		reg |=3D UART_OMAP_IER2_RHR_IT_DIS;
+-		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
++		serial_out(p, UART_OMAP_IER2, reg);
+ 	}
+
+ 	dma_async_issue_pending(dma->rxchan);
+=2D-
+2.41.0
+
