@@ -2,275 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CA87DCFE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AE37DCFF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbjJaPLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        id S1344610AbjJaPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233467AbjJaPLD (ORCPT
+        with ESMTP id S1344229AbjJaPOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:11:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA81F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:10:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698765059; x=1730301059;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=sncHb8N64StAqzTXvm19WT9pM90bLF04U6+sY/o4zzk=;
-  b=L5bV7N6hLmTIJ4PdPRDouPLL5R0fljLjm0OCE7VMnkSj6GD7LjZ9QSV1
-   0YsFLU66Ax6D7aQmLf9AUGwU/ydydXNrSV0JS3awbX2yu1tLL4zJlsVkC
-   f56YyJBfwqzvljAGwO5yvm+/5QVeQZR809Wuvns4pJkOeP5sBLzp2J25Q
-   hq5B7R3jozuF1BzyHq558IIzWKHOdl3oU75X20K2aEKBtZDvN63IM1/q8
-   cIEI6fy2j/xBo8peHqYSsq+Gykofses8ashzYdulRev63zzs0T7uYHzYY
-   3A35faGgDP0tLqt+SEtdMgJUdgSyd5i6b2wpsxIt4B4b9PsdVZfTVSFRI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="373357176"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="373357176"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 08:10:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="710452564"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="710452564"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 31 Oct 2023 08:10:28 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qxqNu-0000EW-0R;
-        Tue, 31 Oct 2023 15:10:26 +0000
-Date:   Tue, 31 Oct 2023 23:09:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux-foundation.org>
-Subject: kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1
- (different address spaces)
-Message-ID: <202310312340.LW2o2xTj-lkp@intel.com>
+        Tue, 31 Oct 2023 11:14:05 -0400
+Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C42113;
+        Tue, 31 Oct 2023 08:13:58 -0700 (PDT)
+Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
+        by mx08-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39VDoqY3030766;
+        Tue, 31 Oct 2023 15:13:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=dk201812; bh=9pL6SJ84mlnFKhAF6Oc5x
+        3UgCZPBPaHrYjQtgNSexqU=; b=JVatyVqxXJubFp6OoRMX++rTNKxjTRqXnNhHp
+        9jLvYz+Qyvoh+I78eLQjOlKpXB+mfvENOxnXhxnbta+lxt/VO3b4Els2yCETPnEI
+        0xCPsJA+Ag4VBcEVvHAXZuJ54v+sXUJh7sln5K1ZNqNcBicD95XnRQzX88ZTWkVY
+        KEjk/f+4my2OrH/Ae1w11DESBE/OrKMmB+TwqB/q0sSL2+WLv6w4WBKBLryNWd1M
+        pJvaQ2sPANrKZR+xZAN8mfxf60z2o20c4/EFnJStOJQh55rxR4EZC7AUXOs8dMV0
+        nJRdh9J/WVrX881/JW2snfwmXQgDv9OkuAu6INOA6KWKGU3Yg==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3u0rjntf3v-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 31 Oct 2023 15:13:15 +0000 (GMT)
+Received: from HHMAIL04.hh.imgtec.org (10.100.10.119) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 31 Oct 2023 15:13:14 +0000
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (104.47.21.50) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34 via Frontend
+ Transport; Tue, 31 Oct 2023 15:13:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wgypemhj9pm8P6cf+dyVVkigdYGgnloBKjWfyYCa/+v1EUJ8N3EbIXEZKTEAv9p6i6mAgMOE8WXRlvD+7Do4ZHZF2r8P781X+BJl2OdQ4FswA/IkJK/jrTOECVSHFh9oUaHfZfNdxW/k/KJ8c++YM+BP9E8v+acqZKTxekoGKk5y5Jqttq//Qb3hhHla3fqTa9/8EOUxhxVJAA28P+HxMUZ+202mDfgzEUYZkJLwH1XDiZo4plK2meL1DweBanLImTuBHBdeI9CTZ9b4rDJLeBC5wDOhG+GdgdpEKa/G4dAuF8lFW5Tx+l/pyUChBxfiUz7NA4Axq2hu4PGbGzN+VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9pL6SJ84mlnFKhAF6Oc5x3UgCZPBPaHrYjQtgNSexqU=;
+ b=e5A5f+ZTIYHfqwRGWyJysaJbqat3YjGsUC9CpRZ91aedvGrqRoGLQqCrshxvkcPo+xoIVeyJCj6wYejKsfyjz/SkUmykUAj+PhAHjdKf12t6MZyIQ52g/rJVi9yUEh3Vu6pKdFJbeDiFCPZ1Hh6SVW9QKipRBjKKIZZyDRNKlwCyQp8kR7BvhLUr1rvdVC8b9mmTqWUxPDud77kd7tfgPfpV36QaAN3F7JzY5jQMOtqsJPX7gOjx63TrPqadvMEyx6GRd1CRvjH0rJ+O2pyttB1eD7I/qSYzya5Rtqo/2dcQMhZto/X90F53ZcYsdfpS7CcGvaRe8nDfMwlMcpCnSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9pL6SJ84mlnFKhAF6Oc5x3UgCZPBPaHrYjQtgNSexqU=;
+ b=jwIascto0JUqTUeVDMqoHmbQLkXFtfoRT00vDCsufej+x0uxStaJ/+2BkrodMXtKuJ53JWhddE8pgmFlcjm682ZgMI9ztFso7mE+FmXmlcr+i8o6Il7VOKrJbhQ77YBklr40CxnFF1QWBdPa9DRE+Be9gnQc3XzR1DVhz9zkmnk=
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
+ by LO4P265MB6572.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2f6::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Tue, 31 Oct
+ 2023 15:13:12 +0000
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::eef1:bccc:508d:e086]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::eef1:bccc:508d:e086%5]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
+ 15:13:12 +0000
+From:   Sarah Walker <sarah.walker@imgtec.com>
+To:     <dri-devel@lists.freedesktop.org>
+CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
+        <boris.brezillon@collabora.com>, <faith.ekstrand@collabora.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <afd@ti.com>, <hns@goldelico.com>,
+        <matthew.brost@intel.com>, <christian.koenig@amd.com>,
+        <luben.tuikov@amd.com>, <dakr@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <corbet@lwn.net>,
+        <linux-doc@vger.kernel.org>
+Subject: [PATCH v8 00/20] Imagination Technologies PowerVR DRM driver
+Date:   Tue, 31 Oct 2023 15:12:37 +0000
+Message-Id: <20231031151257.90350-1-sarah.walker@imgtec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0301.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:196::18) To CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:170::9)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP265MB4817:EE_|LO4P265MB6572:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d54ae29-e515-49f7-6fbe-08dbda23e64a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hBJDLXMZ0JgV6dJTp/kM8MGoNT2axcl40wwyBvh1Fs/HCNR32TJd4eFTY8lhoBO5NQLo+QUkFw4C5+x+Tf4Xnt25N6t8GJMPsNK0MbMpubMEkwPdUc2/e/DbM7SAr6uhmVOhMITQSGiY82TQKltWDU9oqwyi3pwqjsOH5nW3LYg3E8iCxj+iVySLPic5DwG6iMDVuLbyuzKTyWOiSpUY9L33nW/lirdkKTf/NXfDKOnW3yJsJclVcCek9j3F4qSuQbsUGvKB2W2YY972P/8pp4pI3QotV2ShMf/TseNLj7lfXvvUqUL6OLlIth6AKFOGrDXK3uPgdtSvoeQRUkB8QjC683Br3OYdSJef1NFOP7relrvZ3U4maviH8tI7Gs+i8P6+DeVJECDidW2riu+vyhUjgbhD7PCdKFJ69u3YQpQOGaBVxtTG1dVtcZuEQib8P6Z+Ze7z54awjoWJ3U6w/T50KqD6NGpKvfLDpjsPiZBb4CY1O/1UCsLrURV41viaY6fTbK/PGDKMGXbZeQWDbe3NzPv0M6y/kckBdaOvaC/gsgB+Tw3GsVctyFDiG8WYTgPrRSy0iFyLs0ZVYE8/wuMm32XCI/I0PyFuK3hgZw4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(366004)(346002)(376002)(136003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(2906002)(478600001)(6486002)(966005)(86362001)(6666004)(2616005)(1076003)(26005)(38350700005)(38100700002)(36756003)(83380400001)(6512007)(6506007)(52116002)(66556008)(66476007)(41300700001)(44832011)(316002)(66946007)(6916009)(5660300002)(8676002)(8936002)(4326008)(30864003)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fbigh6NjcAUJoY7vTsTs8n2MEnRqonyQSt3Vs2XuBJb/wjsg1ggLSAMdTJ0I?=
+ =?us-ascii?Q?YCnzgby7nUlgecEcODvU0n4uXIszfNsPBRPEQNPf5o8AiDTG6Bl86Zzxr+3a?=
+ =?us-ascii?Q?OHgnGqLBiF/xwKXV7vjur7HLcBS6CJPa6Iif6yeFS2NdBj9zxBpDDCBD28kd?=
+ =?us-ascii?Q?n3iVvDUcqZFfMZPJVDCIQqiT+zbcFtUrtIBNsn0cmjoRHGOvCZtPsrr9+8qP?=
+ =?us-ascii?Q?nDZBzjRy99nP5Vapiqd8/RjECHRrAYAMET0JJsDfWq3X7aDU8NrvMZLpBYf+?=
+ =?us-ascii?Q?V46cXVEh+ob11gcfaKQAGKfess+Xn1grDVpceIOxEi1KunpjjNMnbKqn6hRM?=
+ =?us-ascii?Q?p+67zKOxxMM3GMGcgOTrpPi0iTKvdWhGpo8XnJV0+o2QdqHpc1V3CiFQTKwf?=
+ =?us-ascii?Q?2I+moDVTArC4YyVNNFqgYDA03lrkI3GQsDkcL4MjZpGpVQ7209IUqddN48SS?=
+ =?us-ascii?Q?WZl+m3kuXUkVL6TKqv1ZMSelDy0mNOPCjLJOjrJ1lRY6Rgn2d9jzyI3FHklD?=
+ =?us-ascii?Q?HKJJWsyHMyN/jw3EPIVjZNYQLMj2WwHuqKsZLriHZLU1z+Bcq0cj0BSlqoa6?=
+ =?us-ascii?Q?ndugO2RO7ubveX+PsLV1YcH7Fv1397zfXg7dpxLcV3m6eWSf+DXvy32sN+mO?=
+ =?us-ascii?Q?W8gYAE9VR1lKlJZPPtWSn7zLGTIrsfFG/puuaqWGTINArmEyzB1fEtQU46Mp?=
+ =?us-ascii?Q?wPLPafOaQTAscxJ+kiHviGpLtQl4DStkwbgkxK8nsR+AzYE/grmQ/BdKLkDI?=
+ =?us-ascii?Q?SlijNz1GxSb75XGJiV3z5WGW6BpdPtxIoLutVV+OP1J/ddLH//DNgODpTOCb?=
+ =?us-ascii?Q?KMUsSYvx2u97Aeinf7br0Jw33/d2IBc4et9vpYnL2O1SmUrV1JKs6i80UNbg?=
+ =?us-ascii?Q?8UQZSmTMQJaJEXrhsai24AW7XaNOaeUaiHaoAiy234rkhBapjm4ReF8yXP6e?=
+ =?us-ascii?Q?USyfP0Pt+hvdfpzuIf280oddS61xGZGHjvHZjXWo4lg7jP6Fsk4+pAiLKXG1?=
+ =?us-ascii?Q?+lzlUmrQT3b4tecnl03ZKO9vRdS7pX2WqXC15RPv3gCXWws//PcEOjdP0D9o?=
+ =?us-ascii?Q?lV+klJ+OKQsqP7SxZrlFEzE7qm1ykyZBYXgzQK8Wx2BALoLzCW0O0HFRu55g?=
+ =?us-ascii?Q?XjmQvCIHtX3VEwSfwAGoYwXrzUuXwFFgNBLw9+l5P5YGSTr9JbnbCCd7yOS6?=
+ =?us-ascii?Q?wfrSlCyH8WudLLb17GFU4LfE+TuvKmJIVPdCUi61R4jysS7nsu7hGT1vLfFR?=
+ =?us-ascii?Q?o7l1JI4wIj73518C2JQ22x0jVE6axReUPIE7JYkzs1E9AMpSZThcBVpgyoF/?=
+ =?us-ascii?Q?h2Kbmf38XO3w0kd3KsNW60E4xxEWWGxUf0sGE0Tqg2jq5b03ZiQCyUB8NcL0?=
+ =?us-ascii?Q?ITDYmK4tpZ2iVDLuKh+O+ctq3fd2QX0PUz6Cq4WPYBMU+US679fnZp2x0ji6?=
+ =?us-ascii?Q?ADuL9NLgLr08UQaDTRdhgmo1+0mnGowel1HvtzpaOnXt0II3FivjYwqVvPCN?=
+ =?us-ascii?Q?sxW5tif2/ZTm0TB0PU/obSyQJ1rdyW4a/PaISw4X958u/v0L18fPSle63Y/C?=
+ =?us-ascii?Q?e4G5gLk8IcFpnW3VL5ZvHeAkY5v0xmFJlNkO7Qbib/uvJ0jfws/TH3shBX+5?=
+ =?us-ascii?Q?Wg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d54ae29-e515-49f7-6fbe-08dbda23e64a
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 15:13:12.6776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +0SigQ1iNmt/fsVMaeUq1JXBK0rqapfsfdxcg1mE7sgWhj9dguUxm9pg2ZhO5H90aaG7jHw+rAvmEv7uDigzaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB6572
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-GUID: NFRLX7ny4mu9q0WHdYlMQbgjS2qbACOk
+X-Proofpoint-ORIG-GUID: NFRLX7ny4mu9q0WHdYlMQbgjS2qbACOk
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5a6a09e97199d6600d31383055f9d43fbbcbe86f
-commit: e240e53ae0abb0896e0f399bdfef41c69cec3123 mm, slub: add CONFIG_SLUB_TINY
-date:   11 months ago
-config: x86_64-randconfig-a013-20230614 (https://download.01.org/0day-ci/archive/20231031/202310312340.LW2o2xTj-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310312340.LW2o2xTj-lkp@intel.com/reproduce)
+This patch series adds the initial DRM driver for Imagination Technologies PowerVR
+GPUs, starting with those based on our Rogue architecture. It's worth pointing
+out that this is a new driver, written from the ground up, rather than a
+refactored version of our existing downstream driver (pvrsrvkm).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310312340.LW2o2xTj-lkp@intel.com/
+This new DRM driver supports:
+- GEM shmem allocations
+- dma-buf / PRIME
+- Per-context userspace managed virtual address space
+- DRM sync objects (binary and timeline)
+- Power management suspend / resume
+- GPU job submission (geometry, fragment, compute, transfer)
+- META firmware processor
+- MIPS firmware processor
+- GPU hang detection and recovery
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/fork.c:1096:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *owner @@     got struct task_struct *p @@
-   kernel/fork.c:1096:19: sparse:     expected struct task_struct [noderef] __rcu *owner
-   kernel/fork.c:1096:19: sparse:     got struct task_struct *p
-   kernel/fork.c:1310:24: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct file [noderef] __rcu *__ret @@     got struct file *new_exe_file @@
-   kernel/fork.c:1310:24: sparse:     expected struct file [noderef] __rcu *__ret
-   kernel/fork.c:1310:24: sparse:     got struct file *new_exe_file
-   kernel/fork.c:1310:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __ret @@
-   kernel/fork.c:1310:22: sparse:     expected struct file *[assigned] old_exe_file
-   kernel/fork.c:1310:22: sparse:     got struct file [noderef] __rcu *[assigned] __ret
-   kernel/fork.c:1637:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
-   kernel/fork.c:1637:38: sparse:     expected struct refcount_struct [usertype] *r
-   kernel/fork.c:1637:38: sparse:     got struct refcount_struct [noderef] __rcu *
-   kernel/fork.c:1646:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:1646:31: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:1646:31: sparse:     got struct spinlock [noderef] __rcu *
->> kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
-   kernel/fork.c:1647:9: sparse:     expected void const *
-   kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
->> kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
-   kernel/fork.c:1647:9: sparse:     expected void const *
-   kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
-   kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
-   kernel/fork.c:1647:9: sparse:     expected void const *
-   kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
-   kernel/fork.c:1648:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:1648:33: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:1648:33: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2074:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2074:31: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2074:31: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2078:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2078:33: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2078:33: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2398:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct * @@
-   kernel/fork.c:2398:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
-   kernel/fork.c:2398:32: sparse:     got struct task_struct *
-   kernel/fork.c:2407:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2407:27: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2407:27: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2454:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
-   kernel/fork.c:2454:54: sparse:     expected struct list_head *head
-   kernel/fork.c:2454:54: sparse:     got struct list_head [noderef] __rcu *
-   kernel/fork.c:2476:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2476:29: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2476:29: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2497:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2497:29: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2497:29: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2524:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   kernel/fork.c:2524:28: sparse:     expected struct sighand_struct *sighand
-   kernel/fork.c:2524:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
-   kernel/fork.c:2553:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2553:31: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2553:31: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2555:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2555:33: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2555:33: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2998:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/fork.c:2998:24: sparse:     expected struct task_struct *[assigned] parent
-   kernel/fork.c:2998:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/fork.c:3079:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
-   kernel/fork.c:3079:43: sparse:     expected struct refcount_struct const [usertype] *r
-   kernel/fork.c:3079:43: sparse:     got struct refcount_struct [noderef] __rcu *
-   kernel/fork.c:1742:9: sparse: sparse: dereference of noderef expression
-   kernel/fork.c:2119:22: sparse: sparse: dereference of noderef expression
-   kernel/fork.c: note: in included file (through include/uapi/asm-generic/bpf_perf_event.h, arch/x86/include/generated/uapi/asm/bpf_perf_event.h, ...):
-   include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
-   include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
-   include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
-   include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
-   include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
-   include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
-   kernel/fork.c:2452:59: sparse: sparse: dereference of noderef expression
-   kernel/fork.c:2453:59: sparse: sparse: dereference of noderef expression
-   kernel/fork.c:1088:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/fork.c:1088:23: sparse:    struct task_struct [noderef] __rcu *
-   kernel/fork.c:1088:23: sparse:    struct task_struct *
---
->> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
-   drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
-   drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
-   drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
---
->> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
->> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
->> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
->> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got char [noderef] __iomem *screen_base @@
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void *
-   drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
---
-   drivers/gpu/drm/gma500/opregion.c:294:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got struct opregion_header *header @@
-   drivers/gpu/drm/gma500/opregion.c:294:25: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/gpu/drm/gma500/opregion.c:294:25: sparse:     got struct opregion_header *header
->> drivers/gpu/drm/gma500/opregion.c:324:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *const p @@     got void [noderef] __iomem *[assigned] base @@
-   drivers/gpu/drm/gma500/opregion.c:324:20: sparse:     expected void const *const p
-   drivers/gpu/drm/gma500/opregion.c:324:20: sparse:     got void [noderef] __iomem *[assigned] base
-   drivers/gpu/drm/gma500/opregion.c:330:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_header *header @@     got void [noderef] __iomem *[assigned] base @@
-   drivers/gpu/drm/gma500/opregion.c:330:26: sparse:     expected struct opregion_header *header
-   drivers/gpu/drm/gma500/opregion.c:330:26: sparse:     got void [noderef] __iomem *[assigned] base
-   drivers/gpu/drm/gma500/opregion.c:331:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *vbt @@     got void [noderef] __iomem * @@
-   drivers/gpu/drm/gma500/opregion.c:331:23: sparse:     expected void *vbt
-   drivers/gpu/drm/gma500/opregion.c:331:23: sparse:     got void [noderef] __iomem *
-   drivers/gpu/drm/gma500/opregion.c:338:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_acpi *acpi @@     got void [noderef] __iomem * @@
-   drivers/gpu/drm/gma500/opregion.c:338:32: sparse:     expected struct opregion_acpi *acpi
-   drivers/gpu/drm/gma500/opregion.c:338:32: sparse:     got void [noderef] __iomem *
-   drivers/gpu/drm/gma500/opregion.c:343:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_asle *asle @@     got void [noderef] __iomem * @@
-   drivers/gpu/drm/gma500/opregion.c:343:32: sparse:     expected struct opregion_asle *asle
-   drivers/gpu/drm/gma500/opregion.c:343:32: sparse:     got void [noderef] __iomem *
---
->> drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *const p @@     got unsigned char [noderef] [usertype] __iomem * @@
-   drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse:     expected void const *const p
-   drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse:     got unsigned char [noderef] [usertype] __iomem *
-   drivers/gpu/drm/gma500/intel_bios.c:549:40: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/gma500/intel_bios.c:559:24: sparse: sparse: cast removes address space '__iomem' of expression
+Currently our main focus is on the AXE-1-16M GPU. Testing so far has been done
+using a TI SK-AM62 board (AXE-1-16M GPU). The driver has also been confirmed to
+work on the BeaglePlay board. Firmware for the AXE-1-16M can befound here:
+https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/tree/powervr
 
-vim +1647 kernel/fork.c
+A Vulkan driver that works with our downstream kernel driver has already been
+merged into Mesa [1][2]. Support for this new DRM driver is being maintained in
+a merge request [3], with the branch located here:
+https://gitlab.freedesktop.org/frankbinns/mesa/-/tree/powervr-winsys
 
-a016f3389c0660 JANAK DESAI        2006-02-07  1631  
-a39bc51691a0c8 Alexey Dobriyan    2007-10-18  1632  static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1633  {
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1634  	struct sighand_struct *sig;
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1635  
-60348802e9cb13 Zhaolei            2009-01-06  1636  	if (clone_flags & CLONE_SIGHAND) {
-d036bda7d0e726 Elena Reshetova    2019-01-18  1637  		refcount_inc(&current->sighand->count);
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1638  		return 0;
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1639  	}
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1640  	sig = kmem_cache_alloc(sighand_cachep, GFP_KERNEL);
-0c282b068eb26d Madhuparna Bhowmik 2020-01-27  1641  	RCU_INIT_POINTER(tsk->sighand, sig);
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1642  	if (!sig)
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1643  		return -ENOMEM;
-9d7fb04276481c Peter Zijlstra     2015-06-30  1644  
-d036bda7d0e726 Elena Reshetova    2019-01-18  1645  	refcount_set(&sig->count, 1);
-06e62a46bbba20 Jann Horn          2018-08-21  1646  	spin_lock_irq(&current->sighand->siglock);
-^1da177e4c3f41 Linus Torvalds     2005-04-16 @1647  	memcpy(sig->action, current->sighand->action, sizeof(sig->action));
-06e62a46bbba20 Jann Horn          2018-08-21  1648  	spin_unlock_irq(&current->sighand->siglock);
-b612e5df4587c9 Christian Brauner  2019-10-14  1649  
-b612e5df4587c9 Christian Brauner  2019-10-14  1650  	/* Reset all signal handler not set to SIG_IGN to SIG_DFL. */
-b612e5df4587c9 Christian Brauner  2019-10-14  1651  	if (clone_flags & CLONE_CLEAR_SIGHAND)
-b612e5df4587c9 Christian Brauner  2019-10-14  1652  		flush_signal_handlers(tsk, 0);
-b612e5df4587c9 Christian Brauner  2019-10-14  1653  
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1654  	return 0;
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1655  }
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1656  
+Job stream formats are documented at:
+https://gitlab.freedesktop.org/mesa/mesa/-/blob/f8d2b42ae65c2f16f36a43e0ae39d288431e4263/src/imagination/csbgen/rogue_kmd_stream.xml
 
-:::::: The code at line 1647 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+The Vulkan driver is progressing towards Vulkan 1.0. The current combination of this
+kernel driver with the Mesa Vulkan driver (powervr-mesa-next branch) successfully
+completes Vulkan CTS 1.3.4.1 in our local runs. The driver is expected to pass the
+Khronos Conformance Process once the submission is made.
 
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+The code in this patch series, along with the needed dts changes can be found here:
+https://gitlab.freedesktop.org/sarah-walker-imgtec/powervr/-/tree/dev/v8_dts
+The full development history can be found here:
+https://gitlab.freedesktop.org/frankbinns/powervr/-/tree/powervr-next
+
+This patch series has dependencies on a number of patches not yet merged. They
+are listed below :
+
+drm/sched: Convert drm scheduler to use a work queue rather than kthread:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-2-matthew.brost@intel.com/
+drm/sched: Move schedule policy to scheduler / entity:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-3-matthew.brost@intel.com/
+drm/sched: Add DRM_SCHED_POLICY_SINGLE_ENTITY scheduling policy:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-4-matthew.brost@intel.com/
+drm/sched: Start run wq before TDR in drm_sched_start:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-6-matthew.brost@intel.com/
+drm/sched: Submit job before starting TDR:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-7-matthew.brost@intel.com/
+drm/sched: Add helper to set TDR timeout:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-8-matthew.brost@intel.com/
+
+[1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15243
+[2] https://gitlab.freedesktop.org/mesa/mesa/-/tree/main/src/imagination/vulkan
+[3] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15507
+
+High level summary of changes:
+
+v8:
+* Documentation clarifications/fixes for UAPI
+* CREATE_BO ioctl now returns an error if provided size isn't page aligned
+* Optimisations to MMU flush operations
+* FWIF change to support CPU cached FW allocations/mappings
+
+v7:
+* Fix fence handling in pvr_sync_signal_array_add()
+* Add a minimum retry count to pvr_kccb_reserve_slot_sync()
+* Don't initialise kernel_vm_ctx when using MIPS firmware processor
+* Remove unused gpu label from dt bindings example
+* Improve UAPI BYPASS_CACHE documentation
+* Add DRM_PVR_SUBMIT_JOB_FRAG_CMD_DISABLE_PIXELMERGE flag to UAPI
+* Rename gpuva_manager usage to gpuvm
+* Sync GEM objects to device on creation
+* Fix out-of-bounds shift bug
+* Fix integer overflow in MIPS MMU map error path
+* Add missing commit messages
+
+v6:
+* Fix a number of error paths
+* Attempt to recover GPU on MMU flush command failure
+* Defer freeing/releasing page table backing pages until after TLB flush
+* Add memory barriers and use WRITE_ONCE() when writing to page tables
+* Add Kconfig dependency on CONFIG_PM
+* Fix a few issues with GPU VA manager usage
+* Split up header commit due to size
+* Update compatible string and driver description to match marketing name
+* Use alloc_page() to allocate MIPS pagetable
+* Remove obsolete documentation
+
+v5:
+* Retrieve GPU device information from firmware image header
+* Address issues with DT binding and example DTS
+* Update VM code for upstream GPU VA manager
+* BOs are always zeroed on allocation
+* Update copyright
+
+v4:
+* Implemented hang recovery via firmware hard reset
+* Add support for partial render jobs
+* Move to a threaded IRQ
+* Remove unnecessary read/write and clock helpers
+* Remove device tree elements not relevant to AXE-1-16M
+* Clean up resource acquisition
+* Remove unused DT binding attributes
+
+v3:
+* Use drm_sched for scheduling
+* Use GPU VA manager
+* Use runtime PM
+* Use drm_gem_shmem
+* GPU watchdog and device loss handling
+* DT binding changes: remove unused attributes, add additionProperties:false
+
+v2:
+* Redesigned and simplified UAPI based on RFC feedback from XDC 2022
+* Support for transfer and partial render jobs
+* Support for timeline sync objects
+
+RFC v1: https://lore.kernel.org/dri-devel/20220815165156.118212-1-sarah.walker@imgtec.com/
+
+RFC v2: https://lore.kernel.org/dri-devel/20230413103419.293493-1-sarah.walker@imgtec.com/
+
+v3: https://lore.kernel.org/dri-devel/20230613144800.52657-1-sarah.walker@imgtec.com/
+
+v4: https://lore.kernel.org/dri-devel/20230714142355.111382-1-sarah.walker@imgtec.com/
+
+v5: https://lore.kernel.org/dri-devel/20230816082531.164695-1-sarah.walker@imgtec.com/
+
+v6: https://lore.kernel.org/dri-devel/20230906095542.3280699-1-sarah.walker@imgtec.com/
+
+v7: https://lore.kernel.org/dri-devel/20231010133738.35274-1-sarah.walker@imgtec.com/
+
+Donald Robson (1):
+  drm/gpuvm: Helper to get range of unmap from a remap op.
+
+Matt Coster (1):
+  sizes.h: Add entries between SZ_32G and SZ_64T
+
+Sarah Walker (18):
+  dt-bindings: gpu: Add Imagination Technologies PowerVR/IMG GPU
+  drm/imagination/uapi: Add PowerVR driver UAPI
+  drm/imagination: Add skeleton PowerVR driver
+  drm/imagination: Get GPU resources
+  drm/imagination: Add GPU register headers
+  drm/imagination: Add firmware and MMU related headers
+  drm/imagination: Add FWIF headers
+  drm/imagination: Add GPU ID parsing and firmware loading
+  drm/imagination: Add GEM and VM related code
+  drm/imagination: Implement power management
+  drm/imagination: Implement firmware infrastructure and META FW support
+  drm/imagination: Implement MIPS firmware processor and MMU support
+  drm/imagination: Implement free list and HWRT create and destroy
+    ioctls
+  drm/imagination: Implement context creation/destruction ioctls
+  drm/imagination: Implement job submission and scheduling
+  drm/imagination: Add firmware trace header
+  drm/imagination: Add firmware trace to debugfs
+  drm/imagination: Add driver documentation
+
+ .../devicetree/bindings/gpu/img,powervr.yaml  |   73 +
+ Documentation/gpu/drivers.rst                 |    2 +
+ Documentation/gpu/imagination/index.rst       |   13 +
+ Documentation/gpu/imagination/uapi.rst        |  174 +
+ MAINTAINERS                                   |    9 +
+ drivers/gpu/drm/Kconfig                       |    2 +
+ drivers/gpu/drm/Makefile                      |    1 +
+ drivers/gpu/drm/imagination/Kconfig           |   18 +
+ drivers/gpu/drm/imagination/Makefile          |   35 +
+ drivers/gpu/drm/imagination/pvr_ccb.c         |  648 ++
+ drivers/gpu/drm/imagination/pvr_ccb.h         |   71 +
+ drivers/gpu/drm/imagination/pvr_cccb.c        |  267 +
+ drivers/gpu/drm/imagination/pvr_cccb.h        |  109 +
+ drivers/gpu/drm/imagination/pvr_context.c     |  464 ++
+ drivers/gpu/drm/imagination/pvr_context.h     |  205 +
+ drivers/gpu/drm/imagination/pvr_debugfs.c     |   53 +
+ drivers/gpu/drm/imagination/pvr_debugfs.h     |   29 +
+ drivers/gpu/drm/imagination/pvr_device.c      |  658 ++
+ drivers/gpu/drm/imagination/pvr_device.h      |  710 ++
+ drivers/gpu/drm/imagination/pvr_device_info.c |  254 +
+ drivers/gpu/drm/imagination/pvr_device_info.h |  186 +
+ drivers/gpu/drm/imagination/pvr_drv.c         | 1501 ++++
+ drivers/gpu/drm/imagination/pvr_drv.h         |  129 +
+ drivers/gpu/drm/imagination/pvr_free_list.c   |  625 ++
+ drivers/gpu/drm/imagination/pvr_free_list.h   |  195 +
+ drivers/gpu/drm/imagination/pvr_fw.c          | 1489 ++++
+ drivers/gpu/drm/imagination/pvr_fw.h          |  508 ++
+ drivers/gpu/drm/imagination/pvr_fw_info.h     |  135 +
+ drivers/gpu/drm/imagination/pvr_fw_meta.c     |  554 ++
+ drivers/gpu/drm/imagination/pvr_fw_meta.h     |   14 +
+ drivers/gpu/drm/imagination/pvr_fw_mips.c     |  252 +
+ drivers/gpu/drm/imagination/pvr_fw_mips.h     |   48 +
+ .../gpu/drm/imagination/pvr_fw_startstop.c    |  306 +
+ .../gpu/drm/imagination/pvr_fw_startstop.h    |   13 +
+ drivers/gpu/drm/imagination/pvr_fw_trace.c    |  515 ++
+ drivers/gpu/drm/imagination/pvr_fw_trace.h    |   78 +
+ drivers/gpu/drm/imagination/pvr_gem.c         |  421 ++
+ drivers/gpu/drm/imagination/pvr_gem.h         |  175 +
+ drivers/gpu/drm/imagination/pvr_hwrt.c        |  549 ++
+ drivers/gpu/drm/imagination/pvr_hwrt.h        |  165 +
+ drivers/gpu/drm/imagination/pvr_job.c         |  788 +++
+ drivers/gpu/drm/imagination/pvr_job.h         |  161 +
+ drivers/gpu/drm/imagination/pvr_mmu.c         | 2637 +++++++
+ drivers/gpu/drm/imagination/pvr_mmu.h         |  109 +
+ drivers/gpu/drm/imagination/pvr_params.c      |  147 +
+ drivers/gpu/drm/imagination/pvr_params.h      |   72 +
+ drivers/gpu/drm/imagination/pvr_power.c       |  433 ++
+ drivers/gpu/drm/imagination/pvr_power.h       |   41 +
+ drivers/gpu/drm/imagination/pvr_queue.c       | 1455 ++++
+ drivers/gpu/drm/imagination/pvr_queue.h       |  179 +
+ .../gpu/drm/imagination/pvr_rogue_cr_defs.h   | 6193 +++++++++++++++++
+ .../imagination/pvr_rogue_cr_defs_client.h    |  159 +
+ drivers/gpu/drm/imagination/pvr_rogue_defs.h  |  179 +
+ drivers/gpu/drm/imagination/pvr_rogue_fwif.h  | 2188 ++++++
+ .../drm/imagination/pvr_rogue_fwif_check.h    |  493 ++
+ .../drm/imagination/pvr_rogue_fwif_client.h   |  373 +
+ .../imagination/pvr_rogue_fwif_client_check.h |  133 +
+ .../drm/imagination/pvr_rogue_fwif_common.h   |   60 +
+ .../drm/imagination/pvr_rogue_fwif_dev_info.h |  113 +
+ .../pvr_rogue_fwif_resetframework.h           |   28 +
+ .../gpu/drm/imagination/pvr_rogue_fwif_sf.h   | 1648 +++++
+ .../drm/imagination/pvr_rogue_fwif_shared.h   |  258 +
+ .../imagination/pvr_rogue_fwif_shared_check.h |  108 +
+ .../drm/imagination/pvr_rogue_fwif_stream.h   |   78 +
+ .../drm/imagination/pvr_rogue_heap_config.h   |  113 +
+ drivers/gpu/drm/imagination/pvr_rogue_meta.h  |  356 +
+ drivers/gpu/drm/imagination/pvr_rogue_mips.h  |  335 +
+ .../drm/imagination/pvr_rogue_mips_check.h    |   58 +
+ .../gpu/drm/imagination/pvr_rogue_mmu_defs.h  |  136 +
+ drivers/gpu/drm/imagination/pvr_stream.c      |  285 +
+ drivers/gpu/drm/imagination/pvr_stream.h      |   75 +
+ drivers/gpu/drm/imagination/pvr_stream_defs.c |  351 +
+ drivers/gpu/drm/imagination/pvr_stream_defs.h |   16 +
+ drivers/gpu/drm/imagination/pvr_sync.c        |  289 +
+ drivers/gpu/drm/imagination/pvr_sync.h        |   84 +
+ drivers/gpu/drm/imagination/pvr_vm.c          |  958 +++
+ drivers/gpu/drm/imagination/pvr_vm.h          |   60 +
+ drivers/gpu/drm/imagination/pvr_vm_mips.c     |  238 +
+ drivers/gpu/drm/imagination/pvr_vm_mips.h     |   22 +
+ include/drm/drm_gpuvm.h                       |   28 +
+ include/linux/sizes.h                         |    9 +
+ include/uapi/drm/pvr_drm.h                    | 1297 ++++
+ 82 files changed, 34396 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yaml
+ create mode 100644 Documentation/gpu/imagination/index.rst
+ create mode 100644 Documentation/gpu/imagination/uapi.rst
+ create mode 100644 drivers/gpu/drm/imagination/Kconfig
+ create mode 100644 drivers/gpu/drm/imagination/Makefile
+ create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_context.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_context.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_drv.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_drv.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_info.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_gem.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_gem.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_job.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_job.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_params.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_params.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_power.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_power.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_queue.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_queue.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs_client.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_common.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_dev_info.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_resetframework.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_stream.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_heap_config.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_meta.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mmu_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_sync.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_sync.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.h
+ create mode 100644 include/uapi/drm/pvr_drm.h
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
