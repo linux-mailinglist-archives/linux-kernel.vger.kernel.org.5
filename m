@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D6D7DC7F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518287DC7F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjJaIO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 04:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
+        id S232976AbjJaINl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbjJaIO0 (ORCPT
+        with ESMTP id S230478AbjJaINi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 04:14:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9DBC1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:14:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698740062; x=1730276062;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=nn8aG/qwp31DynVdhC5f/5kYJcYQBtqnJ1gzCFyQEVc=;
-  b=lFuDhkrro6OcMt1Pi0Kvt7RwpM/fX9Prws7qIayiRaOJzUXaM8oSWYff
-   W/Y3mWJC7c7SIh4/ozmbkG6k3ONsKIdknDbXsmJxz+VdBy/optxOUyRQt
-   HO72jMroekwpBsb3iZca3uvswxr+DlqohFFcMpPSfoZaqOaZINaZhPNyp
-   JlDUlEEDo/Vspp6XHb0+Gj/TjBkJ8kETjgEfZg2baivvzS3jBECUGIaFn
-   +QaDijCSTEx7w3JOn5TaXxEkW0z/XdIyy3tJPN9pI68NZhRiFA/vu5teN
-   KIMOWgTUZDZGYAvImpPS/C0wSqS5P0FT1BWrsmizNxaLvMVaVjIU8mJIp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="367582479"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="367582479"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:14:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="826329263"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="826329263"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 01:14:19 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@googleN.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
- splitting
-In-Reply-To: <581e3d59-1d04-4c88-8b60-74fd7513c0d9@arm.com> (Ryan Roberts's
-        message of "Mon, 30 Oct 2023 13:59:51 +0000")
-References: <20231025144546.577640-1-ryan.roberts@arm.com>
-        <20231025144546.577640-5-ryan.roberts@arm.com>
-        <87o7gga5ga.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <581e3d59-1d04-4c88-8b60-74fd7513c0d9@arm.com>
-Date:   Tue, 31 Oct 2023 16:12:17 +0800
-Message-ID: <87pm0v8b32.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Tue, 31 Oct 2023 04:13:38 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE426BD;
+        Tue, 31 Oct 2023 01:13:35 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5409bc907edso8310452a12.0;
+        Tue, 31 Oct 2023 01:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698740014; x=1699344814; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KUSjPd9JDelxayHLoaKrsl8RYjyIQSTE5q0zW+6XXnI=;
+        b=fpm0K05iCPS618aAqxTo2tAwsd6N+Rpt3XXNaUMRGd/QX2HucBMQCDBHwjYPUsJykV
+         9HVfe87q8FrkEa19839mzc0W1sKLUXLPqJ6aB/JRV30p7TXjtTAeeFmMfDlNNSdo5iiF
+         4m2Zw3gLbvjrr8M6nKlbQFrq3uiiV/DQoXqv+Qw23QNu/n3mY/hVQiARUtz0E6KcGjGs
+         Z/Sj7wt9OJuCiGKxa2vqZQeHdybAIeiV9VJ4cxjUcEsX3g1pdF1PxBsG6v24xk209jiy
+         tiVVDkosfjPEQ7R7PIhLprKry4Z99Zp3t0Rr3p7Of960zHXVKmRWVaO0LdOMBIdwe3md
+         PE1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698740014; x=1699344814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KUSjPd9JDelxayHLoaKrsl8RYjyIQSTE5q0zW+6XXnI=;
+        b=evCIg858RMvvlaQzCtWEH7aW33OY4JtgIPlCOkTHWRECqTTeuuAt7Ui3VT4Kevnh6C
+         UubMZz3amtlznEVROJGnGrlrx81HpKdWC7jif9eR3mOdDKidphyKzA2pSGCf50UEJ5E9
+         rD8XPqaoltLeeC6ulmLDyYDGwHrdmUflS1nkNUadLN9ec5MuCSs/ew2+PUO8/qsuUbo5
+         QL1bSYSB//VrxFN8MUkkV2NFZSK5+5DlJR+3DJCSxEwk8on3etxccxnpDg1GiLbz+9Bt
+         0wgctsfKLJ4mNgbirRiec8YVZqx0nXxI8+IxvPn7AFxs/rC5ePgGXPL2MJtyc/4LAGOP
+         xndA==
+X-Gm-Message-State: AOJu0YzO4323ncSyd/ptwaQNQIBKFVCyYgxkNRNTdnppnZztFr0487qO
+        0UJddxyXX5qBGQVYJKWnxnI=
+X-Google-Smtp-Source: AGHT+IGXHNJ1xJ5AaZ5QeGdx4lK2BcHbEIPBRlWpzvgcS2lWFzAVpJjfoNIFh/XffpFG5sKxWRF32g==
+X-Received: by 2002:a17:907:7f92:b0:9bd:f155:eb54 with SMTP id qk18-20020a1709077f9200b009bdf155eb54mr11872826ejc.6.1698740014038;
+        Tue, 31 Oct 2023 01:13:34 -0700 (PDT)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-109.cust.vodafonedsl.it. [188.217.59.109])
+        by smtp.gmail.com with ESMTPSA id rp16-20020a170906d97000b009ae57888718sm530859ejb.207.2023.10.31.01.13.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 01:13:33 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 09:13:30 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     martin.hecht@avnet.eu, michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZUC3KpmB6ZzLkxDw@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
+ <20231020141354.2500602-4-tomm.merciai@gmail.com>
+ <ZTpnHdpTgRNll3TC@kekkonen.localdomain>
+ <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <ZUAxoy2cRR6Rm9ig@kekkonen.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUAxoy2cRR6Rm9ig@kekkonen.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,337 +89,211 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+Hi Sakari,
+Thanks for your comments.
 
-> On 30/10/2023 08:18, Huang, Ying wrote:
->> Hi, Ryan,
->> 
->> Ryan Roberts <ryan.roberts@arm.com> writes:
->> 
->>> The upcoming anonymous small-sized THP feature enables performance
->>> improvements by allocating large folios for anonymous memory. However
->>> I've observed that on an arm64 system running a parallel workload (e.g.
->>> kernel compilation) across many cores, under high memory pressure, the
->>> speed regresses. This is due to bottlenecking on the increased number of
->>> TLBIs added due to all the extra folio splitting.
->>>
->>> Therefore, solve this regression by adding support for swapping out
->>> small-sized THP without needing to split the folio, just like is already
->>> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
->>> enabled, and when the swap backing store is a non-rotating block device.
->>> These are the same constraints as for the existing PMD-sized THP
->>> swap-out support.
->>>
->>> Note that no attempt is made to swap-in THP here - this is still done
->>> page-by-page, like for PMD-sized THP.
->>>
->>> The main change here is to improve the swap entry allocator so that it
->>> can allocate any power-of-2 number of contiguous entries between [1, (1
->>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
->>> order and allocating sequentially from it until the cluster is full.
->>> This ensures that we don't need to search the map and we get no
->>> fragmentation due to alignment padding for different orders in the
->>> cluster. If there is no current cluster for a given order, we attempt to
->>> allocate a free cluster from the list. If there are no free clusters, we
->>> fail the allocation and the caller falls back to splitting the folio and
->>> allocates individual entries (as per existing PMD-sized THP fallback).
->>>
->>> The per-order current clusters are maintained per-cpu using the existing
->>> infrastructure. This is done to avoid interleving pages from different
->>> tasks, which would prevent IO being batched. This is already done for
->>> the order-0 allocations so we follow the same pattern.
->>> __scan_swap_map_try_ssd_cluster() is introduced to deal with arbitrary
->>> orders and scan_swap_map_try_ssd_cluster() is refactored as a wrapper
->>> for order-0.
->>>
->>> As is done for order-0 per-cpu clusters, the scanner now can steal
->>> order-0 entries from any per-cpu-per-order reserved cluster. This
->>> ensures that when the swap file is getting full, space doesn't get tied
->>> up in the per-cpu reserves.
->>>
->>> I've run the tests on Ampere Altra (arm64), set up with a 35G block ram
->>> device as the swap device and from inside a memcg limited to 40G memory.
->>> I've then run `usemem` from vm-scalability with 70 processes (each has
->>> its own core), each allocating and writing 1G of memory. I've repeated
->>> everything 5 times and taken the mean:
->>>
->>> Mean Performance Improvement vs 4K/baseline
->>>
->>> | alloc size |            baseline |       + this series |
->>> |            |  v6.6-rc4+anonfolio |                     |
->>> |:-----------|--------------------:|--------------------:|
->>> | 4K Page    |                0.0% |                4.9% |
->>> | 64K THP    |              -44.1% |               10.7% |
->>> | 2M THP     |               56.0% |               65.9% |
->>>
->>> So with this change, the regression for 64K swap performance goes away
->>> and 4K and 2M swap improves slightly too.
->>>
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>  include/linux/swap.h |  10 +--
->>>  mm/swapfile.c        | 149 +++++++++++++++++++++++++++++++------------
->>>  mm/vmscan.c          |  10 +--
->>>  3 files changed, 119 insertions(+), 50 deletions(-)
->>>
->>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>> index 0ca8aaa098ba..ccbca5db851b 100644
->>> --- a/include/linux/swap.h
->>> +++ b/include/linux/swap.h
->>> @@ -295,11 +295,11 @@ struct swap_info_struct {
->>>  	unsigned int __percpu *cluster_next_cpu; /*percpu index for next allocation */
->>>  	unsigned int __percpu *cpu_next;/*
->>>  					 * Likely next allocation offset. We
->>> -					 * assign a cluster to each CPU, so each
->>> -					 * CPU can allocate swap entry from its
->>> -					 * own cluster and swapout sequentially.
->>> -					 * The purpose is to optimize swapout
->>> -					 * throughput.
->>> +					 * assign a cluster per-order to each
->>> +					 * CPU, so each CPU can allocate swap
->>> +					 * entry from its own cluster and
->>> +					 * swapout sequentially. The purpose is
->>> +					 * to optimize swapout throughput.
->>>  					 */
->> 
->> This is kind of hard to understand.  Better to define some intermediate
->> data structure to improve readability.  For example,
->> 
->> #ifdef CONFIG_THP_SWAP
->> #define NR_SWAP_ORDER   PMD_ORDER
->> #else
->> #define NR_SWAP_ORDER   1
->> #endif
->> 
->> struct percpu_clusters {
->>         unsigned int alloc_next[NR_SWAP_ORDER];
->> };
->> 
->> PMD_ORDER isn't a constant on powerpc, but THP_SWAP isn't supported on
->> powerpc too.
->
-> I get your point, but this is just making it more difficult for powerpc to ever
-> enable the feature in future - you're implicitly depending on !powerpc, which
-> seems fragile. How about if I change the first line of the coment to be "per-cpu
-> array indexed by allocation order"? Would that be enough?
+On Mon, Oct 30, 2023 at 10:43:47PM +0000, Sakari Ailus wrote:
+> Hi Tommaso,
+> 
+> On Mon, Oct 30, 2023 at 01:26:58PM +0100, Tommaso Merciai wrote:
+> 
+> ...
+> 
+> > > > +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
+> > > > +{
+> > > > +	u64 val;
+> > > > +	int ret = 0;
+> > > > +
+> > > > +	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
+> > > 
+> > > Missing error checking before the use of the value. The same pattern
+> > > remains prevalent throughout the driver.
+> > > 
+> > > I think it'd be easier if you didn't use a temporary variable for reading,
+> > > but instead had a register width specific access function. You could even
+> > > introduce a helper macro to read this information as I suggested in an
+> > > earlier review.
+> > 
+> > oks.
+> > We are moving to use the following macros:
+> > 
+> > #define alvium_read_check(alvium, reg, value) \
+> > { \
+> > 	int ret = alvium_read(alvium, reg, value, NULL); \
+> > 	if (ret) \
+> > 		return ret; \
+> > }
+> > 
+> 
+> You could do something like (entirely untested):
+> 
+> #define ALVIUM_DECLARE_READ(sign, bits) \
+> 	static int
+> 	alvium_read_ ## sign ## bits(struct alvium_dev *alvium, u32 reg, \
+> 				     sign ## bits *val, int *err) \
+> 	{ \
+> 		u64 val64; \
+> 		int ret; \
+> 			\
+> 		if (err && *err < 0) \
+> 			return *err; \
+> 			\
+> 		alvium_read(alvium, reg, &val64, &ret); \
+> 		if (ret < 0) { \
+> 			if (err) \
+> 				*err = ret; \
+> 			return ret; \
+> 		}	\
+> 			\
+> 		*val = val64; \
+> 			\
+> 		return 0; \
+> 	}
+> 
+> ALVIUM_DECLARE_READ(u, 32);
+> 
+> And then, e.g. instead of (and failing to check ret):
+> 
+> 	u64 val;
+> 
+> 	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_RW, &val, &ret);
+> 	alvium->dft_contrast = val;
+> 
+> you'd have a single call:
+> 
+> 	alvium_read_u32(alvium, REG_BCRM_CONTRAST_VALUE_RW,
+> 		        &alvium->dft_contrast, &ret);
+> 
+> And so on.
+> 
+> You can drop sign if you don't need signed reads but some of the struct
+> fields you're writing something appear to be signed.
+> 
+> It'd be good to check the register size matches with the size of *val, too.
+> Maybe something like:
+> 
+> WARN_ON((CCI_REG ## bits(0) && CCI_REG_WIDTH_MASK) >> CCI_REG_WIDTH_SHIFT
+> 	!= sizeof(sign ## bits));
 
-Even if PMD_ORDER isn't constant on powerpc, it's not necessary for
-NR_SWAP_ORDER to be variable.  At least (1 << (NR_SWAP_ORDER-1)) should
-< SWAPFILE_CLUSTER.  When someone adds THP swap support on powerpc, he
-can choose a reasonable constant for NR_SWAP_ORDER (for example, 10 or
-7).
+Laurent suggest me also a good way.
+I switched to the Laurent suggested implementation in v11.
+I think now is clear. Thanks to both again.
+Let me know what do you think about :)
 
->> 
->>>  	struct rb_root swap_extent_root;/* root of the swap extent rbtree */
->>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>> index 94f7cc225eb9..b50bce50bed9 100644
->>> --- a/mm/swapfile.c
->>> +++ b/mm/swapfile.c
->>> @@ -545,10 +545,12 @@ static void free_cluster(struct swap_info_struct *si, unsigned long idx)
->>>  
->>>  /*
->>>   * The cluster corresponding to page_nr will be used. The cluster will be
->>> - * removed from free cluster list and its usage counter will be increased.
->>> + * removed from free cluster list and its usage counter will be increased by
->>> + * count.
->>>   */
->>> -static void inc_cluster_info_page(struct swap_info_struct *p,
->>> -	struct swap_cluster_info *cluster_info, unsigned long page_nr)
->>> +static void add_cluster_info_page(struct swap_info_struct *p,
->>> +	struct swap_cluster_info *cluster_info, unsigned long page_nr,
->>> +	unsigned long count)
->>>  {
->>>  	unsigned long idx = page_nr / SWAPFILE_CLUSTER;
->>>  
->>> @@ -557,9 +559,19 @@ static void inc_cluster_info_page(struct swap_info_struct *p,
->>>  	if (cluster_is_free(&cluster_info[idx]))
->>>  		alloc_cluster(p, idx);
->>>  
->>> -	VM_BUG_ON(cluster_count(&cluster_info[idx]) >= SWAPFILE_CLUSTER);
->>> +	VM_BUG_ON(cluster_count(&cluster_info[idx]) + count > SWAPFILE_CLUSTER);
->>>  	cluster_set_count(&cluster_info[idx],
->>> -		cluster_count(&cluster_info[idx]) + 1);
->>> +		cluster_count(&cluster_info[idx]) + count);
->>> +}
->>> +
->>> +/*
->>> + * The cluster corresponding to page_nr will be used. The cluster will be
->>> + * removed from free cluster list and its usage counter will be increased.
->>> + */
->>> +static void inc_cluster_info_page(struct swap_info_struct *p,
->>> +	struct swap_cluster_info *cluster_info, unsigned long page_nr)
->>> +{
->>> +	add_cluster_info_page(p, cluster_info, page_nr, 1);
->>>  }
->>>  
->>>  /*
->>> @@ -588,8 +600,8 @@ static void dec_cluster_info_page(struct swap_info_struct *p,
->>>   * cluster list. Avoiding such abuse to avoid list corruption.
->>>   */
->>>  static bool
->>> -scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
->>> -	unsigned long offset)
->>> +__scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
->>> +	unsigned long offset, int order)
->>>  {
->>>  	bool conflict;
->>>  
->>> @@ -601,23 +613,36 @@ scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
->>>  	if (!conflict)
->>>  		return false;
->>>  
->>> -	*this_cpu_ptr(si->cpu_next) = SWAP_NEXT_NULL;
->>> +	this_cpu_ptr(si->cpu_next)[order] = SWAP_NEXT_NULL;
->> 
->> This is added in the previous patch.  I don't think SWAP_NEXT_NULL is a
->> good name.  Because NEXT isn't a pointer (while cluster_next is). Better
->> to name it as SWAP_NEXT_INVALID, etc.
->
-> ACK, will make change for next version.
+> 
+> > > > +static int alvium_get_csi_clk_params(struct alvium_dev *alvium)
+> > > > +{
+> > > > +	u64 val;
+> > > > +	int ret = 0;
+> > > > +
+> > > > +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MIN_R, &val, &ret);
+> > > > +	alvium->min_csi_clk = val;
+> > > > +
+> > > > +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MAX_R, &val, &ret);
+> > > > +	alvium->max_csi_clk = val;
+> > > > +
+> > > > +	return ret;
+> > > > +}
+> > > > +
+> > > > +static int alvium_set_csi_clk(struct alvium_dev *alvium)
+> > > > +{
+> > > > +	struct device *dev = &alvium->i2c_client->dev;
+> > > > +	u64 csi_clk;
+> > > > +	int ret;
+> > > > +
+> > > > +	csi_clk = (u32)alvium->ep.link_frequencies[0];
+> > > 
+> > > Why casting to u32? Shouldn't csi_clk be u32 instead?
+> > 
+> > Ok we fix this in v11.
+> > Change to use u64 for calculation because type of ep.link_frequencies[0]
+> > Plan is to clamp csi_clk between min/max instead of returning error.
+> 
+> I think I would keep it as-is: this isn't V4L2 UAPI.
+> 
+> > 
+> > > 
+> > > > +
+> > > > +	if (csi_clk < alvium->min_csi_clk || csi_clk > alvium->max_csi_clk)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	ret = alvium_write_hshake(alvium, REG_BCRM_CSI2_CLOCK_RW, csi_clk);
+> > > > +	if (ret) {
+> > > > +		dev_err(dev, "Fail to set csi lanes reg\n");
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	alvium->link_freq = alvium->ep.link_frequencies[0];
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> 
+> ...
+> 
+> > > > +			goto out;
+> > > > +
+> > > > +		ret = alvium_set_mode(alvium, state);
+> > > > +		if (ret)
+> > > > +			goto out;
+> > > > +
+> > > > +		fmt = v4l2_subdev_get_pad_format(sd, state, 0);
+> > > > +		ret = alvium_set_framefmt(alvium, fmt);
+> > > > +		if (ret)
+> > > > +			goto out;
+> > > > +
+> > > > +		ret = alvium_set_stream_mipi(alvium, enable);
+> > > > +		if (ret)
+> > > > +			goto out;
+> > > > +
+> > > > +	} else {
+> > > > +		alvium_set_stream_mipi(alvium, enable);
+> > > > +		pm_runtime_mark_last_busy(&client->dev);
+> > > > +		pm_runtime_put_autosuspend(&client->dev);
+> > > 
+> > > pm_runtime_put() here, too.
+> > 
+> > Here is not needed we already have pm_runtime_put_autosuspend.
+> > I'm missing something?
+> 
+> Ah, I missed that while reviewing. Please ignore that comment then.
 
-Thanks!
+No problem, update in v11.
 
->> 
->>>  	return true;
->>>  }
->>>  
->>>  /*
->>> - * Try to get a swap entry from current cpu's swap entry pool (a cluster). This
->>> - * might involve allocating a new cluster for current CPU too.
->>> + * It's possible scan_swap_map_slots() uses a free cluster in the middle of free
->>> + * cluster list. Avoiding such abuse to avoid list corruption.
->>>   */
->>> -static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>> -	unsigned long *offset, unsigned long *scan_base)
->>> +static bool
->>> +scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
->>> +	unsigned long offset)
->>> +{
->>> +	return __scan_swap_map_ssd_cluster_conflict(si, offset, 0);
->>> +}
->>> +
->>> +/*
->>> + * Try to get a swap entry (or size indicated by order) from current cpu's swap
->>> + * entry pool (a cluster). This might involve allocating a new cluster for
->>> + * current CPU too.
->>> + */
->>> +static bool __scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>> +	unsigned long *offset, unsigned long *scan_base, int order)
->>>  {
->>>  	struct swap_cluster_info *ci;
->>> -	unsigned int tmp, max;
->>> +	unsigned int tmp, max, i;
->>>  	unsigned int *cpu_next;
->>> +	unsigned int nr_pages = 1 << order;
->>>  
->>>  new_cluster:
->>> -	cpu_next = this_cpu_ptr(si->cpu_next);
->>> +	cpu_next = &this_cpu_ptr(si->cpu_next)[order];
->>>  	tmp = *cpu_next;
->>>  	if (tmp == SWAP_NEXT_NULL) {
->>>  		if (!cluster_list_empty(&si->free_clusters)) {
->>> @@ -643,10 +668,12 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>>  	 * reserve a new cluster.
->>>  	 */
->>>  	ci = lock_cluster(si, tmp);
->>> -	if (si->swap_map[tmp]) {
->>> -		unlock_cluster(ci);
->>> -		*cpu_next = SWAP_NEXT_NULL;
->>> -		goto new_cluster;
->>> +	for (i = 0; i < nr_pages; i++) {
->>> +		if (si->swap_map[tmp + i]) {
->>> +			unlock_cluster(ci);
->>> +			*cpu_next = SWAP_NEXT_NULL;
->>> +			goto new_cluster;
->>> +		}
->>>  	}
->>>  	unlock_cluster(ci);
->>>  
->>> @@ -654,12 +681,22 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>>  	*scan_base = tmp;
->>>  
->>>  	max = ALIGN_DOWN(tmp, SWAPFILE_CLUSTER) + SWAPFILE_CLUSTER;
->> 
->> This line is added in a previous patch.  Can we just use
->> 
->>         max = ALIGN(tmp + 1, SWAPFILE_CLUSTER);
->
-> Sure. This is how I originally had it, but then decided that the other approach
-> was a bit clearer. But I don't have a strong opinion, so I'll change it as you
-> suggest.
+> 
+> > 
+> > > 
+> > > > +	}
+> > > > +
+> > > > +	alvium->streaming = !!enable;
+> > > > +	v4l2_subdev_unlock_state(state);
+> > > > +
+> > > > +	return 0;
+> > > > +
+> > > > +out:
+> > > > +	v4l2_subdev_unlock_state(state);
+> > > > +	return ret;
+> > > > +}
+> > > > +
+> > > > +static int alvium_init_cfg(struct v4l2_subdev *sd,
+> > > > +			   struct v4l2_subdev_state *state)
+> > > > +{
+> > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > +	struct alvium_mode *mode = &alvium->mode;
+> > > 
+> > > Init_cfg() is expected to be configuration independent (as much as
+> > > possible). Therefore you should use defaults here, not current mode.
+> > 
+> > Defaults alvium mode already used here.
+> 
+> Ah, indeed. Please ignore.
 
-Thanks!
+No problem.
 
->> 
->> Or, add ALIGN_UP() for this?
->> 
->>> -	tmp += 1;
->>> +	tmp += nr_pages;
->>>  	*cpu_next = tmp < max ? tmp : SWAP_NEXT_NULL;
->>>  
->>>  	return true;
->>>  }
->>>  
->>> +/*
->>> + * Try to get a swap entry from current cpu's swap entry pool (a cluster). This
->>> + * might involve allocating a new cluster for current CPU too.
->>> + */
->>> +static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>> +	unsigned long *offset, unsigned long *scan_base)
->>> +{
->>> +	return __scan_swap_map_try_ssd_cluster(si, offset, scan_base, 0);
->>> +}
->>> +
->>>  static void __del_from_avail_list(struct swap_info_struct *p)
->>>  {
->>>  	int nid;
->>> @@ -982,35 +1019,58 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
->>>  	return n_ret;
->>>  }
->>>  
->>> -static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
->>> +static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
->>> +			    unsigned int nr_pages)
->> 
->> IMHO, it's better to make scan_swap_map_slots() to support order > 0
->> instead of making swap_alloc_cluster() to support order != PMD_ORDER.
->> And, we may merge swap_alloc_cluster() with scan_swap_map_slots() after
->> that.
->
-> I did consider adding a 5th patch to rename swap_alloc_large() to something like
-> swap_alloc_one_ssd_entry() (which would then be used for order=0 too) and
-> refactor scan_swap_map_slots() to fully delegate to it for the non-scaning ssd
-> allocation case. Would something like that suit?
->
-> I have reservations about making scan_swap_map_slots() take an order and be the
-> sole entry point:
->
->   - in the non-ssd case, we can't support order!=0
+Thanks & Regards,
+Tommaso
 
-Don't need to check ssd directly, we only support order != 0 if
-si->cluster_info != NULL.
-
->   - there is a lot of other logic to deal with falling back to scanning which we
->     would only want to do for order==0, so we would end up with a few ugly
->     conditionals against order.
-
-We don't need to care about them in most cases.  IIUC, only the "goto
-scan" after scan_swap_map_try_ssd_cluster() return false need to "goto
-no_page" for order != 0.
-
->   - I was concerned the risk of me introducing a bug when refactoring all that
->     subtle logic was high
-
-IMHO, readability is more important for long term maintenance.  So, we
-need to refactor the existing code for that.
-
-> What do you think? Is not making scan_swap_map_slots() support order > 0 a deal
-> breaker for you?
-
-I just think that it's better to use scan_swap_map_slots() for any order
-other than PMD_ORDER.  In that way, we share as much code as possible.
-
---
-Best Regards,
-Huang, Ying
+> 
+> -- 
+> Kind regards,
+> 
+> Sakari Ailus
