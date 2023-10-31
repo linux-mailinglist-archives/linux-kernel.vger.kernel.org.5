@@ -2,164 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78E57DCE2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A6B7DCE36
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 14:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344645AbjJaNrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 09:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S1344634AbjJaNtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 09:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344592AbjJaNrK (ORCPT
+        with ESMTP id S235008AbjJaNtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:47:10 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEE4DE;
-        Tue, 31 Oct 2023 06:47:07 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b1ef786b7fso5681661b3a.3;
-        Tue, 31 Oct 2023 06:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698760027; x=1699364827; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=szWjSuZzSBsgDHOkVrsEaBtEWrwcwItxo1aEsAkUX60=;
-        b=OqkwBCvXVDA6wfLEjmkHv2xJG8vX1+koutd+BawGbGy5dDRmXmqtaQt3zQWnxnpNpz
-         eHljFBzd0SoO9AafY1CdPx5QZtlN5eg3nzUBqgfAmO47gr1MfbPp052phN3kxaBnwiSg
-         eLf9BW17Gjth0U7dxRcknw2dyr8W9TyvjPxuGRv2hbNlIK4SvIh8a/cfxhhMhIvA5RTp
-         lqkoxTq50R74iPce+JKlvXej9IBytVehNCEtXydP8gXsUixPvacvAmFt3sguvJlnFMmN
-         ImFDsgnwbHgbyeYtW5GfH/eGBvOvM4NGnHcgEi4xs1hgXPjrBci0LHsutO7lGuN1eNP8
-         P4+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698760027; x=1699364827;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=szWjSuZzSBsgDHOkVrsEaBtEWrwcwItxo1aEsAkUX60=;
-        b=NW6pXlwqKeiW60rZUp5ibU1v12VY++L+yD6/QYgR21TGGlWjG1vl5DQxXLE3DX6Hom
-         HaCG/5cEibPlt9Cz8LkPTd/w1QaPN8Z4nStQqt8trRHxQDGFjpAUucXZrQlAnIVgKOzw
-         vsYyvgjHclJxGOU5JrTvELCHvVDDGJ5Y4OOgB/KjAdZWYr6hyq9rKsC+cIGO6SbVKO6X
-         WKcjPSumYAYrGObooIRZtLpdgJ+ZdwGnv9y8/kcyps/OT2yZA02ngMYDdtyEANNVGDd7
-         mClgVZefa0pA8h3dDCIKus9AhW+rfffARBsx4H1tcX2Kfs77MMUUTSNE/Zl/48ljusqF
-         Mu5w==
-X-Gm-Message-State: AOJu0Yzklc89PL3p2c8G2Y00OJXtcJmO8uL5WohBbKHUXH4PQG4xZRQp
-        jflg5CWOxuO1yvVxp5eJ4qsTbYh60Cg=
-X-Google-Smtp-Source: AGHT+IEss54PrDdJ/A6btq7yXlW0o9uW7P3aDmSlcSFpwKSRIpbSBtWxowwZRpjuhJlEhUCn+cuBUQ==
-X-Received: by 2002:a05:6a20:7d95:b0:169:cd02:65e9 with SMTP id v21-20020a056a207d9500b00169cd0265e9mr16505135pzj.33.1698760027378;
-        Tue, 31 Oct 2023 06:47:07 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y16-20020a056a00191000b0069268e3a659sm1263401pfi.132.2023.10.31.06.47.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 06:47:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e223764a-c081-4634-810b-56886a29804a@roeck-us.net>
-Date:   Tue, 31 Oct 2023 06:47:04 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
-Content-Language: en-US
-To:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Tue, 31 Oct 2023 09:49:13 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C51F4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 06:49:10 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231031134907euoutp02fda67723d9cfa93eb423874862a81c4a~TNVp0jr2T2672626726euoutp02M
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:49:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231031134907euoutp02fda67723d9cfa93eb423874862a81c4a~TNVp0jr2T2672626726euoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1698760147;
+        bh=+5Eh93ax/i28RwkAXRyvodCltxo1X7H2c4M8Yvi/M4o=;
+        h=From:To:CC:Subject:Date:References:From;
+        b=TY2ZqbX01lXyA9N1nfvw8ZDucEq3K7+Kc624J5jR2G93u+ocf+hMocrFghz2aTs/6
+         2J5vjbInPKGXnQWPA3q86Eteh6vZRXPNR/45vO6FQ9yRaN970LKZa35ZEcXo709OHk
+         22adSkxROYxvMRQPpSLCETdnbiYfIBqwCoI94CiQ=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231031134906eucas1p125c456c32ccb1adac18e41771b90a4a1~TNVpYMQAv1867218672eucas1p1I;
+        Tue, 31 Oct 2023 13:49:06 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id BC.A9.52736.2D501456; Tue, 31
+        Oct 2023 13:49:06 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231031134906eucas1p10b45c65d43bc0643116808c916c12c95~TNVo_4tD52324323243eucas1p1P;
+        Tue, 31 Oct 2023 13:49:06 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231031134906eusmtrp154f8104d9a371f7953b0b6ab7590a567~TNVo_VqOG0203202032eusmtrp1P;
+        Tue, 31 Oct 2023 13:49:06 +0000 (GMT)
+X-AuditID: cbfec7f5-ba1ff7000000ce00-57-654105d2b47b
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 01.10.25043.2D501456; Tue, 31
+        Oct 2023 13:49:06 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231031134905eusmtip13660961fdb7fd8b37e3b37ddfd16b821~TNVoyd4kS1714117141eusmtip1R;
+        Tue, 31 Oct 2023 13:49:05 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+        Server (TLS) id 15.0.1497.2; Tue, 31 Oct 2023 13:49:05 +0000
+Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
+        ([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Tue, 31 Oct
+        2023 13:49:05 +0000
+From:   Daniel Gomez <da.gomez@samsung.com>
+To:     "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
+        "kbingham@kernel.org" <kbingham@kernel.org>,
+        "cleger@rivosinc.com" <cleger@rivosinc.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-References: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
- <20231026081514.3610343-3-Delphine_CC_Chiu@Wiwynn.com>
- <2ef2e804-d498-a2ae-9717-dd03bfd26853@roeck-us.net>
- <SG2PR04MB5543FEAFC1777ADE29239AC9A1A0A@SG2PR04MB5543.apcprd04.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <SG2PR04MB5543FEAFC1777ADE29239AC9A1A0A@SG2PR04MB5543.apcprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Pankaj Raghav <p.raghav@samsung.com>,
+        "Daniel Gomez" <da.gomez@samsung.com>
+Subject: [PATCH] scripts/gdb: fix usage of MOD_TEXT not defined when
+ CONFIG_MODULES=n
+Thread-Topic: [PATCH] scripts/gdb: fix usage of MOD_TEXT not defined when
+        CONFIG_MODULES=n
+Thread-Index: AQHaDAEDTRsJsWBk1kaMZj/f5uw8FQ==
+Date:   Tue, 31 Oct 2023 13:49:04 +0000
+Message-ID: <20231031134848.119391-1-da.gomez@samsung.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [106.110.32.103]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EA017D15EDF91446AA17C7BB3E6755B5@scsc.local>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBKsWRmVeSWpSXmKPExsWy7djP87qXWB1TDR4/VrCYs34Nm8XCk8kW
+        927eZLY41b2ZyeLyrjlsFjcmPGV0YPPYtKqTzePEjN8sHjdmRXhsPzmJyePzJrkA1igum5TU
+        nMyy1CJ9uwSujEUH17AUfBKpuDP9DnsD4xqRLkZODgkBE4lfN/6wdTFycQgJrGCUeHplFTuE
+        84VRYtWkF8wQzmdGida5rewwLQ8Oz2OBSCxnlHj59SMrXNXbh/+hWs4wSpxtmcYE4awEmvxp
+        MwtIP5uApsS+k5vAtoiAVO0/+gysn1lgN6PEqQm/wLYIC4RLPN71DaxDRCBG4uC7R0wQtp7E
+        7v9tjCA2i4CqxIytJ5hBbF4BK4nrf2+zgtiMArISj1ZCzGEWEJe49WQ+E8TlghKLZu9hhrDF
+        JP7tesgGYetInL3+hBHCNpDYunQfC4StJPGnYyFQnANojqbE+l36ECMtJeZ07GaCsBUlpnQ/
+        ZIc4QVDi5Mwn4ICRENjMKbFx9iqoXS4SVw8sgtolLPHq+BZoSMpInJ7cwzKBUXsWklNnIayb
+        hWTdLCTrZiFZt4CRdRWjeGppcW56arFxXmq5XnFibnFpXrpecn7uJkZgYjr97/jXHYwrXn3U
+        O8TIxMF4iFGCg1lJhPewqUOqEG9KYmVValF+fFFpTmrxIUZpDhYlcV7VFPlUIYH0xJLU7NTU
+        gtQimCwTB6dUA1PRAxfzN9dnH1nsEyVXc/G5snzhybaHG4rfTZNz0ZbWuTPn27ktr9hPOlXE
+        /GS3PBtxb0v+LJ0/8m//l5/KfVLUELx4+rxonyS1WF9LtfAZzXLSN1QKrL8IVPJbcX1T1uP+
+        ue/cp3sHgoI2zvX9qGvvMcfwiO2/7QYpFz5dnPSY+9edKaJVGz4rNL9kV7GTOlfzMNNnwToN
+        09qis8secysy3lMUWXTX9PWliilKfqXuEc9D9/v3vbMxkv7af/LVOrbCR//W7Xc4LFi0cWuM
+        joONdC3zZX1vvm1VMaa33hXyp377eO9UkMj8PdFaanyrQrO/67sb7n8deeSyX+vbRy3aPNu4
+        dvZ+7Hon0vTznrESS3FGoqEWc1FxIgAyKrT+uwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKKsWRmVeSWpSXmKPExsVy+t/xu7qXWB1TDZ78ZraYs34Nm8XCk8kW
+        927eZLY41b2ZyeLyrjlsFjcmPGV0YPPYtKqTzePEjN8sHjdmRXhsPzmJyePzJrkA1ig9m6L8
+        0pJUhYz84hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jEUH17AUfBKp
+        uDP9DnsD4xqRLkZODgkBE4kHh+exdDFycQgJLGWUOLRkEhNEQkZi45errBC2sMSfa11sILaQ
+        wEdGia8TVCEazjBKvP4zlxHCWcko8XHVW7AONgFNiX0nN7GDJERAqvYffQaWYBbYzSixYK0o
+        iC0sEC7xeNc3FhBbRCBGYsmEw1C2nsTu/22MIDaLgKrEjK0nmEFsXgEriet/b4PNYRSQlXi0
+        8hc7xExxiVtP5kOdLSCxZM95ZghbVOLl439QL+hInL3+hBHCNpDYunQfC4StJPGnYyFQnANo
+        jqbE+l36ECMtJeZ07GaCsBUlpnQ/ZIc4QVDi5MwnLBMYpWYh2TwLoXsWku5ZSLpnIelewMi6
+        ilEktbQ4Nz232EivODG3uDQvXS85P3cTIzB9bDv2c8sOxpWvPuodYmTiYDzEKMHBrCTCe9jU
+        IVWINyWxsiq1KD++qDQntfgQoykwhCYyS4km5wMTWF5JvKGZgamhiZmlgamlmbGSOK9nQUei
+        kEB6YklqdmpqQWoRTB8TB6dUA9OqlNDMqAp9puu+M+8G5a42+W9mWRK1T/7iJNGc16rtB0O1
+        s8vvnmndZb9PXV8ys8TGuqIsrsum4N7/sO7ynNdXo7nO3bT+veHx2bw5LP//ecr8UXHyjT2x
+        62jvGc31k83b6v1v3976+dGO7TcMbE+YfQs9e2Fn/xUf27CJO2fP8Z7Au092ybTGxkcHK8Tr
+        94l4Owhtme37w+PXm2Cb6ASHGV7+u2MbD97bFbTXty3VdYeKdlbXMqZHLU/2zWFs3PrQ/dWr
+        xVUhh7Z1e3w746573XbO+QlbfW11LQNm/fh6OePowTt91YdOLnnRm6tqWzRxlcYcaWmHzJmT
+        t5uqfjOz/OLcbPGPuXp7+1c38wwlluKMREMt5qLiRABvLkBwqAMAAA==
+X-CMS-MailID: 20231031134906eucas1p10b45c65d43bc0643116808c916c12c95
+X-Msg-Generator: CA
+X-RootMTR: 20231031134906eucas1p10b45c65d43bc0643116808c916c12c95
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231031134906eucas1p10b45c65d43bc0643116808c916c12c95
+References: <CGME20231031134906eucas1p10b45c65d43bc0643116808c916c12c95@eucas1p1.samsung.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 23:46, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
-[ ... ]
->>
->>> +
->>> +     ret = of_property_read_u32(client->dev.of_node,
->>> +                                "shunt-resistor-micro-ohms",
->> &rsense);
->>> +     if (ret < 0)
->>> +             return ret;
->>> +
->>> +     if (rsense == 0)
->>> +             return -EINVAL;
->>> +
->>> +     info = &ltc4286_info;
->>> +
->>> +     /* Default of VRANGE_SELECT = 1, 102.4V */
->>> +     if (device_property_read_bool(&client->dev,
->> "adi,vrange-select-25p6")) {
->>
->> What if the adi,vrange-select-25p6 property is not provided, but the chip
->> is programmed for this range ?
-> The binding document tells programmers how to fill the dts.
-> Thus, programmers must fill this property if their system is 25.6 volts voltage range.
-> 
-
-Sure, but there is no else case, meaning VRANGE_SELECT is
-unmodified in that case. There is no guarantee that the chip
-is in its power-on state.
-
-Guenter
-
+RnJvbTogQ2zDqW1lbnQgTMOpZ2VyIDxjbGVnZXJAcml2b3NpbmMuY29tPg0KDQpNT0RfVEVYVCBp
+cyBvbmx5IGRlZmluZWQgaWYgQ09ORklHX01PRFVMRVM9eSB3aGljaCBsZWFkIHRvIGxvYWRpbmcg
+ZmFpbHVyZQ0Kb2YgdGhlIGdkYiBzY3JpcHRzIHdoZW4ga2VybmVsIGlzIGJ1aWx0IHdpdGhvdXQg
+Q09ORklHX01PRFVMRVM9eToNCg0KUmVhZGluZyBzeW1ib2xzIGZyb20gdm1saW51eC4uLg0KVHJh
+Y2ViYWNrIChtb3N0IHJlY2VudCBjYWxsIGxhc3QpOg0KICBGaWxlICIvZm9vL3ZtbGludXgtZ2Ri
+LnB5IiwgbGluZSAyNSwgaW4gPG1vZHVsZT4NCiAgICBpbXBvcnQgbGludXguY29uc3RhbnRzDQog
+IEZpbGUgIi9mb28vc2NyaXB0cy9nZGIvbGludXgvY29uc3RhbnRzLnB5IiwgbGluZSAxNCwgaW4g
+PG1vZHVsZT4NCiAgICBMWF9NT0RfVEVYVCA9IGdkYi5wYXJzZV9hbmRfZXZhbCgiTU9EX1RFWFQi
+KQ0KICAgICAgICAgICAgICAgICAgXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eDQpnZGIu
+ZXJyb3I6IE5vIHN5bWJvbCAiTU9EX1RFWFQiIGluIGN1cnJlbnQgY29udGV4dC4NCg0KQWRkIGEg
+Y29uZGl0aW9uYWwgY2hlY2sgb24gQ09ORklHX01PRFVMRVMgdG8gZml4IHRoaXMgZXJyb3IuDQoN
+CkZpeGVzOiBiNGFmZjc1MTNkZjMgKCJzY3JpcHRzL2dkYjogdXNlIG1lbSBpbnN0ZWFkIG9mIGNv
+cmVfbGF5b3V0IHRvIGdldCB0aGUgbW9kdWxlIGFkZHJlc3MiKQ0KU2lnbmVkLW9mZi1ieTogQ2zD
+qW1lbnQgTMOpZ2VyIDxjbGVnZXJAcml2b3NpbmMuY29tPg0KVGVzdGVkLWJ5OiBEYW5pZWwgR29t
+ZXogPGRhLmdvbWV6QHNhbXN1bmcuY29tPg0KU2lnbmVkLW9mZi1ieTogRGFuaWVsIEdvbWV6IDxk
+YS5nb21lekBzYW1zdW5nLmNvbT4NCi0tLQ0KSGksDQoNCkknbSByZXNlbmRpbmcgdGhlIHBhdGNo
+IFsxXSBmcm9tIENsZW1lbnQgTGVnZXIgd2l0aCByZXF1aXJlZCBjaGFuZ2VzIHRvDQptYWtlIGl0
+IHdvcmsgd2l0aCBsYXRlc3QgbGludXgtbmV4dC4NCg0KWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwu
+b3JnL2FsbC8yMDIzMDgwMTEyNTcxNS4xMzk3MjEtMS1jbGVnZXJAcml2b3NpbmMuY29tLw0KDQpJ
+IGhvcGUgaXQncyBhY2NlcHRhYmxlIHRoYXQgSSd2ZSBpbmNsdWRlZCBteSBvd24gU2lnbmVkLW9m
+LWJ5IGluDQphZGRpdGlvbiB0byB0aGUgVGVzdGVkLWJ5IGR1ZSB0byB0aGUgKG1pbm9yKSBjaGFu
+Z2VzLg0KDQpEYW5pZWwNCg0KIHNjcmlwdHMvZ2RiL2xpbnV4L2NvbnN0YW50cy5weS5pbiB8IDkg
+KysrKystLS0tDQogMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMo
+LSkNCg0KZGlmZiAtLWdpdCBhL3NjcmlwdHMvZ2RiL2xpbnV4L2NvbnN0YW50cy5weS5pbiBiL3Nj
+cmlwdHMvZ2RiL2xpbnV4L2NvbnN0YW50cy5weS5pbg0KaW5kZXggZTM1MTdkNGFiOGVjLi4wNGM4
+N2I1NzBhYWIgMTAwNjQ0DQotLS0gYS9zY3JpcHRzL2dkYi9saW51eC9jb25zdGFudHMucHkuaW4N
+CisrKyBiL3NjcmlwdHMvZ2RiL2xpbnV4L2NvbnN0YW50cy5weS5pbg0KQEAgLTY2LDEwICs2Niwx
+MSBAQCBMWF9HREJQQVJTRUQoSVJRRF9MRVZFTCkNCiBMWF9HREJQQVJTRUQoSVJRX0hJRERFTikN
+Cg0KIC8qIGxpbnV4L21vZHVsZS5oICovDQotTFhfR0RCUEFSU0VEKE1PRF9URVhUKQ0KLUxYX0dE
+QlBBUlNFRChNT0RfREFUQSkNCi1MWF9HREJQQVJTRUQoTU9EX1JPREFUQSkNCi1MWF9HREJQQVJT
+RUQoTU9EX1JPX0FGVEVSX0lOSVQpDQoraWYgSVNfQlVJTFRJTihDT05GSUdfTU9EVUxFUyk6DQor
+ICAgIExYX0dEQlBBUlNFRChNT0RfVEVYVCkNCisgICAgTFhfR0RCUEFSU0VEKE1PRF9EQVRBKQ0K
+KyAgICBMWF9HREJQQVJTRUQoTU9EX1JPREFUQSkNCisgICAgTFhfR0RCUEFSU0VEKE1PRF9ST19B
+RlRFUl9JTklUKQ0KDQogLyogbGludXgvbW91bnQuaCAqLw0KIExYX1ZBTFVFKE1OVF9OT1NVSUQp
+DQotLQ0KMi4zOS4yDQo=
