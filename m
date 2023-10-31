@@ -2,45 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECBF7DD5D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A57A7DD5D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376647AbjJaSMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 14:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        id S1376629AbjJaSMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 14:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376632AbjJaSMI (ORCPT
+        with ESMTP id S230455AbjJaSMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 14:12:08 -0400
+        Tue, 31 Oct 2023 14:12:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C96A3;
-        Tue, 31 Oct 2023 11:12:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17B8EC433C7;
-        Tue, 31 Oct 2023 18:12:04 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B441DA2;
+        Tue, 31 Oct 2023 11:12:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F2FC433C8;
+        Tue, 31 Oct 2023 18:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698775926;
-        bh=z2kKP0Kx2dr57rizxfyHv38jeggUfLgco7MlYnA5gyE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dcgLn6vSn6gm14DKigv2Fh7/WSvAoDVEs2UjDpd6TDtwuq09AUWgxPLuVALGPSarp
-         34pPV1o98F2CmMGKv1QjRC4MCgbmp/iwVdbMpKZNrqe83luuMxboZhO4UfB6+8OyjL
-         rBdjAcFNYmzjGITP4tpy8+ZYse6BTtaook47cxniePiZgjOpyUL3gwJdpKbLmKrrC3
-         fCvmcd7fUbgKqtBVmvk584Q2SSTL1GhmmLHlUDbGIQgqqQJ7fq2hpGuwWQR15J4Lv+
-         /x4umGUFK8eagzBKHuMAZYqSWkWwFK8Vr0nuFjZaIJgDFvRTSYOZrbBZCzC5GmJjA2
-         ZLXnUswjZ8xSg==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, linux-doc@vger.kernel.org
-Subject: [PATCH] kbuild: support 'userldlibs' syntax
-Date:   Wed,  1 Nov 2023 03:11:57 +0900
-Message-Id: <20231031181157.704314-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        s=k20201202; t=1698775922;
+        bh=9Jf3KU3ADv1NIFoN1APkqO365A/HCOvTo+JR2JcocMY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=m1gSkGf+mN9nCYslCyx8aeuQNeOTNjEp13rhkxSfnXOxiAlTZpNI+17No1M4HTmSr
+         1VDU1rskOdb2pb/n57E2y4O9KHsS4gLtIjifqOj3cPkRgVljsY0MRgQM0MQmRkClF1
+         4ohlthrUN+MFeDQH9ZBmwxBzPdsuCaku+dM1CeY4Bk5/wZpsxpFTKWYu5SJdC+2mf5
+         UP9F/ua0/3jY80iNpM7ImM7kHKoqg2Nwe7yJKJmAf68TAvXcYjavDdSaKw+ykncFLy
+         hEZjc+Klg0lZoDBhTLyzXCHM5g/wyWBPgoudZp0T0AlEAIbgj5SBbMmG7w7dN5E7wO
+         sEPfk7YalbQtQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C9039CE0B77; Tue, 31 Oct 2023 11:12:01 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 11:12:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>, matz@suse.de,
+        ubizjak@gmail.com
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+Message-ID: <e4896e0b-eacc-45a2-a7a8-de2280a51ecc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231027144050.110601-3-frederic@kernel.org>
+ <20231027192026.GG26550@noisy.programming.kicks-ass.net>
+ <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop>
+ <20231027224628.GI26550@noisy.programming.kicks-ass.net>
+ <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
+ <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
+ <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
+ <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+ <58c82a9d-f796-4585-b392-401b8b9dbc2e@paulmck-laptop>
+ <20231031152033.GC15024@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031152033.GC15024@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -51,58 +71,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This syntax is useful to specify libraries linked to all userspace
-programs in the Makefile.
+On Tue, Oct 31, 2023 at 04:20:33PM +0100, Peter Zijlstra wrote:
+> On Tue, Oct 31, 2023 at 07:24:13AM -0700, Paul E. McKenney wrote:
+> 
+> > So, at least until GCC catches up to clang's code generation, I take it
+> > that you don't want WRITE_ONCE() for that ->nvcsw increment.  Thoughts on
+> > ->on_rq?
+> 
+> I've not done the patch yet, but I suspect those would be fine, those
+> are straight up stores, hard to get wrong (famous last words).
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Assuming that the reads are already either marked with READ_ONCE() or
+are under appropriate locks, my immediate thought would be something
+like the all-too-lightly tested patch shown below.
 
- Documentation/kbuild/makefiles.rst | 4 ++++
- scripts/Makefile.userprogs         | 6 +++---
- 2 files changed, 7 insertions(+), 3 deletions(-)
+The ASSERT_EXCLUSIVE_WRITER() causes KCSAN to complain if there is a
+concurrent store of any kind to the location.
 
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index d88d4f0f4f89..e9299971220a 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -937,6 +937,10 @@ Example::
-   # net/bpfilter/Makefile
-   bpfilter_umh-userldflags += -static
- 
-+To specify libraries linked to a userspace program, you can use
-+``<executable>-userldlibs``. The ``userldlibs`` syntax specifies libraries
-+linked to all userspace programs created in the current Makefile.
-+
- When linking bpfilter_umh, it will be passed the extra option -static.
- 
- From command line, :ref:`USERCFLAGS and USERLDFLAGS <userkbuildflags>` will also be used.
-diff --git a/scripts/Makefile.userprogs b/scripts/Makefile.userprogs
-index fb415297337a..f3a7e1ef3753 100644
---- a/scripts/Makefile.userprogs
-+++ b/scripts/Makefile.userprogs
-@@ -19,19 +19,19 @@ user-cobjs	:= $(addprefix $(obj)/, $(user-cobjs))
- user_ccflags	= -Wp,-MMD,$(depfile) $(KBUILD_USERCFLAGS) $(userccflags) \
- 			$($(target-stem)-userccflags)
- user_ldflags	= $(KBUILD_USERLDFLAGS) $(userldflags) $($(target-stem)-userldflags)
-+user_ldlibs	= $(userldlibs) $($(target-stem)-userldlibs)
- 
- # Create an executable from a single .c file
- quiet_cmd_user_cc_c = CC [U]  $@
-       cmd_user_cc_c = $(CC) $(user_ccflags) $(user_ldflags) -o $@ $< \
--		      $($(target-stem)-userldlibs)
-+		      $(user_ldlibs)
- $(user-csingle): $(obj)/%: $(src)/%.c FORCE
- 	$(call if_changed_dep,user_cc_c)
- 
- # Link an executable based on list of .o files
- quiet_cmd_user_ld = LD [U]  $@
-       cmd_user_ld = $(CC) $(user_ldflags) -o $@ \
--		    $(addprefix $(obj)/, $($(target-stem)-objs)) \
--		    $($(target-stem)-userldlibs)
-+		    $(addprefix $(obj)/, $($(target-stem)-objs)) $(user_ldlibs)
- $(user-cmulti): FORCE
- 	$(call if_changed,user_ld)
- $(call multi_depend, $(user-cmulti), , -objs)
--- 
-2.40.1
+Of course, please feel free to ignore.  Thoughts?
 
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 81885748871d..aeace19ad7f5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2124,12 +2124,14 @@ void activate_task(struct rq *rq, struct task_struct *p, int flags)
+ 
+ 	enqueue_task(rq, p, flags);
+ 
+-	p->on_rq = TASK_ON_RQ_QUEUED;
++	WRITE_ONCE(p->on_rq, TASK_ON_RQ_QUEUED);
++	ASSERT_EXCLUSIVE_WRITER(p->on_rq);
+ }
+ 
+ void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
+ {
+-	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
++	WRITE_ONCE(p->on_rq, (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING);
++	ASSERT_EXCLUSIVE_WRITER(p->on_rq);
+ 
+ 	dequeue_task(rq, p, flags);
+ }
