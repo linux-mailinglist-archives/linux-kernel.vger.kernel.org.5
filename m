@@ -2,192 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9E57DD461
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A268E7DD466
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344192AbjJaRLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        id S1345261AbjJaRMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343647AbjJaRLj (ORCPT
+        with ESMTP id S1344688AbjJaRMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:11:39 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D5E92;
-        Tue, 31 Oct 2023 10:11:36 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc316ccc38so21802695ad.1;
-        Tue, 31 Oct 2023 10:11:36 -0700 (PDT)
+        Tue, 31 Oct 2023 13:12:08 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB960E6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:12:04 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9d465d1c86bso327223866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:12:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698772296; x=1699377096; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=2HXYPgIUyZ5nHc/WiwIE5ATfM06VSGOOaD0fnX8j7bA=;
-        b=KqIfQQnvdHHg/qaW8Kkb/SVFpTQpLpnWNwzSHLJmLzSPmWpwaSrqeNUQnzBVp5JBtw
-         ofIhO2sKPvjnWPMEhFvhUdXgeDaoAAjIA3keecdT/kqWEjtiin4MpWUFYmFLXNjFABeD
-         A68mcKzkG9nMa5afxjcSjLniTV7Ml97E3cmd1Aw8Ldjp8S4rsw35Av6MKxIaeV67Ars9
-         Bakqna10mt6kkZrOfnSYW4jeNRCCx71xZt1Kv5ncDzkIPqOmUmgI2a2xCL5VVRhX5S6i
-         eb25WqjLNLG0SMOycL8Aq4bq2eN4C5r8UHbM4ywqrpaT3TwPv0dHDUoKDfmeWDVBVJmv
-         BMUA==
+        d=linaro.org; s=google; t=1698772323; x=1699377123; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3gy2DoXe7zvEWgTN6cmYSFYz8OjUKBBawRLe2BiuPrI=;
+        b=MbQgH7tuFfyVZFOqb3DywR3MnoPlr7LMsfjQSXpFgPYHMFKH8LwnZprQEfLDtOF4wY
+         n+SfYATK6C0uWNG2DZ4Fjstsbr+EiLziYuBcp9U9BaiVW0pA245Ddt3m46TRw5aW/6j8
+         QmRjXEOwxR53e6Ies36ksqfs6IFkkRpU115PKj9Eb5CxY9GKDheY+r0hiHNkXBY9AtEg
+         RNZCIcBN1bdE/xLaGRQDwKPZcSaH+lSxr5VM4qvS2cxZPt7SlmdW+zP8x9972pseiXdB
+         M4iGlKPTJygCwka3JYjg/XUDfhq08/G2HiwK5r0BRz647blMC9xkX8iq7ce1vO8jZ0hX
+         Xjtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698772296; x=1699377096;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2HXYPgIUyZ5nHc/WiwIE5ATfM06VSGOOaD0fnX8j7bA=;
-        b=at3z3ZFbVUqNvWY2NlONWd/dos3vWzI3WvmapnXHZCucPyqoLBA/qkHLcCKSh57gUb
-         zwp65B4hAXCHKn/tTc+Iml+rHARkXR10sU6TDMJD1gwOBT1+B77DWEttXfGeke8tbFLx
-         EPmtVcuQ2U+LEGTGvOXeXE93eXmi1hc+Su+EFVwH0MWGIOPxaJ7uPgB/WK22II4M4+Dd
-         VMCGssKIlkY3fSu6jPrQuCeYBj2hCvsC9lfSJ0nnghptaJfHfAQ/fKsZluz/MOA6qhUT
-         t2JrW/wia+rA1KzrcSSgKloxlEFGOo1czCTeALTYhLZWFrFVUI3woSeccza83tsu8FaR
-         6rpg==
-X-Gm-Message-State: AOJu0YyqIfGUbKsG0mi9mQnhjmJuZ47otAzWrRbLtBqfkm2dl9w/O6vT
-        8qFZgxkaojynTN65JrnaUSIaGL8gqQ4=
-X-Google-Smtp-Source: AGHT+IHGc7JTWx5eB40qYrB1H4APbWH+vfjny9OzMCBGIs9MmKY9tCe406XXQ0sJsDdOirnlCTURsg==
-X-Received: by 2002:a17:903:2450:b0:1cc:70e4:28e9 with SMTP id l16-20020a170903245000b001cc70e428e9mr1037810pls.49.1698772295917;
-        Tue, 31 Oct 2023 10:11:35 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b21-20020a170902ed1500b001c724732058sm1556066pld.235.2023.10.31.10.11.34
+        d=1e100.net; s=20230601; t=1698772323; x=1699377123;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gy2DoXe7zvEWgTN6cmYSFYz8OjUKBBawRLe2BiuPrI=;
+        b=WRkmA97s9AZ3OafTJNZKQfZPK/xTx7fByCXjatkmk4m/3OUxoiKfMsiJ9JtOlRZUSu
+         ur9gKp227pEtvG/gH3JznTYZ2Z8/KE9jFnf7SRLqoBDckfXyE/NtZGKW7AjrWxZoT8lD
+         9O/wZHtVf/up+buMug1kQBJltepKZGLA2tOmaRRX1ryeugY/kfwtI+PULQx61QPmBVte
+         zDie1LI5NspaDxkAPU0vkW/RHuTqJlm5EZ07nmHNB5nhZqsxE6j8EKQ9y8z/TbDFWJ/S
+         GGSDQV/iejfcDZqW/6rVGUZzZCx7Yw1OFkmIV8+h/FrQX1w08trx9f6MJ7bUcVpz+CFj
+         mmBQ==
+X-Gm-Message-State: AOJu0Ywpp4TfyJZV8gkKFSj39gvVEUF9x6tO0U6rLkUFg8y7FExo4wz4
+        g/yeQ9YsGbI1GwyuL/lPVwcVfw==
+X-Google-Smtp-Source: AGHT+IGEL4ucCTHZwLV51PO1qj/dTChkWJAA2ttTP0kXd0AtrR7VSrTuRrEgYvu0TJHdYWdsSFjY6A==
+X-Received: by 2002:a17:907:2d87:b0:9c4:b8c9:1bf2 with SMTP id gt7-20020a1709072d8700b009c4b8c91bf2mr12238581ejc.60.1698772323126;
+        Tue, 31 Oct 2023 10:12:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id pj17-20020a170906d79100b0099bc8bd9066sm1268384ejb.150.2023.10.31.10.12.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 10:11:35 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b7e39913-0f83-47d3-9bd8-835402345614@roeck-us.net>
-Date:   Tue, 31 Oct 2023 10:11:33 -0700
+        Tue, 31 Oct 2023 10:12:02 -0700 (PDT)
+Message-ID: <47cf6dd2-dcfa-468b-9bcb-3af32f6d9c4b@linaro.org>
+Date:   Tue, 31 Oct 2023 18:12:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
- bindings
+Subject: Re: [RFC PATCH 2/5] arm64: dts: qcom: ipq9574: Add ecc engine support
 Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>,
-        Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231031072124.201181-1-Delphine_CC_Chiu@Wiwynn.com>
- <20231031072124.201181-2-Delphine_CC_Chiu@Wiwynn.com>
- <20231031-sneeze-zoom-8fdb3ccebd25@spud>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231031-sneeze-zoom-8fdb3ccebd25@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        quic_srichara@quicinc.com, qpic_varada@quicinc.com
+References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 10:06, Conor Dooley wrote:
-> On Tue, Oct 31, 2023 at 03:21:21PM +0800, Delphine CC Chiu wrote:
->> Add a device tree bindings for ltc4286 device.
->>
->> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
->>
->> Changelog:
->>    v3 - Revise adi,vrange-select-25p6 to adi,vrange-low-enable
->>    v2 - Revise vrange_select_25p6 to adi,vrange-select-25p6
->>       - Add type for adi,vrange-select-25p6
->>       - Revise rsense-micro-ohms to shunt-resistor-micro-ohms
->> ---
->>   .../bindings/hwmon/lltc,ltc4286.yaml          | 52 +++++++++++++++++++
->>   MAINTAINERS                                   | 10 ++++
->>   2 files changed, 62 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
->> new file mode 100644
->> index 000000000000..4695bca77c05
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
->> @@ -0,0 +1,52 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/hwmon/lltc,ltc4286.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: LTC4286 power monitors
->> +
->> +maintainers:
->> +  - Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - lltc,ltc4286
->> +      - lltc,ltc4287
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  adi,vrange-low-enable:
->> +    description:
->> +      This property is a bool parameter to represent the
->> +      voltage range is 25.6 volts or 102.4 volts for
->> +      this chip.
->> +      The default is 102.4 volts.
+On 31/10/2023 13:03, Md Sadre Alam wrote:
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> You've got weird wrapping of text here (short lines). Either this
-> property or the corollary work for me, depending on what Guenter
-> wants. With two nits below,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> index 5f83ee42a719..b44acb1fac74 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> @@ -336,6 +336,11 @@ sdhc_1: mmc@7804000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		bch: qpic_ecc {
+> +			compatible = "qcom,ipq9574-ecc";
 
-Oh, I am tired of arguing, so I'll accept whatever gets a Reviewed-by:
-tag from a DT maintainer (people do a pretty good job of wearing me down
-lately).
+NAK. There are so many wrong things with it... Let's start with missing
+checkpatch. Then with unndeeded label. Then with not allowed underscores
+in node names.
+Finally:
+> +			status = "ok";
 
-Guenter
+Drop.
+
+
+
+Best regards,
+Krzysztof
 
