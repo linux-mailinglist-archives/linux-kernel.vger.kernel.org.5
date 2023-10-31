@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 813D67DCF76
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EBB7DCF62
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344485AbjJaOeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        id S1344494AbjJaOir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344241AbjJaOd7 (ORCPT
+        with ESMTP id S230405AbjJaOip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:33:59 -0400
+        Tue, 31 Oct 2023 10:38:45 -0400
 Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F79ED
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:33:57 -0700 (PDT)
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07ADE4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:38:42 -0700 (PDT)
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com [209.85.219.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8A45740945
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:33:54 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1F77E4081E
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698762834;
-        bh=COgus/3ZSuwT+db+ge/hLLqZedK9bhS7aDmQpcwmeRs=;
+        s=20210705; t=1698763114;
+        bh=au17QPiJsjAocXmUfByZs1Bf5AaxfhY0/xgh3nLmqCY=;
         h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
          To:Cc:Content-Type;
-        b=pKRxZ27g12d3CP7xd6GzxzNtCroWm+aae+LdfT2U0ihVagT1f4aJiY1oEp7fMssce
-         m4uWhxgtXGFWp0Yupeln1XmvGtpem/CGS37nNvNc46JXc/WgkynCZEtincrTbMCFF7
-         uqnMHWDrtrbF3Yzoxe7bpqv5pbfIeVkp56exvn0gOvqNRBsYuWz1iKsyCiviLou0NE
-         /VifAcQ5WrAFR/zFYNtZ/vImPQAHx7ZqGB0zw/dIBkI92ujQWCCoeFijDpwOPHCTPN
-         Qzm1LMGWNbDVc10Q7qchFVNHRKpaoKhwXKab5VwfeJcycqOGCW54OWU9Yo199Vd1l4
-         KvT016xtXy7gQ==
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d24cdf232so73629426d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:33:54 -0700 (PDT)
+        b=pkcgatLGruVrFC1KZkHbr6lflUuZja1M2cmhmghsFWfFexjXw8OjGNaIL7OLp0I0L
+         KgWIM0hyWO4buQ0XPAsN3WolZsFwAE3tsuBCSkE1oDmIgq8ic16lu1Qy6JuAcO2gqk
+         TB9iRAWX6bbiqzNcELxBXwLxeK+2oknpCkQRMKB7+fLxluVwWuudyHlNEiJdtDMQLP
+         D/0Q2qWGTnVwj54PWGUYbBba2gBqY0uRqiCoIBZo2ln1p2YynHjIzOPaCQVwwib1QB
+         zMBFvMy8m0pGC5eTEE2lj8n7LY/x25nRP6Gu9a1ZN9UQJJVKFYuyQZazOyvtuvUGQ0
+         X8S+OeWOsv4pA==
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-670b675b2c5so38738836d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 07:38:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698762831; x=1699367631;
+        d=1e100.net; s=20230601; t=1698763109; x=1699367909;
         h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=COgus/3ZSuwT+db+ge/hLLqZedK9bhS7aDmQpcwmeRs=;
-        b=wXi5evO7ZLZVj2pgbRgZWG3ng3e/Iss3kefklCItH3/gZ1KxgdauzqxANsmne8NRUx
-         AYVEyABJtTM8hF3+f4w6EIb5LgbJkQ6rhFvw3Anc2U5vQFQdJDP1AmyWpRAels7noeDR
-         cGnX15bMnTiCmGUl0Q2YDpgl6LjJND0dpbmhB4b39bJutqnhtBsq+pp0EUnZnqAzuON3
-         w81EhpGmfrdh0TwKSSARU60GFWN0yX29sYZXk5hwb8ZCeeOHHGgHthTA99m6RnInIvSt
-         yXVCOz2ZrKjDeKps/rw2Qz3rVFlKPo4GtvokoalcJeHvGs4XkkLv1lS/hTb3pb9b+QB8
-         4SMw==
-X-Gm-Message-State: AOJu0YyrIkdMNMPmbMrAjN3Pij7y8QY+9MmS6dDw7xe1BXXjIQWKFDZ3
-        uP/aTciVwLg9vezHx7x0O3lvenhaQ+Y5kYOyxF62uOET1SXbeKP8/U/xGs54wyfaItSbyYz27MR
-        yrOPQpvojd83zEtFu5/Dsa3n2aaoBWIWMBSzTcoLmzaysNGZ2RWtGV5jftQ==
-X-Received: by 2002:a05:6214:29c7:b0:671:9c02:cba9 with SMTP id gh7-20020a05621429c700b006719c02cba9mr8520626qvb.51.1698762831404;
-        Tue, 31 Oct 2023 07:33:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF74SsUAurkkruUb75fgXBV0BIjaQzXoMkI8lq6APUuq85/spyU3nh/61hrUO+aeB6Sqk13/8jIe+UO0RD6jOs=
-X-Received: by 2002:a05:6214:29c7:b0:671:9c02:cba9 with SMTP id
- gh7-20020a05621429c700b006719c02cba9mr8520611qvb.51.1698762831069; Tue, 31
- Oct 2023 07:33:51 -0700 (PDT)
+        bh=au17QPiJsjAocXmUfByZs1Bf5AaxfhY0/xgh3nLmqCY=;
+        b=QpoIboJfJ/2/lcm0X/CVw4jZIWS4kKaM+9vepxcuDLGkFTsoEprVTa4ynXhhk1C8em
+         nXcjEUpZxa3WF0mInOePamJWwSrGllhx2xpxI1YOgUEwb+Ygxrk7HsZRAcAsarbGANbP
+         Z/u5PD6NFVKahQgWdCDp1xI2a6U7Kohcv/C3lARitXMrrk836b0BLAzzRCRtUwxt+NTo
+         7wSBibEoBhu5tIVAdgQGWvTjigndWl76LdlqjjcFkpZpRH3hJ+t+O7lLRWESXfV7TK2v
+         CGtFcZLhtL2WX1uYnmVaGXc2HSof1BIQGprUlJ7zNbsia6hB6BkOYtRbUCy6/jD6YdmD
+         uuQg==
+X-Gm-Message-State: AOJu0YwUACVValQbNguHui4F/UZw8zuqsc6GgS2rkqAi22pXb0n8xes8
+        0JxMAPSLMtqya3ODYtoUqg1musVnrX8QHi9jKHCUdSfa3X8EZnQEXt1AbdSpQtdQjz6DX4/iwgh
+        Lqn5rfDvNfP6tmTlVVgEfDq7oZ8LdK06Ee9mF+0fMUA4arnfM0vfVKVAqqw==
+X-Received: by 2002:a05:622a:1009:b0:419:7623:ef6c with SMTP id d9-20020a05622a100900b004197623ef6cmr16897769qte.60.1698763109679;
+        Tue, 31 Oct 2023 07:38:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEManiQqpXLt0b01D3i/c6XioIV3LcDFDS3I/YsKWQWlnlDlbI16LCgriOnJiUp81AuiFuChC8BPHTNIdY05AA=
+X-Received: by 2002:a05:622a:1009:b0:419:7623:ef6c with SMTP id
+ d9-20020a05622a100900b004197623ef6cmr16897742qte.60.1698763109425; Tue, 31
+ Oct 2023 07:38:29 -0700 (PDT)
 Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 31 Oct 2023 07:33:50 -0700
+ HTTPREST; Tue, 31 Oct 2023 07:38:29 -0700
 From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231029042712.520010-6-cristian.ciocaltea@collabora.com>
-References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com> <20231029042712.520010-6-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20231029042712.520010-8-cristian.ciocaltea@collabora.com>
+References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com> <20231029042712.520010-8-cristian.ciocaltea@collabora.com>
 Mime-Version: 1.0
-Date:   Tue, 31 Oct 2023 07:33:50 -0700
-Message-ID: <CAJM55Z8K5QztgU9NYiJ1kv+-BSsgP=LCABN7BYDtQ30_G1Nc7w@mail.gmail.com>
-Subject: Re: [PATCH v2 05/12] net: stmmac: dwmac-starfive: Add support for
- JH7100 SoC
+Date:   Tue, 31 Oct 2023 07:38:29 -0700
+Message-ID: <CAJM55Z8D12XoRG4WGaf=PG0_yp7d_xk9EhOk7bnCKQRMok9eBA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/12] riscv: dts: starfive: jh7100: Add ccache DT node
 To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -98,136 +97,63 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Cristian Ciocaltea wrote:
-> Add a missing quirk to enable support for the StarFive JH7100 SoC.
+> Provide a DT node for the SiFive Composable Cache controller found on
+> the StarFive JH7100 SoC.
 >
-> Additionally, for greater flexibility in operation, allow using the
-> rgmii-rxid and rgmii-txid phy modes.
+> Note this is also used to support non-coherent DMA, via the
+> sifive,cache-ops cache flushing operations.
+
+This property is no longer needed:
+https://lore.kernel.org/linux-riscv/20231031141444.53426-1-emil.renner.berthing@canonical.com/
+
+Also it would be nice to mention that these nodes are copied from my
+visionfive patches ;)
+
 >
-> Co-developed-by: Emil Renner Berthing <kernel@esmil.dk>
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-
-Hi Cristian,
-
-Thanks for working on this! This driver has code to update the phy clock for
-different line speeds. I don't think that will work without the
-CLK_SET_RATE_PARENT flag added to the clock in [1] which in turn depends on
-[2].
-
-[1]: https://github.com/esmil/linux/commit/b200c3054b58a49ba25af67aff82d9045e3c3666
-[2]: https://github.com/esmil/linux/commit/dce189542c16bf0eb8533d96c0305cb59d149dae
-
-Two more comments below..
-
 > ---
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  6 ++--
->  .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 32 ++++++++++++++++---
->  2 files changed, 31 insertions(+), 7 deletions(-)
+>  arch/riscv/boot/dts/starfive/jh7100.dtsi | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 >
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> index a2b9e289aa36..c3c2c8360047 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> @@ -165,9 +165,9 @@ config DWMAC_STARFIVE
->  	help
->  	  Support for ethernet controllers on StarFive RISC-V SoCs
+> diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+> index 06bb157ce111..a8a5bb00b0d8 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+> @@ -32,6 +32,7 @@ U74_0: cpu@0 {
+>  			i-tlb-sets = <1>;
+>  			i-tlb-size = <32>;
+>  			mmu-type = "riscv,sv39";
+> +			next-level-cache = <&ccache>;
+>  			riscv,isa = "rv64imafdc";
+>  			riscv,isa-base = "rv64i";
+>  			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
+> @@ -60,6 +61,7 @@ U74_1: cpu@1 {
+>  			i-tlb-sets = <1>;
+>  			i-tlb-size = <32>;
+>  			mmu-type = "riscv,sv39";
+> +			next-level-cache = <&ccache>;
+>  			riscv,isa = "rv64imafdc";
+>  			riscv,isa-base = "rv64i";
+>  			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
+> @@ -147,6 +149,18 @@ soc {
+>  		dma-noncoherent;
+>  		ranges;
 >
-> -	  This selects the StarFive platform specific glue layer support for
-> -	  the stmmac device driver. This driver is used for StarFive JH7110
-> -	  ethernet controller.
-> +	  This selects the StarFive platform specific glue layer support
-> +	  for the stmmac device driver. This driver is used for the
-> +	  StarFive JH7100 and JH7110 ethernet controllers.
->
->  config DWMAC_STI
->  	tristate "STi GMAC support"
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-> index 5d630affb4d1..88c431edcea0 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-> @@ -15,13 +15,20 @@
->
->  #include "stmmac_platform.h"
->
-> -#define STARFIVE_DWMAC_PHY_INFT_RGMII	0x1
-> -#define STARFIVE_DWMAC_PHY_INFT_RMII	0x4
-> -#define STARFIVE_DWMAC_PHY_INFT_FIELD	0x7U
-> +#define STARFIVE_DWMAC_PHY_INFT_RGMII		0x1
-> +#define STARFIVE_DWMAC_PHY_INFT_RMII		0x4
-> +#define STARFIVE_DWMAC_PHY_INFT_FIELD		0x7U
+> +		ccache: cache-controller@2010000 {
+> +			compatible = "starfive,jh7100-ccache", "sifive,ccache0", "cache";
+> +			reg = <0x0 0x2010000 0x0 0x1000>;
+> +			interrupts = <128>, <130>, <131>, <129>;
+> +			cache-block-size = <64>;
+> +			cache-level = <2>;
+> +			cache-sets = <2048>;
+> +			cache-size = <2097152>;
+> +			cache-unified;
+> +			sifive,cache-ops;
+> +		};
 > +
-> +#define JH7100_SYSMAIN_REGISTER49_DLYCHAIN	0xc8
-> +
-> +struct starfive_dwmac_data {
-> +	unsigned int gtxclk_dlychain;
-> +};
->
->  struct starfive_dwmac {
->  	struct device *dev;
->  	struct clk *clk_tx;
-> +	const struct starfive_dwmac_data *data;
->  };
->
->  static void starfive_dwmac_fix_mac_speed(void *priv, unsigned int speed, unsigned int mode)
-> @@ -67,6 +74,8 @@ static int starfive_dwmac_set_mode(struct plat_stmmacenet_data *plat_dat)
->
->  	case PHY_INTERFACE_MODE_RGMII:
->  	case PHY_INTERFACE_MODE_RGMII_ID:
-> +	case PHY_INTERFACE_MODE_RGMII_RXID:
-> +	case PHY_INTERFACE_MODE_RGMII_TXID:
->  		mode = STARFIVE_DWMAC_PHY_INFT_RGMII;
->  		break;
->
-> @@ -89,6 +98,14 @@ static int starfive_dwmac_set_mode(struct plat_stmmacenet_data *plat_dat)
->  	if (err)
->  		return dev_err_probe(dwmac->dev, err, "error setting phy mode\n");
->
-> +	if (dwmac->data) {
-
-I think you want something like this so future quirks don't need to touch this
-code:
-
-	if (dwmac->data && dwmac->data->gtxclk_dlychain)
-
-> +		err = regmap_write(regmap, JH7100_SYSMAIN_REGISTER49_DLYCHAIN,
-> +				   dwmac->data->gtxclk_dlychain);
-> +		if (err)
-> +			return dev_err_probe(dwmac->dev, err,
-> +					     "error selecting gtxclk delay chain\n");
-> +	}
-> +
->  	return 0;
->  }
->
-> @@ -114,6 +131,8 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
->  	if (!dwmac)
->  		return -ENOMEM;
->
-> +	dwmac->data = device_get_match_data(&pdev->dev);
-> +
->  	dwmac->clk_tx = devm_clk_get_enabled(&pdev->dev, "tx");
->  	if (IS_ERR(dwmac->clk_tx))
->  		return dev_err_probe(&pdev->dev, PTR_ERR(dwmac->clk_tx),
-> @@ -144,8 +163,13 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
->  	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
->  }
->
-> +static const struct starfive_dwmac_data jh7100_data = {
-> +	.gtxclk_dlychain = 4
-
-Please add a , at the end of this line. I know it's unlikely that we need to
-add more properties, but it's still good practice to do. This way such patches
-won't need to touch this line.
-
-> +};
-> +
->  static const struct of_device_id starfive_dwmac_match[] = {
-> -	{ .compatible = "starfive,jh7110-dwmac"	},
-> +	{ .compatible = "starfive,jh7100-dwmac", .data = &jh7100_data },
-> +	{ .compatible = "starfive,jh7110-dwmac" },
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, starfive_dwmac_match);
+>  		clint: clint@2000000 {
+>  			compatible = "starfive,jh7100-clint", "sifive,clint0";
+>  			reg = <0x0 0x2000000 0x0 0x10000>;
 > --
 > 2.42.0
 >
