@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8697DD770
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 22:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8B37DD773
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 22:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbjJaVDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 17:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
+        id S234025AbjJaVFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 17:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjJaVDJ (ORCPT
+        with ESMTP id S231921AbjJaVFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 17:03:09 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9F1F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:03:06 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VL0enn028967;
-        Tue, 31 Oct 2023 21:03:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8wdSHrI9y8FcJDLER0LIrEGaNVtngqDK7qsD5hk7h9Y=;
- b=Ejm5cY0sa+O/p86tsWO+DlzX30tZULrP3MaHbbADld+9EzvTDQgrncTpO1YG/bPNFfLa
- mDhCPDxi+gSSPipNpRlIgSjiPExNr8U/ixH+T9HSzrJT1GcUL/gydO8xAPdMHEarNTR3
- n0ErGWbaPEd1tgMa2ODE8u9oWIFGg5K8nfxD1hH1TbW/GkgsXZElO8JJpFgGZrekagvI
- 3WmSgEki8PYPYdCcLVtIgUYhThlmzvYUqm+hCJJrZhplqwPAtOjH4bWgDiPWHcuo4zVI
- OWLONrdXlFsWIku+07QQWISn2ryXDSNvAUrhnbTMOtObbr9cZKdNrBOGRJClCC1OEqXg gQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u3948g2fx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 21:02:59 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39VL0uNe029562;
-        Tue, 31 Oct 2023 21:02:59 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u3948g2fc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 21:02:59 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39VJcpPl000725;
-        Tue, 31 Oct 2023 21:02:58 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1cmt3pp3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 21:02:58 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39VL2vEO45875470
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Oct 2023 21:02:57 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 642FF58051;
-        Tue, 31 Oct 2023 21:02:57 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A94835805A;
-        Tue, 31 Oct 2023 21:02:56 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 31 Oct 2023 21:02:56 +0000 (GMT)
-Message-ID: <b3b62f3f-7af4-4af4-8ec3-d4f63698b103@linux.ibm.com>
-Date:   Tue, 31 Oct 2023 17:02:56 -0400
+        Tue, 31 Oct 2023 17:05:47 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1237AF3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:05:45 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1e5bc692721so3742801fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 14:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698786344; x=1699391144; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ylAWoXi+6yzfzvduSB8hqrTOh1zLBHDnHEqXnt/b0ys=;
+        b=fgSUFs3mbPlBsK5wCQNOa4ndbVCUacyPUo7OR7Lw8h5/PS4WWsckjB/1tLzsOGhp9p
+         rgEJpOZ3UYRoIYEXC5ZI6Zvuh0J68s1KHm10rhdIpp/r0ZVP4Z0UhAU4DAezJ5SBkpux
+         HRuEJmzHuJO3deWyeIqgDtD3fnGRrsN5wsXwbScu7HpFYWuf+KbXMylrk+MNl5KLeSWA
+         yrH4gvqkBB7os5c1JjKRDIWf7io6rqvuAAnZD88Zw/hq+oNy0Iuq28Lv55QFH+bxuxPE
+         LxV8DSNsS1WysAMkC6QeKCtkd6KdscjDcjTEtr7DdZiODzGF7Q19n7SjKP9gqXPR5H84
+         KFnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698786344; x=1699391144;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ylAWoXi+6yzfzvduSB8hqrTOh1zLBHDnHEqXnt/b0ys=;
+        b=vFSb24WkVecUZdINAIhIxI6aVPTv+4Fx0sh/74TqQNo+qmQl1DSgJj3hxJibVrXp2W
+         hpaeQFSCiI/jF0Pp1Xn8um1i6L63I8ubZ5naJEvY5v0KIOl1BdouZ+QY0r1PwOALbVH6
+         WMYJWm0FavYc6ENHwrjEAyLjz2IAKGvZXKR51wjOjn9teanU3aarWwVcAocLdjTL8Txf
+         dqDfNRSzHTgSfZL+aZWtTDiSvfWsBJbhypaM4l+mKMVc3RcrTpLwU7GlacndQ+veGYuz
+         gLwRh2FdsO4Rox6fmQaFQ+tcHL/JKmk0VVv0HiXxXGEvw/RHui48oS5oo2cw5ZsCNNVF
+         2aqg==
+X-Gm-Message-State: AOJu0YyVL67VkfbChLhgVJGWagmPK1gT+d8GVSM0iDpfMOEBiOinjhi/
+        FguIvVdnXabtw74cw/IutD6wqQ==
+X-Google-Smtp-Source: AGHT+IFWeaujTZlxNE99wm4MuEN85B5qR+JpSkHbMT/+0Xuf6ptGT02D91k1HtJZSO/Va6heCnyRVg==
+X-Received: by 2002:a05:6870:200f:b0:1bf:9f6:b810 with SMTP id o15-20020a056870200f00b001bf09f6b810mr16535724oab.36.1698786344044;
+        Tue, 31 Oct 2023 14:05:44 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id ky10-20020a056871c4ca00b001efce0658e6sm24616oac.39.2023.10.31.14.05.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 14:05:43 -0700 (PDT)
+From:   David Lechner <dlechner@baylibre.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     David Lechner <dlechner@baylibre.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: triggered-buffer: prevent possible freeing of wrong buffer
+Date:   Tue, 31 Oct 2023 16:05:19 -0500
+Message-ID: <20231031210521.1661552-1-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] rootfs: Use tmpfs for rootfs even if root= is given
-Content-Language: en-US
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Milton D. Miller II" <mdmii@outlook.com>,
-        Rob Landley <rob@landley.net>,
-        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Jim Cromie <jim.cromie@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mimi Zohar <zohar@linux.ibm.com>
-References: <20231031154417.621742-1-stefanb@linux.ibm.com>
- <2023103159-punctuate-amount-f09d@gregkh>
- <b035a00f-865a-453c-bb27-0916aada0594@linux.ibm.com>
- <3FBB731F-2A45-4EC6-AF8C-76C21B8607BC@zytor.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <3FBB731F-2A45-4EC6-AF8C-76C21B8607BC@zytor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rkiowVA8tR9LoUY05AOku358bZK8SbY7
-X-Proofpoint-ORIG-GUID: cxE22DGeHXLZGgc9FC3H2uP8QK-UAM5B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-31_07,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=623
- malwarescore=0 suspectscore=0 impostorscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310310172
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit ee708e6baacd ("iio: buffer: introduce support for attaching more
+IIO buffers") introduced support for multiple buffers per indio_dev but
+left indio_dev->buffer for a few legacy use cases.
 
+In the case of the triggered buffer, iio_triggered_buffer_cleanup()
+still assumes that indio_dev->buffer points to the buffer allocated by
+iio_triggered_buffer_setup_ext(). However, since
+iio_triggered_buffer_setup_ext() now calls iio_device_attach_buffer()
+to attach the buffer, indio_dev->buffer will only point to the buffer
+allocated by iio_device_attach_buffer() if it the first buffer attached.
 
-On 10/31/23 16:33, H. Peter Anvin wrote:
-> On October 31, 2023 10:11:01 AM PDT, Stefan Berger <stefanb@linux.ibm.com> wrote:
->>
->> On 10/31/23 12:56, Greg Kroah-Hartman wrote:
->>> On Tue, Oct 31, 2023 at 11:44:17AM -0400, Stefan Berger wrote:
->>>> rootfs currently does not use tmpfs if the root= boot option is passed
->>>> even though the documentation about rootfs (added in 6e19eded3684) in
->>>> Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
->>>>
->>>>     If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
->>>>     default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
->>>>     line.
->>> At this point in time, is there even any difference between ramfs and
->>> tmpfs anymore?  Why would you want to choose one over the other here?
->>
->> CONFIG_TPMFS_XATTRS allows us to set xattrs, such as security.ima.
->>
->>     Stefan
->>
->>>
->>> thanks,
->>>
->>> greg k-h
-> Why do we even keep ramfs as a standalone file system? To guarantee it cannot be swapped out? Does anyone actually use it?
+This adds a check to make sure that no other buffer has been attached
+yet to ensure that indio_dev->buffer will be assigned when
+iio_device_attach_buffer() is called.
 
-Probably all machines that have root= on the boot command line use it...
+Fixes: ee708e6baacd ("iio: buffer: introduce support for attaching more IIO buffers")
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+ drivers/iio/buffer/industrialio-triggered-buffer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/iio/buffer/industrialio-triggered-buffer.c b/drivers/iio/buffer/industrialio-triggered-buffer.c
+index c7671b1f5ead..c06515987e7a 100644
+--- a/drivers/iio/buffer/industrialio-triggered-buffer.c
++++ b/drivers/iio/buffer/industrialio-triggered-buffer.c
+@@ -46,6 +46,16 @@ int iio_triggered_buffer_setup_ext(struct iio_dev *indio_dev,
+ 	struct iio_buffer *buffer;
+ 	int ret;
+ 
++	/*
++	 * iio_triggered_buffer_cleanup() assumes that the buffer allocated here
++	 * is assigned to indio_dev->buffer but this is only the case if this
++	 * function is the first caller to iio_device_attach_buffer(). If
++	 * indio_dev->buffer is already set then we can't proceed otherwise the
++	 * cleanup function will try to free a buffer that was not allocated here.
++	 */
++	if (indio_dev->buffer)
++		return -EADDRINUSE;
++
+ 	buffer = iio_kfifo_allocate();
+ 	if (!buffer) {
+ 		ret = -ENOMEM;
+-- 
+2.42.0
+
