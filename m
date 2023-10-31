@@ -2,65 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07EB7DC38B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 01:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E447DC395
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 01:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbjJaAU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 20:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
+        id S236730AbjJaAYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 20:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbjJaAU5 (ORCPT
+        with ESMTP id S235371AbjJaAYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 20:20:57 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B79E1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 17:20:53 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da03ef6fc30so4796275276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 17:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698711653; x=1699316453; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QBv8J2j2tFrn/qyS6YAMefYGNMpKBA+EnJ/tz9XeZcQ=;
-        b=DutbvxFdNj+zxFsXIApxuqgL/svtHFE4X/w9rnzDlctDS5aEKYBHsMFuGsD2ppEan5
-         YFMqvnCKG53Rlybn98y5q77a5MpuTtAucEPhIo7eNk2V2+s7EPAj4EjoZBsxjiDA1Wgp
-         wZyw9LMd2L4yUILKkMIJFH/1f1+Ais7lSpK/pUNwe4B9tfDfsTc1jUYuMaYPzxVg7ODU
-         Iwvs+PMW6VidbEzn0tHKXJ+viUEAs8xkSYidMx8TdObaEwuzsWe2YmDYf0JxpwIfdben
-         DccNkbIfGdDwrnq3qLloMhx6T6yKHqGXtqh+AZmjyqVu2zal4Z5Kh2E43uC+4/vEsslQ
-         BfSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698711653; x=1699316453;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QBv8J2j2tFrn/qyS6YAMefYGNMpKBA+EnJ/tz9XeZcQ=;
-        b=nLuhsRI71Fwn5AW2bQ19XKfg/QpZCo8wntd9hCGJ5FmleXsp9CeXqc9p/Vysw97ach
-         TV1q0igbepDTJYTgm22M56lO3XAEnmRvgoCqGwPBlmiMsJx46XfX7VysZVhK+4YdWSRx
-         /Gm+BasJ/cgopIHPgb9IteMPcpivHcmhvAoPUVSHIUWvXWRncLmcszAflM1ZWOfheXax
-         NKobiENmsm/rdmSv0bZAibTERwQzm91sjWyMFC6jmBiI1zccZK/zXXd6xe9zi0b2Ly9p
-         ionPqc/bGJQQ1WaICDNbIPBeTGvX3ar444WCALjs+XejYAaHR8HWeGUmCyg88EZVHWmE
-         WQwA==
-X-Gm-Message-State: AOJu0Yw+zn6moSM6kXiph54oSSzPEE3l42lamLOwd98ivXfBqaWpoeAw
-        9eFZ0gY4+VcoWZcHllDBW6QESiR3ka0=
-X-Google-Smtp-Source: AGHT+IHDrosN2uCkEGjbekhzE56kmIuP6ZdJ4qX5BxhY2UQvH9WBnwhhS/T43sOArnZ3ZTMzAD09hmalB/w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:168c:b0:da0:3e46:8ba5 with SMTP id
- bx12-20020a056902168c00b00da03e468ba5mr205460ybb.8.1698711652929; Mon, 30 Oct
- 2023 17:20:52 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 30 Oct 2023 17:20:49 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231031002049.3915752-1-seanjc@google.com>
-Subject: [PATCH guest_memfd] KVM: selftests: Add a memory region subtest to
- validate invalid flags
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Mon, 30 Oct 2023 20:24:44 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF0AA9;
+        Mon, 30 Oct 2023 17:24:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698711880;
+        bh=TeSlqjbE4T8/9w6BkWEqBi/or+R2Kb6ZESw56Zd+cJs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IT70Y4Cg+4n51qyl/qrwuCQ16hQPZPn5zQFYSlNUlZuBfwRPbeiGs7H1iDiGm57fu
+         sjLqn6P/Cqvzk5dTlwv+MTkKuncylXPIIZL150jI95C28pZ7Mlmxk8FlhpR8NxTL8A
+         cNFll7QbUYTagSgaJeOSJKqY4ofGZuz50Xy82BTb0Bw7tlKLDNNtDbEA3x/LZOGgvO
+         pazuwfo9/r/DikXfZBKvaPYnzpbmwxBj6RNNInDUKh/RM49bxhVSrfLyMMfn+Dz3eY
+         XIyrqPsH3hq/GvZ4OEbsookKzi5UTTeq8ryMIPKBxpP8kOWpjnjZ03k2GQ2dgZgt9C
+         GExsoP5mBqEPA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SK9r84Qyjz4wdD;
+        Tue, 31 Oct 2023 11:24:40 +1100 (AEDT)
+Date:   Tue, 31 Oct 2023 11:24:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Namjae Jeon <linkinjeon@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Jan Cincera <hcincera@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the exfat tree with Linus' tree
+Message-ID: <20231031112439.00d4eeab@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/xINdbKI//+JJ_dwwrnG73YU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,89 +53,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a subtest to set_memory_region_test to verify that KVM rejects invalid
-flags and combinations with -EINVAL.
+--Sig_/xINdbKI//+JJ_dwwrnG73YU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+Hi all,
 
-Selftest that *tries* to detect cases where KVM allows v2 flags for
-KVM_SET_USER_MEMORY_REGION.  It's kinda worthless because KVM will likely fail
-with EINVAL anyways, but maybe it'll provide meaningful coverage in concert
-with a sanitizer?
+Today's linux-next merge of the exfat tree got conflicts in:
 
- .../selftests/kvm/set_memory_region_test.c    | 49 +++++++++++++++++++
- 1 file changed, 49 insertions(+)
+  fs/exfat/inode.c
+  fs/exfat/super.c
 
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index ca83e3307a98..268baf853bd6 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -326,6 +326,53 @@ static void test_zero_memory_regions(void)
- }
- #endif /* __x86_64__ */
- 
-+static void test_invalid_memory_region_flags(void)
-+{
-+	uint32_t supported_flags = KVM_MEM_LOG_DIRTY_PAGES;
-+	const uint32_t v2_only_flags = KVM_MEM_PRIVATE;
-+	struct kvm_vm *vm;
-+	int r, i;
-+
-+#ifdef __x86_64__
-+	supported_flags |= KVM_MEM_READONLY;
-+
-+	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))
-+		vm = vm_create_barebones_protected_vm();
-+	else
-+#endif
-+		vm = vm_create_barebones();
-+
-+	if (kvm_check_cap(KVM_CAP_MEMORY_ATTRIBUTES) & KVM_MEMORY_ATTRIBUTE_PRIVATE)
-+		supported_flags |= KVM_MEM_PRIVATE;
-+
-+	for (i = 0; i < 32; i++) {
-+		if ((supported_flags & BIT(i)) && !(v2_only_flags & BIT(i)))
-+			continue;
-+
-+		r = __vm_set_user_memory_region(vm, MEM_REGION_SLOT, BIT(i),
-+						MEM_REGION_GPA, MEM_REGION_SIZE, NULL);
-+
-+		TEST_ASSERT(r && errno == EINVAL,
-+			    "KVM_SET_USER_MEMORY_REGION should have failed on v2 only flag 0x%lx", BIT(i));
-+
-+		if (supported_flags & BIT(i))
-+			continue;
-+
-+		r = __vm_set_user_memory_region2(vm, MEM_REGION_SLOT, BIT(i),
-+						 MEM_REGION_GPA, MEM_REGION_SIZE, NULL, 0, 0);
-+		TEST_ASSERT(r && errno == EINVAL,
-+			    "KVM_SET_USER_MEMORY_REGION2 should have failed on unsupported flag 0x%lx", BIT(i));
-+	}
-+
-+	if (supported_flags & KVM_MEM_PRIVATE) {
-+		r = __vm_set_user_memory_region2(vm, MEM_REGION_SLOT,
-+						 KVM_MEM_LOG_DIRTY_PAGES | KVM_MEM_PRIVATE,
-+						 MEM_REGION_GPA, MEM_REGION_SIZE, NULL, 0, 0);
-+		TEST_ASSERT(r && errno == EINVAL,
-+			    "KVM_SET_USER_MEMORY_REGION2 should have failed, dirty logging private memory is unsupported");
-+	}
-+}
-+
- /*
-  * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
-  * tentative to add further slots should fail.
-@@ -491,6 +538,8 @@ int main(int argc, char *argv[])
- 	test_zero_memory_regions();
- #endif
- 
-+	test_invalid_memory_region_flags();
-+
- 	test_add_max_memory_regions();
- 
- 	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
+between commit:
 
-base-commit: 881375a408c0f4ea451ff14545b59216d2923881
--- 
-2.42.0.820.g83a721a137-goog
+  4c72a36edd54 ("exfat: convert to new timestamp accessors")
 
+from Linus' tree and commit:
+
+  d76271feecc1 ("exfat: add ioctls for accessing attributes")
+
+from the exfat tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/exfat/inode.c
+index a2185e6f0548,edcd8a5c38d1..000000000000
+--- a/fs/exfat/inode.c
++++ b/fs/exfat/inode.c
+@@@ -400,9 -397,9 +400,9 @@@ static int exfat_write_end(struct file=20
+  	if (err < len)
+  		exfat_write_failed(mapping, pos+len);
+ =20
+- 	if (!(err < 0) && !(ei->attr & ATTR_ARCHIVE)) {
++ 	if (!(err < 0) && !(ei->attr & EXFAT_ATTR_ARCHIVE)) {
+ -		inode->i_mtime =3D inode_set_ctime_current(inode);
+ +		inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+- 		ei->attr |=3D ATTR_ARCHIVE;
++ 		ei->attr |=3D EXFAT_ATTR_ARCHIVE;
+  		mark_inode_dirty(inode);
+  	}
+ =20
+diff --cc fs/exfat/super.c
+index e919a68bf4a1,e7cba540c99e..000000000000
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@@ -369,9 -376,9 +376,9 @@@ static int exfat_read_root(struct inod
+  	ei->i_size_aligned =3D i_size_read(inode);
+  	ei->i_size_ondisk =3D i_size_read(inode);
+ =20
+- 	exfat_save_attr(inode, ATTR_SUBDIR);
++ 	exfat_save_attr(inode, EXFAT_ATTR_SUBDIR);
+ -	inode->i_mtime =3D inode->i_atime =3D ei->i_crtime =3D inode_set_ctime_c=
+urrent(inode);
+ -	exfat_truncate_atime(&inode->i_atime);
+ +	ei->i_crtime =3D simple_inode_init_ts(inode);
+ +	exfat_truncate_inode_atime(inode);
+  	return 0;
+  }
+ =20
+
+--Sig_/xINdbKI//+JJ_dwwrnG73YU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVASUcACgkQAVBC80lX
+0GxXjgf/Qaekmx9BIZ+CoKewRPzaVB7VnHaLSxSVpT218lfT5V4nQaULgT8vm6/C
+Ku8Pyx5VqrYRTRTgKq4ul6efon6hEWdgaEwyUWo0tbj077rg+k23fOAkHjcQgISq
+TEFZxh7pMMH2RI+1uyvJ1GDlqd4WGwFokNmFI902kyRIb2Tde9bYSnZOM9CQyevj
+yZmfOK3ZanQ8B7ZvxJZxiKqDnx3/BHasxyvTOG73CIsbOpyoHYUsGXBz7vfgkHl9
+ftanceEhmlPNh/QwtjacpaW9182bSsVbZXnwIzCxab5WNYAYi43RSTeWmsRLS8h6
+dNqOWVMPO+vyfqCCmjcvDQ+qy10H1w==
+=2NYM
+-----END PGP SIGNATURE-----
+
+--Sig_/xINdbKI//+JJ_dwwrnG73YU--
