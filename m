@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B6D7DC8D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14C27DC8D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 09:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343539AbjJaI7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 04:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
+        id S235344AbjJaI75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 04:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235761AbjJaI7m (ORCPT
+        with ESMTP id S235753AbjJaI7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 04:59:42 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C517611B
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:59:39 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50797cf5b69so7458651e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698742778; x=1699347578; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tNOnxQseUn+sdzcn++tRPmK5DAb/ytwQ21KP2ZD3yF8=;
-        b=J6nCG4YFqgEFdX1t0NzbCF48/yxhDKHE3rp2/7yzhr40yH+l7JCa9OQFMwidONwCHc
-         apjDRXhPwaB1imBLjzuRvuVZSj3rS0RDE2fNLLOU6NM1zY4M/4/uvtn3ohhJ5AxjxvIa
-         FM8yfqNknfNjS0CV0Em5Z4ZwRAnQzu/+qtWY4pxuV0rWWiXD5oLQ1AY86TrSdH4jHIRy
-         F0J1z+0nWURU4gcYgRj/XG06iubZOHM6wHAXCIuptqZHJDJXBrGlb6FDvxul7IJRpXDn
-         Ph32JhVrXN896YkHGrGPl3ghD/+QCXcdPiep/8kALWMpB3ZmrIct91FaUrlrCli30jgh
-         5LvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698742778; x=1699347578;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tNOnxQseUn+sdzcn++tRPmK5DAb/ytwQ21KP2ZD3yF8=;
-        b=rKffavWAPJDuXa0yerV0VnZfPM0IBwl1KTTy2FbLXNVSdjDe4vmawuF3466pepwT7A
-         eWjJ7Yp1ghCEyJhMf8V2mmcFSfbse2oUVK6e+TBxpO354Bju5vdZgYXzzfegAjLmTCV8
-         aH5xkzG6rXa9xVZWMmC6ftYPM+kHiuJLqk4wLgexxGMa9k3dwXVD8kNT+bAHbItYu6OC
-         wvksYvaoMHEyCpVlxS0IsLlKqJyl4kj6wfsvv+o3NVuucr7khLtHuu9W2DJO8gMXkhYm
-         YnBGrbaDo+BJVO/7UJkuFmXC8rSPzzr/fOrTtGqYKo61y4WODVtqfISwhynyroFAs3xP
-         fHqw==
-X-Gm-Message-State: AOJu0YxhFJP+A5Bu/RV7g+jw09MA+l3XK/vVL3lO7yQULHsqf1eMKSok
-        UyQidSOcjc1k0ppEgngRlyY2iQ==
-X-Google-Smtp-Source: AGHT+IEz7RBymWwGaxhsiouoy6qvMnV1G4Gz7ZzpjpSRrBR9AiCIjw9PoA1bkmrCkpDthe9/kykFuw==
-X-Received: by 2002:a05:6512:ea8:b0:507:ac56:66a0 with SMTP id bi40-20020a0565120ea800b00507ac5666a0mr8295514lfb.56.1698742778001;
-        Tue, 31 Oct 2023 01:59:38 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o11-20020a5d684b000000b0032f9a0fe0absm103388wrw.96.2023.10.31.01.59.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 01:59:37 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 11:59:34 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] staging: vc04_services: remove unnecessary NULL check
-Message-ID: <1dff4d9b-d067-4525-95e0-ffdc1185cccd@moroto.mountain>
+        Tue, 31 Oct 2023 04:59:54 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5460BE8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 01:59:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=HolwFtH31Q6ywKQODQ0148en20rqb3PsUXQ91SE+TOY=;
+        t=1698742791; x=1699952391; b=Sy27MN8iVjWwE3XGdhMdVktv6Rd1BKZsMsroEsXTIQ7zFVo
+        9RttbYY5Ml2veAieJk3UP1SaqTfXPx0gnE+2/MaigyMzIrWlpu2PbSxEzDu5R/u3qvRuuO2LR8KuA
+        n5pNjOCXCcU7p1Agfw7B6IWTEdPsAcxmmQbVk4BDyVTdtbC2LkwXN9NRiOFV8UHsV2xNnPSvSxu7M
+        yZb7ZA4iNXkYlEo7tmdknWdf7EiMQDAOhsKxBJmr0Iv99OLVfpZY7NGLiCEXveLNaqDhxJijJWlBe
+        C8fzSbQCemrUSFCMmGlkPshaDaRVCyeRbwvclWaEboVM5jZSIYqANJHePRxU/N4g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97-RC1)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qxkbE-000000091HJ-0OuS;
+        Tue, 31 Oct 2023 09:59:48 +0100
+Message-ID: <d00e8976baa4fb93a1f3f1191998994540bb173b.camel@sipsolutions.net>
+Subject: Re: [PATCH] Devcoredump: fix use-after-free issue when releasing
+ devcd device
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Yu Wang <quic_yyuwang@quicinc.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org, kernel@quicinc.com
+Date:   Tue, 31 Oct 2023 09:59:47 +0100
+In-Reply-To: <ab509035-cf3c-4902-87a8-cbba03ac948c@quicinc.com>
+References: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
+         <2023102730-twins-thieving-d04e@gregkh>
+         <22ab53d1ae36d4925732e6e1dc989dc75af126da.camel@sipsolutions.net>
+         <ab509035-cf3c-4902-87a8-cbba03ac948c@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+X-malware-bazaar: not-scanned
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,28 +58,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We ensured that "service" as non-NULL in the previous if statement so
-there is no need to check again here.
+On Tue, 2023-10-31 at 16:29 +0800, Yu Wang wrote:
+>=20
+> In this case, the device is temporarily added for dump only, so we need t=
+o
+> delete it when dump is completed.
+> The other users doesn't add/delete the device like this.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+For good reason, I guess? I think this is probably a bad idea.
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-index 39b857da2d42..a0117efa2991 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-@@ -2040,8 +2040,7 @@ sync_func(void *v)
- 			continue;
- 		}
- 
--		svc_fourcc = service ? service->base.fourcc
--				     : VCHIQ_MAKE_FOURCC('?', '?', '?', '?');
-+		svc_fourcc = service->base.fourcc;
- 
- 		vchiq_log_trace(state->dev, VCHIQ_SYNC,
- 				"Rcvd Msg %s from %p4cc s:%d d:%d len:%d",
--- 
-2.42.0
+The whole point of this was to actually know which device created the
+coredump? If you make one up on the fly that's ... pointless? Surely you
+must have _some_ device that already exists?
 
+> It removes the device when the @free function has been called, I think
+> the @free function should be considered as a completion signal, and so
+> we need to put @free at the end of falling-device-related-clean-up in
+> devcoredump framework (the change in the patch).
+
+That may be true for the case you have, but really, I wouldn't consider
+that a bug now?
+
+Besides, we do hav<e put_device() at the end, and I'm not sure I see how
+the device can be removed before put_device()?
+
+Can parts of the device there disappear before we release all the
+references? Could that mean the scenario is also possible without your
+contorted device creation and removal, just by unplugging the device
+while a coredump exists in sysfs?
+
+> Yes, I know we don't need to care about the dump data, but as mentioned
+> upon, the device is locally and temporarily created for this one-time dum=
+p
+> only, we need to free it when dump is completed, so introduce this comple=
+tion.
+> Refer to drivers/remoteproc/remoteproc_coredump.c.
+
+I still don't think this is right ... Even the code there is awful, it
+potentially blocks for 5 minutes? I'm not sure we should encourage that.
+
+Note that you could also argue exactly the other way around - what if
+the *free* function requires access to the device? It gets arbitrary
+data after all.
+
+
+> Regarding NULL for the struct module pointer, looks it's allowed for this
+> API (<remoteproc_coredump.c> also pass NULL)? But yes, it's not nice inde=
+ed,
+> we need this to get a reference of the calling module for safety.
+> Will correct in the next patch set.
+
+Well, it's not really allowed to literally write NULL - maybe we should
+have a macro that fills in THIS_MODULE. But THIS_MODULE can be NULL at
+runtime if it's in built-in code ... so we can't catch it.
+
+But actually if you do have the completion you wouldn't care about this
+specific case, but ...
+
+johannes
