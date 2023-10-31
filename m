@@ -2,148 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C250B7DC663
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FB77DC670
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 07:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbjJaGSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 02:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        id S235568AbjJaGUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 02:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbjJaGSk (ORCPT
+        with ESMTP id S232876AbjJaGUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 02:18:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62101130
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 23:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698733118; x=1730269118;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=NyEoznET54YCz7kuFt0PNB4G+3M7o3wChdoIcBnHdmU=;
-  b=W5pINHLMccrzm0A1eDpePpdprsUqDoTt3bgS1shPeYmdseSpSA570gpu
-   Vh4BwIZmyrk0FiGfVcNTdne2uEEP+InZw6G2AJ3kqNNULUrR7tKHUR/i3
-   Qk68DTupnE4x3rUJBEdGnsMtw3kCfTomSHMqfbv2Yyntcavjm1yr3UcVC
-   B0zBmp2qacpNjeji+0UgVIxQ3ov2uc8LqKwq9rOQWUxlyxKBULBnjl+db
-   9komvgUS5znd3feCd4bC+pwY6CzUGCtUuZyC9bNh2R5Y28MfX7TV8UZgj
-   TQ8YMBQBjA7Y663pdtUBWdq5Sgl/ljh+3pRrPajvWA4v7PfRLf2xvAsC4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="419333136"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="419333136"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 23:18:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="8216555"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 23:18:37 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 30 Oct 2023 23:18:36 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 23:18:36 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 30 Oct 2023 23:18:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=exBWrkZRmFtDoCqh9d2AMwqZvt8qpaX6oWLNcHpk9u+LXtETZwYLVhmpJlkvBrJ3yx3bT4eadWYzwLJalwPib+hN04wYKEJSPdz2Asyu2VjHioERglxUOO4dd/EbWyg9mfg3tgBSMc/aUvfq/HiWCfo75QXH62K/oDmzWDl1Vr1F3Zf5YaxthyhPw+xRUqGles0e3/EYU3Z6IFugkWdwGnZf/IHrLIcWuF+3wcpvoNvYm/HYJCcZ7+k8utvJUYSBF9v7z5dnaOosBHGMRnGpiXaZ00JJp0/cypPaTaN/IofIzEDzvqJfewIDM7iDdGRfE++vn1K9vAu3nGtQwM0OTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XKCtm7YuIJFcqKinU6HNdilKE2DyMf6KTDXHmjJdo1M=;
- b=LZnyMnJsx1VSB4xYg8GQE5cMU/BOFkoX1SYlRRb8hR9iHzLXeFp8E2xCsT5AbDli7mcsUtuPrBzfQDVtbRNPMaMw0LHNx22gnNNgr4zjMHtOxB7IoLyW6y0V1ETJwbgDw4BONNUC0ckn3HU1tRns/OBLhKnyE0FAm/5TH8RrV14w1b/oC5NN/XU7z8RANaMOY5G52q5sglTWp/oo29qBHHTo6yo1YrSZxLzCiRmgEJxgleg0qEzH8On2zY46CpEl6oPsfKOH7ICOMHdIfd1IkE72mUrJ+a7qDVNCvRCz/TzO+FJNRR468L4/KFGlZuK/Bun3vP0/pFulK1NM7xKaeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
- by SA1PR11MB8573.namprd11.prod.outlook.com (2603:10b6:806:3ab::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Tue, 31 Oct
- 2023 06:18:34 +0000
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::8c24:7666:7047:d99e]) by MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::8c24:7666:7047:d99e%4]) with mapi id 15.20.6933.024; Tue, 31 Oct 2023
- 06:18:34 +0000
-Date:   Tue, 31 Oct 2023 14:18:23 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Keisuke Nishimura <keisuke.nishimura@inria.fr>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        <linux-kernel@vger.kernel.org>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH v2] sched/fair: Fix the decision for load balance
-Message-ID: <ZUCcL28IrCCiLPx2@chenyu5-mobl2.ccr.corp.intel.com>
-References: <20231030172945.1505532-1-keisuke.nishimura@inria.fr>
- <ZUCXwmzaoNbRbNpR@chenyu5-mobl2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZUCXwmzaoNbRbNpR@chenyu5-mobl2.ccr.corp.intel.com>
-X-ClientProxiedBy: KL1PR0401CA0009.apcprd04.prod.outlook.com
- (2603:1096:820:f::14) To MN0PR11MB6206.namprd11.prod.outlook.com
- (2603:10b6:208:3c6::8)
+        Tue, 31 Oct 2023 02:20:02 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA1B91;
+        Mon, 30 Oct 2023 23:20:00 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UK7eAZ026041;
+        Mon, 30 Oct 2023 23:19:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=xWrQJr89+eLrLsnsPDitsCD3AyalGG7UX3b15wzIHQw=;
+ b=igzCzjfuT3F6Su/3fmvzSJK2Fv9m2GRrhXvUo3w+BvP5H46kOvwWQlVhTW5bh8FTF/J1
+ mO5g2ZPi+P5remp9ENmA7pNjWmyXRvTbVjFz3BtUPdIk9vrD4iMWDIurYYVdwYErBVxs
+ N0q/sAfRt1yr9xZ9zJol9KD53qjsZBwNcD1owGbfJ3CrJt8PzNM3vSzw+EP3OF3cUD8z
+ hW3nnI+pbb/g309n9qAN4CXF9iwweJza8q675UVKtL6aXlGQ6iJg7G7+Np2gpgaxedXh
+ /wXZmIcR2FZvJIVTyWVhEYBfixfov8pGMG99s+Pem0o0L77y4mzeKpJ/8HAKzartZ+JM tg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3u2a9f3xeu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 23:19:48 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 30 Oct
+ 2023 23:19:46 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 30 Oct 2023 23:19:46 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 568703F70BB;
+        Mon, 30 Oct 2023 23:19:43 -0700 (PDT)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net-next PATCH] octeontx2-pf: TC flower offload support for ICMP type and code
+Date:   Tue, 31 Oct 2023 11:49:42 +0530
+Message-ID: <20231031061942.18553-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|SA1PR11MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 181d1857-efdf-46b2-3bce-08dbd9d93662
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ++nQPQGwpJzuY0Z7hzdBawOhF6TFREPBkEjxS66iTg/q2lMkO8A+KENqNi187m9fPHOK0DvWrVfkpNot5B17D99RrU/eikcbu3fqMTaC+TeUuGBsgxikZ8ebkIYowIdPCOivpyR+ObYugG6EmzVy4mkVSuhGnKvs8e14MElwdVKZrt1P4I3BBG48rowl8BPpYVhvq6B0z/vPbKml2BLrFakxZvNN5BcIg903idqfNimbzdKBJw8vARKsxjvzFWEgdQEjQQbwAH85CL+zGDfmpGlVaICT+4VGTJzPpBowBXYR3QF3Ccw9+s3/DATEd0o8UVg5NLTUWAveBXDuxLYEvOW77WhK/zRzW5ukiF+SGMBxBmUK2M35He8wWxkLsFepqCFnLYPvOMNKbU/UO//wJtH8BJJskvNyoaFjdAlpg2hPmpNJ5qctWYiSzcWm7TJZ/5dQ8oFuQK5xxhWzXOP0EGeRGbfHy6yg3zqnqehasVETaA2vX2zm3BrRewjXnuVQqqQjNwodV27mo8Pt/XpUKaHzKchFyQd08JrXeNMb8r+UafAqamEN42sSRmjgbbxp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(366004)(346002)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(478600001)(66946007)(6666004)(6506007)(6486002)(82960400001)(83380400001)(38100700002)(66556008)(4001150100001)(66476007)(86362001)(2906002)(41300700001)(26005)(53546011)(6512007)(54906003)(5660300002)(8676002)(7416002)(6916009)(8936002)(316002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r2mqWEWFihKEvavcZdQUdCdR/aUY6ZKOA5vxpMRMTu8kwNxPf/nb90tK0yH7?=
- =?us-ascii?Q?EX5/cfa/sobbXLJRhlQxeEpBymy3ex1kg9Rh4VNiw0nbgIZhJOk3ObBlAbv0?=
- =?us-ascii?Q?gQ2GjabEbDdB6ZPVjerctmuoaSVFpfQK0bIhbLQpmQ3gdiYSmTh8N/MzlJCc?=
- =?us-ascii?Q?bIdDT4C0h/8B/RECZLOI7BwMz7Fmnt+Np0Rg+OMiSTHETPLaZUv0NR/5Bday?=
- =?us-ascii?Q?s/fk8QNxK1Y2C4CX5HsN4raODpH4mYgyGALA4WJluDz/4C9reN6rzJta5Ncf?=
- =?us-ascii?Q?XW/VRUi2uy0ocIet6kQG09IQxrlb9b0BIHqVPFu04OfvB8A5H3UP9VXWKmXw?=
- =?us-ascii?Q?uhy1tKiM1oMPqOcryLWSpJOGuN542JN58uqBUyCEVWrOMcQ6+UPAGxb+L/3t?=
- =?us-ascii?Q?UD9RYioFjnPFza+2lUYFXcxfpcTJfjuEqJ58B/tbqqdaIP8b6vsyw38c2ZYa?=
- =?us-ascii?Q?cHi4/vRo8Z6kjoFyeykZsZVQegKVQpME+tXiT8gg4iOnNDDOJ8u3oLt0luXv?=
- =?us-ascii?Q?mhGy0i3IFB+puOBa5mX+R54O5M14gZ5gdK2sbrmqur9M7qT5gRU3ZkY2yc5D?=
- =?us-ascii?Q?vWHzI2GaTJHY2BjlRklRf7dsuqrTnd/CSti7gAiKL4YcJOqe74PQS0GW5T19?=
- =?us-ascii?Q?RXz+nGZocTeSdlip83NiSFLX+FmaalzlMirjgr6yAIJ7yOXIzoBnm8kKAsYu?=
- =?us-ascii?Q?COQl+AvG/r+sAKSve/xxe75LcN9xfaLSsaAUKxPnQLYLAfWvN/1xrE8qqmXf?=
- =?us-ascii?Q?eUn9pTyA2CJI2SN8RK4ZM34ef5AbeZXcugG7HdPD7NgR4SXH9eZl39aOUl0R?=
- =?us-ascii?Q?bQNeWljqi0kJ2yP8TlCA+h5uW6inI0QTtDzLLgig8L5PTYUHeq9o8GCiWd6x?=
- =?us-ascii?Q?BkiBsijtmX1g5ejJyZGny6iaYSb1PdyinbR8PMLgYxRR+PB/4OSbGxNWQOgC?=
- =?us-ascii?Q?YJZUGTPpcBST+DmRBYrcEKX+lwKD0QicNUX4Pb+WhO2qTql4DlXlHC485/q3?=
- =?us-ascii?Q?Pemea6ckeOK0+2l8P06z4bQJj8Hp42nWEuMbqkMwCSwanzDkb4cySq27l1Gh?=
- =?us-ascii?Q?QsxSeFz3pcbaWEjF+qxgb/hZ+2zVAJJ53Eji15VJn/1wzkewP7K9F8dlZuux?=
- =?us-ascii?Q?W1rcEheMpUO4hrTOBEZphQtkhuSl0DHp7ZtkiBRkuhAOdGDsBT1njSCupJWT?=
- =?us-ascii?Q?Tw7DY6lG+bTbAW5eXeavUbH8DwKHyG4wTwQkGd7qi6KrvAMXOo2rd3fcDSic?=
- =?us-ascii?Q?Lz+/jZgFUwD4stY88swc8f01BSfeRavfPq6lHpCc3ZTYiaug51+cJPHYqos8?=
- =?us-ascii?Q?wVBhrmRmPCUHkKDFT1fdLLiGOgDd3Bj97gqd5yTkGSQHFw+oykA/YyltFXNy?=
- =?us-ascii?Q?2jvyngaMfSrg1GCTucRKq7ZtHviyxnIVr/ASXIX8+0QTXjpTdfhHt7ZHkSFx?=
- =?us-ascii?Q?oQCgONrn02mz6Gda+15hNe/K2iy2oa0GFH/rvBv7HyzlH8AYdSFH8CoFAJ8J?=
- =?us-ascii?Q?2fqz08nUo12jZcAZGT47uhrLhnOZBhwFhEm+WS/hnC6WzTn0FqwMRkSqh0Fz?=
- =?us-ascii?Q?MBamOL5UVvN33I2K51nwpK1ZJgeWMqF8plMfe6RX?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 181d1857-efdf-46b2-3bce-08dbd9d93662
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 06:18:34.7874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ADVgxPVSrO+i16phMx+txucl7IaITlgAeJYGqXYlYrUg69ESjyZfq7/pb7R9jj8Bd1t1zBFTZkDM9MyfFJ/wMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8573
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Type: text/plain
+X-Proofpoint-GUID: _nIVOTjhQ4zdyXAraAQaeWntIHoL-AX1
+X-Proofpoint-ORIG-GUID: _nIVOTjhQ4zdyXAraAQaeWntIHoL-AX1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-31_02,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -151,59 +64,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-31 at 13:59:30 +0800, Chen Yu wrote:
-> On 2023-10-30 at 18:29:46 +0100, Keisuke Nishimura wrote:
-> > should_we_balance is called for the decision to do load-balancing.
-> > When sched ticks invoke this function, only one CPU should return
-> > true. However, in the current code, two CPUs can return true. The
-> > following situation, where b means busy and i means idle, is an
-> > example, because CPU 0 and CPU 2 return true.
-> > 
-> >         [0, 1] [2, 3]
-> >          b  b   i  b
-> > 
-> > This fix checks if there exists an idle CPU with busy sibling(s)
-> > after looking for a CPU on an idle core. If some idle CPUs with busy
-> > siblings are found, just the first one should do load-balancing.
-> > 
-> > Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
-> > Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-> > ---
-> >  kernel/sched/fair.c | 10 +++++++---
-> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 2048138ce54b..69d63fae34f4 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -11079,12 +11079,16 @@ static int should_we_balance(struct lb_env *env)
-> >  			continue;
-> >  		}
-> >  
-> > -		/* Are we the first idle CPU? */
-> > +		/*
-> > +		 * Are we the first idle core in a MC or higher domain
-> 
-> It is possible that the Cluster domain is lower than a MC.
-> cluser domain: CPUs share the same L2
-> MC domain: CPUs share the same LLC
-> 
->  grep . domain*/{name,flags}
-> domain0/name:CLS
-> domain1/name:MC
-> domain2/name:NUMA
-> domain0/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_PKG_RESOURCES SD_PREFER_SIBLING 
-> domain1/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_PKG_RESOURCES SD_PREFER_SIBLING 
-> domain2/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-> 
-> So, maybe:
-> Are we the first idle core in a non-SMT domain or higher,
->
+Adds tc offload support for matching on ICMP type and code.
 
-I suppose you can also carry the Reviewed-by tags in V1(Shrikanth and Vincent's)
-as there is no code change.
+Example usage:
+To enable adding tc ingress rules
+        tc qdisc add dev eth0 ingress
 
-Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+TC rule drop the ICMP echo reply:
+        tc filter add dev eth0 protocol ip parent ffff: \
+        flower ip_proto icmp type 8 code 0 skip_sw action drop
 
-thanks,
-Chenyu
+TC rule to drop ICMPv6 echo reply:
+        tc filter add dev eth0 protocol ipv6 parent ffff: flower \
+        indev eth0 ip_proto icmpv6 type 128 code 0 action drop
+
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+---
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  2 ++
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  2 ++
+ .../marvell/octeontx2/af/rvu_debugfs.c        |  8 +++++++
+ .../marvell/octeontx2/af/rvu_npc_fs.c         | 23 ++++++++++++++-----
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 14 +++++++++++
+ 5 files changed, 43 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 6b5b06c2b4e9..78088dd4e2f9 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -1473,6 +1473,8 @@ struct flow_msg {
+ 		u8 next_header;
+ 	};
+ 	__be16 vlan_itci;
++	u8 icmp_type;
++	u8 icmp_code;
+ };
+ 
+ struct npc_install_flow_req {
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index de9fbd98dfb7..2f1ed5411d75 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -206,6 +206,8 @@ enum key_fields {
+ 	NPC_SPORT_SCTP,
+ 	NPC_DPORT_SCTP,
+ 	NPC_IPSEC_SPI,
++	NPC_TYPE_ICMP,
++	NPC_CODE_ICMP,
+ 	NPC_HEADER_FIELDS_MAX,
+ 	NPC_CHAN = NPC_HEADER_FIELDS_MAX, /* Valid when Rx */
+ 	NPC_PF_FUNC, /* Valid when Tx */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index d30e84803481..2b32b9d6c625 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -2836,6 +2836,14 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
+ 			seq_printf(s, "0x%x ", ntohl(rule->packet.spi));
+ 			seq_printf(s, "mask 0x%x\n", ntohl(rule->mask.spi));
+ 			break;
++		case NPC_TYPE_ICMP:
++			seq_printf(s, "%d ", rule->packet.icmp_type);
++			seq_printf(s, "mask 0x%x\n", rule->mask.icmp_type);
++			break;
++		case NPC_CODE_ICMP:
++			seq_printf(s, "%d ", rule->packet.icmp_code);
++			seq_printf(s, "mask 0x%x\n", rule->mask.icmp_code);
++			break;
+ 		default:
+ 			seq_puts(s, "\n");
+ 			break;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index 237f82082ebe..ad204e21867b 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -43,6 +43,8 @@ static const char * const npc_flow_names[] = {
+ 	[NPC_DPORT_SCTP] = "sctp destination port",
+ 	[NPC_LXMB]	= "Mcast/Bcast header ",
+ 	[NPC_IPSEC_SPI] = "SPI ",
++	[NPC_TYPE_ICMP] = "icmp type",
++	[NPC_CODE_ICMP] = "icmp code",
+ 	[NPC_UNKNOWN]	= "unknown",
+ };
+ 
+@@ -518,6 +520,8 @@ do {									       \
+ 	NPC_SCAN_HDR(NPC_DPORT_TCP, NPC_LID_LD, NPC_LT_LD_TCP, 2, 2);
+ 	NPC_SCAN_HDR(NPC_SPORT_SCTP, NPC_LID_LD, NPC_LT_LD_SCTP, 0, 2);
+ 	NPC_SCAN_HDR(NPC_DPORT_SCTP, NPC_LID_LD, NPC_LT_LD_SCTP, 2, 2);
++	NPC_SCAN_HDR(NPC_TYPE_ICMP, NPC_LID_LD, NPC_LT_LD_ICMP, 0, 1);
++	NPC_SCAN_HDR(NPC_CODE_ICMP, NPC_LID_LD, NPC_LT_LD_ICMP, 1, 1);
+ 	NPC_SCAN_HDR(NPC_ETYPE_ETHER, NPC_LID_LA, NPC_LT_LA_ETHER, 12, 2);
+ 	NPC_SCAN_HDR(NPC_ETYPE_TAG1, NPC_LID_LB, NPC_LT_LB_CTAG, 4, 2);
+ 	NPC_SCAN_HDR(NPC_ETYPE_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 8, 2);
+@@ -539,7 +543,7 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
+ {
+ 	struct npc_mcam *mcam = &rvu->hw->mcam;
+ 	u64 *features = &mcam->rx_features;
+-	u64 tcp_udp_sctp;
++	u64 proto_flags;
+ 	int hdr;
+ 
+ 	if (is_npc_intf_tx(intf))
+@@ -550,18 +554,21 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
+ 			*features |= BIT_ULL(hdr);
+ 	}
+ 
+-	tcp_udp_sctp = BIT_ULL(NPC_SPORT_TCP) | BIT_ULL(NPC_SPORT_UDP) |
++	proto_flags = BIT_ULL(NPC_SPORT_TCP) | BIT_ULL(NPC_SPORT_UDP) |
+ 		       BIT_ULL(NPC_DPORT_TCP) | BIT_ULL(NPC_DPORT_UDP) |
+-		       BIT_ULL(NPC_SPORT_SCTP) | BIT_ULL(NPC_DPORT_SCTP);
++		       BIT_ULL(NPC_SPORT_SCTP) | BIT_ULL(NPC_DPORT_SCTP) |
++		       BIT_ULL(NPC_SPORT_SCTP) | BIT_ULL(NPC_DPORT_SCTP) |
++		       BIT_ULL(NPC_TYPE_ICMP) | BIT_ULL(NPC_CODE_ICMP);
+ 
+ 	/* for tcp/udp/sctp corresponding layer type should be in the key */
+-	if (*features & tcp_udp_sctp) {
++	if (*features & proto_flags) {
+ 		if (!npc_check_field(rvu, blkaddr, NPC_LD, intf))
+-			*features &= ~tcp_udp_sctp;
++			*features &= ~proto_flags;
+ 		else
+ 			*features |= BIT_ULL(NPC_IPPROTO_TCP) |
+ 				     BIT_ULL(NPC_IPPROTO_UDP) |
+-				     BIT_ULL(NPC_IPPROTO_SCTP);
++				     BIT_ULL(NPC_IPPROTO_SCTP) |
++				     BIT_ULL(NPC_IPPROTO_ICMP);
+ 	}
+ 
+ 	/* for AH/ICMP/ICMPv6/, check if corresponding layer type is present in the key */
+@@ -950,6 +957,10 @@ do {									      \
+ 		       ntohs(mask->sport), 0);
+ 	NPC_WRITE_FLOW(NPC_DPORT_SCTP, dport, ntohs(pkt->dport), 0,
+ 		       ntohs(mask->dport), 0);
++	NPC_WRITE_FLOW(NPC_TYPE_ICMP, icmp_type, pkt->icmp_type, 0,
++		       mask->icmp_type, 0);
++	NPC_WRITE_FLOW(NPC_CODE_ICMP, icmp_code, pkt->icmp_code, 0,
++		       mask->icmp_code, 0);
+ 
+ 	NPC_WRITE_FLOW(NPC_IPSEC_SPI, spi, ntohl(pkt->spi), 0,
+ 		       ntohl(mask->spi), 0);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index fab9d85bfb37..bede05dfad7b 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -519,6 +519,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_PORTS) |
+ 	      BIT(FLOW_DISSECTOR_KEY_IPSEC) |
++	      BIT_ULL(FLOW_DISSECTOR_KEY_ICMP) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IP))))  {
+ 		netdev_info(nic->netdev, "unsupported flow used key 0x%llx",
+ 			    dissector->used_keys);
+@@ -738,6 +739,19 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 		}
+ 	}
+ 
++	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ICMP)) {
++		struct flow_match_icmp match;
++
++		flow_rule_match_icmp(rule, &match);
++
++		flow_spec->icmp_type = match.key->type;
++		flow_mask->icmp_type = match.mask->type;
++		req->features |= BIT_ULL(NPC_TYPE_ICMP);
++
++		flow_spec->icmp_code = match.key->code;
++		flow_mask->icmp_code = match.mask->code;
++		req->features |= BIT_ULL(NPC_CODE_ICMP);
++	}
+ 	return otx2_tc_parse_actions(nic, &rule->action, req, f, node);
+ }
+ 
+-- 
+2.25.1
+
