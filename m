@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC337DCBD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E605A7DCBD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343745AbjJaLas convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Oct 2023 07:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        id S1343741AbjJaLbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbjJaLaq (ORCPT
+        with ESMTP id S235613AbjJaLbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:30:46 -0400
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC3F91;
-        Tue, 31 Oct 2023 04:30:43 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 7396563437BD;
-        Tue, 31 Oct 2023 12:30:41 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3_L6L093YCFA; Tue, 31 Oct 2023 12:30:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 0DDB9622F591;
-        Tue, 31 Oct 2023 12:30:41 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TrchRbFCCrbk; Tue, 31 Oct 2023 12:30:40 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id DF65E6342D5C;
-        Tue, 31 Oct 2023 12:30:40 +0100 (CET)
-Date:   Tue, 31 Oct 2023 12:30:40 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Miquel Raynal <miquel.raynal@bootlin.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Message-ID: <2131754563.27779.1698751840800.JavaMail.zimbra@nod.at>
-In-Reply-To: <20231031-laienhaft-weshalb-bc27f8dacd9e@brauner>
-References: <20231030103415.401ce804@canb.auug.org.au> <20231030173228.691620ca@xps-13> <1541110626.24818.1698696696387.JavaMail.zimbra@nod.at> <20231031085158.o4ilb5d47sxcqm3o@quack3> <1419418117.26823.1698742930275.JavaMail.zimbra@nod.at> <20231031-laienhaft-weshalb-bc27f8dacd9e@brauner>
-Subject: Re: linux-next: manual merge of the mtd tree with the vfs-brauner
- tree
+        Tue, 31 Oct 2023 07:31:42 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1158891;
+        Tue, 31 Oct 2023 04:31:40 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6ce2b6b3cb6so3721170a34.3;
+        Tue, 31 Oct 2023 04:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698751899; x=1699356699; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zYGDhB/um96+OSL3bdNH6Xb1xNttdqBHEeOQYlAiy+4=;
+        b=VKSEaqGanVQNrWpcmf21+Tk4hgKRzDH83SR7GX1RqcbDUxCcW84D6P96siXTiGYQrT
+         0eXNjl8CyMqL+TlaO3JRZ9Ajy87IHVAlUHQKKYjC0lJ5r1vtf7Q6JNnMlhMCuYkSZQCH
+         yYZjMGtfCBxYnYTxUL/lgFlEUpWNRXDPkZ7b2v5kOJRqngsy0k/oAWaRxN+gZKDvaZDE
+         pp0V1oJAt7IiffnbWnpZFLAMm7Z9y4RKaJXguyGCW9R7yYkC/SY8eRqUkHgDfdePXp2w
+         je92RUl54APIbkeDwgrR2en5Ge/DmiSq/Z/g7tWSbUZtlEO27sUR+EOvq96LUtPF+ibQ
+         9Pdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698751899; x=1699356699;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zYGDhB/um96+OSL3bdNH6Xb1xNttdqBHEeOQYlAiy+4=;
+        b=NrcK82KUZkYEtgSyKznQrpuJdPNt1wq5Odfj08ZehjOndNKw1baVZrNO3XvNDhyo2X
+         +7d4mazDfG1vQFKmFulmjkDJ/gnvV36LMxsxEdGlw4cFXYFCsIA7xFoO5GYQQxWLuV99
+         4Sj85gwVJsWaKe5Ycn4mlYwkR4mVAU4z/NdKmYj+RW3TYyNohuMK2utYLIEWG3YXomBl
+         Uy+rUherVgf4EksI0pDtr82mKrmedkqMnD3iqig9eUySd7tdjzazn5Khjizl4qUUDYka
+         /+FN2YutgSJC/zYPhYrHk+hjB4Y8UWd55DwoNKhUYjcO1pi7ov/zzbE+GuDHvYkVWs8V
+         cXFQ==
+X-Gm-Message-State: AOJu0YyMc7wQkxNjiQJMFuIPZ/50ahA9+dLQqqG1aQ/BxH23EuQWFJhs
+        HjFke5I/hgXGL0NJ3QT4eee5MtHSqsUYNRqhgDc=
+X-Google-Smtp-Source: AGHT+IHuYP72qDA7lV1u5U+Et4v2vvDxnY6s+Al6fXDbgkiWs9zjXI2/VLFe0hP5lM6ClxyT2yA6zMq4AXtgvsttkaM=
+X-Received: by 2002:a05:6830:1e99:b0:6be:ea3e:367 with SMTP id
+ n25-20020a0568301e9900b006beea3e0367mr13025879otr.23.1698751899308; Tue, 31
+ Oct 2023 04:31:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: linux-next: manual merge of the mtd tree with the vfs-brauner tree
-Thread-Index: bbfZssUFZurWsTJgEhG6VF4CPYrWUA==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a8a:d1:0:b0:4f0:1250:dd51 with HTTP; Tue, 31 Oct 2023
+ 04:31:38 -0700 (PDT)
+In-Reply-To: <20231031-proviant-anrollen-d2245037ce97@brauner>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f>
+ <ZTJmnsAxGDnks2aj@dread.disaster.area> <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
+ <ZTYAUyiTYsX43O9F@dread.disaster.area> <CAGudoHGzX2H4pUuDNYzYOf8s-HaZuAi7Dttpg_SqtXAgTw8tiw@mail.gmail.com>
+ <20231031-proviant-anrollen-d2245037ce97@brauner>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Tue, 31 Oct 2023 12:31:38 +0100
+Message-ID: <CAGudoHEw+JRNB_qfdam2LM-3KLWiQu369ewQFO=hnpQ7qALmbA@mail.gmail.com>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian,
+On 10/31/23, Christian Brauner <brauner@kernel.org> wrote:
+>> The follow up including a statement about "being arsed" once more was
+>> to Christian, not you and was rather "tongue in cheek".
+>
+> Fyi, I can't be arsed to be talked to like that.
+>
 
------ Ursprüngliche Mail -----
-> Von: "Christian Brauner" <brauner@kernel.org>
->> >> A side effect of 1bcded92d938 ("mtd: block2mtd: Convert to
->> >> bdev_open_by_dev/path()")
->> >> is that it fixes the problem too. That's a good thing.
->> >> 
->> >> I'm a bit puzzled how to fix the problem for 6.5.y and 6.6.y stable releases.
->> >> Back porting 1bcded92d938 seems risky to me since the commit is large.
->> >> On the other hand, ff6abbe85634 will not make it into Linus' tree and therefore
->> >> is not suitable for stable either.
->> > 
->> > Yes, that's one of the cases where stable rules make life harder for actual
->> > fixes... You can try pushing ff6abbe85634 to stable even if it is not
->> > upstream since it fixes a real bug and taking the upstream solution is
->> > indeed IMO too intrusive. Sometimes stable maintainers accept such fixes.
->> 
->> Yep, let's try this route. :-)
-> 
-> Is there anything for me to do? IOW, do I need to grab that patch or
-> not? :)
+Maybe there is a language or cultural barrier at play here and the
+above comes off to you as inflammatory.
 
-No, just keep Jan's patch. (-:
+I assumed the tone here is rather informal. For example here is an
+excerpt from your response to me in another thread:
+> You're all driving me nuts. ;)
 
-Miquel, we could also keep ff6abbe85634 in the mtd tree and explain Linus the
-conflict, what do you think? That would help with back porting to stable.
+I assumed this was not a serious statement and the "being arsed" thing
+was written by me in the same spirit. I find it surprising there is a
+strong reaction to it, but I can only explain why.
 
-Thanks,
-//richard
+All that said, I have some patches I intend to submit in the
+foreseeable future. I am going to make sure to stick to more
+professional tone.
+
+>> Whether the patch is ready for reviews and whatnot is your call to
+>> make as the author.
+>
+> This is basically why that patch never staid in -next. Dave said this
+> patch is meaningless without his other patchs and I had no reason to
+> doubt that claim nor currently the cycles to benchmark and disprove it.
+>
+
+That makes sense, thanks.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
