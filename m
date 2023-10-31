@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BB47DD25E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4204C7DD263
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345498AbjJaQmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        id S231529AbjJaQnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346703AbjJaQlm (ORCPT
+        with ESMTP id S236119AbjJaQmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:41:42 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB9330E5;
-        Tue, 31 Oct 2023 09:39:27 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39VGc99a004710;
-        Tue, 31 Oct 2023 11:38:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1698770289;
-        bh=rMxQobL2C9Ih5ynT2fDAXkMqW1vSAxnXsdaxx4aMauw=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=Gl3UBQWyuntZv13eEWHDFlxwPnMUlvRRiMdggQvN7fwlmJcG+djBrJlocN1yp3H8e
-         YWqPV7e8WPpeX0ZIWxjzp2aLh4ff9/lr10HdPwdcO55nBoDs+aXQA4SGhoCtIsYwXc
-         21hV586kBu/5irnQAcKG6muKXMyp9P/qIRi1Yur4=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39VGc9I8127636
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 31 Oct 2023 11:38:09 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 31
- Oct 2023 11:38:09 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 31 Oct 2023 11:38:09 -0500
-Received: from [10.249.132.69] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39VGc5E6011960;
-        Tue, 31 Oct 2023 11:38:06 -0500
-Message-ID: <5d251b55-7050-c212-c262-49127f86f32c@ti.com>
-Date:   Tue, 31 Oct 2023 22:08:04 +0530
+        Tue, 31 Oct 2023 12:42:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D55EA255
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698770378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XJqCZxrLTKcwcLAE87Zs5L0NcoxMkUhMyUSeCCjP4ho=;
+        b=e8RJvwWETCmvqMLYFNueCelFvSZH1lRK3Wg9IdyI8grJR2A1WZvHROsf67Q07A2Q24JbA+
+        WVBPZVJUajhXWcVcgegMx7dGGYkN/WhR0CpQTG9rqPMuRCNi98HttIT2/d719i5IYSBZlF
+        oNWxMnNpFFRsdhp7MRGst7hYQMs2ERY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-166-1qVwYXYvOQWRFkDMsla7RQ-1; Tue, 31 Oct 2023 12:39:36 -0400
+X-MC-Unique: 1qVwYXYvOQWRFkDMsla7RQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9d30a6a67abso178515166b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 09:39:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698770375; x=1699375175;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XJqCZxrLTKcwcLAE87Zs5L0NcoxMkUhMyUSeCCjP4ho=;
+        b=AYqsBl+l7g/DZU/xB8x8+apC5MCPm5j/hMmAYUf9pOqc1uhNrAgaz6iI22xhIMqz0e
+         zxyLGKnVUFKZpLXd8HG2x1+0Xmr1y3BlcgvCedlE9HogiL8tCR37FNGcql6BuujlWP8m
+         Wc8RdJRUPTSDtdEzI7iahPc7lBXvKmJlhCgH6RoxTCfk86QLZZniFfPEi4lt/Npne4kb
+         cXvOOwRYOY4iIB1wEpF7eVWVslhmWNAkUdqo3g6BMPokh7NPc59Q11t+MXhj7IuYvRqP
+         uOLz+6aNEPxld0GbRP8VFXi7wmxZpT2Ey08+0z75zH9C+iic8Nu4lDINR4xq+3NHJ+1D
+         xGuA==
+X-Gm-Message-State: AOJu0YyU0Hu4I53Ehcp5GXs5C03M/5wvNynJE6JRY/Fcm9MXsk4jhjKG
+        2tLqfz7CjyL8tW2/U99JWFtXH6/CwclBaNR2m29pVJlymdFgcnR0L66erZ5F75yo97LU2gNH0ub
+        aeOElGvCCgTsiN6PUSkKZm0LJ
+X-Received: by 2002:a17:906:fd8b:b0:9bf:30e8:5bfd with SMTP id xa11-20020a170906fd8b00b009bf30e85bfdmr11756715ejb.48.1698770375522;
+        Tue, 31 Oct 2023 09:39:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuyO5pLCHn8pJ83CSPTWoms/T8gldqXUtB/D0/4Zzvxqi9jtHduxrXbKLdaxRhtjX8nVkSdQ==
+X-Received: by 2002:a17:906:fd8b:b0:9bf:30e8:5bfd with SMTP id xa11-20020a170906fd8b00b009bf30e85bfdmr11756697ejb.48.1698770375172;
+        Tue, 31 Oct 2023 09:39:35 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id s25-20020a170906bc5900b009b9977867fbsm1230584ejv.109.2023.10.31.09.39.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 09:39:34 -0700 (PDT)
+Message-ID: <980754a3-7f5a-465e-88a9-62a40c82cae8@redhat.com>
+Date:   Tue, 31 Oct 2023 17:39:33 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] scripts/dtc: Allow ports to have a single port@0 child
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drm-misc-next v7 4/7] drm/gpuvm: add an abstraction for a
+ VM / BO combination
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     Frank Rowand <frowand.list@gmail.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jai Luthra <j-luthra@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>
-References: <20231013085424.7137-1-a-bhatia1@ti.com>
- <20231025193113.GA994152-robh@kernel.org>
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20231025193113.GA994152-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231023201659.25332-1-dakr@redhat.com>
+ <20231023201659.25332-5-dakr@redhat.com>
+ <4a51c1cd9e2435332e033f9426bac8fae1c21c60.camel@linux.intel.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <4a51c1cd9e2435332e033f9426bac8fae1c21c60.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,61 +89,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 26-Oct-23 01:01, Rob Herring wrote:
-> On Fri, Oct 13, 2023 at 02:24:24PM +0530, Aradhya Bhatia wrote:
->> Exempt 'ports' from the rule which asserts that nodes with single child
->> node having reg = 0, should not have the '#size-cells' and
->> '#address-cells' properties.
+On 10/31/23 12:25, Thomas Hellström wrote:
+> On Mon, 2023-10-23 at 22:16 +0200, Danilo Krummrich wrote:
+>> Add an abstraction layer between the drm_gpuva mappings of a
+>> particular
+>> drm_gem_object and this GEM object itself. The abstraction represents
+>> a
+>> combination of a drm_gem_object and drm_gpuvm. The drm_gem_object
+>> holds
+>> a list of drm_gpuvm_bo structures (the structure representing this
+>> abstraction), while each drm_gpuvm_bo contains list of mappings of
+>> this
+>> GEM object.
 >>
->> Ports of certain hardware do need to be described as only having a
->> single child node 'port@0', especially when hardware has multiple ports,
->> and the other ports 'port@x' are planned to be added subsequently. In
->> such cases, just using 'port', would be an inaccurate hardware
->> description.
+>> This has multiple advantages:
 >>
->> For example, Texas Instruments' DSS (display-subsystem), which has 2 or
->> 4 video ports depending on the SoC. Describing the first video port with
->> just 'port' under ports would be inaccurate and even slightly
->> misleading. Simply using port@0 (when other ports are not added)
->> produces the following warning, while making dtbs with W=1 flag set[0].
-> 
-> There's a reason this is behind W=1.
-> 
-> In general, if you only have a single 'port' it should be just 'port' 
-> which is equivalent to port 0. There's exceptions to that, so the 
-> warning is off by default.
-
-Thank you for reviewing the patch, Rob!
-
-I had a discussion offline, and I agree that the patch may not be needed
-after all.
-
-Moreover, upon looking at the tests provided in upstream dtc tree, I
-also realized that the check is exclusively limited to port@0, and does
-not include any random 'child@0'. This makes the patch make a lot less
-sense too.
-
-Regards
-Aradhya
-
-> 
->> code-block ::
+>> 1) We can use the drm_gpuvm_bo structure to attach it to various
+>> lists
+>>     of the drm_gpuvm. This is useful for tracking external and evicted
+>>     objects per VM, which is introduced in subsequent patches.
 >>
->> 	Warning (graph_child_address): /bus@100000/dss@4a00000/ports:
->> 	graph node has single child node 'port@0',
->> 	#address-cells/#size-cells are not necessary
+>> 2) Finding mappings of a certain drm_gem_object mapped in a certain
+>>     drm_gpuvm becomes much cheaper.
 >>
->> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+>> 3) Drivers can derive and extend the structure to easily represent
+>>     driver specific states of a BO for a certain GPUVM.
 >>
->> [0]: https://lore.kernel.org/all/570903b6-8239-d44a-5fac-71700804cb5d@ti.com/
+>> The idea of this abstraction was taken from amdgpu, hence the credit
+>> for
+>> this idea goes to the developers of amdgpu.
+>>
+>> Cc: Christian König <christian.koenig@amd.com>
+>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 >> ---
->>  scripts/dtc/checks.c | 11 ++++++++++-
->>  1 file changed, 10 insertions(+), 1 deletion(-)
+>>   drivers/gpu/drm/drm_gpuvm.c            | 335 +++++++++++++++++++++--
+>> --
+>>   drivers/gpu/drm/nouveau/nouveau_uvmm.c |  64 +++--
+>>   include/drm/drm_gem.h                  |  32 +--
+>>   include/drm/drm_gpuvm.h                | 188 +++++++++++++-
+>>   4 files changed, 533 insertions(+), 86 deletions(-)
 > 
-> This is a copy of upstream dtc. We don't take patches for it (except in 
-> emergency). Look at the commit history.
+> That checkpatch.pl error still remains as well.
+
+I guess you refer to:
+
+ERROR: do not use assignment in if condition
+#633: FILE: drivers/gpu/drm/nouveau/nouveau_uvmm.c:1165:
++                       if (!(op->gem.obj = obj))
+
+This was an intentional decision, since in this specific case it seems to
+be more readable than the alternatives.
+
+However, if we consider this to be a hard rule, which we never ever break,
+I'm fine changing it too.
+
 > 
-> Rob
+> Thanks,
+> Thomas
+> 
 
