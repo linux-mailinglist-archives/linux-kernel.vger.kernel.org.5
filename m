@@ -2,479 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCFA7DD4E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7547DD4F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376279AbjJaRpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S1376321AbjJaRqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346980AbjJaRpI (ORCPT
+        with ESMTP id S1376296AbjJaRqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:45:08 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEC9F7
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:45:04 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a909b4e079so64158457b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698774303; x=1699379103; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cQkff4wKmvdkqz0jbn2DGoF7t1ibijfeMrbSGmFfV5o=;
-        b=e3jaSlgxFNQSlipcBtWT5aZWYqe196LvMCQ1l2y9E/tXVvMZj5PcZQSH9NjI5Kk7+c
-         it7PieMCAlZBLOileuErxhrxATNfsIwKTlTcouNu/Xo9qkllleUHcOYBlUioi/k/3xXZ
-         SXHj78qDp7aSySVx+XdoyoktTGRmUsbv7npwvWV/Rj4FGfu0YLpSjOW/3udFu02fCGQ4
-         DFDPtUiTvgpFrnASQTaX8CGKvoR4hrYEVDnJKbIYvM4PEGaxqYBCXFS0UBAWdL1B7Pnl
-         oRwcVi+1Orq93cTRVUmTO4r+LJcc3rZh3FdOHJ8ZFwiD7DnS9UJJkLfE3Wu9gPPAIdUH
-         vafg==
+        Tue, 31 Oct 2023 13:46:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76B4A2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698774318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rWf+4dRln/ZnS7DUNhqOn//sFXTpR/FU0p4fjjC28pk=;
+        b=adx/pJLJplYXuoTiudeNpzVP1qg1CElRKuOUKEsmcm2QYOxGNXWmhYe5uXFCWn1kpATygw
+        p7Qbh74KmWF1genDblqlHt5SpYyxM2koV5HcV9hL/7Do9gYcTrrM4Sy84DIKVa10ZfGdgp
+        vesdCBU4TNKLCjtD+SIXwvlLucGNbOk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-22-SXAwV5EaNvGDFdys17yv1Q-1; Tue, 31 Oct 2023 13:45:15 -0400
+X-MC-Unique: SXAwV5EaNvGDFdys17yv1Q-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40855a91314so395795e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 10:45:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774303; x=1699379103;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cQkff4wKmvdkqz0jbn2DGoF7t1ibijfeMrbSGmFfV5o=;
-        b=JbJCLtIg3DEgjh+7HE8MoEzNaLG/ocdAPX8AG3JMZPCU/voznGnIzMrIesXMguXQEZ
-         cMnV0U2GnSLLtKbpEtj6WgCNiGk+kQZhaQ+JkcgKEzRASv8bHppVVKNfMz/ofpmjFu7z
-         yjvERjOqhKp93rH6uCmGuQf2YdadoP0K0V1o/VVXRbXDZsX+DGLrksrQqwd96po83Isy
-         V24zgMoOMSHndzhKXljzDr3WeOnLS4ezMGmSFtV1j+3XPeMCkeW2Vh+uF1/DkpkjJlb7
-         D/iyVIcWb/25QWaRkrc2IMk7kbVTf7EcBTwgnsG9vxxpKoPnDsYW2zKXt8TPXA2beTpy
-         5Dqg==
-X-Gm-Message-State: AOJu0YwVur0OoxB01WcnyxFNDfEAFJ2a4iC1d5KgG54QS8gtWs+UxnOx
-        D3zOHzPcjyGh3wJ5Ns3hlgNkdEZzSJcyzKZP1Q==
-X-Google-Smtp-Source: AGHT+IEaKzEc6XPxB+tid0y7t2s5ea2F0qyE+xcrn5lI3u1DwjXdT2pJXY5F6GLe0m12f0145l2jPa4jrmTp4G//qg==
-X-Received: from souravpanda.svl.corp.google.com ([2620:15c:2a3:200:84c2:bfa0:7c62:5d77])
- (user=souravpanda job=sendgmr) by 2002:a25:cfca:0:b0:d9a:556d:5f8a with SMTP
- id f193-20020a25cfca000000b00d9a556d5f8amr242440ybg.12.1698774303488; Tue, 31
- Oct 2023 10:45:03 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 10:44:59 -0700
-In-Reply-To: <20231031174459.459480-1-souravpanda@google.com>
-Mime-Version: 1.0
-References: <20231031174459.459480-1-souravpanda@google.com>
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231031174459.459480-2-souravpanda@google.com>
-Subject: [PATCH v3 1/1] mm: report per-page metadata information
-From:   Sourav Panda <souravpanda@google.com>
-To:     corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, david@redhat.com,
-        rdunlap@infradead.org, chenlinxuan@uniontech.com,
-        yang.yang29@zte.com.cn, souravpanda@google.com,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@Oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
+        d=1e100.net; s=20230601; t=1698774314; x=1699379114;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rWf+4dRln/ZnS7DUNhqOn//sFXTpR/FU0p4fjjC28pk=;
+        b=bjxi2lTY/UzQLAJzUxsqdFk9Vqz4J2ky/W8JhoCIZQ2czVlHT92tbrH3mV5Eo0fYYm
+         0lum9zExar/tkHrL2uz7KGR26/PihVltVN7e4JJ789oM4tafMs3y4/Ia2vaglNFqlRDj
+         1ikuyJLtfi7f22TLjMzXSd3mjx7VhsHg97XHidjNOeV1tvXrqg7ljtUrV2recbi6prO3
+         dSGsY1FJ1Oi3kykXTl8PVB14oAD8jl9hjCbZBNCaUJ3zWewOoUhBPCaCba7lzsMSdvYX
+         qn5l04deAPsm/HfyVqQUtFPzoR6uTyvqxk09jL831jH1ge6qMEOGmB0Dd/NN3PX3NNTg
+         S0XQ==
+X-Gm-Message-State: AOJu0YzWcN7I4C0R4JjSjG7XugOGTv9cQefO2zdpnMkQK+iOqepxAVks
+        EAwuHdGEE+IUI+o/+NkeTdMlCMPpHeKfnX210BDwkEly01ANCRJ8tMsu1edjIZOLSsEhG4wZyDJ
+        byJhyj6RFuFF3E8FF4ihL5gni
+X-Received: by 2002:a05:600c:444d:b0:407:3e94:bcca with SMTP id v13-20020a05600c444d00b004073e94bccamr3745607wmn.1.1698774314252;
+        Tue, 31 Oct 2023 10:45:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGbZBYqKwT+ougX5g/TztWctujgcRUcbudRaLRTD/WxfIqJFPl/aXqTBrFrrEIyuIt7ZpPcWQ==
+X-Received: by 2002:a05:600c:444d:b0:407:3e94:bcca with SMTP id v13-20020a05600c444d00b004073e94bccamr3745577wmn.1.1698774313833;
+        Tue, 31 Oct 2023 10:45:13 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05600c468f00b003fe1c332810sm2362973wmo.33.2023.10.31.10.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 10:45:13 -0700 (PDT)
+Message-ID: <d6eb8a9dc5b0e4b83e1944d7e0bb8ee2cb9cc111.camel@redhat.com>
+Subject: Re: [PATCH v6 06/25] x86/fpu/xstate: Opt-in kernel dynamic bits
+ when calculate guest xstate size
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Tue, 31 Oct 2023 19:45:11 +0200
+In-Reply-To: <ZTqgzZl-reO1m01I@google.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-7-weijiang.yang@intel.com>
+         <e0db6ffd-5d92-2a1a-bdfb-a190fe1ccd25@intel.com>
+         <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
+         <ZTf5wPKXuHBQk0AN@google.com>
+         <de1b148c-45c6-6517-0926-53d1aad8978e@intel.com>
+         <ZTqgzZl-reO1m01I@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a new per-node PageMetadata field to
-/sys/devices/system/node/nodeN/meminfo
-and a global PageMetadata field to /proc/meminfo. This information can
-be used by users to see how much memory is being used by per-page
-metadata, which can vary depending on build configuration, machine
-architecture, and system use.
+On Thu, 2023-10-26 at 10:24 -0700, Sean Christopherson wrote:
+> On Wed, Oct 25, 2023, Weijiang Yang wrote:
+> > On 10/25/2023 1:07 AM, Sean Christopherson wrote:
+> > > On Fri, Sep 15, 2023, Weijiang Yang wrote:
+> > > IIUC, the "dynamic" features contains CET_KERNEL, whereas xfeatures_mask_supervisor()
+> > > conatins PASID, CET_USER, and CET_KERNEL.  PASID isn't virtualized by KVM, but
+> > > doesn't that mean CET_USER will get dropped/lost if userspace requests AMX/XTILE
+> > > enabling?
+> > 
+> > Yes, __state_size is correct for guest enabled xfeatures, including CET_USER,
+> > and it gets removed from __state_perm.
+> > 
+> > IIUC, from current qemu/kernel interaction for guest permission settings,
+> > __xstate_request_perm() is called only _ONCE_ to set AMX/XTILE for every vCPU
+> > thread, so the removal of guest supervisor xfeatures won't hurt guest! ;-/
+> 
+> Huh?  I don't follow.  What does calling __xstate_request_perm() only once have
+> to do with anything?
+> 
+> /me stares more
+> 
+> OMG, hell no.  First off, this code is a nightmare to follow.  The existing comment
+> is useless.  No shit the code is adding in supervisor states for the host.  What's
+> not AT ALL clear is *why*.
+> 
+> The commit says it's necessary because the "permission bitmap is only relevant
+> for user states":
+> 
+>   commit 781c64bfcb735960717d1cb45428047ff6a5030c
+>   Author: Thomas Gleixner <tglx@linutronix.de>
+>   Date:   Thu Mar 24 14:47:14 2022 +0100
+> 
+>     x86/fpu/xstate: Handle supervisor states in XSTATE permissions
+>     
+>     The size calculation in __xstate_request_perm() fails to take supervisor
+>     states into account because the permission bitmap is only relevant for user
+>     states.
+> 
+> But @permitted comes from:
+> 
+>   permitted = xstate_get_group_perm(guest);
+> 
+> which is either fpu->guest_perm.__state_perm or fpu->perm.__state_perm.  And
+> __state_perm is initialized to:
+> 
+> 	fpu->perm.__state_perm		= fpu_kernel_cfg.default_features;
 
-Per-page metadata is the amount of memory that Linux needs in order to
-manage memory at the page granularity. The majority of such memory is
-used by "struct page" and "page_ext" data structures. In contrast to
-most other memory consumption statistics, per-page metadata might not
-be included in MemTotal. For example, MemTotal does not include memblock
-allocations but includes buddy allocations. While on the other hand,
-per-page metadata would include both memblock and buddy allocations.
+Not anymore after patch 5, and patch 5 does make sense in the regard to the fact
+that we might not want to save/restore kernel CET state for nothing for regular kernel threads.
 
-This memory depends on build configurations, machine architectures, and
-the way system is used:
+> 
+> where fpu_kernel_cfg.default_features contains everything except the dynamic
+> xfeatures, i.e. everything except XFEATURE_MASK_XTILE_DATA:
+> 
+> 	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
+> 	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> 
+> So why on earth does this code to force back xfeatures_mask_supervisor()?  Because
+> the code just below drops the supervisor bits to compute the user xstate size and
+> then clobbers __state_perm.
+> 
+> 	/* Calculate the resulting user state size */
+> 	mask &= XFEATURE_MASK_USER_SUPPORTED;
+> 	usize = xstate_calculate_size(mask, false);
+> 
+> 	...
+> 
+> 	WRITE_ONCE(perm->__state_perm, mask);
+> 
+> That is beyond asinine.  IIUC, the intent is to apply the permission bitmap only
+> for user states, because the only dynamic states are user states.  Bbut the above
+> creates an inconsistent mess.  If userspace doesn't request XTILE_DATA,
+> __state_perm will contain supervisor states, but once userspace does request
+> XTILE_DATA, __state_perm will be lost.
+> 
+> And because that's not confusing enough, clobbering __state_perm would also drop
+> FPU_GUEST_PERM_LOCKED, except that __xstate_request_perm() can' be reached with
+> said LOCKED flag set.
+> 
+> fpu_xstate_prctl() already strips out supervisor features:
+> 
+> 	case ARCH_GET_XCOMP_PERM:
+> 		/*
+> 		 * Lockless snapshot as it can also change right after the
+> 		 * dropping the lock.
+> 		 */
+> 		permitted = xstate_get_host_group_perm();
+> 		permitted &= XFEATURE_MASK_USER_SUPPORTED;
+> 		return put_user(permitted, uptr);
+> 
+> 	case ARCH_GET_XCOMP_GUEST_PERM:
+> 		permitted = xstate_get_guest_group_perm();
+> 		permitted &= XFEATURE_MASK_USER_SUPPORTED;
+> 		return put_user(permitted, uptr);
+> 
+> and while KVM doesn't apply the __state_perm to supervisor states, if it did
+> there would be zero harm in doing so.
+> 
+> 	case 0xd: {
+> 		u64 permitted_xcr0 = kvm_get_filtered_xcr0();
+> 		u64 permitted_xss = kvm_caps.supported_xss;
+> 
+> Second, the relying on QEMU to only trigger __xstate_request_perm() is not acceptable.
+> It "works" for the current code, but only because there's only a single dynamic
+> feature, i.e. this will short circuit and prevent computing a bad ksize.
+> 
+> 	/* Check whether fully enabled */
+> 	if ((permitted & requested) == requested)
+> 		return 0;
+> 
+> I don't know how I can possibly make it any clearer: KVM absolutely must not assume
+> userspace behavior.
+> 
+> So rather than continue with the current madness, which will break if/when the
+> next dynamic feature comes along, just preserve non-user xfeatures/flags in
+> __guest_perm.
 
-Build configuration may include extra fields into "struct page",
-and enable / disable "page_ext"
-Machine architecture defines base page sizes. For example 4K x86,
-8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
-overhead is smaller on machines with larger page sizes.
-System use can change per-page overhead by using vmemmap
-optimizations with hugetlb pages, and emulated pmem devdax pages.
-Also, boot parameters can determine whether page_ext is needed
-to be allocated. This memory can be part of MemTotal or be outside
-MemTotal depending on whether the memory was hot-plugged, booted with,
-or hugetlb memory was returned back to the system.
+I more or less agree with you, however I would like to discuss the FPU permissions
+in more depth:
 
-Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Signed-off-by: Sourav Panda <souravpanda@google.com>
----
- Documentation/filesystems/proc.rst |  3 +++
- drivers/base/node.c                |  2 ++
- fs/proc/meminfo.c                  |  7 +++++++
- include/linux/mmzone.h             |  3 +++
- include/linux/vmstat.h             |  4 ++++
- mm/hugetlb.c                       |  8 +++++++-
- mm/hugetlb_vmemmap.c               |  8 +++++++-
- mm/mm_init.c                       |  3 +++
- mm/page_alloc.c                    |  1 +
- mm/page_ext.c                      | 32 +++++++++++++++++++++---------
- mm/sparse-vmemmap.c                |  3 +++
- mm/sparse.c                        |  7 ++++++-
- mm/vmstat.c                        | 24 ++++++++++++++++++++++
- 13 files changed, 93 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 2b59cff8be17..c121f2ef9432 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -987,6 +987,7 @@ Example output. You may not have all of these fields.
-     AnonPages:       4654780 kB
-     Mapped:           266244 kB
-     Shmem:              9976 kB
-+    PageMetadata:     513419 kB
-     KReclaimable:     517708 kB
-     Slab:             660044 kB
-     SReclaimable:     517708 kB
-@@ -1089,6 +1090,8 @@ Mapped
-               files which have been mmapped, such as libraries
- Shmem
-               Total memory used by shared memory (shmem) and tmpfs
-+PageMetadata
-+              Memory used for per-page metadata
- KReclaimable
-               Kernel allocations that the kernel will attempt to reclaim
-               under memory pressure. Includes SReclaimable (below), and other
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 493d533f8375..da728542265f 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -428,6 +428,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			     "Node %d Mapped:         %8lu kB\n"
- 			     "Node %d AnonPages:      %8lu kB\n"
- 			     "Node %d Shmem:          %8lu kB\n"
-+			     "Node %d PageMetadata:   %8lu kB\n"
- 			     "Node %d KernelStack:    %8lu kB\n"
- #ifdef CONFIG_SHADOW_CALL_STACK
- 			     "Node %d ShadowCallStack:%8lu kB\n"
-@@ -458,6 +459,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			     nid, K(node_page_state(pgdat, NR_FILE_MAPPED)),
- 			     nid, K(node_page_state(pgdat, NR_ANON_MAPPED)),
- 			     nid, K(i.sharedram),
-+			     nid, K(node_page_state(pgdat, NR_PAGE_METADATA)),
- 			     nid, node_page_state(pgdat, NR_KERNEL_STACK_KB),
- #ifdef CONFIG_SHADOW_CALL_STACK
- 			     nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 45af9a989d40..f141bb2a550d 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -39,7 +39,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	long available;
- 	unsigned long pages[NR_LRU_LISTS];
- 	unsigned long sreclaimable, sunreclaim;
-+	unsigned long nr_page_metadata;
- 	int lru;
-+	int nid;
- 
- 	si_meminfo(&i);
- 	si_swapinfo(&i);
-@@ -57,6 +59,10 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
- 	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
- 
-+	nr_page_metadata = 0;
-+	for_each_online_node(nid)
-+		nr_page_metadata += node_page_state(NODE_DATA(nid), NR_PAGE_METADATA);
-+
- 	show_val_kb(m, "MemTotal:       ", i.totalram);
- 	show_val_kb(m, "MemFree:        ", i.freeram);
- 	show_val_kb(m, "MemAvailable:   ", available);
-@@ -104,6 +110,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "Mapped:         ",
- 		    global_node_page_state(NR_FILE_MAPPED));
- 	show_val_kb(m, "Shmem:          ", i.sharedram);
-+	show_val_kb(m, "PageMetadata:   ", nr_page_metadata);
- 	show_val_kb(m, "KReclaimable:   ", sreclaimable +
- 		    global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE));
- 	show_val_kb(m, "Slab:           ", sreclaimable + sunreclaim);
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4106fbc5b4b3..dda1ad522324 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -207,6 +207,9 @@ enum node_stat_item {
- 	PGPROMOTE_SUCCESS,	/* promote successfully */
- 	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
- #endif
-+	NR_PAGE_METADATA,	/* Page metadata size (struct page and page_ext)
-+				 * in pages
-+				 */
- 	NR_VM_NODE_STAT_ITEMS
- };
- 
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index fed855bae6d8..af096a881f03 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -656,4 +656,8 @@ static inline void lruvec_stat_sub_folio(struct folio *folio,
- {
- 	lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
- }
-+
-+void __init mod_node_early_perpage_metadata(int nid, long delta);
-+void __init store_early_perpage_metadata(void);
-+
- #endif /* _LINUX_VMSTAT_H */
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 1301ba7b2c9a..e453962f2b74 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1790,6 +1790,10 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
- 		destroy_compound_gigantic_folio(folio, huge_page_order(h));
- 		free_gigantic_folio(folio, huge_page_order(h));
- 	} else {
-+#ifndef CONFIG_SPARSEMEM_VMEMMAP
-+		__mod_node_page_state(NODE_DATA(page_to_nid(&folio->page)),
-+				      NR_PAGE_METADATA, -huge_page_order(h));
-+#endif
- 		__free_pages(&folio->page, huge_page_order(h));
- 	}
- }
-@@ -2175,7 +2179,9 @@ static struct folio *alloc_buddy_hugetlb_folio(struct hstate *h,
- 		__count_vm_event(HTLB_BUDDY_PGALLOC_FAIL);
- 		return NULL;
- 	}
--
-+#ifndef CONFIG_SPARSEMEM_VMEMMAP
-+	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, huge_page_order(h));
-+#endif
- 	__count_vm_event(HTLB_BUDDY_PGALLOC);
- 	return page_folio(page);
- }
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 4b9734777f69..71c44d2471d0 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -214,6 +214,8 @@ static inline void free_vmemmap_page(struct page *page)
- 		free_bootmem_page(page);
- 	else
- 		__free_page(page);
-+	__mod_node_page_state(NODE_DATA(page_to_nid(page)),
-+			      NR_PAGE_METADATA, -1);
- }
- 
- /* Free a list of the vmemmap pages */
-@@ -336,6 +338,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
- 			  (void *)walk.reuse_addr);
- 		list_add(&walk.reuse_page->lru, &vmemmap_pages);
- 	}
-+	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, 1);
- 
- 	/*
- 	 * In order to make remapping routine most efficient for the huge pages,
-@@ -384,11 +387,14 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
- 	unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
- 	int nid = page_to_nid((struct page *)start);
- 	struct page *page, *next;
-+	int i;
- 
--	while (nr_pages--) {
-+	for (i = 0; i < nr_pages; i++) {
- 		page = alloc_pages_node(nid, gfp_mask, 0);
- 		if (!page)
- 			goto out;
-+		__mod_node_page_state(NODE_DATA(page_to_nid(page)),
-+				      NR_PAGE_METADATA, 1);
- 		list_add_tail(&page->lru, list);
- 	}
- 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 50f2f34745af..e02dce7e2e9a 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -26,6 +26,7 @@
- #include <linux/pgtable.h>
- #include <linux/swap.h>
- #include <linux/cma.h>
-+#include <linux/vmstat.h>
- #include "internal.h"
- #include "slab.h"
- #include "shuffle.h"
-@@ -1656,6 +1657,8 @@ static void __init alloc_node_mem_map(struct pglist_data *pgdat)
- 			panic("Failed to allocate %ld bytes for node %d memory map\n",
- 			      size, pgdat->node_id);
- 		pgdat->node_mem_map = map + offset;
-+		mod_node_early_perpage_metadata(pgdat->node_id,
-+						PAGE_ALIGN(size) >> PAGE_SHIFT);
- 	}
- 	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
- 				__func__, pgdat->node_id, (unsigned long)pgdat,
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 85741403948f..522dc0c52610 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5443,6 +5443,7 @@ void __init setup_per_cpu_pageset(void)
- 	for_each_online_pgdat(pgdat)
- 		pgdat->per_cpu_nodestats =
- 			alloc_percpu(struct per_cpu_nodestat);
-+	store_early_perpage_metadata();
- }
- 
- __meminit void zone_pcp_init(struct zone *zone)
-diff --git a/mm/page_ext.c b/mm/page_ext.c
-index 4548fcc66d74..9e8b1fcbb962 100644
---- a/mm/page_ext.c
-+++ b/mm/page_ext.c
-@@ -201,6 +201,8 @@ static int __init alloc_node_page_ext(int nid)
- 		return -ENOMEM;
- 	NODE_DATA(nid)->node_page_ext = base;
- 	total_usage += table_size;
-+	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-+			      PAGE_ALIGN(table_size) >> PAGE_SHIFT);
- 	return 0;
- }
- 
-@@ -255,12 +257,15 @@ static void *__meminit alloc_page_ext(size_t size, int nid)
- 	void *addr = NULL;
- 
- 	addr = alloc_pages_exact_nid(nid, size, flags);
--	if (addr) {
-+	if (addr)
- 		kmemleak_alloc(addr, size, 1, flags);
--		return addr;
--	}
-+	else
-+		addr = vzalloc_node(size, nid);
- 
--	addr = vzalloc_node(size, nid);
-+	if (addr) {
-+		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-+				    PAGE_ALIGN(size) >> PAGE_SHIFT);
-+	}
- 
- 	return addr;
- }
-@@ -303,18 +308,27 @@ static int __meminit init_section_page_ext(unsigned long pfn, int nid)
- 
- static void free_page_ext(void *addr)
- {
-+	size_t table_size;
-+	struct page *page;
-+	struct pglist_data *pgdat;
-+
-+	table_size = page_ext_size * PAGES_PER_SECTION;
-+
- 	if (is_vmalloc_addr(addr)) {
-+		page = vmalloc_to_page(addr);
-+		pgdat = page_pgdat(page);
- 		vfree(addr);
- 	} else {
--		struct page *page = virt_to_page(addr);
--		size_t table_size;
--
--		table_size = page_ext_size * PAGES_PER_SECTION;
--
-+		page = virt_to_page(addr);
-+		pgdat = page_pgdat(page);
- 		BUG_ON(PageReserved(page));
- 		kmemleak_free(addr);
- 		free_pages_exact(addr, table_size);
- 	}
-+
-+	__mod_node_page_state(pgdat, NR_PAGE_METADATA,
-+			      -1L * (PAGE_ALIGN(table_size) >> PAGE_SHIFT));
-+
- }
- 
- static void __free_page_ext(unsigned long pfn)
-diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-index a2cbe44c48e1..e33f302db7c6 100644
---- a/mm/sparse-vmemmap.c
-+++ b/mm/sparse-vmemmap.c
-@@ -469,5 +469,8 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
- 	if (r < 0)
- 		return NULL;
- 
-+	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-+			      PAGE_ALIGN(end - start) >> PAGE_SHIFT);
-+
- 	return pfn_to_page(pfn);
- }
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 77d91e565045..db78233a85ef 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -14,7 +14,7 @@
- #include <linux/swap.h>
- #include <linux/swapops.h>
- #include <linux/bootmem_info.h>
--
-+#include <linux/vmstat.h>
- #include "internal.h"
- #include <asm/dma.h>
- 
-@@ -465,6 +465,9 @@ static void __init sparse_buffer_init(unsigned long size, int nid)
- 	 */
- 	sparsemap_buf = memmap_alloc(size, section_map_size(), addr, nid, true);
- 	sparsemap_buf_end = sparsemap_buf + size;
-+#ifndef CONFIG_SPARSEMEM_VMEMMAP
-+	mod_node_early_perpage_metadata(nid, PAGE_ALIGN(size) >> PAGE_SHIFT);
-+#endif
- }
- 
- static void __init sparse_buffer_fini(void)
-@@ -641,6 +644,8 @@ static void depopulate_section_memmap(unsigned long pfn, unsigned long nr_pages,
- 	unsigned long start = (unsigned long) pfn_to_page(pfn);
- 	unsigned long end = start + nr_pages * sizeof(struct page);
- 
-+	__mod_node_page_state(NODE_DATA(page_to_nid(pfn_to_page(pfn))), NR_PAGE_METADATA,
-+			      (long)-1 * (PAGE_ALIGN(end - start) >> PAGE_SHIFT));
- 	vmemmap_free(start, end, altmap);
- }
- static void free_map_bootmem(struct page *memmap)
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 00e81e99c6ee..070d2b3d2bcc 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1245,6 +1245,7 @@ const char * const vmstat_text[] = {
- 	"pgpromote_success",
- 	"pgpromote_candidate",
- #endif
-+	"nr_page_metadata",
- 
- 	/* enum writeback_stat_item counters */
- 	"nr_dirty_threshold",
-@@ -2274,4 +2275,27 @@ static int __init extfrag_debug_init(void)
- }
- 
- module_init(extfrag_debug_init);
-+
- #endif
-+
-+/*
-+ * Page metadata size (struct page and page_ext) in pages
-+ */
-+static unsigned long early_perpage_metadata[MAX_NUMNODES] __initdata;
-+
-+void __init mod_node_early_perpage_metadata(int nid, long delta)
-+{
-+	early_perpage_metadata[nid] += delta;
-+}
-+
-+void __init store_early_perpage_metadata(void)
-+{
-+	int nid;
-+	struct pglist_data *pgdat;
-+
-+	for_each_online_pgdat(pgdat) {
-+		nid = pgdat->node_id;
-+		__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-+				      early_perpage_metadata[nid]);
-+	}
-+}
--- 
-2.42.0.820.g83a721a137-goog
+First of all we have two things at play here:
+
+1. On demand resize of the thread's FPU state buffer to avoid penalty of context switching the AMX state.
+
+2. The fact that allowing this on demand resize of this state buffer breaks the x86_64 ABI,
+   because FPU state has to be saved on the signal stack and ABI allows the stack size to be smaller than what is
+   needed to save the FPU state with AMX features enabled.
+
+Thus a two tiered approach was done: first application asks for a permission to use the dynamic features,
+and then when it actually uses it, the FPU state buffer is resized.
+
+Otherwise if an AMX instruction is used by the app but the permission was not asked by the app for its xstate component, 
+the application is terminated.
+
+(I might not 100% understand this correctly, please correct me if I am wrong).
+
+However IMHO the 'fpu permission' name is a bit misleading,
+This feature is not really about security/permissions but more like opt-in to use newer ABI,
+for example KVM capabilities API, and the kernel will never refuse the permission request
+(except if the
+signal stack size is too small but the userspace can adjust it before asking for the permission)
+
+
+On top of that I think that applying the same permission approach to guest's FPU state is not a good fit,
+because of two reasons:
+
+1. The guest FPU state will never be pushed on the signal stack - KVM swaps back the host FPU state
+   before it returns from the KVM_RUN ioctl.
+
+   Also I think (not sure) that ptrace can only access (FPU) state of a stopped process, and a stopped vCPU process
+   will also first return to userspace. Again I might be mistaken here, I never researched this in depth.
+
+   Assuming that I am correct on these assumptions, the guest FPU state can only be accessed via 
+   KVM_GET_XSAVE/KVM_SET_XSAVE/KVM_GET_XSAVE2 ioctls,
+   which also returns the userspace portion of the state including optionally the AMX state, 
+   but this ioctl doesn't really need FPU permission framework, because it is a KVM ABI, and in 
+   fact KVM_GET_XSAVE2 was added exactly because of that: to make sure that userspace
+   is aware that larger than 4K buffer can be returned.
+
+2. Guest FPU state is not even on demand resized (but I can imagine that in the future we will do this).
+
+
+And of course, adding permissions for kernel features, that is even worse idea, which we really
+shouldn't do.
+
+>  
+> If there are no objections, I'll test the below and write a proper changelog.
+>  
+> --
+> From: Sean Christopherson <seanjc@google.com>
+> Date: Thu, 26 Oct 2023 10:17:33 -0700
+> Subject: [PATCH] x86/fpu/xstate: Always preserve non-user xfeatures/flags in
+>  __state_perm
+> 
+> Fixes: 781c64bfcb73 ("x86/fpu/xstate: Handle supervisor states in XSTATE permissions")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kernel/fpu/xstate.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index ef6906107c54..73f6bc00d178 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -1601,16 +1601,20 @@ static int __xstate_request_perm(u64 permitted, u64 requested, bool guest)
+>  	if ((permitted & requested) == requested)
+>  		return 0;
+>  
+> -	/* Calculate the resulting kernel state size */
+> +	/*
+> +	 * Calculate the resulting kernel state size.  Note, @permitted also
+> +	 * contains supervisor xfeatures even though supervisor are always
+> +	 * permitted for kernel and guest FPUs, and never permitted for user
+> +	 * FPUs.
+> +	 */
+>  	mask = permitted | requested;
+> -	/* Take supervisor states into account on the host */
+> -	if (!guest)
+> -		mask |= xfeatures_mask_supervisor();
+>  	ksize = xstate_calculate_size(mask, compacted);
+
+This might not work with kernel dynamic features, because xfeatures_mask_supervisor() will
+return all supported supervisor features.
+
+
+Therefore at least until we have an actual kernel dynamic feature 
+(a feature used by the host kernel and not KVM, and which has to be dynamic like AMX),
+I suggest that KVM stops using the permission
+API completely for the guest FPU state, 
+and just gives all the features it wants to enable right to __fpu_alloc_init_guest_fpstate()
+(Guest FPU permission API IMHO should be deprecated and ignored)
+
+
+
+>  
+> -	/* Calculate the resulting user state size */
+> -	mask &= XFEATURE_MASK_USER_SUPPORTED;
+> -	usize = xstate_calculate_size(mask, false);
+> +	/*
+> +	 * Calculate the resulting user state size.  Take care not to clobber
+> +	 * the supervisor xfeatures in the new mask!
+> +	 */
+> +	usize = xstate_calculate_size(mask & XFEATURE_MASK_USER_SUPPORTED, false);
+>  
+>  	if (!guest) {
+>  		ret = validate_sigaltstack(usize);
+
+
+
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> base-commit: c076acf10c78c0d7e1aa50670e9cc4c91e8d59b4
+
+
+
+
+
 
