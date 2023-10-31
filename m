@@ -2,219 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988767DCCB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE2C7DCCA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344176AbjJaMEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 08:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        id S1344181AbjJaMEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjJaMEs (ORCPT
+        with ESMTP id S230321AbjJaMEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:04:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12715583
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698753838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=tizFFarlRzwye9RcySbWtnsOMYZ5mRgBH68nH0EPV+s=;
-        b=JZ0qdHfZmLtTvxI1BtweQ11BIUa6b8WQQhxvPWu7CgaU2aD5pdq9Ly1TKfBiNCcseuUwyX
-        WEZnm6gM09jOLM9L5tCHs4olYYDAqJfHbJk4ZXnChClS9nSCKUVHVtskePercsKpIpPQ0E
-        I339Eu8owGiVnO35XsfPpVvwaI/6RFI=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-UvsgnU1RNNeFgy6LO6AAOg-1; Tue, 31 Oct 2023 08:03:56 -0400
-X-MC-Unique: UvsgnU1RNNeFgy6LO6AAOg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32d9751ca2cso2529113f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:03:56 -0700 (PDT)
+        Tue, 31 Oct 2023 08:04:33 -0400
+Received: from mail-oi1-f206.google.com (mail-oi1-f206.google.com [209.85.167.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CA55590
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:04:28 -0700 (PDT)
+Received: by mail-oi1-f206.google.com with SMTP id 5614622812f47-3b2e7a8fbbdso7289081b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 05:04:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698753835; x=1699358635;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tizFFarlRzwye9RcySbWtnsOMYZ5mRgBH68nH0EPV+s=;
-        b=jxCZt5grA3+T5+hh4vcQqsZPCCK870jkVkEGH6eyHPMnGUBcRS8NznNpDXhMyyFrB2
-         L5aQspvNgUGRRE92rsYQ2vrqVefJecSGw5l1Yzsd+gEs+QJmwdwORfRnsCks8q/qvidU
-         TLqThIUbKAHSWVIYb/9Z/skX0wS/gm0W3l14oqtxSepqYhCWDzb/mcWHS97EWJQWEbL5
-         0MXWKc8diH6sGW0xH2Phqu5vSdS2z4U5OhYdyxxRHlvrcBGArJ58hZHCAoJBVtIDFrS2
-         JMoqql3kLlwaBIknlYXx8uJufr8Ejx+aS/dvKgzzHcm1DyjxwO1K+1cb3bgDNqmioCUZ
-         R++g==
-X-Gm-Message-State: AOJu0YxoPw4hsAccVdcjk9BXgutrEJIekuSyxMuvk9IOTXAqm/nOZdCX
-        WCbWQ7cFK8vOmIEs8nKaAwYi7f3J/iXOCwtWwANDPTw8AN3JJPT/1PbmPplxWP6tcBxGPyx/M66
-        2jKYHiD0QIKUNU2ureJgcr04k7hw8ms9T
-X-Received: by 2002:a5d:5229:0:b0:32d:9ed0:c31a with SMTP id i9-20020a5d5229000000b0032d9ed0c31amr8203285wra.64.1698753835518;
-        Tue, 31 Oct 2023 05:03:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFPNnFt3Jl6HWNbWTOKBc66lgc1Kkuj+K6c2d8a6zYk8NL7hLTmlGJwMGgFR1ELWi8GJQC6FA==
-X-Received: by 2002:a5d:5229:0:b0:32d:9ed0:c31a with SMTP id i9-20020a5d5229000000b0032d9ed0c31amr8203257wra.64.1698753835063;
-        Tue, 31 Oct 2023 05:03:55 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c707:8f00:43b0:1107:57d2:28ee? (p200300cbc7078f0043b0110757d228ee.dip0.t-ipconnect.de. [2003:cb:c707:8f00:43b0:1107:57d2:28ee])
-        by smtp.gmail.com with ESMTPSA id v6-20020a5d4b06000000b0031f82743e25sm1344399wrq.67.2023.10.31.05.03.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 05:03:54 -0700 (PDT)
-Message-ID: <e05b95bd-d712-42cd-9344-5ff2627b9e1d@redhat.com>
-Date:   Tue, 31 Oct 2023 13:03:53 +0100
+        d=1e100.net; s=20230601; t=1698753867; x=1699358667;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5wpJcbiTL0xJL6GMyqbrLywFGyvMuibD1Wk7yDfqWH8=;
+        b=Fncgx3gsPUTKw9GpUgK8narid3awY+ZkUDKWaeIqeal/BFgmSib7T1IxpVQ/q7QqEM
+         z1zVHW2OSO/uI94Tnvat/TsDeMxfsMQrBOJAHATdYxLYiR43Fgzv+z6iT1DTRb1cmYw5
+         +Xy2egjCpZhqrfsDihd8/yz54CYmMUHs3Lk2OOSc1fOA5V7SMCW6N9/jJ1+nq0qRWSFC
+         UIfgQzWNAyNEdV5WCvdWUdCBEenIoG/lo1Mot5oow3Rv34Ke4q9Ac0y7Gr48NURSPDMF
+         gSImAeOeVbSXv0ZKtRhiwbLg0+uOKW9nS1HHyCyZOfPl+1CSMeokOf3obxcZFHhZqz5B
+         Bcmw==
+X-Gm-Message-State: AOJu0Yz3z4F6f8B3VDRKT+lYgiPzrLe7/R7oxnYCZ0Ntki90TaZr+cG6
+        5a5nfp9LUGnr8FRUDdjEVMfNca71rz53jroEdpRQBAEd5DhJ
+X-Google-Smtp-Source: AGHT+IECTl9BHc7Xo+eIDGD78FhZDF9tZPb8wtlq4b6kUyiccDDr8CFbxc3/vUMUV9xfIkAnk5UK3TkNRRiV4V7dKwW+YsxvLxPi
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com>
- <7a3a2d49-528d-4297-ae19-56aa9e6c59c6@arm.com>
- <cf97cf90-ceae-4fc8-8fd8-3f8068e53611@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <cf97cf90-ceae-4fc8-8fd8-3f8068e53611@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:23d1:b0:3b2:f33d:f22e with SMTP id
+ bq17-20020a05680823d100b003b2f33df22emr4634894oib.0.1698753867758; Tue, 31
+ Oct 2023 05:04:27 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 05:04:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d9483d060901f460@google.com>
+Subject: [syzbot] [perf?] general protection fault in inherit_task_group
+From:   syzbot <syzbot+756fe9affda890e892ae@syzkaller.appspotmail.com>
+To:     acme@kernel.org, adrian.hunter@intel.com,
+        alexander.shishkin@linux.intel.com, bpf@vger.kernel.org,
+        irogers@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.10.23 12:55, Ryan Roberts wrote:
-> On 31/10/2023 11:50, Ryan Roberts wrote:
->> On 06/10/2023 21:06, David Hildenbrand wrote:
->> [...]
->>>
->>> Change 2: sysfs interface.
->>>
->>> If we call it THP, it shall go under "/sys/kernel/mm/transparent_hugepage/", I
->>> agree.
->>>
->>> What we expose there and how, is TBD. Again, not a friend of "orders" and
->>> bitmaps at all. We can do better if we want to go down that path.
->>>
->>> Maybe we should take a look at hugetlb, and how they added support for multiple
->>> sizes. What *might* make sense could be (depending on which values we actually
->>> support!)
->>>
->>>
->>> /sys/kernel/mm/transparent_hugepage/hugepages-64kB/
->>> /sys/kernel/mm/transparent_hugepage/hugepages-128kB/
->>> /sys/kernel/mm/transparent_hugepage/hugepages-256kB/
->>> /sys/kernel/mm/transparent_hugepage/hugepages-512kB/
->>> /sys/kernel/mm/transparent_hugepage/hugepages-1024kB/
->>> /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/
->>>
->>> Each one would contain an "enabled" and "defrag" file. We want something minimal
->>> first? Start with the "enabled" option.
->>>
->>>
->>> enabled: always [global] madvise never
->>>
->>> Initially, we would set it for PMD-sized THP to "global" and for everything else
->>> to "never".
->>
->> Hi David,
->>
->> I've just started coding this, and it occurs to me that I might need a small
->> clarification here; the existing global "enabled" control is used to drive
->> decisions for both anonymous memory and (non-shmem) file-backed memory. But the
->> proposed new per-size "enabled" is implicitly only controlling anon memory (for
->> now).
->>
->> 1) Is this potentially confusing for the user? Should we rename the per-size
->> controls to "anon_enabled"? Or is it preferable to jsut keep it vague for now so
->> we can reuse the same control for file-backed memory in future?
->>
->> 2) The global control will continue to drive the file-backed memory decision
->> (for now), even when hugepages-2048kB/enabled != "global"; agreed?
->>
->> Thanks,
->> Ryan
->>
-> 
-> Also, an implementation question:
-> 
-> hugepage_vma_check() doesn't currently care whether enabled="never" for DAX VMAs
-> (although it does honour MADV_NOHUGEPAGE and the prctl); It will return true
-> regardless. Is that by design? It couldn't fathom any reasoning from the commit log:
+Hello,
 
-The whole DAX "hugepage" and THP mixup is just plain confusing. We're 
-simply using PUD/PMD mappings of DAX memory, and PMD/PTE- remap when 
-required (VMA split I assume, COW).
+syzbot found the following issue on:
 
-It doesn't result in any memory waste, so who really cares how it's 
-mapped? Apparently we want individual processes to just disable PMD/PUD 
-mappings of DAX using the prctl and madvise. Maybe there are good reasons.
+HEAD commit:    c17cda15cc86 Merge tag 'net-6.6-rc8' of git://git.kernel.o..
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=151ab177680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7d1f30869bb78ec6
+dashboard link: https://syzkaller.appspot.com/bug?extid=756fe9affda890e892ae
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103b572b680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143a82c3680000
 
-Looks like a design decision, probably some legacy leftovers.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d47cb341912c/disk-c17cda15.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f37f0cf41858/vmlinux-c17cda15.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e256afecf3c3/bzImage-c17cda15.xz
 
--- 
-Cheers,
+The issue was bisected to:
 
-David / dhildenb
+commit 32671e3799ca2e4590773fd0e63aaa4229e50c06
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Wed Oct 18 11:56:54 2023 +0000
 
+    perf: Disallow mis-matched inherited group reads
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10fdf71d680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12fdf71d680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14fdf71d680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+756fe9affda890e892ae@syzkaller.appspotmail.com
+Fixes: 32671e3799ca ("perf: Disallow mis-matched inherited group reads")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
+CPU: 0 PID: 5052 Comm: syz-executor420 Not tainted 6.6.0-rc7-syzkaller-00089-gc17cda15cc86 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:inherit_group kernel/events/core.c:13375 [inline]
+RIP: 0010:inherit_task_group.isra.0+0x248/0x5e0 kernel/events/core.c:13422
+Code: 38 d0 7c 08 84 d2 0f 85 18 03 00 00 49 8d bf 8c 00 00 00 8b 9b 8c 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 eb
+RSP: 0018:ffffc90003b1fa48 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000011 RSI: ffffffff81b0fbc9 RDI: 000000000000008c
+RBP: ffff88801ce578a0 R08: 0000000000000005 R09: 0000000000000001
+R10: 0000000000000001 R11: ffffffff8a60008b R12: 0000000000000000
+R13: ffff88807532bb80 R14: ffffc90003b1fae0 R15: 0000000000000000
+FS:  00007f07e8df36c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f07e8df3fe8 CR3: 0000000078a1f000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ perf_event_init_context kernel/events/core.c:13487 [inline]
+ perf_event_init_task+0x330/0x740 kernel/events/core.c:13538
+ copy_process+0x242c/0x73f0 kernel/fork.c:2475
+ kernel_clone+0xfd/0x920 kernel/fork.c:2909
+ __do_sys_clone+0xba/0x100 kernel/fork.c:3052
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f07e8e324d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f07e8df3228 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 00007f07e8ebc308 RCX: 00007f07e8e324d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f07e8ebc300 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f07e8ebc30c
+R13: 0000000000000016 R14: 00007ffca721dd10 R15: 00007ffca721ddf8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:inherit_group kernel/events/core.c:13375 [inline]
+RIP: 0010:inherit_task_group.isra.0+0x248/0x5e0 kernel/events/core.c:13422
+Code: 38 d0 7c 08 84 d2 0f 85 18 03 00 00 49 8d bf 8c 00 00 00 8b 9b 8c 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 eb
+RSP: 0018:ffffc90003b1fa48 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000011 RSI: ffffffff81b0fbc9 RDI: 000000000000008c
+RBP: ffff88801ce578a0 R08: 0000000000000005 R09: 0000000000000001
+R10: 0000000000000001 R11: ffffffff8a60008b R12: 0000000000000000
+R13: ffff88807532bb80 R14: ffffc90003b1fae0 R15: 0000000000000000
+FS:  00007f07e8df36c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f07e8e5ef20 CR3: 0000000078a1f000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	38 d0                	cmp    %dl,%al
+   2:	7c 08                	jl     0xc
+   4:	84 d2                	test   %dl,%dl
+   6:	0f 85 18 03 00 00    	jne    0x324
+   c:	49 8d bf 8c 00 00 00 	lea    0x8c(%r15),%rdi
+  13:	8b 9b 8c 00 00 00    	mov    0x8c(%rbx),%ebx
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
+  2e:	48 89 f8             	mov    %rdi,%rax
+  31:	83 e0 07             	and    $0x7,%eax
+  34:	83 c0 03             	add    $0x3,%eax
+  37:	38 d0                	cmp    %dl,%al
+  39:	7c 08                	jl     0x43
+  3b:	84 d2                	test   %dl,%dl
+  3d:	0f                   	.byte 0xf
+  3e:	85 eb                	test   %ebp,%ebx
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
