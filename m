@@ -2,154 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76767DD06D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B0E7DD073
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344777AbjJaPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S1344773AbjJaPX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344673AbjJaPWC (ORCPT
+        with ESMTP id S1344663AbjJaPX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:22:02 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F00126
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:21:44 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77897c4ac1fso386727485a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:21:44 -0700 (PDT)
+        Tue, 31 Oct 2023 11:23:28 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C96AEA
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:23:24 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507c8316abcso8199868e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1698765704; x=1699370504; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZnmkiJJG0cEgBzyHB4LFbZlwQl8xMEYKj1qchPFtzG4=;
-        b=J6Bn8VVUm06P+Yfv/ypgUgwEbXm+/Dnh08wxkyt71+r9Rg/A5oQ7ep/9ZRMxcHVnEx
-         TcE+j0TC0WJJSXe6FzowZM9oCfB1+dicsO7YFi2O96Y56fcv76YZ1n2v4Vze/oaeNGaA
-         6slRWe2x5p5zmeZ3Td4W53ZUZP0PNuubYvaXeh5kDbJxGGsplXdwrrcZVsFVMB1f3lOJ
-         7B+q4zK09l0VyZqPLJGWp88EEBEL+cJbg1Pa5eZKCEjZiyTgfPgMF2bD92pzgl2dv0wG
-         rLKhsf7+B4P7B9iC9vrvVg1RC9jJF95kEhdMMh5s/1+aeeAXBEx5xKNFagBZaiMCwnLO
-         bnpg==
+        d=linaro.org; s=google; t=1698765803; x=1699370603; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ATYS9nanviadzb566KV+seOqWKaS5f1isvxWfQD8QqA=;
+        b=GwzTkYnH4mqGBRxnnAYE++19bpnmNtwq0NHjE1zs0PZ5o0l6PoqKV0H3SPvsWPoTBw
+         HLlrFCVL46zkKquAeueyMT4EuiRsKJGQt1q6NBJ47SsFT65iUORBswGdZygrgmyjikqi
+         Azdx5APvK2o9lLaMlvif/Db4qxEtT70D7/DQJb5cRIWrxXfug/h4FhE3LnJW7DCvcsIP
+         m6wwnsrvS4K0bTfAb0QLPLSmYCcEkX8ZBdZCzWSGvbe4DFPt9NR2vdbw3T7tZ9in4goR
+         i2RvzXlqkQHAr4m5DhVMQRG0IBSsRRShUIgtx9hVnjEnJfeGnwVBsa2uEmT/7wuFtO+w
+         ZOig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698765704; x=1699370504;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZnmkiJJG0cEgBzyHB4LFbZlwQl8xMEYKj1qchPFtzG4=;
-        b=cif6nccpl6pCaNswtjyyF0A+ffCdwS2t47XxwQyFUcudlJLXU38YOmMqiTDxXuiqLh
-         2HDzxmA1LDXHvmNsFGI2rioluJkiQ1jMAgvP1hBsYR6kGoNKbP1TSImP9uQPt/aTARf3
-         k7dkMYlzNFgITCXO4iZ2lWAASnGy7hjNibSsU9pnlLTou3MN5LK2Uk9HgxeAonNs2iSz
-         NaeFH6K1cYUrh9XY2RDGcS0Rk2TzvNAe0O8mz2Tnmbb3owVUyXiXowmfOrXPCXoxxuVK
-         AMSgraOxqrFKdS81U9a3fIrsFleSQbC1sZG5T01ThI2vQ+D4RwlcnrDipDxgrtsnkoIx
-         znbA==
-X-Gm-Message-State: AOJu0YxV+9j7WDLUMKfpicSdtOGdgn2QujFuQAecl/UAn6eDKJ/3Bf/l
-        tI8SmLVyjuLoU5PceciMFzvHzw==
-X-Google-Smtp-Source: AGHT+IGPYBEeF9BbUTVwUbma4WDE/1ptaZPy3XJsVsp7P2LAAwW3/vB/rtdvJjOrS3sR2ClQKgFiXQ==
-X-Received: by 2002:a05:620a:25c8:b0:77a:47ad:1211 with SMTP id y8-20020a05620a25c800b0077a47ad1211mr1196140qko.69.1698765703762;
-        Tue, 31 Oct 2023 08:21:43 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:a294])
-        by smtp.gmail.com with ESMTPSA id az40-20020a05620a172800b0076db5b792basm577846qkb.75.2023.10.31.08.21.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 08:21:43 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 11:21:42 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Gregory Price <gourry.memverge@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-mm@kvack.org, ying.huang@intel.com,
-        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
-        weixugc@google.com, apopple@nvidia.com, tim.c.chen@intel.com,
-        dave.hansen@intel.com, shy828301@gmail.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-Message-ID: <20231031152142.GA3029315@cmpxchg.org>
-References: <20231031003810.4532-1-gregory.price@memverge.com>
- <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+        d=1e100.net; s=20230601; t=1698765803; x=1699370603;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ATYS9nanviadzb566KV+seOqWKaS5f1isvxWfQD8QqA=;
+        b=EBTmR5YbaSJY9W8RtiOSI2IjxBfS/YXyHdJUGUrWsaamGW4UcpnAgAugxNlqCpBkkK
+         Y/4PRpgC0KmYKHj4hdBxtR3beiitb3V96dWuK2DwEkNOAbka1xJX5hXeULP1g76JFR01
+         HUtFoGTR58G7HIaIW8jT9tJ0ipR/Yc9fuWe++z2SM5HJIeltwQReo61TPXMKpBDZ8Y9f
+         1fUwaqQwlrB1x6IUZxqk5AJ4+SXV0UCq/h/drI3PRENF+YH3YtNC6Gmqo4+et+ccIZLL
+         6E8IWUUp3DjAldVChdFvITrDAwLqtOq0m9ZDYU58cHzCbCJhX3O3GvQnzvMQjxOl46vq
+         P8nQ==
+X-Gm-Message-State: AOJu0YzjTcAkGAKNcM2UqIVGQHKQQkjlK1e8n36p4cVR9NXm0PcxLEzP
+        nGSR6R+ZO99lF5ADjx5uCRdC+w==
+X-Google-Smtp-Source: AGHT+IGb7omjnf0GkAFWUjhV7orO4W8kGX5+o4ozOOQdo5MzuuZDwFymNSCMD7ksBcg5ZYsq4MNoCw==
+X-Received: by 2002:ac2:4546:0:b0:507:9fe7:f321 with SMTP id j6-20020ac24546000000b005079fe7f321mr9092874lfm.54.1698765802622;
+        Tue, 31 Oct 2023 08:23:22 -0700 (PDT)
+Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
+        by smtp.gmail.com with ESMTPSA id v17-20020ac25591000000b00503189d8b8csm233610lfg.198.2023.10.31.08.23.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 08:23:22 -0700 (PDT)
+Message-ID: <873c1b14-5b7c-4fb1-8f09-6344a4bf901b@linaro.org>
+Date:   Tue, 31 Oct 2023 16:23:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 2/5] arm64: dts: qcom: ipq9574: Add ecc engine support
+Content-Language: en-US
+To:     Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, quic_srichara@quicinc.com,
+        qpic_varada@quicinc.com
+References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 10:53:41AM +0100, Michal Hocko wrote:
-> On Mon 30-10-23 20:38:06, Gregory Price wrote:
-> > This patchset implements weighted interleave and adds a new sysfs
-> > entry: /sys/devices/system/node/nodeN/accessM/il_weight.
-> > 
-> > The il_weight of a node is used by mempolicy to implement weighted
-> > interleave when `numactl --interleave=...` is invoked.  By default
-> > il_weight for a node is always 1, which preserves the default round
-> > robin interleave behavior.
-> > 
-> > Interleave weights may be set from 0-100, and denote the number of
-> > pages that should be allocated from the node when interleaving
-> > occurs.
-> > 
-> > For example, if a node's interleave weight is set to 5, 5 pages
-> > will be allocated from that node before the next node is scheduled
-> > for allocations.
+On 31.10.2023 13:03, Md Sadre Alam wrote:
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+> ---
+Hello,
+
+you're missing:
+
+- dt-bindings (make dtbs_check is unhappy)
+- a commit message
+- Co-developed-by for Sricharan
+
+
+status should read "okay" instead, but in this case it's unnecessary
+as you're defining the node and lack of the status property also means
+that device is enabled
+
+however
+
+this ECC engine seems to be a part of the NAND controller, so it's
+unlikely that the DT maintainers will agree for it to have a separate
+node
+
+Konrad
+>  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> I find this semantic rather weird TBH. First of all why do you think it
-> makes sense to have those weights global for all users? What if
-> different applications have different view on how to spred their
-> interleaved memory?
-> 
-> I do get that you might have a different tiers with largerly different
-> runtime characteristics but why would you want to interleave them into a
-> single mapping and have hard to predict runtime behavior?
-> 
-> [...]
-> > In this way it becomes possible to set an interleaving strategy
-> > that fits the available bandwidth for the devices available on
-> > the system. An example system:
-> > 
-> > Node 0 - CPU+DRAM, 400GB/s BW (200 cross socket)
-> > Node 1 - CPU+DRAM, 400GB/s BW (200 cross socket)
-> > Node 2 - CXL Memory. 64GB/s BW, on Node 0 root complex
-> > Node 3 - CXL Memory. 64GB/s BW, on Node 1 root complex
-> > 
-> > In this setup, the effective weights for nodes 0-3 for a task
-> > running on Node 0 may be [60, 20, 10, 10].
-> > 
-> > This spreads memory out across devices which all have different
-> > latency and bandwidth attributes at a way that can maximize the
-> > available resources.
-> 
-> OK, so why is this any better than not using any memory policy rely
-> on demotion to push out cold memory down the tier hierarchy?
-> 
-> What is the actual real life usecase and what kind of benefits you can
-> present?
-
-There are two things CXL gives you: additional capacity and additional
-bus bandwidth.
-
-The promotion/demotion mechanism is good for the capacity usecase,
-where you have a nice hot/cold gradient in the workingset and want
-placement accordingly across faster and slower memory.
-
-The interleaving is useful when you have a flatter workingset
-distribution and poorer access locality. In that case, the CPU caches
-are less effective and the workload can be bus-bound. The workload
-might fit entirely into DRAM, but concentrating it there is
-suboptimal. Fanning it out in proportion to the relative performance
-of each memory tier gives better resuls.
-
-We experimented with datacenter workloads on such machines last year
-and found significant performance benefits:
-
-https://lore.kernel.org/linux-mm/YqD0%2FtzFwXvJ1gK6@cmpxchg.org/T/
-
-This hopefully also explains why it's a global setting. The usecase is
-different from conventional NUMA interleaving, which is used as a
-locality measure: spread shared data evenly between compute
-nodes. This one isn't about locality - the CXL tier doesn't have local
-compute. Instead, the optimal spread is based on hardware parameters,
-which is a global property rather than a per-workload one.
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> index 5f83ee42a719..b44acb1fac74 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> @@ -336,6 +336,11 @@ sdhc_1: mmc@7804000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		bch: qpic_ecc {
+> +			compatible = "qcom,ipq9574-ecc";
+> +			status = "ok";
+> +		}
+> +
+>  		blsp_dma: dma-controller@7884000 {
+>  			compatible = "qcom,bam-v1.7.0";
+>  			reg = <0x07884000 0x2b000>;
