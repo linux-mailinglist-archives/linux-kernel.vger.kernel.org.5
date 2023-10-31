@@ -2,147 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08A57DD605
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217017DD606
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 19:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbjJaS1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 14:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
+        id S231238AbjJaS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 14:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbjJaS1N (ORCPT
+        with ESMTP id S229881AbjJaS1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 14:27:13 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3398DDF
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 11:27:10 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5aa7172bafdso4041844a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 11:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698776829; x=1699381629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U69Eg1i5YMr1sJwmANMppaJJXceNvx8HFkukPz27Hbo=;
-        b=Z8ZdEnprzoZ9ZHKQ71hGWPUMuTIvGarzb/CAeCrkHkDC3y5KtLuHJzXgEPHB44SrH2
-         PSgkB/tb4fHWsnijVjiWaQwmi08odPIzImzuZnLAnZR5zMli3Af3m3RZeIpPhNeaWqI1
-         FQ1Dmj+AmgDQIzMbuDoUvKjq9yhD6fogYJZedNiEMYtTrW0x3iS75hfPMrdpw5StERpu
-         fT5ie9B4XBdRaEvdgjpyxjDNKg+XgX9vfS10IDn7YQYIhpsLYsOwLDYzaK/sw9Guy2x+
-         PoJsfA5MCBTZhw6LID/RtUhm2LONSKCPQQff5RjAYIL0LWunN9Py2C+lKxCri7QK6yK2
-         cgVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698776829; x=1699381629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U69Eg1i5YMr1sJwmANMppaJJXceNvx8HFkukPz27Hbo=;
-        b=fqE7nSc3hhTSD1pvqz34EFInSlvLV06rwy+WeRdjB0ocjgrupH59D7BBMAmnoHza5u
-         XLq2zw2PVZHLqBlMCmoYFXyAJYmlsKCZ91tqXe1wb4wc9AUznfjyVCa3RsTZ+CS/B9Tv
-         tHoB0sEeQZSJ4MjdkufdW7FuhJK56yfV870oiWd4lpkcGNDZXROW96aESwdfH2UJtzVf
-         mWfjJr6ce0OrZuA2gog4063zrrE5fCVE9BqO4ZP2epnQNGJxC9XST2U7bRNSKJNa14q2
-         mdnVZnxNl1HxRnb1DTR4sgJo1exIYAYFGAvZ2gL3BbCLG8D5lb6keHMsFe5wtYwS2bkV
-         wZIw==
-X-Gm-Message-State: AOJu0YyOQRv+eKp2GrUHcZRWGhBCXXEpLLyinpIgDP0kNYPowdOxf3h0
-        kPIKyCpsRzDTymJlux6Zx3jG+8HI0LRIUU/fXS0=
-X-Google-Smtp-Source: AGHT+IFkKwl6RxjQ7PqjHXLWiBJqz4KC39TuYkrflzvEHUC0SdM4frt8XxboY7J8UTrC1rh8ZpnM3YCub5G/WKOmOqQ=
-X-Received: by 2002:a17:90a:31ca:b0:27d:c36:e12c with SMTP id
- j10-20020a17090a31ca00b0027d0c36e12cmr10811012pjf.9.1698776829643; Tue, 31
- Oct 2023 11:27:09 -0700 (PDT)
+        Tue, 31 Oct 2023 14:27:11 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA37EA3;
+        Tue, 31 Oct 2023 11:27:08 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VEhXBa017754;
+        Tue, 31 Oct 2023 18:27:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=1aiqPfkqrfk24xscMr9ACJG5fDGrPxUrkLLtvpjW5+c=;
+ b=QxhqddASfaQkzNbmIYP+03ntGnE8tmSfJyXoisOotsm0g/xDo9EFX4ebMDsz0W5URsxP
+ cTd5xIjS853ouRf2d443tx50lu1Zwon98zoP0GwW80Whqkk+lIH5vod0VDHkQx2stlzt
+ op2d3tszUkiovmnyUE3dmY3Tie4JdNmcv4VDTLkTmiIZe2M/8boynhPWmOjRBwovzU3c
+ kpPbc75lyy06MlsXNkc7tgRwdTm4FsYvXBl1jLTfJ5Dj6pLovui3LPSK4OzH/X/LtKKH
+ +ZCT2vVFUxrxrpOZl+lFiQOrAqCxX6DevN6aiZPRQE8ZrId8uAGPJ6T+N0499sPtnIXf xg== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u30xe9are-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 18:27:05 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39VIR5Uv030324
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 18:27:05 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 31 Oct 2023 11:27:04 -0700
+From:   Elliot Berman <quic_eberman@quicinc.com>
+Date:   Tue, 31 Oct 2023 11:27:00 -0700
+Subject: [PATCH] dt-bindings: power: reset: $ref reboot-mode in
+ syscon-reboot-mode
 MIME-Version: 1.0
-References: <431d9fb6823036369dcb1d3b2f63732f01df21a7.1698488264.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <431d9fb6823036369dcb1d3b2f63732f01df21a7.1698488264.git.baolin.wang@linux.alibaba.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 31 Oct 2023 11:26:58 -0700
-Message-ID: <CAHbLzkoaAZipjcCLcC41kjm4rE8DSfqdDBFrG6LJJvFwgmcHLg@mail.gmail.com>
-Subject: Re: [PATCH] mm: huge_memory: batch tlb flush when splitting a
- pte-mapped THP
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, ying.huang@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231031-ref-reboot-mode-v1-1-18dde4faf7e8@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAPNGQWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA2ND3aLUNCBOys8v0c3NT0nVTUtNSrOwSElNNDBPUgLqKgAqyKwAmxg
+ dW1sLAHcrPx5hAAAA
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Elliot Berman <quic_eberman@quicinc.com>
+X-Mailer: b4 0.13-dev
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4-gsh6VaMGoQ-hNXe2ytBmMeok-j81h-
+X-Proofpoint-ORIG-GUID: 4-gsh6VaMGoQ-hNXe2ytBmMeok-j81h-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_05,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 clxscore=1011 mlxscore=0 priorityscore=1501 malwarescore=0
+ adultscore=0 impostorscore=0 mlxlogscore=998 phishscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310310148
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 6:12=E2=80=AFPM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
-> I can observe an obvious tlb flush hotpot when splitting a pte-mapped THP=
- on
-> my ARM64 server, and the distribution of this hotspot is as follows:
->
->    - 16.85% split_huge_page_to_list
->       + 7.80% down_write
->       - 7.49% try_to_migrate
->          - 7.48% rmap_walk_anon
->               7.23% ptep_clear_flush
->       + 1.52% __split_huge_page
->
-> The reason is that the split_huge_page_to_list() will build migration ent=
-ries
-> for each subpage of a pte-mapped Anon THP by try_to_migrate(), or unmap f=
-or
-> file THP, and it will clear and tlb flush for each subpage's pte. Moreove=
-r,
-> the split_huge_page_to_list() will set TTU_SPLIT_HUGE_PMD flag to ensure
-> the THP is already a pte-mapped THP before splitting it to some normal pa=
-ges.
->
-> Actually, there is no need to flush tlb for each subpage immediately, ins=
-tead
-> we can batch tlb flush for the pte-mapped THP to improve the performance.
->
-> After this patch, we can see the batch tlb flush can improve the latency
-> obviously when running thpscale.
->                              k6.5-base                   patched
-> Amean     fault-both-1      1071.17 (   0.00%)      901.83 *  15.81%*
-> Amean     fault-both-3      2386.08 (   0.00%)     1865.32 *  21.82%*
-> Amean     fault-both-5      2851.10 (   0.00%)     2273.84 *  20.25%*
-> Amean     fault-both-7      3679.91 (   0.00%)     2881.66 *  21.69%*
-> Amean     fault-both-12     5916.66 (   0.00%)     4369.55 *  26.15%*
-> Amean     fault-both-18     7981.36 (   0.00%)     6303.57 *  21.02%*
-> Amean     fault-both-24    10950.79 (   0.00%)     8752.56 *  20.07%*
-> Amean     fault-both-30    14077.35 (   0.00%)    10170.01 *  27.76%*
-> Amean     fault-both-32    13061.57 (   0.00%)    11630.08 *  10.96%*
->
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+syscon-reboot-mode.yaml should $ref: reboot-mode.yaml, but instead
+rewrites the properties. Update so it $refs instead.
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+---
+ .../devicetree/bindings/power/reset/syscon-reboot-mode.yaml       | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-> ---
->  mm/huge_memory.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index f31f02472396..0e4c14bf6872 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2379,7 +2379,7 @@ void vma_adjust_trans_huge(struct vm_area_struct *v=
-ma,
->  static void unmap_folio(struct folio *folio)
->  {
->         enum ttu_flags ttu_flags =3D TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD=
- |
-> -               TTU_SYNC;
-> +               TTU_SYNC | TTU_BATCH_FLUSH;
->
->         VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
->
-> @@ -2392,6 +2392,8 @@ static void unmap_folio(struct folio *folio)
->                 try_to_migrate(folio, ttu_flags);
->         else
->                 try_to_unmap(folio, ttu_flags | TTU_IGNORE_MLOCK);
-> +
-> +       try_to_unmap_flush();
->  }
->
->  static void remap_page(struct folio *folio, unsigned long nr)
-> --
-> 2.39.3
->
+diff --git a/Documentation/devicetree/bindings/power/reset/syscon-reboot-mode.yaml b/Documentation/devicetree/bindings/power/reset/syscon-reboot-mode.yaml
+index 9b1ffceefe3d..b6acff199cde 100644
+--- a/Documentation/devicetree/bindings/power/reset/syscon-reboot-mode.yaml
++++ b/Documentation/devicetree/bindings/power/reset/syscon-reboot-mode.yaml
+@@ -29,12 +29,10 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: Offset in the register map for the mode register (in bytes)
+ 
+-patternProperties:
+-  "^mode-.+":
+-    $ref: /schemas/types.yaml#/definitions/uint32
+-    description: Vendor-specific mode value written to the mode register
++allOf:
++  - $ref: reboot-mode.yaml#
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ required:
+   - compatible
+
+---
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+change-id: 20231031-ref-reboot-mode-febf88dea07b
+
+Best regards,
+-- 
+Elliot Berman <quic_eberman@quicinc.com>
+
