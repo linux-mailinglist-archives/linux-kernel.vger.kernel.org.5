@@ -2,112 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E487DCFAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4ED7DCFB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 15:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235662AbjJaOpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 10:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        id S1344327AbjJaOqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 10:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344322AbjJaOpN (ORCPT
+        with ESMTP id S235751AbjJaOp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:45:13 -0400
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C260DB;
-        Tue, 31 Oct 2023 07:45:10 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 10:45:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698763507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3gchYbq79mNDohG4/f4ys44HMok8d0bAKNHT8aFmBDo=;
-        b=xbDJCQ4gjieKVwS/6bt9bB9kVPZjx6e3Xe6NROKOBlFHnnt5Rzb2shCM6FwMavZG5XZZKZ
-        nu4/YDPeLzrplr7JtuL2JzvU3pzHv2v1ilL/DR+5FPHkjl4Ttewto76Mr7J64qt67fY7ST
-        VRMRZoj98joV+h+EnPljL0qQS0/avj4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs for v6.7
-Message-ID: <20231031144505.bqnxu3pgrodp7ukp@moria.home.lan>
-References: <20231030145540.pjkggoiddobyjicq@moria.home.lan>
- <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
+        Tue, 31 Oct 2023 10:45:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F85F3;
+        Tue, 31 Oct 2023 07:45:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BFD4C433C8;
+        Tue, 31 Oct 2023 14:45:53 +0000 (UTC)
+Date:   Tue, 31 Oct 2023 10:45:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Mark Brown <broonie@kernel.org>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: selftests: user_events: ftrace_test - RIP:
+ 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
+Message-ID: <20231031104551.6e0f3620@gandalf.local.home>
+In-Reply-To: <20231031000031.1e705592@gandalf.local.home>
+References: <CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com>
+        <20231027192011.GA436-beaub@linux.microsoft.com>
+        <20231027183640.2529ab68@gandalf.local.home>
+        <20231027223344.3854ac1f@rorschach.local.home>
+        <20231030163102.GA1853-beaub@linux.microsoft.com>
+        <20231030124223.4e4ddeb8@gandalf.local.home>
+        <20231030173151.0631169b@gandalf.local.home>
+        <20231031002707.GA107-beaub@linux.microsoft.com>
+        <20231031000031.1e705592@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXpwMdLuoWsNGa8qacT_5Wv-vSTz0xoBR5n_fnD9cNOuQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_SBL_A autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 01:47:02PM +0100, Geert Uytterhoeven wrote:
-> Hi Kent,
-> 
-> On Mon, Oct 30, 2023 at 3:56 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> > The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-> >
-> >   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-> >
-> > are available in the Git repository at:
-> >
-> >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-10-30
-> >
-> > for you to fetch changes up to b827ac419721a106ae2fccaa40576b0594edad92:
-> >
-> >   exportfs: Change bcachefs fid_type enum to avoid conflicts (2023-10-26 16:41:00 -0400)
-> >
-> > ----------------------------------------------------------------
-> > Initial bcachefs pull request for 6.7-rc1
-> >
-> > Here's the bcachefs filesystem pull request.
-> >
-> > One new patch since last week: the exportfs constants ended up
-> > conflicting with other filesystems that are also getting added to the
-> > global enum, so switched to new constants picked by Amir.
-> >
-> > I'll also be sending another pull request later on in the cycle bringing
-> > things up to date my master branch that people are currently running;
-> > that will be restricted to fs/bcachefs/, naturally.
-> >
-> > Testing - fstests as well as the bcachefs specific tests in ktest:
-> >   https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-for-upstream
-> >
-> > It's also been soaking in linux-next, which resulted in a whole bunch of
-> > smatch complaints and fixes and a patch or two from Kees.
-> >
-> > The only new non fs/bcachefs/ patch is the objtool patch that adds
-> > bcachefs functions to the list of noreturns. The patch that exports
-> > osq_lock() has been dropped for now, per Ingo.
-> 
-> Thanks for your PR!
-> 
-> >  fs/bcachefs/mean_and_variance.c                 |  159 ++
-> >  fs/bcachefs/mean_and_variance.h                 |  198 ++
-> >  fs/bcachefs/mean_and_variance_test.c            |  240 ++
-> 
-> Looking into missing dependencies for MEAN_AND_VARIANCE_UNIT_TEST and
-> failing mean_and_variance tests, this does not seem to match what was
-> submitted for public review?
-> 
-> Lore only has:
-> "[PATCH 31/32] lib: add mean and variance module."
-> https://lore.kernel.org/all/20230509165657.1735798-32-kent.overstreet@linux.dev/
+On Tue, 31 Oct 2023 00:00:31 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-It was later moved back into fs/bcachefs/, yes. I want to consolidate
-the time stats code in bcachefs and bcachefs, so I'll be sending a PR to
-move it back out at some point.
+> But the I applied:
+> 
+>   f5ca233e2e66d ("tracing: Increase trace array ref count on enable and filter files")
+> 
+> And do the above commands again and BOOM! it crashes with:
 
-Can you point me at what's failing?
+The below patch appears to solve this. Care to test it?
+
+-- Steve
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/linux/trace_events.h       |  4 ++++
+ kernel/trace/trace.c               | 15 +++++++++++++++
+ kernel/trace/trace.h               |  4 ++++
+ kernel/trace/trace_events.c        | 29 +++++++++++++++++++++++++----
+ kernel/trace/trace_events_filter.c |  3 +++
+ 5 files changed, 51 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 12207dc6722d..696f8dc4aa53 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -492,6 +492,7 @@ enum {
+ 	EVENT_FILE_FL_TRIGGER_COND_BIT,
+ 	EVENT_FILE_FL_PID_FILTER_BIT,
+ 	EVENT_FILE_FL_WAS_ENABLED_BIT,
++	EVENT_FILE_FL_FREED_BIT,
+ };
+ 
+ extern struct trace_event_file *trace_get_event_file(const char *instance,
+@@ -630,6 +631,7 @@ extern int __kprobe_event_add_fields(struct dynevent_cmd *cmd, ...);
+  *  TRIGGER_COND  - When set, one or more triggers has an associated filter
+  *  PID_FILTER    - When set, the event is filtered based on pid
+  *  WAS_ENABLED   - Set when enabled to know to clear trace on module removal
++ *  FREED         - File descriptor is freed, all fields should be considered invalid
+  */
+ enum {
+ 	EVENT_FILE_FL_ENABLED		= (1 << EVENT_FILE_FL_ENABLED_BIT),
+@@ -643,6 +645,7 @@ enum {
+ 	EVENT_FILE_FL_TRIGGER_COND	= (1 << EVENT_FILE_FL_TRIGGER_COND_BIT),
+ 	EVENT_FILE_FL_PID_FILTER	= (1 << EVENT_FILE_FL_PID_FILTER_BIT),
+ 	EVENT_FILE_FL_WAS_ENABLED	= (1 << EVENT_FILE_FL_WAS_ENABLED_BIT),
++	EVENT_FILE_FL_FREED		= (1 << EVENT_FILE_FL_FREED_BIT),
+ };
+ 
+ struct trace_event_file {
+@@ -671,6 +674,7 @@ struct trace_event_file {
+ 	 * caching and such. Which is mostly OK ;-)
+ 	 */
+ 	unsigned long		flags;
++	atomic_t		ref;	/* ref count for opened files */
+ 	atomic_t		sm_ref;	/* soft-mode reference counter */
+ 	atomic_t		tm_ref;	/* trigger-mode reference counter */
+ };
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2539cfc20a97..9aebf904ff97 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4978,6 +4978,20 @@ int tracing_open_file_tr(struct inode *inode, struct file *filp)
+ 	if (ret)
+ 		return ret;
+ 
++	mutex_lock(&event_mutex);
++
++	/* Fail if the file is marked for removal */
++	if (file->flags & EVENT_FILE_FL_FREED) {
++		trace_array_put(file->tr);
++		ret = -ENODEV;
++	} else {
++		event_file_get(file);
++	}
++
++	mutex_unlock(&event_mutex);
++	if (ret)
++		return ret;
++
+ 	filp->private_data = inode->i_private;
+ 
+ 	return 0;
+@@ -4988,6 +5002,7 @@ int tracing_release_file_tr(struct inode *inode, struct file *filp)
+ 	struct trace_event_file *file = inode->i_private;
+ 
+ 	trace_array_put(file->tr);
++	event_file_put(file);
+ 
+ 	return 0;
+ }
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 0e1405abf4f7..4fcd293ecbd4 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1669,6 +1669,10 @@ extern void event_trigger_unregister(struct event_command *cmd_ops,
+ 				     char *glob,
+ 				     struct event_trigger_data *trigger_data);
+ 
++extern void event_file_get(struct trace_event_file *file);
++extern void event_file_put(struct trace_event_file *file);
++
++
+ /**
+  * struct event_trigger_ops - callbacks for trace event triggers
+  *
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 70a029ae3c65..ec86f4894455 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -990,13 +990,33 @@ static void remove_subsystem(struct trace_subsystem_dir *dir)
+ 	}
+ }
+ 
++void event_file_get(struct trace_event_file *file)
++{
++	atomic_inc(&file->ref);
++}
++
++void event_file_put(struct trace_event_file *file)
++{
++	if (WARN_ON_ONCE(!atomic_read(&file->ref))) {
++		if (file->flags & EVENT_FILE_FL_FREED)
++			kmem_cache_free(file_cachep, file);
++		return;
++	}
++
++	if (atomic_dec_and_test(&file->ref) &&
++	    (file->flags & EVENT_FILE_FL_FREED)) {
++		kmem_cache_free(file_cachep, file);
++	}
++}
++
+ static void remove_event_file_dir(struct trace_event_file *file)
+ {
+ 	eventfs_remove_dir(file->ei);
+ 	list_del(&file->list);
+ 	remove_subsystem(file->system);
+ 	free_event_filter(file->filter);
+-	kmem_cache_free(file_cachep, file);
++	file->flags |= EVENT_FILE_FL_FREED;
++	event_file_put(file);
+ }
+ 
+ /*
+@@ -1369,7 +1389,7 @@ event_enable_read(struct file *filp, char __user *ubuf, size_t cnt,
+ 		flags = file->flags;
+ 	mutex_unlock(&event_mutex);
+ 
+-	if (!file)
++	if (!file || flags & EVENT_FILE_FL_FREED)
+ 		return -ENODEV;
+ 
+ 	if (flags & EVENT_FILE_FL_ENABLED &&
+@@ -1404,7 +1424,7 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 		ret = -ENODEV;
+ 		mutex_lock(&event_mutex);
+ 		file = event_file_data(filp);
+-		if (likely(file)) {
++		if (likely(file && !(file->flags & EVENT_FILE_FL_FREED))) {
+ 			printk("update file = %px\n", file);
+ 			printk("update tr = %px\n", file->tr);
+ 			ret = tracing_update_buffers(file->tr);
+@@ -1686,7 +1706,7 @@ event_filter_read(struct file *filp, char __user *ubuf, size_t cnt,
+ 
+ 	mutex_lock(&event_mutex);
+ 	file = event_file_data(filp);
+-	if (file)
++	if (file && !(file->flags & EVENT_FILE_FL_FREED))
+ 		print_event_filter(file, s);
+ 	mutex_unlock(&event_mutex);
+ 
+@@ -2905,6 +2925,7 @@ trace_create_new_event(struct trace_event_call *call,
+ 	atomic_set(&file->tm_ref, 0);
+ 	INIT_LIST_HEAD(&file->triggers);
+ 	list_add(&file->list, &tr->events);
++	event_file_get(file);
+ 
+ 	return file;
+ }
+diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+index 33264e510d16..0c611b281a5b 100644
+--- a/kernel/trace/trace_events_filter.c
++++ b/kernel/trace/trace_events_filter.c
+@@ -2349,6 +2349,9 @@ int apply_event_filter(struct trace_event_file *file, char *filter_string)
+ 	struct event_filter *filter = NULL;
+ 	int err;
+ 
++	if (file->flags & EVENT_FILE_FL_FREED)
++		return -ENODEV;
++
+ 	if (!strcmp(strstrip(filter_string), "0")) {
+ 		filter_disable(file);
+ 		filter = event_filter(file);
+-- 
+2.42.0
+
