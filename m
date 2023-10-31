@@ -2,167 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1757DD41C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CAB7DD427
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 18:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236181AbjJaRHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 13:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
+        id S235901AbjJaRHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 13:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236152AbjJaRGq (ORCPT
+        with ESMTP id S236498AbjJaRGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:06:46 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B47E181;
-        Tue, 31 Oct 2023 10:05:28 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so10251870a12.1;
-        Tue, 31 Oct 2023 10:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698771927; x=1699376727; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PHOq+cM1i5HvilDCUI3n2s0JE2fFsAEJIBhWGuopi9E=;
-        b=USHGYfnnsTMSxXqdmOHwuBfdbU20Ymow/HfF6shFT4ANCtcq9ICZYYA4pIQ7RE4jlX
-         7edaUJ1TE4Bt+Q0K9g/7WHYnrQccXZLlreQ7M2ohQw7pcxjZr/yjUiJ7JFtTn+mH2arx
-         UEEnhjHTRVPLSHZPJWnbVvf9j2wNAK3gOc1DM95z2MGQSAlS0ol/9u1l8RzJr6tOOfQS
-         fr30yKguNEDQ5lRenE7t4VjovjYGAu8bFD8sbskAgYzQYR6RRkqfujVJORRK0Ml34sqh
-         tnh2lLkfqn962QwobeG1u2MLS6qwMWpQPse5K/3y2Tw8ALqZpfgaABfYpmTrBEiaUrJy
-         WlOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698771927; x=1699376727;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PHOq+cM1i5HvilDCUI3n2s0JE2fFsAEJIBhWGuopi9E=;
-        b=op2CYNNIZSgchTC1HWY1FpYVPC2ZKpDNjehyv5ttAsDNAdvKv+oxTPyOpLkx5Tjvtz
-         9Fa0/RaEP4M57oDss7r8/Jpg6J60VcqPKnIy8c2MQv+85HjqCMvtxp9mpD2Sg2+cqRR1
-         9zKOQh0F6xf5x9tgDzuAid6VleUm8YMDplI+437d0e+ZilqC7rNcSWRdYvGvWGDuQXWV
-         0IV4y8RjaEjTbzRxOxr+MytQ35R9XdXQIlXnwH4rcdCliEo15GPk+xT67yNts7QfnNAc
-         olLGNWxRVP7swXLBNrSYcbizmDtXZdt9dDJfN3/WIOItqp1O9PGnURGm9i2H0gcT72Fm
-         Pv3w==
-X-Gm-Message-State: AOJu0Yzt8nYIC6N8pxY+o4vAeFt/C001l3PETe7TgNu0Yi7hPb9LemAf
-        +JuoPzlkhrAA0K/GvxCjOPZb8iMQezOw7Q==
-X-Google-Smtp-Source: AGHT+IHaRXGmxNROU+qgeKBTMhFayeYLeKfBdCCE+0SfI7lcwuHO+zQmfzKBoA+F2pfuixIZlMBnpA==
-X-Received: by 2002:a17:906:dace:b0:9c3:730e:6947 with SMTP id xi14-20020a170906dace00b009c3730e6947mr10822219ejb.41.1698771926710;
-        Tue, 31 Oct 2023 10:05:26 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id z5-20020a170906714500b0099ce188be7fsm1279516ejj.3.2023.10.31.10.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:05:23 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 31 Oct 2023 18:05:17 +0100
-To:     Matthieu Baerts <matttbe@kernel.org>
-Cc:     Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mptcp@lists.linux.dev,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-Message-ID: <ZUEzzc/Sod8OR28B@krava>
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
+        Tue, 31 Oct 2023 13:06:49 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BA5C2105;
+        Tue, 31 Oct 2023 10:05:33 -0700 (PDT)
+Received: from CPC-beaub-VBQ1L. (unknown [4.155.48.123])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BB4B920B74C0;
+        Tue, 31 Oct 2023 10:05:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BB4B920B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1698771932;
+        bh=fblPO5jXGp2VzBMVMfmWWPtvOiCMzdbt2sEWj0FwmbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kb4CZf/hvQs32c2GkISvCPoFAAd/ul+9KIqTNSeYL7VQnlGfcMa7AN7oZlDQ3NLDW
+         VcH09P5LVLVUq3bOtPqrvLMei7COZnQ28U7jytvTAqU6pK7BqcnlYkrZxEF1dgxA93
+         lHrK1y2ZxcbifiHXW2+v3y0YxfJWVvc/RKmK/2gM=
+Date:   Tue, 31 Oct 2023 17:05:31 +0000
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Mark Brown <broonie@kernel.org>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: selftests: user_events: ftrace_test - RIP:
+ 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
+Message-ID: <20231031170531.GB199-beaub@linux.microsoft.com>
+References: <20231027192011.GA436-beaub@linux.microsoft.com>
+ <20231027183640.2529ab68@gandalf.local.home>
+ <20231027223344.3854ac1f@rorschach.local.home>
+ <20231030163102.GA1853-beaub@linux.microsoft.com>
+ <20231030124223.4e4ddeb8@gandalf.local.home>
+ <20231030173151.0631169b@gandalf.local.home>
+ <20231031002707.GA107-beaub@linux.microsoft.com>
+ <20231031000031.1e705592@gandalf.local.home>
+ <20231031104551.6e0f3620@gandalf.local.home>
+ <20231031120702.70dbb21b@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231031120702.70dbb21b@gandalf.local.home>
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
-> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> possible to build the kernel without CONFIG_CGROUPS:
+On Tue, Oct 31, 2023 at 12:07:02PM -0400, Steven Rostedt wrote:
+> On Tue, 31 Oct 2023 10:45:51 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |              ^~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
->   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |                                    ^~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
->     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
->         |                                                            ^~~~~~
->   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
->     930 |         css_task_iter_start(css, flags, kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~~~
->         |         task_seq_start
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
->   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~
->         |                class_dev_iter_next
->   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
->   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
->     949 |         css_task_iter_end(kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~
+> > @@ -1404,7 +1424,7 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+> >  		ret = -ENODEV;
+> >  		mutex_lock(&event_mutex);
+> >  		file = event_file_data(filp);
+> > -		if (likely(file)) {
+> > +		if (likely(file && !(file->flags & EVENT_FILE_FL_FREED))) {
+> >  			printk("update file = %px\n", file);
+> >  			printk("update tr = %px\n", file->tr);
+> >  			ret = tracing_update_buffers(file->tr);
 > 
-> This patch simply surrounds with a #ifdef the new code requiring CGroups
-> support. It seems enough for the compiler and this is similar to
-> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> been added in kernel/bpf/helpers.c and in the selftests.
+> Well, this won't apply because I still had debugging in it when I added
+> these changes.
 > 
-> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
-> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
-> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
+> Here's a better version:
+> 
+Thanks!
 
-Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+I ended up testing the official patch [1] instead of this one along with
+patches [2][3] in the next branch.
 
-jirka
+My printk's are now good, everything looks back to normal for my repro.
 
-> ---
->  kernel/bpf/task_iter.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 59e747938bdb..e0d313114a5b 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -894,6 +894,8 @@ __bpf_kfunc void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it)
+I added my Tested-by onto the official patch thread.
+
+Thanks,
+-Beau
+
+1. https://lore.kernel.org/linux-trace-kernel/20231031122453.7a48b923@gandalf.local.home/
+2. https://lore.kernel.org/linux-trace-kernel/20231030114047.759c7bdf@gandalf.local.home
+3. https://lore.kernel.org/linux-trace-kernel/20231028164650.4f5ea18a@rorschach.local.home/
+
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 12207dc6722d..696f8dc4aa53 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -492,6 +492,7 @@ enum {
+>  	EVENT_FILE_FL_TRIGGER_COND_BIT,
+>  	EVENT_FILE_FL_PID_FILTER_BIT,
+>  	EVENT_FILE_FL_WAS_ENABLED_BIT,
+> +	EVENT_FILE_FL_FREED_BIT,
+>  };
 >  
->  __diag_pop();
+>  extern struct trace_event_file *trace_get_event_file(const char *instance,
+> @@ -630,6 +631,7 @@ extern int __kprobe_event_add_fields(struct dynevent_cmd *cmd, ...);
+>   *  TRIGGER_COND  - When set, one or more triggers has an associated filter
+>   *  PID_FILTER    - When set, the event is filtered based on pid
+>   *  WAS_ENABLED   - Set when enabled to know to clear trace on module removal
+> + *  FREED         - File descriptor is freed, all fields should be considered invalid
+>   */
+>  enum {
+>  	EVENT_FILE_FL_ENABLED		= (1 << EVENT_FILE_FL_ENABLED_BIT),
+> @@ -643,6 +645,7 @@ enum {
+>  	EVENT_FILE_FL_TRIGGER_COND	= (1 << EVENT_FILE_FL_TRIGGER_COND_BIT),
+>  	EVENT_FILE_FL_PID_FILTER	= (1 << EVENT_FILE_FL_PID_FILTER_BIT),
+>  	EVENT_FILE_FL_WAS_ENABLED	= (1 << EVENT_FILE_FL_WAS_ENABLED_BIT),
+> +	EVENT_FILE_FL_FREED		= (1 << EVENT_FILE_FL_FREED_BIT),
+>  };
 >  
-> +#ifdef CONFIG_CGROUPS
+>  struct trace_event_file {
+> @@ -671,6 +674,7 @@ struct trace_event_file {
+>  	 * caching and such. Which is mostly OK ;-)
+>  	 */
+>  	unsigned long		flags;
+> +	atomic_t		ref;	/* ref count for opened files */
+>  	atomic_t		sm_ref;	/* soft-mode reference counter */
+>  	atomic_t		tm_ref;	/* trigger-mode reference counter */
+>  };
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 2539cfc20a97..9aebf904ff97 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -4978,6 +4978,20 @@ int tracing_open_file_tr(struct inode *inode, struct file *filp)
+>  	if (ret)
+>  		return ret;
+>  
+> +	mutex_lock(&event_mutex);
 > +
->  struct bpf_iter_css_task {
->  	__u64 __opaque[1];
->  } __attribute__((aligned(8)));
-> @@ -952,6 +954,8 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
->  
->  __diag_pop();
->  
-> +#endif /* CONFIG_CGROUPS */
+> +	/* Fail if the file is marked for removal */
+> +	if (file->flags & EVENT_FILE_FL_FREED) {
+> +		trace_array_put(file->tr);
+> +		ret = -ENODEV;
+> +	} else {
+> +		event_file_get(file);
+> +	}
 > +
->  struct bpf_iter_task {
->  	__u64 __opaque[3];
->  } __attribute__((aligned(8)));
-> 
-> ---
-> base-commit: f1c73396133cb3d913e2075298005644ee8dfade
-> change-id: 20231031-bpf-compil-err-css-056f3db04860
-> 
-> Best regards,
-> -- 
-> Matthieu Baerts <matttbe@kernel.org>
-> 
+> +	mutex_unlock(&event_mutex);
+> +	if (ret)
+> +		return ret;
+> +
+>  	filp->private_data = inode->i_private;
+>  
+>  	return 0;
+> @@ -4988,6 +5002,7 @@ int tracing_release_file_tr(struct inode *inode, struct file *filp)
+>  	struct trace_event_file *file = inode->i_private;
+>  
+>  	trace_array_put(file->tr);
+> +	event_file_put(file);
+>  
+>  	return 0;
+>  }
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index 0e1405abf4f7..b7f4ea25a194 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -1669,6 +1669,9 @@ extern void event_trigger_unregister(struct event_command *cmd_ops,
+>  				     char *glob,
+>  				     struct event_trigger_data *trigger_data);
+>  
+> +extern void event_file_get(struct trace_event_file *file);
+> +extern void event_file_put(struct trace_event_file *file);
+> +
+>  /**
+>   * struct event_trigger_ops - callbacks for trace event triggers
+>   *
+> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+> index f9e3e24d8796..f29e815ca5b2 100644
+> --- a/kernel/trace/trace_events.c
+> +++ b/kernel/trace/trace_events.c
+> @@ -990,13 +990,35 @@ static void remove_subsystem(struct trace_subsystem_dir *dir)
+>  	}
+>  }
+>  
+> +void event_file_get(struct trace_event_file *file)
+> +{
+> +	atomic_inc(&file->ref);
+> +}
+> +
+> +void event_file_put(struct trace_event_file *file)
+> +{
+> +	if (WARN_ON_ONCE(!atomic_read(&file->ref))) {
+> +		if (file->flags & EVENT_FILE_FL_FREED)
+> +			kmem_cache_free(file_cachep, file);
+> +		return;
+> +	}
+> +
+> +	if (atomic_dec_and_test(&file->ref)) {
+> +		/* Count should only go to zero when it is freed */
+> +		if (WARN_ON_ONCE(!(file->flags & EVENT_FILE_FL_FREED)))
+> +			return;
+> +		kmem_cache_free(file_cachep, file);
+> +	}
+> +}
+> +
+>  static void remove_event_file_dir(struct trace_event_file *file)
+>  {
+>  	eventfs_remove_dir(file->ei);
+>  	list_del(&file->list);
+>  	remove_subsystem(file->system);
+>  	free_event_filter(file->filter);
+> -	kmem_cache_free(file_cachep, file);
+> +	file->flags |= EVENT_FILE_FL_FREED;
+> +	event_file_put(file);
+>  }
+>  
+>  /*
+> @@ -1369,7 +1391,7 @@ event_enable_read(struct file *filp, char __user *ubuf, size_t cnt,
+>  		flags = file->flags;
+>  	mutex_unlock(&event_mutex);
+>  
+> -	if (!file)
+> +	if (!file || flags & EVENT_FILE_FL_FREED)
+>  		return -ENODEV;
+>  
+>  	if (flags & EVENT_FILE_FL_ENABLED &&
+> @@ -1403,7 +1425,7 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+>  		ret = -ENODEV;
+>  		mutex_lock(&event_mutex);
+>  		file = event_file_data(filp);
+> -		if (likely(file)) {
+> +		if (likely(file && !(file->flags & EVENT_FILE_FL_FREED))) {
+>  			ret = tracing_update_buffers(file->tr);
+>  			if (ret < 0) {
+>  				mutex_unlock(&event_mutex);
+> @@ -1683,7 +1705,7 @@ event_filter_read(struct file *filp, char __user *ubuf, size_t cnt,
+>  
+>  	mutex_lock(&event_mutex);
+>  	file = event_file_data(filp);
+> -	if (file)
+> +	if (file && !(file->flags & EVENT_FILE_FL_FREED))
+>  		print_event_filter(file, s);
+>  	mutex_unlock(&event_mutex);
+>  
+> @@ -2902,6 +2924,7 @@ trace_create_new_event(struct trace_event_call *call,
+>  	atomic_set(&file->tm_ref, 0);
+>  	INIT_LIST_HEAD(&file->triggers);
+>  	list_add(&file->list, &tr->events);
+> +	event_file_get(file);
+>  
+>  	return file;
+>  }
+> diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+> index 33264e510d16..0c611b281a5b 100644
+> --- a/kernel/trace/trace_events_filter.c
+> +++ b/kernel/trace/trace_events_filter.c
+> @@ -2349,6 +2349,9 @@ int apply_event_filter(struct trace_event_file *file, char *filter_string)
+>  	struct event_filter *filter = NULL;
+>  	int err;
+>  
+> +	if (file->flags & EVENT_FILE_FL_FREED)
+> +		return -ENODEV;
+> +
+>  	if (!strcmp(strstrip(filter_string), "0")) {
+>  		filter_disable(file);
+>  		filter = event_filter(file);
