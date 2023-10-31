@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F467DCB1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5956C7DCB1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 11:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343973AbjJaKrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 06:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S1343979AbjJaKr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 06:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbjJaKrP (ORCPT
+        with ESMTP id S230370AbjJaKr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:47:15 -0400
+        Tue, 31 Oct 2023 06:47:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FE183;
-        Tue, 31 Oct 2023 03:47:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 466BEC433C7;
-        Tue, 31 Oct 2023 10:47:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC7083;
+        Tue, 31 Oct 2023 03:47:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A8D2C433C8;
+        Tue, 31 Oct 2023 10:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698749232;
-        bh=ZmuRbV2seYSv3d+8oixIkvV1jxp6dhCpYX7zgrslYeo=;
+        s=korg; t=1698749273;
+        bh=iF3C2e7LZaWn1k2ko938GDKkj0Hq9IqXqcDNFWqyPV0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ejByAtdYCxcTAa8g4wiPR5vquftL3cBxk3N7WJUXE+ktF3A6zBShFhCwsPqAXumDU
-         i0GKeCGnTVTHJ1QFy6W1p/5lhQ6SU2FrvFbMHnMmBVNwIZatI+wR/gjTitUDe0z2dz
-         U9Qa5Iro88N3u3EmuATGlEYXo90aKtHA6hQX5FkM=
-Date:   Tue, 31 Oct 2023 11:47:09 +0100
+        b=WnnnGIc8En8kNKMwc4Mb1QKIENm0X9/WDtHWlvzJ5TCpG0hdwN37zNDRi5cUFqnJO
+         xUjkHFxNCoBnIN6IIRbhs25TjMdF8kLgJCMhTPtGj8aTq51MaAOf785U8wBN6rwG4v
+         sdzgXVVL2Ze48MeQSbUU8t5pJpTmh2xNWApYBYn8=
+Date:   Tue, 31 Oct 2023 11:47:50 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Ronald Wahl <rwahl@gmx.de>
 Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
         Vignesh Raghavendra <vigneshr@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Ronald Wahl <ronald.wahl@raritan.com>
-Subject: Re: [PATCH v2] serial: 8250: 8250_omap: Clear UART_HAS_RHR_IT_DIS bit
-Message-ID: <2023103101-versus-tribesman-610e@gregkh>
-References: <20231031102024.9973-1-rwahl@gmx.de>
+Subject: Re: [PATCH v2] serial: 8250: 8250_omap: Do not start RX DMA on THRI
+ interrupt
+Message-ID: <2023103137-sushi-playgroup-c2a5@gregkh>
+References: <20231031102220.9997-1-rwahl@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031102024.9973-1-rwahl@gmx.de>
+In-Reply-To: <20231031102220.9997-1-rwahl@gmx.de>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -47,45 +49,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 11:20:24AM +0100, Ronald Wahl wrote:
+On Tue, Oct 31, 2023 at 11:22:20AM +0100, Ronald Wahl wrote:
 > From: Ronald Wahl <ronald.wahl@raritan.com>
 > 
-> This fixes commit 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX
-> interrupt after DMA enable") which unfortunately set the
-> UART_HAS_RHR_IT_DIS bit in the UART_OMAP_IER2 register and never
-> cleared it.
+> Starting RX DMA on THRI interrupt is too early because TX may not have
+> finished yet.
 > 
-> Fixes: 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable")
+> This change is inspired by commit 90b8596ac460 ("serial: 8250: Prevent
+> starting up DMA Rx on THRI interrupt") and fixes DMA issues I had with
+> an AM62 SoC that is using the 8250 OMAP variant.
+> 
+> Fixes: c26389f998a8 ("serial: 8250: 8250_omap: Add DMA support for UARTs on K3 SoCs")
 > Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
 > ---
 > V2: - add Fixes: tag
 >     - fix author
 > 
->  drivers/tty/serial/8250/8250_omap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/tty/serial/8250/8250_omap.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
 > diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-> index ca972fd37725..c7ab2963040b 100644
+> index c7ab2963040b..f2f59ec6b50b 100644
 > --- a/drivers/tty/serial/8250/8250_omap.c
 > +++ b/drivers/tty/serial/8250/8250_omap.c
-> @@ -914,7 +914,7 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
->  	if (priv->habit & UART_HAS_RHR_IT_DIS) {
->  		reg = serial_in(p, UART_OMAP_IER2);
->  		reg &= ~UART_OMAP_IER2_RHR_IT_DIS;
-> -		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
-> +		serial_out(p, UART_OMAP_IER2, reg);
->  	}
+> @@ -1282,10 +1282,11 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
 > 
->  	dmaengine_tx_status(rxchan, cookie, &state);
-> @@ -1060,7 +1060,7 @@ static int omap_8250_rx_dma(struct uart_8250_port *p)
->  	if (priv->habit & UART_HAS_RHR_IT_DIS) {
->  		reg = serial_in(p, UART_OMAP_IER2);
->  		reg |= UART_OMAP_IER2_RHR_IT_DIS;
-> -		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
-> +		serial_out(p, UART_OMAP_IER2, reg);
->  	}
+>  	status = serial_port_in(port, UART_LSR);
 > 
->  	dma_async_issue_pending(dma->rxchan);
+> -	if (priv->habit & UART_HAS_EFR2)
+> -		am654_8250_handle_rx_dma(up, iir, status);
+> -	else
+> -		status = omap_8250_handle_rx_dma(up, iir, status);
+> +	if ((iir & 0x3f) != UART_IIR_THRI)
+> +		if (priv->habit & UART_HAS_EFR2)
+> +			am654_8250_handle_rx_dma(up, iir, status);
+> +		else
+> +			status = omap_8250_handle_rx_dma(up, iir, status);
+> 
+>  	serial8250_modem_status(up);
+>  	if (status & UART_LSR_THRE && up->dma->tx_err) {
 > --
 > 2.41.0
 > 
