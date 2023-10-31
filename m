@@ -2,124 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15C77DD6FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535D57DD6F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbjJaUSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 16:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S231835AbjJaUOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjJaUSU (ORCPT
+        with ESMTP id S230522AbjJaUOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 16:18:20 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718C9ED
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:18:18 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7b9e83b70so1994267b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698783497; x=1699388297; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ztq39AVKtcPBQkDEgvD9lSUG5ylL2QPNBxZOTT2U9hc=;
-        b=EGHI4CJywkrKHWz4oREJwLIPp6QyfyEiQeyA23EfZYk0zf+UB8FaTgGtnIX4Yz/5zq
-         0wfaPxBX7kOFTa7t8SErD2Hdr9/BpS/09YMO+DydsO14aCCNLpEF5gRDbAdvSyeOlVqc
-         UPdwDfxNFzQZxJxlIYSyVEJZg41aUPEyzyBuf8phKhuMelMvnPjr5Pz6KgLXeK4ZyOyT
-         +hM/LYAkG4A9YLNg1vZwyyDl7cXlnZ1Ny2Pzc8JTvWpSyKt02vk6NaI7jNgmL1ZlNAAc
-         3b2rz5CYEcRrjjIGqzCRVZFOm/ke01G8uUhp01YYpIQ64333Vi174EbMtHL1aCTM9ObF
-         psUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698783497; x=1699388297;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ztq39AVKtcPBQkDEgvD9lSUG5ylL2QPNBxZOTT2U9hc=;
-        b=CY7v1a2zrJvTFDFvtXIPFrM9j3EekomGA8HMFL7acqt10EIi/DH3j0QoHHjhnN36jF
-         PUGv2reDlG+LuFdKwccFrA1OiB39bMGuocxB6fSHE2Qjo9GOVY5oB8VT9OSbmo1T+Lvb
-         1/1UrsBIVq5wHjbO0ruhx6hxxG02YNEZSEhnrEgUFPq3vCA1aQrzJ47pQYiIvnr7yHvs
-         H8TlmHh1UiUkYKT+aplX6SUnd7UJQSW+ovEsLMY+heikC6wJKgFmCso+TC/TL4uGOFsR
-         GUbh4p8IuMKE4yO7oFlDu9GQJabWVO/6IM8xPzg64D6+htpLmSj8pb5cRTPhlZ4tqGfQ
-         bPww==
-X-Gm-Message-State: AOJu0Yx56h9sIBOTiF064b5aGfztW7M9KE9DVgAIprDHQHALlceoGL1M
-        PDjpu8GoAPARDQjOiGafhk82V6FLs4ZG
-X-Google-Smtp-Source: AGHT+IE8r9R0/YNE2aMmXBt/5jdVEq82GPS8cQwktw+16arRhB9NYq/NvvqS8Dt8j29bFV2jrKzq4QjdO3vj
-X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
- (user=mmaurer job=sendgmr) by 2002:a0d:d684:0:b0:58c:e8da:4d1a with SMTP id
- y126-20020a0dd684000000b0058ce8da4d1amr89719ywd.2.1698783497681; Tue, 31 Oct
- 2023 13:18:17 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 20:10:14 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231031201752.1189213-1-mmaurer@google.com>
-Subject: [PATCH] rust: Suppress searching builtin sysroot
-From:   Matthew Maurer <mmaurer@google.com>
-To:     Jamie.Cunliffe@arm.com, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     will@kernel.org, Matthew Maurer <mmaurer@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Tue, 31 Oct 2023 16:14:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53C9F4;
+        Tue, 31 Oct 2023 13:14:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27D12C433C7;
+        Tue, 31 Oct 2023 20:14:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698783259;
+        bh=YduzvvmkmCkh7XYeNNev2rvRk7Q+I6SxwFxUFz9VHnY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=td53QjSZeq2Du0lMC4bD+vMC4aWlfLC6V0Q7LWNOqXlaz2rTQNiFyJBLjpmpSENEP
+         lvws2KtMyn0A53iMkYIQ2qVzbyxMzHmMHXt5+xvSNSDqjA3mNAhW3tTPCXX5laQDj7
+         5gEeamGoTjWEIzsQNKPr8douaj0yQdLVMp+kCC3hXHhWbub+UPGXyjKNCicJV7s8x0
+         Y3KHPV0Y3IvkwHqHkCaeWIJgGkTSscfIx6Y77pA9McZwK+ZT2LQrK12x7PXeRon0iI
+         Y+cRRPMo2jAIJznQndQ5b9BUTsm2nFI2IskQR9RZarDym0db04q2Vqr/kEgTX66QQe
+         Y4H7zM1YqwUug==
+Date:   Tue, 31 Oct 2023 13:14:18 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the crypto tree
+Message-ID: <20231031131418.52af79d0@kernel.org>
+In-Reply-To: <20231031045157.GA12981@sol.localdomain>
+References: <20231030155809.6b47288c@canb.auug.org.au>
+        <20231030160953.28f2df61@canb.auug.org.au>
+        <ZT896a2j3hUI1NF+@gondor.apana.org.au>
+        <20231030150243.0e66ba73@kernel.org>
+        <20231031045157.GA12981@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, if Rust is passed `--target=foo` rather than a target.json
-file, it will infer a default sysroot if that component is installed. As
-the proposed aarch64 support uses `aarch64-unknown-none` rather than a
-target.json file, this is needed to prevent rustc from being confused
-between the custom kernel sysroot and the pre-installed one.
+On Mon, 30 Oct 2023 21:51:57 -0700 Eric Biggers wrote:
+> On Mon, Oct 30, 2023 at 03:02:43PM -0700, Jakub Kicinski wrote:
+> > On Mon, 30 Oct 2023 13:23:53 +0800 Herbert Xu wrote:  
+> > > If we simply apply this patch to the netdev tree then everything
+> > > should work at the next merge window.  But perhaps you could change
+> > > the patch description to say something like remove the obsolete
+> > > crypto_hash_alignmask.  It's not important though.  
+> > 
+> > I'm happy to massage the commit message and apply the fix to net.
+> > But is it actually 100% correct to do that? IOW is calling
+> > crypto_ahash_alignmask() already not necessary in net-next or does
+> > it only become unnecessary after some prep work in crypto-next?
+> > 
+> > We can tell Linus to squash this fix into the merge of either
+> > crypto-next or net-next, I'm pretty sure he'd be okay with that..  
+> 
+> It's safe to fold the patch into net-next.  It actually looks like a bug to be
+> using the alignmask in the way that net/ipv4/tcp_ao.c is using it.  You don't
+> want to be erroring out just because the algorithm declared an alignmask.
 
-Signed-off-by: Matthew Maurer <mmaurer@google.com>
----
-
-This patch is prompted by the issue I encountered at
-https://lore.kernel.org/all/CAGSQo01pOixiPXkW867h4vPUaAjtKtHGKhkV-rpifJvKxAf4Ww@mail.gmail.com/
-but should be generically more hermetic even if we don't end up landing
-that patch.
-
- rust/Makefile          | 1 +
- scripts/Makefile.build | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/rust/Makefile b/rust/Makefile
-index a27f35f924ec..0403e88e19fd 100644
---- a/rust/Makefile
-+++ b/rust/Makefile
-@@ -400,6 +400,7 @@ quiet_cmd_rustc_library = $(if $(skip_clippy),RUSTC,$(RUSTC_OR_CLIPPY_QUIET)) L
- 		--emit=metadata=$(dir $@)$(patsubst %.o,lib%.rmeta,$(notdir $@)) \
- 		--crate-type rlib -L$(objtree)/$(obj) \
- 		--crate-name $(patsubst %.o,%,$(notdir $@)) $< \
-+		--sysroot=/dev/null \
- 	$(if $(rustc_objcopy),;$(OBJCOPY) $(rustc_objcopy) $@)
- 
- rust-analyzer:
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 82e3fb19fdaf..6e4ee513cc3c 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -275,6 +275,7 @@ rust_common_cmd = \
- 	--extern alloc --extern kernel \
- 	--crate-type rlib -L $(objtree)/rust/ \
- 	--crate-name $(basename $(notdir $@)) \
-+	--sysroot=/dev/null \
- 	--out-dir $(dir $@) --emit=dep-info=$(depfile)
- 
- # `--emit=obj`, `--emit=asm` and `--emit=llvm-ir` imply a single codegen unit
--- 
-2.42.0.820.g83a721a137-goog
-
+Thanks Eric! Applied as commit f2fbb9081123 ("net: tcp: remove call to
+obsolete crypto_ahash_alignmask()") to net-next. I'll respin our PR
+after some sanity checking.
