@@ -2,121 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 241C07DC9DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010307DC9DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 10:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbjJaJsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 05:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S231282AbjJaJtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 05:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjJaJsg (ORCPT
+        with ESMTP id S230457AbjJaJtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 05:48:36 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3033ED;
-        Tue, 31 Oct 2023 02:48:33 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V6dd7F021340;
-        Tue, 31 Oct 2023 09:48:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4y6/UUnLiFspiisyLHIS98YUAP4Jpm3aumYKQ9G92Q0=;
- b=DLXA+u/jts1mAC9eV4SUj7EyTBXRmuHg5Tmuu/Nk7jHMfgMnmtpRL0WEQNxJ2Ch1QuMQ
- XUnA3ZSRY/2d3lcDxyW7EXzuMnwqeM5GGwaE77c42wAG5N0vyjhIgqgz4kLVcrgsX4et
- Bhpx4a/xiMjvTwwgtnWkuXp5MWErxbdLZ0/+JbQU/DkmgFDbi1F3gthuUB6Q+Zb96gdg
- sMmHHmALmjGwWRnzZcDUeVPSC/L8AifozbGtL1SPMPPqvD4cmwZWnxIyXR/5JYqEF1dy
- KOsN87rU4ESc1ZHHE+qfU2zcbEBLpiq7ntO3f9bX6QFgn16K4hH06RscHgvnhtPQlRDL XA== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2tpx0n4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 09:48:28 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39V9mRCQ029465
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 09:48:27 GMT
-Received: from [10.214.225.95] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 31 Oct
- 2023 02:48:25 -0700
-Message-ID: <98413d47-986f-bf94-0793-865a5a4dc80d@quicinc.com>
-Date:   Tue, 31 Oct 2023 15:18:14 +0530
+        Tue, 31 Oct 2023 05:49:01 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D6ED8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:48:58 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-584a761b301so4316447a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 02:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698745738; x=1699350538; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rYhUK3Ef9ZtO2nV4gKtW07Ip2faB9tXLb6bMWZbknSY=;
+        b=FVdlKeYNVbGwEj3wWYnJ5gODeiJ5bwzsZvcEPknKdezwtdQudLj4cg0uBWfIOpVTHO
+         a99vfA04iUnIAHecg4wJtKl+CsM7j1DPCx89szuF+eZxkAc/2w9YHlVzk9MUE0lsHQBB
+         8FU3rtRTAx1c+VjjTZ3sGjSR8QXJhpoLcrspLZgOhZ+ZR2ST/GS8NSqvcBklPeMr+4AC
+         CPWnjE7sDrXZFpainFHvOUR3uXIFHh44YjEL8VEiHKjmH1wBVasrizRrA6hQ534f8BOk
+         fgnS9kvwnala+iYDC6TQfVQs/SKJRr2uw4a/29ExQzKhLDYu5UjeQZfno/E4xlM2evr3
+         PE+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698745738; x=1699350538;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rYhUK3Ef9ZtO2nV4gKtW07Ip2faB9tXLb6bMWZbknSY=;
+        b=eL40EaAu3iVcSUDyxuhwEgfKWiqArVKu1oxDVMe7bGdEd0XLhcY/6YvXSFV4lS9jGm
+         fES4weG3f5g1++CXxJONFs8jjwtJ35A4gAhgH8TCNNFndf60gYmLX7weLIRL95Mj7SE5
+         1Jub8EPoGjt9/pOFGeC1I86qDpqaltQhpZ0ajTxOq/3os7Mfy7TbZVyZmbgsz6g3i+v5
+         zoDlK5cuLFjrwG8SLZv5/OAq2s79nH4/ys/MIEESea1wRu7a8ltccZGyJjsSA5M/45Vj
+         +wT0pevzjdAtk7IEUv2rAUgA6PKByryual3YSrrpgywsmHJypb5EzBWjQ0CyElkyEVRl
+         zoeA==
+X-Gm-Message-State: AOJu0Yxnj458KWRgG+hJPmAq9aGGPAsW4qNZPxi8J52A9X1LENFn6fej
+        5Zf0K2AJX4WlrQhDSd+nCFESIg1ue02rhcD2b0JYxA==
+X-Google-Smtp-Source: AGHT+IFodctCoBfntSB97ytv+c3eYTsmabXo8s/B2A8Y0mzQyyrkapI4MRtIqtFwOVg6oauPSK49g6vsxsHjXcSIwik=
+X-Received: by 2002:a17:90a:19ce:b0:280:2985:56af with SMTP id
+ 14-20020a17090a19ce00b00280298556afmr7095622pjj.45.1698745738085; Tue, 31 Oct
+ 2023 02:48:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] tracing/kprobes: Fix the order of argument descriptions
-To:     Yujie Liu <yujie.liu@intel.com>,
-        <linux-trace-kernel@vger.kernel.org>
-CC:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231031041305.3363712-1-yujie.liu@intel.com>
-Content-Language: en-US
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231031041305.3363712-1-yujie.liu@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: lbzy1QKhATs0k3Ybj_mYhOnzIQdegUY0
-X-Proofpoint-GUID: lbzy1QKhATs0k3Ybj_mYhOnzIQdegUY0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 clxscore=1015 spamscore=0
- phishscore=0 malwarescore=0 adultscore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310310076
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231026170913.32605-1-vincent.guittot@linaro.org>
+ <20231026170913.32605-2-vincent.guittot@linaro.org> <83d6a790-3d18-4922-850b-b60e88761786@arm.com>
+In-Reply-To: <83d6a790-3d18-4922-850b-b60e88761786@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 31 Oct 2023 10:48:46 +0100
+Message-ID: <CAKfTPtCLc3z6k9MwW6XKHjbh78AFrAg1T1MONYtf8N8GGR6fGQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] sched/schedutil: rework performance estimation
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     wyes.karny@amd.com, peterz@infradead.org, linux-pm@vger.kernel.org,
+        rafael@kernel.org, vschneid@redhat.com, bristot@redhat.com,
+        bsegall@google.com, rostedt@goodmis.org, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, beata.michalska@arm.com,
+        linux-kernel@vger.kernel.org, qyousef@layalina.io,
+        viresh.kumar@linaro.org, mingo@redhat.com, mgorman@suse.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Lukasz,
 
+On Mon, 30 Oct 2023 at 18:45, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi Vincent,
+>
+> On 10/26/23 18:09, Vincent Guittot wrote:
+> > The current method to take into account uclamp hints when estimating the
+> > target frequency can end into situation where the selected target
+> > frequency is finally higher than uclamp hints whereas there are no real
+> > needs. Such cases mainly happen because we are currently mixing the
+> > traditional scheduler utilization signal with the uclamp performance
+> > hints. By adding these 2 metrics, we loose an important information when
+> > it comes to select the target frequency and we have to make some
+> > assumptions which can't fit all cases.
+> >
+> > Rework the interface between the scheduler and schedutil governor in order
+> > to propagate all information down to the cpufreq governor.
+> >
+> > effective_cpu_util() interface changes and now returns the actual
+> > utilization of the CPU with 2 optional inputs:
+> > - The minimum performance for this CPU; typically the capacity to handle
+> >    the deadline task and the interrupt pressure. But also uclamp_min
+> >    request when available.
+> > - The maximum targeting performance for this CPU which reflects the
+> >    maximum level that we would like to not exceed. By default it will be
+> >    the CPU capacity but can be reduced because of some performance hints
+> >    set with uclamp. The value can be lower than actual utilization and/or
+> >    min performance level.
+>
+> You have probably missed my question in the last v1 patch set.
 
-On 10/31/2023 9:43 AM, Yujie Liu wrote:
-> The order of descriptions should be consistent with the argument list of
-> the function, so "kretprobe" should be the second one.
-> 
-> int __kprobe_event_gen_cmd_start(struct dynevent_cmd *cmd, bool kretprobe,
->                                   const char *name, const char *loc, ...)
-> 
-> Fixes: 2a588dd1d5d6 ("tracing: Add kprobe event command generation functions")
-> Suggested-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> Signed-off-by: Yujie Liu <yujie.liu@intel.com>
+Yes, sorry
 
-Thanks.
+>
+> The description above needs a bit of clarification, since looking at the
+> patches some dark corners are introduced IMO:
+>
+> Currently, we have a less aggressive power saving policy than this
+> proposal.
+>
+> The questions:
+> What if the PD has 4 CPUs, the max util found is 500 and is from a CPU
+> w/ uclamp_max, but there is another CPU with normal utilization 499?
+> What should be the final frequency for that PD?
 
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+We now follow the same sequence everywhere which can be summarized by:
 
--Mukesh
+for each cpu sharing the same frequency domain:
+    util = cpu_util(cpu)
+    eff_util = effective_cpu_util(util, &min, &max)
+    eff_util = sugov_effective_cpu_perf(eff_util, min, max) which
+applies the dvfs headroom if needed
+    max_util = max(max_util, eff_util);
 
-> ---
->   kernel/trace/trace_kprobe.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index e834f149695b..47812aa16bb5 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1020,9 +1020,9 @@ EXPORT_SYMBOL_GPL(kprobe_event_cmd_init);
->   /**
->    * __kprobe_event_gen_cmd_start - Generate a kprobe event command from arg list
->    * @cmd: A pointer to the dynevent_cmd struct representing the new event
-> + * @kretprobe: Is this a return probe?
->    * @name: The name of the kprobe event
->    * @loc: The location of the kprobe event
-> - * @kretprobe: Is this a return probe?
->    * @...: Variable number of arg (pairs), one pair for each field
->    *
->    * NOTE: Users normally won't want to call this function directly, but
+EAS anticipates the impact of the waking task on utilization and max
+but the end result is the same as above once the task is enqueued so I
+didn't show it for simplicity
+
+Coming back to your example
+  CPU0 has uclamp_max = 500 and an actual utilization above 500. Its
+eff_util will be 500
+  CPU1 doesn't have uclamp_max constraint and an actual utilization of
+499 which will be increase with dvfs headroom to 623 in
+sugov_effective_cpu_perf()
+
+The final max util will be 623
+
+With the current implementation we apply the dvfs headroom to the
+final max_util (which is the CPU0 with uclamp_max == 500) whereas we
+now apply the dvfs headroom on each CPU inside
+sugov_effective_cpu_perf()
+
+The main difference is that if CPU1 has an actual utilization of 400,
+the max_util of the frequency domain will be 500 whereas it is 625
+after applying dvfs headroom with current implementation
+
+>
+> In current design, where we care more about 'delivered performance
+> to the tasks' than power saving, the +20% would be applied for the
+> frequency. Therefore if that CPU with 499 util doesn't have uclamp_max,
+> it would get a decent amount of idle time for its tasks (to compensate
+> some workload variation).
+
+CPU1 with 499 still gets its 25% margin or I missed something in your example ?
+
+Vincent
+
+>
+> Regards,
+> Lukasz
