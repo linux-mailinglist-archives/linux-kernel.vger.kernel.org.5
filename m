@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB617DC713
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98CD7DC716
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 08:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343600AbjJaHRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 03:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        id S1343625AbjJaHSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 03:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233277AbjJaHRn (ORCPT
+        with ESMTP id S1343603AbjJaHSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 03:17:43 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 778AEC1;
-        Tue, 31 Oct 2023 00:17:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=omdBI
-        C+e1jVadRkJ0QsCI7L9wKGBA2OoP3PF04hqiWI=; b=OrIC40tmci6RhEscC9gla
-        xHTAaSCL9FiAp/BqCBDMNjAAfGuvu3Oy8IOv5zdDjJICQJj37neLCenx27GEx8Li
-        lDKmGkTAVOqq/Bpp3Az5t9P9G/MmqKOahtO7NkY5g65hZ8Z8xHvl77lhWzfnZewR
-        2ALg90tvkhEUWnqMNz6TCg=
-Received: from leanderwang-LC4.localdomain (unknown [111.206.145.21])
-        by zwqz-smtp-mta-g3-3 (Coremail) with SMTP id _____wBn3ojfqUBlwMj4AQ--.51864S5;
-        Tue, 31 Oct 2023 15:16:51 +0800 (CST)
-From:   Zheng Wang <zyytlz.wz@163.com>
-To:     dmitry.osipenko@collabora.com
-Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, hackerzheng666@gmail.com,
-        1395428693sheep@gmail.com, alex000young@gmail.com,
-        amergnat@baylibre.com, wenst@chromium.org,
-        Zheng Wang <zyytlz.wz@163.com>, stable@vger.kernel.org
-Subject: [PATCH v2 3/3] media: mtk-jpeg: Fix timeout schedule error in 
-Date:   Tue, 31 Oct 2023 15:16:44 +0800
-Message-Id: <20231031071644.20086-4-zyytlz.wz@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231031071644.20086-1-zyytlz.wz@163.com>
-References: <20231031071644.20086-1-zyytlz.wz@163.com>
+        Tue, 31 Oct 2023 03:18:22 -0400
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14F8DB;
+        Tue, 31 Oct 2023 00:18:19 -0700 (PDT)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id 2A8D84140C;
+        Tue, 31 Oct 2023 12:18:11 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1698736692; bh=xnyRWdL+NdKNQmT5h3gBkSuEgvXkNp1V2Sk1J7cHl3Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s5lauFYUlfv9MNE4zi6/ThT/z69ngFC1oupMRy7Yz3R/DPrb2Y5M4pDOqCskY3igK
+         8J+gdc4BXEyDkh6nsWvtrn/FC5X+EtIpsJ3dycb3mNL99NEuToOg8D3SD99XqUrBH4
+         kOXH/LJUrhls/MtxkyQfs17W/I6k2CClZBkvFnIsDLg1Ttdb7B1iOOAYLFBeT38msG
+         kGrA/jB+3K3xeGV+HFxuHxZEMDPGTGh0D2+xve5pd5cvC3Jwp3vrggCZTcPuGNFOyK
+         QhJIDZxf86rhpLNFcuK/ZHT3Oi+jvn8vlODMqcVKeHwO74khnBxQq7buHJABnQ+Dac
+         qsaA2RHv1XUfQ==
 MIME-Version: 1.0
+Date:   Tue, 31 Oct 2023 12:18:08 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: acer-aspire1: Enable RTC
+In-Reply-To: <CAD=FV=UigovpD_s89j6V7MhCXOVHVVXLRtH3XGEHtcHKbwVgBA@mail.gmail.com>
+References: <20231027-aspire1-sound-v1-0-5ff3cf8b5701@trvn.ru>
+ <20231027-aspire1-sound-v1-1-5ff3cf8b5701@trvn.ru>
+ <d6b63a3c-d171-4b6b-b222-8c619d90f51b@linaro.org>
+ <CAD=FV=UigovpD_s89j6V7MhCXOVHVVXLRtH3XGEHtcHKbwVgBA@mail.gmail.com>
+Message-ID: <9157b1f2ffc28f00da4d40b1baedb4b9@trvn.ru>
+X-Sender: nikita@trvn.ru
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBn3ojfqUBlwMj4AQ--.51864S5
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ar15uF1rKrW5Gr4xtw4Dtwb_yoW8ZF1rpF
-        WfK3yqkrWUWrZ8tF4UA3W7ZFy5G34Fgr47Ww43Xwn5A343XF47tryjya4xtFWIyFy2ka4F
-        yF4vg34xJFsFyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UTuWLUUUUU=
-X-Originating-IP: [111.206.145.21]
-X-CM-SenderInfo: h2113zf2oz6qqrwthudrp/xtbBdgYaU2Dkptft7gAAsP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,DOS_RCVD_IP_TWICE_B,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mtk_jpegdec_worker, if error occurs in mtk_jpeg_set_dec_dst, it
-will start the timeout worker and invoke v4l2_m2m_job_finish at
-the same time. This will break the logic of design for there should
-be only one function to call v4l2_m2m_job_finish. But now the timeout
-handler and mtk_jpegdec_worker will both invoke it.
+Doug Anderson писал(а) 31.10.2023 02:55:
+> Hi,
+> 
+> On Mon, Oct 30, 2023 at 2:47 PM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> On 27.10.2023 16:42, Nikita Travkin wrote:
+>> > pm6150 has a read-only RTC that can be used to keep the time with some
+>> > extra userspace tools. Enable it.
+>> >
+>> > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> > ---
+>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>
+>> kinda unsure why it'd ever be disabled
+>>
+>> Konrad
+> 
+> FWIW we don't use the PMIC RTC in Chrome boards. I can't quite
+> remember why, but I _think_ that the power lines aren't hooked up to
+> the PMIC to keep power on for the board's lowest power states.
+> Instead we use the RTC that's on the EC (Embedded Controller).
+> 
 
-Fix it by start the worker only if mtk_jpeg_set_dec_dst successfully
-finished.
+When it was submitted, I suggested to keep it disabled by default
+because of the firmware mess qcom has - the rtc is set to
+read-only and if one enables it on cros without allow-set-time;
+and validating that qtiseclib doesn't block it too, it would
+likely cause issues by taking devices back to 1970s :D
 
-Fixes: da4ede4b7fd6 ("media: mtk-jpeg: move data/code inside CONFIG_OF blocks")
-Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: stable@vger.kernel.org
----
-v2:
-- put the patches into a single series suggested by Dmitry
----
- drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Nikita
 
-diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-index a39acde2724a..c3456c700c07 100644
---- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-+++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-@@ -1749,9 +1749,6 @@ static void mtk_jpegdec_worker(struct work_struct *work)
- 	v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
- 	v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
- 
--	schedule_delayed_work(&comp_jpeg[hw_id]->job_timeout_work,
--			      msecs_to_jiffies(MTK_JPEG_HW_TIMEOUT_MSEC));
--
- 	mtk_jpeg_set_dec_src(ctx, &src_buf->vb2_buf, &bs);
- 	if (mtk_jpeg_set_dec_dst(ctx,
- 				 &jpeg_src_buf->dec_param,
-@@ -1761,6 +1758,9 @@ static void mtk_jpegdec_worker(struct work_struct *work)
- 		goto setdst_end;
- 	}
- 
-+	schedule_delayed_work(&comp_jpeg[hw_id]->job_timeout_work,
-+			      msecs_to_jiffies(MTK_JPEG_HW_TIMEOUT_MSEC));
-+
- 	spin_lock_irqsave(&comp_jpeg[hw_id]->hw_lock, flags);
- 	ctx->total_frame_num++;
- 	mtk_jpeg_dec_reset(comp_jpeg[hw_id]->reg_base);
--- 
-2.25.1
-
+> -Doug
