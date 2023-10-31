@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2307DD6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 20:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0827DD6E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 21:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343583AbjJaT7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 15:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        id S1343496AbjJaUDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 16:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbjJaT7f (ORCPT
+        with ESMTP id S234890AbjJaUDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 15:59:35 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EA6F3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 12:59:31 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1F94B2C01BE;
-        Wed,  1 Nov 2023 08:59:28 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1698782368;
-        bh=S/pfkRH68yVx3hWmEG6BUZFthc8VRNCK7zHVAa7ID0E=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=W8ZZZHTMs/LdXojZXS41MnnaIEJQ+U/wM8gGESmd9oIen6ivrR9UyxafAhS8hXSZx
-         m+A+riGU/c5/FiQUxQjBlm6w/J3Opa6q71YcUvi+UIQlrp593aKEOFbhFNq4HeJA7F
-         QmIXX5mM9oVQyKLjCciTvP1MEGt5Z/17xSdNlRTvAi17tjtBOEhcynH3JIr+bxB+Gc
-         pvVXqSzOcn+XXitqCB1thxB2tP6GyLp/IOTgAEFUlX6pIrcG09IqlcMCeW2Ld1SNVt
-         +6FFwRPEBmC2MQgpA/VZvYeRgH6O60q1e/FHI9dMc82orwMF6FB3RHyrn8pYLqHOFs
-         3usviZsigx1CA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B65415ca00000>; Wed, 01 Nov 2023 08:59:28 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.39; Wed, 1 Nov 2023 08:59:27 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.48; Wed, 1 Nov 2023 08:59:27 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.039; Wed, 1 Nov 2023 08:59:27 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "andi.shyti@kernel.org" <andi.shyti@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/2] i2c: mv64xxx: add an optional bus-reset-gpios
- property
-Thread-Topic: [PATCH v5 2/2] i2c: mv64xxx: add an optional bus-reset-gpios
- property
-Thread-Index: AQHaCIYGLKsizTKN0UyQHbkVO99aL7BcpjeAgAACoICAA762AIACLMeAgADqM4A=
-Date:   Tue, 31 Oct 2023 19:59:27 +0000
-Message-ID: <89088ff0-d2c7-4270-bb2b-26f90d6c3e3c@alliedtelesis.co.nz>
-References: <20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz>
- <20231027033104.1348921-3-chris.packham@alliedtelesis.co.nz>
- <65911ec0-e073-435f-846a-c5501dd5d3a9@linaro.org>
- <9eebec9b-e6fd-4a22-89ea-b434f446e061@linaro.org>
- <b91223a3-d835-47c0-976b-3ebdfe84d1f8@alliedtelesis.co.nz>
- <22c74d90-19f8-4a68-ad01-1b7ed833cf91@linaro.org>
-In-Reply-To: <22c74d90-19f8-4a68-ad01-1b7ed833cf91@linaro.org>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C754409B998D01428E2408B0D6697ECD@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Tue, 31 Oct 2023 16:03:09 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE80C9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 13:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tPacMkZH0y8QWW+lHcXmKmF01kbsT/kTr2EnDLWNeP0=; b=oVhlQrgg6x3TUP0JGmdbYox9k8
+        B3JjbRLlvD7ntmQkP9jXeQ2HEcAkK4BQO3Y6BixG6Z2p3lU7+158vukdqZmoYW1NEwiWaitpyndcg
+        WKAPna0YyQYfuh+aR1Ekt5oyccneNbST9eYr2DsuhXuCe9JS89nR5d4ZcIIohzoxCm9+rZ1NchPVA
+        8TCnuFvLEjAkE8ROvXr8ACM91n57CbndfEsaAFpkcGooz7haW2XZVhTInRjjSpVwWfumPidWuWhTo
+        Ru182GqN7/TpErKptJtahh0ALG4CrnCUyXjE/fjE4hIIVv5nkbFg5yXndtGuLHzpljCuVRf7sYfjK
+        WxzGYYeA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qxuwX-0053M6-1Y;
+        Tue, 31 Oct 2023 20:02:29 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DFB51300451; Tue, 31 Oct 2023 21:02:28 +0100 (CET)
+Date:   Tue, 31 Oct 2023 21:02:28 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        aubrey.li@linux.intel.com, yu.c.chen@intel.com,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        boqun.feng@gmail.com, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com
+Subject: [PATCH] rcu: Break rcu_node_0 --> &rq->__lock order
+Message-ID: <20231031200228.GG15024@noisy.programming.kicks-ass.net>
+References: <20231031001418.274187-1-longman@redhat.com>
+ <20231031085308.GB35651@noisy.programming.kicks-ass.net>
+ <a46f5614-53ec-49fb-86d0-fa5aea4d0a42@paulmck-laptop>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=62ntRvTiAAAA:8 a=g14jhrGyAAAA:8 a=VwQbUJbxAAAA:8 a=KKAkSRfTAAAA:8 a=-msGNS_7CClV5aHoOmwA:9 a=QEXdDO2ut3YA:10 a=pToNdpNmrtiFLRE6bQ9Z:22 a=P511sJaWzJIkUf5biGsp:22 a=AjGcO6oz07-iQ99wixmX:22 a=cvBusfyB2V15izCimMoJ:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a46f5614-53ec-49fb-86d0-fa5aea4d0a42@paulmck-laptop>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,81 +68,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAzMS8xMC8yMyAxOTowMSwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToNCj4gT24gMjkv
-MTAvMjAyMyAyMTo0OCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4+IE9uIDI4LzEwLzIzIDAwOjM3
-LCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3RlOg0KPj4+IE9uIDI3LzEwLzIwMjMgMTM6MjcsIEty
-enlzenRvZiBLb3psb3dza2kgd3JvdGU6DQo+Pj4+IE9uIDI3LzEwLzIwMjMgMDU6MzEsIENocmlz
-IFBhY2toYW0gd3JvdGU6DQo+Pj4+PiBTb21lIGhhcmR3YXJlIGRlc2lnbnMgaGF2ZSBhIEdQSU8g
-dXNlZCB0byBjb250cm9sIHRoZSByZXNldCBvZiBhbGwgdGhlDQo+Pj4+PiBkZXZpY2VzIG9uIGFu
-ZCBJMkMgYnVzLiBJdCdzIG5vdCBwb3NzaWJsZSBmb3IgZXZlcnkgY2hpbGQgbm9kZSB0bw0KPj4+
-Pj4gZGVjbGFyZSBhIHJlc2V0LWdwaW9zIHByb3BlcnR5IGFzIG9ubHkgdGhlIGZpcnN0IGRldmlj
-ZSBwcm9iZWQgd291bGQgYmUNCj4+Pj4+IGFibGUgdG8gc3VjY2Vzc2Z1bGx5IHJlcXVlc3QgaXQg
-KHRoZSBvdGhlcnMgd2lsbCBnZXQgLUVCVVNZKS4gUmVwcmVzZW50DQo+Pj4gQ2M6IE1hcmssDQo+
-Pj4NCj4+PiBBbHNvIHRoaXMgcGFydCBpcyBub3QgdHJ1ZS4gSWYgdGhlIGJ1cyBpcyBub24tZGlz
-Y292ZXJhYmxlLCB0aGVuIGl0IGlzDQo+Pj4gcG9zc2libGUgdG8gaGF2ZSByZXNldC1ncGlvcyBp
-biBlYWNoIHByb2JlZCBkZXZpY2UuIFlvdSBjYW4gc2hhcmUgR1BJT3MsDQo+Pj4gc28gbm8gcHJv
-YmxlbSB3aXRoIC1FQlVTWSBhdCBhbGwuDQo+PiBMYXN0IHRpbWUgSSBjaGVja2VkIHlvdSBjb3Vs
-ZG4ndCBzaGFyZSBHUElPcy4gSWYgdGhhdCdzIG5vIGxvbmdlciB0aGUNCj4+IGNhc2UgdGhlbiBJ
-IGNhbiBwcm9iYWJseSBtYWtlIHdoYXQgSSBuZWVkIHRvIGhhcHBlbiB3b3JrLiBJdCBzdGlsbA0K
-Pj4gY3JlYXRlcyBhbiBpc3N1ZSB0aGF0IEkgaGF2ZSBtdWx0aXBsZSBQQ0E5NTR4IG11eGVzIGNv
-bm5lY3RlZCB0byBhDQo+PiBjb21tb24gcmVzZXQgR1BJTyBzbyBhcyBlYWNoIG11eCBpcyBwcm9i
-ZWQgdGhlIFBDQTk1NHggZHJpdmVyIHdpbGwNCj4+IHRvZ2dsZSB0aGUgcmVzZXQuIFRoYXQncyBw
-cm9iYWJseSBPSyBhcyB0aGUgUENBOTU0eCBpcyBzdWZmaWNpZW50bHkNCj4+IHN0YXRlbGVzcyB0
-aGF0IHRoZSBleHRyYSByZXNldHMgd29uJ3QgZG8gYW55IGhhcm0gYnV0IGlmIGl0IHdlcmUgYSBt
-b3JlDQo+PiBjb21wbGljYXRlZCBkZXZpY2UgdGhlbiB0aGVyZSB3b3VsZCBiZSBpc3N1ZXMuDQo+
-IEkga25vdywgYnV0IHRoaXMgaXMgYSBicm9hZGVyIHByb2JsZW0sIG5vdCByZWFsbHkgc3BlY2lm
-aWMgdG8gdGhpcyBvbmUNCj4gZGV2aWNlLiBJIGFsc28gYXJndWUgdGhhdCB5b3VyIEkyQyBjb250
-cm9sbGVyIGRvZXMgbm90IGFjdHVhbGx5IGhhdmUNCj4gdGhpcyByZXNldCBsaW5lLg0KDQpZZXMg
-YWJzb2x1dGVseS4gQmVjYXVzZSB0aGUgcmVzZXQgbGluZSBpcyBjb21tb24gdG8gbXVsdGlwbGUg
-cGNhOTU0eCANCm11eGVzIHRoZSBvbmx5IG9wdGlvbiBJIGhhdmUgKEkgdGhpbmspIGlzIHRvIGFz
-c29jaWF0ZSB0aGUgcmVzZXQgbGluZSANCndpdGggdGhlIGNvbnRyb2xsZXIuIEl0IGhhcHBlbnMg
-dG8gYmUgdHJ1ZSBmb3IgbXkgY2FzZSB0aGF0IGV2ZXJ5dGhpbmcgDQpjb25uZWN0ZWQgdG8gdGhh
-dCBidXMgaXMgYWZmZWN0ZWQgYnkgdGhlIHJlc2V0IGxpbmUgYnV0IEkgY2FuIGNvbXBsZXRlbHkg
-DQpzZWUgdGhhdCB0aGVyZSBtYXkgYmUgb3RoZXIgZGVzaWducyB3aGVyZSB0aGVyZSBhcmUgYSBt
-aXggb2YgbXV4ZXMgYW5kIA0Kb3RoZXIgZGV2aWNlcyBvbiB0aGUgcm9vdCBidXMuDQoNClNvIGFz
-c29jaWF0aW5nIHRoZSByZXNldCBsaW5lIHdpdGggdGhlIEkyQyBjb250cm9sbGVyIGlzIGEgcHJh
-Z21hdGljIA0Kc29sdXRpb24gKG9yIGFuIGVncmVnaW91cyBoYWNrIGRlcGVuZGluZyBvbiB5b3Vy
-IHBvaW50IG9mIHZpZXcpIHRoYXQgDQp3b3JrcyB3aXRoIHRoaXMga2luZCBvZiBoYXJkd2FyZSBk
-ZXNpZ24uDQoNCkFub3RoZXIgY29tcGxldGUgaGFjayBJJ3ZlIGV4cGVyaW1lbnRlZCB3aXRoIGlz
-IGFkZGluZyB0aGUgbXV4ZXMgZGVmaW5lZCANCndpdGggYHN0YXR1cyA9ICJkaXNhYmxlZCI7YCBp
-biB0aGUgZHRzIGFuZCBoYXZpbmcgYSBjdXN0b20gZHJpdmVyIHRoYXQgDQpyZXF1ZXN0cyB0aGUg
-R1BJTyBhbmQgbWFuaXB1bGF0ZXMgdGhlIGxpdmUgZGV2aWNlIHRyZWUuIEl0IHdvcmtzIGJ1dCBp
-cyANCnF1aXRlIGEgbG90IG1vcmUgY29kZSBhbmQgd2lsbCBpbnZhcmlhYmx5IGJyZWFrIGlmIEkg
-bmVlZCB0byB0d2VhayB0aGUgDQpkZXZpY2UgdHJlZS4NCg0KPj4gSGF2aW5nIHNvbWUga2luZCBv
-ZiByZWYtY291bnRlZCByZXNldCBjb250cm9sbGVyIHRoYXQgaXMgaW1wbGVtZW50ZWQNCj4+IHdp
-dGggR1BJT3MgaXMgcHJvYmFibHkgdGhlIGJldHRlciBzb2x1dGlvbi4gSSB3YXMga2luZCBvZiBz
-dXJwcmlzZWQgdGhhdA0KPj4gbm90aGluZyBleGlzdGVkIGxpa2UgdGhhdCBpbiBkcml2ZXJzL3Jl
-c2V0Lg0KPiByZXNldCBjb250cm9sbGVyIGZyYW1ld29yayBhbHJlYWR5IHN1cHBvcnRzIHRoaXMu
-IFRoZSBwb2ludCBpcyB0aGF0IEdQSU8NCj4gcmVzZXQgaXMgbm90IGEgcmVzZXQgY29udHJvbGxl
-ciwgc28gaW4gdGVybXMgb2YgYmluZGluZ3MgInJlc2V0cyINCj4gcHJvcGVydHkgZG9lcyBub3Qg
-Zml0IGl0Lg0KDQpTbyBJIG5lZWQgc29tZSB3YXkgb2YgcmVwcmVzZW50aW5nIGEgR1BJTyBsaW5l
-IGFzc29jaWF0ZWQgd2l0aCBtdWx0aXBsZSANCmRldmljZXMgdGhhdCBtdXN0IGJlIHJlcXVlc3Rl
-ZCBhbmQgZHJpdmVuIGFwcHJvcHJpYXRlbHkgYmVmb3JlIHRoZSANCmRldmljZXMgYXJlIHByb2Jl
-ZC4gSW4gbGlldSBvZiBhbnl0aGluZyBlbHNlIGEgImJ1cy1yZXNldC1ncGlvcyIgDQpwcm9wZXJ0
-eSByZWNvZ25pemVkIGJ5IHRoZSBnZW5lcmljIEkyQyBmcmFtZXdvcmsga2luZCBvZiBzb3VuZHMg
-bGlrZSB0aGUgDQpiZXN0IHNvbHV0aW9uIHNvIGZhci4gVW5sZXNzIG1heWJlIHRoZXJlJ3Mgc29t
-ZSBraW5kIG9mIHBpbmN0cmwgdHlwZSANCnRoaW5nIHRoYXQgd291bGQgYWxyZWFkeSB3b3JrLg0K
-DQo+Pj4gVGhlIHByb2JsZW0gaXMgZG9pbmcgcmVzZXQ6DQo+Pj4gMS4gaW4gcHJvcGVyIG1vbWVu
-dCBmb3IgYWxsIGRldmljZXMNCj4+PiAyLiB3aXRob3V0IGFmZmVjdGluZyBvdGhlciBkZXZpY2Vz
-IHdoZW4gb25lIHVuYmluZHMvcmVtb3ZlKCkNCj4+Pg0KPj4+IFRoZSAoMikgYWJvdmUgaXMgbm90
-IHNvbHZlYWJsZSBlYXN5IGluIGtlcm5lbCBhbmQgd2UgYWxyZWFkeSBoYWQgbmljZQ0KPj4+IHRh
-bGtzIGFib3V0IGl0IGp1c3QgZmV3IGRheXMgYWdvOg0KPj4+IDEuIEFwcGxlIGNhc2U6DQo+Pj4g
-aHR0cHM6Ly9zY2FubWFpbC50cnVzdHdhdmUuY29tLz9jPTIwOTg4JmQ9dFpqQTVSNzd5c2xpUnlX
-ZkR2Z1g5Sm5tTFpyLVRxaFJXcFlqc05PLTVBJnU9aHR0cHMlM2ElMmYlMmZzb2NpYWwlMmV0cmVl
-aG91c2UlMmVzeXN0ZW1zJTJmJTQwbWFyY2FuJTJmMTExMjY4NzgwMzExNjM0MTYwDQo+Pj4NCj4+
-PiAyLiBteSBXU0E4ODR4Og0KPj4+IGh0dHBzOi8vc2Nhbm1haWwudHJ1c3R3YXZlLmNvbS8/Yz0y
-MDk4OCZkPXRaakE1Ujc3eXNsaVJ5V2ZEdmdYOUpubUxaci1UcWhSV3BaOXRJN3Z2dyZ1PWh0dHBz
-JTNhJTJmJTJmbG9yZSUyZWtlcm5lbCUyZW9yZyUyZmFsc2EtZGV2ZWwlMmY4NGY5ZjFjNC0wNjI3
-LTQ5ODYtODE2MC1iNGFiOTk0NjliODElNDBsaW5hcm8lMmVvcmclMmYNCj4+IEFwb2xvZ2llcyBm
-b3IgdGhlIG1hbmdsZWQgbGlua3MgKHRoZXkncmUgbW9yZSBzZWN1cmUgbm93IGF0IGxlYXN0IHRo
-YXQncw0KPj4gd2hhdCBvdXIgSVMgdGVhbSBoYXZlIGJlZW4gc29sZCkuDQo+Pj4gTGFzdCwNCj4+
-PiBJIHdvdWxkIGxpa2UgdG8gYXBvbG9naXplIHRvIHlvdSBDaHJpcy4gSSB1bmRlcnN0YW5kIHRo
-YXQgYnJpbmdpbmcgc3VjaA0KPj4+IGZlZWRiYWNrIGF0IHY1IGlzIG5vdCB0aGF0IGdvb2QuIEkg
-aGFkIHBsZW50eSBvZiB0aW1lIHRvIHNheSBzb21ldGhpbmcNCj4+PiBlYXJsaWVyLCBzbyB0aGlz
-IGlzIG5vdCByZWFsbHkgcHJvZmVzc2lvbmFsIGZyb20gbXkgc2lkZS4gSSBhbSBzb3JyeSwNCj4+
-PiBqdXN0IG15IGJyYWluIGRpZCBub3QgY29ubmVjdCBhbGwgdGhlc2UgdG9waWNzIHRvZ2V0aGVy
-Lg0KPj4+DQo+Pj4gSSBhcG9sb2dpemUuDQo+PiBBY3R1YWxseSBJIGtpbmQgb2YgZXhwZWN0ZWQg
-dGhpcyBmZWVkYmFjay4gSSBmaWd1cmVkIEkgY291bGQgc3RhcnQgd2l0aA0KPj4gdGhlIGRyaXZl
-ciB0aGF0IGlzIGN1cnJlbnRseSBjYXVzaW5nIG1lIGlzc3VlcyBhbmQgb25jZSB0aGUgZHQtYmlu
-ZGluZw0KPj4gd2FzIGNvbnNpZGVyZWQgZ29vZCBlbm91Z2ggaXQgbWlnaHQgbWlncmF0ZSB0byB0
-aGUgaTJjIGNvcmUuDQo+Pg0KPg0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KPg==
+On Tue, Oct 31, 2023 at 07:29:04AM -0700, Paul E. McKenney wrote:
+> Other than the de-alphabetization of the local variables, it looks
+> plausible to me.  Frederic's suggestion also sounds plausible to me.
+
+Having spend the better part of the past two decades using upside down
+xmas trees for local variables, this alphabet thing is obnoxious :-)
+
+But your code, your rules.
+
+To reduce the number of alphabet songs required, I've taken the liberty
+to move a few variables into a narrower scope, hope that doesn't offend.
+
+---
+Subject: rcu: Break rcu_node_0 --> &rq->__lock order
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Tue, 31 Oct 2023 09:53:08 +0100
+
+Commit 851a723e45d1 ("sched: Always clear user_cpus_ptr in
+do_set_cpus_allowed()") added a kfree() call to free any user
+provided affinity mask, if present. It was changed later to use
+kfree_rcu() in commit 9a5418bc48ba ("sched/core: Use kfree_rcu()
+in do_set_cpus_allowed()") to avoid a circular locking dependency
+problem.
+
+It turns out that even kfree_rcu() isn't safe for avoiding
+circular locking problem. As reported by kernel test robot,
+the following circular locking dependency now exists:
+
+  &rdp->nocb_lock --> rcu_node_0 --> &rq->__lock
+
+Solve this by breaking the rcu_node_0 --> &rq->__lock chain by moving
+the resched_cpu() out from under rcu_node lock.
+
+[peterz: heavily borrowed from Waiman's Changelog]
+Fixes: 851a723e45d1 ("sched: Always clear user_cpus_ptr in do_set_cpus_allowed()")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/oe-lkp/202310302207.a25f1a30-oliver.sang@intel.com
+---
+ kernel/rcu/tree.c |   34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
+
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -754,14 +754,19 @@ static int dyntick_save_progress_counter
+ }
+ 
+ /*
+- * Return true if the specified CPU has passed through a quiescent
+- * state by virtue of being in or having passed through an dynticks
+- * idle state since the last call to dyntick_save_progress_counter()
+- * for this same CPU, or by virtue of having been offline.
++ * Returns positive if the specified CPU has passed through a quiescent state
++ * by virtue of being in or having passed through an dynticks idle state since
++ * the last call to dyntick_save_progress_counter() for this same CPU, or by
++ * virtue of having been offline.
++ *
++ * Returns negative if the specified CPU needs a force resched.
++ *
++ * Returns zero otherwise.
+  */
+ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+ {
+ 	unsigned long jtsq;
++	int ret = 0;
+ 	struct rcu_node *rnp = rdp->mynode;
+ 
+ 	/*
+@@ -847,8 +852,8 @@ static int rcu_implicit_dynticks_qs(stru
+ 	    (time_after(jiffies, READ_ONCE(rdp->last_fqs_resched) + jtsq * 3) ||
+ 	     rcu_state.cbovld)) {
+ 		WRITE_ONCE(rdp->rcu_urgent_qs, true);
+-		resched_cpu(rdp->cpu);
+ 		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
++		ret = -1;
+ 	}
+ 
+ 	/*
+@@ -891,7 +896,7 @@ static int rcu_implicit_dynticks_qs(stru
+ 		}
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /* Trace-event wrapper function for trace_rcu_future_grace_period.  */
+@@ -2257,15 +2262,15 @@ static void force_qs_rnp(int (*f)(struct
+ {
+ 	int cpu;
+ 	unsigned long flags;
+-	unsigned long mask;
+-	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+ 
+ 	rcu_state.cbovld = rcu_state.cbovldnext;
+ 	rcu_state.cbovldnext = false;
+ 	rcu_for_each_leaf_node(rnp) {
++		unsigned long mask = 0;
++		unsigned long rsmask = 0;
++
+ 		cond_resched_tasks_rcu_qs();
+-		mask = 0;
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 		rcu_state.cbovldnext |= !!rnp->cbovldmask;
+ 		if (rnp->qsmask == 0) {
+@@ -2283,11 +2288,17 @@ static void force_qs_rnp(int (*f)(struct
+ 			continue;
+ 		}
+ 		for_each_leaf_node_cpu_mask(rnp, cpu, rnp->qsmask) {
++			struct rcu_data *rdp;
++			int ret;
++
+ 			rdp = per_cpu_ptr(&rcu_data, cpu);
+-			if (f(rdp)) {
++			ret = f(rdp);
++			if (ret > 0) {
+ 				mask |= rdp->grpmask;
+ 				rcu_disable_urgency_upon_qs(rdp);
+ 			}
++			if (ret < 0)
++				rsmask |= rdp->grpmask;
+ 		}
+ 		if (mask != 0) {
+ 			/* Idle/offline CPUs, report (releases rnp->lock). */
+@@ -2296,6 +2307,9 @@ static void force_qs_rnp(int (*f)(struct
+ 			/* Nothing to do here, so just drop the lock. */
+ 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		}
++
++		for_each_leaf_node_cpu_mask(rnp, cpu, rsmask)
++			resched_cpu(cpu);
+ 	}
+ }
+ 
