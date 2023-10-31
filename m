@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C22D7DCC6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A3B7DCCA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 13:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344137AbjJaL4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
+        id S236017AbjJaMIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 08:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236211AbjJaL4Y (ORCPT
+        with ESMTP id S235946AbjJaMIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:56:24 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A41510E5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:55:56 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D76BEC15;
-        Tue, 31 Oct 2023 04:56:36 -0700 (PDT)
-Received: from [10.1.34.180] (XHFQ2J9959.cambridge.arm.com [10.1.34.180])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4E713F64C;
-        Tue, 31 Oct 2023 04:55:52 -0700 (PDT)
-Message-ID: <cf97cf90-ceae-4fc8-8fd8-3f8068e53611@arm.com>
-Date:   Tue, 31 Oct 2023 11:55:51 +0000
+        Tue, 31 Oct 2023 08:08:23 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7FA3C2B;
+        Tue, 31 Oct 2023 04:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:To:From; bh=MakPPGMUuNUhnaPbEFN4Yl+aPlwh02eGnV80mD+Vp7Q=; b=4mXQgwrC3
+        yFphuAyMpUKWyasIz+353i8qsAvyEnXGsw4ocT6mZ2twW9uvxbKDxY+07CSuzeqgl5eKuim1SvyD5
+        tTwUb93ir2CyuvjWQTJGIq+qG4lUy/K7Kkn9vtuw3TOLw+qoBbrBY31s4xyyP0Xts7ZO7GbtwlGOD
+        MkEamPaw=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qxnNc-0001TH-6A; Tue, 31 Oct 2023 11:57:56 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qxnNb-0002XF-TV; Tue, 31 Oct 2023 11:57:56 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
+Date:   Tue, 31 Oct 2023 11:57:48 +0000
+Message-Id: <20231031115748.622578-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com>
- <7a3a2d49-528d-4297-ae19-56aa9e6c59c6@arm.com>
-In-Reply-To: <7a3a2d49-528d-4297-ae19-56aa9e6c59c6@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,89 +57,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 11:50, Ryan Roberts wrote:
-> On 06/10/2023 21:06, David Hildenbrand wrote:
-> [...]
->>
->> Change 2: sysfs interface.
->>
->> If we call it THP, it shall go under "/sys/kernel/mm/transparent_hugepage/", I
->> agree.
->>
->> What we expose there and how, is TBD. Again, not a friend of "orders" and
->> bitmaps at all. We can do better if we want to go down that path.
->>
->> Maybe we should take a look at hugetlb, and how they added support for multiple
->> sizes. What *might* make sense could be (depending on which values we actually
->> support!)
->>
->>
->> /sys/kernel/mm/transparent_hugepage/hugepages-64kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-128kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-256kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-512kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-1024kB/
->> /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/
->>
->> Each one would contain an "enabled" and "defrag" file. We want something minimal
->> first? Start with the "enabled" option.
->>
->>
->> enabled: always [global] madvise never
->>
->> Initially, we would set it for PMD-sized THP to "global" and for everything else
->> to "never".
-> 
-> Hi David,
-> 
-> I've just started coding this, and it occurs to me that I might need a small
-> clarification here; the existing global "enabled" control is used to drive
-> decisions for both anonymous memory and (non-shmem) file-backed memory. But the
-> proposed new per-size "enabled" is implicitly only controlling anon memory (for
-> now).
-> 
-> 1) Is this potentially confusing for the user? Should we rename the per-size
-> controls to "anon_enabled"? Or is it preferable to jsut keep it vague for now so
-> we can reuse the same control for file-backed memory in future?
-> 
-> 2) The global control will continue to drive the file-backed memory decision
-> (for now), even when hugepages-2048kB/enabled != "global"; agreed?
-> 
-> Thanks,
-> Ryan
-> 
+From: Paul Durrant <pdurrant@amazon.com>
 
-Also, an implementation question:
+Unless explicitly told to do so (by passing 'clocksource=tsc' and
+'tsc=stable:socket', and then jumping through some hoops concerning
+potential CPU hotplug) Xen will never use TSC as its clocksource.
+Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
+in either the primary or secondary pvclock memory areas. This has
+led to bugs in some guest kernels which only become evident if
+PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
+such guests, give the VMM a new Xen HVM config flag to tell KVM to
+forcibly clear the bit in the Xen pvclocks.
 
-hugepage_vma_check() doesn't currently care whether enabled="never" for DAX VMAs
-(although it does honour MADV_NOHUGEPAGE and the prctl); It will return true
-regardless. Is that by design? It couldn't fathom any reasoning from the commit log:
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+---
+ Documentation/virt/kvm/api.rst |  6 ++++++
+ arch/x86/kvm/x86.c             | 28 +++++++++++++++++++++++-----
+ arch/x86/kvm/xen.c             |  3 ++-
+ include/uapi/linux/kvm.h       |  1 +
+ 4 files changed, 32 insertions(+), 6 deletions(-)
 
-bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
-			bool smaps, bool in_pf, bool enforce_sysfs)
-{
-	if (!vma->vm_mm)		/* vdso */
-		return false;
-
-	/*
-	 * Explicitly disabled through madvise or prctl, or some
-	 * architectures may disable THP for some mappings, for
-	 * example, s390 kvm.
-	 * */
-	if ((vm_flags & VM_NOHUGEPAGE) ||
-	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
-		return false;
-	/*
-	 * If the hardware/firmware marked hugepage support disabled.
-	 */
-	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_UNSUPPORTED))
-		return false;
-
-	/* khugepaged doesn't collapse DAX vma, but page fault is fine. */
-	if (vma_is_dax(vma))
-		return in_pf;  <<<<<<<<
-
-	...
-}
-
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 21a7578142a1..9752a01270df 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -8252,6 +8252,7 @@ PVHVM guests. Valid flags are::
+   #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL		(1 << 4)
+   #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+   #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
++  #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
+ 
+ The KVM_XEN_HVM_CONFIG_HYPERCALL_MSR flag indicates that the KVM_XEN_HVM_CONFIG
+ ioctl is available, for the guest to set its hypercall page.
+@@ -8295,6 +8296,11 @@ behave more correctly, not using the XEN_RUNSTATE_UPDATE flag until/unless
+ specifically enabled (by the guest making the hypercall, causing the VMM
+ to enable the KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG attribute).
+ 
++The KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag indicates that KVM supports
++clearing the PVCLOCK_TSC_STABLE_BIT flag in Xen pvclock sources. This will be
++done when the KVM_CAP_XEN_HVM ioctl sets the
++KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag.
++
+ 8.31 KVM_CAP_PPC_MULTITCE
+ -------------------------
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 41cce5031126..6abad6dacf07 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3096,7 +3096,8 @@ u64 get_kvmclock_ns(struct kvm *kvm)
+ 
+ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
+ 				    struct gfn_to_pfn_cache *gpc,
+-				    unsigned int offset)
++				    unsigned int offset,
++				    bool force_tsc_unstable)
+ {
+ 	struct kvm_vcpu_arch *vcpu = &v->arch;
+ 	struct pvclock_vcpu_time_info *guest_hv_clock;
+@@ -3122,6 +3123,10 @@ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
+ 	 */
+ 
+ 	guest_hv_clock->version = vcpu->hv_clock.version = (guest_hv_clock->version + 1) | 1;
++
++	if (force_tsc_unstable)
++		guest_hv_clock->flags &= ~PVCLOCK_TSC_STABLE_BIT;
++
+ 	smp_wmb();
+ 
+ 	/* retain PVCLOCK_GUEST_STOPPED if set in guest copy */
+@@ -3154,6 +3159,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 	u8 pvclock_flags;
+ 	bool use_master_clock;
+ 
++	/*
++	 * For Xen guests we may need to override PVCLOCK_TSC_STABLE_BIT as unless
++	 * explicitly told to use TSC as its clocksource Xen will not set this bit.
++	 * This default behaviour led to bugs in some guest kernels which cause
++	 * problems if they observe PVCLOCK_TSC_STABLE_BIT in the pvclock flags.
++	 */
++	bool xen_pvclock_tsc_unstable =
++		ka->xen_hvm_config.flags & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
++
+ 	kernel_ns = 0;
+ 	host_tsc = 0;
+ 
+@@ -3231,12 +3245,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 	vcpu->hv_clock.flags = pvclock_flags;
+ 
+ 	if (vcpu->pv_time.active)
+-		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
++		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0, false);
++
+ 	if (vcpu->xen.vcpu_info_cache.active)
+ 		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
+-					offsetof(struct compat_vcpu_info, time));
++					offsetof(struct compat_vcpu_info, time),
++					xen_pvclock_tsc_unstable);
+ 	if (vcpu->xen.vcpu_time_info_cache.active)
+-		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
++		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0,
++					xen_pvclock_tsc_unstable);
+ 	kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
+ 	return 0;
+ }
+@@ -4531,7 +4548,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
+ 		    KVM_XEN_HVM_CONFIG_SHARED_INFO |
+ 		    KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL |
+-		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
++		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
++		    KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
+ 		if (sched_info_on())
+ 			r |= KVM_XEN_HVM_CONFIG_RUNSTATE |
+ 			     KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG;
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index 40edf4d1974c..959061315953 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -1113,7 +1113,8 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
+ {
+ 	/* Only some feature flags need to be *enabled* by userspace */
+ 	u32 permitted_flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
+-		KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
++		KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
++		KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
+ 
+ 	if (xhc->flags & ~permitted_flags)
+ 		return -EINVAL;
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 13065dd96132..e21b53e8358d 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1282,6 +1282,7 @@ struct kvm_x86_mce {
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL	(1 << 4)
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+ #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
++#define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
+ 
+ struct kvm_xen_hvm_config {
+ 	__u32 flags;
+-- 
+2.39.2
 
