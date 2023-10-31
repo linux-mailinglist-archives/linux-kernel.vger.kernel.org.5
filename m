@@ -2,75 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9007DD0EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4957DD0F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 16:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbjJaPt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 11:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        id S1345119AbjJaPwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 11:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjJaPt6 (ORCPT
+        with ESMTP id S231131AbjJaPw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:49:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2398F
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:49:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F1AC433C8;
-        Tue, 31 Oct 2023 15:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698767395;
-        bh=ptwLXdCn0ccaumT/kPopEMDLG2wWUx3Jgvu71frbDck=;
-        h=From:Date:Subject:To:Cc:From;
-        b=ACAIAmlpCE0abUrhPB/XsWgklzKUtZcCk/HO7TSB3qnrzQE9WhOAzVMluqEAhTSZc
-         ckAyIOAYCUFJbVmbU5x+/e8NZfTPVZXfzeoPb19uz68m1lSemaSwm4H2K0MN7LtHLb
-         CwIliDkHgt1jToW4EezZvA/QOA5+KWd/k3xoNtxgRhfcsUzKwvLFRcHi6QsIs7QQOJ
-         y19uudAIQ9QSz60WGNBXNrIL3tqvQ3isjKMJBFxKPUwayzxWB0hok9K7rgSphsJq79
-         ZvRxJKBq/AZYw+p9ddgFkhI78DdBNPZqqqePL4A1w2ChMNQHXL/34bbAubvWhZXv9L
-         VKI5xbRcLAijg==
-From:   Matthieu Baerts <matttbe@kernel.org>
-Date:   Tue, 31 Oct 2023 16:49:34 +0100
-Subject: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
+        Tue, 31 Oct 2023 11:52:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8D48DF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 08:52:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02DA42F;
+        Tue, 31 Oct 2023 08:53:08 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F3073F67D;
+        Tue, 31 Oct 2023 08:52:24 -0700 (PDT)
+Message-ID: <d1b613d5-2207-45dd-8aa2-a276502ccaa1@arm.com>
+Date:   Tue, 31 Oct 2023 16:52:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/6] sched/uclamp: Track uclamped util_avg in
+ sched_avg
+Content-Language: en-US
+To:     Hongyan Xia <Hongyan.Xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Qais Yousef <qyousef@layalina.io>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Christian Loehle <christian.loehle@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
+ <5564fc23d5e6425d069c36b4cef48edbe77fe64d.1696345700.git.Hongyan.Xia2@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <5564fc23d5e6425d069c36b4cef48edbe77fe64d.1696345700.git.Hongyan.Xia2@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAA0iQWUC/x2M0QqDMAwAf0XyvEBqVWS/MvYwa+oCs5ZEhiD+u
- 9XHg7vbwViFDZ7VDsp/MVlSAfeoIHw/aWKUsTDUVHtH3uGQI4ZlzvJDVsVghtR20Y8DNX1HUMK
- sHGW7py+4/MTbCu/jOAGEKaWIbgAAAA==
-To:     Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>, Tejun Heo <tj@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mptcp@lists.linux.dev, kernel test robot <lkp@intel.com>,
-        Matthieu Baerts <matttbe@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3822; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=ptwLXdCn0ccaumT/kPopEMDLG2wWUx3Jgvu71frbDck=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlQSIf7JzITS5yigKSmkjBEojx4ObevveToHbTO
- HbhWN3Vsy6JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZUEiHwAKCRD2t4JPQmmg
- c693EADmVd/miwyt3lQhaFzmnmadovlFUo9fUa0ZqvDwzTRA3eiqY1LYjMou+syLNJndFI/e9u/
- 1jtiqO+vJ6WvInqW6lJPyhK9Gazo9/+DaSgq+exeB5GFcDDgwU7Ar97dUIvC/kXNKFNucFFsItX
- 2ORKGxVnWScKW0e0Sq+csK6DcKrNV4258dB6l8ZULB/7WP7AEBZEMgTxltfFfogNxTS5JtisUFH
- xoWIaW5zpCxJgJ54kcJ5wvDy/OmLMkuNHhTPVbaerFNnqj5peDMQpEwks1226XUq10nMK03Z75/
- HgChOn+Yp8BUYJUh1ZLRHYmn/97bLIYAb8bpSPpwdqe8/A68eIYkCJSXR8+1jkmJqjKfrMCkCQV
- l5Pc0Xg64eQTGVjI0vCeOqIXYTHib62t34yoOGWozvjFq0DH45YmyqVu0WllKyCbrJlw/ZWjyUl
- aCP02+UlApolXNJhrei2wk7/rVCOY16F39LFhqVu4O/g3vwP0LRXeEQkd4MiwLmEpAbTeEN/DCP
- bvNgLKcO8wAqC8XFoP7TV/eVwanwTk+fpHfstswWxmMNn7BjC2GsqSFPQYj+6yjb76WhJbIPObJ
- 4os5PrT/QpWmaWvGxA3URiUOJ4i/wsFmKsCpgvV7Cy8MkrpGs9cvhAY+l8zoiFV7ScQp1Xz5DjH
- b4nh7Z2GUs86WCQ==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,79 +52,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-possible to build the kernel without CONFIG_CGROUPS:
+On 04/10/2023 11:04, Hongyan Xia wrote:
+> From: Hongyan Xia <hongyan.xia2@arm.com>
 
-  kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
-  kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
-    919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-        |              ^~~~~~~~~~~~~~~~~~~
-  kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
-  kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
-    919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-        |                                    ^~~~~~~~~~~~~~~~~~~~~~
-  kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
-    927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
-        |                                                            ^~~~~~
-  kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
-    930 |         css_task_iter_start(css, flags, kit->css_it);
-        |         ^~~~~~~~~~~~~~~~~~~
-        |         task_seq_start
-  kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
-  kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
-    940 |         return css_task_iter_next(kit->css_it);
-        |                ^~~~~~~~~~~~~~~~~~
-        |                class_dev_iter_next
-  kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
-    940 |         return css_task_iter_next(kit->css_it);
-        |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
-  kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
-    949 |         css_task_iter_end(kit->css_it);
-        |         ^~~~~~~~~~~~~~~~~
+[...]
 
-This patch simply surrounds with a #ifdef the new code requiring CGroups
-support. It seems enough for the compiler and this is similar to
-bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-been added in kernel/bpf/helpers.c and in the selftests.
+> @@ -6445,6 +6450,21 @@ static int sched_idle_cpu(int cpu)
+>  }
+>  #endif
+>  
+> +void ___update_util_avg_uclamp(struct sched_avg *avg, struct sched_entity *se);
 
-Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
-Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
-Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
----
- kernel/bpf/task_iter.c | 4 ++++
- 1 file changed, 4 insertions(+)
+IMHO, `struct sched_avg *avg` can only be the one of a cfs_rq. So
+passing a cfs_rq would eliminate the question whether this can be from
+another se.
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 59e747938bdb..e0d313114a5b 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -894,6 +894,8 @@ __bpf_kfunc void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it)
- 
- __diag_pop();
- 
-+#ifdef CONFIG_CGROUPS
-+
- struct bpf_iter_css_task {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
-@@ -952,6 +954,8 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
- 
- __diag_pop();
- 
-+#endif /* CONFIG_CGROUPS */
-+
- struct bpf_iter_task {
- 	__u64 __opaque[3];
- } __attribute__((aligned(8)));
+> +static void update_se_chain(struct task_struct *p)
+> +{
+> +#ifdef CONFIG_UCLAMP_TASK
+> +	struct sched_entity *se = &p->se;
+> +	struct rq *rq = task_rq(p);
+> +
+> +	for_each_sched_entity(se) {
+> +		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+> +
+> +		___update_util_avg_uclamp(&cfs_rq->avg, se);
+> +	}
+> +#endif
+> +}
+>  /*
+>   * The enqueue_task method is called before nr_running is
+>   * increased. Here we update the fair scheduling stats and
+> @@ -6511,6 +6531,16 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>  			goto enqueue_throttle;
+>  	}
+>  
+> +	/*
+> +	 * Re-evaluate the se hierarchy now that on_rq is true. This is
+> +	 * important to enforce uclamp the moment a task with uclamp is
+> +	 * enqueued, rather than waiting a timer tick for uclamp to kick in.
+> +	 *
+> +	 * XXX: This duplicates some of the work already done in the above for
+> +	 * loops.
+> +	 */
+> +	update_se_chain(p);
 
----
-base-commit: f1c73396133cb3d913e2075298005644ee8dfade
-change-id: 20231031-bpf-compil-err-css-056f3db04860
+I try to figure out why this is necessary here:
 
-Best regards,
--- 
-Matthieu Baerts <matttbe@kernel.org>
+enqueue_task_fair()
+  for_each_sched_entity()
+    enqueue_entity()
+      update_load_avg()
+        __update_load_avg_se()
+          ___update_util_avg_uclamp()        <-- if se->on_rq,
+                                                 update p (se) if we
+                                                 cross PELT period (1)
+                                                 boundaries
+          ___decay_util_avg_uclamp_towards() <-- decay p (se)      (2)
 
+      enqueue_util_avg_uclamp()          <-- enqueue p into cfs_rq (3)
+
+      se->on_rq = 1                          <-- set p (se) on_rq  (4)
+
+  for_each_sched_entity()
+    update_load_avg()                        <-- update all on_rq se's
+                                                 in the hierarchy  (5)
+
+  update_se_chain()                          <-- update p (se) and its
+                                                 se hierarchy      (6)
+
+(1) Skip p since it is !se->on_rq.
+
+(2) Decay p->se->avg.util_avg_uclamp to 0 since it was sleeping.
+
+(3) Attach p to its cfs_rq
+
+...
+
+(6) Update all all se's and cfs_rq's involved in p's task_group
+    hierarchy (including propagation from se (level=x+1) to cfs_rq
+    (level=x))
+
+Question for me is why can't you integrate the util_avg_uclamp signals
+for se's and cfs_rq's/rq's much closer into existing PELT functions?
+
+[...]
