@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3C27DD324
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417FE7DD31E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 17:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346501AbjJaQts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 12:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        id S1346868AbjJaQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 12:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346860AbjJaQtV (ORCPT
+        with ESMTP id S1346867AbjJaQtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 12:49:21 -0400
+        Tue, 31 Oct 2023 12:49:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F18118;
-        Tue, 31 Oct 2023 09:49:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89434C433BD;
-        Tue, 31 Oct 2023 16:49:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAF7E6;
+        Tue, 31 Oct 2023 09:49:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7200C433D9;
+        Tue, 31 Oct 2023 16:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698770957;
-        bh=O2ArSsFw7SF4g7FuBBWi6vHwa0go+wIZPFZlnlzeBPY=;
+        s=k20201202; t=1698770961;
+        bh=hjO1thsBtNWKgoDt95oSE/97xbheY9O5MXtc459uiLk=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=l1Bt2mFvNo9Y/6eplPBlDVuk4pklrukz/N9YktcIK1DUObDyUyQ5uRms40O8pJsv1
-         p4JYKr8qmP0uTnQJ91Gb7XW04Kb3v4YsMPBlEJJiCjRFkr1Qn4Z6ucfbNaS3/c2ZKV
-         VW0ERN73SBBlgJABnF3uzd/bE0cRSJvD32Kne6JiX3VUt5QOwRHQnpRwZONyx+TvX3
-         XSy4/0igcijXdhIpo7XRKsjMM30vrcOEJpgsf7gJ7kC2UMD6pDu49b/bw/0ngGwjwh
-         7JMV0xnN/NvZPv40X2CdbSx/tujxiJiz5YT0MsVQ/V1H86RqAv5HF0xi5GUncZa3c1
-         X/QB0fSuZXhdw==
+        b=eO8w93dpaAwkGijK5tNBw//6sqqm8PohRQimWd7JyU27VhGzpEE3T5i9hG+55fYbh
+         Al1BQqBsSkPmmrdBSfjgx/Abzdpnwm+IJpk0jh3Nnxi+nDaEiU+1ocymPTdzndUr5S
+         cJY0x0erIvwHqVRv/0erjStDz8zasg3DsJ8PMs5q3kz53AymJgOSpcClaKQtVwSJOJ
+         D91qYMpfaVH+5gQtJbsa+KNtG89KzvA8WCOkeGnOC55RoZ+SxzJusUis1ET5+aksJ1
+         FFiLrTVWXAl18eR3jFG2z5LeZpJnmy8l2S0RXrimnv167HyU3NkSYNVpFAkqSPhwRm
+         GdaOSs700Sk6g==
 From:   Maxime Ripard <mripard@kernel.org>
-Date:   Tue, 31 Oct 2023 17:48:28 +0100
-Subject: [PATCH RFC v3 15/37] drm/rockchip: inno_hdmi: Remove useless
- mode_fixup
+Date:   Tue, 31 Oct 2023 17:48:29 +0100
+Subject: [PATCH RFC v3 16/37] drm/rockchip: inno_hdmi: Remove useless copy
+ of drm_display_mode
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231031-kms-hdmi-connector-state-v3-15-328b0fae43a7@kernel.org>
+Message-Id: <20231031-kms-hdmi-connector-state-v3-16-328b0fae43a7@kernel.org>
 References: <20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org>
 In-Reply-To: <20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,12 +53,12 @@ Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
         linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
         Maxime Ripard <mripard@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1301; i=mripard@kernel.org;
- h=from:subject:message-id; bh=O2ArSsFw7SF4g7FuBBWi6vHwa0go+wIZPFZlnlzeBPY=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmO+vc+vNmqvn/SwRcxs93fxxRJ/nxZW66yMH3blfVvL
- Ez3qnXwdpSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAiPxsZ/oqcs1l8e+1l05SZ
- W9dphFw6IF8m4qMhM6frtkfp0fo/L8IZ/vAtvREcX+o5YW1eVnfEyhj/A3ZruK18Q/Rf5giINgd
- L8wIA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1075; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=hjO1thsBtNWKgoDt95oSE/97xbheY9O5MXtc459uiLk=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmO+vf27E3KXeoamlw1xXTrpl0b3YrvWKvzh+mvux63a
+ vs1g+9JHaUsDGJcDLJiiiwxwuZL4k7Net3JxjcPZg4rE8gQBi5OAZjIeTaGPzwn2hKSjk74L1Hc
+ WZoVVr6yoGHbpaYUqcXdEx5PlrTfvp7hv4fm589cBwUPcemYJGxW/7/N8NVD5TkCzdtsfsS01O6
+ LZwYA
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -71,40 +71,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mode_fixup implementation doesn't do anything, so we can simply
-remove it.
+The driver maintains a copy of the adjusted mode but doesn't use it
+anywhere. Remove it.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 6e5b922a121e..cc48cbf85f31 100644
+index cc48cbf85f31..4f5844fc115a 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -517,13 +517,6 @@ static void inno_hdmi_encoder_disable(struct drm_encoder *encoder)
- 	inno_hdmi_set_pwr_mode(hdmi, LOWER_PWR);
+@@ -62,7 +62,6 @@ struct inno_hdmi {
+ 	unsigned int tmds_rate;
+ 
+ 	struct hdmi_data_info	hdmi_data;
+-	struct drm_display_mode previous_mode;
+ };
+ 
+ static struct inno_hdmi *encoder_to_inno_hdmi(struct drm_encoder *encoder)
+@@ -498,9 +497,6 @@ static void inno_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 	struct inno_hdmi *hdmi = encoder_to_inno_hdmi(encoder);
+ 
+ 	inno_hdmi_setup(hdmi, adj_mode);
+-
+-	/* Store the display mode for plugin/DPMS poweron events */
+-	drm_mode_copy(&hdmi->previous_mode, adj_mode);
  }
  
--static bool inno_hdmi_encoder_mode_fixup(struct drm_encoder *encoder,
--					 const struct drm_display_mode *mode,
--					 struct drm_display_mode *adj_mode)
--{
--	return true;
--}
--
- static int
- inno_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
- 			       struct drm_crtc_state *crtc_state,
-@@ -540,7 +533,6 @@ inno_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
- static struct drm_encoder_helper_funcs inno_hdmi_encoder_helper_funcs = {
- 	.enable     = inno_hdmi_encoder_enable,
- 	.disable    = inno_hdmi_encoder_disable,
--	.mode_fixup = inno_hdmi_encoder_mode_fixup,
- 	.mode_set   = inno_hdmi_encoder_mode_set,
- 	.atomic_check = inno_hdmi_encoder_atomic_check,
- };
+ static void inno_hdmi_encoder_enable(struct drm_encoder *encoder)
 
 -- 
 2.41.0
