@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4AB7DD828
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A8E7DD82F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 23:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346450AbjJaWUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 18:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
+        id S1346510AbjJaWV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 18:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344917AbjJaWUr (ORCPT
+        with ESMTP id S1346399AbjJaWV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 18:20:47 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AC2F3;
-        Tue, 31 Oct 2023 15:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=NfaUNK9Gnj3jV65G++Jz1u69ma76y4R62RU6zrUykfs=; b=B3fP9cX5+GEozlK4l6bigX6CuZ
-        lT42tJF+EPt9WJw7oBh4z+EYjqV7oH36njpu2YEbN9FbWoiy7sA3lDs8maIXRAukKSxNyCYOOrUwV
-        4geNMJlQWeM7PXdUsBgxX27DIxZIVyRgbxq5FfwS2KPJMik5q0mqRLzB5sO3FaELAgjQCpSMxTx2f
-        geSMoqnlkcrGbIwXXdT7cawzaVuTRqk9bronV7WiEnh1bcRvMIrB4xFkeoCZU63WVcK2583hlOt9g
-        DCgSPdOXP9nEh9nNtm9Zz7jZTI+Q+1//WfCZHt2lNGq0k7Yv/GnKA1M/imfWIfxOhgRatcCVlCnz/
-        shy3DGWg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qxx60-000N13-Lj; Tue, 31 Oct 2023 23:20:24 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qxx5z-000GcY-Rd; Tue, 31 Oct 2023 23:20:23 +0100
-Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Youlun Zhang <zhangyoulun@bytedance.com>
-References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
- <20231027190254.GA88444@n191-129-154.byted.org>
- <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
- <20231028231135.GA2236124@n191-129-154.byted.org>
- <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
- <20231031125348.70fc975e@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6d5cb0ef-fabc-7ca3-94b2-5b1925a6805f@iogearbox.net>
-Date:   Tue, 31 Oct 2023 23:20:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 31 Oct 2023 18:21:57 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A561AF1;
+        Tue, 31 Oct 2023 15:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698790912;
+        bh=0/iPY9kfJQM8rbXhWaLusL0GvM6vvu0c3dVC6j6qNj8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IEzlh71NsWa2rj/5JbwIjqIYOpY7MtPiciRQteFGYAgzu8wZqznHpLFExbwhl73Fn
+         F16kSYzGZ9OspPNKHc6jpELCUFoRDcEzfTtl1w01w5A1q2RT8UOX2LRTRYmxwKKUYP
+         MBSPQFVwg+qbFr8rtFcCddnacycseUcKrvpVPgMacYT3/LHbWT18bhZcqVnlx/M7cu
+         E/Ar5slSzhr0pWrxFSCRpxc9fUDTefba37v/Bz2em+UW66afVaR0DOO6N8i/QdM2I+
+         kp+eaao3xlNHB1P7VRmwpWBgTPZSontr9vF3hArPXyI8vE3VaVCS2NPKoV56mr0MOX
+         XABL4VQCcVSPQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKl3y69ffz4wd2;
+        Wed,  1 Nov 2023 09:21:50 +1100 (AEDT)
+Date:   Wed, 1 Nov 2023 09:21:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sohil Mehta <sohil.mehta@intel.com>
+Subject: Re: linux-next: manual merge of the block tree with the asm-generic
+ tree
+Message-ID: <20231101092146.4a19a00b@canb.auug.org.au>
+In-Reply-To: <20231009123118.4487a0e1@canb.auug.org.au>
+References: <20231009123118.4487a0e1@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20231031125348.70fc975e@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27078/Tue Oct 31 08:41:25 2023)
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/sxYwLbzN=Mwr0xwm9iz+GEP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 8:53 PM, Jakub Kicinski wrote:
-> On Mon, 30 Oct 2023 15:19:26 +0100 Daniel Borkmann wrote:
->>> Since I didn't want to update host-veth's TX counters.  If we
->>> bpf_redirect_peer()ed a packet from NIC TC ingress to Pod-veth TC ingress,
->>> I think it means we've bypassed host-veth TX?
->>
->> Yes. So the idea is to transition to tstats replace the location where
->> we used to bump lstats with tstat's tx counter, and only the peer redirect
->> would bump the rx counter.. then upon stats traversal we fold the latter into
->> the rx stats which was populated by the opposite's tx counters. Makes sense.
->>
->> OT: does cadvisor run inside the Pod to collect the device stats? Just
->> curious how it gathers them.
-> 
-> Somewhat related - where does netkit count stats?
+--Sig_/sxYwLbzN=Mwr0xwm9iz+GEP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yeap, it needs it as well, I have a local branch here where I pushed all
-of it - coming out soon; I was planning to add some selftests in addition
-till end of this week:
+Hi all,
 
-https://github.com/cilium/linux/commits/pr/ndo_peer
+On Mon, 9 Oct 2023 12:31:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the block tree got conflicts in:
+>=20
+>   arch/alpha/kernel/syscalls/syscall.tbl
+>   arch/arm/tools/syscall.tbl
+>   arch/arm64/include/asm/unistd.h
+>   arch/arm64/include/asm/unistd32.h
+>   arch/m68k/kernel/syscalls/syscall.tbl
+>   arch/microblaze/kernel/syscalls/syscall.tbl
+>   arch/mips/kernel/syscalls/syscall_n32.tbl
+>   arch/mips/kernel/syscalls/syscall_n64.tbl
+>   arch/mips/kernel/syscalls/syscall_o32.tbl
+>   arch/parisc/kernel/syscalls/syscall.tbl
+>   arch/powerpc/kernel/syscalls/syscall.tbl
+>   arch/s390/kernel/syscalls/syscall.tbl
+>   arch/sh/kernel/syscalls/syscall.tbl
+>   arch/sparc/kernel/syscalls/syscall.tbl
+>   arch/x86/entry/syscalls/syscall_32.tbl
+>   arch/xtensa/kernel/syscalls/syscall.tbl
+>   include/uapi/asm-generic/unistd.h
+>=20
+> between commits:
+>=20
+>   2fd0ebad27bc ("arch: Reserve map_shadow_stack() syscall number for all =
+architectures")
+>=20
+> from the asm-generic tree and commits:
+>=20
+>   9f6c532f59b2 ("futex: Add sys_futex_wake()")
+>   cb8c4312afca ("futex: Add sys_futex_wait()")
+>   0f4b5f972216 ("futex: Add sys_futex_requeue()")
+>=20
+> from the block tree.
 
->>>> Definitely no new stats ndo resp indirect call in fast path.
->>>
->>> Yeah, I think I'll put a comment saying that all devices that support
->>> BPF_F_PEER must use tstats (or must use lstats), then.
->>
->> sgtm.
-> 
-> Is comment good enough? Can we try to do something more robust?
-> Move the allocation of stats into the core at registration based
-> on some u8 assigned in the driver? (I haven't looked at the code TBH)
-Hm, not sure. One thing that comes to mind is lazy one-time allocation
-like in case of netdev_core_stats_inc(), so whenever one of the helpers
-like dev_sw_netstats_{rx,tx}_add() are called and dev->tstats are still
-NULL, the core knows about the driver's intent, but tbh that doesn't
-feel overly clean and in case of netdev_core_stats_inc() it's more in
-the exception case rather than fast-path.
+This is now a conflict between the asm-generic tree and Linus' tree.
 
-Other option could be to have two small helpers in the core which then
-set a flag as well:
+--=20
+Cheers,
+Stephen Rothwell
 
-static inline int netdev_tstats_alloc(struct net_device *dev)
-{
-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
-	if (!dev->tstats)
-		return -ENOMEM;
-	dev->priv_flags |= IFF_USES_TSTATS;
-	return 0;
-}
+--Sig_/sxYwLbzN=Mwr0xwm9iz+GEP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-static inline void netdev_tstats_free(struct net_device *dev)
-{
-	free_percpu(dev->tstats);
-}
+-----BEGIN PGP SIGNATURE-----
 
-They can then be used from .ndo_init/uninit - not sure if this would
-be overall nicer.. or just leaving it at the .ndo callback comment for
-the time being until really more users show up (which I doubt tbh).
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBffoACgkQAVBC80lX
+0Gx64Af9F7cnAyFeN33QuudhqVUezl/iiPmRkNuVGJS1bTjuFpG6dMaw/HT/MLP+
+FpWn5ticga8cLeUGvuy70EuVGk0weR9gWqUyeUKOChtpF+dDD3seDXe/MC6qj7Du
+Tml4TPI+b3oCKHZQRHi+MAjkZUJPIAWJH4WUplS9QKhA+mj7vnN9pLxT1rgZRgrO
+Sx6/DRKGwq8cZYqsWhIshWN0Lw3d1UaebgmrrznOe2U3f1zhWeXruoxvMLy54gR+
+/LY6brcXZgfQJONKe2OUdoIL+nJlj+jjZBfBN8ai91RfDaYpYDG1QYNAbQHqW5R6
+6Tej+g+Mm7gs/SVd68QOPMTIZfm7YA==
+=d2a7
+-----END PGP SIGNATURE-----
 
-Thanks,
-Daniel
+--Sig_/sxYwLbzN=Mwr0xwm9iz+GEP--
