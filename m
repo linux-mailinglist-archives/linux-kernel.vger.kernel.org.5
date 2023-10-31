@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7AC7DCC09
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AC87DCC0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 12:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344029AbjJaLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 07:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        id S1344028AbjJaLnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 07:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344003AbjJaLmc (ORCPT
+        with ESMTP id S1343818AbjJaLns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 07:42:32 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45691;
-        Tue, 31 Oct 2023 04:42:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=VlN8p3RfYXpXh6bENRI9S68YgJgpcAwvfutYsLKoRF8=; b=iGQM8KHo53UcuP/wjvDnraWCAV
-        +cK8IC6VobUa7A1LGj5o1rYNKBzU7e2CPUH3yazhrqfKrj0odV/auJ8v2ZG7AUJmdviuvjozHRzVX
-        a+nGB63sCxSFYXUBhpu20H37NPhNMWgCDQYSbl1oQ3DnYk8zUa7sW4gqRqv3LJJW+Y3unaQCUwGfl
-        OqRWJAE5/GLny+lqvaOERSTGUUfCYazW0nBf40A7ACDIC0PLuz41sZEo1BAAd0S1mnHYgN68Fxv2X
-        z1/JTXkulD1nAwKvg7y2/m2SzivuGJJ3al8MwwTsH8OOrrZNJmOlI40kI9i4Jmu36D4vHx3xlGOEw
-        6ttE7z6g==;
-Received: from [46.18.216.58] (helo=[127.0.0.1])
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qxn8W-004mxB-1n;
-        Tue, 31 Oct 2023 11:42:22 +0000
-Date:   Tue, 31 Oct 2023 11:42:19 +0000
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     paul@xen.org, Paul Durrant <xadimgnik@gmail.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-CC:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] KVM: x86/xen: improve accuracy of Xen timers
-User-Agent: K-9 Mail for Android
-In-Reply-To: <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
-References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org> <1a679274-bbff-4549-a1ea-c7ea9f1707cc@xen.org>
-Message-ID: <F80266DD-D7EF-4A26-B9F8-BC33EC65F444@infradead.org>
+        Tue, 31 Oct 2023 07:43:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8FE91
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 04:43:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B5EBC433C8;
+        Tue, 31 Oct 2023 11:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698752625;
+        bh=p99OjcIysNRLbcUAAt0Zd2DW319yL12hpVvXPeYTCEw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mpCNNSautJ24/ecDIFfU2AfJeOWlA2quBKOz5W/upvwkmLrTB+46d8wUholuzea6d
+         kvgi3Wecqp6N531leydrZcQqLM8X9hFMNqz2G9DgJafcsDp6Ie8nAaG7Rc6H0d1Acg
+         SuVfd7E7biFzd9qG62zDLlIg4HWaEnMgKweNlUbmctP4PDdJn90gJIgrubI6nmHWwZ
+         AXPZ8Vyb5NuQXqC+Ay9tEndOfH5+LUCjx1QmdOmCp9TuXLXi9ZI5F7DPapv4skzmXg
+         wpygSA1ZbvLY4uNokkqP9aEw4I11kZU0H2z5j1VahO3Re1dtuJXTJz6+TEYYCVExGo
+         e2R44cFP8Fkjw==
+Date:   Tue, 31 Oct 2023 12:43:39 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     mike.isely@cobaltdigital.com
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Mike Isely <isely@pobox.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] [i2c-bcm2835] Fully clean up hardware state machine
+ after a timeout
+Message-ID: <20231031114339.nutx2q2vtwbaaw6h@zenone.zhora.eu>
+References: <20231030162114.3603829-1-mike.isely@cobaltdigital.com>
+ <20231030162114.3603829-2-mike.isely@cobaltdigital.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030162114.3603829-2-mike.isely@cobaltdigital.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,157 +57,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mike,
 
+> When the driver detects a timeout, there's no guarantee that the ISR
+> would have fired.  Thus after a timeout, it's the foreground that
+> becomes responsible to reset the hardware state machine.  The change
+> here just duplicates what is already implemented in the ISR.
 
-On 31 October 2023 10:42:42 GMT, Paul Durrant <xadimgnik@gmail=2Ecom> wrot=
-e:
->There is no documented ordering requirement on setting KVM_XEN_VCPU_ATTR_=
-TYPE_TIMER versus KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO or KVM_XEN_ATTR_TYPE_SHA=
-RED_INFO but kvm_xen_start_timer() now needs the vCPU's pvclock to be valid=
-=2E Should actually starting the timer not be deferred until then? (Or simp=
-ly add a check here and have the attribute setting fail if the pvclock is n=
-ot valid)=2E
+Is this a fix? What failing here?
 
+Can we have a feedback from Florian, Ray or Scott here?
 
-There are no such dependencies and I don't want there to be=2E That would =
-be the *epitome* of what my "if it needs documenting, fix it first" mantra =
-is intended to correct=2E
+...
 
-The fact that this broke on migration because the hv_clock isn't set up ye=
-t, as we saw in our overnight testing, is just a bug=2E In my tree I've fix=
-ed it thus:
+>  	if (!time_left) {
+> +		/* Since we can't trust the ISR to have cleaned up, do the
+> +		 * full cleanup here... */
 
-index 63531173dad1=2E=2Ee3d2d63eef34 100644
---- a/arch/x86/kvm/xen=2Ec
-+++ b/arch/x86/kvm/xen=2Ec
-@@ -182,7 +182,7 @@ static void kvm_xen_start_timer(st
-ruct kvm_vcpu *vcpu, u64 guest_abs,
-         * the absolute CLOCK_MONOTONIC time at which
-the timer should
-         * fire=2E
-         */
--       if (vcpu->kvm->arch=2Euse_master_clock &&
-+       if (vcpu->arch=2Ehv_clock=2Eversion && vcpu->kvm->
-arch=2Euse_master_clock &&
-            static_cpu_has(X86_FEATURE_CONSTANT_TSC))
-{
-                uint64_t host_tsc, guest_tsc;
+Please use the
 
-@@ -206,9 +206,23 @@ static void kvm_xen_start_timer(s
-truct kvm_vcpu *vcpu, u64 guest_abs,
+	/*
+	 * comment
+	 * comment
+	 */
 
-                /* Calculate the guest kvmclock as the
- guest would do it=2E */
-                guest_tsc =3D kvm_read_l1_tsc(vcpu, host
-_tsc);
--               guest_now =3D __pvclock_read_cycles(&vcp
-u->arch=2Ehv_clock, guest_tsc);
-+               guest_now =3D __pvclock_read_cycles(&vcp
-u->arch=2Ehv_clock,
-+                                                 gues
-t_tsc);
-        } else {
--               /* Without CONSTANT_TSC, get_kvmclock_
-ns() is the only option */
-+               /*
-+                * Without CONSTANT_TSC, get_kvmclock_
-ns() is the only option=2E
-+                *
-+                * Also if the guest PV clock hasn't b
-een set up yet, as is
-+                * likely to be the case during migrat
-ion when the vCPU has
-+                * not been run yet=2E It would be possi
-ble to calculate the
-+                * scaling factors properly in that ca
-se but there's not much
-+                * point in doing so=2E The get_kvmclock
-_ns() drift accumulates
-+                * over time, so it's OK to use it at
-startup=2E Besides, on
-+                * migration there's going to be a lit
-tle bit of skew in the
-+                * precise moment at which timers fire
- anyway=2E Often they'll
-+                * be in the "past" by the time the VM
- is running again after
-+                * migration=2E
-+                */
-                guest_now =3D get_kvmclock_ns(vcpu->kvm)
-;
-                kernel_now =3D ktime_get();
-        }
---
-2=2E41=2E0
+format
 
-We *could* reset the timer when the vCPU starts to run and handles the KVM=
-_REQ_CLOCK_UPDATE event, but I don't want to for two reasons=2E
+>  		bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_C,
+>  				   BCM2835_I2C_C_CLEAR);
+> +		bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_S, BCM2835_I2C_S_CLKT |
+> +				   BCM2835_I2C_S_ERR | BCM2835_I2C_S_DONE);
 
-Firstly, we just don't need that complexity=2E This approach is OK, as the=
- newly-added comment says=2E And we do need to fix get_kvmclock_ns() anyway=
-, so it should work fine=2E Most of this patch will still be useful as it u=
-ses a single TSC read and we *do* need to do that part even after all the k=
-vmclock brokenness is fixed=2E But the complexity on KVM_REQ_CLOCK_UPDATE i=
-sn't needed in the long term=2E
+I'm not sure this is really making any difference though. How
+have you tested this?
 
-Secondly, it's also wrong thing to do in the general case=2E Let's say KVM=
- does its thing and snaps the kvmclock backwards in time on a KVM_REQ_CLOCK=
-_UPDATE=2E=2E=2E do we really want to reinterpret existing timers against t=
-he new kvmclock? They were best left alone, I think=2E=20
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00
+Have you tried reading those registers before and understand what
+went wrong?
+
+Andi
+
