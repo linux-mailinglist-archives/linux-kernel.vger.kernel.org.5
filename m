@@ -2,96 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9747B7DDD37
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEF27DDD3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbjKAHau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
+        id S231197AbjKAHbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbjKAHat (ORCPT
+        with ESMTP id S230434AbjKAHbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:30:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35023E4;
-        Wed,  1 Nov 2023 00:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698823843; x=1730359843;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=38bUYl9zGRcXqgO3kvm3wpVN8MNciUwqMVCV5OnvF8E=;
-  b=Byn+WNzBAcKevBhPJnkljzqtxWgD8jtZ4CUsssURhfsjeMDAnnl1lJsd
-   WeARez1jdkWJjb+d0+v77SKTE2V5s3TYeDnOHPcjNgpG/TyUqUHF/FZVA
-   V0Pg2DUv7kxMfzV0HnP9QvGqO0/M38+LOXoJjofR2ztB1eyQVXWqf2uxn
-   mSI53gmzkjANgVYjglC6xtwKCrng92j1tbOm81oiPi3ZpW0/pi6b/+Ie0
-   l1Eqt8LAszCJak6oz5D+EOHuFN7aBZOY4kU+JzWWgm11s0Bv3gFBSYCdr
-   eIHdrJ9wAhel80TlC9VQk99oFbw0jxg0uPBD+ek9hUuSJlxebkR3CbBnQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="454923841"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="454923841"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 00:30:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="884461159"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="884461159"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 00:30:30 -0700
-Message-ID: <b2e1f4ed-9954-4bea-b5b5-04b0041df5ec@linux.intel.com>
-Date:   Wed, 1 Nov 2023 15:30:12 +0800
+        Wed, 1 Nov 2023 03:31:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98138C2
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:31:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B44C433C8;
+        Wed,  1 Nov 2023 07:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698823874;
+        bh=aLdY5UIq+nqHDS65m/fjFNnkNyiXjooji94VuobbOeg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QLd0+jkSFNXqjNBQXufW56O7ZtBD2KhAtCSR0W3vdKtvRvAEr2Se9vf0vFX7HfoYI
+         9dJP+f6siXJIbKAooj+GNxPjisxEM4f3KB16Ackxlv404Q/PN67+gAIpw4xcZfVQLf
+         f4nzZVZucDoke9Aw0Jv+m8NpJHspCfP4ZwzMB0nE=
+Date:   Wed, 1 Nov 2023 08:31:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xingxing Luo <xingxing.luo@unisoc.com>
+Cc:     b-liu@ti.com, keescook@chromium.org, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev,
+        xingxing0070.luo@gmail.com, Zhiyong.Liu@unisoc.com,
+        Cixi.Geng1@unisoc.com, Orson.Zhai@unisoc.com, zhang.lyra@gmail.com
+Subject: Re: [PATCH V2] usb: musb: Check requset->buf before use to avoid
+ crash issue
+Message-ID: <2023110105-saggy-gladiator-b3b0@gregkh>
+References: <20231101071421.29462-1-xingxing.luo@unisoc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 09/35] KVM: Add KVM_EXIT_MEMORY_FAULT exit to report
- faults to userspace
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-10-seanjc@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20231027182217.3615211-10-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231101071421.29462-1-xingxing.luo@unisoc.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,193 +51,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/28/2023 2:21 AM, Sean Christopherson wrote:
-> From: Chao Peng <chao.p.peng@linux.intel.com>
->
-> Add a new KVM exit type to allow userspace to handle memory faults that
-> KVM cannot resolve, but that userspace *may* be able to handle (without
-> terminating the guest).
->
-> KVM will initially use KVM_EXIT_MEMORY_FAULT to report implicit
-> conversions between private and shared memory.  With guest private memory,
-> there will be two kind of memory conversions:
->
->    - explicit conversion: happens when the guest explicitly calls into KVM
->      to map a range (as private or shared)
->
->    - implicit conversion: happens when the guest attempts to access a gfn
->      that is configured in the "wrong" state (private vs. shared)
->
-> On x86 (first architecture to support guest private memory), explicit
-> conversions will be reported via KVM_EXIT_HYPERCALL+KVM_HC_MAP_GPA_RANGE,
-> but reporting KVM_EXIT_HYPERCALL for implicit conversions is undesriable
-> as there is (obviously) no hypercall, and there is no guarantee that the
-> guest actually intends to convert between private and shared, i.e. what
-> KVM thinks is an implicit conversion "request" could actually be the
-> result of a guest code bug.
->
-> KVM_EXIT_MEMORY_FAULT will be used to report memory faults that appear to
-> be implicit conversions.
->
-> Note!  To allow for future possibilities where KVM reports
-> KVM_EXIT_MEMORY_FAULT and fills run->memory_fault on _any_ unresolved
-> fault, KVM returns "-EFAULT" (-1 with errno == EFAULT from userspace's
-> perspective), not '0'!
-Is "-EHWPOISON" case not considered unresolved, so it is not mentioned here?
-
-> Due to historical baggage within KVM, exiting to
-> userspace with '0' from deep callstacks, e.g. in emulation paths, is
-> infeasible as doing so would require a near-complete overhaul of KVM,
-> whereas KVM already propagates -errno return codes to userspace even when
-> the -errno originated in a low level helper.
->
-> Report the gpa+size instead of a single gfn even though the initial usage
-> is expected to always report single pages.  It's entirely possible, likely
-> even, that KVM will someday support sub-page granularity faults, e.g.
-> Intel's sub-page protection feature allows for additional protections at
-> 128-byte granularity.
->
-> Link: https://lore.kernel.org/all/20230908222905.1321305-5-amoorthy@google.com
-> Link: https://lore.kernel.org/all/ZQ3AmLO2SYv3DszH@google.com
-> Cc: Anish Moorthy <amoorthy@google.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Co-developed-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Wed, Nov 01, 2023 at 03:14:21PM +0800, Xingxing Luo wrote:
+> When connecting USB to PC, there is a very low probability of kernel
+> crash. The reason is that in ep0_txstate(), the buf member of struct
+> usb_request used may be a null pointer. Therefore, it needs to
+> determine whether it is null before using it.
+> 
+> [ 4888.071462][T597@C0] Call trace:
+> [ 4888.071467][T597@C0]  musb_default_write_fifo+0xa0/0x1ac [musb_hdrc]
+> [ 4888.087190][T597@C0]  musb_write_fifo+0x3c/0x90 [musb_hdrc]
+> [ 4888.099826][T597@C0]  ep0_txstate+0x78/0x218 [musb_hdrc]
+> [ 4888.153918][T597@C0]  musb_g_ep0_irq+0x3c4/0xe10 [musb_hdrc]
+> [ 4888.159663][T597@C0]  musb_interrupt+0xab4/0xf1c [musb_hdrc]
+> [ 4888.165391][T597@C0]  sprd_musb_interrupt+0x1e4/0x484 [musb_sprd]
+> [ 4888.171447][T597@C0]  __handle_irq_event_percpu+0xd8/0x2f8
+> [ 4888.176901][T597@C0]  handle_irq_event+0x70/0xe4
+> [ 4888.181487][T597@C0]  handle_fasteoi_irq+0x15c/0x230
+> [ 4888.186420][T597@C0]  handle_domain_irq+0x88/0xfc
+> [ 4888.191090][T597@C0]  gic_handle_irq+0x60/0x138
+> [ 4888.195591][T597@C0]  call_on_irq_stack+0x40/0x70
+> [ 4888.200263][T597@C0]  do_interrupt_handler+0x50/0xac
+> [ 4888.205196][T597@C0]  el1_interrupt+0x34/0x64
+> [ 4888.209524][T597@C0]  el1h_64_irq_handler+0x1c/0x2c
+> [ 4888.214370][T597@C0]  el1h_64_irq+0x7c/0x80
+> [ 4888.218525][T597@C0]  __check_heap_object+0x1ac/0x1fc
+> [ 4888.223544][T597@C0]  __check_object_size+0x10c/0x20c
+> [ 4888.228563][T597@C0]  simple_copy_to_iter+0x40/0x74
+> [ 4888.233410][T597@C0]  __skb_datagram_iter+0xa0/0x310
+> [ 4888.238343][T597@C0]  skb_copy_datagram_iter+0x44/0x110
+> [ 4888.243535][T597@C0]  netlink_recvmsg+0xdc/0x364
+> [ 4888.248123][T597@C0]  ____sys_recvmsg.llvm.16749613423860851707+0x358/0x6c0
+> [ 4888.255045][T597@C0]  ___sys_recvmsg+0xe0/0x1dc
+> [ 4888.259544][T597@C0]  __arm64_sys_recvmsg+0xc4/0x10c
+> [ 4888.264478][T597@C0]  invoke_syscall+0x6c/0x15c
+> [ 4888.268976][T597@C0]  el0_svc_common.llvm.12373701176611417606+0xd4/0x120
+> [ 4888.275726][T597@C0]  do_el0_svc+0x34/0xac
+> [ 4888.279795][T597@C0]  el0_svc+0x28/0x90
+> [ 4888.283603][T597@C0]  el0t_64_sync_handler+0x88/0xec
+> [ 4888.288548][T597@C0]  el0t_64_sync+0x1b4/0x1b8
+> [ 4888.292956][T597@C0] Code: 540002c3 53027ea8 aa1303e9 71000508 (b840452a)
+> [ 4888.299789][T597@C0] ---[ end trace 14a301b7253e83cc ]---
+> 
+> Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
+> Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
 > ---
->   Documentation/virt/kvm/api.rst | 41 ++++++++++++++++++++++++++++++++++
->   arch/x86/kvm/x86.c             |  1 +
->   include/linux/kvm_host.h       | 11 +++++++++
->   include/uapi/linux/kvm.h       |  8 +++++++
->   4 files changed, 61 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index ace984acc125..860216536810 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6723,6 +6723,26 @@ array field represents return values. The userspace should update the return
->   values of SBI call before resuming the VCPU. For more details on RISC-V SBI
->   spec refer, https://github.com/riscv/riscv-sbi-doc.
->   
-> +::
-> +
-> +		/* KVM_EXIT_MEMORY_FAULT */
-> +		struct {
-> +			__u64 flags;
-> +			__u64 gpa;
-> +			__u64 size;
-> +		} memory;
-> +
-> +KVM_EXIT_MEMORY_FAULT indicates the vCPU has encountered a memory fault that
-> +could not be resolved by KVM.  The 'gpa' and 'size' (in bytes) describe the
-> +guest physical address range [gpa, gpa + size) of the fault.  The 'flags' field
-> +describes properties of the faulting access that are likely pertinent.
-> +Currently, no flags are defined.
-> +
-> +Note!  KVM_EXIT_MEMORY_FAULT is unique among all KVM exit reasons in that it
-> +accompanies a return code of '-1', not '0'!  errno will always be set to EFAULT
-> +or EHWPOISON when KVM exits with KVM_EXIT_MEMORY_FAULT, userspace should assume
-> +kvm_run.exit_reason is stale/undefined for all other error numbers.
-> +
->   ::
->   
->       /* KVM_EXIT_NOTIFY */
-> @@ -7757,6 +7777,27 @@ This capability is aimed to mitigate the threat that malicious VMs can
->   cause CPU stuck (due to event windows don't open up) and make the CPU
->   unavailable to host or other VMs.
->   
-> +7.34 KVM_CAP_MEMORY_FAULT_INFO
-> +------------------------------
-> +
-> +:Architectures: x86
-> +:Returns: Informational only, -EINVAL on direct KVM_ENABLE_CAP.
-> +
-> +The presence of this capability indicates that KVM_RUN will fill
-> +kvm_run.memory_fault if KVM cannot resolve a guest page fault VM-Exit, e.g. if
-> +there is a valid memslot but no backing VMA for the corresponding host virtual
-> +address.
-> +
-> +The information in kvm_run.memory_fault is valid if and only if KVM_RUN returns
-> +an error with errno=EFAULT or errno=EHWPOISON *and* kvm_run.exit_reason is set
-> +to KVM_EXIT_MEMORY_FAULT.
-> +
-> +Note: Userspaces which attempt to resolve memory faults so that they can retry
-> +KVM_RUN are encouraged to guard against repeatedly receiving the same
-> +error/annotated fault.
-> +
-> +See KVM_EXIT_MEMORY_FAULT for more information.
-> +
->   8. Other capabilities.
->   ======================
->   
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 6409914428ca..ee3cd8c3c0ef 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4518,6 +4518,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   	case KVM_CAP_ENABLE_CAP:
->   	case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
->   	case KVM_CAP_IRQFD_RESAMPLE:
-> +	case KVM_CAP_MEMORY_FAULT_INFO:
->   		r = 1;
->   		break;
->   	case KVM_CAP_EXIT_HYPERCALL:
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 4e741ff27af3..96aa930536b1 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -2327,4 +2327,15 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
->   /* Max number of entries allowed for each kvm dirty ring */
->   #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
->   
-> +static inline void kvm_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
-> +						 gpa_t gpa, gpa_t size)
-> +{
-> +	vcpu->run->exit_reason = KVM_EXIT_MEMORY_FAULT;
-> +	vcpu->run->memory_fault.gpa = gpa;
-> +	vcpu->run->memory_fault.size = size;
-> +
-> +	/* Flags are not (yet) defined or communicated to userspace. */
-> +	vcpu->run->memory_fault.flags = 0;
-> +}
-> +
->   #endif
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index bd1abe067f28..7ae9987b48dd 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -274,6 +274,7 @@ struct kvm_xen_exit {
->   #define KVM_EXIT_RISCV_SBI        35
->   #define KVM_EXIT_RISCV_CSR        36
->   #define KVM_EXIT_NOTIFY           37
-> +#define KVM_EXIT_MEMORY_FAULT     38
->   
->   /* For KVM_EXIT_INTERNAL_ERROR */
->   /* Emulate instruction failed. */
-> @@ -520,6 +521,12 @@ struct kvm_run {
->   #define KVM_NOTIFY_CONTEXT_INVALID	(1 << 0)
->   			__u32 flags;
->   		} notify;
-> +		/* KVM_EXIT_MEMORY_FAULT */
-> +		struct {
-> +			__u64 flags;
-> +			__u64 gpa;
-> +			__u64 size;
-> +		} memory_fault;
->   		/* Fix the size of the union. */
->   		char padding[256];
->   	};
-> @@ -1203,6 +1210,7 @@ struct kvm_ppc_resize_hpt {
->   #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
->   #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
->   #define KVM_CAP_USER_MEMORY2 230
-> +#define KVM_CAP_MEMORY_FAULT_INFO 231
->   
->   #ifdef KVM_CAP_IRQ_ROUTING
->   
+> v1 -> v2: - Fixed a spelling error
+>           - Add the fixed commit id
+> 
+>  drivers/usb/musb/musb_gadget_ep0.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/usb/musb/musb_gadget_ep0.c b/drivers/usb/musb/musb_gadget_ep0.c
+> index 6d7336727388..19eb7a5e1fdc 100644
+> --- a/drivers/usb/musb/musb_gadget_ep0.c
+> +++ b/drivers/usb/musb/musb_gadget_ep0.c
+> @@ -531,6 +531,11 @@ static void ep0_txstate(struct musb *musb)
+>  
+>  	request = &req->request;
+>  
+> +	if (!request->buf) {
+> +		musb_dbg(musb, "request->buf is NULL");
 
+Why is this debug line needed?
+
+> +		return;
+
+Shouldn't we be reporting an error here somehow?
+
+And why has this issue never been seen before in this driver?  This is a
+very old driver, with millions, if not billions, of working systems with
+it.  What caused this to suddenly start happening?
+
+thanks,
+
+greg k-h
