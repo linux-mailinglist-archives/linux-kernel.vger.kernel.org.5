@@ -2,243 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61A47DDB59
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215BE7DDB66
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbjKADJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 23:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        id S230413AbjKADQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 23:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjKADJE (ORCPT
+        with ESMTP id S230337AbjKADQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 23:09:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD95BA4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 20:08:58 -0700 (PDT)
+        Tue, 31 Oct 2023 23:16:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8B6A4;
+        Tue, 31 Oct 2023 20:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698808138; x=1730344138;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=7oU5zP/ORh3VkaRH+O4IqYYm4jA/RodQFLfi2B7JOSo=;
-  b=LXtPBV64jMXOtPcCud4Jsf8RfQDfawn72srAVe6G4KKP36NpckbZExsf
-   rIDCGAzh0a0uAjBpr0+IZIU2RVZOafqbinmp7mWEmIVJAAw9Y4zbu78Ng
-   P31QPrxWR7TVyJd5ZslIGpQRglK23z1cXnIFoAY9C9rkPx9P20pwLw26l
-   Q5LdLTRZ5fw/Y9Os1zbQIJukDmWfmihrMTFSrN8BUuyjoLrphxlvfYbtY
-   SuIG827MGSqCB27Qy/rLLLssOLqA4VEotMTII7O9OgiiWC57YbZLTEa56
-   dYKfgh3CSIoRonwgojw/IKWzlvUyz9NylPwvHGNGO1De60+Za3WxiASZC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="474664458"
+  t=1698808563; x=1730344563;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=saaKNKCsevz6fHFrJEAzjrPd1r0TCI63AXuP13gD10A=;
+  b=Dn9SXK4YaefO9J8EbzY+d7yeMClQfwJiOLVPVJavefG5U6dptGDtw0FL
+   K+SCq/lV1U29iYAcqc1hCjmBNkMJIOBRZO413blscLuj3WsIxWlrtwk+B
+   2PnzTVvRVv7U8T7HjUzIhwXixd1fEYRLO4vPfUflXxmZep9XeOF1WQwlj
+   piUxeK6fg3F2DF8/VYDPzRn+FN8bC+/QGU8Cm/LVJoUCHmelTOa6K7r68
+   76AGE/ZW0nKi4GHCKmNIQKXac82n8OVDRbN8FKQ+ihmuGopNgXV596Wqf
+   CQpgCA0KZmOPWee10OpyPRBge553V2UiQxuSR8/DLEIUoDsOL/9oqeo/Q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="373474001"
 X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="474664458"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:08:57 -0700
+   d="scan'208";a="373474001"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:16:03 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="884409636"
 X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="884409636"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:08:53 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Byungchul Park <byungchul@sk.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel_team@skhynix.com>, <akpm@linux-foundation.org>,
-        <namit@vmware.com>, <xhao@linux.alibaba.com>,
-        <mgorman@techsingularity.net>, <hughd@google.com>,
-        <willy@infradead.org>, <peterz@infradead.org>, <luto@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>
-Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-In-Reply-To: <20231030095803.GA81877@system.software.com> (Byungchul Park's
-        message of "Mon, 30 Oct 2023 18:58:03 +0900")
-References: <20231030072540.38631-1-byungchul@sk.com>
-        <20231030072540.38631-3-byungchul@sk.com>
-        <a8337371-50ed-4618-b48e-78b96d18810f@redhat.com>
-        <20231030095803.GA81877@system.software.com>
-Date:   Wed, 01 Nov 2023 11:06:51 +0800
-Message-ID: <87edha6uk4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="1964523"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.12.33]) ([10.93.12.33])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:16:00 -0700
+Message-ID: <fbad1983-5cde-4c7b-aaed-412110fe737f@linux.intel.com>
+Date:   Wed, 1 Nov 2023 11:15:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [kvm-unit-tests Patch v2 4/5] x86: pmu: Support validation for
+ Intel PMU fixed counter 3
+Content-Language: en-US
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>
+References: <20231031092921.2885109-1-dapeng1.mi@linux.intel.com>
+ <20231031092921.2885109-5-dapeng1.mi@linux.intel.com>
+ <CALMp9eQ4Xj5D-kgqVMKUNmdF37rLcMRXyDYdQU339sRCKZ7d9A@mail.gmail.com>
+ <28796dd3-ac4e-4a38-b9e1-f79533b2a798@linux.intel.com>
+ <CALMp9eRH5pttOA5BApdVeSbbkOU-kWcOWAoGMfK-9f=cy2Jf0g@mail.gmail.com>
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <CALMp9eRH5pttOA5BApdVeSbbkOU-kWcOWAoGMfK-9f=cy2Jf0g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Byungchul Park <byungchul@sk.com> writes:
 
-> On Mon, Oct 30, 2023 at 09:00:56AM +0100, David Hildenbrand wrote:
->> On 30.10.23 08:25, Byungchul Park wrote:
->> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
->> > We always face the migration overhead at either promotion or demotion,
->> > while working with tiered memory e.g. CXL memory and found out TLB
->> > shootdown is a quite big one that is needed to get rid of if possible.
->> > 
->> > Fortunately, TLB flush can be defered or even skipped if both source and
->> > destination of folios during migration are kept until all TLB flushes
->> > required will have been done, of course, only if the target PTE entries
->> > have read only permission, more precisely speaking, don't have write
->> > permission. Otherwise, no doubt the folio might get messed up.
->> > 
->> > To achieve that:
->> > 
->> >     1. For the folios that map only to non-writable TLB entries, prevent
->> >        TLB flush at migration by keeping both source and destination
->> >        folios, which will be handled later at a better time.
->> > 
->> >     2. When any non-writable TLB entry changes to writable e.g. through
->> >        fault handler, give up CONFIG_MIGRC mechanism so as to perform
->> >        TLB flush required right away.
->> > 
->> >     3. Temporarily stop migrc from working when the system is in very
->> >        high memory pressure e.g. direct reclaim needed.
->> > 
->> > The measurement result:
->> > 
->> >     Architecture - x86_64
->> >     QEMU - kvm enabled, host cpu
->> >     Numa - 2 nodes (16 CPUs 1GB, no CPUs 8GB)
->> >     Linux Kernel - v6.6-rc5, numa balancing tiering on, demotion enabled
->> >     Benchmark - XSBench -p 50000000 (-p option makes the runtime longer)
->> > 
->> >     run 'perf stat' using events:
->> >        1) itlb.itlb_flush
->> >        2) tlb_flush.dtlb_thread
->> >        3) tlb_flush.stlb_any
->> >        4) dTLB-load-misses
->> >        5) dTLB-store-misses
->> >        6) iTLB-load-misses
->> > 
->> >     run 'cat /proc/vmstat' and pick:
->> >        1) numa_pages_migrated
->> >        2) pgmigrate_success
->> >        3) nr_tlb_remote_flush
->> >        4) nr_tlb_remote_flush_received
->> >        5) nr_tlb_local_flush_all
->> >        6) nr_tlb_local_flush_one
->> > 
->> >     BEFORE - mainline v6.6-rc5
->> >     ------------------------------------------
->> >     $ perf stat -a \
->> > 	   -e itlb.itlb_flush \
->> > 	   -e tlb_flush.dtlb_thread \
->> > 	   -e tlb_flush.stlb_any \
->> > 	   -e dTLB-load-misses \
->> > 	   -e dTLB-store-misses \
->> > 	   -e iTLB-load-misses \
->> > 	   ./XSBench -p 50000000
->> > 
->> >     Performance counter stats for 'system wide':
->> > 
->> >        20953405     itlb.itlb_flush
->> >        114886593    tlb_flush.dtlb_thread
->> >        88267015     tlb_flush.stlb_any
->> >        115304095543 dTLB-load-misses
->> >        163904743    dTLB-store-misses
->> >        608486259	   iTLB-load-misses
->> > 
->> >     556.787113849 seconds time elapsed
->> > 
->> >     $ cat /proc/vmstat
->> > 
->> >     ...
->> >     numa_pages_migrated 3378748
->> >     pgmigrate_success 7720310
->> >     nr_tlb_remote_flush 751464
->> >     nr_tlb_remote_flush_received 10742115
->> >     nr_tlb_local_flush_all 21899
->> >     nr_tlb_local_flush_one 740157
->> >     ...
->> > 
->> >     AFTER - mainline v6.6-rc5 + CONFIG_MIGRC
->> >     ------------------------------------------
->> >     $ perf stat -a \
->> > 	   -e itlb.itlb_flush \
->> > 	   -e tlb_flush.dtlb_thread \
->> > 	   -e tlb_flush.stlb_any \
->> > 	   -e dTLB-load-misses \
->> > 	   -e dTLB-store-misses \
->> > 	   -e iTLB-load-misses \
->> > 	   ./XSBench -p 50000000
->> > 
->> >     Performance counter stats for 'system wide':
->> > 
->> >        4353555      itlb.itlb_flush
->> >        72482780     tlb_flush.dtlb_thread
->> >        68226458     tlb_flush.stlb_any
->> >        114331610808 dTLB-load-misses
->> >        116084771    dTLB-store-misses
->> >        377180518    iTLB-load-misses
->> > 
->> >     552.667718220 seconds time elapsed
->> > 
->> >     $ cat /proc/vmstat
->> > 
->> 
->> So, an improvement of 0.74% ? How stable are the results? Serious question:
+On 11/1/2023 10:47 AM, Jim Mattson wrote:
+> On Tue, Oct 31, 2023 at 7:33 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
+>>
+>> On 11/1/2023 2:47 AM, Jim Mattson wrote:
+>>> On Tue, Oct 31, 2023 at 2:22 AM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
+>>>> Intel CPUs, like Sapphire Rapids, introduces a new fixed counter
+>>>> (fixed counter 3) to counter/sample topdown.slots event, but current
+>>>> code still doesn't cover this new fixed counter.
+>>>>
+>>>> So this patch adds code to validate this new fixed counter can count
+>>>> slots event correctly.
+>>> I'm not convinced that this actually validates anything.
+>>>
+>>> Suppose, for example, that KVM used fixed counter 1 when the guest
+>>> asked for fixed counter 3. Wouldn't this test still pass?
+>>
+>> Per my understanding, as long as the KVM returns a valid count in the
+>> reasonable count range, we can think KVM works correctly. We don't need
+>> to entangle on how KVM really uses the HW, it could be impossible and
+>> unnecessary.
+> Now, I see how the Pentium FDIV bug escaped notice. Hey, the numbers
+> are in a reasonable range. What's everyone upset about?
 >
-> I'm getting very stable result.
->
->> worth the churn?
->
-> Yes, ultimately the time wise improvement should be observed. However,
-> I've been focusing on the numbers of TLB flushes and TLB misses because
-> better result in terms of total time will be followed depending on the
-> test condition. We can see the result if we test with a system that:
->
->    1. has more CPUs that would induce a crazy number of IPIs.
+>> Yeah, currently the predefined valid count range may be some kind of
+>> loose since I want to cover as much as hardwares and avoid to cause
+>> regression. Especially after introducing the random jump and clflush
+>> instructions, the cycles and slots become much more hard to predict.
+>> Maybe we can have a comparable restricted count range in the initial
+>> change, and we can loosen the restriction then if we encounter a failure
+>> on some specific hardware. do you think it's better? Thanks.
+> I think the test is essentially useless, and should probably just be
+> deleted, so that it doesn't give a false sense of confidence.
 
-FYI, the TLB flushing IPI number reduces much with commit 7e12beb8ca2a
-("migrate_pages: batch flushing TLB") if multiple pages are migrated
-together.
+IMO, I can't say the tests are totally useless. Yes,  passing the tests 
+doesn't mean the KVM vPMU must work correctly, but we can say there is 
+something probably wrong if it fails to pass these tests. Considering 
+the hardware differences, it's impossible to set an exact value for 
+these events in advance and it seems there is no better method to verify 
+the PMC count as well. I still prefer to keep these tests until we have 
+a better method to verify the accuracy of the PMC count.
 
---
-Best Regards,
-Huang, Ying
 
->    2. has slow memories that makes TLB miss overhead bigger.
->    3. runs workloads that is harmful at TLB miss and IPI storm.
->    4. runs workloads that causes heavier numa migrations.
->    5. runs workloads that has a lot of read only permission mappings.
->    6. and so on.
->
-> I will share the results once I manage to meet the conditions.
->
-> By the way, I should've added IPI reduction because it also has super
-> big delta :)
->
->> Or did I get the numbers wrong?
->> 
->> >   #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
->> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
->> > index 5c02720c53a5..1ca2ac91aa14 100644
->> > --- a/include/linux/page-flags.h
->> > +++ b/include/linux/page-flags.h
->> > @@ -135,6 +135,9 @@ enum pageflags {
->> >   #ifdef CONFIG_ARCH_USES_PG_ARCH_X
->> >   	PG_arch_2,
->> >   	PG_arch_3,
->> > +#endif
->> > +#ifdef CONFIG_MIGRC
->> > +	PG_migrc,		/* Page has its copy under migrc's control */
->> >   #endif
->> >   	__NR_PAGEFLAGS,
->> > @@ -589,6 +592,10 @@ TESTCLEARFLAG(Young, young, PF_ANY)
->> >   PAGEFLAG(Idle, idle, PF_ANY)
->> >   #endif
->> > +#ifdef CONFIG_MIGRC
->> > +PAGEFLAG(Migrc, migrc, PF_ANY)
->> > +#endif
->> 
->> I assume you know this: new pageflags are frowned upon.
->
-> Sorry for that. I really didn't want to add a new headache.
->
-> 	Byungchul
