@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E16717DE5C6
+	by mail.lfdr.de (Postfix) with ESMTP id 369B47DE5C4
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345006AbjKASDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
+        id S1345038AbjKASDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344870AbjKASDC (ORCPT
+        with ESMTP id S1344795AbjKASDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Nov 2023 14:03:02 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009DA111
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:02:38 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7bbe0a453so1706227b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:02:38 -0700 (PDT)
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4535411C
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:02:42 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-543d2bc7d9dso30646a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698861758; x=1699466558; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698861761; x=1699466561; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dDLIbYfXHuasXnwFeCXtVR7UAQw9kXfm6H29EVGLaPI=;
-        b=2bAw7LBQR0BmITiaYlDtY8vfbx1z9BWfuy9uJrduek6ePnoIEXkcOCfWgvNYPc7DNH
-         9vontYNZG8+No95hSNXxsAk7oq1nGFDWgvhsqybJ+LR2r6HvfJey/kgxH3CTkGtTyUP/
-         bBcTzs2HgAFDuCrTvSdX3iSE2hsIAnuKkkmeomvvJfBaqfy6PCyXXMiYsYjIY7k4mRRG
-         zAn5eg0hesENM5IBRAVhpzphqk5A9bx8D/aUvdWMQoECjS51/MV9nph/BMZjgsFcrdhu
-         05sdllSSRGxcXFNn8PPtDlL5/UTNN3J9ofuTQ4v4LdMjOU2mysxlTwvGtKztG+QaRJBM
-         Vm4w==
+        bh=azhVe2rhV1gDlFmhFwnbqw9ViDwuarkzu6YKI2xsrC4=;
+        b=Zk2+K0Z8vnB/TazQEeQH1S6Jtp6THf67hyu4kJmXPCAZIIheuDk0g4GVm/AcGshhir
+         Jns270pNIXEnM5eH0ZyKYJYVEHPMfjReVpZFmOcuxB2CnLqH+nsrfUuE/tt/S29LRUhe
+         twgfG7fu74Enj8DRplKnoMLbgt6S8j5wAl9pNRl4uRUE836hZwuPNpJWwDewZU+j2MGu
+         PIgHnkoMPmk+tyhT8lrqF46T3bJuy5Fe8cOVC3LBvxCqrJiegZN04sDzssfreg0ylLxk
+         DgtsJ8w9jkQJBEjDqLiNlTzGujJRH2QdeZlS8vlKFznFFTfZDfhODQP0CTo1DBZPVM14
+         vcBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698861758; x=1699466558;
+        d=1e100.net; s=20230601; t=1698861761; x=1699466561;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dDLIbYfXHuasXnwFeCXtVR7UAQw9kXfm6H29EVGLaPI=;
-        b=Cn5dd+cgD9M1HChHUpzr5XkgxVIcPlNa7CMCmUJuPV1nCmYO19FZ9FNmWdppCnHwPP
-         qh8mJGm2b/RmNkq8JMciLmkcwW3Ard6Bot8piO/AS747ROHC777vWQQqS8+npLVqGtyb
-         V+lWNTZSu25ofRg7KMfkBthY89dMhGwweYQ2MiSPBlioQKaFQOuSeoCQVMILLslQeGmx
-         FSinq8gdJg5z6JlPBQ6Z35QE0DbwUTMW4hXPTK929pPgXkcaanAwlBA9uY2+JMiTJvnT
-         P3fgJjvtQVOippKznfTWTqSFbEJSNfovrC3AgvypqFFZzob7y/QA6lplfVmOgiSDbPXG
-         34Wg==
-X-Gm-Message-State: AOJu0YxWoFSwx2e2ivRn9T5D3P1FZj3mZQKT0kG3cLQqYRVEnPzw0SBB
-        TfcRAjfYjLCBH6602+BOvQw0c8CqzvzCT8I=
-X-Google-Smtp-Source: AGHT+IHyQRiD/+p/vZEH0TbYPJgPCCJR9dO3Vv3f1NLBzQ/xxyDnZ+MjbpGIOk462kDOf8s4clx+v4rh6ZpIGh0=
+        bh=azhVe2rhV1gDlFmhFwnbqw9ViDwuarkzu6YKI2xsrC4=;
+        b=Coi/KS1mPfUE0ofiFg1mMJ8LrwIIbP2BmN01k8DWWP04I72dMCyfh1j2EQfkOGDwem
+         V+OnBhgDIjVQRTvLw0iYWgBKHy8igoPBWxP4FY6m89RHl/WDTJDSru6hoOhEDfkKDp+l
+         YKHdmS/C/xi9t16uniTc2YdB/5IAaDS6ezijvTBdCsYodkhenInxbVp8fQ1EFw7FDhuh
+         3PfLluJHvZbfOxO/dAioueGVLszAr883koMLRfucYUlKHPJDwv96seyhDEKcilkqQslM
+         tvVn/4Mo8eYDEN2lt8tW8BlgZN6yNBbyI+ip/hgWvHdsPlZi6ULLQ6rMZaV41ClyMSH/
+         Cffw==
+X-Gm-Message-State: AOJu0YxfAca8nrFqzIOVKSSimKDE903tn/yaV7HDMlw6xMPS8Au81675
+        ffdHgGCRgm/hO/uDz+5V9pPDY4RMGCuE5xo=
+X-Google-Smtp-Source: AGHT+IGIafMa/L8kSErTNfhI7Uu0JoIHIZDKXT9un2aQ391U3nQog6Y6NHnAqAoTL2PWMaxfFHQQ7/C8WFyOVDk=
 X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a0d:db97:0:b0:5a7:b15a:1a7d with SMTP id
- d145-20020a0ddb97000000b005a7b15a1a7dmr325916ywe.2.1698861758246; Wed, 01 Nov
- 2023 11:02:38 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 18:01:39 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6402:500d:b0:543:6cf7:87db with SMTP
+ id p13-20020a056402500d00b005436cf787dbmr61701eda.5.1698861760736; Wed, 01
+ Nov 2023 11:02:40 -0700 (PDT)
+Date:   Wed, 01 Nov 2023 18:01:40 +0000
 In-Reply-To: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 Mime-Version: 1.0
 References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231101-rust-binder-v1-9-08ba9197f637@google.com>
-Subject: [PATCH RFC 09/20] rust_binder: serialize oneway transactions
+Message-ID: <20231101-rust-binder-v1-10-08ba9197f637@google.com>
+Subject: [PATCH RFC 10/20] rust_binder: add death notifications
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -78,308 +78,735 @@ Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The binder driver guarantees that oneway transactions sent to the same
-node are serialized, that is, userspace will not be given the next one
-until it has finished processing the previous oneway transaction. This
-is done to avoid the case where two oneway transactions arrive in
-opposite order from the order in which they were sent. (E.g., they could
-be delivered to two different threads, which could appear as-if they
-were sent in opposite order.)
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
 
-To fix that, we store pending oneway transactions in a separate list in
-the node, and don't deliver the next oneway transaction until userspace
-signals that it has finished processing the previous oneway transaction
-by calling the BC_FREE_BUFFER ioctl.
+This adds death notifications that let one process be notified when
+another process dies.
 
+A process can request to be notified when a process dies using
+`BC_REQUEST_DEATH_NOTIFICATION`. This will make the driver send a
+`BR_DEAD_BINDER` to userspace when the process dies (or immediately if
+it is already dead). Userspace is supposed to respond with
+`BC_DEAD_BINDER_DONE` once it has processed the notification.
+
+Userspace can unregister from death notifications using the
+`BC_CLEAR_DEATH_NOTIFICATION` command. In this case, the kernel will
+respond with `BR_CLEAR_DEATH_NOTIFICATION_DONE` once the notification
+has been removed. Note that if the remote process dies before the kernel
+has responded with `BR_CLEAR_DEATH_NOTIFICATION_DONE`, then the kernel
+will still send a `BR_DEAD_BINDER`, which userspace must be able to
+process. In this case, the kernel will wait for the
+`BC_DEAD_BINDER_DONE` command before it sends
+`BR_CLEAR_DEATH_NOTIFICATION_DONE`.
+
+Note that even if the kernel sends a `BR_DEAD_BINDER`, this does not
+remove the death notification. Userspace must still remove it manually
+using `BC_CLEAR_DEATH_NOTIFICATION`.
+
+If a process uses `BC_RELEASE` to destroy its last refcount on a node
+that has an active death registration, then the death registration is
+immediately deleted. However, userspace is not supposed to delete a
+node reference without first deregistering death notifications, so this
+codepath is not executed under normal circumstances.
+
+Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+Co-developed-by: Alice Ryhl <aliceryhl@google.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- drivers/android/allocation.rs  | 19 +++++++++-
- drivers/android/node.rs        | 79 ++++++++++++++++++++++++++++++++++++++++--
- drivers/android/process.rs     | 25 ++++++++++---
- drivers/android/transaction.rs | 26 ++++++++++++--
- 4 files changed, 138 insertions(+), 11 deletions(-)
+ drivers/android/defs.rs        |  10 +-
+ drivers/android/node.rs        | 258 ++++++++++++++++++++++++++++++++++++++++-
+ drivers/android/process.rs     | 193 +++++++++++++++++++++++++++---
+ drivers/android/rust_binder.rs |   7 ++
+ drivers/android/thread.rs      |  22 +++-
+ 5 files changed, 471 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/android/allocation.rs b/drivers/android/allocation.rs
-index 1ab0f254fded..0fdef5425918 100644
---- a/drivers/android/allocation.rs
-+++ b/drivers/android/allocation.rs
-@@ -3,13 +3,22 @@
+diff --git a/drivers/android/defs.rs b/drivers/android/defs.rs
+index 32178e8c5596..753f7e86c92d 100644
+--- a/drivers/android/defs.rs
++++ b/drivers/android/defs.rs
+@@ -23,10 +23,13 @@ macro_rules! pub_no_prefix {
+     BR_SPAWN_LOOPER,
+     BR_TRANSACTION_COMPLETE,
+     BR_OK,
++    BR_ERROR,
+     BR_INCREFS,
+     BR_ACQUIRE,
+     BR_RELEASE,
+-    BR_DECREFS
++    BR_DECREFS,
++    BR_DEAD_BINDER,
++    BR_CLEAR_DEATH_NOTIFICATION_DONE
+ );
  
- use kernel::{bindings, pages::Pages, prelude::*, sync::Arc, user_ptr::UserSlicePtrReader};
+ pub_no_prefix!(
+@@ -44,7 +47,10 @@ macro_rules! pub_no_prefix {
+     BC_RELEASE,
+     BC_DECREFS,
+     BC_INCREFS_DONE,
+-    BC_ACQUIRE_DONE
++    BC_ACQUIRE_DONE,
++    BC_REQUEST_DEATH_NOTIFICATION,
++    BC_CLEAR_DEATH_NOTIFICATION,
++    BC_DEAD_BINDER_DONE
+ );
  
--use crate::{node::NodeRef, process::Process};
-+use crate::{
-+    node::{Node, NodeRef},
-+    process::Process,
-+    DArc,
-+};
- 
- #[derive(Default)]
- pub(crate) struct AllocationInfo {
-     /// The target node of the transaction this allocation is associated to.
-     /// Not set for replies.
-     pub(crate) target_node: Option<NodeRef>,
-+    /// When this allocation is dropped, call `pending_oneway_finished` on the node.
-+    ///
-+    /// This is used to serialize oneway transaction on the same node. Binder guarantees that
-+    /// oneway transactions to the same node are delivered sequentially in the order they are sent.
-+    pub(crate) oneway_node: Option<DArc<Node>>,
-     /// Zero the data in the buffer on free.
-     pub(crate) clear_on_free: bool,
- }
-@@ -110,6 +119,10 @@ pub(crate) fn get_or_init_info(&mut self) -> &mut AllocationInfo {
-         self.allocation_info.get_or_insert_with(Default::default)
-     }
- 
-+    pub(crate) fn set_info_oneway_node(&mut self, oneway_node: DArc<Node>) {
-+        self.get_or_init_info().oneway_node = Some(oneway_node);
-+    }
-+
-     pub(crate) fn set_info_clear_on_drop(&mut self) {
-         self.get_or_init_info().clear_on_free = true;
-     }
-@@ -126,6 +139,10 @@ fn drop(&mut self) {
-         }
- 
-         if let Some(mut info) = self.allocation_info.take() {
-+            if let Some(oneway_node) = info.oneway_node.as_ref() {
-+                oneway_node.pending_oneway_finished();
-+            }
-+
-             info.target_node = None;
- 
-             if info.clear_on_free {
+ pub(crate) const FLAT_BINDER_FLAG_TXN_SECURITY_CTX: u32 =
 diff --git a/drivers/android/node.rs b/drivers/android/node.rs
-index c6c3d81e705d..b8a08b16c06d 100644
+index b8a08b16c06d..7ed494bf9f7c 100644
 --- a/drivers/android/node.rs
 +++ b/drivers/android/node.rs
-@@ -2,7 +2,9 @@
- 
+@@ -3,11 +3,12 @@
  use kernel::{
      io_buffer::IoBufferWriter,
--    list::{AtomicListArcTracker, ListArcSafe, TryNewListArc},
-+    list::{
-+        AtomicListArcTracker, HasListLinks, List, ListArcSafe, ListItem, ListLinks, TryNewListArc,
-+    },
+     list::{
+-        AtomicListArcTracker, HasListLinks, List, ListArcSafe, ListItem, ListLinks, TryNewListArc,
++        AtomicListArcTracker, HasListLinks, List, ListArc, ListArcSafe, ListItem, ListLinks,
++        TryNewListArc,
+     },
      prelude::*,
      sync::lock::{spinlock::SpinLockBackend, Guard},
-     sync::{Arc, LockedBy},
-@@ -11,9 +13,11 @@
- 
- use crate::{
-     defs::*,
-+    error::BinderError,
-     process::{Process, ProcessInner},
-     thread::Thread,
--    DArc, DeliverToRead,
-+    transaction::Transaction,
-+    DArc, DLArc, DTRWrap, DeliverToRead,
+-    sync::{Arc, LockedBy},
++    sync::{Arc, LockedBy, SpinLock},
+     user_ptr::UserSlicePtrWriter,
  };
  
- struct CountState {
-@@ -36,6 +40,8 @@ fn new() -> Self {
+@@ -40,6 +41,7 @@ fn new() -> Self {
  struct NodeInner {
      strong: CountState,
      weak: CountState,
-+    oneway_todo: List<DTRWrap<Transaction>>,
-+    has_pending_oneway_todo: bool,
++    death_list: List<DTRWrap<NodeDeath>, 1>,
+     oneway_todo: List<DTRWrap<Transaction>>,
+     has_pending_oneway_todo: bool,
      /// The number of active BR_INCREFS or BR_ACQUIRE operations. (should be maximum two)
-     ///
-     /// If this is non-zero, then we postpone any BR_RELEASE or BR_DECREFS notifications until the
-@@ -62,6 +68,16 @@ impl ListArcSafe<0> for Node {
+@@ -95,6 +97,7 @@ pub(crate) fn new(
+                 NodeInner {
+                     strong: CountState::new(),
+                     weak: CountState::new(),
++                    death_list: List::new(),
+                     oneway_todo: List::new(),
+                     has_pending_oneway_todo: false,
+                     active_inc_refs: 0,
+@@ -112,6 +115,25 @@ pub(crate) fn get_id(&self) -> (usize, usize) {
+         (self.ptr, self.cookie)
+     }
+ 
++    pub(crate) fn next_death(
++        &self,
++        guard: &mut Guard<'_, ProcessInner, SpinLockBackend>,
++    ) -> Option<DArc<NodeDeath>> {
++        self.inner
++            .access_mut(guard)
++            .death_list
++            .pop_front()
++            .map(|larc| larc.into_arc())
++    }
++
++    pub(crate) fn add_death(
++        &self,
++        death: ListArc<DTRWrap<NodeDeath>, 1>,
++        guard: &mut Guard<'_, ProcessInner, SpinLockBackend>,
++    ) {
++        self.inner.access_mut(guard).death_list.push_back(death);
++    }
++
+     pub(crate) fn inc_ref_done_locked(
+         &self,
+         _strong: bool,
+@@ -449,3 +471,235 @@ fn drop(&mut self) {
+         }
      }
  }
- 
-+// These make `oneway_todo` work.
++
++struct NodeDeathInner {
++    dead: bool,
++    cleared: bool,
++    notification_done: bool,
++    /// Indicates whether the normal flow was interrupted by removing the handle. In this case, we
++    /// need behave as if the death notification didn't exist (i.e., we don't deliver anything to
++    /// the user.
++    aborted: bool,
++}
++
++/// Used to deliver notifications when a process dies.
++///
++/// A process can request to be notified when a process dies using `BC_REQUEST_DEATH_NOTIFICATION`.
++/// This will make the driver send a `BR_DEAD_BINDER` to userspace when the process dies (or
++/// immediately if it is already dead). Userspace is supposed to respond with `BC_DEAD_BINDER_DONE`
++/// once it has processed the notification.
++///
++/// Userspace can unregister from death notifications using the `BC_CLEAR_DEATH_NOTIFICATION`
++/// command. In this case, the kernel will respond with `BR_CLEAR_DEATH_NOTIFICATION_DONE` once the
++/// notification has been removed. Note that if the remote process dies before the kernel has
++/// responded with `BR_CLEAR_DEATH_NOTIFICATION_DONE`, then the kernel will still send a
++/// `BR_DEAD_BINDER`, which userspace must be able to process. In this case, the kernel will wait
++/// for the `BC_DEAD_BINDER_DONE` command before it sends `BR_CLEAR_DEATH_NOTIFICATION_DONE`.
++///
++/// Note that even if the kernel sends a `BR_DEAD_BINDER`, this does not remove the death
++/// notification. Userspace must still remove it manually using `BC_CLEAR_DEATH_NOTIFICATION`.
++///
++/// If a process uses `BC_RELEASE` to destroy its last refcount on a node that has an active death
++/// registration, then the death registration is immediately deleted (we implement this using the
++/// `aborted` field). However, userspace is not supposed to delete a `NodeRef` without first
++/// deregistering death notifications, so this codepath is not executed under normal circumstances.
++#[pin_data]
++pub(crate) struct NodeDeath {
++    node: DArc<Node>,
++    process: Arc<Process>,
++    pub(crate) cookie: usize,
++    #[pin]
++    links_track: AtomicListArcTracker<0>,
++    /// Used by the owner `Node` to store a list of registered death notifications.
++    ///
++    /// # Invariants
++    ///
++    /// Only ever used with the `death_list` list of `self.node`.
++    #[pin]
++    death_links: ListLinks<1>,
++    /// Used by the process to keep track of the death notifications for which we have sent a
++    /// `BR_DEAD_BINDER` but not yet received a `BC_DEAD_BINDER_DONE`.
++    ///
++    /// # Invariants
++    ///
++    /// Only ever used with the `delivered_deaths` list of `self.process`.
++    #[pin]
++    delivered_links: ListLinks<2>,
++    #[pin]
++    delivered_links_track: AtomicListArcTracker<2>,
++    #[pin]
++    inner: SpinLock<NodeDeathInner>,
++}
++
++impl NodeDeath {
++    /// Constructs a new node death notification object.
++    pub(crate) fn new(
++        node: DArc<Node>,
++        process: Arc<Process>,
++        cookie: usize,
++    ) -> impl PinInit<DTRWrap<Self>> {
++        DTRWrap::new(pin_init!(
++            Self {
++                node,
++                process,
++                cookie,
++                links_track <- AtomicListArcTracker::new(),
++                death_links <- ListLinks::new(),
++                delivered_links <- ListLinks::new(),
++                delivered_links_track <- AtomicListArcTracker::new(),
++                inner <- kernel::new_spinlock!(NodeDeathInner {
++                    dead: false,
++                    cleared: false,
++                    notification_done: false,
++                    aborted: false,
++                }, "NodeDeath::inner"),
++            }
++        ))
++    }
++
++    /// Sets the cleared flag to `true`.
++    ///
++    /// It removes `self` from the node's death notification list if needed.
++    ///
++    /// Returns whether it needs to be queued.
++    pub(crate) fn set_cleared(self: &DArc<Self>, abort: bool) -> bool {
++        let (needs_removal, needs_queueing) = {
++            // Update state and determine if we need to queue a work item. We only need to do it
++            // when the node is not dead or if the user already completed the death notification.
++            let mut inner = self.inner.lock();
++            if abort {
++                inner.aborted = true;
++            }
++            if inner.cleared {
++                // Already cleared.
++                return false;
++            }
++            inner.cleared = true;
++            (!inner.dead, !inner.dead || inner.notification_done)
++        };
++
++        // Remove death notification from node.
++        if needs_removal {
++            let mut owner_inner = self.node.owner.inner.lock();
++            let node_inner = self.node.inner.access_mut(&mut owner_inner);
++            // SAFETY: A `NodeDeath` is never inserted into the death list of any node other than
++            // its owner, so it is either in this death list or in no death list.
++            unsafe { node_inner.death_list.remove(self) };
++        }
++        needs_queueing
++    }
++
++    /// Sets the 'notification done' flag to `true`.
++    pub(crate) fn set_notification_done(self: DArc<Self>, thread: &Thread) {
++        let needs_queueing = {
++            let mut inner = self.inner.lock();
++            inner.notification_done = true;
++            inner.cleared
++        };
++        if needs_queueing {
++            if let Some(death) = ListArc::try_from_arc_or_drop(self) {
++                let _ = thread.push_work_if_looper(death);
++            }
++        }
++    }
++
++    /// Sets the 'dead' flag to `true` and queues work item if needed.
++    pub(crate) fn set_dead(self: DArc<Self>) {
++        let needs_queueing = {
++            let mut inner = self.inner.lock();
++            if inner.cleared {
++                false
++            } else {
++                inner.dead = true;
++                true
++            }
++        };
++        if needs_queueing {
++            // Push the death notification to the target process. There is nothing else to do if
++            // it's already dead.
++            if let Some(death) = ListArc::try_from_arc_or_drop(self) {
++                let process = death.process.clone();
++                let _ = process.push_work(death);
++            }
++        }
++    }
++}
++
++kernel::list::impl_list_arc_safe! {
++    impl ListArcSafe<0> for NodeDeath {
++        tracked_by links_track: AtomicListArcTracker;
++    }
++}
++
 +kernel::list::impl_has_list_links! {
-+    impl HasListLinks<0> for DTRWrap<Transaction> { self.links.inner }
++    impl HasListLinks<1> for DTRWrap<NodeDeath> { self.wrapped.death_links }
++}
++kernel::list::impl_list_arc_safe! {
++    impl ListArcSafe<1> for DTRWrap<NodeDeath> { untracked; }
 +}
 +kernel::list::impl_list_item! {
-+    impl ListItem<0> for DTRWrap<Transaction> {
++    impl ListItem<1> for DTRWrap<NodeDeath> {
 +        using ListLinks;
 +    }
 +}
 +
- impl Node {
-     pub(crate) fn new(
-         ptr: usize,
-@@ -79,6 +95,8 @@ pub(crate) fn new(
-                 NodeInner {
-                     strong: CountState::new(),
-                     weak: CountState::new(),
-+                    oneway_todo: List::new(),
-+                    has_pending_oneway_todo: false,
-                     active_inc_refs: 0,
-                 },
-             ),
-@@ -201,6 +219,63 @@ fn write(&self, writer: &mut UserSlicePtrWriter, code: u32) -> Result {
-         writer.write(&self.cookie)?;
-         Ok(())
++kernel::list::impl_has_list_links! {
++    impl HasListLinks<2> for DTRWrap<NodeDeath> { self.wrapped.delivered_links }
++}
++kernel::list::impl_list_arc_safe! {
++    impl ListArcSafe<2> for DTRWrap<NodeDeath> {
++        tracked_by wrapped: NodeDeath;
++    }
++}
++kernel::list::impl_list_arc_safe! {
++    impl ListArcSafe<2> for NodeDeath {
++        tracked_by delivered_links_track: AtomicListArcTracker<2>;
++    }
++}
++kernel::list::impl_list_item! {
++    impl ListItem<2> for DTRWrap<NodeDeath> {
++        using ListLinks;
++    }
++}
++
++impl DeliverToRead for NodeDeath {
++    fn do_work(
++        self: DArc<Self>,
++        _thread: &Thread,
++        writer: &mut UserSlicePtrWriter,
++    ) -> Result<bool> {
++        let done = {
++            let inner = self.inner.lock();
++            if inner.aborted {
++                return Ok(true);
++            }
++            inner.cleared && (!inner.dead || inner.notification_done)
++        };
++
++        let cookie = self.cookie;
++        let cmd = if done {
++            BR_CLEAR_DEATH_NOTIFICATION_DONE
++        } else {
++            let process = self.process.clone();
++            let mut process_inner = process.inner.lock();
++            let inner = self.inner.lock();
++            if inner.aborted {
++                return Ok(true);
++            }
++            // We're still holding the inner lock, so it cannot be aborted while we insert it into
++            // the delivered list.
++            process_inner.death_delivered(self.clone());
++            BR_DEAD_BINDER
++        };
++
++        writer.write(&cmd)?;
++        writer.write(&cookie)?;
++        // Mimic the original code: we stop processing work items when we get to a death
++        // notification.
++        Ok(cmd != BR_DEAD_BINDER)
++    }
++
++    fn should_sync_wakeup(&self) -> bool {
++        false
++    }
++}
+diff --git a/drivers/android/process.rs b/drivers/android/process.rs
+index d4e50c7f9a88..0b79fa59ffa5 100644
+--- a/drivers/android/process.rs
++++ b/drivers/android/process.rs
+@@ -20,7 +20,7 @@
+     pages::Pages,
+     prelude::*,
+     rbtree::RBTree,
+-    sync::{lock::Guard, Arc, ArcBorrow, Mutex, SpinLock},
++    sync::{lock::Guard, Arc, ArcBorrow, Mutex, SpinLock, UniqueArc},
+     task::Task,
+     types::{ARef, Either},
+     user_ptr::{UserSlicePtr, UserSlicePtrReader},
+@@ -32,7 +32,7 @@
+     context::Context,
+     defs::*,
+     error::{BinderError, BinderResult},
+-    node::{Node, NodeRef},
++    node::{Node, NodeDeath, NodeRef},
+     range_alloc::{self, RangeAllocator},
+     thread::{PushWorkRes, Thread},
+     DArc, DLArc, DTRWrap, DeliverToRead,
+@@ -69,6 +69,7 @@ pub(crate) struct ProcessInner {
+     nodes: RBTree<usize, DArc<Node>>,
+     mapping: Option<Mapping>,
+     work: List<DTRWrap<dyn DeliverToRead>>,
++    delivered_deaths: List<DTRWrap<NodeDeath>, 2>,
+ 
+     /// The number of requested threads that haven't registered yet.
+     requested_thread_count: u32,
+@@ -91,6 +92,7 @@ fn new() -> Self {
+             mapping: None,
+             nodes: RBTree::new(),
+             work: List::new(),
++            delivered_deaths: List::new(),
+             requested_thread_count: 0,
+             max_threads: 0,
+             started_thread_count: 0,
+@@ -225,15 +227,40 @@ fn register_thread(&mut self) -> bool {
+         self.started_thread_count += 1;
+         true
      }
 +
-+    pub(crate) fn submit_oneway(
-+        &self,
-+        transaction: DLArc<Transaction>,
-+        guard: &mut Guard<'_, ProcessInner, SpinLockBackend>,
-+    ) -> Result<(), (BinderError, DLArc<dyn DeliverToRead>)> {
-+        if guard.is_dead {
-+            return Err((BinderError::new_dead(), transaction));
-+        }
-+
-+        let inner = self.inner.access_mut(guard);
-+        if inner.has_pending_oneway_todo {
-+            inner.oneway_todo.push_back(transaction);
-+        } else {
-+            inner.has_pending_oneway_todo = true;
-+            guard.push_work(transaction)?;
-+        }
-+        Ok(())
-+    }
-+
-+    pub(crate) fn release(&self, guard: &mut Guard<'_, ProcessInner, SpinLockBackend>) {
-+        // Move every pending oneshot message to the process todolist. The process
-+        // will cancel it later.
-+        //
-+        // New items can't be pushed after this call, since `submit_oneway` fails when the process
-+        // is dead, which is set before `Node::release` is called.
-+        //
-+        // TODO: Give our linked list implementation the ability to move everything in one go.
-+        while let Some(work) = self.inner.access_mut(guard).oneway_todo.pop_front() {
-+            guard.push_work_for_release(work);
-+        }
-+    }
-+
-+    pub(crate) fn pending_oneway_finished(&self) {
-+        let mut guard = self.owner.inner.lock();
-+        if guard.is_dead {
-+            // Cleanup will happen in `Process::deferred_release`.
-+            return;
-+        }
-+
-+        let inner = self.inner.access_mut(&mut guard);
-+
-+        let transaction = inner.oneway_todo.pop_front();
-+        inner.has_pending_oneway_todo = transaction.is_some();
-+        if let Some(transaction) = transaction {
-+            match guard.push_work(transaction) {
-+                Ok(()) => {}
-+                Err((_err, work)) => {
-+                    // Process is dead.
-+                    // This shouldn't happen due to the `is_dead` check, but if it does, just drop
-+                    // the transaction and return.
-+                    drop(guard);
-+                    drop(work);
-+                }
++    /// Finds a delivered death notification with the given cookie, removes it from the thread's
++    /// delivered list, and returns it.
++    fn pull_delivered_death(&mut self, cookie: usize) -> Option<DArc<NodeDeath>> {
++        let mut cursor_opt = self.delivered_deaths.cursor_front();
++        while let Some(cursor) = cursor_opt {
++            if cursor.current().cookie == cookie {
++                return Some(cursor.remove().into_arc());
 +            }
++            cursor_opt = cursor.next();
++        }
++        None
++    }
++
++    pub(crate) fn death_delivered(&mut self, death: DArc<NodeDeath>) {
++        if let Some(death) = ListArc::try_from_arc_or_drop(death) {
++            self.delivered_deaths.push_back(death);
++        } else {
++            pr_warn!("Notification added to `delivered_deaths` twice.");
 +        }
 +    }
  }
  
- impl DeliverToRead for Node {
-diff --git a/drivers/android/process.rs b/drivers/android/process.rs
-index 2e8b0fc07756..d4e50c7f9a88 100644
---- a/drivers/android/process.rs
-+++ b/drivers/android/process.rs
-@@ -136,6 +136,11 @@ pub(crate) fn push_work(
-         }
+ struct NodeRefInfo {
+     node_ref: NodeRef,
++    death: Option<DArc<NodeDeath>>,
+ }
+ 
+ impl NodeRefInfo {
+     fn new(node_ref: NodeRef) -> Self {
+-        Self { node_ref }
++        Self {
++            node_ref,
++            death: None,
++        }
+     }
+ }
+ 
+@@ -385,6 +412,18 @@ fn get_thread(self: ArcBorrow<'_, Self>, id: i32) -> Result<Arc<Thread>> {
+         Ok(ta)
      }
  
-+    /// Push work to be cancelled. Only used during process teardown.
-+    pub(crate) fn push_work_for_release(&mut self, work: DLArc<dyn DeliverToRead>) {
-+        self.work.push_back(work);
++    pub(crate) fn push_work(&self, work: DLArc<dyn DeliverToRead>) -> BinderResult {
++        // If push_work fails, drop the work item outside the lock.
++        let res = self.inner.lock().push_work(work);
++        match res {
++            Ok(()) => Ok(()),
++            Err((err, work)) => {
++                drop(work);
++                Err(err)
++            }
++        }
 +    }
 +
-     pub(crate) fn remove_node(&mut self, ptr: usize) {
-         self.nodes.remove(&ptr);
+     fn set_as_manager(
+         self: ArcBorrow<'_, Self>,
+         info: Option<FlatBinderObject>,
+@@ -513,6 +552,14 @@ pub(crate) fn get_node_from_handle(&self, handle: u32, strong: bool) -> Result<N
+             .clone(strong)
      }
-@@ -740,6 +745,21 @@ fn deferred_release(self: Arc<Self>) {
  
-         self.ctx.deregister_process(&self);
++    pub(crate) fn remove_from_delivered_deaths(&self, death: &DArc<NodeDeath>) {
++        let mut inner = self.inner.lock();
++        // SAFETY: By the invariant on the `delivered_links` field, this is the right linked list.
++        let removed = unsafe { inner.delivered_deaths.remove(death) };
++        drop(inner);
++        drop(removed);
++    }
++
+     pub(crate) fn update_ref(&self, handle: u32, inc: bool, strong: bool) -> Result {
+         if inc && handle == 0 {
+             if let Ok(node_ref) = self.ctx.get_manager_node(strong) {
+@@ -529,6 +576,12 @@ pub(crate) fn update_ref(&self, handle: u32, inc: bool, strong: bool) -> Result
+         let mut refs = self.node_refs.lock();
+         if let Some(info) = refs.by_handle.get_mut(&handle) {
+             if info.node_ref.update(inc, strong) {
++                // Clean up death if there is one attached to this node reference.
++                if let Some(death) = info.death.take() {
++                    death.set_cleared(true);
++                    self.remove_from_delivered_deaths(&death);
++                }
++
+                 // Remove reference from process tables.
+                 let id = info.node_ref.node.global_id;
+                 refs.by_handle.remove(&handle);
+@@ -725,6 +778,87 @@ pub(crate) fn needs_thread(&self) -> bool {
+         ret
+     }
  
-+        // Move oneway_todo into the process todolist.
-+        {
-+            let mut inner = self.inner.lock();
-+            let nodes = take(&mut inner.nodes);
-+            for node in nodes.values() {
-+                node.release(&mut inner);
++    pub(crate) fn request_death(
++        self: &Arc<Self>,
++        reader: &mut UserSlicePtrReader,
++        thread: &Thread,
++    ) -> Result {
++        let handle: u32 = reader.read()?;
++        let cookie: usize = reader.read()?;
++
++        // TODO: First two should result in error, but not the others.
++
++        // TODO: Do we care about the context manager dying?
++
++        // Queue BR_ERROR if we can't allocate memory for the death notification.
++        let death = UniqueArc::try_new_uninit().map_err(|err| {
++            thread.push_return_work(BR_ERROR);
++            err
++        })?;
++        let mut refs = self.node_refs.lock();
++        let info = refs.by_handle.get_mut(&handle).ok_or(EINVAL)?;
++
++        // Nothing to do if there is already a death notification request for this handle.
++        if info.death.is_some() {
++            return Ok(());
++        }
++
++        let death = {
++            let death_init = NodeDeath::new(info.node_ref.node.clone(), self.clone(), cookie);
++            match death.pin_init_with(death_init) {
++                Ok(death) => death,
++                // error is infallible
++                Err(err) => match err {},
 +            }
-+            inner.nodes = nodes;
++        };
++
++        // Register the death notification.
++        {
++            let mut owner_inner = info.node_ref.node.owner.inner.lock();
++            if owner_inner.is_dead {
++                let death = ListArc::from_pin_unique(death);
++                info.death = Some(death.clone_arc());
++                drop(owner_inner);
++                let _ = self.push_work(death);
++            } else {
++                let death = ListArc::from_pin_unique(death);
++                info.death = Some(death.clone_arc());
++                info.node_ref.node.add_death(death, &mut owner_inner);
++            }
++        }
++        Ok(())
++    }
++
++    pub(crate) fn clear_death(&self, reader: &mut UserSlicePtrReader, thread: &Thread) -> Result {
++        let handle: u32 = reader.read()?;
++        let cookie: usize = reader.read()?;
++
++        let mut refs = self.node_refs.lock();
++        let info = refs.by_handle.get_mut(&handle).ok_or(EINVAL)?;
++
++        let death = info.death.take().ok_or(EINVAL)?;
++        if death.cookie != cookie {
++            info.death = Some(death);
++            return Err(EINVAL);
 +        }
 +
-+        // Cancel all pending work items.
-+        while let Some(work) = self.get_work() {
-+            work.into_arc().cancel();
++        // Update state and determine if we need to queue a work item. We only need to do it when
++        // the node is not dead or if the user already completed the death notification.
++        if death.set_cleared(false) {
++            if let Some(death) = ListArc::try_from_arc_or_drop(death) {
++                let _ = thread.push_work_if_looper(death);
++            }
 +        }
 +
-         // Move the threads out of `inner` so that we can iterate over them without holding the
-         // lock.
-         let mut inner = self.inner.lock();
-@@ -751,11 +771,6 @@ fn deferred_release(self: Arc<Self>) {
-             thread.release();
++        Ok(())
++    }
++
++    pub(crate) fn dead_binder_done(&self, cookie: usize, thread: &Thread) {
++        if let Some(death) = self.inner.lock().pull_delivered_death(cookie) {
++            death.set_notification_done(thread);
++        }
++    }
++
+     fn deferred_flush(&self) {
+         let inner = self.inner.lock();
+         for thread in inner.threads.values() {
+@@ -760,17 +894,6 @@ fn deferred_release(self: Arc<Self>) {
+             work.into_arc().cancel();
          }
  
--        // Cancel all pending work items.
--        while let Some(work) = self.get_work() {
--            work.into_arc().cancel();
+-        // Move the threads out of `inner` so that we can iterate over them without holding the
+-        // lock.
+-        let mut inner = self.inner.lock();
+-        let threads = take(&mut inner.threads);
+-        drop(inner);
+-
+-        // Release all threads.
+-        for thread in threads.values() {
+-            thread.release();
 -        }
 -
          // Free any resources kept alive by allocated buffers.
          let omapping = self.inner.lock().mapping.take();
          if let Some(mut mapping) = omapping {
-diff --git a/drivers/android/transaction.rs b/drivers/android/transaction.rs
-index a6525a4253ea..a4ffe0a3878c 100644
---- a/drivers/android/transaction.rs
-+++ b/drivers/android/transaction.rs
-@@ -62,9 +62,12 @@ pub(crate) fn new(
-                     return Err(err);
-                 }
-             };
--        if trd.flags & TF_ONE_WAY != 0 && stack_next.is_some() {
--            pr_warn!("Oneway transaction should not be in a transaction stack.");
--            return Err(EINVAL.into());
-+        if trd.flags & TF_ONE_WAY != 0 {
-+            if stack_next.is_some() {
-+                pr_warn!("Oneway transaction should not be in a transaction stack.");
-+                return Err(EINVAL.into());
-+            }
-+            alloc.set_info_oneway_node(node_ref.node.clone());
+@@ -785,6 +908,48 @@ fn deferred_release(self: Arc<Self>) {
+                 drop(alloc)
+             });
          }
-         if trd.flags & TF_CLEAR_BUF != 0 {
-             alloc.set_info_clear_on_drop();
-@@ -165,9 +168,26 @@ pub(crate) fn find_from(&self, thread: &Thread) -> Option<DArc<Transaction>> {
-     ///
-     /// Not used for replies.
-     pub(crate) fn submit(self: DLArc<Self>) -> BinderResult {
-+        let oneway = self.flags & TF_ONE_WAY != 0;
-         let process = self.to.clone();
-         let mut process_inner = process.inner.lock();
- 
-+        if oneway {
-+            if let Some(target_node) = self.target_node.clone() {
-+                match target_node.submit_oneway(self, &mut process_inner) {
-+                    Ok(()) => return Ok(()),
-+                    Err((err, work)) => {
-+                        drop(process_inner);
-+                        // Drop work after releasing process lock.
-+                        drop(work);
-+                        return Err(err);
-+                    }
-+                }
++
++        // Drop all references. We do this dance with `swap` to avoid destroying the references
++        // while holding the lock.
++        let mut refs = self.node_refs.lock();
++        let mut node_refs = take(&mut refs.by_handle);
++        drop(refs);
++
++        // Remove all death notifications from the nodes (that belong to a different process).
++        for info in node_refs.values_mut() {
++            let death = if let Some(existing) = info.death.take() {
++                existing
 +            } else {
-+                pr_err!("Failed to submit oneway transaction to node.");
-+            }
++                continue;
++            };
++            death.set_cleared(false);
 +        }
 +
-         let res = if let Some(thread) = self.find_target_thread() {
-             match thread.push_work(self) {
-                 PushWorkRes::Ok => Ok(()),
++        // Do similar dance for the state lock.
++        let mut inner = self.inner.lock();
++        let threads = take(&mut inner.threads);
++        let nodes = take(&mut inner.nodes);
++        drop(inner);
++
++        // Release all threads.
++        for thread in threads.values() {
++            thread.release();
++        }
++
++        // Deliver death notifications.
++        for node in nodes.values() {
++            loop {
++                let death = {
++                    let mut inner = self.inner.lock();
++                    if let Some(death) = node.next_death(&mut inner) {
++                        death
++                    } else {
++                        break;
++                    }
++                };
++                death.set_dead();
++            }
++        }
+     }
+ 
+     pub(crate) fn flush(this: ArcBorrow<'_, Process>) -> Result {
+diff --git a/drivers/android/rust_binder.rs b/drivers/android/rust_binder.rs
+index 218c2001e8cb..04477ff7e5a0 100644
+--- a/drivers/android/rust_binder.rs
++++ b/drivers/android/rust_binder.rs
+@@ -100,6 +100,13 @@ impl<T: ?Sized> core::ops::Receiver for DTRWrap<T> {}
+ type DLArc<T> = kernel::list::ListArc<DTRWrap<T>>;
+ 
+ impl<T: ListArcSafe> DTRWrap<T> {
++    fn new(val: impl PinInit<T>) -> impl PinInit<Self> {
++        pin_init!(Self {
++            links <- ListLinksSelfPtr::new(),
++            wrapped <- val,
++        })
++    }
++
+     #[allow(dead_code)]
+     fn arc_try_new(val: T) -> Result<DLArc<T>, alloc::alloc::AllocError> {
+         ListArc::pin_init(pin_init!(Self {
+diff --git a/drivers/android/thread.rs b/drivers/android/thread.rs
+index b583297cea91..b70a5e3c064b 100644
+--- a/drivers/android/thread.rs
++++ b/drivers/android/thread.rs
+@@ -391,10 +391,27 @@ pub(crate) fn push_work(&self, work: DLArc<dyn DeliverToRead>) -> PushWorkRes {
+         res
+     }
+ 
++    /// Attempts to push to given work item to the thread if it's a looper thread (i.e., if it's
++    /// part of a thread pool) and is alive. Otherwise, push the work item to the process instead.
++    pub(crate) fn push_work_if_looper(&self, work: DLArc<dyn DeliverToRead>) -> BinderResult {
++        let mut inner = self.inner.lock();
++        if inner.is_looper() && !inner.is_dead {
++            inner.push_work(work);
++            Ok(())
++        } else {
++            drop(inner);
++            self.process.push_work(work)
++        }
++    }
++
+     pub(crate) fn push_work_deferred(&self, work: DLArc<dyn DeliverToRead>) {
+         self.inner.lock().push_work_deferred(work);
+     }
+ 
++    pub(crate) fn push_return_work(&self, reply: u32) {
++        self.inner.lock().push_return_work(reply);
++    }
++
+     pub(crate) fn copy_transaction_data(
+         &self,
+         to_process: Arc<Process>,
+@@ -556,7 +573,7 @@ fn transaction<T>(self: &Arc<Self>, tr: &BinderTransactionDataSg, inner: T)
+                 );
+             }
+ 
+-            self.inner.lock().push_return_work(err.reply);
++            self.push_return_work(err.reply);
+         }
+     }
+ 
+@@ -684,6 +701,9 @@ fn write(self: &Arc<Self>, req: &mut BinderWriteRead) -> Result {
+                 BC_DECREFS => self.process.update_ref(reader.read()?, false, false)?,
+                 BC_INCREFS_DONE => self.process.inc_ref_done(&mut reader, false)?,
+                 BC_ACQUIRE_DONE => self.process.inc_ref_done(&mut reader, true)?,
++                BC_REQUEST_DEATH_NOTIFICATION => self.process.request_death(&mut reader, self)?,
++                BC_CLEAR_DEATH_NOTIFICATION => self.process.clear_death(&mut reader, self)?,
++                BC_DEAD_BINDER_DONE => self.process.dead_binder_done(reader.read()?, self),
+                 BC_REGISTER_LOOPER => {
+                     let valid = self.process.register_thread();
+                     self.inner.lock().looper_register(valid);
 
 -- 
 2.42.0.820.g83a721a137-goog
