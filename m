@@ -2,439 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C447DDD74
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D947DDD79
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjKAHuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        id S231587AbjKAH5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbjKAHuC (ORCPT
+        with ESMTP id S231269AbjKAH5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:50:02 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1243B101;
-        Wed,  1 Nov 2023 00:49:55 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A144Qdi017803;
-        Wed, 1 Nov 2023 00:49:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=SM2epVf6nDHb8xWPQceLmBlNM1r/lEggltHtY9bgEEc=;
- b=ia2ete46676/4j68Uqtxx8MT3B0oIlSwsfAMPBylfxPyRcIYKQcoE422rbocrCvlLIPc
- 3xtzNOoCU3M0iS2gCl+2dc922mqEk3Pvz2kPyTYUgE0MCUgkCUUs/OoB2kJTCYQY9bsT
- HUQ+QuALLL4g1P73TlPxDM3Eb6UXuBH+G0YHZPduYhRcVLmHOgc15kK3TITdw2s6MFui
- hrXlbol21HRGc5gBF72L7XeqguoVykQRrqLiv+L0tjexbigpiEzOQuMYeT/hiJYXX6ox
- OykS2O85KFmMr2B7C2E4Y0ELdiexCrEVmQQqDgSB1HZXGgTeylWCrE2ZwGZzqGv0mzCZ ng== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3u11tper0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 01 Nov 2023 00:49:46 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 1 Nov
- 2023 00:49:27 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 1 Nov 2023 00:49:27 -0700
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 603363F70BF;
-        Wed,  1 Nov 2023 00:49:23 -0700 (PDT)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <horms@kernel.org>
-CC:     Suman Ghosh <sumang@marvell.com>,
-        Ratheesh Kannoth <rkannoth@marvell.com>
-Subject: [net PATCH] octeontx2: Fix klockwork and coverity issues
-Date:   Wed, 1 Nov 2023 13:19:19 +0530
-Message-ID: <20231101074919.2614608-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 1 Nov 2023 03:57:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A32DB;
+        Wed,  1 Nov 2023 00:57:25 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A15gWo7007920;
+        Wed, 1 Nov 2023 07:57:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+Uoqj1rcN7c5r6Vl2OVzUHE5X0Lv4psbwP7FskDGH94=;
+ b=BQq499aXYY36MYq+LDOyByDrHGdYfBOMPaB9BLypyWPfm1By5rGjEhHuhzgeqoEnFumf
+ oEnB4URv3+laFTWC4bDqRm4vZb0q5nA8tHmTVE/7KD0FKMKd7qeRBZJA366BQi4LFB5P
+ +8JVNrmUzEJ32ATkJr7MYJio0rnxOkzT4zBY4ZQwyuLjB5/gR4zXfWhoKDTj3Ygxb0fs
+ 3xI+BvCwdpZikE4WZiryFCk8QBggjS2FCckBVYDrcZtrZUJN6AyZhdsLh40DGRqOsew8
+ ih2IC748au+9lkyL/r7eP1ubkdXU84T1qhx0Y+P3hOI7YtQ5j8yGOCp6MR93KM3QuAGw ww== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3e06rwaj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 07:57:13 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A17vCs5007667
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Nov 2023 07:57:12 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 1 Nov
+ 2023 00:57:07 -0700
+Message-ID: <acf03f49-8873-42e8-a76f-340f1da33df8@quicinc.com>
+Date:   Wed, 1 Nov 2023 13:27:04 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: RKjGHjhU5FgotjBfbdsW46e28xIQNHV1
-X-Proofpoint-ORIG-GUID: RKjGHjhU5FgotjBfbdsW46e28xIQNHV1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+References: <20231025104457.628109-1-robimarko@gmail.com>
+ <20231025104457.628109-2-robimarko@gmail.com>
+ <CAOX2RU4MBvDZZ767RPS9XKj0U2L3gviVG5cyR8NKyO4LD+sfYQ@mail.gmail.com>
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <CAOX2RU4MBvDZZ767RPS9XKj0U2L3gviVG5cyR8NKyO4LD+sfYQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 8fGxbklvQLSbcOUKQmpKnESOJM_BBjVB
+X-Proofpoint-GUID: 8fGxbklvQLSbcOUKQmpKnESOJM_BBjVB
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-01_05,2023-10-31_03,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 mlxscore=0 clxscore=1015 phishscore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311010066
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix all klockwork and coverity issues reported on AF and PF/VF driver.
 
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/af/cgx.c   | 14 ++++-
- .../marvell/octeontx2/af/mcs_rvu_if.c         |  8 ++-
- .../net/ethernet/marvell/octeontx2/af/ptp.c   | 11 +++-
- .../ethernet/marvell/octeontx2/af/rvu_cpt.c   |  2 +-
- .../marvell/octeontx2/af/rvu_debugfs.c        |  8 ++-
- .../ethernet/marvell/octeontx2/af/rvu_nix.c   |  2 +-
- .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  2 +-
- .../marvell/octeontx2/nic/otx2_common.c       |  8 +--
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  3 +
- .../ethernet/marvell/octeontx2/nic/otx2_reg.h | 55 ++++++++++---------
- .../marvell/octeontx2/nic/otx2_txrx.c         |  2 +-
- .../net/ethernet/marvell/octeontx2/nic/qos.c  |  7 ++-
- 12 files changed, 77 insertions(+), 45 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 6c70c8498690..5a672888577e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -457,12 +457,19 @@ int cgx_lmac_addr_max_entries_get(u8 cgx_id, u8 lmac_id)
- u64 cgx_lmac_addr_get(u8 cgx_id, u8 lmac_id)
- {
- 	struct cgx *cgx_dev = cgx_get_pdata(cgx_id);
--	struct lmac *lmac = lmac_pdata(lmac_id, cgx_dev);
- 	struct mac_ops *mac_ops;
-+	struct lmac *lmac;
- 	int index;
- 	u64 cfg;
- 	int id;
- 
-+	if (!cgx_dev)
-+		return 0;
-+
-+	lmac = lmac_pdata(lmac_id, cgx_dev);
-+	if (!lmac)
-+		return 0;
-+
- 	mac_ops = cgx_dev->mac_ops;
- 
- 	id = get_sequence_id_of_lmac(cgx_dev, lmac_id);
-@@ -955,6 +962,9 @@ int cgx_lmac_pfc_config(void *cgxd, int lmac_id, u8 tx_pause,
- 
- 	/* Write source MAC address which will be filled into PFC packet */
- 	cfg = cgx_lmac_addr_get(cgx->cgx_id, lmac_id);
-+	if (!cfg)
-+		return -ENODEV;
-+
- 	cgx_write(cgx, lmac_id, CGXX_SMUX_SMAC, cfg);
- 
- 	return 0;
-@@ -1617,7 +1627,7 @@ unsigned long cgx_get_lmac_bmap(void *cgxd)
- static int cgx_lmac_init(struct cgx *cgx)
- {
- 	struct lmac *lmac;
--	u64 lmac_list;
-+	u64 lmac_list = 0;
- 	int i, err;
- 
- 	/* lmac_list specifies which lmacs are enabled
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c b/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c
-index dfd23580e3b8..1b0b022f5493 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c
-@@ -625,8 +625,8 @@ int rvu_mbox_handler_mcs_free_resources(struct rvu *rvu,
- {
- 	u16 pcifunc = req->hdr.pcifunc;
- 	struct mcs_rsrc_map *map;
-+	int rc = -EINVAL;
- 	struct mcs *mcs;
--	int rc = 0;
- 
- 	if (req->mcs_id >= rvu->mcs_blk_cnt)
- 		return MCS_AF_ERR_INVALID_MCSID;
-@@ -675,8 +675,8 @@ int rvu_mbox_handler_mcs_alloc_resources(struct rvu *rvu,
- {
- 	u16 pcifunc = req->hdr.pcifunc;
- 	struct mcs_rsrc_map *map;
-+	int rsrc_id = -EINVAL, i;
- 	struct mcs *mcs;
--	int rsrc_id, i;
- 
- 	if (req->mcs_id >= rvu->mcs_blk_cnt)
- 		return MCS_AF_ERR_INVALID_MCSID;
-@@ -737,6 +737,8 @@ int rvu_mbox_handler_mcs_alloc_resources(struct rvu *rvu,
- 			rsp->rsrc_cnt++;
- 		}
- 		break;
-+	default:
-+		goto exit;
- 	}
- 
- 	rsp->rsrc_type = req->rsrc_type;
-@@ -849,7 +851,7 @@ int rvu_mbox_handler_mcs_ctrl_pkt_rule_write(struct rvu *rvu,
- static void rvu_mcs_set_lmac_bmap(struct rvu *rvu)
- {
- 	struct mcs *mcs = mcs_get_pdata(0);
--	unsigned long lmac_bmap;
-+	unsigned long lmac_bmap = 0;
- 	int cgx, lmac, port;
- 
- 	for (port = 0; port < mcs->hw->lmac_cnt; port++) {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/ptp.c b/drivers/net/ethernet/marvell/octeontx2/af/ptp.c
-index bcc96eed2481..a199b1123ba7 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/ptp.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/ptp.c
-@@ -518,6 +518,7 @@ static int ptp_probe(struct pci_dev *pdev,
- 		     const struct pci_device_id *ent)
- {
- 	struct ptp *ptp;
-+	void __iomem * const *base;
- 	int err;
- 
- 	ptp = kzalloc(sizeof(*ptp), GFP_KERNEL);
-@@ -536,7 +537,15 @@ static int ptp_probe(struct pci_dev *pdev,
- 	if (err)
- 		goto error_free;
- 
--	ptp->reg_base = pcim_iomap_table(pdev)[PCI_PTP_BAR_NO];
-+	base = pcim_iomap_table(pdev);
-+	if (!base)
-+		goto error_free;
-+
-+	ptp->reg_base = base[PCI_PTP_BAR_NO];
-+	if (!ptp->reg_base) {
-+		err = -ENODEV;
-+		goto error_free;
-+	}
- 
- 	pci_set_drvdata(pdev, ptp);
- 	if (!first_ptp_block)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
-index f047185f38e0..a1a919fcda47 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
-@@ -43,7 +43,7 @@ static irqreturn_t cpt_af_flt_intr_handler(int vec, void *ptr)
- 	struct rvu *rvu = block->rvu;
- 	int blkaddr = block->addr;
- 	u64 reg, val;
--	int i, eng;
-+	int i, eng = 0;
- 	u8 grp;
- 
- 	reg = rvu_read64(rvu, blkaddr, CPT_AF_FLTX_INT(vec));
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index bd817ee88735..307942ff1b10 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -519,12 +519,16 @@ RVU_DEBUG_SEQ_FOPS(mcs_rx_secy_stats, mcs_rx_secy_stats_display, NULL);
- static void rvu_dbg_mcs_init(struct rvu *rvu)
- {
- 	struct mcs *mcs;
--	char dname[10];
-+	char *dname = NULL;
- 	int i;
- 
- 	if (!rvu->mcs_blk_cnt)
- 		return;
- 
-+	dname = kmalloc_array(rvu->mcs_blk_cnt, sizeof(char), GFP_KERNEL);
-+	if (!dname)
-+		return;
-+
- 	rvu->rvu_dbg.mcs_root = debugfs_create_dir("mcs", rvu->rvu_dbg.root);
- 
- 	for (i = 0; i < rvu->mcs_blk_cnt; i++) {
-@@ -568,6 +572,8 @@ static void rvu_dbg_mcs_init(struct rvu *rvu)
- 		debugfs_create_file("port", 0600, rvu->rvu_dbg.mcs_tx, mcs,
- 				    &rvu_dbg_mcs_tx_port_stats_fops);
- 	}
-+
-+	kfree(dname);
- }
- 
- #define LMT_MAPTBL_ENTRY_SIZE 16
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index 23c2f2ed2fb8..2fa2ef970e88 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -5033,7 +5033,7 @@ static void nix_inline_ipsec_cfg(struct rvu *rvu, struct nix_inline_ipsec_cfg *r
- 				 int blkaddr)
- {
- 	u8 cpt_idx, cpt_blkaddr;
--	u64 val;
-+	u64 val = 0;
- 
- 	cpt_idx = (blkaddr == BLKADDR_NIX0) ? 0 : 1;
- 	if (req->enable) {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 16cfc802e348..b25ecd36ca61 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -1734,8 +1734,8 @@ static void npc_load_kpu_profile(struct rvu *rvu)
- 				rvu->kpu_prfl_addr = NULL;
- 			} else {
- 				kfree(rvu->kpu_fwdata);
-+				rvu->kpu_fwdata = NULL;
- 			}
--			rvu->kpu_fwdata = NULL;
- 			rvu->kpu_fwdata_sz = 0;
- 			if (retry_fwdb) {
- 				retry_fwdb = false;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 1a42bfded872..628251e940e8 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -648,14 +648,14 @@ int otx2_txschq_config(struct otx2_nic *pfvf, int lvl, int prio, bool txschq_for
- 	} else if (lvl == NIX_TXSCH_LVL_TL4) {
- 		parent = schq_list[NIX_TXSCH_LVL_TL3][prio];
- 		req->reg[0] = NIX_AF_TL4X_PARENT(schq);
--		req->regval[0] = parent << 16;
-+		req->regval[0] = (u64)parent << 16;
- 		req->num_regs++;
- 		req->reg[1] = NIX_AF_TL4X_SCHEDULE(schq);
- 		req->regval[1] = dwrr_val;
- 	} else if (lvl == NIX_TXSCH_LVL_TL3) {
- 		parent = schq_list[NIX_TXSCH_LVL_TL2][prio];
- 		req->reg[0] = NIX_AF_TL3X_PARENT(schq);
--		req->regval[0] = parent << 16;
-+		req->regval[0] = (u64)parent << 16;
- 		req->num_regs++;
- 		req->reg[1] = NIX_AF_TL3X_SCHEDULE(schq);
- 		req->regval[1] = dwrr_val;
-@@ -670,11 +670,11 @@ int otx2_txschq_config(struct otx2_nic *pfvf, int lvl, int prio, bool txschq_for
- 	} else if (lvl == NIX_TXSCH_LVL_TL2) {
- 		parent = schq_list[NIX_TXSCH_LVL_TL1][prio];
- 		req->reg[0] = NIX_AF_TL2X_PARENT(schq);
--		req->regval[0] = parent << 16;
-+		req->regval[0] = (u64)parent << 16;
- 
- 		req->num_regs++;
- 		req->reg[1] = NIX_AF_TL2X_SCHEDULE(schq);
--		req->regval[1] = TXSCH_TL1_DFLT_RR_PRIO << 24 | dwrr_val;
-+		req->regval[1] = (u64)hw->txschq_aggr_lvl_rr_prio << 24 | dwrr_val;
- 
- 		if (lvl == hw->txschq_link_cfg_lvl) {
- 			req->num_regs++;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 6daf4d58c25d..62702ff6f3ea 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -496,6 +496,9 @@ static void otx2_pfvf_mbox_handler(struct work_struct *work)
- 	return;
- 
- inval_msg:
-+	if (!msg)
-+		return;
-+
- 	otx2_reply_invalid_msg(mbox, vf_idx, 0, msg->id);
- 	otx2_mbox_msg_send(mbox, vf_idx);
- }
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
-index 45a32e4b49d1..e3aee6e36215 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
-@@ -139,33 +139,34 @@
- #define	NIX_LF_CINTX_ENA_W1C(a)		(NIX_LFBASE | 0xD50 | (a) << 12)
- 
- /* NIX AF transmit scheduler registers */
--#define NIX_AF_SMQX_CFG(a)		(0x700 | (a) << 16)
--#define NIX_AF_TL1X_SCHEDULE(a)		(0xC00 | (a) << 16)
--#define NIX_AF_TL1X_CIR(a)		(0xC20 | (a) << 16)
--#define NIX_AF_TL1X_TOPOLOGY(a)		(0xC80 | (a) << 16)
--#define NIX_AF_TL2X_PARENT(a)		(0xE88 | (a) << 16)
--#define NIX_AF_TL2X_SCHEDULE(a)		(0xE00 | (a) << 16)
--#define NIX_AF_TL2X_TOPOLOGY(a)		(0xE80 | (a) << 16)
--#define NIX_AF_TL2X_CIR(a)              (0xE20 | (a) << 16)
--#define NIX_AF_TL2X_PIR(a)              (0xE30 | (a) << 16)
--#define NIX_AF_TL3X_PARENT(a)		(0x1088 | (a) << 16)
--#define NIX_AF_TL3X_SCHEDULE(a)		(0x1000 | (a) << 16)
--#define NIX_AF_TL3X_SHAPE(a)		(0x1010 | (a) << 16)
--#define NIX_AF_TL3X_CIR(a)		(0x1020 | (a) << 16)
--#define NIX_AF_TL3X_PIR(a)		(0x1030 | (a) << 16)
--#define NIX_AF_TL3X_TOPOLOGY(a)		(0x1080 | (a) << 16)
--#define NIX_AF_TL4X_PARENT(a)		(0x1288 | (a) << 16)
--#define NIX_AF_TL4X_SCHEDULE(a)		(0x1200 | (a) << 16)
--#define NIX_AF_TL4X_SHAPE(a)		(0x1210 | (a) << 16)
--#define NIX_AF_TL4X_CIR(a)		(0x1220 | (a) << 16)
--#define NIX_AF_TL4X_PIR(a)		(0x1230 | (a) << 16)
--#define NIX_AF_TL4X_TOPOLOGY(a)		(0x1280 | (a) << 16)
--#define NIX_AF_MDQX_SCHEDULE(a)		(0x1400 | (a) << 16)
--#define NIX_AF_MDQX_SHAPE(a)		(0x1410 | (a) << 16)
--#define NIX_AF_MDQX_CIR(a)		(0x1420 | (a) << 16)
--#define NIX_AF_MDQX_PIR(a)		(0x1430 | (a) << 16)
--#define NIX_AF_MDQX_PARENT(a)		(0x1480 | (a) << 16)
--#define NIX_AF_TL3_TL2X_LINKX_CFG(a, b)	(0x1700 | (a) << 16 | (b) << 3)
-+#define NIX_AF_SMQX_CFG(a)		(0x700 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_SDP_LINK_CFG(a)	(0xB10 | (u64)(a) << 16)
-+#define NIX_AF_TL1X_SCHEDULE(a)		(0xC00 | (u64)(a) << 16)
-+#define NIX_AF_TL1X_CIR(a)		(0xC20 | (u64)(a) << 16)
-+#define NIX_AF_TL1X_TOPOLOGY(a)		(0xC80 | (u64)(a) << 16)
-+#define NIX_AF_TL2X_PARENT(a)		(0xE88 | (u64)(a) << 16)
-+#define NIX_AF_TL2X_SCHEDULE(a)		(0xE00 | (u64)(a) << 16)
-+#define NIX_AF_TL2X_TOPOLOGY(a)		(0xE80 | (u64)(a) << 16)
-+#define NIX_AF_TL2X_CIR(a)		(0xE20 | (u64)(a) << 16)
-+#define NIX_AF_TL2X_PIR(a)		(0xE30 | (u64)(a) << 16)
-+#define NIX_AF_TL3X_PARENT(a)		(0x1088 | (u64)(a) << 16)
-+#define NIX_AF_TL3X_SCHEDULE(a)		(0x1000 | (u64)(a) << 16)
-+#define NIX_AF_TL3X_SHAPE(a)		(0x1010 | (u64)(a) << 16)
-+#define NIX_AF_TL3X_CIR(a)		(0x1020 | (u64)(a) << 16)
-+#define NIX_AF_TL3X_PIR(a)		(0x1030 | (u64)(a) << 16)
-+#define NIX_AF_TL3X_TOPOLOGY(a)		(0x1080 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_PARENT(a)		(0x1288 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_SCHEDULE(a)		(0x1200 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_SHAPE(a)		(0x1210 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_CIR(a)		(0x1220 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_PIR(a)		(0x1230 | (u64)(a) << 16)
-+#define NIX_AF_TL4X_TOPOLOGY(a)		(0x1280 | (u64)(a) << 16)
-+#define NIX_AF_MDQX_SCHEDULE(a)		(0x1400 | (u64)(a) << 16)
-+#define NIX_AF_MDQX_SHAPE(a)		(0x1410 | (u64)(a) << 16)
-+#define NIX_AF_MDQX_CIR(a)		(0x1420 | (u64)(a) << 16)
-+#define NIX_AF_MDQX_PIR(a)		(0x1430 | (u64)(a) << 16)
-+#define NIX_AF_MDQX_PARENT(a)		(0x1480 | (u64)(a) << 16)
-+#define NIX_AF_TL3_TL2X_LINKX_CFG(a, b)	(0x1700 | (u64)(a) << 16 | (b) << 3)
- 
- /* LMT LF registers */
- #define LMT_LFBASE			BIT_ULL(RVU_FUNC_BLKADDR_SHIFT)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 53b2a4ef5298..04a462b3e638 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -510,7 +510,7 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
- 
- static void otx2_adjust_adaptive_coalese(struct otx2_nic *pfvf, struct otx2_cq_poll *cq_poll)
- {
--	struct dim_sample dim_sample;
-+	struct dim_sample dim_sample = { 0 };
- 	u64 rx_frames, rx_bytes;
- 
- 	rx_frames = OTX2_GET_RX_STATS(RX_BCAST) + OTX2_GET_RX_STATS(RX_MCAST) +
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/qos.c b/drivers/net/ethernet/marvell/octeontx2/nic/qos.c
-index 1e77bbf5d22a..7b23120a3e60 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/qos.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/qos.c
-@@ -153,7 +153,6 @@ static void __otx2_qos_txschq_cfg(struct otx2_nic *pfvf,
- 		num_regs++;
- 
- 		otx2_config_sched_shaping(pfvf, node, cfg, &num_regs);
--
- 	} else if (level == NIX_TXSCH_LVL_TL4) {
- 		otx2_config_sched_shaping(pfvf, node, cfg, &num_regs);
- 	} else if (level == NIX_TXSCH_LVL_TL3) {
-@@ -528,6 +527,7 @@ otx2_qos_sw_create_leaf_node(struct otx2_nic *pfvf,
- 	err = otx2_qos_add_child_node(parent, node);
- 	if (err) {
- 		mutex_unlock(&pfvf->qos.qos_lock);
-+		kfree(node);
- 		return ERR_PTR(err);
- 	}
- 	mutex_unlock(&pfvf->qos.qos_lock);
-@@ -1028,8 +1028,9 @@ static int otx2_qos_root_add(struct otx2_nic *pfvf, u16 htb_maj_id, u16 htb_defc
- 	new_cfg = kzalloc(sizeof(*new_cfg), GFP_KERNEL);
- 	if (!new_cfg) {
- 		NL_SET_ERR_MSG_MOD(extack, "Memory allocation error");
--		err = -ENOMEM;
--		goto free_root_node;
-+		otx2_qos_sw_node_delete(pfvf, root);
-+		mutex_destroy(&pfvf->qos.qos_lock);
-+		return -ENOMEM;
- 	}
- 	/* allocate htb root node */
- 	new_cfg->schq[root->level] = 1;
--- 
-2.25.1
+On 10/29/2023 4:34 PM, Robert Marko wrote:
+> On Wed, 25 Oct 2023 at 12:45, Robert Marko <robimarko@gmail.com> wrote:
+>>
+>> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
+>> and drop the curent code that is de-asserting the USB GDSC-s as part of
+>> the GCC probe.
+>>
+>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> 
+> Unfortunately, after testing on multiple devices I hit the same GDSC
+> issue I had a long time ago
+> that was the reason I did not send this upstream.
+> It seems that USB3 port GDSC (USB0 GDSC in code) works just fine,
+> however the USB2 one
+> (USB1 GDSC in code) it is stuck off and USB2 port will fail due to this:
+>      1.607531] ------------[ cut here ]------------
+> [    1.607559] usb1_gdsc status stuck at 'off'
+> [    1.607592] WARNING: CPU: 0 PID: 35 at gdsc_toggle_logic+0x16c/0x174
+> [    1.615120] Modules linked in:
+> [    1.621712] CPU: 0 PID: 35 Comm: kworker/u8:1 Tainted: G        W
+>         6.6.0-rc7-next-20231026 #5
+> [    1.624586] Hardware name: Wallys DR6018 v4 (DT)
+> [    1.633867] Workqueue: events_unbound deferred_probe_work_func
+> [    1.638556] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [    1.644200] pc : gdsc_toggle_logic+0x16c/0x174
+> [    1.651052] lr : gdsc_toggle_logic+0x16c/0x174
+> [    1.655566] sp : ffffffc081a03a40
+> [    1.659990] x29: ffffffc081a03a40 x28: 0000000000000000 x27: 0000000000000000
+> [    1.663384] x26: ffffff8000156ac0 x25: 0000000000000000 x24: ffffffc081824c90
+> [    1.670502] x23: ffffffc081824840 x22: 0000000000000000 x21: 0000000000000001
+> [    1.677620] x20: 00000000ffffff92 x19: ffffffc081824840 x18: ffffffffffffffff
+> [    1.684738] x17: 00000000cdb32eee x16: 00000000d648a142 x15: fffffffffffc38ff
+> [    1.691855] x14: ffffffc0817994c0 x13: 00000000000000e0 x12: 00000000000000e0
+> [    1.698974] x11: 00000000ffffffea x10: ffffffc0817f14c0 x9 : 0000000000000001
+> [    1.706094] x8 : 0000000000000001 x7 : 0000000000017fe8 x6 : c0000000ffffefff
+> [    1.713211] x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : ffffffc081a03840
+> [    1.720328] x2 : ffffffc081799400 x1 : ffffffc081799400 x0 : 000000000000001f
+> [    1.727448] Call trace:
+> [    1.734556]  gdsc_toggle_logic+0x16c/0x174
+> [    1.736815]  gdsc_enable+0x60/0x27c
+> [    1.740980]  genpd_power_on+0x180/0x22c
+> [    1.744367]  __genpd_dev_pm_attach+0x140/0x238
+> [    1.748188]  genpd_dev_pm_attach+0x60/0x70
+> [    1.752701]  dev_pm_domain_attach+0x20/0x34
+> [    1.756780]  platform_probe+0x50/0xc0
+> [    1.760859]  really_probe+0x148/0x2b8
+> [    1.764679]  __driver_probe_device+0x78/0x12c
+> [    1.768327]  driver_probe_device+0xdc/0x160
+> [    1.772667]  __device_attach_driver+0xb8/0x134
+> [    1.776660]  bus_for_each_drv+0x70/0xb8
+> [    1.781173]  __device_attach+0xa0/0x184
+> [    1.784905]  device_initial_probe+0x14/0x20
+> [    1.788725]  bus_probe_device+0xac/0xb0
+> [    1.792891]  deferred_probe_work_func+0x88/0xc0
+> [    1.796712]  process_one_work+0x158/0x2bc
+> [    1.801226]  worker_thread+0x2a0/0x4bc
+> [    1.805391]  kthread+0xe4/0xf0
+> [    1.809035]  ret_from_fork+0x10/0x20
+> [    1.812075] ---[ end trace 0000000000000000 ]---
+> 
+> Kathiravan, do you happen to have any docs or info if the USB1 GDSC is special
+> and its status bits are broken or?
 
+
+Robert, sorry for the late response. Unfortunately, we didn't handle the 
+GDSC via the framework, so not sure if something is broken at HW level. 
+I can try to get some information on this, but immediately is not quite 
+possible. Thanks for the understanding.
+
+Thanks,
+
+
+> 
+> Maybe the offset is even wrong as I based it on the current driver.
+> 
+> Regards,
+> Robert
+> 
+>> ---
+>>   drivers/clk/qcom/Kconfig       |  1 +
+>>   drivers/clk/qcom/gcc-ipq6018.c | 33 ++++++++++++++++++++++++---------
+>>   2 files changed, 25 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+>> index ad1acd9b7426b..2aefa2231b51b 100644
+>> --- a/drivers/clk/qcom/Kconfig
+>> +++ b/drivers/clk/qcom/Kconfig
+>> @@ -164,6 +164,7 @@ config IPQ_GCC_5332
+>>
+>>   config IPQ_GCC_6018
+>>          tristate "IPQ6018 Global Clock Controller"
+>> +       select QCOM_GDSC
+>>          help
+>>            Support for global clock controller on ipq6018 devices.
+>>            Say Y if you want to use peripheral devices such as UART, SPI,
+>> diff --git a/drivers/clk/qcom/gcc-ipq6018.c b/drivers/clk/qcom/gcc-ipq6018.c
+>> index cc20a16d8973c..9d5ee2ac012a1 100644
+>> --- a/drivers/clk/qcom/gcc-ipq6018.c
+>> +++ b/drivers/clk/qcom/gcc-ipq6018.c
+>> @@ -23,6 +23,7 @@
+>>   #include "clk-alpha-pll.h"
+>>   #include "clk-regmap-divider.h"
+>>   #include "clk-regmap-mux.h"
+>> +#include "gdsc.h"
+>>   #include "reset.h"
+>>
+>>   enum {
+>> @@ -4691,6 +4692,22 @@ static struct clk_branch gcc_dcc_clk = {
+>>          },
+>>   };
+>>
+>> +static struct gdsc usb0_gdsc = {
+>> +       .gdscr = 0x3e078,
+>> +       .pd = {
+>> +               .name = "usb0_gdsc",
+>> +       },
+>> +       .pwrsts = PWRSTS_OFF_ON,
+>> +};
+>> +
+>> +static struct gdsc usb1_gdsc = {
+>> +       .gdscr = 0x3f078,
+>> +       .pd = {
+>> +               .name = "usb1_gdsc",
+>> +       },
+>> +       .pwrsts = PWRSTS_OFF_ON,
+>> +};
+>> +
+>>   static const struct alpha_pll_config ubi32_pll_config = {
+>>          .l = 0x3e,
+>>          .alpha = 0x6667,
+>> @@ -5138,6 +5155,11 @@ static const struct qcom_reset_map gcc_ipq6018_resets[] = {
+>>          [GCC_Q6_AXIM_ARES] = {0x59110, 4},
+>>   };
+>>
+>> +static struct gdsc *gcc_ipq6018_gdscs[] = {
+>> +       [USB0_GDSC] = &usb0_gdsc,
+>> +       [USB1_GDSC] = &usb1_gdsc,
+>> +};
+>> +
+>>   static const struct of_device_id gcc_ipq6018_match_table[] = {
+>>          { .compatible = "qcom,gcc-ipq6018" },
+>>          { }
+>> @@ -5160,6 +5182,8 @@ static const struct qcom_cc_desc gcc_ipq6018_desc = {
+>>          .num_resets = ARRAY_SIZE(gcc_ipq6018_resets),
+>>          .clk_hws = gcc_ipq6018_hws,
+>>          .num_clk_hws = ARRAY_SIZE(gcc_ipq6018_hws),
+>> +       .gdscs = gcc_ipq6018_gdscs,
+>> +       .num_gdscs = ARRAY_SIZE(gcc_ipq6018_gdscs),
+>>   };
+>>
+>>   static int gcc_ipq6018_probe(struct platform_device *pdev)
+>> @@ -5170,15 +5194,6 @@ static int gcc_ipq6018_probe(struct platform_device *pdev)
+>>          if (IS_ERR(regmap))
+>>                  return PTR_ERR(regmap);
+>>
+>> -       /* Disable SW_COLLAPSE for USB0 GDSCR */
+>> -       regmap_update_bits(regmap, 0x3e078, BIT(0), 0x0);
+>> -       /* Enable SW_OVERRIDE for USB0 GDSCR */
+>> -       regmap_update_bits(regmap, 0x3e078, BIT(2), BIT(2));
+>> -       /* Disable SW_COLLAPSE for USB1 GDSCR */
+>> -       regmap_update_bits(regmap, 0x3f078, BIT(0), 0x0);
+>> -       /* Enable SW_OVERRIDE for USB1 GDSCR */
+>> -       regmap_update_bits(regmap, 0x3f078, BIT(2), BIT(2));
+>> -
+>>          /* SW Workaround for UBI Huyara PLL */
+>>          regmap_update_bits(regmap, 0x2501c, BIT(26), BIT(26));
+>>
+>> --
+>> 2.41.0
+>>
