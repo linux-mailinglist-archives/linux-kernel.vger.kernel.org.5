@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7227E7DDEDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2909A7DDEE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbjKAKAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        id S232640AbjKAKFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbjKAKA3 (ORCPT
+        with ESMTP id S230200AbjKAKFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:00:29 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD4B101;
-        Wed,  1 Nov 2023 03:00:23 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SL2VL3Ckfz6K63t;
-        Wed,  1 Nov 2023 17:57:14 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 1 Nov 2023 06:05:10 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0CFDA
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:05:05 -0700 (PDT)
+Received: from dggpemm500011.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SL2ZR2TxYzPp0C;
+        Wed,  1 Nov 2023 18:00:47 +0800 (CST)
+Received: from huawei.com (10.175.104.170) by dggpemm500011.china.huawei.com
+ (7.185.36.110) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 1 Nov
- 2023 10:00:20 +0000
-Date:   Wed, 1 Nov 2023 10:00:19 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Su Hui <suhui@nfschina.com>
-CC:     Jonathan Cameron <jic23@kernel.org>, <lars@metafoo.de>,
-        <jean-baptiste.maneyrol@tdk.com>, <andy.shevchenko@gmail.com>,
-        <chenhuiz@axis.com>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH v2] iio: imu: inv_mpu6050: fix an error code problem in
- inv_mpu6050_read_raw
-Message-ID: <20231101100019.00004be7@Huawei.com>
-In-Reply-To: <7555437b-9289-eba4-efa8-965386e0e956@nfschina.com>
-References: <20231027145949.243f03f2@jic23-huawei>
-        <7555437b-9289-eba4-efa8-965386e0e956@nfschina.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+ 2023 18:04:52 +0800
+From:   Ren Mingshuai <renmingshuai@huawei.com>
+To:     <jirislaby@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <caowangbao@huawei.com>, <yanan@huawei.com>, <liaichun@huawei.com>
+Subject: [PATCH] CAPI: Return -ENOMEM instead of -1
+Date:   Wed, 1 Nov 2023 18:04:50 +0800
+Message-ID: <20231101100450.120680-1-renmingshuai@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500011.china.huawei.com (7.185.36.110)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 10:10:05 +0800
-Su Hui <suhui@nfschina.com> wrote:
+It is more reasonable to return -ENOMEM instead of -1 when kmalloc
+failed, although the caller doesn't care.
 
-> On 2023/10/27 21:59, Jonathan Cameron wrote:
-> > On Mon, 23 Oct 2023 12:05:52 +0800
-> > Su Hui <suhui@nfschina.com> wrote:
-> >  
-> >> inv_mpu6050_sensor_show() can return -EINVAL or IIO_VAL_INT. Return the
-> >> true value rather than only return IIO_VAL_INT.
-> >>
-> >> Signed-off-by: Su Hui <suhui@nfschina.com>  
-> > If you can figure out a fixes tag that would be great.  Just reply to this thread
-> > with it and I'll pick it up from here.  
-> Oh, I just send a v3 patch, sorry....
-> Fixes: d5098447147c ("iio: imu: mpu6050: add calibration offset support")
-That works too!
+smatch warinings:
+drivers/isdn/capi/capi.c:151 capiminor_add_ack() warn: returning -1 instead of -ENOMEM is sloppy
 
-Thanks,
+Signed-off-by: Ren Mingshuai <renmingshuai@huawei.com>
+---
+ drivers/isdn/capi/capi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-J
-> >> ---
-> >> v2:
-> >>   - fix the error of commit title.
-> >> v1:
-> >>   - https://lore.kernel.org/all/20231020091413.205743-2-suhui@nfschina.com/
-> >>   drivers/iio/imu/inv_mpu6050/inv_mpu_core.c | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
-> >> index 29f906c884bd..a9a5fb266ef1 100644
-> >> --- a/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
-> >> +++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c
-> >> @@ -749,13 +749,13 @@ inv_mpu6050_read_raw(struct iio_dev *indio_dev,
-> >>   			ret = inv_mpu6050_sensor_show(st, st->reg->gyro_offset,
-> >>   						chan->channel2, val);
-> >>   			mutex_unlock(&st->lock);
-> >> -			return IIO_VAL_INT;
-> >> +			return ret;
-> >>   		case IIO_ACCEL:
-> >>   			mutex_lock(&st->lock);
-> >>   			ret = inv_mpu6050_sensor_show(st, st->reg->accl_offset,
-> >>   						chan->channel2, val);
-> >>   			mutex_unlock(&st->lock);
-> >> -			return IIO_VAL_INT;
-> >> +			return ret;
-> >>   
-> >>   		default:
-> >>   			return -EINVAL;  
-> 
+diff --git a/drivers/isdn/capi/capi.c b/drivers/isdn/capi/capi.c
+index 2f3789515..6522f031a 100644
+--- a/drivers/isdn/capi/capi.c
++++ b/drivers/isdn/capi/capi.c
+@@ -149,7 +149,7 @@ static int capiminor_add_ack(struct capiminor *mp, u16 datahandle)
+ 	n = kmalloc(sizeof(*n), GFP_ATOMIC);
+ 	if (unlikely(!n)) {
+ 		printk(KERN_ERR "capi: alloc datahandle failed\n");
+-		return -1;
++		return -ENOMEM;
+ 	}
+ 	n->datahandle = datahandle;
+ 	INIT_LIST_HEAD(&n->list);
+-- 
+2.27.0
 
