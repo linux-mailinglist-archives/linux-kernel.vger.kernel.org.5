@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1B67DE863
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E867DE868
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235044AbjKAWyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 18:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S1346145AbjKAW6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 18:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbjKAWye (ORCPT
+        with ESMTP id S232330AbjKAW6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 18:54:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DF412F
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 15:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698879268; x=1730415268;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=tZVTpUY1N1MedF2l86nD3DHTHWTVwd0+nVjfFkbyVyU=;
-  b=koWnXswI0wi2iNTCn72RcbYRMcVkOrIf/xHGJSIp3J9sWVtzid3IB5+V
-   lr7tLc5Ig64NaLQlZUKRXe7CV4xSTrofdNnbGnsgUU2Mug4LTnxv2r9Vq
-   oEdUkyRc3Ao+SHuBcYE+wNloC6pYchtHTLyJH1a2pr31Kv3BJ8eqAS4AF
-   F4ASGxxH7YevKjWAwjjMT37JulwQT5pWDBmei6iwlO9BT3e7gWztA+Dkx
-   QTbm7QK+yG3P+NnF2BFFj3gx/gdlizYA2Pir+XTSY8lakQLmR3cB7DMD2
-   tMupy6JVPeF6Hi1Hf6RnqeAFxkJLsA8yhudEKnQbTVsRK+eReanyB2oAM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="1511461"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="1511461"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 15:54:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764710567"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="764710567"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 01 Nov 2023 15:54:26 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyK6R-00010C-0W;
-        Wed, 01 Nov 2023 22:54:23 +0000
-Date:   Thu, 2 Nov 2023 06:53:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.11.01a 18/37]
- kernel/locking/qspinlock.c:691:6: warning: no previous declaration for
- 'spinlock_dump'
-Message-ID: <202311020612.oQucVrSC-lkp@intel.com>
+        Wed, 1 Nov 2023 18:58:30 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471EDC1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 15:58:28 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5b31c5143a0so4279337b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 15:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698879507; x=1699484307; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VF4uwbYIzZxVA4IRa0W7WHUlrQEG+ReHRfEP9dC90UI=;
+        b=Cwg5k63HzRppgKfPVytsNYU8xokuLmESh0Y8TkpZ9fXn/9cwhQltvgEeq7kR9qC+zb
+         +hAH29FRR9xjW4jZgb91Jc1bK+wW7OPluCDRR1Xl/EYB491pEbRwQtv9GdpRekFSl4m+
+         nkZMf5s6RvKpTZf5Itl9ndEpiYeMufHaLI0zltu1TLmVPydwh9KCUrVFk+pVgYCW6Owb
+         eYM4zhxB2eJCMBgZJpP2Yj1Ww4TDm+UdGDB91AheA1I6R1j7NcDAlABWXa0FMBjxH3nI
+         8sVgXVfP5/OTdhH47PxKHqJNdSCdunkEaDLWb4I9uOLCSpj/fZBJhGLdgpSkpLluhoRC
+         LjTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698879507; x=1699484307;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VF4uwbYIzZxVA4IRa0W7WHUlrQEG+ReHRfEP9dC90UI=;
+        b=mviXB7Uqof1TSd+cS6zCsRnRVIsj6YIFX7m/oqkm0ksWHCPlYFUVirSMt7uYn8ZznF
+         h7seFyIIPq2veTaZBZj1IuAMweu0xD7MQU19atmZQYV5NV6BG5XqtChjY1mVk/WqZdQa
+         7GtsYGJliYxT3h498XNSKV8jQIUfC4kovZ/vC5WXduXQ4zcelW5k4LnJye+XGCotlN3f
+         LvC3FqlyYqgnN5RbVqAbj3s/wEsSrHwIRtCp3wmjJuT89NJpNPaAI7H6DZPM334ExjFX
+         ZAbVjwxO/YhqwaRkgYhnuW/dxmXVZjitxuF57Ppz4ealEx7crgVJhqYuZSbwfL/BaVmw
+         ew5w==
+X-Gm-Message-State: AOJu0Yw2w89ShjoyI+ZW2N+y6LCIV5MTDTzx+PHnw5AL0ab8nVE6A9HL
+        ivUgqmLXUoOC8zf11fu2lFE=
+X-Google-Smtp-Source: AGHT+IHedWxUbsdmjGnOLQ5mn7neRiDb2ixy1UoJ/s62hUvhRyE5OP3XI7yYQ4Om6FwLPVwi1mE54w==
+X-Received: by 2002:a81:a889:0:b0:595:8e80:30ef with SMTP id f131-20020a81a889000000b005958e8030efmr14295306ywh.51.1698879507402;
+        Wed, 01 Nov 2023 15:58:27 -0700 (PDT)
+Received: from localhost ([50.221.102.30])
+        by smtp.gmail.com with ESMTPSA id u72-20020a0deb4b000000b0059f4f30a32bsm526804ywe.24.2023.11.01.15.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 15:58:26 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH 0/4] lib/group_cpus: rework grp_spread_init_one() and make it O(1)
+Date:   Wed,  1 Nov 2023 15:58:16 -0700
+Message-Id: <20231101225820.51342-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.11.01a
-head:   a5d1576b5e4924bc6884b992be2345013a663c82
-commit: 851f9c70733ed644c8a03d8f93f9876942181bee [18/37] EXP qspinlock: Add spinlock_dump() to dump lock state
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20231102/202311020612.oQucVrSC-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311020612.oQucVrSC-lkp@intel.com/reproduce)
+grp_spread_init_one() implementation is sub-optimal now because it
+traverses bitmaps from the beginning, instead of picking from the
+previous iteration.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311020612.oQucVrSC-lkp@intel.com/
+Fix it and use find_bit API where appropriate.
 
-All warnings (new ones prefixed by >>):
+Yury Norov (4):
+  cpumask: introduce for_each_cpu_and_from()
+  lib/group_cpus: relax atomicity requirement in grp_spread_init_one()
+  lib/group_cpus: optimize inner loop in grp_spread_init_one()
+  lib/group_cpus: optimize outer loop in grp_spread_init_one()
 
->> kernel/locking/qspinlock.c:691:6: warning: no previous declaration for 'spinlock_dump' [-Wmissing-declarations]
-    void spinlock_dump(spinlock_t *sp, bool full)
-         ^~~~~~~~~~~~~
-
-
-vim +/spinlock_dump +691 kernel/locking/qspinlock.c
-
-   690	
- > 691	void spinlock_dump(spinlock_t *sp, bool full)
-   692	{
-   693		int cpu;
-   694		int i = 0;
-   695		int idx;
-   696		struct mcs_spinlock *msp;
-   697		struct qspinlock qval = sp->rlock.raw_lock;
-   698	
-   699		cpu = tail_to_cpu(qval.tail);
-   700		idx = tail_to_idx(qval.tail);
-   701		pr_alert("%s: %ps %#x (%c%c%c%c %#x: %d[%d]\n",
-   702			 __func__, sp, (unsigned int)atomic_read(&qval.val),
-   703			 ".L"[!!qval.locked],
-   704			 ".P"[!!qval.pending],
-   705			 ".Q"[cpu >= 0 && idx >= 0],
-   706			 ".F"[!!full],
-   707			 (unsigned int)qval.tail, cpu, idx);
-   708		pr_alert("%s: _Q_TAIL_CPU_OFFSET=%d _Q_TAIL_IDX_MASK=%d _Q_TAIL_IDX_OFFSET=%d _Q_LOCKED_VAL=%d _Q_TAIL_OFFSET=%d sizeof(->tail)=%lu\n",
-   709			__func__, _Q_TAIL_CPU_OFFSET, _Q_TAIL_IDX_MASK, _Q_TAIL_IDX_OFFSET, _Q_LOCKED_VAL, _Q_TAIL_OFFSET, (unsigned long)sizeof(qval.tail));
-   710		if (!full || cpu < 0 || idx < 0)
-   711			return;
-   712		msp = per_cpu_ptr(&qnodes[idx].mcs, cpu);
-   713		while (i++ < nr_cpu_ids && (msp = next_to_prev(msp, &cpu, &idx))) {
-   714			pr_alert("%s: Q%d CPU %d[%d] %c%d\n", __func__, i, cpu, idx,
-   715				 ".L"[!!msp->locked], msp->count);
-   716		}
-   717		if (i >= nr_cpu_ids && cpu >= 0 && idx >= 0)
-   718			pr_alert("%s: Queue output truncated.\n", __func__);
-   719		else
-   720			pr_alert("%s: End of queue.\n", __func__);
-   721	}
-   722	EXPORT_SYMBOL(spinlock_dump);
-   723	
+ include/linux/cpumask.h | 11 +++++++++++
+ include/linux/find.h    |  3 +++
+ lib/group_cpus.c        | 29 ++++++++++++-----------------
+ 3 files changed, 26 insertions(+), 17 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
