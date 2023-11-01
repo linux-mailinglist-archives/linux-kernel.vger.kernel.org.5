@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD4F7DE372
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E3E7DE38D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbjKAPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
+        id S234016AbjKAPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbjKAPRU (ORCPT
+        with ESMTP id S233757AbjKAPRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:17:20 -0400
+        Wed, 1 Nov 2023 11:17:22 -0400
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C27D12F;
-        Wed,  1 Nov 2023 08:16:48 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 767B45C0272;
-        Wed,  1 Nov 2023 11:16:47 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82258191;
+        Wed,  1 Nov 2023 08:16:49 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.nyi.internal (Postfix) with ESMTP id D05445C026B;
+        Wed,  1 Nov 2023 11:16:48 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 01 Nov 2023 11:16:47 -0400
+  by compute7.internal (MEProxy); Wed, 01 Nov 2023 11:16:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:content-type:date
         :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698851807; x=1698938207; bh=mi/1bIt+Wi3Xu7dZdtAdadElR9m1kdodNDS
-        n+OFK8VA=; b=ajhg2tQdp2pNsnNcvSch/5K7YmLxTP/ZUdoW3WE20Kp9ybXnZbq
-        f6Ik7Kt/qypiKrcHNQJkg7h4GkXFBBvwod619VGA1oH/VgKfZ/ouf0ZtzkHNcvoK
-        ZGWb2GKslkvjOe2u6VnDsRMHFTut6GA52tFx2BOQMqCZBtw4kZEf+xsGv8UFLfXK
-        e073r8CM7rBtpgZzrp+R6xPceqr5QxbvLjeKk0oF+w4CWHqXo8ZmE7O4cu/vwnCP
-        DEsIgtOWcN1WN+HAWYNbsvr1p8nD53nQ7OedctrQacAr5P8OhYOTGKn80S3JA4lz
-        3AGWjCeJ5+hL1CXd5Wr/Pd7Ijh6oe6l4aXg==
+        1698851808; x=1698938208; bh=Mm+JRDBtZvObmZ+uO6jWZAPic1sg7YIcuKF
+        rNlBR5/c=; b=URsyfAr2jR4DaeRxAEJ+ozYGQ20/t1waQFKOE81pCv3g7T84RR0
+        OwtHcHTHsiXqsjq31xK6GsKqMbVlnwHYTiS9QJE+JAyzYhCQkafHtP1+KOpA2mxX
+        3Ke/5whz4ByHA9i3yrSYG4BpV3Pw+px8M5dquDLq5pL0w1ACsP9laWypcxqZJxFT
+        HuHRYuFds9mLbzj2eysMvR2p2rdXOCEnvFw/79QkkMlolJp4MZbFIJhXdSIVptua
+        7L833q+E5UWgZSGmEcKhVz/wODc0CEN8cBo4FAm997uBMkOhekd96kwyvRSbW/Qf
+        vu1ASJByIUGgrlDzVfxfIKralmNVpTADrYg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:content-type:date:date:feedback-id:feedback-id
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698851807; x=1698938207; bh=mi/1bIt+Wi3Xu7dZdtAdadElR9m1kdodNDS
-        n+OFK8VA=; b=rV5qMkzfb1iSOJtDx7GwG3ghF6+egzjgEXc8FSLp0cVfHoemdhp
-        9kFbmgCC0F+C+VE5YJeVZxpBHCyvvqRiDfUayLS58vK5QVwldzN73962d8fcpoQ/
-        Hbb33z82xCumuq5Hrqe9yzyvy+Vxy9lWQcObOXX0NBALr1ianPY6H2ADifKRv2rm
-        NsmRiDbX62XCzavxRbGV2FwROqVewYZpv9N2tHkKFYL+ye9hqjq413U9uqO2ZPrG
-        BFUJyEafnFu/aioW+WhsU4Vx8B39OjLJ91g+RrweyPbRGK68+wSpWPeB20998sbj
-        K7ztSW/OydIFyOcwtRrneKJLEVTcKzKmvVA==
-X-ME-Sender: <xms:3mtCZTna28LJ43CEyAHgNhQWn0m6RsCtzVYQjlMkFeAJvU9hNaLVYg>
-    <xme:3mtCZW08LWA2p5zDx30otIym-3yIIIliY0xdqrdirWg4Dbg8mJAGk2P2VYMflvj6W
-    cliQLk1k8rSzPFzY4Q>
-X-ME-Received: <xmr:3mtCZZoAacmc7e7L9Q5jWYrdLEFawSWs6G2KV6hVWzG2LPLUjNqeRhQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgjeegucetufdoteggodetrfdotf
+        1698851808; x=1698938208; bh=Mm+JRDBtZvObmZ+uO6jWZAPic1sg7YIcuKF
+        rNlBR5/c=; b=MD4x5sfy8SNN6nBRoBFlSo413yZMS8RRL93V+HN7If5+1cyGX8P
+        jMpJaXDvMmONqHW1RmZ+WLU4VzNCo2/mpNiarlbY/f4yYGe+OYGRH5JyuB0Kmea3
+        Gv3kQ/vgL2dc2LuJe5yKR3EUYcMNbzKrVu2Vno8DYBQGRKtPBdeIYLkd9+E987qt
+        1EPShDJK046p9f1LodmUFNCOlQQqFTH0UWowTYklHjFYZgcNoD5S+K1/kff6qUNr
+        jsfwvktaBHNN2++ZpECIEFfvqH4QOLXgLgbOlkRydhsiyeVC3l7jaad2VTwyz7xE
+        2oLMY/VxCNo0k78K+9FGmJAmA/U/rQAQ3zw==
+X-ME-Sender: <xms:4GtCZeX1evdsrZliOITD1jXH5K0dJS_M0xXR1aErXxUUSztPkvf6iA>
+    <xme:4GtCZamMWGVce88SmFp0lIe9mjWVu51JMxy--I8_LAw8rZ1hgLaJoKp8DaJ8j_arZ
+    x6HJ8HFG0vnMlEd7fs>
+X-ME-Received: <xmr:4GtCZSYSQOZLqrV88Rgrl40sQWR1tJqEEO2bjIW_qKQp_F0VkB4F1MM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgjeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpeflihgr
@@ -56,20 +56,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgjeegucetufdoteggod
     cuggftrfgrthhtvghrnhepvdekiefhfeevkeeuveetfeelffekgedugefhtdduudeghfeu
     veegffegudekjeelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
     hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:32tCZbkJG3dtDZYIB-Wi2UAY6y5HjTWpIBZloCrZrTFzMaA4oQlNNA>
-    <xmx:32tCZR0eD6JmY4GebGYmdh-ABBfJYgPSRuHfeHE4RViLYAkq_su0_w>
-    <xmx:32tCZat8IP-IyEo4XFmniyGmZXVILQCW32hk6KriYz0RbrmQnYy0RA>
-    <xmx:32tCZcSsSIefWLMMs0Pdh1zUlCgsr6OM_MfJHmRaPhvT83uTRRAkkw>
+X-ME-Proxy: <xmx:4GtCZVVKgY2OKaWacaZvqcMSwkobraL04X1PUAyC_BX0AC18NS1kfQ>
+    <xmx:4GtCZYnIdOHhDJq2_2lySTN775zySmevg0pyrOe8rvdm5UzFAHnn8A>
+    <xmx:4GtCZacUFxgS5ECMseLqG3n8yJ4dj9xIrFrdMUZ-Eg00Vy058QyEDQ>
+    <xmx:4GtCZZDIVEFax_WBJSbTB3LNDl3Pp_tj0IxfdipLOkp72qVKT8RUvA>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Nov 2023 11:16:46 -0400 (EDT)
+ 1 Nov 2023 11:16:47 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Wed, 01 Nov 2023 11:39:08 +0000
-Subject: [PATCH fixes 2/3] MIPS: Loongson64: Enable DMA noncoherent support
+Date:   Wed, 01 Nov 2023 11:39:09 +0000
+Subject: [PATCH fixes 3/3] MIPS: Loongson64: Handle more memory types
+ passed from firmware
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231101-loongson64_fixes-v1-2-2a2582a4bfa9@flygoat.com>
+Message-Id: <20231101-loongson64_fixes-v1-3-2a2582a4bfa9@flygoat.com>
 References: <20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com>
 In-Reply-To: <20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
@@ -87,87 +88,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some Loongson64 systems come with broken coherent DMA
-support, firmware will set a bit in boot_param and pass nocoherentio
-in cmdline.
+There are many types of revsered memory passed from firmware
+that should be reserved in memblock, and UMA memory passed
+from firmware that should be added to system memory for system
+to use.
 
-However nonconherent support was missed out when spin off Loongson-2EF
-form Loongson64, and that boot_param change never made itself into
-upstream.
+Also for memblock there is no need to align those space into page,
+which actually cause problems.
 
-Support DMA noncoherent properly to get those systems work.
+Handle them properly to prevent memory corruption on some systems.
 
 Cc: stable@vger.kernel.org
-Fixes: 71e2f4dd5a65 ("MIPS: Fork loongson2ef from loongson64")
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/Kconfig                                  | 2 ++
- arch/mips/include/asm/mach-loongson64/boot_param.h | 3 ++-
- arch/mips/loongson64/env.c                         | 9 ++++++++-
- 3 files changed, 12 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/mach-loongson64/boot_param.h |  6 +++-
+ arch/mips/loongson64/init.c                        | 42 +++++++++++++---------
+ 2 files changed, 31 insertions(+), 17 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 76db82542519..797ae590ebdb 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -460,6 +460,7 @@ config MACH_LOONGSON2EF
- 
- config MACH_LOONGSON64
- 	bool "Loongson 64-bit family of machines"
-+	select ARCH_DMA_DEFAULT_COHERENT
- 	select ARCH_SPARSEMEM_ENABLE
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-@@ -1251,6 +1252,7 @@ config CPU_LOONGSON64
- 	select CPU_SUPPORTS_MSA
- 	select CPU_DIEI_BROKEN if !LOONGSON3_ENHANCEMENT
- 	select CPU_MIPSR2_IRQ_VI
-+	select DMA_NONCOHERENT
- 	select WEAK_ORDERING
- 	select WEAK_REORDERING_BEYOND_LLSC
- 	select MIPS_ASID_BITS_VARIABLE
 diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-index 035b1a69e2d0..c454ef734c45 100644
+index c454ef734c45..e007edd6b60a 100644
 --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
 +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-@@ -117,7 +117,8 @@ struct irq_source_routing_table {
- 	u64 pci_io_start_addr;
- 	u64 pci_io_end_addr;
- 	u64 pci_config_addr;
--	u32 dma_mask_bits;
-+	u16 dma_mask_bits;
-+	u16 dma_noncoherent;
- } __packed;
- 
- struct interface_info {
-diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-index c961e2999f15..df0e92cd3920 100644
---- a/arch/mips/loongson64/env.c
-+++ b/arch/mips/loongson64/env.c
-@@ -13,6 +13,8 @@
-  * Copyright (C) 2009 Lemote Inc.
-  * Author: Wu Zhangjin, wuzhangjin@gmail.com
-  */
+@@ -14,7 +14,11 @@
+ #define ADAPTER_ROM		8
+ #define ACPI_TABLE		9
+ #define SMBIOS_TABLE		10
+-#define MAX_MEMORY_TYPE		11
++#define UMA_VIDEO_RAM		11
++#define VUMA_VIDEO_RAM		12
++#define MAX_MEMORY_TYPE		13
 +
-+#include <linux/dma-map-ops.h>
- #include <linux/export.h>
- #include <linux/pci_ids.h>
- #include <asm/bootinfo.h>
-@@ -147,8 +149,13 @@ void __init prom_lefi_init_env(void)
++#define MEM_SIZE_IS_IN_BYTES	(1 << 31)
  
- 	loongson_sysconf.dma_mask_bits = eirq_source->dma_mask_bits;
- 	if (loongson_sysconf.dma_mask_bits < 32 ||
--		loongson_sysconf.dma_mask_bits > 64)
-+		loongson_sysconf.dma_mask_bits > 64) {
- 		loongson_sysconf.dma_mask_bits = 32;
-+		dma_default_coherent = true;
-+	} else
-+		dma_default_coherent = !eirq_source->dma_noncoherent;
+ #define LOONGSON3_BOOT_MEM_MAP_MAX 128
+ struct efi_memory_map_loongson {
+diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+index d62262f93069..f25caa6aa9d3 100644
+--- a/arch/mips/loongson64/init.c
++++ b/arch/mips/loongson64/init.c
+@@ -49,8 +49,7 @@ void virtual_early_config(void)
+ void __init szmem(unsigned int node)
+ {
+ 	u32 i, mem_type;
+-	static unsigned long num_physpages;
+-	u64 node_id, node_psize, start_pfn, end_pfn, mem_start, mem_size;
++	phys_addr_t node_id, mem_start, mem_size;
+ 
+ 	/* Otherwise come from DTB */
+ 	if (loongson_sysconf.fw_interface != LOONGSON_LEFI)
+@@ -64,27 +63,38 @@ void __init szmem(unsigned int node)
+ 
+ 		mem_type = loongson_memmap->map[i].mem_type;
+ 		mem_size = loongson_memmap->map[i].mem_size;
+-		mem_start = loongson_memmap->map[i].mem_start;
 +
-+	pr_info("DMA coherent: %s\n", dma_default_coherent ? "on" : "off");
++		/* Memory size comes in MB if MEM_SIZE_IS_IN_BYTES not set */
++		if (mem_size & MEM_SIZE_IS_IN_BYTES)
++			mem_size &= ~MEM_SIZE_IS_IN_BYTES;
++		else
++			mem_size = mem_size << 20;
++
++		mem_start = (node_id << 44) | loongson_memmap->map[i].mem_start;
  
- 	loongson_sysconf.restart_addr = boot_p->reset_system.ResetWarm;
- 	loongson_sysconf.poweroff_addr = boot_p->reset_system.Shutdown;
+ 		switch (mem_type) {
+ 		case SYSTEM_RAM_LOW:
+ 		case SYSTEM_RAM_HIGH:
+-			start_pfn = ((node_id << 44) + mem_start) >> PAGE_SHIFT;
+-			node_psize = (mem_size << 20) >> PAGE_SHIFT;
+-			end_pfn  = start_pfn + node_psize;
+-			num_physpages += node_psize;
+-			pr_info("Node%d: mem_type:%d, mem_start:0x%llx, mem_size:0x%llx MB\n",
+-				(u32)node_id, mem_type, mem_start, mem_size);
+-			pr_info("       start_pfn:0x%llx, end_pfn:0x%llx, num_physpages:0x%lx\n",
+-				start_pfn, end_pfn, num_physpages);
+-			memblock_add_node(PFN_PHYS(start_pfn),
+-					  PFN_PHYS(node_psize), node,
++		case UMA_VIDEO_RAM:
++			pr_info("Node %d, mem_type:%d\t[%pa], %pa bytes usable\n",
++				(u32)node_id, mem_type, &mem_start, &mem_size);
++			memblock_add_node(mem_start, mem_size, node,
+ 					  MEMBLOCK_NONE);
+ 			break;
+ 		case SYSTEM_RAM_RESERVED:
+-			pr_info("Node%d: mem_type:%d, mem_start:0x%llx, mem_size:0x%llx MB\n",
+-				(u32)node_id, mem_type, mem_start, mem_size);
+-			memblock_reserve(((node_id << 44) + mem_start), mem_size << 20);
++		case VIDEO_ROM:
++		case ADAPTER_ROM:
++		case ACPI_TABLE:
++		case SMBIOS_TABLE:
++			pr_info("Node %d, mem_type:%d\t[%pa], %pa bytes reserved\n",
++				(u32)node_id, mem_type, &mem_start, &mem_size);
++			memblock_reserve(mem_start, mem_size);
++			break;
++		/* We should not reserve VUMA_VIDEO_RAM as it overlaps with MMIO */
++		case VUMA_VIDEO_RAM:
++		default:
++			pr_info("Node %d, mem_type:%d\t[%pa], %pa bytes unhandled\n",
++				(u32)node_id, mem_type, &mem_start, &mem_size);
+ 			break;
+ 		}
+ 	}
 
 -- 
 2.34.1
