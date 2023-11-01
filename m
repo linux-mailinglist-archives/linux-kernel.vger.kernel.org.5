@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8EB7DDE82
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD507DDE86
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjKAJfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        id S230330AbjKAJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKAJfJ (ORCPT
+        with ESMTP id S230178AbjKAJgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:35:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5299DA;
-        Wed,  1 Nov 2023 02:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698831303; x=1730367303;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=j6Z+/BFFUr6BsaZp6yLVq3KbJXpgzXJVepF6hPcGotI=;
-  b=fqHYLaeVqSul0BxdzHTjfPrvnzTfZEUIKpZCr2sZv/jlIM46jSf2NI3Q
-   Jf3a3PjqfxJdEk+6UtZKYkK8Q8dP/i+4xa4tOscYJrhZL/QcBWB2XzzjM
-   YhQwPgXyvt6HkIbUluCflQ9xu9nyNwbowoh4ZwG/qCNBK3OG7I3dvWDQT
-   1FOf11iffPv5QzNE4ZSON7BO/a5XxFK9hZ5vkQ9RvpfwuocK6GobfU2xj
-   qMHwzVT6+as2pT69PZw2pbTlUei57P5dcktMK/SSdQqrk3iRmKR+6JJyc
-   D8lvyBiYnrhp+CpQTIC8HOUQ1eQpQ3oCQXVTPiPo/AvmqJj7YWWTyyqZa
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="392326053"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="392326053"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:35:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="1092295088"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="1092295088"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:35:01 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qy7cp-0000000APPm-0y8d;
-        Wed, 01 Nov 2023 11:34:59 +0200
-Date:   Wed, 1 Nov 2023 11:34:58 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Raag Jadav <raag.jadav@intel.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 1/1] pinctrl: tangier: Move default strength
- assignment to a switch-case
-Message-ID: <ZUIbwtXmmTCHO9lf@smile.fi.intel.com>
-References: <20231030155340.3468528-1-andriy.shevchenko@linux.intel.com>
- <20231101063520.GC17433@black.fi.intel.com>
+        Wed, 1 Nov 2023 05:36:13 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE66DA
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:36:10 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id y7dwqR8ijQRiPy7dwqGq2i; Wed, 01 Nov 2023 10:36:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698831369;
+        bh=NZ1iobFX10Nh/HKZlug5CXulRdixpZgCPip/7q+e51k=;
+        h=From:To:Cc:Subject:Date;
+        b=N58b8yS5T9e1AGnVTLHT5D9yQZIbYZvut3OPuh1dhJh5J+OBWVa55fwmOG+JqJyfb
+         soCXr/tgO1by2Ka7A2gYbnjdl+iL/tPmSgTf4rLz4XscCcX2cIZ6LY8FfBjFFxWeHI
+         woXsk7LBCEdRNIs2vWFJSftUAAz+KCF0YWPBnZT6BNyJMaGsykoLWEbV/de5jna5Nk
+         PNzEVgmxODvu3TBSKH1gtwoZ5aArZ1w5+94pok0OXI3pnccDgz0gloII2R+kQJXbh2
+         GMmTqlqow5kLrJL88qhcQhKxdni7hJzVcgZ1vabT0PEUew6+7D+luXVQm5cDPUXHk1
+         hegOaO1W8Jofw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 01 Nov 2023 10:36:09 +0100
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH] software node: Remove usage of the deprecated ida_simple_xx() API
+Date:   Wed,  1 Nov 2023 10:36:04 +0100
+Message-Id: <c7cdc3566c783d106138698b1e1923351fabace8.1698831275.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101063520.GC17433@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:35:20AM +0200, Mika Westerberg wrote:
-> On Mon, Oct 30, 2023 at 05:53:40PM +0200, Andy Shevchenko wrote:
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-...
+This is less verbose.
 
-> > +		case 1: /* Set default strength value in case none is given */
-> 
-> The comment is good but I think would it make sense to have constant for
-> this instead?
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/base/swnode.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-If so, it makes sense to get it via entire GPIO library, and not locally for
-Intel stuff. That said, I prefer to do that separately. Do you agree?
-
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index 1886995a0b3a..f7c4317b2ccf 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -747,10 +747,10 @@ static void software_node_release(struct kobject *kobj)
+ 	struct swnode *swnode = kobj_to_swnode(kobj);
+ 
+ 	if (swnode->parent) {
+-		ida_simple_remove(&swnode->parent->child_ids, swnode->id);
++		ida_free(&swnode->parent->child_ids, swnode->id);
+ 		list_del(&swnode->entry);
+ 	} else {
+-		ida_simple_remove(&swnode_root_ids, swnode->id);
++		ida_free(&swnode_root_ids, swnode->id);
+ 	}
+ 
+ 	if (swnode->allocated)
+@@ -776,8 +776,8 @@ swnode_register(const struct software_node *node, struct swnode *parent,
+ 	if (!swnode)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = ida_simple_get(parent ? &parent->child_ids : &swnode_root_ids,
+-			     0, 0, GFP_KERNEL);
++	ret = ida_alloc(parent ? &parent->child_ids : &swnode_root_ids,
++			GFP_KERNEL);
+ 	if (ret < 0) {
+ 		kfree(swnode);
+ 		return ERR_PTR(ret);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
