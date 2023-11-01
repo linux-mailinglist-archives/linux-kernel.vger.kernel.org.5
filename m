@@ -2,176 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9677DE011
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156687DE014
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbjKALFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        id S235014AbjKALGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234048AbjKALFl (ORCPT
+        with ESMTP id S234048AbjKALGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:05:41 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C994111;
-        Wed,  1 Nov 2023 04:05:38 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c594196344so97509631fa.3;
-        Wed, 01 Nov 2023 04:05:38 -0700 (PDT)
+        Wed, 1 Nov 2023 07:06:14 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E688F;
+        Wed,  1 Nov 2023 04:06:08 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2801d7f46f9so3774046a91.3;
+        Wed, 01 Nov 2023 04:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698836736; x=1699441536; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3+Z3Do7J3Zw1Jdi4ducS/Fi/mcvigbwggXv1TRTYbns=;
-        b=RJgnSiQICprdLcbtO678GSVkis2V4EpLxB8aPbeYLcFO4EBjy8r9h9VCH8M9q4HbKM
-         L/0WO0CVyGldY8c6MObJyQQOSUljZOz57D715P5Ny4jNkpV+LOkuZu9yyE/WxFEoqFoN
-         JWTpYycqdEKMbB7z12PJs4Gu/Fs88kwZDdTU9i9wIXE1gh/1DkEZ0N/Dv17Nt9uOTo6C
-         GUhlCnCVd61o7+QAFaG/wA0+85axNMP2OzbbgbDCsAPkf7zJoqiizNRcNu6HTZWy/V6s
-         DbUG1BEvCuFeANkmUraPdi2tKooTTRr0iE1tiMwvO1JkZs9NmzyHCAgtAhSkYPSRVPMC
-         FIYg==
+        d=gmail.com; s=20230601; t=1698836768; x=1699441568; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dArM6zmYx3FOnkvGIUE8xI49PNFQdgtFB0ocOl6ka7Y=;
+        b=b4H42GfDfS7XvegVqbg10AJL7TiyO8F5eLYqOIie/OU9iob6kzLaoa+9/EjJibeT7g
+         MA7cegnTNrvL7RB9gtmr3JOMTy08K+ULCq4uw3iSXJ/9rJ2jLTs9ZSPgwpHfEHZCTZJo
+         KXnlPQKZU9uGWNc4Ec+9/0Es2E2nBAsGVYMe5Ryp5MEKSaimdkE7dWKnpQxm05eEJ39u
+         EZGPA5NMrux1dYLQ2ss110J+892SyDBFtpksaMrB/8i1/PsKaQ5pL080+5t+Gz9GJF/U
+         BbDd/AgjmMfx0b8XxlT4e0XQxXBcHQVbmBDKri8baZ9SrQUZ3utLGgIHLw9r5kV/3lzz
+         MKEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698836736; x=1699441536;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3+Z3Do7J3Zw1Jdi4ducS/Fi/mcvigbwggXv1TRTYbns=;
-        b=CAekvDGlyaJaMK2PIfl1md7RYITqP47SFa6h5QzJjz8kDWIdFxFqfy4NyB7NOISJe0
-         +a4PSBQ6EJoGwt1PgSfumHgnmTUu+WcYKIslgmKoXhOlqAYEbFx70o+uHnb44/fLa1PB
-         6CbZUIBFb6VcxpTlM3pGV/IWijdnBzvkWcxRKqOjwMdeSZbCU/hzKliOk9f1hW6yWFDJ
-         D2QnmbLxnBxeusILCTfetwTMFvDpewWLQFHCBDIsTkxkjPXo/vQNpZmeFEyGAEMqvpQi
-         E7uWAY4lvOSI42tLcjKQXrBtCfb9M0JXzpMbrZ9MfkwhwJe7gtl6RbuNgDkA0Rs9gnIl
-         G9Fg==
-X-Gm-Message-State: AOJu0YxtVOzZ7MEKoACQMWYzBklN47Io194qT13QPz75KMq7/fOwA6hH
-        s+WilK3msnu2BjGfXjp7PnM=
-X-Google-Smtp-Source: AGHT+IGB3Q+cPBWL9THhOrCjrcivf3jw9MrANp+1qm19E2D4+8F1GTRcj//bNpekNgn1CA5TwkIz/g==
-X-Received: by 2002:a05:651c:c9b:b0:2c0:7d6:570a with SMTP id bz27-20020a05651c0c9b00b002c007d6570amr14088608ljb.33.1698836736066;
-        Wed, 01 Nov 2023 04:05:36 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v20-20020a2e5054000000b002c17dcd8d91sm183576ljd.120.2023.11.01.04.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 04:05:35 -0700 (PDT)
-Message-ID: <4ec86365668f6c3b4242232506e896a17aa2af4c.camel@gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add test for immediate
- spilled to stack
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Date:   Wed, 01 Nov 2023 13:05:33 +0200
-In-Reply-To: <20231101-fix-check-stack-write-v2-2-cb7c17b869b0@gmail.com>
-References: <20231101-fix-check-stack-write-v2-0-cb7c17b869b0@gmail.com>
-         <20231101-fix-check-stack-write-v2-2-cb7c17b869b0@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+        d=1e100.net; s=20230601; t=1698836768; x=1699441568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dArM6zmYx3FOnkvGIUE8xI49PNFQdgtFB0ocOl6ka7Y=;
+        b=YKgDmLbAJzW6mHsWIiY2z//8xiPYaUsAKI0ONB6gABg1ux0M6ohLFjHCbRWiQ/KPPm
+         CSsvfO+Lg/ykbh0SpDyIOVTAw1chwIvaGF5P9Tz+HA8Dqv00tS6sHW8s2dBb+AD2rt7r
+         pTlGQh+ECTE9p5O6toQDGu8E0G0TJIabnvDNTGsGWF5b/2xhYloqJxXRuySri74jSojG
+         hlUKEwONB1NKE1F70Uk6ChfkH5m3nM7KRyVzmXTbxxd69ypslFc1j1y/alD1NvaRbiB3
+         3VB87krOkcZycBHtnupH5XbDmBduh40/ALtHZyFCW1EW180+ROn+Q8kne58qbKQYnWsk
+         GhIQ==
+X-Gm-Message-State: AOJu0YyBTLNDIuGo5JCqTFZV29jSfrXvBywhlrH4a4PAyxbu8nvcVj49
+        caiVfmXbm5qCxjjCiGoaMN43MlpHgfmH48/MgtYdSX63
+X-Google-Smtp-Source: AGHT+IFa4/88Y8aoZg93TUyc6RlxW2Rv1MZsuL3fqtLE2emZD4ASH4FWrbqSA5szVDQReIiLDE0r8zE7vFwfkGAJK+4=
+X-Received: by 2002:a17:90a:134c:b0:280:35ce:5e0f with SMTP id
+ y12-20020a17090a134c00b0028035ce5e0fmr7734215pjf.11.1698836767703; Wed, 01
+ Nov 2023 04:06:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
+ <c1cfa3e0-6e5d-4e1d-b6e0-4d1045196a11@xs4all.nl> <CAA+D8AOCujL-eD2-chqHAW7UN7UmLrO6CWRd7d6wTCPP8=VyfA@mail.gmail.com>
+In-Reply-To: <CAA+D8AOCujL-eD2-chqHAW7UN7UmLrO6CWRd7d6wTCPP8=VyfA@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 1 Nov 2023 19:05:56 +0800
+Message-ID: <CAA+D8AOHk1pqoESetVerywkJMPX8A57m5kMXTk5GVETstE6fCg@mail.gmail.com>
+Subject: Re: [RFC PATCH v8 00/13] Add audio support in v4l2 framework
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-01 at 08:33 +0100, Hao Sun wrote:
-> Add a test to check if the verifier correctly reason about the sign
-> of an immediate spilled to stack by BPF_ST instruction.
->=20
-> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
-> ---
->  tools/testing/selftests/bpf/verifier/bpf_st_mem.c | 32 +++++++++++++++++=
-++++++
->  1 file changed, 32 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/bpf/verifier/bpf_st_mem.c b/tools/te=
-sting/selftests/bpf/verifier/bpf_st_mem.c
-> index 3af2501082b2..0ba23807c46c 100644
-> --- a/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
-> +++ b/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
-> @@ -65,3 +65,35 @@
->  	.expected_attach_type =3D BPF_SK_LOOKUP,
->  	.runs =3D -1,
->  },
-> +{
-> +	"BPF_ST_MEM stack imm sign",
-> +	/* Check if verifier correctly reasons about sign of an
-> +	 * immediate spilled to stack by BPF_ST instruction.
-> +	 *
-> +	 *   fp[-8] =3D -44;
-> +	 *   r0 =3D fp[-8];
-> +	 *   if r0 s< 0 goto ret0;
-> +	 *   r0 =3D -1;
-> +	 *   exit;
-> +	 * ret0:
-> +	 *   r0 =3D 0;
-> +	 *   exit;
-> +	 */
-> +	.insns =3D {
-> +	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, -44),
-> +	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -8),
-> +	BPF_JMP_IMM(BPF_JSLT, BPF_REG_0, 0, 2),
-> +	BPF_MOV64_IMM(BPF_REG_0, -1),
-> +	BPF_EXIT_INSN(),
-> +	BPF_MOV64_IMM(BPF_REG_0, 0),
-> +	BPF_EXIT_INSN(),
-> +	},
-> +	/* Use prog type that requires return value in range [0, 1] */
-> +	.prog_type =3D BPF_PROG_TYPE_SK_LOOKUP,
-> +	.expected_attach_type =3D BPF_SK_LOOKUP,
-> +	.result =3D VERBOSE_ACCEPT,
-> +	.runs =3D -1,
-> +	.errstr =3D "0: (7a) *(u64 *)(r10 -8) =3D -44        ; R10=3Dfp0 fp-8_w=
-=3D-44\
-> +	2: (c5) if r0 s< 0x0 goto pc+2\
-> +	2: R0_w=3D-44",
-> +},
->=20
+On Mon, Oct 30, 2023 at 9:56=E2=80=AFAM Shengjiu Wang <shengjiu.wang@gmail.=
+com> wrote:
+>
+> On Fri, Oct 27, 2023 at 7:18=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl>=
+ wrote:
+> >
+> > Hi Shengjiu,
+> >
+> > Is there a reason why this series is still marked RFC?
+> >
+> > Just wondering about that.
+>
+> In the very beginning I started this series with RFC, So
+> I still use RFC now...
+>
 
-Please note that this test case fails on CI [0], full log below:
+Should I resend patches which remove the 'RFC'?
 
-2023-11-01T07:49:51.2841702Z #116/p BPF_ST_MEM stack imm sign FAIL
-2023-11-01T07:49:51.2843456Z Unexpected verifier log!
-2023-11-01T07:49:51.2844968Z EXP: 2: R0_w=3D-44
-2023-11-01T07:49:51.2845583Z RES:
-2023-11-01T07:49:51.2846693Z func#0 @0
-2023-11-01T07:49:51.2848932Z 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-2023-11-01T07:49:51.2853045Z 0: (7a) *(u64 *)(r10 -8) =3D -44        ; R10=
-=3Dfp0 fp-8_w=3D-44
-2023-11-01T07:49:51.2857391Z 1: (79) r0 =3D *(u64 *)(r10 -8)         ; R0_w=
-=3D-44 R10=3Dfp0 fp-8_w=3D-44
-2023-11-01T07:49:51.2859127Z 2: (c5) if r0 s< 0x0 goto pc+2
-2023-11-01T07:49:51.2862943Z mark_precise: frame0: last_idx 2 first_idx 0 s=
-ubseq_idx -1=20
-2023-11-01T07:49:51.2867511Z mark_precise: frame0: regs=3Dr0 stack=3D befor=
-e 1: (79) r0 =3D *(u64 *)(r10 -8)
-2023-11-01T07:49:51.2872217Z mark_precise: frame0: regs=3D stack=3D-8 befor=
-e 0: (7a) *(u64 *)(r10 -8) =3D -44
-2023-11-01T07:49:51.2872816Z 5: R0_w=3D-44
-2023-11-01T07:49:51.2875653Z 5: (b7) r0 =3D 0                        ; R0_w=
-=3D0
-2023-11-01T07:49:51.2876493Z 6: (95) exit
+Best regards
+Wang shengjiu
 
-I suspect that after recent logging fixes instruction number printed
-after jump changed and that's why test case no longer passes.
-
-Note: you can check CI status for submitted patch-sets using link [1].
-
-[0] https://github.com/kernel-patches/bpf/actions/runs/6717053909/job/18254=
-330860
-[1] https://patchwork.kernel.org/project/netdevbpf/list/
+> >
+> > Regards,
+> >
+> >         Hans
+> >
+> > On 27/10/2023 12:35, Shengjiu Wang wrote:
+> > > Audio signal processing also has the requirement for memory to
+> > > memory similar as Video.
+> > >
+> > > This asrc memory to memory (memory ->asrc->memory) case is a non
+> > > real time use case.
+> > >
+> > > User fills the input buffer to the asrc module, after conversion, the=
+n asrc
+> > > sends back the output buffer to user. So it is not a traditional ALSA=
+ playback
+> > > and capture case.
+> > >
+> > > It is a specific use case,  there is no reference in current kernel.
+> > > v4l2 memory to memory is the closed implementation,  v4l2 current
+> > > support video, image, radio, tuner, touch devices, so it is not
+> > > complicated to add support for this specific audio case.
+> > >
+> > > Because we had implemented the "memory -> asrc ->i2s device-> codec"
+> > > use case in ALSA.  Now the "memory->asrc->memory" needs
+> > > to reuse the code in asrc driver, so the first 3 patches is for refin=
+ing
+> > > the code to make it can be shared by the "memory->asrc->memory"
+> > > driver.
+> > >
+> > > The main change is in the v4l2 side, A /dev/vl4-audioX will be create=
+d,
+> > > user applications only use the ioctl of v4l2 framework.
+> > >
+> > > Other change is to add memory to memory support for two kinds of i.MX=
+ ASRC
+> > > module.
+> > >
+> > > changes in v8:
+> > > - refine V4L2_CAP_AUDIO_M2M to be 0x00000008
+> > > - update doc for FIXED_POINT
+> > > - address comments for imx-asrc
+> > >
+> > > changes in v7:
+> > > - add acked-by from Mark
+> > > - separate commit for fixed point, m2m audio class, audio rate contro=
+ls
+> > > - use INTEGER_MENU for rate,  FIXED_POINT for rate offset
+> > > - remove used fmts
+> > > - address other comments for Hans
+> > >
+> > > changes in v6:
+> > > - use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
+> > >   m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_p=
+art_two.
+> > > - change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
+> > > - fix warning by kernel test rebot
+> > > - remove some unused format V4L2_AUDIO_FMT_XX
+> > > - Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
+> > > - rename audm2m to viaudm2m.
+> > >
+> > > changes in v5:
+> > > - remove V4L2_AUDIO_FMT_LPCM
+> > > - define audio pixel format like V4L2_AUDIO_FMT_S8...
+> > > - remove rate and format in struct v4l2_audio_format.
+> > > - Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
+> > > - updata document accordingly.
+> > >
+> > > changes in v4:
+> > > - update document style
+> > > - separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate com=
+mit
+> > >
+> > > changes in v3:
+> > > - Modify documents for adding audio m2m support
+> > > - Add audio virtual m2m driver
+> > > - Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+> > > - Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+> > > - with modification in v4l-utils, pass v4l2-compliance test.
+> > >
+> > > changes in v2:
+> > > - decouple the implementation in v4l2 and ALSA
+> > > - implement the memory to memory driver as a platfrom driver
+> > >   and move it to driver/media
+> > > - move fsl_asrc_common.h to include/sound folder
+> > >
+> > > Shengjiu Wang (13):
+> > >   ASoC: fsl_asrc: define functions for memory to memory usage
+> > >   ASoC: fsl_easrc: define functions for memory to memory usage
+> > >   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+> > >   ASoC: fsl_asrc: register m2m platform device
+> > >   ASoC: fsl_easrc: register m2m platform device
+> > >   media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+> > >   media: v4l2: Add audio capture and output support
+> > >   media: uapi: Define audio sample format fourcc type
+> > >   media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
+> > >   media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+> > >   media: uapi: Add audio rate controls support
+> > >   media: imx-asrc: Add memory to memory driver
+> > >   media: vim2m_audio: add virtual driver for audio memory to memory
+> > >
+> > >  .../userspace-api/media/v4l/buffer.rst        |    6 +
+> > >  .../userspace-api/media/v4l/common.rst        |    1 +
+> > >  .../media/v4l/dev-audio-mem2mem.rst           |   71 +
+> > >  .../userspace-api/media/v4l/devices.rst       |    1 +
+> > >  .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
+> > >  .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
+> > >  .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+> > >  .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+> > >  .../media/v4l/vidioc-g-ext-ctrls.rst          |   17 +-
+> > >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+> > >  .../media/v4l/vidioc-querycap.rst             |    3 +
+> > >  .../media/v4l/vidioc-queryctrl.rst            |    9 +-
+> > >  .../media/videodev2.h.rst.exceptions          |    4 +
+> > >  .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+> > >  drivers/media/platform/nxp/Kconfig            |   12 +
+> > >  drivers/media/platform/nxp/Makefile           |    1 +
+> > >  drivers/media/platform/nxp/imx-asrc.c         | 1186 +++++++++++++++=
+++
+> > >  drivers/media/test-drivers/Kconfig            |    9 +
+> > >  drivers/media/test-drivers/Makefile           |    1 +
+> > >  drivers/media/test-drivers/vim2m_audio.c      |  680 ++++++++++
+> > >  drivers/media/v4l2-core/v4l2-ctrls-api.c      |    5 +-
+> > >  drivers/media/v4l2-core/v4l2-ctrls-core.c     |    2 +
+> > >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   16 +
+> > >  drivers/media/v4l2-core/v4l2-dev.c            |   17 +
+> > >  drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
+> > >  include/media/v4l2-dev.h                      |    2 +
+> > >  include/media/v4l2-ioctl.h                    |   34 +
+> > >  .../fsl =3D> include/sound}/fsl_asrc_common.h   |   60 +
+> > >  include/uapi/linux/v4l2-controls.h            |    9 +
+> > >  include/uapi/linux/videodev2.h                |   42 +
+> > >  sound/soc/fsl/fsl_asrc.c                      |  144 ++
+> > >  sound/soc/fsl/fsl_asrc.h                      |    4 +-
+> > >  sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+> > >  sound/soc/fsl/fsl_easrc.c                     |  233 ++++
+> > >  sound/soc/fsl/fsl_easrc.h                     |    6 +-
+> > >  35 files changed, 2771 insertions(+), 11 deletions(-)
+> > >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-m=
+em2mem.rst
+> > >  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-a=
+udio-m2m.rst
+> > >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audi=
+o.rst
+> > >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+> > >  create mode 100644 drivers/media/test-drivers/vim2m_audio.c
+> > >  rename {sound/soc/fsl =3D> include/sound}/fsl_asrc_common.h (60%)
+> > >
+> >
