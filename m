@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A117DE768
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8190B7DE760
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345345AbjKAV0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 17:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
+        id S1345228AbjKAV0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 17:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345207AbjKAV0R (ORCPT
+        with ESMTP id S1345309AbjKAV0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 17:26:17 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E04115
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:26:11 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2802c41b716so317115a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 14:26:11 -0700 (PDT)
+        Wed, 1 Nov 2023 17:26:18 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C2B110
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:26:12 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-28098ebd5aeso309673a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 14:26:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698873971; x=1699478771; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1698873972; x=1699478772; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4xwbTQnI0BFDkZi25AAHIqWZZ1NOZD3jNak99jsdxzc=;
-        b=Xvlby8pBjG3vZ+lep8i9zpMxYYiRKEWq+w4rcBwyUkYmBP1b/kQkIMjGJmZ7C8aCFu
-         ihltBhppdK6U/4e8Apw+LZCcGEk06Pq9UASpq3xHhBvfd8HYp6DgsfB87+vC+pDhqIW5
-         f9LDd8St270hVtkUCBqT9xEnTrQ5MmChpG7hw=
+        bh=keM6xgaqk4y5F5Fy9cbvhHzonhRhCtU3xaG8qjxRs74=;
+        b=UQVeKcZvDQWa0yPd7HLezvQmUCotcGHpxJA/Yc1N33qiJYBEQHfmenzJu8tANw7FBM
+         UHFFQLwlOJFmd6aUCQSyh8ifrj0NFwtniTT+Ttt9GrnpfAo9DYGyeW/Sg/jFZ5svOTeC
+         PrU1mecB07k1V3sVnnuYIWk0T2Xb19o1xPBnI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698873971; x=1699478771;
+        d=1e100.net; s=20230601; t=1698873972; x=1699478772;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4xwbTQnI0BFDkZi25AAHIqWZZ1NOZD3jNak99jsdxzc=;
-        b=hT63vrmYtoi/NKwYsLIZYyqqlJ3uqxUNsVvRLCTZC5MWaDKTZhMAtHGniX/zYa5Ad4
-         3mgAxPYya75Cif0hG4A/4MIx+uaYpZEZMFQ3g8F6fqe9yVswqFvZ4h5njRucp/1qhgTS
-         TnSLziy7LoQesm7W/yO51gzw4u3xzCw3J5Gb8mkApvXfTaUEwo7M1VjO9PD7RBlDwxpb
-         UUty5dfgpl5T3sTo5FezeDBGhmI28kaAe0jOr2SeueIbAjJk1SszGL2KtRC8UBHX5CwI
-         9pce7Gc+VHHdHtlJ3uywe9PqLNoLc09xifN7aLrx4DG9p8dVp8WVNhSNiF6vr/vOgA7M
-         3afg==
-X-Gm-Message-State: AOJu0Yx220TiWwcxWJsGbFuoaUh7d5/Hs6uM8NW27qaCjVe5PtZASlyd
-        nBqncC3nXWbMzgLclYCQpXjJUg==
-X-Google-Smtp-Source: AGHT+IG4lzVSFfrqsSnpcJVhqEfYSvDjiBzDAfyW/0AfJKI4nQzO2Rcu8SZNBZwV0H28Gj33QrQq0Q==
-X-Received: by 2002:a17:90a:6f42:b0:280:1b75:f077 with SMTP id d60-20020a17090a6f4200b002801b75f077mr11349044pjk.13.1698873970505;
-        Wed, 01 Nov 2023 14:26:10 -0700 (PDT)
+        bh=keM6xgaqk4y5F5Fy9cbvhHzonhRhCtU3xaG8qjxRs74=;
+        b=szg4ZH7lGjtpJ1zX14Yrlmwo4XPMjXvGY+ibWq/714WSmL9AWsV01Cn0MWX4N2jcIh
+         Ms4auJaS2GpKYivgxyuuk6K4QGYQw4Fv0SgnEsm4g7IOXvpiCCnhhMRS08EXTJ3jiOtV
+         R5hy6w6EMHvYId57vPUKBXz0fUTtAN5ok5zOCXJLVtaH8LuDJWHGUGsCQIp7q7pY1ZdZ
+         ArwhyBQY49Qsja6bFf04JG2g4ZkWuO+zIDShdlyisBks3AWaJifaWXTwP9czlMcBYhMW
+         +POqugcz7j5mkKvUdYU/RhU24nx3/pVb230Pc9dHUZE/BEfZVOCVtJynToU4F2CrITdc
+         enyQ==
+X-Gm-Message-State: AOJu0YyemBoZBKbhx7PRu6M9dIB7m2dAhcNcc8Ony03SuG6IKt8ia0kK
+        nERcq8TlUEJiOYTpwvPOm5s3bw==
+X-Google-Smtp-Source: AGHT+IFJslIGJU7A2/YPceX8PHGElxQ1whLtbPlYdX+GrlOIjg+IOa63DnZoHTC5pBxg7dwe30PYSQ==
+X-Received: by 2002:a17:90a:fc88:b0:280:18bd:ffe7 with SMTP id ci8-20020a17090afc8800b0028018bdffe7mr11725904pjb.48.1698873971885;
+        Wed, 01 Nov 2023 14:26:11 -0700 (PDT)
 Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:b410:473c:2b92:2e2e])
-        by smtp.gmail.com with ESMTPSA id ds21-20020a17090b08d500b00274262bcf8dsm1212976pjb.41.2023.11.01.14.26.09
+        by smtp.gmail.com with ESMTPSA id ds21-20020a17090b08d500b00274262bcf8dsm1212976pjb.41.2023.11.01.14.26.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 14:26:10 -0700 (PDT)
+        Wed, 01 Nov 2023 14:26:11 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Douglas Anderson <dianders@chromium.org>
 Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
@@ -58,9 +58,9 @@ Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] drm/panel-edp: Add override_edid_mode quirk for generic edp
-Date:   Wed,  1 Nov 2023 14:20:10 -0700
-Message-ID: <20231101212604.1636517-3-hsinyi@chromium.org>
+Subject: [PATCH 3/3] drm/panel-edp: Choose correct preferred mode
+Date:   Wed,  1 Nov 2023 14:20:11 -0700
+Message-ID: <20231101212604.1636517-4-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231101212604.1636517-1-hsinyi@chromium.org>
 References: <20231101212604.1636517-1-hsinyi@chromium.org>
@@ -76,137 +76,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic edp gets mode from edid. However, some panels report incorrect
-mode in this way, resulting in glitches on panel. Introduce a new quirk
-additional_mode to the generic edid to pick a correct hardcoded mode.
+If a non generic edp-panel is under aux-bus, the mode read from edid would
+still be selected as preferred and results in multiple preferred modes,
+which is ambiguous.
+
+If a hard-coded mode is present, unset the preferred bit of the modes read
+from edid.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- drivers/gpu/drm/panel/panel-edp.c | 68 ++++++++++++++++++++++++++++---
- 1 file changed, 63 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/drm_modes.c       | 16 ++++++++++++++++
+ drivers/gpu/drm/panel/panel-edp.c |  7 +++++--
+ include/drm/drm_modes.h           |  1 +
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index ac9a406250c5..35927467f4b0 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -1933,6 +1933,22 @@ void drm_connector_list_update(struct drm_connector *connector)
+ }
+ EXPORT_SYMBOL(drm_connector_list_update);
+ 
++/**
++ * drm_mode_unset_preferred - clear the preferred status on existing modes.
++ * @connector: the connector to update
++ *
++ * Walk the mode list for connector, clearing the preferred status on existing
++ * modes.
++ */
++void drm_mode_unset_preferred_modes(struct drm_connector *connector)
++{
++	struct drm_display_mode *cur_mode;
++
++	list_for_each_entry(cur_mode, &connector->probed_modes, head)
++		cur_mode->type &= ~DRM_MODE_TYPE_PREFERRED;
++}
++EXPORT_SYMBOL_GPL(drm_mode_unset_preferred_modes);
++
+ static int drm_mode_parse_cmdline_bpp(const char *str, char **end_ptr,
+ 				      struct drm_cmdline_mode *mode)
+ {
 diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 06ce3a73d740..0883ff312eba 100644
+index 0883ff312eba..b3ac473b2554 100644
 --- a/drivers/gpu/drm/panel/panel-edp.c
 +++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -203,6 +203,9 @@ struct edp_panel_entry {
- 
- 	/** @name: Name of this panel (for printing to logs). */
- 	const char *name;
-+
-+	/** @override_edid_mode: Override the mode obtained by edid. */
-+	const struct drm_display_mode *override_edid_mode;
- };
- 
- struct panel_edp {
-@@ -301,6 +304,25 @@ static unsigned int panel_edp_get_display_modes(struct panel_edp *panel,
- 	return num;
- }
- 
-+static int panel_edp_override_edid_mode(struct panel_edp *panel,
-+					struct drm_connector *connector,
-+					const struct drm_display_mode *override_mode)
-+{
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, override_mode);
-+	if (mode) {
-+		mode->type |= DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+		drm_mode_set_name(mode);
-+		drm_mode_probed_add(connector, mode);
-+		return 1;
+@@ -622,10 +622,13 @@ static int panel_edp_get_modes(struct drm_panel *panel,
+ 	 * and no modes (the generic edp-panel case) because it will clobber
+ 	 * the display_info that was already set by drm_add_edid_modes().
+ 	 */
+-	if (p->desc->num_timings || p->desc->num_modes)
++	if (p->desc->num_timings || p->desc->num_modes) {
++		/* hard-coded modes present, unset preferred modes from edid. */
++		drm_mode_unset_preferred_modes(connector);
+ 		num += panel_edp_get_non_edid_modes(p, connector);
+-	else if (!num)
++	} else if (!num) {
+ 		dev_warn(p->base.dev, "No display modes\n");
 +	}
-+
-+	dev_err(panel->base.dev, "failed to add additional mode\n");
-+
-+	return 0;
-+}
-+
- static int panel_edp_get_non_edid_modes(struct panel_edp *panel,
- 					struct drm_connector *connector)
- {
-@@ -568,6 +590,9 @@ static int panel_edp_get_modes(struct drm_panel *panel,
- {
- 	struct panel_edp *p = to_panel_edp(panel);
- 	int num = 0;
-+	bool has_override_edid_mode = p->detected_panel &&
-+				      p->detected_panel != ERR_PTR(-EINVAL) &&
-+				      p->detected_panel->override_edid_mode;
  
- 	/* probe EDID if a DDC bus is available */
- 	if (p->ddc) {
-@@ -575,9 +600,18 @@ static int panel_edp_get_modes(struct drm_panel *panel,
+ 	/*
+ 	 * TODO: Remove once all drm drivers call
+diff --git a/include/drm/drm_modes.h b/include/drm/drm_modes.h
+index c613f0abe9dc..301817e00a15 100644
+--- a/include/drm/drm_modes.h
++++ b/include/drm/drm_modes.h
+@@ -560,6 +560,7 @@ void drm_mode_prune_invalid(struct drm_device *dev,
+ 			    struct list_head *mode_list, bool verbose);
+ void drm_mode_sort(struct list_head *mode_list);
+ void drm_connector_list_update(struct drm_connector *connector);
++void drm_mode_unset_preferred_modes(struct drm_connector *connector);
  
- 		if (!p->edid)
- 			p->edid = drm_get_edid(connector, p->ddc);
--
--		if (p->edid)
--			num += drm_add_edid_modes(connector, p->edid);
-+		if (p->edid) {
-+			if (has_override_edid_mode) {
-+				/*
-+				 * override_edid_mode is specified. Use
-+				 * override_edid_mode instead of from edid.
-+				 */
-+				num += panel_edp_override_edid_mode(p, connector,
-+						p->detected_panel->override_edid_mode);
-+			} else {
-+				num += drm_add_edid_modes(connector, p->edid);
-+			}
-+		}
- 
- 		pm_runtime_mark_last_busy(panel->dev);
- 		pm_runtime_put_autosuspend(panel->dev);
-@@ -950,6 +984,19 @@ static const struct panel_desc auo_b101ean01 = {
- 	},
- };
- 
-+static const struct drm_display_mode auo_b116xa3_mode = {
-+	.clock = 70589,
-+	.hdisplay = 1366,
-+	.hsync_start = 1366 + 40,
-+	.hsync_end = 1366 + 40 + 40,
-+	.htotal = 1366 + 40 + 40 + 32,
-+	.vdisplay = 768,
-+	.vsync_start = 768 + 10,
-+	.vsync_end = 768 + 10 + 12,
-+	.vtotal = 768 + 10 + 12 + 6,
-+	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+};
-+
- static const struct drm_display_mode auo_b116xak01_mode = {
- 	.clock = 69300,
- 	.hdisplay = 1366,
-@@ -1882,6 +1929,15 @@ static const struct panel_delay delay_200_150_e200 = {
- 	.delay = _delay \
- }
- 
-+#define EDP_PANEL_ENTRY2(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _delay, _name, _mode) \
-+{ \
-+	.name = _name, \
-+	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-+					     product_id), \
-+	.delay = _delay, \
-+	.override_edid_mode = _mode \
-+}
-+
- /*
-  * This table is used to figure out power sequencing delays for panels that
-  * are detected by EDID. Entries here may point to entries in the
-@@ -1899,9 +1955,11 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116XAN06.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116XTN02.5"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
--	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &delay_200_500_e50, "B116XAK01.0"),
-+	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &delay_200_500_e50, "B116XAK01.0",
-+			 &auo_b116xa3_mode),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133UAN01.0"),
--	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
-+	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1",
-+			 &auo_b116xa3_mode),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x635c, &delay_200_500_e50, "B116XAN06.3"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x639c, &delay_200_500_e50, "B140HAK02.7"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x8594, &delay_200_500_e50, "B133UAN01.0"),
+ /* parsing cmdline modes */
+ bool
 -- 
 2.42.0.869.gea05f2083d-goog
 
