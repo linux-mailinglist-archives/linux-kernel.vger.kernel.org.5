@@ -2,235 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D74577DE518
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB3A7DE51E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344666AbjKARMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        id S1344650AbjKARNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344562AbjKARMW (ORCPT
+        with ESMTP id S1344598AbjKARNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:12:22 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA3F124;
-        Wed,  1 Nov 2023 10:12:19 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso91155e9.3;
-        Wed, 01 Nov 2023 10:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698858738; x=1699463538; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AQy7qK6Zq9rdMdefArobJ1vlG90EN/iB2yTcxQ2LdoA=;
-        b=M9Vx7dA35ffajNDu+FAZXB6WM9/l58SPQ+mifk3746rcUTpCpzHZFijHoaz8sQ8LXe
-         A075Woi9O0mwdTRabCqxvfIG4sPAtlhs97ktxCOnXTKzWYsVbHFhEvPSy5s2Ibw9aPvq
-         goxSQcEFW05IQ0aQVThmczzBFrMV00tAUBLwSv1Tp8txHTf4qSev9mbmV1rHMiD0QBA/
-         7QZEmoWaqozwW6Ew/7zjgadQe2Yy+YMpcUmByDJJVug6u/d4xLXfuBkp23iGPQA+VszX
-         ktVBLszAzXlYkT6pQUakaCYjeH4yGGR8UDjQPs6ZZhMXnCLiRt8I3fjjBjsBg4MLPZV7
-         4dcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698858738; x=1699463538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AQy7qK6Zq9rdMdefArobJ1vlG90EN/iB2yTcxQ2LdoA=;
-        b=mjMDycLBmr8LvFNyl9qhP+iaOWU3a8pgIFQ3p7sx8yWF5Tm0NY7kiTJmltVxF7pHQM
-         i0Y90Y2LUnnK7Xa9k9/M3VchdDXmfufW49QJAKTY4c5XHX70tPtxcqh+LXY5qS8b+Pdq
-         Vw9hvARAnbu47HHGIZ25L7cPBCopfr/XZwyShxUCW6RyO2I4JAU97bC9aVcGmX9lyRrx
-         /xQR8Tgyiax0iI1La6c3IBDk7XxGVfxygpDE5MTSrXd6URjrDX6CLdrI0tlnan3dHWpG
-         PmRH4CdEtlLqybQRxztEHJZ4dSiExhDPCn5RmSYOii1j8IWN1cYnVqpeMEDzhpkZq7It
-         n/9Q==
-X-Gm-Message-State: AOJu0YwpjUvYWM8HunPzX8MLsHOajqcnuuUcz5WIljXjWWdkQKwlBhyK
-        6EVV+YSM7ET4or32So3rCu4=
-X-Google-Smtp-Source: AGHT+IFFmlv3r+yRXvnfyGgxJWm4eMNkRoWjijsZxi92Gn3OMagi28a5mETWbyHp35iH5ARc1mcAtg==
-X-Received: by 2002:a05:600c:1d08:b0:408:4d0e:68ac with SMTP id l8-20020a05600c1d0800b004084d0e68acmr13103609wms.32.1698858737167;
-        Wed, 01 Nov 2023 10:12:17 -0700 (PDT)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-109.cust.vodafonedsl.it. [188.217.59.109])
-        by smtp.gmail.com with ESMTPSA id fb13-20020a05600c520d00b00405442edc69sm344125wmb.14.2023.11.01.10.12.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 10:12:16 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 18:12:13 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        martin.hecht@avnet.eu, michael.roeder@avnet.eu, mhecht73@gmail.com,
-        linuxfancy@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZUKG7duZT5/BM2F5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
- <20231020141354.2500602-4-tomm.merciai@gmail.com>
- <a98bca80-944c-493b-9872-75b94cd24eea@wanadoo.fr>
- <ZUDpAR3ZyBVrUyat@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <ZUJc-p_i4JjqkM9i@kekkonen.localdomain>
+        Wed, 1 Nov 2023 13:13:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3720010E;
+        Wed,  1 Nov 2023 10:13:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB57BC433C8;
+        Wed,  1 Nov 2023 17:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698858788;
+        bh=FSBuDV3vn5ABFwCq/Fw5E+UxUcGXr0n01nZQCGovems=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=k+uuAch9XlzhQ6zX3uH+i4yKj/TY1VgTdvuHDW2BWMAgvlR/MNCLqoKsfkNVFrOB9
+         BM8+qaMam0gvD9emFXsJ0kUvmwYFaIjLkbjrgeMfzzWKjnOqTfr6+/0v8o/v4/UICB
+         nTTe9F7PW2/oUCJbHtpDv88UfPxYkusD8iNAHGrcyPAoZHxA83Hl9QI9MWe7ALvaLu
+         IGHVpJQBkN6xpJYa0lJXysvTIjhDWvL20iE5YkQnLm7lhq/nBsZtC9AkB9PYgx3nlX
+         H4Hzlhb9HGw581IFptvys8kTiz6B2aDKhvq3Z2nGFHNfjrMM3ql9kUSJ/99t93hdwm
+         4ODVtWtRQ0LZw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6705ACE09BE; Wed,  1 Nov 2023 10:13:08 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 10:13:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Z qiang <qiang.zhang1211@gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v6.7
+Message-ID: <5e797896-6c0b-4686-98b7-d66bcdb10d0a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZTuf+xNrfqGjHFDK@lothringen>
+ <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
+ <ZUDUlQq6hEEPBiCR@lothringen>
+ <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
+ <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
+ <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZUJc-p_i4JjqkM9i@kekkonen.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On Tue, Oct 31, 2023 at 06:07:57PM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 31, 2023 at 01:06:44PM -1000, Linus Torvalds wrote:
 
-On Wed, Nov 01, 2023 at 02:13:14PM +0000, Sakari Ailus wrote:
-> Hi Tommaso,
-> 
-> On Tue, Oct 31, 2023 at 12:46:09PM +0100, Tommaso Merciai wrote:
-> > > > +static int alvium_get_dt_data(struct alvium_dev *alvium)
-> > > > +{
-> > > > +	struct device *dev = &alvium->i2c_client->dev;
-> > > > +	struct fwnode_handle *fwnode = dev_fwnode(dev);
-> > > > +	struct fwnode_handle *endpoint;
-> > > > +	int ret = -EINVAL;
-> > > > +
-> > > > +	if (!fwnode)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	/* Only CSI2 is supported for now: */
-> > > > +	alvium->ep.bus_type = V4L2_MBUS_CSI2_DPHY;
-> > > > +
-> > > > +	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
-> > > > +	if (!endpoint) {
-> > > > +		dev_err(dev, "endpoint node not found\n");
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +
-> > > > +	if (v4l2_fwnode_endpoint_alloc_parse(endpoint, &alvium->ep)) {
-> > > > +		dev_err(dev, "could not parse endpoint\n");
-> > > > +		goto error_out;
-> > > 
-> > > This could go to another label to be less confusing, but
-> > > v4l2_fwnode_endpoint_free() looks to be a no-op here, so good enough.
-> > 
-> > Thanks for the comment.
-> > To be honest right now this is clear to me
-> > I prefere to stay on the following :)
-> > Prefer to keep just only one path.
-> 
-> You can safely call v4l2_fwnode_endpoint_free() on an unparsed endpoint (or
-> on and endpoint the parsing of which failed). I prefer this too.
-> 
-> > > > +		ret = -ENODEV;
-> > > > +		goto err_powerdown;
-> > > > +	}
-> > > > +
-> > > > +	ret = alvium_get_hw_info(alvium);
-> > > > +	if (ret) {
-> > > > +		dev_err(dev, "get_hw_info fail %d\n", ret);
-> > > > +		goto err_powerdown;
-> > > > +	}
-> > > > +
-> > > > +	ret = alvium_hw_init(alvium);
-> > > > +	if (ret) {
-> > > > +		dev_err(dev, "hw_init fail %d\n", ret);
-> > > > +		goto err_powerdown;
-> > > > +	}
-> > > > +
-> > > > +	ret = alvium_setup_mipi_fmt(alvium);
-> > > > +	if (ret) {
-> > > > +		dev_err(dev, "setup_mipi_fmt fail %d\n", ret);
-> > > > +		goto err_powerdown;
-> > > > +	}
-> > > > +
-> > > > +	/*
-> > > > +	 * Enable runtime PM without autosuspend:
-> > > > +	 *
-> > > > +	 * Don't use pm autosuspend (alvium have ~7s boot time).
-> > > > +	 * Alvium has been powered manually:
-> > > > +	 *  - mark it as active
-> > > > +	 *  - increase the usage count without resuming the device.
-> > > > +	 */
-> > > > +	pm_runtime_set_active(dev);
-> > > > +	pm_runtime_get_noresume(dev);
-> > > > +	pm_runtime_enable(dev);
-> > > > +
-> > > > +	/* Initialize the V4L2 subdev. */
-> > > > +	ret = alvium_subdev_init(alvium);
-> > > > +	if (ret)
-> > > > +		goto err_pm;
-> > > > +
-> > > > +	ret = v4l2_async_register_subdev(&alvium->sd);
-> > > > +	if (ret < 0) {
-> > > > +		dev_err(dev, "Could not register v4l2 device\n");
-> > > > +		goto err_subdev;
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +
-> > > > +err_subdev:
-> > > > +	alvium_subdev_cleanup(alvium);
-> > > 
-> > > Should this also be called by the remove function?
-> > > Or is it already handled by an un-register mechanism?
-> > 
-> > Right, I miss this.
-> > Thanks.
-> > I put this to remove function like:
-> > 
-> > static void alvium_remove(struct i2c_client *client)
-> > {
-> > 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > 	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > 	struct device *dev = &alvium->i2c_client->dev;
-> > 
-> > 	/*
-> > 	 * Disable runtime PM. In case runtime PM is disabled in the kernel,
-> > 	 * make sure to turn power off manually.
-> > 	 */
-> > 	pm_runtime_disable(dev);
-> > 	if (!pm_runtime_status_suspended(dev))
-> > 		alvium_power_on(alvium, false);
-> > 	pm_runtime_set_suspended(dev);
-> > 
-> > 	alvium_subdev_cleanup(alvium);
-> > 	i2c_unregister_device(alvium->i2c_client);
-> 
-> This doesn't belong here (as you didn't register it). It was missed in the
-> review earlier.
+[ . . . ]
 
-Arg.. Good catch! Thanks :)
-You are right we remove i2c_register into some previous review.
+> > I really think that we should *never* have any kind of notifiers for
+> > kernel bugs. They cause problems. The *one* exception is an actual
+> > honest-to-goodness kernel debugger, and then it should literally
+> > *only* be the debugger that can register a notifier, so that you are
+> > *never* in the situation that a kernel without a debugger will just
+> > hang because of some bogus debug notifier.
 
-Regards,
-Tommaso
+Here you might have been suggesting that I use gdb and just set a
+breakpoint in check_cpu_stall(), and then use gdb commands to read out
+the state.  And yes, this work well in some situations.  In fact, there
+is a --gdb parameter to the rcutorture scripting for just this purpose.
 
-> 
-> > }
-> > 
-> > 
-> > If for you Cristophe, Sakari, Laurent,
-> > it's ok I prefer to skip v11 that I sent this morning too early.
-> > I collected hints from Cristophe right now and I plan to send v12
-> > this afternoon/evening if for you all is ok.
-> > 
-> > https://github.com/avs-sas/linux/blob/tm/media_stage/v6.6.0-rc3/alvium_drv/v12/drivers/media/i2c/alvium-csi2.c
-> > 
-> > Please let me know.
-> > 
-> > Thanks again to all! :)
-> 
-> -- 
-> Regards,
-> 
-> Sakari Ailus
+Except that I normally run a few hundred rcutorture guest OSes spread
+across 20 systems, and sometimes more than a thousand guest OSes across
+50 systems for hard-to-reproduce bugs.  In my experience, managing that
+many remote gdb sessions is cranky and unreliable, which is not helpful
+when debugging.  Writing a few tens of lines of C code in the kernel is
+much simpler and more reliable.
+
+Assuming of course that I avoid the traps you point out.  Which I have
+done thus far.  (Famous last words...)
+
+							Thanx, Paul
