@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DA37DE078
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB537DE07D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbjKALmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        id S235349AbjKALps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjKALmp (ORCPT
+        with ESMTP id S231571AbjKALpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:42:45 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCD3DC;
-        Wed,  1 Nov 2023 04:42:39 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9ac3b4f42cso712144276.0;
-        Wed, 01 Nov 2023 04:42:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698838959; x=1699443759;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=C2egqJtjMEVY832Egz6NiSBaRiA5E24nP8wjEBXHQN8=;
-        b=UUOxCckYBd0NLA52PBCw7z91uMfL997NkD4FRq/hqRZBuO8jQNOb17ohUSAfVtGExE
-         NFsBZouLciqm/nuOxME+M5GTn7G5raXQ3/9Mad+/dpnbGYtkDIlqGVVQG0vyKHnLd1VH
-         OGDWUFSeHLLtLnx+fAkv41iAuV3YKwEPgBFeJJTtBsZD0iUhHaVqbm9MxBrBZKa2FrNK
-         84AWJGpvi96gacqicIOZ69ZYK4uWld25bNKRf0ZyGH9T3nCz0eSticlM+OwvxyMs+2x9
-         OVacVAjbhEqugAP4hdoVbkUcX0Q2st+SlNahGbhnpVSwO/BWVvdm3Qo7AjORuTeH2LYI
-         b2LA==
-X-Gm-Message-State: AOJu0Yz8CjObq3QJA11p5ly8w7zUvkl6ko7OHTLJy6sf73eg97clzVXJ
-        XhY1cuv+OpITQyHqqXnwxhQ=
-X-Google-Smtp-Source: AGHT+IEt5JUHNTmKjGlZ8GO1dh1xbcpbijmW7pMtYlfK/Xcx/u3VdEvLqB0v/QGRx6umoMZePuSUiQ==
-X-Received: by 2002:a25:5104:0:b0:da0:c582:da97 with SMTP id f4-20020a255104000000b00da0c582da97mr1608076ybb.24.1698838958782;
-        Wed, 01 Nov 2023 04:42:38 -0700 (PDT)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id y62-20020a25c841000000b00d8674371317sm1881279ybf.36.2023.11.01.04.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 04:42:38 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 08:42:50 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-        s=2023; t=1698838956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C2egqJtjMEVY832Egz6NiSBaRiA5E24nP8wjEBXHQN8=;
-        b=Tw24Q834At+VjLLYYDiTPP7WDKdtXf/WpkSqRdr2q4G8sJ8sege0PFd3aIFJRQyrFO9jkw
-        utZbRqZL092xcXtxMZOH+/ewIcIfZCQ9cz6CtxYychtj1MXCK0aowlQZ70H0PxEP3qKaPh
-        0pQ/vdmeUZ+5H22DI44WW0OXHUKJGD01gjKk2ZrFmAteWKcbQNC64kTHY/GkLk4ieZELOX
-        OMTdoMzXCfBHlLfx4WZMNxvYi3Obh5gsFLMF4Kxt9kGnRVe4bCtceF2hxhIl6YliUYE5/S
-        +JD0On4xBuFnTWfNVYcPIHIhhVEQMguMpT9IKSNhAOxTF4X3m2rMsi1ltS6NAg==
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.5 000/112] 6.5.10-rc1 review
-Message-ID: <ozrwtfpo2njf4qdojazb5jpqdpjqbqmcmh3akjpqbphvg5zwpt@l6e34jngmvef>
-References: <20231031165901.318222981@linuxfoundation.org>
+        Wed, 1 Nov 2023 07:45:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB48119;
+        Wed,  1 Nov 2023 04:45:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F09E1C433C7;
+        Wed,  1 Nov 2023 11:45:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698839143;
+        bh=uRdXVaNPSlmlco16plmQ5T/iCvBKB01tajwUhNVdG/g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=RPoaNCBh+5fWMFs+UXqnfKgZH7T4yKQK6DTDbUkzeIY5Wt0e1UVOXzqawPZnLhVxl
+         dFmYdGqgRQZDNKi8x2I4n1FnaR3qFsPSHO1Rwqrz8AbK/t/1mbqRXJLPIvMj1Ctmp1
+         PG8bon32+33rlzgcCY6y3ZdQGNRmCtyMlowB56lJ+oMeOUBQZHjkiJRvd7h5Zqbkik
+         6lTjUGPSERr1/WzpjN+In6K8tIBIfXBTE/NFbRZaOfzDoamWJCpJvGaN3N651KcICo
+         UEytFq27OCxmWI0OUmPMZOF4jB883M7OfExPK/5Cr/sLru00NZICixp6lpb6SHDlaY
+         6SeEXPqji8vvg==
+Date:   Wed, 1 Nov 2023 06:45:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, gloriouseggroll@gmail.com
+Subject: Re: Fwd: Regression: Kernel 6.4 rc1 and higher causes Steam Deck to
+ fail to wake from suspend (bisected)
+Message-ID: <20231101114541.GA43502@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031165901.318222981@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+In-Reply-To: <0e784280-02bb-4e0e-a5ae-4e0a40ea4c51@gmail.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,30 +53,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/31 06:00PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.10 release.
-> There are 112 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 02 Nov 2023 16:58:38 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+[+cc linux-pci]
 
-No regressions to report on my system.
+On Tue, Oct 31, 2023 at 03:21:20PM +0700, Bagas Sanjaya wrote:
+> Hi,
+> 
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+> 
+> > On Kernel 6.4 rc1 and higher if you put the Steam Deck into suspend then press the power button again it will not wake up. 
+> > 
+> > I don't have a clue as to -why- this commit breaks wake from suspend on steam deck, but it does. Bisected to:
+> > 
+> > ```
+> > 1ad11eafc63ac16e667853bee4273879226d2d1b is the first bad commit
+> > commit 1ad11eafc63ac16e667853bee4273879226d2d1b
+> > Author: Bjorn Helgaas <bhelgaas@google.com>
+> > Date:   Tue Mar 7 14:32:43 2023 -0600
+> > 
+> >     nvme-pci: drop redundant pci_enable_pcie_error_reporting()
+> >     
+> >     pci_enable_pcie_error_reporting() enables the device to send ERR_*
+> >     Messages.  Since f26e58bf6f54 ("PCI/AER: Enable error reporting when AER is
+> >     native"), the PCI core does this for all devices during enumeration, so the
+> >     driver doesn't need to do it itself.
+> >     
+> >     Remove the redundant pci_enable_pcie_error_reporting() call from the
+> >     driver.  Also remove the corresponding pci_disable_pcie_error_reporting()
+> >     from the driver .remove() path.
+> >     
+> >     Note that this only controls ERR_* Messages from the device.  An ERR_*
+> >     Message may cause the Root Port to generate an interrupt, depending on the
+> >     AER Root Error Command register managed by the AER service driver.
+> >     
+> >     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> >     Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+> >     Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > 
+> >  drivers/nvme/host/pci.c | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> > ```
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-6.4.y&id=1ad11eafc63ac16e667853bee4273879226d2d1b
+> > 
+> > Reverting that commit by itself on top of 6.5.9 (stable) allows it to wake from suspend properly.
+> 
+> See Bugzilla for the full thread.
+> 
+> Anyway, I'm adding this regression to regzbot:
+> 
+> #regression introduced: 1ad11eafc63ac1 https://bugzilla.kernel.org/show_bug.cgi?id=218090
+> #regression title: Steam Deck fails to wake from suspend due to pci_enable_pcie_error_reporting() removal
+> 
+> Thanks.
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218090
 
-[    0.000000] Linux version 6.5.10-rc1+ (rbmarliere@debian) (Debian clang version 16.0.6 (16), GNU ld (GNU Binutils for Debian) 2.41) #10 SMP PREEMPT_DYNAMIC Wed Nov  1 08:08:55 -03 2023
-
-Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
-
-Thank you,
--	Ricardo
+Thanks, I requested some dmesg logs and lspci output to help debug
+this.
