@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F238C7DDB0C
+	by mail.lfdr.de (Postfix) with ESMTP id 4154D7DDB0A
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345003AbjKACg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 22:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S1344906AbjKACgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 22:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344958AbjKACgY (ORCPT
+        with ESMTP id S1343508AbjKACgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 22:36:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E30102;
-        Tue, 31 Oct 2023 19:36:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698806179; x=1730342179;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=CN4PDYT+KcfignHaXej0DYuB1qouUibKHlCbKBw8oZ4=;
-  b=gQc/s7GKMisukvnLGgKJsbIqLUbiLhfBvIhbqK6PCNErbLExr4Kx9Dz3
-   DKBjnpMOXpP0g4LfXXSrMSLUrSjuj0lZBo66DNYYAFt2/00+rXV4jE8Ad
-   4PMkLcaPSYWNeCe0CEQ1iAdkl1CQNiK4Na9B/cOJRtT/FXIj1zX2YToXM
-   rREPSvzQKeKMKz2ZeHKptfgnCsqp7orpNgAjsWHVmSfxzxm2ei0/oBdwv
-   LwU46mePbmMNgqyR499pP9x2dgkpZx6JHZlFdO0WGdC96Qwflmh3YfQCE
-   X0FuhlIjW0i15t2J6lFgUOtt29aBOMidx7ZsLk9mgpJZaFDDjKk7p8OMv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="385599662"
-X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
-   d="scan'208";a="385599662"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 19:36:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
-   d="scan'208";a="1954297"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 19:36:15 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Gregory Price <gourry.memverge@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        aneesh.kumar@linux.ibm.com, weixugc@google.com, apopple@nvidia.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-In-Reply-To: <20231031162216.GB3029315@cmpxchg.org> (Johannes Weiner's message
-        of "Tue, 31 Oct 2023 12:22:16 -0400")
-References: <20231031003810.4532-1-gregory.price@memverge.com>
-        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
-        <20231031152142.GA3029315@cmpxchg.org>
-        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
-        <20231031162216.GB3029315@cmpxchg.org>
-Date:   Wed, 01 Nov 2023 10:34:12 +0800
-Message-ID: <87il6m6w2j.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Tue, 31 Oct 2023 22:36:14 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682A8BD;
+        Tue, 31 Oct 2023 19:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698806166;
+        bh=TxYijZCRoh5ojMbiyuaBbdMRPr9YE0sS1cIswYJBrNw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nc14nOhlvjNPxk3F06m3sjqwkgaRGnmXpMxzTrN14V44ZH9c9yeBLsiFnD/+HB4F7
+         s+TFBz2t2QJGytVoOCag8Hveojw9M9y0SU/Hw8WaN7l4ObQC7bI6oSOCfD4i/wF/Ys
+         Q4eUFpF5/dpFJQ/u3tufZzTA0XNnazUKnywTGB/cIJ/FJF9GZ1p+8kr3xWqz3dQ4c+
+         80Cro+gRyF60tEpeApZf7cToBOibXON0eF4bRhtJ22hLfDVNESD8Kc5F2KGfVCc0GI
+         vtLfoTJs0i5zoWiN+47ffZXf7DquDReUg7REhdqBVrlTSsvWnf+jn5nQFlfkykBEfz
+         dGVxV2lBmYx8Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKrjK69Sxz4wcg;
+        Wed,  1 Nov 2023 13:36:05 +1100 (AEDT)
+Date:   Wed, 1 Nov 2023 13:36:04 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Christoffer Dall <cdall@cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        KVM <kvm@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the kvm-arm tree with the arm64
+ tree
+Message-ID: <20231101133604.4edad0b3@canb.auug.org.au>
+In-Reply-To: <20231017123017.3907baac@canb.auug.org.au>
+References: <20231017123017.3907baac@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/+QxrnIxb6+.k+HEe3OnigdV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> writes:
+--Sig_/+QxrnIxb6+.k+HEe3OnigdV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
->> On Tue 31-10-23 11:21:42, Johannes Weiner wrote:
->> > On Tue, Oct 31, 2023 at 10:53:41AM +0100, Michal Hocko wrote:
->> > > On Mon 30-10-23 20:38:06, Gregory Price wrote:
+Hi all,
 
-[snip]
-
->>  
->> > This hopefully also explains why it's a global setting. The usecase is
->> > different from conventional NUMA interleaving, which is used as a
->> > locality measure: spread shared data evenly between compute
->> > nodes. This one isn't about locality - the CXL tier doesn't have local
->> > compute. Instead, the optimal spread is based on hardware parameters,
->> > which is a global property rather than a per-workload one.
->> 
->> Well, I am not convinced about that TBH. Sure it is probably a good fit
->> for this specific CXL usecase but it just doesn't fit into many others I
->> can think of - e.g. proportional use of those tiers based on the
->> workload - you get what you pay for.
->> 
->> Is there any specific reason for not having a new interleave interface
->> which defines weights for the nodemask? Is this because the policy
->> itself is very dynamic or is this more driven by simplicity of use?
+On Tue, 17 Oct 2023 12:30:17 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> A downside of *requiring* weights to be paired with the mempolicy is
-> that it's then the application that would have to figure out the
-> weights dynamically, instead of having a static host configuration. A
-> policy of "I want to be spread for optimal bus bandwidth" translates
-> between different hardware configurations, but optimal weights will
-> vary depending on the type of machine a job runs on.
->
-> That doesn't mean there couldn't be usecases for having weights as
-> policy as well in other scenarios, like you allude to above. It's just
-> so far such usecases haven't really materialized or spelled out
-> concretely. Maybe we just want both - a global default, and the
-> ability to override it locally.
+> Today's linux-next merge of the kvm-arm tree got a conflict in:
+>=20
+>   arch/arm64/kvm/arm.c
+>=20
+> between commit:
+>=20
+>   d8569fba1385 ("arm64: kvm: Use cpus_have_final_cap() explicitly")
+>=20
+> from the arm64 tree and commit:
+>=20
+>   ef150908b6bd ("KVM: arm64: Add generic check for system-supported vCPU =
+features")
+>=20
+> from the kvm-arm tree.
+>=20
+> I fixed it up (I just used the latter) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
-I think that this is a good idea.  The system-wise configuration with
-reasonable default makes applications life much easier.  If more control
-is needed, some kind of workload specific configuration can be added.
-And, instead of adding another memory policy, a cgroup-wise
-configuration may be easier to be used.  The per-workload weight may
-need to be adjusted when we deploying different combination of workloads
-in the system.
+This is now a conflict between the kvm tree and the arm64 tree.
 
-Another question is that should the weight be per-memory-tier or
-per-node?  In this patchset, the weight is per-source-target-node
-combination.  That is, the weight becomes a matrix instead of a vector.
-IIUC, this is used to control cross-socket memory access in addition to
-per-memory-type memory access.  Do you think the added complexity is
-necessary?
+--=20
+Cheers,
+Stephen Rothwell
 
-> Could you elaborate on the 'get what you pay for' usecase you
-> mentioned?
+--Sig_/+QxrnIxb6+.k+HEe3OnigdV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
---
-Best Regards,
-Huang, Ying
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBuZQACgkQAVBC80lX
+0GwH5wf/RdBQBcblcMFtgM49SEUF4RHWBHhiep/hIg6tPWG7pKPVgKeyold61+3s
+a0ifRXxLD0IuXgPuHoiX39UfTE4yH6TcYOaZ8mkZTX3DthWbFGUxINPDgc3TuWMz
+tXNYH7xvCVFHPUI1jiSeVBT70BjJ4errJm7aG6OxisEEhbKsBENJJpijmuSaCM5J
+lqmyxsyhGWHrEkoVN+Jim7Krr2c8v1glhbpmqK2rR1JY4ORCm1SPPZJ73cM1lKxn
+SbBmaOJIqw18H644nM57jPMZcudLI5oXlDK6SzBbbUKShP/Oab6gSR0tgWz94dHP
+fImX/y4UFkKfrlrziffVjsnrixEKjw==
+=hLaM
+-----END PGP SIGNATURE-----
+
+--Sig_/+QxrnIxb6+.k+HEe3OnigdV--
