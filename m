@@ -2,232 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943097DE056
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D98957DE05C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbjKALac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
+        id S234882AbjKALbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbjKALaa (ORCPT
+        with ESMTP id S235193AbjKALbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:30:30 -0400
-Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B39F4;
-        Wed,  1 Nov 2023 04:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
-        Subject:To:From; bh=RYoaWJuvgILigleDCr8z13sgBPRtlyGrLyhz0BgFbBc=; b=kJ+VQjiuo
-        lGIc5h8CcE75Qc1/x7cU+XIktI2IkmtwC+EC9IYULMtMB7yLqkmgG/nXahRrb7Ons/TLS2pHywUnx
-        z+svJ8NbPeg7GwY1HO7lVAGOgN9XwoEDXylhEdntp5YnvFx2lXwtRIoH5rft/6rAqpMhTBPFBf29S
-        AYZhRswI=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1qy9Q7-0007EQ-4L; Wed, 01 Nov 2023 11:29:59 +0000
-Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1qy9Q6-0004FX-Mk; Wed, 01 Nov 2023 11:29:58 +0000
-From:   Paul Durrant <paul@xen.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
-Date:   Wed,  1 Nov 2023 11:29:33 +0000
-Message-Id: <20231101112934.631344-1-paul@xen.org>
-X-Mailer: git-send-email 2.39.2
+        Wed, 1 Nov 2023 07:31:19 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A944B111
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:31:13 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-778a20df8c3so465925285a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 04:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698838272; x=1699443072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GLyp5FUS2qPs528dNdoTbrsbRrAppICUBpffUvX+tg=;
+        b=bLbaUnavCfhTqoQra0/LwwSuSzXE/lzWII6uTfolMZuySw1ibvN3Lu3dcICmVjx2iQ
+         /oojfgLHsczj78CwbLfUJ6y19g2hm/VcMQ2wRlf03UzILzJx09RLbVkChCmTFTdrmyay
+         g2ooi9ccxI9ALUzxHTja3pJ4SSpNnS7K3A17w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698838272; x=1699443072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5GLyp5FUS2qPs528dNdoTbrsbRrAppICUBpffUvX+tg=;
+        b=qh6F/Jiy5jMLOhMC0vjtoQ2p//+EbFP7eKbSUQLcxXuL8e4eHiWB7MIXaN3gm0Fleb
+         fiTjs+n5cFGNo58Tu1BNv6VxUlWSfY8a+Bg+ri+ZjfgIe41KGFomgWbwDdcKRRfP3EEV
+         HlmfdwOhlNrtS++v4WAxDo0WtQFo4ioLDTGbWfN4IpsqwOmIawUoWkZ46U26Xa0rA/Xm
+         8Urc3b6AItVXB/yLIlnBxp/6+scdRk05+lFajxw7rAONphHTbF+UazRGdQpF0Wkyw5Jh
+         JYCffg4PuVPLyydW61RUQDegiBXrIQC6ixF7/uTHss1LpZ/wEmZaVZ2PVZ6L2HySMdYn
+         kUSg==
+X-Gm-Message-State: AOJu0YzpoQC4AGS6tDWNb+PsNUtJHH2dw0ZAqsCfKHhOlYGrWiKyyMKV
+        huhjoJGGkUIm9A5vXL2ITopTyJiUO7S+Dw57QiiNJg==
+X-Google-Smtp-Source: AGHT+IFG4X8QM361Sf/0Q/7MOPJJHCzWC8R0BKkb4R1PusMcHP7Wb9dL/evBOeNc8g7HpQr4smGnhb1ryn3veTht5jQ=
+X-Received: by 2002:a0c:e2c5:0:b0:672:7fe3:7aae with SMTP id
+ t5-20020a0ce2c5000000b006727fe37aaemr7995774qvl.56.1698838272664; Wed, 01 Nov
+ 2023 04:31:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231027145623.2258723-1-korneld@chromium.org>
+ <20231027145623.2258723-2-korneld@chromium.org> <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
+In-Reply-To: <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
+From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
+Date:   Wed, 1 Nov 2023 12:31:01 +0100
+Message-ID: <CAD=NsqxXP+SjH-ud8sjHD5y_LxZGUDnwHNPbzr_0RPwqVrwpPw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mmc: cqhci: Add a quirk to clear stale TC
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Radoslaw Biernacki <biernacki@google.com>,
+        Gwendal Grignou <gwendal@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Durrant <pdurrant@amazon.com>
+On Mon, Oct 30, 2023 at 8:31=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> On 27/10/23 17:56, Kornel Dul=C4=99ba wrote:
+> > This fix addresses a stale task completion event issued right after the
+> > CQE recovery. As it's a hardware issue the fix is done in form of a
+> > quirk.
+> >
+> > When error interrupt is received the driver runs recovery logic is run.
+> > It halts the controller, clears all pending tasks, and then re-enables
+> > it. On some platforms a stale task completion event is observed,
+> > regardless of the CQHCI_CLEAR_ALL_TASKS bit being set.
+> >
+> > This results in either:
+> > a) Spurious TC completion event for an empty slot.
+> > b) Corrupted data being passed up the stack, as a result of premature
+> >    completion for a newly added task.
+> >
+> > To fix that re-enable the controller, clear task completion bits,
+> > interrupt status register and halt it again.
+> > This is done at the end of the recovery process, right before interrupt=
+s
+> > are re-enabled.
+> >
+> > Signed-off-by: Kornel Dul=C4=99ba <korneld@chromium.org>
+> > ---
+> >  drivers/mmc/host/cqhci-core.c | 42 +++++++++++++++++++++++++++++++++++
+> >  drivers/mmc/host/cqhci.h      |  1 +
+> >  2 files changed, 43 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-cor=
+e.c
+> > index b3d7d6d8d654..e534222df90c 100644
+> > --- a/drivers/mmc/host/cqhci-core.c
+> > +++ b/drivers/mmc/host/cqhci-core.c
+> > @@ -1062,6 +1062,45 @@ static void cqhci_recover_mrqs(struct cqhci_host=
+ *cq_host)
+> >  /* CQHCI could be expected to clear it's internal state pretty quickly=
+ */
+> >  #define CQHCI_CLEAR_TIMEOUT          20
+> >
+> > +/*
+> > + * During CQE recovery all pending tasks are cleared from the
+> > + * controller and its state is being reset.
+> > + * On some platforms the controller sets a task completion bit for
+> > + * a stale(previously cleared) task right after being re-enabled.
+> > + * This results in a spurious interrupt at best and corrupted data
+> > + * being passed up the stack at worst. The latter happens when
+> > + * the driver enqueues a new request on the problematic task slot
+> > + * before the "spurious" task completion interrupt is handled.
+> > + * To fix it:
+> > + * 1. Re-enable controller by clearing the halt flag.
+> > + * 2. Clear interrupt status and the task completion register.
+> > + * 3. Halt the controller again to be consistent with quirkless logic.
+> > + *
+> > + * This assumes that there are no pending requests on the queue.
+> > + */
+> > +static void cqhci_quirk_clear_stale_tc(struct cqhci_host *cq_host)
+> > +{
+> > +     u32 reg;
+> > +
+> > +     WARN_ON(cq_host->qcnt);
+> > +     cqhci_writel(cq_host, 0, CQHCI_CTL);
+> > +     if ((cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)) {
+> > +             pr_err("%s: cqhci: CQE failed to exit halt state\n",
+> > +                     mmc_hostname(cq_host->mmc));
+> > +     }
+> > +     reg =3D cqhci_readl(cq_host, CQHCI_TCN);
+> > +     cqhci_writel(cq_host, reg, CQHCI_TCN);
+> > +     reg =3D cqhci_readl(cq_host, CQHCI_IS);
+> > +     cqhci_writel(cq_host, reg, CQHCI_IS);
+> > +
+> > +     /*
+> > +      * Halt the controller again.
+> > +      * This is only needed so that we're consistent across quirk
+> > +      * and quirkless logic.
+> > +      */
+> > +     cqhci_halt(cq_host->mmc, CQHCI_FINISH_HALT_TIMEOUT);
+> > +}
+>
+> Thanks a lot for tracking this down!
+>
+> It could be that the "un-halt" starts a task, so it would be
+> better to force the "clear" to work if possible, which
+> should be the case if CQE is disabled.
+>
+> Would you mind trying the code below?  Note the increased
+> CQHCI_START_HALT_TIMEOUT helps avoid trying to clear tasks
+> when CQE has not halted.
 
-Unless explicitly told to do so (by passing 'clocksource=tsc' and
-'tsc=stable:socket', and then jumping through some hoops concerning
-potential CPU hotplug) Xen will never use TSC as its clocksource.
-Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
-in either the primary or secondary pvclock memory areas. This has
-led to bugs in some guest kernels which only become evident if
-PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
-such guests, give the VMM a new Xen HVM config flag to tell KVM to
-forcibly clear the bit in the Xen pvclocks.
+Sure, I'll try it out tomorrow, as I don't have access to the DUT today.
+BTW do we even need to halt the controller in the recovery_finish logic?
+It has already been halted in recovery_start, I guess it could be
+there in case the recovery_start halt didn't work.
+But in that case shouldn't we do this disable/re-enable dance in recovery_s=
+tart?
 
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
----
-
-v3:
- - Moved clearing of PVCLOCK_TSC_STABLE_BIT the right side of the
-   memcpy().
- - Added an all-vCPUs KVM_REQ_CLOCK_UPDATE when the HVM config
-   flag is changed.
----
- Documentation/virt/kvm/api.rst |  6 ++++++
- arch/x86/kvm/x86.c             | 28 +++++++++++++++++++++++-----
- arch/x86/kvm/xen.c             | 15 ++++++++++++++-
- include/uapi/linux/kvm.h       |  1 +
- 4 files changed, 44 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 21a7578142a1..9752a01270df 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -8252,6 +8252,7 @@ PVHVM guests. Valid flags are::
-   #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL		(1 << 4)
-   #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
-   #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
-+  #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
- 
- The KVM_XEN_HVM_CONFIG_HYPERCALL_MSR flag indicates that the KVM_XEN_HVM_CONFIG
- ioctl is available, for the guest to set its hypercall page.
-@@ -8295,6 +8296,11 @@ behave more correctly, not using the XEN_RUNSTATE_UPDATE flag until/unless
- specifically enabled (by the guest making the hypercall, causing the VMM
- to enable the KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG attribute).
- 
-+The KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag indicates that KVM supports
-+clearing the PVCLOCK_TSC_STABLE_BIT flag in Xen pvclock sources. This will be
-+done when the KVM_CAP_XEN_HVM ioctl sets the
-+KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag.
-+
- 8.31 KVM_CAP_PPC_MULTITCE
- -------------------------
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 41cce5031126..4ad17ad0fc0c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3096,7 +3096,8 @@ u64 get_kvmclock_ns(struct kvm *kvm)
- 
- static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
- 				    struct gfn_to_pfn_cache *gpc,
--				    unsigned int offset)
-+				    unsigned int offset,
-+				    bool force_tsc_unstable)
- {
- 	struct kvm_vcpu_arch *vcpu = &v->arch;
- 	struct pvclock_vcpu_time_info *guest_hv_clock;
-@@ -3133,6 +3134,10 @@ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
- 	}
- 
- 	memcpy(guest_hv_clock, &vcpu->hv_clock, sizeof(*guest_hv_clock));
-+
-+	if (force_tsc_unstable)
-+		guest_hv_clock->flags &= ~PVCLOCK_TSC_STABLE_BIT;
-+
- 	smp_wmb();
- 
- 	guest_hv_clock->version = ++vcpu->hv_clock.version;
-@@ -3154,6 +3159,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
- 	u8 pvclock_flags;
- 	bool use_master_clock;
- 
-+	/*
-+	 * For Xen guests we may need to override PVCLOCK_TSC_STABLE_BIT as unless
-+	 * explicitly told to use TSC as its clocksource Xen will not set this bit.
-+	 * This default behaviour led to bugs in some guest kernels which cause
-+	 * problems if they observe PVCLOCK_TSC_STABLE_BIT in the pvclock flags.
-+	 */
-+	bool xen_pvclock_tsc_unstable =
-+		ka->xen_hvm_config.flags & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
-+
- 	kernel_ns = 0;
- 	host_tsc = 0;
- 
-@@ -3231,12 +3245,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
- 	vcpu->hv_clock.flags = pvclock_flags;
- 
- 	if (vcpu->pv_time.active)
--		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
-+		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0, false);
-+
- 	if (vcpu->xen.vcpu_info_cache.active)
- 		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
--					offsetof(struct compat_vcpu_info, time));
-+					offsetof(struct compat_vcpu_info, time),
-+					xen_pvclock_tsc_unstable);
- 	if (vcpu->xen.vcpu_time_info_cache.active)
--		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
-+		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0,
-+					xen_pvclock_tsc_unstable);
- 	kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
- 	return 0;
- }
-@@ -4531,7 +4548,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
- 		    KVM_XEN_HVM_CONFIG_SHARED_INFO |
- 		    KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL |
--		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
-+		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
-+		    KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
- 		if (sched_info_on())
- 			r |= KVM_XEN_HVM_CONFIG_RUNSTATE |
- 			     KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG;
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 40edf4d1974c..7699d94f190b 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -1111,9 +1111,12 @@ int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
- 
- int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
- {
-+	bool update_pvclock = false;
-+
- 	/* Only some feature flags need to be *enabled* by userspace */
- 	u32 permitted_flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
--		KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
-+		KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
-+		KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
- 
- 	if (xhc->flags & ~permitted_flags)
- 		return -EINVAL;
-@@ -1134,9 +1137,19 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
- 	else if (!xhc->msr && kvm->arch.xen_hvm_config.msr)
- 		static_branch_slow_dec_deferred(&kvm_xen_enabled);
- 
-+	if ((kvm->arch.xen_hvm_config.flags &
-+	     KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE) !=
-+	    (xhc->flags &
-+	     KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE))
-+		update_pvclock = true;
-+
- 	memcpy(&kvm->arch.xen_hvm_config, xhc, sizeof(*xhc));
- 
- 	mutex_unlock(&kvm->arch.xen.xen_lock);
-+
-+	if (update_pvclock)
-+		kvm_make_all_cpus_request(kvm, KVM_REQ_CLOCK_UPDATE);
-+
- 	return 0;
- }
- 
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 13065dd96132..e21b53e8358d 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1282,6 +1282,7 @@ struct kvm_x86_mce {
- #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL	(1 << 4)
- #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
- #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
-+#define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
- 
- struct kvm_xen_hvm_config {
- 	__u32 flags;
--- 
-2.39.2
-
+>
+>
+> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.=
+c
+> index b3d7d6d8d654..534c13069833 100644
+> --- a/drivers/mmc/host/cqhci-core.c
+> +++ b/drivers/mmc/host/cqhci-core.c
+> @@ -987,7 +987,7 @@ static bool cqhci_halt(struct mmc_host *mmc, unsigned=
+ int timeout)
+>   * layers will need to send a STOP command), so we set the timeout based=
+ on a
+>   * generous command timeout.
+>   */
+> -#define CQHCI_START_HALT_TIMEOUT       5
+> +#define CQHCI_START_HALT_TIMEOUT       500
+>
+>  static void cqhci_recovery_start(struct mmc_host *mmc)
+>  {
+> @@ -1075,28 +1075,27 @@ static void cqhci_recovery_finish(struct mmc_host=
+ *mmc)
+>
+>         ok =3D cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
+>
+> -       if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
+> -               ok =3D false;
+> -
+>         /*
+>          * The specification contradicts itself, by saying that tasks can=
+not be
+>          * cleared if CQHCI does not halt, but if CQHCI does not halt, it=
+ should
+>          * be disabled/re-enabled, but not to disable before clearing tas=
+ks.
+>          * Have a go anyway.
+>          */
+> -       if (!ok) {
+> -               pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname=
+(mmc));
+> -               cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
+> -               cqcfg &=3D ~CQHCI_ENABLE;
+> -               cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+> -               cqcfg |=3D CQHCI_ENABLE;
+> -               cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+> -               /* Be sure that there are no tasks */
+> -               ok =3D cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
+> -               if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
+> -                       ok =3D false;
+> -               WARN_ON(!ok);
+> -       }
+> +       if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
+> +               ok =3D false;
+> +
+> +       cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
+> +       cqcfg &=3D ~CQHCI_ENABLE;
+> +       cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+> +
+> +       cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
+> +       cqcfg |=3D CQHCI_ENABLE;
+> +       cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+> +
+> +       cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
+> +
+> +       if (!ok)
+> +               cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT);
+>
+>         cqhci_recover_mrqs(cq_host);
+>
+>
