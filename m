@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BD67DDFC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553DA7DDFCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbjKAKvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        id S232851AbjKAKw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbjKAKvP (ORCPT
+        with ESMTP id S233312AbjKAKwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:51:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD26115
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:51:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BDAC433C7;
-        Wed,  1 Nov 2023 10:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698835867;
-        bh=PUb5cnlFGehCaLm9tBDLh1LIRhoSslutvGk/oy47Q/c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QhWnbdga9QU5q6D0VrSZRDntOmo1wrS6bith0nos9UiFN+Rcrg31M4RxpYnr4Xe4M
-         2IVSQKirOZ0XMdAhq+W7Z+ce9ItU+TW+NYZeFwFfQPA4LdnuvIwdJaxDX5iWsljJdx
-         4PCfO8Z7zdu5yuzYxrS04tnTYhB09uqBi2Un+0k0kSIik3jDWXZPMVEVR0lDhsyPeD
-         bpFIiZLOIx1pumn2GVfxLoOM+ZBAXibkDRDOrF4j3rkW4sdfDebQpiex4s7NnPb4rq
-         PKIkxiFwnnjFcfEE/Yd6CbiGX8PO0FETtVLLybVyJz+5VpwcV/HOsfJZjcAXOr1JFy
-         XUfUpHx7bdOBg==
-Message-ID: <a2a87ae8-932a-4bc0-8c9c-f08bf109f0f2@kernel.org>
-Date:   Wed, 1 Nov 2023 11:51:00 +0100
+        Wed, 1 Nov 2023 06:52:23 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49249131
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:52:09 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-41e1974783cso42422281cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 03:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698835928; x=1699440728; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+1C51gwP1j6EX8xWamHNo0Nti+w4//VV3v7LQeJatAc=;
+        b=yN17iL/NtYXNFxdA7kD75XpUtWLJzYPScw1VkdFte29lOZZFAunMkvokTPcjA69NnN
+         NHxh2UTDFJ26X7BjAt53QVKfwKqSHqzT7Y1dgiGuut2nXL1gkRF2Jl4bma7mqWlrtazv
+         V4mhhOMjopvQbsMccow+vNHXvWJWDfsjHs9d8BJmsD1DQiIX+/DkoWMPcFX8U8uBpvi+
+         5E81fEN1KqCuq7OfcCCfxFhBxk/11ieQgLzpt9APa5RNkBtFNmk4jlA0+XsM/kAu7tbK
+         vCLXtrccAc3L0J6nmmNH2o+ulE1w/BruqDA7knnRnrGayR05wXCpQzFQu35WL9nsjJL4
+         o30Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698835928; x=1699440728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+1C51gwP1j6EX8xWamHNo0Nti+w4//VV3v7LQeJatAc=;
+        b=g6uhukbRw/FJefw/R/GKbaxwuUW+HSvXaSQv+juxrKpjWc4c0fwn3lPdGpj6mqcaf5
+         1mTS5annDW0qT30Aekmt25YBZRQwSVGJsheVh9XNVp37xrEmrRwwvP/6hxb2Wd3NiVPS
+         wL4BqpE8INtvkGstXeXstDZ9EWvrQ8cusYjcgoszxTdynlVPG/DrgN6h9hjkkhZvTEBf
+         cZdOJefnfNoGh0m28oLQkLTb5TtKuC/U8hpmkSSnGB/DLf4ueGaK1RkuZFLUvO7DiXkR
+         6FbUNEi75J+OeAq2uxGbicxnvqBVvMkkSk1N43srThz1i2HpRXkr6pDpfO+eynJMdsu2
+         i7ig==
+X-Gm-Message-State: AOJu0YwfWzzb4S0rqS03vdAw2nckHCvheP1gssxj7LJJdqDdhq76QoOe
+        plIVWABY9zkoLoJqCMj9B53zMJwqfnYJFteCPreDOA==
+X-Google-Smtp-Source: AGHT+IGBD7AeuMGXkTRP2ep4CYUi9124TDOVpS389Mu+hB31XqL4gTKvstmlOGh29as6609/Xh60qBUoSzB28pjDL10=
+X-Received: by 2002:a0c:d64a:0:b0:675:5111:4cec with SMTP id
+ e10-20020a0cd64a000000b0067551114cecmr114725qvj.58.1698835928102; Wed, 01 Nov
+ 2023 03:52:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] phy: sprd: Add Spreadtrum usb20 hsphy driver
-Content-Language: en-US
-To:     Pu Li <pu.li@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Zhiyong Liu <zhiyong.liu@unisoc.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231101054432.27509-1-pu.li@unisoc.com>
- <20231101054432.27509-3-pu.li@unisoc.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231101054432.27509-3-pu.li@unisoc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
+ <CA+EHjTzj4drYKONVOLP19DYpJ4O8kSXcFzw2AKier1QdcFKx_Q@mail.gmail.com> <ZUF8A5KpwpA6IKUH@google.com>
+In-Reply-To: <ZUF8A5KpwpA6IKUH@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Wed, 1 Nov 2023 10:51:31 +0000
+Message-ID: <CA+EHjTwTT9cFzYTtwT43nLJS01Sgt0NqzUgKAnfo2fiV3tEvXg@mail.gmail.com>
+Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,474 +106,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2023 06:44, Pu Li wrote:
-> Add Spreadtrum platform USB20 HSPHY driver support. This driver
-> takes care of all the PHY functionality, normally paired with
-> DesignWare USB20 (DRD) Controller or Spreadtrum musb phy (DRD )controller.
-> 
-> Signed-off-by: Pu Li <pu.li@unisoc.com>
-> ---
+Hi Sean,
 
+On Tue, Oct 31, 2023 at 10:13=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+>
+> On Tue, Oct 31, 2023, Fuad Tabba wrote:
+> > Hi,
+> >
+> > On Fri, Oct 27, 2023 at 7:23=E2=80=AFPM Sean Christopherson <seanjc@goo=
+gle.com> wrote:
+> >
+> > ...
+> >
+> > > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/=
+api.rst
+> > > index e2252c748fd6..e82c69d5e755 100644
+> > > --- a/Documentation/virt/kvm/api.rst
+> > > +++ b/Documentation/virt/kvm/api.rst
+> > > @@ -6079,6 +6079,15 @@ applied.
+> > >  :Parameters: struct kvm_userspace_memory_region2 (in)
+> > >  :Returns: 0 on success, -1 on error
+> > >
+> > > +KVM_SET_USER_MEMORY_REGION2 is an extension to KVM_SET_USER_MEMORY_R=
+EGION that
+> > > +allows mapping guest_memfd memory into a guest.  All fields shared w=
+ith
+> > > +KVM_SET_USER_MEMORY_REGION identically.  Userspace can set KVM_MEM_P=
+RIVATE in
+> > > +flags to have KVM bind the memory region to a given guest_memfd rang=
+e of
+> > > +[guest_memfd_offset, guest_memfd_offset + memory_size].  The target =
+guest_memfd
+> > > +must point at a file created via KVM_CREATE_GUEST_MEMFD on the curre=
+nt VM, and
+> > > +the target range must not be bound to any other memory region.  All =
+standard
+> > > +bounds checks apply (use common sense).
+> > > +
+> >
+> > Bikeshedding here: Not sure if KVM_MEM_PRIVATE is the best name for
+> > this. It gets confusing with KVM_MEMORY_ATTRIBUTE_PRIVATE, i.e., that
+> > a region marked as KVM_MEM_PRIVATE is only potentially private. It did
+> > confuse the rest of the team when I walked them through a previous
+> > version of this code once. Would something like KVM_MEM_GUESTMEM make
+> > more sense?
+>
+> Heh, deja vu.  We discussed this back in v7[*], and I came to the conclus=
+ion that
+> choosing a name that wasn't explicitly tied to private memory wasn't just=
+ified.
+> But that was before a KVM-owned guest_memfd was even an idea, and thus be=
+fore we
+> had anything close to a real use case.
+>
+> Since we now know that at least pKVM will use guest_memfd for shared memo=
+ry, and
+> odds are quite good that "regular" VMs will also do the same, i.e. will w=
+ant
+> guest_memfd with the concept of private memory, I agree that we should av=
+oid
+> PRIVATE.
+>
+> Though I vote for KVM_MEM_GUEST_MEMFD (or KVM_MEM_GUEST_MEMFD_VALID or
+> KVM_MEM_USE_GUEST_MEMFD).  I.e. do our best to avoid ambiguity between re=
+ferring
+> to "guest memory" at-large and guest_memfd.
 
-> +
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/iio/consumer.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/slab.h>
-> +#include <linux/timer.h>
-> +#include <linux/usb/otg.h>
-> +#include <uapi/linux/usb/charger.h>
-> +
-> +#include "phy-sprd-usb20-hs.h"
-> +
-> +static const struct sprd_hsphy_cfg *phy_cfg;
+Yeah I remember that discussion, but I didn't realize how confusing it
+was until I was presenting my work so far to the rest of the team, and
+it confused them quite a bit. I'm happy with any of the other
+alternatives that you suggest, as long as the distinction is clear.
 
-File-scope variables do not look good.
+> > > -See KVM_SET_USER_MEMORY_REGION.
+> > > +A KVM_MEM_PRIVATE region _must_ have a valid guest_memfd (private me=
+mory) and
+> > > +userspace_addr (shared memory).  However, "valid" for userspace_addr=
+ simply
+> > > +means that the address itself must be a legal userspace address.  Th=
+e backing
+> > > +mapping for userspace_addr is not required to be valid/populated at =
+the time of
+> > > +KVM_SET_USER_MEMORY_REGION2, e.g. shared memory can be lazily mapped=
+/allocated
+> > > +on-demand.
+> >
+> > Regarding requiring that a private region have both a valid
+> > guest_memfd and a userspace_addr, should this be
+> > implementation-specific? In pKVM at least, all regions for protected
+> > VMs are private, and KVM doesn't care about the host userspace address
+> > for those regions even when part of the memory is shared.
+>
+> Hmm, as of this patch, no, because the pKVM usage doesn't exist.  E.g.
+>
+> .  Because this literally documents the current ABI.  When
 
-> +
+Ack.
 
-...
+> > > +When mapping a gfn into the guest, KVM selects shared vs. private, i=
+.e consumes
+> > > +userspace_addr vs. guest_memfd, based on the gfn's KVM_MEMORY_ATTRIB=
+UTE_PRIVATE
+> > > +state.  At VM creation time, all memory is shared, i.e. the PRIVATE =
+attribute
+> > > +is '0' for all gfns.  Userspace can control whether memory is shared=
+/private by
+> > > +toggling KVM_MEMORY_ATTRIBUTE_PRIVATE via KVM_SET_MEMORY_ATTRIBUTES =
+as needed.
+> >
+> > In pKVM, guest memory is private by default, and most of it will
+> > remain so for the lifetime of the VM. Userspace could explicitly mark
+> > all the guest's memory as private at initialization, but it would save
+> > a slight amount of work. That said, I understand that it might be
+> > better to be consistent across implementations.
+>
+> Yeah, we discussed this in v12[*].  The default really doesn't matter for=
+ memory
+> overheads or performances once supports range-based xarray entries, and i=
+f that
+> isn't sufficient, KVM can internally invert the polarity of PRIVATE.
+>
+> But for the ABI, I think we put a stake in the ground and say that all me=
+mory is
+> shared by default.  That way CoCo VMs and regular VMs (i.e VMs without th=
+e concept
+> of private memory) all have the same ABI.  Practically speaking, the cost=
+ to pKVM
+> (and likely every other CoCo VM type) is a single ioctl() during VM creat=
+ion to
+> "convert" all memory to private.
+>
+> [*] https://lore.kernel.org/all/ZRw6X2BptZnRPNK7@google.com
 
-> +
-> +static int sprd_hsphy_cali_mode(void)
-> +{
-> +	struct device_node *cmdline_node;
-> +	const char *cmdline, *mode;
-> +	int ret;
-> +
-> +	cmdline_node = of_find_node_by_path("/chosen");
-> +	ret = of_property_read_string(cmdline_node, "bootargs", &cmdline);
-> +
-> +	if (ret) {
-> +		pr_err("Can't not parse bootargs\n");
-> +		return 0;
-> +	}
-> +
-> +	mode = strstr(cmdline, "androidboot.mode=cali");
-
-NAK, drop this nonsense.
-
-> +	if (mode)
-> +		return 1;
-> +
-> +	mode = strstr(cmdline, "sprdboot.mode=cali");
-
-NAK, drop this nonsense.
-
-
-> +	if (mode)
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int sprd_hsphy_probe(struct platform_device *pdev)
-> +{
-> +	struct sprd_hsphy *phy;
-> +	struct resource *res;
-> +	struct device *dev = &pdev->dev;
-> +	int ret = 0, calimode = 0;
-> +	struct usb_otg *otg;
-> +
-> +	phy = devm_kzalloc(dev, sizeof(*phy), GFP_KERNEL);
-> +	if (!phy)
-> +		return -ENOMEM;
-> +
-> +	otg = devm_kzalloc(dev, sizeof(*otg), GFP_KERNEL);
-> +	if (!otg)
-> +		return -ENOMEM;
-> +
-> +	/* phy cfg data */
-> +	phy_cfg = of_device_get_match_data(dev);
-> +	if (!phy_cfg) {
-> +		dev_err(dev, "no matching driver data found\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* set vdd */
-> +	ret = of_property_read_u32(dev->of_node, "sprd,vdd-voltage",
-> +				   &phy->vdd_vol);
-> +	if (ret < 0) {
-> +		dev_err(dev, "unable to read hsphy vdd voltage\n");
-> +		return ret;
-> +	}
-> +
-> +	calimode = sprd_hsphy_cali_mode();
-> +	if (calimode) {
-> +		phy->vdd_vol = phy_cfg->parameters[FULLSPEED_USB33_TUNE];
-> +		dev_info(dev, "calimode vdd_vol:%d\n", phy->vdd_vol);
-> +	}
-> +
-> +	phy->vdd = devm_regulator_get(dev, "vdd");
-> +	if (IS_ERR(phy->vdd)) {
-> +		dev_err(dev, "unable to get hsphy vdd supply\n");
-
-You do not have regulators. You clearly did not test the code, DTS or
-the bindings. Maybe nothing here was tested.
-
-> +		return PTR_ERR(phy->vdd);
-
-Syntax is anyway return dev_err_probe().
-
-> +	}
-> +
-> +	ret = regulator_set_voltage(phy->vdd, phy->vdd_vol, phy->vdd_vol);
-> +	if (ret < 0) {
-> +		dev_err(dev, "fail to set hsphy vdd voltage at %dmV\n",
-> +			phy->vdd_vol);
-> +		return ret;
-> +	}
-> +
-> +	/* phy tune */
-> +	if (phy_cfg->phy_version == VERSION1) {
-> +		ret = of_property_read_u32(dev->of_node, "sprd,tune-value",
-
-Nope, it is not allowed in your bindings.
-
-> +					&phy->phy_tune);
-> +		if (ret < 0) {
-> +			dev_err(dev, "unable to read hsphy usb phy tune\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	/* phy base */
-> +	if (phy_cfg->phy_version == VERSION1 ||
-> +		phy_cfg->phy_version == VERSION2) {
-> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy_glb_regs");
-
-This was not expressed in the bindings.
-
-> +		if (!res) {
-> +			dev_err(dev, "missing USB PHY registers resource\n");
-> +			return -ENODEV;
-> +		}
-> +
-> +		phy->base = devm_ioremap(dev, res->start, resource_size(res));
-> +		if (IS_ERR(phy->base)) {
-> +			dev_err(dev, "unable to get phy base!\n");
-> +			return PTR_ERR(phy->base);
-> +		}
-> +	}
-> +
-> +	/* analog & aoapb & apahb regmap */
-> +	phy->aon_apb = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +				 "sprd,syscon-enable");
-> +	if (IS_ERR(phy->aon_apb)) {
-> +		dev_err(dev, "USB aon apb syscon failed!\n");
-
-return dev_err_probe, if it stays
-
-> +		return PTR_ERR(phy->aon_apb);
-> +	}
-> +
-> +	if (phy_cfg->phy_version == VERSION2) {
-
-
-> +		phy->ap_ahb = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +				 "sprd,syscon-apahb");
-
-NAK, there is no such property!
-
-> +		if (IS_ERR(phy->ap_ahb)) {
-> +			dev_err(dev, "USB apahb syscon failed!\n");
-
-> +			return PTR_ERR(phy->ap_ahb);
-> +		}
-> +	}
-> +
-> +	if (phy_cfg->phy_version != VERSION1) {
-
-This was not expressed in your bindings
-
-
-> +		phy->analog = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +				 "sprd,syscon-ana");
-
-
-> +		if (IS_ERR(phy->analog)) {
-> +			dev_err(dev, "USB analog syscon failed!\n");
-> +			return PTR_ERR(phy->analog);
-
-return dev_err_probe, if it stays, but I insist to remove it.
-
-> +		}
-> +	}
-> +
-> +	/* prepare eye pattern */
-> +	ret = sprd_eye_pattern_prepared(phy, dev);
-> +	if (ret < 0)
-> +		dev_warn(dev, "sprd_eye_pattern_prepared failed, ret = %d\n", ret);
-> +
-> +	/* enable usb module */
-> +	if (phy_cfg->phy_version == VERSION2 ||
-> +		phy_cfg->phy_version == VERSION3) {
-> +		phy_cfg->cfg_ops->usb_enable_ctrl(phy, CTRL2);
-> +	}
-> +
-> +	/* usb phy power down */
-> +	if (phy_cfg->phy_version != VERSION4)
-> +		phy_cfg->cfg_ops->usb_phy_power_ctrl(phy, CTRL2);
-> +
-> +	phy->dev = dev;
-> +	phy->phy.dev = dev;
-> +	phy->phy.label = "sprd-hsphy";
-> +	phy->phy.otg = otg;
-> +	phy->phy.init = sprd_hsphy_init;
-> +	phy->phy.shutdown = sprd_hsphy_shutdown;
-> +	phy->phy.set_vbus = sprd_hostphy_set;
-> +	phy->phy.type = USB_PHY_TYPE_USB2;
-> +	phy->phy.vbus_nb.notifier_call = sprd_hsphy_vbus_notify;
-> +	otg->usb_phy = &phy->phy;
-> +
-> +	device_init_wakeup(phy->dev, true);
-> +	phy->wake_lock = wakeup_source_register(phy->dev, "sprd-hsphy");
-> +	if (!phy->wake_lock) {
-> +		dev_err(dev, "fail to register wakeup lock.\n");
-> +		return -ENOMEM;
-> +	}
-> +	INIT_WORK(&phy->work, sprd_hsphy_charger_detect_work);
-> +	platform_set_drvdata(pdev, phy);
-> +
-> +	ret = usb_add_phy_dev(&phy->phy);
-> +	if (ret) {
-> +		dev_err(dev, "fail to add phy\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = sysfs_create_groups(&dev->kobj, usb_hsphy_groups);
-> +	if (ret)
-> +		dev_warn(dev, "failed to create usb hsphy attributes\n");
-> +
-> +	if (extcon_get_state(phy->phy.edev, EXTCON_USB) > 0)
-> +		usb_phy_set_charger_state(&phy->phy, USB_CHARGER_PRESENT);
-> +
-> +	dev_info(dev, "sprd usb phy probe ok !\n");
-
-Drop. This code looks very, very poor :(. Lack of testing is even worse.
-
-> +
-> +	return ret;
-> +}
+Ack.
 
 ...
 
-> +static int __init sprd_hsphy_driver_init(void)
-> +{
-> +	return platform_driver_register(&sprd_hsphy_driver);
-> +}
-> +
-> +static void __exit sprd_hsphy_driver_exit(void)
-> +{
-> +	platform_driver_unregister(&sprd_hsphy_driver);
-> +}
-> +
-> +late_initcall(sprd_hsphy_driver_init);
-> +module_exit(sprd_hsphy_driver_exit);
-> +
-> +MODULE_ALIAS("platform:spreadtrum-usb20-hsphy");
+> > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > > index 78a0b09ef2a5..5d1a2f1b4e94 100644
+> > > --- a/virt/kvm/kvm_main.c
+> > > +++ b/virt/kvm/kvm_main.c
+> > > @@ -798,7 +798,7 @@ void kvm_mmu_invalidate_range_add(struct kvm *kvm=
+, gfn_t start, gfn_t end)
+> > >         }
+> > >  }
+> > >
+> > > -static bool kvm_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_=
+range *range)
+> > > +bool kvm_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *=
+range)
+> > >  {
+> > >         kvm_mmu_invalidate_range_add(kvm, range->start, range->end);
+> > >         return kvm_unmap_gfn_range(kvm, range);
+> > > @@ -1034,6 +1034,9 @@ static void kvm_destroy_dirty_bitmap(struct kvm=
+_memory_slot *memslot)
+> > >  /* This does not remove the slot from struct kvm_memslots data struc=
+tures */
+> > >  static void kvm_free_memslot(struct kvm *kvm, struct kvm_memory_slot=
+ *slot)
+> > >  {
+> > > +       if (slot->flags & KVM_MEM_PRIVATE)
+> > > +               kvm_gmem_unbind(slot);
+> > > +
+> >
+> > Should this be called after kvm_arch_free_memslot()? Arch-specific ode
+> > might need some of the data before the unbinding, something I thought
+> > might be necessary at one point for the pKVM port when deleting a
+> > memslot, but realized later that kvm_invalidate_memslot() ->
+> > kvm_arch_guest_memory_reclaimed() was the more logical place for it.
+> > Also, since that seems to be the pattern for arch-specific handlers in
+> > KVM.
+>
+> Maybe?  But only if we can about symmetry between the allocation and free=
+ paths
+> I really don't think kvm_arch_free_memslot() should be doing anything bey=
+ond a
+> "pure" free.  E.g. kvm_arch_free_memslot() is also called after moving a =
+memslot,
+> which hopefully we never actually have to allow for guest_memfd, but any =
+code in
+> kvm_arch_free_memslot() would bring about "what if" questions regarding m=
+emslot
+> movement.  I.e. the API is intended to be a "free arch metadata associate=
+d with
+> the memslot".
+>
+> Out of curiosity, what does pKVM need to do at kvm_arch_guest_memory_recl=
+aimed()?
 
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong (e.g. misses either
-entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
-for incomplete ID table.
+It's about the host reclaiming ownership of guest memory when tearing
+down a protected guest. In pKVM, we currently teardown the guest and
+reclaim its memory when kvm_arch_destroy_vm() is called. The problem
+with guestmem is that kvm_gmem_unbind() could get called before that
+happens, after which the host might try to access the unbound guest
+memory. Since the host hasn't reclaimed ownership of the guest memory
+from hyp, hilarity ensues (it crashes).
 
+Initially, I hooked reclaim guest memory to kvm_free_memslot(), but
+then I needed to move the unbind later in the function. I realized
+later that kvm_arch_guest_memory_reclaimed() gets called earlier (at
+the right time), and is more aptly named.
 
-> +MODULE_AUTHOR("Pu Li <lip308226@gmail.com>");
-> +MODULE_DESCRIPTION("Spreadtrum USB20 HSPHY driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/phy/sprd/phy-sprd-usb20-hs.h b/drivers/phy/sprd/phy-sprd-usb20-hs.h
-> new file mode 100644
-> index 000000000000..897ee5e64482
-> --- /dev/null
-> +++ b/drivers/phy/sprd/phy-sprd-usb20-hs.h
-> @@ -0,0 +1,525 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * phy-sprd-usb20-hs.h - Spreadtrum usb20 phy Glue layer h file
-> + *
-> + * Copyright 2020-2023 Unisoc Inc.
-> + */
-> +
-> +#ifndef __SPRD_USB20_HS_H
-> +#define __SPRD_USB20_HS_H
-> +
-> +#include <linux/regmap.h>
-> +#include <linux/usb/phy.h>
-> +
-> +struct sprd_hsphy {
-> +	struct device		*dev;
-> +	struct usb_phy		phy;
-> +	void __iomem		*base;
-> +	struct regulator	*vdd;
-> +	struct regmap           *aon_apb;
-> +	struct regmap           *ap_ahb;
-> +	struct regmap           *analog;
-> +	struct wakeup_source	*wake_lock;
-> +	struct work_struct	work;
-> +	unsigned long event;
-> +	u32			vdd_vol;
-> +	u32			phy_tune;
-> +	u32			host_eye_pattern;
-> +	u32			device_eye_pattern;
-> +	u32			host_otg_ctrl0;
-> +	u32			device_otg_ctrl0;
-> +	u32			host_otg_ctrl1;
-> +	u32			device_otg_ctrl1;
-> +	atomic_t		reset;
-> +	atomic_t		inited;
-> +	bool			is_host;
-> +};
-> +
-> +enum hsphy_parameters {
-> +	TUNEHSAMP_SHIFT,
-> +	TUNEEQ_SHIFT,
-> +	TFREGRES_SHIFT,
-> +	FULLSPEED_USB33_TUNE,
-> +};
-> +
-> +enum sprd_hsphy_reg_layout {
-> +	REG_AON_APB_APB_RST1,
-> +	REG_AON_APB_APB_RST2,
-> +	REG_AON_APB_APB_EB1,
-> +	REG_AON_APB_APB_EB2,
-> +	REG_AON_APB_CGM_REG1,
-> +	REG_AON_APB_OTG_PHY_TEST,
-> +	REG_AON_APB_OTG_PHY_CTRL,
-> +	REG_AON_APB_PWR_CTRL,
-> +	REG_AON_APB_AON_SOC_USB_CTRL,
-> +	REG_AON_APB_MIPI_CSI_POWER_CTRL,
-> +	REG_AP_AHB_AHB_EB,
-> +	REG_AP_AHB_AHB_RST,
-> +	REG_AP_AHB_OTG_CTRL0,
-> +	REG_AP_AHB_OTG_CTRL1,
-> +	REG_AP_AHB_OTG_PHY_CTRL,
-> +	REG_AP_AHB_OTG_PHY_TUNE,
-> +	REG_AP_AHB_OTG_PHY_TEST,
-> +	REG_ANALOG_USB20_USB20_ISO_SW,
-> +	REG_ANALOG_USB20_USB20_BATTER_PLL,
-> +	REG_ANALOG_USB20_USB20_UTMI_CTL1,
-> +	REG_ANALOG_USB20_USB20_TRIMMING,
-> +	REG_ANALOG_USB20_USB20_UTMI_CTL2,
-> +	REG_ANALOG_USB20_REG_SEL_CFG_0,
-> +	REG_ANALOG_USB20_IDDG,
-> +	REG_ANALOG_USB20_USB20_PHY,
-> +};
-> +
-> +enum sprd_hsphy_mask_layout {
-> +	MASK_AON_APB_USB_PHY_PD_S,
-> +	MASK_AON_APB_USB_PHY_PD_L,
-> +	MASK_AON_APB_ANLG_APB_EB,
-> +	MASK_AON_APB_ANLG_EB,
-> +	MASK_AON_APB_OTG_REF_EB,
-> +	MASK_AON_APB_ANA_EB,
-> +	MASK_AON_APB_OTG_UTMI_EB,
-> +	MASK_AON_APB_AON_USB2_TOP_EB,
-> +	MASK_AON_APB_OTG_PHY_EB,
-> +	MASK_AON_APB_CGM_OTG_REF_EN,
-> +	MASK_AON_APB_CGM_DPHY_REF_EN,
-> +	MASK_AON_APB_USB_ISO_SW_EN,
-> +	MASK_AON_APB_OTG_PHY_SOFT_RST,
-> +	MASK_AON_APB_OTG_UTMI_SOFT_RST,
-> +	MASK_AON_APB_OTG_VBUS_VALID_PHYREG,
-> +	MASK_AON_APB_USB2_PHY_IDDIG,
-> +	MASK_AON_APB_UTMI_WIDTH_SEL,
-> +	MASK_AON_APB_USB20_CTRL_MUX_REG,
-> +	MASK_AON_APB_USB20_ISO_SW_EN,
-> +	MASK_AON_APB_C2G_ANALOG_USB20_USB20_PS_PD_S,
-> +	MASK_AON_APB_C2G_ANALOG_USB20_USB20_PS_PD_L,
-> +	MASK_AP_AHB_OTG_EB,
-> +	MASK_AP_AHB_OTG_PHY_SOFT_RST,
-> +	MASK_AP_AHB_OTG_UTMI_SOFT_RST,
-> +	MASK_AP_AHB_OTG_SOFT_RST,
-> +	MASK_AP_AHB_USB2_PHY_IDDIG,
-> +	MASK_AP_AHB_OTG_DPPULLDOWN,
-> +	MASK_AP_AHB_OTG_DMPULLDOWN,
-> +	MASK_AP_AHB_OTG_VBUS_VALID_EXT,
-> +	MASK_AP_AHB_OTG_VBUS_VALID_PHYREG,
-> +	MASK_AP_AHB_UTMI_WIDTH_SEL,
-> +	MASK_AP_AHB_USB2_DATABUS16_8,
-> +	MASK_AP_AHB_USB20_SAMPLER_SEL,
-> +	MASK_AP_AHB_USB20_TUNEHSAMP,
-> +	MASK_AP_AHB_USB20_TUNEEQ,
-> +	MASK_AP_AHB_USB20_TFREGRES,
-> +	MASK_ANALOG_USB20_USB20_VBUSVLDEXT,
-> +	MASK_ANALOG_USB20_USB20_DATABUS16_8,
-> +	MASK_DBG_SEL_ANALOG_USB20_USB20_DMPULLDOWN,
-> +	MASK_DBG_SEL_ANALOG_USB20_USB20_DPPULLDOWN,
-> +	MASK_ANALOG_USB20_USB20_DMPULLDOWN,
-> +	MASK_ANALOG_USB20_USB20_DPPULLDOWN,
-> +	MASK_ANALOG_USB20_UTMIOTG_IDDG,
-> +	MASK_ANALOG_USB20_USB20_PS_PD_S,
-> +	MASK_ANALOG_USB20_USB20_PS_PD_L,
-> +	MASK_ANALOG_USB20_USB20_RESERVED,
-> +	MASK_ANALOG_USB20_USB20_ISO_SW_EN,
-> +	MASK_ANALOG_USB20_USB20_TUNEHSAMP,
-> +	MASK_ANALOG_USB20_USB20_TUNEEQ,
-> +	MASK_ANALOG_USB20_USB20_TFREGRES,
-> +};
-> +
-> +enum {
-> +	CTRL0 = 0,
-> +	CTRL1,
-> +	CTRL2,
-> +};
-> +
-> +struct sprd_hsphy_cfg_ops {
-> +	void (*usb_enable_ctrl)(struct sprd_hsphy *phy, int on);
-> +	void (*usb_phy_power_ctrl)(struct sprd_hsphy *phy, int on);
-> +	void (*usb_vbus_ctrl)(struct sprd_hsphy *phy, int on);
-> +	void (*utmi_width_sel)(struct sprd_hsphy *phy);
-> +	void (*reset_core)(struct sprd_hsphy *phy);
-> +	int (*set_mode)(struct sprd_hsphy *phy, int on);
-> +};
-> +
-> +enum hsphy_ip_version {
-> +	VERSION1,
-> +	VERSION2,
-> +	VERSION3,
-> +	VERSION4,
-> +};
-> +
-> +enum hsphy_owner {
-> +	PIKE2,
-> +	SHARKLE,
-> +	SHARKL3,
-> +	SHARKL5,
-> +	SHARKL5PRO,
-> +	QOGIRL6,
-> +	QOGIRN6LITE,
-> +	UIS8520,
-> +};
-> +
-> +struct sprd_hsphy_cfg {
-> +	/* array of registers with different offsets */
-> +	const unsigned int *regs;
-> +
-> +	const unsigned int *masks;
-> +
-> +	/* private ops for each SOC */
-> +	const struct sprd_hsphy_cfg_ops *cfg_ops;
-> +
-> +	const unsigned int *parameters;
-> +
-> +	enum hsphy_ip_version phy_version;
-> +
-> +	enum hsphy_owner	owner;
-> +};
-> +
-> +static const unsigned int pike2_regs_layout[] = {
-
-Static data allocated in every unit including this header? No, this does
-not look like correct code (yeah, it compiles but it is just wrong).
-
-Best regards,
-Krzysztof
-
+Thanks,
+/fuad
