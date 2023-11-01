@@ -2,228 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3187DE7E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBFC7DE7DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbjKAWF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 18:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S1345807AbjKAWAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 18:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjKAWFz (ORCPT
+        with ESMTP id S1345559AbjKAWAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 18:05:55 -0400
-X-Greylist: delayed 402 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Nov 2023 15:05:48 PDT
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B899B110;
-        Wed,  1 Nov 2023 15:05:48 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 045D92B0024C;
-        Wed,  1 Nov 2023 17:59:03 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 01 Nov 2023 17:59:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1698875943; x=
-        1698883143; bh=JDI0BTQjsxNjFfs3ZXUNBrkfEpISd91lLxe7rf7aIlc=; b=r
-        vTYON17JSY0S452ml5IiBSCl0tjiF9U/2kCRCRNEBnmImPQ1fPablp9yJWGc1XjC
-        XhuqLtfwa3EBMQgYpdpkSszRti0XUjz5u2TXHCqyvc7H9+wwGvOu9nbr3nUjFe+P
-        P6Ck1bU+nKPPIB/OaRTrAq07aCjOnxVyOetjtYavVzGapluuW2a47KJnBD0bLJeI
-        zknD0qg3KN5HDGjo1pLQWzVyArxyFxrc/VOupMK2FwkHdx91HxKUaEQ9he0TMy2l
-        DFdCktW0xZGEiXhRH4F+G1kSVa1dyEZNXUNdgehOFSKbdc14WrXpkKKN+dX4ntLQ
-        Lr7LPo7nfNicGOr9xfLuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698875943; x=
-        1698883143; bh=JDI0BTQjsxNjFfs3ZXUNBrkfEpISd91lLxe7rf7aIlc=; b=j
-        qyJXlVWSQlkH5fL2R5I/hiblO0azHwx7SyII3c/xdkWqooNa5IwI4Ou1fRii+Jn9
-        IgUpRy7/w3PVmFG2NFdJ27LPh20xJskt+NH572lyp5X1484mlJf2rmFhlmwMNWDW
-        FNNS+xZ4XDgy/1HLZiv2HX+VE1Bs1KuHhz4rVk8SWdYFdDz79dV0l6mnKrQ3Iuuh
-        WKb+41wU5Dw8tBIsNjcH96MDC6lq/QyLdtj/yk5XZlSZmx7XY6D8othAviZW4TRS
-        0rQtjUvMsG3UBv/hZ9Q1tW9yeoo1kmbnP3aJsoISNPPaVnN5rxHW4bMAIY3k2z42
-        tIbsi+3dgSXYbOxMu5xkQ==
-X-ME-Sender: <xms:J8pCZZo-mR5tQ3-BnKZ6vTCARCQl0XG8US8QvqmvaAoSpa_efxZ7mg>
-    <xme:J8pCZbofbD-qvHOSEOdOmz9YxLoe_KJp_6wjCtO3gddfZASJikvDP5nDVhyoOHOqn
-    ivTy4fv-TQe4oeJCg>
-X-ME-Received: <xmr:J8pCZWP2Yqg0WY7BBS-71gtO9w9h_T4DhEXU59FiVWfetQZdAc_SRAw_9SE_IWJuc06eXg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgudehgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:J8pCZU5Gp9066IKZQxlHsVyKbI3TKWYU_31CurfrYwXofq5AXvzAOw>
-    <xmx:J8pCZY7Hjlnd2IbLtPr6bG51w6V3Il8QLMJmeqy3b3XnuAiYesHeZw>
-    <xmx:J8pCZcgn4wSzGwabhoojyGVmuHXzlYSMRuaNGVoOmDKODzhDq5A1MA>
-    <xmx:J8pCZdSpko-PJ_aSebSMUbykDCE12AGISwu7kOgfK4Ov0XRJVW3afpmpzn4>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Nov 2023 17:59:00 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     shuah@kernel.org, kuba@kernel.org, hawk@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        john.fastabend@gmail.com, davem@davemloft.net,
-        steffen.klassert@secunet.com, antony.antony@secunet.com
-Cc:     martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devel@linux-ipsec.org
-Subject: [RFCv2 bpf-next 7/7] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date:   Wed,  1 Nov 2023 14:57:51 -0700
-Message-ID: <707a94d00b622e73c4b28bc059d4dabe7635b678.1698875025.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1698875025.git.dxu@dxuuu.xyz>
-References: <cover.1698875025.git.dxu@dxuuu.xyz>
+        Wed, 1 Nov 2023 18:00:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6D212F;
+        Wed,  1 Nov 2023 14:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698875985; x=1730411985;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=oGyCeXryWTPGAF6OmHU9gyu8SRadYVdK/4wo+9vlkZE=;
+  b=Kcqt+8syEI9wJPVALoQ0q2+4WzF0h5dAPCDT1xhfxhEmX7buzLmE/JoT
+   DCEk+xUtfbQwC05JD50MF/ryhM/gEuCHKAAM1aayDda8xZAnQkoPIodII
+   mMMu8Qp5bFU8IHX8UaCBR+9k3yaMzdd96o+4UdHwWjIo+rLT6aWm6A4va
+   u3qqV3kUBIt9mj1phxLMEL9+tb7A6ue/UuYYJvl4VRvKYq/FfXphQmVQ4
+   XGvJaCZuYkP/wh8CYouQ9dfAodUQE0gI0E45iWt12cPSq+G+YLva1OqZl
+   CeO88CM/sQ/AV2O4aArjjvPPxK48dbD1d18C2pDLggt8DMVkrBYdQ9dr/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="392460146"
+X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
+   d="scan'208";a="392460146"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 14:59:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="790211768"
+X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
+   d="scan'208";a="790211768"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Nov 2023 14:59:09 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 1 Nov 2023 14:59:08 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 1 Nov 2023 14:59:08 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 1 Nov 2023 14:59:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AguNrOet0zuserKLt2Qg8hIELm27myjA3caNfGfKstOuaxt9VW4zMGTZ3kY7+UUEqrUX1dqA3wNt55H+yI5OzcKo9pjNv7ZPn9UEVFcpkrs6gGW5MVn7gw+xTfpFbekvDHvyS2O7mnDav/RFn4W7Qt2KBl1qlk/qbrx2RSmypJXHZkzaIR2jOcvYcTwp7Ns6tLyiqJ2/wBQcmXJxrCDDuJSYLDl10mM0VNV8fl43AX94sio7mhjGJ9sLy8kW4tCMQrPL3RFUIQswI+RanGgBfUZpQCwPLSve2HXYbkSvz8WFjIFKMUU0yzUrLos7cZGuD1OW4BKjdpdlyn/U5tLzEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IjBYohj+AKy5Fs+4t11Cu/qxdGcL8pF38CMYyyvNALo=;
+ b=hQ1jljWxHdSAk93rTiYHdiNAzRx0Cy1WI5TpbqfFK3hFi6/dVcCgXtHJ/NF0KZkfDKJs7EvcAhLZuB0BcrmBvVlSyK+SVzi3xCDghXdhSGrCRMKl0rmwGp9tO1EApOg/R9a49sYlYwfyoD+RWl000cSouHKcfWZ49pAFxUkk/WGGFENve59gSjDMlbvGfhxVrhTNkDtaiLFDw7BrgBWx/xMDJQ8gYvSKd8R480KgYOfPAL5SUNx72gBaTFj8c8J1BYYjcdGWKHBgL0OW8Yof4yZGEp422qrAovQaJoijCHoYd4VDLt0D47M5KQaIngKs/J5wcWdHDRgGxc0CPxqHBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by BL3PR11MB5681.namprd11.prod.outlook.com (2603:10b6:208:33c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
+ 2023 21:59:06 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::d3b2:2f2:701e:e8c7]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::d3b2:2f2:701e:e8c7%4]) with mapi id 15.20.6954.019; Wed, 1 Nov 2023
+ 21:59:06 +0000
+Date:   Wed, 1 Nov 2023 14:59:01 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 3/3] cxl/memdev: Register for and process CPER
+ events
+Message-ID: <6542ca25d2fb7_435c1294aa@iweiny-mobl.notmuch>
+References: <20230601-cxl-cper-v2-0-314d9c36ab02@intel.com>
+ <20230601-cxl-cper-v2-3-314d9c36ab02@intel.com>
+ <81b90308-fdb1-3686-33a3-1e7ec42a7ef8@amd.com>
+ <6541c795e39b_2e75b294e0@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <6541c795e39b_2e75b294e0@iweiny-mobl.notmuch>
+X-ClientProxiedBy: BYAPR11CA0052.namprd11.prod.outlook.com
+ (2603:10b6:a03:80::29) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|BL3PR11MB5681:EE_
+X-MS-Office365-Filtering-Correlation-Id: d3c03d86-7379-4f85-89e1-08dbdb25c451
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PnSvNvI4Oy/BqM0u1vYJkgy8Zc4Ve0fra3sKEdE5yPj45ZddmBcu3kgaQ+iT72K223w4hgWcYbevkHwM3Xetc9H2ezqaev3tTEJgol5JGhayuTwFTaD3ZBQFf1m7Fy0D29+5KF0hSXEm3+QgYdbeyj6QxWxUmC5MTTsWp0WGuqL7Dzn6FRZg3hQ8dDtyP/UbyLeGKjtIlObzjBdR22hzolCiIXMgtS+tqJdP+7JPTkuiHA1HBjgzzZFOoIK2hSjMjJ5vUjjoK4v1/d8+4PG5fTSjRP95N9yrvljTmRCRLaQhv3rNqzweo5zv0bPr2NPys+DcDYFGfCeiOv2ZjYD4x9nun4702/8Ifq62RchkybLRUQ6nqzP2PowK8cIdBezigrqeZ2R16WgDxnDbFnWrDAWb++VShfsSFP4FDlmx9qAKIp1RqIjTjzdgjj37Ak+IfcrQWAy8RwuBRHooay50BoVEpixjhPaYGxZitMkyWYsJTdSiFkbVL9cNcmJathlASRBQwzL5Nr6ELonXKFzd8Ou8/H1St8w/lEyABTELqgQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(366004)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(66899024)(9686003)(6512007)(26005)(478600001)(86362001)(82960400001)(2906002)(38100700002)(83380400001)(4744005)(5660300002)(6506007)(6666004)(8676002)(8936002)(4326008)(66946007)(316002)(54906003)(44832011)(66476007)(66556008)(6486002)(41300700001)(966005)(110136005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TzH3+4gvkXtgn6tFHDkbwGEAd0aw/5XN0eupBUlEW/136SeVqc5GnTLVUQzv?=
+ =?us-ascii?Q?+fQTGq2odN0naNijfz3tFv10p2CceVZh0k2Pt29eSANEn0FrIdcPTO3VfcLi?=
+ =?us-ascii?Q?b82TzBIIaAwrE6HUR9a1NBOMZcqSysVt6ZQKi2XVg3n0ZptsoR93+Jv6IFgi?=
+ =?us-ascii?Q?77vVqBBM3dWXbGvzM21Bqf4YlhdL41YTmkkEG3cjTt5gmlzQ8NCc3/cXEYMd?=
+ =?us-ascii?Q?VL+/rG2H7EW1LW/tD9ZqKYi1sUHxU3A2ve3YgFvEMVEOewgOC58FScqpgD/e?=
+ =?us-ascii?Q?7r15RMJ9NH+2BXnuFZXEc1SFfJ0n9uwz5aPTC2AYsHJ94Td9sy7E26ZZ8kNT?=
+ =?us-ascii?Q?yQQ6MPvkfkc5Qcuq5mpRNDUPsUaCUHhOF40NzaZ92Uc7ygVuGskamBquW/OD?=
+ =?us-ascii?Q?G5exzDbQSZ6APLokmEJ63owzbpNcYJ04p80UjOwUePQWCjLWvLVF6s/n2lBB?=
+ =?us-ascii?Q?28loozS4sIau79I7qP6irA+i9QlvpTK0UjQnqwYgO/BVHy2Q1JHR5cKL0wGG?=
+ =?us-ascii?Q?HoAyzm7ds0oKLJwjuZj+XjAd+T6JW4nQlnzJatUUNj09f+wRv+8KIbwckGzX?=
+ =?us-ascii?Q?OFVp5MPkTx8thcW5H7KNDyt0SnBRJc+iYqgs+321B2m0XMVB6QFjLNI5hp5Y?=
+ =?us-ascii?Q?k4MXvt07y3S9TPRYlGQLPJiXUqQY1HC3EqWHk8F/phiE/ljjprAAPMBRv5xK?=
+ =?us-ascii?Q?aY6vLWGpxm7ngw+xJp29RAVzOG/dVW0LkVRsF7z7pJBpyUKesF9PVMlMHDf+?=
+ =?us-ascii?Q?7P6tKCokhH3L5lEIS1UhBc08Ugrt5prxqyDTuQ9HV39pr4oZSAvEHICoDwJ5?=
+ =?us-ascii?Q?76XdH0rTH70yMAqWJ6JLigz2hc9ZOHzkZGfOzTx7KUbUIHKWOiryL3LA1XDQ?=
+ =?us-ascii?Q?RBcHoThm+ioL7o7Te6xLv6y9iNYkcji2q+SmDwOfUJeUlpXy3HBu8j3aokkN?=
+ =?us-ascii?Q?RVx3Uh1woAySyQDZ/rfH+9l/sbTu70wbd43ITSYP9HEvcexrqZr+/cbyyfle?=
+ =?us-ascii?Q?Qp97Q+6iaPeSGNw+oeFQGz1sHRTY4Mn2CpohWGfvgdywcOg0Pkzd5n8SXPRc?=
+ =?us-ascii?Q?GZfFkGvBYx1hnLUnFGBiHMcZv2A8yzRhOpyzh5u6GJz4OGfkon79/09iOtyI?=
+ =?us-ascii?Q?s2mOuTzhuSQqXT4Yln/O+QMfBzG3LXksPnuFwagZgHsEU6unsiLiZD4TQ3C9?=
+ =?us-ascii?Q?RlbAv1aNy5eZXorbTcr55/l812bl/k0pF3ndCbrNgeFgbOFkW7ePiTPVB0j+?=
+ =?us-ascii?Q?/XX8T2ojeSUHTEPd8BU5skJzGerUZAFyOjosU4wJe8snoa93K2L+CDCz69DP?=
+ =?us-ascii?Q?/5PO5vMDHybfc9medaWalWF64P/WzZvJn/oanez8e5zg1wZGH07QfnZJIy5u?=
+ =?us-ascii?Q?RsCYIZ6Dqh1pfmG8VBPwpWuysOUm7zvLhJduoKRuttZ67zcm/2MK6ZYflWo8?=
+ =?us-ascii?Q?l3ERQQ1xGAqWTvfnmXPTihJFBoQ3rhO95B2JK+FNZaHTvwKWUTYOqUJkPePK?=
+ =?us-ascii?Q?boF9JguS2DOQ7w4gPgF71NbI7sU7/4NSXE7jcQH8SGLHYMqF8GGj5zv4m2ee?=
+ =?us-ascii?Q?Hug7TnhJ06470IGXw+3d4a3P+88wn7ioVWH++FTB?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3c03d86-7379-4f85-89e1-08dbdb25c451
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 21:59:06.8075
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dYq5cvTwomV0X5Sai175ryO72nFEPa5LZwb1b+lJ5DnDcaWxqqnHrEqRrOIR09PBTcyFekIX1xPpcXvQm5g7NQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB5681
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+Ira Weiny wrote:
+> Smita Koralahalli wrote:
+> 
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/progs/test_tunnel_kern.c    | 49 +++++++++++++++++++
- tools/testing/selftests/bpf/test_tunnel.sh    | 12 +++--
- 2 files changed, 57 insertions(+), 4 deletions(-)
+[snip]
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index ec7e04e012ae..17bf9ce28460 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -35,6 +35,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -948,4 +952,49 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS,
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	bpf_printk("replay-window %d\n", x->replay_esn->replay_window);
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index dd3c79129e87..17d263681c71 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -528,7 +528,7 @@ setup_xfrm_tunnel()
- 	# at_ns0 -> root
- 	ip netns exec at_ns0 \
- 		ip xfrm state add src 172.16.1.100 dst 172.16.1.200 proto esp \
--			spi $spi_in_to_out reqid 1 mode tunnel \
-+			spi $spi_in_to_out reqid 1 mode tunnel replay-window 42 \
- 			auth-trunc 'hmac(sha1)' $auth 96 enc 'cbc(aes)' $enc
- 	ip netns exec at_ns0 \
- 		ip xfrm policy add src 10.1.1.100/32 dst 10.1.1.200/32 dir out \
-@@ -537,7 +537,7 @@ setup_xfrm_tunnel()
- 	# root -> at_ns0
- 	ip netns exec at_ns0 \
- 		ip xfrm state add src 172.16.1.200 dst 172.16.1.100 proto esp \
--			spi $spi_out_to_in reqid 2 mode tunnel \
-+			spi $spi_out_to_in reqid 2 mode tunnel replay-window 42 \
- 			auth-trunc 'hmac(sha1)' $auth 96 enc 'cbc(aes)' $enc
- 	ip netns exec at_ns0 \
- 		ip xfrm policy add src 10.1.1.200/32 dst 10.1.1.100/32 dir in \
-@@ -553,14 +553,14 @@ setup_xfrm_tunnel()
- 	# root namespace
- 	# at_ns0 -> root
- 	ip xfrm state add src 172.16.1.100 dst 172.16.1.200 proto esp \
--		spi $spi_in_to_out reqid 1 mode tunnel \
-+		spi $spi_in_to_out reqid 1 mode tunnel replay-window 42 \
- 		auth-trunc 'hmac(sha1)' $auth 96  enc 'cbc(aes)' $enc
- 	ip xfrm policy add src 10.1.1.100/32 dst 10.1.1.200/32 dir in \
- 		tmpl src 172.16.1.100 dst 172.16.1.200 proto esp reqid 1 \
- 		mode tunnel
- 	# root -> at_ns0
- 	ip xfrm state add src 172.16.1.200 dst 172.16.1.100 proto esp \
--		spi $spi_out_to_in reqid 2 mode tunnel \
-+		spi $spi_out_to_in reqid 2 mode tunnel replay-window 42 \
- 		auth-trunc 'hmac(sha1)' $auth 96  enc 'cbc(aes)' $enc
- 	ip xfrm policy add src 10.1.1.200/32 dst 10.1.1.100/32 dir out \
- 		tmpl src 172.16.1.200 dst 172.16.1.100 proto esp reqid 2 \
-@@ -585,6 +585,8 @@ test_xfrm_tunnel()
- 	tc qdisc add dev veth1 clsact
- 	tc filter add dev veth1 proto ip ingress bpf da object-pinned \
- 		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state
-+	ip link set dev veth1 xdpdrv pinned \
-+		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state_xdp
- 	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
- 	sleep 1
- 	grep "reqid 1" ${TRACE}
-@@ -593,6 +595,8 @@ test_xfrm_tunnel()
- 	check_err $?
- 	grep "remote ip 0xac100164" ${TRACE}
- 	check_err $?
-+	grep "replay-window 42" ${TRACE}
-+	check_err $?
- 	cleanup
- 
- 	if [ $ret -ne 0 ]; then
--- 
-2.42.0
+> > I think we should copy into each 
+> > field of struct cxl_event_record_hdr individually starting from length 
+> > by pointer arithmetic (which is definitely bad, but I cannot think of a 
+> > better way to do this) and then do memcpy for data field in struct 
+> > cxl_event_record_raw..
+> > 
+> > Any other suggestions would be helpful as well.
+> 
+> Based on Dan's suggestion to share the structures this memcpy can be
+> avoided altogether.  Let's see how that works.
 
+memcpy was removed.
+
+> 
+> > 
+> > I can make these changes and validate it on my end if that works..?
+> 
+> Any testing would be welcome.  I don't have a test setup readily
+> available.
+
+Sorry this took so long but I have a new series with the
+headers/structures re-aranged along with the other changes.
+
+https://lore.kernel.org/all/20230601-cxl-cper-v3-0-0189d61f7956@intel.com/
+
+Thanks,
+Ira
