@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8647DE36A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F467DE359
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbjKAP1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        id S234096AbjKAP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233926AbjKAP1b (ORCPT
+        with ESMTP id S233227AbjKAP3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:27:31 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA5A128;
-        Wed,  1 Nov 2023 08:27:21 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9d465d1c86bso475720566b.3;
-        Wed, 01 Nov 2023 08:27:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698852440; x=1699457240;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YHvK9y12HVFPPCcFRFW7IlBRtyM+hFYAm7yaHjfI6As=;
-        b=BEjtnptBIXWsWqMVxrtr/t+BsmCgtB5G0zI1BF8jbh9lLyOdDbou4RxcGtcVFsVRQt
-         jZFiAiSS1Khto93EgPEj1T40x/59e+Q8aedSk50VgeyaVLu9zHj6eHhPkvEwq5GMKCS/
-         0m4Sz3V7pJEvCqbITcF5CRuchACfiSJt6AZ6p8GAE//9TEND+QaZxXrcFF6jVfpGQU36
-         S5wD3sSczgJf6kv3WT/8RXo7UbyDcfkmicpNfdiOBumPpE2MsiFi4cj6SiCNaIREG8sq
-         w1omYa+B3vE6WZTa3ugtxp13i5g0MK0tqEi9/qnOZ3Y3G5P1jY6bb0MZvitrPdblbmt5
-         UW5Q==
-X-Gm-Message-State: AOJu0YwR9+/a19spHvOFipZ6k1MYtZ1QvQLCfvAwelVbsFDExWe2e3fa
-        kEYTFjEJUwF8trBQWfwzp3xKFRbFgv0/Wg==
-X-Google-Smtp-Source: AGHT+IFZKt4Lx3IHvtCFOtDHkfMl4Fy5MbihEW3uZZKr+F3k301Bk2ffmCEH8dfncR2/IiWTk6foFw==
-X-Received: by 2002:a17:907:7641:b0:9da:ee00:a023 with SMTP id kj1-20020a170907764100b009daee00a023mr609747ejc.30.1698852439384;
-        Wed, 01 Nov 2023 08:27:19 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id f6-20020a170906560600b009ae587ce133sm45622ejq.188.2023.11.01.08.27.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 08:27:19 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so10880999a12.3;
-        Wed, 01 Nov 2023 08:27:19 -0700 (PDT)
-X-Received: by 2002:a17:906:db0d:b0:9d3:ccd1:a905 with SMTP id
- xj13-20020a170906db0d00b009d3ccd1a905mr2191785ejb.51.1698852439007; Wed, 01
- Nov 2023 08:27:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231101095533.45258-1-tom@baremetal.dev> <ZUJoFAcKMrVD5Glo@lore-desk>
-In-Reply-To: <ZUJoFAcKMrVD5Glo@lore-desk>
-From:   Tom Waldron <tom@baremetal.dev>
-Date:   Wed, 1 Nov 2023 15:26:46 +0000
-X-Gmail-Original-Message-ID: <CANjHDnBkCW_zQxyCcKcyrZOYnnLNVKT1Z2AJr6x6DT55UZ+A7Q@mail.gmail.com>
-Message-ID: <CANjHDnBkCW_zQxyCcKcyrZOYnnLNVKT1Z2AJr6x6DT55UZ+A7Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] wifi: mt76: mt7921: Add a new VID/PID 0b48/7922 for MT7922
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
+        Wed, 1 Nov 2023 11:29:54 -0400
+Received: from mailo.com (msg-2.mailo.com [213.182.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417D1DA;
+        Wed,  1 Nov 2023 08:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1698852560; bh=8JZ/Xm93s6Pe/glm6UMFP8lzYw6hWMYZSLM5kQwh7A8=;
+        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+         References:Content-Type:Content-Transfer-Encoding:MIME-Version;
+        b=aFrqabgRUnYmfPLcc4RAo+sceWLlJhSTS7CUsuMz0ZNaAHMb1+lBfYda/F2ZVIZxt
+         /C+0/lgZh01wsVkqEC3oE2BRyi6NRxckkCxo6U3uInUb0dmojc+c4LEi1X0ya5Yi79
+         sVcW5uyxlgYPeRliyeKwVikhGgeV5FvcIbifUiZo=
+Received: by b221-3.in.mailobj.net [192.168.90.23] with ESMTP
+        via ip-22.mailoo.org [213.182.54.22]
+        Wed,  1 Nov 2023 16:29:20 +0100 (CET)
+X-EA-Auth: t+PrxXcdHtU8aMBIbHkhq1Jt0EX3B48jBFIYIdTMsBYBoMkLXopLisyWlBB7SBon7hEA1q+bEsEF03sZMfqvsOR2yvukLgFsLo4I9+AtKYg=
+Message-ID: <0f294695fdfed60c385deadc9d030c225816b4f9.camel@mailoo.org>
+Subject: Re: [PATCH 2/3] media: dt-bindings: ak7375: Add ak7345 support
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 01 Nov 2023 16:29:20 +0100
+In-Reply-To: <20231101-wise-childless-ed44729657c6@spud>
+References: <20231101102257.1232179-1-vincent.knecht@mailoo.org>
+         <20231101102257.1232179-2-vincent.knecht@mailoo.org>
+         <20231101-wise-childless-ed44729657c6@spud>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCI VID 0x0b48 doesn't appear to be listed anywhere I can find, though
-a website named pcilookup.com suggests it belongs to TechnoTrend AG. I
-think it's more likely to be part of AMD RZ600 series - rebranded
-mediatek devices. Not sure how any of this might be verified.
+Le mercredi 01 novembre 2023 =C3=A0 15:10 +0000, Conor Dooley a =C3=A9crit=
+=C2=A0:
+> On Wed, Nov 01, 2023 at 11:22:56AM +0100, Vincent Knecht wrote:
+> > Document AK7345 bindings.
+>=20
+> The commit message should mention why this device is incompatible with
+> the 7375. Something like
+>=20
+> "Document the ak7345 voice coil motor actuator. Similar to the ak7375,
+> this model has 4 unilateral phase detractors instead of 8."
+>=20
+> Otherwise,
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> Cheers,
+> Conor.
 
-On Wed, 1 Nov 2023 at 15:00, Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> > Add VID/PID 0b48/7922 for MediaTek MT7922 wifi chip.
-> > Change tested on Redmi Book Pro 15 2023 (Fedora 38).
-> >
-> > Signed-off-by: Tom Waldron <tom@baremetal.dev>
-> > ---
-> >  drivers/net/wireless/mediatek/mt76/mt7921/pci.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-> > index 3dda84a93..ba805cb02 100644
-> > --- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-> > +++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-> > @@ -21,6 +21,8 @@ static const struct pci_device_id mt7921_pci_device_table[] = {
-> >               .driver_data = (kernel_ulong_t)MT7921_FIRMWARE_WM },
-> >       { PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x0616),
-> >               .driver_data = (kernel_ulong_t)MT7922_FIRMWARE_WM },
-> > +     { PCI_DEVICE(0x0b48, 0x7922),
-> > +             .driver_data = (kernel_ulong_t)MT7922_FIRMWARE_WM },
->
-> is PCI VID 0x0b48 PCI_VENDOR_ID_ITTIM?
->
-> Regards,
-> Lorenzo
->
-> >       { },
-> >  };
-> >
-> > --
-> > 2.41.0
-> >
+Thank you for the review!
+
+I don't know anything about phase detractors, nor any other details
+(having found no datasheets for either of these ICs)
+apart what could be infered from vendor/downstream drivers
+like in the commit text for patch 3/3...
+
+So I guess I'll send a v2 with a commit text along these lines :
+Document AK7345 bindings.
+Compared to AK7375, it has only 9 bits position values (instead of 12),
+20 ms power-up delay (instead of 10), and no known standby register setting=
+.
+
+
+
