@@ -2,157 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D257DE655
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 20:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BA57DE66D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 20:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344951AbjKATTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 15:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
+        id S1345602AbjKATcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 15:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbjKATS6 (ORCPT
+        with ESMTP id S1345574AbjKATcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 15:18:58 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAB3124
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 12:18:55 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5aaae6f46e1so123142a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 12:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698866335; x=1699471135; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYCNgLtP9T+m1wFzy1oumnbf2/vhCmVl2ynmQE81Q6s=;
-        b=mMQGm4Gb0AMWF+5Dpd/SDLjuW9kXowdnKpGqK/Xms/F87iabysk5TO7elkYDhINmSj
-         kgjs5o9rgwm1Svkh9pBMgt2ZaMotHNI6XVC3sUYV9GAfjwi8/zhr8DA1HPSf/VrxW41t
-         Kw9zxU7smIRcm6DjplExMH7ubwws97UV65P2W6oJuHOyqrW0WrvOEED1lySHE/jxvp1p
-         DuObOV1/9Veq3yKehJm44t33OSgzOnGTWqBcvGTvfXlPFyeX8nYhbFxboiVgvD/d0mIn
-         Dn4SzvBpVsY2jzOMH2u3nM18M0EdGnLSripfMWc2hrbrrIbCCeJqoGrM5HGkutRtxw2d
-         eQVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698866335; x=1699471135;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYCNgLtP9T+m1wFzy1oumnbf2/vhCmVl2ynmQE81Q6s=;
-        b=hSlWyayCLk8FkIEHx1RAXTILSnJSgNOFI9tG9/OTIK4hnEDuuYEIlV9DVJ15Jpth8c
-         b8Vy84891BSm18/rN9M0AXBcikKDxi+8i7M7VKg6r5f1jL6DTEfS3ZIwnnLu4u51Ca9W
-         FBWxsQFA8eF1IDwPZVqmjgQJ/9wLvuSuzL1o1igjkKadWRL4BascTauD+TztUnlrSJRL
-         /Dy4O9neifoaJ8A5KuHCf/+Rut7aaZ7bSBgcgMpI9pfldg4Loahv1+VHz7lbcdvM57FV
-         I7tK5whSwVpy5Jhn8LobWIkjFA8jvkQMnRWYDbOzVhG/sTiERnugw+mcFU9nD6gbuw3n
-         s+xw==
-X-Gm-Message-State: AOJu0YwnUrJlYo01Xi+PzYXJZo952IF4kw69VkFPg1BBkhaHvVRnqy0t
-        3JIuBiERFL9faGs2RmKFMcyREijbPaQ=
-X-Google-Smtp-Source: AGHT+IFf7VebosCxcQV3YrMYYDgLbRkY1zY/Dq16ihBtHMGdVKGRZgR7MAtxcaj4+vwqMVFH2l0p7zXyEDo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:36c2:0:b0:5b9:803b:1fbc with SMTP id
- d185-20020a6336c2000000b005b9803b1fbcmr185420pga.12.1698866335230; Wed, 01
- Nov 2023 12:18:55 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 12:18:53 -0700
-In-Reply-To: <e10fb116aa67509f7a63660a6b0731e28935c820.camel@redhat.com>
-Mime-Version: 1.0
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-12-weijiang.yang@intel.com> <e10fb116aa67509f7a63660a6b0731e28935c820.camel@redhat.com>
-Message-ID: <ZUKknZ7qEzzQ5Cgi@google.com>
-Subject: Re: [PATCH v6 11/25] KVM: x86: Report XSS as to-be-saved if there are
- supported features
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 15:32:12 -0400
+Received: from mx4.spacex.com (mx4.spacex.com [192.31.242.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7420D12E;
+        Wed,  1 Nov 2023 12:32:05 -0700 (PDT)
+Received: from pps.filterd (mx4.spacex.com [127.0.0.1])
+        by mx4.spacex.com (8.17.1.19/8.17.1.19) with ESMTP id 3A1HtMNJ006209;
+        Wed, 1 Nov 2023 12:19:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spacex.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=dkim; bh=K8t1h29qoJgDaDFX2qbEYAZ6YVO/kL5T9Bzxga1eoBs=;
+ b=TlL1FXFpL6WnAuKsQ30zvjSeaF1TjQpHJctJoWVXvXjIgBc4U+yvBvqt034H5tzsFrsn
+ p+1WYuHyXnuK7mcO1TVPXzf+BtHvhJIEDJKhVilX7Ozj+8j7NXk1tmxwkKNNGAruoC9W
+ yyoPkELLpUHKYneL3OGZdsMv75+Cn5pABUWiiRIefFMA1+OTWQ0HpilzyDNc5voYsyMQ
+ qGK8WwjZ4/7Cn9QsdoBMprpzRjYAt2RnXB75nfgE3rbqqc7CceOxfWs/THOygwR49o+1
+ WsX/iR5OgI/z7M+xEssfCaSESpH4g6JLDFtFmPo2xW+WR+rt6YS25bk62Bfmb3Wvc8Os Xw== 
+Received: from smtp.spacex.corp ([10.34.3.234])
+        by mx4.spacex.com (PPS) with ESMTPS id 3u0yqn5peb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 01 Nov 2023 12:19:16 -0700
+Received: from apakhunov-z4.spacex.corp (10.1.32.161) by
+ HT-DC-EX-D2-N2.spacex.corp (10.34.3.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 1 Nov 2023 12:19:16 -0700
+From:   <alexey.pakhunov@spacex.com>
+To:     <siva.kallam@broadcom.com>
+CC:     <vincent.wong2@spacex.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <prashant@broadcom.com>,
+        <mchan@broadcom.com>, Alex Pakhunov <alexey.pakhunov@spacex.com>
+Subject: [PATCH 0/2] tg3: Fix the TX ring stall
+Date:   Wed, 1 Nov 2023 12:18:56 -0700
+Message-ID: <20231101191858.2611154-1-alexey.pakhunov@spacex.com>
+X-Mailer: git-send-email 2.39.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ht-dc-ex-d3-n1.spacex.corp (10.34.3.236) To
+ HT-DC-EX-D2-N2.spacex.corp (10.34.3.234)
+X-Proofpoint-ORIG-GUID: t3s4_VIsBNvb9nflAae7tjUajF2xu0Vs
+X-Proofpoint-GUID: t3s4_VIsBNvb9nflAae7tjUajF2xu0Vs
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 priorityscore=1501 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311010142
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023, Maxim Levitsky wrote:
-> On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> > From: Sean Christopherson <seanjc@google.com>
-> > 
-> > Add MSR_IA32_XSS to list of MSRs reported to userspace if supported_xss
-> > is non-zero, i.e. KVM supports at least one XSS based feature.
-> 
-> 
-> I can't believe that CET is the first supervisor feature that KVM supports...
-> 
-> Ah, now I understand why:
-> 
-> 1. XSAVES on AMD can't really be intercepted (other than clearing CR4.OSXSAVE
->    bit, which isn't an option if you want to support AVX for example) On VMX
->    however you can intercept XSAVES and even intercept it only when it touches
->    specific bits of state that you don't want the guest to read/write freely.
-> 
-> 2. Even if it was possible to intercept it, guests use XSAVES on every
->    context switch if available and emulating it might be costly.
->
-> 3. Emulating XSAVES is also not that easy to do correctly.
->
-> However XSAVES touches various MSRs, thus letting the guest use it
-> unintercepted means giving access to host MSRs, which might be wrong security
-> wise in some cases.
->
-> Thus I see that KVM hardcodes the IA32_XSS to 0, and that makes the XSAVES
-> work exactly like XSAVE.
-> 
-> And for some features which would benefit from XSAVES state components,
-> KVM likely won't even be able to do so due to this limitation.
-> (this is allowed thankfully by the CPUID), forcing the guests to use
-> rdmsr/wrmsr instead.
+From: Alex Pakhunov <alexey.pakhunov@spacex.com>
 
-Sort of?  KVM doesn't (yet) virtualize PASID, HDC, HWP, or arch LBRs (wow,
-there's a lot of stuff getting thrown into XSTATE), so naturally those aren't
-supported in XSS.
+This patch fixes the problem with tg3 driver we encountered on several
+machines having Broadcom 5719 NIC. The problem showed up as a 10-20 seconds
+interruption in network traffic and these dmegs message followed by the NIC
+registers dump:
 
-KVM does virtualize Processor Trace (PT), but PT is a bit of a special snowflake.
-E.g. the host kernel elects NOT to manage PT MSRs via XSTATE, but it would be
-possible for KVM to the guest to manage PT MSRs via XSTATE.
+=== dmesg ===
+NETDEV WATCHDOG: eth0 (tg3): transmit queue 0 timed out
+...
+RIP: 0010:dev_watchdog+0x21e/0x230
+...
+tg3 0000:02:00.2 eth0: transmit timed out, resetting
+=== ===
 
-I suspect the answer to PT is threefold:
+The issue was observed with "4.15.0-52-lowlatency #56~16.04.1-Ubuntu" and
+"4.15.0-161-lowlatency #169~16.04.1-Ubuntu" kernels.
 
- 1. Exposing a feature that isn't "supported" by the host kernel is scary.
- 2. No one has pushed for the support, e.g. Linux guests obviously don't complain
-    about lack of XSS support for PT.
- 3. Toggling PT MSR passthrough on XSAVES/XRSTORS accesses would be more complex
-    and less performant than KVM's current approach.
+Based on the state of the TX queue at the time of the reset and analysis of
+dev_watchdog() it appeared that the NIC has not been notified about packets
+accumulated in the TX ring for TG3_TX_TIMEOUT seconds and was reset:
 
-Re: #3, KVM does passthrough PT MSRs, but only when the guest is actively using
-PT.  PT is basically a super fancy PMU feature, and so KVM "needs" to load guest
-state as late as possible before VM-Entry, and load host state as early as possible
-after VM-Exit.  I.e. the context switch happens on *every* entry/exit pair.
+=== dmesg ===
+tg3 0000:02:00.2 eth0: 0: Host status block [00000001:000000a0:(0000:06d8:0000):(0000:01a0)]
+tg3 0000:02:00.2 eth0: 0: NAPI info [000000a0:000000a0:(0188:01a0:01ff):0000:(06f2:0000:0000:0000)]
+=== ===
 
-By passing through PT MSRs only when needed, KVM avoids a rather large pile of
-RDMSRs and WRMSRs on every entry/exit, as the host values can be kept resident in
-hardware so long as the main enable bit is cleared in the guest's control MSR
-(which is context switch via a dedicated VMCS field).
+tnapi->hw_status->idx[0].tx_consumer is the same as tnapi->tx_cons (0x1a0)
+meaning that the driver has processed all TX descriptions released by
+the NIC. tnapi->tx_prod (0x188) is ahead of 0x1a0 meaning that there are
+more descriptors in the TX ring ready to be sent but the NIC does not know
+about that yet.
 
-XSAVES isn't subject to MSR intercepts, but KVM could utilize VMX's XSS-exiting
-bitmap to effectively intercept reads and writes to PT MSRs.  Except that as you
-note, KVM would either need to emulate XSAVES (oof) or save/load PT MSRs much more
-frequently.
+Further analysis showed that tg3_start_xmit() can stop the TX queue and
+not tell the NIC about already enqueued packets. The specific sequence
+is:
 
-So it's kind of an emulation thing, but I honestly doubt that emulating XSAVES
-was ever seriously considered when KVM support for PT was added.
+1. tg3_start_xmit() is called at least once and queues packet(s) without
+   updating tnapi->prodmbox (netdev_xmit_more() returns true)
+2. tg3_start_xmit() is called with an SKB which causes tg3_tso_bug() to be
+   called.
+3. tg3_tso_bug() determines that the SKB is too large [L7860], ...
 
-CET is different than PT because the MSRs that need to be context switched at
-every entry/exit have dedicated VMCS fields.  The IA32_PLx_SSP MSRs don't have
-VMCS fields, but they are consumed only in privelege level changes, i.e. can be
-safely deferred until guest "FPU" state is put.
+        if (unlikely(tg3_tx_avail(tnapi) <= frag_cnt_est)) {
 
-> However it is possible to enable IA32_XSS bits in case the msrs XSAVES
-> reads/writes can't do harm to the host, and then KVM can context switch these
-> MSRs when the guest exits and that is what is done here with CET.
+   ... stops the queue [L7861], and returns NETDEV_TX_BUSY [L7870]:
 
-This isn't really true.  It's not a safety or correctness issue so much as it's
-a performance issue.  E.g. KVM could let the guest use XSS for any virtualized
-feature, but it would effectively require context switching related state that
-the host needs loaded "immediately" after VM-Exit.  And for MSRs, that gets
-very expensive without dedicated VMCS fields.
+        netif_tx_stop_queue(txq);
+        ...
+        if (tg3_tx_avail(tnapi) <= frag_cnt_est)
+                return NETDEV_TX_BUSY;
 
-I mean, yeah, it's a correctness thing to not consume guest state in the host
-and vice versa, but that's not unique to XSS in any way.
+4. Since all tg3_tso_bug() call sites directly return, the code updating
+   tnapi->prodmbox [L8138] is skipped.
+
+5. The queue is stuck now. tg3_start_xmit() is not called while the queue
+   is stopped. The NIC is not processing new packets because
+   tnapi->prodmbox wasn't updated. tg3_tx() is not called by
+   tg3_poll_work() because the all TX descriptions that could be freed has
+   been freed [L7159]:
+
+        /* run TX completion thread */
+        if (tnapi->hw_status->idx[0].tx_consumer != tnapi->tx_cons) {
+                tg3_tx(tnapi);
+
+6. Eventually, dev_watchdog() fires resetting the queue.
+
+As far as I can tell this sequence is still possible in HEAD of master.
+
+I could not reproduce this stall by generating traffic to match conditions
+required for tg3_tso_bug() to be called. Based on the driver's code
+the SKB must be a TSO or GSO skb; it should contain a VLAN tag or extra TCP
+header options; and it should be queued at exactly the right time.
+I believe that the last part is what makes reproducing it harder.
+
+However I was able to reproduce the stall by mimicing the behavior of
+tg3_tso_bug() in tg3_start_xmit(). I added the following lines to
+tg3_start_xmit() before "would_hit_hwbug = 0;" [L8046]:
+
+        if (...) {
+                netif_tx_stop_queue(txq);
+                return NETDEV_TX_BUSY;
+        }
+
+        would_hit_hwbug = 0;
+
+The condition is not super relevant. It was used to control when the stall
+is induced, so that the network is not completely broken dueing testing.
+This approach reproduced the issue rather reliably.
+
+The proposed fix makes sure that the tnapi->prodmbox update happens
+regardless of the reason tg3_start_xmit() returned. It essentially moves
+the code updating tnapi->prodmbox from tg3_start_xmit() (which is renamed
+to __tg3_start_xmit()) to a new wrapper. This makes sure all retun paths
+are covered.
+
+I tested this fix with the code inducing the TX stall from above. The fix
+eliminated stalls completely.
+
+Note that initially, instead of adding a new wrapper function, I tried
+adjusting all code paths exiting tg3_start_xmit() so that they go through
+the branch updating tnapi->prodmbox. This approach seemed more fragile
+than adding a wrapper.
+
+Alex Pakhunov (2):
+  tg3: Increment tx_dropped in tg3_tso_bug()
+  tg3: Fix the TX ring stall
+
+ drivers/net/ethernet/broadcom/tg3.c | 50 ++++++++++++++++++++++-------
+ 1 file changed, 38 insertions(+), 12 deletions(-)
+
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+-- 
+2.39.3
+
