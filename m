@@ -2,95 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 494BE7DE596
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7EC7DE599
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344758AbjKARqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
+        id S1344715AbjKARsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344760AbjKARqH (ORCPT
+        with ESMTP id S1344421AbjKARso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:46:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260A912E
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:45:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2083DC433C8;
-        Wed,  1 Nov 2023 17:45:58 +0000 (UTC)
-Date:   Wed, 1 Nov 2023 13:45:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [QUESTION] ftrace_test_recursion_trylock behaviour
-Message-ID: <20231101134556.5d4a46c3@gandalf.local.home>
-In-Reply-To: <ZUKLnmYyHpthlMEE@krava>
-References: <ZUKLnmYyHpthlMEE@krava>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 1 Nov 2023 13:48:44 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3EDA2;
+        Wed,  1 Nov 2023 10:48:38 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 1101F120020;
+        Wed,  1 Nov 2023 20:48:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1101F120020
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1698860917;
+        bh=EddFr7lOGf4NXOMM9jH9Co+otzGhI8EbkMU/xHevNXE=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=F07PzInd2aLutm3Xd9pZoDISSjegh06GAkp3cdqDW4Lx5dLB9WXbsgoFpvw7aEB+n
+         kZ7/Yi0H+KQpjsyxGCqYJtfIi7mJXC6TRODY3mS2ZeumRl/GhqFWtI3lN9wC0yrQAw
+         9bbnGqmGaekNiFh0K5/e+uI3u3FWG2BEExgEq09hnB1n6IPdh5X2BWc8rvxZhTQeuh
+         RB3CIJnLtAOBkYvHgN9RkpIXfcTY1CB3OFpWGg08uy+/rlKM+x3nj2HIQuPRt2x6/H
+         n2ZJc3YVzF137t7PWQr+Y08s8CKB5D/3nXAg6s3M7wYdaCLqoeALEpj+7GCZvwQq0i
+         5ULJWT87MKiLQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed,  1 Nov 2023 20:48:36 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
+ 2023 20:48:36 +0300
+Date:   Wed, 1 Nov 2023 20:48:36 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>, <kernel@sberdevices.ru>,
+        <rockosov@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
+Subject: Re: [PATCH v3 11/11] dt-bindings: leds: aw200xx: fix led pattern and
+ add reg constraints
+Message-ID: <20231101174836.2qlhkgao6pxjjs2e@CAB-WSD-L081021>
+References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
+ <20231101142445.8753-12-ddrokosov@salutedevices.com>
+ <20231101-subzero-grimace-52a10da6a445@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231101-subzero-grimace-52a10da6a445@spud>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181058 [Nov 01 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 15:56:00 #22380151
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Nov 2023 18:32:14 +0100
-Jiri Olsa <olsajiri@gmail.com> wrote:
+Conor,
 
-> hi,
-> I'm doing some testing on top of fprobes and noticed that the
-> ftrace_test_recursion_trylock allows caller from the same context
-> going through twice.
+On Wed, Nov 01, 2023 at 03:31:28PM +0000, Conor Dooley wrote:
+> On Wed, Nov 01, 2023 at 05:24:45PM +0300, Dmitry Rokosov wrote:
+> > AW200XX controllers have the capability to declare more than 0xf LEDs,
+> > therefore, it is necessary to accept LED names using an appropriate
+> > regex pattern.
+> > 
+> > The register offsets can be adjusted within the specified range, with
+> > the maximum value corresponding to the highest number of LEDs that can
+> > be connected to the controller.
+> > 
+> > Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
+> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 > 
-> The change below adds extra fprobe on stack_trace_print, which is
-> called within the sample_entry_handler and I can see it being executed
-> with following trace output:
+> You did correctly guess what I was getting at on the previous version.
+> Apologies for not replying - I got sick and things probably fell a bit
+> through the cracks.
+
+Don't worry! Take care and get well soon!
+
 > 
->            <...>-457     [003] ...1.    32.352554: sample_entry_handler:
-> Enter <kernel_clone+0x0/0x380> ip = 0xffffffff81177420 <...>-457
-> [003] ...2.    32.352578: sample_entry_handler_extra: Enter
-> <stack_trace_print+0x0/0x60> ip = 0xffffffff8127ae70
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 > 
-> IOW nested ftrace_test_recursion_trylock call in the same context
-> succeeded.
+
+Should I include this tag in the next version with a fix for the 'reg'
+maxItems, or would you review this patch again?
+
+> Cheers,
+> Conor.
 > 
-> It seems the reason is the TRACE_CTX_TRANSITION bit logic.
-> 
-> Just making sure it's intentional.. we have kprobe_multi code on top of
-> fprobe with another re-entry logic and that might behave differently based
-> on ftrace_test_recursion_trylock logic.
+> > ---
+> >  .../bindings/leds/awinic,aw200xx.yaml         | 64 +++++++++++++++++--
+> >  1 file changed, 58 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+> > index 67c1d960db1d..ba4511664fb8 100644
+> > --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+> > +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+> > @@ -45,17 +45,12 @@ properties:
+> >      maxItems: 1
+> >  
+> >  patternProperties:
+> > -  "^led@[0-9a-f]$":
+> > +  "^led@[0-9a-f]+$":
+> >      type: object
+> >      $ref: common.yaml#
+> >      unevaluatedProperties: false
+> >  
+> >      properties:
+> > -      reg:
+> > -        description:
+> > -          LED number
+> > -        maxItems: 1
+> > -
+> >        led-max-microamp:
+> >          default: 9780
+> >          description: |
+> > @@ -69,6 +64,63 @@ patternProperties:
+> >            where max-current-switch-number is determinated by led configuration
+> >            and depends on how leds are physically connected to the led driver.
+> >  
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: awinic,aw20036
+> > +    then:
+> > +      patternProperties:
+> > +        "^led@[0-9a-f]+$":
+> > +          properties:
+> > +            reg:
+> > +              items:
+> > +                minimum: 0
+> > +                maximum: 36
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: awinic,aw20054
+> > +    then:
+> > +      patternProperties:
+> > +        "^led@[0-9a-f]+$":
+> > +          properties:
+> > +            reg:
+> > +              items:
+> > +                minimum: 0
+> > +                maximum: 54
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: awinic,aw20072
+> > +    then:
+> > +      patternProperties:
+> > +        "^led@[0-9a-f]+$":
+> > +          properties:
+> > +            reg:
+> > +              items:
+> > +                minimum: 0
+> > +                maximum: 72
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: awinic,aw20108
+> > +    then:
+> > +      patternProperties:
+> > +        "^led@[0-9a-f]+$":
+> > +          properties:
+> > +            reg:
+> > +              items:
+> > +                minimum: 0
+> > +                maximum: 108
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> > -- 
+> > 2.36.0
+> > 
 
-Yes it's intentional, as it's a work around for an issue that may be
-cleared up now with Peter Zijlstra's noinstr updates.
 
-The use case for that TRACE_CTX_TRANSITION is when a function is traced
-just after an interrupt was triggered but before the preempt count was
-updated to let us know that we are in an interrupt context.
 
-Daniel Bristot reported a regression after the trylock was first introduced
-where the interrupt entry function was traced sometimes but not always.
-That's because if the interrupt happened normally, it would be traced, but
-if the interrupt happened when another event was being traced, the recursion
-logic would see that the trace of the interrupt was happening in the same
-context as the event it interrupted and drop the interrupt trace. But after
-the preempt count was updated, the other functions in the interrupt would be
-seen. This led to very confusing trace output.
-
-The solution to that was this workaround hack, where the trace recursion
-logic would allow a single recursion (the interrupt preempting another
-trace before it set preempt count).
-
-But with noinstr, there should be no more instances of this problem and we
-can drop that extra bit. But the last I checked, there were a few places
-that still could be traced without the preempt_count set. I'll have to
-re-investigate.
-
--- Steve
-
+-- 
+Thank you,
+Dmitry
