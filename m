@@ -2,188 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4D37DD998
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4257DDA27
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376892AbjKAAYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 20:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S1376908AbjKAA0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 20:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjKAAYg (ORCPT
+        with ESMTP id S232206AbjKAA0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 20:24:36 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26648ED;
-        Tue, 31 Oct 2023 17:24:34 -0700 (PDT)
+        Tue, 31 Oct 2023 20:26:20 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64400F4;
+        Tue, 31 Oct 2023 17:26:18 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a6774da682so237910639f.3;
+        Tue, 31 Oct 2023 17:26:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1698798274; x=1730334274;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=C1ijJfA84sdw2N5xqDWTVIUJa7Os+IAgqDYcgevk44w=;
-  b=eWgmUK49qdcbFUnxQ8elqgHmorqrTCZFOCKpuNfW3+m+7osuaoDYkjgZ
-   V7OcT+cviT6HxPw+1rBMkb1mPBqV33joOedMpO7H6HhujeAAX0REVgeqy
-   CXXBVfAFvomGTTGOV93oEJZSi6HoUx7Xw/NRp0kQZLnThymWLsvPmQIZd
-   k=;
-X-IronPort-AV: E=Sophos;i="6.03,266,1694736000"; 
-   d="scan'208";a="40092128"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-b404fda3.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 00:24:33 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1d-m6i4x-b404fda3.us-east-1.amazon.com (Postfix) with ESMTPS id 56176804B2;
-        Wed,  1 Nov 2023 00:24:31 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:44159]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.35.252:2525] with esmtp (Farcaster)
- id a6afe38b-6f63-4009-be6e-39d7d5250157; Wed, 1 Nov 2023 00:24:30 +0000 (UTC)
-X-Farcaster-Flow-ID: a6afe38b-6f63-4009-be6e-39d7d5250157
-Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 1 Nov 2023 00:24:30 +0000
-Received: from u1e958862c3245e.ant.amazon.com (10.111.85.42) by
- EX19D030UWB002.ant.amazon.com (10.13.139.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 1 Nov 2023 00:24:29 +0000
-From:   Suraj Jitindar Singh <surajjs@amazon.com>
-To:     <stable@vger.kernel.org>
-CC:     <surajjs@amazon.com>, <gregkh@linuxfoundation.org>,
-        <jslaby@suse.com>, <george.kennedy@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <sjitindarsingh@gmail.com>
-Subject: [PATCH stable 4.14.y] vc_screen: move load of struct vc_data pointer in vcs_read() to avoid UAF
-Date:   Tue, 31 Oct 2023 17:24:21 -0700
-Message-ID: <20231101002421.1674851-1-surajjs@amazon.com>
-X-Mailer: git-send-email 2.34.1
+        d=gmail.com; s=20230601; t=1698798377; x=1699403177; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Crihteq14mq1SNgvZmjOWL5sINKEUJsXZXrqKikBaFA=;
+        b=S7hZDo5x5QiwstdqXNGe7Ho9HLxYe9ocSofq0BgFxYqyIQZ8Mp2HLFlbdX9Yxi6f2M
+         m9hpg4D1g82//Xf1egGSgJIwjSbf2iXd75ErU469vGvIoq0FdgTHIOWnAREkRA1sB0qt
+         FNLWJ7F0X8+5T5OUCdHNSPE/bG9vI+nIUthYCaSvq01ACv/gfXIC+WFBI9xZkSFf2IGC
+         QRmxx1gKSwywo94HrxKOiv7jW/xZTKZfewcCXT8MyP3sk17WpuWeZzoDtKlffpN2AUoV
+         jcTIntEiglXX/yG9yU3QgWJY0qbn2pbHNCbWSpFgO597n8QxDnaMtueCx+nRfzZuQejZ
+         0tdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698798377; x=1699403177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Crihteq14mq1SNgvZmjOWL5sINKEUJsXZXrqKikBaFA=;
+        b=RQwRDgMFUY3fSGUPnZPcIlkc+68Xv3xz8NyqMHygygiqnYBRZPHQt/h/M2dzszoDHj
+         VEYz6RKcgRzg3Mn087ayh/yuFqhq+QyBhI02Be0ruLw5GzILjD7rogyVMPrej/AJ6AYo
+         aSrOPA1P8gabsin0PiEgZlv6aVwiVW40FbDP2EmwCG5v+dSUvZ9MLhJ4nCqgNsEHr57L
+         kjZYCd/UVJlwURlUBhKDk8ynFUf2Lxk8CMsQfTMGoSUT+LmukUByKlyESk+LyU30lIKC
+         x379uKXFLslShf3zoIJKbF123vqV7ishBYcqgHYT6mN1hd9+tL/UQeE9MWEQedZYpgyq
+         pANg==
+X-Gm-Message-State: AOJu0YxhoA4qk16um/ZpImbtdn9bzIIU+8sNTmmUpUM/2J0+iUGd317H
+        /Qoww9c8BDz2vytHlr2X6yx294sFnWVAXg==
+X-Google-Smtp-Source: AGHT+IEvAaoR06BIVnuyKsQIdXDCjeoXMJTD3Hx+wBd5i6t6IGdzUzFxe+C0CccvWJTiQOS040zF+A==
+X-Received: by 2002:a05:6e02:3893:b0:359:9c0:de73 with SMTP id cn19-20020a056e02389300b0035909c0de73mr14028636ilb.26.1698798377422;
+        Tue, 31 Oct 2023 17:26:17 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id t1-20020a92c901000000b00357cc8df1d5sm141701ilp.68.2023.10.31.17.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 17:26:16 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
+        gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     lb@semihalf.com, linux@rasmusvillemoes.dk, joe@perches.com,
+        mcgrof@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
+        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
+        robdclark@gmail.com, groeck@google.com, yanivt@google.com,
+        bleung@google.com, linux-doc@vger.kernel.org,
+        quic_saipraka@quicinc.com, will@kernel.org,
+        catalin.marinas@arm.com, quic_psodagud@quicinc.com, maz@kernel.org,
+        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, mingo@redhat.com,
+        jim.cromie@gmail.com
+Subject: [PATCH v7d 00/23] fix DRM_USE_DYNAMIC_DEBUG=y regression
+Date:   Tue, 31 Oct 2023 18:25:46 -0600
+Message-ID: <20231101002609.3533731-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.111.85.42]
-X-ClientProxiedBy: EX19D040UWB004.ant.amazon.com (10.13.138.91) To
- EX19D030UWB002.ant.amazon.com (10.13.139.182)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Kennedy <george.kennedy@oracle.com>
+hi Jason, DRM-folk
 
-commit 226fae124b2dac217ea5436060d623ff3385bc34 upstream.
+(v7d - refreshed onto v6.6, patch-21 squashed into 14)
 
-After a call to console_unlock() in vcs_read() the vc_data struct can be
-freed by vc_deallocate(). Because of that, the struct vc_data pointer
-load must be done at the top of while loop in vcs_read() to avoid a UAF
-when vcs_size() is called.
+This patchest fixes the chicken-egg initialization problem in the 1st
+version of ddebug-class-maps, that DRM-CI uncovered.
 
-Syzkaller reported a UAF in vcs_size().
+The root-problem was DECLARE_DYNDBG_CLASSMAP, which broke the K&R rule:
+"define once, refer many".  In patch 14 it is replaced by:
 
-BUG: KASAN: use-after-free in vcs_size (drivers/tty/vt/vc_screen.c:215)
-Read of size 4 at addr ffff8881137479a8 by task 4a005ed81e27e65/1537
+ DYNDBG_CLASSMAP_DEFINE - define and export a struct ddebug_class_map
+ DYNDBG_CLASSMAP_USE - ref the exported struct
 
-CPU: 0 PID: 1537 Comm: 4a005ed81e27e65 Not tainted 6.2.0-rc5 #1
-Hardware name: Red Hat KVM, BIOS 1.15.0-2.module
-Call Trace:
-  <TASK>
-__asan_report_load4_noabort (mm/kasan/report_generic.c:350)
-vcs_size (drivers/tty/vt/vc_screen.c:215)
-vcs_read (drivers/tty/vt/vc_screen.c:415)
-vfs_read (fs/read_write.c:468 fs/read_write.c:450)
-...
-  </TASK>
+test-dynamic-debug is also extended with a -submod.ko, in order to
+recapitulate the drm & drivers initialization scenario.
 
-Allocated by task 1191:
-...
-kmalloc_trace (mm/slab_common.c:1069)
-vc_allocate (./include/linux/slab.h:580 ./include/linux/slab.h:720
-     drivers/tty/vt/vt.c:1128 drivers/tty/vt/vt.c:1108)
-con_install (drivers/tty/vt/vt.c:3383)
-tty_init_dev (drivers/tty/tty_io.c:1301 drivers/tty/tty_io.c:1413
-     drivers/tty/tty_io.c:1390)
-tty_open (drivers/tty/tty_io.c:2080 drivers/tty/tty_io.c:2126)
-chrdev_open (fs/char_dev.c:415)
-do_dentry_open (fs/open.c:883)
-vfs_open (fs/open.c:1014)
-...
+The final blocking bug was a missing __align(8) on the ddebug_class_user
+record inserted by DYNDBG_CLASSMAP_USE.  This caused DRM=y (builtin
+only) to have a corrupt record for drm_kms_helper (a builtin dependent).
+Curiously, a clang build did not exhibit this problem.
 
-Freed by task 1548:
-...
-kfree (mm/slab_common.c:1021)
-vc_port_destruct (drivers/tty/vt/vt.c:1094)
-tty_port_destructor (drivers/tty/tty_port.c:296)
-tty_port_put (drivers/tty/tty_port.c:312)
-vt_disallocate_all (drivers/tty/vt/vt_ioctl.c:662 (discriminator 2))
-vt_ioctl (drivers/tty/vt/vt_ioctl.c:903)
-tty_ioctl (drivers/tty/tty_io.c:2776)
-...
+Heres a part of dmesg, for a DRM=y kernel, booted with
+     dynamic_debug.verbose=3 drm.debug=0x10
 
-The buggy address belongs to the object at ffff888113747800
-  which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 424 bytes inside of
-  1024-byte region [ffff888113747800, ffff888113747c00)
+[    0.466747] dyndbg: add-module: drm 406 sites
+[    0.467569] dyndbg: classes[0]: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.467743] dyndbg: module:drm attached 1 classes
+[    0.468557] dyndbg: builtin class: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.468742] dyndbg:  found kp:drm.debug =0x10
+[    0.468743] dyndbg:   mapped to: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.469742] dyndbg:   drm.debug: classbits: 0x10
+[    0.470573] dyndbg: apply bitmap: 0x10 to: 0x0 for drm
+[    0.470743] dyndbg: query 0: "class DRM_UT_ATOMIC +p" mod:drm
+[    0.471743] dyndbg: split into words: "class" "DRM_UT_ATOMIC" "+p"
+[    0.472743] dyndbg: op='+' flags=0x1 maskp=0xffffffff
+[    0.473679] dyndbg: parsed: func="" file="" module="drm" format="" lineno=0-0 class=DRM_UT_ATOMIC
+[    0.473749] dyndbg: processed 1 queries, with 0 matches, 0 errs
+[    0.474742] dyndbg: bit_4: 0 matches on class: DRM_UT_ATOMIC -> 0x10
+[    0.475742] dyndbg: applied bitmap: 0x10 to: 0x0 for drm
+[    0.476686] dyndbg: 406 debug prints in module drm
+[    0.476743] dyndbg: add-module: drm_kms_helper 93 sites
+[    0.477727] dyndbg: class_ref[0] drm_kms_helper -> drm module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.477743] dyndbg: builtin class: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.478742] dyndbg:  found kp:drm.debug =0x10
+[    0.478743] dyndbg:   mapped to: module:drm base:0 len:10 type:DISJOINT_BITS
+[    0.479743] dyndbg:   drm.debug: classbits: 0x10
+[    0.480592] dyndbg: apply bitmap: 0x10 to: 0x0 for drm_kms_helper
+[    0.480743] dyndbg: query 0: "class DRM_UT_ATOMIC +p" mod:drm_kms_helper
+[    0.481743] dyndbg: split into words: "class" "DRM_UT_ATOMIC" "+p"
+[    0.482743] dyndbg: op='+' flags=0x1 maskp=0xffffffff
+[    0.483743] dyndbg: parsed: func="" file="" module="drm_kms_helper" format="" lineno=0-0 class=DRM_UT_ATOMIC
+[    0.484750] dyndbg: class-ref: drm_kms_helper.DRM_UT_ATOMIC  module:drm_kms_helper nd:93 nc:0 nu:1
+[    0.485809] dyndbg: processed 1 queries, with 44 matches, 0 errs
+[    0.486742] dyndbg: bit_4: 44 matches on class: DRM_UT_ATOMIC -> 0x10
+[    0.487742] dyndbg: applied bitmap: 0x10 to: 0x0 for drm_kms_helper
+[    0.488743] dyndbg: attach-client-module:  module:drm_kms_helper nd:93 nc:0 nu:1
+[    0.489742] dyndbg:  93 debug prints in module drm_kms_helper
 
-The buggy address belongs to the physical page:
-page:00000000b3fe6c7c refcount:1 mapcount:0 mapping:0000000000000000
-     index:0x0 pfn:0x113740
-head:00000000b3fe6c7c order:3 compound_mapcount:0 subpages_mapcount:0
-     compound_pincount:0
-anon flags: 0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-raw: 0017ffffc0010200 ffff888100042dc0 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+Id like to get this into linux-next, so widespread testing is appreciated.
+lkp-robot reported BUILD SUCCESS on it, Im running it on my amdgpu desktop.
+I have scripts to operate the test-module if anyone wants them.
 
-Memory state around the buggy address:
-  ffff888113747880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff888113747900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888113747980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                   ^
-  ffff888113747a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff888113747a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-Disabling lock debugging due to kernel taint
+Patches are also at https://github.com/jimc/linux/tree/dd-fix-7d
 
-Fixes: ac751efa6a0d ("console: rename acquire/release_console_sem() to console_lock/unlock()")
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Suggested-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-Link: https://lore.kernel.org/r/1674577014-12374-1-git-send-email-george.kennedy@oracle.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[ 4.14: Adjust context ]
-Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
----
- drivers/tty/vt/vc_screen.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/vt/vc_screen.c b/drivers/tty/vt/vc_screen.c
-index 42c9ef64108f..aa67730f5cc6 100644
---- a/drivers/tty/vt/vc_screen.c
-+++ b/drivers/tty/vt/vc_screen.c
-@@ -219,10 +219,6 @@ vcs_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
- 	console_lock();
- 
- 	attr = (currcons & 128);
--	ret = -ENXIO;
--	vc = vcs_vc(inode, &viewed);
--	if (!vc)
--		goto unlock_out;
- 
- 	ret = -EINVAL;
- 	if (pos < 0)
-@@ -238,6 +234,11 @@ vcs_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
- 		ssize_t orig_count;
- 		long p = pos;
- 
-+		ret = -ENXIO;
-+		vc = vcs_vc(inode, &viewed);
-+		if (!vc)
-+			goto unlock_out;
-+
- 		/* Check whether we are above size each round,
- 		 * as copy_to_user at the end of this loop
- 		 * could sleep.
+Jim Cromie (23):
+  test-dyndbg: fixup CLASSMAP usage error
+  dyndbg: reword "class unknown," to "class:_UNKNOWN_"
+  dyndbg: make ddebug_class_param union members same size
+  dyndbg: replace classmap list with a vector
+  dyndbg: ddebug_apply_class_bitmap - add module arg, select on it
+  dyndbg: split param_set_dyndbg_classes to module/wrapper fns
+  dyndbg: drop NUM_TYPE_ARRAY
+  dyndbg: reduce verbose/debug clutter
+  dyndbg: silence debugs with no-change updates
+  dyndbg: tighten ddebug_class_name() 1st arg type
+  dyndbg: tighten fn-sig of ddebug_apply_class_bitmap
+  dyndbg: reduce verbose=3 messages in ddebug_add_module
+  dyndbg-API: remove DD_CLASS_TYPE_(DISJOINT|LEVEL)_NAMES and code
+  dyndbg-API: fix CONFIG_DRM_USE_DYNAMIC_DEBUG regression
+  dyndbg: refactor ddebug_classparam_clamp_input
+  dyndbg-API: promote DYNDBG_CLASSMAP_PARAM to API
+  dyndbg-doc: add classmap info to howto
+  dyndbg: reserve flag bit _DPRINTK_FLAGS_PREFIX_CACHED
+  dyndbg: add _DPRINTK_FLAGS_INCL_LOOKUP
+  dyndbg: refactor *dynamic_emit_prefix
+  drm: use correct ccflags-y spelling
+  drm-drivers: DRM_CLASSMAP_USE in 2nd batch of drivers, helpers
+  drm: restore CONFIG_DRM_USE_DYNAMIC_DEBUG un-BROKEN
+
+ .../admin-guide/dynamic-debug-howto.rst       |  60 ++-
+ MAINTAINERS                                   |   2 +-
+ drivers/gpu/drm/Kconfig                       |   3 +-
+ drivers/gpu/drm/Makefile                      |   3 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  12 +-
+ drivers/gpu/drm/display/drm_dp_helper.c       |  12 +-
+ drivers/gpu/drm/drm_crtc_helper.c             |  12 +-
+ drivers/gpu/drm/drm_gem_shmem_helper.c        |   2 +
+ drivers/gpu/drm/drm_print.c                   |  35 +-
+ drivers/gpu/drm/gud/gud_drv.c                 |   2 +
+ drivers/gpu/drm/i915/i915_params.c            |  12 +-
+ drivers/gpu/drm/mgag200/mgag200_drv.c         |   2 +
+ drivers/gpu/drm/nouveau/nouveau_drm.c         |  12 +-
+ drivers/gpu/drm/qxl/qxl_drv.c                 |   2 +
+ drivers/gpu/drm/radeon/radeon_drv.c           |   2 +
+ drivers/gpu/drm/udl/udl_main.c                |   2 +
+ drivers/gpu/drm/vkms/vkms_drv.c               |   2 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |   2 +
+ include/asm-generic/vmlinux.lds.h             |   1 +
+ include/drm/drm_print.h                       |  12 +-
+ include/linux/dynamic_debug.h                 | 121 +++--
+ kernel/module/main.c                          |   3 +
+ lib/Kconfig.debug                             |  24 +-
+ lib/Makefile                                  |   3 +
+ lib/dynamic_debug.c                           | 458 +++++++++++-------
+ lib/test_dynamic_debug.c                      | 131 ++---
+ lib/test_dynamic_debug_submod.c               |  17 +
+ 27 files changed, 584 insertions(+), 365 deletions(-)
+ create mode 100644 lib/test_dynamic_debug_submod.c
+
 -- 
-2.34.1
+2.41.0
 
