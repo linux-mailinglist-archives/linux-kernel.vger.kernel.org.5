@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8612A7DE710
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515997DE70C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348077AbjKAUTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 16:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        id S1346375AbjKAUUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 16:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjKAUTF (ORCPT
+        with ESMTP id S231461AbjKAUUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 16:19:05 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4863FC2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:19:00 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5af5b532d8fso2535347b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 13:19:00 -0700 (PDT)
+        Wed, 1 Nov 2023 16:20:24 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDCBC1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:20:21 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9c7bba32beso173913276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 13:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698869939; x=1699474739; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TitzneWvDoMzzr+coAisCqJHJdfZSk/3hIEHii6U/Bo=;
-        b=uLkpk1S9HK6v9qnOElJdITKWjFE5P23BTIaJB3vQTuxJ7OtNwA0HA0T9zVM4D1Pk8J
-         MJOTlZRohvM+V7Ik5XwK8dGo4Rap0yGNdoFHbQfl7ttseHQ6wtx6GzX9LlUGtK5Pv//V
-         xoUibo02z/ziikkSBY0wSbVynhqJ5Le+rdHMViIyff/r56HC1XqHjceeTjXm5enXQXER
-         LTwU8Dld/J1lJSVqEJ6lMuimmNB48OhMDLzVDHJ3Cwwy5/YaMzUQkAvWVaRjvYPH3g57
-         QNmizt00Ba/nBUq5En+kw9FgqpX/8BNM+I0hRtZBZpQEc0cF9Y7WiKeFlyuIR2wjVPK4
-         dYrw==
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1698870021; x=1699474821; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VOihp0zXHeWm/nSnAGD46PQYVKeGVpfsma9ThAS7/fM=;
+        b=owzGiz5X2hbiAono6gLF86oV0nRuOqqpEO15BvvhPGUWBubT5n5oPmdKfwNkWMN8vC
+         GIZudJU6i9qrzyohD1kQOu6bhMSlaSS4b2LU3bFq9BrmGhbjhpqemscXGfl9FV5W8ghF
+         IZjBJiNgrFKP/dbOOlb6UdV6zGcp5HdEArOdLYAN3joCOJy3db2S+fFpO8ndl52hDSvN
+         gLJtwa5xn7P2festAVTVrGtbwYxMK8HnKGaCZ0T1ezSqnJ1ET3oo+QKGckXanhmd74uZ
+         xBbg+ys62ea6/LLpAYGFi3B5GppDDxbCQZJMdNh0eSJfzHhoq/nNV9wFXZA9125apZVF
+         RKIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698869939; x=1699474739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TitzneWvDoMzzr+coAisCqJHJdfZSk/3hIEHii6U/Bo=;
-        b=Z+EGkAzSs8UPSSFJ4ZE3QbJla4Z4A9qB5avpZ1oLwn6iCu5VWj5ndZLRIK+98z5Q4f
-         229BAYzwES+naLalmCoEfIndyI3VC2GOa1XqqMCFW1KPpXjwI3m8Ez7+l8aqKPNhnp0U
-         xo8C3QoKxGdxsOhfQdqmggFX3heDy10XqA6fvqrQ5rx905UdyvyZmY9CUOyz7LStM1ys
-         0Wst0ClyraoNi8Yr4e3S9ziY4I5K8UNMt0WlveemAkZe7PeiLsG5jktslYOb4lvtKzEl
-         /fJXmxPNnwX1vudWXK+jd5LvwdQAdB3glXCQ1fHehtedl5eLxBNEC5/mdioYT7x4gyMS
-         TlxA==
-X-Gm-Message-State: AOJu0YyCM0/wOBXFIRwLRk3oMipSsiihJLQvV+I5jO5nVTVhlbsT5a6+
-        xMj7qxA0oCDDXWfsh8i7/lHV5D+LF2j4XHLxXkLFXQ==
-X-Google-Smtp-Source: AGHT+IGo6+MIYRKhTrama1zkFjt1CLUiYGYVyMjn2OnPbe5KN9hBfB3CyP4WowMIfpzZSNbhubM4hATIU/UXf+5ejxk=
-X-Received: by 2002:a05:690c:39b:b0:5b3:4264:416f with SMTP id
- bh27-20020a05690c039b00b005b34264416fmr6121252ywb.27.1698869939518; Wed, 01
- Nov 2023 13:18:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698870021; x=1699474821;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VOihp0zXHeWm/nSnAGD46PQYVKeGVpfsma9ThAS7/fM=;
+        b=B16Gilsst5bXXulCdINxWAFsYEz32lWSisHRkJcrHP0skEKSr0EWsrylTDr/tmze1A
+         QEK8f6/KAfPJ8TsCfisodiNhhVhci+7tVNs3pvsiKybUh+nWwPjFvKou6ubVhjofw7Bj
+         sEAXc6ILtDN6O+bBjJhHuekQvay8H44yBk1fhiLRyamkhVRXRi0c75oYUe9NiPUfhr+Z
+         9MvHdK3jRO+zMcknopKQoVlkL1Rn+FL780M8ulUYOKPvJLupUHZ52S8KHxwav/MWwn0F
+         yhLcwipk6FzjqO9yrDe/R41g9vWxWwgxRq7FOui4/H5uzcP8m9BIH2gpyZkQOOvKggQf
+         x7tA==
+X-Gm-Message-State: AOJu0Yy9FRJ3DMmehgYMP+X09iPWCEL3Fnqft+PdWIb/XHfPhNyhfA7n
+        j+aPL+BxWX7ac2KXbG27wTFqnQ==
+X-Google-Smtp-Source: AGHT+IGfcei5zZrxTrafEEem8XgcvmWSIU+nZw6wSP5Juc/xfuc6SOZjFpQ4zHtoqxszA8ZSbbQlqA==
+X-Received: by 2002:a25:2684:0:b0:da0:3924:3c9b with SMTP id m126-20020a252684000000b00da039243c9bmr18010960ybm.23.1698870020683;
+        Wed, 01 Nov 2023 13:20:20 -0700 (PDT)
+Received: from dell-precision-5540 ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id x16-20020ae9e910000000b00770f3e5618esm1744928qkf.101.2023.11.01.13.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 13:20:19 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 16:20:08 -0400
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ben Whitten <ben.whitten@gmail.com>
+Subject: Re: [PATCH] regmap: prevent noinc writes from clobbering cache
+Message-ID: <ZUKy-ETSbM7yNvNK@dell-precision-5540>
+References: <20231101142926.2722603-2-ben.wolsieffer@hefring.com>
+ <b0e8c9f5-7aff-4adc-b5bc-d61c6107c07f@sirena.org.uk>
 MIME-Version: 1.0
-References: <20231031-fix-rtl8366rb-v3-1-04dfc4e7d90e@linaro.org>
-In-Reply-To: <20231031-fix-rtl8366rb-v3-1-04dfc4e7d90e@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 1 Nov 2023 21:18:47 +0100
-Message-ID: <CACRpkdYiZHXMK1jmG2Ht5kU3bfi_Cor6jvKKRLKOX0KWX3AW9Q@mail.gmail.com>
-Subject: Re: [PATCH net v3] net: dsa: tag_rtl4_a: Bump min packet size
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0e8c9f5-7aff-4adc-b5bc-d61c6107c07f@sirena.org.uk>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 11:45=E2=80=AFPM Linus Walleij <linus.walleij@linar=
-o.org> wrote:
+Hi Mark,
 
-> It was reported that the "LuCI" web UI was not working properly
-> with a device using the RTL8366RB switch. Disabling the egress
-> port tagging code made the switch work again, but this is not
-> a good solution as we want to be able to direct traffic to a
-> certain port.
+On Wed, Nov 01, 2023 at 05:05:39PM +0000, Mark Brown wrote:
+> On Wed, Nov 01, 2023 at 10:29:27AM -0400, Ben Wolsieffer wrote:
+> > Currently, noinc writes are cached as if they were standard incrementing
+> > writes, overwriting unrelated register values in the cache. Instead, we
+> > want to cache the last value written to the register, as is done in the
+> > accelerated noinc handler (regmap_noinc_readwrite).
+> 
+> Could you please add a kunit test for this?
 
-Luiz is not seeing this on his ethernet controller so:
+I started to look into this, but it is not currently possible to test
+noinc behavior with regmap_[raw_]ram. The same bulk write operation is
+used by both incrementing and non-incrementing writes, and the difference
+in behavior is due to how the hardware handles the bulk write to a
+particular register.
 
-pw-bot: cr
+To test this behavior, regmap_raw_ram (raw because it supports bulk
+writes) would have to be told that certain of its registers should
+implement noinc semantics.
 
-(I've seen Vladmir do this, I don't know what it means, but seems
-to be how to hold back patches.)
+Is this something I should implement?
 
-Yours,
-Linus Walleij
+Thanks, Ben
