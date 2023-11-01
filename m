@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4157DE76A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEA27DE7A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345625AbjKAV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 17:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
+        id S1345587AbjKAV1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 17:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345432AbjKAV0Z (ORCPT
+        with ESMTP id S1345309AbjKAV1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 17:26:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E5F122
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698873977; x=1730409977;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=W/tSw6Scof6Iowi5GgeffcVwE78iqgrLgeV/J7eZZQI=;
-  b=griO7eMpF5cxCy9ltVStBpzPF2mB1vmoZv+Z/MVuusupU7zT53OCpWjS
-   i6Y0sjK0LMpNojeOUIirzA/Y/6WPsW2dOrtdcsIGzwgF1td6hKjlhnurj
-   yRqbsfPCQ6S04UT5iaGf91geIlE/dcb2LFshSw+V9Mge1jh2BZ7QCVINT
-   Y+DxrZdKhJ9xxvhCpXcKgbqLrBx2fb9X2zCriqcCwjUn5yaKzook73ZTo
-   2TnTzIkvc+C2I876vF/hAmuTVSjnjXAB3yfgB6qpKpJAIKs+fSriY/Sf5
-   8Fs/ANZCWoULgrNcwthmoMyVG38sb2ds2OQHpjwOj8dCuHNICxxyCm6CD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="419699894"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="419699894"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 14:26:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764691693"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="764691693"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 14:26:16 -0700
-Date:   Wed, 1 Nov 2023 14:26:15 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     "Moger, Babu" <babu.moger@amd.com>
-Cc:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: [PATCH v2] x86/resctrl: Fix unused variable warning in
- cache_alloc_hsw_probe()
-Message-ID: <ZULCd/TGJL9Dmncf@agluck-desk3>
-References: <20231031220534.37730-1-tony.luck@intel.com>
- <d47235e0-7ecd-483e-82c3-78f13c77df67@amd.com>
- <SJ1PR11MB6083C14236AC0AFCB49DFB15FCA7A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <9e6a979a-48db-4b25-884f-ac8d4c2bb078@amd.com>
+        Wed, 1 Nov 2023 17:27:36 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CACFD5A
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:26:58 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-da2b9211dc0so227689276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 14:26:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698874018; x=1699478818; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qwvcIFx1x2xKOK8vInsz3+h6jH8AxfiD9ppPw8p0zVU=;
+        b=Lmzw8VxUGoEhKu53Q19/A8yhd+nHgbZzjxzHikHDHqsU9d87mQfRjqdJVPZvFBBZ/F
+         rt1Lx6uMxvKktElKE73xE1TRuwdXgupfUB4dz8JkXhPDdTF8XJkfSeSRYuzq39unldZT
+         umra8dnBw1IZhlufmTv4NozG+c3yu6qUm+jcZfO5i8WPYCt/6xpEp/TSdV+PmBtBkB3c
+         g6bOaTdJbmKQdCp4CKUibSj3Kom0M6TB1adp3FHr5Ky1JK+0W1N+cAyxyU86v3UbZUo3
+         KC4YQJCkCBlmU0IirdaWJkAkqCFXc+UGSG42SE6cfGv4PufTyT/MvCWsc/yFvtGwacgR
+         pVZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698874018; x=1699478818;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qwvcIFx1x2xKOK8vInsz3+h6jH8AxfiD9ppPw8p0zVU=;
+        b=RPCNOZsJlUaP36YKoNFtkr1N+e3NUZJzvGa9ZhMsIr74f0B6v4DCDF6Baq0KjVIhjB
+         TmbiNpKyneXCdjIZcnjBud9i9rTXSk2J9EEaZrSpQvgUQXpzBz2dxDmsJqHzCAmOrBGK
+         SNg/hDQulgFsl/pt0BRwSX2W32IuqOJGfrEPD4CVkSKIivzxoUCY8h/jK8CA7tc16ALd
+         coIU6nAFk8ydV5SrCb+1KTzxkSL9yftVVpCdVlCrbh+0dtADrgiDLDQOv9GlR4bmS+oI
+         Ke0BAoZN+mMqx2Dih9pNrAds7LTKv1T5GBfISkAxO8MBULM52zfZNvxAdvWMFPdjvEUg
+         VbGw==
+X-Gm-Message-State: AOJu0YwIs/ApeZD/cWBBEuE0Zc+qncR0Rbvnvgtlm5U2WznFw3pYLGbX
+        XXIzu6UOnpOI9dtwW5OeB1l0+Ne//Jp6mxS7RdSR9w==
+X-Google-Smtp-Source: AGHT+IFNFUT/yrpeYmeI9UzNEtwEugX28B6zv7+mKVcZeC1p52A0159sap29DPJOxBLy1xzSHmKHJ/hvPBOi6ZZXZjs=
+X-Received: by 2002:a25:cbc4:0:b0:da0:6876:c20d with SMTP id
+ b187-20020a25cbc4000000b00da06876c20dmr16304686ybg.19.1698874017783; Wed, 01
+ Nov 2023 14:26:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e6a979a-48db-4b25-884f-ac8d4c2bb078@amd.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org> <20231101-gdsc-hwctrl-v3-2-0740ae6b2b04@linaro.org>
+In-Reply-To: <20231101-gdsc-hwctrl-v3-2-0740ae6b2b04@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 1 Nov 2023 23:26:46 +0200
+Message-ID: <CAA8EJprVZ=FEMwn_oB7O840aen3u7f3xknNQukbw8TODxRhB4A@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 2/5] PM: domains: Add the domain HW-managed mode
+ to the summary
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
+        Taniya Das <quic_tdas@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a "W=1" build gcc throws a warning:
+On Wed, 1 Nov 2023 at 11:06, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> Now that genpd supports dynamically switching the control for an
+> attached device between hardware- and software-mode,  let's add this
+> information to the genpd summary in debugfs.
+>
+> Suggested-by: Taniya Das <quic_tdas@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/base/power/domain.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 
-arch/x86/kernel/cpu/resctrl/core.c: In function ‘cache_alloc_hsw_probe’:
-arch/x86/kernel/cpu/resctrl/core.c:139:16: warning: variable ‘h’ set but not used
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Fix by switching from wrmsr_safe() to wrmsrl_safe(), and from rdmsr()
-to rdmsrl() using a single u64 argument for the MSR value instead of
-the pair of u32 for the high and low halves.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
-Changes since v1 (suggested by Babu)
-
-Switch both the wrmsr() and rdmsr() to the 64-bit versions.
-
- arch/x86/kernel/cpu/resctrl/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 19e0681f0435..d29ebe345de6 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -136,15 +136,15 @@ static inline void cache_alloc_hsw_probe(void)
- {
- 	struct rdt_hw_resource *hw_res = &rdt_resources_all[RDT_RESOURCE_L3];
- 	struct rdt_resource *r  = &hw_res->r_resctrl;
--	u32 l, h, max_cbm = BIT_MASK(20) - 1;
-+	u64 max_cbm = BIT_ULL_MASK(20) - 1, l3_cbm_0;
- 
--	if (wrmsr_safe(MSR_IA32_L3_CBM_BASE, max_cbm, 0))
-+	if (wrmsrl_safe(MSR_IA32_L3_CBM_BASE, max_cbm))
- 		return;
- 
--	rdmsr(MSR_IA32_L3_CBM_BASE, l, h);
-+	rdmsrl(MSR_IA32_L3_CBM_BASE, l3_cbm_0);
- 
- 	/* If all the bits were set in MSR, return success */
--	if (l != max_cbm)
-+	if (l3_cbm_0 != max_cbm)
- 		return;
- 
- 	hw_res->num_closid = 4;
--- 
-2.41.0
-
+--
+With best wishes
+Dmitry
