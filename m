@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4F47DE71C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B2A7DE72A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348036AbjKAUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 16:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
+        id S1348070AbjKAUNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 16:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347763AbjKAUMa (ORCPT
+        with ESMTP id S1347762AbjKAUNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 16:12:30 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52196110
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:12:28 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b709048d8eso235754b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 13:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698869548; x=1699474348; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XBY0JWp+fvBCeujtT4HwLCwKShpFadpYymdfioiLqEY=;
-        b=fLUGwmn/YMPlpSv3zjIS5KdUmNEb1RgacJfynZeBTMyl6g02CW5KfZuYlpJJ+m92q5
-         CAk8opzGhUvQnHFlJkNZCwoFP8foDlCzRW6zMCZuVMCI6xuehvTGWMjwaSe2UtbLOu0d
-         nr73E2y4oVFnFj7YiXwRvDLzNIXab/f/JcYxiY89PdiTw0w8Szrl4HbhwCMb42CmvZy0
-         JAQU/c2Z/5Dd5FMiy1ZEJdgBLo+9/gdDLw7TA/YonCUxM88VlFfGhRwa0vkcia7o2Y9i
-         KkerJ8Qshl25SHcB5zgLUtKDeanpH6amLHY57aeYdHHei4TRDzf9BhnXbwMHR5r8Odvn
-         C0yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698869548; x=1699474348;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XBY0JWp+fvBCeujtT4HwLCwKShpFadpYymdfioiLqEY=;
-        b=lFmVSxP8RUdQlRh0NKO3ihykVnrWvqa/wlMs3StkWQxChT6FTGjZOudrOcDFjvTylj
-         WTfCh7bW3GRmsn5qtTYm1IL9A/f1tXv2tKIJ8jD7K02I7FGW6zyh85Iu+MyGjTj7r0tP
-         lP4xgN1sE7nLNiEX+kVJCjHC8ESGNDTzSK8U9Exk9ZapnywxVGoHIqW+MyupmCLyczmE
-         YRInVrL9oTNMV0s8/hh3gKRP8N0E1/E4yxOgm+RAPCLuAW2SQIR+8LZmdtDsDTXafOpb
-         jVxm4RhmJOcflT+VUYgJWXnj7rdMWCgiBOg6iZs0j2QerJrmQMX/i483M/FxjohMjt74
-         OApw==
-X-Gm-Message-State: AOJu0YzVlDBcBGxEAIx1ko59kUozgg5FYIF7MzuBOve/hzmst4aEFirG
-        1jWPTHzE3axoVXw0k/ZOE1Hkpw==
-X-Google-Smtp-Source: AGHT+IGZCGUcTXRTOrpzR95F1FXg0ZwWYA/hCUz78Q1veCMd1klHXEEda84Z+O8rabrVvTyQI5zB/w==
-X-Received: by 2002:a05:6a00:1797:b0:6b4:6b34:8cef with SMTP id s23-20020a056a00179700b006b46b348cefmr15788129pfg.34.1698869547714;
-        Wed, 01 Nov 2023 13:12:27 -0700 (PDT)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id u18-20020a056a00125200b00688435a9915sm1584901pfi.189.2023.11.01.13.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 13:12:27 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 13:12:24 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        Xiao W Wang <xiao.w.wang@intel.com>,
-        Evan Green <evan@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v9 5/5] riscv: Test checksum functions
-Message-ID: <ZUKxKFlIHcxZWVKg@ghost>
-References: <20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com>
- <20231031-optimize_checksum-v9-5-ea018e69b229@rivosinc.com>
- <be85f9cb-25cb-4d58-a0db-9b85af240bba@app.fastmail.com>
+        Wed, 1 Nov 2023 16:13:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2786D11D;
+        Wed,  1 Nov 2023 13:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=9GbIiVVmtxjeLQGfLovljVUMJ+L+zaLMrxPAsch8AJA=; b=AXVpfN3jrYeH9Mrr/XwXJGquAG
+        vy/vZBAdO/ww8EX58LdE2uPSYEyjEMRLF3k81mSvrvYAyY6ejODqYbCC/uYhvbGVmLUx74gnmiyJm
+        TMKft+OtD6Fb9EVoPv9A8mhQPMN+NDkrTEEGbA4qiOWlEw3PhqGhFOmiDOqE78+4ssukmZmESgFSt
+        zMPzjEugUTcIRK7XwiSwyBFBsblvmgO8LkoUBM4/NVHhlUc0d4LZTu4uaTqO28zL8liQwFMPDh3ce
+        fLHMk32dOTXJOUB2dn254fE24QMaRpqOGJj0Y7ygQuObKqqPD57uesqkTWr9F7DxgWxSRY1KulIDe
+        YnQrkHXA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qyHaJ-0084wC-16;
+        Wed, 01 Nov 2023 20:13:03 +0000
+Date:   Wed, 1 Nov 2023 13:13:03 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-modules@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        andrea.righi@canonical.com, keescook@chromium.org,
+        zhumao001@208suo.com, yangtiezhu@loongson.cn, ojeda@kernel.org
+Subject: [GIT PULL] Modules changes for v6.7-rc1
+Message-ID: <ZUKxT1CL9/0Dn6NE@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be85f9cb-25cb-4d58-a0db-9b85af240bba@app.fastmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:14:07PM +0100, Arnd Bergmann wrote:
-> On Wed, Nov 1, 2023, at 01:18, Charlie Jenkins wrote:
-> > Add Kconfig support for riscv specific testing modules. This was created
-> > to supplement lib/checksum_kunit.c, and add tests for ip_fast_csum and
-> > csum_ipv6_magic.
-> >
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/Kconfig.debug              |   1 +
-> >  arch/riscv/lib/Kconfig.debug          |  31 ++++
-> >  arch/riscv/lib/Makefile               |   2 +
-> >  arch/riscv/lib/riscv_checksum_kunit.c | 330 ++++++++++++++++++++++++++++++++++
-> 
-> I don't understand this bit, what is special about riscv here
-> that prevents you from adding it to the common lib/checksum_kunit.c?
-> 
->        Arnd
+The following changes since commit 7d461b291e65938f15f56fe58da2303b07578a76:
 
-Oh, I can add it to the common one. I was hesitant to do that just
-because it would affect all archs.
+  Merge tag 'drm-next-2023-10-31-1' of git://anongit.freedesktop.org/drm/drm (2023-11-01 06:28:35 -1000)
 
-- Charlie
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ tags/modules-6.7-rc1
+
+for you to fetch changes up to ea0b0bcef4917a2640ecc100c768b8e785784834:
+
+  module: Annotate struct module_notes_attrs with __counted_by (2023-11-01 13:07:32 -0700)
+
+----------------------------------------------------------------
+Modules changes for v6.7-rc1
+
+The only thing worth highligthing is that gzip moves to use vmalloc() instead of
+kmalloc just as we had a fix for this for zstd on v6.6-rc1. The rest is regular
+house keeping, keeping things neat, tidy, and boring.
+
+Oh and this has been on linux-next for over a month.
+
+----------------------------------------------------------------
+Andrea Righi (1):
+      module/decompress: use vmalloc() for gzip decompression workspace
+
+Kees Cook (2):
+      module: Clarify documentation of module_param_call()
+      module: Annotate struct module_notes_attrs with __counted_by
+
+Luis Chamberlain (1):
+      MAINTAINERS: add include/linux/module*.h to modules
+
+Tiezhu Yang (2):
+      module: Make is_mapping_symbol() return bool
+      module: Make is_valid_name() return bool
+
+Zhu Mao (1):
+      module: Fix comment typo
+
+ MAINTAINERS                   | 2 +-
+ include/linux/module_symbol.h | 2 +-
+ include/linux/moduleparam.h   | 6 +++++-
+ kernel/module/decompress.c    | 4 ++--
+ kernel/module/stats.c         | 2 +-
+ kernel/module/sysfs.c         | 2 +-
+ scripts/mod/modpost.c         | 4 ++--
+ 7 files changed, 13 insertions(+), 9 deletions(-)
