@@ -2,246 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156687DE014
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3557DE015
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235014AbjKALGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S235045AbjKALGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234048AbjKALGO (ORCPT
+        with ESMTP id S235032AbjKALGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:06:14 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E688F;
-        Wed,  1 Nov 2023 04:06:08 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2801d7f46f9so3774046a91.3;
-        Wed, 01 Nov 2023 04:06:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698836768; x=1699441568; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dArM6zmYx3FOnkvGIUE8xI49PNFQdgtFB0ocOl6ka7Y=;
-        b=b4H42GfDfS7XvegVqbg10AJL7TiyO8F5eLYqOIie/OU9iob6kzLaoa+9/EjJibeT7g
-         MA7cegnTNrvL7RB9gtmr3JOMTy08K+ULCq4uw3iSXJ/9rJ2jLTs9ZSPgwpHfEHZCTZJo
-         KXnlPQKZU9uGWNc4Ec+9/0Es2E2nBAsGVYMe5Ryp5MEKSaimdkE7dWKnpQxm05eEJ39u
-         EZGPA5NMrux1dYLQ2ss110J+892SyDBFtpksaMrB/8i1/PsKaQ5pL080+5t+Gz9GJF/U
-         BbDd/AgjmMfx0b8XxlT4e0XQxXBcHQVbmBDKri8baZ9SrQUZ3utLGgIHLw9r5kV/3lzz
-         MKEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698836768; x=1699441568;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dArM6zmYx3FOnkvGIUE8xI49PNFQdgtFB0ocOl6ka7Y=;
-        b=YKgDmLbAJzW6mHsWIiY2z//8xiPYaUsAKI0ONB6gABg1ux0M6ohLFjHCbRWiQ/KPPm
-         CSsvfO+Lg/ykbh0SpDyIOVTAw1chwIvaGF5P9Tz+HA8Dqv00tS6sHW8s2dBb+AD2rt7r
-         pTlGQh+ECTE9p5O6toQDGu8E0G0TJIabnvDNTGsGWF5b/2xhYloqJxXRuySri74jSojG
-         hlUKEwONB1NKE1F70Uk6ChfkH5m3nM7KRyVzmXTbxxd69ypslFc1j1y/alD1NvaRbiB3
-         3VB87krOkcZycBHtnupH5XbDmBduh40/ALtHZyFCW1EW180+ROn+Q8kne58qbKQYnWsk
-         GhIQ==
-X-Gm-Message-State: AOJu0YyBTLNDIuGo5JCqTFZV29jSfrXvBywhlrH4a4PAyxbu8nvcVj49
-        caiVfmXbm5qCxjjCiGoaMN43MlpHgfmH48/MgtYdSX63
-X-Google-Smtp-Source: AGHT+IFa4/88Y8aoZg93TUyc6RlxW2Rv1MZsuL3fqtLE2emZD4ASH4FWrbqSA5szVDQReIiLDE0r8zE7vFwfkGAJK+4=
-X-Received: by 2002:a17:90a:134c:b0:280:35ce:5e0f with SMTP id
- y12-20020a17090a134c00b0028035ce5e0fmr7734215pjf.11.1698836767703; Wed, 01
- Nov 2023 04:06:07 -0700 (PDT)
+        Wed, 1 Nov 2023 07:06:20 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FA910D;
+        Wed,  1 Nov 2023 04:06:14 -0700 (PDT)
+Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E6FF110A;
+        Wed,  1 Nov 2023 12:05:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698836756;
+        bh=bNLD+noyFVORoYFY85gW0uosk8xZoUZ+0P47zGsRArE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PSLG8vzTk8KVKuQoBTWUmuj6MifmftYWbHs+39ueu2RNQ5ELNitlEMXF/m4Y5GU+o
+         /22pdh4enHKzMQCL3JKTWjYzLIqmZ9XjCkQEB15Bmls5z7w8uw3UAepOZVg/Y712Xk
+         A+Hu0laEVfbYEujWh21jkIdG5aTx3PwXDhbFlzvw=
+Message-ID: <7d4c762a-9fe1-41ba-b394-cefa8fa70786@ideasonboard.com>
+Date:   Wed, 1 Nov 2023 11:06:10 +0000
 MIME-Version: 1.0
-References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
- <c1cfa3e0-6e5d-4e1d-b6e0-4d1045196a11@xs4all.nl> <CAA+D8AOCujL-eD2-chqHAW7UN7UmLrO6CWRd7d6wTCPP8=VyfA@mail.gmail.com>
-In-Reply-To: <CAA+D8AOCujL-eD2-chqHAW7UN7UmLrO6CWRd7d6wTCPP8=VyfA@mail.gmail.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Wed, 1 Nov 2023 19:05:56 +0800
-Message-ID: <CAA+D8AOHk1pqoESetVerywkJMPX8A57m5kMXTk5GVETstE6fCg@mail.gmail.com>
-Subject: Re: [RFC PATCH v8 00/13] Add audio support in v4l2 framework
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 2/4] usb: gadget: uvc: Allocate uvc_requests one at a
+ time
+Content-Language: en-US
+To:     Avichal Rakesh <arakesh@google.com>
+Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        m.grzeschik@pengutronix.de
+References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+ <20231030202231.3263253-1-arakesh@google.com>
+ <20231030202231.3263253-2-arakesh@google.com>
+From:   Dan Scally <dan.scally@ideasonboard.com>
+Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231030202231.3263253-2-arakesh@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 9:56=E2=80=AFAM Shengjiu Wang <shengjiu.wang@gmail.=
-com> wrote:
->
-> On Fri, Oct 27, 2023 at 7:18=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl>=
- wrote:
-> >
-> > Hi Shengjiu,
-> >
-> > Is there a reason why this series is still marked RFC?
-> >
-> > Just wondering about that.
->
-> In the very beginning I started this series with RFC, So
-> I still use RFC now...
->
+Morning Avichal
 
-Should I resend patches which remove the 'RFC'?
+On 30/10/2023 20:22, Avichal Rakesh wrote:
+> Currently, the uvc gadget driver allocates all uvc_requests as one array
+> and deallocates them all when the video stream stops. This includes
+> de-allocating all the usb_requests associated with those uvc_requests.
+> This can lead to use-after-free issues if any of those de-allocated
+> usb_requests were still owned by the usb controller.
+>
+> This patch is 1 of 2 patches addressing the use-after-free issue.
+> Instead of bulk allocating all uvc_requests as an array, this patch
+> allocates uvc_requests one at a time, which should allows for similar
+> granularity when deallocating the uvc_requests. This patch has no
+> functional changes other than allocating each uvc_request separately,
+> and similarly freeing each of them separately.
+>
+> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Signed-off-by: Avichal Rakesh <arakesh@google.com>
 
-Best regards
-Wang shengjiu
 
-> >
-> > Regards,
-> >
-> >         Hans
-> >
-> > On 27/10/2023 12:35, Shengjiu Wang wrote:
-> > > Audio signal processing also has the requirement for memory to
-> > > memory similar as Video.
-> > >
-> > > This asrc memory to memory (memory ->asrc->memory) case is a non
-> > > real time use case.
-> > >
-> > > User fills the input buffer to the asrc module, after conversion, the=
-n asrc
-> > > sends back the output buffer to user. So it is not a traditional ALSA=
- playback
-> > > and capture case.
-> > >
-> > > It is a specific use case,  there is no reference in current kernel.
-> > > v4l2 memory to memory is the closed implementation,  v4l2 current
-> > > support video, image, radio, tuner, touch devices, so it is not
-> > > complicated to add support for this specific audio case.
-> > >
-> > > Because we had implemented the "memory -> asrc ->i2s device-> codec"
-> > > use case in ALSA.  Now the "memory->asrc->memory" needs
-> > > to reuse the code in asrc driver, so the first 3 patches is for refin=
-ing
-> > > the code to make it can be shared by the "memory->asrc->memory"
-> > > driver.
-> > >
-> > > The main change is in the v4l2 side, A /dev/vl4-audioX will be create=
-d,
-> > > user applications only use the ioctl of v4l2 framework.
-> > >
-> > > Other change is to add memory to memory support for two kinds of i.MX=
- ASRC
-> > > module.
-> > >
-> > > changes in v8:
-> > > - refine V4L2_CAP_AUDIO_M2M to be 0x00000008
-> > > - update doc for FIXED_POINT
-> > > - address comments for imx-asrc
-> > >
-> > > changes in v7:
-> > > - add acked-by from Mark
-> > > - separate commit for fixed point, m2m audio class, audio rate contro=
-ls
-> > > - use INTEGER_MENU for rate,  FIXED_POINT for rate offset
-> > > - remove used fmts
-> > > - address other comments for Hans
-> > >
-> > > changes in v6:
-> > > - use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
-> > >   m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_p=
-art_two.
-> > > - change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
-> > > - fix warning by kernel test rebot
-> > > - remove some unused format V4L2_AUDIO_FMT_XX
-> > > - Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
-> > > - rename audm2m to viaudm2m.
-> > >
-> > > changes in v5:
-> > > - remove V4L2_AUDIO_FMT_LPCM
-> > > - define audio pixel format like V4L2_AUDIO_FMT_S8...
-> > > - remove rate and format in struct v4l2_audio_format.
-> > > - Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
-> > > - updata document accordingly.
-> > >
-> > > changes in v4:
-> > > - update document style
-> > > - separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate com=
-mit
-> > >
-> > > changes in v3:
-> > > - Modify documents for adding audio m2m support
-> > > - Add audio virtual m2m driver
-> > > - Defined V4L2_AUDIO_FMT_LPCM format type for audio.
-> > > - Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
-> > > - with modification in v4l-utils, pass v4l2-compliance test.
-> > >
-> > > changes in v2:
-> > > - decouple the implementation in v4l2 and ALSA
-> > > - implement the memory to memory driver as a platfrom driver
-> > >   and move it to driver/media
-> > > - move fsl_asrc_common.h to include/sound folder
-> > >
-> > > Shengjiu Wang (13):
-> > >   ASoC: fsl_asrc: define functions for memory to memory usage
-> > >   ASoC: fsl_easrc: define functions for memory to memory usage
-> > >   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
-> > >   ASoC: fsl_asrc: register m2m platform device
-> > >   ASoC: fsl_easrc: register m2m platform device
-> > >   media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
-> > >   media: v4l2: Add audio capture and output support
-> > >   media: uapi: Define audio sample format fourcc type
-> > >   media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
-> > >   media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-> > >   media: uapi: Add audio rate controls support
-> > >   media: imx-asrc: Add memory to memory driver
-> > >   media: vim2m_audio: add virtual driver for audio memory to memory
-> > >
-> > >  .../userspace-api/media/v4l/buffer.rst        |    6 +
-> > >  .../userspace-api/media/v4l/common.rst        |    1 +
-> > >  .../media/v4l/dev-audio-mem2mem.rst           |   71 +
-> > >  .../userspace-api/media/v4l/devices.rst       |    1 +
-> > >  .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
-> > >  .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
-> > >  .../userspace-api/media/v4l/pixfmt.rst        |    1 +
-> > >  .../media/v4l/vidioc-enum-fmt.rst             |    2 +
-> > >  .../media/v4l/vidioc-g-ext-ctrls.rst          |   17 +-
-> > >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
-> > >  .../media/v4l/vidioc-querycap.rst             |    3 +
-> > >  .../media/v4l/vidioc-queryctrl.rst            |    9 +-
-> > >  .../media/videodev2.h.rst.exceptions          |    4 +
-> > >  .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
-> > >  drivers/media/platform/nxp/Kconfig            |   12 +
-> > >  drivers/media/platform/nxp/Makefile           |    1 +
-> > >  drivers/media/platform/nxp/imx-asrc.c         | 1186 +++++++++++++++=
-++
-> > >  drivers/media/test-drivers/Kconfig            |    9 +
-> > >  drivers/media/test-drivers/Makefile           |    1 +
-> > >  drivers/media/test-drivers/vim2m_audio.c      |  680 ++++++++++
-> > >  drivers/media/v4l2-core/v4l2-ctrls-api.c      |    5 +-
-> > >  drivers/media/v4l2-core/v4l2-ctrls-core.c     |    2 +
-> > >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   16 +
-> > >  drivers/media/v4l2-core/v4l2-dev.c            |   17 +
-> > >  drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
-> > >  include/media/v4l2-dev.h                      |    2 +
-> > >  include/media/v4l2-ioctl.h                    |   34 +
-> > >  .../fsl =3D> include/sound}/fsl_asrc_common.h   |   60 +
-> > >  include/uapi/linux/v4l2-controls.h            |    9 +
-> > >  include/uapi/linux/videodev2.h                |   42 +
-> > >  sound/soc/fsl/fsl_asrc.c                      |  144 ++
-> > >  sound/soc/fsl/fsl_asrc.h                      |    4 +-
-> > >  sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
-> > >  sound/soc/fsl/fsl_easrc.c                     |  233 ++++
-> > >  sound/soc/fsl/fsl_easrc.h                     |    6 +-
-> > >  35 files changed, 2771 insertions(+), 11 deletions(-)
-> > >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-m=
-em2mem.rst
-> > >  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-a=
-udio-m2m.rst
-> > >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audi=
-o.rst
-> > >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
-> > >  create mode 100644 drivers/media/test-drivers/vim2m_audio.c
-> > >  rename {sound/soc/fsl =3D> include/sound}/fsl_asrc_common.h (60%)
-> > >
-> >
+Thanks for the update; this seems ok now:
+
+
+Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+
+> ---
+> v1 -> v2 : Rebased to ToT
+> v2 -> v3 : Fix email threading goof-up
+> v3 -> v4 : Address review comments & re-rebase to ToT
+> v4 -> v5 : Address more review comments. Add Reviewed-by & Tested-by.
+> v5 -> v6 : No change
+> v6 -> v7 : No change
+> v7 -> v8 : No change. Getting back in review queue
+> v8 -> v9 : Address review comments.
+> v9 -> v10: Address review comments; remove BUG_ON(&video->reqs);
+>             Rebase to ToT (usb-next)
+>
+>   drivers/usb/gadget/function/uvc.h       |  3 +-
+>   drivers/usb/gadget/function/uvc_video.c | 88 ++++++++++++++-----------
+>   2 files changed, 51 insertions(+), 40 deletions(-)
+>
+> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+> index 989bc6b4e93d..993694da0bbc 100644
+> --- a/drivers/usb/gadget/function/uvc.h
+> +++ b/drivers/usb/gadget/function/uvc.h
+> @@ -81,6 +81,7 @@ struct uvc_request {
+>   	struct sg_table sgt;
+>   	u8 header[UVCG_REQUEST_HEADER_LEN];
+>   	struct uvc_buffer *last_buf;
+> +	struct list_head list;
+>   };
+>
+>   struct uvc_video {
+> @@ -102,7 +103,7 @@ struct uvc_video {
+>
+>   	/* Requests */
+>   	unsigned int req_size;
+> -	struct uvc_request *ureq;
+> +	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
+>   	struct list_head req_free;
+>   	spinlock_t req_lock;
+>
+> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+> index c334802ac0a4..1619f9664748 100644
+> --- a/drivers/usb/gadget/function/uvc_video.c
+> +++ b/drivers/usb/gadget/function/uvc_video.c
+> @@ -227,6 +227,24 @@ uvc_video_encode_isoc(struct usb_request *req, struct uvc_video *video,
+>    * Request handling
+>    */
+>
+> +static void
+> +uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
+> +{
+> +	sg_free_table(&ureq->sgt);
+> +	if (ureq->req && ep) {
+> +		usb_ep_free_request(ep, ureq->req);
+> +		ureq->req = NULL;
+> +	}
+> +
+> +	kfree(ureq->req_buffer);
+> +	ureq->req_buffer = NULL;
+> +
+> +	if (!list_empty(&ureq->list))
+> +		list_del_init(&ureq->list);
+> +
+> +	kfree(ureq);
+> +}
+> +
+>   static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_request *req)
+>   {
+>   	int ret;
+> @@ -293,27 +311,12 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+>   static int
+>   uvc_video_free_requests(struct uvc_video *video)
+>   {
+> -	unsigned int i;
+> -
+> -	if (video->ureq) {
+> -		for (i = 0; i < video->uvc_num_requests; ++i) {
+> -			sg_free_table(&video->ureq[i].sgt);
+> +	struct uvc_request *ureq, *temp;
+>
+> -			if (video->ureq[i].req) {
+> -				usb_ep_free_request(video->ep, video->ureq[i].req);
+> -				video->ureq[i].req = NULL;
+> -			}
+> -
+> -			if (video->ureq[i].req_buffer) {
+> -				kfree(video->ureq[i].req_buffer);
+> -				video->ureq[i].req_buffer = NULL;
+> -			}
+> -		}
+> -
+> -		kfree(video->ureq);
+> -		video->ureq = NULL;
+> -	}
+> +	list_for_each_entry_safe(ureq, temp, &video->ureqs, list)
+> +		uvc_video_free_request(ureq, video->ep);
+>
+> +	INIT_LIST_HEAD(&video->ureqs);
+>   	INIT_LIST_HEAD(&video->req_free);
+>   	video->req_size = 0;
+>   	return 0;
+> @@ -322,6 +325,7 @@ uvc_video_free_requests(struct uvc_video *video)
+>   static int
+>   uvc_video_alloc_requests(struct uvc_video *video)
+>   {
+> +	struct uvc_request *ureq;
+>   	unsigned int req_size;
+>   	unsigned int i;
+>   	int ret = -ENOMEM;
+> @@ -332,29 +336,33 @@ uvc_video_alloc_requests(struct uvc_video *video)
+>   		 * max_t(unsigned int, video->ep->maxburst, 1)
+>   		 * (video->ep->mult);
+>
+> -	video->ureq = kcalloc(video->uvc_num_requests, sizeof(struct uvc_request), GFP_KERNEL);
+> -	if (video->ureq == NULL)
+> -		return -ENOMEM;
+> +	for (i = 0; i < video->uvc_num_requests; i++) {
+> +		ureq = kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
+> +		if (ureq == NULL)
+> +			goto error;
+> +
+> +		INIT_LIST_HEAD(&ureq->list);
+> +
+> +		list_add_tail(&ureq->list, &video->ureqs);
+>
+> -	for (i = 0; i < video->uvc_num_requests; ++i) {
+> -		video->ureq[i].req_buffer = kmalloc(req_size, GFP_KERNEL);
+> -		if (video->ureq[i].req_buffer == NULL)
+> +		ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
+> +		if (ureq->req_buffer == NULL)
+>   			goto error;
+>
+> -		video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+> -		if (video->ureq[i].req == NULL)
+> +		ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+> +		if (ureq->req == NULL)
+>   			goto error;
+>
+> -		video->ureq[i].req->buf = video->ureq[i].req_buffer;
+> -		video->ureq[i].req->length = 0;
+> -		video->ureq[i].req->complete = uvc_video_complete;
+> -		video->ureq[i].req->context = &video->ureq[i];
+> -		video->ureq[i].video = video;
+> -		video->ureq[i].last_buf = NULL;
+> +		ureq->req->buf = ureq->req_buffer;
+> +		ureq->req->length = 0;
+> +		ureq->req->complete = uvc_video_complete;
+> +		ureq->req->context = ureq;
+> +		ureq->video = video;
+> +		ureq->last_buf = NULL;
+>
+> -		list_add_tail(&video->ureq[i].req->list, &video->req_free);
+> +		list_add_tail(&ureq->req->list, &video->req_free);
+>   		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
+> -		sg_alloc_table(&video->ureq[i].sgt,
+> +		sg_alloc_table(&ureq->sgt,
+>   			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
+>   					    PAGE_SIZE) + 2, GFP_KERNEL);
+>   	}
+> @@ -489,8 +497,8 @@ static void uvcg_video_pump(struct work_struct *work)
+>    */
+>   int uvcg_video_enable(struct uvc_video *video, int enable)
+>   {
+> -	unsigned int i;
+>   	int ret;
+> +	struct uvc_request *ureq;
+>
+>   	if (video->ep == NULL) {
+>   		uvcg_info(&video->uvc->func,
+> @@ -502,9 +510,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+>   		cancel_work_sync(&video->pump);
+>   		uvcg_queue_cancel(&video->queue, 0);
+>
+> -		for (i = 0; i < video->uvc_num_requests; ++i)
+> -			if (video->ureq && video->ureq[i].req)
+> -				usb_ep_dequeue(video->ep, video->ureq[i].req);
+> +		list_for_each_entry(ureq, &video->ureqs, list) {
+> +			if (ureq->req)
+> +				usb_ep_dequeue(video->ep, ureq->req);
+> +		}
+>
+>   		uvc_video_free_requests(video);
+>   		uvcg_queue_enable(&video->queue, 0);
+> @@ -536,6 +545,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+>    */
+>   int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+>   {
+> +	INIT_LIST_HEAD(&video->ureqs);
+>   	INIT_LIST_HEAD(&video->req_free);
+>   	spin_lock_init(&video->req_lock);
+>   	INIT_WORK(&video->pump, uvcg_video_pump);
+> --
+> 2.42.0.820.g83a721a137-goog
