@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 780E87DDCDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 07:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA5E7DDCE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 07:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345216AbjKAGuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 02:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
+        id S1345130AbjKAGxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 02:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbjKAGuC (ORCPT
+        with ESMTP id S230252AbjKAGxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 02:50:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA35A6;
-        Tue, 31 Oct 2023 23:49:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5249C433C8;
-        Wed,  1 Nov 2023 06:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698821396;
-        bh=IrJZzwa1LgUljgZ2pNJ6BxSyMe71q3iklIBfrKxqK5g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zz4teDGVyicLH+2JW0PTJ/4ys7ufZO5iW4ESyOqVpIzH++E1HRi7nYG3N+BJCa6ja
-         sWDNEPGZ6CyFu0VTP3itptGAxbgW+oGvrnMTZSmA38HcsW6ND8od9LDYmCznkCNNSB
-         pvWFb3+LKGTKPu2DkztOkcBPwFeWrgQHjxLfTOyA=
-Date:   Wed, 1 Nov 2023 07:49:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2] tty: serial: Add RS422 flag to struct serial_rs485
-Message-ID: <2023110127-wireless-candy-c298@gregkh>
-References: <20231101064404.45711-1-crescentcy.hsieh@moxa.com>
+        Wed, 1 Nov 2023 02:53:51 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF926A6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 23:53:45 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A15TNEC012804;
+        Wed, 1 Nov 2023 06:53:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vkUEf9qIvi0SMDctvwk2B4fTr2MBK+8AfABz9dTKu/8=;
+ b=QChlah4+6tT+ib6JEADUjJ5yqmpB1MxuS+DqnO7YNxspRxlv1s78I2RX0lGOnSELa3WH
+ YYEC4dEV/pwRXRyMzzT5H2rF08mGXz60Nb9cXhu8EeLJ+0/sF2ztF4PGFZLdwBYRl973
+ RbO6UKtJBLpfFxxaNGtO8x8wPyQIuWubGIUr7llTZZ7eoiEgY83S/IIUgjmx1oGV5SCL
+ BQartnJiB29h/J83uNwki1bchIdIG1+2Jci26xznwcghdMvuT+uEqod8X1nJnr016S2n
+ sclc92pggOwhpeynCisU1Dtq4FRL5EhH9UEazLv0atLhlOz/HSwIPiz4zYsu5bG5S/6i sw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3382jdb0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 06:53:31 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A16rUW5019280
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Nov 2023 06:53:30 GMT
+Received: from [10.214.66.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 31 Oct
+ 2023 23:53:27 -0700
+Message-ID: <ca6093e6-fc85-9ce8-71a1-77d8996c9fd6@quicinc.com>
+Date:   Wed, 1 Nov 2023 12:23:24 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101064404.45711-1-crescentcy.hsieh@moxa.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm: page_alloc: unreserve highatomic page blocks before
+ oom
+Content-Language: en-US
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     Michal Hocko <mhocko@suse.com>, <akpm@linux-foundation.org>,
+        <mgorman@techsingularity.net>, <david@redhat.com>,
+        <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1698669590-3193-1-git-send-email-quic_charante@quicinc.com>
+ <gtya2g2pdbsonelny6vpfwj5vsxdrzhi6wzkpcrke33mr3q2hf@j4ramnjmfx52>
+ <2a0d2dd8-562c-fec7-e3ac-0bd955643e16@quicinc.com>
+ <37c58833-1953-42c3-98c6-ee0ac75508ce@quicinc.com>
+From:   Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <37c58833-1953-42c3-98c6-ee0ac75508ce@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QFFtBJcqKPNIL5bxjw0mLNMw8tK7eo3r
+X-Proofpoint-ORIG-GUID: QFFtBJcqKPNIL5bxjw0mLNMw8tK7eo3r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_03,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015
+ mlxlogscore=575 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311010057
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 02:44:04PM +0800, Crescent CY Hsieh wrote:
-> Add "SER_RS422_ENABLED" flag within struct serial_rs485, so that serial
-> port can switching interface into RS422 if supported by using ioctl
-> command "TIOCSRS485".
+
+
+On 11/1/2023 12:16 PM, Pavan Kondeti wrote:
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 2a2536d..41441ced 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -1886,7 +1886,9 @@ static void reserve_highatomic_pageblock(struct
+>> page *page, struct zone *zone)
+>>          * Limit the number reserved to 1 pageblock or roughly 1% of a zone.
+>>          * Check is race-prone but harmless.
+>>          */
+>> -       max_managed = (zone_managed_pages(zone) / 100) + pageblock_nr_pages;
+>> +       max_managed = max_t(unsigned long,
+>> +                       ALIGN(zone_managed_pages(zone) / 100,
+>> pageblock_nr_pages),
+>> +                       pageblock_nr_pages);
+>>         if (zone->nr_reserved_highatomic >= max_managed)
+>>                 return;
+>>
+> ALIGN() rounds up the value, so max_t() is not needed here. If you had
+> used ALIGN_DOWN() then max_t() can be used to keep atleast
+> pageblock_nr_pages pages.
 > 
-> In case of interfaces confliction, add checks within
-> uart_sanitize_serial_rs485() such that only one of RS422/RS485 is set.
+Yeah, just ALIGN() enough here.
 > 
-> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+> Also, add below Fixes tag if it makes sense.
 > 
-> ---
-> Changes in v2:
-> - Revise the logic that checks whether RS422/RS485 are enabled
->   simultaneously.
-> 
-> v1: https://lore.kernel.org/all/20231030053632.5109-1-crescentcy.hsieh@moxa.com/
-> 
-> ---
->  drivers/tty/serial/serial_core.c | 19 +++++++++++++++++--
->  include/uapi/linux/serial.h      |  4 ++++
->  2 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index 831d03361..54a104c52 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -1305,7 +1305,7 @@ static int uart_get_icount(struct tty_struct *tty,
->  
->  #define SER_RS485_LEGACY_FLAGS	(SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | \
->  				 SER_RS485_RTS_AFTER_SEND | SER_RS485_RX_DURING_TX | \
-> -				 SER_RS485_TERMINATE_BUS)
-> +				 SER_RS485_TERMINATE_BUS | SER_RS422_ENABLED)
-
-A new flag is "legacy"?
-
->  
->  static int uart_check_rs485_flags(struct uart_port *port, struct serial_rs485 *rs485)
->  {
-> @@ -1371,11 +1371,26 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
->  {
->  	u32 supported_flags = port->rs485_supported.flags;
->  
-> -	if (!(rs485->flags & SER_RS485_ENABLED)) {
-> +	if (!(rs485->flags & (SER_RS485_ENABLED | SER_RS422_ENABLED))) {
->  		memset(rs485, 0, sizeof(*rs485));
->  		return;
->  	}
->  
-> +	/* Pick sane setting if the user enables both interfaces */
-> +	if (rs485->flags & SER_RS485_ENABLED && rs485->flags & SER_RS422_ENABLED) {
-> +		dev_warn_ratelimited(port->dev,
-> +			"%s (%d): Invalid serial interface setting, using RS485 instead\n",
-> +			port->name, port->line);
-
-Why is this ratelimited?  What would cause lots of repeats of this?
-
-
-> +		rs485->flags &= ~SER_RS422_ENABLED;
-> +	}
-> +
-> +	/* Clear other bits and return if RS422 is enabled */
-> +	if (rs485->flags & SER_RS422_ENABLED) {
-> +		memset(rs485, 0, sizeof(*rs485));
-> +		rs485->flags |= SER_RS422_ENABLED;
-> +		return;
-> +	}
-> +
->  	/* Pick sane settings if the user hasn't */
->  	if ((supported_flags & (SER_RS485_RTS_ON_SEND|SER_RS485_RTS_AFTER_SEND)) &&
->  	    !(rs485->flags & SER_RS485_RTS_ON_SEND) ==
-> diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
-> index 53bc1af67..427609fd5 100644
-> --- a/include/uapi/linux/serial.h
-> +++ b/include/uapi/linux/serial.h
-> @@ -137,6 +137,8 @@ struct serial_icounter_struct {
->   * * %SER_RS485_ADDRB		- Enable RS485 addressing mode.
->   * * %SER_RS485_ADDR_RECV - Receive address filter (enables @addr_recv). Requires %SER_RS485_ADDRB.
->   * * %SER_RS485_ADDR_DEST - Destination address (enables @addr_dest). Requires %SER_RS485_ADDRB.
-> + *
-> + * * %SER_RS422_ENABLED		- RS422 enabled.
->   */
->  struct serial_rs485 {
->  	__u32	flags;
-> @@ -149,6 +151,8 @@ struct serial_rs485 {
->  #define SER_RS485_ADDR_RECV		(1 << 7)
->  #define SER_RS485_ADDR_DEST		(1 << 8)
->  
-> +#define SER_RS422_ENABLED		(1 << 9)
-
-Why the extra blank line before this?
-
-And why isn't it using the proper BIT() type macro instead (yeah, the
-others are not, I understand...)
-
-Also, what userspace code is going to use this?  How is it tested?
-
-thanks,
-
-greg k-h
+> Fixes: 04c8716f7b00 ("mm: try to exhaust highatomic reserve before the OOM")
+I should be adding this.
