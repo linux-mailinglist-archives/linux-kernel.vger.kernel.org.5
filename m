@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DDE7DE06A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E305E7DE3A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjKALi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
+        id S232649AbjKAPRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235212AbjKALi5 (ORCPT
+        with ESMTP id S233224AbjKAPRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:38:57 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415F0F7;
-        Wed,  1 Nov 2023 04:38:55 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7afd45199so68560487b3.0;
-        Wed, 01 Nov 2023 04:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698838734; x=1699443534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m59jZyxH1gZ4IkJNBzdNka8KVbsaoVT0nyeW9BoP3MY=;
-        b=AbceKytzbEm1fI6aJYaC1xgszi8ZaazKEewzYxEeIa1ryBQcvsQOrXMWoRCCtA1pZ9
-         xsRT6HfikEC13gutV14GgKFexrHw2ErdRcXEw++19GFKFn/iXSFPWGwtpeKOuMLORAzi
-         ImKVLOFcGgiDOvJXQ32c1gkFN1dQQzDLOsMu3J+UnF7O3wv8vr1GwiMK8t7yGT2YAA/1
-         x2fXufvwli5f4k3NfrLLRrTf0Uy6j+9QGZYKKngmgwzcwK8BEG6HM+qRZ01lphBr1EwC
-         L6OAQEEoL8mSAmPJ2a/3hyHMhcOyEbVTQRf1qzR64eVYw2+n0hcBKelPoQZiXZ9yrGdB
-         KLSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698838734; x=1699443534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m59jZyxH1gZ4IkJNBzdNka8KVbsaoVT0nyeW9BoP3MY=;
-        b=LHuLGLA8sPOhw2N+B3J0HXaBHCsw8MH1HJbkNQinAYvMIvK0Wztp2A7OnjDfd0G3/e
-         oGQvx+++BBKadAQXF0fEQ25qFn2uaR7E7oUdXrQYLGCEErqZiRQZbCJcORCsaHFsWrrj
-         j99x9CRlXGGDPjEZqUnracHP9iMiDaOWAq9VKYEmzKwaqqqfeFphMFowsJPbOSldYyPe
-         C5vaRYCvi55jtgMei4TBIrEh28xNEcpB7t7EqFt4/zwMrGf39NER4jhZgbbQfjSFKqEr
-         AmBf/XONrEgGmHYQGnyK1qYKX+WpGl6QJ2P8624oiDB6rZqpcw8oKjomIPn2xcpwZynr
-         g9Cw==
-X-Gm-Message-State: AOJu0Yy4kgZCJ7nwc78gR/YwxCT+a6wRIpxzf3doDasep0DvBKOXx73Q
-        DW0nuY+B5+tVKC+2dwiz2pcj5VLL2R3g3K2bTmM=
-X-Google-Smtp-Source: AGHT+IGPiQGs2flMchmrpUm3exXHwdHaIxqaR1nEgkE1E5+9YOWUy0Mc758PsX3a/8WhBl38xRZWvkoZHjkiwWqRbg8=
-X-Received: by 2002:a81:ae09:0:b0:5a7:dad7:61dd with SMTP id
- m9-20020a81ae09000000b005a7dad761ddmr15318204ywh.20.1698838734410; Wed, 01
- Nov 2023 04:38:54 -0700 (PDT)
+        Wed, 1 Nov 2023 11:17:18 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748DDA2;
+        Wed,  1 Nov 2023 08:16:45 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id D90C05C0260;
+        Wed,  1 Nov 2023 11:16:44 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 01 Nov 2023 11:16:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:message-id:mime-version:reply-to
+        :sender:subject:subject:to:to; s=fm1; t=1698851804; x=
+        1698938204; bh=rddZh9OfuBWNKiq+20BMvUIm9LU7zYcwtfDISZLYvWY=; b=Q
+        q9jCOfz+AgT+pACC4sODldqk/AvvzufVOUZtg1GaPBG0FbWpKG45EXpm/p+ZU319
+        z/9q2oYQvrWa19/dgYP501OT+ygaPBqeYTBOq+daI/3SlQe3gvhSkucI3CI2q5ZT
+        z+boVVmMA5gs7KQCDh131tYWFXxmY0DRMMkCHoUsM1h59NFw8r8N8QyeEkQfk2ho
+        4npqAWpryYgdYFlOULVUm+UxB4C0mfZneX8N1uD6vFxzqT3WiVpW4h03lA/79WUB
+        H1UeY2Ms/EaQteT63LlCnHiKxz78e0oWlk+xD+ozMe01qVIlpP6tJOlzuI+1EQlT
+        Vctkklk46wKw6XMaHp+dw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; t=1698851804; x=1698938204; bh=r
+        ddZh9OfuBWNKiq+20BMvUIm9LU7zYcwtfDISZLYvWY=; b=tZYMkhI0FPG6OgmWq
+        653YH6f53OJH5H3GzpKrhqIGw9wCv5YBP8OaFd1smtMLGgdz9sNLWw7M6OJ4jpx6
+        BUswXWDcLSAgSkhzLs/dxNJgf+b0ccjuQkDcFbaB0lL19BlK0mb+9oG5ZK+Enp1g
+        7YDLmM9t2zy0Sbe3BAFODwFy68gJqU2KmBWK8CM3DU73voZ1QyHhmXzZ7vNghxFl
+        t1g8aM1KMyaROgbGgtqyiseNX1g4cBLNKGh9iFHVKFVooAqaYslL138LBRy7dtzv
+        ddxxCjD9UFYi0BS+4xxnOUUEQsjdGaTO4WkknFU2nqbtahKa4RfaUMtSVhnZG6RJ
+        yPauQ==
+X-ME-Sender: <xms:22tCZQvDw7dPYLUtTxVNpGm_HeTaJpCp86PKd4hB8D_dQ6hrEKYO_Q>
+    <xme:22tCZdcJsL9lMNXhSjmeEE7TJOkXwwGw1rfhVbDjAdXmaxNaBCWyZwkQrzw__LCvD
+    PgU6Uo0_w6rVBPy9eo>
+X-ME-Received: <xmr:22tCZbyyX0LLU6bXIYmi_vx-Oqk5der04xCIBWhodrfXMLgA0yJEIKk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffufffkgggtgffvvefosehtjeertdertdejnecuhfhrohhmpeflihgrgihu
+    nhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecugg
+    ftrfgrthhtvghrnhepudffffffhfeuheevhffgleevkeeugeetfeegieeijeehfeekheek
+    veduveeigeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:22tCZTNuh0-wdlkofhLcohc9rUCUn7qRec3Fp24XOUWmxlWBt1M7xA>
+    <xmx:22tCZQ-C85bwTg1UIj24pj3F0rVbAjiU3THO8zcPgJibmFzmFY5iSA>
+    <xmx:22tCZbV2QnXgo64iD6YLb8Pq-4Guo09qsae-b6sH2fPcWh_C3vPdFw>
+    <xmx:3GtCZUZlrIYHbN467g5xDt00C2fMbn6oC-B_qaNgG6Lt3HNurxJhGw>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Nov 2023 11:16:43 -0400 (EDT)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH fixes 0/3] MIPS: Loongson64: Fix some long-term issues
+Date:   Wed, 01 Nov 2023 11:39:06 +0000
+Message-Id: <20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com>
 MIME-Version: 1.0
-References: <ZTjMRRqmlJ+fTys2@dread.disaster.area> <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area> <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area> <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
- <ZUBbj8XsA6uW8ZDK@dread.disaster.area> <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
- <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
- <ZUF4NTxQXpkJADxf@dread.disaster.area> <20231101101648.zjloqo5su6bbxzff@quack3>
-In-Reply-To: <20231101101648.zjloqo5su6bbxzff@quack3>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 1 Nov 2023 13:38:41 +0200
-Message-ID: <CAOQ4uxgGxtErFEcSdxoFDnZZ1XfmVKn2LT1dQcJqhNj5_rnC6A@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANo4QmUC/yWLQQqAIBAAvxJ7TnC1OvSViNDaaiE0XIhA+ntSt
+ xmGySCUmAT6KkOii4VjKIJ1BfPuwkaKl+JgtLGIGtURY9gkhq6ZVr5JlHarR99quyBB2c5EXyj
+ XAD+Nz/MCYDCo+mkAAAA=
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 12:16=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 01-11-23 08:57:09, Dave Chinner wrote:
-> > 5. When-ever the inode is persisted, the timestamp is copied to the
-> > on-disk structure and the current change counter is folded in.
-> >
-> >       This means the on-disk structure always contains the latest
-> >       change attribute that has been persisted, just like we
-> >       currently do with i_version now.
-> >
-> > 6. When-ever we read the inode off disk, we split the change counter
-> > from the timestamp and update the appropriate internal structures
-> > with this information.
-> >
-> >       This ensures that the VFS and userspace never see the change
-> >       counter implementation in the inode timestamps.
->
-> OK, but is this compatible with the current XFS behavior? AFAICS currentl=
-y
-> XFS sets sb->s_time_gran to 1 so timestamps currently stored on disk will
-> have some mostly random garbage in low bits of the ctime. Now if you look
-> at such inode with a kernel using this new scheme, stat(2) will report
-> ctime with low bits zeroed-out so if the ctime fetched in the old kernel =
-was
-> stored in some external database and compared to the newly fetched ctime,=
- it
-> will appear that ctime has gone backwards... Maybe we don't care but it i=
-s
-> a user visible change that can potentially confuse something.
+Hi all,
 
-See xfs_inode_has_bigtime() and auto-upgrade of inode format in
-xfs_inode_item_precommit().
+This series fixes some long-term issues in kernel that preventing
+some machine from work properly.
 
-In the case of BIGTIME inode format, admin needs to opt-in to
-BIGTIME format conversion by setting an INCOMPAT_BIGTIME
-sb feature flag.
+Hopefully that will rescue some system in wild :-)
 
-I imagine that something similar (inode flag + sb flag) would need
-to be done for the versioned-timestamp, but I think that in that case,
-the feature flag could be RO_COMPAT - there is no harm in exposing
-made-up nsec lower bits if fs would be mounted read-only on an old
-kernel, is there?
+Thanks
 
-The same RO_COMPAT feature flag could also be used to determine
-s_time_gran, because IIUC, s_time_gran for timestamp updates
-is uniform across all inodes.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+Jiaxun Yang (3):
+      MIPS: Loongson64: Reserve vgabios memory on boot
+      MIPS: Loongson64: Enable DMA noncoherent support
+      MIPS: Loongson64: Handle more memory types passed from firmware
 
-I know that Dave said he wants to avoid changing on-disk format,
-but I am hoping that this well defined and backward compat with
-lazy upgrade, on-disk format change may be acceptable?
+ arch/mips/Kconfig                                  |  2 +
+ arch/mips/include/asm/mach-loongson64/boot_param.h |  9 ++++-
+ arch/mips/loongson64/env.c                         |  9 ++++-
+ arch/mips/loongson64/init.c                        | 47 ++++++++++++++--------
+ 4 files changed, 48 insertions(+), 19 deletions(-)
+---
+base-commit: 9c2d379d63450ae464eeab45462e0cb573cd97d0
+change-id: 20231101-loongson64_fixes-0afb1b503d1e
 
-Thanks,
-Amir.
+Best regards,
+-- 
+Jiaxun Yang <jiaxun.yang@flygoat.com>
+
