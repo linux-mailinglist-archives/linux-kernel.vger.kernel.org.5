@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBA47DDDF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FB77DDDFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbjKAJCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S234816AbjKAJCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbjKAJCe (ORCPT
+        with ESMTP id S234684AbjKAJCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:02:34 -0400
-Received: from out28-4.mail.aliyun.com (out28-4.mail.aliyun.com [115.124.28.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C88F7;
-        Wed,  1 Nov 2023 02:02:30 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1092362|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00441527-0.000454537-0.99513;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.VCeegrp_1698829343;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.VCeegrp_1698829343)
+        Wed, 1 Nov 2023 05:02:43 -0400
+Received: from out28-196.mail.aliyun.com (out28-196.mail.aliyun.com [115.124.28.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F869F3;
+        Wed,  1 Nov 2023 02:02:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2838174|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0377807-0.000735089-0.961484;FP=12384614467520510894|1|1|6|0|-1|-1|-1;HT=ay29a033018047203;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.VCeegvs_1698829346;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.VCeegvs_1698829346)
           by smtp.aliyun-inc.com;
-          Wed, 01 Nov 2023 17:02:26 +0800
+          Wed, 01 Nov 2023 17:02:29 +0800
 From:   wangweidong.a@awinic.com
 To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
         tiwai@suse.com, wangweidong.a@awinic.com, liweilei@awinic.com,
         u.kleine-koenig@pengutronix.de, yang.lee@linux.alibaba.com,
         nathan@kernel.org, linux-sound@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2 2/3] ASoC: codecs: Modify the wrong judgment of re value
-Date:   Wed,  1 Nov 2023 17:02:09 +0800
-Message-ID: <20231101090211.177125-3-wangweidong.a@awinic.com>
+Subject: [PATCH V2 3/3] ASoC: codecs: Modify macro value error
+Date:   Wed,  1 Nov 2023 17:02:10 +0800
+Message-ID: <20231101090211.177125-4-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231101090211.177125-1-wangweidong.a@awinic.com>
 References: <20231101090211.177125-1-wangweidong.a@awinic.com>
@@ -45,29 +45,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-An error code should be return when the re is greater
-than the maximum value or less than the minimum value
+The value of vsense_select should be either 32
+or 0 in both cases, so modify the
+AW88399_DEV_VDSEL_VSENSE macro to 32.
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/aw88399.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/aw88399.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/aw88399.c b/sound/soc/codecs/aw88399.c
-index 1d6228cb1cc2..54f8457e8497 100644
---- a/sound/soc/codecs/aw88399.c
-+++ b/sound/soc/codecs/aw88399.c
-@@ -486,8 +486,8 @@ static int aw_dev_update_cali_re(struct aw_cali_desc *cali_desc)
- 	u32 cali_re;
- 	int ret;
+diff --git a/sound/soc/codecs/aw88399.h b/sound/soc/codecs/aw88399.h
+index 8b3f1e101985..4f391099d0f2 100644
+--- a/sound/soc/codecs/aw88399.h
++++ b/sound/soc/codecs/aw88399.h
+@@ -522,7 +522,7 @@ enum {
  
--	if ((aw_dev->cali_desc.cali_re <= AW88399_CALI_RE_MAX) ||
--			(aw_dev->cali_desc.cali_re >= AW88399_CALI_RE_MIN))
-+	if ((aw_dev->cali_desc.cali_re >= AW88399_CALI_RE_MAX) ||
-+			(aw_dev->cali_desc.cali_re <= AW88399_CALI_RE_MIN))
- 		return -EINVAL;
+ enum {
+ 	AW88399_DEV_VDSEL_DAC = 0,
+-	AW88399_DEV_VDSEL_VSENSE = 1,
++	AW88399_DEV_VDSEL_VSENSE = 32,
+ };
  
- 	cali_re = AW88399_SHOW_RE_TO_DSP_RE((aw_dev->cali_desc.cali_re +
+ enum {
 -- 
 2.41.0
 
