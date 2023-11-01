@@ -2,229 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919137DDDB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 09:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47937DDDB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 09:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbjKAIY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 04:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
+        id S232509AbjKAIZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 04:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjKAIY1 (ORCPT
+        with ESMTP id S232350AbjKAIZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 04:24:27 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2E0F1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 01:24:21 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9d267605ceeso525497866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 01:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698827060; x=1699431860; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TBWvET6IBXszoErEcoe2EKRkpfFSeipc62qQ0bXnK5Y=;
-        b=NM/XQxbL7sIGYhoYQHP7lJdqmdxv3mT+6at5gv7jUPTZFLtidwDAYymEiHEFMB2tQR
-         bLzY624PVAmRL8tX70oaStuJNaIFyOZRb0wDArTEPvkkm96b0HWVn0EwNEFHmhxoi+Vz
-         oa1eWoAaqPm6Q8Zu3ifbgerLYk2xFfElyREszvw9L2ifmpM4fU9pQbdA2wur0xzkQj5C
-         mBf6X57gLtUVy0eu+MUlWB1PehWEjipKrIR/ybJymzdIOCz7keHrGw9vZaBrXP7GHTJz
-         I3z8+SWCYCI5yxKjz2yUdPryY8Dw2KGXSFGyl2xBhV2oLZXkchmZpMQ0T9p7UxQcIIjH
-         T2ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698827060; x=1699431860;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TBWvET6IBXszoErEcoe2EKRkpfFSeipc62qQ0bXnK5Y=;
-        b=GQzHuYsZpHasZuJt9P3N88yehbQa83mBppQ5AeNTMasDHUQeRogQTmJucJtZvxKmRU
-         JQnHnK5Q2Svu7MiG7Yg9lhp0AFymTfk0/GW55KAQZpB3rFHAXmvbt+vgncSehuX32nsL
-         0v+qzIzC9MgNPpZLswxmfcfAzM7JgHXJo/5oHrKACAy5DJgCw0tFWKvInD+P4hbjVkUH
-         KY1qMisnp6zZ7YlRz79W2jiDEjeSSl2SwVGE9XNlzuc92NKRGlaVBFCqNqb/ex06WyiC
-         OuYofSwqpCq6BZUoKEnd5FXTt/2xN82g0UoamZF61fSmVy84lXwZcCwO3IPhfF+sWS0I
-         Hwfg==
-X-Gm-Message-State: AOJu0YwKDe02XBCAPc6GJpcGRSZ+DdAjL5LFqBBVBUU0XvHFBfMMrqUM
-        vvZsP9Gt/b2c0JuxPSUEd+k6Sg==
-X-Google-Smtp-Source: AGHT+IFXuz6IzcS31cThS1mjXs5Daa68aY9heBRyvv2tCKxzSOtjEesbeLeoQ0qrc1RQGrPWnodCYQ==
-X-Received: by 2002:a17:906:6a27:b0:9ae:6ff4:9f15 with SMTP id qw39-20020a1709066a2700b009ae6ff49f15mr1187552ejc.11.1698827060146;
-        Wed, 01 Nov 2023 01:24:20 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id la5-20020a170906ad8500b00992e265495csm2131182ejb.212.2023.11.01.01.24.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 01:24:19 -0700 (PDT)
-Message-ID: <630d58e0-589e-4411-905a-2514048e6ec4@linaro.org>
-Date:   Wed, 1 Nov 2023 09:24:15 +0100
+        Wed, 1 Nov 2023 04:25:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9041101
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 01:25:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7FEC433C7;
+        Wed,  1 Nov 2023 08:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698827146;
+        bh=yFVtjEK6MAAB7vMXEvUnFtsjPel4TJMN6k8Ko8VXdYs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=H+EfT11FBVdWRjAfeYkOnUaRHnTJepVNb5nikvZ26s+2qtK3y703T79U7MvmnrmF2
+         ZlcsraE72qoE3Uy6DpNUBlvnWhtZX21/hweezd934PF0SVpcJlo//becBi2Y03TdSq
+         JNIHPs3PP1SF/ua9iAUYzitWUPRcslT3VuHs3KX2U8tTxgzfFcu13Jd4sWSX56Afmq
+         uXsahwZaUXj7YVmpAd5RSS6SPsAuS0opg3CIJQ3D9tvxEgn9MItedOmQskZd7fLoeg
+         7WaMqGRTfheQriy6+wtkm9I9q28wtTbbBiKNaKR437HxxnejFXD7FXw/bl9vFSXiuU
+         g0XwNSRHsK/9A==
+Message-ID: <9aad3bb9-daca-405a-93c3-dccea3c0a07a@kernel.org>
+Date:   Wed, 1 Nov 2023 09:25:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v4 01/11] dt-bindings: media: s5p-mfc: Add mfcv12 variant
-Content-Language: en-US
-To:     Aakarsh Jain <aakarsh.jain@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     m.szyprowski@samsung.com, andrzej.hajda@intel.com,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, dillon.minfei@gmail.com,
-        david.plowman@raspberrypi.com, mark.rutland@arm.com,
-        robh+dt@kernel.org, conor+dt@kernel.org,
-        linux-samsung-soc@vger.kernel.org, andi@etezian.org,
-        gost.dev@samsung.com, alim.akhtar@samsung.com,
-        aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
-        ajaykumar.rs@samsung.com, linux-fsd@tesla.com
-References: <20231025102216.50480-1-aakarsh.jain@samsung.com>
- <CGME20231025102233epcas5p16b716d5b650bbc5af0d759ea4f58f44d@epcas5p1.samsung.com>
- <20231025102216.50480-2-aakarsh.jain@samsung.com>
- <948af111-e7a1-4757-a784-b4256657abd6@linaro.org>
- <000001da0810$c2b17680$48146380$@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <000001da0810$c2b17680$48146380$@samsung.com>
+Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
+Content-Language: en-GB, fr-BE
+To:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yonghong.song@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Chuyi Zhou <zhouchuyi@bytedance.com>,
+        Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>,
+        kernel test robot <lkp@intel.com>
+References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
+ <ZUEzzc/Sod8OR28B@krava>
+ <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
+ <ZUH9cveAsjcUgz9e@krava>
+From:   Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+In-Reply-To: <ZUH9cveAsjcUgz9e@krava>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 15:31, Aakarsh Jain wrote:
-> Hello Krzysztof
-> 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: 25 October 2023 18:30
->> To: Aakarsh Jain <aakarsh.jain@samsung.com>; linux-arm-
->> kernel@lists.infradead.org; linux-media@vger.kernel.org; linux-
->> kernel@vger.kernel.org; devicetree@vger.kernel.org
->> Cc: m.szyprowski@samsung.com; andrzej.hajda@intel.com;
->> mchehab@kernel.org; hverkuil-cisco@xs4all.nl;
->> krzysztof.kozlowski+dt@linaro.org; dillon.minfei@gmail.com;
->> david.plowman@raspberrypi.com; mark.rutland@arm.com;
->> robh+dt@kernel.org; conor+dt@kernel.org; linux-samsung-
->> soc@vger.kernel.org; andi@etezian.org; gost.dev@samsung.com;
->> alim.akhtar@samsung.com; aswani.reddy@samsung.com;
->> pankaj.dubey@samsung.com; ajaykumar.rs@samsung.com; linux-
->> fsd@tesla.com
->> Subject: Re: [Patch v4 01/11] dt-bindings: media: s5p-mfc: Add mfcv12
->> variant
->>
->> On 25/10/2023 12:22, Aakarsh Jain wrote:
->>> Add Tesla FSD MFC(MFC v12) compatible.
+Hi Jirka, Alexei,
+
+On 01/11/2023 08:25, Jiri Olsa wrote:
+> On Tue, Oct 31, 2023 at 08:54:56PM -0700, Alexei Starovoitov wrote:
+>> On Tue, Oct 31, 2023 at 10:05 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >>>
->>> Cc: linux-fsd@tesla.com
->>> Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
->>> ---
->>
->> No changelog and your cover letter does not explain what happened here.
->> Specifically, why did you decide to ignore received tag.
->>
-> Last patch series we had two different patches for schema which was one for adding MFCv12 compatible string and other for adding its HW properties.
-> In one of the patches you gave reviewed-by tag. Since mfc dt_schema got merged already, and this is relatively  new patch so thought of getting reviewed again.
-> 
-> Link to those patches:
-> https://patchwork.kernel.org/project/linux-media/patch/20221011122516.32135-2-aakarsh.jain@samsung.com/
-> https://patchwork.kernel.org/project/linux-media/patch/20221011122516.32135-3-aakarsh.jain@samsung.com/    
-> 
-> if you are ok, I will add your reviewed-by in next patch series.
-
-It is okay to drop Reviewed-by tag, but this should be explicitly
-mentioned in the changelog with a reason.
-
-> 
->>>  .../bindings/media/samsung,s5p-mfc.yaml          | 16 ++++++++++++++++
->>>  1 file changed, 16 insertions(+)
+>>> On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
+>>>> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
+>>>> possible to build the kernel without CONFIG_CGROUPS:
+>>>>
+>>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
+>>>>   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
+>>>>     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+>>>>         |              ^~~~~~~~~~~~~~~~~~~
+>>>>   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
+>>>>   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
+>>>>     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+>>>>         |                                    ^~~~~~~~~~~~~~~~~~~~~~
+>>>>   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
+>>>>     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
+>>>>         |                                                            ^~~~~~
+>>>>   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
+>>>>     930 |         css_task_iter_start(css, flags, kit->css_it);
+>>>>         |         ^~~~~~~~~~~~~~~~~~~
+>>>>         |         task_seq_start
+>>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
+>>>>   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
+>>>>     940 |         return css_task_iter_next(kit->css_it);
+>>>>         |                ^~~~~~~~~~~~~~~~~~
+>>>>         |                class_dev_iter_next
+>>>>   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
+>>>>     940 |         return css_task_iter_next(kit->css_it);
+>>>>         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
+>>>>   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
+>>>>     949 |         css_task_iter_end(kit->css_it);
+>>>>         |         ^~~~~~~~~~~~~~~~~
+>>>>
+>>>> This patch simply surrounds with a #ifdef the new code requiring CGroups
+>>>> support. It seems enough for the compiler and this is similar to
+>>>> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
+>>>> been added in kernel/bpf/helpers.c and in the selftests.
+>>>>
+>>>> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
+>>>> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
+>>>> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
 >>>
->>> diff --git a/Documentation/devicetree/bindings/media/samsung,s5p-
->> mfc.yaml b/Documentation/devicetree/bindings/media/samsung,s5p-
->> mfc.yaml
->>> index 084b44582a43..c30eb309f670 100644
->>> --- a/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
->>> +++ b/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
->>> @@ -24,6 +24,7 @@ properties:
->>>            - samsung,mfc-v7                # Exynos5420
->>>            - samsung,mfc-v8                # Exynos5800
->>>            - samsung,mfc-v10               # Exynos7880
->>> +          - tesla,fsd-mfc                 # Tesla FSD
->>>        - items:
->>>            - enum:
->>>                - samsung,exynos3250-mfc    # Exynos3250
->>> @@ -165,6 +166,21 @@ allOf:
->>>            minItems: 1
->>>            maxItems: 2
->>>
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            enum:
->>> +              - tesla,fsd-mfc
->>> +    then:
->>> +      properties:
->>> +        clocks:
->>> +          maxItems: 1
->>> +        clock-names:
->>> +          items:
->>> +            - const: mfc
->>> +        iommus: false
+>>> Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
 >>
->> That's odd. How so? MFC v12 does not support IOMMU?
->>
-> MFC v12 do support IOMMU. But currently it is not enabled in SW (has dependencies on some of the floating dma-mapping patches) and not tested on upstream kernel. 
+>> I believe this patch has the same issue as Arnd's patch:
+>> https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com/
 
-Bindings describe hardware, not software.
+@Alexei: Arf, sorry, I didn't find this patch when searching for
+"9c66dc94b62a" on lore. I don't know why I didn't search for the commit
+title as usual...
 
-> Current patch sets intend to add support for MFCv12 using reserve memory and later patches related to enable iommu will be posted (after resolving the dependencies). So I marked iommu property as false. 
-> Now what is your suggestion here? Should I keep iommu as false or add memory-region as below?
+>> I'd like to merge the fix asap. Please make it a complete fix.
+> 
+> ugh, it won't fail the build, it just warns.. I think we should
+> fail the build in that case, I'll check
 
-I expect complete picture of the hardware, not something limited to
-current driver, so for sure iommus must be there.
+@Jirka: Thank you for checking that! Please tell me if you want me to
+send a v2 or if you prefer to do that. I don't mind if you prefer to
+send your own patches, as long as there is a fix for that at the end :)
 
-Please wrap your emails according to mailing lists rules.
+Note that if a warning is emitted for these new bpf_iter_css_task_*()
+functions, I guess you will have the same issue with bpf_iter_css_*()
+and probably others as mentioned in my commit message.
 
-Best regards,
-Krzysztof
-
+Cheers,
+Matt
