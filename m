@@ -2,185 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB6F7DE56F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB83A7DE574
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbjKARg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S1344277AbjKARkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjKARgx (ORCPT
+        with ESMTP id S231233AbjKARkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:36:53 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAB3ED
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:36:50 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0cb98f66cso6455442276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698860209; x=1699465009; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aa5pPv4/g+I3C3eNDgudVhrFstr6S8Xmtwrf0OlljDI=;
-        b=1G73i3bpqP3lEIiYf1Xa+PqF+ry3FPPmHtzhkTz2ESLqKv/PJo83UzY0L3tGLSLtgw
-         FEf6apQxu3ajl2eaf2jpMXM8oiMYlwvL+Gaj7CmFke3L5WVAzOh6QUSsRjnNhhvyggQP
-         /0obTqP8SXrHs5tm5Lcs1IoffSqT4ZAyvwPXIthiiQ2/DYs3pRsDS0oN02OgNcKyJmxV
-         +il1EDZ1G9lZ1tby+sgxcieBPfodwSlNZ7rJ6OOgSa83N+qrWIIICrK86C1Ay71kdg1m
-         h7J1Ii0mSVbVxFFpS5Ul/5maHoLcclIuFP3aDRfEoQUS+LZ7DrcFMxeDrV3szI4QTAZm
-         WoHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698860209; x=1699465009;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aa5pPv4/g+I3C3eNDgudVhrFstr6S8Xmtwrf0OlljDI=;
-        b=LfTsGkMi5PmCHna65jac9dWx9BrKyUij2qKCviqvOkmFfpEqY8QTDwiobwM82yX855
-         9ZyKbFUpHpzQv+cK3et1iSN3N01Io7Sn7GRU8+05zME7MqchJZkVxpo+YtCFjjogGBCF
-         X1DO/YeYK2VX40+NTWoezUE25UQlKfUEkFdq5Afz3n7/AAcoR4P+xLvThwbI5i86I3SD
-         ttBhM7iK5G32ul12MLRpnwhWvOAbFe44dSXVYiCDrLFWElYVeHI+D7yIfz6CGyLp49Cn
-         Gfb8zfLlh2ksT5UWo7IyOqbDTB5qoUJHKz7075yRuVPPTmPEjACUmXG31pwpoMPpl4Mj
-         pt7Q==
-X-Gm-Message-State: AOJu0Yyw+Q1oyumXPR1w+PDiwUKK2LwagJB+71w1TPSW+qKE2iorUyLa
-        TUm5b/J85iZ7QT8liCYiwE/gl5+tbuA=
-X-Google-Smtp-Source: AGHT+IG/a6Sj0mASs5/8PEJQnR69sSphX+9SHKWYEjRPOLGEF4l6c52AgzjYtmdhHr7JL68mzkGP7JI8NEg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:168c:b0:da0:3e46:8ba5 with SMTP id
- bx12-20020a056902168c00b00da03e468ba5mr304342ybb.8.1698860209654; Wed, 01 Nov
- 2023 10:36:49 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 10:36:48 -0700
-In-Reply-To: <482bfea6f54ea1bb7d1ad75e03541d0ba0e5be6f.camel@intel.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-10-seanjc@google.com>
- <482bfea6f54ea1bb7d1ad75e03541d0ba0e5be6f.camel@intel.com>
-Message-ID: <ZUKMsOdg3N9wmEzy@google.com>
-Subject: Re: [PATCH v13 09/35] KVM: Add KVM_EXIT_MEMORY_FAULT exit to report
- faults to userspace
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "mic@digikod.net" <mic@digikod.net>,
-        "liam.merwick@oracle.com" <liam.merwick@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "tabba@google.com" <tabba@google.com>,
-        "amoorthy@google.com" <amoorthy@google.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "michael.roth@amd.com" <michael.roth@amd.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Vishal Annapurve <vannapurve@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "mail@maciej.szmigiero.name" <mail@maciej.szmigiero.name>,
-        "yu.c.zhang@linux.intel.com" <yu.c.zhang@linux.intel.com>,
-        "qperret@google.com" <qperret@google.com>,
-        "dmatlack@google.com" <dmatlack@google.com>,
-        Yilun Xu <yilun.xu@intel.com>,
-        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-        "ackerleytng@google.com" <ackerleytng@google.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Wei W Wang <wei.w.wang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 13:40:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9AAED;
+        Wed,  1 Nov 2023 10:40:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83300C433C7;
+        Wed,  1 Nov 2023 17:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698860414;
+        bh=a6W3IlblsIT8EDDhgTVDxrMWX5YkV60VTCvGI//nKvQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mXkQHR2eAmvKVo+G4Y9+a/+qFEOqK7eJ8jmOMxxQHG+vnVnXP3MQcJYpbiIy7b8Bt
+         K4E9v2+qjGJI+L69cXX0oSI6bHMNqygOoWqdh/+sfXbrMaEpqw1G4qe7fV2bi/WlUB
+         prC0jDazB2FAptjTu423XE3JqPQbt/XEjaT5UKS7y8thUBBpramPuzov2qZ5YWWn1x
+         MtWvAofLN/smhz9DHJLLfT6ooICS5t4W0W2cvAuxpIIEEc7p/+ue3FOW7vCsoLk8hE
+         WP+pA3gSH8e0auPrQ4xT+n4OfP+SIR4HUo+XkKSpMfufkrGzXLFJT2vX1cH/q/8XbN
+         Y4j9Pt5LHFloQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2052ECE09BE; Wed,  1 Nov 2023 10:40:14 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 10:40:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Z qiang <qiang.zhang1211@gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v6.7
+Message-ID: <c83bea5c-b577-4b6a-bf41-6ac7433f15bc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZTuf+xNrfqGjHFDK@lothringen>
+ <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
+ <ZUDUlQq6hEEPBiCR@lothringen>
+ <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
+ <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
+ <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+ <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023, Kai Huang wrote:
+On Wed, Nov 01, 2023 at 07:11:54AM -1000, Linus Torvalds wrote:
+> On Tue, 31 Oct 2023 at 15:08, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Here are the ways forward I can see:
+> >
+> > 1.      Status quo.  This has all the issues that you call out.
+> >         People will hurt themselves with it and consume time and effort.
+> >         So let's not do this.
 > 
-> > +7.34 KVM_CAP_MEMORY_FAULT_INFO
-> > +------------------------------
-> > +
-> > +:Architectures: x86
-> > +:Returns: Informational only, -EINVAL on direct KVM_ENABLE_CAP.
-> > +
-> > +The presence of this capability indicates that KVM_RUN will fill
-> > +kvm_run.memory_fault if KVM cannot resolve a guest page fault VM-Exit, e.g. if
-> > +there is a valid memslot but no backing VMA for the corresponding host virtual
-> > +address.
-> > +
-> > +The information in kvm_run.memory_fault is valid if and only if KVM_RUN returns
-> > +an error with errno=EFAULT or errno=EHWPOISON *and* kvm_run.exit_reason is set
-> > +to KVM_EXIT_MEMORY_FAULT.
+> Well, at a *minimum*, I really want that notifier chain call to be
+> done *after* the core printk's.
 > 
-> IIUC returning -EFAULT or whatever -errno is sort of KVM internal
-> implementation.
-
-The errno that is returned to userspace is ABI.  In KVM, it's a _very_ poorly
-defined ABI for the vast majority of ioctls(), but it's still technically ABI.
-KVM gets away with being cavalier with errno because the vast majority of errors
-are considered fatal by userespace, i.e. in most cases, userspace simply doesn't
-care about the exact errno.
-
-A good example is KVM_RUN with -EINTR; if KVM were to return something other than
--EINTR on a pending signal or vcpu->run->immediate_exit, userspace would fall over.
-
-> Is it better to relax the validity of kvm_run.memory_fault when
-> KVM_RUN returns any -errno?
-
-Not unless there's a need to do so, and if there is then we can update the
-documentation accordingly.  If KVM's ABI is that kvm_run.memory_fault is valid
-for any errno, then KVM would need to purge kvm_run.exit_reason super early in
-KVM_RUN, e.g. to prevent an -EINTR return due to immediate_exit from being
-misinterpreted as KVM_EXIT_MEMORY_FAULT.  And purging exit_reason super early is
-subtly tricky because KVM's (again, poorly documented) ABI is that *some* exit
-reasons are preserved across KVM_RUN with vcpu->run->immediate_exit (or with a
-pending signal).
-
-https://lore.kernel.org/all/ZFFbwOXZ5uI%2Fgdaf@google.com
-
-> [...]
+> That way, if it deadlocks or does something else stupid, at least the
+> core printouts make it out.
 > 
-> 
-> > --- a/include/linux/kvm_host.h
-> > +++ b/include/linux/kvm_host.h
-> > @@ -2327,4 +2327,15 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
-> >  /* Max number of entries allowed for each kvm dirty ring */
-> >  #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
-> >  
-> > +static inline void kvm_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
-> > +						 gpa_t gpa, gpa_t size)
-> > +{
-> > +	vcpu->run->exit_reason = KVM_EXIT_MEMORY_FAULT;
-> > +	vcpu->run->memory_fault.gpa = gpa;
-> > +	vcpu->run->memory_fault.size = size;
-> > +
-> > +	/* Flags are not (yet) defined or communicated to userspace. */
-> > +	vcpu->run->memory_fault.flags = 0;
-> > +}
-> > +
-> 
-> KVM_CAP_MEMORY_FAULT_INFO is x86 only, is it better to put this function to
-> <asm/kvm_host.h>?
+> IOW, I think the notifier should be done perhaps just before the
+> "panic_on_rcu_stall()" call, not at the top before you've even
+> reported any stall conditions at all.
 
-I'd prefer to keep it in generic code, as it's highly likely to end up there
-sooner than later.  There's a known use case for ARM (exit to userspace on missing
-userspace mapping[*]), and I'm guessing pKVM (also ARM) will also utilize this API.
+Understood.  But my problem is that the core printk()s destroy the state
+that the notifier is trying to output.
 
-[*] https://lore.kernel.org/all/20230908222905.1321305-8-amoorthy@google.com
+> And yes, I think the trace_rcu_stall_warning() might be better off
+> later too, but at least trace events are things that get regular
+> testing in nasty conditions (including NMI etc), so I'm *much* less
+> worried about those than about "random developers who think they know
+> what they do and add a notifier".
+
+Agreed, this is a special debug facility, not something that anyone
+should use in production.  And also not something that should be used
+where gdb would do the job.
+
+> And yes, I do think the notifier should be narrowed down a lot, if you
+> actually want to keep it.
+
+Understood, thus a new default-disabled Kconfig option that depends on
+RCU_EXPERT and DEBUG_KERNEL, along with a default-disabled kernel
+boot parameter, both of which have to be selected to make anything
+happen.
+
+> I did not actually hear you say that there is a good use-case for it.
+> I only saw you say "Those of us who need this", without showing *any*
+> kind of indication of why anybody would use it in reality.
+> 
+> Why the secrecy? There is certainly no current user, nor any
+> description of what a user would be and what makes that notifier
+> useful.
+> 
+> The commit message also just says "It is sometimes helpful" and some
+> strange reference to "the subsystem causing the stall to dump its
+> state". It all sounds very fishy. Why would anybody ever have a known
+> subsystem causing RCU stalls? Except, of course, for the rcutorture
+> testing.
+
+One use case is dumping out the qspinlock state for an extremely
+rare lockup.  If you even look at the system cross-eyed, the lockup
+goes away.  And yes, I should have mentioned this in the commit
+log, and I apologize for having failed to do so.  I do not expect
+that the state-dump code would ever be appropriate for mainline.
+
+> Anyway, that all absolutely SCREAMS to me "this is not something
+> useful in any normal kernel", and so yes:
+
+Agreed, definitely not for any normal kernel!
+
+> > 3.      Add a default-n Kconfig option that depends on RCU_EXPERT
+> >         and KEBUG_KERNEL, so that these problems can only arise in
+> >         specially built kernels.
+> >
+> > 4.      Same as #3, but use a kernel boot parameter instead of a
+> >         Kconfig option.
+> 
+> let's make it clear that this is *not* something that any upstream
+> kernel would ever do, and the *only* possible use for it is some kind
+> of external temporary debug patch.
+> 
+> See why I so hate things like this? Let's head off any crazy use long
+> *long* before somebody decides that "Oh, I want to use this".
+
+You are absolutely right, a debug tool with this many sharp edges should
+definitely not be default-enabled.  And needs some scary words in the
+Kconfig help text.  And a boot-time splat to make people think twice
+before using it.
+
+Apologies for not having thought this through!
+
+I will send a fixup patch before the end of today.
+
+							Thanx, Paul
