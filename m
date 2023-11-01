@@ -2,194 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E14467DE233
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9847DE1EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbjKANsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S233019AbjKANun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjKANsg (ORCPT
+        with ESMTP id S229503AbjKANul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:48:36 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E77B10C;
-        Wed,  1 Nov 2023 06:48:30 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c503da4fd6so100047061fa.1;
-        Wed, 01 Nov 2023 06:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698846509; x=1699451309; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ypnAFcKaxcGrebt4YkydHFPrDnm46ZqpTii7CDbQCEY=;
-        b=kFGq2QtxR8vGQpZ9m3j9cHga6Mf94kizVjjaToSnsY+15ZeDjs2Nt1iEy7D/dMswRF
-         2Sc8E2J2TK+TP0HtqI51cKxzKUzpwcdQ87gqgZVOcH0CdhbKKNEiPynMwtDl+4eYxES4
-         qgH6PVFbRdon84urNE4kt9VmzQtTeVCimB90Ksljn/tNqKbfTXH/5CbP08j+FqaoKbvo
-         bSugvL7UsnmGeYeDqpxaDz7ozt+/JSlFBQWRrdxipgKxEww9z88PrtvxhG5DX4Ku4hwz
-         YyjU4XwCkFJDmFQoSfggr61GShfUs1IQpfpgLSGjQh0PPFjFq2O020NBIE/2E75t5HGU
-         KhMQ==
+        Wed, 1 Nov 2023 09:50:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179BF83
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698846595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8nWuZfMltD4ivs2KoMTFabKsH4/GDdWsbpvxlt/w2Uk=;
+        b=jL3WY9buMvcmSLWYW8VSR+Yzmz3v/6tr0hdtjTAehz4PwjdPhpur56l4p6kZedMQZd2G92
+        KoeFoTkAwZARXMScnVviyF+D5ZDVBGmkze5if+aufAK0wO8L5Eq3ynYm01uLBKg+heOri9
+        ig/m+JUsrNkva4s0E6KzPF5cUxB64uk=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-Fd9argBoPEevJJafmV5kzw-1; Wed, 01 Nov 2023 09:49:54 -0400
+X-MC-Unique: Fd9argBoPEevJJafmV5kzw-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-457ed9f83bfso2356928137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 06:49:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698846509; x=1699451309;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ypnAFcKaxcGrebt4YkydHFPrDnm46ZqpTii7CDbQCEY=;
-        b=id45htP7QvSOY6L3buFzm1ulDxMKzC4h3mxAVwEIxA7bwo6nT9VnqO0ZTsalpopcyn
-         uHxMIrooEA+5pauO9c2pn75Q35CrzN3JlpmwaXD+ubkN8HM/CyOyb7Z/JchIsdi8xkda
-         V5o5AT0LBPE4OWUczLEucYwC1UzRO94XCvieMPH9ve5n/AhrPKKHLYesk9QcSjMiHT/G
-         wa1/+ZKFe8emzLJadQLMUriXLJC1PMlKs5CoJTcwDtEcZeAXd4v8hjRCOGE6fanriyo5
-         oUDQVftpNM3X2FHBtjVGakXVLap1gB0Qw16OgBoRUHh7QE9C5spdYB5Rm2rKlEJ973HH
-         O1VQ==
-X-Gm-Message-State: AOJu0YwFSzWjXXr2NXD/ge+PQ/jPkHHhQcTN1O2PCPEEsNjon6BkDlVl
-        VD5wqk3njZ2zxQMmHKQrlXk=
-X-Google-Smtp-Source: AGHT+IH0olDc5ndrSrDBXxxXXQwDGLg9PtRgHABkRp98qEUSj5BFubA+3kWVV8WIeZSqBzewLXeKIg==
-X-Received: by 2002:a05:6512:1388:b0:508:26b6:bc21 with SMTP id fc8-20020a056512138800b0050826b6bc21mr13510216lfb.40.1698846508452;
-        Wed, 01 Nov 2023 06:48:28 -0700 (PDT)
-Received: from [192.168.0.108] (dsl-hkibng42-56733b-36.dhcp.inet.fi. [86.115.59.36])
-        by smtp.googlemail.com with ESMTPSA id h31-20020a0565123c9f00b005048f11892dsm222024lfv.171.2023.11.01.06.48.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 06:48:26 -0700 (PDT)
-Message-ID: <e88ce2bc-71eb-490c-8640-80c24a9ae18a@gmail.com>
-Date:   Wed, 1 Nov 2023 15:48:25 +0200
+        d=1e100.net; s=20230601; t=1698846593; x=1699451393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8nWuZfMltD4ivs2KoMTFabKsH4/GDdWsbpvxlt/w2Uk=;
+        b=ZvvMaBRYMw1N6zIHjPn/KI52Pef6dN+bRfIxa7FPkmsW1RYRJZs0dU6QiiqV1A+k3h
+         aq5lXbF5LtKW4OFsx+22UyHwIKXqjORTBSvrRGJnx1khLOyEkwceI7zdemNUDGtBQGDW
+         uR33/wWDAN50behbbnKi8Nq1Zs2liHNKpGSEoQN8z8PNVlLOrQzWLgLsKeCQVcvrQ+4Z
+         r7etwFvn31XIznn7OG13mdMAWSDsJkJG3kNAWAwmG81jVr/3E6nN4c5W4zbAqhJzdUKx
+         u7JgdVsCSBfR+oFqliMxomPoGCP7M+xpv/oM+/tBGt5w1P4P5lbwowNnWFbQE4mG30+N
+         ya9w==
+X-Gm-Message-State: AOJu0YzaJwLf1RZ4f+221+a4CJVZlzzHzv9RPARa+Esyk6i3O4k80m54
+        /PL4nTti9+dvm8Pv1YoT7aOypJxLtSbdJ5rMWVPBylhQk3c0BeotCrbJpS8iKO71Aer/ZPtJjwN
+        3RWdiUifk9pJDUoCJUOM+b73TYbLv1KhUUPd69ZxG
+X-Received: by 2002:a67:a20b:0:b0:45b:529:cffb with SMTP id l11-20020a67a20b000000b0045b0529cffbmr13944635vse.27.1698846593177;
+        Wed, 01 Nov 2023 06:49:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFwXCml3dQ0y1Cr/jFjux1lHGIWg//wB9GtnyXEiXbtExQlCwIylI67p1IY3V8uopiP51EusJ56Du+cgZSOAjo=
+X-Received: by 2002:a67:a20b:0:b0:45b:529:cffb with SMTP id
+ l11-20020a67a20b000000b0045b0529cffbmr13944598vse.27.1698846592873; Wed, 01
+ Nov 2023 06:49:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/5] media: qcom: camss: Introduce support for named
- power-domains
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231101-b4-camss-named-power-domains-v3-0-bbdf5f22462a@linaro.org>
-Content-Language: en-US
-From:   =?UTF-8?Q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
-In-Reply-To: <20231101-b4-camss-named-power-domains-v3-0-bbdf5f22462a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
+ <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com> <ZUEML6oJXDCFJ9fg@google.com>
+ <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com> <ZUJVfCkIYYFp5VwG@google.com>
+In-Reply-To: <ZUJVfCkIYYFp5VwG@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Wed, 1 Nov 2023 14:49:40 +0100
+Message-ID: <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
+Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
+ dedicated guest memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1.11.2023 12.54, Bryan O'Donoghue wrote:
-> V3:
-> - Includes bugfix reported on IRC
->   genpd_link and genpd should be checked for NULL on the cleanup path.
->   Matti Lehtimäki 
-> - Retains NULL check before dev_pm_domain_attach_by_name()
->   I experimented with the suggested drop but of_property_match_string()
->   chokes
->   Link: https://lore.kernel.org/lkml/883ce8a7-80e1-4065-a957-424d0b4a6535@linaro.org/T/#m10e5a43d0245f13eca177ef2f65b24259c641030
->   Konrad
-> - Fixes spelling caught by codespell - Konrad
-> 
-> Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/b4-camss-named-power-domains-v3
-> sm8250-testable: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/b4-camss-named-power-domains-v3+sm8250
-> 
-> V2:
-> - Incorporates Konrad's suggestion re: removing 'id'
-> - Adds RB - Konrad
-> - Adds in a flag to indicate if a VFE has a power domain.
->   As I rebased this series I realised we had some magic indexing for VFE v
->   VFE Lite, which isn't the root cause of my bug bear in this series but is
->   the same sin - inferring functionality from indexing.
->   Once we transition fully to named pds we won't need a 'has_pd' to flag
->   which VFEs need power-domain attachment and which don't.
->   That transition will require populating all upstream dtsi with pd-names
->   and then deprecating the old way.
->   has_pd is a far better choice than inferring from indexes so, I've added.
-> 
-> Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/commits/aa45a2b58aa1e187a2698a65164d694251f08fa1
-> 
-> V1:
-> At the moment the Qcom CAMSS driver relies on the declaration order of
-> power-domains within the dtsi to determine which power-domain relates to a
-> VFE and which power-domain relates to the top-level (top) CAMSS
-> power-domain.
-> 
-> VFE power-domains must be declared prior to the top power-domain. The top
-> power-domain must be declared last. Early SoCs have just one top
-> power-domain with later SoCs introducing VFE specific power-domains.
-> 
-> Differentiating between the number of power-domains results in lots of code
-> which is brittle and which we can mostly get rid of with named
-> power-domains.
-> 
-> The reliance on declaration ordering is in-effect magic number indexing.
-> 
-> This series introduces named power-domains for CAMSS and refactors some of
-> the code in CAMSS to support the new named power-domains. We continue to
-> support the legacy indexing model with an intention to remove after a
-> reasonable transition period.
-> 
-> New SoC additions should use named power-domains from now on.
-> 
-> Tested on x13s, rb5, db410c
-> 
-> Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-23-10-23-camss-named-power-domains
-> 
-> Bryan O'Donoghue (5):
->   media: qcom: camss: Flag which VFEs require a power-domain
->   media: qcom: camss: Convert to per-VFE pointer for power-domain
->     linkages
->   media: qcom: camss: Use common VFE pm_domain_on/pm_domain_off where
->     applicable
->   media: qcom: camss: Move VFE power-domain specifics into vfe.c
->   media: qcom: camss: Add support for named power-domains
-> 
->  .../media/platform/qcom/camss/camss-vfe-170.c | 36 --------
->  .../media/platform/qcom/camss/camss-vfe-4-1.c |  8 +-
->  .../media/platform/qcom/camss/camss-vfe-4-7.c | 36 --------
->  .../media/platform/qcom/camss/camss-vfe-4-8.c | 31 -------
->  .../media/platform/qcom/camss/camss-vfe-480.c | 36 --------
->  drivers/media/platform/qcom/camss/camss-vfe.c | 77 ++++++++++++++++
->  drivers/media/platform/qcom/camss/camss-vfe.h | 16 ++++
->  drivers/media/platform/qcom/camss/camss.c     | 87 ++++++++++++-------
->  drivers/media/platform/qcom/camss/camss.h     |  7 +-
->  9 files changed, 156 insertions(+), 178 deletions(-)
-> 
-> --
-> 2.42.0
-> 
-> ---
-> Bryan O'Donoghue (5):
->       media: qcom: camss: Flag which VFEs require a power-domain
->       media: qcom: camss: Convert to per-VFE pointer for power-domain linkages
->       media: qcom: camss: Use common VFE pm_domain_on/pm_domain_off where applicable
->       media: qcom: camss: Move VFE power-domain specifics into vfe.c
->       media: qcom: camss: Add support for named power-domains
-> 
->  drivers/media/platform/qcom/camss/camss-vfe-170.c | 36 ----------
->  drivers/media/platform/qcom/camss/camss-vfe-4-1.c |  8 +--
->  drivers/media/platform/qcom/camss/camss-vfe-4-7.c | 36 ----------
->  drivers/media/platform/qcom/camss/camss-vfe-4-8.c | 31 --------
->  drivers/media/platform/qcom/camss/camss-vfe-480.c | 36 ----------
->  drivers/media/platform/qcom/camss/camss-vfe.c     | 79 ++++++++++++++++++++
->  drivers/media/platform/qcom/camss/camss-vfe.h     | 16 +++++
->  drivers/media/platform/qcom/camss/camss.c         | 87 ++++++++++++++---------
->  drivers/media/platform/qcom/camss/camss.h         |  7 +-
->  9 files changed, 158 insertions(+), 178 deletions(-)
-> ---
-> base-commit: 48016737a9af47328dd321df4dd3479ed5e2041d
-> change-id: 20231031-b4-camss-named-power-domains-cc2ac2722543
-> 
-> Best regards,
+On Wed, Nov 1, 2023 at 2:41=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Wed, Nov 01, 2023, Xiaoyao Li wrote:
+> > On 10/31/2023 10:16 PM, Sean Christopherson wrote:
+> > > On Tue, Oct 31, 2023, Xiaoyao Li wrote:
+> > > > On 10/28/2023 2:21 AM, Sean Christopherson wrote:
+> > > > > Extended guest_memfd to allow backing guest memory with transpare=
+nt
+> > > > > hugepages. Require userspace to opt-in via a flag even though the=
+re's no
+> > > > > known/anticipated use case for forcing small pages as THP is opti=
+onal,
+> > > > > i.e. to avoid ending up in a situation where userspace is unaware=
+ that
+> > > > > KVM can't provide hugepages.
+> > > >
+> > > > Personally, it seems not so "transparent" if requiring userspace to=
+ opt-in.
+> > > >
+> > > > People need to 1) check if the kernel built with TRANSPARENT_HUGEPA=
+GE
+> > > > support, or check is the sysfs of transparent hugepage exists; 2)ge=
+t the
+> > > > maximum support hugepage size 3) ensure the size satisfies the alig=
+nment;
+> > > > before opt-in it.
+> > > >
+> > > > Even simpler, userspace can blindly try to create guest memfd with
+> > > > transparent hugapage flag. If getting error, fallback to create wit=
+hout the
+> > > > transparent hugepage flag.
+> > > >
+> > > > However, it doesn't look transparent to me.
+> > >
+> > > The "transparent" part is referring to the underlying kernel mechanis=
+m, it's not
+> > > saying anything about the API.  The "transparent" part of THP is that=
+ the kernel
+> > > doesn't guarantee hugepages, i.e. whether or not hugepages are actual=
+ly used is
+> > > (mostly) transparent to userspace.
+> > >
+> > > Paolo also isn't the biggest fan[*], but there are also downsides to =
+always
+> > > allowing hugepages, e.g. silent failure due to lack of THP or unalign=
+ed size,
+> > > and there's precedent in the form of MADV_HUGEPAGE.
+> > >
+> > > [*] https://lore.kernel.org/all/84a908ae-04c7-51c7-c9a8-119e1933a189@=
+redhat.com
+> >
+> > But it's different than MADV_HUGEPAGE, in a way. Per my understanding, =
+the
+> > failure of MADV_HUGEPAGE is not fatal, user space can ignore it and
+> > continue.
+> >
+> > However, the failure of KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is fatal, which =
+leads
+> > to failure of guest memfd creation.
+>
+> Failing KVM_CREATE_GUEST_MEMFD isn't truly fatal, it just requires differ=
+ent
+> action from userspace, i.e. instead of ignoring the error, userspace coul=
+d redo
+> KVM_CREATE_GUEST_MEMFD with KVM_GUEST_MEMFD_ALLOW_HUGEPAGE=3D0.
+>
+> We could make the behavior more like MADV_HUGEPAGE, e.g. theoretically we=
+ could
+> extend fadvise() with FADV_HUGEPAGE, or add a guest_memfd knob/ioctl() to=
+ let
+> userspace provide advice/hints after creating a guest_memfd.  But I suspe=
+ct that
+> guest_memfd would be the only user of FADV_HUGEPAGE, and IMO a post-creat=
+ion hint
+> is actually less desirable.
+>
+> KVM_GUEST_MEMFD_ALLOW_HUGEPAGE will fail only if userspace didn't provide=
+ a
+> compatible size or the kernel doesn't support THP.  An incompatible size =
+is likely
+> a userspace bug, and for most setups that want to utilize guest_memfd, la=
+ck of THP
+> support is likely a configuration bug.  I.e. many/most uses *want* failur=
+es due to
+> KVM_GUEST_MEMFD_ALLOW_HUGEPAGE to be fatal.
+>
+> > For current implementation, I think maybe KVM_GUEST_MEMFD_DESIRE_HUGEPA=
+GE
+> > fits better than KVM_GUEST_MEMFD_ALLOW_HUGEPAGE? or maybe *PREFER*?
+>
+> Why?  Verbs like "prefer" and "desire" aren't a good fit IMO because they=
+ suggest
+> the flag is a hint, and hints are usually best effort only, i.e. are igno=
+red if
+> there is a fundamental incompatibility.
+>
+> "Allow" isn't perfect, e.g. I would much prefer a straight KVM_GUEST_MEMF=
+D_USE_HUGEPAGES
+> or KVM_GUEST_MEMFD_HUGEPAGES flag, but I wanted the name to convey that K=
+VM doesn't
+> (yet) guarantee hugepages.  I.e. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is strong=
+er than
+> a hint, but weaker than a requirement.  And if/when KVM supports a dedica=
+ted memory
+> pool of some kind, then we can add KVM_GUEST_MEMFD_REQUIRE_HUGEPAGE.
 
-Tested the series using work in progress SC7280 CAMSS.
-Power domain handling works correctly.
+I think that the current patch is fine, but I will adjust it to always
+allow the flag,
+and to make the size check even if !CONFIG_TRANSPARENT_HUGEPAGE.
+If hugepages are not guaranteed, and (theoretically) you could have no
+hugepage at all in the result, it's okay to get this result even if THP is =
+not
+available in the kernel.
 
-For the series:
-
-Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+Paolo
 
