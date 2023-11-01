@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5C67DDAC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905D47DDAD3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377332AbjKAB7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 21:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        id S230089AbjKACGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 22:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345095AbjKAB7f (ORCPT
+        with ESMTP id S229603AbjKACGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 21:59:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889F5ED;
-        Tue, 31 Oct 2023 18:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698803970; x=1730339970;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hy+BaQYzelq4bNrPLUQer7B8U5ZvM3TM81vJ3Dtbimc=;
-  b=KcU3Gxm6ncLm7JMJayPc4JBgTZlJ+CC/DJdY0Xzt6T9QfAK4S1QoL1MY
-   jSCB5NqYNgCu1vdZ6O0AHsRDNG0eibZw3B3j4fNvAuIOoAC6MJ93ArVKG
-   bwNexLcmLRXVFAThLl30DBCDWf+w+Wp/RlDPeIRaODh6FEl06nrXB0EEz
-   CwNKN8bqPDMES75Z2b2YrQeuOkR4shhPQp3TcIqFA1s0gO0y+YKJKPqbN
-   FoBUlRygGmrEE1EjN6pCk6uC8OxgMUoJwUrwSC8/rJeQqx5rTSvgKTzP0
-   boqgoYqGxyKeckL2uCj6slln5G5m6FG18yMNvnB+l+Anmbdr95a6OUeoW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="367758528"
-X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
-   d="scan'208";a="367758528"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 18:59:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
-   d="scan'208";a="8508070"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.12.33]) ([10.93.12.33])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 18:59:27 -0700
-Message-ID: <c3f0e4ac-1790-40c1-a09e-209a09e3d230@linux.intel.com>
-Date:   Wed, 1 Nov 2023 09:59:24 +0800
+        Tue, 31 Oct 2023 22:06:01 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C75B4;
+        Tue, 31 Oct 2023 19:05:58 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d84c24a810dso5929638276.2;
+        Tue, 31 Oct 2023 19:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698804358; x=1699409158; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cEKlb9+ZY0B9mrv/T98IQK90StjaDbNde8cN8esmJ2I=;
+        b=KewMRLCavlkUTR3cNhriYucpF6RDEPSScNbMu4qbpZRcqy6VyMofzJJEMs7ROzaoUS
+         oiJ6OKL4gbo/GIdeZXHRhu94d9ny6JprulGkZ5/My2WYIRA9buFx1aC6oX4W7griBKSb
+         xtGKoD5fACuiEKMhuc7cmq7v+zztzeBfRAMwasvQ4N3DlPe6qN2wOOdAdYFeDns8hrlh
+         uYIhpsqHjc2XyfxLiBSwCxsZC4WBJJhZrD4aOekc8255Dasykwgx8y2ds68QB+Ojs8a6
+         3mgcPeZSZarHESGMC99azyGF4Ez4EQcDkKlKzdXAN+50D73vc1YnBi1ZkqfB/xUoJesK
+         Wnig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698804358; x=1699409158;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cEKlb9+ZY0B9mrv/T98IQK90StjaDbNde8cN8esmJ2I=;
+        b=BZWj9METYo9OFzJilYQVQhGiu6dY1k3MAsrZsoYhjsyLd9b3vvrqUJHEdQtdISNHD8
+         oL2BymAxyQ753uhUQNdDccF1PZT9z76b2dvW6/uLkc04Yc96en/xWYYbhwstqCsOT+se
+         LN+TGqvO9mhsN+e8YtroG/tRRxd7Bf9DLYVXX9jeNN3NQwWBO2LarguatqHiBiqqQK5W
+         O72yDxLdAMHZTE7qogpiOEA3y1EuNLIkgYzI5GEV5cA9oBcn07Rl4xyBOVTjzkwy3IgK
+         9ei0oIUAlDqEeldY2s85ABZGEULmBychLqrOzDMTny+0RZXpsWOKkmnyLTlewMKRImTa
+         monQ==
+X-Gm-Message-State: AOJu0Yz3oC7DkQ970W107QtEDWSG2zHbql0k0ptN/NOnXomggdLJgFH7
+        B7QXgUC1JzAi8KXuOLsxWCdFoT+prjMiWF+nx5Q=
+X-Google-Smtp-Source: AGHT+IFooif2X5+/CJeuSxxULskFOAk5A4KRknHkAg3yGC3gdg+4uZvRH2WSCmbJ5vxEtXGGlfsugeWUSMqdBCqfOcM=
+X-Received: by 2002:a25:68cd:0:b0:da0:4453:8f10 with SMTP id
+ d196-20020a2568cd000000b00da044538f10mr12049799ybc.43.1698804357417; Tue, 31
+ Oct 2023 19:05:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch 1/2] KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots
- event
-Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>, Like Xu <likexu@tencent.com>
-References: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
- <20231031090613.2872700-2-dapeng1.mi@linux.intel.com>
- <CALMp9eR_BFdNNTXhSpbuH66jXcRLVB8VvD8V+kY245NbusN2+g@mail.gmail.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <CALMp9eR_BFdNNTXhSpbuH66jXcRLVB8VvD8V+kY245NbusN2+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <cover.1698717154.git.zhoubinbin@loongson.cn> <7fae3ce932b455effcf73ff0208f4776959f2f44.1698717154.git.zhoubinbin@loongson.cn>
+ <20231031175342.GA1805362-robh@kernel.org>
+In-Reply-To: <20231031175342.GA1805362-robh@kernel.org>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Wed, 1 Nov 2023 08:05:46 +0600
+Message-ID: <CAMpQs4+fz7Xx90QnU23kRAtcyaq9nFQAfp7Qa1RxWhpKr_TiHw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] dt-bindings: interrupt-controller:
+ loongson,liointc: Fix dtbs_check for interrupt-names
+To:     Rob Herring <robh@kernel.org>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, lvjianmin@loongson.cn,
+        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,33 +81,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/2023 2:22 AM, Jim Mattson wrote:
-> On Tue, Oct 31, 2023 at 1:58 AM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
->> This patch adds support for the architectural topdown slots event which
->> is hinted by CPUID.0AH.EBX.
-> Can't a guest already program an event selector to count event select
-> 0xa4, unit mask 1, unless the event is prohibited by
-> KVM_SET_PMU_EVENT_FILTER?
-
-Actually defining this new slots arch event is to do the sanity check 
-for supported arch-events which is enumerated by CPUID.0AH.EBX. 
-Currently vPMU would check if the arch event from guest is supported by 
-KVM. If not, it would be rejected just like intel_hw_event_available() 
-shows.
-
-If we don't add the slots event in the intel_arch_events[] array, guest 
-may program the slots event and pass the sanity check of KVM on a 
-platform which actually doesn't support slots event and program the 
-event on a real GP counter and got an invalid count. This is not correct.
-
-
+On Tue, Oct 31, 2023 at 11:53=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
 >
-> AFAICT, this change just enables event filtering based on
-> CPUID.0AH:EBX[bit 7] (though it's not clear to me why two independent
-> mechanisms are necessary for event filtering).
+> On Tue, Oct 31, 2023 at 10:36:38AM +0800, Binbin Zhou wrote:
+> > The Loongson-2K0500/2K1000 CPUs have 64 interrupt sources as inputs, an=
+d
+> > a route-mapped node handles up to 32 interrupt sources, so two liointc
+> > nodes are defined in dts{i}.
+> > Of course, we need to ensure that the routing outputs (intx) of the two
+> > nodes cannot conflict.
+> >
+> > For example, in Loongson-2K1000, 'int0' is typically used by the lioint=
+c0
+> > node, then the liointc1 node can only use the outputs starting with
+> > 'int1'.
+> >
+> > So "interrupt-names" should be defined by "pattern".
+> >
+> > This fixes dtbs_check warning:
+> >
+> > DTC_CHK arch/loongarch/boot/dts/loongson-2k0500-ref.dtb
+> > arch/loongarch/boot/dts/loongson-2k0500-ref.dtb: interrupt-controller@1=
+fe11440: interrupt-names:0: 'int0' was expected
+> >         From schema: Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> > arch/loongarch/boot/dts/loongson-2k0500-ref.dtb: interrupt-controller@1=
+fe11440: Unevaluated properties are not allowed ('interrupt-names' was unex=
+pected)
+> >         From schema: Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> > DTC_CHK arch/loongarch/boot/dts/loongson-2k1000-ref.dtb
+> > arch/loongarch/boot/dts/loongson-2k1000-ref.dtb: interrupt-controller@1=
+fe01440: interrupt-names:0: 'int0' was expected
+> >         From schema: Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> > arch/loongarch/boot/dts/loongson-2k1000-ref.dtb: interrupt-controller@1=
+fe01440: Unevaluated properties are not allowed ('interrupt-names' was unex=
+pected)
+> >         From schema: Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> >
+> > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > ---
+> >  .../bindings/interrupt-controller/loongson,liointc.yaml    | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/loo=
+ngson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller=
+/loongson,liointc.yaml
+> > index 7393d7dfbe82..a90c609d351e 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,l=
+iointc.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,l=
+iointc.yaml
+> > @@ -54,11 +54,9 @@ properties:
+> >    interrupt-names:
+> >      description: List of names for the parent interrupts.
+> >      items:
+> > -      - const: int0
+> > -      - const: int1
+> > -      - const: int2
+> > -      - const: int3
+> > +      pattern: int[0-3]
+> >      minItems: 1
+> > +    maxItems: 4
+> >
+> >    '#interrupt-cells':
+> >      const: 2
+> > @@ -87,6 +85,7 @@ required:
+> >    - compatible
+> >    - reg
+> >    - interrupts
+> > +  - interrupt-names
+>
+> A new required property is an ABI break. Is that okay for this platform?
+> The commit msg should answer that if so.
 
+Hi Rob:
 
-IMO, these are two different things. this change is just to enable the 
-supported arch events check for slot events, the event filtering is 
-another thing.
+Thanks for your reply.
 
+In fact, 'interrupt-names' is essential for both liointc-1.0 and
+liointc-2.0, and we now pass it to get the corresponding interrupt
+number.
+To a certain extent, I think it's already 'required'.
+Of course, I'll try to explain it more clearly in the commit message.
+
+Thanks.
+Binbin
+>
+>
+> >    - interrupt-controller
+> >    - '#interrupt-cells'
+> >    - loongson,parent-int-map
+> > --
+> > 2.39.3
+> >
