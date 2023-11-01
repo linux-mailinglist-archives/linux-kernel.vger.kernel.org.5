@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A50E07DDAF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C50657DDB01
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344725AbjKAC26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 22:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
+        id S1343766AbjKACau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 22:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344943AbjKAC2z (ORCPT
+        with ESMTP id S233285AbjKACar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 22:28:55 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F744F5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 19:28:49 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2f507c03cso3403896b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 19:28:49 -0700 (PDT)
+        Tue, 31 Oct 2023 22:30:47 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3BFBD;
+        Tue, 31 Oct 2023 19:30:45 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1cc13149621so11834965ad.1;
+        Tue, 31 Oct 2023 19:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1698805728; x=1699410528; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3NOS13AWfl+zD92mnNkBlpojb9vC6m6JveBvE3ib1D0=;
-        b=i0HBoO8FKw46GPzErrcz85zwLKI8QuFdVbmp0SaYnxgwKKHQ2Lk9dwF8hcMIIPMbVU
-         CXBykjy60Hq9diMHtz7hiawfguk5XwcD+WZCdvKfOapTHyDtFxwmSJNgV23q5vaYNirJ
-         TvxS/+10Bs/q4q1yGsZPKg7echGfJGFVlIjWw=
+        d=gmail.com; s=20230601; t=1698805845; x=1699410645; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wJx1gCCJdYe6w1k0ztbhtZDsqbmsvBkB8hSiGVC++eQ=;
+        b=BQ2XJZAXQFn5HrJLnlG6w6f04L8jPKx3/jXVxtoN4qQS9vNJ166Ou0HZ+DrGkoLZYn
+         hFfydrYQr8sw2qAgbyx53IahM25DDwlAezzyycYZMz6Ml9VvnrHorwffpDk5jxwRgY35
+         blc4nL3RbcbFRFviexKVzedSnXX98HTYvfl/YsGcasDmfr5G43jqyzAIeXkXLk0QZ4xO
+         TpFJhe6StTAk3NI8DLETLJQXLMQdMiUIpVvE7Xuu3OpZXK3h1tnUoIvpKjqBGa+pvswy
+         /2ZRmiU/+++cixdPpd4A+EdubuZPQE+6oI9Z0h3ggE/ppXo5F+w6R4yjbNC5hOh5lBmf
+         JJWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698805728; x=1699410528;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3NOS13AWfl+zD92mnNkBlpojb9vC6m6JveBvE3ib1D0=;
-        b=iY9VgEw0m7fxPaITQHBufOD0g3QB7owGJdC2j5BP0JU6U7iS7fs7I7Y2L5QIJEhv2p
-         tXgpfPsDRelOYxMcr//2cSrOOPpvuUzsWfedAj4nDImiHg0x8LWsacwBd2feo490e7BX
-         vtZ0tvxmjknFh9kI51pBFHr4ivj0aKIoLOoUTHw1Ll19FdnI/jZ+EsxQuVNzl3l5pDOK
-         VMJVmv8NAfQZhgatebYiAkdorAx6a+c3yjenMhvkWXnwWVuyj8yD2tqrlYEsLUaZqhaQ
-         3lYu4brC8lXqFvlLHqbFgDCWWaZj4d8qSHlU0ic40foYo9GmFy8P7nimlvxsTZWwlCrN
-         ImFg==
-X-Gm-Message-State: AOJu0Yxi2MEKySRm9AQbRVFMTiua05r9iqo5xIJuj6m1ZtBCCZX8IeiK
-        EhqF+m6RzhAk6mKfc0jBSeJyFQ==
-X-Google-Smtp-Source: AGHT+IHOvyiAUD7ZHPdpP44HLsndQ+RdyPrWrmwj5thEHMOLwAMgNq37HfZjGr3nOGtKfd7GtWMEuA==
-X-Received: by 2002:a05:6808:3a85:b0:3a9:cfb5:4641 with SMTP id fb5-20020a0568083a8500b003a9cfb54641mr13949893oib.48.1698805728594;
-        Tue, 31 Oct 2023 19:28:48 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id t2-20020a0568080b2200b003af6eeed9b6sm101348oij.27.2023.10.31.19.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 19:28:48 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 31 Oct 2023 21:28:44 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.5 000/112] 6.5.10-rc1 review
-Message-ID: <ZUG33Hft8a4XYnrD@fedora64.linuxtx.org>
-References: <20231031165901.318222981@linuxfoundation.org>
+        d=1e100.net; s=20230601; t=1698805845; x=1699410645;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wJx1gCCJdYe6w1k0ztbhtZDsqbmsvBkB8hSiGVC++eQ=;
+        b=Sd2Je+IqqjEZiTrl8HxTreYBO8+mbl0vBQ0IQibzSGaADY3Y39o7aJ37lBzizEFRUC
+         jyrpK0HEDdJZc7eePSYUEsBVMwW9dqdhMNJ1abRbXhHY0VFuwlAfnN09e679D1iztk62
+         XkPY+AaIzwpsIYG0NLFmuvp3DUr6ziQjWgcnYEeDEodzNcBRo/RU4felIZqrSf0ptVdL
+         LcrUnNRHbWTpx3AiWFiAr6g77ECY+rv6KDe0wBbZNvrKfYS56ZaoV1Uk52Z2M9/bjtl5
+         OMNb0K8p7aXQyaxpBoczkYz7FXRMZrhlb80i7HnM8uhG6G4M1rbeCdceEPEOdJPz85RC
+         G6HA==
+X-Gm-Message-State: AOJu0YyIi22FKUWPy2x0Y6JGfcd6iZ6R/vgr1YZy2TBTXfvhoDvdKzZp
+        K5Gl+8SGsYq2JrR3wbmX9dk=
+X-Google-Smtp-Source: AGHT+IF6VbUmw7ib/mBsZAQ0gg4BzyuZrjaSSFR7jiz1xHe2BNnC93S25te2VsButXn2Ux3Y49d34g==
+X-Received: by 2002:a17:902:d1c2:b0:1cc:277f:b4f6 with SMTP id g2-20020a170902d1c200b001cc277fb4f6mr12342647plb.6.1698805845113;
+        Tue, 31 Oct 2023 19:30:45 -0700 (PDT)
+Received: from [127.0.0.1] (059149129201.ctinets.com. [59.149.129.201])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902c1c500b001ca4c7bee0csm219700plc.232.2023.10.31.19.30.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 19:30:44 -0700 (PDT)
+Message-ID: <1aec4977-05dd-49dd-ae59-f3fce8db70b7@gmail.com>
+Date:   Wed, 1 Nov 2023 10:30:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031165901.318222981@linuxfoundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ti: fix possible memory leak in
+ _ti_omap4_clkctrl_setup()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     kristo@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        tony@atomide.com, claudiu.beznea@microchip.com, robh@kernel.org,
+        dario.binacchi@amarulasolutions.com, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231031103010.23792-1-hbh25y@gmail.com>
+ <ZUDZ_tDvM7oUBfkq@smile.fi.intel.com>
+Content-Language: en-US
+From:   Hangyu Hua <hbh25y@gmail.com>
+In-Reply-To: <ZUDZ_tDvM7oUBfkq@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 06:00:01PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.10 release.
-> There are 112 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 31/10/2023 18:42, Andy Shevchenko wrote:
+> On Tue, Oct 31, 2023 at 06:30:10PM +0800, Hangyu Hua wrote:
+>> kstrndup() and kstrdup_and_replace() in clkctrl_get_name() can perform
+>> dynamic memory allocation. So clkctrl_name needs to be freed when
+>> provider->clkdm_name is NULL.
 > 
-> Responses should be made by Thu, 02 Nov 2023 16:58:38 +0000.
-> Anything received after that time might be too late.
+>> Fixes: bd46cd0b802d ("clk: ti: clkctrl: check return value of kasprintf()")
+>> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+>> ---
+>>
+>> 	 v2 and v3: fix commit info.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> I believe I gave you my Rb tag. It's your responsibility to care it on if you
+> send a new version. Otherwise, please tell what makes you think that tag should
+> not be here?
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Do you mean "Reviewed-by"? I checked the previous emails and 
+"lore.kernel.org" and didn’t find this tag in any related emails. I am 
+not sure what happened. Can you please resend it?
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Thanks,
+Hangyu
+>  
