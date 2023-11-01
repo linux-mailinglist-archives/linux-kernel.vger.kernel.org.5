@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72DB7DE797
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC7C7DE7A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345997AbjKAViK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 17:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
+        id S1346004AbjKAViM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 17:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345726AbjKAViF (ORCPT
+        with ESMTP id S1345802AbjKAViG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 17:38:05 -0400
+        Wed, 1 Nov 2023 17:38:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC8711D
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:38:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E44BC433CB;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD97B120;
+        Wed,  1 Nov 2023 14:38:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD84C433CD;
         Wed,  1 Nov 2023 21:38:03 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qyIuY-00EdX7-0g;
+        id 1qyIuY-00EdXf-1M;
         Wed, 01 Nov 2023 17:38:02 -0400
-Message-ID: <20231101213802.017038744@goodmis.org>
+Message-ID: <20231101213802.233842141@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 01 Nov 2023 17:37:20 -0400
+Date:   Wed, 01 Nov 2023 17:37:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 02/12] eventfs: Remove extra dget() in eventfs_create_events_dir()
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [for-next][PATCH 03/12] tracing: Have the user copy of synthetic event address use correct
+ context
 References: <20231101213718.381015321@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +47,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The creation of the top events directory does a dget() at the end of the
-creation in eventfs_create_events_dir() with a comment saying the final
-dput() will happen when it is removed. The problem is that a dget() is
-already done on the dentry when it was created with tracefs_start_creating()!
-The dget() now just causes a memory leak of that dentry.
+A synthetic event is created by the synthetic event interface that can
+read both user or kernel address memory. In reality, it reads any
+arbitrary memory location from within the kernel. If the address space is
+in USER (where CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE is set) then
+it uses strncpy_from_user_nofault() to copy strings otherwise it uses
+strncpy_from_kernel_nofault().
 
-Remove the extra dget() as the final dput() in the deletion of the events
-directory actually matches the one in tracefs_start_creating().
+But since both functions use the same variable there's no annotation to
+what that variable is (ie. __user). This makes sparse complain.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231031124229.4f2e3fa1@gandalf.local.home
+Quiet sparse by typecasting the strncpy_from_user_nofault() variable to
+a __user pointer.
 
+Link: https://lore.kernel.org/linux-trace-kernel/20231031151033.73c42e23@gandalf.local.home
+
+Cc: stable@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
-Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode")
+Fixes: 0934ae9977c2 ("tracing: Fix reading strings from synthetic events");
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311010013.fm8WTxa5-lkp@intel.com/
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/tracefs/event_inode.c | 3 ---
- 1 file changed, 3 deletions(-)
+ kernel/trace/trace_events_synth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 4d2da7480e5f..5536860eb2ff 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -774,9 +774,6 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
- 	tracefs_end_creating(dentry);
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 14cb275a0bab..846e02c0fb59 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -452,7 +452,7 @@ static unsigned int trace_string(struct synth_trace_event *entry,
  
--	/* Will call dput when the directory is removed */
--	dget(dentry);
--
- 	return ei;
- 
-  fail:
+ #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 		if ((unsigned long)str_val < TASK_SIZE)
+-			ret = strncpy_from_user_nofault(str_field, str_val, STR_VAR_LEN_MAX);
++			ret = strncpy_from_user_nofault(str_field, (const void __user *)str_val, STR_VAR_LEN_MAX);
+ 		else
+ #endif
+ 			ret = strncpy_from_kernel_nofault(str_field, str_val, STR_VAR_LEN_MAX);
 -- 
 2.42.0
