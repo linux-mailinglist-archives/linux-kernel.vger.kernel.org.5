@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8D57DDFA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C36E7DDFB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjKAKnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        id S232626AbjKAKoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjKAKnm (ORCPT
+        with ESMTP id S231559AbjKAKoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:43:42 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0235DA;
-        Wed,  1 Nov 2023 03:43:35 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 5F442120033;
-        Wed,  1 Nov 2023 13:43:34 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5F442120033
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1698835414;
-        bh=jDo2aDU63Lsaw8yLynOOXkBuzH1PYdjr+U0WO2CO6P8=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=u0/3w0d2vojXRizkYPTz2IcePTK09PyhNzZ+KPErQM1XJfKRoMg8bj6V2WjJ6TNt6
-         NZFqKY1Zf0M1i6fbd7gJAHIcrjhO7recH+duasL3+slp8Dk+nWWaDibim8tjmkrxzH
-         KgqUFz0OvXvJstoONNA0OoA4zcllJL9WhUevJiVHltbHTi15fVKZ1R4WlmO8RvIr1H
-         8Lge0Uh+hoHz40qygepJ/TP3HCJnvTuPSzVUuUpZ1YbNoW68kj8KnVl+Z2+50DtHGJ
-         l2UP+OJOW+gesFccB/nhwlu4fs3uQJARdhZ6erAf35ql+y1CbMMbTXVFm6b0p0hnV4
-         XAGKlwkg80CSg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed,  1 Nov 2023 13:43:34 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
- 2023 13:43:33 +0300
-Date:   Wed, 1 Nov 2023 13:43:33 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
-        <muchun.song@linux.dev>, <akpm@linux-foundation.org>
-CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v1] tools/cgroup: introduce cgroup v2 memory.events
- listener
-Message-ID: <20231101104333.s4hvljtneunroeff@CAB-WSD-L081021>
-References: <20231013184107.28734-1-ddrokosov@salutedevices.com>
+        Wed, 1 Nov 2023 06:44:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE7311A;
+        Wed,  1 Nov 2023 03:44:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6B82C433C8;
+        Wed,  1 Nov 2023 10:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698835449;
+        bh=hzm/oY3Uj3T6xSQToZS19KHYzBSe7yYI1FPO5I22FNk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IhQ3CMhFQcNswF3IQNEXoasKrME2RFwM9scqNsCI5hUYebmRB9Cs3doDDmpdEzYvx
+         VQQa60a8spWCmeGWS2fCkogmtOnTjNC7sy7fP+qOsLfRD8ts6ltRiNBFoDyzEkCNQ6
+         Tmu5+/sGCi9OY0TImhVlh35g+Ng/Ym/cF2QvIAI1AGZy9OmVZQu9ApLVpbYxDgpy9k
+         tQHbQqltAZWq0FgRLEWTuawo6fa/r6mO23eVEn6xfVUKVEhbHYPZiIXmkpxxStu4a8
+         t/OMZYqKUBHWZNhd4QQYw+2uNKFu3RhmyHJfVVlsbOxYOacWZ6NLJZ5+mcQ1Q6vKPf
+         e47o/KqkQOwLQ==
+Message-ID: <69d464d3-ef42-484f-8c68-9ed0e22ee6fd@kernel.org>
+Date:   Wed, 1 Nov 2023 11:44:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231013184107.28734-1-ddrokosov@salutedevices.com>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181045 [Nov 01 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 06:18:00 #22376334
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V7 3/3] leds: Add support for UP board CPLD onboard LEDS
+Content-Language: en-US
+To:     "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
+        andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
+        pavel@ucw.cz
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
+        musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
+        noah.hung@yunjingtech.com
+References: <20231031015119.29756-1-larry.lai@yunjingtech.com>
+ <20231031015119.29756-4-larry.lai@yunjingtech.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231031015119.29756-4-larry.lai@yunjingtech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,411 +99,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all!
-
-Please let me know if there are any specific guidelines or requirements
-you would like me to consider while reviewing the work. I am open to any
-suggestions or comments you may have.
-
-Appreciate any feedback on that.
-
-On Fri, Oct 13, 2023 at 09:41:07PM +0300, Dmitry Rokosov wrote:
-> This is a simple listener for memory events that handles counter
-> changes in runtime. It can be set up for a specific memory cgroup v2.
+On 31/10/2023 02:51, larry.lai wrote:
+> The UP boards come with a few FPGA-controlled onboard LEDs:
+> * UP Board: yellow, green, red
+> * UP Squared: blue, yellow, green, red
 > 
-> The output example:
-> =====
-> $ /tmp/cgroup_v2_event_listener test
-> Initialized MEMCG events with counters:
-> MEMCG events:
-> 	low: 0
-> 	high: 0
-> 	max: 0
-> 	oom: 0
-> 	oom_kill: 0
-> 	oom_group_kill: 0
-> Started monitoring memory events from '/sys/fs/cgroup/test/memory.events'...
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 0 => 1
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 1 => 2
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 2 => 3
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 3 => 4
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 2 MEMCG max events, change counter 0 => 2
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 8 MEMCG max events, change counter 2 => 10
-> *** 1 MEMCG oom event, change counter 0 => 1
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 4 => 5
-> ^CExiting cgroup v2 event listener...
-> =====
+> This patch depends on patch "mfd: Add support for UP board CPLD/FPGA".
+
+Your commit msg should not describe dependencies within patches. Cover
+letter or --- changelog should. This is totally irrelevant for the git
+history.
+
 > 
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> ---
->  tools/cgroup/Makefile                   |   4 +-
->  tools/cgroup/cgroup_v2_event_listener.c | 330 ++++++++++++++++++++++++
->  2 files changed, 332 insertions(+), 2 deletions(-)
->  create mode 100644 tools/cgroup/cgroup_v2_event_listener.c
-> 
-> diff --git a/tools/cgroup/Makefile b/tools/cgroup/Makefile
-> index ffca068e4a76..86bd357a8f54 100644
-> --- a/tools/cgroup/Makefile
-> +++ b/tools/cgroup/Makefile
-> @@ -3,9 +3,9 @@
->  
->  CFLAGS = -Wall -Wextra
->  
-> -all: cgroup_event_listener
-> +all: cgroup_event_listener cgroup_v2_event_listener
->  %: %.c
->  	$(CC) $(CFLAGS) -o $@ $^
->  
->  clean:
-> -	$(RM) cgroup_event_listener
-> +	$(RM) cgroup_event_listener cgroup_v2_event_listener
-> diff --git a/tools/cgroup/cgroup_v2_event_listener.c b/tools/cgroup/cgroup_v2_event_listener.c
-> new file mode 100644
-> index 000000000000..987261db5369
-> --- /dev/null
-> +++ b/tools/cgroup/cgroup_v2_event_listener.c
-> @@ -0,0 +1,330 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * cgroup_v2_event_listener.c - Simple listener of cgroup v2 memory.events
-> + *
-> + * Copyright (c) 2023, SaluteDevices. All Rights Reserved.
-> + *
-> + * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> + */
+> Signed-off-by: Gary Wang <garywang@aaeon.com.tw>
+> Signed-off-by: larry.lai <larry.lai@yunjingtech.com>
+
+...
+
 > +
-> +#include <err.h>
-> +#include <errno.h>
-> +#include <limits.h>
-> +#include <poll.h>
-> +#include <stdbool.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/inotify.h>
-> +#include <unistd.h>
-> +
-> +#define MEMCG_EVENTS "memory.events"
-> +
-> +/* Size of buffer to use when reading inotify events */
-> +#define INOTIFY_BUFFER_SIZE 8192
-> +
-> +#define INOTIFY_EVENT_NEXT(event, length) ({         \
-> +	(length) -= sizeof(*(event)) + (event)->len; \
-> +	(event)++;                                   \
-> +})
-> +
-> +#define INOTIFY_EVENT_OK(event, length) ((length) >= (ssize_t)sizeof(*(event)))
-> +
-> +#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-> +
-> +struct memcg_counters {
-> +	long low;
-> +	long high;
-> +	long max;
-> +	long oom;
-> +	long oom_kill;
-> +	long oom_group_kill;
-> +};
-> +
-> +struct memcg_events {
-> +	struct memcg_counters counters;
-> +	char path[PATH_MAX];
-> +	int inotify_fd;
-> +	int inotify_wd;
-> +};
-> +
-> +static void print_memcg_counters(const struct memcg_counters *counters)
+> +static int __init upboard_led_probe(struct platform_device *pdev)
+
+Same problems.
+
 > +{
-> +	printf("MEMCG events:\n");
-> +	printf("\tlow: %ld\n", counters->low);
-> +	printf("\thigh: %ld\n", counters->high);
-> +	printf("\tmax: %ld\n", counters->max);
-> +	printf("\toom: %ld\n", counters->oom);
-> +	printf("\toom_kill: %ld\n", counters->oom_kill);
-> +	printf("\toom_group_kill: %ld\n", counters->oom_group_kill);
-> +}
-> +
-> +static int get_memcg_counter(char *line, const char *name, long *counter)
-> +{
-> +	size_t len = strlen(name);
-> +	char *endptr;
-> +	long tmp;
-> +
-> +	if (memcmp(line, name, len)) {
-> +		warnx("Counter line %s has wrong name, %s is expected",
-> +		      line, name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* skip the whitespace delimiter */
-> +	len += 1;
-> +
-> +	errno = 0;
-> +	tmp = strtol(&line[len], &endptr, 10);
-> +	if (((tmp == LONG_MAX || tmp == LONG_MIN) && errno == ERANGE) ||
-> +	    (errno && !tmp)) {
-> +		warnx("Failed to parse: %s", &line[len]);
-> +		return -ERANGE;
-> +	}
-> +
-> +	if (endptr == &line[len]) {
-> +		warnx("Not digits were found in line %s", &line[len]);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!(*endptr == '\0' || (*endptr == '\n' && *++endptr == '\0'))) {
-> +		warnx("Further characters after number: %s", endptr);
-> +		return -EINVAL;
-> +	}
-> +
-> +	*counter = tmp;
-> +
-> +	return 0;
-> +}
-> +
-> +static int read_memcg_events(struct memcg_events *events, bool show_diff)
-> +{
-> +	FILE *fp = fopen(events->path, "re");
-> +	size_t i;
-> +	int ret = 0;
-> +	bool any_new_events = false;
-> +	char *line = NULL;
-> +	size_t len = 0;
-> +	struct memcg_counters new_counters;
-> +	struct memcg_counters *counters = &events->counters;
-> +	struct {
-> +		const char *name;
-> +		long *new;
-> +		long *old;
-> +	} map[] = {
-> +		{
-> +			.name = "low",
-> +			.new = &new_counters.low,
-> +			.old = &counters->low,
-> +		},
-> +		{
-> +			.name = "high",
-> +			.new = &new_counters.high,
-> +			.old = &counters->high,
-> +		},
-> +		{
-> +			.name = "max",
-> +			.new = &new_counters.max,
-> +			.old = &counters->max,
-> +		},
-> +		{
-> +			.name = "oom",
-> +			.new = &new_counters.oom,
-> +			.old = &counters->oom,
-> +		},
-> +		{
-> +			.name = "oom_kill",
-> +			.new = &new_counters.oom_kill,
-> +			.old = &counters->oom_kill,
-> +		},
-> +		{
-> +			.name = "oom_group_kill",
-> +			.new = &new_counters.oom_group_kill,
-> +			.old = &counters->oom_group_kill,
-> +		},
+> +	struct upboard_fpga * const cpld = dev_get_drvdata(pdev->dev.parent);
+> +	struct reg_field fldconf = {
+> +		.reg = UPFPGA_REG_FUNC_EN0,
 > +	};
+> +	struct upboard_led_data * const pdata = pdev->dev.platform_data;
+> +	struct upboard_led *led;
 > +
-> +	if (!fp) {
-> +		warn("Failed to open memcg events file %s", events->path);
-> +		return -EBADF;
-> +	}
+> +	/* check & register GPIO LEDs */
+> +	if (strstr(pdata->colour, "gpio"))
+> +		return upboard_led_gpio_register(cpld);
 > +
-> +	/* Read new values for memcg counters */
-> +	for (i = 0; i < ARRAY_SIZE(map); ++i) {
-> +		ssize_t nread;
+> +	led = devm_kzalloc(&pdev->dev, sizeof(*led), GFP_KERNEL);
+> +	if (!led)
+> +		return -ENOMEM;
 > +
-> +		errno = 0;
-> +		nread = getline(&line, &len, fp);
-> +		if (nread == -1) {
-> +			if (errno) {
-> +				warn("Failed to read line for counter %s",
-> +				     map[i].name);
-> +				ret = -EIO;
-> +				goto exit;
-> +			}
+> +	fldconf.lsb = pdata->bit;
+> +	fldconf.msb = pdata->bit;
+> +	led->field = devm_regmap_field_alloc(&pdev->dev, cpld->regmap, fldconf);
+> +	if (IS_ERR(led->field))
+> +		return PTR_ERR(led->field);
 > +
-> +			break;
-> +		}
+> +	led->cdev.brightness_get = upboard_led_brightness_get;
+> +	led->cdev.brightness_set = upboard_led_brightness_set;
+> +	led->cdev.name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "upboard:%s:", pdata->colour);
+> +	if (!led->cdev.name)
+> +		return -ENOMEM;
 > +
-> +		ret = get_memcg_counter(line, map[i].name, map[i].new);
-> +		if (ret) {
-> +			warnx("Failed to get counter value from line %s", line);
-> +			goto exit;
-> +		}
-> +	}
+> +	return devm_led_classdev_register(&pdev->dev, &led->cdev);
+> +};
 > +
-> +	for (i = 0; i < ARRAY_SIZE(map); ++i) {
-> +		long diff;
+> +static struct platform_driver upboard_led_driver = {
+> +	.driver = {
+> +		.name = "upboard-led",
+> +	},
+> +};
+> +module_platform_driver_probe(upboard_led_driver, upboard_led_probe);
 > +
-> +		if (*map[i].new > *map[i].old) {
-> +			diff = *map[i].new - *map[i].old;
-> +
-> +			if (show_diff)
-> +				printf("*** %ld MEMCG %s event%s, "
-> +				       "change counter %ld => %ld\n",
-> +				       diff, map[i].name,
-> +				       (diff == 1) ? "" : "s",
-> +				       *map[i].old, *map[i].new);
-> +
-> +			*map[i].old += diff;
-> +			any_new_events = true;
-> +		}
-> +	}
-> +
-> +	if (show_diff && !any_new_events)
-> +		printf("*** No new untracked memcg events available\n");
-> +
-> +exit:
-> +	free(line);
-> +	fclose(fp);
-> +
-> +	return ret;
-> +}
-> +
-> +static void process_memcg_events(struct memcg_events *events,
-> +				 struct inotify_event *event)
-> +{
-> +	int ret;
-> +
-> +	if (events->inotify_wd != event->wd) {
-> +		warnx("Unknown inotify event %d, should be %d", event->wd,
-> +		      events->inotify_wd);
-> +		return;
-> +	}
-> +
-> +	printf("Received event in %s:\n", events->path);
-> +
-> +	if (!(event->mask & IN_MODIFY)) {
-> +		warnx("No IN_MODIFY event, skip it");
-> +		return;
-> +	}
-> +
-> +	ret = read_memcg_events(events, /* show_diff = */true);
-> +	if (ret)
-> +		warnx("Can't read memcg events");
-> +}
-> +
-> +static void monitor_events(struct memcg_events *events)
-> +{
-> +	struct pollfd fds[1];
-> +	int ret;
-> +
-> +	printf("Started monitoring memory events from '%s'...\n", events->path);
-> +
-> +	fds[0].fd = events->inotify_fd;
-> +	fds[0].events = POLLIN;
-> +
-> +	for (;;) {
-> +		ret = poll(fds, ARRAY_SIZE(fds), -1);
-> +		if (ret < 0 && errno != EAGAIN)
-> +			err(EXIT_FAILURE, "Can't poll memcg events (%d)", ret);
-> +
-> +		if (fds[0].revents & POLLERR)
-> +			err(EXIT_FAILURE, "Got POLLERR during monitor events");
-> +
-> +		if (fds[0].revents & POLLIN) {
-> +			struct inotify_event *event;
-> +			char buffer[INOTIFY_BUFFER_SIZE];
-> +			ssize_t length;
-> +
-> +			length = read(fds[0].fd, buffer, INOTIFY_BUFFER_SIZE);
-> +			if (length <= 0)
-> +				continue;
-> +
-> +			event = (struct inotify_event *)buffer;
-> +			while (INOTIFY_EVENT_OK(event, length)) {
-> +				process_memcg_events(events, event);
-> +				event = INOTIFY_EVENT_NEXT(event, length);
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +static int initialize_memcg_events(struct memcg_events *events,
-> +				   const char *cgroup)
-> +{
-> +	int ret;
-> +
-> +	memset(events, 0, sizeof(struct memcg_events));
-> +
-> +	ret = snprintf(events->path, PATH_MAX,
-> +		       "/sys/fs/cgroup/%s/memory.events", cgroup);
-> +	if (ret >= PATH_MAX) {
-> +		warnx("Path to cgroup memory.events is too long");
-> +		return -EMSGSIZE;
-> +	} else if (ret < 0) {
-> +		warn("Can't generate cgroup event full name");
-> +		return ret;
-> +	}
-> +
-> +	ret = read_memcg_events(events, /* show_diff = */false);
-> +	if (ret) {
-> +		warnx("Failed to read initial memcg events state (%d)", ret);
-> +		return ret;
-> +	}
-> +
-> +	events->inotify_fd = inotify_init();
-> +	if (events->inotify_fd < 0) {
-> +		warn("Failed to setup new inotify device");
-> +		return -EMFILE;
-> +	}
-> +
-> +	events->inotify_wd = inotify_add_watch(events->inotify_fd,
-> +					       events->path, IN_MODIFY);
-> +	if (events->inotify_wd < 0) {
-> +		warn("Couldn't add monitor in dir %s", events->path);
-> +		return -EIO;
-> +	}
-> +
-> +	printf("Initialized MEMCG events with counters:\n");
-> +	print_memcg_counters(&events->counters);
-> +
-> +	return 0;
-> +}
-> +
-> +static void cleanup_memcg_events(struct memcg_events *events)
-> +{
-> +	inotify_rm_watch(events->inotify_fd, events->inotify_wd);
-> +	close(events->inotify_fd);
-> +}
-> +
-> +int main(int argc, const char **argv)
-> +{
-> +	struct memcg_events events;
-> +	ssize_t ret;
-> +
-> +	if (argc != 2)
-> +		errx(EXIT_FAILURE, "Usage: %s <cgroup>", argv[0]);
-> +
-> +	ret = initialize_memcg_events(&events, argv[1]);
-> +	if (ret)
-> +		errx(EXIT_FAILURE, "Can't initialize memcg events (%zd)", ret);
-> +
-> +	monitor_events(&events);
-> +
-> +	cleanup_memcg_events(&events);
-> +
-> +	printf("Exiting cgroup v2 event listener...\n");
-> +
-> +	return EXIT_SUCCESS;
-> +}
-> -- 
-> 2.36.0
-> 
+> +MODULE_AUTHOR("Gary Wang <garywang@aaeon.com.tw>");
+> +MODULE_DESCRIPTION("UP Board LED driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:upboard-led");
 
--- 
-Thank you,
-Dmitry
+Same problem.
+
+Best regards,
+Krzysztof
+
