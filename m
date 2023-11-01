@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9507DE923
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2777DE924
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjKAXxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 19:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
+        id S230516AbjKAXxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 19:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjKAXxi (ORCPT
+        with ESMTP id S230320AbjKAXxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 19:53:38 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA216C2;
-        Wed,  1 Nov 2023 16:53:35 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4083f61322fso2592935e9.1;
-        Wed, 01 Nov 2023 16:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698882814; x=1699487614; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3BgQx+ZoqpwlxPpWNlIrALpYgnFDkCJPO5cLrhzB9PI=;
-        b=jrz+Tcfe+05NnCxvv+djkcm27Tvx3reP9M+pszJXOQlvsz5uw2DSKlbJ1Sbs3ifcLU
-         jCDHbKcr1k45NxC0BVg551I12+WT7Pm8KJxLeMes+wnEIrvA4gpDPrfntk2ga1bfQFPa
-         MlK01oR9egNfMQHPQQX64/RZ6Vz5woA/BlvIAHDl48Zumc5nFYwgfZnYnhCMS4GQiZk2
-         qOoxu/kkP62zQ6d/1xth7jyFW9946UKLiKd1eJzmeDd8qxAn1cxFBS/VXHQ2mp6ZVpV2
-         PJQG9UjLYlcmbvUbTYJ3noA6a9A7m0rQXVWaeeClH4W433exi0S17vForREvF11O8f60
-         EC7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698882814; x=1699487614;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3BgQx+ZoqpwlxPpWNlIrALpYgnFDkCJPO5cLrhzB9PI=;
-        b=VpkyOBTrD4lv3PNDuZR4w8u4g1UO8VsKpOVA6COKVpBLuNn+zcBesMGXGNIfNXUQBM
-         PFF3ifKQz2rZQiHbTwIWr1V5kg4pPi2d2T145n2AGR558YRzlvKuooR/JTlkIlRuUs81
-         4MucaFgRIMf3eD/GJdk/rZBrfdBD9VifnTvwd3B7GmD1VLSFXSkgiE93If/g0E0HIDe1
-         ivSxEVBhlKGnlWAQgd2M3Nfqexfl11JdAz+Lrfbi9yhXj0k34ejNi4R2Ir3S/hJBYl+G
-         lsqjvC+fpkJtApSpLnO78tnCE3xMvIojNV7kA39c0OirMSEzbPfo3bJj9Z65vImXsR04
-         onoA==
-X-Gm-Message-State: AOJu0YyBB2TVUnqmGWVvaUJ7QS5vIJ/Honp6hXUUzCPiiEZYOYUQA1uL
-        Mqj36PXgvdOGzrb0ZKVi3QE=
-X-Google-Smtp-Source: AGHT+IGo5bIUIzQ8KJtHM9VlInvkNOfDXo2WDE5tMgw3TN28eWBB5DdK4IiQ1cmKvQ8keolWoy+MNA==
-X-Received: by 2002:a05:600c:1f87:b0:406:411f:742e with SMTP id je7-20020a05600c1f8700b00406411f742emr14103113wmb.34.1698882813966;
-        Wed, 01 Nov 2023 16:53:33 -0700 (PDT)
-Received: from archlinux.. ([88.127.172.169])
-        by smtp.gmail.com with ESMTPSA id y20-20020a1c4b14000000b00406408dc788sm1031347wma.44.2023.11.01.16.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 16:53:33 -0700 (PDT)
-From:   dimadrumspro@gmail.com
-X-Google-Original-From: dimadrumspro@@gmail.com
-To:     dimaac@bk.ru
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        dimaaac <dimadrumspro@gmail.com>
-Subject: [PATCH 2/2] drivers: tty: vt: vt.c: fixed segmentation fault in vt.c
-Date:   Thu,  2 Nov 2023 00:53:32 +0100
-Message-ID: <20231101235332.4314-1-dimadrumspro@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 1 Nov 2023 19:53:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E57119
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698882823; x=1730418823;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8No9qD3NopqdlPoaq0kKHzHKIDnfhkU+1rIhmFx3lKA=;
+  b=GJF/iMXS4Ynfugy5WRcXEEBXvSrbP9IiqHg1+4IhBNcr1bKl9sIkCKhd
+   vFoCCL0187bXPfGJOB24uTPsjjjispV5/Rn+yEeK+/AvOkxvxC2tBFuLz
+   g2qYM0Ia7tCjykyVDChDGMjQ6GBV/5vZ071QQOYaFDmTHc7unT1liHHSC
+   YsT82Da/lh8Bm91kHBoIwh5aJqJwGX+lLt+Vd/X1ePl/n4owfndfLWGHj
+   GKqMywzzCLtMuRFojHGah4v1H2YDB29I0udskULR6ul4qy0jMdLPQTzDK
+   MDmXgyZ7eVaFXIrnPhnGalDn+V8xY4dJgQNAt1ALnUwa7XAAwZpbxwtGx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="385777358"
+X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
+   d="scan'208";a="385777358"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 16:53:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="884702862"
+X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
+   d="scan'208";a="884702862"
+Received: from mckitto-mobl1.amr.corp.intel.com (HELO [10.209.109.254]) ([10.209.109.254])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 16:53:42 -0700
+Message-ID: <4b05bf79-c394-4a63-b6d5-eccbdc708115@linux.intel.com>
+Date:   Wed, 1 Nov 2023 16:53:42 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MAINTAINERS: Add Intel TDX entry
+Content-Language: en-US
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     x86@kernel.org, Kai Huang <kai.huang@intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20231101233314.2567-1-kirill.shutemov@linux.intel.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20231101233314.2567-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dimaaac <dimadrumspro@gmail.com>
+Hi,
 
-The previous code lacked proper synchronization, leading to potential data corruption and crashes. Added a spin lock to protect shared variable 'scrollback_delta' to prevent concurrent access.
+On 11/1/2023 4:33 PM, Kirill A. Shutemov wrote:
+> Add myself as Intel TDX maintainer.
+> 
+> I drove upstreaming most of TDX code so far and I will continue
+> working on TDX for foreseeable future.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+> ---
 
-Signed-off-by: dimaaac <dimaac@bk.ru>
----
- drivers/tty/vt/vt.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Acked-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 5c47f77804f0..29cf7fe11662 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -301,12 +301,13 @@ static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
- }
- 
- /* Called  from the keyboard irq path.. */
-+static DEFINE_SPINLOCK(scrolldelta_lock);
-+
- static inline void scrolldelta(int lines)
- {
--	/* FIXME */
--	/* scrolldelta needs some kind of consistency lock, but the BKL was
--	   and still is not protecting versus the scheduled back end */
-+	spin_lock(&scrolldelta_lock);
- 	scrollback_delta += lines;
-+	spin_unlock(&scrolldelta_lock);
- 	schedule_console_callback();
- }
- 
+>  MAINTAINERS | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7608b714653f..1cbec6b235f9 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -23466,6 +23466,18 @@ F:	arch/x86/kernel/dumpstack.c
+>  F:	arch/x86/kernel/stacktrace.c
+>  F:	arch/x86/kernel/unwind_*.c
+>  
+> +X86 TRUST DOMAIN EXTENSIONS (TDX)
+> +M:	Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> +L:	x86@kernel.org
+> +L:	linux-coco@lists.linux.dev
+> +S:	Maintained
+> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
+> +F:	arch/x86/boot/compressed/tdx*
+> +F:	arch/x86/coco/tdx/
+> +F:	arch/x86/include/asm/shared/tdx.h
+> +F:	arch/x86/include/asm/tdx.h
+> +F:	arch/x86/virt/vmx/tdx/
+> +
+
+Do you want to include drivers/virt/coco/tdx-guest?
+
+>  X86 VDSO
+>  M:	Andy Lutomirski <luto@kernel.org>
+>  L:	linux-kernel@vger.kernel.org
+
 -- 
-2.42.0
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
