@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7D7DDBB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B9A7DDBB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbjKADzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 23:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S233638AbjKAD50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 23:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbjKADzM (ORCPT
+        with ESMTP id S231434AbjKAD5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 23:55:12 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30BAC1;
-        Tue, 31 Oct 2023 20:55:09 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-313e742a787so253735f8f.1;
-        Tue, 31 Oct 2023 20:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698810908; x=1699415708; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JB0/maXrKhTyio7d/n+oJLiXoE4Nk47OqpdEbHEpM+Q=;
-        b=fZm8vkKKqOSIcofsxbkKBs6gKtm0G3nysJnpwn+UOhJoKHGqj0j+PCQZRxiMR6gkT/
-         xJVoAJbND+xKOLjbbWybqNcq74dHq95jUBogQxHSipU7h7/CKegi01QvjPbXXC5p0ZmJ
-         etoPn/014get5N9KDSG/NV0TVh8ayU2FXN4hfTP+yumVx6vXmL0Lfadw5BFDlrwk8JDg
-         LVt5lu1VHgaia9z9LqL10vpskqJ8cqKXOECXw2wDnrmjGfL9/mR+L7XAI4ZKW1Ipcy5O
-         FDLybJxxT/KmYjvS6jzTlh4a9Lg1LEyfHOypXq3gk64LaTaNvwKVjO85L/u9ZC1DNGzf
-         rwig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698810908; x=1699415708;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JB0/maXrKhTyio7d/n+oJLiXoE4Nk47OqpdEbHEpM+Q=;
-        b=v6E2BrViqzedMnnCZJv4QrvUzuTsIVRZsblundj+4lDsNNOvSA/7OFjz0MKMqH/9/C
-         OieSFTfIiGoNj2iPo/cXw5vcu/qOIwz+XpDMkYA2iDN/CyQ4DgbHElFbxLUZ/44yKaTQ
-         RPLQ6hA20wELqwCY+is8Wnz9j1DDdAif97BpoTXiytQakZz1JBSePpzbDRtF8pMtAKjy
-         kfO7oq6+IZM60Wj1/eBMEsSi1KrViYCXJT7p1GmRsxrOg36zl4F9H1tVKAHs73Ek3+Yu
-         qetIs79f7efqsu7TgEn4vL0eemczDZ55cOFrJxxcnjNO5xSJ2IFYp543B6dpOu14EQBi
-         SwzA==
-X-Gm-Message-State: AOJu0YxGFm+y2w7QzUBLzVTEV3VYrgkZPbfWh+8ms1/XHgVKQx5jt/6c
-        +Vi8M6LLy06eYQomjudcIo9TEj/eS2AK9DnuDu4=
-X-Google-Smtp-Source: AGHT+IEr7KyXAJEpInft+c9ZhQlYvVmFJWyLpzhcsVLEkhcHWsrXKsLbILhZlE1rMBSUuUxgrsGXTN9cMIGNRYTrhyM=
-X-Received: by 2002:a05:6000:154b:b0:32f:811c:dfc4 with SMTP id
- 11-20020a056000154b00b0032f811cdfc4mr5397720wry.4.1698810907910; Tue, 31 Oct
- 2023 20:55:07 -0700 (PDT)
+        Tue, 31 Oct 2023 23:57:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07609A4;
+        Tue, 31 Oct 2023 20:57:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698811039; x=1730347039;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=l7SaA6WrF/yfhZTXdnFu0cvBBoAB6oKdoOqzhveg098=;
+  b=NA3FrSDn5sN0P/ucW1bqQ/w3Au7YBS0HKFMUglUwx+kUE5/mCYUT3Z42
+   jNmPt2+X+0s9ltJ7BlUX/ZK/pSo9yL3hbh6z5b+b6A4sqP2k2PGQByJXZ
+   TcaPUSfCNt/pNl2ihbcFuNEBgAck90EfS7D+RIeqPYT68PkGV3TjRI06t
+   mYbjeJSF264+hQ6l7bEBiGLPNHE+GRU+41JfrV4gu4Xp3TZrDCaUSakpJ
+   UqHx+r3qpmeACh1Bsasc99sLiEMg/7+XbszSknbrdptqrnuVmCyRRNwbL
+   S7ZTElWd6mwMJ1TVp1KyjhNUOLRO5MTo5Nqv6LFuYnJr/wwqsSX0Wm5T5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="452716256"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="452716256"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:57:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="1092219060"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="1092219060"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.12.33]) ([10.93.12.33])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:57:15 -0700
+Message-ID: <df8f7461-3d4e-4b49-9380-d7d74af844d4@linux.intel.com>
+Date:   Wed, 1 Nov 2023 11:57:12 +0800
 MIME-Version: 1.0
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org> <ZUEzzc/Sod8OR28B@krava>
-In-Reply-To: <ZUEzzc/Sod8OR28B@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 31 Oct 2023 20:54:56 -0700
-Message-ID: <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Matthieu Baerts <matttbe@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [kvm-unit-tests Patch v2 4/5] x86: pmu: Support validation for
+ Intel PMU fixed counter 3
+Content-Language: en-US
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20231031092921.2885109-1-dapeng1.mi@linux.intel.com>
+ <20231031092921.2885109-5-dapeng1.mi@linux.intel.com>
+ <CALMp9eQ4Xj5D-kgqVMKUNmdF37rLcMRXyDYdQU339sRCKZ7d9A@mail.gmail.com>
+ <28796dd3-ac4e-4a38-b9e1-f79533b2a798@linux.intel.com>
+ <CALMp9eRH5pttOA5BApdVeSbbkOU-kWcOWAoGMfK-9f=cy2Jf0g@mail.gmail.com>
+ <fbad1983-5cde-4c7b-aaed-412110fe737f@linux.intel.com>
+ <CALMp9eQhUaATf=-7zGDCb_WMNwWx2edXH5Piy+D8QybEL0tyNg@mail.gmail.com>
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <CALMp9eQhUaATf=-7zGDCb_WMNwWx2edXH5Piy+D8QybEL0tyNg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,73 +77,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 10:05=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
-te:
->
-> On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
-> > Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> > possible to build the kernel without CONFIG_CGROUPS:
-> >
-> >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
-> >   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclare=
-d (first use in this function)
-> >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> >         |              ^~~~~~~~~~~~~~~~~~~
-> >   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is re=
-ported only once for each function it appears in
-> >   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undecl=
-ared (first use in this function)
-> >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> >         |                                    ^~~~~~~~~~~~~~~~~~~~~~
-> >   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof'=
- to incomplete type 'struct css_task_iter'
-> >     927 |         kit->css_it =3D bpf_mem_alloc(&bpf_global_ma, sizeof(=
-struct css_task_iter));
-> >         |                                                            ^~=
-~~~~
-> >   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function=
- 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=3Dimplicit-=
-function-declaration]
-> >     930 |         css_task_iter_start(css, flags, kit->css_it);
-> >         |         ^~~~~~~~~~~~~~~~~~~
-> >         |         task_seq_start
-> >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
-> >   kernel/bpf/task_iter.c:940:16: error: implicit declaration of functio=
-n 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=3Dimpl=
-icit-function-declaration]
-> >     940 |         return css_task_iter_next(kit->css_it);
-> >         |                ^~~~~~~~~~~~~~~~~~
-> >         |                class_dev_iter_next
-> >   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function=
- with return type 'struct task_struct *' makes pointer from integer without=
- a cast [-Werror=3Dint-conversion]
-> >     940 |         return css_task_iter_next(kit->css_it);
-> >         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
-> >   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function=
- 'css_task_iter_end' [-Werror=3Dimplicit-function-declaration]
-> >     949 |         css_task_iter_end(kit->css_it);
-> >         |         ^~~~~~~~~~~~~~~~~
-> >
-> > This patch simply surrounds with a #ifdef the new code requiring CGroup=
-s
-> > support. It seems enough for the compiler and this is similar to
-> > bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> > been added in kernel/bpf/helpers.c and in the selftests.
-> >
-> > Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfunc=
-s")
-> > Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665=
-206927
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp=
-@intel.com/
-> > Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
->
-> Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
 
-I believe this patch has the same issue as Arnd's patch:
-https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpo=
-R1RQ@mail.gmail.com/
+On 11/1/2023 11:24 AM, Jim Mattson wrote:
+> On Tue, Oct 31, 2023 at 8:16 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
+>>
+>> On 11/1/2023 10:47 AM, Jim Mattson wrote:
+>>> On Tue, Oct 31, 2023 at 7:33 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
+>>>> On 11/1/2023 2:47 AM, Jim Mattson wrote:
+>>>>> On Tue, Oct 31, 2023 at 2:22 AM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
+>>>>>> Intel CPUs, like Sapphire Rapids, introduces a new fixed counter
+>>>>>> (fixed counter 3) to counter/sample topdown.slots event, but current
+>>>>>> code still doesn't cover this new fixed counter.
+>>>>>>
+>>>>>> So this patch adds code to validate this new fixed counter can count
+>>>>>> slots event correctly.
+>>>>> I'm not convinced that this actually validates anything.
+>>>>>
+>>>>> Suppose, for example, that KVM used fixed counter 1 when the guest
+>>>>> asked for fixed counter 3. Wouldn't this test still pass?
+>>>> Per my understanding, as long as the KVM returns a valid count in the
+>>>> reasonable count range, we can think KVM works correctly. We don't need
+>>>> to entangle on how KVM really uses the HW, it could be impossible and
+>>>> unnecessary.
+>>> Now, I see how the Pentium FDIV bug escaped notice. Hey, the numbers
+>>> are in a reasonable range. What's everyone upset about?
+>>>
+>>>> Yeah, currently the predefined valid count range may be some kind of
+>>>> loose since I want to cover as much as hardwares and avoid to cause
+>>>> regression. Especially after introducing the random jump and clflush
+>>>> instructions, the cycles and slots become much more hard to predict.
+>>>> Maybe we can have a comparable restricted count range in the initial
+>>>> change, and we can loosen the restriction then if we encounter a failure
+>>>> on some specific hardware. do you think it's better? Thanks.
+>>> I think the test is essentially useless, and should probably just be
+>>> deleted, so that it doesn't give a false sense of confidence.
+>> IMO, I can't say the tests are totally useless. Yes,  passing the tests
+>> doesn't mean the KVM vPMU must work correctly, but we can say there is
+>> something probably wrong if it fails to pass these tests. Considering
+>> the hardware differences, it's impossible to set an exact value for
+>> these events in advance and it seems there is no better method to verify
+>> the PMC count as well. I still prefer to keep these tests until we have
+>> a better method to verify the accuracy of the PMC count.
+> If it's impossible to set an exact value for these events in advance,
+> how does Intel validate the hardware PMU?
 
-I'd like to merge the fix asap. Please make it a complete fix.
+
+I have no much idea how HW team validates the PMU functionality. But per 
+my gotten information, they could have some very tiny benchmarks with a 
+fixed pattern and run them on a certain scenario, so they can expect an 
+very accurate count value. But this is different with our case, a real 
+program is executed on a real system (probably shared with other 
+programs), the events count is impacted by too much hardware/software 
+factors, such as cache contention, it's hard to predict a single 
+accurate count in advance.
+
+Anyway, it's only my guess about the ways of hardware validation, still 
+add Kan to get more information.
+
+Hi Kan,
+
+Do you have more information about how HW team to validate the PMC count 
+accuracy? Thanks.
+
+
