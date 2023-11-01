@@ -2,40 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB84D7DDDA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 09:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 928F57DDD5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbjKAITV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 04:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S231630AbjKAHlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjKAITU (ORCPT
+        with ESMTP id S231251AbjKAHlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 04:19:20 -0400
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5628A6
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 01:19:17 -0700 (PDT)
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6FC4C1A117F;
-        Wed,  1 Nov 2023 09:19:16 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1FBF31A05BE;
-        Wed,  1 Nov 2023 09:19:16 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 5AA21180031E;
-        Wed,  1 Nov 2023 16:19:14 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     vkoul@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, shengjiu.wang@gmail.com,
-        linux-imx@nxp.com, dmaengine@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: imx-sdma: support dual fifo for DEV_TO_DEV
-Date:   Wed,  1 Nov 2023 15:40:26 +0800
-Message-Id: <1698824426-16111-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        Wed, 1 Nov 2023 03:41:47 -0400
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEF2ED
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:41:44 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id y5rAqxjn51jHcy5rAqb1Lk; Wed, 01 Nov 2023 08:41:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698824503;
+        bh=W0JdcYadX1Uj/95T3fXcyVaHAA0+IQtzR59DL7bY2cg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=k05IFa8GzXylwHKRm10nhBZrgD7pVppqAA7dozugSEw0Fy+64nxdUFNGBCOXE9MVM
+         fa6D/XqpE2vvTEtMUs8821cAnm1QP0K6Vw7ns9Naih7xVsoN+YAygefGd6CExXUTlN
+         Py7BKtTktPAF+9X+Qab78w2BNEUH1d76TfhGxGW60ubrsuqRCN+TyWi/xwquuSdK9s
+         7G7lOyLXOWWQkXeqI+U6OdduGHER7avOFjXT1brQvNRTPyqzBN/pOjqHzWe4bOG1Q5
+         TTUWZ3OVcOPTesfZLtw1fSCDSISILZLqFhaEntd+01EGHmsZT1e0LZexXbtCprNi14
+         OEecP7VhLj3Pw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 01 Nov 2023 08:41:43 +0100
+X-ME-IP: 86.243.2.178
+Message-ID: <37ab9219-a049-4a43-b555-83b1629e5a48@wanadoo.fr>
+Date:   Wed, 1 Nov 2023 08:41:39 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] refscale: Optimize process_durations()
+To:     paulmck@kernel.org
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, rcu@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+References: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
+ <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
+ <bcd6bfe1-9891-4f22-86ad-361330e47e9d@paulmck-laptop>
+ <a6943003-da31-4ac7-8944-c7dc06381148@paulmck-laptop>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <a6943003-da31-4ac7-8944-c7dc06381148@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,63 +70,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SSI and SPDIF are dual fifo interface, when support ASRC P2P
-with SSI and SPDIF, the src fifo or dst fifo number can be
-two.
+Le 31/10/2023 à 23:47, Paul E. McKenney a écrit :
+> On Tue, Oct 31, 2023 at 11:21:14AM -0700, Paul E. McKenney wrote:
+>> On Mon, Oct 30, 2023 at 09:55:16AM -0700, Davidlohr Bueso wrote:
+>>> On Sat, 28 Oct 2023, Christophe JAILLET wrote:
+>>>
+>>>> process_durations() is not a hot path, but there is no good reason to
+>>>> iterate over and over the data already in 'buf'.
+>>>>
+>>>> Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+>>>> Data is written directly at the correct place.
+>>>
+>>> Makes sense.
+>>>
+>>> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+>>
+>> Queued and pushed, thank you all!
+> 
+> But an allmodconfig build complains about seq_buf_putc() being undefined,
+> that is, not exported.  I suspect that other seq_buf_*() functions in
+> this patch might also be complained about.
+> 
+> I am dropping this for the moment.  Please make it pass an allmodconfig
+> build so that I can pull it in again.  Please see below for the commit.
+> 
+> 							Thanx, Paul
+> 
 
-The p2p watermark level bit 13 and 14 are designed for
-these use case. This patch is to complete this function
-in driver.
+Ouch!
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Joy Zou <joy.zou@nxp.com>
----
- drivers/dma/imx-sdma.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+seq_buf_init(), seq_buf_terminate(), seq_buf_clear() are inlined 
+functions in a .h file, so shouldn't be a problem.
 
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index f81ecf5863e8..892e23cc0ce8 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -137,7 +137,11 @@
-  *						0: Source on AIPS
-  *	12		Destination Bit(DP)	1: Destination on SPBA
-  *						0: Destination on AIPS
-- *	13-15		---------		MUST BE 0
-+ *	13		Source FIFO		1: Source is dual FIFO
-+ *						0: Source is single FIFO
-+ *	14		Destination FIFO	1: Destination is dual FIFO
-+ *						0: Destination is single FIFO
-+ *	15		---------		MUST BE 0
-  *	16-23		Higher WML		HWML
-  *	24-27		N			Total number of samples after
-  *						which Pad adding/Swallowing
-@@ -168,6 +172,8 @@
- #define SDMA_WATERMARK_LEVEL_SPDIF	BIT(10)
- #define SDMA_WATERMARK_LEVEL_SP		BIT(11)
- #define SDMA_WATERMARK_LEVEL_DP		BIT(12)
-+#define SDMA_WATERMARK_LEVEL_SD		BIT(13)
-+#define SDMA_WATERMARK_LEVEL_DD		BIT(14)
- #define SDMA_WATERMARK_LEVEL_HWML	(0xFF << 16)
- #define SDMA_WATERMARK_LEVEL_LWE	BIT(28)
- #define SDMA_WATERMARK_LEVEL_HWE	BIT(29)
-@@ -1259,6 +1265,16 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
- 		sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_DP;
- 
- 	sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_CONT;
-+
-+	/*
-+	 * Limitation: The p2p script support dual fifos in maximum,
-+	 * So when fifo number is larger than 1, force enable dual
-+	 * fifos.
-+	 */
-+	if (sdmac->n_fifos_src > 1)
-+		sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_SD;
-+	if (sdmac->n_fifos_dst > 1)
-+		sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_DD;
- }
- 
- static void sdma_set_watermarklevel_for_sais(struct sdma_channel *sdmac)
--- 
-2.34.1
+seq_buf_printf() is exported, but seq_buf_putc() is not!
+Really odd to me.
+
+Kees Cook (added in cc) suggests to use this API (see [1]) to avoid some 
+potential issues and ease the management of NULL terminated strings in 
+buffers. (#LinuxHardening).
+
+I'll propose to add the missing EXPORT_SYMBOL_GPL.
+
+CJ
+
+[1]: https://lore.kernel.org/all/202310241629.0A4206316F@keescook/
 
