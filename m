@@ -2,87 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB8E7DE7DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C01E7DE7E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345815AbjKAWAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 18:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
+        id S1344391AbjKAWC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 18:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345806AbjKAWAO (ORCPT
+        with ESMTP id S232007AbjKAWC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 18:00:14 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E8318A
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:59:46 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5afabb23900so4036527b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 14:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698875986; x=1699480786; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VVhslCqemjL4H5fKdlNl1e+NcivavOEThICSKqY5Y80=;
-        b=cmIsomgQHciFGGroiszS8HKBzWFtpTz3CboIfubUMLvpFukWFM/SADG/jG4DQpz07G
-         5UK7ctktBZAXpBbBLYuI9NaZ08fqGEzNhpq7ZHziEUgbY5ooJymeLre0/LJ4q0ipYACm
-         CQkIDg0bOHikEBPcjXMbYYdkllMQfXuetgP6amWr18bdKpNY2Z6RVKZ0VZy51gnZ/4GY
-         14Z4EWe3hFtJSXGFTlfHt2fFA0rk/5+OC1wMbx1SsEEJJ6nRTcq5P8/B8IINiX+R81ZS
-         vxcGHWkgK8up4ueqfI8+kMH/R7qD7iD2rUZP58y+WxJBXcAtFXw6J3BSI75wiZZYs/bE
-         HIqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698875986; x=1699480786;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VVhslCqemjL4H5fKdlNl1e+NcivavOEThICSKqY5Y80=;
-        b=lbAQQiYFDv7faPhMA8+XV0Je6niRw1Ew/yN45Ht2pqItT2zuzXyNt7oXT3acq4e7U+
-         IpENjawcFbJkAZpI2nAxqDUXf79GOmsdhUW0v/pijR7HLj1xNiGWaBh8m3z5Vn3hyb9d
-         z96oMfSTCWKyygo7ugWz+kTQFN92CU3yuOoG1pn6XEH/EZqBw0pAfcm3+4xdZ0H6ciwn
-         73btniXYwNfWiz0CUaRJ9wgLG8A8Td+1KGl3XckVtDcIaZRZOFibfew0aPRe8jEtDi9J
-         As2y5c8XM0oWzVxdsqKqmPhW6pruWglxOG3wZEKck1O5Iu/GgV/UJFxkM99jCRilhqXv
-         uckw==
-X-Gm-Message-State: AOJu0Yzz2j3L8nzBu7sCXfa+PVopQmKJM6X3faLjnd9yAyr3PyqVfTCP
-        PmRahVdU4HCg7PNrcMMsn06lwdWYWP4HfqJ43x+hTQ==
-X-Google-Smtp-Source: AGHT+IEAWmjNqaDpKBud9HrA9LIsvsu2nlmPn06W+S7UDg40Xj5L8fVbe+zmZDO+ieP9R7C8NC/ofzJENFuj1vQi8/g=
-X-Received: by 2002:a81:aa0b:0:b0:5ae:8539:5630 with SMTP id
- i11-20020a81aa0b000000b005ae85395630mr18109564ywh.4.1698875986043; Wed, 01
- Nov 2023 14:59:46 -0700 (PDT)
+        Wed, 1 Nov 2023 18:02:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A0D110;
+        Wed,  1 Nov 2023 15:02:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6417EC433C7;
+        Wed,  1 Nov 2023 22:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698876144;
+        bh=wnWLDQK0FBkzmPX13eahCC6CH20kSJCdKoocecCI93s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=o2rfU4uLCVdKybijAOa0me8qs5gY1oB7W2Enq/sp2esf+Jwnr7SYLqwJxrGTyBLxD
+         PJWsQWuazLx6iAm/0lrWgeCqJiP8CdebHo9Xh8OI2WNErazD88E4DtknZ+UPlwdekC
+         OY2biJnnx4gnzeztqIxtutRc8ixr5jfaT3kGV4tLBLTz8359uadpWwuz9U13om4TrB
+         sqIA0nmj6ahkuLNP2mlSe0icOjpJ3521K/HwMq8BKiOgf2IxFcMBypHivMxonTMaLo
+         hk8FkX4RuaOEj0+s5j3zJP7NChiEuW1judgpJy9ImvWkRy6pgo4lIIrgY1qaQJByWx
+         9cciBOTffXTaw==
+Date:   Wed, 1 Nov 2023 17:02:22 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-pci@vger.kernel.org, lpieralisi@kernel.org, kw@linux.com,
+        robh@kernel.org, linux-kernel@vger.kernel.org,
+        chenhuacai@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH fixes v4] pci: loongson: Workaround MIPS firmware MRRS
+ settings
+Message-ID: <20231101220222.GA99154@bhelgaas>
 MIME-Version: 1.0
-References: <20231030175854.12675-1-rwahl@gmx.de>
-In-Reply-To: <20231030175854.12675-1-rwahl@gmx.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 1 Nov 2023 22:59:34 +0100
-Message-ID: <CACRpkdZ2CXiNsnh_VxAy0OK+s_=cDqP8k0PVmNiL4QJ+mMZ+GQ@mail.gmail.com>
-Subject: Re: [PATCH] stacktrace: check whether task has a stack before saving it
-To:     Ronald Wahl <rwahl@gmx.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ronald Wahl <ronald.wahl@raritan.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231101114957.309902-1-jiaxun.yang@flygoat.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 6:59=E2=80=AFPM Ronald Wahl <rwahl@gmx.de> wrote:
+On Wed, Nov 01, 2023 at 11:49:56AM +0000, Jiaxun Yang wrote:
+> This is a partial revert of commit 8b3517f88ff2 ("PCI:
+> loongson: Prevent LS7A MRRS increases") for MIPS based Loongson.
 
-> I encountered a crash on ARM32 when trying to dump the stack of some
-> zombie process. This is caused by a missing check whether the task
-> actually has a valid stack. This commit adds this check.
->
-> Commit 214d8ca6ee85 ("stacktrace: Provide common infrastructure")
-> introduced this check for platforms that define CONFIG_ARCH_STACKWALK
-> but ARM32 is not one of them.
->
-> Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+Thanks for this patch.  We're in the v6.7 merge window, so we won't
+start merging v6.8 content until v6.7-rc1 (probably Nov 12).
 
-Looks correct to me:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> There are many MIPS based Loongson systems in wild that
+> shipped with firmware which does not set maximum MRRS properly.
 
-Yours,
-Linus Walleij
+As far as I know, there's no requirement for firmware to set MRRS at
+all *except* for the "no_inc_mrrs" hack added by 8b3517f88ff2.  That
+hack treats the current MRRS value as a limit to work around the
+Loongson bug that read requests larger than the limit cause a
+Completer Abort instead of multiple completions.
+
+> Limiting MRRS to 256 for all as MIPS Loongson comes with higher
+> MRRS support is considered rare.
+> 
+> It must be done at device enablement stage because hardware will
+> reset MRRS to inavlid value if a device got disabled.
+
+s/inavlid/invalid/
+
+This part isn't clear to me, though.  What exactly does "device got
+disabled" mean?  The device got reset?  Power cycled?
+PCI_COMMAND_MASTER was cleared?
+
+PCI_FIXUP_ENABLE quirks are run during pci_enable_device(), which
+basically just turns on PCI_COMMAND_MEMORY and/or PCI_COMMAND_IO.
+
+If MRRS gets reset when PCI_COMMAND_MASTER is set or cleared, we don't
+have a quirk phase that runs during pci_set_master(), which is where
+PCI_COMMAND_MASTER gets set, so it's not clear that
+pci_enable_device() is the right place.
+
+> Cc: stable@vger.kernel.org
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217680
+> Fixes: 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases")
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+We'll look for an ack from the maintainer.  Maybe that's you, since
+you added the driver in the first place?  Or maybe it's Huacai?
+
+MAINTAINERS currently doesn't list anybody for
+drivers/pci/controller/pci-loongson.c, and it should.  That should be
+a separate patch.
+
+> ---
+> v4: Improve commit message
+> 
+> This is a partial revert of the origin quirk so there shouldn't
+> be any drama.
+> ---
+>  drivers/pci/controller/pci-loongson.c | 38 +++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pci-loongson.c b/drivers/pci/controller/pci-loongson.c
+> index d45e7b8dc530..d184d7b97e54 100644
+> --- a/drivers/pci/controller/pci-loongson.c
+> +++ b/drivers/pci/controller/pci-loongson.c
+> @@ -108,6 +108,44 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>  			DEV_LS7A_PCIE_PORT6, loongson_mrrs_quirk);
+>  
+> +#ifdef CONFIG_MIPS
+> +static void loongson_old_mrrs_quirk(struct pci_dev *pdev)
+> +{
+> +	struct pci_bus *bus = pdev->bus;
+> +	struct pci_dev *bridge;
+> +	static const struct pci_device_id bridge_devids[] = {
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS2K_PCIE_PORT0) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT0) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT1) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT2) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT3) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT4) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT5) },
+> +		{ PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT6) },
+
+This looks like the same list of devices as for loongson_mrrs_quirk().
+So I guess the idea is that we need loongson_mrrs_quirk() for
+Loongarch-based systems, and this loongson_old_mrrs_quirk() for
+MIPS-based systems?
+
+If so, maybe they could be #ifdef'd to show that, e.g., so that only
+one or the other is compiled?
+
+> +		{ 0, },
+> +	};
+> +
+> +	/* look for the matching bridge */
+> +	while (!pci_is_root_bus(bus)) {
+> +		bridge = bus->self;
+> +		bus = bus->parent;
+> +		/*
+> +		 * There are still some wild MIPS Loongson firmware won't
+> +		 * set MRRS properly. Limiting MRRS to 256 as MIPS Loongson
+> +		 * comes with higher MRRS support is considered rare.
+> +		 */
+> +		if (pci_match_id(bridge_devids, bridge)) {
+> +			if (pcie_get_readrq(pdev) > 256) {
+> +				pci_info(pdev, "limiting MRRS to 256\n");
+> +				pcie_set_readrq(pdev, 256);
+> +			}
+> +			break;
+> +		}
+> +	}
+> +}
+> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, loongson_old_mrrs_quirk);
+> +#endif
+> +
+>  static void loongson_pci_pin_quirk(struct pci_dev *pdev)
+>  {
+>  	pdev->pin = 1 + (PCI_FUNC(pdev->devfn) & 3);
+> -- 
+> 2.34.1
+> 
