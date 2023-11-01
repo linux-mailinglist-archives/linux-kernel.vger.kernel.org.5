@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E0C7DDFC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BD67DDFC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbjKAKvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        id S232558AbjKAKvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjKAKvG (ORCPT
+        with ESMTP id S232540AbjKAKvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:51:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF64F7
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:51:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E7A141F74A;
-        Wed,  1 Nov 2023 10:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698835858; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2WLYzeh478WlPUyItQ97pqNBnGoje4ZiZDp2mbbnW3Q=;
-        b=Qkldod7gecfbRLLe4lpkeRbl21VPREQfaK6Qz+xDw1m64H6ty7iOSNevjQdeOtDeUr5Fa5
-        Wx3n/puZkgbr4exjZZyoNeFI9COJsTvnWF1etXD/74TMwkoPSC7EqzWIYRTg+HdJHYMFv+
-        QmH9UrcnXlSzRHlN3bZmAON9RNIL1WQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698835858;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2WLYzeh478WlPUyItQ97pqNBnGoje4ZiZDp2mbbnW3Q=;
-        b=A43mMo88s6kGUn3b1cVszwYijMyCkdydlYHoalCq8etVQX9k8wK9y31uviW+JNqcIVM5y3
-        +exDGptR0Nic3WCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEEEB1348D;
-        Wed,  1 Nov 2023 10:50:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fBzLMZItQmWEKgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 01 Nov 2023 10:50:58 +0000
-Message-ID: <9811a9a1-dffb-443f-62b1-07de04723a8a@suse.cz>
-Date:   Wed, 1 Nov 2023 11:50:58 +0100
+        Wed, 1 Nov 2023 06:51:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD26115
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:51:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BDAC433C7;
+        Wed,  1 Nov 2023 10:51:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698835867;
+        bh=PUb5cnlFGehCaLm9tBDLh1LIRhoSslutvGk/oy47Q/c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QhWnbdga9QU5q6D0VrSZRDntOmo1wrS6bith0nos9UiFN+Rcrg31M4RxpYnr4Xe4M
+         2IVSQKirOZ0XMdAhq+W7Z+ce9ItU+TW+NYZeFwFfQPA4LdnuvIwdJaxDX5iWsljJdx
+         4PCfO8Z7zdu5yuzYxrS04tnTYhB09uqBi2Un+0k0kSIik3jDWXZPMVEVR0lDhsyPeD
+         bpFIiZLOIx1pumn2GVfxLoOM+ZBAXibkDRDOrF4j3rkW4sdfDebQpiex4s7NnPb4rq
+         PKIkxiFwnnjFcfEE/Yd6CbiGX8PO0FETtVLLybVyJz+5VpwcV/HOsfJZjcAXOr1JFy
+         XUfUpHx7bdOBg==
+Message-ID: <a2a87ae8-932a-4bc0-8c9c-f08bf109f0f2@kernel.org>
+Date:   Wed, 1 Nov 2023 11:51:00 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument
- 1 (different address spaces)
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux-foundation.org>
-References: <202310312340.LW2o2xTj-lkp@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] phy: sprd: Add Spreadtrum usb20 hsphy driver
 Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <202310312340.LW2o2xTj-lkp@intel.com>
+To:     Pu Li <pu.li@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Zhiyong Liu <zhiyong.liu@unisoc.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231101054432.27509-1-pu.li@unisoc.com>
+ <20231101054432.27509-3-pu.li@unisoc.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231101054432.27509-3-pu.li@unisoc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,222 +102,474 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/11/2023 06:44, Pu Li wrote:
+> Add Spreadtrum platform USB20 HSPHY driver support. This driver
+> takes care of all the PHY functionality, normally paired with
+> DesignWare USB20 (DRD) Controller or Spreadtrum musb phy (DRD )controller.
+> 
+> Signed-off-by: Pu Li <pu.li@unisoc.com>
+> ---
 
 
-On 10/31/23 16:09, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5a6a09e97199d6600d31383055f9d43fbbcbe86f
-> commit: e240e53ae0abb0896e0f399bdfef41c69cec3123 mm, slub: add CONFIG_SLUB_TINY
+> +
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include <linux/iio/consumer.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/slab.h>
+> +#include <linux/timer.h>
+> +#include <linux/usb/otg.h>
+> +#include <uapi/linux/usb/charger.h>
+> +
+> +#include "phy-sprd-usb20-hs.h"
+> +
+> +static const struct sprd_hsphy_cfg *phy_cfg;
 
-Hello,
+File-scope variables do not look good.
 
-I don't see how that commit could possibly cause the memcpy warning().
-Something wrong with the evaluation?
+> +
 
-Vlastimil
+...
 
-> date:   11 months ago
-> config: x86_64-randconfig-a013-20230614 (https://download.01.org/0day-ci/archive/20231031/202310312340.LW2o2xTj-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310312340.LW2o2xTj-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310312340.LW2o2xTj-lkp@intel.com/
-> 
-> sparse warnings: (new ones prefixed by >>)
->    kernel/fork.c:1096:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *owner @@     got struct task_struct *p @@
->    kernel/fork.c:1096:19: sparse:     expected struct task_struct [noderef] __rcu *owner
->    kernel/fork.c:1096:19: sparse:     got struct task_struct *p
->    kernel/fork.c:1310:24: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct file [noderef] __rcu *__ret @@     got struct file *new_exe_file @@
->    kernel/fork.c:1310:24: sparse:     expected struct file [noderef] __rcu *__ret
->    kernel/fork.c:1310:24: sparse:     got struct file *new_exe_file
->    kernel/fork.c:1310:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __ret @@
->    kernel/fork.c:1310:22: sparse:     expected struct file *[assigned] old_exe_file
->    kernel/fork.c:1310:22: sparse:     got struct file [noderef] __rcu *[assigned] __ret
->    kernel/fork.c:1637:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
->    kernel/fork.c:1637:38: sparse:     expected struct refcount_struct [usertype] *r
->    kernel/fork.c:1637:38: sparse:     got struct refcount_struct [noderef] __rcu *
->    kernel/fork.c:1646:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:1646:31: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:1646:31: sparse:     got struct spinlock [noderef] __rcu *
->>> kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
->    kernel/fork.c:1647:9: sparse:     expected void const *
->    kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
->>> kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
->    kernel/fork.c:1647:9: sparse:     expected void const *
->    kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
->    kernel/fork.c:1647:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
->    kernel/fork.c:1647:9: sparse:     expected void const *
->    kernel/fork.c:1647:9: sparse:     got struct k_sigaction [noderef] __rcu *
->    kernel/fork.c:1648:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:1648:33: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:1648:33: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2074:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2074:31: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2074:31: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2078:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2078:33: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2078:33: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2398:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct * @@
->    kernel/fork.c:2398:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
->    kernel/fork.c:2398:32: sparse:     got struct task_struct *
->    kernel/fork.c:2407:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2407:27: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2407:27: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2454:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
->    kernel/fork.c:2454:54: sparse:     expected struct list_head *head
->    kernel/fork.c:2454:54: sparse:     got struct list_head [noderef] __rcu *
->    kernel/fork.c:2476:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2476:29: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2476:29: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2497:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2497:29: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2497:29: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2524:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
->    kernel/fork.c:2524:28: sparse:     expected struct sighand_struct *sighand
->    kernel/fork.c:2524:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
->    kernel/fork.c:2553:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2553:31: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2553:31: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2555:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    kernel/fork.c:2555:33: sparse:     expected struct spinlock [usertype] *lock
->    kernel/fork.c:2555:33: sparse:     got struct spinlock [noderef] __rcu *
->    kernel/fork.c:2998:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
->    kernel/fork.c:2998:24: sparse:     expected struct task_struct *[assigned] parent
->    kernel/fork.c:2998:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
->    kernel/fork.c:3079:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
->    kernel/fork.c:3079:43: sparse:     expected struct refcount_struct const [usertype] *r
->    kernel/fork.c:3079:43: sparse:     got struct refcount_struct [noderef] __rcu *
->    kernel/fork.c:1742:9: sparse: sparse: dereference of noderef expression
->    kernel/fork.c:2119:22: sparse: sparse: dereference of noderef expression
->    kernel/fork.c: note: in included file (through include/uapi/asm-generic/bpf_perf_event.h, arch/x86/include/generated/uapi/asm/bpf_perf_event.h, ...):
->    include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
->    include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
->    include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
->    include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
->    include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
->    include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
->    kernel/fork.c:2452:59: sparse: sparse: dereference of noderef expression
->    kernel/fork.c:2453:59: sparse: sparse: dereference of noderef expression
->    kernel/fork.c:1088:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    kernel/fork.c:1088:23: sparse:    struct task_struct [noderef] __rcu *
->    kernel/fork.c:1088:23: sparse:    struct task_struct *
-> --
->>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->>> drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->    drivers/video/fbdev/hgafb.c:496:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:496:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] dest @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] dest
->    drivers/video/fbdev/hgafb.c:507:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const * @@     got unsigned char [noderef] [usertype] __iomem *[assigned] src @@
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     expected void const *
->    drivers/video/fbdev/hgafb.c:507:25: sparse:     got unsigned char [noderef] [usertype] __iomem *[assigned] src
-> --
->>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
->>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
->>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void const *
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
->>> drivers/video/fbdev/cirrusfb.c:1853:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got char [noderef] __iomem *screen_base @@
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     expected void *
->    drivers/video/fbdev/cirrusfb.c:1853:17: sparse:     got char [noderef] __iomem *screen_base
-> --
->    drivers/gpu/drm/gma500/opregion.c:294:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got struct opregion_header *header @@
->    drivers/gpu/drm/gma500/opregion.c:294:25: sparse:     expected void volatile [noderef] __iomem *addr
->    drivers/gpu/drm/gma500/opregion.c:294:25: sparse:     got struct opregion_header *header
->>> drivers/gpu/drm/gma500/opregion.c:324:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *const p @@     got void [noderef] __iomem *[assigned] base @@
->    drivers/gpu/drm/gma500/opregion.c:324:20: sparse:     expected void const *const p
->    drivers/gpu/drm/gma500/opregion.c:324:20: sparse:     got void [noderef] __iomem *[assigned] base
->    drivers/gpu/drm/gma500/opregion.c:330:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_header *header @@     got void [noderef] __iomem *[assigned] base @@
->    drivers/gpu/drm/gma500/opregion.c:330:26: sparse:     expected struct opregion_header *header
->    drivers/gpu/drm/gma500/opregion.c:330:26: sparse:     got void [noderef] __iomem *[assigned] base
->    drivers/gpu/drm/gma500/opregion.c:331:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *vbt @@     got void [noderef] __iomem * @@
->    drivers/gpu/drm/gma500/opregion.c:331:23: sparse:     expected void *vbt
->    drivers/gpu/drm/gma500/opregion.c:331:23: sparse:     got void [noderef] __iomem *
->    drivers/gpu/drm/gma500/opregion.c:338:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_acpi *acpi @@     got void [noderef] __iomem * @@
->    drivers/gpu/drm/gma500/opregion.c:338:32: sparse:     expected struct opregion_acpi *acpi
->    drivers/gpu/drm/gma500/opregion.c:338:32: sparse:     got void [noderef] __iomem *
->    drivers/gpu/drm/gma500/opregion.c:343:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct opregion_asle *asle @@     got void [noderef] __iomem * @@
->    drivers/gpu/drm/gma500/opregion.c:343:32: sparse:     expected struct opregion_asle *asle
->    drivers/gpu/drm/gma500/opregion.c:343:32: sparse:     got void [noderef] __iomem *
-> --
->>> drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *const p @@     got unsigned char [noderef] [usertype] __iomem * @@
->    drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse:     expected void const *const p
->    drivers/gpu/drm/gma500/intel_bios.c:548:42: sparse:     got unsigned char [noderef] [usertype] __iomem *
->    drivers/gpu/drm/gma500/intel_bios.c:549:40: sparse: sparse: cast removes address space '__iomem' of expression
->    drivers/gpu/drm/gma500/intel_bios.c:559:24: sparse: sparse: cast removes address space '__iomem' of expression
-> 
-> vim +1647 kernel/fork.c
-> 
-> a016f3389c0660 JANAK DESAI        2006-02-07  1631  
-> a39bc51691a0c8 Alexey Dobriyan    2007-10-18  1632  static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1633  {
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1634  	struct sighand_struct *sig;
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1635  
-> 60348802e9cb13 Zhaolei            2009-01-06  1636  	if (clone_flags & CLONE_SIGHAND) {
-> d036bda7d0e726 Elena Reshetova    2019-01-18  1637  		refcount_inc(&current->sighand->count);
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1638  		return 0;
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1639  	}
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1640  	sig = kmem_cache_alloc(sighand_cachep, GFP_KERNEL);
-> 0c282b068eb26d Madhuparna Bhowmik 2020-01-27  1641  	RCU_INIT_POINTER(tsk->sighand, sig);
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1642  	if (!sig)
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1643  		return -ENOMEM;
-> 9d7fb04276481c Peter Zijlstra     2015-06-30  1644  
-> d036bda7d0e726 Elena Reshetova    2019-01-18  1645  	refcount_set(&sig->count, 1);
-> 06e62a46bbba20 Jann Horn          2018-08-21  1646  	spin_lock_irq(&current->sighand->siglock);
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16 @1647  	memcpy(sig->action, current->sighand->action, sizeof(sig->action));
-> 06e62a46bbba20 Jann Horn          2018-08-21  1648  	spin_unlock_irq(&current->sighand->siglock);
-> b612e5df4587c9 Christian Brauner  2019-10-14  1649  
-> b612e5df4587c9 Christian Brauner  2019-10-14  1650  	/* Reset all signal handler not set to SIG_IGN to SIG_DFL. */
-> b612e5df4587c9 Christian Brauner  2019-10-14  1651  	if (clone_flags & CLONE_CLEAR_SIGHAND)
-> b612e5df4587c9 Christian Brauner  2019-10-14  1652  		flush_signal_handlers(tsk, 0);
-> b612e5df4587c9 Christian Brauner  2019-10-14  1653  
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1654  	return 0;
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1655  }
-> ^1da177e4c3f41 Linus Torvalds     2005-04-16  1656  
-> 
-> :::::: The code at line 1647 was first introduced by commit
-> :::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
-> 
-> :::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-> :::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-> 
+> +
+> +static int sprd_hsphy_cali_mode(void)
+> +{
+> +	struct device_node *cmdline_node;
+> +	const char *cmdline, *mode;
+> +	int ret;
+> +
+> +	cmdline_node = of_find_node_by_path("/chosen");
+> +	ret = of_property_read_string(cmdline_node, "bootargs", &cmdline);
+> +
+> +	if (ret) {
+> +		pr_err("Can't not parse bootargs\n");
+> +		return 0;
+> +	}
+> +
+> +	mode = strstr(cmdline, "androidboot.mode=cali");
+
+NAK, drop this nonsense.
+
+> +	if (mode)
+> +		return 1;
+> +
+> +	mode = strstr(cmdline, "sprdboot.mode=cali");
+
+NAK, drop this nonsense.
+
+
+> +	if (mode)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int sprd_hsphy_probe(struct platform_device *pdev)
+> +{
+> +	struct sprd_hsphy *phy;
+> +	struct resource *res;
+> +	struct device *dev = &pdev->dev;
+> +	int ret = 0, calimode = 0;
+> +	struct usb_otg *otg;
+> +
+> +	phy = devm_kzalloc(dev, sizeof(*phy), GFP_KERNEL);
+> +	if (!phy)
+> +		return -ENOMEM;
+> +
+> +	otg = devm_kzalloc(dev, sizeof(*otg), GFP_KERNEL);
+> +	if (!otg)
+> +		return -ENOMEM;
+> +
+> +	/* phy cfg data */
+> +	phy_cfg = of_device_get_match_data(dev);
+> +	if (!phy_cfg) {
+> +		dev_err(dev, "no matching driver data found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* set vdd */
+> +	ret = of_property_read_u32(dev->of_node, "sprd,vdd-voltage",
+> +				   &phy->vdd_vol);
+> +	if (ret < 0) {
+> +		dev_err(dev, "unable to read hsphy vdd voltage\n");
+> +		return ret;
+> +	}
+> +
+> +	calimode = sprd_hsphy_cali_mode();
+> +	if (calimode) {
+> +		phy->vdd_vol = phy_cfg->parameters[FULLSPEED_USB33_TUNE];
+> +		dev_info(dev, "calimode vdd_vol:%d\n", phy->vdd_vol);
+> +	}
+> +
+> +	phy->vdd = devm_regulator_get(dev, "vdd");
+> +	if (IS_ERR(phy->vdd)) {
+> +		dev_err(dev, "unable to get hsphy vdd supply\n");
+
+You do not have regulators. You clearly did not test the code, DTS or
+the bindings. Maybe nothing here was tested.
+
+> +		return PTR_ERR(phy->vdd);
+
+Syntax is anyway return dev_err_probe().
+
+> +	}
+> +
+> +	ret = regulator_set_voltage(phy->vdd, phy->vdd_vol, phy->vdd_vol);
+> +	if (ret < 0) {
+> +		dev_err(dev, "fail to set hsphy vdd voltage at %dmV\n",
+> +			phy->vdd_vol);
+> +		return ret;
+> +	}
+> +
+> +	/* phy tune */
+> +	if (phy_cfg->phy_version == VERSION1) {
+> +		ret = of_property_read_u32(dev->of_node, "sprd,tune-value",
+
+Nope, it is not allowed in your bindings.
+
+> +					&phy->phy_tune);
+> +		if (ret < 0) {
+> +			dev_err(dev, "unable to read hsphy usb phy tune\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	/* phy base */
+> +	if (phy_cfg->phy_version == VERSION1 ||
+> +		phy_cfg->phy_version == VERSION2) {
+> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy_glb_regs");
+
+This was not expressed in the bindings.
+
+> +		if (!res) {
+> +			dev_err(dev, "missing USB PHY registers resource\n");
+> +			return -ENODEV;
+> +		}
+> +
+> +		phy->base = devm_ioremap(dev, res->start, resource_size(res));
+> +		if (IS_ERR(phy->base)) {
+> +			dev_err(dev, "unable to get phy base!\n");
+> +			return PTR_ERR(phy->base);
+> +		}
+> +	}
+> +
+> +	/* analog & aoapb & apahb regmap */
+> +	phy->aon_apb = syscon_regmap_lookup_by_phandle(dev->of_node,
+> +				 "sprd,syscon-enable");
+> +	if (IS_ERR(phy->aon_apb)) {
+> +		dev_err(dev, "USB aon apb syscon failed!\n");
+
+return dev_err_probe, if it stays
+
+> +		return PTR_ERR(phy->aon_apb);
+> +	}
+> +
+> +	if (phy_cfg->phy_version == VERSION2) {
+
+
+> +		phy->ap_ahb = syscon_regmap_lookup_by_phandle(dev->of_node,
+> +				 "sprd,syscon-apahb");
+
+NAK, there is no such property!
+
+> +		if (IS_ERR(phy->ap_ahb)) {
+> +			dev_err(dev, "USB apahb syscon failed!\n");
+
+> +			return PTR_ERR(phy->ap_ahb);
+> +		}
+> +	}
+> +
+> +	if (phy_cfg->phy_version != VERSION1) {
+
+This was not expressed in your bindings
+
+
+> +		phy->analog = syscon_regmap_lookup_by_phandle(dev->of_node,
+> +				 "sprd,syscon-ana");
+
+
+> +		if (IS_ERR(phy->analog)) {
+> +			dev_err(dev, "USB analog syscon failed!\n");
+> +			return PTR_ERR(phy->analog);
+
+return dev_err_probe, if it stays, but I insist to remove it.
+
+> +		}
+> +	}
+> +
+> +	/* prepare eye pattern */
+> +	ret = sprd_eye_pattern_prepared(phy, dev);
+> +	if (ret < 0)
+> +		dev_warn(dev, "sprd_eye_pattern_prepared failed, ret = %d\n", ret);
+> +
+> +	/* enable usb module */
+> +	if (phy_cfg->phy_version == VERSION2 ||
+> +		phy_cfg->phy_version == VERSION3) {
+> +		phy_cfg->cfg_ops->usb_enable_ctrl(phy, CTRL2);
+> +	}
+> +
+> +	/* usb phy power down */
+> +	if (phy_cfg->phy_version != VERSION4)
+> +		phy_cfg->cfg_ops->usb_phy_power_ctrl(phy, CTRL2);
+> +
+> +	phy->dev = dev;
+> +	phy->phy.dev = dev;
+> +	phy->phy.label = "sprd-hsphy";
+> +	phy->phy.otg = otg;
+> +	phy->phy.init = sprd_hsphy_init;
+> +	phy->phy.shutdown = sprd_hsphy_shutdown;
+> +	phy->phy.set_vbus = sprd_hostphy_set;
+> +	phy->phy.type = USB_PHY_TYPE_USB2;
+> +	phy->phy.vbus_nb.notifier_call = sprd_hsphy_vbus_notify;
+> +	otg->usb_phy = &phy->phy;
+> +
+> +	device_init_wakeup(phy->dev, true);
+> +	phy->wake_lock = wakeup_source_register(phy->dev, "sprd-hsphy");
+> +	if (!phy->wake_lock) {
+> +		dev_err(dev, "fail to register wakeup lock.\n");
+> +		return -ENOMEM;
+> +	}
+> +	INIT_WORK(&phy->work, sprd_hsphy_charger_detect_work);
+> +	platform_set_drvdata(pdev, phy);
+> +
+> +	ret = usb_add_phy_dev(&phy->phy);
+> +	if (ret) {
+> +		dev_err(dev, "fail to add phy\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = sysfs_create_groups(&dev->kobj, usb_hsphy_groups);
+> +	if (ret)
+> +		dev_warn(dev, "failed to create usb hsphy attributes\n");
+> +
+> +	if (extcon_get_state(phy->phy.edev, EXTCON_USB) > 0)
+> +		usb_phy_set_charger_state(&phy->phy, USB_CHARGER_PRESENT);
+> +
+> +	dev_info(dev, "sprd usb phy probe ok !\n");
+
+Drop. This code looks very, very poor :(. Lack of testing is even worse.
+
+> +
+> +	return ret;
+> +}
+
+...
+
+> +static int __init sprd_hsphy_driver_init(void)
+> +{
+> +	return platform_driver_register(&sprd_hsphy_driver);
+> +}
+> +
+> +static void __exit sprd_hsphy_driver_exit(void)
+> +{
+> +	platform_driver_unregister(&sprd_hsphy_driver);
+> +}
+> +
+> +late_initcall(sprd_hsphy_driver_init);
+> +module_exit(sprd_hsphy_driver_exit);
+> +
+> +MODULE_ALIAS("platform:spreadtrum-usb20-hsphy");
+
+You should not need MODULE_ALIAS() in normal cases. If you need it,
+usually it means your device ID table is wrong (e.g. misses either
+entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
+for incomplete ID table.
+
+
+> +MODULE_AUTHOR("Pu Li <lip308226@gmail.com>");
+> +MODULE_DESCRIPTION("Spreadtrum USB20 HSPHY driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/phy/sprd/phy-sprd-usb20-hs.h b/drivers/phy/sprd/phy-sprd-usb20-hs.h
+> new file mode 100644
+> index 000000000000..897ee5e64482
+> --- /dev/null
+> +++ b/drivers/phy/sprd/phy-sprd-usb20-hs.h
+> @@ -0,0 +1,525 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +/*
+> + * phy-sprd-usb20-hs.h - Spreadtrum usb20 phy Glue layer h file
+> + *
+> + * Copyright 2020-2023 Unisoc Inc.
+> + */
+> +
+> +#ifndef __SPRD_USB20_HS_H
+> +#define __SPRD_USB20_HS_H
+> +
+> +#include <linux/regmap.h>
+> +#include <linux/usb/phy.h>
+> +
+> +struct sprd_hsphy {
+> +	struct device		*dev;
+> +	struct usb_phy		phy;
+> +	void __iomem		*base;
+> +	struct regulator	*vdd;
+> +	struct regmap           *aon_apb;
+> +	struct regmap           *ap_ahb;
+> +	struct regmap           *analog;
+> +	struct wakeup_source	*wake_lock;
+> +	struct work_struct	work;
+> +	unsigned long event;
+> +	u32			vdd_vol;
+> +	u32			phy_tune;
+> +	u32			host_eye_pattern;
+> +	u32			device_eye_pattern;
+> +	u32			host_otg_ctrl0;
+> +	u32			device_otg_ctrl0;
+> +	u32			host_otg_ctrl1;
+> +	u32			device_otg_ctrl1;
+> +	atomic_t		reset;
+> +	atomic_t		inited;
+> +	bool			is_host;
+> +};
+> +
+> +enum hsphy_parameters {
+> +	TUNEHSAMP_SHIFT,
+> +	TUNEEQ_SHIFT,
+> +	TFREGRES_SHIFT,
+> +	FULLSPEED_USB33_TUNE,
+> +};
+> +
+> +enum sprd_hsphy_reg_layout {
+> +	REG_AON_APB_APB_RST1,
+> +	REG_AON_APB_APB_RST2,
+> +	REG_AON_APB_APB_EB1,
+> +	REG_AON_APB_APB_EB2,
+> +	REG_AON_APB_CGM_REG1,
+> +	REG_AON_APB_OTG_PHY_TEST,
+> +	REG_AON_APB_OTG_PHY_CTRL,
+> +	REG_AON_APB_PWR_CTRL,
+> +	REG_AON_APB_AON_SOC_USB_CTRL,
+> +	REG_AON_APB_MIPI_CSI_POWER_CTRL,
+> +	REG_AP_AHB_AHB_EB,
+> +	REG_AP_AHB_AHB_RST,
+> +	REG_AP_AHB_OTG_CTRL0,
+> +	REG_AP_AHB_OTG_CTRL1,
+> +	REG_AP_AHB_OTG_PHY_CTRL,
+> +	REG_AP_AHB_OTG_PHY_TUNE,
+> +	REG_AP_AHB_OTG_PHY_TEST,
+> +	REG_ANALOG_USB20_USB20_ISO_SW,
+> +	REG_ANALOG_USB20_USB20_BATTER_PLL,
+> +	REG_ANALOG_USB20_USB20_UTMI_CTL1,
+> +	REG_ANALOG_USB20_USB20_TRIMMING,
+> +	REG_ANALOG_USB20_USB20_UTMI_CTL2,
+> +	REG_ANALOG_USB20_REG_SEL_CFG_0,
+> +	REG_ANALOG_USB20_IDDG,
+> +	REG_ANALOG_USB20_USB20_PHY,
+> +};
+> +
+> +enum sprd_hsphy_mask_layout {
+> +	MASK_AON_APB_USB_PHY_PD_S,
+> +	MASK_AON_APB_USB_PHY_PD_L,
+> +	MASK_AON_APB_ANLG_APB_EB,
+> +	MASK_AON_APB_ANLG_EB,
+> +	MASK_AON_APB_OTG_REF_EB,
+> +	MASK_AON_APB_ANA_EB,
+> +	MASK_AON_APB_OTG_UTMI_EB,
+> +	MASK_AON_APB_AON_USB2_TOP_EB,
+> +	MASK_AON_APB_OTG_PHY_EB,
+> +	MASK_AON_APB_CGM_OTG_REF_EN,
+> +	MASK_AON_APB_CGM_DPHY_REF_EN,
+> +	MASK_AON_APB_USB_ISO_SW_EN,
+> +	MASK_AON_APB_OTG_PHY_SOFT_RST,
+> +	MASK_AON_APB_OTG_UTMI_SOFT_RST,
+> +	MASK_AON_APB_OTG_VBUS_VALID_PHYREG,
+> +	MASK_AON_APB_USB2_PHY_IDDIG,
+> +	MASK_AON_APB_UTMI_WIDTH_SEL,
+> +	MASK_AON_APB_USB20_CTRL_MUX_REG,
+> +	MASK_AON_APB_USB20_ISO_SW_EN,
+> +	MASK_AON_APB_C2G_ANALOG_USB20_USB20_PS_PD_S,
+> +	MASK_AON_APB_C2G_ANALOG_USB20_USB20_PS_PD_L,
+> +	MASK_AP_AHB_OTG_EB,
+> +	MASK_AP_AHB_OTG_PHY_SOFT_RST,
+> +	MASK_AP_AHB_OTG_UTMI_SOFT_RST,
+> +	MASK_AP_AHB_OTG_SOFT_RST,
+> +	MASK_AP_AHB_USB2_PHY_IDDIG,
+> +	MASK_AP_AHB_OTG_DPPULLDOWN,
+> +	MASK_AP_AHB_OTG_DMPULLDOWN,
+> +	MASK_AP_AHB_OTG_VBUS_VALID_EXT,
+> +	MASK_AP_AHB_OTG_VBUS_VALID_PHYREG,
+> +	MASK_AP_AHB_UTMI_WIDTH_SEL,
+> +	MASK_AP_AHB_USB2_DATABUS16_8,
+> +	MASK_AP_AHB_USB20_SAMPLER_SEL,
+> +	MASK_AP_AHB_USB20_TUNEHSAMP,
+> +	MASK_AP_AHB_USB20_TUNEEQ,
+> +	MASK_AP_AHB_USB20_TFREGRES,
+> +	MASK_ANALOG_USB20_USB20_VBUSVLDEXT,
+> +	MASK_ANALOG_USB20_USB20_DATABUS16_8,
+> +	MASK_DBG_SEL_ANALOG_USB20_USB20_DMPULLDOWN,
+> +	MASK_DBG_SEL_ANALOG_USB20_USB20_DPPULLDOWN,
+> +	MASK_ANALOG_USB20_USB20_DMPULLDOWN,
+> +	MASK_ANALOG_USB20_USB20_DPPULLDOWN,
+> +	MASK_ANALOG_USB20_UTMIOTG_IDDG,
+> +	MASK_ANALOG_USB20_USB20_PS_PD_S,
+> +	MASK_ANALOG_USB20_USB20_PS_PD_L,
+> +	MASK_ANALOG_USB20_USB20_RESERVED,
+> +	MASK_ANALOG_USB20_USB20_ISO_SW_EN,
+> +	MASK_ANALOG_USB20_USB20_TUNEHSAMP,
+> +	MASK_ANALOG_USB20_USB20_TUNEEQ,
+> +	MASK_ANALOG_USB20_USB20_TFREGRES,
+> +};
+> +
+> +enum {
+> +	CTRL0 = 0,
+> +	CTRL1,
+> +	CTRL2,
+> +};
+> +
+> +struct sprd_hsphy_cfg_ops {
+> +	void (*usb_enable_ctrl)(struct sprd_hsphy *phy, int on);
+> +	void (*usb_phy_power_ctrl)(struct sprd_hsphy *phy, int on);
+> +	void (*usb_vbus_ctrl)(struct sprd_hsphy *phy, int on);
+> +	void (*utmi_width_sel)(struct sprd_hsphy *phy);
+> +	void (*reset_core)(struct sprd_hsphy *phy);
+> +	int (*set_mode)(struct sprd_hsphy *phy, int on);
+> +};
+> +
+> +enum hsphy_ip_version {
+> +	VERSION1,
+> +	VERSION2,
+> +	VERSION3,
+> +	VERSION4,
+> +};
+> +
+> +enum hsphy_owner {
+> +	PIKE2,
+> +	SHARKLE,
+> +	SHARKL3,
+> +	SHARKL5,
+> +	SHARKL5PRO,
+> +	QOGIRL6,
+> +	QOGIRN6LITE,
+> +	UIS8520,
+> +};
+> +
+> +struct sprd_hsphy_cfg {
+> +	/* array of registers with different offsets */
+> +	const unsigned int *regs;
+> +
+> +	const unsigned int *masks;
+> +
+> +	/* private ops for each SOC */
+> +	const struct sprd_hsphy_cfg_ops *cfg_ops;
+> +
+> +	const unsigned int *parameters;
+> +
+> +	enum hsphy_ip_version phy_version;
+> +
+> +	enum hsphy_owner	owner;
+> +};
+> +
+> +static const unsigned int pike2_regs_layout[] = {
+
+Static data allocated in every unit including this header? No, this does
+not look like correct code (yeah, it compiles but it is just wrong).
+
+Best regards,
+Krzysztof
+
