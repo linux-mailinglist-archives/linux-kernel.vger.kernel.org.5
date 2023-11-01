@@ -2,190 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F3D7DE71D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655EF7DE735
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346414AbjKAUmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 16:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
+        id S1346455AbjKAUms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 16:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjKAUmV (ORCPT
+        with ESMTP id S234278AbjKAUmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 16:42:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61E210D
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698871292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BrCQTK+msYYunSQbQ7QqLC4ERfMyHGDaa10A5wvKQSE=;
-        b=fmfaluh45EL18eQoLiLdvwC5EvfuKk/a96UBD0zrEEn1YozZDOqQ7T0lmEQepz4Br0jzgt
-        1+xEGpijOCguPdYcGDPz5L0Gt5vwOBMrl8gKwkf16VQZhUItzArH3AkKmGQcgLjeIyOzeu
-        TjPOefIorNARkoZeCfpXlWHARW2Y4QI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-417-ZQ9mVp4aM5S4Z82mCHgXQw-1; Wed, 01 Nov 2023 16:41:29 -0400
-X-MC-Unique: ZQ9mVp4aM5S4Z82mCHgXQw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B6A99185A780;
-        Wed,  1 Nov 2023 20:41:28 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 42821492BE0;
-        Wed,  1 Nov 2023 20:41:26 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  1 Nov 2023 21:40:27 +0100 (CET)
-Date:   Wed, 1 Nov 2023 21:40:23 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Marc Dionne <marc.dionne@auristor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rxrpc_find_service_conn_rcu: use read_seqbegin() rather
- than read_seqbegin_or_lock()
-Message-ID: <20231101204023.GC32034@redhat.com>
-References: <20231027095842.GA30868@redhat.com>
- <1952182.1698853516@warthog.procyon.org.uk>
- <20231101202302.GB32034@redhat.com>
+        Wed, 1 Nov 2023 16:42:46 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2062.outbound.protection.outlook.com [40.107.92.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C065010C
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:42:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MjgPOoNC7Oh8GKpJeipBGEV/tVPRTsxBUmc+z0nrqZaTNoRT7/aGQ9x0ZROfwZRaBIlNZcW9FIDBMPMpjB4bqjh9D6i76Jp4gGvIaTAauz9XkeinQuVx6dZqRzF1nbihjTFqtgbY44W/Twbc08Myftk9IVWhtoo6KGV77cPglue3erXgezIY3zRCHliKq354QdPxFOgbqAF9At1OAdP6/RT8xKgi98GJIT+/uZZ33PyeVcOi3GThocQ4NUhekBATwTl5dLpyYDbtlSlQgknulX2cSqeIjomU3sjXqOcgtZI61ba2W6ObGGGKGsp5dBtwdub1s7/GaNhAxSQnNUWpfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PyThgpM1/ZfqcnydQlilVngAdJZtUJK87OPUS2UUxj8=;
+ b=F5gaSCoMl6LFDvG+yJRtYqaDb6ptQDqAS0GresDZkgx+GkjCn43z4fAIVEN4FZadiQuOlmuz4hJKMO73AHWjJ8q5/WwJXXEgizB1aytZOIpuTB+fNJgqFilDroxl4TBYKOIPEqkZMG4RV3TnbiYa5LF4r9/Hxo3iZBBrnUDqD1zss1BcPxCy4RUnSLjGjzzIX41MlA9oFzGT2k5xEfau2FDDIjwoNzc8Wnv19gE/vBEe+Ef4eww4Zj5E9dDD7nP3CTt/kbQenFL3nYK0Sz+eKTb9g+qbqgJfQK8sib3CGH4XHCbaIPjCOC9HBFz7r99Jjwuw40Y193xYRR2ckLRXkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PyThgpM1/ZfqcnydQlilVngAdJZtUJK87OPUS2UUxj8=;
+ b=4bIdhvn7lVBI/HeJNE9MMhei5XiLyCDexnuhDqk+SK+6DieivgEJyK0Sr92rO1IrftyagfxSIsdj4FlLp/lLE3OVtw0ATtB+Z+uveqBKQ9gp5DbviTO59OFCd59zdjL0rZhTwkr/yocU5CIgFTeOunAiXfx0WIj62qcTUbeBBc8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by DM4PR12MB6565.namprd12.prod.outlook.com (2603:10b6:8:8c::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
+ 2023 20:42:38 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::2ba5:fd62:f75e:cf66]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::2ba5:fd62:f75e:cf66%4]) with mapi id 15.20.6954.019; Wed, 1 Nov 2023
+ 20:42:38 +0000
+Message-ID: <9e6a979a-48db-4b25-884f-ac8d4c2bb078@amd.com>
+Date:   Wed, 1 Nov 2023 15:42:36 -0500
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH] x86/resctrl: Fix unused variable warning in
+ cache_alloc_hsw_probe()
+Content-Language: en-US
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+References: <20231031220534.37730-1-tony.luck@intel.com>
+ <d47235e0-7ecd-483e-82c3-78f13c77df67@amd.com>
+ <SJ1PR11MB6083C14236AC0AFCB49DFB15FCA7A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <SJ1PR11MB6083C14236AC0AFCB49DFB15FCA7A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR13CA0025.namprd13.prod.outlook.com
+ (2603:10b6:806:130::30) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101202302.GB32034@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM4PR12MB6565:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6857d78-49c2-4a92-36f3-08dbdb1b15fc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CzoRaGdGEfTrRuTZjBXt4uDyW4Y8aJ0y5h8NBdLdtC3SqSOpwk5VP3CF2mQYeSivftS75axni+BkFXWnusdlqppvgVAz/1dS1wPaPQ2VmYRTLiXYRsPZxAVQZmjBLt+9BEqCbeNo+3D/pPN87rEaSrPSgmvMcl3lvqLxx00vr5ej+AaZAfCFPbqpPG3AtKIYP01ZGYxknWyMqd8kGMFCFMuErVjqS3FUbBPYad0+BXvrGPpuoZTi8ix1P7k55jJupY3GAzUO17Pz1f/skkFn9Bvmij693IHxvgf9cuVsqTB+YwTS6QOGgpC9IWaP0f4+Ckq1pYtXKmr+DzU/eyFvUE9sUxEszmq6JS1lnmCK/cg5qZrwpSxaiOfBsw/wpMtHhjA7T/YQfxEwhTsKcZKZKuo4AEVYEh+kT6EqQHQkiaD/vP8Z3CS7k5sUwX5gSaLJEzrpKnDNXuFnsDPffOl9Tf+pIeJ6dA8atR9MfLxz4HzZs8xMWIczl42UvrfA0j9W/a9hVDF9PDqZmTAl3kFkTyF4NHcxiIPiO6NMBSY3k+d56QhRmsFvGGKuzU7Hm1SKfZb/n04FzZ69/mJ6sTcR0057CMsH1QHyLWAZyzTgNev+rI2nQGhsIQnednV+qZ78nds0rfG3XWixhkWwd461jg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(136003)(376002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(38100700002)(478600001)(41300700001)(6506007)(53546011)(36756003)(6512007)(66556008)(66946007)(110136005)(7416002)(5660300002)(6486002)(4326008)(8936002)(8676002)(31686004)(31696002)(86362001)(4744005)(2616005)(3450700001)(316002)(26005)(54906003)(2906002)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YmtxTkhkVmFBZUFFZUQ3ZjhnMEF4eDhpaUdEK3k4MUx0ZUhLOThRVVp6VHE0?=
+ =?utf-8?B?Q2k2Vm5UK1pPdzh0N3FVaGIyU0NTSnpMMWljVlFzS2tkaUlMYkxmS1lydmRh?=
+ =?utf-8?B?L1Jqb2xEb0lQTzFVSFBKWU5OeUVpRktxVDRxVXdOZGdsS3NNckRNRXBCczV1?=
+ =?utf-8?B?WFJpTlJQUkJ0MEdIWngxcUxCS2RlTG00a3gxMHFySiswczZGN3dpdXVDZVJ0?=
+ =?utf-8?B?YkJ3dWhwSUdYdXo4UzF5eXh2aDRwQktKT25QWW5zS2FnQXVtZThITXJsQitx?=
+ =?utf-8?B?eE94bDJjZU1SVU5yTVNvMjdhZ3NMQ0wwUzB1ck9RVXVJUERFOG5tQXJhTUFr?=
+ =?utf-8?B?NllwdUNJZUx6eENNRmttZUMwZ1U3MWo1NDlHSmwrNzdOay9nZ283NGlPVHNV?=
+ =?utf-8?B?bEk1c05pZXVEeXRtSlBLeFB3VCsyampiSjJmTDBmMDhFZmpqZ2dxbW9kbEQr?=
+ =?utf-8?B?L2JOK01pb3FoNDM3dXFXMVNtS09zbHp5T0daV29BeTk1L0t5WUhyaEFoU0NN?=
+ =?utf-8?B?SFM2aTJtZzBRMUwyeE4veHd1MzNCNmYwR1RDSDRCbVpqUkJuSUR3ZjFxTWRH?=
+ =?utf-8?B?UXg5dDRhRGdmZGMvZzRFc2t1bktWVzJCVFpMY3BPdDIramluU1JXVXNVUHJE?=
+ =?utf-8?B?NU53OTFzMDJqdFFWQUw4YXZ0bjJ3VzdLUVU5SjZNM0JlRGV2Z3djOWVoODRH?=
+ =?utf-8?B?aWZGSUZPN0RSbmVEdjJ4ZHJzeExRZlpLak93b1B0UVVGOVVLd3dhZzI3VGRJ?=
+ =?utf-8?B?aWYyWjdnZ2lab3QrN2ExcFRMVVp2ZzJvclB4N3c5VnNpek4wdHBWQXJ0cGt0?=
+ =?utf-8?B?TlorR3lGMzV4MUowNkxsZDhRblQxdXBZMDVYc3F5ckJhSGptT2RKbWM2OEVF?=
+ =?utf-8?B?d2pNdXZYZU9TVElQSi8rWUtHQ3dnNnBNRUVkTHBqSWp1RGhCUE1hQlNLWjdk?=
+ =?utf-8?B?Ymx1MXJFZ2M3dDkvYVFkOHZsL0Zzd1FJemxWT2UzdUN4cTBYeWlsM3paemtw?=
+ =?utf-8?B?dTdETlQrdnl2ajhNT0QvYWZBWG9QM2lNd1RoV2pJUjltY1lwdnhYc2NKeHNC?=
+ =?utf-8?B?RmQ4Yzkwa0pndHVzRnRQb21TOFFWQ094Y0JGeHpvT1F4ZnpoQThBMHNWLzZx?=
+ =?utf-8?B?MVVvOUQwL1BnSkVDMHpxNWxTNnZPcjZOZWF2Tzk1NFhlWVhOQWlvb2lQRFht?=
+ =?utf-8?B?VGxFREdNRnNYd1BnZ1FhMWpYYnloOGdMdCtSMVd2dDdQOUlEN09ZS09xQXhw?=
+ =?utf-8?B?T1V4OGhiaGJjb3JhRUlOWXBDZVhDSnZVNzhlUzRjUzdxU1hmMTRQeWNGYmkv?=
+ =?utf-8?B?SE5kNmJwS2tHUVE3SVljODRmZWM4VE1RbGNCTHNlQ1hjVUVDU1ptVmZQSmV3?=
+ =?utf-8?B?NXpQVVRBaDh0UDIwV3d3SGdVNkNVQ2hkWlVQOU1tZTBrWFpWUDcwWVNCSmdY?=
+ =?utf-8?B?WHFlaEJ1R1ZKaFlMTTFReXRjVnR2Mm1mcDRnTXVCZEZRMnRydE1UR0FRcFls?=
+ =?utf-8?B?UFkyZWl5VW9McmpmaTlvQWxOQXlaejZ3Yndxc3VHQ2tZdFdBYkNENW1Odk8v?=
+ =?utf-8?B?NEh4ZFZjaHZ3b1ViemlTTmZ2R0VsZFkrUy9nRG1Ha2xSUUEvc2tuQmkzN0lI?=
+ =?utf-8?B?TDFHU1FXS3ZIcmZWMDVEaEdEOGYrRkhYNThycml4L0tHQm1PN2wwTDdkZExR?=
+ =?utf-8?B?ZTJZNHdtM0xsMkUrS2tLNVR3czZOaTNNb24yd3ZzcGVKWFg1MHQ4bjlWaHFm?=
+ =?utf-8?B?aHFJNGxmME56WXBJWkZsNHEwVW50ZzcrT0JRUEhkUDNpT3owaWVSSWZZZnJv?=
+ =?utf-8?B?LzltUU4yNUNUeHowVUhjelJDSjRRNjVwNmltNzVnakZtUDloWVVPMVFIS3Nj?=
+ =?utf-8?B?eDZpUVhqRzU1Mk4vcGN4b0tVVUVhWGFFRnVZdGZsV1NScndjNlVtU3ZyNG03?=
+ =?utf-8?B?allhS3pJaGh3MmRmT3RuLzRna243TkZydFlzclNJd0Z5bEV5dGZzYnhOdWRh?=
+ =?utf-8?B?NWFlNjAyM2FnRU43NlpscFFOa2hNYXIvRDNlQjV2ZEN1aTlCNzg3anpFTDA5?=
+ =?utf-8?B?TnJhbzBycGJ2NkJMVUpGUTlxRlU3UTlLRVZUcS96MmdzR3NjU3Ric0p6dzZa?=
+ =?utf-8?Q?ADwM=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6857d78-49c2-4a92-36f3-08dbdb1b15fc
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 20:42:38.3783
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yG2li5ONqa03yQxABQXk56405m/aNz/fyn19D7QipB4ZMWzCPyP7Hb1hKrpSbrBQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6565
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case I was not clear, I am not saying this code is buggy.
 
-Just none of read_seqbegin_or_lock/need_seqretry/done_seqretry
-helpers make any sense in this code. It can use read_seqbegin/
-read_seqretry and this won't change the current behaviour.
+On 11/1/23 15:33, Luck, Tony wrote:
+>>>     if (wrmsr_safe(MSR_IA32_L3_CBM_BASE, max_cbm, 0))
+>>>             return;
+>>>
+>>> -   rdmsr(MSR_IA32_L3_CBM_BASE, l, h);
+>>> +   rdmsrl(MSR_IA32_L3_CBM_BASE, l3_cbm_0);
+>>
+>> You are writing 32 bit and reading 64 bit. Why don't you change both to 64
+>> bit?
+> 
+> wrmsr_safe() writes all 64-bits ... just gets those bits as a pair
+> of 32-bit arguments for the low and high halves.
+> 
+> I could switch that to wrmsrl_safe() and change max_cbm to be "u64"
+> to make write & read match. Would that be better?
 
-On 11/01, Oleg Nesterov wrote:
->
-> On 11/01, David Howells wrote:
-> >
-> > Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > > read_seqbegin_or_lock() makes no sense unless you make "seq" odd
-> > > after the lockless access failed.
-> >
-> > I think you're wrong.
->
-> I think you missed the point ;)
->
-> > write_seqlock() turns it odd.
->
-> It changes seqcount_t->sequence but not "seq" so this doesn't matter.
->
-> > For instance, if the read lock is taken first:
-> >
-> > 	sequence seq	CPU 1				CPU 2
-> > 	======= =======	===============================	===============
-> > 	0
-> > 	0	0	seq = 0  MUST BE EVEN
->
-> This is correct,
->
-> > ACCORDING TO DOC
->
-> documentation is wrong, please see
->
-> 	[PATCH 1/2] seqlock: fix the wrong read_seqbegin_or_lock/need_seqretry documentation
-> 	https://lore.kernel.org/all/20231024120808.GA15382@redhat.com/
->
-> > 	0	0	read_seqbegin_or_lock() [lockless]
-> > 			...
-> > 	1	0					write_seqlock()
-> > 	1	0	need_seqretry() [seq=even; sequence!=seq: retry]
->
-> Yes, if CPU_1 races with write_seqlock() need_seqretry() returns true,
->
-> > 	1	1	read_seqbegin_or_lock() [exclusive]
->
-> No. "seq" is still even, so read_seqbegin_or_lock() won't do read_seqlock_excl(),
-> it will do
->
-> 	seq = read_seqbegin(lock);
->
-> again.
->
-> > Note that it spins in __read_seqcount_begin() until we get an even seq,
-> > indicating that no write is currently in progress - at which point we can
-> > perform a lockless pass.
->
-> Exactly. And this means that "seq" is always even.
->
-> > > See thread_group_cputime() as an example, note that it does nextseq = 1 for
-> > > the 2nd round.
-> >
-> > That's not especially convincing.
->
-> See also the usage of read_seqbegin_or_lock() in fs/dcache.c and fs/d_path.c.
-> All other users are wrong.
->
-> Lets start from the very beginning. This code does
->
->         int seq = 0;
->         do {
->                 read_seqbegin_or_lock(service_conn_lock, &seq);
->
->                 do_something();
->
->         } while (need_seqretry(service_conn_lock, seq));
->
->         done_seqretry(service_conn_lock, seq);
->
-> Initially seq is even (it is zero), so read_seqbegin_or_lock(&seq) does
->
-> 	*seq = read_seqbegin(lock);
->
-> and returns. Note that "seq" is still even.
->
-> Now. If need_seqretry(seq) detects the race with write_seqlock() it returns
-> true but it does NOT change this "seq", it is still even. So on the next
-> iteration read_seqbegin_or_lock() will do
->
-> 	*seq = read_seqbegin(lock);
->
-> again, it won't take this lock for writing. And again, seq will be even.
-> And so on.
->
-> And this means that the code above is equivalent to
->
-> 	do {
-> 		seq = read_seqbegin(service_conn_lock);
->
-> 		do_something();
->
-> 	} while (read_seqretry(service_conn_lock, seq));
->
-> and this is what this patch does.
->
-> Yes this is confusing. Again, even the documentation is wrong! That is why
-> I am trying to remove the misuse of read_seqbegin_or_lock(), then I am going
-> to change the semantics of need_seqretry() to enforce the locking on the 2nd
-> pass.
->
-> Oleg.
-
+Yes. That is better.
+-- 
+Thanks
+Babu Moger
