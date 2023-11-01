@@ -2,193 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C58E7DE917
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 799AC7DE918
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347624AbjKAXnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 19:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
+        id S1347710AbjKAXnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 19:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346433AbjKAXnU (ORCPT
+        with ESMTP id S1347720AbjKAXnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 19:43:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55537C2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698882195; x=1730418195;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=8Yh4fXap/BCqnaP4PO3UufdIs+YQkLkZQY+Zlk44Fys=;
-  b=fNGUR05d3SlMlorIU/IukZ3iQB3Zn4Ol4Kn30odI/dVphhSKGNGQ9Teb
-   9YYw+c9yXMht0YqlWWJ0x0AJSWfvNzCW3kCZLrc4lD9cPZihCtFiPKrYV
-   QoghxudFXy1q4c2D8fyQFQZtPSGJKz8TRAHEM5kjWYJLpidhpzutFBVAT
-   IknZqPkfaZo7cVDMQNze1qiVZ8mUgTqTymETm4Mcr+WaTvGTYvnHseFI2
-   30cg0OBeDPGNscHccY/XfHMo/MZhutsqsGKi73Yhxj0UglgLCVR2fKXKH
-   gURTC8VhjjebWaGa/2P9XaDmafvUOW+U4U6gsXBIuLq2TsI6YHVha8Cui
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="373645673"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="373645673"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 16:43:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="710956086"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="710956086"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Nov 2023 16:43:15 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 1 Nov 2023 16:43:14 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 1 Nov 2023 16:43:13 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 1 Nov 2023 16:43:13 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 1 Nov 2023 16:43:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MwyU85pRKEAyVLRIgIv1+Du/UorJLvcR6MW/mz5MksB8egKe3A5n0/pKBgr1EwXUHvlFVK4GLdozZ8l7V0YMlZmG7jZqEizaSauVtVduPC5DFBn8f1JVj2MiSh5TQqbRwQlnL3X7ATr8kMOJntxdnXLSDXhy2l16Rx3t9fAfhTSTdU5Iz59AbD8L/tsE8xuhyDxfcYPHtbxBccB+8gUsnsf4ZMXWwTz09BlQ/TLpdhmZ4/rSOJpOfxjLp88zmGmLcAz2u5nk19wgmYMEMwCnJnwsxTMHgRh6GpxMzFU9Rw/WuBARCdMHWmMMBmEk0EFIw8v5n+HHLxBTlUJbN9T1Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8Yh4fXap/BCqnaP4PO3UufdIs+YQkLkZQY+Zlk44Fys=;
- b=h6dpDuzObH/4Z24FqDwBQN/8J/NYwZbtouG4jFgcEnMg79F9BbH0dIKwP+gQ4Iu6rW30je+4N/GUGYSrwmGfOSeNZiRjC6xNrCNRpKsq1NO44zTkjuaLFXYA4X6bDGvMDfd7Z3QLlbdIFeTUiUNx7F2zN+1PletTD+F1VwDb6flnsA25T6ppJkpbwAGnzvbLNQcalsB6RjsgJcosEmy0SJtTXp2S99jvnuf6s46NOalhOWljRP4utkFDNUjtvURGaztGiBDmA0Oqs1/gvBmFx1JJjJQ8cAPgRYoc4Qw00iKDidEX94rGU+O5IiTse2A/GgnsiMoml0fHot6QlMIF3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DM4PR11MB7278.namprd11.prod.outlook.com (2603:10b6:8:10a::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
- 2023 23:43:06 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::5d1:aa22:7c98:f3c6]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::5d1:aa22:7c98:f3c6%6]) with mapi id 15.20.6954.019; Wed, 1 Nov 2023
- 23:43:06 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-CC:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Add Intel TDX entry
-Thread-Topic: [PATCH] MAINTAINERS: Add Intel TDX entry
-Thread-Index: AQHaDRvXyuM9KCBFrk2g/qSHEC80K7BmIBgA
-Date:   Wed, 1 Nov 2023 23:43:06 +0000
-Message-ID: <9cfd38b33bcb234b6d3c84d24716fe1b7bef6e95.camel@intel.com>
-References: <20231101233314.2567-1-kirill.shutemov@linux.intel.com>
-In-Reply-To: <20231101233314.2567-1-kirill.shutemov@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|DM4PR11MB7278:EE_
-x-ms-office365-filtering-correlation-id: 6d60863b-5afc-4c28-113f-08dbdb344c51
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TdJUAl2xg8dgNxZ5n4HIRLy/o/aHc8msx55FVkLgrw88jb++pRl/6I4aY6NlWCnbRfHL8Px0+acKHynm52UUhOJq1joqOrWJTJ/Rb6JNo6bByrCHMh+hTfteB/z6MOYF3/dRRKyAbV6Pv4+9yp7VdbXyiI0TZY62haJRvm3N3QvSQiKh2S8gIrCN/DOzxQ7cyQrNgEj80qibC9KeQHHcYI99EGYhVAjpV+9gXsJsyfv/fJE9UO4EpP9MKAlW6YaNKLQu5frng2kekh/toioqZJLixweBUDHEZ47AEDS6NbNUUiz/V35h9QF/6RHDDcMo+cjAjlHoLbHbyc11FkQr5mPynLiS9plumgztylZFb4JC0FALNN5SIXI6Jqq8C2zDtLJe0Us9p4ALjfTOKeRRwmYEoT5eLODBQtaeQZYehEGJDwpGT2/ZFpkNlaJm2f3ZWWR+Ppk8xDPXAFsBZTzjOaTJDQHdGZub+ccUK3lhXRsUwJTWHtiec10FZi0PuptXAih/kC6KDsBXKd8/Knrh9UNIp+/g4HiRG1scFHhi2tWAnrqLF/YE2o/GH/fPCJFfH2tC1peI3Vs+ty6Oau7yT3TJ31GmgmIIwyLFf9stfd95pBukcns/Ff5yULz0I20B
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(136003)(39860400002)(346002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(41300700001)(5660300002)(8936002)(8676002)(4326008)(2906002)(6486002)(64756008)(66446008)(66556008)(66476007)(316002)(66946007)(76116006)(36756003)(26005)(86362001)(478600001)(38070700009)(2616005)(71200400001)(110136005)(91956017)(6506007)(6512007)(122000001)(82960400001)(54906003)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S3ZENnM0M0VOL0IrVjR6UURQcmh0VGFQUE1GMXhJV3E0YVlEQmNkSDN0bmkr?=
- =?utf-8?B?K2NXQkRJckdOVGtGMnAxNUZpbXNTYStmcmRCTU53YkpBQzczQXJVWXhISGN2?=
- =?utf-8?B?dHFkSDJmQWFWdnVjNENjQnlGdnFzZGEyYytVNzBQU1dpTFRUbStTT1UrZS9a?=
- =?utf-8?B?VUxjR0g5aE0zUEJ4eUdUKzgwKzgyTDRmUWFzN25MZm1xZk8zQnJHdzIyUnFU?=
- =?utf-8?B?azZXa3FLN0xQaWtmZDk5eS9KL2pvK3lndmcxODRSVUlRMFNtWnE2ZmFHdmhh?=
- =?utf-8?B?VXIvaXFnNVp1M3RHTXFSS2RNeStrQjlUc2NYWGttbGcrM1RDVStUWnNKaTZL?=
- =?utf-8?B?RlRWaFh0bnpsNXFraUFTb2hsUzlZTDBzeDRQR1BCS3VScHc5bEY0SFZSOW10?=
- =?utf-8?B?aWtuZXBKSnBBV0hTb1hxZkxObncvUDFmdWt1RC9qZDcwTWlqcjVUclYzOHo0?=
- =?utf-8?B?ZFRsSDYrVFZTSE1SeXhJMWZnZElFZkhFeFFyWTN2TG5tZnFjZlBLRTdVUXFo?=
- =?utf-8?B?ZUJIYjhyRVorUjI4RkU4NkUvQnFGeVNmTW1CR2xYY0lKenF0RWpaakpjeHdG?=
- =?utf-8?B?UURKNjdCRUI2NXUyVlRsb2tiNm5vZ3ZucW1QYXA2UzV2dGZjcGs1RlZDRVNY?=
- =?utf-8?B?NDQybXBZWVRhU0xULzBmL0VrcUtQaEN1cmt1VkZuYnNPaDhkcW80NzlEWjNz?=
- =?utf-8?B?K2kyWGVMRnlkOFMvSitSK3prditDWVRVSnBObHNCQ3ZqYlBiSThsTU5qQVgw?=
- =?utf-8?B?cmlBcnZuR2RrdHpRb01ubWhTNkMrbjVKb2x1R1dFQlAvNXFPOXVadDlnOGhN?=
- =?utf-8?B?SHpteFBvL2ZtOU9vSnIxR2I4Z0xWZ1VCc2ZIRkFUS2d1RlZ6WGtpdHdEVXNW?=
- =?utf-8?B?ck5FMWhaWERYWFFxNm81YWZaT1QwNXdKUi9ucDA2M3FjM0c1NnJzeXNuL3Ri?=
- =?utf-8?B?MExENnRQZ1RDQXd1Smt6OVdmOWdIVDVFTjlpMy9BVm1QNyt4enpEOG5MRzBt?=
- =?utf-8?B?R2RXcEdWQU5uYjV4VFZtWU5UUnVDU1NZaUo3QXlFak9YRm4yMkZoSmRjWWdT?=
- =?utf-8?B?VzFSajFZNUpvcmZub3owZHNwTlAwWXJ4L2t0UWt4c1BudkdvUzZUVEFOUW1X?=
- =?utf-8?B?RGtQcjRlRmVVMkJDTm5EVDBtb0lsUUE2Q3JJTndKVEVaN3N0UFJkSnJDcmN3?=
- =?utf-8?B?Z2pSakdpZnBNazVIZk1RNUxneXRHUjJCMlp1UVdOeUZObjlvSHkrMUJKRXg4?=
- =?utf-8?B?RUlEb1ZYekpicmp4ZDRKY1FIWitXdW1OeWk0NlFBVHB6TVpKNlc2SXZwanZO?=
- =?utf-8?B?L3VxcVpIeTNGMFJzYlFOS2o4WjFpbUs4VnkyempMTTg1eVZlZUZQS2hIV1li?=
- =?utf-8?B?a2FWdGY4UGxhOFl4TzJwNXkzQ1dLL2ppY1VxTHg0MmtCaUNPS0xTRmhnLzZS?=
- =?utf-8?B?QklocG1FRXoyanBkTTJ0VFRyQmhsLzlDNmVEMU1wTVRzRjFaL0JMNWlMZm05?=
- =?utf-8?B?a25kaDZzdzY5MVZZVXBaaGVyeDZZN0J1R3pTTHFaOUN5bnZWdnFKZnlTY3I3?=
- =?utf-8?B?RzNEaXVuOEM3ZHlBR0Y3V1ZVRUtURHhWOEhxWmIvWVlMeTJkTC9jZDZVbjNj?=
- =?utf-8?B?a25JWlprR0FCeGdGTC9iYTlmTlJJZUpaOC8wZCtCKzBZWXl2NytQOEdjeklN?=
- =?utf-8?B?NWtacyt4Q0tHWlFscUc3TUFlUXdVS3RMdkJ1cktmTFRmQm81d1pDWjhjaHAz?=
- =?utf-8?B?K0k4Tm9zQjVFN2lJWkZhYmlOcHRxanByeFZpK3V5WHFoOEJ2Y0Q3ZDZUcXhL?=
- =?utf-8?B?blRWQnhvbDlGVmlhS2pRT1BaZnBtdHhGdkp4RmwwUUtQZ3dpS0lTNEtZbk1B?=
- =?utf-8?B?RG1sN1Q2S0J6elZMWmM5Y2k5MVZnRXhiZVR6czlqM1hJTmVheHRGWW53cjFN?=
- =?utf-8?B?MGNXT1pvTEVnU0daK3kwdklCK3NzRWtpOVhUbTVSdTJnSVlmU1hsL3pQc3lM?=
- =?utf-8?B?NGovRjdtMGZOcGkyaGRhb1VqWElkY2JFSVpoZDVLUmY0bW5GUHl5eStPSUxS?=
- =?utf-8?B?RisxNTQyUTY4ZE9HdmxYa05XT1p2Q1hkNVI4b1lnOHlIZlAxZVJHT2k0UCtF?=
- =?utf-8?B?ZkxNTHVQenBjWk1jeVVQR0ptOTF0QnB2RUZORDJja0dKTFNORk12M1dSYStj?=
- =?utf-8?B?WGc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B12020E3D3A196429BB3C56D7D0CC61E@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d60863b-5afc-4c28-113f-08dbdb344c51
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2023 23:43:06.5129
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sJcint5qZqmISUNNPn5ed4dBKI0Um/CMIMk+w+xhw6kQX3IUKYyIaD8Q6WQ82CZhb0f+uYiSV8bLGAKup4nCAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7278
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 19:43:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8014012B
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:43:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C0B2C433C8;
+        Wed,  1 Nov 2023 23:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698882217;
+        bh=JYSuVmAFZUH8PIIywSUCSUc1vvzba2A2zsKaGtJUFJ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tTfVdpkLFi/f+19jAwnzN88NXsS0mr92C1azob9dm7IQHvzdxX6mdwbybWdjnHeL5
+         JGLjThcBSURbO3MpdEJ79v+ui06qscuEOu64v2ivgUrOrNfEEDLD+sPcwJ2TCmsvDi
+         aEqneLoB9uon2KI25ijF/EqnKwR3zjncZBxIQr8N4FhjM3kvBJLPDhUJvD108gZnI8
+         3r/LTCPRLcrvU0y1+Warm1BoOIgCtgdOVYpchuRArPOCWaa5QzjL8JnfPwbiFGi/Mz
+         xQwwBY4ggLTjUGhzv5oo3SJximAijOZ4XSIYtoF+KrhJOqZBtUU4/wVTv0rU7clF6L
+         K+hAYCsthtG2Q==
+Date:   Thu, 2 Nov 2023 08:43:32 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v5 4/7] eventfs: Save ownership and mode
+Message-Id: <20231102084332.754ff8867b7616c36bdf65ad@kernel.org>
+In-Reply-To: <20231031223420.568912586@goodmis.org>
+References: <20231031223326.794680978@goodmis.org>
+        <20231031223420.568912586@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTExLTAyIGF0IDAyOjMzICswMzAwLCBLaXJpbGwgQS4gU2h1dGVtb3Ygd3Jv
-dGU6DQo+IEFkZCBteXNlbGYgYXMgSW50ZWwgVERYIG1haW50YWluZXIuDQo+IA0KPiBJIGRyb3Zl
-IHVwc3RyZWFtaW5nIG1vc3Qgb2YgVERYIGNvZGUgc28gZmFyIGFuZCBJIHdpbGwgY29udGludWUN
-Cj4gd29ya2luZyBvbiBURFggZm9yIGZvcmVzZWVhYmxlIGZ1dHVyZS4NCj4gDQo+IFNpZ25lZC1v
-ZmYtYnk6IEtpcmlsbCBBLiBTaHV0ZW1vdiA8a2lyaWxsLnNodXRlbW92QGxpbnV4LmludGVsLmNv
-bT4NCj4gU3VnZ2VzdGVkLWJ5OiBEYXZlIEhhbnNlbiA8ZGF2ZS5oYW5zZW5AbGludXguaW50ZWwu
-Y29tPg0KPiAtLS0NCj4gIE1BSU5UQUlORVJTIHwgMTIgKysrKysrKysrKysrDQo+ICAxIGZpbGUg
-Y2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL01BSU5UQUlORVJT
-IGIvTUFJTlRBSU5FUlMNCj4gaW5kZXggNzYwOGI3MTQ2NTNmLi4xY2JlYzZiMjM1ZjkgMTAwNjQ0
-DQo+IC0tLSBhL01BSU5UQUlORVJTDQo+ICsrKyBiL01BSU5UQUlORVJTDQo+IEBAIC0yMzQ2Niw2
-ICsyMzQ2NiwxOCBAQCBGOglhcmNoL3g4Ni9rZXJuZWwvZHVtcHN0YWNrLmMNCj4gIEY6CWFyY2gv
-eDg2L2tlcm5lbC9zdGFja3RyYWNlLmMNCj4gIEY6CWFyY2gveDg2L2tlcm5lbC91bndpbmRfKi5j
-DQo+ICANCj4gK1g4NiBUUlVTVCBET01BSU4gRVhURU5TSU9OUyAoVERYKQ0KPiArTToJS2lyaWxs
-IEEuIFNodXRlbW92IDxraXJpbGwuc2h1dGVtb3ZAbGludXguaW50ZWwuY29tPg0KPiArTDoJeDg2
-QGtlcm5lbC5vcmcNCj4gK0w6CWxpbnV4LWNvY29AbGlzdHMubGludXguZGV2DQo+ICtTOglNYWlu
-dGFpbmVkDQo+ICtUOglnaXQgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJu
-ZWwvZ2l0L3RpcC90aXAuZ2l0IHg4Ni90ZHgNCj4gK0Y6CWFyY2gveDg2L2Jvb3QvY29tcHJlc3Nl
-ZC90ZHgqDQo+ICtGOglhcmNoL3g4Ni9jb2NvL3RkeC8NCj4gK0Y6CWFyY2gveDg2L2luY2x1ZGUv
-YXNtL3NoYXJlZC90ZHguaA0KPiArRjoJYXJjaC94ODYvaW5jbHVkZS9hc20vdGR4LmgNCj4gK0Y6
-CWFyY2gveDg2L3ZpcnQvdm14L3RkeC8NCj4gKw0KPiAgWDg2IFZEU08NCj4gIE06CUFuZHkgTHV0
-b21pcnNraSA8bHV0b0BrZXJuZWwub3JnPg0KPiAgTDoJbGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZw0KDQpBY2tlZC1ieTogS2FpIEh1YW5nIDxrYWkuaHVhbmdAaW50ZWwuY29tPg0K
+On Tue, 31 Oct 2023 18:33:30 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Now that inodes and dentries are created on the fly, they are also
+> reclaimed on memory pressure. Since the ownership and file mode are saved
+> in the inode, if they are freed, any changes to the ownership and mode
+> will be lost.
+
+Do we (need to) allow to change the ownership and mode of the eventfs files?
+I thought it was fixed on the files in tracefs...
+
+Otherwise, the code itself looks good to me.
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thanks,
+
+> 
+> To counter this, if the user changes the permissions or ownership, save
+> them, and when creating the inodes again, restore those changes.
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v4: https://lkml.kernel.org/r/20231031193428.558586557@goodmis.org
+> 
+> - Rebased to this series
+> 
+>  fs/tracefs/event_inode.c | 148 +++++++++++++++++++++++++++++++++++----
+>  fs/tracefs/internal.h    |  16 +++++
+>  2 files changed, 151 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+> index b28f240bbb6d..d1683bf6d316 100644
+> --- a/fs/tracefs/event_inode.c
+> +++ b/fs/tracefs/event_inode.c
+> @@ -40,6 +40,15 @@ static DEFINE_MUTEX(eventfs_mutex);
+>   */
+>  DEFINE_STATIC_SRCU(eventfs_srcu);
+>  
+> +/* Mode is unsigned short, use the upper bits for flags */
+> +enum {
+> +	EVENTFS_SAVE_MODE	= BIT(16),
+> +	EVENTFS_SAVE_UID	= BIT(17),
+> +	EVENTFS_SAVE_GID	= BIT(18),
+> +};
+> +
+> +#define EVENTFS_MODE_MASK	(EVENTFS_SAVE_MODE - 1)
+> +
+>  static struct dentry *eventfs_root_lookup(struct inode *dir,
+>  					  struct dentry *dentry,
+>  					  unsigned int flags);
+> @@ -47,8 +56,89 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file);
+>  static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx);
+>  static int eventfs_release(struct inode *inode, struct file *file);
+>  
+> +static void update_attr(struct eventfs_attr *attr, struct iattr *iattr)
+> +{
+> +	unsigned int ia_valid = iattr->ia_valid;
+> +
+> +	if (ia_valid & ATTR_MODE) {
+> +		attr->mode = (attr->mode & ~EVENTFS_MODE_MASK) |
+> +			(iattr->ia_mode & EVENTFS_MODE_MASK) |
+> +			EVENTFS_SAVE_MODE;
+> +	}
+> +	if (ia_valid & ATTR_UID) {
+> +		attr->mode |= EVENTFS_SAVE_UID;
+> +		attr->uid = iattr->ia_uid;
+> +	}
+> +	if (ia_valid & ATTR_GID) {
+> +		attr->mode |= EVENTFS_SAVE_GID;
+> +		attr->gid = iattr->ia_gid;
+> +	}
+> +}
+> +
+> +static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			    struct iattr *iattr)
+> +{
+> +	const struct eventfs_entry *entry;
+> +	struct eventfs_inode *ei;
+> +	const char *name;
+> +	int ret;
+> +
+> +	mutex_lock(&eventfs_mutex);
+> +	ei = dentry->d_fsdata;
+> +	/* The LSB is set when the eventfs_inode is being freed */
+> +	if (((unsigned long)ei & 1UL) || ei->is_freed) {
+> +		/* Do not allow changes if the event is about to be removed. */
+> +		mutex_unlock(&eventfs_mutex);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Preallocate the children mode array if necessary */
+> +	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
+> +		if (!ei->entry_attrs) {
+> +			ei->entry_attrs = kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
+> +						  GFP_KERNEL);
+> +			if (!ei->entry_attrs) {
+> +				ret = -ENOMEM;
+> +				goto out;
+> +			}
+> +		}
+> +	}
+> +
+> +	ret = simple_setattr(idmap, dentry, iattr);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	/*
+> +	 * If this is a dir, then update the ei cache, only the file
+> +	 * mode is saved in the ei->m_children, and the ownership is
+> +	 * determined by the parent directory.
+> +	 */
+> +	if (dentry->d_inode->i_mode & S_IFDIR) {
+> +		update_attr(&ei->attr, iattr);
+> +
+> +	} else {
+> +		name = dentry->d_name.name;
+> +
+> +		for (int i = 0; i < ei->nr_entries; i++) {
+> +			entry = &ei->entries[i];
+> +			if (strcmp(name, entry->name) == 0) {
+> +				update_attr(&ei->entry_attrs[i], iattr);
+> +				break;
+> +			}
+> +		}
+> +	}
+> + out:
+> +	mutex_unlock(&eventfs_mutex);
+> +	return ret;
+> +}
+> +
+>  static const struct inode_operations eventfs_root_dir_inode_operations = {
+>  	.lookup		= eventfs_root_lookup,
+> +	.setattr	= eventfs_set_attr,
+> +};
+> +
+> +static const struct inode_operations eventfs_file_inode_operations = {
+> +	.setattr	= eventfs_set_attr,
+>  };
+>  
+>  static const struct file_operations eventfs_file_operations = {
+> @@ -59,10 +149,30 @@ static const struct file_operations eventfs_file_operations = {
+>  	.release	= eventfs_release,
+>  };
+>  
+> +static void update_inode_attr(struct inode *inode, struct eventfs_attr *attr, umode_t mode)
+> +{
+> +	if (!attr) {
+> +		inode->i_mode = mode;
+> +		return;
+> +	}
+> +
+> +	if (attr->mode & EVENTFS_SAVE_MODE)
+> +		inode->i_mode = attr->mode & EVENTFS_MODE_MASK;
+> +	else
+> +		inode->i_mode = mode;
+> +
+> +	if (attr->mode & EVENTFS_SAVE_UID)
+> +		inode->i_uid = attr->uid;
+> +
+> +	if (attr->mode & EVENTFS_SAVE_GID)
+> +		inode->i_gid = attr->gid;
+> +}
+> +
+>  /**
+>   * create_file - create a file in the tracefs filesystem
+>   * @name: the name of the file to create.
+>   * @mode: the permission that the file should have.
+> + * @attr: saved attributes changed by user
+>   * @parent: parent dentry for this file.
+>   * @data: something that the caller will want to get to later on.
+>   * @fop: struct file_operations that should be used for this file.
+> @@ -72,6 +182,7 @@ static const struct file_operations eventfs_file_operations = {
+>   * call.
+>   */
+>  static struct dentry *create_file(const char *name, umode_t mode,
+> +				  struct eventfs_attr *attr,
+>  				  struct dentry *parent, void *data,
+>  				  const struct file_operations *fop)
+>  {
+> @@ -95,7 +206,10 @@ static struct dentry *create_file(const char *name, umode_t mode,
+>  	if (unlikely(!inode))
+>  		return eventfs_failed_creating(dentry);
+>  
+> -	inode->i_mode = mode;
+> +	/* If the user updated the directory's attributes, use them */
+> +	update_inode_attr(inode, attr, mode);
+> +
+> +	inode->i_op = &eventfs_file_inode_operations;
+>  	inode->i_fop = fop;
+>  	inode->i_private = data;
+>  
+> @@ -108,19 +222,19 @@ static struct dentry *create_file(const char *name, umode_t mode,
+>  
+>  /**
+>   * create_dir - create a dir in the tracefs filesystem
+> - * @name: the name of the file to create.
+> + * @ei: the eventfs_inode that represents the directory to create
+>   * @parent: parent dentry for this file.
+>   *
+>   * This function will create a dentry for a directory represented by
+>   * a eventfs_inode.
+>   */
+> -static struct dentry *create_dir(const char *name, struct dentry *parent)
+> +static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent)
+>  {
+>  	struct tracefs_inode *ti;
+>  	struct dentry *dentry;
+>  	struct inode *inode;
+>  
+> -	dentry = eventfs_start_creating(name, parent);
+> +	dentry = eventfs_start_creating(ei->name, parent);
+>  	if (IS_ERR(dentry))
+>  		return dentry;
+>  
+> @@ -128,7 +242,9 @@ static struct dentry *create_dir(const char *name, struct dentry *parent)
+>  	if (unlikely(!inode))
+>  		return eventfs_failed_creating(dentry);
+>  
+> -	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
+> +	/* If the user updated the directory's attributes, use them */
+> +	update_inode_attr(inode, &ei->attr, S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO);
+> +
+>  	inode->i_op = &eventfs_root_dir_inode_operations;
+>  	inode->i_fop = &eventfs_file_operations;
+>  
+> @@ -146,6 +262,7 @@ static void free_ei(struct eventfs_inode *ei)
+>  {
+>  	kfree_const(ei->name);
+>  	kfree(ei->d_children);
+> +	kfree(ei->entry_attrs);
+>  	kfree(ei);
+>  }
+>  
+> @@ -231,7 +348,7 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+>  /**
+>   * create_file_dentry - create a dentry for a file of an eventfs_inode
+>   * @ei: the eventfs_inode that the file will be created under
+> - * @e_dentry: a pointer to the d_children[] of the @ei
+> + * @idx: the index into the d_children[] of the @ei
+>   * @parent: The parent dentry of the created file.
+>   * @name: The name of the file to create
+>   * @mode: The mode of the file.
+> @@ -244,10 +361,12 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+>   * just do a dget() on it and return. Otherwise create the dentry and attach it.
+>   */
+>  static struct dentry *
+> -create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
+> +create_file_dentry(struct eventfs_inode *ei, int idx,
+>  		   struct dentry *parent, const char *name, umode_t mode, void *data,
+>  		   const struct file_operations *fops, bool lookup)
+>  {
+> +	struct eventfs_attr *attr = NULL;
+> +	struct dentry **e_dentry = &ei->d_children[idx];
+>  	struct dentry *dentry;
+>  	bool invalidate = false;
+>  
+> @@ -264,13 +383,18 @@ create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
+>  		mutex_unlock(&eventfs_mutex);
+>  		return *e_dentry;
+>  	}
+> +
+> +	/* ei->entry_attrs are protected by SRCU */
+> +	if (ei->entry_attrs)
+> +		attr = &ei->entry_attrs[idx];
+> +
+>  	mutex_unlock(&eventfs_mutex);
+>  
+>  	/* The lookup already has the parent->d_inode locked */
+>  	if (!lookup)
+>  		inode_lock(parent->d_inode);
+>  
+> -	dentry = create_file(name, mode, parent, data, fops);
+> +	dentry = create_file(name, mode, attr, parent, data, fops);
+>  
+>  	if (!lookup)
+>  		inode_unlock(parent->d_inode);
+> @@ -378,7 +502,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+>  	if (!lookup)
+>  		inode_lock(parent->d_inode);
+>  
+> -	dentry = create_dir(ei->name, parent);
+> +	dentry = create_dir(ei, parent);
+>  
+>  	if (!lookup)
+>  		inode_unlock(parent->d_inode);
+> @@ -495,8 +619,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+>  			if (r <= 0)
+>  				continue;
+>  			ret = simple_lookup(dir, dentry, flags);
+> -			create_file_dentry(ei, &ei->d_children[i],
+> -					   ei_dentry, name, mode, cdata,
+> +			create_file_dentry(ei, i, ei_dentry, name, mode, cdata,
+>  					   fops, true);
+>  			break;
+>  		}
+> @@ -629,8 +752,7 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+>  		r = entry->callback(name, &mode, &cdata, &fops);
+>  		if (r <= 0)
+>  			continue;
+> -		d = create_file_dentry(ei, &ei->d_children[i],
+> -				       parent, name, mode, cdata, fops, false);
+> +		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops, false);
+>  		if (d) {
+>  			ret = add_dentries(&dentries, d, cnt);
+>  			if (ret < 0)
+> diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+> index 5a98e87dd3d1..5f60bcd69289 100644
+> --- a/fs/tracefs/internal.h
+> +++ b/fs/tracefs/internal.h
+> @@ -13,6 +13,18 @@ struct tracefs_inode {
+>  	struct inode            vfs_inode;
+>  };
+>  
+> +/*
+> + * struct eventfs_attr - cache the mode and ownership of a eventfs entry
+> + * @mode:	saved mode plus flags of what is saved
+> + * @uid:	saved uid if changed
+> + * @gid:	saved gid if changed
+> + */
+> +struct eventfs_attr {
+> +	int				mode;
+> +	kuid_t				uid;
+> +	kgid_t				gid;
+> +};
+> +
+>  /*
+>   * struct eventfs_inode - hold the properties of the eventfs directories.
+>   * @list:	link list into the parent directory
+> @@ -22,6 +34,8 @@ struct tracefs_inode {
+>   * @dentry:     the dentry of the directory
+>   * @d_parent:   pointer to the parent's dentry
+>   * @d_children: The array of dentries to represent the files when created
+> + * @entry_attrs: Saved mode and ownership of the @d_children
+> + * @attr:	Saved mode and ownership of eventfs_inode itself
+>   * @data:	The private data to pass to the callbacks
+>   * @is_freed:	Flag set if the eventfs is on its way to be freed
+>   *                Note if is_freed is set, then dentry is corrupted.
+> @@ -35,6 +49,8 @@ struct eventfs_inode {
+>  	struct dentry			*dentry; /* Check is_freed to access */
+>  	struct dentry			*d_parent;
+>  	struct dentry			**d_children;
+> +	struct eventfs_attr		*entry_attrs;
+> +	struct eventfs_attr		attr;
+>  	void				*data;
+>  	/*
+>  	 * Union - used for deletion
+> -- 
+> 2.42.0
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
