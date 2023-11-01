@@ -2,214 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45AEC7DE4F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE6A7DE4FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344327AbjKARCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
+        id S1344229AbjKARFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjKARCa (ORCPT
+        with ESMTP id S231233AbjKARFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:02:30 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8D9FD;
-        Wed,  1 Nov 2023 10:02:27 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4084b0223ccso57975e9.2;
-        Wed, 01 Nov 2023 10:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698858146; x=1699462946; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+CMbhE83gVdE7/6b871iYz3oVRssgurvombxQrmFMGA=;
-        b=MIFUX4b+NiW5ZuVc4kXsUXi0R6CJD9RJcHaYDScjm6JI4L+UwEzEKyU+TMEeoXJFd7
-         rXCJFc7LN6BWa39ILHKtzSIRPCtUF6mCkf2AmxgP657sXfAr/lNhW3ZdSabPPHldNGXa
-         +s2/JRA/lcvN91aLvDD44VZmKEUraoS+LHL7vmcEJ5xDm8NcmMZdQ2PLinTWHqK0S8cf
-         vp468gzJG1DtI3ij6+9w8WngpdRYn5+j+C7OhuJ5/xNsj3bkocOZ354avilG3BMstnoq
-         yccD+LXMo73+Xua7gbcsqa5lX89fkq8RWhvw4AxUy9JmUNLdvXtfNl/f58jFnCzOOsO/
-         iqEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698858146; x=1699462946;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+CMbhE83gVdE7/6b871iYz3oVRssgurvombxQrmFMGA=;
-        b=mD16JIKf7KejNf6SvTVMIcqDoSeQbgQS2IcsRP9Trf8cHRequcta+KH4qHWJ3xnc3S
-         bc/R4RjjL5Q8Bb2NoK7dqeIVXLpwj/7beYPszQulOK5nPtfvdmYIrIKBAXvNujI5XnqH
-         y1iPISY15UjzKRBbx+S3Fn7Ie4TpgoKvHKKX/M2Utaco4XERVzWseJOaiCikl/E5FqnR
-         ad9Lkdzpg3J/DojNX3dOjbIv8WVTlYjPgZRYDUN3AqE2bJVQ4EXiCxqubu0gInr8A8Y5
-         70UPaq030kbB3iq92lWZlif2dW9K4iNLa7PDg1+lMu2qsVm9HyaWuYHFu6fF7I5S+5J3
-         LO8w==
-X-Gm-Message-State: AOJu0Yy4nXTXfd08SGaU4g9eyqzHv7bopZaqVAomnby7QhMuRmdXIEBh
-        QyOkI2Np2WSsu4RH8YqsKskH+6AFVXmKgA==
-X-Google-Smtp-Source: AGHT+IFNtntu2ilsPgE2E7iq6WgEC3dCLXHRFsQQjqZbKEv86n02g1bpGZ0WxaTmFez/LPasusDJfA==
-X-Received: by 2002:a05:600c:3d0e:b0:408:3bbd:4a82 with SMTP id bh14-20020a05600c3d0e00b004083bbd4a82mr13715339wmb.15.1698858145536;
-        Wed, 01 Nov 2023 10:02:25 -0700 (PDT)
-Received: from [192.168.14.111] (54-240-197-236.amazon.com. [54.240.197.236])
-        by smtp.gmail.com with ESMTPSA id h12-20020a05600c314c00b0040641a9d49bsm239900wmo.17.2023.11.01.10.02.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 10:02:24 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <8b4fda17-07c3-4633-bf61-8b3829384c29@xen.org>
-Date:   Wed, 1 Nov 2023 17:02:23 +0000
+        Wed, 1 Nov 2023 13:05:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC1CFD
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:05:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D599BC433C8;
+        Wed,  1 Nov 2023 17:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698858344;
+        bh=5xV6hyTIsbcZvneau3h2oVWhmP+sQM96ndcUicW+Oz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ihH1zX1/QLyCnoaOp1327n8FR6g7H3Uwfv7AywKjzqb6J/K3ydpUjjcVrLi10MEy5
+         bs7qeuxwL+3u1Wb58+/E8FBO8NAnsvshg7m3Nz0gS+fRd8FXECMB9O0tQdbQLmhXdC
+         Mt/BRApPU62BXvc5RIADwIvqmTrZql61MASM+7qFcDkticnFPCmrQlOj115mnoKoL9
+         NoZvRT2lZUraV0WeQ7fadDPIXrT6gXQKEwhgc3n3IODboVHpf3E2a4vQA/dTpFE+px
+         iJ/ppIXzMfiPJo959eOzLGMPhrxabFokwe+KQHPI+dWX7DWvFW/6bK2PkBnY6w1kT6
+         93JXBVreIcEng==
+Date:   Wed, 1 Nov 2023 17:05:39 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ben Whitten <ben.whitten@gmail.com>
+Subject: Re: [PATCH] regmap: prevent noinc writes from clobbering cache
+Message-ID: <b0e8c9f5-7aff-4adc-b5bc-d61c6107c07f@sirena.org.uk>
+References: <20231101142926.2722603-2-ben.wolsieffer@hefring.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v3] KVM x86/xen: add an override for
- PVCLOCK_TSC_STABLE_BIT
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231101112934.631344-1-paul@xen.org>
- <ZUKAzGzEts262FqC@google.com>
-Content-Language: en-US
-Organization: Xen Project
-In-Reply-To: <ZUKAzGzEts262FqC@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pw5rt8tNwUJb6Zfg"
+Content-Disposition: inline
+In-Reply-To: <20231101142926.2722603-2-ben.wolsieffer@hefring.com>
+X-Cookie: P-K4
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2023 16:46, Sean Christopherson wrote:
-> On Wed, Nov 01, 2023, Paul Durrant wrote:
->> @@ -3231,12 +3245,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
->>   	vcpu->hv_clock.flags = pvclock_flags;
->>   
->>   	if (vcpu->pv_time.active)
->> -		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
->> +		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0, false);
->> +
->>   	if (vcpu->xen.vcpu_info_cache.active)
->>   		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
->> -					offsetof(struct compat_vcpu_info, time));
->> +					offsetof(struct compat_vcpu_info, time),
->> +					xen_pvclock_tsc_unstable);
->>   	if (vcpu->xen.vcpu_time_info_cache.active)
->> -		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
->> +		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0,
->> +					xen_pvclock_tsc_unstable);
->>   	kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
->>   	return 0;
-> 
-> Please rebase, this conflicts with commit ee11ab6bb04e ("KVM: X86: Reduce size of
-> kvm_vcpu_arch structure when CONFIG_KVM_XEN=n").  I can solve the conflict, but
-> I really shouldn't have to.
-> 
-> Also, your version of git should support --base, which makes life much easier for
-> others when non-trivial conflicts are encountered.  From maintainer-kvm-x86.rst:
-> 
->   : Git Base
->   : ~~~~~~~~
->   : If you are using git version 2.9.0 or later (Googlers, this is all of you!),
->   : use ``git format-patch`` with the ``--base`` flag to automatically include the
->   : base tree information in the generated patches.
->   :
->   : Note, ``--base=auto`` works as expected if and only if a branch's upstream is
->   : set to the base topic branch, e.g. it will do the wrong thing if your upstream
->   : is set to your personal repository for backup purposes.  An alternative "auto"
->   : solution is to derive the names of your development branches based on their
->   : KVM x86 topic, and feed that into ``--base``.  E.g. ``x86/pmu/my_branch_name``,
->   : and then write a small wrapper to extract ``pmu`` from the current branch name
->   : to yield ``--base=x/pmu``, where ``x`` is whatever name your repository uses to
->   : track the KVM x86 remote.
-> 
 
-Ok, I'll sort that out. Thanks for the tip.
+--pw5rt8tNwUJb6Zfg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> @@ -4531,7 +4548,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->>   		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
->>   		    KVM_XEN_HVM_CONFIG_SHARED_INFO |
->>   		    KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL |
->> -		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
->> +		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
->> +		    KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
->>   		if (sched_info_on())
->>   			r |= KVM_XEN_HVM_CONFIG_RUNSTATE |
->>   			     KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG;
->> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
->> index 40edf4d1974c..7699d94f190b 100644
->> --- a/arch/x86/kvm/xen.c
->> +++ b/arch/x86/kvm/xen.c
->> @@ -1111,9 +1111,12 @@ int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
->>   
->>   int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
->>   {
->> +	bool update_pvclock = false;
->> +
->>   	/* Only some feature flags need to be *enabled* by userspace */
->>   	u32 permitted_flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
->> -		KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
->> +		KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
->> +		KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
->>   
->>   	if (xhc->flags & ~permitted_flags)
->>   		return -EINVAL;
->> @@ -1134,9 +1137,19 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
->>   	else if (!xhc->msr && kvm->arch.xen_hvm_config.msr)
->>   		static_branch_slow_dec_deferred(&kvm_xen_enabled);
->>   
->> +	if ((kvm->arch.xen_hvm_config.flags &
->> +	     KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE) !=
->> +	    (xhc->flags &
->> +	     KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE))
->> +		update_pvclock = true;
-> 
-> Rather than a boolean and the above, which is a bit hard to parse, what about
-> taking a snapshot of the old flags and then doing an XOR?
-> 
-> 	/* Only some feature flags need to be *enabled* by userspace */
-> 	u32 permitted_flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
-> 		KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
-> 		KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
-> 	u32 old_flags;
-> 
-> 	if (xhc->flags & ~permitted_flags)
-> 		return -EINVAL;
-> 
-> 	/*
-> 	 * With hypercall interception the kernel generates its own
-> 	 * hypercall page so it must not be provided.
-> 	 */
-> 	if ((xhc->flags & KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL) &&
-> 	    (xhc->blob_addr_32 || xhc->blob_addr_64 ||
-> 	     xhc->blob_size_32 || xhc->blob_size_64))
-> 		return -EINVAL;
-> 
-> 	mutex_lock(&kvm->arch.xen.xen_lock);
-> 
-> 	if (xhc->msr && !kvm->arch.xen_hvm_config.msr)
-> 		static_branch_inc(&kvm_xen_enabled.key);
-> 	else if (!xhc->msr && kvm->arch.xen_hvm_config.msr)
-> 		static_branch_slow_dec_deferred(&kvm_xen_enabled);
-> 
-> 	old_flags = kvm->arch.xen_hvm_config.flags;
-> 	memcpy(&kvm->arch.xen_hvm_config, xhc, sizeof(*xhc));
-> 
-> 	mutex_unlock(&kvm->arch.xen.xen_lock);
-> 
-> 	if ((old_flags ^ xhc->flags) & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE)
-> 		kvm_make_all_cpus_request(kvm, KVM_REQ_CLOCK_UPDATE);
-> 
-> 	return 0;
+On Wed, Nov 01, 2023 at 10:29:27AM -0400, Ben Wolsieffer wrote:
+> Currently, noinc writes are cached as if they were standard incrementing
+> writes, overwriting unrelated register values in the cache. Instead, we
+> want to cache the last value written to the register, as is done in the
+> accelerated noinc handler (regmap_noinc_readwrite).
 
-Sure, I can do it that way if you prefer.
+Could you please add a kunit test for this?
 
-   Paul
+--pw5rt8tNwUJb6Zfg
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVChWMACgkQJNaLcl1U
+h9Ca0wf/ZPDbcne+0fDI2ts571Uo57MW0irb1eXl6vypwEChkShmFPljDGlI4PP1
++DD0/Uw2RHR9L1b0HnQ6kYwu9HOlSnM5cIkvpEBTQ1bLicEB7pWWSCwSPmiiwHBr
+6j2/G4lSqOWbHhTTgMc+Zw8ZSdSLdja2cYfQQwgNlWfAo7RQ9lclljWtBzxKnrXw
+Z0P6yQ0TmiKn7L7PcEXMh3+tn6/4CH+lRqL4JxYfKvOyKHmmfqcJJuj1/BULRNQG
+C5dpFretGVwsOm8fxNbyhyaO99kjUCYqxMB9HtfbcUYevmByuGbfiLSK4EAlsOGM
+rU4ckTMHBgUHjvkTr6XnGMuksIdkRw==
+=X9eS
+-----END PGP SIGNATURE-----
+
+--pw5rt8tNwUJb6Zfg--
