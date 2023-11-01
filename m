@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDBA7DDF16
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A297DDF1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbjKAKLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        id S234957AbjKAKNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbjKAKLf (ORCPT
+        with ESMTP id S234893AbjKAKNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:11:35 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4EE101
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:11:28 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b3ebbbdb1aso10255801b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 03:11:28 -0700 (PDT)
+        Wed, 1 Nov 2023 06:13:33 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A53103
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:13:27 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1e9b0514cb2so9109118fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 03:13:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698833488; x=1699438288;
+        d=1e100.net; s=20230601; t=1698833606; x=1699438406;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bXahSEUy+14xsn/d7aszM5fHvVZhAbvct7hqKP00aRo=;
-        b=fiV88joCAgitLUQIWvmOg/ttbj3T5ktRMo7y1grVjm+VLXomRX+qKGniWqZzms2kom
-         ABwo5KqP27bhljOcedKorMbuDg4w7dC2ObaXpAFL4YaZDHUsFCGeR773U1gexR4NDjdS
-         vna6r7ujVhxgKNY9O3cpCZbYrqbvZsZj9+a4cw4mPpJFXCte0lqEtm+I+5cUhTgPxq0l
-         Wfvic+pA2K8VQbfFAblo3KUyX21vrLI9qijny0OBSlaSJoUTG55ylrIVRwKsJlbUlQVj
-         OwQQzJSrFjv1bZfU74eqSsisdr33EWO5C6r8JCeE3bmZl2krpbK5Y2HzSwBYNrFljYpa
-         fIvg==
-X-Gm-Message-State: AOJu0Yx4PaBlS/0tHF3qVdQ9lzdc2eQ/HHxwTNtFgcNhHI8uZypCEayK
-        3z/Smi1+JQNGE5r5wHIeESrVAzqMaJrojz8sesPxxhUzS2B4
-X-Google-Smtp-Source: AGHT+IHoUKW4bJUZ+erPsgzbUz4MYK9ApwlDolBOgA5uUtcaQW9W9XQTqwf1JwXc/sUY4YarLT7VQ2PSP0V0yntlF9W/7m+rcUJx
+        bh=lLsI5q2P0bI6Z53/HYlR53dp0RSt+UIwzXIoVPhwdTg=;
+        b=tLL+H/khBLLICaWfmDjtF1NkQEHidio1wuMb4XWHlVnGhURj72DRitH/JWxXi/gsCH
+         FtDZ+ymp5aV6PMJgfWkiWLpPJ6t6gqrpK4e9NqSPJ4c1Dsk2qXPrPdeueNIYLfgXfWsC
+         bT+XOcfnIP5YEQgI0wnYasHZ7zHE4b3/qKY5b7R9ufY5LEg4bbFSI5IyrcnPQZUkgqn6
+         WfEtmHmwP6HLjmsik0eR2irSld8OY6gIOzjhZ7Ss44Lb7s54X9okflI/9NOu5/UXvVRx
+         HBBbcpx/Vd7qI9r337pY4b230SdZfpOPYSLIvwvZn2m1GM9uhimN73JrXo2psqK9Us/Z
+         n/ig==
+X-Gm-Message-State: AOJu0YyLvg+eImv/GIcQNwqLXmpcIKBI0WJBWGXBXcL6pG9Bmsniie0g
+        UBEhhJqCNquByVPVF1OgF4N2NfQ8o+3RLKQaWiAobtZ1KPXn
+X-Google-Smtp-Source: AGHT+IEVMc7SZssl3rVvtvN+sivqx/RIShePRer5RPfCA8+xqQsJNVYR3waRzqWcWHqzpdO7LR8ALweFKStDR8s9OtE15O1nruwQ
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:f0b:b0:3ae:532c:e93a with SMTP id
- m11-20020a0568080f0b00b003ae532ce93amr5515798oiw.11.1698833488314; Wed, 01
- Nov 2023 03:11:28 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 03:11:28 -0700
+X-Received: by 2002:a05:6870:8094:b0:1ef:9ee0:3378 with SMTP id
+ q20-20020a056870809400b001ef9ee03378mr5648844oab.0.1698833605134; Wed, 01 Nov
+ 2023 03:13:25 -0700 (PDT)
+Date:   Wed, 01 Nov 2023 03:13:25 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009a89f30609147ef3@google.com>
-Subject: [syzbot] Monthly nilfs report (Oct 2023)
-From:   syzbot <syzbot+listfef7805b7a90b5da7492@syzkaller.appspotmail.com>
-To:     konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
+Message-ID: <00000000000091116d06091485b2@google.com>
+Subject: [syzbot] Monthly can report (Nov 2023)
+From:   syzbot <syzbot+list7367dbc4668559b00896@syzkaller.appspotmail.com>
+To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mkl@pengutronix.de, netdev@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,28 +55,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello nilfs maintainers/developers,
+Hello can maintainers/developers,
 
-This is a 31-day syzbot report for the nilfs subsystem.
+This is a 31-day syzbot report for the can subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/nilfs
+https://syzkaller.appspot.com/upstream/s/can
 
 During the period, 0 new issues were detected and 0 were fixed.
-In total, 6 issues are still open and 36 have been fixed so far.
+In total, 8 issues are still open and 47 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 366     Yes   kernel BUG at fs/buffer.c:LINE!
-                  https://syzkaller.appspot.com/bug?extid=cfed5b56649bddf80d6e
-<2> 337     Yes   WARNING in nilfs_sufile_set_segment_usage
-                  https://syzkaller.appspot.com/bug?extid=14e9f834f6ddecece094
-<3> 224     No    INFO: task hung in path_openat (7)
-                  https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
-<4> 105     Yes   INFO: task hung in nilfs_detach_log_writer
-                  https://syzkaller.appspot.com/bug?extid=e3973c409251e136fdd0
-<5> 6       Yes   kernel BUG in end_buffer_async_write
-                  https://syzkaller.appspot.com/bug?extid=5c04210f7c7f897c1e7f
+<1> 281     Yes   possible deadlock in j1939_sk_queue_drop_all
+                  https://syzkaller.appspot.com/bug?extid=3bd970a1887812621b4c
+<2> 152     No    KMSAN: uninit-value in bpf_prog_run_generic_xdp
+                  https://syzkaller.appspot.com/bug?extid=0e6ddb1ef80986bdfe64
+<3> 61      Yes   possible deadlock in j1939_session_activate
+                  https://syzkaller.appspot.com/bug?extid=f32cbede7fd867ce0d56
+<4> 7       Yes   possible deadlock in j1939_sk_errqueue (2)
+                  https://syzkaller.appspot.com/bug?extid=1591462f226d9cbf0564
 
 ---
 This report is generated by a bot. It may contain errors.
