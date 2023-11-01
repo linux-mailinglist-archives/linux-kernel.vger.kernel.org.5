@@ -2,88 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 951377DDD21
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD007DDD34
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbjKAHZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
+        id S230464AbjKAHaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjKAHZq (ORCPT
+        with ESMTP id S230206AbjKAHaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:25:46 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC639107;
-        Wed,  1 Nov 2023 00:25:42 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5437d60fb7aso2219826a12.3;
-        Wed, 01 Nov 2023 00:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698823541; x=1699428341; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0B6t64iTbqlkXV8vHqQhKtKlN8kObrIwOhWS9YPxd2c=;
-        b=itjQTJf0hPtSeKP0359/n8uA0SC/CXw5AdojH8UUBlJ8dH4/wKV7IPshyOu3y7Il9C
-         XOQdoy429xJNqsVi/uCaClMB62/p08AOxw1o4A1LYufbmjwWyqMftl9tqtkAnkVpPsn6
-         zPiQ9s+TiUEXFbdBj+Mxypk0iCGihFQhD2jlyhEKjVbu7yt0uyXO8bZX0mw9DSSgAnBl
-         vnO9YMe3Nq06zk0q2rAfPrhY+yKMvbmxtjDa4pxFTrl2NpAtx+yPL+RjYqK5ym3Ag8qR
-         guBJc1uzzcecgPMOap2jOudzdDSiy0TIWHST+Oftj8xEv8G7BCq4cOf3w96GeF/zshcC
-         4rnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698823541; x=1699428341;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0B6t64iTbqlkXV8vHqQhKtKlN8kObrIwOhWS9YPxd2c=;
-        b=lgwAfpBXQPznVu4Jn3Iwo7a6z1Vt1xGDZ3iiKEFonm1bE1xzQOhIw47X4S9KVW6YcD
-         aSghrd7ixmZGe766Wx4tACcs3KI96QSgUH0KFR8yJnvNkmThAyzRWA0c5sVwb5eQZSfd
-         rSYJzEf6LsLadI+3liVDV/HBOyXnqMJ6GMwN+sAUaJ1Adko3fG5KOjUfu+9ZLY+sGy0h
-         OqUi9OdhU7cA4BHLg3WZzr2MRcMI8POP1fhV32aDdCfQxwhn6+r5MlrmQUDtkvTa4lgP
-         B3qN5M/V4v0r5fSdqxr12n4+vtluU4rj7i0+aDBJa3cIk8R86DkKEjvf1fmZR1IXhML/
-         7ZYA==
-X-Gm-Message-State: AOJu0YxDBIdEzg9eCCgCWj+Do/cpQQFOLXHB8HM/yLBw0xnsyPCwQW4Z
-        SJcQkw7hUN0eEjMQIVdNHDM=
-X-Google-Smtp-Source: AGHT+IH0nGJpQFa+U2u0tQ+MCqlEtJOEF/OGmjnfNQC0t+iPzP5TdkXUNtOywr7ed1aA/LrThdSvKA==
-X-Received: by 2002:a17:907:d21:b0:9c0:eb3e:b070 with SMTP id gn33-20020a1709070d2100b009c0eb3eb070mr1204779ejc.69.1698823540960;
-        Wed, 01 Nov 2023 00:25:40 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id k12-20020a1709065fcc00b009ce03057c48sm2067069ejv.214.2023.11.01.00.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 00:25:40 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 1 Nov 2023 08:25:38 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Matthieu Baerts <matttbe@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-Message-ID: <ZUH9cveAsjcUgz9e@krava>
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
- <ZUEzzc/Sod8OR28B@krava>
- <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
+        Wed, 1 Nov 2023 03:30:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6039EC2
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:30:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D441C433C8;
+        Wed,  1 Nov 2023 07:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698823800;
+        bh=VeAKvTqavtEz9Y6S8VCa+9Li/lCoIJxJGeZcquOfX/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xlU+oaenAgZ4Pzjkhl//+DWTuWwRTojw7tjHP/L1NUNqK92BVT5p4ya7rzMhNpcaj
+         A2K5IVAXq4p6D0yvLagWX3NSw4UdH/PesM4lhubi+4LbaNDvVpIxBQQaa1MHYuruav
+         rNvz/q49+fkuxIuKaJKypMy9y554SNMSzFNSrMgI=
+Date:   Wed, 1 Nov 2023 08:29:57 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xingxing Luo <xingxing.luo@unisoc.com>
+Cc:     b-liu@ti.com, keescook@chromium.org, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev,
+        xingxing0070.luo@gmail.com, Zhiyong.Liu@unisoc.com,
+        Cixi.Geng1@unisoc.com, Orson.Zhai@unisoc.com, zhang.lyra@gmail.com
+Subject: Re: [PATCH V2] usb: musb: Check requset->buf before use to avoid
+ crash issue
+Message-ID: <2023110144-sequence-twistable-3580@gregkh>
+References: <20231101071421.29462-1-xingxing.luo@unisoc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231101071421.29462-1-xingxing.luo@unisoc.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,60 +51,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 08:54:56PM -0700, Alexei Starovoitov wrote:
-> On Tue, Oct 31, 2023 at 10:05 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
-> > > Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> > > possible to build the kernel without CONFIG_CGROUPS:
-> > >
-> > >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
-> > >   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
-> > >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> > >         |              ^~~~~~~~~~~~~~~~~~~
-> > >   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
-> > >   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
-> > >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> > >         |                                    ^~~~~~~~~~~~~~~~~~~~~~
-> > >   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
-> > >     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
-> > >         |                                                            ^~~~~~
-> > >   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
-> > >     930 |         css_task_iter_start(css, flags, kit->css_it);
-> > >         |         ^~~~~~~~~~~~~~~~~~~
-> > >         |         task_seq_start
-> > >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
-> > >   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
-> > >     940 |         return css_task_iter_next(kit->css_it);
-> > >         |                ^~~~~~~~~~~~~~~~~~
-> > >         |                class_dev_iter_next
-> > >   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
-> > >     940 |         return css_task_iter_next(kit->css_it);
-> > >         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
-> > >   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
-> > >     949 |         css_task_iter_end(kit->css_it);
-> > >         |         ^~~~~~~~~~~~~~~~~
-> > >
-> > > This patch simply surrounds with a #ifdef the new code requiring CGroups
-> > > support. It seems enough for the compiler and this is similar to
-> > > bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> > > been added in kernel/bpf/helpers.c and in the selftests.
-> > >
-> > > Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
-> > > Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
-> > > Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
-> >
-> > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+On Wed, Nov 01, 2023 at 03:14:21PM +0800, Xingxing Luo wrote:
+> When connecting USB to PC, there is a very low probability of kernel
+> crash. The reason is that in ep0_txstate(), the buf member of struct
+> usb_request used may be a null pointer. Therefore, it needs to
+> determine whether it is null before using it.
 > 
-> I believe this patch has the same issue as Arnd's patch:
-> https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com/
+> [ 4888.071462][T597@C0] Call trace:
+> [ 4888.071467][T597@C0]  musb_default_write_fifo+0xa0/0x1ac [musb_hdrc]
+> [ 4888.087190][T597@C0]  musb_write_fifo+0x3c/0x90 [musb_hdrc]
+> [ 4888.099826][T597@C0]  ep0_txstate+0x78/0x218 [musb_hdrc]
+> [ 4888.153918][T597@C0]  musb_g_ep0_irq+0x3c4/0xe10 [musb_hdrc]
+> [ 4888.159663][T597@C0]  musb_interrupt+0xab4/0xf1c [musb_hdrc]
+> [ 4888.165391][T597@C0]  sprd_musb_interrupt+0x1e4/0x484 [musb_sprd]
+> [ 4888.171447][T597@C0]  __handle_irq_event_percpu+0xd8/0x2f8
+> [ 4888.176901][T597@C0]  handle_irq_event+0x70/0xe4
+> [ 4888.181487][T597@C0]  handle_fasteoi_irq+0x15c/0x230
+> [ 4888.186420][T597@C0]  handle_domain_irq+0x88/0xfc
+> [ 4888.191090][T597@C0]  gic_handle_irq+0x60/0x138
+> [ 4888.195591][T597@C0]  call_on_irq_stack+0x40/0x70
+> [ 4888.200263][T597@C0]  do_interrupt_handler+0x50/0xac
+> [ 4888.205196][T597@C0]  el1_interrupt+0x34/0x64
+> [ 4888.209524][T597@C0]  el1h_64_irq_handler+0x1c/0x2c
+> [ 4888.214370][T597@C0]  el1h_64_irq+0x7c/0x80
+> [ 4888.218525][T597@C0]  __check_heap_object+0x1ac/0x1fc
+> [ 4888.223544][T597@C0]  __check_object_size+0x10c/0x20c
+> [ 4888.228563][T597@C0]  simple_copy_to_iter+0x40/0x74
+> [ 4888.233410][T597@C0]  __skb_datagram_iter+0xa0/0x310
+> [ 4888.238343][T597@C0]  skb_copy_datagram_iter+0x44/0x110
+> [ 4888.243535][T597@C0]  netlink_recvmsg+0xdc/0x364
+> [ 4888.248123][T597@C0]  ____sys_recvmsg.llvm.16749613423860851707+0x358/0x6c0
+> [ 4888.255045][T597@C0]  ___sys_recvmsg+0xe0/0x1dc
+> [ 4888.259544][T597@C0]  __arm64_sys_recvmsg+0xc4/0x10c
+> [ 4888.264478][T597@C0]  invoke_syscall+0x6c/0x15c
+> [ 4888.268976][T597@C0]  el0_svc_common.llvm.12373701176611417606+0xd4/0x120
+> [ 4888.275726][T597@C0]  do_el0_svc+0x34/0xac
+> [ 4888.279795][T597@C0]  el0_svc+0x28/0x90
+> [ 4888.283603][T597@C0]  el0t_64_sync_handler+0x88/0xec
+> [ 4888.288548][T597@C0]  el0t_64_sync+0x1b4/0x1b8
+> [ 4888.292956][T597@C0] Code: 540002c3 53027ea8 aa1303e9 71000508 (b840452a)
+> [ 4888.299789][T597@C0] ---[ end trace 14a301b7253e83cc ]---
 > 
-> I'd like to merge the fix asap. Please make it a complete fix.
+> Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
+> Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
+> ---
+> v1 -> v2: - Fixed a spelling error
+>           - Add the fixed commit id
+> 
+>  drivers/usb/musb/musb_gadget_ep0.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/usb/musb/musb_gadget_ep0.c b/drivers/usb/musb/musb_gadget_ep0.c
+> index 6d7336727388..19eb7a5e1fdc 100644
+> --- a/drivers/usb/musb/musb_gadget_ep0.c
+> +++ b/drivers/usb/musb/musb_gadget_ep0.c
+> @@ -531,6 +531,11 @@ static void ep0_txstate(struct musb *musb)
+>  
+>  	request = &req->request;
+>  
+> +	if (!request->buf) {
+> +		musb_dbg(musb, "request->buf is NULL");
+> +		return;
+> +	}
+> +
+>  	/* load the data */
+>  	fifo_src = (u8 *) request->buf + request->actual;
+>  	fifo_count = min((unsigned) MUSB_EP0_FIFOSIZE,
+> -- 
+> 2.17.1
+> 
+> 
 
-ugh, it won't fail the build, it just warns.. I think we should
-fail the build in that case, I'll check
+Hi,
 
-jirka
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
