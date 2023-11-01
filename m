@@ -2,61 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BAF7DE3E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D217DE3EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbjKAPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        id S234557AbjKAPhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbjKAPgc (ORCPT
+        with ESMTP id S229603AbjKAPg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:36:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DFF115
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 08:36:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA1A9C433C8;
-        Wed,  1 Nov 2023 15:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698852989;
-        bh=ErDN5TGrf82/1e3WSBuxJ8Uwcx5pZO0mfLHGxApPH9o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qoJpP3g3Xc50XgkT727p3w1Uw0bduzyGMMVFAwCS01GSz8AnKJL4TohyJNhngDdNm
-         QG1fvGTDDtYj7x7XbY9kjPdSUQuBQFgnaAvUT1mFG9bREb38EbjUoh6S1opeaPJo6c
-         b8saLZ95nsEKj5XUPUO9kBUwVcvMe9bUFYWCPvjdfQdorF0/xOGrjvlZpyd+bKDA9Z
-         zBaXX3nccA8kwN/Hzzfjegl+zrOHpk7mmzoodODxWHeCSdgNqXXww+cAlk36UZ/5ou
-         G67BUMFZjbHwIZ6RugYeZaSjWHZgX5FpKX77bsL3cu6wC61u4OwpyslNi6eMJ/pVAd
-         It5TcDOx1Fptg==
-Date:   Wed, 1 Nov 2023 15:36:23 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     =?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>
-Cc:     Iago Toral Quiroga <itoral@igalia.com>,
-        dri-devel@lists.freedesktop.org, Emma Anholt <emma@anholt.net>,
-        Melissa Wen <mwen@igalia.com>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-dev@igalia.com
-Subject: Re: [PATCH v3 3/4] dt-bindings: gpu: v3d: Add BCM2712's compatible
-Message-ID: <20231101-whinny-observer-d0cae8d8d7c0@spud>
-References: <20231031073859.25298-1-itoral@igalia.com>
- <20231031073859.25298-4-itoral@igalia.com>
- <d3ed80e5-b3a1-e9ba-48eb-7c6fc58ef3f9@igalia.com>
+        Wed, 1 Nov 2023 11:36:59 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D76DA;
+        Wed,  1 Nov 2023 08:36:57 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so10901603a12.1;
+        Wed, 01 Nov 2023 08:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698853015; x=1699457815; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hexmk49ujNpb1xtdHgW2u+GIQeyEe+vJ7SF4SxvQAsE=;
+        b=To6GlV/KdFOpByY1yvAw7isqSl8s4HfsUh4dzfs14IXxdseir8HOdPMYZFDsVoTUdg
+         WXGUwEn21qaRnWNCnIy314lqniL7n1V5gY8au63vnnqi6gzbeTSLY1TYWsJS2hov7PQ/
+         4xrw/jezioilfbPeRIXruL033DEOzs0qUX+BanwxjgjVOhICC56DjPzuS7p1uy0KYk7S
+         xZCZmkn8OxFiAZU0HjCtACIus/afIlH/SbV1ZdPWAP4YKAVcewuar93Qc3LyOcGiWD7s
+         L0Ufh3ut/JuKtuhh7+GkHaznv/Y74z57HUXu18FskacLXYyRr7oWC25ZKXcmI5qQFDt9
+         G6mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698853015; x=1699457815;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hexmk49ujNpb1xtdHgW2u+GIQeyEe+vJ7SF4SxvQAsE=;
+        b=RjFQksVYmB48C7RIXjV+r/mTLEyJ3d/lqFkvFeHT1TOQC97sOxeeq5m/kOqdmdLpoP
+         U5n6pT95GdR/IufWvQbyq1TuhrIP0VeRhkzKtK8DkYD3TePMSAnywuykUF1iafRtcCfb
+         RtYNm88yjMf+hIHIrkrF8ZfBwAhdDrmfhTa3k7nnZhA4DlHHxzRFkxoPrUhvskCOQN6j
+         n5Pll7dMgwlV01XYoVfGMnOOuULTGgUu5VJm7DMGLARMWYX3CG314ngAiOj0ZpnIRxMS
+         6V5Bz0/kvcJYWKAYdGP5KmpFNC2dVlBUlLn627JoqdSuTIpTrGFlANZmGM87CcW18ZS9
+         RJ1g==
+X-Gm-Message-State: AOJu0YzU3QhY1ou/7fNXksAI/lMDb9CIAY/ztrU9v7jTJx1hh05EYmN+
+        XU/F++6eTYWS4Op0SPq/Og==
+X-Google-Smtp-Source: AGHT+IHGBq6ikaR1Vc0Dr5gti0wNOgkMImLBk6ma21/TdEmuBAI35mUjQ49xGCe1d1e1AA5A2y3fCQ==
+X-Received: by 2002:aa7:d0ca:0:b0:530:74ed:fc8a with SMTP id u10-20020aa7d0ca000000b0053074edfc8amr12958328edo.41.1698853015062;
+        Wed, 01 Nov 2023 08:36:55 -0700 (PDT)
+Received: from [192.168.78.129] ([105.163.156.68])
+        by smtp.gmail.com with ESMTPSA id v10-20020aa7dbca000000b0052ffc2e82f1sm1191247edt.4.2023.11.01.08.36.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Nov 2023 08:36:54 -0700 (PDT)
+Message-ID: <9d00781f-3c24-401d-902a-451e38c19e3c@gmail.com>
+Date:   Wed, 1 Nov 2023 18:36:51 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="sKuyd3vh441A/Ew6"
-Content-Disposition: inline
-In-Reply-To: <d3ed80e5-b3a1-e9ba-48eb-7c6fc58ef3f9@igalia.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] staging: sm750fb: Remove unused return value in
+ display_control_adjust_sm750le()
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     outreachy@lists.linux.dev, julia.lawall@inria.fr,
+        dan.carpenter@linaro.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20231019101348.22076-1-anonolitunya@gmail.com>
+ <20231019101348.22076-2-anonolitunya@gmail.com>
+ <2023102113-barbell-amazingly-cef6@gregkh>
+From:   Dorcas Anono Litunya <anonolitunya@gmail.com>
+In-Reply-To: <2023102113-barbell-amazingly-cef6@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,33 +83,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---sKuyd3vh441A/Ew6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 21/10/2023 13:01, Greg Kroah-Hartman wrote:
+> On Thu, Oct 19, 2023 at 01:13:36PM +0300, Dorcas AnonoLitunya wrote:
+>> Modifies the return type of display_control_adjust_sm750le()
+>> to void from unsigned long as the return value is being ignored in
+>> all subsequent function calls.
+>>
+>> This improves code readability and maintainability.
+>>
+>> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
+>> ---
+>>   drivers/staging/sm750fb/ddk750_mode.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+> This patch doesn't apply against my latest branch.  Please rebase it and
+> resend.
+>
+> thanks,
+>
+> greg k-h
 
-On Tue, Oct 31, 2023 at 02:53:35PM -0300, Ma=EDra Canal wrote:
 
-> I would like to ask the device tree maintainers if you are willing
-> to take this through your tree or should I push the entire series
-> through drm-misc/drm-misc-next.
+Hi Greg,
 
-dt-binding patches almost never go through Rob's tree, usually that only
-happens as a last resort if subsystem maintainers let them fall through
-the cracks.
+Sorry for the delay. Was occupied on the project starter tasks. I have 
+rebased the patch and resent it. Thanks!
 
-Cheers,
-Conor.
 
---sKuyd3vh441A/Ew6
-Content-Type: application/pgp-signature; name="signature.asc"
+Dorcas
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUJwdwAKCRB4tDGHoIJi
-0jPJAP9aRVPsF33zF9+FSJjfCZPt69Z4e+uhPfQRnzhHZt0MJgD9GKPs7nkQVYGh
-aY8i+yXw3l4Q8S1CVlbXYIOHIQXqFgY=
-=A4c3
------END PGP SIGNATURE-----
-
---sKuyd3vh441A/Ew6--
