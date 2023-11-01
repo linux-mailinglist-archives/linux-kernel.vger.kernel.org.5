@@ -2,160 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C51B7DE593
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CE07DE594
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344667AbjKARoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
+        id S1344741AbjKARpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbjKARol (ORCPT
+        with ESMTP id S1344705AbjKARpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:44:41 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B6210E
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:44:37 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a68b87b265so230418139f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:44:37 -0700 (PDT)
+        Wed, 1 Nov 2023 13:45:15 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169BF111
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:45:09 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5aa481d53e5so17124a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698860675; x=1699465475; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LsnVrs+xNv4YSUuZr1i/w8nQzHDiyAXV+cc71MWu4hE=;
-        b=O8+TwbgOAcCNgZTkXfCQWd+LCGarWSu+8PiE/RwG0Gmeu3yn7XM4vHndhnG3f410BH
-         VKVdryyEbKF0+BPhJR3Fb3m2WnEqtZKgYwHphjOG3UNDQUvHKaUwxOGDI+hfHc69+SZY
-         u54QWzKBeBfv61XNXuud1DcAtIQLkiuBWbVnQKWKWE49DY+yJncFRpPfFTkLy7H2wWx9
-         2Wp1WsoEwBE6OSmCDbPN7/SrAM+geKduKuRI3cI7Lr5N9UZnmWFYMfnKHxptejEQ6d06
-         n9BqnjDPRD/ErvitZNQpgLQmlnYEQgmwY5b/DqYj4y4sHfhos4+2ALuWSehgYoQMyjbS
-         csPA==
+        d=gmail.com; s=20230601; t=1698860708; x=1699465508; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gJLYbQqFz/FdbUB5pvTJ7lgdYLSt1A0vYFl0v5PTNKo=;
+        b=BT1wWFxPAPUQvRxX/ZSn0DzUZzndL4szGLMMI229Dbtvca+kMPgOIJ4hKLtrfM/BtW
+         m2tVtaY0ulAzqNM5EPCinagmJoRqje2Zu9Q7Mifh3oC2ThgmvCbm1LinPgFxe20hTyV8
+         DzU8+8aBATIdRYw7wZreHH4CjhXsh/P48V7zPpHOLvDt6ohnjNnN4WTimDzbsOOWo16N
+         rEL1COZGyjlJVNIbgKThbJdcSd+TBSsJf8dsHseJC1QYj5E0VPKb1N2wvGOLcIauDjNu
+         EUUWKU7J+iG+10SlL6ktPkfvo2U5R9M5MHewncTfY1gmJlhVodUbnsrHnM+pTLqiIqdb
+         U/pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698860675; x=1699465475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LsnVrs+xNv4YSUuZr1i/w8nQzHDiyAXV+cc71MWu4hE=;
-        b=gBdTqL5Viox6SZ1EnZoTPEyNv3M4FfGM+wq9Ddl5S7fMCmakBdsWxDb5rEh6TOZL83
-         hAVJOEMwQR900xc7KJ7J4q6bw5+553pp3xR0UUW9loSHPASREXhYsPpbmeePO6twA6mN
-         ejGcPKxaSgJZz8GXB/0xvfe5LwJTqxSEmTyaU3WVY/tT3xxVToGQRDCfoJ4FxFX57Ae3
-         Rw+ZCI9OTgtCwwZNyCt+OooxOR2n15fJfw5pd/lHtUlmV2tI+qJZLwgx94NdoPkXV0iy
-         szbmHVhRVpoUKFp6TTEhkNa7EzXXFwbyc2oOOnLlN+69yaXLrkefJicJMniDzlTrv4tt
-         R+JQ==
-X-Gm-Message-State: AOJu0YzaobU0A0BdH4lkt3MbbzfP2rDBcyYqvHOHmfSKeqvTgAQSv++D
-        wfAAUDFp0yOkO56LaIxeYonxLo7Xdw+lV8/PRElJ71NShKmJMQ==
-X-Google-Smtp-Source: AGHT+IEy9HFmOUO7eHQ+lgpM8WJTzxOVZ89EiemOtxM1+WutKjomhq5xBxoo9OJVYaxQ2+g28FNt+8N8zWizgz6mg/o=
-X-Received: by 2002:a6b:7f48:0:b0:7a6:a3b1:b45c with SMTP id
- m8-20020a6b7f48000000b007a6a3b1b45cmr17207486ioq.14.1698860674977; Wed, 01
- Nov 2023 10:44:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698860708; x=1699465508;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gJLYbQqFz/FdbUB5pvTJ7lgdYLSt1A0vYFl0v5PTNKo=;
+        b=S+/7z6GFinUtf8ipcS+n86Jz6jno4MOE96t2mWdTD88DR9IV35M8mxGHYUpJjOu3bK
+         liUy4f0vgGhPoky+/HvE7Re9Kgh4gEarvrFoKxUB+Lvajx+u/oIlrxRce4UKRgfdo6kX
+         gSYE2BN/JdqsoV0bXeLpwgbf3UDLi4nibzp+/BlVpyqsgXu/eKtpmSmosn33W9CQPYDz
+         w86LvE+zYQPL+KxJPp0Kr128oAtz7WKrO1GB3MQ9CVbY7PGdS9PULwN/ZdKaZgxWZcT4
+         GlowJlQx3idMY3nb+Rl5TFBCI96hFzDihhRezhI2IuINzBx7Ou8D6Okqbjj9Q7kMKyJE
+         u5ig==
+X-Gm-Message-State: AOJu0YyBcCiM+rDvMN+Ve4/poi5zL0Jpi0HHu3ID8Im4g3FsGv2NoFFW
+        SLl4CEAm3toBexaN4qSMXoE=
+X-Google-Smtp-Source: AGHT+IFDsJ6u5VD5Fmlt6KmflMQ4/xBxmt4AIcUv8DtygG/P4dvRATXSypZFH+E5LuhvU19zIvmXkg==
+X-Received: by 2002:a17:903:32cc:b0:1cc:4985:fc04 with SMTP id i12-20020a17090332cc00b001cc4985fc04mr10128180plr.66.1698860708146;
+        Wed, 01 Nov 2023 10:45:08 -0700 (PDT)
+Received: from rin-ROG-STRIX-G10CES-G10CES.. (111-255-207-86.dynamic-ip.hinet.net. [111.255.207.86])
+        by smtp.gmail.com with ESMTPSA id ja11-20020a170902efcb00b001b8a00d4f7asm1593949plb.9.2023.11.01.10.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 10:45:07 -0700 (PDT)
+From:   s921975628@gmail.com
+To:     mingo@redhat.com, peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        linux-kernel@vger.kernel.org, s921975628@gmail.com
+Subject: [PATCH] sched/fair: Track current se's EEVDF parameters
+Date:   Thu,  2 Nov 2023 01:44:46 +0800
+Message-Id: <20231101174446.90413-1-s921975628@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231024203302.1920362-3-nphamcs@gmail.com> <20231101012614.186996-1-nphamcs@gmail.com>
- <B0D87683-DD13-4787-8188-98CEBF561B99@linux.dev>
-In-Reply-To: <B0D87683-DD13-4787-8188-98CEBF561B99@linux.dev>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 1 Nov 2023 10:44:23 -0700
-Message-ID: <CAKEwX=PmLSKpmv3zpGhka-JaJoTk7Se4bo6D8r5s6HhPmkpEng@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] zswap: make shrinking memcg-aware
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        cerasuolodomenico@gmail.com, Yosry Ahmed <yosryahmed@google.com>,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Li <chrisl@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        kernel-team@meta.com, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 8:07=E2=80=AFPM Muchun Song <muchun.song@linux.dev>=
- wrote:
->
->
->
-> > On Nov 1, 2023, at 09:26, Nhat Pham <nphamcs@gmail.com> wrote:
-> >
-> > cc-ing Johannes, Roman, Shakeel, Muchun since you all know much more
-> > about memory controller + list_lru reparenting logic than me.
-> >
-> > There seems to be a race between memcg offlining and zswap=E2=80=99s
-> > cgroup-aware LRU implementation:
-> >
-> > CPU0                            CPU1
-> > zswap_lru_add()                 mem_cgroup_css_offline()
-> >    get_mem_cgroup_from_objcg()
-> >                                    memcg_offline_kmem()
-> >                                        memcg_reparent_objcgs()
-> >                                        memcg_reparent_list_lrus()
-> >                                            memcg_reparent_list_lru()
-> >                                                memcg_reparent_list_lru_=
-node()
-> >    list_lru_add()
-> >                                                memcg_list_lru_free()
-> >
-> >
-> > Essentially: on CPU0, zswap gets the memcg from the entry's objcg
-> > (before the objcgs are reparented). Then it performs list_lru_add()
-> > after the list_lru entries reparenting (memcg_reparent_list_lru_node())
-> > step. If the list_lru of the memcg being offlined has not been freed
-> > (i.e before the memcg_list_lru_free() call), then the list_lru_add()
-> > call would succeed - but the list will be freed soon after. The new
->
-> No worries.  list_lru_add() will add the object to the lru list of
-> the parent of the memcg being offlined, because the ->kmemcg_id of the
-> memcg being offlined will be changed to its parent's ->kmemcg_id before m=
-emcg_reparent_list_lru().
->
+From: Yiwei Lin <s921975628@gmail.com>
 
-Ohhh that is subtle. Thanks for pointing this out, Muchun!
+After dequeuing the current-picked scheduling entity with
+`__dequeue_entity`, its contribution to the EEVDF parameters
+cfs_rq->avg_vruntime and cfs_rq->avg_load are also removed.
+Because these should in fact be considered for the EEVDF algorithm,
+we took curr as the special case and inserted back the contributions
+when requests for cfs_rq->avg_vruntime and cfs_rq->avg_load.
 
-In that case, I think Yosry is right after all! We don't even need to get
-a reference to the memcg:
+Functions like `entity_eligible` which is called insied a loop may
+therefore recalculate these statistics repeatly and require more effort.
+Instead, we could just avoid to remove these statistics from
+cfs_rq->avg_vruntime and cfs_rq->avg_load directly.
 
-rcu_read_lock();
-memcg =3D obj_cgroup_memcg(objcg);
-list_lru_add();
-rcu_read_unlock();
+Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+---
+ kernel/sched/fair.c | 34 +++++++---------------------------
+ 1 file changed, 7 insertions(+), 27 deletions(-)
 
-As long as we're inside this rcu section, we're guaranteed to get
-an un-freed memcg. Now it could be offlined etc., but as Muchun has
-pointed out, the list_lru_add() call will still does the right thing - it w=
-ill
-either add the new entry to the parent list if this happens after the
-kmemcg_id update, or the child list before the list_lru reparenting
-action. Both of these scenarios are fine.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 876798824..d507ade09 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -655,17 +655,9 @@ void avg_vruntime_update(struct cfs_rq *cfs_rq, s64 delta)
+  */
+ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+ {
+-	struct sched_entity *curr = cfs_rq->curr;
+ 	s64 avg = cfs_rq->avg_vruntime;
+ 	long load = cfs_rq->avg_load;
+ 
+-	if (curr && curr->on_rq) {
+-		unsigned long weight = scale_load_down(curr->load.weight);
+-
+-		avg += entity_key(cfs_rq, curr) * weight;
+-		load += weight;
+-	}
+-
+ 	if (load) {
+ 		/* sign flips effective floor / ceil */
+ 		if (avg < 0)
+@@ -722,17 +714,9 @@ static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
+  */
+ int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
+-	struct sched_entity *curr = cfs_rq->curr;
+ 	s64 avg = cfs_rq->avg_vruntime;
+ 	long load = cfs_rq->avg_load;
+ 
+-	if (curr && curr->on_rq) {
+-		unsigned long weight = scale_load_down(curr->load.weight);
+-
+-		avg += entity_key(cfs_rq, curr) * weight;
+-		load += weight;
+-	}
+-
+ 	return avg >= entity_key(cfs_rq, se) * load;
+ }
+ 
+@@ -821,11 +805,12 @@ static void __enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 				__entity_less, &min_deadline_cb);
+ }
+ 
+-static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
++static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, bool on_rq)
+ {
+ 	rb_erase_augmented_cached(&se->run_node, &cfs_rq->tasks_timeline,
+ 				  &min_deadline_cb);
+-	avg_vruntime_sub(cfs_rq, se);
++	if (!on_rq)
++		avg_vruntime_sub(cfs_rq, se);
+ }
+ 
+ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
+@@ -3675,8 +3660,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 		/* commit outstanding execution time */
+ 		if (cfs_rq->curr == se)
+ 			update_curr(cfs_rq);
+-		else
+-			avg_vruntime_sub(cfs_rq, se);
++		avg_vruntime_sub(cfs_rq, se);
+ 		update_load_sub(&cfs_rq->load, se->load.weight);
+ 	}
+ 	dequeue_load_avg(cfs_rq, se);
+@@ -3712,8 +3696,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 	enqueue_load_avg(cfs_rq, se);
+ 	if (se->on_rq) {
+ 		update_load_add(&cfs_rq->load, se->load.weight);
+-		if (cfs_rq->curr != se)
+-			avg_vruntime_add(cfs_rq, se);
++		avg_vruntime_add(cfs_rq, se);
+ 	}
+ }
+ 
+@@ -5023,7 +5006,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * EEVDF: placement strategy #1 / #2
+ 	 */
+ 	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
+-		struct sched_entity *curr = cfs_rq->curr;
+ 		unsigned long load;
+ 
+ 		lag = se->vlag;
+@@ -5081,8 +5063,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 		 *   vl_i = (W + w_i)*vl'_i / W
+ 		 */
+ 		load = cfs_rq->avg_load;
+-		if (curr && curr->on_rq)
+-			load += scale_load_down(curr->load.weight);
+ 
+ 		lag *= load + scale_load_down(se->load.weight);
+ 		if (WARN_ON_ONCE(!load))
+@@ -5229,7 +5209,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 
+ 	update_entity_lag(cfs_rq, se);
+ 	if (se != cfs_rq->curr)
+-		__dequeue_entity(cfs_rq, se);
++		__dequeue_entity(cfs_rq, se, 0);
+ 	se->on_rq = 0;
+ 	account_entity_dequeue(cfs_rq, se);
+ 
+@@ -5264,7 +5244,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 		 * runqueue.
+ 		 */
+ 		update_stats_wait_end_fair(cfs_rq, se);
+-		__dequeue_entity(cfs_rq, se);
++		__dequeue_entity(cfs_rq, se, 1);
+ 		update_load_avg(cfs_rq, se, UPDATE_TG);
+ 		/*
+ 		 * HACK, stash a copy of deadline at the point of pick in vlag,
+-- 
+2.34.1
 
-> Muchun,
-> Thanks
->
-> > zswap entry as a result will not be subjected to future reclaim
-> > attempt. IOW, this list_lru_add() call is effectively swallowed. And
-> > worse, there might be a crash when we invalidate the zswap_entry in the
-> > future (which will perform a list_lru removal).
-> >
-> > Within get_mem_cgroup_from_objcg(), none of the following seem
-> > sufficient to prevent this race:
-> >
-> >    1. Perform the objcg-to-memcg lookup inside a rcu_read_lock()
-> >    section.
-> >    2. Checking if the memcg is freed yet (with css_tryget()) (what
-> >    we're currently doing in this patch series).
-> >    3. Checking if the memcg is still online (with css_tryget_online())
-> >    The memcg can still be offlined down the line.
-> >
-> >
-> > I've discussed this privately with Johannes, and it seems like the
-> > cleanest solution here is to move the reparenting logic down to release
-> > stage. That way, when get_mem_cgroup_from_objcg() returns,
-> > zswap_lru_add() is given an memcg that is reparenting-safe (until we
-> > drop the obtained reference).
->
