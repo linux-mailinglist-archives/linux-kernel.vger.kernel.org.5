@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43D67DE50C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0617DE506
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344643AbjKARJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
+        id S1344616AbjKARIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344604AbjKARJS (ORCPT
+        with ESMTP id S1344351AbjKARIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:09:18 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0FAFD;
-        Wed,  1 Nov 2023 10:09:16 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32dbbf3c782so655123f8f.1;
-        Wed, 01 Nov 2023 10:09:16 -0700 (PDT)
+        Wed, 1 Nov 2023 13:08:50 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F67FD;
+        Wed,  1 Nov 2023 10:08:47 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9d10f94f70bso2004366b.3;
+        Wed, 01 Nov 2023 10:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698858555; x=1699463355; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=NZPlhUOCK7okoUQsTTKK0IjnNH7irIK2p/2Bnn8UEv8=;
-        b=BYieO0ayvPpQK79RMTUl5/irFmvuDn5+X7nNP77HukgiiMMa2HvhqEWw0SLrpCZ2eU
-         CKbH1jUsytrRG1V1WGf95aoRvRVm4ck9XSBl3CEsc0SmZ/IvCULrevlxWRY7zmYtY4Q4
-         i8lZyzNhJb5VECMKZ1HuP2EQkz9zOByd1SAytGebyZxMBToFa5bXWA6uoQetWYZYiCro
-         DjwxY6pMV56MnYtJiOS0qKtrDoxdoU4QsaMbUFpSG9eTDs8TRDSBRrZUJqtam9Hu2rE+
-         Sbo3HWKfpcOwsZGLrA8eVG7AV99VbTkt5MCvLJmZ9+T8aobHZ1NTXAjyUmfJKQGoVcsd
-         4V8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698858555; x=1699463355;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698858526; x=1699463326; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NZPlhUOCK7okoUQsTTKK0IjnNH7irIK2p/2Bnn8UEv8=;
-        b=nfhuxYV00I9weWEuGA1Cs+1hQyRkbzuzt5VaAJebX+r1PLoK2+IiDpDTS8YeLPfa1A
-         Ldeh/jEU6lKiTp2NqF2Kl/FC2agp+qqk1+HKj84Fd8uxSEkfGqriVoXPlJrtxiqreGzf
-         JSiKAIta/LIm5W4VRlzoCscPQJ52PwFah+746d4tCs/kATNG47xeZVb1G+3T+OigMFbZ
-         ZPHkXIJhI/KLLZtmMu5oj+8tFUs+jmI3B8ecdLAevWk5Lv7TzgWz+iIQ1jMCh+ZVaniB
-         UWcMcF65vZ1ubYvbImKom5IsFB86sMyXxJ+aQstzYWhdkoGujvdu27xmdp+oIrQcqf56
-         YtVw==
-X-Gm-Message-State: AOJu0YxdZJQhreMnm3enA73JGJonEdzm9iBMmKg+z07fpYpY5eaCrwMI
-        0FqB5OcC1eWroE330icXkGc=
-X-Google-Smtp-Source: AGHT+IGtTXr/kTMLy/R9teg5mGqXuVKejKhn3hIAWp/szoiaU5Yfzj65YDHE6B6LPbHM6N+84o6s/A==
-X-Received: by 2002:a05:6000:188f:b0:32f:75d2:bdba with SMTP id a15-20020a056000188f00b0032f75d2bdbamr3921739wri.6.1698858554682;
-        Wed, 01 Nov 2023 10:09:14 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id u16-20020a05600c19d000b0040644e699a0sm318436wmq.45.2023.11.01.10.08.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 10:08:57 -0700 (PDT)
-Message-ID: <65428629.050a0220.b2431.1edc@mx.google.com>
-X-Google-Original-Message-ID: <ZUKGCUNvAx3J0PZ4@Ansuel-xps.>
-Date:   Wed, 1 Nov 2023 18:08:25 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robimarko@gmail.com>
-Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
- support
-References: <20231101123608.11157-1-ansuelsmth@gmail.com>
- <4b536ad3-2112-4f28-90e4-586b5745be20@lunn.ch>
- <65427400.5d0a0220.41c58.0ded@mx.google.com>
- <34a0b76e-aa0e-4148-ba01-c3b4608f17f7@lunn.ch>
- <65427fd4.df0a0220.28d26.1955@mx.google.com>
- <c9dad91a-1de1-4c30-ab7f-414552702009@lunn.ch>
+        bh=VxqC4haUmO6O6zFKwa2JDemqA1Zr0ZXCW08zDQAdl+M=;
+        b=YJ5cPBx7s/w1G3jpaDof0yohlE5FynVbV3+YjI+zgj0MXmKlMoAD+jkfqbaTAeOPNm
+         9cyWveC/fAkIEgb1pkVzQ1b50m4Wt3COsnGbLNs4qxA7pQLNvcoFJx+tUs0QATiSBtYl
+         jGw9SgJsSywkmYGss+fCiwRxX58woUCYQ4yyNXzxtURm4o9ppG/5GmRvJ0vK3O9RZ4ZM
+         DJwM3uLypvp/LVUE+5FKCDWuBJt4KTdKHaQVrd99XEH/2c6pqHw5Dv4A0kBlwhUMSUhD
+         h9TOkUA2vb9aDMeoNMqxEgv4LsGjAqASwUWIVYoXIPbDc/NteyDOiOCAc1XMMd5D/Wh0
+         kaiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698858526; x=1699463326;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VxqC4haUmO6O6zFKwa2JDemqA1Zr0ZXCW08zDQAdl+M=;
+        b=pes6iMfFV7WDBKzkbQCfrMGdkDn0GV6iA56plmPu7o4OOZqHWg0u3DDv05PzhieodS
+         PbZgwN4fLW0WmHsag/nWITHbyNwJugHukqhXnSgx2gCudulnHmsVrV7A47KwWCGQpNWf
+         YfTSaaUNYTwKUHiAZ920YGhvvppCqTwGnowgU2qWjl6UQiDMe8nuthLxPvcCgQRc09xG
+         NkAXaMxAHfgr/XppkICiIuqeRLmDQTBVrDc+bmF3ADuAcAy6vGKSb0BChfGRHKuVswvk
+         Z0/0Mqu4pl5z6y2jJB45QRqjHiGkZAYgmpLz6xtFOux+eZxaZLUtqf5Iuojcx86jctKs
+         TDHw==
+X-Gm-Message-State: AOJu0YzACtJfTtig5jYbat5b4NkL+fimjBLUTI3ws+2f95yQKBv9GopP
+        JviuOfUC52W+JhzeLk4G1bskY4fd3MCOa7Vy00A=
+X-Google-Smtp-Source: AGHT+IHh/xoThtkS3jWPmHaVPIYaN0JAsAKsui3AVMwsCTMgS9HAdTpsiYFJj2naIUWjXdqCl0SM1zRBe0PN5df0Omk=
+X-Received: by 2002:a17:906:dc93:b0:9c7:3611:9e7c with SMTP id
+ cs19-20020a170906dc9300b009c736119e7cmr2502264ejc.61.1698858525799; Wed, 01
+ Nov 2023 10:08:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9dad91a-1de1-4c30-ab7f-414552702009@lunn.ch>
+References: <20231101102837.25205-1-ddrokosov@salutedevices.com> <20231101102837.25205-2-ddrokosov@salutedevices.com>
+In-Reply-To: <20231101102837.25205-2-ddrokosov@salutedevices.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Nov 2023 10:08:34 -0700
+Message-ID: <CAEf4BzZ0p-k15XLf2QdHNN6TodjRBtRKk2mvsttCj=GUi4Or3A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mm: memcg: print out cgroup name in the memcg tracepoints
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -87,19 +73,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 05:54:50PM +0100, Andrew Lunn wrote:
-> > There are plenty of firmware around so it can be checked by from what I
-> > have, it looks like they are word aligned... Ok I will use the
-> > get_unaligned and add a comment saying that we assume the iram and dram
-> > section are always word aligned.
-> 
-> We probably want to know if there is firmware out there which is not
-> word aligned. So i would probably do phydev_err() and return -EINVAL.
+On Wed, Nov 1, 2023 at 3:29=E2=80=AFAM Dmitry Rokosov
+<ddrokosov@salutedevices.com> wrote:
 >
+> Sometimes it is necessary to understand in which memcg tracepoint event
+> occurred. The function cgroup_name() is a useful tool for this purpose.
+> To integrate cgroup_name() into the existing memcg tracepoints, this
+> patch introduces a new tracepoint template for the begin() and end()
+> events, utilizing static __array() to store the cgroup name.
+>
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> ---
+>  include/trace/events/vmscan.h | 77 +++++++++++++++++++++++++++++------
+>  mm/vmscan.c                   |  8 ++--
+>  2 files changed, 69 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.=
+h
+> index d2123dd960d5..124bc22866c8 100644
+> --- a/include/trace/events/vmscan.h
+> +++ b/include/trace/events/vmscan.h
+> @@ -141,19 +141,47 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_templat=
+e, mm_vmscan_direct_reclaim_b
+>  );
+>
+>  #ifdef CONFIG_MEMCG
+> -DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_memcg_re=
+claim_begin,
+>
+> -       TP_PROTO(int order, gfp_t gfp_flags),
+> +DECLARE_EVENT_CLASS(mm_vmscan_memcg_reclaim_begin_template,
+>
+> -       TP_ARGS(order, gfp_flags)
+> +       TP_PROTO(const struct mem_cgroup *memcg, int order, gfp_t gfp_fla=
+gs),
+> +
+> +       TP_ARGS(memcg, order, gfp_flags),
 
-Do we have API to check this? Or I think I should just check the iram
-and dram size and see if iram_size % sizeof(u32) is zero and return
-error otherwise.
+By adding memcg in front of existing tracepoint arguments, you
+unnecessarily break everyone who currently has some scripts based on
+this tracepoint. Given there is no reason why memcg has to be the very
+first argument, it would be nice if you can just append it at the end
+to make it nicely backwards compatible. Same for other tracepoints
+below.
 
--- 
-	Ansuel
+Tracepoints are not an ABI, but there is also no point in arbitrarily
+breaking all current scripts for such a trivial reason.
+
+> +
+> +       TP_STRUCT__entry(
+> +               __field(int, order)
+> +               __field(unsigned long, gfp_flags)
+> +               __array(char, name, NAME_MAX + 1)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->order =3D order;
+> +               __entry->gfp_flags =3D (__force unsigned long)gfp_flags;
+> +               cgroup_name(memcg->css.cgroup,
+> +                       __entry->name,
+> +                       sizeof(__entry->name));
+> +       ),
+> +
+> +       TP_printk("memcg=3D%s order=3D%d gfp_flags=3D%s",
+> +               __entry->name,
+> +               __entry->order,
+> +               show_gfp_flags(__entry->gfp_flags))
+>  );
+
+[...]
