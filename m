@@ -2,191 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6A87DDAB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 02:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859F57DDABC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 02:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377293AbjKABr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 21:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S1377305AbjKABse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 21:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377053AbjKABry (ORCPT
+        with ESMTP id S1377288AbjKABsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 21:47:54 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2012.outbound.protection.outlook.com [40.92.99.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9C5E4;
-        Tue, 31 Oct 2023 18:47:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DwXwOXR7qYMxUPr/4tXVwbU0aQSX1SKzE8j2qVlMRrAAxJ5ewLGtqacKrHABY0C1kmVTSqWHjkzTQ6hdp2Y/DNx6GCAuEIzrBuUYLIJrZb55rir/fqf5affk0Qgwn7jJO7dr6gYSxdYuf5j+NzlO/jqG20dUVjvtPKOYlOEmitLZ4F874bQw1Lnj33WMpNBYH6QOiek3008WzE1BzKSwhbcHRawPIkDvIpzlDRWaV9SqWqhgEeUOQdCQLdoTSDVMBgfgZY/6Q98/rkQVII3QAfPZpHvWUIBl+MyOYMEtrZcRJDukIaUr9dNAogV20F56eBp4t48Sx2Z7hQ+UNrQljw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oekaFV/H6G7/kTQrVCsZZH6TZkqMHF9EilX+awNCAGY=;
- b=Iq/YXLsUqmhhy+v8Nq0ww7Vluf31n/+hhxdcOfoT0wO0nUrnvag4/sGJgiso+c7QcdT1V0YEzhNgxRHqCzwh0ywH3CzbSRmWybmk5ZwrpZ19vZPQ9KK876/88lVUe+G0YnuE3ArU3/LJpiZw45wTFsZ47BqLtTl/4jMdGI9ZsT926/OSRavrOsRCvRs56WRDLCQRZq+Adrj2xvoPildPqC2Tm2gti/5hIHzg6KYo19kZHyDxSTvnzQQyRIuSRPQwkF9VEQpOt8zhiUnb8kEyzMD0Hth/D3L6Pd4ltEs365Fznu6ZXZ2TJjdQJVp70mrAqE3cVVTho8Pk2/m5TnAyGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oekaFV/H6G7/kTQrVCsZZH6TZkqMHF9EilX+awNCAGY=;
- b=Q6A30MLnKNBkxyBVDzj6f3VjnGWMXDyV76GR1ce5M9dGyQWb/4b9jMp0iuxB2Yx4yMFlXpSLIGWN+0Q9qdsAKzzATLc3cI+9DoIhcd/59nqcoml3JX1NFiHJcNa6l+txss7n9+r6KQB1xj+4uYYt1KVU8juwHFbLOmc2XtUpjjVO+6I9Z2dNtZYnLVK2uy3Lhkt19YUuQs1eYNcpZOrV7vtbk0MJcZe8BDujXUKcLeOGuJbaeC/k0qbPJxzMR16zU8RM47nnlw5te530QWsl5/ckJ1s6u1bjFGkXYiJNYcicx42oSzcQXErEocm8Sa14CCP0eYfnfQyjm8sCF6/EFw==
-Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
- by TY3P286MB3795.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:406::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
- 2023 01:47:43 +0000
-Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- ([fe80::465a:2534:4d99:a25b]) by TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- ([fe80::465a:2534:4d99:a25b%6]) with mapi id 15.20.6954.019; Wed, 1 Nov 2023
- 01:47:43 +0000
-From:   Shiji Yang <yangshiji66@outlook.com>
-To:     robh@kernel.org
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        oliver@schinagl.nl, pavel@ucw.cz
-Subject: Re: [PATCH v2 2/2] dt-bindings: leds: add "internet" and "rssi" function definitions
-Date:   Wed,  1 Nov 2023 09:47:31 +0800
-Message-ID: <TYAP286MB0315C0414CC9420993D18DAABCA7A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231031180305.GA1813504-robh@kernel.org>
-References: <20231031180305.GA1813504-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TMN:  [MX3eettV9n7PyP5EVhlpK+u/QOEr4qNB0/T1RBQXxek=]
-X-ClientProxiedBy: TY2PR02CA0023.apcprd02.prod.outlook.com
- (2603:1096:404:56::35) To TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:404:8041::8)
-X-Microsoft-Original-Message-ID: <20231101014731.9270-1-yangshiji66@outlook.com>
+        Tue, 31 Oct 2023 21:48:33 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368F9F4;
+        Tue, 31 Oct 2023 18:48:29 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so6365153b3a.2;
+        Tue, 31 Oct 2023 18:48:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698803308; x=1699408108; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=F2BaTa6G2HWw9DgMuR1O5iLUXYXlCPDt7//P1EX5GrM=;
+        b=jbAKFXMwl47tJA2EeQxqwzX9zgg4wmQCgd+ZsWR1eF327Tm7oZj9W1yVQoSMZWBxtu
+         jzkALMJggtC3ahoduXdZ6l0sEsns88vQWkter36ZNrI6Ez4q9WpVKUCAQGmbqJQ/6rpT
+         +sxahbL2zKb5dqO7RIkexwmtWphrYv7b9rNwZK+p5UbEm93F00p7CHiP15eQiabcnYEN
+         ejnbg00OtYg78oDOm8zsc63rl6hOWOK3BW28iClLsSQdlXVvdynD+KYnd0QLyB0Q0MLD
+         PxHFINQfdALI1ZPdSXm5vBpiEET+8mzWuTBvpbwcfufhOSci3Prcy8oLeOCZSDgmhnxS
+         CsLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698803308; x=1699408108;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F2BaTa6G2HWw9DgMuR1O5iLUXYXlCPDt7//P1EX5GrM=;
+        b=EsRkyGAMNEPSrvnH0o5EKgzzYrekIlgwZPSxh1wpMiOxC7phJ68DgukWmFzRjvh1GA
+         C7UxOCdoDOM2GTZ/KO2HVI5EVpfEqm17AzviMQg4NmYFWEyq+IDSgytdxOVYJ+F/9UE1
+         SB8bulZo5E+NpctnqdRLBxNQiLqww+jYdfOQrvVfyxaYAcZXZeeyEX8HtiAsASgjlvzJ
+         d/8KAN+Ep24U6+eWPyNaslj7bytw3Az50MJLGi7NY4JIyE4SXnZcFBh7jm7h+VD9/zsE
+         z9xcrIJ7foQO9wUAdPBjwxsKJWmDDC/KEeEg6mOSruQ+vAAyb1OwmJYGXO+/3gdP9yqI
+         kP5g==
+X-Gm-Message-State: AOJu0YxuuPOJu//VnvHKllY6ypIg4XlyuHpkLB2YjOOnl1mfRGeXEBj4
+        RkGAoPdm82oHepPCpvI5q/5xU5bZxtc=
+X-Google-Smtp-Source: AGHT+IF79z/Pz4pTmLfsoJ3VxWrULK5C/eTSmgGYC6l5NroooZgsEqHrx4e6FT7YFA7d/6791SdA8A==
+X-Received: by 2002:a05:6a20:938c:b0:17b:40:ccd6 with SMTP id x12-20020a056a20938c00b0017b0040ccd6mr19669737pzh.2.1698803308466;
+        Tue, 31 Oct 2023 18:48:28 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id mj3-20020a17090b368300b002800b26dbc1sm1659875pjb.32.2023.10.31.18.48.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 18:48:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <feb4297d-eaa4-40b0-824d-af2c6bdb97e3@roeck-us.net>
+Date:   Tue, 31 Oct 2023 18:48:25 -0700
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYAP286MB0315:EE_|TY3P286MB3795:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00b37e9d-3abc-4af0-ce81-08dbda7c89ca
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0dZJJIHSikN1RWV+JS0Dq5hUme1cVgTlHWGHIyNkoCrze3hNjP03clPtIPWfaWYfc4R3MNsjUttKOfn9YIB43PG5PipgQT3sg0m2gRaCnD1NNkCfzs4JPWIZCUkfKfHrDpJ874o8rPWD3PlkzuxdTysKwuspkdvOqN14gSO0buLbOAHmTfcjfa9CyFERS/F5CDbK2VEjR+OD0EwtcPzH1XtTG9UtHsdM0o4iBDv+bLZtGlCgeUvvl4u1MW5Pamnxo5fnKAyvfpjF7cWL7vnY9tbDXe7iNBTSQfvkBaBYPy1Q7XVYhcc+LoZlBqQHaWqW2uhrHQt7+cB2szOVLi7RWKZ/XnlVY9ZPpHt2giZjl7tUuLRkCocasv+YG+TKZNmsy+dwIpwmxhrfh9yfA2MlerK7LhVnOmDLZ8mAszzKtMlE4OZwNFlFJojR33S0/hTLIbQIBC4OUTgkMZfaunI1AOw7RhMGA4TEiLJLY3MboTBP+HSXNyzpc9q9Z4KMWpYGM0IVjMyVR71QHxXf1ZsS/hrQZ/BsjbKLaFAG9W802wvuuNB11fK8jguvJCOCtKjQxxpQmH5DV7eLR90YZspm/dPFkxWbx+heFSnKxLQd+CM=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1huRzVRcWk2SWFJSFRrQm9mU2E3OHV6U3djTlJPTExwNy82bmpDL1FwdDdS?=
- =?utf-8?B?YmdIYTZpeURoUXVGcWxhNEV1ZHU1QkN6dEJhQUxZSkFQSnY0ZFNlSkxleWo4?=
- =?utf-8?B?aFdBZ0VpWnFabVlVTnFXQ2tYUnhDUXJzSmJFZ0prUVVXRGNObElzWSsvMXVl?=
- =?utf-8?B?Wk9lOWd5NVdFUmFMZnVzS0swTVZZUXBsR2xaOXdvZXBkUGxSUncvQ05PTTZ3?=
- =?utf-8?B?UjZseUpMWHl0Y2IvNXRWdmFWTVZsTWg0OG4zcXR6Q0dLeVZCc3E4RytmcnFl?=
- =?utf-8?B?QlZtQ1JpYjRrZWVGU0hmRXVNdGM3Ym52ZGhpcWs2dERTODZSY2tUa24zaGpz?=
- =?utf-8?B?S2tKdnJjNGpOa0VjenhUTkU2WFBWTEhjY1d3UkV5SVJTTWI5cnVkQjdvN0ZS?=
- =?utf-8?B?SnZVMGM5Y0d2a0lOU3JOcndZUDk2c0hNK040dVlIck1ER25BMHhnaVA0L09Y?=
- =?utf-8?B?aHNUTXBaZGVma2lkYVZsMTh3aEVPaVdyYWZNZy8zS2dOM1ZQVUVEQUd3OWY2?=
- =?utf-8?B?LzhldjliTEJUS2V0WGM2R2s4RTNMNXNHUlJ2Y0k1TE1EckZ2RXVESWtvS2Rs?=
- =?utf-8?B?YTg1MFY0NnlJb1N0RHdKOEZwQ3FsZ2cxbVRGU2V1YUpBYzhkTjdjSURIRlpW?=
- =?utf-8?B?VFloTmJyMWF1d0JiODQ2dmZmTjlVSERWTStsTHlZUjhqeWlJc3JNeFVscWk3?=
- =?utf-8?B?NVl5REp4YmFCaythaldQcXIrZ1JqSys4eGFUREI3VFZmQk9LQmlwc0UyejlV?=
- =?utf-8?B?ZDd0M2R0NGd4QnRta1lFWGJTb3Foa1hyOG5OOFB3NnRQWjZvSGduZEs0MDM3?=
- =?utf-8?B?NGZRQ1QxMlBWODE0Wm9XTEpjK3g5em9RUm00KzFaT01teEpIS01CdXZ5clZa?=
- =?utf-8?B?Z29DQm9VNVZYRGpVSG9hNE1EWUwwdFVWKzNDWEVyZm9rTGY3UTlPMGpkS09N?=
- =?utf-8?B?ZTByZVVrSUJZUkduelFzTklnQnU3UEp5NW5lRXZNclpmVEF3cnpkRFN3ZFg1?=
- =?utf-8?B?NW14Z3haM05ESVRlbGhnQWkydlVJdmpkb21FVEZ5YStMZzlZZ1BERXVHbkxR?=
- =?utf-8?B?UXhQQnpIeGdpdFQvOS9nQVRxbFdwRU5RczBvNVZFSW9RZ3J4N20wREtTai91?=
- =?utf-8?B?citWcFl5WEc5RVlvY0pTUkxvK3RyUVFPMGRHU3F4L2RRZGhmbSswbzVaRjdj?=
- =?utf-8?B?cTNzdTliYUIyVjNvQ1g0aEV3bkdvRkYyeXBJY3FzNjIzcWJ6TVYxM3NoZjAv?=
- =?utf-8?B?Y1VhWElURzZGTmpQL0RaMElsSEt3M0FVODNqQzljSGxJaDlnd1ZlZXlZRGdu?=
- =?utf-8?B?ZElzbkV4dll5ZDVGMmd6QjdHa1NkeCt2clVuWmo1WUpuV1RuZ0dpc1poMWpw?=
- =?utf-8?B?eWZhZy9vWHo3YU15S3VDMktkSU0yQUt1b1J3N25UbjIxZVkwUnpxaFFIcHYy?=
- =?utf-8?B?Z0pxcmwyVTJTSkp1R0kzM1dBcHJwcFh4ZFhTcWJLc2wyY1VUMkxyMUpIN0FO?=
- =?utf-8?B?MFl6TUdwN2lhNzhwUFliZktDb2RnUmFJdW5talZOYisvaGtTb20yeC9WZU5N?=
- =?utf-8?B?dGxhdHY3aURlQmhKWXpGRm9wS0ppZnd2ZERvK1VDY0kzaTNaNnFuWXJvK3pz?=
- =?utf-8?Q?o/d9mJ22Ogjw6o+wedn5J4ImAN2GIUHcGzD23H5LQ3f4=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00b37e9d-3abc-4af0-ce81-08dbda7c89ca
-X-MS-Exchange-CrossTenant-AuthSource: TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 01:47:43.3719
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB3795
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] usb: typec: tcpm: Fix sink caps op current check
+Content-Language: en-US
+To:     Badhri Jagan Sridharan <badhri@google.com>,
+        gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com
+Cc:     kyletso@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20231101012845.2701348-1-badhri@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231101012845.2701348-1-badhri@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023 13:03:05 -0500, Rob Herring wrote:
+On 10/31/23 18:28, Badhri Jagan Sridharan wrote:
+> TCPM checks for sink caps operational current even when PD is disabled.
+> This incorrectly sets tcpm_set_charge() when PD is disabled.
+> Check for sink caps only when PD is enabled.
+> 
+> [   97.572342] Start toggling
+> [   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
+> [   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+> [   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+> [   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
+> [   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+> [   99.903584] VBUS on
+> [   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
+> [   99.903600] polarity 1
+> [   99.910155] enable vbus discharge ret:0
+> [   99.910160] Requesting mux state 1, usb-role 2, orientation 2
+> [   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> [   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
+> [   99.946800] Setting voltage/current limit 5000 mV 500 mA
+> [   99.946803] vbus=0 charge:=1
+> [  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
+> [  100.027145] Setting voltage/current limit 5000 mV 3000 mA
+> [  100.466830] VBUS on
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 803b1c8a0cea ("usb: typec: tcpm: not sink vbus if operational current is 0mA")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
->On Tue, Oct 31, 2023 at 09:29:01PM +0800, Shiji Yang wrote:
->> These two types of LEDs are widely used in routers and NICs. The
->> RSSI (Received Signal Strength Indicator) LED is used to display
->> the Wi-Fi signal strength, and the Internet LED can indicate
->> whether the device can access a specific server.
->> 
->> Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
->> ---
->>  include/dt-bindings/leds/common.h | 2 ++
->>  1 file changed, 2 insertions(+)
->> 
->> diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
->> index 9a0d33d02..55a426e39 100644
->> --- a/include/dt-bindings/leds/common.h
->> +++ b/include/dt-bindings/leds/common.h
->> @@ -88,11 +88,13 @@
->>  #define LED_FUNCTION_FLASH "flash"
->>  #define LED_FUNCTION_HEARTBEAT "heartbeat"
->>  #define LED_FUNCTION_INDICATOR "indicator"
->> +#define LED_FUNCTION_INTERNET "internet"
->
->Duplicate of 'wan'.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
+> ---
+> Changes since v2:
+> * Fix the "Fixes" tag
+> * Refactor code based on Guenter Roeck's suggestion.
+> 
+> Changes since v1:
+> * Fix commit title and description to address comments from Guenter Roeck
+> ---
+>   drivers/usb/typec/tcpm/tcpm.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 058d5b853b57..afc791ab6d4f 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4273,7 +4273,8 @@ static void run_state_machine(struct tcpm_port *port)
+>   				current_lim = PD_P_SNK_STDBY_MW / 5;
+>   			tcpm_set_current_limit(port, current_lim, 5000);
+>   			/* Not sink vbus if operational current is 0mA */
+> -			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
+> +			tcpm_set_charge(port, !port->pd_supported ||
+> +					pdo_max_current(port->snk_pdo[0]));
+>   
+>   			if (!port->pd_supported)
+>   				tcpm_set_state(port, SNK_READY, 0);
+> 
+> base-commit: c70793fb7632a153862ee9060e6d48131469a29c
 
-It's different from 'wan'. 'wan' usually indicates whether the WAN
-port is connected to the modem (internet services may still
-unavailable). But the 'internet' shows if the device can successfully
-ping servers like 8.8.8.8 to detected the internet connection status.
-When the router operates in AP only mode, we can even connect LAN port
-to the AC/modem to connect to the internet. In this case, 'internet'
-LED should still be on. On some routers, both 'internet' and 'wan'
-are available and be controled separately.
-
-Ref: OpenWrt has a lot of devices that require the 'internet' LED：
-https://git.openwrt.org/?p=openwrt%2Fopenwrt.git&a=search&h=HEAD&st=grep&s=label+%3D+.*net&sr=1
-
-Anyway, if it is still unacceptable, please let me know and I will
-remove it in v3.
-
-
->
->>  #define LED_FUNCTION_LAN "lan"
->>  #define LED_FUNCTION_MAIL "mail"
->>  #define LED_FUNCTION_MTD "mtd"
->>  #define LED_FUNCTION_PANIC "panic"
->>  #define LED_FUNCTION_PROGRAMMING "programming"
->> +#define LED_FUNCTION_RSSI "rssi"
->
->'rx' or 'wlan'?
-
-
-'rx' and 'wlan' only shows the data transfer speed and on/off status, this
-one indicates the signal strength.
-
->
->Wouldn't you need multiple LEDs to indicate signal strength? Maybe 
->'signal' or something would be more generic?
-
-
-Yes, usually there are 3~4 LEDs to indicate the signal strength, just like
-the signal icon on the mobile phone. We can use `function-enumerator` led
-property to mark the different leds in the signal group. I'll rename it to
-'signal' in v3.
-
->
->>  #define LED_FUNCTION_RX "rx"
->>  #define LED_FUNCTION_SD "sd"
->>  #define LED_FUNCTION_STANDBY "standby"
->> -- 
->> 2.39.2
->> 
-
-Regards,
-Shiji Yang
