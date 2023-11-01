@@ -2,225 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2BC7DE425
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74737DE429
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbjKAPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
+        id S232236AbjKAPtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjKAPss (ORCPT
+        with ESMTP id S229731AbjKAPts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:48:48 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26730102;
-        Wed,  1 Nov 2023 08:48:45 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A1ATNGC011709;
-        Wed, 1 Nov 2023 15:48:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=8mhYkKlsnvVk///0pchx9GV0Utnbb7331HD4nGhk/7k=;
- b=0zllH6j51x0QalbUpT43VeQM+QoqSIn8h5j6m1kJrmh7O2UyBGMn8YB9SoeofaMJYS1H
- QQIImzkEgAIeCzev8cGOE/sbQX1empRovaaBzXuG3GLevNWkFJh94zOiYVrFm9lQG5Mv
- unkW4X8sp9XUTBuqe2XFV7lL6yac/+H17IV0cRBVQW9QBVv9rVM+wATotlyrfAtHJbrM
- CxpJ0sRaR7JeN3zKYsOpBQwxMiPw9gmONXCv1KV+E3JSe0OPN+6aFNcm81TD2Do6MNvU
- 9jKguXHmyJBs4xBPiBZdD3oF4k3RzTjTbumTViwstiK4FmI/LaAC3neH1JCHZQHxHJkF 4Q== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0s33ywhw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Nov 2023 15:48:30 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A1FLXX9022500;
-        Wed, 1 Nov 2023 15:48:29 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u0rr77xg6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Nov 2023 15:48:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a/2lh6PbMET2+OxJ0bU1nhNtACLZoVsUbMen2SqrLbxv+I/gBZZiynI5PFiwQK9q8uDxUN6OsVu1J/7LcRkk6nhfU7mqtR/SANIoepPRx62EkmLclNqrjJ9vJepPoxnLP1fCv2LPdjfU0SYLdyW6Apr1MW/ja1fdXt6oy7suyyzPb1iP6ZmQpCB70u1oaAM/oSHqnwD1YuJrViY4uxMgJQNj3eor6j9VYpcjtvn1TR4/PtWOykhd+Mh2IMjkS87AoNm5VI/41qvY4JsgMqUpeH6mYJIAJbXo8Ju3gV5pk4PWHNmA2mIVYBvou7Ia47XwzeKFTkG9a4yFC0Tzgdt79Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8mhYkKlsnvVk///0pchx9GV0Utnbb7331HD4nGhk/7k=;
- b=oP2CQF6F64nonfEExQRk3eCiOBhXH/JYNZaZQqv0cGiErVAxj0svMZLVHRGKjrDI3H7LSQzF6P0ZUVJ8V4OymQ+xdJ3OtHpOJjM1VnKB+wVvVT7E/Tvzpe64VgvVKnSoBiCFrFP8I0eSVFq6UOQrgOYjiDhRzvOBIpbC84wK8ZgQTXsp16a4fCQhdorlmnlBCFHcFqfKM37gmAu9d6VaR5uPdreuLse2AnhKXISc/yhAWE5tLXuz73brRLqhH0D38mbPMBvsXy89YiAm+CZ79qhN8V0+oPoYp0ArGlAD8vUAToMRVlKTSnKrZs0mvPT87VPmzgTRYdOY0MhuBB4PJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8mhYkKlsnvVk///0pchx9GV0Utnbb7331HD4nGhk/7k=;
- b=OnkUS35S4LkBRAuGTKwkkcb1PcVfwowlUQT61j9UjQV1u3VdaozE0rOouOvldoYgxM4h/j2dFlfag4qO9oBtcv3dRS7R3McvOcQd58PF2+Lsvnss0k734R7Z+7x+pPsgdbCcnK1iHdE7FAFCOqTX/LMaTG3NavbwMI83byEdcns=
-Received: from MW5PR10MB5738.namprd10.prod.outlook.com (2603:10b6:303:19b::14)
- by IA0PR10MB7135.namprd10.prod.outlook.com (2603:10b6:208:401::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.23; Wed, 1 Nov
- 2023 15:48:28 +0000
-Received: from MW5PR10MB5738.namprd10.prod.outlook.com
- ([fe80::a946:abb:59d6:e435]) by MW5PR10MB5738.namprd10.prod.outlook.com
- ([fe80::a946:abb:59d6:e435%4]) with mapi id 15.20.6933.022; Wed, 1 Nov 2023
- 15:48:27 +0000
-Message-ID: <e3c0e7aa-2ee5-4958-99c5-74c25c3869e4@oracle.com>
-Date:   Wed, 1 Nov 2023 10:48:25 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] jfs: fix uaf in jfs_evict_inode
-Content-Language: en-US
-To:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+01cf2dbcbe2022454388@syzkaller.appspotmail.com
-Cc:     jfs-discussion@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <0000000000007b8bed0608abc6c2@google.com>
- <tencent_69E996EDCACDBC79A66CB02F956C3494D80A@qq.com>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-In-Reply-To: <tencent_69E996EDCACDBC79A66CB02F956C3494D80A@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR08CA0021.namprd08.prod.outlook.com
- (2603:10b6:610:33::26) To MW5PR10MB5738.namprd10.prod.outlook.com
- (2603:10b6:303:19b::14)
+        Wed, 1 Nov 2023 11:49:48 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE76510C;
+        Wed,  1 Nov 2023 08:49:40 -0700 (PDT)
+X-UUID: 41e5068278ce11ee8051498923ad61e6-20231101
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ov9TiPDknb6R9yF2IVYZFuRm6kOrz1Qf6/9qeS+Jpgw=;
+        b=tn1FxN3s2FjIgUDdiAJzn5pnR/1n9IYeqXV652hLmM9ru50zq1/xEx+1JcA7P787YHkiA0SXF4MAgwlhwENK5MqoBb6jC3W/Bas1/cd0IjjmpVyj/0aCAlwC4ajot/X/QpbVSqV70weS6mNe6NExJtAkFkJB4q8/hFeT/Jug6hI=;
+X-CID-CACHE: Type:Local,Time:202311012337+08,HitQuantity:1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:5f823a4a-bafd-4a1a-bd5d-938640fa097f,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:364b77b,CLOUDID:eb9c2872-1bd3-4f48-b671-ada88705968c,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 41e5068278ce11ee8051498923ad61e6-20231101
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <bo.ye@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 554406059; Wed, 01 Nov 2023 23:49:35 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 1 Nov 2023 23:49:34 +0800
+Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 1 Nov 2023 23:49:33 +0800
+From:   Bo Ye <bo.ye@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     <yongdong.zhang@mediatek.com>, <browse.zhang@mediatek.com>,
+        <lin.gui@mediatek.com>, <qilin.tan@mediatek.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] mmc: add wp_grp_size node
+Date:   Wed, 1 Nov 2023 23:49:26 +0800
+Message-ID: <20231101154927.119312-1-bo.ye@mediatek.com>
+X-Mailer: git-send-email 2.17.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW5PR10MB5738:EE_|IA0PR10MB7135:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10a9bd75-c92d-454c-f5eb-08dbdaf1fd62
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uK9rh4FL0dOAjafsPkjXlivWgGNss86VjG54vMd3JNPYwX7j4uEF+kptK7GTmKDnk7U6fE15M9zlEYHMvGjvvanv0HKb4AScSVbzD51TyjCgUzQAxJsIUgzFvznIkKHYSFElatv0Y+5F2n0AbtujQC3PqgA+Z6v8S3H4QVygDGNjM02+5XIkL1Y0CB0I6NesQ5jS9fTWhJo5soizUgoeEUDPLvtBaNA9yNcDLCdcAweKXcdZwSnqBGJUgTdgIALeXDP0cHcQuNhJc8mFaLHMb4uc2OJ70+ozKcvjjh01aoqLonBZQn9m3BP5uwiu1HS7g6zSipowncx4e54aFKMdQMRr5DM6Nh8Z67LuHUSrpkRnyjmrsSDHCM599z0ONex4WnA6Uk/8/VU+rRIIjCbRTyvHUAsQcHqK76TVvOZwlFrn/l3qkJGJadCim3tqFr21jCIsYUPUtzdpAA2sgjd/ykvOjA58CUPv8BPq1bdlMn6NHCFO9+1VQ3ViQ2NXeDqrUG1+yfgsF1esw7ahF2/zUgfnaw3tlQbqlrfgOKdndYfN2ns+eSRhBrIXHXEzZ3gnTpAlYk0fyufFuYittkkGHy5irT3sWXBdyG3tZ7ohAVw0p44TyGetdd+Hl12vwjFD5qZqNhg5ZhNgvfpEG/SAlg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR10MB5738.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(396003)(376002)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(478600001)(6506007)(6486002)(2616005)(26005)(6512007)(36756003)(8936002)(2906002)(83380400001)(44832011)(86362001)(5660300002)(31696002)(41300700001)(8676002)(38100700002)(31686004)(4326008)(66476007)(66556008)(316002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d21QZHExTHpCeEJkeG5FNG5JQnpObzFnQVB0OVNVTDF3eENBWVR0UXFBZWdt?=
- =?utf-8?B?M0EyRFRqNTh2NmNycm5OYmdiT0NkVGlRTWNzODNqMTlvdnZLK0R6WFRJT3Rt?=
- =?utf-8?B?QjNuV3NZZHZiZjNJR1o2OEgrOEJER2lubHJ4YjZ0TnRySkp4MGFwRmR2dHUw?=
- =?utf-8?B?VFhUSjBoNXBYNHlSQmlScnFRVFFtUUxUZXc2UTVTekp1ZThBcjRQOUY4R3pm?=
- =?utf-8?B?ZWwwSERLcExMc1QyQnFEeTlCbWlpQWQ3UEVBeCtvNVFxNXdoemMwTXNzRHFH?=
- =?utf-8?B?Q0dFQjV4bnp5bmd3V3dIMzJWYjlmWmwyRjh6R3pyTklUa1d4KzFTTmoxVk1B?=
- =?utf-8?B?L2tRTWFDalh4M3ZGUTNxQ1dhZ2FLWVRTc2xzVlIxSlBhb2w5d3NUWjE1UERh?=
- =?utf-8?B?T0ViS0hIL2h5WFVOWjZGVGJFZGxrckN3elAzNEZPczNCTnd6RWpsNWRiMmda?=
- =?utf-8?B?UzJqR3VreXd1ZkhJM3lGWFBGeGdMQjNyeEppeTlqS1RmdU50SkEvVDZ6MzN6?=
- =?utf-8?B?UEhVWmtqL003VzFkMTZ0RDdXYm5zSXBlYU9VS01CTDNaY2dYdVhsZXUzR2g4?=
- =?utf-8?B?MVNoOWdWUnhpVzJGZTdac0lYTkpaaWFrZFkwQUUwTzBETGxGQ3lhUHRKMDVS?=
- =?utf-8?B?eWZjRXJaWnpFQkFDczdxOUxidDVhUVI5NC9QOGxYK0FQN1hXem5walR2dzEr?=
- =?utf-8?B?RXhkdzcwbGk2UmpMZ3V6QlYzeDJrT3RPQ3AvNktDQmRzdS9JRjlxTmFJL0Uv?=
- =?utf-8?B?UTJOS3hleUUwU3dGUERvZVVubkF5QkswSExYSWZWWDU0b0tsZVIremxRUTBa?=
- =?utf-8?B?UERaaUFwc3ZmUFpIWW4rTlJKb2M4TlN6dXJqZEE4eTh5Z3o0MXZvN1hSQVB6?=
- =?utf-8?B?U2FzVWtFdGpERXJFRVA4M1ptUGhFdGlwKy9ONTE4bTlJZlhTc25IL3hyNHVC?=
- =?utf-8?B?b3ZNK3pSR0VDNGQzZTJCSG1Ca2xBZ0daeXI1akl3OWJsK2I5Y003OUNLaitK?=
- =?utf-8?B?Z2thUStGcjNoNURTamtFVkhZQStSZVNORXFnaWtoMElCQlRBVG03NXdzSWQ4?=
- =?utf-8?B?NTBUem9KblBwTHFXZENLUEZsNVh2dHBHTk5KRUFDTDJ5dzQwQVJOZGxTSlJX?=
- =?utf-8?B?UG92VXVSaFFPMVduMkJYQjd3NHVTZDcxd1kxYmVBRm0xaVpJRVRRTjg5OVZT?=
- =?utf-8?B?Y0Z6Rkt6Rm9vZW80dlAzTUVuSzdPQVNaVlV2QjgxMkZTNjE3NkJyd0ZGRTRz?=
- =?utf-8?B?SWl0SklabXhzSnoyWmhDUVF5VktmcEN4RkZxLzN3dE1acDdFT0crTEtHZXNO?=
- =?utf-8?B?WkpFL3V2b3llMytmdEo3d3RxVDg5SUxkWG1JM0xPSW9BMFU5THZxdTA2TXo4?=
- =?utf-8?B?RWZaZXlRanZPdWx5d0hYWWpVcGZXakowVmdMOW5MMzQ1U3ZmaWU3WDE3ei92?=
- =?utf-8?B?djM4ei8vaFA2QnZpRmo1TDNUV0xUN1JteURLdzAvUmlDSlVyZlBnMmQ5Zlpz?=
- =?utf-8?B?em5rMGd4QmRjRWk3UW5pMFU3bUJwcnB5QzJJV2NzRmZxVUVyWU4rU2VFUEVU?=
- =?utf-8?B?TzFoWU41SzFLV1AzSURxNld0TnFZMEdTdW8xTkhkWGMyN2pjTkZqSnJkcGpj?=
- =?utf-8?B?OE1SZDhJTHVRZm5UNUxYeHM0Nkl0ZlJlUXQ5L0t5Y2I3anU5akE4Z2xWNlFE?=
- =?utf-8?B?bVpqQ21DbTc2Rlc2MlMvNXBHSkI5cmhpMWJHT1JpYTJQbGhTT1pIbFZXc0Z6?=
- =?utf-8?B?U2lFdjhoN01YSXJFMWRjQVh6QVdUaVVJaHJzcnBIZGRUOWFOYmsxaXVmclVh?=
- =?utf-8?B?UEY3aEhyckJ0eHFNZWtLWmRLYjBqNzhGUzRmVnozREZJNGU0QTZZRW5pdmNs?=
- =?utf-8?B?K3hjR3hHejVjSm4ramFabElDcDNDYlYvMitKcGZvWHRJRmwraXVWZndtUEVm?=
- =?utf-8?B?cUt1R3FIdlFsclBqTWZncVQzdnB3b0I5Q0djSVJpVlEvbTVLZUt5cklMSHVq?=
- =?utf-8?B?NFcxNnE2SW5Td1dhWTQ1eTFrcVBNNWtZalE0M0t6NThLM05Hd3BldGZCaytW?=
- =?utf-8?B?WGdTYmRvUFFtZFlQbG5GdFhJbmlWUlFTU1dxcmU3SS9tTmo2ZGp4T3MvbDFV?=
- =?utf-8?B?NDdoNE5YYi9WNS9qNkFSYnVwbjRCVk1HUmorM2hJeHNCN3lxSGpVZWI5bVNp?=
- =?utf-8?B?REE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?U2czRUVZWnhMcXhqcDgyOHpyb3JkNGRYM3JkYm1zSmNsWlZaNm9kbkJtYkNh?=
- =?utf-8?B?cnNwdmJTWTQ4dEJGS3JXdS9QNmxXK291N01YZUhFVWVxeStxQ0l1SGJuVFk1?=
- =?utf-8?B?SWtZVU8zbHc3bmRHSmZIWmQ4OVB0eE9JQXF5d0YzKzlMVENLcURxVmJMeHNX?=
- =?utf-8?B?dGV1QWRTWG1oaXpPYVE0TkJLb2pQM2F3Rm9ERDQyVTg4ZEdTWWo0ZXppQi9t?=
- =?utf-8?B?di9PQThZazlXRW8yWHMySDdoM3h0NlV6blM0Rm9scEdEQ05IVjM0YU1CWktQ?=
- =?utf-8?B?cDI4SUxaRE1YSXMrKzJyMTBobzRRNDhxb1VaOUFFVGkvbHd3RFk0YVN0YXk1?=
- =?utf-8?B?M2VHdldZbzJLSHprSlR0dVQ1d2tFSzdqa0JoajRmdUVqZm9hN05LeEVmU21o?=
- =?utf-8?B?SzdVVEpZbHp5WWVhbUpMaDhHMlhyQVhQN0RjRGJDeS9KT29FamVQQ09JNGI4?=
- =?utf-8?B?VjQ4VU5adWpSeWcrRWY4ZkYzTXdES0xTbHIra24yV3NuaEVhU3BzRmlGd2pl?=
- =?utf-8?B?amh6c1RWZElQM0RyK3NJcU1LbVJzY0VqQkVjWjBPV2ZSSURWaS9FbXVsU3J0?=
- =?utf-8?B?SUt6cTlyNEVlL2M2K1ZXbTY2azVHUjFpUHBCVktSWlEwcFN6WTdxL1ZLeXQr?=
- =?utf-8?B?VFpnbnR4NWsrdm5DM0lGU0hDakZqMWVPQXNmMjJVZ1RtU09kUUp1aFBWWEM5?=
- =?utf-8?B?S0gyVm0wenNQMTg2Z0Fidk50VlRSeGxSVkhVVjZ5TGNYTkNzZVkyaVgyeFZ1?=
- =?utf-8?B?V0haVlR1MVp6c0ZLdVdIMHNTZzBleTRrSXhyL1R2Y3o3OHR0SHRwNGdxOTFJ?=
- =?utf-8?B?Rk5wU0NxZ0MwczNsWU5Fd1JNcE1GMXp4b2paRlJPNzd1bmVJTThXUWRITzFX?=
- =?utf-8?B?YVdidS9jc3NXdk84ckJGTCtHdlJwWU9UNmJlR2FpdjUwSHVxQnJuTTcvV1U4?=
- =?utf-8?B?aHhLS05jQ2JVZEhCM2ZrWUVCSlkraHArTUZBK2hBNlNhdFNZT3hyazEwRjRv?=
- =?utf-8?B?VU1FMUppaDNKYTFnVW9aa1hJdUM5dnlWcmFqdDhJT0RocklJS0d6bXU0T2xj?=
- =?utf-8?B?bjMrL1RjNXVlaDQ3YVVqcEJVTGcwbWlzekdCUzVDUDJBSHRIK1BEMlI5VU9x?=
- =?utf-8?B?VUd2SVBoODVGaGQ4ZDdHaHU5Y25yeTFFdWRKbE94VWJTOGJPVWpsVHBKYlNq?=
- =?utf-8?B?VWYxNTYrS2RUdXJFeUxoWEVMbzZOam9zNXVoV1NGMDZqbEcxRXp2TGlIK1JQ?=
- =?utf-8?B?N0VlUXU4OTJWZGZGbVVqRHBjb0hpREN4Z2dKN0g4Vm11a1Mzdz09?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10a9bd75-c92d-454c-f5eb-08dbdaf1fd62
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR10MB5738.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 15:48:27.8283
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ISGtL1YcrUeGUPNZGGwyHTGHmozHPl5y0yLD42XmiVQJIYj7O1CTPkbP3IlZdWSsu+ERYA2/SSgBiZC28dJOh/ROMp2eLpjG8knpmBm1+Cc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7135
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-01_14,2023-11-01_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311010129
-X-Proofpoint-GUID: CqLwwdhg5IbUe1B_9KqTNnu64KvaTXgb
-X-Proofpoint-ORIG-GUID: CqLwwdhg5IbUe1B_9KqTNnu64KvaTXgb
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--9.192800-8.000000
+X-TMASE-MatchedRID: th1XRPLu1HNGlhjnipkGEAwfhKwa9GwD+lX/RcQoG2FX4H/AHZTAKiQH
+        YX2qyjfSlB6IdnaWhV1I7JPsZpNRgcL2WgOVZLNHhDqIQb7sQecK3n1SHen81VeilmPI7oJlf8S
+        IQrqULYwLYtJsevMdjZZLxtyQINIccMMjBRRYYhwflhDI6DvVlkJfxXUWJFGS31GU/N5W5BBLR6
+        I6ytdxONZKQinVddBT3D2hj0hvDabf0vAzbUUm26am63kopwnT57kkHY8cvsS6Kbobcv5luFpqk
+        DNHM8v+nFqPTSvsB8lzQ71/lVVm1vJMF6pylZNW1tU7lyp9XhEoPUUDFlEi1db1HR1TV5h03x8z
+        1cIgGiHi8zVgXoAltsIJ+4gwXrEtIAcCikR3vq9j6bKbLCMItm8ICwgw12VPO6dim/ocNbcn4VX
+        tjVje77MxnEq2nQWr
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--9.192800-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 0F899615BDE2A6CD307BF16FE736E603887F1EBB5A91C4D58CC90BFFF96AE5642000:8
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 12:39AM, Edward Adam Davis wrote:
-> When the execution of diMount(ipimap) fails, the object ipimap that has been
-> released may be accessed in diFreeSpecial(). Asynchronous ipimap release occurs
-> when rcu_core() calls jfs_free_node().
-> 
-> Therefore, when diMount(ipimap) fails, sbi->ipimap should not be initialized as
-> ipimap.
-> 
-> Reported-and-tested-by: syzbot+01cf2dbcbe2022454388@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+From: "lin.gui" <lin.gui@mediatek.com>
 
-Looks good.
+Detail:
+Add node "wp_grp_size", corresponding to WP_GRP_SIZE
+(write protect group size) of eMMC's CSD register.
 
-Thanks,
-Shaggy
+Scenario:
+The eMMC card can be set into write-protected mode to
+prevent data from being accidentally modified or deleted.
+Wp_grp_size (Write Protect Group Size) refers to an
+attribute of the eMMC card, used to manage write protection,
+and is the CSD register  [36:32] of the eMMC device.
+Wp_grp_size (Write Protect Group Size) indicates how many
+eMMC blocks are contained in each write protection group on the eMMC card.
 
-> ---
->   fs/jfs/jfs_mount.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
-> index 415eb65a36ff..9b5c6a20b30c 100644
-> --- a/fs/jfs/jfs_mount.c
-> +++ b/fs/jfs/jfs_mount.c
-> @@ -172,15 +172,15 @@ int jfs_mount(struct super_block *sb)
->   	}
->   	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
->   
-> -	/* map further access of per fileset inodes by the fileset inode */
-> -	sbi->ipimap = ipimap;
-> -
->   	/* initialize fileset inode allocation map */
->   	if ((rc = diMount(ipimap))) {
->   		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
->   		goto err_ipimap;
->   	}
->   
-> +	/* map further access of per fileset inodes by the fileset inode */
-> +	sbi->ipimap = ipimap;
-> +
->   	return rc;
->   
->   	/*
+Final rendered file:
+"/sys/class/mmc_host/mmc0/mmc0:0001/wp_grp_size"
+
+Signed-off-by: lin.gui <lin.gui@mediatek.com>
+Change-Id: I73952dbde2db375ba918daadb3264380b7863096
+---
+ drivers/mmc/core/mmc.c   | 16 +++++++++++++++-
+ include/linux/mmc/card.h |  2 ++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 4a4bab9aa726..9b67e49a9e63 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -136,6 +136,17 @@ static void mmc_set_erase_size(struct mmc_card *card)
+ 	mmc_init_erase(card);
+ }
+ 
++
++static void mmc_set_wp_grp_size(struct mmc_card *card)
++{
++	if (card->ext_csd.erase_group_def & 1)
++		card->wp_grp_size = card->ext_csd.hc_erase_size *
++			card->ext_csd.raw_hc_erase_gap_size;
++	else
++		card->wp_grp_size = card->csd.erase_size *
++			(card->csd.wp_grp_size + 1);
++}
++
+ /*
+  * Given a 128-bit response, decode to our card CSD structure.
+  */
+@@ -186,6 +197,7 @@ static int mmc_decode_csd(struct mmc_card *card)
+ 		b = UNSTUFF_BITS(resp, 37, 5);
+ 		csd->erase_size = (a + 1) * (b + 1);
+ 		csd->erase_size <<= csd->write_blkbits - 9;
++		csd->wp_grp_size = UNSTUFF_BITS(resp, 32, 5);
+ 	}
+ 
+ 	return 0;
+@@ -791,6 +803,7 @@ MMC_DEV_ATTR(csd, "%08x%08x%08x%08x\n", card->raw_csd[0], card->raw_csd[1],
+ MMC_DEV_ATTR(date, "%02d/%04d\n", card->cid.month, card->cid.year);
+ MMC_DEV_ATTR(erase_size, "%u\n", card->erase_size << 9);
+ MMC_DEV_ATTR(preferred_erase_size, "%u\n", card->pref_erase << 9);
++MMC_DEV_ATTR(wp_grp_size, "%u\n", card->wp_grp_size << 9);
+ MMC_DEV_ATTR(ffu_capable, "%d\n", card->ext_csd.ffu_capable);
+ MMC_DEV_ATTR(hwrev, "0x%x\n", card->cid.hwrev);
+ MMC_DEV_ATTR(manfid, "0x%06x\n", card->cid.manfid);
+@@ -851,6 +864,7 @@ static struct attribute *mmc_std_attrs[] = {
+ 	&dev_attr_date.attr,
+ 	&dev_attr_erase_size.attr,
+ 	&dev_attr_preferred_erase_size.attr,
++	&dev_attr_wp_grp_size.attr,
+ 	&dev_attr_fwrev.attr,
+ 	&dev_attr_ffu_capable.attr,
+ 	&dev_attr_hwrev.attr,
+@@ -1759,7 +1773,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 			mmc_set_erase_size(card);
+ 		}
+ 	}
+-
++	mmc_set_wp_grp_size(card);
+ 	/*
+ 	 * Ensure eMMC user default partition is enabled
+ 	 */
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index daa2f40d9ce6..62873ecc52f1 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -32,6 +32,7 @@ struct mmc_csd {
+ 	unsigned int		r2w_factor;
+ 	unsigned int		max_dtr;
+ 	unsigned int		erase_size;		/* In sectors */
++	unsigned int		wp_grp_size;
+ 	unsigned int		read_blkbits;
+ 	unsigned int		write_blkbits;
+ 	unsigned int		capacity;
+@@ -304,6 +305,7 @@ struct mmc_card {
+ 	unsigned int		eg_boundary;	/* don't cross erase-group boundaries */
+ 	unsigned int		erase_arg;	/* erase / trim / discard */
+  	u8			erased_byte;	/* value of erased bytes */
++	unsigned int		wp_grp_size; /* write group size in sectors */
+ 
+ 	u32			raw_cid[4];	/* raw card CID */
+ 	u32			raw_csd[4];	/* raw card CSD */
+-- 
+2.17.0
+
