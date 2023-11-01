@@ -2,119 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338147DDE52
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEA77DDE56
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbjKAJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        id S233385AbjKAJUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbjKAJUG (ORCPT
+        with ESMTP id S232904AbjKAJUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:20:06 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1238611D
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:19:26 -0700 (PDT)
-Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0F6751C1D;
-        Wed,  1 Nov 2023 10:18:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698830305;
-        bh=OSH8ynuiJ2YVkYrZuWQq2MVjAg+Zul2OXF3bZ5EaKoY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=dAbxEauTggKPBtvsLnTgVxvWaN51QrLuJNaTEEl3DVqw9QseUa8JBoFOKtKTJk4/B
-         NKF+dbkFvR5sgddorjc/PJjo2yisNgv9W6fG56YeAYj6n7PuYRVrtOlFu5h4Yxx5pi
-         wxL8hRRQqvGLAQlysHgUcHB6eIeSXf6GslDZexQ0=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Wed, 01 Nov 2023 11:17:47 +0200
-Subject: [PATCH 10/10] drm/tidss: Fix atomic_flush check
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Wed, 1 Nov 2023 05:20:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E437B129;
+        Wed,  1 Nov 2023 02:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698830372; x=1730366372;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=kxeyAPVgTmesz41nuKx2QKq5Om3tf0Ai+ZW8suTpMlk=;
+  b=d6/X6emUgtSv2DArML3XEeHcU5gJaOtbko2yF6lwiN7X8u3lXI1PZQpv
+   Fm43oT3V3LYNNOgbzLxVw5797XrDtlatcaV/6g7e6ADgAm7wTWChuehW9
+   RMiQiSor6cQkVb971w6YFcV0fSV7joZZpSX9Ebro++BvFOQZBgnAUdtDK
+   stWG4IP9WTWkRCFcXjHqWcD9jiUC04LQK6HWbjT4XkcZ+5wh4UtNcFU/y
+   y+opWYPYB/Rx1DLv2VWPYF9J+akIVbRq2nh8sRH+zXlu8bX1eSt9p7B52
+   DQHpg/tNBAoanpmSLmrTIWZWWf8aYqci7db/Qrw8rDixIlEGErC3ZMq1E
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="367810058"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="367810058"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:19:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="737356852"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="737356852"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Nov 2023 02:19:31 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 1 Nov 2023 02:19:31 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 1 Nov 2023 02:19:31 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 1 Nov 2023 02:19:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VUzLTqoIFHGGHdLOj/zdcXoZbMC9JZcxFC37RyrBcAUKsCWzm1vGkn8Akqb4VJAA5vGzNkhGc7IzXVWD8iwQd8SXfieBD/nk04euUOF/CIleTuvT8dh+Tbyc7dPprpHM2H0thCBrHaCE3Ky04weQJ/z+1wFJ4ge+sgQ28VsFasWxbYJCHx366D6Oa6Xwftla4x/q9YoCq7scPbiJJ8ZLNm18Hr0ZyvCoGDt+H9lcdH9EZUQvrnQjaZu1Ng8FwZDI2Ho/D+Vbh9XxCUnpnTJR/CC/jqNT7k3DqK/9uLzwJ7dVVkMJsJ7Gr3DicUFAETNCdHaK+KDFhvY3a/m/jLdrPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=25rgqx7XbkdZGWGykEAbzr+l1Hpmg6o8bd9EgYKdA54=;
+ b=AXow7986JC4wN56OKnXtM/rQufziSj4CUFm87UgIDkrN8YnFBNNjEaAdkZgA7tV6grRfJkvlV3yXfvYmgpkwgCpQ8xbb2rnADMyCQ3HIYyk2RokYy7fxlwBvfTvksa6gJGhQsJbhpF4r4ayr4pYrM8+ImCNePuKHiZTLI9iXT0cL/JfL3G9g3w+9eR6GubVffG8AbYG6KaWXELXt5swzx0EQl232OlQWlL0Fe8lXiTRjL3nynzvMt3CtdkanZv8J468u4zuIwW10F2AO8yHeK2zd9HKKilcuQbHi3PkmX9N3Z33IWnGTPystFpU1KaqBdjunDGyqCt7Z/MR00p6ucA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by DM6PR11MB4612.namprd11.prod.outlook.com (2603:10b6:5:2a8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
+ 2023 09:19:27 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.6933.029; Wed, 1 Nov 2023
+ 09:19:27 +0000
+Message-ID: <c72dfaac-1622-94cf-a81d-9d7ed81b2f55@intel.com>
+Date:   Wed, 1 Nov 2023 17:19:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 01/25] x86/fpu/xstate: Manually check and add
+ XFEATURE_CET_USER xstate bit
+To:     Maxim Levitsky <mlevitsk@redhat.com>, <seanjc@google.com>,
+        <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <dave.hansen@intel.com>, <peterz@infradead.org>,
+        <chao.gao@intel.com>, <rick.p.edgecombe@intel.com>,
+        <john.allen@amd.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-2-weijiang.yang@intel.com>
+ <0ad2b2b4d394ca4c8b805535444f97db4e9cc690.camel@redhat.com>
+Content-Language: en-US
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <0ad2b2b4d394ca4c8b805535444f97db4e9cc690.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231101-tidss-probe-v1-10-45149e0f9415@ideasonboard.com>
-References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
-In-Reply-To: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
-To:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1701;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=OSH8ynuiJ2YVkYrZuWQq2MVjAg+Zul2OXF3bZ5EaKoY=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlQhfowmaSVl6BO4E/HgJrUUSCbYheTzOdaTI7j
- cPYBH4VqoyJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZUIX6AAKCRD6PaqMvJYe
- 9eIYEACPcoPMlIy8n0o9G8hXcsLaHmiclB9/T6IHAxb7QlmvPnQG5uC4ENthjLwTslHTcm9AKI3
- cZ9lB9izizrFbL0x/lKcOPbFBScAOw1ADcOXo/4ECGzcCcZaFXMSmR0lJkd4INJ9PGnCIR9Bb99
- R55+b+J0BFFDqBd1GEMjWlrRHp7kZWFsNEm5eZgOcbSiX52yQwzF2+kam2CjGIeZ5vnuxS0wB6g
- YEm972d2h9Ffn728GLcoqlRb/r5wQmWVeHecmiKLkEmUKZOUzScS3s0XmtrfCAi64iDazfjT5/r
- F1JGSOsp6PWWoreiAhrDb77x4Y0K1B/2NAeIYeMcI8RzZw1hnnch8Il8D1pLjO9bqsbCN2WVDO+
- bf7Q0zjCCv4Xlo2/6SP+bPr15R+VZWfjDne8l22OtOc/cFXUMjh4utEtuDAu5AGWgFEJyf5oi8I
- DGPku/a64Y9TmVtYTrvK7EWrk7tD2XU0piwij6GK1sidpzk1F4mysb0O6xVl4GfIk6S5k515MrS
- ws599EtVW10LYkxigCxnBtQcETXPA1tePRLPE/oBDJHgOVBw/adQ09KpmomET4rplN7FhSCGMjM
- CHraJxTbEKvPg9JdknRS1e2MTspW5EtMUvERx/b9S0ONGSLaw1AP0sNTAcFamjFSOvAQBouPhb9
- ztjKjvBih4QbYmQ==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: KL1PR01CA0107.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:3::23) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|DM6PR11MB4612:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2935c64a-84ec-460e-cff9-08dbdabba53c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tWeUB1OA6r7BtGoGpoxpoXd+ZqT7D2qUfEX1En+EGQfMoK0ES+WXMorDu9Kei39zxlQWJ7boW8EbOxD4PBp7gOqYYosTctwa6Hai5ULDSaPRQQBaXeil7Rwu+76UaTvAch04doQo22YXRyW2DaAO0hdOVt/bMKTdK7z/WcPlSb8CisE0vSuv5xJvA9jOGmjrHcSlw7cQAXF+mdSjC92vVavQWfcnn0upnaTdtp+7QeF+sg5uDROrJKUxtXtppkcsIBqnONVCbTaNV/L3hdIbJo2nAx46hfjxaaPRsazPtJf92sRQPtuIGpkMm4bdOxQQ8k3Leaqm8+8Gtqz9TlvDB/oBSbzKMScaL7ZoA1ah8gCtbtOQVJX6O4nRgEI/gtRtHKnAd9SJ4lPy/xESDOku7s52nsIBTSH0XoXiALFD9KWKmObclhhCAq7ZOYA6izES4p4iP8B40rhjiusVbTkgVsQ9dC0V707LP86+jo3cHtpOpuR2UDKI5Cjn2uVooBTcpsrsMXkM+u2AejMhupfCsaQjVlsE68PHIFemwbaBNIsNZcVEdELVJGUPtvoonsA30zHT9YdIr10GenNAYyW48aiHwJ2kyrRCdEIBMNpQPJQu1qUTS7I1q4Q55KalLOKZae5xoxQNA/ePO8P57Kd+og==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(376002)(39860400002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(86362001)(36756003)(41300700001)(53546011)(478600001)(6506007)(6512007)(38100700002)(66556008)(66946007)(5660300002)(6486002)(82960400001)(8676002)(8936002)(4326008)(6666004)(31686004)(2616005)(316002)(31696002)(26005)(83380400001)(2906002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UFQ5UC9weEZWQ2lmSENYSnJ2NlFoZkxZblBFVHVxeVRFVHRiaWlQTHV1a0VL?=
+ =?utf-8?B?S3hNVnF6VjloUldja2huSVdlUWFxWGpoRmNLM3NMRS8vY1BsTGhQWVhEY3R5?=
+ =?utf-8?B?TzJ5d2dBNEVJdWFGdXZGUjNwcmZjWlNFOCtLcEFka2p0UWRTVW52em9ENlFo?=
+ =?utf-8?B?VmlGUVZmU2l1NGo4M1ZMMXhVVDFqVVNsdnB0ZUt4QldXVG1OcnQ4MUQyNEtk?=
+ =?utf-8?B?dEhhWFQ3dldYVXFzdTFSS1ZUeDByZkZBMENsRElXRGxycWx0QlpyTzBZdWlL?=
+ =?utf-8?B?eUdUL0N6MGxoOE9nTjA5QkdQc1Z5Rlhhb1VLQ0R3WFMvOHA0dzBkWFVucUNH?=
+ =?utf-8?B?VUhobmFseitkVjJ2cS9PYzlLaWRIVHNyWjRVUy9saUlRYm1ZSTZIbjljbTJO?=
+ =?utf-8?B?b2crejdxcmpEeUIxYnlNZFZDa2lzd2VUdm9SRWdRY0FGNHRZYjB5bWppcVZu?=
+ =?utf-8?B?ODdiRzlTSXR0VHhDbk9KV09JSHJoOEdPanRJbmJlTnpWWjB6K0h4amlqSE9Z?=
+ =?utf-8?B?SG9pM2NtVlFtNE1LN2RDYlFLU2Vja3RiR1lhbWZZV1RwQU5Wc1NMM0YrcHhq?=
+ =?utf-8?B?M2c5QWJXRUJ3cVlUd3BIMHhhWGgweUlpbUVUa2FKNTVWMVU5K0pNNHVyLy9N?=
+ =?utf-8?B?b240NTh5VVAvRlU5UlZxODQ3ZEJiZXY1blJxZ0lmQkJmblFrcXBRU1dCTE9F?=
+ =?utf-8?B?NnF0aDd2MWh0VDFnZlZmZzF3TjU4eXpPOTRGZWRLQUpOaGt3bE1HWGdaZCtY?=
+ =?utf-8?B?SVNVcDZ6STAzVFJVTDA0ZUhZd3cwUDU1Yk9tWTlrUWRPOVJnNDdqKzhRbVZC?=
+ =?utf-8?B?LzVWU3VtLytkVzVaQndsRS82SUVGRDhpSHFwd1MrdUdCd2lGbmdFT0FPMUFz?=
+ =?utf-8?B?Mm9zWmtESDJzTUZXVzVKOE9QYklmN3hsaTRMcitVczZ4b2pwb0JTRC9Menox?=
+ =?utf-8?B?bFFrUzNCcnhGY2c4bWVvb0RmdG80d1llczZpYUdVK1k0V2VybHN4V21tQzJ4?=
+ =?utf-8?B?VTNBWVdnREtkVmttVG5oY3JHRUNkMDlBbEkvdzZsLzJtQ1l6WWlhc3gzVGFu?=
+ =?utf-8?B?Y1E4bzV3OE5uR3I0K3BPdEljUzh1WTUvUDhwbEV6cUVZck5CMnVTS3FDRlMv?=
+ =?utf-8?B?TkJsTnpYSDE0Z3Y3NTFLcnc3SFF3ZHNYTkVIU1RYSG9hK1c4QUpLMDVseUFt?=
+ =?utf-8?B?cmxITnA1VG5FTmkxbzJic21BSFdVd0o1dFJTU3dOMU1rSkZlaGltMnh5NXJJ?=
+ =?utf-8?B?TnZnbG43R0tUeXVsMEs4SFcyRUVXd21VKy9Wc3h6UzlFN0ovVC8rTi9oSVBC?=
+ =?utf-8?B?bTQ4bStaTjRzU2p6T08relppOTZldVAwWlRVRVEwS1JVVEovWlBwci9mMjNO?=
+ =?utf-8?B?S21tVmZPOEltODh0c29xQVhCNTN1QmkxbUFMbmtyRU1JRkYxSTNCWkgyS3Rk?=
+ =?utf-8?B?Zjg3d200L2c5b2VPbWtnL2lpSkpiL0t2bUJhQTRQdWVhOWVPSUdROGUxSDJZ?=
+ =?utf-8?B?MVlhMGhCQlZxeGtUSVBFcTFjc2lSSFNQQitlVjFvelMreEhyQVBvOWZOTkln?=
+ =?utf-8?B?cStuZVF5N2ZuQUdFNjM1b3RuRHJLV0w3azVzZTcrKzBKdTFLZG9qNHlZcHp0?=
+ =?utf-8?B?emQyWlBxNWlhMmhlaUZuYnViQ2xZbFFYRFcycEhMM1hHdUpQUFlBSUZkazgr?=
+ =?utf-8?B?ZmRKa201WmtTVnVTeXNCT2hNWU5zbllhaU9WUGIrWXJPUkpZL0dvcWh3SVdT?=
+ =?utf-8?B?MnMxcUg0dmxvUXIwOVN6eDU5VGNWbXdOODBCUCt3UjlXSU8xd0FURFRTYkxS?=
+ =?utf-8?B?Z2hRM1dRdnFJajlUbW5RM2k4ZG9CM2dWL0g3WEYrYzRhdGs0a3BhTG9LdEF0?=
+ =?utf-8?B?YjJuc1dMNFI1dThhSC9xU09HeFg5ZGVXYmg5RldJeEc5YXd2OUt1QW4rQXdh?=
+ =?utf-8?B?M29NS3lFMEJjRTBiRVFJeDNCVmoxeGM2ZzBWRHNRQU9JT3gyemVXR0JCSnM2?=
+ =?utf-8?B?cjVudk9zV2xueWNKbmpVVXBFaWJxTFZlSUFISjJXL3JmOEpKZXhHRHRwVUxw?=
+ =?utf-8?B?enc5SlZtSXhJZEZUazVTazk2clJGOER4WUw2NFdWUHhNb0VBeU1vR1Q2NU9s?=
+ =?utf-8?B?U0k4Uk1sbzU5OGxJbmU2KzVMV2ZkK0E2ZmVseWdUcFRNUDlPVnVpRU1uOEkr?=
+ =?utf-8?B?eEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2935c64a-84ec-460e-cff9-08dbdabba53c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 09:19:27.2377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1JKzno2se+LCK94FWCOXXH9rBwVcExS/tgEQrSS5Vg9pba1/q/b6btzL4R9qP0VarEOdhWI5anRCm0vLSltCsw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4612
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tidss_crtc_atomic_flush() checks if the crtc is enabled, and if not,
-returns immediately as there's no reason to do any register changes.
+On 11/1/2023 1:43 AM, Maxim Levitsky wrote:
+> On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+>> Remove XFEATURE_CET_USER entry from dependency array as the entry doesn't
+>> reflect true dependency between CET features and the xstate bit, instead
+>> manually check and add the bit back if either SHSTK or IBT is supported.
+>>
+>> Both user mode shadow stack and indirect branch tracking features depend
+>> on XFEATURE_CET_USER bit in XSS to automatically save/restore user mode
+>> xstate registers, i.e., IA32_U_CET and IA32_PL3_SSP whenever necessary.
+>>
+>> Although in real world a platform with IBT but no SHSTK is rare, but in
+>> virtualization world it's common, guest SHSTK and IBT can be controlled
+>> independently via userspace app.
+>>
+>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>> ---
+>>   arch/x86/kernel/fpu/xstate.c | 9 ++++++++-
+>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+>> index cadf68737e6b..12c8cb278346 100644
+>> --- a/arch/x86/kernel/fpu/xstate.c
+>> +++ b/arch/x86/kernel/fpu/xstate.c
+>> @@ -73,7 +73,6 @@ static unsigned short xsave_cpuid_features[] __initdata = {
+>>   	[XFEATURE_PT_UNIMPLEMENTED_SO_FAR]	= X86_FEATURE_INTEL_PT,
+>>   	[XFEATURE_PKRU]				= X86_FEATURE_OSPKE,
+>>   	[XFEATURE_PASID]			= X86_FEATURE_ENQCMD,
+>> -	[XFEATURE_CET_USER]			= X86_FEATURE_SHSTK,
+>>   	[XFEATURE_XTILE_CFG]			= X86_FEATURE_AMX_TILE,
+>>   	[XFEATURE_XTILE_DATA]			= X86_FEATURE_AMX_TILE,
+>>   };
+>> @@ -798,6 +797,14 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+>>   			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+>>   	}
+>>   
+>> +	/*
+>> +	 * Manually add CET user mode xstate bit if either SHSTK or IBT is
+>> +	 * available. Both features depend on the xstate bit to save/restore
+>> +	 * CET user mode state.
+>> +	 */
+>> +	if (boot_cpu_has(X86_FEATURE_SHSTK) || boot_cpu_has(X86_FEATURE_IBT))
+>> +		fpu_kernel_cfg.max_features |= BIT_ULL(XFEATURE_CET_USER);
+>> +
+>>   	if (!cpu_feature_enabled(X86_FEATURE_XFD))
+>>   		fpu_kernel_cfg.max_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+>>   
+>
+> The goal of the xsave_cpuid_features is to disable xfeature state bits which are enabled
+> in CPUID, but their parent feature bit (e.g X86_FEATURE_AVX512) is disabled in CPUID,
+> something that should not happen on real CPU, but can happen if the user explicitly
+> disables the feature on the kernel command line and/or due to virtualization.
+>
+> However the above code does the opposite, it will enable XFEATURE_CET_USER xsaves component,
+> when in fact, it might be disabled in the CPUID (and one can say that in theory such
+> configuration is even useful, since the kernel can still context switch CET msrs manually).
+>
+>
+> So I think that the code should do this instead:
+>
+> if (!boot_cpu_has(X86_FEATURE_SHSTK) && !boot_cpu_has(X86_FEATURE_IBT))
+>   	fpu_kernel_cfg.max_features &= ~BIT_ULL(XFEATURE_CET_USER);
 
-However, the code checks for 'crtc->state->enable', which does not
-reflect the actual HW state. We should instead look at the
-'crtc->state->active' flag.
+Hi, Maxim,
+Thanks a lot for the comments on the series!
+I'll will check and reply them after finish an urgent task at hand.
 
-This causes the tidss_crtc_atomic_flush() to proceed with the flush even
-if the active state is false, which then causes us to hit the
-WARN_ON(!crtc->state->event) check.
+Yeah, it looks good to me and makes the handling logic more consistent!
 
-Fix this by checking the active flag, and while at it, fix the related
-debug print which had "active" and "needs modeset" wrong way.
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/gpu/drm/tidss/tidss_crtc.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/tidss/tidss_crtc.c b/drivers/gpu/drm/tidss/tidss_crtc.c
-index 5e5e466f35d1..4c7009a5d643 100644
---- a/drivers/gpu/drm/tidss/tidss_crtc.c
-+++ b/drivers/gpu/drm/tidss/tidss_crtc.c
-@@ -169,13 +169,12 @@ static void tidss_crtc_atomic_flush(struct drm_crtc *crtc,
- 	struct tidss_device *tidss = to_tidss(ddev);
- 	unsigned long flags;
- 
--	dev_dbg(ddev->dev,
--		"%s: %s enabled %d, needs modeset %d, event %p\n", __func__,
--		crtc->name, drm_atomic_crtc_needs_modeset(crtc->state),
--		crtc->state->enable, crtc->state->event);
-+	dev_dbg(ddev->dev, "%s: %s active %d, needs modeset %d, event %p\n",
-+		__func__, crtc->name, crtc->state->active,
-+		drm_atomic_crtc_needs_modeset(crtc->state), crtc->state->event);
- 
- 	/* There is nothing to do if CRTC is not going to be enabled. */
--	if (!crtc->state->enable)
-+	if (!crtc->state->active)
- 		return;
- 
- 	/*
-
--- 
-2.34.1
+> Best regards,
+> 	Maxim Levitsky
+>
+>
+>
+>
 
