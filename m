@@ -2,106 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 393F67DE5B5
+	by mail.lfdr.de (Postfix) with ESMTP id 9162B7DE5B6
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344257AbjKASAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S233753AbjKASAq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Nov 2023 14:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbjKASAr (ORCPT
+        with ESMTP id S231258AbjKASAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 14:00:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49982C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698861598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KYk0tSjsrn4HcNFkcNV6IhBOk/uVrvqmA+02iLrYOnk=;
-        b=i7UtwFj+4Q1PRmJxDIy5TGsz6Mbdmw1Z8+ZXCAHmqCNLcVH8k/T9TV7tJk8wwbxUakdxEb
-        uHsS53ANOfZ+cEX9wOsr33oja4RPiGURWrSwKpnixbHDsYC0DD9CFHvuI2hdSOEO2ilCNW
-        +2aLQ7wpjRQwFnkL9E1A9U/ygGxjmTA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-222-O4ouqYOsNNaYX_05FZqvKQ-1; Wed, 01 Nov 2023 13:59:50 -0400
-X-MC-Unique: O4ouqYOsNNaYX_05FZqvKQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22A57101A529;
-        Wed,  1 Nov 2023 17:59:49 +0000 (UTC)
-Received: from [10.22.33.245] (unknown [10.22.33.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E15DA1A099;
-        Wed,  1 Nov 2023 17:59:47 +0000 (UTC)
-Message-ID: <8e1b5497-d4ca-50a0-7cb1-ffa098e0a1c2@redhat.com>
-Date:   Wed, 1 Nov 2023 13:59:47 -0400
+        Wed, 1 Nov 2023 14:00:44 -0400
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5771111;
+        Wed,  1 Nov 2023 11:00:40 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5874cc7bb1aso2129eaf.1;
+        Wed, 01 Nov 2023 11:00:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698861640; x=1699466440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NW33Kt1OtgbnrnXkci8faSY06MnlY8Fj/1N16IJDk2g=;
+        b=QXgNS86J5KK9NEbAosku60KERjdpSH0i2vW7hsrptt4dccq3DNes7zsZrQBHmu2O51
+         +6Xr+XmanUFpgs0HJDcqHXrRFwVcULfv6H0iaBZOk+5+ha2Z7KaaWPzsT+NZOqttHrRd
+         kuTHCZo2OOmS7EAwqVxAwQTat1/3sp9qwIKFQDOXvI0ZNmqDL+DfxMYlvQaPM3JnGHXy
+         e4q1oJI98jVZESY5mdByugT/1xtvwQzSQppdSvbTKIFZggqUqjYL5YdK/YCTUiGKYx24
+         y+hZNADFEomZuxYDy9iKNCBbBlYoP/F3eKAITR27ucoFN563DSYTZ76RR8CSoNYuFu4r
+         CweQ==
+X-Gm-Message-State: AOJu0YyyV010AKPdoBlyJMeoVulBF7pYTSbGWvrl50S5oY3hQaa4oIVj
+        8e1N0kamcsi2yLg7384uv92ivExRfxRlNHASE8shWPPT
+X-Google-Smtp-Source: AGHT+IHtkZh5JWIy8kp5OuPsF+vKlzqzWzYT3t7LKTaJypHcebDwZa9eUyMPSw6STz8ba5vZU4uHkETtpArgtRpBb5k=
+X-Received: by 2002:a4a:c991:0:b0:586:7095:126d with SMTP id
+ u17-20020a4ac991000000b005867095126dmr16081339ooq.0.1698861639903; Wed, 01
+ Nov 2023 11:00:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
- value
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Xia Fukun <xiafukun@huawei.com>
-References: <20231024141834.4073262-1-longman@redhat.com>
- <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231101111507.1156910-1-sakari.ailus@linux.intel.com>
+In-Reply-To: <20231101111507.1156910-1-sakari.ailus@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 1 Nov 2023 19:00:28 +0100
+Message-ID: <CAJZ5v0hv6byMP2ZZpr+1oRdjPN1etxcF2jatLLirEmwYfwdvDw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ACPI: property: Replicate DT-aligned u32 properties
+ from DisCo for Imaging
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/23 12:34, Michal Koutný wrote:
-> On Tue, Oct 24, 2023 at 10:18:34AM -0400, Waiman Long <longman@redhat.com> wrote:
->> The nr_deadline_tasks field in cpuset structure was introduced by
->> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
->> in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
->> cpuset_mutex, nr_deadline_tasks can be updated under two different
->> locks - cpuset_mutex in most cases or css_set_lock in cgroup_exit(). As
->> a result, data races can happen leading to incorrect nr_deadline_tasks
->> value.
-> The effect is that dl_update_tasks_root_domain() processes tasks
-> unnecessarily or that it incorrectly skips dl_add_task_root_domain()?
-The effect is that dl_update_tasks_root_domain() may return incorrectly 
-or it is doing unnecessary work. Will update the commit log to reflect that.
+On Wed, Nov 1, 2023 at 1:32 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
 >
->> Since it is not practical to somehow take cpuset_mutex in cgroup_exit(),
->> the easy way out to avoid this possible race condition is by making
->> nr_deadline_tasks an atomic_t value.
-> If css_set_lock is useless for this fields and it's going to be atomic,
-> could you please add (presumably) a cleanup that moves dec_dl_tasks_cs()
-> from under css_set_lock in cgroup_exit() to a (new but specific)
-> cpuset_cgrp_subsys.exit() handler?
+> MIPI DisCo for Imaging defines properties for camera sensors that
+> functionally align with DT equivalents. Replicate the values of these
+> properties so no-one else needs to know about these property names.
+>
+> Properties replicated are:
+>
+>         "mipi-img-clock-frequency" -> "clock-frequency"
+>         "mipi-img-led-max-current" -> "led-max-microamp"
+>         "mipi-img-flash-max-current" -> "flash-max-microamp"
+>         "mipi-img-flash-max-timeout" -> "flash-max-timeout-us"
+>
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+> Hi Rafael,
+>
+> Could you include this patch in the set? Then I think it's fairly
+> complete on ACPI framework side.
 
-But css_set_lock is needed for updating other css data. It is true that 
-we can move dec_dl_tasks_cs() outside of the lock. I can do that in the 
-next version.
+I'll do it, thanks!
 
-Cheers,
-Longman
-
+>  drivers/acpi/mipi-di.c  | 21 +++++++++++++++++++++
+>  include/acpi/acpi_bus.h |  4 ++++
+>  2 files changed, 25 insertions(+)
+>
+> diff --git a/drivers/acpi/mipi-di.c b/drivers/acpi/mipi-di.c
+> index 13ed09216c37..de8988657e96 100644
+> --- a/drivers/acpi/mipi-di.c
+> +++ b/drivers/acpi/mipi-di.c
+> @@ -591,6 +591,7 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
+>         struct acpi_device *adev;
+>         acpi_status status;
+>         unsigned int i;
+> +       u32 val;
+>         int ret;
+>
+>         /*
+> @@ -622,6 +623,26 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
+>                 }
+>         }
+>
+> +       if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-clock-frequency", &val)) {
+> +               swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_CLOCK_FREQUENCY)] =
+> +                       PROPERTY_ENTRY_U32("clock-frequency", val);
+> +       }
+> +
+> +       if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-led-max-current", &val)) {
+> +               swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_LED_MAX_MICROAMP)] =
+> +                       PROPERTY_ENTRY_U32("led-max-microamp", val);
+> +       }
+> +
+> +       if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-flash-max-current", &val)) {
+> +               swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_FLASH_MAX_MICROAMP)] =
+> +                       PROPERTY_ENTRY_U32("flash-max-microamp", val);
+> +       }
+> +
+> +       if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-flash-max-timeout-us", &val)) {
+> +               swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_FLASH_MAX_TIMEOUT_US)] =
+> +                       PROPERTY_ENTRY_U32("flash-max-timeout-us", val);
+> +       }
+> +
+>         status = acpi_get_name(handle, ACPI_FULL_PATHNAME, &buffer);
+>         if (ACPI_FAILURE(status)) {
+>                 acpi_handle_info(handle, "Unable to get the path name\n");
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index d92799889512..85a27081cced 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -371,6 +371,10 @@ struct acpi_gpio_mapping;
+>
+>  enum acpi_device_swnode_dev_props {
+>         ACPI_DEVICE_SWNODE_DEV_ROTATION,
+> +       ACPI_DEVICE_SWNODE_DEV_CLOCK_FREQUENCY,
+> +       ACPI_DEVICE_SWNODE_DEV_LED_MAX_MICROAMP,
+> +       ACPI_DEVICE_SWNODE_DEV_FLASH_MAX_MICROAMP,
+> +       ACPI_DEVICE_SWNODE_DEV_FLASH_MAX_TIMEOUT_US,
+>         ACPI_DEVICE_SWNODE_DEV_NUM_OF,
+>         ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES
+>  };
+> --
+> 2.39.2
+>
+>
