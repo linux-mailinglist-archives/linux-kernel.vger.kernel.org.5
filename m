@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7507DDD05
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741237DDD08
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjKAHOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
+        id S230049AbjKAHP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKAHOv (ORCPT
+        with ESMTP id S229445AbjKAHP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:14:51 -0400
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BD0C2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:14:47 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 3A17EV9M090529;
-        Wed, 1 Nov 2023 15:14:31 +0800 (+08)
-        (envelope-from xingxing.luo@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SKynB68cqz2LcMHL;
-        Wed,  1 Nov 2023 15:09:50 +0800 (CST)
-Received: from zebjkernups01.spreadtrum.com (10.0.93.153) by
- shmbx06.spreadtrum.com (10.0.1.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 1 Nov 2023 15:14:29 +0800
-From:   Xingxing Luo <xingxing.luo@unisoc.com>
-To:     <b-liu@ti.com>, <gregkh@linuxfoundation.org>,
-        <keescook@chromium.org>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <trix@redhat.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <llvm@lists.linux.dev>,
-        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
-        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
-        <zhang.lyra@gmail.com>
-Subject: [PATCH V2] usb: musb: Check requset->buf before use to avoid crash issue
-Date:   Wed, 1 Nov 2023 15:14:21 +0800
-Message-ID: <20231101071421.29462-1-xingxing.luo@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 1 Nov 2023 03:15:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945DDE4;
+        Wed,  1 Nov 2023 00:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698822922; x=1730358922;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YOamUtZBvPGFSqT3bJhAUQfsVZzAHn/s7THLW6Z58ac=;
+  b=VSRldrmCVUGDArECpCQC9ivs+24d3vxD5FiS9uZpT5BU4Ip3LcybJEr9
+   AQI+M6GAOrI4ebsEIAAV5gTCe0JrXPmzgkKLzMUJUdTdn5PfaA6z5keHr
+   dF8y3sVX7wrFcWZdYG5nwlmQb+MARD6xLAWgFCOvN73DQKVFBzVstfA+y
+   Csz1uVVNL/wtpMIXEde0jgb7YFoOpt8E2A3knIuoUeNn0E3AInRtl7ZNH
+   lZnu4OjfEfC3rvhZzC9TyHvJN9sFvYy/or5evlcxqdqrRXgv1NVQtgt1r
+   URHLRED4SWJ8GNPh4sRhoVU4U9GqJuRiMScQeVrht7tCQXio5QEZEso5h
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="7075759"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="7075759"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 00:15:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="831280524"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="831280524"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Nov 2023 00:15:16 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qy5RZ-0000f2-2m;
+        Wed, 01 Nov 2023 07:15:13 +0000
+Date:   Wed, 1 Nov 2023 15:15:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jyan Chou <jyanchou@realtek.com>, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, jh80.chung@samsung.com,
+        riteshh@codeaurora.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        asutoshd@codeaurora.org, p.zabel@pengutronix.de
+Cc:     oe-kbuild-all@lists.linux.dev, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, briannorris@chromium.org, doug@schmorgal.com,
+        tonyhuang.sunplus@gmail.com, abel.vesa@linaro.org,
+        william.qiu@starfivetech.com, jyanchou@realtek.com
+Subject: Re: [PATCH V4][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
+Message-ID: <202311011551.QtHtdWmG-lkp@intel.com>
+References: <20231030062749.2840-3-jyanchou@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.93.153]
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- shmbx06.spreadtrum.com (10.0.1.11)
-X-MAIL: SHSQR01.spreadtrum.com 3A17EV9M090529
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030062749.2840-3-jyanchou@realtek.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When connecting USB to PC, there is a very low probability of kernel
-crash. The reason is that in ep0_txstate(), the buf member of struct
-usb_request used may be a null pointer. Therefore, it needs to
-determine whether it is null before using it.
+Hi Jyan,
 
-[ 4888.071462][T597@C0] Call trace:
-[ 4888.071467][T597@C0]  musb_default_write_fifo+0xa0/0x1ac [musb_hdrc]
-[ 4888.087190][T597@C0]  musb_write_fifo+0x3c/0x90 [musb_hdrc]
-[ 4888.099826][T597@C0]  ep0_txstate+0x78/0x218 [musb_hdrc]
-[ 4888.153918][T597@C0]  musb_g_ep0_irq+0x3c4/0xe10 [musb_hdrc]
-[ 4888.159663][T597@C0]  musb_interrupt+0xab4/0xf1c [musb_hdrc]
-[ 4888.165391][T597@C0]  sprd_musb_interrupt+0x1e4/0x484 [musb_sprd]
-[ 4888.171447][T597@C0]  __handle_irq_event_percpu+0xd8/0x2f8
-[ 4888.176901][T597@C0]  handle_irq_event+0x70/0xe4
-[ 4888.181487][T597@C0]  handle_fasteoi_irq+0x15c/0x230
-[ 4888.186420][T597@C0]  handle_domain_irq+0x88/0xfc
-[ 4888.191090][T597@C0]  gic_handle_irq+0x60/0x138
-[ 4888.195591][T597@C0]  call_on_irq_stack+0x40/0x70
-[ 4888.200263][T597@C0]  do_interrupt_handler+0x50/0xac
-[ 4888.205196][T597@C0]  el1_interrupt+0x34/0x64
-[ 4888.209524][T597@C0]  el1h_64_irq_handler+0x1c/0x2c
-[ 4888.214370][T597@C0]  el1h_64_irq+0x7c/0x80
-[ 4888.218525][T597@C0]  __check_heap_object+0x1ac/0x1fc
-[ 4888.223544][T597@C0]  __check_object_size+0x10c/0x20c
-[ 4888.228563][T597@C0]  simple_copy_to_iter+0x40/0x74
-[ 4888.233410][T597@C0]  __skb_datagram_iter+0xa0/0x310
-[ 4888.238343][T597@C0]  skb_copy_datagram_iter+0x44/0x110
-[ 4888.243535][T597@C0]  netlink_recvmsg+0xdc/0x364
-[ 4888.248123][T597@C0]  ____sys_recvmsg.llvm.16749613423860851707+0x358/0x6c0
-[ 4888.255045][T597@C0]  ___sys_recvmsg+0xe0/0x1dc
-[ 4888.259544][T597@C0]  __arm64_sys_recvmsg+0xc4/0x10c
-[ 4888.264478][T597@C0]  invoke_syscall+0x6c/0x15c
-[ 4888.268976][T597@C0]  el0_svc_common.llvm.12373701176611417606+0xd4/0x120
-[ 4888.275726][T597@C0]  do_el0_svc+0x34/0xac
-[ 4888.279795][T597@C0]  el0_svc+0x28/0x90
-[ 4888.283603][T597@C0]  el0t_64_sync_handler+0x88/0xec
-[ 4888.288548][T597@C0]  el0t_64_sync+0x1b4/0x1b8
-[ 4888.292956][T597@C0] Code: 540002c3 53027ea8 aa1303e9 71000508 (b840452a)
-[ 4888.299789][T597@C0] ---[ end trace 14a301b7253e83cc ]---
+kernel test robot noticed the following build errors:
 
-Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
-Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
----
-v1 -> v2: - Fixed a spelling error
-          - Add the fixed commit id
+[auto build test ERROR on linus/master]
+[also build test ERROR on ulf-hansson-mmc-mirror/next v6.6 next-20231031]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
- drivers/usb/musb/musb_gadget_ep0.c | 5 +++++
- 1 file changed, 5 insertions(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Jyan-Chou/mmc-Add-Synopsys-DesignWare-mmc-cmdq-host-driver/20231030-144300
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231030062749.2840-3-jyanchou%40realtek.com
+patch subject: [PATCH V4][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
+config: sparc64-allyesconfig (https://download.01.org/0day-ci/archive/20231101/202311011551.QtHtdWmG-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311011551.QtHtdWmG-lkp@intel.com/reproduce)
 
-diff --git a/drivers/usb/musb/musb_gadget_ep0.c b/drivers/usb/musb/musb_gadget_ep0.c
-index 6d7336727388..19eb7a5e1fdc 100644
---- a/drivers/usb/musb/musb_gadget_ep0.c
-+++ b/drivers/usb/musb/musb_gadget_ep0.c
-@@ -531,6 +531,11 @@ static void ep0_txstate(struct musb *musb)
- 
- 	request = &req->request;
- 
-+	if (!request->buf) {
-+		musb_dbg(musb, "request->buf is NULL");
-+		return;
-+	}
-+
- 	/* load the data */
- 	fifo_src = (u8 *) request->buf + request->actual;
- 	fifo_count = min((unsigned) MUSB_EP0_FIFOSIZE,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311011551.QtHtdWmG-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/mmc/host/dw_mmc_cqe.c:227:10: error: 'const struct cqhci_host_ops' has no member named 'setup_tran_desc'
+     227 |         .setup_tran_desc = dw_mci_cqe_setup_tran_desc,
+         |          ^~~~~~~~~~~~~~~
+>> drivers/mmc/host/dw_mmc_cqe.c:227:28: error: initialization of 'int (*)(struct cqhci_host *, const union cqhci_crypto_cfg_entry *, int)' from incompatible pointer type 'void (*)(struct mmc_data *, struct cqhci_host *, u8 *, int)' {aka 'void (*)(struct mmc_data *, struct cqhci_host *, unsigned char *, int)'} [-Werror=incompatible-pointer-types]
+     227 |         .setup_tran_desc = dw_mci_cqe_setup_tran_desc,
+         |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/mmc/host/dw_mmc_cqe.c:227:28: note: (near initialization for 'dw_mci_cqhci_host_ops.program_key')
+   In file included from include/linux/debugfs.h:16,
+                    from drivers/mmc/host/dw_mmc_cqe.c:12:
+   drivers/mmc/host/dw_mmc_cqe.c:96:23: warning: 'dw_mci_cqe_req_fops' defined but not used [-Wunused-const-variable=]
+      96 | DEFINE_SHOW_ATTRIBUTE(dw_mci_cqe_req);
+         |                       ^~~~~~~~~~~~~~
+   include/linux/seq_file.h:202:37: note: in definition of macro 'DEFINE_SHOW_ATTRIBUTE'
+     202 | static const struct file_operations __name ## _fops = {                 \
+         |                                     ^~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +227 drivers/mmc/host/dw_mmc_cqe.c
+
+   221	
+   222	static const struct cqhci_host_ops dw_mci_cqhci_host_ops = {
+   223		.enable = dw_mci_cqe_enable,
+   224		.dumpregs = dw_mci_cqe_dumpregs,
+   225		.pre_enable = dw_mci_cqe_pre_enable,
+   226		.post_disable = dw_mci_cqe_post_disable,
+ > 227		.setup_tran_desc = dw_mci_cqe_setup_tran_desc,
+   228	};
+   229	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
