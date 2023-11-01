@@ -2,157 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4937DDEA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7C17DE0FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 13:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbjKAJnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
+        id S1343947AbjKAM3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 08:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjKAJnU (ORCPT
+        with ESMTP id S231519AbjKAM3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:43:20 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54D1DB
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:43:17 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc330e8f58so28899055ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 02:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698831797; x=1699436597; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2A7Y/11whjGsMhAiEp81xRL7zeK5hRlJmAi1MKSmNLM=;
-        b=SyLvHpiCoT+tsK8m3wa7ww/LIfV/5OpOAtBCxYHfHK2i/0HlIRHcYhcvbKBVa5uBqj
-         YhP33ItGe0LrEaL7uWfFGMuoMvf6SeBmmiXOOLOmdiZ6QJ7/6q978DlgcfLnliIgJ+mu
-         GQ2DhONTFgUd2HpcUOZnT9EI69cOTPQxIW0uw3mLTJ0vj5RDo6gEEWy7UZrw5tHF9FcO
-         UDc4gUaNTCaUPEvDV6NoUNhAzc825acdO0eNr22p5PT5kns/qzBqneFmSYdD/HNjGQ7X
-         eRW0q8W0vrFCBxPlg/tfC1e+KpelzdPHL2dg7GnWXd5TOpuII17KidOEOstJedmovhRw
-         /niA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698831797; x=1699436597;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2A7Y/11whjGsMhAiEp81xRL7zeK5hRlJmAi1MKSmNLM=;
-        b=CAS4lb0wjlwKZrs2lOKh/4Rokx2an4yWVsb/A89NaKjFWrTkhfM9ZVVx+Jb7A554je
-         Mu6FVQGzHcIQ7IdxT3O/feucgMxtGKrFKdEaIjVxYdeHrEd1ASdCG3zrK8jK+G4ewJ3d
-         cuvi9C57v2VYRdVxr+TecJ/y6Kw9RQTTBe+bQ1O6jS0WjLSlcDEV5nxO9823gV2bCrgD
-         9j4pZe0JdJOOskIIEBps8L4XxV/96XrVRwzfalOYpgZQ33tWBo4iin6sJoeFgl4N3tT0
-         8OJX8Cg6v8Co9m8RrI7qiODz2lDQeupg75bM12sdcKIdyVGn4DvJESl0+CoUVfBlnLOe
-         YpZQ==
-X-Gm-Message-State: AOJu0Yy2cJck9WWHgSKh2OAuAXkircHbhEly9MJvzYx5lGgzjgfGmjo+
-        oqrflr3mMHaVf+corRzHSAM=
-X-Google-Smtp-Source: AGHT+IGT4O+L81nSAQ1uLW6groCXyS4JSYmHYensOGSr/USkULHyEEJ53PQy564JiPHsQnCSCV9Ktg==
-X-Received: by 2002:a17:902:d4c2:b0:1cc:5aef:f2cf with SMTP id o2-20020a170902d4c200b001cc5aeff2cfmr6986814plg.9.1698831797023;
-        Wed, 01 Nov 2023 02:43:17 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id h18-20020a170902eed200b001b3bf8001a9sm990713plb.48.2023.11.01.02.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 02:43:16 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id A3A8997EF4A3; Wed,  1 Nov 2023 16:43:13 +0700 (WIB)
-Date:   Wed, 1 Nov 2023 16:43:12 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [PATCH] x86/resctrl: Fix unused variable warning in
- cache_alloc_hsw_probe()
-Message-ID: <ZUIdsK5LGmRww9ER@debian.me>
-References: <20231031220534.37730-1-tony.luck@intel.com>
+        Wed, 1 Nov 2023 08:29:53 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682DBDC;
+        Wed,  1 Nov 2023 05:29:48 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3A1B2x4k029612;
+        Wed, 1 Nov 2023 08:29:19 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3u39354ybh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 08:29:18 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 3A1CSeDI011144
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 1 Nov 2023 08:28:40 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Wed, 1 Nov 2023
+ 05:49:09 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Wed, 1 Nov 2023 05:49:09 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.145])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3A19mnJm018866;
+        Wed, 1 Nov 2023 05:48:52 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hwmon@vger.kernel.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 1/2] dt-bindings: rtc: max31335: add max31335 bindings
+Date:   Wed, 1 Nov 2023 11:48:13 +0200
+Message-ID: <20231101094835.51031-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/kDkZH0oq/bEChkj"
-Content-Disposition: inline
-In-Reply-To: <20231031220534.37730-1-tony.luck@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: 9h3A7EFxEa2DlJvgm57yJDk90m9zYcx4
+X-Proofpoint-ORIG-GUID: 9h3A7EFxEa2DlJvgm57yJDk90m9zYcx4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_10,2023-11-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2310240000 definitions=main-2311010104
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Document the Analog Devices MAX31335 device tree bindings.
 
---/kDkZH0oq/bEChkj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+changes in v4:
+ - drop `aux-voltage-chargeable` since it comes with rtc.yaml
+ .../devicetree/bindings/rtc/adi,max31335.yaml | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/adi,max31335.yaml
 
-On Tue, Oct 31, 2023 at 03:05:34PM -0700, Tony Luck wrote:
-> In a "W=3D1" build gcc throws a warning:
->=20
-> arch/x86/kernel/cpu/resctrl/core.c: In function =E2=80=98cache_alloc_hsw_=
-probe=E2=80=99:
-> arch/x86/kernel/cpu/resctrl/core.c:139:16: warning: variable =E2=80=98h=
-=E2=80=99 set but not used
->=20
-> Fix by switching from rdmsr() to rdmsrl() using a single u64 argument
-> for the MSR value instead of the pair of u32 for the high and low
-> halves.
->=20
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
-> This has been annoying me for a while as the only warning from the
-> resctrl code when building with W=3D1.
->=20
-> N.B. compile tested only. I don't have a Haswell system to check this wor=
-ks.
->=20
->  arch/x86/kernel/cpu/resctrl/core.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/res=
-ctrl/core.c
-> index 19e0681f0435..4084131d391d 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -136,15 +136,16 @@ static inline void cache_alloc_hsw_probe(void)
->  {
->  	struct rdt_hw_resource *hw_res =3D &rdt_resources_all[RDT_RESOURCE_L3];
->  	struct rdt_resource *r  =3D &hw_res->r_resctrl;
-> -	u32 l, h, max_cbm =3D BIT_MASK(20) - 1;
-> +	u32 max_cbm =3D BIT_MASK(20) - 1;
-> +	u64 l3_cbm_0;
-> =20
->  	if (wrmsr_safe(MSR_IA32_L3_CBM_BASE, max_cbm, 0))
->  		return;
-> =20
-> -	rdmsr(MSR_IA32_L3_CBM_BASE, l, h);
-> +	rdmsrl(MSR_IA32_L3_CBM_BASE, l3_cbm_0);
-> =20
->  	/* If all the bits were set in MSR, return success */
-> -	if (l !=3D max_cbm)
-> +	if (l3_cbm_0 !=3D max_cbm)
->  		return;
-> =20
->  	hw_res->num_closid =3D 4;
+diff --git a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+new file mode 100644
+index 000000000000..34cc87b92c02
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/adi,max31335.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices MAX31335 RTC
++
++maintainers:
++  - Antoniu Miclaus <antoniu.miclaus@analog.com>
++
++description:
++  Analog Devices MAX31335 I2C RTC ±2ppm Automotive Real-Time Clock with
++  Integrated MEMS Resonator.
++
++allOf:
++  - $ref: rtc.yaml#
++
++properties:
++  compatible:
++    const: adi,max31335
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  "#clock-cells":
++    description:
++      RTC can be used as a clock source through its clock output pin.
++    const: 0
++
++  trickle-resistor-ohms:
++    description:
++      Selected resistor for trickle charger. Should be specified if trickle
++      charger should be enabled.
++    enum: [3000, 6000, 11000]
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        rtc@68 {
++            compatible = "adi,max31335";
++            reg = <0x68>;
++            pinctrl-0 = <&rtc_nint_pins>;
++            interrupts-extended = <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
++            trickle-resistor-ohms = <6000>;
++            aux-voltage-chargeable =<1>;
++        };
++    };
++...
+-- 
+2.42.0
 
-No noticeable regressions on my Acer Aspire E15 (the laptop uses Intel Core
-i3 Haswell), thanks!
-
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---/kDkZH0oq/bEChkj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUIdqgAKCRD2uYlJVVFO
-o7upAQChP7LAJsVZ5cqzDRXlqbqiXTpUB/Z1skpOBG/2zdp9JQEArZ7+m7m+fKJv
-+QWUOzcotSAdWID8x86Qxj8mNM+kuQc=
-=nlab
------END PGP SIGNATURE-----
-
---/kDkZH0oq/bEChkj--
