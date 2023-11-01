@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C50657DDB01
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC0C7DDB04
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 03:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343766AbjKACau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 22:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
+        id S1345166AbjKACd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 22:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbjKACar (ORCPT
+        with ESMTP id S1345099AbjKACd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 22:30:47 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3BFBD;
-        Tue, 31 Oct 2023 19:30:45 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1cc13149621so11834965ad.1;
-        Tue, 31 Oct 2023 19:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698805845; x=1699410645; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wJx1gCCJdYe6w1k0ztbhtZDsqbmsvBkB8hSiGVC++eQ=;
-        b=BQ2XJZAXQFn5HrJLnlG6w6f04L8jPKx3/jXVxtoN4qQS9vNJ166Ou0HZ+DrGkoLZYn
-         hFfydrYQr8sw2qAgbyx53IahM25DDwlAezzyycYZMz6Ml9VvnrHorwffpDk5jxwRgY35
-         blc4nL3RbcbFRFviexKVzedSnXX98HTYvfl/YsGcasDmfr5G43jqyzAIeXkXLk0QZ4xO
-         TpFJhe6StTAk3NI8DLETLJQXLMQdMiUIpVvE7Xuu3OpZXK3h1tnUoIvpKjqBGa+pvswy
-         /2ZRmiU/+++cixdPpd4A+EdubuZPQE+6oI9Z0h3ggE/ppXo5F+w6R4yjbNC5hOh5lBmf
-         JJWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698805845; x=1699410645;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wJx1gCCJdYe6w1k0ztbhtZDsqbmsvBkB8hSiGVC++eQ=;
-        b=Sd2Je+IqqjEZiTrl8HxTreYBO8+mbl0vBQ0IQibzSGaADY3Y39o7aJ37lBzizEFRUC
-         jyrpK0HEDdJZc7eePSYUEsBVMwW9dqdhMNJ1abRbXhHY0VFuwlAfnN09e679D1iztk62
-         XkPY+AaIzwpsIYG0NLFmuvp3DUr6ziQjWgcnYEeDEodzNcBRo/RU4felIZqrSf0ptVdL
-         LcrUnNRHbWTpx3AiWFiAr6g77ECY+rv6KDe0wBbZNvrKfYS56ZaoV1Uk52Z2M9/bjtl5
-         OMNb0K8p7aXQyaxpBoczkYz7FXRMZrhlb80i7HnM8uhG6G4M1rbeCdceEPEOdJPz85RC
-         G6HA==
-X-Gm-Message-State: AOJu0YyIi22FKUWPy2x0Y6JGfcd6iZ6R/vgr1YZy2TBTXfvhoDvdKzZp
-        K5Gl+8SGsYq2JrR3wbmX9dk=
-X-Google-Smtp-Source: AGHT+IF6VbUmw7ib/mBsZAQ0gg4BzyuZrjaSSFR7jiz1xHe2BNnC93S25te2VsButXn2Ux3Y49d34g==
-X-Received: by 2002:a17:902:d1c2:b0:1cc:277f:b4f6 with SMTP id g2-20020a170902d1c200b001cc277fb4f6mr12342647plb.6.1698805845113;
-        Tue, 31 Oct 2023 19:30:45 -0700 (PDT)
-Received: from [127.0.0.1] (059149129201.ctinets.com. [59.149.129.201])
-        by smtp.gmail.com with ESMTPSA id c5-20020a170902c1c500b001ca4c7bee0csm219700plc.232.2023.10.31.19.30.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 19:30:44 -0700 (PDT)
-Message-ID: <1aec4977-05dd-49dd-ae59-f3fce8db70b7@gmail.com>
-Date:   Wed, 1 Nov 2023 10:30:36 +0800
+        Tue, 31 Oct 2023 22:33:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41166BD;
+        Tue, 31 Oct 2023 19:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698806031; x=1730342031;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VM1SwW2sLu8vpMwvfts1qGcCzaC89DFJLSyEUxN/3V0=;
+  b=SywK1OcBVlIQEOm5zXQ/162dpRwHOdgGfDeFZFPG3HA6g4mLmtp9HSdF
+   PjvT4PpE2ElXlMdP1Qc2LZBp65yuWedZ4DBv3/pEuiB1V4/a5Ku8qiZJz
+   Uj78sjgQmSF8O6gcteqiyn+JqAN6BmEPCitSbipK2ko4EJcN0/UJGFpdS
+   toiveEoOm9RyGH2f/MMVSvWhy1WanRJA4QBs2f/E7+dQZgovCUexga/so
+   14PNTysd1/JifGak2fNzak1UJNRNLzVcVwPjEh5oL7dnJ6wuVBQljpnLY
+   8IBRm8Ei5XFmckDQmGJ+io04XkwSxek+umLJmXLd9UBjPcJYoKQSmkZg0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="373468510"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="373468510"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 19:33:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="2041477"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.12.33]) ([10.93.12.33])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 19:33:48 -0700
+Message-ID: <28796dd3-ac4e-4a38-b9e1-f79533b2a798@linux.intel.com>
+Date:   Wed, 1 Nov 2023 10:33:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ti: fix possible memory leak in
- _ti_omap4_clkctrl_setup()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     kristo@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        tony@atomide.com, claudiu.beznea@microchip.com, robh@kernel.org,
-        dario.binacchi@amarulasolutions.com, linux-omap@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231031103010.23792-1-hbh25y@gmail.com>
- <ZUDZ_tDvM7oUBfkq@smile.fi.intel.com>
+Subject: Re: [kvm-unit-tests Patch v2 4/5] x86: pmu: Support validation for
+ Intel PMU fixed counter 3
 Content-Language: en-US
-From:   Hangyu Hua <hbh25y@gmail.com>
-In-Reply-To: <ZUDZ_tDvM7oUBfkq@smile.fi.intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>
+References: <20231031092921.2885109-1-dapeng1.mi@linux.intel.com>
+ <20231031092921.2885109-5-dapeng1.mi@linux.intel.com>
+ <CALMp9eQ4Xj5D-kgqVMKUNmdF37rLcMRXyDYdQU339sRCKZ7d9A@mail.gmail.com>
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <CALMp9eQ4Xj5D-kgqVMKUNmdF37rLcMRXyDYdQU339sRCKZ7d9A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 18:42, Andy Shevchenko wrote:
-> On Tue, Oct 31, 2023 at 06:30:10PM +0800, Hangyu Hua wrote:
->> kstrndup() and kstrdup_and_replace() in clkctrl_get_name() can perform
->> dynamic memory allocation. So clkctrl_name needs to be freed when
->> provider->clkdm_name is NULL.
-> 
->> Fixes: bd46cd0b802d ("clk: ti: clkctrl: check return value of kasprintf()")
->> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
->> ---
+
+On 11/1/2023 2:47 AM, Jim Mattson wrote:
+> On Tue, Oct 31, 2023 at 2:22 AM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
+>> Intel CPUs, like Sapphire Rapids, introduces a new fixed counter
+>> (fixed counter 3) to counter/sample topdown.slots event, but current
+>> code still doesn't cover this new fixed counter.
 >>
->> 	 v2 and v3: fix commit info.
-> 
-> I believe I gave you my Rb tag. It's your responsibility to care it on if you
-> send a new version. Otherwise, please tell what makes you think that tag should
-> not be here?
+>> So this patch adds code to validate this new fixed counter can count
+>> slots event correctly.
+> I'm not convinced that this actually validates anything.
+>
+> Suppose, for example, that KVM used fixed counter 1 when the guest
+> asked for fixed counter 3. Wouldn't this test still pass?
 
-Do you mean "Reviewed-by"? I checked the previous emails and 
-"lore.kernel.org" and didn’t find this tag in any related emails. I am 
-not sure what happened. Can you please resend it?
 
-Thanks,
-Hangyu
->  
+Per my understanding, as long as the KVM returns a valid count in the 
+reasonable count range, we can think KVM works correctly. We don't need 
+to entangle on how KVM really uses the HW, it could be impossible and 
+unnecessary.
+
+Yeah, currently the predefined valid count range may be some kind of 
+loose since I want to cover as much as hardwares and avoid to cause 
+regression. Especially after introducing the random jump and clflush 
+instructions, the cycles and slots become much more hard to predict. 
+Maybe we can have a comparable restricted count range in the initial 
+change, and we can loosen the restriction then if we encounter a failure 
+on some specific hardware. do you think it's better? Thanks.
+
+
+>
+>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+>> ---
+>>   x86/pmu.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/x86/pmu.c b/x86/pmu.c
+>> index 6bd8f6d53f55..404dc7b62ac2 100644
+>> --- a/x86/pmu.c
+>> +++ b/x86/pmu.c
+>> @@ -47,6 +47,7 @@ struct pmu_event {
+>>          {"fixed 1", MSR_CORE_PERF_FIXED_CTR0, 10*N, 10.2*N},
+>>          {"fixed 2", MSR_CORE_PERF_FIXED_CTR0 + 1, 1*N, 500*N},
+>>          {"fixed 3", MSR_CORE_PERF_FIXED_CTR0 + 2, 0.1*N, 300*N},
+>> +       {"fixed 4", MSR_CORE_PERF_FIXED_CTR0 + 3, 1*N, 5000*N},
+>>   };
+>>
+>>   char *buf;
+>> --
+>> 2.34.1
+>>
