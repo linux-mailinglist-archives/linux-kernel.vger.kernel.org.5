@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EBD7DDE4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6057DDE4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbjKAJSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
+        id S234874AbjKAJTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234434AbjKAJSt (ORCPT
+        with ESMTP id S234822AbjKAJSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:18:49 -0400
+        Wed, 1 Nov 2023 05:18:54 -0400
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C066C2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:18:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E4CB9
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:18:48 -0700 (PDT)
 Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 76788D8B;
-        Wed,  1 Nov 2023 10:18:19 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 44C9AE52;
+        Wed,  1 Nov 2023 10:18:20 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
         s=mail; t=1698830300;
-        bh=cqr9qmnFL43Mi0X/si5rR0wyx9x15IoN3blFgEcAEhY=;
+        bh=9o8g+vSUQSS3NMbFAfGUkXi52cmu6Vb3V663gNfc4iY=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=QtWevdGxZ8j6lFrOZSDySoZ8OFG//OIF6lsjV4Rfe1bhm4ZcUopLubuWCahTy4pRH
-         Csc3evlzCSnuoaSdwACFMFKoLR/J6OqoXXNhnMOkbgQYkJ6pbmfQcMHrxXu3jfO5Kl
-         eOuCzrLYjQ1Mx76jlI5T6wtE4bViQ670xn/0KjMU=
+        b=p/T0QMM11m5z3vXdBLD95kfaCJDQgXUYH5Y18q6/1yRkfjNCHx0NLbSThIUxS7tU4
+         n5Nt8UGErZQpNfl7nnGoYcP+aG5UNHdeH2wppHR5/vNDnl3h+kjgjYiDgE09SfbMga
+         iEIgrs5XSnvSPf8iSJv9fEfZiJBSDXqhj+NATuO4=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Wed, 01 Nov 2023 11:17:40 +0200
-Subject: [PATCH 03/10] drm/tidss: Drop useless variable init
+Date:   Wed, 01 Nov 2023 11:17:41 +0200
+Subject: [PATCH 04/10] drm/tidss: Move reset to the end of dispc_init()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231101-tidss-probe-v1-3-45149e0f9415@ideasonboard.com>
+Message-Id: <20231101-tidss-probe-v1-4-45149e0f9415@ideasonboard.com>
 References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
 In-Reply-To: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
 To:     Aradhya Bhatia <a-bhatia1@ti.com>,
@@ -46,21 +46,21 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=708;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1363;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=cqr9qmnFL43Mi0X/si5rR0wyx9x15IoN3blFgEcAEhY=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlQhfmZvrXwVfeAXpKfH/t84dOn0jl1YydKNIAp
- 4Tb85mAQMyJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZUIX5gAKCRD6PaqMvJYe
- 9dq1D/9dvYn6n3xz8Hjqt40LO0+SBnW3EclIBin6YRnFpRYTkAcGD5/If7zbmwBilpE30tQs50H
- X8BE0m2ZZrWnSyC0zzWG0hUmdmSoalIR2kfNXS9l+hdJ4sTY1HCkMX30EbAXbCWdvFqi9N7xoYN
- btOEe49slqZhQczeK6/ILzdUnxUhMlvmktqb2Zd0A4xeGlxHBKur7rpB48+GiS1dH8veEJT5mAr
- FXd1kZjxAHjUZqYvXx293BAKaMtyh3FXsQVhCGx0MrmfpL4QnoCummdCZfiCuFn68LGTodiP2YB
- +c/bw7IMyu37R1Evmd409EBXE+pBiNbk3EcR9Qs7i4nal+KZubWHmhA6DSumDLy5rhXHBXD+B09
- Ddr8qy02PgfLOXzS3QQxfS97ifltB6gZV26CNmbglV9DNPaK/qi4Neylwwy9ierje0zbaRriRuQ
- 0b7kruM7DKsHqvl3e60MHop9sYYICBWoOEFZEByuFA7b3eXw6YNzNrO8DuipN+YEwkrnxJN6bjG
- PZ8xHAY+LLDMpjsy2Iil2PqFBPc4GV3EuxNzYG89oqZ+jUJXwL6Zt0D9rXu/VraWyG3uZcCoFFp
- d80YfWbmFYs533LFOvrEIkd5MgNIPchPnwBW8Fk5ZIQAckMGk3isUWKt0EbcruvG4EiOgv2+1gd
- BogoFbcu0cTNDig==
+ bh=9o8g+vSUQSS3NMbFAfGUkXi52cmu6Vb3V663gNfc4iY=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlQhfmqKrrOflLOTzV3Rkv9Kbh/MN1PuuDm8/ON
+ sPnotTWnrSJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZUIX5gAKCRD6PaqMvJYe
+ 9WbBD/4mv6KLlnj3Gja378NvTcc+TdWKrXms3LxA6LYYNBr9MZP8NrejQnGyZ2scbA9TseQaLKl
+ xqtmW3v5E0vgnfbFCxnvRpSiMN5LFF49++VbMbNUR9OBmNhhAIVKDdRnqefYS3q4f1AHfHWXriV
+ siw+rcnKIWQGXm7PHo4JqLA6SCXpYmzQfuHkplxtl8UBki8/HiX/PxsUmizmZfLlTRZ9E+6THwV
+ A6Bc69316TyAu4A+n6rPZqlEnVqZc5qzQZLndYj1/39Smem4725r1nE7jtsjPuKV2H0NgEinXQi
+ qU+F9mA8H2KkiIwipJ4VyXgsjJCI+mRrsfPCeLDYwsF6sUX1O22/Na84WPcfZxrIaah6hvGejl2
+ ooEtZWgv5kqzRvw8A1hzsdSHwhikoKrYWu+vAFrKuRGRcvoJVJvvusoQUwOsMbg6f/n2yxJVMGd
+ B3m7pIw3P5gzug99n3Je2D+KRpe9pfsMwWkqfO21Elw5xsrhhfDTuFeCbjxyQU7i54W3b1aak/i
+ vYF+fOJYdx39Ld3wUzYz2+aJ1P7/OSZLb2gwBgYusMPb3e1lleR491ykd2XgM/w3hih3KZjDoYA
+ fjuUhfMR6SJnmnPbGQ+U5qNsfPdevqyjfvtNjlvk2ideK0ZJxRaqF8rAduvr+VsLOSonkJo0R97
+ cm0/hvJnAwW77sg==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,26 +73,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to initialize the ret to 0 in dispc_softreset().
+We do a DSS reset in the middle of the dispc_init(). While that happens
+to work now, we should really make sure that e..g the fclk, which is
+acquired only later in the function, is enabled when doing a reset. This
+will be handled in a later patch, but for now, let's move the
+dispc_softreset() call to the end of dispc_init(), which is a sensible
+place for it anyway.
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/gpu/drm/tidss/tidss_dispc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tidss/tidss_dispc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
-index 9d9dee7abaef..ad7999434299 100644
+index ad7999434299..9430625e2d62 100644
 --- a/drivers/gpu/drm/tidss/tidss_dispc.c
 +++ b/drivers/gpu/drm/tidss/tidss_dispc.c
-@@ -2705,7 +2705,7 @@ static void dispc_init_errata(struct dispc_device *dispc)
- static void dispc_softreset(struct dispc_device *dispc)
- {
- 	u32 val;
--	int ret = 0;
-+	int ret;
+@@ -2777,10 +2777,6 @@ int dispc_init(struct tidss_device *tidss)
+ 			return r;
+ 	}
  
- 	/* Soft reset */
- 	REG_FLD_MOD(dispc, DSS_SYSCONFIG, 1, 1, 1);
+-	/* K2G display controller does not support soft reset */
+-	if (feat->subrev != DISPC_K2G)
+-		dispc_softreset(dispc);
+-
+ 	for (i = 0; i < dispc->feat->num_vps; i++) {
+ 		u32 gamma_size = dispc->feat->vp_feat.color.gamma_size;
+ 		u32 *gamma_table;
+@@ -2831,5 +2827,9 @@ int dispc_init(struct tidss_device *tidss)
+ 
+ 	tidss->dispc = dispc;
+ 
++	/* K2G display controller does not support soft reset */
++	if (feat->subrev != DISPC_K2G)
++		dispc_softreset(dispc);
++
+ 	return 0;
+ }
 
 -- 
 2.34.1
