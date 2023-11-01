@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0617DE506
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708357DE511
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344616AbjKARIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
+        id S1344622AbjKARKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344351AbjKARIu (ORCPT
+        with ESMTP id S1344598AbjKARKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:08:50 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F67FD;
-        Wed,  1 Nov 2023 10:08:47 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9d10f94f70bso2004366b.3;
-        Wed, 01 Nov 2023 10:08:47 -0700 (PDT)
+        Wed, 1 Nov 2023 13:10:00 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D201CA6;
+        Wed,  1 Nov 2023 10:09:51 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32deb2809daso4420427f8f.3;
+        Wed, 01 Nov 2023 10:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698858526; x=1699463326; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VxqC4haUmO6O6zFKwa2JDemqA1Zr0ZXCW08zDQAdl+M=;
-        b=YJ5cPBx7s/w1G3jpaDof0yohlE5FynVbV3+YjI+zgj0MXmKlMoAD+jkfqbaTAeOPNm
-         9cyWveC/fAkIEgb1pkVzQ1b50m4Wt3COsnGbLNs4qxA7pQLNvcoFJx+tUs0QATiSBtYl
-         jGw9SgJsSywkmYGss+fCiwRxX58woUCYQ4yyNXzxtURm4o9ppG/5GmRvJ0vK3O9RZ4ZM
-         DJwM3uLypvp/LVUE+5FKCDWuBJt4KTdKHaQVrd99XEH/2c6pqHw5Dv4A0kBlwhUMSUhD
-         h9TOkUA2vb9aDMeoNMqxEgv4LsGjAqASwUWIVYoXIPbDc/NteyDOiOCAc1XMMd5D/Wh0
-         kaiQ==
+        d=gmail.com; s=20230601; t=1698858590; x=1699463390; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=70RuBrWBQ0TSA8ytHNk00JeITSt1g+gvfLn5RbfFjBE=;
+        b=THiwWN2HVaVB6GoIDHajOenhzEJ+cDB5FYejEsog+GHfruWyAdQMw4NOKtQ2QADaKp
+         T2jaCIaRlr+3rf69yy8amD5KUA2N7Mza1vbEwQRqBB3R+PUaZNSFt8Nv+DfYVeddLyX2
+         PxPWwEstIvrKqiTF0PUUzXWeKvdm4MBUhTI+m8t5BKvp7mOoGZAkfPTtuBytMLZdKvT6
+         gx0qmtXsBImTrgOjukc8wIF9piZx884W+ihLRBjQIqcPhJvJqsK62HN8JwvO8hc4JNjh
+         4Z2D27hKV4H0eswBAA7OfdKeVNqHM0gTBHJFdO+4DKRrKDghpkT78EoYtX9ZhF/uJ2rz
+         ounw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698858526; x=1699463326;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VxqC4haUmO6O6zFKwa2JDemqA1Zr0ZXCW08zDQAdl+M=;
-        b=pes6iMfFV7WDBKzkbQCfrMGdkDn0GV6iA56plmPu7o4OOZqHWg0u3DDv05PzhieodS
-         PbZgwN4fLW0WmHsag/nWITHbyNwJugHukqhXnSgx2gCudulnHmsVrV7A47KwWCGQpNWf
-         YfTSaaUNYTwKUHiAZ920YGhvvppCqTwGnowgU2qWjl6UQiDMe8nuthLxPvcCgQRc09xG
-         NkAXaMxAHfgr/XppkICiIuqeRLmDQTBVrDc+bmF3ADuAcAy6vGKSb0BChfGRHKuVswvk
-         Z0/0Mqu4pl5z6y2jJB45QRqjHiGkZAYgmpLz6xtFOux+eZxaZLUtqf5Iuojcx86jctKs
-         TDHw==
-X-Gm-Message-State: AOJu0YzACtJfTtig5jYbat5b4NkL+fimjBLUTI3ws+2f95yQKBv9GopP
-        JviuOfUC52W+JhzeLk4G1bskY4fd3MCOa7Vy00A=
-X-Google-Smtp-Source: AGHT+IHh/xoThtkS3jWPmHaVPIYaN0JAsAKsui3AVMwsCTMgS9HAdTpsiYFJj2naIUWjXdqCl0SM1zRBe0PN5df0Omk=
-X-Received: by 2002:a17:906:dc93:b0:9c7:3611:9e7c with SMTP id
- cs19-20020a170906dc9300b009c736119e7cmr2502264ejc.61.1698858525799; Wed, 01
- Nov 2023 10:08:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698858590; x=1699463390;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=70RuBrWBQ0TSA8ytHNk00JeITSt1g+gvfLn5RbfFjBE=;
+        b=UQf4GYWLwJV6netmk2uimCqlwNJL+w38spGQmXsWJAgxzLjpQnvcNP7PCrO3sG9Der
+         TVe63CAFKf2g2Hy2KQAMjBV7VGricG3ra5eq87dB3e8CkdaBu9e01njsBWMN/t+t2c78
+         JHVaBuwLzWLWCsP7NBrf4N3MehhzOvaEk5hdAlKKRbKAD1YDhwnK8ZupiscZizpp00bp
+         aSWTIItlTTY8YaxvsixEPdwdvCBInJEYeSVIIhcz5vX7hhS7qZQUKii97y984ENCJg/G
+         IGxp3CKQroWwMtfkMjxMQ0G46vQ9ivhDv43dwYoJ4BITDA6scJACmz6O5oAYPvu6FmLa
+         xXqg==
+X-Gm-Message-State: AOJu0Yyv2kkXJG3uonR1AyOFSSXdfjgLetNPc1/ER7vzpkCTDaNp/1ly
+        YK6eJO06j+sW7iONjanFz1o=
+X-Google-Smtp-Source: AGHT+IF7FZ80ccgWOLhOoAWtSxnx8HuhVc/UzlQ2aCdxN6o1nYIq16H2uI6mv83/ALr0CN70rbxaCA==
+X-Received: by 2002:a5d:6d86:0:b0:32f:7f17:b049 with SMTP id l6-20020a5d6d86000000b0032f7f17b049mr9720763wrs.39.1698858590199;
+        Wed, 01 Nov 2023 10:09:50 -0700 (PDT)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id d8-20020adffd88000000b0032dcb08bf94sm287786wrr.60.2023.11.01.10.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 10:09:47 -0700 (PDT)
+Message-ID: <6542865b.df0a0220.82f9d.1bea@mx.google.com>
+X-Google-Original-Message-ID: <ZUKGVWlh01U1evki@Ansuel-xps.>
+Date:   Wed, 1 Nov 2023 18:09:41 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robimarko@gmail.com>
+Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
+ support
+References: <20231101123608.11157-1-ansuelsmth@gmail.com>
+ <5af21f93-bb2d-42b1-b4d4-ee4443ffaff9@gmail.com>
+ <65424cd9.5d0a0220.20d9a.fe0f@mx.google.com>
+ <f5f72cc3-0435-4ba0-8291-30d1ec2633a0@gmail.com>
 MIME-Version: 1.0
-References: <20231101102837.25205-1-ddrokosov@salutedevices.com> <20231101102837.25205-2-ddrokosov@salutedevices.com>
-In-Reply-To: <20231101102837.25205-2-ddrokosov@salutedevices.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Nov 2023 10:08:34 -0700
-Message-ID: <CAEf4BzZ0p-k15XLf2QdHNN6TodjRBtRKk2mvsttCj=GUi4Or3A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mm: memcg: print out cgroup name in the memcg tracepoints
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org,
-        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5f72cc3-0435-4ba0-8291-30d1ec2633a0@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,72 +85,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 3:29=E2=80=AFAM Dmitry Rokosov
-<ddrokosov@salutedevices.com> wrote:
+On Wed, Nov 01, 2023 at 05:57:50PM +0100, Heiner Kallweit wrote:
+> On 01.11.2023 13:57, Christian Marangi wrote:
+> > On Wed, Nov 01, 2023 at 02:01:33PM +0100, Heiner Kallweit wrote:
+> >> On 01.11.2023 13:36, Christian Marangi wrote:
+> >>> From: Robert Marko <robimarko@gmail.com>
+> >>>
+> >>> Aquantia PHY-s require firmware to be loaded before they start operating.
+> >>> It can be automatically loaded in case when there is a SPI-NOR connected
+> >>> to Aquantia PHY-s or can be loaded from the host via MDIO.
+> >>>
+> >>> This patch adds support for loading the firmware via MDIO as in most cases
+> >>> there is no SPI-NOR being used to save on cost.
+> >>> Firmware loading code itself is ported from mainline U-boot with cleanups.
+> >>>
+> >>> The firmware has mixed values both in big and little endian.
+> >>> PHY core itself is big-endian but it expects values to be in little-endian.
+> >>> The firmware is little-endian but CRC-16 value for it is stored at the end
+> >>> of firmware in big-endian.
+> >>>
+> >>> It seems the PHY does the conversion internally from firmware that is
+> >>> little-endian to the PHY that is big-endian on using the mailbox
+> >>> but mailbox returns a big-endian CRC-16 to verify the written data
+> >>> integrity.
+> >>>
+> >>> Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
+> >>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> >>> ---
+> >>> Changes v2:
+> >>> - Move out of RFC
+> >>> - Address sanity check for offsets
+> >>> - Add additional comments on firmware load check
+> >>> - Fix some typo
+> >>> - Capitalize CRC in comments
+> >>> - Rename load_sysfs to load_fs
+> >>>
+> >>
+> >> To make the driver better maintainable: can the firmware handling code
+> >> be placed in a separate source code file, similar to what has been done
+> >> for the hwmon part?
+> >> If yes, then this could also be the right time to move the aquantia
+> >> driver to an own subdirectory.
+> >>
+> > 
+> > Sure! Np for me just is it really worth it? hwmod is a bigger one but
+> > this is really a few functions.
+> > 
+> r8169_firmware.c is even smaller and I've never regretted having it factored
+> out. Whether it makes sense depends on how much you share with the main module
+> and how the API is structured that you provide to the main module.
+> So I don't say you have to do it, I'm just saying it's worth considering it.
 >
-> Sometimes it is necessary to understand in which memcg tracepoint event
-> occurred. The function cgroup_name() is a useful tool for this purpose.
-> To integrate cgroup_name() into the existing memcg tracepoints, this
-> patch introduces a new tracepoint template for the begin() and end()
-> events, utilizing static __array() to store the cgroup name.
->
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> ---
->  include/trace/events/vmscan.h | 77 +++++++++++++++++++++++++++++------
->  mm/vmscan.c                   |  8 ++--
->  2 files changed, 69 insertions(+), 16 deletions(-)
->
-> diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.=
-h
-> index d2123dd960d5..124bc22866c8 100644
-> --- a/include/trace/events/vmscan.h
-> +++ b/include/trace/events/vmscan.h
-> @@ -141,19 +141,47 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_templat=
-e, mm_vmscan_direct_reclaim_b
->  );
->
->  #ifdef CONFIG_MEMCG
-> -DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_memcg_re=
-claim_begin,
->
-> -       TP_PROTO(int order, gfp_t gfp_flags),
-> +DECLARE_EVENT_CLASS(mm_vmscan_memcg_reclaim_begin_template,
->
-> -       TP_ARGS(order, gfp_flags)
-> +       TP_PROTO(const struct mem_cgroup *memcg, int order, gfp_t gfp_fla=
-gs),
-> +
-> +       TP_ARGS(memcg, order, gfp_flags),
 
-By adding memcg in front of existing tracepoint arguments, you
-unnecessarily break everyone who currently has some scripts based on
-this tracepoint. Given there is no reason why memcg has to be the very
-first argument, it would be nice if you can just append it at the end
-to make it nicely backwards compatible. Same for other tracepoints
-below.
+Already done! Will be part of this series with v3 :D
 
-Tracepoints are not an ABI, but there is also no point in arbitrarily
-breaking all current scripts for such a trivial reason.
+> > Anyway if requested, I will move in v3 the driver to a dedicated
+> > directory and move the function to a separate file!
+> > 
+> 
 
-> +
-> +       TP_STRUCT__entry(
-> +               __field(int, order)
-> +               __field(unsigned long, gfp_flags)
-> +               __array(char, name, NAME_MAX + 1)
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->order =3D order;
-> +               __entry->gfp_flags =3D (__force unsigned long)gfp_flags;
-> +               cgroup_name(memcg->css.cgroup,
-> +                       __entry->name,
-> +                       sizeof(__entry->name));
-> +       ),
-> +
-> +       TP_printk("memcg=3D%s order=3D%d gfp_flags=3D%s",
-> +               __entry->name,
-> +               __entry->order,
-> +               show_gfp_flags(__entry->gfp_flags))
->  );
-
-[...]
+-- 
+	Ansuel
