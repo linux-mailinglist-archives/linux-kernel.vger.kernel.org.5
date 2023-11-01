@@ -2,156 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A877DE494
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8EB7DE499
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbjKAQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 12:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S231770AbjKAQcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 12:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjKAQ1X (ORCPT
+        with ESMTP id S231345AbjKAQcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 12:27:23 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2893DFD;
-        Wed,  1 Nov 2023 09:27:19 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.72.206) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 1 Nov
- 2023 19:27:11 +0300
-Subject: Re: [PATCH fixes 2/3] MIPS: Loongson64: Enable DMA noncoherent
- support
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Huacai Chen <chenhuacai@kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com>
- <20231101-loongson64_fixes-v1-2-2a2582a4bfa9@flygoat.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <f1d9a544-bb08-f78a-2a27-437cb9261a16@omp.ru>
-Date:   Wed, 1 Nov 2023 19:27:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20231101-loongson64_fixes-v1-2-2a2582a4bfa9@flygoat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.72.206]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/01/2023 16:16:54
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181058 [Nov 01 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.206
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/01/2023 16:21:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/1/2023 2:02:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 12:32:01 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8CB101
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 09:31:58 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc323b2aa3so30372455ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 09:31:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698856318; x=1699461118; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YV/Jadwf9F+4h9faQyKBO/VGXY2YU0z1WDp/3xRNHSA=;
+        b=H0peW2VgEHgEAmUBl8WSgwDu6k3CQIV6n15GUScEvSn79JwEn8g4dsqv2PfNQmSRHg
+         mOr2XyOBSXinROqvvc2GgKs1M6Psbmyf3XBBY7PvM9YV5NQChNUy3xr0RR1I0AdhZFNj
+         /SEtTbNu0cOhpnalVQUgXoJd6qFRGEirEilPOzervJ/2/0VSipCg1CQpoQKk5UNouxy0
+         71lE735dwCIub4yXv1iTRdUMUZ3mAyODMCZLa3WDd4K01dmctSTNMadjXZeKZf7Okjqb
+         G8704HOhBl/ifqqMLgPT98Ih3vTLySx1YzU1a92CT0vd+c0zoH8M5gkyV02gwZzB2ptg
+         x/MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698856318; x=1699461118;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YV/Jadwf9F+4h9faQyKBO/VGXY2YU0z1WDp/3xRNHSA=;
+        b=GjB7cdmOaYm67bPAWU/96JV8q45KwK4N4MM/36UaNsHKbugGcHHlkXanWhSzpgvdTY
+         0Cw74+WLNKnXzFdoyfUsLb5VEZ/WIDOoQOhKvK6ZraNdNukvmgIe/ggevcw5hKCYjWY/
+         GHjNwRQ7tpz/wqy3T6e+nTsoAeaM7R5G6JokKffmAMVxVZgQstUHQMOkhGuiqK14ol5f
+         oh0Zcac/ViXQemMiKbU1mgLp/zy9Tu5bbXPf3OaB8waPbvziFlIfscYUbSPgfANkLjzF
+         k5E6w80oV5ajNI+48ESRT1JfRQUfoHBuVHygEI43VRXr7erxh9hm8qMyproXLeV0AXYF
+         j0CQ==
+X-Gm-Message-State: AOJu0YyOxvA1R/LzYpF8flCs0UspjZArd12Gw9vMJUh3mTJK0pUS+cg0
+        w5ZaFFFphq4RmpEb+8cic/4j+EBkC5Y=
+X-Google-Smtp-Source: AGHT+IFjPqC/TQoUJx9xijTOJvOyhtwW2g8NWHhEyZb55Fnj2J2udLjDB8ouZshuVH4VRanHeJsp8MbYxRU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:25d2:b0:1cc:2ffe:5a27 with SMTP id
+ jc18-20020a17090325d200b001cc2ffe5a27mr230020plb.9.1698856318050; Wed, 01 Nov
+ 2023 09:31:58 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 09:31:56 -0700
+In-Reply-To: <d67fe0ca19f7aef855aa376ada0fc96a66ca0d4f.camel@redhat.com>
+Mime-Version: 1.0
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-20-weijiang.yang@intel.com> <d67fe0ca19f7aef855aa376ada0fc96a66ca0d4f.camel@redhat.com>
+Message-ID: <ZUJ9fDuQUNe9BLUA@google.com>
+Subject: Re: [PATCH v6 19/25] KVM: VMX: Emulate read and write to CET MSRs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/23 2:39 PM, Jiaxun Yang wrote:
+On Tue, Oct 31, 2023, Maxim Levitsky wrote:
+> On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+> > Add emulation interface for CET MSR access. The emulation code is split
+> > into common part and vendor specific part. The former does common check
+> > for MSRs and reads/writes directly from/to XSAVE-managed MSRs via the
+> > helpers while the latter accesses the MSRs linked to VMCS fields.
+> > 
+> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > ---
 
-> There are some Loongson64 systems come with broken coherent DMA
-> support, firmware will set a bit in boot_param and pass nocoherentio
-> in cmdline.
-> 
-> However nonconherent support was missed out when spin off Loongson-2EF
-> form Loongson64, and that boot_param change never made itself into
-> upstream.
-> 
-> Support DMA noncoherent properly to get those systems work.
+...
 
-   Working.
+> > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+> > +	case MSR_KVM_SSP:
+> > +		if (host_msr_reset && kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+> > +			break;
+> > +		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK))
+> > +			return 1;
+> > +		if (index == MSR_KVM_SSP && !host_initiated)
+> > +			return 1;
+> > +		if (is_noncanonical_address(data, vcpu))
+> > +			return 1;
+> > +		if (index != MSR_IA32_INT_SSP_TAB && !IS_ALIGNED(data, 4))
+> > +			return 1;
+> > +		break;
+> Once again I'll prefer to have an ioctl for setting/getting SSP, this will
+> make the above code simpler (e.g there will be no need to check that write
+> comes from the host/etc).
 
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 71e2f4dd5a65 ("MIPS: Fork loongson2ef from loongson64")
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-[...]
+I don't think an ioctl() would be simpler overall, especially when factoring in
+userspace.  With a synthetic MSR, we get the following quite cheaply:
 
-> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> index 035b1a69e2d0..c454ef734c45 100644
-> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> @@ -117,7 +117,8 @@ struct irq_source_routing_table {
->  	u64 pci_io_start_addr;
->  	u64 pci_io_end_addr;
->  	u64 pci_config_addr;
-> -	u32 dma_mask_bits;
-> +	u16 dma_mask_bits;
-> +	u16 dma_noncoherent;
->  } __packed;
->  
->  struct interface_info {
-> diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-> index c961e2999f15..df0e92cd3920 100644
-> --- a/arch/mips/loongson64/env.c
-> +++ b/arch/mips/loongson64/env.c
-> @@ -13,6 +13,8 @@
->   * Copyright (C) 2009 Lemote Inc.
->   * Author: Wu Zhangjin, wuzhangjin@gmail.com
->   */
-> +
-> +#include <linux/dma-map-ops.h>
->  #include <linux/export.h>
->  #include <linux/pci_ids.h>
->  #include <asm/bootinfo.h>
-> @@ -147,8 +149,13 @@ void __init prom_lefi_init_env(void)
->  
->  	loongson_sysconf.dma_mask_bits = eirq_source->dma_mask_bits;
->  	if (loongson_sysconf.dma_mask_bits < 32 ||
-> -		loongson_sysconf.dma_mask_bits > 64)
-> +		loongson_sysconf.dma_mask_bits > 64) {
+ 1. Enumerating support to userspace.
+ 2. Save/restore of the value, e.g. for live migration.
+ 3. Vendor hooks for propagating values to/from the VMCS/VMCB.
 
-   Please indent this line differently, so it doesn't blend
-with the following line (either start it in the same column
-as the *if* expression above, or add 1 more tab).
+For an ioctl(), #1 would require a capability, #2 (and #1 to some extent) would
+require new userspace flows, and #3 would require new kvm_x86_ops hooks.
 
->  		loongson_sysconf.dma_mask_bits = 32;
-> +		dma_default_coherent = true;
-> +	} else
+The synthetic MSR adds a small amount of messiness, as does bundling 
+MSR_IA32_INT_SSP_TAB with the other shadow stack MSRs.  The bulk of the mess comes
+from the need to allow userspace to write '0' when KVM enumerated supported to
+userspace.
 
-   The kernel style dictates that you need to add {} on the *else*
-branchh too.
+If we isolate MSR_IA32_INT_SSP_TAB, that'll help with the synthetic MSR and with
+MSR_IA32_INT_SSP_TAB.  For the unfortunate "host reset" behavior, the best idea I
+came up with is to add a helper.  It's still a bit ugly, but the ugliness is
+contained in a helper and IMO makes it much easier to follow the case statements.
 
-> +		dma_default_coherent = !eirq_source->dma_noncoherent;
-> +
-> +	pr_info("DMA coherent: %s\n", dma_default_coherent ? "on" : "off");
+get:
 
-   Maybe "Coherent DMA: %s\n"?
+	case MSR_IA32_INT_SSP_TAB:
+		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) ||
+		    !guest_cpuid_has(vcpu, X86_FEATURE_LM))
+			return 1;
+		break;
+	case MSR_KVM_SSP:
+		if (!host_initiated)
+			return 1;
+		fallthrough;
+	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK))
+			return 1;
+		break;
 
-[...]
+static bool is_set_cet_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u64 data,
+				   bool host_initiated)
+{
+	bool any_cet = index == MSR_IA32_S_CET || index == MSR_IA32_U_CET;
 
-MBR, Sergey
+	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
+		return true;
+
+	if (any_cet && guest_can_use(vcpu, X86_FEATURE_IBT))
+		return true;
+
+	/* 
+	 * If KVM supports the MSR, i.e. has enumerated the MSR existence to
+	 * userspace, then userspace is allowed to write '0' irrespective of
+	 * whether or not the MSR is exposed to the guest.
+	 */
+	if (!host_initiated || data)
+		return false;
+
+	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+		return true;
+
+	return any_cet && kvm_cpu_cap_has(X86_FEATURE_IBT);
+}
+
+set:
+	case MSR_IA32_U_CET:
+	case MSR_IA32_S_CET:
+		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated))
+			return 1;
+		if (data & CET_US_RESERVED_BITS)
+			return 1;
+		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
+		    (data & CET_US_SHSTK_MASK_BITS))
+			return 1;
+		if (!guest_can_use(vcpu, X86_FEATURE_IBT) &&
+		    (data & CET_US_IBT_MASK_BITS))
+			return 1;
+		if (!IS_ALIGNED(CET_US_LEGACY_BITMAP_BASE(data), 4))
+			return 1;
+
+		/* IBT can be suppressed iff the TRACKER isn't WAIT_ENDBR. */
+		if ((data & CET_SUPPRESS) && (data & CET_WAIT_ENDBR))
+			return 1;
+		break;
+	case MSR_IA32_INT_SSP_TAB:
+		if (!guest_cpuid_has(vcpu, X86_FEATURE_LM))
+			return 1;
+
+		if (is_noncanonical_address(data, vcpu))
+			return 1;
+		break;
+	case MSR_KVM_SSP:
+		if (!host_initiated)
+			return 1;
+		fallthrough;
+	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated))
+			return 1;
+		if (is_noncanonical_address(data, vcpu))
+			return 1;
+		if (!IS_ALIGNED(data, 4))
+			return 1;
+		break;
+	}
