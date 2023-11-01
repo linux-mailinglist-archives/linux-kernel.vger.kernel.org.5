@@ -2,160 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E07697DE489
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A877DE494
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343818AbjKAQYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 12:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
+        id S231806AbjKAQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 12:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjKAQYh (ORCPT
+        with ESMTP id S231345AbjKAQ1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 12:24:37 -0400
-Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF60D10C
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 09:24:31 -0700 (PDT)
-Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1e98b1bad34so21745fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 09:24:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698855871; x=1699460671;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5PsaySvfTDD9q1J9f+GuzFXfSH+Ayr9JaEuL3ziAbsQ=;
-        b=jIOxMvL1dVn9EV0WkhtZhxl2Fp5GxUoPkabOOrP2ZkSjdwoH5G5Tx38f4cDeoCId0m
-         ChX/uIFQqSURvHB5DlBaV2tgkhRYrng29b2K3NEKJWgGlEz9sCbTXep1JELIgJresJNA
-         +Fb3jqRO5AQ3C1GkIAzHBcJ6yezGiPIk4bbULfVpgCQDkcqS/Sbey2JmqFTkTPxm0Ro7
-         CDH7nd9zVqgavJ/j85U5+Gtg8PuiN9A63qJ54fz/SyA6ge3Rh+NvPYQRMTrOXwOCMEUn
-         jsNzfkDpwy3vOfVF61pJhv0sGKp4FhIkSwSbMmMS4OC0nC/OTowtsFO53l/tckfDP5aB
-         upag==
-X-Gm-Message-State: AOJu0Yx6zCsaX5AKrQG6cKHNG/ftcrDEx7fIDvuojeOeSqzPrFLHlo++
-        o5rqoKQiskCLABGcNeqNcXx5/QGnm0vNiU8UkJZMTsAcZZXk
-X-Google-Smtp-Source: AGHT+IFAnetEgMZ7wlXJeiFipYMWPGJyKKSH8m+izWS1ReoWcXDpLUdoev8S4ZfvpVliPZvW8UTtjpliacQ9+CgjCuQpHdA9xuyR
+        Wed, 1 Nov 2023 12:27:23 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2893DFD;
+        Wed,  1 Nov 2023 09:27:19 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.72.206) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 1 Nov
+ 2023 19:27:11 +0300
+Subject: Re: [PATCH fixes 2/3] MIPS: Loongson64: Enable DMA noncoherent
+ support
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Huacai Chen <chenhuacai@kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com>
+ <20231101-loongson64_fixes-v1-2-2a2582a4bfa9@flygoat.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <f1d9a544-bb08-f78a-2a27-437cb9261a16@omp.ru>
+Date:   Wed, 1 Nov 2023 19:27:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:b684:b0:1e9:c362:a397 with SMTP id
- cy4-20020a056870b68400b001e9c362a397mr8396631oab.10.1698855871148; Wed, 01
- Nov 2023 09:24:31 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 09:24:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b987aa060919b4b1@google.com>
-Subject: [syzbot] [hfs?] kernel BUG in __block_write_full_folio
-From:   syzbot <syzbot+c2827a62c6978df9ccc3@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231101-loongson64_fixes-v1-2-2a2582a4bfa9@flygoat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.206]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/01/2023 16:16:54
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181058 [Nov 01 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.206
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/01/2023 16:21:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/1/2023 2:02:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/1/23 2:39 PM, Jiaxun Yang wrote:
 
-syzbot found the following issue on:
+> There are some Loongson64 systems come with broken coherent DMA
+> support, firmware will set a bit in boot_param and pass nocoherentio
+> in cmdline.
+> 
+> However nonconherent support was missed out when spin off Loongson-2EF
+> form Loongson64, and that boot_param change never made itself into
+> upstream.
+> 
+> Support DMA noncoherent properly to get those systems work.
 
-HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=143d173b680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=c2827a62c6978df9ccc3
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1569f36f680000
+   Working.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/0fdeae0e53d7/mount_4.gz
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 71e2f4dd5a65 ("MIPS: Fork loongson2ef from loongson64")
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+[...]
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c2827a62c6978df9ccc3@syzkaller.appspotmail.com
+> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
+> index 035b1a69e2d0..c454ef734c45 100644
+> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
+> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
+> @@ -117,7 +117,8 @@ struct irq_source_routing_table {
+>  	u64 pci_io_start_addr;
+>  	u64 pci_io_end_addr;
+>  	u64 pci_config_addr;
+> -	u32 dma_mask_bits;
+> +	u16 dma_mask_bits;
+> +	u16 dma_noncoherent;
+>  } __packed;
+>  
+>  struct interface_info {
+> diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
+> index c961e2999f15..df0e92cd3920 100644
+> --- a/arch/mips/loongson64/env.c
+> +++ b/arch/mips/loongson64/env.c
+> @@ -13,6 +13,8 @@
+>   * Copyright (C) 2009 Lemote Inc.
+>   * Author: Wu Zhangjin, wuzhangjin@gmail.com
+>   */
+> +
+> +#include <linux/dma-map-ops.h>
+>  #include <linux/export.h>
+>  #include <linux/pci_ids.h>
+>  #include <asm/bootinfo.h>
+> @@ -147,8 +149,13 @@ void __init prom_lefi_init_env(void)
+>  
+>  	loongson_sysconf.dma_mask_bits = eirq_source->dma_mask_bits;
+>  	if (loongson_sysconf.dma_mask_bits < 32 ||
+> -		loongson_sysconf.dma_mask_bits > 64)
+> +		loongson_sysconf.dma_mask_bits > 64) {
 
-------------[ cut here ]------------
-kernel BUG at fs/buffer.c:1901!
-Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 13080 Comm: syz-executor.5 Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __block_write_full_folio+0xd80/0xe24 fs/buffer.c:1901
-lr : __block_write_full_folio+0xd80/0xe24 fs/buffer.c:1901
-sp : ffff800098116560
-x29: ffff8000981165c0 x28: fffffc0003731000 x27: 1fffe0001b970091
-x26: dfff800000000000 x25: ffff0000c14f9570 x24: 0000000000000080
-x23: 0000000000000002 x22: 0000000000000004 x21: ffff0000c14f9570
-x20: ffff0000c14f9570 x19: 05ffc0000000811f x18: 1fffe000193d1469
-x17: 0000000000000000 x16: ffff80008a71b360 x15: 0000000000000001
-x14: 1fffe0003683238c x13: 0000000000000000 x12: 0000000000000003
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000d92f5340 x7 : ffff8000807d0e78 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
-x2 : 0000000000000007 x1 : 0000000000000002 x0 : 0000000000000000
-Call trace:
- __block_write_full_folio+0xd80/0xe24 fs/buffer.c:1901
- block_write_full_page+0x544/0x660
- hfsplus_writepage+0x30/0x40 fs/hfsplus/inode.c:33
- writeout mm/migrate.c:897 [inline]
- fallback_migrate_folio mm/migrate.c:921 [inline]
- move_to_new_folio+0x624/0xc24 mm/migrate.c:970
- migrate_folio_move mm/migrate.c:1274 [inline]
- migrate_pages_batch+0x1a2c/0x25f4 mm/migrate.c:1759
- migrate_pages_sync mm/migrate.c:1847 [inline]
- migrate_pages+0x1b9c/0x302c mm/migrate.c:1929
- compact_zone+0x274c/0x4158 mm/compaction.c:2515
- compact_node+0x234/0x3c0 mm/compaction.c:2812
- compact_nodes mm/compaction.c:2825 [inline]
- sysctl_compaction_handler+0x110/0x1d4 mm/compaction.c:2871
- proc_sys_call_handler+0x4cc/0x7cc fs/proc/proc_sysctl.c:600
- proc_sys_write+0x2c/0x3c fs/proc/proc_sysctl.c:626
- do_iter_write+0x65c/0xaa8 fs/read_write.c:860
- vfs_iter_write+0x88/0xac fs/read_write.c:901
- iter_file_splice_write+0x628/0xc58 fs/splice.c:736
- do_splice_from fs/splice.c:933 [inline]
- direct_splice_actor+0xe4/0x1c0 fs/splice.c:1142
- splice_direct_to_actor+0x2a0/0x7e4 fs/splice.c:1088
- do_splice_direct+0x20c/0x348 fs/splice.c:1194
- do_sendfile+0x4b8/0xcc4 fs/read_write.c:1254
- __do_sys_sendfile64 fs/read_write.c:1316 [inline]
- __se_sys_sendfile64 fs/read_write.c:1308 [inline]
- __arm64_sys_sendfile64+0x23c/0x3b4 fs/read_write.c:1308
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-Code: aa1c03e0 97f37837 d4210000 97e5ff75 (d4210000) 
----[ end trace 0000000000000000 ]---
+   Please indent this line differently, so it doesn't blend
+with the following line (either start it in the same column
+as the *if* expression above, or add 1 more tab).
 
+>  		loongson_sysconf.dma_mask_bits = 32;
+> +		dma_default_coherent = true;
+> +	} else
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+   The kernel style dictates that you need to add {} on the *else*
+branchh too.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +		dma_default_coherent = !eirq_source->dma_noncoherent;
+> +
+> +	pr_info("DMA coherent: %s\n", dma_default_coherent ? "on" : "off");
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+   Maybe "Coherent DMA: %s\n"?
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+[...]
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+MBR, Sergey
