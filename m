@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9431C7DE4C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F34D7DE4C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344136AbjKAQlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 12:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S1344134AbjKAQmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 12:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjKAQlM (ORCPT
+        with ESMTP id S231233AbjKAQmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 12:41:12 -0400
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD643101;
-        Wed,  1 Nov 2023 09:41:09 -0700 (PDT)
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1cc3216b2a1so30314825ad.2;
-        Wed, 01 Nov 2023 09:41:09 -0700 (PDT)
+        Wed, 1 Nov 2023 12:42:00 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68505122;
+        Wed,  1 Nov 2023 09:41:58 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-409299277bbso45745815e9.2;
+        Wed, 01 Nov 2023 09:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698856917; x=1699461717; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehLytG5Lm/m8qAHZ+syDbxWvnyxatw+QyGWbeWWsGIU=;
+        b=cxVMYWGgjnJc20QcJxLCN64jwi4Ce2dL0Osu/gIGtLuGXvl3HKUEHUa1s5dclyYIEH
+         NEP1VimUh7rugT+lPvYBnPvnWu+NK54v3Is2DxHGCeM+6veVc78L8vmEB3G3TMoVELl/
+         gV8DReXLLcDYLcUPE6eS1Rb+o8059yWhKLMsQktYGxWos9749H+NijnOC5JfhIf6f3Vc
+         LBobY1iKFP0mFL8oif9sAlLxh38bRRiLFEeiUq1KAVnKVL01iSpqjksFePU/nhHvx7z4
+         fk7/12rjHgBWIDLAlAfb3PN90chuYxVkiibd1d8CHK2YMr3BkPWw6AKX97jROEIIx0eh
+         CM+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698856869; x=1699461669;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b+opAGuk+SjszooQP+bzRmo6Dg400E28RdHt2ncsoH0=;
-        b=qDuJ6+eV3llRfDwxdlZhqlXUyT98bcBjELOu9E96L7JyS5B5psM4wkkB1KmUFD5gpv
-         9zq9/53BAnu/9101GcOmnheTsujO4QOW1+VCNFYMwO8d5g9LmFQ3XSMZC93wRH8Mvl4E
-         QCbHZ+AVExPpjHLqN+aigcczJOmz4VL42iuF4QcQwMhRUOmYnwkl2Ygw/oiPQtp/L7/o
-         BEmQA+fqjfN8WYA04X1K9+cqaZzsdIqxNn+EqT2fxLa0ZLpbxS/fAh+T09WbY7e1jCLu
-         VyBeujHZ+EZ+qZK8oi4BHRhL2nNM0AjOWfHFDCt4Jk/cgPt6neNc1lEBcLxfMpmYKCu5
-         jbwQ==
-X-Gm-Message-State: AOJu0YzEXWiC/NRxiuGb7pioVywd8tu18JHdwPceiBviNp+ISikxwvC5
-        S08KxV08W0cdGUgRpz7IP4I=
-X-Google-Smtp-Source: AGHT+IGg5AzXY63twkWghPNw6C7tntLttMWoxGkD3DnikuNd8PsmAbkzHqnqH/lLjvQSnRHbLLBmHQ==
-X-Received: by 2002:a17:902:6803:b0:1bf:c59:c944 with SMTP id h3-20020a170902680300b001bf0c59c944mr12504402plk.22.1698856869220;
-        Wed, 01 Nov 2023 09:41:09 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:2312:f48f:8e12:6623? ([2620:15c:211:201:2312:f48f:8e12:6623])
-        by smtp.gmail.com with ESMTPSA id s9-20020a170902ea0900b001c3267ae317sm1541678plg.165.2023.11.01.09.41.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 09:41:08 -0700 (PDT)
-Message-ID: <cfcd744a-8986-452c-9c27-71a2e6b245f4@acm.org>
-Date:   Wed, 1 Nov 2023 09:41:06 -0700
+        d=1e100.net; s=20230601; t=1698856917; x=1699461717;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ehLytG5Lm/m8qAHZ+syDbxWvnyxatw+QyGWbeWWsGIU=;
+        b=i4t9p2fRlI39eoCZzuHy0lG5/5Gp5eH1T+YE7Pvvcwpa47J61N9gNFKIwbXBlTKzpd
+         EuzKwQtbPtHWnluPOZAnf++w3junMIZQ+r+KHi/LtynjiWienCDf6xhf2Y8G+xH2eFqa
+         ZktyKW6tXjEjhpqu4Q9DlU/pO9zw23KFdl2U2XeF0jgL0F8VWOZps6Os1sxB1n0anayn
+         ozvqVh92pkp9KRXYq8bYPHyDembGGkVYXf82F20X6fQUdIoaBTLY8c/+JOwb1DsS3IIc
+         849StTSGLg+nJEHC+hgI28mn1fHqXbKhSHi1IYbYlJZjRjuOndl9C40+ZYxmmCavWL4T
+         B1+A==
+X-Gm-Message-State: AOJu0YwXI6YhS8QVV2SGi4/S92UjEkguiCs5FJskxO8akLsSeAk36Fqq
+        ZlaYrkyUyLgmb5a8FUHi91s=
+X-Google-Smtp-Source: AGHT+IH1cv3srURZBKYzAKH61o4WsiM1ZhlAF4FyGZIbI6s1ew2ZAr1yiNQIy/qjfyExiMcfVELg0A==
+X-Received: by 2002:a5d:4d09:0:b0:32d:9d99:94e7 with SMTP id z9-20020a5d4d09000000b0032d9d9994e7mr13885540wrt.49.1698856916448;
+        Wed, 01 Nov 2023 09:41:56 -0700 (PDT)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id e16-20020adff350000000b0032daf848f68sm253005wrp.59.2023.11.01.09.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 09:41:56 -0700 (PDT)
+Message-ID: <65427fd4.df0a0220.28d26.1955@mx.google.com>
+X-Google-Original-Message-ID: <ZUJ/0gYlnN7GwSuC@Ansuel-xps.>
+Date:   Wed, 1 Nov 2023 17:41:54 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robimarko@gmail.com>
+Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
+ support
+References: <20231101123608.11157-1-ansuelsmth@gmail.com>
+ <4b536ad3-2112-4f28-90e4-586b5745be20@lunn.ch>
+ <65427400.5d0a0220.41c58.0ded@mx.google.com>
+ <34a0b76e-aa0e-4148-ba01-c3b4608f17f7@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] ufs: core: Expand MCQ queue slot to
- DeviceQueueDepth + 1
-Content-Language: en-US
-To:     naomi.chu@mediatek.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     wsd_upstream@mediatek.com, peter.wang@mediatek.com,
-        casper.li@mediatek.com, powen.kao@mediatek.com,
-        alice.chao@mediatek.com, chun-hung.wu@mediatek.com,
-        cc.chou@mediatek.com, eddie.huang@mediatek.com
-References: <20231101082402.20856-1-naomi.chu@mediatek.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231101082402.20856-1-naomi.chu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <34a0b76e-aa0e-4148-ba01-c3b4608f17f7@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/23 01:24, naomi.chu@mediatek.com wrote:
-> From: Naomi Chu <naomi.chu@mediatek.com>
+On Wed, Nov 01, 2023 at 05:32:29PM +0100, Andrew Lunn wrote:
+> > > > +	for (pos = 0; pos < len; pos += min(sizeof(u32), len - pos)) {
+> > > > +		u32 word = 0;
+> > > > +
+> > > > +		memcpy(&word, data + pos, min(sizeof(u32), len - pos));
+> > > 
+> > > Rather than do a memcpy, use the get_unaligned_ macros. They might map
+> > > to a memcpy(), but some architectures can do unaligned accesses
+> > > without problems.
+> > > 
+> > 
+> > I don't think this is doable for this loop, think we would end up in
+> > some funny situation where for the last run we have to copy less than
+> > u32. (get_unaligned would always take u32 of data and that would end up
+> > reading more than requested) Am I wrong?
 > 
-> Allow UFSHCI 4.0 controllers to fully utilize MCQ queue slots.
-> 
-> Signed-off-by: Naomi Chu <naomi.chu@mediatek.com>
-> ---
->   drivers/ufs/core/ufs-mcq.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
-> index 2ba8ec254dce..5c75ab9d6bb5 100644
-> --- a/drivers/ufs/core/ufs-mcq.c
-> +++ b/drivers/ufs/core/ufs-mcq.c
-> @@ -436,7 +436,7 @@ int ufshcd_mcq_init(struct ufs_hba *hba)
->   
->   	for (i = 0; i < hba->nr_hw_queues; i++) {
->   		hwq = &hba->uhq[i];
-> -		hwq->max_entries = hba->nutrs;
-> +		hwq->max_entries = hba->nutrs + 1;
->   		spin_lock_init(&hwq->sq_lock);
->   		spin_lock_init(&hwq->cq_lock);
->   		mutex_init(&hwq->sq_mutex);
+> Does it happen in practice that the last chunk is not 4 bytes?  Since
+> this is firmware, its probably produced by some sort of linker, and
+> they often round segments to words. Could you take a look at the
+> firmware images you have access to and see if this is true?
+>
+> It could be we do need to keep with the memcpy, but it would be nice
+> if we could limit it to words, at least until somebody has a firmware
+> which is not word aligned.
+>
 
-Please add a Fixes: tag and expand the patch description. What should be
-mentioned in the patch description is that the UFSHCI specification
-requires that there is always at least one empty slot in each completion
-queue. I think that is why the above change is necessary.
+There are plenty of firmware around so it can be checked by from what I
+have, it looks like they are word aligned... Ok I will use the
+get_unaligned and add a comment saying that we assume the iram and dram
+section are always word aligned.
 
-Thanks,
+Is it ok?
 
-Bart.
+-- 
+	Ansuel
