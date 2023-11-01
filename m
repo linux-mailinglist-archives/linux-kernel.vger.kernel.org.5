@@ -2,174 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8E47DE7B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AB97DE7BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbjKAVzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 17:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
+        id S1343861AbjKAV5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 17:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbjKAVzw (ORCPT
+        with ESMTP id S231281AbjKAV47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 17:55:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275AD125
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:55:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da033914f7cso315870276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 14:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698875748; x=1699480548; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PcqXHpLnYUoCfOstmB/gusaSnz1wSaaIZvticgi9YrM=;
-        b=yordn67/B9coJ27wikY+cNB1RREF7cB4b3Ue4KVs4bUxR7NMszr2uB6DsTcvRFezm4
-         Mv9vIV4D1zL7Ebq8eYUvDJaTsA+b6DbfwYGOyfYZ+gn6JBg2zh32vssNDt0PgQWyi3Hc
-         V30xoKLPHpSqs3H12W5kHbw59Cp3oq89IhbOXGRukrdOHcIips6mw6fvttACqcV26Iao
-         o3OJKk/xvzHC16DLzD0pyWC3byA8iAor+alj9Jl/Ez2piZBXn5OAsYe77vVBVgD3KaOP
-         Uo0at9aIB4srFmOFz36vXvyhDqsKT+KVB/6JAS3Kq2OtaQ1RroksSDGcgJr8iz7Y9trj
-         xkLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698875748; x=1699480548;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PcqXHpLnYUoCfOstmB/gusaSnz1wSaaIZvticgi9YrM=;
-        b=WZGaDetqEicFnkQ5GkckZ1dCqMHmSbafYzFKJI7RuQbiBgvFMQnPFMs9bcTxnIwjg3
-         GYYoq+smNu9l9Mmd/4sBRzAzusLGJoKNgMuQjaS/fgYhxY5qJViXz1vkHbAKkkqGpRxb
-         dZgtCkrNjMSxMjBjQLfOC8LeHis0tZJ1/ia05eOEY56Oo1Q6ITmeS75CHi+LF6hgFY6O
-         WP0ByBzm1/5wBI1zEg6YqQBGp0eG9dMka8jKG64wsmQSHtBq2WcpdGCGtoomkWgIS6aW
-         pJ7KzypS9F89Rx9b/uGt2XHyqS1ReJVeSdCzSjjgMv+/Kja913w2WcKbglpTgTOoi4Bz
-         ZhXA==
-X-Gm-Message-State: AOJu0YwojN7UfsE5KcYxcoVOv/AYdFuJ5qibsilSZDMmuLUN38VWocss
-        DFEB2HCy+Ep+ViOPsJcJDIUgjMJ7ugg=
-X-Google-Smtp-Source: AGHT+IE2sMY2tsOG0bVHgm+pvNoyezNqlGkOo8OmSBoeRdI+YDBZP5bgBr5ffHZ4bVc102IwBIrDYpGpUa8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP id
- v3-20020a056902108300b00d9ac3b84274mr405001ybu.7.1698875748263; Wed, 01 Nov
- 2023 14:55:48 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 14:55:46 -0700
-In-Reply-To: <CA+EHjTwTT9cFzYTtwT43nLJS01Sgt0NqzUgKAnfo2fiV3tEvXg@mail.gmail.com>
+        Wed, 1 Nov 2023 17:56:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153B6119;
+        Wed,  1 Nov 2023 14:56:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88281C433C7;
+        Wed,  1 Nov 2023 21:56:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1698875813;
+        bh=gno+Qq/S9t9Xx5vxCvbTys4gMgigrQ0DXVdnE3+iPpM=;
+        h=Date:From:To:Subject:In-Reply-To:References:From;
+        b=bnATcLlHnN/ATGsZYeuY1BQo/UULv5rGPJqin6da2KuPN1eZf/fcyMERYs8hh4hNv
+         j09w+KxpI7ufcxWwezOQHRobfvkvcaotLlJuxFgx6neniBvAwKlVD96CGvykoZbP2P
+         gJ3lR+JBYvKB0YmtJz9aLa46axH3ZqmVmwNFVKo8=
+Date:   Wed, 1 Nov 2023 14:56:52 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+        mm-commits@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] MM updates for 6.7-rc1
+Message-Id: <20231101145652.8ff234ca6c327c5e49e2b21f@linux-foundation.org>
+In-Reply-To: <20231101145447.60320c9044e7db4dba2d93e3@linux-foundation.org>
+References: <20231101145447.60320c9044e7db4dba2d93e3@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
- <CA+EHjTzj4drYKONVOLP19DYpJ4O8kSXcFzw2AKier1QdcFKx_Q@mail.gmail.com>
- <ZUF8A5KpwpA6IKUH@google.com> <CA+EHjTwTT9cFzYTtwT43nLJS01Sgt0NqzUgKAnfo2fiV3tEvXg@mail.gmail.com>
-Message-ID: <ZULJYg5cf1UrNq3e@google.com>
-Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023, Fuad Tabba wrote:
-> > > > @@ -1034,6 +1034,9 @@ static void kvm_destroy_dirty_bitmap(struct kvm_memory_slot *memslot)
-> > > >  /* This does not remove the slot from struct kvm_memslots data structures */
-> > > >  static void kvm_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> > > >  {
-> > > > +       if (slot->flags & KVM_MEM_PRIVATE)
-> > > > +               kvm_gmem_unbind(slot);
-> > > > +
-> > >
-> > > Should this be called after kvm_arch_free_memslot()? Arch-specific ode
-> > > might need some of the data before the unbinding, something I thought
-> > > might be necessary at one point for the pKVM port when deleting a
-> > > memslot, but realized later that kvm_invalidate_memslot() ->
-> > > kvm_arch_guest_memory_reclaimed() was the more logical place for it.
-> > > Also, since that seems to be the pattern for arch-specific handlers in
-> > > KVM.
-> >
-> > Maybe?  But only if we can about symmetry between the allocation and free paths
-> > I really don't think kvm_arch_free_memslot() should be doing anything beyond a
-> > "pure" free.  E.g. kvm_arch_free_memslot() is also called after moving a memslot,
-> > which hopefully we never actually have to allow for guest_memfd, but any code in
-> > kvm_arch_free_memslot() would bring about "what if" questions regarding memslot
-> > movement.  I.e. the API is intended to be a "free arch metadata associated with
-> > the memslot".
-> >
-> > Out of curiosity, what does pKVM need to do at kvm_arch_guest_memory_reclaimed()?
-> 
-> It's about the host reclaiming ownership of guest memory when tearing
-> down a protected guest. In pKVM, we currently teardown the guest and
-> reclaim its memory when kvm_arch_destroy_vm() is called. The problem
-> with guestmem is that kvm_gmem_unbind() could get called before that
-> happens, after which the host might try to access the unbound guest
-> memory. Since the host hasn't reclaimed ownership of the guest memory
-> from hyp, hilarity ensues (it crashes).
-> 
-> Initially, I hooked reclaim guest memory to kvm_free_memslot(), but
-> then I needed to move the unbind later in the function. I realized
-> later that kvm_arch_guest_memory_reclaimed() gets called earlier (at
-> the right time), and is more aptly named.
+On Wed, 1 Nov 2023 14:54:47 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
 
-Aha!  I suspected that might be the case.
+> vs bcachefs tree
+> 	https://lkml.kernel.org/r/20230913093553.4290421e@canb.auug.org.au
+> 	I shall send Stephen's conversion patch in reply to this email.
 
-TDX and SNP also need to solve the same problem of "reclaiming" memory before it
-can be safely accessed by the host.  The plan is to add an arch hook (or two?)
-into guest_memfd that is invoked when memory is freed from guest_memfd.
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: bcachefs: convert to dynamically allocated shrinkers
+Date: Tue, 12 Sep 2023 11:27:22 +1000
 
-Hooking kvm_arch_guest_memory_reclaimed() isn't completely correct as deleting a
-memslot doesn't *guarantee* that guest memory is actually reclaimed (which reminds
-me, we need to figure out a better name for that thing before introducing
-kvm_arch_gmem_invalidate()).
+Link: https://lkml.kernel.org/r/20230913093553.4290421e@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reviewed-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Kent Overstreet <kent.overstreet@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
-The effective false positives aren't fatal for the current usage because the hook
-is used only for x86 SEV guests to flush caches.  An unnecessary flush can cause
-performance issues, but it doesn't affect correctness. For TDX and SNP, and IIUC
-pKVM, false positives are fatal because KVM could assign memory back to the host
-that is still owned by guest_memfd.
+ fs/bcachefs/btree_cache.c     |   22 ++++++++++++----------
+ fs/bcachefs/btree_key_cache.c |   21 ++++++++++++---------
+ fs/bcachefs/btree_types.h     |    4 ++--
+ fs/bcachefs/fs.c              |    2 +-
+ fs/bcachefs/sysfs.c           |    2 +-
+ 5 files changed, 28 insertions(+), 23 deletions(-)
 
-E.g. a misbehaving userspace could prematurely delete a memslot.  And the more
-fun example is intrahost migration, where the plan is to allow pointing multiple
-guest_memfd files at a single guest_memfd inode:
-https://lore.kernel.org/all/cover.1691446946.git.ackerleytng@google.com
+--- a/fs/bcachefs/btree_cache.c~bcachefs-convert-to-dynamically-allocated-shrinkers
++++ a/fs/bcachefs/btree_cache.c
+@@ -285,8 +285,7 @@ static int btree_node_write_and_reclaim(
+ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+ 					   struct shrink_control *sc)
+ {
+-	struct bch_fs *c = container_of(shrink, struct bch_fs,
+-					btree_cache.shrink);
++	struct bch_fs *c = shrink->private_data;
+ 	struct btree_cache *bc = &c->btree_cache;
+ 	struct btree *b, *t;
+ 	unsigned long nr = sc->nr_to_scan;
+@@ -384,8 +383,7 @@ out_nounlock:
+ static unsigned long bch2_btree_cache_count(struct shrinker *shrink,
+ 					    struct shrink_control *sc)
+ {
+-	struct bch_fs *c = container_of(shrink, struct bch_fs,
+-					btree_cache.shrink);
++	struct bch_fs *c = shrink->private_data;
+ 	struct btree_cache *bc = &c->btree_cache;
+ 
+ 	if (bch2_btree_shrinker_disabled)
+@@ -400,7 +398,7 @@ void bch2_fs_btree_cache_exit(struct bch
+ 	struct btree *b;
+ 	unsigned i, flags;
+ 
+-	unregister_shrinker(&bc->shrink);
++	shrinker_free(bc->shrink);
+ 
+ 	/* vfree() can allocate memory: */
+ 	flags = memalloc_nofs_save();
+@@ -454,6 +452,7 @@ void bch2_fs_btree_cache_exit(struct bch
+ int bch2_fs_btree_cache_init(struct bch_fs *c)
+ {
+ 	struct btree_cache *bc = &c->btree_cache;
++	struct shrinker *shrink;
+ 	unsigned i;
+ 	int ret = 0;
+ 
+@@ -473,12 +472,15 @@ int bch2_fs_btree_cache_init(struct bch_
+ 
+ 	mutex_init(&c->verify_lock);
+ 
+-	bc->shrink.count_objects	= bch2_btree_cache_count;
+-	bc->shrink.scan_objects		= bch2_btree_cache_scan;
+-	bc->shrink.seeks		= 4;
+-	ret = register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
+-	if (ret)
++	shrink = shrinker_alloc(0, "%s/btree_cache", c->name);
++	if (!shrink)
+ 		goto err;
++	bc->shrink = shrink;
++	shrink->count_objects	= bch2_btree_cache_count;
++	shrink->scan_objects	= bch2_btree_cache_scan;
++	shrink->seeks		= 4;
++	shrink->private_data	= c;
++	shrinker_register(shrink);
+ 
+ 	return 0;
+ err:
+--- a/fs/bcachefs/btree_key_cache.c~bcachefs-convert-to-dynamically-allocated-shrinkers
++++ a/fs/bcachefs/btree_key_cache.c
+@@ -834,8 +834,7 @@ void bch2_btree_key_cache_drop(struct bt
+ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+ 					   struct shrink_control *sc)
+ {
+-	struct bch_fs *c = container_of(shrink, struct bch_fs,
+-					btree_key_cache.shrink);
++	struct bch_fs *c = shrink->private_data;
+ 	struct btree_key_cache *bc = &c->btree_key_cache;
+ 	struct bucket_table *tbl;
+ 	struct bkey_cached *ck, *t;
+@@ -932,8 +931,7 @@ out:
+ static unsigned long bch2_btree_key_cache_count(struct shrinker *shrink,
+ 					    struct shrink_control *sc)
+ {
+-	struct bch_fs *c = container_of(shrink, struct bch_fs,
+-					btree_key_cache.shrink);
++	struct bch_fs *c = shrink->private_data;
+ 	struct btree_key_cache *bc = &c->btree_key_cache;
+ 	long nr = atomic_long_read(&bc->nr_keys) -
+ 		atomic_long_read(&bc->nr_dirty);
+@@ -953,7 +951,7 @@ void bch2_fs_btree_key_cache_exit(struct
+ 	int cpu;
+ #endif
+ 
+-	unregister_shrinker(&bc->shrink);
++	shrinker_free(bc->shrink);
+ 
+ 	mutex_lock(&bc->lock);
+ 
+@@ -1027,6 +1025,7 @@ void bch2_fs_btree_key_cache_init_early(
+ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+ {
+ 	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
++	struct shrinker *shrink;
+ 
+ #ifdef __KERNEL__
+ 	bc->pcpu_freed = alloc_percpu(struct btree_key_cache_freelist);
+@@ -1039,11 +1038,15 @@ int bch2_fs_btree_key_cache_init(struct
+ 
+ 	bc->table_init_done = true;
+ 
+-	bc->shrink.seeks		= 0;
+-	bc->shrink.count_objects	= bch2_btree_key_cache_count;
+-	bc->shrink.scan_objects		= bch2_btree_key_cache_scan;
+-	if (register_shrinker(&bc->shrink, "%s/btree_key_cache", c->name))
++	shrink = shrinker_alloc(0, "%s/btree_key_cache", c->name);
++	if (!shrink)
+ 		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
++	bc->shrink = shrink;
++	shrink->seeks		= 0;
++	shrink->count_objects	= bch2_btree_key_cache_count;
++	shrink->scan_objects	= bch2_btree_key_cache_scan;
++	shrink->private_data	= c;
++	shrinker_register(shrink);
+ 	return 0;
+ }
+ 
+--- a/fs/bcachefs/btree_types.h~bcachefs-convert-to-dynamically-allocated-shrinkers
++++ a/fs/bcachefs/btree_types.h
+@@ -163,7 +163,7 @@ struct btree_cache {
+ 	unsigned		used;
+ 	unsigned		reserve;
+ 	atomic_t		dirty;
+-	struct shrinker		shrink;
++	struct shrinker		*shrink;
+ 
+ 	/*
+ 	 * If we need to allocate memory for a new btree node and that
+@@ -321,7 +321,7 @@ struct btree_key_cache {
+ 	bool			table_init_done;
+ 	struct list_head	freed_pcpu;
+ 	struct list_head	freed_nonpcpu;
+-	struct shrinker		shrink;
++	struct shrinker		*shrink;
+ 	unsigned		shrink_iter;
+ 	struct btree_key_cache_freelist __percpu *pcpu_freed;
+ 
+--- a/fs/bcachefs/fs.c~bcachefs-convert-to-dynamically-allocated-shrinkers
++++ a/fs/bcachefs/fs.c
+@@ -1904,7 +1904,7 @@ got_sb:
+ 		sb->s_flags	|= SB_POSIXACL;
+ #endif
+ 
+-	sb->s_shrink.seeks = 0;
++	sb->s_shrink->seeks = 0;
+ 
+ 	vinode = bch2_vfs_inode_get(c, BCACHEFS_ROOT_SUBVOL_INUM);
+ 	ret = PTR_ERR_OR_ZERO(vinode);
+--- a/fs/bcachefs/sysfs.c~bcachefs-convert-to-dynamically-allocated-shrinkers
++++ a/fs/bcachefs/sysfs.c
+@@ -494,7 +494,7 @@ STORE(bch2_fs)
+ 
+ 		sc.gfp_mask = GFP_KERNEL;
+ 		sc.nr_to_scan = strtoul_or_return(buf);
+-		c->btree_cache.shrink.scan_objects(&c->btree_cache.shrink, &sc);
++		c->btree_cache.shrink->scan_objects(c->btree_cache.shrink, &sc);
+ 	}
+ 
+ 	if (attr == &sysfs_btree_wakeup)
+_
 
-There was a lot of discussion for this, but it's scattered all over the place.
-The TL;DR is is that the inode will represent physical memory, and a file will
-represent a given "struct kvm" instance's view of that memory.  And so the memory
-isn't reclaimed until the inode is truncated/punched.
-
-I _think_ this reflects the most recent plan from the guest_memfd side:
-https://lore.kernel.org/all/1233d749211c08d51f9ca5d427938d47f008af1f.1689893403.git.isaku.yamahata@intel.com
