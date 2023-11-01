@@ -2,113 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A332C7DE600
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58497DE603
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbjKAS07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S232328AbjKASbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbjKAS05 (ORCPT
+        with ESMTP id S231258AbjKASbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 14:26:57 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD04E8;
-        Wed,  1 Nov 2023 11:26:55 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-778a92c06d6so1614585a.2;
-        Wed, 01 Nov 2023 11:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698863214; x=1699468014; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3VZ3WV5n4DWHHyNJJ+MsK66NBj333/Q6gIZOzccKpE8=;
-        b=EATGl0iQUtWhn4Zs2IBjEkVrP521+PdmG5VqiLXSOVMQnA4+YEvVpCWNgZqa476Ucc
-         mRFtN3NezePPwo2XXyj/yvIueJiFsBPFQcGXrPpRZnnpITD4sfQIanN3Og8om5CgW8tA
-         6HY1lM2wcHhnQm/yt2N6nlbwNWEsJ65QzXpbaZcfmRHnbvcN0Vv3nvJ5mv+cypb1qs68
-         M7hEer2XLbUxom1wgbhbGXy546CoySAS+uGULtQ7VuFmD5su/Qg4VeL89h6J27lkywbT
-         BmuTbCbitljbPCtVx9JLjj1p+DEwgqpnAiaMS1SGJ01a/gr3XEAdgcv6i5YF0/8t1luk
-         dfVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698863214; x=1699468014;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3VZ3WV5n4DWHHyNJJ+MsK66NBj333/Q6gIZOzccKpE8=;
-        b=R8TWKSTXJfbh6o61L1vICM4OPrqdeXYyvn0LrHmgHRqP7nx+ggyJ1VWfROmiyGQ1i9
-         PBFIjHsQsCpfahKNZmb+UveytVwja3LvS/hlHm8zSjQuU4a2SpEBRil1daMtAFjyWX6i
-         Fyv1Wp2pXfSwlMsfdXrffu256pt4yFNI0LysZA5vATsh5YGdLkJlETsug09Myic99FJl
-         HEJaiLrax7ljWUSsGIwmrniQfpClXkn2qM0DNIwkWMJxxotmQ0f30e+lndtwrPMjD2WO
-         cWZ+yoK2nTXHLxzHDfbzIOvTZ2Ly2cY5fGt6c6S6FkFd6mS8bIr0uwjBjEhhmFG16u9B
-         PLCw==
-X-Gm-Message-State: AOJu0Yyk7wFd85AvZZsk01prOsp8gw1RcFqpFMciJZhvuV3NOQrqULxB
-        9Iu1Nt59vguh6C6otr1C9so=
-X-Google-Smtp-Source: AGHT+IGdZeKlaiQJOZt0j8/lfOIhTom1x5FwogBoM9ZVcHXZVgCjrQUSCvZSpak8Q1d9FYbjkh+PTA==
-X-Received: by 2002:a05:620a:1786:b0:770:5ba6:af74 with SMTP id ay6-20020a05620a178600b007705ba6af74mr18257781qkb.18.1698863214112;
-        Wed, 01 Nov 2023 11:26:54 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id w1-20020a05620a094100b0076d6a08ac98sm1646904qkw.76.2023.11.01.11.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 11:26:53 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 34FEC27C005B;
-        Wed,  1 Nov 2023 14:26:53 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 01 Nov 2023 14:26:53 -0400
-X-ME-Sender: <xms:bJhCZZWWsIUI6REjc9Zh4YMaLkK7niaIPsGYgl6AL30BuPxTNQ0mcg>
-    <xme:bJhCZZkXzOJPVZtQZqu4hcg-EbT_qso41A0GpJQ8XbXfkH4SYd_uoZ6cNWmNc13ol
-    7Vrf-Ycj1IJ785qOw>
-X-ME-Received: <xmr:bJhCZVbahVQKP2EZ2ob25TWrDBXcVnmsHlgg9gEmHwsLmLbRA-qSHegGo7Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:bJhCZcWmUl_NrKjDI8cAOOBNaPQfZO6vEk9rvxLUvB0PVjwjIOGi9Q>
-    <xmx:bJhCZTnE5ac8NMMvJbXF6fPB7TumYk-mApg0SfBMRy-3BvdtQnxZ2A>
-    <xmx:bJhCZZdekr7aK0xBlA_BlyRpxfc5G0C5nUUIewit8hEM9ncfUgghlw>
-    <xmx:bZhCZTEqx_Zapl8Yvq6tFPzcT2NxGWdBrrQn7d_eGbHM0EyS9TO91w>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Nov 2023 14:26:51 -0400 (EDT)
-Date:   Wed, 1 Nov 2023 11:25:47 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Matt Gilbride <mattgilbride@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Matthew Maurer <mmaurer@google.com>
-Subject: Re: [PATCH RFC 01/20] rust_binder: define a Rust binder driver
-Message-ID: <ZUKYKw8QlPguQEBM@boqun-archlinux>
-References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
- <20231101-rust-binder-v1-1-08ba9197f637@google.com>
+        Wed, 1 Nov 2023 14:31:21 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FD2102;
+        Wed,  1 Nov 2023 11:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:To:From; bh=yudA2//70ZOKAq+8SLUXpoi/kPg8MKMLW5Pf7+MW1eI=; b=EDvoaTDkL
+        gdOOY4jiYTfDcrOWIpZGw/kwc9sCepInMbP1cW57hOf0YWejYdMZXwTmNItWllBcJGk2HHvkuFHo4
+        2SASFPvECVjCm+s/PWD8BZnDmjVtPxXJmIwsf9+P+gApPCwyIt5z8lhu9+cVxdyI0seVMMMrwxgzz
+        n8GcSXyI=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qyFzC-0000qn-UN; Wed, 01 Nov 2023 18:30:38 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qyFzC-0001gN-KO; Wed, 01 Nov 2023 18:30:38 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
+Date:   Wed,  1 Nov 2023 18:30:32 +0000
+Message-Id: <20231101183032.1498211-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101-rust-binder-v1-1-08ba9197f637@google.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,26 +57,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 06:01:31PM +0000, Alice Ryhl wrote:
-[...]
-> --- a/rust/bindings/bindings_helper.h
-> +++ b/rust/bindings/bindings_helper.h
-> @@ -21,6 +21,7 @@
->  #include <linux/sched.h>
->  #include <linux/task_work.h>
->  #include <linux/workqueue.h>
-> +#include <uapi/linux/android/binder.h>
+From: Paul Durrant <pdurrant@amazon.com>
 
-I wonder whether we could (and should) move this into
-rust/uapi/uapi_helpers.h
+Unless explicitly told to do so (by passing 'clocksource=tsc' and
+'tsc=stable:socket', and then jumping through some hoops concerning
+potential CPU hotplug) Xen will never use TSC as its clocksource.
+Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
+in either the primary or secondary pvclock memory areas. This has
+led to bugs in some guest kernels which only become evident if
+PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
+such guests, give the VMM a new Xen HVM config flag to tell KVM to
+forcibly clear the bit in the Xen pvclocks.
 
-Regards,
-Boqun
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+---
 
->  
->  /* `bindgen` gets confused at certain things. */
->  const size_t BINDINGS_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
-> 
-> -- 
-> 2.42.0.820.g83a721a137-goog
-> 
+v4:
+ - Re-base.
+ - Re-work 'update_pvclock' test as requested.
+
+v3:
+ - Moved clearing of PVCLOCK_TSC_STABLE_BIT the right side of the
+   memcpy().
+ - Added an all-vCPUs KVM_REQ_CLOCK_UPDATE when the HVM config
+   flag is changed.
+---
+ Documentation/virt/kvm/api.rst |  6 ++++++
+ arch/x86/kvm/x86.c             | 27 ++++++++++++++++++++++-----
+ arch/x86/kvm/xen.c             |  9 ++++++++-
+ include/uapi/linux/kvm.h       |  1 +
+ 4 files changed, 37 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 67347d827242..880b929a5cb1 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -8270,6 +8270,7 @@ PVHVM guests. Valid flags are::
+   #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL		(1 << 4)
+   #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+   #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
++  #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
+ 
+ The KVM_XEN_HVM_CONFIG_HYPERCALL_MSR flag indicates that the KVM_XEN_HVM_CONFIG
+ ioctl is available, for the guest to set its hypercall page.
+@@ -8313,6 +8314,11 @@ behave more correctly, not using the XEN_RUNSTATE_UPDATE flag until/unless
+ specifically enabled (by the guest making the hypercall, causing the VMM
+ to enable the KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG attribute).
+ 
++The KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag indicates that KVM supports
++clearing the PVCLOCK_TSC_STABLE_BIT flag in Xen pvclock sources. This will be
++done when the KVM_CAP_XEN_HVM ioctl sets the
++KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag.
++
+ 8.31 KVM_CAP_PPC_MULTITCE
+ -------------------------
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 2c924075f6f1..e43449382cba 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3104,7 +3104,8 @@ u64 get_kvmclock_ns(struct kvm *kvm)
+ 
+ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
+ 				    struct gfn_to_pfn_cache *gpc,
+-				    unsigned int offset)
++				    unsigned int offset,
++				    bool force_tsc_unstable)
+ {
+ 	struct kvm_vcpu_arch *vcpu = &v->arch;
+ 	struct pvclock_vcpu_time_info *guest_hv_clock;
+@@ -3141,6 +3142,10 @@ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
+ 	}
+ 
+ 	memcpy(guest_hv_clock, &vcpu->hv_clock, sizeof(*guest_hv_clock));
++
++	if (force_tsc_unstable)
++		guest_hv_clock->flags &= ~PVCLOCK_TSC_STABLE_BIT;
++
+ 	smp_wmb();
+ 
+ 	guest_hv_clock->version = ++vcpu->hv_clock.version;
+@@ -3162,6 +3167,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 	u8 pvclock_flags;
+ 	bool use_master_clock;
+ 
++	/*
++	 * For Xen guests we may need to override PVCLOCK_TSC_STABLE_BIT as unless
++	 * explicitly told to use TSC as its clocksource Xen will not set this bit.
++	 * This default behaviour led to bugs in some guest kernels which cause
++	 * problems if they observe PVCLOCK_TSC_STABLE_BIT in the pvclock flags.
++	 */
++	bool xen_pvclock_tsc_unstable =
++		ka->xen_hvm_config.flags & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
++
+ 	kernel_ns = 0;
+ 	host_tsc = 0;
+ 
+@@ -3239,13 +3253,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 	vcpu->hv_clock.flags = pvclock_flags;
+ 
+ 	if (vcpu->pv_time.active)
+-		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
++		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0, false);
+ #ifdef CONFIG_KVM_XEN
+ 	if (vcpu->xen.vcpu_info_cache.active)
+ 		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
+-					offsetof(struct compat_vcpu_info, time));
++					offsetof(struct compat_vcpu_info, time),
++					xen_pvclock_tsc_unstable);
+ 	if (vcpu->xen.vcpu_time_info_cache.active)
+-		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
++		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0,
++					xen_pvclock_tsc_unstable);
+ #endif
+ 	kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
+ 	return 0;
+@@ -4638,7 +4654,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
+ 		    KVM_XEN_HVM_CONFIG_SHARED_INFO |
+ 		    KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL |
+-		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
++		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
++		    KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
+ 		if (sched_info_on())
+ 			r |= KVM_XEN_HVM_CONFIG_RUNSTATE |
+ 			     KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG;
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index e53fad915a62..e43948b87f94 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -1162,7 +1162,9 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
+ {
+ 	/* Only some feature flags need to be *enabled* by userspace */
+ 	u32 permitted_flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
+-		KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
++		KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
++		KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
++	u32 old_flags;
+ 
+ 	if (xhc->flags & ~permitted_flags)
+ 		return -EINVAL;
+@@ -1183,9 +1185,14 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
+ 	else if (!xhc->msr && kvm->arch.xen_hvm_config.msr)
+ 		static_branch_slow_dec_deferred(&kvm_xen_enabled);
+ 
++	old_flags = kvm->arch.xen_hvm_config.flags;
+ 	memcpy(&kvm->arch.xen_hvm_config, xhc, sizeof(*xhc));
+ 
+ 	mutex_unlock(&kvm->arch.xen.xen_lock);
++
++	if ((old_flags ^ xhc->flags) & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE)
++		kvm_make_all_cpus_request(kvm, KVM_REQ_CLOCK_UPDATE);
++
+ 	return 0;
+ }
+ 
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 13065dd96132..e21b53e8358d 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1282,6 +1282,7 @@ struct kvm_x86_mce {
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL	(1 << 4)
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+ #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
++#define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
+ 
+ struct kvm_xen_hvm_config {
+ 	__u32 flags;
+
+base-commit: 35dcbd9e47035f98f3910ae420bf10892c9bdc99
+-- 
+2.39.2
+
