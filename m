@@ -2,50 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611077DE45C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CF67DE45F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbjKAQDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 12:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S233121AbjKAQE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 12:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKAQDi (ORCPT
+        with ESMTP id S229498AbjKAQEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 12:03:38 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8BBE4
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 09:03:32 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6d31f3feb12so559976a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 09:03:32 -0700 (PDT)
+        Wed, 1 Nov 2023 12:04:25 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B911ED;
+        Wed,  1 Nov 2023 09:04:19 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-581f78a0206so3707752eaf.2;
+        Wed, 01 Nov 2023 09:04:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698854612; x=1699459412;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EdeQV2pIkNcTK7spnDytELNGhzvPyiLiMoKr4E/iFYg=;
-        b=KqovAuSweOaM2AQ/+6FUVsccBNqcFCZTimvQdyIM1e8WnFbntl1rcv0+UbDgIIE7iP
-         SVGC0JYDMooEcp5FxfwjpeYRZMpxBuE1ApgfOMFUBsxYbQ/5K1jnVozYFKpRaSuST7nX
-         CSpZb6/de5fgUB2swoJVcJgzuYvduH09wXX4KxHmQdWeDKHYgxfUpaD8ZHMmqSpVnHYv
-         FavXkxOzBgMqrX5GA7fOzubiOgrHX29mhYE97HjVjvSPZSKPu1fRJ0f7nQlWAne4BP5c
-         L/kjbKb/HcEe/dQn9DRBeCOWK6x2ns8NxWclpLjUNkUxBvicRjqUfdySWDnRZCmgVMNH
-         G28g==
-X-Gm-Message-State: AOJu0YwNIsBaF7fv7qQ1xS3PqUu7+t34S+AzkNxUyObpIduJ3j5A0rcg
-        zp4RUJeRNz+zWBg0CDR9oxDHc4HSxrYkp8wvlnhXU9CIhY8sG9/aOg==
-X-Google-Smtp-Source: AGHT+IH6pqVhlK4/Ye6KVhcJbYipZaAOhCbWXksV5EcB8uznUSLjN1FhgL37OGuTiwA8CZARxfvOE3cYNM20XJsKeYF/0HOi5Wdq
+        d=1e100.net; s=20230601; t=1698854659; x=1699459459;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CWaBrwk0xPV8MF1irRrQCYQL2JANmokExLyTbnwnF4I=;
+        b=exj0azztkRXDOGB6gLEM1Sxy7ufB4ltlJ7sVnBKgbxLG/v9eDk22BAPmLT6p27gloG
+         ntEpkHYreMZ3vxYrPFCXazmP0QGbuX0h5X28n98uDfoLgaPDGtv+DMqTuqFJHc2flLq5
+         D9rhuIqcSAM9sUxtdm+afS14MVrCAiygmdADORiKOPCCt2ZiZryq+yR89KXlgZd+NQcE
+         AJsU+NnX1ngVHHAZOxvnYRE/wCH0wiGTYs7jk84XvTenoeT6C78DfqyJX792qQTyULxs
+         wl+xy/ZHlB/Mh7LsIPDv3pVHE6+xEwCOZ4JO4TdUC2qyLE5Trvv+vF1Sm4gUvJ3lfC/Y
+         CCPA==
+X-Gm-Message-State: AOJu0Yyt2j2aHRWYHmynNdunduOBCWb2D9W5OjgcEJaV3nRNVTmenVlF
+        G2zu1FT3dmUoMcXuXM9QEw==
+X-Google-Smtp-Source: AGHT+IH8TtLqhn8N1t7KecYu7W6UrqsQdnd3w99WrYJfWo28bAj/jXLMj3j+chPdefJh8xlmRF3+HQ==
+X-Received: by 2002:a4a:dcca:0:b0:583:fb9c:6fe4 with SMTP id h10-20020a4adcca000000b00583fb9c6fe4mr17122520oou.1.1698854658753;
+        Wed, 01 Nov 2023 09:04:18 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id x8-20020a4aaf48000000b0055975f57993sm641341oon.42.2023.11.01.09.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 09:04:18 -0700 (PDT)
+Received: (nullmailer pid 442770 invoked by uid 1000);
+        Wed, 01 Nov 2023 16:04:16 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:5813:b0:1ef:ac35:a2fe with SMTP id
- oj19-20020a056871581300b001efac35a2femr5752413oac.6.1698854611993; Wed, 01
- Nov 2023 09:03:31 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 09:03:31 -0700
-In-Reply-To: <000000000000ffc87a06086172a0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ac4b37060919693b@google.com>
-Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in ptp_release
-From:   syzbot <syzbot+8a676a50d4eee2f21539@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        richardcochran@gmail.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     linux-leds@vger.kernel.org, lee@kernel.org,
+        linux-kernel@vger.kernel.org, kernel@sberdevices.ru,
+        andy.shevchenko@gmail.com, conor+dt@kernel.org, pavel@ucw.cz,
+        krzysztof.kozlowski+dt@linaro.org, rockosov@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20231101142445.8753-12-ddrokosov@salutedevices.com>
+References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
+ <20231101142445.8753-12-ddrokosov@salutedevices.com>
+Message-Id: <169885374980.409399.3653628333009308100.robh@kernel.org>
+Subject: Re: [PATCH v3 11/11] dt-bindings: leds: aw200xx: fix led pattern
+ and add reg constraints
+Date:   Wed, 01 Nov 2023 11:04:16 -0500
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
@@ -55,90 +68,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    89ed67ef126c Merge tag 'net-next-6.7' of git://git.kernel...
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=150b105f680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6e3b1d98cf5a2cca
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a676a50d4eee2f21539
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13dd173b680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ce0840e80000
+On Wed, 01 Nov 2023 17:24:45 +0300, Dmitry Rokosov wrote:
+> AW200XX controllers have the capability to declare more than 0xf LEDs,
+> therefore, it is necessary to accept LED names using an appropriate
+> regex pattern.
+> 
+> The register offsets can be adjusted within the specified range, with
+> the maximum value corresponding to the highest number of LEDs that can
+> be connected to the controller.
+> 
+> Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> ---
+>  .../bindings/leds/awinic,aw200xx.yaml         | 64 +++++++++++++++++--
+>  1 file changed, 58 insertions(+), 6 deletions(-)
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b69c238dd56a/disk-89ed67ef.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f555d654a8ba/vmlinux-89ed67ef.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/335bbfb6c442/bzImage-89ed67ef.xz
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8a676a50d4eee2f21539@syzkaller.appspotmail.com
+yamllint warnings/errors:
 
-list_del corruption. next->prev should be ffff88802a019048, but was ffff88802a401048. (next=ffff88802515e5e8)
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:67!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6526 Comm: syz-executor155 Not tainted 6.6.0-syzkaller-05843-g89ed67ef126c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:__list_del_entry_valid_or_report+0x122/0x130 lib/list_debug.c:65
-Code: 85 06 0f 0b 48 c7 c7 20 5f 9d 8b 4c 89 fe 48 89 d9 e8 52 db 85 06 0f 0b 48 c7 c7 a0 5f 9d 8b 4c 89 fe 4c 89 f1 e8 3e db 85 06 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 80 3d 1d 6e
-RSP: 0018:ffffc90009d67b18 EFLAGS: 00010046
-RAX: 000000000000006d RBX: ffff88802515e5f0 RCX: 58e87076363f5a00
-RDX: 0000000000000000 RSI: 0000000080000001 RDI: 0000000000000000
-RBP: ffff88802a019008 R08: ffffffff81717aac R09: 1ffff920013acf04
-R10: dffffc0000000000 R11: fffff520013acf05 R12: dffffc0000000000
-R13: ffff88802a018000 R14: ffff88802515e5e8 R15: ffff88802a019048
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff08f2c4110 CR3: 0000000074918000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __list_del_entry_valid include/linux/list.h:124 [inline]
- __list_del_entry include/linux/list.h:215 [inline]
- list_del include/linux/list.h:229 [inline]
- ptp_release+0xa8/0x1e0 drivers/ptp/ptp_chardev.c:147
- posix_clock_release+0x8c/0x100 kernel/time/posix-clock.c:157
- __fput+0x3cc/0xa10 fs/file_table.c:394
- task_work_run+0x24a/0x300 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa2c/0x2650 kernel/exit.c:874
- do_group_exit+0x206/0x2c0 kernel/exit.c:1024
- __do_sys_exit_group kernel/exit.c:1035 [inline]
- __se_sys_exit_group kernel/exit.c:1033 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1033
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7ff08f248bf9
-Code: Unable to access opcode bytes at 0x7ff08f248bcf.
-RSP: 002b:00007ffc5a8eb438 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff08f248bf9
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007ff08f2c3290 R08: ffffffffffffffb8 R09: 00000000000000a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ff08f2c3290
-R13: 0000000000000000 R14: 00007ff08f2c3d00 R15: 00007ff08f219da0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__list_del_entry_valid_or_report+0x122/0x130 lib/list_debug.c:65
-Code: 85 06 0f 0b 48 c7 c7 20 5f 9d 8b 4c 89 fe 48 89 d9 e8 52 db 85 06 0f 0b 48 c7 c7 a0 5f 9d 8b 4c 89 fe 4c 89 f1 e8 3e db 85 06 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 80 3d 1d 6e
-RSP: 0018:ffffc90009d67b18 EFLAGS: 00010046
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@0: Unevaluated properties are not allowed ('reg' was unexpected)
+	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@1: Unevaluated properties are not allowed ('reg' was unexpected)
+	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@2: Unevaluated properties are not allowed ('reg' was unexpected)
+	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.yaml#
 
-RAX: 000000000000006d RBX: ffff88802515e5f0 RCX: 58e87076363f5a00
-RDX: 0000000000000000 RSI: 0000000080000001 RDI: 0000000000000000
-RBP: ffff88802a019008 R08: ffffffff81717aac R09: 1ffff920013acf04
-R10: dffffc0000000000 R11: fffff520013acf05 R12: dffffc0000000000
-R13: ffff88802a018000 R14: ffff88802515e5e8 R15: ffff88802a019048
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff08f2c4110 CR3: 0000000074918000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231101142445.8753-12-ddrokosov@salutedevices.com
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
