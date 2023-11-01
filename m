@@ -2,117 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215BE7DDB66
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012077DDB6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjKADQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 23:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
+        id S231649AbjKADRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 23:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjKADQK (ORCPT
+        with ESMTP id S229850AbjKADRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 23:16:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8B6A4;
-        Tue, 31 Oct 2023 20:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698808563; x=1730344563;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=saaKNKCsevz6fHFrJEAzjrPd1r0TCI63AXuP13gD10A=;
-  b=Dn9SXK4YaefO9J8EbzY+d7yeMClQfwJiOLVPVJavefG5U6dptGDtw0FL
-   K+SCq/lV1U29iYAcqc1hCjmBNkMJIOBRZO413blscLuj3WsIxWlrtwk+B
-   2PnzTVvRVv7U8T7HjUzIhwXixd1fEYRLO4vPfUflXxmZep9XeOF1WQwlj
-   piUxeK6fg3F2DF8/VYDPzRn+FN8bC+/QGU8Cm/LVJoUCHmelTOa6K7r68
-   76AGE/ZW0nKi4GHCKmNIQKXac82n8OVDRbN8FKQ+ihmuGopNgXV596Wqf
-   CQpgCA0KZmOPWee10OpyPRBge553V2UiQxuSR8/DLEIUoDsOL/9oqeo/Q
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="373474001"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="373474001"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:16:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="1964523"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.12.33]) ([10.93.12.33])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:16:00 -0700
-Message-ID: <fbad1983-5cde-4c7b-aaed-412110fe737f@linux.intel.com>
-Date:   Wed, 1 Nov 2023 11:15:57 +0800
+        Tue, 31 Oct 2023 23:17:06 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id EAAB8B4;
+        Tue, 31 Oct 2023 20:17:02 -0700 (PDT)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 2C6C06051EAB4;
+        Wed,  1 Nov 2023 11:16:59 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     mike.looijmans@topic.nl, mturquette@baylibre.com, sboyd@kernel.org
+Cc:     Su Hui <suhui@nfschina.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] clk: si5341: fix an error code problem in si5341_output_clk_set_rate
+Date:   Wed,  1 Nov 2023 11:16:36 +0800
+Message-Id: <20231101031633.996124-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [kvm-unit-tests Patch v2 4/5] x86: pmu: Support validation for
- Intel PMU fixed counter 3
-Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>
-References: <20231031092921.2885109-1-dapeng1.mi@linux.intel.com>
- <20231031092921.2885109-5-dapeng1.mi@linux.intel.com>
- <CALMp9eQ4Xj5D-kgqVMKUNmdF37rLcMRXyDYdQU339sRCKZ7d9A@mail.gmail.com>
- <28796dd3-ac4e-4a38-b9e1-f79533b2a798@linux.intel.com>
- <CALMp9eRH5pttOA5BApdVeSbbkOU-kWcOWAoGMfK-9f=cy2Jf0g@mail.gmail.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <CALMp9eRH5pttOA5BApdVeSbbkOU-kWcOWAoGMfK-9f=cy2Jf0g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+regmap_bulk_write() return zero or negative error code, return the value
+of regmap_bulk_write() rather than '0'.
 
-On 11/1/2023 10:47 AM, Jim Mattson wrote:
-> On Tue, Oct 31, 2023 at 7:33 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
->>
->> On 11/1/2023 2:47 AM, Jim Mattson wrote:
->>> On Tue, Oct 31, 2023 at 2:22 AM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
->>>> Intel CPUs, like Sapphire Rapids, introduces a new fixed counter
->>>> (fixed counter 3) to counter/sample topdown.slots event, but current
->>>> code still doesn't cover this new fixed counter.
->>>>
->>>> So this patch adds code to validate this new fixed counter can count
->>>> slots event correctly.
->>> I'm not convinced that this actually validates anything.
->>>
->>> Suppose, for example, that KVM used fixed counter 1 when the guest
->>> asked for fixed counter 3. Wouldn't this test still pass?
->>
->> Per my understanding, as long as the KVM returns a valid count in the
->> reasonable count range, we can think KVM works correctly. We don't need
->> to entangle on how KVM really uses the HW, it could be impossible and
->> unnecessary.
-> Now, I see how the Pentium FDIV bug escaped notice. Hey, the numbers
-> are in a reasonable range. What's everyone upset about?
->
->> Yeah, currently the predefined valid count range may be some kind of
->> loose since I want to cover as much as hardwares and avoid to cause
->> regression. Especially after introducing the random jump and clflush
->> instructions, the cycles and slots become much more hard to predict.
->> Maybe we can have a comparable restricted count range in the initial
->> change, and we can loosen the restriction then if we encounter a failure
->> on some specific hardware. do you think it's better? Thanks.
-> I think the test is essentially useless, and should probably just be
-> deleted, so that it doesn't give a false sense of confidence.
+Fixes: 3044a860fd09 ("clk: Add Si5341/Si5340 driver")
+Acked-by: Mike Looijmans <mike.looijmans@topic.nl>
+Signed-off-by: Su Hui <suhui@nfschina.com>
+---
+ drivers/clk/clk-si5341.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-IMO, I can't say the tests are totally useless. Yes,  passing the tests 
-doesn't mean the KVM vPMU must work correctly, but we can say there is 
-something probably wrong if it fails to pass these tests. Considering 
-the hardware differences, it's impossible to set an exact value for 
-these events in advance and it seems there is no better method to verify 
-the PMC count as well. I still prefer to keep these tests until we have 
-a better method to verify the accuracy of the PMC count.
-
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index 9599857842c7..2920fe2e5e8b 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -895,10 +895,8 @@ static int si5341_output_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	r[0] = r_div ? (r_div & 0xff) : 1;
+ 	r[1] = (r_div >> 8) & 0xff;
+ 	r[2] = (r_div >> 16) & 0xff;
+-	err = regmap_bulk_write(output->data->regmap,
++	return regmap_bulk_write(output->data->regmap,
+ 			SI5341_OUT_R_REG(output), r, 3);
+-
+-	return 0;
+ }
+ 
+ static int si5341_output_reparent(struct clk_si5341_output *output, u8 index)
+-- 
+2.30.2
 
