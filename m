@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB74A7DE13F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF237DE102
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 13:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343762AbjKAMvN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Nov 2023 08:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
+        id S1343636AbjKAMgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 08:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbjKAMvL (ORCPT
+        with ESMTP id S235188AbjKAMgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 08:51:11 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Nov 2023 05:51:04 PDT
-Received: from sender11-of-o51.zoho.eu (sender11-of-o51.zoho.eu [31.186.226.237])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E6EB7
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 05:51:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698842150; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=Un61c349E0VZVnT+x+fMzpqsGysU3B9HdRSMNiCGD2eVKGpARbfitSE5LPTTWJix0kdgQLYWTeutPNRuFU9vfu6z6r053saU05jR6SM8AJthw9Yf0Z/Wd5gPgg0wYx89O4jVk7EUicfcgvKqRtDdPS3kYgHvi5a6w2rDaIf2Vk0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1698842150; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=Owj+mXdGILdMjrSzoqOSKr2JpK848tlEK4LY5T0/yoY=; 
-        b=EIrhU6LOOHw2RPmrkWaN56lZkGt0NcqlS+4FBMnF4cZeD2NtFp9r2GpA4iKJ0PFXpJ9jUDOJ14vN2z1xHUKWIepGI0Bu0IBAuiPH5QAy2G2VZTAnwquCEwjr6IE1PZR57PjpPs85V6Nvj6Al47AQ43tXo0qR73kGYlTA6jsgKDo=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        spf=pass  smtp.mailfrom=carl@uvos.xyz;
-        dmarc=pass header.from=<carl@uvos.xyz>
-Received: from [10.0.0.2] (ip-037-201-241-037.um10.pools.vodafone-ip.de [37.201.241.37]) by mx.zoho.eu
-        with SMTPS id 169884214814494.9572778770256; Wed, 1 Nov 2023 13:35:48 +0100 (CET)
-Message-ID: <47e950989fe0fc297a2272139d69a5a7c4c98de5.camel@uvos.xyz>
-Subject: [BUG] gpu: drm: amd: noretry=0 causes failure in
- amdgpu_device_ip_resume on vega10
-From:   Carl Klemm <carl@uvos.xyz>
-To:     christian.koenig@amd.com, alexander.deucher@amd.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Wed, 01 Nov 2023 13:35:47 +0100
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Wed, 1 Nov 2023 08:36:11 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0747D11B;
+        Wed,  1 Nov 2023 05:36:06 -0700 (PDT)
+Received: from dggpemm500011.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SL5y36YB1zrTPC;
+        Wed,  1 Nov 2023 20:32:59 +0800 (CST)
+Received: from huawei.com (10.175.104.170) by dggpemm500011.china.huawei.com
+ (7.185.36.110) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 1 Nov
+ 2023 20:36:01 +0800
+From:   Ren Mingshuai <renmingshuai@huawei.com>
+To:     <oneukum@suse.com>
+CC:     <khlebnikov@openvz.org>, <davem@davemloft.net>,
+        <caowangbao@huawei.com>, <yanan@huawei.com>, <liaichun@huawei.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: usbnet: Fix potential NULL pointer dereference
+Date:   Wed, 1 Nov 2023 20:35:59 +0800
+Message-ID: <20231101123559.210756-1-renmingshuai@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_20,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500011.china.huawei.com (7.185.36.110)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+23ba07991dad said SKB can be NULL without describing the triggering
+scenario. Always Check it before dereference to void potential NULL
+pointer dereference.
+Fix smatch warning:
+drivers/net/usb/usbnet.c:1380 usbnet_start_xmit() error: we previously assumed 'skb' could be null (see line 1359)
 
-When migrateing from 5.15 to 6.5.9 i noticed that noretry no longer
-function on vega10 (Instinct MI25). The device will fail to start:
+Signed-off-by: Ren Mingshuai <renmingshuai@huawei.com>
+---
+ drivers/net/usb/usbnet.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-[   40.080411] amdgpu: fw load failed
-[   40.083816] amdgpu: smu firmware loading failed
-[   40.088350] amdgpu 0000:83:00.0: amdgpu: amdgpu_device_ip_resume
-failed (-22).
+diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+index 64a9a80b2309..386cb1a4ff03 100644
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1374,6 +1374,11 @@ netdev_tx_t usbnet_start_xmit (struct sk_buff *skb,
+ 		}
+ 	}
+ 
++	if (!skb) {
++		netif_dbg(dev, tx_err, dev->net, "tx skb is NULL\n");
++		goto drop;
++	}
++
+ 	if (!(urb = usb_alloc_urb (0, GFP_ATOMIC))) {
+ 		netif_dbg(dev, tx_err, dev->net, "no urb\n");
+ 		goto drop;
+-- 
+2.33.0
 
-I have also repoduced the same issue on 6.1.55
-It is also possible that the issue was caused by newer gpu firmware,
-instead of the change in kernel. The issue was repduced with the
-firmware from linux-firmware-20230804.
-
-for full dmesg see: https://uvos.xyz/noretry.dmesg.log
-
-The same system also contains 2 vega20 and 1 navi21 device that both
-work fine with noretry=0. For more information on the system this
-problem was encountered on see this rocminfo dump:
-https://uvos.xyz/rocminfo.log
-
-Regards,
-Carl
