@@ -2,66 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CE07DE594
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494BE7DE596
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344741AbjKARpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
+        id S1344758AbjKARqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344705AbjKARpP (ORCPT
+        with ESMTP id S1344760AbjKARqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:45:15 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169BF111
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:45:09 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5aa481d53e5so17124a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698860708; x=1699465508; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gJLYbQqFz/FdbUB5pvTJ7lgdYLSt1A0vYFl0v5PTNKo=;
-        b=BT1wWFxPAPUQvRxX/ZSn0DzUZzndL4szGLMMI229Dbtvca+kMPgOIJ4hKLtrfM/BtW
-         m2tVtaY0ulAzqNM5EPCinagmJoRqje2Zu9Q7Mifh3oC2ThgmvCbm1LinPgFxe20hTyV8
-         DzU8+8aBATIdRYw7wZreHH4CjhXsh/P48V7zPpHOLvDt6ohnjNnN4WTimDzbsOOWo16N
-         rEL1COZGyjlJVNIbgKThbJdcSd+TBSsJf8dsHseJC1QYj5E0VPKb1N2wvGOLcIauDjNu
-         EUUWKU7J+iG+10SlL6ktPkfvo2U5R9M5MHewncTfY1gmJlhVodUbnsrHnM+pTLqiIqdb
-         U/pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698860708; x=1699465508;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gJLYbQqFz/FdbUB5pvTJ7lgdYLSt1A0vYFl0v5PTNKo=;
-        b=S+/7z6GFinUtf8ipcS+n86Jz6jno4MOE96t2mWdTD88DR9IV35M8mxGHYUpJjOu3bK
-         liUy4f0vgGhPoky+/HvE7Re9Kgh4gEarvrFoKxUB+Lvajx+u/oIlrxRce4UKRgfdo6kX
-         gSYE2BN/JdqsoV0bXeLpwgbf3UDLi4nibzp+/BlVpyqsgXu/eKtpmSmosn33W9CQPYDz
-         w86LvE+zYQPL+KxJPp0Kr128oAtz7WKrO1GB3MQ9CVbY7PGdS9PULwN/ZdKaZgxWZcT4
-         GlowJlQx3idMY3nb+Rl5TFBCI96hFzDihhRezhI2IuINzBx7Ou8D6Okqbjj9Q7kMKyJE
-         u5ig==
-X-Gm-Message-State: AOJu0YyBcCiM+rDvMN+Ve4/poi5zL0Jpi0HHu3ID8Im4g3FsGv2NoFFW
-        SLl4CEAm3toBexaN4qSMXoE=
-X-Google-Smtp-Source: AGHT+IFDsJ6u5VD5Fmlt6KmflMQ4/xBxmt4AIcUv8DtygG/P4dvRATXSypZFH+E5LuhvU19zIvmXkg==
-X-Received: by 2002:a17:903:32cc:b0:1cc:4985:fc04 with SMTP id i12-20020a17090332cc00b001cc4985fc04mr10128180plr.66.1698860708146;
-        Wed, 01 Nov 2023 10:45:08 -0700 (PDT)
-Received: from rin-ROG-STRIX-G10CES-G10CES.. (111-255-207-86.dynamic-ip.hinet.net. [111.255.207.86])
-        by smtp.gmail.com with ESMTPSA id ja11-20020a170902efcb00b001b8a00d4f7asm1593949plb.9.2023.11.01.10.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 10:45:07 -0700 (PDT)
-From:   s921975628@gmail.com
-To:     mingo@redhat.com, peterz@infradead.org
-Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org, s921975628@gmail.com
-Subject: [PATCH] sched/fair: Track current se's EEVDF parameters
-Date:   Thu,  2 Nov 2023 01:44:46 +0800
-Message-Id: <20231101174446.90413-1-s921975628@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 1 Nov 2023 13:46:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260A912E
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:45:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2083DC433C8;
+        Wed,  1 Nov 2023 17:45:58 +0000 (UTC)
+Date:   Wed, 1 Nov 2023 13:45:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [QUESTION] ftrace_test_recursion_trylock behaviour
+Message-ID: <20231101134556.5d4a46c3@gandalf.local.home>
+In-Reply-To: <ZUKLnmYyHpthlMEE@krava>
+References: <ZUKLnmYyHpthlMEE@krava>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,135 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yiwei Lin <s921975628@gmail.com>
+On Wed, 1 Nov 2023 18:32:14 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-After dequeuing the current-picked scheduling entity with
-`__dequeue_entity`, its contribution to the EEVDF parameters
-cfs_rq->avg_vruntime and cfs_rq->avg_load are also removed.
-Because these should in fact be considered for the EEVDF algorithm,
-we took curr as the special case and inserted back the contributions
-when requests for cfs_rq->avg_vruntime and cfs_rq->avg_load.
+> hi,
+> I'm doing some testing on top of fprobes and noticed that the
+> ftrace_test_recursion_trylock allows caller from the same context
+> going through twice.
+> 
+> The change below adds extra fprobe on stack_trace_print, which is
+> called within the sample_entry_handler and I can see it being executed
+> with following trace output:
+> 
+>            <...>-457     [003] ...1.    32.352554: sample_entry_handler:
+> Enter <kernel_clone+0x0/0x380> ip = 0xffffffff81177420 <...>-457
+> [003] ...2.    32.352578: sample_entry_handler_extra: Enter
+> <stack_trace_print+0x0/0x60> ip = 0xffffffff8127ae70
+> 
+> IOW nested ftrace_test_recursion_trylock call in the same context
+> succeeded.
+> 
+> It seems the reason is the TRACE_CTX_TRANSITION bit logic.
+> 
+> Just making sure it's intentional.. we have kprobe_multi code on top of
+> fprobe with another re-entry logic and that might behave differently based
+> on ftrace_test_recursion_trylock logic.
 
-Functions like `entity_eligible` which is called insied a loop may
-therefore recalculate these statistics repeatly and require more effort.
-Instead, we could just avoid to remove these statistics from
-cfs_rq->avg_vruntime and cfs_rq->avg_load directly.
+Yes it's intentional, as it's a work around for an issue that may be
+cleared up now with Peter Zijlstra's noinstr updates.
 
-Signed-off-by: Yiwei Lin <s921975628@gmail.com>
----
- kernel/sched/fair.c | 34 +++++++---------------------------
- 1 file changed, 7 insertions(+), 27 deletions(-)
+The use case for that TRACE_CTX_TRANSITION is when a function is traced
+just after an interrupt was triggered but before the preempt count was
+updated to let us know that we are in an interrupt context.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 876798824..d507ade09 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -655,17 +655,9 @@ void avg_vruntime_update(struct cfs_rq *cfs_rq, s64 delta)
-  */
- u64 avg_vruntime(struct cfs_rq *cfs_rq)
- {
--	struct sched_entity *curr = cfs_rq->curr;
- 	s64 avg = cfs_rq->avg_vruntime;
- 	long load = cfs_rq->avg_load;
- 
--	if (curr && curr->on_rq) {
--		unsigned long weight = scale_load_down(curr->load.weight);
--
--		avg += entity_key(cfs_rq, curr) * weight;
--		load += weight;
--	}
--
- 	if (load) {
- 		/* sign flips effective floor / ceil */
- 		if (avg < 0)
-@@ -722,17 +714,9 @@ static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
-  */
- int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
--	struct sched_entity *curr = cfs_rq->curr;
- 	s64 avg = cfs_rq->avg_vruntime;
- 	long load = cfs_rq->avg_load;
- 
--	if (curr && curr->on_rq) {
--		unsigned long weight = scale_load_down(curr->load.weight);
--
--		avg += entity_key(cfs_rq, curr) * weight;
--		load += weight;
--	}
--
- 	return avg >= entity_key(cfs_rq, se) * load;
- }
- 
-@@ -821,11 +805,12 @@ static void __enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 				__entity_less, &min_deadline_cb);
- }
- 
--static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
-+static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, bool on_rq)
- {
- 	rb_erase_augmented_cached(&se->run_node, &cfs_rq->tasks_timeline,
- 				  &min_deadline_cb);
--	avg_vruntime_sub(cfs_rq, se);
-+	if (!on_rq)
-+		avg_vruntime_sub(cfs_rq, se);
- }
- 
- struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
-@@ -3675,8 +3660,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 		/* commit outstanding execution time */
- 		if (cfs_rq->curr == se)
- 			update_curr(cfs_rq);
--		else
--			avg_vruntime_sub(cfs_rq, se);
-+		avg_vruntime_sub(cfs_rq, se);
- 		update_load_sub(&cfs_rq->load, se->load.weight);
- 	}
- 	dequeue_load_avg(cfs_rq, se);
-@@ -3712,8 +3696,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 	enqueue_load_avg(cfs_rq, se);
- 	if (se->on_rq) {
- 		update_load_add(&cfs_rq->load, se->load.weight);
--		if (cfs_rq->curr != se)
--			avg_vruntime_add(cfs_rq, se);
-+		avg_vruntime_add(cfs_rq, se);
- 	}
- }
- 
-@@ -5023,7 +5006,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	 * EEVDF: placement strategy #1 / #2
- 	 */
- 	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
--		struct sched_entity *curr = cfs_rq->curr;
- 		unsigned long load;
- 
- 		lag = se->vlag;
-@@ -5081,8 +5063,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 		 *   vl_i = (W + w_i)*vl'_i / W
- 		 */
- 		load = cfs_rq->avg_load;
--		if (curr && curr->on_rq)
--			load += scale_load_down(curr->load.weight);
- 
- 		lag *= load + scale_load_down(se->load.weight);
- 		if (WARN_ON_ONCE(!load))
-@@ -5229,7 +5209,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 
- 	update_entity_lag(cfs_rq, se);
- 	if (se != cfs_rq->curr)
--		__dequeue_entity(cfs_rq, se);
-+		__dequeue_entity(cfs_rq, se, 0);
- 	se->on_rq = 0;
- 	account_entity_dequeue(cfs_rq, se);
- 
-@@ -5264,7 +5244,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 		 * runqueue.
- 		 */
- 		update_stats_wait_end_fair(cfs_rq, se);
--		__dequeue_entity(cfs_rq, se);
-+		__dequeue_entity(cfs_rq, se, 1);
- 		update_load_avg(cfs_rq, se, UPDATE_TG);
- 		/*
- 		 * HACK, stash a copy of deadline at the point of pick in vlag,
--- 
-2.34.1
+Daniel Bristot reported a regression after the trylock was first introduced
+where the interrupt entry function was traced sometimes but not always.
+That's because if the interrupt happened normally, it would be traced, but
+if the interrupt happened when another event was being traced, the recursion
+logic would see that the trace of the interrupt was happening in the same
+context as the event it interrupted and drop the interrupt trace. But after
+the preempt count was updated, the other functions in the interrupt would be
+seen. This led to very confusing trace output.
+
+The solution to that was this workaround hack, where the trace recursion
+logic would allow a single recursion (the interrupt preempting another
+trace before it set preempt count).
+
+But with noinstr, there should be no more instances of this problem and we
+can drop that extra bit. But the last I checked, there were a few places
+that still could be traced without the preempt_count set. I'll have to
+re-investigate.
+
+-- Steve
 
