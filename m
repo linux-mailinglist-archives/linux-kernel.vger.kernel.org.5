@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060B37DE7FD
+	by mail.lfdr.de (Postfix) with ESMTP id A6FD27DE800
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbjKAWRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 18:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        id S1345657AbjKAWRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 18:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233861AbjKAWQ7 (ORCPT
+        with ESMTP id S232007AbjKAWRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 18:16:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F5610F
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 15:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698876971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mk6bwPrzaDg2FJugacWSMukVdQ2Mx/nmU75IHB2Mc8w=;
-        b=SEriGOSHkKkk89XKS7gFnOvhWLaxkFyjLCg0mbR0wzM1/+pCOKPWmoq/Bm1Hbqwx+zc3a/
-        VAe8gLM5WHbM8nJ5wsjmvYXdblR335lj/7a8jMDO18iz/1P6UteywspfXh/pZqaFLX5sTo
-        evYGlj5GTJzdpvlKC6Tgb+vME33vHas=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-XZuOk2zqNd63bs2DQKNelA-1; Wed, 01 Nov 2023 18:16:08 -0400
-X-MC-Unique: XZuOk2zqNd63bs2DQKNelA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A1C4F185A781;
-        Wed,  1 Nov 2023 22:16:07 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 142F12026D4C;
-        Wed,  1 Nov 2023 22:16:04 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  1 Nov 2023 23:15:06 +0100 (CET)
-Date:   Wed, 1 Nov 2023 23:15:02 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Marc Dionne <marc.dionne@auristor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rxrpc_find_service_conn_rcu: use read_seqbegin() rather
- than read_seqbegin_or_lock()
-Message-ID: <20231101221502.GE32034@redhat.com>
-References: <20231101202302.GB32034@redhat.com>
- <20231027095842.GA30868@redhat.com>
- <1952182.1698853516@warthog.procyon.org.uk>
- <1959032.1698873608@warthog.procyon.org.uk>
+        Wed, 1 Nov 2023 18:17:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0AD10F;
+        Wed,  1 Nov 2023 15:17:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B947C433C7;
+        Wed,  1 Nov 2023 22:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698877064;
+        bh=nyuKdgwIpK1RSgOQtbUwzcBNuY5rZc8qER6Dz4TIRyc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=UflBDt7eftMRf/joBP5ipLEU5vb7LxjqOOPo6Y//N0ou+4VykFBQDrn2sn0EFqMpN
+         qltZXQTFtplhDRN3HzOvYmkVOXyB+Zp0J2Qx0Hp0xwY0Ofli5NJnE5Mwx2ob445Eq5
+         jyJ8ToYXBSlOGo0wp7KI3bKoUCZTHeN8oHq1zmyIkSCm2DH8h+Nc8XSCoagPC14z2S
+         wxHkQM9qMxxDSDUk8EQtf3GLh2HcpKjCnpX7uop7MqfE+ph097h6GD+FN49pkbRayt
+         MGih3nCC2YGNqJuDWB121pISv/c8PZx1eahzFxNKX5RYIUG9Vm6vgdsIPbZtLyu+RZ
+         rQOvx+DMJTVdg==
+Date:   Wed, 1 Nov 2023 17:17:42 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, mani@kernel.org,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, rafael@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v5 5/5] PCI: qcom: Add OPP support to scale performance
+ state of power domain
+Message-ID: <20231101221742.GA101112@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1959032.1698873608@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1694066433-8677-6-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01, David Howells wrote:
->
-> However, I think just changing all of these to always-lockless isn't
-> necessarily the most optimal way.
+On Thu, Sep 07, 2023 at 11:30:33AM +0530, Krishna chaitanya chundru wrote:
+> While scaling the interconnect clocks based on PCIe link speed, it is also
+> mandatory to scale the power domain performance state so that the SoC can
+> run under optimum power conditions.
 
-Yes, but so far I am trying to change the users which never take the
-lock for writing, so this patch doesn't change the current behaviour.
+Can you expand "OPP" somewhere so we know what it stands for?  I'm
+sure everybody knows except me :)
 
-> I wonder if struct seqlock would make more sense with an rwlock rather than a
-> spinlock.  As it is, it does an exclusive spinlock for the readpath which is
-> kind of overkill.
+This commit log says something is mandatory; can you phrase it so it
+says what the patch actually *does*?  The subject is kind of a title,
+and I think it's important for the log to make sense without the
+subject, so it's OK if the log repeats part or all of the subject.
 
-Heh. Please see
-
-	[PATCH 4/5] seqlock: introduce read_seqcount_begin_or_lock() and friends
-	https://lore.kernel.org/all/20230913155005.GA26252@redhat.com/
-
-I am going to return to this later.
-
-Oleg.
-
+Bjorn
