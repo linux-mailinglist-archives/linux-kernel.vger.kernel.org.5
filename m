@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7447DE32F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F597DE33B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbjKAOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 10:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
+        id S231337AbjKAO4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 10:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjKAOyo (ORCPT
+        with ESMTP id S229567AbjKAO4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:54:44 -0400
+        Wed, 1 Nov 2023 10:56:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1218DC
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:54:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C4F8C433C8;
-        Wed,  1 Nov 2023 14:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698850478;
-        bh=9gY3lKUIFxEXKcPbqPGYBJf4V5VDH8CACMCI1oLaASE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=amBqoWbgT9bePCEr3VIThqn1Aoe+Y4GQK2cQBs4GTba5C8988bWCU/jd5duG+gNaT
-         hHxDFgS82VHitlKG89HBNq5WKuVzw3NbxNEqEsx0YjMGfqxW0fJO9fMpqpoVu3Zyj5
-         SHnBDfQmehJ68nYTennTFHdcOuS3fOtN6wF1rcURPTGzz3ztEmNp0gYtYrt3Znikkf
-         bAvZNNqRe24sfBbzykQtiNzE9WEeAx3BfBhkEzBXDm/CLY8hAoA1DUHs56KXr//YIs
-         0LSS6C9IqMdeqLPMNvBAjpVsnPE+rMiEkw5yr0rAJqfMLT0KJtcoZIwPHYlEKtNt/w
-         U6HHv7MwIf+tw==
-Date:   Wed, 1 Nov 2023 14:54:34 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: vendor-prefixes: add rve
-Message-ID: <20231101-maimed-email-4decd11f1d52@spud>
-References: <20231101144057.2653271-1-hugo@hugovil.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC21A119
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:55:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC28C433C8;
+        Wed,  1 Nov 2023 14:55:55 +0000 (UTC)
+Date:   Wed, 1 Nov 2023 10:55:54 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>
+Subject: Re: [PATCH] eventfs: Process deletion of dentry more thoroughly
+Message-ID: <20231101105554.6cd5a30f@gandalf.local.home>
+In-Reply-To: <20231101001659.1456b3d4@gandalf.local.home>
+References: <20231031144703.71eef3a0@gandalf.local.home>
+        <20231101022553.GE1957730@ZenIV>
+        <20231101001659.1456b3d4@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ke7F+ZQ+zKizgPnB"
-Content-Disposition: inline
-In-Reply-To: <20231101144057.2653271-1-hugo@hugovil.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 1 Nov 2023 00:16:59 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
---ke7F+ZQ+zKizgPnB
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, 1 Nov 2023 02:25:53 +0000
+> Al Viro <viro@zeniv.linux.org.uk> wrote:
+> 
+> > Umm...  Is there any reason not to use simple_recursive_removal() there?  
+> 
+> Hmm, I may be able to (I'm still a newbie with understanding of the vfs).
+> 
+> I did it this way thinking that a dentry may exist in the children but not
+> at a higher level, but I don't think that can be the case. This creates
+> dentries and inodes dynamically when they are referenced. The eventfs_inode
+> maps to each directory (the files of a directory are created from the
+> information from the eventfs_inode).
 
-On Wed, Nov 01, 2023 at 10:40:57AM -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
->=20
-> Add vendor prefix for Recharge V=E9hicule =C9lectrique (RVE), which
-> manufactures electric vehicle chargers infrastructure components.
->=20
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+OK, as I tried to use the simple_recursive_remove() and I failed miserably!
 
+I think I know why. What happened was the last child would get one extra
+"dput" than it needed. That's because dentry's exist without any reference
+on them and they don't disappear until a reclaim happens. What I mean is,
+when a file is "open()'d" a dentry is created on the fly so that the user
+can access the file. When it is "close()'d" the dentry count goes to zero.
 
-Where is the user for this?
+Then on memory reclaim, the dentries may be removed. If another open
+happens, the dentry is created again, or the one that is still cached can
+be reinstated.
 
-Cheers,
-Conor.
+It looks like the simple_recursive_remove() expects all dentries to have at
+least a 1 when entering, which is not the case here.
 
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
-umentation/devicetree/bindings/vendor-prefixes.yaml
-> index e48b0a02827a..8455d7f5cfae 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -1161,6 +1161,8 @@ patternProperties:
->      description: Shenzhen Roofull Technology Co, Ltd
->    "^roseapplepi,.*":
->      description: RoseapplePi.org
-> +  "^rve,.*":
-> +    description: Recharge V=E9hicule =C9lectrique (RVE) inc.
->    "^saef,.*":
->      description: Saef Technology Limited
->    "^samsung,.*":
->=20
-> base-commit: 8bc9e6515183935fa0cccaf67455c439afe4982b
-> --=20
-> 2.39.2
->=20
+But!
 
---ke7F+ZQ+zKizgPnB
-Content-Type: application/pgp-signature; name="signature.asc"
+Now what I could do is to do a dget() when removing the eventfs_inodes (ei)
+on any dentry that is attached to them.
 
------BEGIN PGP SIGNATURE-----
+/me goes and tries that...
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUJmqgAKCRB4tDGHoIJi
-0kNAAQCUohq48EWzQa8q0n366LJ2AtnzLSSz+nrPHA92oWiXuAEA5FYC4Bm/FnIU
-Lm2smNuuR4Gdph8JAN1oU9fG5rdy6gw=
-=2x37
------END PGP SIGNATURE-----
+OK, that actually seems to work. With the assumption that there will never
+be dentry without a parent I think I can go this approach.
 
---ke7F+ZQ+zKizgPnB--
+Thanks!
+
+-- Steve
