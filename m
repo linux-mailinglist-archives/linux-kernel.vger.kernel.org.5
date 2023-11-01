@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542937DDB46
+	by mail.lfdr.de (Postfix) with ESMTP id D3C037DDB48
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376272AbjKAC6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 22:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
+        id S1376746AbjKAC6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 22:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345437AbjKAC6i (ORCPT
+        with ESMTP id S1345437AbjKAC6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 22:58:38 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 27F2DA4;
-        Tue, 31 Oct 2023 19:58:35 -0700 (PDT)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id A887A605164A1;
-        Wed,  1 Nov 2023 10:58:04 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     Su Hui <suhui@nfschina.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/radeon/ni_dpm: add an error code check in ni_dpm_init
-Date:   Wed,  1 Nov 2023 10:57:53 +0800
-Message-Id: <20231101025752.988228-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 31 Oct 2023 22:58:41 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37DBE8;
+        Tue, 31 Oct 2023 19:58:36 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A12wMMV1944732, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 3A12wMMV1944732
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Nov 2023 10:58:23 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 1 Nov 2023 10:58:23 +0800
+Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 1 Nov 2023 10:58:22 +0800
+Received: from localhost.localdomain (172.21.252.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
+ 15.1.2375.32 via Frontend Transport; Wed, 1 Nov 2023 10:58:22 +0800
+From:   Tzuyi Chang <tychang@realtek.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, TY Chang <tychang@realtek.com>
+Subject: [PATCH 0/2] Add gpio driver support for Realtek DHC SoCs
+Date:   Wed, 1 Nov 2023 10:58:00 +0800
+Message-ID: <20231101025802.3744-1-tychang@realtek.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-KSE-ServerInfo: RTEXMBS06.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: license violation
+X-KSE-Antivirus-Attachment-Filter-Interceptor-Info: license violation
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ni_patch_single_dependency_table_based_on_leakage() return zero or
-negative error code. But ni_patch_dependency_tables_based_on_leakage()
-doesn't check the return value of the first function call. It's same for
-ni_dpm_init(). It's better to add this error code check.
+These patches add the bindings and the gpio driver for Realtek
+DHC(Digital Home Center) RTD SoCs, including RTD1295, RTD1395,
+RTD1619, RTD1319, RTD1619B, RTD1319D and RTD1315E.
 
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
- drivers/gpu/drm/radeon/ni_dpm.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Tzuyi Chang (2):
+  gpio: realtek: Add GPIO support for RTD SoC variants
+  dt-bindings: gpio: realtek: Add realtek,rtd-gpio bindings
 
-diff --git a/drivers/gpu/drm/radeon/ni_dpm.c b/drivers/gpu/drm/radeon/ni_dpm.c
-index 3e1c1a392fb7..f521dc929a06 100644
---- a/drivers/gpu/drm/radeon/ni_dpm.c
-+++ b/drivers/gpu/drm/radeon/ni_dpm.c
-@@ -1010,6 +1010,8 @@ static int ni_patch_dependency_tables_based_on_leakage(struct radeon_device *rde
- 
- 	ret = ni_patch_single_dependency_table_based_on_leakage(rdev,
- 								&rdev->pm.dpm.dyn_state.vddc_dependency_on_sclk);
-+	if (ret)
-+		return ret;
- 
- 	ret = ni_patch_single_dependency_table_based_on_leakage(rdev,
- 								&rdev->pm.dpm.dyn_state.vddc_dependency_on_mclk);
-@@ -4098,7 +4100,12 @@ int ni_dpm_init(struct radeon_device *rdev)
- 	rdev->pm.dpm.dyn_state.vddc_dependency_on_dispclk.entries[3].clk = 72000;
- 	rdev->pm.dpm.dyn_state.vddc_dependency_on_dispclk.entries[3].v = 900;
- 
--	ni_patch_dependency_tables_based_on_leakage(rdev);
-+	ret = ni_patch_dependency_tables_based_on_leakage(rdev);
-+	if (ret) {
-+		kfree(rdev->pm.dpm.dyn_state.vddc_dependency_on_dispclk.entries);
-+		r600_free_extended_power_table(rdev);
-+		return ret;
-+	}
- 
- 	if (rdev->pm.dpm.voltage_response_time == 0)
- 		rdev->pm.dpm.voltage_response_time = R600_VOLTAGERESPONSETIME_DFLT;
+ .../bindings/gpio/realtek,rtd-gpio.yaml       |  56 ++
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-rtd.c                       | 702 ++++++++++++++++++
+ 4 files changed, 767 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/realtek,rtd-gpio.yaml
+ create mode 100644 drivers/gpio/gpio-rtd.c
+
 -- 
-2.30.2
+2.42.0
 
