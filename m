@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEBD7DDA42
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5A17DDA3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377097AbjKAA1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 20:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
+        id S1377104AbjKAA1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 20:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376971AbjKAA1J (ORCPT
+        with ESMTP id S1377002AbjKAA1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Oct 2023 20:27:09 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1744136;
-        Tue, 31 Oct 2023 17:26:43 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a956887c20so230583739f.1;
-        Tue, 31 Oct 2023 17:26:43 -0700 (PDT)
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C4B181;
+        Tue, 31 Oct 2023 17:26:45 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35748b32d73so24405625ab.0;
+        Tue, 31 Oct 2023 17:26:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698798403; x=1699403203; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698798404; x=1699403204; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4XXimEcMUHLKcy89kdpmOcYiRa3Yj2O0YL1kh5UVcGE=;
-        b=Pqxf9Y4/3csbx2uazrPvoo/Dw+Dz+Z9fZOvhqd+WQ7hh0DFm2cfJtO3vpW7JNedMU7
-         AxaVPrhL+8Sklvfwkh6Rq+26tTjAamb79keN1i+PEyp4fNenH9tRVg777poEZHN1Jkk5
-         IX17RhHSbJO4xphQjk5czMiJByqMOD/rbSo6Pi6Hv0091I7PT5E1WxZr27ki59OlQDTY
-         E/mK2LkNBTowMHo8MZLiJi4AEVNYKYPr2Cg8jCLPF7fE/cF8Lf6Z+JaFF1FjQSpHdDLR
-         GvFi+ELDuOQCoX1sBQXR8gnreYsIAwJ3b96H8ydyxEZ0fCyTIJhT3ZzvzpJR+lqYRw2D
-         f9Jw==
+        bh=2r2Xy/LUqkHG59xFuO4NDcaCnT0VxXpDLDYMeh9aWn8=;
+        b=KnrlPxece63xyuOBMNnRrJlBakMju0SrdFkUX+M/brEvV95/IEJb9T6qSI5XzExH9V
+         zah0eI3kHAkUCToYQxm3jOZ+2wjbbdwL4Q4RAQMfKsxZsnvse8dMO7Otv0PN4Jk8aRIm
+         VdxbnFqrPMCQOv9DFJHWKWD25o0fk/5SqH6uAXsrlabvkl6oicK4DvCpK9yZEPWdszzj
+         BNjaBqhtZQEAnopK8gTwn9JUguKEdtEWmoW7t+45qzVINWRPjVEBU0RYJf2oGtCSy4h7
+         nmWQI+uQh89wnjD0pL7/gJ1PE3qpG6M8dzaZ+ymifTnkv3KL8EgVVxPPwQTT9Qr5KPx0
+         Rl1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698798403; x=1699403203;
+        d=1e100.net; s=20230601; t=1698798404; x=1699403204;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4XXimEcMUHLKcy89kdpmOcYiRa3Yj2O0YL1kh5UVcGE=;
-        b=YARja0KsvDIJW8vqEB7puc90yFfA3cbEpxsKKqHytBy0W282iOk/r+zZjGBqCBaMlU
-         ZLZb7IeZ5IWrU4jeARzaCoud3tGNyzdbFNT6ukO5kXks6/4wLlATbiHvmldxA1l03K8/
-         T7Eye8iARqcZD9Zr2Jlj8j/WaRmXJ9zXP4M7Xkj74x7RNChFqvX/cljQij/n9kknWz5p
-         dfxsXqqUmjPxero930jJdSAe2LeXi9KPmCRZxAzlKnrIr3zSeeFLi4gs6XxWoJFnVfnU
-         PgkASwDhTI3zV/rEjE/Uf9oVUajkuIy+sVCM64+VLFWNAXNPg+Ah0EVWTyD090vVWuEU
-         ps0Q==
-X-Gm-Message-State: AOJu0Yyya1a9+RxIPZwOXRTibEkZ37Y5O+wgYxw1jgs6P+j/OKjrSETS
-        toe2goiqtDW25+31ufhTb6T/qqtcU7SFIw==
-X-Google-Smtp-Source: AGHT+IEuxw5w71K77jdcQFb+x0zSRbj1XYX7dWzhjRL84L4L9BuVeF7Xwp09HkHULcT6OFMfMKAQzw==
-X-Received: by 2002:a92:c24f:0:b0:350:f352:4853 with SMTP id k15-20020a92c24f000000b00350f3524853mr17133011ilo.25.1698798402979;
-        Tue, 31 Oct 2023 17:26:42 -0700 (PDT)
+        bh=2r2Xy/LUqkHG59xFuO4NDcaCnT0VxXpDLDYMeh9aWn8=;
+        b=D3IMorvhrzvKsGpzA3BLYDDRGRNN4JiT5BWLWR1bJFFtUBf1puKOgdpkcoplOShxV1
+         rbdsNYXmUmhK/CVul7m+aFSSUknm8s2J5YNaivA7szK4Bxv3ldGInUAUuYmdy6gBIID0
+         RVWdaaWJ9DNHdgCOknCVvwaFxpBAXU1j5IVDmkLEHmqttAIQ28BqWW0EGOct+cExFSL5
+         caC1AkngHkADwIfydOk1SB/1/ZdyTx5mU3Gq/vdzs4Jf26H48IL8kzBu8GaLSDKV39yn
+         Fr6tTnY6/d2uF25W345kocQ5LyD5apUjyIsHJXhJGCah46Szd/WoK6itw4AHp8ELk385
+         GmLg==
+X-Gm-Message-State: AOJu0Yxi4cPFosrExCaX34j0cy3+O7HQrKb0oluXds8oB3JFe002c6Xq
+        sVVxRI9YdbXxzybGSRE4ieXrq2I8aY1oNg==
+X-Google-Smtp-Source: AGHT+IFJ+EO25MFzuh5tK6lN7VgLWzxSfGJvEw3xuzQxhOciZy5mpoFNsIJKMGKNq9pPh0T4ilf3hg==
+X-Received: by 2002:a05:6e02:330d:b0:359:3754:e6bb with SMTP id bm13-20020a056e02330d00b003593754e6bbmr3823026ilb.21.1698798404300;
+        Tue, 31 Oct 2023 17:26:44 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id t1-20020a92c901000000b00357cc8df1d5sm141701ilp.68.2023.10.31.17.26.41
+        by smtp.googlemail.com with ESMTPSA id t1-20020a92c901000000b00357cc8df1d5sm141701ilp.68.2023.10.31.17.26.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 17:26:42 -0700 (PDT)
+        Tue, 31 Oct 2023 17:26:43 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
         gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
@@ -65,9 +65,9 @@ Cc:     lb@semihalf.com, linux@rasmusvillemoes.dk, joe@perches.com,
         arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
         linux-arm-msm@vger.kernel.org, mingo@redhat.com,
         jim.cromie@gmail.com
-Subject: [PATCH v7d 18/23] dyndbg: reserve flag bit _DPRINTK_FLAGS_PREFIX_CACHED
-Date:   Tue, 31 Oct 2023 18:26:04 -0600
-Message-ID: <20231101002609.3533731-19-jim.cromie@gmail.com>
+Subject: [PATCH v7d 19/23] dyndbg: add _DPRINTK_FLAGS_INCL_LOOKUP
+Date:   Tue, 31 Oct 2023 18:26:05 -0600
+Message-ID: <20231101002609.3533731-20-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231101002609.3533731-1-jim.cromie@gmail.com>
 References: <20231101002609.3533731-1-jim.cromie@gmail.com>
@@ -75,7 +75,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,37 +83,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reserve bit 7 to remember that a pr-debug callsite is/was:
-- enabled, with +p
-- wants a dynamic-prefix, with one+ of module:function:sourcfile
-- was previously called
-- was thus saved in the cache. NOT YET.
+dyndbg's dynamic prefixing (by +tmfsl flags) is needlessly expensive.
 
-Its unclear whether any cache fetch would be faster than 2-3 field
-fetches, but theres another factor; the 3 columns in the __dyndbg
-section are highly redundant and compressible, but to get the
-compression, we need field accessors, which will rebalance the
-tradeoff.
+When an enabled (with +p) pr_debug is called, _DPRINTK_FLAGS_INCL_ANY
+prefix decorations are sprintf'd into stack-mem for every call.
 
-So, for now, its just the bit reservation.
+This string (or part of it) could be cached once its 1st generated,
+and retrieved thereafter, as long as its deleted any time the
+callsite's flags are changed afterwards.
+
+So consider the prefix/decoration flags: 'tmfsl', and what should be
+in the cache:
+
+-t  thread-id. not part of the "callsite" info, derived from current.
+    doesn't belong in the cache. it would be wrong.
+    can be done in outer: dynamic_emit_prefix()
+
+-l  line number
+    this could be part of the prefix, but would bloat the cache
+    can also be done in outer: dynamic_emit_prefix()
+
+-mfs  module, function, source-file
+    we cache these, composed into a sub-string.
+    they are "lookups", currently to descriptor fields,
+    could be accessor macros to "compressed" tables.
+    cache saves more access work.
+
+All enabled together, they compose a prefix string like:
+
+  # outer   -----inner----------   outer
+  "[tid] module:function:sourcfile:line: "
+
+So this patch extracts _DPRINTK_FLAGS_INCL_LOOKUP macro out of
+_DPRINTK_FLAGS_INCL_ANY macro, then redefs latter.
+
+Next re-refactor dynamic_emit_prefix inner/outer fns accordingly.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/dynamic_debug.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index 2a7832b1ba5b..4ffddf5e9152 100644
+index 4ffddf5e9152..b4550f80cfd5 100644
 --- a/include/linux/dynamic_debug.h
 +++ b/include/linux/dynamic_debug.h
-@@ -38,6 +38,7 @@ struct _ddebug {
- #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
- #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
+@@ -40,10 +40,12 @@ struct _ddebug {
  #define _DPRINTK_FLAGS_INCL_SOURCENAME	(1<<5)
-+#define _DPRINTK_FLAGS_PREFIX_CACHED	(1<<7)
+ #define _DPRINTK_FLAGS_PREFIX_CACHED	(1<<7)
  
- #define _DPRINTK_FLAGS_INCL_ANY		\
- 	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
+-#define _DPRINTK_FLAGS_INCL_ANY		\
+-	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
+-	 _DPRINTK_FLAGS_INCL_LINENO  | _DPRINTK_FLAGS_INCL_TID |\
++#define _DPRINTK_FLAGS_INCL_LOOKUP					\
++	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |	\
+ 	 _DPRINTK_FLAGS_INCL_SOURCENAME)
++#define _DPRINTK_FLAGS_INCL_ANY						\
++	(_DPRINTK_FLAGS_INCL_LINENO | _DPRINTK_FLAGS_INCL_TID |		\
++	 _DPRINTK_FLAGS_INCL_LOOKUP)
+ 
+ #if defined DEBUG
+ #define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINT
 -- 
 2.41.0
 
