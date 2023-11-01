@@ -2,142 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBD87DE1A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFE47DE1AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344250AbjKAN3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        id S1344282AbjKANau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344200AbjKAN3A (ORCPT
+        with ESMTP id S1344200AbjKANas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:29:00 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2CEFC;
-        Wed,  1 Nov 2023 06:28:51 -0700 (PDT)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b2e44c7941so4559723b6e.2;
-        Wed, 01 Nov 2023 06:28:51 -0700 (PDT)
+        Wed, 1 Nov 2023 09:30:48 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9584F4
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:30:45 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991c786369cso1072024666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 06:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1698845444; x=1699450244; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zqp+tKsbxuT0dP0kvbmRHXQPetcAFAg5Ll5YZH6o/4c=;
+        b=JTYwlKHLwTBMgX7BLi7RGY3k3PaCc/x4YiwSqQupeq017c7pU2qtEluozEbmlImE0x
+         Qs5qKDRn2kDzfLnkj2kXm042OBCxV2A8+TNm9JuK+r7Xo3M9u9q5H3Gv3igPB0Y4qv96
+         cph6c+SI1F1VmPU4UWrpk4fYLNtNakcdOhfEVG/bVQYj0kCwWO+1FCuCwPYJcV8gxhYP
+         pz7Ha2hyM+Ao3qAUTC+T+/RFMIES63qMxxGGT6MYYoHFco+batbrfFie0533geEDI2mv
+         RxO/nHnYdw0W2eeyI0vlIbNjIqEE0i02xN9/rhOcnLKKGfpWTqa5h/QEo1ehBga1QxIP
+         WgEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698845330; x=1699450130;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yuRhwoRZhsAqDUdHH78st4OhSKCrO+YWmaTXJR5WojE=;
-        b=FBXb95r0YpQKKxksJazMcmmwop6jeUA4wiLCILYBLrYEd3jtbCyIhp0eBDSkXktzZR
-         LHwIiD9TD0cGQFoapkZOlLRz+zVtnsL1ZQX8Zpq9yUJpCvITJjH1bJ/A3qIoFfXWjOJ7
-         3MqUp/wML8r7OdCv11D7GfaoPzQt+xeSJlrp98gsAvhDAYCMQwsYDpvyn7J3lpGd+4RB
-         m5G+5F77BenYumRNAN/F5Uk+OkaSM1NbamQSMM5AphFDMoFjduPonniI9swB+alqrUR3
-         Q3OSOqYkwVwlHtiYZXklqrn4DFnarXgHJDm/Z5An2OqGiddvdzH1t7VZC3J465MDiFQy
-         HbjQ==
-X-Gm-Message-State: AOJu0YzI9vePqtMdKVwJio80bPyPctY4JqiKYi87QB3x8v1foJq9sl9f
-        Nn+4nR4BBX8ewmIh8sCheA==
-X-Google-Smtp-Source: AGHT+IE5bPC9rrewIVjh/QtRMTKfvJg0gEfDZ/hx+nIvG88LiXjawrwUWwltBfASmntx2SbX7IBNxQ==
-X-Received: by 2002:a05:6808:14c4:b0:3b5:663c:9b91 with SMTP id f4-20020a05680814c400b003b5663c9b91mr5571557oiw.12.1698845330569;
-        Wed, 01 Nov 2023 06:28:50 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s7-20020a056808008700b003ae165739bbsm221997oic.7.2023.11.01.06.28.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 06:28:49 -0700 (PDT)
-Received: (nullmailer pid 4072711 invoked by uid 1000);
-        Wed, 01 Nov 2023 13:28:48 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1698845444; x=1699450244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zqp+tKsbxuT0dP0kvbmRHXQPetcAFAg5Ll5YZH6o/4c=;
+        b=tk9oSOMHgpo9QvQFLr21eCjAGuLSZ9y5xiAhBff/FUVU8+lVDc+tANrQIWRqz5W4eQ
+         +MjUORQoAe2CcpA8coruDkKGwZOEk3SMsAlmPgIBF3OpHlNE6pP6K7NKPRIulaWsOiJO
+         VZ8iAXteLhruSOmKXaraaH4qHs6CqD9SsOqQ400qsl+r5LFQMJFGXdt810JbRJ3F7pDZ
+         IK1A+9c0TMeLn0bxHacxH0Tsr5f1XFDZQp7CU5b/UnfJiFeJLmh/IcTRNXi+mgJnHxOe
+         XRhUGcwmfD/+g0DXYf80TCSa5pUDb4xvk/aUhC3PFxOJTfMtIko4dWHmYbX8a4EKHnOa
+         3W4g==
+X-Gm-Message-State: AOJu0YwjYwjLqfRijwFJvc/yKgsA9bPzZxnpZw1MRfUULCENadhJVc0G
+        kVlM1J7kAp5yr2reZp8XDy5lwDGHoMdepqdTmIsVtw==
+X-Google-Smtp-Source: AGHT+IE0QhPJiUSklN+lm5WtW4Z7Yv9ImCivRKXFVydz+RY3qA5o2XFPaZaGYPiYDAveM7G5Fo98a74g0NEDILnIC70=
+X-Received: by 2002:a17:907:7f19:b0:9be:2b53:ac4d with SMTP id
+ qf25-20020a1709077f1900b009be2b53ac4dmr1969204ejc.74.1698845444122; Wed, 01
+ Nov 2023 06:30:44 -0700 (PDT)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Conor Dooley <conor+dt@kernel.org>, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org
-In-Reply-To: <20231101123608.11157-2-ansuelsmth@gmail.com>
-References: <20231101123608.11157-1-ansuelsmth@gmail.com>
- <20231101123608.11157-2-ansuelsmth@gmail.com>
-Message-Id: <169884529967.4072013.2362625689707570358.robh@kernel.org>
-Subject: Re: [net-next PATCH v2 2/2] dt-bindings: Document bindings for
- Marvell Aquantia PHY
-Date:   Wed, 01 Nov 2023 08:28:48 -0500
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231031165918.608547597@linuxfoundation.org>
+In-Reply-To: <20231031165918.608547597@linuxfoundation.org>
+From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date:   Wed, 1 Nov 2023 22:30:33 +0900
+Message-ID: <CAKL4bV743XcEZTObZ2qY58Mz5TZ-GXbiuTMykTTemO06Py2O3Q@mail.gmail.com>
+Subject: Re: [PATCH 6.1 00/86] 6.1.61-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg
 
-On Wed, 01 Nov 2023 13:36:08 +0100, Christian Marangi wrote:
-> Document bindings for Marvell Aquantia PHY.
-> 
-> The Marvell Aquantia PHY require a firmware to work correctly and there
-> at least 3 way to load this firmware.
-> 
-> Describe all the different way and document the binding "firmware-name"
-> to load the PHY firmware from userspace.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
-> Changes v2:
-> - Add DT patch
-> 
->  .../bindings/net/marvell,aquantia.yaml        | 123 ++++++++++++++++++
->  1 file changed, 123 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-> 
+On Wed, Nov 1, 2023 at 2:02=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.61 release.
+> There are 86 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 02 Nov 2023 16:59:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.61-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+6.1.61-rc1 tested.
 
-yamllint warnings/errors:
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mdio-mux-mmioreg.example.dtb: ethernet-phy@4: compatible:0: 'ethernet-phy-ieee802.3-c45' is not one of ['ethernet-phy-id03a1.b445', 'ethernet-phy-id03a1.b460', 'ethernet-phy-id03a1.b4a2', 'ethernet-phy-id03a1.b4d0', 'ethernet-phy-id03a1.b4e0', 'ethernet-phy-id03a1.b5c2', 'ethernet-phy-id03a1.b4b0', 'ethernet-phy-id03a1.b662', 'ethernet-phy-id03a1.b712', 'ethernet-phy-id31c3.1c12']
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mdio-mux-mmioreg.example.dtb: ethernet-phy@4: compatible: ['ethernet-phy-ieee802.3-c45'] is too short
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mdio-mux-mmioreg.example.dtb: ethernet-phy@4: compatible:0: 'ethernet-phy-ieee802.3-c45' is not one of ['ethernet-phy-id03a1.b445', 'ethernet-phy-id03a1.b460', 'ethernet-phy-id03a1.b4a2', 'ethernet-phy-id03a1.b4d0', 'ethernet-phy-id03a1.b4e0', 'ethernet-phy-id03a1.b5c2', 'ethernet-phy-id03a1.b4b0', 'ethernet-phy-id03a1.b662', 'ethernet-phy-id03a1.b712', 'ethernet-phy-id31c3.1c12']
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mdio-mux-mmioreg.example.dtb: ethernet-phy@4: compatible: ['ethernet-phy-ieee802.3-c45'] is too short
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/ethernet-phy.example.dtb: ethernet-phy@0: compatible:0: 'ethernet-phy-id0141.0e90' is not one of ['ethernet-phy-id03a1.b445', 'ethernet-phy-id03a1.b460', 'ethernet-phy-id03a1.b4a2', 'ethernet-phy-id03a1.b4d0', 'ethernet-phy-id03a1.b4e0', 'ethernet-phy-id03a1.b5c2', 'ethernet-phy-id03a1.b4b0', 'ethernet-phy-id03a1.b662', 'ethernet-phy-id03a1.b712', 'ethernet-phy-id31c3.1c12']
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/sff,sfp.example.dtb: ethernet-phy@0: compatible:0: 'ethernet-phy-ieee802.3-c45' is not one of ['ethernet-phy-id03a1.b445', 'ethernet-phy-id03a1.b460', 'ethernet-phy-id03a1.b4a2', 'ethernet-phy-id03a1.b4d0', 'ethernet-phy-id03a1.b4e0', 'ethernet-phy-id03a1.b5c2', 'ethernet-phy-id03a1.b4b0', 'ethernet-phy-id03a1.b662', 'ethernet-phy-id03a1.b712', 'ethernet-phy-id31c3.1c12']
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/sff,sfp.example.dtb: ethernet-phy@0: compatible: ['ethernet-phy-ieee802.3-c45'] is too short
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/sff,sfp.example.dtb: ethernet-phy@0: Unevaluated properties are not allowed ('interrupt' was unexpected)
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nvidia,tegra234-mgbe.example.dtb: phy@0: $nodename:0: 'phy@0' does not match '^ethernet-phy(@[a-f0-9]+)?$'
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nvidia,tegra234-mgbe.example.dtb: phy@0: compatible:0: 'ethernet-phy-ieee802.3-c45' is not one of ['ethernet-phy-id03a1.b445', 'ethernet-phy-id03a1.b460', 'ethernet-phy-id03a1.b4a2', 'ethernet-phy-id03a1.b4d0', 'ethernet-phy-id03a1.b4e0', 'ethernet-phy-id03a1.b5c2', 'ethernet-phy-id03a1.b4b0', 'ethernet-phy-id03a1.b662', 'ethernet-phy-id03a1.b712', 'ethernet-phy-id31c3.1c12']
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nvidia,tegra234-mgbe.example.dtb: phy@0: compatible: ['ethernet-phy-ieee802.3-c45'] is too short
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nvidia,tegra234-mgbe.example.dtb: phy@0: Unevaluated properties are not allowed ('#phy-cells', 'compatible' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
 
-doc reference errors (make refcheckdocs):
+Thanks
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231101123608.11157-2-ansuelsmth@gmail.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
