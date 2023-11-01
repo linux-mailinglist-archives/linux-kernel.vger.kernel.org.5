@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5417DDCBB
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC9E7DDCBC
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 07:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345162AbjKAGfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 02:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
+        id S1345205AbjKAGfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 02:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345167AbjKAGfn (ORCPT
+        with ESMTP id S1345130AbjKAGfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 02:35:43 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01hn2237.outbound.protection.outlook.com [52.100.0.237])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A20C11B;
-        Tue, 31 Oct 2023 23:35:37 -0700 (PDT)
+        Wed, 1 Nov 2023 02:35:41 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01hn2233.outbound.protection.outlook.com [52.100.0.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F188DDA;
+        Tue, 31 Oct 2023 23:35:35 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FDN1LiiRhVrMfF3BZ85LPvHg3bbusGAm6yQbuUviQKmo8H98p875lYyn8jBYDu3sr/Iz93zezu403/puPfYVgHFGRgO5mzv52RdJgLGe1RYD/u78cIkwCCPMaxZJF3j/gAwtcaCmQf5FZNaTmsuT2sjMpvrEa51GzZOe4nGN9JjCZPrsgOq55Fc1J52RsP+gFzglXngKyO8/8YVrAtXE28KDJSEpnN18c/iH+MiZxv39XMKaeJwntq+iOmnthUv+6UUb1k3vapRF6S8Idyt33DcF45esk1PTFhUpNpfq6V/6KIqwmEISoitm13/n2Bx1IWhYfGRU3WY+vYJMuC+AsA==
+ b=XFWDSO82lGqKvbtFWDXbIwlr5e0cpk0qawjzwiFZ0E72Wphb9NmvBbDkOmzTt+NoquODVR4F0x0QPkt1aacQ9Rbyk3euUCAZSDcmuugyDfiQ08FkFtOk0iKinB3G9PHdmgV1wNDexmxIyxxPJZyD1imJTMZPWCq9SI6tkvCUhEiyT4AK7G327KXzR/yrpzBeEbjiBiFjN1UajbHQ1xmv7PY3uaOe86UEnKw+ZiKznxquDf8Wo8TksKKdI436F9Nah8BEJVMvPypUPxvpg/NTUc/+NLKOqsI3Ndzjln+2Go5L1QNBr+wyNstzcH4FJnOvynKHHsqc6XbooPaYypu88Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EJC37DQbAUBAsFLLjmR5HaLGx4anaYHtwuAVwlSTkmY=;
- b=I5vLifETqA7r4APum+Sq8ySbBe7WD6ACMjI+u64IntOObw6UlCjUSPyD+hpGl+ocnTVhmhGMAedotLkfhzr2Y8WTHNJ90bJMIIrRniM0K+H7f+9nR1UBUQIusX+VC/UDnqKu8dwNg9Dx4qXien0JVbHXU5IYFSx8wR3albGjSuwLjePE1/DCnVauBzr6TywVN+surkGNP4nuAVcl9hqw+r/wsR3BPZXZDzxS1g7g3+SSwb4PCo8bCw+wsOZ0ayEs/P7M3a0zstSuO0vpF8UU+0HVWYBiUCNOzAjKg7MrNaOKCK2ONYcuVk9AZkyHzq6ngXwsLah19tzEEIDPBxJ5FQ==
+ bh=VcaICetR5lyEKj6pIUQJ2asUqjV4ZwfHDhAFVDFV/yA=;
+ b=ecMEr9RMVi9PbsoJp83TFiFTeNBX/lgp4/pxyYEBsanvhSTpcBKJzjmQkQfarHPSiIALdQwf5fp6liADdDJzL0iHKqVd7lFYRKfWyvJFKtY+3A7vWeV2raFA3X1v3Is+F+tq7k/y6DWoRp6V3bvBzKT2kthMHSWJ9UFafey0F7WBx/5siLpvssc30D4Pnq0/afftaXjI58UPEXvFzIv4fOhPwIOXAN3Ggj6RMIL67+bxdpOWSKDSOkvY1lSSnbsNnpS+kxhgoawJduJxew8fXg0iC232CmANxtt2smDj7P64J0qwmVBoGx170/T/1u8dU/500UU99nIwzPfC3G3j/g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ 175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EJC37DQbAUBAsFLLjmR5HaLGx4anaYHtwuAVwlSTkmY=;
- b=WoEjLaV6YYi2hXJTmvDfnqso0Fy7K//2Khh9NpN6h6MkWzaSd2eJJ3uUAF18WGBBM/PdokNrkLHCOYCcesf5GOhmYEhhOO3eNhhRLiB0I6n5HOEgnah2JVwWJRHsQtD/KejFjIO2HnlM6Fb2wz5byc4s3gM8ldMj0hmdlf4WtGc=
-Received: from PS2PR02CA0001.apcprd02.prod.outlook.com (2603:1096:300:41::13)
- by KL1PR03MB8474.apcprd03.prod.outlook.com (2603:1096:820:13b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.24; Wed, 1 Nov
- 2023 06:35:33 +0000
-Received: from HK3PEPF0000021B.apcprd03.prod.outlook.com
- (2603:1096:300:41:cafe::d5) by PS2PR02CA0001.outlook.office365.com
- (2603:1096:300:41::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
- Transport; Wed, 1 Nov 2023 06:35:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ bh=VcaICetR5lyEKj6pIUQJ2asUqjV4ZwfHDhAFVDFV/yA=;
+ b=TxIxzSzrJvGMlRT0p1zwR6Ztt/DgVdUbqVg2MydSb99LBSnbd4ig8oEgKWFRsBFXWgEBvfegNwa5ebj24PQn7sO+Ai1V4riqKFSYXiycxU2bKUzYITIb+Ksfl8LtoAuOlI92DLMEpd/dG1aqYgRW7MXSdTu3lor59xljEo9VtCg=
+Received: from SG2PR06CA0205.apcprd06.prod.outlook.com (2603:1096:4:68::13) by
+ SEZPR03MB8208.apcprd03.prod.outlook.com (2603:1096:101:19f::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.26; Wed, 1 Nov 2023 06:35:30 +0000
+Received: from SG2PEPF000B66D0.apcprd03.prod.outlook.com
+ (2603:1096:4:68:cafe::29) by SG2PR06CA0205.outlook.office365.com
+ (2603:1096:4:68::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29 via Frontend
+ Transport; Wed, 1 Nov 2023 06:35:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
  smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nuvoton.com;
 Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
-Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
- HK3PEPF0000021B.mail.protection.outlook.com (10.167.8.37) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Wed, 1 Nov 2023 06:35:33 +0000
-Received: from NTHCCAS02.nuvoton.com (10.1.9.121) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 1 Nov
- 2023 14:35:17 +0800
+ 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=175.98.123.7; helo=NTHCCAS04.nuvoton.com; pr=C
+Received: from NTHCCAS04.nuvoton.com (175.98.123.7) by
+ SG2PEPF000B66D0.mail.protection.outlook.com (10.167.240.26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.20.6954.19 via Frontend Transport; Wed, 1 Nov 2023 06:35:30 +0000
+Received: from NTHCCAS02.nuvoton.com (10.1.9.121) by NTHCCAS04.nuvoton.com
+ (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Wed, 1
+ Nov 2023 14:35:18 +0800
 Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS02.nuvoton.com
  (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Wed, 1 Nov
- 2023 14:35:16 +0800
+ 2023 14:35:17 +0800
 Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
  (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Wed, 1 Nov 2023 14:35:16 +0800
+ Transport; Wed, 1 Nov 2023 14:35:17 +0800
 From:   Seven Lee <wtli@nuvoton.com>
 To:     <broonie@kernel.org>
 CC:     <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
@@ -70,9 +69,9 @@ CC:     <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
         <YHCHuang@nuvoton.com>, <KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>,
         <SJLIN0@nuvoton.com>, <wtli@nuvoton.com>, <scott6986@gmail.com>,
         <supercraig0719@gmail.com>, <dardar923@gmail.com>
-Subject: [PATCH v3 1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate
-Date:   Wed, 1 Nov 2023 14:35:13 +0800
-Message-ID: <20231101063514.666754-2-wtli@nuvoton.com>
+Subject: [PATCH v3 2/2] ASoC: nau8821: Add slew rate controls.
+Date:   Wed, 1 Nov 2023 14:35:14 +0800
+Message-ID: <20231101063514.666754-3-wtli@nuvoton.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231101063514.666754-1-wtli@nuvoton.com>
 References: <20231101063514.666754-1-wtli@nuvoton.com>
@@ -81,25 +80,24 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-NotSetDelaration: True
 X-EOPAttributedMessage: 0
-X-MS-Exchange-SkipListedInternetSender: ip=[211.75.126.7];domain=NTHCCAS01.nuvoton.com
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021B:EE_|KL1PR03MB8474:EE_
-X-MS-Office365-Filtering-Correlation-Id: f094038a-8c88-434b-1ff1-08dbdaa4c012
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66D0:EE_|SEZPR03MB8208:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2bc017f8-2af8-41fe-f523-08dbdaa4be51
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o0xfzbxCLR6sTNuQdBsw8H6Tw+lk9qg2GD4BIbzbXww9+D9uiKGzwnP+OnAkmiUHslNmJYxrrrjt4skQNIoZsnR/ueyp+/nSFs+e5JYjtou+Fa62g8uUqQJqt2bpC1de0d38JB+1/PUd55fK+kikim2za5jsggaomM6vfG5ctR/ERVOJRMadUoeoA0MeRhbQyjfukO55itYd9UftwJi3+Ew3n/24qnbfiUKbU++bslDB5HwD3Q+rQH/Va6kDNYdBoi1U8ekogiiICYFYT99uzFAEZxUC9tKSbjxUOE53XutQQT93Ql2LmClsv13mzNVtuIdcmOoBGNoppZlBuLrySm/rrElmbrlegiMmxGU+o4HOgLNARD4ev+D8sn/eSwtflKyNBgQ0CFWUh3fDtyNVGfa3Z1UUig2KelCGQtKfyz6tADKuFWTftAI7ByoJEqDqPBNVZXOnO9tbonpSuSgNLYeE8c1Ohd9WrGKB31jcWxUHxv9lMSbtqxWWu8NN4sISFmekLI1WVppsvXOiES7rFQq39LnBe8aBiXjWXAHYDshBCk0bepUzOIIXKHtQKYBorWfQkZKv8ueYiADRC/zWM4i+a1jCXF6ov+R9YO26WQBjhw2YGxkBEWKoNPc0i0y2JN6sWl6FZH0fn5wsdfwYgxS/cWF91NrCUuTldyP9PXOk4skL91OzuyaPOiBeQHZywYNaJw8yTknJ6MCCf351m8ckkNkFmzIG7V4VClljs7URWF0lXCmpGty2OnL623H1BtDfOcxt/5Gu5IDp1KU+xPCIA1cRqQRMGBerHkRPP3mz34TS2s/9L07Iz8m1iIcjqORJBB3RvTX7FfQYILWznTbwXApVzIabcMK2+WiSjtc=
-X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(451199024)(5400799018)(186009)(64100799003)(82310400011)(1800799009)(40470700004)(36840700001)(46966006)(40480700001)(26005)(2616005)(40460700003)(36756003)(86362001)(81166007)(356005)(82740400003)(426003)(336012)(34020700004)(2906002)(5660300002)(7416002)(1076003)(478600001)(36860700001)(6666004)(47076005)(6916009)(8676002)(4326008)(8936002)(70206006)(316002)(70586007)(54906003)(41300700001)(12100799048);DIR:OUT;SFP:1501;
+X-Microsoft-Antispam-Message-Info: +Wi2A7PkDZk815I4cc1xCinNu78xRMA72et1mHFXwHdHHbSRxiy4FWOabThFnszq5LX1saSGgAsdhu18B5fifYPwyL+LMw18LAPZ21ZrVnya4CU4N3aAShYUSRvyMFnxs6A/u9yzbXnpFZ0sM6LEM6PUnr4cccsdm/Vx49STrrokBm5rx6dHIHwomlurx9/kdMJhQ0V+CBlZ3LclTeMcZsiD5NTIAnvBisvhpxbxaqNiQboBaFew2KBGCvnpKuLV67ABEfpASge85EYgGF0BfFARti12mTxA4MhC6yD3544GBeKy+oQJRAKDw3ZZOYUYueK0WB1rk9e0Nmnqfhp4WGqdv7cgYUX8eJDxqe5jpiG8sRjdBlZSmW9k7jqBtfnoN36v+kuPaZ/j6Z7FfJDs6N6qeT5mNSruc2VdQpGlb6A1xm/mdM4zXXpbb4T8OM8/8I9KJOYOreEeTjgCvcHbmEU41g7Nmo3hrJPCUbznuz3g40PPYsG+5jJoA/Lpn/7MzPvtvWwVo/DJKf6yM4jjeduD5+rTQhKYCYOCt6fXZ1Ze1xNu9NONPxruB743n+N4E2VTwp/y3MdMx0EVQrfKkl/dGYlwbLfYdgBjYJOtz+9CVXnRxhch3zwqabonVRaQ/58E7YwRm2z5VonroZDDbRGdzVmP0ysuDQTKgUf1fhHDmi1mdWbZu1nqP83PptAMAoTEGwbLze7tqoHdFvsjEIvuGE9dWLYT5lOO3et6aoqx1s3PxlTfsmDMgrY0knGzAAGVifmvfmaAVOsFO0kodcMDlvw4b6Am+JlSDx7lEGlB63VZM2LW5Us7MdcnpTL58j0TXOEAq8/7ybs8PKRVFa0Pi/fP8fw/Q6jkaxmwJ+8=
+X-Forefront-Antispam-Report: CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS04.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(186009)(1800799009)(5400799018)(82310400011)(64100799003)(451199024)(46966006)(36840700001)(40470700004)(34020700004)(36860700001)(6916009)(54906003)(316002)(41300700001)(47076005)(8936002)(82740400003)(8676002)(86362001)(70586007)(70206006)(2906002)(4326008)(478600001)(40480700001)(81166007)(426003)(7416002)(336012)(5660300002)(356005)(36756003)(40460700003)(1076003)(83380400001)(26005)(2616005)(6666004)(12100799048);DIR:OUT;SFP:1501;
 X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 06:35:33.4493
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 06:35:30.4341
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f094038a-8c88-434b-1ff1-08dbdaa4c012
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bc017f8-2af8-41fe-f523-08dbdaa4be51
 X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
-X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021B.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS04.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: SG2PEPF000B66D0.apcprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB8474
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB8208
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -110,39 +108,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add input with DMIC slew rate controls
+The patch supports DMIC clock slew rate controls.
 
 Signed-off-by: Seven Lee <wtli@nuvoton.com>
 ---
- .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/nau8821.c | 7 +++++++
+ sound/soc/codecs/nau8821.h | 3 +++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-index 3e54abd4ca74..48c389276a15 100644
---- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-+++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-@@ -89,6 +89,13 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     default: 3072000
+diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
+index 6e1b6b26298a..012e347e6391 100644
+--- a/sound/soc/codecs/nau8821.c
++++ b/sound/soc/codecs/nau8821.c
+@@ -1738,6 +1738,10 @@ static int nau8821_read_device_properties(struct device *dev,
+ 		&nau8821->dmic_clk_threshold);
+ 	if (ret)
+ 		nau8821->dmic_clk_threshold = 3072000;
++	ret = device_property_read_u32(dev, "nuvoton,dmic-slew-rate",
++		&nau8821->dmic_slew_rate);
++	if (ret)
++		nau8821->dmic_slew_rate = 0;
  
-+  nuvoton,dmic-slew-rate:
-+    description: The range 0 to 7 represents the speed of DMIC slew rate.
-+        The lowest value 0 means the slowest rate and the highest value
-+        7 means the fastest rate.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 0
-+
-   nuvoton,left-input-single-end:
-     description: Enable left input with single-ended settings if set.
-         For the headset mic application, the single-ended control is
-@@ -127,6 +134,7 @@ examples:
-             nuvoton,jack-insert-debounce = <7>;
-             nuvoton,jack-eject-debounce = <0>;
-             nuvoton,dmic-clk-threshold = <3072000>;
-+            nuvoton,dmic-slew-rate= <0>;
-             #sound-dai-cells = <0>;
-         };
-     };
+ 	return 0;
+ }
+@@ -1797,6 +1801,9 @@ static void nau8821_init_regs(struct nau8821 *nau8821)
+ 		NAU8821_ADC_SYNC_DOWN_MASK, NAU8821_ADC_SYNC_DOWN_64);
+ 	regmap_update_bits(regmap, NAU8821_R2C_DAC_CTRL1,
+ 		NAU8821_DAC_OVERSAMPLE_MASK, NAU8821_DAC_OVERSAMPLE_64);
++	regmap_update_bits(regmap, NAU8821_R13_DMIC_CTRL,
++		NAU8821_DMIC_SLEW_MASK, nau8821->dmic_slew_rate <<
++		NAU8821_DMIC_SLEW_SFT);
+ 	if (nau8821->left_input_single_end) {
+ 		regmap_update_bits(regmap, NAU8821_R6B_PGA_MUTE,
+ 			NAU8821_MUTE_MICNL_EN, NAU8821_MUTE_MICNL_EN);
+diff --git a/sound/soc/codecs/nau8821.h b/sound/soc/codecs/nau8821.h
+index 00a888ed07ce..62eaad130b2e 100644
+--- a/sound/soc/codecs/nau8821.h
++++ b/sound/soc/codecs/nau8821.h
+@@ -236,6 +236,8 @@
+ #define NAU8821_DMIC_SRC_MASK	(0x3 << NAU8821_DMIC_SRC_SFT)
+ #define NAU8821_CLK_DMIC_SRC	(0x2 << NAU8821_DMIC_SRC_SFT)
+ #define NAU8821_DMIC_EN_SFT	0
++#define NAU8821_DMIC_SLEW_SFT  8
++#define NAU8821_DMIC_SLEW_MASK (0x7 << NAU8821_DMIC_SLEW_SFT)
+ 
+ /* GPIO12_CTRL (0x1a) */
+ #define NAU8821_JKDET_PULL_UP	(0x1 << 11) /* 0 - pull down, 1 - pull up */
+@@ -573,6 +575,7 @@ struct nau8821 {
+ 	int jack_eject_debounce;
+ 	int fs;
+ 	int dmic_clk_threshold;
++	int dmic_slew_rate;
+ 	int key_enable;
+ };
+ 
 -- 
 2.25.1
 
