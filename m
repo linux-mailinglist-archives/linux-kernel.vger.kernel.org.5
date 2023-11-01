@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C80F47DDBC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 05:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E1B7DDBC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 05:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbjKAECM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 00:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        id S232937AbjKAED1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 00:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKAECK (ORCPT
+        with ESMTP id S232091AbjKAEDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 00:02:10 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9367ADF;
-        Tue, 31 Oct 2023 21:02:04 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A11vpbZ031127;
-        Wed, 1 Nov 2023 04:01:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=7hxHgKStLp4kLx/Vn0TFARVQ9iOgMIJxkdR3hYP1PNk=;
- b=VVJxvFz7FP6tXhettQd5y8Zm93H/W+8iJfM8lbzo5LXNSSQSpG6j6DXv69qFw7CV3KrM
- d5PifuQG7cAY9GoJMb9sxbt3sZ/nhXESGVAP7sx6OQqItk99OHe+3VOCStW6Ox0CFuvH
- vaM50Z8J75vliCowf37YDpW/nTH5DNi+j1W/YlSGQOUa1F1teyWDHIIjT/51UXpjC4kg
- ygWJ8wH3C2pocXVk8RoWKQM3DjAyfUX136T3cwXPYCPGYyAwf3bq2+mgjLaQSon3TzVI
- V5mF0h0s/YD1tbR28cm9BjHXvXsZadNomDzw5vP5ZzSOZVZYMz8lxLFTKB7y65RZQHtE hg== 
-Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3ayvrkkb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Nov 2023 04:01:21 +0000
-Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A141IIT013366;
-        Wed, 1 Nov 2023 04:01:18 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3u0ucma7sr-1;
-        Wed, 01 Nov 2023 04:01:18 +0000
-Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A141IP5013361;
-        Wed, 1 Nov 2023 04:01:18 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3A141HUt013360;
-        Wed, 01 Nov 2023 04:01:18 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
-        id DBB4853F5; Wed,  1 Nov 2023 12:01:16 +0800 (CST)
-From:   Ziqi Chen <quic_ziqichen@quicinc.com>
-To:     quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        bvanassche@acm.org, mani@kernel.org, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, quic_ziqichen@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        quic_rampraka@quicinc.com
-Cc:     linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] dt-bindings: ufs: qcom: Add msi-parent for UFS MCQ
-Date:   Wed,  1 Nov 2023 12:01:09 +0800
-Message-Id: <1698811270-76312-1-git-send-email-quic_ziqichen@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Y0Ppfrsa43hIFi2NT0_LbgRnd-ns4l8x
-X-Proofpoint-ORIG-GUID: Y0Ppfrsa43hIFi2NT0_LbgRnd-ns4l8x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-31_10,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 malwarescore=0
- clxscore=1011 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=736
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311010032
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 00:03:25 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7CEC1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 21:03:23 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso361558b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 21:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698811403; x=1699416203; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NnMb6+VyJPA3A0rpO2QIfgR9bU2yeP3mMFNmvX5wlvI=;
+        b=dZUgDamZAjKuKNwgh9rC7/V7VoxudveKDj3nCG2H7pS6MSHtKEnBMGxe/HGi/iwK28
+         qLI/jVCDg7Y6IqI6ScLnOlUbcrXR2h4IFCLzqMPLouu1MiSPF27PiWPetHSRWfSIvuf/
+         lS89Bm/ibwYqPKXBMfSDzbVIbw2gzDnxOuTYQje6knPDSFGck/qzzDRT6XPixNquqjEX
+         JZNIh5T/pbricGtXf5Ho+bRl0++9hZvTJQiYei5JYSBJGCcJb+yt6w39dYN7Vy15BZtT
+         cxKV7LjRb0JgRECQYjx5KicUN8PFx8r/LoYDOBVbfTmAjFcdAS15AjoDWUHkcumtDBpI
+         YQVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698811403; x=1699416203;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NnMb6+VyJPA3A0rpO2QIfgR9bU2yeP3mMFNmvX5wlvI=;
+        b=LRN0+ydhqwey9bCtdXpPH1ohCJcVKsYhPznl+ik1WLE1xW0Dneih2FBJPK9sZHmtQk
+         j89qICTwleM1XzLOGh+DBeaohMXBGXZGLVvx2E7AhXhFGTiSo33GR84yrgcVsS7VPdvw
+         lkmDEjTEQj2+q/qdto9uQGVg+iBpRUoMYYWH1Uz/UkmudHhlpunsWlyLRgqwYINYtkPe
+         lI2f5VK3h3bv4uU/63VMZXODssbjwwszWQlDxUiW7F6MvmyZh7mlGCwt085Qs+BVsLAR
+         l/4MUHVLX1mbh2FhAwfss5LvoC/v71X6ZPK9sbbYldG9kcf22HElKlxwLhM5YrEGMR04
+         EVag==
+X-Gm-Message-State: AOJu0YxKnw/qe1iGQx6uSKRhwEfH+kzm8IV5GwU4/F5k7Uy1wbFY2jEJ
+        bSfCebEBuFiiTPHyXOdTBn+PEfiViMQ=
+X-Google-Smtp-Source: AGHT+IFJV4DrN5I2ZCm7U/tQz+n3KIvZHavrDqKe3B/FXxIf2VCztT7TUDRH2JXNUCwFZCjwy2tnFQ==
+X-Received: by 2002:a05:6a21:7897:b0:151:35ad:f331 with SMTP id bf23-20020a056a21789700b0015135adf331mr6146183pzc.14.1698811402841;
+        Tue, 31 Oct 2023 21:03:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n2-20020aa78a42000000b006c107a9e8f0sm348552pfa.128.2023.10.31.21.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 21:03:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 31 Oct 2023 21:03:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Li zeming <zeming@nfschina.com>, gor@linux.ibm.com,
+        hca@linux.ibm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] stackleak: Remove unnecessary '0' values from ret
+Message-ID: <fe84bc23-03a3-4783-86c7-bd2323269b8b@roeck-us.net>
+References: <20231017060824.10434-1-zeming@nfschina.com>
+ <ZS5ek5RrW3XaBph9@FVFF77S0Q05N>
+ <202310181704.F1089D5B@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202310181704.F1089D5B@keescook>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Message Signaled Interrupt (MSI) has been used
-by UFS driver since the MCQ be enabled. Hence in UFS
-DT node, we need to give the msi-parent property that
-point to the hardware entity that serves as the MSI
-controller for this UFS controller.
+On Wed, Oct 18, 2023 at 05:39:21PM -0700, Kees Cook wrote:
+> On Tue, Oct 17, 2023 at 11:14:43AM +0100, Mark Rutland wrote:
+> > On Tue, Oct 17, 2023 at 02:08:24PM +0800, Li zeming wrote:
+> > > ret is assigned first, so it does not need to initialize the assignment.
+> > > 
+> > > Signed-off-by: Li zeming <zeming@nfschina.com>
+> > 
+> > Does this actually need to change? It's not harmful, and deleting the
+> > assignment doesn't save any lines of code.
+> 
+> I prefer explicit initialization. Any unused initialization will be
+> optimized away by the compiler during Dead Store Elimination, so all
+> removing the initialization does is make the code more fragile in the
+> future.
+> 
 
-Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
----
- Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Also, be careful with those submissions, and do not take the claim
+in the commit message at face value. Several of them introduce
+uninitialize variable errors. I had two submissions for the watchdog
+subsystem, and both of them were wrong.
 
-diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-index 462ead5..d2f505a 100644
---- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-+++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-@@ -103,6 +103,8 @@ properties:
-     description:
-       GPIO connected to the RESET pin of the UFS memory device.
- 
-+  msi-parent: true
-+
- required:
-   - compatible
-   - reg
-@@ -318,5 +320,6 @@ examples:
-                             <0 0>,
-                             <0 0>;
-             qcom,ice = <&ice>;
-+            msi-parent = <&gic_its 0x60>;
-         };
-     };
--- 
-2.7.4
-
+Guenter
