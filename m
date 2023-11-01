@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 257257DE90F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0787DE910
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347526AbjKAXjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 19:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S1347418AbjKAXj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 19:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345420AbjKAXjF (ORCPT
+        with ESMTP id S1346931AbjKAXj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 19:39:05 -0400
+        Wed, 1 Nov 2023 19:39:58 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF12C2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:39:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA07122
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:39:52 -0700 (PDT)
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7A7475C017E;
-        Wed,  1 Nov 2023 19:38:59 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id ECBD65C0160;
+        Wed,  1 Nov 2023 19:39:51 -0400 (EDT)
 Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 01 Nov 2023 19:38:59 -0400
+  by compute5.internal (MEProxy); Wed, 01 Nov 2023 19:39:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
         :cc:content-type:content-type:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698881939; x=1698968339; bh=F1
-        DCGCW1lBQGx3oWk6l1ZaaArAh1kPJB+/1646TCU88=; b=cU5tmODXG/ZE+43CMf
-        n9Czs6AzFmJavHO0czDfmbY/q0vwHWZ8d7AfKIlOgYj6Jq1tYduG9Ug45p7P76gp
-        Du5JsU86sz2xnFTZHgSCRnRJNIogs8HfR1xxvv+Akiif6/Ei8CE6f44ziHDLr6GS
-        2+o0YuWiRvndDieaz8pWhQrfBC8cMt7x3+36zVKLGTCZgYgvbNxiyplI7iojO24i
-        L5WnNAmmSDASt/d7PmaRuaDDbzekUuqTf0rvFLlKTnrBZm9LNp82Ca86sUGTQoc3
-        0HWkJuSUKDHaA14vL+CAhFnkTNyKNE+u+ikmixhJHLSEaITzIiEyW1legMxWbxWp
-        Toxg==
+        :subject:subject:to:to; s=fm2; t=1698881991; x=1698968391; bh=4b
+        563ZqvCmMnYCYpTaw4aWlrs3H12OBDEPRJ2whkyks=; b=QrugovtBKq868OFfTu
+        b33axnvNTnn6rEcvLNuWsWzGFqGH0MofufohnuxCnYbWaxEJDMG/eJTRqUbbxIHZ
+        sbscJE0rV2SBi7Qsvyf4JY/eqp8okzGD7fF4i/J4wtvzn+J2sTzHWmXL4plcmP/u
+        D7hf9v80UYX3xZwAzK942iI0GnpWOxZiDebsZlZtF9bvtwGcBTtMPwmpVrqMCuIQ
+        mXeV+EzzGPj4OrtDMwsZccf/iS/DXET97JT9eoVZDZtSLV3a8/J0I4kLP4DTt+VK
+        dVOSSSCgyhYAfomziPo+AVo9VxHDKdLzsMc1ih3+9WVe0hOQzrIzK5l7Yv52i7kN
+        HL5w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698881939; x=1698968339; bh=F1DCGCW1lBQGx
-        3oWk6l1ZaaArAh1kPJB+/1646TCU88=; b=Q+jQe2bn6Swi+RertqkePFbDWzubK
-        5phhnB/RCyqU2YuOBFKzFoK4RwArro+zlbkkxdvMFxoNoVlYSdw/r7cRhZtPWiN0
-        XJu5snh2nzGKpxQ/eeHeG2sL0IXgHAUUPwt0eZM9Vf2vXowjmJLIL17veiofNqVY
-        eCC5XTnmFdrVjWedfeTWlxZTRSN3vA5dybwNNBYNGXjOzLiuTmHGQohbiDe/9D3f
-        bAbVPffH99p2n2v1ZXAyah+6Egbi52reQoH5x7U36wwH4sJRfAMpwlp58Wc5U6V9
-        4DugwCx1JE/01jX6CqpIsyXNPg9agOAaX6T1cKooaV27HuhtUpy8+edKw==
-X-ME-Sender: <xms:k-FCZVask4XTCjM0izcja_DhUDqGwwyeZFNq87DpanwR_1lPiXjGqw>
-    <xme:k-FCZcbA80cWa91iw1OHh3a5DbP4RpkTEQQk4k1N6aLAJ_16otZOjVu3DSJJ_A02a
-    6DuHYXmjaSZ5V52gRM>
+        :x-sasl-enc; s=fm3; t=1698881991; x=1698968391; bh=4b563ZqvCmMnY
+        CYpTaw4aWlrs3H12OBDEPRJ2whkyks=; b=e8E8sDZYgGWZjce99pJnoU41oN/zT
+        In/JhZQIliiHOgRQ1zvd54KJLrPc6ykQU5+09m7T3X+b99QYNC0PAqB0Zg3jCQGq
+        QQ+C5/0UpGl5dvxXdcOMPEkIh63f7JgCzFSV/tpOrI82EEKxDCt3Py3wob0KSUOE
+        BuWylbS3lXFre293QxnYtiBFWLGiF+PlPx7yhsg4lQC7haTVo+Exh7q8bz3eZmwR
+        bdPbl/ZwFELeO1wFVc3mEELsffIc9+WtitN6rv0DIiSmyaZ017VBfay3QQfpVbX/
+        y4JrEZ51E5XojcgLP3LlhLXz/iQ/VXj8lgV7/oG02Bf9buvp/P8+LFI1A==
+X-ME-Sender: <xms:x-FCZe1c1MD1wvThAL2zRXSIMsQO5y8tqZmZUhcjR8HCXEyS42wA0A>
+    <xme:x-FCZRGbWl7thLlcyW6ZtdIo5iAOvvCdlNybFiZSdrFX4xGlFD4zdVNghondDCQfs
+    RYxkRvw-Elzms_gIm0>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddthedguddvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -53,26 +53,26 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddthedguddvucetufdoteggod
     nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
     htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
     hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:k-FCZX9Q4wNDGBqSEQYiJRzJLocPso1mlQt1W0zajv2psbKiroZUQw>
-    <xmx:k-FCZTrMEn5wEB0ulJKikeJFeYYUy-0_XqtBrZ4X10CG9493aNscxA>
-    <xmx:k-FCZQrVOF8s1TJW6OTqo-dlbmVVJ1DnxoEoOtu_mbBeA0AfgzQMTw>
-    <xmx:k-FCZdBk_ZJYysQdw5_3QiCQsL2r_b6F9vXc1f6nreh04bd9O5GvzA>
+    dunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:x-FCZW6k8TxlPEC_HmwL0LB01TqiSBehGu_NHXytyYYRna3vwh0uFw>
+    <xmx:x-FCZf1C6Upuq-7MVr7woNhOlzzPcCZCCYZ_qZfO4oTNwzdaT1zc_g>
+    <xmx:x-FCZRGYANsbVlYVOK0Ebm3djs0sGZyYiA6rXTYuGGjVS18DesEGmw>
+    <xmx:x-FCZfPQlHUdaHQrgkWxTevIbinhvxOcr4_sICiKQncMDy9-ruh35Q>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id F281BB60089; Wed,  1 Nov 2023 19:38:58 -0400 (EDT)
+        id 78F09B60089; Wed,  1 Nov 2023 19:39:51 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
 MIME-Version: 1.0
-Message-Id: <b2114f58-083c-43d0-a73e-660c030a0241@app.fastmail.com>
+Message-Id: <2ba2a5c9-0e92-4ab6-88dd-8410956ffa78@app.fastmail.com>
 In-Reply-To: <263c2cf0-c35a-4d3c-85b3-fcb692cbfd40@app.fastmail.com>
 References: <263c2cf0-c35a-4d3c-85b3-fcb692cbfd40@app.fastmail.com>
-Date:   Thu, 02 Nov 2023 00:38:38 +0100
+Date:   Thu, 02 Nov 2023 00:39:30 +0100
 From:   "Arnd Bergmann" <arnd@arndb.de>
 To:     "Linus Torvalds" <torvalds@linux-foundation.org>
 Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [GIT PULL 3/4] ARM defconfig updates for 6.7
+Subject: [GIT PULL 4/4] ARM: SoC code changes for 6.7
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
@@ -91,90 +91,39 @@ The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-defconfig-6.7
+  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-arm-6.7
 
-for you to fetch changes up to 216da5ebb83a13caece8032ee443acfd6a6083b6:
+for you to fetch changes up to a9838799e2fa9fedd77867942e661b657d5591a0:
 
-  Merge tag 'ti-k3-config-for-v6.7' of https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux into soc/defconfig (2023-10-27 17:28:10 +0200)
-
-----------------------------------------------------------------
-ARM defconfig updates for 6.7
-
-These are the usual trivial changes to enable a couple of newly added
-device drivers and remove lines for Kconfig options that are no
-longer needed.
+  arm: debug: reuse the config DEBUG_OMAP2UART{1,2} for OMAP{3,4,5} (2023-10-26 17:26:15 +0200)
 
 ----------------------------------------------------------------
-Alexander Stein (1):
-      arm64: defconfig: Enable Samsung DSIM driver
+ARM: SoC code changes for 6.7
 
-Arnd Bergmann (9):
-      Merge tag 'renesas-arm-defconfig-for-v6.7-tag1' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel into soc/defconfig
-      Merge tag 'renesas-arm-defconfig-for-v6.7-tag2' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel into soc/defconfig
-      Merge tag 'imx-defconfig-6.7' of git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux into soc/defconfig
-      Merge tag 'qcom-arm64-defconfig-for-6.7' of https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux into soc/defconfig
-      Merge tag 'aspeed-6.7-defconfig' of git://git.kernel.org/pub/scm/linux/kernel/git/joel/bmc into soc/defconfig
-      Merge tag 'samsung-defconfig-6.7' of https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux into soc/defconfig
-      Merge tag 'amlogic-defconfig-for-v6.7' of https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux into soc/defconfig
-      Merge tag 'qcom-arm64-defconfig-for-6.7-2' of https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux into soc/defconfig
-      Merge tag 'ti-k3-config-for-v6.7' of https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux into soc/defconfig
+The AMD Pensando DPU platform gets added to arm64, and some
+minor updates make it into Renesas' 32-bit platforms.
 
-Claudiu Beznea (1):
-      arm64: defconfig: Enable RZ/G3S (R9A08G045) SoC
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      Merge tag 'renesas-arm-soc-for-v6.7-tag1' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel into soc/arm
 
-Dmitry Baryshkov (2):
-      arm64: defconfig: enable CONFIG_TYPEC_QCOM_PMIC
-      arm64: defconfig: enable DisplayPort altmode support
+Brad Larson (2):
+      MAINTAINERS: Add entry for AMD PENSANDO
+      arm64: Add config for AMD Pensando SoC platforms
 
-Fabio Estevam (1):
-      arm64: defconfig: Enable CONFIG_USB_MASS_STORAGE
+Geert Uytterhoeven (4):
+      ARM: shmobile: rcar-gen2: Remove unneeded once handling
+      ARM: shmobile: rcar-gen2: Reserve boot area when SMP is enabled
+      ARM: shmobile: r8a7779: Reserve boot area when SMP is enabled
+      ARM: shmobile: sh73a0: Reserve boot area when SMP is enabled
 
-Geert Uytterhoeven (1):
-      ARM: shmobile: defconfig: Refresh for v6.6-rc3
+Lukas Bulwahn (1):
+      arm: debug: reuse the config DEBUG_OMAP2UART{1,2} for OMAP{3,4,5}
 
-Jai Luthra (1):
-      arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
-
-Joel Stanley (4):
-      ARM: config: aspeed: Add new FSI drivers
-      ARM: config: aspeed: Add Ampere SMPro drivers
-      ARM: config: aspeed_g5: Enable SSIF BMC driver
-      ARM: config: aspeed: Remove FIRMWARE_MEMMAP
-
-Konrad Dybcio (1):
-      arm64: defconfig: enable Qualcomm SM6115 LPASS pinctrl
-
-Krzysztof Kozlowski (1):
-      arm64: defconfig: enable Qualcomm SM8350 LPASS pinctrl
-
-Marek Szyprowski (7):
-      ARM: multi_v7_defconfig: make Exynos related PHYs modules
-      ARM: multi_v7_defconfig: add AHCI_DWC driver
-      ARM: exynos_defconfig: replace SATA_AHCI_PLATFORM with AHCI_DWC driver
-      ARM: multi_v7_defconfig: add tm2-touchkey driver
-      ARM: multi_v7_defconfig: add drivers for S5C73M3 & S5K6A3 camera sensors
-      ARM: exynos_defconfig: add driver for ISL29018
-      arm64: defconfig: add various drivers for Amlogic based boards
-
-Neil Armstrong (1):
-      arm64: defconfig: enable NB7VPQ904M driver as module
-
-Svyatoslav Ryhel (1):
-      ARM: s5pv210_defconfig: enable IIO required by MAX17040
-
-Trevor Woerner (1):
-      ARM: defconfig: cleanup orphaned CONFIGs
-
-Varadarajan Narayanan (1):
-      arm64: defconfig: Enable M31 USB phy driver
-
- arch/arm/configs/aspeed_g4_defconfig |  1 -
- arch/arm/configs/aspeed_g5_defconfig |  8 +++++++-
- arch/arm/configs/exynos_defconfig    |  3 ++-
- arch/arm/configs/keystone_defconfig  |  1 -
- arch/arm/configs/multi_v7_defconfig  |  7 ++++++-
- arch/arm/configs/omap2plus_defconfig |  8 --------
- arch/arm/configs/s5pv210_defconfig   |  1 +
- arch/arm/configs/shmobile_defconfig  |  2 +-
- arch/arm64/configs/defconfig         | 19 +++++++++++++++++++
- 9 files changed, 36 insertions(+), 14 deletions(-)
+ MAINTAINERS                           |  7 +++++++
+ arch/arm/Kconfig.debug                | 12 ++++--------
+ arch/arm/mach-shmobile/pm-rcar-gen2.c |  5 +++--
+ arch/arm/mach-shmobile/smp-r8a7779.c  |  9 ++++++++-
+ arch/arm/mach-shmobile/smp-sh73a0.c   | 10 ++++++++--
+ arch/arm64/Kconfig.platforms          | 12 ++++++++++++
+ 6 files changed, 42 insertions(+), 13 deletions(-)
