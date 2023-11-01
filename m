@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE6A7DE4FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B80E7DE4FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344229AbjKARFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        id S1344557AbjKARGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjKARFq (ORCPT
+        with ESMTP id S231233AbjKARGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:05:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC1CFD
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:05:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D599BC433C8;
-        Wed,  1 Nov 2023 17:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698858344;
-        bh=5xV6hyTIsbcZvneau3h2oVWhmP+sQM96ndcUicW+Oz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ihH1zX1/QLyCnoaOp1327n8FR6g7H3Uwfv7AywKjzqb6J/K3ydpUjjcVrLi10MEy5
-         bs7qeuxwL+3u1Wb58+/E8FBO8NAnsvshg7m3Nz0gS+fRd8FXECMB9O0tQdbQLmhXdC
-         Mt/BRApPU62BXvc5RIADwIvqmTrZql61MASM+7qFcDkticnFPCmrQlOj115mnoKoL9
-         NoZvRT2lZUraV0WeQ7fadDPIXrT6gXQKEwhgc3n3IODboVHpf3E2a4vQA/dTpFE+px
-         iJ/ppIXzMfiPJo959eOzLGMPhrxabFokwe+KQHPI+dWX7DWvFW/6bK2PkBnY6w1kT6
-         93JXBVreIcEng==
-Date:   Wed, 1 Nov 2023 17:05:39 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ben Whitten <ben.whitten@gmail.com>
-Subject: Re: [PATCH] regmap: prevent noinc writes from clobbering cache
-Message-ID: <b0e8c9f5-7aff-4adc-b5bc-d61c6107c07f@sirena.org.uk>
-References: <20231101142926.2722603-2-ben.wolsieffer@hefring.com>
+        Wed, 1 Nov 2023 13:06:33 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A723D110
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:06:29 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc3388621cso9568545ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698858389; x=1699463189; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ACtbDGuD6MnDLtRfrY8r3GOV1M4ngbjpcwXbhvL0euE=;
+        b=P6RS5VG3dAppFpjc9hkAVqsv5Vjq9QigYbFnG5QcKvnEdihFo+HN4v6zbOjOF2zs/W
+         oMKfqHMhO7CRDihmTS53TkMazuNTW8muMF5cnrnNUvQtJxObv5hO1qECfFlK0pg67Oxn
+         D/qydX6aWGinxjJoRWqeVf8CDV6dQcMUu5wjzv+3/OjNLhBCBMBnGk3DAVupzySbgElC
+         d5nz9DztbUCpt6mxCtlJfJ3bPmQ8fycHxGuu4Ih8q2eWiolXuJN1A9naXdDB442pmY0Z
+         oeFjDC9Qn9WmC739SJSIGUzFZVpjwkZjPZJveeukJt3TLdECfSMU5GETODzFbCg5h7GQ
+         C6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698858389; x=1699463189;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ACtbDGuD6MnDLtRfrY8r3GOV1M4ngbjpcwXbhvL0euE=;
+        b=D48IhIG2wklGMM5B/1+hNCYiAGd8cfOnosOpd9Z5w9y5dkifbWSHp1Rxu6afro7V8d
+         JO3qKq8QOEkHrbWstO9oBI/QlrdBgU9MLvwYGbokyEo+pQGelEsMTeFkGiZCUmfPNpnz
+         kYSnsHRYOhEdhHiGh3S+GZsmaFDjVilMIGT/12zwxcQa1o4vWVfrPPCZ+ZlLIhBjWHaI
+         Z5IV4lEO7ZifngjQlH5rUZOJTUHCuCxq4dzcB+KOrwp2PybNEuXlCCy//t1tFtMffDKm
+         KsAttPeet6fbfB8PxIadoOP2m74Ax51nj9lnjuNKbvX/VKmg4EU/AR4cDg1pObqOuku/
+         ak3w==
+X-Gm-Message-State: AOJu0YxGoPPU8FnnLwLSJi2bqbbf+T+Czy57FAsNKcNJXQSbgjpKldoY
+        1KLakN7uZDPjDHpI57JCUAhYFQ==
+X-Google-Smtp-Source: AGHT+IGDzF7Sr80/ji5fpFgmiXPcEYqf4bfWA92oba3hW5WW+ntNPgwDgNSORh/ITQ3cqqhDMxHbBw==
+X-Received: by 2002:a17:902:d488:b0:1cc:5f5a:5d3 with SMTP id c8-20020a170902d48800b001cc5f5a05d3mr9031339plg.22.1698858389079;
+        Wed, 01 Nov 2023 10:06:29 -0700 (PDT)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id jh19-20020a170903329300b001c61df93afdsm1580553plb.59.2023.11.01.10.06.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 10:06:28 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 10:06:26 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        Xiao Wang <xiao.w.wang@intel.com>,
+        Evan Green <evan@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v9 0/5] riscv: Add fine-tuned checksum functions
+Message-ID: <ZUKFkn/PzOjw129p@ghost>
+References: <20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com>
+ <20231101-palace-tightly-97a1d35a4597@spud>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pw5rt8tNwUJb6Zfg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101142926.2722603-2-ben.wolsieffer@hefring.com>
-X-Cookie: P-K4
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231101-palace-tightly-97a1d35a4597@spud>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 01, 2023 at 11:50:46AM +0000, Conor Dooley wrote:
+> On Tue, Oct 31, 2023 at 05:18:50PM -0700, Charlie Jenkins wrote:
+> > Each architecture generally implements fine-tuned checksum functions to
+> > leverage the instruction set. This patch adds the main checksum
+> > functions that are used in networking.
+> > 
+> > This patch takes heavy use of the Zbb extension using alternatives
+> > patching.
+> > 
+> > To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
+> > and RISCV_CHECKSUM_KUNIT.
+> > 
+> > I have attempted to make these functions as optimal as possible, but I
+> > have not ran anything on actual riscv hardware. My performance testing
+> > has been limited to inspecting the assembly, running the algorithms on
+> > x86 hardware, and running in QEMU.
+> > 
+> > ip_fast_csum is a relatively small function so even though it is
+> > possible to read 64 bits at a time on compatible hardware, the
+> > bottleneck becomes the clean up and setup code so loading 32 bits at a
+> > time is actually faster.
+> > 
+> > Relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@rivosinc.com/
+> 
+> I coulda sworn I reported build issues against the v8 of this series
+> that are still present in this v9. For example:
+> https://patchwork.kernel.org/project/linux-riscv/patch/20231031-optimize_checksum-v9-3-ea018e69b229@rivosinc.com/
+> 
+> Cheers,
+> Conor.
 
---pw5rt8tNwUJb6Zfg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You did, and I fixed the build issues. This is another instance of how
+Patchwork reports the results of the previous build before the new build
+completes. Patchwork was very far behind so it took around 15 hours for
+the result to be ready. There are some miscellaneous warnings in random
+drivers that I don't think can be attributed to this patch.
 
-On Wed, Nov 01, 2023 at 10:29:27AM -0400, Ben Wolsieffer wrote:
-> Currently, noinc writes are cached as if they were standard incrementing
-> writes, overwriting unrelated register values in the cache. Instead, we
-> want to cache the last value written to the register, as is done in the
-> accelerated noinc handler (regmap_noinc_readwrite).
+- Charlie
 
-Could you please add a kunit test for this?
-
---pw5rt8tNwUJb6Zfg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVChWMACgkQJNaLcl1U
-h9Ca0wf/ZPDbcne+0fDI2ts571Uo57MW0irb1eXl6vypwEChkShmFPljDGlI4PP1
-+DD0/Uw2RHR9L1b0HnQ6kYwu9HOlSnM5cIkvpEBTQ1bLicEB7pWWSCwSPmiiwHBr
-6j2/G4lSqOWbHhTTgMc+Zw8ZSdSLdja2cYfQQwgNlWfAo7RQ9lclljWtBzxKnrXw
-Z0P6yQ0TmiKn7L7PcEXMh3+tn6/4CH+lRqL4JxYfKvOyKHmmfqcJJuj1/BULRNQG
-C5dpFretGVwsOm8fxNbyhyaO99kjUCYqxMB9HtfbcUYevmByuGbfiLSK4EAlsOGM
-rU4ckTMHBgUHjvkTr6XnGMuksIdkRw==
-=X9eS
------END PGP SIGNATURE-----
-
---pw5rt8tNwUJb6Zfg--
