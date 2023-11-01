@@ -2,47 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD007DDD34
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C807DDD35
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbjKAHaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        id S230522AbjKAHaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjKAHaF (ORCPT
+        with ESMTP id S230206AbjKAHaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:30:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6039EC2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:30:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D441C433C8;
-        Wed,  1 Nov 2023 07:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698823800;
-        bh=VeAKvTqavtEz9Y6S8VCa+9Li/lCoIJxJGeZcquOfX/Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xlU+oaenAgZ4Pzjkhl//+DWTuWwRTojw7tjHP/L1NUNqK92BVT5p4ya7rzMhNpcaj
-         A2K5IVAXq4p6D0yvLagWX3NSw4UdH/PesM4lhubi+4LbaNDvVpIxBQQaa1MHYuruav
-         rNvz/q49+fkuxIuKaJKypMy9y554SNMSzFNSrMgI=
-Date:   Wed, 1 Nov 2023 08:29:57 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xingxing Luo <xingxing.luo@unisoc.com>
-Cc:     b-liu@ti.com, keescook@chromium.org, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev,
-        xingxing0070.luo@gmail.com, Zhiyong.Liu@unisoc.com,
-        Cixi.Geng1@unisoc.com, Orson.Zhai@unisoc.com, zhang.lyra@gmail.com
-Subject: Re: [PATCH V2] usb: musb: Check requset->buf before use to avoid
- crash issue
-Message-ID: <2023110144-sequence-twistable-3580@gregkh>
-References: <20231101071421.29462-1-xingxing.luo@unisoc.com>
+        Wed, 1 Nov 2023 03:30:13 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C938C2
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:30:07 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9d224dca585so559512766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 00:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698823806; x=1699428606; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CW/G19QSts/AS5IHtohcgFR0rmH2Gai+NgYGEXSnqko=;
+        b=V8zda8PbVAENVj1NtjJSxAhEt5RMz+9HrQ3HkPV9kNJTExmeh0TdpAKqe5Y0XIE7V0
+         gvIpZq5bt2oin0vXOEx09EYtYT71dxGcxxw6VCjRmqm8jG8f6GmQrNeVH6++BvIvL6zL
+         ty1tJtknPD8t1j1y+WyWiTdPBoGCjFggHvKNVNLUDwKuFo3qEdVkSMF7st1If2JMN+BY
+         T2T1Ynft9KIIUnDiPXixNbhvVubN0rx73HPRylAQCrpMjW6N2L3wBcWIyuwkuWf7WC8k
+         DOq/jAVYnpHp80A7GnUdZn0E6NYaS7NGNnEB/1I+LoT/Xy5wk2ciBpdtnC5rEF9MZyy2
+         HUHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698823806; x=1699428606;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CW/G19QSts/AS5IHtohcgFR0rmH2Gai+NgYGEXSnqko=;
+        b=emxGaeOCpG+cQ5xLI6wb1A7x78sdBnUVJpEw0/9aQr1Onb5OLXVph0/WmA3YhF508z
+         cucqzu0Vguayx4fKRgOvagxxvsBN3jNA5CT1J2KgtkZ+H3O4ls5qXXmuOc3kZayvDWSj
+         yz18IThJiINOF7/hYMk+/H4taEsWKyhxaHCmrvhhP7WXI84WRwopqRWctAUkSLCMSdOp
+         GItsLW4H7fAfI24z7vPb3mTYgUTBwILVihmKRy/drkVg4eLn4+xdL6C0fNm6LfAFvwQ5
+         43l0df9uDbbDVK1gw7fqqkFWGbjJZ5fpou/nangpQkx2y5znKg0gMA87bg2Wf1b99GBx
+         ag9A==
+X-Gm-Message-State: AOJu0YxNogx67wUd7Pd0KAr90EydWz/LdXwGF8pwIdkQS7IQxKsLiywH
+        l2HAIgmuE/inDr3Z1mFlxZEHhg==
+X-Google-Smtp-Source: AGHT+IHn5OBLKdIBm9gYlbbPmKG0d7lUTKDYbGWt1aIcMqZvCFT1JsaADE8XNZhwlrSvfLYDhRJBlA==
+X-Received: by 2002:a17:907:7f9e:b0:99c:6692:7f76 with SMTP id qk30-20020a1709077f9e00b0099c66927f76mr1413901ejc.16.1698823805746;
+        Wed, 01 Nov 2023 00:30:05 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id v9-20020a17090606c900b0098f33157e7dsm2044256ejb.82.2023.11.01.00.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 00:30:05 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 10:30:02 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
+        venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
+        mastan.katragadda@amd.com, juan.martinez@amd.com,
+        amadeuszx.slawinski@linux.intel.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: amd: acp: fix for i2s mode register field
+ update
+Message-ID: <8b61e318-7734-4bcf-ae17-59128058e5b7@kadam.mountain>
+References: <20231031135949.1064581-1-Syed.SabaKareem@amd.com>
+ <20231031135949.1064581-3-Syed.SabaKareem@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101071421.29462-1-xingxing.luo@unisoc.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20231031135949.1064581-3-Syed.SabaKareem@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,103 +82,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 03:14:21PM +0800, Xingxing Luo wrote:
-> When connecting USB to PC, there is a very low probability of kernel
-> crash. The reason is that in ep0_txstate(), the buf member of struct
-> usb_request used may be a null pointer. Therefore, it needs to
-> determine whether it is null before using it.
+On Tue, Oct 31, 2023 at 07:29:34PM +0530, Syed Saba Kareem wrote:
+> I2S mode register field will be set to 1 when tdm mode is enabled.
+> Update the I2S mode field based on tdm_mode flag check.
 > 
-> [ 4888.071462][T597@C0] Call trace:
-> [ 4888.071467][T597@C0]  musb_default_write_fifo+0xa0/0x1ac [musb_hdrc]
-> [ 4888.087190][T597@C0]  musb_write_fifo+0x3c/0x90 [musb_hdrc]
-> [ 4888.099826][T597@C0]  ep0_txstate+0x78/0x218 [musb_hdrc]
-> [ 4888.153918][T597@C0]  musb_g_ep0_irq+0x3c4/0xe10 [musb_hdrc]
-> [ 4888.159663][T597@C0]  musb_interrupt+0xab4/0xf1c [musb_hdrc]
-> [ 4888.165391][T597@C0]  sprd_musb_interrupt+0x1e4/0x484 [musb_sprd]
-> [ 4888.171447][T597@C0]  __handle_irq_event_percpu+0xd8/0x2f8
-> [ 4888.176901][T597@C0]  handle_irq_event+0x70/0xe4
-> [ 4888.181487][T597@C0]  handle_fasteoi_irq+0x15c/0x230
-> [ 4888.186420][T597@C0]  handle_domain_irq+0x88/0xfc
-> [ 4888.191090][T597@C0]  gic_handle_irq+0x60/0x138
-> [ 4888.195591][T597@C0]  call_on_irq_stack+0x40/0x70
-> [ 4888.200263][T597@C0]  do_interrupt_handler+0x50/0xac
-> [ 4888.205196][T597@C0]  el1_interrupt+0x34/0x64
-> [ 4888.209524][T597@C0]  el1h_64_irq_handler+0x1c/0x2c
-> [ 4888.214370][T597@C0]  el1h_64_irq+0x7c/0x80
-> [ 4888.218525][T597@C0]  __check_heap_object+0x1ac/0x1fc
-> [ 4888.223544][T597@C0]  __check_object_size+0x10c/0x20c
-> [ 4888.228563][T597@C0]  simple_copy_to_iter+0x40/0x74
-> [ 4888.233410][T597@C0]  __skb_datagram_iter+0xa0/0x310
-> [ 4888.238343][T597@C0]  skb_copy_datagram_iter+0x44/0x110
-> [ 4888.243535][T597@C0]  netlink_recvmsg+0xdc/0x364
-> [ 4888.248123][T597@C0]  ____sys_recvmsg.llvm.16749613423860851707+0x358/0x6c0
-> [ 4888.255045][T597@C0]  ___sys_recvmsg+0xe0/0x1dc
-> [ 4888.259544][T597@C0]  __arm64_sys_recvmsg+0xc4/0x10c
-> [ 4888.264478][T597@C0]  invoke_syscall+0x6c/0x15c
-> [ 4888.268976][T597@C0]  el0_svc_common.llvm.12373701176611417606+0xd4/0x120
-> [ 4888.275726][T597@C0]  do_el0_svc+0x34/0xac
-> [ 4888.279795][T597@C0]  el0_svc+0x28/0x90
-> [ 4888.283603][T597@C0]  el0t_64_sync_handler+0x88/0xec
-> [ 4888.288548][T597@C0]  el0t_64_sync+0x1b4/0x1b8
-> [ 4888.292956][T597@C0] Code: 540002c3 53027ea8 aa1303e9 71000508 (b840452a)
-> [ 4888.299789][T597@C0] ---[ end trace 14a301b7253e83cc ]---
+> This will fix below smatch checker warning.
 > 
-> Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
-> Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
-> ---
-> v1 -> v2: - Fixed a spelling error
->           - Add the fixed commit id
+> sound/soc/amd/acp/acp-i2s.c:59 acp_set_i2s_clk()
+> 	warn: odd binop '0x0 & 0x2'
 > 
->  drivers/usb/musb/musb_gadget_ep0.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/usb/musb/musb_gadget_ep0.c b/drivers/usb/musb/musb_gadget_ep0.c
-> index 6d7336727388..19eb7a5e1fdc 100644
-> --- a/drivers/usb/musb/musb_gadget_ep0.c
-> +++ b/drivers/usb/musb/musb_gadget_ep0.c
-> @@ -531,6 +531,11 @@ static void ep0_txstate(struct musb *musb)
->  
->  	request = &req->request;
->  
-> +	if (!request->buf) {
-> +		musb_dbg(musb, "request->buf is NULL");
-> +		return;
-> +	}
-> +
->  	/* load the data */
->  	fifo_src = (u8 *) request->buf + request->actual;
->  	fifo_count = min((unsigned) MUSB_EP0_FIFOSIZE,
-> -- 
-> 2.17.1
-> 
-> 
+> Fixes: 40f74d5f09d7 ("ASoC: amd: acp: refactor acp i2s clock
+> 	generation code")
 
-Hi,
+I saw this yesterday but didn't comment because I didn't want you to
+have to redo the patch.  Mark, of course, also saw it and didn't ask you
+to redo it.  And now it's applied.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+But for the future, these Fixes tags should be on one line and in the
+tags section of the commit message.  (It's in chronological order).
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Fixes: 40f74d5f09d7 ("ASoC: amd: acp: refactor acp i2s clock generation code")
+Reported-By: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Signed-off-by: Mark Brown
 
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
+regards,
+dan carpenter
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
