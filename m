@@ -2,52 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B787DDFB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E952D7DE009
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjKAKqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        id S234507AbjKALDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjKAKq2 (ORCPT
+        with ESMTP id S234165AbjKALDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:46:28 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63945F3;
-        Wed,  1 Nov 2023 03:46:21 -0700 (PDT)
-Received: from Monstersaurus.local (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 82AF4AE;
-        Wed,  1 Nov 2023 11:46:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698835562;
-        bh=x8bS3rNNLOykwqAZYHNIdSHJMf/DDPOXu+i6Qmi0T0w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dEbcSwm77UIpNGSOh1w53lQXyqjNqNRFGNQwHcQZcpPUCuqf9eZuoBOV0+8b9c3Du
-         uYu5n3XeM2i3do0840cAf5cYKDxNNjwnsM/QuxTCr8Lpf/vu6G72hjBpdM8Y8EAKtV
-         UQThGmTDaGUC8xVCNuFA7BpIJBUTBoYWMmLVBwRE=
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-To:     devicetree@vger.kernel.org
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX
-        / MXC ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] arm64: dts: freescale: debix-som-a-bmb-08: Add CSI Power Regulators
-Date:   Wed,  1 Nov 2023 10:46:11 +0000
-Message-Id: <20231101104614.2209986-1-kieran.bingham@ideasonboard.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 1 Nov 2023 07:03:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDD0111
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698836583; x=1730372583;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KZm2FRo0QlZe3vUOYch1zlq/LSJxNku5I2xXeQeO+Z8=;
+  b=D3770ckfFt0mGY5baVx4CrNpJAtNBUDTGTSnYRYQmr13GSsOMkbUB13Q
+   IKPMx5MkOFZlTXPnSATTldSfC46KZvCCja24tmr160MrclE0+WsMaRiaX
+   Rp4S65vkKvNcOTmhmNdT65HLD2PJIW+rcDSQVNcff+E29Mr/s4mfHUEh1
+   hBZroPybmTIDXwm8wiUB/kuD4dolSUp1cH1pmoSX0RnXosqBCJw4mg6PP
+   zOyK+DpJUMEExWYeInlE1HSBul3oZ9UgTE0lrWUTHR6l+Nx7aQVQsf7Ci
+   Jj1LucmBB0KeabbCajwJyrxkw5f143ws4+n1Y+TuqAhjg/0KxWufGg+3g
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="385652013"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="385652013"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 04:03:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="884530390"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="884530390"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 01 Nov 2023 04:03:01 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id A61D054A; Wed,  1 Nov 2023 12:47:17 +0200 (EET)
+Date:   Wed, 1 Nov 2023 12:47:17 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Chen Ni <nichen@iscas.ac.cn>, lee@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: intel-lpss: Fix IRQ check
+Message-ID: <20231101104717.GH17433@black.fi.intel.com>
+References: <20231101062643.507983-1-nichen@iscas.ac.cn>
+ <20231101070310.GF17433@black.fi.intel.com>
+ <ZUIclOuVocLUUk7_@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZUIclOuVocLUUk7_@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,96 +65,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide the 1.8 and 3.3 volt regulators that are utilised on the Debix
-SOM BMB-08 base board.
+On Wed, Nov 01, 2023 at 11:38:28AM +0200, Andy Shevchenko wrote:
+> On Wed, Nov 01, 2023 at 09:03:10AM +0200, Mika Westerberg wrote:
+> > On Wed, Nov 01, 2023 at 06:26:43AM +0000, Chen Ni wrote:
+> > > platform_get_irq() returns a negative error code to indicating an
+> > > error. So in intel_lpss_probe() the unset / erroneous IRQ should be
+> > > returned as is.
+> > > 
+> > > Fixes: 4b45efe85263 ("mfd: Add support for Intel Sunrisepoint LPSS devices")
+> 
+> > There is no need for Fixes tag here.
+> 
+> I said that already in v1 :-)
+> 
+> ...
+> 
+> > > -	if (!info || !info->mem || info->irq <= 0)
+> > > +	if (!info || !info->mem)
+> > 
+> > This check (info->irq <= 0) covers both "invalid" interrupt numbers
+> > (that's the negative errno and 0 as no interrupt) so I don't see how
+> > this change makes it any better and the changelog does not clarify it
+> > either.
+> 
+> It makes sense. The IRQ here may not be 0. We should actually fix
+> the PCI code to guarantee that (platform_get_irq() guarantees that
+> in platform driver).
 
-Facilitate this by also supplying the pin control used to enable the
-regulators on the second MIPI CSI port.
-
-Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
-Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-
----
-v2:
- - Remove _SW post fixes from regulators.
-
- .../freescale/imx8mp-debix-som-a-bmb-08.dts   | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
-index 0b0c95432bdc..386177c66c6d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
-@@ -63,6 +63,50 @@ regulator-som-vdd3v3 {
- 		regulator-always-on;
- 	};
- 
-+	reg_csi1_1v8: regulator-csi1-vdd1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-name = "CSI1_VDD1V8";
-+		gpio = <&expander0 13 GPIO_ACTIVE_HIGH>;
-+		vin-supply = <&reg_baseboard_vdd3v3>;
-+		enable-active-high;
-+	};
-+
-+	reg_csi1_3v3: regulator-csi1-vdd3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-name = "CSI1_VDD3V3";
-+		gpio = <&expander0 14 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&reg_vdd5v0>;
-+	};
-+
-+	reg_csi2_1v8: regulator-csi2-vdd1v8 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_csi2_1v8>;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-name = "CSI2_VDD1V8";
-+		gpio = <&gpio3 21 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&reg_baseboard_vdd3v3>;
-+	};
-+
-+	reg_csi2_3v3: regulator-csi2-vdd3v3 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_csi2_3v3>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-name = "CSI2_VDD3V3";
-+		gpio = <&gpio4 25 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&reg_vdd5v0>;
-+	};
-+
- 	regulator-vbus-usb20 {
- 		compatible = "regulator-fixed";
- 		regulator-min-microvolt = <5000000>;
-@@ -413,6 +457,18 @@ MX8MP_IOMUXC_GPIO1_IO03__GPIO1_IO03		0x41
- 		>;
- 	};
- 
-+	pinctrl_reg_csi2_1v8: regcsi21v8grp {
-+		fsl,pins = <
-+			MX8MP_IOMUXC_SAI5_RXD0__GPIO3_IO21		0x19
-+		>;
-+	};
-+
-+	pinctrl_reg_csi2_3v3: regcsi23v3grp {
-+		fsl,pins = <
-+			MX8MP_IOMUXC_SAI2_TXC__GPIO4_IO25		0x19
-+		>;
-+	};
-+
- 	pinctrl_uart2: uart2grp {
- 		fsl,pins = <
- 			MX8MP_IOMUXC_UART2_RXD__UART2_DCE_RX		0x14f
--- 
-2.34.1
-
+Yeah but I mean the check above handles any "invalid" interrupt number
+just fine regardless. I don't see any point changing that.
