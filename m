@@ -2,145 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B997DE8D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539967DE8D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346285AbjKAXS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 19:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S235075AbjKAXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 19:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbjKAXSz (ORCPT
+        with ESMTP id S232848AbjKAXSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 19:18:55 -0400
+        Wed, 1 Nov 2023 19:18:17 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14A5A6
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:18:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F26135
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698880689;
+        s=mimecast20190719; t=1698880647;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K5Z5/0jEKUR78SsGzTEQP0lgV6IDugZghhgxYociaAs=;
-        b=FQY6aLGDDR2yPwztk1aQ9xHKRAluSd4ZvqqoxjD12A6zcb+7CUV0OBkzBxfnzTVnURzOxk
-        zsccJ7uG+PBNA481cxFLVDuyx4qTbELoZVgN4hx04WIxV2OJjSJ8FnCOl4TpGfRdf6ZUxh
-        FxMJ64X4qDXGTL3qs7Xh17dIQ8YKpHI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-99-eNuOVGxUOSWptyh3OQndMQ-1; Wed,
- 01 Nov 2023 19:18:07 -0400
-X-MC-Unique: eNuOVGxUOSWptyh3OQndMQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3C494381AE47;
-        Wed,  1 Nov 2023 23:18:07 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8A4F62026D4C;
-        Wed,  1 Nov 2023 23:18:04 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  2 Nov 2023 00:17:05 +0100 (CET)
-Date:   Thu, 2 Nov 2023 00:17:02 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rxrpc_find_service_conn_rcu: use read_seqbegin() rather
- than read_seqbegin_or_lock()
-Message-ID: <20231101231701.GH32034@redhat.com>
-References: <20231027095842.GA30868@redhat.com>
- <1952182.1698853516@warthog.procyon.org.uk>
- <20231101202302.GB32034@redhat.com>
- <20231101205238.GI1957730@ZenIV>
- <20231101215214.GD32034@redhat.com>
- <20231101224855.GJ1957730@ZenIV>
+        bh=0vwHZc+/Gns5rEzdivTNKNr5j0n3GZLH4TX/0o56Y/4=;
+        b=chyzq9C4fVwZzI3soe1A5mGtIdOLQK9TeWLdrfFE2MWQm87zJdSKxYsXrj9pZuoC2K0u/2
+        +Jcv9wvuE7yWgatY0YOqsAswsY6VWszGHZPAi6yjsyGxCwQ2EEllY3bb8OaRnr3HPcxVej
+        wzYgkpgzPN7v1eUl1rFJV+jZBcXcj+E=
+Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
+ [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-249-U-EXtD-mNPO7-k6wh5u8sg-1; Wed, 01 Nov 2023 19:17:25 -0400
+X-MC-Unique: U-EXtD-mNPO7-k6wh5u8sg-1
+Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-457bc611991so160204137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 16:17:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698880645; x=1699485445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0vwHZc+/Gns5rEzdivTNKNr5j0n3GZLH4TX/0o56Y/4=;
+        b=L6MsAaspYuMDjez7NSkKOTjinNcvV98khithaOrxLR0MyqEZkdlk5Tvs4DumtZ/6Ln
+         7OatTw3yb1durxQToHkZmrD7iutAoV0GOTbBugoRwGvE4ZxwIlZ3OvpSCNNmaw+w+WW4
+         Iwam0JAVZOKRZooJci83ubJ9XKu9hw1qyLu41E3PcugEG/ZEw11brPW+rjCmix+1X+H9
+         KqQc4j0fGanw2zbd5EUsB6IslyzMaW6faRfXiL66Mr0ggHjpgA25vjtRYW1+dQFY50U8
+         CQRiwSCtwkFimiUmnO/BxdVxmUWoYxNaTT3JuT21d52PeVHK1NWb4tcvlzF989EMjA0K
+         pHWw==
+X-Gm-Message-State: AOJu0YzaHhwD/NKFdbfigYjOhNDnEIielOx+V65zeOH11rqJsT2KD/+W
+        QlExnWodTEk0NKDK8R26lwitXK1d/v1vY9yvroLSL38eZluWYA28avoLb9vzpl6NDzvwNPZW9OQ
+        Rkh0Lp2zsCiy6mtexW1JhWCZDA5F7kqI0iTu9fu/o
+X-Received: by 2002:a67:b70e:0:b0:450:8e58:2de4 with SMTP id h14-20020a67b70e000000b004508e582de4mr14946742vsf.7.1698880645387;
+        Wed, 01 Nov 2023 16:17:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IERW8ZMUKS1oQBttUXGlXfpcF1aXMGz29SltsJOczMO7DdV5tM2YzmJ2Q5mLWwPrzL7OcDPCpWawHIyBUWWBis=
+X-Received: by 2002:a67:b70e:0:b0:450:8e58:2de4 with SMTP id
+ h14-20020a67b70e000000b004508e582de4mr14946722vsf.7.1698880645133; Wed, 01
+ Nov 2023 16:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101224855.GJ1957730@ZenIV>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
+ <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com> <ZUEML6oJXDCFJ9fg@google.com>
+ <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com> <ZUJVfCkIYYFp5VwG@google.com>
+ <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
+ <ZUJ-cJfofk2d_I0B@google.com> <4ca2253d-276f-43c5-8e9f-0ded5d5b2779@redhat.com>
+ <ZULSkilO-tdgDGyT@google.com>
+In-Reply-To: <ZULSkilO-tdgDGyT@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 2 Nov 2023 00:17:13 +0100
+Message-ID: <CABgObfbq_Hg0B=jvsSDqYH3CSpX+RsxfwB-Tc-eYF4uq2Qw9cg@mail.gmail.com>
+Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
+ dedicated guest memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01, Al Viro wrote:
+On Wed, Nov 1, 2023 at 11:35=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
 >
-> On Wed, Nov 01, 2023 at 10:52:15PM +0100, Oleg Nesterov wrote:
->
-> > > Why would you want to force that "switch to locked on the second pass" policy
-> > > on every possible caller?
+> On Wed, Nov 01, 2023, Paolo Bonzini wrote:
+> > On 11/1/23 17:36, Sean Christopherson wrote:
+> > > > > "Allow" isn't perfect, e.g. I would much prefer a straight KVM_GU=
+EST_MEMFD_USE_HUGEPAGES
+> > > > > or KVM_GUEST_MEMFD_HUGEPAGES flag, but I wanted the name to conve=
+y that KVM doesn't
+> > > > > (yet) guarantee hugepages.  I.e. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE i=
+s stronger than
+> > > > > a hint, but weaker than a requirement.  And if/when KVM supports =
+a dedicated memory
+> > > > > pool of some kind, then we can add KVM_GUEST_MEMFD_REQUIRE_HUGEPA=
+GE.
+> > > > I think that the current patch is fine, but I will adjust it to alw=
+ays
+> > > > allow the flag, and to make the size check even if !CONFIG_TRANSPAR=
+ENT_HUGEPAGE.
+> > > > If hugepages are not guaranteed, and (theoretically) you could have=
+ no
+> > > > hugepage at all in the result, it's okay to get this result even if=
+ THP is not
+> > > > available in the kernel.
+> > > Can you post a fixup patch?  It's not clear to me exactly what behavi=
+or you intend
+> > > to end up with.
 > >
-> > Because this is what (I think) read_seqbegin_or_lock() is supposed to do.
-> > It should take the lock for writing if the lockless access failed. At least
-> > according to the documentation.
+> > Sure, just this:
+> >
+> > diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> > index 7d1a33c2ad42..34fd070e03d9 100644
+> > --- a/virt/kvm/guest_memfd.c
+> > +++ b/virt/kvm/guest_memfd.c
+> > @@ -430,10 +430,7 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_cr=
+eate_guest_memfd *args)
+> >  {
+> >       loff_t size =3D args->size;
+> >       u64 flags =3D args->flags;
+> > -     u64 valid_flags =3D 0;
+> > -
+> > -     if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
+> > -             valid_flags |=3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+> > +     u64 valid_flags =3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+> >       if (flags & ~valid_flags)
+> >               return -EINVAL;
+> > @@ -441,11 +438,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_cr=
+eate_guest_memfd *args)
+> >       if (size < 0 || !PAGE_ALIGNED(size))
+> >               return -EINVAL;
+> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >       if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
+> >           !IS_ALIGNED(size, HPAGE_PMD_SIZE))
+> >               return -EINVAL;
+> > -#endif
 >
-> Not really - it's literally seqbegin or lock, depending upon what the caller
-> tells it...
+> That won't work, HPAGE_PMD_SIZE is valid only for CONFIG_TRANSPARENT_HUGE=
+PAGE=3Dy.
+>
+> #else /* CONFIG_TRANSPARENT_HUGEPAGE */
+> #define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
+> #define HPAGE_PMD_MASK ({ BUILD_BUG(); 0; })
+> #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
 
-OK, I won't argue right now. But again, this patch doesn't change the current
-behaviour. Exactly because the caller does NOT tell read_seqbegin_or_lock() that
-it wants "or lock" on the 2nd pass.
+Would have caught it when actually testing it, I guess. :) It has to
+be PMD_SIZE, possibly with
 
-> Take a look at d_walk() and try to shoehorn that into your variant.  Especially
-> the D_WALK_NORETRY handling...
+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+BUILD_BUG_ON(HPAGE_PMD_SIZE !=3D PMD_SIZE);
+#endif
 
-I am already sleeping, quite possibly I am wrong. But it seems that if we change
-done_seqretry() then d_walk() needs something like
+for extra safety.
 
-	--- a/fs/dcache.c
-	+++ b/fs/dcache.c
-	@@ -1420,7 +1420,7 @@ static void d_walk(struct dentry *parent, void *data,
-			spin_lock(&this_parent->d_lock);
-	 
-			/* might go back up the wrong parent if we have had a rename. */
-	-		if (need_seqretry(&rename_lock, seq))
-	+		if (need_seqretry(&rename_lock, &seq))
-				goto rename_retry;
-			/* go into the first sibling still alive */
-			do {
-	@@ -1432,22 +1432,20 @@ static void d_walk(struct dentry *parent, void *data,
-			rcu_read_unlock();
-			goto resume;
-		}
-	-	if (need_seqretry(&rename_lock, seq))
-	+	if (need_seqretry(&rename_lock, &seq))
-			goto rename_retry;
-		rcu_read_unlock();
-	 
-	 out_unlock:
-		spin_unlock(&this_parent->d_lock);
-	-	done_seqretry(&rename_lock, seq);
-	+	done_seqretry(&rename_lock, &seq);
-		return;
-	 
-	 rename_retry:
-		spin_unlock(&this_parent->d_lock);
-		rcu_read_unlock();
-	-	BUG_ON(seq & 1);
-		if (!retry)
-			return;
-	-	seq = 1;
-		goto again;
-	 }
-
-
-But again, again, this is off-topic and needs another discussion. Right now I am just
-trying to audit the users of read_seqbegin_or_lock/need_seqretry and change those who
-use them incorrectly.
-
-Oleg.
+Paolo
 
