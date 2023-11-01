@@ -2,186 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BE17DE4EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB3B7DE4F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbjKAQ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 12:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S1344339AbjKAQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 12:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjKAQ56 (ORCPT
+        with ESMTP id S231233AbjKAQ7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 12:57:58 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535B910F;
-        Wed,  1 Nov 2023 09:57:52 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d267605ceeso393366b.2;
-        Wed, 01 Nov 2023 09:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698857871; x=1699462671; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sn6xBYx2DalfFZhDl/aI5XV9Hmv1XDDj4chPbF8qFs0=;
-        b=WKD+d4VwDGvXkwbZtczTmG9T01GVwkx3KPgMBLuRWFKyA17xs9Ycmo1gglcbnXHidy
-         qHC7molFd/k/hlmv1MI7H1fTuBXhRfzI7Z8r0l85OWmpfw9XZh2nl0Ve7s43VREhbBaB
-         Ky79XAdzuihexy0NHCmwUGTIERYvtKgqGOCfM797OEyWPKEw1WSz9bGkRUqPbe38mO3M
-         L5r56S7M0/oIl0DDcKK6M0GGu2izVTfOJ08Cm/4LH2KXenA/5gmrxJMp48MiSVKvdJ7t
-         /qfIPkE+a4dEtgedXAtmfCxxpEiUZU6RW7+fwtR9FkRc+IOEiMNadKBcgwvME/92Z4uG
-         7vOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698857871; x=1699462671;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sn6xBYx2DalfFZhDl/aI5XV9Hmv1XDDj4chPbF8qFs0=;
-        b=aUdsv/OovyC5WyAzwp91G7Gj1RoHh2KoqrqY93zG8FiUpofxBhUWfFjo8t41Ojvvx1
-         ebTmBQ9lbtUi0HfauyclNWitGUpKPJpvAZSkuMfiZOuomcg3jALY8S/iytHI5VxUMAN6
-         4Dt6UmXO9fFsgCoLRwh5tyFb8j1/6FJy0QXnErVZ7Rpt0AWgep6mZssEBy2NI2UHWz6i
-         NCso3YrvzR0CJq97hQaFLmHrE9b6HFTnBaWy9P/fyGdzXDz2S5ub1D1gFvvBmkBqXkZP
-         nRKFeFT5J3NUJoC3dW8nzc8yKFwIwbRYjKbFXs6jpj+GnLXf2HzjqY0EGKXajEh7pEnf
-         hsJg==
-X-Gm-Message-State: AOJu0YzlXxCCGw7pib7hffj8MuOLtAzhS5Eio1O1Sz1lBGOkQghgSjfk
-        TnF95xTLCOkLxOQuxpE21ZIRYFd0n9o=
-X-Google-Smtp-Source: AGHT+IE2AzkdqRVh1pF7LSqeEwqf2m49EyXKhmuvBMNOr4KrVkn8m+KHfkU3P4arqosZ27//ryBgoQ==
-X-Received: by 2002:a17:907:eab:b0:9bf:5df1:38c9 with SMTP id ho43-20020a1709070eab00b009bf5df138c9mr2530757ejc.9.1698857870436;
-        Wed, 01 Nov 2023 09:57:50 -0700 (PDT)
-Received: from ?IPV6:2a01:c22:6f25:5100:302f:4dfd:b45b:b65a? (dynamic-2a01-0c22-6f25-5100-302f-4dfd-b45b-b65a.c22.pool.telefonica.de. [2a01:c22:6f25:5100:302f:4dfd:b45b:b65a])
-        by smtp.googlemail.com with ESMTPSA id x27-20020a170906135b00b009a5f1d15644sm135256ejb.119.2023.11.01.09.57.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 09:57:50 -0700 (PDT)
-Message-ID: <f5f72cc3-0435-4ba0-8291-30d1ec2633a0@gmail.com>
-Date:   Wed, 1 Nov 2023 17:57:50 +0100
+        Wed, 1 Nov 2023 12:59:13 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BC9FD;
+        Wed,  1 Nov 2023 09:59:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M1A1l/g3SigwpborOo7SOJiqTrjB4YbP1VDQz4M+bB835lIexgqlj59owMHpyqZoDFZGnKEOoluqM4I3GTowjyotXQcmxaKUgcxlocZM2aromuX0fMmHPnwy8osh5xHJmAriGvcIqKG6T6YXKV4GLMaNvi3f3mOiWU7gaZhFiBvgzkcJAybw7aW787ZPubU+iL0Y7TythITZt1GYO7+CPEC3mLQvWvZKO1amjoxM6HdbHw6Yp8FSDnrMevVXXoQwcTn7fJzvprtab+Sq3SLZA3680mnSNL3w3Pvj8M34LMjCegBfL+dwMym4OLV+FTKGT6VB4uWfbPaGTCNxI8txDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KVzaA7BrwWnDQvpykpXz29UXSTYEL2d/piPnLgI0xGs=;
+ b=oQV/wohoLhAHi7kt/nbz3Pg0i/Oq2mW2YYar6ANQiODY3KQIoOA3brYjEMT8cDJut8Uta7Si24YMu+op7DxMp0hSYjqCkyzX4NVN+pywYUjIgKwUSioH4PMu3BCw2tqEvOS/GMYPDJGf5GyUH2cBcXODtfiY5aClAzwDkmB/7YPmta5Z1LeKYRRetcmcmlf/FjZGG5ROpCEMWE06bQbRZdZHiCDoQJiFjkIwDyLx8YnzlgIVT6eSOBvOpQIqdf5uniLWvAtCOMZNJZE0rUeDrizgPuz0jHg1vou2z474NYsWbSd3wncFOrQYobP2oSyerXQQtOAWY0yAEfB6sTZe1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KVzaA7BrwWnDQvpykpXz29UXSTYEL2d/piPnLgI0xGs=;
+ b=Shz2a5f/ElarS3+7Xkggem3rpiHfm7XLMilQN357kvoW2anf8eE6PssBvVoJ6/vimDjjZPeDvKNzd4ehb8DdFFolNtBME0ipdV3mZEvC+NcvAfgWrbJPLfxAIlJltJ8PbZJIQzP21fERQpRwnZ2p8/ZqiWG0MFDen8QTuonFkbg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by PH0PR17MB4861.namprd17.prod.outlook.com (2603:10b6:510:8a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.17; Wed, 1 Nov
+ 2023 16:59:03 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%4]) with mapi id 15.20.6954.019; Wed, 1 Nov 2023
+ 16:59:03 +0000
+Date:   Wed, 1 Nov 2023 12:58:55 -0400
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, ying.huang@intel.com,
+        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        weixugc@google.com, apopple@nvidia.com, tim.c.chen@intel.com,
+        dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <ZUKDz5NpMsoyzWtZ@memverge.com>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+ <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+ <20231031152142.GA3029315@cmpxchg.org>
+ <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+ <ZUCCGJgrqqk87aGN@memverge.com>
+ <pmxrljwp4ayl3fcu7rxm6prbumgb5l3lwb75lqfipmxxxwnqfo@nb5qjcxw22gp>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <pmxrljwp4ayl3fcu7rxm6prbumgb5l3lwb75lqfipmxxxwnqfo@nb5qjcxw22gp>
+X-ClientProxiedBy: BY5PR03CA0013.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::23) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
- support
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robimarko@gmail.com>
-References: <20231101123608.11157-1-ansuelsmth@gmail.com>
- <5af21f93-bb2d-42b1-b4d4-ee4443ffaff9@gmail.com>
- <65424cd9.5d0a0220.20d9a.fe0f@mx.google.com>
-Content-Language: en-US
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <65424cd9.5d0a0220.20d9a.fe0f@mx.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|PH0PR17MB4861:EE_
+X-MS-Office365-Filtering-Correlation-Id: ddcdbc4f-d0b9-4aaf-4fb6-08dbdafbda1a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z4AQhIxQYYLOb5iz97TusxjJU3gjwGhgIMMwxhi/dLXcqcmaCAHMr/Lo1edECFLiBp9V+96ACe2rX7X5jYDEtDfShoMrvycEw4te3bspv47EXMoFM4e2cku/J1zq4cajRJ7XVaS1wxlY7HPcS+MGT4vHvNwAos7u2uzo/HR+Z0iXT4DAJFidpQSN/OUoiIzU3cE6KEveKNUfgYZ5KRynsmWhCiG9UDiknlwg/CaDAYROl2+b7SyGu8llElpc/+9eV7bAU/8djMGJO0/zsw2G8Tzl/B7p69RmwBNSSyd3Vd5QkiL8POFpNof02V+4eR9k3Te8muynHQND91HSXb8nj6Nyu7Xjw74x84YJTvB202qIeWsNeBz1RHo1RBKEQr8hf4PK9hZ4tJ3+Ja4YKTloHXPijtIWlMXDDpj6Z0dfQ2PexGd3sOPjZl2KJ2sRVtVGDw+PspaNVADRMgB1V5EsWlmtIO/0f5T+G2cAOo8qghtMCmK39CenlSpZMVzoQz++aNkrc/25Cm2NDpbtC8NWNu6vPS6RzW4oxcYlSyst/4sMyB40FaxqvzZ10No7c2W5tzQ2Tva6yvXGs59MNTz27AexYflN9mAGPN7U+ORLZUmS74xQjYXZyKwa7n+12YOSSEQMjPB7HaVKDSwHgo7wzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(39830400003)(346002)(230273577357003)(230173577357003)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(2906002)(966005)(6486002)(478600001)(38100700002)(2616005)(26005)(36756003)(6506007)(83380400001)(6512007)(86362001)(6666004)(44832011)(6916009)(41300700001)(54906003)(66556008)(66946007)(66476007)(316002)(5660300002)(8936002)(4326008)(8676002)(7416002)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E8PDCF6nBIIymNsXHd2wYnANgXHXhFdKRKd3u7mNK2n98n1DJpsDhLXCsMPk?=
+ =?us-ascii?Q?FYe+mYN7cPVR6XfqVHlTwiV7+gj4ohMCwuOoeXeMiXeH7K+eOkolYj1Z2zBc?=
+ =?us-ascii?Q?jGJmPkB6QJHfql2Vyr/z4HPlssSzwkdnaHUBVyMKNNI/AoFD7ex5TJxk4dYa?=
+ =?us-ascii?Q?0ZoSGGOMnQa61+aEzJJYAytj7Nqcht47wWIxHvBLpAS/sIpDOytydaZrssCy?=
+ =?us-ascii?Q?nYvQmKgtGlewzgWCcEhj7xUxgopeP0bh5SBcmAXlG3iorJb3QjbPmWHR4RdO?=
+ =?us-ascii?Q?fmxhO4MRu6he1rJ77rKzPBDdOcA0eulg0re9WOAngRo4922I3xq1lRklaD/1?=
+ =?us-ascii?Q?mplkQve4O+YFOIE3IGdEWM9ZgGAdvIF017gd8HqgZPdeGZvX3XXHmcQVLeca?=
+ =?us-ascii?Q?Uio4o0f4GDyhtQxYLpGJLkSc15p69WfftYZEgFWDuEAqFA8IHGJeVOm6zHRo?=
+ =?us-ascii?Q?9D8h+WRzs8TgHkHF3r+xlsMpfQzFsQuJyE7u1EC85GHsL+5yvZbOOy/UfEjO?=
+ =?us-ascii?Q?YIJ//WKFUaQOyurJip6aPTYQzyc7n54oT8IHoYbQrwmP5T8O9gENqIHcgP1o?=
+ =?us-ascii?Q?omqV6lrxa2pKgmNWN8ET/g9Ia4cILUdVkfdRMrOolwefdtHp9BQ5qC73Yh7J?=
+ =?us-ascii?Q?1N+SMi0zHtEwWdSBioJhBwk1JbXNgPXiNyP0X14FRX1TiQUpTolhrzLArP6v?=
+ =?us-ascii?Q?bI94l092g4p+8OeyfR4ImTkmO+F2j1vky6nyI/03/ws7VpX9mDQ22C3hkQZ+?=
+ =?us-ascii?Q?5pspeZKycztNyOX76NQnYojUHCUERq6h5vos2k2Fiuq0EJD83SRrUXstYhY5?=
+ =?us-ascii?Q?KAaAn8nB2BonGe5QHDEH86RET39PxFvxJdaM+Prma3HuL5HZp/nspQSl1bbT?=
+ =?us-ascii?Q?27rmJiigy4GvBKAPS+Nd3+0MMUnC5DBD4FhlGZKaJchyfAKiu2q3Uqkl1IJC?=
+ =?us-ascii?Q?CYwM3yiYU1l0tyTNkpsR0lIdDqDR6tF1mmuvlIlVMbNRGm19i+B4uKpuHOTh?=
+ =?us-ascii?Q?CV3o9bvQGOW7hufYDiQSaOYgOflxHToUvxaCanhr32mdTXGRJP3OqA12QOGd?=
+ =?us-ascii?Q?wKo6QguSZ/sQ4XnQCeXtJpZTdlvMykFtRFdJ+Lo6dJcESTAzGrSrRA+PBhtS?=
+ =?us-ascii?Q?GPS7Rv8TiSfpKZDbT+BKHvVG4vAbf7WaCE8WvU0mbBkxpBmnYWimewtqkQNn?=
+ =?us-ascii?Q?ZM6qPSqmyYEA3AmGmDr7z/2mFhylHKWUf6QFDP/hG4ECeFS65sFXWHaq87nu?=
+ =?us-ascii?Q?OGO2QJvLzRuXFJNQZs2FEiHOce9yJI+6HgfYkZe/PsDiUETjy8pGj53msZKa?=
+ =?us-ascii?Q?POd/VrbAh479/Q0ZrPe4f6ubWDDCLkDD3EyjKAxVCXRMtWdUNlPGgg+BqKzT?=
+ =?us-ascii?Q?4hzAditxeYCh9XzYoMq2F8/5XczqBIAC6MY75JCUjQ3KkidoiOk7GiFA4Gx/?=
+ =?us-ascii?Q?4dQdMcgR2Lp4udcEVStLNnT0uksal6/uW/w0V50nzvZlSSf6jL7lKszoJWVM?=
+ =?us-ascii?Q?P9wMXDfvXGnBTxof1CrCrj/rnUfHmRuwBsyNUFKQA3F0sPs4xVmXqPyzsMgo?=
+ =?us-ascii?Q?VBcrl0YzLJjUO/WpGlCajD6xtFV9fhD9DqUn3yFFfTl9aCCkvD3UGMCjHWpn?=
+ =?us-ascii?Q?8Q=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddcdbc4f-d0b9-4aaf-4fb6-08dbdafbda1a
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 16:59:03.5991
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +6YJggUJHYxCCG/6oD/DzebsOSzU8NPpquIUtCoZdTwVCroTXMFDtcifUxdIqkL65PfwpBpChW1nAv724i0BqG56yx7++XrvjXnyFPvWfcQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR17MB4861
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.2023 13:57, Christian Marangi wrote:
-> On Wed, Nov 01, 2023 at 02:01:33PM +0100, Heiner Kallweit wrote:
->> On 01.11.2023 13:36, Christian Marangi wrote:
->>> From: Robert Marko <robimarko@gmail.com>
->>>
->>> Aquantia PHY-s require firmware to be loaded before they start operating.
->>> It can be automatically loaded in case when there is a SPI-NOR connected
->>> to Aquantia PHY-s or can be loaded from the host via MDIO.
->>>
->>> This patch adds support for loading the firmware via MDIO as in most cases
->>> there is no SPI-NOR being used to save on cost.
->>> Firmware loading code itself is ported from mainline U-boot with cleanups.
->>>
->>> The firmware has mixed values both in big and little endian.
->>> PHY core itself is big-endian but it expects values to be in little-endian.
->>> The firmware is little-endian but CRC-16 value for it is stored at the end
->>> of firmware in big-endian.
->>>
->>> It seems the PHY does the conversion internally from firmware that is
->>> little-endian to the PHY that is big-endian on using the mailbox
->>> but mailbox returns a big-endian CRC-16 to verify the written data
->>> integrity.
->>>
->>> Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
->>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
->>> ---
->>> Changes v2:
->>> - Move out of RFC
->>> - Address sanity check for offsets
->>> - Add additional comments on firmware load check
->>> - Fix some typo
->>> - Capitalize CRC in comments
->>> - Rename load_sysfs to load_fs
->>>
->>
->> To make the driver better maintainable: can the firmware handling code
->> be placed in a separate source code file, similar to what has been done
->> for the hwmon part?
->> If yes, then this could also be the right time to move the aquantia
->> driver to an own subdirectory.
->>
+On Wed, Nov 01, 2023 at 02:45:50PM +0100, Michal Hocko wrote:
+> On Tue 31-10-23 00:27:04, Gregory Price wrote:
+[... snip ...]
+> > 
+> > The downside of doing it in mempolicy is...
+> > 1) mempolicy is not sysfs friendly, and to make it sysfs friendly is a
+> >    non-trivial task.  It is very "current-task" centric.
 > 
-> Sure! Np for me just is it really worth it? hwmod is a bigger one but
-> this is really a few functions.
+> True. Cpusets is the way to make it less process centric but that comes
+> with its own constains (namely which NUMA policies are supported).
+>  
+> > 2) Barring a change to mempolicy to be sysfs friendly, the options for
+> >    implementing weights in the mempolicy are either a) new flag and
+> >    setting every weight individually in many syscalls, or b) a new
+> >    syscall (set_mempolicy2), which is what I demonstrated in the RFC.
 > 
-r8169_firmware.c is even smaller and I've never regretted having it factored
-out. Whether it makes sense depends on how much you share with the main module
-and how the API is structured that you provide to the main module.
-So I don't say you have to do it, I'm just saying it's worth considering it.
+> Yes, that would likely require a new syscall.
+>  
+> > 3) mempolicy is also subject to cgroup nodemasks, and as a result you
+> >    end up with a rats nest of interactions between mempolicy nodemasks
+> >    changing as a result of cgroup migrations, nodes potentially coming
+> >    and going (hotplug under CXL), and others I'm probably forgetting.
+> 
+> Is this really any different from what you are proposing though?
+>
 
-> Anyway if requested, I will move in v3 the driver to a dedicated
-> directory and move the function to a separate file!
+In only one manner: An external user can set the weight of a node that
+is added later on.  If it is implemented in mempolicy, then this is not
+possible.
+
+Basically consider: `numactl --interleave=all ...`
+
+If `--weights=...`: when a node hotplug event occurs, there is no
+recourse for adding a weight for the new node (it will default to 1).
+
+Maybe the answer is "Best effort, sorry" and we don't handle that
+situation.  That doesn't seem entirely unreasonable.
+
+At least with weights in node (or cgroup, or memtier, whatever) it
+provides the ability to set that weight outside the mempolicy context.
+
+> >    weight, or should you reset it? If a new node comes into the node
+> >    mask... what weight should you set? I did not have answers to these
+> >    questions.
+> 
+> I am not really sure I follow you. Are you talking about cpuset
+> nodemask changes or memory hotplug here.
+>
+
+Actually both - slightly different context.
+
+If the weights are implemented in mempolicy, if the cpuset nodemask
+changes then the mempolicy nodemask changes with it.
+
+If the node is removed from the system, I believe (need to validate
+this, but IIRC) the node will be removed from any registered cpusets.
+As a result, that falls down to mempolicy, and the node is removed.
+
+Not entirely sure what happens if a node is added.  The only case where
+I think that is relevant is when cpuset is empty ("all") and mempolicy
+is set to something like `--interleave=all`.  In this case, it's
+possible that the new node will simply have a default weight (1), and if
+weights are implemented in mempolicy only there is no recourse for changing
+it.
+
+> > It was recommended to explore placing it in tiers instead, so I took a
+> > crack at it here: 
+> > 
+> > https://lore.kernel.org/linux-mm/20231009204259.875232-1-gregory.price@memverge.com/
+> > 
+> > This had similar issue with the idea of hotplug nodes: if you give a
+> > tier a weight, and one or more of the nodes goes away/comes back... what
+> > should you do with the weight?  Split it up among the remaining nodes?
+> > Rebalance? Etc.
+> 
+> How is this any different from node becoming depleted? You cannot
+> really expect that you get memory you are asking for and you can easily
+> end up getting memory from a different node instead.
+>  
+... snip ... 
+> Maybe I am missing something really crucial here but I do not see how
+> this fundamentally changes anything.
+> 
+> Memory hotremove
+... snip ... 
+> Memory hotadd
+... snip ...
+> But, that requires that interleave policy nodemask is assuming future
+> nodes going online and put them to the mask.
 > 
 
+The difference is the nodemask changes in mempolicy and cpuset.  If a
+node is removed entirely from the nodemask, and then it comes back
+(through cpuset or something), then "what do you do with it"?
+
+If memory is depleted but opens up later - the interleave policy starts
+working as intended again.  If a node disappears and comes back... that
+bit of plumbing is a bit more complex.
+
+So yes, the "assuming future nodes going online and put them into the
+mask" is the concern I have.  A node being added/removed from the
+nodemask specifically different plumbing issues than just depletion.
+
+If that's really not a concern and we're happy to just let it be OBO
+until an actual use case for handling node hotplug for weighting, then
+mempolicy-based-weighting alone seems more than sufficient.
+
+> > I am not against implementing it in mempolicy (as proof: my first RFC).
+> > I am simply searching for the acceptable way to implement it.
+> > 
+> > One of the benefits of having it set as a global setting is that weights
+> > can be automatically generated from HMAT/HMEM information (ACPI tables)
+> > and programs already using MPOL_INTERLEAVE will have a direct benefit.
+> 
+> Right. This is understood. My main concern is whether this is outweights
+> the limitations of having a _global_ policy _only_. Historically a single
+> global policy usually led to finding ways how to make that more scoped
+> (usually through cgroups).
+>
+
+Maybe the answer here is put it in cgroups + mempolicy, and don't handle
+hotplug?  This is an easy shift my this patch to cgroups, and then
+pulling my syscall patch forward to add weights directly to mempolicy.
+
+I think the interleave code stays pretty much the same, the only
+difference would be where the task gets the weight from:
+
+if (policy->mode == WEIGHTED_INTERLEAVE)
+  weight = pol->weight[target_node]
+else
+   cgroups.get_weight(from_node, target_node)
+
+~Gregory
