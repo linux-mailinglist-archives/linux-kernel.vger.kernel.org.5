@@ -2,80 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4631E7DE14D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1577DE139
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjKANEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
+        id S1343924AbjKAM7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 08:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbjKANEn (ORCPT
+        with ESMTP id S229472AbjKAM7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:04:43 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34087DC;
-        Wed,  1 Nov 2023 06:04:41 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-408002b5b9fso48829205e9.3;
-        Wed, 01 Nov 2023 06:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698843879; x=1699448679; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zoHYYOTWYndoQBZFoxc6RIjyMuCKUCTERW3y4krGlPk=;
-        b=HppfvHQs7G1SKSYKT6uPrpSZ3Nd60cN31HXXoOUyfVu4SBdnpBDjdOKMmUBBIKIOSK
-         +iTCABZITixfe60rsEWK8DtNDFgM8WObPYjKyYKmDoiWXxLHLULA3lSW2M2TKmXk0Min
-         u4EpyI5FIUy+BYUQkVijNqZzbWJcjBObuzZbiMK9GiynDgCvfQuC2vEFyD0mJZS+ZhFJ
-         BAsvmXZIcPniufItEc7GqZZiMe+UPwsJUQ+V4pCqtLS6UvK2Hk9x7T/ut5ebumVzdo7y
-         5dsQQ4UTK5Py5X/heQkp/Dq8Pp9NTMR1aWf12zV2NOLDW24dgMJQx1zEoNxjYkqOz0Ur
-         LFnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698843879; x=1699448679;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zoHYYOTWYndoQBZFoxc6RIjyMuCKUCTERW3y4krGlPk=;
-        b=LTnB7nH8BaCNk2a0z8A5XPMde5PNpn+L8A6p/Ymb2WXL2ppomux6cEg7jGaJMTO2sD
-         My5qYhJiCMsmqddlw4kLPXe5L420mW+E4qyNdg25iwF2Yqom2p8T/Xqxq4m11IvYTGvC
-         3g5/zyVi6NCpBx0tUqah5xd6epIUOQWeVje18mW4O92C7qec2GsEqmpfCshtPN1n46/J
-         CKLIsBgLoJsXXKC/r/yH65TsBJhyAEiKAY1gQ8JPa8ZIewagZg4SzR1LJquKR4BgKU3C
-         t/QBjuW/+e43DKnQCIqVf25HL1LtVKaOwSFRkQxh3xgZcs8mZ1A1dIhreEEp+dK0HJYP
-         UrOQ==
-X-Gm-Message-State: AOJu0YxhEobeEGRU1skOCPBmpVlCVNw7VOw5i5UoAh6t0q82/HZAWbog
-        IBQuH0pt9XEV2TDP4xqoo9A=
-X-Google-Smtp-Source: AGHT+IE8WPIQAqDRX1TbVkWvgKFQfFwmBQpx/dyhQO3K4HrNnF2WuvBdgtWNOPngpHUbzU7eIuO3fQ==
-X-Received: by 2002:adf:d1e1:0:b0:32f:7fa0:558 with SMTP id g1-20020adfd1e1000000b0032f7fa00558mr13342254wrd.49.1698843879187;
-        Wed, 01 Nov 2023 06:04:39 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id v7-20020a5d6107000000b0032da49e18fasm4123612wrt.23.2023.11.01.06.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 06:04:25 -0700 (PDT)
-Message-ID: <65424cd9.5d0a0220.20d9a.fe0f@mx.google.com>
-X-Google-Original-Message-ID: <ZUJLUQevLrz84zSf@Ansuel-xps.>
-Date:   Wed, 1 Nov 2023 13:57:53 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robimarko@gmail.com>
-Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
- support
-References: <20231101123608.11157-1-ansuelsmth@gmail.com>
- <5af21f93-bb2d-42b1-b4d4-ee4443ffaff9@gmail.com>
+        Wed, 1 Nov 2023 08:59:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD59DC;
+        Wed,  1 Nov 2023 05:58:54 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698843532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SWUnEh6XW9/W7DLWKsdahGToSptXq7swAyngnisC52k=;
+        b=30M76bIlVflBqCCitsRhE+s18iWhKakGePKEieuSV5J+DUrqDBNa95RL8c9tjyHzGvS879
+        miwOWjTEET/JcyR7+IcWwde4IsiD1fKQXGmM/JtTmOINrlPfrAveABoCSSM+RxsHvGCqj2
+        JKAra6A58yjTXK7Wisou2KyXzjlNfNFiUtwuHqMJcHVtuvl2fvM7/nveQzPOLfbXyoPLMR
+        yIi+tbJDoCCVwPhADENXd1vBFK690Q5bcQE31JahHaq6stW3qOLMVnOAOpLGqXFLfl1y2q
+        0BlPG9LuRd/SprlEnHFWti6y00cDc2JE21sVzkgtY2gcHyttagKd05Ab9RIPJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698843532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SWUnEh6XW9/W7DLWKsdahGToSptXq7swAyngnisC52k=;
+        b=iaB1DzDW6lOg8Ec9QhS5dsYFAVz46LGqEBVNLbQLXr0grx4QqKk5VzZnBgaTuDzsugZyZu
+        XMm2rK/pmM8DetAQ==
+To:     syzbot <syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
+In-Reply-To: <000000000000cfd180060910a687@google.com>
+References: <000000000000cfd180060910a687@google.com>
+Date:   Wed, 01 Nov 2023 13:58:51 +0100
+Message-ID: <875y2lmxys.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5af21f93-bb2d-42b1-b4d4-ee4443ffaff9@gmail.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,53 +56,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 02:01:33PM +0100, Heiner Kallweit wrote:
-> On 01.11.2023 13:36, Christian Marangi wrote:
-> > From: Robert Marko <robimarko@gmail.com>
-> > 
-> > Aquantia PHY-s require firmware to be loaded before they start operating.
-> > It can be automatically loaded in case when there is a SPI-NOR connected
-> > to Aquantia PHY-s or can be loaded from the host via MDIO.
-> > 
-> > This patch adds support for loading the firmware via MDIO as in most cases
-> > there is no SPI-NOR being used to save on cost.
-> > Firmware loading code itself is ported from mainline U-boot with cleanups.
-> > 
-> > The firmware has mixed values both in big and little endian.
-> > PHY core itself is big-endian but it expects values to be in little-endian.
-> > The firmware is little-endian but CRC-16 value for it is stored at the end
-> > of firmware in big-endian.
-> > 
-> > It seems the PHY does the conversion internally from firmware that is
-> > little-endian to the PHY that is big-endian on using the mailbox
-> > but mailbox returns a big-endian CRC-16 to verify the written data
-> > integrity.
-> > 
-> > Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
-> > Signed-off-by: Robert Marko <robimarko@gmail.com>
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> > Changes v2:
-> > - Move out of RFC
-> > - Address sanity check for offsets
-> > - Add additional comments on firmware load check
-> > - Fix some typo
-> > - Capitalize CRC in comments
-> > - Rename load_sysfs to load_fs
-> > 
-> 
-> To make the driver better maintainable: can the firmware handling code
-> be placed in a separate source code file, similar to what has been done
-> for the hwmon part?
-> If yes, then this could also be the right time to move the aquantia
-> driver to an own subdirectory.
-> 
+On Tue, Oct 31 2023 at 22:36, syzbot wrote:
+> general protection fault, probably for non-canonical address 0xdffffc003ffff113: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: probably user-memory-access in range [0x00000001ffff8898-0x00000001ffff889f]
+> CPU: 1 PID: 5308 Comm: syz-executor.4 Not tainted 6.6.0-rc7-syzkaller-00142-g888cf78c29e2 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+> RIP: 0010:lookup_object lib/debugobjects.c:195 [inline]
+> RIP: 0010:lookup_object_or_alloc lib/debugobjects.c:564 [inline]
+> RIP: 0010:__debug_object_init+0xf3/0x2b0 lib/debugobjects.c:634
+> Code: d8 48 c1 e8 03 42 80 3c 20 00 0f 85 85 01 00 00 48 8b 1b 48 85 db 0f 84 9f 00 00 00 48 8d 7b 18 83 c5 01 48 89 f8 48 c1 e8 03 <42> 80 3c 20 00 0f 85 4c 01 00 00 4c 3b 73 18 75 c3 48 8d 7b 10 48
+> RSP: 0018:ffffc900050e7d08 EFLAGS: 00010012
+> RAX: 000000003ffff113 RBX: 00000001ffff8880 RCX: ffffffff8169123e
+> RDX: 1ffffffff249b149 RSI: 0000000000000004 RDI: 00000001ffff8898
+> RBP: 0000000000000003 R08: 0000000000000001 R09: 0000000000000216
+> R10: 0000000000000003 R11: 0000000000000000 R12: dffffc0000000000
+> R13: ffffffff924d8a48 R14: ffffc900050e7d90 R15: ffffffff924d8a50
+> FS:  0000555556eec480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fa23ab065ee CR3: 000000007e5c1000 CR4: 0000000000350ee0
 
-Sure! Np for me just is it really worth it? hwmod is a bigger one but
-this is really a few functions.
+So this dies in debugobjects::lookup_object()
 
-Anyway if requested, I will move in v3 the driver to a dedicated
-directory and move the function to a separate file!
+hlist_for_each_entry()
 
--- 
-	Ansuel
+>   10:	48 8b 1b             	mov    (%rbx),%rbx
+
+Gets the next entry
+
+>   13:	48 85 db             	test   %rbx,%rbx
+>   16:	0f 84 9f 00 00 00    	je     0xbb
+
+Checks for the termination condition (NULL pointer)
+
+>   1c:	48 8d 7b 18          	lea    0x18(%rbx),%rdi
+
+Calculates the address of obj->object
+
+>   20:	83 c5 01             	add    $0x1,%ebp
+
+cnt++;
+
+>   23:	48 89 f8             	mov    %rdi,%rax
+>   26:	48 c1 e8 03          	shr    $0x3,%rax
+
+KASAN shadow address calculation
+
+> * 2a:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
+
+Kasan accesses 0xdffffc003ffff113 and dies.
+
+RBX contains the pointer to the next object: 0x00000001ffff8880 which is
+clearly a user space address, but I have no idea where that might come
+from. It's obviously data corruption of unknown provenience.
+
+Unfortunately repro.syz does not hold up to its name and refuses to
+reproduce.
+
+Thanks,
+
+        tglx
+
