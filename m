@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369B47DE5C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5133B7DE5D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345038AbjKASDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
+        id S1345063AbjKASDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344795AbjKASDC (ORCPT
+        with ESMTP id S1344792AbjKASDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 14:03:02 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4535411C
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:02:42 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-543d2bc7d9dso30646a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:02:42 -0700 (PDT)
+        Wed, 1 Nov 2023 14:03:03 -0400
+Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02B812C
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:02:44 -0700 (PDT)
+Received: by mail-ej1-x649.google.com with SMTP id a640c23a62f3a-9d2606301eeso10965166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698861761; x=1699466561; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698861763; x=1699466563; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=azhVe2rhV1gDlFmhFwnbqw9ViDwuarkzu6YKI2xsrC4=;
-        b=Zk2+K0Z8vnB/TazQEeQH1S6Jtp6THf67hyu4kJmXPCAZIIheuDk0g4GVm/AcGshhir
-         Jns270pNIXEnM5eH0ZyKYJYVEHPMfjReVpZFmOcuxB2CnLqH+nsrfUuE/tt/S29LRUhe
-         twgfG7fu74Enj8DRplKnoMLbgt6S8j5wAl9pNRl4uRUE836hZwuPNpJWwDewZU+j2MGu
-         PIgHnkoMPmk+tyhT8lrqF46T3bJuy5Fe8cOVC3LBvxCqrJiegZN04sDzssfreg0ylLxk
-         DgtsJ8w9jkQJBEjDqLiNlTzGujJRH2QdeZlS8vlKFznFFTfZDfhODQP0CTo1DBZPVM14
-         vcBg==
+        bh=kukThpDw1OlU2Qi41kPUcezUwH/dCviJIoImwIYtSdk=;
+        b=dw/kZijCmsPpxOgiZ7gqxfe9KU4WKJXqee5Au8rd7OAOc8/9ane5peufyR4aLNbkB8
+         MKjejCWximCo1G9Hk8EcmBaPAo9yxdW4YpvLtK72MO+p0eB8OLpfy017PJLhMGXTM9O7
+         MWxeausv/53eNRvRgWdrTov05bukY2pPsTl9fs7ECTaWVc4dfT9JN4XmiWvLQ7z6xue0
+         tfBUAaErgsze7ix/QGzP9lUbgRWefh6FZQy9cEfLPS15LcS/ff/Th+82X9+EFGN7Voru
+         P7YC9XXhswPfJdKMgjQcG6I1q4YIH0BsILO7CZ7X3LK8447N5+O4M7ewdLjKGltBIQXv
+         /Vog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698861761; x=1699466561;
+        d=1e100.net; s=20230601; t=1698861763; x=1699466563;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=azhVe2rhV1gDlFmhFwnbqw9ViDwuarkzu6YKI2xsrC4=;
-        b=Coi/KS1mPfUE0ofiFg1mMJ8LrwIIbP2BmN01k8DWWP04I72dMCyfh1j2EQfkOGDwem
-         V+OnBhgDIjVQRTvLw0iYWgBKHy8igoPBWxP4FY6m89RHl/WDTJDSru6hoOhEDfkKDp+l
-         YKHdmS/C/xi9t16uniTc2YdB/5IAaDS6ezijvTBdCsYodkhenInxbVp8fQ1EFw7FDhuh
-         3PfLluJHvZbfOxO/dAioueGVLszAr883koMLRfucYUlKHPJDwv96seyhDEKcilkqQslM
-         tvVn/4Mo8eYDEN2lt8tW8BlgZN6yNBbyI+ip/hgWvHdsPlZi6ULLQ6rMZaV41ClyMSH/
-         Cffw==
-X-Gm-Message-State: AOJu0YxfAca8nrFqzIOVKSSimKDE903tn/yaV7HDMlw6xMPS8Au81675
-        ffdHgGCRgm/hO/uDz+5V9pPDY4RMGCuE5xo=
-X-Google-Smtp-Source: AGHT+IGIafMa/L8kSErTNfhI7Uu0JoIHIZDKXT9un2aQ391U3nQog6Y6NHnAqAoTL2PWMaxfFHQQ7/C8WFyOVDk=
+        bh=kukThpDw1OlU2Qi41kPUcezUwH/dCviJIoImwIYtSdk=;
+        b=Ndyhm8YSp/CsR/BSCZq7UNpESXsrDriqlnZMv10ye4rilfPb2EMz3WsMMbeOp5o+N5
+         7aQuB7vEVVqJeekEBvNFEaVGccAzBkMqBMDWuC7by+GadybxddM5FCkrY9O2kWAdFDR6
+         DgEEFEBZKVDVc6ENHTAfZHGv7W1KpgtBTO8JWFFgOcjRPVkHhHOTPLPH5w3h/Fwmdgvb
+         CFVjnKT3zu4A9Dy/Zx0t0b8beHnDoC6ZRCoWpV9LfNkVxaAB1z0rJQNxSdwfdpin2b0h
+         ReqniXs8nTC4p5p+rGyzaF+GIAz3wQ942D5sIdpyxfyPQs3JJU8IRuTJxXa5IKFTrRJ8
+         WW6w==
+X-Gm-Message-State: AOJu0Yx1s130B+wq386YeRBS2jIXkIVVb1ZWNWGBymVQk1cLKa5RZnPa
+        T39flGC/xDGy6zFSrObfx0tFyO4IaYwec7A=
+X-Google-Smtp-Source: AGHT+IFT4hV65jNkYQHPs5YxsaM0BVC/laywsq0hKCQ2FXgBcACkzAb/k49Aw6hMBoaatJYWzfs5TC5MKR1j2S8=
 X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a05:6402:500d:b0:543:6cf7:87db with SMTP
- id p13-20020a056402500d00b005436cf787dbmr61701eda.5.1698861760736; Wed, 01
- Nov 2023 11:02:40 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 18:01:40 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a17:906:f247:b0:9c7:1cbb:3a71 with SMTP
+ id gy7-20020a170906f24700b009c71cbb3a71mr30909ejb.1.1698861763349; Wed, 01
+ Nov 2023 11:02:43 -0700 (PDT)
+Date:   Wed, 01 Nov 2023 18:01:41 +0000
 In-Reply-To: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 Mime-Version: 1.0
 References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231101-rust-binder-v1-10-08ba9197f637@google.com>
-Subject: [PATCH RFC 10/20] rust_binder: add death notifications
+Message-ID: <20231101-rust-binder-v1-11-08ba9197f637@google.com>
+Subject: [PATCH RFC 11/20] rust_binder: send nodes in transactions
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -78,735 +78,700 @@ Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wedson Almeida Filho <wedsonaf@gmail.com>
+To send a transaction to any process other than the context manager,
+someone must first send you the binder node. Usually, you get it from
+the context manager.
 
-This adds death notifications that let one process be notified when
-another process dies.
+The transaction allocation now contains a list of offsets of objects in
+the transaction that must be translated before they are passed to the
+target process. In this patch, we only support translation of binder
+nodes, but future patches will extend this to other object types.
 
-A process can request to be notified when a process dies using
-`BC_REQUEST_DEATH_NOTIFICATION`. This will make the driver send a
-`BR_DEAD_BINDER` to userspace when the process dies (or immediately if
-it is already dead). Userspace is supposed to respond with
-`BC_DEAD_BINDER_DONE` once it has processed the notification.
-
-Userspace can unregister from death notifications using the
-`BC_CLEAR_DEATH_NOTIFICATION` command. In this case, the kernel will
-respond with `BR_CLEAR_DEATH_NOTIFICATION_DONE` once the notification
-has been removed. Note that if the remote process dies before the kernel
-has responded with `BR_CLEAR_DEATH_NOTIFICATION_DONE`, then the kernel
-will still send a `BR_DEAD_BINDER`, which userspace must be able to
-process. In this case, the kernel will wait for the
-`BC_DEAD_BINDER_DONE` command before it sends
-`BR_CLEAR_DEATH_NOTIFICATION_DONE`.
-
-Note that even if the kernel sends a `BR_DEAD_BINDER`, this does not
-remove the death notification. Userspace must still remove it manually
-using `BC_CLEAR_DEATH_NOTIFICATION`.
-
-If a process uses `BC_RELEASE` to destroy its last refcount on a node
-that has an active death registration, then the death registration is
-immediately deleted. However, userspace is not supposed to delete a
-node reference without first deregistering death notifications, so this
-codepath is not executed under normal circumstances.
-
+Co-developed-by: Wedson Almeida Filho <wedsonaf@gmail.com>
 Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-Co-developed-by: Alice Ryhl <aliceryhl@google.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- drivers/android/defs.rs        |  10 +-
- drivers/android/node.rs        | 258 ++++++++++++++++++++++++++++++++++++++++-
- drivers/android/process.rs     | 193 +++++++++++++++++++++++++++---
- drivers/android/rust_binder.rs |   7 ++
- drivers/android/thread.rs      |  22 +++-
- 5 files changed, 471 insertions(+), 19 deletions(-)
+ drivers/android/allocation.rs  | 266 ++++++++++++++++++++++++++++++++++++++++-
+ drivers/android/defs.rs        |  44 +++++--
+ drivers/android/process.rs     |   8 ++
+ drivers/android/thread.rs      | 118 +++++++++++++++++-
+ drivers/android/transaction.rs |   5 +-
+ rust/helpers.c                 |   7 ++
+ rust/kernel/security.rs        |   7 ++
+ 7 files changed, 436 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/android/defs.rs b/drivers/android/defs.rs
-index 32178e8c5596..753f7e86c92d 100644
---- a/drivers/android/defs.rs
-+++ b/drivers/android/defs.rs
-@@ -23,10 +23,13 @@ macro_rules! pub_no_prefix {
-     BR_SPAWN_LOOPER,
-     BR_TRANSACTION_COMPLETE,
-     BR_OK,
-+    BR_ERROR,
-     BR_INCREFS,
-     BR_ACQUIRE,
-     BR_RELEASE,
--    BR_DECREFS
-+    BR_DECREFS,
-+    BR_DEAD_BINDER,
-+    BR_CLEAR_DEATH_NOTIFICATION_DONE
- );
+diff --git a/drivers/android/allocation.rs b/drivers/android/allocation.rs
+index 0fdef5425918..32bc268956f2 100644
+--- a/drivers/android/allocation.rs
++++ b/drivers/android/allocation.rs
+@@ -1,9 +1,18 @@
+ // SPDX-License-Identifier: GPL-2.0
+-use core::mem::size_of_val;
++use core::mem::{size_of, size_of_val, MaybeUninit};
++use core::ops::Range;
  
- pub_no_prefix!(
-@@ -44,7 +47,10 @@ macro_rules! pub_no_prefix {
-     BC_RELEASE,
-     BC_DECREFS,
-     BC_INCREFS_DONE,
--    BC_ACQUIRE_DONE
-+    BC_ACQUIRE_DONE,
-+    BC_REQUEST_DEATH_NOTIFICATION,
-+    BC_CLEAR_DEATH_NOTIFICATION,
-+    BC_DEAD_BINDER_DONE
- );
+-use kernel::{bindings, pages::Pages, prelude::*, sync::Arc, user_ptr::UserSlicePtrReader};
++use kernel::{
++    bindings,
++    io_buffer::{IoBufferReader, ReadableFromBytes, WritableToBytes},
++    pages::Pages,
++    prelude::*,
++    sync::Arc,
++    user_ptr::UserSlicePtrReader,
++};
  
- pub(crate) const FLAT_BINDER_FLAG_TXN_SECURITY_CTX: u32 =
-diff --git a/drivers/android/node.rs b/drivers/android/node.rs
-index b8a08b16c06d..7ed494bf9f7c 100644
---- a/drivers/android/node.rs
-+++ b/drivers/android/node.rs
-@@ -3,11 +3,12 @@
- use kernel::{
-     io_buffer::IoBufferWriter,
-     list::{
--        AtomicListArcTracker, HasListLinks, List, ListArcSafe, ListItem, ListLinks, TryNewListArc,
-+        AtomicListArcTracker, HasListLinks, List, ListArc, ListArcSafe, ListItem, ListLinks,
-+        TryNewListArc,
-     },
-     prelude::*,
-     sync::lock::{spinlock::SpinLockBackend, Guard},
--    sync::{Arc, LockedBy},
-+    sync::{Arc, LockedBy, SpinLock},
-     user_ptr::UserSlicePtrWriter,
- };
+ use crate::{
++    defs::*,
+     node::{Node, NodeRef},
+     process::Process,
+     DArc,
+@@ -11,6 +20,8 @@
  
-@@ -40,6 +41,7 @@ fn new() -> Self {
- struct NodeInner {
-     strong: CountState,
-     weak: CountState,
-+    death_list: List<DTRWrap<NodeDeath>, 1>,
-     oneway_todo: List<DTRWrap<Transaction>>,
-     has_pending_oneway_todo: bool,
-     /// The number of active BR_INCREFS or BR_ACQUIRE operations. (should be maximum two)
-@@ -95,6 +97,7 @@ pub(crate) fn new(
-                 NodeInner {
-                     strong: CountState::new(),
-                     weak: CountState::new(),
-+                    death_list: List::new(),
-                     oneway_todo: List::new(),
-                     has_pending_oneway_todo: false,
-                     active_inc_refs: 0,
-@@ -112,6 +115,25 @@ pub(crate) fn get_id(&self) -> (usize, usize) {
-         (self.ptr, self.cookie)
+ #[derive(Default)]
+ pub(crate) struct AllocationInfo {
++    /// Range within the allocation where we can find the offsets to the object descriptors.
++    pub(crate) offsets: Option<Range<usize>>,
+     /// The target node of the transaction this allocation is associated to.
+     /// Not set for replies.
+     pub(crate) target_node: Option<NodeRef>,
+@@ -87,6 +98,21 @@ pub(crate) fn copy_into(
+         })
      }
  
-+    pub(crate) fn next_death(
-+        &self,
-+        guard: &mut Guard<'_, ProcessInner, SpinLockBackend>,
-+    ) -> Option<DArc<NodeDeath>> {
-+        self.inner
-+            .access_mut(guard)
-+            .death_list
-+            .pop_front()
-+            .map(|larc| larc.into_arc())
-+    }
-+
-+    pub(crate) fn add_death(
-+        &self,
-+        death: ListArc<DTRWrap<NodeDeath>, 1>,
-+        guard: &mut Guard<'_, ProcessInner, SpinLockBackend>,
-+    ) {
-+        self.inner.access_mut(guard).death_list.push_back(death);
-+    }
-+
-     pub(crate) fn inc_ref_done_locked(
-         &self,
-         _strong: bool,
-@@ -449,3 +471,235 @@ fn drop(&mut self) {
-         }
-     }
- }
-+
-+struct NodeDeathInner {
-+    dead: bool,
-+    cleared: bool,
-+    notification_done: bool,
-+    /// Indicates whether the normal flow was interrupted by removing the handle. In this case, we
-+    /// need behave as if the death notification didn't exist (i.e., we don't deliver anything to
-+    /// the user.
-+    aborted: bool,
-+}
-+
-+/// Used to deliver notifications when a process dies.
-+///
-+/// A process can request to be notified when a process dies using `BC_REQUEST_DEATH_NOTIFICATION`.
-+/// This will make the driver send a `BR_DEAD_BINDER` to userspace when the process dies (or
-+/// immediately if it is already dead). Userspace is supposed to respond with `BC_DEAD_BINDER_DONE`
-+/// once it has processed the notification.
-+///
-+/// Userspace can unregister from death notifications using the `BC_CLEAR_DEATH_NOTIFICATION`
-+/// command. In this case, the kernel will respond with `BR_CLEAR_DEATH_NOTIFICATION_DONE` once the
-+/// notification has been removed. Note that if the remote process dies before the kernel has
-+/// responded with `BR_CLEAR_DEATH_NOTIFICATION_DONE`, then the kernel will still send a
-+/// `BR_DEAD_BINDER`, which userspace must be able to process. In this case, the kernel will wait
-+/// for the `BC_DEAD_BINDER_DONE` command before it sends `BR_CLEAR_DEATH_NOTIFICATION_DONE`.
-+///
-+/// Note that even if the kernel sends a `BR_DEAD_BINDER`, this does not remove the death
-+/// notification. Userspace must still remove it manually using `BC_CLEAR_DEATH_NOTIFICATION`.
-+///
-+/// If a process uses `BC_RELEASE` to destroy its last refcount on a node that has an active death
-+/// registration, then the death registration is immediately deleted (we implement this using the
-+/// `aborted` field). However, userspace is not supposed to delete a `NodeRef` without first
-+/// deregistering death notifications, so this codepath is not executed under normal circumstances.
-+#[pin_data]
-+pub(crate) struct NodeDeath {
-+    node: DArc<Node>,
-+    process: Arc<Process>,
-+    pub(crate) cookie: usize,
-+    #[pin]
-+    links_track: AtomicListArcTracker<0>,
-+    /// Used by the owner `Node` to store a list of registered death notifications.
-+    ///
-+    /// # Invariants
-+    ///
-+    /// Only ever used with the `death_list` list of `self.node`.
-+    #[pin]
-+    death_links: ListLinks<1>,
-+    /// Used by the process to keep track of the death notifications for which we have sent a
-+    /// `BR_DEAD_BINDER` but not yet received a `BC_DEAD_BINDER_DONE`.
-+    ///
-+    /// # Invariants
-+    ///
-+    /// Only ever used with the `delivered_deaths` list of `self.process`.
-+    #[pin]
-+    delivered_links: ListLinks<2>,
-+    #[pin]
-+    delivered_links_track: AtomicListArcTracker<2>,
-+    #[pin]
-+    inner: SpinLock<NodeDeathInner>,
-+}
-+
-+impl NodeDeath {
-+    /// Constructs a new node death notification object.
-+    pub(crate) fn new(
-+        node: DArc<Node>,
-+        process: Arc<Process>,
-+        cookie: usize,
-+    ) -> impl PinInit<DTRWrap<Self>> {
-+        DTRWrap::new(pin_init!(
-+            Self {
-+                node,
-+                process,
-+                cookie,
-+                links_track <- AtomicListArcTracker::new(),
-+                death_links <- ListLinks::new(),
-+                delivered_links <- ListLinks::new(),
-+                delivered_links_track <- AtomicListArcTracker::new(),
-+                inner <- kernel::new_spinlock!(NodeDeathInner {
-+                    dead: false,
-+                    cleared: false,
-+                    notification_done: false,
-+                    aborted: false,
-+                }, "NodeDeath::inner"),
-+            }
-+        ))
-+    }
-+
-+    /// Sets the cleared flag to `true`.
-+    ///
-+    /// It removes `self` from the node's death notification list if needed.
-+    ///
-+    /// Returns whether it needs to be queued.
-+    pub(crate) fn set_cleared(self: &DArc<Self>, abort: bool) -> bool {
-+        let (needs_removal, needs_queueing) = {
-+            // Update state and determine if we need to queue a work item. We only need to do it
-+            // when the node is not dead or if the user already completed the death notification.
-+            let mut inner = self.inner.lock();
-+            if abort {
-+                inner.aborted = true;
-+            }
-+            if inner.cleared {
-+                // Already cleared.
-+                return false;
-+            }
-+            inner.cleared = true;
-+            (!inner.dead, !inner.dead || inner.notification_done)
-+        };
-+
-+        // Remove death notification from node.
-+        if needs_removal {
-+            let mut owner_inner = self.node.owner.inner.lock();
-+            let node_inner = self.node.inner.access_mut(&mut owner_inner);
-+            // SAFETY: A `NodeDeath` is never inserted into the death list of any node other than
-+            // its owner, so it is either in this death list or in no death list.
-+            unsafe { node_inner.death_list.remove(self) };
-+        }
-+        needs_queueing
-+    }
-+
-+    /// Sets the 'notification done' flag to `true`.
-+    pub(crate) fn set_notification_done(self: DArc<Self>, thread: &Thread) {
-+        let needs_queueing = {
-+            let mut inner = self.inner.lock();
-+            inner.notification_done = true;
-+            inner.cleared
-+        };
-+        if needs_queueing {
-+            if let Some(death) = ListArc::try_from_arc_or_drop(self) {
-+                let _ = thread.push_work_if_looper(death);
-+            }
-+        }
-+    }
-+
-+    /// Sets the 'dead' flag to `true` and queues work item if needed.
-+    pub(crate) fn set_dead(self: DArc<Self>) {
-+        let needs_queueing = {
-+            let mut inner = self.inner.lock();
-+            if inner.cleared {
-+                false
-+            } else {
-+                inner.dead = true;
-+                true
-+            }
-+        };
-+        if needs_queueing {
-+            // Push the death notification to the target process. There is nothing else to do if
-+            // it's already dead.
-+            if let Some(death) = ListArc::try_from_arc_or_drop(self) {
-+                let process = death.process.clone();
-+                let _ = process.push_work(death);
-+            }
-+        }
-+    }
-+}
-+
-+kernel::list::impl_list_arc_safe! {
-+    impl ListArcSafe<0> for NodeDeath {
-+        tracked_by links_track: AtomicListArcTracker;
-+    }
-+}
-+
-+kernel::list::impl_has_list_links! {
-+    impl HasListLinks<1> for DTRWrap<NodeDeath> { self.wrapped.death_links }
-+}
-+kernel::list::impl_list_arc_safe! {
-+    impl ListArcSafe<1> for DTRWrap<NodeDeath> { untracked; }
-+}
-+kernel::list::impl_list_item! {
-+    impl ListItem<1> for DTRWrap<NodeDeath> {
-+        using ListLinks;
-+    }
-+}
-+
-+kernel::list::impl_has_list_links! {
-+    impl HasListLinks<2> for DTRWrap<NodeDeath> { self.wrapped.delivered_links }
-+}
-+kernel::list::impl_list_arc_safe! {
-+    impl ListArcSafe<2> for DTRWrap<NodeDeath> {
-+        tracked_by wrapped: NodeDeath;
-+    }
-+}
-+kernel::list::impl_list_arc_safe! {
-+    impl ListArcSafe<2> for NodeDeath {
-+        tracked_by delivered_links_track: AtomicListArcTracker<2>;
-+    }
-+}
-+kernel::list::impl_list_item! {
-+    impl ListItem<2> for DTRWrap<NodeDeath> {
-+        using ListLinks;
-+    }
-+}
-+
-+impl DeliverToRead for NodeDeath {
-+    fn do_work(
-+        self: DArc<Self>,
-+        _thread: &Thread,
-+        writer: &mut UserSlicePtrWriter,
-+    ) -> Result<bool> {
-+        let done = {
-+            let inner = self.inner.lock();
-+            if inner.aborted {
-+                return Ok(true);
-+            }
-+            inner.cleared && (!inner.dead || inner.notification_done)
-+        };
-+
-+        let cookie = self.cookie;
-+        let cmd = if done {
-+            BR_CLEAR_DEATH_NOTIFICATION_DONE
-+        } else {
-+            let process = self.process.clone();
-+            let mut process_inner = process.inner.lock();
-+            let inner = self.inner.lock();
-+            if inner.aborted {
-+                return Ok(true);
-+            }
-+            // We're still holding the inner lock, so it cannot be aborted while we insert it into
-+            // the delivered list.
-+            process_inner.death_delivered(self.clone());
-+            BR_DEAD_BINDER
-+        };
-+
-+        writer.write(&cmd)?;
-+        writer.write(&cookie)?;
-+        // Mimic the original code: we stop processing work items when we get to a death
-+        // notification.
-+        Ok(cmd != BR_DEAD_BINDER)
-+    }
-+
-+    fn should_sync_wakeup(&self) -> bool {
-+        false
-+    }
-+}
-diff --git a/drivers/android/process.rs b/drivers/android/process.rs
-index d4e50c7f9a88..0b79fa59ffa5 100644
---- a/drivers/android/process.rs
-+++ b/drivers/android/process.rs
-@@ -20,7 +20,7 @@
-     pages::Pages,
-     prelude::*,
-     rbtree::RBTree,
--    sync::{lock::Guard, Arc, ArcBorrow, Mutex, SpinLock},
-+    sync::{lock::Guard, Arc, ArcBorrow, Mutex, SpinLock, UniqueArc},
-     task::Task,
-     types::{ARef, Either},
-     user_ptr::{UserSlicePtr, UserSlicePtrReader},
-@@ -32,7 +32,7 @@
-     context::Context,
-     defs::*,
-     error::{BinderError, BinderResult},
--    node::{Node, NodeRef},
-+    node::{Node, NodeDeath, NodeRef},
-     range_alloc::{self, RangeAllocator},
-     thread::{PushWorkRes, Thread},
-     DArc, DLArc, DTRWrap, DeliverToRead,
-@@ -69,6 +69,7 @@ pub(crate) struct ProcessInner {
-     nodes: RBTree<usize, DArc<Node>>,
-     mapping: Option<Mapping>,
-     work: List<DTRWrap<dyn DeliverToRead>>,
-+    delivered_deaths: List<DTRWrap<NodeDeath>, 2>,
- 
-     /// The number of requested threads that haven't registered yet.
-     requested_thread_count: u32,
-@@ -91,6 +92,7 @@ fn new() -> Self {
-             mapping: None,
-             nodes: RBTree::new(),
-             work: List::new(),
-+            delivered_deaths: List::new(),
-             requested_thread_count: 0,
-             max_threads: 0,
-             started_thread_count: 0,
-@@ -225,15 +227,40 @@ fn register_thread(&mut self) -> bool {
-         self.started_thread_count += 1;
-         true
-     }
-+
-+    /// Finds a delivered death notification with the given cookie, removes it from the thread's
-+    /// delivered list, and returns it.
-+    fn pull_delivered_death(&mut self, cookie: usize) -> Option<DArc<NodeDeath>> {
-+        let mut cursor_opt = self.delivered_deaths.cursor_front();
-+        while let Some(cursor) = cursor_opt {
-+            if cursor.current().cookie == cookie {
-+                return Some(cursor.remove().into_arc());
-+            }
-+            cursor_opt = cursor.next();
-+        }
-+        None
-+    }
-+
-+    pub(crate) fn death_delivered(&mut self, death: DArc<NodeDeath>) {
-+        if let Some(death) = ListArc::try_from_arc_or_drop(death) {
-+            self.delivered_deaths.push_back(death);
-+        } else {
-+            pr_warn!("Notification added to `delivered_deaths` twice.");
-+        }
-+    }
- }
- 
- struct NodeRefInfo {
-     node_ref: NodeRef,
-+    death: Option<DArc<NodeDeath>>,
- }
- 
- impl NodeRefInfo {
-     fn new(node_ref: NodeRef) -> Self {
--        Self { node_ref }
-+        Self {
-+            node_ref,
-+            death: None,
-+        }
-     }
- }
- 
-@@ -385,6 +412,18 @@ fn get_thread(self: ArcBorrow<'_, Self>, id: i32) -> Result<Arc<Thread>> {
-         Ok(ta)
-     }
- 
-+    pub(crate) fn push_work(&self, work: DLArc<dyn DeliverToRead>) -> BinderResult {
-+        // If push_work fails, drop the work item outside the lock.
-+        let res = self.inner.lock().push_work(work);
-+        match res {
-+            Ok(()) => Ok(()),
-+            Err((err, work)) => {
-+                drop(work);
-+                Err(err)
-+            }
-+        }
-+    }
-+
-     fn set_as_manager(
-         self: ArcBorrow<'_, Self>,
-         info: Option<FlatBinderObject>,
-@@ -513,6 +552,14 @@ pub(crate) fn get_node_from_handle(&self, handle: u32, strong: bool) -> Result<N
-             .clone(strong)
-     }
- 
-+    pub(crate) fn remove_from_delivered_deaths(&self, death: &DArc<NodeDeath>) {
-+        let mut inner = self.inner.lock();
-+        // SAFETY: By the invariant on the `delivered_links` field, this is the right linked list.
-+        let removed = unsafe { inner.delivered_deaths.remove(death) };
-+        drop(inner);
-+        drop(removed);
-+    }
-+
-     pub(crate) fn update_ref(&self, handle: u32, inc: bool, strong: bool) -> Result {
-         if inc && handle == 0 {
-             if let Ok(node_ref) = self.ctx.get_manager_node(strong) {
-@@ -529,6 +576,12 @@ pub(crate) fn update_ref(&self, handle: u32, inc: bool, strong: bool) -> Result
-         let mut refs = self.node_refs.lock();
-         if let Some(info) = refs.by_handle.get_mut(&handle) {
-             if info.node_ref.update(inc, strong) {
-+                // Clean up death if there is one attached to this node reference.
-+                if let Some(death) = info.death.take() {
-+                    death.set_cleared(true);
-+                    self.remove_from_delivered_deaths(&death);
-+                }
-+
-                 // Remove reference from process tables.
-                 let id = info.node_ref.node.global_id;
-                 refs.by_handle.remove(&handle);
-@@ -725,6 +778,87 @@ pub(crate) fn needs_thread(&self) -> bool {
-         ret
-     }
- 
-+    pub(crate) fn request_death(
-+        self: &Arc<Self>,
-+        reader: &mut UserSlicePtrReader,
-+        thread: &Thread,
-+    ) -> Result {
-+        let handle: u32 = reader.read()?;
-+        let cookie: usize = reader.read()?;
-+
-+        // TODO: First two should result in error, but not the others.
-+
-+        // TODO: Do we care about the context manager dying?
-+
-+        // Queue BR_ERROR if we can't allocate memory for the death notification.
-+        let death = UniqueArc::try_new_uninit().map_err(|err| {
-+            thread.push_return_work(BR_ERROR);
-+            err
++    pub(crate) fn read<T: ReadableFromBytes>(&self, offset: usize) -> Result<T> {
++        let mut out = MaybeUninit::<T>::uninit();
++        let mut out_offset = 0;
++        self.iterate(offset, size_of::<T>(), |page, offset, to_copy| {
++            // SAFETY: The sum of `offset` and `to_copy` is bounded by the size of T.
++            let obj_ptr = unsafe { (out.as_mut_ptr() as *mut u8).add(out_offset) };
++            // SAFETY: The pointer points is in-bounds of the `out` variable, so it is valid.
++            unsafe { page.read(obj_ptr, offset, to_copy) }?;
++            out_offset += to_copy;
++            Ok(())
 +        })?;
-+        let mut refs = self.node_refs.lock();
-+        let info = refs.by_handle.get_mut(&handle).ok_or(EINVAL)?;
++        // SAFETY: We just initialised the data.
++        Ok(unsafe { out.assume_init() })
++    }
 +
-+        // Nothing to do if there is already a death notification request for this handle.
-+        if info.death.is_some() {
-+            return Ok(());
-+        }
+     pub(crate) fn write<T: ?Sized>(&self, offset: usize, obj: &T) -> Result {
+         let mut obj_offset = 0;
+         self.iterate(offset, size_of_val(obj), |page, offset, to_copy| {
+@@ -119,6 +145,10 @@ pub(crate) fn get_or_init_info(&mut self) -> &mut AllocationInfo {
+         self.allocation_info.get_or_insert_with(Default::default)
+     }
+ 
++    pub(crate) fn set_info_offsets(&mut self, offsets: Range<usize>) {
++        self.get_or_init_info().offsets = Some(offsets);
++    }
 +
-+        let death = {
-+            let death_init = NodeDeath::new(info.node_ref.node.clone(), self.clone(), cookie);
-+            match death.pin_init_with(death_init) {
-+                Ok(death) => death,
-+                // error is infallible
-+                Err(err) => match err {},
+     pub(crate) fn set_info_oneway_node(&mut self, oneway_node: DArc<Node>) {
+         self.get_or_init_info().oneway_node = Some(oneway_node);
+     }
+@@ -145,6 +175,15 @@ fn drop(&mut self) {
+ 
+             info.target_node = None;
+ 
++            if let Some(offsets) = info.offsets.clone() {
++                let view = AllocationView::new(self, offsets.start);
++                for i in offsets.step_by(size_of::<usize>()) {
++                    if view.cleanup_object(i).is_err() {
++                        pr_warn!("Error cleaning up object at offset {}\n", i)
++                    }
++                }
 +            }
-+        };
 +
-+        // Register the death notification.
-+        {
-+            let mut owner_inner = info.node_ref.node.owner.inner.lock();
-+            if owner_inner.is_dead {
-+                let death = ListArc::from_pin_unique(death);
-+                info.death = Some(death.clone_arc());
-+                drop(owner_inner);
-+                let _ = self.push_work(death);
+             if info.clear_on_free {
+                 if let Err(e) = self.fill_zero() {
+                     pr_warn!("Failed to clear data on free: {:?}", e);
+@@ -155,3 +194,226 @@ fn drop(&mut self) {
+         self.process.buffer_raw_free(self.ptr);
+     }
+ }
++
++/// A view into the beginning of an allocation.
++///
++/// All attempts to read or write outside of the view will fail. To intentionally access outside of
++/// this view, use the `alloc` field of this struct directly.
++pub(crate) struct AllocationView<'a> {
++    pub(crate) alloc: &'a mut Allocation,
++    limit: usize,
++}
++
++impl<'a> AllocationView<'a> {
++    pub(crate) fn new(alloc: &'a mut Allocation, limit: usize) -> Self {
++        AllocationView { alloc, limit }
++    }
++
++    pub(crate) fn read<T: ReadableFromBytes>(&self, offset: usize) -> Result<T> {
++        if offset.checked_add(size_of::<T>()).ok_or(EINVAL)? > self.limit {
++            return Err(EINVAL);
++        }
++        self.alloc.read(offset)
++    }
++
++    pub(crate) fn write<T: WritableToBytes>(&self, offset: usize, obj: &T) -> Result {
++        if offset.checked_add(size_of::<T>()).ok_or(EINVAL)? > self.limit {
++            return Err(EINVAL);
++        }
++        self.alloc.write(offset, obj)
++    }
++
++    pub(crate) fn transfer_binder_object(
++        &self,
++        offset: usize,
++        obj: &bindings::flat_binder_object,
++        strong: bool,
++        node_ref: NodeRef,
++    ) -> Result {
++        if Arc::ptr_eq(&node_ref.node.owner, &self.alloc.process) {
++            // The receiving process is the owner of the node, so send it a binder object (instead
++            // of a handle).
++            let (ptr, cookie) = node_ref.node.get_id();
++            let mut newobj = FlatBinderObject::default();
++            newobj.hdr.type_ = if strong {
++                BINDER_TYPE_BINDER
 +            } else {
-+                let death = ListArc::from_pin_unique(death);
-+                info.death = Some(death.clone_arc());
-+                info.node_ref.node.add_death(death, &mut owner_inner);
++                BINDER_TYPE_WEAK_BINDER
++            };
++            newobj.flags = obj.flags;
++            newobj.__bindgen_anon_1.binder = ptr as _;
++            newobj.cookie = cookie as _;
++            self.write(offset, &newobj)?;
++            // Increment the user ref count on the node. It will be decremented as part of the
++            // destruction of the buffer, when we see a binder or weak-binder object.
++            node_ref.node.update_refcount(true, 1, strong);
++        } else {
++            // The receiving process is different from the owner, so we need to insert a handle to
++            // the binder object.
++            let handle = self
++                .alloc
++                .process
++                .insert_or_update_handle(node_ref, false)?;
++            let mut newobj = FlatBinderObject::default();
++            newobj.hdr.type_ = if strong {
++                BINDER_TYPE_HANDLE
++            } else {
++                BINDER_TYPE_WEAK_HANDLE
++            };
++            newobj.flags = obj.flags;
++            newobj.__bindgen_anon_1.handle = handle;
++            if self.write(offset, &newobj).is_err() {
++                // Decrement ref count on the handle we just created.
++                let _ = self.alloc.process.update_ref(handle, false, strong);
++                return Err(EINVAL);
 +            }
 +        }
 +        Ok(())
 +    }
 +
-+    pub(crate) fn clear_death(&self, reader: &mut UserSlicePtrReader, thread: &Thread) -> Result {
-+        let handle: u32 = reader.read()?;
-+        let cookie: usize = reader.read()?;
++    fn cleanup_object(&self, index_offset: usize) -> Result {
++        let offset = self.alloc.read(index_offset)?;
++        let header = self.read::<BinderObjectHeader>(offset)?;
++        match header.type_ {
++            BINDER_TYPE_WEAK_BINDER | BINDER_TYPE_BINDER => {
++                let obj = self.read::<FlatBinderObject>(offset)?;
++                let strong = header.type_ == BINDER_TYPE_BINDER;
++                // SAFETY: The type is `BINDER_TYPE_{WEAK_}BINDER`, so the `binder` field is
++                // populated.
++                let ptr = unsafe { obj.__bindgen_anon_1.binder } as usize;
++                let cookie = obj.cookie as usize;
++                self.alloc.process.update_node(ptr, cookie, strong);
++                Ok(())
++            }
++            BINDER_TYPE_WEAK_HANDLE | BINDER_TYPE_HANDLE => {
++                let obj = self.read::<FlatBinderObject>(offset)?;
++                let strong = header.type_ == BINDER_TYPE_HANDLE;
++                // SAFETY: The type is `BINDER_TYPE_{WEAK_}HANDLE`, so the `handle` field is
++                // populated.
++                let handle = unsafe { obj.__bindgen_anon_1.handle } as _;
++                self.alloc.process.update_ref(handle, false, strong)
++            }
++            _ => Ok(()),
++        }
++    }
++}
 +
-+        let mut refs = self.node_refs.lock();
-+        let info = refs.by_handle.get_mut(&handle).ok_or(EINVAL)?;
++/// A binder object as it is serialized.
++///
++/// # Invariants
++///
++/// All bytes must be initialized, and the value of `self.hdr.type_` must be one of the allowed
++/// types.
++#[repr(C)]
++pub(crate) union BinderObject {
++    hdr: bindings::binder_object_header,
++    fbo: bindings::flat_binder_object,
++    fdo: bindings::binder_fd_object,
++    bbo: bindings::binder_buffer_object,
++    fdao: bindings::binder_fd_array_object,
++}
 +
-+        let death = info.death.take().ok_or(EINVAL)?;
-+        if death.cookie != cookie {
-+            info.death = Some(death);
++/// A view into a `BinderObject` that can be used in a match statement.
++pub(crate) enum BinderObjectRef<'a> {
++    Binder(&'a mut bindings::flat_binder_object),
++    Handle(&'a mut bindings::flat_binder_object),
++    Fd(&'a mut bindings::binder_fd_object),
++    Ptr(&'a mut bindings::binder_buffer_object),
++    Fda(&'a mut bindings::binder_fd_array_object),
++}
++
++impl BinderObject {
++    pub(crate) fn read_from(reader: &mut UserSlicePtrReader) -> Result<BinderObject> {
++        let object = Self::read_from_inner(|slice| {
++            let read_len = usize::min(slice.len(), reader.len());
++            // SAFETY: The length we pass to `read_raw` is at most the length of the slice.
++            unsafe {
++                reader
++                    .clone_reader()
++                    .read_raw(slice.as_mut_ptr(), read_len)?;
++            }
++            Ok(())
++        })?;
++
++        // If we used a object type smaller than the largest object size, then we've read more
++        // bytes than we needed to. However, we used `.clone_reader()` to avoid advancing the
++        // original reader. Now, we call `skip` so that the caller's reader is advanced by the
++        // right amount.
++        //
++        // The `skip` call fails if the reader doesn't have `size` bytes available. This could
++        // happen if the type header corresponds to an object type that is larger than the rest of
++        // the reader.
++        //
++        // Any extra bytes beyond the size of the object are inaccessible after this call, so
++        // reading them again from the `reader` later does not result in TOCTOU bugs.
++        reader.skip(object.size())?;
++
++        Ok(object)
++    }
++
++    /// Use the provided reader closure to construct a `BinderObject`.
++    ///
++    /// The closure should write the bytes for the object into the provided slice.
++    pub(crate) fn read_from_inner<R>(reader: R) -> Result<BinderObject>
++    where
++        R: FnOnce(&mut [u8; size_of::<BinderObject>()]) -> Result<()>,
++    {
++        let mut obj = MaybeUninit::<BinderObject>::zeroed();
++
++        // SAFETY: The lengths of `BinderObject` and `[u8; size_of::<BinderObject>()]` are equal,
++        // and the byte array has an alignment requirement of one, so the pointer cast is okay.
++        // Additionally, `obj` was initialized to zeros, so the byte array will not be
++        // uninitialized.
++        (reader)(unsafe { &mut *obj.as_mut_ptr().cast() })?;
++
++        // SAFETY: The entire object is initialized, so accessing this field is safe.
++        let type_ = unsafe { obj.assume_init_ref().hdr.type_ };
++        if Self::type_to_size(type_).is_none() {
++            // The value of `obj.hdr_type_` was invalid.
 +            return Err(EINVAL);
 +        }
 +
-+        // Update state and determine if we need to queue a work item. We only need to do it when
-+        // the node is not dead or if the user already completed the death notification.
-+        if death.set_cleared(false) {
-+            if let Some(death) = ListArc::try_from_arc_or_drop(death) {
-+                let _ = thread.push_work_if_looper(death);
++        // SAFETY: All bytes are initialized (since we zeroed them at the start) and we checked
++        // that `self.hdr.type_` is one of the allowed types, so the type invariants are satisfied.
++        unsafe { Ok(obj.assume_init()) }
++    }
++
++    pub(crate) fn as_ref(&mut self) -> BinderObjectRef<'_> {
++        use BinderObjectRef::*;
++        // SAFETY: The constructor ensures that all bytes of `self` are initialized, and all
++        // variants of this union accept all initialized bit patterns.
++        unsafe {
++            match self.hdr.type_ {
++                BINDER_TYPE_WEAK_BINDER | BINDER_TYPE_BINDER => Binder(&mut self.fbo),
++                BINDER_TYPE_WEAK_HANDLE | BINDER_TYPE_HANDLE => Handle(&mut self.fbo),
++                BINDER_TYPE_FD => Fd(&mut self.fdo),
++                BINDER_TYPE_PTR => Ptr(&mut self.bbo),
++                BINDER_TYPE_FDA => Fda(&mut self.fdao),
++                // SAFETY: By the type invariant, the value of `self.hdr.type_` cannot have any
++                // other value than the ones checked above.
++                _ => core::hint::unreachable_unchecked(),
 +            }
 +        }
-+
-+        Ok(())
 +    }
 +
-+    pub(crate) fn dead_binder_done(&self, cookie: usize, thread: &Thread) {
-+        if let Some(death) = self.inner.lock().pull_delivered_death(cookie) {
-+            death.set_notification_done(thread);
++    pub(crate) fn size(&self) -> usize {
++        // SAFETY: The entire object is initialized, so accessing this field is safe.
++        let type_ = unsafe { self.hdr.type_ };
++
++        // SAFETY: The type invariants guarantee that the type field is correct.
++        unsafe { Self::type_to_size(type_).unwrap_unchecked() }
++    }
++
++    fn type_to_size(type_: u32) -> Option<usize> {
++        match type_ {
++            BINDER_TYPE_WEAK_BINDER => Some(size_of::<bindings::flat_binder_object>()),
++            BINDER_TYPE_BINDER => Some(size_of::<bindings::flat_binder_object>()),
++            BINDER_TYPE_WEAK_HANDLE => Some(size_of::<bindings::flat_binder_object>()),
++            BINDER_TYPE_HANDLE => Some(size_of::<bindings::flat_binder_object>()),
++            BINDER_TYPE_FD => Some(size_of::<bindings::binder_fd_object>()),
++            BINDER_TYPE_PTR => Some(size_of::<bindings::binder_buffer_object>()),
++            BINDER_TYPE_FDA => Some(size_of::<bindings::binder_fd_array_object>()),
++            _ => None,
 +        }
 +    }
++}
+diff --git a/drivers/android/defs.rs b/drivers/android/defs.rs
+index 753f7e86c92d..68f32a779a3c 100644
+--- a/drivers/android/defs.rs
++++ b/drivers/android/defs.rs
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++use core::mem::MaybeUninit;
+ use core::ops::{Deref, DerefMut};
+ use kernel::{
+     bindings::{self, *},
+@@ -57,11 +58,18 @@ macro_rules! pub_no_prefix {
+     kernel::bindings::FLAT_BINDER_FLAG_TXN_SECURITY_CTX;
+ pub_no_prefix!(transaction_flags_, TF_ONE_WAY, TF_CLEAR_BUF);
+ 
++pub(crate) use bindings::{
++    BINDER_TYPE_BINDER, BINDER_TYPE_FD, BINDER_TYPE_FDA, BINDER_TYPE_HANDLE, BINDER_TYPE_PTR,
++    BINDER_TYPE_WEAK_BINDER, BINDER_TYPE_WEAK_HANDLE,
++};
 +
-     fn deferred_flush(&self) {
-         let inner = self.inner.lock();
-         for thread in inner.threads.values() {
-@@ -760,17 +894,6 @@ fn deferred_release(self: Arc<Self>) {
-             work.into_arc().cancel();
+ macro_rules! decl_wrapper {
+     ($newname:ident, $wrapped:ty) => {
+-        #[derive(Copy, Clone, Default)]
++        // Define a wrapper around the C type. Use `MaybeUninit` to enforce that the value of
++        // padding bytes must be preserved.
++        #[derive(Copy, Clone)]
+         #[repr(transparent)]
+-        pub(crate) struct $newname($wrapped);
++        pub(crate) struct $newname(MaybeUninit<$wrapped>);
+ 
+         // SAFETY: This macro is only used with types where this is ok.
+         unsafe impl ReadableFromBytes for $newname {}
+@@ -70,13 +78,24 @@ unsafe impl WritableToBytes for $newname {}
+         impl Deref for $newname {
+             type Target = $wrapped;
+             fn deref(&self) -> &Self::Target {
+-                &self.0
++                // SAFETY: We use `MaybeUninit` only to preserve padding. The value must still
++                // always be valid.
++                unsafe { self.0.assume_init_ref() }
+             }
          }
  
--        // Move the threads out of `inner` so that we can iterate over them without holding the
--        // lock.
--        let mut inner = self.inner.lock();
--        let threads = take(&mut inner.threads);
--        drop(inner);
--
--        // Release all threads.
--        for thread in threads.values() {
--            thread.release();
--        }
--
-         // Free any resources kept alive by allocated buffers.
-         let omapping = self.inner.lock().mapping.take();
-         if let Some(mut mapping) = omapping {
-@@ -785,6 +908,48 @@ fn deferred_release(self: Arc<Self>) {
-                 drop(alloc)
-             });
-         }
-+
-+        // Drop all references. We do this dance with `swap` to avoid destroying the references
-+        // while holding the lock.
-+        let mut refs = self.node_refs.lock();
-+        let mut node_refs = take(&mut refs.by_handle);
-+        drop(refs);
-+
-+        // Remove all death notifications from the nodes (that belong to a different process).
-+        for info in node_refs.values_mut() {
-+            let death = if let Some(existing) = info.death.take() {
-+                existing
-+            } else {
-+                continue;
-+            };
-+            death.set_cleared(false);
-+        }
-+
-+        // Do similar dance for the state lock.
-+        let mut inner = self.inner.lock();
-+        let threads = take(&mut inner.threads);
-+        let nodes = take(&mut inner.nodes);
-+        drop(inner);
-+
-+        // Release all threads.
-+        for thread in threads.values() {
-+            thread.release();
-+        }
-+
-+        // Deliver death notifications.
-+        for node in nodes.values() {
-+            loop {
-+                let death = {
-+                    let mut inner = self.inner.lock();
-+                    if let Some(death) = node.next_death(&mut inner) {
-+                        death
-+                    } else {
-+                        break;
-+                    }
-+                };
-+                death.set_dead();
+         impl DerefMut for $newname {
+             fn deref_mut(&mut self) -> &mut Self::Target {
+-                &mut self.0
++                // SAFETY: We use `MaybeUninit` only to preserve padding. The value must still
++                // always be valid.
++                unsafe { self.0.assume_init_mut() }
 +            }
 +        }
++
++        impl Default for $newname {
++            fn default() -> Self {
++                // Create a new value of this type where all bytes (including padding) are zeroed.
++                Self(MaybeUninit::zeroed())
+             }
+         }
+     };
+@@ -85,6 +104,7 @@ fn deref_mut(&mut self) -> &mut Self::Target {
+ decl_wrapper!(BinderNodeDebugInfo, bindings::binder_node_debug_info);
+ decl_wrapper!(BinderNodeInfoForRef, bindings::binder_node_info_for_ref);
+ decl_wrapper!(FlatBinderObject, bindings::flat_binder_object);
++decl_wrapper!(BinderObjectHeader, bindings::binder_object_header);
+ decl_wrapper!(BinderTransactionData, bindings::binder_transaction_data);
+ decl_wrapper!(
+     BinderTransactionDataSecctx,
+@@ -100,18 +120,18 @@ fn deref_mut(&mut self) -> &mut Self::Target {
+ 
+ impl BinderVersion {
+     pub(crate) fn current() -> Self {
+-        Self(bindings::binder_version {
++        Self(MaybeUninit::new(bindings::binder_version {
+             protocol_version: bindings::BINDER_CURRENT_PROTOCOL_VERSION as _,
+-        })
++        }))
+     }
+ }
+ 
+ impl BinderTransactionData {
+     pub(crate) fn with_buffers_size(self, buffers_size: u64) -> BinderTransactionDataSg {
+-        BinderTransactionDataSg(bindings::binder_transaction_data_sg {
+-            transaction_data: self.0,
++        BinderTransactionDataSg(MaybeUninit::new(bindings::binder_transaction_data_sg {
++            transaction_data: *self,
+             buffers_size,
+-        })
++        }))
+     }
+ }
+ 
+@@ -128,6 +148,10 @@ pub(crate) fn tr_data(&mut self) -> &mut BinderTransactionData {
+ 
+ impl ExtendedError {
+     pub(crate) fn new(id: u32, command: u32, param: i32) -> Self {
+-        Self(bindings::binder_extended_error { id, command, param })
++        Self(MaybeUninit::new(bindings::binder_extended_error {
++            id,
++            command,
++            param,
++        }))
+     }
+ }
+diff --git a/drivers/android/process.rs b/drivers/android/process.rs
+index 0b79fa59ffa5..944297b7403c 100644
+--- a/drivers/android/process.rs
++++ b/drivers/android/process.rs
+@@ -591,6 +591,14 @@ pub(crate) fn update_ref(&self, handle: u32, inc: bool, strong: bool) -> Result
+         Ok(())
      }
  
-     pub(crate) fn flush(this: ArcBorrow<'_, Process>) -> Result {
-diff --git a/drivers/android/rust_binder.rs b/drivers/android/rust_binder.rs
-index 218c2001e8cb..04477ff7e5a0 100644
---- a/drivers/android/rust_binder.rs
-+++ b/drivers/android/rust_binder.rs
-@@ -100,6 +100,13 @@ impl<T: ?Sized> core::ops::Receiver for DTRWrap<T> {}
- type DLArc<T> = kernel::list::ListArc<DTRWrap<T>>;
- 
- impl<T: ListArcSafe> DTRWrap<T> {
-+    fn new(val: impl PinInit<T>) -> impl PinInit<Self> {
-+        pin_init!(Self {
-+            links <- ListLinksSelfPtr::new(),
-+            wrapped <- val,
-+        })
++    /// Decrements the refcount of the given node, if one exists.
++    pub(crate) fn update_node(&self, ptr: usize, cookie: usize, strong: bool) {
++        let mut inner = self.inner.lock();
++        if let Ok(Some(node)) = inner.get_existing_node(ptr, cookie) {
++            inner.update_node_refcount(&node, false, strong, 1, None);
++        }
 +    }
 +
-     #[allow(dead_code)]
-     fn arc_try_new(val: T) -> Result<DLArc<T>, alloc::alloc::AllocError> {
-         ListArc::pin_init(pin_init!(Self {
+     pub(crate) fn inc_ref_done(&self, reader: &mut UserSlicePtrReader, strong: bool) -> Result {
+         let ptr = reader.read::<usize>()?;
+         let cookie = reader.read::<usize>()?;
 diff --git a/drivers/android/thread.rs b/drivers/android/thread.rs
-index b583297cea91..b70a5e3c064b 100644
+index b70a5e3c064b..a9afc7b706c6 100644
 --- a/drivers/android/thread.rs
 +++ b/drivers/android/thread.rs
-@@ -391,10 +391,27 @@ pub(crate) fn push_work(&self, work: DLArc<dyn DeliverToRead>) -> PushWorkRes {
-         res
+@@ -21,8 +21,13 @@
+ };
+ 
+ use crate::{
+-    allocation::Allocation, defs::*, error::BinderResult, process::Process, ptr_align,
+-    transaction::Transaction, DArc, DLArc, DTRWrap, DeliverCode, DeliverToRead,
++    allocation::{Allocation, AllocationView, BinderObject, BinderObjectRef},
++    defs::*,
++    error::BinderResult,
++    process::Process,
++    ptr_align,
++    transaction::Transaction,
++    DArc, DLArc, DTRWrap, DeliverCode, DeliverToRead,
+ };
+ 
+ use core::{
+@@ -412,6 +417,54 @@ pub(crate) fn push_return_work(&self, reply: u32) {
+         self.inner.lock().push_return_work(reply);
      }
  
-+    /// Attempts to push to given work item to the thread if it's a looper thread (i.e., if it's
-+    /// part of a thread pool) and is alive. Otherwise, push the work item to the process instead.
-+    pub(crate) fn push_work_if_looper(&self, work: DLArc<dyn DeliverToRead>) -> BinderResult {
-+        let mut inner = self.inner.lock();
-+        if inner.is_looper() && !inner.is_dead {
-+            inner.push_work(work);
-+            Ok(())
-+        } else {
-+            drop(inner);
-+            self.process.push_work(work)
++    fn translate_object(
++        &self,
++        offset: usize,
++        object: BinderObjectRef<'_>,
++        view: &mut AllocationView<'_>,
++    ) -> BinderResult {
++        match object {
++            BinderObjectRef::Binder(obj) => {
++                let strong = obj.hdr.type_ == BINDER_TYPE_BINDER;
++                // SAFETY: `binder` is a `binder_uintptr_t`; any bit pattern is a valid
++                // representation.
++                let ptr = unsafe { obj.__bindgen_anon_1.binder } as _;
++                let cookie = obj.cookie as _;
++                let flags = obj.flags as _;
++                let node = self.process.as_arc_borrow().get_node(
++                    ptr,
++                    cookie,
++                    flags,
++                    strong,
++                    Some(self),
++                )?;
++                security::binder_transfer_binder(&self.process.cred, &view.alloc.process.cred)?;
++                view.transfer_binder_object(offset, obj, strong, node)?;
++            }
++            BinderObjectRef::Handle(obj) => {
++                let strong = obj.hdr.type_ == BINDER_TYPE_HANDLE;
++                // SAFETY: `handle` is a `u32`; any bit pattern is a valid representation.
++                let handle = unsafe { obj.__bindgen_anon_1.handle } as _;
++                let node = self.process.get_node_from_handle(handle, strong)?;
++                security::binder_transfer_binder(&self.process.cred, &view.alloc.process.cred)?;
++                view.transfer_binder_object(offset, obj, strong, node)?;
++            }
++            BinderObjectRef::Fd(_obj) => {
++                pr_warn!("Using unsupported binder object type fd.");
++                return Err(EINVAL.into());
++            }
++            BinderObjectRef::Ptr(_obj) => {
++                pr_warn!("Using unsupported binder object type ptr.");
++                return Err(EINVAL.into());
++            }
++            BinderObjectRef::Fda(_obj) => {
++                pr_warn!("Using unsupported binder object type fda.");
++                return Err(EINVAL.into());
++            }
 +        }
-+    }
-+
-     pub(crate) fn push_work_deferred(&self, work: DLArc<dyn DeliverToRead>) {
-         self.inner.lock().push_work_deferred(work);
-     }
- 
-+    pub(crate) fn push_return_work(&self, reply: u32) {
-+        self.inner.lock().push_return_work(reply);
++        Ok(())
 +    }
 +
      pub(crate) fn copy_transaction_data(
          &self,
          to_process: Arc<Process>,
-@@ -556,7 +573,7 @@ fn transaction<T>(self: &Arc<Self>, tr: &BinderTransactionDataSg, inner: T)
-                 );
-             }
+@@ -436,6 +489,8 @@ pub(crate) fn copy_transaction_data(
  
--            self.inner.lock().push_return_work(err.reply);
-+            self.push_return_work(err.reply);
+         let data_size = trd.data_size.try_into().map_err(|_| EINVAL)?;
+         let adata_size = ptr_align(data_size);
++        let offsets_size = trd.offsets_size.try_into().map_err(|_| EINVAL)?;
++        let aoffsets_size = ptr_align(offsets_size);
+         let asecctx_size = secctx
+             .as_ref()
+             .map(|(_, ctx)| ptr_align(ctx.len()))
+@@ -443,11 +498,14 @@ pub(crate) fn copy_transaction_data(
+ 
+         // This guarantees that at least `sizeof(usize)` bytes will be allocated.
+         let len = usize::max(
+-            adata_size.checked_add(asecctx_size).ok_or(ENOMEM)?,
++            adata_size
++                .checked_add(aoffsets_size)
++                .and_then(|sum| sum.checked_add(asecctx_size))
++                .ok_or(ENOMEM)?,
+             size_of::<usize>(),
+         );
+-        let secctx_off = adata_size;
+-        let alloc = match to_process.buffer_alloc(len, is_oneway) {
++        let secctx_off = adata_size + aoffsets_size;
++        let mut alloc = match to_process.buffer_alloc(len, is_oneway) {
+             Ok(alloc) => alloc,
+             Err(err) => {
+                 pr_warn!(
+@@ -461,8 +519,56 @@ pub(crate) fn copy_transaction_data(
+ 
+         let mut buffer_reader =
+             unsafe { UserSlicePtr::new(trd.data.ptr.buffer as _, data_size) }.reader();
++        let mut end_of_previous_object = 0;
++
++        // Copy offsets if there are any.
++        if offsets_size > 0 {
++            {
++                let mut reader =
++                    unsafe { UserSlicePtr::new(trd.data.ptr.offsets as _, offsets_size) }.reader();
++                alloc.copy_into(&mut reader, adata_size, offsets_size)?;
++            }
++
++            let offsets_start = adata_size;
++            let offsets_end = adata_size + aoffsets_size;
++
++            // Traverse the objects specified.
++            let mut view = AllocationView::new(&mut alloc, data_size);
++            for index_offset in (offsets_start..offsets_end).step_by(size_of::<usize>()) {
++                let offset = view.alloc.read(index_offset)?;
++
++                // Copy data between two objects.
++                if end_of_previous_object < offset {
++                    view.alloc.copy_into(
++                        &mut buffer_reader,
++                        end_of_previous_object,
++                        offset - end_of_previous_object,
++                    )?;
++                }
++
++                let mut object = BinderObject::read_from(&mut buffer_reader)?;
++
++                match self.translate_object(offset, object.as_ref(), &mut view) {
++                    Ok(()) => end_of_previous_object = offset + object.size(),
++                    Err(err) => {
++                        pr_warn!("Error while translating object.");
++                        return Err(err);
++                    }
++                }
++
++                // Update the indexes containing objects to clean up.
++                let offset_after_object = index_offset + size_of::<usize>();
++                view.alloc
++                    .set_info_offsets(offsets_start..offset_after_object);
++            }
++        }
+ 
+-        alloc.copy_into(&mut buffer_reader, 0, data_size)?;
++        // Copy remaining raw data.
++        alloc.copy_into(
++            &mut buffer_reader,
++            end_of_previous_object,
++            data_size - end_of_previous_object,
++        )?;
+ 
+         if let Some((off_out, secctx)) = secctx.as_mut() {
+             if let Err(err) = alloc.write(secctx_off, secctx.as_bytes()) {
+diff --git a/drivers/android/transaction.rs b/drivers/android/transaction.rs
+index a4ffe0a3878c..2faba6e1f47f 100644
+--- a/drivers/android/transaction.rs
++++ b/drivers/android/transaction.rs
+@@ -32,6 +32,7 @@ pub(crate) struct Transaction {
+     code: u32,
+     pub(crate) flags: u32,
+     data_size: usize,
++    offsets_size: usize,
+     data_address: usize,
+     sender_euid: Kuid,
+     txn_security_ctx_off: Option<usize>,
+@@ -85,6 +86,7 @@ pub(crate) fn new(
+             code: trd.code,
+             flags: trd.flags,
+             data_size: trd.data_size as _,
++            offsets_size: trd.offsets_size as _,
+             data_address,
+             allocation <- kernel::new_spinlock!(Some(alloc), "Transaction::new"),
+             txn_security_ctx_off,
+@@ -116,6 +118,7 @@ pub(crate) fn new_reply(
+             code: trd.code,
+             flags: trd.flags,
+             data_size: trd.data_size as _,
++            offsets_size: trd.offsets_size as _,
+             data_address: alloc.ptr,
+             allocation <- kernel::new_spinlock!(Some(alloc), "Transaction::new"),
+             txn_security_ctx_off: None,
+@@ -229,7 +232,7 @@ fn do_work(self: DArc<Self>, thread: &Thread, writer: &mut UserSlicePtrWriter) -
+         tr.flags = self.flags;
+         tr.data_size = self.data_size as _;
+         tr.data.ptr.buffer = self.data_address as _;
+-        tr.offsets_size = 0;
++        tr.offsets_size = self.offsets_size as _;
+         if tr.offsets_size > 0 {
+             tr.data.ptr.offsets = (self.data_address + ptr_align(self.data_size)) as _;
          }
-     }
+diff --git a/rust/helpers.c b/rust/helpers.c
+index e70255f3774f..924c7a00f433 100644
+--- a/rust/helpers.c
++++ b/rust/helpers.c
+@@ -342,6 +342,13 @@ int rust_helper_security_binder_transaction(const struct cred *from,
+ 	return security_binder_transaction(from, to);
+ }
+ EXPORT_SYMBOL_GPL(rust_helper_security_binder_transaction);
++
++int rust_helper_security_binder_transfer_binder(const struct cred *from,
++						const struct cred *to)
++{
++	return security_binder_transfer_binder(from, to);
++}
++EXPORT_SYMBOL_GPL(rust_helper_security_binder_transfer_binder);
+ #endif
  
-@@ -684,6 +701,9 @@ fn write(self: &Arc<Self>, req: &mut BinderWriteRead) -> Result {
-                 BC_DECREFS => self.process.update_ref(reader.read()?, false, false)?,
-                 BC_INCREFS_DONE => self.process.inc_ref_done(&mut reader, false)?,
-                 BC_ACQUIRE_DONE => self.process.inc_ref_done(&mut reader, true)?,
-+                BC_REQUEST_DEATH_NOTIFICATION => self.process.request_death(&mut reader, self)?,
-+                BC_CLEAR_DEATH_NOTIFICATION => self.process.clear_death(&mut reader, self)?,
-+                BC_DEAD_BINDER_DONE => self.process.dead_binder_done(reader.read()?, self),
-                 BC_REGISTER_LOOPER => {
-                     let valid = self.process.register_thread();
-                     self.inner.lock().looper_register(valid);
+ /*
+diff --git a/rust/kernel/security.rs b/rust/kernel/security.rs
+index 9e3e4cf08ecb..9179fc225406 100644
+--- a/rust/kernel/security.rs
++++ b/rust/kernel/security.rs
+@@ -24,6 +24,13 @@ pub fn binder_transaction(from: &Credential, to: &Credential) -> Result {
+     to_result(unsafe { bindings::security_binder_transaction(from.0.get(), to.0.get()) })
+ }
+ 
++/// Calls the security modules to determine if task `from` is allowed to send binder objects
++/// (owned by itself or other processes) to task `to` through a binder transaction.
++pub fn binder_transfer_binder(from: &Credential, to: &Credential) -> Result {
++    // SAFETY: `from` and `to` are valid because the shared references guarantee nonzero refcounts.
++    to_result(unsafe { bindings::security_binder_transfer_binder(from.0.get(), to.0.get()) })
++}
++
+ /// A security context string.
+ ///
+ /// The struct has the invariant that it always contains a valid security context.
 
 -- 
 2.42.0.820.g83a721a137-goog
