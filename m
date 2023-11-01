@@ -2,117 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5E27DDF51
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66B27DDF54
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbjKAKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S235071AbjKAK0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234867AbjKAKYj (ORCPT
+        with ESMTP id S234867AbjKAK0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:24:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD8E10A;
-        Wed,  1 Nov 2023 03:24:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92531C433C7;
-        Wed,  1 Nov 2023 10:24:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698834276;
-        bh=RwpwGnocw6uZNsKYyHZSk+qs8oRJkl1AiuuR52/+UbE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bzVf4mZK3OhUrBy3tKrxdZXEjVnrMKW8Uf0jHVhmd1ibzGKf006kFgN/Ydm9GaEAY
-         yRo54G9eMZ0s5BpI5L8Z0vGSvDhOtCFQtEIlEm9vO7igrdjas9ivN/UkfCBl5DIoxq
-         agDEdFID51CjV8ByCHfQzxvW39zr2MnLmNNRjefhWI20sLn2o7cxQuwYnzjcHhg7K0
-         dO7T3UCwjyqnGxCH3wjwwpagt/tBVzfXPFcJykroMtxhxq+VY9z+EHgAlyQWo+XmLQ
-         8wksKDwZLnFht6sV4eNMzqCsgPnRzBUYNmHNoRYGEiulRzV/u/xmAo7uI8HE7qed4s
-         gHg2GEwe9JIjA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 25BDBCE0B77; Wed,  1 Nov 2023 03:24:36 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 03:24:36 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, rcu@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] refscale: Optimize process_durations()
-Message-ID: <014c446a-23c4-40f9-9512-6869a9b02117@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
- <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
- <bcd6bfe1-9891-4f22-86ad-361330e47e9d@paulmck-laptop>
- <a6943003-da31-4ac7-8944-c7dc06381148@paulmck-laptop>
- <37ab9219-a049-4a43-b555-83b1629e5a48@wanadoo.fr>
+        Wed, 1 Nov 2023 06:26:45 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C2FDA
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:26:39 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507a29c7eefso9465102e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 03:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698834398; x=1699439198; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tCsnTw9G/N7+9b/5OyCWnwytBb//hdrqvpTAVBVTcjs=;
+        b=wg3/+ebk8ebV+NKavBjY7c8BZKYuqsNh2J53mKuEKag+mWOJpNz+aNqumfpCYQCmIQ
+         QW3zksgJ+KeefTyJEZ5SAIqx0IZ8bEP2VEOVHqQJ2HUcpf+hCwr6XdOfSZ+dEXAKhgOd
+         Hw24RRnVytJzYA6p5m53nMH2Kd4/9p+ZeWRSqVH5b3W6N4qOMVFFijdvjGafECHg+/6p
+         O1xQz6CVTipWUehvVI5e73FYQQaFGTWcr4IsuycboEGcse0hUY2xlyzOsfaLimFUeUj/
+         1N7Y/UBa+tFRI1Kn3bNEtd+ir3KOiOO/ZheObjOpcotJCZY8y+3wluV/jal77zVcJOxr
+         15pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698834398; x=1699439198;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tCsnTw9G/N7+9b/5OyCWnwytBb//hdrqvpTAVBVTcjs=;
+        b=h9Lkslc5EujV4T8EJFAnFxxHRzbaZsZIUYwQkrHifP/BXkt0D7QM+vMonldFEoSt6d
+         uAQ62b+F/129iupnAYPJXt+5CvMmd1CDTJCWeZETxkLmi0bkODa8flOzLtVZaUMXDg/I
+         HhQgFbKqaEY4aLzwkGDb9AnDxsamUrjb8ItZv7sv7s/DLAdC93Iq/+2bmFipC6HEyYnT
+         vAI+wBEvMLpiwoi6RTJt9HzxzG31EiCrPRz+PXcWXL04uhwI3Yvn5yQRBktMySECFkSm
+         ubCwaJsLN7Pg7Jy/t50Y58oJww7S6a6Xw7yligCAqlnhDJWXwx12eUezI8Q1c6tCWuS7
+         0k4A==
+X-Gm-Message-State: AOJu0Ywsi3ZTnTGTUROI7sASYurmjD2H1maRKaqgOdNpZdDrF5HBB1Ld
+        0mmlz1kvwjt1Phx/SuFuBJDejA==
+X-Google-Smtp-Source: AGHT+IGDHSmTRMp+DQPCwPp1iEl0Z60JF5+pwDLeqsrAC1axXeyH0dDWC5jptYR1GCcL3n/lnZdCvg==
+X-Received: by 2002:a19:ca49:0:b0:507:9a8c:a8fe with SMTP id h9-20020a19ca49000000b005079a8ca8femr10219765lfj.53.1698834397802;
+        Wed, 01 Nov 2023 03:26:37 -0700 (PDT)
+Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
+        by smtp.gmail.com with ESMTPSA id w4-20020ac25d44000000b00507b869b068sm177139lfd.302.2023.11.01.03.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 03:26:37 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC and MEMSTICK updates for v6.7
+Date:   Wed,  1 Nov 2023 11:26:36 +0100
+Message-Id: <20231101102636.5155-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <37ab9219-a049-4a43-b555-83b1629e5a48@wanadoo.fr>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:41:39AM +0100, Christophe JAILLET wrote:
-> Le 31/10/2023 à 23:47, Paul E. McKenney a écrit :
-> > On Tue, Oct 31, 2023 at 11:21:14AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Oct 30, 2023 at 09:55:16AM -0700, Davidlohr Bueso wrote:
-> > > > On Sat, 28 Oct 2023, Christophe JAILLET wrote:
-> > > > 
-> > > > > process_durations() is not a hot path, but there is no good reason to
-> > > > > iterate over and over the data already in 'buf'.
-> > > > > 
-> > > > > Using a seq_buf saves some useless strcat() and the need of a temp buffer.
-> > > > > Data is written directly at the correct place.
-> > > > 
-> > > > Makes sense.
-> > > > 
-> > > > Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-> > > 
-> > > Queued and pushed, thank you all!
-> > 
-> > But an allmodconfig build complains about seq_buf_putc() being undefined,
-> > that is, not exported.  I suspect that other seq_buf_*() functions in
-> > this patch might also be complained about.
-> > 
-> > I am dropping this for the moment.  Please make it pass an allmodconfig
-> > build so that I can pull it in again.  Please see below for the commit.
-> 
-> Ouch!
+Hi Linus,
 
-Believe me, I know that feeling!  ;-)
+Here's the pull-request with the MMC and MEMSTICK updates for v6.7. Details
+about the highlights are as usual found in the signed tag.
 
-> seq_buf_init(), seq_buf_terminate(), seq_buf_clear() are inlined functions
-> in a .h file, so shouldn't be a problem.
-> 
-> seq_buf_printf() is exported, but seq_buf_putc() is not!
-> Really odd to me.
-> 
-> Kees Cook (added in cc) suggests to use this API (see [1]) to avoid some
-> potential issues and ease the management of NULL terminated strings in
-> buffers. (#LinuxHardening).
-> 
-> I'll propose to add the missing EXPORT_SYMBOL_GPL.
+Please pull this in!
 
-Very good, looking forward to seeing the result.
+Kind regards
+Ulf Hansson
 
-							Thanx, Paul
 
-> CJ
-> 
-> [1]: https://lore.kernel.org/all/202310241629.0A4206316F@keescook/
-> 
+The following changes since commit 84ee19bffc9306128cd0f1c650e89767079efeff:
+
+  mmc: core: Capture correct oemid-bits for eMMC cards (2023-09-27 12:17:04 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v6.7
+
+for you to fetch changes up to 5428a40a308f220dbbffda66cb01b212f88e9a06:
+
+  mmc: Merge branch fixes into next (2023-10-27 12:00:35 +0200)
+
+----------------------------------------------------------------
+MMC core:
+ - Enable host caps to be modified via debugfs to test speed-modes
+ - Improve random I/O writes for 4k buffers for hsq enabled hosts
+
+MMC host:
+ - atmel-mci/sdhci-of-at91: Aubin Constans takes over as maintainer
+ - dw_mmc-starfive: Re-work tuning support
+ - meson-gx: Fix bogus IRQ when using CMD_CFG_ERROR
+ - mmci: Use peripheral flow control for the STM32 variant
+ - renesas,sdhi: Add support for the RZ/G3S variant
+ - sdhci-esdhc-imx: Optimize the manual tuning logic
+ - sdhci-msm: Add support for the SM8650 variant
+ - sdhci-npcm: Add driver to support the Nuvoton NPCM BMC variant
+ - sdhci-pci-gli: Add workaround to allow GL9750 to enter ASPM L1.2
+
+----------------------------------------------------------------
+Andy Shevchenko (3):
+      mmc: sdhci-pci: Switch to use acpi_evaluate_dsm_typed()
+      mmc: sdhci-pltfm: Drop unnecessary error messages in sdhci_pltfm_init()
+      mmc: sdhci-pltfm: Make driver OF independent
+
+Aubin Constans (1):
+      MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI MICROCHIP DRIVERS
+
+Balamanikandan Gunasundar (1):
+      mmc: atmel-mci: Add description for struct member
+
+Ben Wolsieffer (1):
+      mmc: mmci: use peripheral flow control for STM32
+
+Claudiu Beznea (1):
+      dt-bindings: mmc: renesas,sdhi: Document RZ/G3S support
+
+Haibo Chen (1):
+      mmc: sdhci-esdhc-imx: optimize the manual tuing logic to get the best timing
+
+Julia Lawall (1):
+      mmc: atmel-mci: add missing of_node_put
+
+Justin Stitt (1):
+      mmc: vub300: replace deprecated strncpy with strscpy
+
+Kees Cook (1):
+      memstick: jmb38x_ms: Annotate struct jmb38x_ms with __counted_by
+
+Krzysztof Kozlowski (1):
+      dt-bindings: mmc: sdhci-msm: allow flexible order of optional clocks
+
+Lad Prabhakar (1):
+      mmc: host: Kconfig: Make MMC_SDHI_INTERNAL_DMAC config option dependant on ARCH_RENESAS
+
+Neil Armstrong (1):
+      dt-bindings: mmc: sdhci-msm: document the SM8650 SDHCI Controller
+
+Rob Herring (1):
+      mmc: jz4740: Use device_get_match_data()
+
+Rong Chen (1):
+      mmc: meson-gx: Remove setting of CMD_CFG_ERROR
+
+Tomer Maimon (2):
+      dt-bindings: mmc: npcm,sdhci: Document NPCM SDHCI controller
+      mmc: sdhci-npcm: Add NPCM SDHCI driver
+
+Ulf Hansson (3):
+      mmc: Merge branch fixes into next
+      mmc: Merge branch fixes into next
+      mmc: Merge branch fixes into next
+
+Victor Shih (1):
+      mmc: sdhci-pci-gli: A workaround to allow GL9750 to enter ASPM L1.2
+
+Vincent Whitchurch (2):
+      mmc: core: Always reselect card type
+      mmc: debugfs: Allow host caps to be modified
+
+Wenchao Chen (2):
+      mmc: core: Allow dynamical updates of the number of requests for hsq
+      mmc: hsq: Improve random I/O write performance for 4k buffers
+
+William Qiu (2):
+      dt-bindings: mmc: starfive: Remove properties from required
+      mmc: starfive: Change tuning implementation
+
+ .../devicetree/bindings/mmc/npcm,sdhci.yaml        |  45 +++++++
+ .../devicetree/bindings/mmc/renesas,sdhi.yaml      |   2 +
+ .../devicetree/bindings/mmc/sdhci-msm.yaml         |   9 +-
+ .../bindings/mmc/starfive,jh7110-mmc.yaml          |   2 -
+ MAINTAINERS                                        |   5 +-
+ drivers/memstick/host/jmb38x_ms.c                  |   2 +-
+ drivers/mmc/core/debugfs.c                         |  51 +++++++-
+ drivers/mmc/core/mmc.c                             |   7 +-
+ drivers/mmc/core/queue.c                           |   6 +-
+ drivers/mmc/host/Kconfig                           |  12 +-
+ drivers/mmc/host/Makefile                          |   1 +
+ drivers/mmc/host/atmel-mci.c                       |   9 +-
+ drivers/mmc/host/dw_mmc-starfive.c                 | 137 ++++++---------------
+ drivers/mmc/host/jz4740_mmc.c                      |  15 +--
+ drivers/mmc/host/meson-gx-mmc.c                    |   1 -
+ drivers/mmc/host/mmc_hsq.c                         |  22 ++++
+ drivers/mmc/host/mmc_hsq.h                         |  11 ++
+ drivers/mmc/host/mmci.c                            |   3 +-
+ drivers/mmc/host/mmci.h                            |   2 +
+ drivers/mmc/host/sdhci-esdhc-imx.c                 |  52 +++++---
+ drivers/mmc/host/sdhci-npcm.c                      |  94 ++++++++++++++
+ drivers/mmc/host/sdhci-pci-core.c                  |   5 +-
+ drivers/mmc/host/sdhci-pci-gli.c                   |  14 +++
+ drivers/mmc/host/sdhci-pltfm.c                     |  38 ++----
+ drivers/mmc/host/vub300.c                          |  22 ++--
+ include/linux/mmc/host.h                           |   1 +
+ 26 files changed, 384 insertions(+), 184 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mmc/npcm,sdhci.yaml
+ create mode 100644 drivers/mmc/host/sdhci-npcm.c
