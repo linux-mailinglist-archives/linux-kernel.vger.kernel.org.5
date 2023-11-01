@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E4C7DE592
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C51B7DE593
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344629AbjKARof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        id S1344667AbjKARoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbjKARod (ORCPT
+        with ESMTP id S232545AbjKARol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:44:33 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9545110F;
-        Wed,  1 Nov 2023 10:44:26 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id EAC1A120020;
-        Wed,  1 Nov 2023 20:44:23 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru EAC1A120020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1698860663;
-        bh=IFMjb5EThxVctmhDxs8Q+Vp71Ug13ebnpxJJFqjaR1Y=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=ED7K3VOKIYmV02lfi4q4r3obn44pKQEie/SSZ/VkH8lCv37v3BcVp7fO4fWKOQ1h1
-         jkhXZBqyxpz4RBdRH3iBZ+zdOA3pu7LcKYeQkjosVEkK8viMCPvtxT244TFboJoYZs
-         bWlPrrxWVWcv8ENMuCLTPNhnazNLnkrOZXMSWcjzDn7sbF+Ikjghv6Z0+AaYXGXRxl
-         eJJRVQeYl0G14xcy4Qf0DiymqcwQrH7hIlGbF83KfYU6LO/ZgFTUaqiMOwXUJ7CmnY
-         fZsoKL/RfotwRlyk6NZVW1t0QGkLqtsZpbM9Zj/krolyux5I4apxa6apajnLktYDQR
-         C1B90Xa0wveTg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed,  1 Nov 2023 20:44:22 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
- 2023 20:44:22 +0300
-Date:   Wed, 1 Nov 2023 20:44:22 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Conor Dooley <conor@kernel.org>
-CC:     Rob Herring <robh@kernel.org>, <linux-leds@vger.kernel.org>,
-        <lee@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <andy.shevchenko@gmail.com>,
-        <conor+dt@kernel.org>, <pavel@ucw.cz>,
-        <krzysztof.kozlowski+dt@linaro.org>, <rockosov@gmail.com>,
-        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v3 11/11] dt-bindings: leds: aw200xx: fix led pattern and
- add reg constraints
-Message-ID: <20231101174422.zs5er6tqethm46ur@CAB-WSD-L081021>
-References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
- <20231101142445.8753-12-ddrokosov@salutedevices.com>
- <169885374980.409399.3653628333009308100.robh@kernel.org>
- <20231101-bolster-anaerobic-244cd1a8c205@spud>
+        Wed, 1 Nov 2023 13:44:41 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B6210E
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:44:37 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a68b87b265so230418139f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698860675; x=1699465475; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LsnVrs+xNv4YSUuZr1i/w8nQzHDiyAXV+cc71MWu4hE=;
+        b=O8+TwbgOAcCNgZTkXfCQWd+LCGarWSu+8PiE/RwG0Gmeu3yn7XM4vHndhnG3f410BH
+         VKVdryyEbKF0+BPhJR3Fb3m2WnEqtZKgYwHphjOG3UNDQUvHKaUwxOGDI+hfHc69+SZY
+         u54QWzKBeBfv61XNXuud1DcAtIQLkiuBWbVnQKWKWE49DY+yJncFRpPfFTkLy7H2wWx9
+         2Wp1WsoEwBE6OSmCDbPN7/SrAM+geKduKuRI3cI7Lr5N9UZnmWFYMfnKHxptejEQ6d06
+         n9BqnjDPRD/ErvitZNQpgLQmlnYEQgmwY5b/DqYj4y4sHfhos4+2ALuWSehgYoQMyjbS
+         csPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698860675; x=1699465475;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LsnVrs+xNv4YSUuZr1i/w8nQzHDiyAXV+cc71MWu4hE=;
+        b=gBdTqL5Viox6SZ1EnZoTPEyNv3M4FfGM+wq9Ddl5S7fMCmakBdsWxDb5rEh6TOZL83
+         hAVJOEMwQR900xc7KJ7J4q6bw5+553pp3xR0UUW9loSHPASREXhYsPpbmeePO6twA6mN
+         ejGcPKxaSgJZz8GXB/0xvfe5LwJTqxSEmTyaU3WVY/tT3xxVToGQRDCfoJ4FxFX57Ae3
+         Rw+ZCI9OTgtCwwZNyCt+OooxOR2n15fJfw5pd/lHtUlmV2tI+qJZLwgx94NdoPkXV0iy
+         szbmHVhRVpoUKFp6TTEhkNa7EzXXFwbyc2oOOnLlN+69yaXLrkefJicJMniDzlTrv4tt
+         R+JQ==
+X-Gm-Message-State: AOJu0YzaobU0A0BdH4lkt3MbbzfP2rDBcyYqvHOHmfSKeqvTgAQSv++D
+        wfAAUDFp0yOkO56LaIxeYonxLo7Xdw+lV8/PRElJ71NShKmJMQ==
+X-Google-Smtp-Source: AGHT+IEy9HFmOUO7eHQ+lgpM8WJTzxOVZ89EiemOtxM1+WutKjomhq5xBxoo9OJVYaxQ2+g28FNt+8N8zWizgz6mg/o=
+X-Received: by 2002:a6b:7f48:0:b0:7a6:a3b1:b45c with SMTP id
+ m8-20020a6b7f48000000b007a6a3b1b45cmr17207486ioq.14.1698860674977; Wed, 01
+ Nov 2023 10:44:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231101-bolster-anaerobic-244cd1a8c205@spud>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181058 [Nov 01 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;devicetree.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/11/01 16:22:00
-X-KSMG-LinksScanning: Clean, bases: 2023/11/01 16:22:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 15:56:00 #22380151
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <20231024203302.1920362-3-nphamcs@gmail.com> <20231101012614.186996-1-nphamcs@gmail.com>
+ <B0D87683-DD13-4787-8188-98CEBF561B99@linux.dev>
+In-Reply-To: <B0D87683-DD13-4787-8188-98CEBF561B99@linux.dev>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 1 Nov 2023 10:44:23 -0700
+Message-ID: <CAKEwX=PmLSKpmv3zpGhka-JaJoTk7Se4bo6D8r5s6HhPmkpEng@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] zswap: make shrinking memcg-aware
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        cerasuolodomenico@gmail.com, Yosry Ahmed <yosryahmed@google.com>,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Li <chrisl@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        kernel-team@meta.com, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,68 +77,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Conor,
+On Tue, Oct 31, 2023 at 8:07=E2=80=AFPM Muchun Song <muchun.song@linux.dev>=
+ wrote:
+>
+>
+>
+> > On Nov 1, 2023, at 09:26, Nhat Pham <nphamcs@gmail.com> wrote:
+> >
+> > cc-ing Johannes, Roman, Shakeel, Muchun since you all know much more
+> > about memory controller + list_lru reparenting logic than me.
+> >
+> > There seems to be a race between memcg offlining and zswap=E2=80=99s
+> > cgroup-aware LRU implementation:
+> >
+> > CPU0                            CPU1
+> > zswap_lru_add()                 mem_cgroup_css_offline()
+> >    get_mem_cgroup_from_objcg()
+> >                                    memcg_offline_kmem()
+> >                                        memcg_reparent_objcgs()
+> >                                        memcg_reparent_list_lrus()
+> >                                            memcg_reparent_list_lru()
+> >                                                memcg_reparent_list_lru_=
+node()
+> >    list_lru_add()
+> >                                                memcg_list_lru_free()
+> >
+> >
+> > Essentially: on CPU0, zswap gets the memcg from the entry's objcg
+> > (before the objcgs are reparented). Then it performs list_lru_add()
+> > after the list_lru entries reparenting (memcg_reparent_list_lru_node())
+> > step. If the list_lru of the memcg being offlined has not been freed
+> > (i.e before the memcg_list_lru_free() call), then the list_lru_add()
+> > call would succeed - but the list will be freed soon after. The new
+>
+> No worries.  list_lru_add() will add the object to the lru list of
+> the parent of the memcg being offlined, because the ->kmemcg_id of the
+> memcg being offlined will be changed to its parent's ->kmemcg_id before m=
+emcg_reparent_list_lru().
+>
 
-On Wed, Nov 01, 2023 at 04:17:14PM +0000, Conor Dooley wrote:
-> On Wed, Nov 01, 2023 at 11:04:16AM -0500, Rob Herring wrote:
-> > 
-> > On Wed, 01 Nov 2023 17:24:45 +0300, Dmitry Rokosov wrote:
-> > > AW200XX controllers have the capability to declare more than 0xf LEDs,
-> > > therefore, it is necessary to accept LED names using an appropriate
-> > > regex pattern.
-> > > 
-> > > The register offsets can be adjusted within the specified range, with
-> > > the maximum value corresponding to the highest number of LEDs that can
-> > > be connected to the controller.
-> > > 
-> > > Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
-> > > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > > ---
-> > >  .../bindings/leds/awinic,aw200xx.yaml         | 64 +++++++++++++++++--
-> > >  1 file changed, 58 insertions(+), 6 deletions(-)
-> > > 
-> > 
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> > 
-> > yamllint warnings/errors:
-> > 
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@0: Unevaluated properties are not allowed ('reg' was unexpected)
-> > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.yaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@1: Unevaluated properties are not allowed ('reg' was unexpected)
-> > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.yaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@2: Unevaluated properties are not allowed ('reg' was unexpected)
-> > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.yaml#
-> 
-> Looks like you need to drop the second part of this hunk from the patch.
-> @@ -45,17 +45,12 @@ properties:
->      maxItems: 1
->  
->  patternProperties:
-> -  "^led@[0-9a-f]$":
-> +  "^led@[0-9a-f]+$":
->      type: object
->      $ref: common.yaml#
->      unevaluatedProperties: false
->  
->      properties:
-> -      reg:
-> -        description:
-> -          LED number
-> -        maxItems: 1
-> -
->        led-max-microamp:
->          default: 9780
->          description: |
-> 
-> Each LED still only has one reg entry, right?
+Ohhh that is subtle. Thanks for pointing this out, Muchun!
 
-You're right... the maxItems for 'reg' is still needed. I'll back it in
-the next version.
-But I don't understand, why my dt_binding_check run doesn't show me this
-problem... I don't specify DT_CHECKER_FLAGS, maybe this is a root cause.
+In that case, I think Yosry is right after all! We don't even need to get
+a reference to the memcg:
 
--- 
-Thank you,
-Dmitry
+rcu_read_lock();
+memcg =3D obj_cgroup_memcg(objcg);
+list_lru_add();
+rcu_read_unlock();
+
+As long as we're inside this rcu section, we're guaranteed to get
+an un-freed memcg. Now it could be offlined etc., but as Muchun has
+pointed out, the list_lru_add() call will still does the right thing - it w=
+ill
+either add the new entry to the parent list if this happens after the
+kmemcg_id update, or the child list before the list_lru reparenting
+action. Both of these scenarios are fine.
+
+> Muchun,
+> Thanks
+>
+> > zswap entry as a result will not be subjected to future reclaim
+> > attempt. IOW, this list_lru_add() call is effectively swallowed. And
+> > worse, there might be a crash when we invalidate the zswap_entry in the
+> > future (which will perform a list_lru removal).
+> >
+> > Within get_mem_cgroup_from_objcg(), none of the following seem
+> > sufficient to prevent this race:
+> >
+> >    1. Perform the objcg-to-memcg lookup inside a rcu_read_lock()
+> >    section.
+> >    2. Checking if the memcg is freed yet (with css_tryget()) (what
+> >    we're currently doing in this patch series).
+> >    3. Checking if the memcg is still online (with css_tryget_online())
+> >    The memcg can still be offlined down the line.
+> >
+> >
+> > I've discussed this privately with Johannes, and it seems like the
+> > cleanest solution here is to move the reparenting logic down to release
+> > stage. That way, when get_mem_cgroup_from_objcg() returns,
+> > zswap_lru_add() is given an memcg that is reparenting-safe (until we
+> > drop the obtained reference).
+>
