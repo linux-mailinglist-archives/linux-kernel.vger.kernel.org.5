@@ -2,755 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F867DE3BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292207DE416
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjKAOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 10:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
+        id S1343871AbjKAPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343630AbjKAOol (ORCPT
+        with ESMTP id S1344665AbjKAOqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:44:41 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA965186
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:44:35 -0700 (PDT)
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E49733FB62
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698849873;
-        bh=Krk06Mbiwmqz1nqWi3xOtE3pHx1q0sr4aocMS4DzPnQ=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=sjETFT1MHYIn1yDY/uZBoX3g5KSdqKRD0tcMfgRwXys3TXD2GLtZ/1feeLnLtyQt2
-         /oF/wtFwW3SfEIFMKDEUsazqTowt1tUFsjX0FyWfdbopJZMYf/a5tLjHLR5DG+QuNO
-         /XoOKeK6U0WeQeP3sbSs9cRHp2JC0NFJdd4xENL6HszBAWCtszqqkaQ5cltZeVae3y
-         BDObcsW6ZOV53y/sFcOvME9B3X/2StZwpcJTxxOmAigoC6SUEa9eHjV6buBNJ4P+nI
-         JLRHTnNn41d/WgS1iphH3vK4JIvnJAIKi8kQ5vMoaXfrYeNG3DMFRx6RF4Z3lleoGp
-         eKr1kJefaOJSA==
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5079641031aso7142776e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 07:44:33 -0700 (PDT)
+        Wed, 1 Nov 2023 10:46:45 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3273EDC;
+        Wed,  1 Nov 2023 07:46:43 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ce2eaf7c2bso4523438a34.0;
+        Wed, 01 Nov 2023 07:46:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698849873; x=1699454673;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Krk06Mbiwmqz1nqWi3xOtE3pHx1q0sr4aocMS4DzPnQ=;
-        b=UNH8EbSxtxRWHcGTh1cWsFytenNA4hv/kw5huy4sLkPF5dTi4QcStDy3WkGnUZJe3W
-         S8o+DXEHIAsZGK5jAPOYBclKLH1InqQjrKZsWu9V1qvRzcmPeESHzWBjLRQ9XXXRfTEc
-         05IVsVQRlxEP1ANlcGnEkXGqlJ9tFv7NI2iyYDv1WguF6hZQ+VeN8FEdpZh4Xz6Fx2Cg
-         zMfPniC9t51NOZnk6UH56mCb0UilpC64OovbfWl8iOXZuUx4++vyUYu56Bh0ZRjlftGo
-         oFdKQT1brwTH4ddKxeN7Hrwf+YdXYfQ3cPNmpiMOOidUJCoZBaE4eornqv+/Fp+Z96A3
-         bKiA==
-X-Gm-Message-State: AOJu0Yzb7va9VHpoiD+bnci5uQ09Ay92YlABPJEzNrZuT8dtMVTxBXvp
-        a/tMyZbqSG8080XP6Dr2cwZY2ey3XcVtqSgkwCvVlArLEVw2FIVBXvc18U7y1/8yGbALCpCNVC1
-        ssKvfSFE0yjct+TZ2FdSTuOBsWP96T1Ljl8Kal0iTvsSn6mGlhNFsdISL8g==
-X-Received: by 2002:ac2:4982:0:b0:509:d86:fb2c with SMTP id f2-20020ac24982000000b005090d86fb2cmr8386679lfl.58.1698849872953;
-        Wed, 01 Nov 2023 07:44:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH65D3J2ONGqMjqbilt6uelnF2nA9viQzuvJaz3Z7Octc6msG4T81UJFCfcFgQMg8310PrtyKMeIzfEN6hiprw=
-X-Received: by 2002:ac2:4982:0:b0:509:d86:fb2c with SMTP id
- f2-20020ac24982000000b005090d86fb2cmr8386653lfl.58.1698849872495; Wed, 01 Nov
- 2023 07:44:32 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 1 Nov 2023 15:44:30 +0100
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231031-module_relocations-v8-2-09b5b720c1fe@rivosinc.com>
-References: <20231031-module_relocations-v8-0-09b5b720c1fe@rivosinc.com> <20231031-module_relocations-v8-2-09b5b720c1fe@rivosinc.com>
-Mime-Version: 1.0
-Date:   Wed, 1 Nov 2023 15:44:30 +0100
-Message-ID: <CAJM55Z8Q7jG60TGakAhvg90zosdbNq8NeAuQeHVwHomvD+heAQ@mail.gmail.com>
-Subject: Re: [PATCH v8 2/3] riscv: Add remaining module relocations
-To:     Charlie Jenkins <charlie@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Nelson Chu <nelson@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698850002; x=1699454802;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3jeA19kl1acYj+K5OAp8lk/hS9qxEtIjfOF2DeOY2Wk=;
+        b=oR8sOc8IS7ND8q7t6Dpf9jTtI7ICLx3r9zVXXSDumYHXKIU8LVQvbRTq9MujYec6GK
+         DUPoVs3LVmL3CoOforCS6uflkAMK2z/H3Rk7z8tjuyuCqyS94IsammqJGa6YSGUb+ttR
+         5aFg9sb1Pj8EN0Yf1dDU+/VIqPgrGZAWomvNpJ6fTT/g0uAoX+hnSDKlXp0oOfx12qEW
+         QZQ5idyNNEZtDz67h2tJfOzRKbrnxjL26jxAY1sZvRnmHcQOSH040EnHP/P1cj+SvubC
+         yxv12qcs6eUSRW0z4NEUIWiuTRIFP5j/hBxx9pcXZmoPnZBf+aYT59gu0FZ9ufbSJZZV
+         7xmw==
+X-Gm-Message-State: AOJu0YxvPWuzedPRQTQ5/nM51hiC7gyc78VGd9JPxcUcB19Lwk3BLyGa
+        1tPYdkL+w20f9wHjPgUVsQ==
+X-Google-Smtp-Source: AGHT+IE+dz1IOeT7KVIPxGWJde5p4oVtUL0RCQEmKwS1I+MeRIbZm2OK92ubWKocNbqh109fS8FEdQ==
+X-Received: by 2002:a9d:6197:0:b0:6cd:da93:90ce with SMTP id g23-20020a9d6197000000b006cdda9390cemr15395286otk.19.1698850002398;
+        Wed, 01 Nov 2023 07:46:42 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id a13-20020a0568300b8d00b006b8c87551e8sm216507otv.35.2023.11.01.07.46.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 07:46:41 -0700 (PDT)
+Received: (nullmailer pid 121158 invoked by uid 1000);
+        Wed, 01 Nov 2023 14:46:40 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] opp: ti: Use device_get_match_data()
+Date:   Wed,  1 Nov 2023 09:45:00 -0500
+Message-ID: <20231101144501.118972-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Charlie Jenkins wrote:
-> Add all final module relocations and add error logs explaining the ones
-> that are not supported. Implement overflow checks for
-> ADD/SUB/SET/ULEB128 relocations.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/include/uapi/asm/elf.h |   5 +-
->  arch/riscv/kernel/module.c        | 503 +++++++++++++++++++++++++++++++++++---
->  2 files changed, 476 insertions(+), 32 deletions(-)
->
-> diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
-> index d696d6610231..11a71b8533d5 100644
-> --- a/arch/riscv/include/uapi/asm/elf.h
-> +++ b/arch/riscv/include/uapi/asm/elf.h
-> @@ -49,6 +49,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
->  #define R_RISCV_TLS_DTPREL64	9
->  #define R_RISCV_TLS_TPREL32	10
->  #define R_RISCV_TLS_TPREL64	11
-> +#define R_RISCV_IRELATIVE	58
->
->  /* Relocation types not used by the dynamic linker */
->  #define R_RISCV_BRANCH		16
-> @@ -81,7 +82,6 @@ typedef union __riscv_fp_state elf_fpregset_t;
->  #define R_RISCV_ALIGN		43
->  #define R_RISCV_RVC_BRANCH	44
->  #define R_RISCV_RVC_JUMP	45
-> -#define R_RISCV_LUI		46
->  #define R_RISCV_GPREL_I		47
->  #define R_RISCV_GPREL_S		48
->  #define R_RISCV_TPREL_I		49
-> @@ -93,6 +93,9 @@ typedef union __riscv_fp_state elf_fpregset_t;
->  #define R_RISCV_SET16		55
->  #define R_RISCV_SET32		56
->  #define R_RISCV_32_PCREL	57
-> +#define R_RISCV_PLT32		59
-> +#define R_RISCV_SET_ULEB128	60
-> +#define R_RISCV_SUB_ULEB128	61
->
->
->  #endif /* _UAPI_ASM_RISCV_ELF_H */
-> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-> index a9e94e939cb5..0f5d41eaa596 100644
-> --- a/arch/riscv/kernel/module.c
-> +++ b/arch/riscv/kernel/module.c
-> @@ -7,6 +7,9 @@
->  #include <linux/elf.h>
->  #include <linux/err.h>
->  #include <linux/errno.h>
-> +#include <linux/hashtable.h>
-> +#include <linux/kernel.h>
-> +#include <linux/log2.h>
->  #include <linux/moduleloader.h>
->  #include <linux/vmalloc.h>
->  #include <linux/sizes.h>
-> @@ -14,6 +17,39 @@
->  #include <asm/alternative.h>
->  #include <asm/sections.h>
->
-> +struct used_bucket {
-> +	struct list_head head;
-> +	struct hlist_head *bucket;
-> +};
-> +
-> +struct relocation_head {
-> +	struct hlist_node node;
-> +	struct list_head *rel_entry;
-> +	void *location;
-> +};
-> +
-> +struct relocation_entry {
-> +	struct list_head head;
-> +	Elf_Addr value;
-> +	unsigned int type;
-> +};
-> +
-> +struct relocation_handlers {
-> +	int (*reloc_handler)(struct module *me, void *location, Elf_Addr v);
-> +	bool accumulate_relocations;
-> +	int (*accumulate_handler)(struct module *me, void *location,
-> +				  long buffer);
-> +};
-> +
-> +unsigned int initialize_relocation_hashtable(unsigned int num_relocations);
-> +void process_accumulated_relocations(struct module *me);
-> +int add_relocation_to_accumulate(struct module *me, int type, void *location,
-> +				 unsigned int hashtable_bits, Elf_Addr v);
-> +
-> +struct hlist_head *relocation_hashtable;
-> +
-> +struct list_head used_buckets_list;
-> +
->  /*
->   * The auipc+jalr instruction pair can reach any PC-relative offset
->   * in the range [-2^31 - 2^11, 2^31 - 2^11)
-> @@ -35,7 +71,7 @@ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
->  	insn &= keep;
->  	insn |= set;
->
-> -	parcel[0] = cpu_to_le32(insn);
-> +	parcel[0] = cpu_to_le16(insn);
->  	parcel[1] = cpu_to_le16(insn >> 16);
->  	return 0;
->  }
-> @@ -43,8 +79,12 @@ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
->  static int riscv_insn_rvc_rmw(void *location, u16 keep, u16 set)
->  {
->  	u16 *parcel = location;
-> +	u16 insn = le16_to_cpu(*parcel);
->
-> -	*parcel = cpu_to_le16((le16_to_cpu(*parcel) & keep) | set);
-> +	insn &= keep;
-> +	insn |= set;
-> +
-> +	*parcel = cpu_to_le16(insn);
->  	return 0;
->  }
+Use preferred device_get_match_data() instead of of_match_device() to
+get the driver match data. With this, adjust the includes to explicitly
+include the correct headers.
 
-I think you meant to squash these two chunks into the previous patch.
+As this driver only does DT based matching, of_match_device() will never
+return NULL if we've gotten to probe(). Therefore, the NULL check and
+error return for it can be dropped.
 
->
-> @@ -269,6 +309,12 @@ static int apply_r_riscv_align_rela(struct module *me, void *location,
->  	return -EINVAL;
->  }
->
-> +static int apply_r_riscv_add8_rela(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	*(u8 *)location += (u8)v;
-> +	return 0;
-> +}
-> +
->  static int apply_r_riscv_add16_rela(struct module *me, void *location,
->  				    Elf_Addr v)
->  {
-> @@ -290,6 +336,12 @@ static int apply_r_riscv_add64_rela(struct module *me, void *location,
->  	return 0;
->  }
->
-> +static int apply_r_riscv_sub8_rela(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	*(u8 *)location -= (u8)v;
-> +	return 0;
-> +}
-> +
->  static int apply_r_riscv_sub16_rela(struct module *me, void *location,
->  				    Elf_Addr v)
->  {
-> @@ -311,33 +363,415 @@ static int apply_r_riscv_sub64_rela(struct module *me, void *location,
->  	return 0;
->  }
->
-> -static int (*reloc_handlers_rela[]) (struct module *me, void *location,
-> -				Elf_Addr v) = {
-> -	[R_RISCV_32]			= apply_r_riscv_32_rela,
-> -	[R_RISCV_64]			= apply_r_riscv_64_rela,
-> -	[R_RISCV_BRANCH]		= apply_r_riscv_branch_rela,
-> -	[R_RISCV_JAL]			= apply_r_riscv_jal_rela,
-> -	[R_RISCV_RVC_BRANCH]		= apply_r_riscv_rvc_branch_rela,
-> -	[R_RISCV_RVC_JUMP]		= apply_r_riscv_rvc_jump_rela,
-> -	[R_RISCV_PCREL_HI20]		= apply_r_riscv_pcrel_hi20_rela,
-> -	[R_RISCV_PCREL_LO12_I]		= apply_r_riscv_pcrel_lo12_i_rela,
-> -	[R_RISCV_PCREL_LO12_S]		= apply_r_riscv_pcrel_lo12_s_rela,
-> -	[R_RISCV_HI20]			= apply_r_riscv_hi20_rela,
-> -	[R_RISCV_LO12_I]		= apply_r_riscv_lo12_i_rela,
-> -	[R_RISCV_LO12_S]		= apply_r_riscv_lo12_s_rela,
-> -	[R_RISCV_GOT_HI20]		= apply_r_riscv_got_hi20_rela,
-> -	[R_RISCV_CALL_PLT]		= apply_r_riscv_call_plt_rela,
-> -	[R_RISCV_CALL]			= apply_r_riscv_call_rela,
-> -	[R_RISCV_RELAX]			= apply_r_riscv_relax_rela,
-> -	[R_RISCV_ALIGN]			= apply_r_riscv_align_rela,
-> -	[R_RISCV_ADD16]			= apply_r_riscv_add16_rela,
-> -	[R_RISCV_ADD32]			= apply_r_riscv_add32_rela,
-> -	[R_RISCV_ADD64]			= apply_r_riscv_add64_rela,
-> -	[R_RISCV_SUB16]			= apply_r_riscv_sub16_rela,
-> -	[R_RISCV_SUB32]			= apply_r_riscv_sub32_rela,
-> -	[R_RISCV_SUB64]			= apply_r_riscv_sub64_rela,
-> +static int dynamic_linking_not_supported(struct module *me, void *location,
-> +					 Elf_Addr v)
-> +{
-> +	pr_err("%s: Dynamic linking not supported in kernel modules PC = %p\n",
-> +	       me->name, location);
-> +	return -EINVAL;
-> +}
-> +
-> +static int tls_not_supported(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	pr_err("%s: Thread local storage not supported in kernel modules PC = %p\n",
-> +	       me->name, location);
-> +	return -EINVAL;
-> +}
-> +
-> +static int apply_r_riscv_sub6_rela(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	u8 *byte = location;
-> +	u8 value = v;
-> +
-> +	*byte = (*byte - (value & 0x3f)) & 0x3f;
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_set6_rela(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	u8 *byte = location;
-> +	u8 value = v;
-> +
-> +	*byte = (*byte & 0xc0) | (value & 0x3f);
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_set8_rela(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	*(u8 *)location = (u8)v;
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_set16_rela(struct module *me, void *location,
-> +				    Elf_Addr v)
-> +{
-> +	*(u16 *)location = (u16)v;
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_set32_rela(struct module *me, void *location,
-> +				    Elf_Addr v)
-> +{
-> +	*(u32 *)location = (u32)v;
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_32_pcrel_rela(struct module *me, void *location,
-> +				       Elf_Addr v)
-> +{
-> +	*(u32 *)location = v - (unsigned long)location;
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+ - Add missing commit msg
+---
+ drivers/opp/ti-opp-supply.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-nit: in other reviews i've been told to use uintptr_t when casting pointers to
-an unsigned integer.
+diff --git a/drivers/opp/ti-opp-supply.c b/drivers/opp/ti-opp-supply.c
+index 8f3f13fbbb25..e3b97cd1fbbf 100644
+--- a/drivers/opp/ti-opp-supply.c
++++ b/drivers/opp/ti-opp-supply.c
+@@ -18,6 +18,7 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_opp.h>
++#include <linux/property.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ 
+@@ -373,23 +374,15 @@ static int ti_opp_supply_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device *cpu_dev = get_cpu_device(0);
+-	const struct of_device_id *match;
+ 	const struct ti_opp_supply_of_data *of_data;
+ 	int ret = 0;
+ 
+-	match = of_match_device(ti_opp_supply_of_match, dev);
+-	if (!match) {
+-		/* We do not expect this to happen */
+-		dev_err(dev, "%s: Unable to match device\n", __func__);
+-		return -ENODEV;
+-	}
+-	if (!match->data) {
++	of_data = device_get_match_data(dev);
++	if (!of_data) {
+ 		/* Again, unlikely.. but mistakes do happen */
+ 		dev_err(dev, "%s: Bad data in match\n", __func__);
+ 		return -EINVAL;
+ 	}
+-	of_data = match->data;
+-
+ 	dev_set_drvdata(dev, (void *)of_data);
+ 
+ 	/* If we need optimized voltage */
+-- 
+2.42.0
 
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_plt32_rela(struct module *me, void *location,
-> +				    Elf_Addr v)
-> +{
-> +	ptrdiff_t offset = (void *)v - location;
-> +
-> +	if (!riscv_insn_valid_32bit_offset(offset)) {
-> +		/* Only emit the plt entry if offset over 32-bit range */
-> +		if (IS_ENABLED(CONFIG_MODULE_SECTIONS)) {
-> +			offset = (void *)module_emit_plt_entry(me, v) - location;
-> +		} else {
-> +			pr_err("%s: target %016llx can not be addressed by the 32-bit offset from PC = %p\n",
-> +			       me->name, (long long)v, location);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	*(u32 *)location = (u32)offset;
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_set_uleb128(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	*(long *)location = v;
-> +	return 0;
-> +}
-> +
-> +static int apply_r_riscv_sub_uleb128(struct module *me, void *location, Elf_Addr v)
-> +{
-> +	*(long *)location -= v;
-> +	return 0;
-> +}
-> +
-> +static int accumulation_not_supported(struct module *me, void *location, long buffer)
-> +{
-> +	pr_err("%s: Internal error. Only ADD/SUB/SET/ULEB128 should be accumulated.", me->name);
-> +	return -EINVAL;
-> +}
-> +
-> +static int apply_6_bit_accumulation(struct module *me, void *location, long buffer)
-> +{
-> +	u8 *byte = location;
-> +	u8 value = buffer;
-> +
-> +	if (buffer > 0x3f) {
-> +		pr_err("%s: value %ld out of range for 6-bit relocation.\n",
-> +		       me->name, buffer);
-> +		return -EINVAL;
-> +	}
-> +
-> +	*byte = (*byte & 0xc0) | (value & 0x3f);
-> +	return 0;
-> +}
-> +
-> +static int apply_8_bit_accumulation(struct module *me, void *location, long buffer)
-> +{
-> +	if (buffer > U8_MAX) {
-> +		pr_err("%s: value %ld out of range for 8-bit relocation.\n",
-> +		       me->name, buffer);
-> +		return -EINVAL;
-> +	}
-> +	*(u8 *)location = (u8)buffer;
-> +	return 0;
-> +}
-> +
-> +static int apply_16_bit_accumulation(struct module *me, void *location, long buffer)
-> +{
-> +	if (buffer > U16_MAX) {
-> +		pr_err("%s: value %ld out of range for 16-bit relocation.\n",
-> +		       me->name, buffer);
-> +		return -EINVAL;
-> +	}
-> +	*(u16 *)location = (u16)buffer;
-> +	return 0;
-> +}
-> +
-> +static int apply_32_bit_accumulation(struct module *me, void *location, long buffer)
-> +{
-> +	if (buffer > U32_MAX) {
-> +		pr_err("%s: value %ld out of range for 32-bit relocation.\n",
-> +		       me->name, buffer);
-> +		return -EINVAL;
-> +	}
-> +	*(u32 *)location = (u32)buffer;
-> +	return 0;
-> +}
-> +
-> +static int apply_64_bit_accumulation(struct module *me, void *location, long buffer)
-> +{
-> +	*(u64 *)location = (u64)buffer;
-> +	return 0;
-> +}
-> +
-> +static int apply_uleb128_accumulation(struct module *me, void *location, long buffer)
-> +{
-> +	/*
-> +	 * ULEB128 is a variable length encoding. Encode the buffer into
-> +	 * the ULEB128 data format.
-> +	 */
-> +	u8 *p = location;
-> +
-> +	while (buffer != 0) {
-> +		u8 value = buffer & 0x7f;
-> +
-> +		buffer >>= 7;
-> +		value |= (!!buffer) << 7;
-> +
-> +		*p++ = value;
-> +	}
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Relocations defined in the riscv-elf-psabi-doc.
-> + * This handles static linking only.
-> + */
-> +static struct relocation_handlers reloc_handlers[] = {
-
-I don't see anywhere this table is written to. Can we maybe make it const?
-
-> +	[R_RISCV_32] = { apply_r_riscv_32_rela, false,
-> +			 accumulation_not_supported },
-> +	[R_RISCV_64] = { apply_r_riscv_64_rela, false,
-> +			 accumulation_not_supported },
-> +	[R_RISCV_RELATIVE] = { dynamic_linking_not_supported, false,
-> +			       accumulation_not_supported },
-> +	[R_RISCV_COPY] = { dynamic_linking_not_supported, false,
-> +			   accumulation_not_supported },
-> +	[R_RISCV_JUMP_SLOT] = { dynamic_linking_not_supported, false,
-> +				accumulation_not_supported },
-> +	[R_RISCV_TLS_DTPMOD32] = { dynamic_linking_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TLS_DTPMOD64] = { dynamic_linking_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TLS_DTPREL32] = { dynamic_linking_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TLS_DTPREL64] = { dynamic_linking_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TLS_TPREL32] = { dynamic_linking_not_supported, false,
-> +				  accumulation_not_supported },
-> +	[R_RISCV_TLS_TPREL64] = { dynamic_linking_not_supported, false,
-> +				  accumulation_not_supported },
-> +	/* 12-15 undefined */
-> +	[R_RISCV_BRANCH] = { apply_r_riscv_branch_rela, false,
-> +			     accumulation_not_supported },
-> +	[R_RISCV_JAL] = { apply_r_riscv_jal_rela, false,
-> +			  accumulation_not_supported },
-> +	[R_RISCV_CALL] = { apply_r_riscv_call_rela, false,
-> +			   accumulation_not_supported },
-> +	[R_RISCV_CALL_PLT] = { apply_r_riscv_call_plt_rela, false,
-> +			       accumulation_not_supported },
-> +	[R_RISCV_GOT_HI20] = { apply_r_riscv_got_hi20_rela, false,
-> +			       accumulation_not_supported },
-> +	[R_RISCV_TLS_GOT_HI20] = { tls_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TLS_GD_HI20] = { tls_not_supported, false,
-> +				  accumulation_not_supported },
-> +	[R_RISCV_PCREL_HI20] = { apply_r_riscv_pcrel_hi20_rela, false,
-> +				 accumulation_not_supported },
-> +	[R_RISCV_PCREL_LO12_I] = { apply_r_riscv_pcrel_lo12_i_rela, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_PCREL_LO12_S] = { apply_r_riscv_pcrel_lo12_s_rela, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_HI20] = { apply_r_riscv_hi20_rela, false,
-> +			   accumulation_not_supported },
-> +	[R_RISCV_LO12_I] = { apply_r_riscv_lo12_i_rela, false,
-> +			     accumulation_not_supported },
-> +	[R_RISCV_LO12_S] = { apply_r_riscv_lo12_s_rela, false,
-> +			     accumulation_not_supported },
-> +	[R_RISCV_TPREL_HI20] = { tls_not_supported, false,
-> +				 accumulation_not_supported },
-> +	[R_RISCV_TPREL_LO12_I] = { tls_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TPREL_LO12_S] = { tls_not_supported, false,
-> +				   accumulation_not_supported },
-> +	[R_RISCV_TPREL_ADD] = { tls_not_supported, false,
-> +				accumulation_not_supported },
-> +	[R_RISCV_ADD8] = { apply_r_riscv_add8_rela, true,
-> +			   apply_8_bit_accumulation },
-> +	[R_RISCV_ADD16] = { apply_r_riscv_add16_rela, true,
-> +			    apply_16_bit_accumulation },
-> +	[R_RISCV_ADD32] = { apply_r_riscv_add32_rela, true,
-> +			    apply_32_bit_accumulation },
-> +	[R_RISCV_ADD64] = { apply_r_riscv_add64_rela, true,
-> +			    apply_64_bit_accumulation },
-> +	[R_RISCV_SUB8] = { apply_r_riscv_sub8_rela, true,
-> +			   apply_8_bit_accumulation },
-> +	[R_RISCV_SUB16] = { apply_r_riscv_sub16_rela, true,
-> +			    apply_16_bit_accumulation },
-> +	[R_RISCV_SUB32] = { apply_r_riscv_sub32_rela, true,
-> +			    apply_32_bit_accumulation },
-> +	[R_RISCV_SUB64] = { apply_r_riscv_sub64_rela, true,
-> +			    apply_64_bit_accumulation },
-> +	/* 41-42 reserved for future standard use */
-> +	[R_RISCV_ALIGN] = { apply_r_riscv_align_rela, false,
-> +			    accumulation_not_supported },
-> +	[R_RISCV_RVC_BRANCH] = { apply_r_riscv_rvc_branch_rela, false,
-> +				 accumulation_not_supported },
-> +	[R_RISCV_RVC_JUMP] = { apply_r_riscv_rvc_jump_rela, false,
-> +			       accumulation_not_supported },
-> +	/* 46-50 reserved for future standard use */
-> +	[R_RISCV_RELAX] = { apply_r_riscv_relax_rela, false,
-> +			    accumulation_not_supported },
-> +	[R_RISCV_SUB6] = { apply_r_riscv_sub6_rela, true,
-> +			   apply_6_bit_accumulation },
-> +	[R_RISCV_SET6] = { apply_r_riscv_set6_rela, true,
-> +			   apply_6_bit_accumulation },
-> +	[R_RISCV_SET8] = { apply_r_riscv_set8_rela, true,
-> +			   apply_8_bit_accumulation },
-> +	[R_RISCV_SET16] = { apply_r_riscv_set16_rela, true,
-> +			    apply_16_bit_accumulation },
-> +	[R_RISCV_SET32] = { apply_r_riscv_set32_rela, true,
-> +			    apply_32_bit_accumulation },
-> +	[R_RISCV_32_PCREL] = { apply_r_riscv_32_pcrel_rela, false,
-> +			       accumulation_not_supported },
-> +	[R_RISCV_IRELATIVE] = { dynamic_linking_not_supported, false,
-> +				accumulation_not_supported },
-> +	[R_RISCV_PLT32] = { apply_r_riscv_plt32_rela, false,
-> +			    accumulation_not_supported },
-> +	[R_RISCV_SET_ULEB128] = { apply_r_riscv_set_uleb128, true,
-> +				  apply_uleb128_accumulation },
-> +	[R_RISCV_SUB_ULEB128] = { apply_r_riscv_sub_uleb128, true,
-> +				  apply_uleb128_accumulation },
-> +	/* 62-191 reserved for future standard use */
-> +	/* 192-255 nonstandard ABI extensions  */
->  };
->
-> +void process_accumulated_relocations(struct module *me)
-> +{
-> +	/*
-> +	 * Only ADD/SUB/SET/ULEB128 should end up here.
-> +	 *
-> +	 * Each bucket may have more than one relocation location. All
-> +	 * relocations for a location are stored in a list in a bucket.
-> +	 *
-> +	 * Relocations are applied to a temp variable before being stored to the
-> +	 * provided location to check for overflow. This also allows ULEB128 to
-> +	 * properly decide how many entries are needed before storing to
-> +	 * location. The final value is stored into location using the handler
-> +	 * for the last relocation to an address.
-> +	 *
-> +	 * Three layers of indexing:
-> +	 *	- Each of the buckets in use
-> +	 *	- Groups of relocations in each bucket by location address
-> +	 *	- Each relocation entry for a location address
-> +	 */
-> +	struct used_bucket *bucket_iter;
-> +	struct relocation_head *rel_head_iter;
-> +	struct relocation_entry *rel_entry_iter;
-> +	int curr_type;
-> +	void *location;
-> +	long buffer;
-> +
-> +	list_for_each_entry(bucket_iter, &used_buckets_list, head) {
-> +		hlist_for_each_entry(rel_head_iter, bucket_iter->bucket, node) {
-> +			buffer = 0;
-> +			location = rel_head_iter->location;
-> +			list_for_each_entry(rel_entry_iter,
-> +					    rel_head_iter->rel_entry, head) {
-> +				curr_type = rel_entry_iter->type;
-> +				reloc_handlers[curr_type].reloc_handler(
-> +					me, &buffer, rel_entry_iter->value);
-> +				kfree(rel_entry_iter);
-> +			}
-> +			reloc_handlers[curr_type].accumulate_handler(
-> +				me, location, buffer);
-> +			kfree(rel_head_iter);
-> +		}
-> +		kfree(bucket_iter);
-> +	}
-> +
-> +	kfree(relocation_hashtable);
-> +}
-> +
-> +int add_relocation_to_accumulate(struct module *me, int type, void *location,
-> +				 unsigned int hashtable_bits, Elf_Addr v)
-> +{
-> +	struct relocation_entry *entry;
-> +	struct relocation_head *rel_head;
-> +	struct hlist_head *current_head;
-> +	struct used_bucket *bucket;
-> +	unsigned long hash;
-> +
-> +	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-> +	INIT_LIST_HEAD(&entry->head);
-> +	entry->type = type;
-> +	entry->value = v;
-> +
-> +	hash = hash_min((unsigned long)location, hashtable_bits);
-
-uintptr_t
-
-> +
-> +	current_head = &relocation_hashtable[hash];
-> +
-> +	/* Find matching location (if any) */
-> +	bool found = false;
-> +	struct relocation_head *rel_head_iter;
-> +
-> +	hlist_for_each_entry(rel_head_iter, current_head, node) {
-> +		if (rel_head_iter->location == location) {
-> +			found = true;
-> +			rel_head = rel_head_iter;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!found) {
-> +		rel_head = kmalloc(sizeof(*rel_head), GFP_KERNEL);
-> +		rel_head->rel_entry =
-> +			kmalloc(sizeof(struct list_head), GFP_KERNEL);
-> +		INIT_LIST_HEAD(rel_head->rel_entry);
-> +		rel_head->location = location;
-> +		INIT_HLIST_NODE(&rel_head->node);
-> +		if (!current_head->first) {
-> +			bucket =
-> +				kmalloc(sizeof(struct used_bucket), GFP_KERNEL);
-> +			INIT_LIST_HEAD(&bucket->head);
-> +			bucket->bucket = current_head;
-> +			list_add(&bucket->head, &used_buckets_list);
-> +		}
-> +		hlist_add_head(&rel_head->node, current_head);
-> +	}
-> +
-> +	/* Add relocation to head of discovered rel_head */
-> +	list_add_tail(&entry->head, rel_head->rel_entry);
-> +
-> +	return 0;
-> +}
-> +
-> +unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
-> +{
-> +	/* Can safely assume that bits is not greater than sizeof(long) */
-> +	unsigned long hashtable_size = roundup_pow_of_two(num_relocations);
-> +	unsigned int hashtable_bits = ilog2(hashtable_size);
-> +
-> +	/*
-> +	 * Double size of hashtable if num_relocations * 1.25 is greater than
-> +	 * hashtable_size.
-> +	 */
-> +	int should_double_size = ((num_relocations + (num_relocations >> 2)) > (hashtable_size));
-> +
-> +	hashtable_bits += should_double_size;
-> +
-> +	hashtable_size <<= should_double_size;
-> +
-> +	relocation_hashtable = kmalloc_array(hashtable_size,
-> +					     sizeof(*relocation_hashtable),
-> +					     GFP_KERNEL);
-> +	__hash_init(relocation_hashtable, hashtable_size);
-> +
-> +	INIT_LIST_HEAD(&used_buckets_list);
-> +
-> +	return hashtable_bits;
-> +}
-> +
->  int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
->  		       unsigned int symindex, unsigned int relsec,
->  		       struct module *me)
-> @@ -349,11 +783,13 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
->  	unsigned int i, type;
->  	Elf_Addr v;
->  	int res;
-> +	unsigned int num_relocations = sechdrs[relsec].sh_size / sizeof(*rel);
-> +	unsigned int hashtable_bits = initialize_relocation_hashtable(num_relocations);
->
->  	pr_debug("Applying relocate section %u to %u\n", relsec,
->  	       sechdrs[relsec].sh_info);
->
-> -	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-> +	for (i = 0; i < num_relocations; i++) {
->  		/* This is where to make the change */
->  		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
->  			+ rel[i].r_offset;
-> @@ -371,8 +807,8 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
->
->  		type = ELF_RISCV_R_TYPE(rel[i].r_info);
->
-> -		if (type < ARRAY_SIZE(reloc_handlers_rela))
-> -			handler = reloc_handlers_rela[type];
-> +		if (type < ARRAY_SIZE(reloc_handlers))
-> +			handler = reloc_handlers[type].reloc_handler;
->  		else
->  			handler = NULL;
->
-> @@ -428,11 +864,16 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
->  			}
->  		}
->
-> -		res = handler(me, location, v);
-> +		if (reloc_handlers[type].accumulate_relocations)
-
-As far as I can tell the table above has accumulate_relocations == false if and
-only if .accumulate_handler == accumulation_not_supported. Could we maybe drop
-the bool and just check for that?
-
-Are there situations where we might end up calling
-accumulation_not_supported()? If not we could just let .accumulate_handler be
-NULL where accumulation is not supported. Then the table could be initialised
-with
-
-  { reloc_handler }, // when accumulation is not supported and
-  { reloc_handler, accumulate_handler }, // when it is
-
-..and the test above would just be
-
-	if (reloc_handlers[type].accumulate_handler)
-
-> +			res = add_relocation_to_accumulate(me, type, location, hashtable_bits, v);
-> +		else
-> +			res = handler(me, location, v);
->  		if (res)
->  			return res;
->  	}
->
-> +	process_accumulated_relocations(me);
-> +
->  	return 0;
->  }
->
->
-> --
-> 2.34.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
