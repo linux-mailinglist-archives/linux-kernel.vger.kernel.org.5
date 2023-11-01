@@ -2,212 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF47E7DE20D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4657DE1EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjKANmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40182 "EHLO
+        id S232113AbjKANqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKANmI (ORCPT
+        with ESMTP id S230464AbjKANp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:42:08 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5899912A;
-        Wed,  1 Nov 2023 06:42:04 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-778925998cbso466744685a.0;
-        Wed, 01 Nov 2023 06:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698846123; x=1699450923; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5nQo5QAmg18pLngnuIRNmy7fqh3tLqP/m6ROg4gk6+E=;
-        b=cwuk0MpHjw64t27xiF2d3DVeNwTyBCdzBM28VttLnTgFWe1oPRnDP8PUPH1BHqeBhK
-         g2rKhB22dyrDnL3A7f2hpxLspW2w9XwSo6R/dOJxM7uhXa7QeFqVJOn9IL5o3mokkBIo
-         +vvFA2umJCAoqkZgcoUeB5jjZ17GpcjDDlzxwQGAuvwDLZ2o+eKHymP3XO17HBfHS2ic
-         i+vFc2Wr44/4zPvksgobqmdXojlRSmUWwEAJ9yli+zZ5c0lg2Fem6xZFBqybljPSbmec
-         mayH6uFuhJm+M2mPqGa25GFHhBFK0dg4zcWLt5v0yIciAwi1NWMUBXxmEDxXXa+tEFpE
-         I2Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698846123; x=1699450923;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5nQo5QAmg18pLngnuIRNmy7fqh3tLqP/m6ROg4gk6+E=;
-        b=bbEYEB3JhAvBtY0uCzJhMgdSliy3Kl8el3SX+xVdt7lT5rY0ZvYZwAlZcP/4mOZObY
-         Zrta2jQVfehw2SlCzD7yiuhgaAdTz/buZeS7XWWa56+NQkXrug9JUQ6HObRo7kxvkcwW
-         wL2SMR+uH4jXw2Mnm6ArlXWTpPi8xUm1IaZBYVKmK/6c6fv3W8Rk4P4zHeZUHPYBQaXG
-         Ecpe1YuD+6COPx9OeIOQqsSUvNWolC5p/qSjv87xD0npGHa3MaCgnP7mns8F74hY2Gcu
-         t7sWDIqz7MR8Oj9R2OnzdHusKBIN1RRDD0Y9QkTK5XHpKFgi7qHfFrrzZA79WUGKOMyV
-         BskA==
-X-Gm-Message-State: AOJu0Yyddb9Vw6wmMG6k9p+R4KUg/71ADXhJ60I0a5pY35n+di3G71Dr
-        +//vBHfX/jStqIsSHInKjvc=
-X-Google-Smtp-Source: AGHT+IGFKvgB4JFJWNM7MuiXcvAJMvG91K9x/Ey1AKCZT8LeTf2DTYrE5N72zByeJa9VrrfrODcTxQ==
-X-Received: by 2002:a05:620a:2687:b0:76f:2214:e2c3 with SMTP id c7-20020a05620a268700b0076f2214e2c3mr17147730qkp.64.1698846123326;
-        Wed, 01 Nov 2023 06:42:03 -0700 (PDT)
-Received: from pm2-ws13.praxislan02.com (207-172-141-204.s8906.c3-0.slvr-cbr1.lnh-slvr.md.cable.rcncustomer.com. [207.172.141.204])
-        by smtp.gmail.com with ESMTPSA id y24-20020a37e318000000b00767d6ec578csm1435758qki.20.2023.11.01.06.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 06:42:02 -0700 (PDT)
-From:   Jason Andryuk <jandryuk@gmail.com>
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc:     michal.wilczynski@intel.com,
-        Roger Pau Monne <roger.pau@citrix.com>,
-        stable@vger.kernel.org, Jason Andryuk <jandryuk@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: [PATCH v4] acpi/processor: sanitize _OSC/_PDC capabilities for Xen dom0
-Date:   Wed,  1 Nov 2023 09:41:52 -0400
-Message-ID: <20231101134154.18336-1-jandryuk@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 1 Nov 2023 09:45:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A91983;
+        Wed,  1 Nov 2023 06:45:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 915CE1F750;
+        Wed,  1 Nov 2023 13:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1698846351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LtTK0Ve9fvHJNOvzcaEqD249pBo2083iZ5qPSdDbfNg=;
+        b=cUZLQ1vk/TkzkU7BO5pKe0quxSNG7qmBe1s8JS2/aMYUlbVciyDV+aH9MBvOuPLYGg2mDS
+        LWfrYX3AcMP8ctmtPeBhbRv3H/OdUj7gtHR3Gw9isyYROG/aWdhcIZHGXQnooTUqPl5Hzq
+        KubDIt0MzJvAMAifOl3MRxJOpZ6iMho=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6954713460;
+        Wed,  1 Nov 2023 13:45:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FdHJF49WQmWPdwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 01 Nov 2023 13:45:51 +0000
+Date:   Wed, 1 Nov 2023 14:45:50 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, ying.huang@intel.com,
+        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        weixugc@google.com, apopple@nvidia.com, tim.c.chen@intel.com,
+        dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <pmxrljwp4ayl3fcu7rxm6prbumgb5l3lwb75lqfipmxxxwnqfo@nb5qjcxw22gp>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+ <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+ <20231031152142.GA3029315@cmpxchg.org>
+ <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+ <ZUCCGJgrqqk87aGN@memverge.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUCCGJgrqqk87aGN@memverge.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Pau Monne <roger.pau@citrix.com>
+On Tue 31-10-23 00:27:04, Gregory Price wrote:
+> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
+> 
+> > > This hopefully also explains why it's a global setting. The usecase is
+> > > different from conventional NUMA interleaving, which is used as a
+> > > locality measure: spread shared data evenly between compute
+> > > nodes. This one isn't about locality - the CXL tier doesn't have local
+> > > compute. Instead, the optimal spread is based on hardware parameters,
+> > > which is a global property rather than a per-workload one.
+> > 
+> > Well, I am not convinced about that TBH. Sure it is probably a good fit
+> > for this specific CXL usecase but it just doesn't fit into many others I
+> > can think of - e.g. proportional use of those tiers based on the
+> > workload - you get what you pay for.
+> > 
+> > Is there any specific reason for not having a new interleave interface
+> > which defines weights for the nodemask? Is this because the policy
+> > itself is very dynamic or is this more driven by simplicity of use?
+> > 
+> 
+> I had originally implemented it this way while experimenting with new
+> mempolicies.
+> 
+> https://lore.kernel.org/linux-cxl/20231003002156.740595-5-gregory.price@memverge.com/
+> 
+> The downside of doing it in mempolicy is...
+> 1) mempolicy is not sysfs friendly, and to make it sysfs friendly is a
+>    non-trivial task.  It is very "current-task" centric.
 
-The Processor capability bits notify ACPI of the OS capabilities, and
-so ACPI can adjust the return of other Processor methods taking the OS
-capabilities into account.
-
-When Linux is running as a Xen dom0, the hypervisor is the entity
-in charge of processor power management, and hence Xen needs to make
-sure the capabilities reported by _OSC/_PDC match the capabilities of
-the driver in Xen.
-
-Introduce a small helper to sanitize the buffer when running as Xen
-dom0.
-
-When Xen supports HWP, this serves as the equivalent of commit
-a21211672c9a ("ACPI / processor: Request native thermal interrupt
-handling via _OSC") to avoid SMM crashes.  Xen will set bit
-ACPI_PROC_CAP_COLLAB_PROC_PERF (bit 12) in the capability bits and the
-_OSC/_PDC call will apply it.
-
-[ jandryuk: Mention Xen HWP's need.  Support _OSC & _PDC ]
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
----
-v4:
-Use xen_santize_proc_cap_bits() name - Michal
-Rephrase comment - Michal
-
-v3:
-Move xen_sanitize_pdc() call to arch_acpi_set_proc_cap_bits() to cover
-_OSC and _PDC.
-drivers/xen/pcpu.c is CONFIG_DOM0 && CONFIG_X86
-
-v2:
-Move local variables in acpi_processor_eval_pdc() to reuse in both conditions.
----
- arch/x86/include/asm/acpi.h           | 14 ++++++++++++++
- arch/x86/include/asm/xen/hypervisor.h |  9 +++++++++
- drivers/xen/pcpu.c                    | 21 +++++++++++++++++++++
- 3 files changed, 44 insertions(+)
-
-diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-index c8a7fc23f63c..f896eed4516c 100644
---- a/arch/x86/include/asm/acpi.h
-+++ b/arch/x86/include/asm/acpi.h
-@@ -16,6 +16,9 @@
- #include <asm/x86_init.h>
- #include <asm/cpufeature.h>
- #include <asm/irq_vectors.h>
-+#include <asm/xen/hypervisor.h>
-+
-+#include <xen/xen.h>
+True. Cpusets is the way to make it less process centric but that comes
+with its own constains (namely which NUMA policies are supported).
  
- #ifdef CONFIG_ACPI_APEI
- # include <asm/pgtable_types.h>
-@@ -127,6 +130,17 @@ static inline void arch_acpi_set_proc_cap_bits(u32 *cap)
- 	if (!cpu_has(c, X86_FEATURE_MWAIT) ||
- 	    boot_option_idle_override == IDLE_NOMWAIT)
- 		*cap &= ~(ACPI_PROC_CAP_C_C1_FFH | ACPI_PROC_CAP_C_C2C3_FFH);
-+
-+	if (xen_initial_domain()) {
-+		/*
-+		 * When Linux is running as Xen dom0, the hypervisor is the
-+		 * entity in charge of the processor power management, and so
-+		 * Xen needs to check the OS capabilities reported in the
-+		 * processor capabilities buffer matches what the hypervisor
-+		 * driver supports.
-+		 */
-+		xen_sanitize_proc_cap_bits(cap);
-+	}
- }
+> 2) Barring a change to mempolicy to be sysfs friendly, the options for
+>    implementing weights in the mempolicy are either a) new flag and
+>    setting every weight individually in many syscalls, or b) a new
+>    syscall (set_mempolicy2), which is what I demonstrated in the RFC.
+
+Yes, that would likely require a new syscall.
  
- static inline bool acpi_has_cpu_in_madt(void)
-diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
-index 7048dfacc04b..a9088250770f 100644
---- a/arch/x86/include/asm/xen/hypervisor.h
-+++ b/arch/x86/include/asm/xen/hypervisor.h
-@@ -100,4 +100,13 @@ static inline void leave_lazy(enum xen_lazy_mode mode)
+> 3) mempolicy is also subject to cgroup nodemasks, and as a result you
+>    end up with a rats nest of interactions between mempolicy nodemasks
+>    changing as a result of cgroup migrations, nodes potentially coming
+>    and going (hotplug under CXL), and others I'm probably forgetting.
+
+Is this really any different from what you are proposing though?
+
+>    Basically:  If a node leaves the nodemask, should you retain the
+>    weight, or should you reset it? If a new node comes into the node
+>    mask... what weight should you set? I did not have answers to these
+>    questions.
+
+I am not really sure I follow you. Are you talking about cpuset
+nodemask changes or memory hotplug here.
+
+> It was recommended to explore placing it in tiers instead, so I took a
+> crack at it here: 
+> 
+> https://lore.kernel.org/linux-mm/20231009204259.875232-1-gregory.price@memverge.com/
+> 
+> This had similar issue with the idea of hotplug nodes: if you give a
+> tier a weight, and one or more of the nodes goes away/comes back... what
+> should you do with the weight?  Split it up among the remaining nodes?
+> Rebalance? Etc.
+
+How is this any different from node becoming depleted? You cannot
+really expect that you get memory you are asking for and you can easily
+end up getting memory from a different node instead.
  
- enum xen_lazy_mode xen_get_lazy_mode(void);
+> The result of this discussion lead us to simply say "What if we place
+> the weights directly in the node".  And that lead us to this RFC.
+
+Maybe I am missing something really crucial here but I do not see how
+this fundamentally changes anything.
+
+Memory hotremove (or mere node memory depletion) is not really a thing
+because interleaving is a best effort operation so you have to live with
+memory not being strictly distributed per your preferences.
+
+Memory hotadd will be easier to manage because you just update a single
+place after node is hotadded rather than gazillions partial policies.
+But, that requires that interleave policy nodemask is assuming future
+nodes going online and put them to the mask.
+
+> I am not against implementing it in mempolicy (as proof: my first RFC).
+> I am simply searching for the acceptable way to implement it.
+> 
+> One of the benefits of having it set as a global setting is that weights
+> can be automatically generated from HMAT/HMEM information (ACPI tables)
+> and programs already using MPOL_INTERLEAVE will have a direct benefit.
+
+Right. This is understood. My main concern is whether this is outweights
+the limitations of having a _global_ policy _only_. Historically a single
+global policy usually led to finding ways how to make that more scoped
+(usually through cgroups).
  
-+#if defined(CONFIG_XEN_DOM0) && defined(CONFIG_ACPI)
-+void xen_sanitize_proc_cap_bits(uint32_t *buf);
-+#else
-+static inline void xen_sanitize_proc_cap_bits(uint32_t *buf)
-+{
-+	BUG();
-+}
-+#endif
-+
- #endif /* _ASM_X86_XEN_HYPERVISOR_H */
-diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
-index b3e3d1bb37f3..7000701dff8f 100644
---- a/drivers/xen/pcpu.c
-+++ b/drivers/xen/pcpu.c
-@@ -47,6 +47,9 @@
- #include <asm/xen/hypervisor.h>
- #include <asm/xen/hypercall.h>
- 
-+#ifdef CONFIG_ACPI
-+#include <acpi/processor.h>
-+#endif
- 
- /*
-  * @cpu_id: Xen physical cpu logic number
-@@ -400,4 +403,22 @@ bool __init xen_processor_present(uint32_t acpi_id)
- 
- 	return online;
- }
-+
-+void xen_sanitize_proc_cap_bits(uint32_t *cap)
-+{
-+	struct xen_platform_op op = {
-+		.cmd			= XENPF_set_processor_pminfo,
-+		.u.set_pminfo.id	= -1,
-+		.u.set_pminfo.type	= XEN_PM_PDC,
-+	};
-+	u32 buf[3] = { ACPI_PDC_REVISION_ID, 1, *cap };
-+	int ret;
-+
-+	set_xen_guest_handle(op.u.set_pminfo.pdc, buf);
-+	ret = HYPERVISOR_platform_op(&op);
-+	if (ret)
-+		pr_err("sanitize of _PDC buffer bits from Xen failed: %d\n",
-+		       ret);
-+	*cap = buf[2];
-+}
- #endif
+> I have been considering whether MPOL_WEIGHTED_INTERLEAVE should be added
+> along side this patch so that MPOL_INTERLEAVE is left entirely alone.
+> 
+> Happy to discuss more,
+> ~Gregory
+
 -- 
-2.41.0
-
+Michal Hocko
+SUSE Labs
