@@ -2,60 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B437DE3B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9974A7DE37E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344361AbjKAOUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 10:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        id S1344366AbjKAOVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 10:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235630AbjKAOUS (ORCPT
+        with ESMTP id S230464AbjKAOVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:20:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9E0115
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:20:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58EDCC433C7;
-        Wed,  1 Nov 2023 14:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698848408;
-        bh=PzUEW4w524QdvWruo3C65kPqW198zzSfCHbbShc+m20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XvzfVprkRxyBXCL2fyT3+f/ZKg3hX1Ss7t1LQCNQEkqIKOANLH43BUvLnOy0DIVoJ
-         cJrywwsRHVVNA9tWb2U0JN6aDQ4uAqkMhu6ucPdjq5DWYgsjQ9zSy9uWM+2+lOkpd6
-         ts0iB/+Y5ul3aTkgNMM9IfyZdAtmcFDhARMAKi14=
-Date:   Wed, 1 Nov 2023 15:20:05 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ren Mingshuai <renmingshuai@huawei.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        jirislaby@kernel.org, caowangbao@huawei.com, yanan@huawei.com,
-        liaichun@huawei.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: hso: Fix potential null pointer dereference
-Message-ID: <2023110139-spearmint-throttle-ed90@gregkh>
-References: <20231101133544.246961-1-renmingshuai@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101133544.246961-1-renmingshuai@huawei.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 10:21:52 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151EB115;
+        Wed,  1 Nov 2023 07:21:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=OCON80s5+YBfYIu8CqkppkNaABmnDO3nFsvKwtvLV2k=; b=jKmW3CGjYqjvqvQkv061BlX4aq
+        w88GulevTOno29x6tMLLgPdHUHau7teiI5GIzRbD8eOfa0Q+Xk/jGCqoDEOCFBV+bRDmdepuNPEqE
+        Cbq6EkfCnVERbaCzav+0EJch/oug7K+X36L0HMZdzQ+SBaRWMVLeHS8F0qsEn1hUYmKk=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:43426 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qyC6A-00062D-K3; Wed, 01 Nov 2023 10:21:39 -0400
+Date:   Wed, 1 Nov 2023 10:21:34 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Conor Dooley <conor@kernel.org>, a.zummo@towertech.it,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Message-Id: <20231101102134.ecce883a3ccbbf76abf8013d@hugovil.com>
+In-Reply-To: <20231011182330.393f4ec10ba53c85cb09c7e8@hugovil.com>
+References: <20230802191153.952667-1-hugo@hugovil.com>
+        <20230802191153.952667-2-hugo@hugovil.com>
+        <20230808-capsize-deodorize-5776d3dbb192@spud>
+        <20230808082533.b608c9a2a4bd922920643c4b@hugovil.com>
+        <202308081232266ec8a9b7@mail.local>
+        <20230808084426.fc7e432a9d85e5caf72d3ffe@hugovil.com>
+        <20230905113058.0fed933265fb68cd53b6d0fa@hugovil.com>
+        <20230919113423.6c8c48cb1b89275f5b4f3cc2@hugovil.com>
+        <20231011182330.393f4ec10ba53c85cb09c7e8@hugovil.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/2] dt-bindings: rtc: add properties to set
+ battery-related functions
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 09:35:44PM +0800, Ren Mingshuai wrote:
-> Generally, the old always points to the address of a ktermios structure,
-> so old is unlikely to be NULL. Still check it before dereference as
-> elsewhere.
+On Wed, 11 Oct 2023 18:23:30 -0400
+Hugo Villeneuve <hugo@hugovil.com> wrote:
 
-If it can not happen, there is no need to check it.  So unless you can
-prove that this ever could happen, this change isn't needed, right?
+> On Tue, 19 Sep 2023 11:34:23 -0400
+> Hugo Villeneuve <hugo@hugovil.com> wrote:
+> 
+> > On Tue, 5 Sep 2023 11:30:58 -0400
+> > Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > 
+> > > On Tue, 8 Aug 2023 08:44:26 -0400
+> > > Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > 
+> > > > On Tue, 8 Aug 2023 14:32:26 +0200
+> > > > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+> > > > 
+> > > > > On 08/08/2023 08:25:33-0400, Hugo Villeneuve wrote:
+> > > > > > On Tue, 8 Aug 2023 12:21:24 +0100
+> > > > > > Conor Dooley <conor@kernel.org> wrote:
+> > > > > > 
+> > > > > > > Hey Hugo,
+> > > > > > > 
+> > > > > > > On Wed, Aug 02, 2023 at 03:11:52PM -0400, Hugo Villeneuve wrote:
+> > > > > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > > > > > > 
+> > > > > > > > These properties can be defined in the board's device tree to set the
+> > > > > > > > default power-on values for battery-related functions.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > > > > > > ---
+> > > > > > > >  .../devicetree/bindings/rtc/rtc.yaml          | 19 +++++++++++++++++++
+> > > > > > > >  1 file changed, 19 insertions(+)
+> > > > > > > > 
+> > > > > > > > diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > > > > > > > index efb66df82782..0217d229e3fa 100644
+> > > > > > > > --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > > > > > > > +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > > > > > > > @@ -26,6 +26,25 @@ properties:
+> > > > > > > >        0: not chargeable
+> > > > > > > >        1: chargeable
+> > > > > > > >  
+> > > > > > > > +  battery-low-detect:
+> > > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > > > > > +    enum: [0, 1]
+> > > > > > > > +    description: |
+> > > > > > > > +      For RTC devices supporting a backup battery/supercap, this flag can be
+> > > > > > > > +      used to configure the battery low detection reporting function:
+> > > > > > > > +      0: disabled
+> > > > > > > > +      1: enabled
+> > > > > > > > +
+> > > > > > > > +  battery-switch-over:
+> > > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > > > > > +    enum: [0, 1]
+> > > > > > > > +    description: |
+> > > > > > > > +      For RTC devices supporting a backup battery/supercap, this flag can be
+> > > > > > > > +      used to configure the battery switch over when the main voltage source is
+> > > > > > > > +      turned off:
+> > > > > > > > +      0: disabled
+> > > > > > > > +      1: enabled
+> > > > > > > 
+> > > > > > > Why are these implemented as enums? This seems to fall into the category
+> > > > > > > of using DT to determine software policy - why's it not sufficient to
+> > > > > > > have boolean properties that indicate hardware support and let the software
+> > > > > > > decide what to do with them?
+> > > > > > 
+> > > > > > Hi Conor,
+> > > > > > the reason is that I based the new properties on the existing property
+> > > > > > "aux-voltage-chargeable":
+> > > > > > 
+> > > > > > -------------------
+> > > > > >  aux-voltage-chargeable:
+> > > > > >     $ref: /schemas/types.yaml#/definitions/uint32
+> > > > > >     enum: [0, 1]
+> > > > > >     description: |
+> > > > > >       Tells whether the battery/supercap of the RTC (if any) is
+> > > > > >       chargeable or not:
+> > > > > >       0: not chargeable
+> > > > > >       1: chargeable
+> > > > > > -------------------
+> > > > > > 
+> > > > > > I agree with you that a boolean would be more appropriate. Should I
+> > > > > > also submit a (separate) patch to fix the "aux-voltage-chargeable"
+> > > > > > property to a boolean?
+> > > > > > 
+> > > > > 
+> > > > > No, this is an enum on purpose.
+> > > > > I will not take battery switch over related properties, this is not
+> > > > > hardware description but software configuration. There is an ioctl for
+> > > > > this.
+> > > > 
+> > > > Hi Alexandre,
+> > > > can you suggest then how we can set default PWRMNG values for the
+> > > > PCF2131 then?
+> > > > 
+> > > > I looked at Documentation/ABI/testing/rtc-cdev but couldn't find an
+> > > > ioctl to activate the battery switch over function, nor one to activate
+> > > > the battery-low detection...
+> > > 
+> > > Ping...
+> > 
+> > Second ping...
+> > 
+> > Hugo.
+> 
+> Third ping...
 
-thanks,
+Hi Alexandre,
+Fourth ping...
 
-greg k-h
+People are writing to me off the mailing
+list to indicate that there is a "bug" with the PCF2131 driver relating
+to PWRMNG incorrect values.
+
+Can you answer my question so that we can find a solution to this
+problem?
+
+Hugo.
+
+
+> > > > > > > > +
+> > > > > > > >    quartz-load-femtofarads:
+> > > > > > > >      description:
+> > > > > > > >        The capacitive load of the quartz(x-tal), expressed in femto
+> > > > > > > > -- 
+> > > > > > > > 2.30.2
+> > > > > > > > 
+> > > > > 
+> > > > > -- 
+> > > > > Alexandre Belloni, co-owner and COO, Bootlin
+> > > > > Embedded Linux and Kernel engineering
+> > > > > https://bootlin.com
+> > > 
