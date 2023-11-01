@@ -2,135 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACB77DE395
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E357DE323
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344613AbjKAOmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 10:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
+        id S231561AbjKAOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 10:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344438AbjKAOmD (ORCPT
+        with ESMTP id S229537AbjKAOnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:42:03 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6518FD
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:41:57 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0737dcb26so7162855276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 07:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698849717; x=1699454517; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vY+whK5XqbSYsbcvwYkxlvLDj7c4sWYoMlLiCl+8FOk=;
-        b=LfDKBilu4NrSerjztc1lrZy8phroJv/F2apm3wn0KDjMa59lUkyl1NpYYdI9OvIEOL
-         TClkgg2MVEVcDljIhz4wlqODduPTbjuizVIPoH3QQPtd/lSMvjumg8lvM4/Pxa29M+Ae
-         zko2FcItwkGq8s9JuKbDRnHa6QAxZ0EVzEE2APspZVCuRY94vFxXYZNmWqzpjryecr0f
-         ZnxW6RN7/QIrxuVswW+PWOU1FgonTqVmvrHspdovd7/FYt0t4F8sa3TEtceGlSdrlauA
-         x/u8N7Y9K6fR1O/J7ML45OBqHD9dMqd11ZzYo05RWVtONBMCCTQ5H8OGYbJpdDm/DYLW
-         TgHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698849717; x=1699454517;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vY+whK5XqbSYsbcvwYkxlvLDj7c4sWYoMlLiCl+8FOk=;
-        b=LXHyvb0o0T2su+9de8u0zF22SkmhluxdlRVHTNwqwuAp5AmHXTod0fMPnqAw4sXpXZ
-         SePnsN0XMFzTem16bwUi6Oj0wrIhtWsTdg3P/ijZc7AXr1WghGmPngGoQgfuWfxjArEw
-         QIw/x0iEMX5ehpSQtOyYMl12bbDvA1Si+aFxUh2gujJD0KOi5xgqU3Wtg5QDyLIIa/0T
-         DFCyMlpQfvKACJ9XAOySAyaycw94da1xd4uHYE4UiMRtumrOPi8ElzKK+INbRgRiGQtQ
-         iE2jmKDaaKDMP7DClmSqkRr2LGAEqftXX9EJePod6VwRjXDLQpbbxPdHkEHGPIMkGwoB
-         8KwA==
-X-Gm-Message-State: AOJu0YydlxywFP/S2P/aTdw5Ja4cqo5LdRB0nG6WE9PEx3JEL7J0ETuS
-        I4v5yTF5RiLkYtVJl/KeC58O1QaBDcM=
-X-Google-Smtp-Source: AGHT+IGOo/h7yYknoNxH9zuetv1Jm66TgYYqm36QaUrElC5TUX1EIZWIQhjKSSLNgDJc5UoA6/jD+vUPb8Q=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:549:b0:da3:b96c:6c48 with SMTP id
- z9-20020a056902054900b00da3b96c6c48mr39857ybs.9.1698849717105; Wed, 01 Nov
- 2023 07:41:57 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 07:41:55 -0700
-In-Reply-To: <96c30a78fa95071e87045b7293c2cf796d4182a0.camel@redhat.com>
-Mime-Version: 1.0
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-10-weijiang.yang@intel.com> <96c30a78fa95071e87045b7293c2cf796d4182a0.camel@redhat.com>
-Message-ID: <ZUJjs2F-vD1-cZS4@google.com>
-Subject: Re: [PATCH v6 09/25] KVM: x86: Rework cpuid_get_supported_xcr0() to
- operate on vCPU data
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Wed, 1 Nov 2023 10:43:02 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B8DDE;
+        Wed,  1 Nov 2023 07:42:56 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A1D4lw1000533;
+        Wed, 1 Nov 2023 14:42:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=bRMFsgkBN/ZRzcBmg+JK7b2dtXW72QV0EGjP9MpjG08=;
+ b=h3RnaN7F9HBPYTul+NjsDk9aZlDGpLDzu2WliCtDTNRr4qks76Tl0pJ0V8Jhug+o4Mxv
+ l6cOlwRLpj0PTHsT+eBtqcHHPW9G5L7z0gczxv+0G9osP+LiRGRppraEJeADwBqiL84X
+ MFjTYTUkWBjkEHLTlVbZbR5X2v8GUSOnzHACUpK/F/6GQeglKyvXF3EK9lvG5BacAApZ
+ YOyRfec2auJAK2a/kYuCn2lPmp+Ekou78XJAyaLxCw6sxxqlLis7hKaNSYW+1ZbMzaCC
+ /vzye9mklaMiouKwUlI52XYNMorphPkrZNiW5fRxPUy5j5GaGbLnmYs3qEMgrasnCItT lg== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u30xecd7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 14:42:51 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A1EgoxT026228
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Nov 2023 14:42:50 GMT
+Received: from [10.216.63.119] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 1 Nov
+ 2023 07:42:45 -0700
+Message-ID: <a6bffac4-8c9c-6b85-290e-c991e8ab319a@quicinc.com>
+Date:   Wed, 1 Nov 2023 20:12:40 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/3] remoteproc: qcom: pas: make region assign more
+ generic
+Content-Language: en-US
+To:     <neil.armstrong@linaro.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231030-topic-sm8650-upstream-remoteproc-v2-0-609ee572e0a2@linaro.org>
+ <20231030-topic-sm8650-upstream-remoteproc-v2-2-609ee572e0a2@linaro.org>
+ <8e71ba02-5d6a-4c7e-4a55-f9ef79c2f928@quicinc.com>
+ <65dcdd9c-a75b-4fe7-bdcf-471a5602db20@linaro.org>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <65dcdd9c-a75b-4fe7-bdcf-471a5602db20@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cpQItXIuv7P23BUkRLaoMPIpz_Q1Wx5s
+X-Proofpoint-ORIG-GUID: cpQItXIuv7P23BUkRLaoMPIpz_Q1Wx5s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_12,2023-11-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 clxscore=1015 mlxscore=0 priorityscore=1501 malwarescore=0
+ adultscore=0 impostorscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311010123
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023, Maxim Levitsky wrote:
-> On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> > From: Sean Christopherson <seanjc@google.com>
-> > 
-> > Rework and rename cpuid_get_supported_xcr0() to explicitly operate on vCPU
-> > state, i.e. on a vCPU's CPUID state.  Prior to commit 275a87244ec8 ("KVM:
-> > x86: Don't adjust guest's CPUID.0x12.1 (allowed SGX enclave XFRM)"), KVM
-> > incorrectly fudged guest CPUID at runtime,
-> Can you explain how commit 275a87244ec8 relates to this patch?
->
-> > which in turn necessitated massaging the incoming CPUID state for
-> > KVM_SET_CPUID{2} so as not to run afoul of kvm_cpuid_check_equal().
+
+
+On 10/31/2023 10:36 PM, Neil Armstrong wrote:
+> Hi,
 > 
-> Can you link the commit that added this 'massaging' and explain on how this
-> relates to this patch?
+> On 30/10/2023 14:10, Mukesh Ojha wrote:
+>>
+>>
+>> On 10/30/2023 3:33 PM, Neil Armstrong wrote:
+>>> The current memory region assign only supports a single
+>>> memory region.
+>>>
+>>> But new platforms introduces more regions to make the
+>>> memory requirements more flexible for various use cases.
+>>> Those new platforms also shares the memory region between the
+>>> DSP and HLOS.
+>>>
+>>> To handle this, make the region assign more generic in order
+>>> to support more than a single memory region and also permit
+>>> setting the regions permissions as shared.
+>>>
+>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>> ---
+>>>   drivers/remoteproc/qcom_q6v5_pas.c | 102 
+>>> ++++++++++++++++++++++++-------------
+>>>   1 file changed, 66 insertions(+), 36 deletions(-)
+>>>
+>>> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c 
+>>> b/drivers/remoteproc/qcom_q6v5_pas.c
+>>> index 913a5d2068e8..4829fd26e17d 100644
+>>> --- a/drivers/remoteproc/qcom_q6v5_pas.c
+>>> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
+>>> @@ -33,6 +33,8 @@
+>>>   #define ADSP_DECRYPT_SHUTDOWN_DELAY_MS    100
+>>> +#define MAX_ASSIGN_COUNT 2
+>>> +
+>>>   struct adsp_data {
+>>>       int crash_reason_smem;
+>>>       const char *firmware_name;
+>>> @@ -51,6 +53,9 @@ struct adsp_data {
+>>>       int ssctl_id;
+>>>       int region_assign_idx;
+>>> +    int region_assign_count;
+>>> +    bool region_assign_shared;
+>>> +    int region_assign_vmid;
+>>>   };
+>>>   struct qcom_adsp {
+>>> @@ -87,15 +92,18 @@ struct qcom_adsp {
+>>>       phys_addr_t dtb_mem_phys;
+>>>       phys_addr_t mem_reloc;
+>>>       phys_addr_t dtb_mem_reloc;
+>>> -    phys_addr_t region_assign_phys;
+>>> +    phys_addr_t region_assign_phys[MAX_ASSIGN_COUNT];
+>>>       void *mem_region;
+>>>       void *dtb_mem_region;
+>>>       size_t mem_size;
+>>>       size_t dtb_mem_size;
+>>> -    size_t region_assign_size;
+>>> +    size_t region_assign_size[MAX_ASSIGN_COUNT];
+>>>       int region_assign_idx;
+>>> -    u64 region_assign_perms;
+>>> +    int region_assign_count;
+>>> +    bool region_assign_shared;
+>>> +    int region_assign_vmid;
+>>> +    u64 region_assign_perms[MAX_ASSIGN_COUNT];
+>>>       struct qcom_rproc_glink glink_subdev;
+>>>       struct qcom_rproc_subdev smd_subdev;
+>>> @@ -590,37 +598,52 @@ static int adsp_alloc_memory_region(struct 
+>>> qcom_adsp *adsp)
+>>>   static int adsp_assign_memory_region(struct qcom_adsp *adsp)
+>>>   {
+>>> -    struct reserved_mem *rmem = NULL;
+>>> -    struct qcom_scm_vmperm perm;
+>>> +    struct qcom_scm_vmperm perm[MAX_ASSIGN_COUNT];
+>>> +    unsigned int perm_size = 1;
+>>
+>> AFAICS, not need of initialization.
+> 
+> Indeed, removed
+> 
+>>
+>>>       struct device_node *node;
+>>> -    int ret;
+>>> +    int offset, ret;
+>>
+>> Nit: one variable per line.
+> 
+> Done
+> 
+>>
+>>>       if (!adsp->region_assign_idx)
+>>
+>> Not related to this patch..
+>> Should not this be valid only for > 1 ?
+> 
+> I don't understand, only region_assign_idx > 1 triggers a memory_assign,
+> and this check discards configurations with region_assign_idx == 0 as
+> expected.
 
-It's commit 275a87244ec8, which is right above.  I think the missing part is an
-explicit call out that the massaging used cpuid_get_supported_xcr0() with the
-incoming "struct kvm_cpuid_entry2", i.e. without a "struct kvm_vcpu".
+Ah, you can ignore the comments, I got the intention after commenting
+here ..
 
-> Can you explain what is the problem that this patch is trying to solve?
+> 
+>>
+>>
+>>>           return 0;
+>>> -    node = of_parse_phandle(adsp->dev->of_node, "memory-region", 
+>>> adsp->region_assign_idx);
+>>> -    if (node)
+>>> -        rmem = of_reserved_mem_lookup(node);
+>>> -    of_node_put(node);
+>>> -    if (!rmem) {
+>>> -        dev_err(adsp->dev, "unable to resolve shareable 
+>>> memory-region\n");
+>>> -        return -EINVAL;
+>>> -    }
+>>> +    for (offset = 0; offset < adsp->region_assign_count; ++offset) {
+>>> +        struct reserved_mem *rmem = NULL;
+>>> +
+>>> +        node = of_parse_phandle(adsp->dev->of_node, "memory-region",
+>>> +                    adsp->region_assign_idx + offset);
+>>> +        if (node)
+>>> +            rmem = of_reserved_mem_lookup(node);
+>>> +        of_node_put(node);
+>>> +        if (!rmem) {
+>>> +            dev_err(adsp->dev, "unable to resolve shareable 
+>>> memory-region index %d\n",
+>>> +                offset);
+>>> +            return -EINVAL; > +        }
+>>
+>>
+>>> -    perm.vmid = QCOM_SCM_VMID_MSS_MSA;
+>>> -    perm.perm = QCOM_SCM_PERM_RW;
+>>> +        if (adsp->region_assign_shared)  {
+>>> +            perm[0].vmid = QCOM_SCM_VMID_HLOS;
+>>> +            perm[0].perm = QCOM_SCM_PERM_RW;
+>>> +            perm[1].vmid = adsp->region_assign_vmid;
+>>> +            perm[1].perm = QCOM_SCM_PERM_RW;
+>>> +            perm_size = 2;
+>>> +        } else {
+>>> +            perm[0].vmid = adsp->region_assign_vmid;
+>>> +            perm[0].perm = QCOM_SCM_PERM_RW;
+>>> +            perm_size = 1;
+>>> +        }
+>>> -    adsp->region_assign_phys = rmem->base;
+>>> -    adsp->region_assign_size = rmem->size;
+>>> -    adsp->region_assign_perms = BIT(QCOM_SCM_VMID_HLOS);
+>>> +        adsp->region_assign_phys[offset] = rmem->base;
+>>> +        adsp->region_assign_size[offset] = rmem->size;
+>>> +        adsp->region_assign_perms[offset] = BIT(QCOM_SCM_VMID_HLOS);
+>>
+>> Do we need array for this, is this changing ?
+> 
+> We need to keep region_assign_perms for unassign, but for the other 2 we 
+> would
+> need to duplicate the code from adsp_assign_memory_region into
+> adsp_unassign_memory_region.
 
-Is this better?
+Thanks got it.
 
---
-Rework and rename cpuid_get_supported_xcr0() to explicitly operate on vCPU
-state, i.e. on a vCPU's CPUID state, now that the only usage of the helper
-is to retrieve a vCPU's already-set CPUID.
+> 
+>>
+>>> -    ret = qcom_scm_assign_mem(adsp->region_assign_phys,
+>>> -                  adsp->region_assign_size,
+>>> -                  &adsp->region_assign_perms,
+>>> -                  &perm, 1);
+>>> -    if (ret < 0) {
+>>> -        dev_err(adsp->dev, "assign memory failed\n");
+>>> -        return ret;
+>>> +        ret = qcom_scm_assign_mem(adsp->region_assign_phys[offset],
+>>> +                      adsp->region_assign_size[offset],
+>>> +                      &adsp->region_assign_perms[offset],
+>>> +                      perm, perm_size);
+>>> +        if (ret < 0) {
+>>> +            dev_err(adsp->dev, "assign memory %d failed\n", offset);
+>>> +            return ret;
+>>> +        }
+>>>       }
+>>>       return 0;
+>>> @@ -629,20 +652,22 @@ static int adsp_assign_memory_region(struct 
+>>> qcom_adsp *adsp)
+>>>   static void adsp_unassign_memory_region(struct qcom_adsp *adsp)
+>>>   {
+>>>       struct qcom_scm_vmperm perm;
+>>> -    int ret;
+>>> +    int offset, ret;
+>>> -    if (!adsp->region_assign_idx)
+>>> +    if (!adsp->region_assign_idx || adsp->region_assign_shared)
+>>>           return;
+>>> -    perm.vmid = QCOM_SCM_VMID_HLOS;
+>>> -    perm.perm = QCOM_SCM_PERM_RW;
+>>> +    for (offset = 0; offset < adsp->region_assign_count; ++offset) {
+>>> +        perm.vmid = QCOM_SCM_VMID_HLOS;
+>>> +        perm.perm = QCOM_SCM_PERM_RW;
+>>
+>>> -    ret = qcom_scm_assign_mem(adsp->region_assign_phys,
+>>> -                  adsp->region_assign_size,
+>>> -                  &adsp->region_assign_perms,
+>>> -                  &perm, 1);
+>>> -    if (ret < 0)
+>>> -        dev_err(adsp->dev, "unassign memory failed\n");
+>>> +        ret = qcom_scm_assign_mem(adsp->region_assign_phys[offset],
+>>> +                      adsp->region_assign_size[offset],
+>>> +                      &adsp->region_assign_perms[offset],
+>>> +                      &perm, 1);
+>>> +        if (ret < 0)
+>>> +            dev_err(adsp->dev, "unassign memory failed\n");
+>>> +    }
+>>>   }
+>>>   static int adsp_probe(struct platform_device *pdev)
+>>> @@ -696,6 +721,9 @@ static int adsp_probe(struct platform_device *pdev)
+>>>       adsp->info_name = desc->sysmon_name;
+>>>       adsp->decrypt_shutdown = desc->decrypt_shutdown;
+>>>       adsp->region_assign_idx = desc->region_assign_idx;
 
-Prior to commit 275a87244ec8 ("KVM: x86: Don't adjust guest's CPUID.0x12.1
-(allowed SGX enclave XFRM)"), KVM incorrectly fudged guest CPUID at
-runtime, which in turn necessitated massaging the incoming CPUID state for
-KVM_SET_CPUID{2} so as not to run afoul of kvm_cpuid_check_equal().  I.e.
-KVM also invoked cpuid_get_supported_xcr0() with the incoming CPUID state,
-and thus without an explicit vCPU object.
---
+Should this also need
+min_t(int, MAX_ASSIGN_COUNT - 1, desc->region_assign_idx);
+as no where boundary check is being done.
 
-> Is it really allowed in x86 spec to have different supported mask of XCR0 bits
-> on different CPUs (assuming all CPUs of the same type)?
-
-Yes, nothing in the SDM explicitly states that all cores in have identical feature
-sets.  And "assuming all CPUs of the same type" isn't really a valid constraint
-because it's very doable to put different SKUs into a multi-socket system.
-
-Intel even (somewhat inadvertantly) kinda sorta shipped such CPUs, as Alder Lake
-P-cores support AVX512 but E-cores do not, and IIRC early (pre-production?) BIOS
-didn't disable AVX512 on the P-Cores, i.e. software could observe cores with and
-without AVX512.  That quickly got fixed because it confused software, but until
-Intel squashed AVX512 entirely with a microcode update, disabling E-Cores in BIOS
-would effectively enable AVX512 on the remaining P-Cores.
-
-And it's not XCR0-related, but PMUs on Alder Lake (and all Intel hybrid CPUs) are
-truly heterogenous.  It's a mess for virtualization, but concrete proof that there
-are no architectural guarantees regarding homogeneity of feature sets.
-
-> If true, does KVM supports it?
-
-Yes.  Whether or not that's a good thing is definitely debatle, bug KVM's ABI for
-a very long time has allowed userspace to expose whatever it wants via KVM_SET_CPUID.
-
-Getting (guest) software to play nice is an entirely different matter, but exposing
-heterogenous vCPUs isn't an architectural violation.
+-Mukesh
+>>> +    adsp->region_assign_count = min_t(int, MAX_ASSIGN_COUNT, 
+>>> desc->region_assign_count);
+>>> +    adsp->region_assign_vmid = desc->region_assign_vmid;
+>>> +    adsp->region_assign_shared = desc->region_assign_shared;
+>>>       if (dtb_fw_name) {
+>>>           adsp->dtb_firmware_name = dtb_fw_name;
+>>>           adsp->dtb_pas_id = desc->dtb_pas_id;
+>>> @@ -1163,6 +1191,8 @@ static const struct adsp_data 
+>>> sm8550_mpss_resource = {
+>>>       .sysmon_name = "modem",
+>>>       .ssctl_id = 0x12,
+>>>       .region_assign_idx = 2,
+>>> +    .region_assign_count = 1,
+>>> +    .region_assign_vmid = QCOM_SCM_VMID_MSS_MSA,
+>>>   };
+>>>   static const struct of_device_id adsp_of_match[] = {
+>>>
+>>
+>> -Mukesh
+> 
+> Thanks,
+> Neil
+> 
