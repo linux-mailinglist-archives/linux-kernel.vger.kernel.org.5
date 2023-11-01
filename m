@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F07507DDE72
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7867DDE77
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjKAJdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
+        id S230089AbjKAJdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKAJc7 (ORCPT
+        with ESMTP id S229490AbjKAJdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:32:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA6298
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698831172; x=1730367172;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BJlnHyxLxxldKBwcbK7SHbsYAPZoprDqJaMrkG5WMX0=;
-  b=jmdk+oO3wVTP5QbHrXqlXoxdFSirsDG1HuwTkdmag3kQQYGY9fb0XPrA
-   tpbZGeZttT3x/+bhgs0VK7b5l9JLTqMpA9EHAbdhiWqrh6mi5Xb2Rr3YS
-   WiIagEUjPIG7u8JNShqxiU3EHgfSHHUzgNktbYUCx4xv4i5/zaaaHc3DI
-   SnQXjEvX+zvsr0WaMg2Z/hahV6lHi5fDvQjtwMefHAH59V7/jaLSHZgDg
-   Bl+f2I97bw3r7M/rLIe09IylEQOtR2FkMgNJI4G5EbIoccPg0kozJEIYr
-   Q2TP2Qd0wTaYLr2q9IUQrXVsEavW9EOwVtd5CSPsRc98x/fvm9H393OZC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="419582763"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="419582763"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:32:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="710732316"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="710732316"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:32:49 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qy7ag-0000000APOD-1R7V;
-        Wed, 01 Nov 2023 11:32:46 +0200
-Date:   Wed, 1 Nov 2023 11:32:46 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2 6/7] drm/i915/dsi: Replace poking of CHV GPIOs behind
- the driver's back
-Message-ID: <ZUIbPtEEbl6pjdqg@smile.fi.intel.com>
-References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
- <20231024155739.3861342-7-andriy.shevchenko@linux.intel.com>
- <ZTfssxRsrDxhzSQ6@smile.fi.intel.com>
- <b489675d-e9de-4bca-9622-78545aa8606d@redhat.com>
- <16e533e2-81bb-47ba-9e23-460a626bcad7@redhat.com>
+        Wed, 1 Nov 2023 05:33:42 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C054C2
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:33:39 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id y7bUqR7n2QRiPy7bUqGpjn; Wed, 01 Nov 2023 10:33:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698831217;
+        bh=Lk6by+apJlXOTJCfTgHSgCgxJ2Nx6rTRDAgAWtwwfU4=;
+        h=From:To:Cc:Subject:Date;
+        b=BbVBnsZmRk2OMHr0SyJFrkLIzjmbNG6017Q+W8zqghSIP2TMIyMLZArrpLCPxvnF5
+         4x7t+NAHTlbmCfMcwD5W2LI8bqKszLrscaC2+j+/BbVhqNtNHs1TRVGKHVHnac8zEz
+         dgajdDB/wKaW5JtsL4GXQnfLhIqLFiSY5OcL/a3tOQvqv31nOLhYOLl9c3hJpVXB9D
+         IlCfF5Xk+5iRalotiMUMGdCId+VOoxodLNLCrWDIYUOFKqhidUyWi9xLgpZ52Dxpeq
+         Ff1cGFU0RPUELO5nH2cwprGhHxZSZ421QjYbTQkJ0KasVPcsglOikh5gQ7kC0Ij1Lf
+         S+tGPGydgTuIQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 01 Nov 2023 10:33:37 +0100
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] base: soc: Remove usage of the deprecated ida_simple_xx() API
+Date:   Wed,  1 Nov 2023 10:33:33 +0100
+Message-Id: <f0ef849446c9b3df7d6b16b1a58d089b4c17276c.1698831191.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16e533e2-81bb-47ba-9e23-460a626bcad7@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 10:15:52PM +0100, Hans de Goede wrote:
-> On 10/31/23 17:07, Hans de Goede wrote:
-> > On 10/24/23 18:11, Andy Shevchenko wrote:
-> >> On Tue, Oct 24, 2023 at 06:57:38PM +0300, Andy Shevchenko wrote:
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-...
+This is less verbose.
 
-> > As for the CHT support, I have not added that to my tree yet, I would
-> > prefer to directly test the correct/fixed patch.
-> 
-> And I hit the "jackpot" on the first device I tried and the code needed
-> some fixing to actually work, so here is something to fold into v3 to
-> fix things:
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/base/soc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks!
-
-But let me first send current v3 as it quite differs to v2 in the sense
-of how I do instantiate GPIO lookup tables.
-
-Meanwhile I will look into the change you sent (and hopefully we can
-incorporate something in v3 for v4).
-
+diff --git a/drivers/base/soc.c b/drivers/base/soc.c
+index 8dec5228fde3..c741d0845852 100644
+--- a/drivers/base/soc.c
++++ b/drivers/base/soc.c
+@@ -106,7 +106,7 @@ static void soc_release(struct device *dev)
+ {
+ 	struct soc_device *soc_dev = container_of(dev, struct soc_device, dev);
+ 
+-	ida_simple_remove(&soc_ida, soc_dev->soc_dev_num);
++	ida_free(&soc_ida, soc_dev->soc_dev_num);
+ 	kfree(soc_dev->dev.groups);
+ 	kfree(soc_dev);
+ }
+@@ -155,7 +155,7 @@ struct soc_device *soc_device_register(struct soc_device_attribute *soc_dev_attr
+ 	soc_attr_groups[1] = soc_dev_attr->custom_attr_group;
+ 
+ 	/* Fetch a unique (reclaimable) SOC ID. */
+-	ret = ida_simple_get(&soc_ida, 0, 0, GFP_KERNEL);
++	ret = ida_alloc(&soc_ida, GFP_KERNEL);
+ 	if (ret < 0)
+ 		goto out3;
+ 	soc_dev->soc_dev_num = ret;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
