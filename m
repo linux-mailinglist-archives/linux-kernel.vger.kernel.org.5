@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F46D7DE002
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC337DE00B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbjKALC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
+        id S234697AbjKALDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbjKALC0 (ORCPT
+        with ESMTP id S229731AbjKALDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:02:26 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AEFFC;
-        Wed,  1 Nov 2023 04:02:24 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so2259928f8f.0;
-        Wed, 01 Nov 2023 04:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698836543; x=1699441343; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lLGQwWjL2Aw3sFfyWPVTh2LkEYh2Jo+b78gHIPc7ugc=;
-        b=DBJCW2NsUaqE0lQjq3liJexnkoVaIj4KK0h4KXmguzQSy8anfcloF93TuCrsuT9IPt
-         Fhkg950aQykwX6PBRgzXw5hXphmNo2u1xdGuJ7uxYBvnGHFriLYM5IL+gWdIQOeDcUuz
-         fqcJTO/ilUd6HvlZQfC6LGJp3xtQZURa2mxQbkcpSRzZ9bZd2A50J2yCwJdXal3EmAbg
-         aTk0oh15xTILtIEY3rE4lYLes13o+BOAqyG0oxvXMQ9rYNpmS7Dn5lXZuavuUPrC1QB4
-         jHKnMP8QW6ndB3y5qT+uLGtPmf4C5piIgb5kdSc3g/jhD84nApD4lgz9iLPt/K8T8/rO
-         VnFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698836543; x=1699441343;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lLGQwWjL2Aw3sFfyWPVTh2LkEYh2Jo+b78gHIPc7ugc=;
-        b=EdJsOsS/59cJ7Yq+tqMyoVrDdDaODkkTouhNSPCWznd5h98xqrxCR5ZAtU2ScXq4uZ
-         J18YE9hY1osvZ9PF1EYOfTTnYgDOuFWOWq9/agv0LFdz91jA0v2WGybMkKsjGGTViugm
-         NMdVmwI5i3kgC3n5EVkpuv2MHm6pprnUonkJZKx+xY+eNYoFLBsxY86E/fW2roKDeBuc
-         eoMRgwiIvotuhlMTwRheo/JqWaYknpuNI64Iw5qBqzU3qbKH0exOxhiBHkaRcQ3bcgDv
-         UcQJeFSirK3SKYbgaEp3Eeq61SadTSbPMtM164t+qfWF4Xi6vhn7EpDjqijq9k4lvuwz
-         qm4w==
-X-Gm-Message-State: AOJu0YxLtZewPrG1I+aFFERCPxPBq21bNYM4wYue7DrxG+NyJ+DBF830
-        v+xjf6Jveba8telt/BFQNBdBo38i9HZ3fA==
-X-Google-Smtp-Source: AGHT+IGhSCFjWDlSAeyzhKo7ObrQNOoHY2TZnOfL4+qkuskUlpbXSKzRJk8C/Me6qA29voKfgh8GNg==
-X-Received: by 2002:adf:eb47:0:b0:32c:837e:ef0 with SMTP id u7-20020adfeb47000000b0032c837e0ef0mr11190912wrn.50.1698836542620;
-        Wed, 01 Nov 2023 04:02:22 -0700 (PDT)
-Received: from [10.95.173.140] (54-240-197-235.amazon.com. [54.240.197.235])
-        by smtp.gmail.com with ESMTPSA id g8-20020a056000118800b0032f933556b8sm3897074wrx.7.2023.11.01.04.02.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 04:02:22 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <f850458d-c1a3-4851-921e-e04404e827b9@xen.org>
-Date:   Wed, 1 Nov 2023 11:02:16 +0000
+        Wed, 1 Nov 2023 07:03:31 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649A28F
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:03:25 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qy90N-00073n-Qa; Wed, 01 Nov 2023 12:03:23 +0100
+Message-ID: <7a9a1b2f-a3df-4806-a7b3-992f974c2d06@leemhuis.info>
+Date:   Wed, 1 Nov 2023 12:03:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v2] KVM x86/xen: add an override for
- PVCLOCK_TSC_STABLE_BIT
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231031115748.622578-1-paul@xen.org>
- <ZUGCPQegUeTutsrb@google.com>
- <028f629d16377f9a7e9fd87ef9564846b0ab4ed9.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <028f629d16377f9a7e9fd87ef9564846b0ab4ed9.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: regression with 33140e668b10 thermal/drivers/mediatek: Control
+ buffer enablement tweaks
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux Regressions <regressions@lists.linux.dev>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
+          Linux regressions mailing list 
+          <regressions@lists.linux.dev>
+References: <trinity-6713557b-fe0a-4dae-84aa-1aa86f7619fa-1693473911557@3c-app-gmx-bs12>
+ <ZPBjGWPjSfl-HmDJ@debian.me>
+ <e264149e-c053-4346-a645-e694ed791569@leemhuis.info>
+In-Reply-To: <e264149e-c053-4346-a645-e694ed791569@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698836605;f59ee8f4;
+X-HE-SMSGID: 1qy90N-00073n-Qa
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 22:48, David Woodhouse wrote:
-> On Tue, 2023-10-31 at 15:39 -0700, Sean Christopherson wrote:
->> On Tue, Oct 31, 2023, Paul Durrant wrote:
+[TLDR: This mail in primarily relevant for Linux regression tracking. A
+change or fix related to the regression discussed in this thread was
+posted or applied, but it did not use a Closes: tag to point to the
+report, as Linus and the documentation call for. Things happen, no
+worries -- but now the regression tracking bot needs to be told manually
+about the fix. See link in footer if these mails annoy you.]
+
+On 12.09.23 14:23, Linux regression tracking #update (Thorsten Leemhuis)
+wrote:
+> 
+> On 31.08.23 11:53, Bagas Sanjaya wrote:
+>> On Thu, Aug 31, 2023 at 11:25:11AM +0200, Frank Wunderlich wrote:
 >>>
->>> +       if (force_tsc_unstable)
->>> +               guest_hv_clock->flags &= ~PVCLOCK_TSC_STABLE_BIT;
+>>> The commit 33140e668b10 "thermal/drivers/mediatek: Control buffer enablement tweaks" is merged between 6.3 and 6.4 and causes a regression where temperature cannot be read correctly at least for mt7986/Bpi-R3.
+>>>
+>>> bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
+>>> -274000
+>>>
+>>> after reverting the commit and fixing some build-errors in 6.5-rc7 because new members used in mt8365_thermal_data too, we can read temperature on mt7986 again.
+>>>
 >>
->> I don't see how this works.  This clears the bit in the guest copy, then clobbers
->> all of guest_hv_clock with a memcpy().
+>> Thanks for the regression report. I'm adding it to regzbot:
+>>
+>> #regzbot ^introduced: 33140e668b1020
+>> #regzbot title: incorrect temperature on MT7986 due to tweaking buffer
 > 
-> Agreed, that seems wrong.
 > 
+> #regzbot monitor:
+> https://lore.kernel.org/all/20230907112018.52811-1-linux@fw-web.de/
+> #regzbot fix: thermal/drivers/mediatek: Fix control buffer enablement on
+> MT7896
+> #regzbot ignore-activity
 
-It is indeed. Looks like it got moved the wrong side of the memcpy() 
-when I rebased.
+patch title changed, hence:
 
-   Paul
+#regzbot fix: 5055fadfa7e16f242
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
