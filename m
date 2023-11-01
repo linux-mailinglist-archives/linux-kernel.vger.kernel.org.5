@@ -2,552 +2,3390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD8A7DE0A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 13:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BDA7DE0A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 13:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235485AbjKAMDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 08:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
+        id S235560AbjKAMHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 08:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbjKAMDf (ORCPT
+        with ESMTP id S231463AbjKAMHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 08:03:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FEADC;
-        Wed,  1 Nov 2023 05:03:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E982CC433C8;
-        Wed,  1 Nov 2023 12:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698840209;
-        bh=fMsWE4GB8VvCbjmaHdxFKy4uUw8gx5OFh2KttAAaWYE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BCDrVJaKDhpvzYLOBL2UIZNUaog/xwlMTi2ngOIsiYJdiw0DNXw1fVi1XCf1NwyU+
-         iJXAruqyCRCIyNuoAc86nVDweZS1quxLZbr48ZfzpmybJbc9xzITK9TGKYH+uO6g5C
-         Zn5Iqm20v5TVqzmnAE7Wxblne57tW2dibSsGmBHk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: [PATCH 6.5 000/111] 6.5.10-rc2 review
-Date:   Wed,  1 Nov 2023 13:03:25 +0100
-Message-ID: <20231101120147.190909952@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
+        Wed, 1 Nov 2023 08:07:23 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FE8DC;
+        Wed,  1 Nov 2023 05:07:16 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32f7c80ab33so2623611f8f.0;
+        Wed, 01 Nov 2023 05:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698840435; x=1699445235; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h2z+x+neuE71iQR4oQ6WeUWm/Z0Df/+koWbJpTFCkhc=;
+        b=AiheJqiBqIMCngwdIcPY42j6tcvdNDanXDrkml3TATLPzJeOmBWYhWka7EO3uwTMha
+         BPILFsgRT6VcHk5GEi97xdg7zgv8EpzOmEaGqdddRSmOGvVHUXPAUxJvxe/C/MoJRPfj
+         jfcP+kg7gFQkUSmczHZBYe956aS5PBxHjfCj5AzHWybvmQZ7qVX5MmrndaEcq9Xkqckn
+         ghfwZ4EJ9AqzNFydacoyxRzs47WI4BTOsE4d3pQUfCHHjDJqkCSy+c3T8meH3+FROarV
+         K6dqU/hHeGFC1vtDhFaSK2o8aZ7D8wSdofPTy3THFPXBhZUcGs4qyCM2caN6KbEVCD3D
+         99ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698840435; x=1699445235;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h2z+x+neuE71iQR4oQ6WeUWm/Z0Df/+koWbJpTFCkhc=;
+        b=ht4bzjBLyFWfb9mgrmeTt8KlB13wBfBLyUII9mdvs6VS/9O6lJVRy2XiLRvjsTFMuB
+         siZhemXMViFDpzGRc2AaIu9CpeuDmjhypT5d6D0PLYK543iOQdJ27SR9CBhMKnqtVmbt
+         ATOa8x5FO4ys79fxrENqOyph5zRpwItOmkrU/Qh3HFE07e6hWZWTGL+W4/3vk9VbTLAM
+         d7KmHwHvdbQu688A+UUVeFr5IlqsAQZJxfHN87q5hpNd9y6X7Yc08u0pJbq37+gKHvye
+         +Yw6GUAcAaCScsG2LfGunyy40q3aWcu48UenA7RHSk/eNeBeBYm3jnzxqP/OLQhQDALT
+         pfig==
+X-Gm-Message-State: AOJu0YxcNghOtxBHjbIHpvux3eaAIdkv44eEvML7vkgk3r4RIdfoXYDD
+        3QPq9J0HuiggQgdwqyIS8r8=
+X-Google-Smtp-Source: AGHT+IFMj/WI+LqujLAHTCnUAux73fpdY6vWuGwkWJK/IK0pftpIEHQQGV97yfTcO94ICj8sBPuTTg==
+X-Received: by 2002:a05:6000:686:b0:32f:9ac4:6f29 with SMTP id bo6-20020a056000068600b0032f9ac46f29mr3416342wrb.70.1698840434346;
+        Wed, 01 Nov 2023 05:07:14 -0700 (PDT)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-109.cust.vodafonedsl.it. [188.217.59.109])
+        by smtp.gmail.com with ESMTPSA id 12-20020a5d47ac000000b0032ddc3b88e9sm4142469wrb.0.2023.11.01.05.07.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 05:07:13 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 13:07:10 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
+        mhecht73@gmail.com, sakari.ailus@linux.intel.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v11 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZUI/brRQnYuukwsl@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231031073417.556053-1-tomm.merciai@gmail.com>
+ <20231031073417.556053-4-tomm.merciai@gmail.com>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.10-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-6.5.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 6.5.10-rc2
-X-KernelTest-Deadline: 2023-11-03T12:01+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031073417.556053-4-tomm.merciai@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 6.5.10 release.
-There are 111 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Fri, 03 Nov 2023 12:01:18 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.10-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 6.5.10-rc2
-
-Karol Wachowski <karol.wachowski@linux.intel.com>
-    accel/ivpu/37xx: Fix missing VPUIP interrupts
-
-SeongJae Park <sj@kernel.org>
-    mm/damon/sysfs: check DAMOS regions update progress from before_terminate()
-
-David Lazar <dlazar@gmail.com>
-    platform/x86: Add s2idle quirk for more Lenovo laptops
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    clk: stm32: Fix a signedness issue in clk_stm32_composite_determine_rate()
-
-Maxime Ripard <mripard@kernel.org>
-    clk: socfpga: gate: Account for the divider in determine_rate
-
-Alessandro Carminati <alessandro.carminati@gmail.com>
-    clk: Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
-
-Al Viro <viro@zeniv.linux.org.uk>
-    sparc32: fix a braino in fault handling in csum_and_copy_..._user()
-
-Peter Zijlstra <peterz@infradead.org>
-    perf/core: Fix potential NULL deref
-
-Tony Luck <tony.luck@intel.com>
-    x86/cpu: Add model number for Intel Arrow Lake mobile processor
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/i8259: Skip probing when ACPI/MADT advertises PCAT compatibility
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/tsc: Defer marking TSC unstable to a worker
-
-Peng Fan <peng.fan@nxp.com>
-    nvmem: imx: correct nregs for i.MX6UL
-
-Peng Fan <peng.fan@nxp.com>
-    nvmem: imx: correct nregs for i.MX6SLL
-
-Peng Fan <peng.fan@nxp.com>
-    nvmem: imx: correct nregs for i.MX6ULL
-
-Ekansh Gupta <quic_ekangupt@quicinc.com>
-    misc: fastrpc: Unmap only if buffer is unmapped from DSP
-
-Ekansh Gupta <quic_ekangupt@quicinc.com>
-    misc: fastrpc: Clean buffers on remote invocation failures
-
-Ekansh Gupta <quic_ekangupt@quicinc.com>
-    misc: fastrpc: Free DMA handles for RPC calls with no arguments
-
-Ekansh Gupta <quic_ekangupt@quicinc.com>
-    misc: fastrpc: Reset metadata buffer to avoid incorrect free
-
-Yujie Liu <yujie.liu@intel.com>
-    tracing/kprobes: Fix the description of variable length arguments
-
-Andrii Nakryiko <andrii@kernel.org>
-    tracing/kprobes: Fix symbol counting logic by looking at modules as well
-
-Jian Zhang <zhangjian.3032@bytedance.com>
-    i2c: aspeed: Fix i2c bus hang in slave read
-
-Alain Volmat <alain.volmat@foss.st.com>
-    i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
-
-Herve Codina <herve.codina@bootlin.com>
-    i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
-
-Herve Codina <herve.codina@bootlin.com>
-    i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
-
-Herve Codina <herve.codina@bootlin.com>
-    i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
-
-Robert Hancock <robert.hancock@calian.com>
-    iio: adc: xilinx-xadc: Correct temperature offset/scale for UltraScale
-
-Robert Hancock <robert.hancock@calian.com>
-    iio: adc: xilinx-xadc: Don't clobber preset voltage/temperature thresholds
-
-Marek Szyprowski <m.szyprowski@samsung.com>
-    iio: exynos-adc: request second interupt only when touchscreen mode is used
-
-Linus Walleij <linus.walleij@linaro.org>
-    iio: afe: rescale: Accept only offset channels
-
-Jens Axboe <axboe@kernel.dk>
-    io_uring/fdinfo: lock SQ thread while retrieving thread cpu/pid
-
-Haibo Li <haibo.li@mediatek.com>
-    kasan: print the original fault addr when access invalid shadow
-
-Khazhismel Kumykov <khazhy@chromium.org>
-    blk-throttle: check for overflow in calculate_bytes_allowed
-
-Damien Le Moal <dlemoal@kernel.org>
-    scsi: sd: Introduce manage_shutdown device flag
-
-Michal Schmidt <mschmidt@redhat.com>
-    iavf: in iavf_down, disable queues when removing the driver
-
-Matt Roper <matthew.d.roper@intel.com>
-    drm/i915/mcr: Hold GT forcewake during steering operations
-
-Sui Jingfeng <suijingfeng@loongson.cn>
-    drm/logicvc: Kconfig: select REGMAP and REGMAP_MMIO
-
-Vlad Buslov <vladbu@nvidia.com>
-    net/sched: act_ct: additional checks for outdated flows
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: flowtable: GC pushes back packets to classic path
-
-Ivan Vecera <ivecera@redhat.com>
-    i40e: Fix wrong check for I40E_TXR_FLAGS_WB_ON_ITR
-
-Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
-    drm/i915/perf: Determine context valid in OA reports
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    gtp: fix fragmentation needed check with gso
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    gtp: uapi: fix GTPA_MAX
-
-Moritz Wanzenböck <moritz.wanzenboeck@linbit.com>
-    net/handshake: fix file ref count in handshake_nl_accept_doit()
-
-Avraham Stern <avraham.stern@intel.com>
-    wifi: mac80211: don't drop all unprotected public action frames
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: fix assoc response warning on failed links
-
-Ben Greear <greearb@candelatech.com>
-    wifi: cfg80211: pass correct pointer to rdev_inform_bss()
-
-Fred Chen <fred.chenchen03@gmail.com>
-    tcp: fix wrong RTO timeout when received SACK reneging
-
-Douglas Anderson <dianders@chromium.org>
-    r8152: Release firmware if we have an error in probe
-
-Douglas Anderson <dianders@chromium.org>
-    r8152: Cancel hw_phy_work if we have an error in probe
-
-Douglas Anderson <dianders@chromium.org>
-    r8152: Run the unload routine if we have errors during probe
-
-Douglas Anderson <dianders@chromium.org>
-    r8152: Increase USB control msg timeout to 5000ms as per spec
-
-Shigeru Yoshida <syoshida@redhat.com>
-    net: usb: smsc95xx: Fix uninit-value access in smsc95xx_read_reg
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    net: ieee802154: adf7242: Fix some potential buffer overflow in adf7242_stats_show()
-
-Dell Jin <dell.jin.code@outlook.com>
-    net: ethernet: adi: adin1110: Fix uninitialized variable
-
-Sasha Neftin <sasha.neftin@intel.com>
-    igc: Fix ambiguity in the ethtool advertising
-
-Eric Dumazet <edumazet@google.com>
-    neighbour: fix various data-races
-
-Eric Dumazet <edumazet@google.com>
-    net: do not leave an empty skb in write queue
-
-Mateusz Palczewski <mateusz.palczewski@intel.com>
-    igb: Fix potential memory leak in igb_add_ethtool_nfc_entry
-
-Kunwu Chan <chentao@kylinos.cn>
-    treewide: Spelling fix in comment
-
-Ivan Vecera <ivecera@redhat.com>
-    i40e: Fix I40E_FLAG_VF_VLAN_PRUNING value
-
-Michal Schmidt <mschmidt@redhat.com>
-    iavf: initialize waitqueues before starting watchdog_task
-
-Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-    r8169: fix the KCSAN reported data race in rtl_rx while reading desc->opts1
-
-Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-    r8169: fix the KCSAN reported data-race in rtl_tx while reading TxDescArray[entry].opts1
-
-Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-    r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx
-
-Tony Lindgren <tony@atomide.com>
-    clk: ti: Fix missing omap5 mcbsp functional clock and aliases
-
-Tony Lindgren <tony@atomide.com>
-    clk: ti: Fix missing omap4 mcbsp functional clock and aliases
-
-Hao Ge <gehao@kylinos.cn>
-    firmware/imx-dsp: Fix use_after_free in imx_dsp_setup_channels()
-
-Randy Dunlap <rdunlap@infradead.org>
-    ARM: OMAP: timer32K: fix all kernel-doc warnings
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix unwritten extent buffer after snapshotting a new subvolume
-
-Qu Wenruo <wqu@suse.com>
-    btrfs: remove v0 extent handling
-
-Lukasz Majczak <lma@semihalf.com>
-    drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
-
-Mario Limonciello <mario.limonciello@amd.com>
-    drm/amd: Disable ASPM for VI w/ all Intel systems
-
-Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
-    drm/i915/pmu: Check if pmu is closed before stopping event
-
-Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
-    accel/ivpu: Don't enter d0i3 during FLR
-
-Alex Bee <knaerzche@gmail.com>
-    ARM: dts: rockchip: Fix timer clocks for RK3128
-
-Alex Bee <knaerzche@gmail.com>
-    ARM: dts: rockchip: Add missing quirk for RK3128's dma engine
-
-Alex Bee <knaerzche@gmail.com>
-    ARM: dts: rockchip: Add missing arm timer interrupt for RK3128
-
-Alex Bee <knaerzche@gmail.com>
-    ARM: dts: rockchip: Fix i2c0 register address for RK3128
-
-Janusz Krzysztofik <jmkrzyszt@gmail.com>
-    ARM: OMAP1: ams-delta: Fix MODEM initialization failure
-
-Dragos Tatulea <dtatulea@nvidia.com>
-    vdpa/mlx5: Fix double release of debugfs entry
-
-Shawn.Shao <shawn.shao@jaguarmicro.com>
-    vdpa_sim_blk: Fix the potential leak of mgmt_dev
-
-Al Viro <viro@zeniv.linux.org.uk>
-    nfsd: lock_rename() needs both directories to live on the same fs
-
-Liam R. Howlett <Liam.Howlett@oracle.com>
-    maple_tree: add GFP_KERNEL to allocations in mas_expected_entries()
-
-Rik van Riel <riel@surriel.com>
-    hugetlbfs: extend hugetlb_vma_lock to private VMAs
-
-Liam R. Howlett <Liam.Howlett@oracle.com>
-    mm/mempolicy: fix set_mempolicy_home_node() previous VMA pointer
-
-Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-    selftests/mm: include mman header to access MREMAP_DONTUNMAP identifier
-
-Gregory Price <gourry.memverge@gmail.com>
-    mm/migrate: fix do_pages_move for compat pointers
-
-Kemeng Shi <shikemeng@huaweicloud.com>
-    mm/page_alloc: correct start page when guard page debug is enabled
-
-Rik van Riel <riel@surriel.com>
-    hugetlbfs: clear resv_map pointer if mmap fails
-
-Sebastian Ott <sebott@redhat.com>
-    mm: fix vm_brk_flags() to not bail out while holding lock
-
-Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-    i40e: sync next_to_clean and next_to_process for programming status desc
-
-Christopher Obbard <chris.obbard@collabora.com>
-    arm64: dts: rockchip: Fix i2s0 pin conflict on ROCK Pi 4 boards
-
-Christopher Obbard <chris.obbard@collabora.com>
-    arm64: dts: rockchip: Add i2s0-2ch-bus-bclk-off pins to RK3399
-
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-    arm64: dts: qcom: sa8775p: correct PMIC GPIO label in gpio-ranges
-
-Jakob Unterwurzacher <jakobunt@gmail.com>
-    arm64: dts: rockchip: set codec system-clock-fixed on px30-ringneck-haikou
-
-Ermin Sunj <ermin.sunj@theobroma-systems.com>
-    arm64: dts: rockchip: use codec as clock master on px30-ringneck-haikou
-
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-    arm64: dts: qcom: msm8996-xiaomi: fix missing clock populate
-
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-    arm64: dts: qcom: apq8096-db820c: fix missing clock populate
-
-Eric Auger <eric.auger@redhat.com>
-    vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
-
-Alexandru Matei <alexandru.matei@uipath.com>
-    vsock/virtio: initialize the_virtio_vsock before using VQs
-
-Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-    virtio_pci: fix the common cfg map size
-
-zhenwei pi <pizhenwei@bytedance.com>
-    virtio-crypto: handle config changed by work queue
-
-Maximilian Heyne <mheyne@amazon.de>
-    virtio-mmio: fix memory leak of vm_dev
-
-Gavin Shan <gshan@redhat.com>
-    virtio_balloon: Fix endless deflation and inflation on arm64
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: prevent new fids from being removed by laundromat
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: make laundromat a delayed worker
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: do not start laundromat thread on nohandlecache
-
-Steve French <stfrench@microsoft.com>
-    smb3: do not start laundromat thread when dir leases disabled
-
-Steve French <stfrench@microsoft.com>
-    smb3: allow controlling maximum number of cached directories
-
-Steve French <stfrench@microsoft.com>
-    smb3: allow controlling length of time directory entries are cached with dir leases
-
-Dragos Tatulea <dtatulea@nvidia.com>
-    vdpa/mlx5: Fix firmware error on creation of 1k VQs
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |   4 +-
- arch/arm/boot/dts/rockchip/rk3128.dtsi             |  18 +--
- arch/arm/boot/dts/ti/omap/omap4-l4-abe.dtsi        |   6 +
- arch/arm/boot/dts/ti/omap/omap4-l4.dtsi            |   2 +
- arch/arm/boot/dts/ti/omap/omap5-l4-abe.dtsi        |   6 +
- arch/arm/mach-omap1/board-ams-delta.c              |  60 +++-----
- arch/arm/mach-omap1/timer32k.c                     |  14 +-
- arch/arm64/boot/dts/qcom/apq8096-db820c.dts        |  32 ++---
- .../arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi |  32 ++---
- arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts |  16 +--
- arch/arm64/boot/dts/qcom/sa8775p-pmics.dtsi        |   2 +-
- .../boot/dts/rockchip/px30-ringneck-haikou.dts     |  10 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi |   1 +
- arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  10 ++
- arch/sparc/lib/checksum_32.S                       |   2 +-
- arch/x86/include/asm/i8259.h                       |   2 +
- arch/x86/include/asm/intel-family.h                |   2 +
- arch/x86/kernel/acpi/boot.c                        |   3 +
- arch/x86/kernel/i8259.c                            |  38 +++--
- arch/x86/kernel/tsc_sync.c                         |  10 +-
- block/blk-throttle.c                               |   6 +
- drivers/accel/ivpu/ivpu_drv.c                      |  11 +-
- drivers/accel/ivpu/ivpu_drv.h                      |   1 +
- drivers/accel/ivpu/ivpu_hw.h                       |   8 ++
- drivers/accel/ivpu/ivpu_hw_mtl.c                   |  12 +-
- drivers/accel/ivpu/ivpu_pm.c                       |   3 +-
- drivers/ata/libata-scsi.c                          |   5 +-
- drivers/clk/clk.c                                  |  21 +--
- drivers/clk/socfpga/clk-gate.c                     |  27 +++-
- drivers/clk/stm32/clk-stm32-core.c                 |   2 +-
- drivers/clk/ti/clk-44xx.c                          |   5 +
- drivers/clk/ti/clk-54xx.c                          |   4 +
- drivers/crypto/virtio/virtio_crypto_common.h       |   3 +
- drivers/crypto/virtio/virtio_crypto_core.c         |  14 +-
- drivers/firewire/sbp2.c                            |   1 +
- drivers/firmware/imx/imx-dsp.c                     |   2 +-
- drivers/gpu/drm/amd/amdgpu/vi.c                    |   2 +-
- drivers/gpu/drm/display/drm_dp_mst_topology.c      |   6 +-
- drivers/gpu/drm/i915/gt/intel_gt_mcr.c             |  24 +++-
- drivers/gpu/drm/i915/i915_perf.c                   |   4 +-
- drivers/gpu/drm/i915/i915_pmu.c                    |   9 ++
- drivers/gpu/drm/logicvc/Kconfig                    |   2 +
- drivers/i2c/busses/i2c-aspeed.c                    |   3 +-
- drivers/i2c/busses/i2c-stm32f7.c                   |   9 +-
- drivers/i2c/muxes/i2c-demux-pinctrl.c              |   2 +-
- drivers/i2c/muxes/i2c-mux-gpmux.c                  |   2 +-
- drivers/i2c/muxes/i2c-mux-pinctrl.c                |   2 +-
- drivers/iio/adc/exynos_adc.c                       |  24 ++--
- drivers/iio/adc/xilinx-xadc-core.c                 |  39 ++---
- drivers/iio/adc/xilinx-xadc.h                      |   2 +
- drivers/iio/afe/iio-rescale.c                      |  19 ++-
- drivers/misc/fastrpc.c                             |  34 ++---
- drivers/net/ethernet/adi/adin1110.c                |   2 +-
- drivers/net/ethernet/intel/i40e/i40e.h             |   2 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c        |  11 +-
- drivers/net/ethernet/intel/iavf/iavf_main.c        |   7 +-
- drivers/net/ethernet/intel/igb/igb_ethtool.c       |   6 +-
- drivers/net/ethernet/intel/igc/igc_ethtool.c       |  35 +++--
- drivers/net/ethernet/realtek/r8169_main.c          |   6 +-
- drivers/net/ethernet/toshiba/ps3_gelic_wireless.c  |   2 +-
- drivers/net/gtp.c                                  |   5 +-
- drivers/net/ieee802154/adf7242.c                   |   5 +-
- drivers/net/usb/r8152.c                            |  11 +-
- drivers/net/usb/smsc95xx.c                         |   4 +-
- drivers/nvmem/imx-ocotp.c                          |   6 +-
- drivers/platform/x86/amd/pmc-quirks.c              |  73 ++++++++++
- drivers/scsi/sd.c                                  |  39 ++++-
- drivers/vdpa/mlx5/net/debug.c                      |   5 +-
- drivers/vdpa/mlx5/net/mlx5_vnet.c                  |  70 +++++++--
- drivers/vdpa/mlx5/net/mlx5_vnet.h                  |  11 +-
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c               |   5 +-
- drivers/vhost/vhost.c                              |   4 +-
- drivers/virtio/virtio_balloon.c                    |   6 +-
- drivers/virtio/virtio_mmio.c                       |  19 ++-
- drivers/virtio/virtio_pci_modern_dev.c             |   2 +-
- fs/btrfs/backref.c                                 |  39 +++--
- fs/btrfs/backref.h                                 |   3 +-
- fs/btrfs/ctree.c                                   |  21 ++-
- fs/btrfs/ctree.h                                   |   3 +-
- fs/btrfs/extent-tree.c                             |  35 +++--
- fs/btrfs/messages.c                                |   6 -
- fs/btrfs/messages.h                                |   2 -
- fs/btrfs/print-tree.c                              |  10 +-
- fs/btrfs/relocation.c                              |  18 +--
- fs/nfsd/vfs.c                                      |  12 +-
- fs/smb/client/cached_dir.c                         | 158 +++++++++++----------
- fs/smb/client/cached_dir.h                         |   4 +-
- fs/smb/client/cifsfs.c                             |  12 ++
- fs/smb/client/cifsglob.h                           |   4 +-
- fs/smb/client/cifsproto.h                          |   2 +-
- fs/smb/client/connect.c                            |  19 ++-
- fs/smb/client/fs_context.c                         |  11 +-
- fs/smb/client/fs_context.h                         |   4 +-
- fs/smb/client/misc.c                               |  14 +-
- fs/smb/client/smb2pdu.c                            |   2 +-
- include/linux/hugetlb.h                            |   6 +
- include/linux/ieee80211.h                          |  29 ++++
- include/linux/kasan.h                              |   6 +-
- include/net/netfilter/nf_flow_table.h              |   1 +
- include/scsi/scsi_device.h                         |  20 ++-
- include/trace/events/btrfs.h                       |   1 -
- include/uapi/linux/btrfs_tree.h                    |   6 +-
- include/uapi/linux/gtp.h                           |   2 +-
- io_uring/fdinfo.c                                  |  18 ++-
- kernel/events/core.c                               |   3 +-
- kernel/trace/trace_kprobe.c                        |  28 +++-
- lib/maple_tree.c                                   |   2 +-
- lib/test_maple_tree.c                              |  35 +++--
- mm/damon/sysfs.c                                   |   7 +-
- mm/hugetlb.c                                       |  48 ++++++-
- mm/kasan/report.c                                  |   4 +-
- mm/mempolicy.c                                     |   4 +-
- mm/migrate.c                                       |  14 +-
- mm/mmap.c                                          |   6 +-
- mm/page_alloc.c                                    |   2 +-
- net/core/neighbour.c                               |  67 ++++-----
- net/handshake/netlink.c                            |  30 +---
- net/ipv4/tcp.c                                     |   8 +-
- net/ipv4/tcp_input.c                               |   9 +-
- net/mac80211/rx.c                                  |   3 +-
- net/netfilter/nf_flow_table_core.c                 |  14 +-
- net/sched/act_ct.c                                 |   9 ++
- net/vmw_vsock/virtio_transport.c                   |  18 ++-
- net/wireless/mlme.c                                |   3 +-
- net/wireless/scan.c                                |   2 +-
- tools/include/linux/rwsem.h                        |  40 ++++++
- tools/testing/selftests/mm/mremap_dontunmap.c      |   1 +
- 127 files changed, 1162 insertions(+), 577 deletions(-)
-
-
+Hi All,
+Please ignore this v11, I sent this to early.
+I will send v12 where I collected hints from Cristophe also.
+
+Thanks & regards,
+Tommaso
+
+On Tue, Oct 31, 2023 at 08:34:14AM +0100, Tommaso Merciai wrote:
+> The Alvium camera is shipped with sensor + isp in the same housing.
+> The camera can be equipped with one out of various sensor and abstract
+> the user from this. Camera is connected via MIPI CSI-2.
+> 
+> Most of the camera module features are supported, with the main exception
+> being fw update.
+> 
+> The driver provides all mandatory, optional and recommended V4L2 controls
+> for maximum compatibility with libcamera
+> 
+> References:
+>  - https://www.alliedvision.com/en/products/embedded-vision-solutions
+> 
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> ---
+> Changes since v2:
+>  - Removed gpios/clock handling as suggested by LPinchart
+>  - Added vcc-ext-in supply support as suggested by LPinchart
+>  - Fixed alvium_setup_mipi_fmt funct as suggested by CJAILLET
+>  - Removed upside_down/hshake_bit priv data as suggested by CJAILLET
+>  - Fixed commit body as suggested by LPinchart
+>  - Mv alvium_set_streamon_delay to yalvium_set_lp2hs_delay
+>  - Fixed comment on lp2hs prop as suggested by LPinchart
+>  - Added pm resume/suspend functs as suggested by LPinchart
+>  - Dropped alvium_link_setup/alvium_s_power as suggested by LPinchart
+>  - Fixed regs defines as suggested by LPinchart
+>  - Fixed typedef as suggested by LPinchart
+>  - Dropped bcrm_v/fw_v from priv data as suggested by LPinchart
+>  - Now driver use the subdev active state to store the active format and crop
+>    as suggested by LPinchart
+>  - Dropped alvium_is_csi2/i2c_to_alvium as suggested by LPinchart
+> 
+> Changes since v3:
+>  - Fixed warnings Reported-by: kernel test robot <lkp@intel.com>
+> 
+> Changes since v4:
+>  - Removed print into alvium_get_dt_data for alliedvision,lp2hs-delay-us as
+>    suggested by CDooley
+> 
+> Changes since v5:
+>  - Used tab instead of space in .h as suggested by SAilus
+>  - Added support for new CCI API from HDeGoede as suggested by SAilus
+>  - Fixed alvium_write/alvium_read, functions now using the new CCI api, suggested by LPinchart
+>  - Fixed alvium_get_feat_inq func as suggested by SAilus
+>  - Fixed indentation/var-order/includes-order as suggested by SAilus
+>  - Fixed alvium_csi2_fmts with MIPI_CSI2_DT_ defines as suggested by SAilus
+>  - Fixed alvium_is_alive as suggested by SAilus
+>  - Fixed alvium_code_to_pixfmt funct as suggested by SAilus
+>  - Fixed alvium_get_dt_data function, now use only fwnode as suggested by SAilus
+>  - Fixed autosuspend into the probe, is disable as default as suggested by SAilus
+>  - Fixed alvium_get_dt_data function, assigned bus type before parsing the ep
+>    as suggested by SAilus
+>  - Fixed alvium_power_off, removed wrong print as suggested by SAilus
+> 
+> Changes since v6:
+>  - Fixed .h indentation
+>  - Fixed function params indentation
+>  - Added int *err params for alvium_read/alvium_write as suggested by LPinchart
+>  - Removed dbg print from the driver, driver is now using dbg/err prints that comes from
+>    new cci API as suggested by LPinchart. This, fits SAilus suggestion on common pattern function.
+>  - Fixed alvium_write_hshake, now use read_poll_timeout as suggested by LPinchart
+>  - Removed useless includes
+>  - Added maintainers file entries
+> 
+> Changes since v7:
+>  - Fix company legal entity from Inc. to GmbH
+>  - Fix warnings given from HVerkuil build-scripts in alvium_get_bcrm_vers,
+>    alvium_get_fw_version and probe functions using __le16/__le32. Fixed also
+>    probe function warning alvium-csi2.c:2665 alvium_probe() warn: missing error code? 'ret'
+> 
+> Changes since v8:
+>  - Fixed alvium_i2c_driver struct, use probe istead of probe_new
+>  - Fixed Kconfig description taking as reference new mt9m114 driver
+>  - Fixed Kconfig just select V4L2_CCI_I2C taking as reference new mt9m114 driver
+> 
+> Changes since v9:
+>  - Fixed Y8_1X8 mipi_fmt_regval
+>  - Removed alliedvision,lp2hs-delay-us property we set now a default safe value as discussed with SAilus
+>  - Added dft property for ctrls initialization, we first read dft values from the camera and set this into ctrls
+>  - Fixed indentation as suggested by SAilus
+>  - Fixed bit field definitions alignment into .h as suggested by SAilus
+>  - Fixed Heartbeat reg from R -> RW
+>  - Fixed adjusting values in format/crop changes as suggested by SAilus
+>  - Removed unnecessary brcm_addr checks as suggested by SAilus
+>  - Merged poweron/poweroff functions as suggested by SAilus
+>  - Added poweroff path during probe as suggested by SAilus
+>  - Fixed module license type as suggested by SAilus
+>  - Removed unnecessary MODULE_DEVICE_TABLE as suggested by SAilus
+>  - Fixed pm support in s_ctrl and s_stream functions
+>  - Removed unnecessary local variables  as suggested by SAilus
+>  - Added ret values checks as suggested by SAilus
+> 
+> Changes since v10:
+>  - Fixed alignment as suggested by SAilus
+>  - Fixed alvium_read pattern over the driver as suggested by LPinchart
+>  - Fixed alvium_set_csi_clk
+>  - Fixed counters types of alvium_setup_mipi_fmt as suggested by SAilus
+>  - Fixed alvium_set_frame_rate now don't use local var as suggested by SAilus
+>  - Added pm_runtime_put into alvium_s_stream as suggested by SAilus
+>  - Fixed alvium_g_volatile_ctrl as suggested by SAilus
+> 
+>  MAINTAINERS                     |    9 +
+>  drivers/media/i2c/Kconfig       |   10 +
+>  drivers/media/i2c/Makefile      |    1 +
+>  drivers/media/i2c/alvium-csi2.c | 2630 +++++++++++++++++++++++++++++++
+>  drivers/media/i2c/alvium-csi2.h |  488 ++++++
+>  5 files changed, 3138 insertions(+)
+>  create mode 100644 drivers/media/i2c/alvium-csi2.c
+>  create mode 100644 drivers/media/i2c/alvium-csi2.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f3e6dbbbbccb..98d322880c96 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -709,6 +709,15 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/media/allegro,al5e.yaml
+>  F:	drivers/media/platform/allegro-dvt/
+>  
+> +ALLIED VISION ALVIUM CAMERA DRIVER
+> +M:	Tommaso Merciai <tomm.merciai@gmail.com>
+> +M:	Martin Hecht <martin.hecht@avnet.eu>
+> +L:	linux-media@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/media/i2c/alliedvision,alvium-csi2.yaml
+> +F:	drivers/media/i2c/alvium-csi2.c
+> +F:	drivers/media/i2c/alvium-csi2.h
+> +
+>  ALLWINNER A10 CSI DRIVER
+>  M:	Maxime Ripard <mripard@kernel.org>
+>  L:	linux-media@vger.kernel.org
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index d182c3514fb5..8525cfde26ba 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -41,6 +41,16 @@ config VIDEO_APTINA_PLL
+>  config VIDEO_CCS_PLL
+>  	tristate
+>  
+> +config VIDEO_ALVIUM_CSI2
+> +	tristate "Allied Vision ALVIUM MIPI CSI-2 camera support"
+> +	select V4L2_CCI_I2C
+> +	help
+> +	  This is a Video4Linux2 sensor-level driver for the Allied Vision
+> +	  ALVIUM camera connected via MIPI CSI-2 interface.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called alvium-csi2.
+> +
+>  config VIDEO_AR0521
+>  	tristate "ON Semiconductor AR0521 sensor support"
+>  	help
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index f5010f80a21f..d75aa7f74315 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -17,6 +17,7 @@ obj-$(CONFIG_VIDEO_ADV7604) += adv7604.o
+>  obj-$(CONFIG_VIDEO_ADV7842) += adv7842.o
+>  obj-$(CONFIG_VIDEO_AK7375) += ak7375.o
+>  obj-$(CONFIG_VIDEO_AK881X) += ak881x.o
+> +obj-$(CONFIG_VIDEO_ALVIUM_CSI2) += alvium-csi2.o
+>  obj-$(CONFIG_VIDEO_APTINA_PLL) += aptina-pll.o
+>  obj-$(CONFIG_VIDEO_AR0521) += ar0521.o
+>  obj-$(CONFIG_VIDEO_BT819) += bt819.o
+> diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
+> new file mode 100644
+> index 000000000000..e090c457e621
+> --- /dev/null
+> +++ b/drivers/media/i2c/alvium-csi2.c
+> @@ -0,0 +1,2630 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Allied Vision Technologies GmbH Alvium camera driver
+> + *
+> + * Copyright (C) 2023 Tommaso Merciai
+> + * Copyright (C) 2023 Martin Hecht
+> + * Copyright (C) 2023 Avnet EMG GmbH
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <media/mipi-csi2.h>
+> +#include <media/v4l2-async.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-subdev.h>
+> +
+> +#include "alvium-csi2.h"
+> +
+> +static const struct v4l2_mbus_framefmt alvium_csi2_default_fmt = {
+> +	.code = MEDIA_BUS_FMT_UYVY8_1X16,
+> +	.width = 640,
+> +	.height = 480,
+> +	.colorspace = V4L2_COLORSPACE_SRGB,
+> +	.ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(V4L2_COLORSPACE_SRGB),
+> +	.quantization = V4L2_QUANTIZATION_FULL_RANGE,
+> +	.xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(V4L2_COLORSPACE_SRGB),
+> +	.field = V4L2_FIELD_NONE,
+> +};
+> +
+> +static const struct alvium_pixfmt alvium_csi2_fmts[] = {
+> +	{
+> +		/* UYVY8_2X8 */
+> +		.id = ALVIUM_FMT_UYVY8_2X8,
+> +		.code = MEDIA_BUS_FMT_UYVY8_2X8,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_YUV422_8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_YUV422_8B,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* UYVY8_1X16 */
+> +		.id = ALVIUM_FMT_UYVY8_1X16,
+> +		.code = MEDIA_BUS_FMT_UYVY8_1X16,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_YUV422_8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_YUV422_8B,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* YUYV8_1X16 */
+> +		.id = ALVIUM_FMT_YUYV8_1X16,
+> +		.code = MEDIA_BUS_FMT_YUYV8_1X16,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_YUV422_8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_YUV422_8B,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* YUYV8_2X8 */
+> +		.id = ALVIUM_FMT_YUYV8_2X8,
+> +		.code = MEDIA_BUS_FMT_YUYV8_2X8,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_YUV422_8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_YUV422_8B,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* YUYV10_1X20 */
+> +		.id = ALVIUM_FMT_YUYV10_1X20,
+> +		.code = MEDIA_BUS_FMT_YUYV10_1X20,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_YUV422_10,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_YUV422_10B,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* RGB888_1X24 */
+> +		.id = ALVIUM_FMT_RGB888_1X24,
+> +		.code = MEDIA_BUS_FMT_RGB888_1X24,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_RGB888,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RGB888,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* RBG888_1X24 */
+> +		.id = ALVIUM_FMT_RBG888_1X24,
+> +		.code = MEDIA_BUS_FMT_RBG888_1X24,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_RGB888,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RGB888,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* BGR888_1X24 */
+> +		.id = ALVIUM_FMT_BGR888_1X24,
+> +		.code = MEDIA_BUS_FMT_BGR888_1X24,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_RGB888,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RGB888,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* RGB888_3X8 */
+> +		.id = ALVIUM_FMT_RGB888_3X8,
+> +		.code = MEDIA_BUS_FMT_RGB888_3X8,
+> +		.colorspace = V4L2_COLORSPACE_SRGB,
+> +		.fmt_av_bit = ALVIUM_BIT_RGB888,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_NONE,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RGB888,
+> +		.bay_fmt_regval = -1,
+> +		.is_raw = 0,
+> +	}, {
+> +		/* Y8_1X8 */
+> +		.id = ALVIUM_FMT_Y8_1X8,
+> +		.code = MEDIA_BUS_FMT_Y8_1X8,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_MONO,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW8,
+> +		.bay_fmt_regval = 0x00,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGRBG8_1X8 */
+> +		.id = ALVIUM_FMT_SGRBG8_1X8,
+> +		.code = MEDIA_BUS_FMT_SGRBG8_1X8,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GR,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW8,
+> +		.bay_fmt_regval = 0x01,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SRGGB8_1X8 */
+> +		.id = ALVIUM_FMT_SRGGB8_1X8,
+> +		.code = MEDIA_BUS_FMT_SRGGB8_1X8,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_RG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW8,
+> +		.bay_fmt_regval = 0x02,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGBRG8_1X8 */
+> +		.id = ALVIUM_FMT_SGBRG8_1X8,
+> +		.code = MEDIA_BUS_FMT_SGBRG8_1X8,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GB,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW8,
+> +		.bay_fmt_regval = 0x03,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SBGGR8_1X8 */
+> +		.id = ALVIUM_FMT_SBGGR8_1X8,
+> +		.code = MEDIA_BUS_FMT_SBGGR8_1X8,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW8,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_BG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW8,
+> +		.bay_fmt_regval = 0x04,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* Y10_1X10 */
+> +		.id = ALVIUM_FMT_Y10_1X10,
+> +		.code = MEDIA_BUS_FMT_Y10_1X10,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW10,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_MONO,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW10,
+> +		.bay_fmt_regval = 0x00,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGRBG10_1X10 */
+> +		.id = ALVIUM_FMT_SGRBG10_1X10,
+> +		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW10,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GR,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW10,
+> +		.bay_fmt_regval = 0x01,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SRGGB10_1X10 */
+> +		.id = ALVIUM_FMT_SRGGB10_1X10,
+> +		.code = MEDIA_BUS_FMT_SRGGB10_1X10,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW10,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_RG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW10,
+> +		.bay_fmt_regval = 0x02,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGBRG10_1X10 */
+> +		.id = ALVIUM_FMT_SGBRG10_1X10,
+> +		.code = MEDIA_BUS_FMT_SGBRG10_1X10,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW10,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GB,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW10,
+> +		.bay_fmt_regval = 0x03,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SBGGR10_1X10 */
+> +		.id = ALVIUM_FMT_SBGGR10_1X10,
+> +		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW10,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_BG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW10,
+> +		.bay_fmt_regval = 0x04,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* Y12_1X12 */
+> +		.id = ALVIUM_FMT_Y12_1X12,
+> +		.code = MEDIA_BUS_FMT_Y12_1X12,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW12,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_MONO,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW12,
+> +		.bay_fmt_regval = 0x00,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGRBG12_1X12 */
+> +		.id = ALVIUM_FMT_SGRBG12_1X12,
+> +		.code = MEDIA_BUS_FMT_SGRBG12_1X12,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW12,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GR,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW12,
+> +		.bay_fmt_regval = 0x01,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SRGGB12_1X12 */
+> +		.id = ALVIUM_FMT_SRGGB12_1X12,
+> +		.code = MEDIA_BUS_FMT_SRGGB12_1X12,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW12,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_RG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW12,
+> +		.bay_fmt_regval = 0x02,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGBRG12_1X12 */
+> +		.id = ALVIUM_FMT_SGBRG12_1X12,
+> +		.code = MEDIA_BUS_FMT_SGBRG12_1X12,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW12,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GB,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW12,
+> +		.bay_fmt_regval = 0x03,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SBGGR12_1X12 */
+> +		.id = ALVIUM_FMT_SBGGR12_1X12,
+> +		.code = MEDIA_BUS_FMT_SBGGR12_1X12,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW12,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_BG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW12,
+> +		.bay_fmt_regval = 0x04,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SBGGR14_1X14 */
+> +		.id = ALVIUM_FMT_SBGGR14_1X14,
+> +		.code = MEDIA_BUS_FMT_SBGGR14_1X14,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW14,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GR,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW14,
+> +		.bay_fmt_regval = 0x01,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGBRG14_1X14 */
+> +		.id = ALVIUM_FMT_SGBRG14_1X14,
+> +		.code = MEDIA_BUS_FMT_SGBRG14_1X14,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW14,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_RG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW14,
+> +		.bay_fmt_regval = 0x02,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SRGGB14_1X14 */
+> +		.id = ALVIUM_FMT_SRGGB14_1X14,
+> +		.code = MEDIA_BUS_FMT_SRGGB14_1X14,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW14,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_GB,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW14,
+> +		.bay_fmt_regval = 0x03,
+> +		.is_raw = 1,
+> +	}, {
+> +		/* SGRBG14_1X14 */
+> +		.id = ALVIUM_FMT_SGRBG14_1X14,
+> +		.code = MEDIA_BUS_FMT_SGRBG14_1X14,
+> +		.colorspace = V4L2_COLORSPACE_RAW,
+> +		.fmt_av_bit = ALVIUM_BIT_RAW14,
+> +		.bay_av_bit = ALVIUM_BIT_BAY_BG,
+> +		.mipi_fmt_regval = MIPI_CSI2_DT_RAW14,
+> +		.bay_fmt_regval = 0x04,
+> +		.is_raw = 1,
+> +	},
+> +	{ /* sentinel */ }
+> +};
+> +
+> +static int alvium_read(struct alvium_dev *alvium, u32 reg, u64 *val, int *err)
+> +{
+> +	if (reg & REG_BCRM_V4L2) {
+> +		reg &= ~REG_BCRM_V4L2;
+> +		reg += alvium->bcrm_addr;
+> +	}
+> +
+> +	return cci_read(alvium->regmap, reg, val, err);
+> +}
+> +
+> +static int alvium_write(struct alvium_dev *alvium, u32 reg, u64 val, int *err)
+> +{
+> +	if (reg & REG_BCRM_V4L2) {
+> +		reg &= ~REG_BCRM_V4L2;
+> +		reg += alvium->bcrm_addr;
+> +	}
+> +
+> +	return cci_write(alvium->regmap, reg, val, err);
+> +}
+> +
+> +static int alvium_write_hshake(struct alvium_dev *alvium, u32 reg, u64 val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	u64 hshake_bit;
+> +	int ret = 0;
+> +
+> +	/* reset handshake bit and write alvium reg */
+> +	alvium_write(alvium, REG_BCRM_WRITE_HANDSHAKE_RW, 0, &ret);
+> +	alvium_write(alvium, reg, val, &ret);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to write reg\n");
+> +		return ret;
+> +	}
+> +
+> +	/* poll handshake bit since bit0 = 1 */
+> +	read_poll_timeout(alvium_read, hshake_bit,
+> +			  ((hshake_bit & BCRM_HANDSHAKE_W_DONE_EN_BIT) == 1),
+> +			  15000, 45000, true,
+> +			  alvium, REG_BCRM_WRITE_HANDSHAKE_RW, &hshake_bit, &ret);
+> +	if (ret) {
+> +		dev_err(dev, "poll bit[0] = 1, hshake reg fail\n");
+> +		return ret;
+> +	}
+> +
+> +	/* reset handshake bit, write 0 to bit0 */
+> +	alvium_write(alvium, REG_BCRM_WRITE_HANDSHAKE_RW, 0, &ret);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to reset hshake reg\n");
+> +		return ret;
+> +	}
+> +
+> +	/* poll handshake bit since bit0 = 0 */
+> +	read_poll_timeout(alvium_read, hshake_bit,
+> +			  ((hshake_bit & BCRM_HANDSHAKE_W_DONE_EN_BIT) == 0),
+> +			  15000, 45000, true,
+> +			  alvium, REG_BCRM_WRITE_HANDSHAKE_RW, &hshake_bit, &ret);
+> +	if (ret) {
+> +		dev_err(dev, "poll bit[0] = 0, hshake reg fail\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct alvium_bcrm_vers *v;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_VERSION_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v = (struct alvium_bcrm_vers *) &val;
+> +	dev_info(dev, "bcrm version: %u.%u\n", v->minor, v->major);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_fw_version(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct alvium_fw_vers *fw_v;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_DEVICE_FIRMWARE_VERSION_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	fw_v = (struct alvium_fw_vers *) &val;
+> +	dev_info(dev, "fw version: %u.%u.%u.%u\n", fw_v->special, fw_v->major,
+> +		 fw_v->minor, fw_v->patch);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_bcrm_addr(struct alvium_dev *alvium)
+> +{
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_REG_ADDR_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->bcrm_addr = val;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_is_alive(struct alvium_dev *alvium)
+> +{
+> +	u64 bcrm, hbeat;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_VERSION_R, &bcrm, &ret);
+> +	alvium_read(alvium, REG_BCRM_HEARTBEAT_RW, &hbeat, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return hbeat;
+> +}
+> +
+> +static void alvium_print_avail_mipi_fmt(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +
+> +	dev_dbg(dev, "avail mipi_fmt yuv420_8_leg: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_LEG]);
+> +	dev_dbg(dev, "avail mipi_fmt yuv420_8: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8]);
+> +	dev_dbg(dev, "avail mipi_fmt yuv420_10: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10]);
+> +	dev_dbg(dev, "avail mipi_fmt yuv420_8_csps: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_CSPS]);
+> +	dev_dbg(dev, "avail mipi_fmt yuv420_10_csps: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10_CSPS]);
+> +	dev_dbg(dev, "avail mipi_fmt yuv422_8: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_8]);
+> +	dev_dbg(dev, "avail mipi_fmt yuv422_10: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_10]);
+> +	dev_dbg(dev, "avail mipi_fmt rgb888: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB888]);
+> +	dev_dbg(dev, "avail mipi_fmt rgb666: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB666]);
+> +	dev_dbg(dev, "avail mipi_fmt rgb565: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB565]);
+> +	dev_dbg(dev, "avail mipi_fmt rgb555: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB555]);
+> +	dev_dbg(dev, "avail mipi_fmt rgb444: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB444]);
+> +	dev_dbg(dev, "avail mipi_fmt raw6: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW6]);
+> +	dev_dbg(dev, "avail mipi_fmt raw7: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW7]);
+> +	dev_dbg(dev, "avail mipi_fmt raw8: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW8]);
+> +	dev_dbg(dev, "avail mipi_fmt raw10: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW10]);
+> +	dev_dbg(dev, "avail mipi_fmt raw12: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW12]);
+> +	dev_dbg(dev, "avail mipi_fmt raw14: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW14]);
+> +	dev_dbg(dev, "avail mipi_fmt jpeg: %u\n",
+> +		alvium->is_mipi_fmt_avail[ALVIUM_BIT_JPEG]);
+> +}
+> +
+> +static void alvium_print_avail_feat(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +
+> +	dev_dbg(dev, "feature rev_x: %u\n", alvium->avail_ft.rev_x);
+> +	dev_dbg(dev, "feature rev_y: %u\n", alvium->avail_ft.rev_y);
+> +	dev_dbg(dev, "feature int_autop: %u\n", alvium->avail_ft.int_autop);
+> +	dev_dbg(dev, "feature black_lvl: %u\n", alvium->avail_ft.black_lvl);
+> +	dev_dbg(dev, "feature gain: %u\n", alvium->avail_ft.gain);
+> +	dev_dbg(dev, "feature gamma: %u\n", alvium->avail_ft.gamma);
+> +	dev_dbg(dev, "feature contrast: %u\n", alvium->avail_ft.contrast);
+> +	dev_dbg(dev, "feature sat: %u\n", alvium->avail_ft.sat);
+> +	dev_dbg(dev, "feature hue: %u\n", alvium->avail_ft.hue);
+> +	dev_dbg(dev, "feature whiteb: %u\n", alvium->avail_ft.whiteb);
+> +	dev_dbg(dev, "feature sharp: %u\n", alvium->avail_ft.sharp);
+> +	dev_dbg(dev, "feature auto_exp: %u\n", alvium->avail_ft.auto_exp);
+> +	dev_dbg(dev, "feature auto_gain: %u\n", alvium->avail_ft.auto_gain);
+> +	dev_dbg(dev, "feature auto_whiteb: %u\n", alvium->avail_ft.auto_whiteb);
+> +	dev_dbg(dev, "feature dev_temp: %u\n", alvium->avail_ft.dev_temp);
+> +	dev_dbg(dev, "feature acq_abort: %u\n", alvium->avail_ft.acq_abort);
+> +	dev_dbg(dev, "feature acq_fr: %u\n", alvium->avail_ft.acq_fr);
+> +	dev_dbg(dev, "feature fr_trigger: %u\n", alvium->avail_ft.fr_trigger);
+> +	dev_dbg(dev, "feature exp_acq_line: %u\n", alvium->avail_ft.exp_acq_line);
+> +}
+> +
+> +static void alvium_print_avail_bayer(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +
+> +	dev_dbg(dev, "avail bayer mono: %u\n",
+> +		alvium->is_bay_avail[ALVIUM_BIT_BAY_MONO]);
+> +	dev_dbg(dev, "avail bayer gr: %u\n",
+> +		alvium->is_bay_avail[ALVIUM_BIT_BAY_GR]);
+> +	dev_dbg(dev, "avail bayer rg: %u\n",
+> +		alvium->is_bay_avail[ALVIUM_BIT_BAY_RG]);
+> +	dev_dbg(dev, "avail bayer gb: %u\n",
+> +		alvium->is_bay_avail[ALVIUM_BIT_BAY_GB]);
+> +	dev_dbg(dev, "avail bayer bg: %u\n",
+> +		alvium->is_bay_avail[ALVIUM_BIT_BAY_BG]);
+> +}
+> +
+> +static int alvium_get_feat_inq(struct alvium_dev *alvium)
+> +{
+> +	struct alvium_avail_feat *f;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_FEATURE_INQUIRY_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	f = (struct alvium_avail_feat *) &val;
+> +	alvium->avail_ft = *f;
+> +	alvium_print_avail_feat(alvium);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
+> +{
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->h_sup_csi_lanes = val;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_csi_lanes(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	u64 num_lanes;
+> +	int ret;
+> +
+> +	num_lanes = alvium->ep.bus.mipi_csi2.num_data_lanes;
+> +
+> +	if (num_lanes > alvium->h_sup_csi_lanes)
+> +		return -EINVAL;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_CSI2_LANE_COUNT_RW,
+> +								num_lanes);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set csi lanes reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_lp2hs_delay(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret = 0;
+> +
+> +	/*
+> +	 * The purpose of this reg is force a DPhy reset
+> +	 * for the period described by the millisecond on
+> +	 * the reg, before it starts streaming.
+> +	 *
+> +	 * To be clear, with that value bigger than 0 the
+> +	 * Alvium forces a dphy-reset on all lanes for that period.
+> +	 * That means all lanes go up into low power state.
+> +	 *
+> +	 */
+> +	alvium_write(alvium,
+> +		     REG_BCRM_LP2HS_DELAY_RW, ALVIUM_LP2HS_DELAY_MS, &ret);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set lp2hs delay reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_csi_clk_params(struct alvium_dev *alvium)
+> +{
+> +	u64 min_csi_clk, max_csi_clk;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MIN_R, &min_csi_clk, &ret);
+> +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MAX_R, &max_csi_clk, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->min_csi_clk = min_csi_clk;
+> +	alvium->max_csi_clk = max_csi_clk;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_csi_clk(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	u64 csi_clk;
+> +	int ret;
+> +
+> +	csi_clk = clamp(alvium->ep.link_frequencies[0], (u64)alvium->min_csi_clk,
+> +			(u64)alvium->max_csi_clk);
+> +
+> +	if (alvium->ep.link_frequencies[0] != (u64)csi_clk) {
+> +		dev_warn(dev, "requested csi clock (%llu MHz) out of range [%u, %u]"
+> +			 "Adjusted to %llu\n", alvium->ep.link_frequencies[0],
+> +			 alvium->min_csi_clk, alvium->max_csi_clk, csi_clk);
+> +	}
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_CSI2_CLOCK_RW, csi_clk);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set csi clock reg\n");
+> +		return ret;
+> +	}
+> +
+> +	alvium->link_freq = csi_clk;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_img_width_params(struct alvium_dev *alvium)
+> +{
+> +	u64 imgw, imgw_min, imgw_max, imgw_inc;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_IMG_WIDTH_RW, &imgw, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_WIDTH_MIN_R, &imgw_min, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_WIDTH_MAX_R, &imgw_max, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_WIDTH_INC_R, &imgw_inc, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_img_width = imgw;
+> +	alvium->img_min_width = imgw_min;
+> +	alvium->img_max_width = imgw_max;
+> +	alvium->img_inc_width = imgw_inc;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_img_height_params(struct alvium_dev *alvium)
+> +{
+> +	u64 imgh, imgh_min, imgh_max, imgh_inc;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_IMG_HEIGHT_RW, &imgh, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_HEIGHT_MIN_R, &imgh_min, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_HEIGHT_MAX_R, &imgh_max, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_HEIGHT_INC_R, &imgh_inc, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_img_height = imgh;
+> +	alvium->img_min_height = imgh_min;
+> +	alvium->img_max_height = imgh_max;
+> +	alvium->img_inc_height = imgh_inc;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_img_width(struct alvium_dev *alvium, u32 width)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_WIDTH_RW, width);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set img width\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_img_height(struct alvium_dev *alvium, u32 height)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_HEIGHT_RW, height);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set img height\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_img_offx(struct alvium_dev *alvium, u32 offx)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_OFFSET_X_RW, offx);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set img offx\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_img_offy(struct alvium_dev *alvium, u32 offy)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_OFFSET_Y_RW, offy);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set img offy\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_offx_params(struct alvium_dev *alvium)
+> +{
+> +	u64 min_offx, max_offx, inc_offx;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_IMG_OFFSET_X_MIN_R, &min_offx, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_OFFSET_X_MAX_R, &max_offx, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_OFFSET_X_INC_R, &inc_offx, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->min_offx = min_offx;
+> +	alvium->max_offx = max_offx;
+> +	alvium->inc_offx = inc_offx;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_offy_params(struct alvium_dev *alvium)
+> +{
+> +	u64 min_offy, max_offy, inc_offy;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_IMG_OFFSET_Y_MIN_R, &min_offy, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_OFFSET_Y_MAX_R, &max_offy, &ret);
+> +	alvium_read(alvium, REG_BCRM_IMG_OFFSET_Y_INC_R, &inc_offy, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->min_offy = min_offy;
+> +	alvium->max_offy = max_offy;
+> +	alvium->inc_offy = inc_offy;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_gain_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_gain, min_gain, max_gain, inc_gain;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_GAIN_RW, &dft_gain, &ret);
+> +	alvium_read(alvium, REG_BCRM_GAIN_MIN_R, &min_gain, &ret);
+> +	alvium_read(alvium, REG_BCRM_GAIN_MAX_R, &max_gain, &ret);
+> +	alvium_read(alvium, REG_BCRM_GAIN_INC_R, &inc_gain, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_gain = dft_gain;
+> +	alvium->min_gain = min_gain;
+> +	alvium->max_gain = max_gain;
+> +	alvium->inc_gain = inc_gain;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_exposure_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_exp, min_exp, max_exp, inc_exp;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_EXPOSURE_TIME_RW, &dft_exp, &ret);
+> +	alvium_read(alvium, REG_BCRM_EXPOSURE_TIME_MIN_R, &min_exp, &ret);
+> +	alvium_read(alvium, REG_BCRM_EXPOSURE_TIME_MAX_R, &max_exp, &ret);
+> +	alvium_read(alvium, REG_BCRM_EXPOSURE_TIME_INC_R, &inc_exp, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_exp = dft_exp;
+> +	alvium->min_exp = min_exp;
+> +	alvium->max_exp = max_exp;
+> +	alvium->inc_exp = inc_exp;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_red_balance_ratio_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_rb, min_rb, max_rb, inc_rb;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_RED_BALANCE_RATIO_RW, &dft_rb, &ret);
+> +	alvium_read(alvium, REG_BCRM_RED_BALANCE_RATIO_MIN_R, &min_rb, &ret);
+> +	alvium_read(alvium, REG_BCRM_RED_BALANCE_RATIO_MAX_R, &max_rb, &ret);
+> +	alvium_read(alvium, REG_BCRM_RED_BALANCE_RATIO_INC_R, &inc_rb, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_rbalance = dft_rb;
+> +	alvium->min_rbalance = min_rb;
+> +	alvium->max_rbalance = max_rb;
+> +	alvium->inc_rbalance = inc_rb;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_blue_balance_ratio_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_bb, min_bb, max_bb, inc_bb;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_BLUE_BALANCE_RATIO_RW, &dft_bb, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLUE_BALANCE_RATIO_MIN_R, &min_bb, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLUE_BALANCE_RATIO_MAX_R, &max_bb, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLUE_BALANCE_RATIO_INC_R, &inc_bb, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_bbalance = dft_bb;
+> +	alvium->min_bbalance = min_bb;
+> +	alvium->max_bbalance = max_bb;
+> +	alvium->inc_bbalance = inc_bb;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_hue_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_hue, min_hue, max_hue, inc_hue;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_HUE_RW, &dft_hue, &ret);
+> +	alvium_read(alvium, REG_BCRM_HUE_MIN_R, &min_hue, &ret);
+> +	alvium_read(alvium, REG_BCRM_HUE_MAX_R, &max_hue, &ret);
+> +	alvium_read(alvium, REG_BCRM_HUE_INC_R, &inc_hue, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_hue = (s32)dft_hue;
+> +	alvium->min_hue = (s32)min_hue;
+> +	alvium->max_hue = (s32)max_hue;
+> +	alvium->inc_hue = (s32)inc_hue;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_black_lvl_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_blvl, min_blvl, max_blvl, inc_blvl;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_BLACK_LEVEL_RW, &dft_blvl, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLACK_LEVEL_MIN_R, &min_blvl, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLACK_LEVEL_MAX_R, &max_blvl, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLACK_LEVEL_INC_R, &inc_blvl, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_black_lvl = (s32)dft_blvl;
+> +	alvium->min_black_lvl = (s32)min_blvl;
+> +	alvium->max_black_lvl = (s32)max_blvl;
+> +	alvium->inc_black_lvl = (s32)inc_blvl;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_gamma_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_g, min_g, max_g, inc_g;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_GAMMA_RW, &dft_g, &ret);
+> +	alvium_read(alvium, REG_BCRM_GAMMA_MIN_R, &min_g, &ret);
+> +	alvium_read(alvium, REG_BCRM_GAMMA_MAX_R, &max_g, &ret);
+> +	alvium_read(alvium, REG_BCRM_GAMMA_INC_R, &inc_g, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_gamma = dft_g;
+> +	alvium->min_gamma = min_g;
+> +	alvium->max_gamma = max_g;
+> +	alvium->inc_gamma = inc_g;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_sharpness_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_sh, min_sh, max_sh, inc_sh;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_SHARPNESS_RW, &dft_sh, &ret);
+> +	alvium_read(alvium, REG_BCRM_SHARPNESS_MIN_R, &min_sh, &ret);
+> +	alvium_read(alvium, REG_BCRM_BLACK_LEVEL_MAX_R, &max_sh, &ret);
+> +	alvium_read(alvium, REG_BCRM_SHARPNESS_INC_R, &inc_sh, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_sharp = (s32)dft_sh;
+> +	alvium->min_sharp = (s32)min_sh;
+> +	alvium->max_sharp = (s32)max_sh;
+> +	alvium->inc_sharp = (s32)inc_sh;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_contrast_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_c, min_c, max_c, inc_c;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_RW, &dft_c, &ret);
+> +	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_MIN_R, &min_c, &ret);
+> +	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_MAX_R, &max_c, &ret);
+> +	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_INC_R, &inc_c, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_contrast = dft_c;
+> +	alvium->min_contrast = min_c;
+> +	alvium->max_contrast = max_c;
+> +	alvium->inc_contrast = inc_c;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_saturation_params(struct alvium_dev *alvium)
+> +{
+> +	u64 dft_sat, min_sat, max_sat, inc_sat;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_SATURATION_RW, &dft_sat, &ret);
+> +	alvium_read(alvium, REG_BCRM_SATURATION_MIN_R, &min_sat, &ret);
+> +	alvium_read(alvium, REG_BCRM_SATURATION_MAX_R, &max_sat, &ret);
+> +	alvium_read(alvium, REG_BCRM_SATURATION_INC_R, &inc_sat, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->dft_sat = dft_sat;
+> +	alvium->min_sat = min_sat;
+> +	alvium->max_sat = max_sat;
+> +	alvium->inc_sat = inc_sat;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_bcm_mode(struct alvium_dev *alvium)
+> +{
+> +	int ret = 0;
+> +
+> +	alvium_write(alvium, REG_GENCP_CHANGEMODE_W, ALVIUM_BCM_MODE, &ret);
+> +	alvium->bcrm_mode = ALVIUM_BCM_MODE;
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_get_mode(struct alvium_dev *alvium)
+> +{
+> +	u64 bcrm_mode;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_GENCP_CURRENTMODE_R, &bcrm_mode, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	switch (bcrm_mode) {
+> +	case ALVIUM_BCM_MODE:
+> +		alvium->bcrm_mode = ALVIUM_BCM_MODE;
+> +		break;
+> +	case ALVIUM_GENCP_MODE:
+> +		alvium->bcrm_mode = ALVIUM_GENCP_MODE;
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_avail_mipi_data_format(struct alvium_dev *alvium)
+> +{
+> +	struct alvium_avail_mipi_fmt *avail_fmt;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_IMG_AVAILABLE_MIPI_DATA_FORMATS_R,
+> +			  &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	avail_fmt = (struct alvium_avail_mipi_fmt *) &val;
+> +
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_LEG]
+> +				  = avail_fmt->yuv420_8_leg;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8]
+> +				  = avail_fmt->yuv420_8;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10]
+> +				  = avail_fmt->yuv420_10;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_CSPS]
+> +				  = avail_fmt->yuv420_8_csps;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10_CSPS]
+> +				  = avail_fmt->yuv420_10_csps;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_8]
+> +				  = avail_fmt->yuv422_8;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_10]
+> +				  = avail_fmt->yuv422_10;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB888]
+> +				  = avail_fmt->rgb888;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB666]
+> +				  = avail_fmt->rgb666;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB565]
+> +				  = avail_fmt->rgb565;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB555]
+> +				  = avail_fmt->rgb555;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB444]
+> +				  = avail_fmt->rgb444;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW6]
+> +				  = avail_fmt->raw6;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW7]
+> +				  = avail_fmt->raw7;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW8]
+> +				  = avail_fmt->raw8;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW10]
+> +				  = avail_fmt->raw10;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW12]
+> +				  = avail_fmt->raw12;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW14]
+> +				  = avail_fmt->raw14;
+> +	alvium->is_mipi_fmt_avail[ALVIUM_BIT_JPEG]
+> +				  = avail_fmt->jpeg;
+> +
+> +	alvium_print_avail_mipi_fmt(alvium);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
+> +{
+> +	unsigned int avail_fmt_cnt = 0;
+> +	unsigned int fmt = 0;
+> +	size_t sz = 0;
+> +
+> +	alvium->alvium_csi2_fmt = NULL;
+> +
+> +	/* calculate fmt array size */
+> +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
+> +		if (alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
+> +			if ((!alvium_csi2_fmts[fmt].is_raw) ||
+> +			    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]))
+> +				sz++;
+> +	}
+> +
+> +	/* init alvium_csi2_fmt array */
+> +	alvium->alvium_csi2_fmt_n = sz;
+> +	alvium->alvium_csi2_fmt = kmalloc_array(sz,
+> +						sizeof(struct alvium_pixfmt),
+> +						GFP_KERNEL);
+> +
+> +	/* Create the alvium_csi2 fmt array from formats available */
+> +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
+> +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
+> +			continue;
+> +
+> +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
+> +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])) {
+> +			alvium->alvium_csi2_fmt[avail_fmt_cnt] = alvium_csi2_fmts[fmt];
+> +			avail_fmt_cnt++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_mipi_fmt(struct alvium_dev *alvium,
+> +			       const struct alvium_pixfmt *pixfmt)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	u64 reg_val;
+> +	int ret;
+> +
+> +	reg_val = pixfmt->mipi_fmt_regval;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_MIPI_DATA_FORMAT_RW,
+> +				  reg_val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set mipi fmt\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_avail_bayer(struct alvium_dev *alvium)
+> +{
+> +	struct alvium_avail_bayer *avail_bay;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_IMG_BAYER_PATTERN_INQUIRY_R,
+> +			  &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	avail_bay = (struct alvium_avail_bayer *) &val;
+> +
+> +	alvium->is_bay_avail[ALVIUM_BIT_BAY_MONO] = avail_bay->mono;
+> +	alvium->is_bay_avail[ALVIUM_BIT_BAY_GR] = avail_bay->gr;
+> +	alvium->is_bay_avail[ALVIUM_BIT_BAY_RG] = avail_bay->rg;
+> +	alvium->is_bay_avail[ALVIUM_BIT_BAY_GB] = avail_bay->gb;
+> +	alvium->is_bay_avail[ALVIUM_BIT_BAY_BG] = avail_bay->bg;
+> +
+> +	alvium_print_avail_bayer(alvium);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
+> +				    const struct alvium_pixfmt *pixfmt)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	u64 reg_val;
+> +	int ret;
+> +
+> +	reg_val = pixfmt->bay_fmt_regval;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_BAYER_PATTERN_RW, reg_val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set bayer pattern\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_frame_interval(struct alvium_dev *alvium)
+> +{
+> +	u64 min_fr, max_fr;
+> +	int ret = 0;
+> +
+> +	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
+> +		    &min_fr, &ret);
+> +	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
+> +		    &max_fr, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->min_fr = min_fr;
+> +	alvium->max_fr = max_fr;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_frame_rate(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
+> +				  alvium->fr);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set frame rate lanes reg\n");
+> +		return ret;
+> +	}
+> +
+> +	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_stream_mipi(struct alvium_dev *alvium, bool on)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, on ? REG_BCRM_ACQUISITION_START_RW :
+> +				  REG_BCRM_ACQUISITION_STOP_RW, 0x01);
+> +	if (ret) {
+> +		dev_err(dev, "Fail set_stream_mipi\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_gain(struct alvium_dev *alvium)
+> +{
+> +	u64 gain;
+> +	int ret;
+> +
+> +	/* The unit is millibel (1 mB = 0.01 dB) */
+> +	ret = alvium_read(alvium, REG_BCRM_GAIN_RW, &gain, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return gain;
+> +}
+> +
+> +static int alvium_set_gain(struct alvium_dev *alvium, int gain)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	/* The unit is millibel (1 mB = 0.01 dB) */
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_GAIN_RW, (u64)gain);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set gain value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_autogain(struct alvium_dev *alvium, bool on)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	if (!alvium->avail_ft.auto_gain)
+> +		on = false;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_GAIN_AUTO_RW,
+> +				  on ? 0x02 : 0x00);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set autogain reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_exposure(struct alvium_dev *alvium)
+> +{
+> +	u64 exp;
+> +	int ret;
+> +
+> +	/* Exposure time in ns */
+> +	ret = alvium_read(alvium, REG_BCRM_EXPOSURE_TIME_RW, &exp, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return exp;
+> +}
+> +
+> +static int alvium_set_autoexposure(struct alvium_dev *alvium, bool on)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	if (!alvium->avail_ft.auto_exp)
+> +		on = false;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_WHITE_BALANCE_AUTO_RW,
+> +				  on ? 0x02 : 0x00);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set autoexposure reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_exposure(struct alvium_dev *alvium, int exposure_ns)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_EXPOSURE_TIME_RW,
+> +				  (u64)exposure_ns);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set exposure value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_gain(struct alvium_dev *alvium, bool auto_gain)
+> +{
+> +	struct alvium_ctrls *ctrls = &alvium->ctrls;
+> +	int ret = 0;
+> +
+> +	if (ctrls->auto_gain->is_new) {
+> +		ret = alvium_set_autogain(alvium, auto_gain);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (!auto_gain && ctrls->gain->is_new) {
+> +
+> +		if (ctrls->gain->val < alvium->min_gain) {
+> +			ctrls->gain->val = alvium->min_gain;
+> +			ctrls->gain->minimum = alvium->min_gain;
+> +		}
+> +
+> +		if (ctrls->gain->val > alvium->max_gain) {
+> +			ctrls->gain->val = alvium->max_gain;
+> +			ctrls->gain->maximum = alvium->max_gain;
+> +		}
+> +
+> +		ret = alvium_set_gain(alvium, ctrls->gain->val);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_set_blue_balance_ratio(struct alvium_dev *alvium, int blue)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_BLUE_BALANCE_RATIO_RW,
+> +				  (u64)blue);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set blue ratio value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_red_balance_ratio(struct alvium_dev *alvium, int red)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium,
+> +				  REG_BCRM_RED_BALANCE_RATIO_RW, (u64)red);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set red ratio value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_awb(struct alvium_dev *alvium, bool on)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	if (!alvium->avail_ft.auto_whiteb)
+> +		on = false;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_WHITE_BALANCE_AUTO_RW,
+> +				  on ? 0x02 : 0x00);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set awb reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_exposure(struct alvium_dev *alvium,
+> +				    enum v4l2_exposure_auto_type auto_exposure)
+> +{
+> +	struct alvium_ctrls *ctrls = &alvium->ctrls;
+> +	bool auto_exp = (auto_exposure == V4L2_EXPOSURE_AUTO);
+> +	int ret = 0;
+> +
+> +	if (ctrls->auto_exp->is_new) {
+> +		ret = alvium_set_autoexposure(alvium, auto_exp);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (!auto_exp && ctrls->exposure->is_new) {
+> +
+> +		if (ctrls->exposure->val < alvium->min_exp) {
+> +			ctrls->exposure->val = alvium->min_exp;
+> +			ctrls->exposure->minimum = alvium->min_exp;
+> +		}
+> +
+> +		if (ctrls->exposure->val > alvium->max_exp) {
+> +			ctrls->exposure->val = alvium->max_exp;
+> +			ctrls->exposure->maximum = alvium->max_exp;
+> +		}
+> +
+> +		ret = alvium_set_exposure(alvium, ctrls->exposure->val);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_set_ctrl_white_balance(struct alvium_dev *alvium, bool awb)
+> +{
+> +	struct alvium_ctrls *ctrls = &alvium->ctrls;
+> +	int ret = 0;
+> +
+> +	if (ctrls->auto_wb->is_new) {
+> +		ret = alvium_set_awb(alvium, awb);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (awb)
+> +		return 0;
+> +
+> +	if (!awb && (ctrls->blue_balance->is_new)) {
+> +		u64 blue = (u64)ctrls->blue_balance->val;
+> +
+> +		if (blue < alvium->min_bbalance)
+> +			blue = alvium->min_bbalance;
+> +
+> +		if (blue > alvium->max_bbalance)
+> +			blue = alvium->min_bbalance;
+> +
+> +		ret = alvium_set_blue_balance_ratio(alvium, blue);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (!awb && (ctrls->red_balance->is_new)) {
+> +		u64 red = (u64)ctrls->red_balance->val;
+> +
+> +		if (red < alvium->min_rbalance)
+> +			red = alvium->min_rbalance;
+> +
+> +		if (red > alvium->max_rbalance)
+> +			red = alvium->max_rbalance;
+> +
+> +		ret = alvium_set_red_balance_ratio(alvium, red);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_set_ctrl_hue(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_HUE_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set hue value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_contrast(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_CONTRAST_VALUE_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set contrast value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_saturation(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_SATURATION_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set contrast value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_gamma(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_GAMMA_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set gamma value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_sharpness(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_SHARPNESS_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set sharpness value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_hflip(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_REVERSE_X_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set reverse_x value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_ctrl_vflip(struct alvium_dev *alvium, int val)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_write_hshake(alvium, REG_BCRM_IMG_REVERSE_Y_RW, (u64)val);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set reverse_y value reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_hw_features_params(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_get_csi_clk_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read min/max csi clock regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_img_width_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read img width regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_img_height_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read img heigth regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_offx_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read offx regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_offy_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read offy regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_gain_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read gain regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_exposure_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read min/max exp regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_red_balance_ratio_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read red balance ratio regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_blue_balance_ratio_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read blue balance ratio regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_hue_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read hue regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_contrast_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read contrast regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_saturation_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read saturation regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_black_lvl_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read black lvl regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_gamma_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read gamma regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_sharpness_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read sharpness regs\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_hw_info(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	ret = alvium_get_bcrm_vers(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read bcrm version reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_bcrm_addr(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to bcrm address reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_fw_version(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read fw version reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_host_supp_csi_lanes(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read host supported csi lanes reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_feat_inq(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read bcrm feature inquiry reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_hw_features_params(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read features params regs\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_avail_mipi_data_format(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read available mipi data formats reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_avail_bayer(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to read available Bayer patterns reg\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_get_mode(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to get current mode reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_hw_init(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	int ret;
+> +
+> +	/* Set Alvium BCM mode*/
+> +	ret = alvium_set_bcm_mode(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set BCM mode\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_set_csi_lanes(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set csi lanes\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_set_csi_clk(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set csi clk\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_set_lp2hs_delay(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to set lp2hs reg\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* --------------- Subdev Operations --------------- */
+> +
+> +static int alvium_g_frame_interval(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_frame_interval *fi)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +
+> +	fi->interval = alvium->frame_interval;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_frame_interval(struct alvium_dev *alvium,
+> +				     struct v4l2_subdev_frame_interval *fi)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	u64 req_fr, min_fr, max_fr;
+> +	int ret;
+> +
+> +	if (fi->interval.denominator == 0)
+> +		return -EINVAL;
+> +
+> +	ret = alvium_get_frame_interval(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Fail to get frame interval\n");
+> +		return ret;
+> +	}
+> +
+> +	min_fr = alvium->min_fr;
+> +	max_fr = alvium->max_fr;
+> +
+> +	dev_dbg(dev, "fi->interval.numerator = %d\n", fi->interval.numerator);
+> +	dev_dbg(dev, "fi->interval.denominator = %d\n", fi->interval.denominator);
+> +
+> +	req_fr = (fi->interval.denominator * USEC_PER_SEC) /
+> +		  fi->interval.numerator;
+> +
+> +	if (req_fr >= max_fr && req_fr <= min_fr)
+> +		return -EINVAL;
+> +
+> +	alvium->fr = req_fr;
+> +	alvium->frame_interval.numerator = fi->interval.numerator;
+> +	alvium->frame_interval.denominator = fi->interval.denominator;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_s_frame_interval(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_frame_interval *fi)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	int ret;
+> +
+> +	if (alvium->streaming)
+> +		return -EBUSY;
+> +
+> +	ret = alvium_set_frame_interval(alvium, fi);
+> +	if (!ret) {
+> +		ret = alvium_set_frame_rate(alvium);
+> +		if (ret)
+> +			return -EIO;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_enum_mbus_code(struct v4l2_subdev *sd,
+> +				 struct v4l2_subdev_state *sd_state,
+> +				 struct v4l2_subdev_mbus_code_enum *code)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +
+> +	if (code->index >= alvium->alvium_csi2_fmt_n)
+> +		return -EINVAL;
+> +
+> +	code->code = alvium->alvium_csi2_fmt[code->index].code;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct alvium_pixfmt *
+> +alvium_code_to_pixfmt(struct alvium_dev *alvium, u32 code)
+> +{
+> +	const struct alvium_pixfmt *formats = alvium->alvium_csi2_fmt;
+> +	unsigned int i;
+> +
+> +	for (i = 0; formats[i].code; ++i)
+> +		if (formats[i].code == code)
+> +			return &formats[i];
+> +
+> +	return &formats[0];
+> +}
+> +
+> +static int alvium_set_mode(struct alvium_dev *alvium,
+> +			   struct v4l2_subdev_state *state)
+> +{
+> +	struct v4l2_subdev *sd = &alvium->sd;
+> +	struct v4l2_mbus_framefmt *fmt;
+> +	struct v4l2_rect *crop;
+> +	int ret;
+> +
+> +	crop = v4l2_subdev_get_pad_crop(sd, state, 0);
+> +	fmt = v4l2_subdev_get_pad_format(sd, state, 0);
+> +
+> +	fmt->width = clamp(fmt->width, alvium->img_min_width,
+> +			   alvium->img_max_width);
+> +	fmt->height = clamp(fmt->height, alvium->img_min_height,
+> +			    alvium->img_max_height);
+> +
+> +	/* alvium don't accept negative crop left/top */
+> +	crop->left = clamp((u32)max(0, crop->left), alvium->min_offx,
+> +			   (u32)(alvium->img_max_width - fmt->width));
+> +	crop->top = clamp((u32)max(0, crop->top), alvium->min_offy,
+> +			  (u32)(alvium->img_max_height - fmt->height));
+> +
+> +	ret = alvium_set_img_width(alvium, fmt->width);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_set_img_height(alvium, fmt->height);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_set_img_offx(alvium, crop->left);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_set_img_offy(alvium, crop->top);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_framefmt(struct alvium_dev *alvium,
+> +			       struct v4l2_mbus_framefmt *format)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	const struct alvium_pixfmt *alvium_csi2_fmt;
+> +	int ret = 0;
+> +
+> +	alvium_csi2_fmt = alvium_code_to_pixfmt(alvium, format->code);
+> +
+> +	ret = alvium_set_mipi_fmt(alvium, alvium_csi2_fmt);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (alvium_csi2_fmt->is_raw) {
+> +		ret = alvium_set_bayer_pattern(alvium, alvium_csi2_fmt);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	dev_dbg(dev, "start: %s, mipi_fmt_regval regval = 0x%llx",
+> +		__func__, alvium_csi2_fmt->mipi_fmt_regval);
+> +
+> +	return ret;
+> +}
+> +
+> +static int alvium_s_stream(struct v4l2_subdev *sd, int enable)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	struct i2c_client *client = v4l2_get_subdevdata(&alvium->sd);
+> +	struct v4l2_mbus_framefmt *fmt;
+> +	struct v4l2_subdev_state *state;
+> +	int ret = 0;
+> +
+> +	state = v4l2_subdev_lock_and_get_active_state(sd);
+> +
+> +	if (enable) {
+> +		ret = pm_runtime_resume_and_get(&client->dev);
+> +		if (ret < 0)
+> +			goto out;
+> +
+> +		ret = __v4l2_ctrl_handler_setup(&alvium->ctrls.handler);
+> +		if (ret)
+> +			goto out;
+> +
+> +		ret = alvium_set_mode(alvium, state);
+> +		if (ret)
+> +			goto out;
+> +
+> +		fmt = v4l2_subdev_get_pad_format(sd, state, 0);
+> +		ret = alvium_set_framefmt(alvium, fmt);
+> +		if (ret)
+> +			goto out;
+> +
+> +		ret = alvium_set_stream_mipi(alvium, enable);
+> +		if (ret)
+> +			goto out;
+> +
+> +	} else {
+> +		alvium_set_stream_mipi(alvium, enable);
+> +		pm_runtime_mark_last_busy(&client->dev);
+> +		pm_runtime_put_autosuspend(&client->dev);
+> +	}
+> +
+> +	alvium->streaming = !!enable;
+> +	v4l2_subdev_unlock_state(state);
+> +
+> +	return 0;
+> +
+> +out:
+> +	pm_runtime_put(&client->dev);
+> +	v4l2_subdev_unlock_state(state);
+> +	return ret;
+> +}
+> +
+> +static int alvium_init_cfg(struct v4l2_subdev *sd,
+> +			   struct v4l2_subdev_state *state)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	struct alvium_mode *mode = &alvium->mode;
+> +	struct v4l2_subdev_format sd_fmt = {
+> +		.which = V4L2_SUBDEV_FORMAT_TRY,
+> +		.format = alvium_csi2_default_fmt,
+> +	};
+> +	struct v4l2_subdev_crop sd_crop = {
+> +		.which = V4L2_SUBDEV_FORMAT_TRY,
+> +		.rect = {
+> +			.left = mode->crop.left,
+> +			.top = mode->crop.top,
+> +			.width = mode->crop.width,
+> +			.height = mode->crop.height,
+> +		},
+> +	};
+> +
+> +	*v4l2_subdev_get_pad_crop(sd, state, 0) = sd_crop.rect;
+> +	*v4l2_subdev_get_pad_format(sd, state, 0) = sd_fmt.format;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_fmt(struct v4l2_subdev *sd,
+> +			  struct v4l2_subdev_state *sd_state,
+> +			  struct v4l2_subdev_format *format)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	const struct alvium_pixfmt *alvium_csi2_fmt;
+> +	struct v4l2_mbus_framefmt *fmt;
+> +	struct v4l2_rect *crop;
+> +
+> +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
+> +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> +
+> +	fmt->width = clamp(format->format.width, alvium->img_min_width,
+> +			   alvium->img_max_width);
+> +	fmt->height = clamp(format->format.height, alvium->img_min_height,
+> +			    alvium->img_max_height);
+> +
+> +	/* Adjust left and top to prevent roll over sensor area */
+> +	crop->left = clamp((u32)crop->left, (u32)0,
+> +			   (alvium->img_max_width - fmt->width));
+> +	crop->top = clamp((u32)crop->top, (u32)0,
+> +			  (alvium->img_max_height - fmt->height));
+> +
+> +	/* Set also the crop width and height when set a new fmt */
+> +	crop->width = fmt->width;
+> +	crop->height = fmt->height;
+> +
+> +	alvium_csi2_fmt = alvium_code_to_pixfmt(alvium, format->format.code);
+> +	fmt->code = alvium_csi2_fmt->code;
+> +
+> +	*fmt = format->format;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_set_selection(struct v4l2_subdev *sd,
+> +				struct v4l2_subdev_state *sd_state,
+> +				struct v4l2_subdev_selection *sel)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	struct v4l2_mbus_framefmt *fmt;
+> +	struct v4l2_rect *crop;
+> +
+> +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
+> +
+> +	/*
+> +	 * Alvium can only shift the origin of the img
+> +	 * then we accept only value with the same value of the actual fmt
+> +	 */
+> +	if (sel->r.width != fmt->width)
+> +		sel->r.width = fmt->width;
+> +
+> +	if (sel->r.height != fmt->height)
+> +		sel->r.height = fmt->height;
+> +
+> +	if (sel->target != V4L2_SEL_TGT_CROP)
+> +		return -EINVAL;
+> +
+> +	/* alvium don't accept negative crop left/top */
+> +	crop->left = clamp((u32)max(0, sel->r.left), alvium->min_offx,
+> +			   alvium->img_max_width - sel->r.width);
+> +	crop->top = clamp((u32)max(0, sel->r.top), alvium->min_offy,
+> +			  alvium->img_max_height - sel->r.height);
+> +
+> +	sel->r = *crop;
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_selection(struct v4l2_subdev *sd,
+> +				struct v4l2_subdev_state *sd_state,
+> +				struct v4l2_subdev_selection *sel)
+> +{
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +
+> +	switch (sel->target) {
+> +	/* Current cropping area */
+> +	case V4L2_SEL_TGT_CROP:
+> +		sel->r = *v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> +		break;
+> +	/* Cropping bounds */
+> +	case V4L2_SEL_TGT_NATIVE_SIZE:
+> +		sel->r.top = 0;
+> +		sel->r.left = 0;
+> +		sel->r.width = alvium->img_max_width;
+> +		sel->r.height = alvium->img_max_height;
+> +		break;
+> +	/* Default cropping area */
+> +	case V4L2_SEL_TGT_CROP_BOUNDS:
+> +	case V4L2_SEL_TGT_CROP_DEFAULT:
+> +		sel->r.top = alvium->min_offy;
+> +		sel->r.left = alvium->min_offx;
+> +		sel->r.width = alvium->img_max_width;
+> +		sel->r.height = alvium->img_max_height;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	int val;
+> +
+> +	switch (ctrl->id) {
+> +	case V4L2_CID_GAIN:
+> +		val = alvium_get_gain(alvium);
+> +		if (val < 0)
+> +			return val;
+> +		alvium->ctrls.gain->val = val;
+> +		break;
+> +	case V4L2_CID_EXPOSURE:
+> +		val = alvium_get_exposure(alvium);
+> +		if (val < 0)
+> +			return val;
+> +		alvium->ctrls.exposure->val = val;
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	struct i2c_client *client = v4l2_get_subdevdata(&alvium->sd);
+> +	int ret;
+> +
+> +	/*
+> +	 * Applying V4L2 control value only happens
+> +	 * when power is up for streaming
+> +	 */
+> +	if (!pm_runtime_get_if_in_use(&client->dev))
+> +		return 0;
+> +
+> +	switch (ctrl->id) {
+> +	case V4L2_CID_AUTOGAIN:
+> +		ret = alvium_set_ctrl_gain(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_EXPOSURE_AUTO:
+> +		ret = alvium_set_ctrl_exposure(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_AUTO_WHITE_BALANCE:
+> +		ret = alvium_set_ctrl_white_balance(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_HUE:
+> +		ret = alvium_set_ctrl_hue(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_CONTRAST:
+> +		ret = alvium_set_ctrl_contrast(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_SATURATION:
+> +		ret = alvium_set_ctrl_saturation(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_GAMMA:
+> +		ret = alvium_set_ctrl_gamma(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_SHARPNESS:
+> +		ret = alvium_set_ctrl_sharpness(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_HFLIP:
+> +		ret = alvium_set_ctrl_hflip(alvium, ctrl->val);
+> +		break;
+> +	case V4L2_CID_VFLIP:
+> +		ret = alvium_set_ctrl_vflip(alvium, ctrl->val);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	pm_runtime_put(&client->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops alvium_ctrl_ops = {
+> +	.g_volatile_ctrl = alvium_g_volatile_ctrl,
+> +	.s_ctrl = alvium_s_ctrl,
+> +};
+> +
+> +static int alvium_ctrl_init(struct alvium_dev *alvium)
+> +{
+> +	const struct v4l2_ctrl_ops *ops = &alvium_ctrl_ops;
+> +	struct alvium_ctrls *ctrls = &alvium->ctrls;
+> +	struct v4l2_ctrl_handler *hdl = &ctrls->handler;
+> +	struct v4l2_fwnode_device_properties props;
+> +	int ret;
+> +
+> +	v4l2_ctrl_handler_init(hdl, 32);
+> +
+> +	/* Pixel rate is fixed */
+> +	ctrls->pixel_rate = v4l2_ctrl_new_std(hdl, ops,
+> +					      V4L2_CID_PIXEL_RATE, 0,
+> +					      ALVIUM_DEFAULT_PIXEL_RATE_MHZ, 1,
+> +					      ALVIUM_DEFAULT_PIXEL_RATE_MHZ);
+> +
+> +	/* Link freq is fixed */
+> +	ctrls->link_freq = v4l2_ctrl_new_int_menu(hdl, ops,
+> +						  V4L2_CID_LINK_FREQ,
+> +					          0, 0, &alvium->link_freq);
+> +
+> +	/* Auto/manual white balance */
+> +	ctrls->auto_wb = v4l2_ctrl_new_std(hdl, ops,
+> +					   V4L2_CID_AUTO_WHITE_BALANCE,
+> +					   0, 1, 1,
+> +					   alvium->avail_ft.auto_whiteb ? 1 : 0);
+> +
+> +	ctrls->blue_balance = v4l2_ctrl_new_std(hdl, ops,
+> +						V4L2_CID_BLUE_BALANCE,
+> +						alvium->min_bbalance,
+> +						alvium->max_bbalance,
+> +						alvium->inc_bbalance,
+> +						alvium->dft_bbalance);
+> +	ctrls->red_balance = v4l2_ctrl_new_std(hdl, ops,
+> +					       V4L2_CID_RED_BALANCE,
+> +					       alvium->min_rbalance,
+> +					       alvium->max_rbalance,
+> +					       alvium->inc_rbalance,
+> +					       alvium->dft_rbalance);
+> +
+> +	/* Auto/manual exposure */
+> +	ctrls->auto_exp = v4l2_ctrl_new_std_menu(hdl, ops,
+> +						 V4L2_CID_EXPOSURE_AUTO,
+> +						 V4L2_EXPOSURE_MANUAL, 0,
+> +						 alvium->avail_ft.auto_exp ?
+> +						 V4L2_EXPOSURE_AUTO : V4L2_EXPOSURE_MANUAL);
+> +
+> +	ctrls->exposure = v4l2_ctrl_new_std(hdl, ops,
+> +					    V4L2_CID_EXPOSURE,
+> +					    alvium->min_exp,
+> +					    alvium->max_exp,
+> +					    alvium->inc_exp,
+> +					    alvium->dft_exp);
+> +
+> +	/* Auto/manual gain */
+> +	ctrls->auto_gain = v4l2_ctrl_new_std(hdl, ops,
+> +					     V4L2_CID_AUTOGAIN,
+> +					     0, 1, 1,
+> +					     alvium->avail_ft.auto_gain ? 1 : 0);
+> +
+> +	if (alvium->avail_ft.gain)
+> +		ctrls->gain = v4l2_ctrl_new_std(hdl, ops,
+> +						V4L2_CID_GAIN,
+> +						alvium->min_gain,
+> +						alvium->max_gain,
+> +						alvium->inc_gain,
+> +						alvium->dft_gain);
+> +
+> +	if (alvium->avail_ft.sat)
+> +		ctrls->saturation = v4l2_ctrl_new_std(hdl, ops,
+> +						      V4L2_CID_SATURATION,
+> +					              alvium->min_sat,
+> +					              alvium->max_sat,
+> +					              alvium->inc_sat,
+> +					              alvium->dft_sat);
+> +
+> +	if (alvium->avail_ft.hue)
+> +		ctrls->hue = v4l2_ctrl_new_std(hdl, ops,
+> +					       V4L2_CID_HUE,
+> +					       alvium->min_hue,
+> +					       alvium->max_hue,
+> +					       alvium->inc_hue,
+> +					       alvium->dft_hue);
+> +
+> +	if (alvium->avail_ft.contrast)
+> +		ctrls->contrast = v4l2_ctrl_new_std(hdl, ops,
+> +						    V4L2_CID_CONTRAST,
+> +					            alvium->min_contrast,
+> +					            alvium->max_contrast,
+> +					            alvium->inc_contrast,
+> +					            alvium->dft_contrast);
+> +
+> +	if (alvium->avail_ft.gamma)
+> +		ctrls->gamma = v4l2_ctrl_new_std(hdl, ops,
+> +						 V4L2_CID_GAMMA,
+> +						 alvium->min_gamma,
+> +						 alvium->max_gamma,
+> +						 alvium->inc_gamma,
+> +						 alvium->dft_gamma);
+> +
+> +	if (alvium->avail_ft.sharp)
+> +		ctrls->sharpness = v4l2_ctrl_new_std(hdl, ops,
+> +						     V4L2_CID_SHARPNESS,
+> +						     alvium->min_sharp,
+> +						     alvium->max_sharp,
+> +						     alvium->inc_sharp,
+> +						     alvium->dft_sharp);
+> +
+> +	if (alvium->avail_ft.rev_x)
+> +		ctrls->hflip = v4l2_ctrl_new_std(hdl, ops,
+> +						 V4L2_CID_HFLIP,
+> +						 0, 1, 1, 0);
+> +
+> +	if (alvium->avail_ft.rev_y)
+> +		ctrls->vflip = v4l2_ctrl_new_std(hdl, ops,
+> +						 V4L2_CID_VFLIP,
+> +						 0, 1, 1, 0);
+> +
+> +	if (hdl->error) {
+> +		ret = hdl->error;
+> +		goto free_ctrls;
+> +	}
+> +
+> +	ret = v4l2_fwnode_device_parse(&alvium->i2c_client->dev, &props);
+> +	if (ret)
+> +		goto free_ctrls;
+> +
+> +	ret = v4l2_ctrl_new_fwnode_properties(hdl, ops, &props);
+> +	if (ret)
+> +		goto free_ctrls;
+> +
+> +	ctrls->pixel_rate->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> +	ctrls->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> +	ctrls->gain->flags |= V4L2_CTRL_FLAG_VOLATILE;
+> +	ctrls->exposure->flags |= V4L2_CTRL_FLAG_VOLATILE;
+> +
+> +	v4l2_ctrl_auto_cluster(3, &ctrls->auto_wb, 0, false);
+> +	v4l2_ctrl_auto_cluster(2, &ctrls->auto_gain, 0, true);
+> +	v4l2_ctrl_auto_cluster(2, &ctrls->auto_exp, 1, true);
+> +
+> +	alvium->sd.ctrl_handler = hdl;
+> +	return 0;
+> +
+> +free_ctrls:
+> +	v4l2_ctrl_handler_free(hdl);
+> +	return ret;
+> +}
+> +
+> +static const struct v4l2_subdev_core_ops alvium_core_ops = {
+> +	.log_status = v4l2_ctrl_subdev_log_status,
+> +	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
+> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+> +};
+> +
+> +static const struct v4l2_subdev_video_ops alvium_video_ops = {
+> +	.g_frame_interval	= alvium_g_frame_interval,
+> +	.s_frame_interval	= alvium_s_frame_interval,
+> +	.s_stream		= alvium_s_stream,
+> +};
+> +
+> +static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
+> +	.init_cfg = alvium_init_cfg,
+> +	.enum_mbus_code = alvium_enum_mbus_code,
+> +	.get_fmt = v4l2_subdev_get_fmt,
+> +	.set_fmt = alvium_set_fmt,
+> +	.get_selection = alvium_get_selection,
+> +	.set_selection = alvium_set_selection,
+> +};
+> +
+> +static const struct v4l2_subdev_ops alvium_subdev_ops = {
+> +	.core	= &alvium_core_ops,
+> +	.pad	= &alvium_pad_ops,
+> +	.video	= &alvium_video_ops,
+> +};
+> +
+> +static int alvium_subdev_init(struct alvium_dev *alvium)
+> +{
+> +	struct i2c_client *client = alvium->i2c_client;
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct v4l2_subdev *sd = &alvium->sd;
+> +	int ret;
+> +
+> +	/* Setup initial frame interval*/
+> +	alvium->frame_interval.numerator = 1;
+> +	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
+> +	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
+> +
+> +	/* Setup the initial mode */
+> +	alvium->mode.fmt = alvium_csi2_default_fmt;
+> +	alvium->mode.width = alvium_csi2_default_fmt.width;
+> +	alvium->mode.height = alvium_csi2_default_fmt.height;
+> +	alvium->mode.crop.left = alvium->min_offx;
+> +	alvium->mode.crop.top = alvium->min_offy;
+> +	alvium->mode.crop.width = alvium_csi2_default_fmt.width;
+> +	alvium->mode.crop.height = alvium_csi2_default_fmt.height;
+> +
+> +	/* init alvium sd */
+> +	v4l2_i2c_subdev_init(sd, client, &alvium_subdev_ops);
+> +
+> +	sd->flags |= V4L2_SUBDEV_FL_HAS_EVENTS | V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +	alvium->pad.flags = MEDIA_PAD_FL_SOURCE;
+> +	sd->entity.function = MEDIA_ENT_F_CAM_SENSOR;
+> +
+> +	ret = media_entity_pads_init(&sd->entity, 1, &alvium->pad);
+> +	if (ret) {
+> +		dev_err(dev, "Could not register media entity\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = alvium_ctrl_init(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "Control initialization error %d\n", ret);
+> +		goto entity_cleanup;
+> +	}
+> +
+> +	alvium->sd.state_lock = alvium->ctrls.handler.lock;
+> +
+> +	ret = v4l2_subdev_init_finalize(sd);
+> +	if (ret < 0) {
+> +		dev_err(dev, "subdev initialization error %d\n", ret);
+> +		goto err_ctrls;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_ctrls:
+> +	v4l2_ctrl_handler_free(&alvium->ctrls.handler);
+> +entity_cleanup:
+> +	media_entity_cleanup(&alvium->sd.entity);
+> +	return ret;
+> +}
+> +
+> +static void alvium_subdev_cleanup(struct alvium_dev *alvium)
+> +{
+> +	v4l2_subdev_cleanup(&alvium->sd);
+> +	media_entity_cleanup(&alvium->sd.entity);
+> +	v4l2_ctrl_handler_free(&alvium->ctrls.handler);
+> +}
+> +
+> +static int alvium_get_dt_data(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct fwnode_handle *fwnode = dev_fwnode(dev);
+> +	struct fwnode_handle *endpoint;
+> +
+> +	if (!fwnode)
+> +		return -EINVAL;
+> +
+> +	/* Only CSI2 is supported for now: */
+> +	alvium->ep.bus_type = V4L2_MBUS_CSI2_DPHY;
+> +
+> +	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
+> +	if (!endpoint) {
+> +		dev_err(dev, "endpoint node not found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (v4l2_fwnode_endpoint_alloc_parse(endpoint, &alvium->ep)) {
+> +		dev_err(dev, "could not parse endpoint\n");
+> +		goto error_out;
+> +	}
+> +
+> +	if (!alvium->ep.nr_of_link_frequencies) {
+> +		dev_err(dev, "no link frequencies defined");
+> +		goto error_out;
+> +	}
+> +
+> +	return 0;
+> +
+> +error_out:
+> +	v4l2_fwnode_endpoint_free(&alvium->ep);
+> +	fwnode_handle_put(endpoint);
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int alvium_power_on(struct alvium_dev *alvium, bool on)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!on)
+> +		return regulator_disable(alvium->reg_vcc);
+> +
+> +	ret = regulator_enable(alvium->reg_vcc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* alvium boot time 7s*/
+> +	msleep(7000);
+> +	return 0;
+> +}
+> +
+> +static int alvium_runtime_resume(struct device *dev)
+> +{
+> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	int ret;
+> +
+> +	ret = alvium_power_on(alvium, true);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_hw_init(alvium);
+> +	if (ret){
+> +		regulator_disable(alvium->reg_vcc);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_runtime_suspend(struct device *dev)
+> +{
+> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +
+> +	alvium_power_on(alvium, false);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops alvium_pm_ops = {
+> +	RUNTIME_PM_OPS(alvium_runtime_suspend, alvium_runtime_resume, NULL)
+> +};
+> +
+> +static int alvium_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct alvium_dev *alvium;
+> +	int ret;
+> +
+> +	alvium = devm_kzalloc(dev, sizeof(*alvium), GFP_KERNEL);
+> +	if (!alvium)
+> +		return -ENOMEM;
+> +
+> +	alvium->i2c_client = client;
+> +
+> +	alvium->regmap = devm_cci_regmap_init_i2c(client, 16);
+> +	if (IS_ERR(alvium->regmap))
+> +		return PTR_ERR(alvium->regmap);
+> +
+> +	ret = alvium_get_dt_data(alvium);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->reg_vcc = devm_regulator_get_optional(dev, "vcc-ext-in");
+> +	if (IS_ERR(alvium->reg_vcc))
+> +		return dev_err_probe(dev, PTR_ERR(alvium->reg_vcc),
+> +				     "no vcc-ext-in regulator provided\n");
+> +
+> +	ret = alvium_power_on(alvium, true);
+> +	if (ret)
+> +		goto err_powerdown;
+> +
+> +	if (!alvium_is_alive(alvium)) {
+> +		dev_err(dev, "Device detection failed: %d\n", ret);
+> +		ret = -ENODEV;
+> +		goto err_powerdown;
+> +	}
+> +
+> +	ret = alvium_get_hw_info(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "get_hw_info fail %d\n", ret);
+> +		goto err_powerdown;
+> +	}
+> +
+> +	ret = alvium_hw_init(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "hw_init fail %d\n", ret);
+> +		goto err_powerdown;
+> +	}
+> +
+> +	ret = alvium_setup_mipi_fmt(alvium);
+> +	if (ret) {
+> +		dev_err(dev, "setup_mipi_fmt fail %d\n", ret);
+> +		goto err_powerdown;
+> +	}
+> +
+> +	/*
+> +	 * Enable runtime PM without autosuspend:
+> +	 *
+> +	 * Don't use pm autosuspend (alvium have ~7s boot time).
+> +	 * Alvium has been powered manually:
+> +	 *  - mark it as active
+> +	 *  - increase the usage count without resuming the device.
+> +	 */
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_get_noresume(dev);
+> +	pm_runtime_enable(dev);
+> +
+> +	/* Initialize the V4L2 subdev. */
+> +	ret = alvium_subdev_init(alvium);
+> +	if (ret)
+> +		goto err_pm;
+> +
+> +	ret = v4l2_async_register_subdev(&alvium->sd);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Could not register v4l2 device\n");
+> +		goto err_subdev;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_subdev:
+> +	alvium_subdev_cleanup(alvium);
+> +err_pm:
+> +	pm_runtime_disable(dev);
+> +	pm_runtime_put_noidle(dev);
+> +err_powerdown:
+> +	alvium_power_on(alvium, false);
+> +
+> +	return ret;
+> +}
+> +
+> +static void alvium_remove(struct i2c_client *client)
+> +{
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +
+> +	i2c_unregister_device(alvium->i2c_client);
+> +
+> +	/*
+> +	 * Disable runtime PM. In case runtime PM is disabled in the kernel,
+> +	 * make sure to turn power off manually.
+> +	 */
+> +	pm_runtime_disable(dev);
+> +	if (!pm_runtime_status_suspended(dev))
+> +		alvium_power_on(alvium, false);
+> +	pm_runtime_set_suspended(dev);
+> +}
+> +
+> +static const struct of_device_id alvium_of_ids[] = {
+> +	{ .compatible = "alliedvision,alvium-csi2", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, alvium_of_ids);
+> +
+> +static struct i2c_driver alvium_i2c_driver = {
+> +	.driver = {
+> +		.name = "alvium-csi2",
+> +		.pm = pm_ptr(&alvium_pm_ops),
+> +		.of_match_table = alvium_of_ids,
+> +	},
+> +	.probe = alvium_probe,
+> +	.remove = alvium_remove,
+> +};
+> +
+> +module_i2c_driver(alvium_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("Allied Vision's Alvium Camera Driver");
+> +MODULE_AUTHOR("Tommaso Merciai <tomm.merciai@gmail.com>");
+> +MODULE_AUTHOR("Martin Hecht <martin.hecht@avnet.eu>");
+> +MODULE_AUTHOR("Avnet Silica Software & Services EMEA");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
+> new file mode 100644
+> index 000000000000..13531b10d35d
+> --- /dev/null
+> +++ b/drivers/media/i2c/alvium-csi2.h
+> @@ -0,0 +1,488 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Allied Vision Technologies GmbH Alvium camera driver
+> + *
+> + * Copyright (C) 2023 Tommaso Merciai
+> + * Copyright (C) 2023 Martin Hecht
+> + * Copyright (C) 2023 Avnet EMG GmbH
+> + */
+> +
+> +#ifndef ALVIUM_CSI2_H_
+> +#define ALVIUM_CSI2_H_
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <media/v4l2-cci.h>
+> +#include <media/v4l2-common.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-subdev.h>
+> +
+> +#define REG_BCRM_V4L2					BIT(31)
+> +
+> +#define REG_BCRM_V4L2_8BIT(n)				(REG_BCRM_V4L2 | CCI_REG8(n))
+> +#define REG_BCRM_V4L2_16BIT(n)				(REG_BCRM_V4L2 | CCI_REG16(n))
+> +#define REG_BCRM_V4L2_32BIT(n)				(REG_BCRM_V4L2 | CCI_REG32(n))
+> +#define REG_BCRM_V4L2_64BIT(n)				(REG_BCRM_V4L2 | CCI_REG64(n))
+> +
+> +/* Basic Control Register Map register offsets (BCRM) */
+> +#define REG_BCRM_VERSION_R				CCI_REG32(0x0000)
+> +#define REG_BCRM_REG_ADDR_R				CCI_REG16(0x0014)
+> +
+> +#define REG_BCRM_FEATURE_INQUIRY_R			REG_BCRM_V4L2_64BIT(0x0008)
+> +#define REG_BCRM_DEVICE_FIRMWARE_VERSION_R		REG_BCRM_V4L2_64BIT(0x0010)
+> +#define REG_BCRM_WRITE_HANDSHAKE_RW			REG_BCRM_V4L2_8BIT(0x0018)
+> +
+> +/* Streaming Control Registers */
+> +#define REG_BCRM_SUPPORTED_CSI2_LANE_COUNTS_R		REG_BCRM_V4L2_8BIT(0x0040)
+> +#define REG_BCRM_CSI2_LANE_COUNT_RW			REG_BCRM_V4L2_8BIT(0x0044)
+> +#define REG_BCRM_CSI2_CLOCK_MIN_R			REG_BCRM_V4L2_32BIT(0x0048)
+> +#define REG_BCRM_CSI2_CLOCK_MAX_R			REG_BCRM_V4L2_32BIT(0x004c)
+> +#define REG_BCRM_CSI2_CLOCK_RW				REG_BCRM_V4L2_32BIT(0x0050)
+> +#define REG_BCRM_BUFFER_SIZE_R				REG_BCRM_V4L2_32BIT(0x0054)
+> +
+> +#define REG_BCRM_IPU_X_MIN_W				REG_BCRM_V4L2_32BIT(0x0058)
+> +#define REG_BCRM_IPU_X_MAX_W				REG_BCRM_V4L2_32BIT(0x005c)
+> +#define REG_BCRM_IPU_X_INC_W				REG_BCRM_V4L2_32BIT(0x0060)
+> +#define REG_BCRM_IPU_Y_MIN_W				REG_BCRM_V4L2_32BIT(0x0064)
+> +#define REG_BCRM_IPU_Y_MAX_W				REG_BCRM_V4L2_32BIT(0x0068)
+> +#define REG_BCRM_IPU_Y_INC_W				REG_BCRM_V4L2_32BIT(0x006c)
+> +#define REG_BCRM_IPU_X_R				REG_BCRM_V4L2_32BIT(0x0070)
+> +#define REG_BCRM_IPU_Y_R				REG_BCRM_V4L2_32BIT(0x0074)
+> +
+> +#define REG_BCRM_PHY_RESET_RW				REG_BCRM_V4L2_8BIT(0x0078)
+> +#define REG_BCRM_LP2HS_DELAY_RW				REG_BCRM_V4L2_32BIT(0x007c)
+> +
+> +/* Acquisition Control Registers */
+> +#define REG_BCRM_ACQUISITION_START_RW			REG_BCRM_V4L2_8BIT(0x0080)
+> +#define REG_BCRM_ACQUISITION_STOP_RW			REG_BCRM_V4L2_8BIT(0x0084)
+> +#define REG_BCRM_ACQUISITION_ABORT_RW			REG_BCRM_V4L2_8BIT(0x0088)
+> +#define REG_BCRM_ACQUISITION_STATUS_R			REG_BCRM_V4L2_8BIT(0x008c)
+> +#define REG_BCRM_ACQUISITION_FRAME_RATE_RW		REG_BCRM_V4L2_64BIT(0x0090)
+> +#define REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R		REG_BCRM_V4L2_64BIT(0x0098)
+> +#define REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R		REG_BCRM_V4L2_64BIT(0x00a0)
+> +#define REG_BCRM_ACQUISITION_FRAME_RATE_INC_R		REG_BCRM_V4L2_64BIT(0x00a8)
+> +#define REG_BCRM_ACQUISITION_FRAME_RATE_ENABLE_RW	REG_BCRM_V4L2_8BIT(0x00b0)
+> +
+> +#define REG_BCRM_FRAME_START_TRIGGER_MODE_RW		REG_BCRM_V4L2_8BIT(0x00b4)
+> +#define REG_BCRM_FRAME_START_TRIGGER_SOURCE_RW		REG_BCRM_V4L2_8BIT(0x00b8)
+> +#define REG_BCRM_FRAME_START_TRIGGER_ACTIVATION_RW	REG_BCRM_V4L2_8BIT(0x00bc)
+> +#define REG_BCRM_FRAME_START_TRIGGER_SOFTWARE_W		REG_BCRM_V4L2_8BIT(0x00c0)
+> +#define REG_BCRM_FRAME_START_TRIGGER_DELAY_RW		REG_BCRM_V4L2_32BIT(0x00c4)
+> +#define REG_BCRM_EXPOSURE_ACTIVE_LINE_MODE_RW		REG_BCRM_V4L2_8BIT(0x00c8)
+> +#define REG_BCRM_EXPOSURE_ACTIVE_LINE_SELECTOR_RW	REG_BCRM_V4L2_8BIT(0x00cc)
+> +#define REG_BCRM_LINE_CONFIGURATION_RW			REG_BCRM_V4L2_32BIT(0x00d0)
+> +
+> +#define REG_BCRM_IMG_WIDTH_RW				REG_BCRM_V4L2_32BIT(0x0100)
+> +#define REG_BCRM_IMG_WIDTH_MIN_R			REG_BCRM_V4L2_32BIT(0x0104)
+> +#define REG_BCRM_IMG_WIDTH_MAX_R			REG_BCRM_V4L2_32BIT(0x0108)
+> +#define REG_BCRM_IMG_WIDTH_INC_R			REG_BCRM_V4L2_32BIT(0x010c)
+> +
+> +#define REG_BCRM_IMG_HEIGHT_RW				REG_BCRM_V4L2_32BIT(0x0110)
+> +#define REG_BCRM_IMG_HEIGHT_MIN_R			REG_BCRM_V4L2_32BIT(0x0114)
+> +#define REG_BCRM_IMG_HEIGHT_MAX_R			REG_BCRM_V4L2_32BIT(0x0118)
+> +#define REG_BCRM_IMG_HEIGHT_INC_R			REG_BCRM_V4L2_32BIT(0x011c)
+> +
+> +#define REG_BCRM_IMG_OFFSET_X_RW			REG_BCRM_V4L2_32BIT(0x0120)
+> +#define REG_BCRM_IMG_OFFSET_X_MIN_R			REG_BCRM_V4L2_32BIT(0x0124)
+> +#define REG_BCRM_IMG_OFFSET_X_MAX_R			REG_BCRM_V4L2_32BIT(0x0128)
+> +#define REG_BCRM_IMG_OFFSET_X_INC_R			REG_BCRM_V4L2_32BIT(0x012c)
+> +
+> +#define REG_BCRM_IMG_OFFSET_Y_RW			REG_BCRM_V4L2_32BIT(0x0130)
+> +#define REG_BCRM_IMG_OFFSET_Y_MIN_R			REG_BCRM_V4L2_32BIT(0x0134)
+> +#define REG_BCRM_IMG_OFFSET_Y_MAX_R			REG_BCRM_V4L2_32BIT(0x0138)
+> +#define REG_BCRM_IMG_OFFSET_Y_INC_R			REG_BCRM_V4L2_32BIT(0x013c)
+> +
+> +#define REG_BCRM_IMG_MIPI_DATA_FORMAT_RW		REG_BCRM_V4L2_32BIT(0x0140)
+> +#define REG_BCRM_IMG_AVAILABLE_MIPI_DATA_FORMATS_R	REG_BCRM_V4L2_64BIT(0x0148)
+> +#define REG_BCRM_IMG_BAYER_PATTERN_INQUIRY_R		REG_BCRM_V4L2_8BIT(0x0150)
+> +#define REG_BCRM_IMG_BAYER_PATTERN_RW			REG_BCRM_V4L2_8BIT(0x0154)
+> +#define REG_BCRM_IMG_REVERSE_X_RW			REG_BCRM_V4L2_8BIT(0x0158)
+> +#define REG_BCRM_IMG_REVERSE_Y_RW			REG_BCRM_V4L2_8BIT(0x015c)
+> +
+> +#define REG_BCRM_SENSOR_WIDTH_R				REG_BCRM_V4L2_32BIT(0x0160)
+> +#define REG_BCRM_SENSOR_HEIGHT_R			REG_BCRM_V4L2_32BIT(0x0164)
+> +#define REG_BCRM_WIDTH_MAX_R				REG_BCRM_V4L2_32BIT(0x0168)
+> +#define REG_BCRM_HEIGHT_MAX_R				REG_BCRM_V4L2_32BIT(0x016c)
+> +
+> +#define REG_BCRM_EXPOSURE_TIME_RW			REG_BCRM_V4L2_64BIT(0x0180)
+> +#define REG_BCRM_EXPOSURE_TIME_MIN_R			REG_BCRM_V4L2_64BIT(0x0188)
+> +#define REG_BCRM_EXPOSURE_TIME_MAX_R			REG_BCRM_V4L2_64BIT(0x0190)
+> +#define REG_BCRM_EXPOSURE_TIME_INC_R			REG_BCRM_V4L2_64BIT(0x0198)
+> +#define REG_BCRM_EXPOSURE_AUTO_RW			REG_BCRM_V4L2_8BIT(0x01a0)
+> +
+> +#define REG_BCRM_INTENSITY_AUTO_PRECEDENCE_RW		REG_BCRM_V4L2_8BIT(0x01a4)
+> +#define REG_BCRM_INTENSITY_AUTO_PRECEDENCE_VALUE_RW	REG_BCRM_V4L2_32BIT(0x01a8)
+> +#define REG_BCRM_INTENSITY_AUTO_PRECEDENCE_MIN_R	REG_BCRM_V4L2_32BIT(0x01ac)
+> +#define REG_BCRM_INTENSITY_AUTO_PRECEDENCE_MAX_R	REG_BCRM_V4L2_32BIT(0x01b0)
+> +#define REG_BCRM_INTENSITY_AUTO_PRECEDENCE_INC_R	REG_BCRM_V4L2_32BIT(0x01b4)
+> +
+> +#define REG_BCRM_BLACK_LEVEL_RW				REG_BCRM_V4L2_32BIT(0x01b8)
+> +#define REG_BCRM_BLACK_LEVEL_MIN_R			REG_BCRM_V4L2_32BIT(0x01bc)
+> +#define REG_BCRM_BLACK_LEVEL_MAX_R			REG_BCRM_V4L2_32BIT(0x01c0)
+> +#define REG_BCRM_BLACK_LEVEL_INC_R			REG_BCRM_V4L2_32BIT(0x01c4)
+> +
+> +#define REG_BCRM_GAIN_RW				REG_BCRM_V4L2_64BIT(0x01c8)
+> +#define REG_BCRM_GAIN_MIN_R				REG_BCRM_V4L2_64BIT(0x01d0)
+> +#define REG_BCRM_GAIN_MAX_R				REG_BCRM_V4L2_64BIT(0x01d8)
+> +#define REG_BCRM_GAIN_INC_R				REG_BCRM_V4L2_64BIT(0x01e0)
+> +#define REG_BCRM_GAIN_AUTO_RW				REG_BCRM_V4L2_8BIT(0x01e8)
+> +
+> +#define REG_BCRM_GAMMA_RW				REG_BCRM_V4L2_64BIT(0x01f0)
+> +#define REG_BCRM_GAMMA_MIN_R				REG_BCRM_V4L2_64BIT(0x01f8)
+> +#define REG_BCRM_GAMMA_MAX_R				REG_BCRM_V4L2_64BIT(0x0200)
+> +#define REG_BCRM_GAMMA_INC_R				REG_BCRM_V4L2_64BIT(0x0208)
+> +
+> +#define REG_BCRM_CONTRAST_VALUE_RW			REG_BCRM_V4L2_32BIT(0x0214)
+> +#define REG_BCRM_CONTRAST_VALUE_MIN_R			REG_BCRM_V4L2_32BIT(0x0218)
+> +#define REG_BCRM_CONTRAST_VALUE_MAX_R			REG_BCRM_V4L2_32BIT(0x021c)
+> +#define REG_BCRM_CONTRAST_VALUE_INC_R			REG_BCRM_V4L2_32BIT(0x0220)
+> +
+> +#define REG_BCRM_SATURATION_RW				REG_BCRM_V4L2_32BIT(0x0240)
+> +#define REG_BCRM_SATURATION_MIN_R			REG_BCRM_V4L2_32BIT(0x0244)
+> +#define REG_BCRM_SATURATION_MAX_R			REG_BCRM_V4L2_32BIT(0x0248)
+> +#define REG_BCRM_SATURATION_INC_R			REG_BCRM_V4L2_32BIT(0x024c)
+> +
+> +#define REG_BCRM_HUE_RW					REG_BCRM_V4L2_32BIT(0x0250)
+> +#define REG_BCRM_HUE_MIN_R				REG_BCRM_V4L2_32BIT(0x0254)
+> +#define REG_BCRM_HUE_MAX_R				REG_BCRM_V4L2_32BIT(0x0258)
+> +#define REG_BCRM_HUE_INC_R				REG_BCRM_V4L2_32BIT(0x025c)
+> +
+> +#define REG_BCRM_ALL_BALANCE_RATIO_RW			REG_BCRM_V4L2_64BIT(0x0260)
+> +#define REG_BCRM_ALL_BALANCE_RATIO_MIN_R		REG_BCRM_V4L2_64BIT(0x0268)
+> +#define REG_BCRM_ALL_BALANCE_RATIO_MAX_R		REG_BCRM_V4L2_64BIT(0x0270)
+> +#define REG_BCRM_ALL_BALANCE_RATIO_INC_R		REG_BCRM_V4L2_64BIT(0x0278)
+> +
+> +#define REG_BCRM_RED_BALANCE_RATIO_RW			REG_BCRM_V4L2_64BIT(0x0280)
+> +#define REG_BCRM_RED_BALANCE_RATIO_MIN_R		REG_BCRM_V4L2_64BIT(0x0288)
+> +#define REG_BCRM_RED_BALANCE_RATIO_MAX_R		REG_BCRM_V4L2_64BIT(0x0290)
+> +#define REG_BCRM_RED_BALANCE_RATIO_INC_R		REG_BCRM_V4L2_64BIT(0x0298)
+> +
+> +#define REG_BCRM_GREEN_BALANCE_RATIO_RW			REG_BCRM_V4L2_64BIT(0x02a0)
+> +#define REG_BCRM_GREEN_BALANCE_RATIO_MIN_R		REG_BCRM_V4L2_64BIT(0x02a8)
+> +#define REG_BCRM_GREEN_BALANCE_RATIO_MAX_R		REG_BCRM_V4L2_64BIT(0x02b0)
+> +#define REG_BCRM_GREEN_BALANCE_RATIO_INC_R		REG_BCRM_V4L2_64BIT(0x02b8)
+> +
+> +#define REG_BCRM_BLUE_BALANCE_RATIO_RW			REG_BCRM_V4L2_64BIT(0x02c0)
+> +#define REG_BCRM_BLUE_BALANCE_RATIO_MIN_R		REG_BCRM_V4L2_64BIT(0x02c8)
+> +#define REG_BCRM_BLUE_BALANCE_RATIO_MAX_R		REG_BCRM_V4L2_64BIT(0x02d0)
+> +#define REG_BCRM_BLUE_BALANCE_RATIO_INC_R		REG_BCRM_V4L2_64BIT(0x02d8)
+> +
+> +#define REG_BCRM_WHITE_BALANCE_AUTO_RW			REG_BCRM_V4L2_8BIT(0x02e0)
+> +#define REG_BCRM_SHARPNESS_RW				REG_BCRM_V4L2_32BIT(0x0300)
+> +#define REG_BCRM_SHARPNESS_MIN_R			REG_BCRM_V4L2_32BIT(0x0304)
+> +#define REG_BCRM_SHARPNESS_MAX_R			REG_BCRM_V4L2_32BIT(0x0308)
+> +#define REG_BCRM_SHARPNESS_INC_R			REG_BCRM_V4L2_32BIT(0x030c)
+> +
+> +#define REG_BCRM_DEVICE_TEMPERATURE_R			REG_BCRM_V4L2_32BIT(0x0310)
+> +#define REG_BCRM_EXPOSURE_AUTO_MIN_RW			REG_BCRM_V4L2_64BIT(0x0330)
+> +#define REG_BCRM_EXPOSURE_AUTO_MAX_RW			REG_BCRM_V4L2_64BIT(0x0338)
+> +#define REG_BCRM_GAIN_AUTO_MIN_RW			REG_BCRM_V4L2_64BIT(0x0340)
+> +#define REG_BCRM_GAIN_AUTO_MAX_RW			REG_BCRM_V4L2_64BIT(0x0348)
+> +
+> +/* Heartbeat reg*/
+> +#define REG_BCRM_HEARTBEAT_RW				CCI_REG8(0x021f)
+> +
+> +/* GenCP Registers */
+> +#define REG_GENCP_CHANGEMODE_W				CCI_REG8(0x021c)
+> +#define REG_GENCP_CURRENTMODE_R				CCI_REG8(0x021d)
+> +#define REG_GENCP_IN_HANDSHAKE_RW			CCI_REG8(0x001c)
+> +#define REG_GENCP_OUT_SIZE_W				CCI_REG16(0x0020)
+> +#define REG_GENCP_IN_SIZE_R				CCI_REG16(0x0024)
+> +
+> +/* defines */
+> +#define REG_BCRM_HANDSHAKE_STATUS_MASK			0x01
+> +#define REG_BCRM_HANDSHAKE_AVAILABLE_MASK		0x80
+> +
+> +#define BCRM_HANDSHAKE_W_DONE_EN_BIT			BIT(0)
+> +
+> +#define ALVIUM_DEFAULT_FR_HZ				10
+> +#define ALVIUM_DEFAULT_PIXEL_RATE_MHZ			148000000
+> +
+> +#define ALVIUM_LP2HS_DELAY_MS				100
+> +
+> +enum alvium_bcrm_mode {
+> +	ALVIUM_BCM_MODE,
+> +	ALVIUM_GENCP_MODE,
+> +	ALVIUM_NUM_MODE
+> +};
+> +
+> +enum alvium_mipi_fmt {
+> +	ALVIUM_FMT_UYVY8_2X8 = 0,
+> +	ALVIUM_FMT_UYVY8_1X16,
+> +	ALVIUM_FMT_YUYV8_1X16,
+> +	ALVIUM_FMT_YUYV8_2X8,
+> +	ALVIUM_FMT_YUYV10_1X20,
+> +	ALVIUM_FMT_RGB888_1X24,
+> +	ALVIUM_FMT_RBG888_1X24,
+> +	ALVIUM_FMT_BGR888_1X24,
+> +	ALVIUM_FMT_RGB888_3X8,
+> +	ALVIUM_FMT_Y8_1X8,
+> +	ALVIUM_FMT_SGRBG8_1X8,
+> +	ALVIUM_FMT_SRGGB8_1X8,
+> +	ALVIUM_FMT_SGBRG8_1X8,
+> +	ALVIUM_FMT_SBGGR8_1X8,
+> +	ALVIUM_FMT_Y10_1X10,
+> +	ALVIUM_FMT_SGRBG10_1X10,
+> +	ALVIUM_FMT_SRGGB10_1X10,
+> +	ALVIUM_FMT_SGBRG10_1X10,
+> +	ALVIUM_FMT_SBGGR10_1X10,
+> +	ALVIUM_FMT_Y12_1X12,
+> +	ALVIUM_FMT_SGRBG12_1X12,
+> +	ALVIUM_FMT_SRGGB12_1X12,
+> +	ALVIUM_FMT_SGBRG12_1X12,
+> +	ALVIUM_FMT_SBGGR12_1X12,
+> +	ALVIUM_FMT_SBGGR14_1X14,
+> +	ALVIUM_FMT_SGBRG14_1X14,
+> +	ALVIUM_FMT_SRGGB14_1X14,
+> +	ALVIUM_FMT_SGRBG14_1X14,
+> +	ALVIUM_NUM_SUPP_MIPI_DATA_FMT
+> +};
+> +
+> +enum alvium_av_bayer_bit {
+> +	ALVIUM_BIT_BAY_NONE = -1,
+> +	ALVIUM_BIT_BAY_MONO = 0,
+> +	ALVIUM_BIT_BAY_GR,
+> +	ALVIUM_BIT_BAY_RG,
+> +	ALVIUM_BIT_BAY_GB,
+> +	ALVIUM_BIT_BAY_BG,
+> +	ALVIUM_NUM_BAY_AV_BIT
+> +};
+> +
+> +enum alvium_av_mipi_bit {
+> +	ALVIUM_BIT_YUV420_8_LEG = 0,
+> +	ALVIUM_BIT_YUV420_8,
+> +	ALVIUM_BIT_YUV420_10,
+> +	ALVIUM_BIT_YUV420_8_CSPS,
+> +	ALVIUM_BIT_YUV420_10_CSPS,
+> +	ALVIUM_BIT_YUV422_8,
+> +	ALVIUM_BIT_YUV422_10,
+> +	ALVIUM_BIT_RGB888,
+> +	ALVIUM_BIT_RGB666,
+> +	ALVIUM_BIT_RGB565,
+> +	ALVIUM_BIT_RGB555,
+> +	ALVIUM_BIT_RGB444,
+> +	ALVIUM_BIT_RAW6,
+> +	ALVIUM_BIT_RAW7,
+> +	ALVIUM_BIT_RAW8,
+> +	ALVIUM_BIT_RAW10,
+> +	ALVIUM_BIT_RAW12,
+> +	ALVIUM_BIT_RAW14,
+> +	ALVIUM_BIT_JPEG,
+> +	ALVIUM_NUM_SUPP_MIPI_DATA_BIT
+> +};
+> +
+> +struct alvium_bcrm_vers {
+> +	__le16 minor;
+> +	__le16 major;
+> +};
+> +
+> +struct alvium_fw_vers {
+> +	u8 special;
+> +	u8 major;
+> +	__le16 minor;
+> +	__le32 patch;
+> +};
+> +
+> +struct alvium_avail_feat {
+> +	u64 rev_x:1;
+> +	u64 rev_y:1;
+> +	u64 int_autop:1;
+> +	u64 black_lvl:1;
+> +	u64 gain:1;
+> +	u64 gamma:1;
+> +	u64 contrast:1;
+> +	u64 sat:1;
+> +	u64 hue:1;
+> +	u64 whiteb:1;
+> +	u64 sharp:1;
+> +	u64 auto_exp:1;
+> +	u64 auto_gain:1;
+> +	u64 auto_whiteb:1;
+> +	u64 dev_temp:1;
+> +	u64 acq_abort:1;
+> +	u64 acq_fr:1;
+> +	u64 fr_trigger:1;
+> +	u64 exp_acq_line:1;
+> +	u64 reserved:45;
+> +};
+> +
+> +struct alvium_avail_mipi_fmt {
+> +	u64 yuv420_8_leg:1;
+> +	u64 yuv420_8:1;
+> +	u64 yuv420_10:1;
+> +	u64 yuv420_8_csps:1;
+> +	u64 yuv420_10_csps:1;
+> +	u64 yuv422_8:1;
+> +	u64 yuv422_10:1;
+> +	u64 rgb888:1;
+> +	u64 rgb666:1;
+> +	u64 rgb565:1;
+> +	u64 rgb555:1;
+> +	u64 rgb444:1;
+> +	u64 raw6:1;
+> +	u64 raw7:1;
+> +	u64 raw8:1;
+> +	u64 raw10:1;
+> +	u64 raw12:1;
+> +	u64 raw14:1;
+> +	u64 jpeg:1;
+> +	u64 reserved:45;
+> +};
+> +
+> +struct alvium_avail_bayer {
+> +	u8 mono:1;
+> +	u8 gr:1;
+> +	u8 rg:1;
+> +	u8 gb:1;
+> +	u8 bg:1;
+> +	u8 reserved:3;
+> +};
+> +
+> +struct alvium_mode {
+> +	struct v4l2_rect crop;
+> +	struct v4l2_mbus_framefmt fmt;
+> +	u32 width;
+> +	u32 height;
+> +};
+> +
+> +struct alvium_pixfmt {
+> +	u32 code;
+> +	u32 colorspace;
+> +	u64 mipi_fmt_regval;
+> +	u64 bay_fmt_regval;
+> +	u8 id;
+> +	u8 is_raw;
+> +	u8 fmt_av_bit;
+> +	u8 bay_av_bit;
+> +};
+> +
+> +struct alvium_ctrls {
+> +	struct v4l2_ctrl_handler handler;
+> +	struct v4l2_ctrl *pixel_rate;
+> +	struct v4l2_ctrl *link_freq;
+> +	struct {
+> +		struct v4l2_ctrl *auto_exp;
+> +		struct v4l2_ctrl *exposure;
+> +	};
+> +	struct {
+> +		struct v4l2_ctrl *auto_wb;
+> +		struct v4l2_ctrl *blue_balance;
+> +		struct v4l2_ctrl *red_balance;
+> +	};
+> +	struct {
+> +		struct v4l2_ctrl *auto_gain;
+> +		struct v4l2_ctrl *gain;
+> +	};
+> +	struct v4l2_ctrl *saturation;
+> +	struct v4l2_ctrl *hue;
+> +	struct v4l2_ctrl *contrast;
+> +	struct v4l2_ctrl *gamma;
+> +	struct v4l2_ctrl *sharpness;
+> +	struct v4l2_ctrl *hflip;
+> +	struct v4l2_ctrl *vflip;
+> +};
+> +
+> +struct alvium_dev {
+> +	struct i2c_client *i2c_client;
+> +	struct v4l2_subdev sd;
+> +	struct v4l2_fwnode_endpoint ep;
+> +	struct media_pad pad;
+> +	struct regmap *regmap;
+> +
+> +	struct regulator *reg_vcc;
+> +
+> +	u16 bcrm_addr;
+> +
+> +	struct alvium_avail_feat avail_ft;
+> +	u8 is_mipi_fmt_avail[ALVIUM_NUM_SUPP_MIPI_DATA_BIT];
+> +	u8 is_bay_avail[ALVIUM_NUM_BAY_AV_BIT];
+> +
+> +	u32 min_csi_clk;
+> +	u32 max_csi_clk;
+> +	u32 dft_img_width;
+> +	u32 img_min_width;
+> +	u32 img_max_width;
+> +	u32 img_inc_width;
+> +	u32 dft_img_height;
+> +	u32 img_min_height;
+> +	u32 img_max_height;
+> +	u32 img_inc_height;
+> +	u32 min_offx;
+> +	u32 max_offx;
+> +	u32 inc_offx;
+> +	u32 min_offy;
+> +	u32 max_offy;
+> +	u32 inc_offy;
+> +	u64 dft_gain;
+> +	u64 min_gain;
+> +	u64 max_gain;
+> +	u64 inc_gain;
+> +	u64 dft_exp;
+> +	u64 min_exp;
+> +	u64 max_exp;
+> +	u64 inc_exp;
+> +	u64 dft_rbalance;
+> +	u64 min_rbalance;
+> +	u64 max_rbalance;
+> +	u64 inc_rbalance;
+> +	u64 dft_bbalance;
+> +	u64 min_bbalance;
+> +	u64 max_bbalance;
+> +	u64 inc_bbalance;
+> +	s32 dft_hue;
+> +	s32 min_hue;
+> +	s32 max_hue;
+> +	s32 inc_hue;
+> +	u32 dft_contrast;
+> +	u32 min_contrast;
+> +	u32 max_contrast;
+> +	u32 inc_contrast;
+> +	u32 dft_sat;
+> +	u32 min_sat;
+> +	u32 max_sat;
+> +	u32 inc_sat;
+> +	s32 dft_black_lvl;
+> +	s32 min_black_lvl;
+> +	s32 max_black_lvl;
+> +	s32 inc_black_lvl;
+> +	u64 dft_gamma;
+> +	u64 min_gamma;
+> +	u64 max_gamma;
+> +	u64 inc_gamma;
+> +	s32 dft_sharp;
+> +	s32 min_sharp;
+> +	s32 max_sharp;
+> +	s32 inc_sharp;
+> +
+> +	struct alvium_mode mode;
+> +	struct v4l2_fract frame_interval;
+> +	u64 min_fr;
+> +	u64 max_fr;
+> +	u64 fr;
+> +
+> +	u8 h_sup_csi_lanes;
+> +	u64 link_freq;
+> +
+> +	struct alvium_ctrls ctrls;
+> +
+> +	u8 bcrm_mode;
+> +
+> +	struct alvium_pixfmt *alvium_csi2_fmt;
+> +	u8 alvium_csi2_fmt_n;
+> +
+> +	u8 streaming;
+> +	u8 apply_fiv;
+> +};
+> +
+> +static inline struct alvium_dev *sd_to_alvium(struct v4l2_subdev *sd)
+> +{
+> +	return container_of(sd, struct alvium_dev, sd);
+> +}
+> +
+> +static inline struct v4l2_subdev *ctrl_to_sd(struct v4l2_ctrl *ctrl)
+> +{
+> +	return &container_of(ctrl->handler, struct alvium_dev,
+> +					  ctrls.handler)->sd;
+> +}
+> +#endif /* ALVIUM_CSI2_H_ */
+> -- 
+> 2.34.1
+> 
