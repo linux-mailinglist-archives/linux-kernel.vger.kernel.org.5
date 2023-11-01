@@ -2,158 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF4B7DE696
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 20:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67147DE69C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 21:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347403AbjKAT5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 15:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
+        id S1347845AbjKAUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 16:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345631AbjKAT5t (ORCPT
+        with ESMTP id S1347374AbjKAUAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 15:57:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6E69F;
-        Wed,  1 Nov 2023 12:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=EWtpRWigEp4aNg0HcdQgbJ0QY7oVa1tRy34Oox0Ohhk=; b=NnRz+sQFO4TaN94d+IZKtQuMXa
-        cH/22Apxzzalu/C7pYjKBwNwEAPg3QUDEyftbtCu9f4hFgnTzl9gSEt3Bah561+oyL7o/S5JcRU2T
-        zH0t5N8ah2UCoyW8LbIi/PDXQWzdd1aH+rvsnTWlUR2C68rS2MAfOsvRMqw+ydFrr/EbBfM6id+4e
-        AlMY7gZue7oKfDyUoURzx/OunTlAppdPithXjHzMkTwu0CdPW0b6CFdjbJzQQS0TAC2CI4gJVc3ig
-        Ig0E76C6JGn5eZldwc2n/rDAiDRXyk/jPZ05mULtXrH63I0PT5szzRPfRQ7EzG1ACA9aL8CApgFhj
-        bXRm0N1g==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qyHLS-0083qj-2c;
-        Wed, 01 Nov 2023 19:57:42 +0000
-Date:   Wed, 1 Nov 2023 12:57:42 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Joel Granados <joel.granados@gmail.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Subject: [GIT PULL] sysctl changes for v6.7-rc1
-Message-ID: <ZUKttkQ2/hgweOQP@bombadil.infradead.org>
+        Wed, 1 Nov 2023 16:00:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264CF10F
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:00:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A60AC433C8;
+        Wed,  1 Nov 2023 20:00:36 +0000 (UTC)
+Date:   Wed, 1 Nov 2023 16:00:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] eventfs: Fix kerneldoc of eventfs_remove_rec()
+Message-ID: <20231101160035.12824b55@gandalf.local.home>
+In-Reply-To: <9d71fc3b-f7a9-9f23-6fbe-a7665954cd30@quicinc.com>
+References: <20231030121523.0b2225a7@gandalf.local.home>
+        <9d71fc3b-f7a9-9f23-6fbe-a7665954cd30@quicinc.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
+On Mon, 30 Oct 2023 21:57:13 +0530
+Mukesh Ojha <quic_mojha@quicinc.com> wrote:
 
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+> On 10/30/2023 9:45 PM, Steven Rostedt wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > The eventfs_remove_rec() had some missing parameters in the kerneldoc
+> > comment above it. Also, rephrase the description a bit more to have a bit
+> > more correct grammar.
+> > 
+> > Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode");
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202310052216.4SgqasWo-lkp@intel.com/
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>  
+> 
+> Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-are available in the Git repository at:
+Hi Mukesh!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ tags/sysctl-6.7-rc1
+First, I want to thank you for your reviews. We certainly need more
+reviewers.
 
-for you to fetch changes up to 8b793bcda61f6c3ed4f5b2ded7530ef6749580cb:
+But I need to also state that "Reviewed-by" tags should not be sent so
+lightly. The only times a Reviewed-by tag should be sent is if you
+participated in the discussion of the code, you have authored some of
+the code that is being modified, or are marked as a reviewer of the code in
+the MAINTAINERS file.
 
-  watchdog: move softlockup_panic back to early_param (2023-11-01 12:10:02 -0700)
+For example, you added to the discussion here:
 
-----------------------------------------------------------------
-sysctl-6.7-rc1
+   https://lore.kernel.org/all/65dcdd9c-a75b-4fe7-bdcf-471a5602db20@linaro.org/
 
-To help make the move of sysctls out of kernel/sysctl.c not incur a size
-penalty sysctl has been changed to allow us to not require the sentinel, the
-final empty element on the sysctl array. Joel Granados has been doing all this
-work. On the v6.6 kernel we got the major infrastructure changes required to
-support this. For v6.7-rc1 we have all arch/ and drivers/ modified to remove
-the sentinel. Both arch and driver changes have been on linux-next for a bit
-less than a month. It is worth re-iterating the value:
+And adding your Reviewed-by tag is appropriate.
 
-  - this helps reduce the overall build time size of the kernel and run time
-     memory consumed by the kernel by about ~64 bytes per array
-  - the extra 64-byte penalty is no longer inncurred now when we move sysctls
-    out from kernel/sysctl.c to their own files
+But when a maintainer receives a Reviewed-by from someone they don't know,
+without any discussion in the patch, it may make that maintainer think that
+the person sending the Reviewed-by is only out to get listed in the LWN
+"Reviewed-by" count.
 
-For v6.8-rc1 expect removal of all the sentinels and also then the unneeded
-check for procname == NULL.
+I review other developers' code all the time, and unless the code touches
+something I worked on or I'm marked as a reviewer in the MAINTAINERS file,
+I do not send a Reviewed-by tag unless I added some input to the patch in
+question.
 
-The last 2 patches are fixes recently merged by Krister Johansen which allow
-us again to use softlockup_panic early on boot. This used to work but the
-alias work broke it. This is useful for folks who want to detect softlockups
-super early rather than wait and spend money on cloud solutions with nothing
-but an eventual hung kernel. Although this hadn't gone through linux-next it's
-also a stable fix, so we might as well roll through the fixes now.
+My advice to you is to keep up the reviewing, I appreciate it (I really
+do!), but don't send out Reviewed-by tags unless you are marked as a
+reviewer of the code, or participated in a discussion on that code.
 
-----------------------------------------------------------------
-Joel Granados (21):
-      S390: Remove now superfluous sentinel elem from ctl_table arrays
-      arm: Remove now superfluous sentinel elem from ctl_table arrays
-      arch/x86: Remove now superfluous sentinel elem from ctl_table arrays
-      x86/vdso: Remove now superfluous sentinel element from ctl_table array
-      riscv: Remove now superfluous sentinel element from ctl_table array
-      powerpc: Remove now superfluous sentinel element from ctl_table arrays
-      c-sky: Remove now superfluous sentinel element from ctl_talbe array
-      hpet: Remove now superfluous sentinel element from ctl_table array
-      xen: Remove now superfluous sentinel element from ctl_table array
-      tty: Remove now superfluous sentinel element from ctl_table array
-      scsi: Remove now superfluous sentinel element from ctl_table array
-      parport: Remove the now superfluous sentinel element from ctl_table array
-      macintosh: Remove the now superfluous sentinel element from ctl_table array
-      infiniband: Remove the now superfluous sentinel element from ctl_table array
-      char-misc: Remove the now superfluous sentinel element from ctl_table array
-      vrf: Remove the now superfluous sentinel element from ctl_table array
-      sgi-xp: Remove the now superfluous sentinel element from ctl_table array
-      fw loader: Remove the now superfluous sentinel element from ctl_table array
-      raid: Remove now superfluous sentinel element from ctl_table array
-      Drivers: hv: Remove now superfluous sentinel element from ctl_table array
-      intel drm: Remove now superfluous sentinel element from ctl_table array
+Thanks,
 
-Krister Johansen (2):
-      proc: sysctl: prevent aliased sysctls from getting passed to init
-      watchdog: move softlockup_panic back to early_param
-
- arch/arm/kernel/isa.c                         |  4 ++--
- arch/arm64/kernel/armv8_deprecated.c          |  8 +++-----
- arch/arm64/kernel/fpsimd.c                    |  2 --
- arch/arm64/kernel/process.c                   |  1 -
- arch/csky/abiv1/alignment.c                   |  1 -
- arch/powerpc/kernel/idle.c                    |  1 -
- arch/powerpc/platforms/pseries/mobility.c     |  1 -
- arch/riscv/kernel/vector.c                    |  1 -
- arch/s390/appldata/appldata_base.c            |  4 +---
- arch/s390/kernel/debug.c                      |  1 -
- arch/s390/kernel/topology.c                   |  1 -
- arch/s390/mm/cmm.c                            |  1 -
- arch/s390/mm/pgalloc.c                        |  1 -
- arch/x86/entry/vdso/vdso32-setup.c            |  1 -
- arch/x86/kernel/cpu/intel.c                   |  1 -
- arch/x86/kernel/itmt.c                        |  1 -
- drivers/base/firmware_loader/fallback_table.c |  1 -
- drivers/char/hpet.c                           |  1 -
- drivers/char/ipmi/ipmi_poweroff.c             |  1 -
- drivers/char/random.c                         |  1 -
- drivers/gpu/drm/i915/i915_perf.c              |  1 -
- drivers/hv/hv_common.c                        |  1 -
- drivers/infiniband/core/iwcm.c                |  1 -
- drivers/infiniband/core/ucma.c                |  1 -
- drivers/macintosh/mac_hid.c                   |  1 -
- drivers/md/md.c                               |  1 -
- drivers/misc/sgi-xp/xpc_main.c                |  2 --
- drivers/net/vrf.c                             |  1 -
- drivers/parport/procfs.c                      | 28 +++++++++++----------------
- drivers/perf/arm_pmuv3.c                      |  1 -
- drivers/scsi/scsi_sysctl.c                    |  1 -
- drivers/scsi/sg.c                             |  1 -
- drivers/tty/tty_io.c                          |  1 -
- drivers/xen/balloon.c                         |  1 -
- fs/proc/proc_sysctl.c                         |  8 +++++++-
- include/linux/sysctl.h                        |  6 ++++++
- init/main.c                                   |  4 ++++
- kernel/watchdog.c                             |  7 +++++++
- 38 files changed, 41 insertions(+), 60 deletions(-)
+-- Steve
