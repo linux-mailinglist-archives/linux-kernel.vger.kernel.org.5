@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856FA7DE1AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169897DE183
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344304AbjKANdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S1344335AbjKANdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344162AbjKANdf (ORCPT
+        with ESMTP id S1344315AbjKANdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:33:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC96F7;
-        Wed,  1 Nov 2023 06:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698845607; x=1730381607;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TLfikYcSzIKUF7Psef+fS9e6czzFkIgyby047PInD7c=;
-  b=Ma+noyr4+ky2IkD6gSL/5CIjCqbwfCyflzPvmKn/Be9H5MjoYWPagBio
-   HI201hb5Vpm/Mrf4r9EaIm5WysbE8pbA8Y7RgiEPtGJUAprDPlIL/X0R0
-   MijUrogG1x1BD5beNEd+vIswKlCdwOaS/xX7XV6ECTTf9EritBMGLOb1K
-   2+LS9iKZ6fPweLlyiW2Ue5tvhKobwMmz0dbbsSfUDKCpvvUGijD7iINAs
-   UhY5l2Chv7y41d/+n/WfjRTLl54RUWaJUDfcgviFmDIu+NMEhiZG64mgc
-   CZKkU5swfOIAl8N64CnHtG2VlD13C8ah1oBpTtvYuYOGiECGTSEchihmO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="391359976"
-X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
-   d="scan'208";a="391359976"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 06:33:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="790114629"
-X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
-   d="scan'208";a="790114629"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 06:33:23 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 48DB41207A3;
-        Wed,  1 Nov 2023 15:33:22 +0200 (EET)
-Date:   Wed, 1 Nov 2023 13:33:22 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/6] media: i2c: imx335: Enable regulator supplies
-Message-ID: <ZUJTold9QBOJeTt_@kekkonen.localdomain>
-References: <20231101131354.2333498-1-kieran.bingham@ideasonboard.com>
- <20231101131354.2333498-5-kieran.bingham@ideasonboard.com>
+        Wed, 1 Nov 2023 09:33:42 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50064F4
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:33:37 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cacde97002so51335165ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 06:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698845617; x=1699450417; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ppla82jXl+t7SLtnqV4J5gUeWoqBYeNU2h7XlmpBP+Q=;
+        b=d59Sh70haFeyj89SSq4B971tZM5qKGWftSazri2Z7fAEtyWeHnQH0k3HnR7LqQC+jt
+         gzM7PC+FB2dQJBSEeHx0z11bgDJtRm/IqVw7ss/ovcYefO0Mz7uSU4ca+ewGl0jxWNgU
+         zUPTZ3xxVL2iU5LHYwLtYVnvdAFaNw0DnTh/fBhv10apAyYDuRNJfZfYQcVvjoMBcPAL
+         7MB65L7M5csjbzgTKZvCelJbPQjMOIpYcGw4emc3KWhy2ibVBLs+5aZuGuWu2vROzesi
+         NZWAtPdU32xvBJS6uOQaaFnrBwSfIZqAnW/VlBS2ZPoMivj7O+6jHviPn8itdi5C1ARm
+         Hp9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698845617; x=1699450417;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ppla82jXl+t7SLtnqV4J5gUeWoqBYeNU2h7XlmpBP+Q=;
+        b=m2bnHNxy1zki5VSasWl6Wer35jC4UoFETglYiLsLJYBTZp0zilcihhOWnq6l5zd8AR
+         NPq9TQCsk912HDZsqwUG6cz2WIw2/5o7TEDat23Bf33QG+f7BDuO7+MSkI2GcfABo9Mg
+         ConhDQfII0UabvFnG1Mn1+l75F6m9LLjf14qhVueR6HE607nU3gvfcgog/s4/GjpGesz
+         TOxlQJhB2+xvjcYYAgaPfqQwnxDhIWdgShat11JQZ5wfeo/bIxmbKAYmPehdwLBajXmm
+         khRgSkqL05hczxSK3cJW/qC4Mb2enYuvyx/qwznkK49uz1K8SXW0C/8tFjM4Jejs/AXk
+         bo8Q==
+X-Gm-Message-State: AOJu0YwUf94vXdhcRJrOpxP0g0WzifvhMfPbLQq2TjBmf/99ekGzJHMn
+        FG9KK5O6+MWnTjn0IdY2fRo=
+X-Google-Smtp-Source: AGHT+IGTvl/hR/hWdrmGmksscbujB9udae+yOgkkEeiomkqbrTUOFDLrbrF54stNHBPGVdbvIPx+GA==
+X-Received: by 2002:a17:902:6acb:b0:1ca:2c3b:7747 with SMTP id i11-20020a1709026acb00b001ca2c3b7747mr11968247plt.20.1698845616441;
+        Wed, 01 Nov 2023 06:33:36 -0700 (PDT)
+Received: from fedora ([1.245.179.104])
+        by smtp.gmail.com with ESMTPSA id e19-20020a170902f1d300b001bbb25dd3a7sm1348539plc.187.2023.11.01.06.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 06:33:35 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 22:33:29 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     chengming.zhou@linux.dev
+Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        willy@infradead.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [RFC PATCH v4 0/9] slub: Delay freezing of CPU partial slabs
+Message-ID: <ZUJTiGgWrkYQPwaf@fedora>
+References: <20231031140741.79387-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101131354.2333498-5-kieran.bingham@ideasonboard.com>
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20231031140741.79387-1-chengming.zhou@linux.dev>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,132 +75,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+On Tue, Oct 31, 2023 at 02:07:32PM +0000, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> Changes in RFC v4:
+>  - Reorder patches to put the two cleanup patches to the front.
+>  - Move slab_node_partial flag functions to mm/slub.c.
+>  - Fix freeze_slab() by using slab_update_freelist().
+>  - Fix build error when !CONFIG_SLUB_CPU_PARTIAL.
+>  - Add a patch to rename all *unfreeze_partials* functions.
+>  - Add a patch to update inconsistent documentations in the source.
+>  - Some comments and changelog improvements.
+>  - Add Reviewed-by and Suggested-by tags. Many thanks!
+>  - RFC v3: https://lore.kernel.org/all/20231024093345.3676493-1-chengming.zhou@linux.dev/
 
-Thanks for the set.
+Hi,
+This series passed (yeah, v3 was broken as reported by the bot)
+hackbench + a set of MM tests on 30 different SLUB configs [1] [2]
 
-On Wed, Nov 01, 2023 at 01:13:52PM +0000, Kieran Bingham wrote:
-> Provide support for enabling and disabling regulator supplies to control
-> power to the camera sensor.
-> 
-> While updating the power on function, document that a sleep is
-> represented as 'T4' in the datasheet power on sequence.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> 
-> ---
-> 
-> v2:
->  - document 'supplies' member variable
->  - disable regulators in error path
->  - Remove 'unhelpful' comments
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> ---
->  drivers/media/i2c/imx335.c | 38 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 36 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index 31c612c6bdd8..f17ce40b9c77 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -75,6 +75,14 @@ struct imx335_reg_list {
->  	const struct imx335_reg *regs;
->  };
->  
-> +static const char * const imx335_supply_name[] = {
-> +	"avdd", /* Analog (2.9V) supply */
-> +	"ovdd", /* Digital I/O (1.8V) supply */
-> +	"dvdd", /* Digital Core (1.2V) supply */
-> +};
-> +
-> +#define IMX335_NUM_SUPPLIES ARRAY_SIZE(imx335_supply_name)
+For the series, feel free to add:
+Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Please use plain ARRAY_SIZE() where you needed this.
+Thanks!
 
-> +
->  /**
->   * struct imx335_mode - imx335 sensor mode structure
->   * @width: Frame width
-> @@ -108,6 +116,7 @@ struct imx335_mode {
->   * @sd: V4L2 sub-device
->   * @pad: Media pad. Only one pad supported
->   * @reset_gpio: Sensor reset gpio
-> + * @supplies: Regulator supplies to handle power control
->   * @inclk: Sensor input clock
->   * @ctrl_handler: V4L2 control handler
->   * @link_freq_ctrl: Pointer to link frequency control
-> @@ -126,6 +135,8 @@ struct imx335 {
->  	struct v4l2_subdev sd;
->  	struct media_pad pad;
->  	struct gpio_desc *reset_gpio;
-> +	struct regulator_bulk_data supplies[IMX335_NUM_SUPPLIES];
-> +
->  	struct clk *inclk;
->  	struct v4l2_ctrl_handler ctrl_handler;
->  	struct v4l2_ctrl *link_freq_ctrl;
-> @@ -781,6 +792,17 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
->  		return PTR_ERR(imx335->reset_gpio);
->  	}
->  
-> +	for (i = 0; i < IMX335_NUM_SUPPLIES; i++)
-> +		imx335->supplies[i].supply = imx335_supply_name[i];
-> +
-> +	ret = devm_regulator_bulk_get(imx335->dev,
-> +				      IMX335_NUM_SUPPLIES,
-> +				      imx335->supplies);
-> +	if (ret) {
-> +		dev_err(imx335->dev, "Failed to get regulators\n");
-> +		return ret;
-> +	}
-> +
->  	/* Get sensor input clock */
->  	imx335->inclk = devm_clk_get(imx335->dev, NULL);
->  	if (IS_ERR(imx335->inclk)) {
-> @@ -863,6 +885,17 @@ static int imx335_power_on(struct device *dev)
->  	struct imx335 *imx335 = to_imx335(sd);
->  	int ret;
->  
-> +	ret = regulator_bulk_enable(IMX335_NUM_SUPPLIES,
-> +				    imx335->supplies);
-> +	if (ret) {
-> +		dev_err(dev, "%s: failed to enable regulators\n",
-> +			__func__);
-> +		return ret;
-> +	}
-> +
-> +	usleep_range(500, 550); /* Tlow */
-> +
-> +	/* Set XCLR */
->  	gpiod_set_value_cansleep(imx335->reset_gpio, 1);
->  
->  	ret = clk_prepare_enable(imx335->inclk);
-> @@ -871,12 +904,13 @@ static int imx335_power_on(struct device *dev)
->  		goto error_reset;
->  	}
->  
-> -	usleep_range(20, 22);
-> +	usleep_range(20, 22); /* T4 */
->  
->  	return 0;
->  
->  error_reset:
->  	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
-> +	regulator_bulk_disable(IMX335_NUM_SUPPLIES, imx335->supplies);
->  
->  	return ret;
->  }
-> @@ -893,8 +927,8 @@ static int imx335_power_off(struct device *dev)
->  	struct imx335 *imx335 = to_imx335(sd);
->  
->  	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
-> -
->  	clk_disable_unprepare(imx335->inclk);
-> +	regulator_bulk_disable(IMX335_NUM_SUPPLIES, imx335->supplies);
->  
->  	return 0;
->  }
+[1] https://jenkins.kerneltesting.org/job/slab-experimental/21/
+[2] https://lava.kerneltesting.org/scheduler/alljobs
 
 -- 
-Regards,
-
-Sakari Ailus
+Hyeonggon
