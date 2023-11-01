@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFE47DE1AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523197DE189
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344282AbjKANau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S1344325AbjKANdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344200AbjKANas (ORCPT
+        with ESMTP id S1344263AbjKANdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:30:48 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9584F4
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:30:45 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991c786369cso1072024666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 06:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1698845444; x=1699450244; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zqp+tKsbxuT0dP0kvbmRHXQPetcAFAg5Ll5YZH6o/4c=;
-        b=JTYwlKHLwTBMgX7BLi7RGY3k3PaCc/x4YiwSqQupeq017c7pU2qtEluozEbmlImE0x
-         Qs5qKDRn2kDzfLnkj2kXm042OBCxV2A8+TNm9JuK+r7Xo3M9u9q5H3Gv3igPB0Y4qv96
-         cph6c+SI1F1VmPU4UWrpk4fYLNtNakcdOhfEVG/bVQYj0kCwWO+1FCuCwPYJcV8gxhYP
-         pz7Ha2hyM+Ao3qAUTC+T+/RFMIES63qMxxGGT6MYYoHFco+batbrfFie0533geEDI2mv
-         RxO/nHnYdw0W2eeyI0vlIbNjIqEE0i02xN9/rhOcnLKKGfpWTqa5h/QEo1ehBga1QxIP
-         WgEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698845444; x=1699450244;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zqp+tKsbxuT0dP0kvbmRHXQPetcAFAg5Ll5YZH6o/4c=;
-        b=tk9oSOMHgpo9QvQFLr21eCjAGuLSZ9y5xiAhBff/FUVU8+lVDc+tANrQIWRqz5W4eQ
-         +MjUORQoAe2CcpA8coruDkKGwZOEk3SMsAlmPgIBF3OpHlNE6pP6K7NKPRIulaWsOiJO
-         VZ8iAXteLhruSOmKXaraaH4qHs6CqD9SsOqQ400qsl+r5LFQMJFGXdt810JbRJ3F7pDZ
-         IK1A+9c0TMeLn0bxHacxH0Tsr5f1XFDZQp7CU5b/UnfJiFeJLmh/IcTRNXi+mgJnHxOe
-         XRhUGcwmfD/+g0DXYf80TCSa5pUDb4xvk/aUhC3PFxOJTfMtIko4dWHmYbX8a4EKHnOa
-         3W4g==
-X-Gm-Message-State: AOJu0YwjYwjLqfRijwFJvc/yKgsA9bPzZxnpZw1MRfUULCENadhJVc0G
-        kVlM1J7kAp5yr2reZp8XDy5lwDGHoMdepqdTmIsVtw==
-X-Google-Smtp-Source: AGHT+IE0QhPJiUSklN+lm5WtW4Z7Yv9ImCivRKXFVydz+RY3qA5o2XFPaZaGYPiYDAveM7G5Fo98a74g0NEDILnIC70=
-X-Received: by 2002:a17:907:7f19:b0:9be:2b53:ac4d with SMTP id
- qf25-20020a1709077f1900b009be2b53ac4dmr1969204ejc.74.1698845444122; Wed, 01
- Nov 2023 06:30:44 -0700 (PDT)
+        Wed, 1 Nov 2023 09:33:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C294BD;
+        Wed,  1 Nov 2023 06:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698845616; x=1730381616;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=dISOpVyZvQSiCHyFzom/7AUnTuWjhbN0bxMSO69eY1Y=;
+  b=ObBWW/KnEczlDfOhm+mIvFGIa5XyUTRW70GQhc4+YY2wT1x9Z1cmo1VL
+   U42tak1RP9GH57kMFcN/jFurls8sSfUpnFV8WfpSVgcU5SQRKLkNPjYju
+   9Gva6y848sTWm6HR8EQlY86zWZ1JXL74KAcYZ9sfwU1KinG5oQM1Qkymh
+   WvDBzYq8y+pKbHHlDqa9OrB4CNM1fr3HPt8R7j7n9tJR+XKjpuxslGtCD
+   dv+cdk0zFXiubWt6plV7ZjCQtMfdLSqocciuZh1JI4t5+/hRA3NbYoRpb
+   286xMEVrSa0DJdLYJN66Gu8RAOLoeLGmp+npnuuVopd11KbRenLb7poUh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="378880613"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="378880613"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 06:33:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="884557172"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="884557172"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 06:33:11 -0700
+Received: from [10.212.28.1] (kliang2-mobl1.ccr.corp.intel.com [10.212.28.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 1B896580E3D;
+        Wed,  1 Nov 2023 06:33:09 -0700 (PDT)
+Message-ID: <a14147e7-0b35-4fba-b785-ef568474c69b@linux.intel.com>
+Date:   Wed, 1 Nov 2023 09:33:08 -0400
 MIME-Version: 1.0
-References: <20231031165918.608547597@linuxfoundation.org>
-In-Reply-To: <20231031165918.608547597@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Wed, 1 Nov 2023 22:30:33 +0900
-Message-ID: <CAKL4bV743XcEZTObZ2qY58Mz5TZ-GXbiuTMykTTemO06Py2O3Q@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/86] 6.1.61-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Patch 1/2] KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots
+ event
+To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>, Like Xu <likexu@tencent.com>
+References: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
+ <20231031090613.2872700-2-dapeng1.mi@linux.intel.com>
+ <CALMp9eR_BFdNNTXhSpbuH66jXcRLVB8VvD8V+kY245NbusN2+g@mail.gmail.com>
+ <c3f0e4ac-1790-40c1-a09e-209a09e3d230@linux.intel.com>
+ <CALMp9eTDAiJ=Kuh7KkwdAY8x1BL2ZjdgFiPFRHXSSVCpcXp9rw@mail.gmail.com>
+ <baa64cf4-11de-4581-89b6-3a86448e3a6e@linux.intel.com>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <baa64cf4-11de-4581-89b6-3a86448e3a6e@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
 
-On Wed, Nov 1, 2023 at 2:02=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.61 release.
-> There are 86 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 02 Nov 2023 16:59:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.61-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
 
-6.1.61-rc1 tested.
+On 2023-10-31 11:31 p.m., Mi, Dapeng wrote:
+> 
+> On 11/1/2023 11:04 AM, Jim Mattson wrote:
+>> On Tue, Oct 31, 2023 at 6:59 PM Mi, Dapeng
+>> <dapeng1.mi@linux.intel.com> wrote:
+>>> On 11/1/2023 2:22 AM, Jim Mattson wrote:
+>>>> On Tue, Oct 31, 2023 at 1:58 AM Dapeng Mi
+>>>> <dapeng1.mi@linux.intel.com> wrote:
+>>>>> This patch adds support for the architectural topdown slots event
+>>>>> which
+>>>>> is hinted by CPUID.0AH.EBX.
+>>>> Can't a guest already program an event selector to count event select
+>>>> 0xa4, unit mask 1, unless the event is prohibited by
+>>>> KVM_SET_PMU_EVENT_FILTER?
+>>> Actually defining this new slots arch event is to do the sanity check
+>>> for supported arch-events which is enumerated by CPUID.0AH.EBX.
+>>> Currently vPMU would check if the arch event from guest is supported by
+>>> KVM. If not, it would be rejected just like intel_hw_event_available()
+>>> shows.
+>>>
+>>> If we don't add the slots event in the intel_arch_events[] array, guest
+>>> may program the slots event and pass the sanity check of KVM on a
+>>> platform which actually doesn't support slots event and program the
+>>> event on a real GP counter and got an invalid count. This is not
+>>> correct.
+>> On physical hardware, it is possible to program a GP counter with the
+>> event selector and unit mask of the slots event whether or not the
+>> platform supports it. Isn't KVM wrong to disallow something that a
+>> physical CPU allows?
+> 
+> 
+> Yeah, I agree. But I'm not sure if this is a flaw on PMU driver. If an
+> event is not supported by the hardware,  we can't predict the PMU's
+> behavior and a meaningless count may be returned and this could mislead
+> the user.
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+The user can program any events on the GP counter. The perf doesn't
+limit it. For the unsupported event, 0 should be returned. Please keep
+in mind, the event list keeps updating. If the kernel checks for each
+event, it could be a disaster. I don't think it's a flaw.
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Thanks,
+Kan
+> 
+> Add Kan to confirm this.
+> 
+> Hi Kan,
+> 
+> Have you any comments on this? Thanks.
+> 
+> 
+>>
+>>>> AFAICT, this change just enables event filtering based on
+>>>> CPUID.0AH:EBX[bit 7] (though it's not clear to me why two independent
+>>>> mechanisms are necessary for event filtering).
+>>>
+>>> IMO, these are two different things. this change is just to enable the
+>>> supported arch events check for slot events, the event filtering is
+>>> another thing.
+>> How is clearing CPUID.0AH:EBX[bit 7] any different from putting {event
+>> select 0xa4, unit mask 1} in a deny list with the PMU event filter?
+> 
+> I think there is no difference in the conclusion but with two different
+> methods.
+> 
+> 
