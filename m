@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522C87DE7FB
+	by mail.lfdr.de (Postfix) with ESMTP id A62B97DE7FC
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344924AbjKAWOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 18:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S1345555AbjKAWPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 18:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjKAWOD (ORCPT
+        with ESMTP id S232007AbjKAWPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 18:14:03 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73000119
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 15:14:01 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2ea7cc821so207345b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 15:14:01 -0700 (PDT)
+        Wed, 1 Nov 2023 18:15:03 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B36211D
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 15:15:01 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da307fb7752so376651276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 15:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698876840; x=1699481640; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vlCR/tLfeyi2t/6kexPICovuqpYCh6D5uLc0MpM42zU=;
-        b=clx1ASjhxySIpiT+9S/iX6wpXXiuJ1jHocfu63PCcZci14X0rJ4oLCgr2ZjVDcjEb2
-         e0m9lugAAbxP7OEhmg0ANyc73YYMa7r8zxaPpWe/AXM6EsEFCwvYS4YVGrVP1Y2Ey8jN
-         oLLEqC2DxkPRjUFzy0ozRAmQxY9XZdj3TlmFTwxQQVJPP+xn8dScmvJ+w7FIw/jAfHGZ
-         hNvrNvaZmC6LEuVU4uT/EGKsJnc9h+vzTOrQXrJPmOPC9bg8+cRa/RRGrsCgG0y1YPrI
-         9F5B6SHcA1Zs9Z1CxKb9vNLfFYzaCwjNIXYmpDqkma1IHtnHIQp05eS7tO2k7jmHqepD
-         KugQ==
+        d=google.com; s=20230601; t=1698876900; x=1699481700; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AZUx8eyAtnd4MLrDQkE9b5iSo4ODlmVMuEOqA88XPCE=;
+        b=dWGA/jlP9KYXfHOq1B00FLV+q8SPT/y6NA8JG7F33GlEvEXnG+6ziFJIWB3okmKtch
+         zC+mfXw0NArJ/jU9+1qmvN0fljuLMMm7huD0CSpsk1B1VLNvh+ZvbJMU3fUvGxPic02L
+         Xjl8CwPV719HHh6Nkp4cmg9imx6c2fUimE26px+68GCZXnCP2h5xY7UBZBzoXSEgnaDx
+         qrcMrVAeNL+HqtTTMQGmb6oxNUz3euu1HVapnzboheNBb1+zcOl+U6HtZBxAySICEMgt
+         Ny1RU0leyW9I1FnY2cq1EVGok7HZWN+6boEraD3kUezeHtjyCrxh7m4UTBW03/aukFgy
+         FT9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698876840; x=1699481640;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vlCR/tLfeyi2t/6kexPICovuqpYCh6D5uLc0MpM42zU=;
-        b=IJpPLSYmr/V1QjShVtQCJB9OiEOZKI5TTVkiISOU7Yf4joGhzg1DaaPImuEzQDT/d2
-         L9yuF8ChPMCBMR6aJueeprPIlDnV3KTD1oOSE49Op9ke0+SIGIv7eCsQL7KmGM022zmU
-         oG/7T3LqDmspfquDnU8WKabfaIbaW4PkwaMjBCnfIqlXegHBtylgcP+vLkSBjOjCE/eW
-         FdoeexHKVxha3Zz+b8ELvtJzsItguYHzRpOtepKkZz55TzOPik1RR7jboMPr9XnrSoW9
-         Vs8bBlih7Z8TsqxRS6efQ/wVByQj3wb8whe9dcWdBTWHnrfXq86k2m/pbb4asOvGRtjb
-         TqLg==
-X-Gm-Message-State: AOJu0Yw53dEKWl4s8s7ewunnaW323azT40yd53WS2llaaGHDjAX0XJi3
-        oCxnM2g1ReT+TKEkv8S86v46Zg==
-X-Google-Smtp-Source: AGHT+IGWBafYpym6IOSMbRqd53gquhbqtYIFv73RgIewZiuiQDtXVDi9y84GeqUuJPFa/BOiphfZKQ==
-X-Received: by 2002:a05:6808:8db:b0:3ae:5e0e:1669 with SMTP id k27-20020a05680808db00b003ae5e0e1669mr17916649oij.42.1698876840645;
-        Wed, 01 Nov 2023 15:14:00 -0700 (PDT)
-Received: from [192.168.60.239] (183.43.230.35.bc.googleusercontent.com. [35.230.43.183])
-        by smtp.gmail.com with ESMTPSA id fh37-20020a056a00392500b006c03f58b5b1sm1682286pfb.59.2023.11.01.15.13.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 15:13:59 -0700 (PDT)
-Message-ID: <d08b080c-54cc-4fdf-929a-df2b6ad41844@google.com>
-Date:   Wed, 1 Nov 2023 15:13:58 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 2/4] usb: gadget: uvc: Allocate uvc_requests one at a
- time
-Content-Language: en-US
-To:     Dan Scally <dan.scally@ideasonboard.com>
-Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
-        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        m.grzeschik@pengutronix.de
-References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
- <20231030202231.3263253-1-arakesh@google.com>
- <20231030202231.3263253-2-arakesh@google.com>
- <7d4c762a-9fe1-41ba-b394-cefa8fa70786@ideasonboard.com>
-From:   Avichal Rakesh <arakesh@google.com>
-In-Reply-To: <7d4c762a-9fe1-41ba-b394-cefa8fa70786@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698876900; x=1699481700;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AZUx8eyAtnd4MLrDQkE9b5iSo4ODlmVMuEOqA88XPCE=;
+        b=KwBSdW1F58MYZoMJbzbtQjVQuzuxpu7GUYj2cbCaQJUkjjcGbKY0Nk50Pic0vK29fN
+         zgDmlg/1uMKj9Da1Fb5dClagye0LyOdiBq6C+IiMYmVGkqXTOC+SjWREfbB/5gxXnr8r
+         ppxXjjfuBe7albcz6miTjoAno05UKGOp5rzSBHZvuHgByskf4wbG6SqUfg3WyiSoCpDZ
+         Mw3JZCYU7lNuHwglpbT6/5XTfhBOzFUbVkcoXAmD9/IBGq5W9D2BeJi5vBDQaKlwbk34
+         XfbXcxlyu91xNoOmQK96CD5BCZJu4PVXFfXgkK9A7JJJbpN1+eQyGrnV9T4YKWq799oR
+         wOmg==
+X-Gm-Message-State: AOJu0YwGP2GTBG735SMaVk1OdV3ZDyNttdxl+KuwVMInZc9MYQCiEAZw
+        xcD/D8ZDhTj4uHKbIx04VT2F6821FK8=
+X-Google-Smtp-Source: AGHT+IEXfjGw9mEX6v8vrZsfhwz+lK/Ks4rEmpGGTr1iX9SweIr9i1OP2rAJI23eUzGqrvJaXd4EC2JTg1g=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8689:0:b0:d9a:3bee:255c with SMTP id
+ z9-20020a258689000000b00d9a3bee255cmr316101ybk.7.1698876900547; Wed, 01 Nov
+ 2023 15:15:00 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 15:14:58 -0700
+In-Reply-To: <c07416ff2919f0aa30d3a810ccdfbed8c387ce0a.camel@redhat.com>
+Mime-Version: 1.0
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-24-weijiang.yang@intel.com> <c07416ff2919f0aa30d3a810ccdfbed8c387ce0a.camel@redhat.com>
+Message-ID: <ZULN4vMwP1t_mKg7@google.com>
+Subject: Re: [PATCH v6 23/25] KVM: x86: Enable CET virtualization for VMX and
+ advertise to userspace
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 31, 2023, Maxim Levitsky wrote:
+> On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+> > @@ -685,6 +686,13 @@ void kvm_set_cpu_caps(void)
+> >  		kvm_cpu_cap_set(X86_FEATURE_INTEL_STIBP);
+> >  	if (boot_cpu_has(X86_FEATURE_AMD_SSBD))
+> >  		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
+> > +	/*
+> > +	 * The feature bit in boot_cpu_data.x86_capability could have been
+> > +	 * cleared due to ibt=off cmdline option, then add it back if CPU
+> > +	 * supports IBT.
+> > +	 */
+> > +	if (cpuid_edx(7) & F(IBT))
+> > +		kvm_cpu_cap_set(X86_FEATURE_IBT);
+> 
+> The usual policy is that when the host doesn't support a feature, then the guest
+> should not support it either. On the other hand, for this particular feature,
+> it is probably safe to use it. Just a point for a discussion.
 
+Agreed, this needs extra justification.  It's "safe" in theory, but if the admin
+disabled IBT because of a ucode bug, then all bets are off.
 
-On 11/1/23 04:06, Dan Scally wrote:
-> Morning Avichal
-> 
-> On 30/10/2023 20:22, Avichal Rakesh wrote:
->> Currently, the uvc gadget driver allocates all uvc_requests as one array
->> and deallocates them all when the video stream stops. This includes
->> de-allocating all the usb_requests associated with those uvc_requests.
->> This can lead to use-after-free issues if any of those de-allocated
->> usb_requests were still owned by the usb controller.
->>
->> This patch is 1 of 2 patches addressing the use-after-free issue.
->> Instead of bulk allocating all uvc_requests as an array, this patch
->> allocates uvc_requests one at a time, which should allows for similar
->> granularity when deallocating the uvc_requests. This patch has no
->> functional changes other than allocating each uvc_request separately,
->> and similarly freeing each of them separately.
->>
->> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
->> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Signed-off-by: Avichal Rakesh <arakesh@google.com>
-> 
-> 
-> Thanks for the update; this seems ok now:
-> 
-> 
-> Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
-
-Awesome, thank you! I'll add the Reviewed-by in the next patchset
-(assuming you have more review comments on patch 4/4 v10). 
-
-Regards,
-Avi.
-
-> 
->> ---
->> v1 -> v2 : Rebased to ToT
->> v2 -> v3 : Fix email threading goof-up
->> v3 -> v4 : Address review comments & re-rebase to ToT
->> v4 -> v5 : Address more review comments. Add Reviewed-by & Tested-by.
->> v5 -> v6 : No change
->> v6 -> v7 : No change
->> v7 -> v8 : No change. Getting back in review queue
->> v8 -> v9 : Address review comments.
->> v9 -> v10: Address review comments; remove BUG_ON(&video->reqs);
->>             Rebase to ToT (usb-next)
->>
->>   <snip>
+I'm guessing this was added because of the virtualization hole?  I.e. if KVM
+allows CR4.CET=1 for shadow stacks, then KVM can't (easily?) prevent the guest
+from also using IBT.
