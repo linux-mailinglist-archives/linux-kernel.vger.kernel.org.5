@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8248C7DE217
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFA27DE1F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbjKAN4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        id S1343633AbjKAN4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjKAN4j (ORCPT
+        with ESMTP id S231501AbjKAN4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:56:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABCC010F
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:56:36 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C1622F4;
-        Wed,  1 Nov 2023 06:57:18 -0700 (PDT)
-Received: from [10.1.34.131] (XHFQ2J9959.cambridge.arm.com [10.1.34.131])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF9EA3F64C;
-        Wed,  1 Nov 2023 06:56:33 -0700 (PDT)
-Message-ID: <a6fa0847-a950-4044-972c-e5dc8cbc7922@arm.com>
-Date:   Wed, 1 Nov 2023 13:56:32 +0000
+        Wed, 1 Nov 2023 09:56:48 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D2D102;
+        Wed,  1 Nov 2023 06:56:46 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-da2b9234a9fso4494675276.3;
+        Wed, 01 Nov 2023 06:56:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698847005; x=1699451805; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+yzQj0RPB9P3n6Qwul4am9clWs3GiZYO1kyhQz5cK1w=;
+        b=Osfx+K2gQNayvuHziBP9OY/dhFAHAPXp9P4ErXVCXtLwAIGHBHuRO320+mez+AjYYP
+         g2uBlSdrl/nwR0GyQ1aGOtqle4gBef9gx5p9+wlYuLdUgcVBpkXNEV1pgwgRHqnf1s5K
+         rwCNNn2a7R24JuOLCnR7WnFP03vqhXpw90f4trkm1jtAGQRQyf+8w+wCu8lcADt1bQ7r
+         hgm+xYGZyyl8v5K5qpp06mUE/7GEIacypbW9g8d6aMi/q4EoE6MWdCoMVaMY+DcUaLAU
+         rxzTvODcCGtVFciNBB0U5dEPej5RQiC7xZdEbViWw2GlpfZ9n9jRE+SU+Z0nIjHW1qXV
+         biwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698847005; x=1699451805;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+yzQj0RPB9P3n6Qwul4am9clWs3GiZYO1kyhQz5cK1w=;
+        b=aFM8PH4JwqbcfDgS+tl9vt3RiYFeWseP8WZhSnglVnyK0KgwF89+wkA6xkqaMGYThW
+         VCiMoWAvBmkk3Dt2j1WaSiN7NNArCdH9sg0GB8CeXOKGHb9zFcKnDGCYogDYtSAN/zh1
+         n3vc2DKs/iA8+cxzCGxyYBh4JHxlIYnvCu/a9kGG3ABsw10RCsE0w/RBznBJoYaQcjl8
+         /M7QGu01OHfm2c8Ubz1X6ncmyRiROccISczOc6g0NVKhJErZGNkzfhCaVsx8m01FfUrC
+         UFKQj91+3tr7yIpRICedZlIVz+IrMfv5uT0q+geCIgi9/7Nc0oOzc4STj+Fq2i4j0VWv
+         jUWQ==
+X-Gm-Message-State: AOJu0YzU5ZMfeF/lPLbhxs6kNvt7FkgbImlqr3ehODf8eWsa72+T7rff
+        5wZ/jnPZk5rQVCTUm6up63vRAgCOHgYfDEUOuQ==
+X-Google-Smtp-Source: AGHT+IG8OT/aPb+YD5fmyru6znQxDBGEj56fps4ehM2NQ/K5TG8vM4JwTwp9jgTGCkJ+xpBoKSyogKS3vN2dlYxjqow=
+X-Received: by 2002:a25:b790:0:b0:da1:5a1a:e79c with SMTP id
+ n16-20020a25b790000000b00da15a1ae79cmr10500772ybh.50.1698847005123; Wed, 01
+ Nov 2023 06:56:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/9] mm: thp: Extend THP to allocate anonymous large
- folios
-Content-Language: en-GB
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-6-ryan.roberts@arm.com>
- <8a72da61-b2ef-48ad-ae59-0bae7ac2ce10@nvidia.com>
- <5993c198-0d27-46c3-b757-3a02c2aacfc9@arm.com>
- <d07c45bb-4eba-484c-bba1-b586136f8cdb@nvidia.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <d07c45bb-4eba-484c-bba1-b586136f8cdb@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 1 Nov 2023 14:56:34 +0100
+Message-ID: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
+Subject: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,110 +74,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/10/2023 23:25, John Hubbard wrote:
-> On 10/30/23 04:43, Ryan Roberts wrote:
->> On 28/10/2023 00:04, John Hubbard wrote:
->>> On 9/29/23 04:44, Ryan Roberts wrote:
-> ...
->>>>    +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
->>>> +{
->>>> +    int i;
->>>> +
->>>> +    if (nr_pages == 1)
->>>> +        return vmf_pte_changed(vmf);
->>>> +
->>>> +    for (i = 0; i < nr_pages; i++) {
->>>> +        if (!pte_none(ptep_get_lockless(vmf->pte + i)))
->>>> +            return true;
->>>
->>> This seems like something different than the function name implies.
->>> It's really confusing: for a single page case, return true if the
->>> pte in the page tables has changed, yes that is very clear.
->>>
->>> But then for multiple page cases, which is really the main
->>> focus here--for that, claim that the range has changed if any
->>> pte is present (!pte_none). Can you please help me understand
->>> what this means?
->>
->> Yes I understand your confusion. Although I'm confident that the code is
->> correct, its a bad name - I'll make the excuse that this has evolved through
->> rebasing to cope with additions to UFFD. Perhaps something like
->> vmf_is_large_folio_suitable() is a better name.
->>
->> It used to be that we would only take the do_anonymous_page() path if the pte
->> was none; i.e. this is the first time we are faulting on an address covered by
->> an anon VMA and we need to allocate some memory. But more recently we also end
->> up here if the pte is a uffd_wp marker. So for a single pte, instead of checking
->> none, we can check if the pte has changed from our original check (where we
->> determined it was a uffd_wp marker or none). But for multiple ptes, we don't
->> have storage to store all the original ptes from the first check.
->>
->> Fortunately, if uffd is in use for a vma, then we don't want to use a large
->> folio anyway (this would break uffd semantics because we would no longer get a
->> fault for every page). So we only care about the "same but not none" case for
->> nr_pages=1.
->>
->> Would changing the name to vmf_is_large_folio_suitable() help here?
-> 
-> Yes it would! And adding in a sentence or two from above about the uffd, as
-> a function-level comment might be just the right of demystification for
-> the code.
+Hi,
 
-Actually I don't think the name I proposed it quite right either - this gets
-called for small folios too.
+The verifier incorrectly rejects the following prog in check_cfg() when
+loading with root with confusing log `back-edge insn from 7 to 8`:
+  /* 0: r9 = 2
+   * 1: r3 = 0x20
+   * 2: r4 = 0x35
+   * 3: r8 = r4
+   * 4: goto+3
+   * 5: r9 -= r3
+   * 6: r9 -= r4
+   * 7: r9 -= r8
+   * 8: r8 += r4
+   * 9: if r8 < 0x64 goto-5
+   * 10: r0 = r9
+   * 11: exit
+   * */
+  BPF_MOV64_IMM(BPF_REG_9, 2),
+  BPF_MOV64_IMM(BPF_REG_3, 0x20),
+  BPF_MOV64_IMM(BPF_REG_4, 0x35),
+  BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
+  BPF_JMP_IMM(BPF_JA, 0, 0, 3),
+  BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
+  BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
+  BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
+  BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
+  BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
+  BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
+  BPF_EXIT_INSN()
 
-I think its cleaner to change the name to vmf_pte_range_none() and strip out the
-nr_pages==1 case. The checking-for-none part is required by alloc_anon_folio()
-and needs to be safe without holding the PTL. vmf_pte_changed() is not safe in
-without the lock. So I've just hoisted the nr_pages==1 case directly into
-do_anonymous_page(). Shout if you think we can do better:
+-------- Verifier Log --------
+func#0 @0
+back-edge from insn 7 to 8
+processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
 
+This is not intentionally rejected, right?
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 569c828b1cdc..b48e4de1bf20 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4117,19 +4117,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
-        return ret;
- }
-
--static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
-+static bool pte_range_none(pte_t *pte, int nr_pages)
- {
-        int i;
-
--       if (nr_pages == 1)
--               return vmf_pte_changed(vmf);
--
-        for (i = 0; i < nr_pages; i++) {
--               if (!pte_none(ptep_get_lockless(vmf->pte + i)))
--                       return true;
-+               if (!pte_none(ptep_get_lockless(pte + i)))
-+                       return false;
-        }
-
--       return false;
-+       return true;
- }
-
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-@@ -4170,7 +4167,7 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-        while (orders) {
-                addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
-                vmf->pte = pte + pte_index(addr);
--               if (!vmf_pte_range_changed(vmf, 1 << order))
-+               if (pte_range_none(vmf->pte, 1 << order))
-                        break;
-                order = next_order(&orders, order);
-        }
-@@ -4280,7 +4277,8 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
-        vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
-        if (!vmf->pte)
-                goto release;
--       if (vmf_pte_range_changed(vmf, nr_pages)) {
-+       if ((nr_pages == 1 && vmf_pte_changed(vmf)) ||
-+           (nr_pages  > 1 && !pte_range_none(vmf->pte, nr_pages))) {
-                for (i = 0; i < nr_pages; i++)
-                        update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
-                goto release;
-
+Best
+Hao
