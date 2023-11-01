@@ -2,251 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A567DDE5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 143447DDE65
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbjKAJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
+        id S231947AbjKAJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKAJW4 (ORCPT
+        with ESMTP id S230164AbjKAJ3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:22:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBEA98;
-        Wed,  1 Nov 2023 02:22:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698830570; x=1730366570;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=3SrIkXX0HNvcMvBInnN+hF624nAFxK8VxZnMpPz+OCk=;
-  b=NVZWQaWbcP04pTo5Skai1HHjTPvcG96dVOIzB8EeKiqpjAKb2dPmr7fd
-   5TjBEi4Ewiur0fzMXiGj9xZdC3+6UoN+eSZzqhsnNCz7ktvxoCamQuMe8
-   oMM67639p/GfVtZxutpZp/2/mXDA+4evSyDYOi63LHqQ2siH1qTyDBYit
-   kpFcjHbBhRtnV5PDslLc2q/rmIOCcN4VCu8POQmk9EO69wByt15v5CRNU
-   +xvclXLy/+/4yCy2I9zNHSg70H+3Rei+ZGPajdmvntgBOnl55vgNXP+qt
-   cgZBHHXj+0/M4xympWghui4TVm2c85j3H5SJH3vRmNG1Hp7RUrSQTxLrG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="419581589"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="419581589"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:22:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="1092291812"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="1092291812"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Nov 2023 02:22:49 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 1 Nov 2023 02:22:48 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 1 Nov 2023 02:22:48 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 1 Nov 2023 02:22:48 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 1 Nov 2023 02:22:48 -0700
+        Wed, 1 Nov 2023 05:29:40 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D3098;
+        Wed,  1 Nov 2023 02:29:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BHnNRlG75mdvqkvonPsm1vdTjCGfK1Gui55m7a7gF9BzC3dRRv/ZNYPid1aZV9ShAp2QiDGXL2HMlcOV7f85S8qyfZswOWGVeiwY2oL5LTyu5gSI48icLoJ2ylkGDF962NWJ8v5YAClspT0x6hqUIBIetTwnwqzcdwptbyJky0c/L2ZlM+Bph+fuAK6+8V95C5zdn2u4sHSfA7FBQdHYqErBLYfuyZ4hevjeCZSHMbgwOJYnymecOc3FFHcGBp83Mm4eagyu8QmANLq7NAuW16JIhwfpF3XU1lPqjaRDsvAsXwT/bOeQnR7Bk51bJFPgAg+pcJq75kB0UHoba9sIYg==
+ b=n0wuKQoItWuR5oUJJmLCu4Uyyr5yOXrK9cPqXzATZPWm8sPxKKAJi3T7hY4mh9m201NYcOFG+KFYy81yuOdTxWGlDUn+EOJW0/IYx9yKS+vYAVXBXDiRN/zO7azYz00TJPa0IBEbQ5rYGf8xMdLyA+46ZGuQlrkBVKozd58+ol+FSc3A3ydthuys9OwYHoy7gzhwuSBmesXdqhUNd33OCzwlfq0ToAGKlxNTqTYcbS/GDBW3Zhwz5WTpAbrkX3M4L1esU41TcwV+u6SX4oVPJSxvvhqIu3/fj/icQEYzrU8VKN82xvx+wtn3YmXJhkqPdTb8hD2S020d6PcEyVK6gQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yCLcH9Tqr2OW+d7Xc57GYU70mFBjJAW+dnpUgX4b2BI=;
- b=U746IzDrzHq5lV5EDaYWT9ATLTjcMkvXX/exJCcLaeOOrGHX5DuO2HBRxkjYQ76AV5lMvULyHIawGLg1zXoBE9PqG5Z3bcLmGkSrZ4J+9eE7vQTI9cC0QfVx60rSusTa+cJkcT9LvRaWAA1h5H3XZTGOdJPNa7LfOswod/26EVXEIick4PBiU87Bxk0IwcHE1LkzEB0G52KlauMV546czR9fMVopy24ljUHvm8kTGukfNrNbEqaa+efDd3Eltvl9l7ZevccEXSaQM1hgno8ysarmR4kxxBPUucBMeGUFyZ7o3yGpjTT3Z4rl69zg+950VAbSjne1af8/Tzwy2nrZzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by DM6PR11MB4612.namprd11.prod.outlook.com (2603:10b6:5:2a8::19) with
+ bh=1a718EGSuvKUfXkIabojU6llpcv7CWBa/dcOub5YHK0=;
+ b=MS4jXpBwSH+5uVxItj9tJbIBa5tHZm2b6PEmZdWELEPC3sKajLtwdhSrXcUqxrnRVINaeCQFdu5qRnDzhXif3d3gpW/zm1sHBlNA/c+D1SaQ3UDSJFFKMOKa2j5ZP3ube2evInjiKKpHwlyLaoIEpIWmAx/Jr4YrmPjVVWctX/0wseGOMMyhdvzR2OXdi0ou0lQ70o/i9MnFPMD7yFfgPtQVqV7bXogiFi2azrC/6fQRX+x9hFIGPa7z/Efpyj51mGhfkwirXkK68EXRo8f7LwfIbFJJYyfkua5/AZmMeO4u5bmY+Jt6RHjBKCVnjDcRVecvIwAE8g3IrxYF6bOpwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 137.201.242.130) smtp.rcpttodomain=linux-foundation.org
+ smtp.mailfrom=micron.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=micron.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1a718EGSuvKUfXkIabojU6llpcv7CWBa/dcOub5YHK0=;
+ b=Jzs6oelGzQF0HMm+J22qyaA+wGS8nebQISa7CjyT7vLSSIp4xvb8y4z3syXN7I7vN2+W6huY6MnepAyiQ1AS5D6SkXRyZJkkAbAbVnX5lJ3XAepDw/Mydq5sp3E1H2H4BN6KYSxBQmn7q+CN6fgb5a5cVPSHYFFgnmuA8mkrMMQap0m8KzrlaxI2oYvaNuvyRUEajEFaBUOp5i1co4onYN3eqyimnH2AfoIhNylvxeD4wmoyZj8nKFmLkqQUGkbeVRWSmZ6HJ2jCzZVXiG5pPua0DvLRsfPdj8QHeJhDuerx9l44Ff8kBZJ1XPXJtTSodQ5RY53DCajJ78ovYDIYfA==
+Received: from PH0PR07CA0112.namprd07.prod.outlook.com (2603:10b6:510:4::27)
+ by BY1PR08MB8574.namprd08.prod.outlook.com (2603:10b6:a03:527::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
- 2023 09:22:39 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.6933.029; Wed, 1 Nov 2023
- 09:22:38 +0000
-Message-ID: <b9fac2d4-61f3-b704-fb43-d3e012239d72@intel.com>
-Date:   Wed, 1 Nov 2023 17:22:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 25/25] KVM: nVMX: Enable CET support for nested guest
-Content-Language: en-US
-To:     Chao Gao <chao.gao@intel.com>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dave.hansen@intel.com>,
-        <peterz@infradead.org>, <rick.p.edgecombe@intel.com>,
-        <john.allen@amd.com>
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-26-weijiang.yang@intel.com>
- <ZUGzZiF0Jn8GVcr+@chao-email>
-From:   "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <ZUGzZiF0Jn8GVcr+@chao-email>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0132.apcprd02.prod.outlook.com
- (2603:1096:4:188::15) To PH0PR11MB4965.namprd11.prod.outlook.com
- (2603:10b6:510:34::7)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Wed, 1 Nov
+ 2023 09:29:30 +0000
+Received: from SN1PEPF000252A2.namprd05.prod.outlook.com
+ (2603:10b6:510:4:cafe::eb) by PH0PR07CA0112.outlook.office365.com
+ (2603:10b6:510:4::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
+ Transport; Wed, 1 Nov 2023 09:29:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 137.201.242.130)
+ smtp.mailfrom=micron.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=micron.com;
+Received-SPF: Pass (protection.outlook.com: domain of micron.com designates
+ 137.201.242.130 as permitted sender) receiver=protection.outlook.com;
+ client-ip=137.201.242.130; helo=mail.micron.com; pr=C
+Received: from mail.micron.com (137.201.242.130) by
+ SN1PEPF000252A2.mail.protection.outlook.com (10.167.242.9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.19 via Frontend Transport; Wed, 1 Nov 2023 09:29:29 +0000
+Received: from BOW36EX19B.micron.com (137.201.85.154) by BOW17EX19A.micron.com
+ (137.201.21.218) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 1 Nov
+ 2023 03:29:28 -0600
+Received: from VENKATARAVI-LAP.micron.com (10.70.32.235) by
+ RestrictedRelayBOW36EX19B.micron.com (137.201.85.154) with Microsoft SMTP
+ Server id 15.2.1258.12 via Frontend Transport; Wed, 1 Nov 2023 03:29:24 -0600
+From:   Ravi Jonnalagadda <ravis.opensrc@micron.com>
+To:     <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <aneesh.kumar@linux.ibm.com>,
+        <apopple@nvidia.com>, <dave.hansen@intel.com>,
+        <gourry.memverge@gmail.com>, <gregkh@linuxfoundation.org>,
+        <gregory.price@memverge.com>, <hannes@cmpxchg.org>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <mhocko@suse.com>, <rafael@kernel.org>,
+        <shy828301@gmail.com>, <tim.c.chen@intel.com>, <weixugc@google.com>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Date:   Wed, 1 Nov 2023 14:59:23 +0530
+Message-ID: <20231101092923.283-1-ravis.opensrc@micron.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <87il6m6w2j.fsf@yhuang6-desk2.ccr.corp.intel.com>
+References: <87il6m6w2j.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MT-Whitelisted: matched
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|DM6PR11MB4612:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e55dfdf-cbb3-4984-c864-08dbdabc1778
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A2:EE_|BY1PR08MB8574:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26538c5a-04fe-41b9-d4a3-08dbdabd0c97
+X-EXT-ByPass: 1
+X-MT-RULE-Whitelisted: Triggered
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +ZoAuKiT9l1sAsyfCGd8n/OZ1L32PFRIPIv4jouvxqO5+PNGnKeoJ8z7uGdtyu5WDQb1CEEje7rNgYxMi9uKvvVTy1ks0GZCxZ4aeBfvxGpoVGon3tgfHYN/NPQfFsCGzp0uSycLQJMY55qHb4hA1yurkZS7ITwPZbsOb7Dz0m1NKzwV38dgq7Rf8dEPeNlRPpdQUXP/GnQFgY6jVTYxvXcpDoQcnX0GmuvmiGxDQBHxHj32znDShCc1n2GLi6cEuk5YubF3UHZW9m3nQYkW2d6aQ3P88E3xOHQHJRHqyA3a2DRGiZLiEXDkkxloi4tLhn7MVNpxTTCprIVFsCpac8TF/4J3to1z68QANv6KQm+Doa0RMgO4WwBF/Dz8iERXJlWX0DjZOsq+6bmeoWw5cNK91Mmwf8ukNGrVqBdtEG9CKC2QAVEbv7Hm6+fU8jo8UBpZeEWw5vd69H5WneAIm3skMZIOsrVU5YUr6JGNZo/O9nYEQsI/qECLiKO9Sq2/AnaX8cTnW5igZrtSkKeCvjgeLaIkZV3U1R38oz1PR3LYWQeT5sc4EJrg/cth++77Z98sWCADrVu7h1QCI7DHhdm2bn94mUQ5BCqwxtYCxcyn/8nm47ZoclgCUtmJEMZVznbrkdTjh95pn7kmJJNQow==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(376002)(39860400002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(86362001)(36756003)(41300700001)(53546011)(478600001)(6506007)(6512007)(38100700002)(66556008)(66946007)(5660300002)(6486002)(82960400001)(8676002)(8936002)(4326008)(6862004)(6666004)(31686004)(2616005)(316002)(37006003)(31696002)(6636002)(26005)(83380400001)(2906002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NUZLdHJYM3FhbW1Nc3BoNjN3QWdFMFlxK1d6eEJhaGdHNG9qVkE1MkJ0VW9F?=
- =?utf-8?B?Mzk1NWhMd3NuRVJJU3AxNDRYT2lwbVBLRlBRQjZkQWpCTDhZbXpQc0RPQm5C?=
- =?utf-8?B?a1oxY0RpcEtPMDAyTm9GTXM5MGRaZ29wUUJHWFhuTm1pYzNPUGUwZFdzblNa?=
- =?utf-8?B?UzhnVzVXUzNiUkdBWFd4VHRXTWNPY0dJVXIvWUwrT3IraVM0d3Z0NHFEdGNQ?=
- =?utf-8?B?TGR4d1BCQTJsOGlPUkc4M2FzSnU3c0JobWZRbnZESWFHRzJNeWtsLzJDWUJs?=
- =?utf-8?B?UFVKczNFeVVwRGNnSGNvRUtob3Z6TGZIWkpzMStHeGVreHg4dUd5OHFhSE93?=
- =?utf-8?B?TzZXbkprM3E3aDVtWUxzRTdJSXJLWUorR2M4REdnV29zajM3bUZ6OGN6YUEr?=
- =?utf-8?B?N2ZtUGtSRmxGK0NldjJuaytja1lpUGg3aHQ4RmNhem9YTkl4a1cwRkFyYmlF?=
- =?utf-8?B?NDk1RDdBa0srQlQrL215bktPYnFHL25hK0FSMXZvUmg2Yk11ZjI0aERWZG5T?=
- =?utf-8?B?SU0vc2dwb2UrajdFdi9VUG5KbHl0WWZ4WWlMNFdHbnFRSWJGRUJyR2lSQkc1?=
- =?utf-8?B?UjRNei9LL1dzWTE3RWJtSGFnM2VOSDF5Y2JNM3Y2N3JtL3N3UGI3aTFsd1ho?=
- =?utf-8?B?S1dTbGZVSnp3MzUrRGlRV2ZZZWNWYVQzWUlEa3hQbVF0T2ZIV0x1Nm52WTI1?=
- =?utf-8?B?b01GUzJhNldWVmIrU3l0bG45NHJJMG9ucEdVTFdnT3ZraDZuTUE2amxtNmJ0?=
- =?utf-8?B?WTdySWhnaXZSRkNucloyeG01TllxZE9ROHZGWm5JWk5rQmszeXBHR0s1dkFV?=
- =?utf-8?B?bmJzbGtFOGJjcEd6aU1USnhVY2RFWnlsRWwrZUE5ZTV4UEFjYmlVbnhjK1Nt?=
- =?utf-8?B?WmM2WUFWWCtEN0VWZjBqQ004QjBlWFozdzE1RlIxcXFtbEhlSzlUVlQ5MlFq?=
- =?utf-8?B?eHpscWFwdXhMSy9Nb0VvZ3MxOFdsU2FCMm5HbVk3UUNSbnREajlnWWpsTFdT?=
- =?utf-8?B?OHUveHdGQkl6QVNHMm4zU1A1M3ArdHkxWXBRbDhReEIwckExQjFpWVgvVVNa?=
- =?utf-8?B?Zm54LzE0SWk3MVlaMEc4cEY1WWtWYzl0ditUTUE5WklMNTRKazdGeUM5WG1h?=
- =?utf-8?B?VUkxWDhQUWxUc3o4M25hSzEwaFBaSWdiZXJ5MHgxc2hXS1hIYUtTeUp2WDMw?=
- =?utf-8?B?WlozT1FTRVBEcDc1Z2puK1kvMlkzYlpIT1VlUTFnZVFaMy9UK09CcGFnS2ov?=
- =?utf-8?B?MHhoZjVjMW5ScnpETUNTSE9vV0J6Ym93ampJeHdMVzlrbVBzZ3RsSCtvdmts?=
- =?utf-8?B?MDMrNTJXV0NBbjJodjFwbFdiczhLZWNnTkRPSG5VRVp1ZTRJRlFXRUhTU1Uz?=
- =?utf-8?B?NXVmUnF6UHU5VXFhSWFCQ2FpdWI5QlBuVG1xTFdEbUV2VFFERURrWVdhRU5B?=
- =?utf-8?B?MHk1d2lhQnh6c3dQQjVydmJzeFB0UDVmdDNTMzJERDZhWEcrZGF0S0NoOC9v?=
- =?utf-8?B?clhvNmNQNUdoemlOZDY0b2ZiK1ZGQ083UU0rb3RNemdUN3dEa3NBdUJ5SVRC?=
- =?utf-8?B?T3F3eFRoaEJVU1pyKzF5ZUN2d1JJWndIbUZpTkdXTGtYVS8wSzYxZHhFY1Fh?=
- =?utf-8?B?djVJOTg5cDFLZnRzYmxnU0N2aFRQR21pVFRoQ2I5YWlpMFBmaWFxc0ZGN1Z5?=
- =?utf-8?B?YnovSEdtRlNUY1JTRzQwU1M0MFJJK2pSaTRId3M3SmxYNUpVNzdYZ2VOTnha?=
- =?utf-8?B?RmU2WG03NlEzdjhKaDJjL2FZM1FRUytBb1BjV1lDeE5sQ2lsSVg5Q0tQSTJC?=
- =?utf-8?B?Snc2OU1IK2FXbE1rNWpYSUNVZ1lPRGd0TXlJM1VBUlRFcHBFVHJrdWMwTVc2?=
- =?utf-8?B?N2pyNEsxTXR4NWRMaFp2MDEyUWdQY3p6VTA2ZTk5czBmeFlxQ3ZHMTJUWWox?=
- =?utf-8?B?d1lCVVU4dUNabEpjWU13VE9WS0JrQXVibVNIaGlnNTR2emp3SkMweEliMGhi?=
- =?utf-8?B?NVg1WXNIQzRoWUU1U2ZSeG1STERZc2RnbVN0K2V3M092endWSGFzRjJpSGdL?=
- =?utf-8?B?ZXhlZEN4WkZlMEZKbjM1SEZLYndQMTBKSkM3L2Jzdjc0MStsZ2hoTXZYM3FH?=
- =?utf-8?B?YnJkWiszenFObUtXZjdkTDZlbi9xRFV2bkRhcy8rUzAwMzNOZ3hzdlV4ZHJq?=
- =?utf-8?B?M2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e55dfdf-cbb3-4984-c864-08dbdabc1778
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 09:22:38.8352
+X-Microsoft-Antispam-Message-Info: ZlpJAwXB4y+SoEfQZ7HQFpJK9OhxNX1UDyE9g9hEjdHmaPr78wHCu0ZIlr7rSksTGHGa9nuvDA/yKYWI6ZQ2JtCyRtJn/l9hJxup4lvU8//vPsKlvAxgav/4DMfUvIswj5AhfrrWbwqkaTwE+8YNtri0KpCxbZSnsxlwqOoIIa+mBt0lMH9CWYWozfvRJW6om4l/Q9xzuheEYO90XXabUuCfx3tmQd/5sFOtoMTVURWr8RCsifMyPVwc2MOn0xnbDv+S5VqHU2KpFQbKtsS7vuPJXvtYZ3/ZGSWpnFtys4A05qfLSbp83aK3Th4nDQsC0gCxGdQWvbtq5y1WiMdPtc8wtCtW/SkSlWRDvM+vRHCZgJNDY27p70AmDmWOaqZhcT7tTtAobai6Vc2SgwzsplrxcD+xbM9CTQ/cBbJu9RGmrcp/cjT8DgsHVS1PlkN3P4KJbyKjDMVIlqlkFcj26WVE7L2xKQrWojCezBAh0HrSkSUIlvwgGVjj52/S433XsiYMP54TBx1BRomEb7LqCtZe2gVJiacMGFtCeJ4Q8DZlXan6nEU+NN3FSOtt3VE/TT3EkgBlb5kv/wSicjFX7/RWOQsOKZwOA/otegtgIqXjq8gcbgVDXDMXpL3+yBT1BiSx8zEZqg9X/TOCcaGQdp480yLu0zAm3ejcLvt+ZIyJk+Kin0BRC8IwdaVdQA9lXZnoUtiQpDtxkN1UhYYG2xNM1DMEooevKzaCG5koc2iFZfp0uAjLNcSJ+Ol0n+GTWlM664/naILZwTmiEhXkxA==
+X-Forefront-Antispam-Report: CIP:137.201.242.130;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.micron.com;PTR:masquerade.micron.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(346002)(136003)(230922051799003)(1800799009)(82310400011)(64100799003)(186009)(451199024)(40470700004)(46966006)(36840700001)(47076005)(36756003)(86362001)(82740400003)(1076003)(26005)(70206006)(40480700001)(41300700001)(478600001)(7696005)(8676002)(8936002)(4326008)(6862004)(2906002)(83380400001)(2616005)(40460700003)(426003)(70586007)(5660300002)(316002)(54906003)(356005)(7416002)(36860700001)(7636003)(336012)(16393002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: micron.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 09:29:29.6914
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AKbpGsg9IyfCDcwN1sG4ywEsAiVVZXosZq4c2TfrtjX4idc06L5QCm46nCMqUBo0OIeRMnpGHhy1jByybHmbHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4612
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26538c5a-04fe-41b9-d4a3-08dbdabd0c97
+X-MS-Exchange-CrossTenant-Id: f38a5ecd-2813-4862-b11b-ac1d563c806f
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f38a5ecd-2813-4862-b11b-ac1d563c806f;Ip=[137.201.242.130];Helo=[mail.micron.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A2.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR08MB8574
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/2023 10:09 AM, Chao Gao wrote:
-> On Thu, Sep 14, 2023 at 02:33:25AM -0400, Yang Weijiang wrote:
->> Set up CET MSRs, related VM_ENTRY/EXIT control bits and fixed CR4 setting
->> to enable CET for nested VM.
->>
->> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
->> ---
->> arch/x86/kvm/vmx/nested.c | 27 +++++++++++++++++++++++++--
->> arch/x86/kvm/vmx/vmcs12.c |  6 ++++++
->> arch/x86/kvm/vmx/vmcs12.h | 14 +++++++++++++-
->> arch/x86/kvm/vmx/vmx.c    |  2 ++
->> 4 files changed, 46 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index 78a3be394d00..2c4ff13fddb0 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -660,6 +660,28 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
->> 	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> 					 MSR_IA32_FLUSH_CMD, MSR_TYPE_W);
->>
->> +	/* Pass CET MSRs to nested VM if L0 and L1 are set to pass-through. */
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_U_CET, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_S_CET, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL0_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL1_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL2_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_PL3_SSP, MSR_TYPE_RW);
->> +
->> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
->> +					 MSR_IA32_INT_SSP_TAB, MSR_TYPE_RW);
->> +
->> 	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
->>
->> 	vmx->nested.force_msr_bitmap_recalc = false;
->> @@ -6794,7 +6816,7 @@ static void nested_vmx_setup_exit_ctls(struct vmcs_config *vmcs_conf,
->> 		VM_EXIT_HOST_ADDR_SPACE_SIZE |
->> #endif
->> 		VM_EXIT_LOAD_IA32_PAT | VM_EXIT_SAVE_IA32_PAT |
->> -		VM_EXIT_CLEAR_BNDCFGS;
->> +		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_LOAD_CET_STATE;
->> 	msrs->exit_ctls_high |=
->> 		VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR |
->> 		VM_EXIT_LOAD_IA32_EFER | VM_EXIT_SAVE_IA32_EFER |
->> @@ -6816,7 +6838,8 @@ static void nested_vmx_setup_entry_ctls(struct vmcs_config *vmcs_conf,
->> #ifdef CONFIG_X86_64
->> 		VM_ENTRY_IA32E_MODE |
->> #endif
->> -		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS;
->> +		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS |
->> +		VM_ENTRY_LOAD_CET_STATE;
->> 	msrs->entry_ctls_high |=
->> 		(VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR | VM_ENTRY_LOAD_IA32_EFER |
->> 		 VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL);
->> diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
->> index 106a72c923ca..4233b5ca9461 100644
->> --- a/arch/x86/kvm/vmx/vmcs12.c
->> +++ b/arch/x86/kvm/vmx/vmcs12.c
->> @@ -139,6 +139,9 @@ const unsigned short vmcs12_field_offsets[] = {
->> 	FIELD(GUEST_PENDING_DBG_EXCEPTIONS, guest_pending_dbg_exceptions),
->> 	FIELD(GUEST_SYSENTER_ESP, guest_sysenter_esp),
->> 	FIELD(GUEST_SYSENTER_EIP, guest_sysenter_eip),
->> +	FIELD(GUEST_S_CET, guest_s_cet),
->> +	FIELD(GUEST_SSP, guest_ssp),
->> +	FIELD(GUEST_INTR_SSP_TABLE, guest_ssp_tbl),
-> I think we need to sync guest states, e.g., guest_s_cet/guest_ssp/guest_ssp_tbl,
-> between vmcs02 and vmcs12 on nested VM entry/exit, probably in
-> sync_vmcs02_to_vmcs12() and prepare_vmcs12() or "_rare" variants of them.
-
-Thanks Chao!
-Let me double check the nested code part and reply.
-
+>> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:=0D
+>>> On Tue 31-10-23 11:21:42, Johannes Weiner wrote:=0D
+>>> > On Tue, Oct 31, 2023 at 10:53:41AM +0100, Michal Hocko wrote:=0D
+>>> > > On Mon 30-10-23 20:38:06, Gregory Price wrote:=0D
+>=0D
+>[snip]=0D
+>=0D
+>>>=0D
+>>> > This hopefully also explains why it's a global setting. The usecase i=
+s=0D
+>>> > different from conventional NUMA interleaving, which is used as a=0D
+>>> > locality measure: spread shared data evenly between compute=0D
+>>> > nodes. This one isn't about locality - the CXL tier doesn't have loca=
+l=0D
+>>> > compute. Instead, the optimal spread is based on hardware parameters,=
+=0D
+>>> > which is a global property rather than a per-workload one.=0D
+>>>=0D
+>>> Well, I am not convinced about that TBH. Sure it is probably a good fit=
+=0D
+>>> for this specific CXL usecase but it just doesn't fit into many others =
+I=0D
+>>> can think of - e.g. proportional use of those tiers based on the=0D
+>>> workload - you get what you pay for.=0D
+>>>=0D
+>>> Is there any specific reason for not having a new interleave interface=
+=0D
+>>> which defines weights for the nodemask? Is this because the policy=0D
+>>> itself is very dynamic or is this more driven by simplicity of use?=0D
+>>=0D
+>> A downside of *requiring* weights to be paired with the mempolicy is=0D
+>> that it's then the application that would have to figure out the=0D
+>> weights dynamically, instead of having a static host configuration. A=0D
+>> policy of "I want to be spread for optimal bus bandwidth" translates=0D
+>> between different hardware configurations, but optimal weights will=0D
+>> vary depending on the type of machine a job runs on.=0D
+>>=0D
+>> That doesn't mean there couldn't be usecases for having weights as=0D
+>> policy as well in other scenarios, like you allude to above. It's just=0D
+>> so far such usecases haven't really materialized or spelled out=0D
+>> concretely. Maybe we just want both - a global default, and the=0D
+>> ability to override it locally.=0D
+>=0D
+>I think that this is a good idea.  The system-wise configuration with=0D
+>reasonable default makes applications life much easier.  If more control=0D
+>is needed, some kind of workload specific configuration can be added.=0D
+=0D
+Glad that we are in agreement here. For bandwidth expansion use cases=0D
+that this interleave patchset is trying to cater to, most applications=0D
+would have to follow the "reasanable defaults" for weights.=0D
+The necessity for applications to choose different weights while=0D
+interleaving would probably be to do capacity expansion which the=0D
+default memory tiering implementation would anyway support and provide=0D
+better latency.=0D
+=0D
+>And, instead of adding another memory policy, a cgroup-wise=0D
+>configuration may be easier to be used.  The per-workload weight may=0D
+>need to be adjusted when we deploying different combination of workloads=0D
+>in the system.=0D
+>=0D
+>Another question is that should the weight be per-memory-tier or=0D
+>per-node?  In this patchset, the weight is per-source-target-node=0D
+>combination.  That is, the weight becomes a matrix instead of a vector.=0D
+>IIUC, this is used to control cross-socket memory access in addition to=0D
+>per-memory-type memory access.  Do you think the added complexity is=0D
+>necessary?=0D
+=0D
+Pros and Cons of Node based interleave:=0D
+Pros:=0D
+1. Weights can be defined for devices with different bandwidth and latency=
+=0D
+characteristics individually irrespective of which tier they fall into.=0D
+2. Defining the weight per-source-target-node would be necessary for multi=
+=0D
+socket systems where few devices may be closer to one socket rather than ot=
+her.=0D
+Cons:=0D
+1. Weights need to be programmed for all the nodes which can be tedious for=
+=0D
+systems with lot of NUMA nodes.=0D
+=0D
+Pros and Cons of Memory Tier based interleave:=0D
+Pros:=0D
+1. Programming weight per initiator would apply for all the nodes in the ti=
+er.=0D
+2. Weights can be calculated considering the cumulative bandwidth of all=0D
+the nodes in the tier and need to be programmed once for all the nodes in a=
+=0D
+given tier.=0D
+3. It may be useful in cases where numa nodes with similar latency and band=
+width=0D
+characteristics increase, possibly with pooling use cases.=0D
+Cons:=0D
+1. If nodes with different bandwidth and latency characteristics are placed=
+=0D
+in same tier as seen in the current mainline kernel, it will be difficult t=
+o=0D
+apply a correct interleave weight policy.=0D
+2. There will be a need for functionality to move nodes between different t=
+iers=0D
+or create new tiers to place such nodes for programming correct interleave =
+weights.=0D
+We are working on a patch to support it currently.=0D
+3. For systems where each numa node is having different characteristics,=0D
+a single node might end up existing in different memory tier, which would b=
+e=0D
+equivalent to node based interleaving. On newer systems where all CXL memor=
+y=0D
+from different devices under a port are combined to form single numa node, =
+this=0D
+scenario might be applicable.=0D
+4. Users may need to keep track of different memory tiers and what nodes ar=
+e present=0D
+in each tier for invoking interleave policy.=0D
+=0D
+>=0D
+>> Could you elaborate on the 'get what you pay for' usecase you=0D
+>> mentioned?=0D
+>=0D
+>--=0D
+>Best Regards,=0D
+>Huang, Ying=0D
+--=0D
+Best Regards,=0D
+Ravi Jonnalagadda=0D
