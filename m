@@ -2,235 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98957DE05C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C89F7DE07B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbjKALbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
+        id S235345AbjKALoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235193AbjKALbT (ORCPT
+        with ESMTP id S235263AbjKALoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:31:19 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A944B111
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:31:13 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-778a20df8c3so465925285a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 04:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698838272; x=1699443072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5GLyp5FUS2qPs528dNdoTbrsbRrAppICUBpffUvX+tg=;
-        b=bLbaUnavCfhTqoQra0/LwwSuSzXE/lzWII6uTfolMZuySw1ibvN3Lu3dcICmVjx2iQ
-         /oojfgLHsczj78CwbLfUJ6y19g2hm/VcMQ2wRlf03UzILzJx09RLbVkChCmTFTdrmyay
-         g2ooi9ccxI9ALUzxHTja3pJ4SSpNnS7K3A17w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698838272; x=1699443072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GLyp5FUS2qPs528dNdoTbrsbRrAppICUBpffUvX+tg=;
-        b=qh6F/Jiy5jMLOhMC0vjtoQ2p//+EbFP7eKbSUQLcxXuL8e4eHiWB7MIXaN3gm0Fleb
-         fiTjs+n5cFGNo58Tu1BNv6VxUlWSfY8a+Bg+ri+ZjfgIe41KGFomgWbwDdcKRRfP3EEV
-         HlmfdwOhlNrtS++v4WAxDo0WtQFo4ioLDTGbWfN4IpsqwOmIawUoWkZ46U26Xa0rA/Xm
-         8Urc3b6AItVXB/yLIlnBxp/6+scdRk05+lFajxw7rAONphHTbF+UazRGdQpF0Wkyw5Jh
-         JYCffg4PuVPLyydW61RUQDegiBXrIQC6ixF7/uTHss1LpZ/wEmZaVZ2PVZ6L2HySMdYn
-         kUSg==
-X-Gm-Message-State: AOJu0YzpoQC4AGS6tDWNb+PsNUtJHH2dw0ZAqsCfKHhOlYGrWiKyyMKV
-        huhjoJGGkUIm9A5vXL2ITopTyJiUO7S+Dw57QiiNJg==
-X-Google-Smtp-Source: AGHT+IFG4X8QM361Sf/0Q/7MOPJJHCzWC8R0BKkb4R1PusMcHP7Wb9dL/evBOeNc8g7HpQr4smGnhb1ryn3veTht5jQ=
-X-Received: by 2002:a0c:e2c5:0:b0:672:7fe3:7aae with SMTP id
- t5-20020a0ce2c5000000b006727fe37aaemr7995774qvl.56.1698838272664; Wed, 01 Nov
- 2023 04:31:12 -0700 (PDT)
+        Wed, 1 Nov 2023 07:44:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC58A110
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:44:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70FE9C433C7;
+        Wed,  1 Nov 2023 11:44:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698839046;
+        bh=+a3hNejyp4HZMjQsHPW/cfQ7BJWexJetpS73VMdMRwA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SCMyExs6Zidse0QDMfPkM31ezH/ybXj6xUXupFRwOSxRM1pZbMEyZk9Gaq1/6yXgL
+         PtwazttdLEK/aDbhVXXGmRiicusnrJxYO0+crz9Ucd9eDgvf2ckBiRnOvpQFk9gF0O
+         ckA5YCkTbwksG3WhHe61i0EsuG2+PM5QJN7v3AI+GjQEqtSN2iFz3G7QQRCab7lLke
+         mXzv7MAgP7+y7Xo6VvUW3OeO5HcDRnBBP/+l6qKozitGM1vCBzW6s2t+jXo8h+q/iw
+         SYQiB4VpFI5eiE98QqraWj12AzlAQf8rgXPAVQ3aNud6JAVlgvsYDgQskgyvr3aJNy
+         pZBxluKN7ixAg==
+Date:   Wed, 1 Nov 2023 19:31:48 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Evan Green <evan@rivosinc.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        David Laight <David.Laight@aculab.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
+Message-ID: <ZUI3JKff9SgsA3Z/@xhacker>
+References: <20230915184904.1976183-1-evan@rivosinc.com>
+ <ZQVp1PJb+HuEdu4L@xhacker>
 MIME-Version: 1.0
-References: <20231027145623.2258723-1-korneld@chromium.org>
- <20231027145623.2258723-2-korneld@chromium.org> <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
-In-Reply-To: <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
-From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
-Date:   Wed, 1 Nov 2023 12:31:01 +0100
-Message-ID: <CAD=NsqxXP+SjH-ud8sjHD5y_LxZGUDnwHNPbzr_0RPwqVrwpPw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: cqhci: Add a quirk to clear stale TC
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZQVp1PJb+HuEdu4L@xhacker>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 8:31=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 27/10/23 17:56, Kornel Dul=C4=99ba wrote:
-> > This fix addresses a stale task completion event issued right after the
-> > CQE recovery. As it's a hardware issue the fix is done in form of a
-> > quirk.
-> >
-> > When error interrupt is received the driver runs recovery logic is run.
-> > It halts the controller, clears all pending tasks, and then re-enables
-> > it. On some platforms a stale task completion event is observed,
-> > regardless of the CQHCI_CLEAR_ALL_TASKS bit being set.
-> >
-> > This results in either:
-> > a) Spurious TC completion event for an empty slot.
-> > b) Corrupted data being passed up the stack, as a result of premature
-> >    completion for a newly added task.
-> >
-> > To fix that re-enable the controller, clear task completion bits,
-> > interrupt status register and halt it again.
-> > This is done at the end of the recovery process, right before interrupt=
-s
-> > are re-enabled.
-> >
-> > Signed-off-by: Kornel Dul=C4=99ba <korneld@chromium.org>
+On Sat, Sep 16, 2023 at 04:39:54PM +0800, Jisheng Zhang wrote:
+> On Fri, Sep 15, 2023 at 11:49:03AM -0700, Evan Green wrote:
+> > Probing for misaligned access speed takes about 0.06 seconds. On a
+> > system with 64 cores, doing this in smp_callin() means it's done
+> > serially, extending boot time by 3.8 seconds. That's a lot of boot time.
+> > 
+> > Instead of measuring each CPU serially, let's do the measurements on
+> > all CPUs in parallel. If we disable preemption on all CPUs, the
+> > jiffies stop ticking, so we can do this in stages of 1) everybody
+> > except core 0, then 2) core 0.
+> > 
+> > The measurement call in smp_callin() stays around, but is now
+> > conditionalized to only run if a new CPU shows up after the round of
+> > in-parallel measurements has run. The goal is to have the measurement
+> > call not run during boot or suspend/resume, but only on a hotplug
+> > addition.
+> > 
+> > Signed-off-by: Evan Green <evan@rivosinc.com>
+> 
+> Reported-by: Jisheng Zhang <jszhang@kernel.org>
+
+Hi Evan, Palmer,
+
+This patch seems missing in v6.6, I dunno what happened.
+
+And this patch doesn't fix the boot time regression but also fix a real
+bug during cpu hotplug on and off.
+
+Here is the reproduce script:
+
+while true
+do
+echo 0 > /sys/devices/system/cpu/cpu1/online
+echo 1 > /sys/devices/system/cpu/cpu1/online
+done
+
+
+Here is the BUG log on qemu:
+
+[   20.950753] CPU1: failed to come online
+[   20.951875] ------------[ cut here ]------------
+[   20.952070] kernel BUG at kernel/time/hrtimer.c:2227!
+[   20.952341] Kernel BUG [#1]
+[   20.952366] Modules linked in:
+[   20.952515] CPU: 0 PID: 46 Comm: sh Not tainted 6.6.0 #3
+[   20.952607] Hardware name: riscv-virtio,qemu (DT)
+[   20.952695] epc : hrtimers_dead_cpu+0x22e/0x230
+[   20.952808]  ra : cpuhp_invoke_callback+0xe4/0x54e
+[   20.952844] epc : ffffffff8007d6c0 ra : ffffffff8000f904 sp : ff600000011ebb30
+[   20.952863]  gp : ffffffff80d081d0 tp : ff6000000134da00 t0 : 0000000000000040
+[   20.952880]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ff600000011ebbb0
+[   20.952895]  s1 : 0000000000000001 a0 : 0000000000000001 a1 : 000000000000002c
+[   20.952911]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
+[   20.952926]  a5 : 0000000000000001 a6 : 0000000000000538 a7 : 0000000000000000
+[   20.952941]  s2 : 000000000000002c s3 : 0000000000000000 s4 : ff6000003ffd4390
+[   20.952957]  s5 : ffffffff80d0a1f8 s6 : 0000000000000000 s7 : ffffffff8007d492
+[   20.952972]  s8 : 0000000000000001 s9 : fffffffffffffffb s10: 0000000000000000
+[   20.952987]  s11: 00005555820dc708 t3 : 0000000000000002 t4 : 0000000000000402
+[   20.953002]  t5 : ff600000010f0710 t6 : ff600000010f0718
+[   20.953016] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[   20.953124] [<ffffffff8007d6c0>] hrtimers_dead_cpu+0x22e/0x230
+[   20.953226] [<ffffffff8000f904>] cpuhp_invoke_callback+0xe4/0x54e
+[   20.953241] [<ffffffff80010fb8>] _cpu_up+0x200/0x2a2
+[   20.953254] [<ffffffff800110ac>] cpu_up+0x52/0x8a
+[   20.953266] [<ffffffff80011654>] cpu_device_up+0x14/0x1c
+[   20.953279] [<ffffffff8029abb6>] cpu_subsys_online+0x1e/0x68
+[   20.953296] [<ffffffff802957de>] device_online+0x3c/0x70
+[   20.953306] [<ffffffff8029587a>] online_store+0x68/0x8c
+[   20.953317] [<ffffffff802909ba>] dev_attr_store+0xe/0x1a
+[   20.953330] [<ffffffff801df8aa>] sysfs_kf_write+0x2a/0x34
+[   20.953346] [<ffffffff801def06>] kernfs_fop_write_iter+0xde/0x162
+[   20.953360] [<ffffffff8018154a>] vfs_write+0x136/0x320
+[   20.953372] [<ffffffff801818e4>] ksys_write+0x4a/0xb4
+[   20.953383] [<ffffffff80181962>] __riscv_sys_write+0x14/0x1c
+[   20.953394] [<ffffffff803dec7e>] do_trap_ecall_u+0x4a/0x110
+[   20.953420] [<ffffffff80003666>] ret_from_exception+0x0/0x66
+[   20.953648] Code: 7c42 7ca2 7d02 6de2 4501 6109 8082 c0ef 7463 bd1d (9002) 1141
+[   20.953897] ---[ end trace 0000000000000000 ]---
+[   20.954068] Kernel panic - not syncing: Fatal exception in interrupt
+[   20.954128] SMP: stopping secondary CPUs
+[   22.749953] SMP: failed to stop secondary CPUs 0-1
+[   22.803768] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+
+
+> > 
 > > ---
-> >  drivers/mmc/host/cqhci-core.c | 42 +++++++++++++++++++++++++++++++++++
-> >  drivers/mmc/host/cqhci.h      |  1 +
-> >  2 files changed, 43 insertions(+)
-> >
-> > diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-cor=
-e.c
-> > index b3d7d6d8d654..e534222df90c 100644
-> > --- a/drivers/mmc/host/cqhci-core.c
-> > +++ b/drivers/mmc/host/cqhci-core.c
-> > @@ -1062,6 +1062,45 @@ static void cqhci_recover_mrqs(struct cqhci_host=
- *cq_host)
-> >  /* CQHCI could be expected to clear it's internal state pretty quickly=
- */
-> >  #define CQHCI_CLEAR_TIMEOUT          20
-> >
-> > +/*
-> > + * During CQE recovery all pending tasks are cleared from the
-> > + * controller and its state is being reset.
-> > + * On some platforms the controller sets a task completion bit for
-> > + * a stale(previously cleared) task right after being re-enabled.
-> > + * This results in a spurious interrupt at best and corrupted data
-> > + * being passed up the stack at worst. The latter happens when
-> > + * the driver enqueues a new request on the problematic task slot
-> > + * before the "spurious" task completion interrupt is handled.
-> > + * To fix it:
-> > + * 1. Re-enable controller by clearing the halt flag.
-> > + * 2. Clear interrupt status and the task completion register.
-> > + * 3. Halt the controller again to be consistent with quirkless logic.
-> > + *
-> > + * This assumes that there are no pending requests on the queue.
-> > + */
-> > +static void cqhci_quirk_clear_stale_tc(struct cqhci_host *cq_host)
-> > +{
-> > +     u32 reg;
+> > 
+> > Jisheng, I didn't add your Tested-by tag since the patch evolved from
+> > the one you tested. Hopefully this one brings you the same result.
+> > 
+> > ---
+> >  arch/riscv/include/asm/cpufeature.h |  3 ++-
+> >  arch/riscv/kernel/cpufeature.c      | 28 +++++++++++++++++++++++-----
+> >  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
+> >  3 files changed, 35 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+> > index d0345bd659c9..19e7817eba10 100644
+> > --- a/arch/riscv/include/asm/cpufeature.h
+> > +++ b/arch/riscv/include/asm/cpufeature.h
+> > @@ -30,6 +30,7 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
+> >  /* Per-cpu ISA extensions. */
+> >  extern struct riscv_isainfo hart_isa[NR_CPUS];
+> >  
+> > -void check_unaligned_access(int cpu);
+> > +extern bool misaligned_speed_measured;
+> > +int check_unaligned_access(void *unused);
+> >  
+> >  #endif
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> > index 1cfbba65d11a..8eb36e1dfb95 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -42,6 +42,9 @@ struct riscv_isainfo hart_isa[NR_CPUS];
+> >  /* Performance information */
+> >  DEFINE_PER_CPU(long, misaligned_access_speed);
+> >  
+> > +/* Boot-time in-parallel unaligned access measurement has occurred. */
+> > +bool misaligned_speed_measured;
+> 
+> This var can be avoided, see below.
+> 
 > > +
-> > +     WARN_ON(cq_host->qcnt);
-> > +     cqhci_writel(cq_host, 0, CQHCI_CTL);
-> > +     if ((cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)) {
-> > +             pr_err("%s: cqhci: CQE failed to exit halt state\n",
-> > +                     mmc_hostname(cq_host->mmc));
-> > +     }
-> > +     reg =3D cqhci_readl(cq_host, CQHCI_TCN);
-> > +     cqhci_writel(cq_host, reg, CQHCI_TCN);
-> > +     reg =3D cqhci_readl(cq_host, CQHCI_IS);
-> > +     cqhci_writel(cq_host, reg, CQHCI_IS);
-> > +
-> > +     /*
-> > +      * Halt the controller again.
-> > +      * This is only needed so that we're consistent across quirk
-> > +      * and quirkless logic.
-> > +      */
-> > +     cqhci_halt(cq_host->mmc, CQHCI_FINISH_HALT_TIMEOUT);
+> >  /**
+> >   * riscv_isa_extension_base() - Get base extension word
+> >   *
+> > @@ -556,8 +559,9 @@ unsigned long riscv_get_elf_hwcap(void)
+> >  	return hwcap;
+> >  }
+> >  
+> > -void check_unaligned_access(int cpu)
+> > +int check_unaligned_access(void *unused)
+> >  {
+> > +	int cpu = smp_processor_id();
+> >  	u64 start_cycles, end_cycles;
+> >  	u64 word_cycles;
+> >  	u64 byte_cycles;
+> > @@ -571,7 +575,7 @@ void check_unaligned_access(int cpu)
+> >  	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
+> >  	if (!page) {
+> >  		pr_warn("Can't alloc pages to measure memcpy performance");
+> > -		return;
+> > +		return 0;
+> >  	}
+> >  
+> >  	/* Make an unaligned destination buffer. */
+> > @@ -643,15 +647,29 @@ void check_unaligned_access(int cpu)
+> >  
+> >  out:
+> >  	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
+> > +	return 0;
 > > +}
->
-> Thanks a lot for tracking this down!
->
-> It could be that the "un-halt" starts a task, so it would be
-> better to force the "clear" to work if possible, which
-> should be the case if CQE is disabled.
->
-> Would you mind trying the code below?  Note the increased
-> CQHCI_START_HALT_TIMEOUT helps avoid trying to clear tasks
-> when CQE has not halted.
-
-Sure, I'll try it out tomorrow, as I don't have access to the DUT today.
-BTW do we even need to halt the controller in the recovery_finish logic?
-It has already been halted in recovery_start, I guess it could be
-there in case the recovery_start halt didn't work.
-But in that case shouldn't we do this disable/re-enable dance in recovery_s=
-tart?
-
->
->
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.=
-c
-> index b3d7d6d8d654..534c13069833 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -987,7 +987,7 @@ static bool cqhci_halt(struct mmc_host *mmc, unsigned=
- int timeout)
->   * layers will need to send a STOP command), so we set the timeout based=
- on a
->   * generous command timeout.
->   */
-> -#define CQHCI_START_HALT_TIMEOUT       5
-> +#define CQHCI_START_HALT_TIMEOUT       500
->
->  static void cqhci_recovery_start(struct mmc_host *mmc)
->  {
-> @@ -1075,28 +1075,27 @@ static void cqhci_recovery_finish(struct mmc_host=
- *mmc)
->
->         ok =3D cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
->
-> -       if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-> -               ok =3D false;
-> -
->         /*
->          * The specification contradicts itself, by saying that tasks can=
-not be
->          * cleared if CQHCI does not halt, but if CQHCI does not halt, it=
- should
->          * be disabled/re-enabled, but not to disable before clearing tas=
-ks.
->          * Have a go anyway.
->          */
-> -       if (!ok) {
-> -               pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname=
-(mmc));
-> -               cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
-> -               cqcfg &=3D ~CQHCI_ENABLE;
-> -               cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> -               cqcfg |=3D CQHCI_ENABLE;
-> -               cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> -               /* Be sure that there are no tasks */
-> -               ok =3D cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
-> -               if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-> -                       ok =3D false;
-> -               WARN_ON(!ok);
-> -       }
-> +       if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-> +               ok =3D false;
-> +
-> +       cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
-> +       cqcfg &=3D ~CQHCI_ENABLE;
-> +       cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> +
-> +       cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
-> +       cqcfg |=3D CQHCI_ENABLE;
-> +       cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> +
-> +       cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
-> +
-> +       if (!ok)
-> +               cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT);
->
->         cqhci_recover_mrqs(cq_host);
->
->
+> > +
+> > +static void check_unaligned_access_nonboot_cpu(void *param)
+> > +{
+> > +	if (smp_processor_id() != 0)
+> > +		check_unaligned_access(param);
+> >  }
+> >  
+> > -static int check_unaligned_access_boot_cpu(void)
+> > +static int check_unaligned_access_all_cpus(void)
+> >  {
+> > -	check_unaligned_access(0);
+> > +	/* Check everybody except 0, who stays behind to tend jiffies. */
+> > +	on_each_cpu(check_unaligned_access_nonboot_cpu, NULL, 1);
+> > +
+> > +	/* Check core 0. */
+> > +	smp_call_on_cpu(0, check_unaligned_access, NULL, true);
+> > +
+> > +	/* Boot-time measurements are complete. */
+> > +	misaligned_speed_measured = true;
+> >  	return 0;
+> >  }
+> >  
+> > -arch_initcall(check_unaligned_access_boot_cpu);
+> > +arch_initcall(check_unaligned_access_all_cpus);
+> >  
+> >  #ifdef CONFIG_RISCV_ALTERNATIVE
+> >  /*
+> > diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+> > index 1b8da4e40a4d..39322ae20a75 100644
+> > --- a/arch/riscv/kernel/smpboot.c
+> > +++ b/arch/riscv/kernel/smpboot.c
+> > @@ -27,6 +27,7 @@
+> >  #include <linux/sched/mm.h>
+> >  #include <asm/cpu_ops.h>
+> >  #include <asm/cpufeature.h>
+> > +#include <asm/hwprobe.h>
+> >  #include <asm/irq.h>
+> >  #include <asm/mmu_context.h>
+> >  #include <asm/numa.h>
+> > @@ -246,7 +247,15 @@ asmlinkage __visible void smp_callin(void)
+> >  
+> >  	numa_add_cpu(curr_cpuid);
+> >  	set_cpu_online(curr_cpuid, 1);
+> > -	check_unaligned_access(curr_cpuid);
+> > +
+> > +	/*
+> > +	 * Boot-time misaligned access speed measurements are done in parallel
+> > +	 * in an initcall. Only measure here for hotplug.
+> > +	 */
+> > +	if (misaligned_speed_measured &&
+> > +	    (per_cpu(misaligned_access_speed, curr_cpuid) == RISCV_HWPROBE_MISALIGNED_UNKNOWN)) {
+> 
+> I believe this check is for cpu not-booted during boot time but hotplug in
+> after that, if so I'm not sure whether
+> misaligned_speed_measured can be replaced with
+> (system_state == SYSTEM_RUNNING)
+> then we don't need misaligned_speed_measured at all.
+> 
+> > +		check_unaligned_access(NULL);
+> > +	}
+> >  
+> >  	if (has_vector()) {
+> >  		if (riscv_v_setup_vsize())
+> > -- 
+> > 2.34.1
+> > 
