@@ -2,158 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 390947DDE0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CD87DDE22
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbjKAJE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S233793AbjKAJH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233784AbjKAJEr (ORCPT
+        with ESMTP id S233120AbjKAJHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:04:47 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0E4124
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:04:40 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-53fa455cd94so4901652a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 02:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698829480; x=1699434280; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T97XsuQPDMRDtHy08B+rqECq/pabjxSIR/W6V7wvFWM=;
-        b=wDR/u07J09wey+Tzfc9wT2uc3JDwIYuShLiN2TlGprBgCfFRjfv8xR8r3Lo8t9BrG+
-         yI0fYEEM/bfAH1gvXNxhC+vF9g7sQWRyi8uqH1tvhxh2H93ZKtVIb4Fr2bHJpulosKeK
-         qHoTqaDYKKD7OwXWnTBMIqqQ2hvoHbV2rTXhQheMKWZFHN+Q248QE2pMr6WXL5wUjgnr
-         YLM1BHjvcEOgUcrX1Qxwnalb4WSq2uQUOR/nCghOSD50HRCED/4tq17cPGP/lSKa1QZn
-         Q9rGJ7lGWoqmub44HKvLQDahlLIyix6jZ1uCMhfpewTfcspqAJkzbQP+dvjqfu1c/lZT
-         /WpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698829480; x=1699434280;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T97XsuQPDMRDtHy08B+rqECq/pabjxSIR/W6V7wvFWM=;
-        b=pImOjT70ec0LT9viAJ2qfOap4IAL/FBQmB40OCIYlf0S2WcHwkOUAAtgDcANf7gkq2
-         g9mF3DkyxQxvNSdBM06r9mIPfqBNPxW1IDrwaTCEwV85nyM5q1F9y50nMG44PgDsi9FJ
-         YnbIAopVw+BAwh2tucW4sO5yDuUvb+l17uXMtMk+zJtgTgqgjXaBFG0P8QABZjq4wsNn
-         od6KmBx6RTxME+5AAnCHV19aFpnzccrUBqyi8eZQXMOaBu1s5tvdhbCAhH0kF6ANmMc6
-         +FgJ7zi5J55krif2/NaPeK/ieJlKO/PxwW/r6q9Bpi6jlifXXQ5K7uzh8aZ358AjoEIV
-         d/Tg==
-X-Gm-Message-State: AOJu0YzKlxLQN8EssoVlvFrbHr55at0bww1BuvJd4Y3SH3ZYYyNqKTr+
-        eAljI4+JiC8tlLgk8fuC9ezakWk40XPT9BZQegP7QQ==
-X-Google-Smtp-Source: AGHT+IE3lvIVL/RqHctY3lvCHB1fhOmc51H/phVezjStkLmOqrn9OaDOQHPPmsK4zrwvjKKx4RwmqYLMKXfHu3BQP9o=
-X-Received: by 2002:a05:6a20:4327:b0:16b:b4a0:e06b with SMTP id
- h39-20020a056a20432700b0016bb4a0e06bmr14390989pzk.43.1698829479791; Wed, 01
- Nov 2023 02:04:39 -0700 (PDT)
+        Wed, 1 Nov 2023 05:07:24 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5636E102;
+        Wed,  1 Nov 2023 02:07:16 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A11vm1Q006624;
+        Wed, 1 Nov 2023 09:07:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=IOlBThydEMhGc7QoFRuOa4ssmZqQYyjeSpWiLRMWaiM=;
+ b=pb+S8+C1C0ENS8wkTfcjzxWma+/yfLMhd+mytUpxMF7lzk1fLQBdVf98V07DCQbh7DFz
+ a7vAHQTnBPiNqfLHbzYTJluLcl4XLI1x64134aYbMSuADkegLgQgO3NHOdkpoQhxCuWo
+ bmHkN+2xO33ExB8Pfq36X8th1CT65BDeulPfNQ70TBm1SYmQ9uxSjA8+QHrlXEV6WOR/
+ v3fB3WqlqtWCywjfF+iTdfLWt2XrCu92bXG5JBGQA3IjiiJDYTZ3oToFBWHuiA2rikEl
+ gKkpb0S82ZhV8XkDH2+u5bp41WF/A38rO7fbAPvf3RZ1+P0gU/pLBjDCucPZHsKnRgaf YQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u34sc2mhc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 09:06:59 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A196vBK030531
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Nov 2023 09:06:57 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 1 Nov
+ 2023 02:06:53 -0700
+Message-ID: <7389a1de-feed-4fe5-9aaf-75e3f11bc1ec@quicinc.com>
+Date:   Wed, 1 Nov 2023 17:06:51 +0800
 MIME-Version: 1.0
-References: <20231027080400.56703-1-vincent.guittot@linaro.org>
- <20231027080400.56703-8-vincent.guittot@linaro.org> <ZUGUvdjrpw9NHSex@e129154.nice.arm.com>
-In-Reply-To: <ZUGUvdjrpw9NHSex@e129154.nice.arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 1 Nov 2023 10:04:27 +0100
-Message-ID: <CAKfTPtDDouduP57P8GH6J4qDjbKUasVRe-K0QUKcZHC2NZ+syQ@mail.gmail.com>
-Subject: Re: [PATCH v4 7/7] arm64/amu: use capacity_ref_freq to set AMU ratio
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
-        lukasz.luba@arm.com, ionela.voinescu@arm.com,
-        pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, conor.dooley@microchip.com,
-        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/8] coresight-tpdm: Add support to configure CMB
+To:     James Clark <james.clark@arm.com>
+CC:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+References: <1698202408-14608-1-git-send-email-quic_taozha@quicinc.com>
+ <1698202408-14608-5-git-send-email-quic_taozha@quicinc.com>
+ <288bcd70-ee12-e4f7-2381-8d18e6fc0c1b@arm.com>
+Content-Language: en-US
+From:   Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <288bcd70-ee12-e4f7-2381-8d18e6fc0c1b@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: iCQJHJmpYoZrRR5KAkYUZp-fQELYwrrU
+X-Proofpoint-GUID: iCQJHJmpYoZrRR5KAkYUZp-fQELYwrrU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_06,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=502 bulkscore=0 phishscore=0 priorityscore=1501
+ mlxscore=0 spamscore=0 clxscore=1015 adultscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311010076
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beata,
 
-On Wed, 1 Nov 2023 at 00:59, Beata Michalska <beata.michalska@arm.com> wrote:
+On 10/30/2023 7:29 PM, James Clark wrote:
 >
-> On Fri, Oct 27, 2023 at 10:04:00AM +0200, Vincent Guittot wrote:
-> > Use the new capacity_ref_freq to set the ratio that is used by AMU for
-> > computing the arch_scale_freq_capacity().
-> > This helps to keep everything aligned using the same reference for
-> > computing CPUs capacity.
-> >
+> On 25/10/2023 03:53, Tao Zhang wrote:
+>> TPDM CMB subunits support two forms of CMB data set element creation:
+>> continuous and trace-on-change collection mode. Continuous change
+>> creates CMB data set elements on every CMBCLK edge. Trace-on-change
+>> creates CMB data set elements only when a new data set element differs
+>> in value from the previous element in a CMB data set. Set CMB_CR.MODE
+>> to 0 for continuous CMB collection mode. Set CMB_CR.MODE to 1 for
+>> trace-on-change CMB collection mode
+>>
+>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+>> ---
+>>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 10 +++
+>>   drivers/hwtracing/coresight/coresight-tpdm.c       | 71 ++++++++++++++++++++++
+>>   drivers/hwtracing/coresight/coresight-tpdm.h       | 12 ++++
+>>   3 files changed, 93 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>> index f07218e..ace7231 100644
+>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>> @@ -170,3 +170,13 @@ Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_t
+>>   Description:
+>>   		(RW) Set/Get the MSR(mux select register) for the DSB subunit
+>>   		TPDM.
+>> +
+>> +What:		/sys/bus/coresight/devices/<tpdm-name>/cmb_mode
+>> +Date:		March 2023
+>> +KernelVersion	6.7
+>> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+>> +Description:	(Write) Set the data collection mode of CMB tpdm.
+> I know it's expanded elsewhere, but it's probably worth expanding the
+> CMB abbreviation here as well so people reading the docs don't have to
+> go into the code.
 
-[..]
+Sure, I will update in the next patch series.
 
-> > @@ -381,6 +385,9 @@ void topology_init_cpu_capacity_cppc(void)
-> >       }
-> >
-> >       for_each_possible_cpu(cpu) {
-> > +             freq_inv_set_max_ratio(cpu,
-> > +                                    per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> > +
-> The capacity_ref_freq set earlier will still lead to units mismatch,
-> as at the point of calling topology_init_cpu_capacity_cppc the lowest & nominal
-> frequencies will be provided in MHz (unless I have missed smth).
 
-I don't get your point:
-the unit of per_cpu(capacity_freq_ref, cpu) is Khz
+Best,
 
-For cppc, we have
-per_cpu(capacity_freq_ref, cpu) = cppc_perf_to_khz(&perf_caps,
-raw_capacity[cpu]);
+Tao
 
-freq_inv_set_max_ratio() uses
-arch_timer_get_rate() which returns a freq in Hz
-and
-per_cpu(capacity_freq_ref, cpu) * HZ_PER_KHZ. to get a freq in Hz too.
-
-> This means that use of both, the capacity_ref_freq and the arch_freq_scale
-> will generate unexpected results, so I guess this should get amended in the
-> preceding patch (?) [1]
 >
-> ---
-> BR
-> B.
+> Otherwise:
 >
-> [1] https://lore.kernel.org/linux-arm-kernel/20231027080400.56703-4-vincent.guittot@linaro.org/T/#m42daa167097edc190b1cfc05382c385ed801d909
+> Reviewed-by: James Clark <james.clark@arm.com>
 >
-> >               capacity = raw_capacity[cpu];
-> >               capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
-> >                                    capacity_scale);
-> > @@ -422,8 +429,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
-> >
-> >       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
-> >
-> > -     for_each_cpu(cpu, policy->related_cpus)
-> > +     for_each_cpu(cpu, policy->related_cpus) {
-> >               per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
-> > +             freq_inv_set_max_ratio(cpu,
-> > +                                    per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> > +     }
-> >
-> >       if (cpumask_empty(cpus_to_visit)) {
-> >               topology_normalize_cpu_scale();
-> > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> > index 38ca6c76af56..ffdf0b7c55fa 100644
-> > --- a/include/linux/arch_topology.h
-> > +++ b/include/linux/arch_topology.h
-> > @@ -99,6 +99,7 @@ void update_siblings_masks(unsigned int cpu);
-> >  void remove_cpu_topology(unsigned int cpuid);
-> >  void reset_cpu_topology(void);
-> >  int parse_acpi_topology(void);
-> > +void freq_inv_set_max_ratio(int cpu, u64 max_rate);
-> >  #endif
-> >
-> >  #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
-> > --
-> > 2.34.1
-> >
+>> +
+>> +		Accepts only one of the 2 values -  0 or 1.
+>> +		0 : Continuous CMB collection mode.
+>> +		1 : Trace-on-change CMB collection mode.
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+>> index c8bb388..efb376e 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>> @@ -148,6 +148,18 @@ static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+>>   	return 0;
+>>   }
+> [...]
