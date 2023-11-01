@@ -2,154 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EE47DE237
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86317DE1FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344332AbjKAOMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 10:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
+        id S1344353AbjKAONc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 10:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235523AbjKAOMg (ORCPT
+        with ESMTP id S235182AbjKAONa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:12:36 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2071.outbound.protection.outlook.com [40.107.223.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6425B83;
-        Wed,  1 Nov 2023 07:12:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C8elzXfRSeWIwj1WMOav63ZaoXZV9xpCMy8leIAWrO9dQrQU523padYvMw0Zxj+ZjJft3vAf1FIkakN7sjH+SRvSdnc9LYbPTKKl/gmHHR7JR3t4R7/OeNUpLThweeifsidZFh5yRjQB7OsDiU2L3yXl/P05ur/n1Sb+IZYeN5ldfYcPhxnplNg7SzgCiTSkOzUszgbEZjQpBMpoykNuHVKoERs+zGxqZ0aFjSqOhvO3nQs8FQvQ6OQJKMD9OY0GQfOwe8SUvw6hJFofZEwU83t1LX/IZg0a+nYODz2lzXzVECixTy/0ErGo66fxpVfEOj39aPc9S+arn96F1G03FA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S/HOO6S2f1Q4bmcAWouHRq8lvufSNEf/syKLVn4zn/E=;
- b=iWbFDOx5E7wIK8jT4OYtOiRslVH8B7FSWD4hm8h6P0wwmGkkjX5hEqwSS7E9Pz0AbmXowZbo87/iLfysrdOZ2kvpQcXMP1KcOjGmvCdA/GH7Y9eMkVaMbnosZHn/2ll3zqUxNBghdWAlEuzcwjZEwn/iTNrmJOL6P8Gw+tQpiwJHjX5LcxBf0REB/iChANozIvYk1aIOUaF6V3vfCfbNQcQJ3FtSq7EI+/SmQ9lYqS8AqiW02Budn4NkZECNznH91R9XMRg52ZUTvSawNklikClc1QD7fi89UNrPW5FhGbpCbh+ZjY6YfaMmbdguJ8PDKZftvHtSKteEYeD6z30KgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S/HOO6S2f1Q4bmcAWouHRq8lvufSNEf/syKLVn4zn/E=;
- b=cdmZEmr3/37oLu8vDRXi32TDtwdBzNWkN2CkjkdSB7QYdZmYcDpR1M6jLsA16HLRrfhQqIxGXUCFScpd7MwRqWVlKondzXbgt9FIXyye0zWEQFxxk5YkjY6tfZ6j0aTfKuoiz2XxCVGBRKsTnvL2KgYFUNZW9v8w8C7U7YTQ+L0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SA1PR12MB8641.namprd12.prod.outlook.com (2603:10b6:806:388::18)
- by CY8PR12MB7436.namprd12.prod.outlook.com (2603:10b6:930:50::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Wed, 1 Nov
- 2023 14:12:26 +0000
-Received: from SA1PR12MB8641.namprd12.prod.outlook.com
- ([fe80::9b29:df63:fce7:8b3e]) by SA1PR12MB8641.namprd12.prod.outlook.com
- ([fe80::9b29:df63:fce7:8b3e%2]) with mapi id 15.20.6933.028; Wed, 1 Nov 2023
- 14:12:26 +0000
-Message-ID: <9505fea9-1175-4427-a6b6-1783329b8c93@amd.com>
-Date:   Wed, 1 Nov 2023 19:42:16 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] crypto: ccp - Add function to allocate and free
- memory using DMA APIs
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     thomas.lendacky@amd.com, john.allen@amd.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jens.wiklander@linaro.org, sumit.garg@linaro.org,
-        jarkko.nikula@linux.intel.com, mario.limonciello@amd.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org,
-        Mythri.Pandeshwarakrishna@amd.com, Devaraj.Rangasamy@amd.com,
-        Rijo-john.Thomas@amd.com, nimesh.easow@amd.com
-References: <20231025065700.1556152-1-JESHWANTHKUMAR.NK@amd.com>
- <20231025065700.1556152-2-JESHWANTHKUMAR.NK@amd.com>
- <ZTtJdU5a/P4kg/Ss@infradead.org>
- <94059f5c-10dd-4d75-a69c-76b21ff49546@amd.com>
- <ZT+wkcITIz0ThWU7@infradead.org>
-From:   "NK, JESHWANTHKUMAR" <jeshwanthkumar.nk@amd.com>
-In-Reply-To: <ZT+wkcITIz0ThWU7@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0230.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:eb::15) To SA1PR12MB8641.namprd12.prod.outlook.com
- (2603:10b6:806:388::18)
+        Wed, 1 Nov 2023 10:13:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E4883;
+        Wed,  1 Nov 2023 07:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698848006; x=1730384006;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wGBu3/j706WJmrxU7xAqNyUmg5FN/DVlyjcIaMJULUM=;
+  b=EGs4eVu7assSGMJlYEqaQqF37wpyzXuKQpBhLyNCDNRxNrHVv06xwLpF
+   K98U3MiJocvbWf6w54ywwrLYyboh7ORhh7ASv9pkGw2GCR3BtBsxT6blS
+   Hc7FUK2SYkOyh/o3JQJq7j4irz1RUImyKV5l7gdqmyS9iP/9dn9QrDcMk
+   Rg3KZW8AGWwI4V1zuNz8S7QQ2GgpZ9XG1CVv0XjoIr1DOWHMuU3wd72qp
+   k/7+Oe+Z94mWHpDovygo+apsrwJI5xZFTDGpbc6vHfHZRmkc1Kf+7iKbp
+   gSsQmsyzAQYq5UiOkWOUx5CxRztFZWwkrxp5i3p7DSw5QLu7j+n4+3hMX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7122329"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="7122329"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 07:13:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="826783310"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="826783310"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 07:13:17 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 405DB1207A3;
+        Wed,  1 Nov 2023 16:13:14 +0200 (EET)
+Date:   Wed, 1 Nov 2023 14:13:14 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        martin.hecht@avnet.eu, michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZUJc-p_i4JjqkM9i@kekkonen.localdomain>
+References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
+ <20231020141354.2500602-4-tomm.merciai@gmail.com>
+ <a98bca80-944c-493b-9872-75b94cd24eea@wanadoo.fr>
+ <ZUDpAR3ZyBVrUyat@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR12MB8641:EE_|CY8PR12MB7436:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11968a13-3955-4348-7e0a-08dbdae49355
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: //zSMU8OefcHMCtmVP/cwPb+yV4FdcBbJZxqZ8vr8A3UZI/gHfuB54p0Z3ZYcjBShHaxC1VifgqG4BMO25Dqdvz/dXP0/AAd91qWU+T39f9vHNm4NiUhdx5U1OaNU0a916AHGNKpSKbvAPk38qJRH8x0jbrxEa6wc5v80O1kSWgA+You0ijLbGDoI0d89FrmHcsYzXx8poj2QClYBtCRUTdlCMlX6y2G5Z8IgOYxszJYJsi8JuRM3DvPfEH8CszxZ22ZPqGU8z9xAca1gEHCI2ILgFhVGGy8PfwG/Jlx/pY6dt2ckE7VF+0taBP4qHQ9NlLU6WRri+apqd4oKgApiNo2Oi8jftKqZnhgQ4WWRI7YNOgFsCHjhC0yByH32Z+EsU2/De1/ZAUDGCToiXBrawOi45YlwYVy09La/0gfOJrlBe5Ml4sP+JGA9xMqBXrgnJguIep+vz/jEpMD48eWUXxELQ6RkE6x2ja76+uo3fQ8Z/w8oPyRQkGgNSnNzyXbRsUp/4XCFbaCQ1zYEwVyKiu6sCHBup337b/KQ+OP/AZ3onCqZ4TMiq4fyOxuZAtt+9XyHecwCiqesHQCQAD632Rjyo+dCLp95gU0oGMdlc4zPY6bNNmWIKrXqkeuCOf1nDEnM+GZg+0veQ4jw6Bjfw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB8641.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(376002)(346002)(396003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(26005)(6512007)(2616005)(6666004)(478600001)(53546011)(6506007)(2906002)(4744005)(5660300002)(8676002)(41300700001)(6916009)(66946007)(8936002)(66556008)(4326008)(6486002)(66476007)(316002)(38100700002)(31696002)(36756003)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WEY2WkFnT1V0UitzbjVlc3d4RXIvQkZxb1kyUWU2eE9qMXZnUEZwQndzVERQ?=
- =?utf-8?B?djJiSDE3T2ZXQnFrMGhrbHlKUCt1UHRrWnZ4djNIZk9WTThIK3lwaE9PQXdZ?=
- =?utf-8?B?cHNxdGNXeHhjK3gzUE9HYjF4c1lOOW5rY09qUXhKNlVFamxucko3MkxTS2Iw?=
- =?utf-8?B?eTlhOU1QM0hwZkt5NXhZbTQ1WFU3OVJ4N3J0cktqZzh0alJ5Tmxudkd2WTB6?=
- =?utf-8?B?YThwcHlsc05KQjkwNSs1cStCUHpESW5BWDZkZk1QVGRMSEZYZkQ4NlNOZXNt?=
- =?utf-8?B?S25TakZUc2ovQW54MHR1R09za2FLeFlxcDVJMSsvck1LVFdtTFdGKzF5cmJy?=
- =?utf-8?B?TUVvVDM3blFRQWVuMFlnUC9tdkY0SG1PWU5XYTN6VTNkZ211elEzVTQ0enVO?=
- =?utf-8?B?T0o3RDF6R2p6OWwyQkhlTmRzMGpFZHlxdXRNOW82SzhuTjgxdVJmbnV2bGZU?=
- =?utf-8?B?ZHM1YzFnUXZRNmhzTnpOcC9jVlVhNW5LMVF6TjNvWGJNZGtlbXhiTVRzeStD?=
- =?utf-8?B?SzgyS1o3RDFXMEdkaFVGQ0xqU3BRYmdUaERqd09Jck43SVVsWGpFS1kzU3Qy?=
- =?utf-8?B?TlBTTVNlQzZkSWx2UHRUMUNVWTRLWmlueDVHVVV3bXBocmNIQVpLK1RNVWNZ?=
- =?utf-8?B?bzB0VHcrUzZ5UEVBUEVaZXEralN0QTZqSGFLUXhxc21ZdFZ5RDlzVjJNcHpw?=
- =?utf-8?B?Q0hLcytBaFBIWElqTENoajc3aEtOb0t1VnNBWFFjUmVKMVpVNGhDRTdOaW5z?=
- =?utf-8?B?YW5Tck15QkZzSk5pckRsNTVnRmdlanRvRXZJbC9vVk5Ca0k2QjZZSFNqQS9H?=
- =?utf-8?B?cXZNYWlqa0pKQkswQkR1VzV0Sk5FTnkyZk5wbTMxeDZNNzlTaHdwUytuSTk5?=
- =?utf-8?B?NEM3SnEydEh4VTRORm40UEg2STl0SXZ3bzU2TmxSOW5PUS92WHZBMDBUMnh4?=
- =?utf-8?B?OXpGZksyM2lFNUQ4bjhrbmxYWHlIaC9IQ3lPMzZBbVE1M21Ub1N0TXNMb0Zx?=
- =?utf-8?B?czgwNW84SmNBdDgvOThpZFdxNDFwcE14S2lCNWVnVEVWMk9qVm5RalBqcVdm?=
- =?utf-8?B?d0lEQXNzNi8vekYrZlNadk1IdEJyK29IUUNiTFBCSEdVdGE5dWhyY1BrSXJV?=
- =?utf-8?B?YnZnNUE5NlYrUkRxdStoQkJIVWNhQW1NVC8zdjRoekk5K1VBa2pxNFUxb0FT?=
- =?utf-8?B?QStQY0VtYVZpVzlsa2NhS2M0NlAxbUY2cTdaYUE0ZHFwSnRySjQ3N3FRT2hz?=
- =?utf-8?B?TFprbHA2dlkySHBHRzI3S2hZOStlY3BvOWxwcnFpd052Zm9qWU53dkxuNEtM?=
- =?utf-8?B?amMyUXFYRUNHdytreGN2RkxCbnZRWnpmdG0vWkd0OEZZRE9LY0g3VmZDMVF3?=
- =?utf-8?B?MDA5SWtWWk1uREkwcGNQWnIvS0xRcUtBMU9OSThnaksrWDU4WDJjbHB2VEFY?=
- =?utf-8?B?U1Y4YmpoY2oyUGFidk9TOHBGeG9NZlVUcHZvVFEvYXIrc1VvOWFGSkJNMXln?=
- =?utf-8?B?eVYxT0hVeVhaSEhoNmt4QS9qZzhpTFRSU2xmbE1VeHBpcTRYZmdsc09BTEk1?=
- =?utf-8?B?bFI5NnMxQXFudlRremxnanFMTzlIYm5BdEhTTUpMSHh1eXJ3Y0xTVnRFdTRL?=
- =?utf-8?B?MG56QmtmUUJjM3NkcE5ZSHdsWkgyYzJrOExHR3MvVGtWZ1VxbnBkcXlUSC9Q?=
- =?utf-8?B?bVZxNVBmODk5K0hESnN1MU5MWDIxTTFXeVJDTFA3WkVES3IweUsrY0ErbnNK?=
- =?utf-8?B?V3ovL2VCTUdpTlNEOGwwMzQ1UytCaUJKVmlEWTZ3SWFPRy94OFhLSXM5c3JP?=
- =?utf-8?B?Tk5qbFdTZ20wS0g2Q1lUS1RmL0VTK092RnFVSXQzNEorOUt1TDdHbElaUDha?=
- =?utf-8?B?K3lGRlhlalcyUE1uUm5mczVlSVNOUEtWRXlKSXZVUStyK3pCNzVIbW5LQ2c0?=
- =?utf-8?B?SVNIWGRoMG8rd3FaVGJPOEk0TXhwN3l1SkovK2hBdXZaN3laWlU5RU9ZQ05T?=
- =?utf-8?B?aS9yUmlsZW53UWgwaDc0L011azBSSTUzaFAvUXFRVEZETytvd2RNREJBeXZL?=
- =?utf-8?B?K2JramZBQ2JoVUZiZlJVaDExWmdIV2s1KzlycUZhV1JPSzRhR0tJVjlxZlNK?=
- =?utf-8?Q?OzqrnFaDciniXkvR4ywT3JPUO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11968a13-3955-4348-7e0a-08dbdae49355
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB8641.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 14:12:26.5487
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DBsAqNDq82Lsv/Q0Sua7joO9fi4N0K8hU4MXQNeSm3kK/GLG+/CXI0t7lI+j3BMbyQwl4vXis7PO2+QWavGDVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7436
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUDpAR3ZyBVrUyat@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Hi Tommaso,
 
-On 30-Oct-23 7:03 PM, Christoph Hellwig wrote:
-> On Fri, Oct 27, 2023 at 07:05:17PM +0530, NK, JESHWANTHKUMAR wrote:
->> Can you please elaborate a bit more?
-> Becasue the DMA API is a blackbox.  You can pass the dma_addr_t to
-> hardware, and you can use the kernel virtual address.  That it can
-> sometimes be implemented using the IMMU API is an implementation
-> detail.  Similarly you can only feeds iovas generated by the IOMMU
-> API into the IOMMU API, not any random other scalar value, which
-> is what you can get from the DMA API.
+On Tue, Oct 31, 2023 at 12:46:09PM +0100, Tommaso Merciai wrote:
+> > > +static int alvium_get_dt_data(struct alvium_dev *alvium)
+> > > +{
+> > > +	struct device *dev = &alvium->i2c_client->dev;
+> > > +	struct fwnode_handle *fwnode = dev_fwnode(dev);
+> > > +	struct fwnode_handle *endpoint;
+> > > +	int ret = -EINVAL;
+> > > +
+> > > +	if (!fwnode)
+> > > +		return -EINVAL;
+> > > +
+> > > +	/* Only CSI2 is supported for now: */
+> > > +	alvium->ep.bus_type = V4L2_MBUS_CSI2_DPHY;
+> > > +
+> > > +	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
+> > > +	if (!endpoint) {
+> > > +		dev_err(dev, "endpoint node not found\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	if (v4l2_fwnode_endpoint_alloc_parse(endpoint, &alvium->ep)) {
+> > > +		dev_err(dev, "could not parse endpoint\n");
+> > > +		goto error_out;
+> > 
+> > This could go to another label to be less confusing, but
+> > v4l2_fwnode_endpoint_free() looks to be a no-op here, so good enough.
+> 
+> Thanks for the comment.
+> To be honest right now this is clear to me
+> I prefere to stay on the following :)
+> Prefer to keep just only one path.
 
-Thanks for the explanation, I will send a new version of the patch.
+You can safely call v4l2_fwnode_endpoint_free() on an unparsed endpoint (or
+on and endpoint the parsing of which failed). I prefer this too.
 
+> > > +		ret = -ENODEV;
+> > > +		goto err_powerdown;
+> > > +	}
+> > > +
+> > > +	ret = alvium_get_hw_info(alvium);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "get_hw_info fail %d\n", ret);
+> > > +		goto err_powerdown;
+> > > +	}
+> > > +
+> > > +	ret = alvium_hw_init(alvium);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "hw_init fail %d\n", ret);
+> > > +		goto err_powerdown;
+> > > +	}
+> > > +
+> > > +	ret = alvium_setup_mipi_fmt(alvium);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "setup_mipi_fmt fail %d\n", ret);
+> > > +		goto err_powerdown;
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * Enable runtime PM without autosuspend:
+> > > +	 *
+> > > +	 * Don't use pm autosuspend (alvium have ~7s boot time).
+> > > +	 * Alvium has been powered manually:
+> > > +	 *  - mark it as active
+> > > +	 *  - increase the usage count without resuming the device.
+> > > +	 */
+> > > +	pm_runtime_set_active(dev);
+> > > +	pm_runtime_get_noresume(dev);
+> > > +	pm_runtime_enable(dev);
+> > > +
+> > > +	/* Initialize the V4L2 subdev. */
+> > > +	ret = alvium_subdev_init(alvium);
+> > > +	if (ret)
+> > > +		goto err_pm;
+> > > +
+> > > +	ret = v4l2_async_register_subdev(&alvium->sd);
+> > > +	if (ret < 0) {
+> > > +		dev_err(dev, "Could not register v4l2 device\n");
+> > > +		goto err_subdev;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +
+> > > +err_subdev:
+> > > +	alvium_subdev_cleanup(alvium);
+> > 
+> > Should this also be called by the remove function?
+> > Or is it already handled by an un-register mechanism?
+> 
+> Right, I miss this.
+> Thanks.
+> I put this to remove function like:
+> 
+> static void alvium_remove(struct i2c_client *client)
+> {
+> 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> 	struct alvium_dev *alvium = sd_to_alvium(sd);
+> 	struct device *dev = &alvium->i2c_client->dev;
+> 
+> 	/*
+> 	 * Disable runtime PM. In case runtime PM is disabled in the kernel,
+> 	 * make sure to turn power off manually.
+> 	 */
+> 	pm_runtime_disable(dev);
+> 	if (!pm_runtime_status_suspended(dev))
+> 		alvium_power_on(alvium, false);
+> 	pm_runtime_set_suspended(dev);
+> 
+> 	alvium_subdev_cleanup(alvium);
+> 	i2c_unregister_device(alvium->i2c_client);
+
+This doesn't belong here (as you didn't register it). It was missed in the
+review earlier.
+
+> }
+> 
+> 
+> If for you Cristophe, Sakari, Laurent,
+> it's ok I prefer to skip v11 that I sent this morning too early.
+> I collected hints from Cristophe right now and I plan to send v12
+> this afternoon/evening if for you all is ok.
+> 
+> https://github.com/avs-sas/linux/blob/tm/media_stage/v6.6.0-rc3/alvium_drv/v12/drivers/media/i2c/alvium-csi2.c
+> 
+> Please let me know.
+> 
+> Thanks again to all! :)
+
+-- 
 Regards,
 
-Jeshwanth
-
+Sakari Ailus
