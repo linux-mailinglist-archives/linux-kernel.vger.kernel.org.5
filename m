@@ -2,80 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7EC7DE599
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C237DE59C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344715AbjKARsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
+        id S1344705AbjKARuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344421AbjKARso (ORCPT
+        with ESMTP id S232381AbjKARux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:48:44 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3EDA2;
-        Wed,  1 Nov 2023 10:48:38 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 1101F120020;
-        Wed,  1 Nov 2023 20:48:37 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1101F120020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1698860917;
-        bh=EddFr7lOGf4NXOMM9jH9Co+otzGhI8EbkMU/xHevNXE=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=F07PzInd2aLutm3Xd9pZoDISSjegh06GAkp3cdqDW4Lx5dLB9WXbsgoFpvw7aEB+n
-         kZ7/Yi0H+KQpjsyxGCqYJtfIi7mJXC6TRODY3mS2ZeumRl/GhqFWtI3lN9wC0yrQAw
-         9bbnGqmGaekNiFh0K5/e+uI3u3FWG2BEExgEq09hnB1n6IPdh5X2BWc8rvxZhTQeuh
-         RB3CIJnLtAOBkYvHgN9RkpIXfcTY1CB3OFpWGg08uy+/rlKM+x3nj2HIQuPRt2x6/H
-         n2ZJc3YVzF137t7PWQr+Y08s8CKB5D/3nXAg6s3M7wYdaCLqoeALEpj+7GCZvwQq0i
-         5ULJWT87MKiLQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed,  1 Nov 2023 20:48:36 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
- 2023 20:48:36 +0300
-Date:   Wed, 1 Nov 2023 20:48:36 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Conor Dooley <conor@kernel.org>
-CC:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andy.shevchenko@gmail.com>, <kernel@sberdevices.ru>,
-        <rockosov@gmail.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
-Subject: Re: [PATCH v3 11/11] dt-bindings: leds: aw200xx: fix led pattern and
- add reg constraints
-Message-ID: <20231101174836.2qlhkgao6pxjjs2e@CAB-WSD-L081021>
-References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
- <20231101142445.8753-12-ddrokosov@salutedevices.com>
- <20231101-subzero-grimace-52a10da6a445@spud>
+        Wed, 1 Nov 2023 13:50:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1538EA2
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VQU/ph1sN3uqpoValzEQw01xluy/sVRwBxsE8vbGC3s=; b=XaSQupFrL5k0GrLxoEnBk/JVX+
+        jMaCk/JoBb8mGromBN9h2QqtaptZU/4SUM5BL9ou66lJqLXhfGNqx2mOd24bjT0TvCDDOUacV5rTM
+        oKdT2UZcN2wPphVaBMUmHvl3cBzDRi5RDX6dsU6Oo+vEgp/HKe57RX53wjvFWPjQLWyBQDcmpq41n
+        r8eJxoxevZVh+3zvtM/oYvZqNaGauxTLwI8xU0wotKChegXY/Lykanl3GRTcungM971SSM6DirRyY
+        d6TXrO1YJ9IU+s2NrjRy9/Rw3qrTvY5TMkcHH6tPPKCxODFDwUuxU1h4KxtvlbpdY0vW5J3PnSJhK
+        PHFpckvw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qyFMS-005rQH-3D;
+        Wed, 01 Nov 2023 17:50:37 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A5D2C3002AF; Wed,  1 Nov 2023 18:50:36 +0100 (CET)
+Date:   Wed, 1 Nov 2023 18:50:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        feng.tang@intel.com
+Subject: Re: [PATCH v2] x86/tsc: Have tsc=recalibrate override things
+Message-ID: <20231101175036.GA30898@noisy.programming.kicks-ass.net>
+References: <20231030160050.GA15024@noisy.programming.kicks-ass.net>
+ <20231101111621.GC19106@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101-subzero-grimace-52a10da6a445@spud>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181058 [Nov 01 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 15:56:00 #22380151
-X-KSMG-AntiVirus-Status: Clean, skipped
+In-Reply-To: <20231101111621.GC19106@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -86,134 +55,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conor,
-
-On Wed, Nov 01, 2023 at 03:31:28PM +0000, Conor Dooley wrote:
-> On Wed, Nov 01, 2023 at 05:24:45PM +0300, Dmitry Rokosov wrote:
-> > AW200XX controllers have the capability to declare more than 0xf LEDs,
-> > therefore, it is necessary to accept LED names using an appropriate
-> > regex pattern.
-> > 
-> > The register offsets can be adjusted within the specified range, with
-> > the maximum value corresponding to the highest number of LEDs that can
-> > be connected to the controller.
-> > 
-> > Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+On Wed, Nov 01, 2023 at 12:16:21PM +0100, Peter Zijlstra wrote:
+> Subject: x86/tsc: Have tsc=recalibrate override things
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Mon, 30 Oct 2023 17:00:50 +0100
 > 
-> You did correctly guess what I was getting at on the previous version.
-> Apologies for not replying - I got sick and things probably fell a bit
-> through the cracks.
-
-Don't worry! Take care and get well soon!
-
+> My brand-spanking new SPR supermicro workstation was reporting NTP
+> failures:
 > 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Oct 30 13:00:26 spr ntpd[3517]: CLOCK: kernel reports TIME_ERROR: 0x41: Clock Unsynchronized
+> Oct 30 13:00:58 spr ntpd[3517]: CLOCK: time stepped by 32.316775
+> Oct 30 13:00:58 spr ntpd[3517]: CLOCK: frequency error 41699 PPM exceeds tolerance 500 PPM
 > 
-
-Should I include this tag in the next version with a fix for the 'reg'
-maxItems, or would you review this patch again?
-
-> Cheers,
-> Conor.
+> CPUID provides:
 > 
-> > ---
-> >  .../bindings/leds/awinic,aw200xx.yaml         | 64 +++++++++++++++++--
-> >  1 file changed, 58 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> > index 67c1d960db1d..ba4511664fb8 100644
-> > --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> > +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> > @@ -45,17 +45,12 @@ properties:
-> >      maxItems: 1
-> >  
-> >  patternProperties:
-> > -  "^led@[0-9a-f]$":
-> > +  "^led@[0-9a-f]+$":
-> >      type: object
-> >      $ref: common.yaml#
-> >      unevaluatedProperties: false
-> >  
-> >      properties:
-> > -      reg:
-> > -        description:
-> > -          LED number
-> > -        maxItems: 1
-> > -
-> >        led-max-microamp:
-> >          default: 9780
-> >          description: |
-> > @@ -69,6 +64,63 @@ patternProperties:
-> >            where max-current-switch-number is determinated by led configuration
-> >            and depends on how leds are physically connected to the led driver.
-> >  
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: awinic,aw20036
-> > +    then:
-> > +      patternProperties:
-> > +        "^led@[0-9a-f]+$":
-> > +          properties:
-> > +            reg:
-> > +              items:
-> > +                minimum: 0
-> > +                maximum: 36
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: awinic,aw20054
-> > +    then:
-> > +      patternProperties:
-> > +        "^led@[0-9a-f]+$":
-> > +          properties:
-> > +            reg:
-> > +              items:
-> > +                minimum: 0
-> > +                maximum: 54
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: awinic,aw20072
-> > +    then:
-> > +      patternProperties:
-> > +        "^led@[0-9a-f]+$":
-> > +          properties:
-> > +            reg:
-> > +              items:
-> > +                minimum: 0
-> > +                maximum: 72
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: awinic,aw20108
-> > +    then:
-> > +      patternProperties:
-> > +        "^led@[0-9a-f]+$":
-> > +          properties:
-> > +            reg:
-> > +              items:
-> > +                minimum: 0
-> > +                maximum: 108
-> > +
-> >  required:
-> >    - compatible
-> >    - reg
-> > -- 
-> > 2.36.0
-> > 
+>     Time Stamp Counter/Core Crystal Clock Information (0x15):
+>        TSC/clock ratio = 200/2
+>        nominal core crystal clock = 25000000 Hz
+>     Processor Frequency Information (0x16):
+>        Core Base Frequency (MHz) = 0x9c4 (2500)
+>        Core Maximum Frequency (MHz) = 0x12c0 (4800)
+>        Bus (Reference) Frequency (MHz) = 0x64 (100)
+> 
+> and the kernel believes this. Since commit a7ec817d5542 ("x86/tsc: Add
+> option to force frequency recalibration with HW timer") there is the
+> tsc=recalibrate option, which forces the recalibrate.
+> 
+> This duely reports:
+> 
+> Oct 30 12:42:39 spr kernel: tsc: Warning: TSC freq calibrated by CPUID/MSR differs from what is calibrated by HW timer, please check with vendor!!
+> Oct 30 12:42:39 spr kernel: tsc: Previous calibrated TSC freq:         2500.000 MHz
+> Oct 30 12:42:39 spr kernel: tsc: TSC freq recalibrated by [HPET]:         2399.967 MHz
 
+Additionally, we could consider something like the below. This makes the
+machine print:
 
+[    0.000000] DMI: Supermicro SYS-531A-I/X13SRA-TF, BIOS 1.1b 08/01/2023
+[    0.000000] tsc: [Firmware Bug]: DMI based CPUID-15h crystal frequency override: 24000000
 
--- 
-Thank you,
-Dmitry
+This way I can boot without additional parameters.
+
+---
+Index: linux-2.6/arch/x86/kernel/tsc.c
+===================================================================
+--- linux-2.6.orig/arch/x86/kernel/tsc.c
++++ linux-2.6/arch/x86/kernel/tsc.c
+@@ -15,6 +15,7 @@
+ #include <linux/timex.h>
+ #include <linux/static_key.h>
+ #include <linux/static_call.h>
++#include <linux/dmi.h>
+ 
+ #include <asm/hpet.h>
+ #include <asm/timer.h>
+@@ -651,6 +652,35 @@ success:
+ 	return delta;
+ }
+ 
++static unsigned long dmi_crystal_hz;
++
++static int dmi_crystal_hz_override(const struct dmi_system_id *d)
++{
++	if (dmi_crystal_hz != (unsigned long)d->driver_data) {
++		dmi_crystal_hz = (unsigned long)d->driver_data;
++		pr_err(FW_BUG "DMI based CPUID-15h crystal frequency override: %lu\n",
++				dmi_crystal_hz);
++	}
++	return 1;
++}
++
++/*
++ * List of systems that managed to screw up CPUID-15h :-(
++ */
++static const struct dmi_system_id tsc_dmi_table[] = {
++	{
++		.callback = dmi_crystal_hz_override,
++		.ident = "Supermicro X13SRA-TF",
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Supermicro"),
++			DMI_MATCH(DMI_BOARD_NAME, "X13SRA-TF"),
++		},
++		/* The board advertises a 25MHz crystal, in reality it has 24MHz */
++		.driver_data = (void *)24000000UL,
++	},
++	{}
++};
++
+ /**
+  * native_calibrate_tsc
+  * Determine TSC frequency via CPUID, else return 0.
+@@ -671,6 +701,10 @@ unsigned long native_calibrate_tsc(void)
+ 	/* CPUID 15H TSC/Crystal ratio, plus optionally Crystal Hz */
+ 	cpuid(0x15, &eax_denominator, &ebx_numerator, &ecx_hz, &edx);
+ 
++	dmi_crystal_hz = ecx_hz;
++	if (ecx_hz && dmi_check_system(tsc_dmi_table))
++		ecx_hz = dmi_crystal_hz;
++
+ 	if (ebx_numerator == 0 || eax_denominator == 0)
+ 		return 0;
+ 
