@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2324C7DDA99
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 02:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB847DDA9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 02:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376986AbjKAB2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 21:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S1345072AbjKABcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 21:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345135AbjKAB2w (ORCPT
+        with ESMTP id S233002AbjKABcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 21:28:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EBDF1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 18:28:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da2b8af7e89so4545055276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 18:28:49 -0700 (PDT)
+        Tue, 31 Oct 2023 21:32:05 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BE198
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 18:31:59 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a87ac9d245so63849807b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 18:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698802129; x=1699406929; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VxjREVhKIwNUHPrTEbniLZS6ji7rcCI9L7LUymPl9mk=;
-        b=cBl+Hb5H45g1Zs6aUOl/J0Z6Xf2sgzRwQ/ZCiOqF8NtuAId5Syl15yUc1yhXsZ7v69
-         nRS9vVfLU4Ziu/YQaa6koE9UAGFXA7Zw/0jUF/4bHmhADxwYMn7c7iX50FBxVPaA9lEt
-         9cTz+o/zgktS99MB2oxMDE3Op6XZENrCYemmJp1wqCjfnuQLS5PovYg4oVCLdDHyl6vE
-         Ys8yUu57Bd2X70uwsGw9UHDks/MukaAtcbvhI6glrPExwaSLhhLnSncM0BVz4QDxU1Cs
-         1TdqH70uy2YjCzUMr0NOtfJXIMAFwGOX6VmDWNkLQQlzVIj/1wj2c0NPTZNjxvmqT4dC
-         7C8g==
+        d=paul-moore.com; s=google; t=1698802319; x=1699407119; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sAtbtXoeyQL2kI+3xh8JmxZpodoQXPkbKDeMUcyZ+DU=;
+        b=IFPouKtcWELcNlKP5qKaVshNtxWTHbkG3zwk8ABZaxtlbjnOFhQNp2viGMbxi5rhkq
+         hHXDH2S9f3d7ZYAsjNyV0CDUIDshEBsw5Z2PMX3HEQBrLPdq7wZGz9bnY2Pb1BBue6mj
+         Ibtk7bdGInN1E/mhln1clpqrsNO98O9S2xazw4CSEuAjg6X/exyOn3m4HGw6LTuCyjNJ
+         OJ6z7OsudloLlwgrsFsahpH0mdThXAcdxF5IvhHc/2a5jPLevROo1HGl4q/3cbWu/unu
+         nyJfRfIgNFrMKWD01cHrQTBE5vNqIKPQyyxxhW4y7iPVRkVHFEOLoWiKyWcdb6I0hd4x
+         I7Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698802129; x=1699406929;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VxjREVhKIwNUHPrTEbniLZS6ji7rcCI9L7LUymPl9mk=;
-        b=qiRZ9mj7KJlLAvCMAbk8GRLSeeiI7f/WEiL81N0DPa1wPWfu7MxbODNhSwcTjqOpbr
-         5KwhMJ2vBfb9fCgLMOM5IrMluNBybmC6qF2vvbAQ2Kqoqqc4BUKTBQg/jRAL8UMn1odS
-         t4MR6GqecjTF4P3sseaHc907xBRXC8u9u1X6/LiB+agzVq62WKvRRG2jQYX3vbLLLYTy
-         b5aHHl42DfE4EM/+Hrit7OeumdrieTyetk/V+WL1B8udELCBJfOuSB/sXVeAAqfWds6/
-         SWT4q2Qh4PwqJOlsSvYZdVA9B7wPklOVYYX6/iJr9XWjk3B1M2BkxXsf/bO/rIP+lJu+
-         mYww==
-X-Gm-Message-State: AOJu0Yzz2z3fQBP87tlTRbO4rzvq/OKSPyEDVCBrFm6FOjgDufnUb9ZK
-        ilvEin0L30yrXV+kvkBs3ZQmXd3pMt0=
-X-Google-Smtp-Source: AGHT+IH2G54HVEVIYbn3qEM7Uh8KXF5UOjbqJ1LWEr//qTninScBLtbinVdR0me/FhTzFqgkkOQXirVVsvg=
-X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
- (user=badhri job=sendgmr) by 2002:a25:5c2:0:b0:d9a:68de:16a1 with SMTP id
- 185-20020a2505c2000000b00d9a68de16a1mr276149ybf.0.1698802128834; Tue, 31 Oct
- 2023 18:28:48 -0700 (PDT)
-Date:   Wed,  1 Nov 2023 01:28:45 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231101012845.2701348-1-badhri@google.com>
-Subject: [PATCH v3] usb: typec: tcpm: Fix sink caps op current check
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     gregkh@linuxfoundation.org, linux@roeck-us.net,
-        heikki.krogerus@linux.intel.com
-Cc:     kyletso@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+        d=1e100.net; s=20230601; t=1698802319; x=1699407119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sAtbtXoeyQL2kI+3xh8JmxZpodoQXPkbKDeMUcyZ+DU=;
+        b=OYan0DCpMH7ibZUvv2Ekn8Hl9aKRAVmjNjNVzjXonSSFej9jCg0LfFZSkG2fpPxx8L
+         99n+BaWdMV1hDqB17JZ0ZvzWC5R/tKWNrP8f5kVFwf8uJusBIqJujSGDdW34IXs27O2H
+         PgKeuQ0tK09am/M/pAC6qgsbPxifrDT/ov3zpih5vMt06ERShqjFItMuHTuGOlWKQNkQ
+         2/kvG/kwE1yZmZu4RuiekrJpM/Z59SYZlGKL8QRo3VBWAPP/d379c/cqT14KES+EjO+c
+         xni1Os2iNTPzmG3quV2z19lUlflVJGWrmKDDPcEXcuhK6afZlnqXrjsw+8oRg+WIHoGi
+         qFDg==
+X-Gm-Message-State: AOJu0YxkSiifP9ArvRlTEXKVHX4XmewrDoIb35UwZ8cM86m7bgFqfBvk
+        AAmSx8q0gQO9KEUC1KD57S7EWZeMwkLOW6LgT23b
+X-Google-Smtp-Source: AGHT+IFaty8q/YU9+RKjuTi/K5RqkTtKBa9esaVDZXsopmxgTuyR6pQ67IqImVBTbPpnJ2KaQP7urzV337kh2Od/6Ko=
+X-Received: by 2002:a25:8243:0:b0:da0:3b7e:6ad8 with SMTP id
+ d3-20020a258243000000b00da03b7e6ad8mr12576282ybn.10.1698802319135; Tue, 31
+ Oct 2023 18:31:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <78932582fa556fd5fd6e8886e80e993f.paul@paul-moore.com> <CAHk-=whOtZK1g_dzEnb5NEB8ssNqotmHy3CkUwbnab_4phFRdw@mail.gmail.com>
+In-Reply-To: <CAHk-=whOtZK1g_dzEnb5NEB8ssNqotmHy3CkUwbnab_4phFRdw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 31 Oct 2023 21:31:48 -0400
+Message-ID: <CAHC9VhQs9H-f8qZbwMgcF=LHEwspxvdJSNhhjwGu5K-ExYjPZw@mail.gmail.com>
+Subject: Re: [GIT PULL] selinux/selinux-pr-20231030
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TCPM checks for sink caps operational current even when PD is disabled.
-This incorrectly sets tcpm_set_charge() when PD is disabled.
-Check for sink caps only when PD is enabled.
+On Tue, Oct 31, 2023 at 2:13=E2=80=AFAM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Mon, 30 Oct 2023 at 16:16, Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > * Use a better hashing function for the SELinux role tansition hash
+> >   table.
+>
+> Bah.
+>
+> While the old hash function was garbage, the new one is quite expensive.
+>
+> Maybe it's worth it.
+>
+> But generally, if you find that "oh, just doing a modulus with a power
+> of two drops all high bits", the first thing to try is probably to
+> just do "hash_long(x, N)" to get N bits instead.
+>
+> Assuming the input is somewhat ok in one word, it does a fairly good
+> job of mixing the bits with a simple multiply-and-shift.
+>
+> Yes, yes, jhash is a fine hash, but it does a quite *lot* of (simple)
+> ALU ops. While "hash_long()" is often small enough to be inlined.
 
-[   97.572342] Start toggling
-[   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-[   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
-[   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-[   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
-[   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-[   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
-[   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
-[   99.903584] VBUS on
-[   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
-[   99.903600] polarity 1
-[   99.910155] enable vbus discharge ret:0
-[   99.910160] Requesting mux state 1, usb-role 2, orientation 2
-[   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
-[   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
-[   99.946800] Setting voltage/current limit 5000 mV 500 mA
-[   99.946803] vbus=0 charge:=1
-[  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
-[  100.027145] Setting voltage/current limit 5000 mV 3000 mA
-[  100.466830] VBUS on
+We probably should do some performance measurements of the various
+hash tables in the SELinux code and use that to drive some decisions
+on what functions we use.  There have been some in the past for
+specific tables, but I don't think we've done anything comprehensive,
+or recent.  This latest change obviously focused more on ensuring a
+better distribution, which can help, but if the digest calculation is
+too slow it probably doesn't matter.
 
-Cc: stable@vger.kernel.org
-Fixes: 803b1c8a0cea ("usb: typec: tcpm: not sink vbus if operational current is 0mA")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
-Changes since v2:
-* Fix the "Fixes" tag
-* Refactor code based on Guenter Roeck's suggestion.
+> I also note that filenametr_hash() does the old "one byte at a time"
+> hash and partial_name_hash(). Is there any reason that code doesn't
+> use the "full_name_hash()" which does things a word at a time?
 
-Changes since v1:
-* Fix commit title and description to address comments from Guenter Roeck
----
- drivers/usb/typec/tcpm/tcpm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Likely just a matter of no one looking at it and realizing it can be
+improved.  I'll toss this on the todo list, it should take all of five
+minutes.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 058d5b853b57..afc791ab6d4f 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -4273,7 +4273,8 @@ static void run_state_machine(struct tcpm_port *port)
- 				current_lim = PD_P_SNK_STDBY_MW / 5;
- 			tcpm_set_current_limit(port, current_lim, 5000);
- 			/* Not sink vbus if operational current is 0mA */
--			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
-+			tcpm_set_charge(port, !port->pd_supported ||
-+					pdo_max_current(port->snk_pdo[0]));
- 
- 			if (!port->pd_supported)
- 				tcpm_set_state(port, SNK_READY, 0);
+> Probably doesn't matter, but since I looked at this to see what the
+> new hashing was, I noticed...
 
-base-commit: c70793fb7632a153862ee9060e6d48131469a29c
--- 
-2.42.0.820.g83a721a137-goog
+No harm in mentioning it, feedback is always welcome, but you know
+what else is even more welcome?  Patches ;)
 
+--=20
+paul-moore.com
