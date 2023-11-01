@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A177DE713
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6BC7DE704
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjKAUu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 16:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        id S234418AbjKAUvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 16:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235702AbjKAUuR (ORCPT
+        with ESMTP id S229648AbjKAUvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 16:50:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B309115
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:50:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 35FE1C433C8;
-        Wed,  1 Nov 2023 20:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698871815;
-        bh=3KFsxJijKFB2Kiimw1iU32ijZTtx78RNP151X/2aWHA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ciFceBwI0Y/pt5/+da93k1D/fIAlZ1FreSwQzMPi7VCLvvKPsR79OJF8lWhV4nI8k
-         SWD3tia6jyz2gf5m8X8+KXEWzqU2fcn5n/M2z3FOyqnt3HRdowNXT0VMM+LDqBdicW
-         6H3I8xhRfCVEd0f3gQIWdWw1X3NBEO0GA1ZaDiCV374IDWrce7iFCqq0+QBWk5fBCI
-         t276NBfIcNNq4iHVliboYddxCsNXUefP2I6uQELDmhEFZkNaLx34czPyI9WQi2GqkM
-         SrVl6tL76EbxX0YSx7HoarWKAhm2mcJQoPyG/UvalKdOvrLsLj7s3mq6MlocR5vrkl
-         Gxd2bV78P6k0w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0EE67C3959F;
-        Wed,  1 Nov 2023 20:50:15 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/tdx for 6.7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231101000755.4183137-1-dave.hansen@linux.intel.com>
-References: <20231101000755.4183137-1-dave.hansen@linux.intel.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231101000755.4183137-1-dave.hansen@linux.intel.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_tdx_for_6.7
-X-PR-Tracked-Commit-Id: 9ee4318c157b9802589b746cc340bae3142d984c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8999ad99f4cb19638d9ecb8017831f9a0ab8dc3d
-Message-Id: <169887181505.2957.4731792421171260688.pr-tracker-bot@kernel.org>
-Date:   Wed, 01 Nov 2023 20:50:15 +0000
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     torvalds@linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Wed, 1 Nov 2023 16:51:14 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1235A11C
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 13:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1698871863;
+        bh=+MuUQ7FS66koShvyTlTaOH84DYO2F+juD3CotMhyqqU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QehCGBvKJDRkhdLW4wmvM0+EDA/ghxOCZiEUfMtd8+APJFajCwkuj2g/zHzNA+BLc
+         5GcaHTJDL2ZpjTk29R6eTGdtXOijtwhFxZsqs76v6cfV20PuY5cEp397y7ngPrMPOm
+         8rYql1e7GBpQa237jGHu5RXE5mwcgBue4bMChFvQeEq/ymz8yfywGHt0i3OiCtlhKJ
+         1X9C9TMrerw4L8bTDOV9rU59PsjULRmr8Sg11vm/M20yFrWPG+qWVo1dfc+55g7Rzo
+         YPcCQZJ4qOOj3f0oLr8/YLflgGKT7o6BmTePGcxaLBJkOtK/m1qkJkEFijuwZB+K1y
+         082AvFrqFxyIg==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SLK0l49LCz1b9S;
+        Wed,  1 Nov 2023 16:51:03 -0400 (EDT)
+Message-ID: <bdb00d83-279b-4b73-aa5b-50a9f275d102@efficios.com>
+Date:   Wed, 1 Nov 2023 16:51:23 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Fix: rseq uapi: Adapt header includes to follow glibc
+ header changes
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Rik van Riel <riel@surriel.com>
+References: <20231025214811.2066376-1-mathieu.desnoyers@efficios.com>
+ <202310271556.LunB8KLv-lkp@intel.com>
+ <81d2fd04-572d-48cd-bb5c-9a77937a79a0@efficios.com>
+ <20231027100641.52fbee5d@gandalf.local.home>
+ <f5bd06bb-da51-48c1-bf79-d1ef92802adf@efficios.com>
+ <20231101164415.7f198500@gandalf.local.home>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231101164415.7f198500@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,15 +60,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 31 Oct 2023 17:07:55 -0700:
+On 2023-11-01 16:44, Steven Rostedt wrote:
+> On Wed, 1 Nov 2023 16:10:04 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> So what is the minimal change required to make things work on your
+>> setup? I just tested with a Debian "testing" chroot (with libc 2.37-12)
+>> and I cannot reproduce your issue.
+>>
+>> Should I just submit a patch that removes "#include <asm/byteorder.h>" ?
+>> I am really unsure which environments are affected though.
+>>
+> 
+> I guess you can drop it :-p
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_tdx_for_6.7
+OK, let's drop this patch then. I may respin the removal of asm/byteorder.h
+include as a cleanup in the future, but there is really no hurry.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8999ad99f4cb19638d9ecb8017831f9a0ab8dc3d
+Thanks,
 
-Thank you!
+Mathieu
+
+> 
+> When I tried to reproduce it with hand writing 'gcc', I couldn't. But when
+> I did:
+> 
+>   $ make foo
+> 
+> It gave me the error. I was confused for a bit. Then I looked at what my
+> Makefile was doing and what I was doing. The only difference was that the
+> make included:
+> 
+>     -I.
+> 
+> Removing that from the Makefile worked!
+> 
+> My Makefile added to the CFLAGS "-I." and I forgot that this directory has
+> a "linux/"  directory in it that I used years ago to test kernel functions.
+> The git history shows it was last touched in 2016 (when I was still at Red Hat)
+> 
+> Removing -I. now makes everything work.
+> 
+> I have no idea why it suddenly stopped working just a few months ago. Maybe
+> something was moved out of the gcc headers so my local headers no longer
+> see it. That is, perhaps the glibc headers moved something out and added a
+> #include to it, where my local headers did not have that change. I don't
+> know and I don't care.
+> 
+> Well, at least now I know why I was getting errors on my build, but
+> couldn't find anything on the internet showing why others were not!
+> 
+> Sorry for the noise. :-/
+> 
+> -- Steve
+> 
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
