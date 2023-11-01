@@ -2,152 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 460E17DDFF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F76A7DDFFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234314AbjKAK47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S231781AbjKALAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbjKAK4t (ORCPT
+        with ESMTP id S229731AbjKALAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:56:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA57122;
-        Wed,  1 Nov 2023 03:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698836200; x=1730372200;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8XoIBvJBqu2UWQDbjlJ+l/oehOtNlARvyRZhwkORV84=;
-  b=joACo38YsW5rDnNlEJ/Xxzw8zZ4RCx2y3xv8BxVCtX3YPx4W9W1nYcfG
-   xp88PbhiETi1IQesFchd89jVpW6MEtxi0eKJlTF6RED7jYQvgXNeAVfZk
-   1kH0MAqpUePfQu1PUPN43M370FjomDlqFMsQkuhmjQO2BW2yfx8Q6anIG
-   uqjj4khol5TpDT2C+lDDe9zPIHOQyQVUmXpZulQqupMFIxyqc2aBi/0NI
-   R6dUf9d1YvzDIR6HciZZliI9qGt4bza8O8P0s1C7CZP1++I3+P/TPiOwa
-   usJbrb4/Ni4NnOXOkts/Dq3A/jlNIlEa+Z0veAhx29w6vlw8qCFzuFF7Q
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="454948364"
-X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
-   d="scan'208";a="454948364"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 03:56:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
-   d="scan'208";a="8632388"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 01 Nov 2023 03:56:37 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qy8tm-0000lM-1L;
-        Wed, 01 Nov 2023 10:56:34 +0000
-Date:   Wed, 1 Nov 2023 18:56:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Ober <dober6023@gmail.com>, linux-hwmon@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jdelvare@suse.com,
-        linux@roeck-us.net, corbet@lwn.net, dober@lenovo.com,
-        mpearson-lenovo@squebb.ca, David Ober <dober6023@gmail.com>
-Subject: Re: [PATCH v2] hwmon:Add MEC172x Micro Chip driver for Lenovo
- motherboards
-Message-ID: <202311011858.M1Ui9wp1-lkp@intel.com>
-References: <20231031154930.4908-1-dober6023@gmail.com>
+        Wed, 1 Nov 2023 07:00:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1161FFC
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698836355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ChCUMS4Z0zFJSSZC7NvVm2TXc5lFEMGFDVYjPFXyk18=;
+        b=CBUGIDfGcAFMcZVYl+tBbboYHDpWHw/EJDSJpOT1YWgV6RztNp1jUfgg9Kus9rvMOWgsZW
+        dlGM3ahyK4vfdMbXdXvK8drvEVoJkU0zj59ai6E45scT+mHeBXuvCl1vK5IFBV3+9qR69A
+        0ficsu3p7bvpgmjNsWPOgoXckLAHlQ4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-fyY86f_8NsCcwA_q8KmtfA-1; Wed, 01 Nov 2023 06:59:13 -0400
+X-MC-Unique: fyY86f_8NsCcwA_q8KmtfA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a681c3470fso453869666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 03:59:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698836352; x=1699441152;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ChCUMS4Z0zFJSSZC7NvVm2TXc5lFEMGFDVYjPFXyk18=;
+        b=sq8wcFVyGvV7t2jDUNlemPNVpqpOG7SZSaBPt2Mf0soZBrWxWTgNLDZr/ZOkHgJ1KE
+         yGJVZpEzAB8cRpgZS8WyTIbTjgKHdap0HNwIBcwFaBMj7xuTcoELjV326qyhzYGxoz0C
+         eL1S2XIk7/gaE/lOlYzuVT2xtLMI1KWQqaHdzyPzWtpLxH8kzlCIlmkfavIYQQdYvGr+
+         UCwqh1gJ7v2sHx0oHTibuitoIItJFhllWpliiJbrIcnH4eUpDxT8GDuJ35FKKb5Ug2Wc
+         2qi1LNZwOUuP/iVDLIokLzXe6vL3RCj8omD0XF8Pv0Ni80QLOjmN612KiCivuBEAU0+D
+         Ir2A==
+X-Gm-Message-State: AOJu0YxlciinQcWpA4pKxMtX0TVdJa83Crw9IrUhykEupgrDUQpPBmm5
+        0rrWkaPqpmgBcpKXHWVrOSretDCSv0HPdYh8J6ZuYzTUfOJ6h6DFtERmQcjzDMJx2WdmLa7L5cS
+        +kdaqAa2RhV6xB7r7MsFZQ6Iv
+X-Received: by 2002:a17:907:a44:b0:9be:b668:5700 with SMTP id be4-20020a1709070a4400b009beb6685700mr1473979ejc.58.1698836352534;
+        Wed, 01 Nov 2023 03:59:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHN4iF493a6l6vf8pkc7Vcdp9JsgvmrZwNhMEkxLmF5mmGf3XNHFkTZfmDTINO03oYIYYz4pw==
+X-Received: by 2002:a17:907:a44:b0:9be:b668:5700 with SMTP id be4-20020a1709070a4400b009beb6685700mr1473967ejc.58.1698836352277;
+        Wed, 01 Nov 2023 03:59:12 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id a22-20020a1709062b1600b0099ddc81903asm2265963ejg.221.2023.11.01.03.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Nov 2023 03:59:11 -0700 (PDT)
+Message-ID: <24e0ae5c-26bb-6efa-d59a-262541d2a452@redhat.com>
+Date:   Wed, 1 Nov 2023 11:59:10 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031154930.4908-1-dober6023@gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] vboxsf: Avoid an spurious warning if load_nls_xxx()
+ fails
+Content-Language: en-US, nl
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christoph Hellwig <hch@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <d09eaaa4e2e08206c58a1a27ca9b3e81dc168773.1698835730.git.christophe.jaillet@wanadoo.fr>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <d09eaaa4e2e08206c58a1a27ca9b3e81dc168773.1698835730.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hi Christophe,
 
-kernel test robot noticed the following build warnings:
+On 11/1/23 11:49, Christophe JAILLET wrote:
+> If an load_nls_xxx() function fails a few lines above, the 'sbi->bdi_id' is
+> still 0.
+> So, in the error handling path, we will call ida_simple_remove(..., 0)
+> which is not allocated yet.
+> 
+> In order to prevent a spurious "ida_free called for id=0 which is not
+> allocated." message, tweak the error handling path and add a new label.
+> 
+> Fixes: 0fd169576648 ("fs: Add VirtualBox guest shared folder (vboxsf) support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on linus/master v6.6 next-20231101]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thank you, both patches look good to me:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Ober/hwmon-Add-MEC172x-Micro-Chip-driver-for-Lenovo-motherboards/20231031-235345
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20231031154930.4908-1-dober6023%40gmail.com
-patch subject: [PATCH v2] hwmon:Add MEC172x Micro Chip driver for Lenovo motherboards
-config: sh-allyesconfig (https://download.01.org/0day-ci/archive/20231101/202311011858.M1Ui9wp1-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311011858.M1Ui9wp1-lkp@intel.com/reproduce)
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311011858.M1Ui9wp1-lkp@intel.com/
+for the series.
 
-All warnings (new ones prefixed by >>):
+Regards,
 
-   drivers/hwmon/lenovo-ec-sensors.c: In function 'get_ec_reg':
-   drivers/hwmon/lenovo-ec-sensors.c:36:25: error: implicit declaration of function 'inb_p'; did you mean 'int_pow'? [-Werror=implicit-function-declaration]
-      36 | #define io_read8(a)     inb_p(a)
-         |                         ^~~~~
-   drivers/hwmon/lenovo-ec-sensors.c:45:13: note: in expansion of macro 'io_read8'
-      45 |         if (io_read8(MCHP_EMI0_APPLICATION_ID) != 0) /* EMI access locked */
-         |             ^~~~~~~~
-   drivers/hwmon/lenovo-ec-sensors.c:35:25: error: implicit declaration of function 'outb_p' [-Werror=implicit-function-declaration]
-      35 | #define io_write8(a, b) outb_p(b, a)
-         |                         ^~~~~~
-   drivers/hwmon/lenovo-ec-sensors.c:48:9: note: in expansion of macro 'io_write8'
-      48 |         io_write8(MCHP_EMI0_APPLICATION_ID, 0x01);
-         |         ^~~~~~~~~
-   drivers/hwmon/lenovo-ec-sensors.c: In function 'get_platform':
->> drivers/hwmon/lenovo-ec-sensors.c:274:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
-     274 |         for (idx = 0 ; idx < 6 ; idx++)
-         |         ^~~
-   drivers/hwmon/lenovo-ec-sensors.c:276:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
-     276 |                 system_type[idx] = get_ec_reg(0xC, (0x10 + idx));
-         |                 ^~~~~~~~~~~
-   In function 'get_platform',
-       inlined from 'lenovo_ec_probe' at drivers/hwmon/lenovo-ec-sensors.c:420:26:
->> drivers/hwmon/lenovo-ec-sensors.c:276:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-     276 |                 system_type[idx] = get_ec_reg(0xC, (0x10 + idx));
-         |                 ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/hwmon/lenovo-ec-sensors.c: In function 'lenovo_ec_probe':
-   drivers/hwmon/lenovo-ec-sensors.c:270:14: note: at offset 6 into destination object 'system_type' of size 6
-     270 |         char system_type[6];
-         |              ^~~~~~~~~~~
-   cc1: some warnings being treated as errors
+Hans
 
 
-vim +/for +274 drivers/hwmon/lenovo-ec-sensors.c
 
-   267	
-   268	static int get_platform(struct ec_sensors_data *data)
-   269	{
-   270		char system_type[6];
-   271		int ret = -1;
-   272		int idx;
-   273	
- > 274		for (idx = 0 ; idx < 6 ; idx++)
-   275			mutex_lock(&data->mec_mutex);
- > 276			system_type[idx] = get_ec_reg(0xC, (0x10 + idx));
-   277			mutex_unlock(&data->mec_mutex);
-   278	
-   279		for (idx = 0 ; idx < 4 ; idx++) {
-   280			if (strcmp(systems[idx], system_type) == 0) {
-   281				ret = idx;
-   282				break;
-   283			}
-   284		}
-   285		return ret;
-   286	}
-   287	
+> ---
+>  fs/vboxsf/super.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+> index 1fb8f4df60cb..9848af78215b 100644
+> --- a/fs/vboxsf/super.c
+> +++ b/fs/vboxsf/super.c
+> @@ -151,7 +151,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+>  		if (!sbi->nls) {
+>  			vbg_err("vboxsf: Count not load '%s' nls\n", nls_name);
+>  			err = -EINVAL;
+> -			goto fail_free;
+> +			goto fail_destroy_idr;
+>  		}
+>  	}
+>  
+> @@ -224,6 +224,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+>  		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
+>  	if (sbi->nls)
+>  		unload_nls(sbi->nls);
+> +fail_destroy_idr:
+>  	idr_destroy(&sbi->ino_idr);
+>  	kfree(sbi);
+>  	return err;
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
