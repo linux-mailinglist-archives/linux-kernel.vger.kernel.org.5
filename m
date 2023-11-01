@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C104F7DDC2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 06:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3327DDC15
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 06:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346855AbjKAEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 00:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
+        id S1346885AbjKAEuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 00:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344644AbjKAEnV (ORCPT
+        with ESMTP id S1345092AbjKAEuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 00:43:21 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796F2FC
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 21:43:19 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-457c82cd837so2692898137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 21:43:19 -0700 (PDT)
+        Wed, 1 Nov 2023 00:50:03 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F5C103
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 21:50:01 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54357417e81so7748a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 21:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698813798; x=1699418598; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698814200; x=1699419000; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bgzUATk4aTDwLV5ETkynjjS36FynkenHN7MQBidatBs=;
-        b=SmpH5xchV/kk/yj3fxtZYQJGwRtZ6wfSTVjR3LfLM/EOoRSVUz9GjTl9JAafCsUm68
-         za+7rnGBrnELeUycXQi989f+JH0nrEPTKvY0Bar0dkflmp5L87+4dKfMDn6N5bGljoka
-         kQy0FJHg6qE3JaoiONtEEd8t5M5jGD/j6UTKftdXScB+xqa27wd1INPtrqQImqVXm2iQ
-         ++AhmIGRuI9/oj2tDevmwsmJTDXJ+N2EmQJ3duY1LW80ih6xYu8oHK+doV+BeNzNsNxY
-         B7o+prGkK54KPPCsVXtkuv/fXrTP+L1BxQ7NAHhAlw0wlPICpiDmwRNGvqyVs5qxoFY2
-         ydpQ==
+        bh=yhQrGrRiXOP6T/LjlMKW+7pqde7WtEKCtrVNN6uAKIY=;
+        b=GFGQ5JyxZLdxHR4X1IudqTZgn0B9fhT2jThnnP88CsB5w6UHDavcl1wvaMKeTJOQ5U
+         NIM9nzE1qbb52hq+c6JV3NQNUYDi5jtUphaFM0ss5S+9tnzNztjP7/B0AX6LGUr6/aic
+         wjAJfm7pIIcdf/zmlX5KnuioGyFFIGTs0KC/fNwhgKPGzWz8s3KhAO+TJw8WrnVYK8KN
+         G0c97pWdPJwdH/n2/+a5lKbzNuJyo7I+4EYH6YyCiqFu+E8DJYvfDBMRmbOkGodw4Cg/
+         cx3ZY5sZ5WPiVV+WQ5dbUX5f9OhCWmYWR0zrIVVowD4+Z/r/hZ/66Mc/gsYrNP90m4Md
+         rA0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698813798; x=1699418598;
+        d=1e100.net; s=20230601; t=1698814200; x=1699419000;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bgzUATk4aTDwLV5ETkynjjS36FynkenHN7MQBidatBs=;
-        b=YnzvE6EzthrZUJHpk8hCU5M5XfGnfsHhph42egkzs2F7p5vAx+GWOh13ualV+2JgsG
-         GcBhlh4bzUMTdJqQIHYmzMfWgbv9DzAIFo8Bf66iFdyTwsvC1a/J5ewrf0Pnq5ikxJjo
-         Fe4xUdZWK2msWr0yiUneEoo2juP1/Bbx+kARTQJiETlUwqNqSAEF9Qs8LsejSigDUnwr
-         0l3L9mYAih6HgGW+hGpHP1+zfwKYsl+9huy3crkoJMe9Un92ZdapAFZUgAKY/Wem/tpN
-         H/1myfXYyXWV6Nc6f30FMFD2fJL5vMQUF1StSpRUQ7cFNyNGyk94Wh4D5w2T+RCf72Nu
-         oySg==
-X-Gm-Message-State: AOJu0YwDqrFvJOJqL4r4fVEaEThajy/71/ms7bfgtOT8+7xq+kdqAGP+
-        WE4oDSYan5a+Wugk/lg0wKG2rEUv5nlkJUqW3xfrRA==
-X-Google-Smtp-Source: AGHT+IGiJ2dXrF26oqY/t33QqLa6W5Q3zXHlE16Nhs1v668ybIE4h6rrhKm13xdbut+rPybUdSDFjHkOz/ki7psGPhE=
-X-Received: by 2002:a05:6102:471e:b0:457:4645:a339 with SMTP id
- ei30-20020a056102471e00b004574645a339mr13663582vsb.1.1698813798503; Tue, 31
- Oct 2023 21:43:18 -0700 (PDT)
+        bh=yhQrGrRiXOP6T/LjlMKW+7pqde7WtEKCtrVNN6uAKIY=;
+        b=mQWdKAz3wYurft7YRg6qUfbhXOJvqE2xcEDadqck1dHxI0627VlWsTVLAhUIiJ3976
+         9Kuuc1/SWFgUO5cE5DNF+cl1XCczls7z435cgD6H87ggeg25Xk7PUSU+87yBV5mLLBMm
+         +RLH0AMEBorGx7128IXRDYDQBZgW5zfQCSUnKmwwk4o6Ta6epnylTQg/d/z/g+TJieQd
+         OL2jXcTyzLoA/R7qe03FC4p/uU7s2Zxvgjuq3PySADeQT8vOGzerP/7Ppbohjt+l8NdJ
+         aSOMWQlewnNAm42raetNnkcKV8dghqrZbvdiVV6mfR3sGdnND5zSZFjtmp5Hhg3izqgt
+         qQXA==
+X-Gm-Message-State: AOJu0YzRlnVXSY6g1mHMWmCYn01fBCi+c+wuE+v9Qqfb3VHkmoaUZtuE
+        4iQvGWPX2zpDeTj2sxB9p2Xo7aEpnqXf9kSL0dse4g==
+X-Google-Smtp-Source: AGHT+IHxAeRmRNwusd8SDjsAoXM6juVtUd+PfRg+3YUq/OHZ9FhyQX9RugH2kSnb5B3Bir6sLB+JT2x3UIjYR1Fpsdk=
+X-Received: by 2002:a50:c04f:0:b0:542:d737:dc7e with SMTP id
+ u15-20020a50c04f000000b00542d737dc7emr258881edd.0.1698814199560; Tue, 31 Oct
+ 2023 21:49:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231031044021.1162403-1-mnkumar@google.com> <20231031044021.1162403-2-mnkumar@google.com>
-In-Reply-To: <20231031044021.1162403-2-mnkumar@google.com>
-From:   Naveen Kumar M <mnkumar@google.com>
-Date:   Wed, 1 Nov 2023 10:13:08 +0530
-Message-ID: <CA+Hc5+6Zb65gL1tCOZ6bYQThVn3HFS_gzj+_P+y-TkrHKw6zbw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] usb: host: xhci-plat: Add quirk-no-64-bit-support
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        royluo@google.com, devicetree@vger.kernel.org
+References: <20231031-tcp-ao-fix-label-in-compound-statement-warning-v1-1-c9731d115f17@kernel.org>
+In-Reply-To: <20231031-tcp-ao-fix-label-in-compound-statement-warning-v1-1-c9731d115f17@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 1 Nov 2023 05:49:45 +0100
+Message-ID: <CANn89i+YpJ+y23f=b0uByVJCqh1Rjau44vP-saRD60kFG7J4fw@mail.gmail.com>
+Subject: Re: [PATCH net] tcp: Fix -Wc23-extensions in tcp_options_write()
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, ndesaulniers@google.com, trix@redhat.com,
+        0x7f454c46@gmail.com, fruggeri@arista.com, noureddine@arista.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding the reviewers/maintainers I missed in the previous mail to this patc=
-h
+On Tue, Oct 31, 2023 at 9:23=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> Clang warns (or errors with CONFIG_WERROR=3Dy) when CONFIG_TCP_AO is set:
+>
+>   net/ipv4/tcp_output.c:663:2: error: label at end of compound statement =
+is a C23 extension [-Werror,-Wc23-extensions]
+>     663 |         }
+>         |         ^
+>   1 error generated.
+>
+> On earlier releases (such as clang-11, the current minimum supported
+> version for building the kernel) that do not support C23, this was a
+> hard error unconditionally:
 
-On Tue, Oct 31, 2023 at 10:10=E2=80=AFAM Naveen Kumar <mnkumar@google.com> =
-wrote:
->
-> From: Naveen Kumar M <mnkumar@google.com>
->
-> This patch exposes the existing quirk XHCI_NO_64BIT_SUPPORT so that dwc3
-> clients can also use this flag. Despite HCCPARAMS1 being set to 1 some
-> clients may not support 64 bit addressing.
->
-> Signed-off-by: Naveen Kumar M <mnkumar@google.com>
-> ---
->  drivers/usb/host/xhci-plat.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> index b93161374293..d5f37decb7da 100644
-> --- a/drivers/usb/host/xhci-plat.c
-> +++ b/drivers/usb/host/xhci-plat.c
-> @@ -249,6 +249,9 @@ int xhci_plat_probe(struct platform_device *pdev, str=
-uct device *sysdev, const s
->                 if (device_property_read_bool(tmpdev, "quirk-broken-port-=
-ped"))
->                         xhci->quirks |=3D XHCI_BROKEN_PORT_PED;
->
-> +               if (device_property_read_bool(tmpdev, "quirk-no-64-bit-su=
-pport"))
-> +                       xhci->quirks |=3D XHCI_NO_64BIT_SUPPORT;
-> +
->                 device_property_read_u32(tmpdev, "imod-interval-ns",
->                                          &xhci->imod_interval);
->         }
-> --
-> 2.42.0.820.g83a721a137-goog
->
+
+Reviewed-by: Eric Dumazet <edumazet@google.com>
