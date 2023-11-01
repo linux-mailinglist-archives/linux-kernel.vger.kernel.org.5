@@ -2,185 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47937DDDB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 09:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C6F7DDDC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 09:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjKAIZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 04:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S232068AbjKAIiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 04:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbjKAIZv (ORCPT
+        with ESMTP id S229436AbjKAIiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 04:25:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9041101
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 01:25:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7FEC433C7;
-        Wed,  1 Nov 2023 08:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698827146;
-        bh=yFVtjEK6MAAB7vMXEvUnFtsjPel4TJMN6k8Ko8VXdYs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=H+EfT11FBVdWRjAfeYkOnUaRHnTJepVNb5nikvZ26s+2qtK3y703T79U7MvmnrmF2
-         ZlcsraE72qoE3Uy6DpNUBlvnWhtZX21/hweezd934PF0SVpcJlo//becBi2Y03TdSq
-         JNIHPs3PP1SF/ua9iAUYzitWUPRcslT3VuHs3KX2U8tTxgzfFcu13Jd4sWSX56Afmq
-         uXsahwZaUXj7YVmpAd5RSS6SPsAuS0opg3CIJQ3D9tvxEgn9MItedOmQskZd7fLoeg
-         7WaMqGRTfheQriy6+wtkm9I9q28wtTbbBiKNaKR437HxxnejFXD7FXw/bl9vFSXiuU
-         g0XwNSRHsK/9A==
-Message-ID: <9aad3bb9-daca-405a-93c3-dccea3c0a07a@kernel.org>
-Date:   Wed, 1 Nov 2023 09:25:34 +0100
+        Wed, 1 Nov 2023 04:38:01 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C388DF;
+        Wed,  1 Nov 2023 01:37:58 -0700 (PDT)
+Received: from [192.168.1.103] (31.173.85.63) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 1 Nov
+ 2023 11:37:47 +0300
+Subject: Re: [PATCH V2] usb: musb: Check requset->buf before use to avoid
+ crash issue
+To:     Xingxing Luo <xingxing.luo@unisoc.com>, <b-liu@ti.com>,
+        <gregkh@linuxfoundation.org>, <keescook@chromium.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <llvm@lists.linux.dev>,
+        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
+        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
+        <zhang.lyra@gmail.com>
+References: <20231101071421.29462-1-xingxing.luo@unisoc.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <6720b83c-e89b-6a22-e7b6-1503df7c8a0d@omp.ru>
+Date:   Wed, 1 Nov 2023 11:37:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-Content-Language: en-GB, fr-BE
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
- <ZUEzzc/Sod8OR28B@krava>
- <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
- <ZUH9cveAsjcUgz9e@krava>
-From:   Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-In-Reply-To: <ZUH9cveAsjcUgz9e@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231101071421.29462-1-xingxing.luo@unisoc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [31.173.85.63]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/01/2023 08:21:19
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181034 [Nov 01 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.63 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.63 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.63
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/01/2023 08:27:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/1/2023 5:24:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jirka, Alexei,
+Hello!
 
-On 01/11/2023 08:25, Jiri Olsa wrote:
-> On Tue, Oct 31, 2023 at 08:54:56PM -0700, Alexei Starovoitov wrote:
->> On Tue, Oct 31, 2023 at 10:05 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>>
->>> On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
->>>> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
->>>> possible to build the kernel without CONFIG_CGROUPS:
->>>>
->>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->>>>   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
->>>>     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->>>>         |              ^~~~~~~~~~~~~~~~~~~
->>>>   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
->>>>   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
->>>>     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->>>>         |                                    ^~~~~~~~~~~~~~~~~~~~~~
->>>>   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
->>>>     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
->>>>         |                                                            ^~~~~~
->>>>   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
->>>>     930 |         css_task_iter_start(css, flags, kit->css_it);
->>>>         |         ^~~~~~~~~~~~~~~~~~~
->>>>         |         task_seq_start
->>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
->>>>   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
->>>>     940 |         return css_task_iter_next(kit->css_it);
->>>>         |                ^~~~~~~~~~~~~~~~~~
->>>>         |                class_dev_iter_next
->>>>   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
->>>>     940 |         return css_task_iter_next(kit->css_it);
->>>>         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
->>>>   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
->>>>     949 |         css_task_iter_end(kit->css_it);
->>>>         |         ^~~~~~~~~~~~~~~~~
->>>>
->>>> This patch simply surrounds with a #ifdef the new code requiring CGroups
->>>> support. It seems enough for the compiler and this is similar to
->>>> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
->>>> been added in kernel/bpf/helpers.c and in the selftests.
->>>>
->>>> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
->>>> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
->>>> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
->>>
->>> Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
->>
->> I believe this patch has the same issue as Arnd's patch:
->> https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com/
+   You have have a typo in the subject: s/requset/request/...
 
-@Alexei: Arf, sorry, I didn't find this patch when searching for
-"9c66dc94b62a" on lore. I don't know why I didn't search for the commit
-title as usual...
-
->> I'd like to merge the fix asap. Please make it a complete fix.
-> 
-> ugh, it won't fail the build, it just warns.. I think we should
-> fail the build in that case, I'll check
-
-@Jirka: Thank you for checking that! Please tell me if you want me to
-send a v2 or if you prefer to do that. I don't mind if you prefer to
-send your own patches, as long as there is a fix for that at the end :)
-
-Note that if a warning is emitted for these new bpf_iter_css_task_*()
-functions, I guess you will have the same issue with bpf_iter_css_*()
-and probably others as mentioned in my commit message.
-
-Cheers,
-Matt
+MBR, Sergey
