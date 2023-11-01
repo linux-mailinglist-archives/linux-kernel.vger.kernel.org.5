@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 736597DE373
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489BD7DE38B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbjKAPFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        id S233452AbjKAPFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbjKAPFE (ORCPT
+        with ESMTP id S233002AbjKAPFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:05:04 -0400
+        Wed, 1 Nov 2023 11:05:12 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B5F11A;
-        Wed,  1 Nov 2023 08:05:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929FFC43395;
-        Wed,  1 Nov 2023 15:04:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2885E12B;
+        Wed,  1 Nov 2023 08:05:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B8EEC433C7;
+        Wed,  1 Nov 2023 15:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698851101;
-        bh=u2/0EZmNkhteR9yqHKg+ZM6He3MW48mMvU+dc7j/N/0=;
+        s=k20201202; t=1698851102;
+        bh=J9TDTTp5Th8l4Sk4Cvv9hQrUXmMuJKZ9hBfQCH+y39o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ugFZRDltk5Ji75WF2kM1nw4DV4QMsmp3Ew6NnanEH/76zirT1kWCLAImIsZSrtore
-         mDrjURw25SZK383ubVdsB10y+bUZR+MXkcgX9qBz/q8cIv6Ow0EsBqzkyy6KwRVteZ
-         521C7+4u2SAkkyK7YTNheuZDDAKHrQx1cC+knHjGuYOjv7GcACDkQzhNVWZ2ehJvN6
-         pOm9jSMdPPPd9KnTGQT9ZhBrj/D59Rn/yxR/mMz3zr7W3oNHCcoobf/Shm5dSUVPU+
-         Ub1zn+MRgY7RKWYi/08hUxahwdkcaIVwwSdDXjYOiM1AwgQgoimtnBP4tHOhUAZKbv
-         t844YUt4cyqWQ==
+        b=mForM/ElSg9nfUfHoSsS9u0waPf4ExfykoG7pn8Q3XaEFgsuytu/ouZBmYcqQY8rw
+         mBCLgYXYsf/9nsFDRochpXiVbM1DwA2OtewmFI4or+JDh0c8/cnOXG1n9KvZPrO34R
+         XR3XxeLrPAqnnn3W3aaXyYsWXUdRH2RsWT8+z5XWQAtZ2dFQdViSHXC//r9Aa7d9n/
+         r/L053pdsVpMNa65QHfpWWceGMtD27/WRDnLzz9u1jsm+cnaMmvTfc9ENNegOoaUfY
+         e2eSn8UCofIHVcgoEC8GrhEsPMr5SHW7ge7vA1krBOKkEgAaV+Xi+9vmk0tvA4Kv5C
+         pHhg1GVhlpXWw==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 5/7] modpost: prefer global symbols in symsearch_find_nearest()
-Date:   Thu,  2 Nov 2023 00:04:02 +0900
-Message-Id: <20231101150404.754108-6-masahiroy@kernel.org>
+Subject: [PATCH 6/7] modpost: add symsearch_find_with_name() helper function
+Date:   Thu,  2 Nov 2023 00:04:03 +0900
+Message-Id: <20231101150404.754108-7-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231101150404.754108-1-masahiroy@kernel.org>
 References: <20231101150404.754108-1-masahiroy@kernel.org>
@@ -53,130 +53,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there are multiple symbols that share the same section index and
-address, symsearch_find_nearest() returns the first occurrence in the
-original .symtab section. We can add more rules to break a tie based
-on symbol attributes.
+This helper function searches for a symbol with the provided name.
+The symbol must be located in the specified section and within the
+given distance from the target address.
 
-Kallsyms does this; compare_symbols() in scripts/kallsyms.c first sorts
-symbols by address, then by weakness and by underscore-prefixing in
-order to provide users with the most desirable symbol.
-
-This commit gives the following preference, in this order:
-
-  1. lower address
-  2. global symbol
-  3. no underscore prefix
-
-If two symbols still tie, the first one encounterd in the linear search
-is selected. This does not match the order in the original .symtab
-section, but it is not a significant issue.
+In the expected use case, the min_distance is very small, so the
+linear search will finish within a few iterations.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/mod/symsearch.c | 57 +++++++++++++++++------------------------
- 1 file changed, 24 insertions(+), 33 deletions(-)
+ scripts/mod/modpost.h   |  3 +++
+ scripts/mod/symsearch.c | 44 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
 
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index 9834ac44846d..43148b1a762b 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -186,6 +186,9 @@ void symsearch_finish(struct elf_info *elf);
+ Elf_Sym *symsearch_find_nearest(struct elf_info *elf, Elf_Addr addr,
+ 				unsigned int secndx, bool allow_negative,
+ 				Elf_Addr min_distance);
++Elf_Sym *symsearch_find_with_name(struct elf_info *elf, Elf_Addr addr,
++				  unsigned int secndx, bool allow_negative,
++				  Elf_Addr min_distance, const char *name);
+ 
+ /* file2alias.c */
+ void handle_moddevtable(struct module *mod, struct elf_info *info,
 diff --git a/scripts/mod/symsearch.c b/scripts/mod/symsearch.c
-index 4549c5b0bb81..13464e4f4d72 100644
+index 13464e4f4d72..9101bb9584a4 100644
 --- a/scripts/mod/symsearch.c
 +++ b/scripts/mod/symsearch.c
-@@ -20,9 +20,7 @@ struct syminfo {
-  * Entries in table are ascending, sorted first by section_index,
-  * then by addr, and last by symbol_index.  The sorting by
-  * symbol_index is used to ensure predictable behavior when
-- * multiple symbols are present with the same address; all
-- * symbols past the first are effectively ignored, by eliding
-- * them in symsearch_fixup().
-+ * multiple symbols are present with the same address.
-  */
- struct symsearch {
- 	unsigned int table_size;
-@@ -97,32 +95,6 @@ static void symsearch_populate(struct elf_info *elf,
- 		fatal("%s: size mismatch\n", __func__);
- }
- 
--/*
-- * Do any fixups on the table after sorting.
-- * For now, this just finds adjacent entries which have
-- * the same section_index and addr, and it propagates
-- * the first symbol_index over the subsequent entries,
-- * so that only one symbol_index is seen for any given
-- * section_index and addr.  This ensures that whether
-- * we're looking at an address from "above" or "below"
-- * that we see the same symbol_index.
-- * This does leave some duplicate entries in the table;
-- * in practice, these are a small fraction of the
-- * total number of entries, and they are harmless to
-- * the binary search algorithm other than a few occasional
-- * unnecessary comparisons.
-- */
--static void symsearch_fixup(struct syminfo *table, unsigned int table_size)
--{
--	/* Don't look at index 0, it will never change. */
--	for (unsigned int i = 1; i < table_size; i++) {
--		if (table[i].addr == table[i - 1].addr &&
--		    table[i].section_index == table[i - 1].section_index) {
--			table[i].symbol_index = table[i - 1].symbol_index;
--		}
--	}
--}
--
- void symsearch_init(struct elf_info *elf)
- {
- 	unsigned int table_size = symbol_count(elf);
-@@ -134,8 +106,6 @@ void symsearch_init(struct elf_info *elf)
- 	symsearch_populate(elf, elf->symsearch->table, table_size);
- 	qsort(elf->symsearch->table, table_size,
- 	      sizeof(struct syminfo), syminfo_compare);
--
--	symsearch_fixup(elf->symsearch->table, table_size);
- }
- 
- void symsearch_finish(struct elf_info *elf)
-@@ -226,12 +196,33 @@ static Elf_Sym *symsearch_find(struct elf_info *elf, Elf_Addr addr,
- static bool symsearch_nearest_filter(const Elf_Sym *sym1, const Elf_Sym *sym2,
- 				     void *data)
- {
-+	struct elf_info *elf = data;
-+	unsigned int bind1, bind2, unscores1, unscores2;
-+
- 	/* If sym2 is NULL, this is the first occurrence, always take it. */
- 	if (sym2 == NULL)
- 		return true;
- 
- 	/* Prefer lower address. */
--	return sym1->st_value < sym2->st_value;
-+	if (sym1->st_value < sym2->st_value)
-+		return true;
-+	if (sym1->st_value > sym2->st_value)
-+		return false;
-+
-+	bind1 = ELF_ST_BIND(sym1->st_info);
-+	bind2 = ELF_ST_BIND(sym2->st_info);
-+
-+	/* Prefer global symbol. */
-+	if (bind1 == STB_GLOBAL && bind2 != STB_GLOBAL)
-+		return true;
-+	if (bind1 != STB_GLOBAL && bind2 == STB_GLOBAL)
-+		return false;
-+
-+	/* Prefer less underscores. */
-+	unscores1 = strspn(sym_name(elf, sym1), "_");
-+	unscores2 = strspn(sym_name(elf, sym2), "_");
-+
-+	return unscores1 < unscores2;
- }
- 
- /*
-@@ -247,5 +238,5 @@ Elf_Sym *symsearch_find_nearest(struct elf_info *elf, Elf_Addr addr,
- 				Elf_Addr min_distance)
- {
+@@ -240,3 +240,47 @@ Elf_Sym *symsearch_find_nearest(struct elf_info *elf, Elf_Addr addr,
  	return symsearch_find(elf, addr, secndx, allow_negative, min_distance,
--			      symsearch_nearest_filter, NULL);
-+			      symsearch_nearest_filter, elf);
+ 			      symsearch_nearest_filter, elf);
  }
++
++struct name_filter_data {
++	struct elf_info *elf;
++	const char *name;
++};
++
++static bool symsearch_name_filter(const Elf_Sym *sym1, const Elf_Sym *sym2,
++				  void *_data)
++{
++	struct name_filter_data *data = _data;
++	const char *name;
++
++	/* Check the symbol name. */
++	name = sym_name(data->elf, sym1);
++	if (strcmp(name, data->name))
++		return false;
++
++	/* If sym2 is NULL, this is the first occurrence, always take it. */
++	if (!sym2)
++		return true;
++
++	/* Prefer lower address. */
++	return sym1->st_value < sym2->st_value;
++}
++
++/*
++ * Find the symbol which is in secndx and has the given name, and is located
++ * close enough to the given address.
++ * allow_negative: allow returning a symbol whose address is > addr.
++ * min_distance: ignore symbols which are further away than this.
++ * name: the name of the symbol to search for.
++ *
++ * Returns a pointer into the symbol table for success.
++ * Returns NULL if no legal symbol is found within the requested range.
++ */
++Elf_Sym *symsearch_find_with_name(struct elf_info *elf, Elf_Addr addr,
++				  unsigned int secndx, bool allow_negative,
++				  Elf_Addr min_distance, const char *name)
++{
++	struct name_filter_data data = { .elf = elf, .name = name };
++
++	return symsearch_find(elf, addr, secndx, allow_negative, min_distance,
++			      symsearch_name_filter, &data);
++}
 -- 
 2.40.1
 
