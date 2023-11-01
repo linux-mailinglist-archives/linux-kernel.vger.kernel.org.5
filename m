@@ -2,66 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C387DE19C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA1F7DE1B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 14:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344121AbjKANT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
+        id S1344148AbjKANVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343851AbjKANT5 (ORCPT
+        with ESMTP id S1343969AbjKANVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:19:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB63A102;
-        Wed,  1 Nov 2023 06:19:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A34FC433C9;
-        Wed,  1 Nov 2023 13:19:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698844794;
-        bh=wMsbiq8mxqi0Aabju/Zt8NFoQfuizV+q9reXZUKkN6E=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=EXWkWN6Fk7+PdfzDVy32SEf56gXKxDiiv4aANU0kF4uSc6SCEhF2mLHMzSkI1d9L8
-         iSy5CpimTCetbBXXNaXOqOPcToCfK+C2tPwLJyKY7HJnRa+DRFDI6YQC4dNPVDRp8A
-         /T8/E95IUhq+DwMNoJxDGO03dhzoz0z/4yzk4+FTDpWlgnW+iRqrEHtbwREOhhQTYe
-         2wUJKw9YfqCz6CEJzgLWMRmgApmDAQHFF90p/b8Lses1IgF3pSM3c1mnoeGMhipd8n
-         +P4TQnJCjH99VO6tmncCPN926QGM6zw4PBsJPkSSz6e8lhB0iXyZLMYNPR/ES+Lz+j
-         /mFgicj2XqzSA==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Tom Waldron <tom@baremetal.dev>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/1] wifi: mt76: mt7921: Add a new VID/PID 0b48/7922 for
- MT7922
-References: <20231101095533.45258-1-tom@baremetal.dev>
-Date:   Wed, 01 Nov 2023 15:19:51 +0200
-In-Reply-To: <20231101095533.45258-1-tom@baremetal.dev> (Tom Waldron's message
-        of "Wed, 1 Nov 2023 09:55:33 +0000")
-Message-ID: <87o7gdbog8.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 1 Nov 2023 09:21:09 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84A8F4
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:21:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 65BA4215EE;
+        Wed,  1 Nov 2023 13:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1698844862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZN58lJbHenxUKwiOCOfOaIP86jpT8vhR/q8e1VR4s2s=;
+        b=gcdJnKH7LEz0a2gzMsnBvcIbCgtD/BEuHEUtOwZC0EDBpGUgG1PGKr+/xS1GJ1v46ydD5t
+        jDmxPIJVj9Xk6THcDcJCeXmPg4BXK4ixvpwo+Z0Ks90B2JwIMcKyIWBiCaBmfzUf1DY50Z
+        iY1HtVzusUX1oZhUQ9i4IjJ75tJkX7c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1698844862;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZN58lJbHenxUKwiOCOfOaIP86jpT8vhR/q8e1VR4s2s=;
+        b=ObKbcWpvHdQ4CXuNh9TzeHnq3+inGm1NXxv9HbCGencvVJcot937DbK+T9zZEQC/igCEmX
+        S/yFF98WuY2eqoAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F2ED1348D;
+        Wed,  1 Nov 2023 13:21:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Pv+xCr5QQmWbbAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 01 Nov 2023 13:21:02 +0000
+Message-ID: <6041f645-a3d0-367a-8f2a-c6c5a68507ca@suse.cz>
+Date:   Wed, 1 Nov 2023 14:21:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v4 7/9] slub: Optimize deactivate_slab()
+Content-Language: en-US
+To:     chengming.zhou@linux.dev, cl@linux.com, penberg@kernel.org,
+        willy@infradead.org
+Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20231031140741.79387-1-chengming.zhou@linux.dev>
+ <20231031140741.79387-8-chengming.zhou@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231031140741.79387-8-chengming.zhou@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tom Waldron <tom@baremetal.dev> writes:
 
-> Add VID/PID 0b48/7922 for MediaTek MT7922 wifi chip.
-> Change tested on Redmi Book Pro 15 2023 (Fedora 38).
->
-> Signed-off-by: Tom Waldron <tom@baremetal.dev>
 
-Should I take this to wireless? Felix&Lorenzo, ack?
+On 10/31/23 15:07, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> Since the introduce of unfrozen slabs on cpu partial list, we don't
+> need to synchronize the slab frozen state under the node list_lock.
+> 
+> The caller of deactivate_slab() and the caller of __slab_free() won't
+> manipulate the slab list concurrently.
+> 
+> So we can get node list_lock in the last stage if we really need to
+> manipulate the slab list in this path.
+> 
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> ---
+>  mm/slub.c | 76 +++++++++++++++++++------------------------------------
+>  1 file changed, 26 insertions(+), 50 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index bcb5b2c4e213..c429f8baba5f 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2468,10 +2468,8 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
+>  static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
+>  			    void *freelist)
+>  {
+> -	enum slab_modes { M_NONE, M_PARTIAL, M_FREE, M_FULL_NOLIST };
+>  	struct kmem_cache_node *n = get_node(s, slab_nid(slab));
+>  	int free_delta = 0;
+> -	enum slab_modes mode = M_NONE;
+>  	void *nextfree, *freelist_iter, *freelist_tail;
+>  	int tail = DEACTIVATE_TO_HEAD;
+>  	unsigned long flags = 0;
+> @@ -2512,62 +2510,40 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
+>  	 *
+>  	 * Ensure that the slab is unfrozen while the list presence
+>  	 * reflects the actual number of objects during unfreeze.
+
+I think this we can delete also these two lines. If there's no other
+reason for v5, I can do it when merging the series.
