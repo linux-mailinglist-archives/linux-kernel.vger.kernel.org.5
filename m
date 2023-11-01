@@ -2,257 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46EE7DE348
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9D37DE3DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjKAO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 10:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        id S231985AbjKAO5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 10:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjKAO4c (ORCPT
+        with ESMTP id S231652AbjKAO5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:56:32 -0400
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD10110C;
-        Wed,  1 Nov 2023 07:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Reply-To:
-        Content-ID:Content-Description;
-        bh=2OitxQ/ndqBrxlaO/t3PZApPqvhNvUnxSmmdj8bUi1o=; b=TLMz5jcMPUMHKCqqaVE2eDGCv6
-        MfEjncZPQ6PZTjZWqBM8qgKjGVkodYTXB1l8EMkOoI/4V8yhDIYbEJggi/F4IsYEX1sa3XqHs0BWI
-        mfXampdWmXkN3jz7WN7oO+c2LGGqhNF5MCIFLT1PzMmHh+t3y81Ubj/gO6kLW2PcFz9J3e8G08To/
-        tf+Mv+5PVtTuEb64H6Mg5a0J2WQ5brAWlL4XQBZHfK69qy3KiNKNcPkVDjbdK0oa7Bks201XuaKPW
-        c3gkrapt/cK3IA4iFn069hEgDcghFVqeZ2Mt4I/1w+vCeFbOjWDQMF9spozzcjVwQAwTDwV0EPRDf
-        adeP5T7w==;
-Received: from [10.22.3.24] (helo=kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1qyCdn-002MbQ-2q;
-        Wed, 01 Nov 2023 15:56:19 +0100
-Date:   Wed, 1 Nov 2023 15:56:13 +0100
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain
- devices
-Message-ID: <ZUJm-r43cj0E-vBP@kernkonzept.com>
-References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
- <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
- <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
- <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com>
- <ZTeyhR7YY7VgWQlU@kernkonzept.com>
- <CAPDyKFrcV8iJnJ904j1jkx0E8PaOLmiTZ7CKk7EV8qQ71AZdbA@mail.gmail.com>
- <ZTfBZqBwqskhFydZ@kernkonzept.com>
- <CAPDyKFooPLCmJeqjhiMm7HRdW5UrEw0yHvGF9fgLvOigsgbWxg@mail.gmail.com>
- <ZTfv-Dea693UqLXB@gerhold.net>
- <CAPDyKFpFJd+ipv6kb77MgnDtXtFPa3=BX2RgaKq5i5r6WpVmJQ@mail.gmail.com>
+        Wed, 1 Nov 2023 10:57:01 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BE010F;
+        Wed,  1 Nov 2023 07:56:55 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so6285206b3a.2;
+        Wed, 01 Nov 2023 07:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698850614; x=1699455414; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=T5eqcDZB5c0baecYRCFjpMqUqeKyZRbdxM6CaL31wS0=;
+        b=hk+P13ew1iUjubBwENVzC94oC7pxfjx/jhWEPu8Dr3AxnfWj6QhWDmtT4gYnWAG5nY
+         8NTMp7JLZKyXjzEDZiq8p96io6BL3l9QhLqtVQLvD5XSjK0ErBPKHhI/nPqfDM1xR/ng
+         P1BhJEHFJnJFI+g0dyg3l7VH9nRyaW6C/iM1hhd+aNI3CNFXvajR7SyfD8bPDHPiSWBm
+         2wgtAtfz9T9Bd4dICo0EyeU/FlNiF7ZPTBgX93pK6z7Te6btcNzLUPBNDPX0f0y77NRs
+         7BdsW1yTa1/p7A+icu+yke/gotHNxWnHSZ2IKT3lqPZ0JlkMw5t2exYN4FnTwAljVYH1
+         p9cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698850614; x=1699455414;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T5eqcDZB5c0baecYRCFjpMqUqeKyZRbdxM6CaL31wS0=;
+        b=lqbWj+x83qRGnwdirsIA3dXtgdmkXRzap+sj3CN4xiueh7MtCqFpAQQv0wRe4cV0CS
+         +PYHp44X9+oWxH3XSPuN21HoT5HXL0dC4rO/4kB1ZOMePu0MvtBeWhZzQRdntBLzi/GO
+         n8T8wUQe3vDRI+BkVwvNhyFojh4DiRJGYfi3zqGO9bgOQCHL+/PKQUauYDRRt5xQCrOe
+         vbLTDK8pOoWi45DH1IWUdd23Aj4mjDA2u/+yJlsdoI+1phdX5rBwTzcFcFCdp98deLU9
+         93V37eaVTUO+f2tvIsnDiNUVCro0h1Q22mElOlDmYPEpqN3KqYUGQUWukg2qqY2vNqG9
+         otGA==
+X-Gm-Message-State: AOJu0YxpcuR+fO3n2QAHjnHA/P7Hq0shrlSUowRCI1nTOQuP8oZ856gI
+        dvpi9KVVKWL2L9oWxR2g8Zk=
+X-Google-Smtp-Source: AGHT+IGIerrmfy5iTMcHXFqJ9jhYtYTASfoyiH2x+1SaLDtHH00p49QkZs0KZgAx5AbjEtRIn7IgkA==
+X-Received: by 2002:a05:6a00:2341:b0:692:b6e8:ce88 with SMTP id j1-20020a056a00234100b00692b6e8ce88mr14510936pfj.17.1698850614271;
+        Wed, 01 Nov 2023 07:56:54 -0700 (PDT)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id l16-20020a056a0016d000b006bd67a7a7b3sm1384368pfc.68.2023.11.01.07.56.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Nov 2023 07:56:53 -0700 (PDT)
+Message-ID: <0e003343-3c64-4fee-a56f-987a4ef6e336@gmail.com>
+Date:   Wed, 1 Nov 2023 23:56:49 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFpFJd+ipv6kb77MgnDtXtFPa3=BX2RgaKq5i5r6WpVmJQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH] docs: translations: add translations links when they
+ exist
+To:     vegard.nossum@oracle.com
+Cc:     akiyks@gmail.com, alexs@kernel.org, carlos.bilbao@amd.com,
+        corbet@lwn.net, federico.vaga@vaga.pv.it,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        siyanteng@loongson.cn, src.res.211@gmail.com
+References: <20231028162931.261843-1-vegard.nossum@oracle.com>
+Content-Language: en-US
+In-Reply-To: <20231028162931.261843-1-vegard.nossum@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 12:05:49PM +0200, Ulf Hansson wrote:
-> On Tue, 24 Oct 2023 at 18:25, Stephan Gerhold <stephan@gerhold.net> wrote:
-> > On Tue, Oct 24, 2023 at 06:11:34PM +0200, Ulf Hansson wrote:
-> > > On Tue, 24 Oct 2023 at 15:07, Stephan Gerhold
-> > > <stephan.gerhold@kernkonzept.com> wrote:
-> > > > On Tue, Oct 24, 2023 at 02:49:32PM +0200, Ulf Hansson wrote:
-> > > > > On Tue, 24 Oct 2023 at 14:03, Stephan Gerhold
-> > > > > <stephan.gerhold@kernkonzept.com> wrote:
-> > > > > > On Thu, Oct 19, 2023 at 01:26:19PM +0200, Ulf Hansson wrote:
-> > > > > > > On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > > > > On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
-> > > > > > > > <stephan.gerhold@kernkonzept.com> wrote:
-> > > > > > > > >
-> > > > > > > > > The genpd core caches performance state votes from devices that are
-> > > > > > > > > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
-> > > > > > > > > runtime PM performance state handling"). They get applied once the
-> > > > > > > > > device becomes active again.
-> > > > > > > > >
-> > > > > > > > > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
-> > > > > > > > > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
-> > > > > > > > > devices that use runtime PM only to control the enable and performance
-> > > > > > > > > state for the attached power domain.
-> > > > > > > > >
-> > > > > > > > > However, at the moment nothing ever resumes the virtual devices created
-> > > > > > > > > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
-> > > > > > > > > means that performance state votes made during cpufreq scaling get
-> > > > > > > > > always cached and never applied to the hardware.
-> > > > > > > > >
-> > > > > > > > > Fix this by enabling the devices after attaching them and use
-> > > > > > > > > dev_pm_syscore_device() to ensure the power domains also stay on when
-> > > > > > > > > going to suspend. Since it supplies the CPU we can never turn it off
-> > > > > > > > > from Linux. There are other mechanisms to turn it off when needed,
-> > > > > > > > > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
-> > > > > > > >
-> > > > > > > > I believe we discussed using dev_pm_syscore_device() for the previous
-> > > > > > > > version. It's not intended to be used for things like the above.
-> > > > > > > >
-> > > > > > > > Moreover, I was under the impression that it wasn't really needed. In
-> > > > > > > > fact, I would think that this actually breaks things for system
-> > > > > > > > suspend/resume, as in this case the cpr driver's genpd
-> > > > > > > > ->power_on|off() callbacks are no longer getting called due this,
-> > > > > > > > which means that the cpr state machine isn't going to be restored
-> > > > > > > > properly. Or did I get this wrong?
-> > > > > > >
-> > > > > > > BTW, if you really need something like the above, the proper way to do
-> > > > > > > it would instead be to call device_set_awake_path() for the device.
-> > > > > > >
-> > > > > >
-> > > > > > Unfortunately this does not work correctly. When I use
-> > > > > > device_set_awake_path() it does set dev->power.wakeup_path = true.
-> > > > > > However, this flag is cleared again in device_prepare() when entering
-> > > > > > suspend. To me it looks a bit like wakeup_path is not supposed to be set
-> > > > > > directly by drivers? Before and after your commit 8512220c5782 ("PM /
-> > > > > > core: Assign the wakeup_path status flag in __device_prepare()") it
-> > > > > > seems to be internally bound to device_may_wakeup().
-> > > > > >
-> > > > > > It works if I make device_may_wakeup() return true, with
-> > > > > >
-> > > > > >         device_set_wakeup_capable(dev, true);
-> > > > > >         device_wakeup_enable(dev);
-> > > > > >
-> > > > > > but that also allows *disabling* the wakeup from sysfs which doesn't
-> > > > > > really make sense for the CPU.
-> > > > > >
-> > > > > > Any ideas?
-> > > > >
-> > > > > The device_set_awake_path() should be called from a system suspend
-> > > > > callback. So you need to add that callback for the cpufreq driver.
-> > > > >
-> > > > > Sorry, if that wasn't clear.
-> > > > >
-> > > >
-> > > > Hmm, but at the moment I'm calling this on the virtual genpd devices.
-> > > > How would it work for them? I don't have a suspend callback for them.
-> > > >
-> > > > I guess could loop over the virtual devices in the cpufreq driver
-> > > > suspend callback, but is my driver suspend callback really guaranteed to
-> > > > run before the device_prepare() that clears "wakeup_path" on the virtual
-> > > > devices?
-> > >
-> > > Yes, that's guaranteed. dpm_prepare() (which calls device_prepare())
-> > > is always being executed before dpm_suspend().
-> > >
-> >
-> > Thanks, I think I understand. Maybe. :-)
-> >
-> > Just to confirm, I should call device_set_awake_path() for the virtual
-> > genpd devices as part of the PM ->suspend() callback? And this will be
-> > guaranteed to run after the "prepare" phase but before the
-> > "suspend_noirq" phase where the genpd core will check the wakeup flag?
-> 
-> Correct!
-> 
+Hi,
 
-Thanks, this seems to works as intended! The diff I tested is below, in
-case you already have some comments.
+On Sat, 28 Oct 2023 18:29:31 +0200, Vegard Nossum wrote:
+> Add a new Sphinx extension that knows about the translations of kernel
+> documentation and can insert links to the translations at the top of
+> the document.
+>=20
+> It basically works like this:
+>=20
+> 1. Register a new node type, LanguagesNode.
+>=20
+> 2. Register a new transform, TranslationsTransform, that inserts a new
+>    LanguageNode at the top of every document. The LanguageNode contains=
 
-I'll put this into proper patches and will send a v3 after the merge
-window.
+>    "pending references" to translations of the document. The key here
+>    is that these are pending (i.e. unresolved) references that may or
+>    may not actually exist.
+>=20
+> 3. Register a 'doctree-resolved' event that iterates over all the
+>    LanguageNode nodes. Any unresolved references are filtered out; the
+>    list of resolved references is passed to the 'translations.html'
+>    template and rendered as an HTML node (if HTML output is selected).
+>=20
+> Testing: make htmldocs with v7.3.0.
 
-Stephan
+So, I've started playing with this.
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index 7e9202080c98..e0c82c958018 100644
---- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -23,6 +23,7 @@
- #include <linux/nvmem-consumer.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
-@@ -426,6 +427,18 @@ static const struct qcom_cpufreq_match_data match_data_ipq8074 = {
- 	.get_version = qcom_cpufreq_ipq8074_name_version,
- };
- 
-+static void qcom_cpufreq_suspend_virt_devs(struct qcom_cpufreq_drv *drv, unsigned cpu)
-+{
-+	const char * const *name = drv->data->genpd_names;
-+	int i;
-+
-+	if (!drv->cpus[cpu].virt_devs)
-+		return;
-+
-+	for (i = 0; *name; i++, name++)
-+		device_set_awake_path(drv->cpus[cpu].virt_devs[i]);
-+}
-+
- static void qcom_cpufreq_put_virt_devs(struct qcom_cpufreq_drv *drv, unsigned cpu)
- {
- 	const char * const *name = drv->data->genpd_names;
-@@ -542,9 +555,6 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
- 
- 					goto free_opp;
- 				}
--
--				/* Keep CPU power domain always-on */
--				dev_pm_syscore_device(virt_devs[i], true);
- 			}
- 			drv->cpus[cpu].virt_devs = virt_devs;
- 		}
-@@ -581,11 +591,25 @@ static void qcom_cpufreq_remove(struct platform_device *pdev)
- 	}
- }
- 
-+static int qcom_cpufreq_suspend(struct device *dev)
-+{
-+	struct qcom_cpufreq_drv *drv = dev_get_drvdata(dev);
-+	unsigned int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		qcom_cpufreq_suspend_virt_devs(drv, cpu);
-+
-+	return 0;
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(qcom_cpufreq_pm_ops, qcom_cpufreq_suspend, NULL);
-+
- static struct platform_driver qcom_cpufreq_driver = {
- 	.probe = qcom_cpufreq_probe,
- 	.remove_new = qcom_cpufreq_remove,
- 	.driver = {
- 		.name = "qcom-cpufreq-nvmem",
-+		.pm = pm_sleep_ptr(&qcom_cpufreq_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/pmdomain/qcom/rpmpd.c b/drivers/pmdomain/qcom/rpmpd.c
-index abb62e4a2bdf..0f91e00b5909 100644
---- a/drivers/pmdomain/qcom/rpmpd.c
-+++ b/drivers/pmdomain/qcom/rpmpd.c
-@@ -1050,6 +1050,7 @@ static int rpmpd_probe(struct platform_device *pdev)
- 		rpmpds[i]->pd.power_off = rpmpd_power_off;
- 		rpmpds[i]->pd.power_on = rpmpd_power_on;
- 		rpmpds[i]->pd.set_performance_state = rpmpd_set_performance;
-+		rpmpds[i]->pd.flags = GENPD_FLAG_ACTIVE_WAKEUP;
- 		pm_genpd_init(&rpmpds[i]->pd, NULL, true);
- 
- 		data->domains[i] = &rpmpds[i]->pd;
+It looks like this introduces hysteresis in successive runs of
+"make htmldocs" and "make latexdocs".
 
--- 
-Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
+Steps to reproduce
+
+  1. Run "make cleandocs"
+
+  2. Run "make htmldocs"
+
+  3. Run "make latexdocs"
+
+This aborts with the message (under Sphinx 7.2.6):
+
+  Extension error (translations):
+  Handler <function process_languages at 0x7f122f343420> for event 'doctr=
+ee-resolved' threw an exception (exception: 'LaTeXBuilder' object has no =
+attribute 'templates')
+  make[2]: *** [Documentation/Makefile:128: latexdocs] Error 2
+  make[1]: *** [/linux/Makefile:1695: latexdocs] Error 2
+  make: *** [Makefile:234: __sub-make] Error 2
+  Command exited with non-zero status 2
+
+If I run "make latexdocs" in step 2 and "make htmldocs" in step 3,
+both runs complete successfully, but html pages don't have the
+expected links to other translations.
+
+All I can do is to report the symptoms.
+Vegard, can you look into them?
+
+>=20
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> ---
+>  Documentation/conf.py                         |  2 +-
+>  Documentation/sphinx-static/custom.css        |  8 ++
+>  .../sphinx/templates/translations.html        | 12 +++
+>  Documentation/sphinx/translations.py          | 96 +++++++++++++++++++=
+
+>  4 files changed, 117 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/sphinx/templates/translations.html
+>  create mode 100644 Documentation/sphinx/translations.py
+>=20
+> diff --git a/Documentation/conf.py b/Documentation/conf.py
+> index d4fdf6a3875a..64eab500b2cd 100644
+> --- a/Documentation/conf.py
+> +++ b/Documentation/conf.py
+> @@ -55,7 +55,7 @@ needs_sphinx =3D '1.7'
+>  extensions =3D ['kerneldoc', 'rstFlatTable', 'kernel_include',
+>                'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
+>                'maintainers_include', 'sphinx.ext.autosectionlabel',
+> -              'kernel_abi', 'kernel_feat']
+> +              'kernel_abi', 'kernel_feat', 'translations']
+> =20
+>  if major >=3D 3:
+>      if (major > 3) or (minor > 0 or patch >=3D 2):
+> diff --git a/Documentation/sphinx-static/custom.css b/Documentation/sph=
+inx-static/custom.css
+> index 084a884f6fb7..33adee4a35d9 100644
+> --- a/Documentation/sphinx-static/custom.css
+> +++ b/Documentation/sphinx-static/custom.css
+> @@ -73,3 +73,11 @@ input.kernel-toc-toggle { display: none; }
+>      h3.kernel-toc-contents { display: inline; }
+>      div.kerneltoc a { color: black; }
+>  }
+> +
+> +/* Language selection bar */
+> +div.language-selection {
+> +    background: #eeeeee;
+> +    border: 1px solid #cccccc;
+> +    margin-bottom: 1em;
+> +    padding: .5em;
+> +}
+> diff --git a/Documentation/sphinx/templates/translations.html b/Documen=
+tation/sphinx/templates/translations.html
+> new file mode 100644
+> index 000000000000..08afb595c203
+> --- /dev/null
+> +++ b/Documentation/sphinx/templates/translations.html
+> @@ -0,0 +1,12 @@
+> +<!-- SPDX-License-Identifier: GPL-2.0 -->
+> +<!-- Copyright =C2=A9 2023, Oracle and/or its affiliates. -->
+> +
+> +{# Create a language bar for translations #}
+> +{% if languages|length > 0: %}
+> +<div class=3D"language-selection">
+> +Languages:
+> +{% for ref in languages: %}
+> +<a href=3D"{{ ref.refuri }}">{{ ref.astext() }}</a>{% if not loop.last=
+ %}, {% endif %}
+> +{% endfor %}
+> +</div>
+> +{% endif %}
+> diff --git a/Documentation/sphinx/translations.py b/Documentation/sphin=
+x/translations.py
+> new file mode 100644
+> index 000000000000..e1da811bdaf0
+> --- /dev/null
+> +++ b/Documentation/sphinx/translations.py
+> @@ -0,0 +1,96 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright =C2=A9 2023, Oracle and/or its affiliates.
+> +# Author: Vegard Nossum <vegard.nossum@oracle.com>
+> +#
+> +# Add translation links to the top of the document.
+> +#
+> +
+> +import os
+> +
+> +from docutils import nodes
+> +from docutils.transforms import Transform
+> +
+> +import sphinx
+> +from sphinx import addnodes
+> +from sphinx.errors import NoUri
+
+NoUri is not in sphinx.errors prior to Sphinx 2.
+I think it is a good chance to finally get rid of Sphinx 1.7.x
+support.
+
+        Thanks, Akira
+
+> +
+> +all_languages =3D {
+> +    # English is always first
+> +    None: 'English',
+> +
+> +    # Keep the rest sorted alphabetically
+> +    'zh_CN': 'Chinese',
+> +    'it_IT': 'Italian',
+> +    'ja_JP': 'Japanese',
+> +    'ko_KR': 'Korean',
+> +    'sp_SP': 'Spanish',
+> +    'zh_TW': 'Taiwanese',
+> +}
+> +
+> +class LanguagesNode(nodes.Element):
+> +    pass
+> +
+> +class TranslationsTransform(Transform):
+> +    default_priority =3D 900
+> +
+> +    def apply(self):
+> +        app =3D self.document.settings.env.app
+> +        if app.builder.format not in ['html']:
+> +            return
+> +
+> +        docname =3D self.document.settings.env.docname
+> +
+> +        this_lang_code =3D None
+> +        components =3D docname.split(os.sep)
+> +        if components[0] =3D=3D 'translations' and len(components) > 2=
+:
+> +            this_lang_code =3D components[1]
+> +
+> +            # normalize docname to be the untranslated one
+> +            docname =3D os.path.join(*components[2:])
+> +
+> +        new_nodes =3D LanguagesNode()
+> +
+> +        for lang_code, lang_name in all_languages.items():
+> +            if lang_code =3D=3D this_lang_code:
+> +                continue
+> +
+> +            if lang_code is None:
+> +                target_name =3D docname
+> +            else:
+> +                target_name =3D os.path.join('translations', lang_code=
+, docname)
+> +
+> +            pxref =3D addnodes.pending_xref('', refdomain=3D'std',
+> +                reftype=3D'doc', reftarget=3D'/' + target_name, modnam=
+e=3DNone,
+> +                classname=3DNone, refexplicit=3DTrue)
+> +            pxref +=3D nodes.Text(lang_name)
+> +            new_nodes +=3D pxref
+> +
+> +        self.document.insert(0, new_nodes)
+> +
+> +def process_languages(app, doctree, docname):
+> +    for node in doctree.traverse(LanguagesNode):
+> +        languages =3D []
+> +
+> +        # Iterate over the child nodes; any resolved links will have
+> +        # the type 'nodes.reference', while unresolved links will be
+> +        # type 'nodes.Text'.
+> +        languages =3D list(filter(lambda xref:
+> +            isinstance(xref, nodes.reference), node.children))
+> +
+> +        html_content =3D app.builder.templates.render('translations.ht=
+ml',
+> +            context=3D{
+> +                'languages': languages,
+> +            })
+> +
+> +        node.replace_self(nodes.raw('', html_content, format=3D'html')=
+)
+> +
+> +def setup(app):
+> +    app.add_node(LanguagesNode)
+> +    app.add_transform(TranslationsTransform)
+> +    app.connect('doctree-resolved', process_languages)
+> +
+> +    return {
+> +        'parallel_read_safe': True,
+> +        'parallel_write_safe': True,
+> +    }
+> --=20
+> 2.34.1
