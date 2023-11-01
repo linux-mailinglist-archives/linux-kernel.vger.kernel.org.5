@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5133B7DE5D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9952B7DE5C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345063AbjKASDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        id S1345073AbjKASDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344792AbjKASDD (ORCPT
+        with ESMTP id S1344883AbjKASDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Nov 2023 14:03:03 -0400
-Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02B812C
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:02:44 -0700 (PDT)
-Received: by mail-ej1-x649.google.com with SMTP id a640c23a62f3a-9d2606301eeso10965166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:02:44 -0700 (PDT)
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366F6115
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:02:47 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-53fa5cd4480so38958a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:02:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698861763; x=1699466563; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698861765; x=1699466565; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kukThpDw1OlU2Qi41kPUcezUwH/dCviJIoImwIYtSdk=;
-        b=dw/kZijCmsPpxOgiZ7gqxfe9KU4WKJXqee5Au8rd7OAOc8/9ane5peufyR4aLNbkB8
-         MKjejCWximCo1G9Hk8EcmBaPAo9yxdW4YpvLtK72MO+p0eB8OLpfy017PJLhMGXTM9O7
-         MWxeausv/53eNRvRgWdrTov05bukY2pPsTl9fs7ECTaWVc4dfT9JN4XmiWvLQ7z6xue0
-         tfBUAaErgsze7ix/QGzP9lUbgRWefh6FZQy9cEfLPS15LcS/ff/Th+82X9+EFGN7Voru
-         P7YC9XXhswPfJdKMgjQcG6I1q4YIH0BsILO7CZ7X3LK8447N5+O4M7ewdLjKGltBIQXv
-         /Vog==
+        bh=JV3zrCLyeqQczhMfmNzMo9ruR8VdjWrgmPRKWC6d6dI=;
+        b=wNQiFmRtQpc4qIM731WBr652K7jKpu5FdL5QOeDC3v4bjwZXS6VqXV7IxwzqWm3rCz
+         IV7KrHV+rou2MAGOwzAYciVsZA1Q6jCPzZ0c85qsV4l+OANZvAK4bOWjvUv792knJY1I
+         KRFkzRFDURvCO/UyCn3adPv4IYtvMlXUB159ajQ2DMtXl0LJRnUkG3+XMyDNb5WxHSNB
+         FLVWcK4IZqsGCLxtjiEbGIkIPjWr+MQcLvdZYtEB2zV8GXTGqvQd6VliJtxNd0QVLlU9
+         OW/VMd19Kg6vP2E3wyHbM8/pwNyTFIvfgG81R4dwwV7+71ClYllJUX/ScUET0lsczD+B
+         pYyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698861763; x=1699466563;
+        d=1e100.net; s=20230601; t=1698861765; x=1699466565;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kukThpDw1OlU2Qi41kPUcezUwH/dCviJIoImwIYtSdk=;
-        b=Ndyhm8YSp/CsR/BSCZq7UNpESXsrDriqlnZMv10ye4rilfPb2EMz3WsMMbeOp5o+N5
-         7aQuB7vEVVqJeekEBvNFEaVGccAzBkMqBMDWuC7by+GadybxddM5FCkrY9O2kWAdFDR6
-         DgEEFEBZKVDVc6ENHTAfZHGv7W1KpgtBTO8JWFFgOcjRPVkHhHOTPLPH5w3h/Fwmdgvb
-         CFVjnKT3zu4A9Dy/Zx0t0b8beHnDoC6ZRCoWpV9LfNkVxaAB1z0rJQNxSdwfdpin2b0h
-         ReqniXs8nTC4p5p+rGyzaF+GIAz3wQ942D5sIdpyxfyPQs3JJU8IRuTJxXa5IKFTrRJ8
-         WW6w==
-X-Gm-Message-State: AOJu0Yx1s130B+wq386YeRBS2jIXkIVVb1ZWNWGBymVQk1cLKa5RZnPa
-        T39flGC/xDGy6zFSrObfx0tFyO4IaYwec7A=
-X-Google-Smtp-Source: AGHT+IFT4hV65jNkYQHPs5YxsaM0BVC/laywsq0hKCQ2FXgBcACkzAb/k49Aw6hMBoaatJYWzfs5TC5MKR1j2S8=
+        bh=JV3zrCLyeqQczhMfmNzMo9ruR8VdjWrgmPRKWC6d6dI=;
+        b=j60AesYXVbEOZKfZNOHesx8JkgITZsRrm4Ihi5JJxufZJt5R+foByqDMsYthwYmm9J
+         jHvuQl5JlUPc1LI/neGIjogpocM3WjxQv5TEOKbyRMCuOKq3tfQa6DAGfPnO/zP2Q8Us
+         BOYqu8KYAYB1t6b54eiin/eJgAubU85Frjw3AON5cD4Q39sApbfajOzTHvWyxQ3FEAtu
+         543C6Wo5XfNJHM71syzaRdJfbr6lhKzNlVOkAheaywPJcgd7QQ0yfIgOFVZhaHgIxaeP
+         vthphFpKBDsRS7tSQxW3oD1Gf6p7cBVWk+AK0Fww26SntvZ6Ah8hVhI8flAzmP4NjWAF
+         3wKg==
+X-Gm-Message-State: AOJu0Yxm9xRENzTILnNdmzITbEKWu2pZ7GSaryztEIvGtwqtnYKUM44q
+        J7oKZFVCO5LT+1mlTUhcemFC0OYi10w0pwY=
+X-Google-Smtp-Source: AGHT+IFBkFcCuyTpC8ZugJvAlyPaAkxPD0TqFR/BCnOj9JZRZAZdvCpZPSEXt37ryWaNk8385siZn0wVreFw6LI=
 X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a17:906:f247:b0:9c7:1cbb:3a71 with SMTP
- id gy7-20020a170906f24700b009c71cbb3a71mr30909ejb.1.1698861763349; Wed, 01
- Nov 2023 11:02:43 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 18:01:41 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6402:540e:b0:543:78e5:e00d with SMTP
+ id ev14-20020a056402540e00b0054378e5e00dmr50282edb.6.1698861765780; Wed, 01
+ Nov 2023 11:02:45 -0700 (PDT)
+Date:   Wed, 01 Nov 2023 18:01:42 +0000
 In-Reply-To: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 Mime-Version: 1.0
 References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231101-rust-binder-v1-11-08ba9197f637@google.com>
-Subject: [PATCH RFC 11/20] rust_binder: send nodes in transactions
+Message-ID: <20231101-rust-binder-v1-12-08ba9197f637@google.com>
+Subject: [PATCH RFC 12/20] rust_binder: add BINDER_TYPE_PTR support
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -85,527 +85,397 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To send a transaction to any process other than the context manager,
-someone must first send you the binder node. Usually, you get it from
-the context manager.
+Implement support for the scatter-gather feature of binder, which lets
+you embed pointers in binder transactions and have them be translated
+so that the recipient gets a pointer that also works for them.
 
-The transaction allocation now contains a list of offsets of objects in
-the transaction that must be translated before they are passed to the
-target process. In this patch, we only support translation of binder
-nodes, but future patches will extend this to other object types.
+This works by adding a second kind of object to the offset array, namely
+the BINDER_TYPE_PTR object. This object has a pointer and length
+embedded. The kernel will copy the data behind the pointer, and update
+the address of the pointer so that the recipient will be able to follow
+the pointer and see the same data.
 
-Co-developed-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+These objects are supported recursively. Other than the pointer in the
+main transaction buffer, each buffer may be pointed at by a pointer
+in one of the other buffers. This can be used to build arbitrary trees
+of buffers.
+
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- drivers/android/allocation.rs  | 266 ++++++++++++++++++++++++++++++++++++++++-
- drivers/android/defs.rs        |  44 +++++--
- drivers/android/process.rs     |   8 ++
- drivers/android/thread.rs      | 118 +++++++++++++++++-
- drivers/android/transaction.rs |   5 +-
- rust/helpers.c                 |   7 ++
- rust/kernel/security.rs        |   7 ++
- 7 files changed, 436 insertions(+), 19 deletions(-)
+ drivers/android/defs.rs   |   1 +
+ drivers/android/error.rs  |   9 ++
+ drivers/android/thread.rs | 340 +++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 344 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/android/allocation.rs b/drivers/android/allocation.rs
-index 0fdef5425918..32bc268956f2 100644
---- a/drivers/android/allocation.rs
-+++ b/drivers/android/allocation.rs
-@@ -1,9 +1,18 @@
- // SPDX-License-Identifier: GPL-2.0
--use core::mem::size_of_val;
-+use core::mem::{size_of, size_of_val, MaybeUninit};
-+use core::ops::Range;
- 
--use kernel::{bindings, pages::Pages, prelude::*, sync::Arc, user_ptr::UserSlicePtrReader};
-+use kernel::{
-+    bindings,
-+    io_buffer::{IoBufferReader, ReadableFromBytes, WritableToBytes},
-+    pages::Pages,
-+    prelude::*,
-+    sync::Arc,
-+    user_ptr::UserSlicePtrReader,
-+};
- 
- use crate::{
-+    defs::*,
-     node::{Node, NodeRef},
-     process::Process,
-     DArc,
-@@ -11,6 +20,8 @@
- 
- #[derive(Default)]
- pub(crate) struct AllocationInfo {
-+    /// Range within the allocation where we can find the offsets to the object descriptors.
-+    pub(crate) offsets: Option<Range<usize>>,
-     /// The target node of the transaction this allocation is associated to.
-     /// Not set for replies.
-     pub(crate) target_node: Option<NodeRef>,
-@@ -87,6 +98,21 @@ pub(crate) fn copy_into(
-         })
-     }
- 
-+    pub(crate) fn read<T: ReadableFromBytes>(&self, offset: usize) -> Result<T> {
-+        let mut out = MaybeUninit::<T>::uninit();
-+        let mut out_offset = 0;
-+        self.iterate(offset, size_of::<T>(), |page, offset, to_copy| {
-+            // SAFETY: The sum of `offset` and `to_copy` is bounded by the size of T.
-+            let obj_ptr = unsafe { (out.as_mut_ptr() as *mut u8).add(out_offset) };
-+            // SAFETY: The pointer points is in-bounds of the `out` variable, so it is valid.
-+            unsafe { page.read(obj_ptr, offset, to_copy) }?;
-+            out_offset += to_copy;
-+            Ok(())
-+        })?;
-+        // SAFETY: We just initialised the data.
-+        Ok(unsafe { out.assume_init() })
-+    }
-+
-     pub(crate) fn write<T: ?Sized>(&self, offset: usize, obj: &T) -> Result {
-         let mut obj_offset = 0;
-         self.iterate(offset, size_of_val(obj), |page, offset, to_copy| {
-@@ -119,6 +145,10 @@ pub(crate) fn get_or_init_info(&mut self) -> &mut AllocationInfo {
-         self.allocation_info.get_or_insert_with(Default::default)
-     }
- 
-+    pub(crate) fn set_info_offsets(&mut self, offsets: Range<usize>) {
-+        self.get_or_init_info().offsets = Some(offsets);
-+    }
-+
-     pub(crate) fn set_info_oneway_node(&mut self, oneway_node: DArc<Node>) {
-         self.get_or_init_info().oneway_node = Some(oneway_node);
-     }
-@@ -145,6 +175,15 @@ fn drop(&mut self) {
- 
-             info.target_node = None;
- 
-+            if let Some(offsets) = info.offsets.clone() {
-+                let view = AllocationView::new(self, offsets.start);
-+                for i in offsets.step_by(size_of::<usize>()) {
-+                    if view.cleanup_object(i).is_err() {
-+                        pr_warn!("Error cleaning up object at offset {}\n", i)
-+                    }
-+                }
-+            }
-+
-             if info.clear_on_free {
-                 if let Err(e) = self.fill_zero() {
-                     pr_warn!("Failed to clear data on free: {:?}", e);
-@@ -155,3 +194,226 @@ fn drop(&mut self) {
-         self.process.buffer_raw_free(self.ptr);
-     }
- }
-+
-+/// A view into the beginning of an allocation.
-+///
-+/// All attempts to read or write outside of the view will fail. To intentionally access outside of
-+/// this view, use the `alloc` field of this struct directly.
-+pub(crate) struct AllocationView<'a> {
-+    pub(crate) alloc: &'a mut Allocation,
-+    limit: usize,
-+}
-+
-+impl<'a> AllocationView<'a> {
-+    pub(crate) fn new(alloc: &'a mut Allocation, limit: usize) -> Self {
-+        AllocationView { alloc, limit }
-+    }
-+
-+    pub(crate) fn read<T: ReadableFromBytes>(&self, offset: usize) -> Result<T> {
-+        if offset.checked_add(size_of::<T>()).ok_or(EINVAL)? > self.limit {
-+            return Err(EINVAL);
-+        }
-+        self.alloc.read(offset)
-+    }
-+
-+    pub(crate) fn write<T: WritableToBytes>(&self, offset: usize, obj: &T) -> Result {
-+        if offset.checked_add(size_of::<T>()).ok_or(EINVAL)? > self.limit {
-+            return Err(EINVAL);
-+        }
-+        self.alloc.write(offset, obj)
-+    }
-+
-+    pub(crate) fn transfer_binder_object(
-+        &self,
-+        offset: usize,
-+        obj: &bindings::flat_binder_object,
-+        strong: bool,
-+        node_ref: NodeRef,
-+    ) -> Result {
-+        if Arc::ptr_eq(&node_ref.node.owner, &self.alloc.process) {
-+            // The receiving process is the owner of the node, so send it a binder object (instead
-+            // of a handle).
-+            let (ptr, cookie) = node_ref.node.get_id();
-+            let mut newobj = FlatBinderObject::default();
-+            newobj.hdr.type_ = if strong {
-+                BINDER_TYPE_BINDER
-+            } else {
-+                BINDER_TYPE_WEAK_BINDER
-+            };
-+            newobj.flags = obj.flags;
-+            newobj.__bindgen_anon_1.binder = ptr as _;
-+            newobj.cookie = cookie as _;
-+            self.write(offset, &newobj)?;
-+            // Increment the user ref count on the node. It will be decremented as part of the
-+            // destruction of the buffer, when we see a binder or weak-binder object.
-+            node_ref.node.update_refcount(true, 1, strong);
-+        } else {
-+            // The receiving process is different from the owner, so we need to insert a handle to
-+            // the binder object.
-+            let handle = self
-+                .alloc
-+                .process
-+                .insert_or_update_handle(node_ref, false)?;
-+            let mut newobj = FlatBinderObject::default();
-+            newobj.hdr.type_ = if strong {
-+                BINDER_TYPE_HANDLE
-+            } else {
-+                BINDER_TYPE_WEAK_HANDLE
-+            };
-+            newobj.flags = obj.flags;
-+            newobj.__bindgen_anon_1.handle = handle;
-+            if self.write(offset, &newobj).is_err() {
-+                // Decrement ref count on the handle we just created.
-+                let _ = self.alloc.process.update_ref(handle, false, strong);
-+                return Err(EINVAL);
-+            }
-+        }
-+        Ok(())
-+    }
-+
-+    fn cleanup_object(&self, index_offset: usize) -> Result {
-+        let offset = self.alloc.read(index_offset)?;
-+        let header = self.read::<BinderObjectHeader>(offset)?;
-+        match header.type_ {
-+            BINDER_TYPE_WEAK_BINDER | BINDER_TYPE_BINDER => {
-+                let obj = self.read::<FlatBinderObject>(offset)?;
-+                let strong = header.type_ == BINDER_TYPE_BINDER;
-+                // SAFETY: The type is `BINDER_TYPE_{WEAK_}BINDER`, so the `binder` field is
-+                // populated.
-+                let ptr = unsafe { obj.__bindgen_anon_1.binder } as usize;
-+                let cookie = obj.cookie as usize;
-+                self.alloc.process.update_node(ptr, cookie, strong);
-+                Ok(())
-+            }
-+            BINDER_TYPE_WEAK_HANDLE | BINDER_TYPE_HANDLE => {
-+                let obj = self.read::<FlatBinderObject>(offset)?;
-+                let strong = header.type_ == BINDER_TYPE_HANDLE;
-+                // SAFETY: The type is `BINDER_TYPE_{WEAK_}HANDLE`, so the `handle` field is
-+                // populated.
-+                let handle = unsafe { obj.__bindgen_anon_1.handle } as _;
-+                self.alloc.process.update_ref(handle, false, strong)
-+            }
-+            _ => Ok(()),
-+        }
-+    }
-+}
-+
-+/// A binder object as it is serialized.
-+///
-+/// # Invariants
-+///
-+/// All bytes must be initialized, and the value of `self.hdr.type_` must be one of the allowed
-+/// types.
-+#[repr(C)]
-+pub(crate) union BinderObject {
-+    hdr: bindings::binder_object_header,
-+    fbo: bindings::flat_binder_object,
-+    fdo: bindings::binder_fd_object,
-+    bbo: bindings::binder_buffer_object,
-+    fdao: bindings::binder_fd_array_object,
-+}
-+
-+/// A view into a `BinderObject` that can be used in a match statement.
-+pub(crate) enum BinderObjectRef<'a> {
-+    Binder(&'a mut bindings::flat_binder_object),
-+    Handle(&'a mut bindings::flat_binder_object),
-+    Fd(&'a mut bindings::binder_fd_object),
-+    Ptr(&'a mut bindings::binder_buffer_object),
-+    Fda(&'a mut bindings::binder_fd_array_object),
-+}
-+
-+impl BinderObject {
-+    pub(crate) fn read_from(reader: &mut UserSlicePtrReader) -> Result<BinderObject> {
-+        let object = Self::read_from_inner(|slice| {
-+            let read_len = usize::min(slice.len(), reader.len());
-+            // SAFETY: The length we pass to `read_raw` is at most the length of the slice.
-+            unsafe {
-+                reader
-+                    .clone_reader()
-+                    .read_raw(slice.as_mut_ptr(), read_len)?;
-+            }
-+            Ok(())
-+        })?;
-+
-+        // If we used a object type smaller than the largest object size, then we've read more
-+        // bytes than we needed to. However, we used `.clone_reader()` to avoid advancing the
-+        // original reader. Now, we call `skip` so that the caller's reader is advanced by the
-+        // right amount.
-+        //
-+        // The `skip` call fails if the reader doesn't have `size` bytes available. This could
-+        // happen if the type header corresponds to an object type that is larger than the rest of
-+        // the reader.
-+        //
-+        // Any extra bytes beyond the size of the object are inaccessible after this call, so
-+        // reading them again from the `reader` later does not result in TOCTOU bugs.
-+        reader.skip(object.size())?;
-+
-+        Ok(object)
-+    }
-+
-+    /// Use the provided reader closure to construct a `BinderObject`.
-+    ///
-+    /// The closure should write the bytes for the object into the provided slice.
-+    pub(crate) fn read_from_inner<R>(reader: R) -> Result<BinderObject>
-+    where
-+        R: FnOnce(&mut [u8; size_of::<BinderObject>()]) -> Result<()>,
-+    {
-+        let mut obj = MaybeUninit::<BinderObject>::zeroed();
-+
-+        // SAFETY: The lengths of `BinderObject` and `[u8; size_of::<BinderObject>()]` are equal,
-+        // and the byte array has an alignment requirement of one, so the pointer cast is okay.
-+        // Additionally, `obj` was initialized to zeros, so the byte array will not be
-+        // uninitialized.
-+        (reader)(unsafe { &mut *obj.as_mut_ptr().cast() })?;
-+
-+        // SAFETY: The entire object is initialized, so accessing this field is safe.
-+        let type_ = unsafe { obj.assume_init_ref().hdr.type_ };
-+        if Self::type_to_size(type_).is_none() {
-+            // The value of `obj.hdr_type_` was invalid.
-+            return Err(EINVAL);
-+        }
-+
-+        // SAFETY: All bytes are initialized (since we zeroed them at the start) and we checked
-+        // that `self.hdr.type_` is one of the allowed types, so the type invariants are satisfied.
-+        unsafe { Ok(obj.assume_init()) }
-+    }
-+
-+    pub(crate) fn as_ref(&mut self) -> BinderObjectRef<'_> {
-+        use BinderObjectRef::*;
-+        // SAFETY: The constructor ensures that all bytes of `self` are initialized, and all
-+        // variants of this union accept all initialized bit patterns.
-+        unsafe {
-+            match self.hdr.type_ {
-+                BINDER_TYPE_WEAK_BINDER | BINDER_TYPE_BINDER => Binder(&mut self.fbo),
-+                BINDER_TYPE_WEAK_HANDLE | BINDER_TYPE_HANDLE => Handle(&mut self.fbo),
-+                BINDER_TYPE_FD => Fd(&mut self.fdo),
-+                BINDER_TYPE_PTR => Ptr(&mut self.bbo),
-+                BINDER_TYPE_FDA => Fda(&mut self.fdao),
-+                // SAFETY: By the type invariant, the value of `self.hdr.type_` cannot have any
-+                // other value than the ones checked above.
-+                _ => core::hint::unreachable_unchecked(),
-+            }
-+        }
-+    }
-+
-+    pub(crate) fn size(&self) -> usize {
-+        // SAFETY: The entire object is initialized, so accessing this field is safe.
-+        let type_ = unsafe { self.hdr.type_ };
-+
-+        // SAFETY: The type invariants guarantee that the type field is correct.
-+        unsafe { Self::type_to_size(type_).unwrap_unchecked() }
-+    }
-+
-+    fn type_to_size(type_: u32) -> Option<usize> {
-+        match type_ {
-+            BINDER_TYPE_WEAK_BINDER => Some(size_of::<bindings::flat_binder_object>()),
-+            BINDER_TYPE_BINDER => Some(size_of::<bindings::flat_binder_object>()),
-+            BINDER_TYPE_WEAK_HANDLE => Some(size_of::<bindings::flat_binder_object>()),
-+            BINDER_TYPE_HANDLE => Some(size_of::<bindings::flat_binder_object>()),
-+            BINDER_TYPE_FD => Some(size_of::<bindings::binder_fd_object>()),
-+            BINDER_TYPE_PTR => Some(size_of::<bindings::binder_buffer_object>()),
-+            BINDER_TYPE_FDA => Some(size_of::<bindings::binder_fd_array_object>()),
-+            _ => None,
-+        }
-+    }
-+}
 diff --git a/drivers/android/defs.rs b/drivers/android/defs.rs
-index 753f7e86c92d..68f32a779a3c 100644
+index 68f32a779a3c..267266f3ad76 100644
 --- a/drivers/android/defs.rs
 +++ b/drivers/android/defs.rs
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+use core::mem::MaybeUninit;
- use core::ops::{Deref, DerefMut};
- use kernel::{
-     bindings::{self, *},
-@@ -57,11 +58,18 @@ macro_rules! pub_no_prefix {
-     kernel::bindings::FLAT_BINDER_FLAG_TXN_SECURITY_CTX;
- pub_no_prefix!(transaction_flags_, TF_ONE_WAY, TF_CLEAR_BUF);
- 
-+pub(crate) use bindings::{
-+    BINDER_TYPE_BINDER, BINDER_TYPE_FD, BINDER_TYPE_FDA, BINDER_TYPE_HANDLE, BINDER_TYPE_PTR,
-+    BINDER_TYPE_WEAK_BINDER, BINDER_TYPE_WEAK_HANDLE,
-+};
-+
- macro_rules! decl_wrapper {
-     ($newname:ident, $wrapped:ty) => {
--        #[derive(Copy, Clone, Default)]
-+        // Define a wrapper around the C type. Use `MaybeUninit` to enforce that the value of
-+        // padding bytes must be preserved.
-+        #[derive(Copy, Clone)]
-         #[repr(transparent)]
--        pub(crate) struct $newname($wrapped);
-+        pub(crate) struct $newname(MaybeUninit<$wrapped>);
- 
-         // SAFETY: This macro is only used with types where this is ok.
-         unsafe impl ReadableFromBytes for $newname {}
-@@ -70,13 +78,24 @@ unsafe impl WritableToBytes for $newname {}
-         impl Deref for $newname {
-             type Target = $wrapped;
-             fn deref(&self) -> &Self::Target {
--                &self.0
-+                // SAFETY: We use `MaybeUninit` only to preserve padding. The value must still
-+                // always be valid.
-+                unsafe { self.0.assume_init_ref() }
-             }
-         }
- 
-         impl DerefMut for $newname {
-             fn deref_mut(&mut self) -> &mut Self::Target {
--                &mut self.0
-+                // SAFETY: We use `MaybeUninit` only to preserve padding. The value must still
-+                // always be valid.
-+                unsafe { self.0.assume_init_mut() }
-+            }
-+        }
-+
-+        impl Default for $newname {
-+            fn default() -> Self {
-+                // Create a new value of this type where all bytes (including padding) are zeroed.
-+                Self(MaybeUninit::zeroed())
-             }
-         }
-     };
-@@ -85,6 +104,7 @@ fn deref_mut(&mut self) -> &mut Self::Target {
- decl_wrapper!(BinderNodeDebugInfo, bindings::binder_node_debug_info);
+@@ -105,6 +105,7 @@ fn default() -> Self {
  decl_wrapper!(BinderNodeInfoForRef, bindings::binder_node_info_for_ref);
  decl_wrapper!(FlatBinderObject, bindings::flat_binder_object);
-+decl_wrapper!(BinderObjectHeader, bindings::binder_object_header);
+ decl_wrapper!(BinderObjectHeader, bindings::binder_object_header);
++decl_wrapper!(BinderBufferObject, bindings::binder_buffer_object);
  decl_wrapper!(BinderTransactionData, bindings::binder_transaction_data);
  decl_wrapper!(
      BinderTransactionDataSecctx,
-@@ -100,18 +120,18 @@ fn deref_mut(&mut self) -> &mut Self::Target {
- 
- impl BinderVersion {
-     pub(crate) fn current() -> Self {
--        Self(bindings::binder_version {
-+        Self(MaybeUninit::new(bindings::binder_version {
-             protocol_version: bindings::BINDER_CURRENT_PROTOCOL_VERSION as _,
--        })
-+        }))
+diff --git a/drivers/android/error.rs b/drivers/android/error.rs
+index 430b0994affa..c9b991d133d9 100644
+--- a/drivers/android/error.rs
++++ b/drivers/android/error.rs
+@@ -50,6 +50,15 @@ fn from(_: core::alloc::AllocError) -> Self {
      }
  }
  
- impl BinderTransactionData {
-     pub(crate) fn with_buffers_size(self, buffers_size: u64) -> BinderTransactionDataSg {
--        BinderTransactionDataSg(bindings::binder_transaction_data_sg {
--            transaction_data: self.0,
-+        BinderTransactionDataSg(MaybeUninit::new(bindings::binder_transaction_data_sg {
-+            transaction_data: *self,
-             buffers_size,
--        })
-+        }))
-     }
- }
++impl From<alloc::collections::TryReserveError> for BinderError {
++    fn from(_: alloc::collections::TryReserveError) -> Self {
++        Self {
++            reply: BR_FAILED_REPLY,
++            source: Some(ENOMEM),
++        }
++    }
++}
++
+ impl core::fmt::Debug for BinderError {
+     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+         match self.reply {
+diff --git a/drivers/android/thread.rs b/drivers/android/thread.rs
+index a9afc7b706c6..86bb32bbabd9 100644
+--- a/drivers/android/thread.rs
++++ b/drivers/android/thread.rs
+@@ -35,6 +35,184 @@
+     sync::atomic::{AtomicU32, Ordering},
+ };
  
-@@ -128,6 +148,10 @@ pub(crate) fn tr_data(&mut self) -> &mut BinderTransactionData {
++/// Stores the layout of the scatter-gather entries. This is used during the `translate_objects`
++/// call and is discarded when it returns.
++struct ScatterGatherState {
++    /// A struct that tracks the amount of unused buffer space.
++    unused_buffer_space: UnusedBufferSpace,
++    /// Scatter-gather entries to copy.
++    sg_entries: Vec<ScatterGatherEntry>,
++    /// Indexes into `sg_entries` corresponding to the last binder_buffer_object that
++    /// was processed and all of its ancestors. The array is in sorted order.
++    ancestors: Vec<usize>,
++}
++
++/// This entry specifies an additional buffer that should be copied using the scatter-gather
++/// mechanism.
++struct ScatterGatherEntry {
++    /// The index in the offset array of the BINDER_TYPE_PTR that this entry originates from.
++    obj_index: usize,
++    /// Offset in target buffer.
++    offset: usize,
++    /// User address in source buffer.
++    sender_uaddr: usize,
++    /// Number of bytes to copy.
++    length: usize,
++    /// The minimum offset of the next fixup in this buffer.
++    fixup_min_offset: usize,
++    /// The offsets within this buffer that contain pointers which should be translated.
++    pointer_fixups: Vec<PointerFixupEntry>,
++}
++
++/// This entry specifies that a fixup should happen at `target_offset` of the
++/// buffer. If `skip` is nonzero, then the fixup is a `binder_fd_array_object`
++/// and is applied later. Otherwise if `skip` is zero, then the size of the
++/// fixup is `sizeof::<u64>()` and `pointer_value` is written to the buffer.
++struct PointerFixupEntry {
++    /// The number of bytes to skip, or zero for a `binder_buffer_object` fixup.
++    skip: usize,
++    /// The translated pointer to write when `skip` is zero.
++    pointer_value: u64,
++    /// The offset at which the value should be written. The offset is relative
++    /// to the original buffer.
++    target_offset: usize,
++}
++
++/// Return type of `apply_and_validate_fixup_in_parent`.
++struct ParentFixupInfo {
++    /// The index of the parent buffer in `sg_entries`.
++    parent_sg_index: usize,
++    /// The number of ancestors of the buffer.
++    ///
++    /// The buffer is considered an ancestor of itself, so this is always at
++    /// least one.
++    num_ancestors: usize,
++    /// New value of `fixup_min_offset` if this fixup is applied.
++    new_min_offset: usize,
++    /// The offset of the fixup in the target buffer.
++    target_offset: usize,
++}
++
++impl ScatterGatherState {
++    /// Called when a `binder_buffer_object` or `binder_fd_array_object` tries
++    /// to access a region in its parent buffer. These accesses have various
++    /// restrictions, which this method verifies.
++    ///
++    /// The `parent_offset` and `length` arguments describe the offset and
++    /// length of the access in the parent buffer.
++    ///
++    /// # Detailed restrictions
++    ///
++    /// Obviously the fixup must be in-bounds for the parent buffer.
++    ///
++    /// For safety reasons, we only allow fixups inside a buffer to happen
++    /// at increasing offsets; additionally, we only allow fixup on the last
++    /// buffer object that was verified, or one of its parents.
++    ///
++    /// Example of what is allowed:
++    ///
++    /// A
++    ///   B (parent = A, offset = 0)
++    ///   C (parent = A, offset = 16)
++    ///     D (parent = C, offset = 0)
++    ///   E (parent = A, offset = 32) // min_offset is 16 (C.parent_offset)
++    ///
++    /// Examples of what is not allowed:
++    ///
++    /// Decreasing offsets within the same parent:
++    /// A
++    ///   C (parent = A, offset = 16)
++    ///   B (parent = A, offset = 0) // decreasing offset within A
++    ///
++    /// Arcerring to a parent that wasn't the last object or any of its parents:
++    /// A
++    ///   B (parent = A, offset = 0)
++    ///   C (parent = A, offset = 0)
++    ///   C (parent = A, offset = 16)
++    ///     D (parent = B, offset = 0) // B is not A or any of A's parents
++    fn validate_parent_fixup(
++        &self,
++        parent: usize,
++        parent_offset: usize,
++        length: usize,
++    ) -> Result<ParentFixupInfo> {
++        // Using `position` would also be correct, but `rposition` avoids
++        // quadratic running times.
++        let ancestors_i = self
++            .ancestors
++            .iter()
++            .copied()
++            .rposition(|sg_idx| self.sg_entries[sg_idx].obj_index == parent)
++            .ok_or(EINVAL)?;
++        let sg_idx = self.ancestors[ancestors_i];
++        let sg_entry = match self.sg_entries.get(sg_idx) {
++            Some(sg_entry) => sg_entry,
++            None => {
++                pr_err!(
++                    "self.ancestors[{}] is {}, but self.sg_entries.len() is {}",
++                    ancestors_i,
++                    sg_idx,
++                    self.sg_entries.len()
++                );
++                return Err(EINVAL);
++            }
++        };
++        if sg_entry.fixup_min_offset > parent_offset {
++            pr_warn!(
++                "validate_parent_fixup: fixup_min_offset={}, parent_offset={}",
++                sg_entry.fixup_min_offset,
++                parent_offset
++            );
++            return Err(EINVAL);
++        }
++        let new_min_offset = parent_offset.checked_add(length).ok_or(EINVAL)?;
++        if new_min_offset > sg_entry.length {
++            pr_warn!(
++                "validate_parent_fixup: new_min_offset={}, sg_entry.length={}",
++                new_min_offset,
++                sg_entry.length
++            );
++            return Err(EINVAL);
++        }
++        let target_offset = sg_entry.offset.checked_add(parent_offset).ok_or(EINVAL)?;
++        // The `ancestors_i + 1` operation can't overflow since the output of the addition is at
++        // most `self.ancestors.len()`, which also fits in a usize.
++        Ok(ParentFixupInfo {
++            parent_sg_index: sg_idx,
++            num_ancestors: ancestors_i + 1,
++            new_min_offset,
++            target_offset,
++        })
++    }
++}
++
++/// Keeps track of how much unused buffer space is left. The initial amount is the number of bytes
++/// requested by the user using the `buffers_size` field of `binder_transaction_data_sg`. Each time
++/// we translate an object of type `BINDER_TYPE_PTR`, some of the unused buffer space is consumed.
++struct UnusedBufferSpace {
++    /// The start of the remaining space.
++    offset: usize,
++    /// The end of the remaining space.
++    limit: usize,
++}
++impl UnusedBufferSpace {
++    /// Claim the next `size` bytes from the unused buffer space. The offset for the claimed chunk
++    /// into the buffer is returned.
++    fn claim_next(&mut self, size: usize) -> Result<usize> {
++        // We require every chunk to be aligned.
++        let size = ptr_align(size);
++        let new_offset = self.offset.checked_add(size).ok_or(EINVAL)?;
++
++        if new_offset <= self.limit {
++            let offset = self.offset;
++            self.offset = new_offset;
++            Ok(offset)
++        } else {
++            Err(EINVAL)
++        }
++    }
++}
++
+ pub(crate) enum PushWorkRes {
+     Ok,
+     FailedDead(DLArc<dyn DeliverToRead>),
+@@ -419,9 +597,11 @@ pub(crate) fn push_return_work(&self, reply: u32) {
  
- impl ExtendedError {
-     pub(crate) fn new(id: u32, command: u32, param: i32) -> Self {
--        Self(bindings::binder_extended_error { id, command, param })
-+        Self(MaybeUninit::new(bindings::binder_extended_error {
-+            id,
-+            command,
-+            param,
-+        }))
-     }
- }
-diff --git a/drivers/android/process.rs b/drivers/android/process.rs
-index 0b79fa59ffa5..944297b7403c 100644
---- a/drivers/android/process.rs
-+++ b/drivers/android/process.rs
-@@ -591,6 +591,14 @@ pub(crate) fn update_ref(&self, handle: u32, inc: bool, strong: bool) -> Result
+     fn translate_object(
+         &self,
++        obj_index: usize,
+         offset: usize,
+         object: BinderObjectRef<'_>,
+         view: &mut AllocationView<'_>,
++        sg_state: &mut ScatterGatherState,
+     ) -> BinderResult {
+         match object {
+             BinderObjectRef::Binder(obj) => {
+@@ -453,9 +633,78 @@ fn translate_object(
+                 pr_warn!("Using unsupported binder object type fd.");
+                 return Err(EINVAL.into());
+             }
+-            BinderObjectRef::Ptr(_obj) => {
+-                pr_warn!("Using unsupported binder object type ptr.");
+-                return Err(EINVAL.into());
++            BinderObjectRef::Ptr(obj) => {
++                let obj_length = obj.length.try_into().map_err(|_| EINVAL)?;
++                let alloc_offset = match sg_state.unused_buffer_space.claim_next(obj_length) {
++                    Ok(alloc_offset) => alloc_offset,
++                    Err(err) => {
++                        pr_warn!(
++                            "Failed to claim space for a BINDER_TYPE_PTR. (offset: {}, limit: {}, size: {})",
++                            sg_state.unused_buffer_space.offset,
++                            sg_state.unused_buffer_space.limit,
++                            obj_length,
++                        );
++                        return Err(err.into());
++                    }
++                };
++
++                let sg_state_idx = sg_state.sg_entries.len();
++                sg_state.sg_entries.try_push(ScatterGatherEntry {
++                    obj_index,
++                    offset: alloc_offset,
++                    sender_uaddr: obj.buffer as _,
++                    length: obj_length,
++                    pointer_fixups: Vec::new(),
++                    fixup_min_offset: 0,
++                })?;
++
++                let buffer_ptr_in_user_space = (view.alloc.ptr + alloc_offset) as u64;
++
++                if obj.flags & bindings::BINDER_BUFFER_FLAG_HAS_PARENT == 0 {
++                    sg_state.ancestors.clear();
++                    sg_state.ancestors.try_push(sg_state_idx)?;
++                } else {
++                    // Another buffer also has a pointer to this buffer, and we need to fixup that
++                    // pointer too.
++
++                    let parent_index = usize::try_from(obj.parent).map_err(|_| EINVAL)?;
++                    let parent_offset = usize::try_from(obj.parent_offset).map_err(|_| EINVAL)?;
++
++                    let info = sg_state.validate_parent_fixup(
++                        parent_index,
++                        parent_offset,
++                        size_of::<u64>(),
++                    )?;
++
++                    sg_state.ancestors.truncate(info.num_ancestors);
++                    sg_state.ancestors.try_push(sg_state_idx)?;
++
++                    let parent_entry = match sg_state.sg_entries.get_mut(info.parent_sg_index) {
++                        Some(parent_entry) => parent_entry,
++                        None => {
++                            pr_err!(
++                                "validate_parent_fixup returned index out of bounds for sg.entries"
++                            );
++                            return Err(EINVAL.into());
++                        }
++                    };
++
++                    parent_entry.fixup_min_offset = info.new_min_offset;
++                    parent_entry.pointer_fixups.try_push(PointerFixupEntry {
++                        skip: 0,
++                        pointer_value: buffer_ptr_in_user_space,
++                        target_offset: info.target_offset,
++                    })?;
++                }
++
++                let mut obj_write = BinderBufferObject::default();
++                obj_write.hdr.type_ = BINDER_TYPE_PTR;
++                obj_write.flags = obj.flags;
++                obj_write.buffer = buffer_ptr_in_user_space;
++                obj_write.length = obj.length;
++                obj_write.parent = obj.parent;
++                obj_write.parent_offset = obj.parent_offset;
++                view.write::<BinderBufferObject>(offset, &obj_write)?;
+             }
+             BinderObjectRef::Fda(_obj) => {
+                 pr_warn!("Using unsupported binder object type fda.");
+@@ -465,6 +714,61 @@ fn translate_object(
          Ok(())
      }
  
-+    /// Decrements the refcount of the given node, if one exists.
-+    pub(crate) fn update_node(&self, ptr: usize, cookie: usize, strong: bool) {
-+        let mut inner = self.inner.lock();
-+        if let Ok(Some(node)) = inner.get_existing_node(ptr, cookie) {
-+            inner.update_node_refcount(&node, false, strong, 1, None);
-+        }
-+    }
++    fn apply_sg(&self, alloc: &mut Allocation, sg_state: &mut ScatterGatherState) -> BinderResult {
++        for sg_entry in &mut sg_state.sg_entries {
++            let mut end_of_previous_fixup = sg_entry.offset;
++            let offset_end = sg_entry.offset.checked_add(sg_entry.length).ok_or(EINVAL)?;
 +
-     pub(crate) fn inc_ref_done(&self, reader: &mut UserSlicePtrReader, strong: bool) -> Result {
-         let ptr = reader.read::<usize>()?;
-         let cookie = reader.read::<usize>()?;
-diff --git a/drivers/android/thread.rs b/drivers/android/thread.rs
-index b70a5e3c064b..a9afc7b706c6 100644
---- a/drivers/android/thread.rs
-+++ b/drivers/android/thread.rs
-@@ -21,8 +21,13 @@
- };
- 
- use crate::{
--    allocation::Allocation, defs::*, error::BinderResult, process::Process, ptr_align,
--    transaction::Transaction, DArc, DLArc, DTRWrap, DeliverCode, DeliverToRead,
-+    allocation::{Allocation, AllocationView, BinderObject, BinderObjectRef},
-+    defs::*,
-+    error::BinderResult,
-+    process::Process,
-+    ptr_align,
-+    transaction::Transaction,
-+    DArc, DLArc, DTRWrap, DeliverCode, DeliverToRead,
- };
- 
- use core::{
-@@ -412,6 +417,54 @@ pub(crate) fn push_return_work(&self, reply: u32) {
-         self.inner.lock().push_return_work(reply);
-     }
- 
-+    fn translate_object(
-+        &self,
-+        offset: usize,
-+        object: BinderObjectRef<'_>,
-+        view: &mut AllocationView<'_>,
-+    ) -> BinderResult {
-+        match object {
-+            BinderObjectRef::Binder(obj) => {
-+                let strong = obj.hdr.type_ == BINDER_TYPE_BINDER;
-+                // SAFETY: `binder` is a `binder_uintptr_t`; any bit pattern is a valid
-+                // representation.
-+                let ptr = unsafe { obj.__bindgen_anon_1.binder } as _;
-+                let cookie = obj.cookie as _;
-+                let flags = obj.flags as _;
-+                let node = self.process.as_arc_borrow().get_node(
-+                    ptr,
-+                    cookie,
-+                    flags,
-+                    strong,
-+                    Some(self),
-+                )?;
-+                security::binder_transfer_binder(&self.process.cred, &view.alloc.process.cred)?;
-+                view.transfer_binder_object(offset, obj, strong, node)?;
++            let mut reader =
++                UserSlicePtr::new(sg_entry.sender_uaddr as _, sg_entry.length).reader();
++            for fixup in &mut sg_entry.pointer_fixups {
++                let fixup_len = if fixup.skip == 0 {
++                    size_of::<u64>()
++                } else {
++                    fixup.skip
++                };
++
++                let target_offset_end = fixup.target_offset.checked_add(fixup_len).ok_or(EINVAL)?;
++                if fixup.target_offset < end_of_previous_fixup || offset_end < target_offset_end {
++                    pr_warn!(
++                        "Fixups oob {} {} {} {}",
++                        fixup.target_offset,
++                        end_of_previous_fixup,
++                        offset_end,
++                        target_offset_end
++                    );
++                    return Err(EINVAL.into());
++                }
++
++                let copy_off = end_of_previous_fixup;
++                let copy_len = fixup.target_offset - end_of_previous_fixup;
++                if let Err(err) = alloc.copy_into(&mut reader, copy_off, copy_len) {
++                    pr_warn!("Failed copying into alloc: {:?}", err);
++                    return Err(err.into());
++                }
++                if fixup.skip == 0 {
++                    let res = alloc.write::<u64>(fixup.target_offset, &fixup.pointer_value);
++                    if let Err(err) = res {
++                        pr_warn!("Failed copying ptr into alloc: {:?}", err);
++                        return Err(err.into());
++                    }
++                }
++                if let Err(err) = reader.skip(fixup_len) {
++                    pr_warn!("Failed skipping {} from reader: {:?}", fixup_len, err);
++                    return Err(err.into());
++                }
++                end_of_previous_fixup = target_offset_end;
 +            }
-+            BinderObjectRef::Handle(obj) => {
-+                let strong = obj.hdr.type_ == BINDER_TYPE_HANDLE;
-+                // SAFETY: `handle` is a `u32`; any bit pattern is a valid representation.
-+                let handle = unsafe { obj.__bindgen_anon_1.handle } as _;
-+                let node = self.process.get_node_from_handle(handle, strong)?;
-+                security::binder_transfer_binder(&self.process.cred, &view.alloc.process.cred)?;
-+                view.transfer_binder_object(offset, obj, strong, node)?;
-+            }
-+            BinderObjectRef::Fd(_obj) => {
-+                pr_warn!("Using unsupported binder object type fd.");
-+                return Err(EINVAL.into());
-+            }
-+            BinderObjectRef::Ptr(_obj) => {
-+                pr_warn!("Using unsupported binder object type ptr.");
-+                return Err(EINVAL.into());
-+            }
-+            BinderObjectRef::Fda(_obj) => {
-+                pr_warn!("Using unsupported binder object type fda.");
-+                return Err(EINVAL.into());
++            let copy_off = end_of_previous_fixup;
++            let copy_len = offset_end - end_of_previous_fixup;
++            if let Err(err) = alloc.copy_into(&mut reader, copy_off, copy_len) {
++                pr_warn!("Failed copying remainder into alloc: {:?}", err);
++                return Err(err.into());
 +            }
 +        }
 +        Ok(())
@@ -614,164 +484,84 @@ index b70a5e3c064b..a9afc7b706c6 100644
      pub(crate) fn copy_transaction_data(
          &self,
          to_process: Arc<Process>,
-@@ -436,6 +489,8 @@ pub(crate) fn copy_transaction_data(
- 
-         let data_size = trd.data_size.try_into().map_err(|_| EINVAL)?;
+@@ -491,6 +795,8 @@ pub(crate) fn copy_transaction_data(
          let adata_size = ptr_align(data_size);
-+        let offsets_size = trd.offsets_size.try_into().map_err(|_| EINVAL)?;
-+        let aoffsets_size = ptr_align(offsets_size);
+         let offsets_size = trd.offsets_size.try_into().map_err(|_| EINVAL)?;
+         let aoffsets_size = ptr_align(offsets_size);
++        let buffers_size = tr.buffers_size.try_into().map_err(|_| EINVAL)?;
++        let abuffers_size = ptr_align(buffers_size);
          let asecctx_size = secctx
              .as_ref()
              .map(|(_, ctx)| ptr_align(ctx.len()))
-@@ -443,11 +498,14 @@ pub(crate) fn copy_transaction_data(
- 
-         // This guarantees that at least `sizeof(usize)` bytes will be allocated.
+@@ -500,11 +806,12 @@ pub(crate) fn copy_transaction_data(
          let len = usize::max(
--            adata_size.checked_add(asecctx_size).ok_or(ENOMEM)?,
-+            adata_size
-+                .checked_add(aoffsets_size)
-+                .and_then(|sum| sum.checked_add(asecctx_size))
-+                .ok_or(ENOMEM)?,
+             adata_size
+                 .checked_add(aoffsets_size)
++                .and_then(|sum| sum.checked_add(abuffers_size))
+                 .and_then(|sum| sum.checked_add(asecctx_size))
+                 .ok_or(ENOMEM)?,
              size_of::<usize>(),
          );
--        let secctx_off = adata_size;
--        let alloc = match to_process.buffer_alloc(len, is_oneway) {
-+        let secctx_off = adata_size + aoffsets_size;
-+        let mut alloc = match to_process.buffer_alloc(len, is_oneway) {
+-        let secctx_off = adata_size + aoffsets_size;
++        let secctx_off = adata_size + aoffsets_size + abuffers_size;
+         let mut alloc = match to_process.buffer_alloc(len, is_oneway) {
              Ok(alloc) => alloc,
              Err(err) => {
-                 pr_warn!(
-@@ -461,8 +519,56 @@ pub(crate) fn copy_transaction_data(
- 
+@@ -520,6 +827,7 @@ pub(crate) fn copy_transaction_data(
          let mut buffer_reader =
              unsafe { UserSlicePtr::new(trd.data.ptr.buffer as _, data_size) }.reader();
-+        let mut end_of_previous_object = 0;
+         let mut end_of_previous_object = 0;
++        let mut sg_state = None;
+ 
+         // Copy offsets if there are any.
+         if offsets_size > 0 {
+@@ -532,9 +840,22 @@ pub(crate) fn copy_transaction_data(
+             let offsets_start = adata_size;
+             let offsets_end = adata_size + aoffsets_size;
+ 
++            // This state is used for BINDER_TYPE_PTR objects.
++            let sg_state = sg_state.insert(ScatterGatherState {
++                unused_buffer_space: UnusedBufferSpace {
++                    offset: offsets_end,
++                    limit: len,
++                },
++                sg_entries: Vec::new(),
++                ancestors: Vec::new(),
++            });
 +
-+        // Copy offsets if there are any.
-+        if offsets_size > 0 {
+             // Traverse the objects specified.
+             let mut view = AllocationView::new(&mut alloc, data_size);
+-            for index_offset in (offsets_start..offsets_end).step_by(size_of::<usize>()) {
++            for (index, index_offset) in (offsets_start..offsets_end)
++                .step_by(size_of::<usize>())
++                .enumerate()
 +            {
-+                let mut reader =
-+                    unsafe { UserSlicePtr::new(trd.data.ptr.offsets as _, offsets_size) }.reader();
-+                alloc.copy_into(&mut reader, adata_size, offsets_size)?;
-+            }
-+
-+            let offsets_start = adata_size;
-+            let offsets_end = adata_size + aoffsets_size;
-+
-+            // Traverse the objects specified.
-+            let mut view = AllocationView::new(&mut alloc, data_size);
-+            for index_offset in (offsets_start..offsets_end).step_by(size_of::<usize>()) {
-+                let offset = view.alloc.read(index_offset)?;
-+
-+                // Copy data between two objects.
-+                if end_of_previous_object < offset {
-+                    view.alloc.copy_into(
-+                        &mut buffer_reader,
-+                        end_of_previous_object,
-+                        offset - end_of_previous_object,
-+                    )?;
-+                }
-+
-+                let mut object = BinderObject::read_from(&mut buffer_reader)?;
-+
-+                match self.translate_object(offset, object.as_ref(), &mut view) {
-+                    Ok(()) => end_of_previous_object = offset + object.size(),
-+                    Err(err) => {
-+                        pr_warn!("Error while translating object.");
-+                        return Err(err);
-+                    }
-+                }
-+
-+                // Update the indexes containing objects to clean up.
-+                let offset_after_object = index_offset + size_of::<usize>();
-+                view.alloc
-+                    .set_info_offsets(offsets_start..offset_after_object);
+                 let offset = view.alloc.read(index_offset)?;
+ 
+                 // Copy data between two objects.
+@@ -548,7 +869,7 @@ pub(crate) fn copy_transaction_data(
+ 
+                 let mut object = BinderObject::read_from(&mut buffer_reader)?;
+ 
+-                match self.translate_object(offset, object.as_ref(), &mut view) {
++                match self.translate_object(index, offset, object.as_ref(), &mut view, sg_state) {
+                     Ok(()) => end_of_previous_object = offset + object.size(),
+                     Err(err) => {
+                         pr_warn!("Error while translating object.");
+@@ -570,6 +891,13 @@ pub(crate) fn copy_transaction_data(
+             data_size - end_of_previous_object,
+         )?;
+ 
++        if let Some(sg_state) = sg_state.as_mut() {
++            if let Err(err) = self.apply_sg(&mut alloc, sg_state) {
++                pr_warn!("Failure in apply_sg: {:?}", err);
++                return Err(err);
 +            }
 +        }
- 
--        alloc.copy_into(&mut buffer_reader, 0, data_size)?;
-+        // Copy remaining raw data.
-+        alloc.copy_into(
-+            &mut buffer_reader,
-+            end_of_previous_object,
-+            data_size - end_of_previous_object,
-+        )?;
- 
++
          if let Some((off_out, secctx)) = secctx.as_mut() {
              if let Err(err) = alloc.write(secctx_off, secctx.as_bytes()) {
-diff --git a/drivers/android/transaction.rs b/drivers/android/transaction.rs
-index a4ffe0a3878c..2faba6e1f47f 100644
---- a/drivers/android/transaction.rs
-+++ b/drivers/android/transaction.rs
-@@ -32,6 +32,7 @@ pub(crate) struct Transaction {
-     code: u32,
-     pub(crate) flags: u32,
-     data_size: usize,
-+    offsets_size: usize,
-     data_address: usize,
-     sender_euid: Kuid,
-     txn_security_ctx_off: Option<usize>,
-@@ -85,6 +86,7 @@ pub(crate) fn new(
-             code: trd.code,
-             flags: trd.flags,
-             data_size: trd.data_size as _,
-+            offsets_size: trd.offsets_size as _,
-             data_address,
-             allocation <- kernel::new_spinlock!(Some(alloc), "Transaction::new"),
-             txn_security_ctx_off,
-@@ -116,6 +118,7 @@ pub(crate) fn new_reply(
-             code: trd.code,
-             flags: trd.flags,
-             data_size: trd.data_size as _,
-+            offsets_size: trd.offsets_size as _,
-             data_address: alloc.ptr,
-             allocation <- kernel::new_spinlock!(Some(alloc), "Transaction::new"),
-             txn_security_ctx_off: None,
-@@ -229,7 +232,7 @@ fn do_work(self: DArc<Self>, thread: &Thread, writer: &mut UserSlicePtrWriter) -
-         tr.flags = self.flags;
-         tr.data_size = self.data_size as _;
-         tr.data.ptr.buffer = self.data_address as _;
--        tr.offsets_size = 0;
-+        tr.offsets_size = self.offsets_size as _;
-         if tr.offsets_size > 0 {
-             tr.data.ptr.offsets = (self.data_address + ptr_align(self.data_size)) as _;
-         }
-diff --git a/rust/helpers.c b/rust/helpers.c
-index e70255f3774f..924c7a00f433 100644
---- a/rust/helpers.c
-+++ b/rust/helpers.c
-@@ -342,6 +342,13 @@ int rust_helper_security_binder_transaction(const struct cred *from,
- 	return security_binder_transaction(from, to);
- }
- EXPORT_SYMBOL_GPL(rust_helper_security_binder_transaction);
-+
-+int rust_helper_security_binder_transfer_binder(const struct cred *from,
-+						const struct cred *to)
-+{
-+	return security_binder_transfer_binder(from, to);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_security_binder_transfer_binder);
- #endif
- 
- /*
-diff --git a/rust/kernel/security.rs b/rust/kernel/security.rs
-index 9e3e4cf08ecb..9179fc225406 100644
---- a/rust/kernel/security.rs
-+++ b/rust/kernel/security.rs
-@@ -24,6 +24,13 @@ pub fn binder_transaction(from: &Credential, to: &Credential) -> Result {
-     to_result(unsafe { bindings::security_binder_transaction(from.0.get(), to.0.get()) })
- }
- 
-+/// Calls the security modules to determine if task `from` is allowed to send binder objects
-+/// (owned by itself or other processes) to task `to` through a binder transaction.
-+pub fn binder_transfer_binder(from: &Credential, to: &Credential) -> Result {
-+    // SAFETY: `from` and `to` are valid because the shared references guarantee nonzero refcounts.
-+    to_result(unsafe { bindings::security_binder_transfer_binder(from.0.get(), to.0.get()) })
-+}
-+
- /// A security context string.
- ///
- /// The struct has the invariant that it always contains a valid security context.
+                 pr_warn!("Failed to write security context: {:?}", err);
 
 -- 
 2.42.0.820.g83a721a137-goog
