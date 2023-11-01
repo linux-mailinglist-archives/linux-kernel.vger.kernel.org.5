@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 539967DE8D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0107DE8DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbjKAXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 19:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        id S1346425AbjKAX3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 19:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbjKAXSR (ORCPT
+        with ESMTP id S235085AbjKAX3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 19:18:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F26135
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698880647;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0vwHZc+/Gns5rEzdivTNKNr5j0n3GZLH4TX/0o56Y/4=;
-        b=chyzq9C4fVwZzI3soe1A5mGtIdOLQK9TeWLdrfFE2MWQm87zJdSKxYsXrj9pZuoC2K0u/2
-        +Jcv9wvuE7yWgatY0YOqsAswsY6VWszGHZPAi6yjsyGxCwQ2EEllY3bb8OaRnr3HPcxVej
-        wzYgkpgzPN7v1eUl1rFJV+jZBcXcj+E=
-Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
- [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-249-U-EXtD-mNPO7-k6wh5u8sg-1; Wed, 01 Nov 2023 19:17:25 -0400
-X-MC-Unique: U-EXtD-mNPO7-k6wh5u8sg-1
-Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-457bc611991so160204137.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 16:17:25 -0700 (PDT)
+        Wed, 1 Nov 2023 19:29:12 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E427C109
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:29:09 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-581e5a9413bso174640eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 16:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698881349; x=1699486149; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9D9sfHhqQD//T+0joi06c/klbHPqB5VbxNysl+FPJQ=;
+        b=fmz9lDrcEy9qvklbrlhwcESMkHH26/plwaFv3FU3SQeTusQd019nZ5zniomKzC7ckE
+         N33FdONRvAs9mnVMNnWec9f0CRx19io3sIMZj5J41GFJjT6VDkF6jpiaR2dfpSrWi7hm
+         MwO9EMy3nlvfHxGEi6db7KffY5UObsVcL7uOk1WSokU1o8eHaQ0Em+rtEjEzYTJ9286h
+         Zx8i/hD/wc/blYLZlli48qoPbpCkdzjyCuZE3ypVqGQmwPI2dPu9pfK9Drm/1u/wv5nU
+         L1QD8EMORxFCxBfaX9hQRplK6kgoKQcOU1iM6lQRLfT9lgznbndkxLgqkh5WABxeoewt
+         oqKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698880645; x=1699485445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0vwHZc+/Gns5rEzdivTNKNr5j0n3GZLH4TX/0o56Y/4=;
-        b=L6MsAaspYuMDjez7NSkKOTjinNcvV98khithaOrxLR0MyqEZkdlk5Tvs4DumtZ/6Ln
-         7OatTw3yb1durxQToHkZmrD7iutAoV0GOTbBugoRwGvE4ZxwIlZ3OvpSCNNmaw+w+WW4
-         Iwam0JAVZOKRZooJci83ubJ9XKu9hw1qyLu41E3PcugEG/ZEw11brPW+rjCmix+1X+H9
-         KqQc4j0fGanw2zbd5EUsB6IslyzMaW6faRfXiL66Mr0ggHjpgA25vjtRYW1+dQFY50U8
-         CQRiwSCtwkFimiUmnO/BxdVxmUWoYxNaTT3JuT21d52PeVHK1NWb4tcvlzF989EMjA0K
-         pHWw==
-X-Gm-Message-State: AOJu0YzaHhwD/NKFdbfigYjOhNDnEIielOx+V65zeOH11rqJsT2KD/+W
-        QlExnWodTEk0NKDK8R26lwitXK1d/v1vY9yvroLSL38eZluWYA28avoLb9vzpl6NDzvwNPZW9OQ
-        Rkh0Lp2zsCiy6mtexW1JhWCZDA5F7kqI0iTu9fu/o
-X-Received: by 2002:a67:b70e:0:b0:450:8e58:2de4 with SMTP id h14-20020a67b70e000000b004508e582de4mr14946742vsf.7.1698880645387;
-        Wed, 01 Nov 2023 16:17:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IERW8ZMUKS1oQBttUXGlXfpcF1aXMGz29SltsJOczMO7DdV5tM2YzmJ2Q5mLWwPrzL7OcDPCpWawHIyBUWWBis=
-X-Received: by 2002:a67:b70e:0:b0:450:8e58:2de4 with SMTP id
- h14-20020a67b70e000000b004508e582de4mr14946722vsf.7.1698880645133; Wed, 01
- Nov 2023 16:17:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698881349; x=1699486149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9D9sfHhqQD//T+0joi06c/klbHPqB5VbxNysl+FPJQ=;
+        b=ByfnxhhzWPeoeGy8U+atusZchnR+Lcj0PXRmFufbvdJXAmDI4mdEkGQk4OzAMDd+Ye
+         e6+276hbRWXT6IIgCNs0rlQ48Q25U/gwHoGL0DZfv4ABnlEu7NwwVOkGT+Hi5MHeF1S1
+         XwD7cVOD2/zdswDJ30n0FqntaauwJFl0grRtPCQ8jccwS3mp0CPveQM8gevTYJ8X6Hzn
+         IaIM5/BcS7G/MMflkxYtvBeO2w5PzT0FvEBHCT1WeLs4swk2oCVNZimaLn3tlxd2+ZtE
+         Iofj2V11Ew5BySSk2geTK2v59t8Yv7QXTK+VxSWGSjj20yQP4SUW/P6Y/TfICNlKCmny
+         ppww==
+X-Gm-Message-State: AOJu0YxpSFCzJ08xDy9BvQD42YsYR1HnOVFMvNbZPZu99Q5CBiwNHzCX
+        YR+1BCYSNfBhM84QtDLgQgiMsw==
+X-Google-Smtp-Source: AGHT+IHBbuuxoCvj122hy4w+Q5lkHRxzDKw2Hawu2bpMvdgl9pcfnhSlloOBc2uNwlUNFzkm4O5+rA==
+X-Received: by 2002:a05:6358:724d:b0:169:845b:3417 with SMTP id i13-20020a056358724d00b00169845b3417mr10842702rwa.25.1698881349037;
+        Wed, 01 Nov 2023 16:29:09 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id e22-20020a637456000000b0058a9621f583sm354653pgn.44.2023.11.01.16.29.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 16:29:08 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qyKe0-006zm8-39;
+        Thu, 02 Nov 2023 10:29:05 +1100
+Date:   Thu, 2 Nov 2023 10:29:04 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "jack@suse.cz" <jack@suse.cz>, "clm@fb.com" <clm@fb.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "jstultz@google.com" <jstultz@google.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "chandan.babu@oracle.com" <chandan.babu@oracle.com>,
+        "hughd@google.com" <hughd@google.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "amir73il@gmail.com" <amir73il@gmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "jack@suse.de" <jack@suse.de>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZULfQIdN146eZodE@dread.disaster.area>
+References: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area>
+ <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+ <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+ <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
+ <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
+ <ZUF4NTxQXpkJADxf@dread.disaster.area>
+ <20231101101648.zjloqo5su6bbxzff@quack3>
+ <CAHk-=wj6wy6tNUQm6EtgxfE_J229y1DthpCguqQfTej71yiJXw@mail.gmail.com>
+ <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
 MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
- <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com> <ZUEML6oJXDCFJ9fg@google.com>
- <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com> <ZUJVfCkIYYFp5VwG@google.com>
- <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
- <ZUJ-cJfofk2d_I0B@google.com> <4ca2253d-276f-43c5-8e9f-0ded5d5b2779@redhat.com>
- <ZULSkilO-tdgDGyT@google.com>
-In-Reply-To: <ZULSkilO-tdgDGyT@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Thu, 2 Nov 2023 00:17:13 +0100
-Message-ID: <CABgObfbq_Hg0B=jvsSDqYH3CSpX+RsxfwB-Tc-eYF4uq2Qw9cg@mail.gmail.com>
-Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
- dedicated guest memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -116,78 +110,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 11:35=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
+On Wed, Nov 01, 2023 at 09:34:57PM +0000, Trond Myklebust wrote:
+> On Wed, 2023-11-01 at 10:10 -1000, Linus Torvalds wrote:
+> > The above does not expose *any* changes to timestamps to users, and
+> > should work across a wide variety of filesystems, without requiring
+> > any special code from the filesystem itself.
+> > 
+> > And now please all jump on me and say "No, Linus, that won't work,
+> > because XYZ".
+> > 
+> > Because it is *entirely* possible that I missed something truly
+> > fundamental, and the above is completely broken for some obvious
+> > reason that I just didn't think of.
+> > 
+> 
+> My client writes to the file and immediately reads the ctime. A 3rd
+> party client then writes immediately after my ctime read.
+> A reboot occurs (maybe minutes later), then I re-read the ctime, and
+> get the same value as before the 3rd party write.
 >
-> On Wed, Nov 01, 2023, Paolo Bonzini wrote:
-> > On 11/1/23 17:36, Sean Christopherson wrote:
-> > > > > "Allow" isn't perfect, e.g. I would much prefer a straight KVM_GU=
-EST_MEMFD_USE_HUGEPAGES
-> > > > > or KVM_GUEST_MEMFD_HUGEPAGES flag, but I wanted the name to conve=
-y that KVM doesn't
-> > > > > (yet) guarantee hugepages.  I.e. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE i=
-s stronger than
-> > > > > a hint, but weaker than a requirement.  And if/when KVM supports =
-a dedicated memory
-> > > > > pool of some kind, then we can add KVM_GUEST_MEMFD_REQUIRE_HUGEPA=
-GE.
-> > > > I think that the current patch is fine, but I will adjust it to alw=
-ays
-> > > > allow the flag, and to make the size check even if !CONFIG_TRANSPAR=
-ENT_HUGEPAGE.
-> > > > If hugepages are not guaranteed, and (theoretically) you could have=
- no
-> > > > hugepage at all in the result, it's okay to get this result even if=
- THP is not
-> > > > available in the kernel.
-> > > Can you post a fixup patch?  It's not clear to me exactly what behavi=
-or you intend
-> > > to end up with.
-> >
-> > Sure, just this:
-> >
-> > diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> > index 7d1a33c2ad42..34fd070e03d9 100644
-> > --- a/virt/kvm/guest_memfd.c
-> > +++ b/virt/kvm/guest_memfd.c
-> > @@ -430,10 +430,7 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_cr=
-eate_guest_memfd *args)
-> >  {
-> >       loff_t size =3D args->size;
-> >       u64 flags =3D args->flags;
-> > -     u64 valid_flags =3D 0;
-> > -
-> > -     if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
-> > -             valid_flags |=3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-> > +     u64 valid_flags =3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-> >       if (flags & ~valid_flags)
-> >               return -EINVAL;
-> > @@ -441,11 +438,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_cr=
-eate_guest_memfd *args)
-> >       if (size < 0 || !PAGE_ALIGNED(size))
-> >               return -EINVAL;
-> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >       if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
-> >           !IS_ALIGNED(size, HPAGE_PMD_SIZE))
-> >               return -EINVAL;
-> > -#endif
->
-> That won't work, HPAGE_PMD_SIZE is valid only for CONFIG_TRANSPARENT_HUGE=
-PAGE=3Dy.
->
-> #else /* CONFIG_TRANSPARENT_HUGEPAGE */
-> #define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
-> #define HPAGE_PMD_MASK ({ BUILD_BUG(); 0; })
-> #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
+> Yes, most of the time that is better than the naked ctime, but not
+> across a reboot.
 
-Would have caught it when actually testing it, I guess. :) It has to
-be PMD_SIZE, possibly with
+This sort of "crash immediately after 3rd party data write" scenario
+has never worked properly, even with i_version.
 
-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-BUILD_BUG_ON(HPAGE_PMD_SIZE !=3D PMD_SIZE);
-#endif
+The issue is that 3rd party (local) buffered writes or metadata
+changes do not require any integrity or metadata stability
+operations to be performed by the filesystem unless O_[D]SYNC is set
+on the fd, RWF_[D]SYNC is set on the IO, or f{data}sync() is
+performed on the file.
 
-for extra safety.
+Hence no local filesystem currently persists i_version or ctime
+outside of operations with specific data integrity semantics.
 
-Paolo
+nfsd based modifications have application specific persistence
+requirements and that is triggered by the nfsd calling
+->commit_metadata prior to returning the operation result to the
+client. This is what persists i_version/timestamp changes that were
+made during the nfsd operation - this persistence behaviour is not
+driven by the local filesystem.
 
+IOWs, this "change attribute failure" scenario is an existing
+problem with the current i_version implementation.  It has always
+been flawed in this way but this didn't matter a decade ago because
+it's only purpose (and user) was nfsd and that had the required
+persistence semantics to hide these flaws within the application's
+context.
+
+Now that we are trying to expose i_version as a "generic change
+attribute", these persistence flaws get exposed because local
+filesystem operations do not have the same enforced persistence
+semantics as the NFS server.
+
+This is another reason I want i_version to die.
+
+What we need is a clear set of well defined semantics around statx
+change attribute sampling. Correct crash-recovery/integrity behaviour
+requires this rule:
+
+  If the change attribute has been sampled, then the next
+  modification to the filesystem that bumps change attribute *must*
+  persist the change attribute modification atomically with the
+  modification that requires it to change, or submit and complete
+  persistence of the change attribute modification before the
+  modification that requires it starts.
+
+e.g. a truncate can bump the change attribute atomically with the
+metadata changes in a transaction-based filesystem (ext4, XFS,
+btrfs, bcachefs, etc).
+
+Data writes are much harder, though. Some filesysetm structures can
+write data and metadata in a single update e.g. log structured or
+COW filesystems that can mix data and metadata like btrfs.
+Journalling filesystems require ordering between journal writes and
+the data writes to guarantee the change attribute is persistent
+before we write the data. Non-journalling filesystems require inode
+vs data write ordering.
+
+Hence I strongly doubt that a persistent change attribute is best
+implemented at the VFS - optimal, efficient implementations are
+highly filesystem specific regardless of how the change attribute is
+encoded in filesysetm metadata.
+
+This is another reason I want to change how the inode timestamp code
+is structured to call into the filesystem first rather than last.
+Different filesystems will need to do different things to persist
+a "ctime change counter" attribute correctly and efficiently -
+it's not a one-size fits all situation....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
