@@ -2,175 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B29087DE210
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF47E7DE20D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 15:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbjKANlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 09:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        id S231574AbjKANmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 09:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjKANlu (ORCPT
+        with ESMTP id S229437AbjKANmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 09:41:50 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82267F7
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 06:41:47 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5b02ed0f886so61967927b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 06:41:47 -0700 (PDT)
+        Wed, 1 Nov 2023 09:42:08 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5899912A;
+        Wed,  1 Nov 2023 06:42:04 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-778925998cbso466744685a.0;
+        Wed, 01 Nov 2023 06:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698846106; x=1699450906; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nFf6aEaGwk5ej5JezQy0IgMN87WPAcTCXufwbiE3fug=;
-        b=R2O+hzqrfXKjpVkCK7WWKNStZqPyF2cdxKhoLb11/ctjZo5ZPSp0q11vTaRIMqKh+G
-         rTGHEntcK74whLXVzkwTEfg4kXFGvDFoyHYkdR0w4NkG++ha3FYomi7HyzXNxjoxUIK2
-         kcKweF9pJ+NEs74UZBMULXVN7G7SWL8wASy0+pNCqSNNPT1zkqvQfLHK78Y20NUzPNkc
-         zAZ09oqc5lZHgiYL4DmQPGFbydmLOB6LzfwncWQjpui3CcXu6Wc1sVfHimGhI82PhfIb
-         /7xN434TnAp+9QvKT0AHhWkz3sCvRmyo2aHZIig6PpsFsT18SvRKUf81x8cwxHJJ0j8r
-         nrVA==
+        d=gmail.com; s=20230601; t=1698846123; x=1699450923; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5nQo5QAmg18pLngnuIRNmy7fqh3tLqP/m6ROg4gk6+E=;
+        b=cwuk0MpHjw64t27xiF2d3DVeNwTyBCdzBM28VttLnTgFWe1oPRnDP8PUPH1BHqeBhK
+         g2rKhB22dyrDnL3A7f2hpxLspW2w9XwSo6R/dOJxM7uhXa7QeFqVJOn9IL5o3mokkBIo
+         +vvFA2umJCAoqkZgcoUeB5jjZ17GpcjDDlzxwQGAuvwDLZ2o+eKHymP3XO17HBfHS2ic
+         i+vFc2Wr44/4zPvksgobqmdXojlRSmUWwEAJ9yli+zZ5c0lg2Fem6xZFBqybljPSbmec
+         mayH6uFuhJm+M2mPqGa25GFHhBFK0dg4zcWLt5v0yIciAwi1NWMUBXxmEDxXXa+tEFpE
+         I2Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698846106; x=1699450906;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nFf6aEaGwk5ej5JezQy0IgMN87WPAcTCXufwbiE3fug=;
-        b=XQpGq+WESPYhqiiCQyjLetE0/zokhdT9tZuTtDb14WsDcnB8h3wbiwNT4KiHU0bl49
-         kVQ9ahZdPnVvYtPO9UmRf1hFA3UHwJp0VTU3ljgfPjZJtdEN2zUIE4gcvd56cvuNBPgN
-         8IP0jxx0IeTJHSD2BXHVzr/m1XCPiRvBHzHgrMVprTGjEm2fnISWHpg3O1p5IKjBHEUr
-         EoNjRxnJRfaBovHpHEvPqI1ZxaApyXUJ8CTUOLEiOMntRBpzXh6ZzSiEMgDCG/u2608u
-         9qwnNaY9xFUSMO/krIAhfynO+YQudNoDv9qTsiwLgRiuCTdFf/uMkL+JUD5zNRows+Zk
-         d22A==
-X-Gm-Message-State: AOJu0YyMOiPWveUqbTKIhxlDgF0MIdk7SGZz0AWxVRD+P4NkEOALVN80
-        bi2ap7KVZjYhZiIgh7SzpUjRa8kAoKk=
-X-Google-Smtp-Source: AGHT+IEsRM1yQnQClQeVqyoNLxT9cYgRny7PWezkHcY0wXTm/cdeLyJgnrb+5OZENHYJQKvQlFBt8yx8E+I=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:e689:0:b0:5a7:bfcf:2cb8 with SMTP id
- p131-20020a0de689000000b005a7bfcf2cb8mr314827ywe.1.1698846106686; Wed, 01 Nov
- 2023 06:41:46 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 06:41:45 -0700
-In-Reply-To: <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
- <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com> <ZUEML6oJXDCFJ9fg@google.com>
- <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com>
-Message-ID: <ZUJVfCkIYYFp5VwG@google.com>
-Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
- dedicated guest memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1698846123; x=1699450923;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5nQo5QAmg18pLngnuIRNmy7fqh3tLqP/m6ROg4gk6+E=;
+        b=bbEYEB3JhAvBtY0uCzJhMgdSliy3Kl8el3SX+xVdt7lT5rY0ZvYZwAlZcP/4mOZObY
+         Zrta2jQVfehw2SlCzD7yiuhgaAdTz/buZeS7XWWa56+NQkXrug9JUQ6HObRo7kxvkcwW
+         wL2SMR+uH4jXw2Mnm6ArlXWTpPi8xUm1IaZBYVKmK/6c6fv3W8Rk4P4zHeZUHPYBQaXG
+         Ecpe1YuD+6COPx9OeIOQqsSUvNWolC5p/qSjv87xD0npGHa3MaCgnP7mns8F74hY2Gcu
+         t7sWDIqz7MR8Oj9R2OnzdHusKBIN1RRDD0Y9QkTK5XHpKFgi7qHfFrrzZA79WUGKOMyV
+         BskA==
+X-Gm-Message-State: AOJu0Yyddb9Vw6wmMG6k9p+R4KUg/71ADXhJ60I0a5pY35n+di3G71Dr
+        +//vBHfX/jStqIsSHInKjvc=
+X-Google-Smtp-Source: AGHT+IGFKvgB4JFJWNM7MuiXcvAJMvG91K9x/Ey1AKCZT8LeTf2DTYrE5N72zByeJa9VrrfrODcTxQ==
+X-Received: by 2002:a05:620a:2687:b0:76f:2214:e2c3 with SMTP id c7-20020a05620a268700b0076f2214e2c3mr17147730qkp.64.1698846123326;
+        Wed, 01 Nov 2023 06:42:03 -0700 (PDT)
+Received: from pm2-ws13.praxislan02.com (207-172-141-204.s8906.c3-0.slvr-cbr1.lnh-slvr.md.cable.rcncustomer.com. [207.172.141.204])
+        by smtp.gmail.com with ESMTPSA id y24-20020a37e318000000b00767d6ec578csm1435758qki.20.2023.11.01.06.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 06:42:02 -0700 (PDT)
+From:   Jason Andryuk <jandryuk@gmail.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc:     michal.wilczynski@intel.com,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        stable@vger.kernel.org, Jason Andryuk <jandryuk@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH v4] acpi/processor: sanitize _OSC/_PDC capabilities for Xen dom0
+Date:   Wed,  1 Nov 2023 09:41:52 -0400
+Message-ID: <20231101134154.18336-1-jandryuk@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023, Xiaoyao Li wrote:
-> On 10/31/2023 10:16 PM, Sean Christopherson wrote:
-> > On Tue, Oct 31, 2023, Xiaoyao Li wrote:
-> > > On 10/28/2023 2:21 AM, Sean Christopherson wrote:
-> > > > Extended guest_memfd to allow backing guest memory with transparent
-> > > > hugepages. Require userspace to opt-in via a flag even though there's no
-> > > > known/anticipated use case for forcing small pages as THP is optional,
-> > > > i.e. to avoid ending up in a situation where userspace is unaware that
-> > > > KVM can't provide hugepages.
-> > > 
-> > > Personally, it seems not so "transparent" if requiring userspace to opt-in.
-> > > 
-> > > People need to 1) check if the kernel built with TRANSPARENT_HUGEPAGE
-> > > support, or check is the sysfs of transparent hugepage exists; 2)get the
-> > > maximum support hugepage size 3) ensure the size satisfies the alignment;
-> > > before opt-in it.
-> > > 
-> > > Even simpler, userspace can blindly try to create guest memfd with
-> > > transparent hugapage flag. If getting error, fallback to create without the
-> > > transparent hugepage flag.
-> > > 
-> > > However, it doesn't look transparent to me.
-> > 
-> > The "transparent" part is referring to the underlying kernel mechanism, it's not
-> > saying anything about the API.  The "transparent" part of THP is that the kernel
-> > doesn't guarantee hugepages, i.e. whether or not hugepages are actually used is
-> > (mostly) transparent to userspace.
-> > 
-> > Paolo also isn't the biggest fan[*], but there are also downsides to always
-> > allowing hugepages, e.g. silent failure due to lack of THP or unaligned size,
-> > and there's precedent in the form of MADV_HUGEPAGE.
-> > 
-> > [*] https://lore.kernel.org/all/84a908ae-04c7-51c7-c9a8-119e1933a189@redhat.com
-> 
-> But it's different than MADV_HUGEPAGE, in a way. Per my understanding, the
-> failure of MADV_HUGEPAGE is not fatal, user space can ignore it and
-> continue.
->
-> However, the failure of KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is fatal, which leads
-> to failure of guest memfd creation.
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-Failing KVM_CREATE_GUEST_MEMFD isn't truly fatal, it just requires different
-action from userspace, i.e. instead of ignoring the error, userspace could redo
-KVM_CREATE_GUEST_MEMFD with KVM_GUEST_MEMFD_ALLOW_HUGEPAGE=0.
+The Processor capability bits notify ACPI of the OS capabilities, and
+so ACPI can adjust the return of other Processor methods taking the OS
+capabilities into account.
 
-We could make the behavior more like MADV_HUGEPAGE, e.g. theoretically we could
-extend fadvise() with FADV_HUGEPAGE, or add a guest_memfd knob/ioctl() to let
-userspace provide advice/hints after creating a guest_memfd.  But I suspect that
-guest_memfd would be the only user of FADV_HUGEPAGE, and IMO a post-creation hint
-is actually less desirable.
+When Linux is running as a Xen dom0, the hypervisor is the entity
+in charge of processor power management, and hence Xen needs to make
+sure the capabilities reported by _OSC/_PDC match the capabilities of
+the driver in Xen.
 
-KVM_GUEST_MEMFD_ALLOW_HUGEPAGE will fail only if userspace didn't provide a
-compatible size or the kernel doesn't support THP.  An incompatible size is likely
-a userspace bug, and for most setups that want to utilize guest_memfd, lack of THP
-support is likely a configuration bug.  I.e. many/most uses *want* failures due to
-KVM_GUEST_MEMFD_ALLOW_HUGEPAGE to be fatal.
+Introduce a small helper to sanitize the buffer when running as Xen
+dom0.
 
-> For current implementation, I think maybe KVM_GUEST_MEMFD_DESIRE_HUGEPAGE
-> fits better than KVM_GUEST_MEMFD_ALLOW_HUGEPAGE? or maybe *PREFER*?
+When Xen supports HWP, this serves as the equivalent of commit
+a21211672c9a ("ACPI / processor: Request native thermal interrupt
+handling via _OSC") to avoid SMM crashes.  Xen will set bit
+ACPI_PROC_CAP_COLLAB_PROC_PERF (bit 12) in the capability bits and the
+_OSC/_PDC call will apply it.
 
-Why?  Verbs like "prefer" and "desire" aren't a good fit IMO because they suggest
-the flag is a hint, and hints are usually best effort only, i.e. are ignored if
-there is a fundamental incompatibility.
+[ jandryuk: Mention Xen HWP's need.  Support _OSC & _PDC ]
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+---
+v4:
+Use xen_santize_proc_cap_bits() name - Michal
+Rephrase comment - Michal
 
-"Allow" isn't perfect, e.g. I would much prefer a straight KVM_GUEST_MEMFD_USE_HUGEPAGES
-or KVM_GUEST_MEMFD_HUGEPAGES flag, but I wanted the name to convey that KVM doesn't
-(yet) guarantee hugepages.  I.e. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is stronger than
-a hint, but weaker than a requirement.  And if/when KVM supports a dedicated memory
-pool of some kind, then we can add KVM_GUEST_MEMFD_REQUIRE_HUGEPAGE.
+v3:
+Move xen_sanitize_pdc() call to arch_acpi_set_proc_cap_bits() to cover
+_OSC and _PDC.
+drivers/xen/pcpu.c is CONFIG_DOM0 && CONFIG_X86
+
+v2:
+Move local variables in acpi_processor_eval_pdc() to reuse in both conditions.
+---
+ arch/x86/include/asm/acpi.h           | 14 ++++++++++++++
+ arch/x86/include/asm/xen/hypervisor.h |  9 +++++++++
+ drivers/xen/pcpu.c                    | 21 +++++++++++++++++++++
+ 3 files changed, 44 insertions(+)
+
+diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+index c8a7fc23f63c..f896eed4516c 100644
+--- a/arch/x86/include/asm/acpi.h
++++ b/arch/x86/include/asm/acpi.h
+@@ -16,6 +16,9 @@
+ #include <asm/x86_init.h>
+ #include <asm/cpufeature.h>
+ #include <asm/irq_vectors.h>
++#include <asm/xen/hypervisor.h>
++
++#include <xen/xen.h>
+ 
+ #ifdef CONFIG_ACPI_APEI
+ # include <asm/pgtable_types.h>
+@@ -127,6 +130,17 @@ static inline void arch_acpi_set_proc_cap_bits(u32 *cap)
+ 	if (!cpu_has(c, X86_FEATURE_MWAIT) ||
+ 	    boot_option_idle_override == IDLE_NOMWAIT)
+ 		*cap &= ~(ACPI_PROC_CAP_C_C1_FFH | ACPI_PROC_CAP_C_C2C3_FFH);
++
++	if (xen_initial_domain()) {
++		/*
++		 * When Linux is running as Xen dom0, the hypervisor is the
++		 * entity in charge of the processor power management, and so
++		 * Xen needs to check the OS capabilities reported in the
++		 * processor capabilities buffer matches what the hypervisor
++		 * driver supports.
++		 */
++		xen_sanitize_proc_cap_bits(cap);
++	}
+ }
+ 
+ static inline bool acpi_has_cpu_in_madt(void)
+diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
+index 7048dfacc04b..a9088250770f 100644
+--- a/arch/x86/include/asm/xen/hypervisor.h
++++ b/arch/x86/include/asm/xen/hypervisor.h
+@@ -100,4 +100,13 @@ static inline void leave_lazy(enum xen_lazy_mode mode)
+ 
+ enum xen_lazy_mode xen_get_lazy_mode(void);
+ 
++#if defined(CONFIG_XEN_DOM0) && defined(CONFIG_ACPI)
++void xen_sanitize_proc_cap_bits(uint32_t *buf);
++#else
++static inline void xen_sanitize_proc_cap_bits(uint32_t *buf)
++{
++	BUG();
++}
++#endif
++
+ #endif /* _ASM_X86_XEN_HYPERVISOR_H */
+diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
+index b3e3d1bb37f3..7000701dff8f 100644
+--- a/drivers/xen/pcpu.c
++++ b/drivers/xen/pcpu.c
+@@ -47,6 +47,9 @@
+ #include <asm/xen/hypervisor.h>
+ #include <asm/xen/hypercall.h>
+ 
++#ifdef CONFIG_ACPI
++#include <acpi/processor.h>
++#endif
+ 
+ /*
+  * @cpu_id: Xen physical cpu logic number
+@@ -400,4 +403,22 @@ bool __init xen_processor_present(uint32_t acpi_id)
+ 
+ 	return online;
+ }
++
++void xen_sanitize_proc_cap_bits(uint32_t *cap)
++{
++	struct xen_platform_op op = {
++		.cmd			= XENPF_set_processor_pminfo,
++		.u.set_pminfo.id	= -1,
++		.u.set_pminfo.type	= XEN_PM_PDC,
++	};
++	u32 buf[3] = { ACPI_PDC_REVISION_ID, 1, *cap };
++	int ret;
++
++	set_xen_guest_handle(op.u.set_pminfo.pdc, buf);
++	ret = HYPERVISOR_platform_op(&op);
++	if (ret)
++		pr_err("sanitize of _PDC buffer bits from Xen failed: %d\n",
++		       ret);
++	*cap = buf[2];
++}
+ #endif
+-- 
+2.41.0
+
