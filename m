@@ -2,183 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBD47DE4A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA72A7DE4B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 17:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjKAQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 12:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        id S233492AbjKAQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 12:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjKAQgG (ORCPT
+        with ESMTP id S231345AbjKAQi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 12:36:06 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8906C111
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 09:36:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da1aa98ec19so6159635276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 09:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698856562; x=1699461362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=azJu2Dh8gujl5qnxyYwo1n6krfiG0RwudOI1y5vnuB4=;
-        b=yuFCX/+hNdCQoExuPOLtehV1sJV5YXuIC4dK84hnQsWhPdH2Z3iLN7bxdeMtxGj+WB
-         cyzEaD66/7stT4SYcguXXwRhJjsUPKJnPLc7tlAGTT6QQ7U8Hc2NurenL8NF3eoKj+4P
-         RfWTVWvFfkqVD2gRfDU09y5lBFNvzjzueEpuaO2xsVY5I4+kSjoC83fBVUIBnh3QJaL8
-         RsG8orHK+MB9w4bObQ/9WLURAj4uIVelYqCRJKbCGCOjf013V/nSWEedtPb+5hmOsFjL
-         r6GSwII+CK6XrhP83YYhH3pshpbwSDDI4qB9CrX5BKhf+VGh0py3HXKrLZViwVuSh4mC
-         zYng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698856562; x=1699461362;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=azJu2Dh8gujl5qnxyYwo1n6krfiG0RwudOI1y5vnuB4=;
-        b=Wxp/atMJ5Z2zExZEN0FjqPRoBXHvPpylgSgLdtFQ5FsaO4guXcDqFOxm0zJlUy/4eH
-         Dl54qqEjhQPrSKvHl+HItxUzykaEb7Fzxz+vTxVoEVaxdd3nk5siWsAj6U5lZuvMegYD
-         Ahj96o4t/dMoAz1hL9v9qiY2kvdwgFWQcKDp912EeijVUdt1BcVSMdgPwiL4yaG/dE9y
-         0MpMPr2ojNdj73y+oIbRdXiW+NXbO0lE7LtsWXjIfkH5+LWDRkEu1EjiR0EFRmkgyK8m
-         hFFlNbMUNbguZY64DzAyGUAd+vjELpGu3Mrn9FgmvHkgl5GM8QUTzOpuJSDUU8LEx3B8
-         V0FA==
-X-Gm-Message-State: AOJu0Yy+EHGLzoFOLp5eGCTP37YafnWSTAiGAo6S72Ll6kstixklSc6/
-        5c3NrPypr8UVFls6sy/fS/NpEqz6zCE=
-X-Google-Smtp-Source: AGHT+IFqCABorYKmfCmJZy/oBSeOXTtnBU+krovHVjWnvhFIdm8AwbTMBJoMdfZ9FR5pLbycY5bTrtHt4Z4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:770f:0:b0:da0:73c2:db78 with SMTP id
- s15-20020a25770f000000b00da073c2db78mr326876ybc.9.1698856562473; Wed, 01 Nov
- 2023 09:36:02 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 09:36:00 -0700
-In-Reply-To: <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
- <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com> <ZUEML6oJXDCFJ9fg@google.com>
- <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com> <ZUJVfCkIYYFp5VwG@google.com>
- <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
-Message-ID: <ZUJ-cJfofk2d_I0B@google.com>
-Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
- dedicated guest memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 12:38:26 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A8BFD;
+        Wed,  1 Nov 2023 09:38:23 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A1FwpPm018971;
+        Wed, 1 Nov 2023 16:38:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=bqzZF6Y8RSQ9fIQ5rXf87/CsDE5jJQpEoTdC3OaGO0U=;
+ b=SWKbuU+Jv6OgQZKFCJUtuCMnZCxj8dgHwwBA6MeC0Quq/AG/n2F7JPw3/zHqxEe3xrOE
+ YE/mZ/zBb6p4ZNLI0f8g4ovRSzIy5l5+jZpplhE82Y6+vPNA0l2QoiydNmf8gWbjc7sI
+ vyVqPgpFSbmy28YkRS+kTaXIn7G8FfuwBLjDkaRTkKQkiQxjQOVyhYnrqDRdmD726fTg
+ jeQCIbIfE+kIT6GQurZatwqlH6b5Th1AN/JKmQMRh9YeK8Lts6ILA2lT+J7pOWF6Dp7H
+ y/5qAXZ5fphTNhskD4keGvMULWRFkPfitdeePUzmQwi/mvSl6JsgBBTjilYhKyr3k0Dk eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u3sk418wn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 16:38:19 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A1GTdZs011672;
+        Wed, 1 Nov 2023 16:38:18 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u3sk418w4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 16:38:18 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A1FhToB020321;
+        Wed, 1 Nov 2023 16:38:18 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1d0yrxmu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Nov 2023 16:38:17 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A1GcFk638404746
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Nov 2023 16:38:16 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D340B20043;
+        Wed,  1 Nov 2023 16:38:15 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F80220040;
+        Wed,  1 Nov 2023 16:38:14 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.9.163])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  1 Nov 2023 16:38:14 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: [PATCH v2 0/2] Document handing of unwritten bh in ext4_block_zero_page_range()
+Date:   Wed,  1 Nov 2023 22:08:09 +0530
+Message-Id: <cover.1698856309.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: suN64p_AwKzoTaWsCCF2QtP4gC8wGVXV
+X-Proofpoint-GUID: Xi_vsV5XsktoosfggeVP1s2DI3yTzQu-
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_15,2023-11-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ adultscore=0 suspectscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311010131
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023, Paolo Bonzini wrote:
-> On Wed, Nov 1, 2023 at 2:41=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> >
-> > On Wed, Nov 01, 2023, Xiaoyao Li wrote:
-> > > On 10/31/2023 10:16 PM, Sean Christopherson wrote:
-> > > > On Tue, Oct 31, 2023, Xiaoyao Li wrote:
-> > > > > On 10/28/2023 2:21 AM, Sean Christopherson wrote:
-> > > But it's different than MADV_HUGEPAGE, in a way. Per my understanding=
-, the
-> > > failure of MADV_HUGEPAGE is not fatal, user space can ignore it and
-> > > continue.
-> > >
-> > > However, the failure of KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is fatal, whic=
-h leads
-> > > to failure of guest memfd creation.
-> >
-> > Failing KVM_CREATE_GUEST_MEMFD isn't truly fatal, it just requires diff=
-erent
-> > action from userspace, i.e. instead of ignoring the error, userspace co=
-uld redo
-> > KVM_CREATE_GUEST_MEMFD with KVM_GUEST_MEMFD_ALLOW_HUGEPAGE=3D0.
-> >
-> > We could make the behavior more like MADV_HUGEPAGE, e.g. theoretically =
-we could
-> > extend fadvise() with FADV_HUGEPAGE, or add a guest_memfd knob/ioctl() =
-to let
-> > userspace provide advice/hints after creating a guest_memfd.  But I sus=
-pect that
-> > guest_memfd would be the only user of FADV_HUGEPAGE, and IMO a post-cre=
-ation hint
-> > is actually less desirable.
-> >
-> > KVM_GUEST_MEMFD_ALLOW_HUGEPAGE will fail only if userspace didn't provi=
-de a
-> > compatible size or the kernel doesn't support THP.  An incompatible siz=
-e is likely
-> > a userspace bug, and for most setups that want to utilize guest_memfd, =
-lack of THP
-> > support is likely a configuration bug.  I.e. many/most uses *want* fail=
-ures due to
-> > KVM_GUEST_MEMFD_ALLOW_HUGEPAGE to be fatal.
-> >
-> > > For current implementation, I think maybe KVM_GUEST_MEMFD_DESIRE_HUGE=
-PAGE
-> > > fits better than KVM_GUEST_MEMFD_ALLOW_HUGEPAGE? or maybe *PREFER*?
-> >
-> > Why?  Verbs like "prefer" and "desire" aren't a good fit IMO because th=
-ey suggest
-> > the flag is a hint, and hints are usually best effort only, i.e. are ig=
-nored if
-> > there is a fundamental incompatibility.
-> >
-> > "Allow" isn't perfect, e.g. I would much prefer a straight KVM_GUEST_ME=
-MFD_USE_HUGEPAGES
-> > or KVM_GUEST_MEMFD_HUGEPAGES flag, but I wanted the name to convey that=
- KVM doesn't
-> > (yet) guarantee hugepages.  I.e. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is stro=
-nger than
-> > a hint, but weaker than a requirement.  And if/when KVM supports a dedi=
-cated memory
-> > pool of some kind, then we can add KVM_GUEST_MEMFD_REQUIRE_HUGEPAGE.
->=20
-> I think that the current patch is fine, but I will adjust it to always
-> allow the flag, and to make the size check even if !CONFIG_TRANSPARENT_HU=
-GEPAGE.
-> If hugepages are not guaranteed, and (theoretically) you could have no
-> hugepage at all in the result, it's okay to get this result even if THP i=
-s not
-> available in the kernel.
+** Changes v1 -> v2 **
 
-Can you post a fixup patch?  It's not clear to me exactly what behavior you=
- intend
-to end up with.
+* Instead of exiting early in ext4_block_zero_page_range() for unwrit
+  bhs like in v1, lets let the current logic be as it is and instead
+  document the handing of unwritten buffer heads to make the intent
+  clear
+
+v1:
+https://lore.kernel.org/linux-ext4/20231019165546.norapdphdyx7g3ob@quack3/T/#mbd0ab69d55487493edbd465b3882051e5bc2365d
+
+** Original Cover Letter **
+
+As per discussion with Jan here [1], this patchset intends to exit early
+from __ext4_block_zero_page_range() incase the block we are about to
+zero (partially) is unwritten and unmapped, since such a block doesn't
+require zeroing.
+
+Further, also make sure that calls to ext4_zero_partial_blocks()
+truncate the page cache completely beforehand, so that they don't rely
+on ext4_zero_partial_block() -> __ext4_block_zero_page_range() to zero
+out non block aligned edges of pagecache.
+
+Reviews and comments are appreciated!
+
+Regards,
+ojaswin
+
+[1]
+https://lore.kernel.org/linux-ext4/20230914141920.lw2nlpzhcxwuz2y6@quack3/
+
+Ojaswin Mujoo (2):
+  ext4: treat end of range as exclusive in ext4_zero_range()
+  ext4: Clarify handling of unwritten bh in
+    __ext4_block_zero_page_range()
+
+ fs/ext4/extents.c | 6 ++++--
+ fs/ext4/inode.c   | 6 ++++++
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+-- 
+2.39.3
+
