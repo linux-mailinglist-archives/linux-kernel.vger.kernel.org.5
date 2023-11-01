@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2C87DDC6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 07:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21527DDC8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 07:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376474AbjKAGQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 02:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        id S230503AbjKAGWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 02:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjKAGQi (ORCPT
+        with ESMTP id S229569AbjKAGWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 02:16:38 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2612F3;
-        Tue, 31 Oct 2023 23:16:35 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507cd62472dso595148e87.0;
-        Tue, 31 Oct 2023 23:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698819394; x=1699424194; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F9yle7VrmIO9F6x8DetVeUxbscZ9DT3LOEfWagzVsSw=;
-        b=RMj3aTIL6/2bDCxX0snbze/zEAqpwF2gERFn9tAMnqOsdfZHRfPu9kDqK/KX9Z/bz3
-         I1NIlfRNjB1Yu89Cg1jgmJ4hk73pf92lr9lhYY53fMoVYtVIUpfs0bdsAVhzQwbWuuiw
-         wZ9lVGtueX1yT3326cDM0KGSjmGcQ620Kq0H0eCEhLwNpup42aXy/HmxjNSNNx3wgGIs
-         j24OV824hMJm0eqlWsLP08IBoILhl79VoM6E5SUMBlajVspU/DrTrJQlDLJjomUOhaOt
-         lTOoxRGVm2n6RsDKsMtBM/5ws5usroVSuKe+sNUpEHv5cjIHk2kwPZ7OaUYsCzWJZ//v
-         7BAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698819394; x=1699424194;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9yle7VrmIO9F6x8DetVeUxbscZ9DT3LOEfWagzVsSw=;
-        b=X5CEmXK9d8Z5OLnjOFAluURPTXGymPohwWfYRtJcH7JxcgI/S6ybahDlCZ+ZDWXxNI
-         P+bWLijEfmAE+ayHNeNR0nTR0S6aNLnMB9TvjD7FQNlL2ODAeFPOPAtgVcZ3DqC/zagl
-         50A4qXfl0ZA9phBZFLY5z9UqK792Krj3AMOxYh+w8W193SxZOP41Xd71psDJCHEQG3qK
-         GVeolSf90qa0xTrD1OUt2ODMwCSkTDl9DTCqE6cvKPiue8pMXhXhZZ57H8+Te460X5E4
-         oZsDL9DIxIIQs8biUUbj7HowP5NpnhKKgnY3xuSef66Drs62ZYaZKPKkZgS3u5B9OvKR
-         RgVA==
-X-Gm-Message-State: AOJu0YwIUKNYbR9oOJmHkU2bshN6p9R7WwGGcLfSSD4qpWtoUkjqjyyA
-        OxFvG8dNnTCz3m8vSoCC1w6wERSY8pI+vg==
-X-Google-Smtp-Source: AGHT+IFWsxF2Ff5zf6/CiiCtuLXE3tIiPkLBLUgMyHvwmtbh+xotWxyPgxYtMMAnoTLo6COspJ0rvA==
-X-Received: by 2002:a05:6512:3ba9:b0:508:15dc:ec11 with SMTP id g41-20020a0565123ba900b0050815dcec11mr2047875lfv.30.1698819393536;
-        Tue, 31 Oct 2023 23:16:33 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::1? (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id p6-20020a056512234600b005057830c24dsm130670lfu.141.2023.10.31.23.16.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 23:16:32 -0700 (PDT)
-Message-ID: <6d553aaa-279f-48bf-96c9-30fdac1ae372@gmail.com>
-Date:   Wed, 1 Nov 2023 08:16:32 +0200
+        Wed, 1 Nov 2023 02:22:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C9A98;
+        Tue, 31 Oct 2023 23:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698819766; x=1730355766;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9wz2LHUoWqpe98OcYQ2/Jx5c2J985NHQToFkCmXdymk=;
+  b=g7T8ht7szX+KKcdvkx4bi2CPwGP4BPuxZDyNrPbwE9MR/1r9HehhaEOB
+   qpLonj9rtYCBivIYLPcD4YwsNzVrVt0DfG4X2CxxsrWDGaDYyDlBoa8+T
+   QpQ+GamJ2IwxNon3odGhtFnFEYV0Cth+k+UoWI/0iajb4/TULW4Fd/2n9
+   zMvCaFNmk7yBEEjgOuRGo5y5Tvz2l9MxqLDf6WvrYhknM0RUL5bt7V67g
+   APt25+35fzn3BCahNtLei4Bnp+ygN2V6WIJ41mpk1bGYTvyhjYptMJIz3
+   F4XUw9TyacuPoTisDAUbanncVpyA7LuyuUmDEtFEvxys7VTc2/A61fVcz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="454914644"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="454914644"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 23:22:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="1995351"
+Received: from ssid-ilbpg3-teeminta.png.intel.com ([10.88.227.74])
+  by orviesa002.jf.intel.com with ESMTP; 31 Oct 2023 23:22:41 -0700
+From:   Gan Yi Fang <yi.fang.gan@intel.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Gan Yi Fang <yi.fang.gan@intel.com>
+Subject: [PATCH net-next v2 1/1] net: stmmac: check CBS input values before configuration
+Date:   Wed,  1 Nov 2023 14:19:20 +0800
+Message-Id: <20231101061920.401582-1-yi.fang.gan@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-Content-Language: en-US, en-GB
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Gazzillo <paul@pgazz.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
- <20231028162025.4259f1cc@jic23-huawei>
- <84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com>
- <6a697c62-6a7c-4b31-bc8e-10f40db0363d@gmail.com>
- <d528b45c-123d-4ef7-b110-7efbfef91bc5@gmail.com>
- <ZUDZIEY_uTVMHh3C@smile.fi.intel.com>
- <b01930d6-5bec-496c-89de-6cf6d178c860@gmail.com>
- <ZUEET34K7AOkFf4A@smile.fi.intel.com>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <ZUEET34K7AOkFf4A@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 15:42, Andy Shevchenko wrote:
-> On Tue, Oct 31, 2023 at 02:07:46PM +0200, Matti Vaittinen wrote:
->> On 10/31/23 12:38, Andy Shevchenko wrote:
->>> On Tue, Oct 31, 2023 at 09:11:37AM +0200, Matti Vaittinen wrote:
->>>> On 10/30/23 12:21, Matti Vaittinen wrote:
->>>>> On 10/29/23 17:51, Matti Vaittinen wrote:
->>>>>> On 10/28/23 18:20, Jonathan Cameron wrote:
-> 
-> ...
-> 
->>>> 	tmp = gts->max_scale;
->>>>
->>>> 	rem = do_div(tmp, total_gain);
->>>> 	if (total_gain > 1 && rem >= total_gain / 2)
->>>> 		tmp += 1ULL;
->>>
->>> ...which is NIH DIV_ROUND_CLOSEST_ULL()
->>
->> There is a difference though. The DIV_ROUND_CLOSEST_ULL() does
->>
->> tmp + total_gain / 2;
->>
->> before division - which in theory may overflow.
-> 
-> Then you can fix it there for everybody, no?
+From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
 
-Now that I know of this macro - Maybe. It's just always scary to touch 
-things which seem like fundamental building blocks and which may be used 
-by many. Odds are something breaks, so I tend to be very conservative 
-when suggesting changes to widely used stuff. Especially when I have no 
-idea when and why the API has been added - and if the thing I'm trying 
-to "fix" has been a deliberate choice.
+Add check for below conditions before proceeding to configuration.
+A message will be prompted if the input value is invalid.
 
-Yours,
-	-- Matti.
+Idleslope minus sendslope should equal speed_div.
+Idleslope is always a positive value including zero.
+Sendslope is always a negative value including zero.
+Hicredit is always a positive value including zero.
+Locredit is always a negative value including zero.
 
+Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index ac41ef4cbd2f..e8a079946f84 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -381,6 +381,11 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	if ((qopt->idleslope - qopt->sendslope != speed_div) ||
++	    qopt->idleslope < 0 || qopt->sendslope > 0 ||
++	    qopt->hicredit < 0 || qopt->locredit > 0)
++		return -EINVAL;
++
+ 	mode_to_use = priv->plat->tx_queues_cfg[queue].mode_to_use;
+ 	if (mode_to_use == MTL_QUEUE_DCB && qopt->enable) {
+ 		ret = stmmac_dma_qmode(priv, priv->ioaddr, queue, MTL_QUEUE_AVB);
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+2.34.1
 
