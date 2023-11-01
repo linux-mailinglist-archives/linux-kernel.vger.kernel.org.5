@@ -2,173 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC5C7DE826
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0197DE829
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 23:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346003AbjKAWe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 18:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
+        id S1346203AbjKAWfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 18:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbjKAWeZ (ORCPT
+        with ESMTP id S1345824AbjKAWfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 18:34:25 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88E1210F;
-        Wed,  1 Nov 2023 15:34:22 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D673F2F4;
-        Wed,  1 Nov 2023 15:35:03 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 073F43F64C;
-        Wed,  1 Nov 2023 15:34:19 -0700 (PDT)
-Message-ID: <9c6f1e12-ed49-4b3d-ad20-cf2b32741836@arm.com>
-Date:   Wed, 1 Nov 2023 23:34:18 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/6] sched/fair: Use CFS util_avg_uclamp for
- utilization and frequency
-Content-Language: en-US
-To:     Hongyan Xia <Hongyan.Xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Christian Loehle <christian.loehle@arm.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
- <b2fc40b143f90ce652a02950503cbe744bc1d112.1696345700.git.Hongyan.Xia2@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <b2fc40b143f90ce652a02950503cbe744bc1d112.1696345700.git.Hongyan.Xia2@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 18:35:11 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714DD130
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 15:35:00 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5af16e00fadso6181267b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 15:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698878099; x=1699482899; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oVrvOLECZXxSaWjRNpKGTaiE8FNIaCo3DEHHzsR8PGo=;
+        b=b5mh1MruIW+Wz9fLsRF7Crc1pctj+MHKhH0i16f7UD5/dRSmav+yoNrvmst7G8UVxN
+         I8wMqCnPp3K/CRYmZ2I9/ud/fpHYvJokyDibpOhgOr6gnZq1JGwslG+kSFIghY5JE+dG
+         ZpD3gs+zFjm2+UXCoAa4ai5nFfbZaNE8xr4VYi+KnkDqR2+hlPod/DQHr/dURW20/rDr
+         YXR+1AOEI9w/xR8Kv18S+7QSlILwYZzJ4NHEnkFJmbxTYl8PCIE15p8kMt8iCdHtX9ju
+         DElQq7Tm0yx97T5u32j2XuTqQi58aPsvj+AGsdWjECpekqodnFTZo5XZ79BC1Y4psMEi
+         BNSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698878099; x=1699482899;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oVrvOLECZXxSaWjRNpKGTaiE8FNIaCo3DEHHzsR8PGo=;
+        b=UX/ajLLYnhk6ZX3zTIJFVuIYoAOhgyPnxJGCTX9192VZHxo9rbmSg1hSK+bfwCYIRw
+         CFoKSkzfUppmfViVZ4LResXyIznUJPeesAVoGNKC5pRSZqRF8E4hEQP/xhxNdO0JSWPS
+         D6TqqdX8FY6muyHFACaXOND0BO+ITWOxEfj3O8BdjvlbgBKawCL5MnGKYKXeRbgBXEOB
+         hkCy1jq3aTcTNX2wS13UAWTWzh2jqFHEA+0RekwI2MvG/iUkJ2/FG2m9MDqRg0P4DGs+
+         7Q0A/2k4yT/hSI09QysDcAoTJgS7yIrPbWzy930mPKF82UxFMExmpT2d+XwjWoVAFBdo
+         0wkw==
+X-Gm-Message-State: AOJu0YwHUe3FHnzF7R3/d1aOuTIDPnRwsH/DkR+gNpYogV9CJcDFST7/
+        k+JgFZRParown5XszcobAyGCefvjwNk=
+X-Google-Smtp-Source: AGHT+IGD6UN3MOOerdMFLEmny4gzkak60wHqIVXKsA4NlWLNqw1UJj00i84usFlUQuEsQ45Qnt2ok92VRKM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:9214:0:b0:5a7:bbdb:6b39 with SMTP id
+ j20-20020a819214000000b005a7bbdb6b39mr350826ywg.3.1698878099514; Wed, 01 Nov
+ 2023 15:34:59 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 15:34:58 -0700
+In-Reply-To: <4ca2253d-276f-43c5-8e9f-0ded5d5b2779@redhat.com>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-18-seanjc@google.com>
+ <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com> <ZUEML6oJXDCFJ9fg@google.com>
+ <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com> <ZUJVfCkIYYFp5VwG@google.com>
+ <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
+ <ZUJ-cJfofk2d_I0B@google.com> <4ca2253d-276f-43c5-8e9f-0ded5d5b2779@redhat.com>
+Message-ID: <ZULSkilO-tdgDGyT@google.com>
+Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
+ dedicated guest memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 11:04, Hongyan Xia wrote:
-> From: Hongyan Xia <hongyan.xia2@arm.com>
+On Wed, Nov 01, 2023, Paolo Bonzini wrote:
+> On 11/1/23 17:36, Sean Christopherson wrote:
+> > > > "Allow" isn't perfect, e.g. I would much prefer a straight KVM_GUEST_MEMFD_USE_HUGEPAGES
+> > > > or KVM_GUEST_MEMFD_HUGEPAGES flag, but I wanted the name to convey that KVM doesn't
+> > > > (yet) guarantee hugepages.  I.e. KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is stronger than
+> > > > a hint, but weaker than a requirement.  And if/when KVM supports a dedicated memory
+> > > > pool of some kind, then we can add KVM_GUEST_MEMFD_REQUIRE_HUGEPAGE.
+> > > I think that the current patch is fine, but I will adjust it to always
+> > > allow the flag, and to make the size check even if !CONFIG_TRANSPARENT_HUGEPAGE.
+> > > If hugepages are not guaranteed, and (theoretically) you could have no
+> > > hugepage at all in the result, it's okay to get this result even if THP is not
+> > > available in the kernel.
+> > Can you post a fixup patch?  It's not clear to me exactly what behavior you intend
+> > to end up with.
 > 
-> Switch to the new util_avg_uclamp for task and runqueue utilization.
-> Since util_est() calls task_util(), this means util_est is now also a
-> clamped value.
-
-s/util_est()/task_util_est()
-
-but task_util_est() is max(task_util(p), _task_util_est(p))
-
-So I don't immediately spot why util_est is a clamped value as well now.
-
-We have a naming mismatch between CPU and task related function on this
-level: cpu_util() vs. task_util_est().
-
-> Now that we have the sum aggregated CFS util value, we do not need to
-> consult uclamp buckets to know how the frequency should be clamped. We
-> simply look at the aggregated top level root_cfs_util_uclamp to know
-> what frequency to choose. Because we simulate PELT decay in
-> root_cfs_util_uclamp anyway, there's no need in cpufreq_schedutil.c to
-> avoid premature frequency drops.
+> Sure, just this:
 > 
-> Consequently, there is no need for uclamp_rq_util_with(). This function
-> takes the un-clamped util value and sends it through various clamping
-> filters to get the final value. However, util_avg_uclamp is propagated
-> with clamping in mind already, so it does not need to be clamped again.
-> 
-> TODO: There are two major caveats in this patch.
-> 1. At the moment sum aggregation does not consider RT tasks. The avg_rt
->    signal considers all RT tasks on this rq as a single entity, which
->    means the utilization of individual RT tasks is not tracked
->    separately. If we want to use sum aggregation, we might have to track
->    utilization of RT tasks individually.
-
-Not sure if the RT class will except PELT task tracking (plus there is
-CONFIG_RT_GROUP_SCHED too).
-
-> 2. Busy time accounting in compute_energy() now takes the uclamp'ed
->    value. Ideally, it should reflect reality and use the un-clamp'ed
->    values. However, that would require maintaining both the normal and
->    uclamp'ed values for util_est. This needs to be revisited if it
->    causes real problems in practice.
-
-You could use your new rq->root_cfs_util_uclamp for eenv_pd_max_util
-(FREQUENCY_UTIL) and use rq->cfs.avg.util_avg in eenv_pd_busy_time()
-(ENERGY_UTIL).
-
-[...]
-
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index efe3848978a0..32511ee63f01 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7402,10 +7402,12 @@ int sched_core_idle_cpu(int cpu)
->   * The DL bandwidth number otoh is not a measured metric but a value computed
->   * based on the task model parameters and gives the minimal utilization
->   * required to meet deadlines.
-> + *
-> + * The util_cfs parameter has already taken uclamp into account (unless uclamp
-> + * support is not compiled in).
->   */
->  unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
-> -				 enum cpu_util_type type,
-> -				 struct task_struct *p)
-> +				 enum cpu_util_type type)
-
-There are changes proposed in the area of uclamping right now in:
-
-https://lkml.kernel.org/r/20231026170913.32605-2-vincent.guittot@linaro.org
-
-[...]
-
->  /**
-> @@ -282,7 +281,11 @@ static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time,
->  	 * into the same scale so we can compare.
->  	 */
->  	boost = (sg_cpu->iowait_boost * max_cap) >> SCHED_CAPACITY_SHIFT;
-> -	boost = uclamp_rq_util_with(cpu_rq(sg_cpu->cpu), boost, NULL);
-> +	/*
-> +	 * TODO: Investigate what should be done here. In sum aggregation there
-> +	 * is no such thing as uclamp_max on a rq, so how do we cap the boost
-> +	 * value, or do we want to cap the boost frequency here at all?
-> +	 */
-
-https://lkml.kernel.org/r/20231026170913.32605-3-vincent.guittot@linaro.org
-
-is proposing to cap iowait boost with max (set in effective_cpu_util()
-and max depends on uclamp_rq_get(rq, UCLAMP_MAX) too.
-
-So you could cap iowait boost in case uclamp_rq_is_capped(), i.e. when:
-
-  if (rq->cfs.avg.util_avg > rq->root_cfs_util_uclamp + margin)
-
-[...]
-
-> @@ -7468,11 +7459,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  static unsigned long
->  cpu_util(int cpu, struct task_struct *p, int dst_cpu, int boost)
+> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> index 7d1a33c2ad42..34fd070e03d9 100644
+> --- a/virt/kvm/guest_memfd.c
+> +++ b/virt/kvm/guest_memfd.c
+> @@ -430,10 +430,7 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
 >  {
-> -	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
-> -	unsigned long util = READ_ONCE(cfs_rq->avg.util_avg);
-> +	struct rq *rq = cpu_rq(cpu);
-> +	struct cfs_rq *cfs_rq = &rq->cfs;
-> +	unsigned long util = root_cfs_util(rq);
-> +	bool capped = uclamp_rq_is_capped(rq);
->  	unsigned long runnable;
->  
-> -	if (boost) {
-> +	if (boost && !capped) {
->  		runnable = READ_ONCE(cfs_rq->avg.runnable_avg);
->  		util = max(util, runnable);
->  	}
+>  	loff_t size = args->size;
+>  	u64 flags = args->flags;
+> -	u64 valid_flags = 0;
+> -
+> -	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
+> -		valid_flags |= KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+> +	u64 valid_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+>  	if (flags & ~valid_flags)
+>  		return -EINVAL;
+> @@ -441,11 +438,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
+>  	if (size < 0 || !PAGE_ALIGNED(size))
+>  		return -EINVAL;
+> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
+>  	    !IS_ALIGNED(size, HPAGE_PMD_SIZE))
+>  		return -EINVAL;
+> -#endif
 
-IMHO, this makes sense. Only allow runnable boosting in case the rq is
-not uclamp_max capped.
+That won't work, HPAGE_PMD_SIZE is valid only for CONFIG_TRANSPARENT_HUGEPAGE=y.
 
-[...]
+#else /* CONFIG_TRANSPARENT_HUGEPAGE */
+#define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
+#define HPAGE_PMD_MASK ({ BUILD_BUG(); 0; })
+#define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
+
+...
+
+>  	return __kvm_gmem_create(kvm, size, flags);
+>  }
+> 
+> Paolo
+> 
