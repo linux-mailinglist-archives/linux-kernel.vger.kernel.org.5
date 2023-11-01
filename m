@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675967DDA38
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D5D7DDA3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376941AbjKAAdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 20:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
+        id S1376958AbjKAAhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 20:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376900AbjKAAdY (ORCPT
+        with ESMTP id S236795AbjKAAhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 20:33:24 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADF0124;
-        Tue, 31 Oct 2023 17:32:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698798745;
-        bh=6p1mMr2S18vzpg3JUCfuptuKroPdbAQKf0L4IgUzuzo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VlvpLyoG6Pz8D1POVOZNP+cYbOVYpPyjxhbG6XKF1yXHC5vWhHAfpJit3J9q6sAbA
-         LYNFY1z+fSbbgjNqdM5K5vkS0rEa6vlWWJfJXA80l11HmWnGgxRZtuGacmmcPLNQge
-         BI5nBDxEeuQHIeRysAIdE8WCOiZZoO3kFZ7BDIum5SQ0YrCcMjr5MPEbPlOT2IYXS3
-         NVl+5dYPbtE2+2QbRgqNrXkm9VGrZZZXGWhwAKhDuhfERuagyRlUD80EfZUnT7mrvx
-         9FcRwsY+1AfIKaBqP+6od4LixWVJHCmZUEoYchwbZZueEuuGqgpjGVkvQyN+Xq4Ysd
-         nRW83Caft0LYw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SKnyc5F0Jz4wx7;
-        Wed,  1 Nov 2023 11:32:24 +1100 (AEDT)
-Date:   Wed, 1 Nov 2023 11:32:22 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bcachefs tree
-Message-ID: <20231101113222.13e7edc2@canb.auug.org.au>
-In-Reply-To: <20230914083145.17c2e7de@canb.auug.org.au>
-References: <20230912120429.7852428f@canb.auug.org.au>
-        <e639a428-0fb7-7329-ce52-e51f7951a146@bytedance.com>
-        <20230913093553.4290421e@canb.auug.org.au>
-        <ada473e9-aa2f-c6ff-b869-cf94942ddd20@bytedance.com>
-        <20230913132330.00b3ef07f696cf9efc4d0886@linux-foundation.org>
-        <20230914083145.17c2e7de@canb.auug.org.au>
+        Tue, 31 Oct 2023 20:37:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C931BED
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698798978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C+GS7S1zs+RWJZ2acWzMVg8OF7MBFMELnGIFo6WBEv4=;
+        b=ObSwoSiQf4jlFNWVIHbm31Tm+L66Tm1BHZ5IOQGBD0znkrfl6M332bAkVZl/5wvLvN3e+p
+        7fKFIYouGXfW2E9JnqdVc6aE3my2J0B943wlTk3j/UhEC1rEEO0Ze3iPSA205F4SsxiwUz
+        sHKAOOoqfvgpy8P18ELOZ7Xhh2ZF5qU=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-128-xgIu9efTO4GGLwv-3ucOtQ-1; Tue, 31 Oct 2023 20:35:56 -0400
+X-MC-Unique: xgIu9efTO4GGLwv-3ucOtQ-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-507d4583c4cso7059661e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:35:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698798954; x=1699403754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C+GS7S1zs+RWJZ2acWzMVg8OF7MBFMELnGIFo6WBEv4=;
+        b=wB7zKytoPrORWxc0Tmv5tejFmbQVncJoxm+WthvFAfVBKjhUzpt4wsfwO4SR+7wQ+w
+         0KeCpvZAL47kpCo28qGnZleaJFzeydJAon5wlea3vMwOVVI8+xZOQUnb2tZCW/Mlj3WT
+         N3JAy5d3knIMPjoLkDAySdmnL/ucTXt2uJroSZkE6Vz0mCpcMCZGKG6HZOVS3mAtQPvD
+         qJkxjzKc9t39Wt/fbjMzdrA3Y22/qagw6hDqj/PqI41/6BAi9lDBHblWByKoBsj6Tx+2
+         Ku5cfmjlcnQyuxOfRHaRNjEKvefXIhFafLPAIT9BtPdcCV1fQiBxNox82eyXa2/0zp89
+         7tNw==
+X-Gm-Message-State: AOJu0YyMOzH9M97oeNMbeV6T1crMcqWkmJkVHrVF7JFxhucKWK6SX83x
+        YOXCzaY1YuZzJ6nLZzJ2cyCxkYaYZi1kRMylHv/8opPCsWxP1KCkxwdS0wPVW5vR4NXcpkW/N8P
+        +qRZcHxCQkpiGlysBFahJT0pl0otEezP4CEcAO8hUdJ3gAKlaxqo=
+X-Received: by 2002:a05:6512:2396:b0:503:343a:829f with SMTP id c22-20020a056512239600b00503343a829fmr14598979lfv.23.1698798954040;
+        Tue, 31 Oct 2023 17:35:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEg+1pMD7BGHcsWb0wYXFGaP9FuBcGzatueA1YF+p9rYE0YMGk4z2qP+9HpSwembnuzfBCTmKuQjRRFMXs3AHM=
+X-Received: by 2002:a05:6512:2396:b0:503:343a:829f with SMTP id
+ c22-20020a056512239600b00503343a829fmr14598971lfv.23.1698798953743; Tue, 31
+ Oct 2023 17:35:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1.0EBoCEorT8Ulh4SIWeziu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231031144339.121453-1-sgarzare@redhat.com> <CAJaqyWfr123zWdM8E+H4bnfrdvv-KEvZ7r5eN+fY428G6v95Hg@mail.gmail.com>
+In-Reply-To: <CAJaqyWfr123zWdM8E+H4bnfrdvv-KEvZ7r5eN+fY428G6v95Hg@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 1 Nov 2023 08:35:42 +0800
+Message-ID: <CACGkMEvRCdCT4A5r9up0U+Pj5m44f5V2Fw_dcPJvnJk7NBtrLQ@mail.gmail.com>
+Subject: Re: [PATCH] vdpa_sim_blk: allocate the buffer zeroed
+To:     Eugenio Perez Martin <eperezma@redhat.com>
+Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, Qing Wang <qinwang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1.0EBoCEorT8Ulh4SIWeziu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Andrew,
-
-On Thu, 14 Sep 2023 08:31:45 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Wed, Nov 1, 2023 at 1:52=E2=80=AFAM Eugenio Perez Martin <eperezma@redha=
+t.com> wrote:
 >
-> On Wed, 13 Sep 2023 13:23:30 -0700 Andrew Morton <akpm@linux-foundation.o=
-rg> wrote:
+> On Tue, Oct 31, 2023 at 3:44=E2=80=AFPM Stefano Garzarella <sgarzare@redh=
+at.com> wrote:
 > >
-> > On Wed, 13 Sep 2023 09:10:11 +0800 Qi Zheng <zhengqi.arch@bytedance.com=
-> wrote:
-> >  =20
-> > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > Date: Tue, 12 Sep 2023 11:27:22 +1000
-> > > > Subject: [PATCH] bcachefs: convert to dynamically allocated shrinke=
-rs
-> > > >=20
-> > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > ---
-> > > >   fs/bcachefs/btree_cache.c     | 22 ++++++++++++----------
-> > > >   fs/bcachefs/btree_key_cache.c | 21 ++++++++++++---------
-> > > >   fs/bcachefs/btree_types.h     |  4 ++--
-> > > >   fs/bcachefs/fs.c              |  2 +-
-> > > >   fs/bcachefs/sysfs.c           |  2 +-
-> > > >   5 files changed, 28 insertions(+), 23 deletions(-)   =20
-> > >=20
-> > > This version looks good to me.
-> > >=20
-> > > Reviewed-by: Qi Zheng <zhengqi.arch@bytedance.com>   =20
-> >=20
-> > I not longer carry a post-linux-next patch queue, so there's nothing I
-> > can do with this patch.  I'll assume that either Kent or I will merge
-> > it later, depending upon whose stuff goes into mainline first. =20
->=20
-> Actually the correct plan is for you and Kent to inform Linus of the
-> need for this patch as part of the merge resolution when he merges the
-> latter of your trees (unless you want to stabilise the shrinker changes
-> into a separate branch that is never rewritten and is merged into your
-> tree and the bcachefs tree).
+> > Deleting and recreating a device can lead to having the same
+> > content as the old device, so let's always allocate buffers
+> > completely zeroed out.
+> >
+> > Fixes: abebb16254b3 ("vdpa_sim_blk: support shared backend")
+> > Suggested-by: Qing Wang <qinwang@redhat.com>
+>
+> Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-This is now a conflict between the mm-stable tree and Linus' tree.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
---=20
-Cheers,
-Stephen Rothwell
+Thanks
 
---Sig_/1.0EBoCEorT8Ulh4SIWeziu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+>
+> > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> > ---
+> >  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_s=
+im/vdpa_sim_blk.c
+> > index b3a3cb165795..b137f3679343 100644
+> > --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> > +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> > @@ -437,7 +437,7 @@ static int vdpasim_blk_dev_add(struct vdpa_mgmt_dev=
+ *mdev, const char *name,
+> >         if (blk->shared_backend) {
+> >                 blk->buffer =3D shared_buffer;
+> >         } else {
+> > -               blk->buffer =3D kvmalloc(VDPASIM_BLK_CAPACITY << SECTOR=
+_SHIFT,
+> > +               blk->buffer =3D kvzalloc(VDPASIM_BLK_CAPACITY << SECTOR=
+_SHIFT,
+> >                                        GFP_KERNEL);
+> >                 if (!blk->buffer) {
+> >                         ret =3D -ENOMEM;
+> > @@ -495,7 +495,7 @@ static int __init vdpasim_blk_init(void)
+> >                 goto parent_err;
+> >
+> >         if (shared_backend) {
+> > -               shared_buffer =3D kvmalloc(VDPASIM_BLK_CAPACITY << SECT=
+OR_SHIFT,
+> > +               shared_buffer =3D kvzalloc(VDPASIM_BLK_CAPACITY << SECT=
+OR_SHIFT,
+> >                                          GFP_KERNEL);
+> >                 if (!shared_buffer) {
+> >                         ret =3D -ENOMEM;
+> > --
+> > 2.41.0
+> >
+>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVBnJYACgkQAVBC80lX
-0GwJpwf/csecxXPPdT/XePMK3t2Pqr81wdy9BzK7Au3Jrw/J3qL6MJbaXxf4ME7G
-y8Tmfmcf6TLK2LWhvnV1T0lLlWC8UMJbCxvXp/AWj7mVLyeeyhNfecPGJXIjB7xF
-z9mmocX83gy0GLcdB4XG3vZqCY++4wr2OJONrPd041nvENinqjsiHTMdh7JOdv7E
-MwFi6Acf8bczrsDVKBkUfVIn5wP3Xd7UgMiHXlvtknTie5q9lCfyM8LuhpfGLoXb
-UqiTxE2x2jQiM8fVkM8//5/qA+fKAGk+Pe5mN4FuHzqjkUJeoMIGYjp1yoWYgQCL
-eT7j66WMcujmEWqXVBkKHhEcpczLCA==
-=dLTC
------END PGP SIGNATURE-----
-
---Sig_/1.0EBoCEorT8Ulh4SIWeziu--
