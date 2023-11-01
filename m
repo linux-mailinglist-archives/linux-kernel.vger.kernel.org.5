@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56DC7DDA52
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0516E7DDA4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376950AbjKAAgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 20:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
+        id S1376932AbjKAAjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 20:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376932AbjKAAgW (ORCPT
+        with ESMTP id S231947AbjKAAjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 20:36:22 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6B9F3;
-        Tue, 31 Oct 2023 17:36:14 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 7973760173;
-        Wed,  1 Nov 2023 01:36:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1698798971; bh=7+OnU03hnEgdpDmnONAOnNrmZzBC/v9M+zILGmMnYVs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=2KOLpL38q0G2qKze6WO6dSOZRCb5zHCOkVr5U4Z7OMWkVLUa1hgS6yrNTR/J4zv7v
-         x5LC+ipe7D9riZxgq4WHcQySuTcM9Pwd3CHuhUtUVQnR7VhXU+U/j36wTo3ub2hYAI
-         lsBPhCUsmSh0krJxLkmD7h77pS2W8uyiCHVLmTVBFXYRmdb2XZm0jGB7+Qo2IvjwYS
-         xHY8lyil58e+Dv6qPj718fbxbC6Dx1vMTGCDirpGJv1DXp6nroGBJZqPPCzYSCzzlS
-         uYgIbsaf/P+8Fm+kH+jA4Ywq31DGC60gDZa9RhK/EagIQKp4EIeqzX8mfrWwRJ3uo9
-         oiXG6AwnAUR1A==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VO-KPkDgqbXm; Wed,  1 Nov 2023 01:36:08 +0100 (CET)
-Received: from [192.168.1.6] (78-2-88-80.adsl.net.t-com.hr [78.2.88.80])
-        by domac.alu.hr (Postfix) with ESMTPSA id 139DE60171;
-        Wed,  1 Nov 2023 01:36:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1698798968; bh=7+OnU03hnEgdpDmnONAOnNrmZzBC/v9M+zILGmMnYVs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sep5SPp7jEs9UZ+p2yIjxq6FZhm6zz7bhVx2M7FWKIpDBMHktoFo35jLkJMFSeP9+
-         XBiefuRdHgBdQLSQ4F9r3a4ZfxGmo/9c0CAtOmVSsr28gPIjbdt0Qh7tx+v5N5RQOr
-         FON028Ysh6IgS124y4p4oqNJh4Aw/wNgyM1kgIDkuUvHjHJrocIpaaDGuExxwCU2P/
-         6iniHgAEBN8+jfPx17xH89wEJ4sExbgXtSm0ADNBoy+3UTvDKGKn7AzWEOEG/yYV9i
-         6VTWz7aKge/EXVKkNLbcTmFMvrp547+mLo5j4lvWtKD7wwgcI4dTK0lDzG3UwVHmyI
-         wGeQFORljFG0w==
-Message-ID: <4126706e-87f7-40d9-a896-8fc869a0f41d@alu.unizg.hr>
-Date:   Wed, 1 Nov 2023 01:35:55 +0100
+        Tue, 31 Oct 2023 20:39:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336A2107
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698799109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cVmhpIbbAED27w6cogZcQtjsKWbHbF+MiZXcAMDs3b8=;
+        b=DHQxtzX00C43K8lgWaV9oBtsYzi/ad6CfDfVXCbBRd9PqXW3JBw8I12jCuCfGh/D4syJD/
+        75PFiEpa044NX3BRYYu0jKYFci3kobK5VVDJmTmbOEdVvizOqn0xiH5dKKfF48ZjE7d9En
+        5OPcHff/W3gvWlc1kbQX1TqXt5TmdbY=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-189-q4ChtN6NPcG3TiwawueYQQ-1; Tue, 31 Oct 2023 20:38:18 -0400
+X-MC-Unique: q4ChtN6NPcG3TiwawueYQQ-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5079fe7cc7cso7609003e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:38:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698799096; x=1699403896;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cVmhpIbbAED27w6cogZcQtjsKWbHbF+MiZXcAMDs3b8=;
+        b=Tm5Qq4kO/UfhKMaTqbQAQn0f/U+JE71g9uXMInLh0fGiAHLMyw9MSegv9QzhBCDTBE
+         TzSWDs02ncsmyh8BPU0r/Ezf1x9IG2zzIizgBLJV39aGPc0XA1ez0Hi4dqKKOiUnUxeC
+         TG9ptQ7HleWfNqwy9FmdNkYs9Qhcz7oLHubEbrPLyxOcAf004FXpizkGKbduXbbAaPKp
+         6YlHM21QNW0CZZMpeksPVJaELwadetoq3n2k1xr+r8v0CHRoAwyRfjElAmqJn6R4/TNg
+         0fcSsGy+YJWF2ioHF4k1q4m5K2HeiBmnhLzexBkB8Abu0XwHQT9P/8LKZyNEJqTNx20z
+         EOuQ==
+X-Gm-Message-State: AOJu0YyrueR5nhlToLelNEaypn53PEVURAms48xJqme817IpB+6/PpMq
+        P0PiqidQh/u291G/MxBGGqPeP83mdcRYDInxmS/sC+PvodzkHodHtDBw8eEgOk6R6TS0s09OPBk
+        /Gej3CFmiHPwPJJgaEKH2hw/g3VE7GvbdUQCeUE1t
+X-Received: by 2002:ac2:5d31:0:b0:508:1227:5a10 with SMTP id i17-20020ac25d31000000b0050812275a10mr8510925lfb.23.1698799096728;
+        Tue, 31 Oct 2023 17:38:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IELnbiKGw2gzG8mmlQVxm+S0ABUPG3MLsIsFSN626UDcnC/raa4pedrJ5yX266tK9gGw2tsUAPI3qr4SXA4FRg=
+X-Received: by 2002:ac2:5d31:0:b0:508:1227:5a10 with SMTP id
+ i17-20020ac25d31000000b0050812275a10mr8510914lfb.23.1698799096383; Tue, 31
+ Oct 2023 17:38:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] r8169: Coalesce r8169_mac_ocp_write/modify calls
- to reduce spinlock stalls
-To:     Jacob Keller <jacob.e.keller@intel.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>,
-        Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, nic_swsd@realtek.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
-References: <20231029110442.347448-1-mirsad.todorovac@alu.unizg.hr>
- <e7a6b0c1-9fc6-480c-a135-7e142514d0e7@intel.com>
- <a85e41ab-7cfa-413a-a446-f1b65c09c9ab@gmail.com>
- <e1c666d8-c7f0-440e-b362-3dbb7a67b242@intel.com>
- <19e2d5fc-7e30-4bb2-943c-f83b44099192@alu.unizg.hr>
- <f2f3a5dc-8b00-400a-9d3f-f10663ce8857@intel.com>
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <f2f3a5dc-8b00-400a-9d3f-f10663ce8857@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <110d3058179284b092722827bef4f74f8ba0c622.1698769192.git.mst@redhat.com>
+In-Reply-To: <110d3058179284b092722827bef4f74f8ba0c622.1698769192.git.mst@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 1 Nov 2023 08:38:05 +0800
+Message-ID: <CACGkMEt0OV=y+MRvSVQcLJqOSfrqQNR=aMWfcFgFbZ9QODzeTQ@mail.gmail.com>
+Subject: Re: [PATCH] virtio_pci: move structure to a header
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/23 20:46, Jacob Keller wrote:
-> 
-> 
-> On 10/30/2023 8:51 PM, Mirsad Todorovac wrote:
->> Am I allowed to keep Mr. Keller's Reviewed-by: tags on the reviewed diffs provided
->> that I fix the cover letter issue and objections?
->>
-> 
-> I have no objections as long as the content otherwise remains the same :)
-> 
-> Thanks,
-> Jake
+On Wed, Nov 1, 2023 at 12:20=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> These are guest/host interfaces so belong in the header
+> where e.g. qemu will know to find them.
+> Note: we added a new structure as opposed to extending existing one
+> because someone might be relying on the size of the existing structure
+> staying unchanged.  Add a warning to avoid using sizeof.
+>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-Of course, one changed character would require another review.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Thank you.
+Thanks
 
-Mirsad
+> ---
+>  drivers/virtio/virtio_pci_modern_dev.c |  7 ++++---
+>  include/linux/virtio_pci_modern.h      |  7 -------
+>  include/uapi/linux/virtio_pci.h        | 11 +++++++++++
+>  3 files changed, 15 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virt=
+io_pci_modern_dev.c
+> index e2a1fe7bb66c..7de8b1ebabac 100644
+> --- a/drivers/virtio/virtio_pci_modern_dev.c
+> +++ b/drivers/virtio/virtio_pci_modern_dev.c
+> @@ -294,9 +294,10 @@ int vp_modern_probe(struct virtio_pci_modern_device =
+*mdev)
+>
+>         err =3D -EINVAL;
+>         mdev->common =3D vp_modern_map_capability(mdev, common,
+> -                                     sizeof(struct virtio_pci_common_cfg=
+), 4,
+> -                                     0, sizeof(struct virtio_pci_modern_=
+common_cfg),
+> -                                     &mdev->common_len, NULL);
+> +                             sizeof(struct virtio_pci_common_cfg), 4, 0,
+> +                             offsetofend(struct virtio_pci_modern_common=
+_cfg,
+> +                                         queue_reset),
+> +                             &mdev->common_len, NULL);
+>         if (!mdev->common)
+>                 goto err_map_common;
+>         mdev->isr =3D vp_modern_map_capability(mdev, isr, sizeof(u8), 1,
+> diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci=
+_modern.h
+> index d0f2797420f7..a09e13a577a9 100644
+> --- a/include/linux/virtio_pci_modern.h
+> +++ b/include/linux/virtio_pci_modern.h
+> @@ -5,13 +5,6 @@
+>  #include <linux/pci.h>
+>  #include <linux/virtio_pci.h>
+>
+> -struct virtio_pci_modern_common_cfg {
+> -       struct virtio_pci_common_cfg cfg;
+> -
+> -       __le16 queue_notify_data;       /* read-write */
+> -       __le16 queue_reset;             /* read-write */
+> -};
+> -
+>  /**
+>   * struct virtio_pci_modern_device - info for modern PCI virtio
+>   * @pci_dev:       Ptr to the PCI device struct
+> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_=
+pci.h
+> index f703afc7ad31..44f4dd2add18 100644
+> --- a/include/uapi/linux/virtio_pci.h
+> +++ b/include/uapi/linux/virtio_pci.h
+> @@ -166,6 +166,17 @@ struct virtio_pci_common_cfg {
+>         __le32 queue_used_hi;           /* read-write */
+>  };
+>
+> +/*
+> + * Warning: do not use sizeof on this: use offsetofend for
+> + * specific fields you need.
+> + */
+> +struct virtio_pci_modern_common_cfg {
+> +       struct virtio_pci_common_cfg cfg;
+> +
+> +       __le16 queue_notify_data;       /* read-write */
+> +       __le16 queue_reset;             /* read-write */
+> +};
+> +
+>  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+>  struct virtio_pci_cfg_cap {
+>         struct virtio_pci_cap cap;
+> --
+> MST
+>
+
