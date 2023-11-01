@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB3A7DE51E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A22D7DE524
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344650AbjKARNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        id S1344684AbjKARPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344598AbjKARNL (ORCPT
+        with ESMTP id S1344562AbjKARO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:13:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3720010E;
-        Wed,  1 Nov 2023 10:13:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB57BC433C8;
-        Wed,  1 Nov 2023 17:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698858788;
-        bh=FSBuDV3vn5ABFwCq/Fw5E+UxUcGXr0n01nZQCGovems=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=k+uuAch9XlzhQ6zX3uH+i4yKj/TY1VgTdvuHDW2BWMAgvlR/MNCLqoKsfkNVFrOB9
-         BM8+qaMam0gvD9emFXsJ0kUvmwYFaIjLkbjrgeMfzzWKjnOqTfr6+/0v8o/v4/UICB
-         nTTe9F7PW2/oUCJbHtpDv88UfPxYkusD8iNAHGrcyPAoZHxA83Hl9QI9MWe7ALvaLu
-         IGHVpJQBkN6xpJYa0lJXysvTIjhDWvL20iE5YkQnLm7lhq/nBsZtC9AkB9PYgx3nlX
-         H4Hzlhb9HGw581IFptvys8kTiz6B2aDKhvq3Z2nGFHNfjrMM3ql9kUSJ/99t93hdwm
-         4ODVtWtRQ0LZw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6705ACE09BE; Wed,  1 Nov 2023 10:13:08 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 10:13:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Z qiang <qiang.zhang1211@gmail.com>
-Subject: Re: [GIT PULL] RCU changes for v6.7
-Message-ID: <5e797896-6c0b-4686-98b7-d66bcdb10d0a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZTuf+xNrfqGjHFDK@lothringen>
- <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
- <ZUDUlQq6hEEPBiCR@lothringen>
- <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
- <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
- <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+        Wed, 1 Nov 2023 13:14:59 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B87A6;
+        Wed,  1 Nov 2023 10:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1698858884; x=1699463684; i=rwahl@gmx.de;
+        bh=EriKGdVhkjZE/JW8h0Day4T4RmUpBJKLvzPhAYNXNLI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=T6QKpQEh0+ITgaCW1YWnQiQak5N89ZYBJQnfNlOwVsmEG/2+NECZ6AVpinFbGtaL
+         owz8ZMeiYQYpjAqGwKM0ZIjR/GKuxgl9fWtdnQaxunAhNJOGT/Un31eojphAAfEP3
+         SSrjMUOwPg+4EXCPM6m3ntizj5kXT/liJ3K/7dN+8/nFU+G7H16b6SIcWIBn9TIgE
+         Jfu0A2O8jpQ03prOswovmX7xOavcQb23cdcIYfjA5fQtyGMX2hZZTf/UrSjuN+AI+
+         0WqBdmJhA/Lkkjxd/cyZlpxQS+M7uJ/whYkWhd5zywMCQ2PjViKCu9aci4o30bCLu
+         8TT6DVoPh0Jx/n1ZyQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from rohan.localdomain ([84.156.147.134]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUGeB-1qpGPH2S4B-00RJT5; Wed, 01
+ Nov 2023 18:14:44 +0100
+From:   Ronald Wahl <rwahl@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Ronald Wahl <ronald.wahl@raritan.com>, stable@vger.kernel.org
+Subject: [PATCH v4] serial: 8250: 8250_omap: Do not start RX DMA on THRI interrupt
+Date:   Wed,  1 Nov 2023 18:14:31 +0100
+Message-ID: <20231101171431.16495-1-rwahl@gmx.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OU2kS9jqgy2fT3w5uBLnJbbnDx7Tjfr6MYf8PnuM07Qq6IGpNSX
+ /2D7bW0HTTX0RYxg/DoeuwfkkyrUX8LBM4jCVaMMcfFlx0lzfkAdkzlUzyLIUHiPsvCc1q6
+ OOOAice4sEsIUqqmEIKhbqatANdaPcZM5bO4EjGDFleJnfx+7VkiFc23QK+qFEepIgmjhhZ
+ jD7DcXK6lcx/vIFmdSkbg==
+UI-OutboundReport: notjunk:1;M01:P0:53AjFZVSRN4=;5723rBi+1Md/zfc/YkPrOSPr4iD
+ 930nbU4C6fvaWXJ1VOKaJLLD0KqLaYNaI1A93BIPSoqsIyu92H440hXkvnGz15siwq6rrqDDY
+ iXqf81ls9hgcaLZVJunD+B3mzlxy02KS5IihNpAxKay+NdSq2Cg0rFnK3SAkdhIIhz9CQkKlB
+ 55//g62HUPPis0UhiHehtXJXim3/rSkHmEaihyBjb9w3+gi+8vpGLPXVX/AgEyjSrxHDjiGKi
+ VNY2Cq+pIVg60Prb8/+fCGe6pVJp9DXttKSkLC/IxC53sp3OKmKqost13Jlix96pziAdeImff
+ pFOFOg0ym6BXoBeAB2k/RfuRBUJ8aurqgvA/24CghJ3E1bDZZs+1vN1dmYgzNLBGqEcqSpdrR
+ Hbr6pferUVBVWCvVJiORwc/w1+0gNfvezxBZTEE3gLD/ix6KE7ZPPweJ3Otbo3+YMv1kL/1fj
+ nGRx+SI8fXLualUzbXk3ilW1oJlnYxiN67Ttz6mLh3F26keInVNPjracBXZtqDeinUjBuAaY+
+ 5GegC59OGOzpcv3rnMaG9HLcyVbGqobXCCq5Qu4pnPn9Yj+sqYLBEFKroTd1XxoniDsydggE3
+ xy8WIPkbl1BHBPg7PYDELlAWTn7F6zMTyO4scxJ2SnhY3TByUtHfil2eVUQQhjPgxMSRVvl2Z
+ wRzIz11MmCIhuWUzkpGEl/07rM+E0P5ZzzinDMWCUM4tO+9pyl9Scc2wuPePpoQl51w0YsCbR
+ GBjG4ITVgoFKyzvRlAZ0ZQ18RrdnVRxjOhjlb4uj+OfrtCRwSrqAqEslbUchNr8TNtCxYFfE0
+ 9Gl7fC9R+xu7d+j4L09O6G34toosBZNwta87IU0LBWas1sP8T7Ti4xG65QVrbxTT9Dc7ItfYK
+ WO7tDyT+uosO39kUJqoh3lQbEaDcA1rcsGn0QVT66UdjMDLveGsZGsvFZg0U5i+JzVR1l8e2w
+ i2bqMw==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 06:07:57PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 31, 2023 at 01:06:44PM -1000, Linus Torvalds wrote:
+From: Ronald Wahl <ronald.wahl@raritan.com>
 
-[ . . . ]
+Starting RX DMA on THRI interrupt is too early because TX may not have
+finished yet.
 
-> > I really think that we should *never* have any kind of notifiers for
-> > kernel bugs. They cause problems. The *one* exception is an actual
-> > honest-to-goodness kernel debugger, and then it should literally
-> > *only* be the debugger that can register a notifier, so that you are
-> > *never* in the situation that a kernel without a debugger will just
-> > hang because of some bogus debug notifier.
+This change is inspired by commit 90b8596ac460 ("serial: 8250: Prevent
+starting up DMA Rx on THRI interrupt") and fixes DMA issues I had with
+an AM62 SoC that is using the 8250 OMAP variant.
 
-Here you might have been suggesting that I use gdb and just set a
-breakpoint in check_cpu_stall(), and then use gdb commands to read out
-the state.  And yes, this work well in some situations.  In fact, there
-is a --gdb parameter to the rcutorture scripting for just this purpose.
+Cc: stable@vger.kernel.org
+Fixes: c26389f998a8 ("serial: 8250: 8250_omap: Add DMA support for UARTs o=
+n K3 SoCs")
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+=2D--
+V4: - add missing braces to fix build warning
 
-Except that I normally run a few hundred rcutorture guest OSes spread
-across 20 systems, and sometimes more than a thousand guest OSes across
-50 systems for hard-to-reproduce bugs.  In my experience, managing that
-many remote gdb sessions is cranky and unreliable, which is not helpful
-when debugging.  Writing a few tens of lines of C code in the kernel is
-much simpler and more reliable.
+V3: - add Cc: stable@vger.kernel.org
 
-Assuming of course that I avoid the traps you point out.  Which I have
-done thus far.  (Famous last words...)
+V2: - add Fixes: tag
+    - fix author
 
-							Thanx, Paul
+ drivers/tty/serial/8250/8250_omap.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250=
+/8250_omap.c
+index c7ab2963040b..1122f37fe744 100644
+=2D-- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1282,10 +1282,12 @@ static int omap_8250_dma_handle_irq(struct uart_po=
+rt *port)
+
+ 	status =3D serial_port_in(port, UART_LSR);
+
+-	if (priv->habit & UART_HAS_EFR2)
+-		am654_8250_handle_rx_dma(up, iir, status);
+-	else
+-		status =3D omap_8250_handle_rx_dma(up, iir, status);
++	if ((iir & 0x3f) !=3D UART_IIR_THRI) {
++		if (priv->habit & UART_HAS_EFR2)
++			am654_8250_handle_rx_dma(up, iir, status);
++		else
++			status =3D omap_8250_handle_rx_dma(up, iir, status);
++	}
+
+ 	serial8250_modem_status(up);
+ 	if (status & UART_LSR_THRE && up->dma->tx_err) {
+=2D-
+2.41.0
+
