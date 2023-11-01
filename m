@@ -2,148 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 708357DE511
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389D07DE519
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 18:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344622AbjKARKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 13:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S1344653AbjKARM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 13:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344598AbjKARKA (ORCPT
+        with ESMTP id S1344650AbjKARMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:10:00 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D201CA6;
-        Wed,  1 Nov 2023 10:09:51 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32deb2809daso4420427f8f.3;
-        Wed, 01 Nov 2023 10:09:51 -0700 (PDT)
+        Wed, 1 Nov 2023 13:12:24 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B3211C
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 10:12:17 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507bd644a96so10123132e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698858590; x=1699463390; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=70RuBrWBQ0TSA8ytHNk00JeITSt1g+gvfLn5RbfFjBE=;
-        b=THiwWN2HVaVB6GoIDHajOenhzEJ+cDB5FYejEsog+GHfruWyAdQMw4NOKtQ2QADaKp
-         T2jaCIaRlr+3rf69yy8amD5KUA2N7Mza1vbEwQRqBB3R+PUaZNSFt8Nv+DfYVeddLyX2
-         PxPWwEstIvrKqiTF0PUUzXWeKvdm4MBUhTI+m8t5BKvp7mOoGZAkfPTtuBytMLZdKvT6
-         gx0qmtXsBImTrgOjukc8wIF9piZx884W+ihLRBjQIqcPhJvJqsK62HN8JwvO8hc4JNjh
-         4Z2D27hKV4H0eswBAA7OfdKeVNqHM0gTBHJFdO+4DKRrKDghpkT78EoYtX9ZhF/uJ2rz
-         ounw==
+        d=linux-foundation.org; s=google; t=1698858735; x=1699463535; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3dI2vPmAxG2rnU2Trg0UzI1o//xP9o8QWeSVZuORzPA=;
+        b=efZJiaHrtrD1ymHaOClSB8ut4NXymIHH7BimtyzqAPny3FI3rPl+HtJUfd0jtFTDRL
+         mSLrkBMy4DeZkvch/kU/Yx49g17iFSsCJOB9UDs3HsF9T0MnXRwJH5RD3sft6dYeiurE
+         1XnxJyHBsdJVT4qyLK+pQEGfiZpXHXAUC/2nY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698858590; x=1699463390;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=70RuBrWBQ0TSA8ytHNk00JeITSt1g+gvfLn5RbfFjBE=;
-        b=UQf4GYWLwJV6netmk2uimCqlwNJL+w38spGQmXsWJAgxzLjpQnvcNP7PCrO3sG9Der
-         TVe63CAFKf2g2Hy2KQAMjBV7VGricG3ra5eq87dB3e8CkdaBu9e01njsBWMN/t+t2c78
-         JHVaBuwLzWLWCsP7NBrf4N3MehhzOvaEk5hdAlKKRbKAD1YDhwnK8ZupiscZizpp00bp
-         aSWTIItlTTY8YaxvsixEPdwdvCBInJEYeSVIIhcz5vX7hhS7qZQUKii97y984ENCJg/G
-         IGxp3CKQroWwMtfkMjxMQ0G46vQ9ivhDv43dwYoJ4BITDA6scJACmz6O5oAYPvu6FmLa
-         xXqg==
-X-Gm-Message-State: AOJu0Yyv2kkXJG3uonR1AyOFSSXdfjgLetNPc1/ER7vzpkCTDaNp/1ly
-        YK6eJO06j+sW7iONjanFz1o=
-X-Google-Smtp-Source: AGHT+IF7FZ80ccgWOLhOoAWtSxnx8HuhVc/UzlQ2aCdxN6o1nYIq16H2uI6mv83/ALr0CN70rbxaCA==
-X-Received: by 2002:a5d:6d86:0:b0:32f:7f17:b049 with SMTP id l6-20020a5d6d86000000b0032f7f17b049mr9720763wrs.39.1698858590199;
-        Wed, 01 Nov 2023 10:09:50 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id d8-20020adffd88000000b0032dcb08bf94sm287786wrr.60.2023.11.01.10.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 10:09:47 -0700 (PDT)
-Message-ID: <6542865b.df0a0220.82f9d.1bea@mx.google.com>
-X-Google-Original-Message-ID: <ZUKGVWlh01U1evki@Ansuel-xps.>
-Date:   Wed, 1 Nov 2023 18:09:41 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robimarko@gmail.com>
-Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
- support
-References: <20231101123608.11157-1-ansuelsmth@gmail.com>
- <5af21f93-bb2d-42b1-b4d4-ee4443ffaff9@gmail.com>
- <65424cd9.5d0a0220.20d9a.fe0f@mx.google.com>
- <f5f72cc3-0435-4ba0-8291-30d1ec2633a0@gmail.com>
+        d=1e100.net; s=20230601; t=1698858735; x=1699463535;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3dI2vPmAxG2rnU2Trg0UzI1o//xP9o8QWeSVZuORzPA=;
+        b=LtUvhIdgHiGiusjuYKOTIDb++BbzYw8+lkPAoTygtG8AJhO1jvZUS29ALIMsG4/5N3
+         GZB+DUSI52/I3MODHTCQsHsQNVXaxFjzXCxcL8Y/zDyGmO2dflJ65yOHAJFgbqrftD57
+         O6gevrbqqI/Ki4gLWPdYZyMjnISKsM0lavvTksn9EBXw6mvoMjvmIwLbds5JgxZHzcr9
+         yqISSaJpa3cV1ta4BNL1otG4WcWWqkEAh9KRTkOQaZzSLG8T8GlvwlQkT4mbsCLJIwV0
+         /GU+uJbvbWeqrYhSkRFOjzwYm32YfDBlYY1bDGYED4/uLB4CrANoKzTfKI4N4MMw7B/P
+         GrIg==
+X-Gm-Message-State: AOJu0YwnfO0ffXbDweQFgYNRSpbWj9Qelns3qwMfc2jT+cQ39K3mrOAY
+        pEpBF0XfLjltp4mdxwjWjNy60/+CI4uAkUy6Hd2S7g==
+X-Google-Smtp-Source: AGHT+IFjv3RnWTSsG7EtQM11Rm307DpCjSBVNsgoZC3zVf7GJ5BlttnDT/3/hqNocwwAwUxfj3l8Ew==
+X-Received: by 2002:a05:6512:1282:b0:505:6ede:20a9 with SMTP id u2-20020a056512128200b005056ede20a9mr15216159lfs.65.1698858735182;
+        Wed, 01 Nov 2023 10:12:15 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id u19-20020a17090657d300b009932337747esm154824ejr.86.2023.11.01.10.12.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Nov 2023 10:12:14 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9d2e7726d5bso6208666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 10:12:13 -0700 (PDT)
+X-Received: by 2002:a17:907:9612:b0:9d4:2042:775b with SMTP id
+ gb18-20020a170907961200b009d42042775bmr2500473ejc.30.1698858733416; Wed, 01
+ Nov 2023 10:12:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5f72cc3-0435-4ba0-8291-30d1ec2633a0@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <ZTuf+xNrfqGjHFDK@lothringen> <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
+ <ZUDUlQq6hEEPBiCR@lothringen> <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
+ <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com> <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+In-Reply-To: <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Nov 2023 07:11:54 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
+Message-ID: <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v6.7
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Z qiang <qiang.zhang1211@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 05:57:50PM +0100, Heiner Kallweit wrote:
-> On 01.11.2023 13:57, Christian Marangi wrote:
-> > On Wed, Nov 01, 2023 at 02:01:33PM +0100, Heiner Kallweit wrote:
-> >> On 01.11.2023 13:36, Christian Marangi wrote:
-> >>> From: Robert Marko <robimarko@gmail.com>
-> >>>
-> >>> Aquantia PHY-s require firmware to be loaded before they start operating.
-> >>> It can be automatically loaded in case when there is a SPI-NOR connected
-> >>> to Aquantia PHY-s or can be loaded from the host via MDIO.
-> >>>
-> >>> This patch adds support for loading the firmware via MDIO as in most cases
-> >>> there is no SPI-NOR being used to save on cost.
-> >>> Firmware loading code itself is ported from mainline U-boot with cleanups.
-> >>>
-> >>> The firmware has mixed values both in big and little endian.
-> >>> PHY core itself is big-endian but it expects values to be in little-endian.
-> >>> The firmware is little-endian but CRC-16 value for it is stored at the end
-> >>> of firmware in big-endian.
-> >>>
-> >>> It seems the PHY does the conversion internally from firmware that is
-> >>> little-endian to the PHY that is big-endian on using the mailbox
-> >>> but mailbox returns a big-endian CRC-16 to verify the written data
-> >>> integrity.
-> >>>
-> >>> Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
-> >>> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> >>> ---
-> >>> Changes v2:
-> >>> - Move out of RFC
-> >>> - Address sanity check for offsets
-> >>> - Add additional comments on firmware load check
-> >>> - Fix some typo
-> >>> - Capitalize CRC in comments
-> >>> - Rename load_sysfs to load_fs
-> >>>
-> >>
-> >> To make the driver better maintainable: can the firmware handling code
-> >> be placed in a separate source code file, similar to what has been done
-> >> for the hwmon part?
-> >> If yes, then this could also be the right time to move the aquantia
-> >> driver to an own subdirectory.
-> >>
-> > 
-> > Sure! Np for me just is it really worth it? hwmod is a bigger one but
-> > this is really a few functions.
-> > 
-> r8169_firmware.c is even smaller and I've never regretted having it factored
-> out. Whether it makes sense depends on how much you share with the main module
-> and how the API is structured that you provide to the main module.
-> So I don't say you have to do it, I'm just saying it's worth considering it.
+On Tue, 31 Oct 2023 at 15:08, Paul E. McKenney <paulmck@kernel.org> wrote:
 >
+> Here are the ways forward I can see:
+>
+> 1.      Status quo.  This has all the issues that you call out.
+>         People will hurt themselves with it and consume time and effort.
+>         So let's not do this.
 
-Already done! Will be part of this series with v3 :D
+Well, at a *minimum*, I really want that notifier chain call to be
+done *after* the core printk's.
 
-> > Anyway if requested, I will move in v3 the driver to a dedicated
-> > directory and move the function to a separate file!
-> > 
-> 
+That way, if it deadlocks or does something else stupid, at least the
+core printouts make it out.
 
--- 
-	Ansuel
+IOW, I think the notifier should be done perhaps just before the
+"panic_on_rcu_stall()" call, not at the top before you've even
+reported any stall conditions at all.
+
+And yes, I think the trace_rcu_stall_warning() might be better off
+later too, but at least trace events are things that get regular
+testing in nasty conditions (including NMI etc), so I'm *much* less
+worried about those than about "random developers who think they know
+what they do and add a notifier".
+
+And yes, I do think the notifier should be narrowed down a lot, if you
+actually want to keep it.
+
+I did not actually hear you say that there is a good use-case for it.
+I only saw you say "Those of us who need this", without showing *any*
+kind of indication of why anybody would use it in reality.
+
+Why the secrecy? There is certainly no current user, nor any
+description of what a user would be and what makes that notifier
+useful.
+
+The commit message also just says "It is sometimes helpful" and some
+strange reference to "the subsystem causing the stall to dump its
+state". It all sounds very fishy. Why would anybody ever have a known
+subsystem causing RCU stalls? Except, of course, for the rcutorture
+testing.
+
+Anyway, that all absolutely SCREAMS to me "this is not something
+useful in any normal kernel", and so yes:
+
+> 3.      Add a default-n Kconfig option that depends on RCU_EXPERT
+>         and KEBUG_KERNEL, so that these problems can only arise in
+>         specially built kernels.
+>
+> 4.      Same as #3, but use a kernel boot parameter instead of a
+>         Kconfig option.
+
+let's make it clear that this is *not* something that any upstream
+kernel would ever do, and the *only* possible use for it is some kind
+of external temporary debug patch.
+
+See why I so hate things like this? Let's head off any crazy use long
+*long* before somebody decides that "Oh, I want to use this".
+
+               Linus
