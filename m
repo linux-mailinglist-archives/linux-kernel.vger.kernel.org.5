@@ -2,58 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F377DE035
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E26A7DE036
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbjKALPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        id S233221AbjKALQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjKALPT (ORCPT
+        with ESMTP id S229731AbjKALQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:15:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EEE8115;
-        Wed,  1 Nov 2023 04:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698837312; x=1730373312;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=G6WdYG3gDLTq0pXzeGg/xPh03r/L+UzR/Z4eJLHIsI0=;
-  b=D1w/2/2rAliqc6iTVpBCJDOnI6sY714cFjaF/F6zyoqf1idOidugMF7O
-   nGui5o2apmEzLYbHWpCKyj7NYJ4Bg9VApiouLU4Hndd/hA+83KcxYEvNp
-   FLcdPU4Zuej/1YZRno6OF1SJoj4rl+1tF3c7gqPsVdLtJGni9tKAsjQV/
-   GvJvKW5Heba8FXzvSDf/v6S3n7Q6kLoqKLSrcHgGljA82nEzXb3Jhk0wf
-   hAzGRAx3P7/mCUXMMkn+e0nf2gl61aUZI9NKiCf3M6OS3zyfFFwUt7Kkk
-   LaLBIrzqazoLniQUZwPisFQ4X9TyiMQQhnpvi1wGcdwB5XR5d1Q80nHDb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="452761566"
-X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
-   d="scan'208";a="452761566"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 04:15:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="795872652"
-X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
-   d="scan'208";a="795872652"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 04:15:10 -0700
-Received: from svinhufvud.ger.corp.intel.com (localhost [IPv6:::1])
-        by kekkonen.fi.intel.com (Postfix) with ESMTP id 970EB1207A3;
-        Wed,  1 Nov 2023 13:15:07 +0200 (EET)
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] ACPI: property: Replicate DT-aligned u32 properties from DisCo for Imaging
-Date:   Wed,  1 Nov 2023 13:15:07 +0200
-Message-Id: <20231101111507.1156910-1-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 1 Nov 2023 07:16:39 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FCEF7
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zSh13B1ZZlhI2RrNckeOHFhnIe/fCZORE5Av6JJudls=; b=RONL5jvbv9t8WJohNIHc5jI0nG
+        gl+wlFbu1+NtVPYCnZCmPwnto1RKN9oaAx5jlFC0pN7SoobS+JHPDJh+ULYoNOifQpiHjMT+zuWEi
+        f7+LHJJmuXBXGlGWifK6z7jeUSTfeQe7c1Xp8R85WvigUBcwN+CitLRXDKsAOWVszcoPVOA4o9q4q
+        Z8vP7A0g3gcSBy+CD4mWI94wd8pPHvZwFLMTv7ncLexZSOxNKkMLj5dou1MYl6RvEaeqOg4neAMXz
+        vQXRPVYrN/fFRFwjEZmzG78KlkHrLmqDYVbocvbGq3x1hZeYQmF2f/lGE45HgaIDaeJpyIV324FL6
+        NzSMyskA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qy9Cv-005fUV-1I;
+        Wed, 01 Nov 2023 11:16:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 108F23002AF; Wed,  1 Nov 2023 12:16:21 +0100 (CET)
+Date:   Wed, 1 Nov 2023 12:16:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        feng.tang@intel.com
+Subject: [PATCH v2] x86/tsc: Have tsc=recalibrate override things
+Message-ID: <20231101111621.GC19106@noisy.programming.kicks-ass.net>
+References: <20231030160050.GA15024@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030160050.GA15024@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,82 +54,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPI DisCo for Imaging defines properties for camera sensors that
-functionally align with DT equivalents. Replicate the values of these
-properties so no-one else needs to know about these property names.
+Subject: x86/tsc: Have tsc=recalibrate override things
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Mon, 30 Oct 2023 17:00:50 +0100
 
-Properties replicated are:
+My brand-spanking new SPR supermicro workstation was reporting NTP
+failures:
 
-	"mipi-img-clock-frequency" -> "clock-frequency"
-	"mipi-img-led-max-current" -> "led-max-microamp"
-	"mipi-img-flash-max-current" -> "flash-max-microamp"
-	"mipi-img-flash-max-timeout" -> "flash-max-timeout-us"
+Oct 30 13:00:26 spr ntpd[3517]: CLOCK: kernel reports TIME_ERROR: 0x41: Clock Unsynchronized
+Oct 30 13:00:58 spr ntpd[3517]: CLOCK: time stepped by 32.316775
+Oct 30 13:00:58 spr ntpd[3517]: CLOCK: frequency error 41699 PPM exceeds tolerance 500 PPM
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+CPUID provides:
+
+    Time Stamp Counter/Core Crystal Clock Information (0x15):
+       TSC/clock ratio = 200/2
+       nominal core crystal clock = 25000000 Hz
+    Processor Frequency Information (0x16):
+       Core Base Frequency (MHz) = 0x9c4 (2500)
+       Core Maximum Frequency (MHz) = 0x12c0 (4800)
+       Bus (Reference) Frequency (MHz) = 0x64 (100)
+
+and the kernel believes this. Since commit a7ec817d5542 ("x86/tsc: Add
+option to force frequency recalibration with HW timer") there is the
+tsc=recalibrate option, which forces the recalibrate.
+
+This duely reports:
+
+Oct 30 12:42:39 spr kernel: tsc: Warning: TSC freq calibrated by CPUID/MSR differs from what is calibrated by HW timer, please check with vendor!!
+Oct 30 12:42:39 spr kernel: tsc: Previous calibrated TSC freq:         2500.000 MHz
+Oct 30 12:42:39 spr kernel: tsc: TSC freq recalibrated by [HPET]:         2399.967 MHz
+
+but then continues running at 2500, offering no solace and keeping NTP
+upset -- drifting ~30 seconds for every 15 minutes.
+
+Have tsc=recalibrate override the CPUID provided numbers. This makes the
+machine usable and keeps NTP 'happy':
+
+Oct 30 16:48:44 spr ntpd[2200]: CLOCK: time stepped by -0.768679
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-Hi Rafael,
+ arch/x86/kernel/tsc.c |   15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-Could you include this patch in the set? Then I think it's fairly
-complete on ACPI framework side.
-
- drivers/acpi/mipi-di.c  | 21 +++++++++++++++++++++
- include/acpi/acpi_bus.h |  4 ++++
- 2 files changed, 25 insertions(+)
-
-diff --git a/drivers/acpi/mipi-di.c b/drivers/acpi/mipi-di.c
-index 13ed09216c37..de8988657e96 100644
---- a/drivers/acpi/mipi-di.c
-+++ b/drivers/acpi/mipi-di.c
-@@ -591,6 +591,7 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
- 	struct acpi_device *adev;
- 	acpi_status status;
- 	unsigned int i;
-+	u32 val;
- 	int ret;
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1430,14 +1430,13 @@ static void tsc_refine_calibration_work(
+ 			hpet ? "HPET" : "PM_TIMER",
+ 			(unsigned long)freq / 1000,
+ 			(unsigned long)freq % 1000);
++	} else {
  
- 	/*
-@@ -622,6 +623,26 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
- 		}
+-		return;
++		/* Make sure we're within 1% */
++		if (abs(tsc_khz - freq) > tsc_khz/100)
++			goto out;
  	}
  
-+	if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-clock-frequency", &val)) {
-+		swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_CLOCK_FREQUENCY)] =
-+			PROPERTY_ENTRY_U32("clock-frequency", val);
-+	}
-+
-+	if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-led-max-current", &val)) {
-+		swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_LED_MAX_MICROAMP)] =
-+			PROPERTY_ENTRY_U32("led-max-microamp", val);
-+	}
-+
-+	if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-flash-max-current", &val)) {
-+		swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_FLASH_MAX_MICROAMP)] =
-+			PROPERTY_ENTRY_U32("flash-max-microamp", val);
-+	}
-+
-+	if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-flash-max-timeout-us", &val)) {
-+		swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_FLASH_MAX_TIMEOUT_US)] =
-+			PROPERTY_ENTRY_U32("flash-max-timeout-us", val);
-+	}
-+
- 	status = acpi_get_name(handle, ACPI_FULL_PATHNAME, &buffer);
- 	if (ACPI_FAILURE(status)) {
- 		acpi_handle_info(handle, "Unable to get the path name\n");
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index d92799889512..85a27081cced 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -371,6 +371,10 @@ struct acpi_gpio_mapping;
+-	/* Make sure we're within 1% */
+-	if (abs(tsc_khz - freq) > tsc_khz/100)
+-		goto out;
+-
+ 	tsc_khz = freq;
+ 	pr_info("Refined TSC clocksource calibration: %lu.%03lu MHz\n",
+ 		(unsigned long)tsc_khz / 1000,
+@@ -1479,14 +1478,12 @@ static int __init init_tsc_clocksource(v
+ 	 * When TSC frequency is known (retrieved via MSR or CPUID), we skip
+ 	 * the refined calibration and directly register it as a clocksource.
+ 	 */
+-	if (boot_cpu_has(X86_FEATURE_TSC_KNOWN_FREQ)) {
++	if (boot_cpu_has(X86_FEATURE_TSC_KNOWN_FREQ) && !tsc_force_recalibrate) {
+ 		if (boot_cpu_has(X86_FEATURE_ART))
+ 			art_related_clocksource = &clocksource_tsc;
+ 		clocksource_register_khz(&clocksource_tsc, tsc_khz);
+ 		clocksource_unregister(&clocksource_tsc_early);
+-
+-		if (!tsc_force_recalibrate)
+-			return 0;
++		return 0;
+ 	}
  
- enum acpi_device_swnode_dev_props {
- 	ACPI_DEVICE_SWNODE_DEV_ROTATION,
-+	ACPI_DEVICE_SWNODE_DEV_CLOCK_FREQUENCY,
-+	ACPI_DEVICE_SWNODE_DEV_LED_MAX_MICROAMP,
-+	ACPI_DEVICE_SWNODE_DEV_FLASH_MAX_MICROAMP,
-+	ACPI_DEVICE_SWNODE_DEV_FLASH_MAX_TIMEOUT_US,
- 	ACPI_DEVICE_SWNODE_DEV_NUM_OF,
- 	ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES
- };
--- 
-2.39.2
-
+ 	schedule_delayed_work(&tsc_irqwork, 0);
