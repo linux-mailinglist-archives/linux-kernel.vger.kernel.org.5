@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D727DDE9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922E07DDE9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 10:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbjKAJl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 05:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
+        id S232125AbjKAJmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 05:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbjKAJlx (ORCPT
+        with ESMTP id S231411AbjKAJmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 05:41:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758FEE4
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:41:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 35A9E21A34;
-        Wed,  1 Nov 2023 09:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698831706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gNzKW+x1c0UZzbPukaEOwSLPVJ3mDtKgT9KmOp+APUs=;
-        b=mATHxiyl0jyzlQq1mEMQ1Vf9cG7e8R78/0Fg62j2oA5mxSItZFmh+/2+y/MO0xxPhK7If8
-        1NU2e1kMm0UsMXYdbehYvMYQa4Ugff/Vxvghqsv6zUabsZ929/4TUaOwcex51GQ9UbxOZO
-        sJQlpgZZ6t7pvksUd25n1OoZLxCNkiM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FB8013460;
-        Wed,  1 Nov 2023 09:41:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id PRrnAFodQmU9DAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 01 Nov 2023 09:41:46 +0000
-Date:   Wed, 1 Nov 2023 10:41:45 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Charan Teja Kalla <quic_charante@quicinc.com>
-Cc:     Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        akpm@linux-foundation.org, mgorman@techsingularity.net,
-        david@redhat.com, vbabka@suse.cz, linux-mm@kvack.org,
+        Wed, 1 Nov 2023 05:42:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0611DA
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 02:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698831714; x=1730367714;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=OoaIkugwOcHNspHG5GL+6xzuR+FtZlARttrxfo5ccek=;
+  b=E+OBsiV8xwRGRoJnUdUwUXqCQW72DjhNutdhhZbhVeYt6cKvJAU8oyiU
+   B6IFT/3s3nhJTK/jcwRGqDl+11rViAkESMx5crS07yGW2y5qY6/ITEH/+
+   SI3rLnpMqrwWjOVdeRHOMFJ0+Zc45/EIAuYXcMvtf9GENlR+iAkwvzcM2
+   GIeZ4c95fDjTzki0D2CqHwplpFZPRFhUsbMoeg91dkZ2keHG9MuOvPBYL
+   YkBrhLYsywQZNxHy554uFB2b3Q2W4BRWLAjaXFXSwRKzIw3yJTEPsiKSf
+   CYkq85zZ2JZHSnPTPMp/pfKEmmguhuVoNUBnxpC6sSx3Z4zqqrvEAXrfa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="392326876"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="392326876"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:41:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="1092297687"
+X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
+   d="scan'208";a="1092297687"
+Received: from olindum-mobl1.ger.corp.intel.com (HELO [10.249.254.59]) ([10.249.254.59])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 02:41:50 -0700
+Message-ID: <1043bb3c1156d08015db5478183888892dfeda88.camel@linux.intel.com>
+Subject: Re: [PATCH drm-misc-next v7 4/7] drm/gpuvm: add an abstraction for
+ a VM / BO combination
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: page_alloc: unreserve highatomic page blocks before
- oom
-Message-ID: <azi6v2uipdazwmczihmc4hutsw74r3mfxs6tgxkdmweb6bo4dr@c43f7ixoydpd>
-References: <1698669590-3193-1-git-send-email-quic_charante@quicinc.com>
- <gtya2g2pdbsonelny6vpfwj5vsxdrzhi6wzkpcrke33mr3q2hf@j4ramnjmfx52>
- <2a0d2dd8-562c-fec7-e3ac-0bd955643e16@quicinc.com>
- <37c58833-1953-42c3-98c6-ee0ac75508ce@quicinc.com>
- <ca6093e6-fc85-9ce8-71a1-77d8996c9fd6@quicinc.com>
+Date:   Wed, 01 Nov 2023 10:41:48 +0100
+In-Reply-To: <b09e37f3-33f6-4ea8-876b-f0bee9627ced@redhat.com>
+References: <20231023201659.25332-1-dakr@redhat.com>
+         <20231023201659.25332-5-dakr@redhat.com>
+         <4a51c1cd9e2435332e033f9426bac8fae1c21c60.camel@linux.intel.com>
+         <980754a3-7f5a-465e-88a9-62a40c82cae8@redhat.com>
+         <ab8f30452540171447118d64931e66da96b6e85e.camel@linux.intel.com>
+         <b09e37f3-33f6-4ea8-876b-f0bee9627ced@redhat.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca6093e6-fc85-9ce8-71a1-77d8996c9fd6@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,17 +73,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 01-11-23 12:23:24, Charan Teja Kalla wrote:
-[...]
-> > Also, add below Fixes tag if it makes sense.
-> > 
-> > Fixes: 04c8716f7b00 ("mm: try to exhaust highatomic reserve before the OOM")
-> I should be adding this.
+Hi, Danilo,
 
-I do not think this Fixes tag is really correct. 04c8716f7b00 was rather
-an incomplete fix than something that has caused this situation. I think
-we would need to reference the commit which adds highatomic reserves.
+On Tue, 2023-10-31 at 18:52 +0100, Danilo Krummrich wrote:
+> On 10/31/23 17:45, Thomas Hellstr=C3=B6m wrote:
+> > On Tue, 2023-10-31 at 17:39 +0100, Danilo Krummrich wrote:
+> > > On 10/31/23 12:25, Thomas Hellstr=C3=B6m wrote:
+> > > > On Mon, 2023-10-23 at 22:16 +0200, Danilo Krummrich wrote:
+> > > > > Add an abstraction layer between the drm_gpuva mappings of a
+> > > > > particular
+> > > > > drm_gem_object and this GEM object itself. The abstraction
+> > > > > represents
+> > > > > a
+> > > > > combination of a drm_gem_object and drm_gpuvm. The
+> > > > > drm_gem_object
+> > > > > holds
+> > > > > a list of drm_gpuvm_bo structures (the structure representing
+> > > > > this
+> > > > > abstraction), while each drm_gpuvm_bo contains list of
+> > > > > mappings
+> > > > > of
+> > > > > this
+> > > > > GEM object.
+> > > > >=20
+> > > > > This has multiple advantages:
+> > > > >=20
+> > > > > 1) We can use the drm_gpuvm_bo structure to attach it to
+> > > > > various
+> > > > > lists
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 of the drm_gpuvm. This is useful for tra=
+cking external
+> > > > > and
+> > > > > evicted
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 objects per VM, which is introduced in s=
+ubsequent
+> > > > > patches.
+> > > > >=20
+> > > > > 2) Finding mappings of a certain drm_gem_object mapped in a
+> > > > > certain
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 drm_gpuvm becomes much cheaper.
+> > > > >=20
+> > > > > 3) Drivers can derive and extend the structure to easily
+> > > > > represent
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 driver specific states of a BO for a cer=
+tain GPUVM.
+> > > > >=20
+> > > > > The idea of this abstraction was taken from amdgpu, hence the
+> > > > > credit
+> > > > > for
+> > > > > this idea goes to the developers of amdgpu.
+> > > > >=20
+> > > > > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > > > > Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> > > > > ---
+> > > > > =C2=A0=C2=A0=C2=A0drivers/gpu/drm/drm_gpuvm.c=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 335
+> > > > > +++++++++++++++++++++--
+> > > > > --
+> > > > > =C2=A0=C2=A0=C2=A0drivers/gpu/drm/nouveau/nouveau_uvmm.c |=C2=A0 =
+64 +++--
+> > > > > =C2=A0=C2=A0=C2=A0include/drm/drm_gem.h=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0 32 +--
+> > > > > =C2=A0=C2=A0=C2=A0include/drm/drm_gpuvm.h=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 188
+> > > > > +++++++++++++-
+> > > > > =C2=A0=C2=A0=C2=A04 files changed, 533 insertions(+), 86 deletion=
+s(-)
+> > > >=20
+> > > > That checkpatch.pl error still remains as well.
+> > >=20
+> > > I guess you refer to:
+> > >=20
+> > > ERROR: do not use assignment in if condition
+> > > #633: FILE: drivers/gpu/drm/nouveau/nouveau_uvmm.c:1165:
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(op=
+->gem.obj =3D obj))
+> > >=20
+> > > This was an intentional decision, since in this specific case it
+> > > seems to
+> > > be more readable than the alternatives.
+> > >=20
+> > > However, if we consider this to be a hard rule, which we never
+> > > ever
+> > > break,
+> > > I'm fine changing it too.
+> >=20
+> > With the errors, sooner or later they are going to start generate
+> > patches to "fix" them. In this particular case also Xe CI is
+> > complaining and abort building when I submit the Xe adaptation, so
+> > it'd
+> > be good to be checkpatch.pl conformant IMHO.
+>=20
+> Ok, I will change this one.
+>=20
+> However, in general my opinion on coding style is that we should
+> preserve us
+> the privilege to deviate from it when we agree it makes sense and
+> improves
+> the code quality.
+>=20
+> Having a CI forcing people to *blindly* follow certain rules and even
+> abort
+> building isn't very beneficial in that respect.
+>=20
+> Also, consider patches which partially change a line of code that
+> already
+> contains a coding style "issue" - the CI would also block you on that
+> one I
+> guess. Besides that it seems to block you on unrelated code, note
+> that the
+> assignment in question is from Nouveau and not from GPUVM.
 
--- 
-Michal Hocko
-SUSE Labs
+Yes, I completely agree that having CI enforce error free coding style
+checks is bad, and I'll see if I can get that changed on Xe CI. To my
+Knowledge It hasn't always been like that.
+
+But OTOH my take on this is that if there are coding style rules and
+recommendations we should try to follow them unless there are *strong*
+reasons not to. Sometimes that may result in code that may be a little
+harder to read, but OTOH a reviewer won't have to read up on the
+component's style flavor before reviewing and it will avoid future
+style fix patches.
+
+Thanks,
+Thomas
+
+
+>=20
+> - Danilo
+>=20
+> >=20
+> > Thanks,
+> > Thomas
+> >=20
+> >=20
+> >=20
+> >=20
+> > >=20
+> > > >=20
+> > > > Thanks,
+> > > > Thomas
+> > > >=20
+> > >=20
+> >=20
+>=20
+
