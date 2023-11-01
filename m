@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A37D7DE34D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 892097DE327
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344407AbjKAO23 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Nov 2023 10:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
+        id S1344408AbjKAO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 10:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbjKAO22 (ORCPT
+        with ESMTP id S1344313AbjKAO2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 10:28:28 -0400
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDF4110
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:28:26 -0700 (PDT)
-Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.2)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qyCCL-00084w-04;
-        Wed, 01 Nov 2023 10:27:57 -0400
-Message-ID: <3382634358afa9b95dc4f6db8a53a136d4b9e9cb.camel@surriel.com>
-Subject: Re: [PATCH] mm/hugetlb: fix null ptr defer in hugetlb_vma_lock_write
-From:   Rik van Riel <riel@surriel.com>
-To:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+6ada951e7c0f7bc8a71e@syzkaller.appspotmail.com
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Date:   Wed, 01 Nov 2023 10:27:56 -0400
-In-Reply-To: <tencent_2A675773C6D47370E36A4966A3BA2444F705@qq.com>
-References: <00000000000078d1e00608d7878b@google.com>
-         <tencent_2A675773C6D47370E36A4966A3BA2444F705@qq.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Wed, 1 Nov 2023 10:28:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B587DC
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 07:28:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5576AC433C7;
+        Wed,  1 Nov 2023 14:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698848883;
+        bh=a0qkXSjOyDeXe1GXN/anRJBe4gdOp1j2urwMHhRe9Po=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BF5SS8UFB2nUpJNvZouZVdpKHp8hqj4/0yCpPoT7m2clkvx/FPVII0EBS5Vm6xCAk
+         OB7Q97Jqyhvq5ex/RqUT7fnF0i3A/sbx3ntYHLmsXrDHFcEhnlnNRKtAkKu75CGCgP
+         DMtRSZOfneiQa2owLfbYMkqfdWDR2P/plYqPXPaA=
+Date:   Wed, 1 Nov 2023 15:28:00 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org,
+        "Milton D. Miller II" <mdmii@outlook.com>,
+        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jim Cromie <jim.cromie@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Mimi Zohar <zohar@linux.ibm.com>
+Subject: Re: [RFC PATCH] rootfs: Use tmpfs for rootfs even if root= is given
+Message-ID: <2023110159-rasping-stature-af8d@gregkh>
+References: <20231031154417.621742-1-stefanb@linux.ibm.com>
+ <2023103159-punctuate-amount-f09d@gregkh>
+ <6dae6aa6-e6c6-89d6-f9d7-7563708f7662@landley.net>
+ <a8693232-431e-4840-a020-cd83c162446e@linux.ibm.com>
 MIME-Version: 1.0
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a8693232-431e-4840-a020-cd83c162446e@linux.ibm.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-01 at 14:36 +0800, Edward Adam Davis wrote:
-> When obtaining resv_map from vma, it is necessary to simultaneously
-> determine
-> the flag HPAGE_RESV_OWNER of vm_private_data.
-> Only when they are met simultaneously, resv_map is valid.
+On Wed, Nov 01, 2023 at 10:16:37AM -0400, Stefan Berger wrote:
 > 
-> Reported-and-tested-by:
-> syzbot+6ada951e7c0f7bc8a71e@syzkaller.appspotmail.com
-> Fixes: bf4916922c60 ("hugetlbfs: extend hugetlb_vma_lock to private
-> VMAs")
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->  include/linux/hugetlb.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 47d25a5e1933..1a3ec1aee1a3 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -1265,9 +1265,11 @@ static inline bool __vma_shareable_lock(struct
-> vm_area_struct *vma)
->         return (vma->vm_flags & VM_MAYSHARE) && vma->vm_private_data;
->  }
->  
-> +#define HPAGE_RESV_OWNER    (1UL << 0)
->  static inline bool __vma_private_lock(struct vm_area_struct *vma)
->  {
-> -       return (!(vma->vm_flags & VM_MAYSHARE)) && vma-
-> >vm_private_data;
-> +       return (!(vma->vm_flags & VM_MAYSHARE)) && vma-
-> >vm_private_data && 
-> +               ((unsigned long)vma->vm_private_data &
-> HPAGE_RESV_OWNER);
->  }
+> On 11/1/23 07:35, Rob Landley wrote:
+> > On 10/31/23 11:56, Greg Kroah-Hartman wrote:
+> > > On Tue, Oct 31, 2023 at 11:44:17AM -0400, Stefan Berger wrote:
+> > > > rootfs currently does not use tmpfs if the root= boot option is passed
+> > > > even though the documentation about rootfs (added in 6e19eded3684) in
+> > > > Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
+> > > > 
+> > > >    If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
+> > > >    default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
+> > > >    line.
+> > > 
+> > > At this point in time, is there even any difference between ramfs and
+> > > tmpfs anymore?  Why would you want to choose one over the other here?
+> > 
+> > I submitted a patch to fix this to the list multiple times, which got ignored as
+> > always. Most recently here:
+> > 
+> > https://lore.kernel.org/lkml/8244c75f-445e-b15b-9dbf-266e7ca666e2@landley.net/
+> 
+> Everyone,
+> I now responded to Rob's patch over here:
+> https://lkml.org/lkml/2023/11/1/333
 
-This could be cleaned up a bit by moving the HPAGE_RESV_OWNER
-definition (and its friends) into hugetlb.h, as well as the
-is_vma_resv_set() helper function.
+Note, we can't do anything with lkml.org links, they don't even work at
+times, please always use lore.kernel.org
 
-Then __vma_private_lock() can just call is_vma_resv_set(),
-and open coding a duplicate of the same code.
+Also, one patch out of a longer series also will not work as we can't
+pick it up from there either.
 
-Not having duplicates of the code will make it much harder
-to "miss a spot" with future changes.
+Can someone resend it, as a stand-alone patch, with the proper people
+ cc:ed and then we can handle that.  You all know this...
 
-I am still struggling to find a place where we might leave
-HPAGE_RESV_OWNER behind on a pointer that is otherwise NULL,
-but if your tests show this fixes the issue, I'm all for it :)
+ thanks,
 
--- 
-All Rights Reversed.
+ greg k-h
+
+> 
+> 
+> > 
+> > Rob
