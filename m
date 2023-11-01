@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8687DE3BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD82C7DE357
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjKAPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
+        id S232555AbjKAPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbjKAPE4 (ORCPT
+        with ESMTP id S232519AbjKAPE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:04:56 -0400
+        Wed, 1 Nov 2023 11:04:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B390FD;
-        Wed,  1 Nov 2023 08:04:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 776A1C433CD;
-        Wed,  1 Nov 2023 15:04:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBA5DC;
+        Wed,  1 Nov 2023 08:04:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BD3FC433CA;
+        Wed,  1 Nov 2023 15:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698851093;
-        bh=T11bWBI9YO8ZTft74BUB8/taHx/JC1055+wmzAKgdGI=;
+        s=k20201202; t=1698851095;
+        bh=wPhcCh2R5mo1LuWpZ6AE/5k4PZ89Ug41tO+Ww2sWSJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jSetNX/jH2BNa0lWJSuJnaYZBfiymurs+qWOk5lWteXDlTxsv38TqRr+T7Fb4K/7x
-         MP4yPOU4yr9/mhixWyj0vhxBUi1ly9S/fpTPhJM0M3TmOAQR/W/lXDSer/o0nxbPC1
-         gbpd2tTQO791y7tiAngRVYUXvjQ5+kZcIcR4WnPGmprrJLZzX5ZpMjBOK6F134AaSN
-         xxzgMZAhCoGaOebkddesidDXGiBo1gpQV8hINS6z+AqkMixcI3rQJ71niMms18Li1C
-         soVRSRB8ZRz/p+423aUyHILsRaool04Y7ASoDPgEx2sjiECdagGo5sDz2xgUXx0SWX
-         uECLz7tTfdbdQ==
+        b=RLJfP929G898YCZnm8fG0Z8UEYoSCW5ezQCzlUFOsxV4VOgx0C7slWecL3/MlxVqa
+         SO64HtipVGBgdtqlfCQzHmxvTZlJZVjsbP/pVy6on0YT6I+hR50kgjnENgg32JEft3
+         EyQp93H4paPi7/HFZZJvJkwovU6LXOlDR26keTd9cCXTp4xgpJ0/+3GkvlRVXeogWR
+         AtayS6mMN2cLcd3xCVPBNuLOhV7NVCj3TqqVysDMK2v6eF9fGSgU85BrNDOwZZnlaW
+         M5SRDbd/jv2W8sPs0lxt1FH4p6EjkGKgYiYWxcuK9bxyr2zv+wfeRT++/9RDZK2baW
+         QpC9MhPte6TbA==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 1/7] modpost: move sym_name() to modpost.h
-Date:   Thu,  2 Nov 2023 00:03:58 +0900
-Message-Id: <20231101150404.754108-2-masahiroy@kernel.org>
+Subject: [PATCH 2/7] modpost: add const qualifier to syminfo table
+Date:   Thu,  2 Nov 2023 00:03:59 +0900
+Message-Id: <20231101150404.754108-3-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231101150404.754108-1-masahiroy@kernel.org>
 References: <20231101150404.754108-1-masahiroy@kernel.org>
@@ -53,56 +53,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move sym_name() to modpost.h so it can be used in other source files.
-
-Also, add the 'const' qualifier to the function arguments.
+symsearch_find_nearest() does not modify the table.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/mod/modpost.c | 8 --------
- scripts/mod/modpost.h | 9 +++++++++
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ scripts/mod/symsearch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 973b5e5ae2dd..896ecfa8483f 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -710,14 +710,6 @@ static char *get_modinfo(struct elf_info *info, const char *tag)
- 	return get_next_modinfo(info, tag, NULL);
- }
+diff --git a/scripts/mod/symsearch.c b/scripts/mod/symsearch.c
+index aa4ed51f9960..00f0f9c354db 100644
+--- a/scripts/mod/symsearch.c
++++ b/scripts/mod/symsearch.c
+@@ -156,7 +156,7 @@ Elf_Sym *symsearch_find_nearest(struct elf_info *elf, Elf_Addr addr,
+ {
+ 	unsigned int hi = elf->symsearch->table_size;
+ 	unsigned int lo = 0;
+-	struct syminfo *table = elf->symsearch->table;
++	const struct syminfo *table = elf->symsearch->table;
+ 	struct syminfo target;
  
--static const char *sym_name(struct elf_info *elf, Elf_Sym *sym)
--{
--	if (sym)
--		return elf->strtab + sym->st_name;
--	else
--		return "(unknown)";
--}
--
- /*
-  * Check whether the 'string' argument matches one of the 'patterns',
-  * an array of shell wildcard patterns (glob).
-diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-index 1392afec118c..9834ac44846d 100644
---- a/scripts/mod/modpost.h
-+++ b/scripts/mod/modpost.h
-@@ -156,6 +156,15 @@ static inline unsigned int get_secindex(const struct elf_info *info,
- 	return index;
- }
- 
-+static inline const char *sym_name(const struct elf_info *elf,
-+				   const Elf_Sym *sym)
-+{
-+	if (sym)
-+		return elf->strtab + sym->st_name;
-+	else
-+		return "(unknown)";
-+}
-+
- /*
-  * If there's no name there, ignore it; likewise, ignore it if it's
-  * one of the magic symbols emitted used by current tools.
+ 	target.addr = addr;
 -- 
 2.40.1
 
