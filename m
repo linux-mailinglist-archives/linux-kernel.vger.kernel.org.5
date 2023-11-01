@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E6E7DE5BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD777DE5D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344975AbjKASDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        id S1345215AbjKASDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344895AbjKASDG (ORCPT
+        with ESMTP id S1344951AbjKASDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 14:03:06 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D44D18E
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:03:00 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b0e9c78309so1216177b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:03:00 -0700 (PDT)
+        Wed, 1 Nov 2023 14:03:08 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDF1111
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:03:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da040c021aeso12091276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:03:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698861779; x=1699466579; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698861781; x=1699466581; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nYW75oSrNQi79Zio08wfQNCgl+W4tz8r9dl1ZKyv6O4=;
-        b=VhhTZgu3xoCVrmyn1AamR9fTEEa4P+z1B3WIF1mxz4WmGKRR0cVTghw4qzHgFKgp7R
-         x9SwYKVB5juB3OVO1RAWIGznKpTRthfkhuWBP8OU9bla3Tive5OXQqVxqJbZnY3UuWb7
-         LkouFMfgIvPZwyij8enPS0GJ2EpIG695O61iG3oSEu4+/7/9fLMbV47CArN53S6JmqWL
-         uIdVeCM0ZRgAVgCNIflEjkLgCwP5K4EpPj/ObS8nPIPchxElKjRNVFZ/Fbdv2NNuAMuP
-         hhdMBDcwl6CDfyP9Aqfo8XDDDh/+eDNeII/MpmXQI+5NXXk1Pda99gtSUwqEsvFlanPs
-         J/sg==
+        bh=YNne2uV93ckwMpGguK52oBZlOAZFXC7MfuI9180HtAk=;
+        b=cbIJ2insncFswk6hAzuTTZwcesQ/J2lO0mj2Yq3IVqU15NJnrWwFq6pNS4pwajm9fn
+         soPQkEZNwu7cViawUrtuASjbdF0ka6+eGU6wGdMaBRRwKo4pjt2vb+AJIWI8QmXdpvka
+         L2X1836Hzh9UFykz6lwEzdBD3n9ZUoktUiyqOGG7rUfhdx1crqlOykXMopkc7m4cWoog
+         1C1+KXP+O8kHBFfVcII3569eIN92pAk918twl8wu7FogOiTkk+zS2MCALiQZ1YvoLwoO
+         ISvPaxawcXdbD3v+mzo3jzI/Gi/b8UMspyOjkEVORBcKwopmdEJKNfr7A45pZSHCGKGX
+         v0DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698861779; x=1699466579;
+        d=1e100.net; s=20230601; t=1698861781; x=1699466581;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nYW75oSrNQi79Zio08wfQNCgl+W4tz8r9dl1ZKyv6O4=;
-        b=oMRA304K6PSTavp+0gB14xPh+ofKbIynDnDLJ2ZPOX8lUaqlDIOjtBAvOPslg0Qdm2
-         HsJNaBAuu51kNIQA1u43f4Xqt+118qFzH7KVUl9T0jy9j4N/+ryzRvmcwHvfxyK9ZuPa
-         G4oP6UkV9VGiw2AeALQ5vhoL1rqV2g0Rxuu+9rmsdmbeD19sMi4SVVx3EXZDezGJm5QK
-         sqFFROEI/2dcOjYwo5R6dOI+ceFRLEHkUmlD8eRr4h44vsnkmlrZaB+Ch+I0sNNFg7yz
-         VKVqNcU1QfUbqt7Uz41VmI0KBAsMQo84UXUd/8Zbiyk08uw6ecgzm9vW1NbVR7xE+20i
-         k/wA==
-X-Gm-Message-State: AOJu0Yy18Oo1KikJr6HlIGzlY6/Mx4Mypk7LJnu/XZnrUgVhc5zajJHZ
-        6FJY+dyWi+jPWxHPN0pVufg0tCDojh7bns0=
-X-Google-Smtp-Source: AGHT+IHyI710R7AyGKPM/MfDFt1RmrovNIXnY76dQCzx4Z9GujvM5UIRNylCqNuAbAPVxTMMEtgQcPeoiKbQLLI=
+        bh=YNne2uV93ckwMpGguK52oBZlOAZFXC7MfuI9180HtAk=;
+        b=J0u/LksqUI1apF4AA3DO4KYeDOSbrOD4JU4vNHFemxnkw1Tk2LUFaigLseBdz/Cgn3
+         ECaYjBh81MvTH/jvwIJ59Lnu2z9/i32z4pX6AVH1aKl0hYR50YheqlTBbGYUdsIR5eY7
+         U3EaYrihFTGfG81fE7OAuZzzCydOJBxNjYYX/WY2nGuOR07QpXoXM8o79KsPRnEuW++v
+         EGOtbVtsulJBms8t2DM01qTQAmbjtE2mDAyIOh1pgkNqfXS2FXaN9zg6WEP6rQux9sXN
+         SOlNz3Pa4Ci30YC6zbxp3PiSxcB0RVveZrAJwxJrEIenbNjaMNvvvmqiOfLHsj6nqd/N
+         lrRA==
+X-Gm-Message-State: AOJu0YyEqmIgjvTv8T4nVZ+9+cAG403Ql7CNcVuT/1c2JxDZJe8HBQmm
+        5CgZ9BBtxURqG/cep/jpmC4gI99u9kaCbGg=
+X-Google-Smtp-Source: AGHT+IHOGqfCsl8HbDwvfwDfos1+NgmfjK4tR1zPs+FfFTz3kcrgfYuZozWyS14aVKmyXQfzEAVEM3lFdkaBc/U=
 X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a81:6e54:0:b0:595:5cf0:a9b0 with SMTP id
- j81-20020a816e54000000b005955cf0a9b0mr342967ywc.9.1698861779078; Wed, 01 Nov
- 2023 11:02:59 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 18:01:47 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:1083:b0:da0:567d:f819 with SMTP
+ id v3-20020a056902108300b00da0567df819mr389361ybu.10.1698861781743; Wed, 01
+ Nov 2023 11:03:01 -0700 (PDT)
+Date:   Wed, 01 Nov 2023 18:01:48 +0000
 In-Reply-To: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 Mime-Version: 1.0
 References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231101-rust-binder-v1-17-08ba9197f637@google.com>
-Subject: [PATCH RFC 17/20] rust_binder: add oneway spam detection
+Message-ID: <20231101-rust-binder-v1-18-08ba9197f637@google.com>
+Subject: [PATCH RFC 18/20] rust_binder: add binder_logs/state
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -85,425 +85,421 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Gilbride <mattgilbride@google.com>
+The binderfs directory has four files intended for debugging the driver.
+This patch implements the state file so that you can use it to view the
+current state of the driver.
 
-The idea is that once we cross a certain threshold of free async space,
-whoever is responsible for the low async space is likely to try to send
-another async transaction.
-
-This change allows servers to turn on oneway spam detection and return a
-different binder reply when it is detected.
-
-Signed-off-by: Matt Gilbride <mattgilbride@google.com>
-Co-developed-by: Alice Ryhl <aliceryhl@google.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- drivers/android/allocation.rs  |  3 ++
- drivers/android/defs.rs        |  1 +
- drivers/android/process.rs     | 39 ++++++++++++++++++++++++--
- drivers/android/range_alloc.rs | 62 ++++++++++++++++++++++++++++++++++++++++--
- drivers/android/rust_binder.rs |  1 -
- drivers/android/thread.rs      | 11 ++++++--
- drivers/android/transaction.rs |  5 ++++
- rust/kernel/task.rs            |  2 +-
- 8 files changed, 115 insertions(+), 9 deletions(-)
+ drivers/android/node.rs         | 37 ++++++++++++++++++++
+ drivers/android/process.rs      | 75 +++++++++++++++++++++++++++++++++++++++++
+ drivers/android/rust_binder.rs  | 23 ++++++++++++-
+ drivers/android/thread.rs       | 68 +++++++++++++++++++++++++++++++++++++
+ drivers/android/transaction.rs  | 25 ++++++++++++++
+ rust/bindings/bindings_helper.h |  1 +
+ rust/kernel/lib.rs              |  1 +
+ rust/kernel/seq_file.rs         | 47 ++++++++++++++++++++++++++
+ 8 files changed, 276 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/android/allocation.rs b/drivers/android/allocation.rs
-index c7f44a54b79b..7b64e7fcce4d 100644
---- a/drivers/android/allocation.rs
-+++ b/drivers/android/allocation.rs
-@@ -49,6 +49,7 @@ pub(crate) struct Allocation {
-     pub(crate) process: Arc<Process>,
-     allocation_info: Option<AllocationInfo>,
-     free_on_drop: bool,
-+    pub(crate) oneway_spam_detected: bool,
- }
+diff --git a/drivers/android/node.rs b/drivers/android/node.rs
+index 2c056bd7582e..3acad1c2b963 100644
+--- a/drivers/android/node.rs
++++ b/drivers/android/node.rs
+@@ -7,6 +7,8 @@
+         TryNewListArc,
+     },
+     prelude::*,
++    seq_file::SeqFile,
++    seq_print,
+     sync::lock::{spinlock::SpinLockBackend, Guard},
+     sync::{Arc, LockedBy, SpinLock},
+     user_ptr::UserSlicePtrWriter,
+@@ -111,6 +113,41 @@ pub(crate) fn new(
+         })
+     }
  
- impl Allocation {
-@@ -58,6 +59,7 @@ pub(crate) fn new(
-         size: usize,
-         ptr: usize,
-         pages: Arc<Vec<Pages<0>>>,
-+        oneway_spam_detected: bool,
-     ) -> Self {
-         Self {
-             process,
-@@ -65,6 +67,7 @@ pub(crate) fn new(
-             size,
-             ptr,
-             pages,
-+            oneway_spam_detected,
-             allocation_info: None,
-             free_on_drop: true,
-         }
-diff --git a/drivers/android/defs.rs b/drivers/android/defs.rs
-index b1a54f85b365..e345b6ea45cc 100644
---- a/drivers/android/defs.rs
-+++ b/drivers/android/defs.rs
-@@ -24,6 +24,7 @@ macro_rules! pub_no_prefix {
-     BR_NOOP,
-     BR_SPAWN_LOOPER,
-     BR_TRANSACTION_COMPLETE,
-+    BR_ONEWAY_SPAM_SUSPECT,
-     BR_OK,
-     BR_ERROR,
-     BR_INCREFS,
++    #[inline(never)]
++    pub(crate) fn debug_print(&self, m: &mut SeqFile) -> Result<()> {
++        let weak;
++        let strong;
++        let has_weak;
++        let has_strong;
++        let active_inc_refs;
++        {
++            let mut guard = self.owner.inner.lock();
++            let inner = self.inner.access_mut(&mut guard);
++            weak = inner.weak.count;
++            has_weak = inner.weak.has_count;
++            strong = inner.strong.count;
++            has_strong = inner.strong.has_count;
++            active_inc_refs = inner.active_inc_refs;
++        }
++
++        let has_weak = if has_weak { "Y" } else { "N" };
++        let has_strong = if has_strong { "Y" } else { "N" };
++
++        seq_print!(
++            m,
++            "node gid:{},ptr:{:#x},cookie:{:#x}: strong{}{} weak{}{} active{}\n",
++            self.global_id,
++            self.ptr,
++            self.cookie,
++            strong,
++            has_strong,
++            weak,
++            has_weak,
++            active_inc_refs
++        );
++        Ok(())
++    }
++
+     pub(crate) fn get_id(&self) -> (usize, usize) {
+         (self.ptr, self.cookie)
+     }
 diff --git a/drivers/android/process.rs b/drivers/android/process.rs
-index 44baf9e3f998..4ac5d09041a4 100644
+index 4ac5d09041a4..b5e44f9f2a14 100644
 --- a/drivers/android/process.rs
 +++ b/drivers/android/process.rs
-@@ -92,6 +92,8 @@ pub(crate) struct ProcessInner {
-     pub(crate) sync_recv: bool,
-     /// Process received async transactions since last frozen.
-     pub(crate) async_recv: bool,
-+    /// Check for oneway spam
-+    oneway_spam_detection_enabled: bool,
- }
- 
- impl ProcessInner {
-@@ -113,6 +115,7 @@ fn new() -> Self {
-             is_frozen: false,
-             sync_recv: false,
-             async_recv: false,
-+            oneway_spam_detection_enabled: false,
-         }
-     }
- 
-@@ -658,17 +661,21 @@ pub(crate) fn buffer_alloc(
-         self: &Arc<Self>,
-         size: usize,
-         is_oneway: bool,
-+        from_pid: i32,
-     ) -> BinderResult<Allocation> {
-         let alloc = range_alloc::ReserveNewBox::try_new()?;
-         let mut inner = self.inner.lock();
-         let mapping = inner.mapping.as_mut().ok_or_else(BinderError::new_dead)?;
--        let offset = mapping.alloc.reserve_new(size, is_oneway, alloc)?;
-+        let offset = mapping
-+            .alloc
-+            .reserve_new(size, is_oneway, from_pid, alloc)?;
-         Ok(Allocation::new(
-             self.clone(),
-             offset,
-             size,
-             mapping.address + offset,
-             mapping.pages.clone(),
-+            mapping.alloc.oneway_spam_detected,
-         ))
-     }
- 
-@@ -677,7 +684,14 @@ pub(crate) fn buffer_get(self: &Arc<Self>, ptr: usize) -> Option<Allocation> {
-         let mapping = inner.mapping.as_mut()?;
-         let offset = ptr.checked_sub(mapping.address)?;
-         let (size, odata) = mapping.alloc.reserve_existing(offset).ok()?;
--        let mut alloc = Allocation::new(self.clone(), offset, size, ptr, mapping.pages.clone());
-+        let mut alloc = Allocation::new(
-+            self.clone(),
-+            offset,
-+            size,
-+            ptr,
-+            mapping.pages.clone(),
-+            mapping.alloc.oneway_spam_detected,
-+        );
-         if let Some(data) = odata {
-             alloc.set_info(data);
-         }
-@@ -762,6 +776,14 @@ fn set_max_threads(&self, max: u32) {
-         self.inner.lock().max_threads = max;
-     }
- 
-+    fn set_oneway_spam_detection_enabled(&self, enabled: u32) {
-+        self.inner.lock().oneway_spam_detection_enabled = enabled != 0;
-+    }
-+
-+    pub(crate) fn is_oneway_spam_detection_enabled(&self) -> bool {
-+        self.inner.lock().oneway_spam_detection_enabled
-+    }
-+
-     fn get_node_debug_info(&self, data: UserSlicePtr) -> Result {
-         let (mut reader, mut writer) = data.reader_writer();
- 
-@@ -948,9 +970,17 @@ fn deferred_release(self: Arc<Self>) {
-         if let Some(mut mapping) = omapping {
-             let address = mapping.address;
-             let pages = mapping.pages.clone();
-+            let oneway_spam_detected = mapping.alloc.oneway_spam_detected;
-             mapping.alloc.take_for_each(|offset, size, odata| {
-                 let ptr = offset + address;
--                let mut alloc = Allocation::new(self.clone(), offset, size, ptr, pages.clone());
-+                let mut alloc = Allocation::new(
-+                    self.clone(),
-+                    offset,
-+                    size,
-+                    ptr,
-+                    pages.clone(),
-+                    oneway_spam_detected,
-+                );
-                 if let Some(data) = odata {
-                     alloc.set_info(data);
-                 }
-@@ -1144,6 +1174,9 @@ fn write(
-             bindings::BINDER_SET_CONTEXT_MGR_EXT => {
-                 this.set_as_manager(Some(reader.read()?), &thread)?
-             }
-+            bindings::BINDER_ENABLE_ONEWAY_SPAM_DETECTION => {
-+                this.set_oneway_spam_detection_enabled(reader.read()?)
-+            }
-             bindings::BINDER_FREEZE => ioctl_freeze(reader)?,
-             _ => return Err(EINVAL),
-         }
-diff --git a/drivers/android/range_alloc.rs b/drivers/android/range_alloc.rs
-index e757129613cf..c1d47115e54d 100644
---- a/drivers/android/range_alloc.rs
-+++ b/drivers/android/range_alloc.rs
-@@ -3,6 +3,7 @@
- use kernel::{
+@@ -20,6 +20,8 @@
+     pages::Pages,
      prelude::*,
-     rbtree::{RBTree, RBTreeNode, RBTreeNodeReservation},
-+    task::Pid,
- };
- 
- /// Keeps track of allocations in a process' mmap.
-@@ -13,7 +14,9 @@
- pub(crate) struct RangeAllocator<T> {
-     tree: RBTree<usize, Descriptor<T>>,
-     free_tree: RBTree<FreeKey, ()>,
-+    size: usize,
-     free_oneway_space: usize,
-+    pub(crate) oneway_spam_detected: bool,
- }
- 
- impl<T> RangeAllocator<T> {
-@@ -26,6 +29,8 @@ pub(crate) fn new(size: usize) -> Result<Self> {
-             free_oneway_space: size / 2,
-             tree,
-             free_tree,
-+            oneway_spam_detected: false,
-+            size,
-         })
+     rbtree::RBTree,
++    seq_file::SeqFile,
++    seq_print,
+     sync::{
+         lock::Guard, Arc, ArcBorrow, CondVar, CondVarTimeoutResult, Mutex, SpinLock, UniqueArc,
+     },
+@@ -405,6 +407,79 @@ fn new(ctx: Arc<Context>, cred: ARef<Credential>) -> Result<Arc<Self>> {
+         Ok(process)
      }
  
-@@ -40,6 +45,7 @@ pub(crate) fn reserve_new(
-         &mut self,
-         size: usize,
-         is_oneway: bool,
-+        pid: Pid,
-         alloc: ReserveNewBox<T>,
-     ) -> Result<usize> {
-         // Compute new value of free_oneway_space, which is set only on success.
-@@ -52,6 +58,15 @@ pub(crate) fn reserve_new(
-             self.free_oneway_space
-         };
- 
-+        // Start detecting spammers once we have less than 20%
-+        // of async space left (which is less than 10% of total
-+        // buffer size).
-+        //
-+        // (This will short-circut, so `low_oneway_space` is
-+        // only called when necessary.)
-+        self.oneway_spam_detected =
-+            is_oneway && new_oneway_space < self.size / 10 && self.low_oneway_space(pid);
++    #[inline(never)]
++    pub(crate) fn debug_print(&self, m: &mut SeqFile) -> Result<()> {
++        seq_print!(m, "pid: {}\n", self.task.pid_in_current_ns());
 +
-         let (found_size, found_off, tree_node, free_tree_node) = match self.find_best_match(size) {
-             None => {
-                 pr_warn!("ENOSPC from range_alloc.reserve_new - size: {}", size);
-@@ -65,7 +80,7 @@ pub(crate) fn reserve_new(
-                 let new_desc = Descriptor::new(found_offset + size, found_size - size);
-                 let (tree_node, free_tree_node, desc_node_res) = alloc.initialize(new_desc);
- 
--                desc.state = Some(DescriptorState::new(is_oneway, desc_node_res));
-+                desc.state = Some(DescriptorState::new(is_oneway, pid, desc_node_res));
-                 desc.size = size;
- 
-                 (found_size, found_offset, tree_node, free_tree_node)
-@@ -224,6 +239,30 @@ pub(crate) fn take_for_each<F: Fn(usize, usize, Option<T>)>(&mut self, callback:
-             }
-         }
-     }
++        let is_manager;
++        let started_threads;
++        let has_proc_work;
++        let mut ready_threads = Vec::new();
++        let mut all_threads = Vec::new();
++        let mut all_nodes = Vec::new();
++        loop {
++            let inner = self.inner.lock();
++            let ready_threads_len = inner.ready_threads.iter().count();
++            let all_threads_len = inner.threads.values().count();
++            let all_nodes_len = inner.nodes.values().count();
 +
-+    /// Find the amount and size of buffers allocated by the current caller.
-+    ///
-+    /// The idea is that once we cross the threshold, whoever is responsible
-+    /// for the low async space is likely to try to send another async transaction,
-+    /// and at some point we'll catch them in the act.  This is more efficient
-+    /// than keeping a map per pid.
-+    fn low_oneway_space(&self, calling_pid: Pid) -> bool {
-+        let mut total_alloc_size = 0;
-+        let mut num_buffers = 0;
-+        for (_, desc) in self.tree.iter() {
-+            if let Some(state) = &desc.state {
-+                if state.is_oneway() && state.pid() == calling_pid {
-+                    total_alloc_size += desc.size;
-+                    num_buffers += 1;
-+                }
++            let resize_ready_threads = ready_threads_len > ready_threads.capacity();
++            let resize_all_threads = all_threads_len > all_threads.capacity();
++            let resize_all_nodes = all_nodes_len > all_nodes.capacity();
++            if resize_ready_threads || resize_all_threads || resize_all_nodes {
++                drop(inner);
++                ready_threads.try_reserve(ready_threads_len)?;
++                all_threads.try_reserve(all_threads_len)?;
++                all_nodes.try_reserve(all_nodes_len)?;
++                continue;
 +            }
++
++            is_manager = inner.is_manager;
++            started_threads = inner.started_thread_count;
++            has_proc_work = !inner.work.is_empty();
++
++            for thread in &inner.ready_threads {
++                assert!(ready_threads.len() < ready_threads.capacity());
++                ready_threads.try_push(thread.id)?;
++            }
++
++            for thread in inner.threads.values() {
++                assert!(all_threads.len() < all_threads.capacity());
++                all_threads.try_push(thread.clone())?;
++            }
++
++            for node in inner.nodes.values() {
++                assert!(all_nodes.len() < all_nodes.capacity());
++                all_nodes.try_push(node.clone())?;
++            }
++
++            break;
 +        }
 +
-+        // Warn if this pid has more than 50 transactions, or more than 50% of
-+        // async space (which is 25% of total buffer size). Oneway spam is only
-+        // detected when the threshold is exceeded.
-+        num_buffers > 50 || total_alloc_size > self.size / 4
-+    }
- }
- 
- struct Descriptor<T> {
-@@ -257,16 +296,32 @@ enum DescriptorState<T> {
- }
- 
- impl<T> DescriptorState<T> {
--    fn new(is_oneway: bool, free_res: FreeNodeRes) -> Self {
-+    fn new(is_oneway: bool, pid: Pid, free_res: FreeNodeRes) -> Self {
-         DescriptorState::Reserved(Reservation {
-             is_oneway,
-+            pid,
-             free_res,
-         })
-     }
-+
-+    fn pid(&self) -> Pid {
-+        match self {
-+            DescriptorState::Reserved(inner) => inner.pid,
-+            DescriptorState::Allocated(inner) => inner.pid,
++        seq_print!(m, "is_manager: {}\n", is_manager);
++        seq_print!(m, "started_threads: {}\n", started_threads);
++        seq_print!(m, "has_proc_work: {}\n", has_proc_work);
++        if ready_threads.is_empty() {
++            seq_print!(m, "ready_thread_ids: none\n");
++        } else {
++            seq_print!(m, "ready_thread_ids:");
++            for thread_id in ready_threads {
++                seq_print!(m, " {}", thread_id);
++            }
++            seq_print!(m, "\n");
 +        }
++
++        for node in all_nodes {
++            node.debug_print(m)?;
++        }
++
++        seq_print!(m, "all threads:\n");
++        for thread in all_threads {
++            thread.debug_print(m);
++        }
++        Ok(())
 +    }
 +
-+    fn is_oneway(&self) -> bool {
-+        match self {
-+            DescriptorState::Reserved(inner) => inner.is_oneway,
-+            DescriptorState::Allocated(inner) => inner.is_oneway,
-+        }
-+    }
- }
- 
- struct Reservation {
-     is_oneway: bool,
-+    pid: Pid,
-     free_res: FreeNodeRes,
- }
- 
-@@ -275,6 +330,7 @@ fn allocate<T>(self, data: Option<T>) -> Allocation<T> {
-         Allocation {
-             data,
-             is_oneway: self.is_oneway,
-+            pid: self.pid,
-             free_res: self.free_res,
-         }
-     }
-@@ -282,6 +338,7 @@ fn allocate<T>(self, data: Option<T>) -> Allocation<T> {
- 
- struct Allocation<T> {
-     is_oneway: bool,
-+    pid: Pid,
-     free_res: FreeNodeRes,
-     data: Option<T>,
- }
-@@ -291,6 +348,7 @@ fn deallocate(self) -> (Reservation, Option<T>) {
-         (
-             Reservation {
-                 is_oneway: self.is_oneway,
-+                pid: self.pid,
-                 free_res: self.free_res,
-             },
-             self.data,
+     /// Attempts to fetch a work item from the process queue.
+     pub(crate) fn get_work(&self) -> Option<DLArc<dyn DeliverToRead>> {
+         self.inner.lock().work.pop_front()
 diff --git a/drivers/android/rust_binder.rs b/drivers/android/rust_binder.rs
-index 04477ff7e5a0..adf542872f36 100644
+index adf542872f36..a1c95a1609d5 100644
 --- a/drivers/android/rust_binder.rs
 +++ b/drivers/android/rust_binder.rs
-@@ -107,7 +107,6 @@ fn new(val: impl PinInit<T>) -> impl PinInit<Self> {
-         })
-     }
- 
--    #[allow(dead_code)]
-     fn arc_try_new(val: T) -> Result<DLArc<T>, alloc::alloc::AllocError> {
-         ListArc::pin_init(pin_init!(Self {
-             links <- ListLinksSelfPtr::new(),
-diff --git a/drivers/android/thread.rs b/drivers/android/thread.rs
-index 0238c15604f6..414ffb1387a0 100644
---- a/drivers/android/thread.rs
-+++ b/drivers/android/thread.rs
-@@ -909,7 +909,7 @@ pub(crate) fn copy_transaction_data(
-             size_of::<usize>(),
-         );
-         let secctx_off = adata_size + aoffsets_size + abuffers_size;
--        let mut alloc = match to_process.buffer_alloc(len, is_oneway) {
-+        let mut alloc = match to_process.buffer_alloc(len, is_oneway, self.process.task.pid()) {
-             Ok(alloc) => alloc,
-             Err(err) => {
-                 pr_warn!(
-@@ -1191,8 +1191,15 @@ fn oneway_transaction_inner(self: &Arc<Self>, tr: &BinderTransactionDataSg) -> B
-         let handle = unsafe { tr.transaction_data.target.handle };
-         let node_ref = self.process.get_transaction_node(handle)?;
-         security::binder_transaction(&self.process.cred, &node_ref.node.owner.cred)?;
--        let list_completion = DTRWrap::arc_try_new(DeliverCode::new(BR_TRANSACTION_COMPLETE))?;
-         let transaction = Transaction::new(node_ref, None, self, tr)?;
-+        let code = if self.process.is_oneway_spam_detection_enabled()
-+            && transaction.oneway_spam_detected
-+        {
-+            BR_ONEWAY_SPAM_SUSPECT
-+        } else {
-+            BR_TRANSACTION_COMPLETE
-+        };
-+        let list_completion = DTRWrap::arc_try_new(DeliverCode::new(code))?;
-         let completion = list_completion.clone_arc();
-         self.inner.lock().push_work(list_completion);
-         match transaction.submit() {
-diff --git a/drivers/android/transaction.rs b/drivers/android/transaction.rs
-index 7028c504ef8c..84b9fe58fe3e 100644
---- a/drivers/android/transaction.rs
-+++ b/drivers/android/transaction.rs
-@@ -38,6 +38,7 @@ pub(crate) struct Transaction {
-     data_address: usize,
-     sender_euid: Kuid,
-     txn_security_ctx_off: Option<usize>,
-+    pub(crate) oneway_spam_detected: bool,
+@@ -10,6 +10,8 @@
+         HasListLinks, ListArc, ListArcSafe, ListItem, ListLinks, ListLinksSelfPtr, TryNewListArc,
+     },
+     prelude::*,
++    seq_file::SeqFile,
++    seq_print,
+     sync::Arc,
+     types::ForeignOwnable,
+     user_ptr::UserSlicePtrWriter,
+@@ -347,7 +349,13 @@ unsafe impl<T> Sync for AssertSync<T> {}
  }
  
- kernel::list::impl_list_arc_safe! {
-@@ -70,6 +71,7 @@ pub(crate) fn new(
-                 return Err(err);
-             }
-         };
-+        let oneway_spam_detected = alloc.oneway_spam_detected;
-         if trd.flags & TF_ONE_WAY != 0 {
-             if stack_next.is_some() {
-                 pr_warn!("Oneway transaction should not be in a transaction stack.");
-@@ -98,6 +100,7 @@ pub(crate) fn new(
-             allocation <- kernel::new_spinlock!(Some(alloc), "Transaction::new"),
-             is_outstanding: AtomicBool::new(false),
-             txn_security_ctx_off,
-+            oneway_spam_detected,
+ #[no_mangle]
+-unsafe extern "C" fn rust_binder_state_show(_: *mut seq_file) -> core::ffi::c_int {
++unsafe extern "C" fn rust_binder_state_show(ptr: *mut seq_file) -> core::ffi::c_int {
++    // SAFETY: The caller ensures that the pointer is valid and exclusive for the duration in which
++    // this method is called.
++    let m = unsafe { SeqFile::from_raw(ptr) };
++    if let Err(err) = rust_binder_state_show_impl(m) {
++        seq_print!(m, "failed to generate state: {:?}\n", err);
++    }
+     0
+ }
+ 
+@@ -360,3 +368,16 @@ unsafe impl<T> Sync for AssertSync<T> {}
+ unsafe extern "C" fn rust_binder_transaction_log_show(_: *mut seq_file) -> core::ffi::c_int {
+     0
+ }
++
++fn rust_binder_state_show_impl(m: &mut SeqFile) -> Result<()> {
++    let contexts = context::get_all_contexts()?;
++    for ctx in contexts {
++        let procs = ctx.get_all_procs()?;
++        seq_print!(m, "context {}: ({} processes)\n", &*ctx.name, procs.len());
++        for proc in procs {
++            proc.debug_print(m)?;
++            seq_print!(m, "\n");
++        }
++    }
++    Ok(())
++}
+diff --git a/drivers/android/thread.rs b/drivers/android/thread.rs
+index 414ffb1387a0..d5a56119cc19 100644
+--- a/drivers/android/thread.rs
++++ b/drivers/android/thread.rs
+@@ -15,6 +15,8 @@
+     },
+     prelude::*,
+     security,
++    seq_file::SeqFile,
++    seq_print,
+     sync::{Arc, SpinLock},
+     types::Either,
+     user_ptr::{UserSlicePtr, UserSlicePtrWriter},
+@@ -447,6 +449,72 @@ pub(crate) fn new(id: i32, process: Arc<Process>) -> Result<Arc<Self>> {
+         }))
+     }
+ 
++    #[inline(never)]
++    pub(crate) fn debug_print(&self, m: &mut SeqFile) {
++        let looper_flags;
++        let looper_need_return;
++        let is_dead;
++        let has_work;
++        let process_work_list;
++        let current_transaction;
++        {
++            let inner = self.inner.lock();
++            looper_flags = inner.looper_flags;
++            looper_need_return = inner.looper_need_return;
++            is_dead = inner.is_dead;
++            has_work = !inner.work_list.is_empty();
++            process_work_list = inner.process_work_list;
++            current_transaction = inner.current_transaction.clone();
++        }
++        seq_print!(m, "  tid: {}\n", self.id);
++        seq_print!(m, "  state:");
++        if is_dead {
++            seq_print!(m, " dead");
++        }
++        if looper_need_return {
++            seq_print!(m, " pending_flush_wakeup");
++        }
++        if has_work && process_work_list {
++            seq_print!(m, " has_work");
++        }
++        if has_work && !process_work_list {
++            seq_print!(m, " has_deferred_work");
++        }
++        if looper_flags & LOOPER_REGISTERED != 0 {
++            seq_print!(m, " registered");
++        }
++        if looper_flags & LOOPER_ENTERED != 0 {
++            seq_print!(m, " entered");
++        }
++        if looper_flags & LOOPER_EXITED != 0 {
++            seq_print!(m, " exited");
++        }
++        if looper_flags & LOOPER_INVALID != 0 {
++            seq_print!(m, " invalid");
++        }
++        if looper_flags & LOOPER_WAITING != 0 {
++            if looper_flags & LOOPER_WAITING_PROC != 0 {
++                seq_print!(m, " in_get_work");
++            } else {
++                seq_print!(m, " in_get_work_local");
++            }
++        }
++        if looper_flags & LOOPER_POLL != 0 {
++            seq_print!(m, " poll_is_initialized");
++        }
++        seq_print!(m, "\n");
++        if current_transaction.is_some() {
++            seq_print!(m, "  tstack:");
++            let mut t = current_transaction;
++            while let Some(tt) = t.as_ref() {
++                seq_print!(m, " ");
++                tt.debug_print(m);
++                t = tt.clone_next();
++            }
++            seq_print!(m, "\n");
++        }
++    }
++
+     pub(crate) fn get_extended_error(&self, data: UserSlicePtr) -> Result {
+         let mut writer = data.writer();
+         let ee = self.inner.lock().extended_error;
+diff --git a/drivers/android/transaction.rs b/drivers/android/transaction.rs
+index 84b9fe58fe3e..30c411ab0778 100644
+--- a/drivers/android/transaction.rs
++++ b/drivers/android/transaction.rs
+@@ -5,6 +5,8 @@
+     io_buffer::IoBufferWriter,
+     list::ListArcSafe,
+     prelude::*,
++    seq_file::SeqFile,
++    seq_print,
+     sync::{Arc, SpinLock},
+     task::Kuid,
+     types::{Either, ScopeGuard},
+@@ -140,6 +142,29 @@ pub(crate) fn new_reply(
          }))?)
      }
  
-@@ -115,6 +118,7 @@ pub(crate) fn new_reply(
-                 return Err(err);
-             }
-         };
-+        let oneway_spam_detected = alloc.oneway_spam_detected;
-         if trd.flags & TF_CLEAR_BUF != 0 {
-             alloc.set_info_clear_on_drop();
-         }
-@@ -132,6 +136,7 @@ pub(crate) fn new_reply(
-             allocation <- kernel::new_spinlock!(Some(alloc), "Transaction::new"),
-             is_outstanding: AtomicBool::new(false),
-             txn_security_ctx_off: None,
-+            oneway_spam_detected,
-         }))?)
-     }
- 
-diff --git a/rust/kernel/task.rs b/rust/kernel/task.rs
-index 1a27b968a907..81649f12758b 100644
---- a/rust/kernel/task.rs
-+++ b/rust/kernel/task.rs
-@@ -81,7 +81,7 @@ unsafe impl Send for Task {}
- unsafe impl Sync for Task {}
- 
- /// The type of process identifiers (PIDs).
--type Pid = bindings::pid_t;
-+pub type Pid = bindings::pid_t;
- 
- /// The type of user identifiers (UIDs).
- #[derive(Copy, Clone)]
++    #[inline(never)]
++    pub(crate) fn debug_print(&self, m: &mut SeqFile) {
++        let from_pid = self.from.process.task.pid_in_current_ns();
++        let to_pid = self.to.task.pid_in_current_ns();
++        let from_tid = self.from.id;
++        match self.target_node.as_ref() {
++            Some(target_node) => {
++                let node_id = target_node.global_id;
++                seq_print!(
++                    m,
++                    "{}(tid:{})->{}(nid:{})",
++                    from_pid,
++                    from_tid,
++                    to_pid,
++                    node_id
++                );
++            }
++            None => {
++                seq_print!(m, "{}(tid:{})->{}(nid:_)", from_pid, from_tid, to_pid);
++            }
++        }
++    }
++
+     /// Determines if the transaction is stacked on top of the given transaction.
+     pub(crate) fn is_stacked_on(&self, onext: &Option<DArc<Self>>) -> bool {
+         match (&self.stack_next, onext) {
+diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
+index ffeea312f2fd..b2d60b4a9df6 100644
+--- a/rust/bindings/bindings_helper.h
++++ b/rust/bindings/bindings_helper.h
+@@ -15,6 +15,7 @@
+ #include <linux/pid_namespace.h>
+ #include <linux/poll.h>
+ #include <linux/security.h>
++#include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/refcount.h>
+ #include <linux/rust_binder.h>
+diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+index f4d58da9202e..d46187783464 100644
+--- a/rust/kernel/lib.rs
++++ b/rust/kernel/lib.rs
+@@ -48,6 +48,7 @@
+ pub mod print;
+ pub mod rbtree;
+ pub mod security;
++pub mod seq_file;
+ mod static_assert;
+ #[doc(hidden)]
+ pub mod std_vendor;
+diff --git a/rust/kernel/seq_file.rs b/rust/kernel/seq_file.rs
+new file mode 100644
+index 000000000000..997d527b2e9e
+--- /dev/null
++++ b/rust/kernel/seq_file.rs
+@@ -0,0 +1,47 @@
++// SPDX-License-Identifier: GPL-2.0
++
++//! Seq file bindings.
++//!
++//! C header: [`include/linux/seq_file.h`](../../../../include/linux/seq_file.h)
++
++use crate::{bindings, c_str, types::Opaque};
++
++/// A helper for implementing special files, where the complete contents can be generated on each
++/// access.
++pub struct SeqFile(Opaque<bindings::seq_file>);
++
++impl SeqFile {
++    /// Creates a new [`SeqFile`] from a raw pointer.
++    ///
++    /// # Safety
++    ///
++    /// The caller must ensure that, for the duration of 'a, the pointer must point at a valid
++    /// `seq_file` and that it will not be accessed via anything other than the returned reference.
++    pub unsafe fn from_raw<'a>(ptr: *mut bindings::seq_file) -> &'a mut SeqFile {
++        // SAFETY: The safety requirements guarantee the validity of the dereference, while the
++        // `Credential` type being transparent makes the cast ok.
++        unsafe { &mut *ptr.cast() }
++    }
++
++    /// Used by the [`seq_print`] macro.
++    ///
++    /// [`seq_print`]: crate::seq_print
++    pub fn call_printf(&mut self, args: core::fmt::Arguments<'_>) {
++        // SAFETY: Passing a void pointer to `Arguments` is valid for `%pA`.
++        unsafe {
++            bindings::seq_printf(
++                self.0.get(),
++                c_str!("%pA").as_char_ptr(),
++                &args as *const _ as *const core::ffi::c_void,
++            );
++        }
++    }
++}
++
++/// Use for writing to a [`SeqFile`] with the ordinary Rust formatting syntax.
++#[macro_export]
++macro_rules! seq_print {
++    ($m:expr, $($arg:tt)+) => (
++        $m.call_printf(format_args!($($arg)+))
++    );
++}
 
 -- 
 2.42.0.820.g83a721a137-goog
