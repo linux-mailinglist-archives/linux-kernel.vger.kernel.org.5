@@ -2,111 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B726A7DDA26
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EA07DDA2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 01:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376954AbjKAA2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 20:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S1376900AbjKAAda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 20:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376967AbjKAA1P (ORCPT
+        with ESMTP id S1376958AbjKAAd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 20:27:15 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB37194;
-        Tue, 31 Oct 2023 17:26:50 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-357ccaf982eso23042035ab.0;
-        Tue, 31 Oct 2023 17:26:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698798410; x=1699403210; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3SAgGhvFgEq3ojom6jJPWJ2MyF/faZd9tWGs5HOFcQQ=;
-        b=TTnzm5oGw4rcEXJlvZS/FiwonKEtI7xm5JGFHxRP2hCnZ/CEZkuVj9tMaOlOOUoAud
-         cQtB87zhV5jUkvUdMfIPSgHdUN0FRAOLw1e/ZEq9Upe8gs5zz1lduoSPrFS7havR/Sd9
-         TWKGqWGNEh683ScmLKkKCaIlqGak/TDvp2DvRGAN1Urx6AXlzeGu+ALYkhm5rY4K/Sv5
-         WBZjt5ox4ZfWfznDCGsEWQG3bozcnpUrBqPSG8QAYpuObyTOv3SWdu5+Pk4VICaruf1A
-         O9wejjD5nSwkkEAiDM+n0snY8Q5k+chdlldgX9m4Nl8bHB07praMNnlhXDeuEIj9Cf3G
-         6XfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698798410; x=1699403210;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3SAgGhvFgEq3ojom6jJPWJ2MyF/faZd9tWGs5HOFcQQ=;
-        b=VHunYjUw7YTP9G85bIgAl/+jjkgbnij33EhBDm7xj4sN/jt4KUPHvONs+yNZub+z9z
-         Kt3GOT6DrqgaD2cux/ASY1Vi3Qvfj6LeXgI6DYDmrdQH9s/yRVtLYltUgngApAxL7H8T
-         Mb7xT+EANYavUZEOCDkx87sL5Yt3hl2PDbSi9abUT1xc5P/l0u61YcXL2qfqFg+Glvpz
-         PCMS9RKDBJ0Ot6iJqmdxGq1waPfuTwFQJtH6Ak2JzyzWkdBaZhCtJtbuZMOWH5nPChQH
-         nVIhvpi4X5HU+Fz4iO3lh2gXZbOEMS+w7V89wdgy+RBBFr2j0gm3l/dfiiRcpO2s2Z9X
-         NhjQ==
-X-Gm-Message-State: AOJu0YwXOFP3Io1cDQkybRrhW2oD2Qwp3fDyYwghytDH5+eM+YC3wBy1
-        wcIN3iMxpDyzsTkFM3PPOwxgntDpuYODHA==
-X-Google-Smtp-Source: AGHT+IFaLMPhKAQDiXwdcpHNHlQB0x4IFVrH9A1QbFz7CNOFwFce//LXq9uQbZHYcyJx7HoGA67UZQ==
-X-Received: by 2002:a05:6e02:1522:b0:357:a180:6b74 with SMTP id i2-20020a056e02152200b00357a1806b74mr19332114ilu.27.1698798409806;
-        Tue, 31 Oct 2023 17:26:49 -0700 (PDT)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id t1-20020a92c901000000b00357cc8df1d5sm141701ilp.68.2023.10.31.17.26.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 17:26:49 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
-        gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     lb@semihalf.com, linux@rasmusvillemoes.dk, joe@perches.com,
-        mcgrof@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
-        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
-        robdclark@gmail.com, groeck@google.com, yanivt@google.com,
-        bleung@google.com, linux-doc@vger.kernel.org,
-        quic_saipraka@quicinc.com, will@kernel.org,
-        catalin.marinas@arm.com, quic_psodagud@quicinc.com, maz@kernel.org,
-        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, mingo@redhat.com,
-        jim.cromie@gmail.com
-Subject: [PATCH v7d 23/23] drm: restore CONFIG_DRM_USE_DYNAMIC_DEBUG un-BROKEN
-Date:   Tue, 31 Oct 2023 18:26:09 -0600
-Message-ID: <20231101002609.3533731-24-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231101002609.3533731-1-jim.cromie@gmail.com>
-References: <20231101002609.3533731-1-jim.cromie@gmail.com>
+        Tue, 31 Oct 2023 20:33:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FD1D56
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 17:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698798693; x=1730334693;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=dfDC05rqq8mx/R9hbqBb7VpGNgouZsFDueC1z1qoJeU=;
+  b=iS9eMg25e71BV9WriasLMiMLzxrk/AcBVI9IO8H+8QgWcmUxbSDh4D2X
+   dk6v1hvLFwmbo9r00vqIF3XwUaPVg/WrEOHL1BmsR+gp+2sRZs76IOUbT
+   36EtLpgf4kj0wbsM8PnCoAWwrruTK3vz1Vw1fWvYtpHswyHa0RzgHbNwC
+   3ZC7GPn+zHRO5emPRWwzD5bRWAkzvJ4czS+PhtMGrtB1oveWA7lTxaHWp
+   AKSNs0/KT89nofdBXdgYiD56DFwsYVDsUtk8sZrzW37QlFi+4rjr/4Jms
+   6fOgL8KsXZZVFqsxTx9Te7ilXPV4ZWDnIj/if+Q6RTYJjZ+qBWXLFX9LI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="1303447"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="1303447"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 17:31:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="795740421"
+X-IronPort-AV: E=Sophos;i="6.03,266,1694761200"; 
+   d="scan'208";a="795740421"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 31 Oct 2023 17:31:07 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qxz8S-0000Tw-2l;
+        Wed, 01 Nov 2023 00:31:04 +0000
+Date:   Wed, 1 Nov 2023 08:30:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: kernel/sched/core.c:711:31: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202311010809.aLMtDJ8K-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lots of burn-in testing needed before signing, upstreaming.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5a6a09e97199d6600d31383055f9d43fbbcbe86f
+commit: 52b1364ba0b105122d6de0e719b36db705011ac1 sched/psi: Add PSI_IRQ to track IRQ/SOFTIRQ pressure
+date:   1 year, 2 months ago
+config: x86_64-randconfig-x014-20230805 (https://download.01.org/0day-ci/archive/20231101/202311010809.aLMtDJ8K-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311010809.aLMtDJ8K-lkp@intel.com/reproduce)
 
-NOTE: I set default Y to maximize testing by default.
-Is there a better way to do this ?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311010809.aLMtDJ8K-lkp@intel.com/
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- drivers/gpu/drm/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+sparse warnings: (new ones prefixed by >>)
+>> kernel/sched/core.c:711:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:711:31: sparse:     expected struct task_struct *task
+   kernel/sched/core.c:711:31: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:781:48: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:781:48: sparse:     expected struct task_struct *p
+   kernel/sched/core.c:781:48: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:1028:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:1028:38: sparse:     expected struct task_struct *curr
+   kernel/sched/core.c:1028:38: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:2192:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:2192:33: sparse:     expected struct task_struct *p
+   kernel/sched/core.c:2192:33: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:2192:68: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:2192:68: sparse:     expected struct task_struct *tsk
+   kernel/sched/core.c:2192:68: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:5441:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:5441:38: sparse:     expected struct task_struct *curr
+   kernel/sched/core.c:5441:38: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:6387:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *prev @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:6387:14: sparse:     expected struct task_struct *prev
+   kernel/sched/core.c:6387:14: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:6913:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/core.c:6913:17: sparse:    struct task_struct *
+   kernel/sched/core.c:6913:17: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/core.c:7129:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/core.c:7129:22: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/core.c:7129:22: sparse:    struct task_struct *
+   kernel/sched/core.c:11188:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
+   kernel/sched/core.c:11188:25: sparse:     expected struct task_struct *p
+   kernel/sched/core.c:11188:25: sparse:     got struct task_struct [noderef] __rcu *curr
+   kernel/sched/core.c:537:6: sparse: sparse: context imbalance in 'raw_spin_rq_lock_nested' - wrong count at exit
+   kernel/sched/core.c:570:23: sparse: sparse: context imbalance in 'raw_spin_rq_trylock' - wrong count at exit
+   kernel/sched/core.c:586:6: sparse: sparse: context imbalance in 'raw_spin_rq_unlock' - unexpected unlock
+   kernel/sched/core.c:624:36: sparse: sparse: context imbalance in '__task_rq_lock' - wrong count at exit
+   kernel/sched/core.c:665:36: sparse: sparse: context imbalance in 'task_rq_lock' - wrong count at exit
+   kernel/sched/core.c:781:11: sparse: sparse: dereference of noderef expression
+   kernel/sched/core.c:2183:33: sparse: sparse: dereference of noderef expression
+   kernel/sched/core.c:2184:19: sparse: sparse: dereference of noderef expression
+   kernel/sched/core.c:2185:18: sparse: sparse: dereference of noderef expression
+   kernel/sched/core.c: note: in included file:
+   kernel/sched/sched.h:1594:9: sparse: sparse: context imbalance in 'ttwu_runnable' - wrong count at exit
+   kernel/sched/core.c:4266:9: sparse: sparse: context imbalance in 'task_call_func' - wrong count at exit
+   kernel/sched/sched.h:1594:9: sparse: sparse: context imbalance in 'wake_up_new_task' - wrong count at exit
+   kernel/sched/core.c:5100:9: sparse: sparse: context imbalance in 'finish_task_switch' - wrong count at exit
+   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
+   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
+   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
+   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
+   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
+   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
+   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
+   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 3caa020391c7..708f5e8cb205 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -55,8 +55,7 @@ config DRM_DEBUG_MM
- 
- config DRM_USE_DYNAMIC_DEBUG
- 	bool "use dynamic debug to implement drm.debug"
--	default n
--	depends on BROKEN
-+	default y
- 	depends on DRM
- 	depends on DYNAMIC_DEBUG || DYNAMIC_DEBUG_CORE
- 	depends on JUMP_LABEL
+vim +711 kernel/sched/core.c
+
+   675	
+   676	/*
+   677	 * RQ-clock updating methods:
+   678	 */
+   679	
+   680	static void update_rq_clock_task(struct rq *rq, s64 delta)
+   681	{
+   682	/*
+   683	 * In theory, the compile should just see 0 here, and optimize out the call
+   684	 * to sched_rt_avg_update. But I don't trust it...
+   685	 */
+   686		s64 __maybe_unused steal = 0, irq_delta = 0;
+   687	
+   688	#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+   689		irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
+   690	
+   691		/*
+   692		 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+   693		 * this case when a previous update_rq_clock() happened inside a
+   694		 * {soft,}irq region.
+   695		 *
+   696		 * When this happens, we stop ->clock_task and only update the
+   697		 * prev_irq_time stamp to account for the part that fit, so that a next
+   698		 * update will consume the rest. This ensures ->clock_task is
+   699		 * monotonic.
+   700		 *
+   701		 * It does however cause some slight miss-attribution of {soft,}irq
+   702		 * time, a more accurate solution would be to update the irq_time using
+   703		 * the current rq->clock timestamp, except that would require using
+   704		 * atomic ops.
+   705		 */
+   706		if (irq_delta > delta)
+   707			irq_delta = delta;
+   708	
+   709		rq->prev_irq_time += irq_delta;
+   710		delta -= irq_delta;
+ > 711		psi_account_irqtime(rq->curr, irq_delta);
+   712	#endif
+   713	#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+   714		if (static_key_false((&paravirt_steal_rq_enabled))) {
+   715			steal = paravirt_steal_clock(cpu_of(rq));
+   716			steal -= rq->prev_steal_time_rq;
+   717	
+   718			if (unlikely(steal > delta))
+   719				steal = delta;
+   720	
+   721			rq->prev_steal_time_rq += steal;
+   722			delta -= steal;
+   723		}
+   724	#endif
+   725	
+   726		rq->clock_task += delta;
+   727	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
