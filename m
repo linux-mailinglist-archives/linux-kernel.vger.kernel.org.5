@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05C37DE7AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4157DE76A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 22:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345566AbjKAV2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 17:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
+        id S1345625AbjKAV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 17:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345506AbjKAV2B (ORCPT
+        with ESMTP id S1345432AbjKAV0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 17:28:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0CA134
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:27:53 -0700 (PDT)
+        Wed, 1 Nov 2023 17:26:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E5F122
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 14:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698874074; x=1730410074;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Vvc4zxaF2jHdB5ttg4cf4Zt+cw2B1Cg5jwqZeEaviY8=;
-  b=N6Epush9JbiawJ5nrp+0TRA5VQbHLTTuByCfZRZNyKyVdcD5+ndJnPrX
-   XnauHtPM6yxbACx2MWGK2B5aMv3dl+GEHjaZVGsYVv/oZBiWU+ZAovnvt
-   /YQvyu3FKQ1GhoRcEEc+v5XKrUIFPPKW+gBH0qziVtzh3jP87/Vg0vEhx
-   4xCrP/FmR5Cgdtc+lvs2nyjJNXJLMhUIO0uRqrny9eLMd2hhKf8Vk88Mq
-   ads2Gv3D6pDaKF+d1jmiNQZ9MWLa1kY09LfB4ix1/8zyRQlKngzuSoghl
-   5d9vXdiG35w/vDlT8OlChRVOozgEwvBSLL7h+YUmGfUSF7nN+w5QEh7PZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="1499993"
+  t=1698873977; x=1730409977;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=W/tSw6Scof6Iowi5GgeffcVwE78iqgrLgeV/J7eZZQI=;
+  b=griO7eMpF5cxCy9ltVStBpzPF2mB1vmoZv+Z/MVuusupU7zT53OCpWjS
+   i6Y0sjK0LMpNojeOUIirzA/Y/6WPsW2dOrtdcsIGzwgF1td6hKjlhnurj
+   yRqbsfPCQ6S04UT5iaGf91geIlE/dcb2LFshSw+V9Mge1jh2BZ7QCVINT
+   Y+DxrZdKhJ9xxvhCpXcKgbqLrBx2fb9X2zCriqcCwjUn5yaKzook73ZTo
+   2TnTzIkvc+C2I876vF/hAmuTVSjnjXAB3yfgB6qpKpJAIKs+fSriY/Sf5
+   8Fs/ANZCWoULgrNcwthmoMyVG38sb2ds2OQHpjwOj8dCuHNICxxyCm6CD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="419699894"
 X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="1499993"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 14:27:18 -0700
+   d="scan'208";a="419699894"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 14:26:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="710927215"
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764691693"
 X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="710927215"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 01 Nov 2023 14:27:16 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyIk6-0000xk-0T;
-        Wed, 01 Nov 2023 21:27:14 +0000
-Date:   Thu, 2 Nov 2023 05:26:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: net/core/filter.c:11662:17: warning: no previous declaration for
- 'bpf_dynptr_from_xdp'
-Message-ID: <202311020505.2zgymACj-lkp@intel.com>
+   d="scan'208";a="764691693"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 14:26:16 -0700
+Date:   Wed, 1 Nov 2023 14:26:15 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     "Moger, Babu" <babu.moger@amd.com>
+Cc:     "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: [PATCH v2] x86/resctrl: Fix unused variable warning in
+ cache_alloc_hsw_probe()
+Message-ID: <ZULCd/TGJL9Dmncf@agluck-desk3>
+References: <20231031220534.37730-1-tony.luck@intel.com>
+ <d47235e0-7ecd-483e-82c3-78f13c77df67@amd.com>
+ <SJ1PR11MB6083C14236AC0AFCB49DFB15FCA7A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <9e6a979a-48db-4b25-884f-ac8d4c2bb078@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9e6a979a-48db-4b25-884f-ac8d4c2bb078@amd.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7d461b291e65938f15f56fe58da2303b07578a76
-commit: 05421aecd4ed65da0dc17b0c3c13779ef334e9e5 bpf: Add xdp dynptrs
-date:   8 months ago
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20231102/202311020505.2zgymACj-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311020505.2zgymACj-lkp@intel.com/reproduce)
+In a "W=1" build gcc throws a warning:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311020505.2zgymACj-lkp@intel.com/
+arch/x86/kernel/cpu/resctrl/core.c: In function ‘cache_alloc_hsw_probe’:
+arch/x86/kernel/cpu/resctrl/core.c:139:16: warning: variable ‘h’ set but not used
 
-All warnings (new ones prefixed by >>):
+Fix by switching from wrmsr_safe() to wrmsrl_safe(), and from rdmsr()
+to rdmsrl() using a single u64 argument for the MSR value instead of
+the pair of u32 for the high and low halves.
 
-   net/core/filter.c:11649:17: warning: no previous declaration for 'bpf_dynptr_from_skb' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
-                    ^~~~~~~~~~~~~~~~~~~
->> net/core/filter.c:11662:17: warning: no previous declaration for 'bpf_dynptr_from_xdp' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
-                    ^~~~~~~~~~~~~~~~~~~
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+Changes since v1 (suggested by Babu)
 
+Switch both the wrmsr() and rdmsr() to the 64-bit versions.
 
-vim +/bpf_dynptr_from_xdp +11662 net/core/filter.c
+ arch/x86/kernel/cpu/resctrl/core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- 11661	
- 11662	__bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
- 11663					    struct bpf_dynptr_kern *ptr__uninit)
- 11664	{
- 11665		if (flags) {
- 11666			bpf_dynptr_set_null(ptr__uninit);
- 11667			return -EINVAL;
- 11668		}
- 11669	
- 11670		bpf_dynptr_init(ptr__uninit, xdp, BPF_DYNPTR_TYPE_XDP, 0, xdp_get_buff_len(xdp));
- 11671	
- 11672		return 0;
- 11673	}
- 11674	__diag_pop();
- 11675	
-
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 19e0681f0435..d29ebe345de6 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -136,15 +136,15 @@ static inline void cache_alloc_hsw_probe(void)
+ {
+ 	struct rdt_hw_resource *hw_res = &rdt_resources_all[RDT_RESOURCE_L3];
+ 	struct rdt_resource *r  = &hw_res->r_resctrl;
+-	u32 l, h, max_cbm = BIT_MASK(20) - 1;
++	u64 max_cbm = BIT_ULL_MASK(20) - 1, l3_cbm_0;
+ 
+-	if (wrmsr_safe(MSR_IA32_L3_CBM_BASE, max_cbm, 0))
++	if (wrmsrl_safe(MSR_IA32_L3_CBM_BASE, max_cbm))
+ 		return;
+ 
+-	rdmsr(MSR_IA32_L3_CBM_BASE, l, h);
++	rdmsrl(MSR_IA32_L3_CBM_BASE, l3_cbm_0);
+ 
+ 	/* If all the bits were set in MSR, return success */
+-	if (l != max_cbm)
++	if (l3_cbm_0 != max_cbm)
+ 		return;
+ 
+ 	hw_res->num_closid = 4;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
