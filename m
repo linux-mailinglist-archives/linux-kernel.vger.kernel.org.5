@@ -2,245 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A68E7DE03D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0415F7DE046
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 12:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbjKALVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 07:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
+        id S235015AbjKALZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 07:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjKALVY (ORCPT
+        with ESMTP id S233979AbjKALZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 07:21:24 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4295BF7
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:21:21 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-280137f1a1bso3766105a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 04:21:21 -0700 (PDT)
+        Wed, 1 Nov 2023 07:25:25 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1000F7
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 04:25:19 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507ad511315so9641820e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 04:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698837681; x=1699442481; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L/Z47gSQKxAAIq0iuZpu0N2NhE2dFDUAI45STsYwdUE=;
-        b=JpAAGr5TjD8hI+GeF0QoHKx+myjw7edy9ubvUxpLiapGjjLdbl4Z6cRtypf4FYRgQX
-         8zGY92bidLkXNJpRV1P7qefsFwLGQiEUAdxracex9C3hsWG/saatl1Cm8SN4U4uxUXxn
-         LVbBvlN+IEzRtHRZajKSgA5DNrToUwou0nWJ/7WF47E4YCGW6TdAhceOIbHfQy7NN4yL
-         NJ+3UFKemKQYwU+Ah+92Y1x3izHYlfA75eGBzX8XJfPEHyosj4Kp9d7CLqFfoP63IVgQ
-         51l5rcK5o/7wf/niL9bi/97oUV9pthpx8KGeBAzngGCy6fe6qA6o/cIWeK/ZBSRxuCXo
-         la0g==
+        d=linaro.org; s=google; t=1698837918; x=1699442718; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fTLsGn0av/ptJmCJ6UISKnfoymHQRTy2A0oy+VGOqG4=;
+        b=nPXH6SEK1yxfzcBt5J8FQ1MA4J5sYoECRYR8yPCSwiHt+RP3kBnkfS1890p1CurUEJ
+         6QPg646A69GvnXiuO3o4v03zZaB6cA83E4MI51eceGA3vG/3gedOX8lIDpm/N54Dw1hP
+         NaPi5Dgb6Vc4kxMpss1l5U5QQS/MbH8YeQH6cRjI3S/tEH+JCKG68fhG6kMLqc/i17SN
+         AxTCID3oAFMTdAxTIZbz/xoZxW0nPIruKsZl0JzzeTNnVd//vMnrPaW0zigSV/YF8GME
+         pJkvurkObhTF5pOk9aGZb4IK/PwkN6wZt1gkiTiCdpXspEuDSw0Me+J4+VVWY1v0Lbmq
+         NZow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698837681; x=1699442481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698837918; x=1699442718;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L/Z47gSQKxAAIq0iuZpu0N2NhE2dFDUAI45STsYwdUE=;
-        b=EMC85q3gPkas/UmOreOkISACyEhisf2UuJ4KnxmfvqbdUbtQUCVsTc28eyNTETm6pO
-         qJ5v5YcOa5JoM4voVGXkctZW48SE62DFZ2PsK5EOvrtuDCA3aWKqTUybVFynDF7qslCa
-         HCnmwqJXkWsx/693zhBpT0sp+Hgd3T7pVTcwlxwqMY5nJ+OsydY/pzzvRIKdFBdmeV+c
-         hijTFxZAirc9cvKD4gifXcqfFgvvGdk8aqzst0od5QzbJIQ92OXZqciWTZNuPfhDh5j1
-         sCJy9bvE9hqgJB9UNqG78usGEHpgJYRdVruNvdavY8mQWDFiQWiHAxT1PCWinxcvqUKa
-         rNGw==
-X-Gm-Message-State: AOJu0YwY2hgz5yAOJJruKwI/mzit92VXxxRhl/uN1dqennkjd4EM/30C
-        wLmI1CnIQkxE9cXsl9p5d6xOaq4jV7t1/Dxd/RI=
-X-Google-Smtp-Source: AGHT+IE6fhML8ZxXvIf2y5OTf0w9VByLRiajwtKF3XyubgEPI5VO3CSwH6JcdE6jcJ9iKGDzb0yfl66S/gtC3CcNIyY=
-X-Received: by 2002:a17:90b:1904:b0:280:16bb:8169 with SMTP id
- mp4-20020a17090b190400b0028016bb8169mr9385823pjb.40.1698837680667; Wed, 01
- Nov 2023 04:21:20 -0700 (PDT)
+        bh=fTLsGn0av/ptJmCJ6UISKnfoymHQRTy2A0oy+VGOqG4=;
+        b=ZkkR1SPUrcK8Q71D2vKr0XgKZhjply83KOwW9xwqIczmXeZfwfGiMvpiAWCLAXA9+K
+         SxlNhIf3DOuQclbRKwwhnuhPZ5AYkQo90LuDiBUE8OYZWS/px+4DFpPERGixpsFUu89d
+         QIGnp+bU0ezb6eeuriD2i1Clt3Zw/IcBd21mFFIzpM9n5DJ5PwKv6Ym84z0OC62kpN2F
+         lbzxqri4IeaQ1thk+ecJ6BGHNiVJwT1LR/PSZN6ff4YAjmzFQVWp8O6T8Fuy3Pif7V1G
+         97rBPkQCn3yH6CCnuE9HNI3VU/5kq6WJa9PIKAkTtcYAKKypocWeLXp1gA1xfq8I8Fgb
+         U1ZA==
+X-Gm-Message-State: AOJu0YyAWKX+oD19Ne8ySe3kGWZq1VvfUlREBkzXxw3g8Nvr6UkIMFdt
+        VniRd/+PGBxjyvI9HkAW09TY9H3XBx4oHbPGIos=
+X-Google-Smtp-Source: AGHT+IEt0cqw0WG0csCOEKOW8isjaA+Q2Oo+yjZZWzoSKz11mj6teGBsW7zTsp3VQwbBCu5UuHs/tg==
+X-Received: by 2002:a19:2d45:0:b0:507:9a93:84df with SMTP id t5-20020a192d45000000b005079a9384dfmr10506678lft.25.1698837917926;
+        Wed, 01 Nov 2023 04:25:17 -0700 (PDT)
+Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
+        by smtp.gmail.com with ESMTPSA id f8-20020a0565123b0800b00502e2347ef0sm188744lfv.193.2023.11.01.04.25.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 04:25:17 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [GIT PULL] pmdomain updates for v6.7
+Date:   Wed,  1 Nov 2023 12:25:16 +0100
+Message-Id: <20231101112516.5623-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231031001418.274187-1-longman@redhat.com> <20231031085308.GB35651@noisy.programming.kicks-ass.net>
- <a46f5614-53ec-49fb-86d0-fa5aea4d0a42@paulmck-laptop> <20231031200228.GG15024@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231031200228.GG15024@noisy.programming.kicks-ass.net>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Wed, 1 Nov 2023 19:21:09 +0800
-Message-ID: <CALm+0cWuZZLWkwMPS6n1YyTWzkex9=c1E9CB-m6e_F38MNLVqw@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Break rcu_node_0 --> &rq->__lock order
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        aubrey.li@linux.intel.com, yu.c.chen@intel.com,
-        frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        boqun.feng@gmail.com, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Tue, Oct 31, 2023 at 07:29:04AM -0700, Paul E. McKenney wrote:
-> > Other than the de-alphabetization of the local variables, it looks
-> > plausible to me.  Frederic's suggestion also sounds plausible to me.
->
-> Having spend the better part of the past two decades using upside down
-> xmas trees for local variables, this alphabet thing is obnoxious :-)
->
-> But your code, your rules.
->
-> To reduce the number of alphabet songs required, I've taken the liberty
-> to move a few variables into a narrower scope, hope that doesn't offend.
->
-> ---
-> Subject: rcu: Break rcu_node_0 --> &rq->__lock order
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Tue, 31 Oct 2023 09:53:08 +0100
->
-> Commit 851a723e45d1 ("sched: Always clear user_cpus_ptr in
-> do_set_cpus_allowed()") added a kfree() call to free any user
-> provided affinity mask, if present. It was changed later to use
-> kfree_rcu() in commit 9a5418bc48ba ("sched/core: Use kfree_rcu()
-> in do_set_cpus_allowed()") to avoid a circular locking dependency
-> problem.
->
-> It turns out that even kfree_rcu() isn't safe for avoiding
-> circular locking problem. As reported by kernel test robot,
-> the following circular locking dependency now exists:
->
->   &rdp->nocb_lock --> rcu_node_0 --> &rq->__lock
->
-> Solve this by breaking the rcu_node_0 --> &rq->__lock chain by moving
-> the resched_cpu() out from under rcu_node lock.
->
-> [peterz: heavily borrowed from Waiman's Changelog]
-> Fixes: 851a723e45d1 ("sched: Always clear user_cpus_ptr in do_set_cpus_allowed()")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lore.kernel.org/oe-lkp/202310302207.a25f1a30-oliver.sang@intel.com
-> ---
->  kernel/rcu/tree.c |   34 ++++++++++++++++++++++++----------
->  1 file changed, 24 insertions(+), 10 deletions(-)
->
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -754,14 +754,19 @@ static int dyntick_save_progress_counter
->  }
->
->  /*
-> - * Return true if the specified CPU has passed through a quiescent
-> - * state by virtue of being in or having passed through an dynticks
-> - * idle state since the last call to dyntick_save_progress_counter()
-> - * for this same CPU, or by virtue of having been offline.
-> + * Returns positive if the specified CPU has passed through a quiescent state
-> + * by virtue of being in or having passed through an dynticks idle state since
-> + * the last call to dyntick_save_progress_counter() for this same CPU, or by
-> + * virtue of having been offline.
-> + *
-> + * Returns negative if the specified CPU needs a force resched.
-> + *
-> + * Returns zero otherwise.
->   */
->  static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
->  {
->         unsigned long jtsq;
-> +       int ret = 0;
->         struct rcu_node *rnp = rdp->mynode;
->
->         /*
-> @@ -847,8 +852,8 @@ static int rcu_implicit_dynticks_qs(stru
->             (time_after(jiffies, READ_ONCE(rdp->last_fqs_resched) + jtsq * 3) ||
->              rcu_state.cbovld)) {
->                 WRITE_ONCE(rdp->rcu_urgent_qs, true);
-> -               resched_cpu(rdp->cpu);
->                 WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-> +               ret = -1;
->         }
->
+Hi Linus,
+
+Here's the pull-request with pmdomain updates for v6.7. Details about the
+highlights are as usual found in the signed tag.
+
+Please pull this in!
+
+Kind regards
+Ulf Hansson
 
 
-Maybe some modifications are missing here:
+The following changes since commit 767881c470b3140c33795031c4e4d65572731c1c:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index aa4c808978b8..77e7a0dc722a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -867,8 +867,8 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
-        if (time_after(jiffies, rcu_state.jiffies_resched)) {
-                if (time_after(jiffies,
-                               READ_ONCE(rdp->last_fqs_resched) + jtsq)) {
--                       resched_cpu(rdp->cpu);
-                        WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-+                       ret = -1;
-                }
-                if (IS_ENABLED(CONFIG_IRQ_WORK) &&
-                    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
+  pmdomain: imx: scu-pd: correct DMA2 channel (2023-10-05 00:28:52 +0200)
 
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git tags/pmdomain-v6.7
 
-Thanks
-Zqiang
+for you to fetch changes up to 9e0cceadb7a5099c637e787191a9adbf9ec424cd:
 
+  pmdomain: Merge branch fixes into next (2023-10-27 11:02:11 +0200)
 
->         /*
-> @@ -891,7 +896,7 @@ static int rcu_implicit_dynticks_qs(stru
->                 }
->         }
->
-> -       return 0;
-> +       return ret;
->  }
->
->  /* Trace-event wrapper function for trace_rcu_future_grace_period.  */
-> @@ -2257,15 +2262,15 @@ static void force_qs_rnp(int (*f)(struct
->  {
->         int cpu;
->         unsigned long flags;
-> -       unsigned long mask;
-> -       struct rcu_data *rdp;
->         struct rcu_node *rnp;
->
->         rcu_state.cbovld = rcu_state.cbovldnext;
->         rcu_state.cbovldnext = false;
->         rcu_for_each_leaf_node(rnp) {
-> +               unsigned long mask = 0;
-> +               unsigned long rsmask = 0;
-> +
->                 cond_resched_tasks_rcu_qs();
-> -               mask = 0;
->                 raw_spin_lock_irqsave_rcu_node(rnp, flags);
->                 rcu_state.cbovldnext |= !!rnp->cbovldmask;
->                 if (rnp->qsmask == 0) {
-> @@ -2283,11 +2288,17 @@ static void force_qs_rnp(int (*f)(struct
->                         continue;
->                 }
->                 for_each_leaf_node_cpu_mask(rnp, cpu, rnp->qsmask) {
-> +                       struct rcu_data *rdp;
-> +                       int ret;
-> +
->                         rdp = per_cpu_ptr(&rcu_data, cpu);
-> -                       if (f(rdp)) {
-> +                       ret = f(rdp);
-> +                       if (ret > 0) {
->                                 mask |= rdp->grpmask;
->                                 rcu_disable_urgency_upon_qs(rdp);
->                         }
-> +                       if (ret < 0)
-> +                               rsmask |= rdp->grpmask;
->                 }
->                 if (mask != 0) {
->                         /* Idle/offline CPUs, report (releases rnp->lock). */
-> @@ -2296,6 +2307,9 @@ static void force_qs_rnp(int (*f)(struct
->                         /* Nothing to do here, so just drop the lock. */
->                         raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->                 }
-> +
-> +               for_each_leaf_node_cpu_mask(rnp, cpu, rsmask)
-> +                       resched_cpu(cpu);
->         }
->  }
->
+----------------------------------------------------------------
+ - Move Kconfig files into the pmdomain subsystem
+ - Drop use of genpd's redundant ->opp_to_performance_state() callback
+ - amlogic: Add support for the T7 power-domains controller
+ - amlogic: Fix mask for the second NNA mem power-domain
+ - bcm: Fixup ASB register read and comparison for bcm2835-power
+ - imx: Fix device link problem for consumers of the pgc power-domain
+ - mediatek: Add support for the MT8365 power domains
+ - qcom: Add support for the rpmhpds for SC8380XP power-domains
+ - qcom: Add support for the rpmhpds for SM8650 power-domains
+ - qcom: Add support for the rpmhpd clocks for SM7150
+ - qcom: Add support for the rpmpds for MSM8917 (families) power-domains
+ - starfive: Add support for the JH7110 AON PMU
+
+----------------------------------------------------------------
+Abel Vesa (2):
+      dt-bindings: power: rpmpd: Add SC8380XP support
+      pmdomain: qcom: rpmhpd: Add SC8380XP power domains
+
+Alexandre Bailon (2):
+      pmdomain: mediatek: Add support for WAY_EN operations
+      pmdomain: mediatek: Add support for MTK_SCPD_STRICT_BUS_PROTECTION cap
+
+Changhuang Liang (6):
+      dt-bindings: power: Add power-domain header for JH7110
+      pmdomain: starfive: Replace SOC_STARFIVE with ARCH_STARFIVE
+      pmdomain: starfive: Extract JH7110 pmu private operations
+      pmdomain: starfive: Add JH7110 AON PMU support
+      dt-bindings: power: Update prefixes for AON power domain
+      pmdomain: starfive: Update prefixes for AON power domain
+
+Danila Tikhonov (2):
+      dt-bindings: power: qcom,rpmpd: Add SM7150
+      pmdomain: qcom: rpmhpd: Add support for SM7150 rpmh clocks
+
+Fabien Parent (2):
+      dt-bindings: power: Add MT8365 power domains
+      pmdomain: mediatek: Add support for MT8365
+
+Julia Lawall (1):
+      pmdomain: ti: add missing of_node_put
+
+Justin Stitt (1):
+      pmdomain: renesas: rmobile-sysc: fix -Wvoid-pointer-to-enum-cast warning
+
+Markus Schneider-Pargmann (4):
+      pmdomain: mediatek: Move bools to a flags field
+      pmdomain: mediatek: Split bus_prot_mask
+      pmdomain: mediatek: Create bus protection operation functions
+      pmdomain: mediatek: Unify configuration for infracfg and smi
+
+Maíra Canal (1):
+      pmdomain: bcm: bcm2835-power: check if the ASB register is equal to enable
+
+Neil Armstrong (2):
+      dt-bindings: power: qcom,rpmpd: document the SM8650 RPMh Power Domains
+      pmdomain: qcom: rpmhpd: Add SM8650 RPMh Power Domains
+
+Otto Pflüger (3):
+      dt-bindings: power: rpmpd: Add MSM8917, MSM8937 and QM215
+      pmdomain: qcom: rpmpd: Add MSM8917 power domains
+      pmdomain: qcom: rpmpd: Add QM215 power domains
+
+Pengfei Li (1):
+      pmdomain: imx: Make imx pgc power domain also set the fwnode
+
+Rob Herring (2):
+      pmdomain: starfive: Explicitly include correct DT includes
+      pmdomain: Use device_get_match_data()
+
+Sibi Sankar (1):
+      dt-bindings: power: qcom,rpmhpd: Add GMXC PD index
+
+Tomeu Vizoso (1):
+      pmdomain: amlogic: Fix mask for the second NNA mem PD domain
+
+Ulf Hansson (28):
+      pmdomain: Merge the genpd_dt branch into the next branch
+      pmdomain: Prepare to move Kconfig files into the pmdomain subsystem
+      pmdomain: actions: Move Kconfig file to the pmdomain subsystem
+      pmdomain: amlogic: Move Kconfig options to the pmdomain subsystem
+      pmdomain: apple: Move Kconfig option to the pmdomain subsystem
+      pmdomain: bcm: Move Kconfig options to the pmdomain subsystem
+      pmdomain: imx: Move Kconfig options to the pmdomain subsystem
+      pmdomain: mediatek: Move Kconfig options to the pmdomain subsystem
+      pmdomain: qcom: Move Kconfig options to the pmdomain subsystem
+      pmdomain: renesas: Move Kconfig options to the pmdomain subsystem
+      pmdomain: rockchip: Move Kconfig option to the pmdomain subsystem
+      pmdomain: samsung: Move Kconfig option to the pmdomain subsystem
+      pmdomain: st: Add a Kconfig option for the ux500 power domain
+      pmdomain: starfive: Move Kconfig file to the pmdomain subsystem
+      pmdomain: sunxi: Move Kconfig option to the pmdomain subsystem
+      pmdomain: tegra: Move Kconfig option to the pmdomain subsystem
+      pmdomain: ti: Move and add Kconfig options to the pmdomain subsystem
+      pmdomain: xilinx: Move Kconfig option to the pmdomain subsystem
+      pmdomain: Merge branch genpd_dt into next
+      pmdomain: Merge branch genpd_dt into next
+      pmdomain: Merge branch fixes into next
+      pmdomain: qcom: cpr: Drop the ->opp_to_performance_state() callback
+      pmdomain: qcom: rpmpd: Drop the ->opp_to_performance_state() callback
+      pmdomain: qcom: rpmhpd: Drop the ->opp_to_performance_state() callback
+      pmdomain: Merge branch genpd_dt into next
+      pmdomain: Merge branch fixes into next
+      pmdomain: Merge branch genpd_dt into next
+      pmdomain: Merge branch fixes into next
+
+xianwei.zhao (5):
+      dt-bindings: power: add Amlogic T7 power domains
+      pmdomain: amlogic: modify some power domains property
+      pmdomain: amlogic: add driver to support power parent node
+      pmdomain: amlogic: init power domain state
+      pmdomain: amlogic: Add support for T7 power domains controller
+
+ .../bindings/power/amlogic,meson-sec-pwrc.yaml     |   3 +-
+ .../bindings/power/mediatek,power-controller.yaml  |   6 +
+ .../devicetree/bindings/power/qcom,rpmpd.yaml      |  82 +++----
+ MAINTAINERS                                        |   6 +-
+ drivers/Kconfig                                    |   2 +
+ drivers/firmware/imx/Kconfig                       |   6 -
+ drivers/pmdomain/Kconfig                           |  21 ++
+ drivers/{soc => pmdomain}/actions/Kconfig          |   0
+ drivers/pmdomain/actions/owl-sps.c                 |  16 +-
+ drivers/pmdomain/amlogic/Kconfig                   |  39 ++++
+ drivers/pmdomain/amlogic/meson-ee-pwrc.c           |   2 +-
+ drivers/pmdomain/amlogic/meson-secure-pwrc.c       | 127 +++++++++--
+ drivers/pmdomain/apple/Kconfig                     |  18 ++
+ drivers/pmdomain/bcm/Kconfig                       |  42 ++++
+ drivers/pmdomain/bcm/bcm2835-power.c               |   2 +-
+ drivers/pmdomain/imx/Kconfig                       |  29 +++
+ drivers/pmdomain/imx/gpc.c                         |   8 +-
+ drivers/pmdomain/mediatek/Kconfig                  |  29 +++
+ drivers/pmdomain/mediatek/mt6795-pm-domains.h      |  16 +-
+ drivers/pmdomain/mediatek/mt8167-pm-domains.h      |  20 +-
+ drivers/pmdomain/mediatek/mt8173-pm-domains.h      |  16 +-
+ drivers/pmdomain/mediatek/mt8183-pm-domains.h      | 125 ++++++-----
+ drivers/pmdomain/mediatek/mt8186-pm-domains.h      | 236 ++++++++++++---------
+ drivers/pmdomain/mediatek/mt8188-pm-domains.h      | 223 ++++++++++++-------
+ drivers/pmdomain/mediatek/mt8192-pm-domains.h      | 112 ++++++----
+ drivers/pmdomain/mediatek/mt8195-pm-domains.h      | 199 ++++++++++-------
+ drivers/pmdomain/mediatek/mt8365-pm-domains.h      | 197 +++++++++++++++++
+ drivers/pmdomain/mediatek/mtk-pm-domains.c         | 157 +++++++++-----
+ drivers/pmdomain/mediatek/mtk-pm-domains.h         |  51 +++--
+ drivers/pmdomain/qcom/Kconfig                      |  41 ++++
+ drivers/pmdomain/qcom/cpr.c                        |   7 -
+ drivers/pmdomain/qcom/rpmhpd.c                     |  83 +++++++-
+ drivers/pmdomain/qcom/rpmpd.c                      |  98 ++++++++-
+ drivers/pmdomain/renesas/Kconfig                   | 109 ++++++++++
+ drivers/pmdomain/renesas/rmobile-sysc.c            |   2 +-
+ drivers/pmdomain/rockchip/Kconfig                  |  16 ++
+ drivers/pmdomain/rockchip/pm-domains.c             |  13 +-
+ drivers/pmdomain/samsung/Kconfig                   |   8 +
+ drivers/pmdomain/st/Kconfig                        |   5 +
+ drivers/pmdomain/st/Makefile                       |   2 +-
+ drivers/{soc => pmdomain}/starfive/Kconfig         |   4 +-
+ drivers/pmdomain/starfive/jh71xx-pmu.c             | 139 +++++++++---
+ drivers/pmdomain/sunxi/Kconfig                     |  10 +
+ drivers/pmdomain/tegra/Kconfig                     |   6 +
+ drivers/pmdomain/ti/Kconfig                        |  22 ++
+ drivers/pmdomain/ti/Makefile                       |   2 +-
+ drivers/pmdomain/ti/ti_sci_pm_domains.c            |   8 +-
+ drivers/pmdomain/xilinx/Kconfig                    |  10 +
+ drivers/soc/Kconfig                                |   2 -
+ drivers/soc/amlogic/Kconfig                        |  35 ---
+ drivers/soc/apple/Kconfig                          |  13 --
+ drivers/soc/bcm/Kconfig                            |  51 -----
+ drivers/soc/imx/Kconfig                            |  19 --
+ drivers/soc/mediatek/Kconfig                       |  23 --
+ drivers/soc/qcom/Kconfig                           |  37 ----
+ drivers/soc/renesas/Kconfig                        | 105 ---------
+ drivers/soc/rockchip/Kconfig                       |  12 --
+ drivers/soc/samsung/Kconfig                        |   4 -
+ drivers/soc/sunxi/Kconfig                          |   9 -
+ drivers/soc/tegra/Kconfig                          |   5 -
+ drivers/soc/ti/Kconfig                             |  12 --
+ drivers/soc/xilinx/Kconfig                         |   9 -
+ include/dt-bindings/power/amlogic,t7-pwrc.h        |  63 ++++++
+ include/dt-bindings/power/mediatek,mt8365-power.h  |  19 ++
+ include/dt-bindings/power/qcom,rpmhpd.h            |   2 +
+ include/dt-bindings/power/qcom-rpmpd.h             |  21 ++
+ include/dt-bindings/power/starfive,jh7110-pmu.h    |   6 +-
+ include/linux/soc/mediatek/infracfg.h              |  41 ++++
+ 68 files changed, 1938 insertions(+), 925 deletions(-)
+ create mode 100644 drivers/pmdomain/Kconfig
+ rename drivers/{soc => pmdomain}/actions/Kconfig (100%)
+ create mode 100644 drivers/pmdomain/amlogic/Kconfig
+ create mode 100644 drivers/pmdomain/apple/Kconfig
+ create mode 100644 drivers/pmdomain/bcm/Kconfig
+ create mode 100644 drivers/pmdomain/imx/Kconfig
+ create mode 100644 drivers/pmdomain/mediatek/Kconfig
+ create mode 100644 drivers/pmdomain/mediatek/mt8365-pm-domains.h
+ create mode 100644 drivers/pmdomain/qcom/Kconfig
+ create mode 100644 drivers/pmdomain/renesas/Kconfig
+ create mode 100644 drivers/pmdomain/rockchip/Kconfig
+ create mode 100644 drivers/pmdomain/samsung/Kconfig
+ create mode 100644 drivers/pmdomain/st/Kconfig
+ rename drivers/{soc => pmdomain}/starfive/Kconfig (84%)
+ create mode 100644 drivers/pmdomain/sunxi/Kconfig
+ create mode 100644 drivers/pmdomain/tegra/Kconfig
+ create mode 100644 drivers/pmdomain/ti/Kconfig
+ create mode 100644 drivers/pmdomain/xilinx/Kconfig
+ create mode 100644 include/dt-bindings/power/amlogic,t7-pwrc.h
+ create mode 100644 include/dt-bindings/power/mediatek,mt8365-power.h
