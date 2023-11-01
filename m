@@ -2,48 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEF27DDD3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1CF7DDD42
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbjKAHbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S230525AbjKAHeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbjKAHbU (ORCPT
+        with ESMTP id S230206AbjKAHeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:31:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98138C2
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:31:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B44C433C8;
-        Wed,  1 Nov 2023 07:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698823874;
-        bh=aLdY5UIq+nqHDS65m/fjFNnkNyiXjooji94VuobbOeg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QLd0+jkSFNXqjNBQXufW56O7ZtBD2KhAtCSR0W3vdKtvRvAEr2Se9vf0vFX7HfoYI
-         9dJP+f6siXJIbKAooj+GNxPjisxEM4f3KB16Ackxlv404Q/PN67+gAIpw4xcZfVQLf
-         f4nzZVZucDoke9Aw0Jv+m8NpJHspCfP4ZwzMB0nE=
-Date:   Wed, 1 Nov 2023 08:31:11 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xingxing Luo <xingxing.luo@unisoc.com>
-Cc:     b-liu@ti.com, keescook@chromium.org, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev,
-        xingxing0070.luo@gmail.com, Zhiyong.Liu@unisoc.com,
-        Cixi.Geng1@unisoc.com, Orson.Zhai@unisoc.com, zhang.lyra@gmail.com
-Subject: Re: [PATCH V2] usb: musb: Check requset->buf before use to avoid
- crash issue
-Message-ID: <2023110105-saggy-gladiator-b3b0@gregkh>
-References: <20231101071421.29462-1-xingxing.luo@unisoc.com>
+        Wed, 1 Nov 2023 03:34:08 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD8CC2;
+        Wed,  1 Nov 2023 00:34:05 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40859c466efso49778055e9.3;
+        Wed, 01 Nov 2023 00:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698824044; x=1699428844; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eNER9LrxazZc1unOxuOkdAcLGVcUlD990LvgBax6cfQ=;
+        b=U+Eo8//ImwAm/xb63bBv6qIlYM3zMC/rkrDMlqqBeO54o2g5cqmsbdig4klgxWEGQS
+         4zx9FBa20bH3R1JXVldkJLacEoZPtaKfRbVmtEE0CImaDcLqVerOQLDFc1WavANtLvfN
+         jR7N3/Kp/ORZc5NrLnJfpoIg5Xjkm1ObjvBOgmszTf1TlBAPDK0RUHk6pUQO2nw9Sks9
+         BWUdIkuHe7gUHhyO+j0qFyUbmtD8W7POZfyJn9OH8nsGqZ96+zuzC3qJP1yXd8Aggww6
+         whzx1yigwp7ChAlNxg2Md7a+9Pjq8qEQAaBaGJuMOnTpIXxQfRNqBqtZDCVAMVcNcLdo
+         fbGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698824044; x=1699428844;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eNER9LrxazZc1unOxuOkdAcLGVcUlD990LvgBax6cfQ=;
+        b=hPGy7MCVat8ZiMXQxKMkqd3+IeLeeSdMN5cvGW5Oi5mca8fedGmRx00QVUNY9hhjoV
+         o9vOKUfK82viRLzItA61ysVfOSZYlZcTkzimT3/blAbphCni2/25U+/g5mDChLrPRah7
+         eA9L+g6r/3piUAl8Sj+xYR2foUJz319QnStMsmJc9w66Islw1YXyjeRjHffXhp6vypc/
+         7u7beHF+NrKHyVWqyeL6Upb5cKoxMYnahynJCv9CT1Bs80vpZJL7JAv1i5n9cxfnx1V8
+         wFXcEnVr2M7yRnYa9Jpml6z0tHb2D/p0n65D42WoiHoKd+nQuxKQeDh2X01t9FuUYtJ7
+         WUyQ==
+X-Gm-Message-State: AOJu0YyYkZ4NGbosLI40uT8OVlE69sg4fUcyfiG4kMa+4gjCaPyvVx7a
+        BiIfF0bx+2vIgyNmv4i8qw==
+X-Google-Smtp-Source: AGHT+IE6y1ECsS1CldkeqwBwwBTEcRnocbIRQ9ScNQbDZ/g+HAVE/8uaVRMAhit/TRF95hut2FnPhg==
+X-Received: by 2002:a5d:4dd0:0:b0:31f:bdbc:d762 with SMTP id f16-20020a5d4dd0000000b0031fbdbcd762mr10362561wru.44.1698824043971;
+        Wed, 01 Nov 2023 00:34:03 -0700 (PDT)
+Received: from amdsuplus2.inf.ethz.ch (amdsuplus2.inf.ethz.ch. [129.132.31.88])
+        by smtp.gmail.com with ESMTPSA id i18-20020adff312000000b0032d893d8dc8sm3401810wro.2.2023.11.01.00.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 00:34:02 -0700 (PDT)
+From:   Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH bpf v2 0/2] bpf: Fix incorrect immediate spill
+Date:   Wed, 01 Nov 2023 08:33:21 +0100
+Message-Id: <20231101-fix-check-stack-write-v2-0-cb7c17b869b0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101071421.29462-1-xingxing.luo@unisoc.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEH/QWUC/4VNSw6CMBC9Cpm1Y0rBmrryHoZFKVM6UShpG9QQ7
+ m7DBdy85P03SBSZEtyqDSKtnDjMhchTBdabeSTkoXCQQja1kAodf9B6sk9M2RR8R86EthVaK6X
+ bwRko3SVSCR67D+gXB10RPacc4vf4WuvD+jO71ihQ9Y28kGssXek+ToZfZxsm6PZ9/wGmKn28v
+ wAAAA==
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>,
+        stable@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698824042; l=932;
+ i=sunhao.th@gmail.com; s=20231009; h=from:subject:message-id;
+ bh=ThUo/m341SAJSMmR2TyDAT9X66kZjyxv8buNFFdDyPk=;
+ b=jRSllAPO4dRAxroXA8lhNYVdg4dJk1qH6cH/WAifC4BTdStaARj0dl001Z/g8eSOcGNdFZDqd
+ Klvb9C7V63JC+K1JYP/uosvqd+iyfCNQj7Mh9tue4iiL1yr7U0CnhUL
+X-Developer-Key: i=sunhao.th@gmail.com; a=ed25519;
+ pk=AHFxrImGtyqXOuw4f5xTNh4PGReb7hzD86ayyTZCXd4=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,77 +94,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 03:14:21PM +0800, Xingxing Luo wrote:
-> When connecting USB to PC, there is a very low probability of kernel
-> crash. The reason is that in ep0_txstate(), the buf member of struct
-> usb_request used may be a null pointer. Therefore, it needs to
-> determine whether it is null before using it.
-> 
-> [ 4888.071462][T597@C0] Call trace:
-> [ 4888.071467][T597@C0]  musb_default_write_fifo+0xa0/0x1ac [musb_hdrc]
-> [ 4888.087190][T597@C0]  musb_write_fifo+0x3c/0x90 [musb_hdrc]
-> [ 4888.099826][T597@C0]  ep0_txstate+0x78/0x218 [musb_hdrc]
-> [ 4888.153918][T597@C0]  musb_g_ep0_irq+0x3c4/0xe10 [musb_hdrc]
-> [ 4888.159663][T597@C0]  musb_interrupt+0xab4/0xf1c [musb_hdrc]
-> [ 4888.165391][T597@C0]  sprd_musb_interrupt+0x1e4/0x484 [musb_sprd]
-> [ 4888.171447][T597@C0]  __handle_irq_event_percpu+0xd8/0x2f8
-> [ 4888.176901][T597@C0]  handle_irq_event+0x70/0xe4
-> [ 4888.181487][T597@C0]  handle_fasteoi_irq+0x15c/0x230
-> [ 4888.186420][T597@C0]  handle_domain_irq+0x88/0xfc
-> [ 4888.191090][T597@C0]  gic_handle_irq+0x60/0x138
-> [ 4888.195591][T597@C0]  call_on_irq_stack+0x40/0x70
-> [ 4888.200263][T597@C0]  do_interrupt_handler+0x50/0xac
-> [ 4888.205196][T597@C0]  el1_interrupt+0x34/0x64
-> [ 4888.209524][T597@C0]  el1h_64_irq_handler+0x1c/0x2c
-> [ 4888.214370][T597@C0]  el1h_64_irq+0x7c/0x80
-> [ 4888.218525][T597@C0]  __check_heap_object+0x1ac/0x1fc
-> [ 4888.223544][T597@C0]  __check_object_size+0x10c/0x20c
-> [ 4888.228563][T597@C0]  simple_copy_to_iter+0x40/0x74
-> [ 4888.233410][T597@C0]  __skb_datagram_iter+0xa0/0x310
-> [ 4888.238343][T597@C0]  skb_copy_datagram_iter+0x44/0x110
-> [ 4888.243535][T597@C0]  netlink_recvmsg+0xdc/0x364
-> [ 4888.248123][T597@C0]  ____sys_recvmsg.llvm.16749613423860851707+0x358/0x6c0
-> [ 4888.255045][T597@C0]  ___sys_recvmsg+0xe0/0x1dc
-> [ 4888.259544][T597@C0]  __arm64_sys_recvmsg+0xc4/0x10c
-> [ 4888.264478][T597@C0]  invoke_syscall+0x6c/0x15c
-> [ 4888.268976][T597@C0]  el0_svc_common.llvm.12373701176611417606+0xd4/0x120
-> [ 4888.275726][T597@C0]  do_el0_svc+0x34/0xac
-> [ 4888.279795][T597@C0]  el0_svc+0x28/0x90
-> [ 4888.283603][T597@C0]  el0t_64_sync_handler+0x88/0xec
-> [ 4888.288548][T597@C0]  el0t_64_sync+0x1b4/0x1b8
-> [ 4888.292956][T597@C0] Code: 540002c3 53027ea8 aa1303e9 71000508 (b840452a)
-> [ 4888.299789][T597@C0] ---[ end trace 14a301b7253e83cc ]---
-> 
-> Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
-> Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
-> ---
-> v1 -> v2: - Fixed a spelling error
->           - Add the fixed commit id
-> 
->  drivers/usb/musb/musb_gadget_ep0.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/usb/musb/musb_gadget_ep0.c b/drivers/usb/musb/musb_gadget_ep0.c
-> index 6d7336727388..19eb7a5e1fdc 100644
-> --- a/drivers/usb/musb/musb_gadget_ep0.c
-> +++ b/drivers/usb/musb/musb_gadget_ep0.c
-> @@ -531,6 +531,11 @@ static void ep0_txstate(struct musb *musb)
->  
->  	request = &req->request;
->  
-> +	if (!request->buf) {
-> +		musb_dbg(musb, "request->buf is NULL");
+Immediate is incorrectly cast to u32 before being spilled, losing sign
+information. The range information is incorrect after load again. Fix
+immediate spill by remove the cast. The second patch add a test case
+for this.
 
-Why is this debug line needed?
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+Changes in v2:
+- Add fix and cc tags.
+- Link to v1: https://lore.kernel.org/r/20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com
 
-> +		return;
+---
+Hao Sun (2):
+      bpf: Fix check_stack_write_fixed_off() to correctly spill imm
+      selftests/bpf: Add test for immediate spilled to stack
 
-Shouldn't we be reporting an error here somehow?
+ kernel/bpf/verifier.c                             |  2 +-
+ tools/testing/selftests/bpf/verifier/bpf_st_mem.c | 32 +++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
+---
+base-commit: f1c73396133cb3d913e2075298005644ee8dfade
+change-id: 20231026-fix-check-stack-write-c40996694dfa
 
-And why has this issue never been seen before in this driver?  This is a
-very old driver, with millions, if not billions, of working systems with
-it.  What caused this to suddenly start happening?
+Best regards,
+-- 
+Hao Sun <sunhao.th@gmail.com>
 
-thanks,
-
-greg k-h
