@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A657DE62E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739A87DE630
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbjKASxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
+        id S1344795AbjKASyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbjKASxu (ORCPT
+        with ESMTP id S232753AbjKASyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 14:53:50 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32532C1;
-        Wed,  1 Nov 2023 11:53:47 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso153519b3a.2;
-        Wed, 01 Nov 2023 11:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698864826; x=1699469626; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=h3K1rBvCe1RDjJE7QSAQp/UtOiWZhcJnODORAKt3iL8=;
-        b=Ow5jZIvYJB7Jpq5fqorBCeYGtMDXUyyGMmFxiVyRH8wP5/CfuUc+x+fMGtyLWymooc
-         ycyu8+EaW6UKBRGozb70J1vajnAY2E5DAkS3Z+C0XZWyJQjuKGgAATEprLoXavllIVlX
-         mCgnwyb3LKojrFTGN/l4rzp7f18CuBYAhp/41vqwldeGIjjBHvcE5zOdMMToUdCY0CCj
-         57C8+zz6lf9y4T5NAbAqkoewd2pR+wyv7BMXkYrZSIWx4sEU+x7LPx1g9x8uY7vHUFNj
-         cYK8oIx0qidaYHuypi8FOgisOIc74iReWLJT9YfvxH549Z0jhALNjc+2l4eeFYyCMNsz
-         aoQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698864826; x=1699469626;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h3K1rBvCe1RDjJE7QSAQp/UtOiWZhcJnODORAKt3iL8=;
-        b=DvjbZlsD5nx34TO6KZS41njXv6PNR3eEWgG0JmEvRlJ12UYZDR9z5+VmtyzeKOhOrn
-         8KuirVVYl27zPFlR5pAuKy2oecyynl2iXwF7eqfdzLWgHgTuMwUNg0frbZZ08yfAhFr1
-         ULPAOPlFYJx5rDre7f7RD6QzI+bAOEwLJF370ymboNSzN4cDG0w7hOfZjBNq4L5UwBaA
-         xz0S6/yDx59mNbb/K4kvdpnDmBH8CzXngmdq4+1o8NFaSWWWGwtKPXgQx2UMCoqgJMN7
-         52KxuVhlKSRNFGQNxksnr0fp03iJr90I05hxLg+c0yPaxbfxQ6l541Eiov5KQczKY+U3
-         4Ikg==
-X-Gm-Message-State: AOJu0YzLoZD3CMixrdDfA6nbyfbNDhyp/HBQH+KV6MmVJLsPZF41jSnE
-        xE5Kt4N4+weW6Jt1/zdMSkKZ5YlC/HhNAz4HVzg=
-X-Google-Smtp-Source: AGHT+IHUb/xh2GakawJLmcH1FQCQwst2XSWLVPekwlsf3O9cPOVcMHjrCcKRQ7Ul9uFnldF5hAiQJfpdD3pZRnWSuMQ=
-X-Received: by 2002:a05:6a20:7f9e:b0:15e:bf2b:e6d3 with SMTP id
- d30-20020a056a207f9e00b0015ebf2be6d3mr17998491pzj.46.1698864826641; Wed, 01
- Nov 2023 11:53:46 -0700 (PDT)
+        Wed, 1 Nov 2023 14:54:18 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97092ED;
+        Wed,  1 Nov 2023 11:54:11 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6D85CE0003;
+        Wed,  1 Nov 2023 18:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698864850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q3sZj6RniyTzoHCodRr2i/ntz4jNs4JFrcHctmS81hg=;
+        b=cdd3Y9sRN8ttWyWYp4CktTx2h/eFQ4OzABlsf8uGELdQDyy4ZLTgQpLoQW2XFiinuPJHXW
+        RBWEDFR/7TXz2KOELIFqMaFIuN87guCVLfRaEZ2WkYKUJGe2NIcPHSTPUyyxIRW7qLMMpr
+        x/l4nfgGrrMf4WWlXWkrokf5igp3s34oN562NLrpUwAeV9atz5NOJFpDWO3LBuqIDzCcCA
+        4rIuyKnglUtAkHwI1Xeo8m0/zt3TxovMLAOr7sYgdO1qncnQfbqblUZaLcI22Xf0ay6had
+        L5Ltk/H2PXKdO/Tos5XGraWcb+wnP6t8a8mtDv5lB1CBHR/XZZYrx48SbvWPYA==
+Date:   Wed, 1 Nov 2023 19:54:09 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] rtc: max31335: add driver support
+Message-ID: <202311011854099f524c30@mail.local>
+References: <20231031153100.92939-1-antoniu.miclaus@analog.com>
+ <20231031153100.92939-2-antoniu.miclaus@analog.com>
+ <95e41f16-4b5f-4f2a-bc31-17273032312b@roeck-us.net>
+ <CY4PR03MB3399DEF73E052036AC7EDBA99BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-References: <20231031165918.608547597@linuxfoundation.org>
-In-Reply-To: <20231031165918.608547597@linuxfoundation.org>
-From:   Allen Pais <stable.kernel.dev@gmail.com>
-Date:   Wed, 1 Nov 2023 11:53:35 -0700
-Message-ID: <CAJq+SaDrnwRQ7gFMchjx+8eQ3AbNH7EgszPOPmSrm5XaFg=05g@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/86] 6.1.61-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY4PR03MB3399DEF73E052036AC7EDBA99BA0A@CY4PR03MB3399.namprd03.prod.outlook.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This is the start of the stable review cycle for the 6.1.61 release.
-> There are 86 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 02 Nov 2023 16:59:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.61-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On 31/10/2023 16:28:07+0000, Miclaus, Antoniu wrote:
+> > According to the register map above, the chip does support
+> > low and high temperature limits as well as over- and undertemperature
+> > alarms and interrupts. I would suggest to add support for all of those.
+> > You might also consider adding support for temperature alarm interrupts
+> > and report temperature alarm events by calling hwmon_notify_event()
+> > if a thermal event occurs.
+> 
+> I've sent in the first version of this patch series a cover letter:
+> 
+> "Although the datasheet is not public yet, the driver can be made public (on
+> other linux custom trees it is already).
+> 
+> The driver was tested with actual hardware and works.
+> 
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+Did you run rtctest? Please provide the output.
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
+> Even though the datasheet is not available, if there are any queries about
+> the functionality of the part, these can be provided/inserted as code comments
+> inside the driver."
+> 
+> The reason why I am rushing this a bit is because the customer that uses the
+> driver wants the driver released and mainline kernel compliant.
+> 
+> This is an initial version of the driver covering the main use cases (which were
+> requested, therefore actually used).
+> 
+> Additional features can be added afterwards, if requested.
+> 
+> > 
+> > > +
+> > > +	hwmon = devm_hwmon_device_register_with_info(&client->dev,
+> > client->name,
+> > > +						     max31335,
+> > > +						     &max31335_chip_info,
+> > > +						     NULL);
+> > 
+> > There is no "depends on HWMON" in the Kconfig entry, meaning this will fail
+> > to compile if HWMON=n or if HWMON=m and RTC_DRV_MAX31335=y.
+> >
+> 
+> Will do in v4.
+> 
+> > Guenter
 
-Thanks.
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
