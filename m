@@ -2,220 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7457DDD00
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4E07DDD04
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 08:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjKAHM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 03:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
+        id S230030AbjKAHNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 03:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjKAHM0 (ORCPT
+        with ESMTP id S229656AbjKAHNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 03:12:26 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07517C2;
-        Wed,  1 Nov 2023 00:12:21 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A10v8t5017611;
-        Wed, 1 Nov 2023 07:12:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=u0WiOcWNHfMwWfRqvPP6nsbv0vXbk1NskG9lSHmbs30=;
- b=Gji5+oFhVwtSn+I11P2XtxhlfPc4dq7L0JuDqrsZ/ux628fETuhQVRfdWM25e1LRd8l9
- Cb/cKbVmE3Nn7+CAsoOZRSPeRtEl4tmwGOw+Md3bvfy8hCjAZgZgOyQbEyI41C7unIs6
- K4dx/+/6NYo43iRdM3z66kdW/DwL4WKEIGFRbEpSUeaxrilJYFmgQG5ZEZrnzxYAkUNS
- VBFfzbPrzjkNI60/D0teP+r3jAL8tXtTqwN3aR/b+dBukPQ00rBlqt6DNvyfdnvcPhYY
- nKhr8Qz9oRcLCi8amAgz6+pKnN3U7wkGXBkXkmBBhZccU1daFLhb8gpc5k/CYMfvxYYB Jw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3382jfsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Nov 2023 07:12:05 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A17C4fb014825
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 1 Nov 2023 07:12:04 GMT
-Received: from hu-gkohli-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 1 Nov 2023 00:12:01 -0700
-From:   Gaurav Kohli <quic_gkohli@quicinc.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>,
-        <quic_bjorande@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <boris.brezillon@collabora.com>, <iommu@lists.linux.dev>,
-        <steven.price@arm.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Gaurav Kohli" <quic_gkohli@quicinc.com>
-Subject: [RFC 1/1] arm-smmu: Add iommu support to share pgtable
-Date:   Wed, 1 Nov 2023 12:41:44 +0530
-Message-ID: <20231101071144.16309-2-quic_gkohli@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231101071144.16309-1-quic_gkohli@quicinc.com>
-References: <20231101071144.16309-1-quic_gkohli@quicinc.com>
+        Wed, 1 Nov 2023 03:13:34 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B794103
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 00:13:28 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9becde9ea7bso119325666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 00:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698822806; x=1699427606; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ENaMuPR8qfkGXGxRWAFLfxwcQPKTYImOPy2ccrDRxmU=;
+        b=IohWOM3nAGVBJZPQeC+6mGZvS8SfcbREBLxUahViOGvSq//7QAz9RN/OGaOl0vcIhT
+         RUumo+iUUxGDk2agg27gybEU8zwBxP+TO5QQudEKaZ7cBfgMCUcAVFfjhMweLYCOno/b
+         LzUeCFRbcJGNTwRCvsyOPJewVdUXC8eEOtbJA4aTOGz4DeBhskrB0cKXntRhQRKK/owv
+         T0Y5hzz0588XhyzDk3m/7E/qQDh0/M9rI6NePo3bDVpoIrNXuoXFLz6wyAxVhQVbJqyB
+         i30bZn3ZJ30jFzqw5njnpSwUFK3XnUA7Uq93JLDNIFAm7/aoD2rIdCxEM8Gn2jnAFfrT
+         ZxUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698822806; x=1699427606;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ENaMuPR8qfkGXGxRWAFLfxwcQPKTYImOPy2ccrDRxmU=;
+        b=FSRHpRrHbJocKHbrXLrzm7h4r0uiGSRsit6KVzTBQBkUoYP37LlqATZT2JRYSvsECB
+         cvIF6LiCC3zOFuH2KA4QLSvX0fxT6XNmR9jBWJ5l+N9vFSulfN4nX84kUiOGVZDCQzmC
+         nlvwlDJmvR8ilnGQEtBqsuPcPCe0P6akSnw/cuP88KJIsweCXcjDtgTnMI1kCxpZ5ioI
+         PIJHB502RIjDZ5hYLZks9Cf/K+EfA+jT+K4P+w9AoJKRZuocZmKYxgm54CqTq6T+yFZo
+         7+htauU6zFs4tOMcFxpGK/a3aioSg/JZPE09xAkwduCer0oF7aIM5UaZXtv+G1UbqhzI
+         plpw==
+X-Gm-Message-State: AOJu0YxTI3/POGRFzND49D+JsY7PIezM7BtgxlQkCWogASjYhi39XUhe
+        XOR5k6nLFCHT0rO7+hV58R9I+si89w9jxrva9+s=
+X-Google-Smtp-Source: AGHT+IFA6hSi6XpPHUFncVCgMzMhp4wb56Px3YVwbUXjKoT7OJk+RGKnY7/dHtb7b57cFjarBTipGQ==
+X-Received: by 2002:a17:906:2408:b0:9ae:65d6:a51f with SMTP id z8-20020a170906240800b009ae65d6a51fmr1486666eja.18.1698822806422;
+        Wed, 01 Nov 2023 00:13:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id rp16-20020a170906d97000b009ae57888718sm2034143ejb.207.2023.11.01.00.13.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Nov 2023 00:13:25 -0700 (PDT)
+Message-ID: <6a09f16e-0a41-4619-b7bb-b5561f7e36ce@linaro.org>
+Date:   Wed, 1 Nov 2023 08:13:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ADVeq-RnhZAFjOWzLz0vuLgJYABnnj_6
-X-Proofpoint-ORIG-GUID: ADVeq-RnhZAFjOWzLz0vuLgJYABnnj_6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-01_04,2023-10-31_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0
- impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311010059
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: gpio: realtek: Add realtek,rtd-gpio
+ bindings
+Content-Language: en-US
+To:     Tzuyi Chang <tychang@realtek.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231101025802.3744-1-tychang@realtek.com>
+ <20231101025802.3744-3-tychang@realtek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231101025802.3744-3-tychang@realtek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HLOS can create s1 pagetable and request firmware to share the same
-pgtable to different entity(vmid).
+On 01/11/2023 03:58, Tzuyi Chang wrote:
+> This patch adds the device tree bindings for the Realtek DHC RTD SoCs
+> GPIO controllers.
+> 
 
-Use arm-smmu vendor implementation call to define custom
-alloc/free pgtable callback, And use these callbacks to share
-pgtable to different entity while creating pgtable.
+A nit, subject: drop second/last, redundant "bindings". The
+"dt-bindings" prefix is already stating that these are bindings.
 
-Signed-off-by: Gaurav Kohli <quic_gkohli@quicinc.com>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 81 ++++++++++++++++++++++
- drivers/iommu/arm/arm-smmu/arm-smmu.h      |  8 +++
- 2 files changed, 89 insertions(+)
+> Signed-off-by: Tzuyi Chang <tychang@realtek.com>
+> ---
+>  .../bindings/gpio/realtek,rtd-gpio.yaml       | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/realtek,rtd-gpio.yaml
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index c71afda79d64..e04079988787 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/dev_printk.h>
- #include <linux/adreno-smmu-priv.h>
- #include <linux/delay.h>
- #include <linux/of_device.h>
-@@ -258,11 +259,91 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 	{ }
- };
- 
-+static void *qcom_alloc_pages(void *cookie, size_t size, gfp_t gfp)
-+{
-+	struct page *p;
-+	struct qcom_scm_vmperm perms[2];
-+	u64 src  = BIT(QCOM_SCM_VMID_HLOS);
-+	int ret;
-+
-+	struct arm_smmu_domain *domain = (void *)cookie;
-+	/*
-+	 * qcom_scm_assign_mem call during atomic allocation can sleep, Using GFP flags
-+	 * to detect allocation path and return failure for atomic allocations.
-+	 */
-+	if (!gfpflags_allow_blocking(gfp)) {
-+		dev_err(domain->smmu->dev,
-+			"qcom_scm_assign_mem call are not allowed during atomic allocations\n");
-+		return NULL;
-+	}
-+	p = alloc_page(gfp);
-+	if (!p)
-+		return NULL;
-+
-+	perms[0].vmid = QCOM_SCM_VMID_HLOS;
-+	perms[0].perm = QCOM_SCM_PERM_RW;
-+	perms[1].vmid = domain->secure_vmid;
-+	perms[1].perm = QCOM_SCM_PERM_READ;
-+	ret = qcom_scm_assign_mem(page_to_phys(p), PAGE_SIZE,
-+				  &src, perms, 2);
-+	if (ret < 0) {
-+		dev_err(domain->smmu->dev,
-+			"assign memory failed for vmid=%x ret=%d\n",
-+			domain->secure_vmid, ret);
-+		__free_page(p);
-+		return NULL;
-+	}
-+
-+	return page_address(p);
-+}
-+
-+static void qcom_free_pages(void *cookie, void *pages, size_t size)
-+{
-+	struct qcom_scm_vmperm perms;
-+	struct page *p;
-+	u64 src;
-+	int ret;
-+
-+	struct arm_smmu_domain *domain = (void *)cookie;
-+
-+	p = virt_to_page(pages);
-+
-+	perms.vmid = QCOM_SCM_VMID_HLOS;
-+	perms.perm = QCOM_SCM_PERM_RWX;
-+	src = BIT(domain->secure_vmid) | BIT(QCOM_SCM_VMID_HLOS);
-+	ret = qcom_scm_assign_mem(page_to_phys(p), PAGE_SIZE,
-+				  &src, &perms, 1);
-+	/*
-+	 * For assign failure scenario, it is not safe to use these pages by HLOS.
-+	 * So returning from here instead of freeing the page.
-+	 */
-+	if (ret < 0) {
-+		dev_err(domain->smmu->dev,
-+			"assign memory failed to HLOS for vmid=%x ret=%d\n",
-+			domain->secure_vmid, ret);
-+		return;
-+	}
-+
-+	__free_page(p);
-+}
-+
- static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
- 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
- {
-+	u32 val;
-+
- 	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
- 
-+	/*
-+	 * For those client where qcom,iommu-vmid is not defined, default arm-smmu pgtable
-+	 * alloc/free handler will be used.
-+	 */
-+	if (of_property_read_u32(dev->of_node, "qcom,iommu-vmid", &val) == 0) {
-+		smmu_domain->secure_vmid = val;
-+		pgtbl_cfg->alloc = qcom_alloc_pages;
-+		pgtbl_cfg->free = qcom_free_pages;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-index 703fd5817ec1..98e1c5369e58 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-@@ -374,6 +374,14 @@ struct arm_smmu_domain {
- 	struct mutex			init_mutex; /* Protects smmu pointer */
- 	spinlock_t			cb_lock; /* Serialises ATS1* ops and TLB syncs */
- 	struct iommu_domain		domain;
-+	/*
-+	 * Use to store parse vmid value for those clients which want HLOS
-+	 * to share pgtable to different entity(VMID).
-+	 * Fix Me: Ideally this should be implemented on arm-smmu vendor implementation
-+	 * driver, but as per current design of arm_smmu_domain_alloc there is no way
-+	 * to call implementation callbacks.
-+	 */
-+	u32				secure_vmid;
- };
- 
- struct arm_smmu_master_cfg {
--- 
-2.17.1
+How does your binding come after the user?
+
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/realtek,rtd-gpio.yaml b/Documentation/devicetree/bindings/gpio/realtek,rtd-gpio.yaml
+> new file mode 100644
+> index 000000000000..6cab7ec50c88
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/realtek,rtd-gpio.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2023 Realtek Semiconductor Corporation
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/realtek,rtd-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Realtek DHC GPIO controller
+
+What is DHC? Where is it explained in the binding?
+
+> +
+> +maintainers:
+> +  - TY Chang <tychang@realtek.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - realtek,rtd-gpio
+
+What is "rtd"? Generic name? Drop. You cannot have generic compatibles.
+
+
+> +      - realtek,rtd1295-misc-gpio
+> +      - realtek,rtd1295-iso-gpio
+> +      - realtek,rtd1395-iso-gpio
+> +      - realtek,rtd1619-iso-gpio
+> +
+> +  reg:
+> +    maxItems: 2
+
+You need to describe the items instead.
+
+> +
+> +  interrupts:
+> +    maxItems: 2
+
+You need to describe the items instead.
+
+> +
+> +  gpio-ranges: true
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - gpio-ranges
+> +  - gpio-controller
+> +  - "#gpio-cells"
+
+Best regards,
+Krzysztof
 
