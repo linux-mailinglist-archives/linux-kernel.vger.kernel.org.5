@@ -2,165 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7857DDF48
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583367DDF4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 11:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbjKAKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 06:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        id S235000AbjKAKXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 06:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjKAKVS (ORCPT
+        with ESMTP id S233426AbjKAKXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 06:21:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B42DA
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 03:20:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698834031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dxZkGQlELPKTx4ZEkf/xjndhXilo1fuybmUWb62vNJo=;
-        b=YPWCoCnCp478SmtuM3gt0l4g2eJpc9EJzD8RBmLuY4lGY80GyuqgrVy/9GnkH6lV7MYnW2
-        EbB4/xBqB2uXT6RNWldXsSptmpMV/5Jx4lqCNZsXtVoKUcbFCWVA9yQMvtKKY6ztaw8XSD
-        TxApCZyG9LdZLq2iTHJbjr+4z99zn14=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-XI8WEySgP_OpU1i45_5IOw-1; Wed, 01 Nov 2023 06:20:26 -0400
-X-MC-Unique: XI8WEySgP_OpU1i45_5IOw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9d891685063so32884866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 03:20:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698834025; x=1699438825;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dxZkGQlELPKTx4ZEkf/xjndhXilo1fuybmUWb62vNJo=;
-        b=UvHZXmUs/+oQvMGtjNpjqhqG4oUb7/PF1dQsTpwcRBb3oO+00HuGMdSI7tqrug7K2l
-         +K7STgQLDE/7r6gIfRwsPvWI7/lFvwHBKE1b8JUT3/ELL1g4B+XwTqevQaNTQFqYUWWf
-         dSbwCV1GkuFrOSRgp2A3Qp8ijZ4i5MdyhmvinRHZbtyKEmL0VMoRNp7F9LMcg9W8qqi8
-         ti8X1Lv7sEr0IPaei9bD9IN2It1YhVIvz/2sL4BFWAN6r9mzps8KjAJ0zPDOY1Vp88B+
-         Y9qb4DKd9uM+d6R/xa9k4HFJBqSldKxLco0lL2fVMrpsbPYUcbYGNI0UCm00aienBh3u
-         kyKg==
-X-Gm-Message-State: AOJu0YxeZB5Bcn0LTKUtyekHqNfDedjd91iswM2/V6JHq14Mx0tHdIdU
-        uZzrYCdqzUoZZZqsAHxHuGy5Z1dxB0rZgADzJX/jfmsq6sA3675Ne1XPBe0/ggayWDK3Nrn3fpW
-        hCN6Z7qi95+876gVm2a5vXLt9GZOjrJ+W
-X-Received: by 2002:a50:ef0e:0:b0:540:9444:c281 with SMTP id m14-20020a50ef0e000000b005409444c281mr12883098eds.24.1698834025203;
-        Wed, 01 Nov 2023 03:20:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEx5HMtvWX7uX1/e+f0BpfFb0fDc18xYncSC48psIYMvU8Wo7A5K4aVkm5jCQ14ieNxwK4o2Q==
-X-Received: by 2002:a50:ef0e:0:b0:540:9444:c281 with SMTP id m14-20020a50ef0e000000b005409444c281mr12883084eds.24.1698834024911;
-        Wed, 01 Nov 2023 03:20:24 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id q29-20020a50cc9d000000b0053e2a64b5f8sm894534edi.14.2023.11.01.03.20.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 03:20:24 -0700 (PDT)
-Message-ID: <f68dca47-d9ed-a146-b152-c19bcc9d8828@redhat.com>
-Date:   Wed, 1 Nov 2023 11:20:23 +0100
+        Wed, 1 Nov 2023 06:23:50 -0400
+Received: from mailo.com (msg-2.mailo.com [213.182.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3684DA;
+        Wed,  1 Nov 2023 03:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1698834191; bh=quNt1nLuVEb2eBiyvC+3TU9/S5QcaZsokei6xTBuOdY=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=WzRqZuKxjKB9hmHEhylQn0I88Wmmbm4S7Rj6bP05zgmEiR2yl0uZoizzb4zhLF+j1
+         DFO0s1UC+bguK3UGXPaUkkbfVQFH0r0Dpa+7FfGXqzV7vYHGXXVEVE0/aCKmMeLfu2
+         S/FQIoXg5wrdQnaDuEV//uF51c3pfMga2H17FD/w=
+Received: by b221-2.in.mailobj.net [192.168.90.22] with ESMTP
+        via ip-22.mailoo.org [213.182.54.22]
+        Wed,  1 Nov 2023 11:23:11 +0100 (CET)
+X-EA-Auth: C7pc+fCpBu7fzUYZkZJbS4PhKIkeSMbNjcprzCCgDwhJez8H+DbewnQi7uHXLBoiVrqCUH1b06Z+l93hsRQUW2exu6P3arzefIUO2afeZWs=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: [PATCH 1/3] media: i2c: ak7375: Prepare for supporting another chip
+Date:   Wed,  1 Nov 2023 11:22:55 +0100
+Message-ID: <20231101102257.1232179-1-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 6/7] drm/i915/dsi: Replace poking of CHV GPIOs behind
- the driver's back
-Content-Language: en-US, nl
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
- <20231024155739.3861342-7-andriy.shevchenko@linux.intel.com>
- <ZTfssxRsrDxhzSQ6@smile.fi.intel.com>
- <b489675d-e9de-4bca-9622-78545aa8606d@redhat.com>
- <16e533e2-81bb-47ba-9e23-460a626bcad7@redhat.com>
- <ZUIbPtEEbl6pjdqg@smile.fi.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ZUIbPtEEbl6pjdqg@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In view of adding support for at least one other chip,
+change the driver to move chip-specific properties and
+values in a common structure.
 
-On 11/1/23 10:32, Andy Shevchenko wrote:
-> On Tue, Oct 31, 2023 at 10:15:52PM +0100, Hans de Goede wrote:
->> On 10/31/23 17:07, Hans de Goede wrote:
->>> On 10/24/23 18:11, Andy Shevchenko wrote:
->>>> On Tue, Oct 24, 2023 at 06:57:38PM +0300, Andy Shevchenko wrote:
-> 
-> ...
-> 
->>> As for the CHT support, I have not added that to my tree yet, I would
->>> prefer to directly test the correct/fixed patch.
->>
->> And I hit the "jackpot" on the first device I tried and the code needed
->> some fixing to actually work, so here is something to fold into v3 to
->> fix things:
-> 
-> Thanks!
-> 
-> But let me first send current v3 as it quite differs to v2 in the sense
-> of how I do instantiate GPIO lookup tables.
+No functional changes.
 
-The problem is there already is a GPIO lookup table registered for
-the "0000:00:02.0" device by intel_dsi_vbt_gpio_init() and there can
-be only be one GPIO lookup table per device. So no matter how you
-instantiate GPIO lookup tables it will not work.
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+ drivers/media/i2c/ak7375.c | 110 ++++++++++++++++++++++---------------
+ 1 file changed, 66 insertions(+), 44 deletions(-)
 
-The solution that I chose is to not instantiate a GPIO lookup table
-at all and instead to extend the existing table with an extra entry.
+diff --git a/drivers/media/i2c/ak7375.c b/drivers/media/i2c/ak7375.c
+index 463b51d46320..3a14eff41531 100644
+--- a/drivers/media/i2c/ak7375.c
++++ b/drivers/media/i2c/ak7375.c
+@@ -10,30 +10,45 @@
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-device.h>
+ 
+-#define AK7375_MAX_FOCUS_POS	4095
+-/*
+- * This sets the minimum granularity for the focus positions.
+- * A value of 1 gives maximum accuracy for a desired focus position
+- */
+-#define AK7375_FOCUS_STEPS	1
+-/*
+- * This acts as the minimum granularity of lens movement.
+- * Keep this value power of 2, so the control steps can be
+- * uniformly adjusted for gradual lens movement, with desired
+- * number of control steps.
+- */
+-#define AK7375_CTRL_STEPS	64
+-#define AK7375_CTRL_DELAY_US	1000
+-/*
+- * The vcm may take up 10 ms (tDELAY) to power on and start taking
+- * I2C messages. Based on AK7371 datasheet.
+- */
+-#define AK7375_POWER_DELAY_US	10000
++struct ak73xx_chipdef {
++	u8 reg_position;
++	u8 reg_cont;
++	u8 shift_pos;
++	u8 mode_active;
++	u8 mode_standby;
++	u16 focus_pos_max;
++	/*
++	 * This sets the minimum granularity for the focus positions.
++	 * A value of 1 gives maximum accuracy for a desired focus position
++	 */
++	u16 focus_steps;
++	/*
++	 * This acts as the minimum granularity of lens movement.
++	 * Keep this value power of 2, so the control steps can be
++	 * uniformly adjusted for gradual lens movement, with desired
++	 * number of control steps.
++	 */
++	u16 ctrl_steps;
++	u16 ctrl_delay_us;
++	/*
++	 * The vcm may take time (tDELAY) to power on and start taking
++	 * I2C messages.
++	 */
++	u16 power_delay_us;
++};
+ 
+-#define AK7375_REG_POSITION	0x0
+-#define AK7375_REG_CONT		0x2
+-#define AK7375_MODE_ACTIVE	0x0
+-#define AK7375_MODE_STANDBY	0x40
++static const struct ak73xx_chipdef ak7375_cdef = {
++	.reg_position	= 0x0,
++	.reg_cont	= 0x2,
++	.shift_pos	= 4,	/* 12 bits position values, need to << 4 */
++	.mode_active	= 0x0,
++	.mode_standby	= 0x40,
++	.focus_pos_max	= 4095,
++	.focus_steps	= 1,
++	.ctrl_steps	= 64,
++	.ctrl_delay_us	= 1000,
++	.power_delay_us	= 10000,
++};
+ 
+ static const char * const ak7375_supply_names[] = {
+ 	"vdd",
+@@ -42,6 +57,7 @@ static const char * const ak7375_supply_names[] = {
+ 
+ /* ak7375 device structure */
+ struct ak7375_device {
++	const struct ak73xx_chipdef *cdef;
+ 	struct v4l2_ctrl_handler ctrls_vcm;
+ 	struct v4l2_subdev sd;
+ 	struct v4l2_ctrl *focus;
+@@ -86,10 +102,11 @@ static int ak7375_i2c_write(struct ak7375_device *ak7375,
+ static int ak7375_set_ctrl(struct v4l2_ctrl *ctrl)
+ {
+ 	struct ak7375_device *dev_vcm = to_ak7375_vcm(ctrl);
++	const struct ak73xx_chipdef *cdef = dev_vcm->cdef;
+ 
+ 	if (ctrl->id == V4L2_CID_FOCUS_ABSOLUTE)
+-		return ak7375_i2c_write(dev_vcm, AK7375_REG_POSITION,
+-					ctrl->val << 4, 2);
++		return ak7375_i2c_write(dev_vcm, cdef->reg_position,
++					ctrl->val << cdef->shift_pos, 2);
+ 
+ 	return -EINVAL;
+ }
+@@ -128,11 +145,12 @@ static int ak7375_init_controls(struct ak7375_device *dev_vcm)
+ {
+ 	struct v4l2_ctrl_handler *hdl = &dev_vcm->ctrls_vcm;
+ 	const struct v4l2_ctrl_ops *ops = &ak7375_vcm_ctrl_ops;
++	const struct ak73xx_chipdef *cdef = dev_vcm->cdef;
+ 
+ 	v4l2_ctrl_handler_init(hdl, 1);
+ 
+ 	dev_vcm->focus = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_FOCUS_ABSOLUTE,
+-		0, AK7375_MAX_FOCUS_POS, AK7375_FOCUS_STEPS, 0);
++		0, cdef->focus_pos_max, cdef->focus_steps, 0);
+ 
+ 	if (hdl->error)
+ 		dev_err(dev_vcm->sd.dev, "%s fail error: 0x%x\n",
+@@ -153,6 +171,8 @@ static int ak7375_probe(struct i2c_client *client)
+ 	if (!ak7375_dev)
+ 		return -ENOMEM;
+ 
++	ak7375_dev->cdef = device_get_match_data(&client->dev);
++
+ 	for (i = 0; i < ARRAY_SIZE(ak7375_supply_names); i++)
+ 		ak7375_dev->supplies[i].supply = ak7375_supply_names[i];
+ 
+@@ -206,30 +226,31 @@ static void ak7375_remove(struct i2c_client *client)
+ 
+ /*
+  * This function sets the vcm position, so it consumes least current
+- * The lens position is gradually moved in units of AK7375_CTRL_STEPS,
++ * The lens position is gradually moved in units of ctrl_steps,
+  * to make the movements smoothly.
+  */
+ static int __maybe_unused ak7375_vcm_suspend(struct device *dev)
+ {
+ 	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct ak7375_device *ak7375_dev = sd_to_ak7375_vcm(sd);
++	const struct ak73xx_chipdef *cdef = ak7375_dev->cdef;
+ 	int ret, val;
+ 
+ 	if (!ak7375_dev->active)
+ 		return 0;
+ 
+-	for (val = ak7375_dev->focus->val & ~(AK7375_CTRL_STEPS - 1);
+-	     val >= 0; val -= AK7375_CTRL_STEPS) {
+-		ret = ak7375_i2c_write(ak7375_dev, AK7375_REG_POSITION,
+-				       val << 4, 2);
++	for (val = ak7375_dev->focus->val & ~(cdef->ctrl_steps - 1);
++	     val >= 0; val -= cdef->ctrl_steps) {
++		ret = ak7375_i2c_write(ak7375_dev, cdef->reg_position,
++				       val << cdef->shift_pos, 2);
+ 		if (ret)
+ 			dev_err_once(dev, "%s I2C failure: %d\n",
+ 				     __func__, ret);
+-		usleep_range(AK7375_CTRL_DELAY_US, AK7375_CTRL_DELAY_US + 10);
++		usleep_range(cdef->ctrl_delay_us, cdef->ctrl_delay_us + 10);
+ 	}
+ 
+-	ret = ak7375_i2c_write(ak7375_dev, AK7375_REG_CONT,
+-			       AK7375_MODE_STANDBY, 1);
++	ret = ak7375_i2c_write(ak7375_dev, cdef->reg_cont,
++			       cdef->mode_standby, 1);
+ 	if (ret)
+ 		dev_err(dev, "%s I2C failure: %d\n", __func__, ret);
+ 
+@@ -246,13 +267,14 @@ static int __maybe_unused ak7375_vcm_suspend(struct device *dev)
+ /*
+  * This function sets the vcm position to the value set by the user
+  * through v4l2_ctrl_ops s_ctrl handler
+- * The lens position is gradually moved in units of AK7375_CTRL_STEPS,
++ * The lens position is gradually moved in units of ctrl_steps,
+  * to make the movements smoothly.
+  */
+ static int __maybe_unused ak7375_vcm_resume(struct device *dev)
+ {
+ 	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct ak7375_device *ak7375_dev = sd_to_ak7375_vcm(sd);
++	const struct ak73xx_chipdef *cdef = ak7375_dev->cdef;
+ 	int ret, val;
+ 
+ 	if (ak7375_dev->active)
+@@ -264,24 +286,24 @@ static int __maybe_unused ak7375_vcm_resume(struct device *dev)
+ 		return ret;
+ 
+ 	/* Wait for vcm to become ready */
+-	usleep_range(AK7375_POWER_DELAY_US, AK7375_POWER_DELAY_US + 500);
++	usleep_range(cdef->power_delay_us, cdef->power_delay_us + 500);
+ 
+-	ret = ak7375_i2c_write(ak7375_dev, AK7375_REG_CONT,
+-		AK7375_MODE_ACTIVE, 1);
++	ret = ak7375_i2c_write(ak7375_dev, cdef->reg_cont,
++			       cdef->mode_active, 1);
+ 	if (ret) {
+ 		dev_err(dev, "%s I2C failure: %d\n", __func__, ret);
+ 		return ret;
+ 	}
+ 
+-	for (val = ak7375_dev->focus->val % AK7375_CTRL_STEPS;
++	for (val = ak7375_dev->focus->val % cdef->ctrl_steps;
+ 	     val <= ak7375_dev->focus->val;
+-	     val += AK7375_CTRL_STEPS) {
+-		ret = ak7375_i2c_write(ak7375_dev, AK7375_REG_POSITION,
+-				       val << 4, 2);
++	     val += cdef->ctrl_steps) {
++		ret = ak7375_i2c_write(ak7375_dev, cdef->reg_position,
++				       val << cdef->shift_pos, 2);
+ 		if (ret)
+ 			dev_err_ratelimited(dev, "%s I2C failure: %d\n",
+ 						__func__, ret);
+-		usleep_range(AK7375_CTRL_DELAY_US, AK7375_CTRL_DELAY_US + 10);
++		usleep_range(cdef->ctrl_delay_us, cdef->ctrl_delay_us + 10);
+ 	}
+ 
+ 	ak7375_dev->active = true;
+@@ -290,7 +312,7 @@ static int __maybe_unused ak7375_vcm_resume(struct device *dev)
+ }
+ 
+ static const struct of_device_id ak7375_of_table[] = {
+-	{ .compatible = "asahi-kasei,ak7375" },
++	{ .compatible = "asahi-kasei,ak7375", .data = &ak7375_cdef, },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, ak7375_of_table);
+-- 
+2.41.0
 
-Although thinking more about it I must admit that this is racy.
-
-So a better idea would be to unregister the GPIO lookup
-table registered by intel_dsi_vbt_gpio_init() after getting
-the GPIOs there, that would allow instantiating a new one
-from soc_exec_opaque_gpio() as it currently does and that
-would be race free.
-
-> Meanwhile I will look into the change you sent (and hopefully we can
-> incorporate something in v3 for v4).
-
-Ok, lets go with your v3.
-
-I'll prepare a patch  to move the unregistering of the existing
-conflicting GPIO lookup from intel_dsi_vbt_gpio_cleanup()
-to the end of intel_dsi_vbt_gpio_init() to avoid the conflict
-we have there.
-
-Note you still need the first part of my patch which is
-an unrelated bugfix:
-
---- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-+++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-@@ -219,8 +219,7 @@ static void soc_exec_gpio(struct intel_connector *connector, const char *con_id,
- 	} else {
- 		gpio_desc = devm_gpiod_get_index(dev_priv->drm.dev,
- 						 con_id, gpio_index,
--						 value ? GPIOD_OUT_LOW :
--						 GPIOD_OUT_HIGH);
-+						 value ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW);
- 		if (IS_ERR(gpio_desc)) {
- 			drm_err(&dev_priv->drm,
- 				"GPIO index %u request failed (%pe)\n",
-
-Regards,
-
-Hans
 
 
