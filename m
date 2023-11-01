@@ -2,157 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCCF7DDB90
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F0A7DDB93
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 04:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbjKADgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 23:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S232770AbjKADiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 23:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbjKADgG (ORCPT
+        with ESMTP id S232456AbjKADiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 23:36:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749B8107;
-        Tue, 31 Oct 2023 20:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698809760; x=1730345760;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=x+L0TwUjzFdTma1GOhO3Nmtnj5x0tFCK24XJEnNVyZ8=;
-  b=gzfmIpL2hRSmJIBa2HhzN1rc7IOMzm/qfWZGY7iQTLs4M5VCqoUUS9dz
-   jLerU6sXqCrQIeQ7C4c3+i/KxNoZliZxD8a1cCiP8n7H1a+mDt96TvrXC
-   s9Iy+S2x4hCeO2QqZ6uXnndnhYjrFLuszuvDmJh4l+zbLzDCAjUTqxCcm
-   ws3ef2cNHYkAcwtu7HmkW8i7+1FxND/10c35XT7GBB5BkUFVspx0OLrmp
-   5C8JAldXPDBHvvhizJemogFTl7oUPKlOIDZkEYapqWSz+pDePL2CA6jlK
-   t/dHbixgtkxmH0Ij/fWbyS4m/wtriPFW1gmKf0QtQC4vW22BC2/mhjgs3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="368635156"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="368635156"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 20:35:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10880"; a="737275426"
-X-IronPort-AV: E=Sophos;i="6.03,267,1694761200"; 
-   d="scan'208";a="737275426"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 20:35:58 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 20:35:57 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 20:35:57 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 20:35:57 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 31 Oct 2023 20:35:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ly3qOyJBLPVMVBJSB6Q1AJcF9YGURXxLT+R7WM1N2qL4gN+WiOvbQtyDRcXRnNpf0VjqWjjkXkOf+/a/yWnZu8ZhQ5bVwNE9UvepZ6UbhbI68DGEGRzMPPBfokALBq/KUU3Bf+5Yl3oQS4cs+cH5WtaUztOLbI79LT9p6dsuuNiJ/Q9CNVTUPlj9We5SMes8m0SAY+YouocbpP4z5UFAuZP7p/2PRxZ9ANgXlmW9qr4qUqYKY5TqzwGTG8AcBPbAzfwGCwjBYbIrpUR4m2xEaD4vuVVR4zDBBTQitT98p7N9RW5gPUwfUTUUz1XDu5evHx7UnPxZcgXkMxxKINsiRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3D/dFe2DAG7vNsaAVXnyznZwt6UE13JnXpPdtxf8be4=;
- b=Kmgq/EQxlWMb/LefqjAzYc6iX7LZOs9ZI22wkJ2WBiR3MZt84WvlSCCd1VcY5qEbBJFE8OVI1PEVIayFu7TDUO4uQsF781r8J3liewY8GwoSMRPf1H6UxM4lMMsssBmjDP+HILJZDhb2Is/8ZdNhcQJQIxtiCwVZe/xnIaCnCPgOHeUQubLrT/z5yTKnOgei5afIm7JZWnxd7r98mlkWKNose/cvsn32okFY6d/yXACjgQliIk1jM6OptGxXHaH94iSrWoO/4v0Iw5hp8yvro9NILH4u0TwJXcqskaCm+5/pbH69QJBLIB20OALIvhg/Dz8u+qz+7H5iqpFZCq3WEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by CH3PR11MB7937.namprd11.prod.outlook.com (2603:10b6:610:12c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Wed, 1 Nov
- 2023 03:35:54 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6874:74cc:1c23:7f1c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6874:74cc:1c23:7f1c%4]) with mapi id 15.20.6933.028; Wed, 1 Nov 2023
- 03:35:54 +0000
-Date:   Tue, 31 Oct 2023 20:35:49 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>
-CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 3/3] cxl/memdev: Register for and process CPER
- events
-Message-ID: <6541c795e39b_2e75b294e0@iweiny-mobl.notmuch>
-References: <20230601-cxl-cper-v2-0-314d9c36ab02@intel.com>
- <20230601-cxl-cper-v2-3-314d9c36ab02@intel.com>
- <81b90308-fdb1-3686-33a3-1e7ec42a7ef8@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <81b90308-fdb1-3686-33a3-1e7ec42a7ef8@amd.com>
-X-ClientProxiedBy: SJ0PR13CA0030.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::35) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+        Tue, 31 Oct 2023 23:38:09 -0400
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921D2DF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 20:38:03 -0700 (PDT)
+Message-ID: <4a1de79e-a3e8-2544-e975-e17cad0d2f8a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698809881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mHsD1OxylQ1MZ5/PkTl+8I2miWubAK63+BdXoKTK7E0=;
+        b=WZUFlbhzBzGtSN6xnm/357Bfy7rs1qNAROrVHbu6QZ8TnCKIp5jyL3cf6/z5bNYV37U66w
+        6rwWU73C48JKgYuENNWb1SWrIMpDW0/OHUtWPcdY/OAYtHEkSecdWhQLFSKOK0UcAiKLww
+        gIK2lbtripNKO2++a8BSsuO3yUs2Kc0=
+Date:   Wed, 1 Nov 2023 11:37:30 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|CH3PR11MB7937:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e8b536a-55c5-48db-f9c7-08dbda8ba63c
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iOAkJQJGzjAoSmbcLuG6YCCEEGZ/GRKeNRl3rRvbmxLfDsfD4ALHx4IC7EnM/J8uJV1JcATsbAwJoWr6wf6XaqWnef9pqGM+8WooC3Dcrvta1cw28IeX/R0SH3njqW3Rw3S7l2sx0dQxKM7t5dG/J6aRQtiWZR6uithUUhgG3Bq8EdWBEi+vKtbmy+wqbbQwabmC/odMQB5ilHCm4fX8X0e6jeT262uvC0kBa+YlUf6JR02Ehv1J+VyJFmghIsRbl+yCmx3BzRSTgVrnKc3EwZCbtG56F0EHPWqIyJlU7vK+kYRaJOuzTp6FWpCEfgQ2L1DK8aFRRoWGLT4JIzXqNQ6I55Na5K/LaspFTVNaUUreta0bh1xcQo1QU4dAgsQ7HKgWau71Mx2ajG5DE+0/mp0FDUffC7Yk6oK8KcNhyiyilKF1CaIHqdOfyqqtsMrbAANHyBzNzLQJ/OUtrI9yKfkMNKb3ugCi1xFSxMMV/yFgR1X3w0s5Y52t1D8ILJuDFlHncVjglhsxhKpUzltzNjfqBwZNY5dvSBxr3X8vaDnx+PMl798V/9+cm5Koa4Sh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(39860400002)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(44832011)(316002)(54906003)(41300700001)(5660300002)(8676002)(6486002)(4326008)(2906002)(478600001)(8936002)(66476007)(66556008)(66946007)(110136005)(6666004)(6506007)(9686003)(26005)(66899024)(6512007)(83380400001)(86362001)(82960400001)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r3aw+HhWzUGTlsE3XGr68DIFWHYsnjOgXUW6PkvGgZuinYWjNoXwUwIFhHms?=
- =?us-ascii?Q?aoYGEX+7geYNo9D5+z38LwCtJHIED3JX2Wt7vsUsOlkpPxMP9qv0k7gJM4kP?=
- =?us-ascii?Q?wYbQXbPPtfA/v0e43i+ANcW5ZWdAL+H1FXvw9qtoI5Wvmxr42b1A+hCu3tZN?=
- =?us-ascii?Q?JXRlbEtTRKePIayUGZPK6W3Tcu0nP0S5YBMmcnCosJ1nJV3VUNYnmo8Yxl5h?=
- =?us-ascii?Q?P42BHtRtR/p5TvEFl8nTvWIpp7DGtlAm1oMmj6s/KxnNdQHHLaM96FXUlYim?=
- =?us-ascii?Q?gCL30oAu/CzOd+3YeemNcbaldbA8UjXzYYfNz+GlZ39Cou4br1nrNgpwWTlc?=
- =?us-ascii?Q?HO43jxwnFJZKfc0OyGmsojAbHAjSdv4AqxfscV1VZiu29whajnNw0D3/h55Z?=
- =?us-ascii?Q?a9x/v0dflqumSZviuKg+GambWTJdLr7fYY/tfgdV33+F7VX+y2+xYplQmKr/?=
- =?us-ascii?Q?LETQqWDGAeXYRWFj8gpp6pTbE3FXPx1VWxm3gJNtTbscTp+A7abuXbuBU3p1?=
- =?us-ascii?Q?+29pEjI/zjJSDIEpJMOcWRbgPdxZnmujJOx4KVz0Opilw4IlNEoHXQn9coWf?=
- =?us-ascii?Q?/mWHq54MfBYpA62t4qaixjI/4P9s17wGfMMK3HVGV7SREjBR9f67rWjoPIbH?=
- =?us-ascii?Q?Fna+amemEDbng0zeiO2fwhEMftl9Q1FOmSkTWFa2T9yz85QzbzK7eqCQJl8F?=
- =?us-ascii?Q?yp2wWsU8ht/81oK+7EhTI1VqvwVbJJymxH7mB81mvZkSfl/v+vPWp7vKrizJ?=
- =?us-ascii?Q?O1L3xqmyc1+GL5Yz5HLEoCEwe7QF0qR0GlSfpGuQ+NxfcP9j5UpWPvDwhq51?=
- =?us-ascii?Q?sK5qs0DI1C04bzc070ZMh4DUQ6J/zWoCdRpq+RM7zlyB/bpXC2l48q3YYsf0?=
- =?us-ascii?Q?BhocNp+Mk13sHeUYGWlOmLsgNwlDAd/H4Ql+durJBr4gTc0VN/Hq3MGmgJW/?=
- =?us-ascii?Q?1Tu9RFHXOygRA9T8vFc4kmPbadzhngMyAfWigUh2S1qLDCjJRT1dkRjitFLQ?=
- =?us-ascii?Q?cV6RkMQUPGGCR5P6WmMFR+RpVFB1tOuxhNtj4u0AQxStpz6OwGuPQ6SlNfKL?=
- =?us-ascii?Q?u02RVGIGfLvMpjG488k+Yz3SMFviGtFEVLPSDI6J/qjRxoLyTa6Tm2e4J5Ua?=
- =?us-ascii?Q?T4hlqUljJcvIW9fhGFX00F7LPn9rCg9aJ7x3R4H2NYiEtUwrqY0sp5bAHbsP?=
- =?us-ascii?Q?WzsDAE2jfasYgNIEOPc4/ydrHK0Vl0a+lDec+Opyi0I63JIU36Vj8ZRmTmTG?=
- =?us-ascii?Q?5oT2or95lSvLdHnzqAmqoxUwQ48VyybXFtDh9geu1pRM/USnEL+9Q1/OXdiI?=
- =?us-ascii?Q?scznfFNF7UxKmKkNjisHIgpLOgt+NKa+2o0A8M5s1eahoE9ohL0eRNsVfJ5O?=
- =?us-ascii?Q?gjGOAupZEAHQrkBb06eL9TBrNgMmhvFGkFsDnvicW7QDueDZvSyta3RBg2q5?=
- =?us-ascii?Q?+I7LnZolw1W0lPmFsgovZHE4FieHBW58gXg3ejerGTTEG1Dm4bFQ2BHRF+5U?=
- =?us-ascii?Q?Wp7dA8UVj00OwyfGwxDN/i/k58YCyV72ksHb9ToDnEM7PQ1KpmDCehYMkNj0?=
- =?us-ascii?Q?/TE22JMK1h7z05YSBiKXMDsGyowV5XIv5C39evg4?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e8b536a-55c5-48db-f9c7-08dbda8ba63c
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 03:35:52.9175
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /AP1GCjc7uJqmcIc5snltuC0RgdMTED8sXdFy/+smbQFwo8fi2hXDMfpiM2slEMS0lN5nMCLStpH98GJpevs7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7937
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Subject: Re: [PATCH v4 1/1] mm: report per-page metadata information
+To:     Sourav Panda <souravpanda@google.com>
+References: <20231031223846.827173-1-souravpanda@google.com>
+ <20231031223846.827173-2-souravpanda@google.com>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        rppt@kernel.org, david@redhat.com, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@Oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20231031223846.827173-2-souravpanda@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -160,82 +60,434 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smita Koralahalli wrote:
-> >   
 
-[snip]
 
-> > +#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-> > +int cxl_cper_event_call(struct notifier_block *nb, unsigned long action, void *data)
-> > +{
-> > +	struct cxl_cper_notifier_data *nd = data;
-> > +	struct cxl_event_record_raw record = (struct cxl_event_record_raw) {
-> > +		.hdr.id = UUID_INIT(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-> > +	};
-> > +	enum cxl_event_log_type log_type;
-> > +	struct cxl_memdev_state *mds;
-> > +	u32 hdr_flags;
-> > +
-> > +	mds = container_of(nb, struct cxl_memdev_state, cxl_cper_nb);
-> > +
-> > +	/* Need serial number for device identification */
-> > +	if (!(nd->rec->hdr.validation_bits & CPER_CXL_DEVICE_SN_VALID))
-> > +		return NOTIFY_DONE;
-> 
-> For all the event records that I tested so far, this has never been 
-> true. That is CPER_CXL_DEVICE_SN_VALID is never set which might not log 
-> the records at all. Should we be bit more lenient here and include 
-> validating device_id (bdf) instead and check if cxlds exist?
-> 
-> pci_get_domain_bus_and_slot() and pci_get_drvdata()..
+On 2023/11/1 06:38, Sourav Panda wrote:
+> Adds a new per-node PageMetadata field to
+> /sys/devices/system/node/nodeN/meminfo
+> and a global PageMetadata field to /proc/meminfo. This information can
+> be used by users to see how much memory is being used by per-page
+> metadata, which can vary depending on build configuration, machine
+> architecture, and system use.
+>
+> Per-page metadata is the amount of memory that Linux needs in order to
+> manage memory at the page granularity. The majority of such memory is
+> used by "struct page" and "page_ext" data structures. In contrast to
+> most other memory consumption statistics, per-page metadata might not
+> be included in MemTotal. For example, MemTotal does not include memblock
+> allocations but includes buddy allocations. While on the other hand,
+> per-page metadata would include both memblock and buddy allocations.
+>
+> This memory depends on build configurations, machine architectures, and
+> the way system is used:
+>
+> Build configuration may include extra fields into "struct page",
+> and enable / disable "page_ext"
+> Machine architecture defines base page sizes. For example 4K x86,
+> 8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
+> overhead is smaller on machines with larger page sizes.
+> System use can change per-page overhead by using vmemmap
+> optimizations with hugetlb pages, and emulated pmem devdax pages.
+> Also, boot parameters can determine whether page_ext is needed
+> to be allocated. This memory can be part of MemTotal or be outside
+> MemTotal depending on whether the memory was hot-plugged, booted with,
+> or hugetlb memory was returned back to the system.
+>
+> Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> Signed-off-by: Sourav Panda <souravpanda@google.com>
+> ---
+>   Documentation/filesystems/proc.rst |  3 +++
+>   drivers/base/node.c                |  2 ++
+>   fs/proc/meminfo.c                  |  7 +++++++
+>   include/linux/mmzone.h             |  3 +++
+>   include/linux/vmstat.h             |  4 ++++
+>   mm/hugetlb.c                       | 11 ++++++++--
+>   mm/hugetlb_vmemmap.c               |  8 ++++++--
+>   mm/mm_init.c                       |  3 +++
+>   mm/page_alloc.c                    |  1 +
+>   mm/page_ext.c                      | 32 +++++++++++++++++++++---------
+>   mm/sparse-vmemmap.c                |  3 +++
+>   mm/sparse.c                        |  7 ++++++-
+>   mm/vmstat.c                        | 24 ++++++++++++++++++++++
+>   13 files changed, 94 insertions(+), 14 deletions(-)
+>
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 2b59cff8be17..c121f2ef9432 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -987,6 +987,7 @@ Example output. You may not have all of these fields.
+>       AnonPages:       4654780 kB
+>       Mapped:           266244 kB
+>       Shmem:              9976 kB
+> +    PageMetadata:     513419 kB
+>       KReclaimable:     517708 kB
+>       Slab:             660044 kB
+>       SReclaimable:     517708 kB
+> @@ -1089,6 +1090,8 @@ Mapped
+>                 files which have been mmapped, such as libraries
+>   Shmem
+>                 Total memory used by shared memory (shmem) and tmpfs
+> +PageMetadata
+> +              Memory used for per-page metadata
+>   KReclaimable
+>                 Kernel allocations that the kernel will attempt to reclaim
+>                 under memory pressure. Includes SReclaimable (below), and other
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 493d533f8375..da728542265f 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -428,6 +428,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+>   			     "Node %d Mapped:         %8lu kB\n"
+>   			     "Node %d AnonPages:      %8lu kB\n"
+>   			     "Node %d Shmem:          %8lu kB\n"
+> +			     "Node %d PageMetadata:   %8lu kB\n"
+>   			     "Node %d KernelStack:    %8lu kB\n"
+>   #ifdef CONFIG_SHADOW_CALL_STACK
+>   			     "Node %d ShadowCallStack:%8lu kB\n"
+> @@ -458,6 +459,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+>   			     nid, K(node_page_state(pgdat, NR_FILE_MAPPED)),
+>   			     nid, K(node_page_state(pgdat, NR_ANON_MAPPED)),
+>   			     nid, K(i.sharedram),
+> +			     nid, K(node_page_state(pgdat, NR_PAGE_METADATA)),
+>   			     nid, node_page_state(pgdat, NR_KERNEL_STACK_KB),
+>   #ifdef CONFIG_SHADOW_CALL_STACK
+>   			     nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index 45af9a989d40..f141bb2a550d 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -39,7 +39,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>   	long available;
+>   	unsigned long pages[NR_LRU_LISTS];
+>   	unsigned long sreclaimable, sunreclaim;
+> +	unsigned long nr_page_metadata;
+>   	int lru;
+> +	int nid;
+>   
+>   	si_meminfo(&i);
+>   	si_swapinfo(&i);
+> @@ -57,6 +59,10 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>   	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
+>   	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
+>   
+> +	nr_page_metadata = 0;
+> +	for_each_online_node(nid)
+> +		nr_page_metadata += node_page_state(NODE_DATA(nid), NR_PAGE_METADATA);
+> +
+>   	show_val_kb(m, "MemTotal:       ", i.totalram);
+>   	show_val_kb(m, "MemFree:        ", i.freeram);
+>   	show_val_kb(m, "MemAvailable:   ", available);
+> @@ -104,6 +110,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>   	show_val_kb(m, "Mapped:         ",
+>   		    global_node_page_state(NR_FILE_MAPPED));
+>   	show_val_kb(m, "Shmem:          ", i.sharedram);
+> +	show_val_kb(m, "PageMetadata:   ", nr_page_metadata);
+>   	show_val_kb(m, "KReclaimable:   ", sreclaimable +
+>   		    global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE));
+>   	show_val_kb(m, "Slab:           ", sreclaimable + sunreclaim);
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 4106fbc5b4b3..dda1ad522324 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -207,6 +207,9 @@ enum node_stat_item {
+>   	PGPROMOTE_SUCCESS,	/* promote successfully */
+>   	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
+>   #endif
+> +	NR_PAGE_METADATA,	/* Page metadata size (struct page and page_ext)
+> +				 * in pages
+> +				 */
+>   	NR_VM_NODE_STAT_ITEMS
+>   };
+>   
+> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> index fed855bae6d8..af096a881f03 100644
+> --- a/include/linux/vmstat.h
+> +++ b/include/linux/vmstat.h
+> @@ -656,4 +656,8 @@ static inline void lruvec_stat_sub_folio(struct folio *folio,
+>   {
+>   	lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
+>   }
+> +
+> +void __init mod_node_early_perpage_metadata(int nid, long delta);
+> +void __init store_early_perpage_metadata(void);
+> +
+>   #endif /* _LINUX_VMSTAT_H */
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 1301ba7b2c9a..cd3158a9c7f3 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1790,6 +1790,9 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
+>   		destroy_compound_gigantic_folio(folio, huge_page_order(h));
+>   		free_gigantic_folio(folio, huge_page_order(h));
+>   	} else {
+> +#ifndef CONFIG_SPARSEMEM_VMEMMAP
+> +		__node_stat_sub_folio(folio, NR_PAGE_METADATA);
+> +#endif
+>   		__free_pages(&folio->page, huge_page_order(h));
+>   	}
+>   }
+> @@ -2125,6 +2128,7 @@ static struct folio *alloc_buddy_hugetlb_folio(struct hstate *h,
+>   	struct page *page;
+>   	bool alloc_try_hard = true;
+>   	bool retry = true;
+> +	struct folio *folio;
+>   
+>   	/*
+>   	 * By default we always try hard to allocate the page with
+> @@ -2175,9 +2179,12 @@ static struct folio *alloc_buddy_hugetlb_folio(struct hstate *h,
+>   		__count_vm_event(HTLB_BUDDY_PGALLOC_FAIL);
+>   		return NULL;
+>   	}
+> -
+> +	folio = page_folio(page);
+> +#ifndef CONFIG_SPARSEMEM_VMEMMAP
+> +	__node_stat_add_folio(folio, NR_PAGE_METADATA)
 
-Checking BDF is reasonable.  Not sure what you mean by 'check if cxlds
-exists'?
+Seems you have not tested this patch with CONFIG_SPARSEMEM_VMEMMAP disabled.
+You missed ";" in the end.
 
-This will be called on each memdev so the cxlds should be valid.  Do you
-think we need some locking?  I think the unregister will block device
-removal if this is running.
+> +#endif
 
-> 
-> > +
-> > +	/* FIXME endianess and bytes of serial number need verification */
-> > +	/* FIXME Should other values be checked? */
-> > +	if (memcmp(&mds->cxlds.serial, &nd->rec->hdr.dev_serial_num,
-> > +		   sizeof(mds->cxlds.serial)))
-> > +		return NOTIFY_DONE;
-> > +
-> > +	/* ensure record can always handle the full CPER provided data */
-> > +	BUILD_BUG_ON(sizeof(record) <
-> > +		(CPER_CXL_COMP_EVENT_LOG_SIZE + sizeof(record.hdr.id)));
-> > +
-> > +	/*
-> > +	 * UEFI v2.10 defines N.2.14 defines the CXL CPER record as not
-> > +	 * including the uuid field.
-> > +	 */
-> > +	memcpy(&record.hdr.length, &nd->rec->comp_event_log,
-> > +		CPER_CXL_REC_LEN(nd->rec));
-> 
-> I'm doubtful this will do the job.
+I am curious why we should account HugeTLB pages as metadata.
 
-I'm not sure why but, see below...
+>   	__count_vm_event(HTLB_BUDDY_PGALLOC);
+> -	return page_folio(page);
+> +	return folio;
+>   }
+>   
+>   /*
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index 4b9734777f69..804a93d18cab 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -214,6 +214,7 @@ static inline void free_vmemmap_page(struct page *page)
+>   		free_bootmem_page(page);
+>   	else
+>   		__free_page(page);
+> +	__mod_node_page_state(page_pgdat(page), NR_PAGE_METADATA, -1);
+>   }
+>   
+>   /* Free a list of the vmemmap pages */
+> @@ -336,6 +337,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
+>   			  (void *)walk.reuse_addr);
+>   		list_add(&walk.reuse_page->lru, &vmemmap_pages);
+>   	}
+> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, 1);
 
-> I think we should copy into each 
-> field of struct cxl_event_record_hdr individually starting from length 
-> by pointer arithmetic (which is definitely bad, but I cannot think of a 
-> better way to do this) and then do memcpy for data field in struct 
-> cxl_event_record_raw..
-> 
-> Any other suggestions would be helpful as well.
+What if allocation of walk.reuse_page fails?
 
-Based on Dan's suggestion to share the structures this memcpy can be
-avoided altogether.  Let's see how that works.
+>   
+>   	/*
+>   	 * In order to make remapping routine most efficient for the huge pages,
+> @@ -381,14 +383,16 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
+>   				   struct list_head *list)
+>   {
+>   	gfp_t gfp_mask = GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_THISNODE;
+> -	unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
+> +	unsigned long nr_pages = DIV_ROUND_UP(end - start, PAGE_SIZE);
 
-> 
-> I can make these changes and validate it on my end if that works..?
+"end - start" is always multiple of PAGE_SIZE, why we need DIV_ROUND_UP 
+here?
 
-Any testing would be welcome.  I don't have a test setup readily
-available.
+>   	int nid = page_to_nid((struct page *)start);
+>   	struct page *page, *next;
+> +	int i;
+>   
+> -	while (nr_pages--) {
+> +	for (i = 0; i < nr_pages; i++) {
+>   		page = alloc_pages_node(nid, gfp_mask, 0);
+>   		if (!page)
+>   			goto out;
+> +		__mod_node_page_state(page_pgdat(page), NR_PAGE_METADATA, 1);
+>   		list_add_tail(&page->lru, list);
+>   	}
 
-Ira
+Count one by ine is really inefficient. Can't we count *nr_pages* at
+one time?
 
-[snip]
+>   
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 50f2f34745af..6997bf00945b 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -26,6 +26,7 @@
+>   #include <linux/pgtable.h>
+>   #include <linux/swap.h>
+>   #include <linux/cma.h>
+> +#include <linux/vmstat.h>
+>   #include "internal.h"
+>   #include "slab.h"
+>   #include "shuffle.h"
+> @@ -1656,6 +1657,8 @@ static void __init alloc_node_mem_map(struct pglist_data *pgdat)
+>   			panic("Failed to allocate %ld bytes for node %d memory map\n",
+>   			      size, pgdat->node_id);
+>   		pgdat->node_mem_map = map + offset;
+> +		mod_node_early_perpage_metadata(pgdat->node_id,
+> +						DIV_ROUND_UP(size, PAGE_SIZE));
+>   	}
+>   	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
+>   				__func__, pgdat->node_id, (unsigned long)pgdat,
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 85741403948f..522dc0c52610 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5443,6 +5443,7 @@ void __init setup_per_cpu_pageset(void)
+>   	for_each_online_pgdat(pgdat)
+>   		pgdat->per_cpu_nodestats =
+>   			alloc_percpu(struct per_cpu_nodestat);
+> +	store_early_perpage_metadata();
+>   }
+>   
+>   __meminit void zone_pcp_init(struct zone *zone)
+> diff --git a/mm/page_ext.c b/mm/page_ext.c
+> index 4548fcc66d74..d8d6db9c3d75 100644
+> --- a/mm/page_ext.c
+> +++ b/mm/page_ext.c
+> @@ -201,6 +201,8 @@ static int __init alloc_node_page_ext(int nid)
+>   		return -ENOMEM;
+>   	NODE_DATA(nid)->node_page_ext = base;
+>   	total_usage += table_size;
+> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
+> +			      DIV_ROUND_UP(table_size, PAGE_SIZE));
+>   	return 0;
+>   }
+>   
+> @@ -255,12 +257,15 @@ static void *__meminit alloc_page_ext(size_t size, int nid)
+>   	void *addr = NULL;
+>   
+>   	addr = alloc_pages_exact_nid(nid, size, flags);
+> -	if (addr) {
+> +	if (addr)
+>   		kmemleak_alloc(addr, size, 1, flags);
+> -		return addr;
+> -	}
+> +	else
+> +		addr = vzalloc_node(size, nid);
+>   
+> -	addr = vzalloc_node(size, nid);
+> +	if (addr) {
+> +		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
+> +				    DIV_ROUND_UP(size, PAGE_SIZE));
+> +	}
+>   
+>   	return addr;
+>   }
+> @@ -303,18 +308,27 @@ static int __meminit init_section_page_ext(unsigned long pfn, int nid)
+>   
+>   static void free_page_ext(void *addr)
+>   {
+> +	size_t table_size;
+> +	struct page *page;
+> +	struct pglist_data *pgdat;
+> +
+> +	table_size = page_ext_size * PAGES_PER_SECTION;
+> +
+>   	if (is_vmalloc_addr(addr)) {
+> +		page = vmalloc_to_page(addr);
+> +		pgdat = page_pgdat(page);
+>   		vfree(addr);
+>   	} else {
+> -		struct page *page = virt_to_page(addr);
+> -		size_t table_size;
+> -
+> -		table_size = page_ext_size * PAGES_PER_SECTION;
+> -
+> +		page = virt_to_page(addr);
+> +		pgdat = page_pgdat(page);
+>   		BUG_ON(PageReserved(page));
+>   		kmemleak_free(addr);
+>   		free_pages_exact(addr, table_size);
+>   	}
+> +
+> +	__mod_node_page_state(pgdat, NR_PAGE_METADATA,
+> +			      -1L * (DIV_ROUND_UP(table_size, PAGE_SIZE)));
+> +
+>   }
+>   
+>   static void __free_page_ext(unsigned long pfn)
+> diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> index a2cbe44c48e1..2bc67b2c2aa2 100644
+> --- a/mm/sparse-vmemmap.c
+> +++ b/mm/sparse-vmemmap.c
+> @@ -469,5 +469,8 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
+>   	if (r < 0)
+>   		return NULL;
+>   
+> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
+> +			      DIV_ROUND_UP(end - start, PAGE_SIZE));
+> +
+>   	return pfn_to_page(pfn);
+>   }
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index 77d91e565045..7f67b5486cd1 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -14,7 +14,7 @@
+>   #include <linux/swap.h>
+>   #include <linux/swapops.h>
+>   #include <linux/bootmem_info.h>
+> -
+> +#include <linux/vmstat.h>
+>   #include "internal.h"
+>   #include <asm/dma.h>
+>   
+> @@ -465,6 +465,9 @@ static void __init sparse_buffer_init(unsigned long size, int nid)
+>   	 */
+>   	sparsemap_buf = memmap_alloc(size, section_map_size(), addr, nid, true);
+>   	sparsemap_buf_end = sparsemap_buf + size;
+> +#ifndef CONFIG_SPARSEMEM_VMEMMAP
+> +	mod_node_early_perpage_metadata(nid, DIV_ROUND_UP(size, PAGE_SIZE));
+> +#endif
+>   }
+>   
+>   static void __init sparse_buffer_fini(void)
+> @@ -641,6 +644,8 @@ static void depopulate_section_memmap(unsigned long pfn, unsigned long nr_pages,
+>   	unsigned long start = (unsigned long) pfn_to_page(pfn);
+>   	unsigned long end = start + nr_pages * sizeof(struct page);
+>   
+> +	__mod_node_page_state(page_pgdat(pfn_to_page(pfn)), NR_PAGE_METADATA,
+> +			      -1L * (DIV_ROUND_UP(end - start, PAGE_SIZE)));
+>   	vmemmap_free(start, end, altmap);
+>   }
+>   static void free_map_bootmem(struct page *memmap)
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 00e81e99c6ee..070d2b3d2bcc 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1245,6 +1245,7 @@ const char * const vmstat_text[] = {
+>   	"pgpromote_success",
+>   	"pgpromote_candidate",
+>   #endif
+> +	"nr_page_metadata",
+>   
+>   	/* enum writeback_stat_item counters */
+>   	"nr_dirty_threshold",
+> @@ -2274,4 +2275,27 @@ static int __init extfrag_debug_init(void)
+>   }
+>   
+>   module_init(extfrag_debug_init);
+> +
+>   #endif
+> +
+> +/*
+> + * Page metadata size (struct page and page_ext) in pages
+> + */
+> +static unsigned long early_perpage_metadata[MAX_NUMNODES] __initdata;
+> +
+> +void __init mod_node_early_perpage_metadata(int nid, long delta)
+> +{
+> +	early_perpage_metadata[nid] += delta;
+> +}
+> +
+> +void __init store_early_perpage_metadata(void)
+> +{
+> +	int nid;
+> +	struct pglist_data *pgdat;
+> +
+> +	for_each_online_pgdat(pgdat) {
+> +		nid = pgdat->node_id;
+> +		__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
+> +				      early_perpage_metadata[nid]);
+> +	}
+> +}
+
