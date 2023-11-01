@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA7A7DE5DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD2F7DE5DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 19:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344947AbjKASIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 14:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        id S1344946AbjKASHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 14:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344969AbjKASIL (ORCPT
+        with ESMTP id S1344924AbjKASHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 14:08:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3552D111
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 11:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698862039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cNirxrwnGNxPhSeDEuyk3fyxTyLRlM+krbj6sC5I3yE=;
-        b=gq7pRJQrflrgl7/lHRLzQWlqmI+uzRM6aVtvFRixwBbnob8i3yAzCYrQIo/fKXKyVS2wD9
-        12CCzDbOwd30J6SisCybnzd0EvPEpql2yGKlcqbR6hlsPkfljsr5TK88HHRBpLBB4wQu64
-        YFbR7SxAFGusq2mqZVXeHqd5BWJAAqA=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-540-LxoX-KBpPWaUinYfoUDkXw-1; Wed, 01 Nov 2023 14:07:18 -0400
-X-MC-Unique: LxoX-KBpPWaUinYfoUDkXw-1
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35904504891so609335ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 11:07:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698862037; x=1699466837;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cNirxrwnGNxPhSeDEuyk3fyxTyLRlM+krbj6sC5I3yE=;
-        b=IQHKXvj6m3lYQwoxnm0xMJv+omLXotnMZ8Au2a8BJiMckjMecp8T6OU5XyMU+o5fR7
-         VQ4Q9xhm1pvaMI+FUtyOfgAFl4OFJVyKrhUVmGTKv7MleUqnSjhVCs4sX6iJx6vq7e9p
-         HhY3fraibibx7Y+Txcx8z0o6w44ZDvYhwBCy6spI16ga3rn9JVRdna7O4YM2evvilvkR
-         AAxouaHE2tXzBUmKUTQuAOEFZ9EfWizhxdQ3Mj/4TF7wUN/0T1b6P1ygmex11V85xUpA
-         qxKJaQeHNxzp16LObd+5Pv8Q/bKRjfoPyJiNIfKzkvqtKiOflXPTYTz6FeK7V8/SK2aa
-         1Ndw==
-X-Gm-Message-State: AOJu0YxbPgHYft+Bn4RAXVj/yYF41l7VCx/zBT76ajzHy4i8laAf6edt
-        3MKH/O7qSRBZHKLqIEkA7M6R86gE3xz04CUWnMWJaTZfFBDSIxxtO5ZpWSz7kz7w7Ut/CdEBIPP
-        klt5QWHpZahRwV1oBlftC5Sf1
-X-Received: by 2002:a05:6e02:310e:b0:359:39af:ffba with SMTP id bg14-20020a056e02310e00b0035939afffbamr6214774ilb.7.1698862037339;
-        Wed, 01 Nov 2023 11:07:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGDtPEU6mYCp0PSMGNZDkTtE/bY4ZfUUnVuiRWcA3PR8aPIt2pxI5neewOpstUTBhrwmao2ig==
-X-Received: by 2002:a05:6e02:310e:b0:359:39af:ffba with SMTP id bg14-20020a056e02310e00b0035939afffbamr6214753ilb.7.1698862037083;
-        Wed, 01 Nov 2023 11:07:17 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id a18-20020a92c712000000b0034e2572bb50sm649746ilp.13.2023.11.01.11.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 11:07:16 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 12:07:14 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "tom.zanussi@linux.intel.com" <tom.zanussi@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [RFC PATCH V3 00/26] vfio/pci: Back guest interrupts from
- Interrupt Message Store (IMS)
-Message-ID: <20231101120714.7763ed35.alex.williamson@redhat.com>
-In-Reply-To: <BL1PR11MB52710EAB683507AD7FAD6A5B8CA0A@BL1PR11MB5271.namprd11.prod.outlook.com>
-References: <cover.1698422237.git.reinette.chatre@intel.com>
-        <BL1PR11MB52710EAB683507AD7FAD6A5B8CA0A@BL1PR11MB5271.namprd11.prod.outlook.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        Wed, 1 Nov 2023 14:07:52 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C362219D;
+        Wed,  1 Nov 2023 11:07:40 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 67E1A10002D;
+        Wed,  1 Nov 2023 21:07:39 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 67E1A10002D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1698862059;
+        bh=NKk0Ei5MZui3Aywy6eGW1GkpmW3iDmxKvWin8MaGXgg=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=Tcn4RcdV/HCxG/U9qbWo8mJj96iMrkRvfvy9pXkpfIJ8F5Geon8pTIer16QyOkYL+
+         KKHr+w4rEIKxD4ssopU5w63z7o5YUaEF6b94Z10ugkixJmJvBDKemr2omtYu/z9Mfr
+         UifDNCKg3i0TrmVR0NYCNWpfnrUUCbJW65mDCCW3/FTZz7aP5NeMAMWcQkfVSejAEF
+         PitoFOCAeY6qpl0s1R7O3971tCX2RSkqdGxx8K13qG/JKQqJAdKlhGjAoYmX9IAKUt
+         TbjrNfwTn785fQPN9VUL0p8zPMiEuvkazRb4iVrYmAa9wFavZr4f6dsz90biw3Teer
+         lBI9Ermt4DOqw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed,  1 Nov 2023 21:07:39 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
+ 2023 21:07:39 +0300
+Date:   Wed, 1 Nov 2023 21:07:33 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v1] tools/cgroup: introduce cgroup v2 memory.events
+ listener
+Message-ID: <20231101180733.ok7j34izehrpyfpy@CAB-WSD-L081021>
+References: <20231013184107.28734-1-ddrokosov@salutedevices.com>
+ <eqvaejfo5uoz5m7e5g3wjgegfo4ribajdgu57fst3hu5m6gfa4@beugaul6pjjz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eqvaejfo5uoz5m7e5g3wjgegfo4ribajdgu57fst3hu5m6gfa4@beugaul6pjjz>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181058 [Nov 01 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 17:32:00 #22380453
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023 07:31:24 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+Hello Michal,
 
-> > From: Chatre, Reinette <reinette.chatre@intel.com>
-> > Sent: Saturday, October 28, 2023 1:01 AM
-> > 
-> > Changes since RFC V2:
-> > - RFC V2:
-> > https://lore.kernel.org/lkml/cover.1696609476.git.reinette.chatre@intel.com
-> > /
-> > - Still submiting this as RFC series. I believe that this now matches the
-> >   expectatations raised during earlier reviews. If you agree this is
-> >   the right direction then I can drop the RFC prefix on next submission.
-> >   If you do not agree then please do let me know where I missed
-> >   expectations.  
+Thank you for the feedback!
+
+On Wed, Nov 01, 2023 at 04:56:47PM +0100, Michal Koutný wrote:
+> Hi.
 > 
-> Overall this matches my expectation. Let's wait for Alex/Jason's thoughts
-> before moving to next-level refinement.
+> I think the tools/cgroup/cgroup_event_listener.c was useful in the past
+> to demonstrate the non-traditional API of cgroup.event_control with FDs
+> passing left and right.
+> 
+> 
+> On Fri, Oct 13, 2023 at 09:41:07PM +0300, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
+> > This is a simple listener for memory events that handles counter
+> > changes in runtime. It can be set up for a specific memory cgroup v2.
+> 
+> Event files on v2 are based on more standard poll or inotify APIs so
+> they don't need such a (cgroup specific) demo. Additionally, the demo
+> program lists individual events, so it'd be a maintenance burden to keep
+> them in sync with the kernel implementation.
 
-It feels like there's a lot of gratuitous change without any clear
-purpose.  We create an ops structure so that a variant/mdev driver can
-make use of the vfio-pci-core set_irqs ioctl piecemeal, but then the
-two entry points that are actually implemented by the ims version are
-the same as the core version, so the ops appear to be at the wrong
-level.  The use of the priv pointer for the core callbacks looks like
-it's just trying to justify the existence of the opaque pointer, it
-should really just be using container_of().  We drill down into various
-support functions for MSI (ie. enable, disable, request_interrupt,
-free_interrupt, device name), but INTx is largely ignored, where we
-haven't even kept is_intx() consistent with the other helpers.
+From my perspective, eventfd serves as the standard mechanism as well.
+Therefore, when incorporating the cgroup v1 event listener test into my
+project, I initially turned to the tools example, which proved to be
+immensely beneficial. Conversely, the cgroup v2 inotify example can
+solely be found within the kernel selftests. Although the prevalence of
+inotify makes this somewhat understandable, having an additional example
+would provide supplementary documentation, which is often invaluable to
+developers operating in userspace. Of course, there are maintenance
+expenses associated with this approach, as you rightly pointed out.
+However, I am willing to undertake the responsibility of maintaining
+this example if necessary.
 
-Without an in-tree user of this code, we're just chopping up code for
-no real purpose.  There's no reason that a variant driver requiring IMS
-couldn't initially implement their own SET_IRQS ioctl.  Doing that
-might lead to a more organic solution where we create interfaces where
-they're actually needed.  The existing mdev sample drivers should also
-be considered in any schemes to refactor the core code into a generic
-SET_IRQS helper for devices exposing a vfio-pci API.  Thanks,
-
-Alex
-
+-- 
+Thank you,
+Dmitry
