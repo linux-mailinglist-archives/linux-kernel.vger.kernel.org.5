@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9037DDAB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 02:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6EE7DDAB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 02:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377319AbjKABoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Oct 2023 21:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        id S1377300AbjKABpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Oct 2023 21:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377301AbjKABoX (ORCPT
+        with ESMTP id S1377083AbjKABpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Oct 2023 21:44:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E390AF4;
-        Tue, 31 Oct 2023 18:44:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C6A8C433C8;
-        Wed,  1 Nov 2023 01:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698803060;
-        bh=ykrvRfuuuojPTwHZrO0/0npa0Uw8hmBeyHA5txm1BJs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=lljfK6EteIHJpDK3eH2LEz2PaJJtZ7oYQWez9z7rCTklyJ5wOgcsCuV2Q4keUnqwo
-         +izY0WdjVtUfEODnz1wcrdwU2w2CvJvrO3iyToiDYd34DhKb2wjNmj3SFn2gDPbfzY
-         BhNeNAw2ngZVaNg6tLso0EijH6IFwyvNC2JSXlq4MDRqbV1IomlVbjvLR6f+Rb/TuZ
-         IpmWPL5xFqeOukTZ09t8cU3sYNm2N6uQAnS4oH54fZ/GQe5ZltO7oCNk2Vr0nxGP0v
-         0W7ZeOVgPFy2kOP/fWP9m8nAZ2cr3mHSctmeZMiXfKMnXCZNKOoRNCj2ZiC0oBZvxo
-         qxlzx3l0Yy0tw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 726F7C3959F;
-        Wed,  1 Nov 2023 01:44:20 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI updates for v6.7-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0jT7CKsUtTY3FN=GKBZkCm5naHVEH43vS+jonTrvy4gCg@mail.gmail.com>
-References: <CAJZ5v0jT7CKsUtTY3FN=GKBZkCm5naHVEH43vS+jonTrvy4gCg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0jT7CKsUtTY3FN=GKBZkCm5naHVEH43vS+jonTrvy4gCg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-6.7-rc1
-X-PR-Tracked-Commit-Id: f4cb34a75e4a4aee09ff832ea2147cf8322a6a7f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d4b671d4c66cd57ccebeae659d9b18e28a4fc9e8
-Message-Id: <169880306046.15034.15335431795917861803.pr-tracker-bot@kernel.org>
-Date:   Wed, 01 Nov 2023 01:44:20 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 31 Oct 2023 21:45:02 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AFFF4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Oct 2023 18:44:56 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VvIuiDO_1698803091;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VvIuiDO_1698803091)
+          by smtp.aliyun-inc.com;
+          Wed, 01 Nov 2023 09:44:52 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     morbidrsa@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] mcb: Fix some kernel-doc comments
+Date:   Wed,  1 Nov 2023 09:44:50 +0800
+Message-Id: <20231101014450.78818-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 27 Oct 2023 15:50:36 +0200:
+Fix some kernel-doc comments to silence the warnings:
+drivers/mcb/mcb-core.c:270: warning: Function parameter or member 'carrier' not described in 'mcb_alloc_bus'
+drivers/mcb/mcb-core.c:336: warning: expecting prototype for mcb_bus_put(). Prototype was for mcb_bus_get() instead
+drivers/mcb/mcb-core.c:463: warning: Function parameter or member 'mem' not described in 'mcb_release_mem'
+drivers/mcb/mcb-core.c:463: warning: Excess function parameter 'dev' description in 'mcb_release_mem'
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-6.7-rc1
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7105
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/mcb/mcb-core.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d4b671d4c66cd57ccebeae659d9b18e28a4fc9e8
-
-Thank you!
-
+diff --git a/drivers/mcb/mcb-core.c b/drivers/mcb/mcb-core.c
+index ba4530459de8..7044e96c4434 100644
+--- a/drivers/mcb/mcb-core.c
++++ b/drivers/mcb/mcb-core.c
+@@ -264,7 +264,7 @@ static void mcb_free_bus(struct device *dev)
+ /**
+  * mcb_alloc_bus() - Allocate a new @mcb_bus
+  *
+- * Allocate a new @mcb_bus.
++ * @carrier: pointer to carrier device
+  */
+ struct mcb_bus *mcb_alloc_bus(struct device *carrier)
+ {
+@@ -327,7 +327,7 @@ void mcb_release_bus(struct mcb_bus *bus)
+ EXPORT_SYMBOL_NS_GPL(mcb_release_bus, MCB);
+ 
+ /**
+- * mcb_bus_put() - Increment refcnt
++ * mcb_bus_get() - Increment refcnt
+  * @bus: The @mcb_bus
+  *
+  * Get a @mcb_bus' ref
+@@ -455,9 +455,8 @@ EXPORT_SYMBOL_NS_GPL(mcb_request_mem, MCB);
+ 
+ /**
+  * mcb_release_mem() - Release memory requested by device
+- * @dev: The @mcb_device that requested the memory
+  *
+- * Release memory that was prior requested via @mcb_request_mem().
++ * @mem: memory resource
+  */
+ void mcb_release_mem(struct resource *mem)
+ {
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.20.1.7.g153144c
+
