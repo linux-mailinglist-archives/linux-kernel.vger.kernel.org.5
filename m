@@ -2,188 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A74737DE429
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226887DE42C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbjKAPtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S231709AbjKAPvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjKAPts (ORCPT
+        with ESMTP id S229498AbjKAPve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:49:48 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE76510C;
-        Wed,  1 Nov 2023 08:49:40 -0700 (PDT)
-X-UUID: 41e5068278ce11ee8051498923ad61e6-20231101
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ov9TiPDknb6R9yF2IVYZFuRm6kOrz1Qf6/9qeS+Jpgw=;
-        b=tn1FxN3s2FjIgUDdiAJzn5pnR/1n9IYeqXV652hLmM9ru50zq1/xEx+1JcA7P787YHkiA0SXF4MAgwlhwENK5MqoBb6jC3W/Bas1/cd0IjjmpVyj/0aCAlwC4ajot/X/QpbVSqV70weS6mNe6NExJtAkFkJB4q8/hFeT/Jug6hI=;
-X-CID-CACHE: Type:Local,Time:202311012337+08,HitQuantity:1
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:5f823a4a-bafd-4a1a-bd5d-938640fa097f,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:364b77b,CLOUDID:eb9c2872-1bd3-4f48-b671-ada88705968c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 41e5068278ce11ee8051498923ad61e6-20231101
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <bo.ye@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 554406059; Wed, 01 Nov 2023 23:49:35 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 1 Nov 2023 23:49:34 +0800
-Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 1 Nov 2023 23:49:33 +0800
-From:   Bo Ye <bo.ye@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     <yongdong.zhang@mediatek.com>, <browse.zhang@mediatek.com>,
-        <lin.gui@mediatek.com>, <qilin.tan@mediatek.com>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] mmc: add wp_grp_size node
-Date:   Wed, 1 Nov 2023 23:49:26 +0800
-Message-ID: <20231101154927.119312-1-bo.ye@mediatek.com>
-X-Mailer: git-send-email 2.17.0
+        Wed, 1 Nov 2023 11:51:34 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F43E4;
+        Wed,  1 Nov 2023 08:51:30 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507973f3b65so10488653e87.3;
+        Wed, 01 Nov 2023 08:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698853889; x=1699458689; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wb0D0LJEi05xwQk6CsVxJcO6PBY8HZV7xQTgB2a9XVw=;
+        b=c+lxu02rDBj0w8mV+wEdg5fs6AZZQirAmtoMSUKRNgHVn4TTWVAFaEUnAy0dwgdfRH
+         c8uiS7YRml7zgpHei/mYqAz61hcRIgZ1o6saYG45Dg+xLfSXrR+INjX/C9bQr8oeX8g6
+         lcPMo0NaubkhHBeqgW6IpuQowdxPRM1cgLksMzcfcTGTSKyo7m3t0NZeuNejHeGdTmls
+         Wvuw9QBQC/B3uJO6bkicVKSBSkszHUFFKUypyXlOILIy3OxmqHv8R1LNwGhQj2qUBb6a
+         zjFm3tFKon9iODS4XSqcVY27/ZqJdhZ3Z4992qUnxWLCUN7gtqamPQo4Is+i9r3BVbQ9
+         MByw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698853889; x=1699458689;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wb0D0LJEi05xwQk6CsVxJcO6PBY8HZV7xQTgB2a9XVw=;
+        b=ORUB5+e/Vh1iReprRtXmRIBtKeWIhhHitI5sRqWfOeEVsTZSjZYKkwQKArudu022l7
+         jtVbzuLsgIdQhKH9UCFMRALbegysIrLd+7BTnqxrpDj7iyDLn6E5ltg8DTGgX9bAx1kx
+         Sj6KMLfhSeJwDVJv/InPiAI+7AIMtew3gfxCTxiyAc2+Pv1hJJnBaQB4T/c6rR980OQy
+         O/80Q35DA3RVnCq6Bf++Kd9uYKIUhfDiUZyGyOlQDKoDtPxIuao2FQytlvf4bRsnZVK2
+         kbM6uCeo32M9LvH0NGMjm2cHjoPDYhS+y/Fjh45JoQcU7vq0kZrjaQ0kUPlBYGkZRHh7
+         kcEQ==
+X-Gm-Message-State: AOJu0YxzU7fuWLNJeBeC+hMO68CgY7MuJmHoi7oZUYIbpufGjTgOJejT
+        xv++oGgx6PSuUkhxT4t7G1c=
+X-Google-Smtp-Source: AGHT+IE9QeWHdiVo83ZsHOu1o033dhfQl9c8uQ1h/NOF2IvJFHmXaV30nqgvvI6ZxGlBldMqZB+2qQ==
+X-Received: by 2002:a05:6512:2248:b0:4fe:7e7f:1328 with SMTP id i8-20020a056512224800b004fe7e7f1328mr15484763lfu.16.1698853888568;
+        Wed, 01 Nov 2023 08:51:28 -0700 (PDT)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id x3-20020a5d4903000000b0032f7e832cabsm139349wrq.90.2023.11.01.08.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 08:51:28 -0700 (PDT)
+Message-ID: <65427400.5d0a0220.41c58.0ded@mx.google.com>
+X-Google-Original-Message-ID: <ZUJz/icrdWW94IQI@Ansuel-xps.>
+Date:   Wed, 1 Nov 2023 16:51:26 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robimarko@gmail.com>
+Subject: Re: [net-next PATCH v2 1/2] net: phy: aquantia: add firmware load
+ support
+References: <20231101123608.11157-1-ansuelsmth@gmail.com>
+ <4b536ad3-2112-4f28-90e4-586b5745be20@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--9.192800-8.000000
-X-TMASE-MatchedRID: th1XRPLu1HNGlhjnipkGEAwfhKwa9GwD+lX/RcQoG2FX4H/AHZTAKiQH
-        YX2qyjfSlB6IdnaWhV1I7JPsZpNRgcL2WgOVZLNHhDqIQb7sQecK3n1SHen81VeilmPI7oJlf8S
-        IQrqULYwLYtJsevMdjZZLxtyQINIccMMjBRRYYhwflhDI6DvVlkJfxXUWJFGS31GU/N5W5BBLR6
-        I6ytdxONZKQinVddBT3D2hj0hvDabf0vAzbUUm26am63kopwnT57kkHY8cvsS6Kbobcv5luFpqk
-        DNHM8v+nFqPTSvsB8lzQ71/lVVm1vJMF6pylZNW1tU7lyp9XhEoPUUDFlEi1db1HR1TV5h03x8z
-        1cIgGiHi8zVgXoAltsIJ+4gwXrEtIAcCikR3vq9j6bKbLCMItm8ICwgw12VPO6dim/ocNbcn4VX
-        tjVje77MxnEq2nQWr
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--9.192800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 0F899615BDE2A6CD307BF16FE736E603887F1EBB5A91C4D58CC90BFFF96AE5642000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b536ad3-2112-4f28-90e4-586b5745be20@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "lin.gui" <lin.gui@mediatek.com>
+On Wed, Nov 01, 2023 at 02:13:05PM +0100, Andrew Lunn wrote:
+> On Wed, Nov 01, 2023 at 01:36:07PM +0100, Christian Marangi wrote:
+> > From: Robert Marko <robimarko@gmail.com>
+> > 
+> > Aquantia PHY-s require firmware to be loaded before they start operating.
+> > It can be automatically loaded in case when there is a SPI-NOR connected
+> > to Aquantia PHY-s or can be loaded from the host via MDIO.
+> > 
+> > This patch adds support for loading the firmware via MDIO as in most cases
+> > there is no SPI-NOR being used to save on cost.
+> > Firmware loading code itself is ported from mainline U-boot with cleanups.
+> > 
+> > The firmware has mixed values both in big and little endian.
+> > PHY core itself is big-endian but it expects values to be in little-endian.
+> > The firmware is little-endian but CRC-16 value for it is stored at the end
+> > of firmware in big-endian.
+> > 
+> > It seems the PHY does the conversion internally from firmware that is
+> > little-endian to the PHY that is big-endian on using the mailbox
+> > but mailbox returns a big-endian CRC-16 to verify the written data
+> > integrity.
+> > 
+> > Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
+> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> > Changes v2:
+> > - Move out of RFC
+> 
+> Actually, since we are in the merge window, RFC would be correct.
+>
 
-Detail:
-Add node "wp_grp_size", corresponding to WP_GRP_SIZE
-(write protect group size) of eMMC's CSD register.
+My bad!
 
-Scenario:
-The eMMC card can be set into write-protected mode to
-prevent data from being accidentally modified or deleted.
-Wp_grp_size (Write Protect Group Size) refers to an
-attribute of the eMMC card, used to manage write protection,
-and is the CSD register  [36:32] of the eMMC device.
-Wp_grp_size (Write Protect Group Size) indicates how many
-eMMC blocks are contained in each write protection group on the eMMC card.
+> > - Address sanity check for offsets
+> > - Add additional comments on firmware load check
+> > - Fix some typo
+> > - Capitalize CRC in comments
+> > - Rename load_sysfs to load_fs
+> > 
+> >  drivers/net/phy/Kconfig         |   1 +
+> >  drivers/net/phy/aquantia_main.c | 304 ++++++++++++++++++++++++++++++++
+> >  2 files changed, 305 insertions(+)
+> > 
+> > diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+> > index 421d2b62918f..46c7194efcea 100644
+> > --- a/drivers/net/phy/Kconfig
+> > +++ b/drivers/net/phy/Kconfig
+> > @@ -98,6 +98,7 @@ config ADIN1100_PHY
+> >  
+> >  config AQUANTIA_PHY
+> >  	tristate "Aquantia PHYs"
+> > +	select CRC_CCITT
+> >  	help
+> >  	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
+> >  
+> > diff --git a/drivers/net/phy/aquantia_main.c b/drivers/net/phy/aquantia_main.c
+> > index 334a6904ca5a..0f1b8d75cca0 100644
+> > --- a/drivers/net/phy/aquantia_main.c
+> > +++ b/drivers/net/phy/aquantia_main.c
+> > @@ -12,6 +12,10 @@
+> >  #include <linux/delay.h>
+> >  #include <linux/bitfield.h>
+> >  #include <linux/phy.h>
+> > +#include <linux/of.h>
+> > +#include <linux/firmware.h>
+> > +#include <linux/crc-ccitt.h>
+> > +#include <linux/nvmem-consumer.h>
+> >  
+> >  #include "aquantia.h"
+> >  
+> > @@ -92,10 +96,40 @@
+> >  #define MDIO_C22EXT_STAT_SGMII_TX_RUNT_FRAMES		0xd31b
+> >  
+> >  /* Vendor specific 1, MDIO_MMD_VEND1 */
+> > +#define VEND1_GLOBAL_SC				0x0
+> > +#define VEND1_GLOBAL_SC_SOFT_RESET		BIT(15)
+> > +#define VEND1_GLOBAL_SC_LOW_POWER		BIT(11)
+> > +
+> >  #define VEND1_GLOBAL_FW_ID			0x0020
+> >  #define VEND1_GLOBAL_FW_ID_MAJOR		GENMASK(15, 8)
+> >  #define VEND1_GLOBAL_FW_ID_MINOR		GENMASK(7, 0)
+> >  
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE1			0x0200
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE1_EXECUTE		BIT(15)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE1_WRITE		BIT(14)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET	BIT(12)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE1_BUSY		BIT(8)
+> > +
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE2			0x0201
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE3			0x0202
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR_MASK	GENMASK(15, 0)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR(x)	FIELD_PREP(VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR_MASK, (u16)((x) >> 16))
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE4			0x0203
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR_MASK	GENMASK(15, 2)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR(x)	FIELD_PREP(VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR_MASK, (u16)(x))
+> > +
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE5			0x0204
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA_MASK	GENMASK(15, 0)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA(x)	FIELD_PREP(VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA_MASK, (u16)((x) >> 16))
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE6			0x0205
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE6_LSW_DATA_MASK	GENMASK(15, 0)
+> > +#define VEND1_GLOBAL_MAILBOX_INTERFACE6_LSW_DATA(x)	FIELD_PREP(VEND1_GLOBAL_MAILBOX_INTERFACE6_LSW_DATA_MASK, (u16)(x))
+> > +
+> > +#define VEND1_GLOBAL_CONTROL2			0xc001
+> > +#define VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_RST	BIT(15)
+> > +#define VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD	BIT(6)
+> > +#define VEND1_GLOBAL_CONTROL2_UP_RUN_STALL	BIT(0)
+> > +
+> >  #define VEND1_GLOBAL_GEN_STAT2			0xc831
+> >  #define VEND1_GLOBAL_GEN_STAT2_OP_IN_PROG	BIT(15)
+> >  
+> > @@ -152,6 +186,30 @@
+> >  #define AQR107_OP_IN_PROG_SLEEP		1000
+> >  #define AQR107_OP_IN_PROG_TIMEOUT	100000
+> >  
+> > +#define UP_RESET_SLEEP		100
+> > +
+> > +/* addresses of memory segments in the phy */
+> > +#define DRAM_BASE_ADDR		0x3FFE0000
+> > +#define IRAM_BASE_ADDR		0x40000000
+> > +
+> > +/* firmware image format constants */
+> > +#define VERSION_STRING_SIZE		0x40
+> > +#define VERSION_STRING_OFFSET		0x0200
+> > +/* primary offset is written at an offset from the start of the fw blob */
+> > +#define PRIMARY_OFFSET_OFFSET		0x8
+> > +/* primary offset needs to be then added to a base offset */
+> > +#define PRIMARY_OFFSET_SHIFT		12
+> > +#define PRIMARY_OFFSET(x)		((x) << PRIMARY_OFFSET_SHIFT)
+> > +#define HEADER_OFFSET			0x300
+> > +
+> > +struct aqr_fw_header {
+> > +	u32 padding;
+> > +	u8 iram_offset[3];
+> > +	u8 iram_size[3];
+> > +	u8 dram_offset[3];
+> > +	u8 dram_size[3];
+> > +} __packed;
+> > +
+> >  struct aqr107_hw_stat {
+> >  	const char *name;
+> >  	int reg;
+> > @@ -677,6 +735,166 @@ static int aqr107_wait_processor_intensive_op(struct phy_device *phydev)
+> >  	return 0;
+> >  }
+> >  
+> > +/* load data into the phy's memory */
+> > +static int aquantia_load_memory(struct phy_device *phydev, u32 addr,
+> > +				const u8 *data, size_t len)
+> > +{
+> 
+> > +	for (pos = 0; pos < len; pos += min(sizeof(u32), len - pos)) {
+> > +		u32 word = 0;
+> > +
+> > +		memcpy(&word, data + pos, min(sizeof(u32), len - pos));
+> 
+> Rather than do a memcpy, use the get_unaligned_ macros. They might map
+> to a memcpy(), but some architectures can do unaligned accesses
+> without problems.
+> 
 
-Final rendered file:
-"/sys/class/mmc_host/mmc0/mmc0:0001/wp_grp_size"
+I don't think this is doable for this loop, think we would end up in
+some funny situation where for the last run we have to copy less than
+u32. (get_unaligned would always take u32 of data and that would end up
+reading more than requested) Am I wrong?
 
-Signed-off-by: lin.gui <lin.gui@mediatek.com>
-Change-Id: I73952dbde2db375ba918daadb3264380b7863096
----
- drivers/mmc/core/mmc.c   | 16 +++++++++++++++-
- include/linux/mmc/card.h |  2 ++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+Aside from this, in the other part of the code I can use the macro and
+skip having to convert them.
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 4a4bab9aa726..9b67e49a9e63 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -136,6 +136,17 @@ static void mmc_set_erase_size(struct mmc_card *card)
- 	mmc_init_erase(card);
- }
- 
-+
-+static void mmc_set_wp_grp_size(struct mmc_card *card)
-+{
-+	if (card->ext_csd.erase_group_def & 1)
-+		card->wp_grp_size = card->ext_csd.hc_erase_size *
-+			card->ext_csd.raw_hc_erase_gap_size;
-+	else
-+		card->wp_grp_size = card->csd.erase_size *
-+			(card->csd.wp_grp_size + 1);
-+}
-+
- /*
-  * Given a 128-bit response, decode to our card CSD structure.
-  */
-@@ -186,6 +197,7 @@ static int mmc_decode_csd(struct mmc_card *card)
- 		b = UNSTUFF_BITS(resp, 37, 5);
- 		csd->erase_size = (a + 1) * (b + 1);
- 		csd->erase_size <<= csd->write_blkbits - 9;
-+		csd->wp_grp_size = UNSTUFF_BITS(resp, 32, 5);
- 	}
- 
- 	return 0;
-@@ -791,6 +803,7 @@ MMC_DEV_ATTR(csd, "%08x%08x%08x%08x\n", card->raw_csd[0], card->raw_csd[1],
- MMC_DEV_ATTR(date, "%02d/%04d\n", card->cid.month, card->cid.year);
- MMC_DEV_ATTR(erase_size, "%u\n", card->erase_size << 9);
- MMC_DEV_ATTR(preferred_erase_size, "%u\n", card->pref_erase << 9);
-+MMC_DEV_ATTR(wp_grp_size, "%u\n", card->wp_grp_size << 9);
- MMC_DEV_ATTR(ffu_capable, "%d\n", card->ext_csd.ffu_capable);
- MMC_DEV_ATTR(hwrev, "0x%x\n", card->cid.hwrev);
- MMC_DEV_ATTR(manfid, "0x%06x\n", card->cid.manfid);
-@@ -851,6 +864,7 @@ static struct attribute *mmc_std_attrs[] = {
- 	&dev_attr_date.attr,
- 	&dev_attr_erase_size.attr,
- 	&dev_attr_preferred_erase_size.attr,
-+	&dev_attr_wp_grp_size.attr,
- 	&dev_attr_fwrev.attr,
- 	&dev_attr_ffu_capable.attr,
- 	&dev_attr_hwrev.attr,
-@@ -1759,7 +1773,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 			mmc_set_erase_size(card);
- 		}
- 	}
--
-+	mmc_set_wp_grp_size(card);
- 	/*
- 	 * Ensure eMMC user default partition is enabled
- 	 */
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index daa2f40d9ce6..62873ecc52f1 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -32,6 +32,7 @@ struct mmc_csd {
- 	unsigned int		r2w_factor;
- 	unsigned int		max_dtr;
- 	unsigned int		erase_size;		/* In sectors */
-+	unsigned int		wp_grp_size;
- 	unsigned int		read_blkbits;
- 	unsigned int		write_blkbits;
- 	unsigned int		capacity;
-@@ -304,6 +305,7 @@ struct mmc_card {
- 	unsigned int		eg_boundary;	/* don't cross erase-group boundaries */
- 	unsigned int		erase_arg;	/* erase / trim / discard */
-  	u8			erased_byte;	/* value of erased bytes */
-+	unsigned int		wp_grp_size; /* write group size in sectors */
- 
- 	u32			raw_cid[4];	/* raw card CID */
- 	u32			raw_csd[4];	/* raw card CSD */
+> > +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size)
+> > +{
+> > +	const struct aqr_fw_header *header;
+> > +	u32 iram_offset = 0, iram_size = 0;
+> > +	u32 dram_offset = 0, dram_size = 0;
+> > +	char version[VERSION_STRING_SIZE];
+> > +	u16 calculated_crc, read_crc;
+> > +	u32 primary_offset = 0;
+> > +	int ret;
+> > +
+> > +	/* extract saved CRC at the end of the fw */
+> > +	memcpy(&read_crc, data + size - 2, sizeof(read_crc));
+> 
+> Say size == 1. You just had a buffer underrun.
+> 
+> > +	/* CRC is saved in big-endian as PHY is BE */
+> > +	read_crc = be16_to_cpu(read_crc);
+> > +	calculated_crc = crc_ccitt_false(0, data, size - 2);
+> > +	if (read_crc != calculated_crc) {
+> > +		phydev_err(phydev, "bad firmware CRC: file 0x%04x calculated 0x%04x\n",
+> > +			   read_crc, calculated_crc);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* Get the primary offset to extract DRAM and IRAM sections. */
+> > +	memcpy(&primary_offset, data + PRIMARY_OFFSET_OFFSET, sizeof(u16));
+> 
+> What if PRIMARY_OFFSET_OFFSET + sizeof(u16) is greater than size? A
+> buffer overrun.
+> 
+> Assume the firmware is evil and is trying to hack you. Always test
+> everything.
+> 
+> I would suggest some helpers, something like
+> 
+> int aqr_fw_get_u16(const u8 *data, size_t size, size_t offset, u16 *value)
+> 
+> Check that offset + sizeof(u16) is within the firmware, and if not return -EINVAL.
+> Otherwise set *value to the u16 from the firmware and return 0.
+> 
+> This is where Rust would be nice :-)
+> 
+> 	Andrew
+> 
+> ---
+> pw-bot: cr
+
 -- 
-2.17.0
-
+	Ansuel
