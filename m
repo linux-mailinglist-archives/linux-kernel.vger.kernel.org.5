@@ -2,196 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B7F7DE349
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C927DE33D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Nov 2023 16:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343637AbjKAPfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 11:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48176 "EHLO
+        id S233947AbjKAPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 11:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234553AbjKAPfQ (ORCPT
+        with ESMTP id S233227AbjKAPYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 11:35:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150B7102;
-        Wed,  1 Nov 2023 08:35:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67AE3C433C9;
-        Wed,  1 Nov 2023 15:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698852909;
-        bh=bbdrSxFMrsXv8i5RW4uSoBXIoUFMBluPi9Yoa790odM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rgJY1V2HKsWnaXdqbPjdfzpglTtq4dcJLMF+pW0xil4K7rwUmLxqh1iiY/XXQOjXM
-         M19pPpzwc1M6I8QCWhA1O5ynJKE2lWLDj1CWSGJAW+n2OEagaQkhjs0A964+/7Rk1Z
-         s1svrJnFT0glrtxFNZktZ0K1STk+LOAhF01HCtPqYkAjde+kWePYT/uNA7buXZwuRe
-         uqIJI9OiyIs+0BodAgzGbRjZthhdhCTKL2vkMt5vAoC8SNHr2AODXhPZI+y+pwpsTI
-         sgygKOQ+nEVsJ+EXqCWQEfLur/RiWcWDx7MHGphZBGPQh7yxxHDq0ot/N/Cr1MFhnP
-         BZ8cyZlqOvbVQ==
-Date:   Wed, 1 Nov 2023 23:22:52 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        Xiao Wang <xiao.w.wang@intel.com>,
-        Evan Green <evan@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v9 3/5] riscv: Checksum header
-Message-ID: <ZUJtTEeFD24ZYXHQ@xhacker>
-References: <20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com>
- <20231031-optimize_checksum-v9-3-ea018e69b229@rivosinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231031-optimize_checksum-v9-3-ea018e69b229@rivosinc.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 11:24:35 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8225DA;
+        Wed,  1 Nov 2023 08:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=s3Mg6e1OPGx3dxFtQuDRrNKu3fgsZsQBHayTyRSUnQ4=; b=gWvuR00aVgmtpfQjxMMmU/uwv9
+        u3PRhFp5LosHmHa8qhix41WMIzZ20eLCdTj/oZ08tjCCEN+HxWaDlWB91C5Ti4FxUa1RnanWN9zbT
+        RhTdN4cMtkbCb9g5fK2gp9P8N2NLEmX5DRQ/pq4jT4ThBjTayl/Nz4WbvpzLUgmB3qwI=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:55522 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qyD4q-0006yK-7O; Wed, 01 Nov 2023 11:24:20 -0400
+Date:   Wed, 1 Nov 2023 11:24:15 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Message-Id: <20231101112415.b9e8a2a5b5a37ee06bd2abc3@hugovil.com>
+In-Reply-To: <20231101-nebulizer-lasso-a901cd564dd1@spud>
+References: <20231101144303.2653464-1-hugo@hugovil.com>
+        <20231101-nebulizer-lasso-a901cd564dd1@spud>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] arm64: dts: imx8mn-rve-gateway: add support for RVE
+ gateway board
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 05:18:53PM -0700, Charlie Jenkins wrote:
-> Provide checksum algorithms that have been designed to leverage riscv
-> instructions such as rotate. In 64-bit, can take advantage of the larger
-> register to avoid some overflow checking.
+On Wed, 1 Nov 2023 15:16:50 +0000
+Conor Dooley <conor@kernel.org> wrote:
+
+> On Wed, Nov 01, 2023 at 10:43:02AM -0400, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > The RVE gateway board is based on a Variscite VAR-SOM-NANO,
+> > with a NXP MX8MN nano CPU.
+> > 
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> >  .../devicetree/bindings/arm/fsl.yaml          |   1 +
+> >  MAINTAINERS                                   |   7 +
+> >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+> >  .../boot/dts/freescale/imx8mn-rve-gateway.dts | 296 ++++++++++++++++++
+> >  4 files changed, 305 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index 9450b2c8a678..a1028fe8ed02 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -1007,6 +1007,7 @@ properties:
+> >                - fsl,imx8mn-ddr4-evk       # i.MX8MN DDR4 EVK Board
+> >                - fsl,imx8mn-evk            # i.MX8MN LPDDR4 EVK Board
+> >                - gw,imx8mn-gw7902          # i.MX8MM Gateworks Board
+> > +              - rve,rve-gateway           # i.MX8MN RVE Gateway Board
+> >            - const: fsl,imx8mn
 > 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  arch/riscv/include/asm/checksum.h | 81 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 81 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/checksum.h
-> new file mode 100644
-> index 000000000000..3d77cac338fe
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/checksum.h
-> @@ -0,0 +1,81 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Checksum routines
-> + *
-> + * Copyright (C) 2023 Rivos Inc.
-> + */
-> +#ifndef __ASM_RISCV_CHECKSUM_H
-> +#define __ASM_RISCV_CHECKSUM_H
-> +
-> +#include <linux/in6.h>
-> +#include <linux/uaccess.h>
-> +
-> +#define ip_fast_csum ip_fast_csum
-> +
-> +/* Define riscv versions of functions before importing asm-generic/checksum.h */
-> +#include <asm-generic/checksum.h>
-> +
-> +/*
-> + * Quickly compute an IP checksum with the assumption that IPv4 headers will
-> + * always be in multiples of 32-bits, and have an ihl of at least 5.
-> + * @ihl is the number of 32 bit segments and must be greater than or equal to 5.
-> + * @iph is assumed to be word aligned given that NET_IP_ALIGN is set to 2 on
-> + *	riscv, defining IP headers to be aligned.
-> + */
-> +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-> +{
-> +	unsigned long csum = 0;
-> +	int pos = 0;
-> +
-> +	do {
-> +		csum += ((const unsigned int *)iph)[pos];
-> +		if (IS_ENABLED(CONFIG_32BIT))
-> +			csum += csum < ((const unsigned int *)iph)[pos];
-> +	} while (++pos < ihl);
-> +
-> +	/*
-> +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
-> +	 * worth checking if supported without Alternatives.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> +		unsigned long fold_temp;
-> +
-> +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> +					      RISCV_ISA_EXT_ZBB, 1)
+> Changes to dt-bindings should be in their own patch. Did checkpatch not
+> whinge about this?
 
-This looks like a open coding of riscv_has_extension_*, so if
-we use the it, the code could be rewritten as:
+Hi,
+yes it did and I very well saw it.
 
-	if (riscv_has_extension_likely(RISCV_ISA_EXT_ZBB)) {
-		if (32bit) {
-			asm(...)
+However, before sending my patches, I checked the log history to
+see how patches for new boards were handled, and saw that new
+boards (some) integrated all these changes together.
 
-		} else {
-			asm(...)
-		}
-		return csum >> 16;
-	}
-#ifndef CONFIG_32BIT
-	csum += ror64(csum, 32);
-	csum >>= 32;
-#endif
-	return csum_fold((__force __wsum)csum);
+I will submit a new serie with all changes separated.
 
-The code readability is improved and make it a bit easier to refactor
-the asm(...) code in the future.
-
-And IMHO, the generated code should be the same.
-
-Thanks
-
->
-
-> +		    :
-> +		    :
-> +		    :
-> +		    : no_zbb);
-> +
-> +		if (IS_ENABLED(CONFIG_32BIT)) {
-> +			asm(".option push				\n\
-> +			.option arch,+zbb				\n\
-> +				not	%[fold_temp], %[csum]		\n\
-> +				rori	%[csum], %[csum], 16		\n\
-> +				sub	%[csum], %[fold_temp], %[csum]	\n\
-> +			.option pop"
-> +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> +		} else {
-> +			asm(".option push				\n\
-> +			.option arch,+zbb				\n\
-> +				rori	%[fold_temp], %[csum], 32	\n\
-> +				add	%[csum], %[fold_temp], %[csum]	\n\
-> +				srli	%[csum], %[csum], 32		\n\
-> +				not	%[fold_temp], %[csum]		\n\
-> +				roriw	%[csum], %[csum], 16		\n\
-> +				subw	%[csum], %[fold_temp], %[csum]	\n\
-> +			.option pop"
-> +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> +		}
-> +		return csum >> 16;
-> +	}
-> +no_zbb:
-> +#ifndef CONFIG_32BIT
-> +	csum += ror64(csum, 32);
-> +	csum >>= 32;
-> +#endif
-> +	return csum_fold((__force __wsum)csum);
-> +}
-> +
-> +#endif /* __ASM_RISCV_CHECKSUM_H */
-> 
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Hugo.
