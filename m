@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D38F47DEE66
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 359347DEE68
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbjKBIxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
+        id S234574AbjKBIxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjKBIxi (ORCPT
+        with ESMTP id S233459AbjKBIxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:53:38 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E2AFB
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:53:32 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso1057970a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:53:32 -0700 (PDT)
+        Thu, 2 Nov 2023 04:53:53 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB17131
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:53:43 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso994248a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698915210; x=1699520010; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8lUhLQnAKiB5QJAzwL6lpYBjp5gMlELZrTelsM0Z0Ew=;
-        b=TZ+8HxogxA1aU/PRyuSij/MNsCIrmOYjBcGZ0B0OtqdYG6N2jTGYqGWSsbMs+ASWry
-         RLnXE04Kwl7XklAFbuhCGAog4HDfkiCAt+1eoHVBeHCYh6vtY7bqYxTU2MffuVRFeK7r
-         Ul6BVdYaBKUEfS6d9/ZRDzAYcRq4vWb2dUfk4f6q7w2JYPTE2mqiF5cgUtOw2LENg7sJ
-         tQGTLkUiPmZYCRJvNSbwfgLSXiVEBnjbLA+AROzBv5Z8Y4RF5bwQPCciwvDn7fWbX+GD
-         xHu1zNQ3NFOf0s+hlkqB4rFVzHmVU1pTSJTT2lQjOY1WjgYIPZQbbziCPJ+a9NraW5nm
-         RgOg==
+        d=linaro.org; s=google; t=1698915222; x=1699520022; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+J+xZD33uLXPXgHMU9DaEPidqrZfl8SUOphvs3WIQE0=;
+        b=t0tI8mnLwDdU+KeJ21MXgtYO5GNVNNdTOjVkN0xE/ICS+OVNgF9V+jr5uBHToxv27k
+         5cEcuZP4DIW6eY6u4N8nuT+bVUX8F9L8nP7rf0EHFfGzaosjkCt0sCvop36mSkte62yd
+         1F5TxNTQQ4+mImhkQRkqOTvr1F7hTWgoeDzLypW/DRipXXLYHb4gxqqAw4egEsprk2Ln
+         Nl5TFQud5qd1Vm0BakkXPLwZUUUGQabskV2Mf+E0WFhXdn7nGf4ndtzMAucsIDELeno9
+         1dCpVb8GrQ17ZgZzLjt+YMUPVmQ1AxpRo2OvAJtkw2lsxzfpddHtwF2YI0L2Zg/D/2Lp
+         OU7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698915210; x=1699520010;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8lUhLQnAKiB5QJAzwL6lpYBjp5gMlELZrTelsM0Z0Ew=;
-        b=w7DJ96bVcy4ggwFpLvQql+zJt7HN5UnWRVdKXSogwzO/uhGLpP7cuBXuS437DzL5Lc
-         W8pGKy8KjzVxjRjJ+ooDBOpVshrxbguA4CL1WeldnBAIrVHr/aqXXbLTPEZqlbXwZgZJ
-         hJPRJZM4R7gFvSsdgSrpPZ9YtWWwXA+udvxsFX87UxLSJjkPBO/qPnFkbtw02kQC41+8
-         p5x9npi+c6NbUDeiSCt+XpJtInTas/2iKnfB4cGyTMZX+go89qoAlDbLFoa2kRrgn9dl
-         QYU16fESQS4vk9C6qvANEHGkcrXtGQSTTnghnDwEwPpMMBAJc7Ibe/AfXKo02PUjALBe
-         4MQg==
-X-Gm-Message-State: AOJu0Yw+1Bs1+UQ96IRwwWUKGcanGLPNIHFhZKdQOrHK1ePqUoN05K3p
-        frJjggvTo23uKpK7SSEwCTVXCA==
-X-Google-Smtp-Source: AGHT+IHYdcg7cB+6Xu6zxwcjtkQSSr1iXUeDbUcg/TK3ElyuuomUagyug7ZGCR3mEkxOs/JNO69rBw==
-X-Received: by 2002:aa7:dac2:0:b0:540:4b90:3dc3 with SMTP id x2-20020aa7dac2000000b005404b903dc3mr14274604eds.14.1698915210547;
-        Thu, 02 Nov 2023 01:53:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698915222; x=1699520022;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+J+xZD33uLXPXgHMU9DaEPidqrZfl8SUOphvs3WIQE0=;
+        b=Kb8f/T/mka8q91XS/4sFZaQdPPwedJQDqW1nHxdLqXOb4eM7dDGEzmr6jF0ZzAomDp
+         ZgJasHtrluHEl1tmMP5/RnrN9BlJbfk30+XrVePRG+Go6YM2iJbhs34xuHqM2lEWnz4G
+         fmAqBKeKYVGb8wDEZb9/fFgd+Z8ejEAO/NMbWkDbknN61Vk24IG6IhlMlDL9uX0LCFfE
+         PceUlF/69EIxeYD79EIbZNJ40VlziO40NSBOo8wnNWZ4HCaIJOfjc/dcley6Y/ph7aN7
+         a3LNP3kp7E7YPiPpKVsHBR830SL7z+R5U5jkuoswD9i4NaDcHFkfYX9due+U5C46rHVJ
+         jtjA==
+X-Gm-Message-State: AOJu0YzhxaxNZacjH/dQ7pnwzm6AO21pcqbmF5b45nexOuoET4ZYyMcm
+        LGVQs67tls9UIAeP4z8222o1xQ==
+X-Google-Smtp-Source: AGHT+IEC9fc/gHghN/hQiAxaLiphCB5bOoRmxNCQG0s7cG9hghWU4Ad9qsGNWAsWsikIWYUKQn90JQ==
+X-Received: by 2002:a05:6402:8ce:b0:53e:72be:2b31 with SMTP id d14-20020a05640208ce00b0053e72be2b31mr11611390edz.42.1698915221812;
+        Thu, 02 Nov 2023 01:53:41 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id cy24-20020a0564021c9800b005432f45bee9sm2018883edb.19.2023.11.02.01.53.27
+        by smtp.gmail.com with ESMTPSA id cy24-20020a0564021c9800b005432f45bee9sm2018883edb.19.2023.11.02.01.53.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 01:53:29 -0700 (PDT)
-Message-ID: <c08ad574-d067-4557-a50c-802d6d7fe353@linaro.org>
-Date:   Thu, 2 Nov 2023 09:53:26 +0100
+        Thu, 02 Nov 2023 01:53:40 -0700 (PDT)
+Message-ID: <6de77300-fbbf-43ed-b24b-304e27d4c662@linaro.org>
+Date:   Thu, 2 Nov 2023 09:53:38 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
+Subject: Re: [PATCH V5][4/4] dt-bindings: mmc: Add dt-bindings for realtek mmc
+ driver
+Content-Language: en-US
 To:     Jyan Chou <jyanchou@realtek.com>, ulf.hansson@linaro.org,
         adrian.hunter@intel.com, jh80.chung@samsung.com,
         riteshh@codeaurora.org, robh+dt@kernel.org,
@@ -67,8 +68,7 @@ Cc:     p.zabel@pengutronix.de, linux-mmc@vger.kernel.org,
         tonyhuang.sunplus@gmail.com, abel.vesa@linaro.org,
         william.qiu@starfivetech.com
 References: <20231102081514.22945-1-jyanchou@realtek.com>
- <20231102081514.22945-3-jyanchou@realtek.com>
-Content-Language: en-US
+ <20231102081514.22945-5-jyanchou@realtek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,7 +114,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231102081514.22945-3-jyanchou@realtek.com>
+In-Reply-To: <20231102081514.22945-5-jyanchou@realtek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -128,313 +128,210 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 02/11/2023 09:15, Jyan Chou wrote:
-> We implemented cmdq feature on Synopsys DesignWare mmc driver.
-> The difference between dw_mmc.c and dw_mmc_cqe.c were distinct
-> register definitions, mmc user flow and the addition of cmdq.
+> Document the device-tree bindings for Realtek SoCs mmc driver.
 > 
-> New version of User Guide had modify mmc driver's usage flow,
-> we may need to renew code to precisely follow user guide.
+> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
 > 
-> More over, We added a wait status function to satisfy synopsys
-> user guide's description, since this flow might be specific in
-> synopsys host driver only.
+> ---
+> v4 -> v5:
+> - Fix compatible to match filename.
 
-...
+That's not what I said. Filename must match compatible, not the other
+way around.
 
-> +	for (i = 0; i < host->dma_nents; i++, sg++) {
-> +		dma_len = sg_dma_len(sg);
+> - Remove unused property, e.g.,cqe, resets, clock-freq-min-max.
+> - Fix indentation.
+> 
+> v3 -> v4:
+> - Describe the items to make properties and item easy to understand.
+> - Fix examples' indentation and compiling error.
+> - Drop useless properties.
+> 
+> v2 -> v3:
+> - Modify dt-bindings' content and description.
+> - Fix coding style.
+> - Update the list of maintainers.
+> 
+> v1 -> v2:
+> - Add dt-bindings.
+> ---
+>  .../bindings/mmc/realtek,rtd-dw-cqe-emmc.yaml | 157 ++++++++++++++++++
+>  1 file changed, 157 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mmc/realtek,rtd-dw-cqe-emmc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/realtek,rtd-dw-cqe-emmc.yaml b/Documentation/devicetree/bindings/mmc/realtek,rtd-dw-cqe-emmc.yaml
+> new file mode 100644
+> index 000000000000..f422a216ff93
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mmc/realtek,rtd-dw-cqe-emmc.yaml
+> @@ -0,0 +1,157 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mmc/realtek,rtd-dw-cqe-emmc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +		/* blk_cnt must be the multiple of 512(0x200) */
-> +		if (dma_len < SZ_512)
-> +			blk_cnt = 1;
-> +		else
-> +			blk_cnt  = dma_len >> 9;
+> +title: Realtek DesignWare mobile storage host controller
 > +
-> +		remain_blk_cnt  = blk_cnt;
-> +		dma_addr = sg_dma_address(sg);
+> +description:
+> +  Realtek uses the Synopsys DesignWare mobile storage host controller
+> +  to interface a SoC with storage medium. This file documents the Realtek
+> +  specific extensions.
 > +
-> +		while (remain_blk_cnt) {
-> +			/* DW_MCI_MAX_SCRIPT_BLK is the max
-> +			 * for each descriptor record
-> +			 */
-> +			if (remain_blk_cnt > DW_MCI_MAX_SCRIPT_BLK)
-> +				cur_blk_cnt = DW_MCI_MAX_SCRIPT_BLK;
-> +			else
-> +				cur_blk_cnt = remain_blk_cnt;
+> +maintainers:
+> +  - Jyan Chou <jyanchou@realtek.com>
 > +
-> +			/* In Synopsys DesignWare Databook Page 84,
+> +allOf:
+> +  - $ref: mmc-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - realtek,rtd-dw-cqe-emmc
 
-/*
- *
+I don't understand what happened here. I asked you to drop the
+incorrect, generic compatible. Instead you dropped specific compatibles
+and left generic. Nope, this does not work like it.
 
-I mentioned it last time. Use Linux coding style. For entire patchset.
-
-> +			 * They mentioned the DMA 128MB restriction
-> +			 */
-> +			begin = dma_addr / SZ_128M;
-> +			end = (dma_addr + cur_blk_cnt * SZ_512) / SZ_128M;
-> +
-> +			/* If begin and end in the different 128MB memory zone */
-> +			if (begin != end)
-> +				cur_blk_cnt = (end * SZ_128M - dma_addr) / SZ_512;
-> +
-> +			if (dma_len < SZ_512)
-> +				tmp_val = ((dma_len) << 16) | VALID(0x1) | ACT(0x4);
-> +			else
-> +				tmp_val = ((cur_blk_cnt & 0x7f) << 25) | VALID(0x1) | ACT(0x4);
-> +
-> +			/* Last descriptor */
-> +			if (i == host->dma_nents - 1 && remain_blk_cnt == cur_blk_cnt)
-> +				tmp_val |= END(0x1);
-> +
-> +			desc_base[0] =  tmp_val;
-> +			desc_base[1] =  dma_addr;
-> +
-> +			dma_addr = dma_addr + (cur_blk_cnt << 9);
-> +			remain_blk_cnt -= cur_blk_cnt;
-> +			desc_base += 2;
-> +		}
-> +	}
-> +}
-> +
-
-...
+You *must* use specific compatibles.
 
 > +
-> +#ifdef CONFIG_OF
-> +static struct dw_mci_board *dw_mci_cqe_parse_dt(struct dw_mci *host)
-> +{
-> +	struct dw_mci_board *pdata;
-> +	struct device *dev = host->dev;
-> +	const struct dw_mci_drv_data *drv_data = host->drv_data;
-> +	int ret;
-> +	u32 clock_frequency;
+> +  reg:
+> +    items:
+> +      - description: emmc base address
+> +      - description: cqhci base address
 > +
-> +	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-> +	if (!pdata)
-> +		return ERR_PTR(-ENOMEM);
+> +  reg-names:
+> +    items:
+> +      - const: emmc
+> +      - const: cqhci
 > +
-> +	/* find reset controller when exist */
-> +	pdata->rstc = devm_reset_control_get_optional(dev, "reset");
-
-Where is it described in the bindings?
-
-> +	if (IS_ERR(pdata->rstc)) {
-> +		if (PTR_ERR(pdata->rstc) == -EPROBE_DEFER)
-> +			return ERR_PTR(-EPROBE_DEFER);
-> +	}
+> +  interrupts:
+> +    maxItems: 1
 > +
-> +	device_property_read_u32(dev, "card-detect-delay",
+> +  clocks:
+> +    description: Handles to input clocks
 
-Where is it described in the bindings? It's not. This is v5 but, sorry,
-but I do not see much improvements. You still send code which clearly is
-wrong.
-
-
-> +				 &pdata->detect_delay_ms);
-> +
-> +	if (!device_property_read_u32(dev, "clock-frequency", &clock_frequency))
-> +		pdata->bus_hz = clock_frequency;
-
-Drop property. I don't think it is needed. MMC and CCF has other ways to
-do it.
+Instead: maxItems: 4
 
 > +
-> +	if (drv_data && drv_data->parse_dt) {
-> +		ret = drv_data->parse_dt(host);
-> +		if (ret)
-> +			return ERR_PTR(ret);
-> +	}
+> +  clock-names:
+> +    items:
+> +      - const: biu
+> +      - const: ciu
+> +      - const: vp0
+> +      - const: vp1
 > +
-> +	return pdata;
-> +}
-> +
-> +#else /* CONFIG_OF */
-> +static struct dw_mci_board *dw_mci_cqe_parse_dt(struct dw_mci *host)
-> +{
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +#endif /* CONFIG_OF */
-> +
-> +static void dw_mci_cqe_cto_timer(struct timer_list *t)
-> +{
-> +	struct dw_mci *host = from_timer(host, t, timer);
-> +
-> +	if (host->int_waiting) {
-> +		dev_err(host->dev, "fired, opcode=%d, arg=0x%x, irq status=0x%x, err irq=0x%x, auto err irq=0x%x\n",
-> +			host->opcode, host->arg,
-> +			host->normal_interrupt, host->error_interrupt,
-> +			host->auto_error_interrupt);
-> +
-> +		dw_mci_clr_signal_int(host);
-> +		dw_mci_get_int(host);
-> +
-> +		complete(host->int_waiting);
-> +	}
-> +}
-> +
-> +static void dw_mci_cqhci_init(struct dw_mci *host)
-> +{
-> +	if (host->pdata && (host->pdata->caps2 & MMC_CAP2_CQE)) {
-> +		host->cqe = cqhci_pltfm_init(host->pdev);
-> +		if (PTR_ERR(host->cqe) == -EINVAL ||
-> +		    PTR_ERR(host->cqe) == -ENOMEM ||
-> +		    PTR_ERR(host->cqe) == -EBUSY) {
-> +			dev_err(host->dev, "Unable to get the cmdq related attribute,err = %ld\n",
-> +				PTR_ERR(host->cqe));
-> +			host->cqe = 0;
-> +			host->pdata->caps2 &= ~(MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD);
-> +		} else {
-> +			host->cqe->ops = &dw_mci_cqhci_host_ops;
-> +			cqhci_init(host->cqe, host->slot->mmc, 0);
-> +		}
-> +	}
-> +}
-> +
-> +int dw_mci_cqe_probe(struct dw_mci *host)
-> +{
-> +	const struct dw_mci_drv_data *drv_data = host->drv_data;
-> +	int ret = 0;
-> +
-> +	if (!host->pdata) {
-> +		host->pdata = dw_mci_cqe_parse_dt(host);
-> +		if (PTR_ERR(host->pdata) == -EPROBE_DEFER) {
-> +			return -EPROBE_DEFER;
-> +		} else if (IS_ERR(host->pdata)) {
-> +			dev_err(host->dev, "platform data not available\n");
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	host->biu_clk = devm_clk_get(host->dev, "biu");
-> +	if (IS_ERR(host->biu_clk)) {
-> +		dev_dbg(host->dev, "biu clock not available\n");
-> +	} else {
-> +		ret = clk_prepare_enable(host->biu_clk);
-> +		if (ret) {
-> +			dev_err(host->dev, "failed to enable biu clock\n");
-> +			return ret;
-> +		}
-> +	}
+> +  clock-frequency:
+> +    description:
+> +      Operating frequency of realtek emmc controller clock
 
-All this should be probably devm_clk_get_enabled().
+Drop entire property. There is already max-frequency.
+
+> +    minimum: 300000
+> +    maximum: 400000000
+> +
+> +  vmmc-supply:
+> +    description:
+> +      Handle to fixed-voltage supply for the card power.
+
+Drop entire property. Not needed.
 
 > +
-> +	host->ciu_clk = devm_clk_get(host->dev, "ciu");
-> +	if (IS_ERR(host->ciu_clk)) {
-> +		dev_dbg(host->dev, "ciu clock not available\n");
-> +		host->bus_hz = host->pdata->bus_hz;
-> +	} else {
-> +		ret = clk_prepare_enable(host->ciu_clk);
-> +		if (ret) {
-> +			dev_err(host->dev, "failed to enable ciu clock\n");
-> +			goto err_clk_biu;
-> +		}
+> +  pinctrl-0:
+> +    description:
+> +      should contain default/high speed pin ctrl.
+> +    maxItems: 1
 > +
-> +		if (host->pdata->bus_hz) {
-> +			ret = clk_set_rate(host->ciu_clk, host->pdata->bus_hz);
-> +			if (ret)
-> +				dev_warn(host->dev,
-> +					 "Unable to set bus rate to %uHz\n",
-> +					 host->pdata->bus_hz);
-> +		}
+> +  pinctrl-1:
+> +    description:
+> +      should contain sdr50 mode pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-2:
+> +    description:
+> +      should contain ddr50 mode pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-3:
+> +    description:
+> +      should contain hs200 speed pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-4:
+> +    description:
+> +      should contain hs400 speed pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-5:
+> +    description:
+> +      should contain tune0 pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-6:
+> +    description:
+> +      should contain tune1 pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-7:
+> +    description:
+> +      should contain tune2 pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-8:
+> +    description:
+> +      should contain tune3 pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-9:
+> +    description:
+> +      should contain tune4 pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-names:
+> +    maxItems: 10
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - clock-frequency
+> +  - vmmc-supply
+> +  - pinctrl-names
+> +  - pinctrl-0
+> +  - pinctrl-1
+> +  - pinctrl-3
+> +  - pinctrl-4
+> +  - pinctrl-5
+> +  - pinctrl-6
+> +  - pinctrl-7
+> +  - pinctrl-8
+> +  - pinctrl-9
+> +
+> +additionalProperties: false
 
-All this should be probably devm_clk_get_enabled().
-
-
-> +		host->bus_hz = clk_get_rate(host->ciu_clk);
-
-So this proves that your property clock-frequency is useless.
-
-> +	}
-> +
-> +	if (!host->bus_hz) {
-> +		dev_err(host->dev,
-> +			"Platform data must supply bus speed\n");
-> +		ret = -ENODEV;
-> +		goto err_clk_ciu;
-> +	}
-> +
-> +	if (!IS_ERR(host->pdata->rstc)) {
-> +		reset_control_assert(host->pdata->rstc);
-> +		usleep_range(10, 50);
-> +		reset_control_deassert(host->pdata->rstc);
-> +	}
-> +
-> +	timer_setup(&host->timer, dw_mci_cqe_cto_timer, 0);
-> +
-> +	spin_lock_init(&host->lock);
-> +	spin_lock_init(&host->irq_lock);
-> +	init_rwsem(&host->cr_rw_sem);
-> +	tasklet_init(&host->tasklet, dw_mci_cqe_tasklet_func, (unsigned long)host);
-> +
-> +	dw_mci_cqe_setup(host);
-> +
-> +	dw_mci_cqe_init_dma(host);
-> +
-> +	host->tuning = 0;
-> +	host->current_speed = 0;
-> +
-> +	if (drv_data && drv_data->init) {
-> +		ret = drv_data->init(host);
-> +		if (ret) {
-> +			dev_err(host->dev,
-> +				"implementation specific init failed\n");
-> +			goto err_dmaunmap;
-> +		}
-> +	}
-> +
-> +	ret = dw_mci_cqe_init_slot(host);
-> +	if (ret) {
-> +		dev_err(host->dev, "slot 0 init failed\n");
-> +		goto err_dmaunmap;
-> +	}
-> +
-> +	ret = devm_request_irq(host->dev, host->irq, dw_mci_cqe_interrupt,
-> +			       host->irq_flags, "dw-mci-cqe", host);
-> +	if (ret)
-> +		goto err_dmaunmap;
-> +
-> +	dw_mci_cqhci_init(host);
-> +
-> +	return 0;
-> +
-> +err_dmaunmap:
-> +	if (!IS_ERR(host->pdata->rstc))
-> +		reset_control_assert(host->pdata->rstc);
-> +err_clk_ciu:
-> +	clk_disable_unprepare(host->ciu_clk);
-> +
-> +err_clk_biu:
-> +	clk_disable_unprepare(host->biu_clk);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(dw_mci_cqe_probe);
-
-EXPORT_SYMBOL_GPL
-
-I should have been more explicit:
-EXPORT_SYMBOL_GPL everywhere. In this patchset and all your future
-patchsets. For all your current and future code.
+unevaluatedProperties: false
 
 > +
-> +void dw_mci_cqe_remove(struct dw_mci *host)
-> +{
-> +	if (host->slot)
-> +		dw_mci_cqe_cleanup_slot(host->slot);
-> +
-> +	if (!IS_ERR(host->pdata->rstc))
-> +		reset_control_assert(host->pdata->rstc);
-> +
-> +	clk_disable_unprepare(host->ciu_clk);
-> +	clk_disable_unprepare(host->biu_clk);
-> +}
-> +EXPORT_SYMBOL(dw_mci_cqe_remove);
-> +
+> +examples:
+> +  - |
+> +    emmc: mmc@12000 {
+> +      compatible = "realtek,rtd-dw-cqe-emmc";
+> +      reg = <0x00012000 0x00600>,
+> +            <0x00012180 0x00060>;
+> +      reg-names = "emmc", "cqhci";
+> +      interrupts = <0 42 4>;
+> +      clocks = <&cc 22>, <&cc 26>, <&cc 121>, <&cc 122>;
+> +      clock-names = "biu", "ciu", "vp0", "vp1";
 
+I asked you to test the bindings. This also means that you must test
+your DTS against bindings. Your bindings, DTS and driver do not match,
+therefore let's be a bit more clear:
 
-
+NAK, till you upstream your DTS.
 
 Best regards,
 Krzysztof
