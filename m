@@ -2,69 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0B67DF222
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5807DF22A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347143AbjKBMRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S1376322AbjKBMSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347273AbjKBMRQ (ORCPT
+        with ESMTP id S1347434AbjKBMRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:17:16 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4859D185
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:17:08 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-457cdfc293bso354103137.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698927427; x=1699532227; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Emmjf+2NO3ztIpMJBBAOr+RoGGRHaG/AsnUmU9W3f0=;
-        b=NvvBgbk6vIdTRgWWuUnqLIXV1w/E7dQ4AvSBGe36KzSGJ3DreW+20H54zUim8vS0p3
-         MK8AKWdjfrIwgodjm2arJ63zoghGDfcjpWtgGDjxZ6n3zEUKKpdBQTP/fFWlvSxHZKEF
-         yAx21j/Vc93x9Oi86ewoN+OWR1DSCHj1HZCV2RTnMdf18ebP7qdT4wldBouyd/8MaHeJ
-         8eKULYBtt9qCDjoRCQzGqSJOxw0MniS7A0HM/o8oDgStdDax7X6ZZkUzswcMqJxX1Qyw
-         VgDlzT8geRfVlYu16Dg6+nFS58u10c2L0U3iWkLfD0kOPi4eT4hLmA3aLDv/yhrZdbsV
-         9cNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698927427; x=1699532227;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6Emmjf+2NO3ztIpMJBBAOr+RoGGRHaG/AsnUmU9W3f0=;
-        b=pWQY3e17FxNqzQDpHyuJ6sZpy9/6bI7Yen7kpBEuBFqA+4rPfGu6//YVHCgjwVbiWy
-         2Hre86OJXxEX9QrdFfr4UYFlv3dgJSJgElc8KOoTI4YgZnLprOe1BQa2cY1iVAGCKPvj
-         v/95aY3j3nDi3gMaorjF+Z/hkUXdhtinugdzRQXQ1XCEGOfTRogvAplKaY9+oDqABc20
-         3ew91ol/8vjidFrmy++u5CetSp5PWL/LTzZQrTXFRRSNam36QUpvwvinhNyNVOS08ZJl
-         Wf/CvW+AFhTMj1o7wrpqLjcedEB84m6lywoxuugMbo2OaMqmnOnVPHfCKCCv/v8BMFtG
-         a4RA==
-X-Gm-Message-State: AOJu0YyjISUxnhDCg4oQFf9gK8MEuwiv4T+Bd8Pb7FFbMdWSYOpXD7Q7
-        f9fVkq7nOFXJkABYmvAR8KPuyhn7wwu0SEWf+GlFoIdflEpAkbNeWPg=
-X-Google-Smtp-Source: AGHT+IG+ZyBeZ0CLPfoumkQrBc86+ccJD0aqllH3DMSEJCfF0qUcyiO7GaiarKOm4FqE92bRK9O71qXTxuCxvfGIsww=
-X-Received: by 2002:a05:6102:200f:b0:45c:c42d:87cb with SMTP id
- p15-20020a056102200f00b0045cc42d87cbmr2466070vsr.24.1698927427313; Thu, 02
- Nov 2023 05:17:07 -0700 (PDT)
+        Thu, 2 Nov 2023 08:17:50 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC3F193;
+        Thu,  2 Nov 2023 05:17:46 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3A2CHFCR024307;
+        Thu, 2 Nov 2023 20:17:15 +0800 (+08)
+        (envelope-from Kaiwei.Liu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SLjS10k1Yz2M9fbK;
+        Thu,  2 Nov 2023 20:12:33 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
+ (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 2 Nov 2023
+ 20:17:14 +0800
+From:   Kaiwei Liu <kaiwei.liu@unisoc.com>
+To:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        kaiwei liu <liukaiwei086@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH 2/2] dmaengine: sprd: optimize two stage transfer function
+Date:   Thu, 2 Nov 2023 20:17:08 +0800
+Message-ID: <20231102121708.32279-1-kaiwei.liu@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20231026080409.4149616-1-jens.wiklander@linaro.org>
- <CAFA6WYOYRQ4BgyUE90EwAVULsa=qDkZ4C=0rX49e-E3LOvyz6Q@mail.gmail.com> <20231102115925.GA1233092@rayden>
-In-Reply-To: <20231102115925.GA1233092@rayden>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 2 Nov 2023 17:46:55 +0530
-Message-ID: <CAFA6WYPh-hfzcuLOHToby_vuQcqHh64kF0WQ4AdoaRwjeyyFFg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] OP-TEE FF-A notifications
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Olivier Deprez <Olivier.Deprez@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx07.spreadtrum.com (10.0.1.12)
+X-MAIL: SHSQR01.spreadtrum.com 3A2CHFCR024307
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,84 +51,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Nov 2023 at 17:29, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Hi Sumit,
->
-> On Mon, Oct 30, 2023 at 11:32:47AM +0530, Sumit Garg wrote:
-> > Hi Jens,
-> >
-> > On Thu, 26 Oct 2023 at 13:34, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > This patchset adds support for using FF-A notifications as a delivery
-> > > mechanism of asynchronous notifications from OP-TEE running in the secure
-> > > world. Support for asynchronous notifications via the SMC ABI was added in
-> > > [1], here we add the counterpart needed when using the the FF-A ABI.
-> > >
-> > > Support for FF-A notifications is added with [2] and this patch set is based
-> > > on Sudeeps tree at [3].
-> >
-> > It's good to see FF-A notifications support coming through. The good
-> > aspect here is that FF-A uses a common secure world SGI for
-> > notifications and doesn't have to deal with platform specific reserved
-> > SPI for notifications.
-> >
-> > From OP-TEE point of view I think most of the secure SGI donation base
-> > would be common, so can we switch the SMC ABI to use this donated
-> > secure world SGI for notifications too?
->
-> The SMC ABI driver picks up the interrupt used for notification from
-> device-tree, so there's a chance that it just works if a donated SGI is
-> supplied instead. We'll need some changes in the secure world side of
-> OP-TEE, but they wouldn't affect the ABI.
+From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
 
-AFAIK, a secure world donated SGIs doesn't support IRQ mapping via DT.
-The FF-A driver explicitly creates that mapping here [1]. Moreover
-it's better to detect it via an SMC call rather than hard coded via DT
-as FF-A driver does.
+For SPRD DMA, it provides a function that one channel can start
+the second channel after completing the transmission, which we
+call two stage transfer mode. You can choose which channel can
+generate interrupt when finished. It can support up to two sets
+of such patterns.
+When configuring registers for two stage transfer mode, we need
+to set the mask bit to ensure that the setting are accurate. And
+we should clear the two stage transfer configuration when release
+DMA channel.
+The two stage transfer function is mainly used by SPRD audio, and
+now audio also requires that the data need to be accessed on the
+device side. So here use the src_port_window_size and dst_port_win-
+dow_size in the struct of dma_slave_config.
 
-So the ABI should dynamically detect if there is a donated SGI then
-use it otherwise fallback to SPI/PPI detection via DT. This would make
-the notifications feature platform agnostic and we can drop legacy DT
-methods from optee-os entirely but still need to maintain them in the
-kernel for backwards compatibility.
+Signed-off-by: kaiwei.liu <kaiwei.liu@unisoc.com>
+---
+ drivers/dma/sprd-dma.c | 116 ++++++++++++++++++++++++-----------------
+ 1 file changed, 69 insertions(+), 47 deletions(-)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/tree/drivers/firmware/arm_ffa/driver.c?h=ffa-updates-6.7#n1283
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/tree/drivers/firmware/arm_ffa/driver.c?h=ffa-updates-6.7#n1275
+diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+index 8ab5a9082fc5..f54f4ba1a8bd 100644
+--- a/drivers/dma/sprd-dma.c
++++ b/drivers/dma/sprd-dma.c
+@@ -68,6 +68,7 @@
+ #define SPRD_DMA_GLB_TRANS_DONE_TRG	BIT(18)
+ #define SPRD_DMA_GLB_BLOCK_DONE_TRG	BIT(17)
+ #define SPRD_DMA_GLB_FRAG_DONE_TRG	BIT(16)
++#define SPRD_DMA_GLB_TRG_MASK		GENMASK(19, 16)
+ #define SPRD_DMA_GLB_TRG_OFFSET		16
+ #define SPRD_DMA_GLB_DEST_CHN_MASK	GENMASK(13, 8)
+ #define SPRD_DMA_GLB_DEST_CHN_OFFSET	8
+@@ -155,6 +156,13 @@
+ 
+ #define SPRD_DMA_SOFTWARE_UID		0
+ 
++#define SPRD_DMA_SRC_CHN0_INT		9
++#define SPRD_DMA_SRC_CHN1_INT		10
++#define SPRD_DMA_DST_CHN0_INT		11
++#define SPRD_DMA_DST_CHN1_INT		12
++#define SPRD_DMA_2STAGE_SET		1
++#define SPRD_DMA_2STAGE_CLEAR		0
++
+ /* dma data width values */
+ enum sprd_dma_datawidth {
+ 	SPRD_DMA_DATAWIDTH_1_BYTE,
+@@ -431,53 +439,57 @@ static enum sprd_dma_req_mode sprd_dma_get_req_type(struct sprd_dma_chn *schan)
+ 	return (frag_reg >> SPRD_DMA_REQ_MODE_OFFSET) & SPRD_DMA_REQ_MODE_MASK;
+ }
+ 
+-static int sprd_dma_set_2stage_config(struct sprd_dma_chn *schan)
++static void sprd_dma_2stage_write(struct sprd_dma_chn *schan,
++				  u32 config_type, u32 grp_offset)
+ {
+ 	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
+-	u32 val, chn = schan->chn_num + 1;
+-
+-	switch (schan->chn_mode) {
+-	case SPRD_DMA_SRC_CHN0:
+-		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
+-		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
+-		val |= SPRD_DMA_GLB_2STAGE_EN;
+-		if (schan->int_type != SPRD_DMA_NO_INT)
+-			val |= SPRD_DMA_GLB_SRC_INT;
+-
+-		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
+-		break;
+-
+-	case SPRD_DMA_SRC_CHN1:
+-		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
+-		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
+-		val |= SPRD_DMA_GLB_2STAGE_EN;
+-		if (schan->int_type != SPRD_DMA_NO_INT)
+-			val |= SPRD_DMA_GLB_SRC_INT;
+-
+-		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
+-		break;
+-
+-	case SPRD_DMA_DST_CHN0:
+-		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
+-			SPRD_DMA_GLB_DEST_CHN_MASK;
+-		val |= SPRD_DMA_GLB_2STAGE_EN;
+-		if (schan->int_type != SPRD_DMA_NO_INT)
+-			val |= SPRD_DMA_GLB_DEST_INT;
+-
+-		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
+-		break;
+-
+-	case SPRD_DMA_DST_CHN1:
+-		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
+-			SPRD_DMA_GLB_DEST_CHN_MASK;
+-		val |= SPRD_DMA_GLB_2STAGE_EN;
+-		if (schan->int_type != SPRD_DMA_NO_INT)
+-			val |= SPRD_DMA_GLB_DEST_INT;
+-
+-		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
+-		break;
++	u32 mask_val;
++	u32 chn = schan->chn_num + 1;
++	u32 val = 0;
++
++	if (config_type == SPRD_DMA_2STAGE_SET) {
++		if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
++		    schan->chn_mode == SPRD_DMA_SRC_CHN1) {
++			val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
++			val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
++			val |= SPRD_DMA_GLB_2STAGE_EN;
++			if (schan->int_type & SPRD_DMA_SRC_CHN0_INT ||
++			    schan->int_type & SPRD_DMA_SRC_CHN1_INT)
++				val |= SPRD_DMA_GLB_SRC_INT;
++			mask_val = SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_TRG_MASK |
++				   SPRD_DMA_GLB_SRC_CHN_MASK;
++		} else {
++			val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
++			       SPRD_DMA_GLB_DEST_CHN_MASK;
++			val |= SPRD_DMA_GLB_2STAGE_EN;
++			if (schan->int_type & SPRD_DMA_DST_CHN0_INT ||
++			    schan->int_type & SPRD_DMA_DST_CHN1_INT)
++				val |= SPRD_DMA_GLB_DEST_INT;
++			mask_val = SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB_DEST_CHN_MASK;
++		}
++	} else {
++		if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
++		    schan->chn_mode == SPRD_DMA_SRC_CHN1)
++			mask_val = SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_TRG_MASK |
++				   SPRD_DMA_GLB_2STAGE_EN | SPRD_DMA_GLB_SRC_CHN_MASK;
++		else
++			mask_val = SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB_2STAGE_EN |
++				   SPRD_DMA_GLB_DEST_CHN_MASK;
++	}
++	sprd_dma_glb_update(sdev, grp_offset, mask_val, val);
++}
+ 
+-	default:
++static int sprd_dma_2stage_config(struct sprd_dma_chn *schan, u32 config_type)
++{
++	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
++
++	if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
++	    schan->chn_mode == SPRD_DMA_DST_CHN0)
++		sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2STAGE_GRP1);
++	else if (schan->chn_mode == SPRD_DMA_SRC_CHN1 ||
++		 schan->chn_mode == SPRD_DMA_DST_CHN1)
++		sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2STAGE_GRP2);
++	else {
+ 		dev_err(sdev->dma_dev.dev, "invalid channel mode setting %d\n",
+ 			schan->chn_mode);
+ 		return -EINVAL;
+@@ -545,7 +557,7 @@ static void sprd_dma_start(struct sprd_dma_chn *schan)
+ 	 * Set 2-stage configuration if the channel starts one 2-stage
+ 	 * transfer.
+ 	 */
+-	if (schan->chn_mode && sprd_dma_set_2stage_config(schan))
++	if (schan->chn_mode && sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_SET))
+ 		return;
+ 
+ 	/*
+@@ -569,6 +581,12 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
+ 	sprd_dma_set_pending(schan, false);
+ 	sprd_dma_unset_uid(schan);
+ 	sprd_dma_clear_int(schan);
++	/*
++	 * If 2-stage transfer is used, the configuration must be clear
++	 * when release DMA channel.
++	 */
++	if (schan->chn_mode)
++		sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_CLEAR);
+ 	schan->cur_desc = NULL;
+ }
+ 
+@@ -757,7 +775,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
+ 	phys_addr_t llist_ptr;
+ 
+ 	if (dir == DMA_MEM_TO_DEV) {
+-		src_step = sprd_dma_get_step(slave_cfg->src_addr_width);
++		src_step = slave_cfg->src_port_window_size ?
++			   slave_cfg->src_port_window_size :
++			   sprd_dma_get_step(slave_cfg->src_addr_width);
+ 		if (src_step < 0) {
+ 			dev_err(sdev->dma_dev.dev, "invalid source step\n");
+ 			return src_step;
+@@ -773,7 +793,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
+ 		else
+ 			dst_step = SPRD_DMA_NONE_STEP;
+ 	} else {
+-		dst_step = sprd_dma_get_step(slave_cfg->dst_addr_width);
++		dst_step = slave_cfg->dst_port_window_size ?
++			   slave_cfg->dst_port_window_size :
++			   sprd_dma_get_step(slave_cfg->dst_addr_width);
+ 		if (dst_step < 0) {
+ 			dev_err(sdev->dma_dev.dev, "invalid destination step\n");
+ 			return dst_step;
+-- 
+2.17.1
 
--Sumit
-
->
-> Cheers,
-> Jens
->
-> >
-> > -Sumit
-> >
-> > >
-> > > [1] https://lore.kernel.org/lkml/20211103090255.998070-1-jens.wiklander@linaro.org/
-> > > [2] https://lore.kernel.org/linux-arm-kernel/20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com/
-> > > [3] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/tag/?h=ffa-updates-6.7
-> > >     commit bcefd1bf63b1 ("firmware: arm_ffa: Upgrade the driver version to v1.1")
-> > >
-> > > Thanks,
-> > > Jens
-> > >
-> > > Jens Wiklander (2):
-> > >   optee: provide optee_do_bottom_half() as a common function
-> > >   optee: ffa_abi: add asynchronous notifications
-> > >
-> > >  drivers/tee/optee/call.c          | 31 ++++++++++-
-> > >  drivers/tee/optee/ffa_abi.c       | 91 ++++++++++++++++++++++++++++++-
-> > >  drivers/tee/optee/optee_ffa.h     | 28 ++++++++--
-> > >  drivers/tee/optee/optee_private.h |  9 ++-
-> > >  drivers/tee/optee/smc_abi.c       | 36 ++----------
-> > >  5 files changed, 153 insertions(+), 42 deletions(-)
-> > >
-> > >
-> > > base-commit: bcefd1bf63b1ec9bb08067021cf47f0fad96f395
-> > > --
-> > > 2.34.1
-> > >
