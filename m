@@ -2,214 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C624F7DF8C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105337DF8C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjKBRdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
+        id S231518AbjKBReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjKBRda (ORCPT
+        with ESMTP id S233328AbjKBReE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:33:30 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D518182
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:33:25 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67131800219so7277066d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:33:25 -0700 (PDT)
+        Thu, 2 Nov 2023 13:34:04 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8947E19D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:34:00 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7c97d5d5aso17334167b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698946404; x=1699551204; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QMUtaNcyMJONDb+NRTDB5A2cdiVh8ep8ZeoczkWG0cY=;
-        b=NPeQcBgNQ2/rHTtvy71BICr0d0g5wXpUc7NKdVZRGHXTpAB6hmZhVmHHu11MbIZFBv
-         QCaFn0l6kax2M/T7/DS6ccYjHP2vCYgU5ig5JDV73fEsiE1sOJ3yLOCe1/SEfmLBL2Vy
-         5cp5699V/T6uvQSTiHK85AUpR7luadxdhzgssniNMlBw7ZET40rluiwzFgIsyZUS2rle
-         /WroydCE838FaIQgv3sORwUijXmefl8S17dCrHefUA5cxIb88chvexZHv/FK2YMuM1pl
-         cLPY+Oyq8K33ZIOpIN5vy8vcF2G+ZpJLGekBssoGEfqH3Uho5egVxo7E8/ZNwHih/t2t
-         TJWQ==
+        d=google.com; s=20230601; t=1698946439; x=1699551239; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t9YpU4ldQQXi82QJZDUwjxQ3rP5Gle0TPFZjnEHYbWE=;
+        b=iAO77EFAgcWddLYuZKXE9qepfSt6IFGJwn6Vit91jtNgivH798craudB87DgqA4NI0
+         yF9laVx2Io+TwAd4gr1Zc85YHGhaVxfUYaHtigsJX8huOk0ZOwUaK0mBAob9/GdF191B
+         l2UqC1RYW2QGmNrgrGBeoBKM+bjRVc7b3HuTWPKu22YUHjGefkAKeuoTYZvSOKLNc8GL
+         z7W0GwINg+hLMrPitsGGY9hvcx3Yc66SWKOChppm+P1w0Zqsx0W/K1CVb32RjYm7vHUp
+         Wc+VmsLV+pvB6DNz7ciZ2pMs/bxVBfYyLtez6UPSytbozioAJsSVb5ZBCbcEqTwWZ1mB
+         QIXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698946404; x=1699551204;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMUtaNcyMJONDb+NRTDB5A2cdiVh8ep8ZeoczkWG0cY=;
-        b=VHWYQiC/cEbXTp/F6yz42KnNcIYlVUz3QLCcI5mBRH1+IlpHhmihfTcZvpo+v5ikP3
-         02CazKfcUhDW34mkA7y2RmuYhKOS36XltPfHIb/PFFLw2RZG4Zu296V8lDd1AP2LwC+E
-         EuPV1wBut0RRg/qAhCGCuPZ2BPAyMqN8qR0//QfwF6+0AGyJf67b7ZoFSk/gaEbAZzWT
-         koHRI9XAAaeEFLqH3My1vU9vYGEQar3gc/Yewy7PuE82gpAaEGVJTJiePBNi5pVJFst0
-         pMwD4aOYq8mWe05Mnm9z4P52dpD5D+oYWW5sVUBHE+XCjiX4hNEE52goTJIVV2gHfR8i
-         9kEQ==
-X-Gm-Message-State: AOJu0Ywi++Lr31lFF449d4YJhh/6+TjBOgWGv3QK54pC95XlXkC2AyBI
-        QBJj2Mv5t9Zu/plf6we+XUj1
-X-Google-Smtp-Source: AGHT+IHX7EI2x7veOgf/GXDdZbsRu/5EohayNZh0ZiyAzJQnH+S4mjA6yTOVfB6lGTAOudjhbyAuRQ==
-X-Received: by 2002:a05:6214:529c:b0:66d:2af4:c423 with SMTP id kj28-20020a056214529c00b0066d2af4c423mr21097024qvb.2.1698946404249;
-        Thu, 02 Nov 2023 10:33:24 -0700 (PDT)
-Received: from thinkpad ([117.217.189.228])
-        by smtp.gmail.com with ESMTPSA id p15-20020a0cc3cf000000b00670e7ae4964sm125621qvi.91.2023.11.02.10.33.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 10:33:23 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 23:03:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        robh@kernel.org, roy.zang@nxp.com
-Subject: Re: [PATCH v3 3/4] PCI: layerscape: Rename pf_* as pf_lut_*
-Message-ID: <20231102173314.GE20943@thinkpad>
-References: <20231017193145.3198380-1-Frank.Li@nxp.com>
- <20231017193145.3198380-4-Frank.Li@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231017193145.3198380-4-Frank.Li@nxp.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698946439; x=1699551239;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t9YpU4ldQQXi82QJZDUwjxQ3rP5Gle0TPFZjnEHYbWE=;
+        b=dxvM97UemH4scW7O4g2pYSuMmO14QlhDy+UBmMZ9jD2RQVyf1rp3kSbPhGjqCDRhG1
+         bi9egbf9DYdQi314aLHQOWlX8N2wij1t2Y+6iC/zj++lYLWlplSbdeWVf38u/ukEvqKi
+         9iFbgchiKemWe+7o5Kbf2Pr62ps393GEbRymfYyeEstF4fUFTO89iWGhGHAxqyblxA9w
+         U6vRUe9SmmjzPMmsSfzGnV7jZzuGLEfttlWPGuXec5IProQ1wVgten4quYNcQJz7ZHFP
+         pJqnhL6Fra1zJBlrjgvgrtITzHvcThCx9aPUgKN40ANiJS9igZ20YHY3xknoJvRKuxOa
+         ILAg==
+X-Gm-Message-State: AOJu0Yyv4oliYf97tG6pPO1oXDHsZCrdOgtAfMbKIEF0Jrrjr/ycdWfg
+        3FRTQ8oIO72MMTkDT2ZVjwQ5L70twl4=
+X-Google-Smtp-Source: AGHT+IEtlX9obG8wcyu0re0ETqrSDPLviN5zJozM80QKS5E7coB4Dqsk+Dz7Vr71IisMGcVmSjm3FV1Iv5k=
+X-Received: from avagin.kir.corp.google.com ([2620:0:1008:10:a803:d728:acb2:4622])
+ (user=avagin job=sendgmr) by 2002:a0d:ea41:0:b0:5a7:aa51:c08e with SMTP id
+ t62-20020a0dea41000000b005a7aa51c08emr7033ywe.1.1698946439720; Thu, 02 Nov
+ 2023 10:33:59 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:33:57 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231102173357.446157-1-avagin@google.com>
+Subject: [PATCH] fs/proc/task_mmu: report SOFT_DIRTY bits through the
+ PAGEMAP_SCAN ioctl
+From:   Andrei Vagin <avagin@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, Andrei Vagin <avagin@google.com>,
+        "=?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?=" <mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 03:31:44PM -0400, Frank Li wrote:
-> 'pf' and 'lut' is just difference name in difference chips, but basic it is
-> a MMIO base address plus an offset.
-> 
-> Rename it to avoid duplicate pf_* and lut_* in driver.
-> 
+The PAGEMAP_SCAN ioctl returns information regarding page table entries.
+It is more efficient compared to reading pagemap files. CRIU can start
+to utilize this ioctl, but it needs info about soft-dirty bits to track
+memory changes.
 
-"pci-layerscape-ep.c" uses "ls_lut_" prefix and now you are using "pf_lut_". May
-I know the difference between these two? Can we just use a common name?
+We are aware of a new method for tracking memory changes implemented in
+the PAGEMAP_SCAN ioctl. For CRIU, the primary advantage of this method
+is its usability by unprivileged users. However, it is not feasible to
+transparently replace the soft-dirty tracker with the new one. The main
+problem here is userfault descriptors that have to be preserved between
+pre-dump iterations.  It means criu continues supporting the soft-dirty
+method to avoid breakage for current users. The new method will be
+implemented as a separate feature.
 
-- Mani
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Andrei Vagin <avagin@google.com>
+---
+ fs/proc/task_mmu.c      | 13 ++++++++++++-
+ include/uapi/linux/fs.h |  1 +
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     change from v1 to v3
->     - new patch at v3
-> 
->  drivers/pci/controller/dwc/pci-layerscape.c | 34 ++++++++++-----------
->  1 file changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index 6f47cfe146c44..4b663b20d8612 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -46,7 +46,7 @@
->  #define LS_PCIE_DRV_SCFG	BIT(0)
->  
->  struct ls_pcie_drvdata {
-> -	const u32 pf_off;
-> +	const u32 pf_lut_off;
->  	const struct dw_pcie_host_ops *ops;
->  	int (*exit_from_l2)(struct dw_pcie_rp *pp);
->  	int flags;
-> @@ -56,13 +56,13 @@ struct ls_pcie_drvdata {
->  struct ls_pcie {
->  	struct dw_pcie *pci;
->  	const struct ls_pcie_drvdata *drvdata;
-> -	void __iomem *pf_base;
-> +	void __iomem *pf_lut_base;
->  	struct regmap *scfg;
->  	int index;
->  	bool big_endian;
->  };
->  
-> -#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
-> +#define ls_pcie_pf_lut_readl_addr(addr)	ls_pcie_pf_lut_readl(pcie, addr)
->  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
-> @@ -103,20 +103,20 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
->  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
->  }
->  
-> -static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
-> +static u32 ls_pcie_pf_lut_readl(struct ls_pcie *pcie, u32 off)
->  {
->  	if (pcie->big_endian)
-> -		return ioread32be(pcie->pf_base + off);
-> +		return ioread32be(pcie->pf_lut_base + off);
->  
-> -	return ioread32(pcie->pf_base + off);
-> +	return ioread32(pcie->pf_lut_base + off);
->  }
->  
-> -static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +static void ls_pcie_pf_lut_writel(struct ls_pcie *pcie, u32 off, u32 val)
->  {
->  	if (pcie->big_endian)
-> -		iowrite32be(val, pcie->pf_base + off);
-> +		iowrite32be(val, pcie->pf_lut_base + off);
->  	else
-> -		iowrite32(val, pcie->pf_base + off);
-> +		iowrite32(val, pcie->pf_lut_base + off);
->  }
->  
->  static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> @@ -126,11 +126,11 @@ static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
->  	u32 val;
->  	int ret;
->  
-> -	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_PF_MCR);
->  	val |= PF_MCR_PTOMR;
-> -	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_PF_MCR, val);
->  
-> -	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +	ret = readx_poll_timeout(ls_pcie_pf_lut_readl_addr, LS_PCIE_PF_MCR,
->  				 val, !(val & PF_MCR_PTOMR),
->  				 PCIE_PME_TO_L2_TIMEOUT_US/10,
->  				 PCIE_PME_TO_L2_TIMEOUT_US);
-> @@ -149,15 +149,15 @@ static int ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
->  	 * Set PF_MCR_EXL2S bit in LS_PCIE_PF_MCR register for the link
->  	 * to exit L2 state.
->  	 */
-> -	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_PF_MCR);
->  	val |= PF_MCR_EXL2S;
-> -	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_PF_MCR, val);
->  
->  	/*
->  	 * L2 exit timeout of 10ms is not defined in the specifications,
->  	 * it was chosen based on empirical observations.
->  	 */
-> -	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +	ret = readx_poll_timeout(ls_pcie_pf_lut_readl_addr, LS_PCIE_PF_MCR,
->  				 val, !(val & PF_MCR_EXL2S),
->  				 1000,
->  				 10000);
-> @@ -245,7 +245,7 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
->  };
->  
->  static const struct ls_pcie_drvdata layerscape_drvdata = {
-> -	.pf_off = 0xc0000,
-> +	.pf_lut_off = 0xc0000,
->  	.pm_support = true,
->  	.exit_from_l2 = ls_pcie_exit_from_l2,
->  };
-> @@ -295,7 +295,7 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  
->  	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
->  
-> -	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
-> +	pcie->pf_lut_base = pci->dbi_base + pcie->drvdata->pf_lut_off;
->  
->  	if (pcie->drvdata->flags & LS_PCIE_DRV_SCFG) {
->  
-> -- 
-> 2.34.1
-> 
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ef2eb12906da..cefa676bd33b 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1761,7 +1761,7 @@ static int pagemap_release(struct inode *inode, struc=
+t file *file)
+ #define PM_SCAN_CATEGORIES	(PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN |	\
+ 				 PAGE_IS_FILE |	PAGE_IS_PRESENT |	\
+ 				 PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |	\
+-				 PAGE_IS_HUGE)
++				 PAGE_IS_HUGE | PAGE_IS_SOFT_DIRTY)
+ #define PM_SCAN_FLAGS		(PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC)
+=20
+ struct pagemap_scan_private {
+@@ -1853,12 +1853,16 @@ static unsigned long pagemap_thp_category(struct pa=
+gemap_scan_private *p,
+=20
+ 		if (is_zero_pfn(pmd_pfn(pmd)))
+ 			categories |=3D PAGE_IS_PFNZERO;
++		if (pmd_soft_dirty(pmd))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	} else if (is_swap_pmd(pmd)) {
+ 		swp_entry_t swp;
+=20
+ 		categories |=3D PAGE_IS_SWAPPED;
+ 		if (!pmd_swp_uffd_wp(pmd))
+ 			categories |=3D PAGE_IS_WRITTEN;
++		if (pmd_swp_soft_dirty(pmd))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+=20
+ 		if (p->masks_of_interest & PAGE_IS_FILE) {
+ 			swp =3D pmd_to_swp_entry(pmd);
+@@ -1905,10 +1909,14 @@ static unsigned long pagemap_hugetlb_category(pte_t=
+ pte)
+ 			categories |=3D PAGE_IS_FILE;
+ 		if (is_zero_pfn(pte_pfn(pte)))
+ 			categories |=3D PAGE_IS_PFNZERO;
++		if (pte_soft_dirty(pte))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	} else if (is_swap_pte(pte)) {
+ 		categories |=3D PAGE_IS_SWAPPED;
+ 		if (!pte_swp_uffd_wp_any(pte))
+ 			categories |=3D PAGE_IS_WRITTEN;
++		if (pte_swp_soft_dirty(pte))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	}
+=20
+ 	return categories;
+@@ -1991,6 +1999,9 @@ static int pagemap_scan_test_walk(unsigned long start=
+, unsigned long end,
+ 	if (vma->vm_flags & VM_PFNMAP)
+ 		return 1;
+=20
++	if (vma->vm_flags & VM_SOFTDIRTY)
++		vma_category |=3D PAGE_IS_SOFT_DIRTY;
++
+ 	if (!pagemap_scan_is_interesting_vma(vma_category, p))
+ 		return 1;
+=20
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index da43810b7485..48ad69f7722e 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -316,6 +316,7 @@ typedef int __bitwise __kernel_rwf_t;
+ #define PAGE_IS_SWAPPED		(1 << 4)
+ #define PAGE_IS_PFNZERO		(1 << 5)
+ #define PAGE_IS_HUGE		(1 << 6)
++#define PAGE_IS_SOFT_DIRTY	(1 << 7)
+=20
+ /*
+  * struct page_region - Page region with flags
+--=20
+2.42.0.869.gea05f2083d-goog
 
--- 
-மணிவண்ணன் சதாசிவம்
