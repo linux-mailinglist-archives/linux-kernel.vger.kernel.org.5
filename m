@@ -2,72 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFF87DF2F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAD07DF2FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346297AbjKBM4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
+        id S1376278AbjKBM5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKBM4X (ORCPT
+        with ESMTP id S229665AbjKBM5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:56:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0B8BD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=GgcTWdqaw8oTk+H9w/UodRkn+QGXypNGd40ay+cpcY0=; b=djPoEPuh+ZLdtsbjdVDzS8CFes
-        b8Z/04IZs0mtZKhqIW/0RO3WsG6AOCROoYP8hZ04nxikF9j/LRA888xmDDtd4bQB9XsKSkQMlr9AT
-        xDUZvte1c2a9XtkE2UlV8HzuHvFEiPMZ2MJF0XRgvMDTobSRQKbCqG4GbI/tZeaQpoODbsLwMxBeG
-        L5B9lCNfhw8hFpIbuTa9IikQu+d4ReMcfBhFR1nENlYfnLsfa8IdnCjHLpx7wcuc4j6zYgF/SDZ8M
-        iWe5IBRRL9kSBTIqpkEdXII6E5z1QzE47l93X6JWvguRQMJ8P3zTjfB2mVAa/cFyJGD3/G0TTlLf9
-        xM1Yr8/g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qyXF9-004Y5E-Tc; Thu, 02 Nov 2023 12:56:15 +0000
-Date:   Thu, 2 Nov 2023 12:56:15 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Should vmap() work on pages or folios?
-Message-ID: <ZUOcb1YwUEDT/r3K@casper.infradead.org>
+        Thu, 2 Nov 2023 08:57:22 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80A30121;
+        Thu,  2 Nov 2023 05:57:17 -0700 (PDT)
+Received: from pwmachine.localnet (unknown [86.120.35.5])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4336E20B74C0;
+        Thu,  2 Nov 2023 05:57:15 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4336E20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1698929836;
+        bh=lmXPUyUM/jM/0/57e2UuFckkajSYsjPidz3sTbvACts=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eK3+MYew1dfqEhbm6caxcWlTBwGqR+jjUFwcWkNPxYbyU3BxLPR1TctUk5nwAdd1p
+         WfXNHb6EecnK9VSXI2KXIwEhu4BOjB/9QVHSJm7hsS/aI1HX3OfmcQsO31iJWaMHs5
+         JyKhW7g8mWmak42ulD8iq2NrPUjTfWaxFaa0PeQ8=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH for-next] tracing/kprobes: Add symbol counting check when module loads
+Date:   Thu, 02 Nov 2023 14:57:12 +0200
+Message-ID: <5987802.lOV4Wx5bFT@pwmachine>
+In-Reply-To: <20231101081509.605080231a2736b91331cb85@kernel.org>
+References: <169854904604.132316.12500381416261460174.stgit@devnote2> <1868732.tdWV9SEqCh@pwmachine> <20231101081509.605080231a2736b91331cb85@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For various reasons, I started looking at converting vm_struct.pages
-to be vm_struct.folios.  But vmap() has me wondering because it
-contains:
+Hi!
 
-        if (flags & VM_MAP_PUT_PAGES) {
-                area->pages = pages;
-                area->nr_pages = count;
-        }
+Le mercredi 1 novembre 2023, 01:15:09 EET Masami Hiramatsu a =E9crit :
+> Hi,
+>=20
+> On Tue, 31 Oct 2023 23:24:43 +0200
+>=20
+> Francis Laniel <flaniel@linux.microsoft.com> wrote:
+> > > @@ -729,17 +744,55 @@ static int count_mod_symbols(void *data, const
+> > > char
+> > > *name, unsigned long unused) return 0;
+> > >=20
+> > >  }
+> > >=20
+> > > -static unsigned int number_of_same_symbols(char *func_name)
+> > > +static unsigned int number_of_same_symbols(const char *mod, const ch=
+ar
+> > > *func_name) {
+> > >=20
+> > >  	struct sym_count_ctx ctx =3D { .count =3D 0, .name =3D func_name };
+> > >=20
+> > > -	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
+> > > +	if (!mod)
+> > > +		kallsyms_on_each_match_symbol(count_symbols, func_name,
+> >=20
+> > &ctx.count);
+> >=20
+> > > -	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
+> > > +	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
+> >=20
+> > I may be missing something here or reviewing too quickly.
+> > Wouldn't this function return count to be 0 if func_name is only part of
+> > the module named mod?
+>=20
+> No, please read below.
+>=20
+> > Indeed, if the function is not in kernel symbol,
+> > kallsyms_on_each_match_symbol() will not loop.
+> > And, by giving mod to module_kallsyms_on_each_symbol(), the correspondi=
+ng
+> > module will be skipped, so count_mob_symbols() would not be called.
+> > Hence, we would have 0 as count, which would lead to ENOENT later.
+>=20
+> Would you mean the case func_name is on the specific module?
+> If 'mod' is specified, module_kallsyms_on_each_symbol() only loops on
+> symbols in the module names 'mod'.
+>=20
+> int module_kallsyms_on_each_symbol(const char *modname,
+>                                    int (*fn)(void *, const char *, unsign=
+ed
+> long), void *data)
+> {
+>         struct module *mod;
+>         unsigned int i;
+>         int ret =3D 0;
+>=20
+>         mutex_lock(&module_mutex);
+>         list_for_each_entry(mod, &modules, list) {
+>                 struct mod_kallsyms *kallsyms;
+>=20
+>                 if (mod->state =3D=3D MODULE_STATE_UNFORMED)
+>                         continue;
+>=20
+>                 if (modname && strcmp(modname, mod->name))
+>                         continue;
+> ...
+>=20
+> So with above change, 'if mod is not specified, search the symbols in ker=
+nel
+> and all modules. If mod is sepecified, search the symbol on the specific
+> module'.
+>=20
+> Thus, "if func_name is only part of the module named mod", the
+> module_kallsyms_on_each_symbol() will count the 'func_name' in 'mod' modu=
+le
+> correctly.
 
-In principle, then, we could call vmap() with an array of pages that
-includes tail pages.  However, I think if we do that today, things
-will go badly wrong.  You see, despite the name of the flag, we don't
-actually call put_page().  Instead, we call __free_page() which calls
-__free_pages(page, 0), which calls put_page_testzero().  Since tail
-pages have a refcount of 0, it'll hit the VM_BUG_ON_PAGE().
+Sorry, I looked to quickly and forgot about the return value of strcmp()...
 
-From this, I can conclude nobody does this today.  But people might be
-calling vmap() with tail pages and VM_MAP_PUT_PAGES _not_ set.  And
-it's not necessarily a stupid thing to want to stitch together some
-tail pages (from different folios) into a virtually contiguous block.
-I thibk the primary usecase is order-0 allocations being stuck together
-into a virtually contiguous block, but I haven't audited every caller
-of vmap.
+=46rom the code, everything seems OK!
+If I have some time, I will test it and potentially come back with a "Teste=
+d-
+by" tag but without any warranty.
 
-So what's our intent here?  Should we fix vmap() to actually work with
-tail pages?  Should we require vmap() to only work on order-0 pages?
+> Thank you,
+>=20
+>=20
+> Thank you,
+
+Best regards.
+
+
