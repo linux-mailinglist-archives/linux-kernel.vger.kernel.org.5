@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B32057DFA6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8368D7DFA76
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377254AbjKBS4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        id S1347407AbjKBS4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjKBSz7 (ORCPT
+        with ESMTP id S234273AbjKBSz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 14:55:59 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160A5184
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:55:51 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5af9b0850fdso17755977b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:55:51 -0700 (PDT)
+Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50301188
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:55:52 -0700 (PDT)
+Received: by mail-oo1-xc49.google.com with SMTP id 006d021491bc7-581ff5ab8d3so2639226eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:55:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698951350; x=1699556150; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698951351; x=1699556151; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K1MFejYfcIlhp5L6UBckhhQYL5s7bmRsL3b92h+ON2U=;
-        b=Iignz9zw+EjFYVG0WTLlv6bu4Q6K2OBUdMYTf9SNuBsdBgb9ijqpMdbi1sxXtG2xT6
-         0aFSNJ0BZ8fHw2Ziq1o2S/1y76vI67IKTEExz69AV9EIstysr+dgkfN/YNd0wIstHd2E
-         WvUqxBtKaWJKa6O07F7CGqQDp/9ZWGEglKbYEhApjWGXQFkvSMzR8SuHyQiWpIKpDbx7
-         x3kYROKODF4Vc4o5dvylEk525Aatr42k674XcTwm7OmEldDwY8qtPd53vXpGUVCGYHff
-         6H6sRKk6bJ/ui8xJ7mRdvgJlIZzAnIixRbbzjChXIOdBnfV6r1Ehg+Og80Tc1cR+ATdO
-         O9Pw==
+        bh=32K79yUePS03VyWxcYP10LK3dnc9q0LtbXtqJtsNvV4=;
+        b=4IrWuyf4FDXi3knwTBIYTJsnN040pB6PiJlHx3iw0OI4rBF42lGH6AiCBDsY/ci1uK
+         /hI28wnRz9xZky+J0JVzp9az/5gjGppGB2Xca/Jx7IWGJoSa2RirZoXOp+DnXSo4fRa5
+         RDkICyMS1AHDb14cCvMfnEGBj+ixOrfmrmkQzqlFFGX0C8wyzbpyjXvfSvkAG1jTRr2A
+         +5JxzpbKBSolv016xq3bTGWsdL5DgeXsM999xbYVexSQcrnH+7d9Ze8SVO5EnG8m5Zlf
+         RgifFokKLUsmfHnmTGfweAnFP86XvdnHNb9QaOYC8JTCCeqRAirKqUmPfYgNP3Lp+jsa
+         o52w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951350; x=1699556150;
+        d=1e100.net; s=20230601; t=1698951351; x=1699556151;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K1MFejYfcIlhp5L6UBckhhQYL5s7bmRsL3b92h+ON2U=;
-        b=S/9JxT2VOHUibhTYGjIj7apL8lE+3epRNf7fHCylFdotMpOe+hx9N9nzyn6VrJwzeS
-         oCX7xFLhMu2AyyEfBx4qIdGEvvUyNlB9fxeBW4vmeIPC9SnUJENAT9sgVv/v4JZxqoPa
-         x//YPKHWMj04LfOaPUJ2afX33YzmenQTK0W5leZSYnGJn81Nuu/v2I8cphkVPLWX/0su
-         PaKc56fGL5Dv97SDll1DBfKVHLnPf4L0vCnOBLnagsThDFBhik2dXJhaXnLVH1D1iXOz
-         98G0MC6eSsMCwa/5D+z73No2FzUO8hTK0cDbQ9Rz6Hu3OPtX/Ly5T7mVi/kcxkolgear
-         XLKQ==
-X-Gm-Message-State: AOJu0YzjIVcXvE6qOLULCvY6w8eDSL2jYhlrSCBzPebBl23lTx1Rj8l9
-        hULUePwt4gdcLTlKenofAQ+gZ9/EoOLjyb3M7g==
-X-Google-Smtp-Source: AGHT+IGur+9ubZUYTGwViJK/0T6WuAETQMOPNATCoodiS/vweDFcw/ci9wvenAIu4f9YZlxzEAf34fot3JrUlSjZ+w==
+        bh=32K79yUePS03VyWxcYP10LK3dnc9q0LtbXtqJtsNvV4=;
+        b=UDri4kaMJPD82Sg0sj4gt1S7jhvd0tyrPPvPOjXHqLw4Tymj7S9pooM6sb4b25nElt
+         7bsi2Gt0jKFaUjSMBeyJLrYDTmW1VS5uIv6TS5QJ9rx+Tpw6WQxMqbjIUSeIUK8rBKzT
+         3Gz6RGgw0pSye1dqjK0vnZud/IkRjERFCAzX4QqwYaAJCRSB7/7oQaO6KK8EF5lwj5RX
+         YPV4txfaslTB973HfpzZ5ucBrIrxVrWepjO3jNEDbMvRVRkRN1YBlU6XYqBDgKqE4N5L
+         5WXDEdIZ8sTcpQ+pBcISMEt6dr6PW0gOaiP+QbQtwkdkiILGU9nuSHKp+92do2QWAmpM
+         C6MQ==
+X-Gm-Message-State: AOJu0YzWUNbigYKo+jsyD57arM8rqKfgMlbKWeDpKHF/dkHM3lOMtyCE
+        uvtqCp45bt843v+BgkcwCRv4y+9IENLrP0sbXA==
+X-Google-Smtp-Source: AGHT+IEDkF7Oi1IvBAECUO1D2BZ/WfZR7U3roLxCuXWWPqD/1I8emyNHZYAH7mCiA7sr/QX8V5tqqhhnpUgVQ3gPTg==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:e7d5:0:b0:da1:aff2:bfbc with SMTP
- id e204-20020a25e7d5000000b00da1aff2bfbcmr316486ybh.2.1698951350112; Thu, 02
- Nov 2023 11:55:50 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 18:55:42 +0000
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:b629:b0:1e9:a86f:ec44 with
+ SMTP id cm41-20020a056870b62900b001e9a86fec44mr375267oab.2.1698951351424;
+ Thu, 02 Nov 2023 11:55:51 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 18:55:43 +0000
 In-Reply-To: <20231102-ethtool_puts_impl-v4-0-14e1e9278496@google.com>
 Mime-Version: 1.0
 References: <20231102-ethtool_puts_impl-v4-0-14e1e9278496@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698951347; l=1809;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698951347; l=1990;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=CSBVoPDv8bUcjz46YxS9QitvpQ3NGLvmBs8lKX6nt0Y=; b=ahqS7od7MuaYQgDwf1xLYrlZa/EPl4vCGCgO9aqOLDD54X4Mk82mLZTadznG6MV4/eOfOwtgq
- gVYFH7WrWL5BPoocw4PUQQAzqFcybf4biUS6+am4p7pCOnSg+h+I6qg
+ bh=5WZCSRmn5I240grrVCw4x/4n7/d4Ou3ZeMgHOu6QRHU=; b=1nZEvR6w+gOAIckxQFx/hzREhfGTALc08T+ct+mnZ2DmKk8uycd6z6khwq8TbMAwCu9Ezqp/H
+ Dfu4ZT5igmOB2KC0bZOz7azBMQm7Hj6sTI87CdS0CAZqv2537ilCpzL
 X-Mailer: b4 0.12.3
-Message-ID: <20231102-ethtool_puts_impl-v4-1-14e1e9278496@google.com>
-Subject: [PATCH net-next v4 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <20231102-ethtool_puts_impl-v4-2-14e1e9278496@google.com>
+Subject: [PATCH net-next v4 2/3] checkpatch: add ethtool_sprintf rules
 From:   Justin Stitt <justinstitt@google.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -129,66 +129,63 @@ Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use strscpy() to implement ethtool_puts().
+Add some warnings for using ethtool_sprintf() where a simple
+ethtool_puts() would suffice.
 
-Functionally the same as ethtool_sprintf() when it's used with two
-arguments or with just "%s" format specifier.
+The two cases are:
+
+1) Use ethtool_sprintf() with just two arguments:
+|       ethtool_sprintf(&data, driver[i].name);
+or
+2) Use ethtool_sprintf() with a standalone "%s" fmt string:
+|       ethtool_sprintf(&data, "%s", driver[i].name);
+
+The former may cause -Wformat-security warnings while the latter is just
+not preferred. Both are safely in the category of warnings, not errors.
 
 Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- include/linux/ethtool.h | 13 +++++++++++++
- net/ethtool/ioctl.c     |  7 +++++++
- 2 files changed, 20 insertions(+)
+ scripts/checkpatch.pl | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 226a36ed5aa1..7fc0826d443f 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -1053,6 +1053,19 @@ static inline int ethtool_mm_frag_size_min_to_add(u32 val_min, u32 *val_add,
-  */
- extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt, ...);
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7d16f863edf1..9369ce1d15c5 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7020,6 +7020,25 @@ sub process {
+ 			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+ 		}
  
-+/**
-+ * ethtool_puts - Write string to ethtool string data
-+ * @data: Pointer to a pointer to the start of string to update
-+ * @str: String to write
-+ *
-+ * Write string to *data. Update *data to point at start of
-+ * next string.
-+ *
-+ * Prefer this function to ethtool_sprintf() when given only
-+ * two arguments or if @fmt is just "%s".
-+ */
-+extern void ethtool_puts(u8 **data, const char *str);
++# ethtool_sprintf uses that should likely be ethtool_puts
++		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
++			if (WARN("PREFER_ETHTOOL_PUTS",
++				 "Prefer ethtool_puts over ethtool_sprintf with only two arguments\n" . $herecurr) &&
++			    $fix) {
++				$fixed[$fixlinenr] =~ s/\bethtool_sprintf\s*\(\s*($FuncArg)\s*,\s*($FuncArg)/ethtool_puts($1, $7)/;
++			}
++		}
 +
- /* Link mode to forced speed capabilities maps */
- struct ethtool_forced_speed_map {
- 	u32		speed;
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 0b0ce4f81c01..abdf05edf804 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -1991,6 +1991,13 @@ __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt, ...)
- }
- EXPORT_SYMBOL(ethtool_sprintf);
- 
-+void ethtool_puts(u8 **data, const char *str)
-+{
-+	strscpy(*data, str, ETH_GSTRING_LEN);
-+	*data += ETH_GSTRING_LEN;
-+}
-+EXPORT_SYMBOL(ethtool_puts);
++		# use $rawline because $line loses %s via sanitization and thus we can't match against it.
++		if ($rawline =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*\"\%s\"\s*,\s*$FuncArg\s*\)/) {
++			if (WARN("PREFER_ETHTOOL_PUTS",
++				 "Prefer ethtool_puts over ethtool_sprintf with standalone \"%s\" specifier\n" . $herecurr) &&
++			    $fix) {
++				$fixed[$fixlinenr] =~ s/\bethtool_sprintf\s*\(\s*($FuncArg)\s*,\s*"\%s"\s*,\s*($FuncArg)/ethtool_puts($1, $7)/;
++			}
++		}
 +
- static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
- {
- 	struct ethtool_value id;
++
+ # typecasts on min/max could be min_t/max_t
+ 		if ($perl_version_ok &&
+ 		    defined $stat &&
 
 -- 
 2.42.0.869.gea05f2083d-goog
