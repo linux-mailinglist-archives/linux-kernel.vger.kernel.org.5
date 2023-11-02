@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2077DFAE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CCC7DFAED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjKBT1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        id S1377191AbjKBTbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKBT1g (ORCPT
+        with ESMTP id S229459AbjKBTbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:27:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF51F12D
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698953206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8OfooQG8j7Zpd8EVU9D70gAoqy9uUumAdTwJG3fzo9g=;
-        b=aCRyhZy8KvPHxCSY2h5XsTXlh1wcyEvLckIny6cZAYuFTcWcsneVlFABEfvfB7OQjSyKmC
-        d1YuYg+yuinWKXyuaYCBNpfz8UvwNa92qc1wYYj1bI2mhZtYBauq4mvm37HoUbdlaK4syn
-        zJ4g7BkNd2tCf/ZnJ9UiD8/i5aGiYxc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-263-uPoBGDnAPWeh5XcQipFnKQ-1; Thu, 02 Nov 2023 15:26:44 -0400
-X-MC-Unique: uPoBGDnAPWeh5XcQipFnKQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4083e371a18so1511895e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:26:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698953203; x=1699558003;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8OfooQG8j7Zpd8EVU9D70gAoqy9uUumAdTwJG3fzo9g=;
-        b=w0/ar79PKnKJPns4mmXGwfNlaSAuTmHAuZHJwx6GYQ+fIrQ2I6C2czctrvMSl3rjcG
-         M+Ruu7uB00wTNJqBy81WdRIlWYDZ5vsqnyJnbR9k9EKgOxebjCCXWd7gzfbk55ceNw/y
-         VkJ/dEH8Ph5Jl+SJQHPcs/+KwHN5f7RQJwt1mI8ALxGvxHn+eBTkKpA2b+RMkMaQrmmC
-         sIvdVSkDRBrPAKRyGRJWKsW6NE4Ri5lmCh8Vjq4RhBBSbzJGoDiFPbFTFcc8Nz11W0eh
-         CztWqrxScotB/YPi+rhO+A8Opgk/3LNjuE8G19jj2PjnXpO4uiy1MUz76Bboo8eC52Tf
-         +8xg==
-X-Gm-Message-State: AOJu0Yx0WAoIjxzrLM3UcFQxdTol++0yUJLWDPagCNXRFMKTpRoyfKGS
-        7VBb4sbPT9T+pkYoZAZx9NKSymm/1VhNGisj54gB7dcreczAcvpn6G+QQidpiXSCQvRssrrOzup
-        Nz5e5+RLk8BLcccCW1u4FyZJEKOQwyK0VPX0=
-X-Received: by 2002:a05:600c:3d95:b0:408:3ea2:1220 with SMTP id bi21-20020a05600c3d9500b004083ea21220mr15802752wmb.1.1698953203488;
-        Thu, 02 Nov 2023 12:26:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFiBHZ99klFdqyLT232wErze/LSQj4LAtcCJLgnDebPvzxkC3Fh+K3OUHZv+BCrOFKtDSYBJw==
-X-Received: by 2002:a05:600c:3d95:b0:408:3ea2:1220 with SMTP id bi21-20020a05600c3d9500b004083ea21220mr15802739wmb.1.1698953203134;
-        Thu, 02 Nov 2023 12:26:43 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id r22-20020a05600c35d600b003fee567235bsm117354wmq.1.2023.11.02.12.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 12:26:42 -0700 (PDT)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Philipp Stanner <pstanner@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: [PATCH] drivers/i2c: copy userspace array safely
-Date:   Thu,  2 Nov 2023 20:26:13 +0100
-Message-ID: <20231102192612.54066-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 2 Nov 2023 15:31:45 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A842E7;
+        Thu,  2 Nov 2023 12:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:subject:date:message-id:reply-to;
+        bh=MMBoaFWvHyo5+Qwqx08k6Bz/JCRvP050Pf0KsFHli4Q=; b=fALMgy1syvvh+xxmUWxQp9t80L
+        tISZ3BtlrZ5jbtrh7VnbRmJxO7qr1efiaffe9YAh1z1uhUGu/I70xgodQjbYkemiYIrQGNCIHLSnN
+        ze0TjXa/cRhf45rCW9B3xd8y9ocS5ZmMn7xpFeWSl0JpKCpeF6yTrC71Tq4gHOwq7VaA=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:46024 helo=pettiford.lan)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qydPY-00042s-CR; Thu, 02 Nov 2023 15:31:29 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        leoyang.li@nxp.com, robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, hugo@hugovil.com,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Date:   Thu,  2 Nov 2023 15:31:18 -0400
+Message-Id: <20231102193121.1676000-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+Subject: [PATCH v3 0/3] board: imx8mn-rve-gateway: add support for RVE gateway board
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i2c-dev.c utilizes memdup_user() to copy a userspace array. This is done
-without an overflow check.
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Use the new wrapper memdup_array_user() to copy the array more safely.
+Hello,
+this patch series add support for the RVE gateway board.
 
-Suggested-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/i2c/i2c-dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you.
 
-diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index a01b59e3599b..7d337380a05d 100644
---- a/drivers/i2c/i2c-dev.c
-+++ b/drivers/i2c/i2c-dev.c
-@@ -450,8 +450,8 @@ static long i2cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		if (rdwr_arg.nmsgs > I2C_RDWR_IOCTL_MAX_MSGS)
- 			return -EINVAL;
- 
--		rdwr_pa = memdup_user(rdwr_arg.msgs,
--				      rdwr_arg.nmsgs * sizeof(struct i2c_msg));
-+		rdwr_pa = memdup_array_user(rdwr_arg.msgs,
-+					    rdwr_arg.nmsgs, sizeof(struct i2c_msg));
- 		if (IS_ERR(rdwr_pa))
- 			return PTR_ERR(rdwr_pa);
- 
+Link: [v1] https://lore.kernel.org/all/20231101144303.2653464-1-hugo@hugovil.com/raw
+           https://lore.kernel.org/all/20231101144057.2653271-1-hugo@hugovil.com/raw
+      [v2] https://lore.kernel.org/all/20231101183549.2960083-1-hugo@hugovil.com/raw
+
+Changes for V2:
+- Combine separate patches as a series. Start series at 2 to avoid confusion.
+
+Changes for V3:
+- Fix coding style / indentation
+- Change vmmc supply for usdhc2 node
+- Disable uart2 node instead of removing it.
+- Remove MAINTAINERS board entry
+- Add SOM compatible string
+- Drop some status = "okay"
+
+Hugo Villeneuve (3):
+  dt-bindings: vendor-prefixes: add rve
+  dt-bindings: arm: fsl: add RVE gateway board
+  arm64: dts: freescale: introduce rve-gateway board
+
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../boot/dts/freescale/imx8mn-rve-gateway.dts | 282 ++++++++++++++++++
+ 4 files changed, 286 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
+
+
+base-commit: 4652b8e4f3ffa48c706ec334f048c217a7d9750d
 -- 
-2.41.0
+2.39.2
 
