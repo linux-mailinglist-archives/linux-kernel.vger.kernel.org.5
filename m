@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662E57DF66D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DC27DF67F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344459AbjKBPbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
+        id S1376848AbjKBPeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjKBPbn (ORCPT
+        with ESMTP id S1376845AbjKBPd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:31:43 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D479FFB
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:31:40 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-28023eadc70so1058843a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:31:40 -0700 (PDT)
+        Thu, 2 Nov 2023 11:33:57 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8E413D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:33:50 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b9a456798eso734121a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:33:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1698939100; x=1699543900; darn=vger.kernel.org;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z6ib4yvHo7VS2tnCRMUgFpWE1vpp3pfAzlCEHF8XEGA=;
-        b=J6svxlE4ZPERbIrT15InCvxx4TG7Zge1d9Vym02tE1R3FRAIURj31jfeTNhkW19qf+
-         fSY/V38wE0nEOfMzL643RqZabULL+e002DKAzfNiWDXck9+haamYMw7Txc4IKprdyu+o
-         5QrxfvVb3+hnAD2kUzkgKr3s+AHMTbJA3sZ+eLR4Qaxwx7A4ilgW4cj4CRQLxwrC78dJ
-         iJjdj0sPqLiFejW82bMVnQtENBBeeqJLaPqDZ5hCdKZdHp7RgDd5RW3QhRVnDBIpyi3J
-         eGHEIeuLkqeC+ICQJoe0n1Mrb2Pu7aIq3u2WrWjKqJgZmaHgxTIvMV1weF27BU6OOdVr
-         Xflg==
+        d=9elements.com; s=google; t=1698939230; x=1699544030; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jGrzac9Ke25hyD7VfuBtsDHZigqOcYObR1W1e8Hntzg=;
+        b=Gyne+yRSUFJHNI5jLRJSkgUTRUSbk8Zy/1fJCdEkqgBg6ZmE6HBqWnWCgr2BuP3e1G
+         wT38rmmGMDOfWrXFqKEuH+826tm/c8p86RTjqHqzdoSDWX578GH8OVmrbfB9KOXMCVIC
+         b8xOqJuYYcV2VDNTh3X5AUm0SDut868Phq8hyGw41dk9t5630+sPoZ1vC/AmCZfMmtlk
+         wZEwAynHbs9QvrPNKxr+78ZFMHGNWmK1XJYIQ8O0sdZLAgX35qDecPhy2rX+LkJ6s4dX
+         /NZoeeTm6RAuPmz+suUqBfUr6rxqJ7NLnEzdWgoiiUKzct2WFCUqPpv6X7cclmThNeLU
+         39Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698939100; x=1699543900;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z6ib4yvHo7VS2tnCRMUgFpWE1vpp3pfAzlCEHF8XEGA=;
-        b=U1vb5bowzQkbWZEHLVQoR0ktOrhASwe9ebO3izt9OLRKVhsgBxz5X/6BcKIuTTkvAi
-         F9TALJerF948qPUD1nFd2Z4ffARshnkjTSDv/Dos6JGkV1vWlyLss95f2oUVgcLjuCaD
-         fKfaboqRnjMY7ZQdHpmgXf8ukRiRAE2BWVPKwlF7O9YCYNauw4V4SfbBitYgerYs5DGM
-         8bDkPnGkHDBgynyXkq48MJSaSHIWnf7AL3Y1wUpQB8ytV3dPVhu382ddTp9hAUVbOcAH
-         f1UTTqGEqz3VRsRWZ+webQpT13K4VmVi6XSrsNAzRo+89dC4J4u00Ca4U/qASCChndTn
-         +4zw==
-X-Gm-Message-State: AOJu0YxFZ19q+GeDFldfYilaGcV99Uqn7zSYtzoKWnjPYHoFh85fwPHm
-        XAWT2NbouZkUeGa3fu5z4JWg/A==
-X-Google-Smtp-Source: AGHT+IHJXTfLZgDDiW7WFmdbor5KZ9hsSkujLZ5FIlzWrp7lswZQB6A9G/zHp38CnK/oUxENK/0fFA==
-X-Received: by 2002:a17:90b:d8a:b0:27d:882f:e6c5 with SMTP id bg10-20020a17090b0d8a00b0027d882fe6c5mr15773419pjb.9.1698939100289;
-        Thu, 02 Nov 2023 08:31:40 -0700 (PDT)
-Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id s22-20020a17090aad9600b0027d0a60b9c9sm45227pjq.28.2023.11.02.08.31.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Nov 2023 08:31:39 -0700 (PDT)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Peng Liu'" <pngliu@hotmail.com>,
-        "'Wyes Karny'" <wyes.karny@amd.com>
-Cc:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liupeng17@lenovo.com>, <lenb@kernel.org>,
-        "Doug Smythies" <dsmythies@telus.net>
-References: <TYCP286MB214616F6AE3E088C5D781A2EC6C8A@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM> <TYCP286MB21465F970BF56AAE5D0CEB72C6A1A@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
-In-Reply-To: <TYCP286MB21465F970BF56AAE5D0CEB72C6A1A@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
-Subject: RE: [PATCH] tools/power turbostat: Fix Bzy_MHz calculation equation
-Date:   Thu, 2 Nov 2023 08:31:40 -0700
-Message-ID: <002801da0da1$adb83fc0$0928bf40$@telus.net>
+        d=1e100.net; s=20230601; t=1698939230; x=1699544030;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jGrzac9Ke25hyD7VfuBtsDHZigqOcYObR1W1e8Hntzg=;
+        b=BGjmodc0vRiO1DqNExPNzxFQrKRxP4i3GnQoFA0X6pdYfw4fpqFFuZugJS3zhjLBfX
+         jxE71PJrkyCpbGEBJuOzvyuPbDV/A3do5FFgcs7OPou7dbgcSj+DkwZcnJ/xS2kdGewO
+         z5FBdd5QUz8N86ak472KcHazHdsINGQ8HHgyvi5EO5cw0Y1QCdwQsmLAMlQVFYq9gCm2
+         EXYxwaXEoC62qA4PS6T/Te8mrjCMaAjMmfjXnk3SshSCc+eyR9CyO9gqLg0IVU/EuuVR
+         VVZY3E377dMw7TAKR1OXakwy6LPM6ALzbyv2xzB6iuz6/8ej4sQY6byou5AjDvEvnhp+
+         EqtQ==
+X-Gm-Message-State: AOJu0YwOhLBMgi2DACQwCSr4pIsdHQALiwdwmC7b+f5QcF4ray7Ad1hh
+        wYomZU+IJgmwZuAt5c1BM0w9HCrYhSXCXOBBq4u6dQ==
+X-Google-Smtp-Source: AGHT+IFnHU3rJNh7c+C1uFUmb2F/kNHMNOZqSXUAaW6ls82UIJxRLvlnNqvew//xl91JGebgjmRT8As3fkJE404qdJ8=
+X-Received: by 2002:a17:90a:fd8e:b0:27d:1c70:23d4 with SMTP id
+ cx14-20020a17090afd8e00b0027d1c7023d4mr15158905pjb.44.1698939229731; Thu, 02
+ Nov 2023 08:33:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQG3BHz+VfofbgYKyoMXwr1Kb5XJSwLFIQsTsJcLg0A=
-Content-Language: en-ca
+References: <20231005133059.917577-1-naresh.solanki@9elements.com>
+ <f8dd6d53-7c0b-4a89-9ec4-400aa242c020@sirena.org.uk> <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
+ <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk> <CABqG17h949R+3NFgA1MvPLZFc6zkBi+WRPSE9qP4fCBv5gdXHw@mail.gmail.com>
+ <c2dd0533-3a60-4481-8621-86578e62aab6@sirena.org.uk>
+In-Reply-To: <c2dd0533-3a60-4481-8621-86578e62aab6@sirena.org.uk>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 2 Nov 2023 21:03:40 +0530
+Message-ID: <CABqG17h0OnMD-L1vYkJobji+Z=QPuYrd=ra1d7DncAN0_TO23A@mail.gmail.com>
+Subject: Re: [PATCH] drivers/regulator: Notify sysfs about status changes
+To:     Mark Brown <broonie@kernel.org>
+Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng and Wyes,
+Hi Mark,
 
-Just for your information about your recent "ping"s about your turbostat =
-patches:
-
-Please be aware that there is rarely any reply. There tends to be about =
-2 turbostat updates released per year. Your patches are in patchworks =
-[1], as are some others, including an old one of mine from 2023.04.03
-Eventually there will be an update, and hopefully it will include all =
-our patches.
-
-[1] =
-https://patchwork.kernel.org/project/linux-pm/list/?series=3D&submitter=3D=
-&state=3D&q=3D&archive=3D&delegate=3D107
-
-... Doug
-
-On 2023.10.29 08:12 Peng Liu wrote:
-
-> Ping
+On Thu, 2 Nov 2023 at 20:31, Mark Brown <broonie@kernel.org> wrote:
 >
-> On 2023/10/7 13:46, Peng Liu wrote:
->> From: Peng Liu <liupeng17@lenovo.com>
->>
->> To calculate Bzy_MHz, TSC_delta should multiply APERF_delta instead
->> of dividing it.
->>
->> Signed-off-by: Peng Liu <liupeng17@lenovo.com>
->> ---
->>   tools/power/x86/turbostat/turbostat.8 | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/power/x86/turbostat/turbostat.8 =
-b/tools/power/x86/turbostat/turbostat.8
->> index 8f08c3fd498d..1ba6340d3b3d 100644
->> --- a/tools/power/x86/turbostat/turbostat.8
->> +++ b/tools/power/x86/turbostat/turbostat.8
->> @@ -370,7 +370,7 @@ below the processor's base frequency.
->>  =20
->>   Busy% =3D MPERF_delta/TSC_delta
->>  =20
->> -Bzy_MHz =3D TSC_delta/APERF_delta/MPERF_delta/measurement_interval
->> +Bzy_MHz =3D TSC_delta*APERF_delta/MPERF_delta/measurement_interval
->>  =20
->>   Note that these calculations depend on TSC_delta, so they
->>   are not reliable during intervals when TSC_MHz is not running at =
-the base frequency.
+> On Thu, Nov 02, 2023 at 08:17:35PM +0530, Naresh Solanki wrote:
+> > On Thu, 2 Nov 2023 at 18:36, Mark Brown <broonie@kernel.org> wrote:
+> > > On Thu, Nov 02, 2023 at 05:35:42PM +0530, Naresh Solanki wrote:
+>
+> > > > > We probably should filter the events more, there's events for pre and
+> > > > > post voltage change for example which aren't status changes so would be
+> > > > > spurious.  It ought not to break anything but we should still avoid
+> > > > > unneeded work.
+>
+> > > > Can you please provide me inputs on the additional filtering needed for this.
+> > > > Like some list of events for notify on status?
+>
+> > > I think I'd start off with just reporting things that are obviously
+> > > errors and not things that should ever go off during normal operation.
+>
+> > This is what I could come up with:
+> >         if (event & REGULATOR_EVENT_VOLTAGE_CHANGE) {
+> >                 name = dev_attr_microvolts.attr.name;
+> >                 sysfs_notify(&rdev->dev.kobj, NULL, name);
+> >         } else if (event & (REGULATOR_EVENT_DISABLE | REGULATOR_EVENT_ENABLE)){
+> >                 name = dev_attr_status.attr.name;
+> >                 sysfs_notify(&rdev->dev.kobj, NULL, name);
+> >         }
+>
+> That's the opposite sense to what I was thinking of - we're reporting
+> voltage changes and enables to userspace rather than just errors.  My
+> concern here is that this could generate an awful lot of notificaitons
+> for normal operation on systems that don't use the uevents, I was
+> expecting this to be used for errors.  Could you remind me what the use
+> case is here, I think I might've got myself confused sorry?
+Sorry for confusion caused because I should first described my application
+requirements.
+Currently my application is interested in know regulator status i.e.,
+ENABLE, DISABLE or ERROR.
+Also events are needed specifically to get them logged like
+UNDER_VOLTAGE, OVER_CURRENT, REGULATION_OUT,
+OVER_TEMP.
 
+
+Regards,
+Naresh
