@@ -2,234 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B91B7DF9B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733477DF9AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234484AbjKBSN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43128 "EHLO
+        id S1377165AbjKBSNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235239AbjKBSNN (ORCPT
+        with ESMTP id S235478AbjKBSM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:13:13 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on061d.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0c::61d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4073A448A;
-        Thu,  2 Nov 2023 11:02:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ldxzNEClplXFeDQ7ba9ov3IXCCf9QvbjdUZHj0BjXt2ZP7/8FFo+z4W+cFW6CvYhDbFQOiatKeoweThTeqloYh9ATz8iBoU2zC5Q4UsAJ9qtxRZqu5vW1g6v8qUE7Asq0HjIuLpNCDhnFtFps+g59c4tNUKprBn9gcqeQ9WJCJOe2GjFr6BDQGHngP3+plhnhXdJ/dzQ5YZUK4PFDSb5hRuT4MY0o9m0W7sykvQYyd604PafhJkOCV1q1p7G5l1ISFVrUNJtufuHtaFzgmICJpFJ+wUpjAM2w+IeVtOFmrcB7BblhRuqC8H8IQ4uY8QFtiA93i6cZTJICHIgBTxADA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W9pOne0rk8TXYYlz3UyvrYZSMZM+bLJV8xYmmdt5vII=;
- b=maPjgTISglA961avLbDqWMbKskxuMJGnoLWSMcTAZ/7KBqmscGu3zzEB+Fr25feRTykticYM/A6GprYqGQXEiVHEuVcnLXsLeW83P8Z7GeSnvZBu2SRxJePScDbFB7Mhb+78hqWqWjlAs1yzfT/pNTJZsdZOPIvxNFyvLVXqluJu75kAk1+Do6leKEYh8TBlIl89+JrnaF1xYq0no95FFbbZ74nGUbEC/1lYTIxycXoG7nwVO5hpPkhP55vaibgfy9nyoeMkK0E1XPRjqum+pqfaguL/oXgEqNFGTDrLV2IEI9+9WEMyFSXXvgCOAv87+paKRznaQoARQrhii9ROsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W9pOne0rk8TXYYlz3UyvrYZSMZM+bLJV8xYmmdt5vII=;
- b=RyLzBa1KyhPrk1ihb+C1tlWSsoMlv2U8l46VdkBDolY1IYO0j3y4R99YTUpIwtws/uZi71R1EHwqBXxZwYSolTE6Ds71vwRJ1rLQWZZ09gmEsVbf4+KHPcj46IwCCu2ZOSrwggxOaL5f/QXPlYKDmcCZmgQT9FGtxlVvVsN6MiI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM9PR04MB7666.eurprd04.prod.outlook.com (2603:10a6:20b:287::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 2 Nov
- 2023 18:01:16 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::97ca:a905:8e64:c098]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::97ca:a905:8e64:c098%7]) with mapi id 15.20.6954.017; Thu, 2 Nov 2023
- 18:01:15 +0000
-Date:   Thu, 2 Nov 2023 14:01:06 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        robh@kernel.org, roy.zang@nxp.com
-Subject: Re: [PATCH v3 1/4] PCI: layerscape: Add function pointer for
- exit_from_l2()
-Message-ID: <ZUPjaKOeBzZ9EUvg@lizhi-Precision-Tower-5810>
-References: <20231017193145.3198380-1-Frank.Li@nxp.com>
- <20231017193145.3198380-2-Frank.Li@nxp.com>
- <20231102165808.GC20943@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231102165808.GC20943@thinkpad>
-X-ClientProxiedBy: SJ0PR03CA0198.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Thu, 2 Nov 2023 14:12:57 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FAD3C02;
+        Thu,  2 Nov 2023 11:01:59 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4083f613272so10884975e9.1;
+        Thu, 02 Nov 2023 11:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698948115; x=1699552915; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s9v7fSZdeM5lhEwx+RSQKLoMZAxQbqm89rXIxNUF1qU=;
+        b=I/I4KR3/t4STPpazSdJQC5wM7BplxiqHhYNo1M6bljYUVoYlEDfuO+9fHyA+ktSMFg
+         Bih9oVYwMthfvmUHawyXaP+HZpNYdUJP9oYxQ+oH/V0bmiX6s5tSizM8X8h+ccuIlG93
+         CNeSPZuFL+IUDOupMZbwsRBKxDl9PiW38sOqrCFfMLvmko97TDK88pDudR4rBmOoxiUh
+         3quLuAPWSxxIK6X05Lb1zyzfff42fhV7Jax3/m8RqKMVwL3Hv6leYNhqQW3kcTeSBkpG
+         XMsqtdZUQFef+WwqGiaBfxOc1TIPLJDiFULZp7mIORtlwRTb8k744Gbce5uQosuNQCJc
+         v1ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698948115; x=1699552915;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s9v7fSZdeM5lhEwx+RSQKLoMZAxQbqm89rXIxNUF1qU=;
+        b=A8rZEYNU0n7IWt9SwUCoFRFU9y1+8ySGrmi+ftWKy09THzDR1a8g1AD47hWQqIsAt5
+         wAqPaWFp0Wc4UPAJrj8VSTGysNAPR5JiKi0wB79xX5kE4aM6UHzDLCLmcKpTJDPvUfYg
+         cNE+LZ0WT5h2lgcIXocFknxcy9eLgHuUqbNs2AN40yURw2755a8qolhfOXfcd/9yVX6p
+         Gco8fXr1dHCVCm+8wZJEXqXcOu1Jh4NrOCu2FSyrK6j/y6FPSszCQKrGW+3gHHL8rgkY
+         w92/SLA+FSEs50dF8/yWUDYI6vdermwqStFEsMwDj/13mZHLUi73RWQAlxHyZB0t7qyu
+         nwjQ==
+X-Gm-Message-State: AOJu0YwlL5jnwQgy+w5Eixn2Z2T5TERFmk9nij6bg7OzrWrQ+XzK08QT
+        uWVx43aCekuQjhGLi9I3b44=
+X-Google-Smtp-Source: AGHT+IEZGqW/vxesUw1UMzhtf2vnCkMbF2yFSaqWJA+rHOg1Bsq4xatZmZCYotCXR2brSZnSlLimqg==
+X-Received: by 2002:a05:6000:2c7:b0:32d:d2ef:b0e4 with SMTP id o7-20020a05600002c700b0032dd2efb0e4mr19025433wry.0.1698948114541;
+        Thu, 02 Nov 2023 11:01:54 -0700 (PDT)
+Received: from [192.168.14.38] (54-240-197-227.amazon.com. [54.240.197.227])
+        by smtp.gmail.com with ESMTPSA id b11-20020a5d4d8b000000b0032d8354fb43sm3018823wru.76.2023.11.02.11.01.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 11:01:43 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <8c6f06ae-d1d3-40ea-9bed-8ca949eaff5f@xen.org>
+Date:   Thu, 2 Nov 2023 18:01:35 +0000
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB7666:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae53330a-dd52-4e50-ad62-08dbdbcdb525
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hKk5+Ey4IRwWBMaOzUhM+ZXjH6cRSptGbr2B8zbwypLY0kSlqftpbI9NqltOrf62Y1PECkjD7zg/4nMA9T3SfPOGPfBtgDIq/Zfk1ve9vJ2z+p9c3x9vXnPhGXPx/nta3q/JqZrN6TQp5Zcf/hewelunQkAoF7VcvmInxwpJxUj/vRySoHf9j0Xs1plcxMJ2t0ma/kzT1KZY/vHcZb+RBTZSeRSbEAbP6LlP9It1KwRGW9Kjjt6XLGUj71YzVIUfJA5A2PBQg6LwHPK0mJV68tTlnZPTZcrGwjCzFX4TOuNDsQXs3ID7w0TP315rulUJgFBBuQB3MQ7u0jRxBcxHrw21UrOCINnqBWcHYzKJtj43Wd4lHVKZXUAmmQDmvHoAQgoBIMhyoAsJbbbh9n9+Z/rAwo1Usrei8P5k7cXZzmpReuVEZ4HPLNMC1QPUZPRrEmhCgY/sC2eyMRaikZHagoLkr7mo0f2oo+Noh3OTxL9s0fErnB4MWTSAv+rcHqMGHL0pL80fKQguYa80mVEY/1pu3FU3gzoL3ewTdetkB+zZ0cs1FFpWBxES84kZLg9D/lJ4Lr4B9dLNDOQePBdKeDy0bCwUNsoRHEN10nGuYoxQ8p/COSa5K3Pss7aLZmar
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(66556008)(66946007)(33716001)(316002)(83380400001)(6486002)(86362001)(2906002)(8676002)(4326008)(8936002)(66476007)(5660300002)(41300700001)(38350700005)(478600001)(38100700002)(6506007)(6666004)(6512007)(52116002)(9686003)(7416002)(6916009)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d3lGQlNMekszZTZkZUhlTTFxS2VJbGlsWWtHdzhVYkVBc1RCZFc3UmdaK2g2?=
- =?utf-8?B?R1pPK0NHMzNVaVM1TDhadW9CYmJvRnJzN2xSc25iYzlvTUVDZUlkYk9ZTTZF?=
- =?utf-8?B?YlpGUklsaVBiN0E5ZEVxTU04cUF0YUsvcGdFWUlyZStaM2FnZGNtVFpFUG1j?=
- =?utf-8?B?VWZHRk1SbDZ3QlQ5RXVUMHlJOFNmSkRiVjJEd3JFL1RZaXF6ZzlCcDBKVmFC?=
- =?utf-8?B?S3ErSUZ6bUI3bGRiU29qbXhnOXVKRS8rTks2Tkg3Mllub1JNdmlGZlpPeXA5?=
- =?utf-8?B?WXRTLzdZQkJzMnlCZkxNMEZwMStVSG94bW5ENGtiaE12citBKy9GNGhUN1Fj?=
- =?utf-8?B?bXdTWHNFK09weXRIbkRXR1ZKU0U2a2FKMTJ6Y2FQRnFhSjVTM1M1S0tDSUcy?=
- =?utf-8?B?c0RVcE80TVlOUmtxNXJWeFlLdkIveXVWcm1TREtEdWF5WEJNc0o1T2EwczJB?=
- =?utf-8?B?b0JzQjJYTVdnOW01a04yY1QrV2tPWlVybGh6S203WUV5aEo4dTBNUzVtbTdw?=
- =?utf-8?B?a1dDZlFuRFdDYUhkNDNrNGluZlA1M0N3ak9lM1Y1c0YyZ3lTTEJnWUMrYlRD?=
- =?utf-8?B?TzlaL21EaWRkS1hLa092RDRIVm1uUzNKSTlFWFBFVXpkS1Y2VTgzSG9wLysz?=
- =?utf-8?B?K2VlcDlLd2lKNk1RcUZjZ2ZrS0RmeDdJWW9UTXZTZ2hmL2dvODNlNzhHUjg0?=
- =?utf-8?B?S3hNUHYvU0YwUTgyUzZVT0h1S0kyL0JpdHZPTmYrM3c5ZXZjbHJZa3ZtaExO?=
- =?utf-8?B?ZUtTQ21sN0UrM1l4d1huU0pqRTlMWEdqeVlqMG9rWm00U0ZkTTdWcVhrRm1n?=
- =?utf-8?B?VkdFRWY0Q1Y4WWFxeW4yREo4TFhoV1ZiSnhUMWFFRWNlTjRJeW4yK3RvaTdo?=
- =?utf-8?B?RHJHSWhkVFdtVUsySmN1d3dNRkw1S1lEeWlERTZiQ3l2SnE1QXVkK3AzSkYz?=
- =?utf-8?B?a003U0lHNE9CSS9tU054bnAzY0VpR25XdnJBWmg1MUlIL1llUWN0dVJJbHJL?=
- =?utf-8?B?ajhFTXc0V2M0WjBSR3I5RzMwdkl4a2IyZHBTWjZ5NmFQckF5R3FSY1dXNmow?=
- =?utf-8?B?MzlxR2lFNWhkUGFkTjZ5S3UrbEt4MW9DNmlFU1d6U09aNTJBNStOaWkxdlk0?=
- =?utf-8?B?SmNzazlzbEhUNHQvc3N6cWQwYW43RStoajJwWnBnZG5UOWdaOWJxeWpSNE5z?=
- =?utf-8?B?N1JzWlRBTjdBUk9NaDJRem9ocU9ZMHVYYzA3bk1Dc1I3TWJEbW1LV3NETU9G?=
- =?utf-8?B?VisyZHc0d1JNYy8xS2RhQk1XTERMYWlnMkdFSW9oaVpBVDR4bllDT1IyN0hI?=
- =?utf-8?B?d0dCTDZaT2RhY1lBNGVpN1pSM051UGlBc0Q3SGVEVkpmYUQzN1ZqVnZudVRD?=
- =?utf-8?B?YStZQXllVStzSEZlRXhxaHFMa0dVSHNLZzgySE5qS2JoOENIL2p1WDNYT01V?=
- =?utf-8?B?T3ZpUmJBZE9MdDNobUpkeUMrek5yMm53clRMYU1xdFRwVFZPOWtoc3RxMVR0?=
- =?utf-8?B?WXgvMENvSld2M1lkWkl1bGdDVkNMU09CV3RodmdkeElZNkVVYlpIYnA2akR2?=
- =?utf-8?B?YnRpK0s1b3REOEt2OUFlN0VUUEhNK3FuV3dFZEY2bG9yWUptK0FQd1FsVGFI?=
- =?utf-8?B?L1JPYWdVc244RUZZQ2QwMkMzMzk5UWdZd2t3Ymx4L29ybGFpOHkvTy9XNXRw?=
- =?utf-8?B?aG1HQ1oyaExKcEJKdDM0YVFNQ0dBUWVVY2dRYTVIT0xqVkViK3IxMWp4TU5u?=
- =?utf-8?B?RFlqSU5nelVKOWFReFZId2F6RU9BdkJvYkJFOXZmTkVPME1wd3U3b2pjNlBi?=
- =?utf-8?B?WEtPUlVob2FIZ3NSWkhDc3hVYllEbVVLbkF3Z0txNmZvRzY4T0RZSDlqVGYx?=
- =?utf-8?B?N2hPcGNVYlh6UFlkbXZpTDFMdkJvUmZwTmRWRndqeWI4YmJBa0NMdlcrMnpr?=
- =?utf-8?B?aXdKdGlxQmVKYmduemVDU0ZVR05PRkFDNWVqVXNxdEVtYUJ3cWY2WEY2dmxG?=
- =?utf-8?B?aWpHRk9GMVNGbUhXdWp4VnhkVGZ3M21qT08ydGFWWEV5SzFhc0dyUFNTa1Zk?=
- =?utf-8?B?bC9GcUpCUS9wT0NTWDBhMVAyRk1OcWU5blcyVythL0ppbmw0S3lEQlpiN1JI?=
- =?utf-8?Q?1kokAH3v/YBDhhpa+2lH6pmje?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae53330a-dd52-4e50-ad62-08dbdbcdb525
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 18:01:15.8325
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AuZwJ69+f1OQqUtZS7K+YF8wwEndvNcvDvgUCwgSunlaAIcnDAfz4rNw/IYFqkeLNkyAyCUeHtQKH/MtaYL3ww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7666
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v7 05/11] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Durrant <pdurrant@amazon.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <20231002095740.1472907-1-paul@xen.org>
+ <20231002095740.1472907-6-paul@xen.org> <ZUGScpSFlojjloQk@google.com>
+Organization: Xen Project
+In-Reply-To: <ZUGScpSFlojjloQk@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 10:28:08PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Oct 17, 2023 at 03:31:42PM -0400, Frank Li wrote:
-> > Since difference SoCs require different sequence for exiting L2, let's add
-> > a separate "exit_from_l2()" callback. This callback can be used to execute
-> > SoC specific sequence.
-> > 
+On 31/10/2023 23:49, Sean Christopherson wrote:
+> On Mon, Oct 02, 2023, Paul Durrant wrote:
+>> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
+>> index 6f4737d5046a..d49946ee7ae3 100644
+>> --- a/include/linux/kvm_types.h
+>> +++ b/include/linux/kvm_types.h
+>> @@ -64,7 +64,7 @@ struct gfn_to_hva_cache {
+>>   
+>>   struct gfn_to_pfn_cache {
+>>   	u64 generation;
+>> -	gpa_t gpa;
+>> +	u64 addr;
 > 
-> I missed the fact that this patch honors the return value of the callback (which
-> was ignored previously). So this should be added to the description as well.
+> Holy moly, we have unions for exactly this reason.
+> 
+> 	union {
+> 		gpa_t gpa;
+> 		unsigned long addr;
+> 	};
+> 
+> But that's also weird and silly because it's basically the exact same thing as
+> "uhva".  If "uhva" stores the full address instead of the page-aligned address,
+> then I don't see a need for unionizing the gpa and uhva.
+> 
 
-How about add below?
+Ok, I think that'll be more invasive but I'll see how it looks.
 
-"Change ls_pcie_exit_from_l2() return value from void to int. Return error
-when exit_from_l2() failure to exit suspend flow."
+> kvm_xen_vcpu_get_attr() should darn well explicitly check that the gpc stores
+> the correct type and not bleed ABI into the gfn_to_pfn_cache implementation.
+> 
 
-Frank
+I guess if we leave gpa alone and make it INVALID_GPA for caches 
+initialized using an HVA then that can be checked. Is that what you mean 
+here?
 
+> If there's a true need for a union, the helpers should WARN.
+> 
+>> +unsigned long kvm_gpc_hva(struct gfn_to_pfn_cache *gpc)
+>> +{
+>> +	return !gpc->addr_is_gpa ? gpc->addr : 0;
+> 
+> '0' is a perfectly valid address.  Yeah, practically speaking '0' can't be used
+> these days, but we already have KVM_HVA_ERR_BAD.  If y'all want to use the for the
+> Xen ABI, then so be it.  But the common helpers need to use a sane value.
 
-> 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> 
-> With that,
-> 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> - Mani
-> 
-> > ---
-> > 
-> > Notes:
-> >     Change from v2 to v3
-> >     - fixed according to mani's feedback
-> >       1. update commit message
-> >       2. move dw_pcie_host_ops to next patch
-> >       3. check return value from exit_from_l2()
-> >     Change from v1 to v2
-> >     - change subject 'a' to 'A'
-> >     
-> >     Change from v1 to v2
-> >     - change subject 'a' to 'A'
-> > 
-> >  drivers/pci/controller/dwc/pci-layerscape.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> > index 37956e09c65bd..aea89926bcc4f 100644
-> > --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> > @@ -39,6 +39,7 @@
-> >  
-> >  struct ls_pcie_drvdata {
-> >  	const u32 pf_off;
-> > +	int (*exit_from_l2)(struct dw_pcie_rp *pp);
-> >  	bool pm_support;
-> >  };
-> >  
-> > @@ -125,7 +126,7 @@ static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> >  		dev_err(pcie->pci->dev, "PME_Turn_off timeout\n");
-> >  }
-> >  
-> > -static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> > +static int ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> >  {
-> >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> >  	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > @@ -150,6 +151,8 @@ static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> >  				 10000);
-> >  	if (ret)
-> >  		dev_err(pcie->pci->dev, "L2 exit timeout\n");
-> > +
-> > +	return ret;
-> >  }
-> >  
-> >  static int ls_pcie_host_init(struct dw_pcie_rp *pp)
-> > @@ -180,6 +183,7 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> >  static const struct ls_pcie_drvdata layerscape_drvdata = {
-> >  	.pf_off = 0xc0000,
-> >  	.pm_support = true,
-> > +	.exit_from_l2 = ls_pcie_exit_from_l2,
-> >  };
-> >  
-> >  static const struct of_device_id ls_pcie_of_match[] = {
-> > @@ -247,11 +251,14 @@ static int ls_pcie_suspend_noirq(struct device *dev)
-> >  static int ls_pcie_resume_noirq(struct device *dev)
-> >  {
-> >  	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> > +	int ret;
-> >  
-> >  	if (!pcie->drvdata->pm_support)
-> >  		return 0;
-> >  
-> > -	ls_pcie_exit_from_l2(&pcie->pci->pp);
-> > +	ret = pcie->drvdata->exit_from_l2(&pcie->pci->pp);
-> > +	if (ret)
-> > +		return ret;
-> >  
-> >  	return dw_pcie_resume_noirq(pcie->pci);
-> >  }
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+Ok.
+
+   Paul
