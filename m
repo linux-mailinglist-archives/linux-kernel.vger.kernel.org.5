@@ -2,372 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1729C7DFAEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3CE7DFAF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377208AbjKBTbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S1377240AbjKBTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377242AbjKBTbw (ORCPT
+        with ESMTP id S229736AbjKBTdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:31:52 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9D5187;
-        Thu,  2 Nov 2023 12:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=N/2FR5XgREo2owYdfgPOLRpgoh9tf+0eP6E/Ob0CAgE=; b=uRcTMVjVPhvz5v3hfD4Z2QOWH5
-        fmxF+UMKD/8Liyy9P61kF90n+RnZ4mGhbWopwe3YPVRLpznnh8IqrU0PoEgfEZXp+1YU0LaqTGMNh
-        pPe/LopK+a4JOaC+Iblu8kRFVu3GN01xaqfzPMSwl4JEQwUozC6Pux+wR2GUo9lRP1sY=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:46024 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qydPo-00042s-6d; Thu, 02 Nov 2023 15:31:44 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        leoyang.li@nxp.com, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hugo@hugovil.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date:   Thu,  2 Nov 2023 15:31:21 -0400
-Message-Id: <20231102193121.1676000-4-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231102193121.1676000-1-hugo@hugovil.com>
-References: <20231102193121.1676000-1-hugo@hugovil.com>
+        Thu, 2 Nov 2023 15:33:40 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB52D194;
+        Thu,  2 Nov 2023 12:33:31 -0700 (PDT)
+Received: from [10.137.106.151] (unknown [131.107.159.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C019120B74C0;
+        Thu,  2 Nov 2023 12:33:30 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C019120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1698953610;
+        bh=BFv0LoFgCinTrSDNN0PUUDUwJMnBDe5xTh49JYLz3Y4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gB5YaEFwfIAnkOlr317P5lWnHUTOq+MksL4x/t6lqhrFaWrMyEanwJnIqhD9Ufzwy
+         IolfcJ5mTJlgR6Jri9QAkbJsElG9Na29MJLxkEA1Y4/xrIcTyc/ImgDrFg6i1yx2f9
+         LLDUkRU9KCRLP3D9LBySG2QN3Iaywco1wAyL8x78=
+Message-ID: <b53c47f6-0cf3-448c-bb55-5f68ca48a872@linux.microsoft.com>
+Date:   Thu, 2 Nov 2023 12:33:30 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v11 15/19] fsverity: consume builtin signature via LSM
+ hook
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+        snitzer@kernel.org, eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1696457386-3010-16-git-send-email-wufan@linux.microsoft.com>
+ <6efb7a80ba0eb3e02b3ae7a5c0a210f3.paul@paul-moore.com>
+ <CAHC9VhQJkcb-k+o+NvVn7crrMMZqpBcZpnEbKBT+eZg4Ocjqhw@mail.gmail.com>
+ <20231102025355.GA1498@sol.localdomain>
+ <CAHC9VhScaajDOVpBoGPo80ceUggGyrP24pCoMy6d6uQ4r-WZjw@mail.gmail.com>
+From:   Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <CAHC9VhScaajDOVpBoGPo80ceUggGyrP24pCoMy6d6uQ4r-WZjw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
-Subject: [PATCH v3 3/3] arm64: dts: freescale: introduce rve-gateway board
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-The RVE gateway board is based on a Variscite VAR-SOM-NANO,
-with a NXP MX8MN nano CPU.
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../boot/dts/freescale/imx8mn-rve-gateway.dts | 282 ++++++++++++++++++
- 2 files changed, 283 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
+On 11/2/2023 8:42 AM, Paul Moore wrote:
+> On Wed, Nov 1, 2023 at 10:54 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>> On Wed, Nov 01, 2023 at 08:40:06PM -0400, Paul Moore wrote:
+>>> On Mon, Oct 23, 2023 at 11:52 PM Paul Moore <paul@paul-moore.com> wrote:
+>>>> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+>>>>>
+>>>>> fsverity represents a mechanism to support both integrity and
+>>>>> authenticity protection of a file, supporting both signed and unsigned
+>>>>> digests.
+>>>>>
+>>>>> An LSM which controls access to a resource based on authenticity and
+>>>>> integrity of said resource, can then use this data to make an informed
+>>>>> decision on the authorization (provided by the LSM's policy) of said
+>>>>> claim.
+>>>>>
+>>>>> This effectively allows the extension of a policy enforcement layer in
+>>>>> LSM for fsverity, allowing for more granular control of how a
+>>>>> particular authenticity claim can be used. For example, "all (built-in)
+>>>>> signed fsverity files should be allowed to execute, but only these
+>>>>> hashes are allowed to be loaded as kernel modules".
+>>>>>
+>>>>> This enforcement must be done in kernel space, as a userspace only
+>>>>> solution would fail a simple litmus test: Download a self-contained
+>>>>> malicious binary that never touches the userspace stack. This
+>>>>> binary would still be able to execute.
+>>>>>
+>>>>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+>>>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>>>>> ---
+>>>>> v1-v6:
+>>>>>    + Not present
+>>>>>
+>>>>> v7:
+>>>>>    Introduced
+>>>>>
+>>>>> v8:
+>>>>>    + Split fs/verity/ changes and security/ changes into separate patches
+>>>>>    + Change signature of fsverity_create_info to accept non-const inode
+>>>>>    + Change signature of fsverity_verify_signature to accept non-const inode
+>>>>>    + Don't cast-away const from inode.
+>>>>>    + Digest functionality dropped in favor of:
+>>>>>      ("fs-verity: define a function to return the integrity protected
+>>>>>        file digest")
+>>>>>    + Reworded commit description and title to match changes.
+>>>>>    + Fix a bug wherein no LSM implements the particular fsverity @name
+>>>>>      (or LSM is disabled), and returns -EOPNOTSUPP, causing errors.
+>>>>>
+>>>>> v9:
+>>>>>    + No changes
+>>>>>
+>>>>> v10:
+>>>>>    + Rename the signature blob key
+>>>>>    + Cleanup redundant code
+>>>>>    + Make the hook call depends on CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+>>>>>
+>>>>> v11:
+>>>>>    + No changes
+>>>>> ---
+>>>>>   fs/verity/fsverity_private.h |  2 +-
+>>>>>   fs/verity/open.c             | 26 +++++++++++++++++++++++++-
+>>>>>   include/linux/fsverity.h     |  2 ++
+>>>>>   3 files changed, 28 insertions(+), 2 deletions(-)
+>>>>
+>>>> We need an ACK from some VFS folks on this.
+>>>
+>>> Eric and/or Ted, can we get either an ACK or some feedback on this patch?
+>>>
+>>> For reference, the full patchset can be found on lore at the link below:
+>>>
+>>> https://lore.kernel.org/linux-security-module/1696457386-3010-1-git-send-email-wufan@linux.microsoft.com/
+>>
+>> Well, technically I already gave some (minor) feedback on this exact patch, and
+>> it's not yet been addressed:
+>> https://lore.kernel.org/linux-security-module/20231005022707.GA1688@quark.localdomain/
+Yes thanks for the review. We will certainly add the parameter 
+constification in the next version.
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 300049037eb0..c99da779ef7b 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -98,6 +98,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2pro.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mn-rve-gateway.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-tqma8mqnl-mba8mx.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-venice-gw7902.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts b/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-new file mode 100644
-index 000000000000..186f54fd06c6
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2023 DimOnOff
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/usb/pd.h>
-+#include "imx8mn-var-som.dtsi"
-+
-+/ {
-+	model = "RVE gateway";
-+	compatible = "rve,rve-gateway", "variscite,var-som-mx8mn", "fsl,imx8mn";
-+
-+	crystal_duart_24m: crystal-duart-24m {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpio_keys>;
-+
-+		key-enter {
-+			label = "enter";
-+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ENTER>;
-+		};
-+
-+		key-exit {
-+			label = "exit";
-+			gpios = <&gpio3 23 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ESC>;
-+		};
-+	};
-+
-+	lcd {
-+		compatible = "hit,hd44780";
-+		display-height-chars = <2>;
-+		display-width-chars = <20>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_lcd>;
-+		data-gpios = <&gpio5  1 GPIO_ACTIVE_HIGH>,
-+			     <&gpio1  6 GPIO_ACTIVE_HIGH>,
-+			     <&gpio1 14 GPIO_ACTIVE_HIGH>,
-+			     <&gpio4 28 GPIO_ACTIVE_HIGH>,
-+			     <&gpio5 24 GPIO_ACTIVE_HIGH>,
-+			     <&gpio5  2 GPIO_ACTIVE_HIGH>,
-+			     <&gpio1 12 GPIO_ACTIVE_HIGH>,
-+			     <&gpio5 25 GPIO_ACTIVE_HIGH>;
-+		enable-gpios = <&gpio5 23 GPIO_ACTIVE_HIGH>;
-+		rs-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
-+		rw-gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	reg_3p3v: regulator-3p3v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3P3V";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	/* Bourns PEC12R rotary encoder, 24 steps. */
-+	rotary: rotary-encoder {
-+		compatible = "rotary-encoder";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rotary>;
-+		gpios = <&gpio1  5 GPIO_ACTIVE_LOW>, /* A */
-+			<&gpio3 21 GPIO_ACTIVE_LOW>; /* B */
-+		linux,axis = <0>; /* REL_X */
-+		rotary-encoder,encoding = "gray";
-+		rotary-encoder,relative-axis;
-+	};
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+
-+	duart1: serial@0 {
-+		compatible = "nxp,sc16is752";
-+		reg = <0>;
-+		spi-rx-bus-width = <1>;
-+		spi-tx-bus-width = <1>;
-+		spi-max-frequency = <4000000>;
-+		clocks = <&crystal_duart_24m>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <22 IRQ_TYPE_EDGE_FALLING>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "RADIO0", "RADIO1", "RADIO2", "RADIO3",
-+		"RADIO4", "RADIO_RESET", "TP12", "TP11";
-+		linux,rs485-enabled-at-boot-time;
-+		rs485-rts-active-low;
-+	};
-+
-+	/delete-node/ touchscreen@0;
-+};
-+
-+&ecspi2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi2>;
-+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-+	/delete-property/ dmas;
-+	/delete-property/ dma-names;
-+	status = "okay";
-+
-+	duart2: serial@0 {
-+		compatible = "nxp,sc16is752";
-+		reg = <0>;
-+		spi-rx-bus-width = <1>;
-+		spi-tx-bus-width = <1>;
-+		spi-max-frequency = <4000000>;
-+		clocks = <&crystal_duart_24m>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <20 IRQ_TYPE_EDGE_FALLING>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "LED_B_USER", "LED_R_USER", "LED_G_USER",
-+		"GPIO_EXT3", "GPIO_EXT2", "GPIO_EXT1", "GPIO_EXT0", "TP13";
-+		linux,rs485-enabled-at-boot-time;
-+		rs485-rts-active-low;
-+	};
-+};
-+
-+/* Configure PWM pins in GPIO mode: */
-+&gpio5 {
-+	gpio-line-names = "", "", "", "PWM3", "PWM2", "PWM1";
-+};
-+
-+&gpu {
-+	status = "disabled";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	/* Carrier board EEPROM */
-+	eeprom_cb: eeprom@56 {
-+		compatible = "atmel,24c04";
-+		reg = <0x56>;
-+		pagesize = <16>;
-+		vcc-supply = <&reg_3p3v>;
-+	};
-+
-+	lm75: sensor@48 {
-+		compatible = "st,stlm75";
-+		reg = <0x48>;
-+		vs-supply = <&reg_3p3v>;
-+	};
-+
-+	mcp7940: rtc@6f {
-+		compatible = "microchip,mcp7940x";
-+		reg = <0x6f>;
-+	};
-+};
-+
-+&i2c3 {
-+	codec@1a {
-+		status = "disabled";
-+	};
-+};
-+
-+&i2c4 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c4>;
-+	status = "okay";
-+
-+	pcf8574_1: gpio@38 {
-+		compatible = "nxp,pcf8574";
-+		reg = <0x38>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "LED_B_COMM3", "LED_R_COMM3", "LED_G_COMM3",
-+		"TP14", "TP15", "LED_G_COMM4", "LED_R_COMM4", "LED_B_COMM4";
-+	};
-+
-+	pcf8574_2: gpio@39 {
-+		compatible = "nxp,pcf8574";
-+		reg = <0x39>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "LED_B_COMM2", "LED_G_COMM2", "LED_B_COMM1",
-+		"LED_R_COMM2", "LED_R_COMM1", "LED_G_COMM1", "TP16", "TP17";
-+	};
-+};
-+
-+/* Bluetooth */
-+&uart2 {
-+	status = "disabled";
-+};
-+
-+&usbotg1 {
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+/* SD interface on expansion connector. */
-+&usdhc2 {
-+	vmmc-supply = <&reg_3p3v>;
-+	cd-gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;
-+};
-+
-+&iomuxc {
-+	pinctrl_ecspi1: ecspi1grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI1_SCLK_ECSPI1_SCLK	0x13
-+			MX8MN_IOMUXC_ECSPI1_MOSI_ECSPI1_MOSI	0x13
-+			MX8MN_IOMUXC_ECSPI1_MISO_ECSPI1_MISO	0x13
-+			MX8MN_IOMUXC_ECSPI1_SS0_GPIO5_IO9	0x13 /* SS0 */
-+			MX8MN_IOMUXC_SAI5_RXD1_GPIO3_IO22	0x13 /* SC16 IRQ */
-+		>;
-+	};
-+
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0x13
-+			MX8MN_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI	0x13
-+			MX8MN_IOMUXC_ECSPI2_MISO_ECSPI2_MISO	0x13
-+			MX8MN_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x13 /* SS0 */
-+			MX8MN_IOMUXC_SAI5_RXC_GPIO3_IO20	0x13 /* SC16 IRQ */
-+		>;
-+	};
-+
-+	pinctrl_gpio_keys: gpiokeysgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO01_GPIO1_IO1	0xc6 /* Enter */
-+			MX8MN_IOMUXC_SAI5_RXD2_GPIO3_IO23	0xc6 /* Exit */
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
-+			MX8MN_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_i2c4: i2c4grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_I2C4_SCL_I2C4_SCL		0x400001c3
-+			MX8MN_IOMUXC_I2C4_SDA_I2C4_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_lcd: lcdgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SAI3_TXD_GPIO5_IO1		0x00000156 /* D0 */
-+			MX8MN_IOMUXC_GPIO1_IO06_GPIO1_IO6	0x00000156 /* D1 */
-+			MX8MN_IOMUXC_GPIO1_IO14_GPIO1_IO14	0x00000156 /* D2 */
-+			MX8MN_IOMUXC_SAI3_RXFS_GPIO4_IO28	0x00000156 /* D3 */
-+			MX8MN_IOMUXC_UART2_RXD_GPIO5_IO24	0x00000156 /* D4 */
-+			MX8MN_IOMUXC_SAI3_MCLK_GPIO5_IO2	0x00000156 /* D5 */
-+			MX8MN_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x00000156 /* D6 */
-+			MX8MN_IOMUXC_UART2_TXD_GPIO5_IO25	0x00000156 /* D7 */
-+			MX8MN_IOMUXC_UART1_TXD_GPIO5_IO23	0x00000156 /* E */
-+			MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x00000156 /* RS */
-+			MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27	0x00000156 /* R/W */
-+		>;
-+	};
-+
-+	pinctrl_rotary: rotarygrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO05_GPIO1_IO5	0x00000156 /* A */
-+			MX8MN_IOMUXC_SAI5_RXD0_GPIO3_IO21	0x00000156 /* B */
-+		>;
-+	};
-+
-+	/* Override Card Detect function GPIO value (GPIO1_IO10) from SOM: */
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x41
-+		>;
-+	};
-+};
--- 
-2.39.2
+> 
+> Hopefully Fan can comment on that, unless I'm forgetting some
+> implementation details it seems like a reasonable request.
+> 
+>> Of course, it would also be nice if the commit message mentioned what the patch
+>> actually does.
+> 
+> While I think the commit description does provide a reasonable summary
+> of IPE as it relates to fsverify, I agree that the specifics of the
+> changes presented in the patch are lacking.  Fan, could you update the
+> commit description to add a paragraph explaining what IPE would do in
+> the security_inode_setsecurity() hook called from within
+> fsverity_inode_setsecurity()?
+>
+Sorry for the lack of clarity. The hook call happens right after the 
+built-in signature verification in fsverity. This hook's main job is to 
+allow LSM to store the verified signature so that it can be used for 
+future LSM checks.
+
+>> At a higher level, I've said before, I'm not super happy about the use of
+>> fsverity builtin signatures growing.  (For some of the reasons why, see the
+>> guidance in the fsverity documentation at
+>> https://docs.kernel.org/filesystems/fsverity.html#built-in-signature-verification)
+>> That being said, if the people who are doing the broader review of IPE believe
+>> this is how its fsverity integration should work, I can live with that ...
+> 
+> Fan can surely elaborate on this more, but my understanding is that
+> IPE can help provide the missing authorization piece.
+>
+As Paul mentioned, with IPE, we can add kernel enforcement that only 
+files with the fs-verity built-in signature enabled are allowed. 
+Currently, IPE uses the above hook to save the signature in the file's 
+security blob, and then it decides whether to permit or deny file 
+operations based on the presence of the fs-verity built-in signature.
+
+But our plans don't end there. In the future, we intend to add more 
+features to address the security gaps mentioned in the documentation 
+related to the fs-verity built-in signature. For instance, we will 
+introduce a certificate policy rule to limit which signatures can be 
+trusted, thus resolving issues related to the validity period of 
+certificates. Additionally, we will implement file path rules, allowing 
+different certificates to permit or deny access to different files.
+
+>> ... I don't
+>> intend to block the IPE patchset if enough people want it to be merged.  I've
+>> really been hoping to see engagement with the people involved in IMA, as IPE
+>> basically duplicates/replaces IMA.  But I haven't seen that, so maybe things
+>> need to move on without them.
+> 
+> We are getting a bit beyond the integration of IPE and fsverity so I
+> don't want to spend a lot of time here, but IPE and IMA work quite a
+> bit differently as they serve different purposes.  IPE provides a file
+> authorization mechanism that grants access based on the specified
+> policy and the file's underlying backing store; IPE does not measure
+> files like IMA to provide additional integrity checking, it relies on
+> the storage medium's integrity mechanisms.
+> 
+> I have no doubt Fan could provide a much better summary if needed, and
+> of course there are the documentation patches in the patchset too.
+> 
+
+I would like to emphasize that IPE is not meant to replace IMA.
+
+IPE is a different approach, specifically designed for a particular part 
+of IMA's capabilities, which is "appraisal. While IPE's approach also 
+limits IPE's use cases to highly secure, locked-down devices where 
+almost everything is made read-only. In contrast, IMA is a versatile 
+solution suitable for a wide range of scenarios, and IPE cannot address 
+all of these.
+
+In practice, we often use both IMA (including measurement and appraisal) 
+and IPE simultaneously in production. These two solutions can coexist 
+and complement each other, and they are not mutually exclusive.
+
+-Fan
+
 
