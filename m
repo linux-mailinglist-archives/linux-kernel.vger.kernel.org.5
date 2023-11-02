@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2777DE924
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 00:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777F77DE92E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjKAXxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 19:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S234352AbjKBABf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 20:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjKAXxu (ORCPT
+        with ESMTP id S234295AbjKBABZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 19:53:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E57119
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 16:53:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698882823; x=1730418823;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=8No9qD3NopqdlPoaq0kKHzHKIDnfhkU+1rIhmFx3lKA=;
-  b=GJF/iMXS4Ynfugy5WRcXEEBXvSrbP9IiqHg1+4IhBNcr1bKl9sIkCKhd
-   vFoCCL0187bXPfGJOB24uTPsjjjispV5/Rn+yEeK+/AvOkxvxC2tBFuLz
-   g2qYM0Ia7tCjykyVDChDGMjQ6GBV/5vZ071QQOYaFDmTHc7unT1liHHSC
-   YsT82Da/lh8Bm91kHBoIwh5aJqJwGX+lLt+Vd/X1ePl/n4owfndfLWGHj
-   GKqMywzzCLtMuRFojHGah4v1H2YDB29I0udskULR6ul4qy0jMdLPQTzDK
-   MDmXgyZ7eVaFXIrnPhnGalDn+V8xY4dJgQNAt1ALnUwa7XAAwZpbxwtGx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="385777358"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="385777358"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 16:53:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="884702862"
-X-IronPort-AV: E=Sophos;i="6.03,269,1694761200"; 
-   d="scan'208";a="884702862"
-Received: from mckitto-mobl1.amr.corp.intel.com (HELO [10.209.109.254]) ([10.209.109.254])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 16:53:42 -0700
-Message-ID: <4b05bf79-c394-4a63-b6d5-eccbdc708115@linux.intel.com>
-Date:   Wed, 1 Nov 2023 16:53:42 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MAINTAINERS: Add Intel TDX entry
-Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     x86@kernel.org, Kai Huang <kai.huang@intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20231101233314.2567-1-kirill.shutemov@linux.intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231101233314.2567-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Wed, 1 Nov 2023 20:01:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBD510E
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 17:01:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 059CFC433C7;
+        Thu,  2 Nov 2023 00:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698883280;
+        bh=mCxDYGios1GP2bUsZU4vUlVFM6mDneQhL3Hpf86hB/c=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=OwQ532yuYl6ybv/7yPmdbdGsVqDwawXdvZq9YAhzrTVND6v/ZmhQzmloEa9O81oO1
+         LAmXz9UoWLVNit8JearJ1XqBuoQSpZOWda0qq3ZwIb4jrAj7eYVP7blsNLoItIFpqZ
+         qjUR+JpCi0La0rNPS7jJKGRIj1fKZdorRjnaxnb1OiIohUK6+ZHWqYiPAkSR10xD/D
+         88QiCux4dHKDLzdz7Sb22s6CJuTqS9pCN9g2AcsCQzxfkE3PEQu2abJJVNEwY0d8Qj
+         4Euk6IuCgU0A/aQ8ta2yW7bMc619xKK/ZIgteoDZUL0zHeG12BjypVGkuQrA/efFkl
+         vWn/y4IwRgmuA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E8E80C3959F;
+        Thu,  2 Nov 2023 00:01:19 +0000 (UTC)
+Subject: Re: [GIT PULL] dma-mapping updates for Linux 6.7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZT-46QZiN8b37Swy@infradead.org>
+References: <ZT-46QZiN8b37Swy@infradead.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZT-46QZiN8b37Swy@infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.7-2023-10-30
+X-PR-Tracked-Commit-Id: 36d91e851598a9ea523ad4681dd11fa661d59695
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 009fbfc97b6367762efa257f1478ec86d37949f9
+Message-Id: <169888327994.31464.13950085084685736255.pr-tracker-bot@kernel.org>
+Date:   Thu, 02 Nov 2023 00:01:19 +0000
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,50 +56,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The pull request you sent on Mon, 30 Oct 2023 15:08:41 +0100:
 
-On 11/1/2023 4:33 PM, Kirill A. Shutemov wrote:
-> Add myself as Intel TDX maintainer.
-> 
-> I drove upstreaming most of TDX code so far and I will continue
-> working on TDX for foreseeable future.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-> ---
+> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.7-2023-10-30
 
-Acked-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/009fbfc97b6367762efa257f1478ec86d37949f9
 
->  MAINTAINERS | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7608b714653f..1cbec6b235f9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23466,6 +23466,18 @@ F:	arch/x86/kernel/dumpstack.c
->  F:	arch/x86/kernel/stacktrace.c
->  F:	arch/x86/kernel/unwind_*.c
->  
-> +X86 TRUST DOMAIN EXTENSIONS (TDX)
-> +M:	Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> +L:	x86@kernel.org
-> +L:	linux-coco@lists.linux.dev
-> +S:	Maintained
-> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
-> +F:	arch/x86/boot/compressed/tdx*
-> +F:	arch/x86/coco/tdx/
-> +F:	arch/x86/include/asm/shared/tdx.h
-> +F:	arch/x86/include/asm/tdx.h
-> +F:	arch/x86/virt/vmx/tdx/
-> +
-
-Do you want to include drivers/virt/coco/tdx-guest?
-
->  X86 VDSO
->  M:	Andy Lutomirski <luto@kernel.org>
->  L:	linux-kernel@vger.kernel.org
+Thank you!
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
