@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC477DFABA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E2E7DFABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbjKBTOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        id S1344995AbjKBTPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjKBTO3 (ORCPT
+        with ESMTP id S229703AbjKBTPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:14:29 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B561C188;
-        Thu,  2 Nov 2023 12:14:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1698952460;
-        bh=O7wEcDJtrGJ2yEwB0sEkgTD3GrHwoBv5RI3h12B/TWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mPDbYyzj2o7kfdQXXedsrUe8Ts0XLpOU4a2ChB6jMnNoFOwzBU97iZ5d7QZ00ekr4
-         BirHopLx8Qy05TCzR71Ua/aGkDs4JdExXFm45Bsz8W5tT/23QYJSV2X/Br3bfo9uKn
-         7bmJ/7HLYGg+8BnqSk72TpcADtK5s4dA533fXfgA=
-Date:   Thu, 2 Nov 2023 20:14:19 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rfkill: return ENOTTY on invalid ioctl
-Message-ID: <613039a4-41af-48ff-8113-3b0ee8077bcf@t-8ch.de>
-References: <20231101-rfkill-ioctl-enosys-v1-1-5bf374fabffe@weissschuh.net>
- <a069393c-86b3-ef79-82dd-0b60caf2a907@intel.com>
+        Thu, 2 Nov 2023 15:15:38 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53C0184;
+        Thu,  2 Nov 2023 12:15:36 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1cc938f9612so5437115ad.1;
+        Thu, 02 Nov 2023 12:15:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698952533; x=1699557333;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U+32vB581hzmFY06dbkkG5Ku+sXQfolP2uRxPBBpw/0=;
+        b=GWkIOfB/vSmCGVbqi34tiA/A8gqxhEFHD6cWWEQSrASKuJq4XtnMKLe9UA4zoUbaXX
+         OwYxopRMcXtUY7+q53rrHKNmCeiEch09rbJW3bDSGzIhWbDNH7qPslok5Yo7R5wuDLg4
+         20swDRUYbZs70Y3ZIYj1KZj9yXMiGgwmn53zdH9/w4z8MNHdwX3Fs8kq0fJoShmKyHOo
+         +PdAYGQ9MyNCAVWny5Xm4q0YvUmq5Iif8JDJmyhTavrAoNGH33nikekoWF8/78qvVrHp
+         NqS3LQKMGAZe/LzTId7B9vjA1wgDgnW6YRnEzILg/uipnsy3BG2ZRM4ayprpV2YsKATP
+         R5JA==
+X-Gm-Message-State: AOJu0Yz71J/+uxA1ugB3sf586mMXWHJv1brV4d9VAr9yYtOMxvpn00RR
+        hQM0YU+pdXxdxh/8qbRXYesl8ug4TyA=
+X-Google-Smtp-Source: AGHT+IFyB05wi+a/eG/YQ1Na65WBGYrjXb0/KwBD8cobt8pwQS6rMJJxY+nlRQqkNhMEnWdm3gsKhQ==
+X-Received: by 2002:a17:902:ea01:b0:1cc:47a6:12b8 with SMTP id s1-20020a170902ea0100b001cc47a612b8mr14760705plg.46.1698952533338;
+        Thu, 02 Nov 2023 12:15:33 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:87f7:9784:4475:1cd4? ([2620:15c:211:201:87f7:9784:4475:1cd4])
+        by smtp.gmail.com with ESMTPSA id e5-20020a170902744500b001c60ba709b7sm80157plt.125.2023.11.02.12.15.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 12:15:32 -0700 (PDT)
+Message-ID: <64a6315d-76df-49c8-aa57-a0576c53b6ef@acm.org>
+Date:   Thu, 2 Nov 2023 12:15:30 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a069393c-86b3-ef79-82dd-0b60caf2a907@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] ufs: core: Expand MCQ queue slot to
+ DeviceQueueDepth + 1
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>, naomi.chu@mediatek.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        Can Guo <quic_cang@quicinc.com>, wsd_upstream@mediatek.com,
+        peter.wang@mediatek.com, casper.li@mediatek.com,
+        powen.kao@mediatek.com, alice.chao@mediatek.com,
+        chun-hung.wu@mediatek.com, cc.chou@mediatek.com,
+        eddie.huang@mediatek.com
+References: <20231102052426.12006-1-naomi.chu@mediatek.com>
+ <20231102052426.12006-2-naomi.chu@mediatek.com>
+ <20231102163728.GB20943@thinkpad>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231102163728.GB20943@thinkpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 11/2/23 09:37, Manivannan Sadhasivam wrote:
+> Where is the changelog?
 
-On 2023-11-02 09:57:45+0100, Przemek Kitszel wrote:
-> On 11/1/23 20:41, Thomas Weißschuh wrote:
-> > For unknown ioctls the correct error is
-> > ENOTTY "Inappropriate ioctl for device".
-> 
-> For sure!
-> 
-> I would like to learn more of why this is not an UAPI breaking change?
+I think it's here: 
+https://lore.kernel.org/linux-scsi/20231102052426.12006-1-naomi.chu@mediatek.com/
 
-"break" would mean that some user application worked correctly before
-but does not do so anymore with this change.
+Bart.
 
-This seems highly unlikely and I was not able to find such an
-application via Debian code search.
-
-In general I did *not* mark this change for stable so if some
-application would indeed break it gets detected before the patch hits
-a release.
-
-> > 
-> > ENOSYS as returned before should only be used to indicate that a syscall
-> > is not available at all.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> >   net/rfkill/core.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/net/rfkill/core.c b/net/rfkill/core.c
-> > index 14cc8fe8584b..c3feb4f49d09 100644
-> > --- a/net/rfkill/core.c
-> > +++ b/net/rfkill/core.c
-> > @@ -1351,11 +1351,11 @@ static long rfkill_fop_ioctl(struct file *file, unsigned int cmd,
-> >   			     unsigned long arg)
-> >   {
-> >   	struct rfkill_data *data = file->private_data;
-> > -	int ret = -ENOSYS;
-> > +	int ret = -ENOTTY;
-> >   	u32 size;
-> >   	if (_IOC_TYPE(cmd) != RFKILL_IOC_MAGIC)
-> > -		return -ENOSYS;
-> > +		return -ENOTTY;
-> >   	mutex_lock(&data->mtx);
-> >   	switch (_IOC_NR(cmd)) {
-> > 
-> > ---
-> > base-commit: 7d461b291e65938f15f56fe58da2303b07578a76
-> > change-id: 20231101-rfkill-ioctl-enosys-00a2bb0a4ab1
-> > 
-> > Best regards,
-> 
