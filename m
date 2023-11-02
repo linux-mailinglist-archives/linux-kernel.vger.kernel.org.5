@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9877DF1A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED937DF1B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344874AbjKBLu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S1344733AbjKBLv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344733AbjKBLu1 (ORCPT
+        with ESMTP id S229640AbjKBLv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:50:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81523133
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:50:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D2AC1C433CA;
-        Thu,  2 Nov 2023 11:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698925822;
-        bh=Pf1c1Zob157wCaR6+3UGacUZgEjfHNk4/blaFlwOIY8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=g61e9KKxYXnPaOy4HQNQiHKLCkleVBQ9jeHTzMv4fNQV50tCVr+tD+u/NbOcnLOEB
-         qFb8OEy1wdVuPxTLftK2XY+ZKJLoIxtHvIhq68bQxkElI7uDgoKqo7v8E57F9H31K5
-         TF2UmU+yJQURjUiGUhOgQfC/xcNNHyc7Q0Kc29cmz5jQBNowZkDQh2hyL2x/gsUtW1
-         BoRIIVpiGAv91UuvtmQYmxOQU9QtbI1GNFiIg6og3m6nzPSLtvYq2moCnRjU0NlCOH
-         1dW2F9HIJebzbGVPg9DS5p7BqaNGa/z6uGYMlazafc2ZDcwPL2zyOaa/JsfwJ1+ow6
-         cUo92UmTLRyyg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B5E88C4316B;
-        Thu,  2 Nov 2023 11:50:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 2 Nov 2023 07:51:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E89E4
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698925862;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BXvh0HaN7chqLYewNa2LL+UKTHm+C7BuJqCkmXwm+hI=;
+        b=USCyJZSTDBCXDiq5yT9cLdzjZZnMPqg/SIWV8fo7pZCEiuowbR3Ysylz625DvPIBZN1rzr
+        sydkyZjOsC4qEZpkuQ7Indg5HsTWAgaXd3KHt2bHP2OaDjTDA+BPqZuq6kKKxfFjHtUhf0
+        uw7OGWiGk3epPAALvs1uE9t9BGAYr9M=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-qyri4EJdPqmIB0aOVYsApA-1; Thu, 02 Nov 2023 07:51:00 -0400
+X-MC-Unique: qyri4EJdPqmIB0aOVYsApA-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc1682607eso7139515ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 04:51:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698925860; x=1699530660;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BXvh0HaN7chqLYewNa2LL+UKTHm+C7BuJqCkmXwm+hI=;
+        b=hcH6Nfy4GTVt/Ge0LZfAxaioqRYMOeHeYWtlJ59g6QJzzIiF2oHgsMmqyca8LSCxrx
+         3oXVjDBf92HZewPioC4wptzuv0RMs1Tgwv7bQ/Apb8cp5EHhpWY8/5CmcDJV0/IGoNjj
+         YEU7kpAIk+8c+2VZwXGFWaKIjj39VpjJdOKWcOsfZGaOJCqHYu5Frs/iW2tQbdZwsjLr
+         AeVUPzIitbD5eQxE/fasRUiaBN62xZTmHq+3D1iv8aVNHDfnnFR6waAGRXKEsUL69f4o
+         NGSh57xPHf/3pzVSQ5tIO7dUa2RYOowKq1tCrhzTyd504H75vwA4hLVSyXgCmMilrg6O
+         L5ag==
+X-Gm-Message-State: AOJu0YzhfhMBR93hNOQCPUpNzzS/bI4LKrzmgVX+/VQEmAEM/sodD5pR
+        HHGP+6zfNKVm8ryEoPHrdGuk0YW8qr92A0SUGlGxvNfyrt3U0irOIy8Pk33m0JfpOImG7xO6clv
+        6mueflqlPOwhiraTRmW6nfCwm/aWr+CgqqHH15qmj
+X-Received: by 2002:a17:902:ec91:b0:1cc:54fb:60f9 with SMTP id x17-20020a170902ec9100b001cc54fb60f9mr10689023plg.37.1698925859920;
+        Thu, 02 Nov 2023 04:50:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFeDlGc9ZGH6KLUUs2Oy1+WEmNgkUJb5lFfrVvtguyJjyCi7rE9YZlkZPXYJTVtaydPfwGnkT4uiclyiO5PhFc=
+X-Received: by 2002:a17:902:ec91:b0:1cc:54fb:60f9 with SMTP id
+ x17-20020a170902ec9100b001cc54fb60f9mr10689005plg.37.1698925859679; Thu, 02
+ Nov 2023 04:50:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: page_pool: add missing free_percpu when
- page_pool_init fail
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169892582274.28990.7721054439007529390.git-patchwork-notify@kernel.org>
-Date:   Thu, 02 Nov 2023 11:50:22 +0000
-References: <20231030091256.2915394-1-shaojijie@huawei.com>
-In-Reply-To: <20231030091256.2915394-1-shaojijie@huawei.com>
-To:     Jijie Shao <shaojijie@huawei.com>
-Cc:     hawk@kernel.org, ilias.apalodimas@linaro.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jdamato@fastly.com, shenjian15@huawei.com, wangjie125@huawei.com,
-        liuyonglong@huawei.com, linyunsheng@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231102015141.1355762-1-suhui@nfschina.com>
+In-Reply-To: <20231102015141.1355762-1-suhui@nfschina.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 2 Nov 2023 12:50:47 +0100
+Message-ID: <CAHc6FU5H-Ju9129Xr3RGA6DePDL58tQ7nOkSJXdig4gJc1w+WA@mail.gmail.com>
+Subject: Re: [PATCH] gfs2: remove dead code in __acquires
+To:     Su Hui <suhui@nfschina.com>
+Cc:     rpeterso@redhat.com, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com, gfs2@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, Nov 2, 2023 at 2:54=E2=80=AFAM Su Hui <suhui@nfschina.com> wrote:
+>
+> clang static analyzer complains that value stored to 'gh' is never read.
+> The code of this line is useless after commit 0b93bac2271e
+> ("gfs2: Remove LM_FLAG_PRIORITY flag"). Remove this code to save space.
+>
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  fs/gfs2/glock.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+> index 3772a5d9e85c..347f8a020c82 100644
+> --- a/fs/gfs2/glock.c
+> +++ b/fs/gfs2/glock.c
+> @@ -1524,7 +1524,6 @@ __acquires(&gl->gl_lockref.lock)
+>                 return;
+>         }
+>         list_add_tail(&gh->gh_list, insert_pt);
+> -       gh =3D list_first_entry(&gl->gl_holders, struct gfs2_holder, gh_l=
+ist);
+>         spin_unlock(&gl->gl_lockref.lock);
+>         if (sdp->sd_lockstruct.ls_ops->lm_cancel)
+>                 sdp->sd_lockstruct.ls_ops->lm_cancel(gl);
+> --
+> 2.30.2
+>
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Thanks, I'll add this.
 
-On Mon, 30 Oct 2023 17:12:56 +0800 you wrote:
-> From: Jian Shen <shenjian15@huawei.com>
-> 
-> When ptr_ring_init() returns failure in page_pool_init(), free_percpu()
-> is not called to free pool->recycle_stats, which may cause memory
-> leak.
-> 
-> Fixes: ad6fa1e1ab1b ("page_pool: Add recycle stats")
-> Signed-off-by: Jian Shen <shenjian15@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> 
-> [...]
+(The subject "gfs2: remove dead code in __acquires" is misleading
+because the function this is in is called add_to_queue(); __acquires
+is just an annotation.)
 
-Here is the summary with links:
-  - [net] net: page_pool: add missing free_percpu when page_pool_init fail
-    https://git.kernel.org/netdev/net/c/8ffbd1669ed1
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Andreas
 
