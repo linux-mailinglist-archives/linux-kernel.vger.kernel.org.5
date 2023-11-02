@@ -2,98 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD537DF4B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E19D7DF4B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376704AbjKBOOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        id S1376735AbjKBOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjKBOOH (ORCPT
+        with ESMTP id S230024AbjKBOPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:14:07 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C5B128;
-        Thu,  2 Nov 2023 07:14:04 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SLm4W0KYZz6H7bF;
-        Thu,  2 Nov 2023 22:10:51 +0800 (CST)
-Received: from localhost (10.126.170.21) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 2 Nov
- 2023 14:14:00 +0000
-Date:   Thu, 2 Nov 2023 14:13:59 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ravi Jonnalagadda <ravis.opensrc@micron.com>
-CC:     <ying.huang@intel.com>, <akpm@linux-foundation.org>,
-        <aneesh.kumar@linux.ibm.com>, <apopple@nvidia.com>,
-        <dave.hansen@intel.com>, <gourry.memverge@gmail.com>,
-        <gregkh@linuxfoundation.org>, <gregory.price@memverge.com>,
-        <hannes@cmpxchg.org>, <linux-cxl@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <mhocko@suse.com>, <rafael@kernel.org>, <shy828301@gmail.com>,
-        <tim.c.chen@intel.com>, <weixugc@google.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-Message-ID: <20231102141359.00000aa6@Huawei.com>
-In-Reply-To: <20231102093542.70-1-ravis.opensrc@micron.com>
-References: <87a5rw1wu8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20231102093542.70-1-ravis.opensrc@micron.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 2 Nov 2023 10:15:24 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1450A12E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:15:15 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 203C06607033;
+        Thu,  2 Nov 2023 14:15:13 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698934514;
+        bh=cAv8iDJbPkwyr97yslzoCR0E+J9ioopOVLD7tn0xeaE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HqpIaYF1rO3cGnHd2r+erpo4hV2GzGpXpvcUY+S6BvEdi0pqjEu5FWy6QdvWTB3Gn
+         sLX5M2x5Eba62EWJQeIhhroPsAOPWMocc59q2AuWBWBlax4+QBZzkgfoOdyFqPQbXF
+         Y7hMqhsMlQszW/jpI8+JDDIRReCRzoRS38k39ZND8OCmYQjwIAov7wyhLEOh3B4a8K
+         B14ZdeSjkbBKNhWSqF/sa/1vcE8KOscGZlWKXVKeDxxVrAu7PA0NcjV6DjsU7+mLU0
+         /B6FVDPNyCX1zZQRdHj1Wv1SpIjqjXob6NB925dUEtepvVxB63XjzTVkIiW32H160F
+         OWsLpYE84uuzA==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     boris.brezillon@collabora.com
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        wenst@chromium.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com
+Subject: [PATCH] drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()
+Date:   Thu,  2 Nov 2023 15:15:07 +0100
+Message-ID: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.170.21]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,
-        PP_MIME_FAKE_ASCII_TEXT,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-icable.  
-> >
-> >You mean the different memory ranges of a NUMA node may have different
-> >performance?  I don't think that we can deal with this.  
-> 
-> Example Configuration: On a server that we are using now, four different
-> CXL cards are combined to form a single NUMA node and two other cards are
-> exposed as two individual numa nodes.
-> So if we have the ability to combine multiple CXL memory ranges to a
-> single NUMA node the number of NUMA nodes in the system would potentially
-> decrease even if we can't combine the entire range to form a single node.
->
+The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to request
+powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO ones:
+this means that in order to request poweroff of cores, we are supposed
+to write a bitmask of cores that should be powered off!
+This means that the panfrost_gpu_power_off() function has always been
+doing nothing.
 
-If it's in control of the kernel, today for CXL NUMA nodes are defined by
-CXL Fixed Memory Windows rather than the individual characteristics of devices
-that might be accessed from those windows.
+Fix powering off the GPU by writing a bitmask of the cores to poweroff
+to the relevant PWROFF_LO registers and then check that the transition
+(from ON to OFF) has finished by polling the relevant PWRTRANS_LO
+registers.
 
-That's a useful simplification to get things going and it's not clear how the
-QoS aspects of CFMWS will be used.  So will we always have enough windows with
-fine enough granularity coming from the _DSM QTG magic that they don't end up
-with different performance devices (or topologies) within each one?
+While at it, in order to avoid code duplication, move the core mask
+logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
+function, used in both poweron and poweroff.
 
-No idea.  It's a bunch of trade offs of where the complexity lies and how much
-memory is being provided over CXL vs physical address space exhaustion.
+Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 65 ++++++++++++++++++-------
+ 1 file changed, 47 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index f0be7e19b13e..fad75b6e543e 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -362,28 +362,38 @@ unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev)
+ 	return ((u64)hi << 32) | lo;
+ }
  
-Long term, my guess is we'll need to support something more sophisticated with
-dynamic 'creation' of NUMA  nodes (or something that looks like that anyway)
-so we can always have a separate one for each significantly different set of
-memory access characteristics.  If they are coming from ACPI that's already
-required by the specification.  This space is going to continue getting more
-complex.
++static u64 panfrost_get_core_mask(struct panfrost_device *pfdev)
++{
++	u64 core_mask;
++
++	if (pfdev->features.l2_present == 1)
++		return U64_MAX;
++
++	/*
++	 * Only support one core group now.
++	 * ~(l2_present - 1) unsets all bits in l2_present except
++	 * the bottom bit. (l2_present - 2) has all the bits in
++	 * the first core group set. AND them together to generate
++	 * a mask of cores in the first core group.
++	 */
++	core_mask = ~(pfdev->features.l2_present - 1) &
++		     (pfdev->features.l2_present - 2);
++	dev_info_once(pfdev->dev, "using only 1st core group (%lu cores from %lu)\n",
++		      hweight64(core_mask),
++		      hweight64(pfdev->features.shader_present));
++
++	return core_mask;
++}
++
+ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ {
+ 	int ret;
+ 	u32 val;
+-	u64 core_mask = U64_MAX;
++	u64 core_mask;
+ 
+ 	panfrost_gpu_init_quirks(pfdev);
++	core_mask = panfrost_get_core_mask(pfdev);
+ 
+-	if (pfdev->features.l2_present != 1) {
+-		/*
+-		 * Only support one core group now.
+-		 * ~(l2_present - 1) unsets all bits in l2_present except
+-		 * the bottom bit. (l2_present - 2) has all the bits in
+-		 * the first core group set. AND them together to generate
+-		 * a mask of cores in the first core group.
+-		 */
+-		core_mask = ~(pfdev->features.l2_present - 1) &
+-			     (pfdev->features.l2_present - 2);
+-		dev_info_once(pfdev->dev, "using only 1st core group (%lu cores from %lu)\n",
+-			      hweight64(core_mask),
+-			      hweight64(pfdev->features.shader_present));
+-	}
+ 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present & core_mask);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
+ 		val, val == (pfdev->features.l2_present & core_mask),
+@@ -408,11 +418,30 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ {
+-	gpu_write(pfdev, TILER_PWROFF_LO, 0);
+-	gpu_write(pfdev, SHADER_PWROFF_LO, 0);
+-	gpu_write(pfdev, L2_PWROFF_LO, 0);
++	u64 core_mask = panfrost_get_core_mask(pfdev);
++	int ret;
++	u32 val;
++
++	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
++	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
++					 val, !val, 1, 1000);
++	if (ret)
++		dev_err(pfdev->dev, "shader power transition timeout");
++
++	gpu_write(pfdev, TILER_PWROFF_LO, pfdev->features.tiler_present);
++	ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
++					 val, !val, 1, 1000);
++	if (ret)
++		dev_err(pfdev->dev, "tiler power transition timeout");
++
++	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
++	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
++					 val, !val, 0, 1000);
++	if (ret)
++		dev_err(pfdev->dev, "l2 power transition timeout");
+ }
+ 
++
+ int panfrost_gpu_init(struct panfrost_device *pfdev)
+ {
+ 	int err, irq;
+-- 
+2.42.0
 
-Upshot is that I wouldn't focus too much on possibility of a NUMA node having
-devices with very different memory access characterstics in it.  That's a quirk
-of today's world that we can and should look to fix.
-
-If your bios is setting this up for you and presenting them in SRAT / HMAT etc
-then it's not complying with the ACPI spec.
-
-Jonathan
