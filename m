@@ -2,119 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2CA7DE970
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA4E7DE974
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbjKBAgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 20:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
+        id S234490AbjKBAgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 20:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjKBAgI (ORCPT
+        with ESMTP id S229727AbjKBAgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 20:36:08 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC9E101;
-        Wed,  1 Nov 2023 17:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698885360;
-        bh=DilUg6V/8gKKGvd5+lbnLmizPY1cJYZW7oWRbeuiWU8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JOE2+wXuVan86xnVL6IJaTfdJZ7odPv41V883z+cXO4T43TccoXbN1R1ywO1DzfL1
-         EM2H7sThTQR14/N4U/EpmNePNqgLAkfahjz+XP8cnIk6347HGyZNC7XjS5s1/4gOLi
-         aOVMxBT47W4kRrS7u9EAMIYy8pGqT3Q8kX2FYvHDXJ5i4ZTeVrRBN6VQ1O39DfHs+8
-         0xPAYqIvtHuiVVzfm3EcCM5c7kJzjbIaaEwt+3VBYPOa2HIdyybbxwGipsPuEy/GFR
-         sBqSyyTe+WXKNm8LSIwgQJhumOPLPZbgnIZmRdnOdDQTBi9lONf4smymqoVyQfbS6W
-         OtB5HZdO3HWhQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SLQ0H514Zz4xWR;
-        Thu,  2 Nov 2023 11:35:59 +1100 (AEDT)
-Date:   Thu, 2 Nov 2023 11:35:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dipen Patel <dipenp@nvidia.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the hte tree with the gpio-brgl
- tree
-Message-ID: <20231102113558.7f70323d@canb.auug.org.au>
-In-Reply-To: <20231024151138.74b045ce@canb.auug.org.au>
-References: <20231024151138.74b045ce@canb.auug.org.au>
+        Wed, 1 Nov 2023 20:36:13 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F99124;
+        Wed,  1 Nov 2023 17:36:06 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VvTiKF3_1698885362;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VvTiKF3_1698885362)
+          by smtp.aliyun-inc.com;
+          Thu, 02 Nov 2023 08:36:03 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     kent.overstreet@linux.dev, bfoster@redhat.com
+Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: Remove unneeded semicolon
+Date:   Thu,  2 Nov 2023 08:36:00 +0800
+Message-Id: <20231102003600.94657-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CuJq0SZXgVK89hE4tl+DR/l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CuJq0SZXgVK89hE4tl+DR/l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+./fs/bcachefs/reflink.c:112:32-33: Unneeded semicolon
 
-Hi all,
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7114
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/bcachefs/reflink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, 24 Oct 2023 15:11:38 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the hte tree got a conflict in:
->=20
->   drivers/hte/Kconfig
->=20
-> between commit:
->=20
->   9bc633117d6a ("hte: tegra194: add GPIOLIB dependency")
->=20
-> from the gpio-brgl tree and commit:
->=20
->   63137bee5a7a ("hte: allow building modules with COMPILE_TEST enabled")
->=20
-> from the hte tree.
->=20
-> diff --cc drivers/hte/Kconfig
-> index 8e0fd818a73e,083e67492bf2..000000000000
-> --- a/drivers/hte/Kconfig
-> +++ b/drivers/hte/Kconfig
-> @@@ -16,8 -16,7 +16,8 @@@ if HT
->  =20
->   config HTE_TEGRA194
->   	tristate "NVIDIA Tegra194 HTE Support"
-> - 	depends on ARCH_TEGRA_194_SOC
-> + 	depends on (ARCH_TEGRA_194_SOC || COMPILE_TEST)
->  +	depends on GPIOLIB
->   	help
->   	  Enable this option for integrated hardware timestamping engine also
->   	  known as generic timestamping engine (GTE) support on NVIDIA Tegra194
+diff --git a/fs/bcachefs/reflink.c b/fs/bcachefs/reflink.c
+index eb31df605c2e..958d9ea718b0 100644
+--- a/fs/bcachefs/reflink.c
++++ b/fs/bcachefs/reflink.c
+@@ -109,7 +109,7 @@ static inline void check_indirect_extent_deleting(struct bkey_i *new, unsigned *
+ 	if ((*flags & BTREE_TRIGGER_INSERT) && !*bkey_refcount(new)) {
+ 		new->k.type = KEY_TYPE_deleted;
+ 		new->k.size = 0;
+-		set_bkey_val_u64s(&new->k, 0);;
++		set_bkey_val_u64s(&new->k, 0);
+ 		*flags &= ~BTREE_TRIGGER_INSERT;
+ 	}
+ }
+-- 
+2.20.1.7.g153144c
 
-This is now a conflict between the hte tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/CuJq0SZXgVK89hE4tl+DR/l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVC7u8ACgkQAVBC80lX
-0GwwkQgAhr+AC7KGLdiBAzPcWcQmH929+NI0My+54gvGplsOjT6Xpd9uorD+k4bm
-hPUNNWuGzsi0+EvuFexAld7cxUydrvMzVBQueJ/+JR43sTCyKTUscAeCV7BW8zT8
-Kv8qGxO40fxNVHMvnWij3eLt0NKI/gayEJK9+5GTHALUR/eFJNI1OxToOcHpzcsD
-3JpHrouA9NCZPNlDiglsNp9ZHl5FRSinnhgIGr4FU8Ujh2ugg8pP7pWXOUwZVz9/
-bBhKKnb41yfslOZ0kl6/3DkmbtMudZfXnOBMdLxhb8p1J2WoaeVcMRefWc6CjLO1
-sd+OyzWtv9ZfN5HItZRJyuLDQCRjIw==
-=ZNDj
------END PGP SIGNATURE-----
-
---Sig_/CuJq0SZXgVK89hE4tl+DR/l--
