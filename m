@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 840817DEC78
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B717DEC87
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbjKBFr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 01:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        id S232380AbjKBFvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 01:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbjKBFph (ORCPT
+        with ESMTP id S233293AbjKBFqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 01:45:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB0F112;
-        Wed,  1 Nov 2023 22:45:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F08C433C8;
-        Thu,  2 Nov 2023 05:45:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698903931;
-        bh=deTWce1Ruc+WuMtuvtN9mov19AKFx2bIim+XWnVSxyY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XFIZyzIM6Os/iGOUa/HBwCScp/KWQ75JB5Pxl+4A3LNJqZGM6tDk/gDrY5zF1BevE
-         /7K8pQZg58ICXeHGyRPhoYoJrU1zR/pgPlfaQNe+0N2IemO4XII/p6b14c/wLvz7m2
-         OECxYE+IreLfyBoX8+RRBIUtqwrOzIBsTSSSLyNs=
-Date:   Thu, 2 Nov 2023 06:45:28 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     dimadrumspro@gmail.com
-Cc:     dimaac@bk.ru, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH 2/2] drivers: tty: vt: vt.c: fixed segmentation fault in
- vt.c
-Message-ID: <2023110236-onstage-skipper-30be@gregkh>
-References: <20231101235332.4314-1-dimadrumspro@gmail.com>
+        Thu, 2 Nov 2023 01:46:43 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8246D116
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 22:46:37 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cbf47fa563so4452785ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 22:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698903997; x=1699508797; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hrOBT+EoEGtPZwvHU7oZh43WyyRFFukfmZ6U4aDKCE0=;
+        b=BJN2ET1WU3IiTdq85KDLduA/sqPdxEiHSWEAqoKVDQqA3e3/d1jUakFM0N1ND/rwkv
+         p1NWlLSeaKgM1UrryLbN3r6MriNx1qP+00uk5uP31Z5vYqgEhO0MbAq4IYBRgZwsZgRx
+         RaaZomOW8uBbsytECIT6x95vtDWAJWqZ+EEbNWjSKOLBXUosgoeHEw+mU44nHmZKPE5K
+         w88RuU3uG7dKxyf1p+GrZDOf1kEZeBPFY+t6m359X6WbOWRMpSKouakwg3I8wSZp6xIc
+         6rySfz4iDRRPs39Z0wt102pAUCs7z+x3hTPexiMsBcGtz/HUbgiLk4vOfJsw5frnoK1L
+         shHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698903997; x=1699508797;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hrOBT+EoEGtPZwvHU7oZh43WyyRFFukfmZ6U4aDKCE0=;
+        b=mR4IxwBqLDD5nJ5tQTbggxPVd8htAQ73sLD0vJqsx9fM+qmU77dbZ1AgRKzt3vtMyP
+         nIr7dn0LVaN7FffrQCEL6vUaWX7iY6KcGZrsA4uyV/I0xiDnZvDkw8E7lk3P74r8fTdv
+         c8mHax/q9aHw+Eto3Lmrffp+TGMvrFHsmz7zAXjDsm9RauNN+FOFB5jEyS10/1KsYEoF
+         ays2KiK8rPCrHEdkFrpDfU8XYRYFbnTVWxVo3tmYj1MH9x2fbn7JonTjwb/OvSRlhkkk
+         kNedPWL/2N2VBEawqHfKSWeZMv+xy8nXDYeycRddehGungkHOvSyF1fYlDIeaivhjdAQ
+         eXdw==
+X-Gm-Message-State: AOJu0Yz0hJbkSGeezo8/9Hf8uSG30wwD4KX9Lezrljie3VID6RDf96aW
+        J603BlZi5ujyn8jgaFlVtXKCCg==
+X-Google-Smtp-Source: AGHT+IHzWzw/bbF9cpHuPtrCk+7Qj3F7TGyz61Sy9EZrghH/yAKxInxlWmDDujSzqHSGAGr0f2ru4A==
+X-Received: by 2002:a17:903:111:b0:1cc:4073:88a1 with SMTP id y17-20020a170903011100b001cc407388a1mr7845028plc.0.1698903996993;
+        Wed, 01 Nov 2023 22:46:36 -0700 (PDT)
+Received: from localhost ([122.172.80.14])
+        by smtp.gmail.com with ESMTPSA id e19-20020a170902f1d300b001cc54202429sm2198582plc.288.2023.11.01.22.46.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 22:46:36 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 11:16:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] opp: ti: Use device_get_match_data()
+Message-ID: <20231102054634.u3nse5sv5mknyw7z@vireshk-i7>
+References: <20231101144501.118972-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101235332.4314-1-dimadrumspro@gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231101144501.118972-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 12:53:32AM +0100, dimadrumspro@gmail.com wrote:
-> From: dimaaac <dimadrumspro@gmail.com>
+On 01-11-23, 09:45, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data. With this, adjust the includes to explicitly
+> include the correct headers.
 > 
-> The previous code lacked proper synchronization, leading to potential data corruption and crashes. Added a spin lock to protect shared variable 'scrollback_delta' to prevent concurrent access.
+> As this driver only does DT based matching, of_match_device() will never
+> return NULL if we've gotten to probe(). Therefore, the NULL check and
+> error return for it can be dropped.
 > 
-> Signed-off-by: dimaaac <dimaac@bk.ru>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/tty/vt/vt.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> index 5c47f77804f0..29cf7fe11662 100644
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -301,12 +301,13 @@ static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
->  }
->  
->  /* Called  from the keyboard irq path.. */
-> +static DEFINE_SPINLOCK(scrolldelta_lock);
-> +
->  static inline void scrolldelta(int lines)
->  {
-> -	/* FIXME */
-> -	/* scrolldelta needs some kind of consistency lock, but the BKL was
-> -	   and still is not protecting versus the scheduled back end */
-> +	spin_lock(&scrolldelta_lock);
->  	scrollback_delta += lines;
-> +	spin_unlock(&scrolldelta_lock);
->  	schedule_console_callback();
->  }
->  
-> -- 
-> 2.42.0
-> 
+> v2:
+>  - Add missing commit msg
+> ---
+>  drivers/opp/ti-opp-supply.c | 13 +++----------
+>  1 file changed, 3 insertions(+), 10 deletions(-)
 
-Hi,
+Applied. Thanks.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what is needed in
-  order to properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what a proper
-  Subject: line should look like.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file,
-  Documentation/process/submitting-patches.rst for how to do this
-  correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+-- 
+viresh
