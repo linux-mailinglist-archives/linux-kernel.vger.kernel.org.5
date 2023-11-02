@@ -2,66 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 790927DF785
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B428B7DF78B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344419AbjKBQUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        id S1376835AbjKBQWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjKBQT7 (ORCPT
+        with ESMTP id S234506AbjKBQWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:19:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D0513D;
-        Thu,  2 Nov 2023 09:19:52 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 17:19:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698941991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wvFTteVbImxdySo7jFzcYlYpzDRgsvn6yjCySuFzuTA=;
-        b=W4tBgJ39n+qAv+2rq/lBP9MtwEYtvfMqMMY5ZPBN6Ml1YrfSv8jqA3iBTY3pWUROgl2uk2
-        gBkcEXmhUy7OUo7QJNzo0GxSIK7vOWuU3oRxEtqZ9MYo62hrMs565r+7ALTpDG6137GXZQ
-        JMz18ogKSAEYdVecdAFXfx6emFN5W6Bzyljt5KYp7UvNsz2caQekcU6SSz/vzg83CkF/3i
-        y7UNTgZoRxExA3AGPXKeofTBUPe6vZolDA3vUkLbwjDhE3QU11FEu5NKeft/Pw0GgX0Qv5
-        SnaB2jSmF8HzAKHwVrTUfL47Af53eLQ4n1T4HQNwi60Th9C/NqPkgifkv1hGUw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698941991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wvFTteVbImxdySo7jFzcYlYpzDRgsvn6yjCySuFzuTA=;
-        b=kqzWP+CBNF9w1Lcir2gCG+4QbYWBS0ORPIlD4oJyaKXzYzgn3OtC02M0sNlsF9OsPfN9LL
-        D3AYxz34xQfDWzDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thu, 2 Nov 2023 12:22:03 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A521212D;
+        Thu,  2 Nov 2023 09:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:To:From; bh=ypWhZ+TKbQ7/ZkY7xWEAWru4yXqntW8dv6C3cB3xvx0=; b=pgSDHfrab
+        xNkCqsrmw+kXGBJ0a36S9+XoCL1X+N4d5ov15BPOLNqwCYrjuNFMaF4tsOzG13VAcSQ9Sjcfv1COB
+        RpwqTiVsrOAS+V6ZDUXIeE1VNSahLSXgBI1O+P5cnYROXM2Kbjw3bH2hOMcPiI559/K8XoE1hc3O0
+        cSvYuSLQ=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qyaRs-0001tA-Fv; Thu, 02 Nov 2023 16:21:36 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qyaRs-0000Vf-6Y; Thu, 02 Nov 2023 16:21:36 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tomas Glozar <tglozar@redhat.com>
-Subject: Re: [PATCH] sched/fair: Make the BW replenish timer expire in
- hardirq context for PREEMPT_RT
-Message-ID: <20231102161949.IdSqSK2E@linutronix.de>
-References: <20231030145104.4107573-1-vschneid@redhat.com>
- <20231031160120.GE15024@noisy.programming.kicks-ass.net>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
+Date:   Thu,  2 Nov 2023 16:21:28 +0000
+Message-Id: <20231102162128.2353459-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231031160120.GE15024@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,32 +57,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-31 17:01:20 [+0100], Peter Zijlstra wrote:
-> On Mon, Oct 30, 2023 at 03:51:04PM +0100, Valentin Schneider wrote:
-> > task would get PI'd to FIFO1 (ktimers' default priority). Unfortunately,
-> > rwlocks cannot sanely do PI as they allow multiple readers.
-=E2=80=A6
+From: Paul Durrant <pdurrant@amazon.com>
 
-> I'm thinking working on that is saner than adding this O(n) cgroup loop
-> to hard-irq context. Hmm?
+Unless explicitly told to do so (by passing 'clocksource=tsc' and
+'tsc=stable:socket', and then jumping through some hoops concerning
+potential CPU hotplug) Xen will never use TSC as its clocksource.
+Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
+in either the primary or secondary pvclock memory areas. This has
+led to bugs in some guest kernels which only become evident if
+PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
+such guests, give the VMM a new Xen HVM config flag to tell KVM to
+forcibly clear the bit in the Xen pvclocks.
 
-I have plans to get rid of the softirq issue and the argument for "bad"
-or inefficient rwlocks is usually "get rid of rwlocks then". So=E2=80=A6
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+---
 
-Then I looked at the patch and it only swapped the flag nothing else and
-this hardly works. So I looked at sched_cfs_period_timer():
-| static enum hrtimer_restart sched_cfs_period_timer(struct hrtimer *timer)
-| {
-=E2=80=A6
-|         raw_spin_lock_irqsave(&cfs_b->lock, flags);
-=E2=80=A6
-|         raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
-|=20
-|         return idle ? HRTIMER_NORESTART : HRTIMER_RESTART;
-|}
+v5:
+ - Fix warning reported by kernel test robot.
 
-Judging by this, the whole callback runs already with disabled
-interrupts. At least now it enabled interrupts if multiple callbacks are
-invoked=E2=80=A6
+v4:
+ - Re-base.
+ - Re-work 'update_pvclock' test as requested.
 
-Sebastian
+v3:
+ - Moved clearing of PVCLOCK_TSC_STABLE_BIT the right side of the
+   memcpy().
+ - Added an all-vCPUs KVM_REQ_CLOCK_UPDATE when the HVM config
+   flag is changed.
+---
+ Documentation/virt/kvm/api.rst |  6 ++++++
+ arch/x86/kvm/x86.c             | 28 +++++++++++++++++++++++-----
+ arch/x86/kvm/xen.c             |  9 ++++++++-
+ include/uapi/linux/kvm.h       |  1 +
+ 4 files changed, 38 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 7025b3751027..a9bdd25826d1 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -8374,6 +8374,7 @@ PVHVM guests. Valid flags are::
+   #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL		(1 << 4)
+   #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+   #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
++  #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
+ 
+ The KVM_XEN_HVM_CONFIG_HYPERCALL_MSR flag indicates that the KVM_XEN_HVM_CONFIG
+ ioctl is available, for the guest to set its hypercall page.
+@@ -8417,6 +8418,11 @@ behave more correctly, not using the XEN_RUNSTATE_UPDATE flag until/unless
+ specifically enabled (by the guest making the hypercall, causing the VMM
+ to enable the KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG attribute).
+ 
++The KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag indicates that KVM supports
++clearing the PVCLOCK_TSC_STABLE_BIT flag in Xen pvclock sources. This will be
++done when the KVM_CAP_XEN_HVM ioctl sets the
++KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE flag.
++
+ 8.31 KVM_CAP_PPC_MULTITCE
+ -------------------------
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 2c924075f6f1..cc8d1ae29be3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3104,7 +3104,8 @@ u64 get_kvmclock_ns(struct kvm *kvm)
+ 
+ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
+ 				    struct gfn_to_pfn_cache *gpc,
+-				    unsigned int offset)
++				    unsigned int offset,
++				    bool force_tsc_unstable)
+ {
+ 	struct kvm_vcpu_arch *vcpu = &v->arch;
+ 	struct pvclock_vcpu_time_info *guest_hv_clock;
+@@ -3141,6 +3142,10 @@ static void kvm_setup_guest_pvclock(struct kvm_vcpu *v,
+ 	}
+ 
+ 	memcpy(guest_hv_clock, &vcpu->hv_clock, sizeof(*guest_hv_clock));
++
++	if (force_tsc_unstable)
++		guest_hv_clock->flags &= ~PVCLOCK_TSC_STABLE_BIT;
++
+ 	smp_wmb();
+ 
+ 	guest_hv_clock->version = ++vcpu->hv_clock.version;
+@@ -3161,6 +3166,16 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 	u64 tsc_timestamp, host_tsc;
+ 	u8 pvclock_flags;
+ 	bool use_master_clock;
++#ifdef CONFIG_KVM_XEN
++	/*
++	 * For Xen guests we may need to override PVCLOCK_TSC_STABLE_BIT as unless
++	 * explicitly told to use TSC as its clocksource Xen will not set this bit.
++	 * This default behaviour led to bugs in some guest kernels which cause
++	 * problems if they observe PVCLOCK_TSC_STABLE_BIT in the pvclock flags.
++	 */
++	bool xen_pvclock_tsc_unstable =
++		ka->xen_hvm_config.flags & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
++#endif
+ 
+ 	kernel_ns = 0;
+ 	host_tsc = 0;
+@@ -3239,13 +3254,15 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 	vcpu->hv_clock.flags = pvclock_flags;
+ 
+ 	if (vcpu->pv_time.active)
+-		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
++		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0, false);
+ #ifdef CONFIG_KVM_XEN
+ 	if (vcpu->xen.vcpu_info_cache.active)
+ 		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
+-					offsetof(struct compat_vcpu_info, time));
++					offsetof(struct compat_vcpu_info, time),
++					xen_pvclock_tsc_unstable);
+ 	if (vcpu->xen.vcpu_time_info_cache.active)
+-		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
++		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0,
++					xen_pvclock_tsc_unstable);
+ #endif
+ 	kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
+ 	return 0;
+@@ -4638,7 +4655,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
+ 		    KVM_XEN_HVM_CONFIG_SHARED_INFO |
+ 		    KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL |
+-		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
++		    KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
++		    KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
+ 		if (sched_info_on())
+ 			r |= KVM_XEN_HVM_CONFIG_RUNSTATE |
+ 			     KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG;
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index e53fad915a62..e43948b87f94 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -1162,7 +1162,9 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
+ {
+ 	/* Only some feature flags need to be *enabled* by userspace */
+ 	u32 permitted_flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
+-		KVM_XEN_HVM_CONFIG_EVTCHN_SEND;
++		KVM_XEN_HVM_CONFIG_EVTCHN_SEND |
++		KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
++	u32 old_flags;
+ 
+ 	if (xhc->flags & ~permitted_flags)
+ 		return -EINVAL;
+@@ -1183,9 +1185,14 @@ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
+ 	else if (!xhc->msr && kvm->arch.xen_hvm_config.msr)
+ 		static_branch_slow_dec_deferred(&kvm_xen_enabled);
+ 
++	old_flags = kvm->arch.xen_hvm_config.flags;
+ 	memcpy(&kvm->arch.xen_hvm_config, xhc, sizeof(*xhc));
+ 
+ 	mutex_unlock(&kvm->arch.xen.xen_lock);
++
++	if ((old_flags ^ xhc->flags) & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE)
++		kvm_make_all_cpus_request(kvm, KVM_REQ_CLOCK_UPDATE);
++
+ 	return 0;
+ }
+ 
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 211b86de35ac..ae90294456df 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1291,6 +1291,7 @@ struct kvm_x86_mce {
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL	(1 << 4)
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+ #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
++#define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
+ 
+ struct kvm_xen_hvm_config {
+ 	__u32 flags;
+
+base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
+-- 
+2.39.2
+
