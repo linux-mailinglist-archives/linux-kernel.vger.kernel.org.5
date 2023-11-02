@@ -2,223 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 061377DF454
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE5C7DF46F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376687AbjKBNxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 09:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34580 "EHLO
+        id S1376692AbjKBN6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 09:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjKBNxF (ORCPT
+        with ESMTP id S1376700AbjKBN6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 09:53:05 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97560187
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:53:01 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77897c4ac1fso50444385a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 06:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698933181; x=1699537981; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8MiH+OD80Lz6N2WkoQWVzzSH5wdFrVwABmyWNvMjndg=;
-        b=puJ1+etwmG1T9jWC97a5D1hZmH3E7zo8G+dkgE6ehm7uZxvMFernk9/nmUG201fqhM
-         L0dTDeR0LgHpkAOVOYzE2x9qhC8h6zX3vgvuZDlxCx1aj7SzmQl1ub1s01z+0mmQMkAj
-         jGhdLpgZpiEkiBjfD0UXKVOP3AKUkZACWhu+XpYTGmKtXUNjom5hzruY8f0Xss7UdqnX
-         LHKHO33djXgPrvLgdZ9ZVMibV/bvkTDp0aBvAdpDzYiG1O03h4WoasCfyySf0942UtQv
-         NTOIvK3Xrv/eRKBwsuvQoNcXIwNzQ5sL+8fQ5EplF5RrEzG2ENRo9DAUcQKl21B8IaR+
-         GcPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698933181; x=1699537981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8MiH+OD80Lz6N2WkoQWVzzSH5wdFrVwABmyWNvMjndg=;
-        b=JYBxtPqqoW+3in20Ot9PgdD738EhJCUlSqIiREuxtZr1RZ6J0foWBFOf0QkYcFoDXs
-         0eBPoE69APTE2nJ/NnhkcH6fk3I9fAeKaj3foZA+slqB6asSzcZWrpYnOyenomSYXXHf
-         5PiPBOQ9ZWiRMKRsrnlMCyjBPZ3fb7ncXcXE9fqxii88oU10MmXeL7mH5JUBxQP1kHzW
-         Gwn5KDKiEd/eWjaVZTpdww+G2fr3clDD8/j+kFWD6aADoHDL5V04dt+qqnVVBKo3+kz2
-         1xXqzWZZHMUuZZ4GLKoORSAucG9DG4t9p+le7+gYCsxslHwU5ZilMH1bxfIr9XfCIRak
-         f8WA==
-X-Gm-Message-State: AOJu0Yzl/hkR0GWvsokIX2lnrSque0WUFUB+p9Vg7NZv1jEiFlkh6sJ5
-        CfvhT8wBNiOVkc2Du1hVmJ3SqdYnAM9TOkqOxDZ8uQ==
-X-Google-Smtp-Source: AGHT+IHABEQi7q2gF4GYbu+6KWyVOhp4LTc7vcuWRR/ds6omy7P2Nr93O+4ItCwG4g8ZUZhgbGUZVOPe8u3aj0mVGQs=
-X-Received: by 2002:ad4:5761:0:b0:672:4e8c:9aa5 with SMTP id
- r1-20020ad45761000000b006724e8c9aa5mr14682447qvx.47.1698933180583; Thu, 02
- Nov 2023 06:53:00 -0700 (PDT)
+        Thu, 2 Nov 2023 09:58:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC7583
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698933479; x=1730469479;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=tplbjDSg9L50zPHW+7EcBwalZybgP2Q14tGBqxsVNH8=;
+  b=ObdATYomzKJkBkDbzMcbcdlFERq6mBvkEb1oyAE4jE6rUwZ5mt6vzZwf
+   2mnfytlA1LBwu1Ec2FFJ1fZjzEg6ynoYlrRSkVfAN35u/XI4qK1CiTHQ5
+   ezkDcX77ffnXpIv4GVnuH1zBVNdemVYk4gJdqQCbswcCsFVW9sv8sVWhl
+   GDCdnYB4de8Zg7SLXdBoeZuhVAEAwx0oEerUKj/RQrvskQCBOi39O4jal
+   eLGiLKK4O2oDEacN6ILR18Nx684E6JOyBern5ZG7kBIGtWXqc0IMga+6b
+   MttWK24Q13VhW0Y78kBZJFJ/bXlfkn0nFclraRH9QjeLtE2/FfiUetEau
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="453019603"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="453019603"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 06:55:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="827146899"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="827146899"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Nov 2023 06:55:06 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyYA4-0001V6-2l;
+        Thu, 02 Nov 2023 13:55:04 +0000
+Date:   Thu, 2 Nov 2023 21:54:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Subject: mm/kfence/core.c:329:34: sparse: sparse: cast to restricted __le64
+Message-ID: <202311022155.9hNK2VJO-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
- <CA+EHjTzj4drYKONVOLP19DYpJ4O8kSXcFzw2AKier1QdcFKx_Q@mail.gmail.com>
- <ZUF8A5KpwpA6IKUH@google.com> <CA+EHjTwTT9cFzYTtwT43nLJS01Sgt0NqzUgKAnfo2fiV3tEvXg@mail.gmail.com>
- <ZULJYg5cf1UrNq3e@google.com>
-In-Reply-To: <ZULJYg5cf1UrNq3e@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Thu, 2 Nov 2023 13:52:23 +0000
-Message-ID: <CA+EHjTzGzXnfXHh0m5iHt9m3BxerkUS56EVPDA_az6n2FRnk3w@mail.gmail.com>
-Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 9:55=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Wed, Nov 01, 2023, Fuad Tabba wrote:
-> > > > > @@ -1034,6 +1034,9 @@ static void kvm_destroy_dirty_bitmap(struct=
- kvm_memory_slot *memslot)
-> > > > >  /* This does not remove the slot from struct kvm_memslots data s=
-tructures */
-> > > > >  static void kvm_free_memslot(struct kvm *kvm, struct kvm_memory_=
-slot *slot)
-> > > > >  {
-> > > > > +       if (slot->flags & KVM_MEM_PRIVATE)
-> > > > > +               kvm_gmem_unbind(slot);
-> > > > > +
-> > > >
-> > > > Should this be called after kvm_arch_free_memslot()? Arch-specific =
-ode
-> > > > might need some of the data before the unbinding, something I thoug=
-ht
-> > > > might be necessary at one point for the pKVM port when deleting a
-> > > > memslot, but realized later that kvm_invalidate_memslot() ->
-> > > > kvm_arch_guest_memory_reclaimed() was the more logical place for it=
-.
-> > > > Also, since that seems to be the pattern for arch-specific handlers=
- in
-> > > > KVM.
-> > >
-> > > Maybe?  But only if we can about symmetry between the allocation and =
-free paths
-> > > I really don't think kvm_arch_free_memslot() should be doing anything=
- beyond a
-> > > "pure" free.  E.g. kvm_arch_free_memslot() is also called after movin=
-g a memslot,
-> > > which hopefully we never actually have to allow for guest_memfd, but =
-any code in
-> > > kvm_arch_free_memslot() would bring about "what if" questions regardi=
-ng memslot
-> > > movement.  I.e. the API is intended to be a "free arch metadata assoc=
-iated with
-> > > the memslot".
-> > >
-> > > Out of curiosity, what does pKVM need to do at kvm_arch_guest_memory_=
-reclaimed()?
-> >
-> > It's about the host reclaiming ownership of guest memory when tearing
-> > down a protected guest. In pKVM, we currently teardown the guest and
-> > reclaim its memory when kvm_arch_destroy_vm() is called. The problem
-> > with guestmem is that kvm_gmem_unbind() could get called before that
-> > happens, after which the host might try to access the unbound guest
-> > memory. Since the host hasn't reclaimed ownership of the guest memory
-> > from hyp, hilarity ensues (it crashes).
-> >
-> > Initially, I hooked reclaim guest memory to kvm_free_memslot(), but
-> > then I needed to move the unbind later in the function. I realized
-> > later that kvm_arch_guest_memory_reclaimed() gets called earlier (at
-> > the right time), and is more aptly named.
->
-> Aha!  I suspected that might be the case.
->
-> TDX and SNP also need to solve the same problem of "reclaiming" memory be=
-fore it
-> can be safely accessed by the host.  The plan is to add an arch hook (or =
-two?)
-> into guest_memfd that is invoked when memory is freed from guest_memfd.
->
-> Hooking kvm_arch_guest_memory_reclaimed() isn't completely correct as del=
-eting a
-> memslot doesn't *guarantee* that guest memory is actually reclaimed (whic=
-h reminds
-> me, we need to figure out a better name for that thing before introducing
-> kvm_arch_gmem_invalidate()).
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+commit: 7581495ac82d6cb073609284c7f7186a48021d1e mm: kfence: fix false positives on big endian
+date:   6 months ago
+config: s390-randconfig-r113-20231102 (https://download.01.org/0day-ci/archive/20231102/202311022155.9hNK2VJO-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231102/202311022155.9hNK2VJO-lkp@intel.com/reproduce)
 
-I see. I'd assumed that that was what you're using. I agree that it's
-not completely correct, so for the moment, I assume that if that
-happens we have a misbehaving host, teardown the guest and reclaim its
-memory.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311022155.9hNK2VJO-lkp@intel.com/
 
-> The effective false positives aren't fatal for the current usage because =
-the hook
-> is used only for x86 SEV guests to flush caches.  An unnecessary flush ca=
-n cause
-> performance issues, but it doesn't affect correctness. For TDX and SNP, a=
-nd IIUC
-> pKVM, false positives are fatal because KVM could assign memory back to t=
-he host
-> that is still owned by guest_memfd.
+sparse warnings: (new ones prefixed by >>)
+>> mm/kfence/core.c:329:34: sparse: sparse: cast to restricted __le64
+   mm/kfence/core.c:333:34: sparse: sparse: cast to restricted __le64
+   mm/kfence/core.c:352:21: sparse: sparse: cast to restricted __le64
+   mm/kfence/core.c:372:21: sparse: sparse: cast to restricted __le64
+   mm/kfence/core.c:1181:9: sparse: sparse: context imbalance in 'kfence_handle_page_fault' - different lock contexts for basic block
 
-Yup.
+vim +329 mm/kfence/core.c
 
-> E.g. a misbehaving userspace could prematurely delete a memslot.  And the=
- more
-> fun example is intrahost migration, where the plan is to allow pointing m=
-ultiple
-> guest_memfd files at a single guest_memfd inode:
-> https://lore.kernel.org/all/cover.1691446946.git.ackerleytng@google.com
->
-> There was a lot of discussion for this, but it's scattered all over the p=
-lace.
-> The TL;DR is is that the inode will represent physical memory, and a file=
- will
-> represent a given "struct kvm" instance's view of that memory.  And so th=
-e memory
-> isn't reclaimed until the inode is truncated/punched.
->
-> I _think_ this reflects the most recent plan from the guest_memfd side:
-> https://lore.kernel.org/all/1233d749211c08d51f9ca5d427938d47f008af1f.1689=
-893403.git.isaku.yamahata@intel.com
+0ce20dd840897b Alexander Potapenko 2021-02-25  318  
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  319  static inline void set_canary(const struct kfence_metadata *meta)
+0ce20dd840897b Alexander Potapenko 2021-02-25  320  {
+0ce20dd840897b Alexander Potapenko 2021-02-25  321  	const unsigned long pageaddr = ALIGN_DOWN(meta->addr, PAGE_SIZE);
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  322  	unsigned long addr = pageaddr;
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  323  
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  324  	/*
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  325  	 * The canary may be written to part of the object memory, but it does
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  326  	 * not affect it. The user should initialize the object before using it.
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  327  	 */
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  328  	for (; addr < meta->addr; addr += sizeof(u64))
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03 @329  		*((u64 *)addr) = KFENCE_CANARY_PATTERN_U64;
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  330  
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  331  	addr = ALIGN_DOWN(meta->addr + meta->size, sizeof(u64));
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  332  	for (; addr - pageaddr < PAGE_SIZE; addr += sizeof(u64))
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  333  		*((u64 *)addr) = KFENCE_CANARY_PATTERN_U64;
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  334  }
+1ba3cbf3ec3b21 Peng Zhang          2023-04-03  335  
 
-Thanks for pointing that out. I think this might be the way to go.
-I'll have a closer look at this and see how to get it to work with
-pKVM.
+:::::: The code at line 329 was first introduced by commit
+:::::: 1ba3cbf3ec3b21d866436fb46b4bb7bdc38608f9 mm: kfence: improve the performance of __kfence_alloc() and __kfence_free()
 
-Cheers,
-/fuad
+:::::: TO: Peng Zhang <zhangpeng.00@bytedance.com>
+:::::: CC: Andrew Morton <akpm@linux-foundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
