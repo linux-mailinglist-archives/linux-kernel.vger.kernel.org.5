@@ -2,106 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B98C7DF8D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5EF7DF8DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjKBRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
+        id S233518AbjKBRjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbjKBRhz (ORCPT
+        with ESMTP id S233343AbjKBRjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:37:55 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435B218E;
-        Thu,  2 Nov 2023 10:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=AwjL71MzeBAOU4MURIsg1EVjWrpke9ZuNN+nhEn3EhY=; b=CMQEoFk5VPoCoRlU0pe6Wb6hoA
-        HzwVTLgbLMW4t31pglN1w4Nh6mnQVi7iCY/UaZ3uEEpl1VteLIZhNjYVya78nsTqkK2s10hP/4pYJ
-        oUk3WgTzgerJADJWK8EYHQk+226dl88aUocz1ggjHNl4nlkxBF1Rh03pUGM9qUoIAUOA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qybdU-000lnS-4G; Thu, 02 Nov 2023 18:37:40 +0100
-Date:   Thu, 2 Nov 2023 18:37:40 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH v3 3/4] net: phy: aquantia: add firmware
- load support
-Message-ID: <e632a285-9cb2-4dc9-a4a2-f57e454b8ffe@lunn.ch>
-References: <20231102150032.10740-1-ansuelsmth@gmail.com>
- <20231102150032.10740-3-ansuelsmth@gmail.com>
+        Thu, 2 Nov 2023 13:39:19 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41CE1AE
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:39:11 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77784edc2edso67888085a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698946751; x=1699551551; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yE6hYq/1M2NiVA4RY0gsdXB7HPtKFRVy440CKIJ1q9I=;
+        b=fjlgh+E8Uy45zhCM02rVK7r5JVPU8mV21NaHmBCbwY6blWAA66pnFB627r4rzrit4p
+         BQaGzaP5gKDTH+N4CqpmXRBmwwfl7pRVtvNxgr52hRfthUcLD/bBBLZs2vdbNDrJAY17
+         vPbsLVEXQC1Hg9d93fROLa+56y8BIRduBCxil17pnHRh7f9A4Cungj9K4SHcfmwai0yX
+         PvVWhW95X5SAhlqs25ZdPy9gutEuCHbzjWs7jayc43PIFthR+Z+DHLNgFgQcyzLdaBYd
+         yZjj2n6wjOD2NtGvpGEPeSvyn7LGXuPqfM3Q0mDjS78WqgNLC+q+dbjCoSHFQSaAZSd3
+         QGrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698946751; x=1699551551;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yE6hYq/1M2NiVA4RY0gsdXB7HPtKFRVy440CKIJ1q9I=;
+        b=hN9y+dhuXaU3cog0Q4Wv0GewxFcQuj6XQ1DAoWH5fLKKUUMYbBX8GGGFjlJVXXmm3t
+         n+Cg17j/SOGcKfMjw67RCd0vIB45XJ+zwOlOuQSVzyWRFUZGIKbz3fx45GgJ3+coUiUt
+         SyJw3ydr7pWLPvzDrI0vyK2vTvTpHuxrwzlyQcz9C50oM3GuBn75jXxpm1c+uzqFsWNO
+         tPRem1X5RYTCBNeaVKYaKG4iWISGUrSzcryoU3atev3nFmijkiRAAa8v81aK3Sehugkm
+         Wa/eEl/GMrZdRQQUQDHGhSpk+x0gry4t4rdUF44EoBZML9umcuP+qfEkIEfPtG3AyXbZ
+         11GA==
+X-Gm-Message-State: AOJu0YxEruJ2k+j2BEyWqI/D7b+rNcXn87D5IJYgfKv9mH+MYG7XQJG9
+        BStar75xBB+els+XvX84OrLY
+X-Google-Smtp-Source: AGHT+IGJE7PRlsHRJBiWTBzJ7qskCfmYJqaSK0LlSGhhJCTuiYGeWOKAeIpbrsnv82Z6K6JfC4NtgA==
+X-Received: by 2002:a05:620a:2045:b0:779:d143:c1a7 with SMTP id d5-20020a05620a204500b00779d143c1a7mr18609776qka.26.1698946750692;
+        Thu, 02 Nov 2023 10:39:10 -0700 (PDT)
+Received: from thinkpad ([117.217.189.228])
+        by smtp.gmail.com with ESMTPSA id bk2-20020a05620a1a0200b0076e672f535asm127918qkb.57.2023.11.02.10.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 10:39:10 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 23:09:00 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v3 4/4] PCI: layerscape: Add suspend/resume for ls1043a
+Message-ID: <20231102173900.GF20943@thinkpad>
+References: <20231017193145.3198380-1-Frank.Li@nxp.com>
+ <20231017193145.3198380-5-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231102150032.10740-3-ansuelsmth@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231017193145.3198380-5-Frank.Li@nxp.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* AQR firmware doesn't have fixed offsets for iram and dram section
-> + * but instead provide an header with the offset to use on reading
-> + * and parsing the firmware.
-> + *
-> + * AQR firmware can't be trusted and each offset is validated to be
-> + * not negative and be in the size of the firmware itself.
-> + */
-> +static inline bool aqr_fw_validate_get(size_t size, size_t offset, size_t get_size)
-> +{
-> +	return size + offset > 0 && offset + get_size <= size;
-> +}
+On Tue, Oct 17, 2023 at 03:31:45PM -0400, Frank Li wrote:
+> ls1043a add suspend/resume support.
+> Implement ls1043a_pcie_send_turnoff_msg() to send PME_Turn_Off message.
+> Implement ls1043a_pcie_exit_from_l2() to exit from L2 state.
+> 
 
-Please don't user inline in .c files. The compiler is better at
-deciding than we are.
+Please use the suggestion I gave in patch 2/4.
 
-Also, i wounder about size + offset > 0. size_t is unsigned. So they
-cannot be negative. So does this test make sense?
-
-> +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size,
-> +		       enum aqr_fw_src fw_src)
-> +{
-> +	u16 calculated_crc, read_crc, read_primary_offset;
-> +	u32 iram_offset = 0, iram_size = 0;
-> +	u32 dram_offset = 0, dram_size = 0;
-> +	char version[VERSION_STRING_SIZE];
-> +	u32 primary_offset = 0;
-> +	int ret;
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v2 to v3
+>     - Remove ls_pcie_lut_readl(writel) function
+>     
+>     Change from v1 to v2
+>     - Update subject 'a' to 'A'
+> 
+>  drivers/pci/controller/dwc/pci-layerscape.c | 86 ++++++++++++++++++++-
+>  1 file changed, 85 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index 4b663b20d8612..9656224960b0c 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -41,6 +41,15 @@
+>  #define SCFG_PEXSFTRSTCR	0x190
+>  #define PEXSR(idx)		BIT(idx)
+>  
+> +/* LS1043A PEX PME control register */
+> +#define SCFG_PEXPMECR		0x144
+> +#define PEXPME(idx)		BIT(31 - (idx) * 4)
 > +
-> +	/* extract saved CRC at the end of the fw
-> +	 * CRC is saved in big-endian as PHY is BE
-> +	 */
-> +	ret = aqr_fw_get_be16(data, size - sizeof(u16), size, &read_crc);
-> +	if (ret) {
-> +		phydev_err(phydev, "bad firmware CRC in firmware\n");
-> +		return ret;
+> +/* LS1043A PEX LUT debug register */
+> +#define LS_PCIE_LDBG	0x7fc
+> +#define LDBG_SR		BIT(30)
+> +#define LDBG_WE		BIT(31)
+> +
+>  #define PCIE_IATU_NUM		6
+>  
+>  #define LS_PCIE_DRV_SCFG	BIT(0)
+> @@ -227,6 +236,68 @@ static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+>  	return 0;
+>  }
+>  
+> +static void ls1043a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +
+> +	if (!pcie->scfg) {
+> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
+> +		return;
 > +	}
 
-So if size < sizeof(u16), we get a very big positive number. The > 0
-test does nothing for you here, but the other half of the test does
-trap the issue.
+Why scfg is optional for this SoC and not for the other one added in patch 2/4?
 
-So i think you can remove the > 0 test.
+> +
+> +	/* Send Turn_off message */
+> +	regmap_read(pcie->scfg, SCFG_PEXPMECR, &val);
+> +	val |= PEXPME(pcie->index);
+> +	regmap_write(pcie->scfg, SCFG_PEXPMECR, val);
+> +
 
-   Andrew
+In my previous review, I asked you to use a common function and just pass the
+offsets, as the sequence is same for both the SoCs. But you ignored it :/
+
+> +	/*
+> +	 * There is no specific register to check for PME_To_Ack from endpoint.
+> +	 * So on the safe side, wait for PCIE_PME_TO_L2_TIMEOUT_US.
+> +	 */
+> +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
+> +
+> +	/*
+> +	 * Layerscape hardware reference manual recommends clearing the PMXMTTURNOFF bit
+> +	 * to complete the PME_Turn_Off handshake.
+> +	 */
+> +	regmap_read(pcie->scfg, SCFG_PEXPMECR, &val);
+> +	val &= ~PEXPME(pcie->index);
+> +	regmap_write(pcie->scfg, SCFG_PEXPMECR, val);
+> +}
+> +
+> +static int ls1043a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +
+> +	/*
+> +	 * Only way let PEX module exit L2 is do a software reset.
+
+Same comment applies as patch 2/4.
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
