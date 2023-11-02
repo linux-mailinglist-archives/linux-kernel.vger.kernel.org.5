@@ -2,134 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 692A67DF541
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062C47DF548
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjKBOoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
+        id S229824AbjKBOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKBOoB (ORCPT
+        with ESMTP id S229480AbjKBOrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:44:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61D312F
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698936235; x=1730472235;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ToMx0zsKHa33A5OS7v8oe2ysHJL48zSdQB/ks4J+aMk=;
-  b=duSDRAl4ziRd3gDumWkN9Wh6/KCIhEqZ8U6Sbw0OiqRdn1POci8rLBe1
-   wuoBhzzt4oE/my3c/RMAtd/Efiv+vSbdukqrzbCYhbaB7/ejix5MlyrgC
-   kBMfWbw23GMT9n6kk/5sYiqY7fNGcdbDvAcEj7bnCjUpc5IaCEl/iwp4M
-   AG+5QWsn54AkovnYSaVlTIx40O1s+5X+UEIz9S4xQl+lHIHrtr7SxrGWy
-   0AUUzQ4GUnjy/pDoDNoaJ46zQqeWc2UQ6WNjEF/b09AnNLsnsr1MKGPaz
-   kLAn8EUV5Lx3zhn8V5Ckl1a970tHfI57ue3c6w0qz1YZueqcTo9oYkmCg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="368934050"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="368934050"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 07:43:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="878266017"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="878266017"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Nov 2023 07:43:52 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyYvG-0001Wl-0V;
-        Thu, 02 Nov 2023 14:43:50 +0000
-Date:   Thu, 2 Nov 2023 22:42:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Guo Ren <guoren@linux.alibaba.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: arch/riscv/kernel/signal.c:94:16: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <202311022215.63HoWcPG-lkp@intel.com>
+        Thu, 2 Nov 2023 10:47:51 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12042B7
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:47:46 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5a9d8f4388bso707955a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:47:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1698936465; x=1699541265; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BwaYXZPU1hQEMGgRdu2M9aQmHUJvo+2fE01ng2l9LSs=;
+        b=KhJhhdY9DT0PqmgJ2oumKZFWrJGjEIEhgi7nxs7cZgybRtReS6jGSLn8ku4bUZdR6f
+         5om2rloiD6XGlvENi+eneoBA5q0Y9cFlz97NVLIhqHy2uzXufp3Hz1uEx29d1jlR6q/p
+         gM6j0K5cdhxvEv1NgpOANk06kQr5t77v0MD57+hED6Z4bfGBBo7jfvZod54Iq9GskP57
+         jdytEHybyLK0OLz9NChhSJI6sRhkPsWIBgOvOgwKW41U31u5FFq6GJl0/SRDhiuKIlS5
+         GVE2p8aX2UWQ34s34OprcyPwLCJNNivY5G6dDNuifqr/Vwdtj8zNA4m2w+BnImzcfMl9
+         hwKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698936465; x=1699541265;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BwaYXZPU1hQEMGgRdu2M9aQmHUJvo+2fE01ng2l9LSs=;
+        b=Cxuv54NW77qFe/IuuBwkvH/41Gdt1/7CFj9EE/oMv/mFI3AV0H/SE5ezgWhxWCcaSU
+         HQQXYTpJv5M5vd2CInyLYyIPGs98TYSqbWz3SDPdzctdMBa6GbAYcjD3NQOdCesYRggu
+         6skohYdSDYno7FoojvaW2uOBWaYjMbC46NSVyKMsb96ZQabABcRQ/CIBWBc9IDhevVV/
+         5LEABTYEsRoCHdXg2qs6Bf5YfmOuZ1m7mJvRpWss/vqK85WS0gLMXs5qmBuFtRMqZUhK
+         ywcvsVQNvN6dsSqNJa253mx1giXYtoo0xFv+PtkAfE+jYbeKO9NXYE3/Q7OSbxIyXIji
+         pR0g==
+X-Gm-Message-State: AOJu0YwzjbP9AvXVJLnxxhe35ooxs5NCGmg1CDpYurfca8us912apgK6
+        iQ6/jSgQe2SmyO1QMDkryCZ/ZWwqM14wGXQUSZ1IAQ==
+X-Google-Smtp-Source: AGHT+IF0J0Hf/2LNLeY7moJtwauXVxOaPGXnoAxx/IarWXU3Ll50LDNuuF8+cq0y8E3b4QJIBmg6sf3utcFF+2I+Zzk=
+X-Received: by 2002:a17:90b:38c6:b0:280:1df1:cbc7 with SMTP id
+ nn6-20020a17090b38c600b002801df1cbc7mr12800756pjb.19.1698936465526; Thu, 02
+ Nov 2023 07:47:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005133059.917577-1-naresh.solanki@9elements.com>
+ <f8dd6d53-7c0b-4a89-9ec4-400aa242c020@sirena.org.uk> <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
+ <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk>
+In-Reply-To: <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 2 Nov 2023 20:17:35 +0530
+Message-ID: <CABqG17h949R+3NFgA1MvPLZFc6zkBi+WRPSE9qP4fCBv5gdXHw@mail.gmail.com>
+Subject: Re: [PATCH] drivers/regulator: Notify sysfs about status changes
+To:     Mark Brown <broonie@kernel.org>
+Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
-commit: fa8e7cce55da3569259dc270801885c420eb50fe riscv: Enable Vector code to be built
-date:   5 months ago
-config: riscv-randconfig-r112-20231102 (https://download.01.org/0day-ci/archive/20231102/202311022215.63HoWcPG-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231102/202311022215.63HoWcPG-lkp@intel.com/reproduce)
+Hi Mark,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311022215.63HoWcPG-lkp@intel.com/
+On Thu, 2 Nov 2023 at 18:36, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Nov 02, 2023 at 05:35:42PM +0530, Naresh Solanki wrote:
+> > On Thu, 5 Oct 2023 at 22:30, Mark Brown <broonie@kernel.org> wrote:
+> > > On Thu, Oct 05, 2023 at 03:30:58PM +0200, Naresh Solanki wrote:
+>
+> > > We probably should filter the events more, there's events for pre and
+> > > post voltage change for example which aren't status changes so would be
+> > > spurious.  It ought not to break anything but we should still avoid
+> > > unneeded work.
+>
+> > Can you please provide me inputs on the additional filtering needed for this.
+> > Like some list of events for notify on status?
+>
+> I think I'd start off with just reporting things that are obviously
+> errors and not things that should ever go off during normal operation.
+This is what I could come up with:
+        if (event & REGULATOR_EVENT_VOLTAGE_CHANGE) {
+                name = dev_attr_microvolts.attr.name;
+                sysfs_notify(&rdev->dev.kobj, NULL, name);
+        } else if (event & (REGULATOR_EVENT_DISABLE | REGULATOR_EVENT_ENABLE)){
+                name = dev_attr_status.attr.name;
+                sysfs_notify(&rdev->dev.kobj, NULL, name);
+        }
 
-sparse warnings: (new ones prefixed by >>)
-   WARNING: invalid argument to '-march': '_zihintpause'
->> arch/riscv/kernel/signal.c:94:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *__val @@     got void [noderef] __user *[assigned] datap @@
-   arch/riscv/kernel/signal.c:94:16: sparse:     expected void *__val
-   arch/riscv/kernel/signal.c:94:16: sparse:     got void [noderef] __user *[assigned] datap
-
-vim +94 arch/riscv/kernel/signal.c
-
-8ee0b41898fa26 Greentime Hu 2023-06-05   72  
-8ee0b41898fa26 Greentime Hu 2023-06-05   73  static long save_v_state(struct pt_regs *regs, void __user **sc_vec)
-8ee0b41898fa26 Greentime Hu 2023-06-05   74  {
-8ee0b41898fa26 Greentime Hu 2023-06-05   75  	struct __riscv_ctx_hdr __user *hdr;
-8ee0b41898fa26 Greentime Hu 2023-06-05   76  	struct __sc_riscv_v_state __user *state;
-8ee0b41898fa26 Greentime Hu 2023-06-05   77  	void __user *datap;
-8ee0b41898fa26 Greentime Hu 2023-06-05   78  	long err;
-8ee0b41898fa26 Greentime Hu 2023-06-05   79  
-8ee0b41898fa26 Greentime Hu 2023-06-05   80  	hdr = *sc_vec;
-8ee0b41898fa26 Greentime Hu 2023-06-05   81  	/* Place state to the user's signal context space after the hdr */
-8ee0b41898fa26 Greentime Hu 2023-06-05   82  	state = (struct __sc_riscv_v_state __user *)(hdr + 1);
-8ee0b41898fa26 Greentime Hu 2023-06-05   83  	/* Point datap right after the end of __sc_riscv_v_state */
-8ee0b41898fa26 Greentime Hu 2023-06-05   84  	datap = state + 1;
-8ee0b41898fa26 Greentime Hu 2023-06-05   85  
-8ee0b41898fa26 Greentime Hu 2023-06-05   86  	/* datap is designed to be 16 byte aligned for better performance */
-8ee0b41898fa26 Greentime Hu 2023-06-05   87  	WARN_ON(unlikely(!IS_ALIGNED((unsigned long)datap, 16)));
-8ee0b41898fa26 Greentime Hu 2023-06-05   88  
-8ee0b41898fa26 Greentime Hu 2023-06-05   89  	riscv_v_vstate_save(current, regs);
-8ee0b41898fa26 Greentime Hu 2023-06-05   90  	/* Copy everything of vstate but datap. */
-8ee0b41898fa26 Greentime Hu 2023-06-05   91  	err = __copy_to_user(&state->v_state, &current->thread.vstate,
-8ee0b41898fa26 Greentime Hu 2023-06-05   92  			     offsetof(struct __riscv_v_ext_state, datap));
-8ee0b41898fa26 Greentime Hu 2023-06-05   93  	/* Copy the pointer datap itself. */
-8ee0b41898fa26 Greentime Hu 2023-06-05  @94  	err |= __put_user(datap, &state->v_state.datap);
-8ee0b41898fa26 Greentime Hu 2023-06-05   95  	/* Copy the whole vector content to user space datap. */
-8ee0b41898fa26 Greentime Hu 2023-06-05   96  	err |= __copy_to_user(datap, current->thread.vstate.datap, riscv_v_vsize);
-8ee0b41898fa26 Greentime Hu 2023-06-05   97  	/* Copy magic to the user space after saving  all vector conetext */
-8ee0b41898fa26 Greentime Hu 2023-06-05   98  	err |= __put_user(RISCV_V_MAGIC, &hdr->magic);
-8ee0b41898fa26 Greentime Hu 2023-06-05   99  	err |= __put_user(riscv_v_sc_size, &hdr->size);
-8ee0b41898fa26 Greentime Hu 2023-06-05  100  	if (unlikely(err))
-8ee0b41898fa26 Greentime Hu 2023-06-05  101  		return err;
-8ee0b41898fa26 Greentime Hu 2023-06-05  102  
-8ee0b41898fa26 Greentime Hu 2023-06-05  103  	/* Only progress the sv_vec if everything has done successfully  */
-8ee0b41898fa26 Greentime Hu 2023-06-05  104  	*sc_vec += riscv_v_sc_size;
-8ee0b41898fa26 Greentime Hu 2023-06-05  105  	return 0;
-8ee0b41898fa26 Greentime Hu 2023-06-05  106  }
-8ee0b41898fa26 Greentime Hu 2023-06-05  107  
-
-:::::: The code at line 94 was first introduced by commit
-:::::: 8ee0b41898fa26f66e32237f179b6989c65600d6 riscv: signal: Add sigcontext save/restore for vector
-
-:::::: TO: Greentime Hu <greentime.hu@sifive.com>
-:::::: CC: Palmer Dabbelt <palmer@rivosinc.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Naresh
