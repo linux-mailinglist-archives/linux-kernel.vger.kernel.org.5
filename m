@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831917DFA9B
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACA17DFA9A
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377446AbjKBTBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S1377401AbjKBTBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377417AbjKBTBJ (ORCPT
+        with ESMTP id S1377445AbjKBTBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:01:09 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2A3D73
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:00:58 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b95ee4ae94so942642a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:00:58 -0700 (PDT)
+        Thu, 2 Nov 2023 15:01:13 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D512C10C6
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:01:00 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7af53bde4so18439797b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698951657; x=1699556457; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698951660; x=1699556460; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uOcLOjhkxzM2IC6JW3hdRFYoIiXgOCTJENqihjXbEf8=;
-        b=BOMBt6vnW0Nffs4J7bfPtMA2B8U9PpH0cPfUem7Md66CwDTgTnKbxPP1SxvkjZcQO1
-         fsMgPhiWjrA7I0yZ13JysSoKMamp4E85AXA/C01tF8AbxwNsfFJ0YX/muh+JT2NoXavq
-         G/Hs8vHInQxHKeJ/VIRwOnp6A9e8wHbuViRwCjLRgsdWFneLbK4ZkFIv00EE00f2ID3e
-         3QqODuaCHJNQkMc1Zwk3iy7P1pLM1TYEFLS6dfTqT8SHBUJNkHlt65OQiAZrK7GbYouk
-         WJ543d8Chl87/CILf7zSTvtiVE/Ppu3Z9ehZQDdnoe8TY4fvfRGrhqsDfCOX5nxyQRmk
-         T2Jw==
+        bh=fohxzhQfhxYVopBcNANdGNbb7WZIM4Bu1Q06IAp2S3Q=;
+        b=RoGdSNez/L5tAmj8SqXnDolednKzeXr0lGtZS0756rtfQBtmEYC1xnxXVaLzuXTYrO
+         Cn9ZSxuH7h4sY8p1lbHPIGhita8iqvKAWSK59gfgu610AXwkd6LLsBdStlH8Ouot7co+
+         zdA5/0USbVs4TYhS41IyR3Inm7lLJvPiZqqjneFGIdIvuv99BiF8fSu6WsLRm55w+aUF
+         rGJzzBnxsBWdbq8U3CfVJ8BhjjtM7jHfsvxwwpxuO+cPdUJZIxdWY7625IC/c+BJhoPi
+         L1oUkNdNnBiM+EClJGJITL/yxBKuIII/XZB2lwVTDpkk+ryy5uHZGs+8fQcriMHk6L7G
+         9Qag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951657; x=1699556457;
+        d=1e100.net; s=20230601; t=1698951660; x=1699556460;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uOcLOjhkxzM2IC6JW3hdRFYoIiXgOCTJENqihjXbEf8=;
-        b=iEY3wBGjexjIWCXuLoBBLDiJT9qmVNRhOrAS7jbBir68DZ2yERX6t7UnqB4evdV8VM
-         NaBva96vL96P2SlBnDi1pScyJeFr1czcMKrHR3m0ydWFVaG7S4x4Xza0lV3h+LTziIAC
-         e5HHA6oLzPqfm0v/J+a5KUkz25Mak6TzoNzNT0MMhHtLuupJGauSKAnAaDh7WMfEghOA
-         uwYmDO6ka9ucjpHp9FfXhNaSS7mHTgM3Pv6AgGNwujT3P6wo5uInuWhLc7dluglZctLY
-         Dgq72kUL4LM/7y2T5nKek+hQ2CxsP8jRcFDzQvZRFUUcy7tNojmAcJCIG0hhV8xnD4Vo
-         lEdw==
-X-Gm-Message-State: AOJu0Ywv0V3EySXk17M8XhMKDo/erD/vF7i1SJEYCOY+/F5BITHNY7bw
-        ZQqlvKN+5jUuhG6uYFbbVNK5yhagVVi2GA==
-X-Google-Smtp-Source: AGHT+IE/xoRCWMpr5mW2NCFMGyUl11LlnYW8JE8YWvIRk04axQRpsZUfqqEar3fEBeOp4dFG/S4LBsgGEqHj4Q==
+        bh=fohxzhQfhxYVopBcNANdGNbb7WZIM4Bu1Q06IAp2S3Q=;
+        b=mCxo1lMnRvdyOLe3w3xN8ClQVZkRtKb5Er2fkOe5u/QGVCMBcyBo6OX3Hcez3feo7O
+         Ds1F31hcXcc8yR7ga8ma0bK1w/V+NQxYf4J6rzrHRh7ucxVZ4ZFqHvaVeJhkITycgtbR
+         BSmkoPqWbM+DJs5ut7nedgoXK5axOhvTL5hCEk9J1c9rIRFbVFEjDK2Wcx0qCqDjWFlN
+         BizdrZ10BjkXhTLSKjdT4xWUGZzcvFt3+ovjn+gCDzhBHjbNl6Cnl8TpBtG0vcGdhTyI
+         toEvB1d/wgVgU+LYJixOwWkEmcMTdfR1rIhsyFCLsfTiFjzh4DYdb08ZSkAzcgjV2+w0
+         xOpA==
+X-Gm-Message-State: AOJu0Yx1t5Z3vcnduVfMub6ITkWdoqB/1AJga/j527iyYCiofGJVLsuu
+        YKME55wX5HlU7axkQGDErwPgAYN6FFBGlw==
+X-Google-Smtp-Source: AGHT+IEEaAqMod1gL8uMntB+S+y0GDl/J30t8mD6qKxnOeeQsQQA8hFQ9Mu7Z7gVVkQadWw9tKGdffVCGLkrHg==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a63:3e04:0:b0:5b8:fe99:152d with SMTP id
- l4-20020a633e04000000b005b8fe99152dmr328813pga.7.1698951657514; Thu, 02 Nov
- 2023 12:00:57 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 18:59:13 +0000
+ (user=cmllamas job=sendgmr) by 2002:a25:848c:0:b0:d9a:5e10:c34d with SMTP id
+ v12-20020a25848c000000b00d9a5e10c34dmr379739ybk.11.1698951659740; Thu, 02 Nov
+ 2023 12:00:59 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 18:59:14 +0000
 In-Reply-To: <20231102185934.773885-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231102185934.773885-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231102185934.773885-13-cmllamas@google.com>
-Subject: [PATCH 12/21] binder: separate the no-space debugging logic
+Message-ID: <20231102185934.773885-14-cmllamas@google.com>
+Subject: [PATCH 13/21] binder: relocate low space calculation
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -74,111 +74,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the no-space debugging logic into a separate function. Lets also
-mark this branch as unlikely in binder_alloc_new_buf_locked() as most
-requests will fit without issue.
+Move the low async space calculation to debug_low_async_space_locked().
+This logic not only fits better here but also offloads some of the many
+tasks currently done in binder_alloc_new_buf_locked().
 
-Also add a few cosmetic changes and suggestions from checkpatch.
+No functional change in this patch.
 
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 71 +++++++++++++++++++---------------
- 1 file changed, 40 insertions(+), 31 deletions(-)
+ drivers/android/binder_alloc.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index eacc5a3ce538..3fe5c734c3df 100644
+index 3fe5c734c3df..cc627c106a01 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -323,6 +323,43 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
- 	return smp_load_acquire(&alloc->vma);
- }
+@@ -375,6 +375,15 @@ static bool debug_low_async_space_locked(struct binder_alloc *alloc)
+ 	size_t num_buffers = 0;
+ 	struct rb_node *n;
  
-+static void debug_no_space_locked(struct binder_alloc *alloc)
-+{
-+	size_t largest_alloc_size = 0;
-+	struct binder_buffer *buffer;
-+	size_t allocated_buffers = 0;
-+	size_t largest_free_size = 0;
-+	size_t total_alloc_size = 0;
-+	size_t total_free_size = 0;
-+	size_t free_buffers = 0;
-+	size_t buffer_size;
-+	struct rb_node *n;
-+
-+	for (n = rb_first(&alloc->allocated_buffers); n; n = rb_next(n)) {
-+		buffer = rb_entry(n, struct binder_buffer, rb_node);
-+		buffer_size = binder_alloc_buffer_size(alloc, buffer);
-+		allocated_buffers++;
-+		total_alloc_size += buffer_size;
-+		if (buffer_size > largest_alloc_size)
-+			largest_alloc_size = buffer_size;
++	/*
++	 * Only start detecting spammers once we have less than 20% of async
++	 * space left (which is less than 10% of total buffer size).
++	 */
++	if (alloc->free_async_space >= alloc->buffer_size / 10) {
++		alloc->oneway_spam_detected = false;
++		return false;
 +	}
 +
-+	for (n = rb_first(&alloc->free_buffers); n; n = rb_next(n)) {
-+		buffer = rb_entry(n, struct binder_buffer, rb_node);
-+		buffer_size = binder_alloc_buffer_size(alloc, buffer);
-+		free_buffers++;
-+		total_free_size += buffer_size;
-+		if (buffer_size > largest_free_size)
-+			largest_free_size = buffer_size;
-+	}
-+
-+	binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
-+			   "allocated: %zd (num: %zd largest: %zd), free: %zd (num: %zd largest: %zd)\n",
-+			   total_alloc_size, allocated_buffers,
-+			   largest_alloc_size, total_free_size,
-+			   free_buffers, largest_free_size);
-+}
-+
- static bool debug_low_async_space_locked(struct binder_alloc *alloc)
- {
- 	/*
-@@ -404,42 +441,14 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 		}
+ 	for (n = rb_first(&alloc->allocated_buffers); n != NULL;
+ 		 n = rb_next(n)) {
+ 		buffer = rb_entry(n, struct binder_buffer, rb_node);
+@@ -497,16 +506,8 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+ 		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
+ 			     "%d: binder_alloc_buf size %zd async free %zd\n",
+ 			      alloc->pid, size, alloc->free_async_space);
+-		if (alloc->free_async_space < alloc->buffer_size / 10) {
+-			/*
+-			 * Start detecting spammers once we have less than 20%
+-			 * of async space left (which is less than 10% of total
+-			 * buffer size).
+-			 */
+-			buffer->oneway_spam_suspect = debug_low_async_space_locked(alloc);
+-		} else {
+-			alloc->oneway_spam_detected = false;
+-		}
++		if (debug_low_async_space_locked(alloc))
++			buffer->oneway_spam_suspect = true;
  	}
  
--	if (best_fit == NULL) {
--		size_t allocated_buffers = 0;
--		size_t largest_alloc_size = 0;
--		size_t total_alloc_size = 0;
--		size_t free_buffers = 0;
--		size_t largest_free_size = 0;
--		size_t total_free_size = 0;
--
--		for (n = rb_first(&alloc->allocated_buffers); n != NULL;
--		     n = rb_next(n)) {
--			buffer = rb_entry(n, struct binder_buffer, rb_node);
--			buffer_size = binder_alloc_buffer_size(alloc, buffer);
--			allocated_buffers++;
--			total_alloc_size += buffer_size;
--			if (buffer_size > largest_alloc_size)
--				largest_alloc_size = buffer_size;
--		}
--		for (n = rb_first(&alloc->free_buffers); n != NULL;
--		     n = rb_next(n)) {
--			buffer = rb_entry(n, struct binder_buffer, rb_node);
--			buffer_size = binder_alloc_buffer_size(alloc, buffer);
--			free_buffers++;
--			total_free_size += buffer_size;
--			if (buffer_size > largest_free_size)
--				largest_free_size = buffer_size;
--		}
-+	if (unlikely(!best_fit)) {
- 		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
- 				   "%d: binder_alloc_buf size %zd failed, no address space\n",
- 				   alloc->pid, size);
--		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
--				   "allocated: %zd (num: %zd largest: %zd), free: %zd (num: %zd largest: %zd)\n",
--				   total_alloc_size, allocated_buffers,
--				   largest_alloc_size, total_free_size,
--				   free_buffers, largest_free_size);
-+		debug_no_space_locked(alloc);
- 		return ERR_PTR(-ENOSPC);
- 	}
-+
- 	if (n == NULL) {
- 		buffer = rb_entry(best_fit, struct binder_buffer, rb_node);
- 		buffer_size = binder_alloc_buffer_size(alloc, buffer);
+ 	return buffer;
 -- 
 2.42.0.869.gea05f2083d-goog
 
