@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BB77DEBAD
+	by mail.lfdr.de (Postfix) with ESMTP id 288C77DEBAB
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348430AbjKBEKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
+        id S1348443AbjKBEKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348323AbjKBEKW (ORCPT
+        with ESMTP id S1348417AbjKBEKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:10:22 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2057.outbound.protection.outlook.com [40.92.90.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9944D127;
-        Wed,  1 Nov 2023 21:10:19 -0700 (PDT)
+        Thu, 2 Nov 2023 00:10:25 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2015.outbound.protection.outlook.com [40.92.90.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7E3E7;
+        Wed,  1 Nov 2023 21:10:22 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JLebc6O+aG/efxPzoplBZYbloa1qH+zMxHTtRceVl24kgEEvro8pRKPBWn4b73jwPtEUzxlvVDRr9aZcc0YhJmzoI3grtqWyuCauIvGQpRRDtccfpiIECe6GYYhS+905FCiCzgPTI6Br3Q6PErsptRGpnV2k4PB9+c9Pn+BcobjMsDd5IqO5nuxtURGl76Fzy9GRkhOo6nAaEVEDBt4EQRG9eV1DNE7PI+RykcZUhEdSOGBooJX5LacWO2B+/od385tbTvE4IDT/uW8v/leTEEfoRJCxBUmMqyrfXVQFiWmMXhpJovVhvCLP+26Pw8UXdXC4L6YO2LxCjVRx50mlZA==
+ b=ViQnfXBjCLbcwAds1Lf54T9dg6oYnldCqp0+X32OXfIpOTpGyEC7E8OqqtMVU93J7CaWKLCbSE/3Ys5gGhUlMHzFuvo8UmV44z50wnuqwFC8NVGutmHjQFW/wYcP2N/MKVDuxPnhPMJqrwfJG9vlazsLkw1tK20QibYS47ZeyX4DhVX8MfMPYLqCNc1MUVsEngtHU2BgM2XeIufRz4n4WrEqZowiWsX9dIv3qMnnc8Z03va6VqjMlkSwdY1IVTHGuRrb0OCyLCSc+BvxeHAu7IPbKN5lV3lygPSy1qqUAUwlSw1pexbhTk9dNLZvUNfMBWo3G2qyzJc8N166rbSYmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5D9faqvwN7odn+OIaTCNqi3uJC5WdGKT0RVYNo+RheU=;
- b=LTnxyOB1GbQ7LJqtS1qGvaii/wqiW892+di/Jxw6S1rIJiqUpW51pL+xfWkVDL3xujsIoXQOYNPNryTfi+lZQKikcHNeXv6GOE0YRSsrXUVv6y3kM7D9Q7gz/DF/FOjPjzBThC2KxdAuSEZQ0dxzjtkYLImANU+Su5rsJPyZYeHO+PNuHtzPKXs6cEaMyNrsky0PAF9/xIChiKLOurgDK4tGKPqOm3ViuTjJWT1DGaeKc+wSVSIql4Eb3KOxsQ4FTaOrsM0UDbkawy49FtmARFBt2+2lTOiaNsF5tJuAG0EwbOXdeD7VR+ZLIpaI3Xn947dJFDOJTnkjS+DvD1dNRA==
+ bh=hIu1e8gkymo0Mjuye5ETqHD4PRNOFa8JkqTLKQmZWKI=;
+ b=ktgGkR97SPXTESlv//EaMjAXLsI0ha2VeSwTxydtRyc6GC9okWvQ+1/FrSOJ+yFD7cqUVUq54UiRAB2grPZXeen7Tspp5OPHhfSNeSO3+dbWCmbZnjudGBjdXgVIyjq6KPv6qk09oO7+5OH2RQ/lMGfcKSm2GzC9o+qvWzYYTGpndcFCdz3elxUrkjaJHyzI7s3ZPU+xlIOKdeOZfnHfdLGEq+2e7XzQDkEWjgXdwdIPWGDF2XRX287bdGMUhG4UczQ7W/Ac1gcLcTJQI86E59vN1NDf65LAScSJOcZM4kdZFUljLw0ifKUClSlDrW8ZgOAjvzsk2XSj+z9NO4V5fQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5D9faqvwN7odn+OIaTCNqi3uJC5WdGKT0RVYNo+RheU=;
- b=Vqg8YbzPkLpGWC+sYI9gpSWo1JVJuPtN88I7PK/ZHepfNWCg/Rr6jA2kpHBfKDjHugAGVzu8l0SKKfQHRDDtVOPUZpDBIwxfApERp46EZApAzr9spy9xRSXgNj4WWqUSVFWeAVM7HmdSGT2aMH1mWpXytrWqWqShzUXvxWLf2wioPMfiUvuvzrDFAToXnqwGr6pIOJRrazFL3APRKm+tb/pUKuDfQqCEMG6I+6VOmyBH3lL9moXGR7hYePe9rKf2irhc2oCFB2DGyS/k2PNQInMhbgfYGFnMthw25/a0M8sVY8iXNsZ3XrZug/HaWIUvCJ+7CoPItP/QRZx6PS10rQ==
+ bh=hIu1e8gkymo0Mjuye5ETqHD4PRNOFa8JkqTLKQmZWKI=;
+ b=iui/8T0nCc2cBudsBZAEu9q/0jBT40O59Hb5ldVOTco6bCYDNGrb9bubhHacW2FU+sZGxIDr9EwBFGh8bPkNqA69djRPV59PJ4BLdxSiPcC1M7VFs1pkBdt84fZt/2r0gWuyL0XtbltGInGJwiHpfaP4OdiERo+CraolrkaNtKgpovb5QLbOWPUz/siiK5XX8xNmDNChcWzOMhRCzaXICco9xZslPFYyV4+TekM0SosfMMSxBJOMGMN7Kirwi64ZeHbuF3sHxBZsngBj3dLTHWW5PJenZ2ARdn5nzE/TEaN5EJcoA7pGm8f/tB3f5KXViNhZNftQ4L3iaeQgGVjKuA==
 Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
  by GV1PR10MB5868.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:57::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Thu, 2 Nov
- 2023 04:10:16 +0000
+ 2023 04:10:20 +0000
 Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
  ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
  ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 04:10:16 +0000
+ 04:10:20 +0000
 From:   Yuran Pereira <yuran.pereira@hotmail.com>
 To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au
 Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, davem@davemloft.net,
@@ -45,54 +45,54 @@ Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, davem@davemloft.net,
         dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
         linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH 2/7] crypto: Fixes uninitialized skcipher_walk use in des3_ede_glue
-Date:   Thu,  2 Nov 2023 09:39:26 +0530
-Message-ID: <DB3PR10MB6835EB64DD7E871C722184ACE8A6A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+Subject: [PATCH 3/7] crypto: Fixes uninitialized skcipher_walk use in chacha_glue
+Date:   Thu,  2 Nov 2023 09:39:27 +0530
+Message-ID: <DB3PR10MB68353E2ABA0D6C1462385E6BE8A6A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231102040931.1556061-1-yuran.pereira@hotmail.com>
 References: <DB3PR10MB683562E7BD2DC73A48BEA3C8E8A6A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
  <20231102040931.1556061-1-yuran.pereira@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN:  [qMMSgV97n9JMWg2pFVIDSB+D1ewAymla]
+X-TMN:  [aXHX50crGI1B+8V5f6WJd548W5WSNB2g]
 X-ClientProxiedBy: JN3P275CA0004.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:70::14)
  To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
-X-Microsoft-Original-Message-ID: <20231102040931.1556061-2-yuran.pereira@hotmail.com>
+X-Microsoft-Original-Message-ID: <20231102040931.1556061-3-yuran.pereira@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|GV1PR10MB5868:EE_
-X-MS-Office365-Filtering-Correlation-Id: 133f025f-19b0-4b2a-315e-08dbdb599eb8
+X-MS-Office365-Filtering-Correlation-Id: a3fac163-5017-4033-0b5e-08dbdb59a0d3
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JpJPBhiV5CkJadCdNBCrPkKY0uLyXJE9c9whtg77RKbgdCWAcGdi3RZH6StLEMoKlGNhyMQY4vpXyiQ3U+k0pnm0XFUjFjEQi5UQp+AIHlXXM1UEbjGxyClpxIGgQQ4yXQI9rDpZJ619CU00AFFWTd6GSeRLZRXt1tJ9+ZsEwVgeSWXcX50HhgI36JAfX8GJhuBKb3cqF5+hv8zYWx7DjNuGKm4f1R5ic5NCQg2xgfBgb0DihtgpCeoPcRulLRAjSlZUfiD77x/iHP8guXjRht09X/1D/vTLx21LZhTINseStExDQO9/5jXO3pVi7+zhbZX7BFSUE9m9doXkGCbg7qzlBizyNdI2+b9dg+9D4wgX7hfHTJ2RwSGJ6gkyS/m8CYewccpNFjyeWPwLyiU6DPFK4tOzWjtbXZV9V84Zeutm/YXEwRchXbo/m3GZuzzUbamM/JhKqIH+ZYkwPPCGeK9M/CBwCCMCr0mpXI2C6BVl57/rFbIZRWKkP2P5IBdwTevhZRVa/27ug8XU9s85W+jDCRYy/2NKR3jUNj6G09VlxHtjTVwFsoTCQwPJFYdQql71V8UxFHNEti2bhFZw0vC9l3dqC2ZET8du97IXMgiKmBLDZyJSD+24sZr8eDmG
+X-Microsoft-Antispam-Message-Info: a1G76ybKfrAUrMoH8nOUosnKQggPtVX7magy1yHc6xbZPMOUNO9B1E1xgkt5MMgGxrvGx7sQVPSqRmPdNAWdVeMJvqQF22eEPIoYB59TluxTJBpkoeWc3whtFWu0Wo426wP52RydDDQp8aiSpbA9BSn2xTMurS+5f+tlOBNpsoSPpfELjildo24UNcao91hLc3QyE6y/M5K6UtVGSUNQWjqZzvXAkTubcG98uvlslGTcv1qHN+XtpKEgqhbVeMwUKqNZ0QLygqL8KWslgPOb2fmzuYL9mtc9N4FuGwIbq9Dl/alhgf1MDgqGmov9OiQ5FyV2kcFdTGk/lONN44DILObOO+T6f89sZUIkorh4zh10VO60KX8JjjsffERJHDEi45QDAaL4Y+tbGp1VDonz7teBvgwzxLXOfsWer00EnEjz0dRjDjs2W0cw5W2hVqbZycWG88Kk76TAoyz/6ArZMESCQMthVDq7fgtlgwIOIMDNoZqUGRIdppCpkLQ+3jvq/s3ljVca+L4z9cBPUOQs7j1tx5FDD99lOpJozpkL2VtjXSmCTOOTIE6Je9DH9yA0/2II8ot302aA0WD+TsPIJt4K8+NYu5RfBW5FcszPqUHO5LwHjMp71lMbCdw446rD
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9RkqZmRwxfsvzEA77eR8XLi8sCswBc6LiYSl1p7DKhzMXj+yCACLvpmyX9in?=
- =?us-ascii?Q?mN4TGtaNg+dVOYdmB6fSpfSR2VIxlRZhXgfbtFiELhcqaZRJY1gvFov1xYcu?=
- =?us-ascii?Q?yOQrscVVqkTwOegVrsYH/h3n5D3lLtO2YmP8dQ+bn0owPeFbS3CysECmOULz?=
- =?us-ascii?Q?fMf5GkGdKOnULIArzxORNQI7JPGOrDyJ3X1dW74PDOCdqgfFFyy3p14bx+jH?=
- =?us-ascii?Q?/7DDK34VbO7YHv5cJ0Wr8ajbcx/mSQc9nAHqUAtz4MzahatQ6ue8OY+wipFC?=
- =?us-ascii?Q?FsEBfEzbSVNuIMMNL8gr9sNOtcPg+6zJ83PlTwbqozZb0pkQ1wFCyY3ZlhY6?=
- =?us-ascii?Q?IJMIU6Eco+QrvKwbk0mtNh5Ji+shJxJfFZ4pRAOudafbxEXwgkOP7WenFMeX?=
- =?us-ascii?Q?opsdp1HETK5EvHrFR1v6TzUUxBX5ya8eqguX+fQwtLyfmSHhGKo0khVeY/r2?=
- =?us-ascii?Q?Ml5UmuegJGjpaZG8KlFPg6iEMdROOE96X9HsLBLffrFMdAn9OVj9yGGpkgRY?=
- =?us-ascii?Q?vJylAakxUYTOjBcg0yvECOYsD47C5CUJ/LacKFSJjE0NbIMJSADGYkt0G5Pi?=
- =?us-ascii?Q?uZ1Hf7XGXuDLU1AagrV94cMsY7S5jnGlM5g7BjzVNjqWfVaoJHGq7Yjgvp+X?=
- =?us-ascii?Q?9yYi3b0vzQFhwqmjyhEJ/XmbJVCennQ/1+0dnEn0QWio+Xl1Cgh02L7ydSiR?=
- =?us-ascii?Q?0q6R0HBsCvP2RrvovMboy2qo6Q3P0EGamY1m20zaIgC0lOhUjSp3Av3RTIoM?=
- =?us-ascii?Q?1+uKIyEPMzuxkey+vdVTfc/8fOGARlVwMuQX6yjq94wPXucPy4i6KXg1+y7A?=
- =?us-ascii?Q?sXhs2jVM70lDfbYPiBrf7ynNEqns8a3OTbv4Hgo9Q1YIa0pIWCZMEq+bKiS1?=
- =?us-ascii?Q?aiOWLgYnexujKh/s1Z9+4/OHGk4/+AqZ1yeDN+V2MsupR2QDk/gJUSLQ6Bv1?=
- =?us-ascii?Q?++xS9IX22Ovzf+2fyl9+0ZU/Zc1AMnjtWMdXu+q7eroQaLnFdkbB5YXo8GkO?=
- =?us-ascii?Q?reN8vAN5Vktz4cDocqJkvDmbgIJthYQuVzXMD/Q9BMK6+94GEw7rRUnRw0HK?=
- =?us-ascii?Q?rPtb6CxJKpdq6wjbLVi0PEEqKYei8Wvi+W0BjOmN0v1LGjVBbMrL5CCwLVW5?=
- =?us-ascii?Q?YdMcnLzLLK2wXNzDbb+YBfFURBK6BfLC3ohrQ6N1VesQN1KwDVaMAi7mZFoS?=
- =?us-ascii?Q?0lxSXjdO6sc9hPm09WB3XgKcw35Q2px2GfAhx6Rhbq5P/gBGulmFk0ZNT6k?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AHL6xGGpys684XOThfHNsYJTN4jvWerIyG//4diq0MNa/Q2j8y04xvIwcEfB?=
+ =?us-ascii?Q?Qyj5xHNPIOwyDADV3recGJV0qVX3JpWmApESo3cTV+h8MiQlm3f3bIPt3aD3?=
+ =?us-ascii?Q?32NyGL9p1/d6BdCxYNu6tbVmc4UV3X5Q+tEhcGpAGvMIUnFgZEyyKRQtPeUP?=
+ =?us-ascii?Q?+/dACWM2W4Wgc57bm+iJz2oWe2Kt49rcbnrYWxC+IVk9HvyYIzIc85xHl0xF?=
+ =?us-ascii?Q?DdqJTlIO+sbWsoHaMbU1YyoANbRG4CjiISbUkLH23v3MN0Qxk47IoP+G/SIw?=
+ =?us-ascii?Q?TPNLi7hUwFhcYIhcWALLfuxFN05YOIk8yNMXcUqwEPm2SiTgearh280c2XLX?=
+ =?us-ascii?Q?wTyBptrlwJEZp+iUEOsCLHu/5E45jQIXZlz4k2809Aezvf5rVy6YMyulnl7/?=
+ =?us-ascii?Q?firid+0jiGRM9nt3dCM6Wcmf8n6H1N1bDBIbTo6Wr3aNRy/0i7UppGIOrGf+?=
+ =?us-ascii?Q?rWs1Tui0d7n1z9usIW6ya83xLoM+8HdGU4N09PmhPjiaWfrUItg29mnmxYnZ?=
+ =?us-ascii?Q?1ok5Yni5G2XdRN4EHPfB3sksiafsP/D/7KM4p5r1JD7hGXrK9PiVHDl2QNE5?=
+ =?us-ascii?Q?Q9QIFI2VL1rzvnT8a6Q5JWIRNRtVbAfjiCLf+MwOy0UF97eQI7dbIRky+qym?=
+ =?us-ascii?Q?H+xtGs59V/bY7k2c3+83J8zSD2fNrRS+FsiPIgMtKodyz9tR/U9rb+Bwi5Mo?=
+ =?us-ascii?Q?+AGFR9xZP6afD4GGPJ+lBoo/SdHCUnepUjdbATzcsq/S1IA2VLxWTzR6pyDi?=
+ =?us-ascii?Q?DPT7nC5WTu5/aC/qDxGUaECys9Em7x+4FbPU/7XWoPSt+GCOFi3Wjh8F/Ugq?=
+ =?us-ascii?Q?ECO5/DmjKAITzAUfL/xZP+MCZLnu7jwRpoEDnifDKtfZveD9S25XXp6jAiaI?=
+ =?us-ascii?Q?Tkxipe8WWRUKxtlzRuzELsILlhqVeCTaFB5MAFlAjOQu5pnSWke3PnoCFG2d?=
+ =?us-ascii?Q?e0NF07VB8AjZfcFoaA2VpcUvxaTAXN/dD5rubtwvNk/+HgXN/vJCB3yXpaBO?=
+ =?us-ascii?Q?Xxa+V9gXiMITPE1Ry0yUjQOJE9lfrLl0Ulx4UxRBjVdtO9dq5QfHQPcuZ7Fx?=
+ =?us-ascii?Q?xP75plUfDbaZ7Leq9z9SIT7recNKeT/CGJblq7mhuJdYPGrOB9IbSXPpyn9J?=
+ =?us-ascii?Q?KtkCH0esZG6iDKPi/qPNX/Yy2iMaSjtJndUn0jidkRi3UjHg7Mj55/vnAsgG?=
+ =?us-ascii?Q?L0ibnXivxn7Lv7evTbsF3r5EEQNFdnHqaQgRCNllaJ4y9vdZBER6N5S1lAc?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 133f025f-19b0-4b2a-315e-08dbdb599eb8
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3fac163-5017-4033-0b5e-08dbdb59a0d3
 X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 04:10:16.7758
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 04:10:20.3040
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -108,12 +108,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the following functions:
- - `ecb_crypt`
- - `cbc_encrypt`
- - `cbc_decrypt`
-
-`struct skcipher_walk *walk` is not fully initialized before its use.
+In `chacha_simd_stream_xor()`, `struct skcipher_walk *walk` is not
+fully initialized before its use.
 
 Although the call to `skcipher_walk_virt()` and subsequent functions
 that this function calls seem to initialize some fields of this struct,
@@ -142,48 +138,32 @@ int skcipher_walk_done(struct skcipher_walk *walk, int err)
 To prevent this, this patch ensures that instances of
 `struct skcipher_walk` are correctly initialized prior to their use.
 
-Addresses-Coverity-IDs: 1434673 ("Unintialized scalar variable")
+Addresses-Coverity-IDs: 1456799 ("Unintialized scalar variable")
 Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
 ---
- arch/x86/crypto/des3_ede_glue.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/crypto/chacha_glue.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/crypto/des3_ede_glue.c b/arch/x86/crypto/des3_ede_glue.c
-index abb8b1fe123b..6f16b09b52fe 100644
---- a/arch/x86/crypto/des3_ede_glue.c
-+++ b/arch/x86/crypto/des3_ede_glue.c
-@@ -15,6 +15,7 @@
- #include <linux/init.h>
+diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
+index 7b3a1cf0984b..be8dc756d205 100644
+--- a/arch/x86/crypto/chacha_glue.c
++++ b/arch/x86/crypto/chacha_glue.c
+@@ -13,6 +13,7 @@
+ #include <linux/kernel.h>
  #include <linux/module.h>
- #include <linux/types.h>
+ #include <linux/sizes.h>
 +#include <linux/string.h>
+ #include <asm/simd.h>
  
- struct des3_ede_x86_ctx {
- 	struct des3_ede_ctx enc;
-@@ -70,6 +71,7 @@ static int ecb_crypt(struct skcipher_request *req, const u32 *expkey)
- 	unsigned int nbytes;
+ asmlinkage void chacha_block_xor_ssse3(u32 *state, u8 *dst, const u8 *src,
+@@ -167,6 +168,7 @@ static int chacha_simd_stream_xor(struct skcipher_request *req,
+ 	struct skcipher_walk walk;
  	int err;
  
 +	memset(&walk, 0, sizeof(walk));
  	err = skcipher_walk_virt(&walk, req, false);
  
- 	while ((nbytes = walk.nbytes)) {
-@@ -154,6 +156,7 @@ static int cbc_encrypt(struct skcipher_request *req)
- 	unsigned int nbytes;
- 	int err;
- 
-+	memset(&walk, 0, sizeof(walk));
- 	err = skcipher_walk_virt(&walk, req, false);
- 
- 	while (walk.nbytes) {
-@@ -233,6 +236,7 @@ static int cbc_decrypt(struct skcipher_request *req)
- 	unsigned int nbytes;
- 	int err;
- 
-+	memset(&walk, 0, sizeof(walk));
- 	err = skcipher_walk_virt(&walk, req, false);
- 
- 	while (walk.nbytes) {
+ 	chacha_init_generic(state, ctx->key, iv);
 -- 
 2.25.1
 
