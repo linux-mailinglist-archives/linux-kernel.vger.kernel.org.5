@@ -2,127 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 333317DE98D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3E97DE990
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbjKBAlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 20:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
+        id S234622AbjKBAlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 20:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbjKBAlG (ORCPT
+        with ESMTP id S230502AbjKBAlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 20:41:06 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2A6113
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 17:41:00 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7dd65052aso5516327b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 17:41:00 -0700 (PDT)
+        Wed, 1 Nov 2023 20:41:16 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB74E113
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 17:41:11 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1dd1714b9b6so274235fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 17:41:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1698885660; x=1699490460; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TXv7lNcUKE/bPvUbNVQ0cVR7ltHedHv7vFfJ1xNnXoo=;
-        b=D9no4B2d4cqTGIzHucsVFeKxSN5A9mmIMdqIFPQ4RzAt/VBlLU8VAsOB0wV1fh0xsm
-         H/pGzVf4EBLMd92afH6nNZWydrUBamPyPQGA09x25gWCeiCuojHllt3VZKhGgqSZ7JN2
-         q2ZJUwqYiKVXBEfkThmZU2HnvWbjFEDOVoK2ywFzJT6aTLhlR0Y36hEgrJfKxZAmvtra
-         t/yknTSLg9RmHfFDGoVX/1GkHFCPhER4T8a8fdr95/HnWQs087yaa507YscWGoUlpBP2
-         arbLoim6AdpCroVlMlqTCqOYjLwBoZrwy7LMrf4pfW3fXZGqJuYZUCqAC5oAVQ1fkOfs
-         NR3Q==
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1698885671; x=1699490471; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PAmpgjdK8hmw86qRod49rM//sCJ8Bz8+YBV91rFwGG4=;
+        b=pmRqAN68uA/Z+sMMnSXl8Vq1vVwhLK0wu4dZKngIJHgdls8NWpwRc0eH1l4einry14
+         yJ5O9IxPQ6fvGbC+xHtD6mzff5OEYFRYrgFuy75tBX1kLlmAHwoZ+OBd4EarNNPGQ5zV
+         Z9dL1+jfk7VmScDUdeYCCDir/OzPIh8gMa+23zPVD4MujDfwGUKKuYlUccAOd4y9GDpN
+         1rFip/8WBKwGAqt+A5Fh9SPq1U9wPeUxiN0KBfanHnaVHrn2ew50EJtv5wzmMhSvOS0S
+         QFDogJzqR3+36UXf6arBW/k3pVPm7rTEEbC89JQjT5yUnMwkDMRvcGyhTCSKg8/aAeVI
+         /+TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698885660; x=1699490460;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TXv7lNcUKE/bPvUbNVQ0cVR7ltHedHv7vFfJ1xNnXoo=;
-        b=WAmFbeVA04euClmMdC4Y1Ddf8+SKoeqGtFo+CUJ1pgcCCjepPicJuzoAeDF2qE/QPG
-         P6RcZXxabjLP9NjlgIirqQcAhLwXeUZhZYmOGXxFbE5hT9AlZdc0Ec73iO+/A+aoMTnh
-         hP5VXoFdPTK2P4KyeMKn62vf+F7oFrycm0n01+PIHj6OjwWEC5/qQ54hC+gYCE7h6Y9B
-         7t1JOnN95n0SaJx9cyHRSDslWs6wluXZnzHoramrLZQZQ2oFlqiYMoVk4XEIOuZ4OY/D
-         8EYaounuzxbBtFnh/FnfM7bGrvhr4G2/8tLoTNTXl/XSFdD0hKwp+jrt/6QIijFeg5CQ
-         77vw==
-X-Gm-Message-State: AOJu0Yw7g7TVJcGmAkvb4Ocx8LM4ZcmoJ2PffkcN65K6MsZCBtKbcVyh
-        sTp+Q6nHlL00zRlChktDgkg1hRxSL0GojG0f0THo
-X-Google-Smtp-Source: AGHT+IHX5SByOusRzJbw7XlPM3jE3Ppiy/SLY9W8Ke82qVvDL1WHm97FTYfGRSVFyvB1nXe4XZRil3a/EiFE9ySrnAI=
-X-Received: by 2002:a25:db13:0:b0:d9c:a3dd:664e with SMTP id
- g19-20020a25db13000000b00d9ca3dd664emr15078806ybf.56.1698885659901; Wed, 01
- Nov 2023 17:40:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <1696457386-3010-12-git-send-email-wufan@linux.microsoft.com> <85311850a862fe6ccb946634429b890a.paul@paul-moore.com>
-In-Reply-To: <85311850a862fe6ccb946634429b890a.paul@paul-moore.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 1 Nov 2023 20:40:49 -0400
-Message-ID: <CAHC9VhQHizyP3frH61jQi-8eNeNvg9UcPkvPv6Kk3k7rMsCziQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v11 11/19] dm verity: set DM_TARGET_SINGLETON feature flag
-To:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698885671; x=1699490471;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PAmpgjdK8hmw86qRod49rM//sCJ8Bz8+YBV91rFwGG4=;
+        b=nhSeoTQVzlrLj35TOmeucKj33VF/E5NL2o4RpruJLr8tWcVJ9jxEMXIjPFttL6yOmA
+         SA6+xiJHAb4e8xUCqvEVR2nAOxBGhIbL33BTCFgQSixva6Qm0hxCDIZea07mb4hFuFJD
+         6OYzC/TWCzjfvW4OH3xgO4YPURCk+FGh0mJdGEmlNPD0ATThVuYft9bG0HVnDPtwta7O
+         wXkW0KU6e3dPCsjMYKFO7mEoJGwVMGoOdQR3866FblKbMNqEfivnjb7FsJhkxOx8lzKN
+         juoVD78ViUiXytghygZHJGB1iuwisz2TWJGRe86LWgKAJzLd3Tasn5bO/WJPBnHw9STz
+         yotg==
+X-Gm-Message-State: AOJu0YwDxQZQBfFMcG1J+EKskPYepsIJ/niUqDZwDo/+Rry6kwB3SaTh
+        7CrADVjPZpExInuAJ7eL6AyhtA==
+X-Google-Smtp-Source: AGHT+IFFaftpgSzJhJuGLJNG/sHeW9v22Ui/IWzm0dd7hWk1pkaNfdav4oOzey1zsg3meE6Ku8MPMQ==
+X-Received: by 2002:a05:6871:528e:b0:1ea:6883:9a01 with SMTP id hu14-20020a056871528e00b001ea68839a01mr24276948oac.32.1698885670962;
+        Wed, 01 Nov 2023 17:41:10 -0700 (PDT)
+Received: from localhost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id s15-20020a63b40f000000b00588e8421fa8sm308240pgf.84.2023.11.01.17.41.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 17:41:10 -0700 (PDT)
+Date:   Wed, 01 Nov 2023 17:41:10 -0700 (PDT)
+X-Google-Original-Date: Wed, 01 Nov 2023 17:31:33 PDT (-0700)
+Subject:     Re: [PATCH net] tcp: Fix -Wc23-extensions in tcp_options_write()
+In-Reply-To: <20231031-tcp-ao-fix-label-in-compound-statement-warning-v1-1-c9731d115f17@kernel.org>
+CC:     edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, ndesaulniers@google.com,
+        trix@redhat.com, 0x7f454c46@gmail.com, fruggeri@arista.com,
+        noureddine@arista.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        patches@lists.linux.dev, nathan@kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     nathan@kernel.org
+Message-ID: <mhng-df0ad8f4-f79c-427c-9798-8682fca4f516@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:52=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
-> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
-> >
-> > The device-mapper has a flag to mark targets as singleton, which is a
-> > required flag for immutable targets. Without this flag, multiple
-> > dm-verity targets can be added to a mapped device, which has no
-> > practical use cases and will let dm_table_get_immutable_target return
-> > NULL. This patch adds the missing flag, restricting only one
-> > dm-verity target per mapped device.
-> >
-> > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> > ---
-> > v1-v10:
-> >   + Not present
-> > ---
-> >  drivers/md/dm-verity-target.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 31 Oct 2023 13:23:35 PDT (-0700), nathan@kernel.org wrote:
+> Clang warns (or errors with CONFIG_WERROR=y) when CONFIG_TCP_AO is set:
 >
-> This seems reasonable to me and matches with other users of
-> DM_TARGET_IMMUTABLE.
+>   net/ipv4/tcp_output.c:663:2: error: label at end of compound statement is a C23 extension [-Werror,-Wc23-extensions]
+>     663 |         }
+>         |         ^
+>   1 error generated.
 >
-> Alasdair, Mike, can we get an ACK on this?
+> On earlier releases (such as clang-11, the current minimum supported
+> version for building the kernel) that do not support C23, this was a
+> hard error unconditionally:
+>
+>   net/ipv4/tcp_output.c:663:2: error: expected statement
+>           }
+>           ^
+>   1 error generated.
+>
+> Add a semicolon after the label to create an empty statement, which
+> resolves the warning or error for all compilers.
+>
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/1953
+> Fixes: 1e03d32bea8e ("net/tcp: Add TCP-AO sign to outgoing packets")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  net/ipv4/tcp_output.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index f558c054cf6e..6064895daece 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -658,7 +658,7 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
+>  			memset(ptr, TCPOPT_NOP, sizeof(*ptr));
+>  			ptr++;
+>  		}
+> -out_ao:
+> +out_ao:;
+>  #endif
+>  	}
+>  	if (unlikely(opts->mss)) {
+>
+> ---
+> base-commit: 55c900477f5b3897d9038446f72a281cae0efd86
+> change-id: 20231031-tcp-ao-fix-label-in-compound-statement-warning-ebd6c9978498
+>
+> Best regards,
 
-A gentle ping with a reminder ...
+This gives me a
 
-For reference, the full patchset can be found on lore at the link below:
+linux/net/ipv4/tcp_output.c:663:2: error: expected statement
+        }
 
-https://lore.kernel.org/linux-security-module/1696457386-3010-1-git-send-em=
-ail-wufan@linux.microsoft.com/
+on GCC for me.  So I think something like
 
-> > diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-targe=
-t.c
-> > index 26adcfea0302..80673b66c194 100644
-> > --- a/drivers/md/dm-verity-target.c
-> > +++ b/drivers/md/dm-verity-target.c
-> > @@ -1503,7 +1503,7 @@ int dm_verity_get_root_digest(struct dm_target *t=
-i, u8 **root_digest, unsigned i
-> >
-> >  static struct target_type verity_target =3D {
-> >       .name           =3D "verity",
-> > -     .features       =3D DM_TARGET_IMMUTABLE,
-> > +     .features       =3D DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
-> >       .version        =3D {1, 9, 0},
-> >       .module         =3D THIS_MODULE,
-> >       .ctr            =3D verity_ctr,
-> > --
-> > 2.25.1
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index f558c054cf6e..ca09763acaa8 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -659,6 +659,11 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
+ 			ptr++;
+ 		}
+ out_ao:
++	/*
++	 * Labels at the end of compound statements are a C23 feature, so
++	 * introduce a block to avoid a warning/error on strict toolchains.
++	 */
++	{}
+ #endif
+ 	}
+ 	if (unlikely(opts->mss)) {
 
---=20
-paul-moore.com
+should do it (though it's still build testing...)
