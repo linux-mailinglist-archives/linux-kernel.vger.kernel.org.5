@@ -2,202 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252577DF9F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345647DF9FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377131AbjKBScR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        id S1377181AbjKBSee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbjKBScP (ORCPT
+        with ESMTP id S234295AbjKBSec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:32:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD82918B
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698949881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5xxC28PYqiT7BcV5DEi3XMjaZ09KLMWNz9I8Ill0c/8=;
-        b=fEIKXSBwUL6bnUsmxxXWefefGd3EXY1Jdhd0VqbLHiKtN+AmNKWw+rlb8W98Fb4TdhOLG3
-        nfUNTHwQSsUJgNjd01yKg+m1J+yDIev1N1bHnWWZmCmWXnwknDJctvYXb7VmAo/S9LRwF1
-        WTq/jgAsXTQqSGBWP0pPnsEYgdnLMOA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-395-zGmXZAPRO9Kh99L-uAlIhg-1; Thu, 02 Nov 2023 14:31:18 -0400
-X-MC-Unique: zGmXZAPRO9Kh99L-uAlIhg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32d83fd3765so551253f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:31:18 -0700 (PDT)
+        Thu, 2 Nov 2023 14:34:32 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AD312D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:34:23 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41ccd38eaa5so10768261cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1698950062; x=1699554862; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=L0vqehv1Of/uKbf/NHzSex+avddGRsxzOfkGwHtKkyg=;
+        b=keEIs5atyxpQtTi3W81MbqQkrNpfNLwBg0KGH2gI44fi3hXGXBGDegv5+XmEZImGJu
+         r1NDUTT8iwz+JGaQLXqmlu1cLBmxv5Rq0zViAp+j/rYeMvTou7vhUCHPK0UTLqmJQo2M
+         nwN52bda7Fx2iQZBqR9SSXZHx0/egPzlBqgiRnWJlrnjpXYE7AznFqeEA1GlvIktrDAY
+         4TnUfXMMfsX3vEMyerE3EltJYDrrzgOkVcJRw+UQQYSgWTkm03E/1/9cgpRcbka5x7/4
+         utQVaGWax8FZUUP/C1fz5jGJl7q55zzLcMowZX4KwXGrPTclfIo4rBsthtVthcMpuF0t
+         RriA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698949877; x=1699554677;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5xxC28PYqiT7BcV5DEi3XMjaZ09KLMWNz9I8Ill0c/8=;
-        b=s7unIQOUvP5Cjt/uhTlRwXNJb3FuEryoEdV2QaxAfBS3ACZbQBsRyuD827ELZMqdrb
-         qt30bsRcoEtK5vWpPjFfx94FlxXuby4pYYOr5jgxN/ShspA6cnFAe7hDLJqBqE1cvxyA
-         IfawlqH2d6OVAStWr3iEDaChBtyLL6SvZNGYEI7SZBe7jycbnu5F4jQvQ3h+DlcgmpIS
-         P5i08UlSphtGt4/iWn5zX7djU/V4QDKVSnMrIYVo/aB8E6YTu2SzdR3Mzn+SzPtt4HH7
-         rzh8TBVLFIYrujBNAMJu4vhp/QTcSl2otMQ80614XorHO7uABDy67QosuYoSHq67ZakC
-         LAWQ==
-X-Gm-Message-State: AOJu0Yxsi9DFur3GA460imDkkBLwizwrg0RZ/5vyZ1uJF1PKPITu7iBY
-        tZ1eCHq5yyR7yFYJgmLysZ/Es+gz61JDfMlw+paF44SkDlbVCfM9bkrwC2qoGKRRIDTnNfEZr+1
-        O8MBrVyAAMaJ/I4JYr9uaxiMe
-X-Received: by 2002:a05:6000:1ac7:b0:32d:a213:4d7d with SMTP id i7-20020a0560001ac700b0032da2134d7dmr16596502wry.56.1698949877183;
-        Thu, 02 Nov 2023 11:31:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG/utLi6fXUliUkkLs2Oubehgwj7LYFXk+YZFFrwQgh7gri3uv7upJ9ZiWvrqkmmQv+MLY1Gg==
-X-Received: by 2002:a05:6000:1ac7:b0:32d:a213:4d7d with SMTP id i7-20020a0560001ac700b0032da2134d7dmr16596481wry.56.1698949876866;
-        Thu, 02 Nov 2023 11:31:16 -0700 (PDT)
-Received: from starship ([89.237.99.95])
-        by smtp.gmail.com with ESMTPSA id k23-20020adfb357000000b0032d829e10c0sm15151wrd.28.2023.11.02.11.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 11:31:16 -0700 (PDT)
-Message-ID: <f930aa68395d6ead6b94b1b7a6e4f3af1cfe9205.camel@redhat.com>
-Subject: Re: [PATCH v6 14/25] KVM: x86: Load guest FPU state when access
- XSAVE-managed MSRs
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Thu, 02 Nov 2023 20:31:14 +0200
-In-Reply-To: <ZUKTd_a00fs1nyyk@google.com>
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
-         <20230914063325.85503-15-weijiang.yang@intel.com>
-         <2b1973ee44498039c97d4d11de3a93b0f3b1d2d8.camel@redhat.com>
-         <ZUKTd_a00fs1nyyk@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        d=1e100.net; s=20230601; t=1698950062; x=1699554862;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L0vqehv1Of/uKbf/NHzSex+avddGRsxzOfkGwHtKkyg=;
+        b=SdgJZ5T8hOX1tKJapUZ7xITH7l1FK/AhSeiviEkLoCSNAXQPJUFIK9ejH9cSboDwhh
+         9X/tCJz8f5j3233TB4kmAGhAL+YmFKW3Oxc9xu/2OspRP2Z1v6aVU6pcH2kbyj7Xz1rK
+         0GBqCECoPL/UTG3UlJzVl8dD3CjspvEaboSN8ne4KrBAb3mJ0iXB6BpPYCgeKDWHQjAe
+         I4tw57JX6RvPX7ilI6O71FQEm0b5vVGeWLvilVL/Bg4PpJOD3L8in1IL1pcv+M2jLKB7
+         HmQoTYJJP38rCMZSZzjim8oJGusOuAAjhJaEXfc82XsBA3A/9nsr0hdycxNuLgSbtE4H
+         +4OQ==
+X-Gm-Message-State: AOJu0YzDkbDY2exBe9Yk9N0unIiheR9fR12p9ZmA3X8tUkzSxUV2DgFO
+        HPI6kcmZXBB28Vlv3vJj3obxsxUuy/WPoemajXw7lw==
+X-Google-Smtp-Source: AGHT+IHli5W9pg027z3X7N5yytmKodloxVZvhxda6fBntxwV8IV1XJcayCtmXiUfhXeuIvSC8E1lkCREGDZtsGgqt0g=
+X-Received: by 2002:a05:622a:148c:b0:403:a662:a3c1 with SMTP id
+ t12-20020a05622a148c00b00403a662a3c1mr489774qtx.29.1698950062459; Thu, 02 Nov
+ 2023 11:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
+ <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
+ <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
+ <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com> <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
+ <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com> <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
+ <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com> <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
+ <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com> <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
+ <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com>
+In-Reply-To: <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 2 Nov 2023 14:33:45 -0400
+Message-ID: <CA+CK2bBPBtAXFQAFUeF8nTxL_Sx926HgR3zLCj_6pKgbOGt8Wg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+To:     Wei Xu <weixugc@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-01 at 11:05 -0700, Sean Christopherson wrote:
-> On Tue, Oct 31, 2023, Maxim Levitsky wrote:
-> > On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index 66edbed25db8..a091764bf1d2 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -133,6 +133,9 @@ static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
-> > >  static void __get_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
-> > >  
-> > >  static DEFINE_MUTEX(vendor_module_lock);
-> > > +static void kvm_load_guest_fpu(struct kvm_vcpu *vcpu);
-> > > +static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu);
-> > > +
-> > >  struct kvm_x86_ops kvm_x86_ops __read_mostly;
-> > >  
-> > >  #define KVM_X86_OP(func)					     \
-> > > @@ -4372,6 +4375,22 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(kvm_get_msr_common);
-> > >  
-> > > +static const u32 xstate_msrs[] = {
-> > > +	MSR_IA32_U_CET, MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP,
-> > > +	MSR_IA32_PL2_SSP, MSR_IA32_PL3_SSP,
-> > > +};
-> > > +
-> > > +static bool is_xstate_msr(u32 index)
-> > > +{
-> > > +	int i;
-> > > +
-> > > +	for (i = 0; i < ARRAY_SIZE(xstate_msrs); i++) {
-> > > +		if (index == xstate_msrs[i])
-> > > +			return true;
-> > > +	}
-> > > +	return false;
-> > > +}
-> > 
-> > The name 'xstate_msr' IMHO is not clear.
-> > 
-> > How about naming it 'guest_fpu_state_msrs', together with adding a comment like that:
-> 
-> Maybe xstate_managed_msrs?  I'd prefer not to include "guest" because the behavior
-> is more a property of the architecture and/or the host kernel.  I understand where
-> you're coming from, but it's the MSR *values* are part of guest state, whereas the
-> check is a query on how KVM manages the MSR value, if that makes sense.
-Makes sense.
-> 
-> And I really don't like "FPU".  I get why the the kernel uses the "FPU" terminology,
-> but for this check in particular I want to tie the behavior back to the architecture,
-> i.e. provide the hint that the reason why these MSRs are special is because Intel
-> defined them to be context switched via XSTATE.
-> 
-> Actually, this is unnecesary bikeshedding to some extent, using an array is silly.
-> It's easier and likely far more performant (not that that matters in this case)
-> to use a switch statement.
-> 
-> Is this better?
-> 
-> /*
->  * Returns true if the MSR in question is managed via XSTATE, i.e. is context
->  * switched with the rest of guest FPU state.
->  */
-> static bool is_xstate_managed_msr(u32 index)
-> {
-> 	switch (index) {
-> 	case MSR_IA32_U_CET:
-> 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> 		return true;
-> 	default:
-> 		return false;
-> 	}
-> }
+> > > I could have sworn that I pointed that out in a previous version and
+> > > requested to document that special case in the patch description. :)
+> >
+> > Sounds, good we will document that parts of per-page may not be part
+> > of MemTotal.
+>
+> But this still doesn't answer how we can use the new PageMetadata
+> field to help break down the runtime kernel overhead within MemUsed
+> (MemTotal - MemFree).
 
-Reasonable.
+I am not sure it matters to the end users: they look at PageMetadata
+with or without Page Owner, page_table_check, HugeTLB and it shows
+exactly how much per-page overhead changed. Where the kernel allocated
+that memory is not that important to the end user as long as that
+memory became available to them.
 
-> 
-> /*
->  * Read or write a bunch of msrs. All parameters are kernel addresses.
->  *
->  * @return number of msrs set successfully.
->  */
-> static int __msr_io(struct kvm_vcpu *vcpu, struct kvm_msrs *msrs,
-> 		    struct kvm_msr_entry *entries,
-> 		    int (*do_msr)(struct kvm_vcpu *vcpu,
-> 				  unsigned index, u64 *data))
-> {
-> 	bool fpu_loaded = false;
-> 	int i;
-> 
-> 	for (i = 0; i < msrs->nmsrs; ++i) {
-> 		/*
-> 	 	 * If userspace is accessing one or more XSTATE-managed MSRs,
-> 		 * temporarily load the guest's FPU state so that the guest's
-> 		 * MSR value(s) is resident in hardware, i.e. so that KVM can
-> 		 * get/set the MSR via RDMSR/WRMSR.
-> 	 	 */
-Reasonable as well.
-> 		if (vcpu && !fpu_loaded && kvm_caps.supported_xss &&
-> 		    is_xstate_managed_msr(entries[i].index)) {
-> 			kvm_load_guest_fpu(vcpu);
-> 			fpu_loaded = true;
-> 		}
-> 		if (do_msr(vcpu, entries[i].index, &entries[i].data))
-> 			break;
-> 	}
-> 	if (fpu_loaded)
-> 		kvm_put_guest_fpu(vcpu);
-> 
-> 	return i;
-> }
-> 
+In addition, it is still possible to estimate the actual memblock part
+of Per-page metadata by looking at /proc/zoneinfo:
 
-Best regards,
-	Maxim Levitsky
+Memblock reserved per-page metadata: "present_pages - managed_pages"
 
+If there is something big that we will allocate in that range, we
+should probably also export it in some form.
 
+If this field does not fit in /proc/meminfo due to not fully being
+part of MemTotal, we could just keep it under nodeN/, as a separate
+file, as suggested by Greg.
+
+However, I think it is useful enough to have an easy system wide view
+for Per-page metadata.
+
+> > > > are allocated), so what would be the best way to export page metadata
+> > > > without redefining MemTotal? Keep the new field in /proc/meminfo but
+> > > > be ok that it is not part of MemTotal or do two counters? If we do two
+> > > > counters, we will still need to keep one that is a buddy allocator in
+> > > > /proc/meminfo and the other one somewhere outside?
+> > >
+>
+> I think the simplest thing to do now is to only report the buddy
+> allocations of per-page metadata in meminfo.  The meaning of the new
+
+This will cause PageMetadata to be 0 on 99% of the systems, and
+essentially become useless to the vast majority of users.
