@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 173AA7DEB00
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 03:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5E07DEB0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 03:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347167AbjKBCyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 22:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S235381AbjKBC5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 22:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344988AbjKBCyA (ORCPT
+        with ESMTP id S232896AbjKBC5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 22:54:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C11783;
-        Wed,  1 Nov 2023 19:53:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 667CDC433C8;
-        Thu,  2 Nov 2023 02:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698893638;
-        bh=wliHaT5QZ1Qs4h9Kv8Vuq1EXR4VPMNO+swxxXK8pI2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FfiWaHNmBnE4equDJohmlgDCUHDNxb07hGZrmQSJtpEocMDWmBGeYTWi2AZTw8j8h
-         NslJuVUJtCuyBJkDvRLuGYAYKOdBrpifUrauH0wAUfCnGHgY5nRjO74BQtAoCHX7oq
-         8c0boVj8sUYAyMM+kMTkDsevR6ASozZAe1vYQZSIcmQHc8lKxI2Vuw9dKVkTD0GPBE
-         K9AsmgwOIg4Ttn7fUk8WTXbtIMTD+hZsRvDr8Q2IPXHvdNiMw9DzMWj4EVjeqWpcav
-         za5v37/pFaQIPeY9rXzJrksMI5npYJ9oBAC1ZQehmisokLzIKHF0IU8IIFwyK+VyPe
-         nMAKYfTw6ee6Q==
-Date:   Wed, 1 Nov 2023 19:53:55 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v11 15/19] fsverity: consume builtin signature via
- LSM hook
-Message-ID: <20231102025355.GA1498@sol.localdomain>
-References: <1696457386-3010-16-git-send-email-wufan@linux.microsoft.com>
- <6efb7a80ba0eb3e02b3ae7a5c0a210f3.paul@paul-moore.com>
- <CAHC9VhQJkcb-k+o+NvVn7crrMMZqpBcZpnEbKBT+eZg4Ocjqhw@mail.gmail.com>
+        Wed, 1 Nov 2023 22:57:01 -0400
+Received: from esa2.hc1455-7.c3s2.iphmx.com (esa2.hc1455-7.c3s2.iphmx.com [207.54.90.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322DA101
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 19:56:59 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="138343930"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694703600"; 
+   d="scan'208";a="138343930"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 11:56:57 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com [192.168.87.61])
+        by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id D9439CA243
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:56:54 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+        by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 19E1ED5C4F
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:56:54 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+        by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id A425FE368B
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:56:53 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+        by edo.cn.fujitsu.com (Postfix) with ESMTP id CD1211A0071;
+        Thu,  2 Nov 2023 10:56:52 +0800 (CST)
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael@kernel.org, linux-mm@kvack.org
+Cc:     ying.huang@intel.com, y-goto@fujitsu.com,
+        linux-kernel@vger.kernel.org, Li Zhijian <lizhijian@fujitsu.com>
+Subject: Subject: [PATCH RFC 0/4] Demotion Profiling Improvements
+Date:   Thu,  2 Nov 2023 10:56:44 +0800
+Message-Id: <20231102025648.1285477-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhQJkcb-k+o+NvVn7crrMMZqpBcZpnEbKBT+eZg4Ocjqhw@mail.gmail.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27972.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27972.004
+X-TMASE-Result: 10--5.312400-10.000000
+X-TMASE-MatchedRID: dfhOzwlbDPU5qS/ZlxNfrN+pIjqKanRoYTIx8XXCXvctg96xGBa1qzkS
+        mbZ6cnyurQupIilee/fds6WtD+l5NsUMduPRt7B5R+GtoiXVeDHRTRRZJlWECtZVatUD7z4JPLv
+        PGJ0eFimnceLJy5PCoM7J33yvU/7hcGWImpDN9/zjpxdo/JwVm3oCBx19i+GMF0dwcR3eNq8v+q
+        EP3Q3LyrvlPk1VIqp1gDLqnrRlXrYyF7rbsD7xod0H8LFZNFG7bkV4e2xSge7abS7MXz+efk79l
+        dntgWBfDWBLHj2+4Pgwg9a480Bt50sMHBii02BH
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,91 +64,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:40:06PM -0400, Paul Moore wrote:
-> On Mon, Oct 23, 2023 at 11:52 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
-> > >
-> > > fsverity represents a mechanism to support both integrity and
-> > > authenticity protection of a file, supporting both signed and unsigned
-> > > digests.
-> > >
-> > > An LSM which controls access to a resource based on authenticity and
-> > > integrity of said resource, can then use this data to make an informed
-> > > decision on the authorization (provided by the LSM's policy) of said
-> > > claim.
-> > >
-> > > This effectively allows the extension of a policy enforcement layer in
-> > > LSM for fsverity, allowing for more granular control of how a
-> > > particular authenticity claim can be used. For example, "all (built-in)
-> > > signed fsverity files should be allowed to execute, but only these
-> > > hashes are allowed to be loaded as kernel modules".
-> > >
-> > > This enforcement must be done in kernel space, as a userspace only
-> > > solution would fail a simple litmus test: Download a self-contained
-> > > malicious binary that never touches the userspace stack. This
-> > > binary would still be able to execute.
-> > >
-> > > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> > > ---
-> > > v1-v6:
-> > >   + Not present
-> > >
-> > > v7:
-> > >   Introduced
-> > >
-> > > v8:
-> > >   + Split fs/verity/ changes and security/ changes into separate patches
-> > >   + Change signature of fsverity_create_info to accept non-const inode
-> > >   + Change signature of fsverity_verify_signature to accept non-const inode
-> > >   + Don't cast-away const from inode.
-> > >   + Digest functionality dropped in favor of:
-> > >     ("fs-verity: define a function to return the integrity protected
-> > >       file digest")
-> > >   + Reworded commit description and title to match changes.
-> > >   + Fix a bug wherein no LSM implements the particular fsverity @name
-> > >     (or LSM is disabled), and returns -EOPNOTSUPP, causing errors.
-> > >
-> > > v9:
-> > >   + No changes
-> > >
-> > > v10:
-> > >   + Rename the signature blob key
-> > >   + Cleanup redundant code
-> > >   + Make the hook call depends on CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> > >
-> > > v11:
-> > >   + No changes
-> > > ---
-> > >  fs/verity/fsverity_private.h |  2 +-
-> > >  fs/verity/open.c             | 26 +++++++++++++++++++++++++-
-> > >  include/linux/fsverity.h     |  2 ++
-> > >  3 files changed, 28 insertions(+), 2 deletions(-)
-> >
-> > We need an ACK from some VFS folks on this.
-> 
-> Eric and/or Ted, can we get either an ACK or some feedback on this patch?
-> 
-> For reference, the full patchset can be found on lore at the link below:
-> 
-> https://lore.kernel.org/linux-security-module/1696457386-3010-1-git-send-email-wufan@linux.microsoft.com/
+With the deployment of high-capacity CXL Type 3 memory, HBM and Nvdimm,
+the kernel now supports memory tiering. Building on this foundation
+and aiming to further enhance memory efficiency, the kernel has
+introduced demotion and promotion features.
 
-Well, technically I already gave some (minor) feedback on this exact patch, and
-it's not yet been addressed:
-https://lore.kernel.org/linux-security-module/20231005022707.GA1688@quark.localdomain/
+To provide users with a more intuitive way to observe information
+related to demotion, we have made several improvements to demotion
+profiling, primarily in two aspects:
 
-Of course, it would also be nice if the commit message mentioned what the patch
-actually does.
+Patch 1 introduces a new interface: /sys/devices/system/node/node0/demotion_nodes
+This interface is used to display the target nodes to which a node can demote.
 
-At a higher level, I've said before, I'm not super happy about the use of
-fsverity builtin signatures growing.  (For some of the reasons why, see the
-guidance in the fsverity documentation at
-https://docs.kernel.org/filesystems/fsverity.html#built-in-signature-verification)
-That being said, if the people who are doing the broader review of IPE believe
-this is how its fsverity integration should work, I can live with that; I don't
-intend to block the IPE patchset if enough people want it to be merged.  I've
-really been hoping to see engagement with the people involved in IMA, as IPE
-basically duplicates/replaces IMA.  But I haven't seen that, so maybe things
-need to move on without them.
+Patch 2, Patch 3, and Patch 4 are improvements to demotion statistics.
+Patch 2 changes the granularity of demotion statistics from global to per-node.
+Patch 3 and Patch 4 further differentiate demotion statistics into demotion
+source and demotion destination.
 
-- Eric
+The names of the statistics are open to discussion; they could be named something
+like pgdemote_from/to_* etc.
+One issue with this patch set is that SUM(pgdemote_src_*) always equals SUM(pgdemote_dst_*)
+in the global statistics (/proc/vmstat). Should we hide one of them?
+
+Any feedback is welcome.
+
+TO: Andrew Morton <akpm@linux-foundation.org> 
+TO: Greg Kroah-Hartman <gregkh@linuxfoundation.org> 
+TO: "Rafael J. Wysocki" <rafael@kernel.org> 
+CC: "Huang, Ying" <ying.huang@intel.com>
+CC: y-goto@fujitsu.com
+CC: linux-kernel@vger.kernel.org 
+TO: linux-mm@kvack.org 
+
+Li Zhijian (4):
+  drivers/base/node: Add demotion_nodes sys infterface
+  mm/vmstat: Move pgdemote_* to per-node stats
+  mm/vmstat: rename pgdemote_* to pgdemote_dst_* and add pgdemote_src_*
+  drivers/base/node: add demote_src and demote_dst to numastat
+
+ drivers/base/node.c           | 29 +++++++++++++++++++++++++++--
+ include/linux/memory-tiers.h  |  6 ++++++
+ include/linux/mmzone.h        |  7 +++++++
+ include/linux/vm_event_item.h |  3 ---
+ mm/memory-tiers.c             |  8 ++++++++
+ mm/vmscan.c                   | 14 +++++++++++---
+ mm/vmstat.c                   |  9 ++++++---
+ 7 files changed, 65 insertions(+), 11 deletions(-)
+
+-- 
+2.29.2
+
