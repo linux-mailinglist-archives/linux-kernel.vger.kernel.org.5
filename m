@@ -2,200 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C56C57DF702
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAECD7DF6F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377073AbjKBPsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        id S1377027AbjKBPr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377065AbjKBPsf (ORCPT
+        with ESMTP id S1376847AbjKBPr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:48:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70D5137
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698940068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FvAUr4hZgHRbDlVAWSx46K/GuyuYkJdZPNWAKauBdmI=;
-        b=cLgzRQ3C7gblMTSd3EsYcQFxqN3YmF2sW2G/FoHllPIDM6s4c59j+GKPIcMguniYIqwICQ
-        gDPtiIpnbY0S/Z+97WBHF+RNAM3xLCD4/9tgIT06h/4Lw4YKhCL9ogbhbUDKyS8wsVT938
-        8OFDzkleOtZTrwKBD5MriDRXKcujug0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-592-vAXZqj6sMlOerFru4iEqwA-1; Thu, 02 Nov 2023 11:47:44 -0400
-X-MC-Unique: vAXZqj6sMlOerFru4iEqwA-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99c8bbc902eso84119066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:47:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698940063; x=1699544863;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FvAUr4hZgHRbDlVAWSx46K/GuyuYkJdZPNWAKauBdmI=;
-        b=g1Oab3ZOxDwQLTp4qlnXVNpEJ854iShpdrnz2gDk+QBzOWNFlqS35s0qoAwF0oQKKa
-         JP93BgqsR4QGn6Id1hGVZa/MDbBpGXhfDlraFhTJx9NcTe08ldNIeEb2KwpDicEDbIP4
-         dqCvcSM2sTrZ+QHlGPVzUw2xsFW55ygw7dB/unRnLsENW77zwOonK86Z9QciI9yGJTJO
-         +yUl1Q4BcAzJS0032SOXCEr2tGxTO19JnEbjbVpZA4eGhmQkCdLK/ngTiswK/H5Hm1eA
-         ReyClZD+oizpN4RqANDMs4R7GqJPEi5ZxE0n6qOw1WKUH1vMYjv4s9u0qEoqOpEOAFYj
-         10OA==
-X-Gm-Message-State: AOJu0YzKU6jM5u1LOBBNySG6mah42u8wOnUcNMJ8kQy+W4SyTJNxDdHn
-        aacGHlJ6PVdsqQaAjrkxEWokHD0PRewfByq2hoc7j4BXJpBxBkcch7rxgGS0wxaOPlk1Y06e80A
-        BxXM5TKVarFLNJKwlgxHtZ7sS
-X-Received: by 2002:a17:906:ee85:b0:9c7:5a01:ffea with SMTP id wt5-20020a170906ee8500b009c75a01ffeamr4623653ejb.30.1698940063000;
-        Thu, 02 Nov 2023 08:47:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFzI7xE88HMRLtwJOqNP+R3hLF6K5NNjmsfP6ywgX/MZ9A1Er5VfgcQ792R7hS+PVUVTjbgAg==
-X-Received: by 2002:a17:906:ee85:b0:9c7:5a01:ffea with SMTP id wt5-20020a170906ee8500b009c75a01ffeamr4623630ejb.30.1698940062707;
-        Thu, 02 Nov 2023 08:47:42 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id g9-20020a1709063b0900b009a9fbeb15f5sm1267377ejf.46.2023.11.02.08.47.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 08:47:42 -0700 (PDT)
-Message-ID: <34b4f396-ecf3-576d-69e5-f8eac2a5d488@redhat.com>
-Date:   Thu, 2 Nov 2023 16:47:41 +0100
+        Thu, 2 Nov 2023 11:47:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57319138;
+        Thu,  2 Nov 2023 08:47:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80920C433C9;
+        Thu,  2 Nov 2023 15:47:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698940070;
+        bh=FLSyIoN9fWGlGYgsM4Gjk/0Zq8oidTjhDX15Z8SWCGU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=I+b3neXRoxpPGYdvB8UqviarpIi82qrJQrCDd/zKQIB3761PWC65P+VZB2c6JoXPV
+         a+lyA5CIA+cBtp3T3F+fuu5oJKyKstFU1kUMnuUFNVxcVYEiTb2jeX1lcdTTkzaIZV
+         ahRmvdUWUv2usDvSfBcwLUPzhg+fgf6WVBTOBtQl7yB/CX4HfEBsNUo5RrPXTRMSnX
+         x/lobsffAeDl5Mp2egyJ538AeVOm2PMVKQ4/WGnvGDrRoEIsyrdzda//udkVc+3yWd
+         caGUqrv8T1qfxR2T+L5cvY1PXW8XDcpojDEv3IkQPZv4cfNo13IiumXhychoPcrGsZ
+         7QC7Utg6RkAdA==
+Date:   Thu, 2 Nov 2023 10:47:48 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     bhelgaas@google.com, mika.westerberg@linux.intel.com,
+        andreas.noever@gmail.com, michael.jamet@intel.com,
+        YehezkelShB@gmail.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Alexander.Deucher@amd.com
+Subject: Re: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in
+ pcie_bandwidth_available()
+Message-ID: <20231102154748.GA122230@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 14/15] drm/i915/dsi: Replace poking of CHV GPIOs behind
- the driver's back
-Content-Language: en-US, nl
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20231102151228.668842-1-andriy.shevchenko@linux.intel.com>
- <20231102151228.668842-15-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231102151228.668842-15-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/2/23 16:12, Andy Shevchenko wrote:
-> It's a dirty hack in the driver that pokes GPIO registers behind
-> the driver's back. Moreoever it might be problematic as simultaneous
-> I/O may hang the system, see the commit 0bd50d719b00 ("pinctrl:
-> cherryview: prevent concurrent access to GPIO controllers") for
-> the details. Taking all this into consideration replace the hack
-> with proper GPIO APIs being used.
+On Wed, Nov 01, 2023 at 08:14:31PM -0500, Mario Limonciello wrote:
+> On 11/1/2023 17:52, Bjorn Helgaas wrote:
+> > On Tue, Oct 31, 2023 at 08:34:38AM -0500, Mario Limonciello wrote:
+> > > The USB4 spec specifies that PCIe ports that are used for tunneling
+> > > PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s.
+> > > 
+> > > In reality these ports speed is controlled by the fabric implementation.
+> > 
+> > So I guess you're saying the speed advertised by PCI_EXP_LNKSTA is not
+> > the actual speed?  And we don't have a generic way to find the actual
+> > speed?
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 47 +++++---------------
->  1 file changed, 10 insertions(+), 37 deletions(-)
+> Correct.
 > 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-> index b1736c1301ea..ffc65c943b11 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-> @@ -66,19 +66,6 @@ struct i2c_adapter_lookup {
->  #define CHV_GPIO_IDX_START_SW		100
->  #define CHV_GPIO_IDX_START_SE		198
->  
-> -#define CHV_VBT_MAX_PINS_PER_FMLY	15
-> -
-> -#define CHV_GPIO_PAD_CFG0(f, i)		(0x4400 + (f) * 0x400 + (i) * 8)
-> -#define  CHV_GPIO_GPIOEN		(1 << 15)
-> -#define  CHV_GPIO_GPIOCFG_GPIO		(0 << 8)
-> -#define  CHV_GPIO_GPIOCFG_GPO		(1 << 8)
-> -#define  CHV_GPIO_GPIOCFG_GPI		(2 << 8)
-> -#define  CHV_GPIO_GPIOCFG_HIZ		(3 << 8)
-> -#define  CHV_GPIO_GPIOTXSTATE(state)	((!!(state)) << 1)
-> -
-> -#define CHV_GPIO_PAD_CFG1(f, i)		(0x4400 + (f) * 0x400 + (i) * 8 + 4)
-> -#define  CHV_GPIO_CFGLOCK		(1 << 31)
-> -
->  /* ICL DSI Display GPIO Pins */
->  #define  ICL_GPIO_DDSP_HPD_A		0
->  #define  ICL_GPIO_L_VDDEN_1		1
-> @@ -278,23 +265,21 @@ static void chv_gpio_set_value(struct intel_connector *connector,
->  			       u8 gpio_source, u8 gpio_index, bool value)
->  {
->  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
-> -	u16 cfg0, cfg1;
-> -	u16 family_num;
-> -	u8 port;
->  
->  	if (connector->panel.vbt.dsi.seq_version >= 3) {
->  		if (gpio_index >= CHV_GPIO_IDX_START_SE) {
->  			/* XXX: it's unclear whether 255->57 is part of SE. */
-> -			gpio_index -= CHV_GPIO_IDX_START_SE;
-> -			port = CHV_IOSF_PORT_GPIO_SE;
-> +			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:03", "Panel SE",
-> +					     gpio_index - CHV_GPIO_IDX_START_SW, value);
+> > > Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
+> > > to program the device will always find the PCIe ports used for
+> > > tunneling as a limiting factor and may make incorrect decisions.
+> > > 
+> > > To prevent problems in downstream drivers check explicitly for ports
+> > > being used for PCIe tunneling and skip them when looking for bandwidth
+> > > limitations.
+> > > 
+> > > 2 types of devices are detected:
+> > > 1) PCIe root port used for PCIe tunneling
+> > > 2) Intel Thunderbolt 3 bridge
+> > > 
+> > > Downstream drivers could make this change on their own but then they
+> > > wouldn't be able to detect other potential speed bottlenecks.
+> > 
+> > Is the implication that a tunneling port can *never* be a speed
+> > bottleneck?  That seems to be how this patch would work in practice.
+> 
+> I think that's a stretch we should avoid concluding.
 
-The "gpio_index - CHV_GPIO_IDX_START_SW" here needs to be "gpio_index - CHV_GPIO_IDX_START_SE".
+I'm just reading the description and the patch, which seem to say that
+pcie_bandwidth_available() will never report a tunneling port as the
+limiting port.
 
-Also this patch needs s/soc_exec_opaque_gpio/soc_opaque_gpio_set_value/ to compile ...
+Maybe this can be rectified with a comment about how we can't tell the
+actual bandwidth of a tunneled port, and it may be a hidden unreported
+bottleneck, so pcie_bandwidth_available() can't actually return a
+reliable result.  Seems sort of unsatisfactory, but ... I dunno, maybe
+it's the best we can do.
 
-Regards,
+> IIUC the fabric can be hosting other traffic and it's entirely possible the
+> traffic over the tunneling port runs more slowly at times.
+> 
+> Perhaps that's why the the USB4 spec decided to advertise it this way? I
+> don't know.
 
-Hans
+Maybe, although the same happens on shared PCIe links above switches.
 
+> > > Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925
+> > 
+> > This issue says the external GPU doesn't work at all.  Does this patch
+> > fix that?  This patch looks like it might improve GPU performance, but
+> > wouldn't fix something that didn't work at all.
+> 
+> The issue actually identified 4 distinct different problems.  The 3 problems
+> will be fixed in amdgpu which are functional.
+> 
+> This performance one was from later in the ticket after some back and forth
+> identifying proper solutions for the first 3.
 
+There's a lot of material in that report.  Is there a way to link to
+the specific part related to performance?
 
+> > > + * This function excludes root ports and bridges used for USB4 and TBT3 tunneling.
 
->  		} else if (gpio_index >= CHV_GPIO_IDX_START_SW) {
-> -			gpio_index -= CHV_GPIO_IDX_START_SW;
-> -			port = CHV_IOSF_PORT_GPIO_SW;
-> +			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:00", "Panel SW",
-> +					     gpio_index - CHV_GPIO_IDX_START_SW, value);
->  		} else if (gpio_index >= CHV_GPIO_IDX_START_E) {
-> -			gpio_index -= CHV_GPIO_IDX_START_E;
-> -			port = CHV_IOSF_PORT_GPIO_E;
-> +			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:02", "Panel E",
-> +					     gpio_index - CHV_GPIO_IDX_START_E, value);
->  		} else {
-> -			port = CHV_IOSF_PORT_GPIO_N;
-> +			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
-> +					     gpio_index - CHV_GPIO_IDX_START_N, value);
->  		}
->  	} else {
->  		/* XXX: The spec is unclear about CHV GPIO on seq v2 */
-> @@ -311,21 +296,9 @@ static void chv_gpio_set_value(struct intel_connector *connector,
->  			return;
->  		}
->  
-> -		port = CHV_IOSF_PORT_GPIO_N;
-> +		soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
-> +				     gpio_index - CHV_GPIO_IDX_START_N, value);
->  	}
-> -
-> -	family_num = gpio_index / CHV_VBT_MAX_PINS_PER_FMLY;
-> -	gpio_index = gpio_index % CHV_VBT_MAX_PINS_PER_FMLY;
-> -
-> -	cfg0 = CHV_GPIO_PAD_CFG0(family_num, gpio_index);
-> -	cfg1 = CHV_GPIO_PAD_CFG1(family_num, gpio_index);
-> -
-> -	vlv_iosf_sb_get(dev_priv, BIT(VLV_IOSF_SB_GPIO));
-> -	vlv_iosf_sb_write(dev_priv, port, cfg1, 0);
-> -	vlv_iosf_sb_write(dev_priv, port, cfg0,
-> -			  CHV_GPIO_GPIOEN | CHV_GPIO_GPIOCFG_GPO |
-> -			  CHV_GPIO_GPIOTXSTATE(value));
-> -	vlv_iosf_sb_put(dev_priv, BIT(VLV_IOSF_SB_GPIO));
->  }
->  
->  static void bxt_gpio_set_value(struct intel_connector *connector,
+Wrap to fit in 80 columns like the rest of the file.
 
+> > >    */
+> > >   u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+> > >   			     enum pci_bus_speed *speed,
+> > > @@ -6254,6 +6290,10 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+> > >   	bw = 0;
+> > >   	while (dev) {
+> > > +		/* skip root ports and bridges used for tunneling */
+> > > +		if (pcie_is_tunneling_port(dev))
+> > > +			goto skip;
+> > > +
+> > >   		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> > >   		next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
+> > > @@ -6274,6 +6314,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+> > >   				*width = next_width;
+> > >   		}
+> > > +skip:
+> > >   		dev = pci_upstream_bridge(dev);
+> > >   	}
