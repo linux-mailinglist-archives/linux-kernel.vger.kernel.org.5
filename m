@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E80617DF684
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384477DF672
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347630AbjKBPdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        id S1347566AbjKBPdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345328AbjKBPdA (ORCPT
+        with ESMTP id S1343650AbjKBPdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 11:33:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F8AFB
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EA2182
         for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=ldnPYKUyHMdijInwVZoC1NuQUIqnzmW6aookZYRZh1U=; b=jahtwHNhX+yr0vKRzO1fhTymzt
-        SLnwIxFZMgFhCVyxgCoHHeHHNal4O09ds8khll2mHqBKCDVh1dg2ozVPmfCLnj1HDCscJXKAOx2eX
-        Ee3F4Kb5E8i3CTw3G4yB+MVmOgYao23eRwYHX4UqNBoo4R/keJ47nkef3A28xvpucksuTa99bXHb3
-        ZW43WHCx7msUMSWBXjVDb+1D1Hb+R6OMJ9U7Jo1IMe6/becw+Moi5BFHjwsuOCeCEbCAiVuL+MJoK
-        iFR/PUCJJU0V312y8oU8NDuqXEHCEFTrLny4nBVxCbIIoheFbGQeGydTLEw4m7Viz9C3J0D2Xgiab
-        tZ/njmDA==;
+        bh=gJ0cDE/AWPvauqfBTyp4RE5Jcb6F1MLuevN6bVvwMR4=; b=E9j9R2VdzYpvPH7rwdpNxxMJZL
+        Mc9Uj6K4UmJMbMKg2oBTNF6i6wR6vGVAtWk2bocVeGTSyak6Q+0BB7ILnNi0m3iO37oLJpqIg4XUt
+        La3ST7Gss5YpASywS+2izd9ykg95moqR9MXiDwf2fm1k/qImKpzMOvG28ngIkGF5qweLTe2SWmhU8
+        v7vJ96pRbrcuHvG+YWR/0Zo5UnaZbbW9iB/gAk3zta5iAMsK3cEB1CWVf8d0AUpzjZ+0f12XihsUw
+        GqDigxj3W1t5lYUcVEHpHs5MwElyg6fUyJZd9H4Snik/8eRKymF61DRXGMNnaW0HsiEzmpo6a/y2J
+        Dx9Xz99A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qyZgU-0005PD-UQ; Thu, 02 Nov 2023 15:32:39 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qyZgV-006gQM-26;
+        Thu, 02 Nov 2023 15:32:41 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id 4397930098F; Thu,  2 Nov 2023 16:32:39 +0100 (CET)
-Message-Id: <20231102152018.069585432@infradead.org>
+        id 49CE63015B5; Thu,  2 Nov 2023 16:32:39 +0100 (CET)
+Message-Id: <20231102152018.177137916@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 02 Nov 2023 16:09:22 +0100
+Date:   Thu, 02 Nov 2023 16:09:23 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         acme@kernel.org, mark.rutland@arm.com,
         alexander.shishkin@linux.intel.com, jolsa@kernel.org,
         namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com
-Subject: [PATCH 03/13] perf: Simplify perf_fget_light()
+Subject: [PATCH 04/13] perf: Simplify event_function*()
 References: <20231102150919.719936610@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,78 +54,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce fdnull and use it to simplify perf_fget_light() to either
-return a valid struct fd or not -- much like fdget() itself.
+Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/file.h |    7 ++++++-
- kernel/events/core.c |   22 +++++++++++-----------
- 2 files changed, 17 insertions(+), 12 deletions(-)
+ kernel/events/core.c |   36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
---- a/include/linux/file.h
-+++ b/include/linux/file.h
-@@ -59,6 +59,8 @@ static inline struct fd __to_fd(unsigned
- 	return (struct fd){(struct file *)(v & ~3),v & 3};
- }
- 
-+#define fdnull __to_fd(0)
-+
- static inline struct fd fdget(unsigned int fd)
- {
- 	return __to_fd(__fdget(fd));
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -5802,18 +5802,17 @@ EXPORT_SYMBOL_GPL(perf_event_period);
+@@ -214,6 +214,19 @@ struct event_function_struct {
+ 	void *data;
+ };
  
- static const struct file_operations perf_fops;
- 
--static inline int perf_fget_light(int fd, struct fd *p)
-+static inline struct fd perf_fdget(int fd)
++typedef struct {
++	struct perf_cpu_context *cpuctx;
++	struct perf_event_context *ctx;
++} class_perf_ctx_lock_t;
++
++static inline void class_perf_ctx_lock_destructor(class_perf_ctx_lock_t *_T)
++{ perf_ctx_unlock(_T->cpuctx, _T->ctx); }
++
++static inline class_perf_ctx_lock_t
++class_perf_ctx_lock_constructor(struct perf_cpu_context *cpuctx,
++				struct perf_event_context *ctx)
++{ perf_ctx_lock(cpuctx, ctx); return (class_perf_ctx_lock_t){ cpuctx, ctx }; }
++
+ static int event_function(void *info)
  {
- 	struct fd f = fdget(fd);
- 	if (!f.file)
--		return -EBADF;
-+		return fdnull;
+ 	struct event_function_struct *efs = info;
+@@ -221,20 +234,17 @@ static int event_function(void *info)
+ 	struct perf_event_context *ctx = event->ctx;
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
+ 	struct perf_event_context *task_ctx = cpuctx->task_ctx;
+-	int ret = 0;
  
- 	if (f.file->f_op != &perf_fops) {
- 		fdput(f);
--		return -EBADF;
-+		return fdnull;
+ 	lockdep_assert_irqs_disabled();
++	guard(perf_ctx_lock)(cpuctx, task_ctx);
+ 
+-	perf_ctx_lock(cpuctx, task_ctx);
+ 	/*
+ 	 * Since we do the IPI call without holding ctx->lock things can have
+ 	 * changed, double check we hit the task we set out to hit.
+ 	 */
+ 	if (ctx->task) {
+-		if (ctx->task != current) {
+-			ret = -ESRCH;
+-			goto unlock;
+-		}
++		if (ctx->task != current)
++			return -ESRCH;
+ 
+ 		/*
+ 		 * We only use event_function_call() on established contexts,
+@@ -254,10 +264,8 @@ static int event_function(void *info)
  	}
--	*p = f;
--	return 0;
-+	return f;
+ 
+ 	efs->func(event, cpuctx, ctx, efs->data);
+-unlock:
+-	perf_ctx_unlock(cpuctx, task_ctx);
+ 
+-	return ret;
++	return 0;
  }
  
- static int perf_event_set_output(struct perf_event *event,
-@@ -5864,10 +5863,9 @@ static long _perf_ioctl(struct perf_even
- 		int ret;
- 		if (arg != -1) {
- 			struct perf_event *output_event;
--			struct fd output;
--			ret = perf_fget_light(arg, &output);
--			if (ret)
--				return ret;
-+			struct fd output = perf_fdget(arg);
-+			if (!output.file)
-+				return -EBADF;
- 			output_event = output.file->private_data;
- 			ret = perf_event_set_output(event, output_event);
- 			fdput(output);
-@@ -12401,9 +12399,11 @@ SYSCALL_DEFINE5(perf_event_open,
- 		return event_fd;
+ static void event_function_call(struct perf_event *event, event_f func, void *data)
+@@ -329,11 +337,11 @@ static void event_function_local(struct
+ 		task_ctx = ctx;
+ 	}
  
- 	if (group_fd != -1) {
--		err = perf_fget_light(group_fd, &group);
--		if (err)
-+		group = perf_fdget(group_fd);
-+		if (!group.file) {
-+			err = -EBADF;
- 			goto err_fd;
-+		}
- 		group_leader = group.file->private_data;
- 		if (flags & PERF_FLAG_FD_OUTPUT)
- 			output_event = group_leader;
+-	perf_ctx_lock(cpuctx, task_ctx);
++	guard(perf_ctx_lock)(cpuctx, task_ctx);
+ 
+ 	task = ctx->task;
+ 	if (task == TASK_TOMBSTONE)
+-		goto unlock;
++		return;
+ 
+ 	if (task) {
+ 		/*
+@@ -343,18 +351,16 @@ static void event_function_local(struct
+ 		 */
+ 		if (ctx->is_active) {
+ 			if (WARN_ON_ONCE(task != current))
+-				goto unlock;
++				return;
+ 
+ 			if (WARN_ON_ONCE(cpuctx->task_ctx != ctx))
+-				goto unlock;
++				return;
+ 		}
+ 	} else {
+ 		WARN_ON_ONCE(&cpuctx->ctx != ctx);
+ 	}
+ 
+ 	func(event, cpuctx, ctx, data);
+-unlock:
+-	perf_ctx_unlock(cpuctx, task_ctx);
+ }
+ 
+ #define PERF_FLAG_ALL (PERF_FLAG_FD_NO_GROUP |\
 
 
