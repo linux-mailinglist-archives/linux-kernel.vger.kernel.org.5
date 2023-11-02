@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4EC7DF96C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3197DF96B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345900AbjKBSAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S1344535AbjKBSBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345959AbjKBR7w (ORCPT
+        with ESMTP id S1347509AbjKBSAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:59:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95338D51
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:03 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0631f977bso1488433276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:03 -0700 (PDT)
+        Thu, 2 Nov 2023 14:00:13 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1501AC
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:06 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5afa77f9a33so18056537b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947943; x=1699552743; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947945; x=1699552745; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/uke6dz3sLBq95/rU70Wxcl4SlZDeN/n2+8hitECOvo=;
-        b=Mb5BKuI0XWCgNBxbPjShHetNd7LYdnc3vKQhlBqVHcs20iGLUmRODSHaLApAUrmAzt
-         wnPUkoT8rjCJW6Nw7+e7V/m5y6hVmcT4NaNyRg0PJ/aXT7zvqYIMLkSV23S00GXwBHB7
-         Hc5Dq4Frw/x5WsO60emym6jRysfKVVx/rdBxyt1x1NlF+WXJGD0v8ERUlSbv//T9oq6M
-         rcLJBhdiYMvATeUccG+p7Vz5/cAlPeuoiVS7Mb4NrOS4ohIo0YLrtFaRuid7r2E80XvZ
-         r+2Y/6Cw/5IU0Dptl9fskseELgJzvNdDIyktwd+LYAV8kmLAFzWRnlyjxCjveRliZFz8
-         BA8A==
+        bh=6QBB22XTKhIDhVJxWPltXcD6lstTRUmmQqDxt0zKPM4=;
+        b=cORgzD36HPPpxz21IMrWhru2iduNYlKYevv/wrqcvICniQdVLApHZ743CQkj7+Ycxe
+         oBY1QGfgxpbc3Z9jkgGXE2IiATWkD3og7L0WhZm4ogMFI7yJd91+ScQHlPUmLu6aEPR3
+         WTU4BjigEzhpdO1bMO2LUlIuPxeAECb9yJtoeUPTyomW6/TBpuzmaRmBcIUTixXETNjs
+         bVc4OblPf0vDwHhQIH7lCkJJpuHyeMRvnsez5tQCF1FDWsJPWpxdOs7lPyeIrAnHAyQJ
+         LI0j2/3pVSZpa/mK/tb7hm/nFQmQT+ajjOInB9jsrKlPoI5ZaU2Pd+ZC8d6YgSAVBrW4
+         XkfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947943; x=1699552743;
+        d=1e100.net; s=20230601; t=1698947945; x=1699552745;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/uke6dz3sLBq95/rU70Wxcl4SlZDeN/n2+8hitECOvo=;
-        b=GQih7QJRVZzRd8zAVQk2CPRdKdPGX9rlrJnhcofiKW/JD+aR9s7fgP92UmomZ/RiMu
-         yDNtP8KDZQDV4ylThK1CYIUEacFRHqego+eRJQ5fxb1KgenefkmVR7h23VC2AGNvkcRY
-         p89iRH1Zjwx6zZHBcV1U5PorGh2vo4hTddBbdJJOl2NOz6eSYpzu4iR5ppsGKl40cBO5
-         MjaTXyDkoTx3JHPjj0KNvwQKQiGelWk33nL8X6Uwm9t4ZWJtxJ9Cj9q8h0q8lMWdA9Yo
-         DhGp7onCpZmrxcDUyqRg7UGSmsqX3LokmpBEzZEVYnU23t+wUsEFZnFlCGu5b/Chce0I
-         OYKw==
-X-Gm-Message-State: AOJu0YyQf0xHePGm9rh0SlE/kEJfgt7X3LVH/54YtCxSxGZk4FPSHYkm
-        1y8VDA50BnUtniQdYarIVmND2T+xLtu6
-X-Google-Smtp-Source: AGHT+IFhvleBPR3MXvp+jRIcJindLHAwLW8bfnu6BkmQJIrCUtN9UKutUD9/8CVRafl+Yn2r+NxR3g6J2u3T
+        bh=6QBB22XTKhIDhVJxWPltXcD6lstTRUmmQqDxt0zKPM4=;
+        b=d1LUmaG7BjloVrDi15RMLjVnIy3ll8mnLqEI11SCk9vTuV590RxioQ4EFWTwvtqM7V
+         DnhxIn7Tcp3jj52CyZdpFOctJx7xJo1SdYAuPQaY6Q8CAw/swmh7JUnqCaRgEnkijRMg
+         M2du8tqzrXFz0CSLuSp6Ef6SvIrSKFmh+ordC7jfzvMmtGN5u9RxqVJMbO8OZ5fnO8BE
+         n9azRUpcc0Rn0Rw5Lu+WzIw5Ot4at2wRRu2XgCAfvsLsIkS1tHfFe9DXxTo46XeA+vBQ
+         tA2oTqVc+ZexSynYgGIHzg8YYCkiEotet2+24MZczAeCmMz3TdDiUfg067BrKZ+o4yTH
+         GGgw==
+X-Gm-Message-State: AOJu0YwmMKwFD7lK3mC2ERkSOmw7voCNq/CapWG1CBif7TqxpvmrBzpo
+        ctDLc6rMfvwU0IeTE3GA6MKxuWPp5PpI
+X-Google-Smtp-Source: AGHT+IFIMGcusLs9ss8WG+c0/bv2eoN7Iz9N+TycEIMIjngR54jo0kVxVX/CgRZCB0u7OX0zfiJMXb21huYu
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a25:5046:0:b0:da0:433e:871d with SMTP id
- e67-20020a255046000000b00da0433e871dmr325547ybb.7.1698947942693; Thu, 02 Nov
- 2023 10:59:02 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:11 -0700
+ (user=irogers job=sendgmr) by 2002:a81:5217:0:b0:592:8069:540a with SMTP id
+ g23-20020a815217000000b005928069540amr7440ywb.8.1698947945127; Thu, 02 Nov
+ 2023 10:59:05 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:12 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-30-irogers@google.com>
+Message-Id: <20231102175735.2272696-31-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 29/53] perf maps: Get map before returning in maps__find
+Subject: [PATCH v4 30/53] perf maps: Get map before returning in maps__find_by_name
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -91,8 +91,8 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -105,243 +105,216 @@ Finding a map is done under a lock, returning the map without a
 reference count means it can be removed without notice and causing
 uses after free. Grab a reference count to the map within the lock
 region and return this. Fix up locations that need a map__put
-following this.
+following this. Also fix some reference counted pointer comparisons.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/arch/x86/tests/dwarf-unwind.c |  1 +
- tools/perf/tests/vmlinux-kallsyms.c      |  5 ++---
- tools/perf/util/bpf-event.c              |  1 +
- tools/perf/util/event.c                  |  4 ++--
- tools/perf/util/machine.c                | 22 ++++++++--------------
- tools/perf/util/maps.c                   | 17 ++++++++++-------
- tools/perf/util/symbol.c                 |  3 ++-
- 7 files changed, 26 insertions(+), 27 deletions(-)
+ tools/perf/tests/vmlinux-kallsyms.c |  5 +++--
+ tools/perf/util/machine.c           |  6 ++++--
+ tools/perf/util/maps.c              |  6 +++---
+ tools/perf/util/probe-event.c       |  1 +
+ tools/perf/util/symbol-elf.c        |  4 +++-
+ tools/perf/util/symbol.c            | 20 ++++++++++++--------
+ 6 files changed, 26 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/arch/x86/tests/dwarf-unwind.c b/tools/perf/arch/x86/tests/dwarf-unwind.c
-index 5bfec3345d59..c05c0a85dad4 100644
---- a/tools/perf/arch/x86/tests/dwarf-unwind.c
-+++ b/tools/perf/arch/x86/tests/dwarf-unwind.c
-@@ -34,6 +34,7 @@ static int sample_ustack(struct perf_sample *sample,
- 	}
- 
- 	stack_size = map__end(map) - sp;
-+	map__put(map);
- 	stack_size = stack_size > STACK_SIZE ? STACK_SIZE : stack_size;
- 
- 	memcpy(buf, (void *) sp, stack_size);
 diff --git a/tools/perf/tests/vmlinux-kallsyms.c b/tools/perf/tests/vmlinux-kallsyms.c
-index 822f893e67d5..e808e6fc8f76 100644
+index e808e6fc8f76..fecbf851bb2e 100644
 --- a/tools/perf/tests/vmlinux-kallsyms.c
 +++ b/tools/perf/tests/vmlinux-kallsyms.c
-@@ -151,10 +151,8 @@ static int test__vmlinux_matches_kallsyms_cb2(struct map *map, void *data)
- 	u64 mem_end = map__unmap_ip(args->vmlinux_map, map__end(map));
+@@ -131,9 +131,10 @@ static int test__vmlinux_matches_kallsyms_cb1(struct map *map, void *data)
+ 	struct map *pair = maps__find_by_name(args->kallsyms.kmaps,
+ 					(dso->kernel ? dso->short_name : dso->name));
  
- 	pair = maps__find(args->kallsyms.kmaps, mem_start);
--	if (pair == NULL || map__priv(pair))
--		return 0;
- 
--	if (map__start(pair) == mem_start) {
-+	if (pair != NULL && !map__priv(pair) && map__start(pair) == mem_start) {
- 		struct dso *dso = map__dso(map);
- 
- 		if (!args->header_printed) {
-@@ -170,6 +168,7 @@ static int test__vmlinux_matches_kallsyms_cb2(struct map *map, void *data)
- 		pr_info(" %s\n", dso->name);
+-	if (pair)
++	if (pair) {
  		map__set_priv(pair, 1);
- 	}
-+	map__put(pair);
- 	return 0;
- }
- 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 830711cae30d..d07fd5ffa823 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -63,6 +63,7 @@ static int machine__process_bpf_event_load(struct machine *machine,
- 			dso->bpf_prog.id = id;
- 			dso->bpf_prog.sub_id = i;
- 			dso->bpf_prog.env = env;
-+			map__put(map);
- 		}
- 	}
- 	return 0;
-diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-index 68f45e9e63b6..198903157f9e 100644
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -511,7 +511,7 @@ size_t perf_event__fprintf_text_poke(union perf_event *event, struct machine *ma
- 		struct addr_location al;
- 
- 		addr_location__init(&al);
--		al.map = map__get(maps__find(machine__kernel_maps(machine), tp->addr));
-+		al.map = maps__find(machine__kernel_maps(machine), tp->addr);
- 		if (al.map && map__load(al.map) >= 0) {
- 			al.addr = map__map_ip(al.map, tp->addr);
- 			al.sym = map__find_symbol(al.map, al.addr);
-@@ -641,7 +641,7 @@ struct map *thread__find_map(struct thread *thread, u8 cpumode, u64 addr,
- 		return NULL;
- 	}
- 	al->maps = maps__get(maps);
--	al->map = map__get(maps__find(maps, al->addr));
-+	al->map = maps__find(maps, al->addr);
- 	if (al->map != NULL) {
- 		/*
- 		 * Kernel maps might be changed when loading symbols so loading
+-	else {
++		map__put(pair);
++	} else {
+ 		if (!args->header_printed) {
+ 			pr_info("WARN: Maps only in vmlinux:\n");
+ 			args->header_printed = true;
 diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index ab345604f274..1112a9dbb21a 100644
+index 1112a9dbb21a..d6b3f84cb935 100644
 --- a/tools/perf/util/machine.c
 +++ b/tools/perf/util/machine.c
-@@ -897,7 +897,6 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 	struct symbol *sym;
- 	struct dso *dso;
- 	struct map *map = maps__find(machine__kernel_maps(machine), event->ksymbol.addr);
--	bool put_map = false;
- 	int err = 0;
- 
- 	if (!map) {
-@@ -914,12 +913,6 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 			err = -ENOMEM;
- 			goto out;
- 		}
--		/*
--		 * The inserted map has a get on it, we need to put to release
--		 * the reference count here, but do it after all accesses are
--		 * done.
--		 */
--		put_map = true;
- 		if (event->ksymbol.ksym_type == PERF_RECORD_KSYMBOL_TYPE_OOL) {
- 			dso->binary_type = DSO_BINARY_TYPE__OOL;
- 			dso->data.file_size = event->ksymbol.len;
-@@ -953,8 +946,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 	}
- 	dso__insert_symbol(dso, sym);
- out:
--	if (put_map)
--		map__put(map);
-+	map__put(map);
- 	return err;
- }
- 
-@@ -978,7 +970,7 @@ static int machine__process_ksymbol_unregister(struct machine *machine,
- 		if (sym)
- 			dso__delete_symbol(dso, sym);
- 	}
--
-+	map__put(map);
- 	return 0;
- }
- 
-@@ -1006,11 +998,11 @@ int machine__process_text_poke(struct machine *machine, union perf_event *event,
- 		perf_event__fprintf_text_poke(event, machine, stdout);
- 
- 	if (!event->text_poke.new_len)
--		return 0;
-+		goto out;
- 
- 	if (cpumode != PERF_RECORD_MISC_KERNEL) {
- 		pr_debug("%s: unsupported cpumode - ignoring\n", __func__);
--		return 0;
-+		goto out;
- 	}
- 
- 	if (dso) {
-@@ -1033,7 +1025,8 @@ int machine__process_text_poke(struct machine *machine, union perf_event *event,
- 		pr_debug("Failed to find kernel text poke address map for %#" PRI_lx64 "\n",
- 			 event->text_poke.addr);
- 	}
--
-+out:
-+	map__put(map);
- 	return 0;
- }
- 
-@@ -1301,9 +1294,10 @@ static int machine__map_x86_64_entry_trampolines_cb(struct map *map, void *data)
+@@ -1538,8 +1538,10 @@ static int maps__set_module_path(struct maps *maps, const char *path, struct kmo
  		return 0;
  
- 	dest_map = maps__find(args->kmaps, map__pgoff(map));
--	if (dest_map != map)
-+	if (RC_CHK_ACCESS(dest_map) != RC_CHK_ACCESS(map))
- 		map__set_pgoff(map, map__map_ip(dest_map, map__pgoff(map)));
+ 	long_name = strdup(path);
+-	if (long_name == NULL)
++	if (long_name == NULL) {
++		map__put(map);
+ 		return -ENOMEM;
++	}
  
-+	map__put(dest_map);
- 	args->found = true;
+ 	dso = map__dso(map);
+ 	dso__set_long_name(dso, long_name, true);
+@@ -1553,7 +1555,7 @@ static int maps__set_module_path(struct maps *maps, const char *path, struct kmo
+ 		dso->symtab_type++;
+ 		dso->comp = m->comp;
+ 	}
+-
++	map__put(map);
  	return 0;
  }
+ 
 diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 06fdd8a7c2a2..28facfdac1d7 100644
+index 28facfdac1d7..8a8c1f216b86 100644
 --- a/tools/perf/util/maps.c
 +++ b/tools/perf/util/maps.c
-@@ -487,15 +487,18 @@ void maps__remove_maps(struct maps *maps, bool (*cb)(struct map *map, void *data
- struct symbol *maps__find_symbol(struct maps *maps, u64 addr, struct map **mapp)
- {
- 	struct map *map = maps__find(maps, addr);
-+	struct symbol *result = NULL;
+@@ -885,7 +885,7 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
+ 			struct dso *dso = map__dso(maps__maps_by_name(maps)[i]);
  
- 	/* Ensure map is loaded before using map->map_ip */
- 	if (map != NULL && map__load(map) >= 0) {
--		if (mapp != NULL)
--			*mapp = map; // TODO: map_put on else path when find returns a get.
--		return map__find_symbol(map, map__map_ip(map, addr));
--	}
-+		if (mapp)
-+			*mapp = map;
- 
--	return NULL;
-+		result = map__find_symbol(map, map__map_ip(map, addr));
-+		if (!mapp)
-+			map__put(map);
-+	}
-+	return result;
- }
- 
- struct maps__find_symbol_by_name_args {
-@@ -539,7 +542,7 @@ int maps__find_ams(struct maps *maps, struct addr_map_symbol *ams)
- 	if (ams->addr < map__start(ams->ms.map) || ams->addr >= map__end(ams->ms.map)) {
- 		if (maps == NULL)
- 			return -1;
--		ams->ms.map = maps__find(maps, ams->addr);  // TODO: map_get
-+		ams->ms.map = maps__find(maps, ams->addr);
- 		if (ams->ms.map == NULL)
- 			return -1;
- 	}
-@@ -848,7 +851,7 @@ struct map *maps__find(struct maps *maps, u64 ip)
- 					sizeof(*mapp), map__addr_cmp);
- 
- 			if (mapp)
--				result = *mapp; // map__get(*mapp);
-+				result = map__get(*mapp);
- 			done = true;
+ 			if (dso && strcmp(dso->short_name, name) == 0) {
+-				result = maps__maps_by_name(maps)[i]; // TODO: map__get
++				result = map__get(maps__maps_by_name(maps)[i]);
+ 				done = true;
+ 			}
  		}
- 		up_read(maps__lock(maps));
+@@ -897,7 +897,7 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
+ 					sizeof(*mapp), map__strcmp_name);
+ 
+ 			if (mapp) {
+-				result = *mapp; // TODO: map__get
++				result = map__get(*mapp);
+ 				i = mapp - maps__maps_by_name(maps);
+ 				RC_CHK_ACCESS(maps)->last_search_by_name_idx = i;
+ 			}
+@@ -922,7 +922,7 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
+ 					struct dso *dso = map__dso(pos);
+ 
+ 					if (dso && strcmp(dso->short_name, name) == 0) {
+-						result = pos; // TODO: map__get
++						result = map__get(pos);
+ 						break;
+ 					}
+ 				}
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index a1a796043691..be71abe8b9b0 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -358,6 +358,7 @@ static int kernel_get_module_dso(const char *module, struct dso **pdso)
+ 		map = maps__find_by_name(machine__kernel_maps(host_machine), module_name);
+ 		if (map) {
+ 			dso = map__dso(map);
++			map__put(map);
+ 			goto found;
+ 		}
+ 		pr_debug("Failed to find module %s.\n", module);
+diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+index 4b934ed3bfd1..5990e3fabdb5 100644
+--- a/tools/perf/util/symbol-elf.c
++++ b/tools/perf/util/symbol-elf.c
+@@ -1470,8 +1470,10 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+ 		dso__set_loaded(curr_dso);
+ 		*curr_mapp = curr_map;
+ 		*curr_dsop = curr_dso;
+-	} else
++	} else {
+ 		*curr_dsop = map__dso(curr_map);
++		map__put(curr_map);
++	}
+ 
+ 	return 0;
+ }
 diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 30da8a405d11..ad4819a24320 100644
+index ad4819a24320..0785a54e832e 100644
 --- a/tools/perf/util/symbol.c
 +++ b/tools/perf/util/symbol.c
-@@ -757,7 +757,6 @@ static int dso__load_all_kallsyms(struct dso *dso, const char *filename)
- 
- static int maps__split_kallsyms_for_kcore(struct maps *kmaps, struct dso *dso)
+@@ -814,7 +814,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 				struct map *initial_map)
  {
--	struct map *curr_map;
+ 	struct machine *machine;
+-	struct map *curr_map = initial_map;
++	struct map *curr_map = map__get(initial_map);
  	struct symbol *pos;
- 	int count = 0;
- 	struct rb_root_cached old_root = dso->symbols;
-@@ -770,6 +769,7 @@ static int maps__split_kallsyms_for_kcore(struct maps *kmaps, struct dso *dso)
- 	*root = RB_ROOT_CACHED;
+ 	int count = 0, moved = 0;
+ 	struct rb_root_cached *root = &dso->symbols;
+@@ -858,13 +858,14 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 					dso__set_loaded(curr_map_dso);
+ 				}
  
- 	while (next) {
-+		struct map *curr_map;
- 		struct dso *curr_map_dso;
- 		char *module;
++				map__zput(curr_map);
+ 				curr_map = maps__find_by_name(kmaps, module);
+ 				if (curr_map == NULL) {
+ 					pr_debug("%s/proc/{kallsyms,modules} "
+ 					         "inconsistency while looking "
+ 						 "for \"%s\" module!\n",
+ 						 machine->root_dir, module);
+-					curr_map = initial_map;
++					curr_map = map__get(initial_map);
+ 					goto discard_symbol;
+ 				}
+ 				curr_map_dso = map__dso(curr_map);
+@@ -888,7 +889,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 			 * symbols at this point.
+ 			 */
+ 			goto discard_symbol;
+-		} else if (curr_map != initial_map) {
++		} else if (!RC_CHK_EQUAL(curr_map, initial_map)) {
+ 			char dso_name[PATH_MAX];
+ 			struct dso *ndso;
  
-@@ -796,6 +796,7 @@ static int maps__split_kallsyms_for_kcore(struct maps *kmaps, struct dso *dso)
- 			pos->end -= map__start(curr_map) - map__pgoff(curr_map);
- 		symbols__insert(&curr_map_dso->symbols, pos);
- 		++count;
-+		map__put(curr_map);
+@@ -899,7 +900,8 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 			}
+ 
+ 			if (count == 0) {
+-				curr_map = initial_map;
++				map__zput(curr_map);
++				curr_map = map__get(initial_map);
+ 				goto add_symbol;
+ 			}
+ 
+@@ -913,6 +915,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 					kernel_range++);
+ 
+ 			ndso = dso__new(dso_name);
++			map__zput(curr_map);
+ 			if (ndso == NULL)
+ 				return -1;
+ 
+@@ -926,6 +929,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 
+ 			map__set_mapping_type(curr_map, MAPPING_TYPE__IDENTITY);
+ 			if (maps__insert(kmaps, curr_map)) {
++				map__zput(curr_map);
+ 				dso__put(ndso);
+ 				return -1;
+ 			}
+@@ -936,7 +940,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 			pos->end -= delta;
+ 		}
+ add_symbol:
+-		if (curr_map != initial_map) {
++		if (!RC_CHK_EQUAL(curr_map, initial_map)) {
+ 			struct dso *curr_map_dso = map__dso(curr_map);
+ 
+ 			rb_erase_cached(&pos->rb_node, root);
+@@ -951,12 +955,12 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+ 		symbol__delete(pos);
  	}
  
- 	/* Symbols have been adjusted */
+-	if (curr_map != initial_map &&
++	if (!RC_CHK_EQUAL(curr_map, initial_map) &&
+ 	    dso->kernel == DSO_SPACE__KERNEL_GUEST &&
+ 	    machine__is_default_guest(maps__machine(kmaps))) {
+ 		dso__set_loaded(map__dso(curr_map));
+ 	}
+-
++	map__put(curr_map);
+ 	return count + moved;
+ }
+ 
+@@ -1248,7 +1252,7 @@ static bool remove_old_maps(struct map *map, void *data)
+ 	 * We need to preserve eBPF maps even if they are covered by kcore,
+ 	 * because we need to access eBPF dso for source data.
+ 	 */
+-	return RC_CHK_ACCESS(map) != RC_CHK_ACCESS(map_to_save) && !__map__is_bpf_prog(map);
++	return !RC_CHK_EQUAL(map, map_to_save) && !__map__is_bpf_prog(map);
+ }
+ 
+ static int dso__load_kcore(struct dso *dso, struct map *map,
 -- 
 2.42.0.869.gea05f2083d-goog
 
