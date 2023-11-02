@@ -2,56 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6040B7DFD2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 00:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 271F87DFD33
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 00:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377557AbjKBXKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 19:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        id S1377569AbjKBXLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 19:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjKBXKG (ORCPT
+        with ESMTP id S229628AbjKBXLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 19:10:06 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E200E5;
-        Thu,  2 Nov 2023 16:10:00 -0700 (PDT)
-Received: from [10.137.106.151] (unknown [131.107.159.23])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9910520B74C0;
-        Thu,  2 Nov 2023 16:09:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9910520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1698966599;
-        bh=lp2z5BxeRGAHA/HAb67fp8SLQnfHslP51OFaV1ICsHM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZbkFjUNGs32xbYQ2lx/qXk1hmKb3yJTxfTbeVKjhKAfTGmaS+VJXtC+so76x7ubRQ
-         E+e8vbuv6XKMDEUYdophRxGt8FMSuGIR7EZprLnBAzJ2DPJuMujJR9Dx0A2E9RbkJb
-         b/S1EpOnEFD+dW40FzsEZGH82Is4Kp7xJUMq5WAo=
-Message-ID: <674f6e74-e630-4ed3-b7e8-1de89a83f032@linux.microsoft.com>
-Date:   Thu, 2 Nov 2023 16:09:59 -0700
+        Thu, 2 Nov 2023 19:11:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEE4133;
+        Thu,  2 Nov 2023 16:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698966663; x=1730502663;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t2dJVdoJc7fyWxD/M51aRldCu7biUnkgqQJ2sLnr7E4=;
+  b=geAlUZ81sC56p7Ui5sSDpAm+AwC8TSR95sNFOkK9gb/WS510X2gFM0Vh
+   Oqs/PgPLuzHv8yFVqDvra4eFVhntYKPb2jDKAvM7mUeX0LTkzFwhFW3EQ
+   V6BCHURdaJ/jK+r9diiNBT7BiCRRp2KC6HzCDYqUpYFPJ4HklCkoZU9So
+   U3VpjktNtQH/HqjQwDwcgvPBVIse0KAQkawS0A4+lJT/748n98/kLgY4m
+   7DYtykZB8fEaP83vQ1N3tWbqV2pMw3Q2jWLJdJit5kxIDtWSvRi0VcMRA
+   0imisFaZwzuruNkioNLRe1QS6jQWMkEG0xHJ3fDAo09Nm3WxBPIQ8NeCc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="373881135"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="373881135"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 16:11:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="905151514"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="905151514"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Nov 2023 16:11:00 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qygq1-0001zE-21;
+        Thu, 02 Nov 2023 23:10:57 +0000
+Date:   Fri, 3 Nov 2023 07:10:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Justin Stitt <justinstitt@google.com>,
+        Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Subject: Re: [PATCH] scsi: libfc: replace deprecated strncpy with memcpy
+Message-ID: <202311030603.XIHsNBru-lkp@intel.com>
+References: <20231030-strncpy-drivers-scsi-libfc-fc_encode-h-v1-1-c08c2be6befa@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v11 17/19] scripts: add boot policy generation program
-Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1696457386-3010-18-git-send-email-wufan@linux.microsoft.com>
- <0c3ac562e5b8ea82d962478459bc7047.paul@paul-moore.com>
-From:   Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <0c3ac562e5b8ea82d962478459bc7047.paul@paul-moore.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030-strncpy-drivers-scsi-libfc-fc_encode-h-v1-1-c08c2be6befa@google.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,172 +69,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Justin,
 
+kernel test robot noticed the following build errors:
 
-On 10/23/2023 8:52 PM, Paul Moore wrote:
-> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
->>
->> Enables an IPE policy to be enforced from kernel start, enabling access
->> control based on trust from kernel startup. This is accomplished by
->> transforming an IPE policy indicated by CONFIG_IPE_BOOT_POLICY into a
->> c-string literal that is parsed at kernel startup as an unsigned policy.
->>
->> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
->> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
->> ---
->> v2:
->>    + No Changes
->>
->> v3:
->>    + No Changes
->>
->> v4:
->>    + No Changes
->>
->> v5:
->>    + No Changes
->>
->> v6:
->>    + No Changes
->>
->> v7:
->>    + Move from 01/11 to 14/16
->>    + Don't return errno directly.
->>    + Make output of script more user-friendly
->>    + Add escaping for tab and '?'
->>    + Mark argv pointer const
->>    + Invert return code check in the boot policy parsing code path.
->>
->> v8:
->>    + No significant changes.
->>
->> v9:
->>    + No changes
->>
->> v10:
->>    + Update the init part code for rcu changes in the eval loop patch
->>
->> v11:
->>    + Fix code style issues
->> ---
->>   MAINTAINERS                   |   1 +
->>   scripts/Makefile              |   1 +
->>   scripts/ipe/Makefile          |   2 +
->>   scripts/ipe/polgen/.gitignore |   1 +
->>   scripts/ipe/polgen/Makefile   |   6 ++
->>   scripts/ipe/polgen/polgen.c   | 145 ++++++++++++++++++++++++++++++++++
->>   security/ipe/.gitignore       |   1 +
->>   security/ipe/Kconfig          |  10 +++
->>   security/ipe/Makefile         |  11 +++
->>   security/ipe/fs.c             |   8 ++
->>   security/ipe/ipe.c            |  12 +++
->>   11 files changed, 198 insertions(+)
->>   create mode 100644 scripts/ipe/Makefile
->>   create mode 100644 scripts/ipe/polgen/.gitignore
->>   create mode 100644 scripts/ipe/polgen/Makefile
->>   create mode 100644 scripts/ipe/polgen/polgen.c
->>   create mode 100644 security/ipe/.gitignore
-> 
-> ...
-> 
->> diff --git a/scripts/ipe/polgen/polgen.c b/scripts/ipe/polgen/polgen.c
->> new file mode 100644
->> index 000000000000..40b6fe07f47b
->> --- /dev/null
->> +++ b/scripts/ipe/polgen/polgen.c
->> @@ -0,0 +1,145 @@
-> 
-> ...
-> 
->> +static int write_boot_policy(const char *pathname, const char *buf, size_t size)
->> +{
->> +	int rc = 0;
->> +	FILE *fd;
->> +	size_t i;
->> +
->> +	fd = fopen(pathname, "w");
->> +	if (!fd) {
->> +		rc = errno;
->> +		goto err;
->> +	}
->> +
->> +	fprintf(fd, "/* This file is automatically generated.");
->> +	fprintf(fd, " Do not edit. */\n");
->> +	fprintf(fd, "#include <linux/stddef.h>\n");
->> +	fprintf(fd, "\nextern const char *const ipe_boot_policy;\n\n");
->> +	fprintf(fd, "const char *const ipe_boot_policy =\n");
->> +
->> +	if (!buf || size == 0) {
->> +		fprintf(fd, "\tNULL;\n");
->> +		fclose(fd);
->> +		return 0;
->> +	}
->> +
->> +	fprintf(fd, "\t\"");
->> +
->> +	for (i = 0; i < size; ++i) {
->> +		switch (buf[i]) {
->> +		case '"':
->> +			fprintf(fd, "\\\"");
->> +			break;
->> +		case '\'':
->> +			fprintf(fd, "'");
->> +			break;
-> 
-> The revision of IPE proposed in this patchset doesn't support parsing
-> single or double quotes, yes? >
-Actually all characters can be used in the policy. The previous revision 
-was removing the quote syntax, which supports having space in the policy 
-name like policy_name="example policy". But that is not related to the 
-boot policy generation code here.
+[auto build test ERROR on ffc253263a1375a65fa6c9f62a893e9767fbebfa]
 
-The code here is to generate a C source code that will be linked into 
-IPE. Thus we have to escape these characters to conform with the C 
-language string literal standard.
+url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Stitt/scsi-libfc-replace-deprecated-strncpy-with-memcpy/20231031-063815
+base:   ffc253263a1375a65fa6c9f62a893e9767fbebfa
+patch link:    https://lore.kernel.org/r/20231030-strncpy-drivers-scsi-libfc-fc_encode-h-v1-1-c08c2be6befa%40google.com
+patch subject: [PATCH] scsi: libfc: replace deprecated strncpy with memcpy
+config: i386-randconfig-141-20231102 (https://download.01.org/0day-ci/archive/20231103/202311030603.XIHsNBru-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311030603.XIHsNBru-lkp@intel.com/reproduce)
 
--Fan
->> +		case '\n':
->> +			fprintf(fd, "\\n\"\n\t\"");
->> +			break;
->> +		case '\\':
->> +			fprintf(fd, "\\\\");
->> +			break;
->> +		case '\t':
->> +			fprintf(fd, "\\t");
->> +			break;
->> +		case '\?':
->> +			fprintf(fd, "\\?");
->> +			break;
-> 
-> Similar, are question marks supported by the parser?
-> 
->> +		default:
->> +			fprintf(fd, "%c", buf[i]);
->> +		}
->> +	}
->> +	fprintf(fd, "\";\n");
->> +	fclose(fd);
->> +
->> +	return 0;
->> +
->> +err:
->> +	if (fd)
->> +		fclose(fd);
->> +	return rc;
->> +}
-> 
-> ...
-> 
->> diff --git a/security/ipe/.gitignore b/security/ipe/.gitignore
->> new file mode 100644
->> index 000000000000..eca22ad5ed22
->> --- /dev/null
->> +++ b/security/ipe/.gitignore
->> @@ -0,0 +1 @@
->> +boot-policy.c
->> \ No newline at end of file
-> 
-> Add a newline please.
-> 
-> --
-> paul-moore.com
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311030603.XIHsNBru-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from <command-line>:32:0:
+>> ./usr/include/scsi/fc/fc_ns.h:148:17: error: expected ':', ',', ';', '}' or '__attribute__' before '__nonstring'
+     char fp_name[] __nonstring;
+                    ^~~~~~~~~~~
+   ./usr/include/scsi/fc/fc_ns.h:174:18: error: expected ':', ',', ';', '}' or '__attribute__' before '__nonstring'
+     char  fr_name[] __nonstring;
+                     ^~~~~~~~~~~
+   ./usr/include/scsi/fc/fc_ns.h:183:18: error: expected ':', ',', ';', '}' or '__attribute__' before '__nonstring'
+     char  fr_name[] __nonstring;
+                     ^~~~~~~~~~~
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
