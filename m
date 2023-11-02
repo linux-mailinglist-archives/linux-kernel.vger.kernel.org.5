@@ -2,116 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B627DF52D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE32E7DF531
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjKBOfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        id S231634AbjKBOgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjKBOfc (ORCPT
+        with ESMTP id S230205AbjKBOgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:35:32 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FE4130
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:35:25 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so1759958a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:35:25 -0700 (PDT)
+        Thu, 2 Nov 2023 10:36:16 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0D7185
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:36:14 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-7788f727dd7so58390985a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698935724; x=1699540524; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2kxXGpASHb8vQvtPgEKuD/+7aWXQWstAKgMPv5Qzafs=;
-        b=ywaYldh7n7bub0eOEO2RqApDey7SiTeoIdO4aEA7H9T/sElvGa3wj4H3Uq/Lw/RU4+
-         jl5SLscMOeRcS9sX9Xqq/BSmOSWsxdSUpRvDJdzoIbbcN0njUlFiUtxNID06obKMypqO
-         AMc4j+HI5IlJ4rR3znzdPuYXUzP10BzJjD3mAnB3P3JDUmSs2QRbzBc4RXi4Hp3t9gUN
-         mLnzdSMALnu2pEJOtZr6wavFXe+FwxbssSZmzyQJABh5v1BohtoGuZSUC50DIbBefuJ4
-         4CJoC6N+AKTqVDhJe+AtcT6L5NXQy8iZL+Y0RM1DWp/WLG/zBOGkUlRM/+zLiIokuasR
-         ZBlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698935724; x=1699540524;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1698935773; x=1699540573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2kxXGpASHb8vQvtPgEKuD/+7aWXQWstAKgMPv5Qzafs=;
-        b=tZaRAq0lXCoWP1yDWA9bJzYFJavyed8hb8RkcfAsbn79eB9s0uPw+PSswa83uIAyXE
-         rhFz0A02w3yx7YgJyRQUYKm54yLHJcl8sjI1ygPT9/0Ey2Rk/5veOME+S/k+N0OsJiU2
-         WVTa5uSWVnxBPWDs4vDL4CD47qY//bjfkL01LwduCm+i1D6FTUZm589RK8KGBqWvBsGG
-         YngJc8dkH2UE3cz4wql7rJg0zYluzcbVe/lQ8trWjGS5IBxjx3+Xo8I+8hCWTkGMWgqR
-         voC6sdx8bpkLxiYOzE30cpWEw1sPOJnODRijAFGnJZLyqaOajviRP7V052k0lR84tZyz
-         6MYw==
-X-Gm-Message-State: AOJu0YxZUXXa6JIRDv61Fm4ZXyyR3qF3YArwCXOZQhM5/BMbyqyTSKN+
-        2hL87tMpfyMLLR1uz1kJjxcXHA==
-X-Google-Smtp-Source: AGHT+IHi4X/4Ey2n4dyewNyEL9R+lcjlEa8aSyNJ4kvkobPnvns1KYaw7NdgxkYdUuj6rCBOabCwMQ==
-X-Received: by 2002:a50:aa93:0:b0:543:6ce3:f091 with SMTP id q19-20020a50aa93000000b005436ce3f091mr6167475edc.7.1698935724023;
-        Thu, 02 Nov 2023 07:35:24 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id j8-20020a50ed08000000b0053eb9af1e15sm2386006eds.77.2023.11.02.07.35.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 07:35:23 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 17:35:09 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Alexandra Diupina <adiupina@astralinux.ru>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH 1/4] Remove redundant return value check
-Message-ID: <11e6e0bd-eab1-4aa7-8c5c-29de6cff1b3d@kadam.mountain>
-References: <20231102141135.369-1-adiupina@astralinux.ru>
+        bh=xGQNRc9zE40ysVevY/WGU/Lu6W4371YJar5QqeiLOSY=;
+        b=hyhmBDZP/FH1NQ1CnlAGSiygV2gJrwpH7BGVAbQJAQcL2N4U8BO8Fo/09dEQL4EvlC
+         dart+z8obIgWwK5GWLrAl9/IRFYbTxlB7FMfMEdThFsm1J+z6m26G8t+zok3fRATp0A7
+         vFegvMIL6Qw9aa6h/bcmDou5sUDII5tk7AJUXc7kgrvXxiFW5T/rNZE2W/O4bwa6fIih
+         77NfWyNx8HN9dCe5FEE5Ao9xegwrGlisbnN6uIil88e+FDFtkYCidpr8z2anS05kUEU8
+         rsSScaHN3rhVZye2+hKSTgIpFOT5IjkEhBK/J+O8lcaYT19DeBDy4fjsfDebeYmBFUo4
+         L32g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698935773; x=1699540573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xGQNRc9zE40ysVevY/WGU/Lu6W4371YJar5QqeiLOSY=;
+        b=OOANtEcsXDi9fDFGTHP7N86rV2A9/w+4kxaeIc+sM2xIduDvSUDEX1XTEGnWZZo4cc
+         2Ny/PYcv6M0DhnZXgudEAF8a5IfVEpBcYprIM/xur+bsH6oA8UjJ0ZaW7cs9DBYkGdZz
+         RgJA5SBDO/WVNI6G2aF6Jiok44vUye07/H1GWQta71OnwUo4YNb1p9LD7TisOC15YBD1
+         sj9xmna6UxLBVmNrrmz/rcB9GWBDR8pt3hDRR6I7aKXye/djKG9bwl4+wSkkr7B0AD3D
+         iYUf02Zv3CJdw61AhG10UFZgg42bPxZGFG3xP9ot/SfdL/xGp95OvtbiwnCscsHxfsMY
+         xKVQ==
+X-Gm-Message-State: AOJu0YxF2gw4O4YK1yIfBiW1C7sQFos3rSKsGful51u3eHImMfut0zAR
+        oAbQCrnkUs/SxhCrhSJy68zzsLeMIrfmIF4vnenP1Q==
+X-Google-Smtp-Source: AGHT+IG3zQONLtNNLFCBisiqnyb2KBBdAZoBcVXn8ZKHSOcO4zLCu8vZ+2T5E0OEe4jyHp5mk0SJgyrOfTeARfH9hlY=
+X-Received: by 2002:a05:6214:242e:b0:66d:a90f:c06 with SMTP id
+ gy14-20020a056214242e00b0066da90f0c06mr22425828qvb.14.1698935773112; Thu, 02
+ Nov 2023 07:36:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231102141135.369-1-adiupina@astralinux.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-22-seanjc@google.com>
+In-Reply-To: <20231027182217.3615211-22-seanjc@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Thu, 2 Nov 2023 14:35:36 +0000
+Message-ID: <CA+EHjTzk0=24wGbxQUApAY4B-K3xO3+SOfLn1tPJk-hVJY0+GQ@mail.gmail.com>
+Subject: Re: [PATCH v13 21/35] KVM: Drop superfluous __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
+ macro
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 05:11:32PM +0300, Alexandra Diupina wrote:
-> media_entity_pads_init() will not return 0 only if the
-> 2nd parameter >= MEDIA_ENTITY_MAX_PADS (512), but 1 is
-> passed, so checking the return value is redundant
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
-> Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+On Fri, Oct 27, 2023 at 7:23=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> Drop __KVM_VCPU_MULTIPLE_ADDRESS_SPACE and instead check the value of
+> KVM_ADDRESS_SPACE_NUM.
+>
+> No functional change intended.
+>
+> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c        | 4 +---
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c       | 6 +-----
->  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c        | 2 --
->  drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c | 2 --
->  4 files changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> index 9fa390fbc5f3..f10931a03285 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> @@ -840,9 +840,7 @@ static int gc2235_probe(struct i2c_client *client)
->  	dev->ctrl_handler.lock = &dev->input_lock;
->  	dev->sd.ctrl_handler = &dev->ctrl_handler;
->  
-> -	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
-> -	if (ret)
-> -		gc2235_remove(client);
 
-Not related to your patch but why doesn't this error path return an
-error?  Can that be right?
+Reviewed-by: Fuad Tabba <tabba@google.com>
+Tested-by: Fuad Tabba <tabba@google.com>
 
-> +	media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
->  
->  	return atomisp_register_i2c_module(&dev->sd, gcpdev, RAW_CAMERA);
+Cheers,
+/fuad
 
-regards,
-dan carpenter
+>  arch/x86/include/asm/kvm_host.h | 1 -
+>  include/linux/kvm_host.h        | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
+ost.h
+> index 8d60e4745e8b..6702f795c862 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -2124,7 +2124,6 @@ enum {
+>  #define HF_SMM_MASK            (1 << 1)
+>  #define HF_SMM_INSIDE_NMI_MASK (1 << 2)
+>
+> -# define __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
+>  # define KVM_ADDRESS_SPACE_NUM 2
+>  # define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_M=
+ASK ? 1 : 0)
+>  # define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role=
+).smm)
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index e3223cafd7db..c3cfe08b1300 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -692,7 +692,7 @@ bool kvm_arch_irqchip_in_kernel(struct kvm *kvm);
+>  #define KVM_MEM_SLOTS_NUM SHRT_MAX
+>  #define KVM_USER_MEM_SLOTS (KVM_MEM_SLOTS_NUM - KVM_INTERNAL_MEM_SLOTS)
+>
+> -#ifndef __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
+> +#if KVM_ADDRESS_SPACE_NUM =3D=3D 1
+>  static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
+>  {
+>         return 0;
+> --
+> 2.42.0.820.g83a721a137-goog
+>
