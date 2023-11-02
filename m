@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3357DF7A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC607DF7C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjKBQ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        id S1376954AbjKBQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376933AbjKBQ26 (ORCPT
+        with ESMTP id S1347664AbjKBQek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:28:58 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCA512D
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:28:54 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32fb1c35fe0so200737f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:28:54 -0700 (PDT)
+        Thu, 2 Nov 2023 12:34:40 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79CC18E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:34:33 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so748798f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698942533; x=1699547333; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=20owt2l3/cxGLzLA2xbevoL+xSQuNASMB596X3+ow7c=;
-        b=iP3n4d/OPngbE98wbRDR3NysfZjhFfYHlQVQlVBVc9y+2/IJSvqtZz866SXw/mX+/e
-         W0pJF0hWV7u78rKyEJP7X+RqylVKogh2sx+8h9p7boqcoyUCTkc5limXF7CmLJDfcO64
-         ZVrNM92P6dDLOSAV+cQzWAkB0Oi1ZUWaebe4LyULhZgDomckhwu5VVQTDzeOX4bgRpgA
-         /0tUSYkqtqp21tSUpv2QVc+s8tqJQkzTBfAXMfgsTGtf7UpIn7H/jiKHA6oIQEXZVTaZ
-         Cs+HgkrMeohH6Yri08aBNMoVe4FgY5Dfy/Og6XJljrTyIxyihRg7OtaXxruVXMlYQ06a
-         MXjA==
+        d=linaro.org; s=google; t=1698942872; x=1699547672; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Pf6+egC7wEh4Nlc1mgScW1ILeruY7HuDBJxg1UYN0M8=;
+        b=wOiwZgvYjp0ReUvC7YBIm7zrAbvhsX9u6tIY88Jjbi4O+9wV7ld+3jsEQEswvqh0H9
+         zp++/Vt6Afq33RULvZujOdvwM1m40TwB8y86rMrl4wiBKUw5z8EBpeNc+arH9uLzGm90
+         +QQ9nvAtzMxA6fXxBXTClxg5IStN5tJS8bXx6zxNPAGuWqI+EbbfUGN7AZrOh4QHHcPQ
+         MFpLNxMHIXEGbgExIw35dNUXYM7m8lAjwWz1akGzeaiywwF+bmLOXdjQOfKGfBPWcTXs
+         6kii7jC9qDL1YF9hECl9Nurh3gyPTiQ6M2LihI4cmG53hZQTIIs2yp5r8Lze9moau5Mz
+         jUQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698942533; x=1699547333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=20owt2l3/cxGLzLA2xbevoL+xSQuNASMB596X3+ow7c=;
-        b=jjasPjge1w06g73XKzjw1W1U9lJFKmU81H6CUvCIF8naIwm7g6dgVpUDxetrUUi5m9
-         LnW2/oF3OWCmi7kPWTt3cB0tMdGd5a7fV5g2E0ZeJj2NHJqjXJeYZuDjkeOqG3b3EOOI
-         jqY5vSduCabpw5hPgRvifwZr+18sIdiFxSOXsb1noawaiMswPOBB1NDHOJW0mYDM6GPH
-         WlZMbdJS/MkqV7UZMcARSMZ/2B/RuN/lvQKr+c3HvFkjlyKg5GPtDjOLHSzRrHpp3hxC
-         a8FY4nrBMzzuTwTp1muoE/t89/g/hu92B0A8V6v1O5Vwj9GqwBLjGvxqeGs8q26Uzu+O
-         MKAg==
-X-Gm-Message-State: AOJu0Yzj/nSaZP1sSdiY+uzFd4hMH47qkK5zwn3KLv07dYMHXva4XI7c
-        VpQgsyNmmvMayaVsI7pYw0PoZ5E6u8eHmzmOjQ/jkA==
-X-Google-Smtp-Source: AGHT+IGzC+UPQWsYSxEKly7WToGYHThIxdsAXI0NVkPIoloyom3O4LGBjzNagfuu2dI4j91jKOVPOWF7c1N4gZ20sPc=
-X-Received: by 2002:a5d:4b51:0:b0:32d:8e54:29f6 with SMTP id
- w17-20020a5d4b51000000b0032d8e5429f6mr14415276wrs.47.1698942532901; Thu, 02
- Nov 2023 09:28:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698942872; x=1699547672;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pf6+egC7wEh4Nlc1mgScW1ILeruY7HuDBJxg1UYN0M8=;
+        b=EFUONYw5xDc+A7dX9os4dtfVway75y6juqHn7sUq/nvg/gCu4pYMit1QEfjaxhcLfH
+         bdKw6zeKs5jz1sqOr+BiBaB3hfi14Z8FbQwhKdzD50w90pNxBu+RSDwq1xJlShCF6Qiy
+         HjZZe3R5MwRBCnPVvzHvjBVedbC1SkXBlvO8NS3lNK1oHXt0BoSgIkpli0VY2gLTnCck
+         9vwx8/cHoyxw7mdlBdZAjAw61xcs1uBaynCZz2EAhpOnQmp9oSZMpFNswPqdovm0lAkf
+         kMvDltbFGAx3NnlWXoUnpNOBDsguXqr64CQ+g8rpnr+ovUxhaw/Ws4YlfDbRkqV0PoGp
+         RjNQ==
+X-Gm-Message-State: AOJu0YxVoqBbWLhA6YqtIY1nDRB4dLX+Brw1RADIG+Lp+v3JlTRqcP87
+        pmb0+LRY01YkF1rGGABwPe58dQ==
+X-Google-Smtp-Source: AGHT+IGtoGUpxxIbCzigG2VX+swrGvRJcm+9x+JnerHx+hb4qtVy636oxKeC9OepR+OM/OtMm1CkVg==
+X-Received: by 2002:a5d:6d06:0:b0:32f:8b51:3708 with SMTP id e6-20020a5d6d06000000b0032f8b513708mr34589wrq.2.1698942872155;
+        Thu, 02 Nov 2023 09:34:32 -0700 (PDT)
+Received: from [192.168.67.140] (92.40.204.238.threembb.co.uk. [92.40.204.238])
+        by smtp.gmail.com with ESMTPSA id j20-20020a05600c191400b00407752bd834sm25019wmq.1.2023.11.02.09.33.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 09:34:16 -0700 (PDT)
+Message-ID: <272a9764-1cae-4d86-88b1-00175de83333@linaro.org>
+Date:   Thu, 2 Nov 2023 16:33:19 +0000
 MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
- <ZUFGRyQEuWj4RJS0@google.com> <ZUFzZf-YmCRYP6qo@google.com>
- <CALzav=d9eXZfK=op7A=UftbpuPpUbxqV6CmkqqxxBNuNsUU4nw@mail.gmail.com>
- <6642c379-1023-4716-904f-4bbf076744c2@redhat.com> <ZUPIXt1XzZrriswG@google.com>
-In-Reply-To: <ZUPIXt1XzZrriswG@google.com>
-From:   David Matlack <dmatlack@google.com>
-Date:   Thu, 2 Nov 2023 09:28:23 -0700
-Message-ID: <CALzav=eaVc5rzmHwnQr7aotyTKi9Agdte7NAL0NvBeE+f6zYoA@mail.gmail.com>
-Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/8] dt-bindings: usb: qcom,dwc3: Add bindings to enable
+ runtime
+Content-Language: en-US
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, quic_wcheng@quicinc.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-2-quic_kriskura@quicinc.com>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <20231017131851.8299-2-quic_kriskura@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,57 +86,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 9:03=E2=80=AFAM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Thu, Nov 02, 2023, Paolo Bonzini wrote:
-> > On 10/31/23 23:39, David Matlack wrote:
-> > > > > Maybe can you sketch out how you see this proposal being extensib=
-le to
-> > > > > using guest_memfd for shared mappings?
-> > > > For in-place conversions, e.g. pKVM, no additional guest_memfd is n=
-eeded.  What's
-> > > > missing there is the ability to (safely) mmap() guest_memfd, e.g. K=
-VM needs to
-> > > > ensure there are no outstanding references when converting back to =
-private.
-> > > >
-> > > > For TDX/SNP, assuming we don't find a performant and robust way to =
-do in-place
-> > > > conversions, a second fd+offset pair would be needed.
-> > > Is there a way to support non-in-place conversions within a single gu=
-est_memfd?
-> >
-> > For TDX/SNP, you could have a hook from KVM_SET_MEMORY_ATTRIBUTES to gu=
-est
-> > memory.  The hook would invalidate now-private parts if they have a VMA=
-,
-> > causing a SIGSEGV/EFAULT if the host touches them.
-> >
-> > It would forbid mappings from multiple gfns to a single offset of the
-> > guest_memfd, because then the shared vs. private attribute would be tie=
-d to
-> > the offset.  This should not be a problem; for example, in the case of =
-SNP,
-> > the RMP already requires a single mapping from host physical address to
-> > guest physical address.
->
-> I don't see how this can work.  It's not a M:1 scenario (where M is multi=
-ple gfns),
-> it's a 1:N scenario (wheren N is multiple offsets).  The *gfn* doesn't ch=
-ange on
-> a conversion, what needs to change to do non-in-place conversion is the p=
-fn, which
-> is effectively the guest_memfd+offset pair.
->
-> So yes, we *could* support non-in-place conversions within a single guest=
-_memfd,
-> but it would require a second offset,
 
-Why can't KVM free the existing page at guest_memfd+offset and
-allocate a new one when doing non-in-place conversions?
 
-> at which point it makes sense to add a
-> second file descriptor as well.  Userspace could still use a single guest=
-_memfd
-> instance, i.e. pass in the same file descriptor but different offsets.
+On 17/10/2023 14:18, Krishna Kurapati wrote:
+> Add enable-rt binding to let the device register vendor hooks to
+> core and facilitate runtime suspend and resume.
+
+Hi Krishna,
+
+ From reading through these patches, it's not clear to me why this 
+behaviour should be conditional on a new devicetree property. Are there 
+some platforms where this behaviour would be undesirable? And if so then 
+would it be possible to determine this based on the QSCRATCH registers?
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>   Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index cb50261c6a36..788d9c510abc 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -151,6 +151,11 @@ properties:
+>         HS/FS/LS modes are supported.
+>       type: boolean
+>   
+> +  qcom,enable-rt:
+> +    description:
+> +      If present, register vendor hooks to facilitate runtime suspend/resume
+> +    type: boolean
+
+A Krzysztof pointed out, properties should define the hardware 
+behaviour, not tot the implementation details. For this case the 
+hardware isn't wired up to vbus, so maybe something like "qcom,no-vbus"?
+> +
+>     wakeup-source: true
+>   
+>   # Required child node:
+
+-- 
+// Caleb (they/them)
