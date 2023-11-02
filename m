@@ -2,231 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA037DEC9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8014F7DEC9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbjKBF4C convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 01:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        id S232378AbjKBF4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 01:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjKBF4A (ORCPT
+        with ESMTP id S232327AbjKBF4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 01:56:00 -0400
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E5913D;
-        Wed,  1 Nov 2023 22:55:57 -0700 (PDT)
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5bcfc508d14so410267a12.3;
-        Wed, 01 Nov 2023 22:55:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698904556; x=1699509356;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5vVpAS4KEjXA0XAlwy4Gm/bodbnW8MsJmEcn/2Y1iWQ=;
-        b=X0TDoYg/3JrTw8lfXZShQNR0zxESxzLVjQ1o/Ouf2CQvJRbjvbXT8I12h7ZaHVjvv+
-         grhAa9noaE3CoCNQiEW8Kcu39xVTAB4q6r3iZSdXP+hgyxfvsa2ii+VoZVqyfp+u2ZK/
-         2Vm6uvJLFVb3w/RCGYtCVKHKOMbh7kF1GVR80vU/BJc2gkQXHbHJt4oRd6na0RPvcWV/
-         QQMJ24as+m3sCmq1abM2jKuQ3Q5HlWumbmtHUUkH+nP6BnuSr6pPvIuP88lmcidwbr4t
-         O0BlI6YNb4D9uXqplNtF9x2AOfBwgg9FMF52RESxUVsMi2oEvHYuTMMoGDr34wahta9G
-         37HA==
-X-Gm-Message-State: AOJu0Ywczc0w6CabaMCmoO3zMPLP+TnW2Gz2mEdz6342lvunAeIf9t7y
-        S0eAjJ9/WAjA+Ulj6XIX5gHETo0rqtTfIc9x660=
-X-Google-Smtp-Source: AGHT+IFK6szul+rBI1mcUan2dKrg3R85vTVjd1HwAe6dw4pdzzu74uUQAeJGrzvacL/sMm/6U4Jg3iywvxbeLK0VZ/I=
-X-Received: by 2002:a17:90b:fd4:b0:27d:6d9c:6964 with SMTP id
- gd20-20020a17090b0fd400b0027d6d9c6964mr16982311pjb.26.1698904556325; Wed, 01
- Nov 2023 22:55:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231031120526.11502-1-nick.forrington@arm.com> <20231031120526.11502-2-nick.forrington@arm.com>
-In-Reply-To: <20231031120526.11502-2-nick.forrington@arm.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 1 Nov 2023 22:55:45 -0700
-Message-ID: <CAM9d7cgzbjqU4U9tpAkhme-mZPV-LScJietre=3b01kykG_fcg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf lock report: Restore aggregation by caller by default
-To:     Nick Forrington <nick.forrington@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        stable@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Thu, 2 Nov 2023 01:56:18 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72561111;
+        Wed,  1 Nov 2023 22:56:13 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A23khUd016863;
+        Thu, 2 Nov 2023 05:55:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=hiZ4HQv0rzCsblAnNmcIm9TY47owHps50W46WHrXWO0=;
+ b=BQnGpuF/fWZC18Jofok6Vtk7Oa7wVMB8FX1whmQL45URJggk/H568RXTpws47xXKSum4
+ KgpropX6THo1FjLcvmQDvS1D1NP34EnFYVIVoq6jC15vtLT2JRUMqBY0G1kaA7ed9qmH
+ LUO6HuLZHsnw0t/PqWLJN3VhZrl1NIgoiTl3lHRLKZtSXDMj/ePE6YQAbNGGj0l1yBFK
+ CRTkBH2Ee9+evJXvbRdjZTrNCVSNqGasMmuDL5KALDn4YiN5Y4iU1Xf5DuHZ1U+y/jA3
+ 0NVNK54GajeHxFco7RCySQ7/ieFPhFZUYNCuaYonG+VS0awSdb1U+BJW3zeRhlw+OKFV LA== 
+Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3y5y0mvn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 05:55:56 +0000
+Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A25tr3R004437;
+        Thu, 2 Nov 2023 05:55:53 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3u0ucmf372-1;
+        Thu, 02 Nov 2023 05:55:53 +0000
+Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A25trmx004432;
+        Thu, 2 Nov 2023 05:55:53 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3A25tqiE004430;
+        Thu, 02 Nov 2023 05:55:52 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id 69C665405; Thu,  2 Nov 2023 13:55:51 +0800 (CST)
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH v2] bus: mhi: host: pci_generic: Add SDX75 based modem support
+Date:   Thu,  2 Nov 2023 13:55:49 +0800
+Message-Id: <1698904549-58162-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Wep5NVpMzW2Uc9nUU9jLPitra1rsWt-y
+X-Proofpoint-ORIG-GUID: Wep5NVpMzW2Uc9nUU9jLPitra1rsWt-y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 clxscore=1011 priorityscore=1501 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311020045
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add generic info for SDX75 based modems. SDX75 takes longer than expected
+(default, 8 seconds) to set ready after reboot. Hence add optional ready
+timeout parameter to wait enough for device ready as part of power up
+sequence.
 
-On Tue, Oct 31, 2023 at 5:05 AM Nick Forrington <nick.forrington@arm.com> wrote:
->
-> This change restores the previous default behaviour for "perf lock
-> report", making the current aggregate-by-address behaviour available via
-> the new "--lock-addr" command line parameter.
->
-> This makes the behaviour consistent with "perf lock contention" (which
-> also aggregates by caller by default, or by address when "--lock-addr"
-> is specified).
+Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+---
+v1->v2: pass appropriate timeout value to mhi_poll_reg_field
 
-I understand your concern but actually there's a difference.
-"perf lock contention" is a new command which works with new
-contention tracepoints whereas "perf lock report" works with old
-lockdep/lockstat tracepoints which are not available in the default
-configuration.
+ drivers/bus/mhi/host/init.c        |  1 +
+ drivers/bus/mhi/host/internal.h    |  2 +-
+ drivers/bus/mhi/host/main.c        |  5 +++--
+ drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
+ drivers/bus/mhi/host/pm.c          | 24 +++++++++++++++++-------
+ include/linux/mhi.h                |  4 ++++
+ 6 files changed, 48 insertions(+), 10 deletions(-)
 
-I made "perf lock contention" compatible to "perf lock report" so
-it mimics the old tracepoints behavior as much as possible using
-new tracepoints.  But the important difference is that new contention
-tracepoints don't have lock names.  The old perf lock report showed
-lock names by default but contention output had to use the caller
-instead.
+diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+index f78aefd..65ceac1 100644
+--- a/drivers/bus/mhi/host/init.c
++++ b/drivers/bus/mhi/host/init.c
+@@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
+ 	if (!mhi_cntrl->timeout_ms)
+ 		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
+ 
++	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
+ 	mhi_cntrl->bounce_buf = config->use_bounce_buf;
+ 	mhi_cntrl->buffer_len = config->buf_len;
+ 	if (!mhi_cntrl->buffer_len)
+diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
+index 2e139e7..30ac415 100644
+--- a/drivers/bus/mhi/host/internal.h
++++ b/drivers/bus/mhi/host/internal.h
+@@ -321,7 +321,7 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
+ 				    u32 *out);
+ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+ 				    void __iomem *base, u32 offset, u32 mask,
+-				    u32 val, u32 delayus);
++				    u32 val, u32 delayus, u32 timeout_ms);
+ void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
+ 		   u32 offset, u32 val);
+ int __must_check mhi_write_reg_field(struct mhi_controller *mhi_cntrl,
+diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+index dcf627b..6cf1145 100644
+--- a/drivers/bus/mhi/host/main.c
++++ b/drivers/bus/mhi/host/main.c
+@@ -40,10 +40,11 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
+ 
+ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+ 				    void __iomem *base, u32 offset,
+-				    u32 mask, u32 val, u32 delayus)
++				    u32 mask, u32 val, u32 delayus,
++				    u32 timeout_ms)
+ {
+ 	int ret;
+-	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
++	u32 out, retry = (timeout_ms * 1000) / delayus;
+ 
+ 	while (retry--) {
+ 		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
+diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
+index 08f3f03..cd6cd14 100644
+--- a/drivers/bus/mhi/host/pci_generic.c
++++ b/drivers/bus/mhi/host/pci_generic.c
+@@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
+ 	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
+ };
+ 
++static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
++	.max_channels = 128,
++	.timeout_ms = 8000,
++	.ready_timeout_ms = 50000,
++	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
++	.ch_cfg = modem_qcom_v1_mhi_channels,
++	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
++	.event_cfg = modem_qcom_v1_mhi_events,
++};
++
+ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+ 	.max_channels = 128,
+ 	.timeout_ms = 8000,
+@@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+ 	.event_cfg = modem_qcom_v1_mhi_events,
+ };
+ 
++static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
++	.name = "qcom-sdx75m",
++	.fw = "qcom/sdx75m/xbl.elf",
++	.edl = "qcom/sdx75m/edl.mbn",
++	.config = &modem_qcom_v2_mhiv_config,
++	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
++	.dma_data_width = 32,
++	.sideband_wake = false,
++};
++
+ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+ 	.name = "qcom-sdx65m",
+ 	.fw = "qcom/sdx65m/xbl.elf",
+@@ -600,6 +620,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+ 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
++	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
++		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
+ 		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
+diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+index 8a4362d..a2f2fee 100644
+--- a/drivers/bus/mhi/host/pm.c
++++ b/drivers/bus/mhi/host/pm.c
+@@ -163,6 +163,7 @@ int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
+ 	enum mhi_pm_state cur_state;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 	u32 interval_us = 25000; /* poll register field every 25 milliseconds */
++	u32 timeout_ms;
+ 	int ret, i;
+ 
+ 	/* Check if device entered error state */
+@@ -173,14 +174,18 @@ int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
+ 
+ 	/* Wait for RESET to be cleared and READY bit to be set by the device */
+ 	ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
+-				 MHICTRL_RESET_MASK, 0, interval_us);
++				 MHICTRL_RESET_MASK, 0, interval_us,
++				 mhi_cntrl->timeout_ms);
+ 	if (ret) {
+ 		dev_err(dev, "Device failed to clear MHI Reset\n");
+ 		return ret;
+ 	}
+ 
++	timeout_ms = mhi_cntrl->ready_timeout_ms ?
++		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
+ 	ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHISTATUS,
+-				 MHISTATUS_READY_MASK, 1, interval_us);
++				 MHISTATUS_READY_MASK, 1, interval_us,
++				 timeout_ms);
+ 	if (ret) {
+ 		dev_err(dev, "Device failed to enter MHI Ready\n");
+ 		return ret;
+@@ -479,7 +484,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 
+ 		/* Wait for the reset bit to be cleared by the device */
+ 		ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
+-				 MHICTRL_RESET_MASK, 0, 25000);
++				 MHICTRL_RESET_MASK, 0, 25000, mhi_cntrl->timeout_ms);
+ 		if (ret)
+ 			dev_err(dev, "Device failed to clear MHI Reset\n");
+ 
+@@ -492,8 +497,8 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
+ 			/* wait for ready to be set */
+ 			ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs,
+-						 MHISTATUS,
+-						 MHISTATUS_READY_MASK, 1, 25000);
++						 MHISTATUS, MHISTATUS_READY_MASK,
++						 1, 25000, mhi_cntrl->timeout_ms);
+ 			if (ret)
+ 				dev_err(dev, "Device failed to enter READY state\n");
+ 		}
+@@ -1111,7 +1116,8 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 	if (state == MHI_STATE_SYS_ERR) {
+ 		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
+ 		ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
+-				 MHICTRL_RESET_MASK, 0, interval_us);
++				 MHICTRL_RESET_MASK, 0, interval_us,
++				 mhi_cntrl->timeout_ms);
+ 		if (ret) {
+ 			dev_info(dev, "Failed to reset MHI due to syserr state\n");
+ 			goto error_exit;
+@@ -1202,14 +1208,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
+ int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
+ {
+ 	int ret = mhi_async_power_up(mhi_cntrl);
++	u32 timeout_ms;
+ 
+ 	if (ret)
+ 		return ret;
+ 
++	/* Some devices need more time to set ready during power up */
++	timeout_ms = mhi_cntrl->ready_timeout_ms ?
++		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
+ 	wait_event_timeout(mhi_cntrl->state_event,
+ 			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
+ 			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+-			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
++			   msecs_to_jiffies(timeout_ms));
+ 
+ 	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
+ 	if (ret)
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index 039943e..d0f9b522 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -266,6 +266,7 @@ struct mhi_event_config {
+  * struct mhi_controller_config - Root MHI controller configuration
+  * @max_channels: Maximum number of channels supported
+  * @timeout_ms: Timeout value for operations. 0 means use default
++ * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
+  * @buf_len: Size of automatically allocated buffers. 0 means use default
+  * @num_channels: Number of channels defined in @ch_cfg
+  * @ch_cfg: Array of defined channels
+@@ -277,6 +278,7 @@ struct mhi_event_config {
+ struct mhi_controller_config {
+ 	u32 max_channels;
+ 	u32 timeout_ms;
++	u32 ready_timeout_ms;
+ 	u32 buf_len;
+ 	u32 num_channels;
+ 	const struct mhi_channel_config *ch_cfg;
+@@ -330,6 +332,7 @@ struct mhi_controller_config {
+  * @pm_mutex: Mutex for suspend/resume operation
+  * @pm_lock: Lock for protecting MHI power management state
+  * @timeout_ms: Timeout in ms for state transitions
++ * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
+  * @pm_state: MHI power management state
+  * @db_access: DB access states
+  * @ee: MHI device execution environment
+@@ -419,6 +422,7 @@ struct mhi_controller {
+ 	struct mutex pm_mutex;
+ 	rwlock_t pm_lock;
+ 	u32 timeout_ms;
++	u32 ready_timeout_ms;
+ 	u32 pm_state;
+ 	u32 db_access;
+ 	enum mhi_ee_type ee;
+-- 
+2.7.4
 
->
-> Commit 688d2e8de231 ("perf lock contention: Add -l/--lock-addr option")
-> introduced aggregation modes for "perf lock contention" and (potentially
-> inadvertently) changed the behaviour of "perf lock report" from
-> aggregate-by-caller to aggregate-by-address (making the prior behaviour
-> inaccessible).
-
-So it doesn't change the behavior of perf lock report.
-You're adding a new (default) feature for perf lock report
-to sort the output by caller.  And please note that caller
-info needs callstacks.  perf lock record adds it by default
-when it finds there are only lock contention tracepoints.
-But if it really has the old tracepoints, caller won't work
-unless you enabled callstack collection manually (-g).
-
->
-> Example aggregate-by-address output:
->
-> $ perf lock report -F acquired
-
-I guess you need -l option here.
-
->                 Name   acquired
->
->          event_mutex         34
->                              21
->                               1
-
-This is because you used contention tracepoints
-and they don't have lock names.
-
->
-> Example aggregate-by-caller output:
->
-> $ perf lock report -F acquired
->                 Name   acquired
->
->  perf_trace_init+...         34
->  lock_mm_and_find...         20
->  inherit_event.co...          1
->     do_madvise+0x1f8          1
-
-Maybe it's ok to change the default behavior for contention
-tracepoints.  But when lockdep tracepoints are available
-it should use the existing addr (symbol) mode.
-
->
-> Cc: stable@kernel.org
-> Fixes: 688d2e8de231 ("perf lock contention: Add -l/--lock-addr option")
-
-So, I don't think this is a fix.
-
-Thanks,
-Namhyung
-
-
-> Signed-off-by: Nick Forrington <nick.forrington@arm.com>
-> ---
->  tools/perf/Documentation/perf-lock.txt |  4 ++++
->  tools/perf/builtin-lock.c              | 24 +++++++++++++++++++++---
->  2 files changed, 25 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-> index 503abcba1438..349333acbbfc 100644
-> --- a/tools/perf/Documentation/perf-lock.txt
-> +++ b/tools/perf/Documentation/perf-lock.txt
-> @@ -80,6 +80,10 @@ REPORT OPTIONS
->  --combine-locks::
->         Merge lock instances in the same class (based on name).
->
-> +-l::
-> +--lock-addr::
-> +       Show lock contention stat by address
-> +
->  -t::
->  --threads::
->      The -t option is to show per-thread lock stat like below:
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index fa7419978353..3aa8ba5ad928 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -78,7 +78,7 @@ struct callstack_filter {
->
->  static struct lock_filter filters;
->
-> -static enum lock_aggr_mode aggr_mode = LOCK_AGGR_ADDR;
-> +static enum lock_aggr_mode aggr_mode = LOCK_AGGR_CALLER;
->
->  static bool needs_callstack(void)
->  {
-> @@ -1983,8 +1983,8 @@ static int __cmd_report(bool display_info)
->         if (select_key(false))
->                 goto out_delete;
->
-> -       if (show_thread_stats)
-> -               aggr_mode = LOCK_AGGR_TASK;
-> +       aggr_mode = show_thread_stats ? LOCK_AGGR_TASK :
-> +               show_lock_addrs ? LOCK_AGGR_ADDR : LOCK_AGGR_CALLER;
->
->         err = perf_session__process_events(session);
->         if (err)
-> @@ -2008,6 +2008,19 @@ static void sighandler(int sig __maybe_unused)
->  {
->  }
->
-> +static int check_lock_report_options(const struct option *options,
-> +                                    const char * const *usage)
-> +{
-> +       if (show_thread_stats && show_lock_addrs) {
-> +               pr_err("Cannot use thread and addr mode together\n");
-> +               parse_options_usage(usage, options, "threads", 0);
-> +               parse_options_usage(NULL, options, "lock-addr", 0);
-> +               return -1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int check_lock_contention_options(const struct option *options,
->                                          const char * const *usage)
->
-> @@ -2589,6 +2602,7 @@ int cmd_lock(int argc, const char **argv)
->         /* TODO: type */
->         OPT_BOOLEAN('c', "combine-locks", &combine_locks,
->                     "combine locks in the same class"),
-> +       OPT_BOOLEAN('l', "lock-addr", &show_lock_addrs, "show lock stats by address"),
->         OPT_BOOLEAN('t', "threads", &show_thread_stats,
->                     "show per-thread lock stats"),
->         OPT_INTEGER('E', "entries", &print_nr_entries, "display this many functions"),
-> @@ -2680,6 +2694,10 @@ int cmd_lock(int argc, const char **argv)
->                         if (argc)
->                                 usage_with_options(report_usage, report_options);
->                 }
-> +
-> +               if (check_lock_report_options(report_options, report_usage) < 0)
-> +                       return -1;
-> +
->                 rc = __cmd_report(false);
->         } else if (!strcmp(argv[0], "script")) {
->                 /* Aliased to 'perf script' */
-> --
-> 2.42.0
->
