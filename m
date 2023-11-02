@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDDC7DEFC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D8A7DEFDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346574AbjKBKTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
+        id S1346614AbjKBKWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346532AbjKBKTp (ORCPT
+        with ESMTP id S1346515AbjKBKWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:19:45 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C633133;
-        Thu,  2 Nov 2023 03:19:42 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso118132366b.2;
-        Thu, 02 Nov 2023 03:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698920380; x=1699525180; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uuZBj9+EEKQz0q3dUNT5o4x6WbUeH/U0PGQKyAEqkEc=;
-        b=POQjGVDce8MjoOmq7BrKKNyeZjm32Z2HzLizBk+qciXNcPXbFhQ97/2USn6EBesqm4
-         WrUqiHBnpWDtxUO2IwHKJ9TQ7Y49lxfDZu/PRc7UwRWBR73HsFn4TpKT4WHXOe90bauh
-         mSmApu3iFBPtjNG+9fyZuHwIpiqalyGxLQ3EV5B1veW4zDSUQq8p7mn0/vQLbOsg0iFZ
-         4OQga69bec5Upq8IzksHnfmXrl+bOjYIaWBFgpn6P1t2BsxV5g4v/ZDykyCVJbR+jy4t
-         mru1log3fbF1qZDRxdhiH7e5aU1S7PiMBeqgLWIkRrwUPxt8mlfCQOJi6ssXJknXXDui
-         qmsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698920380; x=1699525180;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uuZBj9+EEKQz0q3dUNT5o4x6WbUeH/U0PGQKyAEqkEc=;
-        b=AxsIarOwF7r6yjaLEt5NGgn/ZfACYN70fXWAVR56c+tyl9x5iFV9kxlHMrEMP5PxSk
-         FOfYj6B4I3UmHrKvxpSFhK+Hp0SBJIiQ8LkhtI2K1T22dDkd7+k9GRsmJ+mbYyHCZSgK
-         GNb7vi+BGpENbPrQ67Bje9GqzKfQTTTk97nWmAkms6dvzGlHPEXuq2BKFWKRnfjswIy2
-         rBuAFCy70W8V7CORxMedhnxW/fyKj4uCmfXtyxie+EyucR+eW20C7qSbanlWmqQuTflf
-         98VjjIZgvBmnEmOlgNjzf/OO7799v2Jim0Gt80vfXp5knNlZVTNFHjLuCxsfmHkbCZM0
-         rX6w==
-X-Gm-Message-State: AOJu0YyiBjsvJJ8Nr1HHEA3foa9+V+hJJz5UaOj1m7lleJUZnkXsaGHM
-        WKsP2h3AZb7OncQ+iy3n6g==
-X-Google-Smtp-Source: AGHT+IHd1YNak3qXuSJPLwTcxNpWToSodRjeM6x9b8vGCYHp3N6Zam2SmnvSxbcx3tezAdJiKLw5fw==
-X-Received: by 2002:a17:907:78b:b0:9d3:8d1e:cf0 with SMTP id xd11-20020a170907078b00b009d38d1e0cf0mr3536377ejb.54.1698920380456;
-        Thu, 02 Nov 2023 03:19:40 -0700 (PDT)
-Received: from p183 ([46.53.253.86])
-        by smtp.gmail.com with ESMTPSA id ch26-20020a170906c2da00b009add084a00csm944494ejb.36.2023.11.02.03.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 03:19:39 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 13:19:36 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Sourav Panda <souravpanda@google.com>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, david@redhat.com,
-        rdunlap@infradead.org, chenlinxuan@uniontech.com,
-        yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com,
-        bhelgaas@google.com, ivan@cloudflare.com,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        vbabka@suse.cz, Liam.Howlett@oracle.com, surenb@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org, willy@infradead.org,
-        weixugc@google.com
-Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
-Message-ID: <8fde83a8-aece-4e99-a9f8-1bcaba7ea246@p183>
-References: <20231101230816.1459373-1-souravpanda@google.com>
- <20231101230816.1459373-2-souravpanda@google.com>
+        Thu, 2 Nov 2023 06:22:41 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C9112;
+        Thu,  2 Nov 2023 03:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1698920556; x=1730456556;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QTIJe6fBmHZ5pDGO2297HJQPTJ63MepYsAuffQjdfjA=;
+  b=QHqi45Dbvzr6AK7DUY+wpj/871k8GYVEkDPXmZQI/oMO4I2TTSBw5swQ
+   1AVxlswINeOFzb7tqhkgOiXMaBiqRX1r79SemgNjfGIzgK8oPTOtpDf1W
+   y+JY1F65YotJoMk4+deRpqbtf1syCqQ1eUMbfavMX1dj8ajNHVz1vll3r
+   xR3RIn1sleUy0cLvzVr02Fbt4/GySTJZrxgIA9qfs8dVWwZE/ElgeDZ0o
+   SfbuyvyiUTE89Meb4WXGHP4h3ZG9oadeOIX/IauMx1qgGkZri8BAFnhqc
+   jU/KUv4Pf+mxWdSRMxjPfjSMbWCK6KUWqU5hu+dYslCZbIDYYdSeYQkwN
+   g==;
+X-CSE-ConnectionGUID: dttG3pA+QG+SpyyA/RvAEA==
+X-CSE-MsgGUID: fmLvno0mTHGxaLzBwfDWtA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="asc'?scan'208";a="241755710"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Nov 2023 03:22:35 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 2 Nov 2023 03:22:18 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 2 Nov 2023 03:22:16 -0700
+Date:   Thu, 2 Nov 2023 10:21:51 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+CC:     Conor Dooley <conor@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        Xiao Wang <xiao.w.wang@intel.com>,
+        Evan Green <evan@rivosinc.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 0/5] riscv: Add fine-tuned checksum functions
+Message-ID: <20231102-express-deplete-4dd19e21a82c@wendy>
+References: <20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com>
+ <20231101-palace-tightly-97a1d35a4597@spud>
+ <ZUKFkn/PzOjw129p@ghost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iP257PpdxnYzWyml"
 Content-Disposition: inline
-In-Reply-To: <20231101230816.1459373-2-souravpanda@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <ZUKFkn/PzOjw129p@ghost>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,8 +80,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 04:08:16PM -0700, Sourav Panda wrote:
-> +void __init mod_node_early_perpage_metadata(int nid, long delta);
-> +void __init store_early_perpage_metadata(void);
+--iP257PpdxnYzWyml
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Section markers are useless with prototypes.
+On Wed, Nov 01, 2023 at 10:06:26AM -0700, Charlie Jenkins wrote:
+> On Wed, Nov 01, 2023 at 11:50:46AM +0000, Conor Dooley wrote:
+> > On Tue, Oct 31, 2023 at 05:18:50PM -0700, Charlie Jenkins wrote:
+> > > Each architecture generally implements fine-tuned checksum functions =
+to
+> > > leverage the instruction set. This patch adds the main checksum
+> > > functions that are used in networking.
+> > >=20
+> > > This patch takes heavy use of the Zbb extension using alternatives
+> > > patching.
+> > >=20
+> > > To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
+> > > and RISCV_CHECKSUM_KUNIT.
+> > >=20
+> > > I have attempted to make these functions as optimal as possible, but I
+> > > have not ran anything on actual riscv hardware. My performance testing
+> > > has been limited to inspecting the assembly, running the algorithms on
+> > > x86 hardware, and running in QEMU.
+> > >=20
+> > > ip_fast_csum is a relatively small function so even though it is
+> > > possible to read 64 bits at a time on compatible hardware, the
+> > > bottleneck becomes the clean up and setup code so loading 32 bits at a
+> > > time is actually faster.
+> > >=20
+> > > Relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@=
+rivosinc.com/
+> >=20
+> > I coulda sworn I reported build issues against the v8 of this series
+> > that are still present in this v9. For example:
+> > https://patchwork.kernel.org/project/linux-riscv/patch/20231031-optimiz=
+e_checksum-v9-3-ea018e69b229@rivosinc.com/
+
+> You did, and I fixed the build issues. This is another instance of how
+> Patchwork reports the results of the previous build before the new build
+> completes. Patchwork was very far behind so it took around 15 hours for
+> the result to be ready.
+
+:clown_face:
+
+> There are some miscellaneous warnings in random
+> drivers that I don't think can be attributed to this patch.
+
+Yeah, there sometimes are warnings that seem spurious when you touch a
+bunch of header files. I'm not really sure how to improve on that, since
+it was newly introduced. My theory is that how we do a build of commit
+A, then commit A~1 and then commit A again & take the difference between
+the 2nd and 3rd builds (which should both be partial rebuilds) is not as
+symmetrical as I might've thought and is the source of those seemingly
+unrelated issues that come up from time to time.
+
+--iP257PpdxnYzWyml
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUN4PwAKCRB4tDGHoIJi
+0jV3AP9c6KociGHuayEHtzK5fniiLEgkWkN9CfAqobQ+jqH0lAEA7HISbiX11E5K
+Exvq77KvbRkFrOWUcY+p5/1Ke/8UYwU=
+=M/iI
+-----END PGP SIGNATURE-----
+
+--iP257PpdxnYzWyml--
