@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B777DFC4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3FC7DFC2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377456AbjKBWUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S1377442AbjKBWMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 18:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjKBWUE (ORCPT
+        with ESMTP id S229448AbjKBWML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:20:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC33F0;
-        Thu,  2 Nov 2023 15:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698963598; x=1730499598;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pOomK60vReoHoxtpV622grZQ+xKJAZalF61nf6xRPAw=;
-  b=JayFoCKIfHsNbnTUatfzK6rIetAxVx/N6+yf2Dz3TIMj5bqpBwXj0c97
-   ormbuzHvE9KS1Sr5wClAf+fRG6i9uo9vkXjtKzeLffGZvx+Il8kEDgYNB
-   lH74c9RbilYZ8umnzGrajLlTWw5+/qR2omXql6P+w5EWeIqpzKAZnhQU6
-   oEWvnreesG7OXyxWZ76s7gsma3ZCbPBLBxIirldTdD3lzks4fBrlKfZYF
-   5dcQO+U5st6mXBS4jqQaE3ETAkdW5FCrRdQxOECwSd0zvi5zNmU07f9Fv
-   VaB+qnrdESJ81tCN32ntXLfJ1dJuYhlJxaHQMP8+yFibcYL6NUbg5VJ1w
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="387718234"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="387718234"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 15:11:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="885020179"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="885020179"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 02 Nov 2023 15:11:37 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyfuX-0001ui-02;
-        Thu, 02 Nov 2023 22:11:33 +0000
-Date:   Fri, 3 Nov 2023 06:11:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Viacheslav Bocharov <adeep@lexina.in>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 2/4] firmware: meson_sm: Add chipid number sysfs entry
-Message-ID: <202311030513.HxyDUCuc-lkp@intel.com>
-References: <20231102074916.3280809-3-adeep@lexina.in>
+        Thu, 2 Nov 2023 18:12:11 -0400
+Received: from mx2-at.ubimet.com (mx2-at.ubimet.com [141.98.226.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A1D191;
+        Thu,  2 Nov 2023 15:12:05 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mx2-at.ubimet.com (Postfix) with ESMTP id 9CEC0811B6;
+        Thu,  2 Nov 2023 22:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ubimet.com;
+        s=20200131mdel; t=1698963123;
+        bh=Ts6HnFX2DYnQcX6TpBcPSGG49aedaASoj32Lwm6JRFc=;
+        h=Date:From:Cc:Subject:From;
+        b=EJO0gnteUdg+rCd3pHXeI1ZYTIkkKlnBI0DP2m7zC7T612GQRuPnkyOIRSA8k2B+s
+         snTppcX+bvonDA0ZD7W0poGzDZXbtFjocYibN1c933Rc1uK4A/dhf99a/V9RaQ4s0d
+         UbxK4xWPVwpXN6S6np2U/h81jeGqIyZTHfAgsTj+MLcCEPVFbVe7emFAtqGSJTqhRz
+         YCPigM/HRIsLswsUitbN7bKjqmGLCScBtujbHNW/5HnBHxwt0BVCrdqspNrSK3vBtm
+         jxEEBOZOFsYG2mgXOAeTgWqKp0ksUTInwl7HgCJFybbk2XD84B2EghJYw2PeCvk9H3
+         hW61f5fkqQWkg==
+Received: from mx2-at.ubimet.com ([127.0.0.1])
+        by localhost (mx02.dmz.dc.at.ubimet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id OHgfwoM8Xor2; Thu,  2 Nov 2023 22:12:03 +0000 (UTC)
+Received: from zimbra-mta01.ext.dc.at.ubimet.com (zimbra-mta01.ext.dc.at.ubimet.com [10.1.18.22])
+        by mx2-at.ubimet.com (Postfix) with ESMTPS id 86E7380BD8;
+        Thu,  2 Nov 2023 22:12:03 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra-mta01.ext.dc.at.ubimet.com (Postfix) with ESMTP id 6945E8089B;
+        Thu,  2 Nov 2023 22:12:03 +0000 (UTC)
+Received: from zimbra-mta01.ext.dc.at.ubimet.com ([127.0.0.1])
+ by localhost (zimbra-mta01.ext.dc.at.ubimet.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id KtiZGBuFMCmH; Thu,  2 Nov 2023 22:12:02 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra-mta01.ext.dc.at.ubimet.com (Postfix) with ESMTP id 40BDC8089D;
+        Thu,  2 Nov 2023 22:12:02 +0000 (UTC)
+X-Virus-Scanned: amavis at zimbra-mta01.ext.dc.at.ubimet.com
+Received: from zimbra-mta01.ext.dc.at.ubimet.com ([127.0.0.1])
+ by localhost (zimbra-mta01.ext.dc.at.ubimet.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id ZX0k2fHRKcft; Thu,  2 Nov 2023 22:12:02 +0000 (UTC)
+Received: from pcn112 (unknown [10.15.100.34])
+        by zimbra-mta01.ext.dc.at.ubimet.com (Postfix) with ESMTPSA id 1A12A8089B;
+        Thu,  2 Nov 2023 22:12:01 +0000 (UTC)
+Date:   Thu, 2 Nov 2023 23:11:30 +0100
+From:   =?UTF-8?B?Sm/Do28=?= Rodrigues <jrodrigues@ubimet.com>
+Cc:     =?UTF-8?B?Sm/Do28=?= Rodrigues <jrodrigues@ubimet.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ARM: dts: imx: tqma7: add lm75a sensor (rev. 01xxx)
+Message-ID: <20231102231130.13ca0513@pcn112>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231102074916.3280809-3-adeep@lexina.in>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viacheslav,
+From: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
 
-kernel test robot noticed the following build errors:
+TQMa7x (revision 01xxx) uses a LM75A temperature sensor.
+The two sensors use different I2C addresses, so we can set both sensors
+simultaneously.
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v6.6 next-20231102]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
+---
+ arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Viacheslav-Bocharov/firmware-meson-sm-change-sprintf-to-scnprintf/20231102-172556
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20231102074916.3280809-3-adeep%40lexina.in
-patch subject: [PATCH 2/4] firmware: meson_sm: Add chipid number sysfs entry
-config: arm64-randconfig-003-20231103 (https://download.01.org/0day-ci/archive/20231103/202311030513.HxyDUCuc-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311030513.HxyDUCuc-lkp@intel.com/reproduce)
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi b/arch/arm/boot/dts/=
+nxp/imx/imx7-tqma7.dtsi
+index fe42b0a4683..3fc3130f9de 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
+@@ -128,11 +128,16 @@ vgen6_reg: vldo4 {
+ 		};
+ 	};
+=20
+-	/* NXP SE97BTP with temperature sensor + eeprom */
++	/* LM75A temperature sensor, TQMa7x 01xx */
++	lm75a: temperature-sensor@48 {
++		compatible =3D "national,lm75a";
++		reg =3D <0x48>;
++	};
++
++	/* NXP SE97BTP with temperature sensor + eeprom, TQMa7x 02xx */
+ 	se97b: temperature-sensor-eeprom@1e {
+ 		compatible =3D "nxp,se97b", "jedec,jc-42.4-temp";
+ 		reg =3D <0x1e>;
+-		status =3D "okay";
+ 	};
+=20
+ 	/* ST M24C64 */
+--=20
+2.25.1
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311030513.HxyDUCuc-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/firmware/meson/meson_sm.c: In function 'chipid_show':
->> drivers/firmware/meson/meson_sm.c:315:17: error: 'ch' undeclared (first use in this function)
-     315 |                 ch = (uint8_t *)(id_buf + 4);
-         |                 ^~
-   drivers/firmware/meson/meson_sm.c:315:17: note: each undeclared identifier is reported only once for each function it appears in
->> drivers/firmware/meson/meson_sm.c:316:22: error: 'i' undeclared (first use in this function)
-     316 |                 for (i = 0; i < 12; i++)
-         |                      ^
-
-
-vim +/ch +315 drivers/firmware/meson/meson_sm.c
-
-   277	
-   278	static ssize_t chipid_show(struct device *dev, struct device_attribute *attr,
-   279				 char *buf)
-   280	{
-   281		struct platform_device *pdev = to_platform_device(dev);
-   282		struct meson_sm_firmware *fw;
-   283		uint8_t *id_buf;
-   284		int ret;
-   285	
-   286		fw = platform_get_drvdata(pdev);
-   287	
-   288		id_buf = kmalloc(SM_CHIP_ID_LENGTH, GFP_KERNEL);
-   289		if (!id_buf)
-   290			return -ENOMEM;
-   291	
-   292		ret = meson_sm_call_read(fw, id_buf, SM_CHIP_ID_LENGTH, SM_GET_CHIP_ID,
-   293					 2, 0, 0, 0, 0);
-   294		if (ret < 0) {
-   295			kfree(id_buf);
-   296			return ret;
-   297		}
-   298	
-   299		int version = *((unsigned int *)id_buf);
-   300	
-   301		if (version == 2)
-   302			ret = scnprintf(buf, PAGE_SIZE, "%16phN\n", &id_buf[SM_CHIP_ID_OFFSET]);
-   303		else {
-   304			/**
-   305			 * Legacy 12-byte chip ID read out, transform data
-   306			 * to expected order format.
-   307			 */
-   308			uint8_t *buff;
-   309	
-   310			buff = kmalloc(SM_CHIP_ID_LENGTH, GFP_KERNEL);
-   311			if (!buff)
-   312				return -ENOMEM;
-   313			((uint32_t *)buff)[0] = 0; // CPU_ID is empty
-   314			/* Transform into expected order for display */
- > 315			ch = (uint8_t *)(id_buf + 4);
- > 316			for (i = 0; i < 12; i++)
-   317				buff[i + 4] = ch[11 - i];
-   318			ret = scnprintf(buf, PAGE_SIZE, "%16phN\n", &buff);
-   319			kfree(buff);
-   320		}
-   321	
-   322		kfree(id_buf);
-   323		return ret;
-   324	}
-   325	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
