@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8DE7DF075
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F9B7DF088
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347251AbjKBKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        id S1347286AbjKBKrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347144AbjKBKp5 (ORCPT
+        with ESMTP id S1346647AbjKBKrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:45:57 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A037138;
-        Thu,  2 Nov 2023 03:45:55 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-540fb78363bso1288023a12.0;
-        Thu, 02 Nov 2023 03:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698921953; x=1699526753; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XjL++vViYaDWI2YtfsqD0BSYvDF9i1i+EJlr9p5UOfE=;
-        b=F2tlDWgX41deut2CSj+12fzK/QWrx3oA4+ifHIyxF3xUA7NbSZ6ioLx/2maxgrl9OC
-         5RaDeSvA36z7XohbDTypZE52hswz3FfgwAtwJXdb16gUgWmncARiSUH+ltaGEkpInwBa
-         makr6+EIW/5Q06AomJm2pVhBZwm4huvM+MmCGwp4/SLe37Awt0spXuBnt5b5s/rf3j/w
-         +alOAnEA03UAuiIPxChSIbM+LOtfQ0ICZPHfHtbGapbZjTj70JuCimMPbUZbp1kbrwY/
-         MN/wuy1B2JZZ07qJGCZgLfHFqgF8gDxubJLBnwiRW1uFBVg3xessjXv29EcRjZDpZE9t
-         hcAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698921953; x=1699526753;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XjL++vViYaDWI2YtfsqD0BSYvDF9i1i+EJlr9p5UOfE=;
-        b=ddAMrYiRTgTFvM6JVqw0GWmBgeTog8nYAVVA58kX4HsWcrd4D+yP5ibK72zBS8N5D4
-         KRDmvwlRTrrUj3f7jWnlRnQclsvbFVUM2W5LkOPM8NCpH+qiBkby/JXgYb4HP2bNnV09
-         bJKyo/wRUHD+7nljHQkKu9M57iCl/JxbGrVuSNm6ZW35rBv3cUQ6lZMczxWTmWyVXmCO
-         TlkSoNxdV77MELGPj//cQnWIUlebyjKx1xQLDEx/L9WXA2DY/LrejcZDX6eAi5WLtx30
-         bqf6FpD1MYIsCDBkLdMXAaQ2EPI65vFEp2cENy7d0Wpca6UEmXBwopJ+asfc7nyvk+/4
-         3ceQ==
-X-Gm-Message-State: AOJu0YzMlKq6ly8xvfSjb+pGPgBfgkihl68z0RjKc7XQdOwlNZTw9ydG
-        MdJHwsQNG1Mb/jxcaQ/RquU=
-X-Google-Smtp-Source: AGHT+IFj4hzOG4wSgbi6JwMGNCHVvolStewuOWlcu3gxxyWR4UxSSlAg7EilxG3Tyqxpq+VKL0er9w==
-X-Received: by 2002:a17:906:fe41:b0:9b6:aac1:6fa5 with SMTP id wz1-20020a170906fe4100b009b6aac16fa5mr4194163ejb.55.1698921953286;
-        Thu, 02 Nov 2023 03:45:53 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id j19-20020a170906279300b009ae69c303aasm976244ejc.137.2023.11.02.03.45.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 03:45:53 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 12:45:50 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <20231102104550.iuw5ozfchbm3u667@skbuf>
-References: <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
- <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
- <20231030222035.oqos7v7sdq5u6mti@skbuf>
- <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
- <20231030233334.jcd5dnojruo57hfk@skbuf>
- <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
- <CAJq09z4+3g7-h5asYPs_3g4e9NbPnxZQK+NxggYXGGxO+oHU1g@mail.gmail.com>
- <CACRpkdZ-M5mSUeVNhdahQRpm+oA1zfFkq6kZEbpp=3sKjdV9jA@mail.gmail.com>
- <CAJq09z6QwLNEc5rEGvE3jujZ-vb+vtUQLS-fkOnrdnYqk5KvxA@mail.gmail.com>
- <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
+        Thu, 2 Nov 2023 06:47:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3849012E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698922033; x=1730458033;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KH7vT1lEeEU0uB3WixM0UBZSUFvdyaK2lluLFuQhe+k=;
+  b=lKuEEFJdHkRmcgtd8rR6DkcA+jOol3qcjCj2ZBi9f4LR4uyXMrXx+wPw
+   2S6TMY/3mgXxJxIgoBKAnzasuCQS4vRPDOtia0r/0VxSMR44Qk4nPTsXq
+   /mp0TlWWz4g39jSR69jgvHT5ls6IOienVpYexLgLq0G4pTfbVvjtxQw/+
+   X93G5k+vr9rqH7S+YSqL7WKjMiqnuABhTW9aIsmPGRI2uzA3Hv58t2tuF
+   P23J52xCzGYKGmX7VUmia1e8wkdm018AfIUirwNhJiZA/eRnAyKNXxct3
+   bEONiqsOU/mjtRtE7/3Jqvlimkc0KSTJ30Z2sQc2ShEojlGx0vxDlgEBN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="419795664"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="419795664"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 03:47:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="790351817"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="790351817"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 02 Nov 2023 03:47:09 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyVEA-0001Q4-1m;
+        Thu, 02 Nov 2023 10:47:06 +0000
+Date:   Thu, 2 Nov 2023 18:46:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     oe-kbuild-all@lists.linux.dev, nouveau@lists.freedesktop.org,
+        Danilo Krummrich <dakr@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Message-ID: <202311021833.q8aYDJnr-lkp@intel.com>
+References: <20231101233113.8059-10-dakr@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231101233113.8059-10-dakr@redhat.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 09:26:50PM +0100, Linus Walleij wrote:
-> On Wed, Nov 1, 2023 at 1:35 PM Luiz Angelo Daros de Luca <luizluca@gmail.com> wrote:
-> 
-> > Sorry but I noticed no issues:
-> 
-> Don't be sorry about that, it's good news because now I know
-> where to look, i.e. in the ethernet controller.
+Hi Danilo,
 
-Don't look too deeply into the code just yet, just try to see what
-happens with dsa_loop on an identical Ethernet controller that isn't
-physically attached to a switch.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on 3c6c7ca4508b6cb1a033ac954c50a1b2c97af883]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-gpuvm-convert-WARN-to-drm_WARN-variants/20231102-073332
+base:   3c6c7ca4508b6cb1a033ac954c50a1b2c97af883
+patch link:    https://lore.kernel.org/r/20231101233113.8059-10-dakr%40redhat.com
+patch subject: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count drm_gpuvm structures
+config: arc-allmodconfig (https://download.01.org/0day-ci/archive/20231102/202311021833.q8aYDJnr-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021833.q8aYDJnr-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021833.q8aYDJnr-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/drm_gpuvm.c:810: warning: expecting prototype for drm_gpuvm_bo_put(). Prototype was for drm_gpuvm_put() instead
+
+
+vim +810 drivers/gpu/drm/drm_gpuvm.c
+
+   801	
+   802	/**
+   803	 * drm_gpuvm_bo_put() - drop a struct drm_gpuvm reference
+   804	 * @gpuvm: the &drm_gpuvm to release the reference of
+   805	 *
+   806	 * This releases a reference to @gpuvm.
+   807	 */
+   808	void
+   809	drm_gpuvm_put(struct drm_gpuvm *gpuvm)
+ > 810	{
+   811		if (gpuvm)
+   812			kref_put(&gpuvm->kref, drm_gpuvm_free);
+   813	}
+   814	EXPORT_SYMBOL_GPL(drm_gpuvm_put);
+   815	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
