@@ -2,108 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59377DF75E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4D77DF760
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376842AbjKBQHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        id S1376860AbjKBQH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjKBQHI (ORCPT
+        with ESMTP id S229468AbjKBQH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:07:08 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CFB12E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:07:00 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507a98517f3so1334068e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698941219; x=1699546019; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8E6OeBpp2Nw5yhR7KvCSLiTOkbzsJNh7XdGehlNCap0=;
-        b=w0kV1cxgdO6Q2demWTudaTzokyjn1ExUzSDzkEwkqdusoBP6MP95FESayN/+FXPN+o
-         NvQwtP8N5n9c/g6VAXa9WPkptzmVIAkIhEpr1U93wkq8//1eRAezfKghABvsQ9sWU/Xb
-         5jVmEnEwk8Gik39D46Pw7rXIzRnrF4aCb2YEz+ghgoNJ30gPx8xEqS6bY1cnCYA43keu
-         yVHPufrV5Xd8jJe3kOIpFbkgv1W0qqS64v8KVZ8AcRnb6f/4ydUkYnHY+VGk1iv1mA7M
-         FZ4w1IJFNChn/mQN+HbRilUC55qeF+av0KgnYkvJACARtqywU9B/3arNuDi3ZJ32MHpz
-         YKog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698941219; x=1699546019;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8E6OeBpp2Nw5yhR7KvCSLiTOkbzsJNh7XdGehlNCap0=;
-        b=Avji2+JIj2XXVmOZUW19mObdFQaGQHEgtmn7vOTIkUiYu3qVcaUWFf6u8Urd3YnHLK
-         KTERU56E7CN9+jZcY6tJR7NFeT+C6mFN/0QMfJXd/VaIhsNxn/vgqOixO+ZHfcAWlDuL
-         JrsR0qangd8oEZfB9wVfPMhxHyEkeNcwjMx+0Q+TzPnVDVR72YCQemVsMZxTk0G/ga6f
-         zlHBxpNFQijzZsKP3EnO0mqbPzvlzhMF+6fFbY7gFvWt68yfeLgBXbxVxDjIUwTLU5wx
-         bNFYSucL+lkWzHGCPLNfLf2DRWfB+Tzy390m0xvCDXuXZyfc+U3h/YPXyZNAFYdsYCW/
-         26XA==
-X-Gm-Message-State: AOJu0YxMOaGIyuLIfseu8byaQi6kP2HoSRR6yKpcuXMgDsH3c7HbQ7lv
-        yKXoVSnmP7k//Ow6kqao3vWfWA==
-X-Google-Smtp-Source: AGHT+IERusrAEl2wCCk+nZGgKzy1aZ+jO07Yst4DCgg7p/Ws1QjPmha88uJz6Mc/GI2rpyEOhAAyaQ==
-X-Received: by 2002:a05:6512:48d1:b0:500:bf33:3add with SMTP id er17-20020a05651248d100b00500bf333addmr13431425lfb.47.1698941218773;
-        Thu, 02 Nov 2023 09:06:58 -0700 (PDT)
-Received: from [192.168.67.140] (92.40.204.238.threembb.co.uk. [92.40.204.238])
-        by smtp.gmail.com with ESMTPSA id x3-20020a5d4903000000b0032d8034724esm2793705wrq.94.2023.11.02.09.06.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 09:06:57 -0700 (PDT)
-Message-ID: <ba16e523-82cf-47a3-8ed3-24ef116faf66@linaro.org>
-Date:   Thu, 2 Nov 2023 16:06:54 +0000
+        Thu, 2 Nov 2023 12:07:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537C98E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698941242; x=1730477242;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=FI+QUk14H8+YA+XATbyjLUs9MoqcwestBJaj56ELKDI=;
+  b=NcWk4Y5O/wBZ1IBKeYdekM0BueT+zF/3NNKUbHzH+HnxGGhYqG9XN1Sb
+   8jWti1sDEp2xSi/K0ZW0g1uTm7d2WQPCfUxk3376yqLGXqHkccmTjpYWt
+   PvK9vUbgxawfrGihed5Vme1q/dwDpQGxGE5OwTOMIM+YceSn22Cj3TSSf
+   vHXH6kXlpyV+26BXwWM5yOB+6+X2No5yIkETH+myLrQ9G2zfVl4fCmxUp
+   dx8NpQ5VXcGjj1KUNTb+ED/v0Xs2Bi+osnIq8PQgkpNTfb+i6REH+7N/j
+   YAwKOlCUikjO+owjLimf7LUpmhSmsrnb8e8kY1zwgXsFwOBoLKZtNvVma
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="392631017"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="392631017"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 09:07:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="831728894"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="831728894"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Nov 2023 09:07:13 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyaDv-0001d1-1R;
+        Thu, 02 Nov 2023 16:07:11 +0000
+Date:   Fri, 3 Nov 2023 00:06:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse:
+ incorrect type in argument 1 (different address spaces)
+Message-ID: <202311030051.n1J0KSmk-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: misc: eud: Add IRQ check for platform_get_irq()
-Content-Language: en-US
-To:     Chen Ni <nichen@iscas.ac.cn>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        quic_schowdhu@quicinc.com, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231102075113.1043358-1-nichen@iscas.ac.cn>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <20231102075113.1043358-1-nichen@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
+date:   4 months ago
+config: openrisc-randconfig-r132-20231102 (https://download.01.org/0day-ci/archive/20231103/202311030051.n1J0KSmk-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231103/202311030051.n1J0KSmk-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311030051.n1J0KSmk-lkp@intel.com/
 
-On 02/11/2023 07:51, Chen Ni wrote:
-> The function eud_probe() should check the return value of
-> platform_get_irq() for errors so as to not pass a negative value to
-> the devm_request_threaded_irq().
-> 
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     got void *kptr
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     got void *kptr
 
-Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
-> ---
->   drivers/usb/misc/qcom_eud.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/misc/qcom_eud.c b/drivers/usb/misc/qcom_eud.c
-> index 7f371ea1248c..26e9b8749d8a 100644
-> --- a/drivers/usb/misc/qcom_eud.c
-> +++ b/drivers/usb/misc/qcom_eud.c
-> @@ -205,6 +205,9 @@ static int eud_probe(struct platform_device *pdev)
->   		return PTR_ERR(chip->mode_mgr);
->   
->   	chip->irq = platform_get_irq(pdev, 0);
-> +	if (chip->irq < 0)
-> +		return chip->irq;
-> +
->   	ret = devm_request_threaded_irq(&pdev->dev, chip->irq, handle_eud_irq,
->   			handle_eud_irq_thread, IRQF_ONESHOT, NULL, chip);
->   	if (ret)
+vim +27 drivers/gpu/drm/loongson/lsdc_benchmark.c
+
+    12	
+    13	typedef void (*lsdc_copy_proc_t)(struct lsdc_bo *src_bo,
+    14					 struct lsdc_bo *dst_bo,
+    15					 unsigned int size,
+    16					 int n);
+    17	
+    18	static void lsdc_copy_gtt_to_vram_cpu(struct lsdc_bo *src_bo,
+    19					      struct lsdc_bo *dst_bo,
+    20					      unsigned int size,
+    21					      int n)
+    22	{
+    23		lsdc_bo_kmap(src_bo);
+    24		lsdc_bo_kmap(dst_bo);
+    25	
+    26		while (n--)
+  > 27			memcpy_toio(dst_bo->kptr, src_bo->kptr, size);
+    28	
+    29		lsdc_bo_kunmap(src_bo);
+    30		lsdc_bo_kunmap(dst_bo);
+    31	}
+    32	
+    33	static void lsdc_copy_vram_to_gtt_cpu(struct lsdc_bo *src_bo,
+    34					      struct lsdc_bo *dst_bo,
+    35					      unsigned int size,
+    36					      int n)
+    37	{
+    38		lsdc_bo_kmap(src_bo);
+    39		lsdc_bo_kmap(dst_bo);
+    40	
+    41		while (n--)
+  > 42			memcpy_fromio(dst_bo->kptr, src_bo->kptr, size);
+    43	
+    44		lsdc_bo_kunmap(src_bo);
+    45		lsdc_bo_kunmap(dst_bo);
+    46	}
+    47	
 
 -- 
-// Caleb (they/them)
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
