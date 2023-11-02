@@ -2,177 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B1F7DEE17
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0067DEE1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbjKBIT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        id S234718AbjKBIYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjKBITZ (ORCPT
+        with ESMTP id S229526AbjKBIYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:19:25 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F70128
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:19:18 -0700 (PDT)
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7D10B3FA95
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698913157;
-        bh=xOlOPXtFC14sPmMq/gNPsGSMRG8MAsaEPYDXA9iMskI=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=XFM8ZEbdjREn5zcnQZEiu0vvjMll9NoZtOFl/83AzBJIvhf9woTmKljMjI6o7PgJv
-         9OcFh1DgP7WzT+NtoZF2mvicXBARgVv7/SImHhg39JCRNwZ+jj6F+OxksQbQ53Qy18
-         IlmBQWS3e6CGpKMKk20XhNCIyvCt4GfMnFx9sUv4tD/HsF5tOFmCFzM4/hCUZkrVLU
-         K5Uf3Kxzi5Ah9uFQ0qW40VyNiNMOxBaVuqfupd72IwQmD1wCZEwH9qwVwHOVqcYT4O
-         DzDzghjT3M0L1RGaHCLVpsimWol5pCWXhrfuat6qqcppkkgDPJi+8iDGqVB3XYhuz+
-         YaqU88uj+sS7g==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9d2ab03a586so42428266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:19:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698913156; x=1699517956;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xOlOPXtFC14sPmMq/gNPsGSMRG8MAsaEPYDXA9iMskI=;
-        b=IC/7YAvSJ9TB9QvUAwt5jvZtO+ujNF61x596kVt+Ak4bFP+/g0I3Z8eumnlbURsgOk
-         0JUOtSUE0DZFq7b+RiGjY4+64mGY6fUbVOYIDcIMihGvtltwcNoYmRMnuvQ+HauPaaDU
-         zfjew4U7TlFxG6N+r2CQZAAMP+axxz19vTNjhCmOSJ9R2/WGao2urr4Xn2UTmLrTEZrx
-         DNNcSQ68JlKuAKOsj5tr+6+cwLYFYraNwF00c34DnKp1LBzaxFcX2iyWWqfMJdnYvYQy
-         DUNWGv38bCtTcVUXdKuJquY29t0iTCH+ahxOxCTRvY9Zk2pT920h5KLB3hBnbBZahMm4
-         6rXQ==
-X-Gm-Message-State: AOJu0Ywp3i7rz3T6QfHppYSHMxNyvxxFZKsMTc4tnKGqIhozAnz+qvyx
-        iDvzukwgawAOMYRKN0q5y6ITyUfXhurN+oBVlkOEZzdFCfBca0f1PjgnhQpTSRQHQlMV9bYSLWT
-        Edmtlrzg8BXziCWy5zQG40C4SRwcBgfl8k3FJLseQdR+DL/Rbdw==
-X-Received: by 2002:a17:906:1915:b0:9bd:a73a:7a0a with SMTP id a21-20020a170906191500b009bda73a7a0amr2841631eje.58.1698913156302;
-        Thu, 02 Nov 2023 01:19:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEHH7IwIDgeKMPODTE0ZBXQTLEF6du+DVJY7/Nuswo3vcdrTQrgwmSzdl0XspVexrQnCQ+rxQ==
-X-Received: by 2002:a17:906:1915:b0:9bd:a73a:7a0a with SMTP id a21-20020a170906191500b009bda73a7a0amr2841622eje.58.1698913155904;
-        Thu, 02 Nov 2023 01:19:15 -0700 (PDT)
-Received: from localhost (host-79-33-130-95.retail.telecomitalia.it. [79.33.130.95])
-        by smtp.gmail.com with ESMTPSA id pv21-20020a170907209500b0099c53c4407dsm824959ejb.78.2023.11.02.01.19.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 01:19:15 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 09:19:14 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-modules@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        zhumao001@208suo.com, yangtiezhu@loongson.cn, ojeda@kernel.org
-Subject: Re: [GIT PULL] Modules changes for v6.7-rc1
-Message-ID: <ZUNbgnCEXC92GLZm@gpd>
-References: <ZUKxT1CL9/0Dn6NE@bombadil.infradead.org>
- <CAHk-=whFXNYXG2ES8HdoaMC=O4bakMXGZezmoqA3SXwn4xJUPQ@mail.gmail.com>
- <CAHk-=wi=goCaTm6ZOKzm_ztky9ZT-vuGDWv39vVdtQT+oW=zEg@mail.gmail.com>
- <ZUNPy/sMRxdo+o2w@gpd>
+        Thu, 2 Nov 2023 04:24:10 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7844D112
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:24:04 -0700 (PDT)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1FF117E2;
+        Thu,  2 Nov 2023 09:23:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698913424;
+        bh=dY5VRG4sVx51nuZ109mj20vCcQCtdywyr1QIsou8CtI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HUpwC3jPIFc0KkExQUPR9vaqPIus1tFugm5UEOQV8Cju9QQ/IMqBTQWNJW2YchODt
+         O1UrFQcWRNLsmForvO44X4VNGhoeojjYkNp5ROKhhK85PFtitsvUX2qdTRFvwwpTC9
+         fcd6aR39OMhO5gs1Fo+XI2+h5/v7QP32c5IJbTeo=
+Message-ID: <4fc5c307-082d-4c72-90c8-7bd7efcd2184@ideasonboard.com>
+Date:   Thu, 2 Nov 2023 10:23:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZUNPy/sMRxdo+o2w@gpd>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/10] drm/tidss: Fix atomic_flush check
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
+ <20231101-tidss-probe-v1-10-45149e0f9415@ideasonboard.com>
+ <20231101145658.GZ12764@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231101145658.GZ12764@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 08:29:17AM +0100, Andrea Righi wrote:
-> On Wed, Nov 01, 2023 at 09:21:09PM -1000, Linus Torvalds wrote:
-> > On Wed, 1 Nov 2023 at 21:02, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > kmalloc() isn't just about "use physically contiguous allocations".
-> > > It's also more memory-efficient, and a *lot* faster than vmalloc(),
-> > > which has to play VM tricks.
-> > 
-> > I've pulled this, but I think you should do something like the
-> > attached (UNTESTED!) patch.
-> > 
-> >                 Linus
+On 01/11/2023 16:56, Laurent Pinchart wrote:
+> Hi Tomi,
 > 
-> Looks good to me, I'll give it a try ASAP.
+> Thank you for the patch.
 > 
-> -Andrea
+> On Wed, Nov 01, 2023 at 11:17:47AM +0200, Tomi Valkeinen wrote:
+>> tidss_crtc_atomic_flush() checks if the crtc is enabled, and if not,
+>> returns immediately as there's no reason to do any register changes.
+>>
+>> However, the code checks for 'crtc->state->enable', which does not
+>> reflect the actual HW state. We should instead look at the
+>> 'crtc->state->active' flag.
+>>
+>> This causes the tidss_crtc_atomic_flush() to proceed with the flush even
+>> if the active state is false, which then causes us to hit the
+>> WARN_ON(!crtc->state->event) check.
+>>
+>> Fix this by checking the active flag, and while at it, fix the related
+>> debug print which had "active" and "needs modeset" wrong way.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>>   drivers/gpu/drm/tidss/tidss_crtc.c | 9 ++++-----
+>>   1 file changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/tidss/tidss_crtc.c b/drivers/gpu/drm/tidss/tidss_crtc.c
+>> index 5e5e466f35d1..4c7009a5d643 100644
+>> --- a/drivers/gpu/drm/tidss/tidss_crtc.c
+>> +++ b/drivers/gpu/drm/tidss/tidss_crtc.c
+>> @@ -169,13 +169,12 @@ static void tidss_crtc_atomic_flush(struct drm_crtc *crtc,
+>>   	struct tidss_device *tidss = to_tidss(ddev);
+>>   	unsigned long flags;
+>>   
+>> -	dev_dbg(ddev->dev,
+>> -		"%s: %s enabled %d, needs modeset %d, event %p\n", __func__,
+>> -		crtc->name, drm_atomic_crtc_needs_modeset(crtc->state),
+>> -		crtc->state->enable, crtc->state->event);
+>> +	dev_dbg(ddev->dev, "%s: %s active %d, needs modeset %d, event %p\n",
+>> +		__func__, crtc->name, crtc->state->active,
+>> +		drm_atomic_crtc_needs_modeset(crtc->state), crtc->state->event);
+> 
+> While at it, how about this ?
 
-Just tested this both with zstd and gzip module compression, all good.
+Why not. The active part won't be needed if we use 
+DRM_PLANE_COMMIT_ACTIVE_ONLY, though.
 
-You can add my:
+> 	dev_dbg(ddev->dev, "%s: %s is %sactive, %s modeset, event %p\n",
+> 		__func__, crtc->name, crtc->state->active ? "" : "not ",
+> 		drm_atomic_crtc_needs_modeset(crtc->state) ? "needs", "doesn't need",
+> 		crtc->state->event);
+> 
+>>   
+>>   	/* There is nothing to do if CRTC is not going to be enabled. */
+>> -	if (!crtc->state->enable)
+>> +	if (!crtc->state->active)
+> 
+> I think the drm_atomic_helper_commit_planes() helper will handle this if
+> you pass it the DRM_PLANE_COMMIT_ACTIVE_ONLY flag.
 
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
+I considered it, but it does a bit more, as it also affects the plane 
+updates. We specifically did not use DRM_PLANE_COMMIT_ACTIVE_ONLY as it 
+didn't work with DSS.
 
-Or if you need a proper paperwork:
+That said, I can't figure out what was the issue. It's possible the 
+issue was only on the older DSS HW, with omapdrm (tidss code was 
+originally somewhat based on omapdrm). I'm pretty sure the issue was 
+related to multi-display systems and the plane updates there. But I 
+don't have any multi-display board which uses tidss.
 
---
+So, I'll keep this patch, but add another on top, which uses 
+DRM_PLANE_COMMIT_ACTIVE_ONLY. Then it'll be easy to revert the 
+DRM_PLANE_COMMIT_ACTIVE_ONLY one if needed, while still keeping this fix.
 
-From: Andrea Righi <andrea.righi@canonical.com>
-Subject: [PATCH] module/decompress: use kvmalloc() consistently
-
-We consistently switched from kmalloc() to vmalloc() in module
-decompression to prevent potential memory allocation failures with large
-modules, however vmalloc() is not as memory-efficient and fast as
-kmalloc().
-
-Since we don't know in general the size of the workspace required by the
-decompression algorithm, it is more reasonable to use kvmalloc()
-consistently, also considering that we don't have special memory
-requirements here.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- kernel/module/decompress.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/module/decompress.c b/kernel/module/decompress.c
-index 4156d59be440..474e68f0f063 100644
---- a/kernel/module/decompress.c
-+++ b/kernel/module/decompress.c
-@@ -100,7 +100,7 @@ static ssize_t module_gzip_decompress(struct load_info *info,
- 	s.next_in = buf + gzip_hdr_len;
- 	s.avail_in = size - gzip_hdr_len;
- 
--	s.workspace = vmalloc(zlib_inflate_workspacesize());
-+	s.workspace = kvmalloc(zlib_inflate_workspacesize(), GFP_KERNEL);
- 	if (!s.workspace)
- 		return -ENOMEM;
- 
-@@ -138,7 +138,7 @@ static ssize_t module_gzip_decompress(struct load_info *info,
- out_inflate_end:
- 	zlib_inflateEnd(&s);
- out:
--	vfree(s.workspace);
-+	kvfree(s.workspace);
- 	return retval;
- }
- #elif defined(CONFIG_MODULE_COMPRESS_XZ)
-@@ -241,7 +241,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
- 	}
- 
- 	wksp_size = zstd_dstream_workspace_bound(header.windowSize);
--	wksp = vmalloc(wksp_size);
-+	wksp = kvmalloc(wksp_size, GFP_KERNEL);
- 	if (!wksp) {
- 		retval = -ENOMEM;
- 		goto out;
-@@ -284,7 +284,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
- 	retval = new_size;
- 
-  out:
--	vfree(wksp);
-+	kvfree(wksp);
- 	return retval;
- }
- #else
--- 
-2.40.1
+  Tomi
 
