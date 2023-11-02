@@ -2,166 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2727DEF0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E947DEF21
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345909AbjKBJiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S229913AbjKBJoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345914AbjKBJiG (ORCPT
+        with ESMTP id S229527AbjKBJoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:38:06 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46DE123
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:38:02 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4SLdkQ4QT7z9y19H;
-        Thu,  2 Nov 2023 17:24:46 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.48.131.78])
-        by APP2 (Coremail) with SMTP id GxC2BwDnibXJbUNl0QNYAw--.58857S3;
-        Thu, 02 Nov 2023 10:37:38 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
-        linux-kernel@vger.kernel.org (open list), patchwork@huawei.com
-Cc:     Wangkefeng <wangkefeng.wang@huawei.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        petr@tesarici.cz, Petr Tesarik <petrtesarik@huaweicloud.com>,
-        miaoxie@huawei.com, weiyongjun1@huawei.com, guohanjun@huawei.com,
-        huawei.libin@huawei.com, yuehaibing@huawei.com,
-        johnny.chenyi@huawei.com, leijitang@huawei.com, ming.fu@huawei.com,
-        zhujianwei7@huawei.com, linuxarm@huawei.com,
-        stable@vger.kernel.org, Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: [PATCH v2 1/1] swiotlb: do not free decrypted pages if dynamic
-Date:   Thu,  2 Nov 2023 10:36:49 +0100
-Message-Id: <20231102071821.431-2-petrtesarik@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231102071821.431-1-petrtesarik@huaweicloud.com>
-References: <20231102071821.431-1-petrtesarik@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 2 Nov 2023 05:44:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E33A6
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:44:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698918250; x=1730454250;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Ea9GVZRCrBex27NSc5HZBiLih1raUbhEfW1msJzzVrg=;
+  b=NWA/w0oEqDDXwCAO9ia7Ashj1GSPVhiNCROLIrKNzU5Gv5KsLOnZylsc
+   lWgC9+h8Az4bpGfAwF5LgJmtNiCN/CDrRIXgZNcVbgcaRC1QCjRkBeFK4
+   S3vxFT+1eW3M4Vva89ztrFvHVTJv5kGIJ6Zu1yQa2unJlpsFWh68Tuh+O
+   GM9+Z/lANweHKL56KsohXVDh5kmAgYM61Oj4umK7aBtwId8Z3QNHl2aDD
+   Hw56ZeU8+i56wIF8qaxQgGR8cnbdHnfym5huVbafPJw+RjNmhZWF4NsCl
+   NSuUpPgosOsjZIvUBGen7Mz73pTACdfzC9y1I+0dvyPk9rS63y/UjmWEO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="10204057"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="10204057"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 02:44:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="2378167"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 02 Nov 2023 02:44:09 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyUFC-0001LL-0O;
+        Thu, 02 Nov 2023 09:44:06 +0000
+Date:   Thu, 2 Nov 2023 17:43:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: kernel/bpf/cgroup_iter.c:336:41: warning: no previous declaration
+ for 'bpf_iter_css_next'
+Message-ID: <202311021749.8NSp1DM4-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwDnibXJbUNl0QNYAw--.58857S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF1xAw1Uury3ur47tw15CFg_yoW5CF1xpF
-        4fCr1Sgr98tFy7CrWfAF4kCF9xGws5urWUCFW3Xw1rZwn8WryIkr9rCw18uayfJF4kua17
-        JrW0v3WayrsrZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
-        ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-        v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-        JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-        kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
-        6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-        vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-        vjDU0xZFpf9x0JU7pnQUUUUU=
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix these two error paths:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+commit: 7251d0905e7518bcb990c8e9a3615b1bb23c78f2 bpf: Introduce css open-coded iterator kfuncs
+date:   13 days ago
+config: i386-randconfig-141-20231102 (https://download.01.org/0day-ci/archive/20231102/202311021749.8NSp1DM4-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021749.8NSp1DM4-lkp@intel.com/reproduce)
 
-1. When set_memory_decrypted() fails, pages may be left fully or partially
-   decrypted.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021749.8NSp1DM4-lkp@intel.com/
 
-2. Decrypted pages may be freed if swiotlb_alloc_tlb() determines that the
-   physical address is too high.
+All warnings (new ones prefixed by >>):
 
-To fix the first issue, call set_memory_encrypted() on the allocated region
-after a failed decryption attempt. If that also fails, leak the pages.
+   kernel/bpf/cgroup_iter.c:312:17: warning: no previous declaration for 'bpf_iter_css_new' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+                    ^~~~~~~~~~~~~~~~
+>> kernel/bpf/cgroup_iter.c:336:41: warning: no previous declaration for 'bpf_iter_css_next' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it)
+                                            ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/cgroup_iter.c:357:18: warning: no previous declaration for 'bpf_iter_css_destroy' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
+                     ^~~~~~~~~~~~~~~~~~~~
 
-To fix the second issue, check that the TLB physical address is below the
-requested limit before decrypting.
 
-Let the caller differentiate between unsuitable physical address (=> retry
-from a lower zone) and allocation failures (=> no point in retrying).
+vim +/bpf_iter_css_next +336 kernel/bpf/cgroup_iter.c
 
-Cc: stable@vger.kernel.org
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Fixes: 79636caad361 ("swiotlb: if swiotlb is full, fall back to a transient memory pool")
-Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
----
- kernel/dma/swiotlb.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+   335	
+ > 336	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it)
+   337	{
+   338		struct bpf_iter_css_kern *kit = (void *)it;
+   339	
+   340		if (!kit->start)
+   341			return NULL;
+   342	
+   343		switch (kit->flags) {
+   344		case BPF_CGROUP_ITER_DESCENDANTS_PRE:
+   345			kit->pos = css_next_descendant_pre(kit->pos, kit->start);
+   346			break;
+   347		case BPF_CGROUP_ITER_DESCENDANTS_POST:
+   348			kit->pos = css_next_descendant_post(kit->pos, kit->start);
+   349			break;
+   350		case BPF_CGROUP_ITER_ANCESTORS_UP:
+   351			kit->pos = kit->pos ? kit->pos->parent : kit->start;
+   352		}
+   353	
+   354		return kit->pos;
+   355	}
+   356	
+ > 357	__bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
+   358	{
+   359	}
+   360	
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index dff067bd56b1..0e1632f75421 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -558,29 +558,40 @@ void __init swiotlb_exit(void)
-  * alloc_dma_pages() - allocate pages to be used for DMA
-  * @gfp:	GFP flags for the allocation.
-  * @bytes:	Size of the buffer.
-+ * @phys_limit:	Maximum allowed physical address of the buffer.
-  *
-  * Allocate pages from the buddy allocator. If successful, make the allocated
-  * pages decrypted that they can be used for DMA.
-  *
-- * Return: Decrypted pages, or %NULL on failure.
-+ * Return: Decrypted pages, %NULL on allocation failure, or ERR_PTR(-EAGAIN)
-+ * if the allocated physical address was above @phys_limit.
-  */
--static struct page *alloc_dma_pages(gfp_t gfp, size_t bytes)
-+static struct page *alloc_dma_pages(gfp_t gfp, size_t bytes, u64 phys_limit)
- {
- 	unsigned int order = get_order(bytes);
- 	struct page *page;
-+	phys_addr_t paddr;
- 	void *vaddr;
- 
- 	page = alloc_pages(gfp, order);
- 	if (!page)
- 		return NULL;
- 
--	vaddr = page_address(page);
-+	paddr = page_to_phys(page);
-+	if (paddr + bytes - 1 > phys_limit) {
-+		__free_pages(page, order);
-+		return ERR_PTR(-EAGAIN);
-+	}
-+
-+	vaddr = phys_to_virt(paddr);
- 	if (set_memory_decrypted((unsigned long)vaddr, PFN_UP(bytes)))
- 		goto error;
- 	return page;
- 
- error:
--	__free_pages(page, order);
-+	/* Intentional leak if pages cannot be encrypted again. */
-+	if (!set_memory_encrypted((unsigned long)vaddr, PFN_UP(bytes)))
-+		__free_pages(page, order);
- 	return NULL;
- }
- 
-@@ -618,11 +629,7 @@ static struct page *swiotlb_alloc_tlb(struct device *dev, size_t bytes,
- 	else if (phys_limit <= DMA_BIT_MASK(32))
- 		gfp |= __GFP_DMA32;
- 
--	while ((page = alloc_dma_pages(gfp, bytes)) &&
--	       page_to_phys(page) + bytes - 1 > phys_limit) {
--		/* allocated, but too high */
--		__free_pages(page, get_order(bytes));
--
-+	while (IS_ERR(page = alloc_dma_pages(gfp, bytes, phys_limit))) {
- 		if (IS_ENABLED(CONFIG_ZONE_DMA32) &&
- 		    phys_limit < DMA_BIT_MASK(64) &&
- 		    !(gfp & (__GFP_DMA32 | __GFP_DMA)))
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
