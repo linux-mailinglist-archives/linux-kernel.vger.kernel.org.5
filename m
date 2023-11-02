@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E572E7DEB4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8E37DEB4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348379AbjKBDYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        id S1348388AbjKBDY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348330AbjKBDYv (ORCPT
+        with ESMTP id S1348366AbjKBDYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:24:51 -0400
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD6A113
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 20:24:44 -0700 (PDT)
+        Wed, 1 Nov 2023 23:24:52 -0400
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B6D120
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 20:24:49 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698895483;
+        t=1698895487;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rXE5qC66xflKju/b5K0r0xT61UeednKHJ/BZyj3zT9w=;
-        b=Hb4c5/5cMu557sfyb4Qm+N+E2afW9N5tC2dmGC7W2tqshdmHyIQi0ignzc96Sfv3lH/6v4
-        /pMsyHBXFmwbe/kt7UshRgo+l+u5TurmWX3zHZI3IJ9XGdtBS8AY4ZNbtEcl52hm/S2deO
-        rdYAz7rU1LmdQ25nUsrxBo6s5PDHjlI=
+        bh=IPS3iWC0ordY9Z/gFrasLVfoOU0ee6NMzPFkJtmjEdA=;
+        b=v1GKoBc/GWi/6wA+3MMyQ6L15tftj7e2VTfNMKRmvlXo85TA0YUcUSnVVJ8Kga11asCboO
+        btJ3b5nOE+cya1I08GWukxT+lICauUTNrau2aealf4F9CdmRScWkmlPsoHeV6UcabxAXZx
+        LYjHaUg928T27sxO5LCHMigYm2gu+Xw=
 From:   chengming.zhou@linux.dev
 To:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org
 Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
         akpm@linux-foundation.org, roman.gushchin@linux.dev,
         42.hyeyoo@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, chengming.zhou@linux.dev,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH v5 2/9] slub: Change get_partial() interfaces to return slab
-Date:   Thu,  2 Nov 2023 03:23:23 +0000
-Message-Id: <20231102032330.1036151-3-chengming.zhou@linux.dev>
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH v5 3/9] slub: Keep track of whether slub is on the per-node partial list
+Date:   Thu,  2 Nov 2023 03:23:24 +0000
+Message-Id: <20231102032330.1036151-4-chengming.zhou@linux.dev>
 In-Reply-To: <20231102032330.1036151-1-chengming.zhou@linux.dev>
 References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
@@ -53,186 +54,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-We need all get_partial() related interfaces to return a slab, instead
-of returning the freelist (or object).
+Now we rely on the "frozen" bit to see if we should manipulate the
+slab->slab_list, which will be changed in the following patch.
 
-Use the partial_context.object to return back freelist or object for
-now. This patch shouldn't have any functional changes.
+Instead we introduce another way to keep track of whether slub is on
+the per-node partial list, here we reuse the PG_workingset bit.
 
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+We use __set_bit and __clear_bit directly instead of the atomic version
+for better performance and it's safe since it's protected by the slub
+node list_lock.
+
+Suggested-by: Matthew Wilcox <willy@infradead.org>
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 ---
- mm/slub.c | 63 +++++++++++++++++++++++++++++--------------------------
- 1 file changed, 33 insertions(+), 30 deletions(-)
+ mm/slub.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 0b0fdc8c189f..03384cd965c5 100644
+index 03384cd965c5..eed8ae0dbaf9 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -204,9 +204,9 @@ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
- 
- /* Structure holding parameters for get_partial() call chain */
- struct partial_context {
--	struct slab **slab;
- 	gfp_t flags;
- 	unsigned int orig_size;
-+	void *object;
- };
- 
- static inline bool kmem_cache_debug(struct kmem_cache *s)
-@@ -2269,10 +2269,11 @@ static inline bool pfmemalloc_match(struct slab *slab, gfp_t gfpflags);
- /*
-  * Try to allocate a partial slab from a specific node.
-  */
--static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
--			      struct partial_context *pc)
-+static struct slab *get_partial_node(struct kmem_cache *s,
-+				     struct kmem_cache_node *n,
-+				     struct partial_context *pc)
- {
--	struct slab *slab, *slab2;
-+	struct slab *slab, *slab2, *partial = NULL;
- 	void *object = NULL;
- 	unsigned long flags;
- 	unsigned int partial_slabs = 0;
-@@ -2288,27 +2289,28 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 
- 	spin_lock_irqsave(&n->list_lock, flags);
- 	list_for_each_entry_safe(slab, slab2, &n->partial, slab_list) {
--		void *t;
--
- 		if (!pfmemalloc_match(slab, pc->flags))
- 			continue;
- 
- 		if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
- 			object = alloc_single_from_partial(s, n, slab,
- 							pc->orig_size);
--			if (object)
-+			if (object) {
-+				partial = slab;
-+				pc->object = object;
- 				break;
-+			}
- 			continue;
- 		}
- 
--		t = acquire_slab(s, n, slab, object == NULL);
--		if (!t)
-+		object = acquire_slab(s, n, slab, object == NULL);
-+		if (!object)
- 			break;
- 
--		if (!object) {
--			*pc->slab = slab;
-+		if (!partial) {
-+			partial = slab;
-+			pc->object = object;
- 			stat(s, ALLOC_FROM_PARTIAL);
--			object = t;
- 		} else {
- 			put_cpu_partial(s, slab, 0);
- 			stat(s, CPU_PARTIAL_NODE);
-@@ -2324,20 +2326,21 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 
- 	}
- 	spin_unlock_irqrestore(&n->list_lock, flags);
--	return object;
-+	return partial;
+@@ -2116,6 +2116,25 @@ static void discard_slab(struct kmem_cache *s, struct slab *slab)
+ 	free_slab(s, slab);
  }
  
++/*
++ * SLUB reuses PG_workingset bit to keep track of whether it's on
++ * the per-node partial list.
++ */
++static inline bool slab_test_node_partial(const struct slab *slab)
++{
++	return folio_test_workingset((struct folio *)slab_folio(slab));
++}
++
++static inline void slab_set_node_partial(struct slab *slab)
++{
++	__set_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
++}
++
++static inline void slab_clear_node_partial(struct slab *slab)
++{
++	__clear_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
++}
++
  /*
-  * Get a slab from somewhere. Search in increasing NUMA distances.
+  * Management of partially allocated slabs.
   */
--static void *get_any_partial(struct kmem_cache *s, struct partial_context *pc)
-+static struct slab *get_any_partial(struct kmem_cache *s,
-+				    struct partial_context *pc)
- {
- #ifdef CONFIG_NUMA
- 	struct zonelist *zonelist;
- 	struct zoneref *z;
- 	struct zone *zone;
- 	enum zone_type highest_zoneidx = gfp_zone(pc->flags);
--	void *object;
-+	struct slab *slab;
- 	unsigned int cpuset_mems_cookie;
- 
- 	/*
-@@ -2372,8 +2375,8 @@ static void *get_any_partial(struct kmem_cache *s, struct partial_context *pc)
- 
- 			if (n && cpuset_zone_allowed(zone, pc->flags) &&
- 					n->nr_partial > s->min_partial) {
--				object = get_partial_node(s, n, pc);
--				if (object) {
-+				slab = get_partial_node(s, n, pc);
-+				if (slab) {
- 					/*
- 					 * Don't check read_mems_allowed_retry()
- 					 * here - if mems_allowed was updated in
-@@ -2381,7 +2384,7 @@ static void *get_any_partial(struct kmem_cache *s, struct partial_context *pc)
- 					 * between allocation and the cpuset
- 					 * update
- 					 */
--					return object;
-+					return slab;
- 				}
- 			}
- 		}
-@@ -2393,17 +2396,18 @@ static void *get_any_partial(struct kmem_cache *s, struct partial_context *pc)
- /*
-  * Get a partial slab, lock it and return it.
-  */
--static void *get_partial(struct kmem_cache *s, int node, struct partial_context *pc)
-+static struct slab *get_partial(struct kmem_cache *s, int node,
-+				struct partial_context *pc)
- {
--	void *object;
-+	struct slab *slab;
- 	int searchnode = node;
- 
- 	if (node == NUMA_NO_NODE)
- 		searchnode = numa_mem_id();
- 
--	object = get_partial_node(s, get_node(s, searchnode), pc);
--	if (object || node != NUMA_NO_NODE)
--		return object;
-+	slab = get_partial_node(s, get_node(s, searchnode), pc);
-+	if (slab || node != NUMA_NO_NODE)
-+		return slab;
- 
- 	return get_any_partial(s, pc);
+@@ -2127,6 +2146,7 @@ __add_partial(struct kmem_cache_node *n, struct slab *slab, int tail)
+ 		list_add_tail(&slab->slab_list, &n->partial);
+ 	else
+ 		list_add(&slab->slab_list, &n->partial);
++	slab_set_node_partial(slab);
  }
-@@ -3213,10 +3217,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- new_objects:
  
- 	pc.flags = gfpflags;
--	pc.slab = &slab;
- 	pc.orig_size = orig_size;
--	freelist = get_partial(s, node, &pc);
--	if (freelist) {
-+	slab = get_partial(s, node, &pc);
-+	if (slab) {
-+		freelist = pc.object;
- 		if (kmem_cache_debug(s)) {
- 			/*
- 			 * For debug caches here we had to go through
-@@ -3408,12 +3412,11 @@ static void *__slab_alloc_node(struct kmem_cache *s,
- 	void *object;
+ static inline void add_partial(struct kmem_cache_node *n,
+@@ -2141,6 +2161,7 @@ static inline void remove_partial(struct kmem_cache_node *n,
+ {
+ 	lockdep_assert_held(&n->list_lock);
+ 	list_del(&slab->slab_list);
++	slab_clear_node_partial(slab);
+ 	n->nr_partial--;
+ }
  
- 	pc.flags = gfpflags;
--	pc.slab = &slab;
- 	pc.orig_size = orig_size;
--	object = get_partial(s, node, &pc);
-+	slab = get_partial(s, node, &pc);
+@@ -4833,6 +4854,7 @@ static int __kmem_cache_do_shrink(struct kmem_cache *s)
  
--	if (object)
--		return object;
-+	if (slab)
-+		return pc.object;
- 
- 	slab = new_slab(s, gfpflags, node);
- 	if (unlikely(!slab)) {
+ 			if (free == slab->objects) {
+ 				list_move(&slab->slab_list, &discard);
++				slab_clear_node_partial(slab);
+ 				n->nr_partial--;
+ 				dec_slabs_node(s, node, slab->objects);
+ 			} else if (free <= SHRINK_PROMOTE_MAX)
 -- 
 2.20.1
 
