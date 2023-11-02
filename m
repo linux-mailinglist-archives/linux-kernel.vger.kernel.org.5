@@ -2,125 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AE67DF870
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BC27DF879
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377155AbjKBRMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
+        id S235519AbjKBRO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377122AbjKBRMS (ORCPT
+        with ESMTP id S229577AbjKBROx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:12:18 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8D2B7
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:12:12 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41e1974783cso6253321cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1698945132; x=1699549932; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/hH8SjbUIXGq+UF4UxExRqQ+IVCN5t4ykfPIyUiPH38=;
-        b=FWvTot97iNaUk34pLKY6RcPdDB6uB+6Nkxu/1gNnBoQMYWZhraEWEno08JMoD+icya
-         /4sa8SzCHvQSVHuPDCv1gYrwugQh4kj1g6dkDloI2TLJFjvRWdXwtoSi7GKHcVriN6Dh
-         zm5qbeTHTxZBfNmXW5ldlq1oHsjcNBXMgVUQSj9JzEXPRzeGOWggi7DYYJ4VlOnRDuXF
-         P7kC0rjAZLAa4pmlnwK8hgJHJsXXRLB2NJDB6d8uQm8NcL8SJbGOsyk08OG0ElWfDzWd
-         kINNf7HlpxAA2dVoCBf2cjxCM8zXjz2H7/PtWfCYyq9/u/sSeIrrFbqMVOjCE/oB1oDl
-         cxyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698945132; x=1699549932;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/hH8SjbUIXGq+UF4UxExRqQ+IVCN5t4ykfPIyUiPH38=;
-        b=nsnNybjl/4q8hgLKTj9hTE/xhNpghgAC2YGqbac62yLX/5zHrDhUOwvuvalEy6C1g8
-         d0I6EcdBPR/+29w1lWh6fB0FMrSreTiBxGmoeGTE5+UlosEuSqGt5GceX659mIh7vttE
-         K7+fi/p3afEZOE5peDJsX4OKuVtdc1oeQI3nRZEVBy3KFWVqMbOnCXWpXmK1Cz+He99c
-         FpwDEpwrnabLfSfVsCFeIH48QgLtw1RqE3qdMY+3Dp71DrotPPAtEKnfhlkn/LMGIZvR
-         GYc/8WzOL852XXPyRxRjbMpFn/flRl7CTsh1DA4AbdeRsKZDTBwEfYcd83L7diYXsRGc
-         EzOQ==
-X-Gm-Message-State: AOJu0YwCcL4xQzcpEK0gZ+wdMM10Q8MgfJwHbUrdB5uV5GXHN+k4lOMY
-        ceZCwZlPFZXuSpNF8qE9u3Rc+kjnDOGBahu0Yx4QLg==
-X-Google-Smtp-Source: AGHT+IHAJDw6t6f/1p5DCXhVNF5ZYBOAfpGF1Lzb87c+hYmXwYQhEflST5W0X8DLq3sBT2hMJLQQMPPBAaeVNc99U4k=
-X-Received: by 2002:ac8:5bc6:0:b0:41e:2db3:a066 with SMTP id
- b6-20020ac85bc6000000b0041e2db3a066mr23182516qtb.45.1698945131763; Thu, 02
- Nov 2023 10:12:11 -0700 (PDT)
+        Thu, 2 Nov 2023 13:14:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD2EB7;
+        Thu,  2 Nov 2023 10:14:47 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2Eibo3000828;
+        Thu, 2 Nov 2023 17:14:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=vvlKJiclVAlP5/IBoWloF5Ur4kOdqzqT0QMxOdleBwE=;
+ b=mQNXwktP0GeRUiU6kxVc1tlTczvnW8KUQtarWdgfk9W39jSu46Om+PxX3zB5eSDocI7Q
+ zSlFa9ozL+59eATZ/tJ6UYnHL1idE9ahIxMr3cBrZgSgmiSM6IQcbAwu6o+tL5Ds+Pws
+ AvosAtBMg+ceDsUvlK/zAtVekwymDJs22vetQ/q6dKuJjoUiabR5lVxgGtHcfSD1Dgs4
+ I4GqcL7C9KWh3/W/yvpLlcGBnhm106K4Z4OQGjoZ4wPZTcUxrInn+8BZpiJUx79gRSva
+ 92FMoDOogPaNUBcLonkhV6FSAjRpdUSVNWM9NDNRxlZOdoTFyMfC1QQueROvVKNg17vM lA== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3mbf3pwq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 17:14:41 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A2HEeMO019332
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 2 Nov 2023 17:14:40 GMT
+Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Thu, 2 Nov 2023 10:14:38 -0700
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Mukesh Ojha" <quic_mojha@quicinc.com>
+Subject: [PATCH v10 0/4] Misc SCM driver changes
+Date:   Thu, 2 Nov 2023 22:44:03 +0530
+Message-ID: <1698945247-16033-1-git-send-email-quic_mojha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20231101230816.1459373-1-souravpanda@google.com>
- <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
- <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
- <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
- <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com> <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
- <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com> <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
- <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com> <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
- <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com>
-In-Reply-To: <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 2 Nov 2023 13:11:34 -0400
-Message-ID: <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Wei Xu <weixugc@google.com>, Sourav Panda <souravpanda@google.com>,
-        corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MtlTxY011jbS5IEEd3d1MtaemO1Un89m
+X-Proofpoint-ORIG-GUID: MtlTxY011jbS5IEEd3d1MtaemO1Un89m
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-02_07,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 adultscore=0 spamscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311020141
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Wei, noticed that all other fields in /proc/meminfo are part of
-> > MemTotal, but this new field may be not (depending where struct pages
->
-> I could have sworn that I pointed that out in a previous version and
-> requested to document that special case in the patch description. :)
+First two changes changes are needed to enable download mode on
+chipset like IPQ9574 and IPQ5332 SoCs as for these targets others
+bits in download mode registers are used for different purpose
+and earlier kernel code was mistakenly overwrite the other bits.
 
-Sounds, good we will document that parts of per-page may not be part
-of MemTotal.
+First three changes(1/4-3/4) are SCM driver specific while 4/4 from
+pinctrl try to use the introduced API(1/3).
 
-> > are allocated), so what would be the best way to export page metadata
-> > without redefining MemTotal? Keep the new field in /proc/meminfo but
-> > be ok that it is not part of MemTotal or do two counters? If we do two
-> > counters, we will still need to keep one that is a buddy allocator in
-> > /proc/meminfo and the other one somewhere outside?
->
-> IMHO, we should just leave MemTotal alone ("memory managed by the buddy
-> that could actually mostly get freed up and reused -- although that's
-> not completely true") and have a new counter that includes any system
-> memory (MemSystem? but as we learned, as separate files), including most
-> memblock allocations/reservations as well (metadata, early pagetables,
-> initrd, kernel, ...).
->
-> The you would actually know how much memory the system is using
-> (exclusing things like crashmem, mem=, ...).
->
-> That part is tricky, though -- I recall there are memblock reservations
-> that are similar to the crashkernel -- which is why the current state is
-> to account memory when it's handed to the buddy under MemTotal -- which
-> is straight forward and simply.
+Changes from v9: https://lore.kernel.org/lkml/1698648967-974-1-git-send-email-quic_mojha@quicinc.com/
+ - Added 3/4 new patch.
+ - commit subject modification.
 
-It may be simplified if we define MemSystem as all the usable memory
-provided by firmware to Linux kernel.
-For BIOS it would be the "usable" ranges in the original e820 memory
-list before it's been modified by the kernel based on the parameters.
+Change from v8: https://lore.kernel.org/lkml/1698235506-16993-1-git-send-email-quic_mojha@quicinc.com/
+ - Introduce enum for dload mode constants as per suggestion from [Elliot].
+ - Rebased on linux-next.
 
-For device-tree architectures, it would be the memory binding provided
-by the original device tree from the firmware.
+Changes from v7: https://lore.kernel.org/lkml/1696440338-12561-1-git-send-email-quic_mojha@quicinc.com/
+ - Rebased it on next-20231025.
+ - Added reviewed-by tag and take care of comment made about
+   commit text should be in imperative mode.
+ - Modified the name of the API to qcom_scm_io_rmw() as per suggestion
+   made by [Dmitry]
+ - Moved spinlock inside qcom_scm structure.
+ - Corrected the patch order as per subsystem SCM first then pinctrl.
 
-Pasha
+Change from minidump-v5(13/17-15/17):https://lore.kernel.org/lkml/1694429639-21484-1-git-send-email-quic_mojha@quicinc.com/ - Removed mistakenly added macros.
+   https://lore.kernel.org/lkml/9da888dc-401a-4cbb-b616-b4654fa79e35@quicinc.com/
+ - Added Acked-by tag from Linus.w to 2/3.
+Change from minidump-v5(13/17-15/17):https://lore.kernel.org/lkml/1694429639-21484-1-git-send-email-quic_mojha@quicinc.com/
+ - Removed mistakenly added macros.
+   https://lore.kernel.org/lkml/9da888dc-401a-4cbb-b616-b4654fa79e35@quicinc.com/
+ - Added Acked-by tag from Linus.w to 2/3.
+
+Changes in v6: https://lore.kernel.org/lkml/1680076012-10785-1-git-send-email-quic_mojha@quicinc.com/
+ - Rebased it on latest tag available on linux-next
+ - Added missed Poovendhan sign-off on 15/17 and tested-by tag from
+   Kathiravan. Thanks to him for testing and reminding me of missing sign-off.
+ - Addressed comments made on dload mode patch v6 version
+
+Changes in v5: https://lore.kernel.org/lkml/1680017869-22421-1-git-send-email-quic_mojha@quicinc.com/
+  - Tried to fix the issue reported by kernel test robot
+    https://lore.kernel.org/lkml/202303280535.acb66sQT-lkp@intel.com/
+
+  - Applied some of the improvement suggested by [Bjorn.andersson]
+
+    . Dropped 'both' instead support full,mini or mini,full for setting download
+    mode to collect both minidump and full dump.
+
+    . logging improvement.
+
+Changes in v4: https://lore.kernel.org/lkml/1679935281-18445-1-git-send-email-quic_mojha@quicinc.com/
+  - val should be shifted within the function [srinivas.kandagatla]
+    i.e new = (old & ~mask) | (val << ffs(mask) - 1);
+  - Added Acked-by [linus.walleij] on pinctrl change.
+
+Changes in v3 : https://lore.kernel.org/lkml/1679070482-8391-1-git-send-email-quic_mojha@quicinc.com/
+ - Removed [1] from the series and sent as a separate patch[2], although this series
+   should be applied on top [2].
+  [1] https://lore.kernel.org/lkml/1677664555-30191-2-git-send-email-quic_mojha@quicinc.com/
+  [2] https://lore.kernel.org/lkml/1678979666-551-1-git-send-email-quic_mojha@quicinc.com/
+ - Introduce new exported symbol on suggestion from [srinivas.kandagatla]
+ - Use the symbol from drivers/pinctrl/qcom/pinctrl-msm.c.
+ - Addressed comment given by [dmitry.baryshkov]
+ - Converted non-standard Originally-by to Signed-off-by.
+
+Changes in v2: https://lore.kernel.org/lkml/1677664555-30191-1-git-send-email-quic_mojha@quicinc.com/
+ - Addressed comment made by [bjorn]
+ - Added download mask.
+ - Passed download mode as parameter
+ - Accept human accepatable download mode string.
+ - enable = !!dload_mode
+ - Shifted module param callback to somewhere down in
+   the file so that it no longer need to know the
+   prototype of qcom_scm_set_download_mode()
+ - updated commit text.
+
+
+Mukesh Ojha (4):
+  firmware: qcom: scm: provide a read-modify-write function
+  firmware: qcom: scm: Modify only the download bits in TCSR register
+  firmware: qcom: scm: Rework dload mode availability check
+  pinctrl: qcom: Use qcom_scm_io_rmw() function
+
+ drivers/firmware/qcom/qcom_scm.c       | 50 ++++++++++++++++++++++++++++------
+ drivers/pinctrl/qcom/pinctrl-msm.c     | 10 +++----
+ include/linux/firmware/qcom/qcom_scm.h |  1 +
+ 3 files changed, 47 insertions(+), 14 deletions(-)
+
+-- 
+2.7.4
+
