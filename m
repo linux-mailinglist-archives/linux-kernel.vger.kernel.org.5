@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BBA7DFBC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 264E27DFBD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376750AbjKBU6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S234444AbjKBVAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 17:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234346AbjKBU6s (ORCPT
+        with ESMTP id S232106AbjKBVAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:58:48 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25FB1A4;
-        Thu,  2 Nov 2023 13:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698958721;
-        bh=Z9hm1IsD57xbA+VBLEg436HiwWyV8amNfvjdSYE3Flw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TlfxyWQ7XxJvZJFtJf9u32SNYRcSPEL34EWz6i7NbaZNWHnbFcD8o29fCnksR9Nye
-         DM01zL7bEGqJPPZy4RKTEJimDpnNtwv5UWTQGc8A321F1nUcqeU4vwiwUQ/lR/3Am1
-         ExHb6kS4/1lVsU+sN1aRGWaONPZVacR0MpYETfUhAvsnCUjSaolM7Y53uEDqoJCYQx
-         PeXbg+qU88t07kt7iVVo17adoYasslRWxcMxTuQNv56BtNwT+88DVKzBzTpGd4G1st
-         ldQmh5DhcSdKw3JJDzT1rPHhCHluiXmPBceSUjTBjSWkFABuHx+rjBTQ2ifwkmNfyf
-         6Kufq0lHjs/tQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SLx753PB6z4xQm;
-        Fri,  3 Nov 2023 07:58:41 +1100 (AEDT)
-Date:   Fri, 3 Nov 2023 07:58:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the risc-v tree
-Message-ID: <20231103075840.02d66c1d@canb.auug.org.au>
+        Thu, 2 Nov 2023 17:00:32 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041B7194
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 14:00:22 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b201a93c9cso1314385b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 14:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698958822; x=1699563622; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=E8KFumTag/+mfUr046qXGDZHDIauHHYyGcdwD8EXFRY=;
+        b=JZIyIVCwD0ECTxQVk3G1/Ci2yYOqLuqNmMu2KPCbmd4HFX/q2nNzTTZYxyfmFDLYg0
+         bgFDBtojDff9NEPVAdbup66Ulfsc/yAOnuKDctVk7jf6dalWD5meSdtrbkSTA7uqjiZK
+         3UFg71SQe1vaYzXXRWpxMU9Kz777urhB4z6ts=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698958822; x=1699563622;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E8KFumTag/+mfUr046qXGDZHDIauHHYyGcdwD8EXFRY=;
+        b=b4Vl54a1Ic8fvVA8Z5rxwOLw3S/3XPrRHxnrvbpnSCNZgcro1eufPfHy0WpUy5qNf7
+         BmHUM9sST1bnfiRKEiPy+EK3sRN0Q1knep8dg4ORmT4rXAaxq7Qrhofon5KEAWPbCkMf
+         6ihOzF6taELY8jId07+AaPorbE3etcCM/Z3r4nCMu4SEnokQkJX1aQkTqxv+ysnA5Yun
+         LHuCCveaM0p3guQnz+c/35Q1veyyq3VUAMhQXdxikfxkzUwAIfK+7I2WhZApTXN3mt4/
+         dbGDGCKIiIbqUKXX8pd3GiAzH0ecq8Mlj7HTEYIgHjCZXnizCR/MQbR3g6wcZrLmFXMr
+         Hqmg==
+X-Gm-Message-State: AOJu0YyvBfCf2tXS9RfvbCCY4MDKTYu86TBeJOsAAEU/Bycwk6iz38zC
+        p135XylpToee30Qp9P+KQuVPGQ==
+X-Google-Smtp-Source: AGHT+IHpWfHMpmZgu3Ki0ANwOyVLt9nZosdSKPzywMjZQkoftSaNFtV+rbheqzdq77GxD/borUX1wg==
+X-Received: by 2002:a05:6a21:18a:b0:181:74fe:ba83 with SMTP id le10-20020a056a21018a00b0018174feba83mr5241243pzb.40.1698958822357;
+        Thu, 02 Nov 2023 14:00:22 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:a601:95c2:1e12:1936])
+        by smtp.gmail.com with UTF8SMTPSA id b7-20020a62cf07000000b0068842ebfd10sm174384pfg.160.2023.11.02.14.00.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 14:00:20 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 14:00:17 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     Karel Balej <balejk@matfyz.cz>
+Cc:     Kalle Valo <kvalo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org,
+        Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: [PATCH 0/2] net: mwifiex: add support for the SD8777 chipset
+Message-ID: <ZUQN4Ua8byy-Fsy8@google.com>
+References: <20231029111807.19261-1-balejk@matfyz.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qUhMt4Jh.aK5E3PQQyOB39.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231029111807.19261-1-balejk@matfyz.cz>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qUhMt4Jh.aK5E3PQQyOB39.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Oct 29, 2023 at 12:08:15PM +0100, Karel Balej wrote:
+> The driver requires proprietary firmware which is not yet part of
+> linux-firmware, but it is packaged in postmarketOS.
 
-Hi all,
+You gotta get that done:
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#new_driver
 
-  e8620de3f26b ("riscv: errata: fix T-Head dcache.cva encoding")
+"have firmware images submitted for linux-firmware with an acceptable
+license allowing redistribution"
 
-This is commit
+We can't have a driver requesting a mrvl/sd8777_uapsta.bin firmware that
+isn't available for anyone [1].
 
-  8eb8fe67e2c8 ("riscv: errata: fix T-Head dcache.cva encoding")
+Until that's done, NAK.
 
-in Linus' tree.
+[1] I think you might be referring to this:
+https://github.com/xcover3/android_vendor_samsung_xcover3lte/commit/6e324b43b32dc607327d89148dd5d83a14429ee6
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qUhMt4Jh.aK5E3PQQyOB39.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVEDYAACgkQAVBC80lX
-0GwfGgf/TnKC8/hRJiCn38KzxRYZ79YxjO5y/SWmkM09quPjqJzGWLXzAIHSl2Np
-xJtc0d9FIYANJ7NfK+2mTIcIs44Bfbvy1F+Gfy5E/A/fZfO0gzfx4tGqgMSkrnKf
-Pem1IiA+ap2IpAVf20sSpPreJqTwZzhLkBi1NP7r/OFHS0IRrM5hqt3AetKXB3Ru
-wdxDaqSNDCR7pWZ/EznfsBoxEJhfwm9TecJyMYPjOht1XWA7eHLpH6iANiG2WIE2
-fwBwyerO7th4BWqK2FLXBRTkDdNAUHwjY7lgh/RCXlAJ6lHDosJ5hehh4avrySxJ
-RVUHoIgNvBP9TedU07J9sfcqt9o+Eg==
-=6W1L
------END PGP SIGNATURE-----
-
---Sig_/qUhMt4Jh.aK5E3PQQyOB39.--
+But I don't see any license info, so I don't think that's going to be
+appropriate for linux-firmware.
