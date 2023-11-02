@@ -2,228 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7027DEEB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145EF7DEEBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345313AbjKBJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
+        id S1345481AbjKBJSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjKBJQh (ORCPT
+        with ESMTP id S230097AbjKBJSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:16:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08547132;
-        Thu,  2 Nov 2023 02:16:30 -0700 (PDT)
+        Thu, 2 Nov 2023 05:18:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B056D139;
+        Thu,  2 Nov 2023 02:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698916591; x=1730452591;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=OCRR/l5SncfbNOGTx53r+eb+uVJU0CxzR6TuOOtqBCU=;
-  b=QS3xkmJ3frBpZSJba1kIeADgCbMT6wycCAHV4FHaeKeotYKloxxwEtiG
-   9UwR3w1CpFge2ECHtwVXvhdcPIR8S/0hBkN4zsIjDF8fHRm941cat8anz
-   ZfqCxYXL6WamuduSvHqIwScBT4qhSz8ANIcq4ThjMJW20Oer3X5yVw510
-   wqmxH74Pqxc6Y2LJx5hh0RgCTLDENeu7Wn9cU5bNnde3JsahaZKbfp0VG
-   ZQHa+ZuxvCBjnqxad2IdA3DK/c/7xI+BPYXNk/w1c/BGLIYUwnGuuk14N
-   HGOA+HGb39yPxoVNaR26p+H919/RIl03Yeefmll/T/02yTytiihKBleSB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="455149087"
+  t=1698916709; x=1730452709;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WfXqmrEzL647g4xsumirECpBC8Tog1OcRNDIdE0JiIY=;
+  b=ACPxe9hau5lNujwaKukcaiiyC/2bSuK3jrF7m0J9//U/OtMk53Ws3qrB
+   ZUx605HbHBcLn1AeCDgyn6lgopmyOT7cQW/sThxCSNMK2nBZz9VOr3PCA
+   7AGx64pbxnFctBc+XOdJppFozJ1xSGxZbU51ZQwUb9WrGa86idozDPhyQ
+   03Lav+v9icphNOmXaSm5uCRjguwFdFwtflszIwuaxcbeFC8iW1BgmdPQg
+   +RB8w9RPg05EM5AfS4z2hisHAcJHRnxSacaMn0M9uQl8vnz2Qx1wkfDyd
+   rqC7frlo42ZyVdaHs9hKtXoS//14lzdOuPSmMo0/qKoG4mVQQud7raN26
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="388489394"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="455149087"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 02:16:30 -0700
+   d="scan'208";a="388489394"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 02:18:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="934721720"
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="796179820"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="934721720"
-Received: from nofferma-mobl.ger.corp.intel.com (HELO localhost) ([10.252.51.121])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 02:16:26 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Jerry Zuo <jerry.zuo@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        amd-gfx@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH] drm/edid: add a quirk for two 240Hz Samsung monitors
-In-Reply-To: <CADnq5_Nv0MnG+pPvRQO37OP8iYwz8oGvFLs2g-+U=URHWcqJGw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231101210037.130494-1-hamza.mahfooz@amd.com>
- <CADnq5_Nv0MnG+pPvRQO37OP8iYwz8oGvFLs2g-+U=URHWcqJGw@mail.gmail.com>
-Date:   Thu, 02 Nov 2023 11:16:22 +0200
-Message-ID: <87edh84is9.fsf@intel.com>
+   d="scan'208";a="796179820"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 02 Nov 2023 02:18:25 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyTqJ-0001JP-1B;
+        Thu, 02 Nov 2023 09:18:23 +0000
+Date:   Thu, 2 Nov 2023 17:18:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "xinglong.yang" <seanyang230@gmail.com>, xinglong.yang@cixtech.com,
+        rafael@kernel.org, daniel.lezcano@linaro.org, amitk@kernel.org,
+        rui.zhang@intel.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] driver: thermal: simplify the traverse of sensor in
+ thermal_zone.
+Message-ID: <202311021624.jfMQm3Ox-lkp@intel.com>
+References: <20231102055120.1192015-1-xinglong.yang@cixtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102055120.1192015-1-xinglong.yang@cixtech.com>
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Nov 2023, Alex Deucher <alexdeucher@gmail.com> wrote:
-> On Wed, Nov 1, 2023 at 5:01=E2=80=AFPM Hamza Mahfooz <hamza.mahfooz@amd.c=
-om> wrote:
->>
->> Without this fix the 5120x1440@240 timing of these monitors
->> leads to screen flickering.
->>
->> Cc: stable@vger.kernel.org # 6.1+
->> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1442
->> Co-developed-by: Harry Wentland <harry.wentland@amd.com>
->> Signed-off-by: Harry Wentland <harry.wentland@amd.com>
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->>  drivers/gpu/drm/drm_edid.c | 47 +++++++++++++++++++++++++++++++++++---
->>  1 file changed, 44 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
->> index bca2af4fe1fc..3fdb8907f66b 100644
->> --- a/drivers/gpu/drm/drm_edid.c
->> +++ b/drivers/gpu/drm/drm_edid.c
->> @@ -89,6 +89,8 @@ static int oui(u8 first, u8 second, u8 third)
->>  #define EDID_QUIRK_NON_DESKTOP                 (1 << 12)
->>  /* Cap the DSC target bitrate to 15bpp */
->>  #define EDID_QUIRK_CAP_DSC_15BPP               (1 << 13)
->> +/* Fix up a particular 5120x1440@240Hz timing */
->> +#define EDID_QUIRK_FIXUP_5120_1440_240         (1 << 14)
->
-> What is wrong with the original timing that needs to be fixed?
+Hi xinglong.yang,
 
-Indeed. I'd be wary of applying this quirk as-is, because it'll impact
-all drivers and all connectors.
+kernel test robot noticed the following build warnings:
 
-The bug report does not have a single EDID from the affected displays
-attached.
+[auto build test WARNING on rafael-pm/thermal]
+[also build test WARNING on linus/master v6.6 next-20231102]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The quirk sets mode members that apparently do not need to be modified.
+url:    https://github.com/intel-lab-lkp/linux/commits/xinglong-yang/driver-thermal-simplify-the-traverse-of-sensor-in-thermal_zone/20231102-135739
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
+patch link:    https://lore.kernel.org/r/20231102055120.1192015-1-xinglong.yang%40cixtech.com
+patch subject: [PATCH] driver: thermal: simplify the traverse of sensor in thermal_zone.
+config: loongarch-randconfig-001-20231102 (https://download.01.org/0day-ci/archive/20231102/202311021624.jfMQm3Ox-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021624.jfMQm3Ox-lkp@intel.com/reproduce)
 
-Cc: Ville
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021624.jfMQm3Ox-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/thermal/thermal_of.c: In function 'of_thermal_zone_find':
+>> drivers/thermal/thermal_of.c:187:28: warning: unused variable 'i' [-Wunused-variable]
+     187 |                 int count, i;
+         |                            ^
 
 
-BR,
-Jani.
+vim +/i +187 drivers/thermal/thermal_of.c
 
+d0c75fa2c17f08 Daniel Lezcano 2022-07-22  169  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  170  static struct device_node *of_thermal_zone_find(struct device_node *sensor, int id)
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  171  {
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  172  	struct device_node *np, *tz;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  173  	struct of_phandle_args sensor_specs;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  174  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  175  	np = of_find_node_by_name(NULL, "thermal-zones");
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  176  	if (!np) {
+9d6792df07367a Daniel Lezcano 2022-08-09  177  		pr_debug("No thermal zones description\n");
+9d6792df07367a Daniel Lezcano 2022-08-09  178  		return ERR_PTR(-ENODEV);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  179  	}
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  180  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  181  	/*
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  182  	 * Search for each thermal zone, a defined sensor
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  183  	 * corresponding to the one passed as parameter
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  184  	 */
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  185  	for_each_available_child_of_node(np, tz) {
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  186  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05 @187  		int count, i;
+d8c9a37137332e xinglong.yang  2023-11-02  188  		int ret;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  189  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  190  		count = of_count_phandle_with_args(tz, "thermal-sensors",
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  191  						   "#thermal-sensor-cells");
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  192  		if (count <= 0) {
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  193  			pr_err("%pOFn: missing thermal sensor\n", tz);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  194  			tz = ERR_PTR(-EINVAL);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  195  			goto out;
+d8c9a37137332e xinglong.yang  2023-11-02  196  		} else if (count > 1) {
+d8c9a37137332e xinglong.yang  2023-11-02  197  			pr_err("%pOFn: number of thermal sensor greater than one\n", tz);
+d8c9a37137332e xinglong.yang  2023-11-02  198  			tz = ERR_PTR(-EINVAL);
+d8c9a37137332e xinglong.yang  2023-11-02  199  			goto out;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  200  		}
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  201  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  202  		ret = of_parse_phandle_with_args(tz, "thermal-sensors",
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  203  						 "#thermal-sensor-cells",
+d8c9a37137332e xinglong.yang  2023-11-02  204  						 0, &sensor_specs);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  205  		if (ret < 0) {
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  206  			pr_err("%pOFn: Failed to read thermal-sensors cells: %d\n", tz, ret);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  207  			tz = ERR_PTR(ret);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  208  			goto out;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  209  		}
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  210  
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  211  		if ((sensor == sensor_specs.np) && id == (sensor_specs.args_count ?
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  212  							  sensor_specs.args[0] : 0)) {
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  213  			pr_debug("sensor %pOFn id=%d belongs to %pOFn\n", sensor, id, tz);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  214  			goto out;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  215  		}
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  216  	}
+9d6792df07367a Daniel Lezcano 2022-08-09  217  	tz = ERR_PTR(-ENODEV);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  218  out:
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  219  	of_node_put(np);
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  220  	return tz;
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  221  }
+3fd6d6e2b4e80f Daniel Lezcano 2022-08-05  222  
 
->
-> Alex
->
->
->>
->>  #define MICROSOFT_IEEE_OUI     0xca125c
->>
->> @@ -170,6 +172,12 @@ static const struct edid_quirk {
->>         EDID_QUIRK('S', 'A', 'M', 596, EDID_QUIRK_PREFER_LARGE_60),
->>         EDID_QUIRK('S', 'A', 'M', 638, EDID_QUIRK_PREFER_LARGE_60),
->>
->> +       /* Samsung C49G95T */
->> +       EDID_QUIRK('S', 'A', 'M', 0x7053, EDID_QUIRK_FIXUP_5120_1440_240=
-),
->> +
->> +       /* Samsung S49AG95 */
->> +       EDID_QUIRK('S', 'A', 'M', 0x71ac, EDID_QUIRK_FIXUP_5120_1440_240=
-),
->> +
->>         /* Sony PVM-2541A does up to 12 bpc, but only reports max 8 bpc =
-*/
->>         EDID_QUIRK('S', 'N', 'Y', 0x2541, EDID_QUIRK_FORCE_12BPC),
->>
->> @@ -6586,7 +6594,37 @@ static void update_display_info(struct drm_connec=
-tor *connector,
->>         drm_edid_to_eld(connector, drm_edid);
->>  }
->>
->> -static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_=
-device *dev,
->> +static void drm_mode_displayid_detailed_edid_quirks(struct drm_connecto=
-r *connector,
->> +                                                   struct drm_display_m=
-ode *mode)
->> +{
->> +       unsigned int hsync_width;
->> +       unsigned int vsync_width;
->> +
->> +       if (connector->display_info.quirks & EDID_QUIRK_FIXUP_5120_1440_=
-240) {
->> +               if (mode->hdisplay =3D=3D 5120 && mode->vdisplay =3D=3D =
-1440 &&
->> +                   mode->clock =3D=3D 1939490) {
->> +                       hsync_width =3D mode->hsync_end - mode->hsync_st=
-art;
->> +                       vsync_width =3D mode->vsync_end - mode->vsync_st=
-art;
->> +
->> +                       mode->clock =3D 2018490;
->> +                       mode->hdisplay =3D 5120;
->> +                       mode->hsync_start =3D 5120 + 8;
->> +                       mode->hsync_end =3D 5120 + 8 + hsync_width;
->> +                       mode->htotal =3D 5200;
->> +
->> +                       mode->vdisplay =3D 1440;
->> +                       mode->vsync_start =3D 1440 + 165;
->> +                       mode->vsync_end =3D 1440 + 165 + vsync_width;
->> +                       mode->vtotal =3D 1619;
->> +
->> +                       drm_dbg_kms(connector->dev,
->> +                                   "[CONNECTOR:%d:%s] Samsung 240Hz mod=
-e quirk applied\n",
->> +                                   connector->base.id, connector->name);
->> +               }
->> +       }
->> +}
->> +
->> +static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_=
-connector *connector,
->>                                                             struct displ=
-ayid_detailed_timings_1 *timings,
->>                                                             bool type_7)
->>  {
->> @@ -6605,7 +6643,7 @@ static struct drm_display_mode *drm_mode_displayid=
-_detailed(struct drm_device *d
->>         bool hsync_positive =3D (timings->hsync[1] >> 7) & 0x1;
->>         bool vsync_positive =3D (timings->vsync[1] >> 7) & 0x1;
->>
->> -       mode =3D drm_mode_create(dev);
->> +       mode =3D drm_mode_create(connector->dev);
->>         if (!mode)
->>                 return NULL;
->>
->> @@ -6628,6 +6666,9 @@ static struct drm_display_mode *drm_mode_displayid=
-_detailed(struct drm_device *d
->>
->>         if (timings->flags & 0x80)
->>                 mode->type |=3D DRM_MODE_TYPE_PREFERRED;
->> +
->> +       drm_mode_displayid_detailed_edid_quirks(connector, mode);
->> +
->>         drm_mode_set_name(mode);
->>
->>         return mode;
->> @@ -6650,7 +6691,7 @@ static int add_displayid_detailed_1_modes(struct d=
-rm_connector *connector,
->>         for (i =3D 0; i < num_timings; i++) {
->>                 struct displayid_detailed_timings_1 *timings =3D &det->t=
-imings[i];
->>
->> -               newmode =3D drm_mode_displayid_detailed(connector->dev, =
-timings, type_7);
->> +               newmode =3D drm_mode_displayid_detailed(connector, timin=
-gs, type_7);
->>                 if (!newmode)
->>                         continue;
->>
->> --
->> 2.42.0
->>
-
---=20
-Jani Nikula, Intel
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
