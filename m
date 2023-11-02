@@ -2,53 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AE57DF656
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC097DF65D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344660AbjKBP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
+        id S1345795AbjKBP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKBP0h (ORCPT
+        with ESMTP id S233053AbjKBP0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:26:37 -0400
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79AB136
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:26:28 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6d309886d9fso1289143a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:26:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698938788; x=1699543588;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=36jTIk8RNWrAuIMJmC5HqYBs4sdtGNKnTTHc+A6SXu8=;
-        b=vjYJ6pJ8JcXqAJLsrPf9Br+PlSnj/EzOMoWCcDsKozbZM663aKWcRZ0OfJhRclvrCJ
-         Wv1nIOJfK+QtrHXrYBs1rQZSBRJXHp3y125a5F7cJ+D8kAcGWaJamu4IYJ+JsSi2DFXw
-         7Cv3n+Ytgv48hZ5eo6z1vwzIF7kO1BDZkXUTzZMjvD8hA3ZxY6dvJGIHP4SjTni/O8jP
-         HY82zl4r2iBAp1Xa3HU18wEYf0KY8k1xByqfVN3HnW2vU0JIXJX0rBuQIFxRPojnYi4M
-         yKf1hmW2wXhojyqGXk5jFXtW8L7spDvyopRk/5jlkMLJvqjunOSWoZVw/VBv2DEW0IlN
-         lzzQ==
-X-Gm-Message-State: AOJu0Yy+WRnSmx5SQqwgXHcAqWaMMHzXmZdtQXxffbS+FNRw/DGXw9qb
-        KkqZVG1HqRNUtkvDBNLnbQwY/BXXYmlt6mzVDEaJkXwXCfxS
-X-Google-Smtp-Source: AGHT+IEWlYNHZ8FBPDPfTtKasOoO9DDEe2aMzCjLNuY/eunbWx/0Dx23U9vkHQAGwGrZmEfOiGN4XMP/wdHHKYAgSp9iDYgca8ce
+        Thu, 2 Nov 2023 11:26:42 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2071.outbound.protection.outlook.com [40.107.94.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E0FDB;
+        Thu,  2 Nov 2023 08:26:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mVEl9BzrnYv9rpvxzBCOt/wyIT77Xz0P3QvuX1iLbEKC9JcruK3phyRjegL2LX34uJHiFwexSqeCsxuHpNUSdu7+20+vAz1i+fWqxh21JGIG6aUEfrDOS0gr7bcpMTtaA2XBbXrCAcfJ75pQqv6Y720ezxtJ2xnLsvKomcRXKoi8nWcMZaFiEv4HK4iedBJYuktNNSA4nzXnwEdtqT02StFp0iaTjKROQ3G0HLopi3L19Y5xSuO8/9jZqOkqO0xNGm8WTSwTttaMssPHzam4T0TpWbv5cPfyN30oUQo30JRzLHUUH2f/EPaAvL6bfpeoQYexT/rtbutFeH8gAixB0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ntSRagWpnhbw2ZWtqTpmFCbps66uDsH76GAuS+dj1kk=;
+ b=kXdJC1ozxHp1+xgh8YoIJOONl8W+cP/yeFVN7RyuJUkPnOQ3q+tHXh0eecfRZRwPt0A6rfiwqMNgg91LbxudlSA812JuSSB8ZZbaFGl4SahC6AIl5UJcSyjWJ+o38aljzlNRjJ9rCancFqoMR7fr1lHJxc66/ymDAcSsPierCClsEE65esG09cfQmZwnalN7FaEcw7HNSdNmu37B4tGDpsGbfPG6I6kT2dWDA6ihlmBaVtUjdeupl8YdA43lURWkcHsMcJNs4VwGJbAFQMcZpMUBsMT8IbuRgiQtHetuRiZjPcHf10iOxktNjpMZXZwYUueq48P0TtweOlwT8fCIaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ntSRagWpnhbw2ZWtqTpmFCbps66uDsH76GAuS+dj1kk=;
+ b=XG09Bu1sIDCxcuRAL1yEx4ypiLn0weTX3/8p/sLfcRFWqdN+bTuRLZJ/BSLPJSgCYaoSeCzlcQBPTjq9uBUSASp943vF0mtNMeCjgZPEjyAPhDfmuBdpyDJhAosUGn6599WsfwPyTrJ+tuRDToJSew1WFYgXZJl6ngmlr0RzYP0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by LV3PR12MB9412.namprd12.prod.outlook.com (2603:10b6:408:211::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Thu, 2 Nov
+ 2023 15:26:33 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6933.024; Thu, 2 Nov 2023
+ 15:26:33 +0000
+Message-ID: <bb4d8fad-dced-4fed-9582-2db50643e868@amd.com>
+Date:   Thu, 2 Nov 2023 10:26:31 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in
+ pcie_bandwidth_available()
+Content-Language: en-US
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
+        mika.westerberg@linux.intel.com, andreas.noever@gmail.com,
+        michael.jamet@intel.com, YehezkelShB@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Alexander.Deucher@amd.com
+References: <20231101225259.GA101390@bhelgaas>
+ <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
+ <20231102152154.GA22270@wunner.de>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20231102152154.GA22270@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0175.namprd11.prod.outlook.com
+ (2603:10b6:806:1bb::30) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-X-Received: by 2002:a9d:6197:0:b0:6cd:f9b7:dadf with SMTP id
- g23-20020a9d6197000000b006cdf9b7dadfmr5320954otk.2.1698938788231; Thu, 02 Nov
- 2023 08:26:28 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 08:26:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7bf4906092d02cb@google.com>
-Subject: [syzbot] [mm?] general protection fault in hugetlb_vma_lock_read
-From:   syzbot <syzbot+93e7c679006f0d4e6105@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|LV3PR12MB9412:EE_
+X-MS-Office365-Filtering-Correlation-Id: fcfa0864-37f7-4d6d-34dc-08dbdbb81871
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B2EcWHNm9bJuUH/mAF33cvVEkgQC7sr8jHDDloGajZaTWAumEotsvbDhF0IzxN8/aIgUeIUwkjSlh4aB5lMNmfqEgAYEm4RVzTtZji2TgCPaF9vhBldq50kmG9LFq8VOQXA51kcyY3Za1K8fPvdDu4DM81Tqlztexw74lGxNSeoqxH/zfaR1BMcexrHGC6BKh7hAeMHZ37e1O9VGwf86h6nf4LfWnsgLxj8ROEMYNIAKwvO3O4+Xm3Jx5i8jQLFiebHSu6EFQxpdcjoY7fAqpQrz1bceQd5eDS7laRWC/lxnTCVzVOMHpJYB97UxdxPjR078VJCcjAxsKoCuL7kNEHTQ0N8XO+GzqrOeNNUtL2W2F0neO/HEaAIxD38YjgRd7tpEY2eiVAE5kKQj2QN2x9bTAxw234neqUEfc9d+ctRmvgvkI8sNGEBml9zSa8quGvk0FKCGLQWa6Ur+vAwTlq9UH0Rn58XzbxgEQqkxrFpX755XuCN0bq4oaRK0OmkUEvCpf7hw6B9+63+F5NUf1PPSTI4asLpIyorHON6HZqp9ECiQ/apxolOl1q5l/xx9wkr6aum8qsEKW017kdsUFCiMZYQetTEoV8TRP9pQmpW9Q1EWAmKUp2M4C9gM3bqEYikpT6TSmk08oOWpXqwDRw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6486002)(4744005)(31686004)(66476007)(66556008)(5660300002)(66946007)(8676002)(8936002)(316002)(6916009)(4326008)(2906002)(7416002)(478600001)(44832011)(6512007)(2616005)(53546011)(41300700001)(26005)(6506007)(38100700002)(31696002)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzNkQVZ5M2oyVnI1dDI2TTRhN0hJeWRiWVlleDJBM2ZJRXByalNXemtuZDRv?=
+ =?utf-8?B?R1A3VEtpcndqWVErcEN6TlJ2bXFCTjRwVWdZZVZKcUQrYlVYa09haitYbEVR?=
+ =?utf-8?B?dVVOWnY4N3Rhb3lCalNxR3Q5bXJDU3ZEUnNiYjY2bVl5K0haOWxsTy9uZWNx?=
+ =?utf-8?B?cXpCMkNJY0RnSGtDNUovR0FsSUJCVDN6UlNRYVl6bGt6SzUwY1V2OUsveXgy?=
+ =?utf-8?B?TU9GT2ttV0RNS1U2cVVKWEdjR2wxczVwdVBuU2hJaXlDZ1lhZmRZQWh3VEcv?=
+ =?utf-8?B?WllVeTAzYkRpYisyd1docGtoY0lVKzBVd0hobk11QVRtaFN2NEQ1Z1JNSHZZ?=
+ =?utf-8?B?cVR6WG5YUGJCRjhKeVdqUXZaMnVyeUUzaGRvdGF0WkRFcFNiQnZscVNuUDBM?=
+ =?utf-8?B?OTlvOXU3cWNnUUxRejN4dm9EL21pU1JjelV4Y0hpRTBwZ09JU3lxWjdoYmUx?=
+ =?utf-8?B?bFRHaitxK1NOaWNneUQ0c1J4S2dXZWZac281VkVSeTFSK0pxN2RTSUM5eDEv?=
+ =?utf-8?B?VmdOWmFDY0N5dk1tVUloODEyZEtiaGxGSXExZXRRcjBITzFJNU5nL0xWTU5o?=
+ =?utf-8?B?K0FObTYrVDNIeFpSVUVjRVVVWDNMdlU4Qk1DOFRuR0syRXgzSlh6dW5qM1Fr?=
+ =?utf-8?B?djBSMFZkM1Q4S0F5eFB5dE5LWGYxUlN0ZW9DZWp5ZjhHYUtYYjRtdGMrdTZH?=
+ =?utf-8?B?TGx3TmVPMVk0dmFIYmk4ZGJrK2FQcWVxTFo5SVFaUXdhbW1nRHppR0VnZms3?=
+ =?utf-8?B?bXhpQzFWZUZrYjFZMVF6UzIyYTdicE1HSERvVVljRzI3WGVjYXVGS1dKT0g5?=
+ =?utf-8?B?TnlnVS8veWFVVnRsTGw2QVNEdG1qZTdrSURZeDVVdE1jV3dzV0l1Y21ZUDBS?=
+ =?utf-8?B?YXJkNWZlQ2pjSm0yRlIyOS9CSXJ1ZkFHUnhqekdyR1o4ckpBdGdRRWtadHBL?=
+ =?utf-8?B?eVd4cm9wVjVUdGt6T0FPQThlM2NIbW51cjFqbmdDTmUvdGZkWUZ5YUxuTlVE?=
+ =?utf-8?B?L3B0UFN5U3JUT1MxbEZ3Wlc2ellIR0ZnK3BZVnBUOUF0RkNLblFobTcyYjhw?=
+ =?utf-8?B?NjVMdkhCbEQzUyszMWNwcVkwS3FxWmFDRSs1UHcxV3hzUGNQMEhEWmRNWDNT?=
+ =?utf-8?B?NGFxV2pKbXFqY245aUJibWJxbU5IZnZvMldxWnY3bkN2MVUrQUJMTCtwVk9x?=
+ =?utf-8?B?QUtuSUZkVGcyUmtnbU9VOTdKcFlmNDJJMllnVGZzNU9lcURuZllnNzcvcWt1?=
+ =?utf-8?B?bUFKOHhXaGhhOVhGQmVKQmZJTHl1VGhBVTVhcDI2V3B5R3Y3aGsySlMvTUdk?=
+ =?utf-8?B?UUR5NnVoLzFvVktiZ1piM3k1Tk1mQjhoSUdJRlJZNXg2NzM5MmRmdWV1dFJw?=
+ =?utf-8?B?cGdxVU9yTmhwQUdTdkpQUXlxZ1VrZnRLbW1UUm00OElHNStTYThEbVozc1RD?=
+ =?utf-8?B?VlFuK0Q2SUU0WmFWSFpzNWtaajNPSUY2Nk04bEVLdzQ3dU1CM29lSTRuUjR6?=
+ =?utf-8?B?TzdIcnNzY2xENmtyb2xDTEtGbzc1Ky9xQXYvdEErczRGcVlXUEdyK1JnNTJy?=
+ =?utf-8?B?N1U5alFpbTNGMnNrS3BaajRSeUJEZE4zR3NUVmQ1em5CZlB0VmZPYkxnM0ND?=
+ =?utf-8?B?eFNJWUp4dWVMT3VTS2p1K0NCMVlIclF6dnhhN1duZUtSajlkbDlra3l3MmVM?=
+ =?utf-8?B?ODlLSS8vV2s2ZFVLWFFmdjIvRUFMdTlKM0lNUkRXMVBEbXlkdVRXeUpXTldI?=
+ =?utf-8?B?c2ZtWlc5Ti90OG11VTVROW42L01PNlBPdTlhZGcrVEt0Q1F0M1ZTdDFBMnhv?=
+ =?utf-8?B?VzhVMk1Ya254bGNBZWJzV2EvVjFMS25XQTJtVU03L0M5YXVQV20zV0J5QnA3?=
+ =?utf-8?B?a0NIcGU4Z3NpOGwxTGVYTmlyTW5tRnRFYS9HMU9HV0g2bDNaRzh6WGd6bVUw?=
+ =?utf-8?B?ZlZHQVNDNXZiQkE1SEVleEZ1dlMzdUExU0lsaWpTdWh1SjRvV1E1UmU5ZEJB?=
+ =?utf-8?B?WEZKeEQyR2VHUndpTkNxeWFDZkdxQjVLOCtzdC9pN2xUZEF1WStmemtIN2Zl?=
+ =?utf-8?B?ZTVZY1hOMTdaSUMzWkxpMGdxOS9WcTA0RUo4TXg2WFc5cmlCK0FNR0JyUXk4?=
+ =?utf-8?Q?xfS9bYkmKj7AE4GQBA1nK2dyr?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fcfa0864-37f7-4d6d-34dc-08dbdbb81871
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 15:26:33.5035
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JVKyBNk10PittUy9j44v1PVAh+dQAO5/reHI/yzqOJklUvrtkL9Oe3wNjneFMCp0xCRMARKcNFEbCmmX8NpAJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9412
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,124 +130,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/2/2023 10:21, Lukas Wunner wrote:
+> On Wed, Nov 01, 2023 at 08:14:31PM -0500, Mario Limonciello wrote:
+>> Considering this I think it's a good idea to move that creation of the
+>> device link into drivers/pci/pci-acpi.c and store a bit in struct pci_device
+>> to indicate it's a tunneled port.
+>>
+>> Then 'thunderbolt' can look for this directly instead of walking all the FW
+>> nodes.
+>>
+>> pcie_bandwidth_available() can just look at the tunneled port bit instead of
+>> the existence of the device link.
+> 
+> pci_is_thunderbolt_attached() should already be doing exactly what
+> you want to achieve with the new bit.  It tells you whether a PCI
+> device is behind a Thunderbolt tunnel.  So I don't think a new bit
+> is actually needed.
+> 
+> Thanks,
+> 
+> Lukas
 
-syzbot found the following issue on:
-
-HEAD commit:    babe393974de Merge tag 'docs-6.7' of git://git.lwn.net/linux
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=176e7813680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=34994593e74fdcfe
-dashboard link: https://syzkaller.appspot.com/bug?extid=93e7c679006f0d4e6105
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/81ff19e40c77/disk-babe3939.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a92e6d2d9507/vmlinux-babe3939.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/afd2bad18cfc/bzImage-babe3939.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+93e7c679006f0d4e6105@syzkaller.appspotmail.com
-
-netlink: 12 bytes leftover after parsing attributes in process `syz-executor.1'.
-general protection fault, probably for non-canonical address 0xdffffc000000001d: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000e8-0x00000000000000ef]
-CPU: 1 PID: 15736 Comm: syz-executor.1 Not tainted 6.6.0-syzkaller-10265-gbabe393974de #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:__lock_acquire+0x109/0x5de0 kernel/locking/lockdep.c:5004
-Code: 45 85 c9 0f 84 cc 0e 00 00 44 8b 05 21 dc 81 0b 45 85 c0 0f 84 be 0d 00 00 48 ba 00 00 00 00 00 fc ff df 4c 89 d1 48 c1 e9 03 <80> 3c 11 00 0f 85 e8 40 00 00 49 81 3a e0 09 b3 90 0f 84 96 0d 00
-RSP: 0018:ffffc90003387378 EFLAGS: 00010006
-RAX: ffff88801d5e9dc0 RBX: 1ffff92000670e9f RCX: 000000000000001d
-RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 00000000000000e8
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 00000000000000e8 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-FS:  00007f07477fc6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000b80 CR3: 000000006a8b7000 CR4: 00000000003506f0
-Call Trace:
- <TASK>
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
- down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
- hugetlb_vma_lock_read mm/hugetlb.c:274 [inline]
- hugetlb_vma_lock_read+0xae/0x100 mm/hugetlb.c:265
- hugetlb_follow_page_mask+0x156/0xf20 mm/hugetlb.c:6500
- follow_page_mask+0x49e/0xda0 mm/gup.c:824
- __get_user_pages+0x366/0x1480 mm/gup.c:1237
- __get_user_pages_locked mm/gup.c:1504 [inline]
- __gup_longterm_locked+0x755/0x2570 mm/gup.c:2198
- pin_user_pages_remote+0xee/0x140 mm/gup.c:3346
- process_vm_rw_single_vec mm/process_vm_access.c:105 [inline]
- process_vm_rw_core.constprop.0+0x43d/0xa10 mm/process_vm_access.c:215
- process_vm_rw+0x2ff/0x360 mm/process_vm_access.c:283
- __do_sys_process_vm_writev mm/process_vm_access.c:303 [inline]
- __se_sys_process_vm_writev mm/process_vm_access.c:298 [inline]
- __x64_sys_process_vm_writev+0xe2/0x1b0 mm/process_vm_access.c:298
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f0746a7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f07477fc0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000137
-RAX: ffffffffffffffda RBX: 00007f0746b9bf80 RCX: 00007f0746a7cae9
-RDX: 0000000000000001 RSI: 0000000020000b80 RDI: 0000000000001d1b
-RBP: 00007f0746ac847a R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000020000f80 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f0746b9bf80 R15: 00007f0746cbfa48
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__lock_acquire+0x109/0x5de0 kernel/locking/lockdep.c:5004
-Code: 45 85 c9 0f 84 cc 0e 00 00 44 8b 05 21 dc 81 0b 45 85 c0 0f 84 be 0d 00 00 48 ba 00 00 00 00 00 fc ff df 4c 89 d1 48 c1 e9 03 <80> 3c 11 00 0f 85 e8 40 00 00 49 81 3a e0 09 b3 90 0f 84 96 0d 00
-RSP: 0018:ffffc90003387378 EFLAGS: 00010006
-RAX: ffff88801d5e9dc0 RBX: 1ffff92000670e9f RCX: 000000000000001d
-RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 00000000000000e8
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 00000000000000e8 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-FS:  00007f07477fc6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000b80 CR3: 000000006a8b7000 CR4: 00000000003506f0
-----------------
-Code disassembly (best guess):
-   0:	45 85 c9             	test   %r9d,%r9d
-   3:	0f 84 cc 0e 00 00    	je     0xed5
-   9:	44 8b 05 21 dc 81 0b 	mov    0xb81dc21(%rip),%r8d        # 0xb81dc31
-  10:	45 85 c0             	test   %r8d,%r8d
-  13:	0f 84 be 0d 00 00    	je     0xdd7
-  19:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
-  20:	fc ff df
-  23:	4c 89 d1             	mov    %r10,%rcx
-  26:	48 c1 e9 03          	shr    $0x3,%rcx
-* 2a:	80 3c 11 00          	cmpb   $0x0,(%rcx,%rdx,1) <-- trapping instruction
-  2e:	0f 85 e8 40 00 00    	jne    0x411c
-  34:	49 81 3a e0 09 b3 90 	cmpq   $0xffffffff90b309e0,(%r10)
-  3b:	0f                   	.byte 0xf
-  3c:	84                   	.byte 0x84
-  3d:	96                   	xchg   %eax,%esi
-  3e:	0d                   	.byte 0xd
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+It's only for a device connected to an Intel TBT3 controller though; it 
+won't apply to USB4.
