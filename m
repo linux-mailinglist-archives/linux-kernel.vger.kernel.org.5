@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601FE7DF963
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D397DF968
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376619AbjKBSAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
+        id S235212AbjKBSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346149AbjKBR7M (ORCPT
+        with ESMTP id S1377155AbjKBR7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:59:12 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A711984
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:47 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da31ec03186so1062562276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:47 -0700 (PDT)
+        Thu, 2 Nov 2023 13:59:17 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF921A7
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:50 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a8ee6a1801so17484357b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947926; x=1699552726; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947929; x=1699552729; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=D/N4ckVg6cjKSIfadSgQO70fx2qt1gK+WL2vtB+jVqs=;
-        b=2zxmkJ4jWXDGt9kklD3qp4T+SUeQYNWxrQTUc6IrAfmTuK1p97pdhKXlOBQRXHvLLZ
-         S9KsnhwyfxyOznTCcMHEnL9BRUoqqPK6UlyxU1/EBhf3dIqIrD68C25WS1V286+DvYCH
-         3yBzVy+jEm22RkrJW4xhi9h4MuNQkAdn/5K4N76H7Sxl1t4hRLOEFsc5Bhg7U7aRxTqK
-         qLQW/GNIdGG1ViEPwtgWPOd3s76QSoc+jPJUYDUt8lgkw/9FIh1RYUMHlNZvMxXZu5LX
-         pAnHiFF85jiRpf+D1KZLjccaDSTSRbTJNeEw4wwmEEqQbNjO/PiAyz5Yjl3NuXfpKTNx
-         1H1Q==
+        bh=+qB7MKGYwy6W2k++DMikZr9fNmwsId1Vn+RjugNY41g=;
+        b=2kwlR0lpTXuTW64udno04EcnsaMVxA4p7AtSyQX0zkP/STVAYorA9lf59BgHckoS+d
+         fJh6v7+9w5/1uqRX/8Sm+SJHDNmnKQefaeM0O0On+O+7GnKx6QVe0m/bfhQFihl4sJjE
+         u3G72vrs4MMdcd50F8xVhsPnoHB1DCFL/a8jQ7jJT1K8ujZ/ibUMCHA5pm7KN4AvjscN
+         Sb/BcZdYhVULgt1+dUnskXJw124acjNEoxJmz0gNlDPLaBTZI8AOYlLiRKGLPjsDoBX+
+         CdOHefqaWikHyjuD7fl+KbBk/9q4mgw5ISnfmPEFLbKC3VElagnt4s54nql2E2a76nah
+         NBmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947926; x=1699552726;
+        d=1e100.net; s=20230601; t=1698947929; x=1699552729;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D/N4ckVg6cjKSIfadSgQO70fx2qt1gK+WL2vtB+jVqs=;
-        b=ijr3RwaJlmRRY8as/4zOlZPr5n/ol+IFeYI7etqTTRgAVfKpmnmN1Kd1uovYvdo5D6
-         cXmKOrYLm3UPR3+LnQHa9FUfSa+6AIKMvwE8IKGPJgzI6j59sOWGQkPK3Fa8tUyCxhFt
-         1g3bdKLuvNseJW0SbphUt56NNzeNzd6GTs6c/081sO5OuC5hzxMuL3Gjib7vQTzdRNwR
-         ffaQp+af81L55wysEilLexTzH+ZDBCfFoskuIVWspARbjlwWbiQ7QlpgKvCGnDzTL7Q4
-         m4m+WF6us6J0XiDlf1fPDYqUm7mrnMjcpL7jqHAcCFsUWM2vHgibcg8f8EQqu11cyUHn
-         +SMw==
-X-Gm-Message-State: AOJu0Yye1MJ6AJ9ieEwnqZ04NQ8WoLHBWVZrsj1539gEkLd9iBn6GFgn
-        JUHyLVIzmWtVveaGqbq+A05IqltKZIfL
-X-Google-Smtp-Source: AGHT+IELmnUlik1Iorlfj1hreAP7SM2tVfd1zV588w7U8EnJ1Yl5h37ZV5f34FREAL85Q0y54IkJ7ONHkjDS
+        bh=+qB7MKGYwy6W2k++DMikZr9fNmwsId1Vn+RjugNY41g=;
+        b=LF08+xJ+ac5dY4aXIqBY9WMpFPoqS27gDx2M+zDnDXOItKY18cAIB9n6Otcb4EbdUx
+         VonebqQk7qZQzfoIHZ+1yQgs7RqV+jH3j7CPNDYOMQdbnMGOuH1n4J0LruHfXPhHkJn4
+         aoG2k5/ee57QfsWgfV6cJPpt0R6R5nWFjiH5Lp6VHh7eAkSBYhyx+rlXaZkD7xuyxLhp
+         NBP5CbiDHVFaEd1nzJ/MpO+TT8R583f1AFqByBh5XiQOi0pMkJBps7iRdutF3NruFfqH
+         1GPB3MWeBQR9LbldwifNSsfl5GZ+Yrt9PuP41Fl8pGPa6+I3KXUOKIZnx1MRf6kg4fbf
+         hVrA==
+X-Gm-Message-State: AOJu0YyjACVN3iBj3msvMXpc0Rj9DyykFl0YshPLwgIDYkwjP/+U8FeY
+        wqjohCgYyLLCgSiVvfUSNpbFVqdPTQnw
+X-Google-Smtp-Source: AGHT+IGnNbr0ATXhvcobY5b1C+xpslu+egv1QsNnD9crxHuCIQZxikYpeND5J0/RExYebRMCygts88rccQXR
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a05:6902:45:b0:d9b:59c3:6eef with SMTP id
- m5-20020a056902004500b00d9b59c36eefmr5140ybh.0.1698947926695; Thu, 02 Nov
- 2023 10:58:46 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:04 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:1802:b0:da0:94e8:84d4 with SMTP
+ id cf2-20020a056902180200b00da094e884d4mr348163ybb.12.1698947929133; Thu, 02
+ Nov 2023 10:58:49 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:05 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-23-irogers@google.com>
+Message-Id: <20231102175735.2272696-24-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 22/53] perf maps: Do simple merge if given map doesn't overlap
+Subject: [PATCH v4 23/53] perf maps: Rename clone to copy from
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -91,47 +91,92 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify merge in for the simple case of a non-overlapping map.
+Rename maps__clone to maps__copy_from to be more intention revealing
+of its behavior. Pass the underlying maps rather than the thread.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/maps.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ tools/perf/util/machine.c | 2 +-
+ tools/perf/util/maps.c    | 6 +-----
+ tools/perf/util/maps.h    | 3 +--
+ tools/perf/util/thread.c  | 2 +-
+ 4 files changed, 4 insertions(+), 9 deletions(-)
 
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 3c967295c9a3..191e492539e5 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -454,7 +454,7 @@ static struct thread *findnew_guest_code(struct machine *machine,
+ 	 * Guest code can be found in hypervisor process at the same address
+ 	 * so copy host maps.
+ 	 */
+-	err = maps__clone(thread, thread__maps(host_thread));
++	err = maps__copy_from(thread__maps(thread), thread__maps(host_thread));
+ 	thread__put(host_thread);
+ 	if (err)
+ 		goto out_err;
 diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 40df08dd9bf3..14e1a169433d 100644
+index 14e1a169433d..85bea2a6dca9 100644
 --- a/tools/perf/util/maps.c
 +++ b/tools/perf/util/maps.c
-@@ -696,9 +696,20 @@ void maps__fixup_end(struct maps *maps)
- int maps__merge_in(struct maps *kmaps, struct map *new_map)
+@@ -452,12 +452,8 @@ int maps__fixup_overlap_and_insert(struct maps *maps, struct map *new)
+ 	return err;
+ }
+ 
+-/*
+- * XXX This should not really _copy_ te maps, but refcount them.
+- */
+-int maps__clone(struct thread *thread, struct maps *parent)
++int maps__copy_from(struct maps *maps, struct maps *parent)
  {
+-	struct maps *maps = thread__maps(thread);
+ 	int err;
  	struct map_rb_node *rb_node;
-+	struct rb_node *first;
-+	bool overlaps;
- 	LIST_HEAD(merged);
- 	int err = 0;
  
-+	down_read(maps__lock(kmaps));
-+	first = first_ending_after(kmaps, new_map);
-+	overlaps = first &&
-+		map__start(rb_entry(first, struct map_rb_node, rb_node)->map) < map__end(new_map);
-+	up_read(maps__lock(kmaps));
-+
-+	if (!overlaps)
-+		return maps__insert(kmaps, new_map);
-+
- 	maps__for_each_entry(kmaps, rb_node) {
- 		struct map *old_map = rb_node->map;
+diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
+index 62e94d443c02..e4a49d6ff5cf 100644
+--- a/tools/perf/util/maps.h
++++ b/tools/perf/util/maps.h
+@@ -14,7 +14,6 @@ struct ref_reloc_sym;
+ struct machine;
+ struct map;
+ struct maps;
+-struct thread;
  
+ struct map_rb_node {
+ 	struct rb_node rb_node;
+@@ -61,7 +60,7 @@ struct kmap {
+ 
+ struct maps *maps__new(struct machine *machine);
+ bool maps__empty(struct maps *maps);
+-int maps__clone(struct thread *thread, struct maps *parent);
++int maps__copy_from(struct maps *maps, struct maps *parent);
+ 
+ struct maps *maps__get(struct maps *maps);
+ void maps__put(struct maps *maps);
+diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
+index 3d47b5c5528b..89c47a5098e2 100644
+--- a/tools/perf/util/thread.c
++++ b/tools/perf/util/thread.c
+@@ -390,7 +390,7 @@ static int thread__clone_maps(struct thread *thread, struct thread *parent, bool
+ 		return 0;
+ 	}
+ 	/* But this one is new process, copy maps. */
+-	return do_maps_clone ? maps__clone(thread, thread__maps(parent)) : 0;
++	return do_maps_clone ? maps__copy_from(thread__maps(thread), thread__maps(parent)) : 0;
+ }
+ 
+ int thread__fork(struct thread *thread, struct thread *parent, u64 timestamp, bool do_maps_clone)
 -- 
 2.42.0.869.gea05f2083d-goog
 
