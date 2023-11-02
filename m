@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C15417DEC05
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874F77DEC0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348499AbjKBErs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
+        id S1348426AbjKBEwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348268AbjKBErq (ORCPT
+        with ESMTP id S229516AbjKBEv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:47:46 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0ABA6
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:47:43 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9c5b313b3ffso74504066b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 21:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698900462; x=1699505262; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yycdQuA+JTtt5VWNbC0xQ0MSDmdTIynT72RC2eozkfU=;
-        b=THsX7EeEmiGAWElNlO0SFRFxoolwsr9f46PZZ8XF8vq/nLX/BTCp+ld42Q0Kgsm6JY
-         4vgkYaKnbyGN4IeKV9Kclptxtbj+7ufYk43nivbZLrdFsYU9SoWGMbbkVLQdTle0lY/j
-         Snmmzm3T4xFoBSV/DbUp5CsYmuSaC1urI693VfzR3oDeR/e0gXCWlx9JXJBYCG5qXUZI
-         JjtiBvATfARKfi/T9mxPHOmcAvN53sBf9riUS68JuokeoAbJ+8c+dh1SzTQqnzjErdGl
-         JxrbvxrtSCL4xwHUYxP5KG7GVZGDLjvu5XGrddeL0hzd1YCq/86wrgp4xcx6t6AauZ3x
-         B+wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698900462; x=1699505262;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yycdQuA+JTtt5VWNbC0xQ0MSDmdTIynT72RC2eozkfU=;
-        b=qUvbh5Y0hZdNmTNRngmhzkYO+5S9gLiedc4d18KLcV4vYCfAr8vzFgkdALjNah5XZN
-         t3LA7rQ+VfX+uVZd6NNRz8yxPkVtH6mtWk8IZG8xMC3CbijI3XJ4iMwbqF0awQV8Sd7F
-         vLGpa973AhY0s8h51xd7qPH02MXzpwFBqVpvMtHPtIk0j/4lFVM5uDdf2C3EQ5VwXyJ+
-         MztaLCVkvPvofa14OtFpdYLHLxW+qVQusWoXnKQ3z8pIdepoGoUofI6ZCL/9EDIVRhNZ
-         8V4vtaS5m9EW7muQWuGTQjNNjukrtqisuvjEXJW/6ZwXgBDN7UjCCMmJJRgfyPsCnbP7
-         Ep2w==
-X-Gm-Message-State: AOJu0Yx6BweO1QTSFbhlKTriQb4/TlljRL8VwzfZQUYAJzQCcsSkehsS
-        XBr7VfDUU47SgOHxakckdXZTJ7VR/kWSVBq2tgfbXcbzy5s=
-X-Google-Smtp-Source: AGHT+IH4ptxiqaBLj89wtLjFhCMXYG7F5hOqvTQwwTniHzXkoQE971X19UAYC9WgBUDCERCr73qs+ot+7Qf4wxGS8to=
-X-Received: by 2002:a17:906:bc93:b0:9bd:bbc1:1c5f with SMTP id
- lv19-20020a170906bc9300b009bdbbc11c5fmr2708008ejb.35.1698900461529; Wed, 01
- Nov 2023 21:47:41 -0700 (PDT)
+        Thu, 2 Nov 2023 00:51:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5764C1;
+        Wed,  1 Nov 2023 21:51:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C998EC433C7;
+        Thu,  2 Nov 2023 04:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698900716;
+        bh=N5PhYckyJitNvUVEQLxwfu9qQj+65o8OQSQa8fX1Z4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l1SQS0MHoqVwhvRH46guTdDbWvcHFjJubtcCBXl2LP/liJt/QnAk4oIMabRWHzSBu
+         tfNJ03Bil97OTREOXuvpb9/fihGxVpjy+TaOx1bDzqK+E5zVRNRq4Uo6ngrQ1BRXHQ
+         rTWCcO+YvS9Xv7aRJgBYt8q1+b9D7p1EMHK6GuZTB8uFX+5eKNNbtAjZ/bib7XlbmP
+         1COfydaKwVcY73i+IKI68UB5xFvl2fsXz9Kda4l40itjtgc6I2N1Tja1kuSwY4+/xT
+         xbt19c6AmHbu0hPjDm3E/KbqXASc2o4C+SSUVm74K8fFLdviT2obMlPEcB3yx5kZOC
+         gq9miRdJL3iEg==
+Date:   Wed, 1 Nov 2023 21:51:54 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jerry Shih <jerry.shih@sifive.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
+        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
+        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
+        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
+        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 04/12] RISC-V: crypto: add Zvkned accelerated AES
+ implementation
+Message-ID: <20231102045154.GE1498@sol.localdomain>
+References: <20231025183644.8735-1-jerry.shih@sifive.com>
+ <20231025183644.8735-5-jerry.shih@sifive.com>
 MIME-Version: 1.0
-References: <20231101233113.8059-1-dakr@redhat.com> <20231101233113.8059-13-dakr@redhat.com>
-In-Reply-To: <20231101233113.8059-13-dakr@redhat.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Thu, 2 Nov 2023 14:47:30 +1000
-Message-ID: <CAPM=9tzaFn_vyguD9iEh=Pi+JEFD_5eucJvFPQxt7W6mtvw=-A@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next v8 12/12] drm/nouveau: use GPUVM common infrastructure
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025183644.8735-5-jerry.shih@sifive.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,18 +56,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Nov 2023 at 09:32, Danilo Krummrich <dakr@redhat.com> wrote:
->
-> GPUVM provides common infrastructure to track external and evicted GEM
-> objects as well as locking and validation helpers.
->
-> Especially external and evicted object tracking is a huge improvement
-> compared to the current brute force approach of iterating all mappings
-> in order to lock and validate the GPUVM's GEM objects. Hence, make us of
-> it.
->
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+On Thu, Oct 26, 2023 at 02:36:36AM +0800, Jerry Shih wrote:
+> diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
+> index 10d60edc0110..500938317e71 100644
+> --- a/arch/riscv/crypto/Kconfig
+> +++ b/arch/riscv/crypto/Kconfig
+> @@ -2,4 +2,16 @@
+>  
+>  menu "Accelerated Cryptographic Algorithms for CPU (riscv)"
+>  
+> +config CRYPTO_AES_RISCV64
+> +	default y if RISCV_ISA_V
+> +	tristate "Ciphers: AES"
+> +	depends on 64BIT && RISCV_ISA_V
+> +	select CRYPTO_AES
+> +	select CRYPTO_ALGAPI
+> +	help
+> +	  Block ciphers: AES cipher algorithms (FIPS-197)
+> +
+> +	  Architecture: riscv64 using:
+> +	  - Zvkned vector crypto extension
 
-Reviewed-by: Dave Airlie <airlied@redhat.com>
+kconfig options should default to off.
 
-Dave.
+I.e., remove the line "default y if RISCV_ISA_V"
+
+> + *
+> + * All zvkned-based functions use encryption expending keys for both encryption
+> + * and decryption.
+> + */
+
+The above comment is a bit confusing.  It's describing the 'key' field of struct
+aes_key; maybe there should be a comment there instead:
+
+    struct aes_key {
+            u32 key[AES_MAX_KEYLENGTH_U32]; /* round keys in encryption order */
+            u32 rounds;
+    };
+
+> +int riscv64_aes_setkey(struct riscv64_aes_ctx *ctx, const u8 *key,
+> +		       unsigned int keylen)
+> +{
+> +	/*
+> +	 * The RISC-V AES vector crypto key expending doesn't support AES-192.
+> +	 * We just use the generic software key expending here to simplify the key
+> +	 * expending flow.
+> +	 */
+
+expending => expanding
+
+> +	u32 aes_rounds;
+> +	u32 key_length;
+> +	int ret;
+> +
+> +	ret = aes_expandkey(&ctx->fallback_ctx, key, keylen);
+> +	if (ret < 0)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Copy the key from `crypto_aes_ctx` to `aes_key` for zvkned-based AES
+> +	 * implementations.
+> +	 */
+> +	aes_rounds = aes_round_num(keylen);
+> +	ctx->key.rounds = aes_rounds;
+> +	key_length = AES_BLOCK_SIZE * (aes_rounds + 1);
+> +	memcpy(ctx->key.key, ctx->fallback_ctx.key_enc, key_length);
+> +
+> +	return 0;
+> +}
+
+Ideally this would use the same crypto_aes_ctx for both the fallback and the
+assembly code.  I suppose we don't want to diverge from the OpenSSL code (unless
+it gets rewritten), though.  So I guess this is fine for now.
+
+> void riscv64_aes_encrypt_zvkned(const struct riscv64_aes_ctx *ctx, u8 *dst,
+>                                const u8 *src)
+
+These functions can be called from a different module (aes-block-riscv64), so
+they need EXPORT_SYMBOL_GPL.
+
+> +static inline bool check_aes_ext(void)
+> +{
+> +	return riscv_isa_extension_available(NULL, ZVKNED) &&
+> +	       riscv_vector_vlen() >= 128;
+> +}
+> +
+> +static int __init riscv64_aes_mod_init(void)
+> +{
+> +	if (check_aes_ext())
+> +		return crypto_register_alg(&riscv64_aes_alg_zvkned);
+> +
+> +	return -ENODEV;
+> +}
+> +
+> +static void __exit riscv64_aes_mod_fini(void)
+> +{
+> +	if (check_aes_ext())
+> +		crypto_unregister_alg(&riscv64_aes_alg_zvkned);
+> +}
+> +
+> +module_init(riscv64_aes_mod_init);
+> +module_exit(riscv64_aes_mod_fini);
+
+module_exit can only run if module_init succeeded.  So, in cases like this it's
+not necessary to check for CPU features before unregistering the algorithm.
+
+- Eric
