@@ -2,141 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3309F7DF02A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3177DF02E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346880AbjKBKdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        id S1346950AbjKBKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346832AbjKBKdC (ORCPT
+        with ESMTP id S1346951AbjKBKdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:33:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C430AC2
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:32:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22382C433C7;
-        Thu,  2 Nov 2023 10:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698921179;
-        bh=vCsEm5kYfVokXfpt6FzUVW6m+28U/AvZkO+g4Ew8jFk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZJiNlDs4f9oSJYvvei6uvYrpqZq37TUCwF2TSXFU0cathgxMjUlb4jnlSBN4uWgXY
-         h1C9FNJXF8eXE6TTbyrPdzGPap3ZvqTeBycVZLwtI/OBCUOA+yoZaqgqRt9+AtkZYO
-         1kJ2hdn88SArB44LpXio9JYg3HVTdQLy/72rTKqAFoB3/hWHcAVdzvxYSVIMHY/pmQ
-         uCnjE2dRoZusENcLrLAjYtjG94rH95ydVkXdor2gNtHsd8Jh5z22QhPIQ3qx+ucgsn
-         Hnsk6XReZPEAH78MSG8NTPZp2RwwvCPMNAXDwhxHJEM2hylphICX3Wg97UUqFLlfiL
-         TC+p/kmOFN+ZA==
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: [PATCH v2] tools/build: Add clang cross-compilation flags to feature detection
-Date:   Thu,  2 Nov 2023 11:32:52 +0100
-Message-Id: <20231102103252.247147-1-bjorn@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Thu, 2 Nov 2023 06:33:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B343A131;
+        Thu,  2 Nov 2023 03:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698921193; x=1730457193;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SLairH+CCw3ORzUP44W20Kvl7uWrU7IvwIG+cWwSFUk=;
+  b=RKbSOMJxC2TrvtdhS/Yfl1oNg2f15wttoBePOvqXmMxWofZENsZCiGGV
+   rJ/tMxl+IKcTdLD8KJZKy6V91mbQHABEVNWaNXvMc9htilgJHFFggGyg4
+   p75SYfQnOqIQ1tnSoFxOUwvUH16t3ycZ0+AvMeGOuLkNluNe9s9siBdRy
+   HeASXWmugcXAFTucPQf8dpho3iEro1MLpoUww5rWDzpmsspHqXbA9ErM+
+   o4iVSoeUZThurbPOpSqaRgFCX515gma895xSb55cujnv2pwS0N7LU9FuY
+   ubcVWzg6hMCtDnySp9kf2eQV7yjI5J5s5tVHqqKye7f9fwu3sYWC4+eHV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="379076149"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="379076149"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 03:33:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="934745072"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="934745072"
+Received: from arajan-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.215.101])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 03:33:09 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 2F0B4109AF7; Thu,  2 Nov 2023 13:33:06 +0300 (+03)
+Date:   Thu, 2 Nov 2023 13:33:06 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, dionnaglaze@google.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+Subject: Re: [PATCH v5 13/14] x86/tsc: Mark Secure TSC as reliable clocksource
+Message-ID: <20231102103306.v7ydmrobd5ibs4yn@box.shutemov.name>
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-14-nikunj@amd.com>
+ <57d63309-51cd-4138-889d-43fbdf5ec790@intel.com>
+ <ae267e31-5722-4784-9146-28bb13ca7cf5@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae267e31-5722-4784-9146-28bb13ca7cf5@amd.com>
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn@rivosinc.com>
+On Thu, Nov 02, 2023 at 11:23:34AM +0530, Nikunj A. Dadhania wrote:
+> On 10/30/2023 10:48 PM, Dave Hansen wrote:
+> > On 10/29/23 23:36, Nikunj A Dadhania wrote:
+> > ...
+> >> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> >> index 15f97c0abc9d..b0a8546d3703 100644
+> >> --- a/arch/x86/kernel/tsc.c
+> >> +++ b/arch/x86/kernel/tsc.c
+> >> @@ -1241,7 +1241,7 @@ static void __init check_system_tsc_reliable(void)
+> >>  			tsc_clocksource_reliable = 1;
+> >>  	}
+> >>  #endif
+> >> -	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
+> >> +	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE) || cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
+> >>  		tsc_clocksource_reliable = 1;
+> > 
+> > Why can't you just set X86_FEATURE_TSC_RELIABLE?
+> 
+> Last time when I tried, I had removed my kvmclock changes and I had set
+> the X86_FEATURE_TSC_RELIABLE similar to Kirill's patch[1], this did not
+> select the SecureTSC.
+> 
+> Let me try setting X86_FEATURE_TSC_RELIABLE and retaining my patch for
+> skipping kvmclock.
 
-When a tool cross-build has LLVM=1 set, the clang cross-compilation
-flags are not passed to the feature detection build system. This
-results in the host's features are detected instead of the targets.
+kvmclock lowers its rating if TSC is good enough:
 
-E.g, triggering a cross-build of bpftool:
+	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+	    !check_tsc_unstable())
+		kvm_clock.rating = 299;
 
-  cd tools/bpf/bpftool
-  make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
+Does your TSC meet the requirements?
 
-would report the host's, and not the target's features.
-
-Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
-feature detection makefile.
-
-Fixes: cebdb7374577 ("tools: Help cross-building with clang")
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
----
- tools/build/Makefile.feature |  2 +-
- tools/build/feature/Makefile | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 934e2777a2db..25b009a6c05f 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -8,7 +8,7 @@ endif
- 
- feature_check = $(eval $(feature_check_code))
- define feature_check_code
--  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
-+  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" CLANG_CROSS_FLAGS="$(CLANG_CROSS_FLAGS)" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
- endef
- 
- feature_set = $(eval $(feature_set_code))
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index dad79ede4e0a..c4458345e564 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -84,12 +84,12 @@ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
- 
- all: $(FILES)
- 
--__BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-+__BUILD = $(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-   BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
-   BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
-   BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
- 
--__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-+__BUILDXX = $(CXX) $(CXXFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-   BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
- 
- ###############################
-@@ -259,10 +259,10 @@ $(OUTPUT)test-reallocarray.bin:
- 	$(BUILD)
- 
- $(OUTPUT)test-libbfd-liberty.bin:
--	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
-+	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
- 
- $(OUTPUT)test-libbfd-liberty-z.bin:
--	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
-+	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
- 
- $(OUTPUT)test-cplus-demangle.bin:
- 	$(BUILD) -liberty
-@@ -283,10 +283,10 @@ $(OUTPUT)test-libbabeltrace.bin:
- 	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
- 
- $(OUTPUT)test-compile-32.bin:
--	$(CC) -m32 -o $@ test-compile.c
-+	$(CC) $(CLANG_CROSS_FLAGS) -m32 -o $@ test-compile.c
- 
- $(OUTPUT)test-compile-x32.bin:
--	$(CC) -mx32 -o $@ test-compile.c
-+	$(CC) $(CLANG_CROSS_FLAGS) -mx32 -o $@ test-compile.c
- 
- $(OUTPUT)test-zlib.bin:
- 	$(BUILD) -lz
-
-base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
 -- 
-2.40.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
