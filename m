@@ -2,139 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 177F17DED20
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6EA7DED1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbjKBHMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 03:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233960AbjKBHMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233939AbjKBHMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 2 Nov 2023 03:12:06 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2060.outbound.protection.outlook.com [40.107.223.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A54912D;
-        Thu,  2 Nov 2023 00:12:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JoFxttKz2ekDV2de680f21IB3WRj3Ttpk0ceuAWy3TuL9gIc5cnelXEMQFX7iXjy+UxD1amGAJIs0GAwDEcAdb1XViFjj3jUGPvDzALxINY56fwovrojdUBAsFWZFWTERv8oyqiDDy5nMMS9X3BpsTCCvbSKHZdYgxZyJGaQ3nVMkxBcNDkw8vDYkJ2/z+556XIWy3pgUnw1PQR3MdwYbQRkBV7I0mzR0jSYng/rqfTLaF3bfUzX4GE/LdREmCHpy1BXlLs9LXbh7MKP2hYhAPxbyGSFFhRj9ryYordPZ2mOVih6zPE3Q0TOn/s5B0BDfPnjkBGkzspeYXCP3u/SSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JIa/PktP5rCqp+kuRIPAJx7p5ryHLyS/h3nkURcEr3c=;
- b=dqwM5SQh42cEh3+vxDqp3k7QTtQULy2RoNBePZjXXwP2nhWnq1/gY4tFRqCOfLs/IT4qhJhwbIpQxg1zVJFBeVnVtNVZHGTQp7EmtBuYo2hB0BPsVo8NbrmssKdjFt4HqhrhMGzzrhhYWQbjw40Qvzoqgj0DiU6doV/qtmIBHdPUGwE+8qr0B5cav4ZC0D9ul28LODiEx8KpCW/gyz8SQHyPPIo0adLKt/K7o2cK8kCFhDbYK+moCa7tzxRxIK0pCy5fQXFnsDFAFgZGHaqA1Z1bNk3KL9UlA/h0b46BsIl2IpHzxWrEzlnMxtnS15cIRPTXwSBSevJWnPdg19m3JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JIa/PktP5rCqp+kuRIPAJx7p5ryHLyS/h3nkURcEr3c=;
- b=e58gn3GoqCI7cqdTvHjqWHaNSt7IvX/q5/7CXRfcMsQ1aOVU/QYAqkDmMvsptuzjv0P1WwcW22FQX4XP0XBhFExLPZqNPePhM/gNLTSHekMEe4uzhWRvSQlo9cRHP8GTI3V++TwCvaQWyF9TNv8n8XfeIKT68EUMFxa0yUaIFFU=
-Received: from DS7PR03CA0287.namprd03.prod.outlook.com (2603:10b6:5:3ad::22)
- by CH0PR12MB5122.namprd12.prod.outlook.com (2603:10b6:610:bd::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
- 2023 07:11:57 +0000
-Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
- (2603:10b6:5:3ad:cafe::6) by DS7PR03CA0287.outlook.office365.com
- (2603:10b6:5:3ad::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
- Transport; Thu, 2 Nov 2023 07:11:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6954.19 via Frontend Transport; Thu, 2 Nov 2023 07:11:57 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 2 Nov
- 2023 02:11:56 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 2 Nov
- 2023 02:11:54 -0500
-Received: from xhdpiyushm40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
- Transport; Thu, 2 Nov 2023 02:11:52 -0500
-From:   Piyush Mehta <piyush.mehta@amd.com>
-To:     <laurent.pinchart@ideasonboard.com>, <dan.scally@ideasonboard.com>,
-        <michal.simek@amd.com>, <gregkh@linuxfoundation.org>
-CC:     <siva.durga.prasad.paladugu@amd.com>,
-        <radhey.shyam.pandey@amd.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Piyush Mehta <piyush.mehta@amd.com>
-Subject: [PATCH] usb: gadget: uvc_video: unlock before submitting a request to ep
-Date:   Thu, 2 Nov 2023 12:41:38 +0530
-Message-ID: <20231102071138.828126-1-piyush.mehta@amd.com>
-X-Mailer: git-send-email 2.25.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233846AbjKBHME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Nov 2023 03:12:04 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EB8185
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:11:56 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99357737980so84569766b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698909114; x=1699513914; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=XLLO2ZSj14ek5f9/G5cjQHYdHWJXlHxtegw6xtGQB1Q=;
+        b=h/8USqGETnfqV9O+2GuVzAJGlLcJ+QHGlzat+4iRoCFbAw2uL2dqizOBRdHOWLbHCb
+         uoBvOdOZqi86uNAeF9OR/Xuv0I2HjgVZs6QqZX6fxUFZgJcWTsj73pbDZO38ZTHnTSSZ
+         HjEHs7J8f1CZWFDavOuH1KF+QuI9gt32M5U8fLxMPIYv0rbl6TLk2JwMGFGbVLOwoT/w
+         sKzJGif2q53DlG4c9ZgtWzONeLRM64OtYJRMWNBg05l0thtsYjEMIsgif1TJ27IsuxaD
+         luKO9ovhirAyVvpeck+PQ8blVTZmWeNMYKm03co5tRu/+cNv3FzYUhVH5eMVV+/a7hxa
+         ZTgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698909114; x=1699513914;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XLLO2ZSj14ek5f9/G5cjQHYdHWJXlHxtegw6xtGQB1Q=;
+        b=Twxpe7HbeI/xLZNJQSsXqGkTl4ni0Ypfl4eXDV+G7uk1IVf4mCE5QeOoG3igEZns6B
+         0w1IOWRt6kndSLa8CW08tdfT9k4NXli4ePPXOmP+6pSXPjQQYM1OKWbfDmeEaDRsQzTK
+         Nce98HXYUacs14PmQZep1eMvyNEGsveQa+ZizCurVkGgHK/fMUlw7UnpUEMSUE1yFj+T
+         1GPQX3ZycGg1uytlWWcD6OhWVscsqvEGV4kdq7gSujUpcE7mEH/MMuR07XuAs4hHPFaL
+         mV/q7WACPbKNPMlCl7NDhsWLahGu5SAcWXENjDapVvHGvNX1KTtq5iq1KCom0HjOhf7Z
+         Cycw==
+X-Gm-Message-State: AOJu0Yw3puMnrxjoGGNiU9mkuW0qGbRUGXwM1nv0BZTRZR6+M53p8Xew
+        ggvjA0njlk14US7KVUENqx3c0w==
+X-Google-Smtp-Source: AGHT+IFz3lqUCJbyM8gNJLVuu/e8iat9+bi5NZqTUB9AyPOtTnX6IbvZh5qzTZ1imC2JPhfNcs3Uzw==
+X-Received: by 2002:a17:906:6a15:b0:9c7:69d4:b264 with SMTP id qw21-20020a1709066a1500b009c769d4b264mr2938876ejc.77.1698909114191;
+        Thu, 02 Nov 2023 00:11:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id la22-20020a170906ad9600b009b8a4f9f20esm768710ejb.102.2023.11.02.00.11.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 00:11:53 -0700 (PDT)
+Message-ID: <4fc3fafa-6c9b-440a-99fe-1332cd3d5b1d@linaro.org>
+Date:   Thu, 2 Nov 2023 08:11:51 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] gpio: realtek: Add GPIO support for RTD SoC variants
+To:     =?UTF-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231101025802.3744-1-tychang@realtek.com>
+ <20231101025802.3744-2-tychang@realtek.com>
+ <e18a7ee0-a5e3-4180-9f8a-99b21d1303e6@linaro.org>
+ <8e4c8676acaf4ba6bf3f57451b2eab40@realtek.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8e4c8676acaf4ba6bf3f57451b2eab40@realtek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|CH0PR12MB5122:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2293b27-2c0a-4335-7b04-08dbdb73002e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qK8vskqxgWZ63x0TxADWKC8Gc0O20nqX2tLxypXc9qSnD35su2JuXHeeDd/L3MQmEB+X7nlbXlMIYF0tocxxBKysZiYxOSh+qh1IZJ+imOsjp2/MFNDsogVeip/1z/+TI6bVG8Y3pz3/gJb2otEuJKDbUygnVx0GlYmB8sGyznPavBdSuuTxO1bEBdNUJfgTRPz5t2u5XsegxVPvpWh9jqU63WE1oCz+mv28HGUyIMLk5CJ1ldLGIXfskQG3m6xVvPayZtfOBl5Ae8hmbZCuNKgKFy50A1PQYnAAHp6FsAZRwo7kaURaUpl7kEsz60kO/1SHVpnDpYevVBwmAZH5vfzX/qEy6PZxTLaFJNUjAkJR2MEMfw70OuUnK5fX91pEWMNiykGznDLqe66Kt6cx5HCtbro5XhZMQW3DyN39aulEnQUMSON7LI5fz8nXVayqNLtmOviRpccN+SdChNh4ruRcieEAjPhL7ROL1NbwbaE+IoQ9Pv1QZILNlflkI2k8clODFxfw3v8evoIl/kaQdwof8Wzhyig2JC+w5jlyRz5e3zfjHOwcUoOP4xQ8f7aCjViE/7RGasvveSy0sfJ3xs8Tp7JH8Rt0I68wgNO4MhPkveSasyqub5DAuYFaLmYyIOukgrEa3MSLNeBhn3f4E4AGo/j25YB3LENaPb9AeX/bMiiqntCiYGrMn7QeB6rGYbinSltfFQPezbo3ot+x8plSVB067WeL9Q2zjbZkdzVxB6M/N2cNDk6BDLcf323cPXJNtdDo8t0TkatsRKwAcA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(82310400011)(40470700004)(46966006)(36840700001)(5660300002)(41300700001)(70586007)(110136005)(70206006)(316002)(54906003)(44832011)(2906002)(8676002)(8936002)(4326008)(478600001)(40480700001)(40460700003)(6666004)(36860700001)(47076005)(81166007)(83380400001)(356005)(36756003)(26005)(336012)(1076003)(86362001)(2616005)(426003)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 07:11:57.2731
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2293b27-2c0a-4335-7b04-08dbdb73002e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5122
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There could be chances where the usb_ep_queue() could fail and trigger
-complete() handler with error status. In this case, if usb_ep_queue()
-is called with lock held and the triggered complete() handler is waiting
-for the same lock to be cleared could result in a deadlock situation and
-could result in system hang. To aviod this scenerio, call usb_ep_queue()
-with lock removed. This patch does the same.
+On 02/11/2023 04:30, TY_Chang[張子逸] wrote:
+> Hi Krzysztof,
+> 
+>> On 01/11/2023 03:58, Tzuyi Chang wrote:
+>>> This commit adds GPIO support for Realtek DHC RTD SoCs.
+>>
+>> Please do not use "This commit/patch", but imperative mood. See longer
+>> explanation here:
+>> https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-
+>> patches.rst#L95
+>>
+> 
+> I will remove these words.
+> 
+>>> +static int rtd_gpio_probe(struct platform_device *pdev) {
+>>> +     struct rtd_gpio *data;
+>>> +     const struct of_device_id *match;
+>>> +     struct device_node *node;
+>>> +     int ret;
+>>> +     int i;
+>>> +
+>>> +     node = pdev->dev.of_node;
+>>> +     match = of_match_node(rtd_gpio_of_matches, pdev->dev.of_node);
+>>> +     if (!match || !match->data)
+>>> +             return -EINVAL;
+>>> +
+>>> +     data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+>>> +     if (!data)
+>>> +             return -ENOMEM;
+>>> +
+>>> +     data->assert_irq = irq_of_parse_and_map(node, 0);
+>>> +     if (!data->assert_irq)
+>>> +             goto deferred;
+>>> +
+>>> +     data->deassert_irq = irq_of_parse_and_map(node, 1);
+>>> +     if (!data->deassert_irq)
+>>> +             goto deferred;
+>>
+>> So this goes to cleanup path...
+>>
+> 
+> Since there is no need to do devm_free, I will directly return -EPROBE_DEFER here.
 
-Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
----
- drivers/usb/gadget/function/uvc_video.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+That's not a correct return value. You do not return DEFER on missing
+IRQ. This should anyway be different call: platform_get_irq().
 
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index 91af3b1ef0d4..0a5d9ac145e7 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -460,11 +460,12 @@ static void uvcg_video_pump(struct work_struct *work)
- 			req->no_interrupt = 1;
- 		}
- 
--		/* Queue the USB request */
--		ret = uvcg_video_ep_queue(video, req);
- 		spin_unlock_irqrestore(&queue->irqlock, flags);
- 
-+		/* Queue the USB request */
-+		ret = uvcg_video_ep_queue(video, req);
- 		if (ret < 0) {
-+			usb_ep_set_halt(video->ep);
- 			uvcg_queue_cancel(queue, 0);
- 			break;
- 		}
--- 
-2.25.1
+
+Best regards,
+Krzysztof
 
