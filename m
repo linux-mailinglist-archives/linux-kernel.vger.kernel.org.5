@@ -2,200 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 957D37DF9AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF1A7DF9A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344655AbjKBSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
+        id S1345945AbjKBSMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235149AbjKBSM3 (ORCPT
+        with ESMTP id S234422AbjKBSMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:12:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DB3D54
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698948664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lf4sz5zgZjW4weKtr+Yg6TBcTzSfkwSHJbmSokVskxk=;
-        b=LrWyIXDrSrIcOgzWeHW7IqyaS+n2Zl2ZLDH5qzK1siW9/OUkvvzHMLK0yAOq5SfIjdtBPo
-        jplbjqyLt1SOJyk4w6s3XIWf+/0SJDXoqSKa07BP0IlyXGDPEUJotm2rPYAx7PO0Z8Oacn
-        YtpAlCC1TdE7DOWKyAdO8WBOs3tlJMM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-529-3cFiMcu0NtKRHyYHtdvWaw-1; Thu, 02 Nov 2023 14:11:02 -0400
-X-MC-Unique: 3cFiMcu0NtKRHyYHtdvWaw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4084e4ce543so7751655e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:11:02 -0700 (PDT)
+        Thu, 2 Nov 2023 14:12:02 -0400
+Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9149E10FA
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:11:36 -0700 (PDT)
+Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6ce279b7033so1553010a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:11:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698948662; x=1699553462;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20230601; t=1698948696; x=1699553496;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lf4sz5zgZjW4weKtr+Yg6TBcTzSfkwSHJbmSokVskxk=;
-        b=FhUmcPR91+owTgocC9o4NmOjyTB2SuyGe3bbBr054dw98oHzLXJl3Tcwa2/rw7l5js
-         E9aQOrSNl7rJX6KSMxNNET/mzvsSMJrqtk+8URd2oC707rJ9WE5AI6Snbcad1k6e7Fp5
-         2RVYPtsAUJK7TVW0fZiBPkGeAmIhqzRxq+7nhUSHC6YPru0OMY2KHzTBNiog9ndSlyS3
-         ezf/xfty0Ww9wYYcjLStewb5ZWSNlS61iC1zOd+pvkfDnfXyq+0GW4W6DAc2yu2FZ3Bt
-         n+7MthouBX+TEoE9Y3lVdKissgITsOBy73hriNrvU07KLrv7tmc8WJ9Igjvr8bhb+zyO
-         9vGA==
-X-Gm-Message-State: AOJu0Yyrzcm2TqaehkphFsYqLBt1cPUuDr40mZAxK+wtjssUU/XzsZ64
-        RtX8eRhdC5+4Wpn4V97zA4lZzkJScCWPAcA/O7hYMAYsyJLwsy4etcIjHcCxp3WzAGMxklGxqqh
-        1RWhff7SHZxKFYrgh4sD9wWRs
-X-Received: by 2002:a5d:68c1:0:b0:32d:a022:8559 with SMTP id p1-20020a5d68c1000000b0032da0228559mr15550166wrw.47.1698948661352;
-        Thu, 02 Nov 2023 11:11:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHSqw020mjK/6PHY7CTNXu4NxTqG4uDaXHOXROR0+xwiATkC32fBes5AQyH3J5aI9Lka800LA==
-X-Received: by 2002:a5d:68c1:0:b0:32d:a022:8559 with SMTP id p1-20020a5d68c1000000b0032da0228559mr15550151wrw.47.1698948660999;
-        Thu, 02 Nov 2023 11:11:00 -0700 (PDT)
-Received: from starship ([89.237.99.95])
-        by smtp.gmail.com with ESMTPSA id k15-20020a056000004f00b00323287186aasm3028866wrx.32.2023.11.02.11.10.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 11:11:00 -0700 (PDT)
-Message-ID: <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
-Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for
- hypervisor kernel
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     John Allen <john.allen@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        weijiang.yang@intel.com, rick.p.edgecombe@intel.com,
-        seanjc@google.com, x86@kernel.org, thomas.lendacky@amd.com,
-        bp@alien8.de
-Date:   Thu, 02 Nov 2023 20:10:58 +0200
-In-Reply-To: <20231010200220.897953-7-john.allen@amd.com>
-References: <20231010200220.897953-1-john.allen@amd.com>
-         <20231010200220.897953-7-john.allen@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=0RbtI8xpa03CyJhsKvMnr93wyie1HRbEaEXonJG5DH8=;
+        b=OGnELeEUv+5PFKJNuZ7wTDZTclGnuu5i4SwSkdSH0wxnA9CP8GZgtIq8QxSr5vcEbl
+         jyiRarpL630Tus/0ImhejImud0A4pSkcxID2+Cg5F0L4MRlP1RMt0Xzo1GZogwDgyoOm
+         IcbXp8mE2pDgTeZw2gE7xbLniEHQgos7A1CaBag/p+3EIPLaKwSD9De3g7gbf4fG/Mf4
+         t1+vb7u5w3jDu+weAZbM99S3Jp1R6Nom0PZtoCtofIZw9pPPah4cBD0mj5D5T9kN2hsf
+         tvTUXO5c/ZrK4yuRwBGYL2kj/lTAK1i/HOoOykg4De+k2vIryoAcUrG8cgQf5Ye3X2aq
+         RqBQ==
+X-Gm-Message-State: AOJu0YyTX5cvUKmQepapegR6fnsKEvEnmnjG9VsMVwjaqketQNpETGw0
+        AsJXbLROfzoErQGmXsVuBxa6pJD31/Icb1bPz1GssIxMmkFH
+X-Google-Smtp-Source: AGHT+IGNMO1VffYnQF9u0dfpNAJh16AvZmj0/iWFfFMNS6Y2wK7AAt4WaTDoeYEL91q6bsBkQsuWE1+rDzH1BduMr/yzbWDLWKQ9
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:6b1a:0:b0:6bc:fb26:499e with SMTP id
+ g26-20020a9d6b1a000000b006bcfb26499emr5585697otp.2.1698948695863; Thu, 02 Nov
+ 2023 11:11:35 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 11:11:35 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000082378906092f51aa@google.com>
+Subject: [syzbot] [net?] KMSAN: uninit-value in xfrm_state_find (2)
+From:   syzbot <syzbot+23bbb17a7878e2b3d1d4@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com,
+        herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
-> When a guest issues a cpuid instruction for Fn0000000D_x0B
-> (CetUserOffset), KVM will intercept and need to access the guest
-> MSR_IA32_XSS value. For SEV-ES, this is encrypted and needs to be
-> included in the GHCB to be visible to the hypervisor.
-> 
-> Signed-off-by: John Allen <john.allen@amd.com>
-> ---
->  arch/x86/include/asm/svm.h |  1 +
->  arch/x86/kvm/svm/sev.c     | 12 ++++++++++--
->  arch/x86/kvm/svm/svm.c     |  1 +
->  arch/x86/kvm/svm/svm.h     |  3 ++-
->  4 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 568d97084e44..5afc9e03379d 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -678,5 +678,6 @@ DEFINE_GHCB_ACCESSORS(sw_exit_info_1)
->  DEFINE_GHCB_ACCESSORS(sw_exit_info_2)
->  DEFINE_GHCB_ACCESSORS(sw_scratch)
->  DEFINE_GHCB_ACCESSORS(xcr0)
-> +DEFINE_GHCB_ACCESSORS(xss)
+Hello,
 
-I don't see anywhere in the patch adding xss to ghcb_save_area.
-What kernel version/commit these patches are based on?
+syzbot found the following issue on:
 
->  
->  #endif
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index bb4b18baa6f7..94ab7203525f 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2445,8 +2445,13 @@ static void sev_es_sync_from_ghcb(struct vcpu_svm *svm)
->  
->  	svm->vmcb->save.cpl = kvm_ghcb_get_cpl_if_valid(svm, ghcb);
->  
-> -	if (kvm_ghcb_xcr0_is_valid(svm)) {
-> -		vcpu->arch.xcr0 = ghcb_get_xcr0(ghcb);
-> +	if (kvm_ghcb_xcr0_is_valid(svm) || kvm_ghcb_xss_is_valid(svm)) {
-> +		if (kvm_ghcb_xcr0_is_valid(svm))
-> +			vcpu->arch.xcr0 = ghcb_get_xcr0(ghcb);
-> +
-> +		if (kvm_ghcb_xss_is_valid(svm))
-> +			vcpu->arch.ia32_xss = ghcb_get_xss(ghcb);
-> +
->  		kvm_update_cpuid_runtime(vcpu);
->  	}
->  
-> @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
->  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
->  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
->  	}
-> +
-> +	if (kvm_caps.supported_xss)
-> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
+HEAD commit:    3669558bdf35 Merge tag 'for-6.6-rc1-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16656930680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=754d6383bae8bc99
+dashboard link: https://syzkaller.appspot.com/bug?extid=23bbb17a7878e2b3d1d4
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-This is not just a virtualization hole. This allows the guest to set MSR_IA32_XSS
-to whatever value it wants, and thus it might allow XSAVES to access some host msrs
-that guest must not be able to access.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-AMD might not yet have such msrs, but on Intel side I do see various components
-like 'HDC State', 'HWP state' and such.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f2e55d5455c8/disk-3669558b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5a0b7323ae76/vmlinux-3669558b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3430d935a839/bzImage-3669558b.xz
 
-I understand that this is needed so that #VC handler could read this msr, and trying
-to read it will cause another #VC which is probably not allowed (I don't know this detail of SEV-ES)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+23bbb17a7878e2b3d1d4@syzkaller.appspotmail.com
 
-I guess #VC handler should instead use a kernel cached value of this msr instead, or at least
-KVM should only allow reads and not writes to it.
+=====================================================
+BUG: KMSAN: uninit-value in xfrm_state_find+0x17bc/0x8ce0 net/xfrm/xfrm_state.c:1160
+ xfrm_state_find+0x17bc/0x8ce0 net/xfrm/xfrm_state.c:1160
+ xfrm_tmpl_resolve_one net/xfrm/xfrm_policy.c:2469 [inline]
+ xfrm_tmpl_resolve net/xfrm/xfrm_policy.c:2514 [inline]
+ xfrm_resolve_and_create_bundle+0x80c/0x4e30 net/xfrm/xfrm_policy.c:2807
+ xfrm_lookup_with_ifid+0x3f7/0x3590 net/xfrm/xfrm_policy.c:3141
+ xfrm_lookup net/xfrm/xfrm_policy.c:3270 [inline]
+ xfrm_lookup_route+0x63/0x2b0 net/xfrm/xfrm_policy.c:3281
+ ip6_dst_lookup_flow net/ipv6/ip6_output.c:1246 [inline]
+ ip6_sk_dst_lookup_flow+0x1044/0x1260 net/ipv6/ip6_output.c:1278
+ udpv6_sendmsg+0x3448/0x4000 net/ipv6/udp.c:1552
+ inet6_sendmsg+0x105/0x190 net/ipv6/af_inet6.c:655
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ sock_sendmsg net/socket.c:753 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+ __sys_sendmmsg+0x3c4/0x950 net/socket.c:2681
+ __do_sys_sendmmsg net/socket.c:2710 [inline]
+ __se_sys_sendmmsg net/socket.c:2707 [inline]
+ __x64_sys_sendmmsg+0xbc/0x120 net/socket.c:2707
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-In addition to that, if we decide to open the read access to the IA32_XSS from the guest,
-this IMHO should be done in a separate patch.
+Local variable tmp.i.i created at:
+ xfrm_tmpl_resolve_one net/xfrm/xfrm_policy.c:2447 [inline]
+ xfrm_tmpl_resolve net/xfrm/xfrm_policy.c:2514 [inline]
+ xfrm_resolve_and_create_bundle+0x370/0x4e30 net/xfrm/xfrm_policy.c:2807
+ xfrm_lookup_with_ifid+0x3f7/0x3590 net/xfrm/xfrm_policy.c:3141
 
-Best regards,
-	Maxim Levitsky
+CPU: 0 PID: 26289 Comm: syz-executor.3 Not tainted 6.6.0-rc1-syzkaller-00033-g3669558bdf35 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+=====================================================
 
 
->  }
->  
->  void sev_init_vmcb(struct vcpu_svm *svm)
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 984e89d7a734..ee7c7d0a09ab 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -146,6 +146,7 @@ static const struct svm_direct_access_msrs {
->  	{ .index = MSR_IA32_PL1_SSP,                    .always = false },
->  	{ .index = MSR_IA32_PL2_SSP,                    .always = false },
->  	{ .index = MSR_IA32_PL3_SSP,                    .always = false },
-> +	{ .index = MSR_IA32_XSS,                        .always = false },
->  	{ .index = MSR_INVALID,				.always = false },
->  };
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index bdc39003b955..2011456d2e9f 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -30,7 +30,7 @@
->  #define	IOPM_SIZE PAGE_SIZE * 3
->  #define	MSRPM_SIZE PAGE_SIZE * 2
->  
-> -#define MAX_DIRECT_ACCESS_MSRS	53
-> +#define MAX_DIRECT_ACCESS_MSRS	54
->  #define MSRPM_OFFSETS	32
->  extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
->  extern bool npt_enabled;
-> @@ -720,5 +720,6 @@ DEFINE_KVM_GHCB_ACCESSORS(sw_exit_info_1)
->  DEFINE_KVM_GHCB_ACCESSORS(sw_exit_info_2)
->  DEFINE_KVM_GHCB_ACCESSORS(sw_scratch)
->  DEFINE_KVM_GHCB_ACCESSORS(xcr0)
-> +DEFINE_KVM_GHCB_ACCESSORS(xss)
->  
->  #endif
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
