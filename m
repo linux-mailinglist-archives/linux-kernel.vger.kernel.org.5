@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 820F87DF4F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA217DF4F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376817AbjKBO1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
+        id S229848AbjKBO2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376829AbjKBO1F (ORCPT
+        with ESMTP id S229569AbjKBO2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:27:05 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97D619F
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:26:58 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A44E466072EF;
-        Thu,  2 Nov 2023 14:26:56 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698935217;
-        bh=L5OWGShxX3MAgjaEB+LbUFsMRGhPWkp6u6Ba4OZca4U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JYDSlsNvDIwZLm6W5E2xUHL2zehdH/PcUa/huAehUQr3Q+TQILITNrexes/qLdQkQ
-         hBeovSOTEEpTvQnigwj96Tv91jdw5TaAKxvK8Uz5b7dFgJfR7QmxxU7mp9x4OMKNMn
-         wtSAXXro5G9mjxz8mKQhDlwzRjQa+eqadVSl2mPNrtAFLawK7G3MrxMK0/MvMJHY32
-         HiTVq6yqPCvV9LhBSPJMbbkeLOq4T8FjcoYQJMtTyVO1lpqyP3REBUw2R77FXHGv+v
-         oZL0gj7JJjlsaj720cy5UWKI7No/a4A6evEvZXyPCTmuAXN8SUiSIh6O9E3rAvPytI
-         ajw6CRoFkkOzQ==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     boris.brezillon@collabora.com
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        wenst@chromium.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com
-Subject: [PATCH v2 6/6] drm/panfrost: Set regulators on/off during system sleep on MediaTek SoCs
-Date:   Thu,  2 Nov 2023 15:26:43 +0100
-Message-ID: <20231102142643.75288-7-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231102142643.75288-1-angelogioacchino.delregno@collabora.com>
-References: <20231102142643.75288-1-angelogioacchino.delregno@collabora.com>
+        Thu, 2 Nov 2023 10:28:45 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5ABAB7
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:28:40 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A2ERWLF03062437, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A2ERWLF03062437
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 2 Nov 2023 22:27:32 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 2 Nov 2023 22:27:32 +0800
+Received: from james-bs01.realtek.com.tw (172.21.190.247) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 2 Nov 2023 22:27:31 +0800
+From:   James Tai <james.tai@realtek.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-realtek-soc@lists.infradead.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 0/6] Initial support for the Realtek interrupt controller
+Date:   Thu, 2 Nov 2023 22:27:25 +0800
+Message-ID: <20231102142731.2087245-1-james.tai@realtek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.190.247]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
+X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: license violation
+X-KSE-Antivirus-Attachment-Filter-Interceptor-Info: license violation
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,59 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All of the MediaTek SoCs supported by Panfrost can completely cut power
-to the GPU during full system sleep without any user-noticeable delay
-in the resume operation, as shown by measurements taken on multiple
-MediaTek SoCs.
+Introduce an interrupt controller driver for Realtek DHC (Digital Home Center) SoCs.
 
-As an example, for MT8195 - a "before" with only runtime PM operations
-(so, without turning on/off regulators), and an "after" executing both
-the system sleep .resume() handler and .runtime_resume() (so the time
-refers to T_Resume + T_Runtime_Resume):
+James Tai (6):
+  dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
+  irqchip: Add interrupt controller support for Realtek DHC SoCs
+  irqchip: Introduce RTD1319 support using the Realtek Common Interrupt
+    Controller Driver
+  irqchip: Introduce RTD1319D support using the Realtek Common Interrupt
+    Controller Driver
+  irqchip: Introduce RTD1325 support using the Realtek Common Interrupt
+    Controller Driver
+  irqchip: Introduce RTD1619B support using the Realtek Common Interrupt
+    Controller Driver
 
-Average Panfrost-only system sleep resume time, before: ~33500ns
-Average Panfrost-only system sleep resume time, after:  ~336200ns
+ .../interrupt-controller/realtek,intc.yaml    | 146 +++++++++++
+ drivers/irqchip/Kconfig                       |  28 +++
+ drivers/irqchip/Makefile                      |   5 +
+ drivers/irqchip/irq-realtek-intc-common.c     | 232 ++++++++++++++++++
+ drivers/irqchip/irq-realtek-intc-common.h     |  75 ++++++
+ drivers/irqchip/irq-realtek-rtd1319.c         | 204 +++++++++++++++
+ drivers/irqchip/irq-realtek-rtd1319d.c        | 211 ++++++++++++++++
+ drivers/irqchip/irq-realtek-rtd1325.c         | 214 ++++++++++++++++
+ drivers/irqchip/irq-realtek-rtd1619b.c        | 201 +++++++++++++++
+ 9 files changed, 1316 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/realtek,intc.yaml
+ create mode 100644 drivers/irqchip/irq-realtek-intc-common.c
+ create mode 100644 drivers/irqchip/irq-realtek-intc-common.h
+ create mode 100644 drivers/irqchip/irq-realtek-rtd1319.c
+ create mode 100644 drivers/irqchip/irq-realtek-rtd1319d.c
+ create mode 100644 drivers/irqchip/irq-realtek-rtd1325.c
+ create mode 100644 drivers/irqchip/irq-realtek-rtd1619b.c
 
-Keep in mind that this additional ~308200 nanoseconds delay happens only
-in resume from a full system suspend, and not in runtime PM operations,
-hence it is acceptable.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/panfrost/panfrost_drv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 82f3c5fe9c58..f63382d9ab04 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -734,7 +734,7 @@ static const struct panfrost_compatible mediatek_mt8183_b_data = {
- 	.supply_names = mediatek_mt8183_b_supplies,
- 	.num_pm_domains = ARRAY_SIZE(mediatek_mt8183_pm_domains),
- 	.pm_domain_names = mediatek_mt8183_pm_domains,
--	.pm_features = BIT(GPU_PM_CLK_DIS),
-+	.pm_features = BIT(GPU_PM_CLK_DIS) | BIT(GPU_PM_VREG_OFF),
- };
- 
- static const char * const mediatek_mt8186_pm_domains[] = { "core0", "core1" };
-@@ -743,7 +743,7 @@ static const struct panfrost_compatible mediatek_mt8186_data = {
- 	.supply_names = mediatek_mt8183_b_supplies,
- 	.num_pm_domains = ARRAY_SIZE(mediatek_mt8186_pm_domains),
- 	.pm_domain_names = mediatek_mt8186_pm_domains,
--	.pm_features = BIT(GPU_PM_CLK_DIS),
-+	.pm_features = BIT(GPU_PM_CLK_DIS) | BIT(GPU_PM_VREG_OFF),
- };
- 
- static const char * const mediatek_mt8192_supplies[] = { "mali", NULL };
-@@ -754,7 +754,7 @@ static const struct panfrost_compatible mediatek_mt8192_data = {
- 	.supply_names = mediatek_mt8192_supplies,
- 	.num_pm_domains = ARRAY_SIZE(mediatek_mt8192_pm_domains),
- 	.pm_domain_names = mediatek_mt8192_pm_domains,
--	.pm_features = BIT(GPU_PM_CLK_DIS),
-+	.pm_features = BIT(GPU_PM_CLK_DIS) | BIT(GPU_PM_VREG_OFF),
- };
- 
- static const struct of_device_id dt_match[] = {
 -- 
-2.42.0
+2.25.1
 
