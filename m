@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2319C7DEB29
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 665447DEB27
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346751AbjKBDJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
+        id S1346498AbjKBDJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347265AbjKBDJe (ORCPT
+        with ESMTP id S232949AbjKBDJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:09:34 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F409F;
-        Wed,  1 Nov 2023 20:09:32 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c3aec5f326so311392866b.1;
-        Wed, 01 Nov 2023 20:09:31 -0700 (PDT)
+        Wed, 1 Nov 2023 23:09:25 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0DB11B;
+        Wed,  1 Nov 2023 20:09:22 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-586ba7cdb6bso233099eaf.2;
+        Wed, 01 Nov 2023 20:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698894570; x=1699499370; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3Ws5cIdqhbDjyHMeqOLI87dAIVT3SXF9kKQ0h2q3cUw=;
-        b=STUw6btNTuZQ25gfQDNmqhEvQpFF81DZhTirFbU8F0GOW9YiT4OZFGBNItMnHbXG79
-         dV8qztqc4mNAKJqneKNgjkrrKO7+FLULvT9Ugvjp8D8E3+yq2WUGRsKuaucP/r12Oc+F
-         IPFcjzz1/uskoUj5p+BJwSpzzK6NIdTDJD/aaD+SRTUdLxrgSVNI6a2Duw7nzDfDdAIF
-         9At/VB+VUV244lVL5sXrqAtbg51zUzGTOR2Ckwai0+8bJxg8an+Cfc2OSYAvuVcJJFxT
-         kyD0rzG59XpxvVJkcA9NRD1pSUtVR/bI83jQ2aDvR0hGp4mhwaOPKdmS7AB5WaHKYxOS
-         QpbQ==
+        d=gmail.com; s=20230601; t=1698894561; x=1699499361; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cf6ShtWCGBzrM5MqeJfbPoi4JRtVO50ryFgW6KiQr44=;
+        b=OKVZ9Dj2QGtgfpKn5SSSI6+bH0f0InLXxwOuNv5jugKSaErA6fh/5hjj+H8dPWWZiu
+         58PpET6ydCZ19BQIy+VWJ66Nr80J6fgVYhf6aJx2514OhtQkBcYvN4XsJuNKFNak1FFD
+         EDSDPB/CQhJHwK/U2SxF4BxqWHkIns4ytfxAF48abHX2yew5QztaQWG0D3LNImhFBWKG
+         oiCkyTUw5Tj44P3RFzd4xya27rJCP5vIAD6LQgDG+lVkWpWutOrxvngYWP2qlOc1B7vJ
+         twjl88Pjdelc/TsS2jvpMsKh1oS7lZdD7NBINTUpQz3uDTzC3PvaMnkpvA4M5sLayv0T
+         H3vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698894570; x=1699499370;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3Ws5cIdqhbDjyHMeqOLI87dAIVT3SXF9kKQ0h2q3cUw=;
-        b=FS6jPiD9ruMo2F1bBR6OWVujwrhzCxGRFLfJ9lcAG7iJ/cSvXp6MsPnSNvb8NOcmVi
-         e5EvNTTyiez72jpLHdfcYKmi9hetIaL9vUuzRwHkb80kcqb7Bw9jchF0K/tUiFiRpy9R
-         J3bWmgx6jpTOXPf8KndzgVmW1DrkiHESPG8sa0bxJmkY/I4ZD7unexBG4joxzL2ylAIK
-         ViO3INJ8DRMKY8GoTS/Q3wHfNZdUR4tgKrAtNJTezy1FyEIuUdCLEunJg2ThoTdvo26v
-         mkZzBljRtRWjbZ1tddtjvVogswzev/8hI/4wulVRsUkSy3v4XtZmlhTv7LW0Fn2QWYLg
-         VtEw==
-X-Gm-Message-State: AOJu0YxEGFdZHPA1kJpkxOvJtm/MOmDCfPGlkFIR3pogIljdbh8v7QI2
-        eB1YXzle2XwJ+ZRVDDnSj9yfYNJqEAsjYWR9vQY=
-X-Google-Smtp-Source: AGHT+IFAtl+rLYtejtLai72vFFnNvc5TovGXtJmqRU+tQdEzKZe5Vm43nbzb/yHXv0fz4InrCD418r/OL1G6d6rWDgM=
-X-Received: by 2002:a17:906:248e:b0:9db:6437:ef42 with SMTP id
- e14-20020a170906248e00b009db6437ef42mr751502ejb.18.1698894570207; Wed, 01 Nov
- 2023 20:09:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698894561; x=1699499361;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cf6ShtWCGBzrM5MqeJfbPoi4JRtVO50ryFgW6KiQr44=;
+        b=wxVgwCwDQHrAGXB7yspqveKuLTlZuPb55zWQ2qFIB0cIJ76R3wpkkxL20FpAxyN8la
+         +NxNZV6VLo6xN/+MFRgREeb/4QMa7PJKhXsiMJRKhHGgaWsr2x7YsS83M+U+HtceSy9K
+         UsNvir2Gpez+OofleNS9lzdVqrWbUSmMzfcyXai/Awx10xIyqfltlrLcWxOfedDORkx7
+         YavEcfw2e7+piCDqSv4+k4/DD8e+TvGNjKBVU0M/3EQDtSeIhpGjuyb30f7kgPYJVGnG
+         6WPTUZVi1QFxApnaHSc2BH+Zbq6R8kqrslEAVm0H8/AK2Bh7pJCVyNTzN6NlYgl4ET9l
+         8niw==
+X-Gm-Message-State: AOJu0YxQ5Qs6Mwno27TzCAL2b2HnoSleL60gbPcS31pROoSFhkGQbLHP
+        lbMajusSXPBnr+Bc7igtHyk=
+X-Google-Smtp-Source: AGHT+IH5sVClCbsTwS+LUk7ehteYhS62U8WpXdsFmyuBIMQwuyBqvqtzHvGLlxCQK4R91BuP/taHPA==
+X-Received: by 2002:a4a:d48b:0:b0:57b:5a55:2bba with SMTP id o11-20020a4ad48b000000b0057b5a552bbamr16351815oos.2.1698894561556;
+        Wed, 01 Nov 2023 20:09:21 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r22-20020a4a3716000000b0057b6d8e51ddsm851561oor.40.2023.11.01.20.09.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 20:09:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 1 Nov 2023 20:09:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     Daniel Matyas <daniel.matyas@analog.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: max31827: include regulator header
+Message-ID: <431f80b4-7e1c-4048-a014-3ec11cfbeac9@roeck-us.net>
+References: <20231031091324.23991-1-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
-From:   sean yang <seanyang230@gmail.com>
-Date:   Thu, 2 Nov 2023 11:09:18 +0800
-Message-ID: <CADGqjFLEJ8WK+_DHJo4APfJGkDf8PLNRR0JboEVk2TL2oC2iog@mail.gmail.com>
-Subject: [PATCH] driver: thermal: simplify the traverse of sensor in thermal_zone.
-To:     xinglong.yang@cixtech.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031091324.23991-1-antoniu.miclaus@analog.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The number of sensor in a thermal zone needs to be greater than zero
-and equal to one. Add the opinion when the number of sensor is greater
-than one in a thermal zone.
+On Tue, Oct 31, 2023 at 11:13:24AM +0200, Antoniu Miclaus wrote:
+> Include `linux/regulator/consumer.h` since the driver is using
+> `devm_regulator_get_enable` function.
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
-There is also no need to traverse the sensor in the thermal zone,
-because there is only one sensor on one thermal zone.
+Applied.
 
-Signed-off-by: xinglong.yang <xinglong.yang@cixtech.com>
----
- drivers/thermal/thermal_of.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+Thanks,
+Guenter
 
-diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-index e615f735f4c0..a405754c42cd 100644
---- a/drivers/thermal/thermal_of.c
-+++ b/drivers/thermal/thermal_of.c
-@@ -186,6 +186,7 @@ static struct device_node
-*of_thermal_zone_find(struct device_node *sensor, int
-  for_each_available_child_of_node(np, tz) {
-
-  int count, i;
-+ int ret;
-
-  count = of_count_phandle_with_args(tz, "thermal-sensors",
-     "#thermal-sensor-cells");
-@@ -193,26 +194,25 @@ static struct device_node
-*of_thermal_zone_find(struct device_node *sensor, int
-  pr_err("%pOFn: missing thermal sensor\n", tz);
-  tz = ERR_PTR(-EINVAL);
-  goto out;
-+ } else if (count > 1) {
-+ pr_err("%pOFn: number of thermal sensor greater than one\n", tz);
-+ tz = ERR_PTR(-EINVAL);
-+ goto out;
-  }
-
-- for (i = 0; i < count; i++) {
--
-- int ret;
--
-- ret = of_parse_phandle_with_args(tz, "thermal-sensors",
-- "#thermal-sensor-cells",
-- i, &sensor_specs);
-- if (ret < 0) {
-- pr_err("%pOFn: Failed to read thermal-sensors cells: %d\n", tz, ret);
-- tz = ERR_PTR(ret);
-- goto out;
-- }
-+ ret = of_parse_phandle_with_args(tz, "thermal-sensors",
-+ "#thermal-sensor-cells",
-+ 0, &sensor_specs);
-+ if (ret < 0) {
-+ pr_err("%pOFn: Failed to read thermal-sensors cells: %d\n", tz, ret);
-+ tz = ERR_PTR(ret);
-+ goto out;
-+ }
-
-- if ((sensor == sensor_specs.np) && id == (sensor_specs.args_count ?
--   sensor_specs.args[0] : 0)) {
-- pr_debug("sensor %pOFn id=%d belongs to %pOFn\n", sensor, id, tz);
-- goto out;
-- }
-+ if ((sensor == sensor_specs.np) && id == (sensor_specs.args_count ?
-+   sensor_specs.args[0] : 0)) {
-+ pr_debug("sensor %pOFn id=%d belongs to %pOFn\n", sensor, id, tz);
-+ goto out;
-  }
-  }
-  tz = ERR_PTR(-ENODEV);
--- 
-2.42.0
+> ---
+>  drivers/hwmon/max31827.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
+> index 0508b020a408..b29f25321dc4 100644
+> --- a/drivers/hwmon/max31827.c
+> +++ b/drivers/hwmon/max31827.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/mutex.h>
+>  #include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+>  
+>  #define MAX31827_T_REG			0x0
+>  #define MAX31827_CONFIGURATION_REG	0x2
