@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A747DF73D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCD17DF741
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377057AbjKBP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S1377044AbjKBQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347663AbjKBP7E (ORCPT
+        with ESMTP id S235482AbjKBQAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:59:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2D4187;
-        Thu,  2 Nov 2023 08:58:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319BCC433C7;
-        Thu,  2 Nov 2023 15:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698940737;
-        bh=TZxJFL5OibED8+/9pa412vgNlmClfWKXxC9WGoztNWY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=09E3HOS+W4nL+5nkvv9jyfGBRlFy+24B88zNuHEqR0IJZpeYbhhwHhLi8PkyEQuhp
-         JuEMlTj2za4RQvRx13msamnOU497gjP3BWlyQ9NENFROLoQSNH2yHvKS48al+oNKQA
-         xfko74CFww1olV7l7vIBj/k8lpJRKHqlxm51juQM=
-Date:   Thu, 2 Nov 2023 16:58:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 1/3] device property: Implement device_is_big_endian()
-Message-ID: <2023110235-viewless-postage-9832@gregkh>
-References: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
- <20231025184259.250588-2-andriy.shevchenko@linux.intel.com>
- <2023102624-moonshine-duller-3043@gregkh>
- <ZTpbMVSdKlOgLbwv@smile.fi.intel.com>
- <ZUPBVMdi3hcTyW2n@smile.fi.intel.com>
+        Thu, 2 Nov 2023 12:00:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A4E7186;
+        Thu,  2 Nov 2023 09:00:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41DEC2F4;
+        Thu,  2 Nov 2023 09:00:42 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.166])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45F3B3F738;
+        Thu,  2 Nov 2023 08:59:58 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 15:59:52 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+Message-ID: <ZUPHeEe1eJjHkhsg@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net>
+ <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+ <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+ <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
+ <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZUPBVMdi3hcTyW2n@smile.fi.intel.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,31 +58,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 05:33:40PM +0200, Andy Shevchenko wrote:
-> On Thu, Oct 26, 2023 at 03:27:30PM +0300, Andy Shevchenko wrote:
-> > On Thu, Oct 26, 2023 at 07:25:35AM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Oct 25, 2023 at 09:42:57PM +0300, Andy Shevchenko wrote:
-> > > > Some users want to use the struct device pointer to see if the
-> > > > device is big endian in terms of Open Firmware specifications,
-> > > > i.e. if it has a "big-endian" property, or if the kernel was
-> > > > compiled for BE *and* the device has a "native-endian" property.
-> > > > 
-> > > > Provide inline helper for the users.
-> > > 
-> > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > 
-> > Thank you, Greg.
-> > 
-> > Bart, would it be still possible to take this into next?
-> > I would like to have at least this patch applied (with the first user)
-> > to allow conversion of others (I have some more users of new API).
-> 
-> Okay, seems we missed v6.7 with this, can you then prepare an immutable
-> branch / tag with this, so other maintainers can pull in case it's needed?
-> (I have something against tty already and perhaps something else, let's
->  see.)
+On Thu, Aug 03, 2023 at 12:13:00PM +0100, Mark Rutland wrote:
+[...]
 
-After -rc1 is out, I'll look into it, can't do anything until then,
-sorry...
+> However, in looking at it I think
+> there may me a wider potential isssue w.r.t. the way instruction memory gets
+> reused, because as writtten today the architecture doesn't seem to have a
+> guarantee on when instruction fetches are completed and therefore when it's
+> safe to modify instruction memory. Usually we're saved by TLB maintenance,
+> which this series avoids by design.
 
-greg k-h
+Just to confirm on this point specifically, per discussions with our
+architects, the (architectural) execution of an instruction ensures that there
+are no outstanding fetches for prior instructions. IIUC that will be clarified 
+the next release of the ARM ARM.
+
+So as long as we're certain all threads have left the old code (e.g. via a
+flag, RCU tasks rude synchronization, whatever) before we overwrite slots in
+the shared buffer, we should be good.
+
+We will need to be very careful with the maintenance when installing new code
+into the shared buffer (e.g. we will require an IPI to all other CPUs), but
+that should be relatively simple.
+
+I'll go review the latest patches with that in mind.
+
+Thanks,
+Mark.
