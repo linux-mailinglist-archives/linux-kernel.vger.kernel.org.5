@@ -2,151 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F90D7DF6EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E377DF6F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347621AbjKBPrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
+        id S1376995AbjKBPr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbjKBPrQ (ORCPT
+        with ESMTP id S1376797AbjKBPrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:47:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5BC137
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698940030; x=1730476030;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HNI3x3MYh/j6wySXSOikcO/9VddS9p/hNBuGdysRtcM=;
-  b=mHw+4qOVx2vBsfRLzwZUIsvSXEz4HT8KuNUQixWuro9Z6fZ/vDBQrOm3
-   aQeZxpd98UF5H7Bh25l1kfK854og1XbgSF9D9dAV5aa/O4LV5IWp/A/JK
-   Ns9CfuxGbp7hqivzAwotfgaP/UceOv92+KkqBDnTwtCt4rwt9HPIOP/CL
-   hc0DVi/kKaABNCKMK3tK03cdTAAKI3Xt5oB+Kkuobf6qvyMpub798PlzH
-   sojl9Rw2vpgoVb/C0fbccBfWb4h/OVW45zbdK3mu/IYplbDa1f1tZxB0u
-   RYISMLBtp+Wkwd0FG6H/rriwgMFtgq0iWZ7L9e7bDbBc7I7tivkPlJqku
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="368950282"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="368950282"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:46:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="711186730"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="711186730"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 02 Nov 2023 08:46:39 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyZu1-0001b6-0v;
-        Thu, 02 Nov 2023 15:46:37 +0000
-Date:   Thu, 2 Nov 2023 23:46:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: lib/maple_tree.c:4327:20: warning: stack frame size (1112) exceeds
- limit (1024) in 'mas_wr_modify'
-Message-ID: <202311022317.B3t8ONbL-lkp@intel.com>
+        Thu, 2 Nov 2023 11:47:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A11182
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698940021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qeg4fThHNamWUhF1iS61sde2LLjKmpBYgt6nMB/6tao=;
+        b=WJi3K3YnmCWcniNc/oaKWiPSm7llaTooxn9b6FcKFTqZmvUCA8qglCSdFvwcMAPlMddQOa
+        540JEfCpi1oCIsFKnf0QsZ5SOCL8n6HKvTvQNm73j3MQJlPhOsskBN2yR859oT5zat01Ow
+        1pttUgwOqvaZC/gbXLL6ukpo1SRJvWs=
+Received: from mail-vs1-f72.google.com (mail-vs1-f72.google.com
+ [209.85.217.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-385-9S4hxtjZOhqHloyIpXKwkw-1; Thu, 02 Nov 2023 11:46:57 -0400
+X-MC-Unique: 9S4hxtjZOhqHloyIpXKwkw-1
+Received: by mail-vs1-f72.google.com with SMTP id ada2fe7eead31-45ad9e08a56so319581137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:46:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698940017; x=1699544817;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qeg4fThHNamWUhF1iS61sde2LLjKmpBYgt6nMB/6tao=;
+        b=C0jPtUMxSHDBaMqnMoDAalJ1BSMkSJtiRlSYyvC+3vT65Ogk0QJVOqsfFyIZiWgdNC
+         u7g5Hz9JAFj2VcoSn4eaXS819qUz0stHFIQAdbDQEJmBBv276tAymikPdbdrQ92tmpxR
+         oYN56THqqQvv+p6Q2e+pGShMriAnjT76Z9g0J54MoMeRqdZ6ywX1HHoFKHK08AGG8Fj2
+         yZa+bkZLWgoC33f79m3HaLXDUNTA0hQ4L2gb+UeXTTMQoCF0oV5d2V0Whn2gYCpQdm/W
+         cumbqDXjVDTM38G9P7RgSFOGGDb26WtY20F3+YSfkenqnYLfi4xglwjl2+T8AB8SJkII
+         6OWQ==
+X-Gm-Message-State: AOJu0YwTnFAx1i7Xxrve7OoUt9x3lFl72FOwTi3GoIfl22lf69fUum2L
+        8HO8s/v6G8S1JVjWGEadDNclPG7LECYnLmlJs0IxNK3+XHc0j79RmoSYDd52lOTzLjQPLP6mmU1
+        K+DZOZFzEXnU5FCS/Dkim3WR7MoJhct858mj6FR5W
+X-Received: by 2002:a67:e094:0:b0:45a:adb1:e731 with SMTP id f20-20020a67e094000000b0045aadb1e731mr13713089vsl.18.1698940016969;
+        Thu, 02 Nov 2023 08:46:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE2sQrKI/skG8LdWfhNkZYp2KhqQ5LS1sXUkK07F1g1zFBTxe6hPbvDf2UcxJZMcPjozGjwKFDjb1Wwm7r+KU4=
+X-Received: by 2002:a67:e094:0:b0:45a:adb1:e731 with SMTP id
+ f20-20020a67e094000000b0045aadb1e731mr13713027vsl.18.1698940016455; Thu, 02
+ Nov 2023 08:46:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231027182217.3615211-18-seanjc@google.com> <7c0844d8-6f97-4904-a140-abeabeb552c1@intel.com>
+ <ZUEML6oJXDCFJ9fg@google.com> <92ba7ddd-2bc8-4a8d-bd67-d6614b21914f@intel.com>
+ <ZUJVfCkIYYFp5VwG@google.com> <CABgObfaw4Byuzj5J3k48jdwT0HCKXLJNiuaA9H8Dtg+GOq==Sw@mail.gmail.com>
+ <ZUJ-cJfofk2d_I0B@google.com> <4ca2253d-276f-43c5-8e9f-0ded5d5b2779@redhat.com>
+ <ZULSkilO-tdgDGyT@google.com> <CABgObfbq_Hg0B=jvsSDqYH3CSpX+RsxfwB-Tc-eYF4uq2Qw9cg@mail.gmail.com>
+ <ZUPCWfO1iO77-KDA@google.com>
+In-Reply-To: <ZUPCWfO1iO77-KDA@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 2 Nov 2023 16:46:42 +0100
+Message-ID: <CABgObfa=DH7FySBviF63OS9sVog_wt-AqYgtUAGKqnY5Bizivw@mail.gmail.com>
+Subject: Re: [PATCH v13 17/35] KVM: Add transparent hugepage support for
+ dedicated guest memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liam,
+On Thu, Nov 2, 2023 at 4:38=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+> Actually, looking that this again, there's not actually a hard dependency=
+ on THP.
+> A THP-enabled kernel _probably_  gives a higher probability of using huge=
+pages,
+> but mostly because THP selects COMPACTION, and I suppose because using TH=
+P for
+> other allocations reduces overall fragmentation.
 
-FYI, the error/warning still remains.
+Yes, that's why I didn't even bother enabling it unless THP is
+enabled, but it makes even more sense to just try.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
-commit: 54a611b605901c7d5d05b6b8f5d04a6ceb0962aa Maple Tree: add new data structure
-date:   1 year, 1 month ago
-config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231102/202311022317.B3t8ONbL-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311022317.B3t8ONbL-lkp@intel.com/reproduce)
+> So rather than honor KVM_GUEST_MEMFD_ALLOW_HUGEPAGE iff THP is enabled, I=
+ think
+> we should do the below (I verified KVM can create hugepages with THP=3Dn)=
+.  We'll
+> need another capability, but (a) we probably should have that anyways and=
+ (b) it
+> provides a cleaner path to adding PUD-sized hugepage support in the futur=
+e.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311022317.B3t8ONbL-lkp@intel.com/
+I wonder if we need KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE though. This
+should be a generic kernel API and in fact the sizes are available in
+a not-so-friendly format in /sys/kernel/mm/hugepages.
 
-All warnings (new ones prefixed by >>):
+We should just add /sys/kernel/mm/hugepages/sizes that contains
+"2097152 1073741824" on x86 (only the former if 1G pages are not
+supported).
 
-   lib/maple_tree.c:330:20: warning: unused function 'mte_set_full' [-Wunused-function]
-     330 | static inline void mte_set_full(const struct maple_enode *node)
-         |                    ^
-   lib/maple_tree.c:335:20: warning: unused function 'mte_clear_full' [-Wunused-function]
-     335 | static inline void mte_clear_full(const struct maple_enode *node)
-         |                    ^
-   lib/maple_tree.c:3958:19: warning: stack frame size (1032) exceeds limit (1024) in 'mas_wr_spanning_store' [-Wframe-larger-than]
-    3958 | static inline int mas_wr_spanning_store(struct ma_wr_state *wr_mas)
-         |                   ^
->> lib/maple_tree.c:4327:20: warning: stack frame size (1112) exceeds limit (1024) in 'mas_wr_modify' [-Wframe-larger-than]
-    4327 | static inline void mas_wr_modify(struct ma_wr_state *wr_mas)
-         |                    ^
-   4 warnings generated.
+Plus: is this the best API if we need something else for 1G pages?
 
+Let's drop *this* patch and proceed incrementally. (Again, this is
+what I want to do with this final review: identify places that are
+stil sticky, and don't let them block the rest).
 
-vim +/mas_wr_modify +4327 lib/maple_tree.c
+Coincidentially we have an open spot next week at plumbers. Let's
+extend Fuad's section to cover more guestmem work.
 
-  4326	
-> 4327	static inline void mas_wr_modify(struct ma_wr_state *wr_mas)
-  4328	{
-  4329		unsigned char node_slots;
-  4330		unsigned char node_size;
-  4331		struct ma_state *mas = wr_mas->mas;
-  4332	
-  4333		/* Direct replacement */
-  4334		if (wr_mas->r_min == mas->index && wr_mas->r_max == mas->last) {
-  4335			rcu_assign_pointer(wr_mas->slots[mas->offset], wr_mas->entry);
-  4336			if (!!wr_mas->entry ^ !!wr_mas->content)
-  4337				mas_update_gap(mas);
-  4338			return;
-  4339		}
-  4340	
-  4341		/* Attempt to append */
-  4342		node_slots = mt_slots[wr_mas->type];
-  4343		node_size = wr_mas->node_end - wr_mas->offset_end + mas->offset + 2;
-  4344		if (mas->max == ULONG_MAX)
-  4345			node_size++;
-  4346	
-  4347		/* slot and node store will not fit, go to the slow path */
-  4348		if (unlikely(node_size >= node_slots))
-  4349			goto slow_path;
-  4350	
-  4351		if (wr_mas->entry && (wr_mas->node_end < node_slots - 1) &&
-  4352		    (mas->offset == wr_mas->node_end) && mas_wr_append(wr_mas)) {
-  4353			if (!wr_mas->content || !wr_mas->entry)
-  4354				mas_update_gap(mas);
-  4355			return;
-  4356		}
-  4357	
-  4358		if ((wr_mas->offset_end - mas->offset <= 1) && mas_wr_slot_store(wr_mas))
-  4359			return;
-  4360		else if (mas_wr_node_store(wr_mas))
-  4361			return;
-  4362	
-  4363		if (mas_is_err(mas))
-  4364			return;
-  4365	
-  4366	slow_path:
-  4367		mas_wr_bnode(wr_mas);
-  4368	}
-  4369	
+Paolo
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testi=
+ng/selftests/kvm/guest_memfd_test.c
+> index c15de9852316..c9f449718fce 100644
+> --- a/tools/testing/selftests/kvm/guest_memfd_test.c
+> +++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+> @@ -201,6 +201,10 @@ int main(int argc, char *argv[])
+>
+>         TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
+>
+> +       if (kvm_has_cap(KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE) && thp_con=
+figured())
+> +               TEST_ASSERT_EQ(get_trans_hugepagesz(),
+> +                              kvm_check_cap(KVM_CAP_GUEST_MEMFD_HUGEPAGE=
+_PMD_SIZE));
+> +
+>         page_size =3D getpagesize();
+>         total_size =3D page_size * 4;
+>
+> diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_t=
+est.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+> index be311944e90a..245901587ed2 100644
+> --- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+> @@ -396,7 +396,7 @@ static void test_mem_conversions(enum vm_mem_backing_=
+src_type src_type, uint32_t
+>
+>         vm_enable_cap(vm, KVM_CAP_EXIT_HYPERCALL, (1 << KVM_HC_MAP_GPA_RA=
+NGE));
+>
+> -       if (backing_src_can_be_huge(src_type))
+> +       if (kvm_has_cap(KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE))
+>                 memfd_flags =3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+>         else
+>                 memfd_flags =3D 0;
+>
+> --
+> From: Sean Christopherson <seanjc@google.com>
+> Date: Wed, 25 Oct 2023 16:26:41 -0700
+> Subject: [PATCH] KVM: Add best-effort hugepage support for dedicated gues=
+t
+>  memory
+>
+> Extend guest_memfd to allow backing guest memory with hugepages.  For now=
+,
+> make hugepage utilization best-effort, i.e. fall back to non-huge mapping=
+s
+> if a hugepage can't be allocated.  Guaranteeing hugepages would require a
+> dedicated memory pool and significantly more complexity and churn..
+>
+> Require userspace to opt-in via a flag even though it's unlikely real use
+> cases will ever want to use order-0 pages, e.g. to give userspace a safet=
+y
+> valve in case hugepage support is buggy, and to allow for easier testing
+> of both paths.
+>
+> Do not take a dependency on CONFIG_TRANSPARENT_HUGEPAGE, as THP enabling
+> primarily deals with userspace page tables, which are explicitly not in
+> play for guest_memfd.  Selecting THP does make obtaining hugepages more
+> likely, but only because THP selects CONFIG_COMPACTION.  Don't select
+> CONFIG_COMPACTION either, because again it's not a hard dependency.
+>
+> For simplicity, require the guest_memfd size to be a multiple of the
+> hugepage size, e.g. so that KVM doesn't need to do bounds checking when
+> deciding whether or not to allocate a huge folio.
+>
+> When reporting the max order when KVM gets a pfn from guest_memfd, force
+> order-0 pages if the hugepage is not fully contained by the memslot
+> binding, e.g. if userspace requested hugepages but punches a hole in the
+> memslot bindings in order to emulate x86's VGA hole.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  Documentation/virt/kvm/api.rst | 17 +++++++++
+>  include/uapi/linux/kvm.h       |  3 ++
+>  virt/kvm/guest_memfd.c         | 69 +++++++++++++++++++++++++++++-----
+>  virt/kvm/kvm_main.c            |  4 ++
+>  4 files changed, 84 insertions(+), 9 deletions(-)
+>
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.=
+rst
+> index e82c69d5e755..ccdd5413920d 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6176,6 +6176,8 @@ and cannot be resized  (guest_memfd files do howeve=
+r support PUNCH_HOLE).
+>         __u64 reserved[6];
+>    };
+>
+> +  #define KVM_GUEST_MEMFD_ALLOW_HUGEPAGE         (1ULL << 0)
+> +
+>  Conceptually, the inode backing a guest_memfd file represents physical m=
+emory,
+>  i.e. is coupled to the virtual machine as a thing, not to a "struct kvm"=
+.  The
+>  file itself, which is bound to a "struct kvm", is that instance's view o=
+f the
+> @@ -6192,6 +6194,12 @@ most one mapping per page, i.e. binding multiple m=
+emory regions to a single
+>  guest_memfd range is not allowed (any number of memory regions can be bo=
+und to
+>  a single guest_memfd file, but the bound ranges must not overlap).
+>
+> +If KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is set in flags, KVM will attempt to a=
+llocate
+> +and map PMD-size hugepages for the guest_memfd file.  This is currently =
+best
+> +effort.  If KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is set, size must be aligned =
+to at
+> +least the size reported by KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE (which =
+also
+> +enumerates support for KVM_GUEST_MEMFD_ALLOW_HUGEPAGE).
+> +
+>  See KVM_SET_USER_MEMORY_REGION2 for additional details.
+>
+>  5. The kvm_run structure
+> @@ -8639,6 +8647,15 @@ block sizes is exposed in KVM_CAP_ARM_SUPPORTED_BL=
+OCK_SIZES as a
+>  64-bit bitmap (each bit describing a block size). The default value is
+>  0, to disable the eager page splitting.
+>
+> +
+> +8.41 KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE
+> +------------------------------------------
+> +
+> +This is an information-only capability that returns guest_memfd's hugepa=
+ge size
+> +for PMD hugepages.  Returns '0' if guest_memfd is not supported, or if K=
+VM
+> +doesn't support creating hugepages for guest_memfd.  Note, guest_memfd d=
+oesn't
+> +currently support PUD-sized hugepages.
+> +
+>  9. Known KVM API problems
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 25caee8d1a80..b78d0e3bf22a 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1217,6 +1217,7 @@ struct kvm_ppc_resize_hpt {
+>  #define KVM_CAP_MEMORY_FAULT_INFO 231
+>  #define KVM_CAP_MEMORY_ATTRIBUTES 232
+>  #define KVM_CAP_GUEST_MEMFD 233
+> +#define KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE 234
+>
+>  #ifdef KVM_CAP_IRQ_ROUTING
+>
+> @@ -2303,4 +2304,6 @@ struct kvm_create_guest_memfd {
+>         __u64 reserved[6];
+>  };
+>
+> +#define KVM_GUEST_MEMFD_ALLOW_HUGEPAGE         (1ULL << 0)
+> +
+>  #endif /* __LINUX_KVM_H */
+> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> index 98a12da80214..31b5e94d461a 100644
+> --- a/virt/kvm/guest_memfd.c
+> +++ b/virt/kvm/guest_memfd.c
+> @@ -13,14 +13,44 @@ struct kvm_gmem {
+>         struct list_head entry;
+>  };
+>
+> +#define NR_PAGES_PER_PMD (1 << PMD_ORDER)
+> +
+> +static struct folio *kvm_gmem_get_huge_folio(struct inode *inode, pgoff_=
+t index)
+> +{
+> +       unsigned long huge_index =3D round_down(index, NR_PAGES_PER_PMD);
+> +       unsigned long flags =3D (unsigned long)inode->i_private;
+> +       struct address_space *mapping  =3D inode->i_mapping;
+> +       gfp_t gfp =3D mapping_gfp_mask(mapping);
+> +       struct folio *folio;
+> +
+> +       if (!(flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE))
+> +               return NULL;
+> +
+> +       if (filemap_range_has_page(mapping, huge_index << PAGE_SHIFT,
+> +                                  (huge_index + NR_PAGES_PER_PMD - 1) <<=
+ PAGE_SHIFT))
+> +               return NULL;
+> +
+> +       folio =3D filemap_alloc_folio(gfp, PMD_ORDER);
+> +       if (!folio)
+> +               return NULL;
+> +
+> +       if (filemap_add_folio(mapping, folio, huge_index, gfp)) {
+> +               folio_put(folio);
+> +               return NULL;
+> +       }
+> +       return folio;
+> +}
+> +
+>  static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t ind=
+ex)
+>  {
+>         struct folio *folio;
+>
+> -       /* TODO: Support huge pages. */
+> -       folio =3D filemap_grab_folio(inode->i_mapping, index);
+> -       if (IS_ERR_OR_NULL(folio))
+> -               return NULL;
+> +       folio =3D kvm_gmem_get_huge_folio(inode, index);
+> +       if (!folio) {
+> +               folio =3D filemap_grab_folio(inode->i_mapping, index);
+> +               if (IS_ERR_OR_NULL(folio))
+> +                       return NULL;
+> +       }
+>
+>         /*
+>          * Use the up-to-date flag to track whether or not the memory has=
+ been
+> @@ -373,6 +403,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t =
+size, u64 flags)
+>         inode->i_mode |=3D S_IFREG;
+>         inode->i_size =3D size;
+>         mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+> +       mapping_set_large_folios(inode->i_mapping);
+>         mapping_set_unmovable(inode->i_mapping);
+>         /* Unmovable mappings are supposed to be marked unevictable as we=
+ll. */
+>         WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
+> @@ -394,14 +425,18 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_=
+t size, u64 flags)
+>
+>  int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args=
+)
+>  {
+> +       u64 valid_flags =3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+>         loff_t size =3D args->size;
+>         u64 flags =3D args->flags;
+> -       u64 valid_flags =3D 0;
+>
+>         if (flags & ~valid_flags)
+>                 return -EINVAL;
+>
+> -       if (size < 0 || !PAGE_ALIGNED(size))
+> +       if (size <=3D 0 || !PAGE_ALIGNED(size))
+> +               return -EINVAL;
+> +
+> +       if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
+> +           !IS_ALIGNED(size, PMD_SIZE))
+>                 return -EINVAL;
+>
+>         return __kvm_gmem_create(kvm, size, flags);
+> @@ -501,7 +536,7 @@ void kvm_gmem_unbind(struct kvm_memory_slot *slot)
+>  int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+>                      gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
+>  {
+> -       pgoff_t index =3D gfn - slot->base_gfn + slot->gmem.pgoff;
+> +       pgoff_t index, huge_index;
+>         struct kvm_gmem *gmem;
+>         struct folio *folio;
+>         struct page *page;
+> @@ -514,6 +549,7 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memo=
+ry_slot *slot,
+>
+>         gmem =3D file->private_data;
+>
+> +       index =3D gfn - slot->base_gfn + slot->gmem.pgoff;
+>         if (WARN_ON_ONCE(xa_load(&gmem->bindings, index) !=3D slot)) {
+>                 r =3D -EIO;
+>                 goto out_fput;
+> @@ -533,9 +569,24 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_mem=
+ory_slot *slot,
+>         page =3D folio_file_page(folio, index);
+>
+>         *pfn =3D page_to_pfn(page);
+> -       if (max_order)
+> +       if (!max_order)
+> +               goto success;
+> +
+> +       *max_order =3D compound_order(compound_head(page));
+> +       if (!*max_order)
+> +               goto success;
+> +
+> +       /*
+> +        * The folio can be mapped with a hugepage if and only if the fol=
+io is
+> +        * fully contained by the range the memslot is bound to.  Note, t=
+he
+> +        * caller is responsible for handling gfn alignment, this only de=
+als
+> +        * with the file binding.
+> +        */
+> +       huge_index =3D ALIGN(index, 1ull << *max_order);
+> +       if (huge_index < ALIGN(slot->gmem.pgoff, 1ull << *max_order) ||
+> +           huge_index + (1ull << *max_order) > slot->gmem.pgoff + slot->=
+npages)
+>                 *max_order =3D 0;
+> -
+> +success:
+>         r =3D 0;
+>
+>  out_unlock:
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 5d1a2f1b4e94..0711f2c75667 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4888,6 +4888,10 @@ static int kvm_vm_ioctl_check_extension_generic(st=
+ruct kvm *kvm, long arg)
+>  #ifdef CONFIG_KVM_PRIVATE_MEM
+>         case KVM_CAP_GUEST_MEMFD:
+>                 return !kvm || kvm_arch_has_private_mem(kvm);
+> +       case KVM_CAP_GUEST_MEMFD_HUGEPAGE_PMD_SIZE:
+> +               if (kvm && !kvm_arch_has_private_mem(kvm))
+> +                       return 0;
+> +               return PMD_SIZE;
+>  #endif
+>         default:
+>                 break;
+>
+> base-commit: fcbef1e5e5d2a60dacac0d16c06ac00bedaefc0f
+> --
+>
+
