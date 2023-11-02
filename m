@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DFB7DF7FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4987DF809
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377034AbjKBQyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        id S1377055AbjKBQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjKBQyY (ORCPT
+        with ESMTP id S229458AbjKBQ4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:54:24 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E9F187
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:54:18 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so2049641a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698944055; x=1699548855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H1LGxmWcx02Jh03WOgomaovWxeWfiplOkjhYrTDh8XI=;
-        b=HCQRKqq/CX1XRCVSaGEKd7EbgNSCs4u5Db89WVAxaA2x2AvrZneQsDHN1iUb/gG7WK
-         6bvW37BjOP+6D+6yBzM7CpGQ4BxR2LHVDef7rgyukHN30rr3BtgRJxbit0A8WkOFNjJB
-         JidJ9XbfkMiFjJfbT3B0iYv42fgkCe9lmJfc4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698944055; x=1699548855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H1LGxmWcx02Jh03WOgomaovWxeWfiplOkjhYrTDh8XI=;
-        b=dDaIQoQuAS9xcOJmCj4SOiT3nNER/SISeq7TrQsEUA8wGQItySPe5KP2W1csbfaCjS
-         EpNhdkM8GuyaKUQ9JmQbpC6DoLieXbjTcCfgpgx/4ZwwSDnLyT5I4UFFTACgdMhjrf2L
-         +oUbI/GFyCloh3ES9PX+K7qVqCZB1fRz0alNNzNnXxZNkEbJnYHoS94A+WSeWId2KLxW
-         0hyp/2p9YiWFBUBnRCsAlFIjXsonIMb6WE3x1dnphpO2c2FeOpXQzStQ+OSuL+AYAK5j
-         Mughb6ZHVjmECt0fwilTUV6zGh8dSDxtwoUjKeKQcmMMKp7Czfc79r7l3iTco3E2I9m4
-         I5/g==
-X-Gm-Message-State: AOJu0YzZEy/0/GhiQMwEWqSBec4Rpot3Efpf/vOp1APD82m39VbWh/NJ
-        3e53ts/w5gLF4ej7JtKQXv8xslDS4pw+XUsGCE0JQA==
-X-Google-Smtp-Source: AGHT+IG/ESxc/FPAmKMQ3Shy2HXvpyYv70BfZ8gmjquC/ty3n3m5tYaxsGv2DRZlSPOsHacHiPVy2A==
-X-Received: by 2002:a17:907:3685:b0:9c7:4e5d:12c5 with SMTP id bi5-20020a170907368500b009c74e5d12c5mr5916970ejc.61.1698944054918;
-        Thu, 02 Nov 2023 09:54:14 -0700 (PDT)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
-        by smtp.gmail.com with ESMTPSA id dv8-20020a170906b80800b009b285351817sm1341308ejb.116.2023.11.02.09.54.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 09:54:14 -0700 (PDT)
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-408c6ec1fd1so1325e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:54:14 -0700 (PDT)
-X-Received: by 2002:a05:600c:1d14:b0:3f7:3e85:36a with SMTP id
- l20-20020a05600c1d1400b003f73e85036amr68368wms.7.1698944053735; Thu, 02 Nov
- 2023 09:54:13 -0700 (PDT)
+        Thu, 2 Nov 2023 12:56:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE0E128
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698944200; x=1730480200;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EOLeIRuvPWfLh1i/5alR77i0YXzhaYpBJ0RcfGGrM8A=;
+  b=OYmVNrctrTdX/uaMKpkXtMjj8AnDprSrrz6v02diayVJNpj/nUZevB9n
+   4SRC/SmZS9D6unAZDYgLkZXQUcmVcqYxmfXmSD0k6SZ1BywxUwLhqLvYc
+   KgdYflCPdPsG42qp5omAs0iDud32UPfwGaYcF6xFUuxfj8l9B/CXBKs/0
+   XqmTd7HmTw/XjTnOx/P35QfJ6cFbh8uSy4QqMH9m76UxQFC3/N4hFp+Rx
+   GZsN5phY+d+iev8zgMBCjkhSpKX0Dq3wY+qJkVyHXCAKcQymJFoltZ/WF
+   BnfMe8UxNFykMYHD8aUajZm6EMMBNJvzr82oKvtb3uEoF3N5Q2Ux2IRLX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="385937965"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="385937965"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 09:56:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="9077710"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 02 Nov 2023 09:56:17 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyazO-0001g8-0y;
+        Thu, 02 Nov 2023 16:56:14 +0000
+Date:   Fri, 3 Nov 2023 00:55:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: fs/hfsplus/wrapper.c:49: warning: Function parameter or member 'opf'
+ not described in 'hfsplus_submit_bio'
+Message-ID: <202311030057.Sd6Te6EU-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231101212604.1636517-1-hsinyi@chromium.org> <20231101212604.1636517-2-hsinyi@chromium.org>
-In-Reply-To: <20231101212604.1636517-2-hsinyi@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 2 Nov 2023 09:53:56 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UArV6uF7Q6=Z0D6u30BGEPLjNiBeZMiDMjpneAKnSTcw@mail.gmail.com>
-Message-ID: <CAD=FV=UArV6uF7Q6=Z0D6u30BGEPLjNiBeZMiDMjpneAKnSTcw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] drm/panel-edp: Add several generic edp panels
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,259 +64,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Bart,
 
-On Wed, Nov 1, 2023 at 2:26=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
-rote:
->
-> Add a few generic edp panels used by mt8186 chromebooks.
-> Besides, modify the following panel:
-> - AUO 0x235c B116XTN02 renamed to B116XTN02.3.
-> - AUO 0x405c B116XAK01 adjust the timing to delay_200_500_e50. According
-> to the datasheet: T3=3D200, T12=3D500, T7_max =3D 50.
+FYI, the error/warning still remains.
 
-Can you modify this in the `auo_b116xak01` structure? That should make
-timing work more correctly for anyone directly specifying this panel.
-The reason I had it point to the other structure was so we didn't
-treat anyone specifying this panel directly differently than anyone
-autodetecting it...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+commit: c85f99929ea66c357199b6a3fe958745e1190f5a fs/hfsplus: Use the enum req_op and blk_opf_t types
+date:   1 year, 4 months ago
+config: i386-buildonly-randconfig-001-20231102 (https://download.01.org/0day-ci/archive/20231103/202311030057.Sd6Te6EU-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311030057.Sd6Te6EU-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311030057.Sd6Te6EU-lkp@intel.com/
 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 62 ++++++++++++++++++++++++++++++-
->  1 file changed, 60 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/pa=
-nel-edp.c
-> index 9dce4c702414..06ce3a73d740 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -1830,6 +1830,12 @@ static const struct panel_delay delay_200_500_e50 =
-=3D {
->         .enable =3D 50,
->  };
->
-> +static const struct panel_delay delay_200_500_e80 =3D {
-> +       .hpd_absent =3D 200,
-> +       .unprepare =3D 500,
-> +       .enable =3D 80,
-> +};
-> +
->  static const struct panel_delay delay_200_500_e80_d50 =3D {
->         .hpd_absent =3D 200,
->         .unprepare =3D 500,
-> @@ -1849,6 +1855,25 @@ static const struct panel_delay delay_200_500_e200=
- =3D {
->         .enable =3D 200,
->  };
->
-> +static const struct panel_delay delay_200_500_e200_d10 =3D {
-> +       .hpd_absent =3D 200,
-> +       .unprepare =3D 500,
-> +       .enable =3D 200,
-> +       .disable =3D 10,
-> +};
-> +
-> +static const struct panel_delay delay_200_150_e50 =3D {
-> +       .hpd_absent =3D 200,
-> +       .unprepare =3D 150,
+All warnings (new ones prefixed by >>):
 
-I worry a little bit about seeing "unprepare" of 150. It doesn't mean
-it's wrong, but it's been so consistent for me to see .500 here that
-it's good to double-confirm. It looks like you use this one on
-"KD116N2930A15". From the datasheet I see that T12 has a min of 150 ms
-and a max of 500 ms. Is that the same thing you see?
-
-Specifying a "max" for T12 makes no sense. That's saying that it
-violates timing specs to ever turn the panel off for more than half a
-second which is nonsense.
-
-Given that:
-* The spec is obviously nonsense for this number.
-* The 500 ms number is present in the spec and somewhat standard for eDP pa=
-nels.
-* Having a larger number is safer.
-* 500 ms usually won't have a real world impact since it just prevents
-turning on the panel again right after turning it off (and we use
-autosuspend to avoid this in most cases).
-
-Maybe it's better to just use 500 here?
+>> fs/hfsplus/wrapper.c:49: warning: Function parameter or member 'opf' not described in 'hfsplus_submit_bio'
+>> fs/hfsplus/wrapper.c:49: warning: Excess function parameter 'op' description in 'hfsplus_submit_bio'
+>> fs/hfsplus/wrapper.c:49: warning: Excess function parameter 'op_flags' description in 'hfsplus_submit_bio'
 
 
-> +       .enable =3D 50,
-> +};
-> +
-> +static const struct panel_delay delay_200_150_e200 =3D {
-> +       .hpd_absent =3D 200,
-> +       .unprepare =3D 150,
-> +       .enable =3D 200,
+vim +49 fs/hfsplus/wrapper.c
 
-Let's look at this unprepare of 150 too. I guess it's used for two panels.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  26  
+915ab236d3c491 Fabian Frederick  2014-06-06  27  /**
+915ab236d3c491 Fabian Frederick  2014-06-06  28   * hfsplus_submit_bio - Perform block I/O
+6596528e391ad9 Seth Forshee      2011-07-18  29   * @sb: super block of volume for I/O
+6596528e391ad9 Seth Forshee      2011-07-18  30   * @sector: block to read or write, for blocks of HFSPLUS_SECTOR_SIZE bytes
+6596528e391ad9 Seth Forshee      2011-07-18  31   * @buf: buffer for I/O
+6596528e391ad9 Seth Forshee      2011-07-18  32   * @data: output pointer for location of requested data
+67ed25961c428a Mike Christie     2016-06-05  33   * @op: direction of I/O
+67ed25961c428a Mike Christie     2016-06-05  34   * @op_flags: request op flags
+6596528e391ad9 Seth Forshee      2011-07-18  35   *
+6596528e391ad9 Seth Forshee      2011-07-18  36   * The unit of I/O is hfsplus_min_io_size(sb), which may be bigger than
+6596528e391ad9 Seth Forshee      2011-07-18  37   * HFSPLUS_SECTOR_SIZE, and @buf must be sized accordingly. On reads
+6596528e391ad9 Seth Forshee      2011-07-18  38   * @data will return a pointer to the start of the requested sector,
+6596528e391ad9 Seth Forshee      2011-07-18  39   * which may not be the same location as @buf.
+6596528e391ad9 Seth Forshee      2011-07-18  40   *
+6596528e391ad9 Seth Forshee      2011-07-18  41   * If @sector is not aligned to the bdev logical block size it will
+6596528e391ad9 Seth Forshee      2011-07-18  42   * be rounded down. For writes this means that @buf should contain data
+6596528e391ad9 Seth Forshee      2011-07-18  43   * that starts at the rounded-down address. As long as the data was
+6596528e391ad9 Seth Forshee      2011-07-18  44   * read using hfsplus_submit_bio() and the same buffer is used things
+6596528e391ad9 Seth Forshee      2011-07-18  45   * will work correctly.
+6596528e391ad9 Seth Forshee      2011-07-18  46   */
+6596528e391ad9 Seth Forshee      2011-07-18  47  int hfsplus_submit_bio(struct super_block *sb, sector_t sector,
+c85f99929ea66c Bart Van Assche   2022-07-14  48  		       void *buf, void **data, blk_opf_t opf)
+52399b171dfaea Christoph Hellwig 2010-11-23 @49  {
+c85f99929ea66c Bart Van Assche   2022-07-14  50  	const enum req_op op = opf & REQ_OP_MASK;
+52399b171dfaea Christoph Hellwig 2010-11-23  51  	struct bio *bio;
+50176ddefa4a94 Seth Forshee      2011-05-31  52  	int ret = 0;
+a6dc8c04218eb7 Janne Kalliomäki  2012-06-17  53  	u64 io_size;
+6596528e391ad9 Seth Forshee      2011-07-18  54  	loff_t start;
+6596528e391ad9 Seth Forshee      2011-07-18  55  	int offset;
+6596528e391ad9 Seth Forshee      2011-07-18  56  
+6596528e391ad9 Seth Forshee      2011-07-18  57  	/*
+6596528e391ad9 Seth Forshee      2011-07-18  58  	 * Align sector to hardware sector size and find offset. We
+6596528e391ad9 Seth Forshee      2011-07-18  59  	 * assume that io_size is a power of two, which _should_
+6596528e391ad9 Seth Forshee      2011-07-18  60  	 * be true.
+6596528e391ad9 Seth Forshee      2011-07-18  61  	 */
+6596528e391ad9 Seth Forshee      2011-07-18  62  	io_size = hfsplus_min_io_size(sb);
+6596528e391ad9 Seth Forshee      2011-07-18  63  	start = (loff_t)sector << HFSPLUS_SECTOR_SHIFT;
+6596528e391ad9 Seth Forshee      2011-07-18  64  	offset = start & (io_size - 1);
+6596528e391ad9 Seth Forshee      2011-07-18  65  	sector &= ~((io_size >> HFSPLUS_SECTOR_SHIFT) - 1);
+52399b171dfaea Christoph Hellwig 2010-11-23  66  
+c85f99929ea66c Bart Van Assche   2022-07-14  67  	bio = bio_alloc(sb->s_bdev, 1, opf, GFP_NOIO);
+4f024f3797c43c Kent Overstreet   2013-10-11  68  	bio->bi_iter.bi_sector = sector;
+52399b171dfaea Christoph Hellwig 2010-11-23  69  
+c85f99929ea66c Bart Van Assche   2022-07-14  70  	if (op != REQ_OP_WRITE && data)
+6596528e391ad9 Seth Forshee      2011-07-18  71  		*data = (u8 *)buf + offset;
+6596528e391ad9 Seth Forshee      2011-07-18  72  
+6596528e391ad9 Seth Forshee      2011-07-18  73  	while (io_size > 0) {
+6596528e391ad9 Seth Forshee      2011-07-18  74  		unsigned int page_offset = offset_in_page(buf);
+6596528e391ad9 Seth Forshee      2011-07-18  75  		unsigned int len = min_t(unsigned int, PAGE_SIZE - page_offset,
+6596528e391ad9 Seth Forshee      2011-07-18  76  					 io_size);
+6596528e391ad9 Seth Forshee      2011-07-18  77  
+6596528e391ad9 Seth Forshee      2011-07-18  78  		ret = bio_add_page(bio, virt_to_page(buf), len, page_offset);
+6596528e391ad9 Seth Forshee      2011-07-18  79  		if (ret != len) {
+6596528e391ad9 Seth Forshee      2011-07-18  80  			ret = -EIO;
+6596528e391ad9 Seth Forshee      2011-07-18  81  			goto out;
+6596528e391ad9 Seth Forshee      2011-07-18  82  		}
+6596528e391ad9 Seth Forshee      2011-07-18  83  		io_size -= len;
+6596528e391ad9 Seth Forshee      2011-07-18  84  		buf = (u8 *)buf + len;
+6596528e391ad9 Seth Forshee      2011-07-18  85  	}
+52399b171dfaea Christoph Hellwig 2010-11-23  86  
+4e49ea4a3d2763 Mike Christie     2016-06-05  87  	ret = submit_bio_wait(bio);
+6596528e391ad9 Seth Forshee      2011-07-18  88  out:
+50176ddefa4a94 Seth Forshee      2011-05-31  89  	bio_put(bio);
+6596528e391ad9 Seth Forshee      2011-07-18  90  	return ret < 0 ? ret : 0;
+52399b171dfaea Christoph Hellwig 2010-11-23  91  }
+52399b171dfaea Christoph Hellwig 2010-11-23  92  
 
-NT116WHM-N21: Wow, there sure are a lot of panels that call themselves
-"NT116WHM-N21" but have different IDs. :-P If you're sure that this is
-150 this is fine, but if there's any doubt (like above) then 500 is
-safer.
+:::::: The code at line 49 was first introduced by commit
+:::::: 52399b171dfaea02b6944cd6feba49b624147126 hfsplus: use raw bio access for the volume headers
 
-R140NWFM R1: I think I found this spec and yeah, it's super clear. 150 ms.
+:::::: TO: Christoph Hellwig <hch@tuxera.com>
+:::::: CC: Christoph Hellwig <hch@lst.de>
 
-
-NOTE: I didn't try to double-check any of the other timings, mostly I
-just looked at the unprepare since it stood out. ;-)
-
-
-> +};
-> +
->  #define EDP_PANEL_ENTRY(vend_chr_0, vend_chr_1, vend_chr_2, product_id, =
-_delay, _name) \
->  { \
->         .name =3D _name, \
-> @@ -1869,38 +1894,71 @@ static const struct edp_panel_entry edp_panels[] =
-=3D {
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x145c, &delay_200_500_e50, "B116X=
-AB01.4"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x1e9b, &delay_200_500_e50, "B133U=
-AN02.1"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x1ea5, &delay_200_500_e50, "B116X=
-AK01.6"),
-> -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x235c, &delay_200_500_e50, "B116X=
-TN02"),
-> -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B11=
-6XAK01"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x208d, &delay_200_500_e50, "B140H=
-TN02.1"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x235c, &delay_200_500_e50, "B116X=
-TN02.3"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116X=
-AN06.1"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116X=
-TN02.5"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140H=
-AN04.0"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &delay_200_500_e50, "B116X=
-AK01.0"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133U=
-AN01.0"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116X=
-AN06.1"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x635c, &delay_200_500_e50, "B116X=
-AN06.3"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x639c, &delay_200_500_e50, "B140H=
-AK02.7"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x8594, &delay_200_500_e50, "B133U=
-AN01.0"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0xf390, &delay_200_500_e50, "B140X=
-TN07.7"),
->
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0715, &delay_200_150_e200, "NT11=
-6WHM-N21"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0731, &delay_200_500_e80, "NT116=
-WHM-N42"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0741, &delay_200_500_e200, "NT11=
-6WHM-N44"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x0786, &delay_200_500_p2e80, "NV1=
-16WHM-T01"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x07d1, &boe_nv133fhm_n61.delay, "=
-NV133FHM-N61"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x07f6, &delay_200_500_e200, "NT14=
-0FHM-N44"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x082d, &boe_nv133fhm_n61.delay, "=
-NV133FHM-N62"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x08b2, &delay_200_500_e200, "NT14=
-0WHM-N49"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x09c3, &delay_200_500_e50, "NT116=
-WHM-N21,836X2"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x094b, &delay_200_500_e50, "NT116=
-WHM-N21"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x095f, &delay_200_500_e50, "NE135=
-FBM-N41 v8.1"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x0979, &delay_200_500_e50, "NV116=
-WHM-N49 V8.0"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x094b, &delay_200_500_e50, "NT116=
-WHM-N21"),
-
-0x904b is already specified above and this is in the wrong sort order.
-
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0951, &delay_200_500_e80, "NV116=
-WHM-N47"),
-
-Please sort 0x0951 before 0x0979.
-
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x098d, &boe_nv110wtm_n61.delay, "=
-NV110WTM-N61"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x09ae, &delay_200_500_e200, "NT14=
-0FHM-N45"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x09dd, &delay_200_500_e50, "NT116=
-WHM-N21"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x0a5d, &delay_200_500_e50, "NV116=
-WHM-N45"),
->         EDP_PANEL_ENTRY('B', 'O', 'E', 0x0ac5, &delay_200_500_e50, "NV116=
-WHM-N4C"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b43, &delay_200_500_e200, "NV14=
-0FHM-T09"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b56, &delay_200_500_e80, "NT140=
-FHM-N47"),
-> +       EDP_PANEL_ENTRY('B', 'O', 'E', 0x0c20, &delay_200_500_e80, "NT140=
-FHM-N47"),
->
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x1132, &delay_200_500_e80_d50, "N=
-116BGE-EA2"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x1138, &innolux_n116bca_ea1.delay=
-, "N116BCA-EA1-RC4"),
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x1139, &delay_200_500_e80_d50, "N=
-116BGE-EA2"),
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x114c, &innolux_n116bca_ea1.delay=
-, "N116BCA-EA1"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x1145, &delay_200_500_e80_d50, "N=
-116BCN-EB1"),
-
-Please sort 0x1145 above 0x114c
-
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x1152, &delay_200_500_e80_d50, "N=
-116BCN-EA1"),
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x1153, &delay_200_500_e80_d50, "N=
-116BGE-EA2"),
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x1154, &delay_200_500_e80_d50, "N=
-116BCA-EA2"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x1157, &delay_200_500_e80_d50, "N=
-116BGE-EA2"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x115b, &delay_200_500_e80_d50, "N=
-116BCN-EB1"),
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x1247, &delay_200_500_e80_d50, "N=
-120ACA-EA1"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x142b, &delay_200_500_e80_d50, "N=
-140HCA-EAC"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x144f, &delay_200_500_e80_d50, "N=
-140HGA-EA1"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x1468, &delay_200_500_e80, "N140H=
-GA-EA1"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x14e5, &delay_200_500_e80_d50, "N=
-140HGA-EA1"),
->         EDP_PANEL_ENTRY('C', 'M', 'N', 0x14d4, &delay_200_500_e80_d50, "N=
-140HCA-EAC"),
-> +       EDP_PANEL_ENTRY('C', 'M', 'N', 0x14d6, &delay_200_500_e80_d50, "N=
-140BGA-EA4"),
-> +
-> +       EDP_PANEL_ENTRY('H', 'K', 'C', 0x2d5c, &delay_200_500_e200, "MB11=
-6AN01-2"),
->
-> +       EDP_PANEL_ENTRY('I', 'V', 'O', 0x048e, &delay_200_500_e200_d10, "=
-M116NWR6 R5"),
->         EDP_PANEL_ENTRY('I', 'V', 'O', 0x057d, &delay_200_500_e200, "R140=
-NWF5 RH"),
->         EDP_PANEL_ENTRY('I', 'V', 'O', 0x854a, &delay_200_500_p2e100, "M1=
-33NW4J"),
->         EDP_PANEL_ENTRY('I', 'V', 'O', 0x854b, &delay_200_500_p2e100, "R1=
-33NW4K-R0"),
-> +       EDP_PANEL_ENTRY('I', 'V', 'O', 0x8c4d, &delay_200_150_e200, "R140=
-NWFM R1"),
->
->         EDP_PANEL_ENTRY('K', 'D', 'B', 0x0624, &kingdisplay_kd116n21_30nv=
-_a010.delay, "116N21-30NV-A010"),
->         EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "1=
-16N29-30NK-C007"),
-> +       EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_150_e50, "KD116=
-N2930A15"),
-
-Please sort 0x0809 above 0x1120.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
