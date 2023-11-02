@@ -2,323 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAFE7DF892
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039CD7DF858
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377119AbjKBRTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
+        id S1377124AbjKBRIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjKBRTu (ORCPT
+        with ESMTP id S235577AbjKBRIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:19:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5032B133
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:19:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11BD0C433C8;
-        Thu,  2 Nov 2023 17:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698945586;
-        bh=n+S+t7+vM++09bRcLKQTdzCHYzyyukgdAaA1NUGk7DY=;
+        Thu, 2 Nov 2023 13:08:11 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80673184;
+        Thu,  2 Nov 2023 10:08:05 -0700 (PDT)
+Received: from localhost (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dbrouwer)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3150B6601711;
+        Thu,  2 Nov 2023 17:08:03 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698944883;
+        bh=HxO1+U33MO4A8FHmVRIQuTTtZl2QLDqDP44tUmlEqLg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hS4exQ1oSK4wq3ggSrI/cGuN6EKPhVG0k8VaIrYPvj11ydqIFTnMPGgleLWxgspOD
-         b7xBxdcZp1P8PcYyzv6jjobKN3sfT91J99mIAXD2q8cBj1y0HbIIyFjAaprozBYxEf
-         rQKH70m0VOUg4Ty6Thv9kt/HNSLiZKubiSEZ7Nn+da2cCV0AK3kLV01GtWA2z+/7dF
-         KAM3KOjcMexrB8Aalp22VbhuQl7WxxDVn6QlxXjE6p0te5oa5ADPfYcrBv2KseAoHt
-         rXNVNJ6Ddpb7vpkkL52N/yH9JillBzcsX0Bfq46PcCUwoA+4UiSEB9JRRLtsZzPByq
-         77F49BqxZrePw==
-Date:   Fri, 3 Nov 2023 01:07:29 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        David Laight <David.Laight@aculab.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <ZUPXUXWM41wZOunA@xhacker>
-References: <20230915184904.1976183-1-evan@rivosinc.com>
- <ZQVp1PJb+HuEdu4L@xhacker>
- <ZUI3JKff9SgsA3Z/@xhacker>
- <CALs-HsvA8xW01UrS08MmeRSBb+eic9KX_=jKDZvf59LASnm=Zw@mail.gmail.com>
+        b=X/cjBjLWdF2rvfRRwrSOh4XeD8IkoYQ3GQEEXemVEdjGkJBf0801QkQRy177yhwyF
+         mtOBmmTwzHCdrWIew0+Fj2tHD7vKFaaof8dPy5Ro9QXGR4sO2/3iI6RQFT1ozMd2Ve
+         a/s7lWBzTyjnuojkQVgIdMfFy5jmK4n+3OlrIZNOtqqNuuXFRvjaQxmK/8E4yT22ck
+         kS5LSFm/RwkD+UIcSOo3KULkhtmBMaziHpxlgG3LSeOXDSEi9luUVNk4Y7prJlqwL7
+         QFAlMw5Zz3YRC7Ncu1Z55g20bjtjxCqF6hw+qUPiNi9QKSiVO41muOswBrmYf8pY6v
+         adn7Luw0ekCzw==
+Date:   Thu, 2 Nov 2023 10:07:59 -0700
+From:   Deborah Brouwer <deborah.brouwer@collabora.com>
+To:     Ivan Bornyakov <brnkv.i1@gmail.com>
+Cc:     Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+Subject: Re: [PATCH v13 5/8] media: chips-media: wave5: Add the v4l2 layer
+Message-ID: <ZUPXb10lU8UZHVQz@mz550>
+References: <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
+ <20231017221359.20164-1-brnkv.i1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALs-HsvA8xW01UrS08MmeRSBb+eic9KX_=jKDZvf59LASnm=Zw@mail.gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231017221359.20164-1-brnkv.i1@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 10:28:53AM -0700, Evan Green wrote:
-> On Wed, Nov 1, 2023 at 4:44 AM Jisheng Zhang <jszhang@kernel.org> wrote:
-> >
-> > On Sat, Sep 16, 2023 at 04:39:54PM +0800, Jisheng Zhang wrote:
-> > > On Fri, Sep 15, 2023 at 11:49:03AM -0700, Evan Green wrote:
-> > > > Probing for misaligned access speed takes about 0.06 seconds. On a
-> > > > system with 64 cores, doing this in smp_callin() means it's done
-> > > > serially, extending boot time by 3.8 seconds. That's a lot of boot time.
-> > > >
-> > > > Instead of measuring each CPU serially, let's do the measurements on
-> > > > all CPUs in parallel. If we disable preemption on all CPUs, the
-> > > > jiffies stop ticking, so we can do this in stages of 1) everybody
-> > > > except core 0, then 2) core 0.
-> > > >
-> > > > The measurement call in smp_callin() stays around, but is now
-> > > > conditionalized to only run if a new CPU shows up after the round of
-> > > > in-parallel measurements has run. The goal is to have the measurement
-> > > > call not run during boot or suspend/resume, but only on a hotplug
-> > > > addition.
-> > > >
-> > > > Signed-off-by: Evan Green <evan@rivosinc.com>
-> > >
-> > > Reported-by: Jisheng Zhang <jszhang@kernel.org>
-> >
-> > Hi Evan, Palmer,
-> >
-> > This patch seems missing in v6.6, I dunno what happened.
-> >
-> > And this patch doesn't fix the boot time regression but also fix a real
-> > bug during cpu hotplug on and off.
+On Wed, Oct 18, 2023 at 01:13:52AM +0300, Ivan Bornyakov wrote:
+> Hi!
+
+Hi Ivan,
+
 > 
-> Hi Jisheng,
-> Just to clarify, you're saying this both fixes the boot regression,
-> and fixes a hotplug crash? I was slightly thrown off by the "doesn't
-> fix the boot time regression", holler if there's still something wrong
-
-typo: should be "not only fix the boot time regression but also ..."
-
-> with boot time.
+> On Thu, 12 Oct 2023 13:01:03 +0200, Sebastian Fricke wrote:
+> > Add the decoder and encoder implementing the v4l2
+> > API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+> > 
+> > Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+> > Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> > Signed-off-by: Deborah Brouwer <deborah.brouwer@collabora.com>
+> > Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> > Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> > Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+> > ---
+> >  drivers/media/platform/chips-media/Kconfig         |    1 +
+> >  drivers/media/platform/chips-media/Makefile        |    1 +
+> >  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
+> >  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
+> >  .../platform/chips-media/wave5/wave5-helper.c      |  213 +++
+> >  .../platform/chips-media/wave5/wave5-helper.h      |   31 +
+> >  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1953 ++++++++++++++++++++
+> >  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1794 ++++++++++++++++++
+> >  .../media/platform/chips-media/wave5/wave5-vpu.c   |  291 +++
+> >  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
+> >  .../platform/chips-media/wave5/wave5-vpuapi.h      |    2 -
+> >  11 files changed, 4389 insertions(+), 2 deletions(-)
 > 
-> The splat you pasted suggests the CPU isn't coming back online. Off
-> the top of my head I can't think of what that might be or why this
-> patch would fix it. I tried this on an old palmer/for-next and didn't
-> repro the issue:
+> [...]
 > 
-> # echo 0 > online
-> [   31.777280] CPU3: off
-> [   31.777740] CPU3 may not have stopped: 3
-> # echo 1 > online
-> [   36.236313] cpu3: Ratio of byte access time to unaligned word
-> access is 7.26, unaligned accesses are fast
-
-you need to run the script for some time, 3 ~ 5 minutes for example.
-
-Only hotplug cpu off then on for once isn't enough
+> > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> > new file mode 100644
+> > index 000000000000..74d1fae64fa4
+> > --- /dev/null
+> > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
 > 
-> FWIW, Palmer's for-next branch now has the v2 of this patch. I
-
-I want v2 patch be merged
-> verified that branch is booting, and hotplug seems to work as well.
-
-can you try stress cpu hotplug without your patch? I.E try on v6.6 
-
-Thanks
+> [...]
 > 
+> > +static int wave5_vpu_dec_queue_setup(struct vb2_queue *q, unsigned int *num_buffers,
+> > +				     unsigned int *num_planes, unsigned int sizes[],
+> > +				     struct device *alloc_devs[])
+> > +{
+> > +	struct vpu_instance *inst = vb2_get_drv_priv(q);
+> > +	struct v4l2_pix_format_mplane inst_format =
+> > +		(q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst->src_fmt : inst->dst_fmt;
+> > +	unsigned int i;
+> > +
+> > +	dev_dbg(inst->dev->dev, "%s: num_buffers: %u | num_planes: %u | type: %u\n", __func__,
+> > +		*num_buffers, *num_planes, q->type);
+> > +
+> > +	/* the CREATE_BUFS case */
+> > +	if (*num_planes) {
+> > +		if (inst_format.num_planes != *num_planes)
+> > +			return -EINVAL;
+> > +
+> > +		for (i = 0; i < *num_planes; i++) {
+> > +			if (sizes[i] < inst_format.plane_fmt[i].sizeimage)
+> > +				return -EINVAL;
+> > +		}
+> > +	/* the REQBUFS case */
+> > +	} else {
+> > +		*num_planes = inst_format.num_planes;
+> > +
+> > +		if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> > +			sizes[0] = inst_format.plane_fmt[0].sizeimage;
+> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
+> > +		} else if (*num_planes == 1) {
 > 
-> >
-> > Here is the reproduce script:
-> >
-> > while true
-> > do
-> > echo 0 > /sys/devices/system/cpu/cpu1/online
-> > echo 1 > /sys/devices/system/cpu/cpu1/online
-> > done
-> >
-> >
-> > Here is the BUG log on qemu:
-> >
-> > [   20.950753] CPU1: failed to come online
-> > [   20.951875] ------------[ cut here ]------------
-> > [   20.952070] kernel BUG at kernel/time/hrtimer.c:2227!
-> > [   20.952341] Kernel BUG [#1]
-> > [   20.952366] Modules linked in:
-> > [   20.952515] CPU: 0 PID: 46 Comm: sh Not tainted 6.6.0 #3
-> > [   20.952607] Hardware name: riscv-virtio,qemu (DT)
-> > [   20.952695] epc : hrtimers_dead_cpu+0x22e/0x230
-> > [   20.952808]  ra : cpuhp_invoke_callback+0xe4/0x54e
-> > [   20.952844] epc : ffffffff8007d6c0 ra : ffffffff8000f904 sp : ff600000011ebb30
-> > [   20.952863]  gp : ffffffff80d081d0 tp : ff6000000134da00 t0 : 0000000000000040
-> > [   20.952880]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ff600000011ebbb0
-> > [   20.952895]  s1 : 0000000000000001 a0 : 0000000000000001 a1 : 000000000000002c
-> > [   20.952911]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
-> > [   20.952926]  a5 : 0000000000000001 a6 : 0000000000000538 a7 : 0000000000000000
-> > [   20.952941]  s2 : 000000000000002c s3 : 0000000000000000 s4 : ff6000003ffd4390
-> > [   20.952957]  s5 : ffffffff80d0a1f8 s6 : 0000000000000000 s7 : ffffffff8007d492
-> > [   20.952972]  s8 : 0000000000000001 s9 : fffffffffffffffb s10: 0000000000000000
-> > [   20.952987]  s11: 00005555820dc708 t3 : 0000000000000002 t4 : 0000000000000402
-> > [   20.953002]  t5 : ff600000010f0710 t6 : ff600000010f0718
-> > [   20.953016] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-> > [   20.953124] [<ffffffff8007d6c0>] hrtimers_dead_cpu+0x22e/0x230
-> > [   20.953226] [<ffffffff8000f904>] cpuhp_invoke_callback+0xe4/0x54e
-> > [   20.953241] [<ffffffff80010fb8>] _cpu_up+0x200/0x2a2
-> > [   20.953254] [<ffffffff800110ac>] cpu_up+0x52/0x8a
-> > [   20.953266] [<ffffffff80011654>] cpu_device_up+0x14/0x1c
-> > [   20.953279] [<ffffffff8029abb6>] cpu_subsys_online+0x1e/0x68
-> > [   20.953296] [<ffffffff802957de>] device_online+0x3c/0x70
-> > [   20.953306] [<ffffffff8029587a>] online_store+0x68/0x8c
-> > [   20.953317] [<ffffffff802909ba>] dev_attr_store+0xe/0x1a
-> > [   20.953330] [<ffffffff801df8aa>] sysfs_kf_write+0x2a/0x34
-> > [   20.953346] [<ffffffff801def06>] kernfs_fop_write_iter+0xde/0x162
-> > [   20.953360] [<ffffffff8018154a>] vfs_write+0x136/0x320
-> > [   20.953372] [<ffffffff801818e4>] ksys_write+0x4a/0xb4
-> > [   20.953383] [<ffffffff80181962>] __riscv_sys_write+0x14/0x1c
-> > [   20.953394] [<ffffffff803dec7e>] do_trap_ecall_u+0x4a/0x110
-> > [   20.953420] [<ffffffff80003666>] ret_from_exception+0x0/0x66
-> > [   20.953648] Code: 7c42 7ca2 7d02 6de2 4501 6109 8082 c0ef 7463 bd1d (9002) 1141
-> > [   20.953897] ---[ end trace 0000000000000000 ]---
-> > [   20.954068] Kernel panic - not syncing: Fatal exception in interrupt
-> > [   20.954128] SMP: stopping secondary CPUs
-> > [   22.749953] SMP: failed to stop secondary CPUs 0-1
-> > [   22.803768] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
-> >
-> >
-> > > >
-> > > > ---
-> > > >
-> > > > Jisheng, I didn't add your Tested-by tag since the patch evolved from
-> > > > the one you tested. Hopefully this one brings you the same result.
-> > > >
-> > > > ---
-> > > >  arch/riscv/include/asm/cpufeature.h |  3 ++-
-> > > >  arch/riscv/kernel/cpufeature.c      | 28 +++++++++++++++++++++++-----
-> > > >  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
-> > > >  3 files changed, 35 insertions(+), 7 deletions(-)
-> > > >
-> > > > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
-> > > > index d0345bd659c9..19e7817eba10 100644
-> > > > --- a/arch/riscv/include/asm/cpufeature.h
-> > > > +++ b/arch/riscv/include/asm/cpufeature.h
-> > > > @@ -30,6 +30,7 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
-> > > >  /* Per-cpu ISA extensions. */
-> > > >  extern struct riscv_isainfo hart_isa[NR_CPUS];
-> > > >
-> > > > -void check_unaligned_access(int cpu);
-> > > > +extern bool misaligned_speed_measured;
-> > > > +int check_unaligned_access(void *unused);
-> > > >
-> > > >  #endif
-> > > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> > > > index 1cfbba65d11a..8eb36e1dfb95 100644
-> > > > --- a/arch/riscv/kernel/cpufeature.c
-> > > > +++ b/arch/riscv/kernel/cpufeature.c
-> > > > @@ -42,6 +42,9 @@ struct riscv_isainfo hart_isa[NR_CPUS];
-> > > >  /* Performance information */
-> > > >  DEFINE_PER_CPU(long, misaligned_access_speed);
-> > > >
-> > > > +/* Boot-time in-parallel unaligned access measurement has occurred. */
-> > > > +bool misaligned_speed_measured;
-> > >
-> > > This var can be avoided, see below.
-> > >
-> > > > +
-> > > >  /**
-> > > >   * riscv_isa_extension_base() - Get base extension word
-> > > >   *
-> > > > @@ -556,8 +559,9 @@ unsigned long riscv_get_elf_hwcap(void)
-> > > >     return hwcap;
-> > > >  }
-> > > >
-> > > > -void check_unaligned_access(int cpu)
-> > > > +int check_unaligned_access(void *unused)
-> > > >  {
-> > > > +   int cpu = smp_processor_id();
-> > > >     u64 start_cycles, end_cycles;
-> > > >     u64 word_cycles;
-> > > >     u64 byte_cycles;
-> > > > @@ -571,7 +575,7 @@ void check_unaligned_access(int cpu)
-> > > >     page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
-> > > >     if (!page) {
-> > > >             pr_warn("Can't alloc pages to measure memcpy performance");
-> > > > -           return;
-> > > > +           return 0;
-> > > >     }
-> > > >
-> > > >     /* Make an unaligned destination buffer. */
-> > > > @@ -643,15 +647,29 @@ void check_unaligned_access(int cpu)
-> > > >
-> > > >  out:
-> > > >     __free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +static void check_unaligned_access_nonboot_cpu(void *param)
-> > > > +{
-> > > > +   if (smp_processor_id() != 0)
-> > > > +           check_unaligned_access(param);
-> > > >  }
-> > > >
-> > > > -static int check_unaligned_access_boot_cpu(void)
-> > > > +static int check_unaligned_access_all_cpus(void)
-> > > >  {
-> > > > -   check_unaligned_access(0);
-> > > > +   /* Check everybody except 0, who stays behind to tend jiffies. */
-> > > > +   on_each_cpu(check_unaligned_access_nonboot_cpu, NULL, 1);
-> > > > +
-> > > > +   /* Check core 0. */
-> > > > +   smp_call_on_cpu(0, check_unaligned_access, NULL, true);
-> > > > +
-> > > > +   /* Boot-time measurements are complete. */
-> > > > +   misaligned_speed_measured = true;
-> > > >     return 0;
-> > > >  }
-> > > >
-> > > > -arch_initcall(check_unaligned_access_boot_cpu);
-> > > > +arch_initcall(check_unaligned_access_all_cpus);
-> > > >
-> > > >  #ifdef CONFIG_RISCV_ALTERNATIVE
-> > > >  /*
-> > > > diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> > > > index 1b8da4e40a4d..39322ae20a75 100644
-> > > > --- a/arch/riscv/kernel/smpboot.c
-> > > > +++ b/arch/riscv/kernel/smpboot.c
-> > > > @@ -27,6 +27,7 @@
-> > > >  #include <linux/sched/mm.h>
-> > > >  #include <asm/cpu_ops.h>
-> > > >  #include <asm/cpufeature.h>
-> > > > +#include <asm/hwprobe.h>
-> > > >  #include <asm/irq.h>
-> > > >  #include <asm/mmu_context.h>
-> > > >  #include <asm/numa.h>
-> > > > @@ -246,7 +247,15 @@ asmlinkage __visible void smp_callin(void)
-> > > >
-> > > >     numa_add_cpu(curr_cpuid);
-> > > >     set_cpu_online(curr_cpuid, 1);
-> > > > -   check_unaligned_access(curr_cpuid);
-> > > > +
-> > > > +   /*
-> > > > +    * Boot-time misaligned access speed measurements are done in parallel
-> > > > +    * in an initcall. Only measure here for hotplug.
-> > > > +    */
-> > > > +   if (misaligned_speed_measured &&
-> > > > +       (per_cpu(misaligned_access_speed, curr_cpuid) == RISCV_HWPROBE_MISALIGNED_UNKNOWN)) {
-> > >
-> > > I believe this check is for cpu not-booted during boot time but hotplug in
-> > > after that, if so I'm not sure whether
-> > > misaligned_speed_measured can be replaced with
-> > > (system_state == SYSTEM_RUNNING)
-> > > then we don't need misaligned_speed_measured at all.
-> > >
-> > > > +           check_unaligned_access(NULL);
-> > > > +   }
-> > > >
-> > > >     if (has_vector()) {
-> > > >             if (riscv_v_setup_vsize())
-> > > > --
-> > > > 2.34.1
-> > > >
+> I think, you should also set *num_buffers to be inst->fbc_buf_count for
+> V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, like this:
+> 
+> 		} else if (q->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+> 			if (*num_buffers < inst->fbc_buf_count)
+> 				*num_buffers = inst->fbc_buf_count;
+> 
+> 			switch (*num_planes) {
+> 			case 1:
+> 				...
+> 			case 2:
+> 				...
+> 			case 3:
+> 				...
+> 			}
+> 		}
+
+I was able to reproduce this issue by requesting a small number of buffers
+on the CAPTURE queue that was less than inst→fbc_buf_count. When this happens,
+wave5_vpu_dec_job_ready() fails here:
+(v4l2_m2m_num_dst_bufs_ready(m2m_ctx) < (inst->fbc_buf_count - 1)
+
+I also tested your suggestion to set the *num_buffers to  inst→fbc_buf_count
+in queue_setup() and it seems to be working well, thanks for this.
+
+I've been working on ways to improve testing for stateful decoders so
+I'm curious how you found this issue?
+
+With fluster tests that we use, gstreamer seems to be calculating correct number of
+CAPTURE buffers to request, so we wouldn't see this.
+
+> 
+> The reason for that is if fbc_buf_count is greater than initial num_buffers,
+> wave5_vpu_dec_job_ready() wouldn't allow to invoke wave5_vpu_dec_device_run()
+> 
+> Here is a part of the log of described situation:
+> 
+>   vdec 20410000.wave515: Switch state from NONE to OPEN.
+>   [...]
+>   vdec 20410000.wave515: wave5_vpu_dec_init_seq: init seq sent (queue 1 : 1)
+>   vdec 20410000.wave515: wave5_vpu_dec_get_seq_info: init seq complete (queue 0 : 0)
+>   [...]
+>   vdec 20410000.wave515: handle_dynamic_resolution_change: width: 4112 height: 3008 profile: 1 | minbuffer: 6
+>   ^^^^^^^^ note that minbuffer is 6
+> 
+>   vdec 20410000.wave515: Switch state from OPEN to INIT_SEQ.
+>   [...]
+>   vdec 20410000.wave515: decoder command: 1
+>   [...]
+>   vdec 20410000.wave515: wave5_vpu_dec_queue_setup: num_buffers: 4 | num_planes: 0 | type: 9
+>   ^^^^^^^^ note that num_buffers is 4
+> 
+>   vdec 20410000.wave515: wave5_vpu_dec_queue_setup: size[0]: 18625536
+>   vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+>   vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+>   vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+>   vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+>   vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    0 size: ([0]=18625536, [1]=   0, [2]=   0)
+>   vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    1 size: ([0]=18625536, [1]=   0, [2]=   0)
+>   vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    2 size: ([0]=18625536, [1]=   0, [2]=   0)
+>   vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    3 size: ([0]=18625536, [1]=   0, [2]=   0)
+>   vdec 20410000.wave515: wave5_vpu_dec_start_streaming: type: 9
+>   vdec 20410000.wave515: No capture buffer ready to decode!
+>   ^^^^^^^^ here v4l2_m2m_num_dst_bufs_ready(m2m_ctx) < (inst->fbc_buf_count - 1), namely 4 < 6
+>   
+>   vdec 20410000.wave515: wave5_vpu_dec_stop_streaming: type: 9
+>   vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 0, fail: -22
+>   vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 1, fail: -22
+>   vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 2, fail: -22
+>   vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 3, fail: -22
+>   [...]
+>   vdec 20410000.wave515: wave5_vpu_dec_close: dec_finish_seq complete
+> 
+> Altering num_buffers solves the issue for me.
+> 
+> > +			if (inst->output_format == FORMAT_422)
+> > +				sizes[0] = inst_format.width * inst_format.height * 2;
+> > +			else
+> > +				sizes[0] = inst_format.width * inst_format.height * 3 / 2;
+> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
+> > +		} else if (*num_planes == 2) {
+> > +			sizes[0] = inst_format.width * inst_format.height;
+> > +			if (inst->output_format == FORMAT_422)
+> > +				sizes[1] = inst_format.width * inst_format.height;
+> > +			else
+> > +				sizes[1] = inst_format.width * inst_format.height / 2;
+> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u\n",
+> > +				__func__, sizes[0], sizes[1]);
+> > +		} else if (*num_planes == 3) {
+> > +			sizes[0] = inst_format.width * inst_format.height;
+> > +			if (inst->output_format == FORMAT_422) {
+> > +				sizes[1] = inst_format.width * inst_format.height / 2;
+> > +				sizes[2] = inst_format.width * inst_format.height / 2;
+> > +			} else {
+> > +				sizes[1] = inst_format.width * inst_format.height / 4;
+> > +				sizes[2] = inst_format.width * inst_format.height / 4;
+> > +			}
+> > +			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u | size[2]: %u\n",
+> > +				__func__, sizes[0], sizes[1], sizes[2]);
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> 
+> BTW I'm currently tinkering with your patchset on another C&M IP and would be
+> gratefull if you Cc me in the future versions of the patchset, if any.
+
+Yes, sorry for missing you on v13, thanks for taking the time to review.
+
+Deborah
+
+> 
+> Thanks.
