@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A9A7DF516
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2FA7DF511
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjKBOdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
+        id S229751AbjKBOb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjKBOdD (ORCPT
+        with ESMTP id S229538AbjKBObz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:33:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52F41FC3
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:30:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B1EFC433C7;
-        Thu,  2 Nov 2023 14:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698935446;
-        bh=85p+CLu4W0AnfKF5ReDjg/r2RQF5LGFbBJEBrfcMLA4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W/bx7FCYor3dDpn7vQLXj0Bi6tykYM8NCF0GO0tK2+gQptOCI7CRb5IvkMAlOxk9N
-         tWXAEhMUC7DDR+7uWmBjCm/Ks7L5EybPbKqObJIHv8wGF/vO1s9zYtZ5EMf1Gr8KS2
-         CwCbjpOVCtycKZOLgFwa6h1OE/YVGqJT/xX7F3rLtV9DtCHLF6HIgR3f6SNTf/c3V5
-         G6syJUBU4TGfq1woUdjKE/B+5pa4mqRY890TIRt1M43PBuAorrjXMFJa3w2cH3XDIx
-         dfNejkGIKTaoonbKmLcdnW1utqOknYWkUOBfgUOyoNv1/Wo4WyIy1Ci8MAofgWgtqD
-         fLdQx5OuxRyZg==
-Date:   Thu, 2 Nov 2023 14:30:41 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Lee Jones <lee@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: [GIT PULL] Backlight for v6.7
-Message-ID: <20231102143041.GY8909@google.com>
+        Thu, 2 Nov 2023 10:31:55 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C87B1B6
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:31:19 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso152655466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698935477; x=1699540277; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IM5n/dsc1U3VyZD/kU7nFCD3rW9G/9wfv8XONCzUoVQ=;
+        b=vBlzl1CZVZNRYlwLKEFPN0c/8KRxxrWUYlo+b1k+WgWSdV1KXOebpflvDGM+3hgkI5
+         T/lSsxKOlzOhDUyWdL66oSH4cWPSsClpTeTloiSKzLmBG0IVGHKr2URb2LxYBvnvZDd9
+         NoBbX8QGw6tUrZ5W9PWDmLiBi/Lxd/du8vJEt/HHr1p05VgPok7tVD9PMqTSQp+3OM8E
+         jSfKLVmgtfMUB6v/zBJesRjqMSC6rOhMNH3ILtqZ9j6+mBWHTkomEZYkd9PK/CpUbFKd
+         x1f8Rn4XOmp5uV8hVNP1mPniGxMgNk/pKsB7dt3UB/O6oOZA/yXyj4/GFdZ/tZYeqafx
+         uhmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698935477; x=1699540277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IM5n/dsc1U3VyZD/kU7nFCD3rW9G/9wfv8XONCzUoVQ=;
+        b=G0leW1Z+vWsGZKze3HED6P6e7vAZnL0rpyz4+A9LWhVr4Ymlisaid6ZXsEJbozCfZ8
+         Yh0MvVPwCnqjeV+9vSoizXZDLLys2G3+1trfD93kX0Pn+9rIbNRErfO9pPzM4Vf6x0CQ
+         3DEMwUe51QdvGHt0HW5ydxDAWrPGEZC9OgVgMiD6Gp/Ga4njJq+EO/XXeCf6v+mIkEEa
+         gt15qWWd4SkdG4EySg0uduIH0MAvK+ritAc5qtbp9B02PGekcJqqDC/yZkozyB9mexau
+         J39SN62hkhEyGjVebwryEceBCS931a8i38BA+71o5dS/uTfwlNmHI+1mbKOHYXpM5I71
+         wFAg==
+X-Gm-Message-State: AOJu0Yw66zDSLNVdyDhECq/5xCyXzJiCPOEro6JtaH7H84hfQkcBCybm
+        Wf0dYJfRCLrrWsD80M5YpfR3Fg==
+X-Google-Smtp-Source: AGHT+IHyujoiAsaChivrEQn1HXmVMVyLwPAXky87rdhKgOFCHxxWUybvxziS+0RLPGY5Y130m30Fgg==
+X-Received: by 2002:a17:906:7956:b0:9c3:a3f2:4cec with SMTP id l22-20020a170906795600b009c3a3f24cecmr5101056ejo.0.1698935477571;
+        Thu, 02 Nov 2023 07:31:17 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id f25-20020a1709062c5900b009ad7fc17b2asm1199083ejh.224.2023.11.02.07.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 07:31:17 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 17:31:12 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Alexandra Diupina <adiupina@astralinux.ru>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: Re: [PATCH 1/4] Remove redundant return value check
+Message-ID: <fc1ba609-93d6-4508-b6ac-bba9471cb075@kadam.mountain>
+References: <20231102141135.369-1-adiupina@astralinux.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231102141135.369-1-adiupina@astralinux.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good afternoon Linus,
+On Thu, Nov 02, 2023 at 05:11:32PM +0300, Alexandra Diupina wrote:
+> media_entity_pads_init() will not return 0 only if the
+> 2nd parameter >= MEDIA_ENTITY_MAX_PADS (512), but 1 is
+> passed, so checking the return value is redundant
+> 
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+It can return an error because of this check:
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+drivers/media/mc/mc-entity.c
+   215                  if (hweight32(iter->flags & (MEDIA_PAD_FL_SINK |
+   216                                               MEDIA_PAD_FL_SOURCE)) != 1) {
+   217                          ret = -EINVAL;
+   218                          break;
+   219                  }
 
-are available in the Git repository at:
+Plus I don't like removing error checking for this reason.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git tags/backlight-next-6.7
+Earlier this month I fixed a case where someone removed an IS_ERR()
+check but then we modified the function to return error pointers.
+https://lore.kernel.org/all/356fb42c-9cf1-45cd-9233-ac845c507fb7@moroto.mountain/
 
-for you to fetch changes up to d5272d39995f4150062a67e6f2cef556edece740:
-
-  dt-bindings: backlight: Add brightness-levels related common properties (2023-10-19 13:27:36 +0100)
-
-----------------------------------------------------------------
- - New Functionality
-   - Add new Device Tree binding for Monolithic Power (MPS) MP3309C step-up converter
-   - Document brightness-levels in bindings for; generic, LED and PWM
-
- - Bug Fixes
-   - Ensure PWMs are disabled on; .shutdown(), .suspend() and .remove()
-
-----------------------------------------------------------------
-Flavio Suligoi (2):
-      dt-bindings: backlight: Add MPS MP3309C
-      dt-bindings: backlight: Add brightness-levels related common properties
-
-Uwe Kleine-König (1):
-      backlight: pwm_bl: Disable PWM on shutdown, suspend and remove
-
- .../devicetree/bindings/leds/backlight/common.yaml | 17 +++++
- .../bindings/leds/backlight/led-backlight.yaml     | 19 ++----
- .../bindings/leds/backlight/mps,mp3309c.yaml       | 73 ++++++++++++++++++++++
- .../bindings/leds/backlight/pwm-backlight.yaml     | 20 ++----
- drivers/video/backlight/pwm_bl.c                   | 22 +++++++
- 5 files changed, 120 insertions(+), 31 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
-
--- 
-Lee Jones [李琼斯]
+regards,
+dan carpenter
 
