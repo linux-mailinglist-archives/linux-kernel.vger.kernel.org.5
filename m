@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44267DF982
+	by mail.lfdr.de (Postfix) with ESMTP id 544D17DF981
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbjKBSDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        id S1346658AbjKBSEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235549AbjKBSDP (ORCPT
+        with ESMTP id S235313AbjKBSER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:03:15 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976371BD3
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:20 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da04fb79246so1435961276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:20 -0700 (PDT)
+        Thu, 2 Nov 2023 14:04:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4C21BE1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:21 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da3a891bf3aso1525995276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947959; x=1699552759; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947961; x=1699552761; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=P522BWcPedC1rbHa5TGjvOW04gaVYccbN3SjyINhw4g=;
-        b=boxKydr746HE7NlHswNdVShFgInZ1q4okiUpW72Pa+tTtsnfMahNNc6vypcBG78BSW
-         LM4rIAoGwjNoKAZKC0Nv0fGOf/TekYfqTBxDJPzy9ivW229NMYNIfu1DDzsh5w6l6kK0
-         OxMWT8MW1pWbFkvwCKZB8NdnAGccgVYb3lXELkNQHDREugtTPSbIruPmOBIAylEcO2Rl
-         PE4EilM6p4Xq2kcgjDaSOsjFPVvya1oL0WoLcOqyrNoASblCvn4AZFVjWjUcEBeLO02Y
-         806hFj3v5ZKdhRljhQn58jXu5AltbVUkG67sWHUpMj5/6Vspz1jBUh5p2Ev9vnXhrmku
-         6sPw==
+        bh=jyqaewET4n3xW99qLn64pqtlx1KxaY6rTSlGiEWPc/8=;
+        b=JylFuvJVKZTu05aAc+DFdRzttQe/w+toVo46ht2/XVqiAY1PUrNCUZjB003Q3IO2zW
+         EtSTVD6jYbVK97iiT7HU2XMBq+Ximd5eBaPnW1s9d2frRjVoQ4H16r2LY2qxn5mNfTIb
+         1Xj0d2RDk5NtW+T6MiuwbcUOkWCb+SoQW6ol881oudyhUrS9cXm3sMnXZVulMUAOAN3C
+         Wj50r+G4lMeQWBwao76qbOi7Xg2ZgWEXVI5Gkk+HMDidEml6FprtkxiF37ePLdM9Cy2m
+         0D7SCegK8EsuQq48JXChb3cG3UrJXtfExdpqqTcsaUkRd8ofsU3n3NkpDoKTj4ylw+d7
+         QpGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947959; x=1699552759;
+        d=1e100.net; s=20230601; t=1698947961; x=1699552761;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P522BWcPedC1rbHa5TGjvOW04gaVYccbN3SjyINhw4g=;
-        b=D87W84N/+ZKMF76/x6ATMf/+2cRzVyVu55G2neb/tCbnhmuxmq1D71izQEiSbxKj5R
-         66hPDrAZZkOYX12TUipR+8PeU8xa43Pm3d7dRgVIH4DwCg9NzTsi990p77ZD6k8ODi3q
-         DvJGc+AEpVLnawuR3F+9HjwVWkwHZdleh0v1WHDOQbUvVJvJXhdIKI6okecWg7QKxJgx
-         JG/hW4nZ/UsTNaA/ffZu2DpwsHm10pd6v+njM3kFjlVB6Nwyf4E6sBN4Gh5XnkH0qvYm
-         hcrM4sEo7lnAhfChjxoTS++Zdr4PyoZiJ61as/S/teChw3QdCxdL4cjV5oJTgvDKvRN4
-         NVwg==
-X-Gm-Message-State: AOJu0YyeFfNxtC9LFC3znNfV0e/mjLaF4mv0ODKw21pqpv3pY5mebKTP
-        H1nSwqOfy6pO/iPOFj4fzHxaLSpmAZ5i
-X-Google-Smtp-Source: AGHT+IGZ83kuqNUqa5uLg/NHMSdUX0NyDpFc9GS31SNAmyTEr5Qa0K/M/5gnZu+yo6dAyGCPUY0fLcNgHFSS
+        bh=jyqaewET4n3xW99qLn64pqtlx1KxaY6rTSlGiEWPc/8=;
+        b=IGJDpalgAvGZ/5RaovYs0vGJrr+gNBdZldFxZMIcy1xFky5zaqDJl7VM0uNs3FwbP6
+         Vne6823NNqzbhWayLWJ+mga2jREOVI5mTr417NuDjCMIkqyEjDvMrF0Pa//Na36HGw8G
+         0gkEEk+grrruojhVG5GnDncWkY4w0HLzfTjQExOBUIWal0S3/gyeosQpAO0mR2hVb9Hq
+         S34nxGQyIhz5Pmw33TvJo3n8A2tkO5CdCG7pTOaYVhq+dtdl/+UBl5g4GJZj+MBokE4I
+         NoemE20h4uSgpxsEQHasVDsOhlXwBqWPbzMIK0z+SLZI42s1/3orDbSEwkh1FGeJ7b65
+         UkJw==
+X-Gm-Message-State: AOJu0YxVg+RtOcyYFLE4TEYodoeT2MatCQRlqSfDnFpn0gxupSxaRzyW
+        NVf0TteMVJgQziwemWGg3Yd6mV4McaCC
+X-Google-Smtp-Source: AGHT+IGi9V5RhaUbRTaj34OzyTHfuhbU/S0KuomTfes45q3kI0AGLTaa7kICQjkVhrNJj3xQH5AzXxkJihRf
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a25:7909:0:b0:da3:ab41:304a with SMTP id
- u9-20020a257909000000b00da3ab41304amr137736ybc.4.1698947959039; Thu, 02 Nov
- 2023 10:59:19 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:18 -0700
+ (user=irogers job=sendgmr) by 2002:a25:e082:0:b0:d9a:ec95:9687 with SMTP id
+ x124-20020a25e082000000b00d9aec959687mr389437ybg.11.1698947961035; Thu, 02
+ Nov 2023 10:59:21 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:19 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-37-irogers@google.com>
+Message-Id: <20231102175735.2272696-38-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 36/53] perf trace: Ignore thread hashing in summary
+Subject: [PATCH v4 37/53] perf machine: Move fprintf to for_each loop and a callback
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -90,107 +90,89 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 91e467bc568f ("perf machine: Use hashtable for machine
-threads") made the iteration of thread tids unordered. The perf trace
---summary output sorts and prints each hash bucket, rather than all
-threads globally. Change this behavior by turn all threads into a
-list, sort the list by number of trace events then by tids, finally
-print the list. This also allows the rbtree in threads to be not
-accessed outside of machine.
+Avoid exposing the threads data structure by switching to the callback
+machine__for_each_thread approach. machine__fprintf is only used in
+tests and verbose >3 output so don't turn to list and sort. Add
+machine__threads_nr to be refactored later.
+
+Note, all existing *_fprintf routines ignore fprintf errors.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-trace.c  | 41 +++++++++++++++++++++----------------
- tools/perf/util/rb_resort.h |  5 -----
- 2 files changed, 23 insertions(+), 23 deletions(-)
+ tools/perf/util/machine.c | 43 ++++++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index e541d0e2777a..e9ff78b331fe 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -74,6 +74,7 @@
- #include <linux/err.h>
- #include <linux/filter.h>
- #include <linux/kernel.h>
-+#include <linux/list_sort.h>
- #include <linux/random.h>
- #include <linux/stringify.h>
- #include <linux/time64.h>
-@@ -4314,34 +4315,38 @@ static unsigned long thread__nr_events(struct thread_trace *ttrace)
- 	return ttrace ? ttrace->nr_events : 0;
- }
- 
--DEFINE_RESORT_RB(threads,
--		(thread__nr_events(thread__priv(a->thread)) <
--		 thread__nr_events(thread__priv(b->thread))),
--	struct thread *thread;
--)
-+static int trace_nr_events_cmp(void *priv __maybe_unused,
-+			       const struct list_head *la,
-+			       const struct list_head *lb)
- {
--	entry->thread = rb_entry(nd, struct thread_rb_node, rb_node)->thread;
-+	struct thread_list *a = list_entry(la, struct thread_list, list);
-+	struct thread_list *b = list_entry(lb, struct thread_list, list);
-+	unsigned long a_nr_events = thread__nr_events(thread__priv(a->thread));
-+	unsigned long b_nr_events = thread__nr_events(thread__priv(b->thread));
-+
-+	if (a_nr_events != b_nr_events)
-+		return a_nr_events < b_nr_events ? -1 : 1;
-+
-+	/* Identical number of threads, place smaller tids first. */
-+	return thread__tid(a->thread) < thread__tid(b->thread)
-+		? -1
-+		: (thread__tid(a->thread) > thread__tid(b->thread) ? 1 : 0);
- }
- 
- static size_t trace__fprintf_thread_summary(struct trace *trace, FILE *fp)
- {
- 	size_t printed = trace__fprintf_threads_header(fp);
--	struct rb_node *nd;
--	int i;
--
--	for (i = 0; i < THREADS__TABLE_SIZE; i++) {
--		DECLARE_RESORT_RB_MACHINE_THREADS(threads, trace->host, i);
-+	LIST_HEAD(threads);
- 
--		if (threads == NULL) {
--			fprintf(fp, "%s", "Error sorting output by nr_events!\n");
--			return 0;
--		}
-+	if (machine__thread_list(trace->host, &threads) == 0) {
-+		struct thread_list *pos;
- 
--		resort_rb__for_each_entry(nd, threads)
--			printed += trace__fprintf_thread(fp, threads_entry->thread, trace);
-+		list_sort(NULL, &threads, trace_nr_events_cmp);
- 
--		resort_rb__delete(threads);
-+		list_for_each_entry(pos, &threads, list)
-+			printed += trace__fprintf_thread(fp, pos->thread, trace);
- 	}
-+	thread_list__delete(&threads);
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 6d7a505850c8..7e19303d1aa6 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -1114,29 +1114,40 @@ size_t machine__fprintf_vmlinux_path(struct machine *machine, FILE *fp)
  	return printed;
  }
  
-diff --git a/tools/perf/util/rb_resort.h b/tools/perf/util/rb_resort.h
-index 376e86cb4c3c..d927a0d25052 100644
---- a/tools/perf/util/rb_resort.h
-+++ b/tools/perf/util/rb_resort.h
-@@ -143,9 +143,4 @@ struct __name##_sorted *__name = __name##_sorted__new
- 	DECLARE_RESORT_RB(__name)(&__ilist->rblist.entries.rb_root,		\
- 				  __ilist->rblist.nr_entries)
+-size_t machine__fprintf(struct machine *machine, FILE *fp)
++struct machine_fprintf_cb_args {
++	FILE *fp;
++	size_t printed;
++};
++
++static int machine_fprintf_cb(struct thread *thread, void *data)
+ {
+-	struct rb_node *nd;
+-	size_t ret;
+-	int i;
++	struct machine_fprintf_cb_args *args = data;
  
--/* For 'struct machine->threads' */
--#define DECLARE_RESORT_RB_MACHINE_THREADS(__name, __machine, hash_bucket)    \
-- DECLARE_RESORT_RB(__name)(&__machine->threads[hash_bucket].entries.rb_root, \
--			   __machine->threads[hash_bucket].nr)
--
- #endif /* _PERF_RESORT_RB_H_ */
+-	for (i = 0; i < THREADS__TABLE_SIZE; i++) {
+-		struct threads *threads = &machine->threads[i];
++	/* TODO: handle fprintf errors. */
++	args->printed += thread__fprintf(thread, args->fp);
++	return 0;
++}
+ 
+-		down_read(&threads->lock);
++static size_t machine__threads_nr(const struct machine *machine)
++{
++	size_t nr = 0;
+ 
+-		ret = fprintf(fp, "Threads: %u\n", threads->nr);
++	for (int i = 0; i < THREADS__TABLE_SIZE; i++)
++		nr += machine->threads[i].nr;
+ 
+-		for (nd = rb_first_cached(&threads->entries); nd;
+-		     nd = rb_next(nd)) {
+-			struct thread *pos = rb_entry(nd, struct thread_rb_node, rb_node)->thread;
++	return nr;
++}
+ 
+-			ret += thread__fprintf(pos, fp);
+-		}
++size_t machine__fprintf(struct machine *machine, FILE *fp)
++{
++	struct machine_fprintf_cb_args args = {
++		.fp = fp,
++		.printed = 0,
++	};
++	size_t ret = fprintf(fp, "Threads: %zu\n", machine__threads_nr(machine));
+ 
+-		up_read(&threads->lock);
+-	}
+-	return ret;
++	machine__for_each_thread(machine, machine_fprintf_cb, &args);
++	return ret + args.printed;
+ }
+ 
+ static struct dso *machine__get_kernel(struct machine *machine)
 -- 
 2.42.0.869.gea05f2083d-goog
 
