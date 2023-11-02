@@ -2,192 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 024AC7DECF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4591B7DECF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbjKBGnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 02:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
+        id S233070AbjKBGpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 02:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKBGnP (ORCPT
+        with ESMTP id S229481AbjKBGpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 02:43:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165DF125;
-        Wed,  1 Nov 2023 23:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698907390; x=1730443390;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=eFzutUwI91AlprFudf7uXPVWde/i5DfJ1a5Vzf3IEHM=;
-  b=DBBfIHJrEAcsME4CLAzNvgjMAbnWGkNG3lVW6oVO9u52dEwoXYo+OM7E
-   bqEl1Cn57FmuQaUUKERqXpL9orCgCNbnzdFNU8gmn6f8lGoq0nyXQh1YC
-   b8EpHspZqQW4MdNvHOSXebAJed+O5DZYPQlKll/R/lG/DU7FyK9MxRB0W
-   oJN4s6nY0SJtQyVoEBOYCD/3dBPx6S/QeCkXMkXTeboaIa2WodnSjyeNV
-   ed2TOsY3SaJKDfk0x0/SZs0MyPd8oRElGtsuGOKjn8m65mhEoSyY2+8vr
-   w24B36Vl1mQ/LYLyxCOqmmYfX58Z3okAlBRfN1DuzdGPoUKj7ots07wek
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="474887758"
-X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="474887758"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 23:43:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="711040332"
-X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="711040332"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 23:43:05 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Ravi Jonnalagadda <ravis.opensrc@micron.com>
-Cc:     <akpm@linux-foundation.org>, <aneesh.kumar@linux.ibm.com>,
-        <apopple@nvidia.com>, <dave.hansen@intel.com>,
-        <gourry.memverge@gmail.com>, <gregkh@linuxfoundation.org>,
-        <gregory.price@memverge.com>, <hannes@cmpxchg.org>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <mhocko@suse.com>, <rafael@kernel.org>,
-        <shy828301@gmail.com>, <tim.c.chen@intel.com>, <weixugc@google.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-In-Reply-To: <20231101092923.283-1-ravis.opensrc@micron.com> (Ravi
-        Jonnalagadda's message of "Wed, 1 Nov 2023 14:59:23 +0530")
-References: <87il6m6w2j.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20231101092923.283-1-ravis.opensrc@micron.com>
-Date:   Thu, 02 Nov 2023 14:41:03 +0800
-Message-ID: <87a5rw1wu8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Thu, 2 Nov 2023 02:45:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AC5123
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 23:44:54 -0700 (PDT)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2E48E667;
+        Thu,  2 Nov 2023 07:44:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698907475;
+        bh=y8Dfqv3Vd9EY7NwnsZJHBtXw59SATw6W0Xla8veD3/E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WNkWFmn/uGrZ7Zx7+N6AiypSiKTn+OzPwQpWMLRZ00cd7P/yjG/7Oq0uUWZvWGeqj
+         0UXw9PA/Uz4dPZhwyJmZKaivPRt8Pui0H1ZVJCorKVL7xC9IcZcYT1N9r9bpMg0RoJ
+         pGcjg7B7HXDikcGG00n5TpvY0tGkJSV29iw7odzM=
+Message-ID: <b8851637-194c-4da7-beb6-fbe842f7788c@ideasonboard.com>
+Date:   Thu, 2 Nov 2023 08:44:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/10] drm/tidss: Return error value from from softreset
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
+ <20231101-tidss-probe-v1-5-45149e0f9415@ideasonboard.com>
+ <20231101135951.GU12764@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231101135951.GU12764@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ravi Jonnalagadda <ravis.opensrc@micron.com> writes:
-
->>> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
->>>> On Tue 31-10-23 11:21:42, Johannes Weiner wrote:
->>>> > On Tue, Oct 31, 2023 at 10:53:41AM +0100, Michal Hocko wrote:
->>>> > > On Mon 30-10-23 20:38:06, Gregory Price wrote:
+On 01/11/2023 15:59, Laurent Pinchart wrote:
+> Hi Tomi,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Nov 01, 2023 at 11:17:42AM +0200, Tomi Valkeinen wrote:
+>> Return an error value from dispc_softreset() so that the caller can
+>> handle the errors.
 >>
->>[snip]
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>>   drivers/gpu/drm/tidss/tidss_dispc.c | 17 ++++++++++++-----
+>>   1 file changed, 12 insertions(+), 5 deletions(-)
 >>
->>>>
->>>> > This hopefully also explains why it's a global setting. The usecase is
->>>> > different from conventional NUMA interleaving, which is used as a
->>>> > locality measure: spread shared data evenly between compute
->>>> > nodes. This one isn't about locality - the CXL tier doesn't have local
->>>> > compute. Instead, the optimal spread is based on hardware parameters,
->>>> > which is a global property rather than a per-workload one.
->>>>
->>>> Well, I am not convinced about that TBH. Sure it is probably a good fit
->>>> for this specific CXL usecase but it just doesn't fit into many others I
->>>> can think of - e.g. proportional use of those tiers based on the
->>>> workload - you get what you pay for.
->>>>
->>>> Is there any specific reason for not having a new interleave interface
->>>> which defines weights for the nodemask? Is this because the policy
->>>> itself is very dynamic or is this more driven by simplicity of use?
->>>
->>> A downside of *requiring* weights to be paired with the mempolicy is
->>> that it's then the application that would have to figure out the
->>> weights dynamically, instead of having a static host configuration. A
->>> policy of "I want to be spread for optimal bus bandwidth" translates
->>> between different hardware configurations, but optimal weights will
->>> vary depending on the type of machine a job runs on.
->>>
->>> That doesn't mean there couldn't be usecases for having weights as
->>> policy as well in other scenarios, like you allude to above. It's just
->>> so far such usecases haven't really materialized or spelled out
->>> concretely. Maybe we just want both - a global default, and the
->>> ability to override it locally.
->>
->>I think that this is a good idea.  The system-wise configuration with
->>reasonable default makes applications life much easier.  If more control
->>is needed, some kind of workload specific configuration can be added.
->
-> Glad that we are in agreement here. For bandwidth expansion use cases
-> that this interleave patchset is trying to cater to, most applications
-> would have to follow the "reasanable defaults" for weights.
-> The necessity for applications to choose different weights while
-> interleaving would probably be to do capacity expansion which the
-> default memory tiering implementation would anyway support and provide
-> better latency.
->
->>And, instead of adding another memory policy, a cgroup-wise
->>configuration may be easier to be used.  The per-workload weight may
->>need to be adjusted when we deploying different combination of workloads
->>in the system.
->>
->>Another question is that should the weight be per-memory-tier or
->>per-node?  In this patchset, the weight is per-source-target-node
->>combination.  That is, the weight becomes a matrix instead of a vector.
->>IIUC, this is used to control cross-socket memory access in addition to
->>per-memory-type memory access.  Do you think the added complexity is
->>necessary?
->
-> Pros and Cons of Node based interleave:
-> Pros:
-> 1. Weights can be defined for devices with different bandwidth and latency
-> characteristics individually irrespective of which tier they fall into.
-> 2. Defining the weight per-source-target-node would be necessary for multi
-> socket systems where few devices may be closer to one socket rather than other.
-> Cons:
-> 1. Weights need to be programmed for all the nodes which can be tedious for
-> systems with lot of NUMA nodes.
+>> diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
+>> index 9430625e2d62..cdbb88289082 100644
+>> --- a/drivers/gpu/drm/tidss/tidss_dispc.c
+>> +++ b/drivers/gpu/drm/tidss/tidss_dispc.c
+>> @@ -2702,7 +2702,7 @@ static void dispc_init_errata(struct dispc_device *dispc)
+>>   	}
+>>   }
+>>   
+>> -static void dispc_softreset(struct dispc_device *dispc)
+>> +static int dispc_softreset(struct dispc_device *dispc)
+>>   {
+>>   	u32 val;
+>>   	int ret;
+>> @@ -2712,8 +2712,12 @@ static void dispc_softreset(struct dispc_device *dispc)
+>>   	/* Wait for reset to complete */
+>>   	ret = readl_poll_timeout(dispc->base_common + DSS_SYSSTATUS,
+>>   				 val, val & 1, 100, 5000);
+>> -	if (ret)
+>> -		dev_warn(dispc->dev, "failed to reset dispc\n");
+>> +	if (ret) {
+>> +		dev_err(dispc->dev, "failed to reset dispc\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   int dispc_init(struct tidss_device *tidss)
+>> @@ -2828,8 +2832,11 @@ int dispc_init(struct tidss_device *tidss)
+>>   	tidss->dispc = dispc;
+>>   
+>>   	/* K2G display controller does not support soft reset */
+>> -	if (feat->subrev != DISPC_K2G)
+>> -		dispc_softreset(dispc);
+>> +	if (feat->subrev != DISPC_K2G) {
+>> +		r = dispc_softreset(dispc);
+>> +		if (r)
+>> +			return r;
+> 
+> tidss->dispc will be set in this case. Could that cause problems ?
 
-2. More complex, so need justification, for example, practical use case.
+Not at the moment, but better be safe. I'll move the reset a few lines 
+higher.
 
-> Pros and Cons of Memory Tier based interleave:
-> Pros:
-> 1. Programming weight per initiator would apply for all the nodes in the tier.
-> 2. Weights can be calculated considering the cumulative bandwidth of all
-> the nodes in the tier and need to be programmed once for all the nodes in a
-> given tier.
-> 3. It may be useful in cases where numa nodes with similar latency and bandwidth
-> characteristics increase, possibly with pooling use cases.
+  Tomi
 
-4. simpler.
-
-> Cons:
-> 1. If nodes with different bandwidth and latency characteristics are placed
-> in same tier as seen in the current mainline kernel, it will be difficult to
-> apply a correct interleave weight policy.
-> 2. There will be a need for functionality to move nodes between different tiers
-> or create new tiers to place such nodes for programming correct interleave weights.
-> We are working on a patch to support it currently.
-
-Thanks!  If we have such system, we will need this.
-
-> 3. For systems where each numa node is having different characteristics,
-> a single node might end up existing in different memory tier, which would be
-> equivalent to node based interleaving.
-
-No.  A node can only exist in one memory tier.
-
-> On newer systems where all CXL memory from different devices under a
-> port are combined to form single numa node, this scenario might be
-> applicable.
-
-You mean the different memory ranges of a NUMA node may have different
-performance?  I don't think that we can deal with this.
-
-> 4. Users may need to keep track of different memory tiers and what nodes are present
-> in each tier for invoking interleave policy.
-
-I don't think this is a con.  With node based solution, you need to know
-your system too.
-
->>
->>> Could you elaborate on the 'get what you pay for' usecase you
->>> mentioned?
->>
-
---
-Best Regards,
-Huang, Ying
