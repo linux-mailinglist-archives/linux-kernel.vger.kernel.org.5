@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439007DF6FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702F77DF701
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377056AbjKBPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S1377058AbjKBPsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377046AbjKBPsY (ORCPT
+        with ESMTP id S1377049AbjKBPsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:48:24 -0400
+        Thu, 2 Nov 2023 11:48:32 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A52D19E;
-        Thu,  2 Nov 2023 08:48:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AF1191;
+        Thu,  2 Nov 2023 08:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698940101; x=1730476101;
+  t=1698940106; x=1730476106;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=DPrHjqjjT0XK/XI2zNWowMuhgRJLcJS3uWdq85e10ZM=;
-  b=hO96Hp6XzBD029+HfLfGrW+kBvrfgXrz8MJ2dFoiilEUpwPs4w9lNKF+
-   HbktntgwoGcPnFuIJTdotfcUlbG8nKdPn+aMU+1UsfBJ7oQpTHftCOir+
-   5B5m7zLZP78Ze4TLV77z1XBtV/PGWfKH1QyuahSNLMKDdXFmUE+940Diz
-   wem3ZjNbEy05zq8WSJyQ+j8W102FYH731A2QIBnhqMx6NbVm3SAnS0B4w
-   sHsFGRHZNIvFuihmcjY3vNuGmLte1JnukMVsNuEuYS1LEu+sh/w8cB+sy
-   1nKsmOiizCcr2Lx3BmW1mpVoDOlOKmyAtgBGQr6F2r2RIpFikSUKs94uv
+  bh=Vj/umKp6KCEEXAyYuUc1ZRbWwXpcTVXJs6xLHU+IwWA=;
+  b=HqDpr0+Be1Y1EYOgT2TCscxOyoNFwUG/y3rrHXCTKpLwXhEOYYfUCQ6+
+   /YfN4+U+qrnhHW7l1ffASAzO3C6rmgxaKRdE5FdVHLd3q9TagTcafkW9q
+   2GHvStVFstDDLUFMJNKxcc2NAHy41CI69/Xc2clGXf+IJHjg5mshCyKQ2
+   QSkGunOX2b5dKnDlFo57Hup4i/wvOMOzHT/Z98C0J96L+sL9t/B3Tankr
+   zaJkL7+xprlOip0qfSX2ODVL/AxNIHuhlHTtsPFg082vp6kVgPqR7Vlcr
+   i5qqDSRj7wR7WpqhEvd2Ht2m6/CutGOVsWsthEP+IvkOMJ483fLEhUVmL
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="368088458"
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="368088491"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="368088458"
+   d="scan'208";a="368088491"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:48:21 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:48:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="878295295"
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="878295300"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="878295295"
+   d="scan'208";a="878295300"
 Received: from pasangle-nuc10i7fnh.iind.intel.com ([10.223.107.83])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Nov 2023 08:48:19 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 02 Nov 2023 08:48:24 -0700
 From:   Parshuram Sangle <parshuram.sangle@intel.com>
 To:     kvm@vger.kernel.org, pbonzini@redhat.com
 Cc:     linux-kernel@vger.kernel.org, jaishankar.rajendran@intel.com,
         parshuram.sangle@intel.com
-Subject: [PATCH 1/2] KVM: enable halt polling shrink parameter by default
-Date:   Thu,  2 Nov 2023 21:16:27 +0530
-Message-Id: <20231102154628.2120-2-parshuram.sangle@intel.com>
+Subject: [PATCH 2/2] KVM: documentation update to halt polling
+Date:   Thu,  2 Nov 2023 21:16:28 +0530
+Message-Id: <20231102154628.2120-3-parshuram.sangle@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231102154628.2120-1-parshuram.sangle@intel.com>
 References: <20231102154628.2120-1-parshuram.sangle@intel.com>
@@ -59,84 +59,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Default halt_poll_ns_shrink value of 0 always resets polling interval
-to 0 on an un-successful poll where vcpu wakeup is not received. This is
-mostly to avoid pointless polling for more number of shorter intervals. But
-disabled shrink assumes vcpu wakeup is less likely to be received in
-subsequent shorter polling intervals. Another side effect of 0 shrink value
-is that, even on a successful poll if total block time was greater than
-current polling interval, the polling interval starts over from 0 instead
-of shrinking by a factor.
-
-Enabling shrink with value of 2 allows the polling interval to gradually
-decrement in case of un-successful poll events as well. This gives a fair
-chance for successful polling events in subsequent polling intervals rather
-than resetting it to 0 and starting over from grow_start.
-
-Below kvm stat log snippet shows interleaved growth and shrinking of
-polling interval:
-87162647182125: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 10000 (grow 0)
-87162647637763: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 20000 (grow 10000)
-87162649627943: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 40000 (grow 20000)
-87162650892407: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 20000 (shrink 40000)
-87162651540378: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 40000 (grow 20000)
-87162652276768: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 20000 (shrink 40000)
-87162652515037: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 40000 (grow 20000)
-87162653383787: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 20000 (shrink 40000)
-87162653627670: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 10000 (shrink 20000)
-87162653796321: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 20000 (grow 10000)
-87162656171645: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 10000 (shrink 20000)
-87162661607487: kvm_halt_poll_ns: vcpu 0: halt_poll_ns 0 (shrink 10000)
-
-Having both grow and shrink enabled creates a balance in polling interval
-growth and shrink behavior. Tests show improved successful polling attempt
-ratio which contribute to VM performance. Power penalty is quite negligible
-as shrunk polling intervals create bursts of very short durations.
-
-Performance assessment results show 3-6% improvements in CPU+GPU, Memory
-and Storage Android VM workloads whereas 5-9% improvement in average FPS of
-gaming VM workloads.
-
-Power penalty is below 1% where host OS is either idle or running a
-native workload having 2 VMs enabled. CPU/GPU intensive gaming workloads
-as well do not show any increased power overhead with shrink enabled.
+Corrected kvm documentation to reflect current handling of
+polling interval on successful and un-successful polling events.
+Also updated the description about newly added halt_poll_ns_grow_start
+parameter.
 
 Co-developed-by: Rajendran Jaishankar <jaishankar.rajendran@intel.com>
 Signed-off-by: Rajendran Jaishankar <jaishankar.rajendran@intel.com>
 Signed-off-by: Parshuram Sangle <parshuram.sangle@intel.com>
 ---
- Documentation/virt/kvm/halt-polling.rst | 2 +-
- virt/kvm/kvm_main.c                     | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/virt/kvm/halt-polling.rst | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
 diff --git a/Documentation/virt/kvm/halt-polling.rst b/Documentation/virt/kvm/halt-polling.rst
-index c82a04b709b4..64f32a81133f 100644
+index 64f32a81133f..cff388d9dc72 100644
 --- a/Documentation/virt/kvm/halt-polling.rst
 +++ b/Documentation/virt/kvm/halt-polling.rst
-@@ -105,7 +105,7 @@ powerpc kvm-hv case.
- |			| grow_halt_poll_ns()	    |			      |
- |			| function.		    |			      |
+@@ -44,12 +44,14 @@ or in the case of powerpc kvm-hv, in the vcore struct:
+ 
+ Thus this is a per vcpu (or vcore) value.
+ 
+-During polling if a wakeup source is received within the halt polling interval,
+-the interval is left unchanged. In the event that a wakeup source isn't
+-received during the polling interval (and thus schedule is invoked) there are
+-two options, either the polling interval and total block time[0] were less than
+-the global max polling interval (see module params below), or the total block
+-time was greater than the global max polling interval.
++During polling if a wakeup source is not received within the halt polling
++interval (and thus schedule is invoked), the interval is always shrunk in
++shrink_halt_poll_ns(). In the event that a wakeup source is received during
++the polling interval, polling interval is left unchanged if total block time
++is below or equal to current interval value otherwise there are two options,
++either the polling interval and total block time[0] were less than the global
++max polling interval (see module params below), or the total block time was
++greater than the global max polling interval.
+ 
+ In the event that both the polling interval and total block time were less than
+ the global max polling interval then the polling interval can be increased in
+@@ -79,11 +81,11 @@ adjustment of the polling interval.
+ Module Parameters
+ =================
+ 
+-The kvm module has 3 tuneable module parameters to adjust the global max
+-polling interval as well as the rate at which the polling interval is grown and
+-shrunk. These variables are defined in include/linux/kvm_host.h and as module
+-parameters in virt/kvm/kvm_main.c, or arch/powerpc/kvm/book3s_hv.c in the
+-powerpc kvm-hv case.
++The kvm module has 4 tunable module parameters to adjust the global max
++polling interval, initial value (to grow from 0) as well as the rate at which
++the polling interval is grown and shrunk. These variables are defined in
++include/linux/kvm_host.h and as module parameters in virt/kvm/kvm_main.c, or
++arch/powerpc/kvm/book3s_hv.c in the powerpc kvm-hv case.
+ 
  +-----------------------+---------------------------+-------------------------+
--|halt_poll_ns_shrink	| The value by which the    | 0			      |
-+|halt_poll_ns_shrink	| The value by which the    | 2			      |
- |			| halt polling interval is  |			      |
- |			| divided in the	    |			      |
- |			| shrink_halt_poll_ns()	    |			      |
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 486800a7024b..cfc474558660 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -91,8 +91,8 @@ unsigned int halt_poll_ns_grow_start = 10000; /* 10us */
- module_param(halt_poll_ns_grow_start, uint, 0644);
- EXPORT_SYMBOL_GPL(halt_poll_ns_grow_start);
- 
--/* Default resets per-vcpu halt_poll_ns . */
--unsigned int halt_poll_ns_shrink;
-+/* Default halves per-vcpu halt_poll_ns. */
-+unsigned int halt_poll_ns_shrink = 2;
- module_param(halt_poll_ns_shrink, uint, 0644);
- EXPORT_SYMBOL_GPL(halt_poll_ns_shrink);
- 
+ |Module Parameter	|   Description		    |	     Default Value    |
 -- 
 2.17.1
 
