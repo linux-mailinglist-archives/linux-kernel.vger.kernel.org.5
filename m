@@ -2,184 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBC17DEF23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB837DEF29
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345737AbjKBJqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S1345741AbjKBJrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345524AbjKBJqB (ORCPT
+        with ESMTP id S1345606AbjKBJrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:46:01 -0400
-Received: from esa19.fujitsucc.c3s2.iphmx.com (esa19.fujitsucc.c3s2.iphmx.com [216.71.158.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D535112
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1698918355; x=1730454355;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=QUiSyKMgHP6DVDWEd3fH0nL4AY7U1id3pkz37hK6gm8=;
-  b=TVeO6uuFi1leletzE+5qy3tdd7wTZlGxXNRU+epCXCAX6usERiasooJW
-   lTDuy7aM8o230FSbHhmesWg+pg/nsD89CrWo5S1adEvA15flhw6Rrk4lp
-   MtPnqGu9PZxRnzg0YWKYGp8vSwYNWwW3ksiMGP2dJEWDZUnccwUM0+wOj
-   gm39C7U86dj4RnGcKuGBbKhGjctfWU+vuUQs9sCc+j2m2TZx+jNlQ4wZ2
-   yhMWAMizXtfcBXpJj4QtIo1l4UuaSDV4yXu6yguocyVZkdQh5MsJljp0c
-   zxcyQOQOOU34BTV87oIvnCL9s3Ty56OAEmJ40DDrX7GkS3SYebYnUxjsc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="100815401"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694703600"; 
-   d="scan'208";a="100815401"
-Received: from mail-tycjpn01lp2168.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.168])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 18:45:41 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q2NtzD5BNyA8O14reEaKpcSHicsjZ0m72PcI8vJOTaIaanAKuTWDhLGm4DpBRn2/VK45nnetJOPdOST/M8fDPoIZmoh2LVkC9QK9deOaNHY30Ezkc5rRanoob3UqhuM5JIrmDEOGKhfkuFF94T5+Phv90se02RGywywJM3ON6lcOYuXp7nY6q66g7ulZqXhMxf+uCkgLu0rmuSTn7bjdmVOljaNbGpHCw3Dl/i5L2bxbWm48LGUi+JZt1v+Bah71XSpgfITVnQqbl1Rr+hcALyI5sBghN6Ur9rzgL7DUO8GzSK3IMk3026vllP732KHa/91dWx6ou3wfmr22lnRj3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QUiSyKMgHP6DVDWEd3fH0nL4AY7U1id3pkz37hK6gm8=;
- b=KK1wHmDz5OBAneJ2+RDLo9Mgw4yeAgwxOjJSERfW6LpGpyJOuomBf6z+TIpg+fVUyR4jjrDn27vWAE8W5xN278QFnaTnuBCnsonYi9i3xWjx8viPvkj2rKuWffW4PAzACqfKQR1mnzDAEs71UBSfgoqyYnVk1UAGiULpiDbaDocgr4NUum6bMeq21DhlEDOTGeFoMWN4yHZuNZzUHX6ghLoAfBBpcC9nuMyvAcfD3jbTxG9y964nQveuwS38RCJIGEYUOCa6GxP5BCdpVbgbveRHyJOBukdN8iwg5w0WoESAl49cIHLpvsUAFcXXJyCffdrVpLfWVhID9mY8PMu4/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYWPR01MB10082.jpnprd01.prod.outlook.com (2603:1096:400:1e3::8)
- by TYAPR01MB6010.jpnprd01.prod.outlook.com (2603:1096:402:31::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
- 2023 09:45:38 +0000
-Received: from TYWPR01MB10082.jpnprd01.prod.outlook.com
- ([fe80::e883:c662:3378:db0d]) by TYWPR01MB10082.jpnprd01.prod.outlook.com
- ([fe80::e883:c662:3378:db0d%4]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 09:45:38 +0000
-From:   "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>
-To:     "'Huang, Ying'" <ying.huang@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-Subject: RE: [PATCH RFC 3/4] mm/vmstat: rename pgdemote_* to pgdemote_dst_*
- and add pgdemote_src_*
-Thread-Topic: [PATCH RFC 3/4] mm/vmstat: rename pgdemote_* to pgdemote_dst_*
- and add pgdemote_src_*
-Thread-Index: AQHaDTg/jDGQjRbPtEmu3LTh584c1rBmhavjgAANNwCAAAHoMIAAErLVgAAV9TA=
-Date:   Thu, 2 Nov 2023 09:45:38 +0000
-Message-ID: <TYWPR01MB10082911F0687F0674F991F3D90A6A@TYWPR01MB10082.jpnprd01.prod.outlook.com>
-References: <20231102025648.1285477-1-lizhijian@fujitsu.com>
-        <20231102025648.1285477-4-lizhijian@fujitsu.com>
-        <87r0l81zfd.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <fbca99e1-40c4-4ffd-a0a1-89728dd0b900@fujitsu.com>
-        <TYWPR01MB1008262A8FCBBEF0331EB16FD90A6A@TYWPR01MB10082.jpnprd01.prod.outlook.com>
- <871qd81ttm.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <871qd81ttm.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: =?utf-8?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2Uw?=
- =?utf-8?B?NTBfQWN0aW9uSWQ9YTNkNjJlZGEtNGU1OS00NGIyLWIxZDYtYThlNjc2MWMz?=
- =?utf-8?B?NzZiO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5?=
- =?utf-8?B?LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxlZD10cnVlO01TSVBfTGFi?=
- =?utf-8?B?ZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX01ldGhv?=
- =?utf-8?B?ZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3Mjk1Y2MxLWQyNzktNDJhYy1hYjRk?=
- =?utf-8?B?LTNiMGY0ZmVjZTA1MF9OYW1lPUZVSklUU1UtUkVTVFJJQ1RFRO+/ou++gA==?=
- =?utf-8?B?776LO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX1NldERhdGU9MjAyMy0xMS0wMlQwOTowNzowMVo7TVNJUF9MYWJl?=
- =?utf-8?B?bF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfU2l0ZUlk?=
- =?utf-8?Q?=3Da19f121d-81e1-4858-a9d8-736e267fd4c7;?=
-x-shieldmailcheckerpolicyversion: FJ-ISEC-20181130-VDI-enc
-x-shieldmailcheckermailid: 3a2230113d86435ba2643e35dda59aee
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.2
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYWPR01MB10082:EE_|TYAPR01MB6010:EE_
-x-ms-office365-filtering-correlation-id: 9928e55f-44a3-4373-3323-08dbdb887899
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zpcK+hnZnKY55w0KLOVHEX5vBn61HKp+zodO/H63CEhXE5eYtZlPA5my7rscOLzU08wcvDEs1zc0thqP3UouehwnFenNl1N2JrRcqTrfkKuKuGHdmHtAwuVJdb7Hh2BHfyNyFFvhc+Jn1zbD3vQLknmYdkkFWXzZnPTyAYoDR5St1QxVUIzPDsiY+9tKXXvi+LBHVjIiOusiudODZMCC/itfz1VPcE1alq2mjXkX/2jNa/yPKC1HmMoyX5Fwnzbr+TEwNNR1T8aRRfAauta5kydbFU5Qwgn+T6A4+D9zPH8ULDTxpKISKSgWW0fcd4aif7GmxgG3TeQnU45N22hQ4LsUbtH1/HduSWgJVRG78m+EPPKbL7vfR1kWcQgOAD8+thgVWwRCc6NOuQGFpZN+aBZIcVp2tViAzpUAbqZlZI2pNnjO5Zd6sKAD+qrljuU0tgz6Eb9GmYyd4Mdmgjv0YQk6nyWqe5/0HxFi2e3TVpMJp4MRWy+sxicwb0F4+7CkZxH3beyHOI22du+Lzjh81fpubhGrXAoa3CLYcB9+jIbK2zTHRmGPMuBFGHSadzZOMpP0ZPnOTrN5Is2e7hiieagKdFamtkPs7uR0/S1uHIDLjDsBCbyKfyLPKeTebVj8B46Y+zi5nGeI3X19gcZ+Vy9DNQHtiIWAyEw1PrLKnx4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYWPR01MB10082.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(376002)(346002)(136003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(1590799021)(5660300002)(1580799018)(4326008)(55016003)(2906002)(6506007)(9686003)(33656002)(7696005)(26005)(316002)(54906003)(53546011)(85182001)(6916009)(66446008)(66946007)(76116006)(71200400001)(82960400001)(107886003)(66556008)(64756008)(38100700002)(122000001)(478600001)(86362001)(83380400001)(8676002)(41300700001)(8936002)(66476007)(52536014)(38070700009)(21314003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UVFRbklUTFU3bU1rcUQxaVc3Nk1McTBzbUJOT1pPYXlNSERPRnp5eUdqYnQ5?=
- =?utf-8?B?YjhBbHZYaVJ6cWpFaHF2aHdqUE04V0hWZ1NRbmdpVDFLV3hPYU5WTERUR0t0?=
- =?utf-8?B?cXl1WUZrcUt0aXQ0RXBjOGV6b2gybmpzNWVKbFBlRkxxRDJ6T2tuYTJWYnpW?=
- =?utf-8?B?a2dBeC9UcUJjeERuejlQTk9ZN05XZWw3VFhDT2djZ1EzNjlienNJTXZ4Y1lh?=
- =?utf-8?B?c0VEZjkxWlNiMzRSQ2dkS3dBdWlDSG1MUG52RzB3ZG9SdUdTOFRxUEZTVHYy?=
- =?utf-8?B?SHpkZ0M4d1dZYnNMMXRyQnRNcDdnUXdMekdROTcvTnA3dUdkNzREK0xPZzF3?=
- =?utf-8?B?ZzhSK0J1RUlKU2h5QVVWTWJ3U1h4ZUlDNUxaem5NdVRUUFBKMW5WZWhwdjRu?=
- =?utf-8?B?eC9rcThUVHlwNGNhTmNxU3dPcHpSbkhCWER0ZldrQzZ2enp4cWs0NzJPdFpO?=
- =?utf-8?B?V05lV05rd1IrVksvdGR1ZmNIVjltMHF5U2hGRTc0b3RSR1V6V1FSZDFScTY4?=
- =?utf-8?B?MW1pOGpMZU9mdTBHcFpuZkZSdHVGd0NpTVN2ZDlIMUJaVTF1ZFVVZy9pQzY1?=
- =?utf-8?B?UEdacmFuNzRVQ2t6ZW5wVnMvRFFNR2FSZ1RyUmJNUEcwRmQ0YjFKem4yS2Ji?=
- =?utf-8?B?dzY2UVJ4VFlYaG91QlRlN1FOaHVjTWtMaHE3VncvTVNkTDhpbWZZaVZMTW9I?=
- =?utf-8?B?S0QrczFITGNsM2RPalp3dGFNTURYL05NMklFK2EyYjNiVElXU1hoaU5ta1Zv?=
- =?utf-8?B?MnEydnJQOWlaS1oxTmpheHBad1Y3TXloODdKbmdZejlJN1NRN1R6KzVuOXp6?=
- =?utf-8?B?MUZ4WktHOHVONFJBbEtRSm5DMzE3Q0VWdHJnQ0R6V2xza3VUTzNRZXA5Nnlv?=
- =?utf-8?B?RjVKOXFsV0NtWGV2K3RUaFk1ZzIxWDdNK2pPUEwwZlNEYmtHaGRVT0NMWTFE?=
- =?utf-8?B?NE81Q2h2dndNUGpmWFdGejQvQjFLY2F2TGpjWnJ3azAzYU1iaDJTTmlSUEVr?=
- =?utf-8?B?c2VmSnhRcEcvQzN6MTdxT1Z5NVYrNXJHTWlreW1jbVo3VlVQbzNRdTJSV2dV?=
- =?utf-8?B?OUwvQTN6R3hNN3NtNFJBRllVNEpkR2ZKcjY2MFF5dDc2UWJETmZNMXNRTEp4?=
- =?utf-8?B?eDB1WnlQVzhzaEJnZ1Q0WnVpWSszalE1aGw5aytxU2g4UTZOWWhveExJcDEz?=
- =?utf-8?B?Mkc2TjFpdU5aM3hmb3pXVHYrakYvSmo3dGFiZitMd0lQYzJUdFYxbEQzUjQ1?=
- =?utf-8?B?MmdtSCsvaDVDYXVrTFk1QzNmaXlDeXk2MEtxaUg1U1dCa3B1NE4zTHVkeHhN?=
- =?utf-8?B?Uzg2MUNRbkYwaHZHTmEzeVNWL09leXVjZVNySzA2cDlsWXlBMHdCYk83T01J?=
- =?utf-8?B?bXVZbHhJSXovSzlvMUhORXFzSXVTMTB3bmFtSzF0ZlpGTmJKR2RURmNSN3Ft?=
- =?utf-8?B?Yi9iQmNCS1JNdllRMmJIcTFseTF2QmxvQWl2NXNKNjlkZjFFZ05KUDFjTFM2?=
- =?utf-8?B?K1RpMWdrUjhEOVNsK2U4T2ZBeTA2ZGhteWpJY2lpS21oZzNrMEdEYkVJOFpK?=
- =?utf-8?B?S0dtSmVSbzlhR3R1U1E5VzBWQU9FVjByZEZJWlQ1RHhtV1NCeUlYZzBLQ0dO?=
- =?utf-8?B?cm1MREdCeWFQQkIzUjcvZUdsT0w5SVkwSlhGNWR1NUJOaFpYY1NSdUcxVS9u?=
- =?utf-8?B?aWZqeWZqdXRLcHlyTTUzYTROUFlrbkxKU0JwdWplaEtsYXlwOU1VMmZCRHN5?=
- =?utf-8?B?bXF6V0VrOWdPUndPVlBqcERteUpUNW9FdE5HK2Vja1p5WkMzaVZIMWlPSjly?=
- =?utf-8?B?QVpUTXZsc0RuNXVGOE5ZeVpMRk8xMGdPY2VhMkdmSUc0d1pLSVA1T2Y0UGh1?=
- =?utf-8?B?RmlaN3pNaTVZVmNYTTFqQXB5TXhKeEdrSk9pclJqUjRCZUcvYlhWU2F2eStt?=
- =?utf-8?B?ZjhMNWltMnlZMlJsV0FSamtBWGM0L3VhVlF4TkNLNzVWOE1iS0dQU05tRUh1?=
- =?utf-8?B?SkJha1pHTDViV1hETGpIZk9PalR3cnlWZ0txcnUyR2FFL2dMNUtOclhTWHBK?=
- =?utf-8?B?UlpYUUgrRURBM3Exb3JDZDhpdWtBYWZZV2NxeUdPY2FRdWRiTTNOZ1hQcncx?=
- =?utf-8?Q?6oz347w0LFz+lhRK8RJRk6JPp?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 2 Nov 2023 05:47:17 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885D6111
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:47:13 -0700 (PDT)
+Received: from frapeml500002.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SLf8c3MFYz6K6Zw;
+        Thu,  2 Nov 2023 17:44:00 +0800 (CST)
+Received: from [10.48.131.78] (10.48.131.78) by frapeml500002.china.huawei.com
+ (7.182.85.205) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 2 Nov
+ 2023 10:47:09 +0100
+Message-ID: <e0afa218-4eb0-4dde-b9d4-5beafc0c9fe7@huawei-partners.com>
+Date:   Thu, 2 Nov 2023 10:47:08 +0100
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?dUJLTTZUR0RGQ3dYSXBJYUUya2s1Sm9IVEtQN052U3ZiM0UwdXFpNFhFK09z?=
- =?utf-8?B?cWdMbmVvWGU4RU1kUWpNWHVqODVzZHB6UTEzTHIxOFVrWCtMeU5zdlh0SlZ2?=
- =?utf-8?B?b3dUUmRMYlRpSTgvWTRma2N1ZDE3UHVDOVFPNmNKaUxuT0EzMGJ3d2xZNS9n?=
- =?utf-8?B?NHNXQjNXaVJrelhMSW13RFlJMFlpODdNNERUc0hwcHM3bzhBQXRDdTVDNi8r?=
- =?utf-8?B?N3ZreTBaZzBsQThjU0daVmxoZWYxNVhKcy90VGRxZExueThOSTg2bFBPWm1z?=
- =?utf-8?B?dHRiU1RVTlFiUDl4NTlac21RbGdEUkptWW5POTZ0UU53MXVxVmhyQm5UZjFK?=
- =?utf-8?B?Uk1IeUFGV25PaXpBa3YwMDJIVExxS05FRHZ2YzZnalMvaFRrMDAybHZmSXM1?=
- =?utf-8?B?RmZBcjAxa2tNUW9SeW14RjBndFVHNU5JaWhBQTZiOE40djVlTFZjOVNoUlAx?=
- =?utf-8?B?Y3R1V3ZncytGeituTC80enl6NUVoOC9BOWFYUkZMcWRmV05FVFh6cFRjUnJI?=
- =?utf-8?B?a0Z0WHBGMG9MYmhINmYyRjFKV0ljc2crNFFzTTMxUkY4UjlMUkhuRTFTZG9i?=
- =?utf-8?B?YkwrUklhUW00VHRhTVlQbUdvRXE3YkJjcHNBZnN0SmRtUTViWkpxU0hlaUww?=
- =?utf-8?B?MWlRY2c3a0hucExWbnFmSW1PaWRQQnQ5RkJFK2VMWG9wMXZucVdSUHZvNVps?=
- =?utf-8?B?OVJhVGpwa3hnZ2JzWU1oWE05S2xSM2pnN21PVTFDQW1jWU5QSDAyeVZpa3Z2?=
- =?utf-8?B?YjhPSURjcU14MHcxWjhZLzlOWENEdHdRNjRzZVh2UzdKUGp0dGFBNzdMeXNu?=
- =?utf-8?B?QjhUeGxqT1lBNXFUdElDSnYrSTQvZU1ITityUU5jaHV5bUxOc2RZbzZuMkty?=
- =?utf-8?B?WlpqRU4yanNTakdnVlJMeTBFSkV0MHlNZGZiZ21WalpJTGwrNjVwV0ZxcWlH?=
- =?utf-8?B?QjRzOFI4MmpxSzRSS3ZCcXFqYWZCcDZSZkJIMnlHNWdodFNTZ25XRVhleU5V?=
- =?utf-8?B?aU44YlBpU2JjMWxHMTJ6V1BOQjJuVXdES1llNi9OL2N0d3lNM0REMmdUMkI0?=
- =?utf-8?B?UVBWUll0cjN4bUV6UkhCa2FpSzBuODZjZmN3QTVHa1JQUmhkNW4vRFNlUHFm?=
- =?utf-8?B?NVV3SjVZTmxqdDNtei8zVGJEOE9RSzZ2bzlRMkdzVVhIRGJaalNQTUVuUDho?=
- =?utf-8?B?SjN5ejdtdkZ1L0VYSVNBeXhjbzBUN094RkQ5ZkFGck04cGdPK2hrR2hUZG1z?=
- =?utf-8?B?Z2szNjQ4QUdwV2xsazdwZHg1RFdvM2lKZUpGRjFURmUxcFdLdz09?=
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYWPR01MB10082.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9928e55f-44a3-4373-3323-08dbdb887899
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2023 09:45:38.8186
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sWtwpBJbJHbOW7gpnJS5SCB4ucXXE1vvKiO31AyxdTKARPQxg4B98d7Ep0PoAt3kE6d/NXjGajpCvCR3Vt1ywA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB6010
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] swiotlb: reduce area lock contention for non-primary IO
+ TLB pools
+To:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     Wangkefeng <wangkefeng.wang@huawei.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        <petr@tesarici.cz>
+References: <20231102094445.1738-1-petrtesarik@huaweicloud.com>
+Content-Language: en-US
+From:   Petr Tesarik <petr.tesarik1@huawei-partners.com>
+In-Reply-To: <20231102094445.1738-1-petrtesarik@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.48.131.78]
+X-ClientProxiedBy: frapeml100001.china.huawei.com (7.182.85.63) To
+ frapeml500002.china.huawei.com (7.182.85.205)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -187,146 +57,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IEhlbGxvLA0KPiA+DQo+ID4+IE9uIDAyLzExLzIwMjMgMTM6NDUsIEh1YW5nLCBZaW5nIHdy
-b3RlOg0KPiA+PiA+IExpIFpoaWppYW4gPGxpemhpamlhbkBmdWppdHN1LmNvbT4gd3JpdGVzOg0K
-PiA+PiA+DQo+ID4+ID4+IHBnZGVtb3RlX3NyY18qOiBwYWdlcyBkZW1vdGVkIGZyb20gdGhpcyBu
-b2RlLg0KPiA+PiA+PiBwZ2RlbW90ZV9kc3RfKjogcGFnZXMgZGVtb3RlZCB0byB0aGlzIG5vZGUu
-DQo+ID4+ID4+DQo+ID4+ID4+IFNvIHRoYXQgd2UgYXJlIGFibGUgdG8ga25vdyB0aGVpciBkZW1v
-dGlvbiBwZXItbm9kZSBzdGF0cyBieSBjaGVja2luZw0KPiB0aGlzLg0KPiA+PiA+Pg0KPiA+PiA+
-PiBJbiB0aGUgZW52aXJvbm1lbnQsIG5vZGUwIGFuZCBub2RlMSBhcmUgRFJBTSwgbm9kZTMgaXMg
-UE1FTS4NCj4gPj4gPj4NCj4gPj4gPj4gR2xvYmFsIHN0YXRzOg0KPiA+PiA+PiAkIGdyZXAgLUUg
-J2RlbW90ZScgL3Byb2Mvdm1zdGF0DQo+ID4+ID4+IHBnZGVtb3RlX3NyY19rc3dhcGQgMTMwMTU1
-DQo+ID4+ID4+IHBnZGVtb3RlX3NyY19kaXJlY3QgMTEzNDk3DQo+ID4+ID4+IHBnZGVtb3RlX3Ny
-Y19raHVnZXBhZ2VkIDANCj4gPj4gPj4gcGdkZW1vdGVfZHN0X2tzd2FwZCAxMzAxNTUNCj4gPj4g
-Pj4gcGdkZW1vdGVfZHN0X2RpcmVjdCAxMTM0OTcNCj4gPj4gPj4gcGdkZW1vdGVfZHN0X2todWdl
-cGFnZWQgMA0KPiA+PiA+Pg0KPiA+PiA+PiBQZXItbm9kZSBzdGF0czoNCj4gPj4gPj4gJCBncmVw
-IGRlbW90ZSAvc3lzL2RldmljZXMvc3lzdGVtL25vZGUvbm9kZTAvdm1zdGF0DQo+ID4+ID4+IHBn
-ZGVtb3RlX3NyY19rc3dhcGQgNjg0NTQNCj4gPj4gPj4gcGdkZW1vdGVfc3JjX2RpcmVjdCA4MzQz
-MQ0KPiA+PiA+PiBwZ2RlbW90ZV9zcmNfa2h1Z2VwYWdlZCAwDQo+ID4+ID4+IHBnZGVtb3RlX2Rz
-dF9rc3dhcGQgMA0KPiA+PiA+PiBwZ2RlbW90ZV9kc3RfZGlyZWN0IDANCj4gPj4gPj4gcGdkZW1v
-dGVfZHN0X2todWdlcGFnZWQgMA0KPiA+PiA+Pg0KPiA+PiA+PiAkIGdyZXAgZGVtb3RlIC9zeXMv
-ZGV2aWNlcy9zeXN0ZW0vbm9kZS9ub2RlMS92bXN0YXQNCj4gPj4gPj4gcGdkZW1vdGVfc3JjX2tz
-d2FwZCAxODU4MzQNCj4gPj4gPj4gcGdkZW1vdGVfc3JjX2RpcmVjdCAzMDA2Ng0KPiA+PiA+PiBw
-Z2RlbW90ZV9zcmNfa2h1Z2VwYWdlZCAwDQo+ID4+ID4+IHBnZGVtb3RlX2RzdF9rc3dhcGQgMA0K
-PiA+PiA+PiBwZ2RlbW90ZV9kc3RfZGlyZWN0IDANCj4gPj4gPj4gcGdkZW1vdGVfZHN0X2todWdl
-cGFnZWQgMA0KPiA+PiA+Pg0KPiA+PiA+PiAkIGdyZXAgZGVtb3RlIC9zeXMvZGV2aWNlcy9zeXN0
-ZW0vbm9kZS9ub2RlMy92bXN0YXQNCj4gPj4gPj4gcGdkZW1vdGVfc3JjX2tzd2FwZCAwDQo+ID4+
-ID4+IHBnZGVtb3RlX3NyY19kaXJlY3QgMA0KPiA+PiA+PiBwZ2RlbW90ZV9zcmNfa2h1Z2VwYWdl
-ZCAwDQo+ID4+ID4+IHBnZGVtb3RlX2RzdF9rc3dhcGQgMjU0Mjg4DQo+ID4+ID4+IHBnZGVtb3Rl
-X2RzdF9kaXJlY3QgMTEzNDk3DQo+ID4+ID4+IHBnZGVtb3RlX2RzdF9raHVnZXBhZ2VkIDANCj4g
-Pj4gPj4NCj4gPj4gPj4gIEZyb20gYWJvdmUgc3RhdHMsIHdlIGtub3cgbm9kZTMgaXMgdGhlIGRl
-bW90aW9uIGRlc3RpbmF0aW9uIHdoaWNoDQo+ID4+ID4+IG9uZSB0aGUgbm9kZTAgYW5kIG5vZGUx
-IHdpbGwgZGVtb3RlIHRvLg0KPiA+PiA+DQo+ID4+ID4gV2h5IGRvIHdlIG5lZWQgdGhlc2UgaW5m
-b3JtYXRpb24/ICBEbyB5b3UgaGF2ZSBzb21lIHVzZSBjYXNlPw0KPiA+Pg0KPiA+PiBJIHJlY2Fs
-bCBvdXIgY3VzdG9tZXJzIGhhdmUgbWVudGlvbmVkIHRoYXQgdGhleSB3YW50IHRvIGtub3cgaG93
-IG11Y2gNCj4gPj4gdGhlIG1lbW9yeSBpcyBkZW1vdGVkIHRvIHRoZSBDWEwgbWVtb3J5IGRldmlj
-ZSBpbiBhIHNwZWNpZmljIHBlcmlvZC4NCj4gPg0KPiA+IEknbGwgbWVudGlvbiBhYm91dCBpdCBt
-b3JlLg0KPiA+DQo+ID4gSSBoYWQgYSBjb252ZXJzYXRpb24gd2l0aCBvbmUgb2Ygb3VyIGN1c3Rv
-bWVycy4gSGUgZXhwcmVzc2VkIGEgZGVzaXJlDQo+ID4gZm9yIG1vcmUgZGV0YWlsZWQgcHJvZmls
-ZSBpbmZvcm1hdGlvbiB0byBhbmFseXplIHRoZSBiZWhhdmlvciBvZg0KPiA+IGRlbW90aW9uIChh
-bmQgcHJvbW90aW9uKSB3aGVuIGhpcyB3b3JrbG9hZHMgYXJlIGV4ZWN1dGVkLg0KPiA+IElmIHRo
-ZSByZXN1bHRzIGFyZSBub3Qgc2F0aXNmYWN0b3J5IGZvciBoaXMgd29ya2xvYWRzLCBoZSB3YW50
-cyB0bw0KPiA+IHR1bmUgaGlzIHNlcnZlcnMgZm9yIGhpcyB3b3JrbG9hZHMgd2l0aCB0aGVzZSBw
-cm9maWxlcy4NCj4gPiBBZGRpdGlvbmFsbHksIGRlcGVuZGluZyBvbiB0aGUgcmVzdWx0cywgaGUg
-bWF5IHdhbnQgdG8gY2hhbmdlIGhpcyBzZXJ2ZXINCj4gY29uZmlndXJhdGlvbi4NCj4gPiBGb3Ig
-ZXhhbXBsZSwgaGUgbWF5IHdhbnQgdG8gYnV5IG1vcmUgZXhwZW5zaXZlIEREUiBtZW1vcmllcyBy
-YXRoZXIgdGhhbg0KPiBjaGVhcGVyIENYTCBtZW1vcnkuDQo+ID4NCj4gPiBJbiBteSBpbXByZXNz
-aW9uLCBvdXIgY3VzdG9tZXJzIHNlZW1zIHRvIHRoaW5rIHRoYXQgQ1hMIG1lbW9yeSBpcyBOT1Qg
-YXMNCj4gcmVsaWFibGUgYXMgRERSIG1lbW9yeSB5ZXQuDQo+ID4gVGhlcmVmb3JlLCB0aGV5IHdh
-bnQgdG8gcHJlcGFyZSBmb3IgdGhlIG5ldyB3b3JsZCB0aGF0IENYTCB3aWxsIGJyaW5nLA0KPiA+
-IGFuZCB3YW50IHRvIGhhdmUgYSBtZXRob2QgZm9yIHRoZSBwcmVwYXJhdGlvbiBieSBwcm9maWxp
-bmcgaW5mb3JtYXRpb24gYXMNCj4gbXVjaCBhcyBwb3NzaWJsZS4NCj4gPg0KPiA+IGl0IHRoaXMg
-ZW5vdWdoIGZvciB5b3VyIHF1ZXN0aW9uPw0KPiANCj4gSSB3YW50IHNvbWUgbW9yZSBkZXRhaWxl
-ZCBpbmZvcm1hdGlvbiBhYm91dCBob3cgdGhlc2Ugc3RhdHMgYXJlIHVzZWQ/DQo+IFdoeSBpc24n
-dCBwZXItbm9kZSBwZ2RlbW90ZV94eHggY291bnRlciBlbm91Z2g/DQoNCkkgcmVjaGVja2VkIHRo
-ZSBjdXN0b21lcidzIG9yaWdpbmFsIHJlcXVlc3QuDQoNCi0gSWYgYSBtZW1vcnkgYXJlYSBpcyBk
-ZW1vdGVkIHRvIGEgQ1hMIG1lbW9yeSBub2RlLCBoZSB3YW50ZWQgdG8gYW5hbHl6ZSBob3cgaXQg
-YWZmZWN0cyBwZXJmb3JtYW5jZQ0KIG9mIHRoZWlyIHdvcmtsb2FkLCBzdWNoIGFzIGxhdGVuY3ku
-IEhlIHdhbnRlZCB0byB1c2UgQ1hMIE5vZGUgbWVtb3J5IHVzYWdlIGFzIGJhc2ljDQogaW5mb3Jt
-YXRpb24gZm9yIHRoZSBhbmFseXNpcy4NCi0gSWYgaGUgbm90aWNlcyB0aGF0IGRlbW90aW9uIG9j
-Y3VycyB3ZWxsIG9uIGEgc2VydmVyIGFuZCBDWEwgbWVtb3JpZXMgYXJlIHVzZWQgODUlIGNvbnN0
-YW50bHksIGhlIA0KICBtYXkgd2FudCB0byBhZGQgRERSIERSQU0gb3Igc2VsZWN0IHNvbWUgb3Ro
-ZXIgd2F5cyB0byBhdm9pZCBkZW1vdGlvbi4NCiAgKEhpcyBpbWFnZSBpcyBsaWtlbHkgU3dhcCBm
-cmVlL3VzZWQuKQ0KICBJSVJDLCBkZW1vdGlvbiB0YXJnZXQgaXMgbm90IHNwcmVhZCB0byBhbGwg
-b2YgdGhlIENYTCBtZW1vcnkgbm9kZSwgcmlnaHQ/IA0KICBUaGVuLCBoZSBuZWVkcyB0byBrbm93
-IGhvdyBDWEwgbWVtb3J5IGlzIG9jY3VwaWVkIGJ5IGRlbW90ZWQgbWVtb3J5Lg0KDQpJZiBJIG1p
-c3VuZGVyc3RhbmQgc29tZXRoaW5nLCBvciB5b3UgaGF2ZSBhbnkgYmV0dGVyIGlkZWEsDQpwbGVh
-c2UgbGV0IHVzIGtub3cuIEknbGwgdGFsayB3aXRoIGhpbSBhZ2Fpbi4gKEl0IHdpbGwgYmUgbmV4
-dCB3ZWVrLi4uKQ0KDQpUaGFua3MsDQoNCj4gDQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gSHVh
-bmcsIFlpbmcNCj4gDQo+ID4gVGhhbmtzLA0KPiA+DQo+ID4+DQo+ID4+DQo+ID4+ID4+PiAgIAlt
-b2Rfbm9kZV9wYWdlX3N0YXRlKE5PREVfREFUQSh0YXJnZXRfbmlkKSwNCj4gPj4gPj4+IC0JCSAg
-ICBQR0RFTU9URV9LU1dBUEQgKyByZWNsYWltZXJfb2Zmc2V0KCksDQo+ID4+IG5yX3N1Y2NlZWRl
-ZCk7DQo+ID4+ID4+PiArCQkgICAgUEdERU1PVEVfRFNUX0tTV0FQRCArIHJlY2xhaW1lcl9vZmZz
-ZXQoKSwNCj4gPj4gbnJfc3VjY2VlZGVkKTsNCj4gPj4NCj4gPj4gQnV0IGlmIHRoZSAqdGFyZ2V0
-X25pZCogaXMgb25seSBpbmRpY2F0ZSB0aGUgcHJlZmVycmVkIG5vZGUsIHRoaXMNCj4gPj4gYWNj
-b3VudGluZyBtYXliZSBub3QgYWNjdXJhdGUuDQo+ID4+DQo+ID4+DQo+ID4+IFRoYW5rcw0KPiA+
-PiBaaGlqaWFuDQo+ID4+DQo+ID4+ID4NCj4gPj4gPiAtLQ0KPiA+PiA+IEJlc3QgUmVnYXJkcywN
-Cj4gPj4gPiBIdWFuZywgWWluZw0KPiA+PiA+DQo+ID4+ID4+IFNpZ25lZC1vZmYtYnk6IExpIFpo
-aWppYW4gPGxpemhpamlhbkBmdWppdHN1LmNvbT4NCj4gPj4gPj4gLS0tDQo+ID4+ID4+IFJGQzog
-dGhlaXIgbmFtZXMgYXJlIG9wZW4gdG8gZGlzY3Vzc2lvbiwgbWF5YmUgcGdkZW1vdGVfZnJvbS90
-b18qDQo+ID4+ID4+IEFub3RoZXIgZGVmZWN0IG9mIHRoaXMgcGF0Y2ggaXMgdGhhdCwgU1VNKHBn
-ZGVtb3RlX3NyY18qKSBpcw0KPiA+PiA+PiBhbHdheXMgc2FtZSBhcyBTVU0ocGdkZW1vdGVfZHN0
-XyopIGluIHRoZSBnbG9iYWwgc3RhdHMsIHNoYWxsIHdlDQo+IGhpZGUgb25lIG9mIHRoZW0uDQo+
-ID4+ID4+IC0tLQ0KPiA+PiA+PiAgIGluY2x1ZGUvbGludXgvbW16b25lLmggfCAgOSArKysrKyst
-LS0NCj4gPj4gPj4gICBtbS92bXNjYW4uYyAgICAgICAgICAgIHwgMTMgKysrKysrKysrKy0tLQ0K
-PiA+PiA+PiAgIG1tL3Ztc3RhdC5jICAgICAgICAgICAgfCAgOSArKysrKystLS0NCj4gPj4gPj4g
-ICAzIGZpbGVzIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pDQo+ID4+
-ID4+DQo+ID4+ID4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L21tem9uZS5oIGIvaW5jbHVk
-ZS9saW51eC9tbXpvbmUuaCBpbmRleA0KPiA+PiA+PiBhZDAzMDllZWE4NTAuLmE2MTQwZDg5NGJl
-YyAxMDA2NDQNCj4gPj4gPj4gLS0tIGEvaW5jbHVkZS9saW51eC9tbXpvbmUuaA0KPiA+PiA+PiAr
-KysgYi9pbmNsdWRlL2xpbnV4L21tem9uZS5oDQo+ID4+ID4+IEBAIC0yMDcsOSArMjA3LDEyIEBA
-IGVudW0gbm9kZV9zdGF0X2l0ZW0gew0KPiA+PiA+PiAgIAlQR1BST01PVEVfU1VDQ0VTUywJLyog
-cHJvbW90ZSBzdWNjZXNzZnVsbHkgKi8NCj4gPj4gPj4gICAJUEdQUk9NT1RFX0NBTkRJREFURSwJ
-LyogY2FuZGlkYXRlIHBhZ2VzIHRvDQo+IHByb21vdGUgKi8NCj4gPj4gPj4gICAJLyogUEdERU1P
-VEVfKjogcGFnZXMgZGVtb3RlZCAqLw0KPiA+PiA+PiAtCVBHREVNT1RFX0tTV0FQRCwNCj4gPj4g
-Pj4gLQlQR0RFTU9URV9ESVJFQ1QsDQo+ID4+ID4+IC0JUEdERU1PVEVfS0hVR0VQQUdFRCwNCj4g
-Pj4gPj4gKwlQR0RFTU9URV9TUkNfS1NXQVBELA0KPiA+PiA+PiArCVBHREVNT1RFX1NSQ19ESVJF
-Q1QsDQo+ID4+ID4+ICsJUEdERU1PVEVfU1JDX0tIVUdFUEFHRUQsDQo+ID4+ID4+ICsJUEdERU1P
-VEVfRFNUX0tTV0FQRCwNCj4gPj4gPj4gKwlQR0RFTU9URV9EU1RfRElSRUNULA0KPiA+PiA+PiAr
-CVBHREVNT1RFX0RTVF9LSFVHRVBBR0VELA0KPiA+PiA+PiAgICNlbmRpZg0KPiA+PiA+PiAgIAlO
-Ul9WTV9OT0RFX1NUQVRfSVRFTVMNCj4gPj4gPj4gICB9Ow0KPiA+PiA+PiBkaWZmIC0tZ2l0IGEv
-bW0vdm1zY2FuLmMgYi9tbS92bXNjYW4uYyBpbmRleA0KPiA+PiA+PiAyZjFmYjRlYzMyMzUuLjU1
-ZDIyODdkNzE1MCAxMDA2NDQNCj4gPj4gPj4gLS0tIGEvbW0vdm1zY2FuLmMNCj4gPj4gPj4gKysr
-IGIvbW0vdm1zY2FuLmMNCj4gPj4gPj4gQEAgLTExMTEsMTMgKzExMTEsMTggQEAgdm9pZCBkcm9w
-X3NsYWIodm9pZCkNCj4gPj4gPj4gICBzdGF0aWMgaW50IHJlY2xhaW1lcl9vZmZzZXQodm9pZCkN
-Cj4gPj4gPj4gICB7DQo+ID4+ID4+ICAgCUJVSUxEX0JVR19PTihQR1NURUFMX0RJUkVDVCAtIFBH
-U1RFQUxfS1NXQVBEICE9DQo+ID4+ID4+IC0JCQlQR0RFTU9URV9ESVJFQ1QgLQ0KPiBQR0RFTU9U
-RV9LU1dBUEQpOw0KPiA+PiA+PiArCQkJUEdERU1PVEVfU1JDX0RJUkVDVCAtDQo+ID4+IFBHREVN
-T1RFX1NSQ19LU1dBUEQpOw0KPiA+PiA+PiAgIAlCVUlMRF9CVUdfT04oUEdTVEVBTF9ESVJFQ1Qg
-LSBQR1NURUFMX0tTV0FQRCAhPQ0KPiA+PiA+PiAgIAkJCVBHU0NBTl9ESVJFQ1QgLSBQR1NDQU5f
-S1NXQVBEKTsNCj4gPj4gPj4gICAJQlVJTERfQlVHX09OKFBHU1RFQUxfS0hVR0VQQUdFRCAtDQo+
-IFBHU1RFQUxfS1NXQVBEICE9DQo+ID4+ID4+IC0JCQlQR0RFTU9URV9LSFVHRVBBR0VEIC0NCj4g
-Pj4gUEdERU1PVEVfS1NXQVBEKTsNCj4gPj4gPj4gKwkJCVBHREVNT1RFX1NSQ19LSFVHRVBBR0VE
-IC0NCj4gPj4gUEdERU1PVEVfU1JDX0tTV0FQRCk7DQo+ID4+ID4+ICAgCUJVSUxEX0JVR19PTihQ
-R1NURUFMX0tIVUdFUEFHRUQgLQ0KPiBQR1NURUFMX0tTV0FQRCAhPQ0KPiA+PiA+PiAgIAkJCVBH
-U0NBTl9LSFVHRVBBR0VEIC0NCj4gUEdTQ0FOX0tTV0FQRCk7DQo+ID4+ID4+ICsJQlVJTERfQlVH
-X09OKFBHREVNT1RFX1NSQ19ESVJFQ1QgLQ0KPiA+PiBQR0RFTU9URV9TUkNfS1NXQVBEICE9DQo+
-ID4+ID4+ICsJCQlQR0RFTU9URV9EU1RfRElSRUNUIC0NCj4gPj4gUEdERU1PVEVfRFNUX0tTV0FQ
-RCk7DQo+ID4+ID4+ICsJQlVJTERfQlVHX09OKFBHREVNT1RFX1NSQ19LSFVHRVBBR0VEIC0NCj4g
-Pj4gUEdERU1PVEVfU1JDX0tTV0FQRCAhPQ0KPiA+PiA+PiArCQkJUEdERU1PVEVfRFNUX0tIVUdF
-UEFHRUQgLQ0KPiA+PiBQR0RFTU9URV9EU1RfS1NXQVBEKTsNCj4gPj4gPj4gKw0KPiA+PiA+Pg0K
-PiA+PiA+PiAgIAlpZiAoY3VycmVudF9pc19rc3dhcGQoKSkNCj4gPj4gPj4gICAJCXJldHVybiAw
-Ow0KPiA+PiA+PiBAQCAtMTY3OCw4ICsxNjgzLDEwIEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQNCj4g
-Pj4gPj4gZGVtb3RlX2ZvbGlvX2xpc3Qoc3RydWN0DQo+ID4+IGxpc3RfaGVhZCAqZGVtb3RlX2Zv
-bGlvcywNCj4gPj4gPj4gICAJCSAgICAgICh1bnNpZ25lZCBsb25nKSZtdGMsIE1JR1JBVEVfQVNZ
-TkMsDQo+ID4+IE1SX0RFTU9USU9OLA0KPiA+PiA+PiAgIAkJICAgICAgJm5yX3N1Y2NlZWRlZCk7
-DQo+ID4+ID4+DQo+ID4+ID4+ICsJbW9kX25vZGVfcGFnZV9zdGF0ZShwZ2RhdCwNCj4gPj4gPj4g
-KwkJICAgIFBHREVNT1RFX1NSQ19LU1dBUEQgKyByZWNsYWltZXJfb2Zmc2V0KCksDQo+ID4+IG5y
-X3N1Y2NlZWRlZCk7DQo+ID4+ID4+ICAgCW1vZF9ub2RlX3BhZ2Vfc3RhdGUoTk9ERV9EQVRBKHRh
-cmdldF9uaWQpLA0KPiA+PiA+PiAtCQkgICAgUEdERU1PVEVfS1NXQVBEICsgcmVjbGFpbWVyX29m
-ZnNldCgpLA0KPiA+PiBucl9zdWNjZWVkZWQpOw0KPiA+PiA+PiArCQkgICAgUEdERU1PVEVfRFNU
-X0tTV0FQRCArIHJlY2xhaW1lcl9vZmZzZXQoKSwNCj4gPj4gbnJfc3VjY2VlZGVkKTsNCj4gPj4g
-Pj4NCj4gPj4gPj4gICAJcmV0dXJuIG5yX3N1Y2NlZWRlZDsNCj4gPj4gPj4gICB9DQo+ID4+ID4+
-IGRpZmYgLS1naXQgYS9tbS92bXN0YXQuYyBiL21tL3Ztc3RhdC5jIGluZGV4DQo+ID4+ID4+IGYx
-NDFjNDhjMzllNC4uNjNmMTA2YTVlMDA4IDEwMDY0NA0KPiA+PiA+PiAtLS0gYS9tbS92bXN0YXQu
-Yw0KPiA+PiA+PiArKysgYi9tbS92bXN0YXQuYw0KPiA+PiA+PiBAQCAtMTI0NCw5ICsxMjQ0LDEy
-IEBAIGNvbnN0IGNoYXIgKiBjb25zdCB2bXN0YXRfdGV4dFtdID0gew0KPiA+PiA+PiAgICNpZmRl
-ZiBDT05GSUdfTlVNQV9CQUxBTkNJTkcNCj4gPj4gPj4gICAJInBncHJvbW90ZV9zdWNjZXNzIiwN
-Cj4gPj4gPj4gICAJInBncHJvbW90ZV9jYW5kaWRhdGUiLA0KPiA+PiA+PiAtCSJwZ2RlbW90ZV9r
-c3dhcGQiLA0KPiA+PiA+PiAtCSJwZ2RlbW90ZV9kaXJlY3QiLA0KPiA+PiA+PiAtCSJwZ2RlbW90
-ZV9raHVnZXBhZ2VkIiwNCj4gPj4gPj4gKwkicGdkZW1vdGVfc3JjX2tzd2FwZCIsDQo+ID4+ID4+
-ICsJInBnZGVtb3RlX3NyY19kaXJlY3QiLA0KPiA+PiA+PiArCSJwZ2RlbW90ZV9zcmNfa2h1Z2Vw
-YWdlZCIsDQo+ID4+ID4+ICsJInBnZGVtb3RlX2RzdF9rc3dhcGQiLA0KPiA+PiA+PiArCSJwZ2Rl
-bW90ZV9kc3RfZGlyZWN0IiwNCj4gPj4gPj4gKwkicGdkZW1vdGVfZHN0X2todWdlcGFnZWQiLA0K
-PiA+PiA+PiAgICNlbmRpZg0KPiA+PiA+Pg0KPiA+PiA+PiAgIAkvKiBlbnVtIHdyaXRlYmFja19z
-dGF0X2l0ZW0gY291bnRlcnMgKi8NCg==
+Hi,
+
+just to make it clear, this patch is orthogonal to and independent from
+the handling of decrypted pages, sent a few minutes earlier.
+
+Petr T
+
+On 11/2/2023 10:44 AM, Petr Tesarik wrote:
+> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>Hi
+> 
+> If multiple areas and multiple IO TLB pools exist, first iterate the
+> current CPU specific area in all pools. Then move to the next area index.
+> 
+> This is best illustrated by a diagram:
+> 
+>         area 0 |  area 1 | ... | area M |
+> pool 0    A         B              C
+> pool 1    D         E
+> ...
+> pool N    F         G              H
+> 
+> Currently, each pool is searched before moving on to the next pool,
+> i.e. the search order is A, B ... C, D, E ... F, G ... H. With this patch,
+> each area is searched in all pools before moving on to the next area,
+> i.e. the search order is A, D ... F, B, E ... G ... C ... H.
+> 
+> Note that preemption is not disabled, and raw_smp_processor_id() may not
+> return a stable result, but it is called only once to determine the initial
+> area index. The search will iterate over all areas eventually, even if the
+> current task is preempted.
+> 
+> Next, some pools may have less (but not more) areas than default_nareas.
+> Skip such pools if the distance from the initial area index is greater than
+> pool->nareas. This logic ensures that for every pool the search starts in
+> the initial CPU's own area and never tries any area twice.
+> 
+> To verify performance impact, I booted the kernel with a minimum pool
+> size ("swiotlb=512,4,force"), so multiple pools get allocated, and I ran
+> these benchmarks:
+> 
+> - small: single-threaded I/O of 4 KiB blocks,
+> - big: single-threaded I/O of 64 KiB blocks,
+> - 4way: 4-way parallel I/O of 4 KiB blocks.
+> 
+> The "var" column in the tables below is the coefficient of variance over 5
+> runs of the test, the "diff" column is the relative difference against base
+> in read-write I/O bandwidth (MiB/s).
+> 
+> Tested on an x86 VM against a QEMU virtio SATA driver backed by a RAM-based
+> block device on the host:
+> 
+> 	base	   patched
+> 	var	var	diff
+> small	0.69%	0.62%	+25.4%
+> big	2.14%	2.27%	+25.7%
+> 4way	2.65%	1.70%	+23.6%
+> 
+> Tested on a Raspberry Pi against a class-10 A1 microSD card:
+> 
+> 	base	   patched
+> 	var	var	diff
+> small	0.53%	1.96%	-0.3%
+> big	0.02%	0.57%	+0.8%
+> 4way	6.17%	0.40%	+0.3%
+> 
+> These results confirm that there is significant performance boost in the
+> software IO TLB slot allocation itself. Where performance is dominated by
+> actual hardware, there is no measurable change.
+> 
+> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> ---
+>  kernel/dma/swiotlb.c | 90 +++++++++++++++++++++++++++-----------------
+>  1 file changed, 55 insertions(+), 35 deletions(-)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index a1c3dabed19f..35d603ec0329 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -954,7 +954,7 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
+>  #endif /* CONFIG_DEBUG_FS */
+>  
+>  /**
+> - * swiotlb_area_find_slots() - search for slots in one IO TLB memory area
+> + * swiotlb_search_pool_area() - search one memory area in one pool
+>   * @dev:	Device which maps the buffer.
+>   * @pool:	Memory pool to be searched.
+>   * @area_index:	Index of the IO TLB memory area to be searched.
+> @@ -969,7 +969,7 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
+>   *
+>   * Return: Index of the first allocated slot, or -1 on error.
+>   */
+> -static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
+> +static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool,
+>  		int area_index, phys_addr_t orig_addr, size_t alloc_size,
+>  		unsigned int alloc_align_mask)
+>  {
+> @@ -1063,41 +1063,50 @@ static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
+>  	return slot_index;
+>  }
+>  
+> +#ifdef CONFIG_SWIOTLB_DYNAMIC
+> +
+>  /**
+> - * swiotlb_pool_find_slots() - search for slots in one memory pool
+> + * swiotlb_search_area() - search one memory area in all pools
+>   * @dev:	Device which maps the buffer.
+> - * @pool:	Memory pool to be searched.
+> + * @start_cpu:	Start CPU number.
+> + * @cpu_offset:	Offset from @start_cpu.
+>   * @orig_addr:	Original (non-bounced) IO buffer address.
+>   * @alloc_size: Total requested size of the bounce buffer,
+>   *		including initial alignment padding.
+>   * @alloc_align_mask:	Required alignment of the allocated buffer.
+> + * @retpool:	Used memory pool, updated on return.
+>   *
+> - * Search through one memory pool to find a sequence of slots that match the
+> + * Search one memory area in all pools for a sequence of slots that match the
+>   * allocation constraints.
+>   *
+>   * Return: Index of the first allocated slot, or -1 on error.
+>   */
+> -static int swiotlb_pool_find_slots(struct device *dev, struct io_tlb_pool *pool,
+> -		phys_addr_t orig_addr, size_t alloc_size,
+> -		unsigned int alloc_align_mask)
+> +static int swiotlb_search_area(struct device *dev, int start_cpu,
+> +		int cpu_offset, phys_addr_t orig_addr, size_t alloc_size,
+> +		unsigned int alloc_align_mask, struct io_tlb_pool **retpool)
+>  {
+> -	int start = raw_smp_processor_id() & (pool->nareas - 1);
+> -	int i = start, index;
+> -
+> -	do {
+> -		index = swiotlb_area_find_slots(dev, pool, i, orig_addr,
+> -						alloc_size, alloc_align_mask);
+> -		if (index >= 0)
+> -			return index;
+> -		if (++i >= pool->nareas)
+> -			i = 0;
+> -	} while (i != start);
+> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+> +	struct io_tlb_pool *pool;
+> +	int area_index;
+> +	int index = -1;
+>  
+> -	return -1;
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(pool, &mem->pools, node) {
+> +		if (cpu_offset >= pool->nareas)
+> +			continue;
+> +		area_index = (start_cpu + cpu_offset) & (pool->nareas - 1);
+> +		index = swiotlb_search_pool_area(dev, pool, area_index,
+> +						 orig_addr, alloc_size,
+> +						 alloc_align_mask);
+> +		if (index >= 0) {
+> +			*retpool = pool;
+> +			break;
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +	return index;
+>  }
+>  
+> -#ifdef CONFIG_SWIOTLB_DYNAMIC
+> -
+>  /**
+>   * swiotlb_find_slots() - search for slots in the whole swiotlb
+>   * @dev:	Device which maps the buffer.
+> @@ -1121,18 +1130,17 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>  	unsigned long nslabs;
+>  	unsigned long flags;
+>  	u64 phys_limit;
+> +	int cpu, i;
+>  	int index;
+>  
+> -	rcu_read_lock();
+> -	list_for_each_entry_rcu(pool, &mem->pools, node) {
+> -		index = swiotlb_pool_find_slots(dev, pool, orig_addr,
+> -						alloc_size, alloc_align_mask);
+> -		if (index >= 0) {
+> -			rcu_read_unlock();
+> +	cpu = raw_smp_processor_id();
+> +	for (i = 0; i < default_nareas; ++i) {
+> +		index = swiotlb_search_area(dev, cpu, i, orig_addr, alloc_size,
+> +					    alloc_align_mask, &pool);
+> +		if (index >= 0)
+>  			goto found;
+> -		}
+>  	}
+> -	rcu_read_unlock();
+> +
+>  	if (!mem->can_grow)
+>  		return -1;
+>  
+> @@ -1145,8 +1153,8 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>  	if (!pool)
+>  		return -1;
+>  
+> -	index = swiotlb_pool_find_slots(dev, pool, orig_addr,
+> -					alloc_size, alloc_align_mask);
+> +	index = swiotlb_search_pool_area(dev, pool, 0, orig_addr,
+> +					 alloc_size, alloc_align_mask);
+>  	if (index < 0) {
+>  		swiotlb_dyn_free(&pool->rcu);
+>  		return -1;
+> @@ -1189,9 +1197,21 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>  		size_t alloc_size, unsigned int alloc_align_mask,
+>  		struct io_tlb_pool **retpool)
+>  {
+> -	*retpool = &dev->dma_io_tlb_mem->defpool;
+> -	return swiotlb_pool_find_slots(dev, *retpool,
+> -				       orig_addr, alloc_size, alloc_align_mask);
+> +	struct io_tlb_pool *pool;
+> +	int start, i;
+> +	int index;
+> +
+> +	*retpool = pool = &dev->dma_io_tlb_mem->defpool;
+> +	i = start = raw_smp_processor_id() & (pool->nareas - 1);
+> +	do {
+> +		index = swiotlb_search_pool_area(dev, pool, i, orig_addr,
+> +						 alloc_size, alloc_align_mask);
+> +		if (index >= 0)
+> +			return index;
+> +		if (++i >= pool->nareas)
+> +			i = 0;
+> +	} while (i != start);
+> +	return -1;
+>  }
+>  
+>  #endif /* CONFIG_SWIOTLB_DYNAMIC */
