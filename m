@@ -2,161 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E967DFC3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3007DFC52
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377461AbjKBWO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S1377479AbjKBWVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 18:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjKBWOz (ORCPT
+        with ESMTP id S229628AbjKBWVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:14:55 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD46A91;
-        Thu,  2 Nov 2023 15:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698963288;
-        bh=i80a06SOeQSQ1W4w6P9Q8wfCVSh8IgOe4nN4K90pDck=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sWdmCh01Iql1djxCPponKgqM3MVvtQjBtJi3XQEPrLx9KZOgn/9NvJHrp0vkBmWvO
-         81lnK0VFvTVKL/Yo3ykG4W9eOOiY2pGwoqdB8JYp6z53XLvMfH3Sr3N5De3wHVacup
-         NHsy1Ga9KUJ2yl3U/OdYH7EtlbEnnm7YRrlHw/9zyr69q29QaBxD2frn9nK/xbn0C5
-         3v/s4XdiFuiQDVxE3hnufXDkK24rEeKhIybLAHXuM52NEDXJjJn+7rpCbc2D/579Jq
-         d4fHfox9739O9v5oMDFXm1mg5mfgTfL0GGM/6QM37CFuJ3i7Pan9MAwPoARO/ScKad
-         EPFlTaAwG5Adw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SLypv3TjMz4xQS;
-        Fri,  3 Nov 2023 09:14:47 +1100 (AEDT)
-Date:   Fri, 3 Nov 2023 09:14:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
-Cc:     Jiexun Wang <wangjiexun@tinylab.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: linux-next: manual merge of the risc-v tree with Linus' tree
-Message-ID: <20231103091436.730cb6c6@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_/ZYG0PhO7Kp5.fiNdLvnQ2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 2 Nov 2023 18:21:53 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB99D138;
+        Thu,  2 Nov 2023 15:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=W67Q+ocST212snQ+6u1nGmsoUqf/Gk6b3ey7lpHRMWo=; b=oI1fvdL8GCPZikoCy/gdEYKKCD
+        gxgCDL7Ul5sYDOEVq8SopsC1DWtDWpLhPHBEAIik2fN9s7Ety0Ude1CnBRIciQlB7DmPhdtB5i7nS
+        6T0VJXvSfqkMrDzclvvf1kwGt4DKTnDaLNLXuvbxS/N4SC2kmHuTe0vkg/Sr5MohFR6M=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:43552 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qyg4E-0006a3-Ba; Thu, 02 Nov 2023 18:21:39 -0400
+Date:   Thu, 2 Nov 2023 18:21:33 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        leoyang.li@nxp.com, robh@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Message-Id: <20231102182133.092e3cedfa80561477b646bb@hugovil.com>
+In-Reply-To: <13357eac-7616-4e3f-965b-52ecae01ab92@linaro.org>
+References: <20231102193121.1676000-1-hugo@hugovil.com>
+        <20231102193121.1676000-3-hugo@hugovil.com>
+        <13357eac-7616-4e3f-965b-52ecae01ab92@linaro.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v3 2/3] dt-bindings: arm: fsl: add RVE gateway board
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_/ZYG0PhO7Kp5.fiNdLvnQ2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2 Nov 2023 22:14:41 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Hi all,
+> On 02/11/2023 20:31, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Add DT compatible string for RVE gateway board based on a Variscite
+> > VAR-SOM-NANO with a NXP MX8MN nano CPU.
+> > 
+> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> >  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index 32b195852a75..4cef18e46312 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -1018,6 +1018,7 @@ properties:
+> >                - fsl,imx8mn-ddr4-evk       # i.MX8MN DDR4 EVK Board
+> >                - fsl,imx8mn-evk            # i.MX8MN LPDDR4 EVK Board
+> >                - gw,imx8mn-gw7902          # i.MX8MM Gateworks Board
+> > +              - rve,rve-gateway           # i.MX8MN RVE Gateway Board
+> 
+> Eh, now it does not match your DTS.
+> 
+> It does not look like you tested the DTS against bindings. Please run
+> `make dtbs_check W=1` (see
+> Documentation/devicetree/bindings/writing-schema.rst or
+> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+> for instructions).
 
-Today's linux-next merge of the risc-v tree got a conflict in:
+Hi,
+for the millionth time, make dtbs_check stopped working for me:
 
-  arch/riscv/kernel/irq.c
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 64, in <module>
+    ret |= check_doc(f)
+           ^^^^^^^^^^^^
+  File "/usr/local/bin/dt-doc-validate", line 32, in check_doc
+    for error in sorted(dtsch.iter_errors(), key=lambda e: e.linecol):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/schema.py",
+line 125, in iter_errors self.annotate_error(scherr, meta_schema,
+scherr.schema_path) File
+"/usr/local/lib/python3.11/dist-packages/dtschema/schema.py", line 104,
+in annotate_error schema = schema[p] ~~~~~~^^^
 
-between commit:
+After a few hours of searching and troubleshooting, I am unable to fix
+the problem.
 
-  07a27665754b ("RISC-V: Fix wrong use of CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK")
+But even with this error, I can still see the warnings, which I
+discarded as garbage initally because of that Traceback error.
 
-from Linus' tree and commit:
+I now see the problem, and I moved "rve,rve-gateway" to the proper
+section, in "Variscite VAR-SOM-MX8MN based boards".
 
-  82982fdd5133 ("riscv: Deduplicate IRQ stack switching")
+After the move, I still have an error, but now I understand that I must
+slightly convert the "Variscite VAR-SOM-MX8MN based boards" to support
+more than one board like this:
 
-from the risc-v tree.
+       - description: Variscite VAR-SOM-MX8MN based boards
+         items:
+-          - const: variscite,var-som-mx8mn-symphony
++          - enum:
++              - rve,rve-gateway # i.MX8MN RVE Gateway Board
++              - variscite,var-som-mx8mn-symphony
+           - const: variscite,var-som-mx8mn
+           - const: fsl,imx8mn
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+With these changes, everything looks good now.
 
---=20
-Cheers,
-Stephen Rothwell
+I Will send a V4 with these changes.
 
-diff --cc arch/riscv/kernel/irq.c
-index 9cc0a7669271,7bfea97ee7e7..000000000000
---- a/arch/riscv/kernel/irq.c
-+++ b/arch/riscv/kernel/irq.c
-@@@ -60,41 -79,23 +79,23 @@@ static void init_irq_stacks(void
-  }
-  #endif /* CONFIG_VMAP_STACK */
- =20
- -#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
- +#ifdef CONFIG_SOFTIRQ_ON_OWN_STACK
-+ static void ___do_softirq(struct pt_regs *regs)
-+ {
-+ 	__do_softirq();
-+ }
-+=20
-  void do_softirq_own_stack(void)
-  {
-- #ifdef CONFIG_IRQ_STACKS
-- 	if (on_thread_stack()) {
-- 		ulong *sp =3D per_cpu(irq_stack_ptr, smp_processor_id())
-- 					+ IRQ_STACK_SIZE/sizeof(ulong);
-- 		__asm__ __volatile(
-- 		"addi	sp, sp, -"RISCV_SZPTR  "\n"
-- 		REG_S"  ra, (sp)		\n"
-- 		"addi	sp, sp, -"RISCV_SZPTR  "\n"
-- 		REG_S"  s0, (sp)		\n"
-- 		"addi	s0, sp, 2*"RISCV_SZPTR "\n"
-- 		"move	sp, %[sp]		\n"
-- 		"call	__do_softirq		\n"
-- 		"addi	sp, s0, -2*"RISCV_SZPTR"\n"
-- 		REG_L"  s0, (sp)		\n"
-- 		"addi	sp, sp, "RISCV_SZPTR   "\n"
-- 		REG_L"  ra, (sp)		\n"
-- 		"addi	sp, sp, "RISCV_SZPTR   "\n"
-- 		:
-- 		: [sp] "r" (sp)
-- 		: "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
-- 		  "t0", "t1", "t2", "t3", "t4", "t5", "t6",
-- #ifndef CONFIG_FRAME_POINTER
-- 		  "s0",
-- #endif
-- 		  "memory");
-- 	} else
-- #endif
-+ 	if (on_thread_stack())
-+ 		call_on_irq_stack(NULL, ___do_softirq);
-+ 	else
-  		__do_softirq();
-  }
- -#endif /* CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK */
- +#endif /* CONFIG_SOFTIRQ_ON_OWN_STACK */
- =20
-  #else
-+ static void init_irq_scs(void) {}
-  static void init_irq_stacks(void) {}
-  #endif /* CONFIG_IRQ_STACKS */
- =20
-
---Sig_/_/ZYG0PhO7Kp5.fiNdLvnQ2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVEH0wACgkQAVBC80lX
-0Gw61Af/cpxDB3nTwIhG02iZyOLJUwgYroVw2nP8RuVb/+BKta3FfY03/FqFzanG
-zeXcMftPUDz98EMWv36AdVf3ziwMRE/nSQ6Kl1y5j3qzTepL+UylK5BJqNJNcFHO
-IHOIwzoeKHkrYmabNiha+ovAGee0HYT/7GT/R5XbNFOdNAl7F5w4ojln3p9L8btJ
-xUGzK+MT0kUMhP/TKCxmz/IjD3OnwFv+S798px3JgM8+ysTlZUoi+iDybHJKY26Y
-rlhvfO6/MUpuHGCRx39LRdmni8/tutOK1rZPXODwhpy5m7Uh75OEVxwQUZFatu7N
-Ylg3AjXrafX+0sPtGShfrbEbSJUDcw==
-=9FZK
------END PGP SIGNATURE-----
-
---Sig_/_/ZYG0PhO7Kp5.fiNdLvnQ2--
+Thank you,
+Hugo.
