@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9579F7DF970
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD107DF969
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376874AbjKBSAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S1345032AbjKBSAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234703AbjKBR7q (ORCPT
+        with ESMTP id S1346157AbjKBR7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:59:46 -0400
+        Thu, 2 Nov 2023 13:59:47 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D511D5C
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:54 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5acac8b6575so18561067b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B397BD44
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:56 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afa77f9a33so18054917b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947933; x=1699552733; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947936; x=1699552736; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BZFU+q33RyXycgTF/0yPGI/OvtojYXelKAaBBZD0UYI=;
-        b=Uy1/4wIQ2Zpn6AINY6D37TWT4iyK51U8RCrIyNyk+eDSE2fznI4saKcPwhGBGBd+rR
-         RMpyo85gqRSGz92uC7BmW6B0qNP9w47stKPPTiSmElYmYYeHsRyM8HpH6AAqa4WGHo4E
-         WTYmo6gCfI/Zmy/v3Y3W6EVWttLFAZ3jvuz3acfIAFHUTHe7bqUPf+kcX9+vV6MNPaWL
-         WL+OUBuS1UBoW2Q4oL4gUAX5AM5m3Rk4oZ/Mn7OodAMpkTFxgxcjHzicjXGYNflrKpGG
-         4DDGROgxArxknCBBSKbToWWhSotYoQROym4Tf6RfnlHTjFIwRq488mU3iZe8qkH3leeA
-         EF8w==
+        bh=RHdMaVmD9Twdp4Gp2dcs3TPKRQRPhfQvajrZyFSG8h0=;
+        b=JeNdZ1JdhX1qIyfk7MwDxG9f7XXX469Gy6XK4R1J+/QzC3Mt/qomWv53Tht3/xr6b+
+         1984/w8OpqokJu/BVb7SOMc0PzYJON0S+RGvyHhYVBnKlIDIN/uNttVkWW4d/BF/eNQb
+         jNDPZLZjPa2/X7MD2rQ5RETaiCfcNhMRLcgF2fIGDRfL/wCLF3FCYB6YH+vlMTPF6BcL
+         HiylBoBWMp+ry9uNtsjEAi04tQ/3X47w1cgkE7nRnabH/i/IU7vRdCAzr+gX/mjA+J04
+         34a6VFrXjxK9lNMUJLQ6Wo0xgUdLXvVHIp9hunYo6BThGYMx5cHk7sWvCpx9g/0bYlhf
+         7NGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947933; x=1699552733;
+        d=1e100.net; s=20230601; t=1698947936; x=1699552736;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZFU+q33RyXycgTF/0yPGI/OvtojYXelKAaBBZD0UYI=;
-        b=h6SCotDIV21Z0pFBlNHEks+UPrMs4Gw8CebgbhnjiFeF+4zngxglEjhdrd+3ee3s55
-         8tgKneXmuPS47TR7IMswS/60Ui88gfsvQVRX5D2rHVwgcJqVx67hlaBfrGFziOQ86L4j
-         UeGyGzDKEcfAjX7OS5OwUth3nJ5AnRCWNgadWhp9rkzCJ6rM65T8ASXIiXj9u1bsdt2D
-         7ohVHtnxc+F8ipzq/onhOeF1mrkcOZbgWlTxz+SdKBdmSmM89e/zjLj5+Jc8wb1rps3i
-         Hz1Za175UNFYTTkA22EkhxTou84Rdk1D1bRNXpFbvbzkmJBl8iyCmmi92dcV6Aof7tvz
-         6dVw==
-X-Gm-Message-State: AOJu0Yyc7AZQS4S18DR/OAA4Xu2D8SZolte8OFhm4CFaDbDS8NiwF8gV
-        ewy3tz2KsGIAzSoak4qkms5baZiq8kCG
-X-Google-Smtp-Source: AGHT+IFojZEQyiPESx+Htv6w7qmFpVGOAnAIUHpw6/EgMIBjXibv5GV1qqwpAFH93KweAwmEsXUuUhE0afYO
+        bh=RHdMaVmD9Twdp4Gp2dcs3TPKRQRPhfQvajrZyFSG8h0=;
+        b=sQyEHZMeWFBT0kQ3IyloiTKRnRQDYSKtTPR6mYrlwrmIVes329CjE5JaKMe6oyAanS
+         1fF12bkxtct9jTk+7RJEUPtXRId/pIyjh0d/Ga9zSNExFn3n+9un4ThZnzQYaCTxnD1V
+         UKxxmYDeM1oODXd1kRjdKuI9+58MzhLOu6jqYJZgWIsbeofwSvnDc6KjlR9BIuPcrgTL
+         gWmEjfueIG4M++mU+UTmo3GogiqI0lAcyrwc6Ua4328Nee3qMfXsGIsm4EfWsoE+1L70
+         nihUr3dDFML5EEepqmKUqRmyJKem1tSpaZAdBCH1zObKoKLEyS19sWb6xxzC/2xJ9NJy
+         RmNg==
+X-Gm-Message-State: AOJu0YxyBEPSl1bsqOFm+cjEHBSlnM6aHkRRptPLwbuUra8fEqMac+KV
+        yvvo38IXy950Njv4iENIVcodO/kT16wq
+X-Google-Smtp-Source: AGHT+IE/5SncuHboetfX9h9c0PAA7PcTKU9uOn+5WvB559DiYaCCGE9A5q422sPRRlNm51aRIHKdn7UNWxA1
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a05:690c:3690:b0:5ae:75db:92c5 with SMTP
- id fu16-20020a05690c369000b005ae75db92c5mr5517ywb.2.1698947933554; Thu, 02
- Nov 2023 10:58:53 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:07 -0700
+ (user=irogers job=sendgmr) by 2002:a0d:d5d2:0:b0:5a7:ad67:b4b6 with SMTP id
+ x201-20020a0dd5d2000000b005a7ad67b4b6mr9215ywd.2.1698947935866; Thu, 02 Nov
+ 2023 10:58:55 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:08 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-26-irogers@google.com>
+Message-Id: <20231102175735.2272696-27-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 25/53] perf maps: Add find next entry to give entry after
- the given map
+Subject: [PATCH v4 26/53] perf maps: Reduce scope of map_rb_node and maps internals
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -94,77 +93,198 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use to remove map_rb_node use from machine.c.
+Avoid exposing the implementation of maps so that the internals can be
+refactored.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/machine.c |  7 +++----
- tools/perf/util/maps.c    | 11 +++++++++++
- tools/perf/util/maps.h    |  2 ++
- 3 files changed, 16 insertions(+), 4 deletions(-)
+ tools/perf/util/maps.c | 90 ++++++++++++++++++++++++++----------------
+ tools/perf/util/maps.h | 23 -----------
+ 2 files changed, 55 insertions(+), 58 deletions(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 191e492539e5..ab345604f274 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -1759,12 +1759,11 @@ int machine__create_kernel_maps(struct machine *machine)
- 
- 	if (end == ~0ULL) {
- 		/* update end address of the kernel map using adjacent module address */
--		struct map_rb_node *rb_node = maps__find_node(machine__kernel_maps(machine),
--							machine__kernel_map(machine));
--		struct map_rb_node *next = map_rb_node__next(rb_node);
-+		struct map *next = maps__find_next_entry(machine__kernel_maps(machine),
-+							 machine__kernel_map(machine));
- 
- 		if (next)
--			machine__set_kernel_mmap(machine, start, map__start(next->map));
-+			machine__set_kernel_mmap(machine, start, map__start(next));
- 	}
- 
- out_put:
 diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 9a84d26328a7..38d56709bd5e 100644
+index 38d56709bd5e..01c15d0b300a 100644
 --- a/tools/perf/util/maps.c
 +++ b/tools/perf/util/maps.c
-@@ -662,6 +662,17 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
- 	return map;
- }
+@@ -10,6 +10,11 @@
+ #include "ui/ui.h"
+ #include "unwind.h"
  
-+struct map *maps__find_next_entry(struct maps *maps, struct map *map)
++struct map_rb_node {
++	struct rb_node rb_node;
++	struct map *map;
++};
++
+ #define maps__for_each_entry(maps, map) \
+ 	for (map = maps__first(maps); map; map = map_rb_node__next(map))
+ 
+@@ -17,6 +22,56 @@
+ 	for (map = maps__first(maps), next = map_rb_node__next(map); map; \
+ 	     map = next, next = map_rb_node__next(map))
+ 
++static struct rb_root *maps__entries(struct maps *maps)
 +{
-+	struct map_rb_node *rb_node = maps__find_node(maps, map);
-+	struct map_rb_node *next = map_rb_node__next(rb_node);
++	return &RC_CHK_ACCESS(maps)->entries;
++}
 +
-+	if (next)
-+		return next->map;
++static struct rw_semaphore *maps__lock(struct maps *maps)
++{
++	return &RC_CHK_ACCESS(maps)->lock;
++}
 +
++static struct map **maps__maps_by_name(struct maps *maps)
++{
++	return RC_CHK_ACCESS(maps)->maps_by_name;
++}
++
++static struct map_rb_node *maps__first(struct maps *maps)
++{
++	struct rb_node *first = rb_first(maps__entries(maps));
++
++	if (first)
++		return rb_entry(first, struct map_rb_node, rb_node);
 +	return NULL;
 +}
 +
- void maps__fixup_end(struct maps *maps)
++static struct map_rb_node *map_rb_node__next(struct map_rb_node *node)
++{
++	struct rb_node *next;
++
++	if (!node)
++		return NULL;
++
++	next = rb_next(&node->rb_node);
++
++	if (!next)
++		return NULL;
++
++	return rb_entry(next, struct map_rb_node, rb_node);
++}
++
++static struct map_rb_node *maps__find_node(struct maps *maps, struct map *map)
++{
++	struct map_rb_node *rb_node;
++
++	maps__for_each_entry(maps, rb_node) {
++		if (rb_node->RC_CHK_ACCESS(map) == RC_CHK_ACCESS(map))
++			return rb_node;
++	}
++	return NULL;
++}
++
+ static void maps__init(struct maps *maps, struct machine *machine)
  {
- 	struct map_rb_node *prev = NULL, *curr;
+ 	refcount_set(maps__refcnt(maps), 1);
+@@ -484,17 +539,6 @@ int maps__copy_from(struct maps *maps, struct maps *parent)
+ 	return err;
+ }
+ 
+-struct map_rb_node *maps__find_node(struct maps *maps, struct map *map)
+-{
+-	struct map_rb_node *rb_node;
+-
+-	maps__for_each_entry(maps, rb_node) {
+-		if (rb_node->RC_CHK_ACCESS(map) == RC_CHK_ACCESS(map))
+-			return rb_node;
+-	}
+-	return NULL;
+-}
+-
+ struct map *maps__find(struct maps *maps, u64 ip)
+ {
+ 	struct rb_node *p;
+@@ -520,30 +564,6 @@ struct map *maps__find(struct maps *maps, u64 ip)
+ 	return m ? m->map : NULL;
+ }
+ 
+-struct map_rb_node *maps__first(struct maps *maps)
+-{
+-	struct rb_node *first = rb_first(maps__entries(maps));
+-
+-	if (first)
+-		return rb_entry(first, struct map_rb_node, rb_node);
+-	return NULL;
+-}
+-
+-struct map_rb_node *map_rb_node__next(struct map_rb_node *node)
+-{
+-	struct rb_node *next;
+-
+-	if (!node)
+-		return NULL;
+-
+-	next = rb_next(&node->rb_node);
+-
+-	if (!next)
+-		return NULL;
+-
+-	return rb_entry(next, struct map_rb_node, rb_node);
+-}
+-
+ static int map__strcmp(const void *a, const void *b)
+ {
+ 	const struct map *map_a = *(const struct map **)a;
 diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
-index b7ab3ec61b7c..84b42c8456e8 100644
+index 84b42c8456e8..d836d04c9402 100644
 --- a/tools/perf/util/maps.h
 +++ b/tools/perf/util/maps.h
-@@ -136,6 +136,8 @@ int maps__fixup_overlap_and_insert(struct maps *maps, struct map *new);
+@@ -15,11 +15,6 @@ struct machine;
+ struct map;
+ struct maps;
  
- struct map *maps__find_by_name(struct maps *maps, const char *name);
+-struct map_rb_node {
+-	struct rb_node rb_node;
+-	struct map *map;
+-};
+-
+ struct map_list_node {
+ 	struct list_head node;
+ 	struct map *map;
+@@ -30,9 +25,6 @@ static inline struct map_list_node *map_list_node__new(void)
+ 	return malloc(sizeof(struct map_list_node));
+ }
  
-+struct map *maps__find_next_entry(struct maps *maps, struct map *map);
-+
- int maps__merge_in(struct maps *kmaps, struct map *new_map);
+-struct map_rb_node *maps__first(struct maps *maps);
+-struct map_rb_node *map_rb_node__next(struct map_rb_node *node);
+-struct map_rb_node *maps__find_node(struct maps *maps, struct map *map);
+ struct map *maps__find(struct maps *maps, u64 addr);
  
- void __maps__sort_by_name(struct maps *maps);
+ DECLARE_RC_STRUCT(maps) {
+@@ -78,26 +70,11 @@ int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, void *data)
+ /* Iterate over map removing an entry if cb returns true. */
+ void maps__remove_maps(struct maps *maps, bool (*cb)(struct map *map, void *data), void *data);
+ 
+-static inline struct rb_root *maps__entries(struct maps *maps)
+-{
+-	return &RC_CHK_ACCESS(maps)->entries;
+-}
+-
+ static inline struct machine *maps__machine(struct maps *maps)
+ {
+ 	return RC_CHK_ACCESS(maps)->machine;
+ }
+ 
+-static inline struct rw_semaphore *maps__lock(struct maps *maps)
+-{
+-	return &RC_CHK_ACCESS(maps)->lock;
+-}
+-
+-static inline struct map **maps__maps_by_name(struct maps *maps)
+-{
+-	return RC_CHK_ACCESS(maps)->maps_by_name;
+-}
+-
+ static inline unsigned int maps__nr_maps(const struct maps *maps)
+ {
+ 	return RC_CHK_ACCESS(maps)->nr_maps;
 -- 
 2.42.0.869.gea05f2083d-goog
 
