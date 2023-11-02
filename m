@@ -2,143 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6CC7DEB67
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163967DEB6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348396AbjKBDak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        id S1348352AbjKBDeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348352AbjKBDah (ORCPT
+        with ESMTP id S1348411AbjKBDd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:30:37 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D098126;
-        Wed,  1 Nov 2023 20:30:29 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A23UEWK02322783, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 3A23UEWK02322783
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Nov 2023 11:30:14 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Thu, 2 Nov 2023 11:30:15 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 2 Nov 2023 11:30:13 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Thu, 2 Nov 2023 11:30:13 +0800
-From:   =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "Andy Shevchenko" <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] gpio: realtek: Add GPIO support for RTD SoC variants
-Thread-Topic: [PATCH 1/2] gpio: realtek: Add GPIO support for RTD SoC variants
-Thread-Index: AQHaDG9Hk0D/m9zpMEiXHZM9KcVyR7Bkh3iAgAHUOsA=
-Date:   Thu, 2 Nov 2023 03:30:13 +0000
-Message-ID: <8e4c8676acaf4ba6bf3f57451b2eab40@realtek.com>
-References: <20231101025802.3744-1-tychang@realtek.com>
- <20231101025802.3744-2-tychang@realtek.com>
- <e18a7ee0-a5e3-4180-9f8a-99b21d1303e6@linaro.org>
-In-Reply-To: <e18a7ee0-a5e3-4180-9f8a-99b21d1303e6@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.181.166]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antivirus-attachment-filter-interceptor-info: license violation
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 1 Nov 2023 23:33:57 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FE99F;
+        Wed,  1 Nov 2023 20:33:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kwvI6cyB/VXBLQgJe15JszZ7DcR8bYyBsodE6Cs1JBDd5bINidtw6Kkzk/Go+3+C6GMcS6bT2A5RCKk3aYD38Nkz/h2Xlsz2W/GPzHySreWnRa8CcEgb8rR01pMZZJGykUTVJXk9sIVxpm3eIe4ti71ob7QSGufUjhJEyxNv7OnLb0MBIJsVqRn6yFWq8JE8hi4v4JyQavBm59UMtws0Jmb+X8iAuitkJxw4BItqD4y3XITRvItT56gv2oX25DAEMWvSvHX/fFSEJ9bOFiPULzwakIYJe1go7n8sRxUnuR1rKnZ5ARF/R2Gk/z1IpsqguWoYqOHP6efG6SOpWC/G5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4a61wOUre/3b+R2eThs77h8VDMUTQpCgOCqZwEPMgbY=;
+ b=DdgWU/UfYQfFuI+XPEiiBsDY1VVpso2UA5jBHXX32w60/FnVPpB1ec0Gir5d8W9lQe3eJb+z03mp1UNLIHaahchG+qPwhLWZcbiME81S3HE7vYaKvZtnBVMtsTlC9cKu4ZyOxUaZL4TPEPIhHFJ4dUDSbbauuqxsvi8ckjoMkbLo31hGmtj3RCFHjUYHa14GYEb4Na026jnWO1hfXhg+XCdvcXI4p/8B/Yia+p5aucrFawo7320qeTYSATfk7P+j6cX81LKfRjlh6ri58Sf+sDJI0euMaH8iGT1J8SCJlZoCA4MtzkaS1XH2LBLmKVC2mWVHDag56fnfbE+69TFvxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4a61wOUre/3b+R2eThs77h8VDMUTQpCgOCqZwEPMgbY=;
+ b=TJaj8VXNs6j28A7/mqEIMlLp4j+nCFtkA/tYVdC/FmKGnehywYcl70f151wPGZ70HEDwz0einLOEuR9kHlNplz0yreV4SPwkgBwTlneHh8/kZCPATUhDtirZakUbfdcjhqcJ52mPzzqeGrR7AX5Y582TDyxh7sIwiGPq496UzI4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
+ DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.21; Thu, 2 Nov 2023 03:33:48 +0000
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::93cc:c27:4af6:b78c]) by DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::93cc:c27:4af6:b78c%2]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 03:33:48 +0000
+Message-ID: <1cdb3a7f-a30a-4874-ab3a-8fd0f8b5351a@amd.com>
+Date:   Thu, 2 Nov 2023 09:03:38 +0530
+User-Agent: Mozilla Thunderbird
+Reply-To: nikunj@amd.com
+Subject: Re: [PATCH v5 01/14] virt: sev-guest: Use AES GCM crypto library
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
+Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, dionnaglaze@google.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-2-nikunj@amd.com>
+ <2a4bbe7b-31e5-7527-8e63-10fb318e0f46@amd.com>
+Content-Language: en-US
+From:   "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <2a4bbe7b-31e5-7527-8e63-10fb318e0f46@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN0PR01CA0019.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:4e::17) To DS7PR12MB6309.namprd12.prod.outlook.com
+ (2603:10b6:8:96::19)
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|DM6PR12MB4388:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0ba855b2-c2a7-46cb-9e48-08dbdb5485dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u31J9F2plugk694uOUqJbC5mEMGI/XzndRU9XUqnn5Gh8eqrgSN89HJ/L2X18UjVLoN+XC2NjCjFfIL2GKdB9bQ8fSLzBlpjqq8WKWftZqfBUBkosq+XSZx9wbCgLqwoFSREjY70lZCQauCReToyl8qRAtuZryzhh1KpwR7DOHJV1HKSFasDxJnUVUXZ0Gzc56wGORcR4lzGTGvcQo45fHwIQ39NR1jNJbz/BNDX6fYWbr4+XKOmxHd/Zd8XFuxGgSxEsyBfpKr3Kix29RA62arCrGh/ZGYmoIB7fIvMcB4OVjC6rWl0+jd1+Ds/ryzqLw/9hJw844SHAMZ9Rp8AJCCnWRaAdN8JBYZC0bcUY2QKKk67ppAja72ogL630G6ozxgD41XAAa5bUwa//uX1b+OShmKoK44oVXtoo4Db2DvgBF1MF/pPfG1qkkmjYJdf7uy/SyObYwpG8s3FnchnLvoy2vh49W0WIt5+JMj3PIGbsR2ABWLbPZxJ08NXIvmrWP5Opz+kOw4UF9x9FlsvOm11qmE2Y+LD9BPLz3I0u9xVJyN9MmW13icfAydmuBiqi/RdcJ8EGSV8qnVYCCD8SbPFtPLwS8b+JLhlff85K3PvTi1H8Cgl8bI/D5mRNIS0XIhYad0CyXg1AR87rhHNIQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(136003)(39860400002)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(66556008)(66476007)(66946007)(316002)(6506007)(2616005)(6512007)(26005)(36756003)(6666004)(38100700002)(31696002)(53546011)(83380400001)(6486002)(478600001)(5660300002)(3450700001)(2906002)(7416002)(41300700001)(31686004)(4326008)(8936002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bVRQWEZ1by9oK3JsSU5iRFQ1VlhoKzA0T1h5VExGeWNtVUpCUFk4Z0hsZmNR?=
+ =?utf-8?B?c3Q3VUYzRE9aYTgyTGloN29MRGpWM1hlQ1VZQWd5QmlXZ1NGSmlCdHdpZGZu?=
+ =?utf-8?B?U3p0bXc2M1Z6S09SLysrNEhWZWtYK2gxUXU3RHhkSlFKTlZXZVhNTGdnUHFV?=
+ =?utf-8?B?R2MzcjhlRnZoYVlzUG8zelBXS1VrTm9LejEyZHlkVEF5OFo2emlPaUd5eFor?=
+ =?utf-8?B?T2lTTWRvQ3N1cERzSGQxQzVleDFnQVhuQTlVTGxTdHZaWlJROGN6R0pGMXg2?=
+ =?utf-8?B?TDE3L3NReGNMdUJjSmJva2JDRitoWGZ2TFdRVVpsTDloeUF5YkRzcHUwMDJw?=
+ =?utf-8?B?SElOTmdVcGpEZGlHdmdnc3Fsejg1UllFd1ltenEvSXZja25rU09kTTd6QUQx?=
+ =?utf-8?B?VXI4V1U5bjhEam4wQUN3NTU3QlhQZ0FhUUhhU0Q2TVFOVlZId3N2cWNCMzgv?=
+ =?utf-8?B?aEwzckJweTg0UDkwbUpxRklWeEtZQjJyZmIzbUZYajlReGhkVGRTRk5NWGlx?=
+ =?utf-8?B?KzhkbkZWdit6WFFWS2hnVVdMdzl6bHJFbUZ4OUpvTVBUb0crcFQ3Ujc2S2lU?=
+ =?utf-8?B?Rnl3QytlUWt6cmx5YVJwS0U0d1dtY0dvd3p4RlB2bXF0bU1va3Fwd1RUM3Uv?=
+ =?utf-8?B?b1JZditCMjVHV1hrTXkxQnBERHIvUzgwWjlwdkVDT24rTGZyd0kwMmJaWjhI?=
+ =?utf-8?B?cmhkL0FOZms5NFpwUVRqcHBYVmVHbnRUL2JJTTVkRGlra2Y1NXBCODZZTWY4?=
+ =?utf-8?B?UEpmWkRudjZVWE10TDR5azlTV2ZpeHgzOUNtcnNhL0VwRUtPSmJlZmZscFpC?=
+ =?utf-8?B?bkMycHNkeS9vQndhRm5QcEhza0VDbTZJT1IrRURWNnR3dG9PZW9BSHpXa2FB?=
+ =?utf-8?B?MGR1OHYzUkcrMkRQaW96c2gwOGdEYWFPam14LzFuNXJYRFRZTlo1emRwejBi?=
+ =?utf-8?B?SVlaS2xYbmVDS1FYWmJ0SU5mVDA3ZlJIc2hSL09CaFE2Z2tsNVowdXJDcjdp?=
+ =?utf-8?B?OTVKeFV2L3lEd2hYT2IrN0xPL1hmYlpkQXhxZkYzSUhqZ0RNYjZrTmZVYVFK?=
+ =?utf-8?B?ZVVpMlphUjRKM1M1ZXAwcEhUUlZvVW14NWhDTkxsL1JzMU84VmJNMmNzOC84?=
+ =?utf-8?B?eVJRNjBUNjlwQ2xrbTgyM3NnZFNad3FjNTBPT1dLaFhSRFpFOXU5NW1IRE1w?=
+ =?utf-8?B?QXl1VXl3b0Q3TFVHUzlTdG1VZzA4empkZUgvamNaU0RwUGNoSytOdm9LajVI?=
+ =?utf-8?B?am54L3c5VGRzOWZNc01wRU9Fem1nVENQTk5oZ0FuVDYyeXI5a1B2bkt5OGh2?=
+ =?utf-8?B?UFhDa29BNWpEZGR4WngwNk9BUmlHcVd3bzMrdFVGeHZ4UG1tbmVpaWxTOWFI?=
+ =?utf-8?B?VVdtMDZHbjdRWHEyS3R1ejdPVHlkcTRycm9mUDJpZjE3VElySGdzRThSQU02?=
+ =?utf-8?B?T1RydEJwQ3RpWjJoYWdWZXMyK3lJbGk1L2xBK2hsdWtlaXlpb2NjbWZGRkxL?=
+ =?utf-8?B?a2tvVldUMHJSZGtqSG5PRWc2dVcyVFRRWTBkNXNqM1BwUVkwd0lIalNLcDlV?=
+ =?utf-8?B?MFE1SEdlOFNOSW13VGZGUkh4RTNESkU4RVd3R0NLVC9McjMvY3BjaDVQVlpI?=
+ =?utf-8?B?R2I5VEtlVUxhSnBpbzZ0eFhBZjdaTEZ6WmNUTmJva3NBVjlMZkszcE5nb1Vs?=
+ =?utf-8?B?d3I4RFhMWTk1aVFpZVhCVVFsaFhZeVl1Z2tvaHBSODJjd1dya0ZNRjNJa1BW?=
+ =?utf-8?B?dmo3aGM3NHRvdlhSRy9XYVNqaENtMy9BL1ExMGtUQkZGTWFkNzI0VU5TR3VC?=
+ =?utf-8?B?TVNFN3FPRFF4OXlhMXRqeGovSktRalVISXZEM2NFa0FzRDB5WWNseDlYai9v?=
+ =?utf-8?B?aDlOUCttUFo4WlVjRkI2UlpLU0Z5by93bVFpSWZmVHhXM3dISldvVVJaOTZV?=
+ =?utf-8?B?ckpxaThOaDd0TXlNekU2cFFXdVljUkNCbUdoNjFiRUJyVy9aL2wvcFhEK0pG?=
+ =?utf-8?B?ZlZTSjRkaG5IbVZza0RtU3pFcloyMndYM3RGNzZKM3ZtTXN1ZFEzNW1ISWRk?=
+ =?utf-8?B?a3hST0wxcWpZcUhrMVRmZCthQWZjY2w3a2FLS1ExcE1mekZFTVpMT1h2bC83?=
+ =?utf-8?Q?fPtLE0jB/mL2jbCFm/oZbVLrD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ba855b2-c2a7-46cb-9e48-08dbdb5485dc
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 03:33:47.6432
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KVCUAaSDlwk1N1C8ykJA1zGulTt95xeaA62OLVv9fPtbK2eB1Shr4+W7DIs3sklP8EPDDaDrhUBfnQcQ5HJFBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4388
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+T24gMDEvMTEvMjAyMyAwMzo1OCwgVHp1eWkgQ2hhbmcgd3JvdGU6
-DQo+PiBUaGlzIGNvbW1pdCBhZGRzIEdQSU8gc3VwcG9ydCBmb3IgUmVhbHRlayBESEMgUlREIFNv
-Q3MuDQo+DQo+UGxlYXNlIGRvIG5vdCB1c2UgIlRoaXMgY29tbWl0L3BhdGNoIiwgYnV0IGltcGVy
-YXRpdmUgbW9vZC4gU2VlIGxvbmdlcg0KPmV4cGxhbmF0aW9uIGhlcmU6DQo+aHR0cHM6Ly9lbGl4
-aXIuYm9vdGxpbi5jb20vbGludXgvdjUuMTcuMS9zb3VyY2UvRG9jdW1lbnRhdGlvbi9wcm9jZXNz
-L3N1Ym1pdHRpbmctDQo+cGF0Y2hlcy5yc3QjTDk1DQo+DQoNCkkgd2lsbCByZW1vdmUgdGhlc2Ug
-d29yZHMuDQoNCj4+ICtzdGF0aWMgaW50IHJ0ZF9ncGlvX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
-ZXZpY2UgKnBkZXYpIHsNCj4+ICsgICAgIHN0cnVjdCBydGRfZ3BpbyAqZGF0YTsNCj4+ICsgICAg
-IGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgKm1hdGNoOw0KPj4gKyAgICAgc3RydWN0IGRldmlj
-ZV9ub2RlICpub2RlOw0KPj4gKyAgICAgaW50IHJldDsNCj4+ICsgICAgIGludCBpOw0KPj4gKw0K
-Pj4gKyAgICAgbm9kZSA9IHBkZXYtPmRldi5vZl9ub2RlOw0KPj4gKyAgICAgbWF0Y2ggPSBvZl9t
-YXRjaF9ub2RlKHJ0ZF9ncGlvX29mX21hdGNoZXMsIHBkZXYtPmRldi5vZl9ub2RlKTsNCj4+ICsg
-ICAgIGlmICghbWF0Y2ggfHwgIW1hdGNoLT5kYXRhKQ0KPj4gKyAgICAgICAgICAgICByZXR1cm4g
-LUVJTlZBTDsNCj4+ICsNCj4+ICsgICAgIGRhdGEgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwg
-c2l6ZW9mKCpkYXRhKSwgR0ZQX0tFUk5FTCk7DQo+PiArICAgICBpZiAoIWRhdGEpDQo+PiArICAg
-ICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0KPj4gKw0KPj4gKyAgICAgZGF0YS0+YXNzZXJ0X2ly
-cSA9IGlycV9vZl9wYXJzZV9hbmRfbWFwKG5vZGUsIDApOw0KPj4gKyAgICAgaWYgKCFkYXRhLT5h
-c3NlcnRfaXJxKQ0KPj4gKyAgICAgICAgICAgICBnb3RvIGRlZmVycmVkOw0KPj4gKw0KPj4gKyAg
-ICAgZGF0YS0+ZGVhc3NlcnRfaXJxID0gaXJxX29mX3BhcnNlX2FuZF9tYXAobm9kZSwgMSk7DQo+
-PiArICAgICBpZiAoIWRhdGEtPmRlYXNzZXJ0X2lycSkNCj4+ICsgICAgICAgICAgICAgZ290byBk
-ZWZlcnJlZDsNCj4NCj5TbyB0aGlzIGdvZXMgdG8gY2xlYW51cCBwYXRoLi4uDQo+DQoNClNpbmNl
-IHRoZXJlIGlzIG5vIG5lZWQgdG8gZG8gZGV2bV9mcmVlLCBJIHdpbGwgZGlyZWN0bHkgcmV0dXJu
-IC1FUFJPQkVfREVGRVIgaGVyZS4NCg0KPj4gKw0KPj4gKyAgICAgZGF0YS0+aW5mbyA9IG1hdGNo
-LT5kYXRhOw0KPj4gKyAgICAgc3Bpbl9sb2NrX2luaXQoJmRhdGEtPmxvY2spOw0KPj4gKw0KPj4g
-KyAgICAgZGF0YS0+YmFzZSA9IG9mX2lvbWFwKG5vZGUsIDApOw0KPj4gKyAgICAgaWYgKCFkYXRh
-LT5iYXNlKQ0KPj4gKyAgICAgICAgICAgICByZXR1cm4gLUVOWElPOw0KPg0KPkJ1dCB0aGlzIGRv
-ZXMgbm90PyBXaGF0Pw0KPg0KPj4gKw0KPj4gKyAgICAgZGF0YS0+aXJxX2Jhc2UgPSBvZl9pb21h
-cChub2RlLCAxKTsNCj4+ICsgICAgIGlmICghZGF0YS0+aXJxX2Jhc2UpDQo+PiArICAgICAgICAg
-ICAgIHJldHVybiAtRU5YSU87DQo+PiArDQo+PiArICAgICBkYXRhLT5ncGlvX2NoaXAucGFyZW50
-ID0gJnBkZXYtPmRldjsNCj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC5sYWJlbCA9IGRldl9uYW1l
-KCZwZGV2LT5kZXYpOw0KPj4gKyAgICAgZGF0YS0+Z3Bpb19jaGlwLm9mX2dwaW9fbl9jZWxscyA9
-IDI7DQo+PiArICAgICBkYXRhLT5ncGlvX2NoaXAuYmFzZSA9IGRhdGEtPmluZm8tPmdwaW9fYmFz
-ZTsNCj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC5uZ3BpbyA9IGRhdGEtPmluZm8tPm51bV9ncGlv
-czsNCj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC5yZXF1ZXN0ID0gcnRkX2dwaW9fcmVxdWVzdDsN
-Cj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC5mcmVlID0gcnRkX2dwaW9fZnJlZTsNCj4+ICsgICAg
-IGRhdGEtPmdwaW9fY2hpcC5nZXRfZGlyZWN0aW9uID0gcnRkX2dwaW9fZ2V0X2RpcmVjdGlvbjsN
-Cj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC5kaXJlY3Rpb25faW5wdXQgPSBydGRfZ3Bpb19kaXJl
-Y3Rpb25faW5wdXQ7DQo+PiArICAgICBkYXRhLT5ncGlvX2NoaXAuZGlyZWN0aW9uX291dHB1dCA9
-IHJ0ZF9ncGlvX2RpcmVjdGlvbl9vdXRwdXQ7DQo+PiArICAgICBkYXRhLT5ncGlvX2NoaXAuc2V0
-ID0gcnRkX2dwaW9fc2V0Ow0KPj4gKyAgICAgZGF0YS0+Z3Bpb19jaGlwLmdldCA9IHJ0ZF9ncGlv
-X2dldDsNCj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC5zZXRfY29uZmlnID0gcnRkX2dwaW9fc2V0
-X2NvbmZpZzsNCj4+ICsgICAgIGRhdGEtPmdwaW9fY2hpcC50b19pcnEgPSBydGRfZ3Bpb190b19p
-cnE7DQo+PiArICAgICBkYXRhLT5pcnFfY2hpcCA9IHJ0ZF9ncGlvX2lycV9jaGlwOw0KPj4gKyAg
-ICAgZGF0YS0+aXJxX2NoaXAubmFtZSA9IGRhdGEtPmluZm8tPm5hbWU7DQo+PiArDQo+PiArICAg
-ICByZXQgPSBkZXZtX2dwaW9jaGlwX2FkZF9kYXRhKCZwZGV2LT5kZXYsICZkYXRhLT5ncGlvX2No
-aXAsIGRhdGEpOw0KPj4gKyAgICAgaWYgKHJldCkgew0KPj4gKyAgICAgICAgICAgICBkZXZfZXJy
-KCZwZGV2LT5kZXYsICJBZGRpbmcgR1BJTyBjaGlwIGZhaWxlZCAoJWQpXG4iLA0KPj4gKyByZXQp
-Ow0KPg0KPkFuZCBoZXJlIG5vIGNsZWFudXA/IEl0J3Mgc29tZSByYW5kb20gY2hvaWNlLg0KPg0K
-Pj4gKyAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPj4gKyAgICAgfQ0KPj4gKw0KPj4gKyAgICAg
-ZGF0YS0+ZG9tYWluID0gaXJxX2RvbWFpbl9hZGRfbGluZWFyKG5vZGUsIGRhdGEtPmdwaW9fY2hp
-cC5uZ3BpbywNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZpcnFfZG9tYWluX3Np
-bXBsZV9vcHMsIGRhdGEpOw0KPj4gKyAgICAgaWYgKCFkYXRhLT5kb21haW4pIHsNCj4+ICsgICAg
-ICAgICAgICAgZGV2bV9rZnJlZSgmcGRldi0+ZGV2LCBkYXRhKTsNCj4NCj5OQUssIHRlc3QgeW91
-ciBwYXRjaC4NCj4NCg0KSSB3aWxsIHJlbW92ZSBpdC4NCg0KPj4gKyAgICAgICAgICAgICByZXR1
-cm4gLUVOT01FTTsNCj4+ICsgICAgIH0NCj4+ICsNCj4+ICsgICAgIGZvciAoaSA9IDA7IGkgPCBk
-YXRhLT5ncGlvX2NoaXAubmdwaW87IGkrKykgew0KPj4gKyAgICAgICAgICAgICBpbnQgaXJxID0g
-aXJxX2NyZWF0ZV9tYXBwaW5nKGRhdGEtPmRvbWFpbiwgaSk7DQo+PiArDQo+PiArICAgICAgICAg
-ICAgIGlycV9zZXRfY2hpcF9kYXRhKGlycSwgZGF0YSk7DQo+PiArICAgICAgICAgICAgIGlycV9z
-ZXRfY2hpcF9hbmRfaGFuZGxlcihpcnEsICZkYXRhLT5pcnFfY2hpcCwNCj5oYW5kbGVfc2ltcGxl
-X2lycSk7DQo+PiArICAgICB9DQo+PiArDQo+PiArICAgICBpcnFfc2V0X2NoYWluZWRfaGFuZGxl
-cl9hbmRfZGF0YShkYXRhLT5hc3NlcnRfaXJxLA0KPnJ0ZF9ncGlvX2Fzc2VydF9pcnFfaGFuZGxl
-LCBkYXRhKTsNCj4+ICsgICAgIGlycV9zZXRfY2hhaW5lZF9oYW5kbGVyX2FuZF9kYXRhKGRhdGEt
-PmRlYXNzZXJ0X2lycSwNCj4+ICsgcnRkX2dwaW9fZGVhc3NlcnRfaXJxX2hhbmRsZSwgZGF0YSk7
-DQo+PiArDQo+PiArICAgICBkZXZfZGJnKCZwZGV2LT5kZXYsICJwcm9iZWRcbiIpOw0KPg0KPk5v
-cCwgZHJvcCBhbGwgc2lsbHksIHNpbXBsZSBlbnRyeS9leGl0IG1lc3NhZ2VzLg0KPg0KDQpJIHdp
-bGwgcmVtb3ZlIGl0Lg0KDQo+PiArDQo+PiArICAgICByZXR1cm4gMDsNCj4+ICsNCj4+ICtkZWZl
-cnJlZDoNCj4+ICsgICAgIGRldm1fa2ZyZWUoJnBkZXYtPmRldiwgZGF0YSk7DQo+DQo+TkFLLCB0
-ZXN0IHlvdXIgcGF0Y2guDQo+DQo+PiArICAgICByZXR1cm4gLUVQUk9CRV9ERUZFUjsNCg0KSSB3
-aWxsIHJlbW92ZSB0aGlzIGxhYmVsLg0KDQo+PiArfQ0KPg0KPkJlc3QgcmVnYXJkcywNCj5Lcnp5
-c3p0b2YNCg0KDQpUaGFua3MsDQpUenV5aSBDaGFuZw0K
+On 10/30/2023 11:21 PM, Tom Lendacky wrote:
+> On 10/30/23 01:36, Nikunj A Dadhania wrote:
+>> The sev-guest driver encryption code uses Crypto API for SNP guest
+>> messaging to interact with AMD Security processor. For enabling SecureTSC,
+>> SEV-SNP guests need to send a TSC_INFO request guest message before the
+>> smpboot phase starts. Details from the TSC_INFO response will be used to
+>> program the VMSA before the secondary CPUs are brought up. The Crypto API
+>> is not available this early in the boot phase.
+>>
+>> In preparation of moving the encryption code out of sev-guest driver to
+>> support SecureTSC and make reviewing the diff easier, start using AES GCM
+>> library implementation instead of Crypto API.
+>>
+>> CC: Ard Biesheuvel <ardb@kernel.org>
+>> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+>> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> I just a few nit comments that might be nice to cover if you have to do a v6...
+
+Sure, I will address them in v6.
+
+>>   -static int __enc_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
+>> +static int __enc_payload(struct aesgcm_ctx *ctx, struct snp_guest_msg *msg,
+>>                void *plaintext, size_t len)
+>>   {
+>> -    struct snp_guest_crypto *crypto = snp_dev->crypto;
+>>       struct snp_guest_msg_hdr *hdr = &msg->hdr;
+>> +    u8 iv[GCM_AES_IV_SIZE] = {};
+>>   -    memset(crypto->iv, 0, crypto->iv_len);
+>> -    memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
+>> +    if (WARN_ON((hdr->msg_sz + ctx->authsize) > sizeof(msg->payload)))
+>> +        return -EBADMSG;
+>>   -    return enc_dec_message(crypto, msg, plaintext, msg->payload, len, true);
+>> +    memcpy(iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
+>> +    aesgcm_encrypt(ctx, msg->payload, plaintext, len, &hdr->algo, AAD_LEN,
+>> +               iv, hdr->authtag);
+>> +    return 0;
+>>   }
+> 
+> __enc_payload() is pretty small now and can probably just be part of the only function that calls it, enc_payload().
+> 
+>>   -static int dec_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
+>> +static int dec_payload(struct aesgcm_ctx *ctx, struct snp_guest_msg *msg,
+>>                  void *plaintext, size_t len)
+>>   {
+>> -    struct snp_guest_crypto *crypto = snp_dev->crypto;
+>>       struct snp_guest_msg_hdr *hdr = &msg->hdr;
+>> +    u8 iv[GCM_AES_IV_SIZE] = {};
+>>   -    /* Build IV with response buffer sequence number */
+>> -    memset(crypto->iv, 0, crypto->iv_len);
+>> -    memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
+>> -
+>> -    return enc_dec_message(crypto, msg, msg->payload, plaintext, len, false);
+>> +    memcpy(iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
+>> +    if (aesgcm_decrypt(ctx, plaintext, msg->payload, len, &hdr->algo,
+>> +               AAD_LEN, iv, hdr->authtag))
+>> +        return 0;
+>> +    else
+>> +        return -EBADMSG;
+> 
+> This would look cleaner / read easier to me to have as:
+> 
+>     if (!aesgcm_decrypt(...))
+>         return -EBADMSG;
+> 
+>     return 0;
+> 
+> But just my opinion.
+> 
+> And ditto here on the size now, can probably just be part of verify_and_dec_payload() now.
+> 
+> Thanks,
+> Tom
+
+Regards
+Nikunj
+
