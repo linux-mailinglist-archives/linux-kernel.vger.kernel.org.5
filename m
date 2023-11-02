@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96337DF97D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716727DF984
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377133AbjKBSFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        id S234579AbjKBSEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346599AbjKBSEk (ORCPT
+        with ESMTP id S1377159AbjKBSDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:04:40 -0400
+        Thu, 2 Nov 2023 14:03:35 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65645195
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:45 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afacc566f3so17216847b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263FA268F
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:47 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a8d9dcdd2bso25330897b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947984; x=1699552784; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947986; x=1699552786; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8AzM8ZmO2/LuV9OGW5MoPE4fbBNeZFfotiJyJxsLNU8=;
-        b=WhLXyXHfo1tm2wllCyBUZ5LgGEOazptIOVz7pQszSLhD2nm0PWTWefTXnpESukDciy
-         e6Wk/Yeja5rY4f/WU2raaG9hz5VtPwxuVNArbC9a28V/WkUpGEf8J4bSOwV8W0x1l39r
-         nlQ8ehNYA+jOoQlfsHISPQuO6M+OOXTwu7mYL0mZDYu2/pGF8go7ibvu15U0eIyDg9Jw
-         RoPsQx9rXqiW4UkrCTc0y4nB5KfgncrTwFTM9rvOBFjB2WfJldaFSVgVrHfD/U+LkDsS
-         HQqNFZ+HzQ2Q5+ethFNrpMjnQBYoccTuOXTmCIlpFJnOoruY+QzOCXDmc6UWCYM4us+Y
-         N/iQ==
+        bh=crhHdwgNdVgPwaFyhVa1Sf4kXmyuYN0V7L2Kpn4xK3g=;
+        b=wBuFwbCw31nqnnbwfHqB6+YQn5GCmd1sYTdTsOcicMMZBaSKVoJ1WtdOYghGbWN6GV
+         sXMkJvuTP+b/Jta3Q/hno01sedd6eAX8mJHP2uuWfQn5TuYN5VT1YbF990J1gAPItmlu
+         bGPwjkfMYzLrRdHD8ZODS6coOWQv1AIs4aP+0dTTUyDasy73+sPke7A+DNm46U0ZZoj8
+         So4bOd/fxYGXxURtTIegN6/ly1wRqsiDFLjoqM5qJ+wIKXdH7GipppNlHA+LAvW7Ynbb
+         KRv7q47eEjO9SgRkpczxVKM7KI2Lvz1wRjmnBzdqjgGtpeQEQX0q+QMsYBF/VCIn6wQx
+         SE+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947984; x=1699552784;
+        d=1e100.net; s=20230601; t=1698947986; x=1699552786;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8AzM8ZmO2/LuV9OGW5MoPE4fbBNeZFfotiJyJxsLNU8=;
-        b=lpmWetUoF74TFpg0/+D6G/s4tItkhTxxKAquES7QSom/V8SxMJ738iiLBT3r9Blvqp
-         CeOa+6fX/t0dIyUTdMdDNojk7dAvd31y1myiDhh3kPivrq6kJjH9+XRYkNHrJAy3+fRp
-         oieH81OfonJJ/qkErW5H5QqKwBe4b0fPAN06wRivJjGnX3PwdrrK8clTgWcM2ogGHSQx
-         Ps0Z+WzO36vNTKM1i00PfDB+f0Yi8Th0xaD+MRjP/7eGF3D/AB14e/YUBl9YziJ10V6j
-         wI8dfGrR8Ane7KEhNtlKL5gbV5hHyJrf4nJGXOQUfBxh+uT9G++ziyhlN1li7RKO+Z45
-         GWzA==
-X-Gm-Message-State: AOJu0Yzy0d8tly8sPIqc2F1sAf6RXoR0sl2jIww8rwTP1gKpSU8XM+0l
-        KxmpFvXLjzQ4iLDKoAlcIPPA7DevOAAQ
-X-Google-Smtp-Source: AGHT+IGQ+tz9Wp+C4hZ1JGaNXWdqeBjHWqxpAu7qdzkOqTHdvhVH0cS/Vpup2e7C0XewIsPwSzO60Bk3FdsN
+        bh=crhHdwgNdVgPwaFyhVa1Sf4kXmyuYN0V7L2Kpn4xK3g=;
+        b=CjqnafhJGAHoBN65juTd2aOMhwqG0j+1wcTc8XW0+TJJMRNikwsF/AmA0b3KY+CFWr
+         TCwVNri8Qd8HXBgiEAVjY9I6DXVJ8/VpvST1x7v+1k+1D0cgTSfQiy+7LNktvR9JrnCe
+         ff5oKyu/LY9xAyqxrYj+gVwgsh69rw5/QnkBgqvLCKU53cgBYuQgjhecmY/w0suFulJZ
+         CK/b84w07gexAzq3Tljjd5XEZB48rMNGndCyTIFHt/cMj411p5Awtd60p5U1lIdwyvjE
+         1iYvIMUKUTdFSaop1IObkWCNoUubW2LcTfC7aDJ/1qSU1KoyBeYyT+/7KBhhwzZIfzxR
+         OdYg==
+X-Gm-Message-State: AOJu0YwxNSPBByCJ0KiQw7igvVU73eNG2nsK/f8Hz/lX/c8SFLesNQdQ
+        Ju699ISlj0IF/W/gjCxFLHMez8AtgJU3
+X-Google-Smtp-Source: AGHT+IHsp8RLYX43W/19GRuBekgu0QUTset3rWELTPIzYf1mfnrP3cR4NcbWFYL9v1sruCzVYYwg6MqWapsj
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a81:6d17:0:b0:5a7:7683:995d with SMTP id
- i23-20020a816d17000000b005a77683995dmr8705ywc.5.1698947983702; Thu, 02 Nov
- 2023 10:59:43 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:29 -0700
+ (user=irogers job=sendgmr) by 2002:a0d:e204:0:b0:59b:ccba:1249 with SMTP id
+ l4-20020a0de204000000b0059bccba1249mr6574ywe.10.1698947986093; Thu, 02 Nov
+ 2023 10:59:46 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:30 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-48-irogers@google.com>
+Message-Id: <20231102175735.2272696-49-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 47/53] perf dsos: Remove __dsos__addnew
+Subject: [PATCH v4 48/53] perf dsos: Remove __dsos__findnew_link_by_longname_id
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -101,42 +101,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function no longer used so remove.
+Function was only called in dsos.c with the dso parameter as
+NULL. Remove the function and specialize for the dso being NULL case
+removing other unused functions along the way.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/dsos.c | 5 -----
- tools/perf/util/dsos.h | 1 -
- 2 files changed, 6 deletions(-)
+ tools/perf/util/dsos.c | 51 +++++++++---------------------------------
+ tools/perf/util/dsos.h |  6 -----
+ 2 files changed, 10 insertions(+), 47 deletions(-)
 
 diff --git a/tools/perf/util/dsos.c b/tools/perf/util/dsos.c
-index cfc10e1a6802..1495ab1cd7a0 100644
+index 1495ab1cd7a0..e4110438841b 100644
 --- a/tools/perf/util/dsos.c
 +++ b/tools/perf/util/dsos.c
-@@ -341,11 +341,6 @@ static struct dso *__dsos__addnew_id(struct dsos *dsos, const char *name, struct
- 	return dso;
+@@ -119,11 +119,6 @@ static int __dso__cmp_short_name(const char *short_name, struct dso_id *id, stru
+ 	return rc ?: dso_id__cmp(id, &b->id);
  }
  
--struct dso *__dsos__addnew(struct dsos *dsos, const char *name)
+-static int dso__cmp_short_name(struct dso *a, struct dso *b)
 -{
--	return __dsos__addnew_id(dsos, name, NULL);
+-	return __dso__cmp_short_name(a->short_name, &a->id, b);
 -}
 -
- static struct dso *__dsos__findnew_id(struct dsos *dsos, const char *name, struct dso_id *id)
+ static int dsos__cmp_long_name_id_short_name(const void *va, const void *vb)
  {
- 	struct dso *dso = __dsos__find_id(dsos, name, id, false, /*write_locked=*/true);
+ 	const struct dso *a = *((const struct dso **)va);
+@@ -143,20 +138,21 @@ static int dsos__cmp_long_name_id_short_name(const void *va, const void *vb)
+  * Either one of the dso or name parameter must be non-NULL or the
+  * function will not work.
+  */
+-struct dso *__dsos__findnew_link_by_longname_id(struct dsos *dsos,
+-						struct dso *dso,
+-						const char *name,
+-						struct dso_id *id,
+-						bool write_locked)
++static struct dso *__dsos__find_by_longname_id(struct dsos *dsos,
++					       const char *name,
++					       struct dso_id *id,
++					       bool write_locked)
+ {
+ 	int low = 0, high = dsos->cnt - 1;
+ 
+ 	if (!dsos->sorted) {
+ 		if (!write_locked) {
++			struct dso *dso;
++
+ 			up_read(&dsos->lock);
+ 			down_write(&dsos->lock);
+-			dso = __dsos__findnew_link_by_longname_id(dsos, dso, name, id,
+-								  /*write_locked=*/true);
++			dso = __dsos__find_by_longname_id(dsos, name, id,
++							  /*write_locked=*/true);
+ 			up_write(&dsos->lock);
+ 			down_read(&dsos->lock);
+ 			return dso;
+@@ -166,9 +162,6 @@ struct dso *__dsos__findnew_link_by_longname_id(struct dsos *dsos,
+ 		dsos->sorted = true;
+ 	}
+ 
+-	if (!name)
+-		name = dso->long_name;
+-
+ 	/*
+ 	 * Find node with the matching name
+ 	 */
+@@ -178,31 +171,13 @@ struct dso *__dsos__findnew_link_by_longname_id(struct dsos *dsos,
+ 		int rc = __dso__cmp_long_name(name, id, this);
+ 
+ 		if (rc == 0) {
+-			/*
+-			 * In case the new DSO is a duplicate of an existing
+-			 * one, print a one-time warning & put the new entry
+-			 * at the end of the list of duplicates.
+-			 */
+-			if (!dso || (dso == this))
+-				return dso__get(this);	/* Find matching dso */
+-			/*
+-			 * The core kernel DSOs may have duplicated long name.
+-			 * In this case, the short name should be different.
+-			 * Comparing the short names to differentiate the DSOs.
+-			 */
+-			rc = dso__cmp_short_name(dso, this);
+-			if (rc == 0) {
+-				pr_err("Duplicated dso name: %s\n", name);
+-				return NULL;
+-			}
++			return dso__get(this);	/* Find matching dso */
+ 		}
+ 		if (rc < 0)
+ 			high = mid - 1;
+ 		else
+ 			low = mid + 1;
+ 	}
+-	if (dso)
+-		__dsos__add(dsos, dso);
+ 	return NULL;
+ }
+ 
+@@ -240,12 +215,6 @@ int dsos__add(struct dsos *dsos, struct dso *dso)
+ 	return ret;
+ }
+ 
+-static struct dso *__dsos__findnew_by_longname_id(struct dsos *dsos, const char *name,
+-						struct dso_id *id, bool write_locked)
+-{
+-	return __dsos__findnew_link_by_longname_id(dsos, NULL, name, id, write_locked);
+-}
+-
+ struct dsos__find_id_cb_args {
+ 	const char *name;
+ 	struct dso_id *id;
+@@ -279,7 +248,7 @@ static struct dso *__dsos__find_id(struct dsos *dsos, const char *name, struct d
+ 		__dsos__for_each_dso(dsos, dsos__find_id_cb, &args);
+ 		return args.res;
+ 	}
+-	res = __dsos__findnew_by_longname_id(dsos, name, id, write_locked);
++	res = __dsos__find_by_longname_id(dsos, name, id, write_locked);
+ 	return res;
+ }
+ 
 diff --git a/tools/perf/util/dsos.h b/tools/perf/util/dsos.h
-index c1b3979ad4bd..d1497b11d64c 100644
+index d1497b11d64c..6c13b65648bc 100644
 --- a/tools/perf/util/dsos.h
 +++ b/tools/perf/util/dsos.h
-@@ -30,7 +30,6 @@ void dsos__exit(struct dsos *dsos);
+@@ -36,12 +36,6 @@ struct dso *dsos__findnew_id(struct dsos *dsos, const char *name, struct dso_id
+  
+ bool dsos__read_build_ids(struct dsos *dsos, bool with_hits);
  
- int __dsos__add(struct dsos *dsos, struct dso *dso);
- int dsos__add(struct dsos *dsos, struct dso *dso);
--struct dso *__dsos__addnew(struct dsos *dsos, const char *name);
- struct dso *dsos__find(struct dsos *dsos, const char *name, bool cmp_short);
- 
- struct dso *dsos__findnew_id(struct dsos *dsos, const char *name, struct dso_id *id);
+-struct dso *__dsos__findnew_link_by_longname_id(struct dsos *dsos,
+-						struct dso *dso,
+-						const char *name,
+-						struct dso_id *id,
+-						bool write_locked);
+-
+ size_t dsos__fprintf_buildid(struct dsos *dsos, FILE *fp,
+ 			       bool (skip)(struct dso *dso, int parm), int parm);
+ size_t dsos__fprintf(struct dsos *dsos, FILE *fp);
 -- 
 2.42.0.869.gea05f2083d-goog
 
