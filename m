@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E68E7DEF88
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A927DEF8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346346AbjKBKJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        id S1345474AbjKBKKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346147AbjKBKJF (ORCPT
+        with ESMTP id S1345941AbjKBKKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:09:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAC8136;
-        Thu,  2 Nov 2023 03:08:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 363D11F896;
-        Thu,  2 Nov 2023 10:08:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698919738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3aHkG+hoDOmbGBPikCMsIz7KXZaV7Ke8PQGKcoscHh4=;
-        b=cM5ku7uz4EcAkyHf6TRBozx/ZJHeKhRwy8YFd25jK+XV1PWvE/0Pc+pXxslSiT2FIVEMvM
-        /TEEfT8mR/RcoyknQrkdc3EwcFTf7fME/ZNT1srHXYtXXNRb07VtsajxnT+nFRYhBabDuh
-        ZvBZ6JoiU6fGLs1nhqM0t4r0fqLm8MY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698919738;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3aHkG+hoDOmbGBPikCMsIz7KXZaV7Ke8PQGKcoscHh4=;
-        b=KCoECzTdPSPZ1kgWG7amUwp3OZ3h34fuj9P/1mjU/k1iuvJdGbF2286Yd7+5WOScOGQkzc
-        RyQSAyV1307rg9Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2250913584;
-        Thu,  2 Nov 2023 10:08:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 74xdCDp1Q2XYfgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 02 Nov 2023 10:08:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A41F6A06E3; Thu,  2 Nov 2023 11:08:57 +0100 (CET)
-Date:   Thu, 2 Nov 2023 11:08:57 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 2/2] ext4: Clarify handling of unwritten bh in
- __ext4_block_zero_page_range()
-Message-ID: <20231102100857.tntr4mdz65bddq2f@quack3>
-References: <cover.1698856309.git.ojaswin@linux.ibm.com>
- <d859b7ae5fe42e6626479b91ed9f4da3aae4c597.1698856309.git.ojaswin@linux.ibm.com>
+        Thu, 2 Nov 2023 06:10:52 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BCE13D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:10:47 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6c32a20d5dbso444946b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wkennington-com.20230601.gappssmtp.com; s=20230601; t=1698919847; x=1699524647; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=odwL1J6AS5nuqoPCF8FI4fUOnDzh+OWjuHaoV8Nap8E=;
+        b=jE9ABzcUs4ykxihsWPdjm5DtOVYkw9/QYvx2LskuQnri8o1sgamftAk9kEJZOxrdSq
+         jKFQ/QmvYHIeWA1b8nR/imfhyGT73XG7+UdrCWAinX4UGxbVEeFPnII+gwFtEqbbbvYv
+         bp2rpq/6Cq2NlfZXwXYoqKgeydFTPf3AT2PWNXQXvacjbG07IwdPaCKGCMDfX7x26jLe
+         DzJZ8cV3ozp6zZmPSS2zQkTX5HVGvzXwQTZM2PWIg3NhCusAmzuz7PXzlNrPLGaWCtdW
+         SInc5TWnIzjb2sap4gUo+vFFXfJoQuuyvdl/bglHf1xtZBoM/Euh2fm1b+Rv2AbcMoUA
+         mWvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698919847; x=1699524647;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=odwL1J6AS5nuqoPCF8FI4fUOnDzh+OWjuHaoV8Nap8E=;
+        b=UwcO1Zwdcv7Sew1UiHOp6dI4Co/N3lkHdamnEpbgUA7iLbBDDEO/i4oCFdyQft8F5W
+         XIhFCzqwh3Y6XSP95ATzalQgL78oM9A+41mlvNJeqP1nsR0FTPZFw8W+dX+xz4lhcwmv
+         gnmXVWdlyIYwgwESk8EfstfTU9qXJHqQVKOmKPLH7wL8fN989y12IETPVrpxR7MAKXKR
+         LlqWekdmmNrUcZUSDdBYAtSkKt+SGojFEh3ZLYRHfrjvF/zIJ6ec51EO/8pBvstS+9h+
+         QVDIWAPaRUksisufi/mr0Af5IQ5jmcFtne4uWb84+S18ggZ5zwtTv0xVjeebq7JhuyoP
+         7W9w==
+X-Gm-Message-State: AOJu0Yxadw77OCGszQNBXFCcjI3h+HBHekVFqca+inBOvv7jV7zYTx6t
+        upaVzmf7o4s9ODdv6jF6qH5WnA==
+X-Google-Smtp-Source: AGHT+IEf7ZgC902FAtds2SgN5IYeyPxxxWqsIRQdyf4VSs9bXlV7zIMiF/oukOjY8Q/mn5suukmJWQ==
+X-Received: by 2002:a05:6a20:7488:b0:16b:8132:b547 with SMTP id p8-20020a056a20748800b0016b8132b547mr17207560pzd.4.1698919847221;
+        Thu, 02 Nov 2023 03:10:47 -0700 (PDT)
+Received: from wak-linux.svl.corp.google.com ([2620:15c:2a3:200:4b75:12e:f4c2:92ac])
+        by smtp.gmail.com with ESMTPSA id fb27-20020a056a002d9b00b006bdd7cbcf98sm2552127pfb.182.2023.11.02.03.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 03:10:46 -0700 (PDT)
+From:   "William A. Kennington III" <william@wkennington.com>
+To:     tmaimon77@gmail.com, tali.perry1@gmail.com, avifishman70@gmail.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Brian Ma <chma0@nuvoton.com>,
+        "William A . Kennington III" <william@wkennington.com>
+Subject: [PATCH v2] ARM: npcm: Add CPU hotplug callbacks for kexec support
+Date:   Thu,  2 Nov 2023 03:10:09 -0700
+Message-ID: <20231102101009.15104-1-william@wkennington.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+In-Reply-To: <20231102002453.1299195-1-william@wkennington.com>
+References: <20231102002453.1299195-1-william@wkennington.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d859b7ae5fe42e6626479b91ed9f4da3aae4c597.1698856309.git.ojaswin@linux.ibm.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 01-11-23 22:08:11, Ojaswin Mujoo wrote:
-> As an optimization, I was trying to work on exiting early from this
-> function if dealing with unwritten extent since they anyways read 0.
-> However, it was realised that there are certain code paths that can
-> end up calling ext4_block_zero_page_range() for an unwritten bh that
-> might still have data in pagecache. In this case, we can't exit early
-> and we do require to process the bh and zero out the pagecache to ensure
-> that a writeback can't kick in at a later time and flush the stale
-> pagecache to disk.
-> 
-> Since, adding the logic to exit early for unwritten bh was turning out
-> to be much more nuanced and the current code already handles it well,
-> just add a comment to explicitly document this behavior.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+From: Brian Ma <chma0@nuvoton.com>
 
-Looks good to me. Feel free to add:
+Add callbacks required for kexec to function. The NPCM7xx does
+not expose controls for powering down CPU cores, so just wait in idle
+loop.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Brian Ma <chma0@nuvoton.com>
+Signed-off-by: William A. Kennington III <william@wkennington.com>
+---
+ arch/arm/mach-npcm/platsmp.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-								Honza
-
-> ---
->  fs/ext4/inode.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index d7732320431a..76921e834dd4 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3632,6 +3632,12 @@ void ext4_set_aops(struct inode *inode)
->  		inode->i_mapping->a_ops = &ext4_aops;
->  }
->  
-> +/*
-> + * Here we can't skip an unwritten buffer even though it usually reads zero
-> + * because it might have data in pagecache (eg, if called from ext4_zero_range,
-> + * ext4_punch_hole, etc) which needs to be properly zeroed out. Otherwise a
-> + * racing writeback can come later and flush the stale pagecache to disk.
-> + */
->  static int __ext4_block_zero_page_range(handle_t *handle,
->  		struct address_space *mapping, loff_t from, loff_t length)
->  {
-> -- 
-> 2.39.3
-> 
+diff --git a/arch/arm/mach-npcm/platsmp.c b/arch/arm/mach-npcm/platsmp.c
+index 41891d3aa124..6cc7b5894f08 100644
+--- a/arch/arm/mach-npcm/platsmp.c
++++ b/arch/arm/mach-npcm/platsmp.c
+@@ -69,10 +69,27 @@ static void __init npcm7xx_smp_prepare_cpus(unsigned int max_cpus)
+ 
+ 	iounmap(scu_base);
+ }
++#ifdef CONFIG_HOTPLUG_CPU
++static void npcm7xx_cpu_die(unsigned int cpu)
++{
++	while (1)
++		cpu_do_idle();
++}
++
++static int npcm7xx_cpu_kill(unsigned int l_cpu)
++{
++	return 1;
++}
++#endif
++
+ 
+ static struct smp_operations npcm7xx_smp_ops __initdata = {
+ 	.smp_prepare_cpus = npcm7xx_smp_prepare_cpus,
+ 	.smp_boot_secondary = npcm7xx_smp_boot_secondary,
++#ifdef CONFIG_HOTPLUG_CPU
++	.cpu_die			= npcm7xx_cpu_die,
++	.cpu_kill			= npcm7xx_cpu_kill,
++#endif
+ };
+ 
+ CPU_METHOD_OF_DECLARE(npcm7xx_smp, "nuvoton,npcm750-smp", &npcm7xx_smp_ops);
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.42.0.820.g83a721a137-goog
+
