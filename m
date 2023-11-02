@@ -2,49 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933E37DF7DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8947DF7DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376886AbjKBQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
+        id S1376952AbjKBQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKBQkQ (ORCPT
+        with ESMTP id S229566AbjKBQmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:40:16 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB0513A;
-        Thu,  2 Nov 2023 09:40:13 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qyajp-0003p8-7D; Thu, 02 Nov 2023 17:40:09 +0100
-Message-ID: <54124220-3ce8-47c7-8303-d186c9e570dd@leemhuis.info>
-Date:   Thu, 2 Nov 2023 17:40:08 +0100
+        Thu, 2 Nov 2023 12:42:06 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF00118E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:42:02 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7d9d357faso13906457b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698943322; x=1699548122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8LiJGLC2FExExiPE0J4pSxoWAHA7z3x+9vmpIcXmfSU=;
+        b=JGmx0PPeto/o4g3FLUeK5rpiU7dqYj/yXbViCpXngs/OHfjs2qrslErCTBaNDfw6xQ
+         TfmXow+JaXPTIaEdhkzITxe5EENJaMr82S2AF7ySkwQjlsb75Zv9SWEmXyADcP1uqaUi
+         C9ddB1b9hGZDcObwtTzdRjENrDH0uPyc4/IsOHfdVuDnp01/JdXW6g+l34rF6mLI11uf
+         xiFJVjpKu7t0s+1iZ+mwJIOk8J2xFOMs6UFZJUIv3qtopngDob3kwwAp0RqUD3PM0/UM
+         pLT9lm2PDdub97PCPtzklmZ+3Y3juhUuqSlVMdYThi54c7dkyFUfP+cCfqyv3/VcGiaU
+         ri6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698943322; x=1699548122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8LiJGLC2FExExiPE0J4pSxoWAHA7z3x+9vmpIcXmfSU=;
+        b=aUv2PjZ0yryrKdSrE1LcLT4u2IUw900X4KnlIFQMg15MuUpmU7wHCS4BUiGpQDJXBF
+         kRQqN7gbLCiptB4JROc7VR+2+XltUUFkvu6dm97yGALtcAZY5/x/M/XoeZPgKNMbMAbS
+         xxPt0Q9QYU0ucH8aytocYP7ZKLvXkRWcb2V2egPek4EnS6RKQCKLNEW3+vVUPpmhWLA+
+         /rIZPHQjG42XrFUsFkInDt0urz2BtEC9bj3O02TLqTIDEBWABitDj2c/jYZIViK+2Usz
+         ckTLFimyUTl9ja6Zagd7/l2h01qxPd14UWSDUbHKXoc3oC8ssEzkA6IjLJiiWmySqKYV
+         oAwA==
+X-Gm-Message-State: AOJu0Yy01uRQCWnWwU+1MGzoKVdB22/NaZ3Fsh3RTQmsgJW0ZGZ+FxvY
+        ABEij1ouD8EnyZZ9E8Uj01Uj7HQfyGDbJkUmiR4=
+X-Google-Smtp-Source: AGHT+IH2hGFHauJsq2POKqGnj+ipHZn+ZhTurRCMsTVtyyfPU2uYxtaxX3N6+D/iM3MgDMMzISXxHppYOFR/cDr2GSA=
+X-Received: by 2002:a05:690c:f10:b0:5a7:c777:2be1 with SMTP id
+ dc16-20020a05690c0f1000b005a7c7772be1mr318014ywb.11.1698943321842; Thu, 02
+ Nov 2023 09:42:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mainline build failure due to 9c66dc94b62a ("bpf: Introduce
- css_task open-coded iterator kfuncs")
-Content-Language: en-US, de-DE
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <ZUNiwMLBsL52X9wa@debian>
- <79260ece-5819-4292-bfac-dc21a3701813@bytedance.com>
- <7ade1b4d-71ad-4f32-9b19-9d8eac8e595b@leemhuis.info>
- <CADVatmNkXXH5xwEe25cZeESRT5FscKQuGEoSZ=1tiGTtLO-+pg@mail.gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <CADVatmNkXXH5xwEe25cZeESRT5FscKQuGEoSZ=1tiGTtLO-+pg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698943213;26473bd7;
-X-HE-SMSGID: 1qyajp-0003p8-7D
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+References: <20231102120053.30630-1-bagasdotme@gmail.com>
+In-Reply-To: <20231102120053.30630-1-bagasdotme@gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 2 Nov 2023 17:41:50 +0100
+Message-ID: <CANiq72==HJp6umRwKgRU2U3FNTjkNaeaEizLZkH5TPrnSZYbjg@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/4] Documentation: Web fonts for kernel documentation
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@ger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,67 +79,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.11.23 17:04, Sudip Mukherjee wrote:
-> On Thu, 2 Nov 2023 at 09:13, Linux regression tracking (Thorsten
-> Leemhuis) <regressions@leemhuis.info> wrote:
->> On 02.11.23 09:53, Chuyi Zhou wrote:
->>> 在 2023/11/2 16:50, Sudip Mukherjee (Codethink) 写道:
->>>> The latest mainline kernel branch fails to build mips
->>>> decstation_64_defconfig,
->>>> decstation_defconfig and decstation_r4k_defconfig with the error:
->>>>
->>>> kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->>>> kernel/bpf/task_iter.c:917:14: error: 'CSS_TASK_ITER_PROCS' undeclared
->>>> (first use in this function)
->>>>    917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->>>>        |              ^~~~~~~~~~~~~~~~~~~
->>> [...]
->>>> git bisect pointed to 9c66dc94b62a ("bpf: Introduce css_task
->>>> open-coded iterator kfuncs")
->>>
->>> Thanks for the report! This issue has been solved by Jiri.[1]
->>>
->>> [1]:https://lore.kernel.org/all/169890482505.9002.10852784674164703819.git-patchwork-notify@kernel.org/
->>
->> Thx, I was just about to reply something similar. :-D
->>
->> Sudip, maybe you know about this already, but in case you don't, here is
->> a quick tip that might be useful for you: in cases like this it's often
->> wise to search for earlier reports on lore using an even more
->> abbreviated commit-id followed by a wildcard (e.g. "9c66dc94*"). That at
->> least was how I found the fix quickly.
-> 
-> Yes, but the failure is still in the mainline. And it has happened in
-> the past that the fix has been submitted and taken by the maintainer
-> but was not sent to Linus.
-> In the last release cycle I had to send a reminder around the time of
-> -rc3 and in that case also the fix was submitted when I sent the build
-> failure mail.
+On Thu, Nov 2, 2023 at 1:01=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com>=
+ wrote:
+>
+> For the font choices, we settle down on IBM Plex Sans (sans-serif), IBM
+> Plex Mono (monospace), and Newsreader (serif). All these fonts are
+> licensed under OFL 1.1 and can be distributed alongside the kernel docs.
+> We have also considered to use S=C3=B6hne [1] instead, but because it is =
+paid
+> font, it is concluded that such font is non-free [2] (and by
+> implication, distributions must patch the kernel to not use it).
 
-Yes, that can happen, I have an eye on such situations as well, but I
-don't add all those cases to rezgbot, as some of them get quickly
-resolved in a day or two. But you are totally free to get regzbot
-involved if you want!
+If we are going to do something like this, then it could be nice to
+consider the ones that `rustdoc` picked, i.e. Fira Sans for headers,
+Source Serif 4 for text and Source Code Pro for code.
 
-> But  like you said I will search and will not add Cc to rezbot in
-> cases where a fix has been submitted.
-
-No, sorry, please don't read my reply like that. Feel free to tell
-regzbot about such cases. But you could do me a favor in cases that are
-similar like this: when adding the issue to the tracking use "#regzbot
-monitor <url>" to point to the fix and "#regzbot fix <subject>" to
-mention its subject, as that makes it clear that a fix is under review
-and/or incoming; and when it landed regzbot will automatically consider
-the regressions resolved, too.
-
-> Also if Linus wants then I will
-> not even send mails in these cases.
-
-That's up to Linus, but I guess he and others that got your report all
-receive enough mail already; so if you ask me, for issues that are known
-and handled already I'd say its best to send them just to the regression
-list while making it obvious that a fix is in the works (see above); if
-things are not resolved more people can be brought in later. But that's
-just how I would handle it.
-
-Ciao, Thorsten
+Cheers,
+Miguel
