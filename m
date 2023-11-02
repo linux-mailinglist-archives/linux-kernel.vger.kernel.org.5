@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDAE7DED4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E867DED4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbjKBHaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 03:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S1343875AbjKBHah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 03:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344212AbjKBHaV (ORCPT
+        with ESMTP id S234353AbjKBHab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 03:30:21 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBFB12D
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:30:15 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53e2dc8fa02so921660a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:30:15 -0700 (PDT)
+        Thu, 2 Nov 2023 03:30:31 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5681513A
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:30:25 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so977569a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:30:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698910214; x=1699515014; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698910224; x=1699515024; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XJl0L1OnhZsTZlttVg8i8yJZK8etXRMHjU1NghTcVu0=;
-        b=YiPT0u3UWT4Y0wAcYkem3Q+kmvwDalR/gc/73CLM/GzQ0jlcbrIfdie82pfHN/f5gI
-         pclWU41HGULbMDZbylE+iptU8DK1WDO0+XsM5797KUvIuEPzrK1Wh6ubJOlujAzDBFtq
-         526uYevmmVyJJ8+dhSGrEco5THrHvMI6mNXjBQz6WjIUzDqyaGvcBuj/F+oQoN0zdwZC
-         RRJvMqoDuNaoNqffdAVXT6kMuPJ9vqaq+fGIVdY1V9bHLt+3Yi7UeX81Nu92NRhZHlHs
-         sSCiN5dU8VkvpBx9Pmtpionrbz5BMoBo9yPfTZSsoLQlahCaKFYzjTc0IF2+f0Kz5jAQ
-         UcuA==
+        bh=Q1R0PNvMcliX4nlo0HsrCO4i8BJWsFqDLugFun1F4yY=;
+        b=f9mUxOV/Tzf3fo1Z7oahOf44HqCdjKW+V98cbMDgJXREiz+Qt+gsmpyENdBAM4L34g
+         8NAsopnJrIYl1w3Gpiv+Wf9oB8uYjmawdk8JzqjNZRY2j1ocSi7FwYui65akMX1VB44O
+         moQKFehyDbVrlLVFFaZr0+mqVpXRfbPMqCCZen6iu2zSZrl0hBXILWDro2PKbLn2VLDT
+         ZeAoQeejFEFKOGLul3EuMxnkyEaUKSqWUl+49kwjRjJtKB+DUhsGXxG23noXURy6mssV
+         KyTaj4LZfdL/lKSVouFAQhzJN1YgnaHvJsqyMYIF1PvGYv/IKSHcb48wU2WlJKW/PCq9
+         JuAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698910214; x=1699515014;
+        d=1e100.net; s=20230601; t=1698910224; x=1699515024;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XJl0L1OnhZsTZlttVg8i8yJZK8etXRMHjU1NghTcVu0=;
-        b=MeeVCydZSez3qfNPz0txPisfe7pqsFXKdtmk+z4IIpoXtszsFWLrJB9bg/SuuS2W4M
-         m51JPhattNARQFwafg8jfGP1NnIvAvnudRdgfWPHTvbW2YZnbTjOG/+6Cy9mCDEqV+hs
-         OJy88O9//7yQcLgJ9t32Gs5PBbBSz/mA/5Kx4ryPrIc6SXiRQxsoaVsirJHl2hi3sZbH
-         IDsnjkDyjyDw4yv168P6tD1TQ8HfTzgEVGStghs6CqJDKuxsxAv/dNwZcVQupqwwoQef
-         d9tK0btCVv/zdyoAwFf8veO68RdbjfIMaCsKWgaKZJLbVmChmwzWYfeER7+ZYO7sDJi4
-         FxHA==
-X-Gm-Message-State: AOJu0YxZksWNuOvrXPPd9ckfYdgqjiMcmL7ZzAoFWmVqgQ4ODo7ftU+7
-        46cmJhbRXz+0Qwaajj57qtcHkg==
-X-Google-Smtp-Source: AGHT+IHHgLxv+kd0YyxbjvrUvEc2nqIBAdQdeYyLM3S3WXucY5/rZNAL8nDPumxsFbqmg5MOxjAqYA==
-X-Received: by 2002:a50:d49e:0:b0:543:5741:c9cd with SMTP id s30-20020a50d49e000000b005435741c9cdmr6922917edi.34.1698910214289;
-        Thu, 02 Nov 2023 00:30:14 -0700 (PDT)
+        bh=Q1R0PNvMcliX4nlo0HsrCO4i8BJWsFqDLugFun1F4yY=;
+        b=VEOfYOut/xsgWx70Kz7gmeOnTU/ol9SF+4hUrfdB8nNeHjnYlry1Johgp6EZEsezhU
+         zrc9BSV3iNL50iT43rjfPZahPld7cfx8ARAuuHI7cgczLvzLk4jKUNlFS1HesaYnh7gA
+         ZZNEpx2M1I3U/eIJLdIgfB5AugeJ1CboYP9Z1agGAo4nsV5wkvx7wqt9MxqsC8JdSd8b
+         PWA4NufYxEyr5GCvSdwISazduwQ9wq5wyAIWJSGPnF5aep/1/jSNYlHeW7zqwKBXx+rq
+         uRaM0n5/SHl6RIpm0KwuRtkjHqIOClJa0NkuM/ubR2Kp2tpajHfk0VuUIjRdCMtb/BHa
+         wFgQ==
+X-Gm-Message-State: AOJu0Yx3rw6QTjOGgNV0rNc9unSO3DAgRDT3xzllqcIw/vTcNSF2IvKA
+        9ugYr31e0SrYLgcm4+7v2vf7og==
+X-Google-Smtp-Source: AGHT+IFHJ/JOoMHdzIOR7crzZuRNyVRfvPIV9S0LFv1mt2OsYHeAeL1O08FulZUztCWbz9nAILpI8A==
+X-Received: by 2002:a05:6402:717:b0:53e:10a1:21d with SMTP id w23-20020a056402071700b0053e10a1021dmr13863907edx.35.1698910223829;
+        Thu, 02 Nov 2023 00:30:23 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id e14-20020a056402190e00b0053ebafe7a60sm1944096edz.59.2023.11.02.00.30.12
+        by smtp.gmail.com with ESMTPSA id e14-20020a056402190e00b0053ebafe7a60sm1944096edz.59.2023.11.02.00.30.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 00:30:13 -0700 (PDT)
-Message-ID: <b9f6eeec-ed32-4d0e-b161-c6190fb7551b@linaro.org>
-Date:   Thu, 2 Nov 2023 08:30:11 +0100
+        Thu, 02 Nov 2023 00:30:23 -0700 (PDT)
+Message-ID: <fb5f0673-6457-4d0d-a0e2-144127920b64@linaro.org>
+Date:   Thu, 2 Nov 2023 08:30:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: add rve
+Subject: Re: [PATCH v2 2/3] dt-bindings: arm: fsl: add RVE gateway board
 Content-Language: en-US
 To:     Hugo Villeneuve <hugo@hugovil.com>, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -64,7 +64,7 @@ To:     Hugo Villeneuve <hugo@hugovil.com>, robh+dt@kernel.org,
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 References: <20231101183549.2960083-1-hugo@hugovil.com>
- <20231101183549.2960083-2-hugo@hugovil.com>
+ <20231101183549.2960083-3-hugo@hugovil.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,9 +110,9 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231101183549.2960083-2-hugo@hugovil.com>
+In-Reply-To: <20231101183549.2960083-3-hugo@hugovil.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -126,8 +126,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 01/11/2023 19:35, Hugo Villeneuve wrote:
 > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > 
-> Add vendor prefix for Recharge Véhicule Électrique (RVE), which
-> manufactures electric vehicle chargers infrastructure components.
+> Add DT compatible string for RVE gateway board based on a Variscite
+> VAR-SOM-NANO with a NXP MX8MN nano CPU.
 > 
 > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > ---
