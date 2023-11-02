@@ -2,239 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CAC7DFA1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5087DFA21
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377349AbjKBSjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
+        id S1377235AbjKBSlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377254AbjKBSjM (ORCPT
+        with ESMTP id S234422AbjKBSlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:39:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDC2191
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698950299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gcxyLn+j42pQ4O/S+kERc6I/oidQhojoanYwpge7F0M=;
-        b=EQ1WMGB1YOwVgGItqHt1x0ehiKTudIGLn1ZYbmPukiSolgrshqxD5Kiyt5T50r3SgdGsIE
-        Zlx99QX+pvV/49kwGeqgYI1wA4+741Lyx9mP9YUgIZCAkhqMGhi7pN5orrfi5NAJSa2c1q
-        Of8GAtHkZU2qorcLOiNdqJjthK/fqCM=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-IlLozxYiOGWfGWh7TxgZnA-1; Thu, 02 Nov 2023 14:38:17 -0400
-X-MC-Unique: IlLozxYiOGWfGWh7TxgZnA-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c53c85e482so13917671fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:38:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698950295; x=1699555095;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        Thu, 2 Nov 2023 14:41:09 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5E4134
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:41:01 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so18014081fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698950460; x=1699555260; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gcxyLn+j42pQ4O/S+kERc6I/oidQhojoanYwpge7F0M=;
-        b=OvR/7/mH66iBu4wg4qOJXV37yNuqKMFsBXZG17nIfYrb1vxp2Y9oZB6zDk929zcrfa
-         Mdk8HAjQWCTCy1srlj20MgurzVHmAUzGf+bwA042prVW3c7kOHUThy/LosHfGWrDUDqq
-         dZLfsqH4xY6mFW43D6g6VJGcxYDFcDrTcZTGNsgfKWG7YkmqtORfgZan4ZTFjHNEAmfK
-         zd4LBNlwo+kWX60M0XwX7jSpjRVAjiTlc1Af0TfKyMg+9XaUlrJvfZRw14oYktziNaJw
-         WZGJekkpLdQRJ53znxh9DMyNJOnrw2whnFqQaqP/8SPub+9/Jd6NppJTjG3995IUYT7N
-         jflA==
-X-Gm-Message-State: AOJu0Yxi3Ja205ONPoPLZrUZcY7O1aQuG250/OI96H5rW4G/OlTq3mBp
-        PFaMUJ1q9t7g2pA4RZf02IqtvS4j6oPCwfCZdUt7peP8FY/i92NAz2cAGmxu/db0RPVfcyrSEVV
-        ImFygVtn2aLLV6slyOdldFzut
-X-Received: by 2002:a2e:9246:0:b0:2c5:724:fd64 with SMTP id v6-20020a2e9246000000b002c50724fd64mr14938878ljg.46.1698950295631;
-        Thu, 02 Nov 2023 11:38:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IETpjEQuLp/YLIGLU/uCXNKi9ikEizahd/fHeez4QkxXxrfARhFToG4SyaI8Sn9obRou8ayDw==
-X-Received: by 2002:a2e:9246:0:b0:2c5:724:fd64 with SMTP id v6-20020a2e9246000000b002c50724fd64mr14938863ljg.46.1698950295255;
-        Thu, 02 Nov 2023 11:38:15 -0700 (PDT)
-Received: from starship ([89.237.99.95])
-        by smtp.gmail.com with ESMTPSA id p22-20020a05600c1d9600b004060f0a0fd5sm328240wms.13.2023.11.02.11.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 11:38:14 -0700 (PDT)
-Message-ID: <ff6b7e9d90d80feb9dcabb0fbd3808c04db3ff94.camel@redhat.com>
-Subject: Re: [PATCH v6 19/25] KVM: VMX: Emulate read and write to CET MSRs
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Thu, 02 Nov 2023 20:38:12 +0200
-In-Reply-To: <ZUJ9fDuQUNe9BLUA@google.com>
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
-         <20230914063325.85503-20-weijiang.yang@intel.com>
-         <d67fe0ca19f7aef855aa376ada0fc96a66ca0d4f.camel@redhat.com>
-         <ZUJ9fDuQUNe9BLUA@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=IEpZhe0N2sN6GVcRg3szCztdEpMXAkzbYdbkv3mYVKg=;
+        b=ulnjtFJnhHlwKCyC1/AZ1zSE6jmTjNnGl+1gPQ9y5WwhoY2j3Zz9bYXPidm0rIx7QQ
+         nW8jd00MIhV0SCLK5tPh33JCTPsPEgqkXjhZ/k+iAKRGweTzwac/BhJhrLKrXLcJnXqB
+         AMekWuvy9ntZniv+v6b/i1k8kcwUQYbR6ri1CCeiqeTVlLoQWTJDVasEWqot/hEZVKzp
+         Eh0OdoOqIm3YkU5E6efCiE2W5FNKctZZEiE/0nFPrBDUoiAhShEwLIZGubrQ2Ab7WVXX
+         +Hd7GS+j688NSzCG6Quf2788tdHucq+L1mofbLXSx/z//aDwpgPTmKMzwj5iBWNMHI6E
+         HiTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698950460; x=1699555260;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IEpZhe0N2sN6GVcRg3szCztdEpMXAkzbYdbkv3mYVKg=;
+        b=MiKUh1Rux/yobPooNXbG8irSVeya/PKu5DRqgCJp89FUYjTLhnkWxuzgx+Br1/vsFY
+         lgQIj9JKAdyCyUSKeQRCs0tbN9d1fDcQ21bjZXSNT8zGZ+SOY+t/eDARlKkelLI5MBOl
+         bsSJQ1p/wr2BakjC6Kl00JoZQOfdd2dKEAPfU6HDLImv6aXRXHCjUcP3jepZ3VGG9wev
+         +Cy5MKQq8NvUqTVi7QvnN+fw4pQQsHxA1pe6MDVWs/qG/Sqj7KCxjfzZMd35Lvou2Qce
+         YVzK0dL3wyfN34HVC5vTXLfIgvgos1Prdp1C7R/L1W19Xlhu3pNagy6fFYuxBFInkUiF
+         QQTA==
+X-Gm-Message-State: AOJu0YxP8K/gdAt5W2oRgSVVmTgTS7JUXc/7upSqqfqIyICO03C6SAnW
+        iEkqME4vuGdmcF3whyFvKnIGXg==
+X-Google-Smtp-Source: AGHT+IHOG6JY6QHe6uEhX0t0A0QtG2EyhAEZkQBZ47BXTPo2Tx8sm8ASqdDLXlJVbPtHx31RMFUn0w==
+X-Received: by 2002:a05:651c:336:b0:2c5:15dc:ba99 with SMTP id b22-20020a05651c033600b002c515dcba99mr12946673ljp.51.1698950460025;
+        Thu, 02 Nov 2023 11:41:00 -0700 (PDT)
+Received: from [192.168.67.140] (92.40.204.37.threembb.co.uk. [92.40.204.37])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05600c2d4b00b00405c33a9a12sm1481939wmg.0.2023.11.02.11.40.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 11:40:59 -0700 (PDT)
+Message-ID: <dbf4a48e-c808-4611-96b1-563ece1e451a@linaro.org>
+Date:   Thu, 2 Nov 2023 18:40:57 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/8] dt-bindings: usb: qcom,dwc3: Add bindings to enable
+ runtime
+Content-Language: en-US
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     quic_wcheng@quicinc.com, linux-usb@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-2-quic_kriskura@quicinc.com>
+ <272a9764-1cae-4d86-88b1-00175de83333@linaro.org>
+ <960101cc-78c0-49cf-ab62-90614eeb9ee2@quicinc.com>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <960101cc-78c0-49cf-ab62-90614eeb9ee2@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-01 at 09:31 -0700, Sean Christopherson wrote:
-> On Tue, Oct 31, 2023, Maxim Levitsky wrote:
-> > On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
-> > > Add emulation interface for CET MSR access. The emulation code is split
-> > > into common part and vendor specific part. The former does common check
-> > > for MSRs and reads/writes directly from/to XSAVE-managed MSRs via the
-> > > helpers while the latter accesses the MSRs linked to VMCS fields.
-> > > 
-> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> > > ---
+> Hi Caleb,
 > 
-> ...
+>    There are two types of platforms, some use extcon and some use 
+> role-switch to deliver vbus/id notifications. Extcon targets already 
+> have this qscratch modifications present today in vbus and id handlers. 
+> But for role-switch based targets we don't have any way to get this 
+> notification to dwc3-qcom. In this implementation, I wanted to get those 
+> notications from core to glue and for this we implenented vendor hooks.
 > 
-> > > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> > > +	case MSR_KVM_SSP:
-> > > +		if (host_msr_reset && kvm_cpu_cap_has(X86_FEATURE_SHSTK))
-> > > +			break;
-> > > +		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK))
-> > > +			return 1;
-> > > +		if (index == MSR_KVM_SSP && !host_initiated)
-> > > +			return 1;
-> > > +		if (is_noncanonical_address(data, vcpu))
-> > > +			return 1;
-> > > +		if (index != MSR_IA32_INT_SSP_TAB && !IS_ALIGNED(data, 4))
-> > > +			return 1;
-> > > +		break;
-> > Once again I'll prefer to have an ioctl for setting/getting SSP, this will
-> > make the above code simpler (e.g there will be no need to check that write
-> > comes from the host/etc).
+> The property added has been used to do two things:
 > 
-> I don't think an ioctl() would be simpler overall, especially when factoring in
-> userspace.  With a synthetic MSR, we get the following quite cheaply:
+> 1. Register glue's vendor hooks to core driver
+> 2. Do runtime_allow for glue (and by default for core as the dt is not 
+> flattened)
 > 
->  1. Enumerating support to userspace.
->  2. Save/restore of the value, e.g. for live migration.
->  3. Vendor hooks for propagating values to/from the VMCS/VMCB.
-> 
-> For an ioctl(), 
-> #1 would require a capability, #2 (and #1 to some extent) would
-> require new userspace flows, and #3 would require new kvm_x86_ops hooks.
-> 
-> The synthetic MSR adds a small amount of messiness, as does bundling 
-> MSR_IA32_INT_SSP_TAB with the other shadow stack MSRs.  The bulk of the mess comes
-> from the need to allow userspace to write '0' when KVM enumerated supported to
-> userspace.
+> In case of extcon, we don't want to register vendor hooks as 
+> notifications are not necessary.
 
+Could it just be enabled when role_switch is present then?
+> 
+> For xhci, we opted to enable runtime from userspace.
 
-Let me put it this way - all hacks start like that, and in this case this is API/ABI hack
-so we will have to live with it forever.
+>>>         HS/FS/LS modes are supported.
+>>>       type: boolean
+>>> +  qcom,enable-rt:
+>>> +    description:
+>>> +      If present, register vendor hooks to facilitate runtime 
+>>> suspend/resume
+>>> +    type: boolean
+>>
+>> A Krzysztof pointed out, properties should define the hardware 
+>> behaviour, not tot the implementation details. For this case the 
+>> hardware isn't wired up to vbus, so maybe something like "qcom,no-vbus"?
+>>> +
+> 
+> On all targets, vbus is not routed to hardware. This vbus toggle 
+> indication is given to controller via qscratch only.
+> 
+> Regards,
+> Krishna,
 
-Once there is a precedent, trust me there will be 10s of new 'fake' msrs added, and the
-interface will become one big mess.
-
-As I suggested, if you don't want to add new capability/ioctl and vendor callback per new
-x86 arch register, then let's implement KVM_GET_ONE_REG/KVM_SET_ONE_REG and then it will
-be really easy to add new regs without confusing users, and without polluting msr
-namespace with msrs that don't exist.
-
-
-Best regards,
-	Maxim Levitsky
-
-
-> 
-> If we isolate MSR_IA32_INT_SSP_TAB, that'll help with the synthetic MSR and with
-> MSR_IA32_INT_SSP_TAB.  For the unfortunate "host reset" behavior, the best idea I
-> came up with is to add a helper.  It's still a bit ugly, but the ugliness is
-> contained in a helper and IMO makes it much easier to follow the case statements.
-> 
-> get:
-> 
-> 	case MSR_IA32_INT_SSP_TAB:
-> 		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) ||
-> 		    !guest_cpuid_has(vcpu, X86_FEATURE_LM))
-> 			return 1;
-> 		break;
-> 	case MSR_KVM_SSP:
-> 		if (!host_initiated)
-> 			return 1;
-> 		fallthrough;
-> 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> 		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK))
-> 			return 1;
-> 		break;
-> 
-> static bool is_set_cet_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u64 data,
-> 				   bool host_initiated)
-> {
-> 	bool any_cet = index == MSR_IA32_S_CET || index == MSR_IA32_U_CET;
-> 
-> 	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
-> 		return true;
-> 
-> 	if (any_cet && guest_can_use(vcpu, X86_FEATURE_IBT))
-> 		return true;
-> 
-> 	/* 
-> 	 * If KVM supports the MSR, i.e. has enumerated the MSR existence to
-> 	 * userspace, then userspace is allowed to write '0' irrespective of
-> 	 * whether or not the MSR is exposed to the guest.
-> 	 */
-> 	if (!host_initiated || data)
-> 		return false;
-> 
-> 	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK))
-> 		return true;
-> 
-> 	return any_cet && kvm_cpu_cap_has(X86_FEATURE_IBT);
-> }
-> 
-> set:
-> 	case MSR_IA32_U_CET:
-> 	case MSR_IA32_S_CET:
-> 		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated))
-> 			return 1;
-> 		if (data & CET_US_RESERVED_BITS)
-> 			return 1;
-> 		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
-> 		    (data & CET_US_SHSTK_MASK_BITS))
-> 			return 1;
-> 		if (!guest_can_use(vcpu, X86_FEATURE_IBT) &&
-> 		    (data & CET_US_IBT_MASK_BITS))
-> 			return 1;
-> 		if (!IS_ALIGNED(CET_US_LEGACY_BITMAP_BASE(data), 4))
-> 			return 1;
-> 
-> 		/* IBT can be suppressed iff the TRACKER isn't WAIT_ENDBR. */
-> 		if ((data & CET_SUPPRESS) && (data & CET_WAIT_ENDBR))
-> 			return 1;
-> 		break;
-> 	case MSR_IA32_INT_SSP_TAB:
-> 		if (!guest_cpuid_has(vcpu, X86_FEATURE_LM))
-> 			return 1;
-> 
-> 		if (is_noncanonical_address(data, vcpu))
-> 			return 1;
-> 		break;
-> 	case MSR_KVM_SSP:
-> 		if (!host_initiated)
-> 			return 1;
-> 		fallthrough;
-> 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> 		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated))
-> 			return 1;
-> 		if (is_noncanonical_address(data, vcpu))
-> 			return 1;
-> 		if (!IS_ALIGNED(data, 4))
-> 			return 1;
-> 		break;
-> 	}
-> 
-
-
+-- 
+// Caleb (they/them)
