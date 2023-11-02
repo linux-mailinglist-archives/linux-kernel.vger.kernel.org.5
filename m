@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC2D7DEA57
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E587DEA67
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbjKBBqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 21:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S235076AbjKBBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 21:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbjKBBqR (ORCPT
+        with ESMTP id S232035AbjKBBtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 21:46:17 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B4110;
-        Wed,  1 Nov 2023 18:46:14 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b89ab5ddb7so517719b3a.0;
-        Wed, 01 Nov 2023 18:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698889574; x=1699494374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gy/GVknEDM3F376D/bWf0Z1BlGJZY3l5y/EY0cLFHSg=;
-        b=TWAyJLHtEzCrtE8BxLEihlp2juJcvdolRk8Vo+jvdlgkmW3kSAZkRjRPAAbp59Tywb
-         ODEOrWvO2p2i7ob13s0sRTlCoY+LN+WTVSExOBWG7pXqcTt12mClCM+ss8JRnJQhO+Yn
-         MzaqlAS1S0gBF8cWpUCau0g98g8xqJXCWC+Ln8q8wc9VR4i78XUYjFoh8URgQGl57rNN
-         mL5g5b/J+DapOX2Btjsxt0aIDvK1TwgVRT+BOpvXr37kYCqmSutbW8tJtOjjmWXr3ERE
-         yH1bbQfF9Y0L+4HEtvL48eSjB15yUQf9o4g2x7BT4o5aNnt6e0pqw/sbt/rixqscQuxy
-         TAJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698889574; x=1699494374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gy/GVknEDM3F376D/bWf0Z1BlGJZY3l5y/EY0cLFHSg=;
-        b=FuFTk/0466vXLtd6j0Y/fVDJnzsj8CpcqHQn2QOGL5H6kWHbi91zEAEfv3+u3dKnOB
-         dnreWvir9iaARM2BKKmRdawMr94E0v/V+/oZzLZ47fsAWzK+HFh6/ILsfk71ErKpTEz1
-         oVdp4l1o7opeVU2lyYDBvTAu1707w0HYAeeIRq+EIE64KnfjjMCdDXcv0g/kNqBnyIrY
-         KRGUBLMPk+YoN5kpcqI2Sf9VFqgSkqxFOmflUqDLX4cYQNmf3Gz+x/+usfa8nUIC7t0L
-         mLC0DpbnTtyLWqZMEbz0y1h9AhEMH7+o7jlDCdgrRH8CubTfzzoCQUt20MSnO8/BpyCZ
-         l0bQ==
-X-Gm-Message-State: AOJu0YxMD0SzmIAUSO1KdQyigMeJaoLw7SAzKMhMxnGwvJ/OsX7c0HIc
-        eB997CQUJpxmVBt7vlOFB+1Mi+QMM3c=
-X-Google-Smtp-Source: AGHT+IE1CaL6tZHiXbUN1S+2Xw9nk5lTFyRUC9NtCsot0YT6JaNtGPJFTNVzNYU2iGIKcYNUusdGSQ==
-X-Received: by 2002:a05:6a00:16d5:b0:6bb:def8:b0a7 with SMTP id l21-20020a056a0016d500b006bbdef8b0a7mr21606945pfc.3.1698889574218;
-        Wed, 01 Nov 2023 18:46:14 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id a17-20020a637051000000b005b3cc663c8csm436415pgn.21.2023.11.01.18.46.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 18:46:13 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 955DA80DFD3B; Thu,  2 Nov 2023 08:46:10 +0700 (WIB)
-Date:   Thu, 2 Nov 2023 08:46:10 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 000/111] 6.5.10-rc2 review
-Message-ID: <ZUL_YkVgFnWQ9k-7@debian.me>
-References: <20231101120147.190909952@linuxfoundation.org>
+        Wed, 1 Nov 2023 21:49:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F15A110;
+        Wed,  1 Nov 2023 18:49:26 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A20vYpB025132;
+        Thu, 2 Nov 2023 01:49:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=DNmtD1Fyx0xLwPw+8zOcJX13mv4B2aavfM2aRPNcGZU=;
+ b=O+T6YT9EjTajZinTmphRzXYdyeFQpdJw4pNO9spo1lHGKPqEQWuIcE2PJh1AG7Q/t3Qv
+ QruS9CzCJUs+F9zJmZ6EwHpuevCe0EaeUvoFPvuZZf44h3lYtr3uWsuvcNnpXGJurnp7
+ W++Vr5RMSWkqK7hpHD4bc0vDnUY3X4evnolOGBXddfy0rY1WsJaI2AXDXiqsR0d5/HgI
+ Y0Ck0OkDglXD7Se2FkbZrvPq5h6//pkrm0gzXkqhEvXMMivD1HZP0xTSmkm/fNdjI53Z
+ bKDBK8qxMDLiGy75RZVjfxdIuta88Iv7ltveHXJngFVpsxUPlpyoO2P/N2S42MxPPGoP dQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3a5ekyxc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 01:49:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A21n49Q002371
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 2 Nov 2023 01:49:04 GMT
+Received: from [10.253.74.76] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 1 Nov
+ 2023 18:49:01 -0700
+Message-ID: <c4daed9a-4d76-a248-d560-edb851b4927c@quicinc.com>
+Date:   Thu, 2 Nov 2023 09:48:58 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7oM5a5ZDZL/pUZYV"
-Content-Disposition: inline
-In-Reply-To: <20231101120147.190909952@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] scsi: ufs: ufs-sysfs: Expose UFS power info
+To:     Bart Van Assche <bvanassche@acm.org>, <mani@kernel.org>,
+        <stanley.chu@mediatek.com>, <adrian.hunter@intel.com>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Lu Hongfei <luhongfei@vivo.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1698811243-5024-1-git-send-email-quic_cang@quicinc.com>
+ <ebdbb2eb-0339-40a7-9697-6148fcda81a2@acm.org>
+Content-Language: en-US
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <ebdbb2eb-0339-40a7-9697-6148fcda81a2@acm.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: B7oJ4lXpztjDpjji8uCVxKjctiTVRV37
+X-Proofpoint-ORIG-GUID: B7oJ4lXpztjDpjji8uCVxKjctiTVRV37
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=892
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311020013
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bart,
 
---7oM5a5ZDZL/pUZYV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11/2/2023 1:07 AM, Bart Van Assche wrote:
+> On 10/31/23 21:00, Can Guo wrote:
+>> +    return sysfs_emit(buf, "%s\n", hba->pwr_info.hs_rate ?
+>> + ufshcd_ufs_hs_gear_to_string(hba->pwr_info.gear_rx) :
+>> + ufshcd_ufs_pwm_gear_to_string(hba->pwr_info.gear_rx));
+>> +}
+>
+> A nit: this is not how kernel code should be indented. I think that
+> "ufshcd_..." should be aligned with "buf,".
+>
+> Anyway:
+>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
-On Wed, Nov 01, 2023 at 01:03:25PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.10 release.
-> There are 111 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+Will address it in next version.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
---=20
-An old man doll... just what I always wanted! - Clara
+Thanks,
 
---7oM5a5ZDZL/pUZYV
-Content-Type: application/pgp-signature; name="signature.asc"
+Can Guo.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUL/XQAKCRD2uYlJVVFO
-o+/CAP43RALYZT77HFB6VE70PhFjGfg1TfgPxT6QuqLkqzEGYQD8CXvInaHtI5wq
-WaGUr7YyWPEzjjC5bkWLf993GkrrBg8=
-=f0/W
------END PGP SIGNATURE-----
-
---7oM5a5ZDZL/pUZYV--
