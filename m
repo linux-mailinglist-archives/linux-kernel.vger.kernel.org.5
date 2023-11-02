@@ -2,120 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A891C7DE9F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154257DE9FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348017AbjKBBXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 21:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        id S1348212AbjKBB1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 21:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjKBBXE (ORCPT
+        with ESMTP id S1347891AbjKBB1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 21:23:04 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA26D83
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 18:23:00 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 3A21MIDF005064;
-        Thu, 2 Nov 2023 09:22:18 +0800 (+08)
-        (envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SLQwJ48L0z2LC54f;
-        Thu,  2 Nov 2023 09:17:36 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Thu, 2 Nov 2023 09:22:16 +0800
-From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
-To:     <jaegeuk@kernel.org>, <chao@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
-        <zhiguo.niu@unisoc.com>
-Subject: [PATCH] f2fs: fix thread name cannot be fully displayed
-Date:   Thu, 2 Nov 2023 09:20:42 +0800
-Message-ID: <1698888042-17199-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 1 Nov 2023 21:27:22 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACE2B9;
+        Wed,  1 Nov 2023 18:27:16 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso8621835e9.0;
+        Wed, 01 Nov 2023 18:27:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698888435; x=1699493235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bm/7OFBSoips3tnbFo8g5Iu+aRQyE9BXKI+0RALQB2s=;
+        b=hh36X+0ZgVfPXzVoEbmb//7/o5unnfqW+PXrw2ImucT0ffEQjykB6Dcv+3K8LbFkTP
+         z+viv5+gPhIBG4MkxX+gHpzF7Erfphtv6cqGO6y9dwu0045GWRoZnz1y4rHDCOzvVTtJ
+         /O3srxPjmtat3UwD80+W7rNpcyME8+PD+el8OHvEZvOcXUWl9WW1jmGtbKeummRh5yQh
+         MI66FK0/y1hT2ib0/mlPq6FqHZR330HzX0qR47jPttE1+63DS8X/lvQPCHiy/JhgXm0x
+         7MkfRkaNgUmKWRiCIl+8ZaEt+2l2a8/bjldcviedmTuABKPX8v4jKthoBlhpnwymRewH
+         IA9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698888435; x=1699493235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bm/7OFBSoips3tnbFo8g5Iu+aRQyE9BXKI+0RALQB2s=;
+        b=l2lkr0pRGF1Zt3+tYxY4vj1Q8Niz7DhQIuNdtkhyH/48sVfXWVuJbCmF9dpe7eyIyr
+         fCBbG/QLiFwZuin/Cn1V4emvOISPVSn5gtU42GjqPrTZ9tSA0bvrUA41uppiWZBgafzz
+         wU2T0gYzzNLIFzvTNaG+3LwETWHEMzKZ36vfXWJ1dItdZU2gdherooUNotOkGEHfsnxU
+         RKnQ6AiuebAHGwVEhw97l9pTuH1q7IJznxOBYwf4BUR3PU8EbrBI9sBfGZ7GGUJoMoA4
+         IVbWf/yqKj38rVUumTzITi2qpgU7TpSLFbAUq4qfCkAMLG2kXl1oOmx1UmSeC0F3st+b
+         roug==
+X-Gm-Message-State: AOJu0YzD18uZ3sFRYXLnhbBpHpl6lTkeTFilAzXEU2jRapQjjRWjoEYl
+        /vp2M5WRvvRgTDzFRJEJGfEts6ua4JZwQYi3t7c=
+X-Google-Smtp-Source: AGHT+IHj/G3eivIIeS4ybijd2Nw580bsygvI2ppnmzqjYuBfD5cWVeVQMU0I52I82q92r002zXMT32kkGW7PhXK6HPQ=
+X-Received: by 2002:a05:6000:1867:b0:32d:9d03:29e6 with SMTP id
+ d7-20020a056000186700b0032d9d0329e6mr9894030wri.27.1698888434551; Wed, 01 Nov
+ 2023 18:27:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.73.87]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL: SHSQR01.spreadtrum.com 3A21MIDF005064
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1698875025.git.dxu@dxuuu.xyz> <0a5dc090a098b911bdd19ed0e63c7e466f7054f6.1698875025.git.dxu@dxuuu.xyz>
+In-Reply-To: <0a5dc090a098b911bdd19ed0e63c7e466f7054f6.1698875025.git.dxu@dxuuu.xyz>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 1 Nov 2023 18:27:03 -0700
+Message-ID: <CAADnVQJu27HZGaTH5046Smwjpn-ttVCRR7f_0B12es_juZiN5w@mail.gmail.com>
+Subject: Re: [RFCv2 bpf-next 1/7] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>, antony.antony@secunet.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because the length of task'name in task_struct can not exceed
-16 characters, f2fs some thread'name cannot be fully displayed,
-including important device number information.
-If there are more than one partition using the f2fs file system,
-it is very inconvenient to match partitions and their threads.
+On Wed, Nov 1, 2023 at 2:58=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> This commit adds an unstable kfunc helper to access internal xfrm_state
+> associated with an SA. This is intended to be used for the upcoming
+> IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
+> words: for custom software RSS.
+>
+> That being said, the function that this kfunc wraps is fairly generic
+> and used for a lot of xfrm tasks. I'm sure people will find uses
+> elsewhere over time.
+>
+> Co-developed-by: Antony Antony <antony.antony@secunet.com>
+> Signed-off-by: Antony Antony <antony.antony@secunet.com>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  include/net/xfrm.h        |   9 ++++
+>  net/xfrm/Makefile         |   1 +
+>  net/xfrm/xfrm_policy.c    |   2 +
+>  net/xfrm/xfrm_state_bpf.c | 105 ++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 117 insertions(+)
+>  create mode 100644 net/xfrm/xfrm_state_bpf.c
+>
+> diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> index c9bb0f892f55..1d107241b901 100644
+> --- a/include/net/xfrm.h
+> +++ b/include/net/xfrm.h
+> @@ -2190,4 +2190,13 @@ static inline int register_xfrm_interface_bpf(void=
+)
+>
+>  #endif
+>
+> +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> +int register_xfrm_state_bpf(void);
+> +#else
+> +static inline int register_xfrm_state_bpf(void)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  #endif /* _NET_XFRM_H */
+> diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> index cd47f88921f5..547cec77ba03 100644
+> --- a/net/xfrm/Makefile
+> +++ b/net/xfrm/Makefile
+> @@ -21,3 +21,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) +=3D xfrm_compat.o
+>  obj-$(CONFIG_XFRM_IPCOMP) +=3D xfrm_ipcomp.o
+>  obj-$(CONFIG_XFRM_INTERFACE) +=3D xfrm_interface.o
+>  obj-$(CONFIG_XFRM_ESPINTCP) +=3D espintcp.o
+> +obj-$(CONFIG_DEBUG_INFO_BTF) +=3D xfrm_state_bpf.o
+> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> index c13dc3ef7910..1b7e75159727 100644
+> --- a/net/xfrm/xfrm_policy.c
+> +++ b/net/xfrm/xfrm_policy.c
+> @@ -4218,6 +4218,8 @@ void __init xfrm_init(void)
+>  #ifdef CONFIG_XFRM_ESPINTCP
+>         espintcp_init();
+>  #endif
+> +
+> +       register_xfrm_state_bpf();
+>  }
+>
+>  #ifdef CONFIG_AUDITSYSCALL
+> diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
+> new file mode 100644
+> index 000000000000..4aaac134b97a
+> --- /dev/null
+> +++ b/net/xfrm/xfrm_state_bpf.c
 
-The following examples show that 4 partitions all use f2fs file system
-PID: 400    TASK: ffffff80f120c9c0  CPU: 2   COMMAND: "f2fs_discard-25"
-PID: 392    TASK: ffffff80f6b75880  CPU: 3   COMMAND: "f2fs_discard-25"
-PID: 400    TASK: ffffff80f120c9c0  CPU: 2   COMMAND: "f2fs_discard-25"
-PID: 392    TASK: ffffff80f6b75880  CPU: 3   COMMAND: "f2fs_discard-25"
-PID: 510    TASK: ffffff80dd62c9c0  CPU: 0   COMMAND: "f2fs_ckpt-254:4"
-PID: 255    TASK: ffffff80f2268000  CPU: 3   COMMAND: "f2fs_ckpt-259:4"
-PID: 398    TASK: ffffff80f120ac40  CPU: 2   COMMAND: "f2fs_ckpt-259:4"
-PID: 390    TASK: ffffff80f6b76740  CPU: 3   COMMAND: "f2fs_ckpt-259:4"
-PID: 511    TASK: ffffff80dd629d80  CPU: 3   COMMAND: "f2fs_flush-254:"
-PID: 399    TASK: ffffff80f120bb00  CPU: 2   COMMAND: "f2fs_flush-259:"
-PID: 391    TASK: ffffff80f6b70000  CPU: 3   COMMAND: "f2fs_flush-259:"
-PID: 256    TASK: ffffff80f226d880  CPU: 6   COMMAND: "f2fs_flush-259:"
+since net/xfrm/xfrm_interface_bpf.c is already there and
+was meant to be use as a file for interface between xfrm and bpf
+may be add new kfuncs there instead of new file?
 
-We can use the name format such as f2fs_gc-xxx, as saw in device:
-PID: 260    TASK: ffffff80f8c2e740  CPU: 3   COMMAND: "f2fs_gc-259:44"
-PID: 420    TASK: ffffff80f6505880  CPU: 2   COMMAND: "f2fs_gc-259:41"
-PID: 393    TASK: ffffff80f6b72c40  CPU: 1   COMMAND: "f2fs_gc-259:40
-PID: 513    TASK: ffffff80dd62e740  CPU: 1   COMMAND: "f2fs_gc-254:40"
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
----
- fs/f2fs/checkpoint.c | 2 +-
- fs/f2fs/segment.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Unstable XFRM state BPF helpers.
+> + *
+> + * Note that it is allowed to break compatibility for these functions si=
+nce the
+> + * interface they are exposed through to BPF programs is explicitly unst=
+able.
+> + */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <net/xdp.h>
+> +#include <net/xfrm.h>
+> +
+> +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> + *
+> + * Members:
+> + * @error      - Out parameter, set for any errors encountered
+> + *              Values:
+> + *                -EINVAL - netns_id is less than -1
+> + *                -EINVAL - Passed NULL for opts
+> + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> + *                -ENONET - No network namespace found for netns_id
+> + * @netns_id   - Specify the network namespace for lookup
+> + *              Values:
+> + *                BPF_F_CURRENT_NETNS (-1)
+> + *                  Use namespace associated with ctx
+> + *                [0, S32_MAX]
+> + *                  Network Namespace ID
+> + * @mark       - XFRM mark to match on
+> + * @daddr      - Destination address to match on
+> + * @spi                - Security parameter index to match on
+> + * @proto      - L3 protocol to match on
+> + * @family     - L3 protocol family to match on
+> + */
+> +struct bpf_xfrm_state_opts {
+> +       s32 error;
+> +       s32 netns_id;
+> +       u32 mark;
+> +       xfrm_address_t daddr;
+> +       __be32 spi;
+> +       u8 proto;
+> +       u16 family;
+> +};
+> +
+> +enum {
+> +       BPF_XFRM_STATE_OPTS_SZ =3D sizeof(struct bpf_xfrm_state_opts),
+> +};
+> +
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "Global functions as their definitions will be in xfrm_=
+state BTF");
+> +
+> +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> + *
+> + * Parameters:
+> + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> + *                 Cannot be NULL
+> + * @opts       - Options for lookup (documented above)
+> + *                 Cannot be NULL
+> + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> + */
+> +__bpf_kfunc struct xfrm_state *
+> +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *o=
+pts, u32 opts__sz)
+> +{
+> +       struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> +       struct net *net =3D dev_net(xdp->rxq->dev);
+> +
+> +       if (!opts || opts__sz !=3D BPF_XFRM_STATE_OPTS_SZ) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (opts->netns_id >=3D 0) {
+> +               net =3D get_net_ns_by_id(net, opts->netns_id);
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index b0597a5..f6a5424 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1893,7 +1893,7 @@ int f2fs_start_ckpt_thread(struct f2fs_sb_info *sbi)
- 		return 0;
- 
- 	cprc->f2fs_issue_ckpt = kthread_run(issue_checkpoint_thread, sbi,
--			"f2fs_ckpt-%u:%u", MAJOR(dev), MINOR(dev));
-+			"f2fs_cp-%u:%u", MAJOR(dev), MINOR(dev));
- 	if (IS_ERR(cprc->f2fs_issue_ckpt)) {
- 		int err = PTR_ERR(cprc->f2fs_issue_ckpt);
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index d05b416..b290713 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -677,7 +677,7 @@ int f2fs_create_flush_cmd_control(struct f2fs_sb_info *sbi)
- 
- init_thread:
- 	fcc->f2fs_issue_flush = kthread_run(issue_flush_thread, sbi,
--				"f2fs_flush-%u:%u", MAJOR(dev), MINOR(dev));
-+				"f2fs_fh-%u:%u", MAJOR(dev), MINOR(dev));
- 	if (IS_ERR(fcc->f2fs_issue_flush)) {
- 		int err = PTR_ERR(fcc->f2fs_issue_flush);
- 
-@@ -2248,7 +2248,7 @@ int f2fs_start_discard_thread(struct f2fs_sb_info *sbi)
- 		return 0;
- 
- 	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
--				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
-+				"f2fs_dc-%u:%u", MAJOR(dev), MINOR(dev));
- 	if (IS_ERR(dcc->f2fs_issue_discard)) {
- 		err = PTR_ERR(dcc->f2fs_issue_discard);
- 		dcc->f2fs_issue_discard = NULL;
--- 
-1.9.1
+netns is leaking :(
 
+> +               if (unlikely(!net)) {
+> +                       opts->error =3D -ENONET;
+> +                       return NULL;
+> +               }
+> +       }
+> +
+> +       return xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi=
+,
+> +                                opts->proto, opts->family);
+
+After looking into xfrm internals realized that
+refcnt inc/dec and KF_ACQUIRE maybe unnecessary overhead.
+XDP progs run under rcu_read_lock.
+I think you can make a version of __xfrm_state_lookup()
+without xfrm_state_hold_rcu() and avoid two atomics per packet,
+but such xfrm_state may have refcnt=3D=3D0.
+Since bpf prog will only read from there and won't pass it anywhere
+else it might be ok.
+
+But considering the rest of ipsec overhead this might be
+a premature optimization and it's better to stay with clean
+acquire/release semantics.
+
+
+As far as IETF:
+https://datatracker.ietf.org/doc/html/draft-ietf-ipsecme-multi-sa-performan=
+ce-02
+it's not clear to me why one Child SA (without new pcpu field)
+has to be handled by one cpu.
+
+Sounds like it's possible to implement differently. At least in SW.
+In HW, I can see how duplicating multiple crypto state and the rest
+in a single queue is difficult.
