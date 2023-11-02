@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C53C07DF0EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B488F7DF0E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347152AbjKBLIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
+        id S1347337AbjKBLI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347283AbjKBLI0 (ORCPT
+        with ESMTP id S1347326AbjKBLIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:08:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5BB196
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:08:20 -0700 (PDT)
+        Thu, 2 Nov 2023 07:08:25 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D79194
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:08:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=7W49TRUT7mF/cAs1KlJPftLquObVPnXXCZ1Z4Fl4mU8=; b=D888II8AWl8id+w5D4nWM4qIIM
-        xql/wjDVc0j2XMKQEx3kQatUu9ALpFSmdc8ZfsACjHekYSzWvfYEnZoGC5jPWZrV0U6UrqUGfO0r4
-        4BzGIbyF+5j4NI01hEfneQUWs/uosuo7Q4adb2yBIaCnRibFC2UVz+6bARkAkkiCEkqAGEijxhMHH
-        hWPuzunyhI/RXSrMDakxt8BfP5GM/W02hdBxj24jdVpW1cfD1dabEaysezuWNWKinBAHuCZsB08H9
-        9n1rGvLGtrw6zCLpAZvqxC4Bnawim7llfzI4RcBS/S8ertbOt519EKG53KoluI8YgXnf37zgX6WSz
-        keEU8T7g==;
+        bh=Q2pn5I7nEgFk410rx98yIHVX9gkNSJA5RXy11j/TIUU=; b=g2TxvWUb+tdjz89PIGGXgKdHMb
+        o87ak7vYVvBl4+ZvD7z3AuVNmtL7xwzggARKzYhPihrBgmVI1PmuvvEaHlfavG4lyRPUgpYScj6nW
+        dqoXOZdGRMfqYzR2xLnp3V3dpUTJDkdk7B+KxqYTjUx//QBCsNV0c5fItfVn2Dl/jIAsrEqWJRLBO
+        1sx7xJVJCspPpK3P5TzGA9OmvIsoDOs2H66x4tymCb/2ydJGlF7N+tn+rmMZc4MpUWoAdZ/l/Hyf+
+        qWKpWG0sWU6dmpvV3UijgOdNd8HGXD5ApSHviLuuxOo2BT3O2bZUdcMCAahH1l5ZGkBc1xMGn40Eq
+        ojIsiMiw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qyVYZ-00467N-Pu; Thu, 02 Nov 2023 11:08:11 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qyVYZ-006WAQ-2h;
+        Thu, 02 Nov 2023 11:08:12 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7174130057E; Thu,  2 Nov 2023 12:08:11 +0100 (CET)
-Message-Id: <20231102110706.460851167@infradead.org>
+        id 7609F300940; Thu,  2 Nov 2023 12:08:11 +0100 (CET)
+Message-Id: <20231102110706.568467727@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 02 Nov 2023 11:44:30 +0100
+Date:   Thu, 02 Nov 2023 11:44:31 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Linus Torvalds <torvalds@linuxfoundation.org>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
@@ -40,222 +41,261 @@ Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Oleg Nesterov <oleg@redhat.com>,
         Eric Biederman <ebiederm@xmission.com>
-Subject: [PATCH 1/2] cleanup: Add conditional guard support
+Subject: [PATCH 2/2] ptrace: Convert ptrace_attach() to use lock guards
 References: <20231102104429.025835330@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds:
+Created as testing for the conditional guard infrastructure.
+Specifically this makes use of the following form:
 
- - DEFINE_GUARD_COND() / DEFINE_LOCK_GUARD_1_COND() to extend existing
-   guards with conditional lock primitives, eg. mutex_trylock(),
-   mutex_lock_interruptible().
-
-   nb. both primitives allow NULL 'locks', which cause the lock to
-       fail (obviously).
-
- - extends scoped_guard() to not take the body when the the
-   conditional guard 'fails'. eg.
-
-     scoped_guard (mutex_intr, &task->signal_cred_guard_mutex) {
-	...
-     }
-
-   will only execute the body when the mutex is held.
-
- - provides scoped_cond_guard(name, fail, args...); which extends
-   scoped_guard() to do fail when the lock-acquire fails.
+  scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
+		     &task->signal->cred_guard_mutex) {
+    ...
+  }
+  ...
+  return 0;
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
----
- include/linux/cleanup.h  |   52 ++++++++++++++++++++++++++++++++++++++++++++---
- include/linux/mutex.h    |    3 +-
- include/linux/rwsem.h    |    8 +++----
- include/linux/spinlock.h |   15 +++++++++++++
- 4 files changed, 70 insertions(+), 8 deletions(-)
+ include/linux/sched/task.h |    2 
+ include/linux/spinlock.h   |   26 ++++++++
+ kernel/ptrace.c            |  138 +++++++++++++++++++++------------------------
+ 3 files changed, 94 insertions(+), 72 deletions(-)
 
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -125,25 +125,55 @@ static inline class_##_name##_t class_##
-  *	trivial wrapper around DEFINE_CLASS() above specifically
-  *	for locks.
-  *
-+ * DEFINE_GUARD_COND(name, ext, condlock)
-+ *	wrapper around EXTEND_CLASS above to add conditional lock
-+ *	variants to a base class, eg. mutex_trylock() or
-+ *	mutex_lock_interruptible().
-+ *
-  * guard(name):
-- *	an anonymous instance of the (guard) class
-+ *	an anonymous instance of the (guard) class, not recommended for
-+ *	conditional locks.
-  *
-  * scoped_guard (name, args...) { }:
-  *	similar to CLASS(name, scope)(args), except the variable (with the
-  *	explicit name 'scope') is declard in a for-loop such that its scope is
-  *	bound to the next (compound) statement.
-  *
-+ *	for conditional locks the loop body is skipped when the lock is not
-+ *	acquired.
-+ *
-+ * scoped_cond_guard (name, fail, args...) { }:
-+ *      similar to scoped_guard(), except it does fail when the lock
-+ *      acquire fails.
-+ *
-  */
- 
- #define DEFINE_GUARD(_name, _type, _lock, _unlock) \
--	DEFINE_CLASS(_name, _type, _unlock, ({ _lock; _T; }), _type _T)
-+	DEFINE_CLASS(_name, _type, if (_T) { _unlock; }, ({ _lock; _T; }), _type _T); \
-+	static inline void * class_##_name##_lock_ptr(class_##_name##_t *_T) \
-+	{ return *_T; }
-+
-+#define DEFINE_GUARD_COND(_name, _ext, _condlock) \
-+	EXTEND_CLASS(_name, _ext, \
-+		     ({ void *_t = _T; if (_T && !(_condlock)) _t = NULL; _t; }), \
-+		     class_##_name##_t _T) \
-+	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
-+	{ return class_##_name##_lock_ptr(_T); }
- 
- #define guard(_name) \
- 	CLASS(_name, __UNIQUE_ID(guard))
- 
-+#define __guard_ptr(_name) class_##_name##_lock_ptr
-+
- #define scoped_guard(_name, args...)					\
- 	for (CLASS(_name, scope)(args),					\
--	     *done = NULL; !done; done = (void *)1)
-+	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
-+
-+#define scoped_cond_guard(_name, _fail, args...) \
-+	for (CLASS(_name, scope)(args), \
-+	     *done = NULL; !done; done = (void *)1) \
-+		if (!__guard_ptr(_name)(&scope)) _fail; \
-+		else
- 
- /*
-  * Additional helper macros for generating lock guards with types, either for
-@@ -152,6 +182,7 @@ static inline class_##_name##_t class_##
-  *
-  * DEFINE_LOCK_GUARD_0(name, lock, unlock, ...)
-  * DEFINE_LOCK_GUARD_1(name, type, lock, unlock, ...)
-+ * DEFINE_LOCK_GUARD_1_COND(name, ext, condlock)
-  *
-  * will result in the following type:
-  *
-@@ -173,6 +204,11 @@ typedef struct {							\
- static inline void class_##_name##_destructor(class_##_name##_t *_T)	\
- {									\
- 	if (_T->lock) { _unlock; }					\
-+}									\
-+									\
-+static inline void *class_##_name##_lock_ptr(class_##_name##_t *_T)	\
-+{									\
-+	return _T->lock;						\
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -226,4 +226,6 @@ static inline void task_unlock(struct ta
+ 	spin_unlock(&p->alloc_lock);
  }
  
- 
-@@ -201,4 +237,14 @@ __DEFINE_LOCK_GUARD_1(_name, _type, _loc
- __DEFINE_UNLOCK_GUARD(_name, void, _unlock, __VA_ARGS__)		\
- __DEFINE_LOCK_GUARD_0(_name, _lock)
- 
-+#define DEFINE_LOCK_GUARD_1_COND(_name, _ext, _condlock)		\
-+	EXTEND_CLASS(_name, _ext,					\
-+		     ({ class_##_name##_t _t = { .lock = l }, *_T = &_t;\
-+		        if (_T->lock && !(_condlock)) _T->lock = NULL;	\
-+			_t; }),						\
-+		     typeof_member(class_##_name##_t, lock) l)		\
-+	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
-+	{ return class_##_name##_lock_ptr(_T); }
++DEFINE_GUARD(task_lock, struct task_struct *, task_lock(_T), task_unlock(_T))
 +
-+
- #endif /* __LINUX_GUARDS_H */
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -221,6 +221,7 @@ extern void mutex_unlock(struct mutex *l
- extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
- 
- DEFINE_GUARD(mutex, struct mutex *, mutex_lock(_T), mutex_unlock(_T))
--DEFINE_FREE(mutex, struct mutex *, if (_T) mutex_unlock(_T))
-+DEFINE_GUARD_COND(mutex, _try, mutex_trylock(_T))
-+DEFINE_GUARD_COND(mutex, _intr, mutex_lock_interruptible(_T) == 0)
- 
- #endif /* __LINUX_MUTEX_H */
---- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -203,11 +203,11 @@ extern void up_read(struct rw_semaphore
- extern void up_write(struct rw_semaphore *sem);
- 
- DEFINE_GUARD(rwsem_read, struct rw_semaphore *, down_read(_T), up_read(_T))
--DEFINE_GUARD(rwsem_write, struct rw_semaphore *, down_write(_T), up_write(_T))
--
--DEFINE_FREE(up_read, struct rw_semaphore *, if (_T) up_read(_T))
--DEFINE_FREE(up_write, struct rw_semaphore *, if (_T) up_write(_T))
-+DEFINE_GUARD_COND(rwsem_read, _try, down_read_trylock(_T))
-+DEFINE_GUARD_COND(rwsem_read, _intr, down_read_interruptible(_T) == 0)
- 
-+DEFINE_GUARD(rwsem_write, struct rw_semaphore *, down_write(_T), up_write(_T))
-+DEFINE_GUARD_COND(rwsem_write, _try, down_write_trylock(_T))
- 
- /*
-  * downgrade write lock to read lock
+ #endif /* _LINUX_SCHED_TASK_H */
 --- a/include/linux/spinlock.h
 +++ b/include/linux/spinlock.h
-@@ -507,6 +507,8 @@ DEFINE_LOCK_GUARD_1(raw_spinlock, raw_sp
- 		    raw_spin_lock(_T->lock),
- 		    raw_spin_unlock(_T->lock))
+@@ -548,5 +548,31 @@ DEFINE_LOCK_GUARD_1(spinlock_irqsave, sp
+ DEFINE_LOCK_GUARD_1_COND(spinlock_irqsave, _try,
+ 			 spin_trylock_irqsave(_T->lock, _T->flags))
  
-+DEFINE_LOCK_GUARD_1_COND(raw_spinlock, _try, raw_spin_trylock(_T->lock))
++DEFINE_LOCK_GUARD_1(read_lock, rwlock_t,
++		    read_lock(_T->lock),
++		    read_unlock(_T->lock))
 +
- DEFINE_LOCK_GUARD_1(raw_spinlock_nested, raw_spinlock_t,
- 		    raw_spin_lock_nested(_T->lock, SINGLE_DEPTH_NESTING),
- 		    raw_spin_unlock(_T->lock))
-@@ -515,23 +517,36 @@ DEFINE_LOCK_GUARD_1(raw_spinlock_irq, ra
- 		    raw_spin_lock_irq(_T->lock),
- 		    raw_spin_unlock_irq(_T->lock))
- 
-+DEFINE_LOCK_GUARD_1_COND(raw_spinlock_irq, _try, raw_spin_trylock_irq(_T->lock))
++DEFINE_LOCK_GUARD_1(read_lock_irq, rwlock_t,
++		    read_lock_irq(_T->lock),
++		    read_unlock_irq(_T->lock))
 +
- DEFINE_LOCK_GUARD_1(raw_spinlock_irqsave, raw_spinlock_t,
- 		    raw_spin_lock_irqsave(_T->lock, _T->flags),
- 		    raw_spin_unlock_irqrestore(_T->lock, _T->flags),
- 		    unsigned long flags)
- 
-+DEFINE_LOCK_GUARD_1_COND(raw_spinlock_irqsave, _try,
-+			 raw_spin_trylock_irqsave(_T->lock, _T->flags))
++DEFINE_LOCK_GUARD_1(read_lock_irqsave, rwlock_t,
++		    read_lock_irqsave(_T->lock, _T->flags),
++		    read_unlock_irqrestore(_T->lock, _T->flags),
++		    unsigned long flags)
 +
- DEFINE_LOCK_GUARD_1(spinlock, spinlock_t,
- 		    spin_lock(_T->lock),
- 		    spin_unlock(_T->lock))
- 
-+DEFINE_LOCK_GUARD_1_COND(spinlock, _try, spin_trylock(_T->lock))
++DEFINE_LOCK_GUARD_1(write_lock, rwlock_t,
++		    write_lock(_T->lock),
++		    write_unlock(_T->lock))
 +
- DEFINE_LOCK_GUARD_1(spinlock_irq, spinlock_t,
- 		    spin_lock_irq(_T->lock),
- 		    spin_unlock_irq(_T->lock))
- 
-+DEFINE_LOCK_GUARD_1_COND(spinlock_irq, _try,
-+			 spin_trylock_irq(_T->lock))
++DEFINE_LOCK_GUARD_1(write_lock_irq, rwlock_t,
++		    write_lock_irq(_T->lock),
++		    write_unlock_irq(_T->lock))
 +
- DEFINE_LOCK_GUARD_1(spinlock_irqsave, spinlock_t,
- 		    spin_lock_irqsave(_T->lock, _T->flags),
- 		    spin_unlock_irqrestore(_T->lock, _T->flags),
- 		    unsigned long flags)
- 
-+DEFINE_LOCK_GUARD_1_COND(spinlock_irqsave, _try,
-+			 spin_trylock_irqsave(_T->lock, _T->flags))
++DEFINE_LOCK_GUARD_1(write_lock_irqsave, rwlock_t,
++		    write_lock_irqsave(_T->lock, _T->flags),
++		    write_unlock_irqrestore(_T->lock, _T->flags),
++		    unsigned long flags)
 +
  #undef __LINUX_INSIDE_SPINLOCK_H
  #endif /* __LINUX_SPINLOCK_H */
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -386,6 +386,34 @@ static int check_ptrace_options(unsigned
+ 	return 0;
+ }
+ 
++static inline void ptrace_set_stopped(struct task_struct *task)
++{
++	guard(spinlock)(&task->sighand->siglock);
++
++	/*
++	 * If the task is already STOPPED, set JOBCTL_TRAP_STOP and
++	 * TRAPPING, and kick it so that it transits to TRACED.  TRAPPING
++	 * will be cleared if the child completes the transition or any
++	 * event which clears the group stop states happens.  We'll wait
++	 * for the transition to complete before returning from this
++	 * function.
++	 *
++	 * This hides STOPPED -> RUNNING -> TRACED transition from the
++	 * attaching thread but a different thread in the same group can
++	 * still observe the transient RUNNING state.  IOW, if another
++	 * thread's WNOHANG wait(2) on the stopped tracee races against
++	 * ATTACH, the wait(2) may fail due to the transient RUNNING.
++	 *
++	 * The following task_is_stopped() test is safe as both transitions
++	 * in and out of STOPPED are protected by siglock.
++	 */
++	if (task_is_stopped(task) &&
++	    task_set_jobctl_pending(task, JOBCTL_TRAP_STOP | JOBCTL_TRAPPING)) {
++		task->jobctl &= ~JOBCTL_STOPPED;
++		signal_wake_up_state(task, __TASK_STOPPED);
++	}
++}
++
+ static int ptrace_attach(struct task_struct *task, long request,
+ 			 unsigned long addr,
+ 			 unsigned long flags)
+@@ -393,17 +421,17 @@ static int ptrace_attach(struct task_str
+ 	bool seize = (request == PTRACE_SEIZE);
+ 	int retval;
+ 
+-	retval = -EIO;
+ 	if (seize) {
+ 		if (addr != 0)
+-			goto out;
++			return -EIO;
+ 		/*
+ 		 * This duplicates the check in check_ptrace_options() because
+ 		 * ptrace_attach() and ptrace_setoptions() have historically
+ 		 * used different error codes for unknown ptrace options.
+ 		 */
+ 		if (flags & ~(unsigned long)PTRACE_O_MASK)
+-			goto out;
++			return -EIO;
++
+ 		retval = check_ptrace_options(flags);
+ 		if (retval)
+ 			return retval;
+@@ -414,88 +442,54 @@ static int ptrace_attach(struct task_str
+ 
+ 	audit_ptrace(task);
+ 
+-	retval = -EPERM;
+ 	if (unlikely(task->flags & PF_KTHREAD))
+-		goto out;
++		return -EPERM;
+ 	if (same_thread_group(task, current))
+-		goto out;
++		return -EPERM;
+ 
+ 	/*
+ 	 * Protect exec's credential calculations against our interference;
+ 	 * SUID, SGID and LSM creds get determined differently
+ 	 * under ptrace.
+ 	 */
+-	retval = -ERESTARTNOINTR;
+-	if (mutex_lock_interruptible(&task->signal->cred_guard_mutex))
+-		goto out;
+-
+-	task_lock(task);
+-	retval = __ptrace_may_access(task, PTRACE_MODE_ATTACH_REALCREDS);
+-	task_unlock(task);
+-	if (retval)
+-		goto unlock_creds;
+-
+-	write_lock_irq(&tasklist_lock);
+-	retval = -EPERM;
+-	if (unlikely(task->exit_state))
+-		goto unlock_tasklist;
+-	if (task->ptrace)
+-		goto unlock_tasklist;
+-
+-	task->ptrace = flags;
+-
+-	ptrace_link(task, current);
+-
+-	/* SEIZE doesn't trap tracee on attach */
+-	if (!seize)
+-		send_sig_info(SIGSTOP, SEND_SIG_PRIV, task);
++	scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
++			   &task->signal->cred_guard_mutex) {
+ 
+-	spin_lock(&task->sighand->siglock);
++		scoped_guard (task_lock, task) {
++			retval = __ptrace_may_access(task, PTRACE_MODE_ATTACH_REALCREDS);
++			if (retval)
++				return retval;
++		}
++
++		scoped_guard (write_lock, &tasklist_lock) {
++			if (unlikely(task->exit_state))
++				return -EPERM;
++			if (task->ptrace)
++				return -EPERM;
++
++			task->ptrace = flags;
++
++			ptrace_link(task, current);
++
++			/* SEIZE doesn't trap tracee on attach */
++			if (!seize)
++				send_sig_info(SIGSTOP, SEND_SIG_PRIV, task);
+ 
+-	/*
+-	 * If the task is already STOPPED, set JOBCTL_TRAP_STOP and
+-	 * TRAPPING, and kick it so that it transits to TRACED.  TRAPPING
+-	 * will be cleared if the child completes the transition or any
+-	 * event which clears the group stop states happens.  We'll wait
+-	 * for the transition to complete before returning from this
+-	 * function.
+-	 *
+-	 * This hides STOPPED -> RUNNING -> TRACED transition from the
+-	 * attaching thread but a different thread in the same group can
+-	 * still observe the transient RUNNING state.  IOW, if another
+-	 * thread's WNOHANG wait(2) on the stopped tracee races against
+-	 * ATTACH, the wait(2) may fail due to the transient RUNNING.
+-	 *
+-	 * The following task_is_stopped() test is safe as both transitions
+-	 * in and out of STOPPED are protected by siglock.
+-	 */
+-	if (task_is_stopped(task) &&
+-	    task_set_jobctl_pending(task, JOBCTL_TRAP_STOP | JOBCTL_TRAPPING)) {
+-		task->jobctl &= ~JOBCTL_STOPPED;
+-		signal_wake_up_state(task, __TASK_STOPPED);
++			ptrace_set_stopped(task);
++		}
+ 	}
+ 
+-	spin_unlock(&task->sighand->siglock);
+-
+-	retval = 0;
+-unlock_tasklist:
+-	write_unlock_irq(&tasklist_lock);
+-unlock_creds:
+-	mutex_unlock(&task->signal->cred_guard_mutex);
+-out:
+-	if (!retval) {
+-		/*
+-		 * We do not bother to change retval or clear JOBCTL_TRAPPING
+-		 * if wait_on_bit() was interrupted by SIGKILL. The tracer will
+-		 * not return to user-mode, it will exit and clear this bit in
+-		 * __ptrace_unlink() if it wasn't already cleared by the tracee;
+-		 * and until then nobody can ptrace this task.
+-		 */
+-		wait_on_bit(&task->jobctl, JOBCTL_TRAPPING_BIT, TASK_KILLABLE);
+-		proc_ptrace_connector(task, PTRACE_ATTACH);
+-	}
++	/*
++	 * We do not bother to change retval or clear JOBCTL_TRAPPING
++	 * if wait_on_bit() was interrupted by SIGKILL. The tracer will
++	 * not return to user-mode, it will exit and clear this bit in
++	 * __ptrace_unlink() if it wasn't already cleared by the tracee;
++	 * and until then nobody can ptrace this task.
++	 */
++	wait_on_bit(&task->jobctl, JOBCTL_TRAPPING_BIT, TASK_KILLABLE);
++	proc_ptrace_connector(task, PTRACE_ATTACH);
+ 
+-	return retval;
++	return 0;
+ }
+ 
+ /**
 
 
