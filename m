@@ -2,167 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84057DF9CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 879CA7DF9D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377187AbjKBSRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
+        id S234335AbjKBSVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234335AbjKBSRv (ORCPT
+        with ESMTP id S229664AbjKBSVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:17:51 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944C91A7;
-        Thu,  2 Nov 2023 11:17:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f9K35zuwEfbJ9cSE8HuEbzaeMXG48suI5YuIFBUI1TvXWpoFEmk7MjVwQfF87FwKP5Al+dO781zKInN0GT6B2IVUB3aWTbuQK1S/5fwJ4Ea0h2hT+pz0jL2O5GA2Pt5veI9U+sQNc8abwVJO4bo1Umw+YhJVfoz9GyKu9VPwPuOTfa7nkJEZO9Bzd7VvaHCsTAAY12J4g6MY40diRufGjNKNAmv62VDtXYlNb+FhsM5votkPqOFWTTp+dCR8VHWTH63mCrG0lTGAIwdtRGk1j2ltioAYwZ0t/MPCDjpxPINtiloS+lKNtJwU+fNSeNBgNGNdSt2loAtYq98Mhu5iFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xUeEAtor6+jDpoIzaPpO34DyjfooFFW5azTZjnR0Tqw=;
- b=KJ3046Jz5qU4Yy5ohoHbH7SRB0iniTNgBJ+OaioOW0gR0C0krCiHP089xUOJjgd13zL/HsFyAATK01SfRLdEQq1NRAS77/crB4w/y2893D+jj/w5Djq6C/az0N+0M4Z+ev2QXScjSvUkVZBL0hZKuT5c/bVh6CRqxYGetdmuriGwFpdIIbNqCQw3TilhJinkh/0f36ctmWk2+VJ/hlZkIjI2yBjm0eY9S9q47isZSLfBUW13WyZqpE6XmY//hul1hXatDIdEoy0YQ01vnYRmd2je8r3NMeUHVuo1R8XUqPssC0mXWFt86jVRkRfZ1UtUXparWiUu7+/iMrtOEdqmnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xUeEAtor6+jDpoIzaPpO34DyjfooFFW5azTZjnR0Tqw=;
- b=i7/BFniRaveg2wferfFc6riF/vRSOkCMuwMDqO6PcpvcFzwaJZtGCdWzIGtV0MzzG59hN7AnHQBkMBfG3AA8SQCIqJeIoPR0sjVZhISOpSDLBAaQ/3olFESp3VpvyiMBjcTwmQyHk8KBginG89ojvX4hpYNC1zEIIzbt1dnrlCSzKqzHtRnWW6cshBDBazT5MVTAKOmYxNP9a7yB3P0A57HyqyLgS8iCy4Z/p8ATcauaZ2PWUCgoO9YFO5CgrV8j8/9bsDNXbOX5zWqGydOBlp8owUYG4k8zWqBnFMmf7hP7Q40mN+RqU4N56jGI/06KTI3DYYkVXcyY2ag3ZCmepQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by SJ2PR12MB9008.namprd12.prod.outlook.com (2603:10b6:a03:543::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Thu, 2 Nov
- 2023 18:17:42 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::a24:3ff6:51d6:62dc]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::a24:3ff6:51d6:62dc%4]) with mapi id 15.20.6933.029; Thu, 2 Nov 2023
- 18:17:42 +0000
-From:   Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To:     =?utf-8?Q?Asbj=C3=B8rn?= Sloth =?utf-8?Q?T=C3=B8nnesen?= 
-        <ast@fiberby.net>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Yevgeny Kliteynik <kliteyn@nvidia.com>,
-        Muhammad Sammar <muhammads@nvidia.com>,
-        Alex Vesker <valex@nvidia.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: Fix reserved at offset in
- mlx5_ifc_fte_match_set_lyr_2_4_bits
-References: <20231102175924.3456007-1-ast@fiberby.net>
-Date:   Thu, 02 Nov 2023 11:17:26 -0700
-In-Reply-To: <20231102175924.3456007-1-ast@fiberby.net> (=?utf-8?Q?=22Asbj?=
- =?utf-8?Q?=C3=B8rn?= Sloth
-        =?utf-8?Q?T=C3=B8nnesen=22's?= message of "Thu, 2 Nov 2023 17:59:22 +0000")
-Message-ID: <87o7gc58ax.fsf@nvidia.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: BYAPR11CA0059.namprd11.prod.outlook.com
- (2603:10b6:a03:80::36) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+        Thu, 2 Nov 2023 14:21:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54399E5
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698949228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vCkPgDNAcAuyFQJmJ3sGnTa/9jSqm1Vt4Hh4Jnv10kQ=;
+        b=VxUrGG7C3jdZN8iXIMP0VF7S7SCAWMFQQ3KmE53SHlo9Pz3HumytmCxIzZjJeDvxX33mGn
+        eAkZmsP63F6bZmr1hRzyP6wGRPwptoP8fqz7mlPlIjj0u93vLHCCTB9TWib/yodRpEVu+y
+        cNUBT3Zas1yLubMoEO2kuVlO+wQtyPU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-344-Qs3bdT0XMO-pcZwGHAlnUg-1; Thu, 02 Nov 2023 14:20:26 -0400
+X-MC-Unique: Qs3bdT0XMO-pcZwGHAlnUg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32f8cb825c5so561415f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:20:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698949225; x=1699554025;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vCkPgDNAcAuyFQJmJ3sGnTa/9jSqm1Vt4Hh4Jnv10kQ=;
+        b=j+ylI0ngl0YMvvcnw5jhZekL1ALe1yiTQaOzit9LDbUW7NEZT38RDEQCjb5rvQuTlb
+         yP1zFy0QJX970o3aoML5Efw1dAyR6vD2nQUPVTQ3yNDGy+lUAwi4uBE+6s2blJDauk4e
+         +x9ZvxdSIzSwNCKLmDETljW+1xGrgCK/GZKzfEaLBROKWgUgxBm/dBWi994IdXcK0QW0
+         P1eRoFz7PjPKPY0aGTsI1rMpDTaBRE2nOg5dOV/ug2Mthzko5r3xB9fiPK45v5YO5M84
+         tOXqh0cwPrC4rdth9HyzW/OYPm4amRiw6C4isK33eTGcU8g8SW+tEvs1x8ADjKzPJanp
+         c2tw==
+X-Gm-Message-State: AOJu0YyGIAmgiZBytn2flx0nZPKCKGdSFclq0crPJZ6UWzFAfAxXJNGz
+        5ZkPuBsfoZOy7Q0QzjkR4V/0z7qW0XcvkZFvNaBcMlcQ/wN70wsOYm5NX3dsVCygQc0XJfcGSVr
+        WPUk48t7z4RsPMBAViF6YzCPY
+X-Received: by 2002:a05:6000:186c:b0:32f:7a65:da64 with SMTP id d12-20020a056000186c00b0032f7a65da64mr15466709wri.65.1698949225180;
+        Thu, 02 Nov 2023 11:20:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGafUiev8YWXZ4EBUnlmWxuao5K8uPhqfCwENZFJcn2nZb8vNibvin3jbofi3dWYt1Xb5hk8g==
+X-Received: by 2002:a05:6000:186c:b0:32f:7a65:da64 with SMTP id d12-20020a056000186c00b0032f7a65da64mr15466688wri.65.1698949224859;
+        Thu, 02 Nov 2023 11:20:24 -0700 (PDT)
+Received: from starship ([89.237.99.95])
+        by smtp.gmail.com with ESMTPSA id z2-20020adff742000000b00326dd5486dcsm3081566wrp.107.2023.11.02.11.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 11:20:07 -0700 (PDT)
+Message-ID: <f4e2d8c79ca3f238aafd61a82a3f5ad5c2d6bcab.camel@redhat.com>
+Subject: Re: [PATCH v6 06/25] x86/fpu/xstate: Opt-in kernel dynamic bits
+ when calculate guest xstate size
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Weijiang Yang <weijiang.yang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Thu, 02 Nov 2023 20:20:05 +0200
+In-Reply-To: <ZUJdohf6wLE5LrCN@google.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-7-weijiang.yang@intel.com>
+         <e0db6ffd-5d92-2a1a-bdfb-a190fe1ccd25@intel.com>
+         <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
+         <ZTf5wPKXuHBQk0AN@google.com>
+         <de1b148c-45c6-6517-0926-53d1aad8978e@intel.com>
+         <ZTqgzZl-reO1m01I@google.com>
+         <d6eb8a9dc5b0e4b83e1944d7e0bb8ee2cb9cc111.camel@redhat.com>
+         <ZUJdohf6wLE5LrCN@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|SJ2PR12MB9008:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c054409-9152-4660-1263-08dbdbd000b5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aBOs8uSDLY4ut4kmpHEKaltvREzbMRaC9Ny2FDX/uelVGqlB5A++lu/KCJQPD1BEhu2zbZgl9Iyrl6Oj3SCIDL3wXTO7neyV6yMsBawWekgiey7TJTbK+5gtK9W0pQokTUGPXrThuyxNv1wWZMgpvbaOWYe+N29SYwGKaoON2oNdPoWE5pNMASbnKnIb+CJMJzo3ef8b/ZLJC6B4/C+z7Tm/9c0QaLuzkf96WWPeSIZLRQHXpoX3b9WL7wzqop1gd/1Ku6nJvmKPGEg/6aBPyVYT621jBHbLhGYRcL5taY6/7O1PC2btcKMIFCuAbE6E4bkhyUU2xao+MOVMEt8o/Nu8dPIhaLzCCOi/21RCC3oE4cfNhE9K+dGifuBKEnALv1hLf71s5sPpXQum5T7mNZswAmVpYZW8aqJznMmjmOFxheD66mPkf3/kEabqyglmj/EMDukU/SkWcG12psX2mH5Fys3pnmFMNg6cHBXV+n+91aanRYOTQT9xgRqKmoEVECG493p/SszCSJTnO54e7qOptpKo4lq2K80ARbP320Nt12LRINXdj1a9DINqUgl9GuE3dAUWtW28rGMWNi/ueVzOfxkOGVac2yhz+VxTCgA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(396003)(136003)(39860400002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(41300700001)(6486002)(478600001)(966005)(6506007)(6666004)(66574015)(4326008)(83380400001)(8676002)(6916009)(66556008)(66476007)(8936002)(5660300002)(2906002)(66946007)(316002)(54906003)(26005)(86362001)(38100700002)(6512007)(2616005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NG5RbW8zL1k3TGtMVHFzMEF6RDl1cG81SUoxRC9IUUQ0a1daT1Y4UURhbWp0?=
- =?utf-8?B?NzV0blpVR0N1aHljdDF2MGZ2TnN5UkRSZ2tndzh4Q2RWNGJPMHlwbEdLZlNa?=
- =?utf-8?B?dno4SFlPSzVHUFNySnNpaktrc0ZlRklDMU0rdE9LYkJYS0psWSs5NlZwK2tV?=
- =?utf-8?B?ekkyMkxQNWFTenFkZi80dCthRk51RGhNc1RtVm1MdXR0T0VSTDFBemJHRURQ?=
- =?utf-8?B?cjM5SjFqS1JuZmVwOVRycDNDYXU5UU1QbW1sdjFNdjMvK0Y1V3JyQXEyeUph?=
- =?utf-8?B?WVQ4U0xxajFGbjVNQmlNb2RQM3hRbVBYMG9WMEI1emdJQ1d3bXZSV0ZDUUVp?=
- =?utf-8?B?bGZEQnp6MUJ4REpTUFNIV1MzaWRXNzFGZWVIZi95UlVnd0xzREorTnc2eHBx?=
- =?utf-8?B?R1NQbVhtZFdBaVNTT09DclYwR2tUUGs1c0xXS054bTMxNzBsNHFXRTJjMzI5?=
- =?utf-8?B?Sno1eXdwc3F6SkhJeTR1RHRmKzlwMGg1YmpMUExwVHdpTzZjbHNueTZDL2xq?=
- =?utf-8?B?aitmNmM5cmxuMXo2aWE2UUtjMGpOTFFsd2xwMWExSUo1VmloOUlSSk1NZk1U?=
- =?utf-8?B?VVFDWExieW5ENzlvT1lJa2hDS3NoMlJ1NUxXTWZIM2dWQ3pFZHZCK3h3dDQ5?=
- =?utf-8?B?N2JLMmM4U3NVUHhTVE8xOWp4YndzN3BlM2hORnREc3AwZUtMcVVRdlhndDVO?=
- =?utf-8?B?YjZybDhxNFpHb1YvZ1cvN285bVZZZGNxZGFSQmtkUGhyU0MwWDN2RDNTeGxl?=
- =?utf-8?B?YkN5cThqdW9ORXdCNG8xV2xHRzlxZ1ljZjRFays4M215SFEyL1BTNHlnK3RZ?=
- =?utf-8?B?dGM5ZG9yaWpTNVdkbklUdDErWWpjL1ZiWGlzTlNIKzdDRDNKZGJ3ajBRZkZl?=
- =?utf-8?B?VzZxazZ3MzVtSXlNbEFzekcvSzRGY3FJaUpwVm9OdUdUSUZuWDZ4dXlYdi84?=
- =?utf-8?B?Q0pXeVRxTXZiN2x4ZXFHMk5TMWJNMWN0ZEtDR2M3dUR6MHpIY05tb0gvckZl?=
- =?utf-8?B?ZlExTDV4N010bjhBeDBzQ0Rwa2d2eEF2M2tHc3RYY1dVcVE5K3VqVkhEQUhV?=
- =?utf-8?B?ZnROWjRUNzRad2JxV3FCT3BySHFyaXNTUTN6SWcvRmRSK1RJSE5wUTY4ZnNn?=
- =?utf-8?B?dTJVaTdYZVpONXRPKzlJZHRtUTJHZEJ1WDJabXlZbmxqTVp2UVl1aFI2TDJk?=
- =?utf-8?B?Z2NmYzBhM0ZLeWtQanZGdlVIMncwOE5OUzBBTnJ4WWhzWFFCZmtCdVc1bFlB?=
- =?utf-8?B?bEhtbWVDK0s3bnJ4NzVsbzNYWUZaV2Q0N09KUDkrekRhQXdnWjlaV3d4d1By?=
- =?utf-8?B?TzlIN3R0MW0vc2JTMW5WSDA3dTYrVjBLZE5OUGxSc1l5dGV0emdKZkQ1aHRJ?=
- =?utf-8?B?YWp5RDRDM2xReHdrbVlIWVFLL0hKREdCeHRiU05zdUtTbi9BN0tSU3E2cGtJ?=
- =?utf-8?B?Wis5OCtNbUtXbE92SWYyMitqZWJxWVdUYk9wS0JzSFlDVTVhaXlSSXI2UE5P?=
- =?utf-8?B?c0I4OTZoazNoVGhITjA3VjJ0RFVYVFdpdW5wZWRneDJFejV6ekJycitWdHNY?=
- =?utf-8?B?SUlDV3NkZ0Y4b1lUU1NRK1g1WFljY0svZlJnTkZnbTZ6TC8xUGRiMFM0L09E?=
- =?utf-8?B?MzRZVDZIVUxwUGhXb29kOHpwVG05bTlMS0QzSW53UEZja05UREE4dzBtS2pw?=
- =?utf-8?B?ckRyTDFQVk1LWmxjVWhFQkhydnhkZnpOMVBQaGpTaHJCaERoWG1QMTcybmV4?=
- =?utf-8?B?ZTNRem9kWms2cCtrTG80U09qWkNyZm14dFhIQTZqSzBGcW5oVHlkV0tTb1Bz?=
- =?utf-8?B?V0N5M3VrSU55dm9BVFRZeXhmYkVNOTFkZWVrWWoxZ1pWcEovMUJqQXdOWXNY?=
- =?utf-8?B?ZEg5b3JuWGRZdFVoRGxWLzdGOHhnVG5FL2t0SkN0aGV5Wmt5MHNteFdlbE5F?=
- =?utf-8?B?YkhqaHBDQXR6YzZhQU5rMHBJTlJaaVhuTTdQRlBYdld4dWlDQnpCbEIvZ2lq?=
- =?utf-8?B?azZJZWpqSG5INkVCVXIwTmdHQVlvUzhuSXJlZTNKM24zdGdQY3FOV08rdmZi?=
- =?utf-8?B?b3BwUjBBaUN3RkIxV1c4WHQ0OUM2aXdkUmlwTDJNSDdUYUtKM2hHOWV2ZWhF?=
- =?utf-8?Q?54XcVZnCfLCTppTiFw4U3kniW?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c054409-9152-4660-1263-08dbdbd000b5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 18:17:41.9034
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SbttuBuK4p++6iCNyWJGaraO5wr7n2a3gcCqn7lwhPhX+tCn3B5xiMWvAc8zt55QMvPno+GFAzCQtglzEMYlQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9008
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Nov, 2023 17:59:22 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen <ast@f=
-iberby.net> wrote:
-> A member of struct mlx5_ifc_fte_match_set_lyr_2_4_bits has been mistakenl=
-y
-> assigned the wrong reserved_at offset value. Correct it to align to the
-> right value, thus avoid future miscalculation.
->
-> Fixes: 5c422bfad2fb ("net/mlx5: DR, Add support for matching on Internet =
-Header Length (IHL)")
-> Signed-off-by: Asbj=C3=B8rn Sloth T=C3=B8nnesen <ast@fiberby.net>
-> ---
->  include/linux/mlx5/mlx5_ifc.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.=
-h
-> index 4df6d1c12437..09c50e786ff4 100644
-> --- a/include/linux/mlx5/mlx5_ifc.h
-> +++ b/include/linux/mlx5/mlx5_ifc.h
-> @@ -552,7 +552,7 @@ struct mlx5_ifc_fte_match_set_lyr_2_4_bits {
-> =20
->  	u8         reserved_at_c0[0x10];
->  	u8         ipv4_ihl[0x4];
-> -	u8         reserved_at_c4[0x4];
-> +	u8         reserved_at_d4[0x4];
-> =20
->  	u8         ttl_hoplimit[0x8];
+On Wed, 2023-11-01 at 07:16 -0700, Sean Christopherson wrote:
+> On Tue, Oct 31, 2023, Maxim Levitsky wrote:
+> > On Thu, 2023-10-26 at 10:24 -0700, Sean Christopherson wrote:
+> > > On Wed, Oct 25, 2023, Weijiang Yang wrote:
+> > On top of that I think that applying the same permission approach to guest's
+> > FPU state is not a good fit, because of two reasons:
+> > 
+> > 1. The guest FPU state will never be pushed on the signal stack - KVM swaps
+> >    back the host FPU state before it returns from the KVM_RUN ioctl.
+> > 
+> >    Also I think (not sure) that ptrace can only access (FPU) state of a
+> >    stopped process, and a stopped vCPU process will also first return to
+> >    userspace. Again I might be mistaken here, I never researched this in
+> >    depth.
+> > 
+> >    Assuming that I am correct on these assumptions, the guest FPU state can
+> >    only be accessed via KVM_GET_XSAVE/KVM_SET_XSAVE/KVM_GET_XSAVE2 ioctls,
+> >    which also returns the userspace portion of the state including optionally
+> >    the AMX state, but this ioctl doesn't really need FPU permission
+> >    framework, because it is a KVM ABI, and in fact KVM_GET_XSAVE2 was added
+> >    exactly because of that: to make sure that userspace is aware that larger
+> >    than 4K buffer can be returned.
+> > 
+> > 2. Guest FPU state is not even on demand resized (but I can imagine that in
+> >    the future we will do this).
+> 
+> Just because guest FPU state isn't resized doesn't mean there's no value in
+> requiring userspace to opt-in to allocating 8KiB of data per-vCPU.
+See my response below:
+> 
+> > And of course, adding permissions for kernel features, that is even worse
+> > idea, which we really shouldn't do.
+> > 
+> > >  
+> > > If there are no objections, I'll test the below and write a proper changelog.
+> > >  
+> > > --
+> > > From: Sean Christopherson <seanjc@google.com>
+> > > Date: Thu, 26 Oct 2023 10:17:33 -0700
+> > > Subject: [PATCH] x86/fpu/xstate: Always preserve non-user xfeatures/flags in
+> > >  __state_perm
+> > > 
+> > > Fixes: 781c64bfcb73 ("x86/fpu/xstate: Handle supervisor states in XSTATE permissions")
+> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > ---
+> > >  arch/x86/kernel/fpu/xstate.c | 18 +++++++++++-------
+> > >  1 file changed, 11 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> > > index ef6906107c54..73f6bc00d178 100644
+> > > --- a/arch/x86/kernel/fpu/xstate.c
+> > > +++ b/arch/x86/kernel/fpu/xstate.c
+> > > @@ -1601,16 +1601,20 @@ static int __xstate_request_perm(u64 permitted, u64 requested, bool guest)
+> > >  	if ((permitted & requested) == requested)
+> > >  		return 0;
+> > >  
+> > > -	/* Calculate the resulting kernel state size */
+> > > +	/*
+> > > +	 * Calculate the resulting kernel state size.  Note, @permitted also
+> > > +	 * contains supervisor xfeatures even though supervisor are always
+> > > +	 * permitted for kernel and guest FPUs, and never permitted for user
+> > > +	 * FPUs.
+> > > +	 */
+> > >  	mask = permitted | requested;
+> > > -	/* Take supervisor states into account on the host */
+> > > -	if (!guest)
+> > > -		mask |= xfeatures_mask_supervisor();
+> > >  	ksize = xstate_calculate_size(mask, compacted);
+> > 
+> > This might not work with kernel dynamic features, because
+> > xfeatures_mask_supervisor() will return all supported supervisor features.
+> 
+> I don't understand what you mean by "This".
 
-In general, patches should target one of net or net-next on the netdev
-mailing list as a heads up.
+> 
+> Somewhat of a side topic, I feel very strongly that we should use "guest only"
+> terminology instead of "dynamic".  There is nothing dynamic about whether or not
+> XFEATURE_CET_KERNEL is allowed; there's not even a real "decision" beyond checking
+> wheter or not CET is supported.
 
-  https://docs.kernel.org/process/maintainer-netdev.html#tl-dr
+> > Therefore at least until we have an actual kernel dynamic feature (a feature
+> > used by the host kernel and not KVM, and which has to be dynamic like AMX),
+> > I suggest that KVM stops using the permission API completely for the guest
+> > FPU state, and just gives all the features it wants to enable right to
+> 
+> By "it", I assume you mean userspace?
+> 
+> > __fpu_alloc_init_guest_fpstate() (Guest FPU permission API IMHO should be
+> > deprecated and ignored)
+> 
+> KVM allocates guest FPU state during KVM_CREATE_VCPU, so not using prctl() would
+> either require KVM to defer allocating guest FPU state until KVM_SET_CPUID{,2},
+> or would require a VM-scoped KVM ioctl() to let userspace opt-in to
+> 
+> Allocating guest FPU state during KVM_SET_CPUID{,2} would get messy, 
 
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+> as KVM allows
+> multiple calls to KVM_SET_CPUID{,2} so long as the vCPU hasn't done KVM_RUN.  E.g.
+> KVM would need to support actually resizing guest FPU state, which would be extra
+> complexity without any meaningful benefit.
+
+
+OK, I understand you now. What you claim is that it is legal to do this:
+
+- KVM_SET_XSAVE
+- KVM_SET_CPUID (with AMX enabled)
+
+KVM_SET_CPUID will have to resize the xstate which is already valid.
+
+Your patch to fix the __xstate_request_perm() does seem to be correct in a sense that it will
+preserve the kernel fpu components in the fpu permissions.
+
+However note that kernel fpu permissions come from 'fpu_kernel_cfg.default_features' 
+which don't include the dynamic kernel xfeatures (added a few patches before this one).
+
+Therefore an attempt to resize the xstate to include a kernel dynamic feature by
+__xfd_enable_feature will fail.
+
+If kvm on the other hand includes all the kernel dynamic features in the initial
+allocation of FPU state (not optimal but possible), then later call to __xstate_request_perm
+for a userspace dynamic feature (which can still happen) will mess the the xstate,
+because again the permission code assumes that only default kernel features were granted the permissions.
+
+
+This has to be solved this way or another.
+
+> 
+> The only benefit I can think of for a VM-scoped ioctl() is that it would allow a
+> single process to host multiple VMs with different dynamic xfeature requirements.
+> But such a setup is mostly theoretical.  Maybe it'll affect the SEV migration
+> helper at some point?  But even that isn't guaranteed.
+> 
+> So while I agree that ARCH_GET_XCOMP_GUEST_PERM isn't ideal, practically speaking
+> it's sufficient for all current use cases.  Unless a concrete use case comes along,
+> deprecating ARCH_GET_XCOMP_GUEST_PERM in favor of a KVM ioctl() would be churn for
+> both the kernel and userspace without any meaningful benefit, or really even any
+> true change in behavior.
+
+
+ARCH_GET_XCOMP_GUEST_PERM/ARCH_SET_XCOMP_GUEST_PERM is not a good API from usability POV, because it is redundant.
+
+KVM already has API called KVM_SET_CPUID2, by which the qemu/userspace instructs the KVM, how much space to allocate,
+to support a VM with *this* CPUID.
+
+
+For example if qemu asks for nested SVM/VMX, then kvm will allocate on demand state for it (also at least 8K/vCPU btw).
+The same should apply for AMX - Qemu sets AMX xsave bit in CPUID - that permits KVM to allocate the extra state when needed.
+
+I don't see why we need an extra and non KVM API for that.
+
+
+Best regards,
+	Maxim Levitsky
+
+
+
+> 
+
+
