@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835C87DF96D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D778B7DF988
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345229AbjKBSBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
+        id S235575AbjKBSDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347062AbjKBSAd (ORCPT
+        with ESMTP id S235670AbjKBSDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:00:33 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9AF1A5
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:26 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9caf486775so1416080276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:26 -0700 (PDT)
+        Thu, 2 Nov 2023 14:03:17 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE61F1FDD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:28 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a8ee6a1801so17492367b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947965; x=1699552765; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947968; x=1699552768; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gusYDjmzvPXlbpdRzaTtuVbqaUCwbO2hOJb/75bCX5U=;
-        b=eAJXjzFsqtsEMOkBXu+FeQ9Cas8aZ2gx/VR+Bz9NeMqdcC4pFvtf0L01LgmegIdODt
-         4t1CnzrnkoLvYRdBcX59jRFG6ZipiVVBvyNeLvy30BfdysE0c8VGvxvUlEB9Fb8TlKgO
-         u+ph5+rs/3AsxkmtCllFSFkMn7/OO6WApLbaAsbcAvyQXqyft0f29MPHgYsbweuE+W/g
-         gE8uI8+kmDiwopgwQlpoJPCqE7gDtvT3Y0RYwYkFnfq1QbaDNqOQgARMEyMgil6oR9xf
-         Fqg9nH+NTybtyg3lpvNdm1/jHv2uMogi8ImvQ3LaLuZHhq4wGTbqDWxUC33X2/D/W5vn
-         o7Ig==
+        bh=SWO5cb/JGhq0YhhkeavtzpdshUSY9BdgMbF9Q9qBiTA=;
+        b=uRoCphS4a9ghls3sAYAX7ZAuJANZx9SSqLeMB9FiVNgB/fbH176oYzGdft8sdIpm8o
+         wXq+z+WBKiXVhnxX3RPhsytFffanBsYX6Ta06ScOLtprRjYvR014DfYQo3eKyHs2xiU4
+         Tua9WqMIa4eDW9qpEKNZkEqAblO6J1vRfbJJOpCibqvWYaXcymcYIx2+gEpdvVsa7RyE
+         6mfd6QnBwXUhvFeKM0b08PfFraQOpGE5qnzGiFx4PJFQ+J6c/KXKhq5jT+YEfIZtYc2+
+         sV8TXUwGJozE55n6/j/kGWW74EwZJVpFYpI5fEH+obnqbZfbM9eHWDKoWlxtWTDnIclu
+         nmsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947965; x=1699552765;
+        d=1e100.net; s=20230601; t=1698947968; x=1699552768;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gusYDjmzvPXlbpdRzaTtuVbqaUCwbO2hOJb/75bCX5U=;
-        b=ABqSjrbP7inFUpOvv1qZB1Ym1HmTre7QjFrrGRujH3ZpoZ/CNnA9YHZQ7uIIrB3FWY
-         iwzIKdZXHxebGRYnqNKcTziBgO3bSsIq/oqEFsfHW3kSN4N5bb+j/ptKLCAQS2G0VXYT
-         ra1EPPt0Cu2cnuvtN7+Wo1D29/6L+YnUgXgBJdbhks1/WNW/MRqwmDYWhYYK1heKEAOw
-         RlRABSUIWOlD7kcoh0JSg5//3SmmB5gVlbxHkWqxat3PgUVvHQEbjb/sh6JAHeNASgU+
-         rOWAA4BJ6EspQEKlKyz2uu8OWDBEUhlWkXPeW29jjBI0lUHVyLularRNWL/MW0sNLHBa
-         z8nA==
-X-Gm-Message-State: AOJu0YzHe8uJ/XF9vh5LEmmIJ7Y57K7O97JC8lOlEl22Ou+FOqNi3HYq
-        QGxkvK+/Evl5xiroVpdkQIvyI0kMCv3T
-X-Google-Smtp-Source: AGHT+IFRKgStJscb3vekJFKAdWhRw295cc/L4wKr13suxwG3v/mB6goTTtHrW1fM75FvCjfwRdlnnMFvhZbD
+        bh=SWO5cb/JGhq0YhhkeavtzpdshUSY9BdgMbF9Q9qBiTA=;
+        b=I6XLXIKy/8bAXuuoOdiL3JLq31AVbIqFTJy5rCutlv8g4t7M8MvDCV621flY8/Fza4
+         Ai+uXU68sCuUUQGsEUwRPtYa8lseDwrNhQKSXqb5AimR/PaptlG7LLmgxshltXckLHhX
+         inwc3TPZyW4PJ473Zvz0558I6Zxh/2ikSbfINtHPNGc9FozsG5CBwElYGWoEMoCgFH2k
+         Y/L3KA3UwR1bhXatO+oHdqFGt5an0Z8U4fxxsLQQRKYfI9sS/Omq45kGvs5z+tICkZHH
+         hHzM33I/KnY74bOc4cAOcQSqPfBmTeWais36Om2nEVcuCrkMQh0C6oGt3E+FxdoC4XqZ
+         FSSQ==
+X-Gm-Message-State: AOJu0Yyh39YpeaSeizVQbNahlZ17nYsRa3sqt4Kt9vCgQNve90WUFSiN
+        qDDcGuBjytqsMrD4i89YWe6YLL2jlb6Q
+X-Google-Smtp-Source: AGHT+IHiCSNiwtVO+sCrdD2Mg2fwEV+vcc69wWBZdswoUAczP+5MhgJ9MgBKBwzIu9ysa21AlSt8cBmLq49h
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a25:3c3:0:b0:d9a:40ed:8d26 with SMTP id
- 186-20020a2503c3000000b00d9a40ed8d26mr406283ybd.0.1698947965524; Thu, 02 Nov
- 2023 10:59:25 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:21 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:168c:b0:da0:3e46:8ba5 with SMTP
+ id bx12-20020a056902168c00b00da03e468ba5mr359961ybb.8.1698947967753; Thu, 02
+ Nov 2023 10:59:27 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:22 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-40-irogers@google.com>
+Message-Id: <20231102175735.2272696-41-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 39/53] perf threads: Switch from rbtree to hashmap
+Subject: [PATCH v4 40/53] perf threads: Reduce table size from 256 to 8
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -91,288 +91,42 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rbtree provides a sorting on entries but this is unused. Switch to
-using hashmap for O(1) rather than O(log n) find/insert/remove
-complexity.
+The threads data structure is an array of hashmaps, previously
+rbtrees. The two levels allows for a fixed outer array where access is
+guarded by rw_semaphores. Commit 91e467bc568f ("perf machine: Use
+hashtable for machine threads") sized the outer table at 256 entries
+to avoid future scalability problems, however, this means the threads
+struct is sized at 30,720 bytes. As the hashmaps allow O(1) access for
+the common find/insert/remove operations, lower the number of entries
+to 8. This reduces the size overhead to 960 bytes.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/threads.c | 146 ++++++++++++--------------------------
- tools/perf/util/threads.h |   6 +-
- 2 files changed, 47 insertions(+), 105 deletions(-)
+ tools/perf/util/threads.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/threads.c b/tools/perf/util/threads.c
-index d984ec939c7b..55923be53180 100644
---- a/tools/perf/util/threads.c
-+++ b/tools/perf/util/threads.c
-@@ -3,25 +3,30 @@
- #include "machine.h"
- #include "thread.h"
- 
--struct thread_rb_node {
--	struct rb_node rb_node;
--	struct thread *thread;
--};
--
- static struct threads_table_entry *threads__table(struct threads *threads, pid_t tid)
- {
- 	/* Cast it to handle tid == -1 */
- 	return &threads->table[(unsigned int)tid % THREADS__TABLE_SIZE];
- }
- 
-+static size_t key_hash(long key, void *ctx __maybe_unused)
-+{
-+	/* The table lookup removes low bit entropy, but this is just ignored here. */
-+	return key;
-+}
-+
-+static bool key_equal(long key1, long key2, void *ctx __maybe_unused)
-+{
-+	return key1 == key2;
-+}
-+
- void threads__init(struct threads *threads)
- {
- 	for (int i = 0; i < THREADS__TABLE_SIZE; i++) {
- 		struct threads_table_entry *table = &threads->table[i];
- 
--		table->entries = RB_ROOT_CACHED;
-+		hashmap__init(&table->shard, key_hash, key_equal, NULL);
- 		init_rwsem(&table->lock);
--		table->nr = 0;
- 		table->last_match = NULL;
- 	}
- }
-@@ -32,6 +37,7 @@ void threads__exit(struct threads *threads)
- 	for (int i = 0; i < THREADS__TABLE_SIZE; i++) {
- 		struct threads_table_entry *table = &threads->table[i];
- 
-+		hashmap__clear(&table->shard);
- 		exit_rwsem(&table->lock);
- 	}
- }
-@@ -44,7 +50,7 @@ size_t threads__nr(struct threads *threads)
- 		struct threads_table_entry *table = &threads->table[i];
- 
- 		down_read(&table->lock);
--		nr += table->nr;
-+		nr += hashmap__size(&table->shard);
- 		up_read(&table->lock);
- 	}
- 	return nr;
-@@ -86,28 +92,13 @@ static void threads_table_entry__set_last_match(struct threads_table_entry *tabl
- struct thread *threads__find(struct threads *threads, pid_t tid)
- {
- 	struct threads_table_entry *table  = threads__table(threads, tid);
--	struct rb_node **p;
--	struct thread *res = NULL;
-+	struct thread *res;
- 
- 	down_read(&table->lock);
- 	res = __threads_table_entry__get_last_match(table, tid);
--	if (res)
--		return res;
--
--	p = &table->entries.rb_root.rb_node;
--	while (*p != NULL) {
--		struct rb_node *parent = *p;
--		struct thread *th = rb_entry(parent, struct thread_rb_node, rb_node)->thread;
--
--		if (thread__tid(th) == tid) {
--			res = thread__get(th);
--			break;
--		}
--
--		if (tid < thread__tid(th))
--			p = &(*p)->rb_left;
--		else
--			p = &(*p)->rb_right;
-+	if (!res) {
-+		if (hashmap__find(&table->shard, tid, &res))
-+			res = thread__get(res);
- 	}
- 	up_read(&table->lock);
- 	if (res)
-@@ -118,49 +109,25 @@ struct thread *threads__find(struct threads *threads, pid_t tid)
- struct thread *threads__findnew(struct threads *threads, pid_t pid, pid_t tid, bool *created)
- {
- 	struct threads_table_entry *table  = threads__table(threads, tid);
--	struct rb_node **p;
--	struct rb_node *parent = NULL;
- 	struct thread *res = NULL;
--	struct thread_rb_node *nd;
--	bool leftmost = true;
- 
- 	*created = false;
- 	down_write(&table->lock);
--	p = &table->entries.rb_root.rb_node;
--	while (*p != NULL) {
--		struct thread *th;
--
--		parent = *p;
--		th = rb_entry(parent, struct thread_rb_node, rb_node)->thread;
--
--		if (thread__tid(th) == tid) {
--			__threads_table_entry__set_last_match(table, th);
--			res = thread__get(th);
--			goto out_unlock;
--		}
--
--		if (tid < thread__tid(th))
--			p = &(*p)->rb_left;
--		else {
--			leftmost = false;
--			p = &(*p)->rb_right;
--		}
--	}
--	nd = malloc(sizeof(*nd));
--	if (nd == NULL)
--		goto out_unlock;
- 	res = thread__new(pid, tid);
--	if (!res)
--		free(nd);
--	else {
--		*created = true;
--		nd->thread = thread__get(res);
--		rb_link_node(&nd->rb_node, parent, p);
--		rb_insert_color_cached(&nd->rb_node, &table->entries, leftmost);
--		++table->nr;
--		__threads_table_entry__set_last_match(table, res);
-+	if (res) {
-+		if (hashmap__add(&table->shard, tid, res)) {
-+			/* Add failed. Assume a race so find other entry. */
-+			thread__put(res);
-+			res = NULL;
-+			if (hashmap__find(&table->shard, tid, &res))
-+				res = thread__get(res);
-+		} else {
-+			res = thread__get(res);
-+			*created = true;
-+		}
-+		if (res)
-+			__threads_table_entry__set_last_match(table, res);
- 	}
--out_unlock:
- 	up_write(&table->lock);
- 	return res;
- }
-@@ -169,57 +136,32 @@ void threads__remove_all_threads(struct threads *threads)
- {
- 	for (int i = 0; i < THREADS__TABLE_SIZE; i++) {
- 		struct threads_table_entry *table = &threads->table[i];
--		struct rb_node *nd;
-+		struct hashmap_entry *cur, *tmp;
-+		size_t bkt;
- 
- 		down_write(&table->lock);
- 		__threads_table_entry__set_last_match(table, NULL);
--		nd = rb_first_cached(&table->entries);
--		while (nd) {
--			struct thread_rb_node *trb = rb_entry(nd, struct thread_rb_node, rb_node);
--
--			nd = rb_next(nd);
--			thread__put(trb->thread);
--			rb_erase_cached(&trb->rb_node, &table->entries);
--			RB_CLEAR_NODE(&trb->rb_node);
--			--table->nr;
-+		hashmap__for_each_entry_safe((&table->shard), cur, tmp, bkt) {
-+			struct thread *old_value;
- 
--			free(trb);
-+			hashmap__delete(&table->shard, cur->key, /*old_key=*/NULL, &old_value);
-+			thread__put(old_value);
- 		}
--		assert(table->nr == 0);
- 		up_write(&table->lock);
- 	}
- }
- 
- void threads__remove(struct threads *threads, struct thread *thread)
- {
--	struct rb_node **p;
- 	struct threads_table_entry *table  = threads__table(threads, thread__tid(thread));
--	pid_t tid = thread__tid(thread);
-+	struct thread *old_value;
- 
- 	down_write(&table->lock);
- 	if (table->last_match && RC_CHK_EQUAL(table->last_match, thread))
- 		__threads_table_entry__set_last_match(table, NULL);
- 
--	p = &table->entries.rb_root.rb_node;
--	while (*p != NULL) {
--		struct rb_node *parent = *p;
--		struct thread_rb_node *nd = rb_entry(parent, struct thread_rb_node, rb_node);
--		struct thread *th = nd->thread;
--
--		if (RC_CHK_EQUAL(th, thread)) {
--			thread__put(nd->thread);
--			rb_erase_cached(&nd->rb_node, &table->entries);
--			RB_CLEAR_NODE(&nd->rb_node);
--			--table->nr;
--			free(nd);
--			break;
--		}
--
--		if (tid < thread__tid(th))
--			p = &(*p)->rb_left;
--		else
--			p = &(*p)->rb_right;
--	}
-+	hashmap__delete(&table->shard, thread__tid(thread), /*old_key=*/NULL, &old_value);
-+	thread__put(old_value);
- 	up_write(&table->lock);
- }
- 
-@@ -229,11 +171,11 @@ int threads__for_each_thread(struct threads *threads,
- {
- 	for (int i = 0; i < THREADS__TABLE_SIZE; i++) {
- 		struct threads_table_entry *table = &threads->table[i];
--		struct rb_node *nd;
-+		struct hashmap_entry *cur;
-+		size_t bkt;
- 
--		for (nd = rb_first_cached(&table->entries); nd; nd = rb_next(nd)) {
--			struct thread_rb_node *trb = rb_entry(nd, struct thread_rb_node, rb_node);
--			int rc = fn(trb->thread, data);
-+		hashmap__for_each_entry((&table->shard), cur, bkt) {
-+			int rc = fn((struct thread *)cur->pvalue, data);
- 
- 			if (rc != 0)
- 				return rc;
 diff --git a/tools/perf/util/threads.h b/tools/perf/util/threads.h
-index ed67de627578..d03bd91a7769 100644
+index d03bd91a7769..da68d2223f18 100644
 --- a/tools/perf/util/threads.h
 +++ b/tools/perf/util/threads.h
-@@ -2,7 +2,7 @@
- #ifndef __PERF_THREADS_H
- #define __PERF_THREADS_H
- 
--#include <linux/rbtree.h>
-+#include "hashmap.h"
- #include "rwsem.h"
+@@ -7,7 +7,7 @@
  
  struct thread;
-@@ -11,9 +11,9 @@ struct thread;
+ 
+-#define THREADS__TABLE_BITS	8
++#define THREADS__TABLE_BITS	3
  #define THREADS__TABLE_SIZE	(1 << THREADS__TABLE_BITS)
  
  struct threads_table_entry {
--	struct rb_root_cached  entries;
-+	/* Key is tid, value is struct thread. */
-+	struct hashmap	       shard;
- 	struct rw_semaphore    lock;
--	unsigned int	       nr;
- 	struct thread	       *last_match;
- };
- 
 -- 
 2.42.0.869.gea05f2083d-goog
 
