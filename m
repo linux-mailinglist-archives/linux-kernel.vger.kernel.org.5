@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5EC7DF405
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA7B7DF409
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376603AbjKBNkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 09:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39292 "EHLO
+        id S1376613AbjKBNkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 09:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjKBNkT (ORCPT
+        with ESMTP id S234971AbjKBNkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 09:40:19 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D8713E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:40:16 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50930f126b1so1094100e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 06:40:16 -0700 (PDT)
+        Thu, 2 Nov 2023 09:40:20 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F14182
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:40:17 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5406c099cebso1493239a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 06:40:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1698932414; x=1699537214; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OOtIHpfkZWFD4FolYlTiy9O+zTRxXyJ2ArxW0gbuYoU=;
-        b=jNDzF46EHaPtjM7F+yC3uf0jsYEwkVGjhFOdq1CI61LoQiwz6YaAB9n3ZBOFF4AqM/
-         iXYclFMIixO/vq296kmOz4LEF3dH4Jc77fNb933X/83tvPy8ATSZrV8+jn4ztdJSM51r
-         qnxwVgX5NA1IMiiKR6ILwHWY9OjiLkc7mIINDD6UMz6oV7eKerYHCixOLeRFbzZGMV0x
-         wRrsVYi2VSQBAoF6feBbXxGqu6PYCqO8JxF/f1pRNjzTJQNPA0FXToRMwWBC0p0O9efS
-         EdjzDM1Q7Vs6FBxXzDOFkvMLBinMTfWADvN5PZEcPY4BOepFmF6i2j2KJVab9jBdLrzi
-         Vxog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698932414; x=1699537214;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698932416; x=1699537216; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OOtIHpfkZWFD4FolYlTiy9O+zTRxXyJ2ArxW0gbuYoU=;
-        b=a/4zYUf1FMsBmwZPs4NWGZ2mRahzgb8g+GO13scNu/ktQMuCsaE07YrIjyn/t1ZCYo
-         i9yabLwfc+48EkGieCAz+kXstg5BGOViU/ORJpHBVZ9Vc6aks2rpmyWULZ7ybm9lpjVO
-         YaIhRGnAh6lW8y5o6dX/5YHr3ntxsPAfhS7wSqLnUWnQZ5zhPe1/KHDCtbDTpMrBHWqn
-         71m3le55mhkZ4giuiAz0dPCeEhEWXFQPgYQS8af30PNbRBMnARtCntVNHufFlc5AOOXK
-         MSKVaf3b/EDWlFwhtnJZPcEuYTl+mHZzP0aKVEzBLvlXkkayueLiJA361fhEONk744Qm
-         kKLw==
-X-Gm-Message-State: AOJu0YyIkND8MSxlGNZ2iLtzRqQnMJJvEi6DB+Vvs6hxLwn73UyvuixL
-        JaSB25IJlpDW7KRDu4z/VKFeuQ==
-X-Google-Smtp-Source: AGHT+IH9Avz4EYkMCVl7IjoVxQZahZVqhEUFxHwUDK/D9DIgwUFD/AoZz+TDzj2dpvUUpDkrMWy0jQ==
-X-Received: by 2002:a05:6512:118d:b0:503:3816:c42c with SMTP id g13-20020a056512118d00b005033816c42cmr16625497lfr.41.1698932414453;
+        bh=faV8A47tvgpZ5h+iJVem6LTeAncvTfPtpMsFTDEMTl8=;
+        b=nksNVbEnlbJSo2MdWScafcLIaKFdjlq0da8To25mbpf8rMQUCikP33EMh5R28TFXbU
+         G6tFylY1KI8SJLyFTddtu5cKJW8OPdMoGpGzeFVtdk2UUtK30rk74y8QeGkSrZZ42lfR
+         V6yWaBzU5ZE4Ng89iu/8YjKqYR/7O1aO1NruMctterXYu0CSS92s/GuKVTYfaZtr2FC6
+         prD5GHSdF19R0YP4BaNS0adngglTGTvXzmk++J92uihspr+qHER9tXpNBdHRTKitHH0P
+         BT/4uwCML/FksgSeYliNWCd2y887/kruq20L15G/SrJadbDM2aEBwinYMwYKJ4E7ayYp
+         dl8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698932416; x=1699537216;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=faV8A47tvgpZ5h+iJVem6LTeAncvTfPtpMsFTDEMTl8=;
+        b=QOhE0kMzLy7Yay2zREn55Hs7icoD/OCkbdNX/qHOttuKZFvO8sIIZlwdvIL4f4dCOA
+         xZGnI/3JyY/74qvQRPDhyUBrn+8lxpXb65gttKOwUVTqvA6wLpXm170FBxt3vk+khgvr
+         qJMTSF7+ia5QesRpkJYm7BN/FeWG6fNC6Ig9RQ4aT037dM5Aved0i65/L8hCUxwMdE64
+         ucWgXnSTbRK23ikzv1fIP7mwIXqSBszD8nZPARfMMyvcB0f5By4kzW7FaEAm8IVGitiC
+         P2P9lUzDYCZcNOr6kqa+LQC1W14KGhw74vrdHbPsUI9XLFqfhw0wkRKJy34jdu6mn6ar
+         kiZw==
+X-Gm-Message-State: AOJu0YwNgBL2YxPe8A1C2W5Fc39INtQtOFUOgcmuSW5KMIiYs1stSqD9
+        4cDEazFCi67q2opCN550fnPSJxdJXRQ=
+X-Google-Smtp-Source: AGHT+IFA82hBDVCIm4Aa4h6VWAi5ZV1plROwqOjG/ow5zKHaqtmNWt9drLjQQDuwmHB8X+Kcs1OKAw==
+X-Received: by 2002:a05:6402:28b3:b0:540:118:e8f with SMTP id eg51-20020a05640228b300b0054001180e8fmr15039013edb.24.1698932415678;
+        Thu, 02 Nov 2023 06:40:15 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id u1-20020aa7db81000000b0054366251e04sm2287357edt.94.2023.11.02.06.40.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Thu, 02 Nov 2023 06:40:14 -0700 (PDT)
-Received: from debian ([185.117.107.42])
-        by smtp.gmail.com with ESMTPSA id s18-20020a056512203200b00502a7a7579bsm495204lfs.216.2023.11.02.06.40.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 06:40:13 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 14:40:11 +0100
-From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
-        <ramon.nordin.rodriguez@ferroamp.se>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, steen.hegelund@microchip.com,
-        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
-        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-        Thorsten.Kummermehr@microchip.com
-Subject: Re: [PATCH net-next v2 8/9] microchip: lan865x: add driver support
- for Microchip's LAN865X MACPHY
-Message-ID: <ZUOmu5M4_pyPnV8b@debian>
-References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
- <20231023154649.45931-9-Parthiban.Veerasooran@microchip.com>
- <ZUOUGf-PMGo8z1s-@debian>
- <f95b42ef-b7e0-44dc-b7c8-9353e9edc2df@lunn.ch>
+Message-ID: <cda574be-4f33-b66d-eb14-92c2b31d241e@gmail.com>
+Date:   Thu, 2 Nov 2023 14:40:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f95b42ef-b7e0-44dc-b7c8-9353e9edc2df@lunn.ch>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v1 0/4] Rockchip rk3066_hdmi update
+To:     hjc@rock-chips.com, heiko@sntech.de
+Cc:     airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew
+Update the Rockchip rk3066_hdmi driver in a somewhat similar way
+to what is proposed for the inno_hdmi driver.
 
-> > 		spi-max-frequency = <50000000>;
-> 
-> That is a pretty high frequency. It is actually running at that speed?
+Johan Jonker (4):
+  drm/rockchip: rk3066_hdmi: Remove useless mode_fixup
+  drm/rockchip: rk3066_hdmi: Switch encoder hooks to atomic
+  drm/rockchip: rk3066_hdmi: Remove useless output format
+  drm/rockchip: rk3066_hdmi: Remove unused drm device pointer
 
-I have not verified that we're actually hitting 50M.
+ drivers/gpu/drm/rockchip/rk3066_hdmi.c | 66 +++++++-------------------
+ 1 file changed, 18 insertions(+), 48 deletions(-)
 
-> 
-> Have you tried lower speed?
+--
+2.39.2
 
-Sorry for being too brief about the things I've tested. But yes, I've
-tested running at 15MHz with the same or similar enough results that
-I've not been able to discern any difference.
-Meaningful to mention here as well would be that I've tested with and
-without DMA as well.
-
-> > With this setup I'm getting a maximum throughput of about 90kB/s.
-> > If I increase the chunk size / oa-cps to 64 I get a might higher
-> > throughput ~900kB/s, but after 0-2s I get dump below (or similar).
-> 
-> Is this tcp traffic? Lost packets will have a big impact. You might
-> want to look at the link peer with tcpdump and look for retries. Also,
-> look if there are frames with bad checksums.
-> 
-
-As you assume, this was with TCP. I'll do a run with tcpdump and see if
-I can compile any intelligent statistics from that.
