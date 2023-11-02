@@ -2,93 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C837DF762
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE267DF767
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376863AbjKBQHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
+        id S1347371AbjKBQIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376703AbjKBQHl (ORCPT
+        with ESMTP id S229468AbjKBQIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:07:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5091913D;
-        Thu,  2 Nov 2023 09:07:34 -0700 (PDT)
-Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B4EC8C1;
-        Thu,  2 Nov 2023 17:07:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698941234;
-        bh=Se4ISjAmQVoP0ZDJ3KrV0mFHZwKI4au8yi0dt/1sH04=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jXsTkvENegp4azWY8Z6/PyqPYPHKUZRRz9OHOTCNwq3BC+BAnTBGAMwOXxfOU79fb
-         yhuiw23d9GJiim5Z8YmwUd55GYk8FQsINGTtFZ+ouvyugIpBpQ8wG3g4GI1P1hhrwO
-         W/dRCTGVjjwdiHgcAPAZHozvyH06Xqw20At2KMM4=
-Message-ID: <915ef27a-11c8-49ba-8f8a-b4524b85c75a@ideasonboard.com>
-Date:   Thu, 2 Nov 2023 16:07:28 +0000
+        Thu, 2 Nov 2023 12:08:39 -0400
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C2312E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:08:32 -0700 (PDT)
+Message-ID: <52383a4f-6efd-43ce-bedb-a91e130850f3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698941310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lwcvhDkIs7fTpknKnCOZda9qAVTWwh/XZv8N4skJZM0=;
+        b=xUq5n14VSxdOTzRZCaTtuPs+LYH1ZVU7CLE6ACyvY411OLKK3A8pmGi7xZivHhdxLw/Uj+
+        jXy4RXtjp+WlKzdFsoyrYYRUwscJ9Nw0uSWv5XSB/eKLFWAQijozjVFQihj+mtk7Bq71v5
+        brF+lTgw/9OrfhPRlRyiF8qNFvnYvAg=
+Date:   Thu, 2 Nov 2023 09:08:26 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] usb:gadget:uvc Do not use worker thread to queue isoc
- usb requests
-Content-Language: en-US
-To:     Jayant Chowdhary <jchowdhary@google.com>,
-        stern@rowland.harvard.edu, laurent.pinchart@ideasonboard.com,
-        m.grzeschik@pengutronix.de, gregkh@linuxfoundation.org
-Cc:     Thinh.Nguyen@synopsys.com, arakesh@google.com, etalvala@google.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-References: <20231026215635.2478767-1-jchowdhary@google.com>
- <20231102060120.1159112-1-jchowdhary@google.com>
-From:   Dan Scally <dan.scally@ideasonboard.com>
-Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231102060120.1159112-1-jchowdhary@google.com>
+Subject: Re: [linus:master] [bpf] c930472552:
+ WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init
+Content-Language: en-GB
+To:     Hou Tao <houtao@huaweicloud.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        "houtao1@huawei.com" <houtao1@huawei.com>
+References: <202310302113.9f8fe705-oliver.sang@intel.com>
+ <7506b682-3be3-fcd0-4bb4-c1db48f609a2@huaweicloud.com>
+ <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,382 +56,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jayant - thanks for the patch
 
-On 02/11/2023 06:01, Jayant Chowdhary wrote:
-> When we use an async work queue to perform the function of pumping
-> usb requests to the usb controller, it is possible that amongst other
-> factors, thread scheduling affects at what cadence we're able to pump
-> requests. This could mean isoc usb requests miss their uframes - resulting
-> in video stream flickers on the host device.
+On 11/2/23 6:40 AM, Hou Tao wrote:
+> Hi Alexei,
 >
-> To avoid this, we make the async_wq thread only produce isoc usb_requests
-> with uvc buffers encoded into them. The process of queueing to the
-> endpoint is done by the uvc_video_complete() handler. In case no
-> usb_requests are ready with encoded information, we just queue a zero
-> length request to the endpoint from the complete handler.
+> On 10/31/2023 4:01 PM, Hou Tao wrote:
+>> Hi,
+>>
+>> On 10/30/2023 10:11 PM, kernel test robot wrote:
+>>> hi, Hou Tao,
+>>>
+>>> we noticed a WARN_ONCE added in this commit was hit in our tests. FYI.
+>>>
+>>>
+>>> Hello,
+>>>
+>>> kernel test robot noticed "WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init" on:
+>>>
+>>> commit: c930472552022bd09aab3cd946ba3f243070d5c7 ("bpf: Ensure unit_size is matched with slab cache object size")
+>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>>
+>>> [test failed on linus/master ffc253263a1375a65fa6c9f62a893e9767fbebfa]
+>>> [test failed on linux-next/master c503e3eec382ac708ee7adf874add37b77c5d312]
+>>>
+>>> in testcase: boot
+>>>
+>>> compiler: gcc-12
+>>> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+>>>
+>>> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>>>
+>>>
+>>> +-------------------------------------------------------------+------------+------------+
+>>> |                                                             | b1d53958b6 | c930472552 |
+>>> +-------------------------------------------------------------+------------+------------+
+>>> | WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init        | 0          | 14         |
+>>> | EIP:bpf_mem_alloc_init                                      | 0          | 14         |
+>>> +-------------------------------------------------------------+------------+------------+
+>>>
+>>>
+>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>>> the same patch/commit), kindly add following tags
+>>> | Reported-by: kernel test robot <oliver.sang@intel.com>
+>>> | Closes: https://lore.kernel.org/oe-lkp/202310302113.9f8fe705-oliver.sang@intel.com
+>>>
+>>>
+>>> [   32.249545][    T1] ------------[ cut here ]------------
+>>> [   32.250152][    T1] bpf_mem_cache[0]: unexpected object size 128, expect 96
+>>> [ 32.250953][ T1] WARNING: CPU: 1 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
+>>> [   32.252065][    T1] Modules linked in:
+>>> [   32.252548][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-12679-gc93047255202 #1
+>>> [ 32.253767][ T1] EIP: bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
+>>> [ 32.254439][ T1] Code: 30 e8 7e 22 04 00 8b 56 20 39 d0 74 24 80 3d 18 c0 cc c2 00 75 3b c6 05 18 c0 cc c2 01 52 50 53 68 df 53 57 c2 e8 47 70 ef ff <0f> 0b 83 c4 10 eb 20 43 83 c6 74 83 fb 0b 0f 85 6a ff ff ff 8b 45
+>> Thanks for the report. I also could reproduce the warning in v6.6 by
+>> following the reproducing steps in the link below.
+>>
+>> According the reproduce job, it seems that the kernel is built for i386
+>> (make HOSTCC=gcc-12 CC=gcc-12 ARCH=i386 olddefconfig prepare
+>> modules_prepare bzImage) and in .config CONFIG_SLAB instead of
+>> CONFIG_SLUB is enabled, I will check whether or not these two setups
+>> make any thing being different.
+> I see what has happened. The problem is twofold:
+> (1) The object_size of kmalloc-cg-96 is adjust from 96 to 128 due to
+> slab merge in __kmem_cache_alias(). For SLAB, SLAB_HWCACHE_ALIGN is
+> enabled by default for kmalloc slab, so align is 64 and size is 128 for
+> kmalloc-cg-96. So when unit_alloc() does kmalloc_node(96, __GFP_ACCOUNT,
+> node), ksize() will return 128 instead of 96 for the returned pointer.
+> SLUB has a similar merge logic, but because its align is 8 under x86-64,
+> so the warning doesn't happen for i386 + SLUB, but I think the similar
+> problem may exist for other architectures.
+> (2) kmalloc_size_roundup() returns the object_size of kmalloc-96 instead
+> of kmalloc-cg-96, so bpf_mem_cache_adjust_size() doesn't adjust
+> size_index accordingly. The reason why the object_size of kmalloc-96 is
+> 96 instead of 128 is that there is slab merge for kmalloc-96.
 >
-> For bulk endpoints the async_wq thread still queues usb requests to the
-> endpoint.
+> About how to fix the problem, I have two ideas:
+> The first is to introduce kmalloc_size_roundup_flags(), so
+> bpf_mem_cache_adjust_size() could use kmalloc_size_roundup_flags(size,
+> __GFP_ACCOUNT) to get the object_size of kmalloc-cg-xxx. It could fix
+> the warning for now, but the warning may pop-up occasionally due to SLUB
+> merge and unusual slab align. The second is just using the bpf_mem_cache
+> pointer to get the unit_size which is saved before the to-be-free
+> pointer. Its downside is that it may can not be able to skip the free
+> operation for pointer which is not allocated from bpf ma, but I think it
+> is acceptable. I prefer the latter solution. What do you think ?
+
+
+Is it possible that in bpf_mem_cache_adjust_size(), we do a series of
+kmalloc (for supported bucket size) and call ksize() to get the actual
+allocated object size. So eventually all possible allocated object sizes
+will be used for size_index[]. This will avoid all kind of special
+corner cases due to config/macro/arch etc. WDYT?
+
+
+>> Regards,
+>> Tao
+>>> All code
+>>> ========
+>>>     0:	30 e8                	xor    %ch,%al
+>>>     2:	7e 22                	jle    0x26
+>>>     4:	04 00                	add    $0x0,%al
+>>>     6:	8b 56 20             	mov    0x20(%rsi),%edx
+>>>     9:	39 d0                	cmp    %edx,%eax
+>>>     b:	74 24                	je     0x31
+>>>     d:	80 3d 18 c0 cc c2 00 	cmpb   $0x0,-0x3d333fe8(%rip)        # 0xffffffffc2ccc02c
+>>>    14:	75 3b                	jne    0x51
+>>>    16:	c6 05 18 c0 cc c2 01 	movb   $0x1,-0x3d333fe8(%rip)        # 0xffffffffc2ccc035
+>>>    1d:	52                   	push   %rdx
+>>>    1e:	50                   	push   %rax
+>>>    1f:	53                   	push   %rbx
+>>>    20:	68 df 53 57 c2       	push   $0xffffffffc25753df
+>>>    25:	e8 47 70 ef ff       	call   0xffffffffffef7071
+>>>    2a:*	0f 0b                	ud2		<-- trapping instruction
+>>>    2c:	83 c4 10             	add    $0x10,%esp
+>>>    2f:	eb 20                	jmp    0x51
+>>>    31:	43 83 c6 74          	rex.XB add $0x74,%r14d
+>>>    35:	83 fb 0b             	cmp    $0xb,%ebx
+>>>    38:	0f 85 6a ff ff ff    	jne    0xffffffffffffffa8
+>>>    3e:	8b                   	.byte 0x8b
+>>>    3f:	45                   	rex.RB
+>>>
+>>> Code starting with the faulting instruction
+>>> ===========================================
+>>>     0:	0f 0b                	ud2
+>>>     2:	83 c4 10             	add    $0x10,%esp
+>>>     5:	eb 20                	jmp    0x27
+>>>     7:	43 83 c6 74          	rex.XB add $0x74,%r14d
+>>>     b:	83 fb 0b             	cmp    $0xb,%ebx
+>>>     e:	0f 85 6a ff ff ff    	jne    0xffffffffffffff7e
+>>>    14:	8b                   	.byte 0x8b
+>>>    15:	45                   	rex.RB
+>>> [   32.256641][    T1] EAX: 00000037 EBX: 00000000 ECX: 00000002 EDX: 80000002
+>>> [   32.257402][    T1] ESI: fefbda30 EDI: da953a30 EBP: c3d49ef0 ESP: c3d49ec0
+>>> [   32.258176][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+>>> [   32.259000][    T1] CR0: 80050033 CR2: 00000000 CR3: 02dd5000 CR4: 000406d0
+>>> [   32.259768][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+>>> [   32.260526][    T1] DR6: fffe0ff0 DR7: 00000400
+>>> [   32.261021][    T1] Call Trace:
+>>> [ 32.261376][ T1] ? show_regs (arch/x86/kernel/dumpstack.c:479 arch/x86/kernel/dumpstack.c:465)
+>>> [ 32.261835][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
+>>> [ 32.262395][ T1] ? __warn (kernel/panic.c:673)
+>>> [ 32.262840][ T1] ? report_bug (lib/bug.c:201 lib/bug.c:219)
+>>> [ 32.263327][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
+>>> [ 32.263884][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
+>>> [ 32.264368][ T1] ? handle_bug (arch/x86/kernel/traps.c:237)
+>>> [ 32.264833][ T1] ? exc_invalid_op (arch/x86/kernel/traps.c:258 (discriminator 1))
+>>> [ 32.265333][ T1] ? handle_exception (arch/x86/entry/entry_32.S:1056)
+>>> [ 32.265903][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
+>>> [ 32.266392][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
+>>> [ 32.266982][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
+>>> [ 32.267476][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
+>>> [ 32.268050][ T1] ? irq_work_init_threads (kernel/bpf/core.c:2919)
+>>> [ 32.268610][ T1] bpf_global_ma_init (kernel/bpf/core.c:2923)
+>>> [ 32.269142][ T1] do_one_initcall (init/main.c:1232)
+>>> [ 32.269657][ T1] ? debug_smp_processor_id (lib/smp_processor_id.c:61)
+>>> [ 32.270243][ T1] ? rcu_is_watching (include/linux/context_tracking.h:122 kernel/rcu/tree.c:699)
+>>> [ 32.270770][ T1] do_initcalls (init/main.c:1293 init/main.c:1310)
+>>> [ 32.271275][ T1] kernel_init_freeable (init/main.c:1549)
+>>> [ 32.271841][ T1] ? rest_init (init/main.c:1429)
+>>> [ 32.272324][ T1] kernel_init (init/main.c:1439)
+>>> [ 32.272785][ T1] ret_from_fork (arch/x86/kernel/process.c:153)
+>>> [ 32.273272][ T1] ? rest_init (init/main.c:1429)
+>>> [ 32.273752][ T1] ret_from_fork_asm (arch/x86/entry/entry_32.S:741)
+>>> [ 32.274272][ T1] entry_INT80_32 (arch/x86/entry/entry_32.S:947)
+>>> [   32.274803][    T1] irq event stamp: 16968005
+>>> [ 32.275293][ T1] hardirqs last enabled at (16968013): console_unlock (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:67 arch/x86/include/asm/irqflags.h:127 kernel/printk/printk.c:347 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
+>>> [ 32.276277][ T1] hardirqs last disabled at (16968022): console_unlock (kernel/printk/printk.c:345 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
+>>> [ 32.277242][ T1] softirqs last enabled at (16967866): __do_softirq (arch/x86/include/asm/preempt.h:27 kernel/softirq.c:400 kernel/softirq.c:582)
+>>> [ 32.278202][ T1] softirqs last disabled at (16967861): do_softirq_own_stack (arch/x86/kernel/irq_32.c:57 arch/x86/kernel/irq_32.c:147)
+>>> [   32.279228][    T1] ---[ end trace 0000000000000000 ]---
+>>> [   32.280294][    T1] kmemleak: Kernel memory leak detector initialized (mem pool available: 15783)
+>>> [   32.281276][    T1] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+>>> [   32.285847][   T74] kmemleak: Automatic memory scanning thread started
+>>> [   32.290289][    T1] UBI error: cannot create "ubi" debugfs directory, error -2
+>>> [   32.291558][    T1] UBI error: cannot initialize UBI, error -2
+>>>
+>>>
+>>>
+>>> The kernel config and materials to reproduce are available at:
+>>> https://download.01.org/0day-ci/archive/20231030/202310302113.9f8fe705-oliver.sang@intel.com
+>>>
+>>>
+>>>
 >
-> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
-> Suggested-by: Avichal Rakesh <arakesh@google.com>
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> ---
->   Based on top of
->   https://lore.kernel.org/linux-usb/20230930184821.310143-1-arakesh@google.com/T/#t:
->   v1->v2: Added self Signed-Off-by and addressed review comments
->   v2->v3: Encode to usb requests in async_wq; queue to ep in complete handler
-> 	 for isoc transfers.
->
->   drivers/usb/gadget/function/uvc.h       |   8 +
->   drivers/usb/gadget/function/uvc_video.c | 187 +++++++++++++++++++-----
->   2 files changed, 156 insertions(+), 39 deletions(-)
->
-> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
-> index e8d4c87f1e09..82c783410554 100644
-> --- a/drivers/usb/gadget/function/uvc.h
-> +++ b/drivers/usb/gadget/function/uvc.h
-> @@ -105,7 +105,15 @@ struct uvc_video {
->   	bool is_enabled; /* tracks whether video stream is enabled */
->   	unsigned int req_size;
->   	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
-> +
-> +	/* USB requests video pump thread can encode into*/
-
-"USB requests that the video pump thread can encode into", and a space before the closing */ please 
-(and the same a few more times below).
-
->   	struct list_head req_free;
-> +
-> +	/*
-> +	 * USB requests video pump thread has already encoded into. These are
-> +	 * ready to be queued to the endpoint.
-> +	 */
-> +	struct list_head req_ready;
->   	spinlock_t req_lock;
->   
->   	unsigned int req_int_count;
-> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-> index 53feb790a4c3..c84183e9afcc 100644
-> --- a/drivers/usb/gadget/function/uvc_video.c
-> +++ b/drivers/usb/gadget/function/uvc_video.c
-> @@ -268,6 +268,98 @@ static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_request *req)
->   	return ret;
->   }
->   
-> +/* This function must be called with video->req_lock held*/
-> +static int uvcg_video_usb_req_queue(struct uvc_video *video,
-> +	struct usb_request *req, bool queue_to_ep) {
-Brace on a new line please - same a few more times below
-> +	bool is_bulk = video->max_payload_size;
-empty line here
-> +	if (!video->is_enabled) {
-> +		uvc_video_free_request(req->context, video->ep);
-> +		return -ENODEV;
-> +	}
-> +	if (queue_to_ep) {
-> +		struct uvc_request *ureq = req->context;
-> +		/*
-> +		 * With USB3 handling more requests at a higher speed, we can't
-> +		 * afford to generate an interrupt for every request. Decide to
-> +		 * interrupt:
-> +		 *
-> +		 * - When no more requests are available in the free queue, as
-> +		 *   this may be our last chance to refill the endpoint's
-> +		 *   request queue.
-> +		 *
-> +		 * - When this is request is the last request for the video
-> +		 *   buffer, as we want to start sending the next video buffer
-> +		 *   ASAP in case it doesn't get started already in the next
-> +		 *   iteration of this loop.
-> +		 *
-> +		 * - Four times over the length of the requests queue (as
-> +		 *   indicated by video->uvc_num_requests), as a trade-off
-> +		 *   between latency and interrupt load.
-> +		*/
-> +		if (list_empty(&video->req_free) || ureq->last_buf ||
-> +			!(video->req_int_count %
-> +			DIV_ROUND_UP(video->uvc_num_requests, 4))) {
-> +			video->req_int_count = 0;
-> +			req->no_interrupt = 0;
-> +		} else {
-> +			req->no_interrupt = 1;
-> +		}
-> +		video->req_int_count++;
-> +		return uvcg_video_ep_queue(video, req);
-> +	} else {
-> +		/*
-> +		* If we're not queing to the ep, for isoc we're queing
-> +		* to the req_ready list, otherwise req_free.
-> +		*/
-> +		struct list_head *list =
-> +			is_bulk ? &video->req_free : &video->req_ready;
-> +		list_add_tail(&req->list, list);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int uvcg_video_ep_queue_zero_length(struct usb_request *req,
-> +	struct uvc_video *video) {
-> +	req->length = 0;
-> +	return uvcg_video_ep_queue(video, req);
-> +}
-Not sure this is worth its own function
-> +
-> +/* Must only be called from uvcg_video_enable - since after that we only want to
-> + * queue requests to the endpoint from the uvc_video_complete complete handler.
-> + * This function is needed in order to 'kick start' the flow of requests from
-> + * gadget driver to the usb controller.
-> + */
-> +static void uvc_video_ep_queue_initial_requests(struct uvc_video *video) {
-> +	struct usb_request *req = NULL;
-> +	unsigned long flags = 0;
-> +	unsigned int count = 0;
-> +	int ret = 0;
-> +	/* We only queue half of the free list since we still want to have
-> +	 * some free usb_requests in the free list for the video_pump async_wq
-> +	 * thread to encode uvc buffers into. Otherwise we could get into a
-> +	 * situation where the free list does not have any usb requests to
-> +	 * encode into - we always end up queueing 0 length requests to the
-> +	 * end point.
-> +	 */
-> +	unsigned half_list_size = video->uvc_num_requests / 2;
-> +	spin_lock_irqsave(&video->req_lock, flags);
-> +	/* Take these requests off the free list and queue them all to the
-> +	 * endpoint. Since we queue the requests with the req_lock held,
-> +	 */
-
-This comment seems to be incomplete? You also want an opening /* on its own line:
-
-
-/*
-  * Multi line comments
-  * look like this
-  */
-
-> +	while (count < half_list_size) {
-> +		req = list_first_entry(&video->req_free, struct usb_request,
-> +					list);
-> +		list_del(&req->list);
-> +		ret = uvcg_video_ep_queue_zero_length(req, video);
-> +		if (ret < 0) {
-> +			uvcg_queue_cancel(&video->queue, /*disconnect*/0);
-> +			break;
-> +		}
-> +		count++;
-> +	}
-> +	spin_unlock_irqrestore(&video->req_lock, flags);
-> +}
-> +
-
-So if I'm understanding the new starting sequence right for an isoc endpoint there's an initial 
-flight of half the requests (between 2 and 32) that are queued as zero length - the very first one 
-to .complete() being re-queued as a zero length request before the workqueue is started and encodes 
-data into the _other_ half of the requests which were left in req_free and putting them into 
-req_ready. At that point the .complete()s being run start to pick requests off req_ready instead and 
-they get sent out with data...does that sound right?
-
-
-What are the implications of those initial 3-33 zero length requests? What kind of latency can that 
-introduce to the start of the video stream?
-
->   static void
->   uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
->   {
-> @@ -276,6 +368,8 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
->   	struct uvc_video_queue *queue = &video->queue;
->   	struct uvc_buffer *last_buf = NULL;
->   	unsigned long flags;
-> +	bool is_bulk = video->max_payload_size;
-> +	int ret = 0;
->   
->   	spin_lock_irqsave(&video->req_lock, flags);
->   	if (!video->is_enabled) {
-> @@ -329,7 +423,38 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
->   	 * back to req_free
->   	 */
->   	if (video->is_enabled) {
-> -		list_add_tail(&req->list, &video->req_free);
-> +		/*
-> +		 * Here we check whether any request is available in the ready
-> +		 * list. If it is, queue it to the ep and add the current
-> +		 * usb_request to the req_free list - for video_pump to fill in.
-> +		 * Otherwise, just use the current usb_request to queue a 0
-> +		 * length request to the ep. Since we always add to the req_free
-> +		 * list if we dequeue from the ready list, there will never
-> +		 * be a situation where the req_free list is completely out of
-> +		 * requests and cannot recover.
-> +		 */
-> +		struct usb_request *to_queue = req;
-> +		to_queue->length = 0;
-> +		if (!list_empty(&video->req_ready)) {
-> +			to_queue = list_first_entry(&video->req_ready,
-> +				struct usb_request, list);
-> +			list_del(&to_queue->list);
-> +			/* Add it to the free list. */
-> +			list_add_tail(&req->list, &video->req_free);
-> +		}
-> +		/*
-> +		 * Queue to the endpoint. The actual queueing to ep will
-> +		 * only happen on one thread - the async_wq for bulk endpoints
-> +		 * and this thread for isoc endpoints.
-> +		 */
-> +		ret = uvcg_video_usb_req_queue(video, to_queue,
-> +					       /*queue_to_ep*/!is_bulk);
-
-
-In principle in-line comments are fine, but I don't think the parameter name is worth a comment
-
-> +		if(ret < 0) {
-> +			uvcg_queue_cancel(queue, 0);
-> +		}
-> +		/* Queue work to the wq as well since its possible that a buffer
-> +		 * may not have been completed.
-> +		 */
-
-
-The phrasing of this implies this is a bit of defensive programming, but if we don't queue to the wq 
-here then doesn't that mean it'll never run?
-
->   		queue_work(video->async_wq, &video->pump);
->   	} else {
->   		uvc_video_free_request(ureq, ep);
-> @@ -347,6 +472,7 @@ uvc_video_free_requests(struct uvc_video *video)
->   
->   	INIT_LIST_HEAD(&video->ureqs);
->   	INIT_LIST_HEAD(&video->req_free);
-> +	INIT_LIST_HEAD(&video->req_ready);
->   	video->req_size = 0;
->   	return 0;
->   }
-> @@ -424,8 +550,7 @@ static void uvcg_video_pump(struct work_struct *work)
->   	struct usb_request *req = NULL;
->   	struct uvc_buffer *buf;
->   	unsigned long flags;
-> -	bool buf_done;
-> -	int ret;
-> +	int ret = 0;
->   
->   	while (true) {
->   		if (!video->ep->enabled)
-> @@ -454,7 +579,6 @@ static void uvcg_video_pump(struct work_struct *work)
->   
->   		if (buf != NULL) {
->   			video->encode(req, video, buf);
-> -			buf_done = buf->state == UVC_BUF_STATE_DONE;
->   		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) && !is_bulk) {
->   			/*
->   			 * No video buffer available; the queue is still connected and
-> @@ -462,7 +586,6 @@ static void uvcg_video_pump(struct work_struct *work)
->   			 * prevent missed ISOC transfers.
->   			 */
->   			req->length = 0;
-> -			buf_done = false;
->   		} else {
->   			/*
->   			 * Either the queue has been disconnected or no video buffer
-> @@ -473,45 +596,26 @@ static void uvcg_video_pump(struct work_struct *work)
->   			break;
->   		}
->   
-> -		/*
-> -		 * With USB3 handling more requests at a higher speed, we can't
-> -		 * afford to generate an interrupt for every request. Decide to
-> -		 * interrupt:
-> -		 *
-> -		 * - When no more requests are available in the free queue, as
-> -		 *   this may be our last chance to refill the endpoint's
-> -		 *   request queue.
-> -		 *
-> -		 * - When this is request is the last request for the video
-> -		 *   buffer, as we want to start sending the next video buffer
-> -		 *   ASAP in case it doesn't get started already in the next
-> -		 *   iteration of this loop.
-> -		 *
-> -		 * - Four times over the length of the requests queue (as
-> -		 *   indicated by video->uvc_num_requests), as a trade-off
-> -		 *   between latency and interrupt load.
-> -		 */
-> -		if (list_empty(&video->req_free) || buf_done ||
-> -		    !(video->req_int_count %
-> -		       DIV_ROUND_UP(video->uvc_num_requests, 4))) {
-> -			video->req_int_count = 0;
-> -			req->no_interrupt = 0;
-> -		} else {
-> -			req->no_interrupt = 1;
-> -		}
-> -
-> -		/* Queue the USB request */
-> -		ret = uvcg_video_ep_queue(video, req);
->   		spin_unlock_irqrestore(&queue->irqlock, flags);
->   
-> +		/* Queue the USB request.*/
-I think just drop this - it was always superfluous.
-> +		spin_lock_irqsave(&video->req_lock, flags);
-> +		/* For bulk end points we queue from the worker thread
-> +		 * since we would preferably not want to wait on requests
-> +		 * to be ready, in the uvcg_video_complete() handler.
-> +		 * For isoc endpoints we add the request to the ready list
-> +		 * and only queue it to the endpoint from the complete handler.
-> +		 */
-> +		ret = uvcg_video_usb_req_queue(video, req, is_bulk);
-> +		spin_unlock_irqrestore(&video->req_lock, flags);
-> +
->   		if (ret < 0) {
->   			uvcg_queue_cancel(queue, 0);
->   			break;
->   		}
->   
-> -		/* Endpoint now owns the request */
-> +		/* The request is owned by  the endpoint / ready list*/
->   		req = NULL;
-> -		video->req_int_count++;
->   	}
->   
->   	if (!req)
-> @@ -567,7 +671,7 @@ uvcg_video_disable(struct uvc_video *video)
->   
->   	spin_lock_irqsave(&video->req_lock, flags);
->   	/*
-> -	 * Remove all uvc_reqeusts from ureqs with list_del_init
-> +	 * Remove all uvc_requests from ureqs with list_del_init
-This should get fixed in the earlier series.
->   	 * This lets uvc_video_free_request correctly identify
->   	 * if the uvc_request is attached to a list or not when freeing
->   	 * memory.
-> @@ -579,9 +683,13 @@ uvcg_video_disable(struct uvc_video *video)
->   		list_del(&req->list);
->   		uvc_video_free_request(req->context, video->ep);
->   	}
-> -
-keep the empty line please
-> +	list_for_each_entry_safe(req, temp, &video->req_ready, list) {
-> +		list_del(&req->list);
-> +		uvc_video_free_request(req->context, video->ep);
-> +	}
-and one here too.
->   	INIT_LIST_HEAD(&video->ureqs);
->   	INIT_LIST_HEAD(&video->req_free);
-> +	INIT_LIST_HEAD(&video->req_ready);
->   	video->req_size = 0;
->   	spin_unlock_irqrestore(&video->req_lock, flags);
->   
-> @@ -635,7 +743,7 @@ int uvcg_video_enable(struct uvc_video *video)
->   
->   	video->req_int_count = 0;
->   
-> -	queue_work(video->async_wq, &video->pump);
-> +	uvc_video_ep_queue_initial_requests(video);
->   
->   	return ret;
->   }
-> @@ -648,6 +756,7 @@ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
->   	video->is_enabled = false;
->   	INIT_LIST_HEAD(&video->ureqs);
->   	INIT_LIST_HEAD(&video->req_free);
-> +	INIT_LIST_HEAD(&video->req_ready);
->   	spin_lock_init(&video->req_lock);
->   	INIT_WORK(&video->pump, uvcg_video_pump);
->   
