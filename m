@@ -2,202 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC817DEBF6
+	by mail.lfdr.de (Postfix) with ESMTP id 678657DEBF5
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348495AbjKBEmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S1348449AbjKBEmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjKBEmb (ORCPT
+        with ESMTP id S229727AbjKBEmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 00:42:31 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BB2DE
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:42:25 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5094727fa67so542576e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 21:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698900143; x=1699504943; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xSxfyTdZnu3+FqBp2jxT8boCx5ackD0/gbsdfNXkuSI=;
-        b=fxDmxDANavXkkjpWYlfSGYP111LgGU9Pb1sUxxa2P9nAA0HCtDTy5QOHz+Jd3UH3mq
-         YIrijGjYn//OL2DmzmBaxvKza8CW6DqIswMdKRKUSoo/4yyFAxY8wgbwgnezb26j5wSF
-         dpX+O8hpOGZPkdlboPpfU/9fOZAjJEdlFoVzw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698900143; x=1699504943;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xSxfyTdZnu3+FqBp2jxT8boCx5ackD0/gbsdfNXkuSI=;
-        b=qqheLICPQnvtJjXKJDz4+aKVxSD36QaozcplLQ/1DGxa2q6esqmvNCN+cq2OkZrwyd
-         VZxCMKYBfq+bkUpFcWA3OTiWatZxILqeMPli8CxDlGm1DFNEQtWcu7VtzJMTEzFarWL7
-         eD/6EG8MyvQRL+q9FB0LhaNheyIPgVvwgDCXhvlna45LEQUXUCbESQcML810sqvgae3w
-         QgMoWLKkoISElLUteWu2wTVkXHxkaHHuwiHeEqclvdVUMfOf4ZFA4acGfkT1sej+fuHJ
-         0/OzU9fmt/6oRtewzRVcg/meT1FLlthZO9Bmvy//n5vK8PUjTvmRv69o9Akbx/tzLHxQ
-         76/A==
-X-Gm-Message-State: AOJu0YwgqDF7UlptqlSG7lWK+qIJQWwRIMf43GzXkn50p7J47dhg9+3X
-        UyNBnp2anygE2MTT6cIqxUT3+rK/upk93uzuP7KDaQ==
-X-Google-Smtp-Source: AGHT+IEI+oiQgy7zdySHyxNcAuu4iYQ/hIODYtERknftJwI21I6qvrGWJCXlSxRyshwn+tYiGm2Denf4VzR/rrCBunY=
-X-Received: by 2002:ac2:4c82:0:b0:507:9a33:f105 with SMTP id
- d2-20020ac24c82000000b005079a33f105mr11352834lfl.69.1698900143193; Wed, 01
- Nov 2023 21:42:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10501E4
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:42:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041E7C433C7;
+        Thu,  2 Nov 2023 04:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698900145;
+        bh=SdcnFgAMPvml22ndDL1ro8QzzwIFpE/APZHZjpE2mRQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CPPnrpyuFEFaOf1GOL8iEw0u6PiEQANR5D6CaAlBZZiblAg86Bkv7NyNPk/pYYP+u
+         bMMfuQGmHKwXEKlPVFI7l0VuxfKWssy0TPvbACTc1MjQhym2ohDd/ZMJeXWxkO+MZb
+         UiGz6PeGPZKW98WsPinIimfOLgsG7rSd3UDEre1boI0q+2QyfMAA1FzIVytw1JQZcq
+         HOYZpBl2jwBj+uaVU3z+UF4XnZj6wj3BKnN1ZHfQAqIU/7ppvxiulbnZmP+50DltZU
+         CVPogkwr1nzn4hrWxJuXODrAv6psKv1jlMHrOBFeMHZdQhHBDlfglUR6JMgNJcQABh
+         Rxx+rt8ymrMHA==
+Date:   Wed, 1 Nov 2023 21:42:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <davem@davemloft.net>, <pabeni@redhat.com>, <edumazet@google.com>,
+        <sgoutham@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: Re: [net-next v2 PATCH] octeontx2-pf: TC flower offload support for
+ ICMP type and code
+Message-ID: <20231101214223.0de10cdb@kernel.org>
+In-Reply-To: <20231031165258.30002-1-gakula@marvell.com>
+References: <20231031165258.30002-1-gakula@marvell.com>
 MIME-Version: 1.0
-References: <CACKFLikNku0_9=MNjj=X+RvO_omTtg5TicQeM5oWfk0NSxiqwg@mail.gmail.com>
- <20231102041045.3103307-1-alexey.pakhunov@spacex.com>
-In-Reply-To: <20231102041045.3103307-1-alexey.pakhunov@spacex.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Wed, 1 Nov 2023 21:42:10 -0700
-Message-ID: <CACKFLi=Eh2ase5qnQ0ioYL+yS6-oSeZreHsaqAn9Zgwkv_d-Bw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] tg3: Fix the TX ring stall
-To:     alexey.pakhunov@spacex.com
-Cc:     linux-kernel@vger.kernel.org, mchan@broadcom.com,
-        netdev@vger.kernel.org, prashant@broadcom.com,
-        siva.kallam@broadcom.com, vincent.wong2@spacex.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000095e4e506092403b7"
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000095e4e506092403b7
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 31 Oct 2023 22:22:58 +0530 Geetha sowjanya wrote:
+> Adds tc offload support for matching on ICMP type and code.
+> 
+> Example usage:
+> To enable adding tc ingress rules
+>         tc qdisc add dev eth0 ingress
+> 
+> TC rule drop the ICMP echo reply:
+>         tc filter add dev eth0 protocol ip parent ffff: \
+>         flower ip_proto icmp type 8 code 0 skip_sw action drop
+> 
+> TC rule to drop ICMPv6 echo reply:
+>         tc filter add dev eth0 protocol ipv6 parent ffff: flower \
+>         indev eth0 ip_proto icmpv6 type 128 code 0 action drop
 
-On Wed, Nov 1, 2023 at 9:11=E2=80=AFPM <alexey.pakhunov@spacex.com> wrote:
->
-> Hi,
->
-> > Thanks for the patch.  An alternative fix that may be simpler is to
-> > add a goto after calling tg3_tso_bug().  Something like this:
-> >
-> >         tg3_tso_bug();
-> >         goto update_tx_mbox;
-> > ...
-> >
-> > update_tx_mbox:
-> >         if (!netdev_xmit_more() || netif_xmit_stopped())
-> >                 tw32_tx_mbox();
-> > ...
->
-> Yes, I considered this approach but in the end it seemed more fragile. Al=
-l
-> future updates to tg3_start_xmit() would need to be careful to make sure
-> all return paths go through "update_tx_mbox". This is much more
-> straightforward with a separate wrapper function.
->
-> The sizes of both patches are roughly the same. The wrapper function
-> version:
->
->  drivers/net/ethernet/broadcom/tg3.c | 46 +++++++++++++++++++++++++++++++=
-++++-----------
->  1 file changed, 35 insertions(+), 11 deletions(-)
->
-> The goto version touches four different return paths: three tg3_tso_bug()
-> calls and the return at the very top of the function:
->
->  drivers/net/ethernet/broadcom/tg3.c | 46 +++++++++++++++++++++++++++++++=
-++-------------
->  1 file changed, 33 insertions(+), 13 deletions(-)
->
-> Let me re-test the goto version and resubmit it as v2. Please let me know
-> which version of the patch you prefer more.
->
+## Form letter - net-next-closed
 
-I did not realize the goto version is almost as big.  In that case,
-your original version is fine.
+The merge window for v6.7 has begun and we have already posted our pull
+request. Therefore net-next is closed for new drivers, features, code
+refactoring and optimizations. We are currently accepting bug fixes only.
 
-You might want to declare the variables in reverse Xmas tree style for
-any new code.  This driver is old and most of the existing code does
-not follow that style.
+Please repost when net-next reopens after Nov 12th.
 
-Thanks.
+RFC patches sent for review only are obviously welcome at any time.
 
---00000000000095e4e506092403b7
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
+-- 
+pw-bot: defer
 
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC1Blbwx1G6aByCj5piBdGrrWoWIOylN
-BPArflwG+5i2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEw
-MjA0NDIyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQAaga0CSzbpEO2wgTZqAxq4vF5WiWjvnQp62WC1KpUv4XZUuWJt
-UE6HaMhoehbLbA5aVP6K3wSYXyylyjHmrcQuaGqu8gYwnXIdPmGNDvlAjbbAZI2AT5uE+40Zp9gT
-qLmwtRYJj+lH4tsNB8BMCk/j1/PdqnPOa8H7bXAXrtm81MKzwlZUgHR/JjD5esU3+0O5bTgWeL9T
-VwUolQvzFwdyDM5uq/CYtYGC+162SjAGEAzH31u2n+4be0qYoUr5w+hk0U4kEvAiuWgEZFH1Lo1O
-83BOU/Q3YI32f6uRvO6yW1b4VwUZ3nDNaEI1jMdQdWv//XS/zIq5Hyr2o2eyYAfj
---00000000000095e4e506092403b7--
