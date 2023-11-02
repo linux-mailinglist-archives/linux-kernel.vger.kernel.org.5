@@ -2,181 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70217DF912
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7A47DF919
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbjKBRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S234173AbjKBRqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjKBRqP (ORCPT
+        with ESMTP id S233906AbjKBRqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:46:15 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57BC182
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:46:11 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so1441a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947170; x=1699551970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G85pRGyLip1+tcQHyAvlsC1xDG3Jc9lQ+KHYjFzzSQc=;
-        b=UotzgL4+aFAn85dY3jbrkStVZvaHjnjDvV7JniuwXFI3o52AE9VQ+g+ylCBJeX1f7i
-         512PslTR2OQElheY1S1MRdPMPhZpI6pJKb00W/W43dz4qmU1p8gHemwlOq2wjl330yJF
-         ZrUbu1yKiPVxwg/Uqjd0lGaAfKGC/IbVzS7KED5/Fim9ZuMFvLnk+T6wU5e2RuAnPcB1
-         LLB4cJpH72iSqbHIFk7HHuskQL+loM5CXwbRsj+MYipp5vvIkxDMDhVnx2jpTRUjvP5q
-         xv7wjGxY/+ThbF6VFPP1DlU4kPw0lq0OcYHJcl+NzTfBlwoCmhqv/tcL5UHhheteYNW+
-         7J0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947170; x=1699551970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G85pRGyLip1+tcQHyAvlsC1xDG3Jc9lQ+KHYjFzzSQc=;
-        b=vMoJTspv4WThE+uHlxgGUkKumnlD8ja5oBw+K6RCDMUv8o16prV6PmUkg/PCySFquk
-         yppQNZ8ZSNOHG+dTQ/Kscsacb/FFvEcJ9MSqdL2gXgF4LC52TrFp9OD6asYNnHXuqWZU
-         x9emHFAfbvsjiyqFfuH7VmzVX7iOEMCa2tbE5PIo+GAkZfi/YXm76O1Y7NbRpUUNYw09
-         jwm4wET9crFAO3lV0UlHJSn1Dux/eZgUuhWjdAsnFGdvDMNg6xoriGS5xkc9Qnx1n0N6
-         YKuZ2dvE+5r6O51VOaSFMZJJsrs15eULizub28CSmGBQbnyCrVpOrSag3x1qeWH6K9Er
-         HT5A==
-X-Gm-Message-State: AOJu0YzKdIaqKsqlTIiYwMj5vXoMK55Snp9outDhW53rqVUzov//2xrN
-        zDbME3ln1n8OvsKflSYL4YzFgppAhgKstiQ5O1F5cmFKiJBp600qY6XreQ==
-X-Google-Smtp-Source: AGHT+IGSe7qAyEQZs1bKmfSacwohVtcCs/g6GqCLZ2kkpMOCfQ8TXSwwazIgs5PBRlN5AX8zrrVPCXuZiJZrVtAnLpk=
-X-Received: by 2002:a50:f60b:0:b0:543:3f97:aa0f with SMTP id
- c11-20020a50f60b000000b005433f97aa0fmr106457edn.4.1698947169816; Thu, 02 Nov
- 2023 10:46:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
- <20231031090613.2872700-2-dapeng1.mi@linux.intel.com> <CALMp9eR_BFdNNTXhSpbuH66jXcRLVB8VvD8V+kY245NbusN2+g@mail.gmail.com>
- <c3f0e4ac-1790-40c1-a09e-209a09e3d230@linux.intel.com> <CALMp9eTDAiJ=Kuh7KkwdAY8x1BL2ZjdgFiPFRHXSSVCpcXp9rw@mail.gmail.com>
- <baa64cf4-11de-4581-89b6-3a86448e3a6e@linux.intel.com> <a14147e7-0b35-4fba-b785-ef568474c69b@linux.intel.com>
- <85706bd7-7df0-4d4b-932c-d807ddb14f9e@linux.intel.com>
-In-Reply-To: <85706bd7-7df0-4d4b-932c-d807ddb14f9e@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 2 Nov 2023 10:45:55 -0700
-Message-ID: <CALMp9eS3NdTUnRrYPB+mMoGKj5NnsYXNUfUJX8Gv=wWCN4dkoQ@mail.gmail.com>
-Subject: Re: [Patch 1/2] KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots event
-To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>, Like Xu <likexu@tencent.com>
+        Thu, 2 Nov 2023 13:46:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5812D131;
+        Thu,  2 Nov 2023 10:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698947186; x=1730483186;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=hdZeCzoPGPX9daNOri96gJ5Hbo0FDfbf5t4cwRncJmw=;
+  b=FK+TDdywxLNaXlLJQxtHjS3uWjNnMzqArB9BspBy8HXph1lg/kDukj5n
+   3CKNE4Za0fBiVSYe/24IgHHIr/Ua12aOYTseazOdEjh7jp87AZjmHC93O
+   m2XvlbxFJVbS0lQbGXZx162ZwKpm9BnHrj3ajtCTsRiCoa8qoF+4nRLeb
+   YypWDqDHQQBF8sMP62L0uuoVNId3Ar2/NF6Yhwj1elkMrlDhr6F8FCZqz
+   Q2216xOpqzZYI+vppmGsOfmGQJ22D6UlP54BUQ3TVYNAIay2ngi8YSPHl
+   cwWhOB2QCrKv/9XVcFzslVkpukDdojFFSUePooBIc1DThjNOMyLc3ivQp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="455257538"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="455257538"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 10:46:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="761349346"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="761349346"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Nov 2023 10:46:25 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 2 Nov 2023 10:46:25 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 2 Nov 2023 10:46:25 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 2 Nov 2023 10:46:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jlZjmQMVK1zpnTB4dRb3Jnjj8CKLsZYu2V+y4FvcBEMBTyO8ZHSaD598DwlyCgxv7HKKrPtZI3BAZamSz9Smh632R/OLjfYdic6aqWTe0gtqVqQhnVxo5Et7pJoX/dNWNNlgnbgsf5N06Pi2OySfg5D7HSLyZTgG9zbDSMpmSUD8oH1JuLsNDvWC+r6Xlj2RX+avvmPeXI5Lh3t9V6BAe0KlvS0HKpzU8wfNgAT3v0cVAYjw7A40pFwDc/8HhtIdxfnyiiEAq8c2VsvjNAOGGnSZppO2s4Gif7XOX+FD6J8QsqOvIhutG6X/Zai6DDW16Cl1xyhhm4rlFB9zdulhYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UxBigg/kZklnbdU/AcRVxv1bgMB2NnidDVeqk/uIKvo=;
+ b=Is86zeYkVLx1mKqFhOruet/Tq3AufTAoX6/tMeOLcwm/uGxeM52RNIJD265+Aab8ILUaf7Y7YB5r6dwFpHiqxVR7O0GjadmGS/fEb5c0MGxdhOqvkejhlt0YHU4e/kswlQQ4ozEfaBmkumImTVFzrwTd8qgv7uVznLPxuLh40mr3ckSQ4+qCU7Ha3UVmVfgLiEkxcu6nl5XQEn86rZnG9YF2GwQqN3TgdWT7npQajGOwfZbcuTZ77CPc5kTlii14Caz4GF53nEFJVP6e0Jk0QRrtJZiX95INb9ThfpXqO9z3yHXj7WRaCYXXqQYNqXLWKmdOFkERKAVKSmftjE9kRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by PH7PR11MB6857.namprd11.prod.outlook.com (2603:10b6:510:1ed::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Thu, 2 Nov
+ 2023 17:46:23 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 17:46:23 +0000
+Message-ID: <1e948a35-b450-444f-ac1d-5bded729422a@intel.com>
+Date:   Thu, 2 Nov 2023 10:46:20 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/24] selftests/resctrl: Split fill_buf to allow tests
+ finer-grained control
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+ <20231024092634.7122-2-ilpo.jarvinen@linux.intel.com>
+Content-Language: en-US
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231024092634.7122-2-ilpo.jarvinen@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0314.namprd04.prod.outlook.com
+ (2603:10b6:303:82::19) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH7PR11MB6857:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8bbcdc35-a8c8-4147-ce4f-08dbdbcba11f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CAUyiDET4RxampB2v9EFh4LYtqE55gzDig8W1Pl5qCFh6R4lWxWZmLiUHHzTx2s8rVKhNePGOrI22BNWfyuNHlJ0Ugs/49YaL1WlBxd/9DuHD6Ijou6606sEk5ibiWS76QGuDA90mJ0RUC1XCG04fow5i9Tdy8aGdDjnit5tt5/BNLZx6N+2PPa/MF9BkjIrb7TOkA+KjD7uTspHfp/QZI1uy0hRYxpAbD/k/plpcwEWmc2RxcATLdnyl1cLkYxiiHAbD64//L2winbpjNDqKxdv1F41CFI4a1hmbEb+v7gBfvRDgq5nBR6dLsoDTczM5aDHdw172TlWR0i/c3P/WqIvS8H4lFIZMke4s26tYyi6NXb+uY8xY+47Ya3RLtwGhRRIu4e1B2zy9tSqcQoIAyhKflNSREVd44XTJcHUVjIytqCstk0N2Qnzh/vv7Yjllrn/rA3ttnG5Q6LH/zPvulFl+jGbiH6jb7l8TrM2Q9jfbg2cFmoJyRIKY7ukRfacBnBdq2tbwdz6JnVooc9uGzQUc4TczIOmpmPeUpEFHl9c1crkIbYC85ur6JM2xn6W/Jp8b3YIFJC3CQyWuIbq2uBqBEQS9WmL5e18CUehiekxTy0fnRBq4+ZTMEFQOzKXbUrmTwdNGfN6IdZhRVIH5A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39860400002)(366004)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(478600001)(6506007)(53546011)(31686004)(38100700002)(66899024)(82960400001)(2616005)(6512007)(31696002)(41300700001)(86362001)(2906002)(4744005)(36756003)(316002)(5660300002)(4326008)(8936002)(44832011)(8676002)(66946007)(66556008)(66476007)(110136005)(6636002)(26005)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S1NQZ1QzVkRBZnFQQTVuUDVpWHFHQ1p2bmVMVzVabEJ2Ly85WHExcUFOczFP?=
+ =?utf-8?B?UUROK3NGa2FlRVBOZGN2ZmNndFc1ajJWU0dQQzdaVDFVRk55cFQyVHJXeHYv?=
+ =?utf-8?B?c292TDBqRGFyOUI1eC92d3crdUUvbGYrWTJQVElwZENZT05qckJTa1pjMG9o?=
+ =?utf-8?B?c3p3U2dubjFvRThLZGNpbHd1OWFYNUsrV3lZNGgzbVhYNW83TUhlK0FHd0hH?=
+ =?utf-8?B?U1lYcnlMMUo1ZW5nTmJNdG1Cd1dKRnRDNWlENVhHZGxFNDR3NmR2eGczNTll?=
+ =?utf-8?B?bUxDOWZoYTl0SXRoUVo5YSsyaDhIYmUwODd2bC83TW5hUnRpUUFNSzlTRkpO?=
+ =?utf-8?B?RDU5TDBTU0JUcWdseEw1WVhFbmNMTDNPWnlESjZLQlhFNEx4R3p1S2o3QlAx?=
+ =?utf-8?B?MDdzSFNxdlRkRFVGNnZpL21INWFQYStXVEFHU0hkWXU1R2szVEhVVGtNUHZ4?=
+ =?utf-8?B?dXMza1RkQm4zOTJNN0dJVlgyeDhUdUx4NndRTEFGNk4wTm9JcUNZV3dkL2M4?=
+ =?utf-8?B?Snp4Ry93MDhUcC85cHllcDJpcUNYdHJMNU5EYmlCRnArb1BYZSs0VjRwcEEv?=
+ =?utf-8?B?VnJEd1B4OHBaa2toZWIxT3dIUGVtWExSM2c2WXQrazNtbFE0RGxQQlptNm93?=
+ =?utf-8?B?ZGs3ejlVdVVOTFQ5ZjRjY3ErTjVrWVluS2JCcHo1dTIwUHhES2ZOM1RtLy9D?=
+ =?utf-8?B?ZGszYTJxUFpmNC93N3ZFMk1CNm1mOUJOVU1IZ051ZHN1RlFaZkVHSzkwUHdI?=
+ =?utf-8?B?RW53N0d5eVhKUHp0aDlPZE9TUmNSQm5Nd2FodWtSR0tEYjF4UXNHQ2ZqeXJz?=
+ =?utf-8?B?cnV0OElxRjRuVVUzNUVoc3ZUQ3RUVGhYTW1LQjFJZ1h1ZzFDU2hOZTdCTFlx?=
+ =?utf-8?B?RkFEb3gvelh6SzFoQk9FL3VuaGxzZllRVTVlYUpJa21SVTRIN1IrdHE5cnpj?=
+ =?utf-8?B?N0g0WE00alMwclc0UWQ3SVF1dFBjOWxHaGVzMEcxYzYvbFZ2dVpxalYydjlP?=
+ =?utf-8?B?Y3J6SHpSZUlJTkRlNmdKcVpmTzdSTk53MDcyVFkrNjRxOVkrKzgwblJwSmFj?=
+ =?utf-8?B?QkVVd0F2U1RjbENpVlZWbUhGRXB4dnRseXpzN2JkbmRKdzRNOVFyOE4xM1JN?=
+ =?utf-8?B?T1JwWm1iQ3BIaWJMbVp4enRmeEtuOEowc3lXVytjR1o4SVpMaHZzci8vc2Qy?=
+ =?utf-8?B?M3hMdk1pUjgra2IvS3orSkJXRWRIc1Z2cmVQZWVvU2NIRml1cWJZeGxRUTVz?=
+ =?utf-8?B?Q1dZVnRWQmxHaWZERHJQVEtRMkE4TUphWWFQb1ZoMDBDdndtamJaMUYwaTdu?=
+ =?utf-8?B?QUwwaEIzU2pBMkFwUXJkbXdVQ0YveHBhRlp4S2duOE52VVhTODNKUUN1Ni9P?=
+ =?utf-8?B?eTUvN2QrNndzVnhBeFZBK3VwK3JaN283QnpEZHpKYXJBQ2hqSFlnOE9BTDY0?=
+ =?utf-8?B?MjNLQWpnSlV3WWYzcGZsVjVjU3g1WFR4SThrY2FtaW53K3FEUlIyTGxMdDBS?=
+ =?utf-8?B?OWhFY21QYVIzNkxtT3d5K3RDTm5HRkJRc25kYUxwai9aQ04vWDRPNm0vK0FQ?=
+ =?utf-8?B?djJsTHdnbjYvMUFWS2xkbnFEdFV6N24vZ2tUc1RvZ1NxOGVEQjF1RDloZnJp?=
+ =?utf-8?B?UVZMaEhEcXB5aHRtSStrNU5KVEF6bEdZZlRHajRRQ0hscmJTYXhINDZIQkdN?=
+ =?utf-8?B?bEFSQVBJWFUya3F1eEx0SVlRZWxYYnZXMU5TL2I4MWJiS3E5eEt1RzFXaEJ6?=
+ =?utf-8?B?LzVZaFdwMThiOGpROXpHbDhqTzd1V1k2RVczcENuMWQwS2Y3bEdOZmVBbDc4?=
+ =?utf-8?B?UVc1aHFPdndZMVY4eWFVbkZQQURjNFhtUDJwZ3BTbDBvNDBnbGFCKytnaTE5?=
+ =?utf-8?B?QnJ5cXo0TUdQWXcwTzVFQ1BsamZ6eWJINFkzT1VnZGNUNlBxVWpta2xHWkxN?=
+ =?utf-8?B?UEl1ditDdHlaYVNTUFZZV0t6S2lkQkNDS1kvWnhHcFFqaEMzMEswNUI3aHNi?=
+ =?utf-8?B?VUtXcGRnVExGM25NZzVIQlV0QmZhYVRYRysvd09STWl3dUtUaDkvOXNleTlk?=
+ =?utf-8?B?ejJCdW1MbkVtZTVIWWo2Q3FOZ2d0ZGJJRHNIeVFIQkw1endscTFCSXlEUGR0?=
+ =?utf-8?B?L05LOTVoSENON2x6bWtYWXBDVlB0SnhGQlM3aXhKY3dzc3RSb0Y5R1dDZTVQ?=
+ =?utf-8?B?MFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bbcdc35-a8c8-4147-ce4f-08dbdbcba11f
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 17:46:23.2998
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g72c/9sYyQ/xsDyYtL4OMvJNwkpQxB47PuJLvX+/VN1QMr3JkDk6Bn06JF+eE6ZwM18Y1WLhtHWetZf5Sk5sgJrhdZLgx4NwLofAYPkydEU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6857
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 7:07=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.intel.c=
-om> wrote:
->
->
-> On 11/1/2023 9:33 PM, Liang, Kan wrote:
-> >
-> > On 2023-10-31 11:31 p.m., Mi, Dapeng wrote:
-> >> On 11/1/2023 11:04 AM, Jim Mattson wrote:
-> >>> On Tue, Oct 31, 2023 at 6:59=E2=80=AFPM Mi, Dapeng
-> >>> <dapeng1.mi@linux.intel.com> wrote:
-> >>>> On 11/1/2023 2:22 AM, Jim Mattson wrote:
-> >>>>> On Tue, Oct 31, 2023 at 1:58=E2=80=AFAM Dapeng Mi
-> >>>>> <dapeng1.mi@linux.intel.com> wrote:
-> >>>>>> This patch adds support for the architectural topdown slots event
-> >>>>>> which
-> >>>>>> is hinted by CPUID.0AH.EBX.
-> >>>>> Can't a guest already program an event selector to count event sele=
-ct
-> >>>>> 0xa4, unit mask 1, unless the event is prohibited by
-> >>>>> KVM_SET_PMU_EVENT_FILTER?
-> >>>> Actually defining this new slots arch event is to do the sanity chec=
-k
-> >>>> for supported arch-events which is enumerated by CPUID.0AH.EBX.
-> >>>> Currently vPMU would check if the arch event from guest is supported=
- by
-> >>>> KVM. If not, it would be rejected just like intel_hw_event_available=
-()
-> >>>> shows.
-> >>>>
-> >>>> If we don't add the slots event in the intel_arch_events[] array, gu=
-est
-> >>>> may program the slots event and pass the sanity check of KVM on a
-> >>>> platform which actually doesn't support slots event and program the
-> >>>> event on a real GP counter and got an invalid count. This is not
-> >>>> correct.
-> >>> On physical hardware, it is possible to program a GP counter with the
-> >>> event selector and unit mask of the slots event whether or not the
-> >>> platform supports it. Isn't KVM wrong to disallow something that a
-> >>> physical CPU allows?
-> >>
-> >> Yeah, I agree. But I'm not sure if this is a flaw on PMU driver. If an
-> >> event is not supported by the hardware,  we can't predict the PMU's
-> >> behavior and a meaningless count may be returned and this could mislea=
-d
-> >> the user.
-> > The user can program any events on the GP counter. The perf doesn't
-> > limit it. For the unsupported event, 0 should be returned. Please keep
-> > in mind, the event list keeps updating. If the kernel checks for each
-> > event, it could be a disaster. I don't think it's a flaw.
->
->
-> Thanks Kan, it would be ok as long as 0 is always returned for
-> unsupported events. IMO, it's a nice to have feature that KVM does this
-> sanity check for supported arch events, it won't break anything.
+Hi Ilpo,
 
-The hardware PMU most assuredly does not return 0 for unsupported events.
+On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
+> MBM, MBA and CMT test cases use run_fill_buf() to loop indefinitely
+> around the buffer. CAT test case is different and doesn't want to loop
+> around the buffer continuously.
 
-For example, if I use host perf to sample event selector 0xa4 unit
-mask 1 on a Broadwell host (406f1), I get...
+Please do not that the changelog starts by describing issue with
+run_fill_buf() (that does not appear in patch) and then switches to
+describe solution for fill_cache() below.
 
-# perf stat -e r01a4 sleep 10
+> 
+> Split fill_cache() so that both the use cases are easier to control by
+> creating separate functions for buffer allocation and looping around
+> the buffer. Make those functions available for tests. The new interface
+> is based on returning/passing pointers instead of the startptr global
+> pointer variable that can now be removed. The deallocation can use
+> free() directly.
 
- Performance counter stats for 'sleep 10':
+Seems like startptr removal has been done already:
+5e3e4f1a03f0 ("selftests/resctrl: Remove unnecessary startptr global from fill_buf") 
 
-           386,964      r01a4
-
-      10.000907211 seconds time elapsed
-
-Broadwell does not advertise support for architectural event 7 in
-CPUID.0AH:EBX, so KVM will refuse to measure this event inside a
-guest. That seems broken to me.
-
->
-> >
-> > Thanks,
-> > Kan
-> >> Add Kan to confirm this.
-> >>
-> >> Hi Kan,
-> >>
-> >> Have you any comments on this? Thanks.
-> >>
-> >>
-> >>>>> AFAICT, this change just enables event filtering based on
-> >>>>> CPUID.0AH:EBX[bit 7] (though it's not clear to me why two independe=
-nt
-> >>>>> mechanisms are necessary for event filtering).
-> >>>> IMO, these are two different things. this change is just to enable t=
-he
-> >>>> supported arch events check for slot events, the event filtering is
-> >>>> another thing.
-> >>> How is clearing CPUID.0AH:EBX[bit 7] any different from putting {even=
-t
-> >>> select 0xa4, unit mask 1} in a deny list with the PMU event filter?
-> >> I think there is no difference in the conclusion but with two differen=
-t
-> >> methods.
-> >>
-> >>
+Reinette
