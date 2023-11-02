@@ -2,391 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131807DFC23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7307DFC26
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343914AbjKBWBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S1377443AbjKBWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 18:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKBWBl (ORCPT
+        with ESMTP id S230187AbjKBWDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:01:41 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1240192
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 15:01:33 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6d31334793bso1778458a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 15:01:33 -0700 (PDT)
+        Thu, 2 Nov 2023 18:03:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D0A199
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 15:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698962561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OJIex0iBPXEPEipoAN2zQv8ZN5dF+ogwUiK0fjM1zeY=;
+        b=YBApA3xDF7pk0+EM/Ew6YVqP3pMtCiyhuWZp2JVyiqhs73m9GD1PdwVMDu0C5ocjjXvg0E
+        Xc6TzgjiGnV0j6aY7IJzRxi9wz+B6RGSqAEQbAkvaYwE4AyU51HROUb51Pr+rufBJ3FFxl
+        uMGJ0XjfLoA3/o2IdUVn+6XzLKgyY0c=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-397--w_7nGCZMa2F2_oeNaL_GA-1; Thu, 02 Nov 2023 18:02:38 -0400
+X-MC-Unique: -w_7nGCZMa2F2_oeNaL_GA-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5435b614a0cso194675a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 15:02:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698962493; x=1699567293;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1698962557; x=1699567357;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lx3a7ZTym/iC6XuG6alzOfzd8BG6bZuH2jZqKF7QRAQ=;
-        b=IOTmN1G8AWrK3W29Cc7Ox4WxOg+ju5xV/VhtdwMLXi5SEUuHxLp27EJQT33dKDlTHW
-         RVSb5EvhFPRo/JY3d3QW5ZpdpjyRW7/w84khwBP5BWuGMWOMBEG2mGCOlMvRAOZDDdMW
-         KjQqUJBF7hz5ZPInfqLFxIKFbkViyET2qe4AlBhUolO8Xd02l5/c/cQ7eP12+2gjXUMN
-         TFiR/pEdVeoEZgHkPmRR22gyyDjRMsWcp1bDAG4grgsomYYIpAtx1FFubqJraC8iEKFI
-         QJ8VomHVAKnB4mQidcX5noWujaGrFznn9B7c+cNVD1xsxif8KMLe8NX2WzHTLEAUIQyW
-         9sMg==
-X-Gm-Message-State: AOJu0Yxx/1C3LqkFZOlXVHBMv+kFHCkShaOU1mCAcFqkHUOJeTIrqu1c
-        B6Aks1CVm/MbBAI2QZZiVY3ZpLMNTtoxMY9MDNJA2l91reSu
-X-Google-Smtp-Source: AGHT+IGLxq6SMPpSRq81yd78LZ9YdZMzH7io0NF2yqIFt1ydh6fUJUy712/aGDFeWePQdlWMTPoVC8ker7d4tnj7YfLgg0oC/Uh7
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1b14:b0:3ae:21ca:9b7e with SMTP id
- bx20-20020a0568081b1400b003ae21ca9b7emr7774617oib.2.1698962493313; Thu, 02
- Nov 2023 15:01:33 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 15:01:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e69b5a06093287ec@google.com>
-Subject: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in
- hci_conn_drop (2)
-From:   syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+        bh=OJIex0iBPXEPEipoAN2zQv8ZN5dF+ogwUiK0fjM1zeY=;
+        b=Y6VMQdpZWid2njCsBQVS9YREgVin+MapwdmypMnvP72ULibhGauh45YTkB2sZK12HV
+         hgdwUlBJbITGGXaGh9evIhOrUPEEeGwUusa8OeC+6oEdkYR5yEzZ6XPmh5MmYT4zJRgr
+         xdf6Rm3Z1lrIZYKOissiMHTcw1e8BQTcwPoEJNPu8fV7GECI+rWWcHr9ksrRQwFr4yOV
+         H/n/EZrYdVSWGdrN4+YTiQm148EXlX8SbAMScTdWv705ZxK1VOJlCgtWjeQbtHCuCtf1
+         cKdmucn+eegvfyhN/DlqnM1srxuDd0G3Uc/z6nKsybz1CEn3YR92fSEPlU1Vs9NvCOKb
+         UkGQ==
+X-Gm-Message-State: AOJu0Yz1YUrM7nEYznbXm3K0Op5IN1D+jkSQtp/HDHP8dF570ZLd3ZjB
+        wO5l26mJz84+bhpZcoxPi5k2bqFWEJbXgooNmjY+iZPJQ4ZqLPU8P8yk8/vgp7O8Y88rB44P6B9
+        7LoVqgPRp1Tgq11MXjuYflWl+
+X-Received: by 2002:a50:baef:0:b0:540:a181:f40b with SMTP id x102-20020a50baef000000b00540a181f40bmr14361460ede.4.1698962557140;
+        Thu, 02 Nov 2023 15:02:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEEPk0xaaUC0zu2hRz92pKvvlUi2VsYtlPFFB4YRq8WpOL59/CqvmCQ46OIEBuNHmV0iBU8Ug==
+X-Received: by 2002:a50:baef:0:b0:540:a181:f40b with SMTP id x102-20020a50baef000000b00540a181f40bmr14361441ede.4.1698962556843;
+        Thu, 02 Nov 2023 15:02:36 -0700 (PDT)
+Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
+        by smtp.gmail.com with ESMTPSA id d26-20020a50cd5a000000b0053dab756073sm199543edj.84.2023.11.02.15.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 15:02:36 -0700 (PDT)
+Message-ID: <7a26cd1bafb22b16eab3868255706d44fa4f255d.camel@redhat.com>
+Subject: Re: [PATCH] drivers/net/ppp: copy userspace array safely
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dave Airlie <airlied@redhat.com>
+Date:   Thu, 02 Nov 2023 23:02:35 +0100
+In-Reply-To: <20231102200943.GK1957730@ZenIV>
+References: <20231102191914.52957-2-pstanner@redhat.com>
+         <20231102200943.GK1957730@ZenIV>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hallo Al,
 
-syzbot found the following issue on:
-
-HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1091d76b680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=1683f76f1b20b826de67
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176a435f680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-BUG: KASAN: slab-use-after-free in atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
-BUG: KASAN: slab-use-after-free in hci_conn_drop+0x34/0x2bc include/net/bluetooth/hci_core.h:1523
-Write of size 4 at addr ffff0000d9518010 by task syz-executor.0/6125
-
-CPU: 1 PID: 6125 Comm: syz-executor.0 Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:475
- kasan_report+0xd8/0x138 mm/kasan/report.c:588
- kasan_check_range+0x254/0x294 mm/kasan/generic.c:187
- __kasan_check_write+0x20/0x30 mm/kasan/shadow.c:37
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
- hci_conn_drop+0x34/0x2bc include/net/bluetooth/hci_core.h:1523
- __sco_sock_close+0x3a8/0x7b0 net/bluetooth/sco.c:444
- sco_sock_close net/bluetooth/sco.c:469 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1246
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-Allocated by task 6126:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- kmalloc_trace+0x70/0x88 mm/slab_common.c:1122
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- hci_conn_add+0xcc/0x1210 net/bluetooth/hci_conn.c:957
- hci_connect_sco+0x94/0x2bc net/bluetooth/hci_conn.c:1701
- sco_connect net/bluetooth/sco.c:266 [inline]
- sco_sock_connect+0x278/0x840 net/bluetooth/sco.c:591
- __sys_connect_file net/socket.c:2050 [inline]
- __sys_connect+0x268/0x290 net/socket.c:2067
- __do_sys_connect net/socket.c:2077 [inline]
- __se_sys_connect net/socket.c:2074 [inline]
- __arm64_sys_connect+0x7c/0x94 net/socket.c:2074
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-Freed by task 50:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_free_info+0x38/0x5c mm/kasan/generic.c:522
- ____kasan_slab_free+0x144/0x1c0 mm/kasan/common.c:236
- __kasan_slab_free+0x18/0x28 mm/kasan/common.c:244
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x2ac/0x480 mm/slub.c:3822
- kfree+0xb8/0x19c mm/slab_common.c:1075
- bt_link_release+0x20/0x30 net/bluetooth/hci_sysfs.c:16
- device_release+0x8c/0x1ac
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c4/0x3c4 lib/kobject.c:733
- put_device+0x28/0x40 drivers/base/core.c:3732
- hci_conn_put include/net/bluetooth/hci_core.h:1506 [inline]
- hci_conn_cleanup net/bluetooth/hci_conn.c:178 [inline]
- hci_conn_del+0x78c/0xabc net/bluetooth/hci_conn.c:1156
- hci_conn_failed+0x204/0x2c0 net/bluetooth/hci_conn.c:1252
- hci_abort_conn_sync+0x688/0xe38 net/bluetooth/hci_sync.c:5428
- abort_conn_sync+0x5c/0x8c net/bluetooth/hci_conn.c:2910
- hci_cmd_sync_work+0x1cc/0x34c net/bluetooth/hci_sync.c:306
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-The buggy address belongs to the object at ffff0000d9518000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 16 bytes inside of
- freed 4096-byte region [ffff0000d9518000, ffff0000d9519000)
-
-The buggy address belongs to the physical page:
-page:00000000c96e5067 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x119518
-head:00000000c96e5067 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 05ffc00000000840 ffff0000c0002140 fffffc0003653800 dead000000000002
-raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000d9517f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000d9517f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff0000d9518000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                         ^
- ffff0000d9518080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff0000d9518100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-------------[ cut here ]------------
-ODEBUG: assert_init not available (active state 0) object: 00000000dac7e963 object type: timer_list hint: hci_conn_timeout+0x0/0x1e8 net/bluetooth/hci_conn.c:928
-WARNING: CPU: 1 PID: 6125 at lib/debugobjects.c:517 debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
-Modules linked in:
-CPU: 1 PID: 6125 Comm: syz-executor.0 Tainted: G    B              6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
-lr : debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
-sp : ffff800096f57790
-x29: ffff800096f57790 x28: dfff800000000000 x27: ffff700012deaf00
-x26: dfff800000000000 x25: dfff800000000000 x24: ffff0000d9518390
-x23: ffff80008ad651a0 x22: ffff800089881d98 x21: ffff80008a89c360
-x20: 0000000000000000 x19: ffff80008ad64cc0 x18: 0000000000000000
-x17: 0000000000000000 x16: ffff80008a71b23c x15: 0000000000000001
-x14: 1ffff00012deae44 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000001 x10: 0000000000000000 x9 : a121024982282a00
-x8 : a121024982282a00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800096f57078 x4 : ffff80008e4210a0 x3 : ffff800082b180c4
-x2 : 0000000000000001 x1 : 0000000000000001 x0 : 0000000000000000
-Call trace:
- debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
- debug_object_assert_init+0x318/0x3c8 lib/debugobjects.c:941
- debug_timer_assert_init kernel/time/timer.c:792 [inline]
- debug_assert_init kernel/time/timer.c:837 [inline]
- __timer_delete+0xac/0x2f8 kernel/time/timer.c:1321
- timer_delete+0x24/0x34 kernel/time/timer.c:1361
- del_timer include/linux/timer.h:213 [inline]
- try_to_grab_pending+0x8c/0x618 kernel/workqueue.c:1564
- __cancel_work+0xb0/0x2a8 kernel/workqueue.c:3582
- cancel_delayed_work+0x24/0x38 kernel/workqueue.c:3620
- hci_conn_drop+0x150/0x2bc include/net/bluetooth/hci_core.h:1548
- __sco_sock_close+0x3a8/0x7b0 net/bluetooth/sco.c:444
- sco_sock_close net/bluetooth/sco.c:469 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1246
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-irq event stamp: 14297
-hardirqs last  enabled at (14297): [<ffff80008a719090>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-hardirqs last  enabled at (14297): [<ffff80008a719090>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-hardirqs last disabled at (14296): [<ffff800080021724>] __do_softirq+0x950/0xd54 kernel/softirq.c:569
-softirqs last  enabled at (14076): [<ffff8000888c272c>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
-softirqs last  enabled at (14076): [<ffff8000888c272c>] lock_sock_nested+0xcc/0x11c net/core/sock.c:3512
-softirqs last disabled at (14074): [<ffff8000888c26d4>] spin_lock_bh include/linux/spinlock.h:356 [inline]
-softirqs last disabled at (14074): [<ffff8000888c26d4>] lock_sock_nested+0x74/0x11c net/core/sock.c:3508
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6125 at kernel/workqueue.c:1939 __queue_delayed_work kernel/workqueue.c:1939 [inline]
-WARNING: CPU: 1 PID: 6125 at kernel/workqueue.c:1939 queue_delayed_work_on+0x214/0x2e4 kernel/workqueue.c:1986
-Modules linked in:
-CPU: 1 PID: 6125 Comm: syz-executor.0 Tainted: G    B   W          6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __queue_delayed_work kernel/workqueue.c:1939 [inline]
-pc : queue_delayed_work_on+0x214/0x2e4 kernel/workqueue.c:1986
-lr : __queue_delayed_work kernel/workqueue.c:1939 [inline]
-lr : queue_delayed_work_on+0x214/0x2e4 kernel/workqueue.c:1986
-sp : ffff800096f57af0
-x29: ffff800096f57af0 x28: 1fffe0001a4c9bc0 x27: dfff800000000000
-x26: 0000000000000000 x25: ffff0000d95183a8 x24: ffff0000d2033400
-x23: 0000000000000000 x22: ffff0000d9518348 x21: 0000000000000008
-x20: 0000000000000000 x19: 0000000000000000 x18: 0000000000000000
-x17: 0000000000000000 x16: ffff80008a71b23c x15: ffff60001b2a3069
-x14: 1fffe0001b2a3069 x13: 00000000000000fb x12: ffffffffffffffff
-x11: 0000000000000001 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000d9588000 x7 : 0000000000000000 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff800080221e68
-x2 : 0000000000000000 x1 : 0000000000000008 x0 : 0000000000000000
-Call trace:
- __queue_delayed_work kernel/workqueue.c:1939 [inline]
- queue_delayed_work_on+0x214/0x2e4 kernel/workqueue.c:1986
- queue_delayed_work include/linux/workqueue.h:569 [inline]
- hci_conn_drop+0x198/0x2bc include/net/bluetooth/hci_core.h:1549
- __sco_sock_close+0x3a8/0x7b0 net/bluetooth/sco.c:444
- sco_sock_close net/bluetooth/sco.c:469 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1246
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-irq event stamp: 14297
-hardirqs last  enabled at (14297): [<ffff80008a719090>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-hardirqs last  enabled at (14297): [<ffff80008a719090>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-hardirqs last disabled at (14296): [<ffff800080021724>] __do_softirq+0x950/0xd54 kernel/softirq.c:569
-softirqs last  enabled at (14076): [<ffff8000888c272c>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
-softirqs last  enabled at (14076): [<ffff8000888c272c>] lock_sock_nested+0xcc/0x11c net/core/sock.c:3512
-softirqs last disabled at (14074): [<ffff8000888c26d4>] spin_lock_bh include/linux/spinlock.h:356 [inline]
-softirqs last disabled at (14074): [<ffff8000888c26d4>] lock_sock_nested+0x74/0x11c net/core/sock.c:3508
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-ODEBUG: activate not available (active state 0) object: 00000000d0bb0e1a object type: work_struct hint: hci_conn_timeout+0x0/0x1e8 net/bluetooth/hci_conn.c:928
-WARNING: CPU: 1 PID: 6125 at lib/debugobjects.c:517 debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
-Modules linked in:
-CPU: 1 PID: 6125 Comm: syz-executor.0 Tainted: G    B   W          6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
-lr : debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
-sp : ffff800096f57870
-x29: ffff800096f57870 x28: dfff800000000000 x27: ffff700012deaf1c
-x26: ffff0000d11d01d8 x25: dfff800000000000 x24: ffff0000d9518348
-x23: ffff80008ad651a0 x22: ffff800089881d98 x21: ffff80008a8710a0
-x20: 0000000000000000 x19: ffff80008ad64c40 x18: 0000000000000000
-x17: 0000000000000000 x16: ffff80008a71b23c x15: 0000000000000001
-x14: 1fffe00036833432 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000000000 x9 : a121024982282a00
-x8 : a121024982282a00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800096f57158 x4 : ffff80008e4210a0 x3 : ffff8000805a359c
-x2 : 0000000000000001 x1 : 0000000000000002 x0 : 0000000000000000
-Call trace:
- debug_print_object+0x168/0x1e0 lib/debugobjects.c:514
- debug_object_activate+0x600/0x7e0 lib/debugobjects.c:760
- debug_work_activate kernel/workqueue.c:572 [inline]
- insert_work+0x4c/0x2d4 kernel/workqueue.c:1644
- __queue_work+0xcf4/0x1338 kernel/workqueue.c:1799
- __queue_delayed_work kernel/workqueue.c:1950 [inline]
- queue_delayed_work_on+0x1f4/0x2e4 kernel/workqueue.c:1986
- queue_delayed_work include/linux/workqueue.h:569 [inline]
- hci_conn_drop+0x198/0x2bc include/net/bluetooth/hci_core.h:1549
- __sco_sock_close+0x3a8/0x7b0 net/bluetooth/sco.c:444
- sco_sock_close net/bluetooth/sco.c:469 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1246
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-irq event stamp: 14297
-hardirqs last  enabled at (14297): [<ffff80008a719090>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-hardirqs last  enabled at (14297): [<ffff80008a719090>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-hardirqs last disabled at (14296): [<ffff800080021724>] __do_softirq+0x950/0xd54 kernel/softirq.c:569
-softirqs last  enabled at (14076): [<ffff8000888c272c>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
-softirqs last  enabled at (14076): [<ffff8000888c272c>] lock_sock_nested+0xcc/0x11c net/core/sock.c:3512
-softirqs last disabled at (14074): [<ffff8000888c26d4>] spin_lock_bh include/linux/spinlock.h:356 [inline]
-softirqs last disabled at (14074): [<ffff8000888c26d4>] lock_sock_nested+0x74/0x11c net/core/sock.c:3508
----[ end trace 0000000000000000 ]---
+On Thu, 2023-11-02 at 20:09 +0000, Al Viro wrote:
+> On Thu, Nov 02, 2023 at 08:19:15PM +0100, Philipp Stanner wrote:
+> > In ppp_generic.c memdup_user() is utilized to copy a userspace
+> > array.
+> > This is done without an overflow check.
+> >=20
+> > Use the new wrapper memdup_array_user() to copy the array more
+> > safely.
+>=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fprog.len =3D uprog->le=
+n;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fprog.filter =3D memdup_user=
+(uprog->filter,
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uprog->len * sizeof(=
+struct
+> > sock_filter));
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fprog.filter =3D memdup_arra=
+y_user(uprog->filter,
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 uprog->len, sizeof(struct
+> > sock_filter));
+>=20
+> Far be it from me to discourage security theat^Whardening, but
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+a bit about the background here:
+(tl;dr: No reason to worry, I am not one of those security fanatics. In
+fact, I worked for 12 months with those people with some mixed
+experiences ^^')
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+(btw, note that the commit says 'safety', not 'security')
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+We introduced those wrappers to string.h hoping they will be useful.
+Now that they're merged, I quickly wanted to establish them as the
+standard for copying user-arrays, ideally in the current merge window.
+Because its convenient, easy to read and, at times, safer.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+I just want to help out a bit in the kernel, clean up here and there;
+it's not yet the primary task assigned to me by my employer. Thus, I
+quickly prepared 13 patches today implementing the wrapper. You'll find
+the others on LKML. Getting to:
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+>=20
+> struct sock_fprog {=C2=A0=C2=A0=C2=A0=C2=A0 /* Required for SO_ATTACH_FIL=
+TER. */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned short=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 len;=C2=A0=C2=A0=C2=A0 /* Number of=
+ filter blocks */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct sock_filter __user=
+ *filter;
+> };
+>=20
+> struct sock_filter {=C2=A0=C2=A0=C2=A0 /* Filter block */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __u16=C2=A0=C2=A0 code;=C2=A0=
+=C2=A0 /* Actual filter code */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __u8=C2=A0=C2=A0=C2=A0 jt;=C2=
+=A0=C2=A0=C2=A0=C2=A0 /* Jump true */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __u8=C2=A0=C2=A0=C2=A0 jf;=C2=
+=A0=C2=A0=C2=A0=C2=A0 /* Jump false */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __u32=C2=A0=C2=A0 k;=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 /* Generic multiuse field */
+> };
+>=20
+> so you might want to mention that overflow in question would have to
+> be
+> in multiplying an untrusted 16bit value by 8...
+>=20
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+I indeed did not even look at that.
+When it was obvious to me that fearing an overflow is ridiculous, I
+actually adjusted the commit-message, see for example here: [1]
 
-If you want to undo deduplication, reply with:
-#syz undup
+I just didn't see it in ppp. Maybe I should have looked more
+intensively for all 13 patches. But we'll get there, that's what v2 and
+v3 are for :)
+
+P.
+
+
+[1] https://lore.kernel.org/all/20231102192402.53721-2-pstanner@redhat.com/
+
+
+PS: Security !=3D Safety
+
