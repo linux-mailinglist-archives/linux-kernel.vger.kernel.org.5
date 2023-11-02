@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C847DEEF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115E17DEEFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjKBJdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        id S1345664AbjKBJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjKBJdr (ORCPT
+        with ESMTP id S229527AbjKBJe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:33:47 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1CC132;
-        Thu,  2 Nov 2023 02:33:44 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc9391884aso361885ad.2;
-        Thu, 02 Nov 2023 02:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698917624; x=1699522424; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yl2RNYa6wlW4u+3YKDs7TAIJG8OkxNjGFmYJ+LCMi/c=;
-        b=cMTdUm16+ZuKCmGFXtHZHYItZ8FSZtIFKx1U67jc3h8wbS6wGijBpQhQPC0TdmsEQV
-         hG2XzZDIjnbpaefhKwctisygT4+hXhVtAO9F/cFLwf+xcP00pbNcydoETykLZBKXbwUH
-         3jXyCoNTo8z6BzVh5M0lKG9nCQ5j4rSlsANl43r26heTcD/mmirFiDt4sye9q2+HIWn4
-         mxf8x0tU2brEnVNHAcREnwwQIb2V2fq0+3Ys2o4XQy1BWahWgUW9CQE0l9KhZvTQ3Yp7
-         WkAf50iLPhmeWwsyWjpWsc0o5eBBX+KdrMTc3NHbyUuz2qH/j6R8Hjpv2Lg/QV2sP53Y
-         JDAw==
+        Thu, 2 Nov 2023 05:34:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307EB123
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698917623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RRqMBhNNsG2GgDNN4qWp+wu4mNgU5riKYWQ5XI3db/A=;
+        b=VYR7byUYoilFUXGCDM3VkHfEqOeP/63nalHG9vkJ6HVpYGmdTBwre56G3GpNFJY5Z/g1wZ
+        Jn5ezhOyVgppRK56lBSLum3Vsv1ivk8NJP6RBR2OxHPxR8/eA1wIo9TzDl75VDquSdEPkd
+        7i+DYvgcKdgQHiOEjcIEK3Ooy83Rf28=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-513-sOBnofkDPbK6Tv3fneYlMQ-1; Thu, 02 Nov 2023 05:33:41 -0400
+X-MC-Unique: sOBnofkDPbK6Tv3fneYlMQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-507b0270b7fso677198e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 02:33:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698917624; x=1699522424;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yl2RNYa6wlW4u+3YKDs7TAIJG8OkxNjGFmYJ+LCMi/c=;
-        b=WVQ0botbuseVv31hNdnVKR7lFhcooyiPJ92q2aDq+/Zs3EvFGVc+hTmVe050cyMciE
-         nYU6CF8854zSr4d2e7jMgHn0TP3hO3oFZCBVb8NrgDA4d4DOm+66/fz+4JEz4TeWsbVJ
-         S5ESaPC8V5fQ25JYdk2QKHTqV9SyF2b5uIcbzVoEK9510+6eQl9qrVUchyderSmBJU/h
-         K5yR4dUHN0XWW95l5IgQDnG1ZgXYb9WiGayKXPfAd2ABLXXepNFWjk8TOHcBvgylqWtP
-         6TneGG/82NW2NHiBal6UBXi0k9UcbaCXvzgPkUEe3L4vcmYnVIriD5pBYIAEQQ01GS0h
-         gK6g==
-X-Gm-Message-State: AOJu0Yx13dvhEGlYkNVGmgSRRH3yNLSXfgsGll3MyziFCU7989LCC92T
-        N/oSgwb8DOFbP0rmOPveh80=
-X-Google-Smtp-Source: AGHT+IE9aiQsmhdgSw/hPL1ANVIjHhSdosoYt30VtelmHetz1ugFwnPKMeuPHRcl2RrWUnYdtKjWxA==
-X-Received: by 2002:a17:902:cecb:b0:1cc:4ff3:c837 with SMTP id d11-20020a170902cecb00b001cc4ff3c837mr10989033plg.68.1698917623615;
-        Thu, 02 Nov 2023 02:33:43 -0700 (PDT)
-Received: from localhost.localdomain ([58.48.52.254])
-        by smtp.gmail.com with ESMTPSA id i14-20020a17090332ce00b001c9ccbb8fdasm2675212plr.260.2023.11.02.02.33.40
+        d=1e100.net; s=20230601; t=1698917620; x=1699522420;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RRqMBhNNsG2GgDNN4qWp+wu4mNgU5riKYWQ5XI3db/A=;
+        b=eF7YdOQ7SA8RPBPGa21gqxEtSD2OKr5mcmuDNFBPdKE8myOUDkGNKO6G2Z/PNYCRjs
+         yk68+IMNMjG8DU2umZJ0Pqf2MAzN14yj/2pl0os7v+kKnMcSumFVnCBabtyqz9N/GzyC
+         KRqKsXLEY47APQox2lWRadezfp1LfRz1zuWzsKWAAuzIFSlaMwBUY0oLqT2N8TwmE+gX
+         wTPWc6Q/dhX7ytsRzo0PgHBjF/s7IjM0fTz34GgmEMBT8Ffr7AO5j90oVduvp/1TD5dB
+         rWnHsB/k6F3LeskTYU4SxpSSaiBdn20V95BLLXGr45weIF2o+CrDXU85QPMnLLadYUud
+         st9Q==
+X-Gm-Message-State: AOJu0YwOE8aitlzlDiM3bcl/2AhUzrBJq4ZEdjvdGPwZAU9vNEzNQaOP
+        tFOzvgOYGZDUedvdwALwuq+7EpNf2tHKAHJhJEsWEuQP9Vbj0bbw8mQuLklPYybgdwHlnsDzR2L
+        5Zwj3bzzZce6SF0cXGgN6Forr
+X-Received: by 2002:a2e:9b0b:0:b0:2b9:36d5:729c with SMTP id u11-20020a2e9b0b000000b002b936d5729cmr15014342lji.47.1698917620033;
+        Thu, 02 Nov 2023 02:33:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHk3Ur/kxbTus79HunF7kL0yxuSMj6fTan91sSZLYut8sHel92MvzChDXeoxbPnpM+fs9EnbA==
+X-Received: by 2002:a2e:9b0b:0:b0:2b9:36d5:729c with SMTP id u11-20020a2e9b0b000000b002b936d5729cmr15014322lji.47.1698917619716;
+        Thu, 02 Nov 2023 02:33:39 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id f9-20020a05600c154900b00407460234f9sm2208669wmg.21.2023.11.02.02.33.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 02:33:43 -0700 (PDT)
-From:   "xinglong.yang" <seanyang230@gmail.com>
-X-Google-Original-From: "xinglong.yang" <xinglong.yang@cixtech.com>
-To:     xinglong.yang@cixtech.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] driver: thermal: simplify the traverse of sensor in thermal_zone.
-Date:   Thu,  2 Nov 2023 17:33:34 +0800
-Message-ID: <20231102093334.1363324-1-xinglong.yang@cixtech.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 02 Nov 2023 02:33:39 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] regulator: core: Add option to prevent disabling unused
+ regulators
+In-Reply-To: <c1690b26-9004-4e5e-aa14-c61f679add12@sirena.org.uk>
+References: <20231028102423.179400-1-javierm@redhat.com>
+ <20231101045652.GA2897@thinkpad>
+ <c1690b26-9004-4e5e-aa14-c61f679add12@sirena.org.uk>
+Date:   Thu, 02 Nov 2023 10:33:38 +0100
+Message-ID: <875y2kh53h.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The number of sensor in a thermal zone needs to be greater than zero
-and equal to one. Add the opinion when the number of sensor is greater
-than one in a thermal zone.
+Mark Brown <broonie@kernel.org> writes:
 
-There is also no need to traverse the sensor in the thermal zone,
-because there is only one sensor on one thermal zone.
+> On Wed, Nov 01, 2023 at 10:26:52AM +0530, Manivannan Sadhasivam wrote:
+>
+>> On the other note, I'm wondering if we could use sync_state() for handling the
+>> regulator_init_complete() work. This would ensure that the regulators are only
+>> disabled when all the consumers are probed.
+>
+> That assumes that everything defined in the DT both has a driver and has
+> the driver available for the currently running kernel neither of which
+> is a good assumption.
 
-Signed-off-by: xinglong.yang <xinglong.yang@cixtech.com>
----
- drivers/thermal/thermal_of.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+Agreed. I believe the current logic of disabling all regulators using a
+workqueue is the correct thing to do.
 
-diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-index e615f735f4c0..c800599e7ebd 100644
---- a/drivers/thermal/thermal_of.c
-+++ b/drivers/thermal/thermal_of.c
-@@ -185,7 +185,8 @@ static struct device_node *of_thermal_zone_find(struct device_node *sensor, int
- 	 */
- 	for_each_available_child_of_node(np, tz) {
- 
--		int count, i;
-+		int count;
-+		int ret;
- 
- 		count = of_count_phandle_with_args(tz, "thermal-sensors",
- 						   "#thermal-sensor-cells");
-@@ -193,26 +194,25 @@ static struct device_node *of_thermal_zone_find(struct device_node *sensor, int
- 			pr_err("%pOFn: missing thermal sensor\n", tz);
- 			tz = ERR_PTR(-EINVAL);
- 			goto out;
-+		} else if (count > 1) {
-+			pr_err("%pOFn: number of thermal sensor greater than one\n", tz);
-+			tz = ERR_PTR(-EINVAL);
-+			goto out;
- 		}
- 
--		for (i = 0; i < count; i++) {
--
--			int ret;
--
--			ret = of_parse_phandle_with_args(tz, "thermal-sensors",
--							 "#thermal-sensor-cells",
--							 i, &sensor_specs);
--			if (ret < 0) {
--				pr_err("%pOFn: Failed to read thermal-sensors cells: %d\n", tz, ret);
--				tz = ERR_PTR(ret);
--				goto out;
--			}
-+		ret = of_parse_phandle_with_args(tz, "thermal-sensors",
-+						 "#thermal-sensor-cells",
-+						 0, &sensor_specs);
-+		if (ret < 0) {
-+			pr_err("%pOFn: Failed to read thermal-sensors cells: %d\n", tz, ret);
-+			tz = ERR_PTR(ret);
-+			goto out;
-+		}
- 
--			if ((sensor == sensor_specs.np) && id == (sensor_specs.args_count ?
--								  sensor_specs.args[0] : 0)) {
--				pr_debug("sensor %pOFn id=%d belongs to %pOFn\n", sensor, id, tz);
--				goto out;
--			}
-+		if ((sensor == sensor_specs.np) && id == (sensor_specs.args_count ?
-+							  sensor_specs.args[0] : 0)) {
-+			pr_debug("sensor %pOFn id=%d belongs to %pOFn\n", sensor, id, tz);
-+			goto out;
- 		}
- 	}
- 	tz = ERR_PTR(-ENODEV);
+The only better option I think is to make user-space notify the kernel
+that it won't load kernel modules anymore. But the delayed work would
+sill be needed, since the kernel can't make an assumption on whether
+user-space will notify of this or not.
+
 -- 
-2.42.0
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
