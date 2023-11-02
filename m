@@ -2,189 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 832427DEDD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9673E7DEDDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbjKBIES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
+        id S233163AbjKBIFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbjKBIER (ORCPT
+        with ESMTP id S233053AbjKBIFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:04:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45CA111
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698912208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WvS8MNTF0hgInyS69OR8wJBPNbNz7HePMphlox+7hLE=;
-        b=HMh6mc1oUNhcz81BnkRCFEpRE+aNqlpgVmqGmWCajxUHei+9zwYZmlsVXAQa1HL6IelWpC
-        m88JuZto6TvNZOm8f83wgXkFyp2e4Hp9tJWTJQXyAQ7cSI/3czfm49F5LPPriIFxtkg7CL
-        avh3/wAmGKWWiOYy2IyRIl76vaESK8g=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-127-ZXeI0wL_OGCPKuuv_BOOQg-1; Thu,
- 02 Nov 2023 04:03:23 -0400
-X-MC-Unique: ZXeI0wL_OGCPKuuv_BOOQg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5121F3810D23;
-        Thu,  2 Nov 2023 08:03:23 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F192492BE0;
-        Thu,  2 Nov 2023 08:03:21 +0000 (UTC)
-Date:   Thu, 2 Nov 2023 16:03:18 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, eric_devolder@yahoo.com
-Subject: Re: [PATCH 1/2] kexec: fix KEXEC_FILE dependencies
-Message-ID: <ZUNXxp9AIkjQkP9s@MiWiFi-R3L-srv>
-References: <20231023110308.1202042-1-arnd@kernel.org>
- <ZTe8NOgAjvKDA6z0@MiWiFi-R3L-srv>
- <b71034f4-5cdc-44e0-b72f-1a8ffae0593e@app.fastmail.com>
+        Thu, 2 Nov 2023 04:05:17 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01619111;
+        Thu,  2 Nov 2023 01:05:15 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5b9a456798eso451105a12.3;
+        Thu, 02 Nov 2023 01:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698912314; x=1699517114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qm047SCnALoyYPhnGrJPWTE0UoF+m8QEisH8xFHbuwA=;
+        b=cdXMCMtzIXIr9ixN3j9KUm8CiBKYEg8wYHZH2VLgeZ8w6Ez0pjmsy4AZs+npdbzRLN
+         uvXxqYRQh+2CffLoFltzlll9DhHcuIvL6MO9R6bNjLDpCRo6xFYFe275lzXsru8rdXzP
+         OjL4cQ5K6BjibL62f8ycIgoZmmJSgDqJqE/00wrHPASZ/8H7i+Mp+s/ziVGnEttJZPsJ
+         GOwm+o/gwix5dk/rkrc3jsxVeJgMrBEI0jUZ55SC70sqrsxyTxPEW7pWxCtu10vOpTXI
+         pKyDf6eAdrSWEPBCznrBqnlZeo7GDraM4h5cZMlKUme+zFTpYYbyqEVyGo7Gq0I9zHkP
+         yXgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698912314; x=1699517114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qm047SCnALoyYPhnGrJPWTE0UoF+m8QEisH8xFHbuwA=;
+        b=ZyUc0PIsNQ0xsicL5PlmPmVqAMfevbH+8SKqzmfytkZPtBKPg/Wkv1MhwGy+dEEY3g
+         7DHRa7pPnCH7zdDk2/Yz4WWhNnP6oaix026/Mi98cDBPn7pMQ1wlrWGM2Cd/iwclHIT5
+         JSqRt8GbUiyjusQMvpwisl/GPgPO7tjoCuDvjH63N9q1wYX+6Duq09waRWIESxCS3yFr
+         7G3x3b2zucqVZBJsShcJDPKfucwzAYMZM9rA9fNrtJDRoFLO0Iar22TfQderOpsMXC28
+         1Op1iJju1yo1eZGp+Z1DvNhq2XLSkQo1VQjJmblMaN5CtTd3wnnkayuaZAWsThFq+0l4
+         8y8A==
+X-Gm-Message-State: AOJu0YwV9DmP7uLRAZvHqEa1/nobof9BHonuhpN1AGtqf3G9Yd9qdqRL
+        opOFpVWgkOktX0Xf6SwmnlI=
+X-Google-Smtp-Source: AGHT+IFIL6VIw66cK4zpLiHDgDf8OIP34pUNG8oTkJtXAdQZP0h9DhMj83aCFzRYsJSB7uHCcpIhXA==
+X-Received: by 2002:a17:902:f682:b0:1cc:7d96:3fe7 with SMTP id l2-20020a170902f68200b001cc7d963fe7mr4181116plg.28.1698912314313;
+        Thu, 02 Nov 2023 01:05:14 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id g10-20020a170902740a00b001c9bc811d59sm2484716pll.307.2023.11.02.01.05.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 01:05:13 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 32F169201A25; Thu,  2 Nov 2023 15:05:09 +0700 (WIB)
+Date:   Thu, 2 Nov 2023 15:05:08 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Huang Rui <ray.huang@amd.com>, Meng Li <li.meng@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Mateusz Guzik <mjguzik@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Michele Della Guardia <micheledellaguardia@yahoo.it>,
+        Linux Power Management <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: Fwd: Abnormal battery drain with kernel 6.5 (Ryzen 5500u)
+Message-ID: <ZUNYNEnGC8cm6ALH@debian.me>
+References: <bede02c1-ef90-8e30-aa8b-e6fae49a8ccf@gmail.com>
+ <ZPql6tqBCnXJh64J@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bFrQyoCjDpyscnAV"
 Content-Disposition: inline
-In-Reply-To: <b71034f4-5cdc-44e0-b72f-1a8ffae0593e@app.fastmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZPql6tqBCnXJh64J@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
 
-On 10/24/23 at 03:17pm, Arnd Bergmann wrote:
-> On Tue, Oct 24, 2023, at 14:44, Baoquan He wrote:
-> > Just add people and mailing list to CC since I didn't find this mail in
-> > my box, just drag it via 'b4 am'.
-> >
-> > On 10/23/23 at 01:01pm, Arnd Bergmann wrote:
-> > ......
-> 
-> >> diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
-> >> index 7aff28ded2f48..bfc636d64ff2b 100644
-> >> --- a/kernel/Kconfig.kexec
-> >> +++ b/kernel/Kconfig.kexec
-> >> @@ -36,6 +36,7 @@ config KEXEC
-> >>  config KEXEC_FILE
-> >>  	bool "Enable kexec file based system call"
-> >>  	depends on ARCH_SUPPORTS_KEXEC_FILE
-> >> +	depends on CRYPTO_SHA256=y || !ARCH_SUPPORTS_KEXEC_PURGATORY
-> >
-> > I am not sure if the logic is correct. In theory, kexec_file code
-> > utilizes purgatory to verify the checksum digested during kernel loading
-> > when try to jump to the kernel. That means kexec_file depends on
-> > purgatory, but not contrary?
-> 
-> The expression I wrote is a bit confusing, but I think this just
-> keeps the existing behavior:
-> 
-> - on architectures that select ARCH_SUPPORTS_KEXEC_PURGATORY
->   (powerpc, riscv, s390 and x86), we also require CRYPTO_SHA256
->   to be built-in.
-> - on architectures that do not have ARCH_SUPPORTS_KEXEC_PURGATORY
->   (arm64 and parisc), CRYPTO_SHA256 is not used and can be disabled
->   or =m.
-> 
-> Since ARCH_SUPPORTS_KEXEC_PURGATORY is a 'bool' symbol, it could
-> be written as
-> 
-> depends on (ARCH_SUPPORTS_KEXEC_PURGATORY && CRYPTO_SHA256=y) \
->            || !ARCH_SUPPORTS_KEXEC_PURGATORY
-> 
-> if you find that clearer. I see that the second patch
-> actually gets this wrong, it should actually do
-> 
-> select CRYPTO if ARCH_SUPPORTS_KEXEC_PURGATORY
-> select CRYPTO_SHA256 if ARCH_SUPPORTS_KEXEC_PURGATORY
-> 
-> > With these changes, we can achieve the goal to avoid building issue,
-> > whereas the code logic becomes confusing. E.g people could disable
-> > CONFIG_KEXEC_FILE, but still get purgatory code built in which is
-> > totally useless.
-> >
-> > Not sure if I think too much over this.
-> 
-> I see your point here, and I would suggest changing the
-> CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY symbol to just indicate
-> the availability of the purgatory code for the arch, rather
-> than actually controlling the code itself. I already mentioned
-> this for s390, but riscv would need the same thing on top.
-> 
-> I think the change below should address your concern.
+--bFrQyoCjDpyscnAV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since no new comment, do you mind spinning v2 to wrap all these up?
+On Fri, Sep 08, 2023 at 12:41:14PM +0800, Huang Rui wrote:
+> On Fri, Sep 01, 2023 at 05:42:22PM +0800, Bagas Sanjaya wrote:
+> > Hi,
+> >=20
+> > I notice a regression report on Bugzilla [1] that have been already han=
+dled
+> > there. Quoting from it:
+> >=20
+> > > After switching from 6.4.x kernel to 6.5 I experienced an abnormal ba=
+ttery drain since my laptop is actually never idle.
+> > > I accepted default CPUfreq to schedutil and AMD Processor P-State mod=
+e is 3 (active).=20
+> > >=20
+> > > I expected a different behaviour, but am I missing something?
+> > > In my boot configuration I had "amd_pstate.shared_mem=3D1" and tried =
+to remove this switch, but did not affect my power consuption.
+> > >=20
+> > > Is there something changed from 6.4.x to 6.5 that requires a differen=
+t configuration to get an optimal power consumption?
+> > >=20
+> > > Thanks a lot for your attention
+> >=20
+> > See Bugzilla for the full thread.
+> >=20
+> > Anyway, I'm adding it to regzbot:
+> >=20
+> > #regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cg=
+i?id=3D217853
+> >=20
+>=20
+> + Meng Li/Perry,
+>=20
+> May we know which CPU type are you using? Try "lscpu"?
+>=20
 
-Thanks
-Baoquan
+Sorry for the replying just now.
 
-> 
->      Arnd
-> 
-> diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-> index e60fbd8660c4..3ac341d296db 100644
-> --- a/arch/riscv/kernel/elf_kexec.c
-> +++ b/arch/riscv/kernel/elf_kexec.c
-> @@ -266,7 +266,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
->                 cmdline = modified_cmdline;
->         }
->  
-> -#ifdef CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY
-> +#ifdef CONFIG_KEXEC_FILE
->         /* Add purgatory to the image */
->         kbuf.top_down = true;
->         kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-> @@ -280,7 +280,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
->                                              sizeof(kernel_start), 0);
->         if (ret)
->                 pr_err("Error update purgatory ret=%d\n", ret);
-> -#endif /* CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY */
-> +#endif /* CONFIG_KEXEC_FILE */
->  
->         /* Add the initrd to the image */
->         if (initrd != NULL) {
-> diff --git a/arch/riscv/Kbuild b/arch/riscv/Kbuild
-> index d25ad1c19f88..ab181d187c23 100644
-> --- a/arch/riscv/Kbuild
-> +++ b/arch/riscv/Kbuild
-> @@ -5,7 +5,7 @@ obj-$(CONFIG_BUILTIN_DTB) += boot/dts/
->  obj-y += errata/
->  obj-$(CONFIG_KVM) += kvm/
->  
-> -obj-$(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) += purgatory/
-> +obj-$(CONFIG_KEXEC_FILE) += purgatory/
->  
->  # for cleaning
->  subdir- += boot
-> diff --git a/arch/s390/Kbuild b/arch/s390/Kbuild
-> index a5d3503b353c..361aa01dbd49 100644
-> --- a/arch/s390/Kbuild
-> +++ b/arch/s390/Kbuild
-> @@ -7,7 +7,7 @@ obj-$(CONFIG_S390_HYPFS)        += hypfs/
->  obj-$(CONFIG_APPLDATA_BASE)    += appldata/
->  obj-y                          += net/
->  obj-$(CONFIG_PCI)              += pci/
-> -obj-$(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) += purgatory/
-> +obj-$(CONFIG_KEXEC_FILE)       += purgatory/
->  
->  # for cleaning
->  subdir- += boot tools
-> 
+The reporter (on Bugzilla) had bisected to commit c8afaa1b0f8bc9 ("locking:
+remove spin_lock_prefetch"). Telling regzbot:
 
+#regzbot introduced: c8afaa1b0f8bc9
+#regzbot title: spin_lock_prefetch() removal causes abnormal battery drain =
+on Ryzen 5500u
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--bFrQyoCjDpyscnAV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUNYLwAKCRD2uYlJVVFO
+owZYAQDsb6Cd0wndv9wWOxPcE7C6GSlUhC+p6Vc2i0w7Ge2crwD9FjZVdMAnD7jZ
+aptnxPSv+I+4kMDvo/d32CBDN4MTXww=
+=xS7j
+-----END PGP SIGNATURE-----
+
+--bFrQyoCjDpyscnAV--
