@@ -2,116 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C617DF166
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7624C7DF16A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbjKBLmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
+        id S234094AbjKBLnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbjKBLmU (ORCPT
+        with ESMTP id S230468AbjKBLnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:42:20 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC3D186
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:42:08 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c518a1d83fso10997311fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 04:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698925327; x=1699530127; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s8dxEzYVSeFJZ3l8QowPz73oS6HbY0588zpxHkYzDJg=;
-        b=lwZ2wSukMRBt/CLG/aWjyFNeWERxJerHRKZYwihDEsEfpaygbKp/n22F6n+9U+w3Q1
-         rhJaTFpw3C3FcD+jBbntZXVVGnDRxfY+4dmY3X//nODWK2+mRGshIS65rQnyszQF99Zu
-         fcfIiW0O5/hs2xCgtk8lokdctNe1tXEVK0fAM/vmKr7p11PIPW4Z4k/TuhGEHCjB2DPu
-         xhtnBlLHdMsl1ajV1GJGn0HUIFdsJ/vrKDop8TZ6483IOxl2URHz2numKP4rCWXXjGAD
-         R7HMtzyxhDyOpOWefwnm1myc+l7tKXzY/QkuTCfIoDNJ1opn2c2+QWQtWgMRCMylwckH
-         WUIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698925327; x=1699530127;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s8dxEzYVSeFJZ3l8QowPz73oS6HbY0588zpxHkYzDJg=;
-        b=iXb5udoL9+bbxXuK5xajgeS44xQKm3N4hS0AQFGujHJtP0kGVgWCfHyyxwXdDQDGcd
-         pF1ERZboSZ7XH7ZuUYeMoGQXkv2nPraKiXYTLICkm5CcKH64zFFOqrQTi3Qtc+0imNeY
-         xVcJNboaw0LVHa0QMHM1pHoY0+bcl49RziIm0cTZ603wVzxICh1ctAnFT7GmSUIvB6J6
-         d6ENvRQi6D6HN1aAQYLdUNNYjjq+T++VC/bVZ8HlbCfEJ+J2uPRFcffya2v1iLQjKJLI
-         JvW5m83JzmKkXp+4pcJjZMbj+elkYoQn1u9umPzOXSUxyb0LTsHc7BFHRCKgXolvtagk
-         lueQ==
-X-Gm-Message-State: AOJu0YwAjvZibxekfZDFI7B7RoIjsaSmuhXA6+xo257iTNPye8mJLuoS
-        smAZLBFVTlw8XeCY9eY/Rfza3g==
-X-Google-Smtp-Source: AGHT+IF+Nqgh2qvRrp3oGM6gzwl8LfwxtdCMH0YDfKUm6K9IhmLAwyJp3QIkCPDsvq7BCWVHc2aEkA==
-X-Received: by 2002:a2e:494a:0:b0:2c5:1a89:41c0 with SMTP id b10-20020a2e494a000000b002c51a8941c0mr12903032ljd.23.1698925327124;
-        Thu, 02 Nov 2023 04:42:07 -0700 (PDT)
-Received: from [127.0.0.1] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id j41-20020a05600c1c2900b004060f0a0fdbsm2717720wms.41.2023.11.02.04.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 04:42:06 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date:   Thu, 02 Nov 2023 11:41:59 +0000
-Subject: [PATCH 6/6] media: qcom: camss: vfe-17x: Rename camss-vfe-170 to
- camss-vfe-17x
+        Thu, 2 Nov 2023 07:43:00 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2055.outbound.protection.outlook.com [40.107.93.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095C4187;
+        Thu,  2 Nov 2023 04:42:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XU/OOQdYyluK/3ZXPx1uGRkvZH+qNDmri/aYnjWO0eiVsX00DJXwXTgoP1T2oWmkDzzXY9m0YZH3NIV9K1WofOZGxRHMM2YCDUjB7OfQkh5P7iPsTz8LQulSCUfCBWNpKEltGrAF6qtQupfnFm1VYBimPqn4kdhLHjubFWST7CfLAYI3IBC9CTRfS5M23URlOGyESeYB7DraxgW5e51sDb5uAb0JUqrHmc6mJyCs8SqWQJo+K9fooVK3YluODZdeKRvc2gshBfCRKgzOWidOCsco6JW+Sfuh/Mxrs6NSeCW5Tqn+3UzBcT488hBgnVqOeCnRFCb6Hcyj/8Sb21MHng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XXgJn0z5TX54nuYWT4I7EaFe55aFSy/1UE7zmTeVDok=;
+ b=ODwky00HCkM38wfZscjxGgCl/EGqp757W8W6vxPztl3JNYj9DM5fnQK63e2fJb1NRkdVYRMREKCOMvguHsjQreOtjeew7Pi3+lvb1VQUnAK9aNQpiXa7zs1UFvmILqdgw5bdu6+KHPSxefBgefd3GOwC08okZYghOp1csDsN7Li0T6K1QJkF3ckd8LMAYmGf2OSr7AR94sreAWq1x7BRvzZWTBk56DoLwkZS4SDnRuGz+F6u11qD3MaICxWjdEkRRO7nmmgsXAAYxnk9H9ZcRLReUApsNVVg5CX/PKi1RpOxZuYONhD0GOW5JgeNLP2CT6jjiyIHPiUMky7zGcSzvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XXgJn0z5TX54nuYWT4I7EaFe55aFSy/1UE7zmTeVDok=;
+ b=4b8tyMZFGD/sqlEK2UJ7AqMutJvI0DO7Oa+YN7HtEhbJ0SaiXwAxIY+QSP4Xl2NY0KrXgbY+bDrLsClPmMwZRyNRnEGD1yXxEnEyvsbyaJ5dbmA3aZh6ZJPfi85cHYLjt6FynL/dlPeYdgdu0BrqVeVnmZXGCcOrGH9iOwVd6dc=
+Received: from CH0PR04CA0036.namprd04.prod.outlook.com (2603:10b6:610:77::11)
+ by DM4PR12MB7550.namprd12.prod.outlook.com (2603:10b6:8:10e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Thu, 2 Nov
+ 2023 11:42:49 +0000
+Received: from DS2PEPF0000343C.namprd02.prod.outlook.com
+ (2603:10b6:610:77:cafe::6e) by CH0PR04CA0036.outlook.office365.com
+ (2603:10b6:610:77::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
+ Transport; Thu, 2 Nov 2023 11:42:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF0000343C.mail.protection.outlook.com (10.167.18.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6954.19 via Frontend Transport; Thu, 2 Nov 2023 11:42:48 +0000
+Received: from amd.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 2 Nov
+ 2023 06:42:47 -0500
+From:   Muralidhara M K <muralimk@amd.com>
+To:     <linux-edac@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>,
+        Muralidhara M K <muralidhara.mk@amd.com>
+Subject: [PATCH v3 0/4] Few cleanups and AMD Family 19h Models 90h-9fh EDAC Support
+Date:   Thu, 2 Nov 2023 11:42:21 +0000
+Message-ID: <20231102114225.2006878-1-muralimk@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231102-b4-camss-sc8280xp-v1-6-9996f4bcb8f4@linaro.org>
-References: <20231102-b4-camss-sc8280xp-v1-0-9996f4bcb8f4@linaro.org>
-In-Reply-To: <20231102-b4-camss-sc8280xp-v1-0-9996f4bcb8f4@linaro.org>
-To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
-        matti.lehtimaki@gmail.com, grosikop@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-X-Mailer: b4 0.13-dev-83828
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343C:EE_|DM4PR12MB7550:EE_
+X-MS-Office365-Filtering-Correlation-Id: bee84b83-118b-4d15-ae64-08dbdb98d6ef
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YPcl9aVchjZzdEQShxA7MvCeUymYORwJKN7GCPRct79BGzsRGH9IVNvQgE7LGLhLKCOpBYkP4XXXRFg9J0ja1owd2vfblsbzIuNFkBkO5k03YPQD3XX2aKEXzewy33q2k53tmAGqjRJHthV5PrJeJZETc772jRgy1hiTOxLlj1JnwzeTM5M33xJKPsfn55X4vhbU+1Hk00GFE2fEYVyP9XGa5ZKVmIG7uv5KCq/y7xzNuQL7qyzTBzUkCdS8PpW208Ba+ovfwqYr/OWK0FA5Ur5rKfHr+ZpJ8MRf/WKOY4PEvkRfgZzlx78AJVId91h3NjEJ6lzKsIM3F5PunJyVqyrcIcFUCaCilU17ysffTDiIhUd/4uQTlsgKCCOK0kgkmOWLuMLQvjhnqyWSbIETGTJhqZLPQxzR5JKKhS0/FlyiwDe3nqzjn808cOw/1Tc+6ajg7VsBxdbS7ICYpu6zrmQSyC3HFRGYVjLuMy5z4o9KhVqKNG382MFXg2lfWiGFDbU6LLg1Xfnm4WiyeNM3+TlYynmJsnnl1HdKGN5vcCMv02OKa2ds8dMrjKg1A7WYqC4oOmi3JbeBOwYSXqnhCBAFXVYzMGuUZIdNQhne0Te9019IJxwSxDeQNaML4qPFc10cvOz7C7GeUgVSH76EWmwOQhHWNM/bcpJ+3goCKo0CmayZpAwj1hOYV/bCF6fhLc115xxozyw0VmGIj0EUH+pLhPjsSgp/E4+LoJsRqL9OvGEjgKFWnW9V4mxlrb6C
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(451199024)(82310400011)(64100799003)(1800799009)(186009)(36840700001)(46966006)(40470700004)(40460700003)(26005)(1076003)(16526019)(6666004)(47076005)(426003)(7696005)(478600001)(8936002)(8676002)(5660300002)(70206006)(70586007)(966005)(54906003)(6916009)(316002)(4326008)(336012)(36860700001)(41300700001)(2616005)(36756003)(83380400001)(356005)(82740400003)(81166007)(40480700001)(2906002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 11:42:48.9819
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bee84b83-118b-4d15-ae64-08dbdb98d6ef
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF0000343C.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7550
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfe-170 and vfe-175 can be supported in the same file with some minimal
-indirection to differentiate between the silicon versions.
+From: Muralidhara M K <muralidhara.mk@amd.com>
 
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/Makefile                             | 2 +-
- drivers/media/platform/qcom/camss/{camss-vfe-170.c => camss-vfe-17x.c} | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
+The below patchset is based on previously submitted changes
+https://lore.kernel.org/linux-edac/20231025051455.101424-1-muralimk@amd.com/T/#m5834ca7109d159f7fc869031f3603dff8a79633c
 
-diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
-index 4e22223589739..0d4389ab312d1 100644
---- a/drivers/media/platform/qcom/camss/Makefile
-+++ b/drivers/media/platform/qcom/camss/Makefile
-@@ -14,7 +14,7 @@ qcom-camss-objs += \
- 		camss-vfe-4-1.o \
- 		camss-vfe-4-7.o \
- 		camss-vfe-4-8.o \
--		camss-vfe-170.o \
-+		camss-vfe-17x.o \
- 		camss-vfe-480.o \
- 		camss-vfe-gen1.o \
- 		camss-vfe.o \
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-17x.c
-similarity index 100%
-rename from drivers/media/platform/qcom/camss/camss-vfe-170.c
-rename to drivers/media/platform/qcom/camss/camss-vfe-17x.c
+Patch 1:
+Remove SMCA Extended Error code descriptions, because some of the
+existing bit definitions in the CTL register of SMCA bank type are
+reassigned without defining new HWID and McaType.
+
+Patch 2:
+Add New SMCA bank types MALL, USR_DP, USR_CP.
+
+Patch 3:
+Add HBM3 memory in the enum.
+
+Patch 4:
+Add Family 19h and Models 90h-9fh Enumeration support.
+
+Muralidhara M K (4):
+  EDAC/mce_amd: Remove SMCA Extended Error code descriptions
+  x86/MCE/AMD: Add new MA_LLC, USR_DP, and USR_CP bank types
+  EDAC/mc: Add support for HBM3 memory type
+  EDAC/amd64: Add support for family 0x19, models 0x90-9f devices
+
+ arch/x86/include/asm/mce.h    |   3 +
+ arch/x86/kernel/cpu/mce/amd.c |   6 +
+ drivers/edac/amd64_edac.c     |  62 +++--
+ drivers/edac/amd64_edac.h     |   1 +
+ drivers/edac/edac_mc.c        |   1 +
+ drivers/edac/mce_amd.c        | 480 ----------------------------------
+ include/linux/edac.h          |   3 +
+ 7 files changed, 60 insertions(+), 496 deletions(-)
 
 -- 
-2.42.0
+2.25.1
 
