@@ -2,276 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5C47DF025
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3309F7DF02A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347108AbjKBKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S1346880AbjKBKdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346874AbjKBKdi (ORCPT
+        with ESMTP id S1346832AbjKBKdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:33:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3355C197
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698921163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=EePgrsn5C6IrnNIxegoYsuWMp1Sc1phl1cmFpN1d7s8=;
-        b=dgirWlphzrGO6MHqpIIjT84Uqd1QdkjyJr11Ajs/ItOiS8dzU1FxYRNSDOLCrLNNdTNtse
-        ejUhg5GZ7/GPtFI8wDLDWTtmpzhJjqPYGv/LjXS0j09CUI50+QfeHdoPZBE+xPUBwR+0ez
-        B6ktf1dgPFxaX9eCJJdWhBQFNMXS+gI=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-96-_U5Cx30EPkGv7_0QTibORw-1; Thu, 02 Nov 2023 06:32:41 -0400
-X-MC-Unique: _U5Cx30EPkGv7_0QTibORw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9ae7663e604so53087066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:32:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698921160; x=1699525960;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EePgrsn5C6IrnNIxegoYsuWMp1Sc1phl1cmFpN1d7s8=;
-        b=PSuhYvZvtpOsICESueb9yG3nMghivoI5OnKUgn3NgG5Nbi9NdyP+2JAJs+gXtxbcUo
-         Mph+rMH+LokPK7ZrQuTVFN3Iewrlzgq6ZTu80aewW9A/h4Fo4WEAbJNZiKMWqnroYoKY
-         Ct03IgX4/YpwQtyIQg8dcP9t3V3IIvO0448MUPCejvnegd9S5M+uu9rsWN6IU77Q3/N/
-         6w4Ypb1BX+64+ID7Uh6h1PFT/vkw8GRDWN4Ubn3/sRmLcAAs+6LshFEHJUzSpudAWJB8
-         ZT7y+aPCrQTE1f3aCxp9aZeG/am2HIYqJWy/WLzc8AoWfftk1uN63YAoDzm0RcREkeCz
-         tLdA==
-X-Gm-Message-State: AOJu0Yy6sEOTZOokSCaDIxfJ2iDxrp9KAnTKVJK9lGtcUfntf6TsJY6f
-        3EZ5oIN2mpNpQFe/LHPxv4ONKPFOQW7sUhuflP0YoR8pdrrK+TMZIQuiforHxLnjhmQTHwhgPxq
-        n9jenr6aKpesSO5hNTpMBIp8X
-X-Received: by 2002:a17:907:70a:b0:9bd:9bfe:e410 with SMTP id xb10-20020a170907070a00b009bd9bfee410mr4134671ejb.72.1698921160424;
-        Thu, 02 Nov 2023 03:32:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHdKWTZCjPNQtOILp1najbjDKUZt1gJ0TmclwPTaP4Nu9rDAFXiy/5MsPxAUlznxhN/2PedEg==
-X-Received: by 2002:a17:907:70a:b0:9bd:9bfe:e410 with SMTP id xb10-20020a170907070a00b009bd9bfee410mr4134618ejb.72.1698921159974;
-        Thu, 02 Nov 2023 03:32:39 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id y13-20020a170906470d00b0099bd1a78ef5sm957651ejq.74.2023.11.02.03.32.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 03:32:39 -0700 (PDT)
-Message-ID: <a03d0e36-7b38-4841-9c62-66c9029e388d@redhat.com>
-Date:   Thu, 2 Nov 2023 11:32:34 +0100
+        Thu, 2 Nov 2023 06:33:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C430AC2
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:32:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22382C433C7;
+        Thu,  2 Nov 2023 10:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698921179;
+        bh=vCsEm5kYfVokXfpt6FzUVW6m+28U/AvZkO+g4Ew8jFk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZJiNlDs4f9oSJYvvei6uvYrpqZq37TUCwF2TSXFU0cathgxMjUlb4jnlSBN4uWgXY
+         h1C9FNJXF8eXE6TTbyrPdzGPap3ZvqTeBycVZLwtI/OBCUOA+yoZaqgqRt9+AtkZYO
+         1kJ2hdn88SArB44LpXio9JYg3HVTdQLy/72rTKqAFoB3/hWHcAVdzvxYSVIMHY/pmQ
+         uCnjE2dRoZusENcLrLAjYtjG94rH95ydVkXdor2gNtHsd8Jh5z22QhPIQ3qx+ucgsn
+         Hnsk6XReZPEAH78MSG8NTPZp2RwwvCPMNAXDwhxHJEM2hylphICX3Wg97UUqFLlfiL
+         TC+p/kmOFN+ZA==
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev,
+        Jiri Olsa <olsajiri@gmail.com>
+Subject: [PATCH v2] tools/build: Add clang cross-compilation flags to feature detection
+Date:   Thu,  2 Nov 2023 11:32:52 +0100
+Message-Id: <20231102103252.247147-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 13/35] KVM: Introduce per-page memory attributes
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc:     "Li, Xiaoyao" <xiaoyao.li@intel.com>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "mic@digikod.net" <mic@digikod.net>,
-        "liam.merwick@oracle.com" <liam.merwick@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "tabba@google.com" <tabba@google.com>,
-        "amoorthy@google.com" <amoorthy@google.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "michael.roth@amd.com" <michael.roth@amd.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "Annapurve, Vishal" <vannapurve@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "mail@maciej.szmigiero.name" <mail@maciej.szmigiero.name>,
-        "yu.c.zhang@linux.intel.com" <yu.c.zhang@linux.intel.com>,
-        "qperret@google.com" <qperret@google.com>,
-        "dmatlack@google.com" <dmatlack@google.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-        "ackerleytng@google.com" <ackerleytng@google.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Wang, Wei W" <wei.w.wang@intel.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-14-seanjc@google.com>
- <b486ed5036fab6d6d4e13a6c68abddcb9541d51b.camel@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <b486ed5036fab6d6d4e13a6c68abddcb9541d51b.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/23 04:01, Huang, Kai wrote:
-> On Fri, 2023-10-27 at 11:21 -0700, Sean Christopherson wrote:
->> From: Chao Peng <chao.p.peng@linux.intel.com>
->>
->> In confidential computing usages, whether a page is private or shared is
->> necessary information for KVM to perform operations like page fault
->> handling, page zapping etc. There are other potential use cases for
->> per-page memory attributes, e.g. to make memory read-only (or no-exec,
->> or exec-only, etc.) without having to modify memslots.
->>
->> Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
->> userspace to operate on the per-page memory attributes.
->>    - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
->>      a guest memory range.
->>    - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
->>      memory attributes.
->>
->> Use an xarray to store the per-page attributes internally, with a naive,
->> not fully optimized implementation, i.e. prioritize correctness over
->> performance for the initial implementation.
->>
->> Use bit 3 for the PRIVATE attribute so that KVM can use bits 0-2 for RWX
->> attributes/protections in the future, e.g. to give userspace fine-grained
->> control over read, write, and execute protections for guest memory.
->>
->> Provide arch hooks for handling attribute changes before and after common
->> code sets the new attributes, e.g. x86 will use the "pre" hook to zap all
->> relevant mappings, and the "post" hook to track whether or not hugepages
->> can be used to map the range.
->>
->> To simplify the implementation wrap the entire sequence with
->> kvm_mmu_invalidate_{begin,end}() even though the operation isn't strictly
->> guaranteed to be an invalidation.  For the initial use case, x86 *will*
->> always invalidate memory, and preventing arch code from creating new
->> mappings while the attributes are in flux makes it much easier to reason
->> about the correctness of consuming attributes.
->>
->> It's possible that future usages may not require an invalidation, e.g.
->> if KVM ends up supporting RWX protections and userspace grants _more_
->> protections, but again opt for simplicity and punt optimizations to
->> if/when they are needed.
->>
->> Suggested-by: Sean Christopherson <seanjc@google.com>
->> Link: https://lore.kernel.org/all/Y2WB48kD0J4VGynX@google.com
->> Cc: Fuad Tabba <tabba@google.com>
->> Cc: Xu Yilun <yilun.xu@intel.com>
->> Cc: Mickaël Salaün <mic@digikod.net>
->> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
->> Co-developed-by: Sean Christopherson <seanjc@google.com>
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
->>
-> 
-> [...]
-> 
->> +Note, there is no "get" API.  Userspace is responsible for explicitly tracking
->> +the state of a gfn/page as needed.
->> +
->>
-> 
-> [...]
-> 
->>   
->> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
->> +static inline unsigned long kvm_get_memory_attributes(struct kvm *kvm, gfn_t gfn)
->> +{
->> +	return xa_to_value(xa_load(&kvm->mem_attr_array, gfn));
->> +}
-> 
-> Only call xa_to_value() when xa_load() returns !NULL?
+From: Björn Töpel <bjorn@rivosinc.com>
 
-This xarray does not store a pointer, therefore xa_load() actually 
-returns an integer that is tagged with 1 in the low bit:
+When a tool cross-build has LLVM=1 set, the clang cross-compilation
+flags are not passed to the feature detection build system. This
+results in the host's features are detected instead of the targets.
 
-static inline unsigned long xa_to_value(const void *entry)
-{
-         return (unsigned long)entry >> 1;
-}
+E.g, triggering a cross-build of bpftool:
 
-Returning zero for an empty entry is okay, so the result of xa_load() 
-can be used directly.
+  cd tools/bpf/bpftool
+  make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
 
+would report the host's, and not the target's features.
 
->> +
->> +bool kvm_range_has_memory_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
->> +				     unsigned long attrs);
-> 
-> Seems it's not immediately clear why this function is needed in this patch,
-> especially when you said there is no "get" API above.  Add some material to
-> changelog?
+Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
+feature detection makefile.
 
-It's used by later patches; even without a "get" API, it's a pretty 
-fundamental functionality.
+Fixes: cebdb7374577 ("tools: Help cross-building with clang")
+Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+---
+ tools/build/Makefile.feature |  2 +-
+ tools/build/feature/Makefile | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
->> +bool kvm_arch_pre_set_memory_attributes(struct kvm *kvm,
->> +					struct kvm_gfn_range *range);
->> +bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
->> +					 struct kvm_gfn_range *range);
-> 
-> Looks if this Kconfig is on, the above two arch hooks won't have implementation.
-> 
-> Is it better to have two __weak empty versions here in this patch?
-> 
-> Anyway, from the changelog it seems it's not mandatory for some ARCH to provide
-> the above two if one wants to turn this on, i.e., the two hooks can be empty and
-> the ARCH can just use the __weak version.
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 934e2777a2db..25b009a6c05f 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -8,7 +8,7 @@ endif
+ 
+ feature_check = $(eval $(feature_check_code))
+ define feature_check_code
+-  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
++  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" CLANG_CROSS_FLAGS="$(CLANG_CROSS_FLAGS)" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+ endef
+ 
+ feature_set = $(eval $(feature_set_code))
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index dad79ede4e0a..c4458345e564 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -84,12 +84,12 @@ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+ 
+ all: $(FILES)
+ 
+-__BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
++__BUILD = $(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
+   BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
+   BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
+   BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
+ 
+-__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
++__BUILDXX = $(CXX) $(CXXFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
+   BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
+ 
+ ###############################
+@@ -259,10 +259,10 @@ $(OUTPUT)test-reallocarray.bin:
+ 	$(BUILD)
+ 
+ $(OUTPUT)test-libbfd-liberty.bin:
+-	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
++	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
+ 
+ $(OUTPUT)test-libbfd-liberty-z.bin:
+-	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
++	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
+ 
+ $(OUTPUT)test-cplus-demangle.bin:
+ 	$(BUILD) -liberty
+@@ -283,10 +283,10 @@ $(OUTPUT)test-libbabeltrace.bin:
+ 	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
+ 
+ $(OUTPUT)test-compile-32.bin:
+-	$(CC) -m32 -o $@ test-compile.c
++	$(CC) $(CLANG_CROSS_FLAGS) -m32 -o $@ test-compile.c
+ 
+ $(OUTPUT)test-compile-x32.bin:
+-	$(CC) -mx32 -o $@ test-compile.c
++	$(CC) $(CLANG_CROSS_FLAGS) -mx32 -o $@ test-compile.c
+ 
+ $(OUTPUT)test-zlib.bin:
+ 	$(BUILD) -lz
 
-I think this can be added by the first arch that needs memory attributes 
-and also doesn't need one of these hooks.  Or perhaps the x86 
-kvm_arch_pre_set_memory_attributes() could be made generic and thus that 
-would be the __weak version.  It's too early to tell, so it's better to 
-leave the implementation to the architectures for now.
-
-Paolo
+base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+-- 
+2.40.1
 
