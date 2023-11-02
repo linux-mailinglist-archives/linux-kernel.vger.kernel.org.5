@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95667DED09
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D7F7DED0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbjKBHDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 03:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        id S233442AbjKBHDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 03:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKBHDR (ORCPT
+        with ESMTP id S231876AbjKBHDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 03:03:17 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC56123
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:03:11 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso88292766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698908590; x=1699513390; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3nhXdUPcKAOv9+XK9xkbhx4vVS0XEkJFjF8wpYBYas=;
-        b=PZvkTZLSCjzskNRrUu77F7RNNcqYyUyt7u0oST7Mq66TkkW0RP+vwQ2X3PcwIJPDpR
-         MZnHXo23TgwSmDJ/eEx8gssiH70/OrDUC34xXCxn4KZhgRLeyUvopPQeh6UsTbBGjzfe
-         MQuTHWVMF6/xGwIoRbPXyJJypr5iwP+hJ3Q3M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698908590; x=1699513390;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V3nhXdUPcKAOv9+XK9xkbhx4vVS0XEkJFjF8wpYBYas=;
-        b=MsPKpPH4viXOWpZbkddOjXl69ejRyX5b4eqmouUpy2jJCOt6uWxLJEwQIPyVM2C5IZ
-         n0wm4q+BgZS5Zd2rqiFgJ8q8qi4v0GPEMHy2QKH7E00CAmVbMgVp9R/r8kjqZv5SJB8s
-         e54oiGa+DBLiJO78hAoYZyOC56+E8r2jauvqO1W0jvrE9i5dHC+2aMLn2HA5k2DKdZM1
-         k1NnnRsgeQLAWSwQbcgigLITdbcs6aO2rel2kX4VRvSnIYz5DIbf3X933q+qLAA45PHm
-         UvNiWhggLYTdeFjYOWYj1vXxsXpKGCFaycdlrFxj5hkSO4WGk1Adz4sh1dkE96sG9Gyn
-         BcCg==
-X-Gm-Message-State: AOJu0YxXiTNmeigoiBEEaMK8Us5h02wqJpYIad1Gwpr5I3Z0gUn98DdZ
-        gfdSV74ZFMy+NIeTJMw2hh2517T3v5oDDgZ3oyTpyDbg
-X-Google-Smtp-Source: AGHT+IF73AjvodyKnC6I/9xdsxqiMFsa4x2vHeW1KhN15ZvlOSjqLqLoJzicDLZVIeek6UYcZ07FHQ==
-X-Received: by 2002:a17:907:7da6:b0:9a9:ef41:e5c7 with SMTP id oz38-20020a1709077da600b009a9ef41e5c7mr4385878ejc.8.1698908590200;
-        Thu, 02 Nov 2023 00:03:10 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id p26-20020a1709060dda00b0099ce025f8ccsm761626eji.186.2023.11.02.00.03.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 00:03:08 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54366784377so866595a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:03:08 -0700 (PDT)
-X-Received: by 2002:a17:906:4fc8:b0:9bd:ac0f:83dc with SMTP id
- i8-20020a1709064fc800b009bdac0f83dcmr3363405ejw.54.1698908588450; Thu, 02 Nov
- 2023 00:03:08 -0700 (PDT)
+        Thu, 2 Nov 2023 03:03:31 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9746A12F
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:03:25 -0700 (PDT)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3B35D667;
+        Thu,  2 Nov 2023 08:03:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698908586;
+        bh=HZ8msN1BvaFhEALTqjIIw5jqjAWnZJH+1ZNrUHXHoY4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=h5/2w5z8uNVNhClSWl6Zbj5n8asTQwuKVkvtj2NVFXUABi3W/mwurNqjOwqiHh9t3
+         ml9eDTTRBdlR+Qxn1UVe6VqpmE5hAZrq6YDV42xSFFLr8nQxwgnw7vzp1FlUtHljt/
+         U8mXhlZmEWfg9nEN4VW5ey6Wu5FzJwRSbLM65MPw=
+Message-ID: <e42af7bf-2f73-49ce-b192-1a6582bc81bd@ideasonboard.com>
+Date:   Thu, 2 Nov 2023 09:03:20 +0200
 MIME-Version: 1.0
-References: <ZUKxT1CL9/0Dn6NE@bombadil.infradead.org>
-In-Reply-To: <ZUKxT1CL9/0Dn6NE@bombadil.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 1 Nov 2023 21:02:51 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whFXNYXG2ES8HdoaMC=O4bakMXGZezmoqA3SXwn4xJUPQ@mail.gmail.com>
-Message-ID: <CAHk-=whFXNYXG2ES8HdoaMC=O4bakMXGZezmoqA3SXwn4xJUPQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Modules changes for v6.7-rc1
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-modules@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, andrea.righi@canonical.com,
-        keescook@chromium.org, zhumao001@208suo.com,
-        yangtiezhu@loongson.cn, ojeda@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/10] drm/tidss: Add dispc_is_idle()
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
+ <20231101-tidss-probe-v1-8-45149e0f9415@ideasonboard.com>
+ <20231101143231.GX12764@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231101143231.GX12764@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Nov 2023 at 10:13, Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> The only thing worth highligthing is that gzip moves to use vmalloc() instead of
-> kmalloc just as we had a fix for this for zstd on v6.6-rc1.
+On 01/11/2023 16:32, Laurent Pinchart wrote:
+> Hi Tomi,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Nov 01, 2023 at 11:17:45AM +0200, Tomi Valkeinen wrote:
+>> Add a helper function, dispc_is_idle(), which returns whether the DSS is
+>> idle (i.e. is any video port enabled).
+>>
+>> For now we add a call to it in the suspend and resume callbacks, and
+>> print a warning if in either place the DSS is not idle.
+> 
+> Could you please explain here why these checks are needed/useful ? Why
+> would the dispc not be idle ?
 
-Actually, that's almost certainly entirely the wrong thing to do.
+I'll drop this. This was mostly a debugging aid for myself when testing 
+runtime PM.
 
-Unless you *know* that the allocation is large, you shouldn't use
-vmalloc(). And since kmalloc() has worked fine, you most definitely
-don't know that.
+  Tomi
 
-So we have 'kvmalloc()' *exactly* for this reason, which is a "use
-kmalloc, unless that is too small, then use vmalloc".
-
-kmalloc() isn't just about "use physically contiguous allocations".
-It's also more memory-efficient, and a *lot* faster than vmalloc(),
-which has to play VM tricks.
-
-So this "just switch to vmalloc()" is entirely wrong.
-
-              Linus
