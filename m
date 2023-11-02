@@ -2,140 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F317DF719
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784E87DF731
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347529AbjKBPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S1376904AbjKBP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377113AbjKBPyC (ORCPT
+        with ESMTP id S1347661AbjKBP5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:54:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7952C1AA
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:53:10 -0700 (PDT)
+        Thu, 2 Nov 2023 11:57:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8B312E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:56:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698940389;
+        s=mimecast20190719; t=1698940614;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=m2KZdUyiw2CjK1qYfMJrZ/1S/LkxbokrMVWAIz/DZHY=;
-        b=TZEDHjQX2x/CO2PttX6zu1ZQts4GZdA1b7kHGCdvn3uxZevAHe8t51BltxuCnPbJtzlNHM
-        0LwxDk47AFpjNnbqGjtl6gzLa6eyq1AxDBrAtQMbcSnvDOaCaniol6lyOkV2ZB2cUSZwPS
-        frAL40EX0MN2O31e8cTSMAjnpKQJpDg=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+         in-reply-to:in-reply-to:references:references;
+        bh=RuVeVCv9mdnDfDJ0toCwOnHIeiEzNsOIusr8nhz3DvE=;
+        b=ac2z0hG4X5ihN9xmsk+WmO9HEy4TLPPE/XfWNjHzDypBiDyvrXTSXmG6EFQsBVWFqNglgl
+        ziSpRdHEpVbFMPc3htL/jwZ+EcHoKuzbB9k/gGQN10/swbCabbBHDeWKMuGArFG7539QfZ
+        hFywnkh6kzXtfPtUs8/rFYsYwxeRoVo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-6-a2KhY2T4OteXHqsx2xtVoQ-1; Thu, 02 Nov 2023 11:53:08 -0400
-X-MC-Unique: a2KhY2T4OteXHqsx2xtVoQ-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2c520e0a9a7so11471661fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:53:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698940386; x=1699545186;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m2KZdUyiw2CjK1qYfMJrZ/1S/LkxbokrMVWAIz/DZHY=;
-        b=Yg/cWQjb7mM2D5Xkri9BBkIqL/Aico84J+eCAhJ7cDoTux6zp+bSEv2tzR7X6EWXn2
-         XRXABPQmpTq1VhSSGrz482Z2uOeVmFXYD9Kxnlg5qgIXYTymwJnSd5TJnnlmHE5hDI5o
-         Tlec9fIHO1jdlZZg5o+Z8nUxfzAopAo4DFWb1XLYMdp58rDvB+K0QvlBaCeOKsCZu2ua
-         ugchgR4mK+/BXSGphJVKQUmt1u+sCVceD5PCvTif7evwyfoCjRz5lRZe+6YgsEbBWx50
-         bAh7ajLae+xa3ySHrnchTcDsCi1iBB6FKAZHNtdEi5VMPggc++GVjsCg0l/SsDVvC/WD
-         /GfA==
-X-Gm-Message-State: AOJu0YzqAsV2dqSUkHx4vGgp7L+GlOoWQtrnUDmWTt0AHsskyBj9m7aY
-        txxnhNg9Ue+m0J/lO5AwJ0lYVfyfuOvDWeyAGGdk5MjAoowcL16tqa3bsPSTUeUsxuB352tcA8R
-        fjyt0z+bn6G1JiNTsQ198QBG+
-X-Received: by 2002:a05:651c:c9b:b0:2c0:7d6:570a with SMTP id bz27-20020a05651c0c9b00b002c007d6570amr17779330ljb.33.1698940386724;
-        Thu, 02 Nov 2023 08:53:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFM8jjLdtcNvq1QVnZGo1tvvfhgqEemz0A0FbjydSsO0gjKkiSL+XfTvJTFRbQAYxI1oQ6wmQ==
-X-Received: by 2002:a05:651c:c9b:b0:2c0:7d6:570a with SMTP id bz27-20020a05651c0c9b00b002c007d6570amr17779292ljb.33.1698940386296;
-        Thu, 02 Nov 2023 08:53:06 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c716:3000:f155:cef2:ff4d:c7? (p200300cbc7163000f155cef2ff4d00c7.dip0.t-ipconnect.de. [2003:cb:c716:3000:f155:cef2:ff4d:c7])
-        by smtp.gmail.com with ESMTPSA id j13-20020a05600c190d00b004067e905f44sm3376475wmq.9.2023.11.02.08.53.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 08:53:05 -0700 (PDT)
-Message-ID: <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com>
-Date:   Thu, 2 Nov 2023 16:53:04 +0100
+ us-mta-341-OHXQl7HOP26GmSTtpcJbCQ-1; Thu, 02 Nov 2023 11:56:51 -0400
+X-MC-Unique: OHXQl7HOP26GmSTtpcJbCQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 992AE85C1BA;
+        Thu,  2 Nov 2023 15:56:50 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.103])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8604D40C6EBC;
+        Thu,  2 Nov 2023 15:56:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  2 Nov 2023 16:55:48 +0100 (CET)
+Date:   Thu, 2 Nov 2023 16:55:45 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH 1/2] cleanup: Add conditional guard support
+Message-ID: <20231102155545.GC9680@redhat.com>
+References: <20231102104429.025835330@infradead.org>
+ <20231102110706.460851167@infradead.org>
+ <20231102144009.GA9680@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
-Content-Language: en-US
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     Wei Xu <weixugc@google.com>, Sourav Panda <souravpanda@google.com>,
-        corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org,
-        Greg Thelen <gthelen@google.com>
-References: <20231101230816.1459373-1-souravpanda@google.com>
- <20231101230816.1459373-2-souravpanda@google.com>
- <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
- <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
- <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
- <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
- <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102144009.GA9680@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -143,24 +68,364 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.11.23 16:50, Pasha Tatashin wrote:
->>> Adding reserved memory to MemTotal is a cleaner approach IMO as well.
->>> But it changes the semantics of MemTotal, which may have compatibility
->>> issues.
->>
->> I object.
-> 
-> Could you please elaborate what you object (and why): you object that
-> it will have compatibility issues, or  you object to include memblock
-> reserves into MemTotal?
+On 11/02, Oleg Nesterov wrote:
+>
+> On 11/02, Peter Zijlstra wrote:
+> >
+> >  include/linux/cleanup.h  |   52 ++++++++++++++++++++++++++++++++++++++++++++---
+>
+> interesting... I don't know anything about cleanup.h, will
+> read this code and the patch later, but I guess I understand
+> the idea.
+>
+> Stupid/offtopic question... Can't we change guard()
+>
+> 	-#define guard(_name) \
+> 	-	CLASS(_name, __UNIQUE_ID(guard))
+> 	+#define guard(_name, args...) \
+> 	+	CLASS(_name, __UNIQUE_ID(guard))(args)
+>
+> and update the current users?
+>
+> To me
+>
+> 	guard(rcu);
+> 	guard(spinlock, &lock);
+>
+> looks better than
+>
+> 	guard(rcu)();
+> 	// doesn't match scoped_guard(spinlock, &lock)
+> 	guard(spinlock)(&lock);
+>
+> And this will make guard() consistent with scoped_guard().
 
-Sorry, I object to changing the semantics of MemTotal. MemTotal is 
-traditionally the memory managed by the buddy, not all memory in the 
-system. I know people/scripts that are relying on that [although it's 
-been source of confusion a couple of times].
+Just in case the kernel builds and botts with the patch below.
+The .c files were changed by
 
--- 
-Cheers,
+	perl -wpi~ -e 's/\bguard\(\w+\K\)\( (\))?/$1 || ", "/ex' kernel/sched/core.c drivers/gpio/gpio-sim.c drivers/hv/hv_balloon.c lib/locking-selftest.c
 
-David / dhildenb
+Oleg.
+---
+
+
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index 44bf1709a648..9f659a966ed9 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -70,7 +70,7 @@ static int gpio_sim_apply_pull(struct gpio_sim_chip *chip,
+ 	gc = &chip->gc;
+ 	desc = &gc->gpiodev->descs[offset];
+ 
+-	guard(mutex)(&chip->lock);
++	guard(mutex, &chip->lock);
+ 
+ 	if (test_bit(FLAG_REQUESTED, &desc->flags) &&
+ 	    !test_bit(FLAG_IS_OUT, &desc->flags)) {
+@@ -113,7 +113,7 @@ static int gpio_sim_get(struct gpio_chip *gc, unsigned int offset)
+ {
+ 	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
+ 
+-	guard(mutex)(&chip->lock);
++	guard(mutex, &chip->lock);
+ 
+ 	return !!test_bit(offset, chip->value_map);
+ }
+@@ -663,7 +663,7 @@ static ssize_t gpio_sim_device_config_dev_name_show(struct config_item *item,
+ 	struct gpio_sim_device *dev = to_gpio_sim_device(item);
+ 	struct platform_device *pdev;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	pdev = dev->pdev;
+ 	if (pdev)
+@@ -965,7 +965,7 @@ gpio_sim_device_config_live_store(struct config_item *item,
+ 	if (ret)
+ 		return ret;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (live == gpio_sim_device_is_live_unlocked(dev))
+ 		ret = -EPERM;
+@@ -1011,7 +1011,7 @@ static ssize_t gpio_sim_bank_config_chip_name_show(struct config_item *item,
+ 	struct gpio_sim_device *dev = gpio_sim_bank_get_device(bank);
+ 	struct gpio_sim_chip_name_ctx ctx = { bank->swnode, page };
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return device_for_each_child(&dev->pdev->dev, &ctx,
+@@ -1028,7 +1028,7 @@ gpio_sim_bank_config_label_show(struct config_item *item, char *page)
+ 	struct gpio_sim_bank *bank = to_gpio_sim_bank(item);
+ 	struct gpio_sim_device *dev = gpio_sim_bank_get_device(bank);
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	return sprintf(page, "%s\n", bank->label ?: "");
+ }
+@@ -1040,7 +1040,7 @@ static ssize_t gpio_sim_bank_config_label_store(struct config_item *item,
+ 	struct gpio_sim_device *dev = gpio_sim_bank_get_device(bank);
+ 	char *trimmed;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return -EBUSY;
+@@ -1063,7 +1063,7 @@ gpio_sim_bank_config_num_lines_show(struct config_item *item, char *page)
+ 	struct gpio_sim_bank *bank = to_gpio_sim_bank(item);
+ 	struct gpio_sim_device *dev = gpio_sim_bank_get_device(bank);
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	return sprintf(page, "%u\n", bank->num_lines);
+ }
+@@ -1084,7 +1084,7 @@ gpio_sim_bank_config_num_lines_store(struct config_item *item,
+ 	if (num_lines == 0)
+ 		return -EINVAL;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return -EBUSY;
+@@ -1109,7 +1109,7 @@ gpio_sim_line_config_name_show(struct config_item *item, char *page)
+ 	struct gpio_sim_line *line = to_gpio_sim_line(item);
+ 	struct gpio_sim_device *dev = gpio_sim_line_get_device(line);
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	return sprintf(page, "%s\n", line->name ?: "");
+ }
+@@ -1121,7 +1121,7 @@ static ssize_t gpio_sim_line_config_name_store(struct config_item *item,
+ 	struct gpio_sim_device *dev = gpio_sim_line_get_device(line);
+ 	char *trimmed;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return -EBUSY;
+@@ -1149,7 +1149,7 @@ static ssize_t gpio_sim_hog_config_name_show(struct config_item *item,
+ 	struct gpio_sim_hog *hog = to_gpio_sim_hog(item);
+ 	struct gpio_sim_device *dev = gpio_sim_hog_get_device(hog);
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	return sprintf(page, "%s\n", hog->name ?: "");
+ }
+@@ -1161,7 +1161,7 @@ static ssize_t gpio_sim_hog_config_name_store(struct config_item *item,
+ 	struct gpio_sim_device *dev = gpio_sim_hog_get_device(hog);
+ 	char *trimmed;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return -EBUSY;
+@@ -1216,7 +1216,7 @@ gpio_sim_hog_config_direction_store(struct config_item *item,
+ 	struct gpio_sim_device *dev = gpio_sim_hog_get_device(hog);
+ 	int dir;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return -EBUSY;
+@@ -1276,7 +1276,7 @@ gpio_sim_line_config_make_hog_item(struct config_group *group, const char *name)
+ 	if (strcmp(name, "hog") != 0)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	hog = kzalloc(sizeof(*hog), GFP_KERNEL);
+ 	if (!hog)
+@@ -1334,7 +1334,7 @@ gpio_sim_bank_config_make_line_group(struct config_group *group,
+ 	if (ret != 1 || nchar != strlen(name))
+ 		return ERR_PTR(-EINVAL);
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return ERR_PTR(-EBUSY);
+@@ -1387,7 +1387,7 @@ gpio_sim_device_config_make_bank_group(struct config_group *group,
+ 	struct gpio_sim_device *dev = to_gpio_sim_device(&group->cg_item);
+ 	struct gpio_sim_bank *bank;
+ 
+-	guard(mutex)(&dev->lock);
++	guard(mutex, &dev->lock);
+ 
+ 	if (gpio_sim_device_is_live_unlocked(dev))
+ 		return ERR_PTR(-EBUSY);
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index e000fa3b9f97..a8954db4cb1c 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -784,7 +784,7 @@ static void hv_online_page(struct page *pg, unsigned int order)
+ 	struct hv_hotadd_state *has;
+ 	unsigned long pfn = page_to_pfn(pg);
+ 
+-	guard(spinlock_irqsave)(&dm_device.ha_lock);
++	guard(spinlock_irqsave, &dm_device.ha_lock);
+ 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
+ 		/* The page belongs to a different HAS. */
+ 		if ((pfn < has->start_pfn) ||
+@@ -803,7 +803,7 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+ 	unsigned long residual, new_inc;
+ 	int ret = 0;
+ 
+-	guard(spinlock_irqsave)(&dm_device.ha_lock);
++	guard(spinlock_irqsave, &dm_device.ha_lock);
+ 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
+ 		/*
+ 		 * If the pfn range we are dealing with is not in the current
+@@ -2068,7 +2068,7 @@ static void balloon_remove(struct hv_device *dev)
+ #endif
+ 	}
+ 
+-	guard(spinlock_irqsave)(&dm_device.ha_lock);
++	guard(spinlock_irqsave, &dm_device.ha_lock);
+ 	list_for_each_entry_safe(has, tmp, &dm->ha_region_list, list) {
+ 		list_for_each_entry_safe(gap, tmp_gap, &has->gap_list, list) {
+ 			list_del(&gap->list);
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 53f1a7a932b0..1d13792a3d85 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -105,8 +105,8 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+ #define DEFINE_GUARD(_name, _type, _lock, _unlock) \
+ 	DEFINE_CLASS(_name, _type, _unlock, ({ _lock; _T; }), _type _T)
+ 
+-#define guard(_name) \
+-	CLASS(_name, __UNIQUE_ID(guard))
++#define guard(_name, args...) \
++	CLASS(_name, __UNIQUE_ID(guard))(args)
+ 
+ #define scoped_guard(_name, args...)					\
+ 	for (CLASS(_name, scope)(args),					\
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 802551e0009b..81acd7811db3 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1097,7 +1097,7 @@ int get_nohz_timer_target(void)
+ 
+ 	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
+ 
+-	guard(rcu)();
++	guard(rcu);
+ 
+ 	for_each_domain(cpu, sd) {
+ 		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+@@ -1827,7 +1827,7 @@ static int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+ 	int old_min, old_max, old_min_rt;
+ 	int result;
+ 
+-	guard(mutex)(&uclamp_mutex);
++	guard(mutex, &uclamp_mutex);
+ 
+ 	old_min = sysctl_sched_uclamp_util_min;
+ 	old_max = sysctl_sched_uclamp_util_max;
+@@ -3440,8 +3440,8 @@ static int migrate_swap_stop(void *data)
+ 	src_rq = cpu_rq(arg->src_cpu);
+ 	dst_rq = cpu_rq(arg->dst_cpu);
+ 
+-	guard(double_raw_spinlock)(&arg->src_task->pi_lock, &arg->dst_task->pi_lock);
+-	guard(double_rq_lock)(src_rq, dst_rq);
++	guard(double_raw_spinlock, &arg->src_task->pi_lock, &arg->dst_task->pi_lock);
++	guard(double_rq_lock, src_rq, dst_rq);
+ 
+ 	if (task_cpu(arg->dst_task) != arg->dst_cpu)
+ 		return -EAGAIN;
+@@ -3734,7 +3734,7 @@ ttwu_stat(struct task_struct *p, int cpu, int wake_flags)
+ 
+ 		__schedstat_inc(p->stats.nr_wakeups_remote);
+ 
+-		guard(rcu)();
++		guard(rcu);
+ 		for_each_domain(rq->cpu, sd) {
+ 			if (cpumask_test_cpu(cpu, sched_domain_span(sd))) {
+ 				__schedstat_inc(sd->ttwu_wake_remote);
+@@ -3940,9 +3940,9 @@ void wake_up_if_idle(int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+ 
+-	guard(rcu)();
++	guard(rcu);
+ 	if (is_idle_task(rcu_dereference(rq->curr))) {
+-		guard(rq_lock_irqsave)(rq);
++		guard(rq_lock_irqsave, rq);
+ 		if (is_idle_task(rq->curr))
+ 			resched_curr(rq);
+ 	}
+@@ -4198,7 +4198,7 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+  */
+ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ {
+-	guard(preempt)();
++	guard(preempt);
+ 	int cpu, success = 0;
+ 
+ 	if (p == current) {
+@@ -5730,7 +5730,7 @@ static void sched_tick_remote(struct work_struct *work)
+ 	 * of when exactly it is running.
+ 	 */
+ 	if (tick_nohz_tick_stopped_cpu(cpu)) {
+-		guard(rq_lock_irq)(rq);
++		guard(rq_lock_irq, rq);
+ 		struct task_struct *curr = rq->curr;
+ 
+ 		if (cpu_online(cpu)) {
+@@ -6297,8 +6297,8 @@ static bool try_steal_cookie(int this, int that)
+ 	unsigned long cookie;
+ 	bool success = false;
+ 
+-	guard(irq)();
+-	guard(double_rq_lock)(dst, src);
++	guard(irq);
++	guard(double_rq_lock, dst, src);
+ 
+ 	cookie = dst->core->core_cookie;
+ 	if (!cookie)
+@@ -6410,7 +6410,7 @@ static void sched_core_cpu_starting(unsigned int cpu)
+ 	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+ 	int t;
+ 
+-	guard(core_lock)(&cpu);
++	guard(core_lock, &cpu);
+ 
+ 	WARN_ON_ONCE(rq->core != rq);
+ 
+@@ -6449,7 +6449,7 @@ static void sched_core_cpu_deactivate(unsigned int cpu)
+ 	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+ 	int t;
+ 
+-	guard(core_lock)(&cpu);
++	guard(core_lock, &cpu);
+ 
+ 	/* if we're the last man standing, nothing to do */
+ 	if (cpumask_weight(smt_mask) == 1) {
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 6f6a5fc85b42..724132f6109e 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -2527,8 +2527,8 @@ DEFINE_LOCK_GUARD_0(RCU_SCHED, rcu_read_lock_sched(), rcu_read_unlock_sched())
+ static void __maybe_unused inner##_in_##outer(void)				\
+ {										\
+ 	/* Relies the reversed clean-up ordering: inner first */		\
+-	guard(outer)(outer_lock);						\
+-	guard(inner)(inner_lock);						\
++	guard(outer, outer_lock);						\
++	guard(inner, inner_lock);						\
+ }
+ 
+ /*
 
