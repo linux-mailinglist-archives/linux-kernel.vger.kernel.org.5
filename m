@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA707DF31D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803607DF325
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376339AbjKBNBR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 09:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        id S1376404AbjKBNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 09:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKBNBP (ORCPT
+        with ESMTP id S1347433AbjKBNCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 09:01:15 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D127C112;
-        Thu,  2 Nov 2023 06:01:11 -0700 (PDT)
-Received: from dggpemm500019.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SLkX16wDrzVm1M;
-        Thu,  2 Nov 2023 21:01:05 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 2 Nov 2023 21:01:09 +0800
-Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
- dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2507.031;
- Thu, 2 Nov 2023 21:01:09 +0800
-From:   "Gonglei (Arei)" <arei.gonglei@huawei.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pizhenwei@bytedance.com" <pizhenwei@bytedance.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: RE: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
-Thread-Topic: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
-Thread-Index: AdnvwZyqMOU4LXJLQHSIVFGYJFXR5QAk7LIAADLTkZAHGvVqsA==
-Date:   Thu, 2 Nov 2023 13:01:09 +0000
-Message-ID: <adb0c5f790dc408887f9d98548373919@huawei.com>
-References: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
- <20230926184158.4ca2c0c3.pasic@linux.ibm.com> 
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.149.11]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 2 Nov 2023 09:02:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDA2136
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698930103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ASeLFDp8swxfgAuKjSU2H8QvmbgML9pw1swrs3fA+jY=;
+        b=ApeMecNjw8ij/dQh6cj0qairK3b4BgJkCIhS3hNr283hZzDMikd6iKM1/PBtKNewXIQYcz
+        iZPzdNEvFqkRifqSjvXht4YxDAHcEkRypWu3nclOsT0Rup1DvQY4UJkWQIos3Md/ByltEr
+        XRx6ACy+4kA2tNS4dQxwbSvTftryTvY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-156-RpxDaBupOw2Get0BiU7CWQ-1; Thu, 02 Nov 2023 09:01:40 -0400
+X-MC-Unique: RpxDaBupOw2Get0BiU7CWQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2647785A5B5;
+        Thu,  2 Nov 2023 13:01:40 +0000 (UTC)
+Received: from [10.22.17.8] (unknown [10.22.17.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F3322026D4C;
+        Thu,  2 Nov 2023 13:01:38 +0000 (UTC)
+Message-ID: <63726aac-2a9b-11f2-6c24-9f33ced68706@redhat.com>
+Date:   Thu, 2 Nov 2023 09:01:38 -0400
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
+ value
+Content-Language: en-US
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Xia Fukun <xiafukun@huawei.com>
+References: <20231024141834.4073262-1-longman@redhat.com>
+ <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
+ <8e1b5497-d4ca-50a0-7cb1-ffa098e0a1c2@redhat.com>
+ <ZUN5XyOs3pWcJBo2@localhost.localdomain>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZUN5XyOs3pWcJBo2@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,88 +78,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping Herbert.  
 
-Thanks.
+On 11/2/23 06:26, Juri Lelli wrote:
+> Hi Waiman,
+>
+> On 01/11/23 13:59, Waiman Long wrote:
+>> On 11/1/23 12:34, Michal Koutný wrote:
+>>> On Tue, Oct 24, 2023 at 10:18:34AM -0400, Waiman Long <longman@redhat.com> wrote:
+>>>> The nr_deadline_tasks field in cpuset structure was introduced by
+>>>> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
+>>>> in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
+>>>> cpuset_mutex, nr_deadline_tasks can be updated under two different
+>>>> locks - cpuset_mutex in most cases or css_set_lock in cgroup_exit(). As
+>>>> a result, data races can happen leading to incorrect nr_deadline_tasks
+>>>> value.
+>>> The effect is that dl_update_tasks_root_domain() processes tasks
+>>> unnecessarily or that it incorrectly skips dl_add_task_root_domain()?
+>> The effect is that dl_update_tasks_root_domain() may return incorrectly or
+>> it is doing unnecessary work. Will update the commit log to reflect that.
+>>>> Since it is not practical to somehow take cpuset_mutex in cgroup_exit(),
+>>>> the easy way out to avoid this possible race condition is by making
+>>>> nr_deadline_tasks an atomic_t value.
+>>> If css_set_lock is useless for this fields and it's going to be atomic,
+>>> could you please add (presumably) a cleanup that moves dec_dl_tasks_cs()
+>>> from under css_set_lock in cgroup_exit() to a (new but specific)
+>>> cpuset_cgrp_subsys.exit() handler?
+>> But css_set_lock is needed for updating other css data. It is true that we
+>> can move dec_dl_tasks_cs() outside of the lock. I can do that in the next
+>> version.
+> Not sure if you had a chance to check my last question/comment on your
+> previous posting?
+>
+> https://lore.kernel.org/lkml/ZSjfBWgZf15TchA5@localhost.localdomain/
 
-> -----Original Message-----
-> From: Gonglei (Arei)
-> Sent: Wednesday, September 27, 2023 5:18 PM
-> To: 'Halil Pasic' <pasic@linux.ibm.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>; linux-crypto@vger.kernel.org;
-> Marc Hartmayer <mhartmay@linux.ibm.com>; Michael S. Tsirkin
-> <mst@redhat.com>; Jason Wang <jasowang@redhat.com>;
-> virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
-> pizhenwei@bytedance.com; Cornelia Huck <cohuck@redhat.com>
-> Subject: RE: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Halil Pasic [mailto:pasic@linux.ibm.com]
-> > Sent: Wednesday, September 27, 2023 12:42 AM
-> > To: Gonglei (Arei) <arei.gonglei@huawei.com>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>;
-> > linux-crypto@vger.kernel.org; Marc Hartmayer <mhartmay@linux.ibm.com>;
-> > Michael S. Tsirkin <mst@redhat.com>; Jason Wang
-> <jasowang@redhat.com>;
-> > virtualization@lists.linux-foundation.org;
-> > linux-kernel@vger.kernel.org; pizhenwei@bytedance.com; Halil Pasic
-> > <pasic@linux.ibm.com>; Cornelia Huck <cohuck@redhat.com>
-> > Subject: Re: [PATCH] crypto: virtio-crypto: call finalize with bh
-> > disabled
-> >
-> > [..]
-> > > --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> > > +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> > > @@ -61,8 +61,9 @@ static void virtio_crypto_akcipher_finalize_req(
-> > >  	vc_akcipher_req->src_buf = NULL;
-> > >  	vc_akcipher_req->dst_buf = NULL;
-> > >  	virtcrypto_clear_request(&vc_akcipher_req->base);
-> > > -
-> > > +	local_bh_disable();
-> > >
-> > > crypto_finalize_akcipher_request(vc_akcipher_req->base.dataq->engine
-> > > ,
-> > > req, err);
-> > > +	local_bh_enable();
-> >
-> > Thanks Gonglei!
-> >
-> > I did this a quick spin, and it does not seem to be sufficient on s390x.
-> > Which does not come as a surprise to me, because
-> >
-> > #define lockdep_assert_in_softirq()
-> > \
-> > do
-> > {
-> >      \
-> >         WARN_ON_ONCE(__lockdep_enabled                  &&
-> > \
-> >                      (!in_softirq() || in_irq() || in_nmi()));          \
-> > } while (0)
-> >
-> > will still warn because  in_irq() still evaluates to true (your patch
-> > addresses the !in_softirq() part).
-> >
-> You are right.
-> 
-> So I think the core of this question is: Can we call crypto_finalize_request() in
-> the upper half of the interrupt?
-> If so, maybe we should introduce a new function, such as
-> lockdep_assert_in_interrupt().
-> 
-> #define lockdep_assert_in_interrupt()                               \
-> do {                                                           \
->        WARN_ON_ONCE(__lockdep_enabled && !in_interrupt());        \
-> } while (0)
-> 
-> If not, why?
-> 
-> Herbert, do you have any suggestions? Thanks.
-> 
-> 
-> Regards,
-> -Gonglei
-> 
+Thanks for the reminder. I look at your comment again. Even though 
+dl_rebuild_rd_accounting() operates on css(es) via css_task_iter_start() 
+and css_task_iter_next(), the css_set_lock is released at the end of it. 
+So it is still possible that a task can call cgroup_exit() after 
+css_task_iter_next() and is being processed by 
+dl_add_task_root_domain(). Is there a helper in the do_exit() path to 
+nullify the dl_task() check. Or maybe we can also check for PF_EXITING 
+in dl_add_task_root_domain() under the pi_lock and do the dl_task() 
+check the under pi_lock to synchronize with dl_add_task_root_domain(). 
+What do you think?
+
+I still believe that it doesn't really matter if we call 
+dec_dl_tasks_cs() inside or outside the css_set_lock.
+
+Cheers,
+Longman
+
+Cheers,
+Longman
 
