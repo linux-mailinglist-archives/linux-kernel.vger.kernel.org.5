@@ -2,177 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0067DEE1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC9E7DEE23
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbjKBIYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        id S234838AbjKBIYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjKBIYK (ORCPT
+        with ESMTP id S234827AbjKBIYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:24:10 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7844D112
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:24:04 -0700 (PDT)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1FF117E2;
-        Thu,  2 Nov 2023 09:23:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698913424;
-        bh=dY5VRG4sVx51nuZ109mj20vCcQCtdywyr1QIsou8CtI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HUpwC3jPIFc0KkExQUPR9vaqPIus1tFugm5UEOQV8Cju9QQ/IMqBTQWNJW2YchODt
-         O1UrFQcWRNLsmForvO44X4VNGhoeojjYkNp5ROKhhK85PFtitsvUX2qdTRFvwwpTC9
-         fcd6aR39OMhO5gs1Fo+XI2+h5/v7QP32c5IJbTeo=
-Message-ID: <4fc5c307-082d-4c72-90c8-7bd7efcd2184@ideasonboard.com>
-Date:   Thu, 2 Nov 2023 10:23:58 +0200
+        Thu, 2 Nov 2023 04:24:30 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA1F18E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:24:20 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so518782a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nathanrossi.com; s=google; t=1698913460; x=1699518260; darn=vger.kernel.org;
+        h=mime-version:content-transfer-encoding:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xBUQuJ95bR9IExrTX27aZhd9vx5/8o/0coGqo9/0lKA=;
+        b=XN76D0qf9qccoBYsNGY9TQmgd/fXtxErtOrsHLuW0Z1cD43uSSYaOY/KnaukFxA4VI
+         U+nAMP34XlJdo2exH7QJJILqse/XLIyZ9ZLzzahDSKpSX89RHBuOf83SNv6OqNRPLQiO
+         4EU3bP++84VJUugbGYHv7GbD1aOTBqGRanOzFy5G6ojtPDK3doF2OiWUWY8Vt5oVgTEC
+         /qIYAHEUiofVniLWzHEj5D81FZccXDeeMFINXnaqBDQxhIB1HVK8UhuGtod9WOdI87GJ
+         YMur4m3NmmWiloW+Rv9tNZeDwI4MQ0o7QMFm92zaaIoJcAiB1DkxVPhr5h0MKImcEJXY
+         xE7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698913460; x=1699518260;
+        h=mime-version:content-transfer-encoding:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xBUQuJ95bR9IExrTX27aZhd9vx5/8o/0coGqo9/0lKA=;
+        b=adtTBwOIa3ciFTa5KuKskoWs4aa2Md5HJOdhvNWjjFeLtijj77wQ8GAuIZPwrMsbud
+         +QAzf2m/eZN6F2qkx/DQ0cG6sHuDYZUvYTKJIsGVDM5JnQelWFY20i0yYgq00U7P7T12
+         8jWWLFjjbhGpZedTaySeAlb/J9Kfu0g1vj/9Gq5rCvI7ftZjV9Zt1j3QLcy90I+gTYPn
+         rKuUyNocgg3xWnqF+9xLFKs1/gZC52h9ybE0xWxT5XigCn6nCmwFKgIT9MdIR+Y8MrUD
+         6r70/Wa+nnPE/j6nJdTVSE9tml1q4gploatoxN7fn6AOrGsKTpFItCnRcD9WYGAxbgcN
+         6bKA==
+X-Gm-Message-State: AOJu0YxuUqotvsiNw5yya/ZthXQdo1IfqtMLqNhv407As9BtieQYZ+Bt
+        DaeSK6pLfBVPu9bAAA6AW47zgQ==
+X-Google-Smtp-Source: AGHT+IGWoSCLnLh32r2nBJb5yLB11eB9zz7cDzMn2xD7NhlXicA2jMMVwXQYSf721kBBQsVM8ZfSWg==
+X-Received: by 2002:a05:6a21:6d9c:b0:162:4f45:b415 with SMTP id wl28-20020a056a216d9c00b001624f45b415mr23597403pzb.51.1698913459805;
+        Thu, 02 Nov 2023 01:24:19 -0700 (PDT)
+Received: from [127.0.1.1] (117-20-68-32.751444.bne.nbn.aussiebb.net. [117.20.68.32])
+        by smtp.gmail.com with UTF8SMTPSA id 20-20020a17090a199400b0027d0adf653bsm2172484pji.7.2023.11.02.01.24.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 01:24:19 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 08:24:06 +0000
+Message-Id: <20231102082406.1555227-1-nathan@nathanrossi.com>
+From:   Nathan Rossi <nathan@nathanrossi.com>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Nathan Rossi <nathan@nathanrossi.com>,
+        Nathan Rossi <nathan.rossi@digi.com>, Li Jun <jun.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: [PATCH] arm64: dts: imx8mp: imx8mq: Add parkmode-disable-ss-quirk on DWC3
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/10] drm/tidss: Fix atomic_flush check
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
- <20231101-tidss-probe-v1-10-45149e0f9415@ideasonboard.com>
- <20231101145658.GZ12764@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231101145658.GZ12764@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2023 16:56, Laurent Pinchart wrote:
-> Hi Tomi,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Nov 01, 2023 at 11:17:47AM +0200, Tomi Valkeinen wrote:
->> tidss_crtc_atomic_flush() checks if the crtc is enabled, and if not,
->> returns immediately as there's no reason to do any register changes.
->>
->> However, the code checks for 'crtc->state->enable', which does not
->> reflect the actual HW state. We should instead look at the
->> 'crtc->state->active' flag.
->>
->> This causes the tidss_crtc_atomic_flush() to proceed with the flush even
->> if the active state is false, which then causes us to hit the
->> WARN_ON(!crtc->state->event) check.
->>
->> Fix this by checking the active flag, and while at it, fix the related
->> debug print which had "active" and "needs modeset" wrong way.
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->>   drivers/gpu/drm/tidss/tidss_crtc.c | 9 ++++-----
->>   1 file changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/tidss/tidss_crtc.c b/drivers/gpu/drm/tidss/tidss_crtc.c
->> index 5e5e466f35d1..4c7009a5d643 100644
->> --- a/drivers/gpu/drm/tidss/tidss_crtc.c
->> +++ b/drivers/gpu/drm/tidss/tidss_crtc.c
->> @@ -169,13 +169,12 @@ static void tidss_crtc_atomic_flush(struct drm_crtc *crtc,
->>   	struct tidss_device *tidss = to_tidss(ddev);
->>   	unsigned long flags;
->>   
->> -	dev_dbg(ddev->dev,
->> -		"%s: %s enabled %d, needs modeset %d, event %p\n", __func__,
->> -		crtc->name, drm_atomic_crtc_needs_modeset(crtc->state),
->> -		crtc->state->enable, crtc->state->event);
->> +	dev_dbg(ddev->dev, "%s: %s active %d, needs modeset %d, event %p\n",
->> +		__func__, crtc->name, crtc->state->active,
->> +		drm_atomic_crtc_needs_modeset(crtc->state), crtc->state->event);
-> 
-> While at it, how about this ?
+From: Nathan Rossi <nathan.rossi@digi.com>
 
-Why not. The active part won't be needed if we use 
-DRM_PLANE_COMMIT_ACTIVE_ONLY, though.
+The i.MX8MP and i.MX8MQ devices both use the same DWC3 controller and
+are both affected by a known issue with the controller due to specific
+behaviour when park mode is enabled in SuperSpeed host mode operation.
 
-> 	dev_dbg(ddev->dev, "%s: %s is %sactive, %s modeset, event %p\n",
-> 		__func__, crtc->name, crtc->state->active ? "" : "not ",
-> 		drm_atomic_crtc_needs_modeset(crtc->state) ? "needs", "doesn't need",
-> 		crtc->state->event);
-> 
->>   
->>   	/* There is nothing to do if CRTC is not going to be enabled. */
->> -	if (!crtc->state->enable)
->> +	if (!crtc->state->active)
-> 
-> I think the drm_atomic_helper_commit_planes() helper will handle this if
-> you pass it the DRM_PLANE_COMMIT_ACTIVE_ONLY flag.
+Under heavy USB traffic from multiple endpoints the controller will
+sometimes incorrectly process transactions such that some transactions
+are lost, or the controller may hang when processing transactions. When
+the controller hangs it does not recover.
 
-I considered it, but it does a bit more, as it also affects the plane 
-updates. We specifically did not use DRM_PLANE_COMMIT_ACTIVE_ONLY as it 
-didn't work with DSS.
+This issue is documented partially within the linux-imx vendor kernel
+which references a Synopsys STAR number 9001415732 in commits [1] and
+additional details in [2]. Those commits provide some additional
+controller internal implementation specifics around the incorrect
+behaviour of the SuperSpeed host controller operation when park mode is
+enabled.
 
-That said, I can't figure out what was the issue. It's possible the 
-issue was only on the older DSS HW, with omapdrm (tidss code was 
-originally somewhat based on omapdrm). I'm pretty sure the issue was 
-related to multi-display systems and the plane updates there. But I 
-don't have any multi-display board which uses tidss.
+The summary of this issue is that the host controller can incorrectly
+enter/exit park mode such that part of the controller is in a state
+which behaves as if in park mode even though it is not. In this state
+the controller incorrectly calculates the number of TRBs available which
+results in incorrect access of the internal caches causing the overwrite
+of pending requests in the cache which should have been processed but
+are ignored. This can cause the controller to drop the requests or hang
+waiting for the pending state of the dropped requests.
 
-So, I'll keep this patch, but add another on top, which uses 
-DRM_PLANE_COMMIT_ACTIVE_ONLY. Then it'll be easy to revert the 
-DRM_PLANE_COMMIT_ACTIVE_ONLY one if needed, while still keeping this fix.
+The workaround for this issue is to disable park mode for SuperSpeed
+operation of the controller through the GUCTL1[17] bit. This is already
+available as a quirk for the DWC3 controller and can be enabled via the
+'snps,parkmode-disable-ss-quirk' device tree property.
 
-  Tomi
+It is possible to replicate this failure on an i.MX8MP EVK with a USB
+Hub connecting 4 SuperSpeed USB flash drives. Performing continuous
+small read operations (dd if=/dev/sd... of=/dev/null bs=16) on the block
+devices will result in device errors initially and will eventually
+result in the controller hanging.
 
+  [13240.896936] xhci-hcd xhci-hcd.0.auto: WARN Event TRB for slot 4 ep 2 with no TDs queued?
+  [13240.990708] usb 2-1.3: reset SuperSpeed USB device number 5 using xhci-hcd
+  [13241.015582] sd 2:0:0:0: [sdc] tag#0 UNKNOWN(0x2003) Result: hostbyte=0x07 driverbyte=DRIVER_OK cmd_age=0s
+  [13241.025198] sd 2:0:0:0: [sdc] tag#0 CDB: opcode=0x28 28 00 00 00 03 e0 00 01 00 00
+  [13241.032949] I/O error, dev sdc, sector 992 op 0x0:(READ) flags 0x80700 phys_seg 25 prio class 2
+  [13272.150710] usb 2-1.2: reset SuperSpeed USB device number 4 using xhci-hcd
+  [13272.175469] sd 1:0:0:0: [sdb] tag#0 UNKNOWN(0x2003) Result: hostbyte=0x03 driverbyte=DRIVER_OK cmd_age=31s
+  [13272.185365] sd 1:0:0:0: [sdb] tag#0 CDB: opcode=0x28 28 00 00 00 03 e0 00 01 00 00
+  [13272.193385] I/O error, dev sdb, sector 992 op 0x0:(READ) flags 0x80700 phys_seg 18 prio class 2
+  [13434.846556] xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command
+  [13434.854592] xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
+  [13434.862553] xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
+
+[1] https://github.com/nxp-imx/linux-imx/commit/97a5349d936b08cf301730b59e4e8855283f815c
+[2] https://github.com/nxp-imx/linux-imx/commit/b4b5cbc5a12d7c3b920d1d7cba0ada3379e4e42b
+
+Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 ++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index c9a610ba48..1264da6012 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -2072,6 +2072,7 @@ usb_dwc3_0: usb@38100000 {
+ 				phys = <&usb3_phy0>, <&usb3_phy0>;
+ 				phy-names = "usb2-phy", "usb3-phy";
+ 				snps,gfladj-refclk-lpm-sel-quirk;
++				snps,parkmode-disable-ss-quirk;
+ 			};
+ 
+ 		};
+@@ -2114,6 +2115,7 @@ usb_dwc3_1: usb@38200000 {
+ 				phys = <&usb3_phy1>, <&usb3_phy1>;
+ 				phy-names = "usb2-phy", "usb3-phy";
+ 				snps,gfladj-refclk-lpm-sel-quirk;
++				snps,parkmode-disable-ss-quirk;
+ 			};
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 4b1ce9fc17..c6dc3ba0d4 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -1649,6 +1649,7 @@ usb_dwc3_0: usb@38100000 {
+ 			phys = <&usb3_phy0>, <&usb3_phy0>;
+ 			phy-names = "usb2-phy", "usb3-phy";
+ 			power-domains = <&pgc_otg1>;
++			snps,parkmode-disable-ss-quirk;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1680,6 +1681,7 @@ usb_dwc3_1: usb@38200000 {
+ 			phys = <&usb3_phy1>, <&usb3_phy1>;
+ 			phy-names = "usb2-phy", "usb3-phy";
+ 			power-domains = <&pgc_otg2>;
++			snps,parkmode-disable-ss-quirk;
+ 			status = "disabled";
+ 		};
+ 
+---
+2.42.0
