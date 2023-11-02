@@ -2,235 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ABD7DFD52
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 00:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A60A7DFD54
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 00:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjKBXkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 19:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        id S229946AbjKBXmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 19:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKBXkS (ORCPT
+        with ESMTP id S229628AbjKBXmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 19:40:18 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5F4191;
-        Thu,  2 Nov 2023 16:40:15 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so1612356b3a.2;
-        Thu, 02 Nov 2023 16:40:15 -0700 (PDT)
+        Thu, 2 Nov 2023 19:42:42 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9DD194;
+        Thu,  2 Nov 2023 16:42:38 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-357cc880bd8so5949145ab.0;
+        Thu, 02 Nov 2023 16:42:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698968415; x=1699573215; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698968558; x=1699573358; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=nwx33ziTZV4oUTDb3pCxYB5gse6/L8kFAcjyGJ3wPjU=;
-        b=ardE/e/OFV1WVFlgbsyEk9GhQwbAaJNkEvpDjOTNdlItw7+NYESIYN3Vn17Cloj2k4
-         cPmFj8wN9jveXutC5MFUtmUyJSFm8JvoEfoCaD+6pDN7YT8GWsysXFvlKzDCCGdPhCSl
-         tfrTiODYbaSi3Ro6R9AX/xmmRshyH8PZJl2NrDkDzEP44YLkvaE2yt1JBeX+ogX4Wk/Y
-         rjYSCJdLKrcPJHSNEEw/PUi7QxiLqkHaS++nSbkeojENcXzdOoXduw3Jtq8AAcqtEBfe
-         fwNV0eNdpbvklD7pEojClnt5DsB6plw3VdsAGNB8m7ikCiQkYVT8ujczEqD0yZvPmK6v
-         LTAg==
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oA1oeuAmLqr7XLJk7k2kE63ePMuRjWUxfqbhyd6/ITs=;
+        b=FojOeOrQglV7v3qFhOEXS9MCBZO9B4ueA5nEfkppB5IkH6UCI9tgzYhL2UdmHbXxQO
+         0Pl1itew8c29fjuDGmMCPtiIc+NUz3hQXdLFtsxgvklpNKxm56sLOabWmrrO0Y6NPhcF
+         I67H2ary5xXUMrbWp62+3RdwHKaAZiXQoywT0PP68aN5fT3LtzONEfX9oBeQZLp55LDy
+         JhWIiwbQoFil1eV3pSf3IZMTPJ8I4awzRntynRhRDjUPpWmA4b5stgs/9guHCWNRDEGy
+         TQFl8B48rp3OaNSA6XSB8E7YI/ELLDAY5e1d35ExAcLLeqMJ+ZDG4KjI0l1MaAZ8X+CM
+         fSgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698968415; x=1699573215;
+        d=1e100.net; s=20230601; t=1698968558; x=1699573358;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nwx33ziTZV4oUTDb3pCxYB5gse6/L8kFAcjyGJ3wPjU=;
-        b=OPEl1va01NKi7Lj1xTYUeU0BH4r7G9eXiuH9/gWioXvceab81gA8FNYjSK4hi4+h97
-         bGEtozcf3YibqW/3EK0Oh+sKWq9eCHN7IVgbTzEGBwZyv6iCyQT7Bsg434o/snUrZaIM
-         zre31VgRmXa3mC6L6g3gs7qgHAyOu8gJs+jW15650cKrVRiOIjNADjPpmmfzLNLCxKwA
-         GByUQDs3axuNhLUJ+eXQxMGzIAqvfYEGsPinuR5XsGXnKbGZQhTgez5QPb6POVJDEn5v
-         wxZDL4bOG0PfQ/nICzTAXDUA3VZCFhcydLg5T34C2MtSwHsxjEjyirxOi6DhA2hGRMFo
-         FR0A==
-X-Gm-Message-State: AOJu0YznBYFQBZ0cfM0AfvZq7wVZvEu12jAOTj4kpbe/UYc5t4E76K0s
-        Av9uKz+gX4hSTz4stdKNLAg=
-X-Google-Smtp-Source: AGHT+IFRS21vfiNTeBTx4JqrE7f8vfAvs3pKAEuVgNnJ8sC6kaivycMOu4gEyZ/kviWnLj7RWvebeg==
-X-Received: by 2002:a05:6a21:35c2:b0:181:219f:4a76 with SMTP id ba2-20020a056a2135c200b00181219f4a76mr8749304pzc.38.1698968414935;
-        Thu, 02 Nov 2023 16:40:14 -0700 (PDT)
-Received: from bangji.corp.google.com ([2620:15c:2c0:5:ea22:bed1:d67b:af04])
-        by smtp.gmail.com with ESMTPSA id 184-20020a6308c1000000b005bd2b3a03eesm266410pgi.6.2023.11.02.16.40.13
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oA1oeuAmLqr7XLJk7k2kE63ePMuRjWUxfqbhyd6/ITs=;
+        b=TlVptVOZY08PfxqbQZ9AqWL6/Lq4y7A7cWAh1CYY5rp0q3Y8I6fFHBjhoeqnr1w1Uz
+         qEC6DSNJzN/qZ+hRSqaZ1UGq30jxw1k09nvJfZeaykCkTmBwnNjVtWocNHp682em36cS
+         Kq4qoGtrxd9H/RUDlcxN1qrAev5Iyx1qU/r38q1Cosd7r4U24eFC5UnkuvcTokxnoiAR
+         uOeZns/k8GSkG9YxFQ1KpfnNYWWJZv0YeI+Hna7XjIExpnbSdNskPNlWSbLmLECiwb+v
+         QTGo3DY+pNA8QOT0cIgNnD/KUXA1pdrzaS3KBppwhvLEAl+GJ4TVWzu1MrzerA/4pfa8
+         YrWg==
+X-Gm-Message-State: AOJu0Yzymd4M+8UYiBsdSpm3KX8gX9O9NtozE7mrx8KJs8hov738xMVa
+        teeVkTIsL7OI0D7nD+kz8yU=
+X-Google-Smtp-Source: AGHT+IFwCn7WN6BdNGdGg72GS5cycyyjC+paN0CfIHCyCh9rS0pex7MIzy4NBGYpmeY37pqDBSAB5g==
+X-Received: by 2002:a05:6e02:2603:b0:359:4377:853c with SMTP id by3-20020a056e02260300b003594377853cmr7966919ilb.0.1698968557900;
+        Thu, 02 Nov 2023 16:42:37 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-016.fbsv.net. [2a03:2880:ff:10::face:b00c])
+        by smtp.gmail.com with ESMTPSA id f30-20020a056a000b1e00b006c06804cd39sm260309pfu.153.2023.11.02.16.42.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 16:40:14 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH] perf test: Simplify object code reading test
-Date:   Thu,  2 Nov 2023 16:40:13 -0700
-Message-ID: <20231102234013.4188687-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+        Thu, 02 Nov 2023 16:42:37 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Subject: [RFC PATCH v3] zswap: memcontrol: implement zswap writeback disabling
+Date:   Thu,  2 Nov 2023 16:42:36 -0700
+Message-Id: <20231102234236.1784543-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It tries cycles (or cpu-clock on s390) event with exclude_kernel bit to
-open.  But other arch on a VM can fail with the hardware event and need
-to fallback to the software event in the same way.
+During our experiment with zswap, we sometimes observe swap IOs due to
+occasional zswap store failures and writebacks-to-swap. These swapping
+IOs prevent many users who cannot tolerate swapping from adopting zswap
+to save memory and improve performance where possible.
 
-So let's get rid of the cpuid check and use generic fallback mechanism
-using an array of event candidates.  Now event in the odd index excludes
-the kernel so use that for the return value.
+This patch adds the option to disable this behavior entirely: do not
+writeback to backing swapping device when a zswap store attempt fail,
+and do not write pages in the zswap pool back to the backing swap
+device (both when the pool is full, and when the new zswap shrinker is
+called).
 
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+This new behavior can be opted-in/out on a per-cgroup basis via a new
+cgroup file. By default, writebacks to swap device is enabled, which is
+the previous behavior.
+
+Note that this is subtly different from setting memory.swap.max to 0, as
+it still allows for pages to be stored in the zswap pool (which itself
+consumes swap space in its current form).
+
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- tools/perf/tests/code-reading.c | 76 ++++++++++-----------------------
- 1 file changed, 23 insertions(+), 53 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst | 11 +++++++
+ Documentation/admin-guide/mm/zswap.rst  |  6 ++++
+ include/linux/memcontrol.h              | 12 ++++++++
+ include/linux/zswap.h                   |  6 ++++
+ mm/memcontrol.c                         | 38 +++++++++++++++++++++++++
+ mm/page_io.c                            |  6 ++++
+ mm/shmem.c                              |  3 +-
+ mm/zswap.c                              | 14 +++++++++
+ 8 files changed, 94 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
-index 3af81012014e..047ba297c6fa 100644
---- a/tools/perf/tests/code-reading.c
-+++ b/tools/perf/tests/code-reading.c
-@@ -511,38 +511,6 @@ static void fs_something(void)
- 	}
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 606b2e0eac4b..18c4171392ea 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1672,6 +1672,17 @@ PAGE_SIZE multiple when read back.
+ 	limit, it will refuse to take any more stores before existing
+ 	entries fault back in or are written out to disk.
+ 
++  memory.zswap.writeback
++	A read-write single value file which exists on non-root
++	cgroups.  The default value is "1".
++
++	When this is set to 0, all swapping attempts to swapping devices
++	are disabled. This included both zswap writebacks, and swapping due
++	to zswap store failure.
++
++	Note that this is subtly different from setting memory.swap.max to
++	0, as it still allows for pages to be written to the zswap pool.
++
+   memory.pressure
+ 	A read-only nested-keyed file.
+ 
+diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
+index 522ae22ccb84..b987e58edb70 100644
+--- a/Documentation/admin-guide/mm/zswap.rst
++++ b/Documentation/admin-guide/mm/zswap.rst
+@@ -153,6 +153,12 @@ attribute, e. g.::
+ 
+ Setting this parameter to 100 will disable the hysteresis.
+ 
++Some users cannot tolerate the swapping that comes with zswap store failures
++and zswap writebacks. Swapping can be disabled entirely (without disabling
++zswap itself) on a cgroup-basis as follows:
++
++	echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
++
+ When there is a sizable amount of cold memory residing in the zswap pool, it
+ can be advantageous to proactively write these cold pages to swap and reclaim
+ the memory for other use cases. By default, the zswap shrinker is disabled.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 95f6c9e60ed1..e51eafdf2a15 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -219,6 +219,12 @@ struct mem_cgroup {
+ 
+ #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+ 	unsigned long zswap_max;
++
++	/*
++	 * Prevent pages from this memcg from being written back from zswap to
++	 * swap, and from being swapped out on zswap store failures.
++	 */
++	bool zswap_writeback;
+ #endif
+ 
+ 	unsigned long soft_limit;
+@@ -1931,6 +1937,7 @@ static inline void count_objcg_event(struct obj_cgroup *objcg,
+ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
+ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
+ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
++bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
+ #else
+ static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
+ {
+@@ -1944,6 +1951,11 @@ static inline void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg,
+ 					     size_t size)
+ {
+ }
++static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
++{
++	/* if zswap is disabled, do not block pages going to the swapping device */
++	return true;
++}
+ #endif
+ 
+ #endif /* _LINUX_MEMCONTROL_H */
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index cbd373ba88d2..b4997e27a74b 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -35,6 +35,7 @@ void zswap_swapoff(int type);
+ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+ void zswap_lruvec_state_init(struct lruvec *lruvec);
+ void zswap_lruvec_swapin(struct page *page);
++bool is_zswap_enabled(void);
+ #else
+ 
+ struct zswap_lruvec_state {};
+@@ -55,6 +56,11 @@ static inline void zswap_swapoff(int type) {}
+ static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+ static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
+ static inline void zswap_lruvec_swapin(struct page *page) {}
++
++static inline bool is_zswap_enabled(void)
++{
++	return false;
++}
+ #endif
+ 
+ #endif /* _LINUX_ZSWAP_H */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e43b5aba8efc..8a6aadcc103c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5545,6 +5545,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
+ #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+ 	memcg->zswap_max = PAGE_COUNTER_MAX;
++	WRITE_ONCE(memcg->zswap_writeback, true);
+ #endif
+ 	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
+ 	if (parent) {
+@@ -8177,6 +8178,12 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
+ 	rcu_read_unlock();
  }
  
--#ifdef __s390x__
--#include "header.h" // for get_cpuid()
--#endif
--
--static const char *do_determine_event(bool excl_kernel)
--{
--	const char *event = excl_kernel ? "cycles:u" : "cycles";
--
--#ifdef __s390x__
--	char cpuid[128], model[16], model_c[16], cpum_cf_v[16];
--	unsigned int family;
--	int ret, cpum_cf_a;
--
--	if (get_cpuid(cpuid, sizeof(cpuid)))
--		goto out_clocks;
--	ret = sscanf(cpuid, "%*[^,],%u,%[^,],%[^,],%[^,],%x", &family, model_c,
--		     model, cpum_cf_v, &cpum_cf_a);
--	if (ret != 5)		 /* Not available */
--		goto out_clocks;
--	if (excl_kernel && (cpum_cf_a & 4))
--		return event;
--	if (!excl_kernel && (cpum_cf_a & 2))
--		return event;
--
--	/* Fall through: missing authorization */
--out_clocks:
--	event = excl_kernel ? "cpu-clock:u" : "cpu-clock";
--
--#endif
--	return event;
--}
--
- static void do_something(void)
- {
- 	fs_something();
-@@ -583,8 +551,10 @@ static int do_test_code_reading(bool try_kcore)
- 	int err = -1, ret;
- 	pid_t pid;
- 	struct map *map;
--	bool have_vmlinux, have_kcore, excl_kernel = false;
-+	bool have_vmlinux, have_kcore;
- 	struct dso *dso;
-+	const char *events[] = { "cycles", "cycles:u", "cpu-clock", "cpu-clock:u", NULL };
-+	int evidx = 0;
- 
- 	pid = getpid();
- 
-@@ -618,7 +588,7 @@ static int do_test_code_reading(bool try_kcore)
- 
- 	/* No point getting kernel events if there is no kernel object */
- 	if (!have_vmlinux && !have_kcore)
--		excl_kernel = true;
-+		evidx++;
- 
- 	threads = thread_map__new_by_tid(pid);
- 	if (!threads) {
-@@ -646,7 +616,7 @@ static int do_test_code_reading(bool try_kcore)
- 		goto out_put;
- 	}
- 
--	while (1) {
-+	while (events[evidx]) {
- 		const char *str;
- 
- 		evlist = evlist__new();
-@@ -657,7 +627,7 @@ static int do_test_code_reading(bool try_kcore)
- 
- 		perf_evlist__set_maps(&evlist->core, cpus, threads);
- 
--		str = do_determine_event(excl_kernel);
-+		str = events[evidx];
- 		pr_debug("Parsing event '%s'\n", str);
- 		ret = parse_event(evlist, str);
- 		if (ret < 0) {
-@@ -675,32 +645,32 @@ static int do_test_code_reading(bool try_kcore)
- 
- 		ret = evlist__open(evlist);
- 		if (ret < 0) {
--			if (!excl_kernel) {
--				excl_kernel = true;
--				/*
--				 * Both cpus and threads are now owned by evlist
--				 * and will be freed by following perf_evlist__set_maps
--				 * call. Getting reference to keep them alive.
--				 */
--				perf_cpu_map__get(cpus);
--				perf_thread_map__get(threads);
--				perf_evlist__set_maps(&evlist->core, NULL, NULL);
--				evlist__delete(evlist);
--				evlist = NULL;
--				continue;
--			}
-+			evidx++;
- 
--			if (verbose > 0) {
-+			if (events[evidx] == NULL && verbose > 0) {
- 				char errbuf[512];
- 				evlist__strerror_open(evlist, errno, errbuf, sizeof(errbuf));
- 				pr_debug("perf_evlist__open() failed!\n%s\n", errbuf);
- 			}
- 
--			goto out_put;
-+			/*
-+			 * Both cpus and threads are now owned by evlist
-+			 * and will be freed by following perf_evlist__set_maps
-+			 * call. Getting reference to keep them alive.
-+			 */
-+			perf_cpu_map__get(cpus);
-+			perf_thread_map__get(threads);
-+			perf_evlist__set_maps(&evlist->core, NULL, NULL);
-+			evlist__delete(evlist);
-+			evlist = NULL;
-+			continue;
- 		}
- 		break;
- 	}
- 
-+	if (events[evidx] == NULL)
-+		goto out_put;
++bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
++{
++	/* if zswap is disabled, do not block pages going to the swapping device */
++	return !is_zswap_enabled() || !memcg || READ_ONCE(memcg->zswap_writeback);
++}
 +
- 	ret = evlist__mmap(evlist, UINT_MAX);
- 	if (ret < 0) {
- 		pr_debug("evlist__mmap failed\n");
-@@ -721,7 +691,7 @@ static int do_test_code_reading(bool try_kcore)
- 		err = TEST_CODE_READING_NO_KERNEL_OBJ;
- 	else if (!have_vmlinux && !try_kcore)
- 		err = TEST_CODE_READING_NO_VMLINUX;
--	else if (excl_kernel)
-+	else if (evidx % 2)
- 		err = TEST_CODE_READING_NO_ACCESS;
- 	else
- 		err = TEST_CODE_READING_OK;
+ static u64 zswap_current_read(struct cgroup_subsys_state *css,
+ 			      struct cftype *cft)
+ {
+@@ -8209,6 +8216,31 @@ static ssize_t zswap_max_write(struct kernfs_open_file *of,
+ 	return nbytes;
+ }
+ 
++static int zswap_writeback_show(struct seq_file *m, void *v)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
++
++	seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
++	return 0;
++}
++
++static ssize_t zswap_writeback_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++	int zswap_writeback;
++	ssize_t parse_ret = kstrtoint(strstrip(buf), 0, &zswap_writeback);
++
++	if (parse_ret)
++		return parse_ret;
++
++	if (zswap_writeback != 0 && zswap_writeback != 1)
++		return -EINVAL;
++
++	WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
++	return nbytes;
++}
++
+ static struct cftype zswap_files[] = {
+ 	{
+ 		.name = "zswap.current",
+@@ -8221,6 +8253,12 @@ static struct cftype zswap_files[] = {
+ 		.seq_show = zswap_max_show,
+ 		.write = zswap_max_write,
+ 	},
++	{
++		.name = "zswap.writeback",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = zswap_writeback_show,
++		.write = zswap_writeback_write,
++	},
+ 	{ }	/* terminate */
+ };
+ #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
+diff --git a/mm/page_io.c b/mm/page_io.c
+index cb559ae324c6..5e606f1aa2f6 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+ 		folio_end_writeback(folio);
+ 		return 0;
+ 	}
++
++	if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))) {
++		folio_mark_dirty(folio);
++		return AOP_WRITEPAGE_ACTIVATE;
++	}
++
+ 	__swap_writepage(&folio->page, wbc);
+ 	return 0;
+ }
+diff --git a/mm/shmem.c b/mm/shmem.c
+index cab053831fea..e5044678de8b 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1514,8 +1514,7 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
+ 
+ 		mutex_unlock(&shmem_swaplist_mutex);
+ 		BUG_ON(folio_mapped(folio));
+-		swap_writepage(&folio->page, wbc);
+-		return 0;
++		return swap_writepage(&folio->page, wbc);
+ 	}
+ 
+ 	mutex_unlock(&shmem_swaplist_mutex);
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 260e01180ee0..051f4487c9ab 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -150,6 +150,11 @@ module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, bool, 0644);
+ static bool zswap_shrinker_enabled;
+ module_param_named(shrinker_enabled, zswap_shrinker_enabled, bool, 0644);
+ 
++bool is_zswap_enabled(void)
++{
++	return zswap_enabled;
++}
++
+ /*********************************
+ * data structures
+ **********************************/
+@@ -590,6 +595,9 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+ 	struct zswap_pool *pool = shrinker->private_data;
+ 	bool encountered_page_in_swapcache = false;
+ 
++	if (!mem_cgroup_zswap_writeback_enabled(sc->memcg))
++		return SHRINK_STOP;
++
+ 	nr_protected =
+ 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+ 	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
+@@ -620,6 +628,9 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+ 	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+ 
++	if (!mem_cgroup_zswap_writeback_enabled(memcg))
++		return 0;
++
+ #ifdef CONFIG_MEMCG_KMEM
+ 	cgroup_rstat_flush(memcg->css.cgroup);
+ 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+@@ -935,6 +946,9 @@ static int shrink_memcg(struct mem_cgroup *memcg)
+ 	struct zswap_pool *pool;
+ 	int nid, shrunk = 0;
+ 
++	if (!mem_cgroup_zswap_writeback_enabled(memcg))
++		return -EINVAL;
++
+ 	/*
+ 	 * Skip zombies because their LRUs are reparented and we would be
+ 	 * reclaiming from the parent instead of the dead memcg.
 -- 
-2.42.0.869.gea05f2083d-goog
-
+2.34.1
