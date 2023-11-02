@@ -2,285 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156697DFAA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8317DFAA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377204AbjKBTEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
+        id S1377383AbjKBTFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377117AbjKBTEd (ORCPT
+        with ESMTP id S235149AbjKBTFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:04:33 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAAE1FE4;
-        Thu,  2 Nov 2023 12:01:58 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9d10f94f70bso190690966b.3;
-        Thu, 02 Nov 2023 12:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698951716; x=1699556516; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ifGnPdp78leEm8TF8GcQ6NdohnpOfA0bs4O5R/OYdS0=;
-        b=bftowuw9fxm5FezwOluOaECx8od2BlSFkYLjj6D5Bc5BsqBJqvZ3N2+QsjcK8J3nm8
-         yS/GF9r7j7MbLxymENSCtqHaxdWsPHZbFfSh+/GJtuzt7Xa9E1dhMsbvah8aL0oOFC4h
-         8uC9ZVdM3ou5uFFu3jGzxOnrn5Na09QJvzw8etDceibYQEFB9bmydjRjEDF1OmSx0BoN
-         +43wTMMdukkRjaKMHJ5BuoM+hxN/tNX1nFv1h/XAGiEQLbBUCfkR1LZe2Um0llay5RgS
-         CUsG8BuWxp3GtN6ngCk07zQettmf4qI242m1ndqWWtt13m/pgUFtECkDR0SD0pB3zGRL
-         i6xg==
+        Thu, 2 Nov 2023 15:05:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEA6D49
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698951807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=m+72lU2is0RjPg3Ej03EzBiDP42Tb65So4vdSCepZ9s=;
+        b=Ch61Hwf+63FZ0uv71dadk5okntx1YM1TBwO1p0oOHQB7NsJq+ar+tLHmrpi/volKR6Bxvo
+        3ko+gNCZSrdwvyd7wpC3uVpF3hO2V1G+MxjFKvfDBo5a7bWOeaCEYNfB+1EEOVph/28Jmr
+        5MwWFrFD8zEPDR/9M0gCq8arLFZPLBI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-9hev12-tPWWLUP4VRjnSZg-1; Thu, 02 Nov 2023 15:03:24 -0400
+X-MC-Unique: 9hev12-tPWWLUP4VRjnSZg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4083a0fb583so1464155e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:03:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951716; x=1699556516;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ifGnPdp78leEm8TF8GcQ6NdohnpOfA0bs4O5R/OYdS0=;
-        b=ijZID6sLIvN0bzVY4N6o7feghpwVJGROlLbHi87zQwps2HEY3tYh7Jh8hBlSPgLAm0
-         kxyRuLCdJVxekguhqfEZEgTStB0/6v7ymtnhGAHOfyPCPNV+DYT1cS3VN4VIRWRf6HlV
-         3AvweJ5SwBuZOffI2+Nu/cfQMlkN4jk5+C1IjAEqACuCuZZiQMSuvSYwfb/V2tnw1nW0
-         sSWa7wIVIrI6TKmtgny7w5Zn2Cp2VK5nc/wZOB54IuSt7UlABzjVBcTsSXmrJ7PSVvfZ
-         91QhUUh+v7AdOPzusDlFZfpRhzkYNlJ1/0A6EzifaP3Wv8au0FsLHV1czUceJg+KAsPK
-         /c4w==
-X-Gm-Message-State: AOJu0Yy/Q3SoHEeZ6PKUH6m2INgr9dQjhZ1HW1rPrcjbO8f9/eCi8thz
-        nZC0eMDSbKj4fegL+oUYY1M52Dl1zOzXdO5kCeU=
-X-Google-Smtp-Source: AGHT+IHNwR57IhzCX+H5PazBzQK6fP/65bHupUZWqtHI8AIq8RW79acIHA9KfkskZFZ1HjpDlYmLSgZ5ZF6+KYJh6KY=
-X-Received: by 2002:a17:906:ee85:b0:9be:dce3:6e07 with SMTP id
- wt5-20020a170906ee8500b009bedce36e07mr5508068ejb.32.1698951716320; Thu, 02
- Nov 2023 12:01:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698951802; x=1699556602;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m+72lU2is0RjPg3Ej03EzBiDP42Tb65So4vdSCepZ9s=;
+        b=grMiJ3mPofeUocBirSY8sQFXlU4+1zd9EPIOWpCUWrGYNuq4yie0nYB2yhx/t6Q5vI
+         AdekKWiueU9JOwbZoCqXs36mTL17GJ3pnOf0VTIk8NwjCA2fmWje4wkWCgSac4q8XsKJ
+         JuyVtinz9kks8KsMS91xUF/1r2mnmBS5aLuXVikH4o6Z5LED+y014jXrchp6Uagcb66I
+         Iy5U0FQbZoL60H8PnIOQB9pVch/NdhJwp1DM31YrYwZhAyDnObycVZuPamgZ1+WNB7At
+         UNb3Y+zt5pVZpkURwA2iLxsOWtO0Yy1WzCNtbrgCXkWi8FQri1L0Rw+t0y9i6R04qd1p
+         wzEg==
+X-Gm-Message-State: AOJu0YyUcqDFOi19wTyG4VVFvHaRdXgigQ+SiueL8wYbnRzrtDmrCXns
+        ietUtOf96qkxCprGwT3dZ3MT8Vs+nWZEa5t/l4sXCAMUKt2WBFD5ZLRCLvbrLLdJ/dv0BfJzS1O
+        zhwB1zqGAHVh/F+W2agCGtMm/9xiSplAS7MQ=
+X-Received: by 2002:a5d:5c11:0:b0:32f:8a45:93a7 with SMTP id cc17-20020a5d5c11000000b0032f8a4593a7mr9124225wrb.0.1698951802590;
+        Thu, 02 Nov 2023 12:03:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFUPZRT8I8iw/CcEcUptKDDx7966nYE1/uugb6+QE4ZoKiWbmft1KG9gyqtzE1rFEHqmKpeCw==
+X-Received: by 2002:a5d:5c11:0:b0:32f:8a45:93a7 with SMTP id cc17-20020a5d5c11000000b0032f8a4593a7mr9124209wrb.0.1698951802240;
+        Thu, 02 Nov 2023 12:03:22 -0700 (PDT)
+Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
+        by smtp.gmail.com with ESMTPSA id l22-20020adfa396000000b0032f7d1e2c7csm62660wrb.95.2023.11.02.12.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 12:03:21 -0700 (PDT)
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Philipp Stanner <pstanner@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: [PATCH] sound/isa/wavefront: copy userspace array safely
+Date:   Thu,  2 Nov 2023 20:03:10 +0100
+Message-ID: <20231102190309.50891-2-pstanner@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
- <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com> <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
-In-Reply-To: <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 2 Nov 2023 12:01:44 -0700
-Message-ID: <CAEf4BzbucupXssMKLhR5Ex4rOHupp8p19CRV6qi1dT+X_5QWJg@mail.gmail.com>
-Subject: Re: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 3:30=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote:
->
-> On Wed, Nov 1, 2023 at 9:57=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Nov 1, 2023 at 6:56=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wr=
-ote:
-> > >
-> > > Hi,
-> > >
-> > > The verifier incorrectly rejects the following prog in check_cfg() wh=
-en
-> > > loading with root with confusing log `back-edge insn from 7 to 8`:
-> > >   /* 0: r9 =3D 2
-> > >    * 1: r3 =3D 0x20
-> > >    * 2: r4 =3D 0x35
-> > >    * 3: r8 =3D r4
-> > >    * 4: goto+3
-> > >    * 5: r9 -=3D r3
-> > >    * 6: r9 -=3D r4
-> > >    * 7: r9 -=3D r8
-> > >    * 8: r8 +=3D r4
-> > >    * 9: if r8 < 0x64 goto-5
-> > >    * 10: r0 =3D r9
-> > >    * 11: exit
-> > >    * */
-> > >   BPF_MOV64_IMM(BPF_REG_9, 2),
-> > >   BPF_MOV64_IMM(BPF_REG_3, 0x20),
-> > >   BPF_MOV64_IMM(BPF_REG_4, 0x35),
-> > >   BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
-> > >   BPF_JMP_IMM(BPF_JA, 0, 0, 3),
-> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
-> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
-> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
-> > >   BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
-> > >   BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
-> > >   BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
-> > >   BPF_EXIT_INSN()
-> > >
-> > > -------- Verifier Log --------
-> > > func#0 @0
-> > > back-edge from insn 7 to 8
-> > > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states =
-0
-> > > peak_states 0 mark_read 0
-> > >
-> > > This is not intentionally rejected, right?
-> >
-> > The way you wrote it, with goto +3, yes, it's intentional. Note that
-> > you'll get different results in privileged and unprivileged modes.
-> > Privileged mode allows "bounded loops" logic, so it doesn't
-> > immediately reject this program, and then later sees that r8 is always
-> > < 0x64, so program is correct.
-> >
->
-> I load the program with privileged mode, and goto-5 makes the program
-> run from #9 to #5, so r8 is updated and the program is not infinite loop.
->
-> > But in unprivileged mode the rules are different, and this conditional
-> > back edge is not allowed, which is probably what you are getting.
-> >
-> > It's actually confusing and your "back-edge from insn 7 to 8" is out
-> > of date and doesn't correspond to your program, you should see
-> > "back-edge from insn 11 to 7", please double check.
-> >
->
-> Yes it's also confusing to me, but "back-edge from insn 7 to 8" is what
-> I got. The execution path of the program is #4 to #8 (goto+3), so the
-> verifier see the #8 first. Then, the program then goes #9 to #5 (goto-5),
-> the verifier thus sees #7 to #8 and incorrectly concludes back-edge here.
->
-> This can is the verifier log I got from latest bpf-next, this C program c=
-an
-> reproduce this: https://pastebin.com/raw/Yug0NVwx
+wavefront_fx.c utilizes memdup_user() to copy a userspace array. This
+does not check for an overflow.
 
-Your instruction indices in your comments are wrong. Save yourself
-time and confusion, use embedded assembly and llvm-objdump. You also
-have a mismatch between 0x64 and actually specifying 0x68. Anyways, I
-don't know how you got 7 to 8, but there does seem indeed to be a bug
-in check_cfg() falsely detecting this as an infinite loop even in
-privileged mode, which it should. I'll need to look deeper into how to
-fix check_cfg(), it's not the easier to follow code, unfortunately.
+Use the new wrapper memdup_array_user() to copy the array more safely.
 
-But here's my log for your information.
+Suggested-by: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+---
+ sound/isa/wavefront/wavefront_fx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/sound/isa/wavefront/wavefront_fx.c b/sound/isa/wavefront/wavefront_fx.c
+index 3c21324b2a0e..0273b7dfaf12 100644
+--- a/sound/isa/wavefront/wavefront_fx.c
++++ b/sound/isa/wavefront/wavefront_fx.c
+@@ -191,9 +191,9 @@ snd_wavefront_fx_ioctl (struct snd_hwdep *sdev, struct file *file,
+ 					    "> 512 bytes to FX\n");
+ 				return -EIO;
+ 			}
+-			page_data = memdup_user((unsigned char __user *)
+-						r.data[3],
+-						r.data[2] * sizeof(short));
++			page_data = memdup_array_user((unsigned char __user *)
++						      r.data[3],
++						      r.data[2], sizeof(short));
+ 			if (IS_ERR(page_data))
+ 				return PTR_ERR(page_data);
+ 			pd = page_data;
+-- 
+2.41.0
 
-$ git show
-commit a343e644b8f3757a83f48b32b56ffc83943a62fa (HEAD -> temp-back-edge-tes=
-t)
-Author: Andrii Nakryiko <andrii@kernel.org>
-Date:   Thu Nov 2 11:55:11 2023 -0700
-
-    selftests/bpf: trickier case of "bounded loop"
-
-    This should be accepted in privileged mode because r8 =3D 2 * r4 =3D 0x=
-6a,
-    and so `if r8 < 0x64 goto -5;` is always false. Currently BPF verifier'=
-s
-    check_cfg() doesn't detect this properly.
-
-    Reported-by: Hao Sun <sunhao.th@gmail.com>
-    Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-
-diff --git a/tools/testing/selftests/bpf/progs/verifier_cfg.c
-b/tools/testing/selftests/bpf/progs/verifier_cfg.c
-index df7697b94007..f89dce7850f6 100644
---- a/tools/testing/selftests/bpf/progs/verifier_cfg.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_cfg.c
-@@ -97,4 +97,26 @@ l0_%=3D:       r2 =3D r0;
-         \
- "      ::: __clobber_all);
- }
-
-+SEC("socket")
-+__description("conditional loop (2)")
-+__success
-+__failure_unpriv __msg_unpriv("back-edge from insn 10 to 11")
-+__naked void conditional_loop2(void)
-+{
-+       asm volatile ("                                 \
-+       r9 =3D 2 ll;                                      \
-+       r3 =3D 0x20 ll;                                   \
-+       r4 =3D 0x35 ll;                                   \
-+       r8 =3D r4;                                        \
-+       goto l1_%=3D;                                     \
-+l0_%=3D: r9 -=3D r3;                                       \
-+       r9 -=3D r4;                                       \
-+       r9 -=3D r8;                                       \
-+l1_%=3D: r8 +=3D r4;                                       \
-+       if r8 < 0x64 goto l0_%=3D;                        \
-+       r0 =3D r9;                                        \
-+       exit;                                           \
-+"      ::: __clobber_all);
-+}
-+
- char _license[] SEC("license") =3D "GPL";
-
-Here's disassembly (though I moved it to separate .bpf.c file to have
-0-based instruction indices, my patch above adds test to other
-existing tests):
-
-$ llvm-objdump -d verifier_cfg1.bpf.o
-
-verifier_cfg1.bpf.o:    file format elf64-bpf
-
-Disassembly of section socket:
-
-0000000000000000 <conditional_loop2>:
-       0:       18 09 00 00 02 00 00 00 00 00 00 00 00 00 00 00 r9 =3D 0x2 =
-ll
-       2:       18 03 00 00 20 00 00 00 00 00 00 00 00 00 00 00 r3 =3D 0x20=
- ll
-       4:       18 04 00 00 35 00 00 00 00 00 00 00 00 00 00 00 r4 =3D 0x35=
- ll
-       6:       bf 48 00 00 00 00 00 00 r8 =3D r4
-       7:       05 00 03 00 00 00 00 00 goto +0x3 <l1_0>
-
-0000000000000040 <l0_0>:
-       8:       1f 39 00 00 00 00 00 00 r9 -=3D r3
-       9:       1f 49 00 00 00 00 00 00 r9 -=3D r4
-      10:       1f 89 00 00 00 00 00 00 r9 -=3D r8
-
-0000000000000058 <l1_0>:
-      11:       0f 48 00 00 00 00 00 00 r8 +=3D r4
-      12:       a5 08 fb ff 64 00 00 00 if r8 < 0x64 goto -0x5 <l0_0>
-      13:       bf 90 00 00 00 00 00 00 r0 =3D r9
-      14:       95 00 00 00 00 00 00 00 exit
-
-Then running test on latest bpf-next:
-
-$ sudo ./test_progs -t verifier_cfg
-...
-run_subtest:PASS:obj_open_mem 0 nsec
-libbpf: prog 'conditional_loop2': BPF program load failed: Invalid argument
-libbpf: prog 'conditional_loop2': failed to load: -22
-libbpf: failed to load object 'verifier_cfg'
-run_subtest:FAIL:unexpected_load_failure unexpected error: -22 (errno 22)
-VERIFIER LOG:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-10: asm volatile ("                                     \
-back-edge from insn 10 to 11
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-#329/15  verifier_cfg/conditional loop (2):FAIL
-#329/16  verifier_cfg/conditional loop (2) @unpriv:OK
-#329     verifier_cfg:FAIL
-
-
-I'll keep looking into this after taking care of other stuff I have on
-TODO list, thanks.
-
-
-
->
-> > Anyways, while I was looking into this, I realized that ldimm64 isn't
-> > handled exactly correctly in check_cfg(), so I just sent a fix. It
-> > also adds a nicer detection of jumping into the middle of the ldimm64
-> > instruction, which I believe is something you were advocating for.
-> >
-> > >
-> > > Best
-> > > Hao
