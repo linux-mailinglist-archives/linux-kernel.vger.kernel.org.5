@@ -2,320 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5297DEC63
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA477DEC69
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348566AbjKBFkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 01:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        id S1348570AbjKBFkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 01:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348472AbjKBFkC (ORCPT
+        with ESMTP id S1348540AbjKBFkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 01:40:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4F8132
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 22:39:59 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A25HmAZ005798;
-        Thu, 2 Nov 2023 05:39:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=RBgfinWgMqkBKLBLRAm2sM9PdeO8ipbYJS1DdXhVd4U=;
- b=SUOr56gu2KYgrcjW1mQ0h8+mWU/SmNlghR0I6pFb/V29srMinlpA7y5wmPKAEQoDTRpi
- mZTR1TlKXm3vapJFbcG/pFFXubkIOCm6nkXwlycuzGFXO3ASX6CNnwnmJ7qBc4Dp2jdY
- wZonlWbbN9A4HHRfJk3IK3hBQDibBBUtVcQ3DMwjF5QLlPS7ofvCY7CHqI0tpVh+POHV
- xdYKgKwc4O4uxThbY+B55mO5W4IxYnZ/PqJrEBpG4pxFT6FE41lCSd8YzEwJRK673ceH
- iIBfkZKc/ncUeBKB6PIJy+/j7WnkxkCL/Ay58Q3OTbvu6IN9pd9T9EDyIsCc8DFGA4+0 0A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u45g80eyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Nov 2023 05:39:43 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A25PGFr022619;
-        Thu, 2 Nov 2023 05:39:43 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u45g80exx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Nov 2023 05:39:42 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A22ZEvt031452;
-        Thu, 2 Nov 2023 05:39:41 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1fb2bvy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Nov 2023 05:39:41 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A25df3S25297436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Nov 2023 05:39:41 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6070458057;
-        Thu,  2 Nov 2023 05:39:41 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 388BB58059;
-        Thu,  2 Nov 2023 05:39:39 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Nov 2023 05:39:38 +0000 (GMT)
-X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Russell Currey <ruscur@russell.cc>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2 37/37] powerpc: Support execute-only on all powerpc
-In-Reply-To: <4283ea9cbef9ff2fbee468904800e1962bc8fc18.1695659959.git.christophe.leroy@csgroup.eu>
-References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
- <4283ea9cbef9ff2fbee468904800e1962bc8fc18.1695659959.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 02 Nov 2023 11:09:37 +0530
-Message-ID: <874ji4af3a.fsf@linux.ibm.com>
+        Thu, 2 Nov 2023 01:40:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29159128
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 22:40:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 183CBC433C9;
+        Thu,  2 Nov 2023 05:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698903615;
+        bh=C0oNnW2C4+FnQKa7bIHzaESxVdM7l0n5Xz2J7g6Tzek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JQ3mbFJSkioebglr77L0j6L8u0OR1FY/7pYGvuIEUHigCcjjzKy76JlfANUBFgD3m
+         dLoTSnCmGpQXW84MBRD6I2KRbwjyiwYvc23sjvfDJrv0kB16MF/qBfngEl262iymrg
+         hdc+MDUQQLqljd9l2WeoiedK/a+rbTZ4XRGexV64=
+Date:   Thu, 2 Nov 2023 06:40:12 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, rafael@kernel.org,
+        linux-mm@kvack.org, ying.huang@intel.com, y-goto@fujitsu.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 4/4] drivers/base/node: add demote_src and demote_dst
+ to numastat
+Message-ID: <2023110230-lilly-mustang-9b57@gregkh>
+References: <20231102025648.1285477-1-lizhijian@fujitsu.com>
+ <20231102025648.1285477-5-lizhijian@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9577bBYKCj9KXZKm1Qv7MUoJ15OaEDsU
-X-Proofpoint-GUID: txbHpqEf3uG5z7b5bRkUePHFJToqarF1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- clxscore=1011 priorityscore=1501 mlxlogscore=999 impostorscore=0
- bulkscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311020043
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102025648.1285477-5-lizhijian@fujitsu.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-
-> Introduce PAGE_EXECONLY_X macro which provides exec-only rights.
-> The _X may be seen as redundant with the EXECONLY but it helps
-> keep consistancy, all macros having the EXEC right have _X.
->
-> And put it next to PAGE_NONE as PAGE_EXECONLY_X is
-> somehow PAGE_NONE + EXEC just like all other SOMETHING_X are
-> just SOMETHING + EXEC.
->
-> On book3s/64 PAGE_EXECONLY becomes PAGE_READONLY_X.
->
-> On book3s/64, as PAGE_EXECONLY is only valid for Radix add
-> VM_READ flag in vm_get_page_prot() for non-Radix.
->
-> And update access_error() so that a non exec fault on a VM_EXEC only
-> mapping is always invalid, even when the underlying layer don't
-> always generate a fault for that.
->
-> For 8xx, set PAGE_EXECONLY_X as _PAGE_NA | _PAGE_EXEC.
-> For others, only set it as just _PAGE_EXEC
->
-> With that change, 8xx, e500 and 44x fully honor execute-only
-> protection.
->
-> On 40x that is a partial implementation of execute-only. The
-> implementation won't be complete because once a TLB has been loaded
-> via the Instruction TLB miss handler, it will be possible to read
-> the page. But at least it can't be read unless it is executed first.
->
-> On 603 MMU, TLB missed are handled by SW and there are separate
-> DTLB and ITLB. Execute-only is therefore now supported by not loading
-> DTLB when read access is not permitted.
->
-> On hash (604) MMU it is more tricky because hash table is common to
-> load/store and execute. Nevertheless it is still possible to check
-> whether _PAGE_READ is set before loading hash table for a load/store
-> access. At least it can't be read unless it is executed first.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Russell Currey <ruscur@russell.cc>
-> Cc: Kees Cook <keescook@chromium.org>
+On Thu, Nov 02, 2023 at 10:56:48AM +0800, Li Zhijian wrote:
+> node0 and node1 is DRAM node, node3 is a PMEM node.
+> 
+> $ cat /sys/devices/system/node/node1/numastat
+> numa_hit 646590
+> numa_miss 3963
+> numa_foreign 30651
+> interleave_hit 416
+> local_node 645252
+> other_node 5301
+> demote_src 200478
+> demote_dst 0
+> 
+> Of cousre, the userspace numastat will be extened to support these 2
+> new fields in the future like:
+> $ numastat
+>                            node0           node1           node3
+> numa_hit                  741793          702460          364154
+> numa_miss                   1759            8104           28893
+> numa_foreign                8105           30651               0
+> interleave_hit               653             416               0
+> local_node                741762          701115               0
+> other_node                  1790            9449          393047
+> demote_src                163612          203828               0
+> demote_dst                     0               0          367440
+> 
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 > ---
->  arch/powerpc/include/asm/book3s/32/pgtable.h |  2 +-
->  arch/powerpc/include/asm/book3s/64/pgtable.h |  4 +---
->  arch/powerpc/include/asm/nohash/32/pte-8xx.h |  1 +
->  arch/powerpc/include/asm/nohash/pgtable.h    |  2 +-
->  arch/powerpc/include/asm/nohash/pte-e500.h   |  1 +
->  arch/powerpc/include/asm/pgtable-masks.h     |  2 ++
->  arch/powerpc/mm/book3s64/pgtable.c           | 10 ++++------
->  arch/powerpc/mm/fault.c                      |  9 +++++----
->  arch/powerpc/mm/pgtable.c                    |  4 ++--
->  9 files changed, 18 insertions(+), 17 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-> index 244621c88510..52971ee30717 100644
-> --- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-> @@ -425,7 +425,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
+>  drivers/base/node.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 27e8502548a7..d3fc70599b6a 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -496,20 +496,32 @@ static DEVICE_ATTR(meminfo, 0444, node_read_meminfo, NULL);
+>  static ssize_t node_read_numastat(struct device *dev,
+>  				  struct device_attribute *attr, char *buf)
 >  {
->  	/*
->  	 * A read-only access is controlled by _PAGE_READ bit.
-> -	 * We have _PAGE_READ set for WRITE and EXECUTE
-> +	 * We have _PAGE_READ set for WRITE
->  	 */
->  	if (!pte_present(pte) || !pte_read(pte))
->  		return false; 
->
-
-Should this now be updated to check for EXEC bit ? 
-
-> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> index 0fd12bdc7b5e..751b01227e36 100644
-> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> @@ -18,6 +18,7 @@
->  #define _PAGE_WRITE		0x00002 /* write access allowed */
->  #define _PAGE_READ		0x00004	/* read access allowed */
->  #define _PAGE_NA		_PAGE_PRIVILEGED
-> +#define _PAGE_NAX		_PAGE_EXEC
->  #define _PAGE_RO		_PAGE_READ
->  #define _PAGE_ROX		(_PAGE_READ | _PAGE_EXEC)
->  #define _PAGE_RW		(_PAGE_READ | _PAGE_WRITE)
-> @@ -141,9 +142,6 @@
->  
->  #include <asm/pgtable-masks.h>
->  
-> -/* Radix only, Hash uses PAGE_READONLY_X + execute-only pkey instead */
-> -#define PAGE_EXECONLY	__pgprot(_PAGE_BASE | _PAGE_EXEC)
-> -
->  /* Permission masks used for kernel mappings */
->  #define PAGE_KERNEL	__pgprot(_PAGE_BASE | _PAGE_KERNEL_RW)
->  #define PAGE_KERNEL_NC	__pgprot(_PAGE_BASE_NC | _PAGE_KERNEL_RW | _PAGE_TOLERANT)
-> diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-> index 1ee38befd29a..137dc3c84e45 100644
-> --- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-> +++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-> @@ -48,6 +48,7 @@
->  
->  #define _PAGE_HUGE	0x0800	/* Copied to L1 PS bit 29 */
->  
-> +#define _PAGE_NAX	(_PAGE_NA | _PAGE_EXEC)
->  #define _PAGE_ROX	(_PAGE_RO | _PAGE_EXEC)
->  #define _PAGE_RW	0
->  #define _PAGE_RWX	_PAGE_EXEC
-> diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/include/asm/nohash/pgtable.h
-> index f922c84b23eb..a50be1de9f83 100644
-> --- a/arch/powerpc/include/asm/nohash/pgtable.h
-> +++ b/arch/powerpc/include/asm/nohash/pgtable.h
-> @@ -203,7 +203,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
->  {
->  	/*
->  	 * A read-only access is controlled by _PAGE_READ bit.
-> -	 * We have _PAGE_READ set for WRITE and EXECUTE
-> +	 * We have _PAGE_READ set for WRITE
->  	 */
->  	if (!pte_present(pte) || !pte_read(pte))
->  		return false;
->
-
-
-Same here. if so I guess book3s/64 also will need an update?
-
-> diff --git a/arch/powerpc/include/asm/nohash/pte-e500.h b/arch/powerpc/include/asm/nohash/pte-e500.h
-> index 31d2c3ea7df8..f516f0b5b7a8 100644
-> --- a/arch/powerpc/include/asm/nohash/pte-e500.h
-> +++ b/arch/powerpc/include/asm/nohash/pte-e500.h
-> @@ -57,6 +57,7 @@
->  #define _PAGE_KERNEL_ROX	(_PAGE_BAP_SR | _PAGE_BAP_SX)
->  
->  #define _PAGE_NA	0
-> +#define _PAGE_NAX	_PAGE_BAP_UX
->  #define _PAGE_RO	_PAGE_READ
->  #define _PAGE_ROX	(_PAGE_READ | _PAGE_BAP_UX)
->  #define _PAGE_RW	(_PAGE_READ | _PAGE_WRITE)
-> diff --git a/arch/powerpc/include/asm/pgtable-masks.h b/arch/powerpc/include/asm/pgtable-masks.h
-> index 808a3b9e8fc0..6e8e2db26a5a 100644
-> --- a/arch/powerpc/include/asm/pgtable-masks.h
-> +++ b/arch/powerpc/include/asm/pgtable-masks.h
-> @@ -4,6 +4,7 @@
->  
->  #ifndef _PAGE_NA
->  #define _PAGE_NA	0
-> +#define _PAGE_NAX	_PAGE_EXEC
->  #define _PAGE_RO	_PAGE_READ
->  #define _PAGE_ROX	(_PAGE_READ | _PAGE_EXEC)
->  #define _PAGE_RW	(_PAGE_READ | _PAGE_WRITE)
-> @@ -20,6 +21,7 @@
->  
->  /* Permission masks used to generate the __P and __S table */
->  #define PAGE_NONE	__pgprot(_PAGE_BASE | _PAGE_NA)
-> +#define PAGE_EXECONLY_X	__pgprot(_PAGE_BASE | _PAGE_NAX)
->  #define PAGE_SHARED	__pgprot(_PAGE_BASE | _PAGE_RW)
->  #define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_RWX)
->  #define PAGE_COPY	__pgprot(_PAGE_BASE | _PAGE_RO)
-> diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-> index 8f8a62d3ff4d..be229290a6a7 100644
-> --- a/arch/powerpc/mm/book3s64/pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/pgtable.c
-> @@ -635,12 +635,10 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
->  	unsigned long prot;
->  
->  	/* Radix supports execute-only, but protection_map maps X -> RX */
-> -	if (radix_enabled() && ((vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)) {
-> -		prot = pgprot_val(PAGE_EXECONLY);
-> -	} else {
-> -		prot = pgprot_val(protection_map[vm_flags &
-> -						 (VM_ACCESS_FLAGS | VM_SHARED)]);
-> -	}
-> +	if (!radix_enabled() && ((vm_flags & VM_ACCESS_FLAGS) == VM_EXEC))
-> +		vm_flags |= VM_READ;
+> +	struct pglist_data *pgdat = NODE_DATA(dev->id);
+> +	unsigned long demote_src, demote_dst;
 > +
-> +	prot = pgprot_val(protection_map[vm_flags & (VM_ACCESS_FLAGS | VM_SHARED)]);
->  
->  	if (vm_flags & VM_SAO)
->  		prot |= _PAGE_SAO;
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index b1723094d464..9e49ede2bc1c 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -266,14 +266,15 @@ static bool access_error(bool is_write, bool is_exec, struct vm_area_struct *vma
->  	}
->  
->  	/*
-> -	 * VM_READ, VM_WRITE and VM_EXEC all imply read permissions, as
-> -	 * defined in protection_map[].  Read faults can only be caused by
-> -	 * a PROT_NONE mapping, or with a PROT_EXEC-only mapping on Radix.
-> +	 * VM_READ, VM_WRITE and VM_EXEC may imply read permissions, as
-> +	 * defined in protection_map[].  In that case Read faults can only be
-> +	 * caused by a PROT_NONE mapping. However a non exec access on a
-> +	 * VM_EXEC only mapping is invalid anyway, so report it as such.
->  	 */
->  	if (unlikely(!vma_is_accessible(vma)))
->  		return true;
->  
-> -	if (unlikely(radix_enabled() && ((vma->vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)))
-> +	if ((vma->vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)
->  		return true;
->  
->  	/*
-> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-> index 781a68c69c2f..79508c1d15d7 100644
-> --- a/arch/powerpc/mm/pgtable.c
-> +++ b/arch/powerpc/mm/pgtable.c
-> @@ -492,7 +492,7 @@ const pgprot_t protection_map[16] = {
->  	[VM_READ]					= PAGE_READONLY,
->  	[VM_WRITE]					= PAGE_COPY,
->  	[VM_WRITE | VM_READ]				= PAGE_COPY,
-> -	[VM_EXEC]					= PAGE_READONLY_X,
-> +	[VM_EXEC]					= PAGE_EXECONLY_X,
->  	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
->  	[VM_EXEC | VM_WRITE]				= PAGE_COPY_X,
->  	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
-> @@ -500,7 +500,7 @@ const pgprot_t protection_map[16] = {
->  	[VM_SHARED | VM_READ]				= PAGE_READONLY,
->  	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
->  	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-> -	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_X,
-> +	[VM_SHARED | VM_EXEC]				= PAGE_EXECONLY_X,
->  	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
->  	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_X,
->  	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
-> -- 
-> 2.41.0
+>  	fold_vm_numa_events();
+> +	demote_src = node_page_state_pages(pgdat, PGDEMOTE_SRC_KSWAPD) +
+> +		     node_page_state_pages(pgdat, PGDEMOTE_SRC_DIRECT) +
+> +		     node_page_state_pages(pgdat, PGDEMOTE_SRC_KHUGEPAGED);
+> +	demote_dst = node_page_state_pages(pgdat, PGDEMOTE_DST_KSWAPD) +
+> +		     node_page_state_pages(pgdat, PGDEMOTE_DST_DIRECT) +
+> +		     node_page_state_pages(pgdat, PGDEMOTE_DST_KHUGEPAGED);
+>  	return sysfs_emit(buf,
+>  			  "numa_hit %lu\n"
+>  			  "numa_miss %lu\n"
+>  			  "numa_foreign %lu\n"
+>  			  "interleave_hit %lu\n"
+>  			  "local_node %lu\n"
+> -			  "other_node %lu\n",
+> +			  "other_node %lu\n"
+> +			  "demote_src %lu\n"
+> +			  "demote_dst %lu\n",
+
+This sysfs file is already a total abuse of sysfs so please, do NOT make
+it worse by adding more fields, that's just wrong and something I can
+not take at all for obvious reasons.
+
+thanks,
+
+greg k-h
