@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E37487DEBFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371C47DEBFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348501AbjKBEol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S1348510AbjKBEqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjKBEok (ORCPT
+        with ESMTP id S1348268AbjKBEqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:44:40 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266D3DE
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:44:37 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9d242846194so72758466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 21:44:37 -0700 (PDT)
+        Thu, 2 Nov 2023 00:46:32 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7ECB7
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:46:29 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9d2e6c8b542so71257566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 21:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698900275; x=1699505075; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698900388; x=1699505188; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+VxWQ4k/E3/qla6JztW2qtYTnXXlUbK1ykpNWnBSc4=;
-        b=f2XFT1nX3axLaYF6YR0rgEYhyXPGJVAhrZ/CUlbQA2H14YlIup17APiQP6sSiIvaPg
-         H2XnkTwR8gV3RsDqBz5zTASzORLiLFROnMpffaWR/LemcX3rxtu0ZSpe7UIiiXFQAU0m
-         lOIWIX7JBjmbiLbZnx1FN4mYF8ZHgw4ZEt7ZwhmWWD6YSq+Jvq4iLdGhrx9wnC6M66kU
-         zI1VFphRodfpuETQTBuCARpcUEEQcleCfx4Jw1CJnh/3pdQTEo6UXVIR3UxWileElqVn
-         Jy2BCls/YdJU5b33j7+ZTnUUQmLFalxCMyoIvdy7BBoTl+9wgL5YmBEVbrw1xfK9SPnJ
-         JZ1w==
+        bh=lly96fwYzj9dyrjYI20I++tfUGe2kjS+ATbpaoIUCkk=;
+        b=eRzmB9kM585VDAX1TV/zfY38RLHFbM/WkAiTl5NBEXolZ7KZPZOqx2MjnRqzZBTEBy
+         7AG8oDvmJTSsyWH2H9E0MFWPOoez89VncNlGGeutKQFFHBDW4+kccvlVlCsEDJ9AXKrb
+         rUvmEPUBq89YDzlP7qnCIEdLdWCs9SjTVz3hLswfcYlwoPwusOcSH1HmUmHY4tZRjZA0
+         5XBfmg4qfp1m+OXEYaXiPMHmgAWtmEff6iCoyl85waO1TnYpn6szi5NJ5utH+GFeCy55
+         3/4OtYRhutZY26LfTQ9QbY81XhXVvaIeo5kcnkb+kMkkj7FWsioQgVkP45scTU+t/XUH
+         /V5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698900275; x=1699505075;
+        d=1e100.net; s=20230601; t=1698900388; x=1699505188;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=I+VxWQ4k/E3/qla6JztW2qtYTnXXlUbK1ykpNWnBSc4=;
-        b=CQ+VQLeBzy5A3Pp/NAT/tsv2wqEDAMdw8v9PQ01jNKwjJxDndoNTSzFCWhxBHcOovQ
-         jOFdrmwbocTHSMOvIHG69qq2V9pzPlBYIqUODlRfDP0qV/WpzvnaJR3D1rW7t9FiJL3h
-         XjSbb/V23Hfjv9alnHhZ1BkiSSIoFsT8Iys1+NWwxCYuL8ljDja2vCyGzjy4sBKceC9l
-         ReC9JVQKEk8sg6khrUmq9+a11PR/JXOW6feiY+ioeAteMwfUfoTO6NxmL7Rq88N2bHIh
-         MEXi4Sl5JFe8iRa+PfjjAQr0OC/S0OTawY9T/wJ/4mAlcNJR98E6Ge/gIEPvs5GyDRbM
-         r3qQ==
-X-Gm-Message-State: AOJu0YyUcmEQ8lp/1BXptC7NSu7h5WlPLqcGY5LMKV6VO1r3AdNEYZbY
-        gWXMtw9mB7XFZFAEtDx/lxEgHDnfNm/n0vphgNQ=
-X-Google-Smtp-Source: AGHT+IFKP1gGRhZOBwRbI3b3qzBxHp0gy+npS/PRjk49h25MKVTvezOcJ7G2BWNnJLD28VMz4AB72Bpi6b7vF1+u4Q0=
-X-Received: by 2002:a17:907:841:b0:9bf:65b0:1122 with SMTP id
- ww1-20020a170907084100b009bf65b01122mr3308085ejb.69.1698900275330; Wed, 01
- Nov 2023 21:44:35 -0700 (PDT)
+        bh=lly96fwYzj9dyrjYI20I++tfUGe2kjS+ATbpaoIUCkk=;
+        b=vGFOtHlaGIaCAluOXYZfbFGaNm2gLO1nTEGnaiZB+A+OpYWPKnrlIZkLA28xM4Ps1K
+         Dpc1tKGydcIeSA3SAbJhId7oKe98Q1rmbAk3bD9Rg3qX9iE7iWyvUrGtiqdyxj2xGxt6
+         br2J1tjAAun/sLQCBvG7el2hg4zO0iIoW/Nf0mCcyTweqLzOJVQcGHR3lmt0EG31/nTx
+         SWHgYHWneaUcETrNTm7/bfW/1OPsRCZvvAiFTfhb0aZ9OFKmgBtugyKo4sD/nFn54HXl
+         GtxGs6Dz1FIltDhUu7Q3IRtusXrgUOCrjgthbgNeHuvMtvtjyvNz7A5XlTSTRdhPjKOA
+         4rHw==
+X-Gm-Message-State: AOJu0Yx0GTqxnAKMTMawtAQb5oZruou21HJp/BTP4KN/usiCFm0faP9O
+        MAwoj67ONj3/5mgWrZ4PYD/9AWGX4u4w4SPevlw=
+X-Google-Smtp-Source: AGHT+IGkqWSf4mQmPFBoVK42WimmNA6rK9CryaOzWX4lpkZQZCXNKAihrrJ+s409aIvJ2HMwO4/hG56dmimdbmuyPs4=
+X-Received: by 2002:a17:907:5c1:b0:9bf:b8f7:1fc4 with SMTP id
+ wg1-20020a17090705c100b009bfb8f71fc4mr3467078ejb.43.1698900388120; Wed, 01
+ Nov 2023 21:46:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231101233113.8059-1-dakr@redhat.com> <20231101233113.8059-9-dakr@redhat.com>
-In-Reply-To: <20231101233113.8059-9-dakr@redhat.com>
+References: <20231101233113.8059-1-dakr@redhat.com> <20231101233113.8059-5-dakr@redhat.com>
+In-Reply-To: <20231101233113.8059-5-dakr@redhat.com>
 From:   Dave Airlie <airlied@gmail.com>
-Date:   Thu, 2 Nov 2023 14:44:23 +1000
-Message-ID: <CAPM=9tx2CrrLWddTW0-sYCndsGq+tmc-hFZi0mmBFBJ0SDy-rQ@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next v8 08/12] drm/nouveau: separately allocate
- struct nouveau_uvmm
+Date:   Thu, 2 Nov 2023 14:46:16 +1000
+Message-ID: <CAPM=9tzRPMDMiJUpMS3Kw4VtXy_nfxEH5fa++fZD=fBm=Khp1Q@mail.gmail.com>
+Subject: Re: [PATCH drm-misc-next v8 04/12] drm/nouveau: make use of drm_gpuvm_range_valid()
 To:     Danilo Krummrich <dakr@redhat.com>
 Cc:     daniel@ffwll.ch, matthew.brost@intel.com,
         thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
@@ -74,11 +73,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, 2 Nov 2023 at 09:31, Danilo Krummrich <dakr@redhat.com> wrote:
 >
-> Allocate struct nouveau_uvmm separately in preparation for subsequent
-> commits introducing reference counting for struct drm_gpuvm.
->
-> While at it, get rid of nouveau_uvmm_init() as indirection of
-> nouveau_uvmm_ioctl_vm_init() and perform some minor cleanups.
+> Use drm_gpuvm_range_valid() in order to validate userspace requests.
 >
 > Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 
