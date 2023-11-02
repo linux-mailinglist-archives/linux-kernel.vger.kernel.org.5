@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929477DF8D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B98C7DF8D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjKBRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S232541AbjKBRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232902AbjKBRho (ORCPT
+        with ESMTP id S233328AbjKBRhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:37:44 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B01D184
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:37:37 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 389A72F4;
-        Thu,  2 Nov 2023 10:38:19 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B2D23F738;
-        Thu,  2 Nov 2023 10:37:34 -0700 (PDT)
-Message-ID: <ad78436f-43c3-4b4b-9cb5-28dffd43468a@arm.com>
-Date:   Thu, 2 Nov 2023 18:37:33 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 4/6] sched/fair: Rewrite util_fits_cpu()
-Content-Language: en-US
-To:     Hongyan Xia <Hongyan.Xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Christian Loehle <christian.loehle@arm.com>,
+        Thu, 2 Nov 2023 13:37:55 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435B218E;
+        Thu,  2 Nov 2023 10:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=AwjL71MzeBAOU4MURIsg1EVjWrpke9ZuNN+nhEn3EhY=; b=CMQEoFk5VPoCoRlU0pe6Wb6hoA
+        HzwVTLgbLMW4t31pglN1w4Nh6mnQVi7iCY/UaZ3uEEpl1VteLIZhNjYVya78nsTqkK2s10hP/4pYJ
+        oUk3WgTzgerJADJWK8EYHQk+226dl88aUocz1ggjHNl4nlkxBF1Rh03pUGM9qUoIAUOA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qybdU-000lnS-4G; Thu, 02 Nov 2023 18:37:40 +0100
+Date:   Thu, 2 Nov 2023 18:37:40 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Robert Marko <robimarko@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
- <d8371d0764b595ab496b4fb744fdcba0a82bf41d.1696345700.git.Hongyan.Xia2@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <d8371d0764b595ab496b4fb744fdcba0a82bf41d.1696345700.git.Hongyan.Xia2@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [net-next RFC PATCH v3 3/4] net: phy: aquantia: add firmware
+ load support
+Message-ID: <e632a285-9cb2-4dc9-a4a2-f57e454b8ffe@lunn.ch>
+References: <20231102150032.10740-1-ansuelsmth@gmail.com>
+ <20231102150032.10740-3-ansuelsmth@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102150032.10740-3-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2023 11:04, Hongyan Xia wrote:
-> From: Hongyan Xia <hongyan.xia2@arm.com>
-> 
-> Currently, there's no way to distinguish the difference between 1) a CPU
-> that is actually maxed out at its highest frequency, or 2) one that is
-> throttled because of UCLAMP_MAX, since both present util_avg values of
-> 1024. This is problematic because when we try to pick a CPU for a task
-> to run, we would like to give 2) a chance, or at least prefer 2) to 1).
-> 
-> Current upstream gives neither a chance because the spare capacity is 0
-> for either case. There are patches to fix this problem by considering 0
-> capacities [1], but this might still be inefficient because this ends
-> up treating 1) and 2) equally, and will always pick the same one because
-> we don't change how we iterate through all CPUs. If we end up putting
-> many tasks on 1), then this creates a seriously unbalanced load for the
-> two CPUs.
-> 
-> Fix by using util_avg_uclamp for util_fits_cpu(). This way, case 1) will
-> still keep its utilization at 1024 whereas 2) shows spare capacities if
-> the sum of util_avg_uclamp values is still under the CPU capacity.
-> Note that this is roughly what the sum aggregation does in the Android
-> kernel [2] (although we clamp UCLAMP_MIN as well in this patch, which
-> may need some discussions), which shows superior energy savings because
-> there's more chance that a task can get scheduled on 2) instead of
-> finding a big CPU to run on.
-> 
-> Under sum aggregation, checking whether a task fits a CPU becomes much
-> simpler. We simply do fits_capacity() and there does not need to be code
-> checking all corner cases for uclamp. This means util_fits_cpu() returns
-> to true and false instead of tri-state, simplifying a significant amount
-> of code.
+> +/* AQR firmware doesn't have fixed offsets for iram and dram section
+> + * but instead provide an header with the offset to use on reading
+> + * and parsing the firmware.
+> + *
+> + * AQR firmware can't be trusted and each offset is validated to be
+> + * not negative and be in the size of the firmware itself.
+> + */
+> +static inline bool aqr_fw_validate_get(size_t size, size_t offset, size_t get_size)
+> +{
+> +	return size + offset > 0 && offset + get_size <= size;
+> +}
 
-You could remove util_fits_cpu() and task_fits_cpu() and call
-fits_capacity() directly. We should try to keep the zoo of util-related
-functions as small as possible.
+Please don't user inline in .c files. The compiler is better at
+deciding than we are.
 
-[...]
+Also, i wounder about size + offset > 0. size_t is unsigned. So they
+cannot be negative. So does this test make sense?
 
+> +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size,
+> +		       enum aqr_fw_src fw_src)
+> +{
+> +	u16 calculated_crc, read_crc, read_primary_offset;
+> +	u32 iram_offset = 0, iram_size = 0;
+> +	u32 dram_offset = 0, dram_size = 0;
+> +	char version[VERSION_STRING_SIZE];
+> +	u32 primary_offset = 0;
+> +	int ret;
+> +
+> +	/* extract saved CRC at the end of the fw
+> +	 * CRC is saved in big-endian as PHY is BE
+> +	 */
+> +	ret = aqr_fw_get_be16(data, size - sizeof(u16), size, &read_crc);
+> +	if (ret) {
+> +		phydev_err(phydev, "bad firmware CRC in firmware\n");
+> +		return ret;
+> +	}
+
+So if size < sizeof(u16), we get a very big positive number. The > 0
+test does nothing for you here, but the other half of the test does
+trap the issue.
+
+So i think you can remove the > 0 test.
+
+   Andrew
