@@ -2,101 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B6A7DF8D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BAC7DF8D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjKBRhT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 13:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
+        id S232398AbjKBRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjKBRhS (ORCPT
+        with ESMTP id S232341AbjKBRhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:37:18 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E132187;
-        Thu,  2 Nov 2023 10:37:15 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qybd2-0020Vj-Nq; Thu, 02 Nov 2023 18:37:12 +0100
-Received: from p5dc55299.dip0.t-ipconnect.de ([93.197.82.153] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qybd2-001UMz-Fz; Thu, 02 Nov 2023 18:37:12 +0100
-Message-ID: <396c3aebd6a382aa5a9cbf333f93d876467e12e9.camel@physik.fu-berlin.de>
-Subject: Re: [GIT PULL] asm-generic updates for v6.7
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Frank Scheiner <frank.scheiner@web.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Tom=C3=A1=C5=A1?= Glozar <tglozar@gmail.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 02 Nov 2023 18:36:39 +0100
-In-Reply-To: <CAHk-=whFLZ67ffzt1juryCYcYz6eL_XjQF8WucDzwUR5H65+rA@mail.gmail.com>
-References: <340fc037-c18f-417f-8aaa-9cf88c9052f4@app.fastmail.com>
-         <8ff191a0-41fa-4f36-86e8-3d32ff3fe75c@web.de>
-         <CAHk-=whFLZ67ffzt1juryCYcYz6eL_XjQF8WucDzwUR5H65+rA@mail.gmail.com>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 93.197.82.153
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 2 Nov 2023 13:37:35 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F064197
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:37:31 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc323b2aa3so8913465ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698946651; x=1699551451; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uN1ssLkZHjDTrGZRWby6miGmTEsoKqfVN3YbqYw1LLA=;
+        b=coSNqGSa47J/UZf0Pz9YGwIQ7TBXNp4w0vC+NhbSJdmfM63JiOkcuplyubh+1Bc1Xq
+         wDZIUN+2gb4+E0zeGXXCd85Yf8kSu9+YVBg7mENZa8X2Td3Okm1qsYKwdlv1ZIziaahp
+         phBKhJnDxgx037qgYQBLTXyDIWs04h12RX0vyIVuFVvywhiLTAp2dUtk4xYwj8sT53Kd
+         wak23GwFfRo+wHgAjW8Ifr3xrZf2CDKVvRJ96S0KbOFd3kiUcpPysu6bM4aaMiQbe+Qx
+         hptsOZZLoBiRBJmyrnh5Kp6KtkOEMsgVNRtO/71TejvAhuZF/s+jD0uHNwhko4LLUx/t
+         wMTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698946651; x=1699551451;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uN1ssLkZHjDTrGZRWby6miGmTEsoKqfVN3YbqYw1LLA=;
+        b=PUIKVaUOj4IkHF8qEai+pMf7jlzAMTuDQuuL4XbtU9E+pUGfNA8o4i7yd1BkRtXtyz
+         JJ/BSIKfm49nczLtcE/UZWIOcCUXtyJ041ozeRWj0rNxMK5peTwJKWrbo3KkQOHqN+Pj
+         YQY1/BcHkTIr0E24H1GfXCwzro9lp/wdyZOpQ5okbGIa4XWh7OxJcKgQrjqBTDb5V9KD
+         dDjFIvnleWe4QytWE+P1qfPxNfMWZMFfSnGHcNM5AHE/TaW1EQr1dG1FOCthOetdo9AM
+         aHKUh+k1Ekfcs0eHev3NzD14dCtiP5inPyNacZWx2jEYnjmnoLEqd6VcKu+QIOYZpg5C
+         8TQA==
+X-Gm-Message-State: AOJu0YzXGibFNTYLpAM93xTj7AvfX9D6PtlG6/Rv66NLFIIYNQPZU0Pk
+        INJY0DtBcPqL85PnUzJZwySZczpmYJY=
+X-Google-Smtp-Source: AGHT+IHO2BmoMwEG0Z4p7dUErvps7DbkHqeEBbdPqNa8vmvQCAafmC1+rihoFOkAVlqXxxzUlxPm8WkwUZU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:25d2:b0:1cc:2ffe:5a27 with SMTP id
+ jc18-20020a17090325d200b001cc2ffe5a27mr287356plb.9.1698946650780; Thu, 02 Nov
+ 2023 10:37:30 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 10:37:29 -0700
+In-Reply-To: <CALzav=eaVc5rzmHwnQr7aotyTKi9Agdte7NAL0NvBeE+f6zYoA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
+ <ZUFGRyQEuWj4RJS0@google.com> <ZUFzZf-YmCRYP6qo@google.com>
+ <CALzav=d9eXZfK=op7A=UftbpuPpUbxqV6CmkqqxxBNuNsUU4nw@mail.gmail.com>
+ <6642c379-1023-4716-904f-4bbf076744c2@redhat.com> <ZUPIXt1XzZrriswG@google.com>
+ <CALzav=eaVc5rzmHwnQr7aotyTKi9Agdte7NAL0NvBeE+f6zYoA@mail.gmail.com>
+Message-ID: <ZUPeWTdbMhvMO4QL@google.com>
+Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Matlack <dmatlack@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+On Thu, Nov 02, 2023, David Matlack wrote:
+> On Thu, Nov 2, 2023 at 9:03=E2=80=AFAM Sean Christopherson <seanjc@google=
+.com> wrote:
+> >
+> > On Thu, Nov 02, 2023, Paolo Bonzini wrote:
+> > > On 10/31/23 23:39, David Matlack wrote:
+> > > > > > Maybe can you sketch out how you see this proposal being extens=
+ible to
+> > > > > > using guest_memfd for shared mappings?
+> > > > > For in-place conversions, e.g. pKVM, no additional guest_memfd is=
+ needed.  What's
+> > > > > missing there is the ability to (safely) mmap() guest_memfd, e.g.=
+ KVM needs to
+> > > > > ensure there are no outstanding references when converting back t=
+o private.
+> > > > >
+> > > > > For TDX/SNP, assuming we don't find a performant and robust way t=
+o do in-place
+> > > > > conversions, a second fd+offset pair would be needed.
+> > > > Is there a way to support non-in-place conversions within a single =
+guest_memfd?
+> > >
+> > > For TDX/SNP, you could have a hook from KVM_SET_MEMORY_ATTRIBUTES to =
+guest
+> > > memory.  The hook would invalidate now-private parts if they have a V=
+MA,
+> > > causing a SIGSEGV/EFAULT if the host touches them.
+> > >
+> > > It would forbid mappings from multiple gfns to a single offset of the
+> > > guest_memfd, because then the shared vs. private attribute would be t=
+ied to
+> > > the offset.  This should not be a problem; for example, in the case o=
+f SNP,
+> > > the RMP already requires a single mapping from host physical address =
+to
+> > > guest physical address.
+> >
+> > I don't see how this can work.  It's not a M:1 scenario (where M is mul=
+tiple gfns),
+> > it's a 1:N scenario (wheren N is multiple offsets).  The *gfn* doesn't =
+change on
+> > a conversion, what needs to change to do non-in-place conversion is the=
+ pfn, which
+> > is effectively the guest_memfd+offset pair.
+> >
+> > So yes, we *could* support non-in-place conversions within a single gue=
+st_memfd,
+> > but it would require a second offset,
+>=20
+> Why can't KVM free the existing page at guest_memfd+offset and
+> allocate a new one when doing non-in-place conversions?
 
-On Thu, 2023-11-02 at 07:28 -1000, Linus Torvalds wrote:
-> That said, I'd be willing to resurrect itanium support, even though I
-> personally despise the architecture with a passion for being
-> fundamentally based on faulty design premises, and an implementation
-> based on politics rather than good technical design.
+Oh, I see what you're suggesting.  Eww.
 
-This made my day. :-)
+It's certainly possible, but it would largely defeat the purpose of why we =
+are
+adding guest_memfd in the first place.
 
-> But only if it turns out to actually have some long-term active
-> interest (ie I'd compare it to the situation with m68k etc - clearly
-> dead architectures that we still support despite them being not
-> relevant - because some people care and they don't cause pain).
+For TDX and SNP, the goal is to provide a simple, robust mechanism for isol=
+ating
+guest private memory so that it's all but impossible for the host to access=
+ private
+memory.  As things stand, memory for a given guest_memfd is either private =
+or shared
+(assuming we support a second guest_memfd per memslot).  I.e. there's no ne=
+ed to
+track whether a given page/folio in the guest_memfd is private vs. shared.
 
-Fully agreed.
+We could use memory attributes, but that further complicates things when in=
+trahost
+migration (and potentially other multi-user scenarios) comes along, i.e. wh=
+en KVM
+supports linking multiple guest_memfd files to a single inode.  We'd have t=
+o ensure
+that all "struct kvm" instances have identical PRIVATE attributes for a giv=
+en
+*offset* in the inode.  I'm not even sure how feasible that is for intrahos=
+t
+migration, and that's the *easy* case, because IIRC it's already a hard req=
+uirement
+that the source and destination have identical gnf=3D>guest_memfd bindings,=
+ i.e. KVM
+can somewhat easily reason about gfn attributes.
 
-> So I'd be willing to come back to the "can we resurrect it"
-> discussion, but not immediately - more along the lines of a "look,
-> we've been maintaining it out of tree for a year, the other
-> infrastructure is still alive, there is no impact on the rest of the
-> kernel, can we please try again"?
+But even then, that only helps with the actual migration of the VM, e.g. we=
+'d still
+have to figure out how to deal with .mmap() and other shared vs. private ac=
+tions
+when linking a new guest_memfd file against an existing inode.
 
-I think this is a very reasonable approach. If the keeping the architecture
-alive is sustainable, it should be possible to do that out of tree for a
-given period of time.
+I haven't seen the pKVM patches for supporting .mmap(), so maybe this is al=
+ready
+a solved problem, but I'd honestly be quite surprised if it all works corre=
+ctly
+if/when KVM supports multiple files per inode.
 
-Thanks,
-Adrian
+And I don't see what value non-in-place conversions would add.  The value a=
+dded
+by in-place conversions, aside from the obvious preservation of data, which=
+ isn't
+relevant to TDX/SNP, is that it doesn't require freeing and reallocating me=
+mory
+to avoid double-allocating for private vs. shared.  That's especialy quite =
+nice
+when hugepages are being used because reconstituing a hugepage "only" requi=
+res
+zapping SPTEs.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+But if KVM is freeing the private page, it's the same as punching a hole, p=
+robably
+quite literally, when mapping the gfn as shared.  In every way I can think =
+of, it's
+worse.  E.g. it's more complex for KVM, and the PUNCH_HOLE =3D> allocation =
+operations
+must be serialized.
+
+Regarding double-allocating, I really, really think we should solve that in=
+ the
+guest.  I.e. teach Linux-as-a-guest to aggressively convert at 2MiB granula=
+rity
+and avoid 4KiB conversions.  4KiB conversions aren't just a memory utilizat=
+ion
+problem, they're also a performance problem, e.g. shatters hugepages (which=
+ KVM
+doesn't yet support recovering) and increases TLB pressure for both stage-1=
+ and
+stage-2 mappings.
