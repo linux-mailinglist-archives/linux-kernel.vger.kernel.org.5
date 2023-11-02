@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C50C77DEE4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F85D7DEE49
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbjKBInr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        id S232500AbjKBIni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbjKBInm (ORCPT
+        with ESMTP id S229497AbjKBIng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:43:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F895128
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:43:36 -0700 (PDT)
+        Thu, 2 Nov 2023 04:43:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6F9128
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698914616; x=1730450616;
+  t=1698914610; x=1730450610;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0zXP3MG1ZlKyeU8SgqJgM6hm/lfNhFbzbZ2ypMpAh9Y=;
-  b=jFKwRl+csegJH39y6Te79NtRj69mAUQNuDKlxakr2FXs5y/yfiEar+pt
-   58QwVJ1PvCBVy2EIIhIAuAyhMVZQikki+/VGwSUrmMcEOr0VcvhL8wsOQ
-   1QZfIdS5xV1TiGrveH/Nu3B1DSywVkFLZfr6xXXNIPjZoEEIva3NSe8+t
-   I81jIb7Wv9Lh52ap2iiqqzchUX9W5N441dNY+0wkizNdqBKAmB9c/VUQa
-   OLZLBSNn7jvmgRN35XaM/9/+ijZPJhO12/9LVg0bvsvP+5ErfLzkapn2u
-   A8aH6e4raXco3migY+M+jrrgxldJ/aIQIjEhOcsxYQXHqg4TOuts0jmB+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="388483984"
+  bh=4PVnbSTg3W8h3V0KXuI/SfFgYtZr+OoRAkzmePRTco8=;
+  b=QshUR6NOqjiFKpjPwTPXd3Z72pEJYE93DyJgDdAVzXCGm3EZjenkJKF3
+   EMzMH9lFS8DZnYDkZWzN37L7tRhkMWj7eRcdsrFAC9+wSoIboRdqeLPHd
+   B3ZLdydvfEo5bKsuDQD5Gou7uBiTVT8zNi1jXx4FLQZjknd8jVB2eq2Y0
+   TKiDkieY/+cTkpUQev67X/FsB1aQJE9ljNCQPazu6NldGqvHJgf3rfYTU
+   wZ8Zkuvx5wAJIPHiDsSWbXFj9rIU+3lctmKtQllsCbOqMiaQQdM/705Xt
+   XSYrd5NrqdkCZCGYIeenXG8SG+BQOU3y2tUZpfEwvceztOCyhI57rTQdg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="373707178"
 X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="388483984"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 01:43:31 -0700
+   d="scan'208";a="373707178"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 01:43:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="711071716"
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="851850895"
 X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="711071716"
+   d="scan'208";a="851850895"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 02 Nov 2023 01:43:29 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Nov 2023 01:43:28 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qyTIV-0001Hd-0C;
-        Thu, 02 Nov 2023 08:43:27 +0000
-Date:   Thu, 2 Nov 2023 16:42:39 +0800
+        id 1qyTIU-0001HU-1C;
+        Thu, 02 Nov 2023 08:43:26 +0000
+Date:   Thu, 2 Nov 2023 16:42:40 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Yonghong Song <yonghong.song@linux.dev>
+To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: kernel/bpf/helpers.c:1905:19: warning: no previous declaration for
- 'bpf_percpu_obj_new_impl'
-Message-ID: <202311021613.I5dZri9c-lkp@intel.com>
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: arch/sh/boards/mach-hp6xx/hp6xx_apm.c:32:22: warning: variable
+ 'backup' set but not used
+Message-ID: <202311021607.1gLwwwRL-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -63,150 +63,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yonghong,
+Hi Masahiro,
 
 FYI, the error/warning still remains.
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
-commit: 36d8bdf75a93190e5669b9d1d95994e13e15ba1d bpf: Add alloc/xchg/direct_access support for local percpu kptr
-date:   8 weeks ago
-config: x86_64-buildonly-randconfig-006-20231102 (https://download.01.org/0day-ci/archive/20231102/202311021613.I5dZri9c-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021613.I5dZri9c-lkp@intel.com/reproduce)
+commit: 706afcea16cd83fecb7c2229ccc31bb237ffdbef sh: Fix -Wmissing-include-dirs warnings for various platforms
+date:   4 months ago
+config: sh-hp6xx_defconfig (https://download.01.org/0day-ci/archive/20231102/202311021607.1gLwwwRL-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021607.1gLwwwRL-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311021613.I5dZri9c-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021607.1gLwwwRL-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   kernel/bpf/helpers.c:1891:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:1905:19: warning: no previous declaration for 'bpf_percpu_obj_new_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1933:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:1941:18: warning: no previous declaration for 'bpf_percpu_obj_drop_impl' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1947:19: warning: no previous declaration for 'bpf_refcount_acquire_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1992:17: warning: no previous declaration for 'bpf_list_push_front_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2002:17: warning: no previous declaration for 'bpf_list_push_back_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2035:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2040:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2045:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2101:17: warning: no previous declaration for 'bpf_rbtree_add_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
-                    ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2111:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2124:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2135:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_task_release(struct task_struct *p)
-                     ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2224:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2265:19: warning: no previous declaration for 'bpf_dynptr_slice' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2349:19: warning: no previous declaration for 'bpf_dynptr_slice_rdwr' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2380:17: warning: no previous declaration for 'bpf_dynptr_adjust' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
-                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2398:18: warning: no previous declaration for 'bpf_dynptr_is_null' [-Wmissing-declarations]
-    __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2403:18: warning: no previous declaration for 'bpf_dynptr_is_rdonly' [-Wmissing-declarations]
-    __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-                     ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2411:19: warning: no previous declaration for 'bpf_dynptr_size' [-Wmissing-declarations]
-    __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2419:17: warning: no previous declaration for 'bpf_dynptr_clone' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
-                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2432:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
-                      ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2437:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2442:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_lock(void)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2447:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_unlock(void)
-                     ^~~~~~~~~~~~~~~~~~~
+   arch/sh/boards/mach-hp6xx/hp6xx_apm.c: In function 'hp6x0_apm_get_power_status':
+>> arch/sh/boards/mach-hp6xx/hp6xx_apm.c:32:22: warning: variable 'backup' set but not used [-Wunused-but-set-variable]
+      32 |         int battery, backup, charging, percentage;
+         |                      ^~~~~~
 
 
-vim +/bpf_percpu_obj_new_impl +1905 kernel/bpf/helpers.c
+vim +/backup +32 arch/sh/boards/mach-hp6xx/hp6xx_apm.c
 
-  1904	
-> 1905	__bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-  1906	{
-  1907		u64 size = local_type_id__k;
-  1908	
-  1909		/* The verifier has ensured that meta__ign must be NULL */
-  1910		return bpf_mem_alloc(&bpf_global_percpu_ma, size);
-  1911	}
-  1912	
-  1913	/* Must be called under migrate_disable(), as required by bpf_mem_free */
-  1914	void __bpf_obj_drop_impl(void *p, const struct btf_record *rec)
-  1915	{
-  1916		if (rec && rec->refcount_off >= 0 &&
-  1917		    !refcount_dec_and_test((refcount_t *)(p + rec->refcount_off))) {
-  1918			/* Object is refcounted and refcount_dec didn't result in 0
-  1919			 * refcount. Return without freeing the object
-  1920			 */
-  1921			return;
-  1922		}
-  1923	
-  1924		if (rec)
-  1925			bpf_obj_free_fields(rec, p);
-  1926	
-  1927		if (rec && rec->refcount_off >= 0)
-  1928			bpf_mem_free_rcu(&bpf_global_ma, p);
-  1929		else
-  1930			bpf_mem_free(&bpf_global_ma, p);
-  1931	}
-  1932	
-  1933	__bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-  1934	{
-  1935		struct btf_struct_meta *meta = meta__ign;
-  1936		void *p = p__alloc;
-  1937	
-  1938		__bpf_obj_drop_impl(p, meta ? meta->record : NULL);
-  1939	}
-  1940	
-> 1941	__bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
-  1942	{
-  1943		/* The verifier has ensured that meta__ign must be NULL */
-  1944		bpf_mem_free_rcu(&bpf_global_percpu_ma, p__alloc);
-  1945	}
-  1946	
+dd4f99b42dcce8 arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2008-03-06  29  
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  30  static void hp6x0_apm_get_power_status(struct apm_power_info *info)
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  31  {
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24 @32  	int battery, backup, charging, percentage;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  33  	u8 pgdr;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  34  
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  35  	battery		= adc_single(ADC_CHANNEL_BATTERY);
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  36  	backup		= adc_single(ADC_CHANNEL_BACKUP);
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  37  	charging	= adc_single(ADC_CHANNEL_CHARGE);
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  38  
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  39  	percentage = 100 * (battery - HP680_BATTERY_MIN) /
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  40  			   (HP680_BATTERY_MAX - HP680_BATTERY_MIN);
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  41  
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  42  	/* % of full battery */
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  43  	info->battery_life = percentage;
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  44  
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  45  	/* We want our estimates in minutes */
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  46  	info->units = 0;
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  47  
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  48  	/* Extremely(!!) rough estimate, we will replace this with a datalist later on */
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  49  	info->time = (2 * battery);
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  50  
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  51  	info->ac_line_status = (battery > HP680_BATTERY_AC_ON) ?
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  52  			 APM_AC_ONLINE : APM_AC_OFFLINE;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  53  
+9d56dd3b083a3b arch/sh/boards/mach-hp6xx/hp6xx_apm.c Paul Mundt         2010-01-26  54  	pgdr = __raw_readb(PGDR);
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  55  	if (pgdr & PGDR_MAIN_BATTERY_OUT) {
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  56  		info->battery_status	= APM_BATTERY_STATUS_NOT_PRESENT;
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  57  		info->battery_flag	= 0x80;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  58  	} else if (charging < 8) {
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  59  		info->battery_status	= APM_BATTERY_STATUS_CHARGING;
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  60  		info->battery_flag	= 0x08;
+8b03c040e4efaa arch/sh/boards/hp6xx/hp6xx_apm.c      Kristoffer Ericson 2008-03-04  61  		info->ac_line_status	= 0x01;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  62  	} else if (percentage <= APM_CRITICAL) {
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  63  		info->battery_status	= APM_BATTERY_STATUS_CRITICAL;
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  64  		info->battery_flag	= 0x04;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  65  	} else if (percentage <= APM_LOW) {
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  66  		info->battery_status	= APM_BATTERY_STATUS_LOW;
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  67  		info->battery_flag	= 0x02;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  68  	} else {
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  69  		info->battery_status	= APM_BATTERY_STATUS_HIGH;
+0a9b0db19262db arch/sh/boards/hp6xx/hp6xx_apm.c      Paul Mundt         2007-01-24  70  		info->battery_flag	= 0x01;
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  71  	}
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  72  }
+3aa770e7972723 arch/sh/boards/hp6xx/hp6xx_apm.c      Andriy Skulysh     2006-09-27  73  
+
+:::::: The code at line 32 was first introduced by commit
+:::::: 0a9b0db19262dbb09f3a34195e68cafd5dc3fa10 [APM] SH: Convert to use shared APM emulation.
+
+:::::: TO: Paul Mundt <lethal@linux-sh.org>
+:::::: CC: Ralf Baechle <ralf@linux-mips.org>
 
 -- 
 0-DAY CI Kernel Test Service
