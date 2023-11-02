@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D487DFB69
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1487DFB6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjKBUUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
+        id S1345530AbjKBUVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 16:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbjKBUUs (ORCPT
+        with ESMTP id S229650AbjKBUUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:20:48 -0400
+        Thu, 2 Nov 2023 16:20:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D069D68
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A3DD6B
         for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:20:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9143DC433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A82BFC433D9;
         Thu,  2 Nov 2023 20:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1698956430;
-        bh=XIqNneDvwTUx7cZETBqQ41jJPKUkTvgEnD4GcJ4v2qE=;
+        bh=o+okMsX1sujuGrVBY8RFU/Wu9ztfX9TyxTvpmsJCxx4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=l6Qo4iPat8GOPplyhUoIrrYPBX9OsgqRtj7hPbT5ygjd3kcrurT4pXbrpw7oSQr+1
-         +C4cnwXyza0086uofo81tbCsVwG/hjZ66OAXIF0frdhhrssZQeujDzBO1+dICvbB+N
-         /RUrJ3pfFFJ0lbWA4qmD2E52ndGB324EVVEz545K/2ONZLmwFld3D7g9LVWbVu4J3I
-         xDLJ5gBAfXlqrhNlfrbsYH4EKerSqYwFQ113ClOBP8Uml3PwRETc9Ukfc56ZG42byR
-         OLuRFDmMZAXcoKs0TKGvEaugi+OKUu8d849z/vzxQ1WuEghkVPMnsyDi4KlqlrE0vb
-         rgRxSwAcGdNYw==
+        b=HHDH5fW0VoxooDlTJ+8nCB5rfErz3QU6csb2u63bYlKAc6kiSvrDayvvYChCW+IMH
+         a7mtiHV8kej5cPyJ1h0X6+h7+xFcZMk+Um3WR4lOVGvd4UJH3V2i46r4OTOKSWHqQI
+         iYDaqWP4P/zwIpv4fVYtPcp62WuQDFfnmTylMtQlAjcu74d6WfF2lie6rQ9k55E80Y
+         jwVyrJ2I5T3RoQ4FJWF6DB/PKvZAcbHzgi94UiMPF1/BDuzwJ58WV3MsbPAwrIB0BD
+         GXXwvxz9aUIaZbHH8cYR90KL6sIlQigiYe3rQ3KsehR9noDPzPrJRhTi3BaCGUFO1v
+         A5fUJgUgMGWvQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6EC45C691E1;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 84251E00081;
         Thu,  2 Nov 2023 20:20:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/6] riscv: SCS support
+Subject: Re: [PATCH v2 0/2] riscv: errata: improve T-Head CMO
 From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169895643044.22248.9260509736343720996.git-patchwork-notify@kernel.org>
+Message-Id: <169895643053.22248.14459905412132338813.git-patchwork-notify@kernel.org>
 Date:   Thu, 02 Nov 2023 20:20:30 +0000
-References: <20230927224757.1154247-8-samitolvanen@google.com>
-In-Reply-To: <20230927224757.1154247-8-samitolvanen@google.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
+References: <20230827090813.1353-1-jszhang@kernel.org>
+In-Reply-To: <20230827090813.1353-1-jszhang@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
 Cc:     linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, keescook@chromium.org,
-        cleger@rivosinc.com, guoren@kernel.org, debug@rivosinc.com,
-        nathan@kernel.org, ndesaulniers@google.com, maskray@google.com,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, guoren@kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,30 +58,22 @@ Hello:
 This series was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Wed, 27 Sep 2023 22:47:58 +0000 you wrote:
-> Hi folks,
+On Sun, 27 Aug 2023 17:08:11 +0800 you wrote:
+> This is a renew of Icenowy patch series[1], patch1 is necessary to
+> make T-Head C910 powered SoCs CMO work correctly. patch2 is to name
+> those instructions following thead-extension-spec.
 > 
-> This series adds Shadow Call Stack (SCS) support for RISC-V. SCS
-> uses compiler instrumentation to store return addresses in a
-> separate shadow stack to protect them against accidental or
-> malicious overwrites. More information about SCS can be found
-> here:
+> Icenowy Zheng (2):
+>   riscv: errata: fix T-Head dcache.cva encoding
+>   riscv: errata: prefix T-Head mnemonics with th.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v4,1/6] riscv: VMAP_STACK overflow detection thread-safe
-    https://git.kernel.org/riscv/c/be97d0db5f44
-  - [v4,2/6] riscv: Deduplicate IRQ stack switching
-    https://git.kernel.org/riscv/c/82982fdd5133
-  - [v4,3/6] riscv: Move global pointer loading to a macro
-    https://git.kernel.org/riscv/c/e609b4f4252a
-  - [v4,4/6] riscv: Implement Shadow Call Stack
-    https://git.kernel.org/riscv/c/d1584d791a29
-  - [v4,5/6] riscv: Use separate IRQ shadow call stacks
-    https://git.kernel.org/riscv/c/c40fef858d00
-  - [v4,6/6] lkdtm: Fix CFI_BACKWARD on RISC-V
-    https://git.kernel.org/riscv/c/245561ba6d5d
+  - [v2,1/2] riscv: errata: fix T-Head dcache.cva encoding
+    (no matching commit)
+  - [v2,2/2] riscv: errata: prefix T-Head mnemonics with th.
+    https://git.kernel.org/riscv/c/c1c99e5f1b13
 
 You are awesome, thank you!
 -- 
