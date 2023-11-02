@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B17B7DECC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721E37DECC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbjKBGEV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 02:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        id S232540AbjKBGFC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 02:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKBGET (ORCPT
+        with ESMTP id S231529AbjKBGFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 02:04:19 -0400
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE58BD
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 23:04:13 -0700 (PDT)
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28023eadc70so600182a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 23:04:13 -0700 (PDT)
+        Thu, 2 Nov 2023 02:05:00 -0400
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6037EA6
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 23:04:58 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-280260db156so590281a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 23:04:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698905053; x=1699509853;
+        d=1e100.net; s=20230601; t=1698905098; x=1699509898;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N9JmNRCSMX3cxhvTtJqtyhnY7GO8nXDu3IZHQQ4SY6Q=;
-        b=RqERb01vxxCQgsKTbHqTt9pK51tYaNUhA+3JTcfAu62bc3ORCDBkYFFf6g0v4k8PW4
-         ekriYM9fJ2Ju2MFy0qeLrfl1siK0WDF9CFKDCfgEQblkeX7j2R6mdU03tlrGyeu14saM
-         qv328bqoSx5DtMDZ3yzOdYMVCQ7DqM5cC+BfdUNlAZHvcB6xxm+n5wIlPKYavXgFCASh
-         KgsuGWQ1XsH2ePh2gkAO84paaXXdnHdJu07yvRgxwPOteUZE8GqZcoumNs6zmGQe1Ve4
-         azpUwi+vHV83rgZTyjn1fYc5jaIUXMdvUhpJpKvlopxp/kVVcTYCGsRPzIi72/lDvFrI
-         XOAg==
-X-Gm-Message-State: AOJu0YyicEvQpJyAN8wjQFs1qpzWyyl6gCefibk5EFec4jATmiUKjtFQ
-        9de+EV5mGxfUoDp2CUTef24A16t1Fgp99KgrBQQ=
-X-Google-Smtp-Source: AGHT+IGUcw6LUfhJ7ZpBdSkq41ZauqR5pMoQBxn2AXiDoGvdWf73Ev1vtE4shTudKbauiWEdIwK6NQ/20zkP9T8kchQ=
-X-Received: by 2002:a17:90b:3601:b0:27d:839:52ae with SMTP id
- ml1-20020a17090b360100b0027d083952aemr15218600pjb.32.1698905052648; Wed, 01
- Nov 2023 23:04:12 -0700 (PDT)
+        bh=jQqLDfCUNhZOdjIXAMjs/nSqV0LAthk72rfDvChjyOs=;
+        b=f6YdYdRRoiIp/wbVa2XKqzAfyDsMWFn1xiQJPQzrMV3DEQk+f6kWH8ffieWxt2U2aQ
+         UMcy2JS6xWH2HxRfBAzXj3fGBtrE4gSNBUbUeV80QlQaChPTNLORy0+iuXveX68GxLPm
+         mBdw+Hb63unjSnlkLoGzzk5Dr5oiAQFtZ2mVLB8UqXh2soywHmyupRmJdCQY7zfS2ixy
+         8DIm64ZV8Kx29hlD2fmMKm0MeYBdVJuhgxWp0MPRdvB2N9MgTlfBKiUakf3RJcea7pfe
+         FrIKpoALVNXt5F6R+G4xl+ndl+nqnk5bQGBkoyOSr1d+d+6hax4MxzlvTELUog/A7zxj
+         H2Cw==
+X-Gm-Message-State: AOJu0Yz39yAeO3RpPIm4bDvljmf+wC1BxM2aS3blAl7guu1ilL66wNZf
+        MiGmBxrHdcapv/tZvfm+6SDP4wL5yvLBrymqGYxSR3X+hHU=
+X-Google-Smtp-Source: AGHT+IF3ZrmIivZ+xS9ued53+mLO4o8+bdImPumo8rTqwa246M/H8qZ/KHZSju8YMX1RBZeA7HmnnniZpr2FxDCxxpE=
+X-Received: by 2002:a17:90b:3654:b0:280:125:e52e with SMTP id
+ nh20-20020a17090b365400b002800125e52emr15176002pjb.35.1698905097710; Wed, 01
+ Nov 2023 23:04:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZUEddFPTJHVLhH/6@kernel.org>
-In-Reply-To: <ZUEddFPTJHVLhH/6@kernel.org>
+References: <ZUEehyDk0FkPnvMR@kernel.org>
+In-Reply-To: <ZUEehyDk0FkPnvMR@kernel.org>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 1 Nov 2023 23:04:01 -0700
-Message-ID: <CAM9d7cjJxS-weBz0xKNm1EzQAT42c9T4w=6Fe=ux9DMCLz3KUA@mail.gmail.com>
-Subject: Re: [PATCH next 1/1] perf beauty socket/prctl_option: Cope with
- extended regexp complaint by grep
+Date:   Wed, 1 Nov 2023 23:04:46 -0700
+Message-ID: <CAM9d7ciFJGWF1y0h+ZFNNhaVCLb4AUqdv+8FFQE0xZX7rfF_ag@mail.gmail.com>
+Subject: Re: [PATCH next 1/1] perf build: Warn about missing libelf before
+ warning about missing libbpf
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
@@ -52,7 +52,7 @@ Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,17 +60,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 8:30 AM Arnaldo Carvalho de Melo
+On Tue, Oct 31, 2023 at 8:34 AM Arnaldo Carvalho de Melo
 <acme@kernel.org> wrote:
 >
-> Noticed on fedora 38, the extended regexp that so far was ok for both
-> grep and sed now gets complaints by grep, that says '/' doesn't need to
-> be escaped with '\'.
+> As libelf is a requirement for libbpf if it is not available, as in some
+> container build tests where NO_LIBELF=1 is used, then better warn about
+> the most basic library first.
 >
-> So stop using '/' in sed, use '%' instead and remove the \ before / in
-> the common extended regexp.
+> Ditto for libz, check its availability before libbpf too.
 >
-> Link: https://x.com/SMT_Solvers/status/1710380010098344192?s=20
 > Cc: Adrian Hunter <adrian.hunter@intel.com>
 > Cc: Ian Rogers <irogers@google.com>
 > Cc: Jiri Olsa <jolsa@kernel.org>
@@ -83,43 +81,33 @@ Thanks,
 Namhyung
 
 > ---
->  tools/perf/trace/beauty/prctl_option.sh | 4 ++--
->  tools/perf/trace/beauty/socket.sh       | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+>  tools/perf/Makefile.config | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/perf/trace/beauty/prctl_option.sh b/tools/perf/trace/beauty/prctl_option.sh
-> index 8059342ca4126c38..9455d9672f140d13 100755
-> --- a/tools/perf/trace/beauty/prctl_option.sh
-> +++ b/tools/perf/trace/beauty/prctl_option.sh
-> @@ -4,9 +4,9 @@
->  [ $# -eq 1 ] && header_dir=$1 || header_dir=tools/include/uapi/linux/
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index b3e6ed10f40c6f6c..8b6cffbc485834c8 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -680,15 +680,15 @@ ifndef BUILD_BPF_SKEL
+>  endif
 >
->  printf "static const char *prctl_options[] = {\n"
-> -regex='^#define[[:space:]]{1}PR_(\w+)[[:space:]]*([[:xdigit:]]+)([[:space:]]*\/.*)?$'
-> +regex='^#define[[:space:]]{1}PR_(\w+)[[:space:]]*([[:xdigit:]]+)([[:space:]]*/.*)?$'
->  grep -E $regex ${header_dir}/prctl.h | grep -v PR_SET_PTRACER | \
-> -       sed -r "s/$regex/\2 \1/g"       | \
-> +       sed -E "s%$regex%\2 \1%g"       | \
->         sort -n | xargs printf "\t[%s] = \"%s\",\n"
->  printf "};\n"
->
-> diff --git a/tools/perf/trace/beauty/socket.sh b/tools/perf/trace/beauty/socket.sh
-> index 8bc7ba62203e4a9d..670c6db298ae0298 100755
-> --- a/tools/perf/trace/beauty/socket.sh
-> +++ b/tools/perf/trace/beauty/socket.sh
-> @@ -18,10 +18,10 @@ grep -E $ipproto_regex ${uapi_header_dir}/in.h | \
->  printf "};\n\n"
->
->  printf "static const char *socket_level[] = {\n"
-> -socket_level_regex='^#define[[:space:]]+SOL_(\w+)[[:space:]]+([[:digit:]]+)([[:space:]]+\/.*)?'
-> +socket_level_regex='^#define[[:space:]]+SOL_(\w+)[[:space:]]+([[:digit:]]+)([[:space:]]+/.*)?'
->
->  grep -E $socket_level_regex ${beauty_header_dir}/socket.h | \
-> -       sed -r "s/$socket_level_regex/\2 \1/g"  | \
-> +       sed -E "s%$socket_level_regex%\2 \1%g"  | \
->         sort -n | xargs printf "\t[%s] = \"%s\",\n"
->  printf "};\n\n"
->
+>  ifeq ($(BUILD_BPF_SKEL),1)
+> -  ifeq ($(filter -DHAVE_LIBBPF_SUPPORT, $(CFLAGS)),)
+> -    dummy := $(warning Warning: Disabled BPF skeletons as libbpf is required)
+> -    BUILD_BPF_SKEL := 0
+> -  else ifeq ($(filter -DHAVE_LIBELF_SUPPORT, $(CFLAGS)),)
+> +  ifeq ($(filter -DHAVE_LIBELF_SUPPORT, $(CFLAGS)),)
+>      dummy := $(warning Warning: Disabled BPF skeletons as libelf is required by bpftool)
+>      BUILD_BPF_SKEL := 0
+>    else ifeq ($(filter -DHAVE_ZLIB_SUPPORT, $(CFLAGS)),)
+>      dummy := $(warning Warning: Disabled BPF skeletons as zlib is required by bpftool)
+>      BUILD_BPF_SKEL := 0
+> +  else ifeq ($(filter -DHAVE_LIBBPF_SUPPORT, $(CFLAGS)),)
+> +    dummy := $(warning Warning: Disabled BPF skeletons as libbpf is required)
+> +    BUILD_BPF_SKEL := 0
+>    else ifeq ($(call get-executable,$(CLANG)),)
+>      dummy := $(warning Warning: Disabled BPF skeletons as clang ($(CLANG)) is missing)
+>      BUILD_BPF_SKEL := 0
 > --
 > 2.41.0
 >
