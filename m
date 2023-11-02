@@ -2,177 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE21D7DF774
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A7B7DF77D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbjKBQMR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 12:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
+        id S1347090AbjKBQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235171AbjKBQMO (ORCPT
+        with ESMTP id S229589AbjKBQR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:12:14 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A4B13D;
-        Thu,  2 Nov 2023 09:12:11 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qyaIV-001TsH-OS; Thu, 02 Nov 2023 17:11:55 +0100
-Received: from p5dc55299.dip0.t-ipconnect.de ([93.197.82.153] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qyaIV-001Hrk-Hu; Thu, 02 Nov 2023 17:11:55 +0100
-Message-ID: <72eadf93a7b7d70ad47b72b6a70bc5f2a62e6ae8.camel@physik.fu-berlin.de>
-Subject: [GIT PULL] sh updates for v6.7
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-sh@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 02 Nov 2023 17:11:54 +0100
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 93.197.82.153
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 2 Nov 2023 12:17:27 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C736212D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:17:23 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so1832512a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698941842; x=1699546642; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PcTsZNfH8uzMszz0/Isw0cv0s2mphvKpQCC7w0T8ytw=;
+        b=otdArOjvbDaZKoyqwx/hcM6m8Hh3K6iOLKCtN+GQhLhB0/nxAXccCNBJvy6BXvmJDM
+         0DkbNCSYO1RaKOShRhycnrgMv2PJ8AUUrD0OgQ79+c1rzXkIwsbzpNOdVXPAXTOeVddG
+         UN6KT7YIWvd2wRFlGQS1Uk1r7w5FA93Tw1Ardc7+8k23RHoweiUMMW7GFNNc05bd/X5j
+         U/dXEjyqb5YK+ivGm69knkxPeBpr1Ze3w6rS/5o1+dJ1FGG8oUUm/KUC3N+y+IdY2yMT
+         9X8pYDZhU2EPooYjZUgemmUjteMgjIu8we2/b1nwF+LdBJY1yWQnjKKvNKXmVU3gM3FN
+         LnwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698941842; x=1699546642;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PcTsZNfH8uzMszz0/Isw0cv0s2mphvKpQCC7w0T8ytw=;
+        b=LNiUVktCTCytEeA2O8sMCaxbkClrQFPSGPmDbOOOmA6MZuHmBr/1bghIFPEAJNvsOO
+         xXiTaRkYd3zUr6ypYrSeVhV+k+WF5V1GAz8BaAUkvDlo9Z/aYku5+fsZjyo4OTIoZYLc
+         fi2zufu5m1CPOs9kewJFRucWowEvrpQ+5a/+0A7zehmQJ3GU5K/HzpI045g734e5gpG4
+         aiWNJ0r1hNr/P1d9tKlk/KXStf4zhvX9yry3Ur7u/RZVDBfjhLIotKbGajSY7HuOz5ht
+         JzD985mWJstPJu9ut6S17frNLGyskCF9OAwpuIJws0FVxA1x5/3ruLazXbF6RA9/RjFd
+         lwgQ==
+X-Gm-Message-State: AOJu0YzpxunF2jg89txmNSql7dn8pQQIup6lM+UU3AIyUKJINFMVrpjP
+        AXMx1b0sr9d3cFW97JoZOEDt1g==
+X-Google-Smtp-Source: AGHT+IHdrz4vMAH2qUJu1kwrlt/8tMoVWJZq1nPfpGgOHFt7yVrmQQe4qPXrPH6Wb7NkVdYDUCFrzA==
+X-Received: by 2002:a50:9fe2:0:b0:542:da34:cb7c with SMTP id c89-20020a509fe2000000b00542da34cb7cmr12171037edf.19.1698941842188;
+        Thu, 02 Nov 2023 09:17:22 -0700 (PDT)
+Received: from localhost ([2a01:e0a:448:76e0:588c:af9c:bddc:7245])
+        by smtp.gmail.com with ESMTPSA id a5-20020a509e85000000b0053e3d8f1d9fsm45300edf.67.2023.11.02.09.17.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 09:17:21 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 02 Nov 2023 17:17:20 +0100
+Message-Id: <CWOGMAUT9MKY.2IBKELIOR1CF7@burritosblues>
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Cc:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <jpanis@baylibre.com>, <jneanne@baylibre.com>, <u-kumar1@ti.com>
+Subject: Re: [PATCH v8] rtc: tps6594: Add driver for TPS6594 RTC
+From:   "Esteban Blanc" <eblanc@baylibre.com>
+X-Mailer: aerc 0.14.0
+References: <20231102132616.1130960-1-eblanc@baylibre.com>
+ <CAHp75VdvR0H7XVLWGqdZqSgoHprUUPQHGiyWEEaHjTgEbeinqQ@mail.gmail.com>
+In-Reply-To: <CAHp75VdvR0H7XVLWGqdZqSgoHprUUPQHGiyWEEaHjTgEbeinqQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+On Thu Nov 2, 2023 at 5:00 PM CET, Andy Shevchenko wrote:
+> On Thu, Nov 2, 2023 at 3:26=E2=80=AFPM Esteban Blanc <eblanc@baylibre.com=
+> wrote:
+>
+> > Notes:
+> >     This patch was picked from a series since there is no dependency be=
+tween
+> >     the two patches.
+>
+> Not sure if RTC maintainer uses the b4 tool, but as I said in previous
+> email for pinctrl change, there is no need to resend. b4 has an
+> ability to select patches from the series to be applied.
 
-While the previously announced patch series for converting arch/sh to device trees is
-not yet ready for inclusion to mainline and therefore didn't make it for this pull
-request, there are still a small number changes for v6.7 which include one platform
-(board plus CPU and driver code) removal plus two fixes.
+Oh that's good to know, I was not aware of that.
+I resent it because there was some minor nits that I fixed on both
+patches.
 
-The removal sent in by Arnd Bergmann concerns the microdev board which was an early
-SuperH prototype board that was never used in production. With the board removed, we
-were able to drop the now unused code for the SH4-202 CPU and well as the driver code
-for the superhyway bus and a custom implementation for ioport_map() and ioport_unmap()
-which will allow us to simplify ioport handling in the future.
+Thanks for your time Andy,
 
-Another patch set by Geert Uytterhoeven revives SuperH BIOS earlyprintk support which got
-accidentally disabled in e76fe57447e88916 ("sh: Remove old early serial console code V2"),
-the second patch in the series updates the documentation.
-
-Finally, a patch by Masami Hiramatsu fixes a regression reported by the kernel test robot
-which uncovered that arch/sh is not implementing arch_cmpxchg_local() and therefore needs
-use __generic_cmpxchg_local() instead.
-
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.7-tag1
-
-for you to fetch changes up to 63f1ee206170ad2363aa25fd99bd5ae529c690ae:
-
-  locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local() (2023-11-02 10:13:12 +0100)
-
-Thanks for pulling!
-
-Adrian
-
-----------------------------------------------------------------
-sh updates for v6.7
-
-- locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local()
-- Documentation: kernel-parameters: Add earlyprintk=bios on SH
-- sh: bios: Revive earlyprintk support
-- sh: machvec: Remove custom ioport_{un,}map()
-- sh: Remove superhyway bus support
-- sh: Remove unused SH4-202 support
-- sh: Remove stale microdev board
-
-----------------------------------------------------------------
-Arnd Bergmann (4):
-      sh: Remove stale microdev board
-      sh: Remove unused SH4-202 support
-      sh: Remove superhyway bus support
-      sh: machvec: Remove custom ioport_{un,}map()
-
-Geert Uytterhoeven (2):
-      sh: bios: Revive earlyprintk support
-      Documentation: kernel-parameters: Add earlyprintk=bios on SH
-
-Masami Hiramatsu (1):
-      locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local()
-
- Documentation/admin-guide/kernel-parameters.txt |   3 +
- Documentation/arch/sh/index.rst                 |   6 -
- arch/sh/Kconfig                                 |  12 +-
- arch/sh/Kconfig.debug                           |  11 ++
- arch/sh/boards/Kconfig                          |   7 -
- arch/sh/boards/Makefile                         |   1 -
- arch/sh/boards/mach-microdev/Makefile           |   6 -
- arch/sh/boards/mach-microdev/fdc37c93xapm.c     | 157 ----------------
- arch/sh/boards/mach-microdev/io.c               | 123 -------------
- arch/sh/boards/mach-microdev/irq.c              | 150 ---------------
- arch/sh/boards/mach-microdev/setup.c            | 197 --------------------
- arch/sh/configs/microdev_defconfig              |  42 -----
- arch/sh/drivers/Makefile                        |   1 -
- arch/sh/drivers/superhyway/Makefile             |   7 -
- arch/sh/drivers/superhyway/ops-sh4-202.c        | 168 -----------------
- arch/sh/include/asm/cmpxchg.h                   |   9 +
- arch/sh/include/asm/io.h                        |   4 +-
- arch/sh/include/asm/machvec.h                   |   5 -
- arch/sh/include/mach-common/mach/microdev.h     |  69 -------
- arch/sh/kernel/cpu/sh4/Makefile                 |   4 -
- arch/sh/kernel/cpu/sh4/clock-sh4-202.c          | 174 ------------------
- arch/sh/kernel/cpu/sh4/setup-sh4-202.c          | 139 --------------
- arch/sh/kernel/ioport.c                         |  13 +-
- drivers/net/ethernet/smsc/smc91x.h              |  19 --
- drivers/sh/Makefile                             |   1 -
- drivers/sh/superhyway/Makefile                  |   8 -
- drivers/sh/superhyway/superhyway-sysfs.c        |  54 ------
- drivers/sh/superhyway/superhyway.c              | 234 ------------------------
- include/linux/superhyway.h                      | 107 -----------
- 29 files changed, 27 insertions(+), 1704 deletions(-)
- delete mode 100644 arch/sh/boards/mach-microdev/Makefile
- delete mode 100644 arch/sh/boards/mach-microdev/fdc37c93xapm.c
- delete mode 100644 arch/sh/boards/mach-microdev/io.c
- delete mode 100644 arch/sh/boards/mach-microdev/irq.c
- delete mode 100644 arch/sh/boards/mach-microdev/setup.c
- delete mode 100644 arch/sh/configs/microdev_defconfig
- delete mode 100644 arch/sh/drivers/superhyway/Makefile
- delete mode 100644 arch/sh/drivers/superhyway/ops-sh4-202.c
- delete mode 100644 arch/sh/include/mach-common/mach/microdev.h
- delete mode 100644 arch/sh/kernel/cpu/sh4/clock-sh4-202.c
- delete mode 100644 arch/sh/kernel/cpu/sh4/setup-sh4-202.c
- delete mode 100644 drivers/sh/superhyway/Makefile
- delete mode 100644 drivers/sh/superhyway/superhyway-sysfs.c
- delete mode 100644 drivers/sh/superhyway/superhyway.c
- delete mode 100644 include/linux/superhyway.h
-
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+--
+Esteban Blanc
+BayLibre
