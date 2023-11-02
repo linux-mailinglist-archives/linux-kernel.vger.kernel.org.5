@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 084DE7DF4E4
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB537DF4E5
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376795AbjKBO0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        id S1376803AbjKBO0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376597AbjKBO03 (ORCPT
+        with ESMTP id S1376794AbjKBO0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:26:29 -0400
+        Thu, 2 Nov 2023 10:26:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC12E12F
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:26:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6CA3C433C7;
-        Thu,  2 Nov 2023 14:26:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559A912D;
+        Thu,  2 Nov 2023 07:26:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D694DC433C8;
+        Thu,  2 Nov 2023 14:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698935185;
-        bh=rcXBjMiQQ807SsSE73W1ZsB1P3MDsemZVPcElP+zMXY=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=hhMeKdRjUwLLB/3HZCgLSvJVy9zZIpSfUk20nwFGioelcmhY4pBPcK13HO1hFK/gb
-         OVromLYq9NbTv6i9Z4un9PKBVRVMFiK3Krhnuc/j5RXyZd0th8ot3CGoFVk7vUMWI/
-         mwkub2D5EV50L8liy8GTg97YCI7R2wfprqWhzqHWNNE9r7B00b91CYUQwsuHNRweJ/
-         gUAsBnTzYZZ3/roV6nh1rA9g5HgOZjqvltaIdy7p+ud0ADoCAV1yBbjY13l5CwBCse
-         pj2wQsuvZBL6dVahEthveQ6FFYV7CHvgzwe1g+DAaVSkGV4DXg4Zj/jk/x+7EfVNge
-         Wiz8oyY89ku5w==
+        s=k20201202; t=1698935188;
+        bh=N61FOLlzGjZfDLM5psX5nhlLEctf0TEJwdUj9EFXRZk=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=ebQdTQNQOdfYg5fW44PWKj7jORcpsJAuFTXN0lqt1IkszBrD6DQHcuAWEOLWWYDDA
+         4a0Lu32/+MUpgSA6PZJtx/mfNMtxFiwLEurHaSqStqA5weg0alBNH9als0/6XEpO1Z
+         V4pwgctsggd3j3helUUl2uEarIze9c2fL7DQXjRIkLV9pkIPEyLLBxZtazDZI3ida6
+         7WiIW/f+9LMndEXh6R+2yju5sS2XJLfgKpBlFgLEexjdLoctCemwhl6G6YZcOdpWe3
+         O9Onq7Ady5tT2wY1W12NxRYtykQC6j2EFXWZYKj5ED069sh7fqc2Y+drdK/tkYmBSB
+         nt/FE024pYcjA==
 From:   Mark Brown <broonie@kernel.org>
-To:     David Rau <David.Rau.opensource@dm.renesas.com>
-Cc:     support.opensource@diasemi.com, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, dmaluka@google.com
-In-Reply-To: <20231101022507.6226-1-David.Rau.opensource@dm.renesas.com>
-References: <20231101022507.6226-1-David.Rau.opensource@dm.renesas.com>
-Subject: Re: [PATCH] ASoC: da7219: Improve system suspend and resume
- handling
-Message-Id: <169893518346.36738.17294390778319166082.b4-ty@kernel.org>
-Date:   Thu, 02 Nov 2023 14:26:23 +0000
+To:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        liweilei@awinic.com, u.kleine-koenig@pengutronix.de,
+        yang.lee@linux.alibaba.com, nathan@kernel.org,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangweidong.a@awinic.com
+In-Reply-To: <20231101090211.177125-1-wangweidong.a@awinic.com>
+References: <20231101090211.177125-1-wangweidong.a@awinic.com>
+Subject: Re: [PATCH V2 0/3] ASoC: codecs: Modify some error codes
+Message-Id: <169893518558.36738.243491245634528224.b4-ty@kernel.org>
+Date:   Thu, 02 Nov 2023 14:26:25 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -52,11 +52,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Nov 2023 10:25:07 +0800, David Rau wrote:
-> When DA7219 is suspended, prevent the AAD IRQ handler is unexpectedly
-> executed and cause the I2C driver "Transfer while suspended" failure.
+On Wed, 01 Nov 2023 17:02:07 +0800, wangweidong.a@awinic.com wrote:
+> The maximum value that calib can set should be
+> consistent with the maximum value of re.
 > 
+> An error code should be return when the re is greater
+> than the maximum value or less than the minimum value
 > 
+> The value of vsense_select should be either 32
+> or 0 in both cases, so modify the
+> AW88399_DEV_VDSEL_VSENSE macro to 32.
+> 
+> [...]
 
 Applied to
 
@@ -64,8 +71,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: da7219: Improve system suspend and resume handling
-      commit: ab5201e20c181563774631258f737caeefed2364
+[1/3] ASoC: codecs: Modify the maximum value of calib
+      commit: c9e920ffa752b9047d65041cd70495409c768dd7
+[2/3] ASoC: codecs: Modify the wrong judgment of re value
+      commit: baf46c3c763809fbeabcff5ec6e2ff3081f755f2
+[3/3] ASoC: codecs: Modify macro value error
+      commit: b729598c1747576bb9a4c997190be3f7c2915726
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
