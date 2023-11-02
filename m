@@ -2,256 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48CD7DFA92
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156697DFAA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377425AbjKBTBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        id S1377204AbjKBTEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377374AbjKBTAz (ORCPT
+        with ESMTP id S1377117AbjKBTEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:00:55 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFB0184;
-        Thu,  2 Nov 2023 12:00:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DPwLF0tGRg+qpRP6tlQaPTMfFsbWgOmM5HI30t7UJia8k7J2KWLuLXIDhNr4EVgcVnaycJM6CQoLpyR6ro+HnWpkySAppf7hXrDdl52zwMS25ngQR81yYttuJNkSlpnVB9Etkb9/at3AxnAbgENDnV5kp2O8/QceeFbP8jt6ZwiHTak1lwjWxeCW4WN84Jtd4xZN0EKUDd3zeNqcsoDRVQ+Mshw1GcHNCWU5ufLtPPlgIZMoUcgw1vDJ4btUOGHc9C6XEnZgLdo5nbO4Y6imjGzXbu/0nOFu2n6Wdd49dq4706d8wkYjGJIyMI8bxHWFoihQOtiP6uwGmwLEQZlXMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c5Y28Wm2wIfxhJiYkMWDWW/VzW7YYYLCesct4WDAwPA=;
- b=LsGK8yrr63gmwpLZDyRoIkcHUqn02Gm7juNsRHXsRzROwy5rCoTHeoB18g6Wy/mZlgTWxNnwgJexXl5Y69RFfBunr0hPXm4WX/cKuub/Rwi+8hDkoQLug8QU/AYtB6sfERQqbH2MYUCuWJm4fl8qhmxmPxPzPewNcBlNnmpklinNobEUqKhSO5FZNDihywi4RJsWoPU0F73Q5FZRgNTk/Ql/gY0iViOUN+Wia8Gx4OZUeKK1kjZLNzHwHBTMvWOIS7FxQPRU5FUQ7/C67eN7AGioXSDrVwIJ8KN2hFOq9vJiInWKgFYkAVBpHVkDo1dZQogpYkLO5b+hJ6ac84ZKwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c5Y28Wm2wIfxhJiYkMWDWW/VzW7YYYLCesct4WDAwPA=;
- b=5clJhTyxIKPEDY7JPI9WPfAkdUBeSnRtP9s0VghzvtYBthDDLKp3uPPVgRP/eW4n6gI96T7Ei4h7g5Af+BiVCqHYFbaTAYCkuO/F/g+GJbTkBwrvWYSmeCMqxkLCdghfo2utE5lXai/dGC59HiKQQjF1IbEtTXj9kUR0wUivlCo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- CH0PR12MB5090.namprd12.prod.outlook.com (2603:10b6:610:bd::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6954.21; Thu, 2 Nov 2023 19:00:41 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5588:7117:d54e:9466%7]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 19:00:41 +0000
-Message-ID: <1eed6bfa-3e98-45d1-9908-2c5a0f3173c3@amd.com>
-Date:   Thu, 2 Nov 2023 15:00:37 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/edid: add a quirk for two 240Hz Samsung monitors
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Jerry Zuo <jerry.zuo@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <20231101210037.130494-1-hamza.mahfooz@amd.com>
- <CADnq5_Nv0MnG+pPvRQO37OP8iYwz8oGvFLs2g-+U=URHWcqJGw@mail.gmail.com>
-Content-Language: en-US
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <CADnq5_Nv0MnG+pPvRQO37OP8iYwz8oGvFLs2g-+U=URHWcqJGw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQBPR0101CA0339.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:6b::29) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+        Thu, 2 Nov 2023 15:04:33 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAAE1FE4;
+        Thu,  2 Nov 2023 12:01:58 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9d10f94f70bso190690966b.3;
+        Thu, 02 Nov 2023 12:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698951716; x=1699556516; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ifGnPdp78leEm8TF8GcQ6NdohnpOfA0bs4O5R/OYdS0=;
+        b=bftowuw9fxm5FezwOluOaECx8od2BlSFkYLjj6D5Bc5BsqBJqvZ3N2+QsjcK8J3nm8
+         yS/GF9r7j7MbLxymENSCtqHaxdWsPHZbFfSh+/GJtuzt7Xa9E1dhMsbvah8aL0oOFC4h
+         8uC9ZVdM3ou5uFFu3jGzxOnrn5Na09QJvzw8etDceibYQEFB9bmydjRjEDF1OmSx0BoN
+         +43wTMMdukkRjaKMHJ5BuoM+hxN/tNX1nFv1h/XAGiEQLbBUCfkR1LZe2Um0llay5RgS
+         CUsG8BuWxp3GtN6ngCk07zQettmf4qI242m1ndqWWtt13m/pgUFtECkDR0SD0pB3zGRL
+         i6xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698951716; x=1699556516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ifGnPdp78leEm8TF8GcQ6NdohnpOfA0bs4O5R/OYdS0=;
+        b=ijZID6sLIvN0bzVY4N6o7feghpwVJGROlLbHi87zQwps2HEY3tYh7Jh8hBlSPgLAm0
+         kxyRuLCdJVxekguhqfEZEgTStB0/6v7ymtnhGAHOfyPCPNV+DYT1cS3VN4VIRWRf6HlV
+         3AvweJ5SwBuZOffI2+Nu/cfQMlkN4jk5+C1IjAEqACuCuZZiQMSuvSYwfb/V2tnw1nW0
+         sSWa7wIVIrI6TKmtgny7w5Zn2Cp2VK5nc/wZOB54IuSt7UlABzjVBcTsSXmrJ7PSVvfZ
+         91QhUUh+v7AdOPzusDlFZfpRhzkYNlJ1/0A6EzifaP3Wv8au0FsLHV1czUceJg+KAsPK
+         /c4w==
+X-Gm-Message-State: AOJu0Yy/Q3SoHEeZ6PKUH6m2INgr9dQjhZ1HW1rPrcjbO8f9/eCi8thz
+        nZC0eMDSbKj4fegL+oUYY1M52Dl1zOzXdO5kCeU=
+X-Google-Smtp-Source: AGHT+IHNwR57IhzCX+H5PazBzQK6fP/65bHupUZWqtHI8AIq8RW79acIHA9KfkskZFZ1HjpDlYmLSgZ5ZF6+KYJh6KY=
+X-Received: by 2002:a17:906:ee85:b0:9be:dce3:6e07 with SMTP id
+ wt5-20020a170906ee8500b009bedce36e07mr5508068ejb.32.1698951716320; Thu, 02
+ Nov 2023 12:01:56 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CH0PR12MB5090:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c100731-7b0d-4241-f5c5-08dbdbd6023b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l36x+ebe/kKiGBQQNdYL5TUNMo7lHreDqJs51GtlnntZa75dSs9+YhJcTAsVXs1cPF+cIDH5enlvrHE0KfEmmj1WLKnnBXcRFdSZJKlRMYA0L1zjobIydMo1H+zcFWOoopPfpPSL5wMbizjH+DVDiVViN+fn2vTazfMzh8ntvgiAXwxj61SnVrCSQCry2jxc0ixLF/dIkXaECOODO/JRq5OduvAuZtHu3lv6J62ShZWDVV9QeL4sCbBjE+eQZdPipOdG1dzGPDYFGJI3bN1RGIehDA+DcMPP79o6ySevNXFHtK7gYLDHdexUTcvmet/USy8Uf/AvS3CuZA42JDtkp6AIeFk+pNt4tQmQZYrQA0KSg63/npJ41zARqYYh+m6uKzbvM7yN2dydg1vV8LCx6aanbpbqyaYqRQSjikMAvjg+i9Y5Iw9DPEvJnH0kiGwEHpAgCDyIH2f8zIWP4cy7FpHmpvqfrCjbnnNusLoDIylGxZden3cM44k5dxYFCVdKAAkPmqwxgbgOUynZB19kQbx8ljVXrUen66D7fuDyqAVxFfY8D7mTEEttynBCN5CNASp8Y4z+AnIMIqZKK/1kcMdZVrLzPAWTpcog/IOAJyjsppjDAHptMiutupU2KNkj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(2906002)(45080400002)(6486002)(966005)(478600001)(2616005)(36756003)(26005)(41300700001)(38100700002)(86362001)(31696002)(53546011)(83380400001)(6506007)(6666004)(6512007)(316002)(6916009)(66946007)(54906003)(66476007)(66556008)(44832011)(5660300002)(4326008)(8676002)(8936002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UVl1NytNZFNmV1hSTWRKZUxSSXpUdEZoZGFlWTJUdzAzVXpGSW5MaE5YNDBn?=
- =?utf-8?B?WDdqMGJmYjJzNlRWeHc2c3dzWGxjdlU0VFBzc2k5K1F2S01sSmZva3FveXRE?=
- =?utf-8?B?Zy9rQVFKekNjcG10YklWUVBQdUFpS0hXRFZSN3dDVzFQQVRESEtjdG9URG4y?=
- =?utf-8?B?Skd3bTZTd0lieC82NTdTd1RPeE1pTHVpMWhZMGxSekR5MHkwdFFkQ1NUU2dK?=
- =?utf-8?B?VjFFNEg5ZWRwcXhiV2wycHh2NEU3eStJQVlCQVMvTDVCR3pyRjVJL3JGK0NH?=
- =?utf-8?B?YWhQQndUZEZnSkN4blE5b3RWWWNuNCtHY0tlRTJjdHJ6dm05dUFkUWdOcStY?=
- =?utf-8?B?a0p0RjcrWEpzQ1VWR0RQVmJaNHJ6RXFDTlVCeVQ2WHlFQmYvV1VuNGhSYW1S?=
- =?utf-8?B?OXRkRmhQbFFLZk54dDZnaDVGOVJHTk1kOWc4ZGdRL1Ivd2p2L2JRUklYMCtP?=
- =?utf-8?B?SkhYeHJlS005eE1xTVh0YzEwVEE2NnFYVzNIOW9VRXlUdVhHSTFBT3JlVi9p?=
- =?utf-8?B?ZTdzNkt3M2tzckIyYWJRbjl1c05qb0NLQ3U5L2xySEhCM0t3cDh0b0U0Q0NJ?=
- =?utf-8?B?Y0JESmdMU1g3WVVXM09mYzcrS3hid0JKSDJjUFZOa0ovWVFxL3pTaHcwWXoz?=
- =?utf-8?B?M3ZGc0JMaEhiN2liK1hFOUVYalZoNkxhNENOdThTaFRMRHh4b243dHRvSUhX?=
- =?utf-8?B?eVRZcEdTelJGYVZwc3FMakhsa3hVRHp2KzJCTXVlZkZJWFMyU1QyQUFlTHRh?=
- =?utf-8?B?NVk1bmcwS1dhaE8wcUl3c1NEZlVOcTZwY1g1WXZjOVlVZ3NqZit4KzZUZkZW?=
- =?utf-8?B?eGFrU2Y1Sm1Ec1docm9kckxkYUFERXBnb0NWV3dIVG81blNKeldnYnZQNnhI?=
- =?utf-8?B?c0tnZ2taSzJXNmZnSnltbUNJRGU3bmhCTnU4czNWMTNUaVhobkFURVJHdHdH?=
- =?utf-8?B?aFFENnM1V2Y0NS9lUHI3ZE82ZXZBN0Y0UndzRnlockZwS2JNeEJlcE1QYURv?=
- =?utf-8?B?QklmZzhlM3dRcXVKeXNlWmRGcG9BV2NmTS9VQkdPYUY1akUzR0NUSyt4dmFF?=
- =?utf-8?B?RzdJUjR6Szk1UmRiSVNZVC8zdUxTOGkzbDdYODMrR24vanZwekdGVzd0SU9q?=
- =?utf-8?B?ZXRubWVMVDhaajQ5NWpSMktEcnRIMk00em1KVktpTlh3M1E5RFdMNG9aeFVJ?=
- =?utf-8?B?U2FjSDgraEo5TVlTa0taaWwvL1JmdCs0b2xsYzFVeXpMMTVOUlJ2ZC9Damh4?=
- =?utf-8?B?cjUvcEM2bmJDYThKcUlYVHk3TjJWUWE3RENRdnRON0hiZGVIMnhnczNHazFn?=
- =?utf-8?B?K0o5b1VHRVJkbzNGNHo1d1czdDZoNjgranl0aTJLa2Q4cHZsY3YwMEFvanA2?=
- =?utf-8?B?RENLZU12VERpN29vSDRmQTFDQ1hxeXIxWTRUclFudGNROGthSklPZnd4ZzhZ?=
- =?utf-8?B?dG0vVnhVRXBBOURiT2UxVVZvL01BZjdxeEN0M0FHYkFLSUlFaUx5Ujd2SGJH?=
- =?utf-8?B?QzhCOU5wSU1jbHhDeDF4VnUzRWkrT2IzU2RaS0JVOW9QWGh0RkVobkhBTEpp?=
- =?utf-8?B?Ukx4ZEk0K3ZWUGo3enpXRjVYSmNkSTNlSG1wejRaR3BkYVphZTE3T2ZLbEdi?=
- =?utf-8?B?VEhFSGpVQlZjODdhVVpwQ3ZhOWFCemFmU0pUQU9odTBRbFR4bldqWEpDcHlH?=
- =?utf-8?B?YUxmbnlMdzRrVHpsVFk3WEF5bEZhNTFBdEh2T0lNOER2UC95L2t1NXMraVFR?=
- =?utf-8?B?RHNpc0ZDRHlxQXdhVzNQSE1SNi9GYUhlWGRHZ3ZsYkpjVnBtVVR6Z2UxMjZu?=
- =?utf-8?B?MDc3MVUxNGtMck1GdExYNTlXSVltK29DM0swOTJXVDVKd2I5ZmlBYXcyNjhv?=
- =?utf-8?B?TkpmR0cxQUpCM2Urdy96ZlVZQXdEM2xJUlNwbSthVjlycFl6NXUrK1JjWmRi?=
- =?utf-8?B?aVVWYjBDaWRjZXU3Y1FWWDUyVk9nbGhLcVhLdlgrQm9aNkF6WktVdllZWUNY?=
- =?utf-8?B?MGZTMXJVcGdpTTVJTUNnUk5ySERLWUYzT1AwWngyTUFYRkk5OHI2cDh0bGo2?=
- =?utf-8?B?SFNvZmtzY1RNeURNeGx3OUw0bEp4U2NiOEtJc3lTRU5Za1ViN2djRWRjTHp6?=
- =?utf-8?Q?2JhSDXu6oDNIj/2MczBnk9Hdh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c100731-7b0d-4241-f5c5-08dbdbd6023b
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 19:00:41.2081
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XWfVa5GYj3TfcSO344IaDn7TJ3FbhqJCp5tRyD0PmVTpK9M+M8c16zfjvsVEkOLqkEXoPt9TGqUtkyTVwxehJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5090
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
+ <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com> <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
+In-Reply-To: <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 2 Nov 2023 12:01:44 -0700
+Message-ID: <CAEf4BzbucupXssMKLhR5Ex4rOHupp8p19CRV6qi1dT+X_5QWJg@mail.gmail.com>
+Subject: Re: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/23 17:36, Alex Deucher wrote:
-> On Wed, Nov 1, 2023 at 5:01 PM Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
->>
->> Without this fix the 5120x1440@240 timing of these monitors
->> leads to screen flickering.
->>
->> Cc: stable@vger.kernel.org # 6.1+
->> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1442
->> Co-developed-by: Harry Wentland <harry.wentland@amd.com>
->> Signed-off-by: Harry Wentland <harry.wentland@amd.com>
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->>   drivers/gpu/drm/drm_edid.c | 47 +++++++++++++++++++++++++++++++++++---
->>   1 file changed, 44 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
->> index bca2af4fe1fc..3fdb8907f66b 100644
->> --- a/drivers/gpu/drm/drm_edid.c
->> +++ b/drivers/gpu/drm/drm_edid.c
->> @@ -89,6 +89,8 @@ static int oui(u8 first, u8 second, u8 third)
->>   #define EDID_QUIRK_NON_DESKTOP                 (1 << 12)
->>   /* Cap the DSC target bitrate to 15bpp */
->>   #define EDID_QUIRK_CAP_DSC_15BPP               (1 << 13)
->> +/* Fix up a particular 5120x1440@240Hz timing */
->> +#define EDID_QUIRK_FIXUP_5120_1440_240         (1 << 14)
-> 
-> What is wrong with the original timing that needs to be fixed?
+On Thu, Nov 2, 2023 at 3:30=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote:
+>
+> On Wed, Nov 1, 2023 at 9:57=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Nov 1, 2023 at 6:56=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wr=
+ote:
+> > >
+> > > Hi,
+> > >
+> > > The verifier incorrectly rejects the following prog in check_cfg() wh=
+en
+> > > loading with root with confusing log `back-edge insn from 7 to 8`:
+> > >   /* 0: r9 =3D 2
+> > >    * 1: r3 =3D 0x20
+> > >    * 2: r4 =3D 0x35
+> > >    * 3: r8 =3D r4
+> > >    * 4: goto+3
+> > >    * 5: r9 -=3D r3
+> > >    * 6: r9 -=3D r4
+> > >    * 7: r9 -=3D r8
+> > >    * 8: r8 +=3D r4
+> > >    * 9: if r8 < 0x64 goto-5
+> > >    * 10: r0 =3D r9
+> > >    * 11: exit
+> > >    * */
+> > >   BPF_MOV64_IMM(BPF_REG_9, 2),
+> > >   BPF_MOV64_IMM(BPF_REG_3, 0x20),
+> > >   BPF_MOV64_IMM(BPF_REG_4, 0x35),
+> > >   BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
+> > >   BPF_JMP_IMM(BPF_JA, 0, 0, 3),
+> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
+> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
+> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
+> > >   BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
+> > >   BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
+> > >   BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
+> > >   BPF_EXIT_INSN()
+> > >
+> > > -------- Verifier Log --------
+> > > func#0 @0
+> > > back-edge from insn 7 to 8
+> > > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states =
+0
+> > > peak_states 0 mark_read 0
+> > >
+> > > This is not intentionally rejected, right?
+> >
+> > The way you wrote it, with goto +3, yes, it's intentional. Note that
+> > you'll get different results in privileged and unprivileged modes.
+> > Privileged mode allows "bounded loops" logic, so it doesn't
+> > immediately reject this program, and then later sees that r8 is always
+> > < 0x64, so program is correct.
+> >
+>
+> I load the program with privileged mode, and goto-5 makes the program
+> run from #9 to #5, so r8 is updated and the program is not infinite loop.
+>
+> > But in unprivileged mode the rules are different, and this conditional
+> > back edge is not allowed, which is probably what you are getting.
+> >
+> > It's actually confusing and your "back-edge from insn 7 to 8" is out
+> > of date and doesn't correspond to your program, you should see
+> > "back-edge from insn 11 to 7", please double check.
+> >
+>
+> Yes it's also confusing to me, but "back-edge from insn 7 to 8" is what
+> I got. The execution path of the program is #4 to #8 (goto+3), so the
+> verifier see the #8 first. Then, the program then goes #9 to #5 (goto-5),
+> the verifier thus sees #7 to #8 and incorrectly concludes back-edge here.
+>
+> This can is the verifier log I got from latest bpf-next, this C program c=
+an
+> reproduce this: https://pastebin.com/raw/Yug0NVwx
 
-Apparently, all of timing values for the 5120x1440@240 mode of these
-monitors aren't set correctly (they are all lower than they should be)
-in their EDIDs. For what it's worth, the windows driver has had a quirk
-similar the one proposed in this patch for ~2 years.
+Your instruction indices in your comments are wrong. Save yourself
+time and confusion, use embedded assembly and llvm-objdump. You also
+have a mismatch between 0x64 and actually specifying 0x68. Anyways, I
+don't know how you got 7 to 8, but there does seem indeed to be a bug
+in check_cfg() falsely detecting this as an infinite loop even in
+privileged mode, which it should. I'll need to look deeper into how to
+fix check_cfg(), it's not the easier to follow code, unfortunately.
 
-> 
-> Alex
-> 
-> 
->>
->>   #define MICROSOFT_IEEE_OUI     0xca125c
->>
->> @@ -170,6 +172,12 @@ static const struct edid_quirk {
->>          EDID_QUIRK('S', 'A', 'M', 596, EDID_QUIRK_PREFER_LARGE_60),
->>          EDID_QUIRK('S', 'A', 'M', 638, EDID_QUIRK_PREFER_LARGE_60),
->>
->> +       /* Samsung C49G95T */
->> +       EDID_QUIRK('S', 'A', 'M', 0x7053, EDID_QUIRK_FIXUP_5120_1440_240),
->> +
->> +       /* Samsung S49AG95 */
->> +       EDID_QUIRK('S', 'A', 'M', 0x71ac, EDID_QUIRK_FIXUP_5120_1440_240),
->> +
->>          /* Sony PVM-2541A does up to 12 bpc, but only reports max 8 bpc */
->>          EDID_QUIRK('S', 'N', 'Y', 0x2541, EDID_QUIRK_FORCE_12BPC),
->>
->> @@ -6586,7 +6594,37 @@ static void update_display_info(struct drm_connector *connector,
->>          drm_edid_to_eld(connector, drm_edid);
->>   }
->>
->> -static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *dev,
->> +static void drm_mode_displayid_detailed_edid_quirks(struct drm_connector *connector,
->> +                                                   struct drm_display_mode *mode)
->> +{
->> +       unsigned int hsync_width;
->> +       unsigned int vsync_width;
->> +
->> +       if (connector->display_info.quirks & EDID_QUIRK_FIXUP_5120_1440_240) {
->> +               if (mode->hdisplay == 5120 && mode->vdisplay == 1440 &&
->> +                   mode->clock == 1939490) {
->> +                       hsync_width = mode->hsync_end - mode->hsync_start;
->> +                       vsync_width = mode->vsync_end - mode->vsync_start;
->> +
->> +                       mode->clock = 2018490;
->> +                       mode->hdisplay = 5120;
->> +                       mode->hsync_start = 5120 + 8;
->> +                       mode->hsync_end = 5120 + 8 + hsync_width;
->> +                       mode->htotal = 5200;
->> +
->> +                       mode->vdisplay = 1440;
->> +                       mode->vsync_start = 1440 + 165;
->> +                       mode->vsync_end = 1440 + 165 + vsync_width;
->> +                       mode->vtotal = 1619;
->> +
->> +                       drm_dbg_kms(connector->dev,
->> +                                   "[CONNECTOR:%d:%s] Samsung 240Hz mode quirk applied\n",
->> +                                   connector->base.id, connector->name);
->> +               }
->> +       }
->> +}
->> +
->> +static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_connector *connector,
->>                                                              struct displayid_detailed_timings_1 *timings,
->>                                                              bool type_7)
->>   {
->> @@ -6605,7 +6643,7 @@ static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *d
->>          bool hsync_positive = (timings->hsync[1] >> 7) & 0x1;
->>          bool vsync_positive = (timings->vsync[1] >> 7) & 0x1;
->>
->> -       mode = drm_mode_create(dev);
->> +       mode = drm_mode_create(connector->dev);
->>          if (!mode)
->>                  return NULL;
->>
->> @@ -6628,6 +6666,9 @@ static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *d
->>
->>          if (timings->flags & 0x80)
->>                  mode->type |= DRM_MODE_TYPE_PREFERRED;
->> +
->> +       drm_mode_displayid_detailed_edid_quirks(connector, mode);
->> +
->>          drm_mode_set_name(mode);
->>
->>          return mode;
->> @@ -6650,7 +6691,7 @@ static int add_displayid_detailed_1_modes(struct drm_connector *connector,
->>          for (i = 0; i < num_timings; i++) {
->>                  struct displayid_detailed_timings_1 *timings = &det->timings[i];
->>
->> -               newmode = drm_mode_displayid_detailed(connector->dev, timings, type_7);
->> +               newmode = drm_mode_displayid_detailed(connector, timings, type_7);
->>                  if (!newmode)
->>                          continue;
->>
->> --
->> 2.42.0
->>
--- 
-Hamza
+But here's my log for your information.
 
+
+$ git show
+commit a343e644b8f3757a83f48b32b56ffc83943a62fa (HEAD -> temp-back-edge-tes=
+t)
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Thu Nov 2 11:55:11 2023 -0700
+
+    selftests/bpf: trickier case of "bounded loop"
+
+    This should be accepted in privileged mode because r8 =3D 2 * r4 =3D 0x=
+6a,
+    and so `if r8 < 0x64 goto -5;` is always false. Currently BPF verifier'=
+s
+    check_cfg() doesn't detect this properly.
+
+    Reported-by: Hao Sun <sunhao.th@gmail.com>
+    Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+diff --git a/tools/testing/selftests/bpf/progs/verifier_cfg.c
+b/tools/testing/selftests/bpf/progs/verifier_cfg.c
+index df7697b94007..f89dce7850f6 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_cfg.c
++++ b/tools/testing/selftests/bpf/progs/verifier_cfg.c
+@@ -97,4 +97,26 @@ l0_%=3D:       r2 =3D r0;
+         \
+ "      ::: __clobber_all);
+ }
+
++SEC("socket")
++__description("conditional loop (2)")
++__success
++__failure_unpriv __msg_unpriv("back-edge from insn 10 to 11")
++__naked void conditional_loop2(void)
++{
++       asm volatile ("                                 \
++       r9 =3D 2 ll;                                      \
++       r3 =3D 0x20 ll;                                   \
++       r4 =3D 0x35 ll;                                   \
++       r8 =3D r4;                                        \
++       goto l1_%=3D;                                     \
++l0_%=3D: r9 -=3D r3;                                       \
++       r9 -=3D r4;                                       \
++       r9 -=3D r8;                                       \
++l1_%=3D: r8 +=3D r4;                                       \
++       if r8 < 0x64 goto l0_%=3D;                        \
++       r0 =3D r9;                                        \
++       exit;                                           \
++"      ::: __clobber_all);
++}
++
+ char _license[] SEC("license") =3D "GPL";
+
+Here's disassembly (though I moved it to separate .bpf.c file to have
+0-based instruction indices, my patch above adds test to other
+existing tests):
+
+$ llvm-objdump -d verifier_cfg1.bpf.o
+
+verifier_cfg1.bpf.o:    file format elf64-bpf
+
+Disassembly of section socket:
+
+0000000000000000 <conditional_loop2>:
+       0:       18 09 00 00 02 00 00 00 00 00 00 00 00 00 00 00 r9 =3D 0x2 =
+ll
+       2:       18 03 00 00 20 00 00 00 00 00 00 00 00 00 00 00 r3 =3D 0x20=
+ ll
+       4:       18 04 00 00 35 00 00 00 00 00 00 00 00 00 00 00 r4 =3D 0x35=
+ ll
+       6:       bf 48 00 00 00 00 00 00 r8 =3D r4
+       7:       05 00 03 00 00 00 00 00 goto +0x3 <l1_0>
+
+0000000000000040 <l0_0>:
+       8:       1f 39 00 00 00 00 00 00 r9 -=3D r3
+       9:       1f 49 00 00 00 00 00 00 r9 -=3D r4
+      10:       1f 89 00 00 00 00 00 00 r9 -=3D r8
+
+0000000000000058 <l1_0>:
+      11:       0f 48 00 00 00 00 00 00 r8 +=3D r4
+      12:       a5 08 fb ff 64 00 00 00 if r8 < 0x64 goto -0x5 <l0_0>
+      13:       bf 90 00 00 00 00 00 00 r0 =3D r9
+      14:       95 00 00 00 00 00 00 00 exit
+
+Then running test on latest bpf-next:
+
+$ sudo ./test_progs -t verifier_cfg
+...
+run_subtest:PASS:obj_open_mem 0 nsec
+libbpf: prog 'conditional_loop2': BPF program load failed: Invalid argument
+libbpf: prog 'conditional_loop2': failed to load: -22
+libbpf: failed to load object 'verifier_cfg'
+run_subtest:FAIL:unexpected_load_failure unexpected error: -22 (errno 22)
+VERIFIER LOG:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+10: asm volatile ("                                     \
+back-edge from insn 10 to 11
+processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+#329/15  verifier_cfg/conditional loop (2):FAIL
+#329/16  verifier_cfg/conditional loop (2) @unpriv:OK
+#329     verifier_cfg:FAIL
+
+
+I'll keep looking into this after taking care of other stuff I have on
+TODO list, thanks.
+
+
+
+>
+> > Anyways, while I was looking into this, I realized that ldimm64 isn't
+> > handled exactly correctly in check_cfg(), so I just sent a fix. It
+> > also adds a nicer detection of jumping into the middle of the ldimm64
+> > instruction, which I believe is something you were advocating for.
+> >
+> > >
+> > > Best
+> > > Hao
