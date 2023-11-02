@@ -2,143 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAD07DF2FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AC27DF300
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376278AbjKBM5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S1376353AbjKBM6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKBM5W (ORCPT
+        with ESMTP id S229607AbjKBM6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:57:22 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80A30121;
-        Thu,  2 Nov 2023 05:57:17 -0700 (PDT)
-Received: from pwmachine.localnet (unknown [86.120.35.5])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4336E20B74C0;
-        Thu,  2 Nov 2023 05:57:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4336E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1698929836;
-        bh=lmXPUyUM/jM/0/57e2UuFckkajSYsjPidz3sTbvACts=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eK3+MYew1dfqEhbm6caxcWlTBwGqR+jjUFwcWkNPxYbyU3BxLPR1TctUk5nwAdd1p
-         WfXNHb6EecnK9VSXI2KXIwEhu4BOjB/9QVHSJm7hsS/aI1HX3OfmcQsO31iJWaMHs5
-         JyKhW7g8mWmak42ulD8iq2NrPUjTfWaxFaa0PeQ8=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH for-next] tracing/kprobes: Add symbol counting check when module loads
-Date:   Thu, 02 Nov 2023 14:57:12 +0200
-Message-ID: <5987802.lOV4Wx5bFT@pwmachine>
-In-Reply-To: <20231101081509.605080231a2736b91331cb85@kernel.org>
-References: <169854904604.132316.12500381416261460174.stgit@devnote2> <1868732.tdWV9SEqCh@pwmachine> <20231101081509.605080231a2736b91331cb85@kernel.org>
+        Thu, 2 Nov 2023 08:58:14 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5812A112
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:58:08 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a84204e7aeso11256337b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698929887; x=1699534687; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dCCONn8E1n3ofwv6haSRwqO8XLggJEnfeXJadE+g31c=;
+        b=Jf8C7iKKsSMX0bRonOaIBv3hBaPaEWu8RmmeuRKP0MqTFIjTe8eTndCLSJM/cGj92b
+         /TMmfmAjX9ufPr0Jg5o/eJNCzhtwAS1ctTUb7j3BBxftu/1q3zg2HSL7r2dlvr28/Qef
+         vxGDxQfCqs1fx34d0BzzR93nnPKFopHsae7i6MrfFVrxxvUTwliy6Z83p0CH9tbJWT5z
+         lHRTCqYzaUGbvJFfb5IQpFzqv0w24wnpbQOVJq+EhlmUpVhousxbmTpa8MBViKx/Stgj
+         7pK7SWEXnJ6VVRGvi0HCvB6bUGkY7cEePIvJtV/T137KlHckStamwtbDxhg4qWIpYwS0
+         IXEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698929887; x=1699534687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dCCONn8E1n3ofwv6haSRwqO8XLggJEnfeXJadE+g31c=;
+        b=mrlKhi67Zg97cAANoAjy2oNtDNpb003h/hYTEG3KJPy/LbAmlqdHhd537cX7n7UrFF
+         ZOi+ED7K1LBgG7P4J7jpCfjx4cWkV9vZ2Oho7iRvpL8TnsvDFburumqRaIXvUp+NnQeK
+         n1o1BoWjyp6uxjm8SgB693Qys4R3Bkm72KSdcpCJDlBXOI905UbigD//vrbn9HNnPEvw
+         2gcyEYVFCtL2lZj1MWYrZ2760jmZszb5bMlzvK16zw0cLb4zhOeKbexDysqDIV+mAfQ8
+         IuQKQbx0OiJN5+lxU7e/AtjcowG74PWfITet1ztOnMW//+y7S/udtQy0Mohbmy7D4kmN
+         rvaQ==
+X-Gm-Message-State: AOJu0Yz1pXkDxQ9SsCRpjnbZuUhTTivTJVql7lxuZEPPhoOhLGP7vVe3
+        NESBu4RCdsEsh6aP1toPTXBagyGXvvFzdBCZuDm1zQ==
+X-Google-Smtp-Source: AGHT+IHcgHYJhzP5Y7dFQbPW7i51z51wvIBnxWK2BKswP/EfWsiw4NQNlN+H23Rr8yHC8tbOVmgUopyu2cV9Ga7Vhgk=
+X-Received: by 2002:a81:ac09:0:b0:5a7:d412:af32 with SMTP id
+ k9-20020a81ac09000000b005a7d412af32mr19926040ywh.10.1698929887555; Thu, 02
+ Nov 2023 05:58:07 -0700 (PDT)
 MIME-Version: 1.0
+References: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 2 Nov 2023 13:57:56 +0100
+Message-ID: <CACRpkdY1Ckc6SQDKKMEVkzOLe8jHNDA=P-7AF_W4QbVb75DFkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/17] pinctrl: intel: Use NOIRQ PM helper
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Mon, Oct 30, 2023 at 1:07=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Le mercredi 1 novembre 2023, 01:15:09 EET Masami Hiramatsu a =E9crit :
-> Hi,
->=20
-> On Tue, 31 Oct 2023 23:24:43 +0200
->=20
-> Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > @@ -729,17 +744,55 @@ static int count_mod_symbols(void *data, const
-> > > char
-> > > *name, unsigned long unused) return 0;
-> > >=20
-> > >  }
-> > >=20
-> > > -static unsigned int number_of_same_symbols(char *func_name)
-> > > +static unsigned int number_of_same_symbols(const char *mod, const ch=
-ar
-> > > *func_name) {
-> > >=20
-> > >  	struct sym_count_ctx ctx =3D { .count =3D 0, .name =3D func_name };
-> > >=20
-> > > -	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
-> > > +	if (!mod)
-> > > +		kallsyms_on_each_match_symbol(count_symbols, func_name,
-> >=20
-> > &ctx.count);
-> >=20
-> > > -	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
-> > > +	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
-> >=20
-> > I may be missing something here or reviewing too quickly.
-> > Wouldn't this function return count to be 0 if func_name is only part of
-> > the module named mod?
->=20
-> No, please read below.
->=20
-> > Indeed, if the function is not in kernel symbol,
-> > kallsyms_on_each_match_symbol() will not loop.
-> > And, by giving mod to module_kallsyms_on_each_symbol(), the correspondi=
-ng
-> > module will be skipped, so count_mob_symbols() would not be called.
-> > Hence, we would have 0 as count, which would lead to ENOENT later.
->=20
-> Would you mean the case func_name is on the specific module?
-> If 'mod' is specified, module_kallsyms_on_each_symbol() only loops on
-> symbols in the module names 'mod'.
->=20
-> int module_kallsyms_on_each_symbol(const char *modname,
->                                    int (*fn)(void *, const char *, unsign=
-ed
-> long), void *data)
-> {
->         struct module *mod;
->         unsigned int i;
->         int ret =3D 0;
->=20
->         mutex_lock(&module_mutex);
->         list_for_each_entry(mod, &modules, list) {
->                 struct mod_kallsyms *kallsyms;
->=20
->                 if (mod->state =3D=3D MODULE_STATE_UNFORMED)
->                         continue;
->=20
->                 if (modname && strcmp(modname, mod->name))
->                         continue;
-> ...
->=20
-> So with above change, 'if mod is not specified, search the symbols in ker=
-nel
-> and all modules. If mod is sepecified, search the symbol on the specific
-> module'.
->=20
-> Thus, "if func_name is only part of the module named mod", the
-> module_kallsyms_on_each_symbol() will count the 'func_name' in 'mod' modu=
-le
-> correctly.
+> Intel pin control drivers use NOIRQ variant of the PM callbacks.
+> To make them smaller and less error prone against different
+> kernel configurations (with possible defined but not used variables)
+> switch to use NOIRQ PM helper.
 
-Sorry, I looked to quickly and forgot about the return value of strcmp()...
+Makes sense. The series:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-=46rom the code, everything seems OK!
-If I have some time, I will test it and potentially come back with a "Teste=
-d-
-by" tag but without any warranty.
-
-> Thank you,
->=20
->=20
-> Thank you,
-
-Best regards.
-
-
+Yours,
+Linus Walleij
