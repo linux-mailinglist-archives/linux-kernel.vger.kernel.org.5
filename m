@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60CE7DF1FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0017DF1FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbjKBMGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        id S1345566AbjKBMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235482AbjKBMEi (ORCPT
+        with ESMTP id S235583AbjKBMEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:04:38 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7A410DA
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:01:58 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc5b705769so7342405ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:01:58 -0700 (PDT)
+        Thu, 2 Nov 2023 08:04:39 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9007110F9
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:02:07 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c0f14d6875so860585b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:02:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698926518; x=1699531318; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1698926527; x=1699531327; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=KoS5Yzc43oJ/fOlEyyLAOhYHKPtTN8IraB0rRBs3MmU=;
-        b=bJlBdzJ0AHhWdQCIf3SrLDFKVkvXvKWlDTdT8FDfZxgdcFinpT6OXPPgolZt1g9YVU
-         J6jEJSkdOMB9kDm3ikWP+8NJUFaVjFPscf5aHmWoj9x4hzKyTGMPvXDOqAKKtVMVySNs
-         nWWmjg8qBBW6xaf1DJyjJ5RxPJc4RPEmsQ1SpnQNshYyfjCoLu5ldn8pe2eu63EuWypR
-         uuXvsCJv/2c2H434TOfVT+LhaGErdJ8Wd9Sf9+zrnRVIRefeBJkxCgeyAxuzbjo9lcaZ
-         EmQ3V7UgEj4ssX4veBaph+/7ekgNmJEfbXKP03TMUZjcYKhAFDNYLw5osLZZYLEOLLRI
-         tWdA==
+        bh=ftnYGlHohU4PgAvOLDfsNbFmXMcl+RaArmfMB/fCVZg=;
+        b=T+jOFR+8YUBSxO12vO53oCoIukGFpca/JywKIajBwzf3v3VdE/wUsYzG32sjxJVR4c
+         +9ZHUOvqPMaGaIUfoSClF44U8nOeXepH6kD0C8KwWbjmNLNzFOn0O47moht18tVoEDv6
+         99xwWaKryihz/Euxj8t6JhgQN6gbpmdkpE1LWIYQ/fIi36zj5dirgdtrMqxJd+1o4p1t
+         XHsYpr21UJikwH2Cwa10hq/99llIbo33DGLTN34S7daCVPxEd7xF1IIowf13GdD3x4Eq
+         WmmpP3yjZQT14KYBbf2q/PZ0E52hnxBNdw9d8U9YqtTK2gK5GWeT0SfdTeHit9XYfOfH
+         mVXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698926518; x=1699531318;
+        d=1e100.net; s=20230601; t=1698926527; x=1699531327;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KoS5Yzc43oJ/fOlEyyLAOhYHKPtTN8IraB0rRBs3MmU=;
-        b=roCAmXtTZJHgqtq2xJegd1GqLHsC5Xxx04rlCeZXMc7B3PTjNj2BYokfMEIih/qc2R
-         5K0kszsY4jTYzFM2ZVpeHJAr7mOc7PxIrOy88UY3fykX6QhDEKejTQ2gi+QzW24Cu7PP
-         KzKJId8NCS0B0x+/mQOyH5zqvyHX34TLZPAq+a2ZcRrSrnBFke/s1Pdoued0xVpeRioY
-         Y0stNyp1ga7URlFT52+FHMxMgnuNnscgBlyoGLCvX3Cb9WBnAxvJyMsLl4Dj882gi15h
-         OJ0yk/SQY2H35C8UzM18zpnW9kl1Edj+2TzHhZbQp9tiroDTstuWYqrUqg7surE7woOm
-         n2CA==
-X-Gm-Message-State: AOJu0YxUURCyFPwGLFtZa79AAh3JguRu8gHzqLpXilhvTsT6LExsr8My
-        dBrmhjRaulckEJ7nrz+b2cWIVQ==
-X-Google-Smtp-Source: AGHT+IE6nEv56zM0QCxqMU8kUXvOQDH9qhvdkxo16VJLcIXw6R7KqMseiu/2jgHWmzTZVVw8yrOyzQ==
-X-Received: by 2002:a17:902:e80f:b0:1cc:7af4:d12c with SMTP id u15-20020a170902e80f00b001cc7af4d12cmr4685399plg.62.1698926517886;
-        Thu, 02 Nov 2023 05:01:57 -0700 (PDT)
+        bh=ftnYGlHohU4PgAvOLDfsNbFmXMcl+RaArmfMB/fCVZg=;
+        b=YyJOrRjHQ5qPg0ikJKFFghI8xGcavlM0P7tIUOOUE05eS4GnHLJJEX9dZDRJJWgw0B
+         blxozWQwYoE5DsFkLFZ4HcLi5gRvH7nJawtMpPwVCGrmD10BYLu6MtAsEGP1yLVI5iJg
+         PNpei0PqIkqeaOs7MH8ihRGW1QGdXFgbUj8m3vu2ol4SgqY0FscBWbQNG3n4sBlAC2AU
+         Z/NeBoHfEDOQbPhd6A9RVAwWHpw/AUo/d5fTaqQLruGZmUyMHKmRHOKT0qe1003S771U
+         jKbmmi4aliGSNkMC6WXDqr8DkN+8SuVoFEONPMXbien36280nHgHuibKRwuuO//KemkK
+         4xeg==
+X-Gm-Message-State: AOJu0YyCGfncD8QXr26oCsuQWZJpW3rv3OdNmHdcEA5YnewQJNmK3s2r
+        q2KOd0pI+wOIeMFTB5+7JHfxmA==
+X-Google-Smtp-Source: AGHT+IGak6vYxyYxJboQzPYtlVELlojzQHOYOuIewHMFX+Z9YpUdKomQpySY+4ZD8wRCrq38FcVPbQ==
+X-Received: by 2002:a17:902:d50d:b0:1cc:3875:e654 with SMTP id b13-20020a170902d50d00b001cc3875e654mr12967681plg.26.1698926526894;
+        Thu, 02 Nov 2023 05:02:06 -0700 (PDT)
 Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170902f68c00b001cc0f6028b8sm2969008plg.106.2023.11.02.05.01.54
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902f68c00b001cc0f6028b8sm2969008plg.106.2023.11.02.05.02.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 05:01:56 -0700 (PDT)
+        Thu, 02 Nov 2023 05:02:06 -0700 (PDT)
 From:   Yong-Xuan Wang <yongxuan.wang@sifive.com>
 To:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org
 Cc:     greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
         alex@ghiti.fr, conor.dooley@microchip.com, ajones@ventanamicro.com,
         Yong-Xuan Wang <yongxuan.wang@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/4] RISC-V: KVM: Add Svadu Extension Support for Guest/VM
-Date:   Thu,  2 Nov 2023 12:01:24 +0000
-Message-Id: <20231102120129.11261-4-yongxuan.wang@sifive.com>
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        Haibo Xu <haibo1.xu@intel.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 4/4] KVM: riscv: selftests: Add Svadu Extension to get-reg-list testt
+Date:   Thu,  2 Nov 2023 12:01:25 +0000
+Message-Id: <20231102120129.11261-5-yongxuan.wang@sifive.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231102120129.11261-1-yongxuan.wang@sifive.com>
 References: <20231102120129.11261-1-yongxuan.wang@sifive.com>
@@ -75,58 +78,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We extend the KVM ISA extension ONE_REG interface to allow VMM
-tools  to detect and enable Svadu extension for Guest/VM.
-
-Also set the ADUE bit in henvcfg CSR if Svadu extension is
-available for Guest/VM.
+Update the get-reg-list test to test the Svadu Extension is available
+for guest OS.
 
 Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 ---
- arch/riscv/include/uapi/asm/kvm.h | 1 +
- arch/riscv/kvm/vcpu.c             | 3 +++
- arch/riscv/kvm/vcpu_onereg.c      | 1 +
- 3 files changed, 5 insertions(+)
+ .../testing/selftests/kvm/riscv/get-reg-list.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-index 992c5e407104..3c7a6c762d0f 100644
---- a/arch/riscv/include/uapi/asm/kvm.h
-+++ b/arch/riscv/include/uapi/asm/kvm.h
-@@ -131,6 +131,7 @@ enum KVM_RISCV_ISA_EXT_ID {
- 	KVM_RISCV_ISA_EXT_ZICSR,
- 	KVM_RISCV_ISA_EXT_ZIFENCEI,
- 	KVM_RISCV_ISA_EXT_ZIHPM,
-+	KVM_RISCV_ISA_EXT_SVADU,
- 	KVM_RISCV_ISA_EXT_MAX,
+diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+index 9f99ea42f45f..972538d76f48 100644
+--- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
++++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+@@ -49,6 +49,7 @@ bool filter_reg(__u64 reg)
+ 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICSR:
+ 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
+ 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
++	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVADU:
+ 		return true;
+ 	/* AIA registers are always available when Ssaia can't be disabled */
+ 	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siselect):
+@@ -340,6 +341,7 @@ static const char *isa_ext_id_to_str(__u64 id)
+ 		"KVM_RISCV_ISA_EXT_ZICSR",
+ 		"KVM_RISCV_ISA_EXT_ZIFENCEI",
+ 		"KVM_RISCV_ISA_EXT_ZIHPM",
++		"KVM_RISCV_ISA_EXT_SVADU",
+ 	};
+ 
+ 	if (reg_off >= ARRAY_SIZE(kvm_isa_ext_reg_name)) {
+@@ -700,6 +702,10 @@ static __u64 fp_d_regs[] = {
+ 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_D,
  };
  
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index 82229db1ce73..c95a3447eb50 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -487,6 +487,9 @@ static void kvm_riscv_vcpu_update_config(const unsigned long *isa)
- 	if (riscv_isa_extension_available(isa, ZICBOZ))
- 		henvcfg |= ENVCFG_CBZE;
- 
-+	if (riscv_isa_extension_available(isa, SVADU))
-+		henvcfg |= ENVCFG_ADUE;
++static __u64 svadu_regs[] = {
++	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVADU,
++};
 +
- 	csr_write(CSR_HENVCFG, henvcfg);
- #ifdef CONFIG_32BIT
- 	csr_write(CSR_HENVCFGH, henvcfg >> 32);
-diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-index b7e0e03c69b1..2b7c7592e273 100644
---- a/arch/riscv/kvm/vcpu_onereg.c
-+++ b/arch/riscv/kvm/vcpu_onereg.c
-@@ -36,6 +36,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
- 	/* Multi letter extensions (alphabetically sorted) */
- 	KVM_ISA_EXT_ARR(SSAIA),
- 	KVM_ISA_EXT_ARR(SSTC),
-+	KVM_ISA_EXT_ARR(SVADU),
- 	KVM_ISA_EXT_ARR(SVINVAL),
- 	KVM_ISA_EXT_ARR(SVNAPOT),
- 	KVM_ISA_EXT_ARR(SVPBMT),
+ #define BASE_SUBLIST \
+ 	{"base", .regs = base_regs, .regs_n = ARRAY_SIZE(base_regs), \
+ 	 .skips_set = base_skips_set, .skips_set_n = ARRAY_SIZE(base_skips_set),}
+@@ -739,6 +745,9 @@ static __u64 fp_d_regs[] = {
+ #define FP_D_REGS_SUBLIST \
+ 	{"fp_d", .feature = KVM_RISCV_ISA_EXT_D, .regs = fp_d_regs, \
+ 		.regs_n = ARRAY_SIZE(fp_d_regs),}
++#define SVADU_REGS_SUBLIST \
++	{"svadu", .feature = KVM_RISCV_ISA_EXT_SVADU, .regs = svadu_regs, \
++		.regs_n = ARRAY_SIZE(svadu_regs),}
+ 
+ static struct vcpu_reg_list h_config = {
+ 	.sublists = {
+@@ -876,6 +885,14 @@ static struct vcpu_reg_list fp_d_config = {
+ 	},
+ };
+ 
++static struct vcpu_reg_list svadu_config = {
++	.sublists = {
++	BASE_SUBLIST,
++	SVADU_REGS_SUBLIST,
++	{0},
++	},
++};
++
+ struct vcpu_reg_list *vcpu_configs[] = {
+ 	&h_config,
+ 	&zicbom_config,
+@@ -894,5 +911,6 @@ struct vcpu_reg_list *vcpu_configs[] = {
+ 	&aia_config,
+ 	&fp_f_config,
+ 	&fp_d_config,
++	&svadu_config,
+ };
+ int vcpu_configs_n = ARRAY_SIZE(vcpu_configs);
 -- 
 2.17.1
 
