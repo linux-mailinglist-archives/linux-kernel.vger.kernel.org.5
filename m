@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE5F7DF3D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BB57DF3D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376515AbjKBNbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 09:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        id S1376540AbjKBNbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 09:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjKBNbF (ORCPT
+        with ESMTP id S234984AbjKBNbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 09:31:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC79196
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:30:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698931817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G4kaapn3liY1zTPGQnPDgzqDOBnuNLhFYbLOwMSHOTc=;
-        b=BaYlqe7IXPgrfv5rbU8Qe3HxkWmqPFV4/2yl3qDstNdvySobMOfJjpzlwSk/23EBJ/Dv6N
-        uwgXbEaocvU4F7w9W6hvTodQrql+cOKr5NJPO8TDxOwSmrgb5yNRzHXre8TzPs5vyubL2P
-        ixzWczgcC5qql98ZZbMJlViM/kqUt1s=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-144-vmo8-sVLPd2zFG1vwrvImw-1; Thu, 02 Nov 2023 09:30:14 -0400
-X-MC-Unique: vmo8-sVLPd2zFG1vwrvImw-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc482cc026so8408835ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 06:30:14 -0700 (PDT)
+        Thu, 2 Nov 2023 09:31:22 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71F819D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:31:19 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5b92b852390so710266a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 06:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698931879; x=1699536679; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TOkLeZ1O4q/pINlkEKARqNQtmFQ8WPpDSAmLPInWj7A=;
+        b=YK0ZQAhyux2rezDHcNwHTSZMAJoz+2mN/36FZBjdKEuvKLqmP7uQc3Kju+F6YxOnyy
+         r4al0vCFbZ4W2fLPC0gZclxtoEQ1f+XVD/hsPXoZRIc6qZPXn5aOH6m4PpGRa75oASh1
+         BlhdYKzCrc2HYQ/wquyZbbzo+8sw5Zyn1t9EGfRxv5oj2SSejK/8289GtzlHVlxJr1oO
+         RCVfECSCTWn1xbcxkfVSBl4/nJJykHnrj+Z0H3VgHMMD+tWFcpLeMveT16HPS1kPl9RV
+         me6jFfH+Uurks2/Vc1wyIoSmhKH5kvxpGEtlFCkhwyYB7GjwajAxO4/65ZzkBJFjmD1i
+         lxBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698931813; x=1699536613;
-        h=content-transfer-encoding:mime-version:references:in-reply-to:from
-         :subject:cc:to:message-id:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=G4kaapn3liY1zTPGQnPDgzqDOBnuNLhFYbLOwMSHOTc=;
-        b=MHA8crCdQ7DsWrknvFvc+6kkbvt0Ks/xkRywwIovUW+Pe0dU7QZbm4qKhnFYjmaZAP
-         /UqxUE18pZtWgLbqUzJfW16q2WUz0SFmQvI2yX9PFx1DF60pPIezLYCLl7lKP5ZXlGRm
-         uBKsB7dUSZ0mrE5HBCpBO+lgsdTO1YpWbC3JQycVqp2F2brjr6DlArxjuHxUYbT2h4BW
-         Mc1IDrLB1Y0/OSV0l93TO2NOPgBFPqJ/fGSzoXTqyFHemPID8Mn2H1fwSwkBZXvhvdox
-         EgH0bEwHlWQoDwbsjGXyrb5DJiBXiE96xKRAFGbJAaBv2ctxCKx+yzm3PCd7sU7GdGVe
-         gKJg==
-X-Gm-Message-State: AOJu0Yy+K7JfVLaXAqIGQhPTBgPlPiMbtGVJ8G4Z909H1TI3etnS0uB0
-        ZNBHo/wu4OcA8o4N0jtLSOeyboZCfi86+UwGJ6pskH1su4X/wVkttbTJ1Hdx26KyH/YASvG+dLJ
-        1FOQ0oUbAiM76M+qm22UVGOc3
-X-Received: by 2002:a17:902:f943:b0:1cc:449b:689e with SMTP id kx3-20020a170902f94300b001cc449b689emr11958467plb.20.1698931813245;
-        Thu, 02 Nov 2023 06:30:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEpaf34EgGKqQhxqqvUP6ThPV7LvGkD3nyVPIKABjoFRGOKKdsCUmtWGPXXtO+YRCkk5SfLBA==
-X-Received: by 2002:a17:902:f943:b0:1cc:449b:689e with SMTP id kx3-20020a170902f94300b001cc449b689emr11958445plb.20.1698931812829;
-        Thu, 02 Nov 2023 06:30:12 -0700 (PDT)
-Received: from localhost ([240d:1a:c0d:9f00:91ec:2f0b:ae2b:204a])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001c877f27d1fsm1940634plh.11.2023.11.02.06.30.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 06:30:12 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 22:30:08 +0900 (JST)
-Message-Id: <20231102.223008.2284405204869772112.syoshida@redhat.com>
-To:     kuba@kernel.org
-Cc:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1698931879; x=1699536679;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TOkLeZ1O4q/pINlkEKARqNQtmFQ8WPpDSAmLPInWj7A=;
+        b=AC4XsO19TSqS2bwLTm5VI7j9/638rpEbDHXC0XWFBmEzUfYizrXYj5tcVkKK59om8t
+         qiHWyvg/PGESik3FdHoA0Fxj2V9NBZnmBI5rI5iOxQe8V/uAGTUhPADZAhykxAM2QLI5
+         gIgFWbBlc5QOrM/1uEjHJUSJrBj2kx0bKf5uGsJERgFrtnkD0JuubxjEYFrUN56gk+oQ
+         np/NddBLqW4ksRYNB4ZQijg9DG+JDj7bgPzMD9EQLfVBOItuEntsa/KsTepBbHBfTZYQ
+         /0XNTP1xn8gGuMH9UanizowqZZN+j1ZCORjssDzDpmD87dWqxvHzJaDoD1Ig8NdnDqrZ
+         GRxg==
+X-Gm-Message-State: AOJu0YxpuIYi+UUU4nFTFKtfPYDu7/IGimvqK8zMBOfTn0kcBfdkvcmF
+        yl+o+J/uWnQ66vxsY8ObQjk=
+X-Google-Smtp-Source: AGHT+IE/3y8BtLSvIHYcZOBPbsY8x2agc3Q0xHxeyZxDcyo2mX10wII/2TrlRDQVH2w7N2bQxK4CTw==
+X-Received: by 2002:a17:90b:1e07:b0:280:5b33:d30 with SMTP id pg7-20020a17090b1e0700b002805b330d30mr11151542pjb.44.1698931879024;
+        Thu, 02 Nov 2023 06:31:19 -0700 (PDT)
+Received: from [192.168.1.105] (111-255-201-13.dynamic-ip.hinet.net. [111.255.201.13])
+        by smtp.gmail.com with ESMTPSA id gk11-20020a17090b118b00b0027d0de51454sm2484308pjb.19.2023.11.02.06.31.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 06:31:18 -0700 (PDT)
+Message-ID: <7537e534-9616-4f45-9974-399453aee276@gmail.com>
+Date:   Thu, 2 Nov 2023 21:31:15 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/fair: Track current se's EEVDF parameters
+Content-Language: en-US
+To:     Abel Wu <wuyun.abel@bytedance.com>, mingo@redhat.com,
+        peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] virtio/vsock: Fix uninit-value in
- virtio_transport_recv_pkt()
-From:   Shigeru Yoshida <syoshida@redhat.com>
-In-Reply-To: <20231101222045.5f7cca01@kernel.org>
-References: <20231026150154.3536433-1-syoshida@redhat.com>
-        <20231101222045.5f7cca01@kernel.org>
-X-Mailer: Mew version 6.9 on Emacs 28.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231101174446.90413-1-s921975628@gmail.com>
+ <e9638a3f-baa0-4abb-bb61-481c539c2181@bytedance.com>
+From:   Yiwei Lin <s921975628@gmail.com>
+In-Reply-To: <e9638a3f-baa0-4abb-bb61-481c539c2181@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Nov 2023 22:20:45 -0700, Jakub Kicinski wrote:
-> On Fri, 27 Oct 2023 00:01:54 +0900 Shigeru Yoshida wrote:
->> This issue occurs because the `buf_alloc` and `fwd_cnt` fields of the
->> `struct virtio_vsock_hdr` are not initialized when a new skb is allocated
->> in `virtio_transport_alloc_skb()`. This patch resolves the issue by
->> initializing these fields during allocation.
-> 
-> We didn't manage to apply this before the merge window, and now the
-> trees have converged. Patch no longer applies cleanly to net.
-> Please rebase & repost.
 
-I got it. I'll rebase the patch to the latest net tree and resend it.
+On 11/2/23 14:27, Abel Wu wrote:
+> On 11/2/23 1:44 AM, s921975628@gmail.com Wrote:
+>> From: Yiwei Lin <s921975628@gmail.com>
+>>
+>> After dequeuing the current-picked scheduling entity with
+>> `__dequeue_entity`, its contribution to the EEVDF parameters
+>> cfs_rq->avg_vruntime and cfs_rq->avg_load are also removed.
+>> Because these should in fact be considered for the EEVDF algorithm,
+>> we took curr as the special case and inserted back the contributions
+>> when requests for cfs_rq->avg_vruntime and cfs_rq->avg_load.
+>
+> Being 'curr' means its vruntime is increasing, so does its
+> contribution to avg_vruntime. And you failed to explain the
+> most important part that how to commit its contribution to
+> avg_vruntime (specifically in update_curr()).
+>
+> Regards,
+>     Abel
+
+Thanks for pointing out the missing part.  I should remember to commit back
+the latest contribution at `update_curr()`. In other words, adding
+delta * scale_load_down(curr->load.weight) to avg_vruntime.
 
 Thanks,
-Shigeru
+     Yiwei Lin
+
 
