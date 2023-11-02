@@ -2,240 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE267DF767
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764127DF76E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347371AbjKBQIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
+        id S1345211AbjKBQKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKBQIj (ORCPT
+        with ESMTP id S229468AbjKBQKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:08:39 -0400
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C2312E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:08:32 -0700 (PDT)
-Message-ID: <52383a4f-6efd-43ce-bedb-a91e130850f3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698941310;
+        Thu, 2 Nov 2023 12:10:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36A4DE
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:09:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698941375;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lwcvhDkIs7fTpknKnCOZda9qAVTWwh/XZv8N4skJZM0=;
-        b=xUq5n14VSxdOTzRZCaTtuPs+LYH1ZVU7CLE6ACyvY411OLKK3A8pmGi7xZivHhdxLw/Uj+
-        jXy4RXtjp+WlKzdFsoyrYYRUwscJ9Nw0uSWv5XSB/eKLFWAQijozjVFQihj+mtk7Bq71v5
-        brF+lTgw/9OrfhPRlRyiF8qNFvnYvAg=
-Date:   Thu, 2 Nov 2023 09:08:26 -0700
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=zrAUxeWN/EkPSZYBviBn3GYoRliJE3QDH1vmaFH0DNM=;
+        b=QYFbWjIDLKxPC3KfTY+MZHX0JEAoImPP8Shw+bBNdy4NC+BqILrnB0WDClaps2ZSa5jo8r
+        xiBY2uCJVOjnf/cNfuXCkuqiuOlvitvKN35bxVA5/xDKafN1t/B2K5Rb6EjlFMcCzm7iL+
+        o9xQHl1uVJiUpNedaNi2asJoTERkK7o=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-504-a8Al7nyeMdiqQCp3fHYMnA-1; Thu, 02 Nov 2023 12:09:32 -0400
+X-MC-Unique: a8Al7nyeMdiqQCp3fHYMnA-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2c5073588cbso10729391fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:09:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698941371; x=1699546171;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zrAUxeWN/EkPSZYBviBn3GYoRliJE3QDH1vmaFH0DNM=;
+        b=R20I5Zw6GAr0iym4+aL+lEsrqZdoDD7OvNSd7qOOxUKBeQYZIOTWI8hBbNL9GGQrWK
+         cYPIcqdIXHWAatLlE+dL/V+fR9qyaffE4n+ZNINva31DF+DbnHLukmHTK56f5nGcrXz+
+         CPgnuRBVgxmJwPt573wAZc5W2CBF8S0PQYB4eyGbnPFDmaubTL52258RdzG1P3HU3Yrp
+         6sgm4sMa4EM8/Dujf1Cx9zUBoUAyNA3hh4Z73TZSZyBRnMLOsVZVDuHWFGbk4ILM1ONq
+         7MPTPJTydQ38CBO3e4s+//xx0uzRrtRFjL1K903qQZuuRq4SrpBoamll8R/6VLHD8Xde
+         TuTg==
+X-Gm-Message-State: AOJu0YzOXHNhs26pt3VWypB9NV1J8GZsPvZO40HPYdnM6MNNmupIZNY/
+        /g4Jiwo+qR+/YqvU3jrwFvaNUC4unejNil2w9IaRBD/N4bm2Knnc0Uc5SUU04qQFDXp+WCmYrzL
+        4dyr/BAwTbrS4KJN9QpPVm7To
+X-Received: by 2002:a2e:9909:0:b0:2c5:137d:6baa with SMTP id v9-20020a2e9909000000b002c5137d6baamr15012779lji.14.1698941370972;
+        Thu, 02 Nov 2023 09:09:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEJlFLj5+3DrDO3VKSLNclsgfN/dX2F6C/t4BIUiZ6w/CFNeVtSshpvZB4HuyvDIGM+ZyTgXg==
+X-Received: by 2002:a2e:9909:0:b0:2c5:137d:6baa with SMTP id v9-20020a2e9909000000b002c5137d6baamr15012736lji.14.1698941370513;
+        Thu, 02 Nov 2023 09:09:30 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c716:3000:f155:cef2:ff4d:c7? (p200300cbc7163000f155cef2ff4d00c7.dip0.t-ipconnect.de. [2003:cb:c716:3000:f155:cef2:ff4d:c7])
+        by smtp.gmail.com with ESMTPSA id l10-20020a1c790a000000b004063977eccesm3307887wme.42.2023.11.02.09.09.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 09:09:29 -0700 (PDT)
+Message-ID: <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com>
+Date:   Thu, 2 Nov 2023 17:09:27 +0100
 MIME-Version: 1.0
-Subject: Re: [linus:master] [bpf] c930472552:
- WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init
-Content-Language: en-GB
-To:     Hou Tao <houtao@huaweicloud.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        "houtao1@huawei.com" <houtao1@huawei.com>
-References: <202310302113.9f8fe705-oliver.sang@intel.com>
- <7506b682-3be3-fcd0-4bb4-c1db48f609a2@huaweicloud.com>
- <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+Content-Language: en-US
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     Wei Xu <weixugc@google.com>, Sourav Panda <souravpanda@google.com>,
+        corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org,
+        Greg Thelen <gthelen@google.com>
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com>
+ <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
+ <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
+ <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
+ <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
+ <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
+ <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com>
+ <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/2/23 6:40 AM, Hou Tao wrote:
-> Hi Alexei,
->
-> On 10/31/2023 4:01 PM, Hou Tao wrote:
->> Hi,
+On 02.11.23 17:02, Pasha Tatashin wrote:
+> On Thu, Nov 2, 2023 at 11:53 AM David Hildenbrand <david@redhat.com> wrote:
 >>
->> On 10/30/2023 10:11 PM, kernel test robot wrote:
->>> hi, Hou Tao,
+>> On 02.11.23 16:50, Pasha Tatashin wrote:
+>>>>> Adding reserved memory to MemTotal is a cleaner approach IMO as well.
+>>>>> But it changes the semantics of MemTotal, which may have compatibility
+>>>>> issues.
+>>>>
+>>>> I object.
 >>>
->>> we noticed a WARN_ONCE added in this commit was hit in our tests. FYI.
->>>
->>>
->>> Hello,
->>>
->>> kernel test robot noticed "WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init" on:
->>>
->>> commit: c930472552022bd09aab3cd946ba3f243070d5c7 ("bpf: Ensure unit_size is matched with slab cache object size")
->>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>>
->>> [test failed on linus/master ffc253263a1375a65fa6c9f62a893e9767fbebfa]
->>> [test failed on linux-next/master c503e3eec382ac708ee7adf874add37b77c5d312]
->>>
->>> in testcase: boot
->>>
->>> compiler: gcc-12
->>> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
->>>
->>> (please refer to attached dmesg/kmsg for entire log/backtrace)
->>>
->>>
->>> +-------------------------------------------------------------+------------+------------+
->>> |                                                             | b1d53958b6 | c930472552 |
->>> +-------------------------------------------------------------+------------+------------+
->>> | WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init        | 0          | 14         |
->>> | EIP:bpf_mem_alloc_init                                      | 0          | 14         |
->>> +-------------------------------------------------------------+------------+------------+
->>>
->>>
->>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->>> the same patch/commit), kindly add following tags
->>> | Reported-by: kernel test robot <oliver.sang@intel.com>
->>> | Closes: https://lore.kernel.org/oe-lkp/202310302113.9f8fe705-oliver.sang@intel.com
->>>
->>>
->>> [   32.249545][    T1] ------------[ cut here ]------------
->>> [   32.250152][    T1] bpf_mem_cache[0]: unexpected object size 128, expect 96
->>> [ 32.250953][ T1] WARNING: CPU: 1 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>> [   32.252065][    T1] Modules linked in:
->>> [   32.252548][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-12679-gc93047255202 #1
->>> [ 32.253767][ T1] EIP: bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>> [ 32.254439][ T1] Code: 30 e8 7e 22 04 00 8b 56 20 39 d0 74 24 80 3d 18 c0 cc c2 00 75 3b c6 05 18 c0 cc c2 01 52 50 53 68 df 53 57 c2 e8 47 70 ef ff <0f> 0b 83 c4 10 eb 20 43 83 c6 74 83 fb 0b 0f 85 6a ff ff ff 8b 45
->> Thanks for the report. I also could reproduce the warning in v6.6 by
->> following the reproducing steps in the link below.
+>>> Could you please elaborate what you object (and why): you object that
+>>> it will have compatibility issues, or  you object to include memblock
+>>> reserves into MemTotal?
 >>
->> According the reproduce job, it seems that the kernel is built for i386
->> (make HOSTCC=gcc-12 CC=gcc-12 ARCH=i386 olddefconfig prepare
->> modules_prepare bzImage) and in .config CONFIG_SLAB instead of
->> CONFIG_SLUB is enabled, I will check whether or not these two setups
->> make any thing being different.
-> I see what has happened. The problem is twofold:
-> (1) The object_size of kmalloc-cg-96 is adjust from 96 to 128 due to
-> slab merge in __kmem_cache_alias(). For SLAB, SLAB_HWCACHE_ALIGN is
-> enabled by default for kmalloc slab, so align is 64 and size is 128 for
-> kmalloc-cg-96. So when unit_alloc() does kmalloc_node(96, __GFP_ACCOUNT,
-> node), ksize() will return 128 instead of 96 for the returned pointer.
-> SLUB has a similar merge logic, but because its align is 8 under x86-64,
-> so the warning doesn't happen for i386 + SLUB, but I think the similar
-> problem may exist for other architectures.
-> (2) kmalloc_size_roundup() returns the object_size of kmalloc-96 instead
-> of kmalloc-cg-96, so bpf_mem_cache_adjust_size() doesn't adjust
-> size_index accordingly. The reason why the object_size of kmalloc-96 is
-> 96 instead of 128 is that there is slab merge for kmalloc-96.
->
-> About how to fix the problem, I have two ideas:
-> The first is to introduce kmalloc_size_roundup_flags(), so
-> bpf_mem_cache_adjust_size() could use kmalloc_size_roundup_flags(size,
-> __GFP_ACCOUNT) to get the object_size of kmalloc-cg-xxx. It could fix
-> the warning for now, but the warning may pop-up occasionally due to SLUB
-> merge and unusual slab align. The second is just using the bpf_mem_cache
-> pointer to get the unit_size which is saved before the to-be-free
-> pointer. Its downside is that it may can not be able to skip the free
-> operation for pointer which is not allocated from bpf ma, but I think it
-> is acceptable. I prefer the latter solution. What do you think ?
+>> Sorry, I object to changing the semantics of MemTotal. MemTotal is
+>> traditionally the memory managed by the buddy, not all memory in the
+>> system. I know people/scripts that are relying on that [although it's
+>> been source of confusion a couple of times].
+> 
+> What if one day we change so that struct pages are allocated from
+> buddy allocator (i.e. allocate deferred struct pages from buddy) will
 
+It does on memory hotplug. But for things like crashkernel size 
+detection doesn't really care about that.
 
-Is it possible that in bpf_mem_cache_adjust_size(), we do a series of
-kmalloc (for supported bucket size) and call ksize() to get the actual
-allocated object size. So eventually all possible allocated object sizes
-will be used for size_index[]. This will avoid all kind of special
-corner cases due to config/macro/arch etc. WDYT?
+> it break those MemTotal scripts? What if the size of struct pages
+> changes significantly, but the overhead will come from other metadata
+> (i.e. memdesc) will that break those scripts? I feel like struct page
 
+Probably; but ideally the metadata overhead will be smaller with 
+memdesc. And we'll talk about that once it gets real ;)
 
->> Regards,
->> Tao
->>> All code
->>> ========
->>>     0:	30 e8                	xor    %ch,%al
->>>     2:	7e 22                	jle    0x26
->>>     4:	04 00                	add    $0x0,%al
->>>     6:	8b 56 20             	mov    0x20(%rsi),%edx
->>>     9:	39 d0                	cmp    %edx,%eax
->>>     b:	74 24                	je     0x31
->>>     d:	80 3d 18 c0 cc c2 00 	cmpb   $0x0,-0x3d333fe8(%rip)        # 0xffffffffc2ccc02c
->>>    14:	75 3b                	jne    0x51
->>>    16:	c6 05 18 c0 cc c2 01 	movb   $0x1,-0x3d333fe8(%rip)        # 0xffffffffc2ccc035
->>>    1d:	52                   	push   %rdx
->>>    1e:	50                   	push   %rax
->>>    1f:	53                   	push   %rbx
->>>    20:	68 df 53 57 c2       	push   $0xffffffffc25753df
->>>    25:	e8 47 70 ef ff       	call   0xffffffffffef7071
->>>    2a:*	0f 0b                	ud2		<-- trapping instruction
->>>    2c:	83 c4 10             	add    $0x10,%esp
->>>    2f:	eb 20                	jmp    0x51
->>>    31:	43 83 c6 74          	rex.XB add $0x74,%r14d
->>>    35:	83 fb 0b             	cmp    $0xb,%ebx
->>>    38:	0f 85 6a ff ff ff    	jne    0xffffffffffffffa8
->>>    3e:	8b                   	.byte 0x8b
->>>    3f:	45                   	rex.RB
->>>
->>> Code starting with the faulting instruction
->>> ===========================================
->>>     0:	0f 0b                	ud2
->>>     2:	83 c4 10             	add    $0x10,%esp
->>>     5:	eb 20                	jmp    0x27
->>>     7:	43 83 c6 74          	rex.XB add $0x74,%r14d
->>>     b:	83 fb 0b             	cmp    $0xb,%ebx
->>>     e:	0f 85 6a ff ff ff    	jne    0xffffffffffffff7e
->>>    14:	8b                   	.byte 0x8b
->>>    15:	45                   	rex.RB
->>> [   32.256641][    T1] EAX: 00000037 EBX: 00000000 ECX: 00000002 EDX: 80000002
->>> [   32.257402][    T1] ESI: fefbda30 EDI: da953a30 EBP: c3d49ef0 ESP: c3d49ec0
->>> [   32.258176][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
->>> [   32.259000][    T1] CR0: 80050033 CR2: 00000000 CR3: 02dd5000 CR4: 000406d0
->>> [   32.259768][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
->>> [   32.260526][    T1] DR6: fffe0ff0 DR7: 00000400
->>> [   32.261021][    T1] Call Trace:
->>> [ 32.261376][ T1] ? show_regs (arch/x86/kernel/dumpstack.c:479 arch/x86/kernel/dumpstack.c:465)
->>> [ 32.261835][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>> [ 32.262395][ T1] ? __warn (kernel/panic.c:673)
->>> [ 32.262840][ T1] ? report_bug (lib/bug.c:201 lib/bug.c:219)
->>> [ 32.263327][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>> [ 32.263884][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
->>> [ 32.264368][ T1] ? handle_bug (arch/x86/kernel/traps.c:237)
->>> [ 32.264833][ T1] ? exc_invalid_op (arch/x86/kernel/traps.c:258 (discriminator 1))
->>> [ 32.265333][ T1] ? handle_exception (arch/x86/entry/entry_32.S:1056)
->>> [ 32.265903][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
->>> [ 32.266392][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>> [ 32.266982][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
->>> [ 32.267476][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>> [ 32.268050][ T1] ? irq_work_init_threads (kernel/bpf/core.c:2919)
->>> [ 32.268610][ T1] bpf_global_ma_init (kernel/bpf/core.c:2923)
->>> [ 32.269142][ T1] do_one_initcall (init/main.c:1232)
->>> [ 32.269657][ T1] ? debug_smp_processor_id (lib/smp_processor_id.c:61)
->>> [ 32.270243][ T1] ? rcu_is_watching (include/linux/context_tracking.h:122 kernel/rcu/tree.c:699)
->>> [ 32.270770][ T1] do_initcalls (init/main.c:1293 init/main.c:1310)
->>> [ 32.271275][ T1] kernel_init_freeable (init/main.c:1549)
->>> [ 32.271841][ T1] ? rest_init (init/main.c:1429)
->>> [ 32.272324][ T1] kernel_init (init/main.c:1439)
->>> [ 32.272785][ T1] ret_from_fork (arch/x86/kernel/process.c:153)
->>> [ 32.273272][ T1] ? rest_init (init/main.c:1429)
->>> [ 32.273752][ T1] ret_from_fork_asm (arch/x86/entry/entry_32.S:741)
->>> [ 32.274272][ T1] entry_INT80_32 (arch/x86/entry/entry_32.S:947)
->>> [   32.274803][    T1] irq event stamp: 16968005
->>> [ 32.275293][ T1] hardirqs last enabled at (16968013): console_unlock (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:67 arch/x86/include/asm/irqflags.h:127 kernel/printk/printk.c:347 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
->>> [ 32.276277][ T1] hardirqs last disabled at (16968022): console_unlock (kernel/printk/printk.c:345 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
->>> [ 32.277242][ T1] softirqs last enabled at (16967866): __do_softirq (arch/x86/include/asm/preempt.h:27 kernel/softirq.c:400 kernel/softirq.c:582)
->>> [ 32.278202][ T1] softirqs last disabled at (16967861): do_softirq_own_stack (arch/x86/kernel/irq_32.c:57 arch/x86/kernel/irq_32.c:147)
->>> [   32.279228][    T1] ---[ end trace 0000000000000000 ]---
->>> [   32.280294][    T1] kmemleak: Kernel memory leak detector initialized (mem pool available: 15783)
->>> [   32.281276][    T1] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
->>> [   32.285847][   T74] kmemleak: Automatic memory scanning thread started
->>> [   32.290289][    T1] UBI error: cannot create "ubi" debugfs directory, error -2
->>> [   32.291558][    T1] UBI error: cannot initialize UBI, error -2
->>>
->>>
->>>
->>> The kernel config and materials to reproduce are available at:
->>> https://download.01.org/0day-ci/archive/20231030/202310302113.9f8fe705-oliver.sang@intel.com
->>>
->>>
->>>
->
+> memory should really be included into MemTotal, otherwise we will have
+> this struggle in the future when we try to optimize struct page
+> memory.
+How far do we want to go, do we want to include crashkernel reserved 
+memory in MemTotal because it is system memory? Only metadata? what else 
+allocated using memblock?
+
+Again, right now it's simple: MemTotal is memory managed by the buddy.
+
+The spirit of this patch set is good, modifying existing counters needs 
+good justification.
+
+-- 
+Cheers,
+
+David / dhildenb
+
