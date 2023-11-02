@@ -2,187 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 474617DF02D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034C97DF02F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346801AbjKBKcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        id S1346765AbjKBKbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346370AbjKBKcO (ORCPT
+        with ESMTP id S1346802AbjKBKba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:32:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B5918C
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698921088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uya6qCwp9TX55b7qKcTEgjZRX+1aFslaiEbQanZjulo=;
-        b=EkyJeWUo5cwuqjKuQWuQKD8ReA7bDJ+HZkUusbHl52RaRc8gPu2Fd2d4rnXFVgFMXqAHxQ
-        lyPWZT6TBSjcbmU9KROHtEKDjI2n25ABWZRTUacX+w5Kr4ElYRrrPcC9aOS0n5xgM/NxKb
-        /HSabtg1JCfO7ZccT7yrjig39wLStiU=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-164-tJXc5c5oMuCtx2V0F0TLTg-1; Thu, 02 Nov 2023 06:31:27 -0400
-X-MC-Unique: tJXc5c5oMuCtx2V0F0TLTg-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6754babc2c8so2511276d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:31:26 -0700 (PDT)
+        Thu, 2 Nov 2023 06:31:30 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FAE187;
+        Thu,  2 Nov 2023 03:31:27 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9d242846194so111823066b.1;
+        Thu, 02 Nov 2023 03:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698921086; x=1699525886; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CpjOzif0QjYVITE4SJqbyNSX7vVCExngH+2bDixVO2k=;
+        b=EwgFi+JsreEx26PQchIxW9xob6QlXxDTvO9COoSPNCvMBhEp9rre2XRhvrX3i/uPro
+         NKeNAwil1do8CU0Rpw3RjyMzQL7Gao1WsPM4UzR67/yy74tBtmQgSrOO6Bebo+ritXjN
+         3e4l+3uNOTyOg7sSgNjtdOUUDSRnAvHINqTqMD3V5jBN8kZoOr7b0Mu9eNj1hxkh3vSZ
+         FqEiY43YJI3W4xhVtQYmZhz4ziRCWH7xlJR0PfyE4b7DuoGPOLlW5O5KmL0wumGMiqLk
+         itkqoYh3uHyQmIuWDlq5M5yc/7HQpoNBiMu8WityL+ZyiY+uB9hM7ZkIzmcQk8WWH0It
+         MDqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1698921086; x=1699525886;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uya6qCwp9TX55b7qKcTEgjZRX+1aFslaiEbQanZjulo=;
-        b=btUaP7tFcp/5eIpy4QgwVLR9Wr3fBsRA//SiiZcqZeuT2BzHHmtobWdv6B+9TCTJ59
-         YviQhL8QlFR+mIkmw+6QKX08u9RBMhBwNKkZF1iIRjZfXxjt/35Q///Z1T+NW5AAnRX3
-         HTIlWEsPKxhMJKk2VebFodRYu73fChVRtQpscNAVxVFZhL+sGHKSzyOEp5LyfcpEYwth
-         GYHb11gtofEZZLiBpiKJ7gmbMnVCR/eLlFWbELmrvTT97yxrpjkFxluuNc01EBoj115o
-         uDChdWyUiaSmjIXMyjh46HaSltXrTAyAHErmGKv7/R1oE1qMavACIltRjI2IenbNPw5w
-         5zwA==
-X-Gm-Message-State: AOJu0Yxr9KWYIpeieuHzJFngKTIgSWAHviam4lf4ZbmciOI2Q6JyfgLO
-        16km2s5SR7LhhN1Ju5fOVdD1y4FTKt7AEdEqHm5hYs5paW6hMQJGkWSXPH2nyuIq0V5cx0n6qih
-        qS+IvHsAT/W9PYqo6dIQ155Gs
-X-Received: by 2002:a05:6214:5582:b0:66d:1ff9:321f with SMTP id mi2-20020a056214558200b0066d1ff9321fmr19025170qvb.6.1698921086471;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CpjOzif0QjYVITE4SJqbyNSX7vVCExngH+2bDixVO2k=;
+        b=aaZbk+fKTUxVAiQ7RzTcMt5+F7vb50ADaTvRzTOPwKCkBqbQP1k+TQbDSY34Kb9osA
+         bVAVZ0A1zNXA9FHdZi3MOnHFKWkoHtIEcrKfqesPBhfgZj2bmxL15hB3b8qMYrsSffnv
+         s6RlwI+PnaQeCMcqH886B7I5yIGWALnqLU9oscTc+xuUwHZ6IVECwXHPYkybceF8SYpn
+         8cBtAxwRmNekViIcjkbrHda8Q3POlv/2eJ9VoeDv7ux8pcaOvl4UWeqiPqdY7NfbRIRY
+         dG5WYpaad/4Q1OA6iKzBY2xoOS2hYXb4/3z4Gl0/SG6uRfxq4rsKpaFPj+Prqv03d0Ae
+         zpHw==
+X-Gm-Message-State: AOJu0YyMG4TSER5TsXJtwmtW/90syhA7I2rqe+MSzf+xtAhzSEgbe3kR
+        rQ7LVM/itQxgRKbthDa4iPRpjFKvofzoxA==
+X-Google-Smtp-Source: AGHT+IEgF66vZ93tpDzSJ96lPj90OBOGERBzlE/mKany2i7Stpw9vhjKWrwM/6gBEQu265ysQYNbFA==
+X-Received: by 2002:a17:906:3b53:b0:9c3:afd3:6136 with SMTP id h19-20020a1709063b5300b009c3afd36136mr3685529ejf.72.1698921086079;
         Thu, 02 Nov 2023 03:31:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEfwwYzxDn43o+6DdeqmVaDeLew80HGhBZMXezzUylt0dZXS6cPsK52nRgvg6FHsLPBgYaZow==
-X-Received: by 2002:a05:6214:5582:b0:66d:1ff9:321f with SMTP id mi2-20020a056214558200b0066d1ff9321fmr19025152qvb.6.1698921086197;
-        Thu, 02 Nov 2023 03:31:26 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-226-153.dyn.eolo.it. [146.241.226.153])
-        by smtp.gmail.com with ESMTPSA id em15-20020ad44f8f000000b0065b229ecb8dsm2272455qvb.3.2023.11.02.03.31.24
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id d14-20020a170906370e00b009b2d46425absm969205ejc.85.2023.11.02.03.31.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 02 Nov 2023 03:31:25 -0700 (PDT)
-Message-ID: <6603e0480feea2e7a28a865705da52bb99679a35.camel@redhat.com>
-Subject: Re: [PATCH net 1/7] net: hns3: fix add VLAN fail issue
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jijie Shao <shaojijie@huawei.com>, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org
-Cc:     shenjian15@huawei.com, wangjie125@huawei.com,
-        liuyonglong@huawei.com, netdev@vger.kernel.org,
+Date:   Thu, 2 Nov 2023 12:31:23 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Thu, 02 Nov 2023 11:31:22 +0100
-In-Reply-To: <20231028025917.314305-2-shaojijie@huawei.com>
-References: <20231028025917.314305-1-shaojijie@huawei.com>
-         <20231028025917.314305-2-shaojijie@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
+Message-ID: <20231102103123.hklqlsbb5kbq53mm@skbuf>
+References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+ <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
+ <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
+ <20231030222035.oqos7v7sdq5u6mti@skbuf>
+ <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
+ <20231030233334.jcd5dnojruo57hfk@skbuf>
+ <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
+ <CAJq09z4+3g7-h5asYPs_3g4e9NbPnxZQK+NxggYXGGxO+oHU1g@mail.gmail.com>
+ <CACRpkdZ-M5mSUeVNhdahQRpm+oA1zfFkq6kZEbpp=3sKjdV9jA@mail.gmail.com>
+ <CAJq09z6QwLNEc5rEGvE3jujZ-vb+vtUQLS-fkOnrdnYqk5KvxA@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJq09z6QwLNEc5rEGvE3jujZ-vb+vtUQLS-fkOnrdnYqk5KvxA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-10-28 at 10:59 +0800, Jijie Shao wrote:
-> From: Jian Shen <shenjian15@huawei.com>
->=20
-> The hclge_sync_vlan_filter is called in periodic task,
-> trying to remove VLAN from vlan_del_fail_bmap. It can
-> be concurrence with VLAN adding operation from user.
-> So once user failed to delete a VLAN id, and add it
-> again soon, it may be removed by the periodic task,
-> which may cause the software configuration being
-> inconsistent with hardware. So add mutex handling
-> to avoid this.
->=20
->      user                        hns3 driver
->=20
->                                            periodic task
->                                                 =E2=94=82
->   add vlan 10 =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80 hns3_vlan_rx_=
-add_vid        =E2=94=82
->        =E2=94=82             (suppose success)          =E2=94=82
->        =E2=94=82                                        =E2=94=82
->   del vlan 10 =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80  hns3_vlan_rx=
-_kill_vid      =E2=94=82
->        =E2=94=82           (suppose fail,add to         =E2=94=82
->        =E2=94=82             vlan_del_fail_bmap)        =E2=94=82
->        =E2=94=82                                        =E2=94=82
->   add vlan 10 =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80 hns3_vlan_rx_=
-add_vid        =E2=94=82
->                      (suppose success)          =E2=94=82
->                                        foreach vlan_del_fail_bmp
->                                             del vlan 10
->=20
-> Fixes: fe4144d47eef ("net: hns3: sync VLAN filter entries when kill VLAN =
-ID failed")
-> Signed-off-by: Jian Shen <shenjian15@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  .../hisilicon/hns3/hns3pf/hclge_main.c        | 21 +++++++++++++------
->  .../hisilicon/hns3/hns3vf/hclgevf_main.c      | 11 ++++++++--
->  2 files changed, 24 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/dr=
-ivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> index c42574e29747..a3230ac928a9 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> @@ -10026,8 +10026,6 @@ static void hclge_rm_vport_vlan_table(struct hclg=
-e_vport *vport, u16 vlan_id,
->  	struct hclge_vport_vlan_cfg *vlan, *tmp;
->  	struct hclge_dev *hdev =3D vport->back;
-> =20
-> -	mutex_lock(&hdev->vport_lock);
-> -
->  	list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node) {
->  		if (vlan->vlan_id =3D=3D vlan_id) {
->  			if (is_write_tbl && vlan->hd_tbl_status)
-> @@ -10042,8 +10040,6 @@ static void hclge_rm_vport_vlan_table(struct hclg=
-e_vport *vport, u16 vlan_id,
->  			break;
->  		}
->  	}
-> -
-> -	mutex_unlock(&hdev->vport_lock);
->  }
-> =20
->  void hclge_rm_vport_all_vlan_table(struct hclge_vport *vport, bool is_de=
-l_list)
-> @@ -10452,11 +10448,16 @@ int hclge_set_vlan_filter(struct hnae3_handle *=
-handle, __be16 proto,
->  	 * handle mailbox. Just record the vlan id, and remove it after
->  	 * reset finished.
->  	 */
-> +	mutex_lock(&hdev->vport_lock);
->  	if ((test_bit(HCLGE_STATE_RST_HANDLING, &hdev->state) ||
->  	     test_bit(HCLGE_STATE_RST_FAIL, &hdev->state)) && is_kill) {
->  		set_bit(vlan_id, vport->vlan_del_fail_bmap);
-> +		mutex_unlock(&hdev->vport_lock);
->  		return -EBUSY;
-> +	} else if (!is_kill && test_bit(vlan_id, vport->vlan_del_fail_bmap)) {
-> +		clear_bit(vlan_id, vport->vlan_del_fail_bmap);
->  	}
-> +	mutex_unlock(&hdev->vport_lock);
-> =20
->  	/* when port base vlan enabled, we use port base vlan as the vlan
->  	 * filter entry. In this case, we don't update vlan filter table
-> @@ -10481,7 +10482,9 @@ int hclge_set_vlan_filter(struct hnae3_handle *ha=
-ndle, __be16 proto,
->  		 * and try to remove it from hw later, to be consistence
->  		 * with stack
->  		 */
-> +		mutex_lock(&hdev->vport_lock);
->  		set_bit(vlan_id, vport->vlan_del_fail_bmap);
-> +		mutex_unlock(&hdev->vport_lock);
+Hi Luiz,
 
-It looks like that the 'hclge_rm_vport_vlan_table()' call a few lines
-above will now happen with the vport_lock unlocked.
+On Wed, Nov 01, 2023 at 09:35:30AM -0300, Luiz Angelo Daros de Luca wrote:
+> Hi Linus,
+> 
+> Sorry but I noticed no issues:
+> 
+> From the router:
+> 
+> No. Time Source Destination Protocol Length Info
+> 1 0.000000000 192.168.1.1 192.168.1.2 ICMP 1514 Echo (ping) request id=0x0789, seq=23/5888, ttl=64 (reply in 2)
+> 2 0.000040094 192.168.1.2 192.168.1.1 ICMP 1514 Echo (ping) reply id=0x0789, seq=23/5888, ttl=64 (request in 1)
+> 
+> From the host:
+> 
+> No. Time Source Destination Protocol Length Info
+> 1 0.000000000 192.168.1.2 192.168.1.1 ICMP 1514 Echo (ping) request id=0x0002, seq=8/2048, ttl=64 (reply in 2)
+> 2 0.000391800 192.168.1.1 192.168.1.2 ICMP 1514 Echo (ping) reply id=0x0002, seq=8/2048, ttl=64 (request in 1)
+> 
+> If I go over that limit, it fragments the packet as expected.
 
-That looks racy and would deserve at least a comment explaining why
-it's safe.
-
-Thanks,
-
-Paolo
-
+Could you run the shell command that sweeps over the entire range, fromhere?
+https://lore.kernel.org/netdev/20231030222035.oqos7v7sdq5u6mti@skbuf/
