@@ -2,165 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804667DEC60
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5297DEC63
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 06:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348559AbjKBFji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 01:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        id S1348566AbjKBFkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 01:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348472AbjKBFjh (ORCPT
+        with ESMTP id S1348472AbjKBFkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 01:39:37 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2088.outbound.protection.outlook.com [40.107.220.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07AE112;
-        Wed,  1 Nov 2023 22:39:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ina029EMEuC6CcfdUPfHeso/B6mxL6455jPAot3HXYg73a0ClQnXJ8/XjNeu8HHrvXcyGKAoM8cvwdaLvZZNqS101GztaorcmFrKUAKYQR34yvfpnYSUy7D4y9rAgIEoLyXBJJDAAON2wVKjDTxHWFP64g0ywaIkATauHNWf9V8akSMngGorCj4punk5DewkeBLV98iSMd4LpDs/I6CVyQoHnkHjVo74+4vqmvFnGnmN/ZI+r5AcMGwA4UX8T0HT+icAwbtKUoLrQYfSY/RxDy8Ay5ONT1MwnKD36KgkbaFU0YC4idIyTUV1cNv17VX4FaNyMJ2TrXtmqpbszEwVhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jSBr375D73fMMePfj12ivKPHZF4zQlBak/s9sHEVSC0=;
- b=XEodKjFNVhbwLrNy0x1DNqtKGHSGCosCWH2CkIThg87IPZgDTPHe5M8pHbJDDBB6NWkn6dI5TBh2/IEkmlL9GsW+nV4C04/OPJnKmQGyIB7UWnztHnji3V4vHORjbeI57qev4i9N+v8h+CDJ1ktFkYaWn1sc9daBhcc6QA4E7GEeuuFeLSYYlB826LVefjJ7JxCPsLq6a1mVVYvYaVcQJXlglrJz1EZpiuNyUsdeMw67PECJ3tPCilsugn2RODpCW5PBJ/Ar4zCQf9tuMQ+yBXa7liPzOcHIzN+9VPbkXiQ33qF8JsK3jrvXjToa69YkQxHr5rh0VCHUxpqIywyZUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jSBr375D73fMMePfj12ivKPHZF4zQlBak/s9sHEVSC0=;
- b=QgHhjFQZSPKY6M+tj+23lkwjiw++bttajcz94HcB/8BxI1Gkf8ezZi/6tzVfYedn8EsPyjhdSuAU8LEwpv8F9ajmqBT02zDSWQ2FR2jCrx0m3ZVeHvrOZgU4ASdsu9bdiCTMYjLv/eZ2UcX6XLgd+h0UUtz6uQhk3A71M26+XSw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
- BL1PR12MB5972.namprd12.prod.outlook.com (2603:10b6:208:39b::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.28; Thu, 2 Nov 2023 05:39:28 +0000
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::93cc:c27:4af6:b78c]) by DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::93cc:c27:4af6:b78c%2]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 05:39:28 +0000
-Message-ID: <0321430a-8666-4017-b791-127484c2b17e@amd.com>
-Date:   Thu, 2 Nov 2023 11:09:16 +0530
-User-Agent: Mozilla Thunderbird
-Reply-To: nikunj@amd.com
-Subject: Re: [PATCH v5 12/14] x86/kvmclock: Skip kvmclock when Secure TSC is
- available
-Content-Language: en-US
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
-Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        dave.hansen@linux.intel.com, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
-References: <20231030063652.68675-1-nikunj@amd.com>
- <20231030063652.68675-13-nikunj@amd.com>
- <cfc9f863-dc07-7c23-7621-d2dc115651bd@amd.com>
-From:   "Nikunj A. Dadhania" <nikunj@amd.com>
-In-Reply-To: <cfc9f863-dc07-7c23-7621-d2dc115651bd@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0009.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:95::17) To DS7PR12MB6309.namprd12.prod.outlook.com
- (2603:10b6:8:96::19)
+        Thu, 2 Nov 2023 01:40:02 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4F8132
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 22:39:59 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A25HmAZ005798;
+        Thu, 2 Nov 2023 05:39:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=RBgfinWgMqkBKLBLRAm2sM9PdeO8ipbYJS1DdXhVd4U=;
+ b=SUOr56gu2KYgrcjW1mQ0h8+mWU/SmNlghR0I6pFb/V29srMinlpA7y5wmPKAEQoDTRpi
+ mZTR1TlKXm3vapJFbcG/pFFXubkIOCm6nkXwlycuzGFXO3ASX6CNnwnmJ7qBc4Dp2jdY
+ wZonlWbbN9A4HHRfJk3IK3hBQDibBBUtVcQ3DMwjF5QLlPS7ofvCY7CHqI0tpVh+POHV
+ xdYKgKwc4O4uxThbY+B55mO5W4IxYnZ/PqJrEBpG4pxFT6FE41lCSd8YzEwJRK673ceH
+ iIBfkZKc/ncUeBKB6PIJy+/j7WnkxkCL/Ay58Q3OTbvu6IN9pd9T9EDyIsCc8DFGA4+0 0A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u45g80eyc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 05:39:43 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A25PGFr022619;
+        Thu, 2 Nov 2023 05:39:43 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u45g80exx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 05:39:42 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A22ZEvt031452;
+        Thu, 2 Nov 2023 05:39:41 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1fb2bvy5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 05:39:41 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A25df3S25297436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 2 Nov 2023 05:39:41 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6070458057;
+        Thu,  2 Nov 2023 05:39:41 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 388BB58059;
+        Thu,  2 Nov 2023 05:39:39 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  2 Nov 2023 05:39:38 +0000 (GMT)
+X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Russell Currey <ruscur@russell.cc>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2 37/37] powerpc: Support execute-only on all powerpc
+In-Reply-To: <4283ea9cbef9ff2fbee468904800e1962bc8fc18.1695659959.git.christophe.leroy@csgroup.eu>
+References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
+ <4283ea9cbef9ff2fbee468904800e1962bc8fc18.1695659959.git.christophe.leroy@csgroup.eu>
+Date:   Thu, 02 Nov 2023 11:09:37 +0530
+Message-ID: <874ji4af3a.fsf@linux.ibm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|BL1PR12MB5972:EE_
-X-MS-Office365-Filtering-Correlation-Id: 016afbda-d7e0-43be-ff3a-08dbdb661475
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zgNsFhULMoaYOjhJyo/mtXeJjzMiYqw4hLi/heTc3dzOyzU/Vi5a4ZLOtaf2KxnvM8TErJajG+dFi3GvlLBM17lC58LyyuRiZFdec+/Qge7221DG9QRRNPsc9bE09LA1lDjWZ3sIRgHAJUX+OfkRFkdDAFoVY42VoaiGacH079W/f6E8Y3fXZ9aKEyijQqGUZ2fGtc58wNFz3leAcg5ZjKjvv+Nwmiot9i3Y+qgwstvFTWAW59nQZjac8y90tekB6FBAN5RXdpxBE7ccpssOsxzr6XvFXO/krcrbWUoaTKn76crorLFEz/IukgmqVdnijkmyMPHFmujbdww3Le+eRYKYFwV8nGm5Jrt33HTkN4fvNQuGZszGnChtvIkCD9Mtx3WllX9dkHlMeZQZtaEPvaacUoFHu6YHIS+JPfz0v0rKqRhXPGwjqcC1H7Ew4jANOk3hJ2q38XuoIJTy3XcHCnQgj756Tq1Xm/nbJXVNktzLHw/IFDqJFarMhexd8+BsbiTSUPjhawP57P6UN1BZGd6fs2JV1zXfi03/Zoymh0lboGUOAIxG608015MqYiMFId0Sfdqf2HsOVk3SaRWQaR6fNGp2N/kZTUAcHieTtmZBa/RLmogU1MhjB+qHUYHdnFkHZO4YGTPUDPSFAiDCTA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(366004)(346002)(39860400002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(66476007)(5660300002)(31686004)(2906002)(41300700001)(478600001)(66556008)(6486002)(6512007)(6506007)(6666004)(53546011)(66946007)(966005)(7416002)(26005)(2616005)(83380400001)(3450700001)(316002)(8936002)(4326008)(8676002)(38100700002)(31696002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dnUyV0N6L2cxR1RldlhrWFFYMFExaGZWNFhpOENzOXozNGE3QkhZOFBoeUZ0?=
- =?utf-8?B?czQxMkloNkdYMm11dTYxZGwzRFFDTG9aL0pkb2JpTldNdEN0VTl1YnRtVnZ2?=
- =?utf-8?B?SkdVUDVmZHpsdWtSUFFhdXVQOHNraG9BanZCclg0TEc5YXJvOUtEekxIc0hm?=
- =?utf-8?B?TncrV0VISlRJTlRuemt0Q3RwZk1rdDFEM2c5Nzh1dWNzWm4yUGpJVW9yaFlM?=
- =?utf-8?B?dHJwZ3VUajhNc1orcmYvRWxOeUJmbXFhOVBWMGErUmVnR2pKaHBMYitHS282?=
- =?utf-8?B?TzFNVmpFd0ZsKzRXbUJjNEpDVHdjb0cwZzVvekdZcytJd0FwUUowTVhXUXli?=
- =?utf-8?B?dzUrWC9ZQ3lCdDRhZkJMbGwvbWVLbm1HMVYvcVFLVXl1djZNQ1ljL1oxSytF?=
- =?utf-8?B?ZHZpZnVRWjhMdFhnTmRYQ1NFNis2NmhqdVZ4T0ttVUx3RXlOeDFncDQyaEdL?=
- =?utf-8?B?NkxMYUxndXhreHB1d3JwVlNEb0VzYWpibEFlZ0JwSElXNlFRR1BONWk5VE9Y?=
- =?utf-8?B?UVFCRklZaGN4N1BkcUxPOVJVdkVpWWRyNjc3aEtlRHlZdDBJb2dHWEJUdDF1?=
- =?utf-8?B?U2ZTMnZ5eHFOODJWTllpZGVhb0sxa2dyY2tENm1sd2czYWljeGNkcnRBTlZk?=
- =?utf-8?B?YU05MG0veXkvR0NIOTVvcmd5aS9NdzIwaVpkMml2ajczbVorb2hPV0RING52?=
- =?utf-8?B?R3FXNHR2YzNpN01uS1NtSGFveUQvMVVxWEMxQ1RXNzVvRTBPWERkL0p5TmVs?=
- =?utf-8?B?SXhENVZIaDJaS3NSNjJNbFhsY05GQkZUSlBqZ1h5bk0zdWNCamo2YWVHRFZh?=
- =?utf-8?B?bDdNbjZFYUFPUklhLy9FWVYxTHRwTUpUUElDZ2tLZ0ZUMkZDK0NRR3FrUEw4?=
- =?utf-8?B?S2p3NVU3V3Npc2h6RWpxUGZMVXNSVjgrU1dYMSt5ajczNGlVemptYkliSWIy?=
- =?utf-8?B?UlllS09aMko0MFdEZWZXK0dlb2dwcGJtY0tnempMeWo0M3lRd0gvTk9kSnB4?=
- =?utf-8?B?Vkg2SG0xb3kzU043TFM5empzZ1dTeVRtUHlJN2VtamJScGdVUitvOFRTQ0pp?=
- =?utf-8?B?OFE2cjZOc2JrUG01U3kvZld3NWRCQ3owaSt4Mzhhb2tuM1J1MXhVdW5xa0Vy?=
- =?utf-8?B?bHlCSDlaeXByR2hrTnlKbUx5OVg3RjYwb2x0a0VlVHRQYnFxMDhaS1BCaWFZ?=
- =?utf-8?B?dUpyTnFqR09JaDljZjJtUnIrdjlrL002M1kvZStNODhLaUNKWDVqRHdZcmlo?=
- =?utf-8?B?cy90QytVNlYxSEJ1Wi9HRy9XK25IdlBMTjZGU2Z5cWpIbVNxcVRFdU50ZzlX?=
- =?utf-8?B?SHVHUlh6MXlVN1NoQ2RnTHppV3h0UzdmYmd2UlFLTmRQb0JDL0c2UmlVSkpU?=
- =?utf-8?B?VGhqa05YNE9EQ2pYeUlGanovOGE5T3Z3RE4zak9DTEhPZG54ZGw5TFdsRDFT?=
- =?utf-8?B?Z3Z1S0I0Y05VS0IzZFc5aHQ2MjBtMFh6a3lLS0VEMHZJUmFwZGZyVDYyeEph?=
- =?utf-8?B?bndkelM1aFRZRXI3Uk9jL0t6NW53Q0IyN2hJTlV6Y2ZDdkg2allocnRzK0Rh?=
- =?utf-8?B?aUx0MDk2UXZqVTNnWFRkTlZiNGdwU1JoaC82WmJXRTZhYnpxbGJMYWRpcmFz?=
- =?utf-8?B?TlRzSERaejRaQkcyd3pGYnBtWDcwaWd3aXZ1ZllkaGlYM1VsbERCaEtCMlor?=
- =?utf-8?B?V014RzFBVW44YkpwUWhWNWx4RGhKektVU1FiMGpZdTdvMWE3dWQ3WDNITktk?=
- =?utf-8?B?YjluLzk1YW1uSXBlZENhSGMzK0d2MVlOaktYdlc0Tzl5aitRWjBIU2svZUNH?=
- =?utf-8?B?MnE0bHZzWjZYWkNiK1h1aUlHOTRxYjBtMXFIbmJaSTBUbGx3Q2tJYU1vUnVM?=
- =?utf-8?B?SG9lb0xkS3VmaWoxZTdhUHZ6UHV0OTIrTDRUY2pOeU5UMUVkY0ZHQmlVajcw?=
- =?utf-8?B?TXdJdVplUEZVRS90UUJJR3dFSFN4UDY0NVBKbGJZb01PcUVCYXUycGdxRjNU?=
- =?utf-8?B?ZW16WWVlTjViaW5jekZiY2p5ZFZkQ0MxQ2o5endkMFcvSGV2b1FvUEVGQ3JS?=
- =?utf-8?B?YUErTjc3S3NDMFA3VzIxaCtlQXh3cEZ6UGpEYUF2b0RNM1c2bnYvKzhJSnlH?=
- =?utf-8?Q?9eYgSyn2X4u2htXAfhDkdcCzm?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 016afbda-d7e0-43be-ff3a-08dbdb661475
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 05:39:28.3001
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Oc0XUpf0vqeVGEGvnPbE7U+V8vAFtwBZ5DmixoN3tQcneQuCtZuz/2T8fkQWnzUTi5IAM9AujGScZrKpCKhW9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5972
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9577bBYKCj9KXZKm1Qv7MUoJ15OaEDsU
+X-Proofpoint-GUID: txbHpqEf3uG5z7b5bRkUePHFJToqarF1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ clxscore=1011 priorityscore=1501 mlxlogscore=999 impostorscore=0
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311020043
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/31/2023 2:30 AM, Tom Lendacky wrote:
-> On 10/30/23 01:36, Nikunj A Dadhania wrote:
->> For AMD SNP guests having Secure TSC enabled, skip using the kvmclock.
->> The guest kernel will fallback and use Secure TSC based clocksource.
->>
->> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
->> ---
->>   arch/x86/kernel/kvmclock.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
->> index fb8f52149be9..779e7311fa6f 100644
->> --- a/arch/x86/kernel/kvmclock.c
->> +++ b/arch/x86/kernel/kvmclock.c
->> @@ -288,7 +288,7 @@ void __init kvmclock_init(void)
->>   {
->>       u8 flags;
->>   -    if (!kvm_para_available() || !kvmclock)
->> +    if (!kvm_para_available() || !kvmclock || cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
-> 
-> And is setting X86_FEATURE_TSC_RELIABLE, as Dave Hansen suggests, enough
-> to prevent usage of kvmclock?
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-No that wasn't sufficient. kvmclock was always selected before SecureTSC even when X86_FEATURE_TSC_RELIABLE was selected.
+> Introduce PAGE_EXECONLY_X macro which provides exec-only rights.
+> The _X may be seen as redundant with the EXECONLY but it helps
+> keep consistancy, all macros having the EXEC right have _X.
+>
+> And put it next to PAGE_NONE as PAGE_EXECONLY_X is
+> somehow PAGE_NONE + EXEC just like all other SOMETHING_X are
+> just SOMETHING + EXEC.
+>
+> On book3s/64 PAGE_EXECONLY becomes PAGE_READONLY_X.
+>
+> On book3s/64, as PAGE_EXECONLY is only valid for Radix add
+> VM_READ flag in vm_get_page_prot() for non-Radix.
+>
+> And update access_error() so that a non exec fault on a VM_EXEC only
+> mapping is always invalid, even when the underlying layer don't
+> always generate a fault for that.
+>
+> For 8xx, set PAGE_EXECONLY_X as _PAGE_NA | _PAGE_EXEC.
+> For others, only set it as just _PAGE_EXEC
+>
+> With that change, 8xx, e500 and 44x fully honor execute-only
+> protection.
+>
+> On 40x that is a partial implementation of execute-only. The
+> implementation won't be complete because once a TLB has been loaded
+> via the Instruction TLB miss handler, it will be possible to read
+> the page. But at least it can't be read unless it is executed first.
+>
+> On 603 MMU, TLB missed are handled by SW and there are separate
+> DTLB and ITLB. Execute-only is therefore now supported by not loading
+> DTLB when read access is not permitted.
+>
+> On hash (604) MMU it is more tricky because hash table is common to
+> load/store and execute. Nevertheless it is still possible to check
+> whether _PAGE_READ is set before loading hash table for a load/store
+> access. At least it can't be read unless it is executed first.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Russell Currey <ruscur@russell.cc>
+> Cc: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/powerpc/include/asm/book3s/32/pgtable.h |  2 +-
+>  arch/powerpc/include/asm/book3s/64/pgtable.h |  4 +---
+>  arch/powerpc/include/asm/nohash/32/pte-8xx.h |  1 +
+>  arch/powerpc/include/asm/nohash/pgtable.h    |  2 +-
+>  arch/powerpc/include/asm/nohash/pte-e500.h   |  1 +
+>  arch/powerpc/include/asm/pgtable-masks.h     |  2 ++
+>  arch/powerpc/mm/book3s64/pgtable.c           | 10 ++++------
+>  arch/powerpc/mm/fault.c                      |  9 +++++----
+>  arch/powerpc/mm/pgtable.c                    |  4 ++--
+>  9 files changed, 18 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
+> index 244621c88510..52971ee30717 100644
+> --- a/arch/powerpc/include/asm/book3s/32/pgtable.h
+> +++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
+> @@ -425,7 +425,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
+>  {
+>  	/*
+>  	 * A read-only access is controlled by _PAGE_READ bit.
+> -	 * We have _PAGE_READ set for WRITE and EXECUTE
+> +	 * We have _PAGE_READ set for WRITE
+>  	 */
+>  	if (!pte_present(pte) || !pte_read(pte))
+>  		return false; 
+>
 
-> 
-> There was a discussion here:
->  https://lore.kernel.org/lkml/20230808162320.27297-1-kirill.shutemov@linux.intel.com/
-> 
-> Thanks,
-> Tom
+Should this now be updated to check for EXEC bit ? 
 
-Regards
-Nikunj
+> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> index 0fd12bdc7b5e..751b01227e36 100644
+> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
+> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> @@ -18,6 +18,7 @@
+>  #define _PAGE_WRITE		0x00002 /* write access allowed */
+>  #define _PAGE_READ		0x00004	/* read access allowed */
+>  #define _PAGE_NA		_PAGE_PRIVILEGED
+> +#define _PAGE_NAX		_PAGE_EXEC
+>  #define _PAGE_RO		_PAGE_READ
+>  #define _PAGE_ROX		(_PAGE_READ | _PAGE_EXEC)
+>  #define _PAGE_RW		(_PAGE_READ | _PAGE_WRITE)
+> @@ -141,9 +142,6 @@
+>  
+>  #include <asm/pgtable-masks.h>
+>  
+> -/* Radix only, Hash uses PAGE_READONLY_X + execute-only pkey instead */
+> -#define PAGE_EXECONLY	__pgprot(_PAGE_BASE | _PAGE_EXEC)
+> -
+>  /* Permission masks used for kernel mappings */
+>  #define PAGE_KERNEL	__pgprot(_PAGE_BASE | _PAGE_KERNEL_RW)
+>  #define PAGE_KERNEL_NC	__pgprot(_PAGE_BASE_NC | _PAGE_KERNEL_RW | _PAGE_TOLERANT)
+> diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> index 1ee38befd29a..137dc3c84e45 100644
+> --- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> +++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> @@ -48,6 +48,7 @@
+>  
+>  #define _PAGE_HUGE	0x0800	/* Copied to L1 PS bit 29 */
+>  
+> +#define _PAGE_NAX	(_PAGE_NA | _PAGE_EXEC)
+>  #define _PAGE_ROX	(_PAGE_RO | _PAGE_EXEC)
+>  #define _PAGE_RW	0
+>  #define _PAGE_RWX	_PAGE_EXEC
+> diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/include/asm/nohash/pgtable.h
+> index f922c84b23eb..a50be1de9f83 100644
+> --- a/arch/powerpc/include/asm/nohash/pgtable.h
+> +++ b/arch/powerpc/include/asm/nohash/pgtable.h
+> @@ -203,7 +203,7 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
+>  {
+>  	/*
+>  	 * A read-only access is controlled by _PAGE_READ bit.
+> -	 * We have _PAGE_READ set for WRITE and EXECUTE
+> +	 * We have _PAGE_READ set for WRITE
+>  	 */
+>  	if (!pte_present(pte) || !pte_read(pte))
+>  		return false;
+>
 
+
+Same here. if so I guess book3s/64 also will need an update?
+
+> diff --git a/arch/powerpc/include/asm/nohash/pte-e500.h b/arch/powerpc/include/asm/nohash/pte-e500.h
+> index 31d2c3ea7df8..f516f0b5b7a8 100644
+> --- a/arch/powerpc/include/asm/nohash/pte-e500.h
+> +++ b/arch/powerpc/include/asm/nohash/pte-e500.h
+> @@ -57,6 +57,7 @@
+>  #define _PAGE_KERNEL_ROX	(_PAGE_BAP_SR | _PAGE_BAP_SX)
+>  
+>  #define _PAGE_NA	0
+> +#define _PAGE_NAX	_PAGE_BAP_UX
+>  #define _PAGE_RO	_PAGE_READ
+>  #define _PAGE_ROX	(_PAGE_READ | _PAGE_BAP_UX)
+>  #define _PAGE_RW	(_PAGE_READ | _PAGE_WRITE)
+> diff --git a/arch/powerpc/include/asm/pgtable-masks.h b/arch/powerpc/include/asm/pgtable-masks.h
+> index 808a3b9e8fc0..6e8e2db26a5a 100644
+> --- a/arch/powerpc/include/asm/pgtable-masks.h
+> +++ b/arch/powerpc/include/asm/pgtable-masks.h
+> @@ -4,6 +4,7 @@
+>  
+>  #ifndef _PAGE_NA
+>  #define _PAGE_NA	0
+> +#define _PAGE_NAX	_PAGE_EXEC
+>  #define _PAGE_RO	_PAGE_READ
+>  #define _PAGE_ROX	(_PAGE_READ | _PAGE_EXEC)
+>  #define _PAGE_RW	(_PAGE_READ | _PAGE_WRITE)
+> @@ -20,6 +21,7 @@
+>  
+>  /* Permission masks used to generate the __P and __S table */
+>  #define PAGE_NONE	__pgprot(_PAGE_BASE | _PAGE_NA)
+> +#define PAGE_EXECONLY_X	__pgprot(_PAGE_BASE | _PAGE_NAX)
+>  #define PAGE_SHARED	__pgprot(_PAGE_BASE | _PAGE_RW)
+>  #define PAGE_SHARED_X	__pgprot(_PAGE_BASE | _PAGE_RWX)
+>  #define PAGE_COPY	__pgprot(_PAGE_BASE | _PAGE_RO)
+> diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
+> index 8f8a62d3ff4d..be229290a6a7 100644
+> --- a/arch/powerpc/mm/book3s64/pgtable.c
+> +++ b/arch/powerpc/mm/book3s64/pgtable.c
+> @@ -635,12 +635,10 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
+>  	unsigned long prot;
+>  
+>  	/* Radix supports execute-only, but protection_map maps X -> RX */
+> -	if (radix_enabled() && ((vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)) {
+> -		prot = pgprot_val(PAGE_EXECONLY);
+> -	} else {
+> -		prot = pgprot_val(protection_map[vm_flags &
+> -						 (VM_ACCESS_FLAGS | VM_SHARED)]);
+> -	}
+> +	if (!radix_enabled() && ((vm_flags & VM_ACCESS_FLAGS) == VM_EXEC))
+> +		vm_flags |= VM_READ;
+> +
+> +	prot = pgprot_val(protection_map[vm_flags & (VM_ACCESS_FLAGS | VM_SHARED)]);
+>  
+>  	if (vm_flags & VM_SAO)
+>  		prot |= _PAGE_SAO;
+> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+> index b1723094d464..9e49ede2bc1c 100644
+> --- a/arch/powerpc/mm/fault.c
+> +++ b/arch/powerpc/mm/fault.c
+> @@ -266,14 +266,15 @@ static bool access_error(bool is_write, bool is_exec, struct vm_area_struct *vma
+>  	}
+>  
+>  	/*
+> -	 * VM_READ, VM_WRITE and VM_EXEC all imply read permissions, as
+> -	 * defined in protection_map[].  Read faults can only be caused by
+> -	 * a PROT_NONE mapping, or with a PROT_EXEC-only mapping on Radix.
+> +	 * VM_READ, VM_WRITE and VM_EXEC may imply read permissions, as
+> +	 * defined in protection_map[].  In that case Read faults can only be
+> +	 * caused by a PROT_NONE mapping. However a non exec access on a
+> +	 * VM_EXEC only mapping is invalid anyway, so report it as such.
+>  	 */
+>  	if (unlikely(!vma_is_accessible(vma)))
+>  		return true;
+>  
+> -	if (unlikely(radix_enabled() && ((vma->vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)))
+> +	if ((vma->vm_flags & VM_ACCESS_FLAGS) == VM_EXEC)
+>  		return true;
+>  
+>  	/*
+> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+> index 781a68c69c2f..79508c1d15d7 100644
+> --- a/arch/powerpc/mm/pgtable.c
+> +++ b/arch/powerpc/mm/pgtable.c
+> @@ -492,7 +492,7 @@ const pgprot_t protection_map[16] = {
+>  	[VM_READ]					= PAGE_READONLY,
+>  	[VM_WRITE]					= PAGE_COPY,
+>  	[VM_WRITE | VM_READ]				= PAGE_COPY,
+> -	[VM_EXEC]					= PAGE_READONLY_X,
+> +	[VM_EXEC]					= PAGE_EXECONLY_X,
+>  	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
+>  	[VM_EXEC | VM_WRITE]				= PAGE_COPY_X,
+>  	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
+> @@ -500,7 +500,7 @@ const pgprot_t protection_map[16] = {
+>  	[VM_SHARED | VM_READ]				= PAGE_READONLY,
+>  	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
+>  	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
+> -	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_X,
+> +	[VM_SHARED | VM_EXEC]				= PAGE_EXECONLY_X,
+>  	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
+>  	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_X,
+>  	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
+> -- 
+> 2.41.0
