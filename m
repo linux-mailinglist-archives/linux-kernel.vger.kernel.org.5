@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 733477DF9AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E276F7DF990
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377165AbjKBSNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        id S1345134AbjKBSIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235478AbjKBSM5 (ORCPT
+        with ESMTP id S234389AbjKBSIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:12:57 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FAD3C02;
-        Thu,  2 Nov 2023 11:01:59 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4083f613272so10884975e9.1;
-        Thu, 02 Nov 2023 11:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698948115; x=1699552915; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9v7fSZdeM5lhEwx+RSQKLoMZAxQbqm89rXIxNUF1qU=;
-        b=I/I4KR3/t4STPpazSdJQC5wM7BplxiqHhYNo1M6bljYUVoYlEDfuO+9fHyA+ktSMFg
-         Bih9oVYwMthfvmUHawyXaP+HZpNYdUJP9oYxQ+oH/V0bmiX6s5tSizM8X8h+ccuIlG93
-         CNeSPZuFL+IUDOupMZbwsRBKxDl9PiW38sOqrCFfMLvmko97TDK88pDudR4rBmOoxiUh
-         3quLuAPWSxxIK6X05Lb1zyzfff42fhV7Jax3/m8RqKMVwL3Hv6leYNhqQW3kcTeSBkpG
-         XMsqtdZUQFef+WwqGiaBfxOc1TIPLJDiFULZp7mIORtlwRTb8k744Gbce5uQosuNQCJc
-         v1ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698948115; x=1699552915;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s9v7fSZdeM5lhEwx+RSQKLoMZAxQbqm89rXIxNUF1qU=;
-        b=A8rZEYNU0n7IWt9SwUCoFRFU9y1+8ySGrmi+ftWKy09THzDR1a8g1AD47hWQqIsAt5
-         wAqPaWFp0Wc4UPAJrj8VSTGysNAPR5JiKi0wB79xX5kE4aM6UHzDLCLmcKpTJDPvUfYg
-         cNE+LZ0WT5h2lgcIXocFknxcy9eLgHuUqbNs2AN40yURw2755a8qolhfOXfcd/9yVX6p
-         Gco8fXr1dHCVCm+8wZJEXqXcOu1Jh4NrOCu2FSyrK6j/y6FPSszCQKrGW+3gHHL8rgkY
-         w92/SLA+FSEs50dF8/yWUDYI6vdermwqStFEsMwDj/13mZHLUi73RWQAlxHyZB0t7qyu
-         nwjQ==
-X-Gm-Message-State: AOJu0YwlL5jnwQgy+w5Eixn2Z2T5TERFmk9nij6bg7OzrWrQ+XzK08QT
-        uWVx43aCekuQjhGLi9I3b44=
-X-Google-Smtp-Source: AGHT+IEZGqW/vxesUw1UMzhtf2vnCkMbF2yFSaqWJA+rHOg1Bsq4xatZmZCYotCXR2brSZnSlLimqg==
-X-Received: by 2002:a05:6000:2c7:b0:32d:d2ef:b0e4 with SMTP id o7-20020a05600002c700b0032dd2efb0e4mr19025433wry.0.1698948114541;
-        Thu, 02 Nov 2023 11:01:54 -0700 (PDT)
-Received: from [192.168.14.38] (54-240-197-227.amazon.com. [54.240.197.227])
-        by smtp.gmail.com with ESMTPSA id b11-20020a5d4d8b000000b0032d8354fb43sm3018823wru.76.2023.11.02.11.01.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 11:01:43 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <8c6f06ae-d1d3-40ea-9bed-8ca949eaff5f@xen.org>
-Date:   Thu, 2 Nov 2023 18:01:35 +0000
+        Thu, 2 Nov 2023 14:08:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC392D44
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698948350; x=1730484350;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=JcdCKuWiAdizqIkMwF5/T103zEfpHKC3od0tcJNuKQE=;
+  b=kwjFxbZBeAm018MjPIFnr3s2aqt32W6patWR3zmNA/QNAe+BiI/9RYP3
+   NPC2ndyEafWFPPX1OkWLK1rGiqNNkEmmLe686W7V7McvWuW6uOVm0jD6t
+   /QvlNvXa/d4ziDtdDKJc/8HMVYYfd4JW6N+s0Nv586jSyQC4/HYNtFJ3W
+   At7f+Vf2ZMUkk8e50+BoXPGmHk+hhWK7FhYhMsVRXHJ18FxbGHH46SXHQ
+   bO5q3W3q6Oy7Ce4ldtape8WT/4m/Dq6I9B4jr6aYsuqf6goLozkp7p9zo
+   XpJ1/s4yiUKHIwjsX7hFxG4e1HCMCfn7w5iRJh6mPVsi8BAz406WHEZ5q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="391645018"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="391645018"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 11:04:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="2634460"
+Received: from binsumax-mobl.gar.corp.intel.com (HELO [10.249.254.171]) ([10.249.254.171])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 11:04:35 -0700
+Message-ID: <8dc6c099679ce461af059c0482f321858f733b84.camel@linux.intel.com>
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 02 Nov 2023 19:04:32 +0100
+In-Reply-To: <7eba1e4d-b594-4b88-9f8a-694fc6663f85@redhat.com>
+References: <20231101233113.8059-1-dakr@redhat.com>
+         <20231101233113.8059-10-dakr@redhat.com>
+         <f95dd975acc6c82e4e6cd0596c14072799eb5a20.camel@linux.intel.com>
+         <7eba1e4d-b594-4b88-9f8a-694fc6663f85@redhat.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v7 05/11] KVM: pfncache: allow a cache to be activated
- with a fixed (userspace) HVA
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Durrant <pdurrant@amazon.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20231002095740.1472907-1-paul@xen.org>
- <20231002095740.1472907-6-paul@xen.org> <ZUGScpSFlojjloQk@google.com>
-Organization: Xen Project
-In-Reply-To: <ZUGScpSFlojjloQk@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,51 +71,208 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 23:49, Sean Christopherson wrote:
-> On Mon, Oct 02, 2023, Paul Durrant wrote:
->> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
->> index 6f4737d5046a..d49946ee7ae3 100644
->> --- a/include/linux/kvm_types.h
->> +++ b/include/linux/kvm_types.h
->> @@ -64,7 +64,7 @@ struct gfn_to_hva_cache {
->>   
->>   struct gfn_to_pfn_cache {
->>   	u64 generation;
->> -	gpa_t gpa;
->> +	u64 addr;
-> 
-> Holy moly, we have unions for exactly this reason.
-> 
-> 	union {
-> 		gpa_t gpa;
-> 		unsigned long addr;
-> 	};
-> 
-> But that's also weird and silly because it's basically the exact same thing as
-> "uhva".  If "uhva" stores the full address instead of the page-aligned address,
-> then I don't see a need for unionizing the gpa and uhva.
-> 
+On Thu, 2023-11-02 at 18:32 +0100, Danilo Krummrich wrote:
+> Hi Thomas,
+>=20
+> thanks for your timely response on that!
+>=20
+> On 11/2/23 18:09, Thomas Hellstr=C3=B6m wrote:
+> > On Thu, 2023-11-02 at 00:31 +0100, Danilo Krummrich wrote:
+> > > Implement reference counting for struct drm_gpuvm.
+> > >=20
+> > > Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> > > ---
+> > > =C2=A0=C2=A0drivers/gpu/drm/drm_gpuvm.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 44
+> > > +++++++++++++++++++-----
+> > > --
+> > > =C2=A0=C2=A0drivers/gpu/drm/nouveau/nouveau_uvmm.c | 20 +++++++++---
+> > > =C2=A0=C2=A0include/drm/drm_gpuvm.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 31 ++++++++++++=
++++++-
+> > > =C2=A0=C2=A03 files changed, 78 insertions(+), 17 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/drm_gpuvm.c
+> > > b/drivers/gpu/drm/drm_gpuvm.c
+> > > index 53e2c406fb04..6a88eafc5229 100644
+> > > --- a/drivers/gpu/drm/drm_gpuvm.c
+> > > +++ b/drivers/gpu/drm/drm_gpuvm.c
+> > > @@ -746,6 +746,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const
+> > > char *name,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0gpuvm->rb.tree =
+=3D RB_ROOT_CACHED;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0INIT_LIST_HEAD(=
+&gpuvm->rb.list);
+> > > =C2=A0=20
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kref_init(&gpuvm->kref);
+> > > +
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0gpuvm->name =3D=
+ name ? name : "unknown";
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0gpuvm->flags =
+=3D flags;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0gpuvm->ops =3D =
+ops;
+> > > @@ -770,15 +772,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
+> > > const
+> > > char *name,
+> > > =C2=A0=C2=A0}
+> > > =C2=A0=C2=A0EXPORT_SYMBOL_GPL(drm_gpuvm_init);
+> > > =C2=A0=20
+> > > -/**
+> > > - * drm_gpuvm_destroy() - cleanup a &drm_gpuvm
+> > > - * @gpuvm: pointer to the &drm_gpuvm to clean up
+> > > - *
+> > > - * Note that it is a bug to call this function on a manager that
+> > > still
+> > > - * holds GPU VA mappings.
+> > > - */
+> > > -void
+> > > -drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+> > > +static void
+> > > +drm_gpuvm_fini(struct drm_gpuvm *gpuvm)
+> > > =C2=A0=C2=A0{
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0gpuvm->name =3D=
+ NULL;
+> > > =C2=A0=20
+> > > @@ -790,7 +785,33 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+> > > =C2=A0=20
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0drm_gem_object_=
+put(gpuvm->r_obj);
+> > > =C2=A0=C2=A0}
+> > > -EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
+> > > +
+> > > +static void
+> > > +drm_gpuvm_free(struct kref *kref)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct drm_gpuvm *gpuvm =
+=3D container_of(kref, struct
+> > > drm_gpuvm, kref);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (drm_WARN_ON(gpuvm->drm=
+, !gpuvm->ops->vm_free))
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0drm_gpuvm_fini(gpuvm);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0gpuvm->ops->vm_free(gpuvm)=
+;
+> > > +}
+> > > +
+> > > +/**
+> > > + * drm_gpuvm_bo_put() - drop a struct drm_gpuvm reference
+> > copy-paste error in function name.
+> >=20
+> > Also it appears like xe might put a vm from irq context so we
+> > should
+> > document the context where this function call is allowable, and if
+> > applicable add a might_sleep().
+>=20
+> =C2=A0From GPUVM PoV I don't see why we can't call this from an IRQ
+> context.
+> It depends on the driver callbacks of GPUVM (->vm_free) and the resv
+> GEM's
+> free callback. Both are controlled by the driver. Hence, I don't see
+> the
+> need for a restriction here.
 
-Ok, I think that'll be more invasive but I'll see how it looks.
+OK. we should keep in mind though, that if such a restriction is needed
+in the future, it might be some work to fix the drivers.
 
-> kvm_xen_vcpu_get_attr() should darn well explicitly check that the gpc stores
-> the correct type and not bleed ABI into the gfn_to_pfn_cache implementation.
-> 
+>=20
+> >=20
+> > If this function needs to sleep we can work around that in Xe by
+> > keeping an xe-private refcount for the xe vm container, but I'd
+> > like to
+> > avoid that if possible and piggy-back on the refcount introduced
+> > here.
+> >=20
+> > > + * @gpuvm: the &drm_gpuvm to release the reference of
+> > > + *
+> > > + * This releases a reference to @gpuvm.
+> > > + */
+> > > +void
+> > > +drm_gpuvm_put(struct drm_gpuvm *gpuvm)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (gpuvm)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0kref_put(&gpuvm->kref, drm_gpuvm_free);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(drm_gpuvm_put);
+> > > =C2=A0=20
+> > > =C2=A0=C2=A0static int
+> > > =C2=A0=C2=A0__drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+> > > @@ -843,7 +864,7 @@ drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (unlikely(!d=
+rm_gpuvm_range_valid(gpuvm, addr,
+> > > range)))
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
+> > > =C2=A0=20
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return __drm_gpuva_insert(=
+gpuvm, va);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return __drm_gpuva_insert(=
+drm_gpuvm_get(gpuvm), va);
+> >=20
+> > Here we leak a reference if __drm_gpuva_insert() fails, and IMO the
+> > reference should be taken where the pointer holding the reference
+> > is
+> > assigned (in this case in __drm_gpuva_insert()), or document the
+> > reference transfer from the argument close to the assignment.
+>=20
+> Ah, good catch. I had it in __drm_gpuva_insert() originally, but that
+> doesn't work, because __drm_gpuva_insert() is used to insert the
+> kernel_alloc_node. And we need to __drm_gpuva_remove() the
+> kernel_alloc_node
+> from drm_gpuvm_fini(), which is called when the reference count is at
+> zero
+> already. In fact, the __* variants are only there to handle the
+> kernel_alloc_node and this one clearly doesn't need reference
+> counting.
+>=20
+> >=20
+> > But since a va itself is not refcounted it clearly can't outlive
+> > the
+> > vm, so is a reference really needed here?
+>=20
+> Well, technically, it can. It just doesn't make any sense and would
+> be
+> considered to be a bug. The reference count comes in handy to prevent
+> that in the first place.
 
-I guess if we leave gpa alone and make it INVALID_GPA for caches 
-initialized using an HVA then that can be checked. Is that what you mean 
-here?
+>=20
+> I'd like to keep the reference count and just fix up the code.
 
-> If there's a true need for a union, the helpers should WARN.
-> 
->> +unsigned long kvm_gpc_hva(struct gfn_to_pfn_cache *gpc)
->> +{
->> +	return !gpc->addr_is_gpa ? gpc->addr : 0;
-> 
-> '0' is a perfectly valid address.  Yeah, practically speaking '0' can't be used
-> these days, but we already have KVM_HVA_ERR_BAD.  If y'all want to use the for the
-> Xen ABI, then so be it.  But the common helpers need to use a sane value.
+OK. That's probably being a bit overly cautious IMHO, but I can't see
+any major drawbacks either.
 
-Ok.
+>=20
+> >=20
+> > I'd suggest using an accessor that instead of using va->vm uses va-
+> > > vm_bo->vm, to avoid needing to worry about the vm->vm refcount
+> > altoghether.
+>=20
+> No, I want to keep that optional. Drivers should be able to use GPUVM
+> to
+> track mappings without being required to implement everything else.
+>=20
+> I think PowerVR, for instance, currently uses GPUVM only to track
+> mappings
+> without everything else.
 
-   Paul
+Yeah, I also realized that userptr is another potential user.
+A badly though-trough suggestion..
+
+Thanks,
+Thomas
+
+
+>=20
+> - Danilo
+>=20
+> >=20
+> > Thanks,
+> > Thomas
+> >=20
+>=20
+
