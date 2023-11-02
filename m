@@ -2,84 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986F7DE938
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406CE7DE93D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbjKBAOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 20:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
+        id S234125AbjKBARZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 20:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjKBAOK (ORCPT
+        with ESMTP id S230285AbjKBARY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 20:14:10 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02960119
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 17:14:04 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b5665e00b6so627635b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 17:14:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698884043; x=1699488843;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3o8M4olUhxGuYhfUSjcCSpJU5SY7A9yJ4TSgZavfZUU=;
-        b=txw5qokwXrkTl+V6yjOCmndyPJTgQ00UxM228V7SR4a885CCOtkQCdc+WzRT//peUO
-         Hx7aPpGWrSWD/UBVNe7MXK/iQpE2+aruV2wBYBaGrqAEAa7SZKGDA0f8NBrzF9qIJyzd
-         807oeiMO2gsDS/84asJWOECDIv6QIlfIvfQa/o2JkDN0gwuRL4PwP+0h3B7bgZWVKYRx
-         l0/k14UQ8yEPcqY0M175ggnwpw/lxsdJWtoNDyf5WPOLm+AcxipkEkH2pdDnF8M2jEZK
-         ONS29fc0KUiaBsCxyRjJOEi2nHjI91odKxYoDpoclir6SSgSGWPmmLDHsj/z4ThPn7Jy
-         i5QA==
-X-Gm-Message-State: AOJu0YwJt2Zd4jBZipBE7A6lLJxZG/7aK0vgxvsSS/fQICZysy1WIMt9
-        9m2FPN39hSrUEF2q8JgC8hcQoRbN+GwD05VqqtFIqMPeIDqR
-X-Google-Smtp-Source: AGHT+IGXujbYdoaOwMiOFafFIW9sSBBYTm1Pp7ERXnBxyhbhAcfk6UQLTv/cxWX2Xmxo1xLz6z1fbF2B0KrsJKybb/11d1grAeua
+        Wed, 1 Nov 2023 20:17:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F38109;
+        Wed,  1 Nov 2023 17:17:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C268C433C7;
+        Thu,  2 Nov 2023 00:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698884235;
+        bh=TOJiriu7zo/tOZp6wt6uoQqF/K8RoG8GBogF+O+OlHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fjz3k9HJotc18Y2AY4yosYabz+yl+n9B5E2DMxuLA98Igdoc8atWUGT0w+Potdj6A
+         vwaXd+5HCxLsFFXkHLjfI2gvOJCxDD4B39nauPuyv3sEEoJDz1HkBFHu37FoJErQ/L
+         te5TuHlyVDtNK6u6J2UM/8xVrR9NnT70JwKk2XKUcws4GzIRlHV9Qqacaodm+VE7YA
+         lWBAms4Kg4g33Uqcu4iLejvPxtJmK4y84z9URimUl4UZ4ArqtGty5L4+6b3BZJa5sc
+         rdN7ZED6BS2xdswu9HFD3YCyfp5gV1Dxg8wlObHLVTXRMjzkgN+Q+XTR8+CpzamRHS
+         Uw/8gSJq2YEJg==
+Date:   Thu, 2 Nov 2023 00:17:11 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     Rob Herring <robh@kernel.org>, linux-leds@vger.kernel.org,
+        lee@kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, andy.shevchenko@gmail.com,
+        conor+dt@kernel.org, pavel@ucw.cz,
+        krzysztof.kozlowski+dt@linaro.org, rockosov@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 11/11] dt-bindings: leds: aw200xx: fix led pattern and
+ add reg constraints
+Message-ID: <20231102-concave-untapped-804a5956faab@spud>
+References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
+ <20231101142445.8753-12-ddrokosov@salutedevices.com>
+ <169885374980.409399.3653628333009308100.robh@kernel.org>
+ <20231101-bolster-anaerobic-244cd1a8c205@spud>
+ <20231101174422.zs5er6tqethm46ur@CAB-WSD-L081021>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1304:b0:3ae:15b6:3292 with SMTP id
- y4-20020a056808130400b003ae15b63292mr6713187oiv.4.1698884043406; Wed, 01 Nov
- 2023 17:14:03 -0700 (PDT)
-Date:   Wed, 01 Nov 2023 17:14:03 -0700
-In-Reply-To: <0000000000003495bf060724994a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec03e20609204362@google.com>
-Subject: Re: [syzbot] [net?] [usb?] INFO: rcu detected stall in worker_thread (9)
-From:   syzbot <syzbot+225bfad78b079744fd5e@syzkaller.appspotmail.com>
-To:     admini@syzkaller.appspotmail.com, bpf@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com,
-        gregkh@linuxfoundation.org, hdanton@sina.com, horms@kernel.org,
-        jiri@nvidia.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1KMrlXhM842v/S70"
+Content-Disposition: inline
+In-Reply-To: <20231101174422.zs5er6tqethm46ur@CAB-WSD-L081021>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit c2368b19807affd7621f7c4638cd2e17fec13021
-Author: Jiri Pirko <jiri@nvidia.com>
-Date:   Fri Jul 29 07:10:35 2022 +0000
+--1KMrlXhM842v/S70
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    net: devlink: introduce "unregistering" mark and use it during devlinks iteration
+On Wed, Nov 01, 2023 at 08:44:22PM +0300, Dmitry Rokosov wrote:
+> Hello Conor,
+>=20
+> On Wed, Nov 01, 2023 at 04:17:14PM +0000, Conor Dooley wrote:
+> > On Wed, Nov 01, 2023 at 11:04:16AM -0500, Rob Herring wrote:
+> > >=20
+> > > On Wed, 01 Nov 2023 17:24:45 +0300, Dmitry Rokosov wrote:
+> > > > AW200XX controllers have the capability to declare more than 0xf LE=
+Ds,
+> > > > therefore, it is necessary to accept LED names using an appropriate
+> > > > regex pattern.
+> > > >=20
+> > > > The register offsets can be adjusted within the specified range, wi=
+th
+> > > > the maximum value corresponding to the highest number of LEDs that =
+can
+> > > > be connected to the controller.
+> > > >=20
+> > > > Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
+> > > > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > > > ---
+> > > >  .../bindings/leds/awinic,aw200xx.yaml         | 64 +++++++++++++++=
+++--
+> > > >  1 file changed, 58 insertions(+), 6 deletions(-)
+> > > >=20
+> > >=20
+> > > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_ch=
+eck'
+> > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> > >=20
+> > > yamllint warnings/errors:
+> > >=20
+> > > dtschema/dtc warnings/errors:
+> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
+gs/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@0: Unevaluated p=
+roperties are not allowed ('reg' was unexpected)
+> > > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.y=
+aml#
+> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
+gs/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@1: Unevaluated p=
+roperties are not allowed ('reg' was unexpected)
+> > > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.y=
+aml#
+> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
+gs/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@2: Unevaluated p=
+roperties are not allowed ('reg' was unexpected)
+> > > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.y=
+aml#
+> >=20
+> > Looks like you need to drop the second part of this hunk from the patch.
+> > @@ -45,17 +45,12 @@ properties:
+> >      maxItems: 1
+> > =20
+> >  patternProperties:
+> > -  "^led@[0-9a-f]$":
+> > +  "^led@[0-9a-f]+$":
+> >      type: object
+> >      $ref: common.yaml#
+> >      unevaluatedProperties: false
+> > =20
+> >      properties:
+> > -      reg:
+> > -        description:
+> > -          LED number
+> > -        maxItems: 1
+> > -
+> >        led-max-microamp:
+> >          default: 9780
+> >          description: |
+> >=20
+> > Each LED still only has one reg entry, right?
+>=20
+> You're right... the maxItems for 'reg' is still needed. I'll back it in
+> the next version.
+> But I don't understand, why my dt_binding_check run doesn't show me this
+> problem... I don't specify DT_CHECKER_FLAGS, maybe this is a root cause.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1758e1e3680000
-start commit:   1c8b86a3799f Merge tag 'xsa441-6.6-tag' of git://git.kerne..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14d8e1e3680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d8e1e3680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
-dashboard link: https://syzkaller.appspot.com/bug?extid=225bfad78b079744fd5e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155614de680000
+I dunno! I do `make dt_binding_check W=3D1 DT_SCHEMA_FILES=3D"$filename"` to
+test stuff.
 
-Reported-by: syzbot+225bfad78b079744fd5e@syzkaller.appspotmail.com
-Fixes: c2368b19807a ("net: devlink: introduce "unregistering" mark and use it during devlinks iteration")
+Also, you can keep the tag.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+--1KMrlXhM842v/S70
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZULqhgAKCRB4tDGHoIJi
+0q4BAQC5YTzHsZRRP1WxLFh3vu211rMVno+IX+YO5RazUkgsMAEArUlNxt0UhTjw
+Nq+4zijW6+jINWj/Jd91+bh5kDWepgk=
+=fKHp
+-----END PGP SIGNATURE-----
+
+--1KMrlXhM842v/S70--
