@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21CC7DEED1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0EE7DEED5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345619AbjKBJ1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43614 "EHLO
+        id S1345612AbjKBJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345474AbjKBJ1M (ORCPT
+        with ESMTP id S230097AbjKBJ2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:27:12 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E18182;
-        Thu,  2 Nov 2023 02:27:05 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3A29Qw2s040645;
-        Thu, 2 Nov 2023 04:26:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1698917218;
-        bh=EdqLodOTtlgjyV9CO9EMSOpuI3JKeo6eegqllj6+txQ=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=hhhmxvvL/rHOkqRaSB3M149il/k9OZMXuuo/M8GgV1WegTb2vgEWaZ1Q2b5LP3kop
-         Y3Lak7DKcHfgMEKvywMC2SMUx9984d6LptAWtn8efgaFRrHnYj7W9YCKq1PtFpZ8Ag
-         pJK/NSIjOMfZeBwhf1Ql3LhkSr/rcWi0NeXIKbNU=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3A29Qw0O117654
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 2 Nov 2023 04:26:58 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 2
- Nov 2023 04:26:57 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 2 Nov 2023 04:26:57 -0500
-Received: from [172.24.227.94] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3A29QtML112967;
-        Thu, 2 Nov 2023 04:26:56 -0500
-Message-ID: <fbe705a6-dade-49ce-9ec8-6d7b87198d11@ti.com>
-Date:   Thu, 2 Nov 2023 14:56:54 +0530
+        Thu, 2 Nov 2023 05:28:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F902123;
+        Thu,  2 Nov 2023 02:28:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ECE441F896;
+        Thu,  2 Nov 2023 09:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1698917292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PRT+wqE8dALDjQ1TdgpzGr2kiqVsb3O10DafcXTHWCE=;
+        b=WhSSPRczbxtOiw0KCYhRZXLTwt/LcqWQok4kdcOEeBjXFy269VmoD6h1rMZ4GNmh3rgGpZ
+        yN5cNemN8WhY2y61Fgv+ePyqnNwySMJCB/Sc3vErp/SYyd+xDcjo+ALdkBZv1QLCHYGhxL
+        +YLELvxOfoNWcyKj3S+EJ64IARy86TA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A700B138EC;
+        Thu,  2 Nov 2023 09:28:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Jja6JaxrQ2XLaQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 02 Nov 2023 09:28:12 +0000
+Date:   Thu, 2 Nov 2023 10:28:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        aneesh.kumar@linux.ibm.com, weixugc@google.com, apopple@nvidia.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <fe7ns7dvrhwp6o7fnn53wt7tuidsncjctgav4bdirwfmjxarne@3oyfe22mxc35>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+ <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+ <20231031152142.GA3029315@cmpxchg.org>
+ <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+ <87msvy6wn8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ivhxexthtfums73nkko6yoy635h3cpetv4sqaemrmqd5pbhpq6@6zrizaoxgdwi>
+ <87il6k1y82.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] serial: 8250: 8250_omap: Clear UART_HAS_RHR_IT_DIS bit
-Content-Language: en-US
-To:     Ronald Wahl <rwahl@gmx.de>, <linux-kernel@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ronald Wahl <ronald.wahl@raritan.com>, <stable@vger.kernel.org>
-References: <20231031110909.11695-1-rwahl@gmx.de>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20231031110909.11695-1-rwahl@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87il6k1y82.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 31/10/23 16:39, Ronald Wahl wrote:
-> From: Ronald Wahl <ronald.wahl@raritan.com>
+On Thu 02-11-23 14:11:09, Huang, Ying wrote:
+> Michal Hocko <mhocko@suse.com> writes:
 > 
-> This fixes commit 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX
-> interrupt after DMA enable") which unfortunately set the
-> UART_HAS_RHR_IT_DIS bit in the UART_OMAP_IER2 register and never
-> cleared it.
+> > On Wed 01-11-23 10:21:47, Huang, Ying wrote:
+> >> Michal Hocko <mhocko@suse.com> writes:
+> > [...]
+> >> > Well, I am not convinced about that TBH. Sure it is probably a good fit
+> >> > for this specific CXL usecase but it just doesn't fit into many others I
+> >> > can think of - e.g. proportional use of those tiers based on the
+> >> > workload - you get what you pay for.
+> >> 
+> >> For "pay", per my understanding, we need some cgroup based
+> >> per-memory-tier (or per-node) usage limit.  The following patchset is
+> >> the first step for that.
+> >> 
+> >> https://lore.kernel.org/linux-mm/cover.1655242024.git.tim.c.chen@linux.intel.com/
+> >
+> > Why do we need a sysfs interface if there are plans for cgroup API?
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable")
-> Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-> ---
-> V3: - add Cc: stable@vger.kernel.org
-> 
-> V2: - add Fixes: tag
->     - fix author
-> 
->  drivers/tty/serial/8250/8250_omap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-> index ca972fd37725..c7ab2963040b 100644
-> --- a/drivers/tty/serial/8250/8250_omap.c
-> +++ b/drivers/tty/serial/8250/8250_omap.c
-> @@ -914,7 +914,7 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
->  	if (priv->habit & UART_HAS_RHR_IT_DIS) {
->  		reg = serial_in(p, UART_OMAP_IER2);
->  		reg &= ~UART_OMAP_IER2_RHR_IT_DIS;
-> -		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
-> +		serial_out(p, UART_OMAP_IER2, reg);
->  	}
-> 
->  	dmaengine_tx_status(rxchan, cookie, &state);
-> @@ -1060,7 +1060,7 @@ static int omap_8250_rx_dma(struct uart_8250_port *p)
->  	if (priv->habit & UART_HAS_RHR_IT_DIS) {
->  		reg = serial_in(p, UART_OMAP_IER2);
->  		reg |= UART_OMAP_IER2_RHR_IT_DIS;
-> -		serial_out(p, UART_OMAP_IER2, UART_OMAP_IER2_RHR_IT_DIS);
-> +		serial_out(p, UART_OMAP_IER2, reg);
->  	}
-> 
->  	dma_async_issue_pending(dma->rxchan);
+> They are for different target.  The cgroup API proposed here is to
+> constrain the DRAM usage in a system with DRAM and CXL memory.  The less
+> you pay, the less DRAM and more CXL memory you use.
 
-
-Thanks for the fix!
-
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-
-
-
-> --
-> 2.41.0
-> 
-
+Right, but why the usage distribution requires its own interface and
+cannot be combined with the access control part of it?
 -- 
-Regards
-Vignesh
+Michal Hocko
+SUSE Labs
