@@ -2,50 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F7E7DF4AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFEA7DF4AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376770AbjKBOMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S1376764AbjKBOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234984AbjKBOL6 (ORCPT
+        with ESMTP id S230024AbjKBOL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 10:11:58 -0400
 Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0642EB7;
-        Thu,  2 Nov 2023 07:11:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FA2130;
+        Thu,  2 Nov 2023 07:11:53 -0700 (PDT)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 92E0C186AD7F;
-        Thu,  2 Nov 2023 17:11:47 +0300 (MSK)
+        by mail.astralinux.ru (Postfix) with ESMTP id 85B50186AD92;
+        Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
 Received: from mail.astralinux.ru ([127.0.0.1])
         by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Fb5gFKlPjCnD; Thu,  2 Nov 2023 17:11:47 +0300 (MSK)
+        with ESMTP id 360raSQFcQ7t; Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 2C2A6186AD7D;
-        Thu,  2 Nov 2023 17:11:47 +0300 (MSK)
+        by mail.astralinux.ru (Postfix) with ESMTP id 2C583186AD72;
+        Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
 X-Virus-Scanned: amavisd-new at astralinux.ru
 Received: from mail.astralinux.ru ([127.0.0.1])
         by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NxnAeH7SuxPo; Thu,  2 Nov 2023 17:11:47 +0300 (MSK)
+        with ESMTP id g0_ELJrllrsB; Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
 Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.237.131])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id C627C186AD74;
-        Thu,  2 Nov 2023 17:11:45 +0300 (MSK)
+        by mail.astralinux.ru (Postfix) with ESMTPSA id 42ED2186AD74;
+        Thu,  2 Nov 2023 17:11:47 +0300 (MSK)
 From:   Alexandra Diupina <adiupina@astralinux.ru>
-To:     Hans de Goede <hdegoede@redhat.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
 Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andy Shevchenko <andy@kernel.org>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH 1/4] Remove redundant return value check
-Date:   Thu,  2 Nov 2023 17:11:32 +0300
-Message-Id: <20231102141135.369-1-adiupina@astralinux.ru>
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev, lvc-project@linuxtesting.org
+Subject: [PATCH 2/4] Remove redundant return value check
+Date:   Thu,  2 Nov 2023 17:11:33 +0300
+Message-Id: <20231102141135.369-2-adiupina@astralinux.ru>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231102141135.369-1-adiupina@astralinux.ru>
+References: <20231102141135.369-1-adiupina@astralinux.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -63,78 +70,27 @@ passed, so checking the return value is redundant
 
 Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+Fixes: 34009bffc1c6 ("media: i2c: Add RDACM20 driver")
 Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
 ---
- drivers/staging/media/atomisp/i2c/atomisp-gc2235.c        | 4 +---
- drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c       | 6 +-----
- drivers/staging/media/atomisp/i2c/atomisp-ov2722.c        | 2 --
- drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c | 2 --
- 4 files changed, 2 insertions(+), 12 deletions(-)
+ drivers/media/i2c/rdacm20.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers=
-/staging/media/atomisp/i2c/atomisp-gc2235.c
-index 9fa390fbc5f3..f10931a03285 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-@@ -840,9 +840,7 @@ static int gc2235_probe(struct i2c_client *client)
- 	dev->ctrl_handler.lock =3D &dev->input_lock;
- 	dev->sd.ctrl_handler =3D &dev->ctrl_handler;
+diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+index f4e2e2f3972a..ed249ade54e0 100644
+--- a/drivers/media/i2c/rdacm20.c
++++ b/drivers/media/i2c/rdacm20.c
+@@ -611,9 +611,7 @@ static int rdacm20_probe(struct i2c_client *client)
 =20
+ 	dev->pad.flags =3D MEDIA_PAD_FL_SOURCE;
+ 	dev->sd.entity.function =3D MEDIA_ENT_F_CAM_SENSOR;
 -	ret =3D media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
--	if (ret)
--		gc2235_remove(client);
+-	if (ret < 0)
+-		goto error_free_ctrls;
 +	media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
 =20
- 	return atomisp_register_i2c_module(&dev->sd, gcpdev, RAW_CAMERA);
-=20
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/driver=
-s/staging/media/atomisp/i2c/atomisp-mt9m114.c
-index 1c6643c442ef..b7a940fdbd0a 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-@@ -1581,11 +1581,7 @@ static int mt9m114_probe(struct i2c_client *client=
-)
-=20
- 	/* REVISIT: Do we need media controller? */
- 	ret =3D media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
--	if (ret) {
--		mt9m114_remove(client);
--		return ret;
--	}
--	return 0;
-+	return ret;
- }
-=20
- static const struct acpi_device_id mt9m114_acpi_match[] =3D {
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers=
-/staging/media/atomisp/i2c/atomisp-ov2722.c
-index 6a72691ed5b7..922774293bf4 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-@@ -993,8 +993,6 @@ static int ov2722_probe(struct i2c_client *client)
- 	dev->sd.entity.function =3D MEDIA_ENT_F_CAM_SENSOR;
-=20
- 	ret =3D media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
--	if (ret)
--		ov2722_remove(client);
-=20
- 	return atomisp_register_i2c_module(&dev->sd, ovpdev, RAW_CAMERA);
-=20
-diff --git a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c b/=
-drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
-index 460a4e34c55b..8d5b74fb5d9c 100644
---- a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
-+++ b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
-@@ -1733,8 +1733,6 @@ static int ov5693_probe(struct i2c_client *client)
- 	dev->sd.ctrl_handler =3D &dev->ctrl_handler;
-=20
- 	ret =3D media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
--	if (ret)
--		ov5693_remove(client);
-=20
- 	return ret;
- out_free:
+ 	ret =3D v4l2_async_register_subdev(&dev->sd);
+ 	if (ret)
 --=20
 2.30.2
 
