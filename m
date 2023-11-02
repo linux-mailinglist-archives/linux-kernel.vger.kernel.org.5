@@ -2,61 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3CE7DFAF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829237DFAF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377240AbjKBTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        id S1377220AbjKBTgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjKBTdk (ORCPT
+        with ESMTP id S229459AbjKBTgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:33:40 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB52D194;
-        Thu,  2 Nov 2023 12:33:31 -0700 (PDT)
-Received: from [10.137.106.151] (unknown [131.107.159.23])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C019120B74C0;
-        Thu,  2 Nov 2023 12:33:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C019120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1698953610;
-        bh=BFv0LoFgCinTrSDNN0PUUDUwJMnBDe5xTh49JYLz3Y4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gB5YaEFwfIAnkOlr317P5lWnHUTOq+MksL4x/t6lqhrFaWrMyEanwJnIqhD9Ufzwy
-         IolfcJ5mTJlgR6Jri9QAkbJsElG9Na29MJLxkEA1Y4/xrIcTyc/ImgDrFg6i1yx2f9
-         LLDUkRU9KCRLP3D9LBySG2QN3Iaywco1wAyL8x78=
-Message-ID: <b53c47f6-0cf3-448c-bb55-5f68ca48a872@linux.microsoft.com>
-Date:   Thu, 2 Nov 2023 12:33:30 -0700
+        Thu, 2 Nov 2023 15:36:50 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F89E7;
+        Thu,  2 Nov 2023 12:36:45 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1cc3542e328so10481785ad.1;
+        Thu, 02 Nov 2023 12:36:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698953804; x=1699558604;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UQJRwVGrqkbOP2rQwY3hByNiVCWEO2BBjk5kXR5X//4=;
+        b=LqLR0rJ/SJ3xBOwmJn72SnZ7URVGlhRYkKjiAr7XuXxCIiwTWsKx3e5ZV8uROgNahP
+         u8K5yBpsSI7awQYkTH5apY2MfcTYupfjKpk9hPb6+MXSJXskag6RzYvRWUbFiqKa42XZ
+         iwCDlqQl+8QrBRR+JA3iS5T+FLeIs6ryxJBM+pID1tQx8CRZb5LzpvEbE5EHrxLpkpXn
+         XnMF/73fM+0gFaLGDHmqQlFNoxND4JalCsvtmWOltlMxrPol6HqIPF7xYUpD5CZCU9Ex
+         PwBpc/zgmEaCkaxN76SenhmZ/YqIQ66BLS0btXcjzTxWeIQOJqibp053AHl2wBNCxvaO
+         b3xw==
+X-Gm-Message-State: AOJu0YzcFJuFqrds17jmpAvcgZ/ZWecOvGNepK0+ucImsP4f9zbUBYDe
+        mBHbEp5lqPi1RauPGGm1H2s=
+X-Google-Smtp-Source: AGHT+IGjt64blOz6dYkFcgNGT6Gy9r9Ym92d/0DHW94dRcRKZ52hcLIAnVsSmS3Ndc+1YjqmClwLTw==
+X-Received: by 2002:a17:902:8216:b0:1cc:15ec:3f53 with SMTP id x22-20020a170902821600b001cc15ec3f53mr15484618pln.36.1698953804483;
+        Thu, 02 Nov 2023 12:36:44 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:87f7:9784:4475:1cd4? ([2620:15c:211:201:87f7:9784:4475:1cd4])
+        by smtp.gmail.com with ESMTPSA id x11-20020a170902ea8b00b001c5fa48b9a0sm102827plb.33.2023.11.02.12.36.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 12:36:43 -0700 (PDT)
+Message-ID: <633b3970-ddd4-4dc6-b586-96ecc5b86456@acm.org>
+Date:   Thu, 2 Nov 2023 12:36:41 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v11 15/19] fsverity: consume builtin signature via LSM
- hook
+Subject: Re: [PATCH v1] scsi: ufs: core: Process abort completed command in
+ MCQ mode
 Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
-        snitzer@kernel.org, eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1696457386-3010-16-git-send-email-wufan@linux.microsoft.com>
- <6efb7a80ba0eb3e02b3ae7a5c0a210f3.paul@paul-moore.com>
- <CAHC9VhQJkcb-k+o+NvVn7crrMMZqpBcZpnEbKBT+eZg4Ocjqhw@mail.gmail.com>
- <20231102025355.GA1498@sol.localdomain>
- <CAHC9VhScaajDOVpBoGPo80ceUggGyrP24pCoMy6d6uQ4r-WZjw@mail.gmail.com>
-From:   Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <CAHC9VhScaajDOVpBoGPo80ceUggGyrP24pCoMy6d6uQ4r-WZjw@mail.gmail.com>
+To:     hoyoung seo <hy50.seo@samsung.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        kwangwon.min@samsung.com, kwmad.kim@samsung.com,
+        sh425.lee@samsung.com, sc.suh@samsung.com,
+        quic_nguyenb@quicinc.com, cpgs@samsung.com
+References: <CGME20231101084246epcas2p32ae15219878d1c31e7d8a14c22489519@epcas2p3.samsung.com>
+ <20231101084504.79087-1-hy50.seo@samsung.com>
+ <e1ed8776-d8ad-49f2-bf8f-2759256e33e9@acm.org>
+ <000001da0d42$1a1c8410$4e558c30$@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <000001da0d42$1a1c8410$4e558c30$@samsung.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,158 +72,55 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 11/2/2023 8:42 AM, Paul Moore wrote:
-> On Wed, Nov 1, 2023 at 10:54 PM Eric Biggers <ebiggers@kernel.org> wrote:
->> On Wed, Nov 01, 2023 at 08:40:06PM -0400, Paul Moore wrote:
->>> On Mon, Oct 23, 2023 at 11:52 PM Paul Moore <paul@paul-moore.com> wrote:
->>>> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
->>>>>
->>>>> fsverity represents a mechanism to support both integrity and
->>>>> authenticity protection of a file, supporting both signed and unsigned
->>>>> digests.
->>>>>
->>>>> An LSM which controls access to a resource based on authenticity and
->>>>> integrity of said resource, can then use this data to make an informed
->>>>> decision on the authorization (provided by the LSM's policy) of said
->>>>> claim.
->>>>>
->>>>> This effectively allows the extension of a policy enforcement layer in
->>>>> LSM for fsverity, allowing for more granular control of how a
->>>>> particular authenticity claim can be used. For example, "all (built-in)
->>>>> signed fsverity files should be allowed to execute, but only these
->>>>> hashes are allowed to be loaded as kernel modules".
->>>>>
->>>>> This enforcement must be done in kernel space, as a userspace only
->>>>> solution would fail a simple litmus test: Download a self-contained
->>>>> malicious binary that never touches the userspace stack. This
->>>>> binary would still be able to execute.
->>>>>
->>>>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
->>>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
->>>>> ---
->>>>> v1-v6:
->>>>>    + Not present
->>>>>
->>>>> v7:
->>>>>    Introduced
->>>>>
->>>>> v8:
->>>>>    + Split fs/verity/ changes and security/ changes into separate patches
->>>>>    + Change signature of fsverity_create_info to accept non-const inode
->>>>>    + Change signature of fsverity_verify_signature to accept non-const inode
->>>>>    + Don't cast-away const from inode.
->>>>>    + Digest functionality dropped in favor of:
->>>>>      ("fs-verity: define a function to return the integrity protected
->>>>>        file digest")
->>>>>    + Reworded commit description and title to match changes.
->>>>>    + Fix a bug wherein no LSM implements the particular fsverity @name
->>>>>      (or LSM is disabled), and returns -EOPNOTSUPP, causing errors.
->>>>>
->>>>> v9:
->>>>>    + No changes
->>>>>
->>>>> v10:
->>>>>    + Rename the signature blob key
->>>>>    + Cleanup redundant code
->>>>>    + Make the hook call depends on CONFIG_FS_VERITY_BUILTIN_SIGNATURES
->>>>>
->>>>> v11:
->>>>>    + No changes
->>>>> ---
->>>>>   fs/verity/fsverity_private.h |  2 +-
->>>>>   fs/verity/open.c             | 26 +++++++++++++++++++++++++-
->>>>>   include/linux/fsverity.h     |  2 ++
->>>>>   3 files changed, 28 insertions(+), 2 deletions(-)
->>>>
->>>> We need an ACK from some VFS folks on this.
->>>
->>> Eric and/or Ted, can we get either an ACK or some feedback on this patch?
->>>
->>> For reference, the full patchset can be found on lore at the link below:
->>>
->>> https://lore.kernel.org/linux-security-module/1696457386-3010-1-git-send-email-wufan@linux.microsoft.com/
->>
->> Well, technically I already gave some (minor) feedback on this exact patch, and
->> it's not yet been addressed:
->> https://lore.kernel.org/linux-security-module/20231005022707.GA1688@quark.localdomain/
-Yes thanks for the review. We will certainly add the parameter 
-constification in the next version.
-
+On 11/1/23 21:07, hoyoung seo wrote:
+> when the ufs host receives any error, the ufs driver executes the error-hander.
+> If the error-hendler attempts re-init, it must abort and organize unprocessed
+>   requests.
+> The above operation is the same for both MCQ/legacy mode.
+> However, in the MCQ mode, if b or c is included in the following specs,
+> the OCS is updated to aborted, which is different from the legacy mode.
 > 
-> Hopefully Fan can comment on that, unless I'm forgetting some
-> implementation details it seems like a reasonable request.
+> B. If the command is in the Submission Queue and not issued to the device yet,
+> the host controller will mark the command to be skipped in the Submission Queue.
+> The host controller will post to the Completion Queue to update the OCS field
+> with ‘ABORTED’.
+> C. If the command is issued to the device already but there is no response yet
+> from the device, the host software driver issue the Abort task management function
+>   to the device for that command.
+> Then the host driver set SQRTCy.ICU as ‘1’ to initiate the clean up the hardware
+> resources. The host controller will post to the Completion Queue to update the OCS
+>   field with ‘ABORTED’.
 > 
->> Of course, it would also be nice if the commit message mentioned what the patch
->> actually does.
+> Unlike legacy mode, this phenomenon causes unintended behavior. (As shown in the log below)
 > 
-> While I think the commit description does provide a reasonable summary
-> of IPE as it relates to fsverify, I agree that the specifics of the
-> changes presented in the patch are lacking.  Fan, could you update the
-> commit description to add a paragraph explaining what IPE would do in
-> the security_inode_setsecurity() hook called from within
-> fsverity_inode_setsecurity()?
->
-Sorry for the lack of clarity. The hook call happens right after the 
-built-in signature verification in fsverity. This hook's main job is to 
-allow LSM to store the verified signature so that it can be used for 
-future LSM checks.
-
->> At a higher level, I've said before, I'm not super happy about the use of
->> fsverity builtin signatures growing.  (For some of the reasons why, see the
->> guidance in the fsverity documentation at
->> https://docs.kernel.org/filesystems/fsverity.html#built-in-signature-verification)
->> That being said, if the people who are doing the broader review of IPE believe
->> this is how its fsverity integration should work, I can live with that ...
+> [1:  kworker/u20:2:23157] ufshcd_try_to_abort_task: cmd pending in the device. tag = 9
+> [3:  kworker/u20:2:23157] Aborting tag 9 / CDB 0x2a succeeded
+> [4:      swapper/4:    0] sd 0:0:0:0: [sda] tag#9 UNKNOWN(0x2003) Result: hostbyte=0x05 driverbyte=DRIVER_OK cmd_age=0s // DID_ABORT
+> [4:      swapper/4:    0] sd 0:0:0:0: [sda] tag#9 CDB: opcode=0x2a 2a 00 00 d3 02 00 00 01 00 00
+> [4:      swapper/4:    0] I/O error, dev sda, sector 110628864 op 0x1:(WRITE) flags 0x800 phys_seg 256 prio class 2
 > 
-> Fan can surely elaborate on this more, but my understanding is that
-> IPE can help provide the missing authorization piece.
->
-As Paul mentioned, with IPE, we can add kernel enforcement that only 
-files with the fs-verity built-in signature enabled are allowed. 
-Currently, IPE uses the above hook to save the signature in the file's 
-security blob, and then it decides whether to permit or deny file 
-operations based on the presence of the fs-verity built-in signature.
-
-But our plans don't end there. In the future, we intend to add more 
-features to address the security gaps mentioned in the documentation 
-related to the fs-verity built-in signature. For instance, we will 
-introduce a certificate policy rule to limit which signatures can be 
-trusted, thus resolving issues related to the validity period of 
-certificates. Additionally, we will implement file path rules, allowing 
-different certificates to permit or deny access to different files.
-
->> ... I don't
->> intend to block the IPE patchset if enough people want it to be merged.  I've
->> really been hoping to see engagement with the people involved in IMA, as IPE
->> basically duplicates/replaces IMA.  But I haven't seen that, so maybe things
->> need to move on without them.
 > 
-> We are getting a bit beyond the integration of IPE and fsverity so I
-> don't want to spend a lot of time here, but IPE and IMA work quite a
-> bit differently as they serve different purposes.  IPE provides a file
-> authorization mechanism that grants access based on the specified
-> policy and the file's underlying backing store; IPE does not measure
-> files like IMA to provide additional integrity checking, it relies on
-> the storage medium's integrity mechanisms.
-> 
-> I have no doubt Fan could provide a much better summary if needed, and
-> of course there are the documentation patches in the patchset too.
-> 
+> For commands that have completed the abort operation in MCQ mode,
+> since OCS has been updated to aborted, it seems that it will be retransmitted only
+>   when it is made to REQUEUE.
 
-I would like to emphasize that IPE is not meant to replace IMA.
+Hi Hoyoung,
 
-IPE is a different approach, specifically designed for a particular part 
-of IMA's capabilities, which is "appraisal. While IPE's approach also 
-limits IPE's use cases to highly secure, locked-down devices where 
-almost everything is made read-only. In contrast, IMA is a versatile 
-solution suitable for a wide range of scenarios, and IPE cannot address 
-all of these.
+Thank you for having provided this clarification - this really helps.
 
-In practice, we often use both IMA (including measurement and appraisal) 
-and IPE simultaneously in production. These two solutions can coexist 
-and complement each other, and they are not mutually exclusive.
+Regarding (B): I would appreciate it if this patch would be reworked
+such that no new 'if (is_mcq_enabled(hba))' statements are introduced.
+Has it been considered to modify ufshcd_mcq_sqe_search() such that it
+sets the SCSI result to DID_REQUEUE << 16 instead of modifying
+ufshcd_transfer_rsp_status()?
 
--Fan
+Regarding (C): SQRTCy.ICU is only set by ufshcd_mcq_sq_cleanup() and the 
+only caller of that function is ufshcd_clear_cmd().
+There is only one function that calls ufshcd_clear_cmd() for SCSI
+commands, namely ufshcd_eh_device_reset_handler(). The latter function
+should not set the SCSI result code. All it should do is to abort all
+pending commands. The SCSI error handler will resubmit all aborted commands.
 
+Thanks,
 
+Bart.
