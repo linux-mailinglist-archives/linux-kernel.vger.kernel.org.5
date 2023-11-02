@@ -2,408 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A7F7DF25D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711BD7DF24F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347389AbjKBM14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
+        id S232877AbjKBM1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346859AbjKBM1t (ORCPT
+        with ESMTP id S229645AbjKBM1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:27:49 -0400
-Received: from esa6.hc3370-68.iphmx.com (esa6.hc3370-68.iphmx.com [216.71.155.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F628DE;
-        Thu,  2 Nov 2023 05:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1698928063;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=Qt98FOOlwQXNEe7TmHLKYpigU0UohpmukrdSKsAE3SY=;
-  b=BPZck9bN89YigFykclQ+LGZnqSwJ7qUGJUlCiWrOO+zrdnBdmEmuQ3Re
-   LW+tl499fUA83FmxVGHHhQZ+gGVlXJre/E7dYd87m4vcTgQSVIQNZiG4y
-   Uzf1x0wTXujV75Za1RvabWjRh6OA8McGWl18vIebMnPEcQ6yny6MRJm13
-   A=;
-X-CSE-ConnectionGUID: pNIzOpSTTbaXx/hvRfdv1w==
-X-CSE-MsgGUID: TcvbfrE4S9OsAZL3//oPsQ==
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-X-SBRS: 4.0
-X-MesageID: 126596384
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.159.70
-X-Policy: $RELAYED
-X-ThreatScanner-Verdict: Negative
-IronPort-Data: A9a23:9S6LjKqzPLvuwfp7fBSi8xMKZDheBmJ/YxIvgKrLsJaIsI4StFCzt
- garIBnVbK3YNmTzL412b4+/9U8F6pPTy99gTgZp/CthF3tG85uZCYyVIHmrMnLJJKUvbq7FA
- +Y2MYCccZ9uHhcwgj/3b9ANeFEljfngqoLUUbOCYmYpA1Y8FE/NsDo788YhmIlknNOlNA2Ev
- NL2sqX3NUSsnjV5KQr40YrawP9UlKq04GhwUmAWP6gR5waHzyNNUPrzGInqR5fGatgMdgKFb
- 76rIIGRpgvx4xorA9W5pbf3GmVirmn6ZFXmZtJ+AsBOszAazsAA+v9T2Mk0MC+7vw6hjdFpo
- OihgLTrIesf0g8gr8xGO/VQO3kW0aSrY9YrK1Dn2SCY5xWun3cBX5yCpaz5VGEV0r8fPI1Ay
- RAXACgrTwKkn9mK/LiyevkrhtoZIsX1ZZxK7xmMzRmBZRonaZXKQqGM7t5ExjYgwMtJGJ4yZ
- eJAN2ApNk6ZJUQSaxFIUPrSn8/x7pX7WxRepEiYuuwc5G/LwRYq+LPsLMDUapqBQsA9ckOw/
- ziYojWnWUFGXDCZ4QaO7HiinMKTpnLcQ6sgMOb/sflSm2TGkwT/DzVJDADm8JFVkHWWWM13L
- 00S5zpopq83nGSxSdP9dx61uniJulgbQdU4O+ki6QyXw67V+AexBWUeSDNFLts8u6ceRTUrx
- 1aPkMHBAD1kqrqOTnyBsLyTqFuaOjkOBWoDbjUDVgwL/5/op4Rbph7CRctiOKu0hcfyAjb+3
- 3aBqy1Wr64PgNAGkbqy/VTvgyqh4JPOS2Yd5RTTUySg4xJ0fqalf4Hu4l/ehd5MLYOYUkOA+
- mMFhcGY7esOJZGVmWqGR+BlNKu0/O3DOTvQjER0GJ8J9yygvXWkeOh44ixlOEZvdMsefyT1S
- E/LtEVa45o7FGv6M4d0bpi3BsBsyrLvffz9UvnIYN1UZ919bg6Z8TsrdR7O937inVJqkqwlP
- 5qfN8G2Ah4yDaVh0SrzX+wc+aEkyzp4xm7JQ53/iRO93tK2YH+TVKdAMEqWY/onxL2LrR+T8
- NtFMcaOjRJFX4XWaDH/+IoSIFZaa3Q2bbj6otJaMO6KJBFrHkklCvnM0fUgfZBom+JekeKg1
- nGlU2dK2Ub4nzvMLgDiQnVibrzodYxyoXIyIWonOlPA83IjbIKg5a4EX5QwerYj+apoyvscZ
- +UKf9WoBvVJVyjd/DIcfd/xoeRKeAqrjBiSFyujbiI2c5NpS0rO4NCMVgLp+DgmDyy5r8Iyr
- rSskATBTvIrQwVkEdaTa/+1yV61lWYSlfg0XEbSJNRXPkL2/+BCNCHwyPs2PukPJA/Fyz/c0
- ByZaSr0vsGU/dVzqoOQw/nZ/sH2S4OSA3a2AUHDy5ekEjHhwlapyL9QF+aWRz7RSjrrrfDKi
- fpu8x3sDBEWtA8U4tosQug3kP5WC8jH/eEAklo+dJnfRxH7Uuk+fyPuMdxn7/UVntdkVR2Kt
- lVjEzWwEZ6OIsrhWGUJPgsjYf/rORo8wWKKsq1dzKkX/kZKEFu7vaZ6ZULkZNR1ducdDW/c6
- b5JVDQqwwK+kAE2Fd2NkzpZ8W+BRlRZDfR35s9BXtG12lN7or2nXXA7InaoiKxjlv0VbxJ0S
- tNqrPGqa0tgKrrqLCNoSCmlMRt1jpUSohFapGI/y6CysoOd3JcfhUQBmQnbuywJln2rJcovY
- Dk0X6C0TI3SlwpVaD9rBjD1QVkYWk3DpCQcCTIhzQXkcqVhbUSVREVVBApH1BlxH750FtSDw
- Iyl9Q==
-IronPort-HdrOrdr: A9a23:aWN29a+FdqhaJVFNY0Nuk+B1I+orL9Y04lQ7vn2ZhyY1TiX+rb
- HJoB17726StN91YhsdcL+7VZVoLUmxyXcx2/hzAV9NNDOWxFdAb7sSkLcL+lXbalLDH5dmpN
- ldmspFaOEYfGIK6foSuzPIaurIqePvmMuVbKXlvhVQpGdRBJ2IhD0JbzpzfHcZeOBuP+tJKL
- OsouRGuhu9cjAtYsygAH5tZZm4m/T70LznfD8bDFod5AOPlDOl76OSKWni4j4uFx1O3JY/+i
- z/nwb4/6WutOz+4hLQzGPI9f1t6ajc4+oGKsyQq9Qfbg/hjQulf+1aKsW/lT04uvyu7142kN
- /KuX4bTrRO108=
-X-Talos-CUID: 9a23:uxNYUmNbRDlVHe5DQA9G5mkMIfwZeHTt3DDQPXW2BXgwV+jA
-X-Talos-MUID: =?us-ascii?q?9a23=3Aa9s5vg7jLNLcXFC0q5hRT2xLxoxU6LqkBlogza5?=
- =?us-ascii?q?XnNKtBwgrfHCatC+OF9o=3D?=
-X-IronPort-AV: E=Sophos;i="6.03,271,1694750400"; 
-   d="scan'208";a="126596384"
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Date:   Thu, 2 Nov 2023 12:26:21 +0000
-Subject: [PATCH 3/3] x86/apic: Drop struct local_apic
+        Thu, 2 Nov 2023 08:27:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49E6DE
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698928050; x=1730464050;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BsFcEvID3o2aSRzfUsZHlx4fPPpNDg9aadUfPiE9Bk4=;
+  b=WMK9USgjEYT1H2N8/KCjn6CW86lLAdBPtQpcbKTEtp6yULmf9x8pNOL5
+   GWGBeUpn9dN2GGgSfkYF4HDXauE2KtrzLQvNMFBbZ2YI/k/hk1saU6KoY
+   DzU3SQN9XqVSLI6xByRLS1QvrjXwY9MmMPIIHO6jTe3flWSnRM8iWNYqe
+   lGSvz8JL7fL3NiNelD93sA9TjBKtbeKZ7SW4FKM7HY2+YgByI7HKc+/LV
+   yUE3JH1pt1W9Ktw5O6yXPMtsnJppW88SQLGCANIvQcYLq/O1/vRCWEogu
+   gkY/Ds5mDs8KUTLijHvdHs1r3sTMnOB5GAqrjgYdP3lL+Ifet540Xt1vs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="379093667"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="379093667"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:27:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="884877367"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="884877367"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:27:27 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qyWnD-0000000AgTQ-4Aci;
+        Thu, 02 Nov 2023 14:27:23 +0200
+Date:   Thu, 2 Nov 2023 14:27:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2 6/7] drm/i915/dsi: Replace poking of CHV GPIOs behind
+ the driver's back
+Message-ID: <ZUOVq2LREbHgFL6R@smile.fi.intel.com>
+References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
+ <20231024155739.3861342-7-andriy.shevchenko@linux.intel.com>
+ <ZTfssxRsrDxhzSQ6@smile.fi.intel.com>
+ <b489675d-e9de-4bca-9622-78545aa8606d@redhat.com>
+ <16e533e2-81bb-47ba-9e23-460a626bcad7@redhat.com>
+ <ZUIbPtEEbl6pjdqg@smile.fi.intel.com>
+ <f68dca47-d9ed-a146-b152-c19bcc9d8828@redhat.com>
+ <437a20fe-121e-0d8c-04a0-da30db71d2ea@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231102-x86-apic-v1-3-bf049a2a0ed6@citrix.com>
-References: <20231102-x86-apic-v1-0-bf049a2a0ed6@citrix.com>
-In-Reply-To: <20231102-x86-apic-v1-0-bf049a2a0ed6@citrix.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Steve Wahl <steve.wahl@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Kyle Meyer <kyle.meyer@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "Russ Anderson" <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        "Andy Shevchenko" <andy@infradead.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "Dexuan Cui" <decui@microsoft.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-hyperv@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <437a20fe-121e-0d8c-04a0-da30db71d2ea@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This type predates recorded history in tglx/history.git, making it older
-than Feb 5th 2002.
+On Wed, Nov 01, 2023 at 12:01:31PM +0100, Hans de Goede wrote:
+> On 11/1/23 11:20, Hans de Goede wrote:
 
-This structure is literally old enough to drink in most juristictions in
-the world, and has not been used once in that time.
+...
 
-Lay it to rest in /dev/null.
+> Attached is this patch, this should probably be one of
+> the first patches in the v3 submission.
 
-Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
----
-There is perhaps something to be said for the longevity of the comment.
-"Not terribly well tested" certainly hasn't bitrotted in all this time.
----
- arch/x86/include/asm/apicdef.h | 260 -----------------------------------------
- 1 file changed, 260 deletions(-)
+Thanks, noted!
 
-diff --git a/arch/x86/include/asm/apicdef.h b/arch/x86/include/asm/apicdef.h
-index ddcbf00db19d..094106b6a538 100644
---- a/arch/x86/include/asm/apicdef.h
-+++ b/arch/x86/include/asm/apicdef.h
-@@ -172,270 +172,10 @@
- #define APIC_CPUID(apicid)	((apicid) & XAPIC_DEST_CPUS_MASK)
- #define NUM_APIC_CLUSTERS	((BAD_APICID + 1) >> XAPIC_DEST_CPUS_SHIFT)
- 
--#ifndef __ASSEMBLY__
--/*
-- * the local APIC register structure, memory mapped. Not terribly well
-- * tested, but we might eventually use this one in the future - the
-- * problem why we cannot use it right now is the P5 APIC, it has an
-- * errata which cannot take 8-bit reads and writes, only 32-bit ones ...
-- */
--#define u32 unsigned int
--
--struct local_apic {
--
--/*000*/	struct { u32 __reserved[4]; } __reserved_01;
--
--/*010*/	struct { u32 __reserved[4]; } __reserved_02;
--
--/*020*/	struct { /* APIC ID Register */
--		u32   __reserved_1	: 24,
--			phys_apic_id	:  4,
--			__reserved_2	:  4;
--		u32 __reserved[3];
--	} id;
--
--/*030*/	const
--	struct { /* APIC Version Register */
--		u32   version		:  8,
--			__reserved_1	:  8,
--			max_lvt		:  8,
--			__reserved_2	:  8;
--		u32 __reserved[3];
--	} version;
--
--/*040*/	struct { u32 __reserved[4]; } __reserved_03;
--
--/*050*/	struct { u32 __reserved[4]; } __reserved_04;
--
--/*060*/	struct { u32 __reserved[4]; } __reserved_05;
--
--/*070*/	struct { u32 __reserved[4]; } __reserved_06;
--
--/*080*/	struct { /* Task Priority Register */
--		u32   priority	:  8,
--			__reserved_1	: 24;
--		u32 __reserved_2[3];
--	} tpr;
--
--/*090*/	const
--	struct { /* Arbitration Priority Register */
--		u32   priority	:  8,
--			__reserved_1	: 24;
--		u32 __reserved_2[3];
--	} apr;
--
--/*0A0*/	const
--	struct { /* Processor Priority Register */
--		u32   priority	:  8,
--			__reserved_1	: 24;
--		u32 __reserved_2[3];
--	} ppr;
--
--/*0B0*/	struct { /* End Of Interrupt Register */
--		u32   eoi;
--		u32 __reserved[3];
--	} eoi;
--
--/*0C0*/	struct { u32 __reserved[4]; } __reserved_07;
--
--/*0D0*/	struct { /* Logical Destination Register */
--		u32   __reserved_1	: 24,
--			logical_dest	:  8;
--		u32 __reserved_2[3];
--	} ldr;
--
--/*0E0*/	struct { /* Destination Format Register */
--		u32   __reserved_1	: 28,
--			model		:  4;
--		u32 __reserved_2[3];
--	} dfr;
--
--/*0F0*/	struct { /* Spurious Interrupt Vector Register */
--		u32	spurious_vector	:  8,
--			apic_enabled	:  1,
--			focus_cpu	:  1,
--			__reserved_2	: 22;
--		u32 __reserved_3[3];
--	} svr;
--
--/*100*/	struct { /* In Service Register */
--/*170*/		u32 bitfield;
--		u32 __reserved[3];
--	} isr [8];
--
--/*180*/	struct { /* Trigger Mode Register */
--/*1F0*/		u32 bitfield;
--		u32 __reserved[3];
--	} tmr [8];
--
--/*200*/	struct { /* Interrupt Request Register */
--/*270*/		u32 bitfield;
--		u32 __reserved[3];
--	} irr [8];
--
--/*280*/	union { /* Error Status Register */
--		struct {
--			u32   send_cs_error			:  1,
--				receive_cs_error		:  1,
--				send_accept_error		:  1,
--				receive_accept_error		:  1,
--				__reserved_1			:  1,
--				send_illegal_vector		:  1,
--				receive_illegal_vector		:  1,
--				illegal_register_address	:  1,
--				__reserved_2			: 24;
--			u32 __reserved_3[3];
--		} error_bits;
--		struct {
--			u32 errors;
--			u32 __reserved_3[3];
--		} all_errors;
--	} esr;
--
--/*290*/	struct { u32 __reserved[4]; } __reserved_08;
--
--/*2A0*/	struct { u32 __reserved[4]; } __reserved_09;
--
--/*2B0*/	struct { u32 __reserved[4]; } __reserved_10;
--
--/*2C0*/	struct { u32 __reserved[4]; } __reserved_11;
--
--/*2D0*/	struct { u32 __reserved[4]; } __reserved_12;
--
--/*2E0*/	struct { u32 __reserved[4]; } __reserved_13;
--
--/*2F0*/	struct { u32 __reserved[4]; } __reserved_14;
--
--/*300*/	struct { /* Interrupt Command Register 1 */
--		u32   vector			:  8,
--			delivery_mode		:  3,
--			destination_mode	:  1,
--			delivery_status		:  1,
--			__reserved_1		:  1,
--			level			:  1,
--			trigger			:  1,
--			__reserved_2		:  2,
--			shorthand		:  2,
--			__reserved_3		:  12;
--		u32 __reserved_4[3];
--	} icr1;
--
--/*310*/	struct { /* Interrupt Command Register 2 */
--		union {
--			u32   __reserved_1	: 24,
--				phys_dest	:  4,
--				__reserved_2	:  4;
--			u32   __reserved_3	: 24,
--				logical_dest	:  8;
--		} dest;
--		u32 __reserved_4[3];
--	} icr2;
--
--/*320*/	struct { /* LVT - Timer */
--		u32   vector		:  8,
--			__reserved_1	:  4,
--			delivery_status	:  1,
--			__reserved_2	:  3,
--			mask		:  1,
--			timer_mode	:  1,
--			__reserved_3	: 14;
--		u32 __reserved_4[3];
--	} lvt_timer;
--
--/*330*/	struct { /* LVT - Thermal Sensor */
--		u32  vector		:  8,
--			delivery_mode	:  3,
--			__reserved_1	:  1,
--			delivery_status	:  1,
--			__reserved_2	:  3,
--			mask		:  1,
--			__reserved_3	: 15;
--		u32 __reserved_4[3];
--	} lvt_thermal;
--
--/*340*/	struct { /* LVT - Performance Counter */
--		u32   vector		:  8,
--			delivery_mode	:  3,
--			__reserved_1	:  1,
--			delivery_status	:  1,
--			__reserved_2	:  3,
--			mask		:  1,
--			__reserved_3	: 15;
--		u32 __reserved_4[3];
--	} lvt_pc;
--
--/*350*/	struct { /* LVT - LINT0 */
--		u32   vector		:  8,
--			delivery_mode	:  3,
--			__reserved_1	:  1,
--			delivery_status	:  1,
--			polarity	:  1,
--			remote_irr	:  1,
--			trigger		:  1,
--			mask		:  1,
--			__reserved_2	: 15;
--		u32 __reserved_3[3];
--	} lvt_lint0;
--
--/*360*/	struct { /* LVT - LINT1 */
--		u32   vector		:  8,
--			delivery_mode	:  3,
--			__reserved_1	:  1,
--			delivery_status	:  1,
--			polarity	:  1,
--			remote_irr	:  1,
--			trigger		:  1,
--			mask		:  1,
--			__reserved_2	: 15;
--		u32 __reserved_3[3];
--	} lvt_lint1;
--
--/*370*/	struct { /* LVT - Error */
--		u32   vector		:  8,
--			__reserved_1	:  4,
--			delivery_status	:  1,
--			__reserved_2	:  3,
--			mask		:  1,
--			__reserved_3	: 15;
--		u32 __reserved_4[3];
--	} lvt_error;
--
--/*380*/	struct { /* Timer Initial Count Register */
--		u32   initial_count;
--		u32 __reserved_2[3];
--	} timer_icr;
--
--/*390*/	const
--	struct { /* Timer Current Count Register */
--		u32   curr_count;
--		u32 __reserved_2[3];
--	} timer_ccr;
--
--/*3A0*/	struct { u32 __reserved[4]; } __reserved_16;
--
--/*3B0*/	struct { u32 __reserved[4]; } __reserved_17;
--
--/*3C0*/	struct { u32 __reserved[4]; } __reserved_18;
--
--/*3D0*/	struct { u32 __reserved[4]; } __reserved_19;
--
--/*3E0*/	struct { /* Timer Divide Configuration Register */
--		u32   divisor		:  4,
--			__reserved_1	: 28;
--		u32 __reserved_2[3];
--	} timer_dcr;
--
--/*3F0*/	struct { u32 __reserved[4]; } __reserved_20;
--
--} __attribute__ ((packed));
--
--#undef u32
--
- #ifdef CONFIG_X86_32
-  #define BAD_APICID 0xFFu
- #else
-  #define BAD_APICID 0xFFFFu
- #endif
- 
--#endif /* !__ASSEMBLY__ */
- #endif /* _ASM_X86_APICDEF_H */
+> Note that if you go with Ville's suggestion to preparse
+> the MIPI sequences, things will change significantly
+> and then the attached patch will likely be unnecessary.
+
+I don't think so I'm for that. My task is to get rid of the poking registers
+of the GPIO IPs in the kernel when driver has no clue about them.
+
+That's why I want to do minimum in that sense with less possible invasion
+into existing flow.
 
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
