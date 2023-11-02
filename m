@@ -2,77 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D8A7DEFDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B397DEFD9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346614AbjKBKWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
+        id S1346589AbjKBKWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346515AbjKBKWl (ORCPT
+        with ESMTP id S1346515AbjKBKV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:22:41 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C9112;
-        Thu,  2 Nov 2023 03:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1698920556; x=1730456556;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QTIJe6fBmHZ5pDGO2297HJQPTJ63MepYsAuffQjdfjA=;
-  b=QHqi45Dbvzr6AK7DUY+wpj/871k8GYVEkDPXmZQI/oMO4I2TTSBw5swQ
-   1AVxlswINeOFzb7tqhkgOiXMaBiqRX1r79SemgNjfGIzgK8oPTOtpDf1W
-   y+JY1F65YotJoMk4+deRpqbtf1syCqQ1eUMbfavMX1dj8ajNHVz1vll3r
-   xR3RIn1sleUy0cLvzVr02Fbt4/GySTJZrxgIA9qfs8dVWwZE/ElgeDZ0o
-   SfbuyvyiUTE89Meb4WXGHP4h3ZG9oadeOIX/IauMx1qgGkZri8BAFnhqc
-   jU/KUv4Pf+mxWdSRMxjPfjSMbWCK6KUWqU5hu+dYslCZbIDYYdSeYQkwN
-   g==;
-X-CSE-ConnectionGUID: dttG3pA+QG+SpyyA/RvAEA==
-X-CSE-MsgGUID: fmLvno0mTHGxaLzBwfDWtA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="asc'?scan'208";a="241755710"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Nov 2023 03:22:35 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 2 Nov 2023 03:22:18 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 2 Nov 2023 03:22:16 -0700
+        Thu, 2 Nov 2023 06:21:58 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 872D5128
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:21:54 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B7982F4;
+        Thu,  2 Nov 2023 03:22:36 -0700 (PDT)
+Received: from [10.1.33.173] (XHFQ2J9959.cambridge.arm.com [10.1.33.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B22D3F67D;
+        Thu,  2 Nov 2023 03:21:52 -0700 (PDT)
+Message-ID: <73aad98e-de4c-4021-af3c-db67e06cdb70@arm.com>
 Date:   Thu, 2 Nov 2023 10:21:51 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-CC:     Conor Dooley <conor@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        Xiao Wang <xiao.w.wang@intel.com>,
-        Evan Green <evan@rivosinc.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 0/5] riscv: Add fine-tuned checksum functions
-Message-ID: <20231102-express-deplete-4dd19e21a82c@wendy>
-References: <20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com>
- <20231101-palace-tightly-97a1d35a4597@spud>
- <ZUKFkn/PzOjw129p@ghost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iP257PpdxnYzWyml"
-Content-Disposition: inline
-In-Reply-To: <ZUKFkn/PzOjw129p@ghost>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Steven Price <Steven.Price@arm.com>
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-5-ryan.roberts@arm.com>
+ <CAGsJ_4z=G03n7ETfG-dH0Pn3opybq9yByTENEB2ACR-ww6KoVw@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4z=G03n7ETfG-dH0Pn3opybq9yByTENEB2ACR-ww6KoVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,70 +54,429 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---iP257PpdxnYzWyml
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 02/11/2023 07:40, Barry Song wrote:
+> On Wed, Oct 25, 2023 at 10:46 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> The upcoming anonymous small-sized THP feature enables performance
+>> improvements by allocating large folios for anonymous memory. However
+>> I've observed that on an arm64 system running a parallel workload (e.g.
+>> kernel compilation) across many cores, under high memory pressure, the
+>> speed regresses. This is due to bottlenecking on the increased number of
+>> TLBIs added due to all the extra folio splitting.
+>>
+>> Therefore, solve this regression by adding support for swapping out
+>> small-sized THP without needing to split the folio, just like is already
+>> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
+>> enabled, and when the swap backing store is a non-rotating block device.
+>> These are the same constraints as for the existing PMD-sized THP
+>> swap-out support.
+> 
+> Hi Ryan,
+> 
+> We had a problem while enabling THP SWP on arm64,
+> commit d0637c505f8 ("arm64: enable THP_SWAP for arm64")
+> 
+> this means we have to depend on !system_supports_mte().
+> static inline bool arch_thp_swp_supported(void)
+> {
+>         return !system_supports_mte();
+> }
+> 
+> Do we have the same problem for small-sized THP? If yes, MTE has been
+> widely existing in various ARM64 SoC. Does it mean we should begin to fix
+> the issue now?
 
-On Wed, Nov 01, 2023 at 10:06:26AM -0700, Charlie Jenkins wrote:
-> On Wed, Nov 01, 2023 at 11:50:46AM +0000, Conor Dooley wrote:
-> > On Tue, Oct 31, 2023 at 05:18:50PM -0700, Charlie Jenkins wrote:
-> > > Each architecture generally implements fine-tuned checksum functions =
-to
-> > > leverage the instruction set. This patch adds the main checksum
-> > > functions that are used in networking.
-> > >=20
-> > > This patch takes heavy use of the Zbb extension using alternatives
-> > > patching.
-> > >=20
-> > > To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
-> > > and RISCV_CHECKSUM_KUNIT.
-> > >=20
-> > > I have attempted to make these functions as optimal as possible, but I
-> > > have not ran anything on actual riscv hardware. My performance testing
-> > > has been limited to inspecting the assembly, running the algorithms on
-> > > x86 hardware, and running in QEMU.
-> > >=20
-> > > ip_fast_csum is a relatively small function so even though it is
-> > > possible to read 64 bits at a time on compatible hardware, the
-> > > bottleneck becomes the clean up and setup code so loading 32 bits at a
-> > > time is actually faster.
-> > >=20
-> > > Relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@=
-rivosinc.com/
-> >=20
-> > I coulda sworn I reported build issues against the v8 of this series
-> > that are still present in this v9. For example:
-> > https://patchwork.kernel.org/project/linux-riscv/patch/20231031-optimiz=
-e_checksum-v9-3-ea018e69b229@rivosinc.com/
+Hi Barry,
 
-> You did, and I fixed the build issues. This is another instance of how
-> Patchwork reports the results of the previous build before the new build
-> completes. Patchwork was very far behind so it took around 15 hours for
-> the result to be ready.
+I'm guessing that the current problem for MTE is that when it saves the tags
+prior to swap out, it assumes all folios are small (i.e. base page size) and
+therefore doesn't have the logic to iterate over a large folio, saving the tags
+for each page?
 
-:clown_face:
+If that's the issue, then yes we have the same problem for small-sized THP, but
+this is all safe - arch_thp_swp_supported() will return false and we continue to
+use that signal to cause the page to be split prior to swap out.
 
-> There are some miscellaneous warnings in random
-> drivers that I don't think can be attributed to this patch.
+But, yes, it would be nice to fix that! And if I've understood the problem
+correctly, it doesn't sound like it should be too hard? Is this something you
+are volunteering for?? :)
 
-Yeah, there sometimes are warnings that seem spurious when you touch a
-bunch of header files. I'm not really sure how to improve on that, since
-it was newly introduced. My theory is that how we do a build of commit
-A, then commit A~1 and then commit A again & take the difference between
-the 2nd and 3rd builds (which should both be partial rebuilds) is not as
-symmetrical as I might've thought and is the source of those seemingly
-unrelated issues that come up from time to time.
+Thanks,
+Ryan
 
---iP257PpdxnYzWyml
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+> 
+> 
+>>
+>> Note that no attempt is made to swap-in THP here - this is still done
+>> page-by-page, like for PMD-sized THP.
+>>
+>> The main change here is to improve the swap entry allocator so that it
+>> can allocate any power-of-2 number of contiguous entries between [1, (1
+>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
+>> order and allocating sequentially from it until the cluster is full.
+>> This ensures that we don't need to search the map and we get no
+>> fragmentation due to alignment padding for different orders in the
+>> cluster. If there is no current cluster for a given order, we attempt to
+>> allocate a free cluster from the list. If there are no free clusters, we
+>> fail the allocation and the caller falls back to splitting the folio and
+>> allocates individual entries (as per existing PMD-sized THP fallback).
+>>
+>> The per-order current clusters are maintained per-cpu using the existing
+>> infrastructure. This is done to avoid interleving pages from different
+>> tasks, which would prevent IO being batched. This is already done for
+>> the order-0 allocations so we follow the same pattern.
+>> __scan_swap_map_try_ssd_cluster() is introduced to deal with arbitrary
+>> orders and scan_swap_map_try_ssd_cluster() is refactored as a wrapper
+>> for order-0.
+>>
+>> As is done for order-0 per-cpu clusters, the scanner now can steal
+>> order-0 entries from any per-cpu-per-order reserved cluster. This
+>> ensures that when the swap file is getting full, space doesn't get tied
+>> up in the per-cpu reserves.
+>>
+>> I've run the tests on Ampere Altra (arm64), set up with a 35G block ram
+>> device as the swap device and from inside a memcg limited to 40G memory.
+>> I've then run `usemem` from vm-scalability with 70 processes (each has
+>> its own core), each allocating and writing 1G of memory. I've repeated
+>> everything 5 times and taken the mean:
+>>
+>> Mean Performance Improvement vs 4K/baseline
+>>
+>> | alloc size |            baseline |       + this series |
+>> |            |  v6.6-rc4+anonfolio |                     |
+>> |:-----------|--------------------:|--------------------:|
+>> | 4K Page    |                0.0% |                4.9% |
+>> | 64K THP    |              -44.1% |               10.7% |
+>> | 2M THP     |               56.0% |               65.9% |
+>>
+>> So with this change, the regression for 64K swap performance goes away
+>> and 4K and 2M swap improves slightly too.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>  include/linux/swap.h |  10 +--
+>>  mm/swapfile.c        | 149 +++++++++++++++++++++++++++++++------------
+>>  mm/vmscan.c          |  10 +--
+>>  3 files changed, 119 insertions(+), 50 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 0ca8aaa098ba..ccbca5db851b 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -295,11 +295,11 @@ struct swap_info_struct {
+>>         unsigned int __percpu *cluster_next_cpu; /*percpu index for next allocation */
+>>         unsigned int __percpu *cpu_next;/*
+>>                                          * Likely next allocation offset. We
+>> -                                        * assign a cluster to each CPU, so each
+>> -                                        * CPU can allocate swap entry from its
+>> -                                        * own cluster and swapout sequentially.
+>> -                                        * The purpose is to optimize swapout
+>> -                                        * throughput.
+>> +                                        * assign a cluster per-order to each
+>> +                                        * CPU, so each CPU can allocate swap
+>> +                                        * entry from its own cluster and
+>> +                                        * swapout sequentially. The purpose is
+>> +                                        * to optimize swapout throughput.
+>>                                          */
+>>         struct rb_root swap_extent_root;/* root of the swap extent rbtree */
+>>         struct block_device *bdev;      /* swap device or bdev of swap file */
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 94f7cc225eb9..b50bce50bed9 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -545,10 +545,12 @@ static void free_cluster(struct swap_info_struct *si, unsigned long idx)
+>>
+>>  /*
+>>   * The cluster corresponding to page_nr will be used. The cluster will be
+>> - * removed from free cluster list and its usage counter will be increased.
+>> + * removed from free cluster list and its usage counter will be increased by
+>> + * count.
+>>   */
+>> -static void inc_cluster_info_page(struct swap_info_struct *p,
+>> -       struct swap_cluster_info *cluster_info, unsigned long page_nr)
+>> +static void add_cluster_info_page(struct swap_info_struct *p,
+>> +       struct swap_cluster_info *cluster_info, unsigned long page_nr,
+>> +       unsigned long count)
+>>  {
+>>         unsigned long idx = page_nr / SWAPFILE_CLUSTER;
+>>
+>> @@ -557,9 +559,19 @@ static void inc_cluster_info_page(struct swap_info_struct *p,
+>>         if (cluster_is_free(&cluster_info[idx]))
+>>                 alloc_cluster(p, idx);
+>>
+>> -       VM_BUG_ON(cluster_count(&cluster_info[idx]) >= SWAPFILE_CLUSTER);
+>> +       VM_BUG_ON(cluster_count(&cluster_info[idx]) + count > SWAPFILE_CLUSTER);
+>>         cluster_set_count(&cluster_info[idx],
+>> -               cluster_count(&cluster_info[idx]) + 1);
+>> +               cluster_count(&cluster_info[idx]) + count);
+>> +}
+>> +
+>> +/*
+>> + * The cluster corresponding to page_nr will be used. The cluster will be
+>> + * removed from free cluster list and its usage counter will be increased.
+>> + */
+>> +static void inc_cluster_info_page(struct swap_info_struct *p,
+>> +       struct swap_cluster_info *cluster_info, unsigned long page_nr)
+>> +{
+>> +       add_cluster_info_page(p, cluster_info, page_nr, 1);
+>>  }
+>>
+>>  /*
+>> @@ -588,8 +600,8 @@ static void dec_cluster_info_page(struct swap_info_struct *p,
+>>   * cluster list. Avoiding such abuse to avoid list corruption.
+>>   */
+>>  static bool
+>> -scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
+>> -       unsigned long offset)
+>> +__scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
+>> +       unsigned long offset, int order)
+>>  {
+>>         bool conflict;
+>>
+>> @@ -601,23 +613,36 @@ scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
+>>         if (!conflict)
+>>                 return false;
+>>
+>> -       *this_cpu_ptr(si->cpu_next) = SWAP_NEXT_NULL;
+>> +       this_cpu_ptr(si->cpu_next)[order] = SWAP_NEXT_NULL;
+>>         return true;
+>>  }
+>>
+>>  /*
+>> - * Try to get a swap entry from current cpu's swap entry pool (a cluster). This
+>> - * might involve allocating a new cluster for current CPU too.
+>> + * It's possible scan_swap_map_slots() uses a free cluster in the middle of free
+>> + * cluster list. Avoiding such abuse to avoid list corruption.
+>>   */
+>> -static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>> -       unsigned long *offset, unsigned long *scan_base)
+>> +static bool
+>> +scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
+>> +       unsigned long offset)
+>> +{
+>> +       return __scan_swap_map_ssd_cluster_conflict(si, offset, 0);
+>> +}
+>> +
+>> +/*
+>> + * Try to get a swap entry (or size indicated by order) from current cpu's swap
+>> + * entry pool (a cluster). This might involve allocating a new cluster for
+>> + * current CPU too.
+>> + */
+>> +static bool __scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>> +       unsigned long *offset, unsigned long *scan_base, int order)
+>>  {
+>>         struct swap_cluster_info *ci;
+>> -       unsigned int tmp, max;
+>> +       unsigned int tmp, max, i;
+>>         unsigned int *cpu_next;
+>> +       unsigned int nr_pages = 1 << order;
+>>
+>>  new_cluster:
+>> -       cpu_next = this_cpu_ptr(si->cpu_next);
+>> +       cpu_next = &this_cpu_ptr(si->cpu_next)[order];
+>>         tmp = *cpu_next;
+>>         if (tmp == SWAP_NEXT_NULL) {
+>>                 if (!cluster_list_empty(&si->free_clusters)) {
+>> @@ -643,10 +668,12 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>>          * reserve a new cluster.
+>>          */
+>>         ci = lock_cluster(si, tmp);
+>> -       if (si->swap_map[tmp]) {
+>> -               unlock_cluster(ci);
+>> -               *cpu_next = SWAP_NEXT_NULL;
+>> -               goto new_cluster;
+>> +       for (i = 0; i < nr_pages; i++) {
+>> +               if (si->swap_map[tmp + i]) {
+>> +                       unlock_cluster(ci);
+>> +                       *cpu_next = SWAP_NEXT_NULL;
+>> +                       goto new_cluster;
+>> +               }
+>>         }
+>>         unlock_cluster(ci);
+>>
+>> @@ -654,12 +681,22 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>>         *scan_base = tmp;
+>>
+>>         max = ALIGN_DOWN(tmp, SWAPFILE_CLUSTER) + SWAPFILE_CLUSTER;
+>> -       tmp += 1;
+>> +       tmp += nr_pages;
+>>         *cpu_next = tmp < max ? tmp : SWAP_NEXT_NULL;
+>>
+>>         return true;
+>>  }
+>>
+>> +/*
+>> + * Try to get a swap entry from current cpu's swap entry pool (a cluster). This
+>> + * might involve allocating a new cluster for current CPU too.
+>> + */
+>> +static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>> +       unsigned long *offset, unsigned long *scan_base)
+>> +{
+>> +       return __scan_swap_map_try_ssd_cluster(si, offset, scan_base, 0);
+>> +}
+>> +
+>>  static void __del_from_avail_list(struct swap_info_struct *p)
+>>  {
+>>         int nid;
+>> @@ -982,35 +1019,58 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>>         return n_ret;
+>>  }
+>>
+>> -static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
+>> +static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
+>> +                           unsigned int nr_pages)
+>>  {
+>> -       unsigned long idx;
+>>         struct swap_cluster_info *ci;
+>> -       unsigned long offset;
+>> +       unsigned long offset, scan_base;
+>> +       int order = ilog2(nr_pages);
+>> +       bool ret;
+>>
+>>         /*
+>> -        * Should not even be attempting cluster allocations when huge
+>> +        * Should not even be attempting large allocations when huge
+>>          * page swap is disabled.  Warn and fail the allocation.
+>>          */
+>> -       if (!IS_ENABLED(CONFIG_THP_SWAP)) {
+>> +       if (!IS_ENABLED(CONFIG_THP_SWAP) ||
+>> +           nr_pages < 2 || nr_pages > SWAPFILE_CLUSTER ||
+>> +           !is_power_of_2(nr_pages)) {
+>>                 VM_WARN_ON_ONCE(1);
+>>                 return 0;
+>>         }
+>>
+>> -       if (cluster_list_empty(&si->free_clusters))
+>> +       /*
+>> +        * Swapfile is not block device or not using clusters so unable to
+>> +        * allocate large entries.
+>> +        */
+>> +       if (!(si->flags & SWP_BLKDEV) || !si->cluster_info)
+>>                 return 0;
+>>
+>> -       idx = cluster_list_first(&si->free_clusters);
+>> -       offset = idx * SWAPFILE_CLUSTER;
+>> -       ci = lock_cluster(si, offset);
+>> -       alloc_cluster(si, idx);
+>> -       cluster_set_count(ci, SWAPFILE_CLUSTER);
+>> +again:
+>> +       /*
+>> +        * __scan_swap_map_try_ssd_cluster() may drop si->lock during discard,
+>> +        * so indicate that we are scanning to synchronise with swapoff.
+>> +        */
+>> +       si->flags += SWP_SCANNING;
+>> +       ret = __scan_swap_map_try_ssd_cluster(si, &offset, &scan_base, order);
+>> +       si->flags -= SWP_SCANNING;
+>> +
+>> +       /*
+>> +        * If we failed to allocate or if swapoff is waiting for us (due to lock
+>> +        * being dropped for discard above), return immediately.
+>> +        */
+>> +       if (!ret || !(si->flags & SWP_WRITEOK))
+>> +               return 0;
+>>
+>> -       memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
+>> +       if (__scan_swap_map_ssd_cluster_conflict(si, offset, order))
+>> +               goto again;
+>> +
+>> +       ci = lock_cluster(si, offset);
+>> +       memset(si->swap_map + offset, SWAP_HAS_CACHE, nr_pages);
+>> +       add_cluster_info_page(si, si->cluster_info, offset, nr_pages);
+>>         unlock_cluster(ci);
+>> -       swap_range_alloc(si, offset, SWAPFILE_CLUSTER);
+>> -       *slot = swp_entry(si->type, offset);
+>>
+>> +       swap_range_alloc(si, offset, nr_pages);
+>> +       *slot = swp_entry(si->type, offset);
+>>         return 1;
+>>  }
+>>
+>> @@ -1036,7 +1096,7 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+>>         int node;
+>>
+>>         /* Only single cluster request supported */
+>> -       WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
+>> +       WARN_ON_ONCE(n_goal > 1 && size > 1);
+>>
+>>         spin_lock(&swap_avail_lock);
+>>
+>> @@ -1073,14 +1133,13 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+>>                         spin_unlock(&si->lock);
+>>                         goto nextsi;
+>>                 }
+>> -               if (size == SWAPFILE_CLUSTER) {
+>> -                       if (si->flags & SWP_BLKDEV)
+>> -                               n_ret = swap_alloc_cluster(si, swp_entries);
+>> +               if (size > 1) {
+>> +                       n_ret = swap_alloc_large(si, swp_entries, size);
+>>                 } else
+>>                         n_ret = scan_swap_map_slots(si, SWAP_HAS_CACHE,
+>>                                                     n_goal, swp_entries);
+>>                 spin_unlock(&si->lock);
+>> -               if (n_ret || size == SWAPFILE_CLUSTER)
+>> +               if (n_ret || size > 1)
+>>                         goto check_out;
+>>                 cond_resched();
+>>
+>> @@ -3041,6 +3100,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>         if (p->bdev && bdev_nonrot(p->bdev)) {
+>>                 int cpu;
+>>                 unsigned long ci, nr_cluster;
+>> +               int nr_order;
+>> +               int i;
+>>
+>>                 p->flags |= SWP_SOLIDSTATE;
+>>                 p->cluster_next_cpu = alloc_percpu(unsigned int);
+>> @@ -3068,13 +3129,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>                 for (ci = 0; ci < nr_cluster; ci++)
+>>                         spin_lock_init(&((cluster_info + ci)->lock));
+>>
+>> -               p->cpu_next = alloc_percpu(unsigned int);
+>> +               nr_order = IS_ENABLED(CONFIG_THP_SWAP) ? PMD_ORDER + 1 : 1;
+>> +               p->cpu_next = __alloc_percpu(sizeof(unsigned int) * nr_order,
+>> +                                            __alignof__(unsigned int));
+>>                 if (!p->cpu_next) {
+>>                         error = -ENOMEM;
+>>                         goto bad_swap_unlock_inode;
+>>                 }
+>> -               for_each_possible_cpu(cpu)
+>> -                       per_cpu(*p->cpu_next, cpu) = SWAP_NEXT_NULL;
+>> +               for_each_possible_cpu(cpu) {
+>> +                       unsigned int *cpu_next = per_cpu_ptr(p->cpu_next, cpu);
+>> +
+>> +                       for (i = 0; i < nr_order; i++)
+>> +                               cpu_next[i] = SWAP_NEXT_NULL;
+>> +               }
+>>         } else {
+>>                 atomic_inc(&nr_rotate_swap);
+>>                 inced_nr_rotate_swap = true;
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 2cc0cb41fb32..ea19710aa4cd 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+>>                                         if (!can_split_folio(folio, NULL))
+>>                                                 goto activate_locked;
+>>                                         /*
+>> -                                        * Split folios without a PMD map right
+>> -                                        * away. Chances are some or all of the
+>> -                                        * tail pages can be freed without IO.
+>> +                                        * Split PMD-mappable folios without a
+>> +                                        * PMD map right away. Chances are some
+>> +                                        * or all of the tail pages can be freed
+>> +                                        * without IO.
+>>                                          */
+>> -                                       if (!folio_entire_mapcount(folio) &&
+>> +                                       if (folio_test_pmd_mappable(folio) &&
+>> +                                           !folio_entire_mapcount(folio) &&
+>>                                             split_folio_to_list(folio,
+>>                                                                 folio_list))
+>>                                                 goto activate_locked;
+>> --
+>> 2.25.1
+>>
+> 
+> Thanks
+> Barry
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUN4PwAKCRB4tDGHoIJi
-0jV3AP9c6KociGHuayEHtzK5fniiLEgkWkN9CfAqobQ+jqH0lAEA7HISbiX11E5K
-Exvq77KvbRkFrOWUcY+p5/1Ke/8UYwU=
-=M/iI
------END PGP SIGNATURE-----
-
---iP257PpdxnYzWyml--
