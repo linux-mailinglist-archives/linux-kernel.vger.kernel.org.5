@@ -2,155 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC687DFB74
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B357DFB77
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344138AbjKBUWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S232865AbjKBUYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 16:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKBUWe (ORCPT
+        with ESMTP id S229511AbjKBUX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:22:34 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F5318E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:22:30 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32d81864e3fso743273f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 13:22:30 -0700 (PDT)
+        Thu, 2 Nov 2023 16:23:59 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B607186
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:23:56 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-5875e2b27c5so465198eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 13:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698956549; x=1699561349; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I2OmO/cSIWcHLs5m9Fp9R9ncrDst5FOA+aif1w7pvlY=;
-        b=VVXw20Ck559qbFs8nOTmwLTg3VE6Z8QGY7PQOXI2emiI6FfSearhwJGE91XsXH/LHJ
-         PV1O6YQ+5QyE2feTXU5dGonPqp68rzG83VTM75gHXFcW5Fdk7E1+9FnITs+rwAXOIVOQ
-         wJF1hZ/X3aq7eZsAhdoXiDr6a99IH9n5/trPQimDxmavKwim5WGKUTA1c47Gto49/jqu
-         bSmHF+kVgyqISE4xdsP6z3G4Z7wVER0N260qFgx09FNFSmwhjPaZQDswaD2xh5h8e8sP
-         pQb4NCjityjzx1ywpFJyA7fyS9ZzLn6iHGzZCQmG7r6WpaB04M+d/g87+gHA7iXUpT6n
-         FBGw==
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1698956635; x=1699561435; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZYxqorYTLyNgH4Ys5lNUekyUrwpkE+NAoR9Xx/kQ8MQ=;
+        b=1qAmgj4zLduDhMvPJzRi0HkTyUVdhhRV4+LAgpxiP2wloWJaqbEz040uaaSBCnLYXT
+         Q6urspTLANP3FvNUuoDOxFoaz5xs6RC6rDGQegCqJDMrCh9e1MOooGYnhOHps2TWjD6D
+         vjY3M/ClCf4g3eLnGHgnLGwbb4kmND7Mzsu26SMby5b7s2i/8nHy8ZwjJWXTM3tbNoir
+         3h0o6IURTx6DN67BeqMxipopgwEnUt34+zWpnTBb3QqvyOwtkWfQ2Rsd5tTkCUbYdy86
+         4jPo6ruIOUhB89BtBnO36nlD3Uw5bjlSDa783eNRv5J6/Kh/acohwJ0RYh7Bcr+tdWGt
+         PX2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698956549; x=1699561349;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I2OmO/cSIWcHLs5m9Fp9R9ncrDst5FOA+aif1w7pvlY=;
-        b=UPUZkRIdyhjh5Cn4li48Z2wkC+JoeniJ+ZFUwyVnkjVfZws+Kue9D2IUoHvja8ns0b
-         ekOALL4EYQwcfouYSaFmVfW7bjb/6y5zcGIDGh93viH5Jlv60Iy60/8qcEzZh7Z+zFKs
-         O5Kr1FSAU/BDGUMR7kzAzhT/+XqxXemf0u5cdfuBFEps4X2pLtWHMcQqsiE/Uwa6Rcml
-         x9RIximizjjiGWfzlx/f/rTY9XJ6srWNbxEAX8uL48UlypB0K4iLsCa89zqPdcLzdLku
-         SV8Jy+jmKRWF6WvEPVDi+hUnDfbxZaFbOrhhrn1m32g0YBJ8FENWfsCGKv1BnJSC7L6O
-         WGOw==
-X-Gm-Message-State: AOJu0YxSpkadbr3I+xc2AKC7kdXPjSIRXxNlz2XqvEkPIuxaafcjlQjA
-        DiOnjDpchUe1OQtoArtrh0zPW8XnBxgdCSDWCMge4g==
-X-Google-Smtp-Source: AGHT+IGWJTOQ+YhYnai3xZ5GlBXEVrHAqeGyrw5YY2JPOXTz5UPWJyE0CwKm1+LwoDz/xF/C9pX5+Zcy8M468XbZ27o=
-X-Received: by 2002:adf:f6c5:0:b0:323:36f1:c256 with SMTP id
- y5-20020adff6c5000000b0032336f1c256mr15140662wrp.11.1698956549087; Thu, 02
- Nov 2023 13:22:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231101230816.1459373-1-souravpanda@google.com>
- <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
- <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
- <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
- <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com> <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
- <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com> <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
- <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com> <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
- <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com> <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
- <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com> <CA+CK2bBPBtAXFQAFUeF8nTxL_Sx926HgR3zLCj_6pKgbOGt8Wg@mail.gmail.com>
-In-Reply-To: <CA+CK2bBPBtAXFQAFUeF8nTxL_Sx926HgR3zLCj_6pKgbOGt8Wg@mail.gmail.com>
-From:   Wei Xu <weixugc@google.com>
-Date:   Thu, 2 Nov 2023 13:22:17 -0700
-Message-ID: <CAAPL-u9HHgPDj_xTTx=GqPg49DcrpGP1FF8zhaog=9awwu0f_Q@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698956635; x=1699561435;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZYxqorYTLyNgH4Ys5lNUekyUrwpkE+NAoR9Xx/kQ8MQ=;
+        b=HeUfwdVcb0zpVERzEk48dB6bDnm8soIALEgOUNM/DsHLzoKRS15bReh9xyOIgqPe2W
+         RuhcoXYhcC7jRd5cDwYbEX7C3z8e/159f+durrybfBXp4SyP5lGPhtmyE7x232HT4M9G
+         eQNuL61k1TPU1V49C5f8OQCenRud4IBISuDHpk4+3UN82o3/p6K8hHpbH9LEKLO50i+M
+         EIe2JvJEIWJqlCkeCg5re6OL4OjsThhhcCpj7QyDdegYbUNGV9QuMKDrHLrbjvX7o51J
+         FiXmys/0iT8zEsAyJOOB0PPHcJmZL7zsqjNm+OZcUKG9upC8N5GPhK0us8tccpD/MahT
+         lTFw==
+X-Gm-Message-State: AOJu0Yyh5BWDUXO8/JkxatrOl2tN6zol2hjF/SBeLw0qdJE57yTOfzP1
+        cvMcpqx93AjM/0Bo8DJLEYT7Zw==
+X-Google-Smtp-Source: AGHT+IHvjzSJSgbbFHJHFSPQEfHZb0G1dwFxE6QUSYdRHcKUimuPg3oA0e89k53MrVMNkydfp+r/RA==
+X-Received: by 2002:a4a:b487:0:b0:581:ff09:62e4 with SMTP id b7-20020a4ab487000000b00581ff0962e4mr19252180ooo.2.1698956635428;
+        Thu, 02 Nov 2023 13:23:55 -0700 (PDT)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id 64-20020a4a0943000000b0057b43a25deasm52070ooa.3.2023.11.02.13.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 13:23:54 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 13:23:54 -0700 (PDT)
+X-Google-Original-Date: Thu, 02 Nov 2023 13:23:51 PDT (-0700)
+Subject:     Re: [PATCH net] tcp: Fix -Wc23-extensions in tcp_options_write()
+In-Reply-To: <mhng-41e9fb36-f703-461e-b585-9e8dd5984714@palmer-ri-x1c9a>
+CC:     edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, ndesaulniers@google.com,
+        trix@redhat.com, 0x7f454c46@gmail.com, fruggeri@arista.com,
+        noureddine@arista.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        patches@lists.linux.dev
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     nathan@kernel.org
+Message-ID: <mhng-7500e386-1e83-4303-a1ee-cd2d5688e73e@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 11:34=E2=80=AFAM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
+On Wed, 01 Nov 2023 18:42:10 PDT (-0700), Palmer Dabbelt wrote:
+> On Wed, 01 Nov 2023 18:07:23 PDT (-0700), nathan@kernel.org wrote:
+>> On Wed, Nov 01, 2023 at 05:41:10PM -0700, Palmer Dabbelt wrote:
+>>> On Tue, 31 Oct 2023 13:23:35 PDT (-0700), nathan@kernel.org wrote:
+>>> > Clang warns (or errors with CONFIG_WERROR=y) when CONFIG_TCP_AO is set:
+>>> >
+>>> >   net/ipv4/tcp_output.c:663:2: error: label at end of compound statement is a C23 extension [-Werror,-Wc23-extensions]
+>>> >     663 |         }
+>>> >         |         ^
+>>> >   1 error generated.
+>>> >
+>>> > On earlier releases (such as clang-11, the current minimum supported
+>>> > version for building the kernel) that do not support C23, this was a
+>>> > hard error unconditionally:
+>>> >
+>>> >   net/ipv4/tcp_output.c:663:2: error: expected statement
+>>> >           }
+>>> >           ^
+>>> >   1 error generated.
+>>> >
+>>> > Add a semicolon after the label to create an empty statement, which
+>>> > resolves the warning or error for all compilers.
+>>> >
+>>> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1953
+>>> > Fixes: 1e03d32bea8e ("net/tcp: Add TCP-AO sign to outgoing packets")
+>>> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>>> > ---
+>>> >  net/ipv4/tcp_output.c | 2 +-
+>>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>>> >
+>>> > diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+>>> > index f558c054cf6e..6064895daece 100644
+>>> > --- a/net/ipv4/tcp_output.c
+>>> > +++ b/net/ipv4/tcp_output.c
+>>> > @@ -658,7 +658,7 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
+>>> >  			memset(ptr, TCPOPT_NOP, sizeof(*ptr));
+>>> >  			ptr++;
+>>> >  		}
+>>> > -out_ao:
+>>> > +out_ao:;
+>>> >  #endif
+>>> >  	}
+>>> >  	if (unlikely(opts->mss)) {
+>>> >
+>>> > ---
+>>> > base-commit: 55c900477f5b3897d9038446f72a281cae0efd86
+>>> > change-id: 20231031-tcp-ao-fix-label-in-compound-statement-warning-ebd6c9978498
+>>> >
+>>> > Best regards,
+>>>
+>>> This gives me a
+>>>
+>>> linux/net/ipv4/tcp_output.c:663:2: error: expected statement
+>>>        }
+>>>
+>>> on GCC for me.
+>>
+>> What GCC version?
 >
-> > > > I could have sworn that I pointed that out in a previous version an=
-d
-> > > > requested to document that special case in the patch description. :=
-)
-> > >
-> > > Sounds, good we will document that parts of per-page may not be part
-> > > of MemTotal.
-> >
-> > But this still doesn't answer how we can use the new PageMetadata
-> > field to help break down the runtime kernel overhead within MemUsed
-> > (MemTotal - MemFree).
->
-> I am not sure it matters to the end users: they look at PageMetadata
-> with or without Page Owner, page_table_check, HugeTLB and it shows
-> exactly how much per-page overhead changed. Where the kernel allocated
-> that memory is not that important to the end user as long as that
-> memory became available to them.
->
-> In addition, it is still possible to estimate the actual memblock part
-> of Per-page metadata by looking at /proc/zoneinfo:
->
-> Memblock reserved per-page metadata: "present_pages - managed_pages"
+> 12.1, though I can't get a smaller reproducer so I'm going to roll back
+> to your change and double-check.  Might take a bit...
 
-This assumes that all reserved memblocks are per-page metadata. As I
-mentioned earlier, it is not a robust approach.
+Looks like there was just some bug in my test scripts and the original 
+patch wasn't actually picked up for all the configs.  It's working now, 
+so
 
-> If there is something big that we will allocate in that range, we
-> should probably also export it in some form.
->
-> If this field does not fit in /proc/meminfo due to not fully being
-> part of MemTotal, we could just keep it under nodeN/, as a separate
-> file, as suggested by Greg.
->
-> However, I think it is useful enough to have an easy system wide view
-> for Per-page metadata.
+Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
 
-It is fine to have this as a separate, informational sysfs file under
-nodeN/, outside of meminfo. I just don't think as in the current
-implementation (where PageMetadata is a mixture of buddy and memblock
-allocations), it can help with the use case that motivates this
-change, i.e. to improve the breakdown of the kernel overhead.
+Sorry for the confusion!
 
-> > > > > are allocated), so what would be the best way to export page meta=
-data
-> > > > > without redefining MemTotal? Keep the new field in /proc/meminfo =
-but
-> > > > > be ok that it is not part of MemTotal or do two counters? If we d=
-o two
-> > > > > counters, we will still need to keep one that is a buddy allocato=
-r in
-> > > > > /proc/meminfo and the other one somewhere outside?
-> > > >
-> >
-> > I think the simplest thing to do now is to only report the buddy
-> > allocations of per-page metadata in meminfo.  The meaning of the new
->
-> This will cause PageMetadata to be 0 on 99% of the systems, and
-> essentially become useless to the vast majority of users.
-
-I don't think it is a major issue. There are other fields (e.g. Zswap)
-in meminfo that remain 0 when the feature is not used.
+>> I cannot reproduce that error with my patch applied. I tested mainline
+>> at commit deefd5024f07 ("Merge tag 'vfio-v6.7-rc1' of
+>> https://github.com/awilliam/linux-vfio") using GCC 6 from kernel.org and
+>> I can reproduce a similar failure with ARCH=x86_64 allyesconfig:
+>>
+>>   net/ipv4/tcp_output.c: In function 'tcp_options_write':
+>>   net/ipv4/tcp_output.c:661:1: error: label at end of compound statement
+>>    out_ao:
+>>    ^~~~~~
+>>
+>> With this change applied, the error disappears for GCC 6 and GCC 13
+>> continues to build without error. I can try the other supported versions
+>> later, I just did an older and newer one for a quick test.
+>>
+>>> So I think something like
+>>>
+>>> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+>>> index f558c054cf6e..ca09763acaa8 100644
+>>> --- a/net/ipv4/tcp_output.c
+>>> +++ b/net/ipv4/tcp_output.c
+>>> @@ -659,6 +659,11 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
+>>> 			ptr++;
+>>> 		}
+>>> out_ao:
+>>> +	/*
+>>> +	 * Labels at the end of compound statements are a C23 feature, so
+>>> +	 * introduce a block to avoid a warning/error on strict toolchains.
+>>> +	 */
+>>> +	{}
+>>> #endif
+>>> 	}
+>>> 	if (unlikely(opts->mss)) {
+>>>
+>>> should do it (though it's still build testing...)
+>>
+>> I am not opposed to this once we understand what versions are affected
+>> by this so that we have some timeline of removing this workaround.
+>>
+>> Cheers,
+>> Nathan
