@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B497DFC57
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903ED7DFC5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377454AbjKBWZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S1377490AbjKBWZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 18:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbjKBWZG (ORCPT
+        with ESMTP id S234452AbjKBWZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:25:06 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8962B138;
-        Thu,  2 Nov 2023 15:24:59 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc330e8f58so11963785ad.3;
-        Thu, 02 Nov 2023 15:24:59 -0700 (PDT)
+        Thu, 2 Nov 2023 18:25:48 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C43191
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 15:25:41 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50949b7d7ffso1710754e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 15:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698963899; x=1699568699; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vavql0gOFP7X20anq8HgeOWwM7lJhURUerirAcwtVGo=;
-        b=YwADAbxmqXBvi0Wo5VZPwjvzTo+pdp4JYRplxlYOZvVyNTBL3vXP0XGdLq4zGY0Uht
-         qQLGsOkGEw6gDW2y9TehusI/tnIvAUw030DEfEZ7O33sAtb3ABctodrawihYddZWGUTz
-         fT8wbqhLWFycwBmUfgME3nrMgdq8uQ5CsW+kdHshe2Si6qidyIu4kiiouq1dy3yd67C1
-         BwlhFR/hAIsl+bNcON3FXwNTJ9vW0Bep3mPSYWBYUn7EqD458mBb2e8LJ7u1NO7jo747
-         dM+tBibNa8+HJcW51xBQR0CTJf3CEUEdn4imCpWDRB21GBIaSXZ/J+ojBF+Dyi/xBsZ+
-         7wEA==
+        d=linaro.org; s=google; t=1698963940; x=1699568740; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=54Wcim5fexlmc9mArCvndyoCrdtUDnHz0mDm1jI0dOs=;
+        b=DprgNULtrVXhddyAN6XzTpEO1fsbLbGVd+UmOPyBiE/ql5xUOo1DOmwFlX62Umo9A1
+         JLa3mCla+uSrsEjwMo6IiMnZCfwG//LzhqLvrXrL7DFMF6Qk5jrCcDwdJc71OYbZ25FP
+         8Pw4zh6YsWSw3y68/YEvNn17u9pykQlUK9CPAJHFsViaWPE3/qMsjXt2FrntXyxF1CLg
+         Cx3J+2pum2CK8rbWQkmSwfvxcAbHIra4GAaqmt/yeb7TarGLCTFc4CVLO+d5J5khFMBO
+         mZcoief24GbpHk79LhwDEs0PwsRZaAt5HRSuYD7n5Dt7jO4VDbusgEmgxpI/7KuLvboo
+         TYEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698963899; x=1699568699;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vavql0gOFP7X20anq8HgeOWwM7lJhURUerirAcwtVGo=;
-        b=ffiKe38bMy7cglcIdo+378EhLxe3WeEd+nATlgwVCUzignF/VErz9RfrymQ/L4ufOm
-         C2nhC9WDR3G0H9SGaAiXJYLHGYULg02iIXy0JZGTQrO536EkBuZtul6fmpgS0ScBzpYn
-         lzFlKlwkFcOsHUtrb/vhhGWaAthkAEOrxo7uw0KujegiEviiKiC7wJMJMaRl1jtabD6e
-         EHF4aulc/FpCs+uuN/8TWTFztF1ipQF+4BN7lOW5eowgEyJMDMJ1tgQl4ADAdOyEefrQ
-         Iq9lh8Ii4msZ9E/zXDspbBoE6X0Rn0a8pPuInZhM9QoNRJXJuLsvF+TzxFscugWamprd
-         Ojjg==
-X-Gm-Message-State: AOJu0YxEkBBCQsqq4ZvKVgjrGD0odNAo3CLfREeOxa60imujtP+Z9Zf9
-        lmopCtEzQziXAYQw1wYrbho=
-X-Google-Smtp-Source: AGHT+IFoMRruO2yiPqOkXbSx+uBINdCWa6XJIOyhpha02qPLV8SR+dUdejRCQDNQMB9PEdbgEbVeJw==
-X-Received: by 2002:a17:902:f687:b0:1cc:4a23:c5fc with SMTP id l7-20020a170902f68700b001cc4a23c5fcmr14195864plg.2.1698963898858;
-        Thu, 02 Nov 2023 15:24:58 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id t12-20020a1709028c8c00b001c444106bcasm191875plo.46.2023.11.02.15.24.57
+        d=1e100.net; s=20230601; t=1698963940; x=1699568740;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=54Wcim5fexlmc9mArCvndyoCrdtUDnHz0mDm1jI0dOs=;
+        b=VaCwrugdNB1qvpFBv2bOeTo80P0co9HHLlnCoIFiax8CGG7j6+x2X7j1Kt5DSrqOkr
+         8+C7PKSTFGDjDXmwHPrVKphAN6jmrzwUfvwKHa0VJ0EuKiQEPxabWzzoEc3IE1pp3zul
+         BgXq4ybnMlSo6PI5EuyqvLORKzUV9RFGRj79MGRBUNwqYNzKAg/Tc1cTC739cw9p22ZX
+         s4q4RtNWgxYnzfH4yFfeYK0sAT5g23oTfR8oWbrwKlf/HPI822SUpOQQyznvOdx4Z23h
+         w+RpFi2080hqcFYNcNOquIFJoOLM611xuSVWqK5JFmzDDshvJRXoPhlrS54G4D6tNny2
+         qYsA==
+X-Gm-Message-State: AOJu0YxN1kueYn5SeGgmoWgOnAbRJtf70l7DqgM55jv5DCLC3DubtdVp
+        L0D7Lj3N6O15lmrJ/DhMgEv34g==
+X-Google-Smtp-Source: AGHT+IHSGONoIXFIAX1bln/GiI+5YVcGA5y5RhNFo1k63KHMuS/vMRjTMbsTL6geTgdsLKzwXyHA5w==
+X-Received: by 2002:ac2:4555:0:b0:509:4a55:f189 with SMTP id j21-20020ac24555000000b005094a55f189mr2343918lfm.11.1698963939548;
+        Thu, 02 Nov 2023 15:25:39 -0700 (PDT)
+Received: from [192.168.1.118] (abyj199.neoplus.adsl.tpnet.pl. [83.9.29.199])
+        by smtp.gmail.com with ESMTPSA id y93-20020a50bb66000000b0053e6e40cc1asm218128ede.86.2023.11.02.15.25.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 15:24:58 -0700 (PDT)
-Message-ID: <05fbf600-027c-45b6-8f09-a3c03dde025c@gmail.com>
-Date:   Thu, 2 Nov 2023 15:24:56 -0700
+        Thu, 02 Nov 2023 15:25:39 -0700 (PDT)
+Message-ID: <21dea74b-b802-2e69-af4b-07dfb68b7024@linaro.org>
+Date:   Thu, 2 Nov 2023 23:25:36 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] net: dsa: tag_rtl4_a: Bump min packet size
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231031-fix-rtl8366rb-v3-1-04dfc4e7d90e@linaro.org>
- <CACRpkdYiZHXMK1jmG2Ht5kU3bfi_Cor6jvKKRLKOX0KWX3AW9Q@mail.gmail.com>
- <ff7e60bf-13c9-44fe-b9e0-0f1ef4904745@gmail.com>
- <CACRpkdY2UiFyTvF=zuk-rSZBi+yH6cP-QRkegMgc3wf=9JD_Wg@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <CACRpkdY2UiFyTvF=zuk-rSZBi+yH6cP-QRkegMgc3wf=9JD_Wg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.0
+Subject: Re: [PATCH v1 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, robh+dt@kernel.org, quic_shazhuss@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nayiluri@quicinc.com, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijjose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+References: <1698767186-5046-1-git-send-email-quic_msarkar@quicinc.com>
+ <1698767186-5046-2-git-send-email-quic_msarkar@quicinc.com>
+ <CAA8EJpoMoUvF8R3PjgCNijS6-8Gs5FjvC6dYerNBVBuYW3FmPA@mail.gmail.com>
+ <20231102163619.GA20943@thinkpad>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231102163619.GA20943@thinkpad>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/23 15:09, Linus Walleij wrote:
-> On Thu, Nov 2, 2023 at 7:43 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> 
->> Looking at drivers/net/ethernet/cortina/gemini.c, should not we account
->> for when the MAC is used as a conduit and include the right amount of
->> "MTU" bytes? Something like this (compile tested only):
-> 
-> The DSA core already fixes this by adding the tag size to the MTU
-> of the conduit interface, so netdev->mtu is already 1504 for this
-> switch.
-> 
-> I found other oddities though so I'm digging into the driver!
 
-Yes indeed, I forgot about that, never mind :)
--- 
-Florian
 
+On 02/11/2023 17:36, Manivannan Sadhasivam wrote:
+> On Thu, Nov 02, 2023 at 05:34:24PM +0200, Dmitry Baryshkov wrote:
+>> On Tue, 31 Oct 2023 at 17:46, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+>>>
+>>> This change will enable cache snooping logic to support
+>>> cache coherency for SA8755P RC platform.
+>>>
+>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+>>> ---
+>>>   drivers/pci/controller/dwc/pcie-qcom.c | 11 +++++++++++
+>>>   1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+>>> index 6902e97..6f240fc 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>>> @@ -51,6 +51,7 @@
+>>>   #define PARF_SID_OFFSET                                0x234
+>>>   #define PARF_BDF_TRANSLATE_CFG                 0x24c
+>>>   #define PARF_SLV_ADDR_SPACE_SIZE               0x358
+>>> +#define PCIE_PARF_NO_SNOOP_OVERIDE             0x3d4
+>>>   #define PARF_DEVICE_TYPE                       0x1000
+>>>   #define PARF_BDF_TO_SID_TABLE_N                        0x2000
+>>>
+>>> @@ -117,6 +118,9 @@
+>>>   /* PARF_LTSSM register fields */
+>>>   #define LTSSM_EN                               BIT(8)
+>>>
+>>> +/* PARF_NO_SNOOP_OVERIDE register value */
+>>> +#define NO_SNOOP_OVERIDE_EN                    0xa
+>>> +
+>>>   /* PARF_DEVICE_TYPE register fields */
+>>>   #define DEVICE_TYPE_RC                         0x4
+>>>
+>>> @@ -961,6 +965,13 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+>>>
+>>>   static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>>>   {
+>>> +       struct dw_pcie *pci = pcie->pci;
+>>> +       struct device *dev = pci->dev;
+>>> +
+>>> +       /* Enable cache snooping for SA8775P */
+>>> +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sa8775p"))
+>>
+>> Obviously: please populate a flag in the data structures instead of
+>> doing of_device_is_compatible(). Same applies to the patch 2.
+>>
+> 
+> Not necessary at this point. For some unknown reasons, the HW team ended up
+> disabling cache snooping on this specific platform. Whereas on other platforms,
+> it is enabled by default. So I have low expectations that we would need this
+> setting on other platforms in the future.
+> 
+> My concern with the usage of flag is that it warrants a new "qcom_pcie_cfg"
+> instance just for this quirk and it looks overkill to me.
+> 
+> So if we endup seeing this behavior on other platforms as well (unlikely) then
+> we can switch to the flag approach.
+This register reads zeroes on 8250, can we confirm it works as
+expected there? I guess some benchmarks with and without
+'dma-coherent'?
+
+Konrad
