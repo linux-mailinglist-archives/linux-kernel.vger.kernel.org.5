@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211AD7DFA8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51307DFA82
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377378AbjKBTA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S1377440AbjKBTBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377371AbjKBTAq (ORCPT
+        with ESMTP id S1377369AbjKBTAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:00:46 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6D0186
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:00:43 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6b496e1e53bso1292285b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:00:43 -0700 (PDT)
+        Thu, 2 Nov 2023 15:00:55 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D321A6
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:00:46 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b0c27d504fso10412047b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698951643; x=1699556443; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698951645; x=1699556445; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uYgheZZZGyuHcjURmTvIQL5X5iZFtwQKbwUqnNega9g=;
-        b=qjFYM9lcZ1qV12u5xPsrPKSU2T5hJFoA6EY2FDCP3M7W5KkfbfbUbY87KNei4L9edy
-         yhkSkckjbzi7Y0wKT3VWPo9+nvZy1Up6kPGli/JVBANGdzbG9WxLluqRjjwp2g0CXyRm
-         P0JgcXkBMCrqChHIRBmpmgvUD7oWOfDPWrZANKswL69EQ95st4AtEJSxwwEmJnKI8oYV
-         SHvqDqSqseqjEmR/EfDHpit4xXJlIznRGuXMqIJlHpl7ker6mBPtiK9wM+7b6QIEPVxG
-         YacqYZSd7sFgsPcW9uhtAFvmnkM2o3v+CTLsvATG9ayuM1vjjfSeP34cOseFNrK0N2+J
-         /Cfg==
+        bh=bo8i4YOQ1Wx4e8B0eeo6gXTR86rAjm5MF1i8+KtSUbY=;
+        b=NBsHm0DT/xAS/gzD1DuvEGeIVckyF2g6VKnZeW5jnRwv0V30FUEo9H8JprUxchYwOC
+         cGyUQr9/+JOsHjm9MZsLfiF9HrJxlNG3pfuFowrpNtiq0p0OO8Ob3TpqNOdlngcm+mqw
+         zvNdLzPUbf+JWZ7T/bFmZQDuYJBbJgjAiGiXdEHsfILDEIa49aELRaAQi5g6Ft+O1h6U
+         KiQYPk9V2LAjEGmJDZgeN3j493XEV3KKJMrufYGpPoWzEL/aqVnPTX2Kf6whmxBA5qEc
+         JJUNeAMqpgV0fLSWlOGLorQ3AvxZjJjvIHnOLxCUNMNti+qwcyLJmSkvtjnzoMbR7gFx
+         fFrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951643; x=1699556443;
+        d=1e100.net; s=20230601; t=1698951645; x=1699556445;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uYgheZZZGyuHcjURmTvIQL5X5iZFtwQKbwUqnNega9g=;
-        b=IcJTwO7m97dzNuyl/B8Q6lQ+rMV+zgdmMzXrm0TkonVKLJBtL7h+Zr/fFnrK/xmnv8
-         sf15blUV3Bf+FKQc6XskXZCWlTX9mEGo6wooqwFT5avhsskYvq7f4s+0CSs5oQbPMMMp
-         /oKwSwuduhlOq/MlyCbQYbGOrWdnd+/Q1HqfnnUIzlf7MEbRyEtltVt2Xc/PG1PnW642
-         qgIYVYTW7SHkETgBDB8sOphTb9TWHy6i4gEdrzZSttoW4bKv+uFcIKy57P0Nh/6Rf/w1
-         W8dBqb6gKsNHLY+l6nUueu2oyVetPsVkT9zYowgwKC6x7fWyfvVXiITedkZP0P0b2OAk
-         BbTQ==
-X-Gm-Message-State: AOJu0YxrQqOdv+/qHvNbPMFv6T3CPDyTyEOeysxlKk5rjLwbYtDT+TrS
-        dweR/wYxVTLetf7TH+5lfhNQJGS1na11TA==
-X-Google-Smtp-Source: AGHT+IHFdUnaf4X55UtQE96nGIb0AAUJJMcgopess+VGd3j5Ge2chQMYt1y1X77wi6cr6e5hI0mIdLuoOrRPQA==
+        bh=bo8i4YOQ1Wx4e8B0eeo6gXTR86rAjm5MF1i8+KtSUbY=;
+        b=rvb4DokKuOhpVGVnniMWo0FZ8XzrXiHrLI4j+WUduLAAeeNtkCFFbaSn4y9Is1wOVm
+         L0Jqnfiop5BvlZJbaTMs0gSYB82Yspi+xGwqGIVTj9bXU008UNjXLIQ+J2XTvAFyeaFv
+         H5UbSH+OuwzUfDyWYlMTVolwlnBeDYyUxeDCANzKeFu13YY2GR5THtv8cg5HZU9DqbmH
+         PypvTYwtK4tifkkNe6YPEwdGa4dv0RizoFDxsrxWGBOnWLqcbA4uyDE7orvXo4xFY0iY
+         wv/TOFayquQgV3YkA0udA2I9OoMU3EKw4NSpyNEGHdDfoH+9H4pX4AXX2kQOxa7qCuOg
+         yGpg==
+X-Gm-Message-State: AOJu0Yz/JG2gdAXNuf+Fq5uexxpXPd8aRA2pEhjap2d3vnl/q3fpLVjB
+        MP1Kl1MSMyz3GCJbefXPxcFEaPVbka9JVw==
+X-Google-Smtp-Source: AGHT+IEwEiDccqPZUOwa1kj1GeP3gwcWvJ8tMlyGIN/Wcyt6KCo+6OJhNrlCDQ1V2W+H4tBrDz6vdRMtHmD7hw==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a05:6a00:80d2:b0:68f:f868:a4fb with SMTP
- id ei18-20020a056a0080d200b0068ff868a4fbmr454834pfb.5.1698951642845; Thu, 02
- Nov 2023 12:00:42 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 18:59:07 +0000
+ (user=cmllamas job=sendgmr) by 2002:a81:84ce:0:b0:5a7:b4d5:5f27 with SMTP id
+ u197-20020a8184ce000000b005a7b4d55f27mr10784ywf.5.1698951645354; Thu, 02 Nov
+ 2023 12:00:45 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 18:59:08 +0000
 In-Reply-To: <20231102185934.773885-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231102185934.773885-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231102185934.773885-7-cmllamas@google.com>
-Subject: [PATCH 06/21] binder: fix comment on binder_alloc_new_buf() return value
+Message-ID: <20231102185934.773885-8-cmllamas@google.com>
+Subject: [PATCH 07/21] binder: remove extern from function prototypes
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -62,45 +62,80 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christian Brauner <brauner@kernel.org>,
         Carlos Llamas <cmllamas@google.com>,
         Suren Baghdasaryan <surenb@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the comments of binder_alloc_new_buf() to reflect that the return
-value of the function is now ERR_PTR(-errno) on failure.
+The kernel coding style does not require 'extern' in function prototypes
+in .h files, so remove them from drivers/android/binder_alloc.h as they
+are not needed.
 
 No functional changes in this patch.
 
-Cc: stable@vger.kernel.org
-Fixes: 57ada2fb2250 ("binder: add log information for binder transaction failures")
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/android/binder_alloc.h | 38 +++++++++++++++++-----------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index cd720bb5c9ce..0e8312f4b771 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -558,7 +558,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
-  * is the sum of the three given sizes (each rounded up to
-  * pointer-sized boundary)
-  *
-- * Return:	The allocated buffer or %NULL if error
-+ * Return:	The allocated buffer or %ERR_PTR(-errno) if error
-  */
- struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
- 					   size_t data_size,
+diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
+index dc1e2b01dd64..82380febdd85 100644
+--- a/drivers/android/binder_alloc.h
++++ b/drivers/android/binder_alloc.h
+@@ -121,27 +121,27 @@ static inline void binder_selftest_alloc(struct binder_alloc *alloc) {}
+ enum lru_status binder_alloc_free_page(struct list_head *item,
+ 				       struct list_lru_one *lru,
+ 				       spinlock_t *lock, void *cb_arg);
+-extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+-						  size_t data_size,
+-						  size_t offsets_size,
+-						  size_t extra_buffers_size,
+-						  int is_async,
+-						  int pid);
+-extern void binder_alloc_init(struct binder_alloc *alloc);
+-extern int binder_alloc_shrinker_init(void);
+-extern void binder_alloc_shrinker_exit(void);
+-extern void binder_alloc_vma_close(struct binder_alloc *alloc);
+-extern struct binder_buffer *
++struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
++					   size_t data_size,
++					   size_t offsets_size,
++					   size_t extra_buffers_size,
++					   int is_async,
++					   int pid);
++void binder_alloc_init(struct binder_alloc *alloc);
++int binder_alloc_shrinker_init(void);
++void binder_alloc_shrinker_exit(void);
++void binder_alloc_vma_close(struct binder_alloc *alloc);
++struct binder_buffer *
+ binder_alloc_prepare_to_free(struct binder_alloc *alloc,
+ 			     uintptr_t user_ptr);
+-extern void binder_alloc_free_buf(struct binder_alloc *alloc,
+-				  struct binder_buffer *buffer);
+-extern int binder_alloc_mmap_handler(struct binder_alloc *alloc,
+-				     struct vm_area_struct *vma);
+-extern void binder_alloc_deferred_release(struct binder_alloc *alloc);
+-extern int binder_alloc_get_allocated_count(struct binder_alloc *alloc);
+-extern void binder_alloc_print_allocated(struct seq_file *m,
+-					 struct binder_alloc *alloc);
++void binder_alloc_free_buf(struct binder_alloc *alloc,
++			   struct binder_buffer *buffer);
++int binder_alloc_mmap_handler(struct binder_alloc *alloc,
++			      struct vm_area_struct *vma);
++void binder_alloc_deferred_release(struct binder_alloc *alloc);
++int binder_alloc_get_allocated_count(struct binder_alloc *alloc);
++void binder_alloc_print_allocated(struct seq_file *m,
++				  struct binder_alloc *alloc);
+ void binder_alloc_print_pages(struct seq_file *m,
+ 			      struct binder_alloc *alloc);
+ 
 -- 
 2.42.0.869.gea05f2083d-goog
 
