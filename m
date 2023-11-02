@@ -2,114 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A284D7DFC86
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4911D7DFC84
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377533AbjKBWml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
+        id S234733AbjKBWm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 18:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377532AbjKBWmj (ORCPT
+        with ESMTP id S229675AbjKBWm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:42:39 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE17DC
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 15:42:36 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso2001006e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 15:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698964954; x=1699569754; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tLk43lN0/decQge2BDqiqpNvO2C3WW2dXE9OlxquTBg=;
-        b=F7+YAVHl84fP2hJQ9ALQWGTiPYRUl7h3MT8vtSVEck25vf5ieotbtu3QEpS/G2Pzyt
-         0vjn8KMnUrAcrZO5/YBMSu/w7Z7crYiQnLYj80z/AgdZ7s4XnETaRKB97Gvg8/wG7al4
-         22gPNK39tkpAx0KhsPZqlPEc37FKPVcsPbV4twVW4Vy4mSyo9/6lHwEXg8rXVNzjkPZ7
-         UdlStXPwfgnBKJyC2wQ0RgLrE4zVuOmx8l3oQRwmgsxbp2dROGafBtzeduh71LkpgO9y
-         USPqXXiKQ4QmKxHb3GkKwAxHhkMZ5IAuGum7M7xnliAyeobB8MZEmt/4NXSXHzgwCBvT
-         RLFA==
+        Thu, 2 Nov 2023 18:42:26 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AEB133
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 15:42:19 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1dd886536f2so1958001fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 15:42:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698964954; x=1699569754;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tLk43lN0/decQge2BDqiqpNvO2C3WW2dXE9OlxquTBg=;
-        b=Y4v/j/w/szFz+9LzN+aZpLKOqxEclWCQryUDCZyuZbJ3ReyHVPfNXDgPkQd49i/fxe
-         651yXmzWTIGmNzEQdSbzyif/QHLHYtyr2IQm7Ke6b4tsevBwqgjt0PPMZq0Ci9yzmx7j
-         y3MCf+Unm2mXOLti6vohMseCHQmmNNYJal+c1iX99HgSBFEFEKXOzRrUPDeLxlA5FjH7
-         bd5Eqd25PELPyM3u4c2HiQamjYAF8Y9Ydfm2dpPPn+mLT7HtzSdNG+5cd4Q6S3tK5qI2
-         ogWfj06ydKA74b5nn9HZskdgKL2xIEt/XdovBmjW3+ZBXoAk6uT5gJ+lpiqzBk1qJA6w
-         b4HA==
-X-Gm-Message-State: AOJu0Yz5NfluE8pa+ySAoS7g/n8DypCgrxOm5pN3WI1fvYQQC4RnReIx
-        Ov+/jkZR1/W/Xi73kj571RXV6ILK69lNPFC+Q5xZxA==
-X-Google-Smtp-Source: AGHT+IFzQD/VoMKgUQZ1/ELVgYegKEHGfIHsT6o8UwNGVxE+fI/gR7xwT4rAgd7EQ8711sNoWsVmNHBhhi5Rc1TmdJM=
-X-Received: by 2002:a05:6512:69:b0:502:d743:9fc4 with SMTP id
- i9-20020a056512006900b00502d7439fc4mr14246766lfo.37.1698964954318; Thu, 02
- Nov 2023 15:42:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698964938; x=1699569738;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aUE0m0u3bkGN6Ok4lWPaHRKmZgqc8pe3r019AW+ZRzY=;
+        b=CHFUCqi+1N46ieOtZoCI/5OXD8fRAxseBD1OpS3b8DDtyr27V2uJw9n+bnq2CX10bV
+         h1Rd1Vj7O8shgAQ/0DmJzmq2ShDugFbf61WZZxBBcMkt2H1hdNU6n/1kkZAoQDCmFB9/
+         pjnG0rZ0TcFnr/1E7cVRKNMxSPf7SzN/n0iS5/5wke+FM4X/jWew88ykeOzm+YnzdbDb
+         bHWxiOrBkhViQcbo0HtHKvv99BlFPJ8HVTQRZS0F8fBn5pzdxcLDr2eBQ0vEv2lSeJZm
+         QoYCu0/1IbIgn+lg+r8Su8gKGAhJsgTrccAsqhtyCUsTgyE15YKpMrv0TzCW41+xadRd
+         +SrA==
+X-Gm-Message-State: AOJu0YzxUjR28XcAArvdXTThQR+Z8/PHmMN90E+0V2O3Z93g4jcOL+DT
+        AfXRbsXKNpUHuv8bCuQRjYcHPVYMuFR33SQDo2Fai9Nfklkp
+X-Google-Smtp-Source: AGHT+IGzT5zON+jrJVcbnN9E1PNHAPOemJPbLxQPnBf31p6Z2lUsOELno+kcBu7qRmjZPlgaHjl1FoegxKdPfXdMCaOacmGNDLhr
 MIME-Version: 1.0
-References: <20230915184904.1976183-1-evan@rivosinc.com>
-In-Reply-To: <20230915184904.1976183-1-evan@rivosinc.com>
-From:   Evan Green <evan@rivosinc.com>
-Date:   Thu, 2 Nov 2023 15:41:58 -0700
-Message-ID: <CALs-Hsu_1x2FpjWXbmioSi6x30NXdNgrQ=t=EBknB0O06DA12A@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
-To:     Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+X-Received: by 2002:a05:6870:c796:b0:1f0:36b6:ef37 with SMTP id
+ dy22-20020a056870c79600b001f036b6ef37mr1940783oab.4.1698964938570; Thu, 02
+ Nov 2023 15:42:18 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 15:42:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a6429e0609331930@google.com>
+Subject: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
+From:   syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 11:49=E2=80=AFAM Evan Green <evan@rivosinc.com> wro=
-te:
->
-> Probing for misaligned access speed takes about 0.06 seconds. On a
-> system with 64 cores, doing this in smp_callin() means it's done
-> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
->
-> Instead of measuring each CPU serially, let's do the measurements on
-> all CPUs in parallel. If we disable preemption on all CPUs, the
-> jiffies stop ticking, so we can do this in stages of 1) everybody
-> except core 0, then 2) core 0.
->
-> The measurement call in smp_callin() stays around, but is now
-> conditionalized to only run if a new CPU shows up after the round of
-> in-parallel measurements has run. The goal is to have the measurement
-> call not run during boot or suspend/resume, but only on a hotplug
-> addition.
->
-> Signed-off-by: Evan Green <evan@rivosinc.com>
+Hello,
 
-Shoot, I saw the other thread [1] where it seems like my use of
-alloc_pages() in this context is improper? I had thought I was
-alright, as Documentation/core-api/memory-allocation.rst says:
+syzbot found the following issue on:
 
- > If the allocation is performed from an atomic context, e.g interrupt
- > handler, use ``GFP_NOWAIT``.
+HEAD commit:    4652b8e4f3ff Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=148ee8cf680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d855e3560c4c99c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=e0b615318f8fcfc01ceb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Any tips for reproducing that splat? I have CONFIG_DEBUG_ATOMIC_SLEEP
-on (it's in the defconfig), and lockdep, and I'm on Conor's
-linux-6.6.y-rt, but so far I'm not seeing it.
+Unfortunately, I don't have any reproducer for this issue yet.
 
--Evan
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/162622d42235/disk-4652b8e4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/62d46f58ffc9/vmlinux-4652b8e4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d1062e5866ab/bzImage-4652b8e4.xz
 
-[1] https://lore.kernel.org/linux-riscv/ZUPWc7sY47l34lV+@xhacker/T/#t
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
+Read of size 8 at addr ffff888028fe7cb0 by task kworker/u4:5/741
+
+CPU: 0 PID: 741 Comm: kworker/u4:5 Not tainted 6.6.0-syzkaller-10396-g4652b8e4f3ff #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Workqueue: btrfs-qgroup-rescan btrfs_work_helper
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
+ __list_del_entry_valid include/linux/list.h:124 [inline]
+ __list_del_entry include/linux/list.h:215 [inline]
+ list_del_init include/linux/list.h:287 [inline]
+ qgroup_iterator_nested_clean fs/btrfs/qgroup.c:2623 [inline]
+ btrfs_qgroup_account_extent+0x18b/0x1150 fs/btrfs/qgroup.c:2883
+ qgroup_rescan_leaf fs/btrfs/qgroup.c:3543 [inline]
+ btrfs_qgroup_rescan_worker+0x1078/0x1c60 fs/btrfs/qgroup.c:3604
+ btrfs_work_helper+0x37c/0xbd0 fs/btrfs/async-thread.c:315
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
+ worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+Allocated by task 15683:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ btrfs_quota_enable+0xee9/0x2060 fs/btrfs/qgroup.c:1209
+ btrfs_ioctl_quota_ctl+0x143/0x190 fs/btrfs/ioctl.c:3705
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Freed by task 15683:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
+ btrfs_remove_qgroup+0x764/0x8c0 fs/btrfs/qgroup.c:1787
+ btrfs_ioctl_qgroup_create+0x185/0x1e0 fs/btrfs/ioctl.c:3811
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ __call_rcu_common kernel/rcu/tree.c:2667 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
+ kthread_worker_fn+0x4ba/0xa90 kernel/kthread.c:823
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ insert_work+0x3e/0x320 kernel/workqueue.c:1647
+ __queue_work+0xd00/0x1010 kernel/workqueue.c:1803
+ call_timer_fn+0x17a/0x5e0 kernel/time/timer.c:1700
+ expire_timers kernel/time/timer.c:1746 [inline]
+ __run_timers+0x67a/0x860 kernel/time/timer.c:2022
+ run_timer_softirq+0x67/0xf0 kernel/time/timer.c:2035
+ __do_softirq+0x2bf/0x93a kernel/softirq.c:553
+
+The buggy address belongs to the object at ffff888028fe7c00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 176 bytes inside of
+ freed 512-byte region [ffff888028fe7c00, ffff888028fe7e00)
+
+The buggy address belongs to the physical page:
+page:ffffea0000a3f900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x28fe4
+head:ffffea0000a3f900 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c41c80 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 3643, tgid 3643 (kworker/u4:10), ts 20275525292, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x19d/0x270 mm/slub.c:3517
+ kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ alloc_bprm+0x56/0x900 fs/exec.c:1514
+ kernel_execve+0x96/0xa10 fs/exec.c:1989
+ call_usermodehelper_exec_async+0x233/0x370 kernel/umh.c:110
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888028fe7b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888028fe7c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888028fe7c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff888028fe7d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888028fe7d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
