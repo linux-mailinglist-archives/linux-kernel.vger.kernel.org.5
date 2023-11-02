@@ -2,124 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 715137DEB9C
+	by mail.lfdr.de (Postfix) with ESMTP id C5FC37DEB9D
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348419AbjKBEDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
+        id S1346757AbjKBEER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348398AbjKBEDl (ORCPT
+        with ESMTP id S1348393AbjKBEEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:03:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B58131;
-        Wed,  1 Nov 2023 21:03:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13E5C433C7;
-        Thu,  2 Nov 2023 04:03:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698897815;
-        bh=z1CJVAu9bc078uGAGfkWMIJJMJkesFaxTcqS0804NqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HrkO3QQiEApYXLUZUDNMyQcaUcE9RB6RWC/n1riSwundUKbH73zf5u8Kc4P41ntFo
-         Jf6rQ/FT8nilsemPzXXxlfBgqcjSxf9uikItJ/61C/vUcNigHM+bAZVH5xzQ1Sb2Qn
-         bIrJQfS7+OW0ULduVofgmVHbtXtfOXeBCZR1kNvmuNGsXYw470TXixzzGxRBrUOJFq
-         GPEeKzGe8Hkmac7xNUxGK1IHinHBV8uJyKYF63Tsgii0QwwKR5IpaqrDV8J5do5cli
-         rfxnQw3fdupMIFcTku+txaWjCuXQMdSEsbhJZqnH8pWyzVM93hj1TCUXsf44/JdNxJ
-         qN8Bjq0tU0W8Q==
-Date:   Wed, 1 Nov 2023 21:03:33 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jerry Shih <jerry.shih@sifive.com>
-Cc:     Charlie Jenkins <charlie@rivosinc.com>,
-        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        christoph.muellner@vrull.eu,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>
-Subject: Re: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
-Message-ID: <20231102040333.GC1498@sol.localdomain>
-References: <20230711153743.1970625-1-heiko@sntech.de>
- <20230914001144.GA924@sol.localdomain>
- <ZQJdnCwf99Glggin@ghost>
- <3A0F6A71-C521-44A5-A56C-076AF3E13897@gmail.com>
- <DD3113B1-AB9F-4D6D-BD6E-8F75A83DA45D@sifive.com>
- <20231006194741.GA68531@google.com>
- <AB98E114-A8DE-492E-B078-7394EE4FA83E@sifive.com>
+        Thu, 2 Nov 2023 00:04:13 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BED187;
+        Wed,  1 Nov 2023 21:03:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yj2o1f+uLCjl9ph8PZUjmabjoTT8gHmodZoOJM1RHGmU3TsRg9HQW7gHWGmVmskUYsHXwLN9QeCXdxKbB1pE/x0s6xfBOeRHueouVM57F4mRFWTgJ8WmyS9PN6YHdPeplMmDGV3YhiX0vghs29aTuvPnrlFiZFYnq3kIBpG2qhWgsI5FUqhS82FgGIfvd2ABRkXb9Z2zMc+2meWUfRJPDiv1kQZamIbWud1TpC1KhNyLbxJvzsvmzeuGg6FGaamh5uOete0wIil9wD2sCoUvxwIqW0w0E3uwEA0wgMgXmYIFM6jzab1psJt3+3vg1XQulK1aVOEalhR9q/K6j4ABbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g/JFLHYdc4VTMc8d71TEizYAARPKPZGYGo6DDT0AViM=;
+ b=C4Z2TiJpd6Ccgy5jZ08szjZ5timbIJnmdKUcOPMxR3U4gJKjciMFg1IHOKW25HA5Aw42yfGXBVTooxnEKd07ZKivxUn1k6Ze02EXKPyjox/g3lyV8KjY3N+Hz+qJ0yw2SLFqBoqS0ucqZdfKBRVTzRF1K947Ll5KZfzXibao9VqTP/7Olm7xeyN4uzIh17x6B3Hfc1+iU0FTyA9oBK0UQIwtYVghhfOthNRFRtx/+Qxio2eLP2wiTvK/HCnCrQzkU8p928tVaVCw+TJjXO5zFhJk5rWLovIL+wB53Du5h8BSVdyQr3xN1wtAl02Ojfk4VLY065YKs/KdWCGfckPEsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g/JFLHYdc4VTMc8d71TEizYAARPKPZGYGo6DDT0AViM=;
+ b=e8pXpnOQsXiw3AuUWyS0B1n+kfa3l71RN/Jl04rIlJozyAvxD9zE6wpWpwMuVJ4PMsTRK1DgUlNEKT8ucZfd0Ymsj04ZaiDYnIPpAVZ0GEtALwqAghObRUs/HUwltuj1P2mEvhRz58a8Os5GqD+OMEH+ZJ7NpLdsTKMzkpel+0Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
+ CH2PR12MB5514.namprd12.prod.outlook.com (2603:10b6:610:62::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.19; Thu, 2 Nov 2023 04:03:54 +0000
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::93cc:c27:4af6:b78c]) by DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::93cc:c27:4af6:b78c%2]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 04:03:54 +0000
+Message-ID: <5b005b81-792a-4338-8085-e064c273f887@amd.com>
+Date:   Thu, 2 Nov 2023 09:33:44 +0530
+User-Agent: Mozilla Thunderbird
+Reply-To: nikunj@amd.com
+Subject: Re: [PATCH v5 05/14] virt: sev-guest: Add vmpck_id to snp_guest_dev
+ struct
+Content-Language: en-US
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
+        pbonzini@redhat.com
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-6-nikunj@amd.com>
+ <CAAH4kHY_sM0DTL+EVz3GNDq1q_5S4FH1Ku9EMV0HOzFAY1s4QQ@mail.gmail.com>
+ <57b904e1-9a17-9203-e275-4b5a31ca8a71@amd.com>
+From:   "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <57b904e1-9a17-9203-e275-4b5a31ca8a71@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0082.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9a::17) To DS7PR12MB6309.namprd12.prod.outlook.com
+ (2603:10b6:8:96::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AB98E114-A8DE-492E-B078-7394EE4FA83E@sifive.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|CH2PR12MB5514:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc6a22aa-9f55-445e-e22a-08dbdb58baf7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QWWycnkiBQgvC88kHqaMV6Lt35muatJ9HKnpnJ9L5Efxc7yXtgqz5sU72Gcwu1Q4PztlCOIyA1gW8Ui2vkhzJd2+Rd7YH6Lx63ni7j/Or25lRaUftRMpqxpGgTryCzoTYiQ2T9nqJnZ5f1oxbpgOlkTlPTq7g/mZD1KvKSqYo7QpGTUvhzRuVd3L9KExBsNztxMoBrnDPAGE+NoP4UMjPwjWh1Tja1KgQExgofrXuxsPZWvH6TlyfO3XPaJUrn5ppLO9NgNRaadnOymEq5mexKMSIgF/M8j+8pwKi5YVmxTCGW6vSw/+PMNfSnAiQetMFvdyJrFfQHIF6+ulKLweJFxDJHr4VW/RQjdiTmZkb9wdgyt2Bd9wtgGJ9LqE1t0Z8E/mZqP4CJNb0rq0dMkl0HvPIITTgejqFe8nYtwb5cfeTVRnUKlJ/kv5riG1TrDHhTpJKEWANKzj9Ni3YZXgfqwIJJ8ZGU5jlBMy/tHWaxURuDzOevzauI1yK3K+c/Y90cJFFx/UpXP9LRuzLWvNADZtjZ60Xe54igkqHSYiqm7ZHMbI6F19yAYFLVonz7LnNbQnJfNHPfxQVPr8WY23qSy5Pmz79sFT5bd58C+PR0KGBKDhGTsz1zanf3qgYp/15NyZX9dt1HLI7ySFx3PaYg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(6506007)(31686004)(8676002)(2906002)(8936002)(4326008)(4744005)(3450700001)(6666004)(478600001)(41300700001)(6486002)(66476007)(66556008)(110136005)(7416002)(66946007)(316002)(5660300002)(53546011)(2616005)(26005)(83380400001)(6512007)(31696002)(36756003)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eGpHbmd2a2YreGdYalhYRmNmd2hESERxRVlCMkg2MGc1aE44MFAvV2FqNSt1?=
+ =?utf-8?B?QmJIK0lZN1M4Ymhqd0xwSFJlRC9lbkVTb1lnU3ZvT3llVkRQNEhhWmFGbFZ3?=
+ =?utf-8?B?R3pjNlMzamd3UGk2QnhuRFBFeEdHVUsySnBrTzlMTjFrRGl3TzdnTGhobFhY?=
+ =?utf-8?B?aTBvNEk0UkE5NGJzRlo3a0xNRmtJM25NZVZyVmNqK1loaWF3Z2lOUmY5MitN?=
+ =?utf-8?B?dEgrekgvaEhhZ2dIcG1OMjlSdU0wNmd6elpkQldxRU5DcjM0MFBjYTVyV05o?=
+ =?utf-8?B?bnFHNzBXR0RpWjBrbTErUk9lM0kxZHJqZ3BtdU5zc1J4SUoxYjFTM3A4SHNw?=
+ =?utf-8?B?TU5ZelJ0aC95YlhzUHRYZTM4K0o0TU1CVkg1L3g4V2hxejcwcmlrTUJrY3A0?=
+ =?utf-8?B?TEtDUjVsN09YeHNCYzlFeTNoSDNkNnM3YnpwaVlwK2V0SHladkdIWDlBeGVT?=
+ =?utf-8?B?V2wrT25SeURvYjNWaUhRWXBsTzBpbUh4QmRERk9XRklXeThBMkhIVUh6ZDFk?=
+ =?utf-8?B?TTAvanpsd1daTXVsQ2tPL1RPaDZjeGkxM1dLcDJaSDY0bnJpTDVST2V3ckFM?=
+ =?utf-8?B?UkxBb0NYejY5cmw3OE1XdjJFNE82ek5MWGNoaTJUcSt0WVhUbG1CdERGQVBw?=
+ =?utf-8?B?aTNZSlhubkd1NSt3SHFGblRiRW9weGg2QTNrNm5sdFhvMDljSGlhdnBtOU0r?=
+ =?utf-8?B?QTJZVTZjVjZ1Y25HWWNqc1BwRW1sNjE0dGlJdkVTcTQ4NC9UbXNFVkhDRzhO?=
+ =?utf-8?B?VDZETGw0RXV5RSthWk9oT0dMcnZsTzlQQ2JGQkVLbzRjTkl5NG5SVk8rOER1?=
+ =?utf-8?B?ckJBTEw5UkcwbUtQSlFYcHFTRGNQbkpTbEtmVEhtOWp3UTJLTFArSFk0RjRx?=
+ =?utf-8?B?QmgvSW91S3NBZk1SUFM0ZXdGdDh5MVIyZkZxVm1Ja3haZk02c0xXYU1rSEVq?=
+ =?utf-8?B?SFV4R3NBdjV5QWNuTllpbGRua2xvRGUxMEcwUnpkZkZLTTZMbTNTT0dpNmU1?=
+ =?utf-8?B?Ni8rU1pvMC9aQjkxWTB4eDRqSnZjQmVFTlVXc1FKVlBjQWVIYm5hUDF0Z0dG?=
+ =?utf-8?B?NDBMZU5mRWRmWjRuZjFvejJWcWRaVFVWTnlLS2VtUTJ0VGlRQzNzWUNBQ3JT?=
+ =?utf-8?B?Tnh5ZE02Rmo4WnN5THliWkVVT3NCZEpYTVFCRTVYenZ1V3Y1MGY0S0syckRv?=
+ =?utf-8?B?QmZnYWlQTEtDM1FQd2NkNTdLVWZxNENFeklPbGRubjRaaGJTZHBINFhKZmcy?=
+ =?utf-8?B?eG14YllCMVhkVEVodGdVVjRiRzRZN3BSRm0vRjNWOXFQUWxBdUdOU1Q2ZEZh?=
+ =?utf-8?B?OGl3a2grTTNRYWR6Y2dZZjBBUHJ6TnhmZGJiTFE5dGpWNEg5Z3o2d1ZEN1ZL?=
+ =?utf-8?B?dm15aWgrVnRwZjNMYi8vM1hTK0k1NEwwMWV6WllwK0NLb2E0VGdBYnN0L0or?=
+ =?utf-8?B?QmFkd1hldTR6N1VPSmFTRlFqbXhSWW9KT0JUQUVEdVBKaGp1bnV2eEpEM2Y4?=
+ =?utf-8?B?Y2thQ1BQM1k5MTdVSG5kNm55K0ZIRVo4K3NWUHJ3QlhhUnFUMFNIcUxZb2R2?=
+ =?utf-8?B?cFhqc0RRMVVRTmJaMVhPMjVDOVJ3OEVoUnVBenMrRGRaUCtiUlR5NU9pT05G?=
+ =?utf-8?B?MlNVVkkrVkpaTUVHeUNiTG1zV0JDUFIyVnBVSVlUWkhFVGtHWWFmTXBQaDR3?=
+ =?utf-8?B?dWkwOW9VVUVXMndHRThCSDVwOHk4bUl3Y1hQeFYzM0ZIN1NOTzJiYjJndjN1?=
+ =?utf-8?B?dmc5aG83MXVrMnZNNk02eTNFdlpNRkhRYlY3UWpWcHo5MTg0RkpCRVh2SXZN?=
+ =?utf-8?B?ai9UWjhGSG5nRXNKYzNjRXpQS0NVSmNGS2xCOU5zQnJ5OG5aZWRweWJhdXhp?=
+ =?utf-8?B?dko4TlFSSkE4Mng5ZXFmRWtqK01YcnoyS1NXaXQvb1VHVjF1dk9lMllNR2M0?=
+ =?utf-8?B?VTVmMEpacTRZWXBHL0h2bC9Rb2VHT0xsZ3JsZVVBQkdabmFxU0c3MlNzM0Z6?=
+ =?utf-8?B?YTlsOGpVUHdpNmFqb3pwNWRrN2J2akNDYWkwWjhxVXoxbkZmNGtoK2ZMWkor?=
+ =?utf-8?B?Vzl0ZG9seXc0ZG9ZeTJmcEEzVDJRNnpuaWFOWFFSNCsxZ0hnYi9LQytzcnN3?=
+ =?utf-8?Q?1ou2mVcf54tFcNdXQKS3QN3pR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc6a22aa-9f55-445e-e22a-08dbdb58baf7
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 04:03:54.6878
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6UkLklcAiw0Hf1rXlwXgWNx2yVC+ujoSSbz9pZs9zKWQ6eWQCdMXa/Ycqfu9KnAqyJm8vtAMGASEnXeLZ4c5wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5514
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jerry,
+On 10/30/2023 10:42 PM, Tom Lendacky wrote:
+> On 10/30/23 11:16, Dionna Amalie Glaze wrote:
+>> On Sun, Oct 29, 2023 at 11:38 PM Nikunj A Dadhania <nikunj@amd.com> wrote:
 
-(Just so you know, you still need to fix your email configuration.  Your emails
-have a bogus Reply-To header, which makes replies not be sent to you by default.
-I had to manually set the "To:" address when replying.)
+>>> @@ -656,32 +674,14 @@ static const struct file_operations snp_guest_fops = {
+>>>          .unlocked_ioctl = snp_guest_ioctl,
+>>>   };
+>>>
+>>> -static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno)
+>>> +bool snp_assign_vmpck(struct snp_guest_dev *dev, int vmpck_id)
+>>>   {
+>>> -       u8 *key = NULL;
+>>> +       if (WARN_ON(vmpck_id > 3))
+>>> +               return false;
+>>
+>> The vmpck_id is an int for some reason, so < 0 is also a problem. Can
+>> we not use unsigned int?
 
-On Tue, Oct 31, 2023 at 10:17:11AM +0800, Jerry Shih wrote:
-> 
-> The RISC-V vector crypto OpenSSL pr[1] is merged.
-> And we also sent the vector-crypto patch based on Heiko's and OpenSSL
-> works.
-> Here is the link:
-> https://lore.kernel.org/all/20231025183644.8735-1-jerry.shih@sifive.com/
-> 
-> [1]
-> https://github.com/openssl/openssl/pull/21923
+Yes, I will update that in my next revision,
 
-Awesome, thanks!
+Thanks
+Nikunj
 
-> 
-> > I'm also wondering about riscv.pm and the choice of generating the crypto
-> > instructions from .words instead of using the assembler.  It makes it
-> > significantly harder to review the code, IMO.  Can we depend on assembler
-> > support for these instructions, or is that just not ready yet?
-> > 
-> > - Eric
-> 
-> There is no public assembler supports the vector-crypto asm mnemonics.
-> We should still use `opcode` for vector-crypto instructions. But we might
-> use asm for standard rvv parts.
-> In order to reuse the codes in OpenSSL as much as possible,  we still use
-> the `riscv.pm` for all standard rvv and vector-crypto instructions. If the asm
-> mnemonic is still a better approach,  I will `rewrite` all standard rvv parts
-> with asm mnemonics in next patch.
-
-Tip-of-tree gcc + binutils seems to support them.  Building some of the sample
-code from the riscv-crypto repository:
-
-    $ riscv64-linux-gnu-as --version
-    GNU assembler (GNU Binutils) 2.41.50.20231021
-    $ riscv64-linux-gnu-gcc --version
-    riscv64-linux-gnu-gcc (GCC) 14.0.0 20231021 (experimental)
-    $ riscv64-linux-gnu-gcc -march=rv64ivzvkned -c riscv-crypto/doc/vector/code-samples/zvkned.s
-
-And tip-of-tree clang supports them experimentally:
-
-    $ clang --version
-    clang version 18.0.0 (https://github.com/llvm/llvm-project 30416f39be326b403e19f23da387009736483119)
-    $ clang -menable-experimental-extensions -target riscv64-linux-gnu -march=rv64ivzvkned1 -c riscv-crypto/doc/vector/code-samples/zvkned.s
-
-It would be nice to use a real assembler, so that people won't have to worry
-about potential mistakes or inconsistencies in the perl-based "assembler".  Also
-keep in mind that if we allow people to compile this code without the real
-assembler support from the beginning, it might end up staying that way for quite
-a while in order to avoid breaking the build for people.
-
-Ultimately it's up to you though; I think that you and others who have been
-working on RISC-V crypto can make the best decision about what to do here.  I
-also don't want this patchset to be delayed waiting for other projects, so maybe
-that indeed means the perl-based "assembler" needs to be used for now.
-
-- Eric
