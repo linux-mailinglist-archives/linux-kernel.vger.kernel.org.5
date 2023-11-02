@@ -2,131 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B397DF20F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4347DF212
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbjKBMLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S1346179AbjKBMLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjKBMLU (ORCPT
+        with ESMTP id S233356AbjKBMLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:11:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6318EE4
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698927031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S4d3LBwofHPDGIVxzOtEyFdF9IVCLxopngLk7uHzb1Y=;
-        b=iLmFbG7n55SpnIa1Cl8bQR2s51UkbFM7HCa6dwrAdsPDtpptyQsqaLOR8kUBQYNULKrP0U
-        juUE4G7lv9e5szFoWxvRm/3jNXlA58iXKDVgysXRmgO18GbYQ5zd5P2F+2+0t3r8nE/zpP
-        1S6x2MxUHvFrYYc2fUJp88PMEnVUD3k=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-JHPk-41xOQWgpRoJsBok7Q-1; Thu, 02 Nov 2023 08:10:30 -0400
-X-MC-Unique: JHPk-41xOQWgpRoJsBok7Q-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9d2606301eeso102236466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:10:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698927029; x=1699531829;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S4d3LBwofHPDGIVxzOtEyFdF9IVCLxopngLk7uHzb1Y=;
-        b=cjax5yCcegwWTWqtazBxbIObLOmKu3sY6xwRae1xHoA+So1wjYE6eRBoMFIYxHqGM6
-         NXMLY44CJofcOHT0mBVpSssj+VL80jHibkckY8QWMABDr8oxj9+7CYOoBo00uoT7BXZb
-         VP/1WleLoVm2hbIrxb7OCvfibuFiv+iZMyrCKto9Q8V8lS5cWJtJZqSSDnRh38GHWd0p
-         sEEcMdbNKqRzD9szpOvbM7+7EIDDKgeT0/hjhiOQqEy1ZPLCloXmO+U4hpn2NBz+7RB9
-         /defY1yinDqW2HsNUH+6bgpqYKA+gjGrLhoo/TSM6vPY8W1HJ82IUXCz8XK2fOISlFg1
-         TuZw==
-X-Gm-Message-State: AOJu0YxYKivUwGj2aXQpKSXbfAWHnupKg65l5UnT1EDwdZatwFKMNOzQ
-        p/h4f7CuJk0Vrt3iz8cDJmjjfEMo3j96NMMypAZ3lpdRK+fOzeE4M269GPHTFu0K4pzRyeDEgZK
-        lZtQI/RDVqvczKNUHjizeWLYcs4x+2acX7TI/kP4U
-X-Received: by 2002:a17:907:88e:b0:9b2:b80d:da87 with SMTP id zt14-20020a170907088e00b009b2b80dda87mr4601103ejb.16.1698927029407;
-        Thu, 02 Nov 2023 05:10:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEATtQiOlFzTOGhzy0swhCJpUIb/sUTEQBiEwaeEXPgC9LXCBs5EA6nfN6r2vIDmzVyu5JcVFzKjJ+d05SCuG4=
-X-Received: by 2002:a17:907:88e:b0:9b2:b80d:da87 with SMTP id
- zt14-20020a170907088e00b009b2b80dda87mr4601085ejb.16.1698927029119; Thu, 02
- Nov 2023 05:10:29 -0700 (PDT)
+        Thu, 2 Nov 2023 08:11:50 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC8081A6;
+        Thu,  2 Nov 2023 05:11:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F8AA2F4;
+        Thu,  2 Nov 2023 05:12:26 -0700 (PDT)
+Received: from [10.1.25.180] (R90XJLFY.arm.com [10.1.25.180])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDB113F67D;
+        Thu,  2 Nov 2023 05:11:42 -0700 (PDT)
+Message-ID: <e90cb52f-d55b-d3ba-3933-6cc7b43fcfbc@arm.com>
+Date:   Thu, 2 Nov 2023 12:11:41 +0000
 MIME-Version: 1.0
-References: <20230923170540.1447301-1-lulu@redhat.com> <20231026024147-mutt-send-email-mst@kernel.org>
- <CACLfguXstNSC20x=acDx20CXU3UksURDY04Z89DM_sNbGeTELQ@mail.gmail.com> <20231102060151-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231102060151-mutt-send-email-mst@kernel.org>
-From:   Cindy Lu <lulu@redhat.com>
-Date:   Thu, 2 Nov 2023 20:09:50 +0800
-Message-ID: <CACLfguVDx8B1t0K6vOZ8JchGwVrSUGJ1P-ZLzxG0KK5S63OuHg@mail.gmail.com>
-Subject: Re: [RFC 0/7] vdpa: Add support for iommufd
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, yi.l.liu@intel.com, jgg@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 3/3] kselftest: Add new test for detecting unprobed
+ Devicetree devices
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>
+Cc:     Mark Brown <broonie@kernel.org>, kernelci@lists.linux.dev,
+        kernel@collabora.com, Guenter Roeck <groeck@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+References: <20230828211424.2964562-1-nfraprado@collabora.com>
+ <20230828211424.2964562-4-nfraprado@collabora.com>
+Content-Language: en-US
+From:   Aishwarya TCV <aishwarya.tcv@arm.com>
+In-Reply-To: <20230828211424.2964562-4-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 6:02=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com> =
-wrote:
->
-> On Thu, Oct 26, 2023 at 02:48:07PM +0800, Cindy Lu wrote:
-> > On Thu, Oct 26, 2023 at 2:42=E2=80=AFPM Michael S. Tsirkin <mst@redhat.=
-com> wrote:
-> > >
-> > > On Sun, Sep 24, 2023 at 01:05:33AM +0800, Cindy Lu wrote:
-> > > > Hi All
-> > > > Really apologize for the delay, this is the draft RFC for
-> > > > iommufd support for vdpa, This code provides the basic function
-> > > > for iommufd support
-> > > >
-> > > > The code was tested and passed in device vdpa_sim_net
-> > > > The qemu code is
-> > > > https://gitlab.com/lulu6/gitlabqemutmp/-/tree/iommufdRFC
-> > > > The kernel code is
-> > > > https://gitlab.com/lulu6/vhost/-/tree/iommufdRFC
-> > > >
-> > > > ToDo
-> > > > 1. this code is out of date and needs to clean and rebase on the la=
-test code
-> > > > 2. this code has some workaround, I Skip the check for
-> > > > iommu_group and CACHE_COHERENCY, also some misc issues like need to=
- add
-> > > > mutex for iommfd operations
-> > > > 3. only test in emulated device, other modes not tested yet
-> > > >
-> > > > After addressed these problems I will send out a new version for RF=
-C. I will
-> > > > provide the code in 3 weeks
-> > >
-> > > What's the status here?
-> > >
-> > Hi Michael
-> > The code is finished, but I found some bug after adding the support for=
- ASID,
-> > will post the new version after this bug is fixed, should be next week
-> > Thanks
-> > Cindy
->
-> The week is almost gone, what's going on?
->
-thanks, Micheal, I will send it out tomorrow
-Thanks
-Cindy
->
-> > > --
-> > > MST
-> > >
->
+
+
+On 28/08/2023 22:13, Nícolas F. R. A. Prado wrote:
+> Introduce a new kselftest to detect devices that were declared in the
+> Devicetree, and are expected to be probed by a driver, but weren't.
+> 
+> The test uses two lists: a list of compatibles that can match a
+> Devicetree device to a driver, and a list of compatibles that should be
+> ignored. The first is automatically generated by the
+> dt-extract-compatibles script, and is run as part of building this test.
+> The list of compatibles to ignore is a hand-crafted list to capture the
+> few exceptions of compatibles that are expected to match a driver but
+> not be bound to it.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+
+Hi Nicolas,
+
+Currently when building kselftest against next-master and
+mainline-master the below build error is observed. A bisect (full log
+below) identified this patch as introducing the failure.
+
+Full log from a failure:
+
+https://storage.kernelci.org/mainline/master/v6.6-9152-gdeefd5024f07/arm64/defconfig%2Bkselftest/gcc-10/logs/kselftest.log
+
+make[4]: Entering directory '/tmp/kci/linux/tools/testing/selftests/dt'
+/tmp/kci/linux/tools/testing/selftests/../../../scripts/dtc/dt-extract-compatibles
+-d /tmp/kci/linux/tools/testing/selftests/../../.. >
+/tmp/kci/linux/build/kselftest/dt/compatible_list
+Traceback (most recent call last):
+  File
+"/tmp/kci/linux/tools/testing/selftests/../../../scripts/dtc/dt-extract-compatibles",
+line 107, in <module>
+    compat_ignore_list.extend(parse_compatibles_to_ignore(f))
+  File
+"/tmp/kci/linux/tools/testing/selftests/../../../scripts/dtc/dt-extract-compatibles",
+line 67, in parse_compatibles_to_ignore
+    with open(file, 'r', encoding='utf-8') as f:
+OSError: [Errno 40] Too many levels of symbolic links:
+'/tmp/kci/linux/tools/testing/selftests/../../../build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/build/source/tools/testing/selftests/powerpc/vphn/vphn.c'
+make[4]: *** [Makefile:12:
+/tmp/kci/linux/build/kselftest/dt/compatible_list] Error 1
+make[4]: Leaving directory '/tmp/kci/linux/tools/testing/selftests/dt'
+
+
+The bisect log:
+
+git bisect start
+# good: [f9a7eda4d73d44dc1d17d05cdc9aeb9fc5660740] Merge tag
+'hwmon-for-v6.7' of
+git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging
+git bisect good f9a7eda4d73d44dc1d17d05cdc9aeb9fc5660740
+# bad: [8bc9e6515183935fa0cccaf67455c439afe4982b] Merge tag
+'devicetree-for-6.7' of
+git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux
+git bisect bad 8bc9e6515183935fa0cccaf67455c439afe4982b
+# good: [0a6d7f8275f255eda823c0f0b61d024f6f5b483d] Merge branch
+'clk-cleanup' into clk-next
+git bisect good 0a6d7f8275f255eda823c0f0b61d024f6f5b483d
+# good: [fe4ae2fab00b4751265580c5865fdf23b62d80b3] Merge tag
+'clk-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux
+git bisect good fe4ae2fab00b4751265580c5865fdf23b62d80b3
+# good: [fc7b34ae1347f4eb36f065458e53d6065cd85928] power: supply:
+wm831x_backup: Convert to platform remove callback returning void
+git bisect good fc7b34ae1347f4eb36f065458e53d6065cd85928
+# bad: [f2147371a83c6de1128093c163dc17bc61096362] dt-bindings: soc: fsl:
+cpm_qe: cpm1-scc-qmc: Fix example property name
+git bisect bad f2147371a83c6de1128093c163dc17bc61096362
+# bad: [22c3888e55bf5c86be536a3d9e06a50e7bf3a39f] dt-bindings: watchdog:
+atmel,at91rm9200-wdt: convert txt to yaml
+git bisect bad 22c3888e55bf5c86be536a3d9e06a50e7bf3a39f
+# bad: [780967feb626c6f4efa1e4b3532f1be83884cd76] dt-bindings: Add
+Marantec vendor prefix
+git bisect bad 780967feb626c6f4efa1e4b3532f1be83884cd76
+# bad: [bc17fd92c1eb7589f1f3df1893e9f62bb35b8cc8] dt-bindings:
+interrupt-controller: qcom,pdc: document qcom,sm4450-pdc
+git bisect bad bc17fd92c1eb7589f1f3df1893e9f62bb35b8cc8
+# good: [365ba0c7a73cce407bf40cdf9900b86b945d4acb] dt:
+dt-extract-compatibles: Add flag for driver matching compatibles
+git bisect good 365ba0c7a73cce407bf40cdf9900b86b945d4acb
+# bad: [14571ab1ad213de59b3726a40aea7ca0365bf445] kselftest: Add new
+test for detecting unprobed Devicetree devices
+git bisect bad 14571ab1ad213de59b3726a40aea7ca0365bf445
+# first bad commit: [14571ab1ad213de59b3726a40aea7ca0365bf445]
+kselftest: Add new test for detecting unprobed Devicetree devices
+
+
+Thanks,
+Aishwarya
 
