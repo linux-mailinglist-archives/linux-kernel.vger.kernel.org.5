@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6EA7DED1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464187DED25
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbjKBHMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 03:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
+        id S233999AbjKBHOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 03:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233846AbjKBHME (ORCPT
+        with ESMTP id S233293AbjKBHOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 03:12:04 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EB8185
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:11:56 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99357737980so84569766b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:11:55 -0700 (PDT)
+        Thu, 2 Nov 2023 03:14:32 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6105812A
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:14:26 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9db6cf8309cso61187866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:14:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698909114; x=1699513914; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=XLLO2ZSj14ek5f9/G5cjQHYdHWJXlHxtegw6xtGQB1Q=;
-        b=h/8USqGETnfqV9O+2GuVzAJGlLcJ+QHGlzat+4iRoCFbAw2uL2dqizOBRdHOWLbHCb
-         uoBvOdOZqi86uNAeF9OR/Xuv0I2HjgVZs6QqZX6fxUFZgJcWTsj73pbDZO38ZTHnTSSZ
-         HjEHs7J8f1CZWFDavOuH1KF+QuI9gt32M5U8fLxMPIYv0rbl6TLk2JwMGFGbVLOwoT/w
-         sKzJGif2q53DlG4c9ZgtWzONeLRM64OtYJRMWNBg05l0thtsYjEMIsgif1TJ27IsuxaD
-         luKO9ovhirAyVvpeck+PQ8blVTZmWeNMYKm03co5tRu/+cNv3FzYUhVH5eMVV+/a7hxa
-         ZTgQ==
+        d=linaro.org; s=google; t=1698909265; x=1699514065; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=33gbO515Gu0/qLf4bxYYOPeKitrjt7A+LBZxiAjPEmk=;
+        b=LXgNlZAvnIbaD0gMzUULiDDm+p3KIaFpBb61LE/Kj7jJbLCl+/67g2aUWOODlyhkOW
+         pklV+/K4dBHQCzv5YBM1rrMqHg9tw9R42nYyPQaU2NIhupRBYzVtCLvmaKW3l6LW9XuH
+         wpzt+OrFB8dohhlYrG5gbyDrElQHMFYaj05nZrWydbt0GHZV/jeLhiGJIZu7qIqE61l1
+         XErVr5MWb5QhvcnPK+J98RTVGDPTxHw4OB/zPLPBSJNJjWTTYRB3m2BFbLobwkkAV/o8
+         ZtYEYS/iIlNNUvK0wytqUVjsCBduyA+PI6nsPFeVDiivV7p1ean3l2yaL10NzzDvxcuY
+         AGAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698909114; x=1699513914;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XLLO2ZSj14ek5f9/G5cjQHYdHWJXlHxtegw6xtGQB1Q=;
-        b=Twxpe7HbeI/xLZNJQSsXqGkTl4ni0Ypfl4eXDV+G7uk1IVf4mCE5QeOoG3igEZns6B
-         0w1IOWRt6kndSLa8CW08tdfT9k4NXli4ePPXOmP+6pSXPjQQYM1OKWbfDmeEaDRsQzTK
-         Nce98HXYUacs14PmQZep1eMvyNEGsveQa+ZizCurVkGgHK/fMUlw7UnpUEMSUE1yFj+T
-         1GPQX3ZycGg1uytlWWcD6OhWVscsqvEGV4kdq7gSujUpcE7mEH/MMuR07XuAs4hHPFaL
-         mV/q7WACPbKNPMlCl7NDhsWLahGu5SAcWXENjDapVvHGvNX1KTtq5iq1KCom0HjOhf7Z
-         Cycw==
-X-Gm-Message-State: AOJu0Yw3puMnrxjoGGNiU9mkuW0qGbRUGXwM1nv0BZTRZR6+M53p8Xew
-        ggvjA0njlk14US7KVUENqx3c0w==
-X-Google-Smtp-Source: AGHT+IFz3lqUCJbyM8gNJLVuu/e8iat9+bi5NZqTUB9AyPOtTnX6IbvZh5qzTZ1imC2JPhfNcs3Uzw==
-X-Received: by 2002:a17:906:6a15:b0:9c7:69d4:b264 with SMTP id qw21-20020a1709066a1500b009c769d4b264mr2938876ejc.77.1698909114191;
-        Thu, 02 Nov 2023 00:11:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698909265; x=1699514065;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=33gbO515Gu0/qLf4bxYYOPeKitrjt7A+LBZxiAjPEmk=;
+        b=Yj9rR6ZBC3X56dRf6/43yVskV2jp+dA2mW/gGBe+RjLEVyEts+q2NppdLwpiZ1vUEH
+         D/2wtbBgthMRMwU8czAhNFZz5DVjw8bhSmC15B/zMTh//geLc4nGAI6bCx1ZOCwywSYQ
+         0euF8c/gIpLZ5WEm9Grg2hyOmZtc0V50RKoQ68APqkLh45VADYk4WQ+hq4UFuGufNwVh
+         uSuEq69z2ohcAfoq/ZHQUQkTiQhxz+VCyIepOi/Wp1X537VaUHXaevKSRhG2v6oKi4pf
+         8NNv4ns+kCNkB159sUK2pp7OaP6K40WGX7AeEhU7V4+/FIw6xavkqEy6prHg1OOQaXqB
+         uaGw==
+X-Gm-Message-State: AOJu0YyyH6dwHIgP05WWGCGEReJZqJf3Q4DT00ke0tKLZaFhXwEjQrRO
+        e3h3IA1Zg4ZLRlFVv4tTAZIdDA==
+X-Google-Smtp-Source: AGHT+IHAlrrTLe1/FRZ6aLXPNG81Bku5kkTibZn+xusOvDmVR0C+fM/9d8vWm6DAAEyPj2K5w1Rm+g==
+X-Received: by 2002:a17:907:3e89:b0:9be:315d:e607 with SMTP id hs9-20020a1709073e8900b009be315de607mr3457975ejc.28.1698909264657;
+        Thu, 02 Nov 2023 00:14:24 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id la22-20020a170906ad9600b009b8a4f9f20esm768710ejb.102.2023.11.02.00.11.52
+        by smtp.gmail.com with ESMTPSA id o21-20020a17090637d500b0099293cdbc98sm780825ejc.145.2023.11.02.00.14.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 00:11:53 -0700 (PDT)
-Message-ID: <4fc3fafa-6c9b-440a-99fe-1332cd3d5b1d@linaro.org>
-Date:   Thu, 2 Nov 2023 08:11:51 +0100
+        Thu, 02 Nov 2023 00:14:23 -0700 (PDT)
+Message-ID: <8c15d904-bab0-4def-ac9a-db49aa80627a@linaro.org>
+Date:   Thu, 2 Nov 2023 08:14:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] gpio: realtek: Add GPIO support for RTD SoC variants
-To:     =?UTF-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231101025802.3744-1-tychang@realtek.com>
- <20231101025802.3744-2-tychang@realtek.com>
- <e18a7ee0-a5e3-4180-9f8a-99b21d1303e6@linaro.org>
- <8e4c8676acaf4ba6bf3f57451b2eab40@realtek.com>
+Subject: Re: [PATCH V4][4/4] dt-bindings: mmc: Add dt-bindings for realtek mmc
+ driver
 Content-Language: en-US
+To:     =?UTF-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
+        "riteshh@codeaurora.org" <riteshh@codeaurora.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "briannorris@chromium.org" <briannorris@chromium.org>,
+        "doug@schmorgal.com" <doug@schmorgal.com>,
+        "tonyhuang.sunplus@gmail.com" <tonyhuang.sunplus@gmail.com>,
+        "abel.vesa@linaro.org" <abel.vesa@linaro.org>,
+        "william.qiu@starfivetech.com" <william.qiu@starfivetech.com>
+References: <20231030062749.2840-1-jyanchou@realtek.com>
+ <20231030062749.2840-5-jyanchou@realtek.com>
+ <b116d46f-f28b-4b7c-afd2-0061b523b00d@linaro.org>
+ <dcb14bcf79ee4aaebe3ce8acbe8d1dac@realtek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -116,65 +126,28 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8e4c8676acaf4ba6bf3f57451b2eab40@realtek.com>
+In-Reply-To: <dcb14bcf79ee4aaebe3ce8acbe8d1dac@realtek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2023 04:30, TY_Chang[張子逸] wrote:
-> Hi Krzysztof,
+On 02/11/2023 08:09, Jyan Chou [周芷安] wrote:
+> Hi Krzysztof, Rob,
 > 
->> On 01/11/2023 03:58, Tzuyi Chang wrote:
->>> This commit adds GPIO support for Realtek DHC RTD SoCs.
->>
->> Please do not use "This commit/patch", but imperative mood. See longer
->> explanation here:
->> https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-
->> patches.rst#L95
->>
+> Thanks for your code review and advice.
 > 
-> I will remove these words.
+>> What? I asked to be the same.
 > 
->>> +static int rtd_gpio_probe(struct platform_device *pdev) {
->>> +     struct rtd_gpio *data;
->>> +     const struct of_device_id *match;
->>> +     struct device_node *node;
->>> +     int ret;
->>> +     int i;
->>> +
->>> +     node = pdev->dev.of_node;
->>> +     match = of_match_node(rtd_gpio_of_matches, pdev->dev.of_node);
->>> +     if (!match || !match->data)
->>> +             return -EINVAL;
->>> +
->>> +     data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
->>> +     if (!data)
->>> +             return -ENOMEM;
->>> +
->>> +     data->assert_irq = irq_of_parse_and_map(node, 0);
->>> +     if (!data->assert_irq)
->>> +             goto deferred;
->>> +
->>> +     data->deassert_irq = irq_of_parse_and_map(node, 1);
->>> +     if (!data->deassert_irq)
->>> +             goto deferred;
->>
->> So this goes to cleanup path...
->>
-> 
-> Since there is no need to do devm_free, I will directly return -EPROBE_DEFER here.
-
-That's not a correct return value. You do not return DEFER on missing
-IRQ. This should anyway be different call: platform_get_irq().
-
+Respond inline, not by copying some pieces out of context to another
+part of email. That's not mailing list style response.
 
 Best regards,
 Krzysztof
