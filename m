@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9AB7DF70C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86087DF7AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376977AbjKBPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S235482AbjKBQdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377052AbjKBPvC (ORCPT
+        with ESMTP id S229458AbjKBQdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:51:02 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979E3182
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:50:43 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cd52c51abso5447721cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1698940242; x=1699545042; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1wB7K/cyK7ekdFksdqw2ZnrHbBqOSSiCpIC9jyTtwpo=;
-        b=HnPsTwndmznOfFuVOWXHx8ct/WrvBsPK5x/xLIx5VeUKtyb62e+cXmBq3CiPuVdLjN
-         a2jpmZFUz/l+eCljwhEANCYRD36X2YtOA10ZRrpxipMD5rta6iiEh1nPAeg6557YEGDf
-         7IW5o8OhO/mIuevLjUaz7bfhXTP+ej6/fn2pWFSvuBpwP1QOojfV0G0fD3d01PJUdPUV
-         LvRGJHkEoo+Lnw53MAhNEYaxQxi/3pb3Ar78Q0ZstWFEzAEqDQVawsWQS2r42rT2mexC
-         PDQUPO4R2WSiFFVWcUrxTKxLuDEQGuKt8Z2hTAggmQlUvTBWKuAqT1PWYEU51+5iiT1b
-         MYVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698940242; x=1699545042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1wB7K/cyK7ekdFksdqw2ZnrHbBqOSSiCpIC9jyTtwpo=;
-        b=Cg2ZynUwJ/kzhKw26QrkEJf48wUKVg4tDrBWrtU1tbZx+wNJBFWgatlF6WFEtIzLTR
-         prS/REdqvCLxs0LAflWjfbYbZfymzHn66F2IUbeqTFq1zyQrNAbNUw0e/NbHzQOm4NJe
-         Kx+N8JtLM05wSdr/oWRB8GcWsK4DButCjRWnAichGuv70uWVXzjLxcVtxg0OZ5SsSTQF
-         1eYvWqYzqsmkPMadflpDSWCj9Iflnh7aNJaG9YOMbvwv3ySJeAhczCw5Rw2qUE0NJA2U
-         CgEXU9ANkdXH0fgxEjPgjHzEirH2NCj4K66l69imJ9FmpOv7/g6FyrFP5J1hkvemn2yD
-         JNNg==
-X-Gm-Message-State: AOJu0YzNyrp1XR7qpz42ef1gXS6EoZBlWAVc1ebuq6kTwjsAAQd+z72U
-        9CgqtAM8ZOCrwnLiK0O2AX+JqoYKn3ZhMSo3WRf+wQ==
-X-Google-Smtp-Source: AGHT+IGeKyqz4S48dOlmrzV0IcLt/Pz5O88FAxRlS/vj9uMFuB0NwFTsg8gf0j3/eylhtue3lIsgsrkZbl6P7Iv8sPE=
-X-Received: by 2002:ac8:5f06:0:b0:418:797:20b6 with SMTP id
- x6-20020ac85f06000000b00418079720b6mr19045388qta.5.1698940242486; Thu, 02 Nov
- 2023 08:50:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231101230816.1459373-1-souravpanda@google.com>
- <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
- <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
- <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com> <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
-In-Reply-To: <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 2 Nov 2023 11:50:05 -0400
-Message-ID: <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Wei Xu <weixugc@google.com>, Sourav Panda <souravpanda@google.com>,
-        corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Thu, 2 Nov 2023 12:33:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBF2123;
+        Thu,  2 Nov 2023 09:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698942787; x=1730478787;
+  h=from:to:cc:subject:date:message-id;
+  bh=cdPiSKd/31m3AqChZgVeKDRUhuu5sQ7j4sET0CgQF7k=;
+  b=Th0d6+eUPgQLiytFXHm+dPltt4U6RNigxg9+JNUpSjWu/5mc+8YlUDT5
+   pMWr+2LE8bIRfT/Pbbp40TsUml8rrcssG7z/hmDk6aekPD1XpocxJ6njk
+   dIpRLKUVCADRi/TtBocaJ9LJ7ir2FiGxZoGuLlqO/ODEDyBC7S9XxYFpp
+   oqRzrFuyQcS1jTliWVgajmB22NLFX/yZaJYx9RKDgr6855mRaxYOd6F9l
+   Fd2+MfXVKlU/Wv0Vus1GlAi/RpwWL/lEZTJKu0YjLyqcVCdWfltkGRgdX
+   CgqvFFwXEDv1OZ09aVTpOrubX3mGS8rAEoMJ1LIaCtKNk1f5fdyFzFyvM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="388570836"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="388570836"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 09:33:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="9448383"
+Received: from arthur-vostro-3668.sh.intel.com ([10.239.159.65])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 09:33:00 -0700
+From:   Zeng Guang <guang.zeng@intel.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        David Hildenbrand <david@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, Zeng Guang <guang.zeng@intel.com>
+Subject: [RFC PATCH v1 0/8] KVM: seftests: Support guest user mode execution and running
+Date:   Thu,  2 Nov 2023 23:51:03 +0800
+Message-Id: <20231102155111.28821-1-guang.zeng@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,15 +66,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Adding reserved memory to MemTotal is a cleaner approach IMO as well.
-> > But it changes the semantics of MemTotal, which may have compatibility
-> > issues.
->
-> I object.
+This patch series give a proposal to support guest VM running
+in user mode and in canonical linear address organization as
+well.
 
-Could you please elaborate what you object (and why): you object that
-it will have compatibility issues, or  you object to include memblock
-reserves into MemTotal?
+First design to parition the 64-bit canonical linear address space
+into two half parts belonging to user-mode and supervisor-mode
+respectively, similar as the organization of linear addresses used
+in linux OS. Currently the linear addresses use 48-bit canonical
+format in which bits 63:47 of the address are identical.
 
-Thanks,
-Pasha
+Secondly setup page table mapping the same guest physical address
+of test code and data segment onto both user-mode and supervisor-mode
+address space. It allows guest in different runtime mode, i.e.
+user or supervisor, can run one code base in the corresponding
+linear address space.
+
+Also provide the runtime environment setup API for switching to
+user mode execution.     
+
+
+Zeng Guang (8):
+  KVM: selftests: x86: Fix bug in addr_arch_gva2gpa()
+  KVM: selftests: x86: Support guest running on canonical linear-address
+    organization
+  KVM: selftests: Add virt_arch_ucall_prealloc() arch specific
+    implementation
+  KVM : selftests : Adapt selftest cases to kernel canonical linear
+    address
+  KVM: selftests: x86: Prepare setup for user mode support
+  KVM: selftests: x86: Allow user to access user-mode address and I/O
+    address space
+  KVM: selftests: x86: Support vcpu run in user mode
+  KVM: selftests: x86: Add KVM forced emulation prefix capability
+
+ .../selftests/kvm/include/kvm_util_base.h     |  20 ++-
+ .../selftests/kvm/include/x86_64/processor.h  |  48 ++++++-
+ .../selftests/kvm/lib/aarch64/processor.c     |   5 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |   6 +-
+ .../selftests/kvm/lib/riscv/processor.c       |   5 +
+ .../selftests/kvm/lib/s390x/processor.c       |   5 +
+ .../testing/selftests/kvm/lib/ucall_common.c  |   2 +
+ .../selftests/kvm/lib/x86_64/processor.c      | 117 ++++++++++++++----
+ .../selftests/kvm/set_memory_region_test.c    |  13 +-
+ .../testing/selftests/kvm/x86_64/debug_regs.c |   2 +-
+ .../kvm/x86_64/userspace_msr_exit_test.c      |   9 +-
+ 11 files changed, 195 insertions(+), 37 deletions(-)
+
+-- 
+2.21.3
+
