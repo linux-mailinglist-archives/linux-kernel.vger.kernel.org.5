@@ -2,333 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BE17DFB2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ABD7DFB34
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377362AbjKBUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
+        id S1377358AbjKBUEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 16:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKBUCH (ORCPT
+        with ESMTP id S229459AbjKBUEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:02:07 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA64DC;
-        Thu,  2 Nov 2023 13:02:03 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c3077984e8so1313825b3a.0;
-        Thu, 02 Nov 2023 13:02:03 -0700 (PDT)
+        Thu, 2 Nov 2023 16:04:32 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FADFB
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:04:26 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so2298300a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 13:04:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698955323; x=1699560123; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZuHikmRqCjHm13by+oAQr/aA53zai8UWN0Q4ojl/okQ=;
-        b=l3B3ZxDZcdaVcn0eGTNf9YOXQ5jo3OMKMzOg4DnUzcFYdoJvK85rY9bkC/tuwHph+I
-         1mX35LGMituZrEKq4OGy3I/SD7wUTBgkN7Mu70QiJBLG303mQMAreN535kJ4V4gVwETN
-         iQn70QPSy7zlaEd3yjuc+w71kfU5zemYrC/MwpV6wHAr3t4Ojmh1eP3IxD/ZzgVhZsw+
-         960fW0AGL9D6GOeaM4Bmy+r/xFWLXLvpXkTnJZ8YUScqE++v/TNQul7VJtKqgW9Cuynd
-         iytWwpYbEgQIhTErEYoCVBSp00rgkCJeq5oVYaEFnyBSwuh/qz/7A8QrpLv3aNzJrRr7
-         jNnQ==
+        d=broadcom.com; s=google; t=1698955465; x=1699560265; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dHsa6IG2KCHQUpMvNJE1YgJ7HD38NBS9TYzLR6Ryhks=;
+        b=Z/e6FIoBSU8aiN0Nrkgu3kp8qr3HAF7lAGc7tO/+1PO+PZemg1PWFuTI+POzkhIlbP
+         vXgPY+/w+4VNi2dlKmFIzzuWvWBZOEaM3EVYC6l8GyIvf1xVDIvg1c8BZ8DQvTv1H9fC
+         G6O9nEBZa0lzABs/9/e4ea2kxoIx8uoGoZK0w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698955323; x=1699560123;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698955465; x=1699560265;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZuHikmRqCjHm13by+oAQr/aA53zai8UWN0Q4ojl/okQ=;
-        b=U8Tu/ViXjL3iS7mL5/xD6h0gbNl+ngDYUHlYcW6gXfBIcz7xqZ0hIxMk7dp6FXIb1B
-         EoKFFVTS3XK3xauwldGhhGywBuT18FHqZv0UZk0L/ygjwkvClI93fSWOnKBONH8cgJby
-         VzFA0Oaar0+ndq6tmsf8diGeOFUM1FTN26FzYDDvY4dsAfPm0lSITq6ilSpE7HGCjOpL
-         0+tODjFuSDEV1ta9HXmDM5gC1zjNT/g2WzHr4KaZtVVvreTd1CoJSAwsY4HEckGOsdOr
-         ave9foevyTETpVkDWkEAgj8jiJaoNs6LivihJMyktNIJm3aFzQerMFPwJmfMj1qfMPes
-         T02g==
-X-Gm-Message-State: AOJu0Ywy+b/sksovSoB9SCDijraWvOKEukmAhaZalIAFm61tZQ4E9aO5
-        C1qrQ2nwOQFom7Y+218W2O4=
-X-Google-Smtp-Source: AGHT+IGh0NPW9G4Gl6NZHVh96UIpJkOaC5QTzf5jtxemRwXtmKKMWA/99myN8VpWsfw0G4aEXKNrBg==
-X-Received: by 2002:a05:6a20:9189:b0:156:e1ce:d4a1 with SMTP id v9-20020a056a20918900b00156e1ced4a1mr20346801pzd.9.1698955322912;
-        Thu, 02 Nov 2023 13:02:02 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-019.fbsv.net. [2a03:2880:ff:13::face:b00c])
-        by smtp.gmail.com with ESMTPSA id k13-20020a056a00134d00b006c34274f66asm129637pfu.102.2023.11.02.13.02.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 13:02:02 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Subject: [RFC PATCH v2] zswap: memcontrol: implement zswap writeback disabling
-Date:   Thu,  2 Nov 2023 13:02:02 -0700
-Message-Id: <20231102200202.920461-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=dHsa6IG2KCHQUpMvNJE1YgJ7HD38NBS9TYzLR6Ryhks=;
+        b=Mh7NsAq2bEh/4B0p1jYuAqZ77ca2TXogH1xhGcX6i9BSdZO+BIJt0aEJ+PQWR7dDg4
+         fMHiOvWmG5HU5jAd1A8cth/JA9oogP8Y/raEo00iTmRdtL8GvIS5NlvpZ1j7QXDibGpF
+         tGvC9rohN3dznnpMFATlyOdh5TB4tbTszhjac0u39czTywBzdS/qKSNleOLFoaIfXx5Y
+         in6sSZG/O4jphxxqjiptu4JVOsQVFQMPDqaBdZKy9QUyJr7xymvrewKn+t/Qv8u5YYsO
+         sxr4jQxZHMfe440CFO76LhpbotsIRFojSbpSyA6JlSG7ByUZyECvuXT6y+Uo1wxCsw8M
+         XNOg==
+X-Gm-Message-State: AOJu0YzeJ35DI1ZdIbnkVFDq63kAWPv7JeBbWX2QSL8YB4vBHIQ2nPf+
+        kYd4/AnKz1IlQnQ+DUOil0gcf6Uctr0FzUaBphbEFA==
+X-Google-Smtp-Source: AGHT+IGmyKwOQyUSKf7ka+rtF/3y4jhnOGinQvgLOYtcUW4bGRcq32vhK27adypk0vSSKa+/7GRn2AAQjPjSYIivbqk=
+X-Received: by 2002:a50:cddc:0:b0:543:5a71:85be with SMTP id
+ h28-20020a50cddc000000b005435a7185bemr8007899edj.23.1698955465171; Thu, 02
+ Nov 2023 13:04:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231102172503.3413318-1-alexey.pakhunov@spacex.com> <20231102172503.3413318-2-alexey.pakhunov@spacex.com>
+In-Reply-To: <20231102172503.3413318-2-alexey.pakhunov@spacex.com>
+From:   Michael Chan <michael.chan@broadcom.com>
+Date:   Thu, 2 Nov 2023 13:04:13 -0700
+Message-ID: <CACKFLik-Ey1eptrCkhSEp0Oi66kBKnVWa+yDk7-_uzxqSTHb6A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] tg3: Increment tx_dropped in tg3_tso_bug()
+To:     alexey.pakhunov@spacex.com
+Cc:     mchan@broadcom.com, vincent.wong2@spacex.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        siva.kallam@broadcom.com, prashant@broadcom.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000053877060930e5fd"
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During our experiment with zswap, we sometimes observe swap IOs due to
-occasional zswap store failures and writebacks-to-swap. These swapping
-IOs prevent many users who cannot tolerate swapping from adopting zswap
-to save memory and improve performance where possible.
+--000000000000053877060930e5fd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds the option to disable this behavior entirely: do not
-writeback to backing swapping device when a zswap store attempt fail,
-and do not write pages in the zswap pool back to the backing swap
-device (both when the pool is full, and when the new zswap shrinker is
-called).
+On Thu, Nov 2, 2023 at 10:25=E2=80=AFAM <alexey.pakhunov@spacex.com> wrote:
+>
+> From: Alex Pakhunov <alexey.pakhunov@spacex.com>
+>
+> tg3_tso_bug() drops a packet if it cannot be segmented for any reason.
+> The number of discarded frames should be incremeneted accordingly.
+>
+> Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
+> Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
+> ---
+>  drivers/net/ethernet/broadcom/tg3.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/b=
+roadcom/tg3.c
+> index 14b311196b8f..99638e6c9e16 100644
+> --- a/drivers/net/ethernet/broadcom/tg3.c
+> +++ b/drivers/net/ethernet/broadcom/tg3.c
+> @@ -7874,8 +7874,10 @@ static int tg3_tso_bug(struct tg3 *tp, struct tg3_=
+napi *tnapi,
+>
+>         segs =3D skb_gso_segment(skb, tp->dev->features &
+>                                     ~(NETIF_F_TSO | NETIF_F_TSO6));
+> -       if (IS_ERR(segs) || !segs)
+> +       if (IS_ERR(segs) || !segs) {
+> +               tp->tx_dropped++;
 
-This new behavior can be opted-in/out on a per-cgroup basis via a new
-cgroup file. By default, writebacks to swap device is enabled, which is
-the previous behavior.
+This is prone to race conditions if we have more than one TX queue.
+The original driver code only supported one TX queue and the counters
+were never modified properly to support multiple queues.  We should
+convert them to per queue counters by moving tx_dropped and rx_dropped
+to the tg3_napi struct.
 
-Note that this is subtly different from setting memory.swap.max to 0, as
-it still allows for pages to be stored in the zswap pool (which itself
-consumes swap space in its current form).
+>                 goto tg3_tso_bug_end;
+> +       }
+>
+>         skb_list_walk_safe(segs, seg, next) {
+>                 skb_mark_not_on_list(seg);
+> --
+> 2.39.3
+>
 
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 11 +++++++
- Documentation/admin-guide/mm/zswap.rst  |  6 ++++
- include/linux/memcontrol.h              | 17 +++++++++++
- mm/memcontrol.c                         | 38 +++++++++++++++++++++++++
- mm/page_io.c                            |  6 ++++
- mm/shmem.c                              |  3 +-
- mm/zswap.c                              |  9 ++++++
- 7 files changed, 88 insertions(+), 2 deletions(-)
+--000000000000053877060930e5fd
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 606b2e0eac4b..18c4171392ea 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1672,6 +1672,17 @@ PAGE_SIZE multiple when read back.
- 	limit, it will refuse to take any more stores before existing
- 	entries fault back in or are written out to disk.
- 
-+  memory.zswap.writeback
-+	A read-write single value file which exists on non-root
-+	cgroups.  The default value is "1".
-+
-+	When this is set to 0, all swapping attempts to swapping devices
-+	are disabled. This included both zswap writebacks, and swapping due
-+	to zswap store failure.
-+
-+	Note that this is subtly different from setting memory.swap.max to
-+	0, as it still allows for pages to be written to the zswap pool.
-+
-   memory.pressure
- 	A read-only nested-keyed file.
- 
-diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
-index 522ae22ccb84..b987e58edb70 100644
---- a/Documentation/admin-guide/mm/zswap.rst
-+++ b/Documentation/admin-guide/mm/zswap.rst
-@@ -153,6 +153,12 @@ attribute, e. g.::
- 
- Setting this parameter to 100 will disable the hysteresis.
- 
-+Some users cannot tolerate the swapping that comes with zswap store failures
-+and zswap writebacks. Swapping can be disabled entirely (without disabling
-+zswap itself) on a cgroup-basis as follows:
-+
-+	echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
-+
- When there is a sizable amount of cold memory residing in the zswap pool, it
- can be advantageous to proactively write these cold pages to swap and reclaim
- the memory for other use cases. By default, the zswap shrinker is disabled.
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 95f6c9e60ed1..e3a3a06727dc 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -219,6 +219,12 @@ struct mem_cgroup {
- 
- #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
- 	unsigned long zswap_max;
-+
-+	/*
-+	 * Prevent pages from this memcg from being written back from zswap to
-+	 * swap, and from being swapped out on zswap store failures.
-+	 */
-+	bool zswap_writeback;
- #endif
- 
- 	unsigned long soft_limit;
-@@ -1615,6 +1621,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- {
- 	return 0;
- }
-+
-+static inline bool mem_cgroup_swap_disk_enabled(struct mem_cgroup *memcg)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_MEMCG */
- 
- static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
-@@ -1931,6 +1943,7 @@ static inline void count_objcg_event(struct obj_cgroup *objcg,
- bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
- void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
- void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-+bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
- #else
- static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- {
-@@ -1944,6 +1957,10 @@ static inline void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg,
- 					     size_t size)
- {
- }
-+static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-+{
-+	return false;
-+}
- #endif
- 
- #endif /* _LINUX_MEMCONTROL_H */
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e43b5aba8efc..b68c613c23a9 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5545,6 +5545,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 	WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
- #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
- 	memcg->zswap_max = PAGE_COUNTER_MAX;
-+	WRITE_ONCE(memcg->zswap_writeback, true);
- #endif
- 	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
- 	if (parent) {
-@@ -8177,6 +8178,12 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- 	rcu_read_unlock();
- }
- 
-+bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-+{
-+	return cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg
-+			&& READ_ONCE(memcg->zswap_writeback);
-+}
-+
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
- {
-@@ -8209,6 +8216,31 @@ static ssize_t zswap_max_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+static int zswap_writeback_show(struct seq_file *m, void *v)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
-+	return 0;
-+}
-+
-+static ssize_t zswap_writeback_write(struct kernfs_open_file *of,
-+				char *buf, size_t nbytes, loff_t off)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	int zswap_writeback;
-+	ssize_t parse_ret = kstrtoint(strstrip(buf), 0, &zswap_writeback);
-+
-+	if (parse_ret)
-+		return parse_ret;
-+
-+	if (zswap_writeback != 0 && zswap_writeback != 1)
-+		return -EINVAL;
-+
-+	WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
-+	return nbytes;
-+}
-+
- static struct cftype zswap_files[] = {
- 	{
- 		.name = "zswap.current",
-@@ -8221,6 +8253,12 @@ static struct cftype zswap_files[] = {
- 		.seq_show = zswap_max_show,
- 		.write = zswap_max_write,
- 	},
-+	{
-+		.name = "zswap.writeback",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = zswap_writeback_show,
-+		.write = zswap_writeback_write,
-+	},
- 	{ }	/* terminate */
- };
- #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
-diff --git a/mm/page_io.c b/mm/page_io.c
-index cb559ae324c6..5e606f1aa2f6 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
- 		folio_end_writeback(folio);
- 		return 0;
- 	}
-+
-+	if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))) {
-+		folio_mark_dirty(folio);
-+		return AOP_WRITEPAGE_ACTIVATE;
-+	}
-+
- 	__swap_writepage(&folio->page, wbc);
- 	return 0;
- }
-diff --git a/mm/shmem.c b/mm/shmem.c
-index cab053831fea..e5044678de8b 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1514,8 +1514,7 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
- 
- 		mutex_unlock(&shmem_swaplist_mutex);
- 		BUG_ON(folio_mapped(folio));
--		swap_writepage(&folio->page, wbc);
--		return 0;
-+		return swap_writepage(&folio->page, wbc);
- 	}
- 
- 	mutex_unlock(&shmem_swaplist_mutex);
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 260e01180ee0..42a478d1a21f 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -590,6 +590,9 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
- 	struct zswap_pool *pool = shrinker->private_data;
- 	bool encountered_page_in_swapcache = false;
- 
-+	if (!mem_cgroup_zswap_writeback_enabled(sc->memcg))
-+		return SHRINK_STOP;
-+
- 	nr_protected =
- 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
- 	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
-@@ -620,6 +623,9 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
- 	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
- 
-+	if (!mem_cgroup_zswap_writeback_enabled(memcg))
-+		return 0;
-+
- #ifdef CONFIG_MEMCG_KMEM
- 	cgroup_rstat_flush(memcg->css.cgroup);
- 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-@@ -935,6 +941,9 @@ static int shrink_memcg(struct mem_cgroup *memcg)
- 	struct zswap_pool *pool;
- 	int nid, shrunk = 0;
- 
-+	if (!mem_cgroup_zswap_writeback_enabled(memcg))
-+		return -EINVAL;
-+
- 	/*
- 	 * Skip zombies because their LRUs are reparented and we would be
- 	 * reclaiming from the parent instead of the dead memcg.
--- 
-2.34.1
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIG64kN3XnGCsuG3RxgZ9bQKfAyAoPHEx
+kcqBAb8xpweOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEw
+MjIwMDQyNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQBrxgxPGnoxCz5zx4XbxdDKAP84wEMaW6AlWyGhUOHpdmKSFHsy
+gkRjALFNGYLN6XfGTnlKCSG+gLLgRUUYExJ/Gyv1bw3pxV81tlFTG2aHrSV5LVx4idFHRhMaLTjD
+feD3BFOWJMryEz5Pgg00wUCd0xxZYtBPKGo41iB2DipL3mm4RMmNQb2y+AeL/rrykgfPPVOMIL4s
+N0jREoAjnFPciQx8pBebqegGIYWuIWrT23t5wmE92vLHzWVhT4pPnaWZTwJpSfiq1gDuC/RD1X9g
+g5xaDqpM4PwH/dlEjFrNXKjGznHfsF9mOlSVEZvzo1qygmQjlI8NwS7ppjScvF5k
+--000000000000053877060930e5fd--
