@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B277DEB9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9F57DEB9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbjKBEDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
+        id S1348397AbjKBEDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjKBED2 (ORCPT
+        with ESMTP id S1346757AbjKBEDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:03:28 -0400
+        Thu, 2 Nov 2023 00:03:33 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7DC127;
-        Wed,  1 Nov 2023 21:03:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90D8128;
+        Wed,  1 Nov 2023 21:03:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698897801; x=1730433801;
+  t=1698897806; x=1730433806;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=ZAhTTJPnwNh7IED7EgXf3uaooCsbRednT45HuNxBBu4=;
-  b=IuKr9Zvm/wvAGpp3Hg7eb3B5k8/lD3F/QXJWv/tsS/fFGd6zKSGkPVKg
-   0HYisRJ/qp42XUtKppZ5L9u2+XJUc/gLKfuYt+HnNSWRjrpFIfv1ggQZ/
-   g/4CcPNVYrGK+GoM5WvQv0kASJ8Y9VDJfqH+Mstg7tkxQqOfNH3WP6AIm
-   dnzWxcexRDFZjiFAN8JlaO4IeNFGysLAiMsvuvtvVixxFDGL3rX7++yBl
-   QLFIlf0LH9r3KV5uGBy14LomV/EdfX7GbpiUrn9CrlT1SgzUzM5K8HKb6
-   T9u/qZDk9t9pZm4ttmSioUi82TIa7ai6x8ozGbaT+0s1yLH30qLgL7vPv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="388448262"
+  bh=uiKjtjc1qeIjldPV5Boqk2rup5dIVAMxXp97CTrQPm0=;
+  b=VXp5TMeRZEExFDVBPLBqV9JpRVRQqxGvurta76S+gEVcF1VE4zgh6XIB
+   tZSk7N91THcafV3UyZo0Wk0b7wbSVUH4mD5dPGfm7LO+CTHqWdXJeO2Z1
+   rjJPfVK1TM70bxQJryvPycP0pvGf6OSwFoXo/FP1ZZ6hveyGsgl+oGD5a
+   bCY1TqQ/lN1OmcXbx4+zUV/KTir45FF/yfB5qnk1qrKuUefomyQ/sI2th
+   LrTpr6hYnFpi8BCaWGCOSfubbArPIQ1Xm1CmZ6yzMbLbDO/IyND9V6SzW
+   7y1bMKel3DHBwv5dx5NnFwlHCQInbf49NwW0J4moDCDzuFihoh1SHogwu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="388448245"
 X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="388448262"
+   d="scan'208";a="388448245"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 21:03:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="851785059"
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="851785060"
 X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="851785059"
+   d="scan'208";a="851785060"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
   by FMSMGA003.fm.intel.com with ESMTP; 01 Nov 2023 21:03:17 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qyOvK-000166-2h;
+        id 1qyOvK-000164-2Z;
         Thu, 02 Nov 2023 04:03:14 +0000
-Date:   Thu, 2 Nov 2023 12:03:06 +0800
+Date:   Thu, 2 Nov 2023 12:03:07 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, kernel@sberdevices.ru,
-        rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: Re: [PATCH v1 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <202311021126.DNKIAcbq-lkp@intel.com>
-References: <20231101102837.25205-3-ddrokosov@salutedevices.com>
+To:     Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v4] KVM x86/xen: add an override for
+ PVCLOCK_TSC_STABLE_BIT
+Message-ID: <202311021159.ppYESBYx-lkp@intel.com>
+References: <20231101183032.1498211-1-paul@xen.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101102837.25205-3-ddrokosov@salutedevices.com>
+In-Reply-To: <20231101183032.1498211-1-paul@xen.org>
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -71,107 +73,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Hi Paul,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on akpm-mm/mm-everything]
+[auto build test WARNING on 35dcbd9e47035f98f3910ae420bf10892c9bdc99]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Rokosov/mm-memcg-print-out-cgroup-name-in-the-memcg-tracepoints/20231101-183040
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231101102837.25205-3-ddrokosov%40salutedevices.com
-patch subject: [PATCH v1 2/2] mm: memcg: introduce new event to trace shrink_memcg
-config: sh-allnoconfig (https://download.01.org/0day-ci/archive/20231102/202311021126.DNKIAcbq-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021126.DNKIAcbq-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Paul-Durrant/KVM-x86-xen-add-an-override-for-PVCLOCK_TSC_STABLE_BIT/20231102-034122
+base:   35dcbd9e47035f98f3910ae420bf10892c9bdc99
+patch link:    https://lore.kernel.org/r/20231101183032.1498211-1-paul%40xen.org
+patch subject: [PATCH v4] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
+config: i386-randconfig-013-20231102 (https://download.01.org/0day-ci/archive/20231102/202311021159.ppYESBYx-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021159.ppYESBYx-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311021126.DNKIAcbq-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021159.ppYESBYx-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   mm/vmscan.c: In function 'shrink_node_memcgs':
->> mm/vmscan.c:5811:17: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_begin'; did you mean 'trace_mm_vmscan_lru_shrink_active'? [-Werror=implicit-function-declaration]
-    5811 |                 trace_mm_vmscan_memcg_shrink_begin(memcg,
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                 trace_mm_vmscan_lru_shrink_active
-   mm/vmscan.c:5845:17: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_end'; did you mean 'trace_mm_vmscan_lru_shrink_active'? [-Werror=implicit-function-declaration]
-    5845 |                 trace_mm_vmscan_memcg_shrink_end(memcg,
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                 trace_mm_vmscan_lru_shrink_active
-   cc1: some warnings being treated as errors
+   arch/x86/kvm/x86.c: In function 'kvm_guest_time_update':
+>> arch/x86/kvm/x86.c:3176:14: warning: unused variable 'xen_pvclock_tsc_unstable' [-Wunused-variable]
+    3176 |         bool xen_pvclock_tsc_unstable =
+         |              ^~~~~~~~~~~~~~~~~~~~~~~~
 
 
-vim +5811 mm/vmscan.c
+vim +/xen_pvclock_tsc_unstable +3176 arch/x86/kvm/x86.c
 
-  5791	
-  5792	static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-  5793	{
-  5794		struct mem_cgroup *target_memcg = sc->target_mem_cgroup;
-  5795		struct mem_cgroup *memcg;
-  5796	
-  5797		memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
-  5798		do {
-  5799			struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
-  5800			unsigned long reclaimed;
-  5801			unsigned long scanned;
-  5802	
-  5803			/*
-  5804			 * This loop can become CPU-bound when target memcgs
-  5805			 * aren't eligible for reclaim - either because they
-  5806			 * don't have any reclaimable pages, or because their
-  5807			 * memory is explicitly protected. Avoid soft lockups.
-  5808			 */
-  5809			cond_resched();
-  5810	
-> 5811			trace_mm_vmscan_memcg_shrink_begin(memcg,
-  5812							   sc->order,
-  5813							   sc->gfp_mask);
-  5814	
-  5815			mem_cgroup_calculate_protection(target_memcg, memcg);
-  5816	
-  5817			if (mem_cgroup_below_min(target_memcg, memcg)) {
-  5818				/*
-  5819				 * Hard protection.
-  5820				 * If there is no reclaimable memory, OOM.
-  5821				 */
-  5822				continue;
-  5823			} else if (mem_cgroup_below_low(target_memcg, memcg)) {
-  5824				/*
-  5825				 * Soft protection.
-  5826				 * Respect the protection only as long as
-  5827				 * there is an unprotected supply
-  5828				 * of reclaimable memory from other cgroups.
-  5829				 */
-  5830				if (!sc->memcg_low_reclaim) {
-  5831					sc->memcg_low_skipped = 1;
-  5832					continue;
-  5833				}
-  5834				memcg_memory_event(memcg, MEMCG_LOW);
-  5835			}
-  5836	
-  5837			reclaimed = sc->nr_reclaimed;
-  5838			scanned = sc->nr_scanned;
-  5839	
-  5840			shrink_lruvec(lruvec, sc);
-  5841	
-  5842			shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
-  5843				    sc->priority);
-  5844	
-  5845			trace_mm_vmscan_memcg_shrink_end(memcg,
-  5846							 sc->nr_reclaimed - reclaimed);
-  5847	
-  5848			/* Record the group's reclaim efficiency */
-  5849			if (!sc->proactive)
-  5850				vmpressure(sc->gfp_mask, memcg, false,
-  5851					   sc->nr_scanned - scanned,
-  5852					   sc->nr_reclaimed - reclaimed);
-  5853	
-  5854		} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
-  5855	}
-  5856	
+  3158	
+  3159	static int kvm_guest_time_update(struct kvm_vcpu *v)
+  3160	{
+  3161		unsigned long flags, tgt_tsc_khz;
+  3162		unsigned seq;
+  3163		struct kvm_vcpu_arch *vcpu = &v->arch;
+  3164		struct kvm_arch *ka = &v->kvm->arch;
+  3165		s64 kernel_ns;
+  3166		u64 tsc_timestamp, host_tsc;
+  3167		u8 pvclock_flags;
+  3168		bool use_master_clock;
+  3169	
+  3170		/*
+  3171		 * For Xen guests we may need to override PVCLOCK_TSC_STABLE_BIT as unless
+  3172		 * explicitly told to use TSC as its clocksource Xen will not set this bit.
+  3173		 * This default behaviour led to bugs in some guest kernels which cause
+  3174		 * problems if they observe PVCLOCK_TSC_STABLE_BIT in the pvclock flags.
+  3175		 */
+> 3176		bool xen_pvclock_tsc_unstable =
+  3177			ka->xen_hvm_config.flags & KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE;
+  3178	
+  3179		kernel_ns = 0;
+  3180		host_tsc = 0;
+  3181	
+  3182		/*
+  3183		 * If the host uses TSC clock, then passthrough TSC as stable
+  3184		 * to the guest.
+  3185		 */
+  3186		do {
+  3187			seq = read_seqcount_begin(&ka->pvclock_sc);
+  3188			use_master_clock = ka->use_master_clock;
+  3189			if (use_master_clock) {
+  3190				host_tsc = ka->master_cycle_now;
+  3191				kernel_ns = ka->master_kernel_ns;
+  3192			}
+  3193		} while (read_seqcount_retry(&ka->pvclock_sc, seq));
+  3194	
+  3195		/* Keep irq disabled to prevent changes to the clock */
+  3196		local_irq_save(flags);
+  3197		tgt_tsc_khz = get_cpu_tsc_khz();
+  3198		if (unlikely(tgt_tsc_khz == 0)) {
+  3199			local_irq_restore(flags);
+  3200			kvm_make_request(KVM_REQ_CLOCK_UPDATE, v);
+  3201			return 1;
+  3202		}
+  3203		if (!use_master_clock) {
+  3204			host_tsc = rdtsc();
+  3205			kernel_ns = get_kvmclock_base_ns();
+  3206		}
+  3207	
+  3208		tsc_timestamp = kvm_read_l1_tsc(v, host_tsc);
+  3209	
+  3210		/*
+  3211		 * We may have to catch up the TSC to match elapsed wall clock
+  3212		 * time for two reasons, even if kvmclock is used.
+  3213		 *   1) CPU could have been running below the maximum TSC rate
+  3214		 *   2) Broken TSC compensation resets the base at each VCPU
+  3215		 *      entry to avoid unknown leaps of TSC even when running
+  3216		 *      again on the same CPU.  This may cause apparent elapsed
+  3217		 *      time to disappear, and the guest to stand still or run
+  3218		 *	very slowly.
+  3219		 */
+  3220		if (vcpu->tsc_catchup) {
+  3221			u64 tsc = compute_guest_tsc(v, kernel_ns);
+  3222			if (tsc > tsc_timestamp) {
+  3223				adjust_tsc_offset_guest(v, tsc - tsc_timestamp);
+  3224				tsc_timestamp = tsc;
+  3225			}
+  3226		}
+  3227	
+  3228		local_irq_restore(flags);
+  3229	
+  3230		/* With all the info we got, fill in the values */
+  3231	
+  3232		if (kvm_caps.has_tsc_control)
+  3233			tgt_tsc_khz = kvm_scale_tsc(tgt_tsc_khz,
+  3234						    v->arch.l1_tsc_scaling_ratio);
+  3235	
+  3236		if (unlikely(vcpu->hw_tsc_khz != tgt_tsc_khz)) {
+  3237			kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
+  3238					   &vcpu->hv_clock.tsc_shift,
+  3239					   &vcpu->hv_clock.tsc_to_system_mul);
+  3240			vcpu->hw_tsc_khz = tgt_tsc_khz;
+  3241			kvm_xen_update_tsc_info(v);
+  3242		}
+  3243	
+  3244		vcpu->hv_clock.tsc_timestamp = tsc_timestamp;
+  3245		vcpu->hv_clock.system_time = kernel_ns + v->kvm->arch.kvmclock_offset;
+  3246		vcpu->last_guest_tsc = tsc_timestamp;
+  3247	
+  3248		/* If the host uses TSC clocksource, then it is stable */
+  3249		pvclock_flags = 0;
+  3250		if (use_master_clock)
+  3251			pvclock_flags |= PVCLOCK_TSC_STABLE_BIT;
+  3252	
+  3253		vcpu->hv_clock.flags = pvclock_flags;
+  3254	
+  3255		if (vcpu->pv_time.active)
+  3256			kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0, false);
+  3257	#ifdef CONFIG_KVM_XEN
+  3258		if (vcpu->xen.vcpu_info_cache.active)
+  3259			kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
+  3260						offsetof(struct compat_vcpu_info, time),
+  3261						xen_pvclock_tsc_unstable);
+  3262		if (vcpu->xen.vcpu_time_info_cache.active)
+  3263			kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0,
+  3264						xen_pvclock_tsc_unstable);
+  3265	#endif
+  3266		kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
+  3267		return 0;
+  3268	}
+  3269	
 
 -- 
 0-DAY CI Kernel Test Service
