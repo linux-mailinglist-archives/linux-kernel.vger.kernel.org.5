@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 292AB7DF954
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFD67DF95E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345256AbjKBR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S1376705AbjKBR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234577AbjKBR6f (ORCPT
+        with ESMTP id S234923AbjKBR6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 13:58:35 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F28D67
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:17 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d86dac81f8fso1517704276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:17 -0700 (PDT)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE887D78
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:19 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7d261a84bso17649837b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947897; x=1699552697; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947899; x=1699552699; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gk/VzT94qDMubCcKVAsuWCAs+LXHGNl5LhGnwC/C5pk=;
-        b=ah9r9+5Mx7Ay7TVE5aEN5x7jcF+tPkgOeQTM+jnCw68fHVIdy2pwm5fsbDFqETN9zx
-         p3jRoljPgx+Zoo0KSKnzKTcH9d1mwZBNi4TSovjqyKbZGnbxLOFe8zJHbYZCIEYriROw
-         hxFCPC5kmigF1MoUtTqWKyXpgH+DDvbesAVwQpqBrNdGsl2XqOJTxW98PVta5tIajAP1
-         Eq+qYga0+wukw1Z9kWISluFhq1CK6/kmklkFKNdHnxGkoza9ALmnvNEposdRX2SQTuXA
-         qwDvlDCeC68uEKAdFzcGnLONYrJa40yUcVhuz5WP0/fqFRDe3Nn9svBm03kAnyhzEYMZ
-         D33A==
+        bh=K5PgdsnPH7oI10azUBd0z2aRarT0oGQNjgB7Dvx0Ne0=;
+        b=0JC1pR9NC+wjbC7AoiPY/Rd2b0kYe/RInF1IQEjZSYwlobCeoKmMIriyHU/i3D//Ek
+         rIqQOyxjbCzCw7duHKXj9bfmlQAsWfoD3pCEE/MX9M95nIaPydlj5xZYHq4tGK59tLdB
+         ZoXcb7Z5damA8LnffX8SLcHMD3YFgHnbihXd6VTXcrZI/Rftu0k0ee4n61/B5VaajnCZ
+         oSAx8NafXUvkLfe7CiE+R6XQCsxExi4VsgXL+Qqan+NcVR4YppdKvM/5oZr2tRVQAEAl
+         1pKg/qpDKSPkYqYM2GLIRJCCadCTmXy6f+cVmZRHQ/LFKyIkzIt4tMxTHCYoPpQoQAEA
+         viCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947897; x=1699552697;
+        d=1e100.net; s=20230601; t=1698947899; x=1699552699;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gk/VzT94qDMubCcKVAsuWCAs+LXHGNl5LhGnwC/C5pk=;
-        b=at732XxqwcauwDPMYZjpCnmyylQx5SdD41ard3+CnLtyKnXAbKGxV+QjyRGTJt2n8t
-         I39QZHrDdb9hdm9sg4odsR8EBJBSclPXoX2+h+bbjZ1xPkYLMNxyX7iENF4wrDTB9Hwg
-         b6eOoE75Acl6BxOLQ0H8MlaeQoUcq6KIyWenUZDZOtH7utJrxzLCFHx/l3IaPEIlNicR
-         PhhFJYeev4kslyC5RHM/veQGUlwa545O/Dx8ABwzAv3p8HZvDd6ZQcayg3DLu6jJ5wMV
-         hCYA7etqyIE0tgUS1ShkyztDxBNcAEGBLXXNYeotTdaKQAgjaa+l4taHw2hbpYDQu4kC
-         hh8Q==
-X-Gm-Message-State: AOJu0Yw7tr90bRNdZaV1SIgz6VB0yzCbr+D2n4nzk2IDUv9iCvL7e3ZY
-        pBdQXnelZ5x7ASLOPyMaNR2Mfxmxtugj
-X-Google-Smtp-Source: AGHT+IGpeDRD/GEyMSa21NJNFRrWsZEsEPu1fdzYK2ak56e29qQnCpW4H/uIWSAKpNpQBE5QB1PJMQbOQvxL
+        bh=K5PgdsnPH7oI10azUBd0z2aRarT0oGQNjgB7Dvx0Ne0=;
+        b=GUwCg6vOHERcyL+F7f8nvRODXfPEAQsdJRnyhhe89BkOznuYCAIWwUZA8jR1UNUNFc
+         lX0V1YWFIbswkXdaMJQruVMwpIxoJUh98HVK0KWnKc+6n4NjI/w8pjSq9J/LyAwCYxfI
+         Z6KstyYOHspc2p7v8Ydb8gqZwZYgsvbznF0lHdUrKzr+gd28icaI+IcUerabaZYdlmxL
+         s1wgOS84QoUfu1Qj/LZtYgjdFqBym7M6bK7Dyf6Sc62fCG/bw/lTh9/REvVtRhinXYni
+         b8d5er5+kuXWqu1kt4i2wZTZjRBzSXaKH00wk0oKHIDKufZWv58VsjPbGiosCN9OeVo1
+         ehPA==
+X-Gm-Message-State: AOJu0Yyq4Dh/IsTqJgwq7FElkNqPmrz3xAgv0Q/wHlUTLbFKPURx0rjP
+        PZuGVVengPph3qZH0YTN7fjkUdf9O0h1
+X-Google-Smtp-Source: AGHT+IE/xmbYEWKH6RBOQRI171I9yC8HUIHsRXQIAw0gBljxL458sfjGnRwpi9ubJuKxlU9ZGOtOe9IETfdR
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a25:770f:0:b0:da0:73c2:db78 with SMTP id
- s15-20020a25770f000000b00da073c2db78mr397036ybc.9.1698947896754; Thu, 02 Nov
- 2023 10:58:16 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:56:51 -0700
+ (user=irogers job=sendgmr) by 2002:a81:4ed5:0:b0:59b:c6bb:bab9 with SMTP id
+ c204-20020a814ed5000000b0059bc6bbbab9mr8387ywb.3.1698947898905; Thu, 02 Nov
+ 2023 10:58:18 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:56:52 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-10-irogers@google.com>
+Message-Id: <20231102175735.2272696-11-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 09/53] perf maps: Switch modules tree walk to io_dir__readdir
+Subject: [PATCH v4 10/53] perf record: Be lazier in allocating lost samples buffer
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -101,67 +101,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compared to glibc's opendir/readdir this lowers the max RSS of perf
-record by 1.8MB on a Debian machine.
+Wait until a lost sample occurs to allocate the lost samples buffer,
+often the buffer isn't necessary. This saves a 64kb allocation and
+5.3kb of peak memory consumption.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/machine.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ tools/perf/builtin-record.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index a985d004aa8d..be3dab9d5253 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -36,6 +36,7 @@
- #include <internal/lib.h> // page_size
- #include "cgroup.h"
- #include "arm64-frame-pointer-unwind-support.h"
-+#include <api/io_dir.h>
- 
- #include <linux/ctype.h>
- #include <symbol/kallsyms.h>
-@@ -1552,25 +1553,21 @@ static int maps__set_module_path(struct maps *maps, const char *path, struct kmo
- 
- static int maps__set_modules_path_dir(struct maps *maps, const char *dir_name, int depth)
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 9b4f3805ca92..b6c8c1371b39 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1924,21 +1924,13 @@ static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
+ static void record__read_lost_samples(struct record *rec)
  {
--	struct dirent *dent;
--	DIR *dir = opendir(dir_name);
-+	struct io_dirent64 *dent;
-+	struct io_dir iod;
- 	int ret = 0;
+ 	struct perf_session *session = rec->session;
+-	struct perf_record_lost_samples *lost;
++	struct perf_record_lost_samples *lost = NULL;
+ 	struct evsel *evsel;
  
--	if (!dir) {
-+	io_dir__init(&iod, open(dir_name, O_CLOEXEC | O_DIRECTORY | O_RDONLY));
-+	if (iod.dirfd < 0) {
- 		pr_debug("%s: cannot open %s dir\n", __func__, dir_name);
- 		return -1;
- 	}
+ 	/* there was an error during record__open */
+ 	if (session->evlist == NULL)
+ 		return;
  
--	while ((dent = readdir(dir)) != NULL) {
-+	while ((dent = io_dir__readdir(&iod)) != NULL) {
- 		char path[PATH_MAX];
--		struct stat st;
- 
--		/*sshfs might return bad dent->d_type, so we have to stat*/
- 		path__join(path, sizeof(path), dir_name, dent->d_name);
--		if (stat(path, &st))
--			continue;
+-	lost = zalloc(PERF_SAMPLE_MAX_SIZE);
+-	if (lost == NULL) {
+-		pr_debug("Memory allocation failed\n");
+-		return;
+-	}
 -
--		if (S_ISDIR(st.st_mode)) {
-+		if (io_dir__is_dir(&iod, dent)) {
- 			if (!strcmp(dent->d_name, ".") ||
- 			    !strcmp(dent->d_name, ".."))
- 				continue;
-@@ -1603,7 +1600,7 @@ static int maps__set_modules_path_dir(struct maps *maps, const char *dir_name, i
+-	lost->header.type = PERF_RECORD_LOST_SAMPLES;
+-
+ 	evlist__for_each_entry(session->evlist, evsel) {
+ 		struct xyarray *xy = evsel->core.sample_id;
+ 		u64 lost_count;
+@@ -1961,6 +1953,14 @@ static void record__read_lost_samples(struct record *rec)
+ 				}
+ 
+ 				if (count.lost) {
++					if (!lost) {
++						lost = zalloc(PERF_SAMPLE_MAX_SIZE);
++						if (!lost) {
++							pr_debug("Memory allocation failed\n");
++							return;
++						}
++						lost->header.type = PERF_RECORD_LOST_SAMPLES;
++					}
+ 					__record__save_lost_samples(rec, evsel, lost,
+ 								    x, y, count.lost, 0);
+ 				}
+@@ -1968,9 +1968,18 @@ static void record__read_lost_samples(struct record *rec)
+ 		}
+ 
+ 		lost_count = perf_bpf_filter__lost_count(evsel);
+-		if (lost_count)
++		if (lost_count) {
++			if (!lost) {
++				lost = zalloc(PERF_SAMPLE_MAX_SIZE);
++				if (!lost) {
++					pr_debug("Memory allocation failed\n");
++					return;
++				}
++				lost->header.type = PERF_RECORD_LOST_SAMPLES;
++			}
+ 			__record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
+ 						    PERF_RECORD_MISC_LOST_SAMPLES_BPF);
++		}
  	}
- 
  out:
--	closedir(dir);
-+	close(iod.dirfd);
- 	return ret;
- }
- 
+ 	free(lost);
 -- 
 2.42.0.869.gea05f2083d-goog
 
