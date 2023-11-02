@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D77DEEE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4237DEEE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345721AbjKBJaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
+        id S1345610AbjKBJa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234890AbjKBJaF (ORCPT
+        with ESMTP id S234512AbjKBJa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:30:05 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9AD139;
-        Thu,  2 Nov 2023 02:30:02 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso1110176a12.1;
-        Thu, 02 Nov 2023 02:30:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698917401; x=1699522201; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=v7/woVjmU2RBJPq+smg6r80XOve4WhdwHN8IQS4+gXE=;
-        b=GqYjmwM8c+8+Io4Yui7sSe2wTZL9kU8/7YjRVRo/liPpaRXdXYCzjqj2H9eJ8H+Nvc
-         lCSQ8A4ajT62BV3Pg37K7jgc6BLInuHrkicEUfeGBqyf5HWSqL0dMEcEv2Qfx/9rqJ2a
-         Ukfs7VHhZ4kS44MXE8/33v6Oz1lmYud610rvruwHVfgwbIdGPclbxOf3eq8DX8w9zXmH
-         6+BF7n4lCUMKEwQ2E+2gbjDvljIU/4ZfytYiO8Nu9vmo6rTvDmCy5EFbCPGs88h5MCA2
-         FO4hmTdFpWKYZcRVQvQZfD/6SVryAGYHlT1Lw+tJnbqD6z4cKKgCzp7aYMa05OvesyV6
-         UYmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698917401; x=1699522201;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7/woVjmU2RBJPq+smg6r80XOve4WhdwHN8IQS4+gXE=;
-        b=u5/cPrK2OixWh39yJz700wXnZQlY9idkY5jGzvIYJpj7dCLnIcNGMcnZG+i5PXCNu6
-         d20mjOG+4lCuMYOgOPtIQFtqUbFkFk7NBy8xLogg3nzJ9bM03I+XDjBpYrnNbRwadgIs
-         b5xwI681s8RqEDxPRxb5dTjSoBUAtEneslTYV0m5vHB+GMcsFgxCWc3Ag8zOZSR3+wao
-         mHbj86ZrIqhBYKasan25D0YjvH2EkFSExgV9ByIm7amEJSNBUnEJyZHYwQW7+ZZpBppT
-         h8hdS2Q1aQtX37OP9+abfMAPIBUWAEmqpZNNS0qdeZs89HrC7KqcaPGKqO1N9f+BEmXL
-         gN2w==
-X-Gm-Message-State: AOJu0YzA+blrJKpqzfp0ooLWNdwOkX84E6n6VT8TD6BreOKdqKvqK7Zb
-        t67tXJjTEEJkAiZZLnf5LHM=
-X-Google-Smtp-Source: AGHT+IHzxzXJreH8ARsObOVNO0E1iGFYPjKZEsSuxYNAATjQOicsHRAcm7e/QPrQfY6dlnivz/aKgQ==
-X-Received: by 2002:a17:906:fd89:b0:9ce:24d0:8a01 with SMTP id xa9-20020a170906fd8900b009ce24d08a01mr4280263ejb.60.1698917400807;
-        Thu, 02 Nov 2023 02:30:00 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id qh13-20020a170906ecad00b009b29553b648sm888874ejb.206.2023.11.02.02.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 02:30:00 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Nov 2023 10:29:58 +0100
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] tools/build: Add clang cross-compilation flags to
- feature detection
-Message-ID: <ZUNsFkZWxws6c5Vx@krava>
-References: <20231102081441.240280-1-bjorn@kernel.org>
+        Thu, 2 Nov 2023 05:30:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B80133;
+        Thu,  2 Nov 2023 02:30:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0531021A0C;
+        Thu,  2 Nov 2023 09:30:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1698917448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pcw+LbWUfSvxfYB/h2cYbMJhx/7SmPVWKYqXZJ8Pv9I=;
+        b=Dym5O29yyxXSjikUeyZ4MonWJ8zuFBbC0jJXdcLz/yKg3Gsf7Nl2fmYrR6RPXDy7hwu98N
+        pISuW0g3YutuhubxJnAcbXXSN7q4kDEjywDsluYpt9moR+m8xUo9djqpMnmko+tdBNXN7F
+        VDE3IgXVtacgzwmhX29LTAvEZsPh6tg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA56C138EC;
+        Thu,  2 Nov 2023 09:30:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TCV1KkdsQ2U/awAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 02 Nov 2023 09:30:47 +0000
+Date:   Thu, 2 Nov 2023 10:30:47 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        aneesh.kumar@linux.ibm.com, weixugc@google.com, apopple@nvidia.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <aou443yuqdizirtjddrrcfn4hoo3m3nort3g3mvsbdcg3w2ruc@m3iumue3tlps>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+ <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+ <20231031152142.GA3029315@cmpxchg.org>
+ <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+ <20231031162216.GB3029315@cmpxchg.org>
+ <3ilajsu7rlatugtmp63r6ussfdhqoxokj2vgmx3ki3zmx7f5po@i64b27upx5qx>
+ <87edh81xqa.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231102081441.240280-1-bjorn@kernel.org>
+In-Reply-To: <87edh81xqa.fsf@yhuang6-desk2.ccr.corp.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,84 +73,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 09:14:41AM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
+On Thu 02-11-23 14:21:49, Huang, Ying wrote:
+> Michal Hocko <mhocko@suse.com> writes:
 > 
-> When a tool cross-build has LLVM=1 set, the clang cross-compilation
-> flags are not passed to the feature detection build system. This
-> results in the host's features are detected instead of the targets.
+> > On Tue 31-10-23 12:22:16, Johannes Weiner wrote:
+> >> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
+> > [...]
+> >> > Is there any specific reason for not having a new interleave interface
+> >> > which defines weights for the nodemask? Is this because the policy
+> >> > itself is very dynamic or is this more driven by simplicity of use?
+> >> 
+> >> A downside of *requiring* weights to be paired with the mempolicy is
+> >> that it's then the application that would have to figure out the
+> >> weights dynamically, instead of having a static host configuration. A
+> >> policy of "I want to be spread for optimal bus bandwidth" translates
+> >> between different hardware configurations, but optimal weights will
+> >> vary depending on the type of machine a job runs on.
+> >
+> > I can imagine this could be achieved by numactl(8) so that the process
+> > management tool could set this up for the process on the start up. Sure
+> > it wouldn't be very dynamic after then and that is why I was asking
+> > about how dynamic the situation might be in practice.
+> >
+> >> That doesn't mean there couldn't be usecases for having weights as
+> >> policy as well in other scenarios, like you allude to above. It's just
+> >> so far such usecases haven't really materialized or spelled out
+> >> concretely. Maybe we just want both - a global default, and the
+> >> ability to override it locally. Could you elaborate on the 'get what
+> >> you pay for' usecase you mentioned?
+> >
+> > This is more or less just an idea that came first to my mind when
+> > hearing about bus bandwidth optimizations. I suspect that sooner or
+> > later we just learn about usecases where the optimization function
+> > maximizes not only bandwidth but also cost for that bandwidth. Consider
+> > a hosting system serving different workloads each paying different
+> > QoS.
 > 
-> E.g, triggering a cross-build of bpftool:
+> I don't think pure software solution can enforce the memory bandwidth
+> allocation.  For that, we will need something like MBA (Memory Bandwidth
+> Allocation) as in the following URL,
 > 
->   cd tools/bpf/bpftool
->   make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
+> https://www.intel.com/content/www/us/en/developer/articles/technical/introduction-to-memory-bandwidth-allocation.html
 > 
-> would report the host's, and not the target's features.
+> At lease, something like MBM (Memory Bandwidth Monitoring) as in the
+> following URL will be needed.
 > 
-> Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
-> feature detection makefile.
+> https://www.intel.com/content/www/us/en/developer/articles/technical/introduction-to-memory-bandwidth-monitoring.html
 > 
-> Fixes: cebdb7374577 ("tools: Help cross-building with clang")
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
-> ---
->  tools/build/Makefile.feature | 2 +-
->  tools/build/feature/Makefile | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 934e2777a2db..25b009a6c05f 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -8,7 +8,7 @@ endif
->  
->  feature_check = $(eval $(feature_check_code))
->  define feature_check_code
-> -  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
-> +  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" CLANG_CROSS_FLAGS="$(CLANG_CROSS_FLAGS)" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
->  endef
->  
->  feature_set = $(eval $(feature_set_code))
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index dad79ede4e0a..0231a53024c7 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -84,12 +84,12 @@ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
->  
->  all: $(FILES)
->  
-> -__BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-> +__BUILD = $(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
->    BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
->    BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
->    BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
->  
-> -__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-> +__BUILDXX = $(CXX) $(CXXFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
->    BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
->  
->  ###############################
-> @@ -259,10 +259,10 @@ $(OUTPUT)test-reallocarray.bin:
->  	$(BUILD)
->  
->  $(OUTPUT)test-libbfd-liberty.bin:
-> -	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
-> +	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
->  
->  $(OUTPUT)test-libbfd-liberty-z.bin:
-> -	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
-> +	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
+> The interleave solution helps the cooperative workloads only.
 
-should we add this also to test-compile-32.bin/test-compile-x32.bin
-targets?
+Enforcement is an orthogonal thing IMO. We are talking about a best
+effort interface.
 
-jirka
-
->  
->  $(OUTPUT)test-cplus-demangle.bin:
->  	$(BUILD) -liberty
-> 
-> base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
-> -- 
-> 2.40.1
-> 
-> 
+-- 
+Michal Hocko
+SUSE Labs
