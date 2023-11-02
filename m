@@ -2,327 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 629C47DE9E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A237DE9F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348158AbjKBBOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 21:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        id S1348191AbjKBBSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 21:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348147AbjKBBOr (ORCPT
+        with ESMTP id S1347896AbjKBBSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 21:14:47 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2084.outbound.protection.outlook.com [40.107.92.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC46FC;
-        Wed,  1 Nov 2023 18:14:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sgej03euOlMjk2ftDQa5kL68HWc2Je9VoDRlJJ+IaSBAXd7V4ivZ4ydXRhG1d/c49NftFeKP3aP0vge57dAeuoNbfbTr+d+ADYxRDg3mKr/qwT0uxRL028ScS1GQt2WE7KcncyzSxltYdmF7/edk0DEoZAfTADVMkOuYefzYx9jGRF1s9PTaGd9POmnLpzFs8a94fa6Aa8a1m+MXxwGyRSp0c42PAqfU07Y+dbZsMQ4RHc1pWU72nbtefCE6JTopEPEYkckI2DB0zRr+ERZYd85ZJkOmPokNrgdOmMKlisUtv8KpJmDvaHQb4pkJrEmdt0GywXxWJ5kAa4Cy2Rd7Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1q/Z71deQ7J/xEcvR0+lxoqnzw2ubuoKlGHkRO3hgBc=;
- b=II4dJGpF6hrtfYV4qIVYaJ3uhQME0FFGSD+DW0Vu0jFlHHQNoilKBEKUE5dWt5mkn9/Sc3J1al3GvSPzIyuID6mH55GtrZnLL+VzSD/s/HHn2Lmzxq37YGc0CcHclQ2m7bFwxfXf5whEGQrOytpp69UXjyWDnMD51mhdSZ+Df4cIdNsvBXkpNV8sEQLQDAYmC8taqGIyJ8Ykt2pthgQhtC4zCEErbMHFTs/TT7GeXU+bTg5OcM4MCIwZ0Ojcdxx1BbhPdWsHxzCZQZ3yhu2DxVAUMSug8X4NITRyHBC/fUGLPUdJEWpi4l2HcLzH2O9Dm7PnKRwHkZLTLHnqgTGIrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1q/Z71deQ7J/xEcvR0+lxoqnzw2ubuoKlGHkRO3hgBc=;
- b=0Yj9y3I6pkmc4Mts4CR4YkRCSlnYFhSKInT9VbVsUatcZ8p0+swu09ThalgEkXkSDbfUgWVlAVOH4Ut2xqOAL2C8eYgureVdPuDoNueUhish1G4NNJEiyR3hItwiJlANr8v2V76vZSjaOs9vnZLeyFTlrO662a2LHBK51puNPM0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MW3PR12MB4364.namprd12.prod.outlook.com (2603:10b6:303:5c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
- 2023 01:14:37 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6933.024; Thu, 2 Nov 2023
- 01:14:37 +0000
-Message-ID: <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
-Date:   Wed, 1 Nov 2023 20:14:31 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in
- pcie_bandwidth_available()
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, mika.westerberg@linux.intel.com,
-        andreas.noever@gmail.com, michael.jamet@intel.com,
-        YehezkelShB@gmail.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Alexander.Deucher@amd.com
-References: <20231101225259.GA101390@bhelgaas>
-Content-Language: en-US
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20231101225259.GA101390@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0169.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::24) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Wed, 1 Nov 2023 21:18:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B879BFD;
+        Wed,  1 Nov 2023 18:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698887921; x=1730423921;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=w5QvYhQUm/Yol4oko8AhL7voOb2RQaezwjaupPx38bg=;
+  b=Z80D6ox1i5ipKkheGzDQY5aAXazL6m/wa8pbU3lqUts581G/6o7taEKg
+   n+tUi8V1157+rMgx0hnGBkioFyGOmrmeWZZGI1nIX0/Q9DUcSpkMFTGOu
+   PmESi9AOKbjZmDkeTxx0Tha9Yp9q6Lu/uG/o6rfa4e/oE7UbpzMU64R3G
+   XR3h+Kvof12XwRQvsYI1NievzM3ZaKYwKr7WM/LqcwgmtT84H8bj0YhCa
+   9SCe1orplQhW3EK8++RPUoUqpdYo38epoAPLV51pCmfWaULcp5XhnASSt
+   t/B06oMzD0SzWAYhb6iJ6XSd9J80fbmbK8jY6otCr+Y3iUEwTyoRAw9ge
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="1531622"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="1531622"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 18:18:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="826949234"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="826949234"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 18:18:33 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Vishal Verma <vishal.l.verma@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nvdimm@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v8 2/3] mm/memory_hotplug: split memmap_on_memory
+ requests across memblocks
+In-Reply-To: <20231101-vv-kmem_memmap-v8-2-5e4a83331388@intel.com> (Vishal
+        Verma's message of "Wed, 1 Nov 2023 16:51:52 -0600")
+References: <20231101-vv-kmem_memmap-v8-0-5e4a83331388@intel.com>
+        <20231101-vv-kmem_memmap-v8-2-5e4a83331388@intel.com>
+Date:   Thu, 02 Nov 2023 09:16:32 +0800
+Message-ID: <87edh93qfj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW3PR12MB4364:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2aea99fc-62a8-4f42-9579-08dbdb411446
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g6HnpA9f1vE3eLxljYjEw1Ui61EfakvJEN00g78H2Tk5sKSMaRsjoX4VRp1fsYeBij9ytqoWNlijR4SQH2Dt6iapxAyIBPJl82Z4MoWJCD+eMkZsazYxRU7IcefShFqHkPcRS5WBIj+x0IvoGla+lx2TUr0wG5H41ceGXPKQch5nJlNVbdZ+Oqw+AuWUQaeLRySp7BRhL2EDGIkuKH6Pst+u/UaRL36dghyKeI7OxYondsH/bB/ktfbB2mI/f5v2AyC4uCz9P9Mxyye8tq7Gh0e5itce9xqX1bRdC7LepYoVZ+LciN3f0vh2e2afrazRb9a4fmotn99+xC7dXZyQMfEQRN54TCwogOS1tfbV3+MCP2+pc92u81iyCsLRAulsn6xxuwArCXwYhHcBUktNIYCWvyeL6Tp+etM/uNC65oahNxYjDJCdMrBxPYPlt77FcEeB8OgPhtknQJ9akVliPDKlAeK7FCRrnaBOxOP+LFLlo3N2CZBqhMko8Qlbi59d1TYkBPECv4xpu9K5qyLd0b+QaZScmo8HIH87f0tJNFecK3Zg3UvHRdCOicRH+aoJepw8s6xUUwcTrdUCwtvicREdKvBlDIWmPhkmHUtPbXMsqP32AevflqP0bNBHTJwk2dPV8zGPR0tPJherxD4/TO5kxcpvrK61epsdPyibZ8JizcxJDt5Ek+q+kc1BM6iNqBR2EnOFN+Wvtn5o2raVXQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(136003)(376002)(39860400002)(230273577357003)(230173577357003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(2616005)(5660300002)(66574015)(86362001)(31696002)(26005)(6506007)(6486002)(966005)(478600001)(6666004)(66556008)(53546011)(36756003)(66476007)(66946007)(6916009)(316002)(38100700002)(41300700001)(31686004)(6512007)(44832011)(2906002)(83380400001)(8936002)(8676002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUoyczE3OGlCU1g5eDRFd2d4YnhOUGo5UEw5L0hyb1FhQW1ibDN0T2hCQTJw?=
- =?utf-8?B?bnBWbWIvN0prMDRZbUlaRUVhT0JwSUwyekJJeGdOdllVV2x0SmU1WGc1bUI4?=
- =?utf-8?B?RE9NV0R5eFo1K1lUc3ZkTEQrNnpSdlU1cXlXTVRNUlBuaTd0S0RVWnlpWDdW?=
- =?utf-8?B?cFVwbEhqWmQrSE9sUXZ3OE5oN2paWUFzbkF4ZHJVMktjYTB2NG9nTUxSTHhp?=
- =?utf-8?B?Z1czOUxkcUhuZ3hrQ29YV0lvby9nR1haK1Z1YXd6VTZjY3J0SUYvZ1haeVhq?=
- =?utf-8?B?TUhSREYxc1d2Q1RBWStxZFNWSW9qV2ZuV2tTaXNvUjFJejYwa1lHTkZzRUYz?=
- =?utf-8?B?T1dtYnVOWTJJRnhZSjBRbmdRQzJ1ZGtDSTQyMXFoaEhpZTNnQW5lSzR1aWJY?=
- =?utf-8?B?K0pQNXZWR0xJbUFubzNaS2M5VWZqeGVwMGlSRzlCMmRmajcvdW1xZmQ3Q25I?=
- =?utf-8?B?cWR5OVd1ZGlGZjhjbU9veWx3dlBDQzEvWUQ1OTNJd2poWWhacUZHTnQyME15?=
- =?utf-8?B?N1RnWUNsbllwUTRsd0ZLdlNmL3puNW1FMVlSdTRaSHREU1VYMEtZaTFXSERi?=
- =?utf-8?B?ekJWTWJmd0kxQ2tyVWFCKzR0bnFOK1orN0crNjRyYkVLZDdybGtVcGlVcmc0?=
- =?utf-8?B?NHJ2YzVQUnExanFwRnhpaWpENkZwS0hjc211dk14aXBZUEhhNG1YQzkxVVRv?=
- =?utf-8?B?UldvSURvU2E0TlJHWEM2UE1XQlFzN3RsT2huaFFxZVZxa0liNTdJaThXYU4r?=
- =?utf-8?B?YW5WTXZHU1J5V2dqYjFOR2xWT1QzNE9tN2ZncXIzK3daUWJYamVIR05xUzFj?=
- =?utf-8?B?TjJudVF2QklpenByS1BKNEJLeWF1enZlM3Y1SG85ckFNWG5LVjFnS1dmbTNU?=
- =?utf-8?B?VnEwUmJ6NUw1R3RMWFBoK0gyYk5PME1MT2lOU1E5azdRKzhjN2UzR2FTQXZR?=
- =?utf-8?B?T3RFa2FnUzB1OTBacHJsSDluc1dVMVg1ZTcyZ1pnUGJscnpUNVUzbGhwTTRh?=
- =?utf-8?B?RG9Fci9FQXpwTUdLRHZLREZxdEJlWnkrU3JxMWUzQVIrNWYzUlg0MUdMOXBB?=
- =?utf-8?B?MnoraGVZb0lEM3dIR3ZvaThteWxaUldaaTlXWDF1T01yNFY2QTVxdFdGUGYw?=
- =?utf-8?B?SWVHTGZ3RVllK2tpK0xxQ0ROUHFQZjRHY04veEE0NWFQbzJMSG1McGRLNTVp?=
- =?utf-8?B?eXo2UWpHQTlndTR6V3RoYWY4LzFFSjhxZ3lBZHVVOUZ1M0wrOEhnR1F2eSs2?=
- =?utf-8?B?eXk0UERQMVB4TmxYQWg5Tk80Z0hNdGRJMXpkQzVIZzJEM2UrVzk3ajBVQ1RM?=
- =?utf-8?B?Y3dwZHZnenlpaHlVUHY1aWgzUnVRaGpycDE3NzFlT1Z3OWVoajN4a1BMT3NH?=
- =?utf-8?B?Q0N3eUQ2ZkJPUHVnYU5DRmZkTWZKMnJhandXVVg1YzVxb3BzMWhpNUdlZWxM?=
- =?utf-8?B?K0JpVmsxaitBck9uV0k1UEJSNW9XM3lVRHNrZHhTZUdsQS8zSmVmT0U1QndY?=
- =?utf-8?B?bHJ6YVdHSjdqcmloeWRlS0VUcWp5TzdWVEZId0NYMmhMbjFJa1lmaTVIVTdx?=
- =?utf-8?B?MFpUU1NZTVMvK3hOT2QyOFFYdnArZTFiK096S0ttMENpT2hhR2NTS040TEVs?=
- =?utf-8?B?R0lrTnpFYXRXaW9DNXhUSHR5NHhEUXYrTXhOZ0VzNzNYa0FlQlpjaWVpdE5u?=
- =?utf-8?B?elQ2UkhWMFV3SkY0aWVtSHRjaXRobHExYjZvdkY3OFlmTXhMQmp0QnZkL1Fw?=
- =?utf-8?B?TTl1Yk90NG5MZWpYenBoc2FCSmpLNTVRYUpyWHczMXhEa3FwSTlNMVM4ek1i?=
- =?utf-8?B?Y0FwR3N1VkIxa00ycFdSQTJQZ1E4a1E1TTVGZ1diNVg4MDZXMzhqczhmbDZk?=
- =?utf-8?B?bWRNNTl1NHdnSEx0NUxYUG1MaEc1VVhwOVczVHhkdkFHN2EvS3JXUjg0N2Q4?=
- =?utf-8?B?dXpwc0lXNy9mbFFtcjN2b1lUZU53Uko1WHVBR3FEVHZHTzBnRXplUkdGK0U3?=
- =?utf-8?B?TUsrK2FEUDVtTkxsWkZIWjhwcWpXOWFYbVMvYlNJUGlSV0YyUDNpUnZVVW53?=
- =?utf-8?B?TDB5aWxRZEZWRlVGYlpxRlVPNFg3ZjFzcWJNbEJ1ZFd1cllGeGN5VmJuMjli?=
- =?utf-8?Q?1cofZaFOkyouW5JCBxNtVQrCD?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2aea99fc-62a8-4f42-9579-08dbdb411446
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 01:14:36.5973
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O2WdCTUIQ4GowMRuLtwNdVA0fMDofchArzKGZqAQg0jBWJK+P94BmRpBiEOJCNdZdTdCWC9qXdxS1/TwjNP71g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4364
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/2023 17:52, Bjorn Helgaas wrote:
-> On Tue, Oct 31, 2023 at 08:34:38AM -0500, Mario Limonciello wrote:
->> The USB4 spec specifies that PCIe ports that are used for tunneling
->> PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s.
->>
->> In reality these ports speed is controlled by the fabric implementation.
-> 
-> So I guess you're saying the speed advertised by PCI_EXP_LNKSTA is not
-> the actual speed?  And we don't have a generic way to find the actual
-> speed?
+Vishal Verma <vishal.l.verma@intel.com> writes:
 
-Correct.
+> The MHP_MEMMAP_ON_MEMORY flag for hotplugged memory is restricted to
+> 'memblock_size' chunks of memory being added. Adding a larger span of
+> memory precludes memmap_on_memory semantics.
+>
+> For users of hotplug such as kmem, large amounts of memory might get
+> added from the CXL subsystem. In some cases, this amount may exceed the
+> available 'main memory' to store the memmap for the memory being added.
+> In this case, it is useful to have a way to place the memmap on the
+> memory being added, even if it means splitting the addition into
+> memblock-sized chunks.
+>
+> Change add_memory_resource() to loop over memblock-sized chunks of
+> memory if caller requested memmap_on_memory, and if other conditions for
+> it are met. Teach try_remove_memory() to also expect that a memory
+> range being removed might have been split up into memblock sized chunks,
+> and to loop through those as needed.
+>
+> This does preclude being able to use PUD mappings in the direct map; a
+> proposal to how this could be optimized in the future is laid out
+> here[1].
+>
+> [1]: https://lore.kernel.org/linux-mm/b6753402-2de9-25b2-36e9-eacd49752b19@redhat.com/
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+> ---
+>  mm/memory_hotplug.c | 213 ++++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 138 insertions(+), 75 deletions(-)
+>
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 6be7de9efa55..d242e49d7f7b 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1380,6 +1380,84 @@ static bool mhp_supports_memmap_on_memory(unsigned long size)
+>  	return arch_supports_memmap_on_memory(vmemmap_size);
+>  }
+>  
+> +static void __ref remove_memory_blocks_and_altmaps(u64 start, u64 size)
+> +{
+> +	unsigned long memblock_size = memory_block_size_bytes();
+> +	u64 cur_start;
+> +
+> +	/*
+> +	 * For memmap_on_memory, the altmaps were added on a per-memblock
+> +	 * basis; we have to process each individual memory block.
+> +	 */
+> +	for (cur_start = start; cur_start < start + size;
+> +	     cur_start += memblock_size) {
+> +		struct vmem_altmap *altmap = NULL;
+> +		struct memory_block *mem;
+> +
+> +		mem = find_memory_block(pfn_to_section_nr(PFN_DOWN(cur_start)));
+> +		WARN_ON_ONCE(!mem);
+> +		if (!mem)
+> +			continue;
+> +
+> +		altmap = mem->altmap;
+> +		mem->altmap = NULL;
+> +
+> +		remove_memory_block_devices(cur_start, memblock_size);
+> +
+> +		arch_remove_memory(cur_start, memblock_size, altmap);
+> +
+> +		/* Verify that all vmemmap pages have actually been freed. */
+> +		WARN(altmap->alloc, "Altmap not fully unmapped");
+> +		kfree(altmap);
+> +	}
+> +}
+> +
+> +static int create_altmaps_and_memory_blocks(int nid, struct memory_group *group,
+> +					    u64 start, u64 size)
+> +{
+> +	unsigned long memblock_size = memory_block_size_bytes();
+> +	u64 cur_start;
+> +	int ret;
+> +
+> +	for (cur_start = start; cur_start < start + size;
+> +	     cur_start += memblock_size) {
+> +		struct mhp_params params = { .pgprot =
+> +						     pgprot_mhp(PAGE_KERNEL) };
+> +		struct vmem_altmap mhp_altmap = {
+> +			.base_pfn = PHYS_PFN(cur_start),
+> +			.end_pfn = PHYS_PFN(cur_start + memblock_size - 1),
+> +		};
+> +
+> +		mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> +		params.altmap = kmemdup(&mhp_altmap, sizeof(struct vmem_altmap),
+> +					GFP_KERNEL);
+> +		if (!params.altmap)
+> +			return -ENOMEM;
 
-> 
->> Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
->> to program the device will always find the PCIe ports used for
->> tunneling as a limiting factor and may make incorrect decisions.
->>
->> To prevent problems in downstream drivers check explicitly for ports
->> being used for PCIe tunneling and skip them when looking for bandwidth
->> limitations.
->>
->> 2 types of devices are detected:
->> 1) PCIe root port used for PCIe tunneling
->> 2) Intel Thunderbolt 3 bridge
->>
->> Downstream drivers could make this change on their own but then they
->> wouldn't be able to detect other potential speed bottlenecks.
-> 
-> Is the implication that a tunneling port can *never* be a speed
-> bottleneck?  That seems to be how this patch would work in practice.
+Use "goto out" here too?
 
-I think that's a stretch we should avoid concluding.
+> +
+> +		/* call arch's memory hotadd */
+> +		ret = arch_add_memory(nid, cur_start, memblock_size, &params);
+> +		if (ret < 0) {
+> +			kfree(params.altmap);
+> +			goto out;
+> +		}
+> +
+> +		/* create memory block devices after memory was added */
+> +		ret = create_memory_block_devices(cur_start, memblock_size,
+> +						  params.altmap, group);
+> +		if (ret) {
+> +			arch_remove_memory(cur_start, memblock_size, NULL);
+> +			kfree(params.altmap);
 
-IIUC the fabric can be hosting other traffic and it's entirely possible 
-the traffic over the tunneling port runs more slowly at times.
+How about move arch_remove_memory() and kree() to error path and use
+different label?
 
-Perhaps that's why the the USB4 spec decided to advertise it this way? 
-I don't know.
+--
+Best Regards,
+Huang, Ying
 
-> 
->> Link: https://lore.kernel.org/linux-pci/7ad4b2ce-4ee4-429d-b5db-3dfc360f4c3e@amd.com/
->> Link: https://www.usb.org/document-library/usb4r-specification-v20
->>        USB4 V2 with Errata and ECN through June 2023 - CLEAN p710
-> 
-> I guess this is sec 11.2.1 ("PCIe Physical Layer Logical Sub-block")
-> on PDF p710 (labeled "666" on the printed page).  How annoying that
-> the PDF page numbers don't match the printed ones; do the section
-> numbers at least stay stable in new spec revisions?
-
-I'd hope so.  I'll change it to section numbers in the next revision.
-
-> 
->> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925
-> 
-> This issue says the external GPU doesn't work at all.  Does this patch
-> fix that?  This patch looks like it might improve GPU performance, but
-> wouldn't fix something that didn't work at all.
-
-The issue actually identified 4 distinct different problems.  The 3 
-problems will be fixed in amdgpu which are functional.
-
-This performance one was from later in the ticket after some back and 
-forth identifying proper solutions for the first 3.
-
-> 
->> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->> ---
->>   drivers/pci/pci.c | 41 +++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 41 insertions(+)
->>
->> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
->> index 59c01d68c6d5..4a7dc9c2b8f4 100644
->> --- a/drivers/pci/pci.c
->> +++ b/drivers/pci/pci.c
->> @@ -6223,6 +6223,40 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
->>   }
->>   EXPORT_SYMBOL(pcie_set_mps);
->>   
->> +/**
->> + * pcie_is_tunneling_port - Check if a PCI device is used for TBT3/USB4 tunneling
->> + * @dev: PCI device to check
->> + *
->> + * Returns true if the device is used for PCIe tunneling, false otherwise.
->> + */
->> +static bool
->> +pcie_is_tunneling_port(struct pci_dev *pdev)
-> 
-> Use usual function signature styling (all on one line).
-
-OK.
-
-> 
->> +{
->> +	struct device_link *link;
->> +	struct pci_dev *supplier;
->> +
->> +	/* Intel TBT3 bridge */
->> +	if (pdev->is_thunderbolt)
->> +		return true;
->> +
->> +	if (!pci_is_pcie(pdev))
->> +		return false;
->> +
->> +	if (pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
->> +		return false;
->> +
->> +	/* PCIe root port used for tunneling linked to USB4 router */
->> +	list_for_each_entry(link, &pdev->dev.links.suppliers, c_node) {
->> +		supplier = to_pci_dev(link->supplier);
->> +		if (!supplier)
->> +			continue;
->> +		if (supplier->class == PCI_CLASS_SERIAL_USB_USB4)
->> +			return true;
-> 
-> Since this is in drivers/pci, and this USB4/Thunderbolt routing is not
-> covered by the PCIe specs, this is basically black magic.  Is there a
-> reference to the USB4 spec we could include to help make it less
-> magical?
-
-The "magic" part is that there is an ACPI construct to indicate a PCIe 
-port is linked to a USB4 router.
-
-Here is a link to the page that is explained:
-https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-acpi-requirements#port-mapping-_dsd-for-usb-3x-and-pcie
-
-In the Linux side this link is created in the 'thunderbolt' driver.
-
-Thinking about this again, this does actually mean we could have a 
-different result based on whether pcie_bandwidth_available() is called 
-before or after the 'thunderbolt' driver has loaded.
-
-For example if a GPU driver that called pcie_bandwidth_available() was 
-in the initramfs but 'thunderbolt' was in the rootfs we might end up 
-with the wrong result again.
-
-Considering this I think it's a good idea to move that creation of the 
-device link into drivers/pci/pci-acpi.c and store a bit in struct 
-pci_device to indicate it's a tunneled port.
-
-Then 'thunderbolt' can look for this directly instead of walking all the 
-FW nodes.
-
-pcie_bandwidth_available() can just look at the tunneled port bit 
-instead of the existence of the device link.
-
-> 
-> Lukas' brief intro in
-> https://lore.kernel.org/all/20230925141930.GA21033@wunner.de/ really
-> helped me connect a few dots, because things like
-> Documentation/admin-guide/thunderbolt.rst assume we already know those
-> details.
-
-Thanks for sharing that.  If I move the detection mechanism as I 
-suggested above I'll reference some of that as well in the commit 
-message to explain what exactly a tunneled port is.
-
-> 
->> +	}
->> +
->> +	return false;
->> +}
->> +
->>   /**
->>    * pcie_bandwidth_available - determine minimum link settings of a PCIe
->>    *			      device and its bandwidth limitation
->> @@ -6236,6 +6270,8 @@ EXPORT_SYMBOL(pcie_set_mps);
->>    * limiting_dev, speed, and width pointers are supplied) information about
->>    * that point.  The bandwidth returned is in Mb/s, i.e., megabits/second of
->>    * raw bandwidth.
->> + *
->> + * This function excludes root ports and bridges used for USB4 and TBT3 tunneling.
->>    */
->>   u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
->>   			     enum pci_bus_speed *speed,
->> @@ -6254,6 +6290,10 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
->>   	bw = 0;
->>   
->>   	while (dev) {
->> +		/* skip root ports and bridges used for tunneling */
->> +		if (pcie_is_tunneling_port(dev))
->> +			goto skip;
->> +
->>   		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
->>   
->>   		next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
->> @@ -6274,6 +6314,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
->>   				*width = next_width;
->>   		}
->>   
->> +skip:
->>   		dev = pci_upstream_bridge(dev);
->>   	}
->>   
->> -- 
->> 2.34.1
->>
-
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +out:
+> +	if (ret && (cur_start != start))
+> +		remove_memory_blocks_and_altmaps(start, cur_start - start);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
+>   * and online/offline operations (triggered e.g. by sysfs).
+> @@ -1390,10 +1468,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  {
+>  	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
+>  	enum memblock_flags memblock_flags = MEMBLOCK_NONE;
+> -	struct vmem_altmap mhp_altmap = {
+> -		.base_pfn =  PHYS_PFN(res->start),
+> -		.end_pfn  =  PHYS_PFN(res->end),
+> -	};
+>  	struct memory_group *group = NULL;
+>  	u64 start, size;
+>  	bool new_node = false;
+> @@ -1436,28 +1510,22 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  	/*
+>  	 * Self hosted memmap array
+>  	 */
+> -	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
+> -		if (mhp_supports_memmap_on_memory(size)) {
+> -			mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> -			params.altmap = kmemdup(&mhp_altmap,
+> -						sizeof(struct vmem_altmap),
+> -						GFP_KERNEL);
+> -			if (!params.altmap)
+> -				goto error;
+> +	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY) &&
+> +	    mhp_supports_memmap_on_memory(memory_block_size_bytes())) {
+> +		ret = create_altmaps_and_memory_blocks(nid, group, start, size);
+> +		if (ret)
+> +			goto error;
+> +	} else {
+> +		ret = arch_add_memory(nid, start, size, &params);
+> +		if (ret < 0)
+> +			goto error;
+> +
+> +		/* create memory block devices after memory was added */
+> +		ret = create_memory_block_devices(start, size, NULL, group);
+> +		if (ret) {
+> +			arch_remove_memory(start, size, NULL);
+> +			goto error;
+>  		}
+> -		/* fallback to not using altmap  */
+> -	}
+> -
+> -	/* call arch's memory hotadd */
+> -	ret = arch_add_memory(nid, start, size, &params);
+> -	if (ret < 0)
+> -		goto error_free;
+> -
+> -	/* create memory block devices after memory was added */
+> -	ret = create_memory_block_devices(start, size, params.altmap, group);
+> -	if (ret) {
+> -		arch_remove_memory(start, size, NULL);
+> -		goto error_free;
+>  	}
+>  
+>  	if (new_node) {
+> @@ -1494,8 +1562,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  		walk_memory_blocks(start, size, NULL, online_memory_block);
+>  
+>  	return ret;
+> -error_free:
+> -	kfree(params.altmap);
+>  error:
+>  	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
+>  		memblock_remove(start, size);
+> @@ -2062,17 +2128,13 @@ static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
+>  	return 0;
+>  }
+>  
+> -static int test_has_altmap_cb(struct memory_block *mem, void *arg)
+> +static int count_memory_range_altmaps_cb(struct memory_block *mem, void *arg)
+>  {
+> -	struct memory_block **mem_ptr = (struct memory_block **)arg;
+> -	/*
+> -	 * return the memblock if we have altmap
+> -	 * and break callback.
+> -	 */
+> -	if (mem->altmap) {
+> -		*mem_ptr = mem;
+> -		return 1;
+> -	}
+> +	u64 *num_altmaps = (u64 *)arg;
+> +
+> +	if (mem->altmap)
+> +		*num_altmaps += 1;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -2146,11 +2208,31 @@ void try_offline_node(int nid)
+>  }
+>  EXPORT_SYMBOL(try_offline_node);
+>  
+> +static int memory_blocks_have_altmaps(u64 start, u64 size)
+> +{
+> +	u64 num_memblocks = size / memory_block_size_bytes();
+> +	u64 num_altmaps = 0;
+> +
+> +	if (!mhp_memmap_on_memory())
+> +		return 0;
+> +
+> +	walk_memory_blocks(start, size, &num_altmaps,
+> +			   count_memory_range_altmaps_cb);
+> +
+> +	if (num_altmaps == 0)
+> +		return 0;
+> +
+> +	if (num_memblocks != num_altmaps) {
+> +		WARN_ONCE(1, "Not all memblocks in range have altmaps");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+>  static int __ref try_remove_memory(u64 start, u64 size)
+>  {
+> -	struct memory_block *mem;
+> -	int rc = 0, nid = NUMA_NO_NODE;
+> -	struct vmem_altmap *altmap = NULL;
+> +	int rc, nid = NUMA_NO_NODE;
+>  
+>  	BUG_ON(check_hotplug_memory_range(start, size));
+>  
+> @@ -2167,45 +2249,25 @@ static int __ref try_remove_memory(u64 start, u64 size)
+>  	if (rc)
+>  		return rc;
+>  
+> -	/*
+> -	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
+> -	 * the same granularity it was added - a single memory block.
+> -	 */
+> -	if (mhp_memmap_on_memory()) {
+> -		rc = walk_memory_blocks(start, size, &mem, test_has_altmap_cb);
+> -		if (rc) {
+> -			if (size != memory_block_size_bytes()) {
+> -				pr_warn("Refuse to remove %#llx - %#llx,"
+> -					"wrong granularity\n",
+> -					start, start + size);
+> -				return -EINVAL;
+> -			}
+> -			altmap = mem->altmap;
+> -			/*
+> -			 * Mark altmap NULL so that we can add a debug
+> -			 * check on memblock free.
+> -			 */
+> -			mem->altmap = NULL;
+> -		}
+> -	}
+> -
+>  	/* remove memmap entry */
+>  	firmware_map_remove(start, start + size, "System RAM");
+>  
+> -	/*
+> -	 * Memory block device removal under the device_hotplug_lock is
+> -	 * a barrier against racing online attempts.
+> -	 */
+> -	remove_memory_block_devices(start, size);
+> -
+>  	mem_hotplug_begin();
+>  
+> -	arch_remove_memory(start, size, altmap);
+> -
+> -	/* Verify that all vmemmap pages have actually been freed. */
+> -	if (altmap) {
+> -		WARN(altmap->alloc, "Altmap not fully unmapped");
+> -		kfree(altmap);
+> +	rc = memory_blocks_have_altmaps(start, size);
+> +	if (rc < 0) {
+> +		goto err;
+> +	} else if (rc == 0) {
+> +		/*
+> +		 * Memory block device removal under the device_hotplug_lock is
+> +		 * a barrier against racing online attempts.
+> +		 * No altmaps present, do the removal directly
+> +		 */
+> +		remove_memory_block_devices(start, size);
+> +		arch_remove_memory(start, size, NULL);
+> +	} else {
+> +		/* all memblocks in the range have altmaps */
+> +		remove_memory_blocks_and_altmaps(start, size);
+>  	}
+>  
+>  	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
+> @@ -2218,8 +2280,9 @@ static int __ref try_remove_memory(u64 start, u64 size)
+>  	if (nid != NUMA_NO_NODE)
+>  		try_offline_node(nid);
+>  
+> +err:
+>  	mem_hotplug_done();
+> -	return 0;
+> +	return (rc < 0 ? rc : 0);
+>  }
+>  
+>  /**
