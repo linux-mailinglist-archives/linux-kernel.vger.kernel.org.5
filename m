@@ -2,65 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 833647DF8AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67917DF8AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjKBRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
+        id S231738AbjKBRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjKBRZf (ORCPT
+        with ESMTP id S229644AbjKBRZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:25:35 -0400
-Received: from mx1.spacex.com (mx1.spacex.com [192.31.242.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23DA184;
-        Thu,  2 Nov 2023 10:25:28 -0700 (PDT)
-Received: from pps.filterd (mx1.spacex.com [127.0.0.1])
-        by mx1.spacex.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2FpdVN024140;
-        Thu, 2 Nov 2023 10:25:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spacex.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=dkim;
- bh=6bH3O6kj5vlPADrl3hGbjcQerEjTQCUhR5OQniuZxLM=;
- b=n+ILVyBK/PQfQwggiPuQprMeLti//kKwfsSkFnBksF5A0soHAppynbjSEeaG/AW4Ux62
- yd2ahZcbateOUtoELMlV+sM8K0mgO76syueEliboPkn39R3aI7s86jUsQaozIEDfgGNS
- j7rP9WHgXDzD3vCiJvTeSP/zAdtai9O0JqulTpgo9n9CQRctsKcvm3qZCgSSsP5WyEhP
- bUFHYseUHDg3Ddn43Oe1QJE6oUzvT0tUTeL2wmRMbumciB0EJB+KBwDFUOTZmH4tkbIH
- z+E3KQDYJMjhsiq4yC3pyz44cqUYOb39oL/gAAH6f03+VfQQL70qBXix3QdDBn3IfbWB HQ== 
-Received: from smtp.spacex.corp ([10.34.3.234])
-        by mx1.spacex.com (PPS) with ESMTPS id 3u0yqhja34-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 02 Nov 2023 10:25:27 -0700
-Received: from apakhunov-z4.spacex.corp (10.1.32.161) by
- HT-DC-EX-D2-N2.spacex.corp (10.34.3.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 2 Nov 2023 10:25:26 -0700
-From:   <alexey.pakhunov@spacex.com>
-To:     <mchan@broadcom.com>
-CC:     <vincent.wong2@spacex.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <siva.kallam@broadcom.com>,
-        <prashant@broadcom.com>, Alex Pakhunov <alexey.pakhunov@spacex.com>
-Subject: [PATCH v2 2/2] tg3: Fix the TX ring stall
-Date:   Thu, 2 Nov 2023 10:25:03 -0700
-Message-ID: <20231102172503.3413318-3-alexey.pakhunov@spacex.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231102172503.3413318-1-alexey.pakhunov@spacex.com>
-References: <20231102172503.3413318-1-alexey.pakhunov@spacex.com>
+        Thu, 2 Nov 2023 13:25:36 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6578A123;
+        Thu,  2 Nov 2023 10:25:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-509109104e2so1389505e87.3;
+        Thu, 02 Nov 2023 10:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698945931; x=1699550731; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uNZVlyzQ1sL4l4gGZgfOvYzM1lLpkdtOhbOEpCB9H7k=;
+        b=bTbBN7VxXSA2ECARdfbNcJGc3fXTbPWb71voIgvQyjQPCAmvW7J4m6tKeIGlOoipaA
+         VfrhJB2MwKTXSWclqkyI5ROLmqC7256U35ilFNoIOdwIh3ezDgwd4tAKEJT3rM6gF94s
+         eb1cJxL0y3lg3J99st2QoVEZS/9EWvaGQjH0tbzFutwo0SJTn5w1pEadvxXcH34eJh9q
+         bTSk8rV+8uqnCPq0+wF1e47C5xQpmxU0xZNKKljru3rR0R4hWRWOj5w63PtPfl8Rr8Bc
+         frxcZ/y9OcZUDH4enw+Grao80FSjPbX8zT/LLDv2DvbYV1gYS+Qg6wv8G85kbOGB4LD3
+         li1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698945931; x=1699550731;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uNZVlyzQ1sL4l4gGZgfOvYzM1lLpkdtOhbOEpCB9H7k=;
+        b=QVecksxuChQJ0pHBa7roqipVw277vCM54JzxZlVUMWvn5U+QKAEJ94GyCRKOzka2UU
+         BTa5hUehBy11gD+52dYwufX8awwYDu+DPj8Cl0tnHIG2aDlS0aHO/6L/BMewt0TZVe10
+         FMh1/9B0vSbOqE+i2gSOzj3tcSMJiB6pLjdxQbYPfjbvkZyYXB/oRLF7gbne4uE1QPjQ
+         egaiGS+qHvamz6P9kqYTYsFUL2Xbnlzk8DbIsTKnUkECftVV/cjWpFBpU6IE2HaU5f8R
+         KcX7sbhzuw3ZhT3vv0XgBsmCLq6TURgKh+1mxG/vSo+nM4vx+rbWNctc6Ja5QpTrqvM/
+         xXwg==
+X-Gm-Message-State: AOJu0YwlygBQDjv6hG2s7BNa+ibZwOcrRqxviISTFd3x/y7q5h/Jc1nQ
+        APnLwRCq04Qmg3dWvEqdBdBcGUvLcaw=
+X-Google-Smtp-Source: AGHT+IGNcflDK5tx9dXHxqAkZ0BhsAWy/q3GpGaWNvhx3Ti1pY8diRK8GPvFwdgYGKxvkIcqpyKRIA==
+X-Received: by 2002:a19:644d:0:b0:509:44b6:e3ac with SMTP id b13-20020a19644d000000b0050944b6e3acmr2964636lfj.61.1698945931285;
+        Thu, 02 Nov 2023 10:25:31 -0700 (PDT)
+Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.googlemail.com with ESMTPSA id v6-20020a5d5906000000b0032f7cfac0fesm856147wrd.51.2023.11.02.10.25.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 10:25:30 -0700 (PDT)
+Message-ID: <b8183f5e-7c4f-48c1-8130-54b77e55349d@gmail.com>
+Date:   Thu, 2 Nov 2023 17:25:29 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HT-DC-EX-D2-N1.spacex.corp (10.34.3.233) To
- HT-DC-EX-D2-N2.spacex.corp (10.34.3.234)
-X-Proofpoint-GUID: HLP40OawTODhoOThXtav86lIA0KqcaQF
-X-Proofpoint-ORIG-GUID: HLP40OawTODhoOThXtav86lIA0KqcaQF
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0
- phishscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311020143
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/lib: Fix overflow of variable m when val >=
+ 1410065408
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231101153237.2214698-1-colin.i.king@gmail.com>
+ <203cf76c-3855-408c-9a7c-8ff3f74a88bd@intel.com>
+Content-Language: en-US
+From:   "Colin King (gmail)" <colin.i.king@gmail.com>
+In-Reply-To: <203cf76c-3855-408c-9a7c-8ff3f74a88bd@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,164 +79,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Pakhunov <alexey.pakhunov@spacex.com>
+On 02/11/2023 16:38, Dave Hansen wrote:
+> On 11/1/23 08:32, Colin Ian King wrote:
+> ...
+>>   int num_digits(int val)
+>>   {
+>> -	int m = 10;
+>> +	long m = 10;
+>>   	int d = 1;
+>>   
+>>   	if (val < 0) {
+> 
+> Isn't this still broken on 32-bit where sizeof(long) == sizeof(int)?
+> Seems like we need 'm' to be able to hold values that are ~10x larger
+> than 'val' if we need this to work for the entire int range.
 
-The TX ring maintained by the tg3 driver can end up in the state, when it
-has packets queued for sending but the NIC hardware is not informed, so no
-progress is made. This leads to a multi-second interruption in network
-traffic followed by dev_watchdog() firing and resetting the queue.
+Good point, long long is required for 32 bit,
 
-The specific sequence of steps is:
+sizes:
+arch     int   long   long long
+i386     4     4      8
+x86_64   4     8      8
 
-1. tg3_start_xmit() is called at least once and queues packet(s) without
-   updating tnapi->prodmbox (netdev_xmit_more() returns true)
-2. tg3_start_xmit() is called with an SKB which causes tg3_tso_bug() to be
-   called.
-3. tg3_tso_bug() determines that the SKB is too large, ...
+I'll send a V2.
 
-        if (unlikely(tg3_tx_avail(tnapi) <= frag_cnt_est)) {
 
-   ... stops the queue, and returns NETDEV_TX_BUSY:
-
-        netif_tx_stop_queue(txq);
-        ...
-        if (tg3_tx_avail(tnapi) <= frag_cnt_est)
-                return NETDEV_TX_BUSY;
-
-4. Since all tg3_tso_bug() call sites directly return, the code updating
-   tnapi->prodmbox is skipped.
-
-5. The queue is stuck now. tg3_start_xmit() is not called while the queue
-   is stopped. The NIC is not processing new packets because
-   tnapi->prodmbox wasn't updated. tg3_tx() is not called by
-   tg3_poll_work() because the all TX descriptions that could be freed has
-   been freed:
-
-        /* run TX completion thread */
-        if (tnapi->hw_status->idx[0].tx_consumer != tnapi->tx_cons) {
-                tg3_tx(tnapi);
-
-6. Eventually, dev_watchdog() fires triggering a reset of the queue.
-
-This fix makes sure that the tnapi->prodmbox update happens regardless of
-the reason tg3_start_xmit() returned.
-
-Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
-Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
----
-v2: Sort Order the local variables in tg3_start_xmit() in the RCS order
-v1: https://lore.kernel.org/netdev/20231101191858.2611154-1-alexey.pakhunov@spacex.com/T/#t
----
- drivers/net/ethernet/broadcom/tg3.c | 53 +++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index 99638e6c9e16..f7680d3e46da 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -6603,9 +6603,9 @@ static void tg3_tx(struct tg3_napi *tnapi)
- 
- 	tnapi->tx_cons = sw_idx;
- 
--	/* Need to make the tx_cons update visible to tg3_start_xmit()
-+	/* Need to make the tx_cons update visible to __tg3_start_xmit()
- 	 * before checking for netif_queue_stopped().  Without the
--	 * memory barrier, there is a small possibility that tg3_start_xmit()
-+	 * memory barrier, there is a small possibility that __tg3_start_xmit()
- 	 * will miss it and cause the queue to be stopped forever.
- 	 */
- 	smp_mb();
-@@ -7845,7 +7845,7 @@ static bool tg3_tso_bug_gso_check(struct tg3_napi *tnapi, struct sk_buff *skb)
- 	return skb_shinfo(skb)->gso_segs < tnapi->tx_pending / 3;
- }
- 
--static netdev_tx_t tg3_start_xmit(struct sk_buff *, struct net_device *);
-+static netdev_tx_t __tg3_start_xmit(struct sk_buff *, struct net_device *);
- 
- /* Use GSO to workaround all TSO packets that meet HW bug conditions
-  * indicated in tg3_tx_frag_set()
-@@ -7881,7 +7881,7 @@ static int tg3_tso_bug(struct tg3 *tp, struct tg3_napi *tnapi,
- 
- 	skb_list_walk_safe(segs, seg, next) {
- 		skb_mark_not_on_list(seg);
--		tg3_start_xmit(seg, tp->dev);
-+		__tg3_start_xmit(seg, tp->dev);
- 	}
- 
- tg3_tso_bug_end:
-@@ -7891,7 +7891,7 @@ static int tg3_tso_bug(struct tg3 *tp, struct tg3_napi *tnapi,
- }
- 
- /* hard_start_xmit for all devices */
--static netdev_tx_t tg3_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static netdev_tx_t __tg3_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct tg3 *tp = netdev_priv(dev);
- 	u32 len, entry, base_flags, mss, vlan = 0;
-@@ -8135,11 +8135,6 @@ static netdev_tx_t tg3_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 			netif_tx_wake_queue(txq);
- 	}
- 
--	if (!netdev_xmit_more() || netif_xmit_stopped(txq)) {
--		/* Packets are ready, update Tx producer idx on card. */
--		tw32_tx_mbox(tnapi->prodmbox, entry);
--	}
--
- 	return NETDEV_TX_OK;
- 
- dma_error:
-@@ -8152,6 +8147,42 @@ static netdev_tx_t tg3_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
- 
-+static netdev_tx_t tg3_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+{
-+	struct netdev_queue *txq;
-+	u16 skb_queue_mapping;
-+	netdev_tx_t ret;
-+
-+	skb_queue_mapping = skb_get_queue_mapping(skb);
-+	txq = netdev_get_tx_queue(dev, skb_queue_mapping);
-+
-+	ret = __tg3_start_xmit(skb, dev);
-+
-+	/* Notify the hardware that packets are ready by updating the TX ring
-+	 * tail pointer. We respect netdev_xmit_more() thus avoiding poking
-+	 * the hardware for every packet. To guarantee forward progress the TX
-+	 * ring must be drained when it is full as indicated by
-+	 * netif_xmit_stopped(). This needs to happen even when the current
-+	 * skb was dropped or rejected with NETDEV_TX_BUSY. Otherwise packets
-+	 * queued by previous __tg3_start_xmit() calls might get stuck in
-+	 * the queue forever.
-+	 */
-+	if (!netdev_xmit_more() || netif_xmit_stopped(txq)) {
-+		struct tg3_napi *tnapi;
-+		struct tg3 *tp;
-+
-+		tp = netdev_priv(dev);
-+		tnapi = &tp->napi[skb_queue_mapping];
-+
-+		if (tg3_flag(tp, ENABLE_TSS))
-+			tnapi++;
-+
-+		tw32_tx_mbox(tnapi->prodmbox, tnapi->tx_prod);
-+	}
-+
-+	return ret;
-+}
-+
- static void tg3_mac_loopback(struct tg3 *tp, bool enable)
- {
- 	if (enable) {
-@@ -17682,7 +17713,7 @@ static int tg3_init_one(struct pci_dev *pdev,
- 	 * device behind the EPB cannot support DMA addresses > 40-bit.
- 	 * On 64-bit systems with IOMMU, use 40-bit dma_mask.
- 	 * On 64-bit systems without IOMMU, use 64-bit dma_mask and
--	 * do DMA address check in tg3_start_xmit().
-+	 * do DMA address check in __tg3_start_xmit().
- 	 */
- 	if (tg3_flag(tp, IS_5788))
- 		persist_dma_mask = dma_mask = DMA_BIT_MASK(32);
--- 
-2.39.3
+> 
+> Also, performance doesn't matter here at *all* with the current use in
+> a couple of printk()'s.  Just making 'm' 'long long' or u64 probably be
+> just fine.
 
