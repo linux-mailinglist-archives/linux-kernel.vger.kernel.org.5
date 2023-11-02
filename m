@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C447DF997
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC487DF98E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344990AbjKBSKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
+        id S233947AbjKBSHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjKBSKW (ORCPT
+        with ESMTP id S234297AbjKBSHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:10:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E07F1BD9
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698948369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nD8lh0J8JiWJ+kvt0KJ7RLOjVJvmjV+qsIu+YAgB6DM=;
-        b=aINcxVMRE3np9F4EWH5RmUBot/jqDSg1QaXg/rVWADCQNqvjKcWblVsRVW2p2y1ie3EE3b
-        3sR385BRPCi7KSYzKpDGt/Vc1cSNGYpwPw+ZaEsbziUCcj9BF0klrXXcKjSp16KddyKraA
-        PcsrLj+3+XOKV02uoSEzjeUbQnQaUUE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-byqEuzz2PuSpyklDQ6HWLA-1; Thu, 02 Nov 2023 14:06:06 -0400
-X-MC-Unique: byqEuzz2PuSpyklDQ6HWLA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40839252e81so7982015e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:06:05 -0700 (PDT)
+        Thu, 2 Nov 2023 14:07:43 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B315A2126
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:06:42 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32d9effe314so666042f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698948383; x=1699553183; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Yc0Vs7ENia0QB6Jekhs2eJe0iOFbFKiK50kmBF20/E=;
+        b=AAml46qkULvvDA7AGY8yiDdcClIi7GzF5jB0cikC9f/beVFq4YF1AZyJwFTc3GE2i6
+         RAO6GxuZivWM9WL5gooShP5XQh14OHtoC02jhbgWZI4yeOcDvSd9buJRBdpgTUwit8ND
+         PGy0t1+UZt8BrFXetbMQbE9dIwB4fUKoY+/RN/3XX1HhzmtIKIMI8rUJ5ovRSzCfaH4U
+         Rm5NVeUvFBkp3D3BhasVZVYiNfydH+e83qJ4i9KT1ShIpqMhCSuUaI77SVaUZ7VU1VNE
+         4pUSrhX31/C23HIOI2RGTzAdWDEnTrSRvSv2XY6mTs4uNoaSpso6aZcUnMRboMkweQ97
+         4E+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698948365; x=1699553165;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nD8lh0J8JiWJ+kvt0KJ7RLOjVJvmjV+qsIu+YAgB6DM=;
-        b=vsuWV60Y3G9eXNo+X/oqr+wYuL0wAqEn0KlGvy2AdENTzqFEkiWKvJpwFvriYvXgP9
-         9IgqkDccRKfNqIUdVUyASiSfVbrGYl97aFj3y+W8g3N2/7/K+7bRIwZKuAo0fFu9vUlX
-         Wnk+8HmuXZcbAeoKHKy/D5RcXT08FYsZWh8cQWmiK1MOjBlj/06hVCgT9/YnwTvdzYyO
-         fc/Uy3XLHtMHmvQmokpL6UmWap9Hj8QPAcb7JmFVTZBv9xNp3/239gVrK25J4AuFygpL
-         IplkXtR4bUIHqmkXc5BMkbi5rCA1+dlXiywR2AUI08/shbAlrGTRGkzFVnx1Fw/WL5zI
-         IbWg==
-X-Gm-Message-State: AOJu0YyQTK8goDZDebwE8TlouabRvM1wpkH7rcgIagG6j2Il0lgS/49z
-        6VIaQZAAHDVvcZp0dItlxzzwZ6HFYKtfsDXcjYMLxHc7UqzNb5uqTMwI+7/S6RsNqoA6lR+6dtk
-        JUh7p+8GJAxyHrnbuYk+wiLLK
-X-Received: by 2002:a05:600c:acc:b0:401:bdd7:49ae with SMTP id c12-20020a05600c0acc00b00401bdd749aemr17206729wmr.18.1698948365144;
-        Thu, 02 Nov 2023 11:06:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFUfpY3pn466g3IG4+RPvgHe7nNa/Hy9VJNg9r7eUGZ4RAmCjMw5LPHpYlEp269Vaogh4yBnA==
-X-Received: by 2002:a05:600c:acc:b0:401:bdd7:49ae with SMTP id c12-20020a05600c0acc00b00401bdd749aemr17206702wmr.18.1698948364781;
-        Thu, 02 Nov 2023 11:06:04 -0700 (PDT)
-Received: from starship ([89.237.99.95])
-        by smtp.gmail.com with ESMTPSA id bh27-20020a05600c3d1b00b004063d8b43e7sm3649100wmb.48.2023.11.02.11.06.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 11:06:04 -0700 (PDT)
-Message-ID: <e87c077a463f13b3c71bfc4e09493e4751aaa563.camel@redhat.com>
-Subject: Re: [PATCH 4/9] KVM: SVM: Rename vmplX_ssp -> plX_ssp
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     John Allen <john.allen@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        weijiang.yang@intel.com, rick.p.edgecombe@intel.com,
-        seanjc@google.com, x86@kernel.org, thomas.lendacky@amd.com,
-        bp@alien8.de
-Date:   Thu, 02 Nov 2023 20:06:02 +0200
-In-Reply-To: <20231010200220.897953-5-john.allen@amd.com>
-References: <20231010200220.897953-1-john.allen@amd.com>
-         <20231010200220.897953-5-john.allen@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        d=1e100.net; s=20230601; t=1698948383; x=1699553183;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Yc0Vs7ENia0QB6Jekhs2eJe0iOFbFKiK50kmBF20/E=;
+        b=EmvBrZOJEspovTOzzM9EAn9twodI5UtZF9fBYmDlq5Fp+dh0xxP9hEF4Zia67eo4nC
+         zPj6GNdA+K8T8byZmJ4P0jperQ09xIXImRmM38HZmhYEV0esK90f4gT40Ven+xnPU9Ut
+         LndN7unahQa4iZhTjgfaC/sdjXGZzOI2YcVwtUvUkb9wv1jKA5bJubdZuiXvDUag8Svq
+         iNRXUjw5J576AqziwKjHa39QLvIorwsQbf4igTD2b6SP9qlQFE6Msqjxisare400IpOB
+         v+bhCSwCTF+IMdvGQj83N5d3lpB34A1AK7esioZEf17WX9qhzlF2Yx0/uNhnmtsv0Qnd
+         R+zw==
+X-Gm-Message-State: AOJu0YwS3O8VqI3+NtJpDGC23Ay86pBbFL83zWR4VAhSBqfIjLQSP7/n
+        rg7JANITVCZOJ7CiCnGYsgHBjGllJxiuXqGJD/G+eg==
+X-Google-Smtp-Source: AGHT+IHxgMVDIc1myhEwVwiOiXyS7PCrW3Q4+lNTE2vtJGBS0emSiUxvpgM+3Thyp+4mZnvr/GaOhiSSJdvkhfObMOw=
+X-Received: by 2002:a5d:68c1:0:b0:32d:a022:8559 with SMTP id
+ p1-20020a5d68c1000000b0032da0228559mr15540985wrw.47.1698948382660; Thu, 02
+ Nov 2023 11:06:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
+ <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
+ <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
+ <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com> <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
+ <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com> <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
+ <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com> <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
+ <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com> <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
+In-Reply-To: <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Thu, 2 Nov 2023 11:06:10 -0700
+Message-ID: <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
-> Rename SEV-ES save area SSP fields to be consistent with the APM.
-> 
-> Signed-off-by: John Allen <john.allen@amd.com>
-> ---
->  arch/x86/include/asm/svm.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 19bf955b67e0..568d97084e44 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -361,10 +361,10 @@ struct sev_es_save_area {
->  	struct vmcb_seg ldtr;
->  	struct vmcb_seg idtr;
->  	struct vmcb_seg tr;
-> -	u64 vmpl0_ssp;
-> -	u64 vmpl1_ssp;
-> -	u64 vmpl2_ssp;
-> -	u64 vmpl3_ssp;
-> +	u64 pl0_ssp;
-> +	u64 pl1_ssp;
-> +	u64 pl2_ssp;
-> +	u64 pl3_ssp;
->  	u64 u_cet;
->  	u8 reserved_0xc8[2];
->  	u8 vmpl;
+On Thu, Nov 2, 2023 at 10:12=E2=80=AFAM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+> > > Wei, noticed that all other fields in /proc/meminfo are part of
+> > > MemTotal, but this new field may be not (depending where struct pages
+> >
+> > I could have sworn that I pointed that out in a previous version and
+> > requested to document that special case in the patch description. :)
+>
+> Sounds, good we will document that parts of per-page may not be part
+> of MemTotal.
 
-Matches the APM.
+But this still doesn't answer how we can use the new PageMetadata
+field to help break down the runtime kernel overhead within MemUsed
+(MemTotal - MemFree).
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > > are allocated), so what would be the best way to export page metadata
+> > > without redefining MemTotal? Keep the new field in /proc/meminfo but
+> > > be ok that it is not part of MemTotal or do two counters? If we do tw=
+o
+> > > counters, we will still need to keep one that is a buddy allocator in
+> > > /proc/meminfo and the other one somewhere outside?
+> >
 
-Best regards,
-	Maxim Levitsky
+I think the simplest thing to do now is to only report the buddy
+allocations of per-page metadata in meminfo.  The meaning of the new
+counter is easier to understand and consistent with MemTotal and other
+fields in meminfo. Its implementation can also be greatly simplified
+and we don't need to handle the other special cases, either, e.g.
+pagemeta allocated from DAX devices.
 
+> > IMHO, we should just leave MemTotal alone ("memory managed by the buddy
+> > that could actually mostly get freed up and reused -- although that's
+> > not completely true") and have a new counter that includes any system
+> > memory (MemSystem? but as we learned, as separate files), including mos=
+t
+> > memblock allocations/reservations as well (metadata, early pagetables,
+> > initrd, kernel, ...).
+> >
+> > The you would actually know how much memory the system is using
+> > (exclusing things like crashmem, mem=3D, ...).
+> >
+> > That part is tricky, though -- I recall there are memblock reservations
+> > that are similar to the crashkernel -- which is why the current state i=
+s
+> > to account memory when it's handed to the buddy under MemTotal -- which
+> > is straight forward and simply.
+>
+> It may be simplified if we define MemSystem as all the usable memory
+> provided by firmware to Linux kernel.
+> For BIOS it would be the "usable" ranges in the original e820 memory
+> list before it's been modified by the kernel based on the parameters.
+>
+> For device-tree architectures, it would be the memory binding provided
+> by the original device tree from the firmware.
+>
+> Pasha
