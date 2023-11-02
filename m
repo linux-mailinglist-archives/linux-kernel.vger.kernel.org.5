@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F207DFA8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48CD7DFA92
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377452AbjKBTBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
+        id S1377425AbjKBTBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234450AbjKBTAz (ORCPT
+        with ESMTP id S1377374AbjKBTAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 15:00:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2431136
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698951603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GEm2sns0/+Gc/wAqvpwT2aL5eohIrGGeBjAVrS1qrIg=;
-        b=RKT24J/YA8tgkmRA5P+QKii9K51KwpNUdtRbpCykQXwQo180fb62meU2S0MC9PiqT8Qeh+
-        63xD6qgPgF0jF6NDzA1pkCHWfO2LwN4lGBKYWPUx+iXxIPYQNdwj1y/wlgC/gCIHfe/ggc
-        pgiN5KuljTd6iShl/hlLJgtGryykldU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-145-qQusuTHxM-iWiJrtw1honw-1; Thu, 02 Nov 2023 14:59:54 -0400
-X-MC-Unique: qQusuTHxM-iWiJrtw1honw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4084d08235fso7998385e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:59:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951594; x=1699556394;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GEm2sns0/+Gc/wAqvpwT2aL5eohIrGGeBjAVrS1qrIg=;
-        b=TSP3POq3SHIr2O/ALSTNQHKnquqQAHyVJckD1rajWkqLV3u6xLlYu8fCaFT+OVnDKd
-         Vv6U9/m+ksAX7moo/fknEXagIpPffrnjUrr1HxMJkB1PRxnsNb9hOPY9aTBF0jwOv2KS
-         mEdQVlUEA22lxupSPzEYsQvbAIL6hyme30HbIgf9QqBiS0u1fTec1b6/55gAp+/B5Y6A
-         AbHTokJcFTRFel0g6joEnU/DnCJuOkZplb05rnWzSeto4rNmwti6cCJNYm7y2/zVjac5
-         jsju2PC8oynnkQdRaK2yOnJ47URPuGaFakvlCrQWJ09XZUAgAI/jfPbUrPTnholCFzV5
-         zZJw==
-X-Gm-Message-State: AOJu0YzPt3hA01NtTw51y1598/9mcWOu0wf43gWN2OzP2M9UkSlLFUcQ
-        yFyR21VNuyJR1TeKOruUoC5ufRRyTAgmtENQEOVg+bsWg4XDt/NjJ+Mz8njlUyDgFsMMNDXgSzy
-        ejCtCWO4O7YdfyESfT72LgnoG
-X-Received: by 2002:a05:600c:354c:b0:408:4cf7:4f91 with SMTP id i12-20020a05600c354c00b004084cf74f91mr16063506wmq.16.1698951593781;
-        Thu, 02 Nov 2023 11:59:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHVTJzaSJ0vkl4qcwzTZ0JUe1Z1QgiS+92pttSKu/xQqyJpNN5GsaGvuUhusOPQ1kxeMxjXtw==
-X-Received: by 2002:a05:600c:354c:b0:408:4cf7:4f91 with SMTP id i12-20020a05600c354c00b004084cf74f91mr16063485wmq.16.1698951593366;
-        Thu, 02 Nov 2023 11:59:53 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:174:efc3:a5be:5586:34a6:1108])
-        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b00405c7591b09sm31517wmq.35.2023.11.02.11.59.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 11:59:52 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 14:59:46 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>, jasowang@redhat.com,
-        xuanzhuo@linux.alibaba.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, xieyongji@bytedance.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        david.marchand@redhat.com, lulu@redhat.com
-Subject: Re: [PATCH v4 4/4] vduse: Add LSM hooks to check Virtio device type
-Message-ID: <20231102145932-mutt-send-email-mst@kernel.org>
-References: <20231020155819.24000-1-maxime.coquelin@redhat.com>
- <20231020155819.24000-5-maxime.coquelin@redhat.com>
- <c8f189e6-c79b-429a-ab36-2193bb68e3e9@schaufler-ca.com>
- <923f87a1-1871-479e-832e-db67b5ae87fd@redhat.com>
- <64626db9-e37a-4c65-a455-fc3985382216@schaufler-ca.com>
- <7524dee3-7c48-4864-8182-1b166b0f6faa@redhat.com>
- <b307ec62-7cfd-4a58-88ef-ea549c64e75e@schaufler-ca.com>
- <76572500-5f90-46fe-9bf2-b090bf1b616b@redhat.com>
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFB0184;
+        Thu,  2 Nov 2023 12:00:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DPwLF0tGRg+qpRP6tlQaPTMfFsbWgOmM5HI30t7UJia8k7J2KWLuLXIDhNr4EVgcVnaycJM6CQoLpyR6ro+HnWpkySAppf7hXrDdl52zwMS25ngQR81yYttuJNkSlpnVB9Etkb9/at3AxnAbgENDnV5kp2O8/QceeFbP8jt6ZwiHTak1lwjWxeCW4WN84Jtd4xZN0EKUDd3zeNqcsoDRVQ+Mshw1GcHNCWU5ufLtPPlgIZMoUcgw1vDJ4btUOGHc9C6XEnZgLdo5nbO4Y6imjGzXbu/0nOFu2n6Wdd49dq4706d8wkYjGJIyMI8bxHWFoihQOtiP6uwGmwLEQZlXMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c5Y28Wm2wIfxhJiYkMWDWW/VzW7YYYLCesct4WDAwPA=;
+ b=LsGK8yrr63gmwpLZDyRoIkcHUqn02Gm7juNsRHXsRzROwy5rCoTHeoB18g6Wy/mZlgTWxNnwgJexXl5Y69RFfBunr0hPXm4WX/cKuub/Rwi+8hDkoQLug8QU/AYtB6sfERQqbH2MYUCuWJm4fl8qhmxmPxPzPewNcBlNnmpklinNobEUqKhSO5FZNDihywi4RJsWoPU0F73Q5FZRgNTk/Ql/gY0iViOUN+Wia8Gx4OZUeKK1kjZLNzHwHBTMvWOIS7FxQPRU5FUQ7/C67eN7AGioXSDrVwIJ8KN2hFOq9vJiInWKgFYkAVBpHVkDo1dZQogpYkLO5b+hJ6ac84ZKwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c5Y28Wm2wIfxhJiYkMWDWW/VzW7YYYLCesct4WDAwPA=;
+ b=5clJhTyxIKPEDY7JPI9WPfAkdUBeSnRtP9s0VghzvtYBthDDLKp3uPPVgRP/eW4n6gI96T7Ei4h7g5Af+BiVCqHYFbaTAYCkuO/F/g+GJbTkBwrvWYSmeCMqxkLCdghfo2utE5lXai/dGC59HiKQQjF1IbEtTXj9kUR0wUivlCo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ CH0PR12MB5090.namprd12.prod.outlook.com (2603:10b6:610:bd::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.21; Thu, 2 Nov 2023 19:00:41 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466%7]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 19:00:41 +0000
+Message-ID: <1eed6bfa-3e98-45d1-9908-2c5a0f3173c3@amd.com>
+Date:   Thu, 2 Nov 2023 15:00:37 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/edid: add a quirk for two 240Hz Samsung monitors
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Jerry Zuo <jerry.zuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>
+References: <20231101210037.130494-1-hamza.mahfooz@amd.com>
+ <CADnq5_Nv0MnG+pPvRQO37OP8iYwz8oGvFLs2g-+U=URHWcqJGw@mail.gmail.com>
+Content-Language: en-US
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <CADnq5_Nv0MnG+pPvRQO37OP8iYwz8oGvFLs2g-+U=URHWcqJGw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQBPR0101CA0339.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:6b::29) To DM4PR12MB6280.namprd12.prod.outlook.com
+ (2603:10b6:8:a2::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76572500-5f90-46fe-9bf2-b090bf1b616b@redhat.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CH0PR12MB5090:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0c100731-7b0d-4241-f5c5-08dbdbd6023b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l36x+ebe/kKiGBQQNdYL5TUNMo7lHreDqJs51GtlnntZa75dSs9+YhJcTAsVXs1cPF+cIDH5enlvrHE0KfEmmj1WLKnnBXcRFdSZJKlRMYA0L1zjobIydMo1H+zcFWOoopPfpPSL5wMbizjH+DVDiVViN+fn2vTazfMzh8ntvgiAXwxj61SnVrCSQCry2jxc0ixLF/dIkXaECOODO/JRq5OduvAuZtHu3lv6J62ShZWDVV9QeL4sCbBjE+eQZdPipOdG1dzGPDYFGJI3bN1RGIehDA+DcMPP79o6ySevNXFHtK7gYLDHdexUTcvmet/USy8Uf/AvS3CuZA42JDtkp6AIeFk+pNt4tQmQZYrQA0KSg63/npJ41zARqYYh+m6uKzbvM7yN2dydg1vV8LCx6aanbpbqyaYqRQSjikMAvjg+i9Y5Iw9DPEvJnH0kiGwEHpAgCDyIH2f8zIWP4cy7FpHmpvqfrCjbnnNusLoDIylGxZden3cM44k5dxYFCVdKAAkPmqwxgbgOUynZB19kQbx8ljVXrUen66D7fuDyqAVxFfY8D7mTEEttynBCN5CNASp8Y4z+AnIMIqZKK/1kcMdZVrLzPAWTpcog/IOAJyjsppjDAHptMiutupU2KNkj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(2906002)(45080400002)(6486002)(966005)(478600001)(2616005)(36756003)(26005)(41300700001)(38100700002)(86362001)(31696002)(53546011)(83380400001)(6506007)(6666004)(6512007)(316002)(6916009)(66946007)(54906003)(66476007)(66556008)(44832011)(5660300002)(4326008)(8676002)(8936002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UVl1NytNZFNmV1hSTWRKZUxSSXpUdEZoZGFlWTJUdzAzVXpGSW5MaE5YNDBn?=
+ =?utf-8?B?WDdqMGJmYjJzNlRWeHc2c3dzWGxjdlU0VFBzc2k5K1F2S01sSmZva3FveXRE?=
+ =?utf-8?B?Zy9rQVFKekNjcG10YklWUVBQdUFpS0hXRFZSN3dDVzFQQVRESEtjdG9URG4y?=
+ =?utf-8?B?Skd3bTZTd0lieC82NTdTd1RPeE1pTHVpMWhZMGxSekR5MHkwdFFkQ1NUU2dK?=
+ =?utf-8?B?VjFFNEg5ZWRwcXhiV2wycHh2NEU3eStJQVlCQVMvTDVCR3pyRjVJL3JGK0NH?=
+ =?utf-8?B?YWhQQndUZEZnSkN4blE5b3RWWWNuNCtHY0tlRTJjdHJ6dm05dUFkUWdOcStY?=
+ =?utf-8?B?a0p0RjcrWEpzQ1VWR0RQVmJaNHJ6RXFDTlVCeVQ2WHlFQmYvV1VuNGhSYW1S?=
+ =?utf-8?B?OXRkRmhQbFFLZk54dDZnaDVGOVJHTk1kOWc4ZGdRL1Ivd2p2L2JRUklYMCtP?=
+ =?utf-8?B?SkhYeHJlS005eE1xTVh0YzEwVEE2NnFYVzNIOW9VRXlUdVhHSTFBT3JlVi9p?=
+ =?utf-8?B?ZTdzNkt3M2tzckIyYWJRbjl1c05qb0NLQ3U5L2xySEhCM0t3cDh0b0U0Q0NJ?=
+ =?utf-8?B?Y0JESmdMU1g3WVVXM09mYzcrS3hid0JKSDJjUFZOa0ovWVFxL3pTaHcwWXoz?=
+ =?utf-8?B?M3ZGc0JMaEhiN2liK1hFOUVYalZoNkxhNENOdThTaFRMRHh4b243dHRvSUhX?=
+ =?utf-8?B?eVRZcEdTelJGYVZwc3FMakhsa3hVRHp2KzJCTXVlZkZJWFMyU1QyQUFlTHRh?=
+ =?utf-8?B?NVk1bmcwS1dhaE8wcUl3c1NEZlVOcTZwY1g1WXZjOVlVZ3NqZit4KzZUZkZW?=
+ =?utf-8?B?eGFrU2Y1Sm1Ec1docm9kckxkYUFERXBnb0NWV3dIVG81blNKeldnYnZQNnhI?=
+ =?utf-8?B?c0tnZ2taSzJXNmZnSnltbUNJRGU3bmhCTnU4czNWMTNUaVhobkFURVJHdHdH?=
+ =?utf-8?B?aFFENnM1V2Y0NS9lUHI3ZE82ZXZBN0Y0UndzRnlockZwS2JNeEJlcE1QYURv?=
+ =?utf-8?B?QklmZzhlM3dRcXVKeXNlWmRGcG9BV2NmTS9VQkdPYUY1akUzR0NUSyt4dmFF?=
+ =?utf-8?B?RzdJUjR6Szk1UmRiSVNZVC8zdUxTOGkzbDdYODMrR24vanZwekdGVzd0SU9q?=
+ =?utf-8?B?ZXRubWVMVDhaajQ5NWpSMktEcnRIMk00em1KVktpTlh3M1E5RFdMNG9aeFVJ?=
+ =?utf-8?B?U2FjSDgraEo5TVlTa0taaWwvL1JmdCs0b2xsYzFVeXpMMTVOUlJ2ZC9Damh4?=
+ =?utf-8?B?cjUvcEM2bmJDYThKcUlYVHk3TjJWUWE3RENRdnRON0hiZGVIMnhnczNHazFn?=
+ =?utf-8?B?K0o5b1VHRVJkbzNGNHo1d1czdDZoNjgranl0aTJLa2Q4cHZsY3YwMEFvanA2?=
+ =?utf-8?B?RENLZU12VERpN29vSDRmQTFDQ1hxeXIxWTRUclFudGNROGthSklPZnd4ZzhZ?=
+ =?utf-8?B?dG0vVnhVRXBBOURiT2UxVVZvL01BZjdxeEN0M0FHYkFLSUlFaUx5Ujd2SGJH?=
+ =?utf-8?B?QzhCOU5wSU1jbHhDeDF4VnUzRWkrT2IzU2RaS0JVOW9QWGh0RkVobkhBTEpp?=
+ =?utf-8?B?Ukx4ZEk0K3ZWUGo3enpXRjVYSmNkSTNlSG1wejRaR3BkYVphZTE3T2ZLbEdi?=
+ =?utf-8?B?VEhFSGpVQlZjODdhVVpwQ3ZhOWFCemFmU0pUQU9odTBRbFR4bldqWEpDcHlH?=
+ =?utf-8?B?YUxmbnlMdzRrVHpsVFk3WEF5bEZhNTFBdEh2T0lNOER2UC95L2t1NXMraVFR?=
+ =?utf-8?B?RHNpc0ZDRHlxQXdhVzNQSE1SNi9GYUhlWGRHZ3ZsYkpjVnBtVVR6Z2UxMjZu?=
+ =?utf-8?B?MDc3MVUxNGtMck1GdExYNTlXSVltK29DM0swOTJXVDVKd2I5ZmlBYXcyNjhv?=
+ =?utf-8?B?TkpmR0cxQUpCM2Urdy96ZlVZQXdEM2xJUlNwbSthVjlycFl6NXUrK1JjWmRi?=
+ =?utf-8?B?aVVWYjBDaWRjZXU3Y1FWWDUyVk9nbGhLcVhLdlgrQm9aNkF6WktVdllZWUNY?=
+ =?utf-8?B?MGZTMXJVcGdpTTVJTUNnUk5ySERLWUYzT1AwWngyTUFYRkk5OHI2cDh0bGo2?=
+ =?utf-8?B?SFNvZmtzY1RNeURNeGx3OUw0bEp4U2NiOEtJc3lTRU5Za1ViN2djRWRjTHp6?=
+ =?utf-8?Q?2JhSDXu6oDNIj/2MczBnk9Hdh?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c100731-7b0d-4241-f5c5-08dbdbd6023b
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 19:00:41.2081
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XWfVa5GYj3TfcSO344IaDn7TJ3FbhqJCp5tRyD0PmVTpK9M+M8c16zfjvsVEkOLqkEXoPt9TGqUtkyTVwxehJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5090
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,96 +129,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 06:56:59PM +0100, Maxime Coquelin wrote:
+On 11/1/23 17:36, Alex Deucher wrote:
+> On Wed, Nov 1, 2023 at 5:01 PM Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
+>>
+>> Without this fix the 5120x1440@240 timing of these monitors
+>> leads to screen flickering.
+>>
+>> Cc: stable@vger.kernel.org # 6.1+
+>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1442
+>> Co-developed-by: Harry Wentland <harry.wentland@amd.com>
+>> Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+>> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+>> ---
+>>   drivers/gpu/drm/drm_edid.c | 47 +++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 44 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+>> index bca2af4fe1fc..3fdb8907f66b 100644
+>> --- a/drivers/gpu/drm/drm_edid.c
+>> +++ b/drivers/gpu/drm/drm_edid.c
+>> @@ -89,6 +89,8 @@ static int oui(u8 first, u8 second, u8 third)
+>>   #define EDID_QUIRK_NON_DESKTOP                 (1 << 12)
+>>   /* Cap the DSC target bitrate to 15bpp */
+>>   #define EDID_QUIRK_CAP_DSC_15BPP               (1 << 13)
+>> +/* Fix up a particular 5120x1440@240Hz timing */
+>> +#define EDID_QUIRK_FIXUP_5120_1440_240         (1 << 14)
 > 
-> 
-> On 10/24/23 17:30, Casey Schaufler wrote:
-> > On 10/24/2023 2:49 AM, Maxime Coquelin wrote:
-> > > 
-> > > 
-> > > On 10/23/23 17:13, Casey Schaufler wrote:
-> > > > On 10/23/2023 12:28 AM, Maxime Coquelin wrote:
-> > > > > 
-> > > > > 
-> > > > > On 10/21/23 00:20, Casey Schaufler wrote:
-> > > > > > On 10/20/2023 8:58 AM, Maxime Coquelin wrote:
-> > > > > > > This patch introduces LSM hooks for devices creation,
-> > > > > > > destruction and opening operations, checking the
-> > > > > > > application is allowed to perform these operations for
-> > > > > > > the Virtio device type.
-> > > > > > 
-> > > > > > Why do you think that there needs to be a special LSM check for virtio
-> > > > > > devices? What can't existing device attributes be used?
-> > > > > 
-> > > > > Michael asked for a way for SELinux to allow/prevent the creation of
-> > > > > some types of devices [0].
-> > > > > 
-> > > > > A device is created using ioctl() on VDUSE control chardev. Its type is
-> > > > > specified via a field in the structure passed in argument.
-> > > > > 
-> > > > > I didn't see other way than adding dedicated LSM hooks to achieve this,
-> > > > > but it is possible that their is a better way to do it?
-> > > > 
-> > > > At the very least the hook should be made more general, and I'd have to
-> > > > see a proposal before commenting on that. security_dev_destroy(dev)
-> > > > might
-> > > > be a better approach. If there's reason to control destruction of vduse
-> > > > devices it's reasonable to assume that there are other devices with the
-> > > > same or similar properties.
-> > > 
-> > > VDUSE is different from other devices as the device is actually
-> > > implemented by the user-space application, so this is very specific in
-> > > my opinion.
-> > 
-> > This is hardly unique. If you're implementing the device
-> > in user-space you may well be able to implement the desired
-> > controls there.
-> > 
-> > > 
-> > > > 
-> > > > Since SELinux is your target use case, can you explain why you can't
-> > > > create SELinux policy to enforce the restrictions you're after? I
-> > > > believe
-> > > > (but can be proven wrong, of course) that SELinux has mechanism for
-> > > > dealing
-> > > > with controls on ioctls.
-> > > > 
-> > > 
-> > > I am not aware of such mechanism to deal with ioctl(), if you have a
-> > > pointer that would be welcome.
-> > 
-> > security/selinux/hooks.c
-> 
-> We might be able to extend selinux_file_ioctl(), but that will only
-> covers the ioctl for the control file, this patch also adds hook for the
-> device file opening that would need dedicated hook as the device type
-> information is stored in the device's private data.
-> 
-> Michael, before going further, I would be interested in your feedback.
-> Was this patch what you had in mind when requesting for a way to
-> allow/deny devices types for a given application?
-> 
-> Regards,
-> Maxime
+> What is wrong with the original timing that needs to be fixed?
 
+Apparently, all of timing values for the 5120x1440@240 mode of these
+monitors aren't set correctly (they are all lower than they should be)
+in their EDIDs. For what it's worth, the windows driver has had a quirk
+similar the one proposed in this patch for ~2 years.
 
-Yes, this is more or less what I had in mind.
-
-> > 
-> > > 
-> > > Thanks,
-> > > Maxime
-> > > 
-> > > > 
-> > > > > 
-> > > > > Thanks,
-> > > > > Maxime
-> > > > > 
-> > > > > [0]:
-> > > > > https://lore.kernel.org/all/20230829130430-mutt-send-email-mst@kernel.org/
-> > > > > 
-> > > > > 
-> > > > 
-> > > 
-> > 
+> 
+> Alex
+> 
+> 
+>>
+>>   #define MICROSOFT_IEEE_OUI     0xca125c
+>>
+>> @@ -170,6 +172,12 @@ static const struct edid_quirk {
+>>          EDID_QUIRK('S', 'A', 'M', 596, EDID_QUIRK_PREFER_LARGE_60),
+>>          EDID_QUIRK('S', 'A', 'M', 638, EDID_QUIRK_PREFER_LARGE_60),
+>>
+>> +       /* Samsung C49G95T */
+>> +       EDID_QUIRK('S', 'A', 'M', 0x7053, EDID_QUIRK_FIXUP_5120_1440_240),
+>> +
+>> +       /* Samsung S49AG95 */
+>> +       EDID_QUIRK('S', 'A', 'M', 0x71ac, EDID_QUIRK_FIXUP_5120_1440_240),
+>> +
+>>          /* Sony PVM-2541A does up to 12 bpc, but only reports max 8 bpc */
+>>          EDID_QUIRK('S', 'N', 'Y', 0x2541, EDID_QUIRK_FORCE_12BPC),
+>>
+>> @@ -6586,7 +6594,37 @@ static void update_display_info(struct drm_connector *connector,
+>>          drm_edid_to_eld(connector, drm_edid);
+>>   }
+>>
+>> -static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *dev,
+>> +static void drm_mode_displayid_detailed_edid_quirks(struct drm_connector *connector,
+>> +                                                   struct drm_display_mode *mode)
+>> +{
+>> +       unsigned int hsync_width;
+>> +       unsigned int vsync_width;
+>> +
+>> +       if (connector->display_info.quirks & EDID_QUIRK_FIXUP_5120_1440_240) {
+>> +               if (mode->hdisplay == 5120 && mode->vdisplay == 1440 &&
+>> +                   mode->clock == 1939490) {
+>> +                       hsync_width = mode->hsync_end - mode->hsync_start;
+>> +                       vsync_width = mode->vsync_end - mode->vsync_start;
+>> +
+>> +                       mode->clock = 2018490;
+>> +                       mode->hdisplay = 5120;
+>> +                       mode->hsync_start = 5120 + 8;
+>> +                       mode->hsync_end = 5120 + 8 + hsync_width;
+>> +                       mode->htotal = 5200;
+>> +
+>> +                       mode->vdisplay = 1440;
+>> +                       mode->vsync_start = 1440 + 165;
+>> +                       mode->vsync_end = 1440 + 165 + vsync_width;
+>> +                       mode->vtotal = 1619;
+>> +
+>> +                       drm_dbg_kms(connector->dev,
+>> +                                   "[CONNECTOR:%d:%s] Samsung 240Hz mode quirk applied\n",
+>> +                                   connector->base.id, connector->name);
+>> +               }
+>> +       }
+>> +}
+>> +
+>> +static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_connector *connector,
+>>                                                              struct displayid_detailed_timings_1 *timings,
+>>                                                              bool type_7)
+>>   {
+>> @@ -6605,7 +6643,7 @@ static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *d
+>>          bool hsync_positive = (timings->hsync[1] >> 7) & 0x1;
+>>          bool vsync_positive = (timings->vsync[1] >> 7) & 0x1;
+>>
+>> -       mode = drm_mode_create(dev);
+>> +       mode = drm_mode_create(connector->dev);
+>>          if (!mode)
+>>                  return NULL;
+>>
+>> @@ -6628,6 +6666,9 @@ static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *d
+>>
+>>          if (timings->flags & 0x80)
+>>                  mode->type |= DRM_MODE_TYPE_PREFERRED;
+>> +
+>> +       drm_mode_displayid_detailed_edid_quirks(connector, mode);
+>> +
+>>          drm_mode_set_name(mode);
+>>
+>>          return mode;
+>> @@ -6650,7 +6691,7 @@ static int add_displayid_detailed_1_modes(struct drm_connector *connector,
+>>          for (i = 0; i < num_timings; i++) {
+>>                  struct displayid_detailed_timings_1 *timings = &det->timings[i];
+>>
+>> -               newmode = drm_mode_displayid_detailed(connector->dev, timings, type_7);
+>> +               newmode = drm_mode_displayid_detailed(connector, timings, type_7);
+>>                  if (!newmode)
+>>                          continue;
+>>
+>> --
+>> 2.42.0
+>>
+-- 
+Hamza
 
