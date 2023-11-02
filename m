@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCD17DF741
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2647D7DF744
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377044AbjKBQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
+        id S1376973AbjKBQAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235482AbjKBQAC (ORCPT
+        with ESMTP id S235479AbjKBQAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:00:02 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A4E7186;
-        Thu,  2 Nov 2023 09:00:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41DEC2F4;
-        Thu,  2 Nov 2023 09:00:42 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.166])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45F3B3F738;
-        Thu,  2 Nov 2023 08:59:58 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 15:59:52 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Puranjay Mohan <puranjay12@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
- in BPF JIT
-Message-ID: <ZUPHeEe1eJjHkhsg@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230626085811.3192402-1-puranjay12@gmail.com>
- <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net>
- <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
- <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
- <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
- <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
- <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+        Thu, 2 Nov 2023 12:00:47 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B7518E;
+        Thu,  2 Nov 2023 09:00:41 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-7789577b53fso60028085a.3;
+        Thu, 02 Nov 2023 09:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698940840; x=1699545640; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pz4xtVbF475+Pz9FkJzwn0CJZFwJfa9rLwbb0l0oHbA=;
+        b=KlX0QeGitfYK/azBpcMoE6CtZPZxW1xq1eWT1RS7GRVfKBO9/xoSvYPHqnLsB/jdTY
+         3fkhrIZny9I3FLMBVJziqSEp9WFJssuwm1BWUpqYgOGDbUcpb0nN4pYQICcB0cxOGCH9
+         PCszp7WFpLxWKDL6FrHnSlC/OOoi5jXULnTpZga9wBUH8UGoZbyl1Br1VwBcl+bGPDK9
+         3hIIlubLn0uJLlC80F4MMllJEzjJOwOxOKTbEVRR7Wv2S/K6ryl9mi411qVVYjvnBBOr
+         B56QYKBEYZiVHL+9jHD5feIz1lhaiuicYXK5nJFzYPkCuNi0vDAKk79iGcTac3/3Rb1O
+         0rHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698940840; x=1699545640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pz4xtVbF475+Pz9FkJzwn0CJZFwJfa9rLwbb0l0oHbA=;
+        b=HtRcEHucGJr15hRaOGuMKGpE0cOoD9+n+66iMt2PpBdAfGQ6Qv6YdjJQHHnuOobX1f
+         PiZQAp7U4/p2GwHylITC+O/3CJIkwWDlMzEcoRI1mIVOFefXJiAQ5HX3JvZNrXXxWIMw
+         oErFVe3D2kLZeU/lhEEhNiUN6mpERyE2I3gQNAj1uFNDTZeYrjlRTU55yiXDdYAK8pP2
+         joHaX+NK90JiCk8gvtOcXSynQPX11o6viDYwwsYNFjjQpxNMxGg7iv8phdkGlCtnTMTR
+         5Mks5DLTmbpJXRm5Z/EqZA5tGl2WviWPvFeqXvumCvTd0T9M8pYV5pGeFFo7J+/Dzcvo
+         9MZQ==
+X-Gm-Message-State: AOJu0YyKADnP2IW9GpNLUOJBoRc6MHLekXLRYL7NN6GQvR8g/wNFSiW4
+        K0NZQJ337bFTtftbvUaSdoaHVJgCG1fv9ZxU6r8=
+X-Google-Smtp-Source: AGHT+IFJOo7yoHIY4QN2C9zC5oQ8llybZSNIBa763mqL1PmRjeFGcyV57n8FUP79bxgLosjpaSyzMXpfn3/LSsAeMMc=
+X-Received: by 2002:a0c:f446:0:b0:66d:2b0a:bf0f with SMTP id
+ h6-20020a0cf446000000b0066d2b0abf0fmr17334703qvm.46.1698940840183; Thu, 02
+ Nov 2023 09:00:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20231102132616.1130960-1-eblanc@baylibre.com>
+In-Reply-To: <20231102132616.1130960-1-eblanc@baylibre.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 2 Nov 2023 18:00:04 +0200
+Message-ID: <CAHp75VdvR0H7XVLWGqdZqSgoHprUUPQHGiyWEEaHjTgEbeinqQ@mail.gmail.com>
+Subject: Re: [PATCH v8] rtc: tps6594: Add driver for TPS6594 RTC
+To:     Esteban Blanc <eblanc@baylibre.com>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        jpanis@baylibre.com, jneanne@baylibre.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,30 +70,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:13:00PM +0100, Mark Rutland wrote:
-[...]
+On Thu, Nov 2, 2023 at 3:26=E2=80=AFPM Esteban Blanc <eblanc@baylibre.com> =
+wrote:
 
-> However, in looking at it I think
-> there may me a wider potential isssue w.r.t. the way instruction memory gets
-> reused, because as writtten today the architecture doesn't seem to have a
-> guarantee on when instruction fetches are completed and therefore when it's
-> safe to modify instruction memory. Usually we're saved by TLB maintenance,
-> which this series avoids by design.
+> Notes:
+>     This patch was picked from a series since there is no dependency betw=
+een
+>     the two patches.
 
-Just to confirm on this point specifically, per discussions with our
-architects, the (architectural) execution of an instruction ensures that there
-are no outstanding fetches for prior instructions. IIUC that will be clarified 
-the next release of the ARM ARM.
+Not sure if RTC maintainer uses the b4 tool, but as I said in previous
+email for pinctrl change, there is no need to resend. b4 has an
+ability to select patches from the series to be applied.
 
-So as long as we're certain all threads have left the old code (e.g. via a
-flag, RCU tasks rude synchronization, whatever) before we overwrite slots in
-the shared buffer, we should be good.
-
-We will need to be very careful with the maintenance when installing new code
-into the shared buffer (e.g. we will require an IPI to all other CPUs), but
-that should be relatively simple.
-
-I'll go review the latest patches with that in mind.
-
-Thanks,
-Mark.
+--=20
+With Best Regards,
+Andy Shevchenko
