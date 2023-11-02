@@ -2,170 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C72237DF525
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B427DF528
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjKBOex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        id S230261AbjKBOfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKBOew (ORCPT
+        with ESMTP id S229579AbjKBOfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:34:52 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5D212D;
-        Thu,  2 Nov 2023 07:34:49 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b566ee5f1dso628048b6e.0;
-        Thu, 02 Nov 2023 07:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698935689; x=1699540489; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=wHBPMtYXD9v/EXoxQS8QLRmpxsQlq3KNaQrAD21c7JI=;
-        b=O+PKuV3FuhXMg691Q4BmeDD8W7O9WRzO3EptdevZli/GIlKb/TAhFBqji5WrMIEnJG
-         gP3zuDj/OkWmWFOySK5s6DISegaNZNRF0Bm4cJv2NpESGOP+X/kNynaIHDQuT5yVKHN/
-         4hpVMxBfnK9Fhg1Crf83avd6NZsrVrVYWy0QyTUxLdpkiGPyBRNFl/7gabWVR836BZ5O
-         bKpQKbtbx/EnHjHhNiOhk3uPLIw6K7PSFQrEOWCi5pHGEOWk2dw9ZS2zGNuXiT44r4x5
-         s6u/hVCtSluHDL907MNx1oOBa+5ydPfbHcLfIEFsYxfDunyElyaZ4luMZEOepY26HcgZ
-         cVog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698935689; x=1699540489;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wHBPMtYXD9v/EXoxQS8QLRmpxsQlq3KNaQrAD21c7JI=;
-        b=NOtrBB7Ib9g7fLwHszS9X8xRpVLieOjJLTwwvvdmGdYUw2F3U1IDekTtSmvBsFdJX/
-         4vXmGUBsdCX8hJTkJyZGvZRaFJvYWoPR1lCHgQWKpwiL0vV1wjivfLWSRGpJQVQVQMeN
-         jQ60KwegTYMye/JyXCfs/fqn4XHNQ+MRoLs7/GXWg+tNQvmmPH4dwmpRDP3Ch91ym3jf
-         nIhKcHXWkAuDcdHvmLRu6FRP6cSmccx3xYIpfwdK+O/ChgL2rGlIm9ZbAVwTMVA+7AiE
-         sBnnAFg5eTqnyvN3DaZrvPhfJc7jAKoamSGAkFpQZDjJu9dzSSN+li5+bUsbHoF3gSpY
-         5UVg==
-X-Gm-Message-State: AOJu0Yzm5YflGh8zdEnCC+Mm6d8ckqt55AvQ9SuMnSSJ12Lkisw6XDmI
-        OOV2D9K+83oCjxQhwoH1dwBrUYTsZjA=
-X-Google-Smtp-Source: AGHT+IFHGR8jUEvgiRwPVHlNQJiHwDhmZyec4yYsaO2gSqpjQ+FT+YOISub2+G1SP3W+6RGT4f0S/g==
-X-Received: by 2002:a54:4799:0:b0:3a7:82e8:8fd1 with SMTP id o25-20020a544799000000b003a782e88fd1mr18574341oic.20.1698935688882;
-        Thu, 02 Nov 2023 07:34:48 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bd37-20020a056808222500b003b2df32d9a9sm549110oib.19.2023.11.02.07.34.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 07:34:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <c448d7e3-c6b6-49e1-bbf1-331d74954a77@roeck-us.net>
-Date:   Thu, 2 Nov 2023 07:34:47 -0700
+        Thu, 2 Nov 2023 10:35:20 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E53B7
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:35:16 -0700 (PDT)
+Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SLmWb4YYFzMmXM;
+        Thu,  2 Nov 2023 22:30:51 +0800 (CST)
+Received: from DESKTOP-6NKE0BC.china.huawei.com (10.174.185.210) by
+ kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 2 Nov 2023 22:35:12 +0800
+From:   Kunkun Jiang <jiangkunkun@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <wanghaibin.wang@huawei.com>, Kunkun Jiang <jiangkunkun@huawei.com>
+Subject: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
+Date:   Thu, 2 Nov 2023 22:35:07 +0800
+Message-ID: <20231102143507.840-1-jiangkunkun@huawei.com>
+X-Mailer: git-send-email 2.26.2.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] hwmon: emc1403: Add support for EMC1442
-Content-Language: en-US
-To:     Patrick Williams <patrick@stwcx.xyz>,
-        Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231102090808.427351-1-Delphine_CC_Chiu@wiwynn.com>
- <ZUOjdGPDX06ehrLB@heinlein.vulture-banana.ts.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <ZUOjdGPDX06ehrLB@heinlein.vulture-banana.ts.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.210]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000007.china.huawei.com (7.193.23.189)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/23 06:26, Patrick Williams wrote:
-> On Thu, Nov 02, 2023 at 05:08:07PM +0800, Delphine CC Chiu wrote:
-> 
-> I have a datasheet for this chip with a "Revision 1.0 (10-25-10)" in the
-> footer.  Reviewed the change against the datasheet.
-> 
->> Add support for EMC1442 which is compatible with EMC1403.
->>
->> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
->> ---
->> change in v2:
->> Revised emc1403 to emc1402
-> 
->> +	case 0x60:
->> +		strscpy(info->type, "emc1442", I2C_NAME_SIZE);
->> +		break;
-> 
-> Confirmed against datasheet.
-> 
-> Section 2.2 "Register Set Delta" specifies:
->      - Product ID | 60h
-> 
->>   static const unsigned short emc1403_address_list[] = {
->> -	0x18, 0x1c, 0x29, 0x4c, 0x4d, 0x5c, I2C_CLIENT_END
->> +	0x18, 0x1c, 0x29, 0x3c, 0x4c, 0x4d, 0x5c, I2C_CLIENT_END
-> 
-> Confirmed against datasheet.
-> 
-> Section 5.1.2 "SMBus Address and RD/WR Bit" has a table indicating that
-> a 22k pull-up resistor corresponds to `0011_100?` binary.
-> 
->>   	{ "emc1422", emc1402 },
->>   	{ "emc1423", emc1403 },
->>   	{ "emc1424", emc1404 },
->> +	{ "emc1442", emc1402 },
-> 
-> Datasheet section 2.1 is titled "Functional Delta from EMC1412 to
-> EMC1442", with minimal differences.  We map "emc1412" to `emc1402`, so
-> mapping "emc1442" to the same should be appropriate.
-> 
-> 
-> Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
-> 
-Thanks. I'll apply, and fix the description while doing so.
+In some scenarios, the guest virtio-pci driver will request two MSI-X,
+one vector for config, one shared for queues. However, the host driver
+(vDPA or VFIO) will request a vector for each queue.
 
-Guenter
+In the current implementation of GICv4/4.1 direct injection of vLPI,
+pINTID and vINTID have one-to-one correspondence. Therefore, the
+above scenario cannot be handled correctly. The host kernel will
+execute its_map_vlpi multiple times but only execute its_unmap_vlpi
+once. This may cause guest hang[1].
+
+|	WARN_ON(!(irq->hw && irq->host_irq == virq));
+|	if (irq->hw) {
+|		atomic_dec(&irq->target_vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vlpi_count);
+|		irq->hw = false;
+|		ret = its_unmap_vlpi(virq);
+|	}
+
+Add a list to struct vgic_irq to record all host irqs mapped to the vlpi.
+When performing an action on the vlpi, traverse the list and perform this
+action on all host irqs.
+
+Link: https://lore.kernel.org/all/0d9fdf42-76b1-afc6-85a9-159c5490bbd4@huawei.com/#t
+
+Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+---
+ arch/arm64/kvm/vgic/vgic-its.c | 74 ++++++++++++++++++++++++----------
+ arch/arm64/kvm/vgic/vgic-v4.c  | 37 ++++++++++++++---
+ include/kvm/arm_vgic.h         |  7 ++++
+ 3 files changed, 91 insertions(+), 27 deletions(-)
+
+diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+index 5fe2365a629f..c4b453155fcf 100644
+--- a/arch/arm64/kvm/vgic/vgic-its.c
++++ b/arch/arm64/kvm/vgic/vgic-its.c
+@@ -54,6 +54,7 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
+ 
+ 	INIT_LIST_HEAD(&irq->lpi_list);
+ 	INIT_LIST_HEAD(&irq->ap_list);
++	INIT_LIST_HEAD(&irq->host_irq_head);
+ 	raw_spin_lock_init(&irq->irq_lock);
+ 
+ 	irq->config = VGIC_CONFIG_EDGE;
+@@ -61,6 +62,7 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
+ 	irq->intid = intid;
+ 	irq->target_vcpu = vcpu;
+ 	irq->group = 1;
++	atomic_set(&irq->map_count, 0);
+ 
+ 	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
+ 
+@@ -284,6 +286,7 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
+ 	u8 prop;
+ 	int ret;
+ 	unsigned long flags;
++	struct vlpi_host_irq *vlpi_hirq;
+ 
+ 	ret = kvm_read_guest_lock(kvm, propbase + irq->intid - GIC_LPI_OFFSET,
+ 				  &prop, 1);
+@@ -305,8 +308,13 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
+ 
+ 	raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
+ 
+-	if (irq->hw)
+-		return its_prop_update_vlpi(irq->host_irq, prop, needs_inv);
++	if (irq->hw) {
++		list_for_each_entry(vlpi_hirq, &irq->host_irq_head, host_irq_list) {
++			ret = its_prop_update_vlpi(vlpi_hirq->host_irq, prop, needs_inv);
++			if (ret)
++				return ret;
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -354,25 +362,31 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+ static int update_affinity(struct vgic_irq *irq, struct kvm_vcpu *vcpu)
+ {
+ 	int ret = 0;
+-	unsigned long flags;
++	unsigned long flags, counts;
++	struct vlpi_host_irq *vlpi_hirq;
+ 
+ 	raw_spin_lock_irqsave(&irq->irq_lock, flags);
+ 	irq->target_vcpu = vcpu;
+ 	raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
+ 
+ 	if (irq->hw) {
+-		struct its_vlpi_map map;
++		counts = atomic_read(&irq->map_count);
++		list_for_each_entry(vlpi_hirq, &irq->host_irq_head, host_irq_list) {
++			struct its_vlpi_map map;
+ 
+-		ret = its_get_vlpi(irq->host_irq, &map);
+-		if (ret)
+-			return ret;
++			ret = its_get_vlpi(vlpi_hirq->host_irq, &map);
++			if (ret)
++				return ret;
+ 
+-		if (map.vpe)
+-			atomic_dec(&map.vpe->vlpi_count);
+-		map.vpe = &vcpu->arch.vgic_cpu.vgic_v3.its_vpe;
+-		atomic_inc(&map.vpe->vlpi_count);
++			counts--;
++			if (map.vpe && !counts)
++				atomic_dec(&map.vpe->vlpi_count);
++			map.vpe = &vcpu->arch.vgic_cpu.vgic_v3.its_vpe;
++			if (!counts)
++				atomic_inc(&map.vpe->vlpi_count);
+ 
+-		ret = its_map_vlpi(irq->host_irq, &map);
++			ret = its_map_vlpi(vlpi_hirq->host_irq, &map);
++		}
+ 	}
+ 
+ 	return ret;
+@@ -731,6 +745,7 @@ static int vgic_its_trigger_msi(struct kvm *kvm, struct vgic_its *its,
+ 				u32 devid, u32 eventid)
+ {
+ 	struct vgic_irq *irq = NULL;
++	struct vlpi_host_irq *vlpi_hirq;
+ 	unsigned long flags;
+ 	int err;
+ 
+@@ -738,9 +753,15 @@ static int vgic_its_trigger_msi(struct kvm *kvm, struct vgic_its *its,
+ 	if (err)
+ 		return err;
+ 
+-	if (irq->hw)
+-		return irq_set_irqchip_state(irq->host_irq,
+-					     IRQCHIP_STATE_PENDING, true);
++	if (irq->hw) {
++		list_for_each_entry(vlpi_hirq, &irq->host_irq_head, host_irq_list) {
++			err = irq_set_irqchip_state(vlpi_hirq->host_irq,
++						    IRQCHIP_STATE_PENDING, true);
++			if (err)
++				return err;
++			return 0;
++		}
++	}
+ 
+ 	raw_spin_lock_irqsave(&irq->irq_lock, flags);
+ 	irq->pending_latch = true;
+@@ -806,12 +827,17 @@ int vgic_its_inject_msi(struct kvm *kvm, struct kvm_msi *msi)
+ /* Requires the its_lock to be held. */
+ static void its_free_ite(struct kvm *kvm, struct its_ite *ite)
+ {
++	struct vlpi_host_irq *vlpi_hirq;
++
+ 	list_del(&ite->ite_list);
+ 
+ 	/* This put matches the get in vgic_add_lpi. */
+ 	if (ite->irq) {
+-		if (ite->irq->hw)
+-			WARN_ON(its_unmap_vlpi(ite->irq->host_irq));
++		if (ite->irq->hw) {
++			list_for_each_entry(vlpi_hirq, &ite->irq->host_irq_head, host_irq_list) {
++				WARN_ON(its_unmap_vlpi(vlpi_hirq->host_irq));
++			}
++		}
+ 
+ 		vgic_put_irq(kvm, ite->irq);
+ 	}
+@@ -1290,7 +1316,8 @@ static int vgic_its_cmd_handle_clear(struct kvm *kvm, struct vgic_its *its,
+ 	u32 device_id = its_cmd_get_deviceid(its_cmd);
+ 	u32 event_id = its_cmd_get_id(its_cmd);
+ 	struct its_ite *ite;
+-
++	struct vlpi_host_irq *vlpi_hirq;
++	int ret;
+ 
+ 	ite = find_ite(its, device_id, event_id);
+ 	if (!ite)
+@@ -1298,9 +1325,14 @@ static int vgic_its_cmd_handle_clear(struct kvm *kvm, struct vgic_its *its,
+ 
+ 	ite->irq->pending_latch = false;
+ 
+-	if (ite->irq->hw)
+-		return irq_set_irqchip_state(ite->irq->host_irq,
+-					     IRQCHIP_STATE_PENDING, false);
++	if (ite->irq->hw) {
++		list_for_each_entry(vlpi_hirq, &ite->irq->host_irq_head, host_irq_list) {
++			ret = irq_set_irqchip_state(vlpi_hirq->host_irq,
++						    IRQCHIP_STATE_PENDING, false);
++			if (ret)
++				return ret;
++		}
++	}
+ 
+ 	return 0;
+ }
+diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
+index 339a55194b2c..d634ba3dd225 100644
+--- a/arch/arm64/kvm/vgic/vgic-v4.c
++++ b/arch/arm64/kvm/vgic/vgic-v4.c
+@@ -413,6 +413,7 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
+ {
+ 	struct vgic_its *its;
+ 	struct vgic_irq *irq;
++	struct vlpi_host_irq *vlpi_hirq;
+ 	struct its_vlpi_map map;
+ 	unsigned long flags;
+ 	int ret;
+@@ -456,9 +457,19 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
+ 	if (ret)
+ 		goto out;
+ 
+-	irq->hw		= true;
+-	irq->host_irq	= virq;
+-	atomic_inc(&map.vpe->vlpi_count);
++	vlpi_hirq = kzalloc(sizeof(struct vlpi_host_irq), GFP_KERNEL_ACCOUNT);
++	if (!vlpi_hirq)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&vlpi_hirq->host_irq_list);
++	vlpi_hirq->host_irq = virq;
++	list_add_tail(&vlpi_hirq->host_irq_list, &irq->host_irq_head);
++
++	if (!atomic_read(&irq->map_count)) {
++		irq->hw = true;
++		atomic_inc(&map.vpe->vlpi_count);
++	}
++	atomic_inc(&irq->map_count);
+ 
+ 	/* Transfer pending state */
+ 	raw_spin_lock_irqsave(&irq->irq_lock, flags);
+@@ -488,6 +499,8 @@ int kvm_vgic_v4_unset_forwarding(struct kvm *kvm, int virq,
+ {
+ 	struct vgic_its *its;
+ 	struct vgic_irq *irq;
++	struct vlpi_host_irq *vlpi_hirq;
++	struct its_vpe *vpe;
+ 	int ret;
+ 
+ 	if (!vgic_supports_direct_msis(kvm))
+@@ -508,10 +521,22 @@ int kvm_vgic_v4_unset_forwarding(struct kvm *kvm, int virq,
+ 	if (ret)
+ 		goto out;
+ 
+-	WARN_ON(!(irq->hw && irq->host_irq == virq));
++	WARN_ON(!(irq->hw));
+ 	if (irq->hw) {
+-		atomic_dec(&irq->target_vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vlpi_count);
+-		irq->hw = false;
++		list_for_each_entry(vlpi_hirq, &irq->host_irq_head, host_irq_list) {
++			if (vlpi_hirq->host_irq == virq) {
++				list_del(&vlpi_hirq->host_irq_list);
++				kfree(vlpi_hirq);
++				break;
++			}
++		}
++
++		atomic_dec(&irq->map_count);
++		if (!atomic_read(&irq->map_count)) {
++			vpe = &irq->target_vcpu->arch.vgic_cpu.vgic_v3.its_vpe;
++			atomic_dec(&vpe->vlpi_count);
++			irq->hw = false;
++		}
+ 		ret = its_unmap_vlpi(virq);
+ 	}
+ 
+diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
+index 5b27f94d4fad..2b8f25d1eff2 100644
+--- a/include/kvm/arm_vgic.h
++++ b/include/kvm/arm_vgic.h
+@@ -114,6 +114,11 @@ struct irq_ops {
+ 	bool (*get_input_level)(int vintid);
+ };
+ 
++struct vlpi_host_irq {
++	struct list_head host_irq_list;
++	unsigned int host_irq;
++};
++
+ struct vgic_irq {
+ 	raw_spinlock_t irq_lock;	/* Protects the content of the struct */
+ 	struct list_head lpi_list;	/* Used to link all LPIs together */
+@@ -138,6 +143,8 @@ struct vgic_irq {
+ 	bool active;			/* not used for LPIs */
+ 	bool enabled;
+ 	bool hw;			/* Tied to HW IRQ */
++	atomic_t map_count;		/* record vLPI map times */
++	struct list_head host_irq_head;	/* record host irqs list of a vLPI */
+ 	struct kref refcount;		/* Used for LPIs */
+ 	u32 hwintid;			/* HW INTID number */
+ 	unsigned int host_irq;		/* linux irq corresponding to hwintid */
+-- 
+2.33.0
 
