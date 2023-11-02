@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CCF7DEBBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0667DEBB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348437AbjKBEPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        id S1348446AbjKBEPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348417AbjKBEPh (ORCPT
+        with ESMTP id S1348417AbjKBEPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:15:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FECA6
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:15:31 -0700 (PDT)
+        Thu, 2 Nov 2023 00:15:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC3EE7
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698898531; x=1730434531;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=YWSSMCsulCRLdzOjDrEsEiAA9R2C1SvVYwlBRHY11MY=;
-  b=KhCmC0AfKMwX+aiwg5znT1snzAi+UtNG55NZu9odiNZAZ0d3TJ5PaAXA
-   Ym97gtjxpWlP4Nw9BugAloBIFwYR7oMVUlWU45Er/QNxFymDzBcwALZBd
-   Sl4q7R5ogSZeVD1ynDjU0QoMsBO5//aRaroW1fxSGh3D1eUQCbhIKl/vw
-   OKQZcOWAa8o5fq4iZj+sz58d3AebCYHlY3zFyjaCyZ6l+XzvKspDVMdPq
-   aVtemsjNDArXPeYFah8zZBKVDoPh19V64aRZzRyVk4NstuKVrryFlSsvi
-   f+pLw2OauTpFR7dOO2e9jvGkOPpTFC4y8Ahe9f1hbq7fyzSlV6opqAnON
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="385811200"
+  t=1698898533; x=1730434533;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pW7IEzkHLClJbmSBnBXg6mayrfNDlf19EbAfy1ucljc=;
+  b=klaXcZ5pKJPOtqad6FY/FByqrc0zktJH7/i60IfmAaJmLaNqiBqGoUDm
+   t/8z0ZxrWxF30td3Z1Cv3ltTK/VBKpxxz0flu5G7i8cmUWWklkbzgCgdr
+   VBgYhrXfL1zaKE0zaA6LPSSizUJYQNf/CnMnxuRHNYorr73zOZzpz6Rxh
+   TwCqo8CO6DFK1uWWkPJddAjr2sq1gzO3bKqGH/gprPUkLq547y1rTc4sK
+   J+AkLHmDdRoZs1yYhaAABiXtORZ9hI0S3X+ZC2pmfXASZRhyAIRm9a6hZ
+   GsVrynory/Ukdppd0Ck17FDrAxq5vj3nO15CgyOITN94vxcdMO4JwkbrP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="452930171"
 X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="385811200"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 21:15:31 -0700
+   d="scan'208";a="452930171"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 21:15:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="1092590988"
 X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="1092590988"
+   d="scan'208";a="2404053"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Nov 2023 21:15:29 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 01 Nov 2023 21:15:29 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qyP79-00016K-1C;
+        id 1qyP79-00016M-1Q;
         Thu, 02 Nov 2023 04:15:27 +0000
-Date:   Thu, 2 Nov 2023 12:14:31 +0800
+Date:   Thu, 2 Nov 2023 12:14:33 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Daan De Meyer <daan.j.demeyer@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: net/core/filter.c:11773:17: warning: no previous declaration for
- 'bpf_sock_addr_set_sun_path'
-Message-ID: <202311021257.nD9pHYSn-lkp@intel.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/panel-edp: Choose correct preferred mode
+Message-ID: <202311021208.ekIThlkq-lkp@intel.com>
+References: <20231101212604.1636517-4-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231101212604.1636517-4-hsinyi@chromium.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daan,
+Hi Hsin-Yi,
 
-FYI, the error/warning still remains.
+kernel test robot noticed the following build warnings:
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   babe393974de0351c0e6cca50f5f84edaf8d7fa1
-commit: 53e380d21441909b12b6e0782b77187ae4b971c4 bpf: Add bpf_sock_addr_set_sun_path() to allow writing unix sockaddr from bpf
-date:   3 weeks ago
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20231102/202311021257.nD9pHYSn-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021257.nD9pHYSn-lkp@intel.com/reproduce)
+[auto build test WARNING on drm-misc/drm-misc-next]
+[cannot apply to linus/master v6.6 next-20231101]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Hsin-Yi-Wang/drm-panel-edp-Add-several-generic-edp-panels/20231102-053007
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20231101212604.1636517-4-hsinyi%40chromium.org
+patch subject: [PATCH 3/3] drm/panel-edp: Choose correct preferred mode
+config: arc-randconfig-001-20231102 (https://download.01.org/0day-ci/archive/20231102/202311021208.ekIThlkq-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021208.ekIThlkq-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311021257.nD9pHYSn-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021208.ekIThlkq-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   net/core/filter.c:11747:17: warning: no previous declaration for 'bpf_dynptr_from_skb' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
-                    ^~~~~~~~~~~~~~~~~~~
-   net/core/filter.c:11760:17: warning: no previous declaration for 'bpf_dynptr_from_xdp' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
-                    ^~~~~~~~~~~~~~~~~~~
->> net/core/filter.c:11773:17: warning: no previous declaration for 'bpf_sock_addr_set_sun_path' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
-                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/core/filter.c:11877:17: warning: no previous declaration for 'bpf_sock_destroy' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
-                    ^~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/drm_modes.c:1944: warning: expecting prototype for drm_mode_unset_preferred(). Prototype was for drm_mode_unset_preferred_modes() instead
 
 
-vim +/bpf_sock_addr_set_sun_path +11773 net/core/filter.c
+vim +1944 drivers/gpu/drm/drm_modes.c
 
- 11772	
- 11773	__bpf_kfunc int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
- 11774						   const u8 *sun_path, u32 sun_path__sz)
- 11775	{
- 11776		struct sockaddr_un *un;
- 11777	
- 11778		if (sa_kern->sk->sk_family != AF_UNIX)
- 11779			return -EINVAL;
- 11780	
- 11781		/* We do not allow changing the address to unnamed or larger than the
- 11782		 * maximum allowed address size for a unix sockaddr.
- 11783		 */
- 11784		if (sun_path__sz == 0 || sun_path__sz > UNIX_PATH_MAX)
- 11785			return -EINVAL;
- 11786	
- 11787		un = (struct sockaddr_un *)sa_kern->uaddr;
- 11788		memcpy(un->sun_path, sun_path, sun_path__sz);
- 11789		sa_kern->uaddrlen = offsetof(struct sockaddr_un, sun_path) + sun_path__sz;
- 11790	
- 11791		return 0;
- 11792	}
- 11793	__diag_pop();
- 11794	
+  1935	
+  1936	/**
+  1937	 * drm_mode_unset_preferred - clear the preferred status on existing modes.
+  1938	 * @connector: the connector to update
+  1939	 *
+  1940	 * Walk the mode list for connector, clearing the preferred status on existing
+  1941	 * modes.
+  1942	 */
+  1943	void drm_mode_unset_preferred_modes(struct drm_connector *connector)
+> 1944	{
+  1945		struct drm_display_mode *cur_mode;
+  1946	
+  1947		list_for_each_entry(cur_mode, &connector->probed_modes, head)
+  1948			cur_mode->type &= ~DRM_MODE_TYPE_PREFERRED;
+  1949	}
+  1950	EXPORT_SYMBOL_GPL(drm_mode_unset_preferred_modes);
+  1951	
 
 -- 
 0-DAY CI Kernel Test Service
