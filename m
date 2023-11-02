@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D997DFB43
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54E57DFB4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377424AbjKBUKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
+        id S230037AbjKBUOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 16:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377411AbjKBUKC (ORCPT
+        with ESMTP id S229459AbjKBUOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:10:02 -0400
+        Thu, 2 Nov 2023 16:14:43 -0400
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58511134;
-        Thu,  2 Nov 2023 13:09:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE59B186;
+        Thu,  2 Nov 2023 13:14:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
         MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=q2W1VCZdvfcA1TvVxXUd1wwMlA+b5wW2gVN59Ibyspc=; b=aHT35T9Ietusi+0XZYIXiBINUJ
-        eAUi5eDPtSXy7tipUD14EmKIbdFtl5ZIe07MLB8laIK8XFiYommLBXXMFg6ZajQ2Ae6J+iUm2/tk9
-        Jmwz/B/hiRzkfMxfUKwAVllzR0uDXOnJFoBQ9kKfKuil/VIcrasJe60saPARy9Qa75jUaLJ7GPjDu
-        bIR41JKecfeLxkC+omQzMMfqER2bqSNWArHV181kHuYA/Wr1qwZeLLXQqBOA9J4jM1BivqGu5OCcN
-        sB7I1paSx5pZYa0JUl1WNMDch2jdmJk2d4kCCm1JjxyB0RNSLmZYLIUSVX2NXIcgz2erurPEuut8l
-        PnftacoA==;
+        bh=x0Ufl3kJR9XTsSlPW8zcy4F+KQbvSb7QulGvGNZDl20=; b=hsnTqt6l5FBhErsMbFP3V4TOwo
+        vIBBukr6dGYVafu3aQDwViROBtMTHDhpE3MHnpIJu62yqGAulAxh+601vevOFRWLFG8e0JrNF4oYS
+        ofcAQupRAkB9xIkW31UitG/SV6382cNEJa9UFg1T7HaxPuzpv6y7/AKUNP1d74z0urG58dyB4X1Xw
+        x4BGZWDY4hNpX2KLeCmdc4i+Tlwxdb+rH2IVkhKI07y8Upwj5GhK4jojqY3EGTddjujaJkXqnV+Gh
+        CC+OFPe9c/jbyu5NLCOvuGFR2HoMYuRYpPt/8ldt1/uT4IdaER1ZcF/6evXO+NTz87efPGA5uDh40
+        b4HYz/3Q==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qye0d-009w63-1T;
-        Thu, 02 Nov 2023 20:09:43 +0000
-Date:   Thu, 2 Nov 2023 20:09:43 +0000
+        id 1qye5A-009wCW-1o;
+        Thu, 02 Nov 2023 20:14:24 +0000
+Date:   Thu, 2 Nov 2023 20:14:24 +0000
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Philipp Stanner <pstanner@redhat.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dave Airlie <airlied@redhat.com>
-Subject: Re: [PATCH] drivers/net/ppp: copy userspace array safely
-Message-ID: <20231102200943.GK1957730@ZenIV>
-References: <20231102191914.52957-2-pstanner@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH] drivers/tty/vt: copy userspace arrays safely
+Message-ID: <20231102201424.GL1957730@ZenIV>
+References: <20231102192134.53301-2-pstanner@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231102191914.52957-2-pstanner@redhat.com>
+In-Reply-To: <20231102192134.53301-2-pstanner@redhat.com>
 Sender: Al Viro <viro@ftp.linux.org.uk>
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
@@ -58,31 +56,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 08:19:15PM +0100, Philipp Stanner wrote:
-> In ppp_generic.c memdup_user() is utilized to copy a userspace array.
-> This is done without an overflow check.
+On Thu, Nov 02, 2023 at 08:21:35PM +0100, Philipp Stanner wrote:
+> The functions (v)memdup_user() are utilized to copy userspace arrays.
+> This is done without overflow checks.
 > 
-> Use the new wrapper memdup_array_user() to copy the array more safely.
+> Use the new wrappers memdup_array_user() and vmemdup_array_user() to
+> copy the arrays more safely.
 
->  	fprog.len = uprog->len;
-> -	fprog.filter = memdup_user(uprog->filter,
-> -				   uprog->len * sizeof(struct sock_filter));
-> +	fprog.filter = memdup_array_user(uprog->filter,
-> +					 uprog->len, sizeof(struct sock_filter));
+> @@ -644,7 +644,7 @@ int con_set_unimap(struct vc_data *vc, ushort ct, struct unipair __user *list)
+>  	if (!ct)
+>  		return 0;
 
-Far be it from me to discourage security theat^Whardening, but
+> -	unilist = vmemdup_user(list, array_size(sizeof(*unilist), ct));
+> +	unilist = vmemdup_array_user(list, ct, sizeof(*unilist));
+>  	if (IS_ERR(unilist))
+>  		return PTR_ERR(unilist);
 
-struct sock_fprog {     /* Required for SO_ATTACH_FILTER. */
-        unsigned short          len;    /* Number of filter blocks */
-	struct sock_filter __user *filter;
-};
+a 16bit value times sizeof(something).
+  
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> index 1fe6107b539b..802ceb0a5e4c 100644
+> --- a/drivers/tty/vt/keyboard.c
+> +++ b/drivers/tty/vt/keyboard.c
+> @@ -1773,8 +1773,8 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
 
-struct sock_filter {    /* Filter block */
-        __u16   code;   /* Actual filter code */
-        __u8    jt;     /* Jump true */
-        __u8    jf;     /* Jump false */
-        __u32   k;      /* Generic multiuse field */
-};
+... and here we have
+                if (ct >= MAX_DIACR)
+			return -EINVAL;
 
-so you might want to mention that overflow in question would have to be
-in multiplying an untrusted 16bit value by 8...
+directly upstream, so it's even better - a value below 256 times sizeof(something)
+
+>  		if (ct) {
+>  
+> -			dia = memdup_user(a->kbdiacr,
+> -					sizeof(struct kbdiacr) * ct);
+> +			dia = memdup_array_user(a->kbdiacr,
+> +						ct, sizeof(struct kbdiacr));
+>  			if (IS_ERR(dia))
+>  				return PTR_ERR(dia);
+>  
+> @@ -1811,8 +1811,8 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
+>  			return -EINVAL;
+
+Ditto.
+
+>  		if (ct) {
+> -			buf = memdup_user(a->kbdiacruc,
+> -					  ct * sizeof(struct kbdiacruc));
+> +			buf = memdup_array_user(a->kbdiacruc,
+> +						ct, sizeof(struct kbdiacruc));
