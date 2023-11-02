@@ -2,52 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322417DED00
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F200B7DED07
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbjKBG5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 02:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        id S233533AbjKBHAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 03:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKBG5j (ORCPT
+        with ESMTP id S229481AbjKBHAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 02:57:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EF9112;
-        Wed,  1 Nov 2023 23:57:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFC3DC433C7;
-        Thu,  2 Nov 2023 06:57:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698908256;
-        bh=fLUnEkpDInr33uX+TwVh/oE8g8P7jL3sdGjLk0PAf1o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=udtGiIR5iMCHMcmwWp8oGZexRcHNJp9P2UWn9sEtk3YvaGAI4k/OQSVDdsGboFapr
-         n8SrgdaufYGa3eSJh5xAVULdhiKiSfyWpbFdXa7Zntfj94yo6nmbdaduK0/NYc16aZ
-         aPD+JWJQsZ32sz2jUbgduQyP3O9LAGAzTEwMySHoeaYiPzAK97fYLiABRAnV0AyTTv
-         POJAyhy1PJDU6+hXtV8F1OoGXjwpBSkSEF8250NyCIPijsapOYd8Au5KFtaAnkFIZw
-         a5JYwgbmXh1tofRjuZyOtemY4D3yZFVNDIzOnAe6dzgLLgz+W8EwAghvBo7jAfXxX7
-         g34Cm/VMAGo+Q==
-Date:   Thu, 2 Nov 2023 15:57:31 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v6 8/8] eventfs: Use simple_recursive_removal() to clean
- up dentries
-Message-Id: <20231102155731.8d00498fa52617c02bdae74b@kernel.org>
-In-Reply-To: <20231101172650.552471568@goodmis.org>
-References: <20231101172541.971928390@goodmis.org>
-        <20231101172650.552471568@goodmis.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Thu, 2 Nov 2023 03:00:23 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10312112
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:00:17 -0700 (PDT)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AC872667;
+        Thu,  2 Nov 2023 07:59:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698908398;
+        bh=XxeJeOmrCEVobEz1TNcbYdsERPtNKL+iIPBV32NxPAY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BQcCITs/0IKx/n8/t146E7sLn71BdreHy6DYowEaj1Bx3IvcIwzIXGz5dYpGBDzJt
+         0aTff0miVWjT/1Zv0v1CQAhgjN84YiU6Q2I1N4CsU5mnoYr5sNNeXxhkiyRnZeHkM+
+         LIxo5zBUMqUtGFKdTyjm/DI6uZ4h4t9Ep1vG8IuM=
+Message-ID: <90b38d40-d71e-4b0e-af35-047dcc5c5b41@ideasonboard.com>
+Date:   Thu, 2 Nov 2023 09:00:11 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/10] drm/tidss: IRQ code cleanup
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
+ <20231101-tidss-probe-v1-9-45149e0f9415@ideasonboard.com>
+ <20231101145243.GY12764@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231101145243.GY12764@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,211 +101,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Nov 2023 13:25:49 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 01/11/2023 16:52, Laurent Pinchart wrote:
+> Hi Tomi,
 > 
-> Looking at how dentry is removed via the tracefs system, I found that
-> eventfs does not do everything that it did under tracefs. The tracefs
-> removal of a dentry calls simple_recursive_removal() that does a lot more
-> than a simple d_invalidate().
+> Thank you for the patch.
 > 
-> As it should be a requirement that any eventfs_inode that has a dentry, so
-> does its parent. When removing a eventfs_inode, if it has a dentry, a call
-> to simple_recursive_removal() on that dentry should clean up all the
-> dentries underneath it.
+> On Wed, Nov 01, 2023 at 11:17:46AM +0200, Tomi Valkeinen wrote:
+>> The IRQ setup code is overly complex. All we really need to do is
+>> initialize the related fields in struct tidss_device, and request the
+>> IRQ.
+>>
+>> We can drop all the HW accesses, as they are pointless: the driver will
+>> set the IRQs correctly when it needs any of the IRQs, and at probe time
+>> we have done a reset, so we know that all the IRQs are masked by default
+>> in the hardware.
 > 
-> Add WARN_ON_ONCE() to check for the parent having a dentry if any children
-> do.
+> Even for K2G ?
 
-This looks good to me.
+Good point. I'll add a simple manual reset for k2g, masking the IRQs and 
+disabling the VPs.
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+  Tomi
 
-Thanks,
-
-
-
-> 
-> Link: https://lore.kernel.org/all/20231101022553.GE1957730@ZenIV/
-> 
-> Cc: stable@vger.kernel.org
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Fixes: 5bdcd5f5331a2 ("eventfs: Implement removal of meta data from eventfs")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> Changes since the last patch: https://lore.kernel.org/linux-trace-kernel/20231031144703.71eef3a0@gandalf.local.home
-> 
-> - Was originally called: eventfs: Process deletion of dentry more thoroughly
-> 
-> - Al Viro pointed out that I could use simple_recursive_removal() instead.
->   I had originally thought that I could not, but looking deeper into it,
->   and realizing that if a dentry exists on any eventfs_inode, then all
->   the parent eventfs_inode of that would als have a dentry. Hence, calling
->   simple_recursive_removal() on the top dentry would clean up all the
->   children dentries as well. Doing it his way cleans up the code quite
->   a bit!
-> 
->  fs/tracefs/event_inode.c | 77 +++++++++++++++++++++++-----------------
->  fs/tracefs/internal.h    |  2 --
->  2 files changed, 44 insertions(+), 35 deletions(-)
-> 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index 0087a3f455f1..f8a594a50ae6 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -967,30 +967,29 @@ static void unhook_dentry(struct dentry *dentry)
->  {
->  	if (!dentry)
->  		return;
-> -
-> -	/* Keep the dentry from being freed yet (see eventfs_workfn()) */
-> +	/*
-> +	 * Need to add a reference to the dentry that is expected by
-> +	 * simple_recursive_removal(), which will include a dput().
-> +	 */
->  	dget(dentry);
->  
-> -	dentry->d_fsdata = NULL;
-> -	d_invalidate(dentry);
-> -	mutex_lock(&eventfs_mutex);
-> -	/* dentry should now have at least a single reference */
-> -	WARN_ONCE((int)d_count(dentry) < 1,
-> -		  "dentry %px (%s) less than one reference (%d) after invalidate\n",
-> -		  dentry, dentry->d_name.name, d_count(dentry));
-> -	mutex_unlock(&eventfs_mutex);
-> +	/*
-> +	 * Also add a reference for the dput() in eventfs_workfn().
-> +	 * That is required as that dput() will free the ei after
-> +	 * the SRCU grace period is over.
-> +	 */
-> +	dget(dentry);
->  }
->  
->  /**
->   * eventfs_remove_rec - remove eventfs dir or file from list
->   * @ei: eventfs_inode to be removed.
-> - * @head: the list head to place the deleted @ei and children
->   * @level: prevent recursion from going more than 3 levels deep.
->   *
->   * This function recursively removes eventfs_inodes which
->   * contains info of files and/or directories.
->   */
-> -static void eventfs_remove_rec(struct eventfs_inode *ei, struct list_head *head, int level)
-> +static void eventfs_remove_rec(struct eventfs_inode *ei, int level)
->  {
->  	struct eventfs_inode *ei_child;
->  
-> @@ -1009,13 +1008,26 @@ static void eventfs_remove_rec(struct eventfs_inode *ei, struct list_head *head,
->  	/* search for nested folders or files */
->  	list_for_each_entry_srcu(ei_child, &ei->children, list,
->  				 lockdep_is_held(&eventfs_mutex)) {
-> -		eventfs_remove_rec(ei_child, head, level + 1);
-> +		/* Children only have dentry if parent does */
-> +		WARN_ON_ONCE(ei_child->dentry && !ei->dentry);
-> +		eventfs_remove_rec(ei_child, level + 1);
->  	}
->  
-> +
->  	ei->is_freed = 1;
->  
-> +	for (int i = 0; i < ei->nr_entries; i++) {
-> +		if (ei->d_children[i]) {
-> +			/* Children only have dentry if parent does */
-> +			WARN_ON_ONCE(!ei->dentry);
-> +			unhook_dentry(ei->d_children[i]);
-> +		}
-> +	}
-> +
-> +	unhook_dentry(ei->dentry);
-> +
->  	list_del_rcu(&ei->list);
-> -	list_add_tail(&ei->del_list, head);
-> +	call_srcu(&eventfs_srcu, &ei->rcu, free_rcu_ei);
->  }
->  
->  /**
-> @@ -1026,30 +1038,22 @@ static void eventfs_remove_rec(struct eventfs_inode *ei, struct list_head *head,
->   */
->  void eventfs_remove_dir(struct eventfs_inode *ei)
->  {
-> -	struct eventfs_inode *tmp;
-> -	LIST_HEAD(ei_del_list);
-> +	struct dentry *dentry;
->  
->  	if (!ei)
->  		return;
->  
-> -	/*
-> -	 * Move the deleted eventfs_inodes onto the ei_del_list
-> -	 * which will also set the is_freed value. Note, this has to be
-> -	 * done under the eventfs_mutex, but the deletions of
-> -	 * the dentries must be done outside the eventfs_mutex.
-> -	 * Hence moving them to this temporary list.
-> -	 */
->  	mutex_lock(&eventfs_mutex);
-> -	eventfs_remove_rec(ei, &ei_del_list, 0);
-> +	dentry = ei->dentry;
-> +	eventfs_remove_rec(ei, 0);
->  	mutex_unlock(&eventfs_mutex);
->  
-> -	list_for_each_entry_safe(ei, tmp, &ei_del_list, del_list) {
-> -		for (int i = 0; i < ei->nr_entries; i++)
-> -			unhook_dentry(ei->d_children[i]);
-> -		unhook_dentry(ei->dentry);
-> -		list_del(&ei->del_list);
-> -		call_srcu(&eventfs_srcu, &ei->rcu, free_rcu_ei);
-> -	}
-> +	/*
-> +	 * If any of the ei children has a dentry, then the ei itself
-> +	 * must have a dentry.
-> +	 */
-> +	if (dentry)
-> +		simple_recursive_removal(dentry, NULL);
->  }
->  
->  /**
-> @@ -1060,10 +1064,17 @@ void eventfs_remove_dir(struct eventfs_inode *ei)
->   */
->  void eventfs_remove_events_dir(struct eventfs_inode *ei)
->  {
-> -	struct dentry *dentry = ei->dentry;
-> +	struct dentry *dentry;
->  
-> +	dentry = ei->dentry;
->  	eventfs_remove_dir(ei);
->  
-> -	/* Matches the dget() from eventfs_create_events_dir() */
-> +	/*
-> +	 * Matches the dget() done by tracefs_start_creating()
-> +	 * in eventfs_create_events_dir() when it the dentry was
-> +	 * created. In other words, it's a normal dentry that
-> +	 * sticks around while the other ei->dentry are created
-> +	 * and destroyed dynamically.
-> +	 */
->  	dput(dentry);
->  }
-> diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-> index 06a1f220b901..ccee18ca66c7 100644
-> --- a/fs/tracefs/internal.h
-> +++ b/fs/tracefs/internal.h
-> @@ -55,12 +55,10 @@ struct eventfs_inode {
->  	/*
->  	 * Union - used for deletion
->  	 * @llist:	for calling dput() if needed after RCU
-> -	 * @del_list:	list of eventfs_inode to delete
->  	 * @rcu:	eventfs_inode to delete in RCU
->  	 */
->  	union {
->  		struct llist_node	llist;
-> -		struct list_head	del_list;
->  		struct rcu_head		rcu;
->  	};
->  	unsigned int			is_freed:1;
-> -- 
-> 2.42.0
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
