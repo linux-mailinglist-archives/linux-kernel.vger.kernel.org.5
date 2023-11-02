@@ -2,168 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B9A7DEDD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832427DEDD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234522AbjKBIDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S234570AbjKBIES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbjKBIDG (ORCPT
+        with ESMTP id S234393AbjKBIER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:03:06 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D261132
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:03:01 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-49d45964fcaso1094234e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698912180; x=1699516980; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cKQS5PgvItDvNN05vSK2iMgNMHwbhRI+e2Nai2snXOQ=;
-        b=f8MxWnfWTz/DA7Av4ipA3+Ct8iY79xSecknrYMvXtqkkN6l4otTjyKMEQ4kGHDmzVl
-         ta/GWuEG27GGNqlFriVEIv+XFtjh/3xTuNuq2uDoynGODtP0Ob+rIX/Nca/Yev9R1Q3F
-         drzU2kwHS6v1cTalBW4rBowTptYtYyGhDX+boPU5Ui0c6KDpo7v4S/zvZ26JfxDckx8E
-         11MvcUWt6diYRGlJJoxUKbloi9EgEua2yQtPYnpZcYBGmUyXeh2Luwf/Va/4H8tRg6xa
-         vI3KXPpo9QK3YjfxGUCuLJJUTkgkFCe9ZXs0dlr7tM73boOGmSxW9Ef9LPuI/4f80dJB
-         aKjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698912180; x=1699516980;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cKQS5PgvItDvNN05vSK2iMgNMHwbhRI+e2Nai2snXOQ=;
-        b=hxCydgJ/1mKqJ0ylZgB8dzDlBht0+UwHZAsKQ1o8VY1e0uqL8Zs1OP4jH2pqTHyFBu
-         zEtPOhEDvMF7wGWvs3DunBMGwC01LAm8Z/zP4orA6MiVgmIEDCNzdo5FcAs/M/VHKFGX
-         je6bsBSsw5xJAXxi6DqzgafRlxpIGmHlG1VrnpEPLqvZpDDJwutE1m99H7VFWI11LlZF
-         J7AS/+n4HOHmjzj0OfgE4cA7zYxnpHKjqUhe15FMXWyOwF66UGoh7zDTFgPeAu58tt4L
-         XvSqToHhQRm00Jx65+6mQZWvWUVenZd//vF8kv3Cic+/tccbA4n/n4waVzwzC9/pC6h/
-         3yyA==
-X-Gm-Message-State: AOJu0YwS5erZEWiFQ0GrpbeS7RXOi4G3uwbiQx9JlfS9o0TTKTODRecz
-        nqAy3aGasj0Cqt8HK9wO5I0/zN1nQgVM3gpwKyLeuA==
-X-Google-Smtp-Source: AGHT+IHTY134eMH+UQu0qE0OSoh5VYBjnfJwKvx7lq3FMSI3bMeR22IziFnPi2xHEeziSTsgs67AJBJekWwNpzj2S5E=
-X-Received: by 2002:ac5:cc5c:0:b0:496:2d54:e6f0 with SMTP id
- l28-20020ac5cc5c000000b004962d54e6f0mr2379457vkm.6.1698912180333; Thu, 02 Nov
- 2023 01:03:00 -0700 (PDT)
+        Thu, 2 Nov 2023 04:04:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45CA111
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698912208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WvS8MNTF0hgInyS69OR8wJBPNbNz7HePMphlox+7hLE=;
+        b=HMh6mc1oUNhcz81BnkRCFEpRE+aNqlpgVmqGmWCajxUHei+9zwYZmlsVXAQa1HL6IelWpC
+        m88JuZto6TvNZOm8f83wgXkFyp2e4Hp9tJWTJQXyAQ7cSI/3czfm49F5LPPriIFxtkg7CL
+        avh3/wAmGKWWiOYy2IyRIl76vaESK8g=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-127-ZXeI0wL_OGCPKuuv_BOOQg-1; Thu,
+ 02 Nov 2023 04:03:23 -0400
+X-MC-Unique: ZXeI0wL_OGCPKuuv_BOOQg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5121F3810D23;
+        Thu,  2 Nov 2023 08:03:23 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F192492BE0;
+        Thu,  2 Nov 2023 08:03:21 +0000 (UTC)
+Date:   Thu, 2 Nov 2023 16:03:18 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-crypto@vger.kernel.org, eric_devolder@yahoo.com
+Subject: Re: [PATCH 1/2] kexec: fix KEXEC_FILE dependencies
+Message-ID: <ZUNXxp9AIkjQkP9s@MiWiFi-R3L-srv>
+References: <20231023110308.1202042-1-arnd@kernel.org>
+ <ZTe8NOgAjvKDA6z0@MiWiFi-R3L-srv>
+ <b71034f4-5cdc-44e0-b72f-1a8ffae0593e@app.fastmail.com>
 MIME-Version: 1.0
-References: <20231030155901.80673-1-sumit.garg@linaro.org> <20231030155901.80673-2-sumit.garg@linaro.org>
- <a54b6109-5a38-4d72-a197-00fee0162860@linaro.org> <1418e74e-175f-4b04-90d7-8bec2987c207@siemens.com>
- <CAFA6WYNe+pt2meP-KDtG2duYqWXHHwTCnHnm97PeNsbi+PJ5ng@mail.gmail.com> <cb729887-13ba-4fe4-8824-3062aeb1ef8e@siemens.com>
-In-Reply-To: <cb729887-13ba-4fe4-8824-3062aeb1ef8e@siemens.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 2 Nov 2023 13:32:48 +0530
-Message-ID: <CAFA6WYN-9dYRbBNM8q=H1DE7YMH4_z2fJpyvSG+W=Hy=Vo8NrQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] tee: optee: Fix supplicant based device enumeration
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Jerome Forissier <jerome.forissier@linaro.org>,
-        jens.wiklander@linaro.org, op-tee@lists.trustedfirmware.org,
-        arnd@linaro.org, ardb@kernel.org, ilias.apalodimas@linaro.org,
-        masahisa.kojima@linaro.org, maxim.uvarov@linaro.org,
-        jarkko.sakkinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        diogo.ivo@siemens.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b71034f4-5cdc-44e0-b72f-1a8ffae0593e@app.fastmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Nov 2023 at 13:28, Jan Kiszka <jan.kiszka@siemens.com> wrote:
->
-> On 02.11.23 08:37, Sumit Garg wrote:
-> > On Tue, 31 Oct 2023 at 17:14, Jan Kiszka <jan.kiszka@siemens.com> wrote:
-> >>
-> >> On 31.10.23 12:04, Jerome Forissier wrote:
-> >>>
-> >>>
-> >>> On 10/30/23 16:59, Sumit Garg wrote:
-> >>>> Currently supplicant dependent optee device enumeration only registers
-> >>>> devices whenever tee-supplicant is invoked for the first time. But it
-> >>>> forgets to remove devices when tee-supplicant daemon stops running and
-> >>>> closes its context gracefully. This leads to following error for fTPM
-> >>>> driver during reboot/shutdown:
-> >>>>
-> >>>> [   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke error: 0xffff3024
-> >>>>
-> >>>> Fix this by separating supplicant dependent devices so that the
-> >>>> user-space service can detach supplicant devices before closing the
-> >>>> supplicant.
-> >>>>
-> >>>> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-> >>>> Link: https://github.com/OP-TEE/optee_os/issues/6094
-> >>>> Fixes: 5f178bb71e3a ("optee: enable support for multi-stage bus enumeration")
-> >>>> Tested-by: Jan Kiszka <jan.kiszka@siemens.com>
-> >>>> Tested-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-> >>>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> >>>> ---
-> >>>>  drivers/tee/optee/device.c | 13 ++++++++++---
-> >>>>  1 file changed, 10 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> >>>> index 64f0e047c23d..78fc0a15c463 100644
-> >>>> --- a/drivers/tee/optee/device.c
-> >>>> +++ b/drivers/tee/optee/device.c
-> >>>> @@ -60,9 +60,10 @@ static void optee_release_device(struct device *dev)
-> >>>>      kfree(optee_device);
-> >>>>  }
-> >>>>
-> >>>> -static int optee_register_device(const uuid_t *device_uuid)
-> >>>> +static int optee_register_device(const uuid_t *device_uuid, u32 func)
-> >>>>  {
-> >>>>      struct tee_client_device *optee_device = NULL;
-> >>>> +    const char *dev_name_fmt = NULL;
-> >>>>      int rc;
-> >>>>
-> >>>>      optee_device = kzalloc(sizeof(*optee_device), GFP_KERNEL);
-> >>>> @@ -71,7 +72,13 @@ static int optee_register_device(const uuid_t *device_uuid)
-> >>>>
-> >>>>      optee_device->dev.bus = &tee_bus_type;
-> >>>>      optee_device->dev.release = optee_release_device;
-> >>>> -    if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
-> >>>> +
-> >>>> +    if (func == PTA_CMD_GET_DEVICES_SUPP)
-> >>>> +            dev_name_fmt = "optee-ta-supp-%pUb";
-> >>>> +    else
-> >>>> +            dev_name_fmt = "optee-ta-%pUb";
-> >>>
-> >>> That's an ABI change, isn't it?
-> >>
+Hi Arnd,
+
+On 10/24/23 at 03:17pm, Arnd Bergmann wrote:
+> On Tue, Oct 24, 2023, at 14:44, Baoquan He wrote:
+> > Just add people and mailing list to CC since I didn't find this mail in
+> > my box, just drag it via 'b4 am'.
 > >
-> > Indeed it is an ABI break although we would like this to be backported
-> > but don't want to break existing users. So I brainstormed on it and
-> > came up with an alternative fix via device attribute in v4. Please
-> > have a look.
+> > On 10/23/23 at 01:01pm, Arnd Bergmann wrote:
+> > ......
+> 
+> >> diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+> >> index 7aff28ded2f48..bfc636d64ff2b 100644
+> >> --- a/kernel/Kconfig.kexec
+> >> +++ b/kernel/Kconfig.kexec
+> >> @@ -36,6 +36,7 @@ config KEXEC
+> >>  config KEXEC_FILE
+> >>  	bool "Enable kexec file based system call"
+> >>  	depends on ARCH_SUPPORTS_KEXEC_FILE
+> >> +	depends on CRYPTO_SHA256=y || !ARCH_SUPPORTS_KEXEC_PURGATORY
 > >
-> >> Oh, here did this come from! Yes, I recently had to adjust some systemd
-> >> service due to carrying this patch but looking for the change only in
-> >> upstream:
-> >>
-> >> https://github.com/ilbers/isar/commit/83644ddf694e51f11793e6107e4aaf68dc0043a5
-> >>
+> > I am not sure if the logic is correct. In theory, kexec_file code
+> > utilizes purgatory to verify the checksum digested during kernel loading
+> > when try to jump to the kernel. That means kexec_file depends on
+> > purgatory, but not contrary?
+> 
+> The expression I wrote is a bit confusing, but I think this just
+> keeps the existing behavior:
+> 
+> - on architectures that select ARCH_SUPPORTS_KEXEC_PURGATORY
+>   (powerpc, riscv, s390 and x86), we also require CRYPTO_SHA256
+>   to be built-in.
+> - on architectures that do not have ARCH_SUPPORTS_KEXEC_PURGATORY
+>   (arm64 and parisc), CRYPTO_SHA256 is not used and can be disabled
+>   or =m.
+> 
+> Since ARCH_SUPPORTS_KEXEC_PURGATORY is a 'bool' symbol, it could
+> be written as
+> 
+> depends on (ARCH_SUPPORTS_KEXEC_PURGATORY && CRYPTO_SHA256=y) \
+>            || !ARCH_SUPPORTS_KEXEC_PURGATORY
+> 
+> if you find that clearer. I see that the second patch
+> actually gets this wrong, it should actually do
+> 
+> select CRYPTO if ARCH_SUPPORTS_KEXEC_PURGATORY
+> select CRYPTO_SHA256 if ARCH_SUPPORTS_KEXEC_PURGATORY
+> 
+> > With these changes, we can achieve the goal to avoid building issue,
+> > whereas the code logic becomes confusing. E.g people could disable
+> > CONFIG_KEXEC_FILE, but still get purgatory code built in which is
+> > totally useless.
 > >
-> > You don't need to unbind all of the optee devices. v4 would help you
-> > to maintain backwards compatibility, can you retest it?
->
-> How do I know from tee-supplicant perspective which devices I need to
-> unbind? There could be one in the future that will also use storage and
-> will therefore also fail once the supplicant is gone.
->
+> > Not sure if I think too much over this.
+> 
+> I see your point here, and I would suggest changing the
+> CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY symbol to just indicate
+> the availability of the purgatory code for the arch, rather
+> than actually controlling the code itself. I already mentioned
+> this for s390, but riscv would need the same thing on top.
+> 
+> I think the change below should address your concern.
 
-With v4, the devices where the below attribute is present need to
-unbind before closing tee-supplicant.
+Since no new comment, do you mind spinning v2 to wrap all these up?
 
-/sys/bus/tee/devices/optee-ta-<uuid>/need_supplicant
+Thanks
+Baoquan
 
--Sumit
+> 
+>      Arnd
+> 
+> diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
+> index e60fbd8660c4..3ac341d296db 100644
+> --- a/arch/riscv/kernel/elf_kexec.c
+> +++ b/arch/riscv/kernel/elf_kexec.c
+> @@ -266,7 +266,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
+>                 cmdline = modified_cmdline;
+>         }
+>  
+> -#ifdef CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY
+> +#ifdef CONFIG_KEXEC_FILE
+>         /* Add purgatory to the image */
+>         kbuf.top_down = true;
+>         kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
+> @@ -280,7 +280,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
+>                                              sizeof(kernel_start), 0);
+>         if (ret)
+>                 pr_err("Error update purgatory ret=%d\n", ret);
+> -#endif /* CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY */
+> +#endif /* CONFIG_KEXEC_FILE */
+>  
+>         /* Add the initrd to the image */
+>         if (initrd != NULL) {
+> diff --git a/arch/riscv/Kbuild b/arch/riscv/Kbuild
+> index d25ad1c19f88..ab181d187c23 100644
+> --- a/arch/riscv/Kbuild
+> +++ b/arch/riscv/Kbuild
+> @@ -5,7 +5,7 @@ obj-$(CONFIG_BUILTIN_DTB) += boot/dts/
+>  obj-y += errata/
+>  obj-$(CONFIG_KVM) += kvm/
+>  
+> -obj-$(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) += purgatory/
+> +obj-$(CONFIG_KEXEC_FILE) += purgatory/
+>  
+>  # for cleaning
+>  subdir- += boot
+> diff --git a/arch/s390/Kbuild b/arch/s390/Kbuild
+> index a5d3503b353c..361aa01dbd49 100644
+> --- a/arch/s390/Kbuild
+> +++ b/arch/s390/Kbuild
+> @@ -7,7 +7,7 @@ obj-$(CONFIG_S390_HYPFS)        += hypfs/
+>  obj-$(CONFIG_APPLDATA_BASE)    += appldata/
+>  obj-y                          += net/
+>  obj-$(CONFIG_PCI)              += pci/
+> -obj-$(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) += purgatory/
+> +obj-$(CONFIG_KEXEC_FILE)       += purgatory/
+>  
+>  # for cleaning
+>  subdir- += boot tools
+> 
 
-> Jan
->
-> --
-> Siemens AG, Technology
-> Linux Expert Center
->
