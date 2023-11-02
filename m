@@ -2,59 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0EF7DF708
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9AB7DF70C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377078AbjKBPuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
+        id S1376977AbjKBPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376703AbjKBPuA (ORCPT
+        with ESMTP id S1377052AbjKBPvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:50:00 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E3192;
-        Thu,  2 Nov 2023 08:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1mL40+ExHNZuGaOB+rQdlmEOkODuu6jCTNDp6aVzkic=; b=uFE0xkaqy6iZ53No0pBhtodBPX
-        h/9SjeSRIwhwfwJFnK07vJv5ibpiyHuCps5CLD9qlsDJVRzhq56OVCo28GXOkaI5GaNn3MrTy8Pf4
-        lZzRMm+5Tvae5bkpZrVc/f1sqADUwinAG6Wi2EJamJvSu46rAh9ORfk+SmEvP7BnoB+Q=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qyZwg-000lND-68; Thu, 02 Nov 2023 16:49:22 +0100
-Date:   Thu, 2 Nov 2023 16:49:22 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH v3 1/4] net: phy: aquantia: move to separate
- directory
-Message-ID: <3af56cbe-dd9a-4747-b7a7-376367df6f79@lunn.ch>
-References: <20231102150032.10740-1-ansuelsmth@gmail.com>
- <5f60b2dc-4e97-49dc-8427-306400fb1b71@lunn.ch>
- <6543bb3e.df0a0220.385df.cdb1@mx.google.com>
+        Thu, 2 Nov 2023 11:51:02 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979E3182
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:50:43 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cd52c51abso5447721cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:50:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1698940242; x=1699545042; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1wB7K/cyK7ekdFksdqw2ZnrHbBqOSSiCpIC9jyTtwpo=;
+        b=HnPsTwndmznOfFuVOWXHx8ct/WrvBsPK5x/xLIx5VeUKtyb62e+cXmBq3CiPuVdLjN
+         a2jpmZFUz/l+eCljwhEANCYRD36X2YtOA10ZRrpxipMD5rta6iiEh1nPAeg6557YEGDf
+         7IW5o8OhO/mIuevLjUaz7bfhXTP+ej6/fn2pWFSvuBpwP1QOojfV0G0fD3d01PJUdPUV
+         LvRGJHkEoo+Lnw53MAhNEYaxQxi/3pb3Ar78Q0ZstWFEzAEqDQVawsWQS2r42rT2mexC
+         PDQUPO4R2WSiFFVWcUrxTKxLuDEQGuKt8Z2hTAggmQlUvTBWKuAqT1PWYEU51+5iiT1b
+         MYVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698940242; x=1699545042;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1wB7K/cyK7ekdFksdqw2ZnrHbBqOSSiCpIC9jyTtwpo=;
+        b=Cg2ZynUwJ/kzhKw26QrkEJf48wUKVg4tDrBWrtU1tbZx+wNJBFWgatlF6WFEtIzLTR
+         prS/REdqvCLxs0LAflWjfbYbZfymzHn66F2IUbeqTFq1zyQrNAbNUw0e/NbHzQOm4NJe
+         Kx+N8JtLM05wSdr/oWRB8GcWsK4DButCjRWnAichGuv70uWVXzjLxcVtxg0OZ5SsSTQF
+         1eYvWqYzqsmkPMadflpDSWCj9Iflnh7aNJaG9YOMbvwv3ySJeAhczCw5Rw2qUE0NJA2U
+         CgEXU9ANkdXH0fgxEjPgjHzEirH2NCj4K66l69imJ9FmpOv7/g6FyrFP5J1hkvemn2yD
+         JNNg==
+X-Gm-Message-State: AOJu0YzNyrp1XR7qpz42ef1gXS6EoZBlWAVc1ebuq6kTwjsAAQd+z72U
+        9CgqtAM8ZOCrwnLiK0O2AX+JqoYKn3ZhMSo3WRf+wQ==
+X-Google-Smtp-Source: AGHT+IGeKyqz4S48dOlmrzV0IcLt/Pz5O88FAxRlS/vj9uMFuB0NwFTsg8gf0j3/eylhtue3lIsgsrkZbl6P7Iv8sPE=
+X-Received: by 2002:ac8:5f06:0:b0:418:797:20b6 with SMTP id
+ x6-20020ac85f06000000b00418079720b6mr19045388qta.5.1698940242486; Thu, 02 Nov
+ 2023 08:50:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6543bb3e.df0a0220.385df.cdb1@mx.google.com>
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
+ <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
+ <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com> <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
+In-Reply-To: <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 2 Nov 2023 11:50:05 -0400
+Message-ID: <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Xu <weixugc@google.com>, Sourav Panda <souravpanda@google.com>,
+        corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,44 +81,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 04:07:41PM +0100, Christian Marangi wrote:
-> On Thu, Nov 02, 2023 at 04:03:33PM +0100, Andrew Lunn wrote:
-> > > diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> > > index 421d2b62918f..4b2451dd6c45 100644
-> > > --- a/drivers/net/phy/Kconfig
-> > > +++ b/drivers/net/phy/Kconfig
-> > > @@ -68,6 +68,8 @@ config SFP
-> > >  
-> > >  comment "MII PHY device drivers"
-> > >  
-> > > +source "drivers/net/phy/aquantia/Kconfig"
-> > > +
-> > >  config AMD_PHY
-> > >  	tristate "AMD and Altima PHYs"
-> > >  	help
-> > > @@ -96,11 +98,6 @@ config ADIN1100_PHY
-> > >  	  Currently supports the:
-> > >  	  - ADIN1100 - Robust,Industrial, Low Power 10BASE-T1L Ethernet PHY
-> > >  
-> > > -config AQUANTIA_PHY
-> > > -	tristate "Aquantia PHYs"
-> > > -	help
-> > > -	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
-> > > -
-> > 
-> > Does this move the PHY in the make menuconfig menu? We try to keep it
-> > sorted based on the tristate string.
-> >
-> 
-> Oh wasn't aware... Yes it does move it to the top of the list... I can
-> just move the source entry where AQUANTIA_PHY was...
+> > Adding reserved memory to MemTotal is a cleaner approach IMO as well.
+> > But it changes the semantics of MemTotal, which may have compatibility
+> > issues.
+>
+> I object.
 
-Yes, that would be best.
+Could you please elaborate what you object (and why): you object that
+it will have compatibility issues, or  you object to include memblock
+reserves into MemTotal?
 
-Thanks
-
-    Andrew
-
----
-pw-bot: cr
-
+Thanks,
+Pasha
