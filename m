@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837337DEB52
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FF87DEB53
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348394AbjKBDZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S1348422AbjKBDZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348420AbjKBDZf (ORCPT
+        with ESMTP id S1348419AbjKBDZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:25:35 -0400
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [IPv6:2001:41d0:203:375::b3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251D2186
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 20:25:24 -0700 (PDT)
+        Wed, 1 Nov 2023 23:25:40 -0400
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB87119
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 20:25:33 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698895522;
+        t=1698895532;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N3Xfo0y6jZ0YfVFtmWrT6BPsa9Nsm+KQGum2QWoNV0I=;
-        b=k4QQibDC1ld0UrW3iBDGGZ48phYAHJ1+HACNNhCO/C89ykyWOPzBIhsNfTvaTJprJCvNXn
-        xOQ7UO16oxS2c3AfRJJiFnt6rOq3FciJQ8ilKoxXDPfHcQOyfEz6OK1DOpVwj61rke/jDb
-        3Vlw5deJI3Z6PFrtYghaLkTN4KlSeUA=
+        bh=gJd616cEH+YooKkPi26MjXWgnIGEXuyIPk1hxd0FhTk=;
+        b=nDjeGraaC0yMn15FP6J1O98CFrfWFi/efFlDQyWlgTKRBWcIkb3Bueh3V63chVaCnBjh/z
+        aT+DJ4liAnoOXN6AjPz5ujQz9YSWQl2pq1MhhIZ8NmN0T3o3AMQcWG/ZORLSwwjhMGbr7d
+        UKvLJzRg/tomBOgosqWMv4T+MnQQ2Cg=
 From:   chengming.zhou@linux.dev
 To:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org
 Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
@@ -33,9 +33,9 @@ Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
         42.hyeyoo@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, chengming.zhou@linux.dev,
         Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH v5 8/9] slub: Rename all *unfreeze_partials* functions to *put_partials*
-Date:   Thu,  2 Nov 2023 03:23:29 +0000
-Message-Id: <20231102032330.1036151-9-chengming.zhou@linux.dev>
+Subject: [PATCH v5 9/9] slub: Update frozen slabs documentations in the source
+Date:   Thu,  2 Nov 2023 03:23:30 +0000
+Message-Id: <20231102032330.1036151-10-chengming.zhou@linux.dev>
 In-Reply-To: <20231102032330.1036151-1-chengming.zhou@linux.dev>
 References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
@@ -53,134 +53,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Since all partial slabs on the CPU partial list are not frozen anymore,
-we don't unfreeze when moving cpu partial slabs to node partial list,
-it's better to rename these functions.
+The current updated scheme (which this series implemented) is:
+ - node partial slabs: PG_Workingset && !frozen
+ - cpu partial slabs: !PG_Workingset && !frozen
+ - cpu slabs: !PG_Workingset && frozen
+ - full slabs: !PG_Workingset && !frozen
+
+The most important change is that "frozen" bit is not set for the
+cpu partial slabs anymore, __slab_free() will grab node list_lock
+then check by !PG_Workingset that it's not on a node partial list.
+
+And the "frozen" bit is still kept for the cpu slabs for performance,
+since we don't need to grab node list_lock to check whether the
+PG_Workingset is set or not if the "frozen" bit is set in __slab_free().
+
+Update related documentations and comments in the source.
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 ---
- mm/slub.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ mm/slub.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index d137468fe4b9..c20bdf5dab0f 100644
+index c20bdf5dab0f..a307d319e82c 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2546,7 +2546,7 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
- }
- 
- #ifdef CONFIG_SLUB_CPU_PARTIAL
--static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
-+static void __put_partials(struct kmem_cache *s, struct slab *partial_slab)
- {
- 	struct kmem_cache_node *n = NULL, *n2 = NULL;
- 	struct slab *slab, *slab_to_discard = NULL;
-@@ -2588,9 +2588,9 @@ static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
- }
- 
- /*
-- * Unfreeze all the cpu partial slabs.
-+ * Put all the cpu partial slabs to the node partial list.
-  */
--static void unfreeze_partials(struct kmem_cache *s)
-+static void put_partials(struct kmem_cache *s)
- {
- 	struct slab *partial_slab;
- 	unsigned long flags;
-@@ -2601,11 +2601,11 @@ static void unfreeze_partials(struct kmem_cache *s)
- 	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (partial_slab)
--		__unfreeze_partials(s, partial_slab);
-+		__put_partials(s, partial_slab);
- }
- 
--static void unfreeze_partials_cpu(struct kmem_cache *s,
--				  struct kmem_cache_cpu *c)
-+static void put_partials_cpu(struct kmem_cache *s,
-+			     struct kmem_cache_cpu *c)
- {
- 	struct slab *partial_slab;
- 
-@@ -2613,7 +2613,7 @@ static void unfreeze_partials_cpu(struct kmem_cache *s,
- 	c->partial = NULL;
- 
- 	if (partial_slab)
--		__unfreeze_partials(s, partial_slab);
-+		__put_partials(s, partial_slab);
+@@ -76,13 +76,22 @@
+  *
+  *   Frozen slabs
+  *
+- *   If a slab is frozen then it is exempt from list management. It is not
+- *   on any list except per cpu partial list. The processor that froze the
++ *   If a slab is frozen then it is exempt from list management. It is
++ *   the cpu slab which is actively allocated from by the processor that
++ *   froze it and it is not on any list. The processor that froze the
+  *   slab is the one who can perform list operations on the slab. Other
+  *   processors may put objects onto the freelist but the processor that
+  *   froze the slab is the only one that can retrieve the objects from the
+  *   slab's freelist.
+  *
++ *   CPU partial slabs
++ *
++ *   The partially empty slabs cached on the CPU partial list are used
++ *   for performance reasons, which speeds up the allocation process.
++ *   These slabs are not frozen, but are also exempt from list management,
++ *   by clearing the PG_workingset flag when moving out of the node
++ *   partial list. Please see __slab_free() for more details.
++ *
+  *   list_lock
+  *
+  *   The list_lock protects the partial and full list on each node and
+@@ -2617,8 +2626,7 @@ static void put_partials_cpu(struct kmem_cache *s,
  }
  
  /*
-@@ -2626,7 +2626,7 @@ static void unfreeze_partials_cpu(struct kmem_cache *s,
- static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain)
- {
- 	struct slab *oldslab;
--	struct slab *slab_to_unfreeze = NULL;
-+	struct slab *slab_to_put = NULL;
- 	unsigned long flags;
- 	int slabs = 0;
- 
-@@ -2641,7 +2641,7 @@ static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain)
- 			 * per node partial list. Postpone the actual unfreezing
- 			 * outside of the critical section.
- 			 */
--			slab_to_unfreeze = oldslab;
-+			slab_to_put = oldslab;
- 			oldslab = NULL;
- 		} else {
- 			slabs = oldslab->slabs;
-@@ -2657,17 +2657,17 @@ static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain)
- 
- 	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
--	if (slab_to_unfreeze) {
--		__unfreeze_partials(s, slab_to_unfreeze);
-+	if (slab_to_put) {
-+		__put_partials(s, slab_to_put);
- 		stat(s, CPU_PARTIAL_DRAIN);
- 	}
- }
- 
- #else	/* CONFIG_SLUB_CPU_PARTIAL */
- 
--static inline void unfreeze_partials(struct kmem_cache *s) { }
--static inline void unfreeze_partials_cpu(struct kmem_cache *s,
--				  struct kmem_cache_cpu *c) { }
-+static inline void put_partials(struct kmem_cache *s) { }
-+static inline void put_partials_cpu(struct kmem_cache *s,
-+				    struct kmem_cache_cpu *c) { }
- 
- #endif	/* CONFIG_SLUB_CPU_PARTIAL */
- 
-@@ -2709,7 +2709,7 @@ static inline void __flush_cpu_slab(struct kmem_cache *s, int cpu)
- 		stat(s, CPUSLAB_FLUSH);
- 	}
- 
--	unfreeze_partials_cpu(s, c);
-+	put_partials_cpu(s, c);
- }
- 
- struct slub_flush_work {
-@@ -2737,7 +2737,7 @@ static void flush_cpu_slab(struct work_struct *w)
- 	if (c->slab)
- 		flush_slab(s, c);
- 
--	unfreeze_partials(s);
-+	put_partials(s);
- }
- 
- static bool has_cpu_slab(int cpu, struct kmem_cache *s)
-@@ -3168,7 +3168,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		if (unlikely(!node_match(slab, node) ||
- 			     !pfmemalloc_match(slab, gfpflags))) {
- 			slab->next = NULL;
--			__unfreeze_partials(s, slab);
-+			__put_partials(s, slab);
- 			continue;
- 		}
- 
+- * Put a slab that was just frozen (in __slab_free|get_partial_node) into a
+- * partial slab slot if available.
++ * Put a slab into a partial slab slot if available.
+  *
+  * If we did not find a slot then simply move all the partials to the
+  * per node partial list.
 -- 
 2.20.1
 
