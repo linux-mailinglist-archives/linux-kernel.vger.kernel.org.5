@@ -2,84 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C25947DEDAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1764A7DEDB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344700AbjKBHvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 03:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
+        id S1344843AbjKBHxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 03:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbjKBHvT (ORCPT
+        with ESMTP id S1344681AbjKBHxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 03:51:19 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC79116;
-        Thu,  2 Nov 2023 00:51:16 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-58686e94ad7so317326eaf.3;
-        Thu, 02 Nov 2023 00:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698911476; x=1699516276; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2PrAs2Tc99o3KGDiQSF+aKrZ+y8qL8PDxem+N4SUKa0=;
-        b=UrDWbB3YLJk6vetgcCtK75ZVtaLmaVtgX1AlS8S/a7A8L/lhs4vMP7eG164dLBymre
-         C4cSo5O4igOOoZ0J+ywMfvE0Ktkh8+oVAMhvfaBqJ2ZjtegBtNob8yAZHCaK4aOanOka
-         cP7lTGPboTis0VwcsVB/2pP6ijx+lLWC6ZFwFc4NmoS9Nl9S2PdVrxDrXUbi1HnCXKcg
-         qAxH0/Vb8cUHu1XMx5AM5C2i+b7i1B7sclsM8FRIvgN0ru4ow1xAZwwTVFCkKv1a87ZD
-         6dxEdz+xuT1xOFKlcP9pACZQsF+EquntqykagdlDzUQYsIS6noKiv92xBlHI9QIdUYjn
-         Aosw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698911476; x=1699516276;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2PrAs2Tc99o3KGDiQSF+aKrZ+y8qL8PDxem+N4SUKa0=;
-        b=nJNL09M0YBEq7Z8bxbK6MD7vqjgW/ot0DQXtVEaC9E8sMCns/EMQFX6tHVJ76zdOz+
-         8/OPLyevjdCUztdMsvsnT9ttHFXQOQLOMWHsZ1eYSEIpQRKIsJnc2Ni/cApmrwu32zF/
-         4ra95d/n3NScgeb+wCvl8Qn1ZzlZHQpTfvi1HU+3Yti5jzL+0nCK1N+eyPhgX4Woep4O
-         1rSeM99TBaQTRW8FokydhJKQTp2oSOOI26/EPmscjjp5biU6Aq+i170bmKSrtYQSO0M8
-         Ngne3l8gNdjIAf1Aw3hef87/ln1bHqpKtRtRKaEf/2/YNIVatSWKKgNFPkCgn/R1B1T3
-         p+0w==
-X-Gm-Message-State: AOJu0Yyg4rKRKvatAoJ6+SEfT5EPdse7LnhqiZtZ+FWPSdkbE7CtDaVL
-        oYZSYnrEUCO6WV4jX3hu9DA=
-X-Google-Smtp-Source: AGHT+IEWAs69KuY7cTMb7hRnkK3qdDBXgD0tDxLUGUOPZMC+cBH1Oxifx11JAVnBW7QBLliKSdA5YA==
-X-Received: by 2002:a05:6358:7f0f:b0:16b:406c:a002 with SMTP id p15-20020a0563587f0f00b0016b406ca002mr227655rwn.19.1698911476055;
-        Thu, 02 Nov 2023 00:51:16 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id w29-20020a63935d000000b0059d219cb359sm935259pgm.9.2023.11.02.00.51.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 00:51:14 -0700 (PDT)
-Message-ID: <557f1553-4e85-4988-83e4-c07acaccfd1e@gmail.com>
-Date:   Thu, 2 Nov 2023 14:51:05 +0700
+        Thu, 2 Nov 2023 03:53:01 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A28412B
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:52:56 -0700 (PDT)
+Received: from localhost (unknown [124.16.138.129])
+        by APP-05 (Coremail) with SMTP id zQCowAAnR6hFVUNlvixZAA--.19531S2;
+        Thu, 02 Nov 2023 15:52:37 +0800 (CST)
+From:   Chen Ni <nichen@iscas.ac.cn>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        quic_schowdhu@quicinc.com, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] usb: misc: eud: Add IRQ check for platform_get_irq()
+Date:   Thu,  2 Nov 2023 07:51:13 +0000
+Message-Id: <20231102075113.1043358-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel
- issue
-To:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Jiri Kosina <jkosina@suse.cz>,
-        David Revoy <davidrevoy@protonmail.com>
-Cc:     "jason.gerecke@wacom.com" <jason.gerecke@wacom.com>,
-        "jose.exposito89@gmail.com" <jose.exposito89@gmail.com>,
-        "ilya.ostapyshyn@gmail.com" <ilya.ostapyshyn@gmail.com>,
-        Nils Fuhler <nils@nilsfuhler.de>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Input Devices <linux-input@vger.kernel.org>
-References: <kRKTNDYigUSblpNgSuZ2H4dX03Of1yD4j_L9GgbyKXcDqZ67yh5HOQfcd7_83U3jZuQzxpKT3L6FXcRkkZIGdl_-PQF14oIB0QmRSfvpc2k=@protonmail.com>
- <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
- <ZULw6AcBaD6z2UZA@debian.me>
- <ba7aeb6b-19ee-4491-a60f-efc5216177a7@leemhuis.info>
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <ba7aeb6b-19ee-4491-a60f-efc5216177a7@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-CM-TRANSID: zQCowAAnR6hFVUNlvixZAA--.19531S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw1rJr1fCFW5CFWUWrWktFb_yoW3KFb_Kr
+        yDuFs7GrWF9rWYyr1agay3ZrW2kF1DWr18ZFnFqa43tFyDC34vqrWavF95AFW7urZ8GFyD
+        W3s8WrW29FsavjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUT6wZUUUUU=
+X-Originating-IP: [124.16.138.129]
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,41 +56,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2023 13:31, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 02.11.23 01:44, Bagas Sanjaya wrote:
->> On Wed, Nov 01, 2023 at 08:37:40PM +0100, Jiri Kosina wrote:
->>> On Wed, 1 Nov 2023, David Revoy wrote:
->>>
->>>> Hi Jason Gerecke, José Expósito, Jiri Kosina and Illia Ostapyshyn,
->>>>
->>>> I am emailing to draw your attention and expertise to a problem I had 
->>>> earlier this week with my Xp-Pen Artist 24 Pro display tablet under 
->>>> Fedora Linux 38 KDE after a kernel update.
->>>>
->> […]
-> 
->>>> Thank you very much if you can help me.
->> […]
->> Thanks for the report.
->>
->> David, can you resend the regression report as plain text email (preferably
->> with 276e14e6c3 people and regressions@lists.linux.dev Cc'ed)? You may need to
->> see kernel documentation [1] for how to configure your email client to send
->> plain text emails. Also, include in your report details from your blog post.
-> 
-> Bagas, I know you mean well, but I think you are making things
-> unnecessarily complicated for both David and the developers here. Sure,
-> the mail Jiri quoted did not make it to lore, but whatever, for him it
-> was apparently good enough; and I suspect this "quote forwarding to
-> others" is good enough for the people he brought into the loop as well.
-> Yes, there are developers that don't want to go to a website for
-> details, but if that's the case it's likely better to ask for details in
-> this thread instead of opening a second one. And regression tracking can
-> work without a separate mail as well.
-> 
+The function eud_probe() should check the return value of
+platform_get_irq() for errors so as to not pass a negative value to
+the devm_request_threaded_irq().
 
-OK, thanks!
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/usb/misc/qcom_eud.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/drivers/usb/misc/qcom_eud.c b/drivers/usb/misc/qcom_eud.c
+index 7f371ea1248c..26e9b8749d8a 100644
+--- a/drivers/usb/misc/qcom_eud.c
++++ b/drivers/usb/misc/qcom_eud.c
+@@ -205,6 +205,9 @@ static int eud_probe(struct platform_device *pdev)
+ 		return PTR_ERR(chip->mode_mgr);
+ 
+ 	chip->irq = platform_get_irq(pdev, 0);
++	if (chip->irq < 0)
++		return chip->irq;
++
+ 	ret = devm_request_threaded_irq(&pdev->dev, chip->irq, handle_eud_irq,
+ 			handle_eud_irq_thread, IRQF_ONESHOT, NULL, chip);
+ 	if (ret)
 -- 
-An old man doll... just what I always wanted! - Clara
+2.25.1
 
