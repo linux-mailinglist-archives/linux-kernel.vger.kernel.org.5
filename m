@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54A97DF601
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0D37DF60E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376691AbjKBPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
+        id S1376784AbjKBPN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbjKBPMv (ORCPT
+        with ESMTP id S1346677AbjKBPMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:12:51 -0400
+        Thu, 2 Nov 2023 11:12:55 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71AD185
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:12:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AEB192
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698937962; x=1730473962;
+  t=1698937966; x=1730473966;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9aluI6zbH8D/Sjkz7dz1700dHJd2ex1h5F6FMyNEQM8=;
-  b=ZOnrt2UbwrYyAtoK/sYSwgSBWeqxCSzRte8bK7cr/16eKaqLqawA1sdl
-   kMBVDQMOXEkfc1XcdXZgyngARbKyqiAsxOWuCeJByphYhd2ijBtxa6rFj
-   XIUzYU5ay/mol3+YKEKR7tfcYvKmLeB+BdPKzOrgHzcPrmcXOIDqF4DKR
-   DtwOU1G6fx7ZSZsBwbGYwdARywUhr9mqxwCfFAHE1BjpQIhKcY8c6I9Q4
-   3giy2to2P+Of3UsN1qMz0fDTgepAM/WzGnZdD9miXrTrox7hLmzFtEUZo
-   4MiHJoQ6Xpre8EGk5G1gb4+/uHQHTsFD8ekK0YB8MohgoziYVmYbnevbh
+  bh=sX1J1ySAF4MO+eRhktvw93+gXMSrlD5/6fA9bNgY1QY=;
+  b=j4Ct5TFZE5TdkARhwaq+YMt/M6JAkmvjwFuZBr1Vz0vyNDl9IhIrU7hK
+   TvcMJQJWr5+nd7y4VFZnwRBHSQAdfS17BgWrZD7WclA3/2dc9M9rTRtLQ
+   4aYzl32MndZIK9CMHTKJW+FSHQEla87zQ3QS8YUJmYkqYerpwQ2njqUNS
+   1CVz3thZDTDLXGL2x48Z0fAcjxKFvLH90aw3oshjPAvRKjX2Auz+PPojR
+   fuJ0yFAf3NjWPh1zV9dkQp5RXDU7OnmmttMOSIfhEOtQn2Bclk2Xsay3x
+   CErdQjsiKDk4XvBwZp97hJa2NnPzmW4jg4irmp+1RXGAfZAZ/tCxNbp6/
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1660183"
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1660208"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="1660183"
+   d="scan'208";a="1660208"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:12:40 -0700
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:12:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="737784572"
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="737784575"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="737784572"
+   d="scan'208";a="737784575"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 02 Nov 2023 08:12:36 -0700
+  by orsmga006.jf.intel.com with ESMTP; 02 Nov 2023 08:12:40 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 384F1591; Thu,  2 Nov 2023 17:12:31 +0200 (EET)
+        id 48FFF76F; Thu,  2 Nov 2023 17:12:31 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Jani Nikula <jani.nikula@intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -53,9 +53,9 @@ Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 14/15] drm/i915/dsi: Replace poking of CHV GPIOs behind the driver's back
-Date:   Thu,  2 Nov 2023 17:12:27 +0200
-Message-Id: <20231102151228.668842-15-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 15/15] drm/i915/iosf: Drop unused APIs
+Date:   Thu,  2 Nov 2023 17:12:28 +0200
+Message-Id: <20231102151228.668842-16-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231102151228.668842-1-andriy.shevchenko@linux.intel.com>
 References: <20231102151228.668842-1-andriy.shevchenko@linux.intel.com>
@@ -71,98 +71,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a dirty hack in the driver that pokes GPIO registers behind
-the driver's back. Moreoever it might be problematic as simultaneous
-I/O may hang the system, see the commit 0bd50d719b00 ("pinctrl:
-cherryview: prevent concurrent access to GPIO controllers") for
-the details. Taking all this into consideration replace the hack
-with proper GPIO APIs being used.
+Drop unused vlv_iosf_sb_read() and vlv_iosf_sb_write().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 47 +++++---------------
- 1 file changed, 10 insertions(+), 37 deletions(-)
+ drivers/gpu/drm/i915/vlv_sideband.c | 17 -----------------
+ drivers/gpu/drm/i915/vlv_sideband.h |  3 ---
+ 2 files changed, 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-index b1736c1301ea..ffc65c943b11 100644
---- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-+++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-@@ -66,19 +66,6 @@ struct i2c_adapter_lookup {
- #define CHV_GPIO_IDX_START_SW		100
- #define CHV_GPIO_IDX_START_SE		198
- 
--#define CHV_VBT_MAX_PINS_PER_FMLY	15
--
--#define CHV_GPIO_PAD_CFG0(f, i)		(0x4400 + (f) * 0x400 + (i) * 8)
--#define  CHV_GPIO_GPIOEN		(1 << 15)
--#define  CHV_GPIO_GPIOCFG_GPIO		(0 << 8)
--#define  CHV_GPIO_GPIOCFG_GPO		(1 << 8)
--#define  CHV_GPIO_GPIOCFG_GPI		(2 << 8)
--#define  CHV_GPIO_GPIOCFG_HIZ		(3 << 8)
--#define  CHV_GPIO_GPIOTXSTATE(state)	((!!(state)) << 1)
--
--#define CHV_GPIO_PAD_CFG1(f, i)		(0x4400 + (f) * 0x400 + (i) * 8 + 4)
--#define  CHV_GPIO_CFGLOCK		(1 << 31)
--
- /* ICL DSI Display GPIO Pins */
- #define  ICL_GPIO_DDSP_HPD_A		0
- #define  ICL_GPIO_L_VDDEN_1		1
-@@ -278,23 +265,21 @@ static void chv_gpio_set_value(struct intel_connector *connector,
- 			       u8 gpio_source, u8 gpio_index, bool value)
- {
- 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
--	u16 cfg0, cfg1;
--	u16 family_num;
--	u8 port;
- 
- 	if (connector->panel.vbt.dsi.seq_version >= 3) {
- 		if (gpio_index >= CHV_GPIO_IDX_START_SE) {
- 			/* XXX: it's unclear whether 255->57 is part of SE. */
--			gpio_index -= CHV_GPIO_IDX_START_SE;
--			port = CHV_IOSF_PORT_GPIO_SE;
-+			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:03", "Panel SE",
-+					     gpio_index - CHV_GPIO_IDX_START_SW, value);
- 		} else if (gpio_index >= CHV_GPIO_IDX_START_SW) {
--			gpio_index -= CHV_GPIO_IDX_START_SW;
--			port = CHV_IOSF_PORT_GPIO_SW;
-+			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:00", "Panel SW",
-+					     gpio_index - CHV_GPIO_IDX_START_SW, value);
- 		} else if (gpio_index >= CHV_GPIO_IDX_START_E) {
--			gpio_index -= CHV_GPIO_IDX_START_E;
--			port = CHV_IOSF_PORT_GPIO_E;
-+			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:02", "Panel E",
-+					     gpio_index - CHV_GPIO_IDX_START_E, value);
- 		} else {
--			port = CHV_IOSF_PORT_GPIO_N;
-+			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
-+					     gpio_index - CHV_GPIO_IDX_START_N, value);
- 		}
- 	} else {
- 		/* XXX: The spec is unclear about CHV GPIO on seq v2 */
-@@ -311,21 +296,9 @@ static void chv_gpio_set_value(struct intel_connector *connector,
- 			return;
- 		}
- 
--		port = CHV_IOSF_PORT_GPIO_N;
-+		soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
-+				     gpio_index - CHV_GPIO_IDX_START_N, value);
- 	}
--
--	family_num = gpio_index / CHV_VBT_MAX_PINS_PER_FMLY;
--	gpio_index = gpio_index % CHV_VBT_MAX_PINS_PER_FMLY;
--
--	cfg0 = CHV_GPIO_PAD_CFG0(family_num, gpio_index);
--	cfg1 = CHV_GPIO_PAD_CFG1(family_num, gpio_index);
--
--	vlv_iosf_sb_get(dev_priv, BIT(VLV_IOSF_SB_GPIO));
--	vlv_iosf_sb_write(dev_priv, port, cfg1, 0);
--	vlv_iosf_sb_write(dev_priv, port, cfg0,
--			  CHV_GPIO_GPIOEN | CHV_GPIO_GPIOCFG_GPO |
--			  CHV_GPIO_GPIOTXSTATE(value));
--	vlv_iosf_sb_put(dev_priv, BIT(VLV_IOSF_SB_GPIO));
+diff --git a/drivers/gpu/drm/i915/vlv_sideband.c b/drivers/gpu/drm/i915/vlv_sideband.c
+index b98dec3ad817..13b644958e38 100644
+--- a/drivers/gpu/drm/i915/vlv_sideband.c
++++ b/drivers/gpu/drm/i915/vlv_sideband.c
+@@ -166,23 +166,6 @@ u32 vlv_nc_read(struct drm_i915_private *i915, u8 addr)
+ 	return val;
  }
  
- static void bxt_gpio_set_value(struct intel_connector *connector,
+-u32 vlv_iosf_sb_read(struct drm_i915_private *i915, u8 port, u32 reg)
+-{
+-	u32 val = 0;
+-
+-	vlv_sideband_rw(i915, PCI_DEVFN(0, 0), port,
+-			SB_CRRDDA_NP, reg, &val);
+-
+-	return val;
+-}
+-
+-void vlv_iosf_sb_write(struct drm_i915_private *i915,
+-		       u8 port, u32 reg, u32 val)
+-{
+-	vlv_sideband_rw(i915, PCI_DEVFN(0, 0), port,
+-			SB_CRWRDA_NP, reg, &val);
+-}
+-
+ u32 vlv_cck_read(struct drm_i915_private *i915, u32 reg)
+ {
+ 	u32 val = 0;
+diff --git a/drivers/gpu/drm/i915/vlv_sideband.h b/drivers/gpu/drm/i915/vlv_sideband.h
+index 9ce283d96b80..8b4495e14bce 100644
+--- a/drivers/gpu/drm/i915/vlv_sideband.h
++++ b/drivers/gpu/drm/i915/vlv_sideband.h
+@@ -26,9 +26,6 @@ enum {
+ };
+ 
+ void vlv_iosf_sb_get(struct drm_i915_private *i915, unsigned long ports);
+-u32 vlv_iosf_sb_read(struct drm_i915_private *i915, u8 port, u32 reg);
+-void vlv_iosf_sb_write(struct drm_i915_private *i915,
+-		       u8 port, u32 reg, u32 val);
+ void vlv_iosf_sb_put(struct drm_i915_private *i915, unsigned long ports);
+ 
+ static inline void vlv_bunit_get(struct drm_i915_private *i915)
 -- 
 2.40.0.1.gaa8946217a0b
 
