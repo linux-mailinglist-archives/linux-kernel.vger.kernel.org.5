@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B26A7DF1DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D347DF1F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345915AbjKBMBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        id S1345636AbjKBMEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345566AbjKBMBC (ORCPT
+        with ESMTP id S235294AbjKBMEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:01:02 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7641187;
-        Thu,  2 Nov 2023 05:00:56 -0700 (PDT)
-Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E0CDF8C2;
-        Thu,  2 Nov 2023 13:00:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698926438;
-        bh=ntl+rkppSxBHVspDsAeKPojZUHoGlZ8H2bX3BZ0P5ek=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UAFAPWc5+xZN5TkwY8WyK0sMqeW262k2lF2wYUw2KMiaABhBufG0FSICPaZyX5gwx
-         KpZt3QzefVb/ocC0yzAuSKqNIVFVcRrbGbnUzCINK99kuqhZjSTzDmUArFAhbfji7s
-         He+YfYL4q7DaKiITxPxb9we0/g34AS0vWpVL1eOU=
-Message-ID: <80a05f4a-eaae-4db1-9604-c5eed9ff594c@ideasonboard.com>
-Date:   Thu, 2 Nov 2023 12:00:52 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: gadget: uvc_video: unlock before submitting a
- request to ep
-Content-Language: en-US
-To:     Piyush Mehta <piyush.mehta@amd.com>,
-        laurent.pinchart@ideasonboard.com, michal.simek@amd.com,
-        gregkh@linuxfoundation.org
-Cc:     siva.durga.prasad.paladugu@amd.com, radhey.shyam.pandey@amd.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231102071138.828126-1-piyush.mehta@amd.com>
-From:   Dan Scally <dan.scally@ideasonboard.com>
-Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231102071138.828126-1-piyush.mehta@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Thu, 2 Nov 2023 08:04:37 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D007210C2
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:01:46 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cacde97002so6391505ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1698926506; x=1699531306; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xJAq1yPvWqyGBi5ZsWwrpgoSqVAMHLxRpGtyjE8Lpog=;
+        b=FF6zsVUmmvmiObdm3E4jVv+YYKMBNbt1a19Y9NAfSXN/nFqrzzMfScZnJBX8kf4nZA
+         8FHUq2WU761da6atFkQLHgzpbAeq4tZQmzQA2z8CrWudON74aOvEAbuXyycyaVFVQ8am
+         WF7/mXaP1pNkKtMEJ8QGmO0V8hX7lx3wZb1XkCPA7IHQSuAbwICwuXOLnvx4dgRP3gVu
+         NTPdavCKuXQP5EcK9jW7GCvO8xy/kZRUsPZGodCC72VavmAwNTgmE+MbPz/vcQcvhlys
+         dxq1GZixeOsV/hdb2OhnQ7pGulwDm8XJErbZtigIPYILkksJ9h2haDcrKoBM8hj3w88h
+         KK9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698926506; x=1699531306;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xJAq1yPvWqyGBi5ZsWwrpgoSqVAMHLxRpGtyjE8Lpog=;
+        b=VU5FvIFdkpVoaHiqSWctZaeyCv+nx/Nww04I9m9AFWZZq1QC7I3rzPZOqg629TJBU8
+         dzeN04qQjjWIlk8oEdgUWGyW/5kWMyRW0xLBzzZCASNrAJ/jVoU6I9BiOJYghsn+M2bW
+         Pdzw4P72p79JfLMoRKDQItBW5MnfMeW/zzIrVjS4CXjauZ1KT2M6K+pLfXW2zKoGCCR6
+         rVb+f+Zx9LRJLmZCtta+jAO2/UsXdqKGOUa0KlCBVFGXxoP317piDeaW/9VNE7Zi2Xon
+         TjKZlLt2esVcs5TRNCFlLUxl5Bk2iVbk5MrysP7kF/E7KMtGCFWto3dsDgkJjNS8/6cX
+         0dZg==
+X-Gm-Message-State: AOJu0YxCIQ2SX9gamjgk+Jx8Ngaxw4Rc9OZ8HhPajL2JLN0PQfzPtQkb
+        uzFf7Yed8ftLrG6AKYWodyfQDA==
+X-Google-Smtp-Source: AGHT+IG/wfKGcDVJAiG/TgytNJy0AhVTei/c041lmiY2sl7WVz0x3oclhwrVt0acJHl8aFDX+bEK+w==
+X-Received: by 2002:a17:902:db10:b0:1cc:5833:cf5e with SMTP id m16-20020a170902db1000b001cc5833cf5emr10617317plx.27.1698926506097;
+        Thu, 02 Nov 2023 05:01:46 -0700 (PDT)
+Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902f68c00b001cc0f6028b8sm2969008plg.106.2023.11.02.05.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 05:01:45 -0700 (PDT)
+From:   Yong-Xuan Wang <yongxuan.wang@sifive.com>
+To:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org
+Cc:     greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
+        alex@ghiti.fr, conor.dooley@microchip.com, ajones@ventanamicro.com,
+        Yong-Xuan Wang <yongxuan.wang@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Guo Ren <guoren@kernel.org>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        David Hildenbrand <david@redhat.com>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Evan Green <evan@rivosinc.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/4] RISC-V: Detect and Enable Svadu Extension Support
+Date:   Thu,  2 Nov 2023 12:01:22 +0000
+Message-Id: <20231102120129.11261-2-yongxuan.wang@sifive.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231102120129.11261-1-yongxuan.wang@sifive.com>
+References: <20231102120129.11261-1-yongxuan.wang@sifive.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,46 +89,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Piyush - thanks for the patch
+Svadu is a RISC-V extension for hardware updating of PTE A/D bits.
 
-On 02/11/2023 07:11, Piyush Mehta wrote:
-> There could be chances where the usb_ep_queue() could fail and trigger
-> complete() handler with error status. In this case, if usb_ep_queue()
-> is called with lock held and the triggered complete() handler is waiting
-> for the same lock to be cleared could result in a deadlock situation and
-> could result in system hang. To aviod this scenerio, call usb_ep_queue()
-> with lock removed. This patch does the same.
+In this patch we detect Svadu extension support from DTB and
+add arch_has_hw_pte_young() to enable optimization in MGLRU and
+__wp_page_copy_user() if Svadu extension is available.
 
+Co-developed-by: Jinyu Tang <tjytimi@163.com>
+Signed-off-by: Jinyu Tang <tjytimi@163.com>
+Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ arch/riscv/include/asm/csr.h     | 1 +
+ arch/riscv/include/asm/hwcap.h   | 1 +
+ arch/riscv/include/asm/pgtable.h | 6 ++++++
+ arch/riscv/kernel/cpufeature.c   | 1 +
+ 4 files changed, 9 insertions(+)
 
-s/aviod/avoid. s/scenerio/scenario/
+diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+index 777cb8299551..e6935fd48c0c 100644
+--- a/arch/riscv/include/asm/csr.h
++++ b/arch/riscv/include/asm/csr.h
+@@ -194,6 +194,7 @@
+ /* xENVCFG flags */
+ #define ENVCFG_STCE			(_AC(1, ULL) << 63)
+ #define ENVCFG_PBMTE			(_AC(1, ULL) << 62)
++#define ENVCFG_ADUE			(_AC(1, ULL) << 61)
+ #define ENVCFG_CBZE			(_AC(1, UL) << 7)
+ #define ENVCFG_CBCFE			(_AC(1, UL) << 6)
+ #define ENVCFG_CBIE_SHIFT		4
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index b7b58258f6c7..1013661d6516 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -58,6 +58,7 @@
+ #define RISCV_ISA_EXT_ZICSR		40
+ #define RISCV_ISA_EXT_ZIFENCEI		41
+ #define RISCV_ISA_EXT_ZIHPM		42
++#define RISCV_ISA_EXT_SVADU		43
+ 
+ #define RISCV_ISA_EXT_MAX		64
+ 
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index b2ba3f79cfe9..028b700cd27b 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -629,6 +629,12 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+ 	return __pgprot(prot);
+ }
+ 
++#define arch_has_hw_pte_young arch_has_hw_pte_young
++static inline bool arch_has_hw_pte_young(void)
++{
++	return riscv_has_extension_unlikely(RISCV_ISA_EXT_SVADU);
++}
++
+ /*
+  * THP functions
+  */
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 1cfbba65d11a..ead378c04991 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -178,6 +178,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+ 	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
+ 	__RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
++	__RISCV_ISA_EXT_DATA(svadu, RISCV_ISA_EXT_SVADU),
+ 	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+ 	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+ 	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+-- 
+2.17.1
 
->
-> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
-> ---
->   drivers/usb/gadget/function/uvc_video.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-> index 91af3b1ef0d4..0a5d9ac145e7 100644
-> --- a/drivers/usb/gadget/function/uvc_video.c
-> +++ b/drivers/usb/gadget/function/uvc_video.c
-> @@ -460,11 +460,12 @@ static void uvcg_video_pump(struct work_struct *work)
->   			req->no_interrupt = 1;
->   		}
->   
-> -		/* Queue the USB request */
-> -		ret = uvcg_video_ep_queue(video, req);
->   		spin_unlock_irqrestore(&queue->irqlock, flags);
->   
-> +		/* Queue the USB request */
-> +		ret = uvcg_video_ep_queue(video, req);
->   		if (ret < 0) {
-> +			usb_ep_set_halt(video->ep);
-
-
-This change isn't mentioned, and shouldn't be necessary - uvcg_video_ep_queue() will already call 
-usb_ep_set_halt() if it's in the error path.
-
->   			uvcg_queue_cancel(queue, 0);
->   			break;
->   		}
