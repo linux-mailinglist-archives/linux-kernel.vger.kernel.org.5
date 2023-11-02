@@ -2,133 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5087DFA21
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2367DFA2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377235AbjKBSlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
+        id S1377300AbjKBSnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbjKBSlJ (ORCPT
+        with ESMTP id S1377207AbjKBSnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:41:09 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5E4134
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:41:01 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so18014081fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:41:01 -0700 (PDT)
+        Thu, 2 Nov 2023 14:43:31 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7987128;
+        Thu,  2 Nov 2023 11:43:28 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a86b6391e9so15332427b3.0;
+        Thu, 02 Nov 2023 11:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698950460; x=1699555260; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698950608; x=1699555408; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=IEpZhe0N2sN6GVcRg3szCztdEpMXAkzbYdbkv3mYVKg=;
-        b=ulnjtFJnhHlwKCyC1/AZ1zSE6jmTjNnGl+1gPQ9y5WwhoY2j3Zz9bYXPidm0rIx7QQ
-         nW8jd00MIhV0SCLK5tPh33JCTPsPEgqkXjhZ/k+iAKRGweTzwac/BhJhrLKrXLcJnXqB
-         AMekWuvy9ntZniv+v6b/i1k8kcwUQYbR6ri1CCeiqeTVlLoQWTJDVasEWqot/hEZVKzp
-         Eh0OdoOqIm3YkU5E6efCiE2W5FNKctZZEiE/0nFPrBDUoiAhShEwLIZGubrQ2Ab7WVXX
-         +Hd7GS+j688NSzCG6Quf2788tdHucq+L1mofbLXSx/z//aDwpgPTmKMzwj5iBWNMHI6E
-         HiTg==
+        bh=T3OCUKIJblthjBAmG3vt22DDyNrmU9MlYinLfZ0K7Xs=;
+        b=b6Rpl/+9pbDKsIkHONmDhCUAgzXGp2bbE1fEyseaqzBjEubY2BQpFpFYzdBQef3/2z
+         DU1IP2hIQa42iuHDR0HMa4hgYeqigYGY32fi2akAqjXNxvQ0amgeDbAb+o4xi8wJFN7H
+         TMgD2/BMvygwi8bZ01b7G1RG9Xcwms6GQHtLtPT7KBMM63XZlPave7+v6W7dVC4P7Gvx
+         YU8B5JV3SqXVYPjh/vzCIRrv2RgJR2OQft6LQqEkq3Y4f/aisjJO7Cdwt2akN1A6o54M
+         xxE2ZPE6BTvrzUIDWHUMdKN5Q6Y1sXhbGVr0JAwQodTFDrQ2OoEQcBHFTohdpKVPs8ev
+         NOgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698950460; x=1699555260;
+        d=1e100.net; s=20230601; t=1698950608; x=1699555408;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IEpZhe0N2sN6GVcRg3szCztdEpMXAkzbYdbkv3mYVKg=;
-        b=MiKUh1Rux/yobPooNXbG8irSVeya/PKu5DRqgCJp89FUYjTLhnkWxuzgx+Br1/vsFY
-         lgQIj9JKAdyCyUSKeQRCs0tbN9d1fDcQ21bjZXSNT8zGZ+SOY+t/eDARlKkelLI5MBOl
-         bsSJQ1p/wr2BakjC6Kl00JoZQOfdd2dKEAPfU6HDLImv6aXRXHCjUcP3jepZ3VGG9wev
-         +Cy5MKQq8NvUqTVi7QvnN+fw4pQQsHxA1pe6MDVWs/qG/Sqj7KCxjfzZMd35Lvou2Qce
-         YVzK0dL3wyfN34HVC5vTXLfIgvgos1Prdp1C7R/L1W19Xlhu3pNagy6fFYuxBFInkUiF
-         QQTA==
-X-Gm-Message-State: AOJu0YxP8K/gdAt5W2oRgSVVmTgTS7JUXc/7upSqqfqIyICO03C6SAnW
-        iEkqME4vuGdmcF3whyFvKnIGXg==
-X-Google-Smtp-Source: AGHT+IHOG6JY6QHe6uEhX0t0A0QtG2EyhAEZkQBZ47BXTPo2Tx8sm8ASqdDLXlJVbPtHx31RMFUn0w==
-X-Received: by 2002:a05:651c:336:b0:2c5:15dc:ba99 with SMTP id b22-20020a05651c033600b002c515dcba99mr12946673ljp.51.1698950460025;
-        Thu, 02 Nov 2023 11:41:00 -0700 (PDT)
-Received: from [192.168.67.140] (92.40.204.37.threembb.co.uk. [92.40.204.37])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05600c2d4b00b00405c33a9a12sm1481939wmg.0.2023.11.02.11.40.58
+        bh=T3OCUKIJblthjBAmG3vt22DDyNrmU9MlYinLfZ0K7Xs=;
+        b=KDVqr5/oiXZnis6A5zUc1VgaCTYYtllXtp6b0NKMokoeuOmHwLxNY4I/SD7UI4MhIU
+         udQY+bL+tS35rTn4QsUe6CSUTctX5Opok1hzEj/d+XYHMSHq796VzS2txuUBV3WMKr13
+         yzpvC30MGeZqp1drPStgNC/4MJ6g9ZHu1ajDzv8x8Cdlz1I5N7VVd9+KASD55WIOcM7f
+         FvKvK7j5XPvlaDeFhH8iPpTH3hr16IVFkS9YTF5gIuZxXhtmfnXClYtcI84wHCMiijje
+         adTyMKvyK1o9Yzdpy77jH+HXxj5CGItZA8OpY5cso39FnNDuktg3ohoA16DJgjM9NFNx
+         hdig==
+X-Gm-Message-State: AOJu0YxnIYm1H9SdaqmJnoz8Kijw/P5x526+BOEQZmOfjlALFuHtH2Wf
+        6lcVtPamFYDfyEawqRGMpZM=
+X-Google-Smtp-Source: AGHT+IHcn+D7Mz9xrTHEz8hxFzaHe+Xzq2rCHcr2HsELphZUue1M+Zu+ivtlx9djqs8B693fXUCn7w==
+X-Received: by 2002:a81:a115:0:b0:5a7:af86:8d3b with SMTP id y21-20020a81a115000000b005a7af868d3bmr575857ywg.37.1698950608056;
+        Thu, 02 Nov 2023 11:43:28 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id t10-20020a0cea2a000000b0065b1f90ff8csm1671qvp.40.2023.11.02.11.43.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 11:40:59 -0700 (PDT)
-Message-ID: <dbf4a48e-c808-4611-96b1-563ece1e451a@linaro.org>
-Date:   Thu, 2 Nov 2023 18:40:57 +0000
+        Thu, 02 Nov 2023 11:43:27 -0700 (PDT)
+Message-ID: <ff7e60bf-13c9-44fe-b9e0-0f1ef4904745@gmail.com>
+Date:   Thu, 2 Nov 2023 11:43:25 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 1/8] dt-bindings: usb: qcom,dwc3: Add bindings to enable
- runtime
+Subject: Re: [PATCH net v3] net: dsa: tag_rtl4_a: Bump min packet size
 Content-Language: en-US
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     quic_wcheng@quicinc.com, linux-usb@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com
-References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
- <20231017131851.8299-2-quic_kriskura@quicinc.com>
- <272a9764-1cae-4d86-88b1-00175de83333@linaro.org>
- <960101cc-78c0-49cf-ab62-90614eeb9ee2@quicinc.com>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <960101cc-78c0-49cf-ab62-90614eeb9ee2@quicinc.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231031-fix-rtl8366rb-v3-1-04dfc4e7d90e@linaro.org>
+ <CACRpkdYiZHXMK1jmG2Ht5kU3bfi_Cor6jvKKRLKOX0KWX3AW9Q@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <CACRpkdYiZHXMK1jmG2Ht5kU3bfi_Cor6jvKKRLKOX0KWX3AW9Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi Caleb,
+On 11/1/23 13:18, Linus Walleij wrote:
+> On Tue, Oct 31, 2023 at 11:45 PM Linus Walleij <linus.walleij@linaro.org> wrote:
 > 
->    There are two types of platforms, some use extcon and some use 
-> role-switch to deliver vbus/id notifications. Extcon targets already 
-> have this qscratch modifications present today in vbus and id handlers. 
-> But for role-switch based targets we don't have any way to get this 
-> notification to dwc3-qcom. In this implementation, I wanted to get those 
-> notications from core to glue and for this we implenented vendor hooks.
+>> It was reported that the "LuCI" web UI was not working properly
+>> with a device using the RTL8366RB switch. Disabling the egress
+>> port tagging code made the switch work again, but this is not
+>> a good solution as we want to be able to direct traffic to a
+>> certain port.
 > 
-> The property added has been used to do two things:
+> Luiz is not seeing this on his ethernet controller so:
 > 
-> 1. Register glue's vendor hooks to core driver
-> 2. Do runtime_allow for glue (and by default for core as the dt is not 
-> flattened)
+> pw-bot: cr
 > 
-> In case of extcon, we don't want to register vendor hooks as 
-> notifications are not necessary.
+> (I've seen Vladmir do this, I don't know what it means, but seems
+> to be how to hold back patches.)
 
-Could it just be enabled when role_switch is present then?
-> 
-> For xhci, we opted to enable runtime from userspace.
+Looking at drivers/net/ethernet/cortina/gemini.c, should not we account 
+for when the MAC is used as a conduit and include the right amount of 
+"MTU" bytes? Something like this (compile tested only):
 
->>>         HS/FS/LS modes are supported.
->>>       type: boolean
->>> +  qcom,enable-rt:
->>> +    description:
->>> +      If present, register vendor hooks to facilitate runtime 
->>> suspend/resume
->>> +    type: boolean
->>
->> A Krzysztof pointed out, properties should define the hardware 
->> behaviour, not tot the implementation details. For this case the 
->> hardware isn't wired up to vbus, so maybe something like "qcom,no-vbus"?
->>> +
-> 
-> On all targets, vbus is not routed to hardware. This vbus toggle 
-> indication is given to controller via qscratch only.
-> 
-> Regards,
-> Krishna,
+diff --git a/drivers/net/ethernet/cortina/gemini.c 
+b/drivers/net/ethernet/cortina/gemini.c
+index 5423fe26b4ef..5143f3734c3b 100644
+--- a/drivers/net/ethernet/cortina/gemini.c
++++ b/drivers/net/ethernet/cortina/gemini.c
+@@ -36,6 +36,7 @@
+  #include <linux/ethtool.h>
+  #include <linux/tcp.h>
+  #include <linux/u64_stats_sync.h>
++#include <net/dsa.h>
 
+  #include <linux/in.h>
+  #include <linux/ip.h>
+@@ -1151,6 +1152,13 @@ static int gmac_map_tx_bufs(struct net_device 
+*netdev, struct sk_buff *skb,
+         if (skb->protocol == htons(ETH_P_8021Q))
+                 mtu += VLAN_HLEN;
+
++#if IS_ENABLED(CONFIG_NET_DSA)
++       if (netdev_uses_dsa(netdev)) {
++               const struct dsa_device_ops *ops = 
+skb->dev->dsa_ptr->tag_ops;
++               mtu += ops->needed_headroom;
++       }
++#endif
++
+         word1 = skb->len;
+         word3 = SOF_BIT;
+
+Also, as a separate check, might be worth annotating the various 
+descriptor words with __le32 and appropriate le32_to_cpu() and 
+cpu_to_le32() accessors for each of those fields.
 -- 
-// Caleb (they/them)
+Florian
+
