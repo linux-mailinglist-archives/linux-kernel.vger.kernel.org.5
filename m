@@ -2,108 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 738AD7DF276
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E20A97DF291
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376308AbjKBMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        id S1376362AbjKBMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346677AbjKBMch (ORCPT
+        with ESMTP id S1347632AbjKBMhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:32:37 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2225F137;
-        Thu,  2 Nov 2023 05:32:35 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso1440639a12.3;
-        Thu, 02 Nov 2023 05:32:35 -0700 (PDT)
+        Thu, 2 Nov 2023 08:37:05 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54BC19A9;
+        Thu,  2 Nov 2023 05:34:39 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9adca291f99so130471066b.2;
+        Thu, 02 Nov 2023 05:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698928353; x=1699533153; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pM8zlt4obzxoJwrjk3uA0SX3/4WusjoDm/ScOgDY3EQ=;
-        b=efmsZab6cESdm9WKcEjMxynzAg0I/RqXRTgAXIEuHgc+cKkoLjgna59bd0+C+HXlc7
-         q0i5Z97FbVP7InT9Dz6vgyBaBKSOgxT88ls71Rd4W/26R2v53hydht8eyKo0+BNii7ks
-         i3lVg5jVREmrvypjFxx7b58kC0z2ksxLUcY7PHAkBVoeLlUQMcjoh8iCOZr7Sokevryu
-         lbqfdpcg5MFUvI+OctynNmTadQrUlWNcxGYK2fklzp5J7j4+0KIm42k5TQwElw9JoyQe
-         7CbH8ITZya8K2iuZytuT60IWtwSR/Bpe4njbRgMKOo/9yz8pi3FhaudtRPgB7DwTNn8J
-         +jBw==
+        d=gmail.com; s=20230601; t=1698928478; x=1699533278; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rsKFZV3nMxQi1oiVGFdNfQgyygad1bdQB+o4P9tAijg=;
+        b=SKSSv3HwjZP8vOFHQv6vFz/05iCay0wI6WE4oLkfCkSCB/Q1wIj/PzLg15HlFnzeIA
+         GnD6QYMbOg7JGz/iFQkxLz2DyF1yfOM4aLWThgenrCYuz36AVsiJOn+Ao1+tUoBVjlth
+         5JnEbSpso0avKMHiUdzDdObcD+vEYSKHO2jXrei1nT2OEkZlIXoFBCAYhb6IkHb7D0Rn
+         YS1cKTDyf23/MMknCy0CxG7VAauEIQc08avX7FfkJWS38kS442bTAOycM3WNvX2GwD+k
+         3E0CjdnJeDh8wkuVbOmC7klU+3OhiWo5avAwi6IiBFSE5jZwe6jaVyFZS+9Tx4f9CEc+
+         rr3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698928353; x=1699533153;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pM8zlt4obzxoJwrjk3uA0SX3/4WusjoDm/ScOgDY3EQ=;
-        b=l635X4WuRXvlPL8PL5uFZNn6688uvHMLa7XF4M4YcjGHSPjora38HoHUDVtZr+g/0G
-         87oojnyUhWpTPg4tFe21PqxkF0go46+3Ad2siFJtfFZjEqECK1RHRpmufFT9eLlZ5mK9
-         BLppb/bFKjgz9kgmqRtlYjp81V30jBas752QwGsSkzQMEB48RAgNq/brpwwbvX0Jgmrx
-         EIEHHrQo0qm9opV7Sjkas+R9KA2B+dcHaQkpyWBDF+D1ulGtvoOH/M+UnQ7iVsp3NVcm
-         2NbECBK5XqqmA/j2h7mOevUymFvi0jb83C0LKqlAtIZugCMYrJdQLGOYnlS8JQ4iV74b
-         muXg==
-X-Gm-Message-State: AOJu0YzhayVrZVBgN5CgoKTBvRUYwPyXR9MDz0qPfQXzKJo997e5fIoI
-        rI7wrw7b317fWcTUaU6MKjM=
-X-Google-Smtp-Source: AGHT+IGpWEQw/lrAY3504ljM8AOISqQkQ25WLINqL0dId7TMKisUKJ2cfbrp1dPqiVaJUysFZFPlCQ==
-X-Received: by 2002:a17:907:608a:b0:9a5:7f99:be54 with SMTP id ht10-20020a170907608a00b009a57f99be54mr4395989ejc.67.1698928353180;
-        Thu, 02 Nov 2023 05:32:33 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id jx3-20020a170906ca4300b009930c80b87csm1104868ejb.142.2023.11.02.05.32.32
+        d=1e100.net; s=20230601; t=1698928478; x=1699533278;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rsKFZV3nMxQi1oiVGFdNfQgyygad1bdQB+o4P9tAijg=;
+        b=j9EmVFkU1v2GJxMnXxzI9ykCKOVgzxkgx24Qw5uzjf58hhmmeB6TzNsowxZSV/xqr1
+         AoaqTD3gKbUet+oBfBpDwgYPAYm8Hgbxng9PIs+QOyB8NT4Sphmu8FsAkVB8rYX3ITgJ
+         E4Nc8J18y2Ur7fZALHNZ1KDhZ0Uxv2qWZQmC74b03W8SaSUfi806GhOaqpYlkTHWG8Sj
+         cwFQZQKGwD9VcAWZO7x6B5OL+I03Ap7Ax+OcSZ0s+czoRF7r3AvVPnNoJg2/dER05LNf
+         CdGyAu5ZjHUo6Jiqo6LJH4SW8KaTGIWinujp8w0dgCdrz8BoOfmnytqJ3uLMF+7AvRr1
+         Zjyg==
+X-Gm-Message-State: AOJu0YxWAFHLd5PRXxVIvU1ZYlEY1cBnpeEkdoMpnR1/xF0EniIdw/IR
+        TNDBcMeOeBPnMIm2KE/k8TCJ0LT7C5Myuw==
+X-Google-Smtp-Source: AGHT+IHbCh/IJZSGzt0gIABJ7y9ndea7qZv4B5H5UEA37VyBzCW20YKU9oOhMj55kNmOINPQ9aPzcA==
+X-Received: by 2002:a17:907:25c6:b0:9d1:a628:3e4f with SMTP id ae6-20020a17090725c600b009d1a6283e4fmr4065531ejc.32.1698928478015;
+        Thu, 02 Nov 2023 05:34:38 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5af678.dynamic.kabel-deutschland.de. [95.90.246.120])
+        by smtp.gmail.com with ESMTPSA id e10-20020a1709067e0a00b009c921a8aae2sm1100112ejr.7.2023.11.02.05.34.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 05:32:32 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 14:32:30 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <20231102123230.luoyrh2j4r4bbwjf@skbuf>
-References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
- <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
- <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
- <20231030222035.oqos7v7sdq5u6mti@skbuf>
- <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
- <20231030233334.jcd5dnojruo57hfk@skbuf>
- <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
- <20231031163439.tqab5axhk5q2r62i@skbuf>
- <CACRpkdb=16uLhsXhktLCwUByDAMv9Arg2zzCA+oJW2HBJ35-Bg@mail.gmail.com>
+        Thu, 02 Nov 2023 05:34:37 -0700 (PDT)
+From:   Nik Bune <n2h9z4@gmail.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        skhan@linuxfoundation.org, juhosg@openwrt.org
+Cc:     Nik Bune <n2h9z4@gmail.com>, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] dt-bindings: watchdog: qca,ar7130-wdt: convert txt to yaml
+Date:   Thu,  2 Nov 2023 13:32:34 +0100
+Message-Id: <20231102123234.62350-1-n2h9z4@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdb=16uLhsXhktLCwUByDAMv9Arg2zzCA+oJW2HBJ35-Bg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 08:02:29PM +0100, Linus Walleij wrote:
-> On Tue, Oct 31, 2023 at 5:34 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > So on the gemini-dlink-dir-685.dts platform, you can also use &gmac1 as
-> > a plain Ethernet port, right?
-> 
-> As a port it exist on the SoC yes but it is not connected physically
-> to anything.
-> 
-> &gmac0 is connected to the switch, and the switch has all the PHYs.
-(...)
-> If you by remote end mean the end of a physical cable there is
-> no way I can do that, as I have no PHY on gmac1.
-> 
-> (I don't know if I misunderstand the question...)
+Convert txt file to yaml. Add maintainers from git blame. 
+Drop qca,ar9330-wdt from example of compatible property
+and leave only qca,ar7130-wdt, as description of property
+mentioned must be qca,ar7130-wdt.
 
-No, you aren't.
+Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+---
 
-> But I have other Gemini platforms, so I will try to do it on one
-> of them! Let's see if I can do this thing....
+Changes in v3:
+Did run checkpatch and updated the commit message accordingly. 
 
-Ok.
+v2 patch: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231101202722.48056-1-n2h9z4@gmail.com/ 
+
+ .../bindings/watchdog/qca,ar7130-wdt.yaml     | 33 +++++++++++++++++++
+ .../bindings/watchdog/qca-ar7130-wdt.txt      | 13 --------
+ 2 files changed, 33 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/qca,ar7130-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/qca-ar7130-wdt.txt
+
+diff --git a/Documentation/devicetree/bindings/watchdog/qca,ar7130-wdt.yaml b/Documentation/devicetree/bindings/watchdog/qca,ar7130-wdt.yaml
+new file mode 100644
+index 000000000000..82040ca10eda
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/qca,ar7130-wdt.yaml
+@@ -0,0 +1,33 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/qca,ar7130-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Atheros AR7130 Watchdog Timer (WDT) Controller
++
++maintainers:
++  - Gabor Juhos <juhosg@openwrt.org>
++
++allOf:
++  - $ref: watchdog.yaml#
++
++properties:
++  compatible:
++    const: qca,ar7130-wdt
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    watchdog@18060008 {
++        compatible = "qca,ar7130-wdt";
++        reg = <0x18060008 0x8>;
++    };
+diff --git a/Documentation/devicetree/bindings/watchdog/qca-ar7130-wdt.txt b/Documentation/devicetree/bindings/watchdog/qca-ar7130-wdt.txt
+deleted file mode 100644
+index 7a89e5f85415..000000000000
+--- a/Documentation/devicetree/bindings/watchdog/qca-ar7130-wdt.txt
++++ /dev/null
+@@ -1,13 +0,0 @@
+-* Qualcomm Atheros AR7130 Watchdog Timer (WDT) Controller
+-
+-Required properties:
+-- compatible: must be "qca,ar7130-wdt"
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-
+-Example:
+-
+-wdt@18060008 {
+-	compatible = "qca,ar9330-wdt", "qca,ar7130-wdt";
+-	reg = <0x18060008 0x8>;
+-};
+-- 
+2.34.1
+
