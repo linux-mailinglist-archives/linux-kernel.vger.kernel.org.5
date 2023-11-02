@@ -2,240 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 791B17DF58D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2647DF580
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344109AbjKBPBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        id S1343676AbjKBPAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjKBPBU (ORCPT
+        with ESMTP id S229516AbjKBPAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:01:20 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD59B19A;
-        Thu,  2 Nov 2023 08:01:14 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4083ac51d8aso7952675e9.2;
-        Thu, 02 Nov 2023 08:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698937273; x=1699542073; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yjqMreabRsDRLtUlqL50Lj0Jf1Dc8tKq0A0FqOYk3vI=;
-        b=TttEmsxMvK5+GPzFXabFceaz/QsyYWbpIxKlLRwMdcC/BRPmz//Tv56W96nmZwrODE
-         rR3vBIdFVA2S89ydd3RBdaEwo3HCCKT9jupjtjplSYGoOFFcGEH0htN6jeRAGjstf7gl
-         e+LX2S0nOolC4hLtEVmNRkFdZhLMWPjf26FAkEizOM1B+AGUZn2ICCfRRknmS/GpHsqN
-         q9jLn6K+FpH8+hb0jlDRw+F/UE5puDvF4w84ry8lJSFHQIGzCTqOxPMvohd7d7uzc71N
-         zSFK3qnyXHrSitql2MstTAFPMyyw/V1sGvgCyjZpC0rieq7GukFyzxtvw8Lid9oKWFoa
-         gHxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698937273; x=1699542073;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yjqMreabRsDRLtUlqL50Lj0Jf1Dc8tKq0A0FqOYk3vI=;
-        b=sIHwkyLMAU71suaIig7P4Dn2V1u483cPhaDn3FgkzvsF7d51A/885E+R0AbUFF3I3F
-         G8ZLw15YJeg+BI1p85p0RLgUndOOOjSDNfJ65y5HNTAziGCX/EAaY9EUBfEdGDgvFZgF
-         7JjuK4QBGvqVu2ZoBncWKAlF2Zgfs7/jTIiba6fWh6WKoPUnkoHhIEy2GCNsT4dV6Hhu
-         WFkR1oMpxlrYlrs2DraPfcTIepBv6AIIIIOhsfrPSbxqrLY9GPHNH4pty3OuHV/tTQMZ
-         pjafRdRF6FcGZgPQhNNCl76djCONGxFHltIl/AMBGT1tc2NglVHkr9iqPSxVctdr42R6
-         lv5g==
-X-Gm-Message-State: AOJu0YxWU3c+LDBz+6s+47PDt6VgIQuMsrQFYuQNchXYbMV2Xjrp8jJP
-        M3LUycwrIZR1kHvhcRX+oiw=
-X-Google-Smtp-Source: AGHT+IGZKjrDa8RVJiFx8Yu7fGNuwAdECwzrX7tDnU5cyYtmKvaAcHpkPDmHp6CGfUjEIjQ24cyP5w==
-X-Received: by 2002:a05:600c:310d:b0:405:3dee:3515 with SMTP id g13-20020a05600c310d00b004053dee3515mr17339953wmo.27.1698937272911;
-        Thu, 02 Nov 2023 08:01:12 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id j15-20020a05600c130f00b003fbe4cecc3bsm3131007wmf.16.2023.11.02.08.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 08:01:08 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH v3 4/4] dt-bindings: Document bindings for Marvell Aquantia PHY
-Date:   Thu,  2 Nov 2023 16:00:32 +0100
-Message-Id: <20231102150032.10740-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231102150032.10740-1-ansuelsmth@gmail.com>
-References: <20231102150032.10740-1-ansuelsmth@gmail.com>
+        Thu, 2 Nov 2023 11:00:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABD7184;
+        Thu,  2 Nov 2023 08:00:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ECABC433C7;
+        Thu,  2 Nov 2023 15:00:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698937238;
+        bh=C88FlU4ouWEmidb+DSCdaONlsanKLO79mrsdvXHGKnU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=sjasx6dUDDFRcFyfz4G3MFiQcdz2i82tGsb4PhzuLohjSby23cJiAth2xGEQ+hx9V
+         m6YiSBptxEHmopJdOMQDzh1XyZKhmAUfO96YwZOZnRaf8J8IfgadbESicaeyIFfOi/
+         gXht+kb4Pla0icSq11paKKinB9SZ6eo/PlSprqUZtfQNrRRtpTDrcsUMJnNfKfZxYm
+         DO51/FOIX19u9R9OCdeDz+nIISeqO+0aWNuGn6E/X4+gfIAYWhoKtR0sX1LSxmcgHV
+         u1S8SXgcnO2SB4InpiPBmvopFQh+PoDcC9xakjYEIIW8xRwg1pdhCXfMHbICOJtoOZ
+         EKAEfeqlZHFaw==
+Message-ID: <868f4920-190d-4917-ae4e-bd4cbb6de98f@kernel.org>
+Date:   Fri, 3 Nov 2023 01:00:33 +1000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/7] modpost: fix modpost errors for m68k-uclinux-gcc
+Content-Language: en-US
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jack Brennen <jbrennen@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+References: <20231101150404.754108-1-masahiroy@kernel.org>
+From:   Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <20231101150404.754108-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document bindings for Marvell Aquantia PHY.
+Hi Masahiro,
 
-The Marvell Aquantia PHY require a firmware to work correctly and there
-at least 3 way to load this firmware.
+On 2/11/23 01:03, Masahiro Yamada wrote:
+> Greg Ungerer reports building with m68k-uclinux-gcc toolchain is broken:
+> https://lore.kernel.org/linux-kbuild/CAK7LNASQ_W5Yva5a4Xx8E2EYi-tN7x3OHgMFhK+93W+BiX1=9Q@mail.gmail.com/T/#m6ff0364f9ca8483c9f6d162619e5005833d1e887
+> 
+> Usually, we do not need to search for export symbols in the .symtab
+> section, but m68k-uclinux-gcc seems to be an exceptional case.
+> I do not know what makes it different from other toolchains.
+> Also, I do not know there exist other toolchains that work like that.
+> 
+> This series extends the symsearch feature in case we need to explicitly
+> search for export symbols.
+> 
+> Then, the last patch fixes the issue.
+> 
+> This series should be applicable for linux-next.
+> 
+> This series is too late for the current merge window, but I'd like
+> to fix the issue somehow by the next merge window.
 
-Describe all the different way and document the binding "firmware-name"
-to load the PHY firmware from userspace.
+Thanks for looking into this.
+I can confirm this series fixes it for me (using linux-next).
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v3:
-- Make DT description more OS agnostic
-- Use custom select to fix dtbs checks
-Changes v2:
-- Add DT patch
 
- .../bindings/net/marvell,aquantia.yaml        | 126 ++++++++++++++++++
- 1 file changed, 126 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+     Tested-by: Greg Ungerer <gerg@kernel.org>
 
-diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-new file mode 100644
-index 000000000000..d43cf28a4d61
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-@@ -0,0 +1,126 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell Aquantia Ethernet PHY
-+
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com>
-+
-+description: |
-+  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actually
-+  work.
-+
-+  This can be done and is implemented by OEM in 3 different way:
-+    - Attached SPI directly to the PHY with the firmware. The PHY will
-+      self load the firmware in the presence of this configuration.
-+    - Dedicated partition on system NAND with firmware in it. NVMEM
-+      subsystem will be used and the declared NVMEM cell will load
-+      the firmware to the PHY using the PHY mailbox interface.
-+    - Manually provided firmware loaded from a file in the filesystem.
-+
-+  If declared, NVMEM will always take priority over filesystem provided
-+  firmware.
-+
-+allOf:
-+  - $ref: ethernet-phy.yaml#
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - ethernet-phy-id03a1.b445
-+          - ethernet-phy-id03a1.b460
-+          - ethernet-phy-id03a1.b4a2
-+          - ethernet-phy-id03a1.b4d0
-+          - ethernet-phy-id03a1.b4e0
-+          - ethernet-phy-id03a1.b5c2
-+          - ethernet-phy-id03a1.b4b0
-+          - ethernet-phy-id03a1.b662
-+          - ethernet-phy-id03a1.b712
-+          - ethernet-phy-id31c3.1c12
-+  required:
-+    - compatible
-+
-+properties:
-+  reg:
-+    maxItems: 1
-+
-+  firmware-name:
-+    description: specify the name of PHY firmware to load
-+
-+  nvmem-cells:
-+    description: phandle to the firmware nvmem cell
-+    maxItems: 1
-+
-+  nvmem-cell-names:
-+    const: firmware
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ethernet-phy@0 {
-+            /*  Only needed to make DT lint tools work. Do not copy/paste
-+             *  into real DTS files.
-+             */
-+            compatible = "ethernet-phy-id31c3.1c12",
-+                         "ethernet-phy-ieee802.3-c45";
-+
-+            reg = <0>;
-+            firmware-name = "AQR-G4_v5.4.C-AQR_CIG_WF-1945_0x8_ID44776_VER1630.cld";
-+        };
-+
-+        ethernet-phy@1 {
-+            /*  Only needed to make DT lint tools work. Do not copy/paste
-+             *  into real DTS files.
-+             */
-+            compatible = "ethernet-phy-id31c3.1c12",
-+                         "ethernet-phy-ieee802.3-c45";
-+
-+            reg = <0>;
-+            nvmem-cells = <&aqr_fw>;
-+            nvmem-cell-names = "firmware";
-+        };
-+    };
-+
-+    flash {
-+        compatible = "jedec,spi-nor";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partitions {
-+            compatible = "fixed-partitions";
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+
-+            /* ... */
-+
-+            partition@650000 {
-+                compatible = "nvmem-cells";
-+                label = "0:ethphyfw";
-+                reg = <0x650000 0x80000>;
-+                read-only;
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                aqr_fw: aqr_fw@0 {
-+                    reg = <0x0 0x5f42a>;
-+                };
-+            };
-+
-+            /* ... */
-+
-+        };
-+    };
--- 
-2.40.1
+Regards
+Greg
 
+
+> 
+> 
+> Masahiro Yamada (7):
+>    modpost: move sym_name() to modpost.h
+>    modpost: add const qualifier to syminfo table
+>    modpost: add table_size local variable to symsearch_find_nearest()
+>    modpost: introduce a filtering feature to symsearch
+>    modpost: prefer global symbols in symsearch_find_nearest()
+>    modpost: add symsearch_find_with_name() helper function
+>    modpost: look up the correct symbol in check_export_symbol()
+> 
+>   scripts/mod/modpost.c   |  39 ++++----
+>   scripts/mod/modpost.h   |  12 +++
+>   scripts/mod/symsearch.c | 205 ++++++++++++++++++++++++++++------------
+>   3 files changed, 180 insertions(+), 76 deletions(-)
+> 
