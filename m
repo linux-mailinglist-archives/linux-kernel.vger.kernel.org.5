@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96227DEDEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246B37DEDED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbjKBINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        id S234571AbjKBILw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjKBINH (ORCPT
+        with ESMTP id S229602AbjKBILv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:13:07 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2791312C;
-        Thu,  2 Nov 2023 01:13:00 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A28BZTV02673409, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A28BZTV02673409
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Nov 2023 16:11:35 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 2 Nov 2023 16:11:35 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 2 Nov 2023 16:11:34 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Thu, 2 Nov 2023 16:11:34 +0800
-From:   =?utf-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
-        "riteshh@codeaurora.org" <riteshh@codeaurora.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "briannorris@chromium.org" <briannorris@chromium.org>,
-        "doug@schmorgal.com" <doug@schmorgal.com>,
-        "tonyhuang.sunplus@gmail.com" <tonyhuang.sunplus@gmail.com>,
-        "abel.vesa@linaro.org" <abel.vesa@linaro.org>,
-        "william.qiu@starfivetech.com" <william.qiu@starfivetech.com>
-Subject: RE: [PATCH V4][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
-Thread-Topic: [PATCH V4][2/4] mmc: Add Synopsys DesignWare mmc cmdq host
- driver
-Thread-Index: AQHaCvo6e3z5KcKOPkKfAzq+fMlzr7BhbFcAgAVDSUA=
-Date:   Thu, 2 Nov 2023 08:11:34 +0000
-Message-ID: <8d2006d952de477b906f8bdac52cdf5c@realtek.com>
-References: <20231030062749.2840-1-jyanchou@realtek.com>
- <20231030062749.2840-3-jyanchou@realtek.com>
- <baf6a0c3-e76a-4d9d-8866-b3f4fdae162e@linaro.org>
-In-Reply-To: <baf6a0c3-e76a-4d9d-8866-b3f4fdae162e@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.236]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antivirus-attachment-filter-interceptor-info: license violation
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 2 Nov 2023 04:11:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814BF111;
+        Thu,  2 Nov 2023 01:11:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 394B521A1D;
+        Thu,  2 Nov 2023 08:11:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1698912704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BMhGQiqfq445PFxKNMsZNs39FeGTNET/PPbR3dvt2CY=;
+        b=bfMbt/c+wYJ3JgnGgoQXiYFLKmZEnT92LSFOTSPFyaHHPkwBnyjg/kt02AmXxdUcfdcCw5
+        +FKcCAeEJANEhv6hTABpht+cXSaarHFJW8mvhMZyyW9gLvTPlluO1Xd+caPVkAIeQ8mB8D
+        pBwItobwOzHaxYv5T4AwcpFs1/FRuyw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1698912704;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BMhGQiqfq445PFxKNMsZNs39FeGTNET/PPbR3dvt2CY=;
+        b=NQxIIzE3X/154Mm5u40Ky61N0P8GzT2JE4zkRdJKmf2PAzbQIlTLwCq3HFL7/bOpgGMCyA
+        sMbqVE7XtnE/RYCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA07B13584;
+        Thu,  2 Nov 2023 08:11:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cpcMNL9ZQ2WHRAAAMHmgww
+        (envelope-from <hare@suse.de>); Thu, 02 Nov 2023 08:11:43 +0000
+Message-ID: <7f8d8801-2f70-4608-9b42-4a0f98aff3d3@suse.de>
+Date:   Thu, 2 Nov 2023 09:11:43 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/13] scsi: fnic: Add support for multiqueue (MQ) in
+ fnic driver
+Content-Language: en-US
+To:     Karan Tilak Kumar <kartilak@cisco.com>, sebaddel@cisco.com
+Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
+        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231027180302.418676-1-kartilak@cisco.com>
+ <20231027180302.418676-13-kartilak@cisco.com>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20231027180302.418676-13-kartilak@cisco.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,257 +77,363 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gV2UgaW1wbGVtZW50ZWQgY21kcSBmZWF0dXJlIG9uIFN5bm9wc3lzIERlc2lnbldhcmUgbW1j
-IGRyaXZlci4NCj4+IFRoZSBkaWZmZXJlbmNlIGJldHdlZW4gZHdfbW1jLmMgYW5kIGR3X21tY19j
-cWUuYyB3ZXJlIGRpc3RpbmN0IA0KPj4gcmVnaXN0ZXIgZGVmaW5pdGlvbnMsIG1tYyB1c2VyIGZs
-b3cgYW5kIHRoZSBhZGRpdGlvbiBvZiBjbWRxLg0KPj4NCj4+IE5ldyB2ZXJzaW9uIG9mIFVzZXIg
-R3VpZGUgaGFkIG1vZGlmeSBtbWMgZHJpdmVyJ3MgdXNhZ2UgZmxvdywgd2UgbWF5IA0KPj4gbmVl
-ZCB0byByZW5ldyBjb2RlIHRvIHByZWNpc2VseSBmb2xsb3cgdXNlciBndWlkZS4NCj4+DQo+PiBN
-b3JlIG92ZXIsIFdlIGFkZGVkIGEgd2FpdCBzdGF0dXMgZnVuY3Rpb24gdG8gc2F0aXNmeSBzeW5v
-cHN5cyB1c2VyIA0KPj4gZ3VpZGUncyBkZXNjcmlwdGlvbiwgc2luY2UgdGhpcyBmbG93IG1pZ2h0
-IGJlIHNwZWNpZmljIGluIHN5bm9wc3lzIA0KPj4gaG9zdCBkcml2ZXIgb25seS4NCj4+DQo+PiBT
-aWduZWQtb2ZmLWJ5OiBKeWFuIENob3UgPGp5YW5jaG91QHJlYWx0ZWsuY29tPg0KPj4NCj4+IOKA
-lC0tDQo+PiB2MyAtPiB2NDoNCj4+IC0gTW9kaWZ5IGRtYSBtb2RlIHNlbGVjdGlvbiBhbmQgZG1h
-IGFkZHJlc3NpbmcgYml0IHRvIHN0YXRpc2Z5DQo+PiAgIGxpbnV4IGNvZGluZyBzdHlsZS4NCj4+
-DQoNCj4gSSBhc2tlZCB0byBmaXggc2V2ZXJhbCBjb2Rpbmcgc3R5bGUgaXNzdWVzIHNvIGl0IHdp
-bGwgbG9vayBhIGJpdCBhcyBtYXRjaGluZyBMaW51eCBjb2Rpbmcgc3R5bGUuIEkgZG9uJ3Qgc2Vl
-IGltcHJvdmVtZW50cy4NCg0KPiBQbGVhc2UgcmVhZCBjYXJlZnVsbHksIG1vcmUgdGhhbiBvbmNl
-LCB0aGUgTGludXggY29kaW5nIHN0eWxlLiBUaGVuIGRvY3VtZW50IGluIGNoYW5nZWxvZyB3aGF0
-IHlvdSBmaXhlZC4gSWYgeW91IGRvY3VtZW50IG5vdGhpbmcsIG1lYW5zIHlvdSBpZ25vcmVkIHRo
-ZSBmZWVkYmFjay4NCg0KPiBGaXggZXZlcnkgd2FybmluZyBmcm9tIGNoZWNrcGF0Y2ggLS1zdHJp
-Y3QuIFRoZW4gZG9jdW1lbnQgaW4gY2hhbmdlbG9nIHdoYXQgeW91IGZpeGVkLiBJZiB5b3UgZG9j
-dW1lbnQgbm90aGluZywgbWVhbnMgeW91IGlnbm9yZWQgdGhlIGZlZWRiYWNrLg0KDQpUaGFua3Mg
-Zm9yIHlvdXIgcmVtaW5kLCB3ZSBoYWQgZml4ZWQgbW9yZSBjb2Rpbmcgc3R5bGUgaXNzdWVzIGFu
-ZCBjaGVja2VkIHdpdGggY2hlY2twYXRjaCAtLXN0cmljdC4NCg0KPj4gKw0KPj4gKyAgICAgaWYg
-KCFob3N0LT5idXNfaHopIHsNCj4+ICsgICAgICAgICAgICAgZGV2X2Vycihob3N0LT5kZXYsDQo+
-PiArICAgICAgICAgICAgICAgICAgICAgIlBsYXRmb3JtIGRhdGEgbXVzdCBzdXBwbHkgYnVzIHNw
-ZWVkXG4iKTsNCj4+ICsgICAgICAgICAgICAgcmV0ID0gLUVOT0RFVjsNCj4+ICsgICAgICAgICAg
-ICAgZ290byBlcnJfY2xrX2NpdTsNCj4+ICsgICAgIH0NCj4+ICsNCj4+ICsgICAgIGlmICghSVNf
-RVJSKGhvc3QtPnBkYXRhLT5yc3RjKSkgew0KPj4gKyAgICAgICAgICAgICByZXNldF9jb250cm9s
-X2Fzc2VydChob3N0LT5wZGF0YS0+cnN0Yyk7DQo+PiArICAgICAgICAgICAgIHVzbGVlcF9yYW5n
-ZSgxMCwgNTApOw0KPj4gKyAgICAgICAgICAgICByZXNldF9jb250cm9sX2RlYXNzZXJ0KGhvc3Qt
-PnBkYXRhLT5yc3RjKTsNCj4+ICsgICAgIH0NCj4+ICsNCj4+ICsgICAgIHRpbWVyX3NldHVwKCZo
-b3N0LT50aW1lciwgZHdfbWNpX2NxZV9jdG9fdGltZXIsIDApOw0KPj4gKw0KPj4gKyAgICAgc3Bp
-bl9sb2NrX2luaXQoJmhvc3QtPmxvY2spOw0KPj4gKyAgICAgc3Bpbl9sb2NrX2luaXQoJmhvc3Qt
-PmlycV9sb2NrKTsNCj4+ICsgICAgIGluaXRfcndzZW0oJmhvc3QtPmNyX3J3X3NlbSk7DQo+PiAr
-ICAgICB0YXNrbGV0X2luaXQoJmhvc3QtPnRhc2tsZXQsIGR3X21jaV9jcWVfdGFza2xldF9mdW5j
-LCAodW5zaWduZWQgDQo+PiArIGxvbmcpaG9zdCk7DQo+PiArDQo+PiArICAgICAvKnBpbyBtb2Rl
-J3MgcGFyYW1ldGVycyBzaG91bGQgYmUgaW5pdGlhbGl6ZWQgaGVyZSovDQoNCj4gTm90aGluZyBp
-bXByb3ZlZC4NCg0KV2UgaGFkIGZpeGVkIGl0Lg0KDQo+PiArDQo+PiArICAgICAvKkluaXRpYWxp
-emUgdGhlIGVNTUMgSVAgcmVsYXRlZCBhdHRyaWJ1dGUqLw0KPj4gKyAgICAgZHdfbWNpX2NxZV9z
-ZXR1cChob3N0KTsNCj4+ICsNCj4+ICsgICAgIGR3X21jaV9jcWVfaW5pdF9kbWEoaG9zdCk7DQo+
-PiArDQo+PiArICAgICAvKiBUaGlzIGZsYWcgd2lsbCBiZSBzZXQgMSB3aGVuIGRvaW5nIHR1bmlu
-ZywNCg0KPiBOb3RoaW5nIGltcHJvdmVkLg0KDQpXZSBoYWQgZml4ZWQgaXQuDQoNCj4+ICsgICAg
-ICAqIHdlIGFkZCB0aGlzIGZsYWcgYmVjYXVzZQ0KPj4gKyAgICAgICogc29tZSB2ZW5kb3JzIG1p
-Z2h0IHVzZSBvdGhlciBjbWQgaW5zdGVhZCBvZiAyMQ0KPj4gKyAgICAgICogdG8gdHVuZSBwaGFz
-ZSB1bmRlciBoaWdoIHNwZWVkIGludGVyZmFjZS4NCj4+ICsgICAgICAqIHdlIHVzZSB0aGlzIGZs
-YWcgdG8gcmVjb2duaXplIGlmIHRoZSBzeXN0ZW0gaXMgdW5kZXIgdHVuaW5nIHN0YWdlLg0KPj4g
-KyAgICAgICovDQo+PiArICAgICBob3N0LT50dW5pbmcgPSAwOw0KPj4gKw0KPj4gKyAgICAgLypU
-aW1pbmdfc2V0dGluZyBpcyB0byBhdm9pZCBzZW5kaW5nIGNvbW1hbmQNCg0KPiBOb3RoaW5nIGlt
-cHJvdmVkLg0KDQpXZSBoYWQgZml4ZWQgaXQuDQoNCj4+ICsgICAgICAqYmVmb3JlIHNldHRpbmcg
-cGhhc2UgaW4gaHMyMDAsIGhzNDAwDQo+PiArICAgICAgKi8NCj4+ICsgICAgIGhvc3QtPmN1cnJl
-bnRfc3BlZWQgPSAwOw0KPj4gKw0KPj4gKyAgICAgLypEbyB0aGUgcmVzdCBvZiBpbml0IGZvciBz
-cGVjaWZpYyovDQo+PiArICAgICBpZiAoZHJ2X2RhdGEgJiYgZHJ2X2RhdGEtPmluaXQpIHsNCj4+
-ICsgICAgICAgICAgICAgcmV0ID0gZHJ2X2RhdGEtPmluaXQoaG9zdCk7DQo+PiArICAgICAgICAg
-ICAgIGlmIChyZXQpIHsNCj4+ICsgICAgICAgICAgICAgICAgICAgICBkZXZfZXJyKGhvc3QtPmRl
-diwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJpbXBsZW1lbnRhdGlvbiBzcGVj
-aWZpYyBpbml0IGZhaWxlZFxuIik7DQo+PiArICAgICAgICAgICAgICAgICAgICAgZ290byBlcnJf
-ZG1hdW5tYXA7DQo+PiArICAgICAgICAgICAgIH0NCj4+ICsgICAgIH0NCj4+ICsNCj4+ICsgICAg
-IHJldCA9IGR3X21jaV9jcWVfaW5pdF9zbG90KGhvc3QpOw0KPj4gKyAgICAgaWYgKHJldCkgew0K
-Pj4gKyAgICAgICAgICAgICBkZXZfZXJyKGhvc3QtPmRldiwgInNsb3QgMCBpbml0IGZhaWxlZFxu
-Iik7DQo+PiArICAgICAgICAgICAgIGdvdG8gZXJyX2RtYXVubWFwOw0KPj4gKyAgICAgfQ0KPj4g
-Kw0KPj4gKyAgICAgcmV0ID0gZGV2bV9yZXF1ZXN0X2lycShob3N0LT5kZXYsIGhvc3QtPmlycSwg
-ZHdfbWNpX2NxZV9pbnRlcnJ1cHQsDQo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIGhv
-c3QtPmlycV9mbGFncywgImR3LW1jaS1jcWUiLCBob3N0KTsNCj4+ICsgICAgIGlmIChyZXQpDQo+
-PiArICAgICAgICAgICAgIGdvdG8gZXJyX2RtYXVubWFwOw0KPj4gKw0KPj4gKyAgICAgLypBZnRl
-ciB0aGUgc2xvdCBpbml0aWFsaXphdGlvbiwNCg0KPiBOb3RoaW5nIGltcHJvdmVkLg0KDQpXZSBo
-YWQgZml4ZWQgaXQuDQoNCj4+ICsgICAgICAqbm93IHdlIGhhdmUgbW1jIGRhdGEgYW5kIGNhbiBp
-bml0aWFsaXplIGNtZHEgaWYgdXNlciBlbmFibGVkDQo+PiArICAgICAgKi8NCj4+ICsgICAgIGR3
-X21jaV9jcWhjaV9pbml0KGhvc3QpOw0KPj4gKw0KPj4gKyAgICAgcmV0dXJuIDA7DQo+PiArDQo+
-PiArZXJyX2RtYXVubWFwOg0KPj4gKyAgICAgaWYgKCFJU19FUlIoaG9zdC0+cGRhdGEtPnJzdGMp
-KQ0KPj4gKyAgICAgICAgICAgICByZXNldF9jb250cm9sX2Fzc2VydChob3N0LT5wZGF0YS0+cnN0
-Yyk7DQo+PiArZXJyX2Nsa19jaXU6DQo+PiArICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoaG9z
-dC0+Y2l1X2Nsayk7DQo+PiArDQo+PiArZXJyX2Nsa19iaXU6DQo+PiArICAgICBjbGtfZGlzYWJs
-ZV91bnByZXBhcmUoaG9zdC0+Yml1X2Nsayk7DQo+PiArDQo+PiArICAgICByZXR1cm4gcmV0Ow0K
-Pj4gK30NCj4+ICtFWFBPUlRfU1lNQk9MKGR3X21jaV9jcWVfcHJvYmUpOw0KPj4gKw0KPj4gK3Zv
-aWQgZHdfbWNpX2NxZV9yZW1vdmUoc3RydWN0IGR3X21jaSAqaG9zdCkgew0KPj4gKyAgICAgZGV2
-X2RiZyhob3N0LT5kZXYsICJyZW1vdmUgc2xvdFxuIik7DQoNCj4gTm90aGluZyBpbXByb3ZlZC4N
-Cg0KV2UgaGFkIGZpeGVkIGl0Lg0KDQo+PiArICAgICBpZiAoaG9zdC0+c2xvdCkNCj4+ICsgICAg
-ICAgICAgICAgZHdfbWNpX2NxZV9jbGVhbnVwX3Nsb3QoaG9zdC0+c2xvdCk7DQo+PiArDQo+PiAr
-ICAgICBpZiAoIUlTX0VSUihob3N0LT5wZGF0YS0+cnN0YykpDQo+PiArICAgICAgICAgICAgIHJl
-c2V0X2NvbnRyb2xfYXNzZXJ0KGhvc3QtPnBkYXRhLT5yc3RjKTsNCj4+ICsNCj4+ICsgICAgIGNs
-a19kaXNhYmxlX3VucHJlcGFyZShob3N0LT5jaXVfY2xrKTsNCj4+ICsgICAgIGNsa19kaXNhYmxl
-X3VucHJlcGFyZShob3N0LT5iaXVfY2xrKTsNCj4+ICt9DQo+PiArRVhQT1JUX1NZTUJPTChkd19t
-Y2lfY3FlX3JlbW92ZSk7DQo+PiArDQo+PiArI2lmZGVmIENPTkZJR19QTQ0KPj4gK2ludCBkd19t
-Y2lfY3FlX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCj4+ICsgICAgIHN0
-cnVjdCBkd19tY2kgKmhvc3QgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4+ICsgICAgIGludCBy
-ZXQgPSAwOw0KPj4gKw0KPj4gKyAgICAgaWYgKGhvc3QtPnBkYXRhICYmIChob3N0LT5wZGF0YS0+
-Y2FwczIgJiBNTUNfQ0FQMl9DUUUpKSB7DQo+PiArICAgICAgICAgICAgIGlmIChob3N0LT5zbG90
-KSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgZGV2X2luZm8oaG9zdC0+ZGV2LCAiY3FlIHN1
-c3BlbmRcbiIpOw0KDQo+IE5vdGhpbmcgaW1wcm92ZWQuDQoNCldlIGhhZCBkcm9wcGVkIGl0Lg0K
-DQo+PiArICAgICAgICAgICAgICAgICAgICAgcmV0ID0gY3FoY2lfc3VzcGVuZChob3N0LT5zbG90
-LT5tbWMpOw0KPj4gKyAgICAgICAgICAgICAgICAgICAgIGlmIChyZXQpIHsNCj4+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGRldl9lcnIoaG9zdC0+ZGV2LCAiY3FlIHN1c3BlbmQgDQo+
-PiArIGZhaWxlZFxuIik7DQoNCj4gTm90aGluZyBpbXByb3ZlZC4NCg0KV2UgaGFkIGRyb3BwZWQg
-aXQuDQoNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+PiAr
-ICAgICAgICAgICAgICAgICAgICAgfQ0KPj4gKyAgICAgICAgICAgICB9DQo+PiArICAgICB9DQo+
-PiArDQo+PiArICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoaG9zdC0+Y2l1X2Nsayk7DQo+PiAr
-DQo+PiArICAgICByZXR1cm4gcmV0Ow0KPj4gK30NCj4+ICtFWFBPUlRfU1lNQk9MKGR3X21jaV9j
-cWVfcnVudGltZV9zdXNwZW5kKTsNCj4+ICsNCj4+ICtpbnQgZHdfbWNpX2NxZV9ydW50aW1lX3Jl
-c3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCj4+ICsgICAgIHN0cnVjdCBkd19tY2kgKmhvc3Qg
-PSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4+ICsgICAgIGNvbnN0IHN0cnVjdCBkd19tY2lfZHJ2
-X2RhdGEgKmRydl9kYXRhID0gaG9zdC0+ZHJ2X2RhdGE7DQo+PiArICAgICBpbnQgcmV0ID0gMDsN
-Cj4+ICsNCj4+ICsgICAgIGNsa19wcmVwYXJlX2VuYWJsZShob3N0LT5jaXVfY2xrKTsNCj4+ICsN
-Cj4+ICsgICAgIGR3X21jaV9jcWVfc2V0dXAoaG9zdCk7DQo+PiArICAgICBpZiAoZHJ2X2RhdGEg
-JiYgZHJ2X2RhdGEtPmluaXQpIHsNCj4+ICsgICAgICAgICAgICAgcmV0ID0gZHJ2X2RhdGEtPmlu
-aXQoaG9zdCk7DQo+PiArICAgICAgICAgICAgIGlmIChyZXQpDQo+PiArICAgICAgICAgICAgICAg
-ICAgICAgZGV2X2Vycihob3N0LT5kZXYsICJpbXBsZW1lbnRhdGlvbiBzcGVjaWZpYyBpbml0IGZh
-aWxlZFxuIik7DQo+PiArICAgICB9DQo+PiArDQo+PiArICAgICBpbml0X2NvbXBsZXRpb24oaG9z
-dC0+aW50X3dhaXRpbmcpOw0KPj4gKw0KPj4gKyAgICAgaWYgKGhvc3QtPnBkYXRhICYmIChob3N0
-LT5wZGF0YS0+Y2FwczIgJiBNTUNfQ0FQMl9DUUUpKSB7DQo+PiArICAgICAgICAgICAgIGlmICho
-b3N0LT5zbG90KSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgZGV2X2luZm8oaG9zdC0+ZGV2
-LCAiY3FlIHJlc3VtZVxuIik7DQo+PiArICAgICAgICAgICAgICAgICAgICAgcmV0ID0gY3FoY2lf
-cmVzdW1lKGhvc3QtPnNsb3QtPm1tYyk7DQo+PiArICAgICAgICAgICAgICAgICAgICAgaWYgKHJl
-dCkNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRldl9lcnIoaG9zdC0+ZGV2LCAi
-Y3FlIHJlc3VtZSANCj4+ICsgZmFpbGVkXG4iKTsNCg0KDQo+IE5vdGhpbmcgaW1wcm92ZWQuDQoN
-CldlIGhhZCBmaXhlZCBpdC4NCg0KPj4gKyAgICAgICAgICAgICB9DQo+PiArICAgICB9DQo+PiAr
-DQo+PiArICAgICBkd19tY2lfY3FlX3NldHVwX2J1cyhob3N0LT5zbG90LCB0cnVlKTsNCj4+ICsN
-Cj4+ICsgICAgIHJldHVybiByZXQ7DQo+PiArfQ0KPj4gK0VYUE9SVF9TWU1CT0woZHdfbWNpX2Nx
-ZV9ydW50aW1lX3Jlc3VtZSk7DQo+PiArI2VuZGlmIC8qIENPTkZJR19QTSAqLw0KPj4gKw0KPj4g
-K3N0YXRpYyBpbnQgX19pbml0IGR3X21jaV9jcWVfaW5pdCh2b2lkKSB7DQo+PiArICAgICBwcl9p
-bmZvKCJTeW5vcHN5cyBEZXNpZ253YXJlIE11bHRpbWVkaWEgQ2FyZCBJbnRlcmZhY2UgDQo+PiAr
-RHJpdmVyXG4iKTsNCg0KDQo+IE5vdGhpbmcgaW1wcm92ZWQuDQoNCldlIGhhZCBkcm9wcGVkIGl0
-Lg0KDQo+PiArICAgICByZXR1cm4gMDsNCj4+ICt9DQo+PiArDQo+PiArc3RhdGljIHZvaWQgX19l
-eGl0IGR3X21jaV9jcWVfZXhpdCh2b2lkKSB7IH0NCj4+ICsNCj4+ICttb2R1bGVfaW5pdChkd19t
-Y2lfY3FlX2luaXQpOw0KPj4gK21vZHVsZV9leGl0KGR3X21jaV9jcWVfZXhpdCk7DQoNCj4gVGhp
-cyBwYXJ0IG9mIGNvZGUgaXMganVzdCB1c2VsZXNzLg0KDQpXZSBoYWQgcmVtb3ZlZCB1c2VsZXNz
-IGNvZGUuDQoNCkJlc3QgcmVnYXJkcywNCkp5YW4NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCkZyb206IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJv
-Lm9yZz4gDQpTZW50OiBNb25kYXksIE9jdG9iZXIgMzAsIDIwMjMgMzozOSBQTQ0KVG86IEp5YW4g
-Q2hvdSBb5ZGo6Iq35a6JXSA8anlhbmNob3VAcmVhbHRlay5jb20+OyB1bGYuaGFuc3NvbkBsaW5h
-cm8ub3JnOyBhZHJpYW4uaHVudGVyQGludGVsLmNvbTsgamg4MC5jaHVuZ0BzYW1zdW5nLmNvbTsg
-cml0ZXNoaEBjb2RlYXVyb3JhLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOyBrcnp5c3p0b2Yua296
-bG93c2tpK2R0QGxpbmFyby5vcmc7IGNvbm9yK2R0QGtlcm5lbC5vcmc7IGFzdXRvc2hkQGNvZGVh
-dXJvcmEub3JnOyBwLnphYmVsQHBlbmd1dHJvbml4LmRlDQpDYzogbGludXgtbW1jQHZnZXIua2Vy
-bmVsLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7IGFybmRAYXJuZGIuZGU7IGJyaWFubm9ycmlzQGNocm9taXVtLm9yZzsgZG91Z0Bz
-Y2htb3JnYWwuY29tOyB0b255aHVhbmcuc3VucGx1c0BnbWFpbC5jb207IGFiZWwudmVzYUBsaW5h
-cm8ub3JnOyB3aWxsaWFtLnFpdUBzdGFyZml2ZXRlY2guY29tDQpTdWJqZWN0OiBSZTogW1BBVENI
-IFY0XVsyLzRdIG1tYzogQWRkIFN5bm9wc3lzIERlc2lnbldhcmUgbW1jIGNtZHEgaG9zdCBkcml2
-ZXINCg0KDQpFeHRlcm5hbCBtYWlsLg0KDQoNCg0KT24gMzAvMTAvMjAyMyAwNzoyNywgSnlhbiBD
-aG91IHdyb3RlOg0KPiBXZSBpbXBsZW1lbnRlZCBjbWRxIGZlYXR1cmUgb24gU3lub3BzeXMgRGVz
-aWduV2FyZSBtbWMgZHJpdmVyLg0KPiBUaGUgZGlmZmVyZW5jZSBiZXR3ZWVuIGR3X21tYy5jIGFu
-ZCBkd19tbWNfY3FlLmMgd2VyZSBkaXN0aW5jdCANCj4gcmVnaXN0ZXIgZGVmaW5pdGlvbnMsIG1t
-YyB1c2VyIGZsb3cgYW5kIHRoZSBhZGRpdGlvbiBvZiBjbWRxLg0KPg0KPiBOZXcgdmVyc2lvbiBv
-ZiBVc2VyIEd1aWRlIGhhZCBtb2RpZnkgbW1jIGRyaXZlcidzIHVzYWdlIGZsb3csIHdlIG1heSAN
-Cj4gbmVlZCB0byByZW5ldyBjb2RlIHRvIHByZWNpc2VseSBmb2xsb3cgdXNlciBndWlkZS4NCj4N
-Cj4gTW9yZSBvdmVyLCBXZSBhZGRlZCBhIHdhaXQgc3RhdHVzIGZ1bmN0aW9uIHRvIHNhdGlzZnkg
-c3lub3BzeXMgdXNlciANCj4gZ3VpZGUncyBkZXNjcmlwdGlvbiwgc2luY2UgdGhpcyBmbG93IG1p
-Z2h0IGJlIHNwZWNpZmljIGluIHN5bm9wc3lzIA0KPiBob3N0IGRyaXZlciBvbmx5Lg0KPg0KPiBT
-aWduZWQtb2ZmLWJ5OiBKeWFuIENob3UgPGp5YW5jaG91QHJlYWx0ZWsuY29tPg0KPg0KPiDigJQt
-LQ0KPiB2MyAtPiB2NDoNCj4gLSBNb2RpZnkgZG1hIG1vZGUgc2VsZWN0aW9uIGFuZCBkbWEgYWRk
-cmVzc2luZyBiaXQgdG8gc3RhdGlzZnkNCj4gICBsaW51eCBjb2Rpbmcgc3R5bGUuDQo+DQoNCkkg
-YXNrZWQgdG8gZml4IHNldmVyYWwgY29kaW5nIHN0eWxlIGlzc3VlcyBzbyBpdCB3aWxsIGxvb2sg
-YSBiaXQgYXMgbWF0Y2hpbmcgTGludXggY29kaW5nIHN0eWxlLiBJIGRvbid0IHNlZSBpbXByb3Zl
-bWVudHMuDQoNClBsZWFzZSByZWFkIGNhcmVmdWxseSwgbW9yZSB0aGFuIG9uY2UsIHRoZSBMaW51
-eCBjb2Rpbmcgc3R5bGUuIFRoZW4gZG9jdW1lbnQgaW4gY2hhbmdlbG9nIHdoYXQgeW91IGZpeGVk
-LiBJZiB5b3UgZG9jdW1lbnQgbm90aGluZywgbWVhbnMgeW91IGlnbm9yZWQgdGhlIGZlZWRiYWNr
-Lg0KDQpGaXggZXZlcnkgd2FybmluZyBmcm9tIGNoZWNrcGF0Y2ggLS1zdHJpY3QuIFRoZW4gZG9j
-dW1lbnQgaW4gY2hhbmdlbG9nIHdoYXQgeW91IGZpeGVkLiBJZiB5b3UgZG9jdW1lbnQgbm90aGlu
-ZywgbWVhbnMgeW91IGlnbm9yZWQgdGhlIGZlZWRiYWNrLg0KDQo+ICsNCj4gKyAgICAgaWYgKCFo
-b3N0LT5idXNfaHopIHsNCj4gKyAgICAgICAgICAgICBkZXZfZXJyKGhvc3QtPmRldiwNCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICJQbGF0Zm9ybSBkYXRhIG11c3Qgc3VwcGx5IGJ1cyBzcGVlZFxu
-Iik7DQo+ICsgICAgICAgICAgICAgcmV0ID0gLUVOT0RFVjsNCj4gKyAgICAgICAgICAgICBnb3Rv
-IGVycl9jbGtfY2l1Ow0KPiArICAgICB9DQo+ICsNCj4gKyAgICAgaWYgKCFJU19FUlIoaG9zdC0+
-cGRhdGEtPnJzdGMpKSB7DQo+ICsgICAgICAgICAgICAgcmVzZXRfY29udHJvbF9hc3NlcnQoaG9z
-dC0+cGRhdGEtPnJzdGMpOw0KPiArICAgICAgICAgICAgIHVzbGVlcF9yYW5nZSgxMCwgNTApOw0K
-PiArICAgICAgICAgICAgIHJlc2V0X2NvbnRyb2xfZGVhc3NlcnQoaG9zdC0+cGRhdGEtPnJzdGMp
-Ow0KPiArICAgICB9DQo+ICsNCj4gKyAgICAgdGltZXJfc2V0dXAoJmhvc3QtPnRpbWVyLCBkd19t
-Y2lfY3FlX2N0b190aW1lciwgMCk7DQo+ICsNCj4gKyAgICAgc3Bpbl9sb2NrX2luaXQoJmhvc3Qt
-PmxvY2spOw0KPiArICAgICBzcGluX2xvY2tfaW5pdCgmaG9zdC0+aXJxX2xvY2spOw0KPiArICAg
-ICBpbml0X3J3c2VtKCZob3N0LT5jcl9yd19zZW0pOw0KPiArICAgICB0YXNrbGV0X2luaXQoJmhv
-c3QtPnRhc2tsZXQsIGR3X21jaV9jcWVfdGFza2xldF9mdW5jLCAodW5zaWduZWQgDQo+ICsgbG9u
-Zylob3N0KTsNCj4gKw0KPiArICAgICAvKnBpbyBtb2RlJ3MgcGFyYW1ldGVycyBzaG91bGQgYmUg
-aW5pdGlhbGl6ZWQgaGVyZSovDQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4gKw0KPiArICAgICAv
-KkluaXRpYWxpemUgdGhlIGVNTUMgSVAgcmVsYXRlZCBhdHRyaWJ1dGUqLw0KPiArICAgICBkd19t
-Y2lfY3FlX3NldHVwKGhvc3QpOw0KPiArDQo+ICsgICAgIGR3X21jaV9jcWVfaW5pdF9kbWEoaG9z
-dCk7DQo+ICsNCj4gKyAgICAgLyogVGhpcyBmbGFnIHdpbGwgYmUgc2V0IDEgd2hlbiBkb2luZyB0
-dW5pbmcsDQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4gKyAgICAgICogd2UgYWRkIHRoaXMgZmxh
-ZyBiZWNhdXNlDQo+ICsgICAgICAqIHNvbWUgdmVuZG9ycyBtaWdodCB1c2Ugb3RoZXIgY21kIGlu
-c3RlYWQgb2YgMjENCj4gKyAgICAgICogdG8gdHVuZSBwaGFzZSB1bmRlciBoaWdoIHNwZWVkIGlu
-dGVyZmFjZS4NCj4gKyAgICAgICogd2UgdXNlIHRoaXMgZmxhZyB0byByZWNvZ25pemUgaWYgdGhl
-IHN5c3RlbSBpcyB1bmRlciB0dW5pbmcgc3RhZ2UuDQo+ICsgICAgICAqLw0KPiArICAgICBob3N0
-LT50dW5pbmcgPSAwOw0KPiArDQo+ICsgICAgIC8qVGltaW5nX3NldHRpbmcgaXMgdG8gYXZvaWQg
-c2VuZGluZyBjb21tYW5kDQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4gKyAgICAgICpiZWZvcmUg
-c2V0dGluZyBwaGFzZSBpbiBoczIwMCwgaHM0MDANCj4gKyAgICAgICovDQo+ICsgICAgIGhvc3Qt
-PmN1cnJlbnRfc3BlZWQgPSAwOw0KPiArDQo+ICsgICAgIC8qRG8gdGhlIHJlc3Qgb2YgaW5pdCBm
-b3Igc3BlY2lmaWMqLw0KPiArICAgICBpZiAoZHJ2X2RhdGEgJiYgZHJ2X2RhdGEtPmluaXQpIHsN
-Cj4gKyAgICAgICAgICAgICByZXQgPSBkcnZfZGF0YS0+aW5pdChob3N0KTsNCj4gKyAgICAgICAg
-ICAgICBpZiAocmV0KSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICBkZXZfZXJyKGhvc3QtPmRl
-diwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImltcGxlbWVudGF0aW9uIHNwZWNp
-ZmljIGluaXQgZmFpbGVkXG4iKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJyX2Rt
-YXVubWFwOw0KPiArICAgICAgICAgICAgIH0NCj4gKyAgICAgfQ0KPiArDQo+ICsgICAgIHJldCA9
-IGR3X21jaV9jcWVfaW5pdF9zbG90KGhvc3QpOw0KPiArICAgICBpZiAocmV0KSB7DQo+ICsgICAg
-ICAgICAgICAgZGV2X2Vycihob3N0LT5kZXYsICJzbG90IDAgaW5pdCBmYWlsZWRcbiIpOw0KPiAr
-ICAgICAgICAgICAgIGdvdG8gZXJyX2RtYXVubWFwOw0KPiArICAgICB9DQo+ICsNCj4gKyAgICAg
-cmV0ID0gZGV2bV9yZXF1ZXN0X2lycShob3N0LT5kZXYsIGhvc3QtPmlycSwgZHdfbWNpX2NxZV9p
-bnRlcnJ1cHQsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgaG9zdC0+aXJxX2ZsYWdz
-LCAiZHctbWNpLWNxZSIsIGhvc3QpOw0KPiArICAgICBpZiAocmV0KQ0KPiArICAgICAgICAgICAg
-IGdvdG8gZXJyX2RtYXVubWFwOw0KPiArDQo+ICsgICAgIC8qQWZ0ZXIgdGhlIHNsb3QgaW5pdGlh
-bGl6YXRpb24sDQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4gKyAgICAgICpub3cgd2UgaGF2ZSBt
-bWMgZGF0YSBhbmQgY2FuIGluaXRpYWxpemUgY21kcSBpZiB1c2VyIGVuYWJsZWQNCj4gKyAgICAg
-ICovDQo+ICsgICAgIGR3X21jaV9jcWhjaV9pbml0KGhvc3QpOw0KPiArDQo+ICsgICAgIHJldHVy
-biAwOw0KPiArDQo+ICtlcnJfZG1hdW5tYXA6DQo+ICsgICAgIGlmICghSVNfRVJSKGhvc3QtPnBk
-YXRhLT5yc3RjKSkNCj4gKyAgICAgICAgICAgICByZXNldF9jb250cm9sX2Fzc2VydChob3N0LT5w
-ZGF0YS0+cnN0Yyk7DQo+ICtlcnJfY2xrX2NpdToNCj4gKyAgICAgY2xrX2Rpc2FibGVfdW5wcmVw
-YXJlKGhvc3QtPmNpdV9jbGspOw0KPiArDQo+ICtlcnJfY2xrX2JpdToNCj4gKyAgICAgY2xrX2Rp
-c2FibGVfdW5wcmVwYXJlKGhvc3QtPmJpdV9jbGspOw0KPiArDQo+ICsgICAgIHJldHVybiByZXQ7
-DQo+ICt9DQo+ICtFWFBPUlRfU1lNQk9MKGR3X21jaV9jcWVfcHJvYmUpOw0KPiArDQo+ICt2b2lk
-IGR3X21jaV9jcWVfcmVtb3ZlKHN0cnVjdCBkd19tY2kgKmhvc3QpIHsNCj4gKyAgICAgZGV2X2Ri
-Zyhob3N0LT5kZXYsICJyZW1vdmUgc2xvdFxuIik7DQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4g
-KyAgICAgaWYgKGhvc3QtPnNsb3QpDQo+ICsgICAgICAgICAgICAgZHdfbWNpX2NxZV9jbGVhbnVw
-X3Nsb3QoaG9zdC0+c2xvdCk7DQo+ICsNCj4gKyAgICAgaWYgKCFJU19FUlIoaG9zdC0+cGRhdGEt
-PnJzdGMpKQ0KPiArICAgICAgICAgICAgIHJlc2V0X2NvbnRyb2xfYXNzZXJ0KGhvc3QtPnBkYXRh
-LT5yc3RjKTsNCj4gKw0KPiArICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoaG9zdC0+Y2l1X2Ns
-ayk7DQo+ICsgICAgIGNsa19kaXNhYmxlX3VucHJlcGFyZShob3N0LT5iaXVfY2xrKTsNCj4gK30N
-Cj4gK0VYUE9SVF9TWU1CT0woZHdfbWNpX2NxZV9yZW1vdmUpOw0KPiArDQo+ICsjaWZkZWYgQ09O
-RklHX1BNDQo+ICtpbnQgZHdfbWNpX2NxZV9ydW50aW1lX3N1c3BlbmQoc3RydWN0IGRldmljZSAq
-ZGV2KSB7DQo+ICsgICAgIHN0cnVjdCBkd19tY2kgKmhvc3QgPSBkZXZfZ2V0X2RydmRhdGEoZGV2
-KTsNCj4gKyAgICAgaW50IHJldCA9IDA7DQo+ICsNCj4gKyAgICAgaWYgKGhvc3QtPnBkYXRhICYm
-IChob3N0LT5wZGF0YS0+Y2FwczIgJiBNTUNfQ0FQMl9DUUUpKSB7DQo+ICsgICAgICAgICAgICAg
-aWYgKGhvc3QtPnNsb3QpIHsNCj4gKyAgICAgICAgICAgICAgICAgICAgIGRldl9pbmZvKGhvc3Qt
-PmRldiwgImNxZSBzdXNwZW5kXG4iKTsNCg0KTm90aGluZyBpbXByb3ZlZC4NCg0KPiArICAgICAg
-ICAgICAgICAgICAgICAgcmV0ID0gY3FoY2lfc3VzcGVuZChob3N0LT5zbG90LT5tbWMpOw0KPiAr
-ICAgICAgICAgICAgICAgICAgICAgaWYgKHJldCkgew0KPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBkZXZfZXJyKGhvc3QtPmRldiwgImNxZSBzdXNwZW5kIA0KPiArIGZhaWxlZFxuIik7
-DQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-cmV0dXJuIHJldDsNCj4gKyAgICAgICAgICAgICAgICAgICAgIH0NCj4gKyAgICAgICAgICAgICB9
-DQo+ICsgICAgIH0NCj4gKw0KPiArICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoaG9zdC0+Y2l1
-X2Nsayk7DQo+ICsNCj4gKyAgICAgcmV0dXJuIHJldDsNCj4gK30NCj4gK0VYUE9SVF9TWU1CT0wo
-ZHdfbWNpX2NxZV9ydW50aW1lX3N1c3BlbmQpOw0KPiArDQo+ICtpbnQgZHdfbWNpX2NxZV9ydW50
-aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCj4gKyAgICAgc3RydWN0IGR3X21jaSAq
-aG9zdCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiArICAgICBjb25zdCBzdHJ1Y3QgZHdfbWNp
-X2Rydl9kYXRhICpkcnZfZGF0YSA9IGhvc3QtPmRydl9kYXRhOw0KPiArICAgICBpbnQgcmV0ID0g
-MDsNCj4gKw0KPiArICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+Y2l1X2Nsayk7DQo+ICsN
-Cj4gKyAgICAgZHdfbWNpX2NxZV9zZXR1cChob3N0KTsNCj4gKyAgICAgaWYgKGRydl9kYXRhICYm
-IGRydl9kYXRhLT5pbml0KSB7DQo+ICsgICAgICAgICAgICAgcmV0ID0gZHJ2X2RhdGEtPmluaXQo
-aG9zdCk7DQo+ICsgICAgICAgICAgICAgaWYgKHJldCkNCj4gKyAgICAgICAgICAgICAgICAgICAg
-IGRldl9lcnIoaG9zdC0+ZGV2LCAiaW1wbGVtZW50YXRpb24gc3BlY2lmaWMgaW5pdCBmYWlsZWRc
-biIpOw0KPiArICAgICB9DQo+ICsNCj4gKyAgICAgaW5pdF9jb21wbGV0aW9uKGhvc3QtPmludF93
-YWl0aW5nKTsNCj4gKw0KPiArICAgICBpZiAoaG9zdC0+cGRhdGEgJiYgKGhvc3QtPnBkYXRhLT5j
-YXBzMiAmIE1NQ19DQVAyX0NRRSkpIHsNCj4gKyAgICAgICAgICAgICBpZiAoaG9zdC0+c2xvdCkg
-ew0KPiArICAgICAgICAgICAgICAgICAgICAgZGV2X2luZm8oaG9zdC0+ZGV2LCAiY3FlIHJlc3Vt
-ZVxuIik7DQo+ICsgICAgICAgICAgICAgICAgICAgICByZXQgPSBjcWhjaV9yZXN1bWUoaG9zdC0+
-c2xvdC0+bW1jKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgIGlmIChyZXQpDQo+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGRldl9lcnIoaG9zdC0+ZGV2LCAiY3FlIHJlc3VtZSANCj4g
-KyBmYWlsZWRcbiIpOw0KDQoNCk5vdGhpbmcgaW1wcm92ZWQuDQoNCj4gKyAgICAgICAgICAgICB9
-DQo+ICsgICAgIH0NCj4gKw0KPiArICAgICBkd19tY2lfY3FlX3NldHVwX2J1cyhob3N0LT5zbG90
-LCB0cnVlKTsNCj4gKw0KPiArICAgICByZXR1cm4gcmV0Ow0KPiArfQ0KPiArRVhQT1JUX1NZTUJP
-TChkd19tY2lfY3FlX3J1bnRpbWVfcmVzdW1lKTsNCj4gKyNlbmRpZiAvKiBDT05GSUdfUE0gKi8N
-Cj4gKw0KPiArc3RhdGljIGludCBfX2luaXQgZHdfbWNpX2NxZV9pbml0KHZvaWQpIHsNCj4gKyAg
-ICAgcHJfaW5mbygiU3lub3BzeXMgRGVzaWdud2FyZSBNdWx0aW1lZGlhIENhcmQgSW50ZXJmYWNl
-IA0KPiArRHJpdmVyXG4iKTsNCg0KDQpOb3RoaW5nIGltcHJvdmVkLg0KDQo+ICsgICAgIHJldHVy
-biAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgdm9pZCBfX2V4aXQgZHdfbWNpX2NxZV9leGl0KHZv
-aWQpIHsgfQ0KPiArDQo+ICttb2R1bGVfaW5pdChkd19tY2lfY3FlX2luaXQpOw0KPiArbW9kdWxl
-X2V4aXQoZHdfbWNpX2NxZV9leGl0KTsNCg0KVGhpcyBwYXJ0IG9mIGNvZGUgaXMganVzdCB1c2Vs
-ZXNzLg0KDQpCZXN0IHJlZ2FyZHMsDQpLcnp5c3p0b2YNCg0K
+On 10/27/23 20:03, Karan Tilak Kumar wrote:
+> Implement support for MQ in fnic driver:
+> 
+> The block multiqueue layer issues IO to the fnic driver
+> with an MQ tag. Use the mqtag and derive a tag from it.
+> Derive the hardware queue from the mqtag and use it
+> in all paths. Modify queuecommand to handle mqtag.
+> 
+> Replace wq and cq indices to support MQ. Replace the
+> zeroth queue with a hardware queue.
+> Implement spin locks on a per hardware queue basis.
+> Replace io_lock with per hardware queue spinlock.
+> Implement out of range tag checks.
+> 
+> Allocate an io_req_table to track status of the io_req.
+> 
+> Test the driver by building it, loading it,
+> and configuring 64 queues in UCSM. Issue IOs using
+> Medusa on multiple fnics. Enable/disable links to exercise
+> the abort and clean up path.
+> 
+> Changes between v1 and v2:
+>      Incorporate the following review comments from Bart:
+>      Remove outdated comment,
+>      Remove unnecessary out of range tag checks,
+>      Remove unnecessary local variable,
+>      Modify function name.
+> 
+> Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+> Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
+> Tested-by: Karan Tilak Kumar <kartilak@cisco.com>
+> Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+> ---
+>   drivers/scsi/fnic/fnic.h      |   2 -
+>   drivers/scsi/fnic/fnic_io.h   |   2 +
+>   drivers/scsi/fnic/fnic_main.c |   3 -
+>   drivers/scsi/fnic/fnic_scsi.c | 571 ++++++++++++++++++++--------------
+>   4 files changed, 346 insertions(+), 232 deletions(-)
+> 
+> diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
+> index 3dc4e9ff100a..87dab09a426d 100644
+> --- a/drivers/scsi/fnic/fnic.h
+> +++ b/drivers/scsi/fnic/fnic.h
+> @@ -36,7 +36,6 @@
+>   #define FNIC_MIN_IO_REQ			256 /* Min IO throttle count */
+>   #define FNIC_MAX_IO_REQ		1024 /* scsi_cmnd tag map entries */
+>   #define FNIC_DFLT_IO_REQ        256 /* Default scsi_cmnd tag map entries */
+> -#define	FNIC_IO_LOCKS		64 /* IO locks: power of 2 */
+>   #define FNIC_DFLT_QUEUE_DEPTH	256
+>   #define	FNIC_STATS_RATE_LIMIT	4 /* limit rate at which stats are pulled up */
+>   
+> @@ -292,7 +291,6 @@ struct fnic {
+>   	struct fnic_host_tag *tags;
+>   	mempool_t *io_req_pool;
+>   	mempool_t *io_sgl_pool[FNIC_SGL_NUM_CACHES];
+> -	spinlock_t io_req_lock[FNIC_IO_LOCKS];	/* locks for scsi cmnds */
+>   
+>   	unsigned int cpy_wq_base;
+>   	struct work_struct link_work;
+> diff --git a/drivers/scsi/fnic/fnic_io.h b/drivers/scsi/fnic/fnic_io.h
+> index f4c8769df312..5895ead20e14 100644
+> --- a/drivers/scsi/fnic/fnic_io.h
+> +++ b/drivers/scsi/fnic/fnic_io.h
+> @@ -52,6 +52,8 @@ struct fnic_io_req {
+>   	unsigned long start_time; /* in jiffies */
+>   	struct completion *abts_done; /* completion for abts */
+>   	struct completion *dr_done; /* completion for device reset */
+> +	unsigned int tag;
+> +	struct scsi_cmnd *sc; /* midlayer's cmd pointer */
+>   };
+>   
+>   enum fnic_port_speeds {
+> diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+> index 5b60396e7349..9ab115a5fc74 100644
+> --- a/drivers/scsi/fnic/fnic_main.c
+> +++ b/drivers/scsi/fnic/fnic_main.c
+> @@ -816,9 +816,6 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>   		fnic->fw_ack_index[i] = -1;
+>   	}
+>   
+> -	for (i = 0; i < FNIC_IO_LOCKS; i++)
+> -		spin_lock_init(&fnic->io_req_lock[i]);
+> -
+>   	err = -ENOMEM;
+>   	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
+>   	if (!fnic->io_req_pool)
+> diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+> index ffdbdbfcdf57..fdc4d73ba63c 100644
+> --- a/drivers/scsi/fnic/fnic_scsi.c
+> +++ b/drivers/scsi/fnic/fnic_scsi.c
+> @@ -92,20 +92,6 @@ static const char *fnic_fcpio_status_to_str(unsigned int status)
+>   
+>   static void fnic_cleanup_io(struct fnic *fnic);
+>   
+> -static inline spinlock_t *fnic_io_lock_hash(struct fnic *fnic,
+> -					    struct scsi_cmnd *sc)
+> -{
+> -	u32 hash = scsi_cmd_to_rq(sc)->tag & (FNIC_IO_LOCKS - 1);
+> -
+> -	return &fnic->io_req_lock[hash];
+> -}
+> -
+> -static inline spinlock_t *fnic_io_lock_tag(struct fnic *fnic,
+> -					    int tag)
+> -{
+> -	return &fnic->io_req_lock[tag & (FNIC_IO_LOCKS - 1)];
+> -}
+> -
+>   /*
+>    * Unmap the data buffer and sense buffer for an io_req,
+>    * also unmap and free the device-private scatter/gather list.
+> @@ -129,23 +115,23 @@ static void fnic_release_ioreq_buf(struct fnic *fnic,
+>   }
+>   
+>   /* Free up Copy Wq descriptors. Called with copy_wq lock held */
+> -static int free_wq_copy_descs(struct fnic *fnic, struct vnic_wq_copy *wq)
+> +static int free_wq_copy_descs(struct fnic *fnic, struct vnic_wq_copy *wq, unsigned int hwq)
+>   {
+>   	/* if no Ack received from firmware, then nothing to clean */
+> -	if (!fnic->fw_ack_recd[0])
+> +	if (!fnic->fw_ack_recd[hwq])
+>   		return 1;
+>   
+>   	/*
+>   	 * Update desc_available count based on number of freed descriptors
+>   	 * Account for wraparound
+>   	 */
+> -	if (wq->to_clean_index <= fnic->fw_ack_index[0])
+> -		wq->ring.desc_avail += (fnic->fw_ack_index[0]
+> +	if (wq->to_clean_index <= fnic->fw_ack_index[hwq])
+> +		wq->ring.desc_avail += (fnic->fw_ack_index[hwq]
+>   					- wq->to_clean_index + 1);
+>   	else
+>   		wq->ring.desc_avail += (wq->ring.desc_count
+>   					- wq->to_clean_index
+> -					+ fnic->fw_ack_index[0] + 1);
+> +					+ fnic->fw_ack_index[hwq] + 1);
+>   
+>   	/*
+>   	 * just bump clean index to ack_index+1 accounting for wraparound
+> @@ -153,10 +139,10 @@ static int free_wq_copy_descs(struct fnic *fnic, struct vnic_wq_copy *wq)
+>   	 * to_clean_index and fw_ack_index, both inclusive
+>   	 */
+>   	wq->to_clean_index =
+> -		(fnic->fw_ack_index[0] + 1) % wq->ring.desc_count;
+> +		(fnic->fw_ack_index[hwq] + 1) % wq->ring.desc_count;
+>   
+>   	/* we have processed the acks received so far */
+> -	fnic->fw_ack_recd[0] = 0;
+> +	fnic->fw_ack_recd[hwq] = 0;
+>   	return 0;
+>   }
+>   
+> @@ -207,7 +193,7 @@ int fnic_fw_reset_handler(struct fnic *fnic)
+>   	spin_lock_irqsave(&fnic->wq_copy_lock[0], flags);
+>   
+>   	if (vnic_wq_copy_desc_avail(wq) <= fnic->wq_copy_desc_low[0])
+> -		free_wq_copy_descs(fnic, wq);
+> +		free_wq_copy_descs(fnic, wq, 0);
+>   
+>   	if (!vnic_wq_copy_desc_avail(wq))
+>   		ret = -EAGAIN;
+> @@ -253,7 +239,7 @@ int fnic_flogi_reg_handler(struct fnic *fnic, u32 fc_id)
+>   	spin_lock_irqsave(&fnic->wq_copy_lock[0], flags);
+>   
+>   	if (vnic_wq_copy_desc_avail(wq) <= fnic->wq_copy_desc_low[0])
+> -		free_wq_copy_descs(fnic, wq);
+> +		free_wq_copy_descs(fnic, wq, 0);
+>   
+>   	if (!vnic_wq_copy_desc_avail(wq)) {
+>   		ret = -EAGAIN;
+> @@ -303,7 +289,9 @@ static inline int fnic_queue_wq_copy_desc(struct fnic *fnic,
+>   					  struct vnic_wq_copy *wq,
+>   					  struct fnic_io_req *io_req,
+>   					  struct scsi_cmnd *sc,
+> -					  int sg_count)
+> +					  int sg_count,
+> +					  uint32_t mqtag,
+> +					  uint16_t hwq)
+>   {
+>   	struct scatterlist *sg;
+>   	struct fc_rport *rport = starget_to_rport(scsi_target(sc->device));
+> @@ -311,7 +299,6 @@ static inline int fnic_queue_wq_copy_desc(struct fnic *fnic,
+>   	struct host_sg_desc *desc;
+>   	struct misc_stats *misc_stats = &fnic->fnic_stats.misc_stats;
+>   	unsigned int i;
+> -	unsigned long intr_flags;
+>   	int flags;
+>   	u8 exch_flags;
+>   	struct scsi_lun fc_lun;
+> @@ -351,13 +338,10 @@ static inline int fnic_queue_wq_copy_desc(struct fnic *fnic,
+>   	int_to_scsilun(sc->device->lun, &fc_lun);
+>   
+>   	/* Enqueue the descriptor in the Copy WQ */
+> -	spin_lock_irqsave(&fnic->wq_copy_lock[0], intr_flags);
+> -
+> -	if (vnic_wq_copy_desc_avail(wq) <= fnic->wq_copy_desc_low[0])
+> -		free_wq_copy_descs(fnic, wq);
+> +	if (vnic_wq_copy_desc_avail(wq) <= fnic->wq_copy_desc_low[hwq])
+> +		free_wq_copy_descs(fnic, wq, hwq);
+>   
+>   	if (unlikely(!vnic_wq_copy_desc_avail(wq))) {
+> -		spin_unlock_irqrestore(&fnic->wq_copy_lock[0], intr_flags);
+>   		FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
+>   			  "fnic_queue_wq_copy_desc failure - no descriptors\n");
+>   		atomic64_inc(&misc_stats->io_cpwq_alloc_failures);
+> @@ -375,7 +359,7 @@ static inline int fnic_queue_wq_copy_desc(struct fnic *fnic,
+>   	    (rp->flags & FC_RP_FLAGS_RETRY))
+>   		exch_flags |= FCPIO_ICMND_SRFLAG_RETRY;
+>   
+> -	fnic_queue_wq_copy_desc_icmnd_16(wq, scsi_cmd_to_rq(sc)->tag,
+> +	fnic_queue_wq_copy_desc_icmnd_16(wq, mqtag,
+>   					 0, exch_flags, io_req->sgl_cnt,
+>   					 SCSI_SENSE_BUFFERSIZE,
+>   					 io_req->sgl_list_pa,
+> @@ -396,31 +380,23 @@ static inline int fnic_queue_wq_copy_desc(struct fnic *fnic,
+>   		atomic64_set(&fnic->fnic_stats.fw_stats.max_fw_reqs,
+>   		  atomic64_read(&fnic->fnic_stats.fw_stats.active_fw_reqs));
+>   
+> -	spin_unlock_irqrestore(&fnic->wq_copy_lock[0], intr_flags);
+>   	return 0;
+>   }
+>   
+> -/*
+> - * fnic_queuecommand
+> - * Routine to send a scsi cdb
+> - * Called with host_lock held and interrupts disabled.
+> - */
+> -static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+> +static int fnic_queuecommand_int(struct scsi_cmnd *sc, uint32_t mqtag, uint16_t hwq)
+>   {
+>   	void (*done)(struct scsi_cmnd *) = scsi_done;
+> -	const int tag = scsi_cmd_to_rq(sc)->tag;
+>   	struct fc_lport *lp = shost_priv(sc->device->host);
+>   	struct fc_rport *rport;
+>   	struct fnic_io_req *io_req = NULL;
+>   	struct fnic *fnic = lport_priv(lp);
+>   	struct fnic_stats *fnic_stats = &fnic->fnic_stats;
+>   	struct vnic_wq_copy *wq;
+> -	int ret;
+> +	int ret = 1;
+>   	u64 cmd_trace;
+>   	int sg_count = 0;
+>   	unsigned long flags = 0;
+>   	unsigned long ptr;
+> -	spinlock_t *io_lock = NULL;
+>   	int io_lock_acquired = 0;
+>   	struct fc_rport_libfc_priv *rp;
+>   
+> @@ -514,7 +490,7 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+>   	sg_count = scsi_dma_map(sc);
+>   	if (sg_count < 0) {
+>   		FNIC_TRACE(fnic_queuecommand, sc->device->host->host_no,
+> -			  tag, sc, 0, sc->cmnd[0], sg_count, fnic_priv(sc)->state);
+> +			  mqtag, sc, 0, sc->cmnd[0], sg_count, fnic_priv(sc)->state);
+>   		mempool_free(io_req, fnic->io_req_pool);
+>   		goto out;
+>   	}
+> @@ -549,11 +525,9 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+>   	}
+>   
+>   	/*
+> -	* Will acquire lock defore setting to IO initialized.
+> +	* Will acquire lock before setting to IO initialized.
+>   	*/
+> -
+> -	io_lock = fnic_io_lock_hash(fnic, sc);
+> -	spin_lock_irqsave(io_lock, flags);
+> +	spin_lock_irqsave(&fnic->wq_copy_lock[hwq], flags);
+>   
+>   	/* initialize rest of io_req */
+>   	io_lock_acquired = 1;
+> @@ -562,21 +536,34 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+>   	fnic_priv(sc)->state = FNIC_IOREQ_CMD_PENDING;
+>   	fnic_priv(sc)->io_req = io_req;
+>   	fnic_priv(sc)->flags |= FNIC_IO_INITIALIZED;
+> +	io_req->sc = sc;
+> +
+> +	if (fnic->sw_copy_wq[hwq].io_req_table[blk_mq_unique_tag_to_tag(mqtag)] != NULL) {
+> +		WARN(1, "fnic<%d>: %s: hwq: %d tag 0x%x already exists\n",
+> +				fnic->fnic_num, __func__, hwq, blk_mq_unique_tag_to_tag(mqtag));
+> +		return SCSI_MLQUEUE_HOST_BUSY;
+> +	}
+> +
+> +	fnic->sw_copy_wq[hwq].io_req_table[blk_mq_unique_tag_to_tag(mqtag)] = io_req;
+> +	io_req->tag = mqtag;
+>   
+>   	/* create copy wq desc and enqueue it */
+> -	wq = &fnic->hw_copy_wq[0];
+> -	ret = fnic_queue_wq_copy_desc(fnic, wq, io_req, sc, sg_count);
+> +	wq = &fnic->hw_copy_wq[hwq];
+> +	atomic64_inc(&fnic_stats->io_stats.ios[hwq]);
+> +	ret = fnic_queue_wq_copy_desc(fnic, wq, io_req, sc, sg_count, mqtag, hwq);
+>   	if (ret) {
+>   		/*
+>   		 * In case another thread cancelled the request,
+>   		 * refetch the pointer under the lock.
+>   		 */
+>   		FNIC_TRACE(fnic_queuecommand, sc->device->host->host_no,
+> -			  tag, sc, 0, 0, 0, fnic_flags_and_state(sc));
+> +			  mqtag, sc, 0, 0, 0, fnic_flags_and_state(sc));
+>   		io_req = fnic_priv(sc)->io_req;
+>   		fnic_priv(sc)->io_req = NULL;
+> +		if (io_req)
+> +			fnic->sw_copy_wq[hwq].io_req_table[blk_mq_unique_tag_to_tag(mqtag)] = NULL;
+>   		fnic_priv(sc)->state = FNIC_IOREQ_CMD_COMPLETE;
+> -		spin_unlock_irqrestore(io_lock, flags);
+> +		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
+>   		if (io_req) {
+>   			fnic_release_ioreq_buf(fnic, io_req, sc);
+>   			mempool_free(io_req, fnic->io_req_pool);
+> @@ -601,18 +588,30 @@ static int fnic_queuecommand_lck(struct scsi_cmnd *sc)
+>   			sc->cmnd[5]);
+>   
+>   	FNIC_TRACE(fnic_queuecommand, sc->device->host->host_no,
+> -		   tag, sc, io_req, sg_count, cmd_trace,
+> +		   mqtag, sc, io_req, sg_count, cmd_trace,
+>   		   fnic_flags_and_state(sc));
+>   
+>   	/* if only we issued IO, will we have the io lock */
+>   	if (io_lock_acquired)
+> -		spin_unlock_irqrestore(io_lock, flags);
+> +		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
+>   
+>   	atomic_dec(&fnic->in_flight);
+>   	return ret;
+>   }
+>   
+> -DEF_SCSI_QCMD(fnic_queuecommand)
+> +int fnic_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *sc)
+> +{
+> +	struct request *const rq = scsi_cmd_to_rq(sc);
+> +	uint32_t mqtag = 0;
+> +	int tag = 0;
+> +	uint16_t hwq = 0;
+> +
+> +	mqtag = blk_mq_unique_tag(rq);
+> +	hwq = blk_mq_unique_tag_to_hwq(mqtag);
+> +	tag = blk_mq_unique_tag_to_tag(mqtag);
+> +
+> +	return fnic_queuecommand_int(sc, mqtag, hwq);
+> +}
+>   
+That is odd.
+If you pass in 'mqtag' you can derive the hardware queue from it,
+so you don't need to pass it in separately.
+Alternative it would make sense to pass in the 'tag' value instead
+of 'mqtag', as this would simplify the code (seeint that you don't
+have to call blk_mq_unique_tag_to_tag() all over the place).
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
+
