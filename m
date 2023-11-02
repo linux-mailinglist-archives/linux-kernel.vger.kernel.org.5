@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9227A7DF6C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9C87DF6FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376808AbjKBPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48124 "EHLO
+        id S1377045AbjKBPsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbjKBPp2 (ORCPT
+        with ESMTP id S1377035AbjKBPsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:45:28 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CE413D
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:45:21 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1e9bb3a0bfeso668495fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698939920; x=1699544720; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=811Wbdi3WkqjCSZVVfz56NC98wHZL/lpCPsLeMoBGy0=;
-        b=0kg7n8X8uDaxlInsv3TBEIU8cEAcTVkuXkye0q1FGeHbj+kmJex6jFJLyKRomzi5KV
-         c0UMIZAukJcsyJ9PgrM9i1OqisDt95wTBbO2N08ZjwRcjAhXB9yVKtc3C8+u4X2quDxW
-         Fbg0QKuMXzJBweq5WqXsmSdj/BW1Qq22cjJyt2U1wCQ4P2IPi4VFAVBra26gHxxHOINm
-         Ipt6HDXMRYeJ9ZkSSduFDyxL0wm/k+eaTT0WJrWgdSPs5VEK/yjw/hHaodmf0Rbm3ffP
-         mp09/T6NALaeNuNzd0GtIK1khD6kNsAyp2AVeP1R/dgmA5miwrzMTFCYhluiZviIP+MU
-         itvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698939920; x=1699544720;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=811Wbdi3WkqjCSZVVfz56NC98wHZL/lpCPsLeMoBGy0=;
-        b=eJcAJ/yiatby9dv3OxsSIMWvICXpflxKKLw3LIgSnjkj7jhtIl5Xj3prpIxeo+JjKU
-         H5tiRul9CEBIC9IycJO4t1fG7ynL7GSOyXvZLk65TxFYBwstpTxWCBh6qsDTvGJfcbyk
-         bAygVRG9yh7JiyGEqdWPB+Fs1WTCcui16M58glrEJASgXeMmc2/bu5D3Lmd0fappW/ah
-         rY+ZzurOpMPdbXq9XBde3AN+uqDO88Np7KW4nOyA+UhzA+T8zo2Qfy/AyiHGHls45q7G
-         kMPhgMqaVEF6tJcCoqusoAXX/MsfQO8gkiMUJU9f2TgjySWvcu0F7wEwCbEXNGH5y7nw
-         u2ew==
-X-Gm-Message-State: AOJu0YwBJFuScE66SPtnvvppkLYfoZUuMfZyC2d9uCikEZmgAgWWgjKb
-        GVOk3NqczsqZ9DhqZh3AUQdiLg==
-X-Google-Smtp-Source: AGHT+IG10P/+TWcEKjiYtSWM4kwAWWHLTtonpxdD387OxExmncHkv81To7NNOZz4Z98YE/IefdevkA==
-X-Received: by 2002:a05:6870:582:b0:1e9:b495:bd0 with SMTP id m2-20020a056870058200b001e9b4950bd0mr21253823oap.8.1698939920178;
-        Thu, 02 Nov 2023 08:45:20 -0700 (PDT)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id ds42-20020a0568705b2a00b001e98fa5c9edsm604940oab.40.2023.11.02.08.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 08:45:19 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 08:45:17 -0700
-From:   Deepak Gupta <debug@rivosinc.com>
-To:     woodrow.shen@sifive.com, Andrew Jones <ajones@ventanamicro.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Glenn Washburn <development@efficientek.com>,
-        Jeff Xie <xiehuan09@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Cc:     akpm@linux-foundation.org
-Subject: Re: [PATCH v6] scripts/gdb: add lx_current support for riscv
-Message-ID: <ZUPEDWofcqgzsgMS@debug.ba.rivosinc.com>
-References: <20231026233837.612405-1-debug@rivosinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231026233837.612405-1-debug@rivosinc.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 2 Nov 2023 11:48:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0A8198;
+        Thu,  2 Nov 2023 08:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698940091; x=1730476091;
+  h=from:to:cc:subject:date:message-id;
+  bh=6kHtkPKqEu3I8WjUy08A0Y89FfSYQOnlWiINqRFlQcA=;
+  b=iHTUqJyifHBqOrBalWF2QmnadurwvLPqmn/7/BtE00nlkSuxqkGiwjrn
+   bHSh24zSXssKWyUzAmuvTgCVw7CWdwwiuoD0weRXxvD0QmGn4X/FQ1NW+
+   1GNWlHE9flsWQfuN0rxZlBuG5+XeZcIpkEe4yuhNXlJq8Jvldg8AcpOrN
+   zc6ywx4thV6esx5FKf1fEZUvksTfvuoVwLxqb7rrnM4gtHfD9LCHUzI3A
+   dhhy0sPB7K3r+tNKUPLMBb6a4HKAzhiYpBLRoUgGxUwJJYLIdIcVLPGr0
+   mTmm6WijT2BiLUi8ilywNuvv0lZLqQpoReoRUZHIpbN6wvfwn3Z7rKU3n
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="368088424"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="368088424"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:48:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="878295286"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="878295286"
+Received: from pasangle-nuc10i7fnh.iind.intel.com ([10.223.107.83])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Nov 2023 08:48:09 -0700
+From:   Parshuram Sangle <parshuram.sangle@intel.com>
+To:     kvm@vger.kernel.org, pbonzini@redhat.com
+Cc:     linux-kernel@vger.kernel.org, jaishankar.rajendran@intel.com,
+        parshuram.sangle@intel.com
+Subject: [PATCH 0/2] KVM: enable halt poll shrink parameter
+Date:   Thu,  2 Nov 2023 21:16:26 +0530
+Message-Id: <20231102154628.2120-1-parshuram.sangle@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping
+KVM halt polling interval growth and shrink behavior has evolved since its
+inception. The current mechanism adjusts the polling interval based on whether
+vcpu wakeup was received or not during polling interval using grow and shrink
+parameter values. Though grow parameter is logically set to 2 by default,
+shrink parameter is kept disabled (set to 0).
 
-+ CC: akpm@linux-foundation.org
+Disabled shrink has two issues:
+1) Resets polling interval to 0 on every un-successful poll assuming it is
+less likely to receive a vcpu wakeup in further shrunk intervals.
+2) Even on successful poll, if total block time is greater or equal to current
+poll_ns value, polling interval is reset to 0 instead shrinking gradually.
 
-Who should I ping to make sure that it lands up in mainline?
-It's quite a trivial change to support lx_current riscv arch.
+These aspects reduce the chances receiving valid wakeup during polling and
+lose potential performance benefits for VM workloads.
 
--Deepak
+Below is the summary of experiments conducted to assess performance and power
+impact by enabling the halt_poll_ns_shrink parameter(value set to 2).
 
-On Thu, Oct 26, 2023 at 04:38:23PM -0700, Deepak Gupta wrote:
->csr_sscratch CSR holds current task_struct address when hart is in
->user space. Trap handler on entry spills csr_sscratch into "tp" (x2)
->register and zeroes out csr_sscratch CSR. Trap handler on exit reloads
->"tp" with expected user mode value and place current task_struct address
->again in csr_sscratch CSR.
->
->This patch assumes "tp" is pointing to task_struct. If value in
->csr_sscratch is numerically greater than "tp" then it assumes csr_sscratch
->is correct address of current task_struct. This logic holds when
->   - hart is in user space, "tp" will be less than csr_sscratch.
->   - hart is in kernel space but not in trap handler, "tp" will be more
->     than csr_sscratch (csr_sscratch being equal to 0).
->   - hart is executing trap handler
->       - "tp" is still pointing to user mode but csr_sscratch contains
->          ptr to task_struct. Thus numerically higher.
->       - "tp" is  pointing to task_struct but csr_sscratch now contains
->          either 0 or numerically smaller value (transiently holds
->          user mode tp)
->
->Signed-off-by: Deepak Gupta <debug@rivosinc.com>
->Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
->Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
->Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
->Tested-by: Hsieh-Tseng Shen <woodrow.shen@sifive.com>
->
->---
->Since patch has changed a little bit from v1 and I didn't include
->changelog earlier, here it is.
->
->v1 --> v2:
-> - added logic to locate task_struct irrespective of priv
-> - made locating task_struct agnostic to bitness(32 vs 64).
-> - added caching of ulong type in scripts/gdb/linux/utils.py
-> - added more descriptive commit message
->
->v2 --> v3:
-> - amended commit message and source line to fit column width
->
->v3 --> v4:
-> - amended commit message and remove whitespace in source
-> - added Reviewed-by for reviewers
->
->v4 --> v5:
-> - changing the order of changelog and sign off/review tags in commit
->
->v5 --> v6:
-> - rebased on 6.6-rc5. dropped changes in utils.py as they're upstream
->---
-> scripts/gdb/linux/cpus.py | 15 +++++++++++++++
-> 1 file changed, 15 insertions(+)
->
->diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
->index 255dc18cb9da..cba589e5b57d 100644
->--- a/scripts/gdb/linux/cpus.py
->+++ b/scripts/gdb/linux/cpus.py
->@@ -179,6 +179,21 @@ def get_current_task(cpu):
->         else:
->             raise gdb.GdbError("Sorry, obtaining the current task is not allowed "
->                                "while running in userspace(EL0)")
->+    elif utils.is_target_arch("riscv"):
->+        current_tp = gdb.parse_and_eval("$tp")
->+        scratch_reg = gdb.parse_and_eval("$sscratch")
->+
->+        # by default tp points to current task
->+        current_task = current_tp.cast(task_ptr_type)
->+
->+        # scratch register is set 0 in trap handler after entering kernel.
->+        # When hart is in user mode, scratch register is pointing to task_struct.
->+        # and tp is used by user mode. So when scratch register holds larger value
->+        # (negative address as ulong is larger value) than tp, then use scratch register.
->+        if (scratch_reg.cast(utils.get_ulong_type()) > current_tp.cast(utils.get_ulong_type())):
->+            current_task = scratch_reg.cast(task_ptr_type)
->+
->+        return current_task.dereference()
->     else:
->         raise gdb.GdbError("Sorry, obtaining the current task is not yet "
->                            "supported with this arch")
->-- 
->2.42.0
->
+Performance Test Summary: (Higher is better)
+--------------------------------------------
+Platform Details: Chrome Brya platform
+CPU - Alder Lake (12th Gen Intel CPU i7-1255U)
+Host kernel version - 5.15.127-20371-g710a1611ad33
+
+Android VM workload (Score)   Base      Shrink Enabled (value 2)    Delta
+---------------------------------------------------------------------------
+GeekBench Multi-core(CPU)     5754      5856                        2%
+3D Mark Slingshot(CPU+GPU)    15486     15885                       3%
+Stream (handopt)(Memory)      20566     21594                       5%
+fio seq-read (Storage)        727       747                         3%
+fio seq-write (Storage)       331       343                         3%
+fio rand-read (Storage)       690       732                         6%
+fio rand-write (Storage)      299       300                         1%
+
+Steam Gaming VM (Avg FPS)     Base      Shrink Enabled (value 2)    Delta
+---------------------------------------------------------------------------
+Metro Redux (OpenGL)          54.80     59.60                       9%
+Dota 2 (Open GL)              48.74     51.40                       5%
+Dota 2 (Vulkan)               20.80     21.10                       1%
+SpaceShip (Vulkan)            20.40     21.52                       6%
+
+With Shrink enabled, majority of workloads show higher % of successful polling.
+Reduced latency of returning control back to VM and avoided overhead of vm_exit
+contribute to these performance gains.
+
+Power Impact Assessment Summary: (Lower is better)
+--------------------------------------------------
+Method : DAQ measurements of CPU and Memory rails
+
+CPU+Memory (Watt)             Base      Shrink Enabled (value 2)    Delta
+---------------------------------------------------------------------------
+Idle* (Host)                  0.636     0.631                       -0.8%
+Video Playback (Host)         2.225     2.210                       -0.7%
+Tomb Raider (VM)              17.261    17.175                      -0.5%
+SpaceShip Benchmark(VM)       17.079    17.123                       0.3%
+
+*Idle power - Idle system with no application running, Android and Borealis
+VMs enabled running no workload. Duration 180 sec.
+
+Power measurements done for Chrome idle scenario and active Gaming VM 
+workload show negligible power overhead since additional polling creates
+very short duration bursts which are less likely to have gone to a
+complete idle CPU state.
+
+NOTE: No tests are conducted on non-x86 platform with this changed config
+
+The default values of grow and shrink parameters get commonly used by
+various VM deployments unless specifically tuned for performance. Hence
+referring to performance and power measurements results shown above, it is
+recommended to have shrink enabled (with value 2) by default so that there
+is no need to explicitly set this parameter through kernel cmdline or by
+other means.
+
+Parshuram Sangle (2):
+  KVM: enable halt polling shrink parameter by default
+  KVM: documentation update to halt polling
+
+ Documentation/virt/kvm/halt-polling.rst | 26 +++++++++++++------------
+ virt/kvm/kvm_main.c                     |  4 ++--
+ 2 files changed, 16 insertions(+), 14 deletions(-)
+
+
+base-commit: 2b3f2325e71f09098723727d665e2e8003d455dc
+-- 
+2.17.1
+
