@@ -2,131 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 345647DF9FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7DC7DFA04
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377181AbjKBSee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
+        id S1377217AbjKBSgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbjKBSec (ORCPT
+        with ESMTP id S234266AbjKBSgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:34:32 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AD312D
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:34:23 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41ccd38eaa5so10768261cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1698950062; x=1699554862; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L0vqehv1Of/uKbf/NHzSex+avddGRsxzOfkGwHtKkyg=;
-        b=keEIs5atyxpQtTi3W81MbqQkrNpfNLwBg0KGH2gI44fi3hXGXBGDegv5+XmEZImGJu
-         r1NDUTT8iwz+JGaQLXqmlu1cLBmxv5Rq0zViAp+j/rYeMvTou7vhUCHPK0UTLqmJQo2M
-         nwN52bda7Fx2iQZBqR9SSXZHx0/egPzlBqgiRnWJlrnjpXYE7AznFqeEA1GlvIktrDAY
-         4TnUfXMMfsX3vEMyerE3EltJYDrrzgOkVcJRw+UQQYSgWTkm03E/1/9cgpRcbka5x7/4
-         utQVaGWax8FZUUP/C1fz5jGJl7q55zzLcMowZX4KwXGrPTclfIo4rBsthtVthcMpuF0t
-         RriA==
+        Thu, 2 Nov 2023 14:36:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A75412D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698950114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N4aRCzDVchJmhXnWZveRqLidGEencbVI2Bo/er04qs0=;
+        b=YOw9bHF5XyAwv2vWexaPkPXFjayFpHZuzWIkWbP3idfUNRkl87sHxJ1q3u9zaFICGPYV9T
+        bAN7M4UUofxoVMBphrw/KnrtddmgUfKIMZelC1l5R0f1kX+0L/X1Bdj26tDr0SvXF/zoys
+        uER0lAaTovwkl21W5fKQvb6yHc2/xZ4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-275-gcMwGaJ-PxakZQpJzHAFDg-1; Thu, 02 Nov 2023 14:35:12 -0400
+X-MC-Unique: gcMwGaJ-PxakZQpJzHAFDg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32dee12c5b4so639462f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:35:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698950062; x=1699554862;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L0vqehv1Of/uKbf/NHzSex+avddGRsxzOfkGwHtKkyg=;
-        b=SdgJZ5T8hOX1tKJapUZ7xITH7l1FK/AhSeiviEkLoCSNAXQPJUFIK9ejH9cSboDwhh
-         9X/tCJz8f5j3233TB4kmAGhAL+YmFKW3Oxc9xu/2OspRP2Z1v6aVU6pcH2kbyj7Xz1rK
-         0GBqCECoPL/UTG3UlJzVl8dD3CjspvEaboSN8ne4KrBAb3mJ0iXB6BpPYCgeKDWHQjAe
-         I4tw57JX6RvPX7ilI6O71FQEm0b5vVGeWLvilVL/Bg4PpJOD3L8in1IL1pcv+M2jLKB7
-         HmQoTYJJP38rCMZSZzjim8oJGusOuAAjhJaEXfc82XsBA3A/9nsr0hdycxNuLgSbtE4H
-         +4OQ==
-X-Gm-Message-State: AOJu0YzDkbDY2exBe9Yk9N0unIiheR9fR12p9ZmA3X8tUkzSxUV2DgFO
-        HPI6kcmZXBB28Vlv3vJj3obxsxUuy/WPoemajXw7lw==
-X-Google-Smtp-Source: AGHT+IHli5W9pg027z3X7N5yytmKodloxVZvhxda6fBntxwV8IV1XJcayCtmXiUfhXeuIvSC8E1lkCREGDZtsGgqt0g=
-X-Received: by 2002:a05:622a:148c:b0:403:a662:a3c1 with SMTP id
- t12-20020a05622a148c00b00403a662a3c1mr489774qtx.29.1698950062459; Thu, 02 Nov
- 2023 11:34:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231101230816.1459373-1-souravpanda@google.com>
- <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
- <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
- <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
- <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com> <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
- <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com> <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
- <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com> <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
- <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com> <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
- <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com>
-In-Reply-To: <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 2 Nov 2023 14:33:45 -0400
-Message-ID: <CA+CK2bBPBtAXFQAFUeF8nTxL_Sx926HgR3zLCj_6pKgbOGt8Wg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
-To:     Wei Xu <weixugc@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org,
-        Greg Thelen <gthelen@google.com>
+        d=1e100.net; s=20230601; t=1698950111; x=1699554911;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N4aRCzDVchJmhXnWZveRqLidGEencbVI2Bo/er04qs0=;
+        b=AI6ty61MdYnN6cQW5JPHTinRdxIeP5LHX6AplVlKVv0fZRg7oy+ZQSIboJgtQHwRBd
+         s6BelJKBXO72YhMehyx2k7aEZ8hzGHgf+xhDh34h+8Wmcts5bOoxQCdzAHwrf+5fi3kO
+         6ibpLiUJ6h/VAyy/83L5Mgj0muZPC6GxIz1Birzea5E2LpmxI9j+9GD3qbeNVPofbJIP
+         PmmAljzOEGT/U1qW6f27ZflFkh23biiF3AptWKUiBEFCQ/Tgc8o7nGXoyt7p7PlF6eNl
+         qQ6mWTZOInbFmUQibED2VfbUmsvP9f94fH0/WJ6DY3lCiOi55X+BbWfnxa9kqnmfihsL
+         bmog==
+X-Gm-Message-State: AOJu0Yzk88KypRlag0hMZsL38M6d2/sUj4YU2nwsUJpnm1uSLPf1d4Kr
+        VKcYTxPJi4tp+7BcloZi+r+51uXRv+GUN6/CTtW9PQaAXWb9bnQSeWGLUlAOCEDNQDGDhhbW7Z/
+        2uU93g25qX/DfUYefkJvJuZ5o8we/f1hL
+X-Received: by 2002:a5d:58d8:0:b0:32d:d2ab:f8e3 with SMTP id o24-20020a5d58d8000000b0032dd2abf8e3mr13140009wrf.68.1698950111450;
+        Thu, 02 Nov 2023 11:35:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzlbcNABTrNQMGaiVGyemkwLQ6UflpTYTNRiwRtee1J+zE6N6uq8VBudkTvaQQC2tvlgpkSQ==
+X-Received: by 2002:a5d:58d8:0:b0:32d:d2ab:f8e3 with SMTP id o24-20020a5d58d8000000b0032dd2abf8e3mr13139991wrf.68.1698950111068;
+        Thu, 02 Nov 2023 11:35:11 -0700 (PDT)
+Received: from starship ([89.237.99.95])
+        by smtp.gmail.com with ESMTPSA id d13-20020adfe2cd000000b0032ddf2804ccsm4081wrj.83.2023.11.02.11.35.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 11:35:08 -0700 (PDT)
+Message-ID: <73c4d3d4c4e7b631d5604178a127bf20cc122034.camel@redhat.com>
+Subject: Re: [PATCH v6 18/25] KVM: x86: Use KVM-governed feature framework
+ to track "SHSTK/IBT enabled"
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Thu, 02 Nov 2023 20:35:06 +0200
+In-Reply-To: <ZUJy7A5Hp6lnZVyq@google.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-19-weijiang.yang@intel.com>
+         <ea3609bf7c7759b682007042b98191d91d10a751.camel@redhat.com>
+         <ZUJy7A5Hp6lnZVyq@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > I could have sworn that I pointed that out in a previous version and
-> > > requested to document that special case in the patch description. :)
-> >
-> > Sounds, good we will document that parts of per-page may not be part
-> > of MemTotal.
->
-> But this still doesn't answer how we can use the new PageMetadata
-> field to help break down the runtime kernel overhead within MemUsed
-> (MemTotal - MemFree).
+On Wed, 2023-11-01 at 08:46 -0700, Sean Christopherson wrote:
+> On Tue, Oct 31, 2023, Maxim Levitsky wrote:
+> > On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+> > > Use the governed feature framework to track whether X86_FEATURE_SHSTK
+> > > and X86_FEATURE_IBT features can be used by userspace and guest, i.e.,
+> > > the features can be used iff both KVM and guest CPUID can support them.
+> > > 
+> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > ---
+> > >  arch/x86/kvm/governed_features.h | 2 ++
+> > >  arch/x86/kvm/vmx/vmx.c           | 2 ++
+> > >  2 files changed, 4 insertions(+)
+> > > 
+> > > diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
+> > > index 423a73395c10..db7e21c5ecc2 100644
+> > > --- a/arch/x86/kvm/governed_features.h
+> > > +++ b/arch/x86/kvm/governed_features.h
+> > > @@ -16,6 +16,8 @@ KVM_GOVERNED_X86_FEATURE(PAUSEFILTER)
+> > >  KVM_GOVERNED_X86_FEATURE(PFTHRESHOLD)
+> > >  KVM_GOVERNED_X86_FEATURE(VGIF)
+> > >  KVM_GOVERNED_X86_FEATURE(VNMI)
+> > > +KVM_GOVERNED_X86_FEATURE(SHSTK)
+> > > +KVM_GOVERNED_X86_FEATURE(IBT)
+> > >  
+> > >  #undef KVM_GOVERNED_X86_FEATURE
+> > >  #undef KVM_GOVERNED_FEATURE
+> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > index 9409753f45b0..fd5893b3a2c8 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > @@ -7765,6 +7765,8 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> > >  		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_XSAVES);
+> > >  
+> > >  	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_VMX);
+> > > +	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_SHSTK);
+> > > +	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_IBT);
+> > >  
+> > >  	vmx_setup_uret_msrs(vmx);
+> > >  
+> > 
+> > Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > 
+> > 
+> > PS: IMHO The whole 'governed feature framework' is very confusing and
+> > somewhat poorly documented.
+> > 
+> > Currently the only partial explanation of it, is at 'governed_features',
+> > which doesn't explain how to use it.
+> 
+> To be honest, terrible name aside, I thought kvm_governed_feature_check_and_set()
+> would be fairly self-explanatory, at least relative to all the other CPUID handling
+> in KVM.
 
-I am not sure it matters to the end users: they look at PageMetadata
-with or without Page Owner, page_table_check, HugeTLB and it shows
-exactly how much per-page overhead changed. Where the kernel allocated
-that memory is not that important to the end user as long as that
-memory became available to them.
+What is not self-explanatory is what are the governed_feature and how to query them.
 
-In addition, it is still possible to estimate the actual memblock part
-of Per-page metadata by looking at /proc/zoneinfo:
+> 
+> > For the reference this is how KVM expects governed features to be used in the
+> > common case (there are some exceptions to this but they are rare)
+> > 
+> > 1. If a feature is not enabled in host CPUID or KVM doesn't support it, 
+> >    KVM is expected to not enable it in KVM cpu caps.
+> > 
+> > 2. Userspace uploads guest CPUID.
+> > 
+> > 3. After the guest CPUID upload, the vendor code calls
+> >    kvm_governed_feature_check_and_set() which sets governed features = True iff
+> >    feature is supported in both kvm cpu caps and in guest CPUID.
+> > 
+> > 4. kvm/vendor code uses 'guest_can_use()' to query the value of the governed
+> >    feature instead of reading guest CPUID.
+> > 
+> > It might make sense to document the above somewhere at least.
+> > 
+> > Now about another thing I am thinking:
+> > 
+> > I do know that the mess of boolean flags that svm had is worse than these
+> > governed features and functionality wise these are equivalent.
+> > 
+> > However thinking again about the whole thing: 
+> > 
+> > IMHO the 'governed features' is another quite confusing term that a KVM
+> > developer will need to learn and keep in memory.
+> 
+> I 100% agree, but I explicitly called out the terrible name in the v1 and v2
+> cover letters[1][2], and the patches were on the list for 6 months before I
+> applied them.  I'm definitely still open to a better name, but I'm also not
+> exactly chomping at the bit to get behind the bikehsed.
 
-Memblock reserved per-page metadata: "present_pages - managed_pages"
+Honestly I don't know if I can come up with a better name either.
+Name is IMHO not the underlying problem, its the feature itself that is confusing.
 
-If there is something big that we will allocate in that range, we
-should probably also export it in some form.
+> 
+> v1:
+>  : Note, I don't like the name "governed", but it was the least awful thing I
+>  : could come up with.  Suggestions most definitely welcome.
+> 
+> v2:
+>  : Note, I still don't like the name "governed", but no one has suggested
+>  : anything else, let alone anything better :-)
+> 
+> 
+> [1] https://lore.kernel.org/all/20230217231022.816138-1-seanjc@google.com
+> [2] https://lore.kernel.org/all/20230729011608.1065019-1-seanjc@google.com
+> 
+> > Because of that, can't we just use guest CPUID as a single source of truth
+> > and drop all the governed features code?
+> 
+> No, not without a rather massive ABI break.  To make guest CPUID the single source
+> of true, KVM would need to modify guest CPUID to squash features that userspace
+> has set, but that are not supported by hardware.  And that is most definitely a
+> can of worms I don't want to reopen, e.g. see the mess that got created when KVM
+> tried to "help" userspace by mucking with VMX capability MSRs in response to
+> CPUID changes.
 
-If this field does not fit in /proc/meminfo due to not fully being
-part of MemTotal, we could just keep it under nodeN/, as a separate
-file, as suggested by Greg.
 
-However, I think it is useful enough to have an easy system wide view
-for Per-page metadata.
+> 
+> There aren't many real use cases for advertising "unsupported" features via guest
+> CPUID, but there are some, and I have definitely abused KVM_SET_CPUID2 for testing
+> purposes.
+> 
+> And as above, that doesn't work for X86_FEATURE_XSAVES or X86_FEATURE_GBPAGES.
+> 
+> We'd also have to overhaul guest CPUID lookups to be significantly faster (which
+> is doable), as one of the motiviations for the framework was to avoid the overhead
+> of looking through guest CPUID without needing one-off boolean fields.
+> 
+> > In most cases, when the governed feature value will differ from the guest
+> > CPUID is when a feature is enabled in the guest CPUID, but not enabled in the
+> > KVM caps.
+> > 
+> > I do see two exceptions to this: XSAVES on AMD and X86_FEATURE_GBPAGES, in
+> > which the opposite happens, governed feature is enabled, even when the
+> > feature is hidden from the guest CPUID, but it might be better from
+> > readability wise point, to deal with these cases manually and we unlikely to
+> > have many new such cases in the future.
+> > 
+> > So for the common case of CPUID mismatch, when the governed feature is
+> > disabled but guest CPUID is enabled, does it make sense to allow this? 
+> 
+> Yes and no.  For "governed features", probably not.  But for CPUID as a whole, there
+> are legimiate cases where userspace needs to enumerate things that aren't officially
+> "supported" by KVM.  E.g. topology, core crystal frequency (CPUID 0x15), defeatures
+> that KVM hasn't yet learned about, features that don't have virtualization controls
+> and KVM hasn't yet learned about, etc.  And for things like Xen and Hyper-V paravirt
+> features, it's very doable to implement features that are enumerate by CPUID fully
+> in userspace, e.g. using MSR filters.
+> 
+> But again, it's a moot point because KVM has (mostly) allowed userspace to fully
+> control guest CPUID for a very long time.
+> 
+> > Such a feature which is advertised as supported but not really working is a
+> > recipe of hard to find guest bugs IMHO.
+> > 
+> > IMHO it would be much better to just check this condition and do
+> > kvm_vm_bugged() or something in case when a feature is enabled in the guest
+> > CPUID but KVM can't support it, and then just use guest CPUID in
+> > 'guest_can_use()'.
 
-> > > > are allocated), so what would be the best way to export page metadata
-> > > > without redefining MemTotal? Keep the new field in /proc/meminfo but
-> > > > be ok that it is not part of MemTotal or do two counters? If we do two
-> > > > counters, we will still need to keep one that is a buddy allocator in
-> > > > /proc/meminfo and the other one somewhere outside?
-> > >
->
-> I think the simplest thing to do now is to only report the buddy
-> allocations of per-page metadata in meminfo.  The meaning of the new
+OK, I won't argue that much over this, however I still think that there are
+better ways to deal with it.
 
-This will cause PageMetadata to be 0 on 99% of the systems, and
-essentially become useless to the vast majority of users.
+If we put optimizations aside (all of this can surely be optimized such as to
+have very little overhead)
+
+How about we have 2 cpuids: Guest visible CPUID which KVM will never use directly
+other than during initialization and effective cpuid which is roughly
+what governed features are, but will include all features and will be initialized
+roughly like governed features are initialized:
+
+effective_cpuid = guest_cpuid & kvm_supported_cpuid 
+
+Except for some forced overrides like for XSAVES and such.
+
+Then we won't need to maintain a list of governed features, and guest_can_use()
+for all features will just return the effective cpuid leafs.
+
+In other words, I want KVM to turn all known CPUID features to governed features,
+and then remove all the mentions of governed features except 'guest_can_use'
+which is a good API.
+
+Such proposal will use a bit more memory but will make it easier for future
+KVM developers to understand the code and have less chance of introducing bugs.
+
+Best regards,
+	Maxim Levitsky
+
+
+
+> 
+> Maybe, if we were creating KVM from scratch, e.g. didn't have to worry about
+> existing uesrspace behavior and could implement a more forward-looking API than
+> KVM_GET_SUPPORTED_CPUID.  But even then the enforcement would need to be limited
+> to "pure" hardware-defined feature bits, and I suspect that there would still be
+> exceptions.  And there would likely be complexitly in dealing with CPUID leafs
+> that are completely unknown to KVM, e.g. unless KVM completely disallowed non-zero
+> values for unknown CPUID leafs, adding restrictions when a feature is defined by
+> Intel or AMD would be at constant risk of breaking userspace.
+> 
+
+
