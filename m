@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2641B7DF676
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA307DF670
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376370AbjKBPdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347499AbjKBPdD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347539AbjKBPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 2 Nov 2023 11:33:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E44184
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:32:53 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234194AbjKBPc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Nov 2023 11:32:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E9313E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=xk+4iMONbkXiTk0hS6u3U/Ijn5wg/Ea5KL9bAZzCxZc=; b=i+xBFng42EokmYQs8E3C2aCCNt
-        LSR9otznbyM7qctRZPGk2veM5RMeYAnviUjiBi+cvtz8pi6EKQ1THOGe7hFXgYZcZgcLfrRZrcai9
-        4qYWZgQm/EKq6HpWHXWiMMuDB7HEXuI8HI/Km9jPQ1LA/Tjwd+rmA8poBJITfQZZdrqurCRe8MCKn
-        DeCjWFal0RmOtaVKlO07WMF32k3YpjokeRGgFGV+ZbtU8PJV1eIxA/WVDzbfoOvusZYKqkCVe+lZw
-        DoPjVDgJ4ssLiV3pCs8XLXRhd8OuC6twA9k2bPVNse7KUCKX91ni2IB9foLt76C56OHuFRDD3GgP8
-        Ft8+a9MA==;
+        bh=PDycx4fpiS6PTok+N6ddTvPXW/vNvT8Lmj3Yl8Tx4xE=; b=H7HBpu3sR+BkCk0NREtlw1ja8/
+        A4hW1cSlDpmlE4lz1CP8KaZ53xnBIgZrCfN9oF42tzkgLbjd3eeU+NbY6VjK3H+4ZqUCvk5dFEkHR
+        env3dsiYcwxY+yYoDW+gCRKe3f3ZstEqUjq0hPAc9lkfdnlprOeE8WvbIICxzAZHIgAFaayYPrsY5
+        2ARgzP/mQrlDPq3E5k5R3va8nhxjkFLs8j9OIWAnSyULaFxPdEh1yX2M8P0Q0QkBX1yQEbCz6HT3j
+        n2xykC6quW6iGR3LHsDsdri9fYklgyI4yOTrMqnEDgB7UWumS4IL/fiJ+yHC0bSOfW24XHBNamoay
+        s83lQYiA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qyZgV-0005PL-Fp; Thu, 02 Nov 2023 15:32:40 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qyZgW-006gQP-26;
+        Thu, 02 Nov 2023 15:32:41 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5FF52302D87; Thu,  2 Nov 2023 16:32:39 +0100 (CET)
-Message-Id: <20231102152018.878930233@infradead.org>
+        id 63E9A302EAB; Thu,  2 Nov 2023 16:32:39 +0100 (CET)
+Message-Id: <20231102152018.986157891@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 02 Nov 2023 16:09:29 +0100
+Date:   Thu, 02 Nov 2023 16:09:30 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         acme@kernel.org, mark.rutland@arm.com,
         alexander.shishkin@linux.intel.com, jolsa@kernel.org,
         namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com
-Subject: [PATCH 10/13] perf: Simplify perf_event_context_sched_in()
+Subject: [PATCH 11/13] perf: Simplify perf_adjust_freq_unthr_context()
 References: <20231102150919.719936610@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,76 +57,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   38 +++++++++++++++-----------------------
- 1 file changed, 15 insertions(+), 23 deletions(-)
+ kernel/events/core.c |   51 +++++++++++++++++++++++----------------------------
+ 1 file changed, 23 insertions(+), 28 deletions(-)
 
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -713,6 +713,9 @@ static void perf_ctx_enable(struct perf_
+@@ -4090,7 +4090,7 @@ perf_adjust_freq_unthr_context(struct pe
+ 	if (!(ctx->nr_freq || unthrottle))
+ 		return;
+ 
+-	raw_spin_lock(&ctx->lock);
++	guard(raw_spinlock)(&ctx->lock);
+ 
+ 	list_for_each_entry_rcu(event, &ctx->event_list, event_entry) {
+ 		if (event->state != PERF_EVENT_STATE_ACTIVE)
+@@ -4100,7 +4100,7 @@ perf_adjust_freq_unthr_context(struct pe
+ 		if (!event_filter_match(event))
+ 			continue;
+ 
+-		perf_pmu_disable(event->pmu);
++		guard(perf_pmu_disable)(event->pmu);
+ 
+ 		hwc = &event->hw;
+ 
+@@ -4110,34 +4110,29 @@ perf_adjust_freq_unthr_context(struct pe
+ 			event->pmu->start(event, 0);
+ 		}
+ 
+-		if (!event->attr.freq || !event->attr.sample_freq)
+-			goto next;
++		if (event->attr.freq && event->attr.sample_freq) {
++			/*
++			 * stop the event and update event->count
++			 */
++			event->pmu->stop(event, PERF_EF_UPDATE);
++
++			now = local64_read(&event->count);
++			delta = now - hwc->freq_count_stamp;
++			hwc->freq_count_stamp = now;
++
++			/*
++			 * restart the event
++			 * reload only if value has changed
++			 * we have stopped the event so tell that
++			 * to perf_adjust_period() to avoid stopping it
++			 * twice.
++			 */
++			if (delta > 0)
++				perf_adjust_period(event, period, delta, false);
+ 
+-		/*
+-		 * stop the event and update event->count
+-		 */
+-		event->pmu->stop(event, PERF_EF_UPDATE);
+-
+-		now = local64_read(&event->count);
+-		delta = now - hwc->freq_count_stamp;
+-		hwc->freq_count_stamp = now;
+-
+-		/*
+-		 * restart the event
+-		 * reload only if value has changed
+-		 * we have stopped the event so tell that
+-		 * to perf_adjust_period() to avoid stopping it
+-		 * twice.
+-		 */
+-		if (delta > 0)
+-			perf_adjust_period(event, period, delta, false);
+-
+-		event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
+-	next:
+-		perf_pmu_enable(event->pmu);
++			event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
++		}
  	}
- }
- 
-+DEFINE_GUARD(perf_ctx_disable, struct perf_event_context *,
-+	     perf_ctx_disable(_T, false), perf_ctx_enable(_T, false))
-+
- static void ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type);
- static void ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type);
- 
-@@ -3903,31 +3906,27 @@ static void perf_event_context_sched_in(
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
- 	struct perf_event_context *ctx;
- 
--	rcu_read_lock();
-+	guard(rcu)();
-+
- 	ctx = rcu_dereference(task->perf_event_ctxp);
- 	if (!ctx)
--		goto rcu_unlock;
 -
--	if (cpuctx->task_ctx == ctx) {
--		perf_ctx_lock(cpuctx, ctx);
--		perf_ctx_disable(ctx, false);
--
--		perf_ctx_sched_task_cb(ctx, true);
--
--		perf_ctx_enable(ctx, false);
--		perf_ctx_unlock(cpuctx, ctx);
--		goto rcu_unlock;
--	}
-+		return;
- 
--	perf_ctx_lock(cpuctx, ctx);
-+	guard(perf_ctx_lock)(cpuctx, ctx);
- 	/*
- 	 * We must check ctx->nr_events while holding ctx->lock, such
- 	 * that we serialize against perf_install_in_context().
- 	 */
- 	if (!ctx->nr_events)
--		goto unlock;
-+		return;
-+
-+	guard(perf_ctx_disable)(ctx);
-+
-+	if (cpuctx->task_ctx == ctx) {
-+		perf_ctx_sched_task_cb(ctx, true);
-+		return;
-+	}
- 
--	perf_ctx_disable(ctx, false);
- 	/*
- 	 * We want to keep the following priority order:
- 	 * cpu pinned (that don't need to move), task pinned,
-@@ -3947,13 +3946,6 @@ static void perf_event_context_sched_in(
- 
- 	if (!RB_EMPTY_ROOT(&ctx->pinned_groups.tree))
- 		perf_ctx_enable(&cpuctx->ctx, false);
--
--	perf_ctx_enable(ctx, false);
--
--unlock:
--	perf_ctx_unlock(cpuctx, ctx);
--rcu_unlock:
--	rcu_read_unlock();
+-	raw_spin_unlock(&ctx->lock);
  }
  
  /*
