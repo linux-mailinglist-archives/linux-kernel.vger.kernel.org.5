@@ -2,176 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E19D7DF4B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2705E7DF4BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376735AbjKBOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S1376703AbjKBOQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjKBOPY (ORCPT
+        with ESMTP id S229579AbjKBOQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:15:24 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1450A12E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:15:15 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 203C06607033;
-        Thu,  2 Nov 2023 14:15:13 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698934514;
-        bh=cAv8iDJbPkwyr97yslzoCR0E+J9ioopOVLD7tn0xeaE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HqpIaYF1rO3cGnHd2r+erpo4hV2GzGpXpvcUY+S6BvEdi0pqjEu5FWy6QdvWTB3Gn
-         sLX5M2x5Eba62EWJQeIhhroPsAOPWMocc59q2AuWBWBlax4+QBZzkgfoOdyFqPQbXF
-         Y7hMqhsMlQszW/jpI8+JDDIRReCRzoRS38k39ZND8OCmYQjwIAov7wyhLEOh3B4a8K
-         B14ZdeSjkbBKNhWSqF/sa/1vcE8KOscGZlWKXVKeDxxVrAu7PA0NcjV6DjsU7+mLU0
-         /B6FVDPNyCX1zZQRdHj1Wv1SpIjqjXob6NB925dUEtepvVxB63XjzTVkIiW32H160F
-         OWsLpYE84uuzA==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     boris.brezillon@collabora.com
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        wenst@chromium.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com
-Subject: [PATCH] drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()
-Date:   Thu,  2 Nov 2023 15:15:07 +0100
-Message-ID: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 2 Nov 2023 10:16:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081D8B7
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698934607; x=1730470607;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=IxweHQehCYDnNEG751FMSRLjQEB5hRmVTBoUdA7XCXU=;
+  b=Q2E2xqXH/cpdkG+uWBz+MBVccMMHJqHtnRc076sDbTpN624kuJ/CliOV
+   MP7BVcXrP/t1I/jIwsA/QAqYw8GI7Ydqnan2W6cIfQVOhjkvh6uAKSp8h
+   i195rHz/6XfSau73GNvg1Bltnh3WRURGTzMo1SRx4XObCd48u9rOgHBfb
+   +pJTrpWHFTFtaM1VEhbsBJISbWrEQAmf8aq6U2rLK8KQiFjCJjVPZPSyE
+   7vkM5zdSXQsAcsTTiZmequeMlg36AJ8bGzKNiyNFE/ASHKNUPX+H51uaw
+   ipBg0vxQ8ATQxJFnPmA6ZtWNpt+/ihasZujez9OtcfGFPih6Z0CksXiFP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="7361184"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="7361184"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 07:16:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="2553271"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 02 Nov 2023 07:16:33 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyYUp-0001Vs-04;
+        Thu, 02 Nov 2023 14:16:31 +0000
+Date:   Thu, 2 Nov 2023 22:15:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/nios2/include/asm/checksum.h:30:24: sparse: sparse: restricted
+ __wsum degrades to integer
+Message-ID: <202311022246.5tfOUz5a-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to request
-powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO ones:
-this means that in order to request poweroff of cores, we are supposed
-to write a bitmask of cores that should be powered off!
-This means that the panfrost_gpu_power_off() function has always been
-doing nothing.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+commit: b38460bc463c54e0c15ff3b37e81f7e2059bb9bb kunit: Fix checksum tests on big endian CPUs
+date:   10 weeks ago
+config: nios2-randconfig-r121-20231102 (https://download.01.org/0day-ci/archive/20231102/202311022246.5tfOUz5a-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231102/202311022246.5tfOUz5a-lkp@intel.com/reproduce)
 
-Fix powering off the GPU by writing a bitmask of the cores to poweroff
-to the relevant PWROFF_LO registers and then check that the transition
-(from ON to OFF) has finished by polling the relevant PWRTRANS_LO
-registers.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311022246.5tfOUz5a-lkp@intel.com/
 
-While at it, in order to avoid code duplication, move the core mask
-logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
-function, used in both poweron and poweroff.
+sparse warnings: (new ones prefixed by >>)
+   lib/checksum_kunit.c: note: in included file:
+>> arch/nios2/include/asm/checksum.h:30:24: sparse: sparse: restricted __wsum degrades to integer
+>> arch/nios2/include/asm/checksum.h:30:24: sparse: sparse: restricted __wsum degrades to integer
+>> arch/nios2/include/asm/checksum.h:30:24: sparse: sparse: restricted __wsum degrades to integer
+>> arch/nios2/include/asm/checksum.h:30:24: sparse: sparse: restricted __wsum degrades to integer
+>> arch/nios2/include/asm/checksum.h:30:24: sparse: sparse: restricted __wsum degrades to integer
 
-Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/panfrost/panfrost_gpu.c | 65 ++++++++++++++++++-------
- 1 file changed, 47 insertions(+), 18 deletions(-)
+vim +30 arch/nios2/include/asm/checksum.h
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index f0be7e19b13e..fad75b6e543e 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -362,28 +362,38 @@ unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev)
- 	return ((u64)hi << 32) | lo;
- }
- 
-+static u64 panfrost_get_core_mask(struct panfrost_device *pfdev)
-+{
-+	u64 core_mask;
-+
-+	if (pfdev->features.l2_present == 1)
-+		return U64_MAX;
-+
-+	/*
-+	 * Only support one core group now.
-+	 * ~(l2_present - 1) unsets all bits in l2_present except
-+	 * the bottom bit. (l2_present - 2) has all the bits in
-+	 * the first core group set. AND them together to generate
-+	 * a mask of cores in the first core group.
-+	 */
-+	core_mask = ~(pfdev->features.l2_present - 1) &
-+		     (pfdev->features.l2_present - 2);
-+	dev_info_once(pfdev->dev, "using only 1st core group (%lu cores from %lu)\n",
-+		      hweight64(core_mask),
-+		      hweight64(pfdev->features.shader_present));
-+
-+	return core_mask;
-+}
-+
- void panfrost_gpu_power_on(struct panfrost_device *pfdev)
- {
- 	int ret;
- 	u32 val;
--	u64 core_mask = U64_MAX;
-+	u64 core_mask;
- 
- 	panfrost_gpu_init_quirks(pfdev);
-+	core_mask = panfrost_get_core_mask(pfdev);
- 
--	if (pfdev->features.l2_present != 1) {
--		/*
--		 * Only support one core group now.
--		 * ~(l2_present - 1) unsets all bits in l2_present except
--		 * the bottom bit. (l2_present - 2) has all the bits in
--		 * the first core group set. AND them together to generate
--		 * a mask of cores in the first core group.
--		 */
--		core_mask = ~(pfdev->features.l2_present - 1) &
--			     (pfdev->features.l2_present - 2);
--		dev_info_once(pfdev->dev, "using only 1st core group (%lu cores from %lu)\n",
--			      hweight64(core_mask),
--			      hweight64(pfdev->features.shader_present));
--	}
- 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present & core_mask);
- 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
- 		val, val == (pfdev->features.l2_present & core_mask),
-@@ -408,11 +418,30 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
- 
- void panfrost_gpu_power_off(struct panfrost_device *pfdev)
- {
--	gpu_write(pfdev, TILER_PWROFF_LO, 0);
--	gpu_write(pfdev, SHADER_PWROFF_LO, 0);
--	gpu_write(pfdev, L2_PWROFF_LO, 0);
-+	u64 core_mask = panfrost_get_core_mask(pfdev);
-+	int ret;
-+	u32 val;
-+
-+	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-+	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
-+					 val, !val, 1, 1000);
-+	if (ret)
-+		dev_err(pfdev->dev, "shader power transition timeout");
-+
-+	gpu_write(pfdev, TILER_PWROFF_LO, pfdev->features.tiler_present);
-+	ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
-+					 val, !val, 1, 1000);
-+	if (ret)
-+		dev_err(pfdev->dev, "tiler power transition timeout");
-+
-+	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
-+	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
-+					 val, !val, 0, 1000);
-+	if (ret)
-+		dev_err(pfdev->dev, "l2 power transition timeout");
- }
- 
-+
- int panfrost_gpu_init(struct panfrost_device *pfdev)
- {
- 	int err, irq;
+eea9507a69d637 Ley Foon Tan 2014-11-06  17  
+eea9507a69d637 Ley Foon Tan 2014-11-06  18  /*
+eea9507a69d637 Ley Foon Tan 2014-11-06  19   * Fold a partial checksum
+eea9507a69d637 Ley Foon Tan 2014-11-06  20   */
+eea9507a69d637 Ley Foon Tan 2014-11-06  21  static inline __sum16 csum_fold(__wsum sum)
+eea9507a69d637 Ley Foon Tan 2014-11-06  22  {
+eea9507a69d637 Ley Foon Tan 2014-11-06  23  	__asm__ __volatile__(
+eea9507a69d637 Ley Foon Tan 2014-11-06  24  		"add	%0, %1, %0\n"
+eea9507a69d637 Ley Foon Tan 2014-11-06  25  		"cmpltu	r8, %0, %1\n"
+eea9507a69d637 Ley Foon Tan 2014-11-06  26  		"srli	%0, %0, 16\n"
+eea9507a69d637 Ley Foon Tan 2014-11-06  27  		"add	%0, %0, r8\n"
+eea9507a69d637 Ley Foon Tan 2014-11-06  28  		"nor	%0, %0, %0\n"
+eea9507a69d637 Ley Foon Tan 2014-11-06  29  		: "=r" (sum)
+eea9507a69d637 Ley Foon Tan 2014-11-06 @30  		: "r" (sum << 16), "0" (sum)
+eea9507a69d637 Ley Foon Tan 2014-11-06  31  		: "r8");
+eea9507a69d637 Ley Foon Tan 2014-11-06  32  	return (__force __sum16) sum;
+eea9507a69d637 Ley Foon Tan 2014-11-06  33  }
+eea9507a69d637 Ley Foon Tan 2014-11-06  34  
+
+:::::: The code at line 30 was first introduced by commit
+:::::: eea9507a69d637d52705de8703b168bf6bfe5643 nios2: Library functions
+
+:::::: TO: Ley Foon Tan <lftan@altera.com>
+:::::: CC: Ley Foon Tan <lftan@altera.com>
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
