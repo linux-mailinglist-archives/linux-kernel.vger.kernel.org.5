@@ -2,234 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC867DF269
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D92117DF26B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347369AbjKBMaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        id S1347458AbjKBMaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347457AbjKBMaB (ORCPT
+        with ESMTP id S1347475AbjKBMaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:30:01 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 234EE182;
-        Thu,  2 Nov 2023 05:29:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D909C15;
-        Thu,  2 Nov 2023 05:30:39 -0700 (PDT)
-Received: from [10.1.33.173] (XHFQ2J9959.cambridge.arm.com [10.1.33.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B73F63F67D;
-        Thu,  2 Nov 2023 05:29:55 -0700 (PDT)
-Message-ID: <84df3b17-6f3d-4e9b-94e0-88ba186207e2@arm.com>
-Date:   Thu, 2 Nov 2023 12:29:54 +0000
+        Thu, 2 Nov 2023 08:30:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96F4137;
+        Thu,  2 Nov 2023 05:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lLbEJjW9cmFlpV3shV0/lRN5bbIbbVeY+zCDD51WFMw=; b=pTHDt05lcN/Cquxk27BSdyCKgy
+        hzNRR4QinKiGSXAT+IvNDIldJJss87ffYgIHYqGWe7fkQJzfVfWVAmqcKYjo5QW15CWq0u59MUihn
+        h2bKPJMu4MRWcgPl8ZiIlyIEoGDnEougjsws6T/D40F/HB6pPn+HJTg62MGa5fiRnKOvCbXPhzsSh
+        tRaYFDh46FTFcvpSzkTKCviXehU/1CUav+ATjAzMWf5BC/65dJTg5yFLVYZ1U4bHiTU7OoCJBejvv
+        63covoTNDX8ZnRkSKNGOtl2gkFc4ePV5QLeaNOdmdnfFQK3GRq+bFLrxvs56WghPaAURYyAAsZZ12
+        7Ch5wJxQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qyWpn-004Qbg-9a; Thu, 02 Nov 2023 12:30:03 +0000
+Date:   Thu, 2 Nov 2023 12:30:03 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] vboxsf: Avoid an spurious warning if load_nls_xxx()
+ fails
+Message-ID: <ZUOWS6Vr0rg4VVIb@casper.infradead.org>
+References: <d09eaaa4e2e08206c58a1a27ca9b3e81dc168773.1698835730.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] selftests/mm: Add a new test for madv and hugetlb
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Breno Leitao <leitao@debian.org>, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-mm@kvack.org, riel@surriel.com,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20231005163922.87568-1-leitao@debian.org>
- <20231005163922.87568-3-leitao@debian.org>
- <662df57e-47f1-4c15-9b84-f2f2d587fc5c@arm.com>
-In-Reply-To: <662df57e-47f1-4c15-9b84-f2f2d587fc5c@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d09eaaa4e2e08206c58a1a27ca9b3e81dc168773.1698835730.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2023 12:24, Ryan Roberts wrote:
-> Hi Breno,
+On Wed, Nov 01, 2023 at 11:49:48AM +0100, Christophe JAILLET wrote:
+> If an load_nls_xxx() function fails a few lines above, the 'sbi->bdi_id' is
+> still 0.
+> So, in the error handling path, we will call ida_simple_remove(..., 0)
+> which is not allocated yet.
 > 
-> 
-> On 05/10/2023 17:39, Breno Leitao wrote:
->> Create a selftest that exercises the race between page faults and
->> madvise(MADV_DONTNEED) in the same huge page. Do it by running two
->> threads that touches the huge page and madvise(MADV_DONTNEED) at the same
->> time.
->>
->> In case of a SIGBUS coming at pagefault, the test should fail, since we
->> hit the bug.
->>
->> The test doesn't have a signal handler, and if it fails, it fails like
->> the following
->>
->>   ----------------------------------
->>   running ./hugetlb_fault_after_madv
->>   ----------------------------------
->>   ./run_vmtests.sh: line 186: 595563 Bus error    (core dumped) "$@"
->>   [FAIL]
->>
->> This selftest goes together with the fix of the bug[1] itself.
->>
->> [1] https://lore.kernel.org/all/20231001005659.2185316-1-riel@surriel.com/#r
->>
->> Signed-off-by: Breno Leitao <leitao@debian.org>
->> ---
->>  tools/testing/selftests/mm/Makefile           |  1 +
->>  .../selftests/mm/hugetlb_fault_after_madv.c   | 73 +++++++++++++++++++
->>  tools/testing/selftests/mm/run_vmtests.sh     |  4 +
->>  3 files changed, 78 insertions(+)
->>  create mode 100644 tools/testing/selftests/mm/hugetlb_fault_after_madv.c
->>
->> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
->> index 6a9fc5693145..e71ec9910c62 100644
->> --- a/tools/testing/selftests/mm/Makefile
->> +++ b/tools/testing/selftests/mm/Makefile
->> @@ -68,6 +68,7 @@ TEST_GEN_FILES += split_huge_page_test
->>  TEST_GEN_FILES += ksm_tests
->>  TEST_GEN_FILES += ksm_functional_tests
->>  TEST_GEN_FILES += mdwe_test
->> +TEST_GEN_FILES += hugetlb_fault_after_madv
->>  
->>  ifneq ($(ARCH),arm64)
->>  TEST_GEN_PROGS += soft-dirty
->> diff --git a/tools/testing/selftests/mm/hugetlb_fault_after_madv.c b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
->> new file mode 100644
->> index 000000000000..73b81c632366
->> --- /dev/null
->> +++ b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
->> @@ -0,0 +1,73 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <pthread.h>
->> +#include <stdio.h>
->> +#include <stdlib.h>
->> +#include <sys/mman.h>
->> +#include <sys/types.h>
->> +#include <unistd.h>
->> +
->> +#include "vm_util.h"
->> +#include "../kselftest.h"
->> +
->> +#define MMAP_SIZE (1 << 21)
->> +#define INLOOP_ITER 100
->> +
->> +char *huge_ptr;
->> +
->> +/* Touch the memory while it is being madvised() */
->> +void *touch(void *unused)
->> +{
->> +	char *ptr = (char *)huge_ptr;
->> +
->> +	for (int i = 0; i < INLOOP_ITER; i++)
->> +		ptr[0] = '.';
->> +
->> +	return NULL;
->> +}
->> +
->> +void *madv(void *unused)
->> +{
->> +	usleep(rand() % 10);
->> +
->> +	for (int i = 0; i < INLOOP_ITER; i++)
->> +		madvise(huge_ptr, MMAP_SIZE, MADV_DONTNEED);
->> +
->> +	return NULL;
->> +}
->> +
->> +int main(void)
->> +{
->> +	unsigned long free_hugepages;
->> +	pthread_t thread1, thread2;
->> +	/*
->> +	 * On kernel 6.4, we are able to reproduce the problem with ~1000
->> +	 * interactions
->> +	 */
->> +	int max = 10000;
->> +
->> +	srand(getpid());
->> +
->> +	free_hugepages = get_free_hugepages();
->> +	if (free_hugepages != 1) {
->> +		ksft_exit_skip("This test needs one and only one page to execute. Got %lu\n",
->> +			       free_hugepages);
->> +	}
->> +
->> +	while (max--) {
->> +		huge_ptr = mmap(NULL, MMAP_SIZE, PROT_READ | PROT_WRITE,
->> +				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
->> +				-1, 0);
->> +
->> +		if ((unsigned long)huge_ptr == -1)
->> +			ksft_exit_skip("Failed to allocated huge page\n");
->> +
->> +		pthread_create(&thread1, NULL, madv, NULL);
->> +		pthread_create(&thread2, NULL, touch, NULL);
->> +
->> +		pthread_join(thread1, NULL);
->> +		pthread_join(thread2, NULL);
->> +		munmap(huge_ptr, MMAP_SIZE);
->> +	}
->> +
->> +	return KSFT_PASS;
->> +}
->> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
->> index 3e2bc818d566..9f53f7318a38 100755
->> --- a/tools/testing/selftests/mm/run_vmtests.sh
->> +++ b/tools/testing/selftests/mm/run_vmtests.sh
->> @@ -221,6 +221,10 @@ CATEGORY="hugetlb" run_test ./hugepage-mremap
->>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
->>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
->>  
->> +# For this test, we need one and just one huge page
->> +echo 1 > /proc/sys/vm/nr_hugepages
-> 
-> I've noticed that this change breaks some of the uffd-stress tests further down
-> the file, because you have freed previously reserved hugepages that the test
-> requires to run. I notice that the patch is already in mm-stable, so perhaps its
-> possible to submit a patch that does a save and restore?
-> 
-> Although I'm not sure if that might be tricky because the previous reservation
-> is per-size and per-node (our CI does this on the kernel command line), and I
-> suspect if you want just 1 huge page in the entire system you won't be able to
-> get back to the previous state by just restoring this value?
+> In order to prevent a spurious "ida_free called for id=0 which is not
+> allocated." message, tweak the error handling path and add a new label.
 
-Actually on closer inspection, I don't think this will be a problem; simply
-saving and restoring the value around the test will be sufficient.
+That's not spurious!  You're freeing something that wasn't allocated.
+A good quality malloc allocation will warn you if you free() a random
+pointer.  I agree with everything abuot this patch (and the next) except
+for the changelog.
 
-I also notice that the binary for the new test is not added to the .gitignore,
-which is a minor annoyance.
-
-Thanks,
-Ryan
-
+> Fixes: 0fd169576648 ("fs: Add VirtualBox guest shared folder (vboxsf) support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  fs/vboxsf/super.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> These are the failing tests for reference:
+> diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+> index 1fb8f4df60cb..9848af78215b 100644
+> --- a/fs/vboxsf/super.c
+> +++ b/fs/vboxsf/super.c
+> @@ -151,7 +151,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+>  		if (!sbi->nls) {
+>  			vbg_err("vboxsf: Count not load '%s' nls\n", nls_name);
+>  			err = -EINVAL;
+> -			goto fail_free;
+> +			goto fail_destroy_idr;
+>  		}
+>  	}
+>  
+> @@ -224,6 +224,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+>  		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
+>  	if (sbi->nls)
+>  		unload_nls(sbi->nls);
+> +fail_destroy_idr:
+>  	idr_destroy(&sbi->ino_idr);
+>  	kfree(sbi);
+>  	return err;
+> -- 
+> 2.34.1
 > 
-> # ------------------------------------
-> # running ./uffd-stress hugetlb 128 32
-> # ------------------------------------
-> # nr_pages: 64, nr_pages_per_cpu: 8
-> # ERROR: context init failed (errno=12, @uffd-stress.c:254)
-> # [FAIL]
-> # --------------------------------------------
-> # running ./uffd-stress hugetlb-private 128 32
-> # --------------------------------------------
-> # nr_pages: 64, nr_pages_per_cpu: 8
-> # ERROR: context init failed (errno=12, @uffd-stress.c:254)
-> # [FAIL]
 > 
-> Thanks,
-> Ryan
-> 
-> 
-> 
->> +CATEGORY="hugetlb" run_test ./hugetlb_fault_after_madv
->> +
->>  if test_selected "hugetlb"; then
->>  	echo "NOTE: These hugetlb tests provide minimal coverage.  Use"
->>  	echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
-> 
-
