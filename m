@@ -2,236 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFAF7DF02B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5C47DF025
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347030AbjKBKcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
+        id S1347108AbjKBKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346735AbjKBKc0 (ORCPT
+        with ESMTP id S1346874AbjKBKdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:32:26 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66BC138
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:32:18 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32f7c80ab33so446803f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698921137; x=1699525937; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hL5GAkNYX5lf5Xnnqavo6wfZxNcky+vNwT6ydKIiCK0=;
-        b=WEzbl58iLKcndODZjAdZophctyQu2r9oOt3DuwJGGxJUQCltuFXJ0iYytUTcgpfFte
-         xYQy7bgKHO+eGYTa+tp7+LKQ+8fgug9kN/ploet0ZFkefynsVWVsPw2+tJcttGOyhXwj
-         bhA0Rm99IJ/+4NzLDmd6b3gFSsff/ugQM5Ec8Ty8Lfi3Am74CLBXhj7MGcmJ+8f0eRKw
-         xAx8qEyhmW5D6Hbnqj3FIJyFLJkt5666RLfYzRR302aOC2Lx2zsDKtse70iA+QFmMjWD
-         rinDi9eXvXooe5wqfwg+yJc2ZaGLuMJhgEzICbToy4OdaArFFV5cVZXdgvgjQ0NWx3Hb
-         oLHA==
+        Thu, 2 Nov 2023 06:33:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3355C197
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698921163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=EePgrsn5C6IrnNIxegoYsuWMp1Sc1phl1cmFpN1d7s8=;
+        b=dgirWlphzrGO6MHqpIIjT84Uqd1QdkjyJr11Ajs/ItOiS8dzU1FxYRNSDOLCrLNNdTNtse
+        ejUhg5GZ7/GPtFI8wDLDWTtmpzhJjqPYGv/LjXS0j09CUI50+QfeHdoPZBE+xPUBwR+0ez
+        B6ktf1dgPFxaX9eCJJdWhBQFNMXS+gI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-_U5Cx30EPkGv7_0QTibORw-1; Thu, 02 Nov 2023 06:32:41 -0400
+X-MC-Unique: _U5Cx30EPkGv7_0QTibORw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9ae7663e604so53087066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:32:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698921137; x=1699525937;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hL5GAkNYX5lf5Xnnqavo6wfZxNcky+vNwT6ydKIiCK0=;
-        b=EywB/SNB2q56xzHc+gNusZQRrtaQBzw98e/1CgOxJZqILK+tEcTtVG2DPmxh9BaEZS
-         EU6AWWdlaXM0THXudg0QKpK36LDg7saTwkrYJapiaMia7ME9SaD3ISbl/4lEyUYU4Pob
-         jdx3eBJEsPLylzxufeChk/YDU8F9200+YYrfriLHoYcwg/+Up4X1xHjMTcvZKzZpngH3
-         sZuyK0yexYUyA7CB3kphr4O3bVqxJXzHfE+nHSHrpE6N5Exkxx3bvxL9PeCrkRX4WsO2
-         uugpQzewwETJNTlmVodFnRa8Iq3SpbfxQrq07eKQ2hE9buBqCcraUjYbprbLnlWgU65w
-         0JfQ==
-X-Gm-Message-State: AOJu0Ywo0WOH9CsPvXLXMjL3JAX5Hhx8wHoDL85RdM7vj9G899le6wRA
-        XUMpQOHQ9jx6B7CPKiOj19QC7A==
-X-Google-Smtp-Source: AGHT+IFPxwdfmh35qsrDuZo1uOZ2JxX6Pr4ET8SmzWDoqC5BsYtR7YOjn4l0q9vCDunbUwW0/3h7uw==
-X-Received: by 2002:a5d:46c7:0:b0:32f:b1f2:1f99 with SMTP id g7-20020a5d46c7000000b0032fb1f21f99mr18289wrs.9.1698921135424;
-        Thu, 02 Nov 2023 03:32:15 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:4ac1:f109:811c:51be? ([2a01:e0a:982:cbb0:4ac1:f109:811c:51be])
-        by smtp.gmail.com with ESMTPSA id bk28-20020a0560001d9c00b0032dab20e773sm2081738wrb.69.2023.11.02.03.32.14
+        d=1e100.net; s=20230601; t=1698921160; x=1699525960;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EePgrsn5C6IrnNIxegoYsuWMp1Sc1phl1cmFpN1d7s8=;
+        b=PSuhYvZvtpOsICESueb9yG3nMghivoI5OnKUgn3NgG5Nbi9NdyP+2JAJs+gXtxbcUo
+         Mph+rMH+LokPK7ZrQuTVFN3Iewrlzgq6ZTu80aewW9A/h4Fo4WEAbJNZiKMWqnroYoKY
+         Ct03IgX4/YpwQtyIQg8dcP9t3V3IIvO0448MUPCejvnegd9S5M+uu9rsWN6IU77Q3/N/
+         6w4Ypb1BX+64+ID7Uh6h1PFT/vkw8GRDWN4Ubn3/sRmLcAAs+6LshFEHJUzSpudAWJB8
+         ZT7y+aPCrQTE1f3aCxp9aZeG/am2HIYqJWy/WLzc8AoWfftk1uN63YAoDzm0RcREkeCz
+         tLdA==
+X-Gm-Message-State: AOJu0Yy6sEOTZOokSCaDIxfJ2iDxrp9KAnTKVJK9lGtcUfntf6TsJY6f
+        3EZ5oIN2mpNpQFe/LHPxv4ONKPFOQW7sUhuflP0YoR8pdrrK+TMZIQuiforHxLnjhmQTHwhgPxq
+        n9jenr6aKpesSO5hNTpMBIp8X
+X-Received: by 2002:a17:907:70a:b0:9bd:9bfe:e410 with SMTP id xb10-20020a170907070a00b009bd9bfee410mr4134671ejb.72.1698921160424;
+        Thu, 02 Nov 2023 03:32:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHdKWTZCjPNQtOILp1najbjDKUZt1gJ0TmclwPTaP4Nu9rDAFXiy/5MsPxAUlznxhN/2PedEg==
+X-Received: by 2002:a17:907:70a:b0:9bd:9bfe:e410 with SMTP id xb10-20020a170907070a00b009bd9bfee410mr4134618ejb.72.1698921159974;
+        Thu, 02 Nov 2023 03:32:39 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id y13-20020a170906470d00b0099bd1a78ef5sm957651ejq.74.2023.11.02.03.32.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 03:32:14 -0700 (PDT)
-Message-ID: <0126493b-6735-42a6-b346-dfabdf23bcaf@linaro.org>
-Date:   Thu, 2 Nov 2023 11:32:13 +0100
+        Thu, 02 Nov 2023 03:32:39 -0700 (PDT)
+Message-ID: <a03d0e36-7b38-4841-9c62-66c9029e388d@redhat.com>
+Date:   Thu, 2 Nov 2023 11:32:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v10 2/4] Input: add core support for Goodix Berlin
- Touchscreen IC
-Content-Language: en-US, fr
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231023-topic-goodix-berlin-upstream-initial-v10-0-88eec2e51c0b@linaro.org>
- <20231023-topic-goodix-berlin-upstream-initial-v10-2-88eec2e51c0b@linaro.org>
- <ZTnzorJ4h1zva1AZ@nixie71>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <ZTnzorJ4h1zva1AZ@nixie71>
+Subject: Re: [PATCH v13 13/35] KVM: Introduce per-page memory attributes
+Content-Language: en-US
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Cc:     "Li, Xiaoyao" <xiaoyao.li@intel.com>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "mic@digikod.net" <mic@digikod.net>,
+        "liam.merwick@oracle.com" <liam.merwick@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "tabba@google.com" <tabba@google.com>,
+        "amoorthy@google.com" <amoorthy@google.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "michael.roth@amd.com" <michael.roth@amd.com>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Annapurve, Vishal" <vannapurve@google.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "mail@maciej.szmigiero.name" <mail@maciej.szmigiero.name>,
+        "yu.c.zhang@linux.intel.com" <yu.c.zhang@linux.intel.com>,
+        "qperret@google.com" <qperret@google.com>,
+        "dmatlack@google.com" <dmatlack@google.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+        "ackerleytng@google.com" <ackerleytng@google.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Wang, Wei W" <wei.w.wang@intel.com>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-14-seanjc@google.com>
+ <b486ed5036fab6d6d4e13a6c68abddcb9541d51b.camel@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <b486ed5036fab6d6d4e13a6c68abddcb9541d51b.camel@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
-
-On 26/10/2023 07:05, Jeff LaBundy wrote:
-> Hi Neil,
-> 
-> On Mon, Oct 23, 2023 at 05:03:46PM +0200, Neil Armstrong wrote:
-> 
-> [...]
-> 
->> +static int goodix_berlin_get_ic_info(struct goodix_berlin_core *cd)
->> +{
->> +	__le16 length_raw;
->> +	u8 *afe_data;
->> +	u16 length;
->> +	int error;
->> +
->> +	afe_data = kzalloc(GOODIX_BERLIN_IC_INFO_MAX_LEN, GFP_KERNEL);
->> +	if (!afe_data)
->> +		return -ENOMEM;
->> +
->> +	error = regmap_raw_read(cd->regmap, GOODIX_BERLIN_IC_INFO_ADDR,
->> +				&length_raw, sizeof(length_raw));
->> +	if (error) {
->> +		dev_info(cd->dev, "failed get ic info length, %d\n", error);
-> 
-> This should be dev_err().
-
-Ack
-
-> 
->> +		goto free_afe_data;
->> +	}
->> +
->> +	length = le16_to_cpu(length_raw);
->> +	if (length >= GOODIX_BERLIN_IC_INFO_MAX_LEN) {
->> +		dev_info(cd->dev, "invalid ic info length %d\n", length);
-> 
-> And here.
-
-Ack
-
-> 
->> +		error = -EINVAL;
->> +		goto free_afe_data;
->> +	}
->> +
->> +	error = regmap_raw_read(cd->regmap, GOODIX_BERLIN_IC_INFO_ADDR,
->> +				afe_data, length);
->> +	if (error) {
->> +		dev_info(cd->dev, "failed get ic info data, %d\n", error);
->> +		return error;
->> +		goto free_afe_data;
->> +	}
-> 
-> This return statement is left over from v9; the print should also be dev_err().
-
-Ack
-
-> 
->> +
->> +	/* check whether the data is valid (ex. bus default values) */
->> +	if (goodix_berlin_is_dummy_data(cd, afe_data, length)) {
->> +		dev_err(cd->dev, "fw info data invalid\n");
->> +		error = -EINVAL;
->> +		goto free_afe_data;
->> +	}
->> +
->> +	if (!goodix_berlin_checksum_valid(afe_data, length)) {
->> +		dev_info(cd->dev, "fw info checksum error\n");
-> 
-> And here.
-
-Ack
-
-> 
->> +		error = -EINVAL;
->> +		goto free_afe_data;
->> +	}
->> +
->> +	error = goodix_berlin_convert_ic_info(cd, afe_data, length);
->> +	if (error)
->> +		goto free_afe_data;
->> +
->> +	/* check some key info */
->> +	if (!cd->touch_data_addr) {
->> +		dev_err(cd->dev, "touch_data_addr is null\n");
->> +		error = -EINVAL;
->> +		goto free_afe_data;
->> +	}
->> +
->> +	return 0;
->> +
->> +free_afe_data:
->> +	kfree(afe_data);
->> +
->> +	return error;
->> +}
+On 11/2/23 04:01, Huang, Kai wrote:
+> On Fri, 2023-10-27 at 11:21 -0700, Sean Christopherson wrote:
+>> From: Chao Peng <chao.p.peng@linux.intel.com>
+>>
+>> In confidential computing usages, whether a page is private or shared is
+>> necessary information for KVM to perform operations like page fault
+>> handling, page zapping etc. There are other potential use cases for
+>> per-page memory attributes, e.g. to make memory read-only (or no-exec,
+>> or exec-only, etc.) without having to modify memslots.
+>>
+>> Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
+>> userspace to operate on the per-page memory attributes.
+>>    - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
+>>      a guest memory range.
+>>    - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
+>>      memory attributes.
+>>
+>> Use an xarray to store the per-page attributes internally, with a naive,
+>> not fully optimized implementation, i.e. prioritize correctness over
+>> performance for the initial implementation.
+>>
+>> Use bit 3 for the PRIVATE attribute so that KVM can use bits 0-2 for RWX
+>> attributes/protections in the future, e.g. to give userspace fine-grained
+>> control over read, write, and execute protections for guest memory.
+>>
+>> Provide arch hooks for handling attribute changes before and after common
+>> code sets the new attributes, e.g. x86 will use the "pre" hook to zap all
+>> relevant mappings, and the "post" hook to track whether or not hugepages
+>> can be used to map the range.
+>>
+>> To simplify the implementation wrap the entire sequence with
+>> kvm_mmu_invalidate_{begin,end}() even though the operation isn't strictly
+>> guaranteed to be an invalidation.  For the initial use case, x86 *will*
+>> always invalidate memory, and preventing arch code from creating new
+>> mappings while the attributes are in flux makes it much easier to reason
+>> about the correctness of consuming attributes.
+>>
+>> It's possible that future usages may not require an invalidation, e.g.
+>> if KVM ends up supporting RWX protections and userspace grants _more_
+>> protections, but again opt for simplicity and punt optimizations to
+>> if/when they are needed.
+>>
+>> Suggested-by: Sean Christopherson <seanjc@google.com>
+>> Link: https://lore.kernel.org/all/Y2WB48kD0J4VGynX@google.com
+>> Cc: Fuad Tabba <tabba@google.com>
+>> Cc: Xu Yilun <yilun.xu@intel.com>
+>> Cc: Mickaël Salaün <mic@digikod.net>
+>> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+>> Co-developed-by: Sean Christopherson <seanjc@google.com>
+>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>>
 > 
 > [...]
 > 
->> +static int goodix_berlin_request_handle_reset(struct goodix_berlin_core *cd)
->> +{
->> +	gpiod_set_value(cd->reset_gpio, 1);
->> +	usleep_range(2000, 2100);
->> +	gpiod_set_value(cd->reset_gpio, 0);
-> 
-> I see that now, this function is only called if the reset GPIO is defined,
-> but there used to be another msleep() here that has since been dropped. Is
-> that intentional?
-
-Indeed, it was dropped, I'll add it back thx for noticing !
-
-> 
+>> +Note, there is no "get" API.  Userspace is responsible for explicitly tracking
+>> +the state of a gfn/page as needed.
 >> +
->> +	return 0;
+>>
+> 
+> [...]
+> 
+>>   
+>> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+>> +static inline unsigned long kvm_get_memory_attributes(struct kvm *kvm, gfn_t gfn)
+>> +{
+>> +	return xa_to_value(xa_load(&kvm->mem_attr_array, gfn));
 >> +}
 > 
-> Kind regards,
-> Jeff LaBundy
+> Only call xa_to_value() when xa_load() returns !NULL?
 
-Thanks,
-Neil
+This xarray does not store a pointer, therefore xa_load() actually 
+returns an integer that is tagged with 1 in the low bit:
+
+static inline unsigned long xa_to_value(const void *entry)
+{
+         return (unsigned long)entry >> 1;
+}
+
+Returning zero for an empty entry is okay, so the result of xa_load() 
+can be used directly.
+
+
+>> +
+>> +bool kvm_range_has_memory_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
+>> +				     unsigned long attrs);
+> 
+> Seems it's not immediately clear why this function is needed in this patch,
+> especially when you said there is no "get" API above.  Add some material to
+> changelog?
+
+It's used by later patches; even without a "get" API, it's a pretty 
+fundamental functionality.
+
+>> +bool kvm_arch_pre_set_memory_attributes(struct kvm *kvm,
+>> +					struct kvm_gfn_range *range);
+>> +bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
+>> +					 struct kvm_gfn_range *range);
+> 
+> Looks if this Kconfig is on, the above two arch hooks won't have implementation.
+> 
+> Is it better to have two __weak empty versions here in this patch?
+> 
+> Anyway, from the changelog it seems it's not mandatory for some ARCH to provide
+> the above two if one wants to turn this on, i.e., the two hooks can be empty and
+> the ARCH can just use the __weak version.
+
+I think this can be added by the first arch that needs memory attributes 
+and also doesn't need one of these hooks.  Or perhaps the x86 
+kvm_arch_pre_set_memory_attributes() could be made generic and thus that 
+would be the __weak version.  It's too early to tell, so it's better to 
+leave the implementation to the architectures for now.
+
+Paolo
 
