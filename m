@@ -2,312 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BADC37DFB7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A077DFB84
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344798AbjKBU00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
+        id S1345189AbjKBU1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 16:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbjKBU0Z (ORCPT
+        with ESMTP id S234444AbjKBU1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:26:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C29199
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698956735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=VsDqPWH+t/yQGhBndaPGZQVRm/8Po6pc3sidIL9VAUU=;
-        b=ZDWTefKAk2W4iECvBLlsvZQaU9Lamxvn8CO/vF5wVdBxGUxebomrbaoysxsEeU65rhAd6o
-        gJFn9ZjwAwzZ119eLwU5NW/d3pg8xjsXMhzJotKLKXfnwFlVqkuisa19g07OePwNT+A61B
-        rmdhTQK16n7/QsgIhdYnUY2OgEYmhAo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-302-zxaazV-oOC6VFnwO3ikvWQ-1; Thu, 02 Nov 2023 16:25:31 -0400
-X-MC-Unique: zxaazV-oOC6VFnwO3ikvWQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40839252e81so8782805e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 13:25:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698956731; x=1699561531;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VsDqPWH+t/yQGhBndaPGZQVRm/8Po6pc3sidIL9VAUU=;
-        b=wtXILeva2HJStA0Ifrvx+NnybOdNDgyyDD3dGEfMLNwDApbEFRpUBijIqcyAp5ghy7
-         txSU9IIXrGr9yCmTb/txq+fttbefjplUszMth69XTw7I0czI12TmVlSA18W9Fk3kcQ0H
-         YGpqZfLTxCKsRorKmp9AxKh7qQvcEMjMc+mAwsQifRxtC7yapWeXSNT+llSRBk4SVG0y
-         ObFmIUjNyGu5QMfHlzEfmmzna0IOTQyYUzsOY+P25Ue+3xxvxLdxnrhD6X0dLwHi1ft2
-         0cVSvMoCR3pF4DwXUZ51Pi1teTyRy4z256V9VEb9dOvYG4H2uoBdAD8GXD9a97+bj3qX
-         9TXQ==
-X-Gm-Message-State: AOJu0YwdMh4ajMAczuLCsw/7padOotROMp2PElIuhN47W0T0xYFkwP2f
-        N8IQpFpOZjFL63VXOo1Jm+Ryk/Lf8+uLrRpTgy+AHvBCFlnB2GhFbZeCNcnWjFOXh5rqELryceR
-        TmFphkUCS1ckMAMsB4/QHPcEv
-X-Received: by 2002:a05:600c:a03:b0:409:51c2:1192 with SMTP id z3-20020a05600c0a0300b0040951c21192mr7551458wmp.38.1698956730647;
-        Thu, 02 Nov 2023 13:25:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFplHRiBTpNbYrLsxJwABSBvTJKRMM8iJySeuN20lNXUcrfP7RfixdOtEzAI8hMJzfQU66W7Q==
-X-Received: by 2002:a05:600c:a03:b0:409:51c2:1192 with SMTP id z3-20020a05600c0a0300b0040951c21192mr7551431wmp.38.1698956729928;
-        Thu, 02 Nov 2023 13:25:29 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c716:3000:f155:cef2:ff4d:c7? (p200300cbc7163000f155cef2ff4d00c7.dip0.t-ipconnect.de. [2003:cb:c716:3000:f155:cef2:ff4d:c7])
-        by smtp.gmail.com with ESMTPSA id bh5-20020a05600c3d0500b004094e565e71sm227759wmb.23.2023.11.02.13.25.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 13:25:29 -0700 (PDT)
-Message-ID: <927b6339-ac5f-480c-9cdc-49c838cbef20@redhat.com>
-Date:   Thu, 2 Nov 2023 21:25:28 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Sharing page tables across processes (mshare)
-Content-Language: en-US
-To:     Khalid Aziz <khalid.aziz@oracle.com>,
+        Thu, 2 Nov 2023 16:27:30 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03381182;
+        Thu,  2 Nov 2023 13:27:27 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2JL2ar006106;
+        Thu, 2 Nov 2023 20:27:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=/5HeeMOj6MQR+DU0KP56V/JLon76FGUWez1TM6HLNCw=;
+ b=my7pul1RPxmQG8VTvAYrH72tDi8r7poHo/d24qTJA1y9pClOsmBzyOQRzCgZx78EjVL1
+ hWEwIR2Q1Hf9rp+I1ua6EkEduw0STHXzlI5GqAikmMHJy2HtOJfOY+pWUsA5Ujy6iPFV
+ 0Tt6QUlHzbRvZ25A4ciksqop0B9BVCqcC7+8fTbkXAIXlVJfjKa1HWrCN4eFpb6z5p7u
+ cEqDwdC6OKhlw7iLeGqzHRvGR7G6exBukUbSVx9C1Tom09gegPPaBd6xhTXB5e116Qzx
+ MYege59ZsLpkEzttzM6reAFDPKVyAzxu4KVH0QJSYQGBpYYudD5vfXbKv4d2DSvXdHFU iQ== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0swttt0u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Nov 2023 20:27:08 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2KK9OF020068;
+        Thu, 2 Nov 2023 20:27:07 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u0rr963a7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Nov 2023 20:27:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iOZ9JvSgokje0Jdc+VwaWJ0w5XFcOO1QKk2UnVak5xsTG59hlVX1YKzdmIPE4jkOj061rhvFNBWlZIoxEjDM4Q9I+LIgEd+S2V7RX6gH6cO0Bsk3Z8L237ihQv/bEF7MeG9WB7dqJG/5CSKSIlsGw8v8M3Nan/aAf6K1hwKI+E0tAqnd3sBDPJYVrYzid5FPgc6uM2nUGPDCAIiIzp+73a8aW/xFPyoQ0EAcvw+kQ79VK4Y5P3/hNhoFujMgTJYTj0FkSloyOzHuvvPpOPlH/aY6Rr6S0aJZbomdeMCB9mpbGvCgDdgtsBVaJtBXIicktz30R1yD9Rl9cATunxDAyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/5HeeMOj6MQR+DU0KP56V/JLon76FGUWez1TM6HLNCw=;
+ b=MeuwARZ+Df7aE1f3WUUMbMzFbp5fTUbJlkSyuvC39BTqndvP7VV+K7HohSQLBwE/Hr8iMdJnHErIx4Vu+G9ecBTaRmJgKyJNfvHRG0q3AcMA44ZIeH7gB40B/aEwfKM77JQcH9vdmFoFUrmWUXSrf7LWWQ5KReUdGfVrvpmlm+gaegwe7Z7tNoDgDdkC0a1EG5t8NrMvEziHs+fpdUO8NJWluuBzXcDJ9IRyiaYFUlpuplyo1fX5/Ju8uHqA/UiA8K6YEDPvFxCh3aaSqYOaH+T9lOmlSk+tNZ5Vf/e7lF8n8d1Hk1VK9LxCyUbQVBhMbsvVISbY+QLkrVclGAXhKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/5HeeMOj6MQR+DU0KP56V/JLon76FGUWez1TM6HLNCw=;
+ b=yBW9Jwbcru1UOTmqe5969wIeQhtpKoRJ63/UmZlY8AHNBCP1U2pPnA15tPZpFhhRci7tO+ac/SExPXF+Ql3MYJp9J2RjhRGL4nPpxr8z6zMhq7g4YrWnH63k5/a0JyAVCmsfKfSFEfiKtYBSUOYclku8CN5rAa9zWm2x16ojNMI=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by PH8PR10MB6316.namprd10.prod.outlook.com (2603:10b6:510:1cf::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Thu, 2 Nov
+ 2023 20:27:04 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6907.025; Thu, 2 Nov 2023
+ 20:27:04 +0000
+Date:   Thu, 2 Nov 2023 16:27:00 -0400
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     Carlos Llamas <cmllamas@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>, rongwei.wang@linux.alibaba.com,
-        Mark Hemment <markhemm@googlemail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-References: <4082bc40-a99a-4b54-91e5-a1b55828d202@oracle.com>
- <1358598e-2c5b-4600-af54-64bf241dc760@redhat.com>
- <a1d6a3de-502e-4114-a603-01710e30428e@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <a1d6a3de-502e-4114-a603-01710e30428e@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, stable@vger.kernel.org,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH 02/21] binder: fix use-after-free in shinker's callback
+Message-ID: <20231102202700.7mqahdkstuorydfx@revolver>
+References: <20231102185934.773885-1-cmllamas@google.com>
+ <20231102185934.773885-3-cmllamas@google.com>
+ <20231102192051.innr2tbugspgmotw@revolver>
+ <ZUQCBnPYf_fzlWnD@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUQCBnPYf_fzlWnD@google.com>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YT4PR01CA0399.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:108::6) To SN6PR10MB3022.namprd10.prod.outlook.com
+ (2603:10b6:805:d8::25)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|PH8PR10MB6316:EE_
+X-MS-Office365-Filtering-Correlation-Id: 129bb35d-f8e1-4f48-2311-08dbdbe21360
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6WgSJcX7Oj+pVM4YpaCydMtx3b3n7HVNPoBbzTOOt3MFkYGRrL3bDLLVPGmV9+DDPI4U0L7JyPLHibEqIu6birswFGqopTpmeM0MUnr/KCLl5VezseNab0JAEuKCxGzgeJVZPFbSnObCvdghxcaz7p/uArb5eeQjHGet/ILk96v7KlOOOX8ps6j4Jk7WSYLHtDcN9qVJzyshntbumYFJQ/cl90SrXWWAr0NNC1IaZNSDBDlb9Enr6Bp5/eCbma1Cs2bvhOau/hBCWJPwgNw1Ou7h6IY+6uYMYbqqZD4v1DbXEyJnRIhBAoX6Vdj4BCNZAvmPNT08NIh1VLgi5tXKyOcNlEWCKTWfdogJNMhQDPtqQjIFpm2JP/EjRbPP27RDGbpy3zKFVZ18WmBa9U/OiMmJdVJ9f/e8neAeXbDwBMNYFDvu4qJ1HfoF5fByDm/+N4xswnEvcK6fd1w1ts8wJpXErltgKbx3cGgQrKBGU2K43Tv9hsYVPsFDtQvMg7kg7zGQulMR8T8/WDfGV2BoS1G0RjIskgDNEVj9pJUWUy4sKG0gciItdrePp92U9lSB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39860400002)(366004)(136003)(396003)(346002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6486002)(54906003)(66476007)(66556008)(8936002)(66946007)(8676002)(5660300002)(316002)(6916009)(4326008)(2906002)(7416002)(6666004)(478600001)(9686003)(6512007)(1076003)(41300700001)(26005)(6506007)(83380400001)(33716001)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Db2MgH3nRYQrqZK/94aBPNuWu22q7rELq0AlIW8a6w2XBKXdSdHTY/CSYAmv?=
+ =?us-ascii?Q?eD4NuPfsNfOiNYDuQdQNqz5Ya1oWMNNNgIgwUAZWsmfdnCRPOKCsJSKRg0Jr?=
+ =?us-ascii?Q?nRhJKyqIYlgvg4IDO6UT1XOyrfzIWZgb/Ab1r9Hi/uI54uhDPE/WaxYRPuvS?=
+ =?us-ascii?Q?deiaWD13nZ3+s6x69HqQvagJCgJCRHc4ftXENPtRj0FK0TvfKP6K65Ms/Y/t?=
+ =?us-ascii?Q?EpeArkgpEOfNQ0Km2UmfjZGDXTrwXVfmJX/mPyZgZtNXeFHcqb1GVNuFrIZt?=
+ =?us-ascii?Q?zkcVeeOKob/38Vs2sqF7DA0HXXN2ZOoTFDqoyjLxwsJI80qTVyQaS+kqzZRQ?=
+ =?us-ascii?Q?UTLidcUPIthPnxPnzMMN83625PCsJCTSFSxhufQl+GuH3pko9iml/1zqQ2Xu?=
+ =?us-ascii?Q?uhMiyEJSpnYEyL/sgOkuLbxUSroLljuhwHZxUQRNHvumhvhVo/p4CXpQfltW?=
+ =?us-ascii?Q?vhBwRIHnTDD8Yy7xb2SY1ceJ98NRi2iMbl/DyHx+dpbYplCenDHo4WYTk9hZ?=
+ =?us-ascii?Q?v8fJTQJ47E72IW0BNnz6UDdIxvKbtwmI4qGZaYj1e4KBhxRWuu9ctBj2/m+7?=
+ =?us-ascii?Q?xtA9LEZRsrSDoet68ZHHHr1HF/XTziHT4bGihqtjOKD6fhFVH4sM1/SYz3do?=
+ =?us-ascii?Q?3dZA54tXtJWpt91E/QELYa31wx6Fi3kQwonAnRuKC/iI33aMwUbWBxfmQVGE?=
+ =?us-ascii?Q?70ZJkqspZNj+WWRQElxmWcuOwpTNaBMgOklFlsw4zAfpaQBTJl46zVkHRJeu?=
+ =?us-ascii?Q?uyaNTc4IN3272WLyJ9u0dsRApY/9LT8gEO7s0gUWyJhG4nLYen+dszTASKxm?=
+ =?us-ascii?Q?CvEH8YDWruL4+KlXw93kOB0gUThyejx4KlekU2op6sIUhwQ3ssaJYkDNCOmc?=
+ =?us-ascii?Q?CA2Ct1/Hpc5y8p692xv5TWOF8M0JNURFHFz77pJZ4JaYI5omso6lkdq9ONay?=
+ =?us-ascii?Q?YzCaPuzGpsNj2nmT7jbYZpoFJm8KfVEC362W8z7tgs8dxh1NMXvy+MUF7xed?=
+ =?us-ascii?Q?P7m1tCKPTLApDVt5KSI5h38QP4Zka/mgexP+b8XRhIEGoGVK2H9q5Dp7htZK?=
+ =?us-ascii?Q?gkgsB2AK9RqwnIAql5uiNBd75LTrWdmqvH/wmt/knGEmyCGqJpOFVdi6Is+x?=
+ =?us-ascii?Q?Vbfdq+GrTFzXBNuXbh960YKBZEerz2D/nArRUz3OzJQQOqHBYaEcOSKVXZLn?=
+ =?us-ascii?Q?OTIShQpkboOxAIeZH94rRQKuo+03V071Ilp/Sg96MGnvUB7QCnQEEetJruAO?=
+ =?us-ascii?Q?nYqhUgw7Vu1GrUH2VUrwGQrwFPI9jYUBUTIPtnShC20XXvBenFLBvNBOyuwo?=
+ =?us-ascii?Q?9/TVblKZqfwoP5SMOHGUvOPBVul8gYUDR0ETUUtm06d/hA3p/A/aD1TCwKeK?=
+ =?us-ascii?Q?x7M+Z+H8CLRmOY6nhRgPhHxq2hlhWfTRaKCwsaz9GzO64U2vJ/3Av027SrWu?=
+ =?us-ascii?Q?HwcugWvdLsN5M9CvPidhIoH5DCR935DXgLYQaBWoLwh3161iBICRQrFcILkQ?=
+ =?us-ascii?Q?4QTQ2BqWgNsNo2rWap5hbX/i388/K6fqmvUBfxBdTyZSRDWmyqJ91Y0CbO0M?=
+ =?us-ascii?Q?jA27TDLAfgicV6DAeV3ExhNPhxuGN0K3vq4qMQtx?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?QWrGuqlnn5gQ6TL04gT7bx788dNaiSxmrepA7Hm1usV188H1rbkwEwwSyotE?=
+ =?us-ascii?Q?3RoBbhOZL792SzargfyWy5mJpMrHTD3Ktv1xZGL7C3gyqUV37LTuBp7kN1rW?=
+ =?us-ascii?Q?WjJ8b5jURmC8kkcsgLHrSNOkY6hIfd+d6M78Urj87fFHBztZx07cxHttDnbu?=
+ =?us-ascii?Q?pDZasbvv2hCp7A1n6uA+EUJzXQLjmb105K8dxm+xsEoWnL/wnrn0n1TvBrnN?=
+ =?us-ascii?Q?s5LvZgpIYy5DzHpENPUpvUO1n/HgqYFyilbll+FR9iEEV58wlvYW1TfHWOLt?=
+ =?us-ascii?Q?Lgc+AfjKHtL+Np+8l7BDwFR1qWf9VtL6CLyk8naB6OPDdXYmiUREYuazr03n?=
+ =?us-ascii?Q?vrRcXFMArTcSXfeoVKCUiygfO6jarxv/hhyG93O26+lZrdQPFafYsicMpvyM?=
+ =?us-ascii?Q?wPlKsg08hW6vf5fchHXqD4SQYNb6OkfbEXP9SzAK1Lbtshyt7pNT1e5kyvxJ?=
+ =?us-ascii?Q?4NbDEj3/+8NHZRRC1+62m80TnI/8PC48qPiyVA72RRrwEncaL6x+xMpZ7cxg?=
+ =?us-ascii?Q?u5KgMFBxg/724YCj03qdGUFSGoYQefpnowNpB5J7zb+DOWvCadZD7gOWBBqV?=
+ =?us-ascii?Q?MmjU6I847iMxUilhTD8nsLwnJWm0DexbH9vwxL5LsNPXPF7OAhIqY3WtG/ab?=
+ =?us-ascii?Q?q2kFcfplf6WEb9QTnmldnVmvZWedb5MMuw5sbEOK02E466e2Jdf/k40sS1/4?=
+ =?us-ascii?Q?zJZH8LkTplo8lGyjRzkqzG2mh71aRNwYRbYdj7GF4mZlRStLdoAuxLF+yNcp?=
+ =?us-ascii?Q?sSyfnNQla5yR6c8UWEeHpVyG2dxAuqA/qjFblx2+7vHZa03HGAhx6ZbC6vJe?=
+ =?us-ascii?Q?P3vq6QQD/K4aV0YCeqa1IOrBIAcvOPqiJve3UOM4574yj9Q9/QkLssfZTtpJ?=
+ =?us-ascii?Q?GQaHHj3Eqxn1s6cRm4MIkRw8vY3TeUaI1a5+o3ZFZk7NQcIO/RNTkeqVsGX+?=
+ =?us-ascii?Q?9+dtL1thOw2KCZQloESe7Xx8I+0Zvtb8milN23MgtAF3lT6xYGCcRZc34sgG?=
+ =?us-ascii?Q?Q0NS2PYb2UgJjByw20Zj1zpIjM1fq3+uegFWuAAdyBU4NE96Oa5nsMw5Q4Wa?=
+ =?us-ascii?Q?kfysTJlsvUsT9Mkwi0STkRmnw/oA1AEx45dEJcMHO9O4WP9GeH8=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 129bb35d-f8e1-4f48-2311-08dbdbe21360
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 20:27:03.9804
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H9/5wXsUsvGgsnzhPrvykag/hyLqernCnbe0eqaK+qNmFp/ScRReD1nNfgsI1pit+q/lUAJ9z7kQ/h/+CUg8oA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6316
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-02_10,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 mlxlogscore=649 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311020166
+X-Proofpoint-ORIG-GUID: AT4CY0BvCZHcVemfPvnpHdI-ov6bf9DJ
+X-Proofpoint-GUID: AT4CY0BvCZHcVemfPvnpHdI-ov6bf9DJ
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.23 23:40, Khalid Aziz wrote:
-> On 11/1/23 08:02, David Hildenbrand wrote:
->>
->>> ----------
->>> What next?
->>> ----------
->>>
->>> There were some more discussions on this proposal while I was on
->>> leave for a few months. There is enough interest in this feature to
->>> continue to refine this. I will refine the code further but before
->>> that I want to make sure we have a common understanding of what this
->>> feature should do.
->>
->> Did you follow-up on the alternatives discussed in a bi-weekly mm session on this topic or is there some other reason
->> you are leaving that out?
+* Carlos Llamas <cmllamas@google.com> [231102 16:09]:
 
-Hi Khalid,
+...
+> 
+> > > diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+> > > index e3db8297095a..c4d60d81221b 100644
+> > > --- a/drivers/android/binder_alloc.c
+> > > +++ b/drivers/android/binder_alloc.c
+> > > @@ -1005,7 +1005,9 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
+> > >  		goto err_mmget;
+> > >  	if (!mmap_read_trylock(mm))
+> > >  		goto err_mmap_read_lock_failed;
+> > > -	vma = binder_alloc_get_vma(alloc);
+> > > +	vma = vma_lookup(mm, page_addr);
+> > > +	if (vma && vma != binder_alloc_get_vma(alloc))
+> > > +		goto err_invalid_vma;
+> > 
+> > Doesn't this need to be:
+> > if (!vma || vma != binder_alloc_get_vma(alloc))
+> > 
+> > This way, we catch a different vma and a NULL vma.
+> > 
+> > Or even, just:
+> > if (vma != binder_alloc_get_vma(alloc))
+> > 
+> > if the alloc vma cannot be NULL?
+> > 
+> 
+> If the vma_lookup() is NULL then we still need to isolate and free the
+> given binder page and we obviously skip the zap() in this case.
+
+I would have thought if there was no VMA, then the entire process could
+be avoided.  Thanks for clarifying.
 
 > 
-> I did a poor job of addressing it :) What we are trying to implement here is to allow disjoint processes to share page
-> tables AND page protection across all processes. It is not the intent to simply catch a process trying to write to a
-> protected page. Mechanism already exists for that. The intent is when page protection is changed for one process, it
-> applies instantly to all processes. Using mprotect to catch a change in page protection continues the same problem
-> database is experiencing. Database wants to be able to change read/write permissions for terrabytes of data for all
-> clients very quickly and simultaneously. Today it requires coordination across 1000s of processes to accomplish that. It
-
-Right, because you have to issue an mprotect() in each and every process 
-context ...
-
-> is slow and impacts database performance significantly. For each process to have to handle a fault/signal whenever page
-> protection is changed impacts every process. By sharing same PTE across all processes, any page protection changes apply
-
-... and everyone has to get the fault and mprotect() again,
-
-Which is one of the reasons why I said that mprotect() is simply the 
-wrong tool to use here.
-
-You want to protect a pagecache page from write access, catch write 
-access and handle it, to then allow write-access again without 
-successive fault->signal. Something similar is being done by filesystems 
-already with the writenotify infrastructure I believe. You just don't 
-get a signal on write access, because it's all handled internally in the FS.
-
-Literally anything is better than using mprotect() here (uffd-wp would 
-also be a faster alternative, but it similarly suffers from the 
-multi-process setup; back when uffd-wp was introduced for shmem, I 
-already raised that a an alternative for multi-process use would be to 
-write-protect on the pagecache level instead of on individual VMAs. But 
-Peter's position was that uffd-wp as is might also be helpful for some 
-use cases that are single-process and we simply want to support shmem as 
-well).
-
-> instantly to all processes (there is the TLB shootdown issue but as discussed in the meeting, it can be handled). The
-> mshare proposal implements the instant page protection change while bringing in benefits of shared page tables at the
-> same time. So the two requirements of this feature are not separable.
-
-Right, and I think we should talk about the problem we are trying to 
-solve and not a solution to the problem. Because the current solution 
-really requires sharing of page tables, which I absolutely don't like.
-
-It absolutely makes no sense to bring in mprotect and VMAs when wanting 
-to catch all write accesses to a pagecache page. And because we still 
-decide to do so, we have to come up with ways of making page table 
-sharing a user-visible feature with weird VMA semantics.
-
-> It is a requirement of the feature to bypass
-> per-process vma permissions. Processes that require per-process vma permissions would not use mshare and thus the
-> requirement for a process to opt into mshare. Matthew, your thoughts?
+> However, if we receive a random unexpected vma because of a corrupted
+> address or similar, then the whole process is skipped.
 > 
-> Hopefully I understood your suggestion to separate the two requirements correctly. We can discuss it at another
-> alignment meeting if that helps.
-
-Yes, I believe there are cleaner alternatives that
-
-(a) don't use mprotect()
-(b) don't imply page table sharing (although it's a reasonable thing
-     to use internally as an implementation detail to speed things up
-     further)
-
-If it's some API to write-protect on the pagecache level + page table 
-sharing as optimization or some modified form of mshare (below), I can't 
-tell.
-
+> Thus, why we use the check above.
 > 
->>
->> To be precise, I raised that both problems should likely be decoupled (sharing of page tables as an optimization, NOT
->> using mprotect to catch write access to pagecache pages). And that page table sharing better remains an implementation
->> detail.
->>
->> Sharing of page tables (as learned by hugetlb) can easily be beneficial to other use cases -- for example, multi-process
->> VMs; no need to bring in mshare. There was the concern that it might not always be reasonable to share page tables, so
->> one could just have some kind of hint (madvise? mmap flag?) that it might be reasonable to try sharing page tables. But
->> it would be a pure internal optimization. Just like it is for hugetlb we would unshare as soon as someone does an
->> mprotect() etc. Initially, you could simply ignore any such hint for filesystems that don't support it. Starting with
->> shmem sounds reasonable.
->>
->> Write access to pagecache pages (or also read-access?) would ideally be handled on the pagecache level, so you could
->> catch any write (page tables, write(), ... and eventually later read access if required) and either notify someone
->> (uffd-style, just on a fd) or send a signal to the faulting process. That would be a new feature, of course. But we do
->> have writenotify infrastructure in place to catch write access to pagecache pages already, whereby we inform the FS that
->> someone wants to write to a PTE-read-only pagecache page.
->>
->> Once you combine both features, you can easily update only a single shared page table when updating the page protection
->> as triggered by the FS/yet-to-be-named-feature and have all processes sharing these page tables see the change in one go.
->>
->>>
->>> As a result of many discussions, a new distinct version of
->>> original proposal has evolved. Which one do we agree to continue
->>> forward with - (1) current version which restricts sharing to PMD sized
->>> and aligned file mappings only, using just a new mmap flag
->>> (MAP_SHARED_PT), or (2) original version that creates an empty page
->>> table shared mshare region using msharefs and mmap for arbitrary
->>> objects to be mapped into later?
-> 
-> At the meeting Matthew expressed desire to support mapping in any objects in the mshare'd region which makes this
-> feature much more versatile. That was the intent of the original proposal which was not fd and MMAP_SHARED_PT based.
-> That is (2) above. The current version was largely based upon your suggestion at LSF/MM to restrict this feature to file
-> mappings only.
-
-It's been a while, but I remember that the feedback in the room was 
-primarily that:
-(a) the original mshare approach/implementation had a very dangerous
-     smell to it. Rerouting mmap/mprotect/... is just absolutely nasty.
-(b) that pure page table sharing itself might be itself a reasonable
-     optimization worth having.
-
-I still think generic page table sharing (as a pure optimization) can be 
-something reasonable to have, and can help existing use cases without 
-the need to modify any software (well, except maybe give a hint that it 
-might be reasonable).
-
-As said, I see value in some fd-thingy that can be mmaped, but is 
-internally assembled from other fds (using protect ioctls, not mmap) 
-with sub-protection (using protect ioctls, not mprotect). The ioctls 
-would be minimal and clearly specified. Most madvise()/uffd/... would 
-simply fail when seeing a VMA that mmaps such a fd thingy. No rerouting 
-of mmap, munmap, mprotect, ...
-
-Under the hood, one can use a MM to manage all that and share page 
-tables. But it would be an implementation detail.
-
-> 
->>
->> So far my opinion on this is unchanged: turning an implementation detail (sharing of page tables) into a feature to
->> bypass per-process VMA permissions sounds absolutely bad to me.
-> 
-> I agree if a feature silently bypasses per-process VMA permissions, that is a terrible idea. This is why we have
-> explicit opt-in requirement and intent is to bypass per-vma permissions by sharing PTE, as opposed to shared PTE
-> bringing in the feature of bypassing per-vma permissions.
-
-Let's talk about cleaner alternatives, at least we should try :)
-
-> 
->>
->> The original concept of mshare certainly sounds interesting, but as discussed a couple of times (LSF/mm), it similarly
->> sounds "dangerous" the way it was originally proposed.
->>
->> Having some kind of container that multiple process can mmap (fd?), and *selected* mmap()/mprotect()/ get rerouted to
->> the container could be interesting; but it might be reasonable to then have separate operations to work on such an fd
->> (ioctl), and *not* using mmap()/mprotect() for that. And one might only want to allow to mmap that fd with a superset of
->> all permissions used inside the container (and only MAP_SHARED), and strictly filter what we allow to map into such a
->> container. page table sharing would likely be an implementation detail.
->>
->> Just some random thoughts (some of which I previously raised). Probably makes sense to discuss that in a bi-weekly mm
->> meeting (again, this time with you as well).
->>
-> 
-> I appreciate your thoughts and your helping move this discussion forward.
-
-Yes, I'm happy to discuss further. In a bi-weekly MM meeting, off-list 
-or here.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> --
+> Carlos Llamas
