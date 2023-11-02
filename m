@@ -2,381 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5796A7DFB85
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AC27DFB8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 21:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345235AbjKBU2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 16:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        id S1345060AbjKBU3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 16:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbjKBU2I (ORCPT
+        with ESMTP id S229462AbjKBU3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 16:28:08 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B06F186
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:28:04 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9c2a0725825so213644066b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 13:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698956883; x=1699561683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D2tG9+LYPAjXHoqgeXN+dTD/rVonlm13np1kfFquZ3k=;
-        b=bkICOSDb4F3r1IdawU1vbqh3ShUXONlR244zHp8BFYBLeG1pJsQOcnMpQfB5YLyLGx
-         T7NciSjfvdyGZbuZoYoUIAirrtivb8s0cvX/MbvXggkQIVP5PAqpAwIDp3IqgbgpDycz
-         SUtXXHC6DMEEWrB30PYEx+3/9IDFsP/ZJsrVG0fcXNzGnzQnlea0CmiiEdicu+Y09LDL
-         3mswKjHPLwUzfhHFQacmQOJjGpKe+28JjyNrM3DKMqqvG0OYmDInnv3pous76ApNiwHc
-         KNyJNbib0iNHK42gWkP0OHwAju6Y8grux34N8sbfA9IXx1yxoTdF8grwj6hirqht4GIs
-         kT+g==
+        Thu, 2 Nov 2023 16:29:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BB219D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 13:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698956913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=56DyDqdEXuR0JDckJHzCKtyxShUi13+QbfqQakjzXUM=;
+        b=UnuSvus7aPJNpHTEVJKUKgyGxH9rY8A9lvOtIVwargw9Mx/MaOMX623nyNLNZr6dl9We5O
+        g+IAoCEHgXWz7QWO816r+43QGa/nZX768oi01xHqihbPwUzxwp4S/GPkGIYRFVcLAUwVFr
+        M636D8nKb8Axn5uElmxdmzwbPxZ4s2E=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-345-xut619krOUCrH8VW9lmY3A-1; Thu, 02 Nov 2023 16:28:31 -0400
+X-MC-Unique: xut619krOUCrH8VW9lmY3A-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c50d73e212so16618681fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 13:28:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698956883; x=1699561683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D2tG9+LYPAjXHoqgeXN+dTD/rVonlm13np1kfFquZ3k=;
-        b=lUM+1+/4TNem3NujOIzyR+ZbBXvsRzfs+XOpgN/OqWhbPmDMksBAssVe55BwLBMHaf
-         WUe9ysLpGtZV8l5KFo1J8GJG8hqdviV1YibJF2yk5gWdMGAmaZpNBFjGGQn5Ln7b5WOD
-         JalTrWwjw/U0/51CgCw9GWZ3qpbbez2ood6gzcgq9VJ/dbZgYgzJ3gzKkeIAkXXV978P
-         9C4B0ityJg0RdxLvspzkrFCTqRbjcvwH3JVacVRRea/2YId4DgNFvG8E/VDwpEZberWm
-         Zq6InDYOxwIxvI/6Bv1Kni+fiDEE5EVGJC1jDTL++ZEtwN78KrOxuo83oT6ogexsZbES
-         eDQQ==
-X-Gm-Message-State: AOJu0YxIMv8nmAspG8NcPCoPvoqd6PN57Q+HG3wcmrdkcmQjBqGoSOCn
-        vfFy6OoTUacY5A7pgyXvrSw5KW0Yi/BLbfudNuY0jw==
-X-Google-Smtp-Source: AGHT+IGopUO2TFYjW2zMpI8RZLl67y2PbZV0MEimJN6sYLHh5XVKfwjFtdjxfx/e9iEddzJSgGQc6t30fNaR9NI4vvA=
-X-Received: by 2002:a17:907:3c22:b0:9dc:2281:2f0a with SMTP id
- gh34-20020a1709073c2200b009dc22812f0amr1266432ejc.50.1698956882559; Thu, 02
- Nov 2023 13:28:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698956910; x=1699561710;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=56DyDqdEXuR0JDckJHzCKtyxShUi13+QbfqQakjzXUM=;
+        b=h2cxGUE9Zk51NxcUN+Oh7zGdpshl/Qk46qBa7FaDoc/zxtNytYq81bbqjsB4cajUTg
+         u//3YA51huwDeRH1cN01pVQxNB96BkuhcNhmrQvEMN3dhYdllyS/au8vhgkYN1c7mInj
+         Zf0zotnIx0dnjNn+uCYKaTlHSsDdZD48gwaz+Ys/uJ1sV7RU4dvKBK/2xk3K/GdzCzIP
+         FOV2twi++koA5lQGb/WviDuoXqfqhtVf5YgzS//Az/cKuLzm4JDTmp8E/fELowPp9WtU
+         tPHxhUTez97b5ujmhQh2PEZgJH3FYS7v6x9b2VKwYzZ4rmmvx18fcZV3MavGhajuVJfp
+         pz6g==
+X-Gm-Message-State: AOJu0YwIPwf7ICMQq3mCJZzzC+PxnPH/pQG4tO7FADI1mOAJdvGkv80Z
+        Dlb69ZFpGn70H0fwv3x0so+7Ko2X0M1VOHLFARIMQKkOKPSDVsOl0EoE2hS6IFX9T4xhvBdPvfy
+        OqINmuxGks4ZOUg26aYDqCWVY
+X-Received: by 2002:a2e:a793:0:b0:2c5:8b1:7561 with SMTP id c19-20020a2ea793000000b002c508b17561mr19286400ljf.10.1698956910034;
+        Thu, 02 Nov 2023 13:28:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGnqs0Mxvj+h7m3Wt9gDD87PWJYPL1gESigSucuPc3UJt3PUXMZMHB642WeXW8CU1/OcsmiJQ==
+X-Received: by 2002:a2e:a793:0:b0:2c5:8b1:7561 with SMTP id c19-20020a2ea793000000b002c508b17561mr19286354ljf.10.1698956909628;
+        Thu, 02 Nov 2023 13:28:29 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c716:3000:f155:cef2:ff4d:c7? (p200300cbc7163000f155cef2ff4d00c7.dip0.t-ipconnect.de. [2003:cb:c716:3000:f155:cef2:ff4d:c7])
+        by smtp.gmail.com with ESMTPSA id j11-20020a5d618b000000b0032db4825495sm228854wru.22.2023.11.02.13.28.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 13:28:29 -0700 (PDT)
+Message-ID: <efbcce1f-e5ad-4e82-a684-96c6d609a097@redhat.com>
+Date:   Thu, 2 Nov 2023 21:28:27 +0100
 MIME-Version: 1.0
-References: <20231102200202.920461-1-nphamcs@gmail.com>
-In-Reply-To: <20231102200202.920461-1-nphamcs@gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 2 Nov 2023 13:27:24 -0700
-Message-ID: <CAJD7tkY8iPBo99+1gdsSRMNDu4jkVKz8rb=W+xk9=GE0y=kSuw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] zswap: memcontrol: implement zswap writeback disabling
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+Content-Language: en-US
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     Wei Xu <weixugc@google.com>, Sourav Panda <souravpanda@google.com>,
+        corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org,
+        Greg Thelen <gthelen@google.com>
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com>
+ <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
+ <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
+ <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
+ <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com>
+ <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
+ <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com>
+ <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
+ <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com>
+ <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
+ <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com>
+ <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 1:02=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
->
-> During our experiment with zswap, we sometimes observe swap IOs due to
-> occasional zswap store failures and writebacks-to-swap. These swapping
-> IOs prevent many users who cannot tolerate swapping from adopting zswap
-> to save memory and improve performance where possible.
->
-> This patch adds the option to disable this behavior entirely: do not
-> writeback to backing swapping device when a zswap store attempt fail,
-> and do not write pages in the zswap pool back to the backing swap
-> device (both when the pool is full, and when the new zswap shrinker is
-> called).
->
-> This new behavior can be opted-in/out on a per-cgroup basis via a new
-> cgroup file. By default, writebacks to swap device is enabled, which is
-> the previous behavior.
->
-> Note that this is subtly different from setting memory.swap.max to 0, as
-> it still allows for pages to be stored in the zswap pool (which itself
-> consumes swap space in its current form).
->
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 11 +++++++
->  Documentation/admin-guide/mm/zswap.rst  |  6 ++++
->  include/linux/memcontrol.h              | 17 +++++++++++
->  mm/memcontrol.c                         | 38 +++++++++++++++++++++++++
->  mm/page_io.c                            |  6 ++++
->  mm/shmem.c                              |  3 +-
->  mm/zswap.c                              |  9 ++++++
->  7 files changed, 88 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 606b2e0eac4b..18c4171392ea 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1672,6 +1672,17 @@ PAGE_SIZE multiple when read back.
->         limit, it will refuse to take any more stores before existing
->         entries fault back in or are written out to disk.
->
-> +  memory.zswap.writeback
-> +       A read-write single value file which exists on non-root
-> +       cgroups.  The default value is "1".
-> +
-> +       When this is set to 0, all swapping attempts to swapping devices
-> +       are disabled. This included both zswap writebacks, and swapping d=
-ue
-> +       to zswap store failure.
-> +
-> +       Note that this is subtly different from setting memory.swap.max t=
-o
-> +       0, as it still allows for pages to be written to the zswap pool.
-> +
->    memory.pressure
->         A read-only nested-keyed file.
->
-> diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin=
--guide/mm/zswap.rst
-> index 522ae22ccb84..b987e58edb70 100644
-> --- a/Documentation/admin-guide/mm/zswap.rst
-> +++ b/Documentation/admin-guide/mm/zswap.rst
-> @@ -153,6 +153,12 @@ attribute, e. g.::
->
->  Setting this parameter to 100 will disable the hysteresis.
->
-> +Some users cannot tolerate the swapping that comes with zswap store fail=
-ures
-> +and zswap writebacks. Swapping can be disabled entirely (without disabli=
-ng
-> +zswap itself) on a cgroup-basis as follows:
-> +
-> +       echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
-> +
->  When there is a sizable amount of cold memory residing in the zswap pool=
-, it
->  can be advantageous to proactively write these cold pages to swap and re=
-claim
->  the memory for other use cases. By default, the zswap shrinker is disabl=
-ed.
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 95f6c9e60ed1..e3a3a06727dc 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -219,6 +219,12 @@ struct mem_cgroup {
->
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
->         unsigned long zswap_max;
-> +
-> +       /*
-> +        * Prevent pages from this memcg from being written back from zsw=
-ap to
-> +        * swap, and from being swapped out on zswap store failures.
-> +        */
-> +       bool zswap_writeback;
->  #endif
->
->         unsigned long soft_limit;
-> @@ -1615,6 +1621,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_dat=
-a_t *pgdat, int order,
->  {
->         return 0;
->  }
-> +
-> +static inline bool mem_cgroup_swap_disk_enabled(struct mem_cgroup *memcg=
-)
-> +{
-> +       return false;
-> +}
-> +
+On 02.11.23 18:11, Pasha Tatashin wrote:
+>>> Wei, noticed that all other fields in /proc/meminfo are part of
+>>> MemTotal, but this new field may be not (depending where struct pages
+>>
+>> I could have sworn that I pointed that out in a previous version and
+>> requested to document that special case in the patch description. :)
+> 
+> Sounds, good we will document that parts of per-page may not be part
+> of MemTotal.
+> 
+>>> are allocated), so what would be the best way to export page metadata
+>>> without redefining MemTotal? Keep the new field in /proc/meminfo but
+>>> be ok that it is not part of MemTotal or do two counters? If we do two
+>>> counters, we will still need to keep one that is a buddy allocator in
+>>> /proc/meminfo and the other one somewhere outside?
+>>
+>> IMHO, we should just leave MemTotal alone ("memory managed by the buddy
+>> that could actually mostly get freed up and reused -- although that's
+>> not completely true") and have a new counter that includes any system
+>> memory (MemSystem? but as we learned, as separate files), including most
+>> memblock allocations/reservations as well (metadata, early pagetables,
+>> initrd, kernel, ...).
+>>
+>> The you would actually know how much memory the system is using
+>> (exclusing things like crashmem, mem=, ...).
+>>
+>> That part is tricky, though -- I recall there are memblock reservations
+>> that are similar to the crashkernel -- which is why the current state is
+>> to account memory when it's handed to the buddy under MemTotal -- which
+>> is straight forward and simply.
+> 
+> It may be simplified if we define MemSystem as all the usable memory
+> provided by firmware to Linux kernel.
+> For BIOS it would be the "usable" ranges in the original e820 memory
+> list before it's been modified by the kernel based on the parameters.
 
-This seems to be a leftover from a prior version.
+There are some cases to consider, like "mem=", crashkernel, and some 
+more odd things (I believe there are some on ppc at least for hw tracing 
+buffers).
 
->  #endif /* CONFIG_MEMCG */
->
->  static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item =
-idx)
-> @@ -1931,6 +1943,7 @@ static inline void count_objcg_event(struct obj_cgr=
-oup *objcg,
->  bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
->  void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
->  void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-> +bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
->  #else
->  static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
->  {
-> @@ -1944,6 +1957,10 @@ static inline void obj_cgroup_uncharge_zswap(struc=
-t obj_cgroup *objcg,
->                                              size_t size)
->  {
->  }
-> +static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup =
-*memcg)
-> +{
-> +       return false;
-> +}
->  #endif
->
->  #endif /* _LINUX_MEMCONTROL_H */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e43b5aba8efc..b68c613c23a9 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5545,6 +5545,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *pa=
-rent_css)
->         WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
->         memcg->zswap_max =3D PAGE_COUNTER_MAX;
-> +       WRITE_ONCE(memcg->zswap_writeback, true);
->  #endif
->         page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
->         if (parent) {
-> @@ -8177,6 +8178,12 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *=
-objcg, size_t size)
->         rcu_read_unlock();
->  }
->
-> +bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-> +{
-> +       return cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg
-> +                       && READ_ONCE(memcg->zswap_writeback);
-> +}
-> +
->  static u64 zswap_current_read(struct cgroup_subsys_state *css,
->                               struct cftype *cft)
->  {
-> @@ -8209,6 +8216,31 @@ static ssize_t zswap_max_write(struct kernfs_open_=
-file *of,
->         return nbytes;
->  }
->
-> +static int zswap_writeback_show(struct seq_file *m, void *v)
-> +{
-> +       struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
-> +
-> +       seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
-> +       return 0;
-> +}
-> +
-> +static ssize_t zswap_writeback_write(struct kernfs_open_file *of,
-> +                               char *buf, size_t nbytes, loff_t off)
-> +{
-> +       struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
-> +       int zswap_writeback;
-> +       ssize_t parse_ret =3D kstrtoint(strstrip(buf), 0, &zswap_writebac=
-k);
-> +
-> +       if (parse_ret)
-> +               return parse_ret;
-> +
-> +       if (zswap_writeback !=3D 0 && zswap_writeback !=3D 1)
-> +               return -EINVAL;
-> +
-> +       WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
-> +       return nbytes;
-> +}
-> +
->  static struct cftype zswap_files[] =3D {
->         {
->                 .name =3D "zswap.current",
-> @@ -8221,6 +8253,12 @@ static struct cftype zswap_files[] =3D {
->                 .seq_show =3D zswap_max_show,
->                 .write =3D zswap_max_write,
->         },
-> +       {
-> +               .name =3D "zswap.writeback",
-> +               .flags =3D CFTYPE_NOT_ON_ROOT,
-> +               .seq_show =3D zswap_writeback_show,
-> +               .write =3D zswap_writeback_write,
-> +       },
->         { }     /* terminate */
->  };
->  #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
-> diff --git a/mm/page_io.c b/mm/page_io.c
-> index cb559ae324c6..5e606f1aa2f6 100644
-> --- a/mm/page_io.c
-> +++ b/mm/page_io.c
-> @@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct writeba=
-ck_control *wbc)
->                 folio_end_writeback(folio);
->                 return 0;
->         }
-> +
-> +       if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))) {
-> +               folio_mark_dirty(folio);
-> +               return AOP_WRITEPAGE_ACTIVATE;
-> +       }
-> +
+All information should be in the memblock allocator, maybe we just have 
+to find some ways to better enlighten it what an allocation is (e.g., 
+memmap), and what some other reason to exclude memory is (crash kernel, 
+mem=, ACPI tables, odd memory holes, ...).
 
-I am not a fan of this, because it will disable using disk swap if
-"zswap_writeback" is disabled, even if zswap is disabled or the page
-was never in zswap. The term zswap_writeback makes no sense here tbh.
+-- 
+Cheers,
 
-I am still hoping someone else will suggest better semantics, because
-honestly I can't think of anything. Perhaps something like
-memory.swap.zswap_only or memory.swap.types which accepts a string
-(e.g. "zswap"/"all",..).
+David / dhildenb
 
-Don't take my suggestions strongly because I am not very fond of them.
-
-Can anyone else come back with better naming/semantics for "use zswap
-but nothing else when swapping"?
-
->         __swap_writepage(&folio->page, wbc);
->         return 0;
->  }
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index cab053831fea..e5044678de8b 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1514,8 +1514,7 @@ static int shmem_writepage(struct page *page, struc=
-t writeback_control *wbc)
->
->                 mutex_unlock(&shmem_swaplist_mutex);
->                 BUG_ON(folio_mapped(folio));
-> -               swap_writepage(&folio->page, wbc);
-> -               return 0;
-> +               return swap_writepage(&folio->page, wbc);
->         }
->
->         mutex_unlock(&shmem_swaplist_mutex);
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 260e01180ee0..42a478d1a21f 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -590,6 +590,9 @@ static unsigned long zswap_shrinker_scan(struct shrin=
-ker *shrinker,
->         struct zswap_pool *pool =3D shrinker->private_data;
->         bool encountered_page_in_swapcache =3D false;
->
-> +       if (!mem_cgroup_zswap_writeback_enabled(sc->memcg))
-> +               return SHRINK_STOP;
-> +
->         nr_protected =3D
->                 atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_pro=
-tected);
->         lru_size =3D list_lru_shrink_count(&pool->list_lru, sc);
-> @@ -620,6 +623,9 @@ static unsigned long zswap_shrinker_count(struct shri=
-nker *shrinker,
->         struct lruvec *lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(sc->=
-nid));
->         unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
->
-> +       if (!mem_cgroup_zswap_writeback_enabled(memcg))
-> +               return 0;
-> +
->  #ifdef CONFIG_MEMCG_KMEM
->         cgroup_rstat_flush(memcg->css.cgroup);
->         nr_backing =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHI=
-FT;
-> @@ -935,6 +941,9 @@ static int shrink_memcg(struct mem_cgroup *memcg)
->         struct zswap_pool *pool;
->         int nid, shrunk =3D 0;
->
-> +       if (!mem_cgroup_zswap_writeback_enabled(memcg))
-> +               return -EINVAL;
-> +
->         /*
->          * Skip zombies because their LRUs are reparented and we would be
->          * reclaiming from the parent instead of the dead memcg.
-> --
-> 2.34.1
