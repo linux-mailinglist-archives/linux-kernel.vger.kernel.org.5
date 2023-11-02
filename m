@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87C57DF611
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFA77DF612
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347488AbjKBPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
+        id S1347703AbjKBPN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345957AbjKBPMy (ORCPT
+        with ESMTP id S1346414AbjKBPMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:12:54 -0400
+        Thu, 2 Nov 2023 11:12:55 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E681A2
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:12:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C190181
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698937965; x=1730473965;
+  t=1698937966; x=1730473966;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=wc6Dw16jrK2JuaQigVkusqKe77bPKOF3ZrL7ybVE950=;
-  b=mY+NxiR2KLNLY/QfcNVAnyYqNn1ei4wWZajfHIazNUU3vgDNORHMXLct
-   WIhCSgxhKIMePEKGJa7VbWe5Tbqf1aN8y6k1yxlwggqqXXeuD9Nk4+iCV
-   lSdBPENYtelq+PvfuPHBIZDUQ6DPbMXo/A/nXCC7xk70nydnp8PjtCNC9
-   OZW5L9vi8h2/mKs3RZ61pRftLNWayCgs0kZhm6Ck6lGG0h4whg7nE6gZC
-   nUp4pkENO1xyo6E6oSatxGFMbCDvLdwRrGRI1xI7Qp0vH9ZV4qiwJIFQ7
-   nGyAAV+jSYhSff8Lul+kLFuDXYlXMxtT2V56tXi/zhH0/gWQVApXddB1Q
+  bh=EwelSoZ61k9tZJuVFvgxr/RQChgXvtfD52YtSTJ+m/s=;
+  b=kCQ/YfB6dv3DozGZmO3Whqpyrom519b9WRFRNw/fc2WKnKsJmV3Pi3Mz
+   DN/qlCRCLP1nNFDu4ttBfxASh+w6tZqDyjiTHwr6MC8X5a0sj0/7orGT6
+   c9JLNDKGXqfvx84e0NCjhjIJl1NjiYVKL5EVkmhwO+rCpRW0gXOdtvUVF
+   uXoXau2HX9/m4YPsTvQdjNZhrcQ/QIlaDQl7SAsxhN2amYTGQ4SoxxGVJ
+   wID4ZbPdQmDmQqCgCOKOgXUCqqowB3UTNuzk+z+JV85LUAgWsQO9m67jh
+   FZAtVq+VMjU5rD329Af46GppQ7cRO8TtuTyK/PIGzhzH/pXl3UaaJaSzt
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="373773456"
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="373773461"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="373773456"
+   d="scan'208";a="373773461"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
   by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:12:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="711174060"
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="711174065"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="711174060"
+   d="scan'208";a="711174065"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orsmga003.jf.intel.com with ESMTP; 02 Nov 2023 08:12:36 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id C426A5F9; Thu,  2 Nov 2023 17:12:30 +0200 (EET)
+        id D074C618; Thu,  2 Nov 2023 17:12:30 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Jani Nikula <jani.nikula@intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -52,10 +52,11 @@ Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 05/15] drm/i915/dsi: bxt/icl GPIO set value do not need gpio source
-Date:   Thu,  2 Nov 2023 17:12:18 +0200
-Message-Id: <20231102151228.668842-6-andriy.shevchenko@linux.intel.com>
+        Hans de Goede <hdegoede@redhat.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>
+Subject: [PATCH v3 06/15] drm/i915/dsi: Replace while(1) with one with clear exit condition
+Date:   Thu,  2 Nov 2023 17:12:19 +0200
+Message-Id: <20231102151228.668842-7-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231102151228.668842-1-andriy.shevchenko@linux.intel.com>
 References: <20231102151228.668842-1-andriy.shevchenko@linux.intel.com>
@@ -71,47 +72,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jani Nikula <jani.nikula@intel.com>
+Move existing condition to while(), so it will be clear on what
+circumstances the loop is successfully finishing.
 
-Drop the unused parameter.
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-index f977d63a0ad4..4af43cf3cee0 100644
+index 4af43cf3cee0..290a112f1b63 100644
 --- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
 +++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-@@ -346,7 +346,7 @@ static void chv_gpio_set_value(struct intel_connector *connector,
- }
+@@ -702,13 +702,10 @@ static void intel_dsi_vbt_exec(struct intel_dsi *intel_dsi,
+ 	if (connector->panel.vbt.dsi.seq_version >= 3)
+ 		data += 4;
  
- static void bxt_gpio_set_value(struct intel_connector *connector,
--			       u8 gpio_source, u8 gpio_index, bool value)
-+			       u8 gpio_index, bool value)
- {
- 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
- 	/* XXX: this table is a quick ugly hack. */
-@@ -486,13 +486,13 @@ static const u8 *mipi_exec_gpio(struct intel_dsi *intel_dsi, const u8 *data)
- 	if (native)
- 		icl_native_gpio_set_value(i915, gpio_number, value);
- 	else if (DISPLAY_VER(i915) >= 11)
--		bxt_gpio_set_value(connector, gpio_source, gpio_index, value);
-+		bxt_gpio_set_value(connector, gpio_index, value);
- 	else if (IS_VALLEYVIEW(i915))
- 		vlv_gpio_set_value(connector, gpio_source, gpio_number, value);
- 	else if (IS_CHERRYVIEW(i915))
- 		chv_gpio_set_value(connector, gpio_source, gpio_number, value);
- 	else
--		bxt_gpio_set_value(connector, gpio_source, gpio_index, value);
-+		bxt_gpio_set_value(connector, gpio_index, value);
+-	while (1) {
++	while (*data != MIPI_SEQ_ELEM_END) {
+ 		u8 operation_byte = *data++;
+ 		u8 operation_size = 0;
  
- 	return data + size;
- }
+-		if (operation_byte == MIPI_SEQ_ELEM_END)
+-			break;
+-
+ 		if (operation_byte < ARRAY_SIZE(exec_elem))
+ 			mipi_elem_exec = exec_elem[operation_byte];
+ 		else
 -- 
 2.40.0.1.gaa8946217a0b
 
