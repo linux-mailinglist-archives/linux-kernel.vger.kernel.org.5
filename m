@@ -2,145 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473317DF8FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4E37DF90D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjKBRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
+        id S233834AbjKBRpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbjKBRlj (ORCPT
+        with ESMTP id S229534AbjKBRp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:41:39 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1856191;
-        Thu,  2 Nov 2023 10:41:36 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c509d5ab43so17446711fa.0;
-        Thu, 02 Nov 2023 10:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698946895; x=1699551695; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=BsIKUWuakJM0P+NQHmV9kFiVxREoAkLhqEdhljFcHzE=;
-        b=H5kh6/3W/3R5AwpjYBjqKMzTf227Pb1tOZ7wf5pzp4BqLws0T2x/5vwyeasN5N+DA9
-         Z9a4j6leHOmAiuHmUoxW5cyuqwBIE+7nlT1CwdcgXKZ21ecPRL2pcTtwNM6o0QB4dtBB
-         ETDphyWxnkMbv9/RyxBuy28yMtSFdui44Atp2OtkZJbyvN6cx8Qsd8pBu0AceuDnWm6W
-         cQY9DSiGBzc/6yucv7hgxMxVmbXK1bUmoJn+Xqj2Jmd22mNioTz2VOBkuZzNdQGMYzfq
-         xpPgg4jo2C88oODL7R7fCgNLuHxsa7pTnTrGK5+BXg00C05xJ/bZ2gqQra1IoKFCv6Mh
-         srFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698946895; x=1699551695;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BsIKUWuakJM0P+NQHmV9kFiVxREoAkLhqEdhljFcHzE=;
-        b=iS2jsb3pW/1BP8PneQuDnvLATiTfGwcwkv11yWw+qrdA//LFT9csOFORv5XAWKG6m/
-         Tj2v2ncLMjApN81wImDNUCF1Darh4QUisccGbr4ZD4n80CzDPJ1tIReYmkj3DKII10RJ
-         u3TJUr8rks3RzRLbLdZBZSkoa8D++KZqjy1iPu9l6RcRhXqdODSoOeM4NWOpe02Pi36d
-         Qv9DfoeabyrHxetvDKhvO9hqgt4hd2rk+7oNCuIDnEdJFrkCuZ+IOtTbKu5mZhPNI/Mm
-         BTalRa5x6Ww4nq+yJ3/PjMj9SSNczc9XCrTCO3QhNlUlpy+pbkIwCoz4MlldO8Ch+cGH
-         eDoQ==
-X-Gm-Message-State: AOJu0Yy/2IJ5wBynz9LKuimeVoJM4WK+kaKOy08NkeGYOqGWduJHPmwR
-        9piotwbYcxgZVqR3vMCP2pY=
-X-Google-Smtp-Source: AGHT+IENtA1mpDpZZhOH5Fzcpvn279NJqkgApaEtOnwzK72I7DN6xdShP3XuBPOj8axyWokJHlrufQ==
-X-Received: by 2002:a2e:7411:0:b0:2bc:dcd6:97b1 with SMTP id p17-20020a2e7411000000b002bcdcd697b1mr14378173ljc.47.1698946894783;
-        Thu, 02 Nov 2023 10:41:34 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id l26-20020a05600c1d1a00b004063cd8105csm3657217wms.22.2023.11.02.10.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 10:41:34 -0700 (PDT)
-Message-ID: <6543df4e.050a0220.e42f1.2222@mx.google.com>
-X-Google-Original-Message-ID: <ZUPfSyzUeKplgYSH@Ansuel-xps.>
-Date:   Thu, 2 Nov 2023 18:41:31 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH v3 3/4] net: phy: aquantia: add firmware
- load support
-References: <20231102150032.10740-1-ansuelsmth@gmail.com>
- <20231102150032.10740-3-ansuelsmth@gmail.com>
- <e632a285-9cb2-4dc9-a4a2-f57e454b8ffe@lunn.ch>
+        Thu, 2 Nov 2023 13:45:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4D0182
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698947119; x=1730483119;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Lsv6LCCERrXEZ6+vMlRwcKrtfS+obUEef2nO4ynJUOA=;
+  b=AJEePLZ/BbZSqO6oGrVroXlLw4fhUVBwrOjANS12Ew0sqSkJmhf8pc2P
+   McN1rFIdVumz+quInzO1NUiNXE6UOj4EqXINwGxuagzLQ7AA3L7aFSIT9
+   JeOaP6dQXcsfUTegiQCLxYNTqUw2eDAit5xrsQ9Voj8wTUR6bkXKWiLK/
+   D7C+b/v+Lp7oT0FVsAfkCyYx7cfOCItqvwINn7SNIdwHDNLyj+yyZPtV+
+   8WFTfPcO/cCqz66WreJUEeWz6CBwKA3jydOlQ4vXJp2R9GxnHy0eNPU5n
+   u6T3UmMLAPHgg0g5IUrFdjblHLcF7oRJeVKFWmmrkn7upSQZh9kqFEs+/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="475019328"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="475019328"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 10:45:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1092792340"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="1092792340"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Nov 2023 10:45:16 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qybko-0001jL-1F;
+        Thu, 02 Nov 2023 17:45:14 +0000
+Date:   Fri, 3 Nov 2023 01:44:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chester Lin <clin@suse.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthew Nunez <matthew.nunez@nxp.com>,
+        Phu Luu An <phu.luuan@nxp.com>,
+        Stefan-Gabriel Mirea <stefan-gabriel.mirea@nxp.com>,
+        Larisa Grigore <larisa.grigore@nxp.com>,
+        Ghennadi Procopciuc <Ghennadi.Procopciuc@oss.nxp.com>,
+        Andrei Stefanescu <andrei.stefanescu@nxp.com>,
+        Radu Pirea <radu-nicolae.pirea@nxp.com>
+Subject: drivers/pinctrl/nxp/pinctrl-s32cc.c:830:62: warning: '%u' directive
+ output may be truncated writing between 1 and 10 bytes into a region of size
+ 5
+Message-ID: <202311030159.iyUGjNGF-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e632a285-9cb2-4dc9-a4a2-f57e454b8ffe@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 06:37:40PM +0100, Andrew Lunn wrote:
-> > +/* AQR firmware doesn't have fixed offsets for iram and dram section
-> > + * but instead provide an header with the offset to use on reading
-> > + * and parsing the firmware.
-> > + *
-> > + * AQR firmware can't be trusted and each offset is validated to be
-> > + * not negative and be in the size of the firmware itself.
-> > + */
-> > +static inline bool aqr_fw_validate_get(size_t size, size_t offset, size_t get_size)
-> > +{
-> > +	return size + offset > 0 && offset + get_size <= size;
-> > +}
-> 
-> Please don't user inline in .c files. The compiler is better at
-> deciding than we are.
->
+Hi Chester,
 
-OK.
+FYI, the error/warning still remains.
 
-> Also, i wounder about size + offset > 0. size_t is unsigned. So they
-> cannot be negative. So does this test make sense?
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+commit: fd84aaa8173d3ff86f8df2009921336a1ea53a8a pinctrl: add NXP S32 SoC family support
+date:   8 months ago
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231103/202311030159.iyUGjNGF-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311030159.iyUGjNGF-lkp@intel.com/reproduce)
 
-The idea was to check case where it's subtracted too much. (example
-where we check the CRC at the end of the fw) but since it's unsigned i
-guess it will always be zero. I will drop. (or should i use ssize_t?)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311030159.iyUGjNGF-lkp@intel.com/
 
-> > +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size,
-> > +		       enum aqr_fw_src fw_src)
-> > +{
-> > +	u16 calculated_crc, read_crc, read_primary_offset;
-> > +	u32 iram_offset = 0, iram_size = 0;
-> > +	u32 dram_offset = 0, dram_size = 0;
-> > +	char version[VERSION_STRING_SIZE];
-> > +	u32 primary_offset = 0;
-> > +	int ret;
-> > +
-> > +	/* extract saved CRC at the end of the fw
-> > +	 * CRC is saved in big-endian as PHY is BE
-> > +	 */
-> > +	ret = aqr_fw_get_be16(data, size - sizeof(u16), size, &read_crc);
-> > +	if (ret) {
-> > +		phydev_err(phydev, "bad firmware CRC in firmware\n");
-> > +		return ret;
-> > +	}
-> 
-> So if size < sizeof(u16), we get a very big positive number. The > 0
-> test does nothing for you here, but the other half of the test does
-> trap the issue.
-> 
-> So i think you can remove the > 0 test.
->
+All warnings (new ones prefixed by >>):
 
-Yes that single check was done because of this, but didn't notice size_t
-is unsigned and it won't ever fall in negative cases.
+   drivers/pinctrl/nxp/pinctrl-s32cc.c: In function 's32_pinctrl_probe_dt':
+>> drivers/pinctrl/nxp/pinctrl-s32cc.c:830:62: warning: '%u' directive output may be truncated writing between 1 and 10 bytes into a region of size 5 [-Wformat-truncation=]
+     830 |                          sizeof(ipctl->regions[i].name), "map%u", i);
+         |                                                              ^~
+   drivers/pinctrl/nxp/pinctrl-s32cc.c:830:58: note: directive argument in the range [0, 4294967294]
+     830 |                          sizeof(ipctl->regions[i].name), "map%u", i);
+         |                                                          ^~~~~~~
+   drivers/pinctrl/nxp/pinctrl-s32cc.c:829:17: note: 'snprintf' output between 5 and 14 bytes into a destination of size 8
+     829 |                 snprintf(ipctl->regions[i].name,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     830 |                          sizeof(ipctl->regions[i].name), "map%u", i);
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +830 drivers/pinctrl/nxp/pinctrl-s32cc.c
+
+   796	
+   797	static int s32_pinctrl_probe_dt(struct platform_device *pdev,
+   798					struct s32_pinctrl *ipctl)
+   799	{
+   800		struct s32_pinctrl_soc_info *info = ipctl->info;
+   801		struct device_node *np = pdev->dev.of_node;
+   802		struct device_node *child;
+   803		struct resource *res;
+   804		struct regmap *map;
+   805		void __iomem *base;
+   806		int mem_regions = info->mem_regions;
+   807		u32 nfuncs = 0;
+   808		u32 i = 0;
+   809	
+   810		if (!np)
+   811			return -ENODEV;
+   812	
+   813		if (mem_regions == 0) {
+   814			dev_err(&pdev->dev, "mem_regions is 0\n");
+   815			return -EINVAL;
+   816		}
+   817	
+   818		ipctl->regions = devm_kzalloc(&pdev->dev,
+   819					      mem_regions * sizeof(*(ipctl->regions)),
+   820					      GFP_KERNEL);
+   821		if (!ipctl->regions)
+   822			return -ENOMEM;
+   823	
+   824		for (i = 0; i < mem_regions; ++i) {
+   825			base = devm_platform_get_and_ioremap_resource(pdev, i, &res);
+   826			if (IS_ERR(base))
+   827				return PTR_ERR(base);
+   828	
+   829			snprintf(ipctl->regions[i].name,
+ > 830				 sizeof(ipctl->regions[i].name), "map%u", i);
+   831	
+   832			s32_regmap_config.name = ipctl->regions[i].name;
+   833			s32_regmap_config.max_register = resource_size(res) -
+   834							 s32_regmap_config.reg_stride;
+   835	
+   836			map = devm_regmap_init_mmio(&pdev->dev, base,
+   837							&s32_regmap_config);
+   838			if (IS_ERR(map)) {
+   839				dev_err(&pdev->dev, "Failed to init regmap[%u]\n", i);
+   840				return PTR_ERR(map);
+   841			}
+   842	
+   843			ipctl->regions[i].map = map;
+   844			ipctl->regions[i].pin_range = &info->mem_pin_ranges[i];
+   845		}
+   846	
+   847		nfuncs = of_get_child_count(np);
+   848		if (nfuncs <= 0) {
+   849			dev_err(&pdev->dev, "no functions defined\n");
+   850			return -EINVAL;
+   851		}
+   852	
+   853		info->nfunctions = nfuncs;
+   854		info->functions = devm_kzalloc(&pdev->dev,
+   855					       nfuncs * sizeof(struct s32_pmx_func),
+   856					       GFP_KERNEL);
+   857		if (!info->functions)
+   858			return -ENOMEM;
+   859	
+   860		info->ngroups = 0;
+   861		for_each_child_of_node(np, child)
+   862			info->ngroups += of_get_child_count(child);
+   863		info->groups = devm_kzalloc(&pdev->dev,
+   864					    info->ngroups * sizeof(struct s32_pin_group),
+   865					    GFP_KERNEL);
+   866		if (!info->groups)
+   867			return -ENOMEM;
+   868	
+   869		i = 0;
+   870		for_each_child_of_node(np, child)
+   871			s32_pinctrl_parse_functions(child, info, i++);
+   872	
+   873		return 0;
+   874	}
+   875	
 
 -- 
-	Ansuel
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
