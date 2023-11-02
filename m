@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AC27DF300
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC42E7DF307
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376353AbjKBM6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
+        id S1376372AbjKBM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKBM6O (ORCPT
+        with ESMTP id S229665AbjKBM7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:58:14 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5812A112
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:58:08 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a84204e7aeso11256337b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:58:08 -0700 (PDT)
+        Thu, 2 Nov 2023 08:59:06 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5430F121
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:58:58 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b497c8575aso958570b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698929887; x=1699534687; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dCCONn8E1n3ofwv6haSRwqO8XLggJEnfeXJadE+g31c=;
-        b=Jf8C7iKKsSMX0bRonOaIBv3hBaPaEWu8RmmeuRKP0MqTFIjTe8eTndCLSJM/cGj92b
-         /TMmfmAjX9ufPr0Jg5o/eJNCzhtwAS1ctTUb7j3BBxftu/1q3zg2HSL7r2dlvr28/Qef
-         vxGDxQfCqs1fx34d0BzzR93nnPKFopHsae7i6MrfFVrxxvUTwliy6Z83p0CH9tbJWT5z
-         lHRTCqYzaUGbvJFfb5IQpFzqv0w24wnpbQOVJq+EhlmUpVhousxbmTpa8MBViKx/Stgj
-         7pK7SWEXnJ6VVRGvi0HCvB6bUGkY7cEePIvJtV/T137KlHckStamwtbDxhg4qWIpYwS0
-         IXEA==
+        d=linaro.org; s=google; t=1698929938; x=1699534738; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nda+509MTdCcAVWnvqFmQxdRWuc9tM4Iop32+RA3uJI=;
+        b=RmcStXAWix7qlknAkqx5yQFYCAJVukqqHWjujWeya71mEuNsb5KxZRSS6wnLFy6QYr
+         OGEfTOjvyjOISMhyd1Qa1nBUrt4q3M6UzSHcvMEjuMEQAG5QS2g1NXJlTetEX22Uh1+q
+         s5q9q/WweykMqTJGu6dsFii1SpCkY32z0d35A5YVXtYcWG8TjSn/YX99GAiUixIb/lhj
+         BN/1ibxP0K7yCzQRmNyQzCoJycAz0Eah6NqwTYzU9JQYzHy+GTf4dVfQ7+SN3hFcnQEP
+         qpY34sqA0E2rw5HUHRf6hhGa5RoXBv9bM2dkSndKvV4NvMXp5b1FKc2sTWQXHUYa1FBJ
+         u1iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698929887; x=1699534687;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dCCONn8E1n3ofwv6haSRwqO8XLggJEnfeXJadE+g31c=;
-        b=mrlKhi67Zg97cAANoAjy2oNtDNpb003h/hYTEG3KJPy/LbAmlqdHhd537cX7n7UrFF
-         ZOi+ED7K1LBgG7P4J7jpCfjx4cWkV9vZ2Oho7iRvpL8TnsvDFburumqRaIXvUp+NnQeK
-         n1o1BoWjyp6uxjm8SgB693Qys4R3Bkm72KSdcpCJDlBXOI905UbigD//vrbn9HNnPEvw
-         2gcyEYVFCtL2lZj1MWYrZ2760jmZszb5bMlzvK16zw0cLb4zhOeKbexDysqDIV+mAfQ8
-         IuQKQbx0OiJN5+lxU7e/AtjcowG74PWfITet1ztOnMW//+y7S/udtQy0Mohbmy7D4kmN
-         rvaQ==
-X-Gm-Message-State: AOJu0Yz1pXkDxQ9SsCRpjnbZuUhTTivTJVql7lxuZEPPhoOhLGP7vVe3
-        NESBu4RCdsEsh6aP1toPTXBagyGXvvFzdBCZuDm1zQ==
-X-Google-Smtp-Source: AGHT+IHcgHYJhzP5Y7dFQbPW7i51z51wvIBnxWK2BKswP/EfWsiw4NQNlN+H23Rr8yHC8tbOVmgUopyu2cV9Ga7Vhgk=
-X-Received: by 2002:a81:ac09:0:b0:5a7:d412:af32 with SMTP id
- k9-20020a81ac09000000b005a7d412af32mr19926040ywh.10.1698929887555; Thu, 02
- Nov 2023 05:58:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698929938; x=1699534738;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nda+509MTdCcAVWnvqFmQxdRWuc9tM4Iop32+RA3uJI=;
+        b=J1rqx/RnChaVkT/vaFt+WU3R5BOK68ivP/GKyjSnyTYG2hmCjgwNuBxx0meLC5Skit
+         6xsjXCCIh4YHukPjmqIUsNo7YgCyXfhkyxSjQjLfKUmg43jVBKDiJqZ50ewzkhWjJaZZ
+         6igeO5yGLRvzvbQB8NV/l076tCOrRrzn7/aqMLjtbhsa8Fz6Vp3vlhPDA1vfnlTnxnkb
+         KRGBnyIQ500YOoM6vaoIXvw9AZpzcoFw9rhMYRqyBWEbqBKV5VKvqbg3R460KG4mBvon
+         Ts8GUh24sjgiHyrIwb7WWcH5E4kmPxITA0fODkL4BESysECkBJ2WFpsrPWLiMLTcReeS
+         MkTA==
+X-Gm-Message-State: AOJu0YzcI5Js32R53XfQKemgFncXsJzF5IoUtnbdSdWdtPb6Yc+zmWBh
+        jhUbVluIZxQETqyuU5IOPsecJcokz4/IcrNA/CRolw==
+X-Google-Smtp-Source: AGHT+IGcERc9A5+LQJd0yCaWrk5coa9BWF3xAQl9PA2emohs1RVO0PyRtm3wTujla4WbJcSj/gYbaELHViLae3BeBtU=
+X-Received: by 2002:a05:6a20:7d88:b0:16b:8067:23a7 with SMTP id
+ v8-20020a056a207d8800b0016b806723a7mr23055795pzj.24.1698929937710; Thu, 02
+ Nov 2023 05:58:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 2 Nov 2023 13:57:56 +0100
-Message-ID: <CACRpkdY1Ckc6SQDKKMEVkzOLe8jHNDA=P-7AF_W4QbVb75DFkQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/17] pinctrl: intel: Use NOIRQ PM helper
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20231026170913.32605-1-vincent.guittot@linaro.org>
+ <20231026170913.32605-2-vincent.guittot@linaro.org> <c9e89355-9503-4623-9320-e4a4f57dcd98@arm.com>
+In-Reply-To: <c9e89355-9503-4623-9320-e4a4f57dcd98@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 2 Nov 2023 13:58:46 +0100
+Message-ID: <CAKfTPtDB50ytNap_XhiNtopZ8KLMVvJEspaEfsTOXS_TPKtkaA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] sched/schedutil: rework performance estimation
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, rafael@kernel.org,
+        viresh.kumar@linaro.org, qyousef@layalina.io,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com, wyes.karny@amd.com, beata.michalska@arm.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -72,16 +72,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 1:07=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, 2 Nov 2023 at 13:03, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 26/10/2023 19:09, Vincent Guittot wrote:
+>
+> [...]
+>
+> > @@ -153,14 +152,38 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+> >       return cpufreq_driver_resolve_freq(policy, freq);
+> >  }
+> >
+> > +unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
+> > +                              unsigned long min,
+> > +                              unsigned long max)
+> > +{
+> > +     unsigned long target;
+> > +     struct rq *rq = cpu_rq(cpu);
+> > +
+> > +     if (rt_rq_is_runnable(&rq->rt))
+> > +             return max;
+> > +
+> > +     /* Provide at least enough capacity for DL + IRQ */
+> > +     target = min;
+> > +
+> > +     actual = map_util_perf(actual);
+> > +     /* Actually we don't need to target the max performance */
+> > +     if (actual < max)
+> > +             max = actual;
+> > +
+> > +     /*
+> > +      * Ensure at least minimum performance while providing more compute
+> > +      * capacity when possible.
+> > +      */
+> > +     return max(target, max);
+>
+> The superfluous `unsigned long target` is still there?
 
-> Intel pin control drivers use NOIRQ variant of the PM callbacks.
-> To make them smaller and less error prone against different
-> kernel configurations (with possible defined but not used variables)
-> switch to use NOIRQ PM helper.
+Yeah, I forgot to add the change in this version but it's in the next one
 
-Makes sense. The series:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+>
+>   return max(min, max) is much cleaer.
+>
+> [...]
