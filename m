@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 446D37DED68
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F9C7DED71
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 08:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344075AbjKBHd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 03:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S1344171AbjKBHga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 03:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234353AbjKBHd0 (ORCPT
+        with ESMTP id S234353AbjKBHg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 03:33:26 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ACF128
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:33:20 -0700 (PDT)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D6DB9667;
-        Thu,  2 Nov 2023 08:33:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698910381;
-        bh=laYSoHqIWHQNbO7AzIweJ9rM6mr5Mp4/bdBblDZOxuQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=E/UZfgBgSMmjelaZad6QeiWIQiYk5G6Igs9H1p2xcspvx1zFOoH+oe2K1LFqFD4Nd
-         K2u10gJkVETK+jTSxnGmzF3oARPEapqNgoMPrnDfFFzn3XGjYetxrAoKmMpWeGauRD
-         Uz145xMP0bwGgrXI8mrmKMP7P5NbUv61B/NucB5w=
-Message-ID: <8d82bde2-8861-49e4-9796-3bd74b89194b@ideasonboard.com>
-Date:   Thu, 2 Nov 2023 09:33:15 +0200
+        Thu, 2 Nov 2023 03:36:28 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EB912C
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 00:36:23 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a92782615dso7992697b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 00:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698910582; x=1699515382; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=02u/Cspi365LCx8HCd9FoPltB+qzXC3rZzncvR1kE0U=;
+        b=uHUO+98b41tsNsBxdgCssSk91V7EqJfuiDcMUWf0qst9NzA5+3JxSYcHdTefvMQQSY
+         PhEd/CKQMZ2lmdjD3ntwQU1mo6LC8UN08nrs3W9vc/bwwrikluxYPbeiSERGHOX/k/4j
+         r8VRGWWx7eJhdMUUJ857YR0k6pH33bIGhHTfta5GJqTYv9hBRC//V7NqWn5KQ5hGZ64T
+         0fBGG5NyJQwXXZwipPx6cEsrCVo93/L1J5NQPrYNOM42g+cE2nmFbWMXZUS3Q2T/Ds7o
+         8tXOMpbAp43BzMVryPezxeRlY/uYUXANudjRQSmM2FS+DgXgie0hOeV5PPm30o6nAClZ
+         Zoqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698910582; x=1699515382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=02u/Cspi365LCx8HCd9FoPltB+qzXC3rZzncvR1kE0U=;
+        b=sAw/fZdr0QQv6z/bXu6aRI7vPU3fI1orI3DW6NvpP4e94QONvxYDXtKhn6VX5av3nB
+         GbMNGmlV9vpWY2LTd1+l0S7ps/PfSrXhSbMyJt60ZNB6Uhy29Nq/2auuk2Bd5zgdDfRO
+         +57RZCyRN1vZY9L9zyAdSPJTXOWJjocNzNmBiKxHYtv/lmFEkyv7BcBQnGhjZLyrlbus
+         DgowR3EV8syFVv6IsEoDC2xOUT12amNm+L91xJW/Lt5YiIF902/y5+KuVfclkm/b80iu
+         ub1V0E8n0phBuXQS2xfEcjIjFGzpvKO2S6xP06T6fM0rmYjiShnx23qzJXdgTZKUF9HQ
+         JS5Q==
+X-Gm-Message-State: AOJu0YysH+g3SeJDm46Mn6qyL+JEBKsGJSss3SKuFsHMNaiObZcpk4JP
+        TbHlXOgpK8QAfRzW8Hbcbg0zF1O4KCZy2Xv58QcNxQ==
+X-Google-Smtp-Source: AGHT+IHcCjbjYppSjP6Dm3lf3ZtNlK+vHOYrwcD8HkVUNTog60tOSFAWYJQ/h5fN/5eg1eQ9CgJ0QQrxj+dDfj+ee1Q=
+X-Received: by 2002:a81:6c57:0:b0:5ae:732b:ec1c with SMTP id
+ h84-20020a816c57000000b005ae732bec1cmr15987159ywc.31.1698910582265; Thu, 02
+ Nov 2023 00:36:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/10] drm/tidss: Fix dss reset
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
- <20231101-tidss-probe-v1-7-45149e0f9415@ideasonboard.com>
- <20231101143059.GW12764@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231101143059.GW12764@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231030155340.3468528-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231030155340.3468528-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 2 Nov 2023 08:36:11 +0100
+Message-ID: <CACRpkdb3wLAZfU+_E0r5Rr_HD-bdFpf7K6bMD6dqiK1Ryv7NAQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] pinctrl: tangier: Move default strength assignment
+ to a switch-case
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Raag Jadav <raag.jadav@intel.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,71 +72,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2023 16:30, Laurent Pinchart wrote:
-> Hi Tomi,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Nov 01, 2023 at 11:17:44AM +0200, Tomi Valkeinen wrote:
->> The probe function calls dispc_softreset() before runtime PM is enabled
->> and without enabling any of the DSS clocks. This happens to work by
->> luck, and we need to make sure the DSS HW is active and the fclk is
->> enabled.
->>
->> To fix the above, add a new function, dispc_init_hw(), which does:
->>
->> - pm_runtime_set_active()
->> - clk_prepare_enable(fclk)
->> - dispc_softreset().
->>
->> This ensures that the reset can be successfully accomplished.
->>
->> Note that we use pm_runtime_set_active(), not the normal
->> pm_runtime_get(). The reason for this is that at this point we haven't
->> enabled the runtime PM yet and also we don't want the normal resume
->> callback to be called: the dispc resume callback does some initial HW
->> setup, and it expects that the HW was off (no video ports are
->> streaming). If the bootloader has enabled the DSS and has set up a
->> boot time splash-screen, the DSS would be enabled and streaming which
->> might lead to issues with the normal resume callback.
-> 
-> I think the right way to do this would be, in probe(), to
-> 
-> - power on the device
-> - enable runtime PM, masking the device as active
-> - at end of probe, calling pm_runtime_put_autosuspend()
+On Mon, Oct 30, 2023 at 4:54=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Can you explain what that would accomplish, or why the code in this 
-patch is wrong?
+> iWhen ->pin_config_set() is called from the GPIO library (assumed
+> GpioIo() ACPI resource), the argument can be 1, when, for example,
+> PullDefault is provided. In such case we supply sane default in
+> the driver. Move that default assingment to a switch-case, so
+> it will be consolidated in one place.
+(...)
+> +               case 1: /* Set default strength value in case none is giv=
+en */
 
-If I understand it right, you're suggesting a more "normal" power up at 
-the probe time, and then leaving the DSS enabled, but with autosuspend. 
-That would require powering up, doing a reset, and calling 
-dispc_runtime_resume. Which can be done, but I'm not sure why it's 
-better, as we're not interested in "normal" power up at probe time.
+So where does this 1 come from in the end? That's the piece I
+am missing in this explanation. Somewhere, someone decided
+to pass 1 to indicate "pull to default resistance".
 
-But I can see that my approach looks perhaps a bit odd just by looking 
-at these patches. This work was related to keeping the bootloader's 
-splash screen on the screen for a longer time, i.e. delaying reset.
+Is it coming from ACPI firmware?
 
-For that, I wanted an early function (dispc_init_hw) which would, 
-instead of always resetting the DSS as it does in this version, peek at 
-the DSS hardware, and see if the DSS is already streaming. If no, do a 
-reset and proceed normally. If yes, skip the reset, leave the clocks 
-enabled, and keep DSS PM active.
+Then a comment such as "the firmware author chose to pass 1
+for default pull" should be added to the constant definition in the
+code.
 
-Later, when we'd be doing the first modeset, the driver would do the 
-initial reset.
+Other than that it looks good!
 
-So, that's why I wanted an independent function for the HW probing/init, 
-which is called before runtime PM is enabled, and I did not want normal 
-runtime resume to be called as dispc_runtime_resume() would break the 
-display.
-
-I think a better solution would be to set up the fb of tidss's fbdev to 
-use the reserved memory, used for the boot splash screen. But I didn't 
-figure out a way to do this. But even there we'd like to delay the reset 
-until the first modeset (when the fbdev display is getting enabled).
-
-  Tomi
-
+Yours,
+Linus Walleij
