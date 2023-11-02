@@ -2,170 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5BD7DF4BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632AF7DF4BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376789AbjKBORb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376772AbjKBOR3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1376780AbjKBOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 2 Nov 2023 10:17:29 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DFE187
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:17:26 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41cc537ed54so4936501cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:17:26 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376766AbjKBOR2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Nov 2023 10:17:28 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCEE13A;
+        Thu,  2 Nov 2023 07:17:23 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da30fd994fdso1869151276.1;
+        Thu, 02 Nov 2023 07:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698934645; x=1699539445; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698934642; x=1699539442; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c7O2KSplInLsDb19B+zn/jm8iaKKD/NZ+yWSezVEL04=;
-        b=OsLIgabCoGKVlVZSp8tm2b2oZ9ZHoUwL2ONfJDXKG7vLOh9Gy0Q7creS9+9vSDkWXo
-         J4xO3IfflUSoz3agNqV8SLG0gC3te/x7TZ6sYp2bdeugnbXNHrdXCRBRSWhOzHl2XBY7
-         wGZgK9FUiGVmDp3dikT6mr4V2SLGfpYH3fJHliQdXLxkK67GEghvvvL9gs168X/DP0Gi
-         3e/4Cvdsx7r3PCHKdyc3vDTgChBRl+AE0wFDw/BxswdRpDyk/eUcDLWQUAL3WRayU5k7
-         Z8q5wNFPiOne9g28KQTrHgWxLH4nylI+k2KnZFOk1VzNYCJERVO5Qw6Bos7EnD7outx6
-         Gcmg==
+        bh=ozVCHWs6xPfqFL3sFI7yfrmGIHIbII6d/vJuYQgFLiI=;
+        b=AExWQDybeQm99GEEq3yDnGpdtTqbAtthw9/hEFLNmNmvZYEeNWcsYuXBtz3g37cZcn
+         qBpXPCx8AT4HCSb9Ozyaxx8iv8dJwbL9LmMSt90q2djsfWb6i9FTDWDW3ydbE2+ACs7N
+         GSqueaz2zohv0Ct0qNbtsrBfz6ANCUf16lVvmGmrjOXRYfMQx3+DCTGw019PuvHQ4yA3
+         NAgxAiyYIBnNZtIQjktnCvaOIHjXXrlehaoAQ/BsLF3dVeEMaVkuehi6vUlBDedbS9t8
+         4CvaLo5dYcjhGNeoXyN5d2Tl32f5ZVsAOAmHHoEuwQQ0s5dLwUljJxLXBG8kYrd5vKT6
+         e1BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698934645; x=1699539445;
+        d=1e100.net; s=20230601; t=1698934642; x=1699539442;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c7O2KSplInLsDb19B+zn/jm8iaKKD/NZ+yWSezVEL04=;
-        b=YhXx6ByXAOrJeYvxKYag70iDIrAT8UCUR7OeFdA9/JYSfa48kHdQJAXTMzJd3C7RTF
-         9uBChpBARM+370UgYMvdC7fhdKXYfJOqLMbpYX46ZMrY1jOogDdvdY2ZhdIwdG+ob7OD
-         jtHM8aHlQeva74aVqY8mg2EPj+bJYQOXZesx89FMoJvEF3X66ZriHWz6BG6OnKwWp4nQ
-         wwXxTsSRWW4YyBPUUQurfkq93UvFNFNLV3Tcl0lwK1KuEr5v/iGvDDKG7H+RW0Uv/G2Z
-         gKzEDGo7X8ncXBak+um9YHAfM99oGdZA1sR01B5HIgasADI15gF3T20VjlKgAMWD+Oc/
-         CwUw==
-X-Gm-Message-State: AOJu0YzYSPg3anzbiJU3jdVbr3QeKDFGWxSYasbIv5FogM5mKDTczOVG
-        MgEG3/VE4IupFpyYyo2Xh/unbLGaBkdlXyTB0a9eKw==
-X-Google-Smtp-Source: AGHT+IGAosxm/0woyiCy5wtpQ5hw9PNiMnNT8Y+nXK7zRiDLlPKvw69895suNy2q5wz5DwPz9Dn0X+ha5Vtg4tVBUZc=
-X-Received: by 2002:a05:6214:d88:b0:66d:3a0f:97a with SMTP id
- e8-20020a0562140d8800b0066d3a0f097amr20020837qve.6.1698934645120; Thu, 02 Nov
- 2023 07:17:25 -0700 (PDT)
+        bh=ozVCHWs6xPfqFL3sFI7yfrmGIHIbII6d/vJuYQgFLiI=;
+        b=qfJVZ09+wSZbw6MpLZlLO4cUKB41mTf3TYBn/ybUhKKZ6i43rmic3qpqTSAlFy/aFe
+         kOX1mSCtl/g9yRBnKyf8Mo35HCQ0dYeHwLu5gkUxMGZmuY7V2+Hrlg0/FzVVKrdOF+dD
+         tyVqGoyoafhVaACH8wTcVWeBapbzk3Maf0Ofqi9/Ln6Vj0ubhfu8ItcRN1cnuxQwjBDV
+         8jQCw4pl+cgWSoleFdHoT0DmHUo1VFFaRyTgAkdZIMy1XMI9Q6YsP9aUisRbhvEmRi7k
+         AbRDBU5ZoTDGFtOeheQZpKu3oDqmd+IdWkLkC++86X+cCJqwlYJhg7J/9Ot04BvboQtL
+         xzJQ==
+X-Gm-Message-State: AOJu0YyGj1HbNm40fEu8vrFgql7V9CxedH21vSC1kFhRcdjgkIN0N02B
+        U2YSa+eW1nnlBkBfd9CGF3RjouajCOIYtKKkHw==
+X-Google-Smtp-Source: AGHT+IERacoiMey2iwNhsLShLPUA+dv2+2NMsVR4WqLZBSHtd4+CnuNZy3L37UIhDtvklAQU92mM44VWIB/g3T1N24I=
+X-Received: by 2002:a25:2fc3:0:b0:da0:8955:34f7 with SMTP id
+ v186-20020a252fc3000000b00da0895534f7mr6351905ybv.23.1698934642161; Thu, 02
+ Nov 2023 07:17:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-19-seanjc@google.com>
-In-Reply-To: <20231027182217.3615211-19-seanjc@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Thu, 2 Nov 2023 14:16:49 +0000
-Message-ID: <CA+EHjTwXdntKGMjb8Zj1M3iVVN5NX6iLwbzJjE72j_eVczTQYw@mail.gmail.com>
-Subject: Re: [PATCH v13 18/35] KVM: x86: "Reset" vcpu->run->exit_reason early
- in KVM_RUN
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
+ <4b354d05b1bb4aa681fff5baca3455d90233951d.camel@gmail.com>
+ <CAEf4Bzbgf-WQSCz8D4Omh3zFdS4oWS6XELnE7VeoUWgKf3cpig@mail.gmail.com>
+ <CACkBjsZen6AA1jXqgmA=uoZZJt5bLu+7Hz3nx3BrvLAP=CqGuA@mail.gmail.com> <CAEf4BzYxC64doNAEcgtPGFirm2pWS=RUQ7JkGG+UMQ17=JqzcA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYxC64doNAEcgtPGFirm2pWS=RUQ7JkGG+UMQ17=JqzcA@mail.gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Thu, 2 Nov 2023 15:17:11 +0100
+Message-ID: <CACkBjsbvk7rNfV0uS8uvrw497ybB1uLvUFvZWPx_SBzSRn2Raw@mail.gmail.com>
+Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 7:23=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
+On Wed, Nov 1, 2023 at 11:45=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Initialize run->exit_reason to KVM_EXIT_UNKNOWN early in KVM_RUN to reduc=
-e
-> the probability of exiting to userspace with a stale run->exit_reason tha=
-t
-> *appears* to be valid.
+> On Wed, Nov 1, 2023 at 2:53=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrot=
+e:
+> >
+> > On Fri, Oct 27, 2023 at 7:51=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Oct 25, 2023 at 10:34=E2=80=AFAM Eduard Zingerman <eddyz87@gm=
+ail.com> wrote:
+> > > >
+> > > > On Tue, 2023-10-24 at 14:40 +0200, Hao Sun wrote:
+> > > > > Hi,
+> > > > >
+> > > > > The following program can trigger a shift-out-of-bounds in
+> > > > > tnum_rshift(), called by scalar32_min_max_rsh():
+> > > > >
+> > > > > 0: (bc) w0 =3D w1
+> > > > > 1: (bf) r2 =3D r0
+> > > > > 2: (18) r3 =3D 0xd
+> > > > > 4: (bc) w4 =3D w0
+> > > > > 5: (bf) r5 =3D r0
+> > > > > 6: (bf) r7 =3D r3
+> > > > > 7: (bf) r8 =3D r4
+> > > > > 8: (2f) r8 *=3D r5
+> > > > > 9: (cf) r5 s>>=3D r5
+> > > > > 10: (a6) if w8 < 0xfffffffb goto pc+10
+> > > > > 11: (1f) r7 -=3D r5
+> > > > > 12: (71) r6 =3D *(u8 *)(r1 +17)
+> > > > > 13: (5f) r3 &=3D r8
+> > > > > 14: (74) w2 >>=3D 30
+> > > > > 15: (1f) r7 -=3D r5
+> > > > > 16: (5d) if r8 !=3D r6 goto pc+4
+> > > > > 17: (c7) r8 s>>=3D 5
+> > > > > 18: (cf) r0 s>>=3D r0
+> > > > > 19: (7f) r0 >>=3D r0
+> > > > > 20: (7c) w5 >>=3D w8         # shift-out-bounds here
+> > > > > 21: exit
+> > > >
+> > > > Here is a simplified example:
+> > > >
+> > > > SEC("?tp")
+> > > > __success __retval(0)
+> > > > __naked void large_shifts(void)
+> > > > {
+> > > >         asm volatile ("                 \
+> > > >         call %[bpf_get_prandom_u32];    \n\
+> > > >         r8 =3D r0;                        \n\
+> > > >         r6 =3D r0;                        \n\
+> > > >         r6 &=3D 0xf;                      \n\
+> > > >         if w8 < 0xffffffff goto +2;     \n\
+> > > >         if r8 !=3D r6 goto +1;            \n\
+> > > >         w0 >>=3D w8;       /* shift-out-bounds here */    \n\
+> > > >         exit;                           \n\
+> > > > "       :
+> > > >         : __imm(bpf_get_prandom_u32)
+> > > >         : __clobber_all);
+> > > > }
+> > > >
+> > >
+> > > With my changes the verifier does correctly derive that r8 !=3D r6 wi=
+ll
+> > > always happen, and thus skips w0 >>=3D w8. But the test itself with
+> >
+> > A similar issue can be triggered after your patch for JNE/JEQ.
+> >
+> > For the following case, the verifier would shift out of bound:
+> >      //  0: r0 =3D -2
+> >       BPF_MOV64_IMM(BPF_REG_0, -2),
+> >       // 1: r0 /=3D 1
+> >       BPF_ALU64_IMM(BPF_DIV, BPF_REG_0, 1),
+> >       // 2: r8 =3D r0
+> >       BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
+> >       // 3: if w8 !=3D 0xfffffffe goto+4
+> >       BPF_JMP32_IMM(BPF_JNE, BPF_REG_8, 0xfffffffe, 4),
+> >       // 4: if r8 s> 0xd goto+3
+> >       BPF_JMP_IMM(BPF_JSGT, BPF_REG_8, 0xd, 3),
+> >       // 5: r4 =3D 0x2
+> >       BPF_MOV64_IMM(BPF_REG_4, 0x2),
+> >       // 6: if r8 s<=3D r4 goto+1
+> >       BPF_JMP_REG(BPF_JSLE, BPF_REG_8, BPF_REG_4, 1),
+> >       // 7: w8 s>>=3D w0 # shift out of bound here
+> >       BPF_ALU32_REG(BPF_ARSH, BPF_REG_8, BPF_REG_0),
+> >       // 8: exit
+> >       BPF_EXIT_INSN(),
+> >
+> >  -------- Verifier Log --------
+> >  func#0 @0
+> >  0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> >  0: (b7) r0 =3D -2                       ; R0_w=3D-2
+> >  1: (37) r0 /=3D 1                       ; R0_w=3Dscalar()
+> >  2: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=
+=3Dscalar(id=3D1)
+> >  3: (56) if w8 !=3D 0xfffffffe goto pc+4         ;
+> > R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D922337203685477=
+5806,umin=3Dumin32=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,sma=
+x32=3D-2,
+> > umax32=3D4294967294,var_off=3D(0xfffffffe; 0xffffffff00000000))
+> >  4: (65) if r8 s> 0xd goto pc+3        ;
+> > R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D13,umin=3Dumin3=
+2=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=3D-2,umax32=
+=3D4294967294,
+> > var_off=3D(0xfffffffe; 0xffffffff00000000))
+> >  5: (b7) r4 =3D 2                        ; R4_w=3D2
+> >  6: (dd) if r8 s<=3D r4 goto pc+1        ; R4_w=3D2 R8_w=3D4294967294
+> >  7: (cc) w8 s>>=3D w0                    ; R0=3D4294967294 R8=3D4294967=
+295
+> >  8: (95) exit
+> >
+> > Here, after #6, reg range is incorrect, seems to be an issue in JSLE ca=
+se
+> > in is_branch_taken(). Is this issue fixed in your patch series?
 >
-> To support fd-based guest memory (guest memory without a corresponding
-> userspace virtual address), KVM will exit to userspace for various memory
-> related errors, which userspace *may* be able to resolve, instead of usin=
-g
-> e.g. BUS_MCEERR_AR.  And in the more distant future, KVM will also likely
-> utilize the same functionality to let userspace "intercept" and handle
-> memory faults when the userspace mapping is missing, i.e. when fast gup()
-> fails.
+> I don't know, but you can easily check by applying my patches on top
+> of bpf-next and then trying your change.
 >
-> Because many of KVM's internal APIs related to guest memory use '0' to
-> indicate "success, continue on" and not "exit to userspace", reporting
-> memory faults/errors to userspace will set run->exit_reason and
-> corresponding fields in the run structure fields in conjunction with a
-> a non-zero, negative return code, e.g. -EFAULT or -EHWPOISON.  And becaus=
-e
-> KVM already returns  -EFAULT in many paths, there's a relatively high
-> probability that KVM could return -EFAULT without setting run->exit_reaso=
-n,
-> in which case reporting KVM_EXIT_UNKNOWN is much better than reporting
-> whatever exit reason happened to be in the run structure.
->
-> Note, KVM must wait until after run->immediate_exit is serviced to
-> sanitize run->exit_reason as KVM's ABI is that run->exit_reason is
-> preserved across KVM_RUN when run->immediate_exit is true.
->
-> Link: https://lore.kernel.org/all/20230908222905.1321305-1-amoorthy@googl=
-e.com
-> Link: https://lore.kernel.org/all/ZFFbwOXZ5uI%2Fgdaf@google.com
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
-Tested-by: Fuad Tabba <tabba@google.com>
+After applying your change, the verifier does not shift out of bound,
+but the range
+is still not correct. See this verifier log:
 
-Cheers,
-/fuad
+-------- Verifier Log --------
+func#0 @0
+0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+0: (b7) r0 =3D -2                       ; R0_w=3D-2
+1: (37) r0 /=3D 1                       ; R0_w=3Dscalar()
+2: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=3Dscal=
+ar(id=3D1)
+3: (56) if w8 !=3D 0xfffffffe goto pc+4         ;
+R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D9223372036854775806=
+,umin=3Dumin32=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=
+=3D-2,umax32=3D4294967294,var_off=3D(0xfffffffe;
+0xffffffff00000000))
+4: (65) if r8 s> 0xd goto pc+3        ;
+R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D13,umin=3Dumin32=3D=
+4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=3D-2,umax32=3D429=
+4967294,var_off=3D(0xfffffffe;
+0xffffffff00000000))
+5: (b7) r4 =3D 2                        ; R4_w=3D2
+6: (dd) if r8 s<=3D r4 goto pc+1        ; R4_w=3D2 R8_w=3D4294967294
+7: (cc) w8 s>>=3D w0                    ; R0=3D4294967294 R8=3Dscalar()
+8: (77) r0 >>=3D 32                     ; R0_w=3D0
+9: (57) r0 &=3D 1                       ; R0_w=3D0
+10: (95) exit
 
->  arch/x86/kvm/x86.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ee3cd8c3c0ef..f41dbb1465a0 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10963,6 +10963,7 @@ static int vcpu_run(struct kvm_vcpu *vcpu)
->  {
->         int r;
->
-> +       vcpu->run->exit_reason =3D KVM_EXIT_UNKNOWN;
->         vcpu->arch.l1tf_flush_l1d =3D true;
->
->         for (;;) {
-> --
-> 2.42.0.820.g83a721a137-goog
->
+from 6 to 8: safe
+
+from 4 to 8: safe
+
+from 3 to 8: safe
+processed 14 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
+
+-------- Test Run Log --------
+RetVal: 1
+
+At #9, the verifier thinks the value of R0 is 0, but it's 1, because
+r0 is -2 all the time before
+#8. The test run also shows return value is 1.
+
+This program can reproduce the above: https://pastebin.com/raw/a0WuXaKh
