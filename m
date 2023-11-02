@@ -2,97 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A7B7DF77D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738027DF784
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347090AbjKBQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+        id S235171AbjKBQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjKBQR1 (ORCPT
+        with ESMTP id S229898AbjKBQTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:17:27 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C736212D
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 09:17:23 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so1832512a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 09:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698941842; x=1699546642; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PcTsZNfH8uzMszz0/Isw0cv0s2mphvKpQCC7w0T8ytw=;
-        b=otdArOjvbDaZKoyqwx/hcM6m8Hh3K6iOLKCtN+GQhLhB0/nxAXccCNBJvy6BXvmJDM
-         0DkbNCSYO1RaKOShRhycnrgMv2PJ8AUUrD0OgQ79+c1rzXkIwsbzpNOdVXPAXTOeVddG
-         UN6KT7YIWvd2wRFlGQS1Uk1r7w5FA93Tw1Ardc7+8k23RHoweiUMMW7GFNNc05bd/X5j
-         U/dXEjyqb5YK+ivGm69knkxPeBpr1Ze3w6rS/5o1+dJ1FGG8oUUm/KUC3N+y+IdY2yMT
-         9X8pYDZhU2EPooYjZUgemmUjteMgjIu8we2/b1nwF+LdBJY1yWQnjKKvNKXmVU3gM3FN
-         LnwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698941842; x=1699546642;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PcTsZNfH8uzMszz0/Isw0cv0s2mphvKpQCC7w0T8ytw=;
-        b=LNiUVktCTCytEeA2O8sMCaxbkClrQFPSGPmDbOOOmA6MZuHmBr/1bghIFPEAJNvsOO
-         xXiTaRkYd3zUr6ypYrSeVhV+k+WF5V1GAz8BaAUkvDlo9Z/aYku5+fsZjyo4OTIoZYLc
-         fi2zufu5m1CPOs9kewJFRucWowEvrpQ+5a/+0A7zehmQJ3GU5K/HzpI045g734e5gpG4
-         aiWNJ0r1hNr/P1d9tKlk/KXStf4zhvX9yry3Ur7u/RZVDBfjhLIotKbGajSY7HuOz5ht
-         JzD985mWJstPJu9ut6S17frNLGyskCF9OAwpuIJws0FVxA1x5/3ruLazXbF6RA9/RjFd
-         lwgQ==
-X-Gm-Message-State: AOJu0YzpxunF2jg89txmNSql7dn8pQQIup6lM+UU3AIyUKJINFMVrpjP
-        AXMx1b0sr9d3cFW97JoZOEDt1g==
-X-Google-Smtp-Source: AGHT+IHdrz4vMAH2qUJu1kwrlt/8tMoVWJZq1nPfpGgOHFt7yVrmQQe4qPXrPH6Wb7NkVdYDUCFrzA==
-X-Received: by 2002:a50:9fe2:0:b0:542:da34:cb7c with SMTP id c89-20020a509fe2000000b00542da34cb7cmr12171037edf.19.1698941842188;
-        Thu, 02 Nov 2023 09:17:22 -0700 (PDT)
-Received: from localhost ([2a01:e0a:448:76e0:588c:af9c:bddc:7245])
-        by smtp.gmail.com with ESMTPSA id a5-20020a509e85000000b0053e3d8f1d9fsm45300edf.67.2023.11.02.09.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 09:17:21 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 02 Nov 2023 17:17:20 +0100
-Message-Id: <CWOGMAUT9MKY.2IBKELIOR1CF7@burritosblues>
-To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
-Cc:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        <jpanis@baylibre.com>, <jneanne@baylibre.com>, <u-kumar1@ti.com>
-Subject: Re: [PATCH v8] rtc: tps6594: Add driver for TPS6594 RTC
-From:   "Esteban Blanc" <eblanc@baylibre.com>
-X-Mailer: aerc 0.14.0
-References: <20231102132616.1130960-1-eblanc@baylibre.com>
- <CAHp75VdvR0H7XVLWGqdZqSgoHprUUPQHGiyWEEaHjTgEbeinqQ@mail.gmail.com>
-In-Reply-To: <CAHp75VdvR0H7XVLWGqdZqSgoHprUUPQHGiyWEEaHjTgEbeinqQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 2 Nov 2023 12:19:13 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4B7D137;
+        Thu,  2 Nov 2023 09:19:09 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9C4E2F4;
+        Thu,  2 Nov 2023 09:19:51 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.166])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E5E73F738;
+        Thu,  2 Nov 2023 09:19:07 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 16:19:05 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, catalin.marinas@arm.com,
+        bpf@vger.kernel.org, kpsingh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 1/3] arm64: patching: Add aarch64_insn_copy()
+Message-ID: <ZUPL-TeBpl1WEN7M@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230908144320.2474-1-puranjay12@gmail.com>
+ <20230908144320.2474-2-puranjay12@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908144320.2474-2-puranjay12@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Nov 2, 2023 at 5:00 PM CET, Andy Shevchenko wrote:
-> On Thu, Nov 2, 2023 at 3:26=E2=80=AFPM Esteban Blanc <eblanc@baylibre.com=
-> wrote:
->
-> > Notes:
-> >     This patch was picked from a series since there is no dependency be=
-tween
-> >     the two patches.
->
-> Not sure if RTC maintainer uses the b4 tool, but as I said in previous
-> email for pinctrl change, there is no need to resend. b4 has an
-> ability to select patches from the series to be applied.
+Hi Puranjay,
 
-Oh that's good to know, I was not aware of that.
-I resent it because there was some minor nits that I fixed on both
-patches.
+On Fri, Sep 08, 2023 at 02:43:18PM +0000, Puranjay Mohan wrote:
+> This will be used by BPF JIT compiler to dump JITed binary to a RX huge
+> page, and thus allow multiple BPF programs sharing the a huge (2MB)
+> page.
+> 
+> The bpf_prog_pack allocator that implements the above feature allocates
+> a RX/RW buffer pair. The JITed code is written to the RW buffer and then
+> this function will be used to copy the code from RW to RX buffer.
+> 
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> Acked-by: Song Liu <song@kernel.org>
+> ---
+>  arch/arm64/include/asm/patching.h |  1 +
+>  arch/arm64/kernel/patching.c      | 41 +++++++++++++++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/patching.h
+> index 68908b82b168..f78a0409cbdb 100644
+> --- a/arch/arm64/include/asm/patching.h
+> +++ b/arch/arm64/include/asm/patching.h
+> @@ -8,6 +8,7 @@ int aarch64_insn_read(void *addr, u32 *insnp);
+>  int aarch64_insn_write(void *addr, u32 insn);
+>  
+>  int aarch64_insn_write_literal_u64(void *addr, u64 val);
+> +void *aarch64_insn_copy(void *dst, const void *src, size_t len);
+>  
+>  int aarch64_insn_patch_text_nosync(void *addr, u32 insn);
+>  int aarch64_insn_patch_text(void *addrs[], u32 insns[], int cnt);
+> diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+> index b4835f6d594b..243d6ae8d2d8 100644
+> --- a/arch/arm64/kernel/patching.c
+> +++ b/arch/arm64/kernel/patching.c
+> @@ -105,6 +105,47 @@ noinstr int aarch64_insn_write_literal_u64(void *addr, u64 val)
+>  	return ret;
+>  }
+>  
+> +/**
+> + * aarch64_insn_copy - Copy instructions into (an unused part of) RX memory
+> + * @dst: address to modify
+> + * @src: source of the copy
+> + * @len: length to copy
+> + *
+> + * Useful for JITs to dump new code blocks into unused regions of RX memory.
+> + */
+> +noinstr void *aarch64_insn_copy(void *dst, const void *src, size_t len)
+> +{
+> +	unsigned long flags;
+> +	size_t patched = 0;
+> +	size_t size;
+> +	void *waddr;
+> +	void *ptr;
+> +	int ret;
+> +
+> +	raw_spin_lock_irqsave(&patch_lock, flags);
+> +
+> +	while (patched < len) {
+> +		ptr = dst + patched;
+> +		size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
+> +			     len - patched);
+> +
+> +		waddr = patch_map(ptr, FIX_TEXT_POKE0);
+> +		ret = copy_to_kernel_nofault(waddr, src + patched, size);
+> +		patch_unmap(FIX_TEXT_POKE0);
+> +
+> +		if (ret < 0) {
+> +			raw_spin_unlock_irqrestore(&patch_lock, flags);
+> +			return NULL;
+> +		}
+> +		patched += size;
+> +	}
+> +	raw_spin_unlock_irqrestore(&patch_lock, flags);
+> +
+> +	caches_clean_inval_pou((uintptr_t)dst, (uintptr_t)dst + len);
 
-Thanks for your time Andy,
+As Xu mentioned, either this needs to use flush_icache_range() to IPI all CPUs
+in the system, or we need to make it the caller's responsibility to do that.
 
---
-Esteban Blanc
-BayLibre
+Otherwise, I think this is functionally ok, but I'm not certain that it's good
+for BPF to be using the FIX_TEXT_POKE0 slot as that will serialize all BPF
+loading, ftrace, kprobes, etc against one another. Do we ever expect to load
+multiple BPF programs in parallel, or is that serialized at a higher level?
+
+Thanks,
+Mark.
