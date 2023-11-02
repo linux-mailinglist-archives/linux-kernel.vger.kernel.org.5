@@ -2,82 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E699C7DF270
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963B77DF271
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376305AbjKBMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
+        id S1376280AbjKBMav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347476AbjKBMa2 (ORCPT
+        with ESMTP id S1347483AbjKBMat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:30:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035391A7
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:30:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 91504C433B9;
-        Thu,  2 Nov 2023 12:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698928223;
-        bh=9ZFkjK8joE0DrTuUP9Z7RKa5d1tIRR1miySEmmgwcuc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MfUgaVpVKEFN+0GmWGjWYx4+7kOWPQvrDi02LZyCGLvaYJaKKo81Uba2TI+tr51tD
-         6jbxtliQrV3IFK/Vsl7/cyan87Id7QBEuWBgT0GW7xlWKbQFRKSCp2tytNMBdyKEan
-         wnMbeow0S0ceBMsFnllzI+pZsJ3/uqHeEphYMl6UKun/MoqYHSrlwaPM6uDnFysk0F
-         1tky3ErYda/wUfOzmammznqhx86+E4QOxEtEQer1B3Huhf+Xg1WUhHKilCO6xAKlCz
-         1Qd9gTXLFNVtwKwK+PS5NLbvwQViwjCxlPE1PigtVC2h9F4vYtC761zZ4K9hGoSz6q
-         YLzzyKp03fBiQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 772C3EAB08B;
-        Thu,  2 Nov 2023 12:30:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 2 Nov 2023 08:30:49 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AFB18B;
+        Thu,  2 Nov 2023 05:30:46 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40839807e82so5594685e9.0;
+        Thu, 02 Nov 2023 05:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698928244; x=1699533044; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8ZqG4eXApU2XHK/8xC8VON8f1IHU1prc7SAhVA2sCKE=;
+        b=MKkPDNGw7eEYiNg6WG7KibnuO0xxEtIxH5tIuzLRKQh8GFrKAyYwyOq8Vyhph3hLHR
+         wfhtuA/G+pWDgABog9MawOBVW6WoduEGItdxAD+VEplwBVV9Ket3GTHe9lKKsOPzHLYe
+         gaoL+Z9DbPtCNpMRtr2JlqFeaVGJFWJz4D6a0yCdGQYmCktnqfyQoJqyiQpn2yDe+g6Q
+         FD0Gb5al+GcSJeNX3LJ99SGHcEsWx4NHmCApJaogFxvESTB2gh3kAT7srNRYTGjacyMu
+         IoZOG0gXS5USMxdQNr3edUctwiXEuQ5mdmkMwhyQ0Pi9TFsakXT/Egz13957GtzXckj9
+         7kZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698928244; x=1699533044;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ZqG4eXApU2XHK/8xC8VON8f1IHU1prc7SAhVA2sCKE=;
+        b=opUrei6cnSAUNpPg0ZccApaUMd5jJmRbQg/7BgXalN4evfVI1eKrFi/fXJZEk09Xbj
+         PRR05/SPuee3FbnWVq3rX4TMXua1u99G/BsPcbGJwRV5w7V21UniK8fhs9qGLxs4GDlB
+         i9A+TD0W9wJqT7b4zOlTnxHVgMRNV7bLuee3Wqf1G2oOrWEFbZvJYZZ8V9W4mH8JwzYu
+         kbSc3YjzAjc474SoXQ378ZnXP9J8yeRAs5jQmTorzshJ7TkMkdWig8UNLPL6UQUUUwMU
+         3V6GL5ibk/0JwueV30ZzN6FNOQCdm6tUk5b/TY5JYDk1FRzFRyp+CvTSEP4br2/a7nPf
+         v90Q==
+X-Gm-Message-State: AOJu0YwkyU/KMINOUhjXBZ1DSEEiJsWBhhbxu6JF9HxcYxzlFRf/LWnE
+        cyK9KcZrfXMKKCA5eVqSZ71jm2ZR7qW1/g==
+X-Google-Smtp-Source: AGHT+IF1JMuTcXHQV9/CxVeYbs66Idurde2ayMH9TFHtm2fwrzB74rfAHR3+dnuRM7ZrKFmvRxuQ3w==
+X-Received: by 2002:a05:600c:2214:b0:408:33ba:569a with SMTP id z20-20020a05600c221400b0040833ba569amr6627963wml.8.1698928243923;
+        Thu, 02 Nov 2023 05:30:43 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id fm15-20020a05600c0c0f00b003fee6e170f9sm2768435wmb.45.2023.11.02.05.30.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 05:30:43 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 2 Nov 2023 13:30:41 +0100
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev,
+        Jiri Olsa <olsajiri@gmail.com>
+Subject: Re: [PATCH v2] tools/build: Add clang cross-compilation flags to
+ feature detection
+Message-ID: <ZUOWcXDpCOzxbFW0@krava>
+References: <20231102103252.247147-1-bjorn@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] net: r8169: Disable multicast filter for RTL8168H and
- RTL8107E
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169892822348.20787.14826789912068070095.git-patchwork-notify@kernel.org>
-Date:   Thu, 02 Nov 2023 12:30:23 +0000
-References: <20231030205031.177855-1-ptf@google.com>
-In-Reply-To: <20231030205031.177855-1-ptf@google.com>
-To:     Patrick Thompson <ptf@google.com>
-Cc:     netdev@vger.kernel.org, hau@realtek.com, davem@davemloft.net,
-        edumazet@google.com, hkallweit1@gmail.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-kernel@vger.kernel.org,
-        nic_swsd@realtek.com
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231102103252.247147-1-bjorn@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Mon, 30 Oct 2023 16:50:14 -0400 you wrote:
-> RTL8168H and RTL8107E ethernet adapters erroneously filter unicast
-> eapol packets unless allmulti is enabled. These devices correspond to
-> RTL_GIGA_MAC_VER_46 and VER_48. Add an exception for VER_46 and VER_48
-> in the same way that VER_35 has an exception.
+On Thu, Nov 02, 2023 at 11:32:52AM +0100, Björn Töpel wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
 > 
-> Fixes: 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
-> Signed-off-by: Patrick Thompson <ptf@google.com>
+> When a tool cross-build has LLVM=1 set, the clang cross-compilation
+> flags are not passed to the feature detection build system. This
+> results in the host's features are detected instead of the targets.
 > 
-> [...]
+> E.g, triggering a cross-build of bpftool:
+> 
+>   cd tools/bpf/bpftool
+>   make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
+> 
+> would report the host's, and not the target's features.
+> 
+> Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
+> feature detection makefile.
+> 
+> Fixes: cebdb7374577 ("tools: Help cross-building with clang")
+> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
 
-Here is the summary with links:
-  - [v3] net: r8169: Disable multicast filter for RTL8168H and RTL8107E
-    https://git.kernel.org/netdev/net/c/efa5f1311c49
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+jirka
 
-
+> ---
+>  tools/build/Makefile.feature |  2 +-
+>  tools/build/feature/Makefile | 12 ++++++------
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> index 934e2777a2db..25b009a6c05f 100644
+> --- a/tools/build/Makefile.feature
+> +++ b/tools/build/Makefile.feature
+> @@ -8,7 +8,7 @@ endif
+>  
+>  feature_check = $(eval $(feature_check_code))
+>  define feature_check_code
+> -  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+> +  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" CLANG_CROSS_FLAGS="$(CLANG_CROSS_FLAGS)" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+>  endef
+>  
+>  feature_set = $(eval $(feature_set_code))
+> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> index dad79ede4e0a..c4458345e564 100644
+> --- a/tools/build/feature/Makefile
+> +++ b/tools/build/feature/Makefile
+> @@ -84,12 +84,12 @@ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+>  
+>  all: $(FILES)
+>  
+> -__BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
+> +__BUILD = $(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
+>    BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
+>    BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
+>    BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
+>  
+> -__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
+> +__BUILDXX = $(CXX) $(CXXFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
+>    BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
+>  
+>  ###############################
+> @@ -259,10 +259,10 @@ $(OUTPUT)test-reallocarray.bin:
+>  	$(BUILD)
+>  
+>  $(OUTPUT)test-libbfd-liberty.bin:
+> -	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
+> +	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
+>  
+>  $(OUTPUT)test-libbfd-liberty-z.bin:
+> -	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
+> +	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
+>  
+>  $(OUTPUT)test-cplus-demangle.bin:
+>  	$(BUILD) -liberty
+> @@ -283,10 +283,10 @@ $(OUTPUT)test-libbabeltrace.bin:
+>  	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
+>  
+>  $(OUTPUT)test-compile-32.bin:
+> -	$(CC) -m32 -o $@ test-compile.c
+> +	$(CC) $(CLANG_CROSS_FLAGS) -m32 -o $@ test-compile.c
+>  
+>  $(OUTPUT)test-compile-x32.bin:
+> -	$(CC) -mx32 -o $@ test-compile.c
+> +	$(CC) $(CLANG_CROSS_FLAGS) -mx32 -o $@ test-compile.c
+>  
+>  $(OUTPUT)test-zlib.bin:
+>  	$(BUILD) -lz
+> 
+> base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+> -- 
+> 2.40.1
+> 
