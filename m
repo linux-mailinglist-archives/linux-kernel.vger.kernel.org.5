@@ -2,130 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BBB7DECD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6997DECD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbjKBGYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 02:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
+        id S230478AbjKBG1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 02:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKBGYB (ORCPT
+        with ESMTP id S229445AbjKBG1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 02:24:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFC8FB;
-        Wed,  1 Nov 2023 23:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698906236; x=1730442236;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=STdydUh5mAz26anwvBBVVUpUuW54oz26dqCeLmmOLA0=;
-  b=PVMR6Z1ACH2wLaUo8gFc2bzArURJjwhFFeZgMvx0GwN5G5UnILu8wGjj
-   K/1MH/Dk/K5J80rvY3nzQLkxT/wGFGkENLfiaRWGHoe2+hL+qLhpre4BQ
-   qeIJgbuWPVzbK2W42cNo5iXvYgyhne1ZyvuqFXpmFMgtSliHj2rGXJmV7
-   +bQ92m6RDqfThZ5hR7otyLC6oSc0huf73jemxxTMcr+6n3JRQqZdCdNMz
-   UMGF49esSiBF9L2gl8ww7L5xlPaODTnMaqGg+AFrLeGzQ6m1NC65e0EpR
-   77ZpwL8EJGww/lLaOLPtjsSr36x3nr2sus3egbMVDv7p5jkA/6BI4Addq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="474885220"
-X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="474885220"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 23:23:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="711036350"
-X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
-   d="scan'208";a="711036350"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 23:23:51 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Gregory Price <gourry.memverge@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        aneesh.kumar@linux.ibm.com, weixugc@google.com, apopple@nvidia.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-In-Reply-To: <3ilajsu7rlatugtmp63r6ussfdhqoxokj2vgmx3ki3zmx7f5po@i64b27upx5qx>
-        (Michal Hocko's message of "Wed, 1 Nov 2023 14:56:13 +0100")
-References: <20231031003810.4532-1-gregory.price@memverge.com>
-        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
-        <20231031152142.GA3029315@cmpxchg.org>
-        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
-        <20231031162216.GB3029315@cmpxchg.org>
-        <3ilajsu7rlatugtmp63r6ussfdhqoxokj2vgmx3ki3zmx7f5po@i64b27upx5qx>
-Date:   Thu, 02 Nov 2023 14:21:49 +0800
-Message-ID: <87edh81xqa.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Thu, 2 Nov 2023 02:27:46 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D075B10E
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 23:27:40 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1eb39505ba4so415824fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 23:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1698906460; x=1699511260; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LY97XwVS1CtIq+KDG3Zlhc+7zSRKCnoy+zEISQpH94w=;
+        b=JUP06NMXP6Hxldb0XmGiMePUQRoulBRgVfQzQnc8G1SqcTVAyIWyviH9TPnuTipiys
+         pd9zeKTSozhcUgoV+vZrQx578XCMZy6YeAGv5pHF9EPtfitQW/7d5TsCBdC4gQ8+m2Eo
+         ZNZQWSffDvESw10t2w4VcZFY/dfzTmzhn6nP3WDp++2RSV5wvfDEQ9/IpVvvT6Sdg3G7
+         C4JJ5m0E+mmigW4rYV8y8/d8IbrpkloABM2k2LiwzdO1AtyQ/gcQjcVDIUxXxoeh8c13
+         Yub4eV+ZX7cpO/vUpjcaJlVRufGwgv8LwXbfyjGHKsYYFBKRXUhqKyX/LsG7Zwqa+s5H
+         tSGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698906460; x=1699511260;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LY97XwVS1CtIq+KDG3Zlhc+7zSRKCnoy+zEISQpH94w=;
+        b=jOXnmQN8sVBRHpjcbE39gm+7ZSiu8s0AsyffmOSfaFCNRYrt3/4OxBz3PprZnz7CMS
+         /siMQjj5dw7tkpJKwaJauqAnJjBwCfOvHzhoEj7e+4xodpxXcE5S48wnMfN/905z8Arz
+         A/Qsb1Fqvd3Jr+SRYWeUcULLJne72b/UcRK7IlWlm347MCEtppyKMSM0KbWQFAkd59Jb
+         aR9XsQKLAr/PkF9qWW54MkatGfSA0hBtJaj/by8TLZ+Cu2+J4V/we5Q4fNbeE5x37YT0
+         Zr86P3IHqJkfJQ+Y9LUWHJdtMQuQv9C7vbZoPXmybfyUTchPfqBf7am2uny6TEMZXgO4
+         gjOw==
+X-Gm-Message-State: AOJu0Yyn9XZVd1OkBwML86t+YFRD2UDRWrTQQN5YkDth02rHJCXM1wsq
+        Zy9IvCfIqQzdntN+/Z6CX7dzyQ==
+X-Google-Smtp-Source: AGHT+IG98hJMMO+OCyZL9MNqsE+NsCXApl/8XzZLkj5lQvHnTKbMKo7UFt6DIoGCVB+otqD5Av2U4g==
+X-Received: by 2002:a05:6870:e984:b0:1d5:a58d:1317 with SMTP id r4-20020a056870e98400b001d5a58d1317mr22153161oao.10.1698906460092;
+        Wed, 01 Nov 2023 23:27:40 -0700 (PDT)
+Received: from [10.84.152.223] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id k11-20020a637b4b000000b0059cc2f1b7basm800780pgn.11.2023.11.01.23.27.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Nov 2023 23:27:39 -0700 (PDT)
+Message-ID: <e9638a3f-baa0-4abb-bb61-481c539c2181@bytedance.com>
+Date:   Thu, 2 Nov 2023 14:27:33 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/fair: Track current se's EEVDF parameters
+To:     s921975628@gmail.com, mingo@redhat.com, peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        linux-kernel@vger.kernel.org
+References: <20231101174446.90413-1-s921975628@gmail.com>
+Content-Language: en-US
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <20231101174446.90413-1-s921975628@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> writes:
+On 11/2/23 1:44 AM, s921975628@gmail.com Wrote:
+> From: Yiwei Lin <s921975628@gmail.com>
+> 
+> After dequeuing the current-picked scheduling entity with
+> `__dequeue_entity`, its contribution to the EEVDF parameters
+> cfs_rq->avg_vruntime and cfs_rq->avg_load are also removed.
+> Because these should in fact be considered for the EEVDF algorithm,
+> we took curr as the special case and inserted back the contributions
+> when requests for cfs_rq->avg_vruntime and cfs_rq->avg_load.
 
-> On Tue 31-10-23 12:22:16, Johannes Weiner wrote:
->> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
-> [...]
->> > Is there any specific reason for not having a new interleave interface
->> > which defines weights for the nodemask? Is this because the policy
->> > itself is very dynamic or is this more driven by simplicity of use?
->> 
->> A downside of *requiring* weights to be paired with the mempolicy is
->> that it's then the application that would have to figure out the
->> weights dynamically, instead of having a static host configuration. A
->> policy of "I want to be spread for optimal bus bandwidth" translates
->> between different hardware configurations, but optimal weights will
->> vary depending on the type of machine a job runs on.
->
-> I can imagine this could be achieved by numactl(8) so that the process
-> management tool could set this up for the process on the start up. Sure
-> it wouldn't be very dynamic after then and that is why I was asking
-> about how dynamic the situation might be in practice.
->
->> That doesn't mean there couldn't be usecases for having weights as
->> policy as well in other scenarios, like you allude to above. It's just
->> so far such usecases haven't really materialized or spelled out
->> concretely. Maybe we just want both - a global default, and the
->> ability to override it locally. Could you elaborate on the 'get what
->> you pay for' usecase you mentioned?
->
-> This is more or less just an idea that came first to my mind when
-> hearing about bus bandwidth optimizations. I suspect that sooner or
-> later we just learn about usecases where the optimization function
-> maximizes not only bandwidth but also cost for that bandwidth. Consider
-> a hosting system serving different workloads each paying different
-> QoS.
+Being 'curr' means its vruntime is increasing, so does its
+contribution to avg_vruntime. And you failed to explain the
+most important part that how to commit its contribution to
+avg_vruntime (specifically in update_curr()).
 
-I don't think pure software solution can enforce the memory bandwidth
-allocation.  For that, we will need something like MBA (Memory Bandwidth
-Allocation) as in the following URL,
+Regards,
+	Abel
 
-https://www.intel.com/content/www/us/en/developer/articles/technical/introduction-to-memory-bandwidth-allocation.html
-
-At lease, something like MBM (Memory Bandwidth Monitoring) as in the
-following URL will be needed.
-
-https://www.intel.com/content/www/us/en/developer/articles/technical/introduction-to-memory-bandwidth-monitoring.html
-
-The interleave solution helps the cooperative workloads only.
-
-> Do I know about anybody requiring that now? No! But we should really
-> test the proposed interface for potential future extensions. If such an
-> extension is not reasonable and/or we can achieve that by different
-> means then great.
-
---
-Best Regards,
-Huang, Ying
+> 
+> Functions like `entity_eligible` which is called insied a loop may
+> therefore recalculate these statistics repeatly and require more effort.
+> Instead, we could just avoid to remove these statistics from
+> cfs_rq->avg_vruntime and cfs_rq->avg_load directly.
+> 
+> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+> ---
+>   kernel/sched/fair.c | 34 +++++++---------------------------
+>   1 file changed, 7 insertions(+), 27 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 876798824..d507ade09 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -655,17 +655,9 @@ void avg_vruntime_update(struct cfs_rq *cfs_rq, s64 delta)
+>    */
+>   u64 avg_vruntime(struct cfs_rq *cfs_rq)
+>   {
+> -	struct sched_entity *curr = cfs_rq->curr;
+>   	s64 avg = cfs_rq->avg_vruntime;
+>   	long load = cfs_rq->avg_load;
+>   
+> -	if (curr && curr->on_rq) {
+> -		unsigned long weight = scale_load_down(curr->load.weight);
+> -
+> -		avg += entity_key(cfs_rq, curr) * weight;
+> -		load += weight;
+> -	}
+> -
+>   	if (load) {
+>   		/* sign flips effective floor / ceil */
+>   		if (avg < 0)
+> @@ -722,17 +714,9 @@ static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>    */
+>   int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>   {
+> -	struct sched_entity *curr = cfs_rq->curr;
+>   	s64 avg = cfs_rq->avg_vruntime;
+>   	long load = cfs_rq->avg_load;
+>   
+> -	if (curr && curr->on_rq) {
+> -		unsigned long weight = scale_load_down(curr->load.weight);
+> -
+> -		avg += entity_key(cfs_rq, curr) * weight;
+> -		load += weight;
+> -	}
+> -
+>   	return avg >= entity_key(cfs_rq, se) * load;
+>   }
+>   
+> @@ -821,11 +805,12 @@ static void __enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>   				__entity_less, &min_deadline_cb);
+>   }
+>   
+> -static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> +static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, bool on_rq)
+>   {
+>   	rb_erase_augmented_cached(&se->run_node, &cfs_rq->tasks_timeline,
+>   				  &min_deadline_cb);
+> -	avg_vruntime_sub(cfs_rq, se);
+> +	if (!on_rq)
+> +		avg_vruntime_sub(cfs_rq, se);
+>   }
+>   
+>   struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
+> @@ -3675,8 +3660,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>   		/* commit outstanding execution time */
+>   		if (cfs_rq->curr == se)
+>   			update_curr(cfs_rq);
+> -		else
+> -			avg_vruntime_sub(cfs_rq, se);
+> +		avg_vruntime_sub(cfs_rq, se);
+>   		update_load_sub(&cfs_rq->load, se->load.weight);
+>   	}
+>   	dequeue_load_avg(cfs_rq, se);
+> @@ -3712,8 +3696,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>   	enqueue_load_avg(cfs_rq, se);
+>   	if (se->on_rq) {
+>   		update_load_add(&cfs_rq->load, se->load.weight);
+> -		if (cfs_rq->curr != se)
+> -			avg_vruntime_add(cfs_rq, se);
+> +		avg_vruntime_add(cfs_rq, se);
+>   	}
+>   }
+>   
+> @@ -5023,7 +5006,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+>   	 * EEVDF: placement strategy #1 / #2
+>   	 */
+>   	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
+> -		struct sched_entity *curr = cfs_rq->curr;
+>   		unsigned long load;
+>   
+>   		lag = se->vlag;
+> @@ -5081,8 +5063,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+>   		 *   vl_i = (W + w_i)*vl'_i / W
+>   		 */
+>   		load = cfs_rq->avg_load;
+> -		if (curr && curr->on_rq)
+> -			load += scale_load_down(curr->load.weight);
+>   
+>   		lag *= load + scale_load_down(se->load.weight);
+>   		if (WARN_ON_ONCE(!load))
+> @@ -5229,7 +5209,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+>   
+>   	update_entity_lag(cfs_rq, se);
+>   	if (se != cfs_rq->curr)
+> -		__dequeue_entity(cfs_rq, se);
+> +		__dequeue_entity(cfs_rq, se, 0);
+>   	se->on_rq = 0;
+>   	account_entity_dequeue(cfs_rq, se);
+>   
+> @@ -5264,7 +5244,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>   		 * runqueue.
+>   		 */
+>   		update_stats_wait_end_fair(cfs_rq, se);
+> -		__dequeue_entity(cfs_rq, se);
+> +		__dequeue_entity(cfs_rq, se, 1);
+>   		update_load_avg(cfs_rq, se, UPDATE_TG);
+>   		/*
+>   		 * HACK, stash a copy of deadline at the point of pick in vlag,
