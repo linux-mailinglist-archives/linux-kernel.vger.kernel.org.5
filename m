@@ -2,142 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAECD7DF6F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AA77DF706
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377027AbjKBPr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
+        id S1377074AbjKBPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376847AbjKBPr5 (ORCPT
+        with ESMTP id S1377065AbjKBPtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:47:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57319138;
-        Thu,  2 Nov 2023 08:47:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80920C433C9;
-        Thu,  2 Nov 2023 15:47:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698940070;
-        bh=FLSyIoN9fWGlGYgsM4Gjk/0Zq8oidTjhDX15Z8SWCGU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=I+b3neXRoxpPGYdvB8UqviarpIi82qrJQrCDd/zKQIB3761PWC65P+VZB2c6JoXPV
-         a+lyA5CIA+cBtp3T3F+fuu5oJKyKstFU1kUMnuUFNVxcVYEiTb2jeX1lcdTTkzaIZV
-         ahRmvdUWUv2usDvSfBcwLUPzhg+fgf6WVBTOBtQl7yB/CX4HfEBsNUo5RrPXTRMSnX
-         x/lobsffAeDl5Mp2egyJ538AeVOm2PMVKQ4/WGnvGDrRoEIsyrdzda//udkVc+3yWd
-         caGUqrv8T1qfxR2T+L5cvY1PXW8XDcpojDEv3IkQPZv4cfNo13IiumXhychoPcrGsZ
-         7QC7Utg6RkAdA==
-Date:   Thu, 2 Nov 2023 10:47:48 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     bhelgaas@google.com, mika.westerberg@linux.intel.com,
-        andreas.noever@gmail.com, michael.jamet@intel.com,
-        YehezkelShB@gmail.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Alexander.Deucher@amd.com
-Subject: Re: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in
- pcie_bandwidth_available()
-Message-ID: <20231102154748.GA122230@bhelgaas>
+        Thu, 2 Nov 2023 11:49:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A36185
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698940133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=bDYfxJY1gaw7RnFMn6xzv+L48r7jo/5hW3rLClryTog=;
+        b=TcBZMnGmsYbQrpoA8QaEmyVl47Go9IXo/HBge6ljOO82iM2iuRC+Ya+kU044qMswnBP2oE
+        qlj5AGEe9GI2b7rI4vB6fxVqlD8HSLhxC5/124COl2f8QeW9agBJBRD0S/RBqp4pnrPlSm
+        LmfkxWbDNS4XHPLvda5efkkuvG8AdhM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-319-2NegdT8qNsuD43czfgBd_A-1; Thu, 02 Nov 2023 11:48:51 -0400
+X-MC-Unique: 2NegdT8qNsuD43czfgBd_A-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77a3fb5b214so113533185a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:48:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698940131; x=1699544931;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bDYfxJY1gaw7RnFMn6xzv+L48r7jo/5hW3rLClryTog=;
+        b=N1JridbvnGcuwx2Fyo0UFHGbWPnLXvr6tFwfnskXcYsIeLqJt3t2nTXoryfb9kR2MR
+         Vb/jOE9SGr3dmzFE7FxLEgDRUBKQNZE1P6c3BLDwyj8Zc6Fu3hjDqIJ5WGaRQUrbFJsT
+         x7TfwAHZRpV0NuasWXrEFH8RfgHN9647KfJJGczAckZcibw9aB59bxJ8TwAqRvdDcfbj
+         MPW8t+hxPhDaCnZ/pIhc0SG+Nh2tXS/Vg9Cb9toodbAI0eGozCBgMeM5aKkFQUCMWMho
+         BPdT/La3d7lak+t4CynNKvp36r0DPB+A1i5nJv5zzKKD92ap+ANItxNEDzEKRreAG2eg
+         K1DQ==
+X-Gm-Message-State: AOJu0Yw/nsEciCZhsgO3uu5tpYAkfRMZjrmEEN61WPXY7qHg7STENF6k
+        XVpLlQqleqPqK6jarU+zX1RSsWmR8wBhmYNttePcXiIO7wuIq8jur6Ca+5IByR7FBgFc9fmN7ad
+        j1qlteJdhO1azWqRDqVv1qXxS
+X-Received: by 2002:a05:620a:8404:b0:76f:456:3916 with SMTP id pc4-20020a05620a840400b0076f04563916mr16196046qkn.43.1698940131021;
+        Thu, 02 Nov 2023 08:48:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGqtKxPa6ov2/TGHeca6u2VwNNxhp886CBhsTSKw0SJ9In1XWY7oX/tNvp/RnEBykosnX1E5Q==
+X-Received: by 2002:a05:620a:8404:b0:76f:456:3916 with SMTP id pc4-20020a05620a840400b0076f04563916mr16196036qkn.43.1698940130729;
+        Thu, 02 Nov 2023 08:48:50 -0700 (PDT)
+Received: from [192.168.1.174] ([151.48.250.237])
+        by smtp.googlemail.com with ESMTPSA id m2-20020a05620a290200b00767da10efb6sm39016qkp.97.2023.11.02.08.48.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 08:48:50 -0700 (PDT)
+Message-ID: <6642c379-1023-4716-904f-4bbf076744c2@redhat.com>
+Date:   Thu, 2 Nov 2023 16:48:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+Content-Language: en-US
+To:     David Matlack <dmatlack@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-17-seanjc@google.com> <ZUFGRyQEuWj4RJS0@google.com>
+ <ZUFzZf-YmCRYP6qo@google.com>
+ <CALzav=d9eXZfK=op7A=UftbpuPpUbxqV6CmkqqxxBNuNsUU4nw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <CALzav=d9eXZfK=op7A=UftbpuPpUbxqV6CmkqqxxBNuNsUU4nw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:14:31PM -0500, Mario Limonciello wrote:
-> On 11/1/2023 17:52, Bjorn Helgaas wrote:
-> > On Tue, Oct 31, 2023 at 08:34:38AM -0500, Mario Limonciello wrote:
-> > > The USB4 spec specifies that PCIe ports that are used for tunneling
-> > > PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s.
-> > > 
-> > > In reality these ports speed is controlled by the fabric implementation.
-> > 
-> > So I guess you're saying the speed advertised by PCI_EXP_LNKSTA is not
-> > the actual speed?  And we don't have a generic way to find the actual
-> > speed?
-> 
-> Correct.
-> 
-> > > Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
-> > > to program the device will always find the PCIe ports used for
-> > > tunneling as a limiting factor and may make incorrect decisions.
-> > > 
-> > > To prevent problems in downstream drivers check explicitly for ports
-> > > being used for PCIe tunneling and skip them when looking for bandwidth
-> > > limitations.
-> > > 
-> > > 2 types of devices are detected:
-> > > 1) PCIe root port used for PCIe tunneling
-> > > 2) Intel Thunderbolt 3 bridge
-> > > 
-> > > Downstream drivers could make this change on their own but then they
-> > > wouldn't be able to detect other potential speed bottlenecks.
-> > 
-> > Is the implication that a tunneling port can *never* be a speed
-> > bottleneck?  That seems to be how this patch would work in practice.
-> 
-> I think that's a stretch we should avoid concluding.
+On 10/31/23 23:39, David Matlack wrote:
+>>> Maybe can you sketch out how you see this proposal being extensible to
+>>> using guest_memfd for shared mappings?
+>> For in-place conversions, e.g. pKVM, no additional guest_memfd is needed.  What's
+>> missing there is the ability to (safely) mmap() guest_memfd, e.g. KVM needs to
+>> ensure there are no outstanding references when converting back to private.
+>>
+>> For TDX/SNP, assuming we don't find a performant and robust way to do in-place
+>> conversions, a second fd+offset pair would be needed.
+> Is there a way to support non-in-place conversions within a single guest_memfd?
 
-I'm just reading the description and the patch, which seem to say that
-pcie_bandwidth_available() will never report a tunneling port as the
-limiting port.
+For TDX/SNP, you could have a hook from KVM_SET_MEMORY_ATTRIBUTES to 
+guest memory.  The hook would invalidate now-private parts if they have 
+a VMA, causing a SIGSEGV/EFAULT if the host touches them.
 
-Maybe this can be rectified with a comment about how we can't tell the
-actual bandwidth of a tunneled port, and it may be a hidden unreported
-bottleneck, so pcie_bandwidth_available() can't actually return a
-reliable result.  Seems sort of unsatisfactory, but ... I dunno, maybe
-it's the best we can do.
+It would forbid mappings from multiple gfns to a single offset of the 
+guest_memfd, because then the shared vs. private attribute would be tied 
+to the offset.  This should not be a problem; for example, in the case 
+of SNP, the RMP already requires a single mapping from host physical 
+address to guest physical address.
 
-> IIUC the fabric can be hosting other traffic and it's entirely possible the
-> traffic over the tunneling port runs more slowly at times.
-> 
-> Perhaps that's why the the USB4 spec decided to advertise it this way? I
-> don't know.
+Paolo
 
-Maybe, although the same happens on shared PCIe links above switches.
-
-> > > Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925
-> > 
-> > This issue says the external GPU doesn't work at all.  Does this patch
-> > fix that?  This patch looks like it might improve GPU performance, but
-> > wouldn't fix something that didn't work at all.
-> 
-> The issue actually identified 4 distinct different problems.  The 3 problems
-> will be fixed in amdgpu which are functional.
-> 
-> This performance one was from later in the ticket after some back and forth
-> identifying proper solutions for the first 3.
-
-There's a lot of material in that report.  Is there a way to link to
-the specific part related to performance?
-
-> > > + * This function excludes root ports and bridges used for USB4 and TBT3 tunneling.
-
-Wrap to fit in 80 columns like the rest of the file.
-
-> > >    */
-> > >   u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
-> > >   			     enum pci_bus_speed *speed,
-> > > @@ -6254,6 +6290,10 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
-> > >   	bw = 0;
-> > >   	while (dev) {
-> > > +		/* skip root ports and bridges used for tunneling */
-> > > +		if (pcie_is_tunneling_port(dev))
-> > > +			goto skip;
-> > > +
-> > >   		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
-> > >   		next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
-> > > @@ -6274,6 +6314,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
-> > >   				*width = next_width;
-> > >   		}
-> > > +skip:
-> > >   		dev = pci_upstream_bridge(dev);
-> > >   	}
