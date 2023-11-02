@@ -2,209 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A34D7DFCC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D10C7DFD22
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 00:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377552AbjKBW70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
+        id S1377560AbjKBXA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 19:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377540AbjKBW7Y (ORCPT
+        with ESMTP id S229615AbjKBXAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:59:24 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FF1193
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 15:59:20 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so2347a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 15:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698965959; x=1699570759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QP31fLX+pxaO5hDZO6DHoxgvhUAHCcHqxZGWN/MwNfQ=;
-        b=JHaMZxzzpF1Cn1yV/IA/F6iFUVhaXwA2p/OVH7ugye6yb3i9Ari5JBkjeNPBPfO5cT
-         Fh2qxB8sJjjHk42A+Kg1i+UoTGzywh4EM3x+r0JuYXg3BjaFWjinvVx8b3AT7vQWPoTP
-         m2p3YJsaHX2wIAoLRuCwMtO6NHiARKlQCxcMwg8HtchLMFKlMLs7FMeMPdmHQUTB2J+/
-         Ju0mZMhlbCWxyK3CqQEh4F7Vvfqj5a4oMNFuzxmL0EkcztD7J+pX1qBiTgRq7iLGBINE
-         zie4hc6FIqClCPcGnwc35sEO98Qq0l5sIU4OzAtQ6UH9uB1VXywl+1vwSMlJ6dCWr5MA
-         UjFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698965959; x=1699570759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QP31fLX+pxaO5hDZO6DHoxgvhUAHCcHqxZGWN/MwNfQ=;
-        b=fBbvQwhhBuWu48Zsyo3zrXVJcetgerFFKfXWwhAj8kU8WqWJJvhTKynA+PRlnFi3Di
-         OgnxPSSPh3jnbX6lCWW6Q4C6H0WgXQ/hrm99bt7RlcFjL0dMFipupLmKhdxjjiatwWNZ
-         KNkki+HW6z9GIEOeOYThQMi3j4uC9zaUI2pq/jkJ0BTIyPZtAzKtOiL5vnj3IFqObG0+
-         U4PuobdF3EJ/oCJAAu7CTgQMw5TB+9IqEVZ3wItLzXflH8TWK4ix9NOTU5AKEdPItaP2
-         NEzwElank/HDVDj/bMSj/ueY7X7Yg4phwgGybL690Hw1y7OQG1BfJlb45Hvy3Sg+PD53
-         kRMQ==
-X-Gm-Message-State: AOJu0Yxbyg+jkLJkwj2nRoWlRQU61XhrG8LNWkzlbwRMXm0SWAtGigKU
-        1nd/HwUM56Vr1rAbRBW5XPea0HVJMyFXg7tNBaHuHw==
-X-Google-Smtp-Source: AGHT+IER/U62zMtD0dfjlB8xVUMWLzaEfk+FVmtEYeeOf4e2H7qaz0cqMSQAHaoKrBNn0fyQr4PgrJoZLliy0h0JKx0=
-X-Received: by 2002:a05:6402:501c:b0:543:fa43:a361 with SMTP id
- p28-20020a056402501c00b00543fa43a361mr146040eda.1.1698965959359; Thu, 02 Nov
- 2023 15:59:19 -0700 (PDT)
+        Thu, 2 Nov 2023 19:00:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A0C19D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 16:00:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698966018; x=1730502018;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DBhSpEbEwFsc55ZA/UmO+rXT9JRyGX3q/WqXeqplQa8=;
+  b=Lz1NUPkZFVgjhBnoRb7dmifVRoefhjWZH5l84x7NQ3BE+Z1ry66sDhBt
+   CHzGop8/mkgdoLBVvvz5ZeRKcfo5LVvmZjcZ+SROclb+zioOHFPZWuD6m
+   COYw51yjN+bUpbelAjH5adTFrD2kCfNkuDcrSZA6ZxBbbL7LtmYF/X6vn
+   /Jq6SgzqafO9lbvxOi+U9eqouLAil/PTYfUmyQCYiQa01p3ogXr+vaCVZ
+   fkssyEB9ExFrEdNV9JwSF5WR68vZApA5qq9xiRsHUMaXpU5ydP2Wh5Bkm
+   j42fhJImOIWAHVSy9MvvS50IgSisSo0eBFzM1Rdw5lbqfchz/h39slOUa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="387726189"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="387726189"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 16:00:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="765076146"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="765076146"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 02 Nov 2023 16:00:16 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qygfe-0001yK-1X;
+        Thu, 02 Nov 2023 23:00:14 +0000
+Date:   Fri, 3 Nov 2023 06:59:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: versioncheck: ./tools/testing/selftests/bpf/progs/dev_cgroup.c: 9
+ linux/version.h not needed.
+Message-ID: <202311030620.PuGqa705-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231102222653.4165959-1-namhyung@kernel.org> <20231102222653.4165959-4-namhyung@kernel.org>
-In-Reply-To: <20231102222653.4165959-4-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 2 Nov 2023 15:59:07 -0700
-Message-ID: <CAP-5=fVWKrSN+c5gc9KwKjP-_tXDi1RaFhEvbD9aP20qMJiHJg@mail.gmail.com>
-Subject: Re: [PATCH 3/5] perf annotate: Move max_coverage to annotated_branch
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 3:27=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> The max_coverage is only used when branch stack info is available so
-> it'd be natural to move to the annotated_branch.
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4652b8e4f3ffa48c706ec334f048c217a7d9750d
+commit: dd65acf72d0e073970459d5da80573a04304aaa9 selftests/bpf: Remove SEC("version") from test progs
+date:   2 years, 1 month ago
+reproduce: (https://download.01.org/0day-ci/archive/20231103/202311030620.PuGqa705-lkp@intel.com/reproduce)
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311030620.PuGqa705-lkp@intel.com/
 
-Thanks,
-Ian
+versioncheck warnings: (new ones prefixed by >>)
+   INFO PATH=/opt/cross/clang/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+   /usr/bin/timeout -k 100 3h /usr/bin/make KCFLAGS= -Wrestrict -Wformat-overflow -Wformat-truncation -Wstringop-overflow -Wundef -funsigned-char -Wenum-conversion -Werror=return-type W=1 --keep-going HOSTCC=gcc-12 CC=gcc-12 -j32 KBUILD_MODPOST_WARN=1 ARCH=x86_64 versioncheck
+   find ./* \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o \
+   	-name '*.[hcS]' -type f -print | sort \
+   	| xargs perl -w ./scripts/checkversion.pl
+   ./arch/csky/include/asm/io.h: 8 linux/version.h not needed.
+   ./arch/csky/kernel/process.c: 5 linux/version.h not needed.
+   ./arch/csky/mm/dma-mapping.c: 12 linux/version.h not needed.
+   ./drivers/media/platform/s3c-camif/camif-core.c: 26 linux/version.h not needed.
+   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-common.h: 16 linux/version.h not needed.
+   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c: 31 linux/version.h not needed.
+   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c: 14 linux/version.h not needed.
+   ./drivers/media/usb/uvc/uvc_driver.c: 19 linux/version.h not needed.
+   ./drivers/net/ethernet/qlogic/qede/qede.h: 10 linux/version.h not needed.
+   ./drivers/net/ethernet/qlogic/qede/qede_ethtool.c: 7 linux/version.h not needed.
+   ./drivers/scsi/cxgbi/libcxgbi.h: 27 linux/version.h not needed.
+   ./drivers/scsi/mpi3mr/mpi3mr.h: 32 linux/version.h not needed.
+   ./drivers/scsi/qedi/qedi_dbg.h: 14 linux/version.h not needed.
+   ./drivers/staging/media/atomisp/include/linux/atomisp.h: 23 linux/version.h not needed.
+   ./init/version.c: 17 linux/version.h not needed.
+   ./sound/soc/codecs/cs42l42.c: 14 linux/version.h not needed.
+   ./tools/lib/bpf/bpf_helpers.h: 262: need linux/version.h
+   ./tools/perf/include/bpf/bpf.h: 70: need linux/version.h
+   ./tools/perf/tests/bpf-script-example.c: 49: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-kbuild.c: 21: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-prologue.c: 47: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-relocation.c: 51: need linux/version.h
+>> ./tools/testing/selftests/bpf/progs/dev_cgroup.c: 9 linux/version.h not needed.
+>> ./tools/testing/selftests/bpf/progs/netcnt_prog.c: 3 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_map_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_send_signal_kern.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_spin_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_tcp_estats.c: 37 linux/version.h not needed.
+   ./tools/testing/selftests/wireguard/qemu/init.c: 25 linux/version.h not needed.
 
-> ---
->  tools/perf/builtin-annotate.c | 7 +++++--
->  tools/perf/util/annotate.c    | 2 +-
->  tools/perf/util/annotate.h    | 4 +++-
->  tools/perf/util/block-range.c | 7 ++++++-
->  4 files changed, 15 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.=
-c
-> index aeeb801f1ed7..a9129b51d511 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -94,6 +94,7 @@ static void process_basic_block(struct addr_map_symbol =
-*start,
->         struct annotation *notes =3D sym ? symbol__annotation(sym) : NULL=
-;
->         struct block_range_iter iter;
->         struct block_range *entry;
-> +       struct annotated_branch *branch;
->
->         /*
->          * Sanity; NULL isn't executable and the CPU cannot execute backw=
-ards
-> @@ -105,6 +106,8 @@ static void process_basic_block(struct addr_map_symbo=
-l *start,
->         if (!block_range_iter__valid(&iter))
->                 return;
->
-> +       branch =3D annotation__get_branch(notes);
-> +
->         /*
->          * First block in range is a branch target.
->          */
-> @@ -118,8 +121,8 @@ static void process_basic_block(struct addr_map_symbo=
-l *start,
->                 entry->coverage++;
->                 entry->sym =3D sym;
->
-> -               if (notes)
-> -                       notes->max_coverage =3D max(notes->max_coverage, =
-entry->coverage);
-> +               if (branch)
-> +                       branch->max_coverage =3D max(branch->max_coverage=
-, entry->coverage);
->
->         } while (block_range_iter__next(&iter));
->
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 2fa1ce3a0858..92a9adf9d5eb 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -946,7 +946,7 @@ static int __symbol__inc_addr_samples(struct map_symb=
-ol *ms,
->         return 0;
->  }
->
-> -static struct annotated_branch *annotation__get_branch(struct annotation=
- *notes)
-> +struct annotated_branch *annotation__get_branch(struct annotation *notes=
-)
->  {
->         if (notes =3D=3D NULL)
->                 return NULL;
-> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-> index 9c199629305d..d8a221591926 100644
-> --- a/tools/perf/util/annotate.h
-> +++ b/tools/perf/util/annotate.h
-> @@ -280,10 +280,10 @@ struct annotated_branch {
->         unsigned int            total_insn;
->         unsigned int            cover_insn;
->         struct cyc_hist         *cycles_hist;
-> +       u64                     max_coverage;
->  };
->
->  struct LOCKABLE annotation {
-> -       u64                     max_coverage;
->         u64                     start;
->         struct annotation_options *options;
->         struct annotation_line  **offsets;
-> @@ -356,6 +356,8 @@ static inline struct annotation *symbol__annotation(s=
-truct symbol *sym)
->  int addr_map_symbol__inc_samples(struct addr_map_symbol *ams, struct per=
-f_sample *sample,
->                                  struct evsel *evsel);
->
-> +struct annotated_branch *annotation__get_branch(struct annotation *notes=
-);
-> +
->  int addr_map_symbol__account_cycles(struct addr_map_symbol *ams,
->                                     struct addr_map_symbol *start,
->                                     unsigned cycles);
-> diff --git a/tools/perf/util/block-range.c b/tools/perf/util/block-range.=
-c
-> index 680e92774d0c..15c42196c24c 100644
-> --- a/tools/perf/util/block-range.c
-> +++ b/tools/perf/util/block-range.c
-> @@ -311,6 +311,7 @@ struct block_range_iter block_range__create(u64 start=
-, u64 end)
->  double block_range__coverage(struct block_range *br)
->  {
->         struct symbol *sym;
-> +       struct annotated_branch *branch;
->
->         if (!br) {
->                 if (block_ranges.blocks)
-> @@ -323,5 +324,9 @@ double block_range__coverage(struct block_range *br)
->         if (!sym)
->                 return -1;
->
-> -       return (double)br->coverage / symbol__annotation(sym)->max_covera=
-ge;
-> +       branch =3D symbol__annotation(sym)->branch;
-> +       if (!branch)
-> +               return -1;
-> +
-> +       return (double)br->coverage / branch->max_coverage;
->  }
-> --
-> 2.42.0.869.gea05f2083d-goog
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
