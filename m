@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FF87DEB53
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 845157DEB55
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348422AbjKBDZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        id S235395AbjKBD2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348419AbjKBDZk (ORCPT
+        with ESMTP id S231574AbjKBD2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:25:40 -0400
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB87119
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 20:25:33 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698895532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gJd616cEH+YooKkPi26MjXWgnIGEXuyIPk1hxd0FhTk=;
-        b=nDjeGraaC0yMn15FP6J1O98CFrfWFi/efFlDQyWlgTKRBWcIkb3Bueh3V63chVaCnBjh/z
-        aT+DJ4liAnoOXN6AjPz5ujQz9YSWQl2pq1MhhIZ8NmN0T3o3AMQcWG/ZORLSwwjhMGbr7d
-        UKvLJzRg/tomBOgosqWMv4T+MnQQ2Cg=
-From:   chengming.zhou@linux.dev
-To:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org
-Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, chengming.zhou@linux.dev,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH v5 9/9] slub: Update frozen slabs documentations in the source
-Date:   Thu,  2 Nov 2023 03:23:30 +0000
-Message-Id: <20231102032330.1036151-10-chengming.zhou@linux.dev>
-In-Reply-To: <20231102032330.1036151-1-chengming.zhou@linux.dev>
-References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
+        Wed, 1 Nov 2023 23:28:51 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2055.outbound.protection.outlook.com [40.107.255.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371CD9F;
+        Wed,  1 Nov 2023 20:28:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eoDUvUFPpjWItJZYSQZZNtckGo0SJzAQFmt25Vo+zcF5if7nkynXdHhGR9S49VJZwFB0yBeiyeo7nB3ZNPTA+cmnh7tH6MWoDBhwdqG25BYWFKSp7JIGYHtECZetJgfKgYutwTTPlsmaJWnH3Wk6axUbEsy4Hv34uwwhcuACG+K66/DN7YpXXlQi9z2X3wWi706Y6550L+4c/hmW/ZNmRjFmlRNzTALExQyEQwgTUtO43NooPtKnvl9ksgxJ+Q26qe/vxLfp/RgbPuIs037MjlRRN1AwU5gWK/u+z5T0omkIUAgntkQwjNk/IPrq/b2HRxrJbq73bAtwfPBTPafFkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RE0Cr8SKYUNobX4lN9yreYfkeYD53klnk59YxgpJZ+c=;
+ b=YjnfLyjy/zsgJEcDyFJZgYjDWx626nnI9+TTpGaBikewDPh2XM2Fww9rU6hLmsMAFizPVjDu+yh/KYNbh8gkoEc92qfv462Nb2fVTKM8GyEEpEM67SPqd8CIElMmeJurgzMbuOFUJsl67dar/elJ/44LlOr2EzThFffbA9S6oG0bqWRzEqr61w6fuW9DXk3XE7D9sTbq7lPuDaj33liYDpLbsdGTDmyE0eBdpmFJ7JcdGeznRLReLhEjNOWGXMSSgkPrxSijdPiA3Svt6bCQvGbFuRl/rvuo4ZwFFFGNvy5rX4CgHeqd4ZFiIVPPh0v732KBRERG9+bR7Vuj2qdF5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RE0Cr8SKYUNobX4lN9yreYfkeYD53klnk59YxgpJZ+c=;
+ b=i/FSLVWDronw1w+kJsmahnThwgvh1tse3TzpgasN2ZvbqpH8UDJzHw5AxUu8sAIy+UHOZAm5gazvUz9VOlRoR1WZMz73/aXUyvXJVhPYLql3LUmWHTWXniVq8d3r8BZE31CqvdUFDyvYgc3qhieEDIpGi9YkS1+b//mw7KWpSWT8RJWrHsp8qVTWdjuiNPSUXbPQ7nSu5lFA/bUQQTVJha8js573YU8Ek5Ex4rheOPAC9jgenQjUD56ZwN7WYuFq+eIn9ZDxHOtc/H88eer9U0IfgUwWA0MS+oJTluLRk07PiuUIpu5lht06D3PJJWD7Q1uNZm1zton98F1S/f6zZg==
+Received: from SG2PR02CA0011.apcprd02.prod.outlook.com (2603:1096:3:17::23) by
+ TY0PR04MB6469.apcprd04.prod.outlook.com (2603:1096:400:275::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.27; Thu, 2 Nov 2023 03:28:40 +0000
+Received: from SG1PEPF000082E1.apcprd02.prod.outlook.com
+ (2603:1096:3:17:cafe::27) by SG2PR02CA0011.outlook.office365.com
+ (2603:1096:3:17::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
+ Transport; Thu, 2 Nov 2023 03:28:40 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ SG1PEPF000082E1.mail.protection.outlook.com (10.167.240.4) with Microsoft
+ SMTP Server id 15.20.6954.19 via Frontend Transport; Thu, 2 Nov 2023 03:28:39
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v4 0/3] hwmon: max31790: support to config PWM as TACH
+Date:   Thu,  2 Nov 2023 11:28:29 +0800
+Message-Id: <20231102032834.3827289-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG1PEPF000082E1:EE_|TY0PR04MB6469:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 1a5f5b56-3526-413e-ce6e-08dbdb53cef5
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rARWfTqNY0RX9Xna1Wh4eAEHLGm81lVMzNMOIpfvy/IOMNzF9xrTj7eOPFNrTreXTFFitc66+zGRRL2AUd4PDgtmPY/xwISsjhfcVxy0xhSR272jtJg5ddlCA3+7RwnZAiATU7OEbP5iO1MYk4CV7aX9U5EHpVGLyA36lSSrRGOc9X2zdomtSQe0DZBtN9wdfC+pObWvAWA+8iZK6CJQowZSRZnYO2+sA3bjYDktlKMvpqp2oId/07F1CClG11li54ht0j1t8UwR6q7s8m1zrK8P/XjIozG5ebZtGvb3C7ukRYRhJ+OUIR91HSBNKrnTWWzGWjjdYCLIBhy97M2AcNyz5UaziH8qGHuPM9TOhYzxCjGx2f9Q1viBmIQippNq+qy6oNXMnI/7uyYzfMEu4yj0aLuSbtbYu3EdsxaQkFajmmbZPC2JY1MBsAuxE2TYKbYiee1QMjrhBBYn5FO1eUL9rG8KoA6ZP+AJyRpYTaVWwRd4PBbvJVHM4Es+cTBPY8bSeC0Y4TBPa3HUSBCi9Q63f6gwk5GBEmIMOnuEy6NeiP9Ip2NexT+y7Sxa4NVODyAaMkurDpAG6Ntrejtj2d71AeDMJyoFgGkgXSblG9QgvMyFxo2HoYOZs+YM3o3acCl6MlJinlQjQGyJa/kvRd8VUtJIIOgpO9ovZLZxmhdG6rzEOf+FyJQ8IXFSSj/kZuOXz8Q5Bga1lm8XB25idQ==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(346002)(396003)(376002)(136003)(39860400002)(64100799003)(82310400011)(1800799009)(186009)(451199024)(36840700001)(46966006)(41300700001)(8676002)(8936002)(4326008)(316002)(5660300002)(6916009)(54906003)(36736006)(7416002)(956004)(6512007)(6506007)(6486002)(4744005)(336012)(2906002)(478600001)(26005)(1076003)(2616005)(83380400001)(36860700001)(70206006)(70586007)(47076005)(81166007)(6666004)(356005)(82740400003)(9316004)(36756003)(40480700001)(86362001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 03:28:39.6541
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a5f5b56-3526-413e-ce6e-08dbdb53cef5
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: SG1PEPF000082E1.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR04MB6469
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+Support to config PWM as TACH in MAX31790 driver.
+Add binding document for MAX31790 driver.
+Add fanN_enable for all fans
 
-The current updated scheme (which this series implemented) is:
- - node partial slabs: PG_Workingset && !frozen
- - cpu partial slabs: !PG_Workingset && !frozen
- - cpu slabs: !PG_Workingset && frozen
- - full slabs: !PG_Workingset && !frozen
-
-The most important change is that "frozen" bit is not set for the
-cpu partial slabs anymore, __slab_free() will grab node list_lock
-then check by !PG_Workingset that it's not on a node partial list.
-
-And the "frozen" bit is still kept for the cpu slabs for performance,
-since we don't need to grab node list_lock to check whether the
-PG_Workingset is set or not if the "frozen" bit is set in __slab_free().
-
-Update related documentations and comments in the source.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 ---
- mm/slub.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Changelog:
+v4 - Add fanN_enable for all fans.
+v3 - Use 'sensor-type' in 'channel' node to config pwm as tach.
+   - Changed the status in MAINTAINERS to 'Maintained'. 
+v2 - Remove unnecessary parentheses.
+   - Add more error handling.
+   - Change the type of "pwm-as-tach" from u8 to u32 to match binding
+     document.
+   - Add dt-bindings for the MAXIM MAX31790.
+v1 - Support to config PWM as TACH
 
-diff --git a/mm/slub.c b/mm/slub.c
-index c20bdf5dab0f..a307d319e82c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -76,13 +76,22 @@
-  *
-  *   Frozen slabs
-  *
-- *   If a slab is frozen then it is exempt from list management. It is not
-- *   on any list except per cpu partial list. The processor that froze the
-+ *   If a slab is frozen then it is exempt from list management. It is
-+ *   the cpu slab which is actively allocated from by the processor that
-+ *   froze it and it is not on any list. The processor that froze the
-  *   slab is the one who can perform list operations on the slab. Other
-  *   processors may put objects onto the freelist but the processor that
-  *   froze the slab is the only one that can retrieve the objects from the
-  *   slab's freelist.
-  *
-+ *   CPU partial slabs
-+ *
-+ *   The partially empty slabs cached on the CPU partial list are used
-+ *   for performance reasons, which speeds up the allocation process.
-+ *   These slabs are not frozen, but are also exempt from list management,
-+ *   by clearing the PG_workingset flag when moving out of the node
-+ *   partial list. Please see __slab_free() for more details.
-+ *
-  *   list_lock
-  *
-  *   The list_lock protects the partial and full list on each node and
-@@ -2617,8 +2626,7 @@ static void put_partials_cpu(struct kmem_cache *s,
- }
- 
- /*
-- * Put a slab that was just frozen (in __slab_free|get_partial_node) into a
-- * partial slab slot if available.
-+ * Put a slab into a partial slab slot if available.
-  *
-  * If we did not find a slot then simply move all the partials to the
-  * per node partial list.
+Delphine CC Chiu (3):
+  hwmon: max31790: support to config PWM as TACH
+  dt-bindings: hwmon: add MAX31790
+  hwmon: max31790: add fanN_enable for all fans
+
+ .../bindings/hwmon/maxim,max31790.yaml        |  89 +++++++++++
+ Documentation/hwmon/max31790.rst              |   2 +-
+ MAINTAINERS                                   |   6 +
+ drivers/hwmon/max31790.c                      | 140 ++++++++++++++----
+ 4 files changed, 210 insertions(+), 27 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
+
 -- 
-2.20.1
+2.25.1
 
