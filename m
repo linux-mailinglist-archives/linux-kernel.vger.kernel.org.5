@@ -2,287 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB837DEF29
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E927DEF28
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345741AbjKBJrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        id S1345739AbjKBJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345606AbjKBJrR (ORCPT
+        with ESMTP id S1345743AbjKBJrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:47:17 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885D6111
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:47:13 -0700 (PDT)
-Received: from frapeml500002.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SLf8c3MFYz6K6Zw;
-        Thu,  2 Nov 2023 17:44:00 +0800 (CST)
-Received: from [10.48.131.78] (10.48.131.78) by frapeml500002.china.huawei.com
- (7.182.85.205) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 2 Nov
- 2023 10:47:09 +0100
-Message-ID: <e0afa218-4eb0-4dde-b9d4-5beafc0c9fe7@huawei-partners.com>
-Date:   Thu, 2 Nov 2023 10:47:08 +0100
+        Thu, 2 Nov 2023 05:47:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC3D13A;
+        Thu,  2 Nov 2023 02:47:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F1F321F896;
+        Thu,  2 Nov 2023 09:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1698918454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AcRP2FT5t+4MsoYnPKOmZrMF9C7uJ/RsjNWL+vm21Ko=;
+        b=BrFd6PhHDUXKwKn1RMkdq/CA7tFqSbaSzq+jAzOZQt6nqnxQBY+E1AXwm9T4Hs3gNy43PN
+        0TPf0aH874H8031b4/Ta1mJKrZN1WcpH8eFgJtIivom4Mgslb8Kea6CQu5x7KWbUHycRSf
+        CFWPUnQMvO3RprIgNaEZ8LeS46NGBOs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9A9B138EC;
+        Thu,  2 Nov 2023 09:47:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9J0uLjVwQ2UHdAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 02 Nov 2023 09:47:33 +0000
+Date:   Thu, 2 Nov 2023 10:47:33 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, ying.huang@intel.com,
+        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        weixugc@google.com, apopple@nvidia.com, tim.c.chen@intel.com,
+        dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+Message-ID: <a4f5das6ckw5lwj3qv2eaygx4nypb762b6mdnxivrjjndqlhjk@zpjao2ewfdoc>
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+ <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+ <20231031152142.GA3029315@cmpxchg.org>
+ <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+ <ZUCCGJgrqqk87aGN@memverge.com>
+ <pmxrljwp4ayl3fcu7rxm6prbumgb5l3lwb75lqfipmxxxwnqfo@nb5qjcxw22gp>
+ <ZUKDz5NpMsoyzWtZ@memverge.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] swiotlb: reduce area lock contention for non-primary IO
- TLB pools
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     Wangkefeng <wangkefeng.wang@huawei.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        <petr@tesarici.cz>
-References: <20231102094445.1738-1-petrtesarik@huaweicloud.com>
-Content-Language: en-US
-From:   Petr Tesarik <petr.tesarik1@huawei-partners.com>
-In-Reply-To: <20231102094445.1738-1-petrtesarik@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.48.131.78]
-X-ClientProxiedBy: frapeml100001.china.huawei.com (7.182.85.63) To
- frapeml500002.china.huawei.com (7.182.85.205)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUKDz5NpMsoyzWtZ@memverge.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed 01-11-23 12:58:55, Gregory Price wrote:
+> On Wed, Nov 01, 2023 at 02:45:50PM +0100, Michal Hocko wrote:
+> > On Tue 31-10-23 00:27:04, Gregory Price wrote:
+> [... snip ...]
+> > > 
+> > > The downside of doing it in mempolicy is...
+> > > 1) mempolicy is not sysfs friendly, and to make it sysfs friendly is a
+> > >    non-trivial task.  It is very "current-task" centric.
+> > 
+> > True. Cpusets is the way to make it less process centric but that comes
+> > with its own constains (namely which NUMA policies are supported).
+> >  
+> > > 2) Barring a change to mempolicy to be sysfs friendly, the options for
+> > >    implementing weights in the mempolicy are either a) new flag and
+> > >    setting every weight individually in many syscalls, or b) a new
+> > >    syscall (set_mempolicy2), which is what I demonstrated in the RFC.
+> > 
+> > Yes, that would likely require a new syscall.
+> >  
+> > > 3) mempolicy is also subject to cgroup nodemasks, and as a result you
+> > >    end up with a rats nest of interactions between mempolicy nodemasks
+> > >    changing as a result of cgroup migrations, nodes potentially coming
+> > >    and going (hotplug under CXL), and others I'm probably forgetting.
+> > 
+> > Is this really any different from what you are proposing though?
+> >
+> 
+> In only one manner: An external user can set the weight of a node that
+> is added later on.  If it is implemented in mempolicy, then this is not
+> possible.
+> 
+> Basically consider: `numactl --interleave=all ...`
+> 
+> If `--weights=...`: when a node hotplug event occurs, there is no
+> recourse for adding a weight for the new node (it will default to 1).
 
-just to make it clear, this patch is orthogonal to and independent from
-the handling of decrypted pages, sent a few minutes earlier.
+Correct and this is what I was asking about in an earlier email. How
+much do we really need to consider this setup. Is this something nice to
+have or does the nature of the technology requires to be fully dynamic
+and expect new nodes coming up at any moment?
+ 
+> Maybe the answer is "Best effort, sorry" and we don't handle that
+> situation.  That doesn't seem entirely unreasonable.
+> 
+> At least with weights in node (or cgroup, or memtier, whatever) it
+> provides the ability to set that weight outside the mempolicy context.
+> 
+> > >    weight, or should you reset it? If a new node comes into the node
+> > >    mask... what weight should you set? I did not have answers to these
+> > >    questions.
+> > 
+> > I am not really sure I follow you. Are you talking about cpuset
+> > nodemask changes or memory hotplug here.
+> >
+> 
+> Actually both - slightly different context.
+> 
+> If the weights are implemented in mempolicy, if the cpuset nodemask
+> changes then the mempolicy nodemask changes with it.
+> 
+> If the node is removed from the system, I believe (need to validate
+> this, but IIRC) the node will be removed from any registered cpusets.
+> As a result, that falls down to mempolicy, and the node is removed.
 
-Petr T
+I do not think we do anything like that. Userspace might decide to
+change the numa mask when a node is offlined but I do not think we do
+anything like that automagically.
 
-On 11/2/2023 10:44 AM, Petr Tesarik wrote:
-> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>Hi
+> Not entirely sure what happens if a node is added.  The only case where
+> I think that is relevant is when cpuset is empty ("all") and mempolicy
+> is set to something like `--interleave=all`.  In this case, it's
+> possible that the new node will simply have a default weight (1), and if
+> weights are implemented in mempolicy only there is no recourse for changing
+> it.
+
+That is what I would expect.
+ 
+[...]
+> > Right. This is understood. My main concern is whether this is outweights
+> > the limitations of having a _global_ policy _only_. Historically a single
+> > global policy usually led to finding ways how to make that more scoped
+> > (usually through cgroups).
+> >
 > 
-> If multiple areas and multiple IO TLB pools exist, first iterate the
-> current CPU specific area in all pools. Then move to the next area index.
+> Maybe the answer here is put it in cgroups + mempolicy, and don't handle
+> hotplug?  This is an easy shift my this patch to cgroups, and then
+> pulling my syscall patch forward to add weights directly to mempolicy.
+
+Moving the global policy to cgroups would make the main cocern of
+different workloads looking for different policy less problamatic.
+I didn't have much time to think that through but the main question is
+how to sanely define hierarchical properties of those weights? This is
+more of a resource distribution than enforcement so maybe a simple
+inherit or overwrite (if you have a more specific needs) semantic makes
+sense and it is sufficient.
+
+> I think the interleave code stays pretty much the same, the only
+> difference would be where the task gets the weight from:
 > 
-> This is best illustrated by a diagram:
+> if (policy->mode == WEIGHTED_INTERLEAVE)
+>   weight = pol->weight[target_node]
+> else
+>    cgroups.get_weight(from_node, target_node)
 > 
->         area 0 |  area 1 | ... | area M |
-> pool 0    A         B              C
-> pool 1    D         E
-> ...
-> pool N    F         G              H
-> 
-> Currently, each pool is searched before moving on to the next pool,
-> i.e. the search order is A, B ... C, D, E ... F, G ... H. With this patch,
-> each area is searched in all pools before moving on to the next area,
-> i.e. the search order is A, D ... F, B, E ... G ... C ... H.
-> 
-> Note that preemption is not disabled, and raw_smp_processor_id() may not
-> return a stable result, but it is called only once to determine the initial
-> area index. The search will iterate over all areas eventually, even if the
-> current task is preempted.
-> 
-> Next, some pools may have less (but not more) areas than default_nareas.
-> Skip such pools if the distance from the initial area index is greater than
-> pool->nareas. This logic ensures that for every pool the search starts in
-> the initial CPU's own area and never tries any area twice.
-> 
-> To verify performance impact, I booted the kernel with a minimum pool
-> size ("swiotlb=512,4,force"), so multiple pools get allocated, and I ran
-> these benchmarks:
-> 
-> - small: single-threaded I/O of 4 KiB blocks,
-> - big: single-threaded I/O of 64 KiB blocks,
-> - 4way: 4-way parallel I/O of 4 KiB blocks.
-> 
-> The "var" column in the tables below is the coefficient of variance over 5
-> runs of the test, the "diff" column is the relative difference against base
-> in read-write I/O bandwidth (MiB/s).
-> 
-> Tested on an x86 VM against a QEMU virtio SATA driver backed by a RAM-based
-> block device on the host:
-> 
-> 	base	   patched
-> 	var	var	diff
-> small	0.69%	0.62%	+25.4%
-> big	2.14%	2.27%	+25.7%
-> 4way	2.65%	1.70%	+23.6%
-> 
-> Tested on a Raspberry Pi against a class-10 A1 microSD card:
-> 
-> 	base	   patched
-> 	var	var	diff
-> small	0.53%	1.96%	-0.3%
-> big	0.02%	0.57%	+0.8%
-> 4way	6.17%	0.40%	+0.3%
-> 
-> These results confirm that there is significant performance boost in the
-> software IO TLB slot allocation itself. Where performance is dominated by
-> actual hardware, there is no measurable change.
-> 
-> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> ---
->  kernel/dma/swiotlb.c | 90 +++++++++++++++++++++++++++-----------------
->  1 file changed, 55 insertions(+), 35 deletions(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index a1c3dabed19f..35d603ec0329 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -954,7 +954,7 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
->  #endif /* CONFIG_DEBUG_FS */
->  
->  /**
-> - * swiotlb_area_find_slots() - search for slots in one IO TLB memory area
-> + * swiotlb_search_pool_area() - search one memory area in one pool
->   * @dev:	Device which maps the buffer.
->   * @pool:	Memory pool to be searched.
->   * @area_index:	Index of the IO TLB memory area to be searched.
-> @@ -969,7 +969,7 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
->   *
->   * Return: Index of the first allocated slot, or -1 on error.
->   */
-> -static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
-> +static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool,
->  		int area_index, phys_addr_t orig_addr, size_t alloc_size,
->  		unsigned int alloc_align_mask)
->  {
-> @@ -1063,41 +1063,50 @@ static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
->  	return slot_index;
->  }
->  
-> +#ifdef CONFIG_SWIOTLB_DYNAMIC
-> +
->  /**
-> - * swiotlb_pool_find_slots() - search for slots in one memory pool
-> + * swiotlb_search_area() - search one memory area in all pools
->   * @dev:	Device which maps the buffer.
-> - * @pool:	Memory pool to be searched.
-> + * @start_cpu:	Start CPU number.
-> + * @cpu_offset:	Offset from @start_cpu.
->   * @orig_addr:	Original (non-bounced) IO buffer address.
->   * @alloc_size: Total requested size of the bounce buffer,
->   *		including initial alignment padding.
->   * @alloc_align_mask:	Required alignment of the allocated buffer.
-> + * @retpool:	Used memory pool, updated on return.
->   *
-> - * Search through one memory pool to find a sequence of slots that match the
-> + * Search one memory area in all pools for a sequence of slots that match the
->   * allocation constraints.
->   *
->   * Return: Index of the first allocated slot, or -1 on error.
->   */
-> -static int swiotlb_pool_find_slots(struct device *dev, struct io_tlb_pool *pool,
-> -		phys_addr_t orig_addr, size_t alloc_size,
-> -		unsigned int alloc_align_mask)
-> +static int swiotlb_search_area(struct device *dev, int start_cpu,
-> +		int cpu_offset, phys_addr_t orig_addr, size_t alloc_size,
-> +		unsigned int alloc_align_mask, struct io_tlb_pool **retpool)
->  {
-> -	int start = raw_smp_processor_id() & (pool->nareas - 1);
-> -	int i = start, index;
-> -
-> -	do {
-> -		index = swiotlb_area_find_slots(dev, pool, i, orig_addr,
-> -						alloc_size, alloc_align_mask);
-> -		if (index >= 0)
-> -			return index;
-> -		if (++i >= pool->nareas)
-> -			i = 0;
-> -	} while (i != start);
-> +	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-> +	struct io_tlb_pool *pool;
-> +	int area_index;
-> +	int index = -1;
->  
-> -	return -1;
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(pool, &mem->pools, node) {
-> +		if (cpu_offset >= pool->nareas)
-> +			continue;
-> +		area_index = (start_cpu + cpu_offset) & (pool->nareas - 1);
-> +		index = swiotlb_search_pool_area(dev, pool, area_index,
-> +						 orig_addr, alloc_size,
-> +						 alloc_align_mask);
-> +		if (index >= 0) {
-> +			*retpool = pool;
-> +			break;
-> +		}
-> +	}
-> +	rcu_read_unlock();
-> +	return index;
->  }
->  
-> -#ifdef CONFIG_SWIOTLB_DYNAMIC
-> -
->  /**
->   * swiotlb_find_slots() - search for slots in the whole swiotlb
->   * @dev:	Device which maps the buffer.
-> @@ -1121,18 +1130,17 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  	unsigned long nslabs;
->  	unsigned long flags;
->  	u64 phys_limit;
-> +	int cpu, i;
->  	int index;
->  
-> -	rcu_read_lock();
-> -	list_for_each_entry_rcu(pool, &mem->pools, node) {
-> -		index = swiotlb_pool_find_slots(dev, pool, orig_addr,
-> -						alloc_size, alloc_align_mask);
-> -		if (index >= 0) {
-> -			rcu_read_unlock();
-> +	cpu = raw_smp_processor_id();
-> +	for (i = 0; i < default_nareas; ++i) {
-> +		index = swiotlb_search_area(dev, cpu, i, orig_addr, alloc_size,
-> +					    alloc_align_mask, &pool);
-> +		if (index >= 0)
->  			goto found;
-> -		}
->  	}
-> -	rcu_read_unlock();
-> +
->  	if (!mem->can_grow)
->  		return -1;
->  
-> @@ -1145,8 +1153,8 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  	if (!pool)
->  		return -1;
->  
-> -	index = swiotlb_pool_find_slots(dev, pool, orig_addr,
-> -					alloc_size, alloc_align_mask);
-> +	index = swiotlb_search_pool_area(dev, pool, 0, orig_addr,
-> +					 alloc_size, alloc_align_mask);
->  	if (index < 0) {
->  		swiotlb_dyn_free(&pool->rcu);
->  		return -1;
-> @@ -1189,9 +1197,21 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  		size_t alloc_size, unsigned int alloc_align_mask,
->  		struct io_tlb_pool **retpool)
->  {
-> -	*retpool = &dev->dma_io_tlb_mem->defpool;
-> -	return swiotlb_pool_find_slots(dev, *retpool,
-> -				       orig_addr, alloc_size, alloc_align_mask);
-> +	struct io_tlb_pool *pool;
-> +	int start, i;
-> +	int index;
-> +
-> +	*retpool = pool = &dev->dma_io_tlb_mem->defpool;
-> +	i = start = raw_smp_processor_id() & (pool->nareas - 1);
-> +	do {
-> +		index = swiotlb_search_pool_area(dev, pool, i, orig_addr,
-> +						 alloc_size, alloc_align_mask);
-> +		if (index >= 0)
-> +			return index;
-> +		if (++i >= pool->nareas)
-> +			i = 0;
-> +	} while (i != start);
-> +	return -1;
->  }
->  
->  #endif /* CONFIG_SWIOTLB_DYNAMIC */
+> ~Gregory
+
+This is not as much about the code as it is about the proper interface
+because that will get cast in stone once introduced. It would be really
+bad to realize that we have a global policy that doesn't fit well and
+have hard time to work it around without breaking anybody.
+-- 
+Michal Hocko
+SUSE Labs
