@@ -2,343 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265A47DEA7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 02:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992DF7DEA81
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 03:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348225AbjKBB75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 21:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S1348220AbjKBCDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 22:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbjKBB7z (ORCPT
+        with ESMTP id S232963AbjKBCDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 21:59:55 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB7B110;
-        Wed,  1 Nov 2023 18:59:49 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A21cR3H007156;
-        Thu, 2 Nov 2023 01:59:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=pCg/c7I2/RUaFnksCU8WecferE/EwY8K5eTYjPO1yBQ=;
- b=B4dD6phMJlc6/Nn6iw7/NDRYVAoGaWuUizs6CVHn2cBVEugg8XVLdEWpNNin7Lm2IsW0
- wC+aq2h6pVN0EWEXHTJjss62shoa9UpaU/Fr74nFY+3awFmHgA00lRwc8J3AxGyRW5sh
- FvazJcWQ1Na6TXTrbaqtPiA4Can0Ik0GOY/ZFgHBVWwStO6iuX+4wd/PCZBoXvH/1Xfb
- Bvel5zAb656sovNedR0pYodSzvTluKfUZD3xwDLRXI0SL0hF6XEtIi2pLClCqgyUCQc/
- cUORGsC3aYOv2xr3FUBr93ua9y39rYlrPPiKMR0A8IGG856RT84wYGTsPOqGDF41yetM hA== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3kactau4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Nov 2023 01:59:31 +0000
-Received: from pps.filterd (NASANPPMTA04.qualcomm.com [127.0.0.1])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A21xUna030861;
-        Thu, 2 Nov 2023 01:59:30 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by NASANPPMTA04.qualcomm.com (PPS) with ESMTP id 3u4227r7y2-1;
-        Thu, 02 Nov 2023 01:59:30 +0000
-Received: from NASANPPMTA04.qualcomm.com (NASANPPMTA04.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A21x3xo030542;
-        Thu, 2 Nov 2023 01:59:30 GMT
-Received: from stor-dylan.qualcomm.com (stor-dylan.qualcomm.com [192.168.140.207])
-        by NASANPPMTA04.qualcomm.com (PPS) with ESMTP id 3A21xU3Z030854;
-        Thu, 02 Nov 2023 01:59:30 +0000
-Received: by stor-dylan.qualcomm.com (Postfix, from userid 359480)
-        id C2AA120A51; Wed,  1 Nov 2023 18:59:29 -0700 (PDT)
-From:   Can Guo <quic_cang@quicinc.com>
-To:     quic_cang@quicinc.com, bvanassche@acm.org, mani@kernel.org,
-        stanley.chu@mediatek.com, adrian.hunter@intel.com,
-        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Lu Hongfei <luhongfei@vivo.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4] scsi: ufs: ufs-sysfs: Expose UFS power info
-Date:   Wed,  1 Nov 2023 18:58:36 -0700
-Message-Id: <1698890324-7374-1-git-send-email-quic_cang@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 79ZGSCbq2P19iSDK8ETWIgPJy0OjkSnc
-X-Proofpoint-GUID: 79ZGSCbq2P19iSDK8ETWIgPJy0OjkSnc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 bulkscore=0
- clxscore=1015 phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311020013
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 1 Nov 2023 22:03:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DF7E4;
+        Wed,  1 Nov 2023 19:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698890606; x=1730426606;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=E2Mb/KvO9IGYgWWlhQaCJkJRm8aWbo+wV8m7MjhdsDI=;
+  b=UiS6xHnIac2c2n6rfCWfdX7Lka/jsku+Ecj5/0a/ZRUKe3ABDucktzh8
+   8aVyh9vf7e148tvrOWT1FJAgM/F2GpupzTPQ8+ijIdGtHzOU2Kx+TNkS6
+   k1zNlmWlhIomCP3WPfSEtbPAp/bUnsoFHTiBCDOIIH5YaLb85ktdTPDAK
+   VAAXfeSAWjchBM9vdNMEI/bOjXh4o0sVoZ4h9rZtB5mAxlMYdtKfqZNkK
+   RYy5PX7tst7IyBadhzpn6+fQpqwGG2PltUopA61JqpcB7SSfNZbsQfUvA
+   EAfeKlM3bAD3JleiTK7VDa3uChI9YyMm0DDhP9MNCZcVdtYR/WCcn5w2N
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="392501357"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="392501357"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 19:03:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="826959147"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="826959147"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 19:03:21 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
+        <aneesh.kumar@linux.ibm.com>, <weixugc@google.com>,
+        <apopple@nvidia.com>, <tim.c.chen@intel.com>,
+        <dave.hansen@intel.com>, <shy828301@gmail.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+In-Reply-To: <ZUCCGJgrqqk87aGN@memverge.com> (Gregory Price's message of "Tue,
+        31 Oct 2023 00:27:04 -0400")
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+        <20231031152142.GA3029315@cmpxchg.org>
+        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+        <ZUCCGJgrqqk87aGN@memverge.com>
+Date:   Thu, 02 Nov 2023 10:01:20 +0800
+Message-ID: <87cyws3ocv.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having UFS power info available in sysfs makes it easier to tell the state
-of the link during runtime considering we have a bunch of power saving
-features and various combinations for backward compatibility.
+Gregory Price <gregory.price@memverge.com> writes:
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Can Guo <quic_cang@quicinc.com>
----
+> On Tue, Oct 31, 2023 at 04:56:27PM +0100, Michal Hocko wrote:
+>
+>> > This hopefully also explains why it's a global setting. The usecase is
+>> > different from conventional NUMA interleaving, which is used as a
+>> > locality measure: spread shared data evenly between compute
+>> > nodes. This one isn't about locality - the CXL tier doesn't have local
+>> > compute. Instead, the optimal spread is based on hardware parameters,
+>> > which is a global property rather than a per-workload one.
+>> 
+>> Well, I am not convinced about that TBH. Sure it is probably a good fit
+>> for this specific CXL usecase but it just doesn't fit into many others I
+>> can think of - e.g. proportional use of those tiers based on the
+>> workload - you get what you pay for.
+>> 
+>> Is there any specific reason for not having a new interleave interface
+>> which defines weights for the nodemask? Is this because the policy
+>> itself is very dynamic or is this more driven by simplicity of use?
+>> 
+>
+> I had originally implemented it this way while experimenting with new
+> mempolicies.
+>
+> https://lore.kernel.org/linux-cxl/20231003002156.740595-5-gregory.price@memverge.com/
+>
+> The downside of doing it in mempolicy is...
+> 1) mempolicy is not sysfs friendly, and to make it sysfs friendly is a
+>    non-trivial task.  It is very "current-task" centric.
+>
+> 2) Barring a change to mempolicy to be sysfs friendly, the options for
+>    implementing weights in the mempolicy are either a) new flag and
+>    setting every weight individually in many syscalls, or b) a new
+>    syscall (set_mempolicy2), which is what I demonstrated in the RFC.
+>
+> 3) mempolicy is also subject to cgroup nodemasks, and as a result you
+>    end up with a rats nest of interactions between mempolicy nodemasks
+>    changing as a result of cgroup migrations, nodes potentially coming
+>    and going (hotplug under CXL), and others I'm probably forgetting.
+>
+>    Basically:  If a node leaves the nodemask, should you retain the
+>    weight, or should you reset it? If a new node comes into the node
+>    mask... what weight should you set? I did not have answers to these
+>    questions.
+>
+>
+> It was recommended to explore placing it in tiers instead, so I took a
+> crack at it here: 
+>
+> https://lore.kernel.org/linux-mm/20231009204259.875232-1-gregory.price@memverge.com/
+>
+> This had similar issue with the idea of hotplug nodes: if you give a
+> tier a weight, and one or more of the nodes goes away/comes back... what
+> should you do with the weight?  Split it up among the remaining nodes?
+> Rebalance? Etc.
 
-v3 -> v4:
-Incorporated comments from Bart and Mani
+The weight of a tier can be defined as the weight of one node of the
+tier instead of the weight of all nodes of the tier.  That is, for a
+system as follows,
 
-v2 -> v3:
-1. For mode/gear/rate/dev_pm/link_status, print texts instead of numbers
-2. Removed number<->text explanations for mode/rate/gear/dev_pm/link_status in Documentation/ABI/testing/sysfs-driver-ufs
+tier 0: node 0, node 1; weight=4
+tier 1: node 2, node 3; weight=1
 
-v1 -> v2:
-1. Incorporated comments from Bart, Nitin and Mani.
-2. Added explanations for lane/mode/rate/gear/dev_pm/link_status in Documentation/ABI/testing/sysfs-driver-ufs
+If you run workload with `numactl --weighted-interleave -n 0,2,3`, the
+proportion will be: "4:0:1:1" on each node.
 
----
+While for `numactl --weighted-interleave -n 0,2`, it will be: "4:0:1:0".
 
- Documentation/ABI/testing/sysfs-driver-ufs |  49 ++++++++++++
- drivers/ufs/core/ufs-sysfs.c               | 120 +++++++++++++++++++++++++++++
- include/ufs/unipro.h                       |   4 +-
- 3 files changed, 171 insertions(+), 2 deletions(-)
+--
+Best Regards,
+Huang, Ying
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 0c7efaf..b73067b 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1223,6 +1223,55 @@ Description:	This file shows the total latency (in micro seconds) of write
- 
- 		The file is read only.
- 
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/lane
-+What:		/sys/bus/platform/devices/*.ufs/power_info/lane
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows how many lanes are enabled on the UFS link,
-+		i.e., an output 2 means UFS link is operating with 2 lanes.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
-+What:		/sys/bus/platform/devices/*.ufs/power_info/mode
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the PA power mode of UFS.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/rate
-+What:		/sys/bus/platform/devices/*.ufs/power_info/rate
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the speed rate of UFS link.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/gear
-+What:		/sys/bus/platform/devices/*.ufs/power_info/gear
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the gear of UFS link.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/dev_pm
-+What:		/sys/bus/platform/devices/*.ufs/power_info/dev_pm
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the UFS device power mode.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/link_state
-+What:		/sys/bus/platform/devices/*.ufs/power_info/link_state
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the state of UFS link.
-+
-+		The file is read only.
-+
- What:		/sys/bus/platform/drivers/ufshcd/*/device_descriptor/wb_presv_us_en
- What:		/sys/bus/platform/devices/*.ufs/device_descriptor/wb_presv_us_en
- Date:		June 2020
-diff --git a/drivers/ufs/core/ufs-sysfs.c b/drivers/ufs/core/ufs-sysfs.c
-index c959064..05b10ca 100644
---- a/drivers/ufs/core/ufs-sysfs.c
-+++ b/drivers/ufs/core/ufs-sysfs.c
-@@ -7,9 +7,56 @@
- #include <asm/unaligned.h>
- 
- #include <ufs/ufs.h>
-+#include <ufs/unipro.h>
- #include "ufs-sysfs.h"
- #include "ufshcd-priv.h"
- 
-+static const char *ufs_pa_pwr_mode_to_string(enum ufs_pa_pwr_mode mode)
-+{
-+	switch (mode) {
-+	case FAST_MODE:		return "FAST_MODE";
-+	case SLOW_MODE:		return "SLOW_MODE";
-+	case FASTAUTO_MODE:	return "FASTAUTO_MODE";
-+	case SLOWAUTO_MODE:	return "SLOWAUTO_MODE";
-+	default:		return "UNKNOWN";
-+	}
-+}
-+
-+static const char *ufs_hs_gear_rate_to_string(enum ufs_hs_gear_rate rate)
-+{
-+	switch (rate) {
-+	case PA_HS_MODE_A:	return "HS_RATE_A";
-+	case PA_HS_MODE_B:	return "HS_RATE_B";
-+	default:		return "UNKNOWN";
-+	}
-+}
-+
-+static const char *ufs_pwm_gear_to_string(enum ufs_pwm_gear_tag gear)
-+{
-+	switch (gear) {
-+	case UFS_PWM_G1:	return "PWM_GEAR1";
-+	case UFS_PWM_G2:	return "PWM_GEAR2";
-+	case UFS_PWM_G3:	return "PWM_GEAR3";
-+	case UFS_PWM_G4:	return "PWM_GEAR4";
-+	case UFS_PWM_G5:	return "PWM_GEAR5";
-+	case UFS_PWM_G6:	return "PWM_GEAR6";
-+	case UFS_PWM_G7:	return "PWM_GEAR7";
-+	default:		return "UNKNOWN";
-+	}
-+}
-+
-+static const char *ufs_hs_gear_to_string(enum ufs_hs_gear_tag gear)
-+{
-+	switch (gear) {
-+	case UFS_HS_G1:	return "HS_GEAR1";
-+	case UFS_HS_G2:	return "HS_GEAR2";
-+	case UFS_HS_G3:	return "HS_GEAR3";
-+	case UFS_HS_G4:	return "HS_GEAR4";
-+	case UFS_HS_G5:	return "HS_GEAR5";
-+	default:	return "UNKNOWN";
-+	}
-+}
-+
- static const char *ufshcd_uic_link_state_to_string(
- 			enum uic_link_state state)
- {
-@@ -628,6 +675,78 @@ static const struct attribute_group ufs_sysfs_monitor_group = {
- 	.attrs = ufs_sysfs_monitor_attrs,
- };
- 
-+static ssize_t lane_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%u\n", hba->pwr_info.lane_rx);
-+}
-+
-+static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%s\n", ufs_pa_pwr_mode_to_string(hba->pwr_info.pwr_rx));
-+}
-+
-+static ssize_t rate_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%s\n", ufs_hs_gear_rate_to_string(hba->pwr_info.hs_rate));
-+}
-+
-+static ssize_t gear_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%s\n", hba->pwr_info.hs_rate ?
-+			  ufs_hs_gear_to_string(hba->pwr_info.gear_rx) :
-+			  ufs_pwm_gear_to_string(hba->pwr_info.gear_rx));
-+}
-+
-+static ssize_t dev_pm_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%s\n", ufshcd_ufs_dev_pwr_mode_to_string(hba->curr_dev_pwr_mode));
-+}
-+
-+static ssize_t link_state_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%s\n", ufshcd_uic_link_state_to_string(hba->uic_link_state));
-+}
-+
-+static DEVICE_ATTR_RO(lane);
-+static DEVICE_ATTR_RO(mode);
-+static DEVICE_ATTR_RO(rate);
-+static DEVICE_ATTR_RO(gear);
-+static DEVICE_ATTR_RO(dev_pm);
-+static DEVICE_ATTR_RO(link_state);
-+
-+static struct attribute *ufs_power_info_attrs[] = {
-+	&dev_attr_lane.attr,
-+	&dev_attr_mode.attr,
-+	&dev_attr_rate.attr,
-+	&dev_attr_gear.attr,
-+	&dev_attr_dev_pm.attr,
-+	&dev_attr_link_state.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group ufs_sysfs_power_info_group = {
-+	.name = "power_info",
-+	.attrs = ufs_power_info_attrs,
-+};
-+
- static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 				  enum desc_idn desc_id,
- 				  u8 desc_index,
-@@ -1233,6 +1352,7 @@ static const struct attribute_group *ufs_sysfs_groups[] = {
- 	&ufs_sysfs_default_group,
- 	&ufs_sysfs_capabilities_group,
- 	&ufs_sysfs_monitor_group,
-+	&ufs_sysfs_power_info_group,
- 	&ufs_sysfs_device_descriptor_group,
- 	&ufs_sysfs_interconnect_descriptor_group,
- 	&ufs_sysfs_geometry_descriptor_group,
-diff --git a/include/ufs/unipro.h b/include/ufs/unipro.h
-index 256eb3a..360e124 100644
---- a/include/ufs/unipro.h
-+++ b/include/ufs/unipro.h
-@@ -193,7 +193,7 @@
- #define DME_LocalAFC0ReqTimeOutVal		0xD043
- 
- /* PA power modes */
--enum {
-+enum ufs_pa_pwr_mode {
- 	FAST_MODE	= 1,
- 	SLOW_MODE	= 2,
- 	FASTAUTO_MODE	= 4,
-@@ -205,7 +205,7 @@ enum {
- #define PWRMODE_RX_OFFSET	4
- 
- /* PA TX/RX Frequency Series */
--enum {
-+enum ufs_hs_gear_rate {
- 	PA_HS_MODE_A	= 1,
- 	PA_HS_MODE_B	= 2,
- };
--- 
-2.7.4
-
+> The result of this discussion lead us to simply say "What if we place
+> the weights directly in the node".  And that lead us to this RFC.
+>
+>
+> I am not against implementing it in mempolicy (as proof: my first RFC).
+> I am simply searching for the acceptable way to implement it.
+>
+> One of the benefits of having it set as a global setting is that weights
+> can be automatically generated from HMAT/HMEM information (ACPI tables)
+> and programs already using MPOL_INTERLEAVE will have a direct benefit.
+>
+> I have been considering whether MPOL_WEIGHTED_INTERLEAVE should be added
+> along side this patch so that MPOL_INTERLEAVE is left entirely alone.
+>
+> Happy to discuss more,
+> ~Gregory
