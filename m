@@ -2,125 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD587DF9CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE747DF9CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347168AbjKBSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S1376412AbjKBSR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234335AbjKBSQy (ORCPT
+        with ESMTP id S235364AbjKBSRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:16:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70A7137
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 11:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698948966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yH09Py8IYRdWEq70yMXJ3wDczRklXyABpCu4Oku+uko=;
-        b=craN23vT94oPqNZLksryG1IPTEnP2L66If6HlaOlqgS4HvWCYcsgULTK90mADicboyK1GW
-        G9aSDOzU95GWp8FkLQrOky9N3TarrFoMvvOYPsLLsNh1/i+UQNWrAh1bFHJfy4FHQs7NYA
-        Rx8yRpIFDCkt6ISsEsHfZieKNsIgQes=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-256-azxNW6RgMiKT8INuitfV3Q-1; Thu, 02 Nov 2023 14:16:04 -0400
-X-MC-Unique: azxNW6RgMiKT8INuitfV3Q-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-507df68e881so307285e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 11:16:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698948963; x=1699553763;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yH09Py8IYRdWEq70yMXJ3wDczRklXyABpCu4Oku+uko=;
-        b=rn2l5TwB5aoyJFv7KjW57Jn6zpW2UvmZ1EhsWf0XYAVlsplqTZHhjk4CwRlbw/tP7d
-         EsXUek7NxvU5q3CAEbn89l3tkHYvz+1X2ZFTM8GgPHnH2FwzI/uRCRGHzG0+0VrYex3C
-         KtMUJszJcrwvbcYPr9dNMgQMgj/vzY9dYgwWpzLE9j9KtS9DqAYEXQssgzyar7+23r65
-         dXeFE6qRIedSuvb+NmCnMxtmspkk7VDNAwzCsg/57k+UgNwcNhf/q9YkCwRla97QuFtO
-         j1/K8hYhJS6U9ptzYXiJFTR41xqJKM+nUDBLVDt+C3NnScVw7FHgDWrnsSgSR/cVxypK
-         0W5g==
-X-Gm-Message-State: AOJu0Yw5IgvHTPDhj/1rHp59lBjMnlRWwa3uNXWvx4jKf+wyZ0OEhKng
-        EYAVT9n0x/aC5/ClqmSXEYhGfsdikTdT1BVnFRcp3QmcraiV2UB5ftupnnFxaDOJb4LzcjgBDeU
-        RYnlB5mhsJaL0rPAjkA8xSp+I
-X-Received: by 2002:a2e:9695:0:b0:2c4:ff24:b02e with SMTP id q21-20020a2e9695000000b002c4ff24b02emr14483934lji.3.1698948963410;
-        Thu, 02 Nov 2023 11:16:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFS1zGZUHtg3KOcze+sfSekgUGd8coQqnik/gqhe4Qn0cg6IP3P+fkjw/XDjmt/1fT6T4eXsA==
-X-Received: by 2002:a2e:9695:0:b0:2c4:ff24:b02e with SMTP id q21-20020a2e9695000000b002c4ff24b02emr14483906lji.3.1698948963067;
-        Thu, 02 Nov 2023 11:16:03 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b004076f522058sm3879929wms.0.2023.11.02.11.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 11:16:02 -0700 (PDT)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Philipp Stanner <pstanner@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: [PATCH 3/3] virt/kvm: copy userspace-array safely
-Date:   Thu,  2 Nov 2023 19:15:26 +0100
-Message-ID: <20231102181526.43279-4-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231102181526.43279-1-pstanner@redhat.com>
-References: <20231102181526.43279-1-pstanner@redhat.com>
+        Thu, 2 Nov 2023 14:17:22 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6D919D;
+        Thu,  2 Nov 2023 11:17:01 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 1BEC5320093C;
+        Thu,  2 Nov 2023 14:16:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 02 Nov 2023 14:16:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1698949016; x=1699035416; bh=cc
+        Rdkv2KouFQrXacW6T4fBEpKBx+OWWMqYeM7hOtQhw=; b=mKvxFm0DCr9N84kDn+
+        EZWTm5c4Z4j2jEi30p/sjG6MCl2TdBNKldA7SvxfsvDW4Lg/STFFxTcn5T7YormW
+        fIQZyiPv0CRhBQ0k4MqZC0CpWl+M2mGzAthc+phgggSLGRWX6pB8JYEGMhqAPBwm
+        V86BWApKHKcS4y6L7cNKdrDB9YD8snnt83csswhdicOq1R41V4YSFyOSHANLQ8zd
+        jN+hHJKQI//CFD23Jq8w2MCMOnNafXRU6LyoLlYnrXM4l2E9ZSn6kdT1rA/J0slo
+        uINX5UPMSyse2Iu6AUJSng3frDaNoCP7dG3fIY9/c3pQCLUQxhbNHOBsqZN5VvQG
+        Qy0g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1698949016; x=1699035416; bh=ccRdkv2KouFQr
+        XacW6T4fBEpKBx+OWWMqYeM7hOtQhw=; b=X2ci7TaDRAwKRs2TPjmHaENk9MuIB
+        5ELb9NI75Pq0qo5PwFW3pGswaY/Ht1RxZRx8cGw1R19bFsXWPZZcbArDpb42OMPr
+        fh1eIE85LNlOix8CAG20bs9ibFHr6YPEhlcZgNzs3rGNA7wphh1oEvoQbmuEFyOe
+        7Ssrx3RiJqQ1YpnrJOga8lTE5q66ClXV4XC3/jaYfl4XnLCrPasK+KAA9UpQoWDq
+        nM9Ym1u5chUDrJbqRlDHUGsLuIyPZ3sSxdW8h/iBL9HT/yzRYFr+YUcf5GvdtDx6
+        J9pp5H1DItU5tRcH5+V/ja0Bg4BzORKBwXJhlq7dxc+VwGWk8i2Trj7CA==
+X-ME-Sender: <xms:mOdDZXM8Q9x_eynSwNS7gndNYKzzGbqezej7swj59Kq2yIuvHc865w>
+    <xme:mOdDZR8r6uzVz0czCRFRjTdKHfzTWV_Vj66x9890_crsB-utK2RS07DkB6z_IdhBE
+    yW2few7xfh3B27km5c>
+X-ME-Received: <xmr:mOdDZWSOZtyku_2_EYXMo3RwKXL0WTjWi0GYViasbtD2oYRHcp10Pk9FaLFxh5HPqxOkBQ4d8ejG4akC1Wz_xw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtiedgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeflvghr
+    vghmhicuvehlihhnvgcuoehjvghrvghmhiesjhgtlhhinhgvrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeigeejfeefueejheeujeduleegueehtdeltedvieevgeefffeljeelvdej
+    hfehheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hjvghrvghmhiesjhgtlhhinhgvrdhorhhg
+X-ME-Proxy: <xmx:mOdDZbvkqzxxh4mDQ3T6GPoI_5SMO7TxkW9A3TRNtc4jFMtcHXXrUw>
+    <xmx:mOdDZfcpWIexFtzzTT8puHOJNPIIuog7kB4E6VpSgEzyKhk2JhHFHw>
+    <xmx:mOdDZX1k2Di95uM9jG2tk_4CWJM7o1BwoZ5-fLSJ4W3isRZcbGclng>
+    <xmx:mOdDZRu7QBhNHpGMWjdzLoiZHoxdOw6yZCePwYVIxhsvFV7DV-7vAg>
+Feedback-ID: i7a7146c5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 2 Nov 2023 14:16:55 -0400 (EDT)
+Date:   Thu, 2 Nov 2023 14:16:54 -0400
+From:   Jeremy Cline <jeremy@jcline.org>
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     habetsm.xilinx@gmail.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        reibax@gmail.com, richardcochran@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net-next V2] ptp: fix corrupted list in ptp_open
+Message-ID: <ZUPnlsm91R72MBs7@dev>
+References: <tencent_2C67C6D2537B236F497823BCC457976F9705@qq.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_2C67C6D2537B236F497823BCC457976F9705@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_main.c utilizes vmemdup_user() and array_size() to copy a userspace
-array. Currently, this does not check for an overflow.
+Hi Edward,
 
-Use the new wrapper vmemdup_array_user() to copy the array more safely.
+On Tue, Oct 31, 2023 at 06:25:42PM +0800, Edward Adam Davis wrote:
+> There is no lock protection when writing ptp->tsevqs in ptp_open(),
+> ptp_release(), which can cause data corruption, use mutex lock to avoid this 
+> issue.
+> 
+> Moreover, ptp_release() should not be used to release the queue in ptp_read(),
+> and it should be deleted together.
+> 
+> Reported-and-tested-by: syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
+> Fixes: 8f5de6fb2453 ("ptp: support multiple timestamp event readers")
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  drivers/ptp/ptp_chardev.c | 11 +++++++++--
+>  drivers/ptp/ptp_clock.c   |  3 +++
+>  drivers/ptp/ptp_private.h |  1 +
+>  3 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+> index 282cd7d24077..e31551d2697d 100644
+> --- a/drivers/ptp/ptp_chardev.c
+> +++ b/drivers/ptp/ptp_chardev.c
+> @@ -109,6 +109,9 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+>  	struct timestamp_event_queue *queue;
+>  	char debugfsname[32];
+>  
+> +	if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
+> +		return -ERESTARTSYS;
+> +
+>  	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
+>  	if (!queue)
+>  		return -EINVAL;
+> @@ -132,15 +135,20 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+>  	debugfs_create_u32_array("mask", 0444, queue->debugfs_instance,
+>  				 &queue->dfs_bitmap);
+>  
+> +	mutex_unlock(&ptp->tsevq_mux);
 
-Suggested-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- virt/kvm/kvm_main.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+The lock doesn't need to be held so long here. Doing so causes a bit of
+an issue, actually, because the memory allocation for the queue can fail
+which will cause the function to return early without releasing the
+mutex.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 486800a7024b..2a2f409c2a7d 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -4932,9 +4932,8 @@ static long kvm_vm_ioctl(struct file *filp,
- 			goto out;
- 		if (routing.nr) {
- 			urouting = argp;
--			entries = vmemdup_user(urouting->entries,
--					       array_size(sizeof(*entries),
--							  routing.nr));
-+			entries = vmemdup_array_user(urouting->entries,
-+						     routing.nr, sizeof(*entries));
- 			if (IS_ERR(entries)) {
- 				r = PTR_ERR(entries);
- 				goto out;
--- 
-2.41.0
+The lock only needs to be held for the list_add_tail() call.
 
+>  	return 0;
+>  }
+>  
+>  int ptp_release(struct posix_clock_context *pccontext)
+>  {
+>  	struct timestamp_event_queue *queue = pccontext->private_clkdata;
+> +	struct ptp_clock *ptp =
+> +		container_of(pccontext->clk, struct ptp_clock, clock);
+>  	unsigned long flags;
+>  
+>  	if (queue) {
+> +		if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
+> +			return -ERESTARTSYS;
+>  		debugfs_remove(queue->debugfs_instance);
+>  		pccontext->private_clkdata = NULL;
+>  		spin_lock_irqsave(&queue->lock, flags);
+> @@ -148,6 +156,7 @@ int ptp_release(struct posix_clock_context *pccontext)
+>  		spin_unlock_irqrestore(&queue->lock, flags);
+>  		bitmap_free(queue->mask);
+>  		kfree(queue);
+> +		mutex_unlock(&ptp->tsevq_mux);
+
+Similar to the above note, you don't want to hold the lock any longer
+than you must.
+
+While this patch looks to cover adding and removing items from the list,
+the code that iterates over the list isn't covered which can be
+problematic. If the list is modified while it is being iterated, the
+iterating code could chase an invalid pointer.
+
+Regards,
+Jeremy
