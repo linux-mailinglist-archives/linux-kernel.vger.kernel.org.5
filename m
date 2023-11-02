@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C46BB7DF675
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E2D7DF671
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376746AbjKBPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        id S1345447AbjKBPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347525AbjKBPdD (ORCPT
+        with ESMTP id S229575AbjKBPc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:33:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3820185
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:32:53 -0700 (PDT)
+        Thu, 2 Nov 2023 11:32:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B88138
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:32:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=nVJ2BrBhs84Vo8op91bCrEqQKyYGP8iSvvBesTbvcL8=; b=rABb7LV3Tw27YsY9IlOdGOlTXx
-        gGljf5bb0ix4DLZ9VPLkCYUfnE881R1/OkrO0I9jJxJPXOQNcozuYIdsSlSdQXgYWL+0BfvUIsr8l
-        OdntMdkVRuBIvA5mrZJl2gmABAGqaz97zI56lJ4uYG/mr4NytS0l2BDyigxSySU++od46JThpDDpk
-        9TPpW9aTs2ZrB74l6XgpGwzgK1QdlrDR1BVgTjF1IJwQmxR8O/BaWivQnGeUc1DV4Co5qmNokddCm
-        bO4jekbhQyrroQtLUQ05nl5LA2G6EM+6L37WhXvk9peSENHrKkp9/Uq6gdbTEeixpxIaJ7P1S4iEA
-        WDoLNhLQ==;
+        bh=TIflEc6HK/22xB9+LAc8fdYfMJHSxjY/dB735CDFq7w=; b=P6kB5/pEItGyT9udySZwn5g3Qv
+        DokDZMGlAiB4g+5YMtKB0RmZbfY/pSLOWVbj5SPF6cIDKqKZn1inehV8/qd0OzY/wn9JdZcifSQj8
+        3dH2nA6JS9foEyCWzBfy2FYGKj4LmT0pao4ngY0As0C25SUXZ540eeGac7JIDrYE/ebOo/ehFs1XS
+        uEVmLDDifA+yYjw0mpY8V81H06JBxnpUcCgwR66s2d9LTWqPI5szoghluskYsv0VEb+nsMdEQYP/6
+        iTI4qNM/z+xa/z7t/+iAAIFUnvAPSqkLVuq9byN3ej3VbidX8FqhNvqpNRFC/A+oIEiju20IssCS+
+        VKZ9UYPA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qyZgV-0005PI-Eg; Thu, 02 Nov 2023 15:32:40 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qyZgW-006gQO-0R;
+        Thu, 02 Nov 2023 15:32:41 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id 4C239301C46; Thu,  2 Nov 2023 16:32:39 +0100 (CET)
-Message-Id: <20231102152018.285699719@infradead.org>
+        id 505FE302187; Thu,  2 Nov 2023 16:32:39 +0100 (CET)
+Message-Id: <20231102152018.391356347@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 02 Nov 2023 16:09:24 +0100
+Date:   Thu, 02 Nov 2023 16:09:25 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         acme@kernel.org, mark.rutland@arm.com,
         alexander.shishkin@linux.intel.com, jolsa@kernel.org,
         namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com
-Subject: [PATCH 05/13] perf: Simplify perf_cgroup_connect()
+Subject: [PATCH 06/13] perf; Simplify event_sched_in()
 References: <20231102150919.719936610@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,58 +54,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use CLASS to reduce gotos and simplify control flow.
+Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/file.h |    2 +-
- kernel/events/core.c |   19 ++++++++-----------
- 2 files changed, 9 insertions(+), 12 deletions(-)
+ kernel/events/core.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -936,22 +936,20 @@ static inline int perf_cgroup_connect(in
- {
- 	struct perf_cgroup *cgrp;
- 	struct cgroup_subsys_state *css;
--	struct fd f = fdget(fd);
--	int ret = 0;
-+	int ret;
+@@ -1153,6 +1153,8 @@ void perf_pmu_enable(struct pmu *pmu)
+ 		pmu->pmu_enable(pmu);
+ }
  
-+	CLASS(fd, f)(fd);
- 	if (!f.file)
- 		return -EBADF;
- 
- 	css = css_tryget_online_from_dir(f.file->f_path.dentry,
- 					 &perf_event_cgrp_subsys);
--	if (IS_ERR(css)) {
--		ret = PTR_ERR(css);
--		goto out;
--	}
-+	if (IS_ERR(css))
-+		return PTR_ERR(css);
- 
- 	ret = perf_cgroup_ensure_storage(event, css);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	cgrp = container_of(css, struct perf_cgroup, css);
- 	event->cgrp = cgrp;
-@@ -963,11 +961,10 @@ static inline int perf_cgroup_connect(in
- 	 */
- 	if (group_leader && group_leader->cgrp != cgrp) {
- 		perf_detach_cgroup(event);
--		ret = -EINVAL;
-+		return -EINVAL;
- 	}
--out:
--	fdput(f);
--	return ret;
++DEFINE_GUARD(perf_pmu_disable, struct pmu *, perf_pmu_disable(_T), perf_pmu_enable(_T))
 +
+ static void perf_assert_pmu_disabled(struct pmu *pmu)
+ {
+ 	WARN_ON_ONCE(*this_cpu_ptr(pmu->pmu_disable_count) == 0);
+@@ -2489,7 +2491,6 @@ event_sched_in(struct perf_event *event,
+ {
+ 	struct perf_event_pmu_context *epc = event->pmu_ctx;
+ 	struct perf_cpu_pmu_context *cpc = this_cpu_ptr(epc->pmu->cpu_pmu_context);
+-	int ret = 0;
+ 
+ 	WARN_ON_ONCE(event->ctx != ctx);
+ 
+@@ -2517,15 +2518,14 @@ event_sched_in(struct perf_event *event,
+ 		event->hw.interrupts = 0;
+ 	}
+ 
+-	perf_pmu_disable(event->pmu);
++	guard(perf_pmu_disable)(event->pmu);
+ 
+ 	perf_log_itrace_start(event);
+ 
+ 	if (event->pmu->add(event, PERF_EF_START)) {
+ 		perf_event_set_state(event, PERF_EVENT_STATE_INACTIVE);
+ 		event->oncpu = -1;
+-		ret = -EAGAIN;
+-		goto out;
++		return -EAGAIN;
+ 	}
+ 
+ 	if (!is_software_event(event))
+@@ -2536,10 +2536,7 @@ event_sched_in(struct perf_event *event,
+ 	if (event->attr.exclusive)
+ 		cpc->exclusive = 1;
+ 
+-out:
+-	perf_pmu_enable(event->pmu);
+-
+-	return ret;
 +	return 0;
  }
  
- static inline void
+ static int
 
 
