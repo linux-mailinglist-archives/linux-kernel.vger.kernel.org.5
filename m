@@ -2,237 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BAC7DF8D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929477DF8D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbjKBRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S231940AbjKBRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbjKBRhf (ORCPT
+        with ESMTP id S232902AbjKBRho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:37:35 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F064197
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:37:31 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc323b2aa3so8913465ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698946651; x=1699551451; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uN1ssLkZHjDTrGZRWby6miGmTEsoKqfVN3YbqYw1LLA=;
-        b=coSNqGSa47J/UZf0Pz9YGwIQ7TBXNp4w0vC+NhbSJdmfM63JiOkcuplyubh+1Bc1Xq
-         wDZIUN+2gb4+E0zeGXXCd85Yf8kSu9+YVBg7mENZa8X2Td3Okm1qsYKwdlv1ZIziaahp
-         phBKhJnDxgx037qgYQBLTXyDIWs04h12RX0vyIVuFVvywhiLTAp2dUtk4xYwj8sT53Kd
-         wak23GwFfRo+wHgAjW8Ifr3xrZf2CDKVvRJ96S0KbOFd3kiUcpPysu6bM4aaMiQbe+Qx
-         hptsOZZLoBiRBJmyrnh5Kp6KtkOEMsgVNRtO/71TejvAhuZF/s+jD0uHNwhko4LLUx/t
-         wMTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698946651; x=1699551451;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uN1ssLkZHjDTrGZRWby6miGmTEsoKqfVN3YbqYw1LLA=;
-        b=PUIKVaUOj4IkHF8qEai+pMf7jlzAMTuDQuuL4XbtU9E+pUGfNA8o4i7yd1BkRtXtyz
-         JJ/BSIKfm49nczLtcE/UZWIOcCUXtyJ041ozeRWj0rNxMK5peTwJKWrbo3KkQOHqN+Pj
-         YQY1/BcHkTIr0E24H1GfXCwzro9lp/wdyZOpQ5okbGIa4XWh7OxJcKgQrjqBTDb5V9KD
-         dDjFIvnleWe4QytWE+P1qfPxNfMWZMFfSnGHcNM5AHE/TaW1EQr1dG1FOCthOetdo9AM
-         aHKUh+k1Ekfcs0eHev3NzD14dCtiP5inPyNacZWx2jEYnjmnoLEqd6VcKu+QIOYZpg5C
-         8TQA==
-X-Gm-Message-State: AOJu0YzXGibFNTYLpAM93xTj7AvfX9D6PtlG6/Rv66NLFIIYNQPZU0Pk
-        INJY0DtBcPqL85PnUzJZwySZczpmYJY=
-X-Google-Smtp-Source: AGHT+IHO2BmoMwEG0Z4p7dUErvps7DbkHqeEBbdPqNa8vmvQCAafmC1+rihoFOkAVlqXxxzUlxPm8WkwUZU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:25d2:b0:1cc:2ffe:5a27 with SMTP id
- jc18-20020a17090325d200b001cc2ffe5a27mr287356plb.9.1698946650780; Thu, 02 Nov
- 2023 10:37:30 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 10:37:29 -0700
-In-Reply-To: <CALzav=eaVc5rzmHwnQr7aotyTKi9Agdte7NAL0NvBeE+f6zYoA@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
- <ZUFGRyQEuWj4RJS0@google.com> <ZUFzZf-YmCRYP6qo@google.com>
- <CALzav=d9eXZfK=op7A=UftbpuPpUbxqV6CmkqqxxBNuNsUU4nw@mail.gmail.com>
- <6642c379-1023-4716-904f-4bbf076744c2@redhat.com> <ZUPIXt1XzZrriswG@google.com>
- <CALzav=eaVc5rzmHwnQr7aotyTKi9Agdte7NAL0NvBeE+f6zYoA@mail.gmail.com>
-Message-ID: <ZUPeWTdbMhvMO4QL@google.com>
-Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 2 Nov 2023 13:37:44 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B01D184
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:37:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 389A72F4;
+        Thu,  2 Nov 2023 10:38:19 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B2D23F738;
+        Thu,  2 Nov 2023 10:37:34 -0700 (PDT)
+Message-ID: <ad78436f-43c3-4b4b-9cb5-28dffd43468a@arm.com>
+Date:   Thu, 2 Nov 2023 18:37:33 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 4/6] sched/fair: Rewrite util_fits_cpu()
+Content-Language: en-US
+To:     Hongyan Xia <Hongyan.Xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Qais Yousef <qyousef@layalina.io>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Christian Loehle <christian.loehle@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
+ <d8371d0764b595ab496b4fb744fdcba0a82bf41d.1696345700.git.Hongyan.Xia2@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <d8371d0764b595ab496b4fb744fdcba0a82bf41d.1696345700.git.Hongyan.Xia2@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023, David Matlack wrote:
-> On Thu, Nov 2, 2023 at 9:03=E2=80=AFAM Sean Christopherson <seanjc@google=
-.com> wrote:
-> >
-> > On Thu, Nov 02, 2023, Paolo Bonzini wrote:
-> > > On 10/31/23 23:39, David Matlack wrote:
-> > > > > > Maybe can you sketch out how you see this proposal being extens=
-ible to
-> > > > > > using guest_memfd for shared mappings?
-> > > > > For in-place conversions, e.g. pKVM, no additional guest_memfd is=
- needed.  What's
-> > > > > missing there is the ability to (safely) mmap() guest_memfd, e.g.=
- KVM needs to
-> > > > > ensure there are no outstanding references when converting back t=
-o private.
-> > > > >
-> > > > > For TDX/SNP, assuming we don't find a performant and robust way t=
-o do in-place
-> > > > > conversions, a second fd+offset pair would be needed.
-> > > > Is there a way to support non-in-place conversions within a single =
-guest_memfd?
-> > >
-> > > For TDX/SNP, you could have a hook from KVM_SET_MEMORY_ATTRIBUTES to =
-guest
-> > > memory.  The hook would invalidate now-private parts if they have a V=
-MA,
-> > > causing a SIGSEGV/EFAULT if the host touches them.
-> > >
-> > > It would forbid mappings from multiple gfns to a single offset of the
-> > > guest_memfd, because then the shared vs. private attribute would be t=
-ied to
-> > > the offset.  This should not be a problem; for example, in the case o=
-f SNP,
-> > > the RMP already requires a single mapping from host physical address =
-to
-> > > guest physical address.
-> >
-> > I don't see how this can work.  It's not a M:1 scenario (where M is mul=
-tiple gfns),
-> > it's a 1:N scenario (wheren N is multiple offsets).  The *gfn* doesn't =
-change on
-> > a conversion, what needs to change to do non-in-place conversion is the=
- pfn, which
-> > is effectively the guest_memfd+offset pair.
-> >
-> > So yes, we *could* support non-in-place conversions within a single gue=
-st_memfd,
-> > but it would require a second offset,
->=20
-> Why can't KVM free the existing page at guest_memfd+offset and
-> allocate a new one when doing non-in-place conversions?
+On 04/10/2023 11:04, Hongyan Xia wrote:
+> From: Hongyan Xia <hongyan.xia2@arm.com>
+> 
+> Currently, there's no way to distinguish the difference between 1) a CPU
+> that is actually maxed out at its highest frequency, or 2) one that is
+> throttled because of UCLAMP_MAX, since both present util_avg values of
+> 1024. This is problematic because when we try to pick a CPU for a task
+> to run, we would like to give 2) a chance, or at least prefer 2) to 1).
+> 
+> Current upstream gives neither a chance because the spare capacity is 0
+> for either case. There are patches to fix this problem by considering 0
+> capacities [1], but this might still be inefficient because this ends
+> up treating 1) and 2) equally, and will always pick the same one because
+> we don't change how we iterate through all CPUs. If we end up putting
+> many tasks on 1), then this creates a seriously unbalanced load for the
+> two CPUs.
+> 
+> Fix by using util_avg_uclamp for util_fits_cpu(). This way, case 1) will
+> still keep its utilization at 1024 whereas 2) shows spare capacities if
+> the sum of util_avg_uclamp values is still under the CPU capacity.
+> Note that this is roughly what the sum aggregation does in the Android
+> kernel [2] (although we clamp UCLAMP_MIN as well in this patch, which
+> may need some discussions), which shows superior energy savings because
+> there's more chance that a task can get scheduled on 2) instead of
+> finding a big CPU to run on.
+> 
+> Under sum aggregation, checking whether a task fits a CPU becomes much
+> simpler. We simply do fits_capacity() and there does not need to be code
+> checking all corner cases for uclamp. This means util_fits_cpu() returns
+> to true and false instead of tri-state, simplifying a significant amount
+> of code.
 
-Oh, I see what you're suggesting.  Eww.
+You could remove util_fits_cpu() and task_fits_cpu() and call
+fits_capacity() directly. We should try to keep the zoo of util-related
+functions as small as possible.
 
-It's certainly possible, but it would largely defeat the purpose of why we =
-are
-adding guest_memfd in the first place.
+[...]
 
-For TDX and SNP, the goal is to provide a simple, robust mechanism for isol=
-ating
-guest private memory so that it's all but impossible for the host to access=
- private
-memory.  As things stand, memory for a given guest_memfd is either private =
-or shared
-(assuming we support a second guest_memfd per memslot).  I.e. there's no ne=
-ed to
-track whether a given page/folio in the guest_memfd is private vs. shared.
-
-We could use memory attributes, but that further complicates things when in=
-trahost
-migration (and potentially other multi-user scenarios) comes along, i.e. wh=
-en KVM
-supports linking multiple guest_memfd files to a single inode.  We'd have t=
-o ensure
-that all "struct kvm" instances have identical PRIVATE attributes for a giv=
-en
-*offset* in the inode.  I'm not even sure how feasible that is for intrahos=
-t
-migration, and that's the *easy* case, because IIRC it's already a hard req=
-uirement
-that the source and destination have identical gnf=3D>guest_memfd bindings,=
- i.e. KVM
-can somewhat easily reason about gfn attributes.
-
-But even then, that only helps with the actual migration of the VM, e.g. we=
-'d still
-have to figure out how to deal with .mmap() and other shared vs. private ac=
-tions
-when linking a new guest_memfd file against an existing inode.
-
-I haven't seen the pKVM patches for supporting .mmap(), so maybe this is al=
-ready
-a solved problem, but I'd honestly be quite surprised if it all works corre=
-ctly
-if/when KVM supports multiple files per inode.
-
-And I don't see what value non-in-place conversions would add.  The value a=
-dded
-by in-place conversions, aside from the obvious preservation of data, which=
- isn't
-relevant to TDX/SNP, is that it doesn't require freeing and reallocating me=
-mory
-to avoid double-allocating for private vs. shared.  That's especialy quite =
-nice
-when hugepages are being used because reconstituing a hugepage "only" requi=
-res
-zapping SPTEs.
-
-But if KVM is freeing the private page, it's the same as punching a hole, p=
-robably
-quite literally, when mapping the gfn as shared.  In every way I can think =
-of, it's
-worse.  E.g. it's more complex for KVM, and the PUNCH_HOLE =3D> allocation =
-operations
-must be serialized.
-
-Regarding double-allocating, I really, really think we should solve that in=
- the
-guest.  I.e. teach Linux-as-a-guest to aggressively convert at 2MiB granula=
-rity
-and avoid 4KiB conversions.  4KiB conversions aren't just a memory utilizat=
-ion
-problem, they're also a performance problem, e.g. shatters hugepages (which=
- KVM
-doesn't yet support recovering) and increases TLB pressure for both stage-1=
- and
-stage-2 mappings.
