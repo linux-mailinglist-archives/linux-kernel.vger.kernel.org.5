@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0017DF1FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2157C7DF217
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345566AbjKBMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        id S1346023AbjKBMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235583AbjKBMEj (ORCPT
+        with ESMTP id S230136AbjKBMQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:04:39 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9007110F9
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:02:07 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c0f14d6875so860585b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:02:07 -0700 (PDT)
+        Thu, 2 Nov 2023 08:16:31 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045D6189;
+        Thu,  2 Nov 2023 05:03:28 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c6ef6c1ec2so9815981fa.2;
+        Thu, 02 Nov 2023 05:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698926527; x=1699531327; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ftnYGlHohU4PgAvOLDfsNbFmXMcl+RaArmfMB/fCVZg=;
-        b=T+jOFR+8YUBSxO12vO53oCoIukGFpca/JywKIajBwzf3v3VdE/wUsYzG32sjxJVR4c
-         +9ZHUOvqPMaGaIUfoSClF44U8nOeXepH6kD0C8KwWbjmNLNzFOn0O47moht18tVoEDv6
-         99xwWaKryihz/Euxj8t6JhgQN6gbpmdkpE1LWIYQ/fIi36zj5dirgdtrMqxJd+1o4p1t
-         XHsYpr21UJikwH2Cwa10hq/99llIbo33DGLTN34S7daCVPxEd7xF1IIowf13GdD3x4Eq
-         WmmpP3yjZQT14KYBbf2q/PZ0E52hnxBNdw9d8U9YqtTK2gK5GWeT0SfdTeHit9XYfOfH
-         mVXg==
+        d=gmail.com; s=20230601; t=1698926606; x=1699531406; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SZgopjRBSehJcywZRSRRjwXmQo1kSprJEg6i4E+ED6Q=;
+        b=Q2AE6KZK+FF/beg3fAugilfpGyXxcASJvrzyt/n8I3zepJXl7sNDqFWj+Zj4tYpZ0k
+         ZhS6CGPuBDt9MTA4tQlGUPxU6WwSMVVnvDCWok4dskSyfXZ1zCPv5KVkv68uYU4YBG3N
+         WCQOYvTGyII2XhcxLpLiZa3JZee00rlXyfokp89PmxpQwn6J9gsBLV42VpgexcnTvEN4
+         Fbhlf5JoYlaODIWA85EvJPreKK+gs0/chzgCrkfhLspE4G2TWRAibFBp/ryuuIbVllQX
+         tRaYmA4yhIUTUVG368Zm5tmwl70Qb4gGhJnHXmbJSd3de6ZbCIEYP4E5r8W4EWl9+e+O
+         1POw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698926527; x=1699531327;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ftnYGlHohU4PgAvOLDfsNbFmXMcl+RaArmfMB/fCVZg=;
-        b=YyJOrRjHQ5qPg0ikJKFFghI8xGcavlM0P7tIUOOUE05eS4GnHLJJEX9dZDRJJWgw0B
-         blxozWQwYoE5DsFkLFZ4HcLi5gRvH7nJawtMpPwVCGrmD10BYLu6MtAsEGP1yLVI5iJg
-         PNpei0PqIkqeaOs7MH8ihRGW1QGdXFgbUj8m3vu2ol4SgqY0FscBWbQNG3n4sBlAC2AU
-         Z/NeBoHfEDOQbPhd6A9RVAwWHpw/AUo/d5fTaqQLruGZmUyMHKmRHOKT0qe1003S771U
-         jKbmmi4aliGSNkMC6WXDqr8DkN+8SuVoFEONPMXbien36280nHgHuibKRwuuO//KemkK
-         4xeg==
-X-Gm-Message-State: AOJu0YyCGfncD8QXr26oCsuQWZJpW3rv3OdNmHdcEA5YnewQJNmK3s2r
-        q2KOd0pI+wOIeMFTB5+7JHfxmA==
-X-Google-Smtp-Source: AGHT+IGak6vYxyYxJboQzPYtlVELlojzQHOYOuIewHMFX+Z9YpUdKomQpySY+4ZD8wRCrq38FcVPbQ==
-X-Received: by 2002:a17:902:d50d:b0:1cc:3875:e654 with SMTP id b13-20020a170902d50d00b001cc3875e654mr12967681plg.26.1698926526894;
-        Thu, 02 Nov 2023 05:02:06 -0700 (PDT)
-Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170902f68c00b001cc0f6028b8sm2969008plg.106.2023.11.02.05.02.03
+        d=1e100.net; s=20230601; t=1698926606; x=1699531406;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SZgopjRBSehJcywZRSRRjwXmQo1kSprJEg6i4E+ED6Q=;
+        b=tuKj1Mzvcn/tkATDb6QEkhKUl6L0s13ZrtlHRxdZygeMcCMcwhspqkCFuquuKQgoCJ
+         GvypbVwpauSzVYxKzMcjldOFIB4ML2DrbhSNHX4EQZGqmUWm69TPzswfOJka9MSwhQIV
+         TTsonzwqcztmlo48zNVAZMQWWyPbWLEA81j9A/74PnCbM9PK7SaexHMfhcERs7N7KkRS
+         74Cn3yCYz10T92MKM/4YrCCRnU14Tj9Wih4Y105ZLqAgqCs9kcz36I0i3OUa/2Lll80H
+         AMajqYUA4EI45FZzQ+lvLiAEOp5exLirPB8BReBwz+V+fmvsGk17Bfo79JvesZ/vxhak
+         chtg==
+X-Gm-Message-State: AOJu0YzzeoZTfBe6U597QcC2S5yBjFoFcTiNqxaL/Zq8cL6bCn24WI0g
+        hhms7sGinPdwZY0u/loQe6o=
+X-Google-Smtp-Source: AGHT+IFMKQuxZDDL7Ub8z/ytNkVS7YNsxF9774I/AhaWO33gRuWb1DDnfHgznfOcdXVqK50Pb+6MQw==
+X-Received: by 2002:a05:651c:c97:b0:2bc:e330:660b with SMTP id bz23-20020a05651c0c9700b002bce330660bmr20292141ljb.9.1698926605812;
+        Thu, 02 Nov 2023 05:03:25 -0700 (PDT)
+Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id e13-20020a05651c038d00b002b9e0d19644sm455838ljp.106.2023.11.02.05.03.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 05:02:06 -0700 (PDT)
-From:   Yong-Xuan Wang <yongxuan.wang@sifive.com>
-To:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org
-Cc:     greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
-        alex@ghiti.fr, conor.dooley@microchip.com, ajones@ventanamicro.com,
-        Yong-Xuan Wang <yongxuan.wang@sifive.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        Haibo Xu <haibo1.xu@intel.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] KVM: riscv: selftests: Add Svadu Extension to get-reg-list testt
-Date:   Thu,  2 Nov 2023 12:01:25 +0000
-Message-Id: <20231102120129.11261-5-yongxuan.wang@sifive.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231102120129.11261-1-yongxuan.wang@sifive.com>
-References: <20231102120129.11261-1-yongxuan.wang@sifive.com>
+        Thu, 02 Nov 2023 05:03:25 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 15:03:23 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: stmmac: Wait a bit for the reset to take effect
+Message-ID: <b4mpa62b2juln47374x6xxnbozb7fcfgztrc5ounk4tvscs3wg@mixnvsoqno7j>
+References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+ <j37ktiug7vwbb7h7s44zmng5a2bjzbd663p7pfowbehapjv3by@vrxfmapscaln>
+ <AS8P193MB1285473EE92FEDB65C08C131E4A0A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS8P193MB1285473EE92FEDB65C08C131E4A0A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,77 +81,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the get-reg-list test to test the Svadu Extension is available
-for guest OS.
+On Tue, Oct 31, 2023 at 05:10:24PM +0100, Bernd Edlinger wrote:
+> 
+> 
+> On 10/31/23 11:32, Serge Semin wrote:
+> > On Mon, Oct 30, 2023 at 07:01:11AM +0100, Bernd Edlinger wrote:
+> >> otherwise the synopsys_id value may be read out wrong,
+> >> because the GMAC_VERSION register might still be in reset
+> >> state, for at least 1 us after the reset is de-asserted.
+> > 
+> > From what have you got that delay value?
+> > 
+> 
+> Just try and error, with very old linux versions and old gcc versions
+> the synopsys_id was read out correctly most of the time (but not always),
+> with recent linux versions and recnet gcc versions it was read out
+> wrongly most of the time, but again not always.
+> I don't have access to the VHDL code in question, so I cannot
+> tell why it takes so long to get the correct values, I also do not
+> have more than a few hardware samples, so I cannot tell how long
+> this timeout must be in worst case.
+> Experimentally I can tell that the register is read several times
+> as zero immediately after the reset is de-asserted, also adding several
+> no-ops is not enough, adding a printk is enough, also udelay(1) seems to
+> be enough but I tried that not very often, and I have not access to many
+> hardware samples to be 100% sure about the necessary delay.
+> And since the udelay here is only executed once per device instance,
+> it seems acceptable to delay the boot for 10 us.
+> 
+> BTW: my hardware's synopsys id is 0x37.
 
-Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
----
- .../testing/selftests/kvm/riscv/get-reg-list.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Well, the delay value is highly hardware-dependent depending on the
+IP-core version, generation (MAC1000, GMAC, QoS Eth, XGMAC, XLGMAC,
+etc), IP-core synthesize parameters and finally the platform-specific
+ref clocks implementation and their rates. So no matter how many you
+try to figure out a safest value I guess you won't be able to find out
+the common value for all the devices. Though seeing nobody has
+reported so far any problem with that then it seems rare among the DW
+*MAC* devices. So since you get to a add a very small delay in just a
+perf non-critical path it won't hurt for the rest of the platforms.
+But please very thoroughly define the problem in the commit message:
+what hardware you have (SoC, platform, etc), in what conditions you
+see the problem (what you already described in your reply to me), how
+you've got to the 10us value, etc. It will be useful in case if
+somebody would want for instance make the delay platform-dependent or
+whatever.
 
-diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-index 9f99ea42f45f..972538d76f48 100644
---- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-@@ -49,6 +49,7 @@ bool filter_reg(__u64 reg)
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICSR:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHPM:
-+	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVADU:
- 		return true;
- 	/* AIA registers are always available when Ssaia can't be disabled */
- 	case KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_AIA_REG(siselect):
-@@ -340,6 +341,7 @@ static const char *isa_ext_id_to_str(__u64 id)
- 		"KVM_RISCV_ISA_EXT_ZICSR",
- 		"KVM_RISCV_ISA_EXT_ZIFENCEI",
- 		"KVM_RISCV_ISA_EXT_ZIHPM",
-+		"KVM_RISCV_ISA_EXT_SVADU",
- 	};
- 
- 	if (reg_off >= ARRAY_SIZE(kvm_isa_ext_reg_name)) {
-@@ -700,6 +702,10 @@ static __u64 fp_d_regs[] = {
- 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_D,
- };
- 
-+static __u64 svadu_regs[] = {
-+	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVADU,
-+};
-+
- #define BASE_SUBLIST \
- 	{"base", .regs = base_regs, .regs_n = ARRAY_SIZE(base_regs), \
- 	 .skips_set = base_skips_set, .skips_set_n = ARRAY_SIZE(base_skips_set),}
-@@ -739,6 +745,9 @@ static __u64 fp_d_regs[] = {
- #define FP_D_REGS_SUBLIST \
- 	{"fp_d", .feature = KVM_RISCV_ISA_EXT_D, .regs = fp_d_regs, \
- 		.regs_n = ARRAY_SIZE(fp_d_regs),}
-+#define SVADU_REGS_SUBLIST \
-+	{"svadu", .feature = KVM_RISCV_ISA_EXT_SVADU, .regs = svadu_regs, \
-+		.regs_n = ARRAY_SIZE(svadu_regs),}
- 
- static struct vcpu_reg_list h_config = {
- 	.sublists = {
-@@ -876,6 +885,14 @@ static struct vcpu_reg_list fp_d_config = {
- 	},
- };
- 
-+static struct vcpu_reg_list svadu_config = {
-+	.sublists = {
-+	BASE_SUBLIST,
-+	SVADU_REGS_SUBLIST,
-+	{0},
-+	},
-+};
-+
- struct vcpu_reg_list *vcpu_configs[] = {
- 	&h_config,
- 	&zicbom_config,
-@@ -894,5 +911,6 @@ struct vcpu_reg_list *vcpu_configs[] = {
- 	&aia_config,
- 	&fp_f_config,
- 	&fp_d_config,
-+	&svadu_config,
- };
- int vcpu_configs_n = ARRAY_SIZE(vcpu_configs);
--- 
-2.17.1
+-Serge(y)
 
+> 
+> 
+> Bernd.
+> 
+> > -Serge(y)
+> > 
+> >>
+> >> Add a wait for 10 us before continuing to be on the safe side.
+> >>
+> >> Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+> >> ---
+> >>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> >> index 5801f4d50f95..e485f4db3605 100644
+> >> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> >> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> >> @@ -7398,6 +7398,9 @@ int stmmac_dvr_probe(struct device *device,
+> >>  		dev_err(priv->device, "unable to bring out of ahb reset: %pe\n",
+> >>  			ERR_PTR(ret));
+> >>  
+> >> +	/* Wait a bit for the reset to take effect */
+> >> +	udelay(10);
+> >> +
+> >>  	/* Init MAC and get the capabilities */
+> >>  	ret = stmmac_hw_init(priv);
+> >>  	if (ret)
+> >> -- 
+> >> 2.39.2
+> >>
+> >>
