@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFEA7DF4AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBB07DF4AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376764AbjKBOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S1376783AbjKBOMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjKBOL6 (ORCPT
+        with ESMTP id S235261AbjKBOL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Nov 2023 10:11:58 -0400
 Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FA2130;
-        Thu,  2 Nov 2023 07:11:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A56A181;
+        Thu,  2 Nov 2023 07:11:56 -0700 (PDT)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 85B50186AD92;
-        Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
+        by mail.astralinux.ru (Postfix) with ESMTP id 4B312186ADA3;
+        Thu,  2 Nov 2023 17:11:54 +0300 (MSK)
 Received: from mail.astralinux.ru ([127.0.0.1])
         by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 360raSQFcQ7t; Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
+        with ESMTP id osod0Jzcpdur; Thu,  2 Nov 2023 17:11:52 +0300 (MSK)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 2C583186AD72;
-        Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
+        by mail.astralinux.ru (Postfix) with ESMTP id D4C7C186AD74;
+        Thu,  2 Nov 2023 17:11:51 +0300 (MSK)
 X-Virus-Scanned: amavisd-new at astralinux.ru
 Received: from mail.astralinux.ru ([127.0.0.1])
         by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id g0_ELJrllrsB; Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
+        with ESMTP id 8K7SQe3qp8h8; Thu,  2 Nov 2023 17:11:51 +0300 (MSK)
 Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.237.131])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id 42ED2186AD74;
-        Thu,  2 Nov 2023 17:11:47 +0300 (MSK)
+        by mail.astralinux.ru (Postfix) with ESMTPSA id 575CE186AD85;
+        Thu,  2 Nov 2023 17:11:50 +0300 (MSK)
 From:   Alexandra Diupina <adiupina@astralinux.ru>
 To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
 Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
@@ -39,17 +39,12 @@ Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
         =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
         <niklas.soderlund+renesas@ragnatech.se>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, lvc-project@linuxtesting.org
-Subject: [PATCH 2/4] Remove redundant return value check
-Date:   Thu,  2 Nov 2023 17:11:33 +0300
-Message-Id: <20231102141135.369-2-adiupina@astralinux.ru>
+        lvc-project@linuxtesting.org
+Subject: [PATCH 3/4] Remove redundant return value check
+Date:   Thu,  2 Nov 2023 17:11:34 +0300
+Message-Id: <20231102141135.369-3-adiupina@astralinux.ru>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231102141135.369-1-adiupina@astralinux.ru>
 References: <20231102141135.369-1-adiupina@astralinux.ru>
@@ -70,17 +65,17 @@ passed, so checking the return value is redundant
 
 Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: 34009bffc1c6 ("media: i2c: Add RDACM20 driver")
+Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
 Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
 ---
- drivers/media/i2c/rdacm20.c | 4 +---
+ drivers/media/i2c/rdacm21.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-index f4e2e2f3972a..ed249ade54e0 100644
---- a/drivers/media/i2c/rdacm20.c
-+++ b/drivers/media/i2c/rdacm20.c
-@@ -611,9 +611,7 @@ static int rdacm20_probe(struct i2c_client *client)
+diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+index 3e22df36354f..168d28073760 100644
+--- a/drivers/media/i2c/rdacm21.c
++++ b/drivers/media/i2c/rdacm21.c
+@@ -583,9 +583,7 @@ static int rdacm21_probe(struct i2c_client *client)
 =20
  	dev->pad.flags =3D MEDIA_PAD_FL_SOURCE;
  	dev->sd.entity.function =3D MEDIA_ENT_F_CAM_SENSOR;
