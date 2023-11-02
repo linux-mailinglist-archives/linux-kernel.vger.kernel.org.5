@@ -2,241 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9D47DF8C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C624F7DF8C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbjKBRdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        id S229762AbjKBRdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjKBRdj (ORCPT
+        with ESMTP id S229525AbjKBRda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:33:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8756B8E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698946368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R5kCMluhNBrBta3fRXenDD6+1dVUGkt/m4UDxiURyOc=;
-        b=aVbFpUMfiitGu95ag2hUdq1e9CSn1jBH6ByqWwbggNi75I27UH5VctkAmhQqFb907cC4vw
-        07BTx/1zhXZy68J4rmeym+YLx5SL36zVBs7Ncii+ze+5nW43h1LWo+b0pA4yGU6uihvz3J
-        ypkcPtN+CJSzKXG3kZDLzPrQUb1fXF0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-222-Hy3SNsKlNzKfgcjrgs4avA-1; Thu, 02 Nov 2023 13:32:47 -0400
-X-MC-Unique: Hy3SNsKlNzKfgcjrgs4avA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9d30a6a67abso87286766b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:32:46 -0700 (PDT)
+        Thu, 2 Nov 2023 13:33:30 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D518182
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:33:25 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67131800219so7277066d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:33:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698946404; x=1699551204; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QMUtaNcyMJONDb+NRTDB5A2cdiVh8ep8ZeoczkWG0cY=;
+        b=NPeQcBgNQ2/rHTtvy71BICr0d0g5wXpUc7NKdVZRGHXTpAB6hmZhVmHHu11MbIZFBv
+         QCaFn0l6kax2M/T7/DS6ccYjHP2vCYgU5ig5JDV73fEsiE1sOJ3yLOCe1/SEfmLBL2Vy
+         5cp5699V/T6uvQSTiHK85AUpR7luadxdhzgssniNMlBw7ZET40rluiwzFgIsyZUS2rle
+         /WroydCE838FaIQgv3sORwUijXmefl8S17dCrHefUA5cxIb88chvexZHv/FK2YMuM1pl
+         cLPY+Oyq8K33ZIOpIN5vy8vcF2G+ZpJLGekBssoGEfqH3Uho5egVxo7E8/ZNwHih/t2t
+         TJWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698946366; x=1699551166;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R5kCMluhNBrBta3fRXenDD6+1dVUGkt/m4UDxiURyOc=;
-        b=iALk34Y8lzAxSZIIheqoSrkYL//zYlYcyLF6dOiqzkvb7deAY/13IK5LF48l0ntrOE
-         NU7PVBRlZg5Vau2cc5EMaroEg0fy3gAhrZSgD77rwSQTuepqw7Cni6ZfK0hASXLcxkY+
-         GoH/rXEghdPjDGzhBBH8wnPPVqgpAOAeVBkCfuZsKNYq4JZjPhNXDxHSN9s+vKQCO9YF
-         idTMVtVoO4QWrhsmkIhfcWGTjQAmTszL3RVlMondw2gYHNq8gmbDVCkEgBYiJzZpp2RF
-         L9TgypRBlPsXifdMIdmW4/3weHpFnATro6rOJ8uE2yJm8gA03xdnJ8CPvqPP8eKkSt20
-         Or7Q==
-X-Gm-Message-State: AOJu0YwEifn7Psh4jCtjo935X17MLAym5A7yG46rCRMPZY5qXLYV0WFx
-        Ig/3nuHjxu2EaNaxhgSDvoUgrmMnXOLwr/xQawarYWn76XqnVTr/xFcdV+4M+E620YmPRIseXC3
-        VjJHoeTjZ9GiHDIULi7EWof8N
-X-Received: by 2002:a17:906:fe45:b0:9ad:e298:a5d with SMTP id wz5-20020a170906fe4500b009ade2980a5dmr6397362ejb.19.1698946365849;
-        Thu, 02 Nov 2023 10:32:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEzgk012/Yr6RhugotSSQNX2ZiY9KJ2MC3G5GO4yvntN3YgSXjg4knlAoGtTNjw5tfws5OPFg==
-X-Received: by 2002:a17:906:fe45:b0:9ad:e298:a5d with SMTP id wz5-20020a170906fe4500b009ade2980a5dmr6397339ejb.19.1698946365516;
-        Thu, 02 Nov 2023 10:32:45 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id bg6-20020a170906a04600b0098951bb4dc3sm1370336ejb.184.2023.11.02.10.32.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 10:32:44 -0700 (PDT)
-Message-ID: <7eba1e4d-b594-4b88-9f8a-694fc6663f85@redhat.com>
-Date:   Thu, 2 Nov 2023 18:32:43 +0100
+        d=1e100.net; s=20230601; t=1698946404; x=1699551204;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QMUtaNcyMJONDb+NRTDB5A2cdiVh8ep8ZeoczkWG0cY=;
+        b=VHWYQiC/cEbXTp/F6yz42KnNcIYlVUz3QLCcI5mBRH1+IlpHhmihfTcZvpo+v5ikP3
+         02CazKfcUhDW34mkA7y2RmuYhKOS36XltPfHIb/PFFLw2RZG4Zu296V8lDd1AP2LwC+E
+         EuPV1wBut0RRg/qAhCGCuPZ2BPAyMqN8qR0//QfwF6+0AGyJf67b7ZoFSk/gaEbAZzWT
+         koHRI9XAAaeEFLqH3My1vU9vYGEQar3gc/Yewy7PuE82gpAaEGVJTJiePBNi5pVJFst0
+         pMwD4aOYq8mWe05Mnm9z4P52dpD5D+oYWW5sVUBHE+XCjiX4hNEE52goTJIVV2gHfR8i
+         9kEQ==
+X-Gm-Message-State: AOJu0Ywi++Lr31lFF449d4YJhh/6+TjBOgWGv3QK54pC95XlXkC2AyBI
+        QBJj2Mv5t9Zu/plf6we+XUj1
+X-Google-Smtp-Source: AGHT+IHX7EI2x7veOgf/GXDdZbsRu/5EohayNZh0ZiyAzJQnH+S4mjA6yTOVfB6lGTAOudjhbyAuRQ==
+X-Received: by 2002:a05:6214:529c:b0:66d:2af4:c423 with SMTP id kj28-20020a056214529c00b0066d2af4c423mr21097024qvb.2.1698946404249;
+        Thu, 02 Nov 2023 10:33:24 -0700 (PDT)
+Received: from thinkpad ([117.217.189.228])
+        by smtp.gmail.com with ESMTPSA id p15-20020a0cc3cf000000b00670e7ae4964sm125621qvi.91.2023.11.02.10.33.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 10:33:23 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 23:03:14 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v3 3/4] PCI: layerscape: Rename pf_* as pf_lut_*
+Message-ID: <20231102173314.GE20943@thinkpad>
+References: <20231017193145.3198380-1-Frank.Li@nxp.com>
+ <20231017193145.3198380-4-Frank.Li@nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
- drm_gpuvm structures
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231101233113.8059-1-dakr@redhat.com>
- <20231101233113.8059-10-dakr@redhat.com>
- <f95dd975acc6c82e4e6cd0596c14072799eb5a20.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <f95dd975acc6c82e4e6cd0596c14072799eb5a20.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231017193145.3198380-4-Frank.Li@nxp.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-thanks for your timely response on that!
-
-On 11/2/23 18:09, Thomas Hellström wrote:
-> On Thu, 2023-11-02 at 00:31 +0100, Danilo Krummrich wrote:
->> Implement reference counting for struct drm_gpuvm.
->>
->> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->> ---
->>   drivers/gpu/drm/drm_gpuvm.c            | 44 +++++++++++++++++++-----
->> --
->>   drivers/gpu/drm/nouveau/nouveau_uvmm.c | 20 +++++++++---
->>   include/drm/drm_gpuvm.h                | 31 +++++++++++++++++-
->>   3 files changed, 78 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gpuvm.c
->> b/drivers/gpu/drm/drm_gpuvm.c
->> index 53e2c406fb04..6a88eafc5229 100644
->> --- a/drivers/gpu/drm/drm_gpuvm.c
->> +++ b/drivers/gpu/drm/drm_gpuvm.c
->> @@ -746,6 +746,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const
->> char *name,
->>          gpuvm->rb.tree = RB_ROOT_CACHED;
->>          INIT_LIST_HEAD(&gpuvm->rb.list);
->>   
->> +       kref_init(&gpuvm->kref);
->> +
->>          gpuvm->name = name ? name : "unknown";
->>          gpuvm->flags = flags;
->>          gpuvm->ops = ops;
->> @@ -770,15 +772,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const
->> char *name,
->>   }
->>   EXPORT_SYMBOL_GPL(drm_gpuvm_init);
->>   
->> -/**
->> - * drm_gpuvm_destroy() - cleanup a &drm_gpuvm
->> - * @gpuvm: pointer to the &drm_gpuvm to clean up
->> - *
->> - * Note that it is a bug to call this function on a manager that
->> still
->> - * holds GPU VA mappings.
->> - */
->> -void
->> -drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
->> +static void
->> +drm_gpuvm_fini(struct drm_gpuvm *gpuvm)
->>   {
->>          gpuvm->name = NULL;
->>   
->> @@ -790,7 +785,33 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
->>   
->>          drm_gem_object_put(gpuvm->r_obj);
->>   }
->> -EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
->> +
->> +static void
->> +drm_gpuvm_free(struct kref *kref)
->> +{
->> +       struct drm_gpuvm *gpuvm = container_of(kref, struct
->> drm_gpuvm, kref);
->> +
->> +       if (drm_WARN_ON(gpuvm->drm, !gpuvm->ops->vm_free))
->> +               return;
->> +
->> +       drm_gpuvm_fini(gpuvm);
->> +
->> +       gpuvm->ops->vm_free(gpuvm);
->> +}
->> +
->> +/**
->> + * drm_gpuvm_bo_put() - drop a struct drm_gpuvm reference
-> copy-paste error in function name.
+On Tue, Oct 17, 2023 at 03:31:44PM -0400, Frank Li wrote:
+> 'pf' and 'lut' is just difference name in difference chips, but basic it is
+> a MMIO base address plus an offset.
 > 
-> Also it appears like xe might put a vm from irq context so we should
-> document the context where this function call is allowable, and if
-> applicable add a might_sleep().
-
- From GPUVM PoV I don't see why we can't call this from an IRQ context.
-It depends on the driver callbacks of GPUVM (->vm_free) and the resv GEM's
-free callback. Both are controlled by the driver. Hence, I don't see the
-need for a restriction here.
-
-> 
-> If this function needs to sleep we can work around that in Xe by
-> keeping an xe-private refcount for the xe vm container, but I'd like to
-> avoid that if possible and piggy-back on the refcount introduced here.
-> 
->> + * @gpuvm: the &drm_gpuvm to release the reference of
->> + *
->> + * This releases a reference to @gpuvm.
->> + */
->> +void
->> +drm_gpuvm_put(struct drm_gpuvm *gpuvm)
->> +{
->> +       if (gpuvm)
->> +               kref_put(&gpuvm->kref, drm_gpuvm_free);
->> +}
->> +EXPORT_SYMBOL_GPL(drm_gpuvm_put);
->>   
->>   static int
->>   __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
->> @@ -843,7 +864,7 @@ drm_gpuva_insert(struct drm_gpuvm *gpuvm,
->>          if (unlikely(!drm_gpuvm_range_valid(gpuvm, addr, range)))
->>                  return -EINVAL;
->>   
->> -       return __drm_gpuva_insert(gpuvm, va);
->> +       return __drm_gpuva_insert(drm_gpuvm_get(gpuvm), va);
-> 
-> Here we leak a reference if __drm_gpuva_insert() fails, and IMO the
-> reference should be taken where the pointer holding the reference is
-> assigned (in this case in __drm_gpuva_insert()), or document the
-> reference transfer from the argument close to the assignment.
-
-Ah, good catch. I had it in __drm_gpuva_insert() originally, but that
-doesn't work, because __drm_gpuva_insert() is used to insert the
-kernel_alloc_node. And we need to __drm_gpuva_remove() the kernel_alloc_node
-from drm_gpuvm_fini(), which is called when the reference count is at zero
-already. In fact, the __* variants are only there to handle the
-kernel_alloc_node and this one clearly doesn't need reference counting.
-
-> 
-> But since a va itself is not refcounted it clearly can't outlive the
-> vm, so is a reference really needed here?
-
-Well, technically, it can. It just doesn't make any sense and would be
-considered to be a bug. The reference count comes in handy to prevent
-that in the first place.
-
-I'd like to keep the reference count and just fix up the code.
-
-> 
-> I'd suggest using an accessor that instead of using va->vm uses va-
->> vm_bo->vm, to avoid needing to worry about the vm->vm refcount
-> altoghether.
-
-No, I want to keep that optional. Drivers should be able to use GPUVM to
-track mappings without being required to implement everything else.
-
-I think PowerVR, for instance, currently uses GPUVM only to track mappings
-without everything else.
-
-- Danilo
-
-> 
-> Thanks,
-> Thomas
+> Rename it to avoid duplicate pf_* and lut_* in driver.
 > 
 
+"pci-layerscape-ep.c" uses "ls_lut_" prefix and now you are using "pf_lut_". May
+I know the difference between these two? Can we just use a common name?
+
+- Mani
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     change from v1 to v3
+>     - new patch at v3
+> 
+>  drivers/pci/controller/dwc/pci-layerscape.c | 34 ++++++++++-----------
+>  1 file changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index 6f47cfe146c44..4b663b20d8612 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -46,7 +46,7 @@
+>  #define LS_PCIE_DRV_SCFG	BIT(0)
+>  
+>  struct ls_pcie_drvdata {
+> -	const u32 pf_off;
+> +	const u32 pf_lut_off;
+>  	const struct dw_pcie_host_ops *ops;
+>  	int (*exit_from_l2)(struct dw_pcie_rp *pp);
+>  	int flags;
+> @@ -56,13 +56,13 @@ struct ls_pcie_drvdata {
+>  struct ls_pcie {
+>  	struct dw_pcie *pci;
+>  	const struct ls_pcie_drvdata *drvdata;
+> -	void __iomem *pf_base;
+> +	void __iomem *pf_lut_base;
+>  	struct regmap *scfg;
+>  	int index;
+>  	bool big_endian;
+>  };
+>  
+> -#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
+> +#define ls_pcie_pf_lut_readl_addr(addr)	ls_pcie_pf_lut_readl(pcie, addr)
+>  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
+> @@ -103,20 +103,20 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
+>  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
+>  }
+>  
+> -static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
+> +static u32 ls_pcie_pf_lut_readl(struct ls_pcie *pcie, u32 off)
+>  {
+>  	if (pcie->big_endian)
+> -		return ioread32be(pcie->pf_base + off);
+> +		return ioread32be(pcie->pf_lut_base + off);
+>  
+> -	return ioread32(pcie->pf_base + off);
+> +	return ioread32(pcie->pf_lut_base + off);
+>  }
+>  
+> -static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
+> +static void ls_pcie_pf_lut_writel(struct ls_pcie *pcie, u32 off, u32 val)
+>  {
+>  	if (pcie->big_endian)
+> -		iowrite32be(val, pcie->pf_base + off);
+> +		iowrite32be(val, pcie->pf_lut_base + off);
+>  	else
+> -		iowrite32(val, pcie->pf_base + off);
+> +		iowrite32(val, pcie->pf_lut_base + off);
+>  }
+>  
+>  static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> @@ -126,11 +126,11 @@ static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+>  	u32 val;
+>  	int ret;
+>  
+> -	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_PF_MCR);
+>  	val |= PF_MCR_PTOMR;
+> -	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_PF_MCR, val);
+>  
+> -	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +	ret = readx_poll_timeout(ls_pcie_pf_lut_readl_addr, LS_PCIE_PF_MCR,
+>  				 val, !(val & PF_MCR_PTOMR),
+>  				 PCIE_PME_TO_L2_TIMEOUT_US/10,
+>  				 PCIE_PME_TO_L2_TIMEOUT_US);
+> @@ -149,15 +149,15 @@ static int ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+>  	 * Set PF_MCR_EXL2S bit in LS_PCIE_PF_MCR register for the link
+>  	 * to exit L2 state.
+>  	 */
+> -	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_PF_MCR);
+>  	val |= PF_MCR_EXL2S;
+> -	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_PF_MCR, val);
+>  
+>  	/*
+>  	 * L2 exit timeout of 10ms is not defined in the specifications,
+>  	 * it was chosen based on empirical observations.
+>  	 */
+> -	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +	ret = readx_poll_timeout(ls_pcie_pf_lut_readl_addr, LS_PCIE_PF_MCR,
+>  				 val, !(val & PF_MCR_EXL2S),
+>  				 1000,
+>  				 10000);
+> @@ -245,7 +245,7 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
+>  };
+>  
+>  static const struct ls_pcie_drvdata layerscape_drvdata = {
+> -	.pf_off = 0xc0000,
+> +	.pf_lut_off = 0xc0000,
+>  	.pm_support = true,
+>  	.exit_from_l2 = ls_pcie_exit_from_l2,
+>  };
+> @@ -295,7 +295,7 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  
+>  	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+>  
+> -	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
+> +	pcie->pf_lut_base = pci->dbi_base + pcie->drvdata->pf_lut_off;
+>  
+>  	if (pcie->drvdata->flags & LS_PCIE_DRV_SCFG) {
+>  
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
