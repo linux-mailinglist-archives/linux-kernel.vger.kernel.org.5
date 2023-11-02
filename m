@@ -2,189 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2695D7DF4D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F409B7DF4DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376784AbjKBOWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S1376797AbjKBOYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376781AbjKBOWP (ORCPT
+        with ESMTP id S229579AbjKBOYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:22:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9320E12E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698934890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+KMDmWsfkbK/uZawBiUpXpXzFBe4d7Moq6tBfbTgpA=;
-        b=BI183GIhd+vl3xnoXV+RAUkJRcOEFh/etZ5Z7U8jSFdezLdpybNG+MvjJfq5IOkzLMo7CZ
-        0YJRJYCksC8EGpa3g2/CUFiuxFPDMV+JjP6dEc53z6wLP1CZcFzFRlm7gSDXhJBdSvyiod
-        muQPtyAvy+zQ+Ffaw24XpXCMwFzEcUY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-577-5uoNLLOiOD2e8YK-kyl5zg-1; Thu, 02 Nov 2023 10:21:17 -0400
-X-MC-Unique: 5uoNLLOiOD2e8YK-kyl5zg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9d25d0788b8so68499166b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:21:11 -0700 (PDT)
+        Thu, 2 Nov 2023 10:24:48 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F91182
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:24:42 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-41cba6e8e65so5241751cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:24:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1698935081; x=1699539881; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=varkfJCjnH+u3E50Sky0yjh/elja1DPy2fnutdy0fKI=;
+        b=cnNxRUx7ccBQGko5c0vAUqTMzOLY8iG/itkdGwAQNJxxzRx753c2aEE9v2rfl1cmot
+         flImMkJQKEaV8c8g+Xy4EQx4pA4C6eel7PCYg2fk200NjECcsFdCsA79w7flqdtARnD6
+         gZfrddTQcY+ozR50CJ2IcN6VpIuf/Gfd3CrVaVpyVsU1xFyIRvWjM0oejN/mHjbPSVut
+         1BBCjBKLU75Yd8pJ+6FZ0vamtAVDLfMsQrpWX/jcFE5MH1kamac7TxMJHbxdsitcg95v
+         E/btemoZytAvN7gKyHjZay4oMKqvQS7yBgyNbkyO6Bpncbi6V0/UwVON9Gigsd/4AuOP
+         /vXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698934870; x=1699539670;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j+KMDmWsfkbK/uZawBiUpXpXzFBe4d7Moq6tBfbTgpA=;
-        b=OPZ9WpKSzgpbU2snFwi1huU7A/KYmu3WgDayleptufSMVQPSPTNy0ZBgxYfzS1Npjd
-         Qj/1ZUQaJkkCrKsjhk1KBL28accHoTMBk57v8Q9SKsr25XS9Z7X/5VmzaQJ8ZK+uqDA/
-         tbBObnLVGwdI8Rh1LHp/gpOXnRz0bSKIwy9bgKyTCvKferZHUDtlET6UEBMSg0BIiCi1
-         CRp8hEijIH7G1JG9cxB5KzFRO9x1WKEBaNdkmV4+V5hxm/Nu9MnjUK09d5whwH40z9kh
-         CElOizajDpugjJYIdVVK+0VJFsfgGoOEr6rJjTPo+EDNRLnJTygjjBZDdx3I+H1K6C67
-         3PFg==
-X-Gm-Message-State: AOJu0YxPOr94cIWgKWcBJEy5uFmT/XReRfq/igTtQWgUkJnZWkvjfcYt
-        tS1XkKvhs0jCfccdEcf2xqBY/GwkLwlgvGYsIr9p/OIqtsPqkcKNzBXGXsycSBA/gz6a5aBailT
-        jDM1+uMDcMTVZ6Xo4kmQIq3Tl
-X-Received: by 2002:a17:907:1c9e:b0:9b2:b768:3cfc with SMTP id nb30-20020a1709071c9e00b009b2b7683cfcmr4557249ejc.1.1698934870240;
-        Thu, 02 Nov 2023 07:21:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEuL5GcHeae3w9tW2SVQM2AAgpf86TfGQJ9jKryff95GMK7q5xVXO8r/JwYXojIp4O+vTWY1g==
-X-Received: by 2002:a17:907:1c9e:b0:9b2:b768:3cfc with SMTP id nb30-20020a1709071c9e00b009b2b7683cfcmr4557227ejc.1.1698934869797;
-        Thu, 02 Nov 2023 07:21:09 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id bu6-20020a170906a14600b009829d2e892csm1225538ejb.15.2023.11.02.07.21.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 07:21:08 -0700 (PDT)
-Message-ID: <b2aa6ccb-0a9a-449f-1341-fd71d5c545fd@redhat.com>
-Date:   Thu, 2 Nov 2023 15:21:04 +0100
+        d=1e100.net; s=20230601; t=1698935081; x=1699539881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=varkfJCjnH+u3E50Sky0yjh/elja1DPy2fnutdy0fKI=;
+        b=hOWyIK4zTgoFftSV04okUSRgE7qn85gTTJRWSrwSiZzcN7+rWPTebyX2cT1YzO058d
+         z8/lxmuscwW+/sA6WmqeUMONyUuT642rRMKn0jkM16wE/455jYlTti8o6Kyazq5PE5N5
+         eHyAJBPyJ0ydNc4hSL/SYMjsFy3xUzb4+m5L8wkDwAQTbdvIcKzCMTDXaAUQtgR+SkAT
+         KucqG0cnAPzixsmPskrr0t+pqU2oyQWYeGc1B2OSVKWWnAm6KI6YM0tJLMLRCf0HHOja
+         y1JDbimgtAGrUUhqBJAP+VpkuUWS+oJ77fITftT7d9kXNygGqXQXKu0lYzPhqIrrkaDs
+         pmNA==
+X-Gm-Message-State: AOJu0YxLjYfRgLXDMONCicKBBsfyKvy5cby8RUOQHOnKw3ARNoDZX/sM
+        f9MXReRDwfjX28qIuGAjKtL6NKDGBcp++XC8FQ20bQ==
+X-Google-Smtp-Source: AGHT+IH0Y68XhZR7psJfRikRrstCfvOIMTxVmiuULLZaDr4XBQoFiKDeDkzTE0NG9ZK0jSv8qPfgX077gTc8xgXgCAA=
+X-Received: by 2002:a05:622a:44b:b0:412:3092:feab with SMTP id
+ o11-20020a05622a044b00b004123092feabmr21550874qtx.50.1698935081374; Thu, 02
+ Nov 2023 07:24:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/4] Remove redundant return value check
-Content-Language: en-US, nl
-To:     Alexandra Diupina <adiupina@astralinux.ru>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20231102141135.369-1-adiupina@astralinux.ru>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231102141135.369-1-adiupina@astralinux.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com> <2023110205-enquirer-sponge-4f35@gregkh>
+In-Reply-To: <2023110205-enquirer-sponge-4f35@gregkh>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 2 Nov 2023 10:24:04 -0400
+Message-ID: <CA+CK2bDUaQDwgF-Q0vfNzHfXmn-QhnHTSE32_RfttHSGB7O3DA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
+        rafael@kernel.org, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, muchun.song@linux.dev, rppt@kernel.org,
+        david@redhat.com, rdunlap@infradead.org, chenlinxuan@uniontech.com,
+        yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com,
+        bhelgaas@google.com, ivan@cloudflare.com, yosryahmed@google.com,
+        hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandra,
+On Thu, Nov 2, 2023 at 1:42=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
+ wrote:
+>
+> On Wed, Nov 01, 2023 at 04:08:16PM -0700, Sourav Panda wrote:
+> > Adds a new per-node PageMetadata field to
+> > /sys/devices/system/node/nodeN/meminfo
+>
+> No, this file is already an abuse of sysfs and we need to get rid of it
+> (it has multiple values in one file.)  Please do not add to the
+> nightmare by adding new values.
 
-On 11/2/23 15:11, Alexandra Diupina wrote:
-> media_entity_pads_init() will not return 0 only if the
-> 2nd parameter >= MEDIA_ENTITY_MAX_PADS (512), but 1 is
-> passed, so checking the return value is redundant
+Hi Greg,
 
-Generally speaking functions which can fail should always be
-error-checked even if their invocation today happen to be
-such that they will not fail.
+Today, nodeN/meminfo is a counterpart of /proc/meminfo, they contain
+almost identical fields, but show node-wide and system-wide views.
 
-Either the invocation or the function itself my change
-causing it to fail in the future. Which is why we want
-to keep the error checks.
+Since per-page metadata is added into /proc/meminfo, it is logical to
+add into nodeN/meminfo, some nodes can have more or less struct page
+data based on size of the node, and also the way memory is configured,
+such as use of vmemamp optimization etc, therefore this information is
+useful to users.
 
-But maybe media_entity_pads_init() is special and
-does not need to be error checked.
+I am not aware of any example of where a system-wide field from
+/proc/meminfo is represented as a separate sysfs file under node0/. If
+nodeN/meminfo is ever broken down into separate files it will affect
+all the fields in it the same way with or without per-page metadata
 
-Sakari, Laurent do you have any opinion on this ?
+> Also, even if you did want to do this, you didn't document it properly
+> in Documentation/ABI/ :(
 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+ The documentation for the fields in nodeN/meminfo is only specified
+in  Documentation/filesystems/proc.rst, there is no separate sysfs
+Documentation for the fields in this file, we could certainly add
+that.
 
-This feels like a false positive of the tool to me,
-but lets wait and see what Sakari or Laurent have
-to say.
-
-Regards,
-
-Hans
-
-
-
-> 
-> Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
-> Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c        | 4 +---
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c       | 6 +-----
->  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c        | 2 --
->  drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c | 2 --
->  4 files changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> index 9fa390fbc5f3..f10931a03285 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> @@ -840,9 +840,7 @@ static int gc2235_probe(struct i2c_client *client)
->  	dev->ctrl_handler.lock = &dev->input_lock;
->  	dev->sd.ctrl_handler = &dev->ctrl_handler;
->  
-> -	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
-> -	if (ret)
-> -		gc2235_remove(client);
-> +	media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
->  
->  	return atomisp_register_i2c_module(&dev->sd, gcpdev, RAW_CAMERA);
->  
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> index 1c6643c442ef..b7a940fdbd0a 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> @@ -1581,11 +1581,7 @@ static int mt9m114_probe(struct i2c_client *client)
->  
->  	/* REVISIT: Do we need media controller? */
->  	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
-> -	if (ret) {
-> -		mt9m114_remove(client);
-> -		return ret;
-> -	}
-> -	return 0;
-> +	return ret;
->  }
->  
->  static const struct acpi_device_id mt9m114_acpi_match[] = {
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> index 6a72691ed5b7..922774293bf4 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> @@ -993,8 +993,6 @@ static int ov2722_probe(struct i2c_client *client)
->  	dev->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
->  
->  	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
-> -	if (ret)
-> -		ov2722_remove(client);
->  
->  	return atomisp_register_i2c_module(&dev->sd, ovpdev, RAW_CAMERA);
->  
-> diff --git a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
-> index 460a4e34c55b..8d5b74fb5d9c 100644
-> --- a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
-> +++ b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
-> @@ -1733,8 +1733,6 @@ static int ov5693_probe(struct i2c_client *client)
->  	dev->sd.ctrl_handler = &dev->ctrl_handler;
->  
->  	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
-> -	if (ret)
-> -		ov5693_remove(client);
->  
->  	return ret;
->  out_free:
-
+Thank you,
+Pasha
