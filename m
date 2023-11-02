@@ -2,238 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9527DF9EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6647DF9EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377215AbjKBS2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1377123AbjKBSaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234401AbjKBS2K (ORCPT
+        with ESMTP id S229534AbjKBS35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:28:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8816A138;
-        Thu,  2 Nov 2023 11:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698949684; x=1730485684;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=ULtzy6mpY86/hXp8GGapD7e9GSut+d1prdcR+4hp+C8=;
-  b=JQWq13nvNxh8p3qRT+UbApaTlXXwNdpcUcqED3JByD/kWNXATBtqI+OV
-   CA6YZ6lX0Rc5siB2GcTTduVJVGIs/yz4d59DkT4QTj2qn3/hEXPhxnu5j
-   lwtE8U1bhl43aAO7ArgfHSHzvcqYpOsyl5B6vqhvqgQdey0akqm0UlhzX
-   EZIuoxOvV3Bqo36fy+qpY8t1pVy/ZDOl2eWgc+1AiKoUZ2xjJL61TJojD
-   nnNvck2k8Z3f5ErK2ncCu4RWoZov2EUvZePwTOqx4j+G1pyhgFlw3WO3b
-   gFUPKfc7NuM6twLqr01GpCEWTG25MsWfaTYwpEa8X6WMytjNFtEqyhZ0+
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="7421185"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="7421185"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 11:28:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="761359775"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="761359775"
-Received: from fmahinh-mobl.amr.corp.intel.com (HELO [192.168.1.200]) ([10.212.91.244])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 11:28:01 -0700
-From:   Vishal Verma <vishal.l.verma@intel.com>
-Date:   Thu, 02 Nov 2023 12:27:15 -0600
-Subject: [PATCH v9 3/3] dax/kmem: allow kmem to add memory with
- memmap_on_memory
+        Thu, 2 Nov 2023 14:29:57 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2089.outbound.protection.outlook.com [40.107.21.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0F2128;
+        Thu,  2 Nov 2023 11:29:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DjbMGtTNEY2LRwkpT6ywGQNiQbCt7vaFomA78AyJfamBg3xPVjFGTCCkkrmw1VJTuq9znCrUrxZOiVKFoTsskRQXJWX56rVelN00MWgJeTdZrhPszz5J4HxwMAHkM8F1pCGZYDV+UkPRP6S7z3BNQ2O+/mrYTGFy/OQXMC/Mz2ntqAz4kENzfnFRSjoFLCOxPZNEcUnwyu+8lJdsit5ONKkcjxxkpgAgnoY/b49lnpTQWaPmET4EZLJNR0puT9xB3mT+8pqpsvX/xod4SgonW/Gu+dY0CRAXOSkKhQZQ+wvYuYEtbSN4EDB/+oWrrmb8fxbgjn8uN9+kThrVDimsDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ASKb/3rn8aYmShC1v65rDttMC3OqKENd0W/UHouoa/E=;
+ b=KvjvSZ7KGJBDslPiNX5kc0U9+UzxQTnx+CXOucHg1hAs8TtqR6pBawJG2gckmpw9w55zEF1Aqz7g4xfJT/EMMn5QWLRl87drW/wTWc9sORWg+lKEpFGo/VYFVdD4o0Vu9SO9Wai/TUCyMEVl7M5lIYjvk+tbzuTeS7T9BYtByJjMbnwkj1jQ1oVBFXS+7va7cSSBEqz99+GfbBsooRr09pYv5Y4a3DC8yfVeehMCY46o28hdWJEmDP/54yMWllyC7vOznTIv3ry+vCDXgWwXpt/jaVYJ9Suzzi4Yqp/49MfTvYCzsPLlDtGmHx7CK1PI1x5+AgfPQZkzxH4rGKPM0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ASKb/3rn8aYmShC1v65rDttMC3OqKENd0W/UHouoa/E=;
+ b=Mewe3bziZe2Ilwzpwf/lV5v/4z74GiSKBo5E6cfx+tQs1A9WurrhSFRCg5zbtNqUUSU0JRtre8pYtm/CWPo584xYsDrAD/YuiCl6tBHZJBDXVo381rAKfPZtg0Q2yMMHXmoh1WFB9zzJk+/VfS8symakyesscM3U1FaeIwwo7Wk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PAXPR04MB8990.eurprd04.prod.outlook.com (2603:10a6:102:20d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
+ 2023 18:29:49 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::97ca:a905:8e64:c098]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::97ca:a905:8e64:c098%7]) with mapi id 15.20.6954.017; Thu, 2 Nov 2023
+ 18:29:49 +0000
+Date:   Thu, 2 Nov 2023 14:29:41 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v3 4/4] PCI: layerscape: Add suspend/resume for ls1043a
+Message-ID: <ZUPqlSMRLtvz129n@lizhi-Precision-Tower-5810>
+References: <20231017193145.3198380-1-Frank.Li@nxp.com>
+ <20231017193145.3198380-5-Frank.Li@nxp.com>
+ <20231102173900.GF20943@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231102173900.GF20943@thinkpad>
+X-ClientProxiedBy: SJ0PR05CA0196.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::21) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231102-vv-kmem_memmap-v9-3-973d6b3a8f1a@intel.com>
-References: <20231102-vv-kmem_memmap-v9-0-973d6b3a8f1a@intel.com>
-In-Reply-To: <20231102-vv-kmem_memmap-v9-0-973d6b3a8f1a@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-X-Mailer: b4 0.13-dev-26615
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5020;
- i=vishal.l.verma@intel.com; h=from:subject:message-id;
- bh=ULtzy6mpY86/hXp8GGapD7e9GSut+d1prdcR+4hp+C8=;
- b=owGbwMvMwCXGf25diOft7jLG02pJDKnOr/SeRJ7O5kg7wBWqEnFkSrSxgo6v/Z6dfuyBu+dIp
- EqsONnVUcrCIMbFICumyPJ3z0fGY3Lb83kCExxh5rAygQxh4OIUgImsbWBkuD1Hp2dOyr/mjaXG
- wpPumOd2zC/V/XHltnzY8u/Tv94WfsDIMNvrylk+yyITSc8tS30F+kIlLp2acWTm2gA34XWaaaU
- zuQA=
-X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
- fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8990:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9029b078-e562-4955-fe00-08dbdbd1b267
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BoIjfGvfGeVRFBMcCQrdkBdCf5B4oayalsysT1zsTuMnKTD01Bi1h4Tns6FcJDQE5/SC3Oeql2+gzylZO+a3YZchy+1Vm07SxwjzMGdoZXzWSJJ9L1jaAhSLtNzZfF4yfTeCmxSQJ1VHhi0teLRWPmtXyzQ89JZ8F+wkBT8ykDCA9qvxG0uyW3swvOEoiHTOeItsYd3+gaIfj9wqfWkwZQDT5F5Vwm275km3daYuwcC+X1NHxc2SeoeGH4slgKcA5zd45IDWV1yi4cY8h1UMqpnhHqmS/D5FzBXqZFByV4X1TKc0GYk4w3ZL0xTzdpQSAAjdJ+95Y2R6BMN9p4Ut3EulHuz6D7KANrrnfPmSe0rt6qPLpsJZs9TNkpmdzeEDRwfYLhTkdIXLGrqW2BAZYZCK2GAf3CDlAjXsaNwo7i0iTRVKysSdy7m/7dYay+43xNyQJzvLKNVcPuEJG8AU+zQhZ73pJ3CsXANjugoD/AVBfrj8rqXs0n9phukXWIPaB0IEHzQ1GGwz+zZGHNjAKWo8MYcRGxi/DyzvyviuLsAXuNhBFPTt+1zJOasVlzODC6LaGmqnTPE7J+jYPEj6nVBc4noLGe8GTBpH21wvJhc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(136003)(346002)(39860400002)(376002)(396003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(8936002)(8676002)(4326008)(83380400001)(26005)(33716001)(38100700002)(38350700005)(7416002)(86362001)(2906002)(15650500001)(5660300002)(41300700001)(6506007)(478600001)(52116002)(6512007)(9686003)(6666004)(66946007)(66556008)(66476007)(6486002)(6916009)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YWhrS0xIRWpFUng5bzFMMFJyZ0lDdzNoNCtSdlA2V2J2RUdrU2J3cUsxN0N2?=
+ =?utf-8?B?b1M2NnJsN29xZmZVOUpVM3RFK29JdXZidEUreTAxWFRRdTJWVldYNnh6Y245?=
+ =?utf-8?B?NE9UZWZHRzFrQitHRzFzNjgvSEtNcEExcUowWDhLdWJNV0dzeDF1ZFlWeGR6?=
+ =?utf-8?B?Ym9TT0dhV3QzQnhWaEZTd0VBMlA4M3pEa2tPb1NoUnA0LytFdFZkMTdzcHZU?=
+ =?utf-8?B?ZGNwbys2dnRFZWRrZkc2VzZQVTdFZWJRUncrV2lEU2xUVkdMdTB0UWRqejVO?=
+ =?utf-8?B?ZS92UzI5Q0Q2MWlhYkVYQXhWZUtSVExwdTBHSktzZHh1bkRMelpuMUVyRTlW?=
+ =?utf-8?B?NUJkelYvdzlpczBobEtNYy9nbzV5ekF4WUV2ZUt5UEZ3bWZ4SVhIVEN4RHpv?=
+ =?utf-8?B?SHpJM0syWHZNckM2WTkybHRiVWtmNm1jU2MzV2VHL1hENG1ZZGtMSlVhWTNn?=
+ =?utf-8?B?c2Z0QlpnOXBLRHU4TkhZa3JOeVNPQkNVdDJremZ2OEk3bUV3dVF2dzAyckhX?=
+ =?utf-8?B?azIrODExbERUQm1wZGhBcHhuQ1lseFB4M2JEWk9MdXA1cnMveUowa0VYQU1Y?=
+ =?utf-8?B?eFdtMTlmcC9IenBGU3NORjhDRzlUYmZmSVRpZkJtKzZyQ0xaakl1NVVseXJH?=
+ =?utf-8?B?Z3NVai9rS1gybG5pRzdTKysxV25qRmpTZVp5YkJ6MklSSXJYTW1KNzBZcjZa?=
+ =?utf-8?B?YUFSdS9kQmVaYi9Ja2pBR2h2WFhvVVBEU3JLOHc3dnd2aXExajlBc2UrNmhu?=
+ =?utf-8?B?MmVHWVhnUHUzK3kxM3Q3ZHpBa09aaG5td2VVbDJFODVySk5YTjhyeFBHMGNr?=
+ =?utf-8?B?Y1I3WXJlNVBEckdHejFaMVVUL05GTTBERzVKWEwyMFJEcWpya3FDSWtlaGts?=
+ =?utf-8?B?VCtqVWRKcE1mVU04NzJYZVRvMUVkdzJwS0dzZTFSSjdYTUMvMjZRZGg3M3JW?=
+ =?utf-8?B?Ly9WcndSbzBHWlVnaGZaRzFJcGdhaU1kV2w4VFVOTUZDUmo1ZHdyMzk5M2pQ?=
+ =?utf-8?B?YlVuT0pJd3FzZGdMYnk3NzFITk9sRXBTcktwTEZyc29vK0VoREdTS3hGRTRV?=
+ =?utf-8?B?LzZEaWl5cHVNSG1SbFZBdytDVU5XNGpYOHBrYWI3dGJNcmRsYURjSDFvcUQ0?=
+ =?utf-8?B?c09QcFkxbzJyM2dydzE3dUtZSEdFK3JhNkhvekl0ekc3SGU0WEtQdGVmTGYr?=
+ =?utf-8?B?RzJYTUtTYUM0TzFwR2w5cCtySGl5N2FBUzhjNzZheFRlb1VWUFFmZjlTLzBJ?=
+ =?utf-8?B?UFdkazU2K1U2RGNEdmhTSkNGWGxIRkRHZ1dZazNGMlRNQ3h6YVVKd0RNcktL?=
+ =?utf-8?B?WFRIa1huV1NiTlIrL1l1bmVTNk9NNlJwZ0RrRndhRzVDNVM4Tm1nSkxWVTgz?=
+ =?utf-8?B?empRZlArSUJEeWtIMjJWWTlFaUFRVGxyQXpwVlJTVTBpSHRmZ1hxVEdrbEdY?=
+ =?utf-8?B?UkkxNDdTTUh2akRtaks0bUlvRGpBZjF0OTkrSDVRckFHRk42UDNMR3RMMGJK?=
+ =?utf-8?B?Rm5pSE5ORVVrdTZEUGlOUE1vUk9kaHY4Ym5ZV1IwUEpaSWd2aFQxVUxpdHVB?=
+ =?utf-8?B?bVBkQ2hjSGdmMzZRaTZOUGdCWG1NR3V3TllldGRvK1RGNDR1Y1lEcUdIVlBE?=
+ =?utf-8?B?SnJ6c0x2TzBzY3l3eWtBZnorOVo0QWFadTBUNjFNSlBmUDFFVlBmMUkyTkFx?=
+ =?utf-8?B?dzBnY3YwZVU0UXZTUjEwVGdlU3FQdmVtM2pFc0tMcXhQdjlqYldRc1J1VDhO?=
+ =?utf-8?B?a04xd25wOThSbS9QdExOY3BneVAvSlBZZUU2QVR6NWgxQktvcnhHRkxkVmVo?=
+ =?utf-8?B?REJ0aHlrMUgzWVBEaGYwVlAzUWduVUtPeUxnaGFtN3k3ekFWcFRYa2UwRFg2?=
+ =?utf-8?B?R0F2NldOQVhUUjI3cmF3NG5NTFpLSjRpR0JhTzhIdDZ2SmFlVFNZbU9BU201?=
+ =?utf-8?B?QTlGeTIvRnlMclJFZENrcXozWkx5cWJCYk5ndXMvdlY1TEJObWFJMmh4cElJ?=
+ =?utf-8?B?NENGRkNBckVUdXNYNnYwUllDWkxpaTM5QWVNdU5OdmJKczUwN3RzTS9KbWlw?=
+ =?utf-8?B?WUxvLzFRVzkzdkhQN2pnTmRxeUJNQ3hqanR6cU5pNlNuS1VuR3FFMXdhRGNG?=
+ =?utf-8?Q?9ufE=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9029b078-e562-4955-fe00-08dbdbd1b267
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 18:29:49.2136
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i19ynwNMgXUSTVZccEcm9rZzEpxb9m20hVarcEMltCuIbftPYdbHktSDjtN9eo6v5ayxlqDs1XY3rEsCJGpnVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8990
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Large amounts of memory managed by the kmem driver may come in via CXL,
-and it is often desirable to have the memmap for this memory on the new
-memory itself.
+On Thu, Nov 02, 2023 at 11:09:00PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Oct 17, 2023 at 03:31:45PM -0400, Frank Li wrote:
+> > ls1043a add suspend/resume support.
+> > Implement ls1043a_pcie_send_turnoff_msg() to send PME_Turn_Off message.
+> > Implement ls1043a_pcie_exit_from_l2() to exit from L2 state.
+> > 
+> 
+> Please use the suggestion I gave in patch 2/4.
+> 
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> > 
+> > Notes:
+> >     Change from v2 to v3
+> >     - Remove ls_pcie_lut_readl(writel) function
+> >     
+> >     Change from v1 to v2
+> >     - Update subject 'a' to 'A'
+> > 
+> >  drivers/pci/controller/dwc/pci-layerscape.c | 86 ++++++++++++++++++++-
+> >  1 file changed, 85 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> > index 4b663b20d8612..9656224960b0c 100644
+> > --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> > @@ -41,6 +41,15 @@
+> >  #define SCFG_PEXSFTRSTCR	0x190
+> >  #define PEXSR(idx)		BIT(idx)
+> >  
+> > +/* LS1043A PEX PME control register */
+> > +#define SCFG_PEXPMECR		0x144
+> > +#define PEXPME(idx)		BIT(31 - (idx) * 4)
+> > +
+> > +/* LS1043A PEX LUT debug register */
+> > +#define LS_PCIE_LDBG	0x7fc
+> > +#define LDBG_SR		BIT(30)
+> > +#define LDBG_WE		BIT(31)
+> > +
+> >  #define PCIE_IATU_NUM		6
+> >  
+> >  #define LS_PCIE_DRV_SCFG	BIT(0)
+> > @@ -227,6 +236,68 @@ static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> >  	return 0;
+> >  }
+> >  
+> > +static void ls1043a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> > +{
+> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> > +	u32 val;
+> > +
+> > +	if (!pcie->scfg) {
+> > +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
+> > +		return;
+> > +	}
+> 
+> Why scfg is optional for this SoC and not for the other one added in patch 2/4?
 
-Enroll kmem-managed memory for memmap_on_memory semantics if the dax
-region originates via CXL. For non-CXL dax regions, retain the existing
-default behavior of hot adding without memmap_on_memory semantics.
+No, it is not optional for this SoC. This check can be removed as your
+previous comments about 2/4.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Huang Ying <ying.huang@intel.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
----
- drivers/dax/bus.h         | 1 +
- drivers/dax/dax-private.h | 1 +
- drivers/dax/bus.c         | 3 +++
- drivers/dax/cxl.c         | 1 +
- drivers/dax/hmem/hmem.c   | 1 +
- drivers/dax/kmem.c        | 8 +++++++-
- drivers/dax/pmem.c        | 1 +
- 7 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> > +
+> > +	/* Send Turn_off message */
+> > +	regmap_read(pcie->scfg, SCFG_PEXPMECR, &val);
+> > +	val |= PEXPME(pcie->index);
+> > +	regmap_write(pcie->scfg, SCFG_PEXPMECR, val);
+> > +
+> 
+> In my previous review, I asked you to use a common function and just pass the
+> offsets, as the sequence is same for both the SoCs. But you ignored it :/
+> 
 
-diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
-index 1ccd23360124..cbbf64443098 100644
---- a/drivers/dax/bus.h
-+++ b/drivers/dax/bus.h
-@@ -23,6 +23,7 @@ struct dev_dax_data {
- 	struct dev_pagemap *pgmap;
- 	resource_size_t size;
- 	int id;
-+	bool memmap_on_memory;
- };
- 
- struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data);
-diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-index 27cf2daaaa79..446617b73aea 100644
---- a/drivers/dax/dax-private.h
-+++ b/drivers/dax/dax-private.h
-@@ -70,6 +70,7 @@ struct dev_dax {
- 	struct ida ida;
- 	struct device dev;
- 	struct dev_pagemap *pgmap;
-+	bool memmap_on_memory;
- 	int nr_range;
- 	struct dev_dax_range {
- 		unsigned long pgoff;
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 0ee96e6fc426..ad9f821b8c78 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -367,6 +367,7 @@ static ssize_t create_store(struct device *dev, struct device_attribute *attr,
- 			.dax_region = dax_region,
- 			.size = 0,
- 			.id = -1,
-+			.memmap_on_memory = false,
- 		};
- 		struct dev_dax *dev_dax = devm_create_dev_dax(&data);
- 
-@@ -1400,6 +1401,8 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
- 	dev_dax->align = dax_region->align;
- 	ida_init(&dev_dax->ida);
- 
-+	dev_dax->memmap_on_memory = data->memmap_on_memory;
-+
- 	inode = dax_inode(dax_dev);
- 	dev->devt = inode->i_rdev;
- 	dev->bus = &dax_bus_type;
-diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
-index 8bc9d04034d6..c696837ab23c 100644
---- a/drivers/dax/cxl.c
-+++ b/drivers/dax/cxl.c
-@@ -26,6 +26,7 @@ static int cxl_dax_region_probe(struct device *dev)
- 		.dax_region = dax_region,
- 		.id = -1,
- 		.size = range_len(&cxlr_dax->hpa_range),
-+		.memmap_on_memory = true,
- 	};
- 
- 	return PTR_ERR_OR_ZERO(devm_create_dev_dax(&data));
-diff --git a/drivers/dax/hmem/hmem.c b/drivers/dax/hmem/hmem.c
-index 5d2ddef0f8f5..b9da69f92697 100644
---- a/drivers/dax/hmem/hmem.c
-+++ b/drivers/dax/hmem/hmem.c
-@@ -36,6 +36,7 @@ static int dax_hmem_probe(struct platform_device *pdev)
- 		.dax_region = dax_region,
- 		.id = -1,
- 		.size = region_idle ? 0 : range_len(&mri->range),
-+		.memmap_on_memory = false,
- 	};
- 
- 	return PTR_ERR_OR_ZERO(devm_create_dev_dax(&data));
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index c57acb73e3db..0aa6c45a4e5a 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -12,6 +12,7 @@
- #include <linux/mm.h>
- #include <linux/mman.h>
- #include <linux/memory-tiers.h>
-+#include <linux/memory_hotplug.h>
- #include "dax-private.h"
- #include "bus.h"
- 
-@@ -56,6 +57,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 	unsigned long total_len = 0;
- 	struct dax_kmem_data *data;
- 	int i, rc, mapped = 0;
-+	mhp_t mhp_flags;
- 	int numa_node;
- 
- 	/*
-@@ -136,12 +138,16 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 		 */
- 		res->flags = IORESOURCE_SYSTEM_RAM;
- 
-+		mhp_flags = MHP_NID_IS_MGID;
-+		if (dev_dax->memmap_on_memory)
-+			mhp_flags |= MHP_MEMMAP_ON_MEMORY;
-+
- 		/*
- 		 * Ensure that future kexec'd kernels will not treat
- 		 * this as RAM automatically.
- 		 */
- 		rc = add_memory_driver_managed(data->mgid, range.start,
--				range_len(&range), kmem_name, MHP_NID_IS_MGID);
-+				range_len(&range), kmem_name, mhp_flags);
- 
- 		if (rc) {
- 			dev_warn(dev, "mapping%d: %#llx-%#llx memory add failed\n",
-diff --git a/drivers/dax/pmem.c b/drivers/dax/pmem.c
-index ae0cb113a5d3..f3c6c67b8412 100644
---- a/drivers/dax/pmem.c
-+++ b/drivers/dax/pmem.c
-@@ -63,6 +63,7 @@ static struct dev_dax *__dax_pmem_probe(struct device *dev)
- 		.id = id,
- 		.pgmap = &pgmap,
- 		.size = range_len(&range),
-+		.memmap_on_memory = false,
- 	};
- 
- 	return devm_create_dev_dax(&data);
+Sorry, I will fixed it at next version. 
 
--- 
-2.41.0
-
+> > +	/*
+> > +	 * There is no specific register to check for PME_To_Ack from endpoint.
+> > +	 * So on the safe side, wait for PCIE_PME_TO_L2_TIMEOUT_US.
+> > +	 */
+> > +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
+> > +
+> > +	/*
+> > +	 * Layerscape hardware reference manual recommends clearing the PMXMTTURNOFF bit
+> > +	 * to complete the PME_Turn_Off handshake.
+> > +	 */
+> > +	regmap_read(pcie->scfg, SCFG_PEXPMECR, &val);
+> > +	val &= ~PEXPME(pcie->index);
+> > +	regmap_write(pcie->scfg, SCFG_PEXPMECR, val);
+> > +}
+> > +
+> > +static int ls1043a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> > +{
+> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> > +	u32 val;
+> > +
+> > +	/*
+> > +	 * Only way let PEX module exit L2 is do a software reset.
+> 
+> Same comment applies as patch 2/4.
+> 
+> - Mani
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
