@@ -2,104 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100BC7DF8AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BCD7DF8B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbjKBR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 13:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S229818AbjKBR22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjKBR0a (ORCPT
+        with ESMTP id S229463AbjKBR20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:26:30 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E7F196;
-        Thu,  2 Nov 2023 10:26:27 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507a62d4788so1503386e87.0;
-        Thu, 02 Nov 2023 10:26:27 -0700 (PDT)
+        Thu, 2 Nov 2023 13:28:26 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0943C123
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:28:20 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-da0344eb3fdso1204920276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:28:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698945986; x=1699550786; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=V81heOTLS2HyOq5jt+KISDCrtvnQ83UiMpmGosl+pi4=;
-        b=i7VbXqtLUdwaEhJwkomf+ZOmPKfdUA82IQP/abP6p3lZdgum7MHQjYeVjxE1gIR0F6
-         krxV54ROoCrMM5Nr+pbIF7K70ZVXhD2ZOM8c1wwTlyUQ/Vi2OYXnqGYUa3sqQAZxWxIr
-         /6JokZBNOLoTxjzR+6uEPIVQ2GV1zE9Wu460KiAUrzU39d0VHZGnLOWwggmrOOEmYEQp
-         6bmoTq8Ug81HTiaoAsYy9JKjFNeHmXm8Q0jR8gVkhNLwO2Fl0EB6CIUp8GT3h3WxzM8G
-         ElEaRPDWTaJxEk3sTp02++EXun/4UCjuNQl0VcyUBnvQDOlBS5Hmq5zvYQhSfI3uWPvR
-         nnSA==
+        d=linaro.org; s=google; t=1698946099; x=1699550899; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tNkygFU/hw8zUOPQ7Nync2PfCNdVcXfa85CS1trX39M=;
+        b=kbG99X2cV0Quktb5nOmK2w+x2cKpHFFaOxqaTT9ajc09PI6DvpcspSybdMtITnf+Fm
+         j+eZ6H3LoH0/WFkO9MjWkqt1Pj74JKZSHfYp1ztPfIfpKILSLDvuaADq1cYcItGGNpUx
+         cRAtnHJL9pK/vdxmqqd+edHjwQ6AuRR17HaA4mfPGGJzuV+Ndd1shl0WNLUD7O8Oqjgj
+         uFrvy2CeRKj8w97xhMhuvCKyzzdKz1W/xjp3p2rhSidAbyTk9L8Yk2wv50gWirxJJAfd
+         UaaKhnG7xu1o05t0T9DNeeq706a/2x+Hy+Nc+bMY0sHLURGym/dHzHEZsT8UPWWQVjg0
+         4Pwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698945986; x=1699550786;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V81heOTLS2HyOq5jt+KISDCrtvnQ83UiMpmGosl+pi4=;
-        b=mAKr2I+niET+THtPqPGrokmDfZocjI81lDbd6ereLvZPTTJS5fiXR8RLBlTnzJqGI2
-         Lh8AaH6YY3e37gYG72lbZZaJUGmQviwnBdJTtkv/OoTs0UfFShVeKHc9cE5GxkuNyVgH
-         Q4W963ItiTa1Q757x9kv9926uft6VryM8fBgzcYFlUNk7kUxLOjSjlGbYzMOUYZBZeJ6
-         IJD3pLUbcOY94G0dgoSMRs2MHI3WYNXazrQJOPTZvRCi9+/pPIjAyuWOB5TVlQUeWxPm
-         yymfHK9xjz4SFdOLfZVeSJXBM+jA8uHS87OEpG0vltHJ2wjACoMWpmKnjY7e8DLhUFSk
-         Lrnw==
-X-Gm-Message-State: AOJu0Yx16rFlLew6dUTBeI2yw0c4Iv6IwzxsO1f1l9tTp18h8Ic0BvwO
-        CfZV0XUwzHt7I5VkyMdswjo=
-X-Google-Smtp-Source: AGHT+IH5G6xdJ9QfMm+C/seRUMl1TXnM1Z96Q3PmBOXwUmrPkxArbBY9UbLxdXKlSwyYGgIIhR2blQ==
-X-Received: by 2002:ac2:5928:0:b0:507:984e:9f16 with SMTP id v8-20020ac25928000000b00507984e9f16mr14357907lfi.36.1698945985351;
-        Thu, 02 Nov 2023 10:26:25 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id l13-20020adfe58d000000b0032dba85ea1bsm2964216wrm.75.2023.11.02.10.26.24
+        d=1e100.net; s=20230601; t=1698946099; x=1699550899;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tNkygFU/hw8zUOPQ7Nync2PfCNdVcXfa85CS1trX39M=;
+        b=R5sbocbTPBU05+h3XAXy16Y3qt9ftq4j+MALzTkg0xZZl7uc8L3CB9G+Z0CDjW1HEz
+         MTDvlN0jXtaytsq4m8fl4cz8DI9+fPuoIHRgbhDd04ec3fQTJ2r4s6uzHUtv4QXWdMhO
+         iarBmDVDKkuBCb8T2RbdCHq4AtVvJhGOq0V1NBycUApW8HXWSEb6GOR2lM6HQJnT4WlV
+         4mk1DjHNv64zQw/S+IFlfqQY5h07oNAa7wzAZyd3xGtOcHfUWONLAsTckaZem7hwC0Mk
+         SUTIpTv2FsWQA659qMd1cYwwilM3ThRT8Bg0L1397Ws9xhx4EJng+4i9FUuGuAfELdmM
+         AEYQ==
+X-Gm-Message-State: AOJu0YwSOAYEFgywKRR5rWSV8GGNDKXUxBnxWqr1WPjqZA+mjROGRQJ0
+        ggtmx5ZKkUXj2sWdD6TuRMh0
+X-Google-Smtp-Source: AGHT+IH7fibGIbeWFf4lq3wUpjaMim+uaJtvzKp2sOzZPKo9u8eoqjbUNEnwl5inK43EbeNu+CLkqA==
+X-Received: by 2002:a5b:706:0:b0:da0:c49a:5103 with SMTP id g6-20020a5b0706000000b00da0c49a5103mr17816802ybq.47.1698946099126;
+        Thu, 02 Nov 2023 10:28:19 -0700 (PDT)
+Received: from thinkpad ([117.217.189.228])
+        by smtp.gmail.com with ESMTPSA id p8-20020ad452e8000000b0066d1e71e515sm121935qvu.113.2023.11.02.10.28.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 10:26:24 -0700 (PDT)
-Message-ID: <6543dbc0.df0a0220.21766.ef29@mx.google.com>
-X-Google-Original-Message-ID: <ZUPbvmgeDjHUSwC6@Ansuel-xps.>
-Date:   Thu, 2 Nov 2023 18:26:22 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Jonghwa Lee <jonghwa3.lee@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] PM / devfreq: Fix buffer overflow in trans_stat_show
-References: <20231024183016.14648-1-ansuelsmth@gmail.com>
- <20231024183016.14648-2-ansuelsmth@gmail.com>
+        Thu, 02 Nov 2023 10:28:18 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 22:58:09 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v3 2/4] PCI: layerscape: Add suspend/resume for ls1021a
+Message-ID: <20231102172809.GD20943@thinkpad>
+References: <20231017193145.3198380-1-Frank.Li@nxp.com>
+ <20231017193145.3198380-3-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231024183016.14648-2-ansuelsmth@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231017193145.3198380-3-Frank.Li@nxp.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 08:30:15PM +0200, Christian Marangi wrote:
-> Fix buffer overflow in trans_stat_show().
+On Tue, Oct 17, 2023 at 03:31:43PM -0400, Frank Li wrote:
+> ls1021a add suspend/resume support.
 > 
-> Convert simple snprintf to the more secure scnprintf with size of
-> PAGE_SIZE.
+> Implement callback ls1021a_pcie_send_turnoff_msg(), which write scfg's
+> SCFG_PEXPMWRCR to issue PME_Turn_off message.
 > 
-> Add condition checking if we are exceeding PAGE_SIZE and exit early from
-> loop. Also add at the end a warning that we exceeded PAGE_SIZE and that
-> stats is disabled.
+> Implement ls1021a_pcie_exit_from_l2() to let controller exit L2 state.
 > 
-> Return -EFBIG in the case where we don't have enough space to write the
-> full transition table.
-> 
-> Also document in the ABI that this function can return -EFBIG error.
-> 
-> Cc: stable@vger.kernel.org
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218041
-> Fixes: e552bbaf5b98 ("PM / devfreq: Add sysfs node for representing frequency transition information.")
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-Any news for this?
+I'd like to reword it to better reflect what the patch does:
+
+"In the suspend path, PME_Turn_Off message is sent to the endpoint to transition
+the link to L2/L3_Ready state. In this SoC, there is no way to check if the
+controller has received the PME_To_Ack from the endpoint or not. So to be on the
+safer side, the driver just waits for PCIE_PME_TO_L2_TIMEOUT_US before asserting
+the SoC specific PMXMTTURNOFF bit to complete the PME_Turn_Off handshake. This
+link would then enter L2/L3 state depending on the VAUX supply.
+
+In the resume path, the link is brought back from L2 to L0 by doing a software
+reset."
+
+Although I do have questions on the resume behavior below.
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v2 to v3
+>     - update according to mani's feedback
+>     change from v1 to v2
+>     - change subject 'a' to 'A'
+> 
+>  drivers/pci/controller/dwc/pci-layerscape.c | 86 ++++++++++++++++++++-
+>  1 file changed, 85 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index aea89926bcc4f..6f47cfe146c44 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -35,11 +35,21 @@
+>  #define PF_MCR_PTOMR		BIT(0)
+>  #define PF_MCR_EXL2S		BIT(1)
+>  
+> +/* LS1021A PEXn PM Write Control Register */
+> +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
+> +#define PMXMTTURNOFF		BIT(31)
+> +#define SCFG_PEXSFTRSTCR	0x190
+> +#define PEXSR(idx)		BIT(idx)
+> +
+>  #define PCIE_IATU_NUM		6
+>  
+> +#define LS_PCIE_DRV_SCFG	BIT(0)
+> +
+>  struct ls_pcie_drvdata {
+>  	const u32 pf_off;
+> +	const struct dw_pcie_host_ops *ops;
+>  	int (*exit_from_l2)(struct dw_pcie_rp *pp);
+> +	int flags;
+
+Why not "bool scfg_support"?
+
+>  	bool pm_support;
+>  };
+>  
+> @@ -47,6 +57,8 @@ struct ls_pcie {
+>  	struct dw_pcie *pci;
+>  	const struct ls_pcie_drvdata *drvdata;
+>  	void __iomem *pf_base;
+> +	struct regmap *scfg;
+> +	int index;
+>  	bool big_endian;
+>  };
+>  
+> @@ -171,13 +183,65 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
+>  	return 0;
+>  }
+>  
+> +static void ls1021a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +
+> +	/* Send PME_Turn_Off message */
+> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
+> +	val |= PMXMTTURNOFF;
+> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
+> +
+> +	/*
+> +	 * There is no specific register to check for PME_To_Ack from endpoint.
+> +	 * So on the safe side, wait for PCIE_PME_TO_L2_TIMEOUT_US.
+> +	 */
+> +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
+> +
+> +	/*
+> +	 * Layerscape hardware reference manual recommends clearing the PMXMTTURNOFF bit
+> +	 * to complete the PME_Turn_Off handshake.
+> +	 */
+> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
+> +	val &= ~PMXMTTURNOFF;
+> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
+> +}
+> +
+> +static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +
+> +	/* Only way exit from l2 is that do software reset */
+
+So, what does exactly "software reset" mean? Are you resetting the endpoint or
+some specific registers/blocks in the controller?
+
+Also, what if the link goes to L3 in the case of no VAUX?
+
+> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
+> +	val |= PEXSR(pcie->index);
+> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
+> +
+> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
+> +	val &= ~PEXSR(pcie->index);
+> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
+>  	.host_init = ls_pcie_host_init,
+>  	.pme_turn_off = ls_pcie_send_turnoff_msg,
+>  };
+>  
+> +static const struct dw_pcie_host_ops ls1021a_pcie_host_ops = {
+> +	.host_init = ls_pcie_host_init,
+> +	.pme_turn_off = ls1021a_pcie_send_turnoff_msg,
+> +};
+> +
+>  static const struct ls_pcie_drvdata ls1021a_drvdata = {
+> -	.pm_support = false,
+> +	.pm_support = true,
+> +	.ops = &ls1021a_pcie_host_ops,
+> +	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
+> +	.flags = LS_PCIE_DRV_SCFG,
+>  };
+>  
+>  static const struct ls_pcie_drvdata layerscape_drvdata = {
+> @@ -205,6 +269,8 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	struct dw_pcie *pci;
+>  	struct ls_pcie *pcie;
+>  	struct resource *dbi_base;
+> +	u32 index[2];
+> +	int ret;
+>  
+>  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+>  	if (!pcie)
+> @@ -220,6 +286,7 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	pci->pp.ops = &ls_pcie_host_ops;
+>  
+>  	pcie->pci = pci;
+> +	pci->pp.ops = pcie->drvdata->ops ? pcie->drvdata->ops : &ls_pcie_host_ops;
+>  
+>  	dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+>  	pci->dbi_base = devm_pci_remap_cfg_resource(dev, dbi_base);
+> @@ -230,6 +297,23 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  
+>  	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
+>  
+> +	if (pcie->drvdata->flags & LS_PCIE_DRV_SCFG) {
+> +
+
+Remove extra newline.
+
+- Mani
 
 -- 
-	Ansuel
+மணிவண்ணன் சதாசிவம்
