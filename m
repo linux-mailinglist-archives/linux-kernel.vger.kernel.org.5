@@ -2,108 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D707DF7D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 933E37DF7DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 17:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376932AbjKBQjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 12:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
+        id S1376886AbjKBQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 12:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377128AbjKBQi6 (ORCPT
+        with ESMTP id S229566AbjKBQkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 12:38:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7996197;
-        Thu,  2 Nov 2023 09:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698943130; x=1730479130;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TbgSOUP/KBLYQvMLt1e9jTgTHS7bUT2DGs5jbUlh/Cc=;
-  b=CPazedrGsSez9xyXLEqN7Ve6DHspY5smfnMxH1IOPOKfDxn9C26H5ki1
-   E1mn2pyxoKIwrUAHZSir0opyxW1fbe1b2juUBoNjF3vdLmfqKDV4NTvrd
-   ZQwdtTVfkooGiD/SSyyciChxgCOftYFhC4hrMGCt6sT9S3LMxVcy4W4Yq
-   +2IlNlt4mI92+eiktmIhSJoYTTTdxAtboadoACvaxFa9tZHjfHYQg89kD
-   dCaydPOGgKEA1I/0SWXRM2QixpzqTqC/Lxeq40Z6u800fUprrqKdW0dU9
-   KmLm595eIFrPNNCdPxlokkqG0P/CmljYX7bdGsEHZTFKzMeSyA6NnAFh8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="419863626"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="419863626"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 09:38:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="851974439"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="851974439"
-Received: from kookjinl-mobl.amr.corp.intel.com (HELO [10.212.164.123]) ([10.212.164.123])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 09:38:49 -0700
-Message-ID: <203cf76c-3855-408c-9a7c-8ff3f74a88bd@intel.com>
-Date:   Thu, 2 Nov 2023 09:38:49 -0700
+        Thu, 2 Nov 2023 12:40:16 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB0513A;
+        Thu,  2 Nov 2023 09:40:13 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qyajp-0003p8-7D; Thu, 02 Nov 2023 17:40:09 +0100
+Message-ID: <54124220-3ce8-47c7-8303-d186c9e570dd@leemhuis.info>
+Date:   Thu, 2 Nov 2023 17:40:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/lib: Fix overflow of variable m when val >=
- 1410065408
-Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231101153237.2214698-1-colin.i.king@gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231101153237.2214698-1-colin.i.king@gmail.com>
+Subject: Re: mainline build failure due to 9c66dc94b62a ("bpf: Introduce
+ css_task open-coded iterator kfuncs")
+Content-Language: en-US, de-DE
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ZUNiwMLBsL52X9wa@debian>
+ <79260ece-5819-4292-bfac-dc21a3701813@bytedance.com>
+ <7ade1b4d-71ad-4f32-9b19-9d8eac8e595b@leemhuis.info>
+ <CADVatmNkXXH5xwEe25cZeESRT5FscKQuGEoSZ=1tiGTtLO-+pg@mail.gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CADVatmNkXXH5xwEe25cZeESRT5FscKQuGEoSZ=1tiGTtLO-+pg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698943213;26473bd7;
+X-HE-SMSGID: 1qyajp-0003p8-7D
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -111,20 +53,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/23 08:32, Colin Ian King wrote:
-...
->  int num_digits(int val)
->  {
-> -	int m = 10;
-> +	long m = 10;
->  	int d = 1;
->  
->  	if (val < 0) {
+On 02.11.23 17:04, Sudip Mukherjee wrote:
+> On Thu, 2 Nov 2023 at 09:13, Linux regression tracking (Thorsten
+> Leemhuis) <regressions@leemhuis.info> wrote:
+>> On 02.11.23 09:53, Chuyi Zhou wrote:
+>>> 在 2023/11/2 16:50, Sudip Mukherjee (Codethink) 写道:
+>>>> The latest mainline kernel branch fails to build mips
+>>>> decstation_64_defconfig,
+>>>> decstation_defconfig and decstation_r4k_defconfig with the error:
+>>>>
+>>>> kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
+>>>> kernel/bpf/task_iter.c:917:14: error: 'CSS_TASK_ITER_PROCS' undeclared
+>>>> (first use in this function)
+>>>>    917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+>>>>        |              ^~~~~~~~~~~~~~~~~~~
+>>> [...]
+>>>> git bisect pointed to 9c66dc94b62a ("bpf: Introduce css_task
+>>>> open-coded iterator kfuncs")
+>>>
+>>> Thanks for the report! This issue has been solved by Jiri.[1]
+>>>
+>>> [1]:https://lore.kernel.org/all/169890482505.9002.10852784674164703819.git-patchwork-notify@kernel.org/
+>>
+>> Thx, I was just about to reply something similar. :-D
+>>
+>> Sudip, maybe you know about this already, but in case you don't, here is
+>> a quick tip that might be useful for you: in cases like this it's often
+>> wise to search for earlier reports on lore using an even more
+>> abbreviated commit-id followed by a wildcard (e.g. "9c66dc94*"). That at
+>> least was how I found the fix quickly.
+> 
+> Yes, but the failure is still in the mainline. And it has happened in
+> the past that the fix has been submitted and taken by the maintainer
+> but was not sent to Linus.
+> In the last release cycle I had to send a reminder around the time of
+> -rc3 and in that case also the fix was submitted when I sent the build
+> failure mail.
 
-Isn't this still broken on 32-bit where sizeof(long) == sizeof(int)?
-Seems like we need 'm' to be able to hold values that are ~10x larger
-than 'val' if we need this to work for the entire int range.
+Yes, that can happen, I have an eye on such situations as well, but I
+don't add all those cases to rezgbot, as some of them get quickly
+resolved in a day or two. But you are totally free to get regzbot
+involved if you want!
 
-Also, performance doesn't matter here at *all* with the current use in
-a couple of printk()'s.  Just making 'm' 'long long' or u64 probably be
-just fine.
+> But  like you said I will search and will not add Cc to rezbot in
+> cases where a fix has been submitted.
+
+No, sorry, please don't read my reply like that. Feel free to tell
+regzbot about such cases. But you could do me a favor in cases that are
+similar like this: when adding the issue to the tracking use "#regzbot
+monitor <url>" to point to the fix and "#regzbot fix <subject>" to
+mention its subject, as that makes it clear that a fix is under review
+and/or incoming; and when it landed regzbot will automatically consider
+the regressions resolved, too.
+
+> Also if Linus wants then I will
+> not even send mails in these cases.
+
+That's up to Linus, but I guess he and others that got your report all
+receive enough mail already; so if you ask me, for issues that are known
+and handled already I'd say its best to send them just to the regression
+list while making it obvious that a fix is in the works (see above); if
+things are not resolved more people can be brought in later. But that's
+just how I would handle it.
+
+Ciao, Thorsten
