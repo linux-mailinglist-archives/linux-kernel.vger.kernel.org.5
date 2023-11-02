@@ -2,74 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 803F67DF0DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E233D7DF0F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347199AbjKBLHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S1376264AbjKBLKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346709AbjKBLHu (ORCPT
+        with ESMTP id S1347307AbjKBLK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:07:50 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35983DE
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:07:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CB4692184B;
-        Thu,  2 Nov 2023 11:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698923262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uwKsAW8t6NpbQI6ToYL+NrNjCkOiOB5sFeA9cp9j2zM=;
-        b=Vrp06a5nq43iTDGTvXAoqTdddotSLXyyr5Dq4oGMrwsVEkaBL8aWMLPxrnVPBaHRiniOkT
-        MpZPCFIA2SgDzl0ojHcxvFCXKlOchjN/nzFK4bl54xCDoRNFLxRytecEdScKTgqZHvl9LS
-        s92m3mNM7ROpGmbHhRp+7cZ3GHa3HwI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698923262;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uwKsAW8t6NpbQI6ToYL+NrNjCkOiOB5sFeA9cp9j2zM=;
-        b=pCWCYxB0pNsE/wlzge6/iFAgN7ccpppI0tdbae5Kj9A0A0moNm6Il6wwBjGzlrBfEfFJQ6
-        0WgMJ7cdNE/QWYBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B50C013584;
-        Thu,  2 Nov 2023 11:07:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1NKZK/6CQ2XbHgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 02 Nov 2023 11:07:42 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3E5CEA06E3; Thu,  2 Nov 2023 12:07:42 +0100 (CET)
-Date:   Thu, 2 Nov 2023 12:07:42 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     Jan Kara <jack@suse.cz>, jack@suse.com,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        groeck@google.com, zsm@google.com,
-        syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-Subject: Re: [PATCH] fs: udf: super.c: Fix a use-after-free issue in
- udf_finalize_lvid
-Message-ID: <20231102110742.jzoee5nqmgs3kilg@quack3>
-References: <20231030202418.847494-1-shreeya.patel@collabora.com>
- <20231031113754.vwrj3pubynb6bnef@quack3>
- <30b49da5-fc1a-3a18-7eeb-d5bbb08b3e9c@collabora.com>
- <20231102110510.m4niipobiu7j3rup@quack3>
+        Thu, 2 Nov 2023 07:10:28 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18053185
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:10:16 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 909CB2F4;
+        Thu,  2 Nov 2023 04:10:58 -0700 (PDT)
+Received: from bogus (unknown [10.57.82.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E50423F67D;
+        Thu,  2 Nov 2023 04:10:14 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 11:08:42 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     sean yang <seanyang230@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, cristian.marussi@arm.com
+Subject: Re: Fwd: [PATCH] firmware: arm_scmi: Remove inappropriate error log.
+Message-ID: <20231102110842.GB1391942@bogus>
+References: <20231101081726.1163042-1-xinglong.yang@cixtech.com>
+ <CADGqjF+qsrKcNntO7FdcUxJ+L4rC8jcMT94nv8uOOTH-VwG9mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231102110510.m4niipobiu7j3rup@quack3>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADGqjF+qsrKcNntO7FdcUxJ+L4rC8jcMT94nv8uOOTH-VwG9mw@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,82 +44,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 02-11-23 12:05:10, Jan Kara wrote:
-> On Thu 02-11-23 15:34:52, Shreeya Patel wrote:
-> > On 31/10/23 17:07, Jan Kara wrote:
-> > > On Tue 31-10-23 01:54:18, Shreeya Patel wrote:
-> > > > Add some error handling cases in udf_sb_lvidiu() and redefine
-> > > > the descCRCLength in order to avoid use-after-free issue in
-> > > > udf_finalize_lvid.
-> > > > 
-> > > > Following use-after-free issue was reported by syzbot :-
-> > > > 
-> > > > https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
-> > > > 
-> > > > BUG: KASAN: use-after-free in crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
-> > > > Read of size 1 at addr ffff88816fba0000 by task syz-executor.0/32133
-> > > > 
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-> > > > Call Trace:
-> > > > <TASK>
-> > > > __dump_stack lib/dump_stack.c:88 [inline]
-> > > > dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
-> > > > print_address_description mm/kasan/report.c:284 [inline]
-> > > > print_report+0x13c/0x462 mm/kasan/report.c:395
-> > > > kasan_report+0xa9/0xd5 mm/kasan/report.c:495
-> > > > crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
-> > > > udf_finalize_lvid+0x111/0x23b fs/udf/super.c:2022
-> > > > udf_sync_fs+0xba/0x123 fs/udf/super.c:2378
-> > > > sync_filesystem+0xe8/0x216 fs/sync.c:56
-> > > > generic_shutdown_super+0x6b/0x334 fs/super.c:474
-> > > > kill_block_super+0x79/0xd6 fs/super.c:1459
-> > > > deactivate_locked_super+0xa0/0x101 fs/super.c:332
-> > > > cleanup_mnt+0x2de/0x361 fs/namespace.c:1192
-> > > > task_work_run+0x22b/0x2d4 kernel/task_work.c:179
-> > > > resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-> > > > exit_to_user_mode_loop+0xc4/0xd3 kernel/entry/common.c:171
-> > > > exit_to_user_mode_prepare+0xb4/0x115 kernel/entry/common.c:204
-> > > > __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
-> > > > syscall_exit_to_user_mode+0xae/0x278 kernel/entry/common.c:297
-> > > > do_syscall_64+0x5d/0x93 arch/x86/entry/common.c:99
-> > > > entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > > > RIP: 0033:0x7e8195fb6e17
-> > > > 
-> > > > Fixes: ebbd5e99f60a ("udf: factor out LVID finalization for reuse")
-> > > > Reported-by: syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-> > > > Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> > > Thanks for the patch but not every syzbot report is actually a bug. In this
-> > > case you can notice that udf_load_logicalvolint() is actually checking
-> > > validity of the Logical Volume Integrity Descriptor. The fact that later
-> > > udf_sb_lvidiu() call overflows the buffer size is caused by the fact that
-> > > syzbot overwrites the UDF filesystem while it is mounted and so the values
-> > > we checked are not the same as the value we later use. That is not a
-> > > problem we try to protect against (it is equivalent to corrupting memory).
-> > > I'm working on patches to so that syzbot can reasonably easily avoid
-> > > creating such invalid scenarios but so far they did not land. So I'm sorry
-> > > but I will not apply your fix.
-> > 
-> > Thanks for the information and it definitely makes sense to not let
-> > syzbot create such invalid scenarios. Maybe we can add some kind of
-> > filtering in syzbot for these kind of issues in future but I wonder how
-> > to even identify these reports from syzbot which is purposely trying to
-> > do some memory corruption. It seems hard to identify them without
-> > understanding what the reproducer is doing.  Maybe this is a question for
-> > the syzbot team.
- 
-Hit send too early ;)
+On Thu, Nov 02, 2023 at 05:55:37PM +0800, sean yang wrote:
+> ---------- Forwarded message ---------
+> 发件人： xinglong.yang <seanyang230@gmail.com>
+> Date: 2023年11月1日周三 16:17
+> Subject: [PATCH] firmware: arm_scmi: Remove inappropriate error log.
+> To: <xinglong.yang@cixtech.com>, <sudeep.holla@arm.com>,
+> <cristian.marussi@arm.com>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> 
 
-I have discussed this with the syzbot team and as you noticed the problem
-is it is very hard to detect the corruption scenario in an automated way.
-What we plan to do (next round of patches submitted yesterday [1]) is that
-we will not allow processes to open devices for writing when they are
-mounted. This will effectively not allow syzbot to corrupt buffer cache of
-a mounted filesystem and so should address these issues.
-
-								Honza
- 
-[1] https://lore.kernel.org/all/20231101173542.23597-1-jack@suse.cz
+Same here, please avoid forwarding patches/emails on the list and wait
+for couple of days to *resend*(not forward) the email/patch if you
+suspect it wasn't delivered.
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Sudeep
