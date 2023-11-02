@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7787DFBFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32ADF7DFC1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjKBV2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 17:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        id S1377429AbjKBVyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 17:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKBV2E (ORCPT
+        with ESMTP id S229448AbjKBVyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 17:28:04 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A5A187
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 14:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:message-id:in-reply-to:references:
-   subject:mime-version:content-transfer-encoding;
-  bh=Z1NpHf+ickCZ3JZZnaLgy5uvJFGYSq4e+2hH9vxGT6o=;
-  b=IHMb2YOCDY/Dv59PibWzdT7rnd/tiFfKfWS8YWCLriD7l9Y5xWoRpLUC
-   r/KtHrOrr7Kdrfa3mignup/JCpmeEaMI4ppoaLscBml/CpoW1TYzzRXPb
-   xwrSAB1hhcsh9M9M8drp/q6RryA1smqfYEtDxPsc8QYKEWz6XqFG2WT0p
-   o=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=Pass smtp.mailfrom=julia.lawall@inria.fr; spf=None smtp.helo=postmaster@zcs-store9.inria.fr
-Received-SPF: Pass (mail2-relais-roc.national.inria.fr: domain of
-  julia.lawall@inria.fr designates 128.93.142.36 as permitted
-  sender) identity=mailfrom; client-ip=128.93.142.36;
-  receiver=mail2-relais-roc.national.inria.fr;
-  envelope-from="julia.lawall@inria.fr";
-  x-sender="julia.lawall@inria.fr"; x-conformance=spf_only;
-  x-record-type="v=spf1"; x-record-text="v=spf1
-  ip4:128.93.142.0/24 ip4:192.134.164.0/24 ip4:128.93.162.160
-  ip4:89.107.174.7 mx ~all"
-Received-SPF: None (mail2-relais-roc.national.inria.fr: no sender
-  authenticity information available from domain of
-  postmaster@zcs-store9.inria.fr) identity=helo;
-  client-ip=128.93.142.36;
-  receiver=mail2-relais-roc.national.inria.fr;
-  envelope-from="julia.lawall@inria.fr";
-  x-sender="postmaster@zcs-store9.inria.fr";
-  x-conformance=spf_only
-X-IronPort-AV: E=Sophos;i="6.03,272,1694728800"; 
-   d="scan'208";a="134394949"
-X-MGA-submission: =?us-ascii?q?MDEeuemg07ECtdgWwyBF/gXCatUf0rYEVG2UuN?=
- =?us-ascii?q?CMQzu8WX+yqMTLVDDYMsQipOJ8h8IkBPjzTs7OXOBRZ2e0dhDAtxC34L?=
- =?us-ascii?q?5EmbC4dC1LSlo7HgZLTxfzrEUT6x5t/GDDzk3DzsWq/D2DGrZXU1K3oG?=
- =?us-ascii?q?MnpCc/Zg1XYaJew9Ktk91WJQ=3D=3D?=
-Received: from zcs-store9.inria.fr ([128.93.142.36])
-  by mail2-relais-roc.national.inria.fr with ESMTP; 02 Nov 2023 22:27:56 +0100
-Date:   Thu, 2 Nov 2023 22:27:55 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-To:     Anton Eliasson <anton.eliasson@axis.com>
-Cc:     nicolas palix <nicolas.palix@imag.fr>, cocci <cocci@inria.fr>,
-        linux-kernel <linux-kernel@vger.kernel.org>, kernel@axis.com
-Message-ID: <978265928.4471013.1698960475973.JavaMail.zimbra@inria.fr>
-In-Reply-To: <20231003-coccicheck-v1-1-07d2d900a52a@axis.com>
-References: <20231003-coccicheck-v1-0-07d2d900a52a@axis.com> <20231003-coccicheck-v1-1-07d2d900a52a@axis.com>
-Subject: Re: [cocci] [PATCH 1/2] scripts: coccicheck: Return error from
- run_cmd_parmap
+        Thu, 2 Nov 2023 17:54:20 -0400
+X-Greylist: delayed 1335 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Nov 2023 14:54:14 PDT
+Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844E5138
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 14:54:14 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.mutex.one (Postfix) with ESMTP id C716016C0059;
+        Thu,  2 Nov 2023 23:31:56 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
+Received: from mail.mutex.one ([127.0.0.1])
+        by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QGFwVGpa-qcb; Thu,  2 Nov 2023 23:31:51 +0200 (EET)
+From:   Marian Postevca <posteuca@mutex.one>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
+        t=1698960711; bh=Q6RAt9WDoMmKifTz8osglDccZBx2+JeWzwRjjrF32hE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=fjJx7RCRxmL0vI4FsOD0Ut7IzvWscnPYs4ITJjcb1+QVmI7C/v8FgQjInLbQPGOy0
+         kKzqNo2xwygkacxKxwuEEYsLBwpiXOzbqrKMYncfWtpdgMelM/OrdMtG2GMJ6uVJsb
+         5S2KpcbnOGPnYKjNqz4DaOWp/n+WW8PEuDlOCt68=
+To:     syed saba kareem <ssabakar@amd.com>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Regression apparently caused by commit
+ 088a40980efbc2c449b72f0f2c7ebd82f71d08e2 "ASoC: amd: acp: add pm ops
+ support for acp pci driver"
+In-Reply-To: <fcb8f03e-bad1-966c-d454-b7ef7cb62454@amd.com>
+References: <87a5v8szhc.fsf@mutex.one>
+ <fcb8f03e-bad1-966c-d454-b7ef7cb62454@amd.com>
+Date:   Thu, 02 Nov 2023 23:30:16 +0200
+Message-ID: <878r7f4zdj.fsf@mutex.one>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [92.89.85.231]
-X-Mailer: Zimbra 8.8.15_GA_4562 (ZimbraWebClient - FF119 (Linux)/8.8.15_GA_4570)
-Thread-Topic: scripts: coccicheck: Return error from run_cmd_parmap
-Thread-Index: /FuP+QpGx8nmd9ShkUiiXS4mQsbSqA==
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -77,48 +61,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syed saba kareem <ssabakar@amd.com> writes:
 
+> We haven't up streamed pm ops for Renoir platform.
+>
+> That is the cause for the issue.
+>
+> Will upstream them in a week.
 
------ Mail original -----
-> De: "Anton Eliasson" <anton.eliasson@axis.com>
-> =C0: "Julia Lawall" <Julia.Lawall@inria.fr>, "nicolas palix" <nicolas.pal=
-ix@imag.fr>
-> Cc: "cocci" <cocci@inria.fr>, "linux-kernel" <linux-kernel@vger.kernel.or=
-g>, "Anton Eliasson" <anton.eliasson@axis.com>,
-> kernel@axis.com
-> Envoy=E9: Mardi 3 Octobre 2023 16:25:14
-> Objet: [cocci] [PATCH 1/2] scripts: coccicheck: Return error from run_cmd=
-_parmap
-
-> Exiting on error breaks the chain mode. Return the error instead in
-> order for the caller to propagate it or in the case of chain, try the
-> next mode.
->=20
-> Signed-off-by: Anton Eliasson <anton.eliasson@axis.com>
-> ---
-> scripts/coccicheck | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/scripts/coccicheck b/scripts/coccicheck
-> index e52cb43fede6..95a312730e98 100755
-> --- a/scripts/coccicheck
-> +++ b/scripts/coccicheck
-> @@ -153,7 +153,7 @@ run_cmd_parmap() {
-> =09err=3D$?
-> =09if [[ $err -ne 0 ]]; then
-> =09=09echo "coccicheck failed"
-> -=09=09exit $err
-> +=09=09return $err
-> =09fi
-> }
->=20
-
-I tried disabling OCaml in my version of Coccinelle and then ran make cocci=
-check with this patch.  But I didn't see any improvement.  On the other han=
-d, it keeps going if I just remove the exit line entirely.  Is that what is=
- wanted?  One can still see the coccicheck failed message.
-
-julia
-
-> --
-> 2.30.2
+Did you manage to upstream the pm ops for Renoir platform?
+I have checked the latest commit on the for-next branch
+( ed2232d49187cebc007ecf4e6374069b11ab3219 ) and the issue is still
+there.
+I still have to revert commit
+088a40980efbc2c449b72f0f2c7ebd82f71d08e2 to have my driver function
+properly.
