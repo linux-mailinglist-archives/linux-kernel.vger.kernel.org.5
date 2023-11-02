@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B49917DFBDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA827DFBE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377067AbjKBVCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 17:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S1377275AbjKBVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 17:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKBVC2 (ORCPT
+        with ESMTP id S234346AbjKBVGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 17:02:28 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB5A18B
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 14:02:26 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc9784dbc1so4980395ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 14:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1698958946; x=1699563746; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=568xToxZkocjSw2LP56h9JKoNDjBFNgUBrVkBAMw8eg=;
-        b=XnnDc1hkJmF1SpYkDNJXiZ2RmnqDtRt1Euurgy9sVEJPCkzuM0+X7mMg50XSkGdW/e
-         1jgSOeRWFa0UJBn9syH1V2sIni+L7fZyOFcs9o80NT3mDsZW7RB3vjeclhhJUvBcnNUe
-         N3V71wRgUFpkxZ8gvXGJLCFY4vPkkpHwX7OLZ5Lt9rNp9gJaGn2cZ2fx/e/EOu/hfP1y
-         E9RDSoMd3Ak5O2ABWedo28PLjqmW18BxHszTe5E7eHasszkHyK/TjOAD3YiIr0IVPFhH
-         WD0xRSuxNGsFRyBmJVdgO3gvMM410pitIuteSNGZYqF7vm+CKQIklDpZnzGm8X5OX8L+
-         0U4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698958946; x=1699563746;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=568xToxZkocjSw2LP56h9JKoNDjBFNgUBrVkBAMw8eg=;
-        b=rC2uPKslFgnu1mZd82JkERgMIE/DZSNVG/M0trQoJVnGWQphv2i9Dd1GKRBkmIDD3B
-         vSh52PySWuvgCrW5phaN5BhyxSvbDxMQ6G+HEU7lYruVTwHkGgJXBhQ0vaVQHxQl0xVq
-         6Oz46Y7FxdVRREUaomgKnz/bM1Tw4M9B9iSE8qRywJXZJIABHsntqB/pimy1dfFNDwaS
-         +8O7QjNA4izvhP9PBM60wcNW6MtJFJaNrK7yloKpIMxW38b9Vr4QBuiHG9jsaRcRcmqS
-         K7jI1SQmV00EFqZfuC7xDHNC7xbrjoq/1hSUBhTh0sGGhHLBB46ufD4XYTiiUJOqR1l6
-         +nGg==
-X-Gm-Message-State: AOJu0YzhOIbVihZy2UqG0yZTc8c4/alKz9+U0q3FRYC1fHh/Nf1k/ACC
-        QwglkAaPC9NHgnkKidJdcgmqP0mDG6YHo9xO1rw=
-X-Google-Smtp-Source: AGHT+IFkM44euvxDR4qdHiQ0XQgClqPVir+at5SUMMPkmpHmzXg56NqFwWtEGi2KaoeGhomseV20VA==
-X-Received: by 2002:a17:902:e745:b0:1cc:45db:e21e with SMTP id p5-20020a170902e74500b001cc45dbe21emr13961691plf.37.1698958945567;
-        Thu, 02 Nov 2023 14:02:25 -0700 (PDT)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170902ea8b00b001c57aac6e5esm151808plb.23.2023.11.02.14.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 14:02:24 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 14:02:24 -0700 (PDT)
-X-Google-Original-Date: Thu, 02 Nov 2023 14:00:57 PDT (-0700)
-Subject:     Re: linux-next: Signed-off-by missing for commit in the risc-v tree
-In-Reply-To: <20231103075521.74a94ee2@canb.auug.org.au>
-CC:     Paul Walmsley <paul@pwsan.com>, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Message-ID: <mhng-66e5d8c0-2a7b-43e4-8d8b-dec50c7730c9@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Thu, 2 Nov 2023 17:06:51 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFE118E;
+        Thu,  2 Nov 2023 14:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698959203;
+        bh=IL1UXN48/wBfVZBy7nalkv0yCuch54ENh6QZaU69oGM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CpwvTiedvH6WHKYigSNccJgQtFGplu9KFU+0EnL2pIeHuQsdduaytqtxJq4YNkzwx
+         +SAApTo0EoWpYR1xIxRHmp5+lUCA1VfsnBSDej/iAAoXesRUoOnQP+bwtAX2u+4Gdv
+         SH0KX0ts3pchGrVdCVsGJcRv5kXmvPJ9TTo3w4YNDDz8WCBhxDVY/futBigXlPUzkC
+         2z/4UkvrXz9c8Yp4rxQLPTcX3gnB/nkey6/KnTgQROIr+8nV6+V0cGDA5x3yMCxDNX
+         XPAbCMPBbcsQOrl9nEu5sxigFGdd6u2Laj9VIqqRHYbOZ4gyj27XWFOlo3RcCOLm/U
+         ZpePN1tiEmXLA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SLxJL6Rw5z4xPf;
+        Fri,  3 Nov 2023 08:06:42 +1100 (AEDT)
+Date:   Fri, 3 Nov 2023 08:06:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the modules tree
+Message-ID: <20231103080642.468b331a@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/ZF3a7bZ0OaRHFDtp7DcG8u0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Nov 2023 13:55:21 PDT (-0700), Stephen Rothwell wrote:
-> Hi all,
->
-> Commit
->
->   c1c99e5f1b13 ("riscv: errata: prefix T-Head mnemonics with th.")
->
-> is missing a Signed-off-by from its committer.
+--Sig_/ZF3a7bZ0OaRHFDtp7DcG8u0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sorry about that, this one should be fixed.
+Hi all,
 
->
-> -- 
-> Cheers,
-> Stephen Rothwell
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
+
+  3111add7f414 ("module: Annotate struct module_notes_attrs with __counted_=
+by")
+  331e833a7606 ("module: Fix comment typo")
+  dc95e422c283 ("module: Make is_valid_name() return bool")
+  bac202d3712f ("module: Make is_mapping_symbol() return bool")
+  b72d5a66766d ("module/decompress: use vmalloc() for gzip decompression wo=
+rkspace")
+  c7540b27da9e ("MAINTAINERS: add include/linux/module*.h to modules")
+  130afb8ce111 ("module: Clarify documentation of module_param_call()")
+
+These are commits
+
+  ea0b0bcef491 ("module: Annotate struct module_notes_attrs with __counted_=
+by")
+  fd06da776130 ("module: Fix comment typo")
+  04311b9b3063 ("module: Make is_valid_name() return bool")
+  60da3640b07c ("module: Make is_mapping_symbol() return bool")
+  3737df782c74 ("module/decompress: use vmalloc() for gzip decompression wo=
+rkspace")
+  62eedac26415 ("MAINTAINERS: add include/linux/module*.h to modules")
+  2c7ccb3c362b ("module: Clarify documentation of module_param_call()")
+
+in Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZF3a7bZ0OaRHFDtp7DcG8u0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVED2IACgkQAVBC80lX
+0GySBAf/eUr6CR8sY5faCQY1OANtb3DURLndV4epd0latXhi8Y1P0GeGyNXfUbGc
+sYaYrjhat+ExSvMiD7Z1Oan9mc6+yYQZGTV9tRh01GzmeZG/dPzY7pYFoxUXqD30
+QUDdDwY5G6fALpLxv1m33HAHyE/eec6eUHdhI9kj/BIm18+b0g4ry0c0fxl01GuD
+8ULcv2FqtsEHL3SJB7c/1gdMq+J8lSTDqL3UXZooiwiFMORgJZeUQpFo0+08mO08
+FPlxXFkfqguP1W1B+HvkmX8Zr1mPESqGCzBQgxUK+98DVvc9QGaCkRGPjxJlrRXr
+/2AoGvn5uP8iRDxtqKRXzffCQNDcKw==
+=s/ID
+-----END PGP SIGNATURE-----
+
+--Sig_/ZF3a7bZ0OaRHFDtp7DcG8u0--
