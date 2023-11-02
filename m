@@ -2,175 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 963B77DF271
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EFA7DF27A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376280AbjKBMav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
+        id S1376314AbjKBMcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347483AbjKBMat (ORCPT
+        with ESMTP id S1347434AbjKBMck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:30:49 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AFB18B;
-        Thu,  2 Nov 2023 05:30:46 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40839807e82so5594685e9.0;
-        Thu, 02 Nov 2023 05:30:45 -0700 (PDT)
+        Thu, 2 Nov 2023 08:32:40 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E9C18A;
+        Thu,  2 Nov 2023 05:32:34 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc4f777ab9so7315875ad.0;
+        Thu, 02 Nov 2023 05:32:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698928244; x=1699533044; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8ZqG4eXApU2XHK/8xC8VON8f1IHU1prc7SAhVA2sCKE=;
-        b=MKkPDNGw7eEYiNg6WG7KibnuO0xxEtIxH5tIuzLRKQh8GFrKAyYwyOq8Vyhph3hLHR
-         wfhtuA/G+pWDgABog9MawOBVW6WoduEGItdxAD+VEplwBVV9Ket3GTHe9lKKsOPzHLYe
-         gaoL+Z9DbPtCNpMRtr2JlqFeaVGJFWJz4D6a0yCdGQYmCktnqfyQoJqyiQpn2yDe+g6Q
-         FD0Gb5al+GcSJeNX3LJ99SGHcEsWx4NHmCApJaogFxvESTB2gh3kAT7srNRYTGjacyMu
-         IoZOG0gXS5USMxdQNr3edUctwiXEuQ5mdmkMwhyQ0Pi9TFsakXT/Egz13957GtzXckj9
-         7kZA==
+        d=gmail.com; s=20230601; t=1698928354; x=1699533154; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QKAx5ThT2Vf8fFtCyU7a6NLM9WmpGysPMUECF9rGRn0=;
+        b=WntAZcXAK5qVBCRhjlSWptYY6gqOR0DQs0GEVrnEFl29RVmZaDX1gIqBTYdcisTihu
+         A0uuzDFkpvcSPX18tx6arp9bBOu0d9nLFnI0S1SueJknQyVv1MJxznQWZV+kw3PzwoT7
+         chsY3uxv+//dE3xAlZli2abSEqxQmwMSBjGLbJQKfdnr5Z2e36ZhvyCfaT3NN4HMACKK
+         Ogn2CW6QC3/E27faIXDkDa7GPjtoRc0fGvuiV+T//71hm0+Ch5oEGuvqGIN26Ke2Mva1
+         GVdZUUecjGIo3ICRv7f19QKPstHxhv8KQdPOFA+YKueY15Rq+QNdQ3WJFNrp0b8IpiHB
+         1dvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698928244; x=1699533044;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8ZqG4eXApU2XHK/8xC8VON8f1IHU1prc7SAhVA2sCKE=;
-        b=opUrei6cnSAUNpPg0ZccApaUMd5jJmRbQg/7BgXalN4evfVI1eKrFi/fXJZEk09Xbj
-         PRR05/SPuee3FbnWVq3rX4TMXua1u99G/BsPcbGJwRV5w7V21UniK8fhs9qGLxs4GDlB
-         i9A+TD0W9wJqT7b4zOlTnxHVgMRNV7bLuee3Wqf1G2oOrWEFbZvJYZZ8V9W4mH8JwzYu
-         kbSc3YjzAjc474SoXQ378ZnXP9J8yeRAs5jQmTorzshJ7TkMkdWig8UNLPL6UQUUUwMU
-         3V6GL5ibk/0JwueV30ZzN6FNOQCdm6tUk5b/TY5JYDk1FRzFRyp+CvTSEP4br2/a7nPf
-         v90Q==
-X-Gm-Message-State: AOJu0YwkyU/KMINOUhjXBZ1DSEEiJsWBhhbxu6JF9HxcYxzlFRf/LWnE
-        cyK9KcZrfXMKKCA5eVqSZ71jm2ZR7qW1/g==
-X-Google-Smtp-Source: AGHT+IF1JMuTcXHQV9/CxVeYbs66Idurde2ayMH9TFHtm2fwrzB74rfAHR3+dnuRM7ZrKFmvRxuQ3w==
-X-Received: by 2002:a05:600c:2214:b0:408:33ba:569a with SMTP id z20-20020a05600c221400b0040833ba569amr6627963wml.8.1698928243923;
-        Thu, 02 Nov 2023 05:30:43 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id fm15-20020a05600c0c0f00b003fee6e170f9sm2768435wmb.45.2023.11.02.05.30.42
+        d=1e100.net; s=20230601; t=1698928354; x=1699533154;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QKAx5ThT2Vf8fFtCyU7a6NLM9WmpGysPMUECF9rGRn0=;
+        b=ZGdIdwAtz40ObRRjdLnHf8k2WRrW7oRced7LGbaUXJ+7jBULiNyjZWN2Wwm/sFBPoa
+         lfxMEI7VOzioJ+EvHTUZPCCRIzHoD5XRaX6EcgXTI+FtjDf0WssqxjK1BM1avi64jNgG
+         lb4wVQsH52cApG+nGMDVmeFEHXzGLNDr6n7EEj3JsiyezVhDFkGUF+TpcKZL5ech2Stj
+         YKSlIzZsoTVUctsbhojugx7Dp+8AmUIon69qgsLDqrG2lCq1DR89xpz+8gIZBOOiUSWU
+         GB9MJKIEQpaqttE18HBVcaPAWze+xT0yFuTrXENcIx10R6NGilyZZP1aWp9C6bPKIzM2
+         N01A==
+X-Gm-Message-State: AOJu0Ywi6TuE3WJs+McZawyeBAE+ZqWiaba2lb0GgCJjST0PKIA01qPZ
+        B58wijTbKIaHtSUlt4zajhw=
+X-Google-Smtp-Source: AGHT+IHJEFWfyJBXdCnPufQWTpRROogPrOje95/7SJj7s8Yme/cUC11Aj3losLSvzq2HqaAQvb6w9g==
+X-Received: by 2002:a17:903:187:b0:1cc:50ea:d5c5 with SMTP id z7-20020a170903018700b001cc50ead5c5mr11550530plg.24.1698928353721;
+        Thu, 02 Nov 2023 05:32:33 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170902ea0800b001ca21c8abf7sm3010728plg.188.2023.11.02.05.32.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 05:30:43 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Nov 2023 13:30:41 +0100
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: Re: [PATCH v2] tools/build: Add clang cross-compilation flags to
- feature detection
-Message-ID: <ZUOWcXDpCOzxbFW0@krava>
-References: <20231102103252.247147-1-bjorn@kernel.org>
+        Thu, 02 Nov 2023 05:32:33 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 5898594783DE; Thu,  2 Nov 2023 19:32:27 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH RFC RESEND 0/4] Documentation: Web fonts for kernel documentation
+Date:   Thu,  2 Nov 2023 19:32:18 +0700
+Message-ID: <20231102123225.32768-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5260; i=bagasdotme@gmail.com; h=from:subject; bh=kbTowhNlSDIuR7XaqayK6AaiczYS/czXO1LI+m9LuXM=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKnOU88d8f28xPVRSnGrD1u1FW+2wSSGTSe9ikLXiNWL7 n355KJfRykLgxgXg6yYIsukRL6m07uMRC60r3WEmcPKBDKEgYtTACZywoHhFzPT3Nub1z+uXvo6 OJVDWK31f8OC7QWdqR+mTekWmiAtuZjhf15M6fXPZ9zawziTTE/eXLapuvEHfwH/09Dz4fdau10 PMgAA
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231102103252.247147-1-bjorn@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 11:32:52AM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
-> 
-> When a tool cross-build has LLVM=1 set, the clang cross-compilation
-> flags are not passed to the feature detection build system. This
-> results in the host's features are detected instead of the targets.
-> 
-> E.g, triggering a cross-build of bpftool:
-> 
->   cd tools/bpf/bpftool
->   make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
-> 
-> would report the host's, and not the target's features.
-> 
-> Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
-> feature detection makefile.
-> 
-> Fixes: cebdb7374577 ("tools: Help cross-building with clang")
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+[resend from previous RFC [4] with correct linux-doc address]
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Intro
+=====
 
-jirka
+The Linux kernel documentation is primarily composed of text (both
+prose and code snippets) and a few images. Hence, making the text
+easy to read by proper typography choices is crucial.
 
-> ---
->  tools/build/Makefile.feature |  2 +-
->  tools/build/feature/Makefile | 12 ++++++------
->  2 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 934e2777a2db..25b009a6c05f 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -8,7 +8,7 @@ endif
->  
->  feature_check = $(eval $(feature_check_code))
->  define feature_check_code
-> -  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
-> +  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" CLANG_CROSS_FLAGS="$(CLANG_CROSS_FLAGS)" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
->  endef
->  
->  feature_set = $(eval $(feature_set_code))
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index dad79ede4e0a..c4458345e564 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -84,12 +84,12 @@ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
->  
->  all: $(FILES)
->  
-> -__BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-> +__BUILD = $(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
->    BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
->    BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
->    BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
->  
-> -__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-> +__BUILDXX = $(CXX) $(CXXFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
->    BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
->  
->  ###############################
-> @@ -259,10 +259,10 @@ $(OUTPUT)test-reallocarray.bin:
->  	$(BUILD)
->  
->  $(OUTPUT)test-libbfd-liberty.bin:
-> -	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
-> +	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
->  
->  $(OUTPUT)test-libbfd-liberty-z.bin:
-> -	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
-> +	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
->  
->  $(OUTPUT)test-cplus-demangle.bin:
->  	$(BUILD) -liberty
-> @@ -283,10 +283,10 @@ $(OUTPUT)test-libbabeltrace.bin:
->  	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
->  
->  $(OUTPUT)test-compile-32.bin:
-> -	$(CC) -m32 -o $@ test-compile.c
-> +	$(CC) $(CLANG_CROSS_FLAGS) -m32 -o $@ test-compile.c
->  
->  $(OUTPUT)test-compile-x32.bin:
-> -	$(CC) -mx32 -o $@ test-compile.c
-> +	$(CC) $(CLANG_CROSS_FLAGS) -mx32 -o $@ test-compile.c
->  
->  $(OUTPUT)test-zlib.bin:
->  	$(BUILD) -lz
-> 
-> base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
-> -- 
-> 2.40.1
-> 
+The problem
+===========
+
+Currently, the kernel docs uses system-default serif fonts, as in
+Documentation/conf.py:
+
+```
+...
+if  html_theme == 'alabaster':
+    html_theme_options = {
+        'description': get_cline_version(),
+        'page_width': '65em',
+        'sidebar_width': '15em',
+        'fixed_sidebar': 'true',
+        'font_size': 'inherit',
+        'font_family': 'serif',
+    }
+...
+```
+
+The problem is depending on the serif font selected by system, the docs
+text (especially long passages) can be hard and uncomfortable to read.
+For developers reading the docs on multiple devices, the apparence may
+look inconsistent.
+
+The solution
+============
+
+Uniform the font choices by leveraging web fonts. Most of people reading
+the kernel docs should already have modern browser that supports this
+feature (e.g. Chrome/Chromium and Firefox). The fonts are downloaded
+automatically when loading the page, but only if the reader don't
+already have ones installed locally. Subsequent docs page loading will
+use the browser cache to retrieve the fonts. If for some reasons the
+fonts fail to load, the browser will fall back to fallback fonts
+commonly seen on other sites.
+
+For the font choices, we settle down on IBM Plex Sans (sans-serif), IBM
+Plex Mono (monospace), and Newsreader (serif). All these fonts are
+licensed under OFL 1.1 and can be distributed alongside the kernel docs.
+We have also considered to use SÃ¶hne [1] instead, but because it is paid
+font, it is concluded that such font is non-free [2] (and by
+implication, distributions must patch the kernel to not use it).
+
+The fonts selected are downloaded from Google Fonts directory [3]. As
+the font files are in .ttf format, these are compressed first into
+.woff2 format (just like other sites that use web fonts do) using
+`woff2_compress` program from `woff2` Debian package. These converted
+files are then referenced in Documentation/sphinx-static/fonts.css via
+`@font-face` directive and the appropriate `font-family` rule selects
+that font.
+
+Note that only necessary styles (regular, bold, italic, and bold-italic)
+are included and used. For Newsreader, use the classic 14 pt static font
+instead of variable variant for compatibility with older browsers.
+
+Scope
+=====
+
+Only the main documentation and translations in languages using Latin
+script (Italian and Spanish) are covered.
+
+[1]: https://klim.co.nz/retail-fonts/soehne/
+[2]: https://lists.debian.org/debian-legal/2023/06/msg00005.html
+[3]: https://fonts.google.com
+[4]: https://lore.kernel.org/all/20231102120053.30630-1-bagasdotme@gmail.com/
+
+Bagas Sanjaya (4):
+  LICENSES: Add SIL Open Font License 1.1
+  Docmentation: Use IBM Plex Sans for page body
+  Documentation: Use Newsreader font for document headings
+  Documentation: Use IBM Plex Mono as monospace font
+
+ Documentation/conf.py                         |   4 +
+ .../sphinx-static/IBMPlexMono-Bold.woff2      | Bin 0 -> 39984 bytes
+ .../IBMPlexMono-BoldItalic.woff2              | Bin 0 -> 43816 bytes
+ .../sphinx-static/IBMPlexMono-Italic.woff2    | Bin 0 -> 43236 bytes
+ .../sphinx-static/IBMPlexMono-Regular.woff2   | Bin 0 -> 38740 bytes
+ .../sphinx-static/IBMPlexSans-Bold.woff2      | Bin 0 -> 55412 bytes
+ .../IBMPlexSans-BoldItalic.woff2              | Bin 0 -> 59112 bytes
+ .../sphinx-static/IBMPlexSans-Italic.woff2    | Bin 0 -> 59468 bytes
+ .../sphinx-static/IBMPlexSans-Regular.woff2   | Bin 0 -> 55380 bytes
+ .../sphinx-static/Newsreader_14pt-Bold.woff2  | Bin 0 -> 44512 bytes
+ .../Newsreader_14pt-BoldItalic.woff2          | Bin 0 -> 48152 bytes
+ .../Newsreader_14pt-Italic.woff2              | Bin 0 -> 44864 bytes
+ .../Newsreader_14pt-Regular.woff2             | Bin 0 -> 41212 bytes
+ Documentation/sphinx-static/fonts.css         | 157 ++++++++++++++++++
+ LICENSES/dual/OFL-1.1                         | 107 ++++++++++++
+ 15 files changed, 268 insertions(+)
+ create mode 100644 Documentation/sphinx-static/IBMPlexMono-Bold.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexMono-BoldItalic.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexMono-Italic.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexMono-Regular.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexSans-Bold.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexSans-BoldItalic.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexSans-Italic.woff2
+ create mode 100644 Documentation/sphinx-static/IBMPlexSans-Regular.woff2
+ create mode 100644 Documentation/sphinx-static/Newsreader_14pt-Bold.woff2
+ create mode 100644 Documentation/sphinx-static/Newsreader_14pt-BoldItalic.woff2
+ create mode 100644 Documentation/sphinx-static/Newsreader_14pt-Italic.woff2
+ create mode 100644 Documentation/sphinx-static/Newsreader_14pt-Regular.woff2
+ create mode 100644 Documentation/sphinx-static/fonts.css
+ create mode 100644 LICENSES/dual/OFL-1.1
+
+
+base-commit: babe393974de0351c0e6cca50f5f84edaf8d7fa1
+-- 
+An old man doll... just what I always wanted! - Clara
+
