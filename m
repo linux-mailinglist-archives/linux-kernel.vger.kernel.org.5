@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E967DF2C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE6B7DF2D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbjKBMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
+        id S1346479AbjKBMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKBMuN (ORCPT
+        with ESMTP id S230149AbjKBMvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:50:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FDA12F;
-        Thu,  2 Nov 2023 05:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698929407; x=1730465407;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c2vyFTVnaWpz+keCJtdyM0qcjQXSrJPEBxbkHvGNQoU=;
-  b=NJ4ossLPK6kPRTsjQhW63j1H4mE9/dsNNOqWUZBZBX/rBsqgaB1IL2UB
-   wVBUl9Cnc133GEAIULGM5cdcHb2/dUzQQcgqjIjryLcns0WNVMSE0jjjv
-   LxklUtYkPRzhimQQca2vU70uuQv89vgGg5ncPUegnjMv6M8MvNT3MrUjS
-   OP/JqYbYAuTbiUBuEa6BE8P23QYI/W1EENh4L2yKP7oEc4oIyCSDd/Qk/
-   m2YpsXDIZudHF2DV3yfrMQ7Xf8+AzDwUC8NcrGQgorN2CN+knWyrPH3Pe
-   Mxk6cRe9io2yIMF0mqX8/O9TcWeTM/W3ZoW/mS59cHZi3XmQ3TOicVfY4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="455185831"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="455185831"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:50:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="711142226"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="711142226"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:50:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qyX96-0000000Agna-1mXE;
-        Thu, 02 Nov 2023 14:50:00 +0200
-Date:   Thu, 2 Nov 2023 14:50:00 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Thu, 2 Nov 2023 08:51:21 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDB8125
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:51:15 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59e88a28b98so8057847b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698929475; x=1699534275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9pU8l6Ru1lmyLGco+UhPIPJQZlA30Z+Oa9JgbnH5Dks=;
+        b=AZbKVW0219z6rAdwYz6L4Xoh5ZTuSdZPFZecqQ+CTAHD0kFVyPYG5WCrqAU7GXuU69
+         iHKyX+nn5IJfv8VJ6zsJH8NJAWzGRI8pcbu5Pf5+yRTHJGgTDhu1SVTy4JW22jYVelm3
+         S2GC5N6br4nNJm601OGIDiTE41SMDW/gC+Mxrl3csQDtprKFqQ20jGUokq2MBNaUv3wm
+         o3HLTGQcSO3CfmzILDt6bEU62ZfDEYJBAuxcZVSV1+qHpWdge+1PEJxSF2SU4VhOVISn
+         fMT+FIWKmSdhYleoVOxwkGAlZyik0GLuo3r/DM8j8jOPbDxFKGba3D1tWUIKQWhm0PMB
+         Wk3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698929475; x=1699534275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9pU8l6Ru1lmyLGco+UhPIPJQZlA30Z+Oa9JgbnH5Dks=;
+        b=ePEbq2bg5FLEo42p5+W/9pT2H4TMyXms+s9IvDkCGsccy9/4nLoZJ61J98i4ZKr1G9
+         Zdzp4Otk8qXWbtkME6qWGKhhmA0TlaOlUEMIzK2p0pO1iarnqXCWLXgjy7B6a98Klb41
+         p6t8QsjhC7jeqteU4SmadosQrmexGlLBeXW9387+zCY5dYAFKfVyBDMcEuU80UoDPW6G
+         LNrMOtP5/xP5SV79WGy31eq6r+tDj4sP2AV6A17N3pH8tnxYZ1YXcGzLsFaxKYoUbu7y
+         6KbCy9ifTzUMgPOn5LxEYYYJAbYsVS6/36KHURU1GCDPjPF83uB6K215WCrO+nIzyULb
+         vRuw==
+X-Gm-Message-State: AOJu0Yye998z9lmD5oe6wD45yhsE+I4eN1aLAi9LlSJVx8OxuWP9whH4
+        SzxYWpWADmF4tNL1KgI/zJcH/RINzXhog2/+LsQEOQ==
+X-Google-Smtp-Source: AGHT+IGRkYgLvFHHFjBhSWduql5eL+9bAHhVMQTgHxjzn6sHcDECaO2Lh/+qYRAoq7rT1SgPFNKls6mPJcZrLdU2ueU=
+X-Received: by 2002:a81:ac64:0:b0:5af:97b6:9def with SMTP id
+ z36-20020a81ac64000000b005af97b69defmr4708633ywj.24.1698929474829; Thu, 02
+ Nov 2023 05:51:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231030072337.2341539-2-contact@jookia.org> <20231030072337.2341539-3-contact@jookia.org>
+In-Reply-To: <20231030072337.2341539-3-contact@jookia.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 2 Nov 2023 13:51:03 +0100
+Message-ID: <CACRpkdbm5KYj8KWNQJ20jq7XLbW-_ykX1_t=kse9-otB1FSPSQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 1/7] drm/panel: nv3052c: Document known register names
+To:     John Watts <contact@jookia.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Paul Gazzillo <paul@pgazz.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-Message-ID: <ZUOa-Ml7YdWoAXBe@smile.fi.intel.com>
-References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
- <20231028162025.4259f1cc@jic23-huawei>
- <84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com>
- <6a697c62-6a7c-4b31-bc8e-10f40db0363d@gmail.com>
- <d528b45c-123d-4ef7-b110-7efbfef91bc5@gmail.com>
- <ZUDZIEY_uTVMHh3C@smile.fi.intel.com>
- <b01930d6-5bec-496c-89de-6cf6d178c860@gmail.com>
- <ZUEET34K7AOkFf4A@smile.fi.intel.com>
- <6d553aaa-279f-48bf-96c9-30fdac1ae372@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d553aaa-279f-48bf-96c9-30fdac1ae372@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Heiko Stuebner <heiko@sntech.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,46 +86,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:16:32AM +0200, Matti Vaittinen wrote:
-> On 10/31/23 15:42, Andy Shevchenko wrote:
-> > On Tue, Oct 31, 2023 at 02:07:46PM +0200, Matti Vaittinen wrote:
-> > > On 10/31/23 12:38, Andy Shevchenko wrote:
-> > > > On Tue, Oct 31, 2023 at 09:11:37AM +0200, Matti Vaittinen wrote:
-> > > > > On 10/30/23 12:21, Matti Vaittinen wrote:
-> > > > > > On 10/29/23 17:51, Matti Vaittinen wrote:
-> > > > > > > On 10/28/23 18:20, Jonathan Cameron wrote:
+On Mon, Oct 30, 2023 at 8:24=E2=80=AFAM John Watts <contact@jookia.org> wro=
+te:
 
-...
+> Many of these registers have a known name in the public datasheet.
+> Document them as comments for reference.
+>
+> Signed-off-by: John Watts <contact@jookia.org>
+> Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
-> > > > > 	tmp = gts->max_scale;
-> > > > > 
-> > > > > 	rem = do_div(tmp, total_gain);
-> > > > > 	if (total_gain > 1 && rem >= total_gain / 2)
-> > > > > 		tmp += 1ULL;
-> > > > 
-> > > > ...which is NIH DIV_ROUND_CLOSEST_ULL()
-> > > 
-> > > There is a difference though. The DIV_ROUND_CLOSEST_ULL() does
-> > > 
-> > > tmp + total_gain / 2;
-> > > 
-> > > before division - which in theory may overflow.
-> > 
-> > Then you can fix it there for everybody, no?
-> 
-> Now that I know of this macro - Maybe. It's just always scary to touch
-> things which seem like fundamental building blocks and which may be used by
-> many. Odds are something breaks, so I tend to be very conservative when
-> suggesting changes to widely used stuff. Especially when I have no idea when
-> and why the API has been added - and if the thing I'm trying to "fix" has
-> been a deliberate choice.
+This makes things better so:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Welcome to the club of the div overflow in macros discussion:
-
-https://lore.kernel.org/linux-clk/20231024161931.78567-1-sebastian.reichel@collabora.com/T/#t
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
