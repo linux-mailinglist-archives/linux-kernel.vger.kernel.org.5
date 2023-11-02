@@ -2,233 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76FB7DEEBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AED7DEEC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345476AbjKBJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        id S1345507AbjKBJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjKBJWL (ORCPT
+        with ESMTP id S229527AbjKBJYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:22:11 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BFA12E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:22:06 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-778a20df8c3so41700085a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 02:22:06 -0700 (PDT)
+        Thu, 2 Nov 2023 05:24:03 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05359FB
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:23:58 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9cf83c044b7so98398266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 02:23:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698916925; x=1699521725; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NwkMZjlqi/ySQgpiQTFMX2kM/+8KoGXXMWDaNv9YbZc=;
-        b=MFIuB0ezDHO+KU2QW4UcdxMijuvuD1q9GKFuM+2w7B4WMaY+bdSMixM0CKEx51aw04
-         TIoRbqNbOwH9GGMcbIeo2rRJjsxBkib5QMwtg0Iez3sYvJxbThKoNtHnKkUFyAMZRzOJ
-         cmlBrfoQhLgf5bqqBG+Y5g6OAq8Wn0nJeNdJY=
+        d=linaro.org; s=google; t=1698917036; x=1699521836; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=N5TJxlMCH07V837adkdqn8iQGbiJkUTpVTRneCDNnEo=;
+        b=UZmSCNuU95NivWzecIO0jXfLF17k46Ocwx0S7XmjJrSoy4le7oYVPSDDgnuda/3/lM
+         gu8vUv6pPDkEgsjDzJfrPMzwnCdz3qCMSv+A8g5lHtp70GwXJ0J5RDixwn//rElwLXwt
+         umLD5v6UjzWvAgaYeYoojWCn7cVDJUMrItAYBm4ffIfskWQ9yrsIGbpdcB3KFwNyHRyb
+         WDHyj6Onim9/oZ4oHwG3JmbLFb+x7USmElcRi1Jw8YsBzZHqXydcNlXM2adn9B4GjcRG
+         fPGx6Jl6qQD6BdAuuDb89hFjozORrtv208A5fSVG4v6oydRADNo2BGoSr5S1+bG3Gwz+
+         vHQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698916925; x=1699521725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NwkMZjlqi/ySQgpiQTFMX2kM/+8KoGXXMWDaNv9YbZc=;
-        b=i1ymwy7soBtWhwZdhPKaOpqKcuoiWos5bfJ8G1vaoBr8tUxZBKfKD5EueTSkJmRLde
-         5Eny1umJe6/dctSN4xHZhpUxd/eSfWQf848Mq9++MC8AUP9Jz+v54Va2whmoIZBstx/7
-         45jnbIVsCKchbeb1KKHf3L8MR2BtRNia7XUjtT9y175MvdoheNuXhZe9wHoFgFrHT13Y
-         1EyfxyaWBidVIl1bCz2VYPTNj/uwJZQfaEt45SmIO3XPUs6SaQTYB/bi1seuB7Q5laKo
-         +IE/qn7Sn9f3ZD9AKz+/uXsyyRn4IK0Hda6rZ2uSzb9aFhJ9AnXfVgvfhMXjBstI7BU6
-         JH8A==
-X-Gm-Message-State: AOJu0Yy1kqM0qHehSlth8gIm1SH7H+ieKhAdCm/29aOZR1Ez7A64Ur3o
-        HFPDadMuZKuKkl/qmRPse1e8akV7l+FQ1rXsl5t1dA==
-X-Google-Smtp-Source: AGHT+IHf7xc04fU251ojm8cT61SiTJmMh145aunUgvAEhAQNIg66HzzltaY1gDenjs3eQzwfHezjkUqgJEk5ZKJalJI=
-X-Received: by 2002:a05:6214:268d:b0:65b:216f:2d65 with SMTP id
- gm13-20020a056214268d00b0065b216f2d65mr19351907qvb.5.1698916924854; Thu, 02
- Nov 2023 02:22:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698917036; x=1699521836;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N5TJxlMCH07V837adkdqn8iQGbiJkUTpVTRneCDNnEo=;
+        b=s8ym7Wvp7NPDCqp9jntCOcm7gkbnVQv8JDF2JTgmxnGbXubbLv9p+EhRh2PDSePuNr
+         YNgUInDp9kDeOUAPuwnlazZn7u4rluo33hVAlhH77kbl7FdkaGXB/RObLLIAbVIn0r0i
+         Fxy/OIV3E45zCNk0CtfDpuypjk6Bl/yhrCkI6m6LXtNDyJdprA9ghUFCbpet90+CxDvt
+         58LYKVSZg2FgBrU+G5YTAWD7d1hKpc93/3tfxkXsz6gRmpVa9/P5zNm6SYf3U+ydsv/L
+         kFGHRIpJDK5+52EJaLIUU1ZnCluPy4gbhuZTi3aapPHo2efzgLE5r/kDSLiYfR0/vizs
+         nxqQ==
+X-Gm-Message-State: AOJu0YzwGpj9QuvAl2OgFqdzDzss5hgM9jdYKcYk3apHPYzi5wNonfOY
+        V8FGV1iulAyQQL3DDHP9Qyv0WA==
+X-Google-Smtp-Source: AGHT+IFEwU2dpVBvCNOYsvcD1IhYjX9QPLpqtUTT7xB1cQFy2LSdQZhqEjqbIWPn3/7qatWqkgu4pg==
+X-Received: by 2002:a17:907:98a:b0:9ae:69b8:322b with SMTP id bf10-20020a170907098a00b009ae69b8322bmr3173013ejc.60.1698917036497;
+        Thu, 02 Nov 2023 02:23:56 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id d14-20020a170906370e00b009b2d46425absm898105ejc.85.2023.11.02.02.23.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Nov 2023 02:23:54 -0700 (PDT)
+Message-ID: <d7407122-8b51-4046-a360-999c3d3706ff@linaro.org>
+Date:   Thu, 2 Nov 2023 10:23:52 +0100
 MIME-Version: 1.0
-References: <20231027145623.2258723-1-korneld@chromium.org>
- <20231027145623.2258723-2-korneld@chromium.org> <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
-In-Reply-To: <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
-From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
-Date:   Thu, 2 Nov 2023 10:21:53 +0100
-Message-ID: <CAD=Nsqzg2zRNFx7E800vnpNH6bZeHv9zdAnZksJjiRcXOQ4t=A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: cqhci: Add a quirk to clear stale TC
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] soc: amlogic: meson-gx-socinfo: export socinfo for
+ use in other modules
+To:     Viacheslav Bocharov <adeep@lexina.in>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231102074916.3280809-1-adeep@lexina.in>
+ <20231102074916.3280809-4-adeep@lexina.in>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231102074916.3280809-4-adeep@lexina.in>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 8:31=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 27/10/23 17:56, Kornel Dul=C4=99ba wrote:
-> > This fix addresses a stale task completion event issued right after the
-> > CQE recovery. As it's a hardware issue the fix is done in form of a
-> > quirk.
-> >
-> > When error interrupt is received the driver runs recovery logic is run.
-> > It halts the controller, clears all pending tasks, and then re-enables
-> > it. On some platforms a stale task completion event is observed,
-> > regardless of the CQHCI_CLEAR_ALL_TASKS bit being set.
-> >
-> > This results in either:
-> > a) Spurious TC completion event for an empty slot.
-> > b) Corrupted data being passed up the stack, as a result of premature
-> >    completion for a newly added task.
-> >
-> > To fix that re-enable the controller, clear task completion bits,
-> > interrupt status register and halt it again.
-> > This is done at the end of the recovery process, right before interrupt=
-s
-> > are re-enabled.
-> >
-> > Signed-off-by: Kornel Dul=C4=99ba <korneld@chromium.org>
-> > ---
-> >  drivers/mmc/host/cqhci-core.c | 42 +++++++++++++++++++++++++++++++++++
-> >  drivers/mmc/host/cqhci.h      |  1 +
-> >  2 files changed, 43 insertions(+)
-> >
-> > diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-cor=
-e.c
-> > index b3d7d6d8d654..e534222df90c 100644
-> > --- a/drivers/mmc/host/cqhci-core.c
-> > +++ b/drivers/mmc/host/cqhci-core.c
-> > @@ -1062,6 +1062,45 @@ static void cqhci_recover_mrqs(struct cqhci_host=
- *cq_host)
-> >  /* CQHCI could be expected to clear it's internal state pretty quickly=
- */
-> >  #define CQHCI_CLEAR_TIMEOUT          20
-> >
-> > +/*
-> > + * During CQE recovery all pending tasks are cleared from the
-> > + * controller and its state is being reset.
-> > + * On some platforms the controller sets a task completion bit for
-> > + * a stale(previously cleared) task right after being re-enabled.
-> > + * This results in a spurious interrupt at best and corrupted data
-> > + * being passed up the stack at worst. The latter happens when
-> > + * the driver enqueues a new request on the problematic task slot
-> > + * before the "spurious" task completion interrupt is handled.
-> > + * To fix it:
-> > + * 1. Re-enable controller by clearing the halt flag.
-> > + * 2. Clear interrupt status and the task completion register.
-> > + * 3. Halt the controller again to be consistent with quirkless logic.
-> > + *
-> > + * This assumes that there are no pending requests on the queue.
-> > + */
-> > +static void cqhci_quirk_clear_stale_tc(struct cqhci_host *cq_host)
-> > +{
-> > +     u32 reg;
-> > +
-> > +     WARN_ON(cq_host->qcnt);
-> > +     cqhci_writel(cq_host, 0, CQHCI_CTL);
-> > +     if ((cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)) {
-> > +             pr_err("%s: cqhci: CQE failed to exit halt state\n",
-> > +                     mmc_hostname(cq_host->mmc));
-> > +     }
-> > +     reg =3D cqhci_readl(cq_host, CQHCI_TCN);
-> > +     cqhci_writel(cq_host, reg, CQHCI_TCN);
-> > +     reg =3D cqhci_readl(cq_host, CQHCI_IS);
-> > +     cqhci_writel(cq_host, reg, CQHCI_IS);
-> > +
-> > +     /*
-> > +      * Halt the controller again.
-> > +      * This is only needed so that we're consistent across quirk
-> > +      * and quirkless logic.
-> > +      */
-> > +     cqhci_halt(cq_host->mmc, CQHCI_FINISH_HALT_TIMEOUT);
-> > +}
->
-> Thanks a lot for tracking this down!
->
-> It could be that the "un-halt" starts a task, so it would be
-> better to force the "clear" to work if possible, which
-> should be the case if CQE is disabled.
->
-> Would you mind trying the code below?  Note the increased
-> CQHCI_START_HALT_TIMEOUT helps avoid trying to clear tasks
-> when CQE has not halted.
+On 02/11/2023 08:49, Viacheslav Bocharov wrote:
+> Move socinfo variable to global scope and export it as meson_gx_socinfo.
 
-I've run a quick test and it works just fine.
-Your approach looks better than what I proposed, since as you
-mentioned, doing it like this avoids some weird side effects, e.g. DMA
-to freed memory.
-Do you plan to include it in the other series that you posted yesterday?
+Why? What the patch is doing we can see from the diff. Commit msg should
+explain why.
 
->
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.=
-c
-> index b3d7d6d8d654..534c13069833 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -987,7 +987,7 @@ static bool cqhci_halt(struct mmc_host *mmc, unsigned=
- int timeout)
->   * layers will need to send a STOP command), so we set the timeout based=
- on a
->   * generous command timeout.
->   */
-> -#define CQHCI_START_HALT_TIMEOUT       5
-> +#define CQHCI_START_HALT_TIMEOUT       500
->
->  static void cqhci_recovery_start(struct mmc_host *mmc)
->  {
-> @@ -1075,28 +1075,27 @@ static void cqhci_recovery_finish(struct mmc_host=
- *mmc)
->
->         ok =3D cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
->
-> -       if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-> -               ok =3D false;
-> -
->         /*
->          * The specification contradicts itself, by saying that tasks can=
-not be
->          * cleared if CQHCI does not halt, but if CQHCI does not halt, it=
- should
->          * be disabled/re-enabled, but not to disable before clearing tas=
-ks.
->          * Have a go anyway.
->          */
-> -       if (!ok) {
-> -               pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname=
-(mmc));
-> -               cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
-> -               cqcfg &=3D ~CQHCI_ENABLE;
-> -               cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> -               cqcfg |=3D CQHCI_ENABLE;
-> -               cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> -               /* Be sure that there are no tasks */
-> -               ok =3D cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
-> -               if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-> -                       ok =3D false;
-> -               WARN_ON(!ok);
-> -       }
-> +       if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-> +               ok =3D false;
-> +
-> +       cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
-> +       cqcfg &=3D ~CQHCI_ENABLE;
-> +       cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> +
-> +       cqcfg =3D cqhci_readl(cq_host, CQHCI_CFG);
-> +       cqcfg |=3D CQHCI_ENABLE;
-> +       cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-> +
-> +       cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
-> +
-> +       if (!ok)
-> +               cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT);
->
->         cqhci_recover_mrqs(cq_host);
->
->
+Best regards,
+Krzysztof
+
