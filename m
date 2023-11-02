@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 756807DEF44
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA507DEF4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 10:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345947AbjKBJy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 05:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
+        id S1345914AbjKBJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 05:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjKBJyx (ORCPT
+        with ESMTP id S1345500AbjKBJzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 05:54:53 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F16133
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:54:50 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-991c786369cso110292066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 02:54:50 -0700 (PDT)
+        Thu, 2 Nov 2023 05:55:55 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE31913A
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 02:55:50 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so1172358a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 02:55:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698918888; x=1699523688; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698918949; x=1699523749; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QYS16eCPsBztvO6TV3MQMioFM+kthtA6Q+ME42940KY=;
-        b=MOGJ4NAJbyDjOO8tgJKz4GJY3se8B9zCsiPAI5qbJVO9bhoOrbG8Ekj6tyeGJQSsea
-         S53CCL61GeJeQ1rFAmyr3QyIDIkYt3/MtKqF2qjtAinF/HrbbBm0gcSzYg2N2f5Nwiei
-         VZ+jRpapOyAA8t38fLuB50IAG6W7QZmRlwQZ+PZWOFXBydrtovMHe5etVzrg1q0raP6F
-         XrrmMjb+u6I02pbFdA8Wuhdj0UqxoSQzpBIEKEpSBA4uV0N4OT0BPsoH+H9tKI0+7Vka
-         euvVfEl2gutOE7ZAPPLDl2l5JLBcyybVmtY67DRdxot1I6PE8buQJ+nh441C/RefsWhi
-         0uoQ==
+        bh=KD1LP756xWcLmOGue5zN8DFu0Ql7ryK355DrzfRDjH4=;
+        b=L4o0JABnVMIR5pc56fo8/YAJEFHy1LhmDz1H20X6Tz2omqDFRsgkBVLrJ3xyq3q0Cp
+         RHcm81LB7+Tt8wx5xOnsl0pCTN+fXbJet4LUwIv6x/IAdwTFqEWvahuUbWmq1yMWOD6u
+         lzlXgjL9kD2yZMLNHbNSiZLFYwNW8in6yfwpXYfFbNJNhbnxU3kJdeZJOwOxnW1XhVOH
+         i4ef7DsUWcXJkE5hIC82LaCPGMB8HpLml2neGZ8+/p3VdMOgxNCeGufuDIUPtdf0yY1T
+         csHCJOnDAaov0X2qdrLr2nC5Fark6jFc17LxBed2zPetVnGFxBeTzHCA++H9FfPG7qqP
+         HzwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698918888; x=1699523688;
+        d=1e100.net; s=20230601; t=1698918949; x=1699523749;
         h=content-transfer-encoding:cc:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QYS16eCPsBztvO6TV3MQMioFM+kthtA6Q+ME42940KY=;
-        b=sUX0H04zHLiHZhfRa+QtBgjmjxmTKdjYbEMyof8/x+7veOkLZXzOWjsy6C1EShM2RT
-         +FShq4dvy4nc99mVNtGGlQFy1/aZIGMQwixCmnDdpltk9+byLZ3Z2fV4vEZWiI+uwTKv
-         popDBXPHCua/2Yb4Z5BJ80QCfTfe7kBQZXRVpToWgvEUh7YZYyC+ggjtf9OJa6BLMw9F
-         ZcC3+aJr/W56TmZKdBbBxjPKxti8ov8EWSlX2J3ELemNfk1c4SzOgB2Wcp1fMGZCSA8w
-         AD8WCxFGZcTbZuU5HOAqJzT6haPS5gZUfdlkJq+WtXY+cLwWO4GlzEAwpSu+hlPx2TTx
-         bt1g==
-X-Gm-Message-State: AOJu0YwfQANYVAU2aEqQBSTqNKdF6QV6D7JpjnmkUZcSwElAJYNwOoYG
-        X86IAXL3dhJT8QfEJuhGXPvT2A6eSXEMI0PUzobU4f1g
-X-Received: by 2002:a17:907:724e:b0:9be:5ab2:73c0 with SMTP id
- ds14-20020a170907724e00b009be5ab273c0mt4010139ejc.8.1698918888378; Thu, 02
- Nov 2023 02:54:48 -0700 (PDT)
+        bh=KD1LP756xWcLmOGue5zN8DFu0Ql7ryK355DrzfRDjH4=;
+        b=RSCNRHG22psGYarLQQp5d1wk4vNf/FrqN38dK5bmlVfLAAIs1PxvL8u91IUzENiVLD
+         v7S/3NvwVDk2YeCUEgrxuQYya5boPf9PXXPhFNADqcgDeya6+Dhgd/O5A2sepyJ1eely
+         NCy4iR9Dg7jYHlePaVPRPOAX+bIyFWcoLNOCAIxYUzK8BSvPOLmn8C3d+vS6jAijKRfL
+         7bmV9WRp1hmsKAkMXd2dN2TQTf+f49DCNHAISng2b9xN1b3UYL9HNtYqnhtORM6z3rIk
+         TRShYQwoUhf15Pi4R6QD5cIY4/WrgRyikKEn6IanG6r7Zi+C7329BPthp6RNgl9SH5DU
+         8kug==
+X-Gm-Message-State: AOJu0YxNztW9UW3czWzp+FNTiSV/I99+65pp07Sxqurl4Ze19GJomAo+
+        Z6uBKtZEkJLi16/+HhGeDjG9SOXvAcWcemkBd9H9i4T2
+X-Received: by 2002:a17:907:6d27:b0:9ba:2fe3:c97e with SMTP id
+ sa39-20020a1709076d2700b009ba2fe3c97emt3051134ejc.11.1698918948114; Thu, 02
+ Nov 2023 02:55:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231102075853.1320710-1-xinglong.yang@cixtech.com>
-In-Reply-To: <20231102075853.1320710-1-xinglong.yang@cixtech.com>
+References: <20231101081726.1163042-1-xinglong.yang@cixtech.com>
+In-Reply-To: <20231101081726.1163042-1-xinglong.yang@cixtech.com>
 From:   sean yang <seanyang230@gmail.com>
-Date:   Thu, 2 Nov 2023 17:54:37 +0800
-Message-ID: <CADGqjFKS9ytGOdvrcr=JuggRFW_1bgLVn-EJTbjoa4wSwgNhHQ@mail.gmail.com>
-Subject: Fwd: [PATCH v2] firmware: arm_scmi: Refrain set operations of perf
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Thu, 2 Nov 2023 17:55:37 +0800
+Message-ID: <CADGqjF+qsrKcNntO7FdcUxJ+L4rC8jcMT94nv8uOOTH-VwG9mw@mail.gmail.com>
+Subject: Fwd: [PATCH] firmware: arm_scmi: Remove inappropriate error log.
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,49 +71,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 ---------- Forwarded message ---------
 =E5=8F=91=E4=BB=B6=E4=BA=BA=EF=BC=9A xinglong.yang <seanyang230@gmail.com>
-Date: 2023=E5=B9=B411=E6=9C=882=E6=97=A5=E5=91=A8=E5=9B=9B 15:59
-Subject: [PATCH v2] firmware: arm_scmi: Refrain set operations of perf
+Date: 2023=E5=B9=B411=E6=9C=881=E6=97=A5=E5=91=A8=E4=B8=89 16:17
+Subject: [PATCH] firmware: arm_scmi: Remove inappropriate error log.
 To: <xinglong.yang@cixtech.com>, <sudeep.holla@arm.com>,
 <cristian.marussi@arm.com>
 Cc: <linux-arm-kernel@lists.infradead.org>
 
 
-Refrain from trying to take the SET operation where the set_* operations
-are not supported, because: (1.) avoid unneeded SCMI exchanges, (2.)
-avoids to trust the FW reply blindly.
+The platform may not support fastchannel, but this is a legal
+operation.
+
+        -Before this patch, when the platform not support fastchannel,
+        goto err_xfer will print "Failed to ...". This log is misleading.
+
+        -With this patch, when the fastchannel is not been supported,
+        the "Failed to ..." log will be skipped.
 
 Signed-off-by: xinglong.yang <xinglong.yang@cixtech.com>
 ---
- drivers/firmware/arm_scmi/perf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/firmware/arm_scmi/driver.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/p=
-erf.c
-index 431bda9165c3..3bcdef91ed5c 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -377,6 +377,9 @@ static int scmi_perf_limits_set(const struct
+diff --git a/drivers/firmware/arm_scmi/driver.c
+b/drivers/firmware/arm_scmi/driver.c
+index b5957cc12fee..2b990e50c8a5 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1642,7 +1642,10 @@ scmi_common_fastchannel_init(const struct
 scmi_protocol_handle *ph,
-        if (IS_ERR(dom))
-                return PTR_ERR(dom);
+         * fastchannels at all.
+         */
+        ret =3D ph->xops->do_xfer(ph, t);
+-       if (ret)
++       if (ret =3D=3D -EOPNOTSUPP) {
++               ph->xops->xfer_put(ph, t);
++               goto return_normal;
++       } else if (ret)
+                goto err_xfer;
 
-+       if (!dom->set_limits)
-+               return -EOPNOTSUPP;
-+
-        if (PROTOCOL_REV_MAJOR(pi->version) >=3D 0x3 && !max_perf && !min_p=
-erf)
-                return -EINVAL;
-
-@@ -473,6 +476,9 @@ static int scmi_perf_level_set(const struct
+        resp =3D t->rx.buf;
+@@ -1695,6 +1698,7 @@ scmi_common_fastchannel_init(const struct
 scmi_protocol_handle *ph,
-        if (IS_ERR(dom))
-                return PTR_ERR(dom);
+                "Using valid FC for protocol %X [MSG_ID:%u / RES_ID:%u]\n",
+                pi->proto->id, message_id, domain);
 
-+       if (!dom->set_perf)
-+               return -EOPNOTSUPP;
-+
-        if (dom->fc_info && dom->fc_info[PERF_FC_LEVEL].set_addr) {
-                struct scmi_fc_info *fci =3D &dom->fc_info[PERF_FC_LEVEL];
++return_normal:
+        return;
 
+ err_db_mem:
 --
 2.42.0
