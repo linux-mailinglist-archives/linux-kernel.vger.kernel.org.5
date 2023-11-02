@@ -2,384 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1317DF148
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A907DF14D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjKBLlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        id S229884AbjKBLmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKBLlv (ORCPT
+        with ESMTP id S229483AbjKBLmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:41:51 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DF7133;
-        Thu,  2 Nov 2023 04:41:45 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2BY6si010226;
-        Thu, 2 Nov 2023 11:41:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=HYFeSr3Ca6VgHP1HrIZZ/ANIQUbp9JhkZ49XbBpGA/o=;
- b=mpula0utnFfPgbWqGkMSzrum9qRZTo8sixlTigyICyVzYQ8myw0tSxZbnguthD0ZBjTp
- BOCqvWnQSBa5Swrc0FecCr3WGBjuxEJ589zA3JQrZF2X3lqNx018LD1Xt5Zm6lwLwo+V
- WfN/iu2iNp7G3sIyzilBanmzVvxq/6Hp+MWm7zB/jNu+vkfXB0wwmp5xToAN2L0hGovx
- ejga1e44vxxJw2VZ1+u9UVeK0DisXkEm5VHDnPRGXntUgNS9J7+UySIx+KjrE3l8Eipc
- pfL3LE8Io+gDpzIv8MHDsECIHtkrjMDRa2nQTVP5wgQhLV7SuQ0IJ3gX4p2Q2Fe3F4TS 3g== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u3y5y19yt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Nov 2023 11:41:34 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A2BfXPX013205
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 2 Nov 2023 11:41:33 GMT
-Received: from [10.216.63.119] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 2 Nov
- 2023 04:41:28 -0700
-Message-ID: <fe8a7217-51af-1102-80eb-db4475bb47fc@quicinc.com>
-Date:   Thu, 2 Nov 2023 17:11:24 +0530
+        Thu, 2 Nov 2023 07:42:08 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208EF181
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:42:01 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9d224dca585so125817866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 04:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698925319; x=1699530119; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ku2yghToBtZf7AmsCT5H5GSjoVJ9gQzHcY+n0fbFqrU=;
+        b=D0jK1QO+bGmqY6/kgYiC4wKGvWSuT21bd+alEZ2TBG6qtJRhNI1+DDoS0xGp/L1pj3
+         QnFExUNkOWD1U26N1FRzy2M5Z2Kbo4NX7mBhLqqrXDOTcJN/7F0l3gZ8A5eW84Nf4DK7
+         rnk+PtHLLFTrl78eKn77b5Gu1BdBtoQXyXOTiueCWLXd3sKSiPKx8ExT8MDl1V5h1bvU
+         65pBBVB6YyisXp+EbkFG7K6vedrWJXuroKl35ZpjlkgggryhpKLtQcNnUnr2PhX+Fz26
+         BVPfBK92IO1sMXlSUbtIBhx73a6AZHMzzOtwZLASOHjeGVQyOJncirWd/goiIGYUtvjQ
+         uz2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698925319; x=1699530119;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ku2yghToBtZf7AmsCT5H5GSjoVJ9gQzHcY+n0fbFqrU=;
+        b=hpYY8AdgKJBYaei6Xer+WVu79Py/YWRuQ/F9FslmB+rkJl4wQ7X7W+0a37fLcpE9a9
+         uAYb9D/Irdo/e9KkD0NUYFXkqTG7iC2cP29wOvf6VPSjkk+dDCX1Rxw6sABiOmsTjf5W
+         0NDQ8gRE4D3iMXGgV2thIRTprKmS0Mg98lxKg/FMAR6O0ceIxWMi1UEzMN47p1FC+p1c
+         JlgOZutfGGNShyov4w4cLSVtkB61fwccbmL8kJCTI3bJW7bX5r2NKyhiCglPmVhzRw0/
+         4jmCT5hNLIIuouQTt4bqiD38GsGcQWBhPkowuAWRg/N695bsDT2EcOLp+oOQ1LQghYXa
+         qHnQ==
+X-Gm-Message-State: AOJu0YwCVWIJTfT7M9FziULzA9LC4P+VUxwekD2qKyCFq1N+39Whps3D
+        HKmyhfoS25YaBfoVSXUG41WJEw==
+X-Google-Smtp-Source: AGHT+IEycpwS4EGuyKSLia2H6bem4NDEZOuXXECda4Wz+aqXbSFiWLitAGF/ZvZspzKnly99dCr+4A==
+X-Received: by 2002:a17:906:7948:b0:9da:a00f:7337 with SMTP id l8-20020a170906794800b009daa00f7337mr3826286ejo.55.1698925319467;
+        Thu, 02 Nov 2023 04:41:59 -0700 (PDT)
+Received: from [127.0.0.1] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id j41-20020a05600c1c2900b004060f0a0fdbsm2717720wms.41.2023.11.02.04.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 04:41:59 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH 0/6] media: qcom: camss: Add sc8280xp support
+Date:   Thu, 02 Nov 2023 11:41:53 +0000
+Message-Id: <20231102-b4-camss-sc8280xp-v1-0-9996f4bcb8f4@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/3] remoteproc: qcom: pas: make region assign more
- generic
-Content-Language: en-US
-To:     <neil.armstrong@linaro.org>, Andy Gross <agross@kernel.org>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAGLQ2UC/x3MMQqAMAxA0atIZgNNdaheRRxsTTWDtTQggnh3i
+ +Mb/n9AuQgrjM0DhS9ROVMFtQ2EfUkbo6zVYI3tiAyh7zEshypqcNaZO6Nh8gOxt+Qj1C4XjnL
+ /z2l+3w8JRkBTYwAAAA==
+To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231030-topic-sm8650-upstream-remoteproc-v2-0-609ee572e0a2@linaro.org>
- <20231030-topic-sm8650-upstream-remoteproc-v2-2-609ee572e0a2@linaro.org>
- <8e71ba02-5d6a-4c7e-4a55-f9ef79c2f928@quicinc.com>
- <65dcdd9c-a75b-4fe7-bdcf-471a5602db20@linaro.org>
- <a6bffac4-8c9c-6b85-290e-c991e8ab319a@quicinc.com>
- <c654555d-f50f-411c-b61d-190da598d5e1@linaro.org>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <c654555d-f50f-411c-b61d-190da598d5e1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: z982-KoIHuI-AiHPqKhDSTk_-B8ea3o2
-X-Proofpoint-ORIG-GUID: z982-KoIHuI-AiHPqKhDSTk_-B8ea3o2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-01_23,2023-11-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- phishscore=0 clxscore=1015 priorityscore=1501 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311020093
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
+        matti.lehtimaki@gmail.com, grosikop@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-83828
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+sc8280xp is the SoC found in the Lenovo X13s. This series adds support to
+bring up the CSIPHY, CSID, VFE/RDI interfaces.
 
+A number of precursor patches make this series smaller overall than
+previous series.
 
-On 11/2/2023 3:56 PM, neil.armstrong@linaro.org wrote:
-> On 01/11/2023 15:42, Mukesh Ojha wrote:
->>
->>
->> On 10/31/2023 10:36 PM, Neil Armstrong wrote:
->>> Hi,
->>>
->>> On 30/10/2023 14:10, Mukesh Ojha wrote:
->>>>
->>>>
->>>> On 10/30/2023 3:33 PM, Neil Armstrong wrote:
->>>>> The current memory region assign only supports a single
->>>>> memory region.
->>>>>
->>>>> But new platforms introduces more regions to make the
->>>>> memory requirements more flexible for various use cases.
->>>>> Those new platforms also shares the memory region between the
->>>>> DSP and HLOS.
->>>>>
->>>>> To handle this, make the region assign more generic in order
->>>>> to support more than a single memory region and also permit
->>>>> setting the regions permissions as shared.
->>>>>
->>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->>>>> ---
->>>>>   drivers/remoteproc/qcom_q6v5_pas.c | 102 
->>>>> ++++++++++++++++++++++++-------------
->>>>>   1 file changed, 66 insertions(+), 36 deletions(-)
->>>>>
->>>>> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c 
->>>>> b/drivers/remoteproc/qcom_q6v5_pas.c
->>>>> index 913a5d2068e8..4829fd26e17d 100644
->>>>> --- a/drivers/remoteproc/qcom_q6v5_pas.c
->>>>> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
->>>>> @@ -33,6 +33,8 @@
->>>>>   #define ADSP_DECRYPT_SHUTDOWN_DELAY_MS    100
->>>>> +#define MAX_ASSIGN_COUNT 2
->>>>> +
->>>>>   struct adsp_data {
->>>>>       int crash_reason_smem;
->>>>>       const char *firmware_name;
->>>>> @@ -51,6 +53,9 @@ struct adsp_data {
->>>>>       int ssctl_id;
->>>>>       int region_assign_idx;
->>>>> +    int region_assign_count;
->>>>> +    bool region_assign_shared;
->>>>> +    int region_assign_vmid;
->>>>>   };
->>>>>   struct qcom_adsp {
->>>>> @@ -87,15 +92,18 @@ struct qcom_adsp {
->>>>>       phys_addr_t dtb_mem_phys;
->>>>>       phys_addr_t mem_reloc;
->>>>>       phys_addr_t dtb_mem_reloc;
->>>>> -    phys_addr_t region_assign_phys;
->>>>> +    phys_addr_t region_assign_phys[MAX_ASSIGN_COUNT];
->>>>>       void *mem_region;
->>>>>       void *dtb_mem_region;
->>>>>       size_t mem_size;
->>>>>       size_t dtb_mem_size;
->>>>> -    size_t region_assign_size;
->>>>> +    size_t region_assign_size[MAX_ASSIGN_COUNT];
->>>>>       int region_assign_idx;
->>>>> -    u64 region_assign_perms;
->>>>> +    int region_assign_count;
->>>>> +    bool region_assign_shared;
->>>>> +    int region_assign_vmid;
->>>>> +    u64 region_assign_perms[MAX_ASSIGN_COUNT];
->>>>>       struct qcom_rproc_glink glink_subdev;
->>>>>       struct qcom_rproc_subdev smd_subdev;
->>>>> @@ -590,37 +598,52 @@ static int adsp_alloc_memory_region(struct 
->>>>> qcom_adsp *adsp)
->>>>>   static int adsp_assign_memory_region(struct qcom_adsp *adsp)
->>>>>   {
->>>>> -    struct reserved_mem *rmem = NULL;
->>>>> -    struct qcom_scm_vmperm perm;
->>>>> +    struct qcom_scm_vmperm perm[MAX_ASSIGN_COUNT];
->>>>> +    unsigned int perm_size = 1;
->>>>
->>>> AFAICS, not need of initialization.
->>>
->>> Indeed, removed
->>>
->>>>
->>>>>       struct device_node *node;
->>>>> -    int ret;
->>>>> +    int offset, ret;
->>>>
->>>> Nit: one variable per line.
->>>
->>> Done
->>>
->>>>
->>>>>       if (!adsp->region_assign_idx)
->>>>
->>>> Not related to this patch..
->>>> Should not this be valid only for > 1 ?
->>>
->>> I don't understand, only region_assign_idx > 1 triggers a memory_assign,
->>> and this check discards configurations with region_assign_idx == 0 as
->>> expected.
->>
->> Ah, you can ignore the comments, I got the intention after commenting
->> here ..
->>
->>>
->>>>
->>>>
->>>>>           return 0;
->>>>> -    node = of_parse_phandle(adsp->dev->of_node, "memory-region", 
->>>>> adsp->region_assign_idx);
->>>>> -    if (node)
->>>>> -        rmem = of_reserved_mem_lookup(node);
->>>>> -    of_node_put(node);
->>>>> -    if (!rmem) {
->>>>> -        dev_err(adsp->dev, "unable to resolve shareable 
->>>>> memory-region\n");
->>>>> -        return -EINVAL;
->>>>> -    }
->>>>> +    for (offset = 0; offset < adsp->region_assign_count; ++offset) {
->>>>> +        struct reserved_mem *rmem = NULL;
->>>>> +
->>>>> +        node = of_parse_phandle(adsp->dev->of_node, "memory-region",
->>>>> +                    adsp->region_assign_idx + offset);
->>>>> +        if (node)
->>>>> +            rmem = of_reserved_mem_lookup(node);
->>>>> +        of_node_put(node);
->>>>> +        if (!rmem) {
->>>>> +            dev_err(adsp->dev, "unable to resolve shareable 
->>>>> memory-region index %d\n",
->>>>> +                offset);
->>>>> +            return -EINVAL; > +        }
->>>>
->>>>
->>>>> -    perm.vmid = QCOM_SCM_VMID_MSS_MSA;
->>>>> -    perm.perm = QCOM_SCM_PERM_RW;
->>>>> +        if (adsp->region_assign_shared)  {
->>>>> +            perm[0].vmid = QCOM_SCM_VMID_HLOS;
->>>>> +            perm[0].perm = QCOM_SCM_PERM_RW;
->>>>> +            perm[1].vmid = adsp->region_assign_vmid;
->>>>> +            perm[1].perm = QCOM_SCM_PERM_RW;
->>>>> +            perm_size = 2;
->>>>> +        } else {
->>>>> +            perm[0].vmid = adsp->region_assign_vmid;
->>>>> +            perm[0].perm = QCOM_SCM_PERM_RW;
->>>>> +            perm_size = 1;
->>>>> +        }
->>>>> -    adsp->region_assign_phys = rmem->base;
->>>>> -    adsp->region_assign_size = rmem->size;
->>>>> -    adsp->region_assign_perms = BIT(QCOM_SCM_VMID_HLOS);
->>>>> +        adsp->region_assign_phys[offset] = rmem->base;
->>>>> +        adsp->region_assign_size[offset] = rmem->size;
->>>>> +        adsp->region_assign_perms[offset] = BIT(QCOM_SCM_VMID_HLOS);
->>>>
->>>> Do we need array for this, is this changing ?
->>>
->>> We need to keep region_assign_perms for unassign, but for the other 2 
->>> we would
->>> need to duplicate the code from adsp_assign_memory_region into
->>> adsp_unassign_memory_region.
->>
->> Thanks got it.
->>
->>>
->>>>
->>>>> -    ret = qcom_scm_assign_mem(adsp->region_assign_phys,
->>>>> -                  adsp->region_assign_size,
->>>>> -                  &adsp->region_assign_perms,
->>>>> -                  &perm, 1);
->>>>> -    if (ret < 0) {
->>>>> -        dev_err(adsp->dev, "assign memory failed\n");
->>>>> -        return ret;
->>>>> +        ret = qcom_scm_assign_mem(adsp->region_assign_phys[offset],
->>>>> +                      adsp->region_assign_size[offset],
->>>>> +                      &adsp->region_assign_perms[offset],
->>>>> +                      perm, perm_size);
->>>>> +        if (ret < 0) {
->>>>> +            dev_err(adsp->dev, "assign memory %d failed\n", offset);
->>>>> +            return ret;
->>>>> +        }
->>>>>       }
->>>>>       return 0;
->>>>> @@ -629,20 +652,22 @@ static int adsp_assign_memory_region(struct 
->>>>> qcom_adsp *adsp)
->>>>>   static void adsp_unassign_memory_region(struct qcom_adsp *adsp)
->>>>>   {
->>>>>       struct qcom_scm_vmperm perm;
->>>>> -    int ret;
->>>>> +    int offset, ret;
->>>>> -    if (!adsp->region_assign_idx)
->>>>> +    if (!adsp->region_assign_idx || adsp->region_assign_shared)
->>>>>           return;
->>>>> -    perm.vmid = QCOM_SCM_VMID_HLOS;
->>>>> -    perm.perm = QCOM_SCM_PERM_RW;
->>>>> +    for (offset = 0; offset < adsp->region_assign_count; ++offset) {
->>>>> +        perm.vmid = QCOM_SCM_VMID_HLOS;
->>>>> +        perm.perm = QCOM_SCM_PERM_RW;
->>>>
->>>>> -    ret = qcom_scm_assign_mem(adsp->region_assign_phys,
->>>>> -                  adsp->region_assign_size,
->>>>> -                  &adsp->region_assign_perms,
->>>>> -                  &perm, 1);
->>>>> -    if (ret < 0)
->>>>> -        dev_err(adsp->dev, "unassign memory failed\n");
->>>>> +        ret = qcom_scm_assign_mem(adsp->region_assign_phys[offset],
->>>>> +                      adsp->region_assign_size[offset],
->>>>> +                      &adsp->region_assign_perms[offset],
->>>>> +                      &perm, 1);
->>>>> +        if (ret < 0)
->>>>> +            dev_err(adsp->dev, "unassign memory failed\n");
->>>>> +    }
->>>>>   }
->>>>>   static int adsp_probe(struct platform_device *pdev)
->>>>> @@ -696,6 +721,9 @@ static int adsp_probe(struct platform_device 
->>>>> *pdev)
->>>>>       adsp->info_name = desc->sysmon_name;
->>>>>       adsp->decrypt_shutdown = desc->decrypt_shutdown;
->>>>>       adsp->region_assign_idx = desc->region_assign_idx;
->>
->> Should this also need
->> min_t(int, MAX_ASSIGN_COUNT - 1, desc->region_assign_idx);
->> as no where boundary check is being done.
+sc8280xp provides
 
-I was wrong here.. MAX_ASSIGN_COUNT was relative to assign index.
+- 4 x VFE, 4 RDI per VFE
+- 4 x VFE Lite, 4 RDI per VFE
+- 4 x CSID
+- 4 x CSID Lite
+- 4 x CSI PHY
 
-> 
-> region_idx is the offset in the memory-region DT property where assigned 
-> memory starts,
-> so for example there's 2 memory regions on SM8650 CDSP, but only a 
-> single shared memory region
-> so we have the following:
->   - region_assign_idx = 2
->   - region_assign_count = 1
-> and in DT:
->   memory-region = <&cdsp_mem>, <&q6_cdsp_dtb_mem>, <&global_sync_mem>;
-> -------------------------------------------------/\
->                                         region_assign_idx
-> ------------------------------------------------[                    ]
->                                         region_assign_count
-> 
-> and for MPSS, there's 2 of both:
->   - region_assign_idx = 2
->   - region_assign_count = 2
-> and in DT:
-> memory-region = <&mpss_mem>, <&q6_mpss_dtb_mem>, <&mpss_dsm_mem>, 
-> <&mpss_dsm_mem_2>;
-> -------------------------------------------------/\
->                                         region_assign_idx
-> 
-> ------------------------------------------------[                                   ]
->                                         region_assign_count
-> 
-> so we cannot add a bounday check.
-> 
-> In any case of_parse_phandle() will do the boundary check if DT has less 
-> phandles than expected.
+I've taken the yaml from a dtsi series and included it here since 1) I sent
+the yaml to the wrong person and 2) it already has RB from Krzysztof.
 
-Thanks for explaining.
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
 
--Mukesh
-> 
-> Neil
-> 
->>
->> -Mukesh
->>>>> +    adsp->region_assign_count = min_t(int, MAX_ASSIGN_COUNT, 
->>>>> desc->region_assign_count);
->>>>> +    adsp->region_assign_vmid = desc->region_assign_vmid;
->>>>> +    adsp->region_assign_shared = desc->region_assign_shared;
->>>>>       if (dtb_fw_name) {
->>>>>           adsp->dtb_firmware_name = dtb_fw_name;
->>>>>           adsp->dtb_pas_id = desc->dtb_pas_id;
->>>>> @@ -1163,6 +1191,8 @@ static const struct adsp_data 
->>>>> sm8550_mpss_resource = {
->>>>>       .sysmon_name = "modem",
->>>>>       .ssctl_id = 0x12,
->>>>>       .region_assign_idx = 2,
->>>>> +    .region_assign_count = 1,
->>>>> +    .region_assign_vmid = QCOM_SCM_VMID_MSS_MSA,
->>>>>   };
->>>>>   static const struct of_device_id adsp_of_match[] = {
->>>>>
->>>>
->>>> -Mukesh
->>>
->>> Thanks,
->>> Neil
->>>
-> 
+Requires the named power-domain patches which apply to media-tree/* :
+https://lore.kernel.org/linux-arm-msm/20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org/
+b4 shazam 20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org
+
+To use the camera on x13s with say Google Hangouts or Microsoft Teams you
+will need to
+
+1. Run Firefox
+2. Update about:config to enable pipewire
+3. Use this WIP version of libcamera
+   https://gitlab.freedesktop.org/camera/libcamera-softisp
+
+A working bootable tree can be found here:
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/lenovo-x13s-linux-6.5.y
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp
+
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+Bryan O'Donoghue (6):
+      media: dt-bindings: media: camss: Add qcom,sc8280xp-camss binding
+      media: qcom: camss: Add CAMSS_SC8280XP enum
+      media: qcom: camss: csiphy-3ph: Add Gen2 v1.1 two-phase MIPI CSI-2 DPHY init
+      media: qcom: camss: Add sc8280xp resource details
+      media: qcom: camss: Add sc8280xp support
+      media: qcom: camss: vfe-17x: Rename camss-vfe-170 to camss-vfe-17x
+
+ .../bindings/media/qcom,sc8280xp-camss.yaml        | 581 +++++++++++++++++++++
+ drivers/media/platform/qcom/camss/Makefile         |   2 +-
+ .../platform/qcom/camss/camss-csiphy-3ph-1-0.c     | 108 +++-
+ drivers/media/platform/qcom/camss/camss-csiphy.c   |   1 +
+ .../camss/{camss-vfe-170.c => camss-vfe-17x.c}     |   0
+ drivers/media/platform/qcom/camss/camss-vfe.c      |  25 +-
+ drivers/media/platform/qcom/camss/camss-video.c    |   1 +
+ drivers/media/platform/qcom/camss/camss.c          | 376 +++++++++++++
+ drivers/media/platform/qcom/camss/camss.h          |   1 +
+ 9 files changed, 1086 insertions(+), 9 deletions(-)
+---
+base-commit: f5602ca81598f12d3fdb327beb29688871955596
+change-id: 20231101-b4-camss-sc8280xp-0e1b91eb21bf
+
+Best regards,
+-- 
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
