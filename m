@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 009557DF087
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8DE7DF075
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347263AbjKBKqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S1347251AbjKBKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347208AbjKBKql (ORCPT
+        with ESMTP id S1347144AbjKBKp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:46:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB42AE7
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698921954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y9mBMnZXkfcn8X+S1uWPcpA8muaoQVjDKXTStMVPXQk=;
-        b=EmXyCwn6/voZedyi3tlQaGSxPn252OT+AJFyUuOKTirpx2Cql1PU7XjujK0f2fh62edf/F
-        TF1hkTTAxau4/sMaDXYUP0vR9u2I5/odI5uA4ScgG6Uw+PK6NZCcoHvW23r+liUI6qxZ5K
-        70DfUwm7fo6L4ZdQYULdO49sVaXz7MQ=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-T-vozEQuMKeePl6o7eePPQ-1; Thu, 02 Nov 2023 06:45:52 -0400
-X-MC-Unique: T-vozEQuMKeePl6o7eePPQ-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7ba2b284b32so112482241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:45:52 -0700 (PDT)
+        Thu, 2 Nov 2023 06:45:57 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A037138;
+        Thu,  2 Nov 2023 03:45:55 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-540fb78363bso1288023a12.0;
+        Thu, 02 Nov 2023 03:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698921953; x=1699526753; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XjL++vViYaDWI2YtfsqD0BSYvDF9i1i+EJlr9p5UOfE=;
+        b=F2tlDWgX41deut2CSj+12fzK/QWrx3oA4+ifHIyxF3xUA7NbSZ6ioLx/2maxgrl9OC
+         5RaDeSvA36z7XohbDTypZE52hswz3FfgwAtwJXdb16gUgWmncARiSUH+ltaGEkpInwBa
+         makr6+EIW/5Q06AomJm2pVhBZwm4huvM+MmCGwp4/SLe37Awt0spXuBnt5b5s/rf3j/w
+         +alOAnEA03UAuiIPxChSIbM+LOtfQ0ICZPHfHtbGapbZjTj70JuCimMPbUZbp1kbrwY/
+         MN/wuy1B2JZZ07qJGCZgLfHFqgF8gDxubJLBnwiRW1uFBVg3xessjXv29EcRjZDpZE9t
+         hcAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698921952; x=1699526752;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y9mBMnZXkfcn8X+S1uWPcpA8muaoQVjDKXTStMVPXQk=;
-        b=hmsz4QFhvnADPzzqeFVaFr3Cmf4kVxz+iGyS7TwH7uLMSxj2hA/i74CEU66VygTYTB
-         ECRyoJJxTwXawv3tjcEnlUF6B22VJ0zOxgGK+YfjcXDnRjhnMt5SmuepgekD4EJUNxVg
-         uXj5ZKYswv6vbY5FyB1DCEKV8H85lsJ6y4jsVLz3LToH/LiR8ki6pbbbmXRDkKAC7O07
-         t9KzELqU759Y0/oWQNf1GCB3wNl82jAJjrxjBV+UZtp6ZrSJviEv5zcKTzoiXB6nx9+a
-         YfTE//tkOCWDMADml7T6dCYiPOGf0qMqXzcROrh2EWmdmpvUnL8NRTQA0ORQExNupe94
-         4/mQ==
-X-Gm-Message-State: AOJu0YxyWrClhTO7Y3B0i+EJt74AFU1ydSCCHxEjBWmQSyCAprb4KPmy
-        KDP5/7WVIYVAxQZpxz6drEPtowSXA7++kkgplfG8XcYxR7rHwXh5BR6b5v4oAH3GiVoBppIbWk7
-        r4E6m6b67wAQ8U+qvH2Im/PZ1
-X-Received: by 2002:a67:ec09:0:b0:45d:6f59:75d with SMTP id d9-20020a67ec09000000b0045d6f59075dmr1132341vso.3.1698921952277;
-        Thu, 02 Nov 2023 03:45:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEEUz+8/oijfPH+hmrLS8G8SbahpZB+B82vOdVxZz6QZCauVC6ge20YbaMyHu2lpttGCmY9SQ==
-X-Received: by 2002:a67:ec09:0:b0:45d:6f59:75d with SMTP id d9-20020a67ec09000000b0045d6f59075dmr1132326vso.3.1698921952004;
-        Thu, 02 Nov 2023 03:45:52 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-226-153.dyn.eolo.it. [146.241.226.153])
-        by smtp.gmail.com with ESMTPSA id f28-20020ad4559c000000b0063f88855ef2sm2252683qvx.101.2023.11.02.03.45.49
+        d=1e100.net; s=20230601; t=1698921953; x=1699526753;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XjL++vViYaDWI2YtfsqD0BSYvDF9i1i+EJlr9p5UOfE=;
+        b=ddAMrYiRTgTFvM6JVqw0GWmBgeTog8nYAVVA58kX4HsWcrd4D+yP5ibK72zBS8N5D4
+         KRDmvwlRTrrUj3f7jWnlRnQclsvbFVUM2W5LkOPM8NCpH+qiBkby/JXgYb4HP2bNnV09
+         bJKyo/wRUHD+7nljHQkKu9M57iCl/JxbGrVuSNm6ZW35rBv3cUQ6lZMczxWTmWyVXmCO
+         TlkSoNxdV77MELGPj//cQnWIUlebyjKx1xQLDEx/L9WXA2DY/LrejcZDX6eAi5WLtx30
+         bqf6FpD1MYIsCDBkLdMXAaQ2EPI65vFEp2cENy7d0Wpca6UEmXBwopJ+asfc7nyvk+/4
+         3ceQ==
+X-Gm-Message-State: AOJu0YzMlKq6ly8xvfSjb+pGPgBfgkihl68z0RjKc7XQdOwlNZTw9ydG
+        MdJHwsQNG1Mb/jxcaQ/RquU=
+X-Google-Smtp-Source: AGHT+IFj4hzOG4wSgbi6JwMGNCHVvolStewuOWlcu3gxxyWR4UxSSlAg7EilxG3Tyqxpq+VKL0er9w==
+X-Received: by 2002:a17:906:fe41:b0:9b6:aac1:6fa5 with SMTP id wz1-20020a170906fe4100b009b6aac16fa5mr4194163ejb.55.1698921953286;
+        Thu, 02 Nov 2023 03:45:53 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id j19-20020a170906279300b009ae69c303aasm976244ejc.137.2023.11.02.03.45.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 03:45:51 -0700 (PDT)
-Message-ID: <9bc9514044063bc57155fb786f970ca1d69758b4.camel@redhat.com>
-Subject: Re: [PATCH net 6/7] net: hns3: fix VF reset fail issue
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jijie Shao <shaojijie@huawei.com>, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org
-Cc:     shenjian15@huawei.com, wangjie125@huawei.com,
-        liuyonglong@huawei.com, netdev@vger.kernel.org,
+        Thu, 02 Nov 2023 03:45:53 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 12:45:50 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Thu, 02 Nov 2023 11:45:48 +0100
-In-Reply-To: <20231028025917.314305-7-shaojijie@huawei.com>
-References: <20231028025917.314305-1-shaojijie@huawei.com>
-         <20231028025917.314305-7-shaojijie@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
+Message-ID: <20231102104550.iuw5ozfchbm3u667@skbuf>
+References: <20231030141623.ufzhb4ttvxi3ukbj@skbuf>
+ <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
+ <20231030222035.oqos7v7sdq5u6mti@skbuf>
+ <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
+ <20231030233334.jcd5dnojruo57hfk@skbuf>
+ <CACRpkdbLTNVJusuCw2hrHDzx5odw8vw8hMWvvvvgEPsAFwB8hg@mail.gmail.com>
+ <CAJq09z4+3g7-h5asYPs_3g4e9NbPnxZQK+NxggYXGGxO+oHU1g@mail.gmail.com>
+ <CACRpkdZ-M5mSUeVNhdahQRpm+oA1zfFkq6kZEbpp=3sKjdV9jA@mail.gmail.com>
+ <CAJq09z6QwLNEc5rEGvE3jujZ-vb+vtUQLS-fkOnrdnYqk5KvxA@mail.gmail.com>
+ <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaoBo0S0RgLhacObd3pbjtWAfr6s3oizQAHqdB76gaG5A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-10-28 at 10:59 +0800, Jijie Shao wrote:
-> Currently the reset process in hns3 and firmware watchdog init process is
-> asynchronous. We think firmware watchdog initialization is completed
-> before VF clear the interrupt source. However, firmware initialization
-> may not complete early. So VF will receive multiple reset interrupts
-> and fail to reset.
->=20
-> So we add delay before VF interrupt source and 5 ms delay
-> is enough to avoid second reset interrupt.
->=20
-> Fixes: 427900d27d86 ("net: hns3: fix the timing issue of VF clearing inte=
-rrupt sources")
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c   | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/=
-drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-> index 1c62e58ff6d8..7b87da031be6 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-> @@ -1924,8 +1924,14 @@ static void hclgevf_service_task(struct work_struc=
-t *work)
->  	hclgevf_mailbox_service_task(hdev);
->  }
-> =20
-> -static void hclgevf_clear_event_cause(struct hclgevf_dev *hdev, u32 regc=
-lr)
-> +static void hclgevf_clear_event_cause(struct hclgevf_dev *hdev, u32 regc=
-lr,
-> +				      bool need_dalay)
->  {
-> +#define HCLGEVF_RESET_DELAY		5
-> +
-> +	if (need_dalay)
-> +		mdelay(HCLGEVF_RESET_DELAY);
+On Wed, Nov 01, 2023 at 09:26:50PM +0100, Linus Walleij wrote:
+> On Wed, Nov 1, 2023 at 1:35 PM Luiz Angelo Daros de Luca <luizluca@gmail.com> wrote:
+> 
+> > Sorry but I noticed no issues:
+> 
+> Don't be sorry about that, it's good news because now I know
+> where to look, i.e. in the ethernet controller.
 
-5ms delay in an interrupt handler is quite a lot. What about scheduling
-a timer from the IH to clear the register when such delay is needed?
-
-Thanks!
-
-Paolo
-
+Don't look too deeply into the code just yet, just try to see what
+happens with dsa_loop on an identical Ethernet controller that isn't
+physically attached to a switch.
