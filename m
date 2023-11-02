@@ -2,244 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3647DF0EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474617DF02D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347330AbjKBLI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
+        id S1346801AbjKBKcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347302AbjKBLIX (ORCPT
+        with ESMTP id S1346370AbjKBKcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:08:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D25181;
-        Thu,  2 Nov 2023 04:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698923296; x=1730459296;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=odjc9dr4DIBNf+sdcc67k5/3mIvmgLlogDDgZmqqTho=;
-  b=JkShQwMfAfj7ECauXBsqZi//XwqUaouL4sj9JzoITCGQHVkBkoYk7w1v
-   4IEdi/SbmBQE2IrbQwnFKWGyq3ZvwCd2+RWCIafzl4Jw4nC5I+J7RZt5z
-   gYBxuidlDp2NDKnYrYijHZrCHHZM4tiSnsUsK7djQM9xzjpIj1OU+x/Kq
-   hoRvUNERjLKF4Dx+9wUlmyTecivlb9w7YUbu+sthV8nxIplDpdBcVmmnT
-   W6mU2coGBU4qMZ56jVv80DsbAcEuvkrj///URylesn7yaKCu1Mcbr4eBE
-   9vPMEdHXHSECP/hOAeY1gV2g8T4P/062PGYu7MZRbzzC6vFQbERPLTBBH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7328808"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="7328808"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 04:08:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764877653"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="764877653"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 02 Nov 2023 04:08:11 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 8AEB14F0; Thu,  2 Nov 2023 12:31:08 +0200 (EET)
-Date:   Thu, 2 Nov 2023 12:31:08 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
-        andreas.noever@gmail.com, michael.jamet@intel.com,
-        YehezkelShB@gmail.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Alexander.Deucher@amd.com
-Subject: Re: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in
- pcie_bandwidth_available()
-Message-ID: <20231102103108.GK17433@black.fi.intel.com>
-References: <20231101225259.GA101390@bhelgaas>
- <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
+        Thu, 2 Nov 2023 06:32:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B5918C
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 03:31:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698921088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uya6qCwp9TX55b7qKcTEgjZRX+1aFslaiEbQanZjulo=;
+        b=EkyJeWUo5cwuqjKuQWuQKD8ReA7bDJ+HZkUusbHl52RaRc8gPu2Fd2d4rnXFVgFMXqAHxQ
+        lyPWZT6TBSjcbmU9KROHtEKDjI2n25ABWZRTUacX+w5Kr4ElYRrrPcC9aOS0n5xgM/NxKb
+        /HSabtg1JCfO7ZccT7yrjig39wLStiU=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-164-tJXc5c5oMuCtx2V0F0TLTg-1; Thu, 02 Nov 2023 06:31:27 -0400
+X-MC-Unique: tJXc5c5oMuCtx2V0F0TLTg-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6754babc2c8so2511276d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 03:31:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698921086; x=1699525886;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uya6qCwp9TX55b7qKcTEgjZRX+1aFslaiEbQanZjulo=;
+        b=btUaP7tFcp/5eIpy4QgwVLR9Wr3fBsRA//SiiZcqZeuT2BzHHmtobWdv6B+9TCTJ59
+         YviQhL8QlFR+mIkmw+6QKX08u9RBMhBwNKkZF1iIRjZfXxjt/35Q///Z1T+NW5AAnRX3
+         HTIlWEsPKxhMJKk2VebFodRYu73fChVRtQpscNAVxVFZhL+sGHKSzyOEp5LyfcpEYwth
+         GYHb11gtofEZZLiBpiKJ7gmbMnVCR/eLlFWbELmrvTT97yxrpjkFxluuNc01EBoj115o
+         uDChdWyUiaSmjIXMyjh46HaSltXrTAyAHErmGKv7/R1oE1qMavACIltRjI2IenbNPw5w
+         5zwA==
+X-Gm-Message-State: AOJu0Yxr9KWYIpeieuHzJFngKTIgSWAHviam4lf4ZbmciOI2Q6JyfgLO
+        16km2s5SR7LhhN1Ju5fOVdD1y4FTKt7AEdEqHm5hYs5paW6hMQJGkWSXPH2nyuIq0V5cx0n6qih
+        qS+IvHsAT/W9PYqo6dIQ155Gs
+X-Received: by 2002:a05:6214:5582:b0:66d:1ff9:321f with SMTP id mi2-20020a056214558200b0066d1ff9321fmr19025170qvb.6.1698921086471;
+        Thu, 02 Nov 2023 03:31:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEfwwYzxDn43o+6DdeqmVaDeLew80HGhBZMXezzUylt0dZXS6cPsK52nRgvg6FHsLPBgYaZow==
+X-Received: by 2002:a05:6214:5582:b0:66d:1ff9:321f with SMTP id mi2-20020a056214558200b0066d1ff9321fmr19025152qvb.6.1698921086197;
+        Thu, 02 Nov 2023 03:31:26 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-153.dyn.eolo.it. [146.241.226.153])
+        by smtp.gmail.com with ESMTPSA id em15-20020ad44f8f000000b0065b229ecb8dsm2272455qvb.3.2023.11.02.03.31.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 03:31:25 -0700 (PDT)
+Message-ID: <6603e0480feea2e7a28a865705da52bb99679a35.camel@redhat.com>
+Subject: Re: [PATCH net 1/7] net: hns3: fix add VLAN fail issue
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Jijie Shao <shaojijie@huawei.com>, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org
+Cc:     shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 02 Nov 2023 11:31:22 +0100
+In-Reply-To: <20231028025917.314305-2-shaojijie@huawei.com>
+References: <20231028025917.314305-1-shaojijie@huawei.com>
+         <20231028025917.314305-2-shaojijie@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 08:14:31PM -0500, Mario Limonciello wrote:
-> On 11/1/2023 17:52, Bjorn Helgaas wrote:
-> > On Tue, Oct 31, 2023 at 08:34:38AM -0500, Mario Limonciello wrote:
-> > > The USB4 spec specifies that PCIe ports that are used for tunneling
-> > > PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s.
-> > > 
-> > > In reality these ports speed is controlled by the fabric implementation.
-> > 
-> > So I guess you're saying the speed advertised by PCI_EXP_LNKSTA is not
-> > the actual speed?  And we don't have a generic way to find the actual
-> > speed?
-> 
-> Correct.
-> 
-> > 
-> > > Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
-> > > to program the device will always find the PCIe ports used for
-> > > tunneling as a limiting factor and may make incorrect decisions.
-> > > 
-> > > To prevent problems in downstream drivers check explicitly for ports
-> > > being used for PCIe tunneling and skip them when looking for bandwidth
-> > > limitations.
-> > > 
-> > > 2 types of devices are detected:
-> > > 1) PCIe root port used for PCIe tunneling
-> > > 2) Intel Thunderbolt 3 bridge
-> > > 
-> > > Downstream drivers could make this change on their own but then they
-> > > wouldn't be able to detect other potential speed bottlenecks.
-> > 
-> > Is the implication that a tunneling port can *never* be a speed
-> > bottleneck?  That seems to be how this patch would work in practice.
-> 
-> I think that's a stretch we should avoid concluding.
-> 
-> IIUC the fabric can be hosting other traffic and it's entirely possible the
-> traffic over the tunneling port runs more slowly at times.
-> 
-> Perhaps that's why the the USB4 spec decided to advertise it this way? I
-> don't know.
-> 
-> > 
-> > > Link: https://lore.kernel.org/linux-pci/7ad4b2ce-4ee4-429d-b5db-3dfc360f4c3e@amd.com/
-> > > Link: https://www.usb.org/document-library/usb4r-specification-v20
-> > >        USB4 V2 with Errata and ECN through June 2023 - CLEAN p710
-> > 
-> > I guess this is sec 11.2.1 ("PCIe Physical Layer Logical Sub-block")
-> > on PDF p710 (labeled "666" on the printed page).  How annoying that
-> > the PDF page numbers don't match the printed ones; do the section
-> > numbers at least stay stable in new spec revisions?
-> 
-> I'd hope so.  I'll change it to section numbers in the next revision.
-> 
-> > 
-> > > Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925
-> > 
-> > This issue says the external GPU doesn't work at all.  Does this patch
-> > fix that?  This patch looks like it might improve GPU performance, but
-> > wouldn't fix something that didn't work at all.
-> 
-> The issue actually identified 4 distinct different problems.  The 3 problems
-> will be fixed in amdgpu which are functional.
-> 
-> This performance one was from later in the ticket after some back and forth
-> identifying proper solutions for the first 3.
-> 
-> > 
-> > > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > ---
-> > >   drivers/pci/pci.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 41 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > index 59c01d68c6d5..4a7dc9c2b8f4 100644
-> > > --- a/drivers/pci/pci.c
-> > > +++ b/drivers/pci/pci.c
-> > > @@ -6223,6 +6223,40 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
-> > >   }
-> > >   EXPORT_SYMBOL(pcie_set_mps);
-> > > +/**
-> > > + * pcie_is_tunneling_port - Check if a PCI device is used for TBT3/USB4 tunneling
-> > > + * @dev: PCI device to check
-> > > + *
-> > > + * Returns true if the device is used for PCIe tunneling, false otherwise.
-> > > + */
-> > > +static bool
-> > > +pcie_is_tunneling_port(struct pci_dev *pdev)
-> > 
-> > Use usual function signature styling (all on one line).
-> 
-> OK.
-> 
-> > 
-> > > +{
-> > > +	struct device_link *link;
-> > > +	struct pci_dev *supplier;
-> > > +
-> > > +	/* Intel TBT3 bridge */
-> > > +	if (pdev->is_thunderbolt)
-> > > +		return true;
-> > > +
-> > > +	if (!pci_is_pcie(pdev))
-> > > +		return false;
-> > > +
-> > > +	if (pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
-> > > +		return false;
-> > > +
-> > > +	/* PCIe root port used for tunneling linked to USB4 router */
-> > > +	list_for_each_entry(link, &pdev->dev.links.suppliers, c_node) {
-> > > +		supplier = to_pci_dev(link->supplier);
-> > > +		if (!supplier)
-> > > +			continue;
-> > > +		if (supplier->class == PCI_CLASS_SERIAL_USB_USB4)
-> > > +			return true;
-> > 
-> > Since this is in drivers/pci, and this USB4/Thunderbolt routing is not
-> > covered by the PCIe specs, this is basically black magic.  Is there a
-> > reference to the USB4 spec we could include to help make it less
-> > magical?
-> 
-> The "magic" part is that there is an ACPI construct to indicate a PCIe port
-> is linked to a USB4 router.
-> 
-> Here is a link to the page that is explained:
-> https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-acpi-requirements#port-mapping-_dsd-for-usb-3x-and-pcie
-> 
-> In the Linux side this link is created in the 'thunderbolt' driver.
-> 
-> Thinking about this again, this does actually mean we could have a different
-> result based on whether pcie_bandwidth_available() is called before or after
-> the 'thunderbolt' driver has loaded.
-> 
-> For example if a GPU driver that called pcie_bandwidth_available() was in
-> the initramfs but 'thunderbolt' was in the rootfs we might end up with the
-> wrong result again.
+On Sat, 2023-10-28 at 10:59 +0800, Jijie Shao wrote:
+> From: Jian Shen <shenjian15@huawei.com>
+>=20
+> The hclge_sync_vlan_filter is called in periodic task,
+> trying to remove VLAN from vlan_del_fail_bmap. It can
+> be concurrence with VLAN adding operation from user.
+> So once user failed to delete a VLAN id, and add it
+> again soon, it may be removed by the periodic task,
+> which may cause the software configuration being
+> inconsistent with hardware. So add mutex handling
+> to avoid this.
+>=20
+>      user                        hns3 driver
+>=20
+>                                            periodic task
+>                                                 =E2=94=82
+>   add vlan 10 =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80 hns3_vlan_rx_=
+add_vid        =E2=94=82
+>        =E2=94=82             (suppose success)          =E2=94=82
+>        =E2=94=82                                        =E2=94=82
+>   del vlan 10 =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80  hns3_vlan_rx=
+_kill_vid      =E2=94=82
+>        =E2=94=82           (suppose fail,add to         =E2=94=82
+>        =E2=94=82             vlan_del_fail_bmap)        =E2=94=82
+>        =E2=94=82                                        =E2=94=82
+>   add vlan 10 =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80 hns3_vlan_rx_=
+add_vid        =E2=94=82
+>                      (suppose success)          =E2=94=82
+>                                        foreach vlan_del_fail_bmp
+>                                             del vlan 10
+>=20
+> Fixes: fe4144d47eef ("net: hns3: sync VLAN filter entries when kill VLAN =
+ID failed")
+> Signed-off-by: Jian Shen <shenjian15@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> ---
+>  .../hisilicon/hns3/hns3pf/hclge_main.c        | 21 +++++++++++++------
+>  .../hisilicon/hns3/hns3vf/hclgevf_main.c      | 11 ++++++++--
+>  2 files changed, 24 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/dr=
+ivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> index c42574e29747..a3230ac928a9 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> @@ -10026,8 +10026,6 @@ static void hclge_rm_vport_vlan_table(struct hclg=
+e_vport *vport, u16 vlan_id,
+>  	struct hclge_vport_vlan_cfg *vlan, *tmp;
+>  	struct hclge_dev *hdev =3D vport->back;
+> =20
+> -	mutex_lock(&hdev->vport_lock);
+> -
+>  	list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node) {
+>  		if (vlan->vlan_id =3D=3D vlan_id) {
+>  			if (is_write_tbl && vlan->hd_tbl_status)
+> @@ -10042,8 +10040,6 @@ static void hclge_rm_vport_vlan_table(struct hclg=
+e_vport *vport, u16 vlan_id,
+>  			break;
+>  		}
+>  	}
+> -
+> -	mutex_unlock(&hdev->vport_lock);
+>  }
+> =20
+>  void hclge_rm_vport_all_vlan_table(struct hclge_vport *vport, bool is_de=
+l_list)
+> @@ -10452,11 +10448,16 @@ int hclge_set_vlan_filter(struct hnae3_handle *=
+handle, __be16 proto,
+>  	 * handle mailbox. Just record the vlan id, and remove it after
+>  	 * reset finished.
+>  	 */
+> +	mutex_lock(&hdev->vport_lock);
+>  	if ((test_bit(HCLGE_STATE_RST_HANDLING, &hdev->state) ||
+>  	     test_bit(HCLGE_STATE_RST_FAIL, &hdev->state)) && is_kill) {
+>  		set_bit(vlan_id, vport->vlan_del_fail_bmap);
+> +		mutex_unlock(&hdev->vport_lock);
+>  		return -EBUSY;
+> +	} else if (!is_kill && test_bit(vlan_id, vport->vlan_del_fail_bmap)) {
+> +		clear_bit(vlan_id, vport->vlan_del_fail_bmap);
+>  	}
+> +	mutex_unlock(&hdev->vport_lock);
+> =20
+>  	/* when port base vlan enabled, we use port base vlan as the vlan
+>  	 * filter entry. In this case, we don't update vlan filter table
+> @@ -10481,7 +10482,9 @@ int hclge_set_vlan_filter(struct hnae3_handle *ha=
+ndle, __be16 proto,
+>  		 * and try to remove it from hw later, to be consistence
+>  		 * with stack
+>  		 */
+> +		mutex_lock(&hdev->vport_lock);
+>  		set_bit(vlan_id, vport->vlan_del_fail_bmap);
+> +		mutex_unlock(&hdev->vport_lock);
 
-Right, that's possible if the boot firmware has support for a connection
-manager. Although we do reset the whole topology with the USB4 v2 host
-routers this is kept as is for v1.
+It looks like that the 'hclge_rm_vport_vlan_table()' call a few lines
+above will now happen with the vport_lock unlocked.
 
-> Considering this I think it's a good idea to move that creation of the
-> device link into drivers/pci/pci-acpi.c and store a bit in struct pci_device
-> to indicate it's a tunneled port.
+That looks racy and would deserve at least a comment explaining why
+it's safe.
 
-Note it currently is setting the link between xHCI and the
-USB4/Thunderbolt host controller but we may want to change it later to
-link between USB 3.x port and the USB4/Thunderbolt host to allow more
-fine grained power management, this is especially true with the new USB
-Gen T tunneling. So for now it is only PCI but we may need to touch the
-USB stack too (perhaps put it in drivers/acpi/ instead).
+Thanks,
 
-> Then 'thunderbolt' can look for this directly instead of walking all the FW
-> nodes.
-> 
-> pcie_bandwidth_available() can just look at the tunneled port bit instead of
-> the existence of the device link.
-> 
-> > 
-> > Lukas' brief intro in
-> > https://lore.kernel.org/all/20230925141930.GA21033@wunner.de/ really
-> > helped me connect a few dots, because things like
-> > Documentation/admin-guide/thunderbolt.rst assume we already know those
-> > details.
-> 
-> Thanks for sharing that.  If I move the detection mechanism as I suggested
-> above I'll reference some of that as well in the commit message to explain
-> what exactly a tunneled port is.
+Paolo
 
-I'm not sure it makes sense to explain from the zero all this stuff that
-people can easily look up from the corresponding spec, such as PCIe or
-USB.
-
-There is a good picture in USB4 v2 ch 2.2.3 about paths crossing USB4
-fabric, perhaps reference that one? Or ch 2.2.10.3 that shows how this
-works with PCIe tunneling instead (although they are similar).
