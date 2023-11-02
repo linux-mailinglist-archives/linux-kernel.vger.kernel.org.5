@@ -2,230 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F5D7DEB63
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF567DEB6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348401AbjKBD3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        id S1348413AbjKBDax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348366AbjKBD3F (ORCPT
+        with ESMTP id S1348397AbjKBDar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:29:05 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2074.outbound.protection.outlook.com [40.107.117.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7271120;
-        Wed,  1 Nov 2023 20:28:58 -0700 (PDT)
+        Wed, 1 Nov 2023 23:30:47 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615B6127;
+        Wed,  1 Nov 2023 20:30:40 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d4jyK9OPDGNyvBffIxxrNkrOVzmMIA8+uWiPyZoSQXSOL4jSzazIr7DOZqDBAZYUICrJ6tY6iJN3N0heJ1Yq5ptQ8+AIfPPbNFMkcBTwwFrEcEfzUujZ+UolervugGGYeOokyQMoj9ewYkY83CzJ73hfM7G9a99awE6ghFp2JKqLf1OE2ZE7bipkaNa2XxjhJMAehctkYihOMQ3TocFk0yCib2TOrvvfL+WMdZ1pVm1tiDKAecM7Edr6kbEG3dx4mZsISecicjZ74uB/sP06FduAjRzcWtbM5OxTInw6xW2FP8+tWe/GAOQCseq3NNxuH6SPj9meaeH5kTq6mMixag==
+ b=niVWRkwbkCjOy74kUOujyO0LtTMeSvKQDEQS7XVcs4xNdjPLuOd/DKjunK558nG5D6iw29JQ+CFLwhfwdnUvNPh4wbjAVBjHVRerppFhdGn28WqNtFdFez/7kJYVreM5oB+/En8SLa3mRh8wg/NzG+LT0ZJgsq5Faz7iQVlGc0qp3uNIlDKtywdnkYynhfTQw2Pgjx3NvzoOWoVDoxnDa5rbhVH/0fUMKGvDPWVqvcNv74hps8QbEWYtFUX41HOOg04hn9m5BPw/0XeXyUBk23QqTEKrkusRjBW4RFiI5PQgOyiJw1CwBwlUWD1AVuKOzD6kAC9YZZQSGyzJwohrxw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y5A+YGxARtmjO8LaEC8NMjLhxNaKIJpF8nCOyDvjQDU=;
- b=MSzqU+WE5Mr+qBwjrGcJ3exx9f5keLhME9t9dKFUehwXzAMYW37c7AJ+WRgqq8DKUBAheBtB8fA0Z3NLzFsczUsUpyk4Lok05xyIjsPQk5uMZdqkwIn69YipG2fYSlHEkC9e49W33Xda9btVq5O4tj/KiTYcOta0FPFK+pu0yrONFbmq3c7jmemkrlqCdumWyg+h7NrMwzQx5JbREmcUmmJlsuxEbUuezRj1xo8eGKs7Xcl9F9R11BL3F7PHDj4+noqqdSYVROzuSSUGF27SqAHr53Lftlx82MvHigHyvahC+Uta44KmY+L0Q5UTDUPxjSZrqEIl43uEJxZfv4nxVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
+ bh=67T2bNTr6OqNAORRS+HdUqCRVLjtgF+4F7i6hyhuihM=;
+ b=Z0Cg082HbKmLv0isGBms35+Loh2GEDM2cjqGMvEkn3cjoZsRcY5YHklpjvayu7QeNpmZ5lpAORukURidd+Kly3ssK0Hn3mfni5k8waVQ/ljdm+UhBmZ79b12t0OZaRjqXJoFKt/Lmk+ZOsA7KML7AgNbOVu/9dW58T4l+bfS9QabDpmRtCwpy6os2CS9UFTt0R0PuPeTxIUuVE68pPEAUNT2IB4732X/yXzIjVHgkKk5NMrsm0e/lPSwlF/NyOFAp+35sGd0+56C6dtxwLquwnKeoF1sN2VF45Gq8LnBbGjqxK+jysRIIVrWZLb7S0VwOb35fXgrICgy8CJa+iV6Ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y5A+YGxARtmjO8LaEC8NMjLhxNaKIJpF8nCOyDvjQDU=;
- b=j/Kizps3EQQZgFpPz5BnREpxQcL8eQSkqiqQzrkImSvzWRmUPyCxtGKm0P8PxFwSTC9jCN+GQF4fkQFp5aOgQBzq7PBfcdVq8IlWqWosRnf77CQtBhJUIc27WNC12Ie31vapK6sUsNf0TuqH8HUTJtJdt8m0cffzOtscTcqOATR7DDi2zyl7MN+M72BuufPmKWfPxWmcyArVN+pC4deOauYFHYz68ygKvm9dXtz8FhXqr/AKyiPPArAD83n9TGj2og3iuOJWKmjaErAoQDenagP09DjiWuwGC/fSpuFAyvXEAzaM9I0MDMRY8UmYwD1F9b3b8i5MwtofnizhqaEX8Q==
-Received: from SG2PR02CA0013.apcprd02.prod.outlook.com (2603:1096:3:17::25) by
- SEZPR04MB7529.apcprd04.prod.outlook.com (2603:1096:101:1f1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
- 2023 03:28:53 +0000
-Received: from SG1PEPF000082E1.apcprd02.prod.outlook.com
- (2603:1096:3:17:cafe::93) by SG2PR02CA0013.outlook.office365.com
- (2603:1096:3:17::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
- Transport; Thu, 2 Nov 2023 03:28:53 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- SG1PEPF000082E1.mail.protection.outlook.com (10.167.240.4) with Microsoft
- SMTP Server id 15.20.6954.19 via Frontend Transport; Thu, 2 Nov 2023 03:28:52
- +0000
-From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH v4 3/3] hwmon: max31790: add fanN_enable for all fans
-Date:   Thu,  2 Nov 2023 11:28:32 +0800
-Message-Id: <20231102032834.3827289-4-Delphine_CC_Chiu@wiwynn.com>
+ bh=67T2bNTr6OqNAORRS+HdUqCRVLjtgF+4F7i6hyhuihM=;
+ b=PGDu3ONGvAnxSXuWrFjW7XvkuJG4oYFbvlmKd7O6yB+FywOhlf7C5UtAbp3GGXtQ3LjMsqvC7y7EWOAfzJZH987T8YgCi6EYqn4Q0lx+tw+csWST1h26sAkixnD23TgpvDfAYfd0q0uBK+9zeRoPps21+NNYeccJb7iJuCnOrxE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SA1PR01MB8131.prod.exchangelabs.com (2603:10b6:806:325::8) by
+ SA3PR01MB7967.prod.exchangelabs.com (2603:10b6:806:31e::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.26; Thu, 2 Nov 2023 03:30:36 +0000
+Received: from SA1PR01MB8131.prod.exchangelabs.com
+ ([fe80::428d:f5bf:7ca0:b59f]) by SA1PR01MB8131.prod.exchangelabs.com
+ ([fe80::428d:f5bf:7ca0:b59f%5]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 03:30:36 +0000
+From:   Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+To:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Cc:     patches@amperecomputing.com, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        jsd@semihalf.com, tamnguyenchi@os.amperecomputing.com,
+        chuong@os.amperecomputing.com, darren@os.amperecomputing.com,
+        stable@vger.kernel.org
+Subject: [PATCH v2] i2c: designware: Disable TX_EMPTY irq while waiting for block length byte
+Date:   Thu,  2 Nov 2023 10:30:08 +0700
+Message-Id: <20231102033009.4555-1-tamnguyenchi@os.amperecomputing.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231102032834.3827289-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20231102032834.3827289-1-Delphine_CC_Chiu@wiwynn.com>
-MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG1PEPF000082E1:EE_|SEZPR04MB7529:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: e7862ea2-64d8-41ff-9e03-08dbdb53d6db
-X-MS-Exchange-AtpMessageProperties: SA
+X-ClientProxiedBy: SI2P153CA0009.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::18) To SA1PR01MB8131.prod.exchangelabs.com
+ (2603:10b6:806:325::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR01MB8131:EE_|SA3PR01MB7967:EE_
+X-MS-Office365-Filtering-Correlation-Id: f1e2459c-f22f-4b33-a80b-08dbdb5413b5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2fiSQejBDy+8c4cA+2WthpFHju5S2Dvy7otkpsbi8uWFp2Q33Ln8raC+dluw/h9/zbF8wDWviwCqcATSUA3V5VgQxIgmMw6Kkke+W6Ov7Wc/P58L88P/zuYzp2AjKVwktmF+G81DzVBwdC8zW8Gkt1F795rfvYHzBrIUi4O1ymkGICwit0I8njIhCxbsa9WFX+UNKWiqFY06tbVwHg+xKYI1LnBY3csQJxnogcSCCzOPq77bgtAnvuVD5VGdZsREb4Q+RRsuS+fnceSHlv+JhfrKnuNI5OerrcnI/kbsHnHy8IcbZ6F4cHaD6WzSmzedp+/r8xMKZj3HcERoCju74WKaJ4bR7JewEk3bc3oF74mx5FqNz/qTzzQ3lj7T6xWLyOdIXxuG///7qMmC5u2RRGLPpmNgjpMXGXr47VBtY8VuEYqXKBdl3O0mBIS4IxecweuaRH2kC/5g9o14MrQr1MT4zVA0jTRwBj5W5WAilg9Ni+pcTYiHaOp+5v6twEhFRiwdEE2xUty+7xXva96WAj5Sq23pOCEdPDRWtQGDoj01PEJZsK0cbMTDxQmF66uwNtGpWmpVHhD0DavGwQH4cCz9cuSqlSO8rWidEZWQZRa7WE3LI8QOH3JqHe4lnXvbRWPpjlu18NOBkTF6raKMsTVvh+L5KQgU/jQT/DvxAMq5YKa6kkXvW+3dHpCOXWfrsOUHBZXy7FGytCTv7qIL3g==
-X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(396003)(39860400002)(136003)(346002)(376002)(451199024)(186009)(1800799009)(82310400011)(64100799003)(46966006)(36840700001)(54906003)(110136005)(70586007)(70206006)(316002)(36736006)(336012)(6506007)(478600001)(82740400003)(1076003)(6666004)(2616005)(4326008)(26005)(956004)(40480700001)(7049001)(8936002)(83380400001)(8676002)(6486002)(6512007)(5660300002)(36756003)(47076005)(2906002)(7416002)(9316004)(81166007)(356005)(41300700001)(36860700001)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 03:28:52.9667
+X-Microsoft-Antispam-Message-Info: vrKqSybqyEHXz4dl49ddjLs6R0PdHkQewe9oLccD0dRexVd294gk6e5pVL3MQQSK10SdtESfzV5AjBSHFY7dR+qRqb/3apXphammCqUDUFI6Ii7P1cq902aM1nFoubZa6VpTWDU+xJA4r/01DnWC4D0ioKf+hwh4EytiRXbDgI+ClE6sjCcsBj+CTsNmDVGsl//9dT3Ck/u1til8vQgyJ6qHcp1Z7BhU+uJCDwfQOJ1olM1iPHqUu2QIDHq7lKXc5hkOQ4RRyKBGpJH0TPojbdiXjQebDQRIRscEGzO8xwxz0iSLvxXJVh6qixRg1xFT72186DI3hh84fy6YSoT35vpoCqzUVp2VAK9OgGvdaN8HaTeNrTLrh9RsHZ7VJ1AKktXaXTmFr803lXeryEp8UKESbWJgdvD7dPLe+82D1ZLUbqhfpsuQ3s6a6iY7XdvS03oknhvzs8n7XDdEjiT5odRoLNVNr2cD9MmpvpWLnqHtMz84fiqNirS8WzmSad5b8fTEUNUHfk4BMtOjIXJ4r963n9HLKz5CqYsFCQ0yaa79AmX74LoFjKKNtN2p3kq/2K+7G/CoNOKQyhLWVK520Rynkvny6sehvX4JR3D1LdQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR01MB8131.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39850400004)(366004)(396003)(346002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(38350700005)(478600001)(5660300002)(52116002)(2906002)(66476007)(316002)(26005)(38100700002)(86362001)(83380400001)(1076003)(966005)(6506007)(66556008)(2616005)(6666004)(41300700001)(8936002)(66946007)(4326008)(8676002)(6512007)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rrsDFFgkqSS2jIRJZ7CKLNNAAUBfqkKNUHqU+GHRURuPuN63PmymmHr3enY/?=
+ =?us-ascii?Q?yh5WDfUJBqe2UOhBCaa3IFIc0uyraEpzXjj2JRxmyW7QjSvzHlmBpbIZ3YSy?=
+ =?us-ascii?Q?1utbWJQ1IpqWUGc8il4uooYN6K/gopuI8C5roSt5zNoAFcfas1cI0unFpyBh?=
+ =?us-ascii?Q?Mqi7DuPSX6uhqhfrXLb5ROWZU4o5uyivYCtf7CKM6Z88peDDnUiUA8o91hP+?=
+ =?us-ascii?Q?i93DffYhtnHsB91jHOQN16LEZU0Z2Zsoi4mCHVuySaQoxwIZ0z6DHvD0JBbo?=
+ =?us-ascii?Q?4uP7KxqzwLvAfpco/3icDtD9KHY2ssOHhtA3UlqlYwR2U7N11iW2HJBfgmPL?=
+ =?us-ascii?Q?RvaGpqyWj4ZTSOnUx8XZMor24C3fVEgI+Nmz2bizYRhuk8hacFWHZCDmdEyl?=
+ =?us-ascii?Q?q9Pu6bfm4dEA50lvp6kVS6jwpAdy132un9vYq9I8XzG6LdQo2tzCcRiehUjo?=
+ =?us-ascii?Q?qF3YqzPgIMu1vyXfXkIrfvjnaRoOi5N7iwdETuzDLd/8o+UIBUt/yKpZGCMd?=
+ =?us-ascii?Q?T6fBJeqgqs7VZy/mxz8F08ZYUvDog6d+6GNJX8PmxJymXk4Xn2ufGmYfg9CB?=
+ =?us-ascii?Q?4KSGhrfGwb0eeJUVBkHUjf6h8Ud4MTA/eouq++GzkugnPZCrM0HjywJAetHr?=
+ =?us-ascii?Q?DXU6y/5ytYD8jioUMzeljEYo2EXCVoHzfOdMva/m3S7pmB1+hc2+O0L5bOCW?=
+ =?us-ascii?Q?QgMYs67+SOXMALL8IablT1D5KvPORSWDtcA7EJT2hEERTaC3rALkYvpZIRkL?=
+ =?us-ascii?Q?Sgcwcmlm6dgX9c6Qiwx2aQys7UkTS3S0rPK3GSNvRaPci8Mpo1x9V43DkDYS?=
+ =?us-ascii?Q?XGg+qS5ccaAEyq2KaWA4PuyAbaS6ytunhkVE0IFMkyYEW6koTss/88w6O5HV?=
+ =?us-ascii?Q?MIXlp5Lmtr/9xMHQ92tdG2u4RB+L4fCxHwxna0s6tLFcaifnbtNuZ2/uQKBx?=
+ =?us-ascii?Q?PnJLDdBgNL8HcZEBu3ZVYTQaudOj3/x3LDmAwraTl35gjEFoGRwTO/Af+wbr?=
+ =?us-ascii?Q?CpEPXSh3uWQVm2Z0ZelSw39YqbI3a5bG3OY/w0jB11wslLXNpEnUcszOrRH3?=
+ =?us-ascii?Q?HhH8/nT4Wbtoj+W0vCXPAPycSgM/9Bzu+eBepacFnSPbNzjY4nHjWRVM3Lsr?=
+ =?us-ascii?Q?B9wUxDAokajdtUxAaoOVruqJLyOCV3I20A9FoRv5hVofq9AwQ2akptB1UM0q?=
+ =?us-ascii?Q?BcwVVXJzo/MepvHydeSebD83rvUOlWV6diPuPLPtblalfW+QdSKvc1TU9Jhq?=
+ =?us-ascii?Q?Dy91+VoMjbv62UBpSGkPgCG1MJFtdDnLj79g3IWa9yYVSW8c/O9HScbEEMOx?=
+ =?us-ascii?Q?7L12cKMxzrqNMIDDapUy3QxV6XGj9tAZMhVG3n/QlDoAhPAfhkn502ZNhIKE?=
+ =?us-ascii?Q?lFt7MQnO5MhpCv4l2Ml2OJAjPWaw7/Mku6BsBH55cypQBxirY/rS19Nc5Y58?=
+ =?us-ascii?Q?cY2rBop+phLbdYo9+2nOYsgWV2f2qfqpY/MWTG2KuYBOORerxp3o4xVDsc7N?=
+ =?us-ascii?Q?4VKeWnFvwjNOp5Sgpj2bXiSofVmDxgfr/hP5uTqjMmBKGWAdM3WzN+7+kMIg?=
+ =?us-ascii?Q?/M9k/y6Ug6iDkDqgai746rTeLuPHtCmyTcmQJgkf6YqdvUk4yGkeveVSNGJ3?=
+ =?us-ascii?Q?FV64Zl7QTULW2WOb+5OoY8Q=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1e2459c-f22f-4b33-a80b-08dbdb5413b5
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR01MB8131.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 03:30:36.2212
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7862ea2-64d8-41ff-9e03-08dbdb53d6db
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource: SG1PEPF000082E1.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB7529
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GYpcjw/AQCeAQyaLKKc7cRY4lk79InuKRXNCDQIDoknJkJrx4+ag2jGvphuztop+yEMCxPQxOQNtQQDuBwpi512sU6cd+MXB1eAtejWpgELXe7cdng9z5shikpH3KM+/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR01MB7967
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fanN_enable will be set in dbus-sensors service according to the
-index of TACH that filled in the configuration of entity-manager.
-Add fanN_enable for all fans to prevent dbus-sensors service
-couldn't find the corresponding fanN_enable for fanN_input.
+During SMBus block data read process, we have seen high interrupt rate
+because of TX_EMPTY irq status while waiting for block length byte (the
+first data byte after the address phase). The interrupt handler does not
+do anything because the internal state is kept as STATUS_WRITE_IN_PROGRESS.
+Hence, we should disable TX_EMPTY IRQ until I2C DesignWare receives
+first data byte from I2C device, then re-enable it to resume SMBus
+transaction.
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
-Changelog:
-v4 - Add fanN_enable for all fans.
----
- Documentation/hwmon/max31790.rst |  2 +-
- drivers/hwmon/max31790.c         | 57 +++++++++++++++++---------------
- 2 files changed, 32 insertions(+), 27 deletions(-)
+It takes 0.789 ms for host to receive data length from slave.
+Without the patch, i2c_dw_isr() is called 99 times by TX_EMPTY interrupt.
+And it is none after applying the patch.
 
-diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
-index 33c5c7330efc..510d5691b18b 100644
---- a/Documentation/hwmon/max31790.rst
-+++ b/Documentation/hwmon/max31790.rst
-@@ -38,7 +38,7 @@ Sysfs entries
- fan[1-12]_input    RO  fan tachometer speed in RPM
- fan[1-12]_fault    RO  fan experienced fault
- fan[1-6]_target    RW  desired fan speed in RPM
--fan[1-6]_enable    RW  enable or disable the tachometer input
-+fan[1-12]_enable   RW  enable or disable the tachometer input
- pwm[1-6]_enable    RW  regulator mode, 0=disabled (duty cycle=0%), 1=manual mode, 2=rpm mode
- pwm[1-6]           RW  read: current pwm duty cycle,
-                        write: target pwm duty cycle (0-255)
-diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 378ff32c7c1e..fa31e108c7ce 100644
---- a/drivers/hwmon/max31790.c
-+++ b/drivers/hwmon/max31790.c
-@@ -203,7 +203,8 @@ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
- 		mutex_unlock(&data->update_lock);
- 		return 0;
- 	case hwmon_fan_enable:
--		*val = !!(data->fan_config[channel] & MAX31790_FAN_CFG_TACH_INPUT_EN);
-+		*val = !!(data->fan_config[channel % NR_CHANNEL] &
-+			  MAX31790_FAN_CFG_TACH_INPUT_EN);
- 		return 0;
- 	default:
- 		return -EOPNOTSUPP;
-@@ -242,12 +243,12 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
+Cc: stable@vger.kernel.org
+Co-developed-by: Chuong Tran <chuong@os.amperecomputing.com>
+Signed-off-by: Chuong Tran <chuong@os.amperecomputing.com>
+Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+---
+v2:
+	+ Reduce the indentations level
+	+ Use regmap_update_bits for bitfield update
+	+ Rewrite comment statement                     [Serge]
+	+ Update commit message
+	+ Add Co-developed-by tag for co-authors        [Andy]
+
+v1:
+  https://lore.kernel.org/lkml/avd7jhwexehgbvi6euzdwvf5zvqqgjx4ozo6uxu2qpmlarvva3@sgkce3rvovwk/T/
+---
+ drivers/i2c/busses/i2c-designware-master.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index 55ea91a63382..ae76620ef35e 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -456,10 +456,16 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
  
- 		data->target_count[channel] = target_count << 5;
- 
--		err = i2c_smbus_write_word_swapped(client,
--					MAX31790_REG_TARGET_COUNT(channel),
--					data->target_count[channel]);
-+		err = i2c_smbus_write_word_swapped(
-+			client, MAX31790_REG_TARGET_COUNT(channel),
-+			data->target_count[channel]);
- 		break;
- 	case hwmon_fan_enable:
--		fan_config = data->fan_config[channel];
-+		fan_config = data->fan_config[channel % NR_CHANNEL];
- 		if (val == 0) {
- 			fan_config &= ~MAX31790_FAN_CFG_TACH_INPUT_EN;
- 		} else if (val == 1) {
-@@ -256,11 +257,14 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
- 			err = -EINVAL;
+ 		/*
+ 		 * Because we don't know the buffer length in the
+-		 * I2C_FUNC_SMBUS_BLOCK_DATA case, we can't stop
+-		 * the transaction here.
++		 * I2C_FUNC_SMBUS_BLOCK_DATA case, we can't stop the
++		 * transaction here. Also disable the TX_EMPTY IRQ
++		 * while waiting for the data length byte to avoid the
++		 * bogus interrupts flood.
+ 		 */
+-		if (buf_len > 0 || flags & I2C_M_RECV_LEN) {
++		if (flags & I2C_M_RECV_LEN) {
++			dev->status |= STATUS_WRITE_IN_PROGRESS;
++			intr_mask &= ~DW_IC_INTR_TX_EMPTY;
++			break;
++		} else if (buf_len > 0) {
+ 			/* more bytes to be written */
+ 			dev->status |= STATUS_WRITE_IN_PROGRESS;
  			break;
- 		}
--		if (fan_config != data->fan_config[channel]) {
--			err = i2c_smbus_write_byte_data(client, MAX31790_REG_FAN_CONFIG(channel),
--							fan_config);
-+		if (fan_config != data->fan_config[channel % NR_CHANNEL]) {
-+			err = i2c_smbus_write_byte_data(
-+				client,
-+				MAX31790_REG_FAN_CONFIG(channel % NR_CHANNEL),
-+				fan_config);
- 			if (!err)
--				data->fan_config[channel] = fan_config;
-+				data->fan_config[channel % NR_CHANNEL] =
-+					fan_config;
- 		}
- 		break;
- 	default:
-@@ -291,7 +295,8 @@ static umode_t max31790_fan_is_visible(const void *_data, u32 attr, int channel)
- 			return 0644;
- 		return 0;
- 	case hwmon_fan_enable:
--		if (channel < NR_CHANNEL)
-+		if (channel < NR_CHANNEL ||
-+		    (fan_config & MAX31790_FAN_CFG_TACH_INPUT))
- 			return 0644;
- 		return 0;
- 	default:
-@@ -445,22 +450,22 @@ static umode_t max31790_is_visible(const void *data,
- 	}
+@@ -495,6 +501,13 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+ 	msgs[dev->msg_read_idx].len = len;
+ 	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
+ 
++	/*
++	 * Received buffer length, re-enable TX_EMPTY interrupt
++	 * to resume the SMBUS transaction.
++	 */
++	regmap_update_bits(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_TX_EMPTY,
++			   DW_IC_INTR_TX_EMPTY);
++
+ 	return len;
  }
  
--static const struct hwmon_channel_info * const max31790_info[] = {
--	HWMON_CHANNEL_INFO(fan,
--			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
--			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
--			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
--			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
--			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
--			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
--			   HWMON_F_INPUT | HWMON_F_FAULT,
--			   HWMON_F_INPUT | HWMON_F_FAULT,
--			   HWMON_F_INPUT | HWMON_F_FAULT,
--			   HWMON_F_INPUT | HWMON_F_FAULT,
--			   HWMON_F_INPUT | HWMON_F_FAULT,
--			   HWMON_F_INPUT | HWMON_F_FAULT),
--	HWMON_CHANNEL_INFO(pwm,
--			   HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
-+static const struct hwmon_channel_info *const max31790_info[] = {
-+	HWMON_CHANNEL_INFO(
-+		fan,
-+		HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_FAULT | HWMON_F_ENABLE,
-+		HWMON_F_INPUT | HWMON_F_FAULT | HWMON_F_ENABLE),
-+	HWMON_CHANNEL_INFO(pwm, HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
- 			   HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
- 			   HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
- 			   HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
 -- 
 2.25.1
 
