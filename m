@@ -2,160 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DA37DF024
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3647DF0EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346670AbjKBKab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        id S1347330AbjKBLI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346112AbjKBKa1 (ORCPT
+        with ESMTP id S1347302AbjKBLIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:30:27 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97E8136;
-        Thu,  2 Nov 2023 03:30:19 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9cbba16084so756474276.1;
-        Thu, 02 Nov 2023 03:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698921019; x=1699525819; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3rctCHpSNNnudhMuzQjqFB7K6mRQjkZdSA9bEmnPeqA=;
-        b=Z1qiOP/+FOR/JKzHy4msogsvl9JLMorgxzABTCBfAYTEzuxQW05flAE3Wkv1HrA/fJ
-         ewmPi30q2+kgee+9kNz+Mn5k58pk7Qsuy5YuWJsQ1hWmGN84mcth+ockGLwwiWDtRIR8
-         haHVhYEfz9azA3H/sEEQ8NOP0TjnKchhRMGKrR/0rIl/jShKKlSg1rud8KDc4uSN9qmT
-         Q4ntuOLnXySTmki8cc9XvRt5THyxOG1ERTxzqSkbbC6WSNdGkGcbYvGImocxPmUzNk0V
-         9unXzZAjftOm5KZ6oQyT4cCVqVuAxlwVFJz2GoFL/qOkfzjFR5JrGsgJig0ng9n77l73
-         xGQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698921019; x=1699525819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3rctCHpSNNnudhMuzQjqFB7K6mRQjkZdSA9bEmnPeqA=;
-        b=VK0/AAGFnrztJw72j6X4YIrJzX+cj0Mh7Ax/CDCH26A15AaTLcDlj2/32hPSEKkDve
-         172ll0ydvUaehgAJCO2l90F5AWdJ/FhrkxTgFIQ+6lOJzJNioQR8rW/K8zUfVxosyH8t
-         GSBN/o/safOyz3wm6ZsrQEjxUMXvLBcPm5XvkMI/KFjqsbIazrOJ61hlbpR05HLPew5F
-         YkXCfncFkmewsICuUeRmNPWZWBYL19DFl6lBPAMxSnf6oKFh+Op4DmJaL4WiXspQBEv0
-         XnmV1sTts0KNmRsfs3Rsn50rgceVjV6WzsjdGc4yNkJ3OzLbKYOxeKPbK9FzwX5//2uE
-         YC9w==
-X-Gm-Message-State: AOJu0YwlX1qAp7mqFQfOCdWyOh09omWXqn9isg8EaOh93RscuC2kLtnn
-        ZFlF883ovR+uAze6gFwSO+HWV+G0t+6lURIxEA==
-X-Google-Smtp-Source: AGHT+IE9befvUCRRTSTK2CGqSbtQw00NeSRpf/odrYSyjMc/SGNn8v1CTqa26VeWWmBWI7wmxOXZ5rWdPQmywQvu4lc=
-X-Received: by 2002:a25:d152:0:b0:da0:3bfc:b915 with SMTP id
- i79-20020a25d152000000b00da03bfcb915mr16112280ybg.11.1698921018746; Thu, 02
- Nov 2023 03:30:18 -0700 (PDT)
+        Thu, 2 Nov 2023 07:08:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D25181;
+        Thu,  2 Nov 2023 04:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698923296; x=1730459296;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=odjc9dr4DIBNf+sdcc67k5/3mIvmgLlogDDgZmqqTho=;
+  b=JkShQwMfAfj7ECauXBsqZi//XwqUaouL4sj9JzoITCGQHVkBkoYk7w1v
+   4IEdi/SbmBQE2IrbQwnFKWGyq3ZvwCd2+RWCIafzl4Jw4nC5I+J7RZt5z
+   gYBxuidlDp2NDKnYrYijHZrCHHZM4tiSnsUsK7djQM9xzjpIj1OU+x/Kq
+   hoRvUNERjLKF4Dx+9wUlmyTecivlb9w7YUbu+sthV8nxIplDpdBcVmmnT
+   W6mU2coGBU4qMZ56jVv80DsbAcEuvkrj///URylesn7yaKCu1Mcbr4eBE
+   9vPMEdHXHSECP/hOAeY1gV2g8T4P/062PGYu7MZRbzzC6vFQbERPLTBBH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7328808"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="7328808"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 04:08:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764877653"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="764877653"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 02 Nov 2023 04:08:11 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 8AEB14F0; Thu,  2 Nov 2023 12:31:08 +0200 (EET)
+Date:   Thu, 2 Nov 2023 12:31:08 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
+        andreas.noever@gmail.com, michael.jamet@intel.com,
+        YehezkelShB@gmail.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Alexander.Deucher@amd.com
+Subject: Re: [PATCH 2/2] PCI: Ignore PCIe ports used for tunneling in
+ pcie_bandwidth_available()
+Message-ID: <20231102103108.GK17433@black.fi.intel.com>
+References: <20231101225259.GA101390@bhelgaas>
+ <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
 MIME-Version: 1.0
-References: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
- <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com>
-In-Reply-To: <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 2 Nov 2023 11:30:07 +0100
-Message-ID: <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
-Subject: Re: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <928df647-5b20-406b-8da5-3199f5cfbb48@amd.com>
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 9:57=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Nov 1, 2023 at 6:56=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrot=
-e:
-> >
-> > Hi,
-> >
-> > The verifier incorrectly rejects the following prog in check_cfg() when
-> > loading with root with confusing log `back-edge insn from 7 to 8`:
-> >   /* 0: r9 =3D 2
-> >    * 1: r3 =3D 0x20
-> >    * 2: r4 =3D 0x35
-> >    * 3: r8 =3D r4
-> >    * 4: goto+3
-> >    * 5: r9 -=3D r3
-> >    * 6: r9 -=3D r4
-> >    * 7: r9 -=3D r8
-> >    * 8: r8 +=3D r4
-> >    * 9: if r8 < 0x64 goto-5
-> >    * 10: r0 =3D r9
-> >    * 11: exit
-> >    * */
-> >   BPF_MOV64_IMM(BPF_REG_9, 2),
-> >   BPF_MOV64_IMM(BPF_REG_3, 0x20),
-> >   BPF_MOV64_IMM(BPF_REG_4, 0x35),
-> >   BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
-> >   BPF_JMP_IMM(BPF_JA, 0, 0, 3),
-> >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
-> >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
-> >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
-> >   BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
-> >   BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
-> >   BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
-> >   BPF_EXIT_INSN()
-> >
-> > -------- Verifier Log --------
-> > func#0 @0
-> > back-edge from insn 7 to 8
-> > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > peak_states 0 mark_read 0
-> >
-> > This is not intentionally rejected, right?
->
-> The way you wrote it, with goto +3, yes, it's intentional. Note that
-> you'll get different results in privileged and unprivileged modes.
-> Privileged mode allows "bounded loops" logic, so it doesn't
-> immediately reject this program, and then later sees that r8 is always
-> < 0x64, so program is correct.
->
+On Wed, Nov 01, 2023 at 08:14:31PM -0500, Mario Limonciello wrote:
+> On 11/1/2023 17:52, Bjorn Helgaas wrote:
+> > On Tue, Oct 31, 2023 at 08:34:38AM -0500, Mario Limonciello wrote:
+> > > The USB4 spec specifies that PCIe ports that are used for tunneling
+> > > PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s.
+> > > 
+> > > In reality these ports speed is controlled by the fabric implementation.
+> > 
+> > So I guess you're saying the speed advertised by PCI_EXP_LNKSTA is not
+> > the actual speed?  And we don't have a generic way to find the actual
+> > speed?
+> 
+> Correct.
+> 
+> > 
+> > > Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
+> > > to program the device will always find the PCIe ports used for
+> > > tunneling as a limiting factor and may make incorrect decisions.
+> > > 
+> > > To prevent problems in downstream drivers check explicitly for ports
+> > > being used for PCIe tunneling and skip them when looking for bandwidth
+> > > limitations.
+> > > 
+> > > 2 types of devices are detected:
+> > > 1) PCIe root port used for PCIe tunneling
+> > > 2) Intel Thunderbolt 3 bridge
+> > > 
+> > > Downstream drivers could make this change on their own but then they
+> > > wouldn't be able to detect other potential speed bottlenecks.
+> > 
+> > Is the implication that a tunneling port can *never* be a speed
+> > bottleneck?  That seems to be how this patch would work in practice.
+> 
+> I think that's a stretch we should avoid concluding.
+> 
+> IIUC the fabric can be hosting other traffic and it's entirely possible the
+> traffic over the tunneling port runs more slowly at times.
+> 
+> Perhaps that's why the the USB4 spec decided to advertise it this way? I
+> don't know.
+> 
+> > 
+> > > Link: https://lore.kernel.org/linux-pci/7ad4b2ce-4ee4-429d-b5db-3dfc360f4c3e@amd.com/
+> > > Link: https://www.usb.org/document-library/usb4r-specification-v20
+> > >        USB4 V2 with Errata and ECN through June 2023 - CLEAN p710
+> > 
+> > I guess this is sec 11.2.1 ("PCIe Physical Layer Logical Sub-block")
+> > on PDF p710 (labeled "666" on the printed page).  How annoying that
+> > the PDF page numbers don't match the printed ones; do the section
+> > numbers at least stay stable in new spec revisions?
+> 
+> I'd hope so.  I'll change it to section numbers in the next revision.
+> 
+> > 
+> > > Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925
+> > 
+> > This issue says the external GPU doesn't work at all.  Does this patch
+> > fix that?  This patch looks like it might improve GPU performance, but
+> > wouldn't fix something that didn't work at all.
+> 
+> The issue actually identified 4 distinct different problems.  The 3 problems
+> will be fixed in amdgpu which are functional.
+> 
+> This performance one was from later in the ticket after some back and forth
+> identifying proper solutions for the first 3.
+> 
+> > 
+> > > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > > ---
+> > >   drivers/pci/pci.c | 41 +++++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 41 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index 59c01d68c6d5..4a7dc9c2b8f4 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -6223,6 +6223,40 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
+> > >   }
+> > >   EXPORT_SYMBOL(pcie_set_mps);
+> > > +/**
+> > > + * pcie_is_tunneling_port - Check if a PCI device is used for TBT3/USB4 tunneling
+> > > + * @dev: PCI device to check
+> > > + *
+> > > + * Returns true if the device is used for PCIe tunneling, false otherwise.
+> > > + */
+> > > +static bool
+> > > +pcie_is_tunneling_port(struct pci_dev *pdev)
+> > 
+> > Use usual function signature styling (all on one line).
+> 
+> OK.
+> 
+> > 
+> > > +{
+> > > +	struct device_link *link;
+> > > +	struct pci_dev *supplier;
+> > > +
+> > > +	/* Intel TBT3 bridge */
+> > > +	if (pdev->is_thunderbolt)
+> > > +		return true;
+> > > +
+> > > +	if (!pci_is_pcie(pdev))
+> > > +		return false;
+> > > +
+> > > +	if (pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
+> > > +		return false;
+> > > +
+> > > +	/* PCIe root port used for tunneling linked to USB4 router */
+> > > +	list_for_each_entry(link, &pdev->dev.links.suppliers, c_node) {
+> > > +		supplier = to_pci_dev(link->supplier);
+> > > +		if (!supplier)
+> > > +			continue;
+> > > +		if (supplier->class == PCI_CLASS_SERIAL_USB_USB4)
+> > > +			return true;
+> > 
+> > Since this is in drivers/pci, and this USB4/Thunderbolt routing is not
+> > covered by the PCIe specs, this is basically black magic.  Is there a
+> > reference to the USB4 spec we could include to help make it less
+> > magical?
+> 
+> The "magic" part is that there is an ACPI construct to indicate a PCIe port
+> is linked to a USB4 router.
+> 
+> Here is a link to the page that is explained:
+> https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/usb4-acpi-requirements#port-mapping-_dsd-for-usb-3x-and-pcie
+> 
+> In the Linux side this link is created in the 'thunderbolt' driver.
+> 
+> Thinking about this again, this does actually mean we could have a different
+> result based on whether pcie_bandwidth_available() is called before or after
+> the 'thunderbolt' driver has loaded.
+> 
+> For example if a GPU driver that called pcie_bandwidth_available() was in
+> the initramfs but 'thunderbolt' was in the rootfs we might end up with the
+> wrong result again.
 
-I load the program with privileged mode, and goto-5 makes the program
-run from #9 to #5, so r8 is updated and the program is not infinite loop.
+Right, that's possible if the boot firmware has support for a connection
+manager. Although we do reset the whole topology with the USB4 v2 host
+routers this is kept as is for v1.
 
-> But in unprivileged mode the rules are different, and this conditional
-> back edge is not allowed, which is probably what you are getting.
->
-> It's actually confusing and your "back-edge from insn 7 to 8" is out
-> of date and doesn't correspond to your program, you should see
-> "back-edge from insn 11 to 7", please double check.
->
+> Considering this I think it's a good idea to move that creation of the
+> device link into drivers/pci/pci-acpi.c and store a bit in struct pci_device
+> to indicate it's a tunneled port.
 
-Yes it's also confusing to me, but "back-edge from insn 7 to 8" is what
-I got. The execution path of the program is #4 to #8 (goto+3), so the
-verifier see the #8 first. Then, the program then goes #9 to #5 (goto-5),
-the verifier thus sees #7 to #8 and incorrectly concludes back-edge here.
+Note it currently is setting the link between xHCI and the
+USB4/Thunderbolt host controller but we may want to change it later to
+link between USB 3.x port and the USB4/Thunderbolt host to allow more
+fine grained power management, this is especially true with the new USB
+Gen T tunneling. So for now it is only PCI but we may need to touch the
+USB stack too (perhaps put it in drivers/acpi/ instead).
 
-This can is the verifier log I got from latest bpf-next, this C program can
-reproduce this: https://pastebin.com/raw/Yug0NVwx
+> Then 'thunderbolt' can look for this directly instead of walking all the FW
+> nodes.
+> 
+> pcie_bandwidth_available() can just look at the tunneled port bit instead of
+> the existence of the device link.
+> 
+> > 
+> > Lukas' brief intro in
+> > https://lore.kernel.org/all/20230925141930.GA21033@wunner.de/ really
+> > helped me connect a few dots, because things like
+> > Documentation/admin-guide/thunderbolt.rst assume we already know those
+> > details.
+> 
+> Thanks for sharing that.  If I move the detection mechanism as I suggested
+> above I'll reference some of that as well in the commit message to explain
+> what exactly a tunneled port is.
 
-> Anyways, while I was looking into this, I realized that ldimm64 isn't
-> handled exactly correctly in check_cfg(), so I just sent a fix. It
-> also adds a nicer detection of jumping into the middle of the ldimm64
-> instruction, which I believe is something you were advocating for.
->
-> >
-> > Best
-> > Hao
+I'm not sure it makes sense to explain from the zero all this stuff that
+people can easily look up from the corresponding spec, such as PCIe or
+USB.
+
+There is a good picture in USB4 v2 ch 2.2.3 about paths crossing USB4
+fabric, perhaps reference that one? Or ch 2.2.10.3 that shows how this
+works with PCIe tunneling instead (although they are similar).
