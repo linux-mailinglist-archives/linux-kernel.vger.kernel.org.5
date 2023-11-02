@@ -2,221 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5ED7DF248
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23D77DF254
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347150AbjKBMY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S234904AbjKBM1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346094AbjKBMYy (ORCPT
+        with ESMTP id S234302AbjKBM1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:24:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6DEAF136;
-        Thu,  2 Nov 2023 05:24:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64CA42F4;
-        Thu,  2 Nov 2023 05:25:32 -0700 (PDT)
-Received: from [10.1.33.173] (XHFQ2J9959.cambridge.arm.com [10.1.33.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D7C33F67D;
-        Thu,  2 Nov 2023 05:24:48 -0700 (PDT)
-Message-ID: <662df57e-47f1-4c15-9b84-f2f2d587fc5c@arm.com>
-Date:   Thu, 2 Nov 2023 12:24:47 +0000
+        Thu, 2 Nov 2023 08:27:44 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Nov 2023 05:27:34 PDT
+Received: from esa6.hc3370-68.iphmx.com (esa6.hc3370-68.iphmx.com [216.71.155.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC9D112;
+        Thu,  2 Nov 2023 05:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1698928055;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=SOa8sX/Ie2qKItHbC8xOcneJFIOfk23Ogyua++a0w4w=;
+  b=OFoPDU7xzZyj/MvOWi3+d+lpirnYnG0h31b7D+cOG8C7jt4iels+ETEL
+   IV1oJKWK0Hr1Un12GyMHqwXv3y+7Gh8ZNbsMp9mkltbLVos5bpQi0NVji
+   W8TbdRY6ncdH86YPtr0sSiRnzuRqsme9w3Upn9xo/Gmi824yDchRkSGKz
+   k=;
+X-CSE-ConnectionGUID: pNIzOpSTTbaXx/hvRfdv1w==
+X-CSE-MsgGUID: BpbD5vabTnSNIjuRbaZWVQ==
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+X-SBRS: 4.0
+X-MesageID: 126596381
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.159.70
+X-Policy: $RELAYED
+X-ThreatScanner-Verdict: Negative
+IronPort-Data: A9a23:gJjK3qp7QmFwiY0gQfooSElf0/teBmJ/YxIvgKrLsJaIsI4StFCzt
+ garIBnXMq2CNjPyet1zPoqx8EoPvsTQyNdmSQVlpSk2Qn8RpZuZCYyVIHmrMnLJJKUvbq7FA
+ +Y2MYCccZ9uHhcwgj/3b9ANeFEljfngqoLUUbOCYmYpA1Y8FE/NsDo788YhmIlknNOlNA2Ev
+ NL2sqX3NUSsnjV5KQr40YrawP9UlKq04GhwUmAWP6gR5waHzyNNUPrzGInqR5fGatgMdgKFb
+ 76rIIGRpgvx4xorA9W5pbf3GmVirmn6ZFXmZtJ+AsBOszAazsAA+v9T2Mk0MC+7vw6hjdFpo
+ OihgLTrIesf0g8gr8xGO/VQO3kW0aSrY9YrK1Dn2SCY5xWun3cBX5yCpaz5VGEV0r8fPI1Ay
+ RAXACgrTwKkn9mK/LiyevkrhtoZIsX1ZZxK7xmMzRmBZRonaZXKQqGM7t5ExjYgwMtJGJ4yZ
+ eJAN2ApNk6ZJUQSaxFIUPrSn8/x7pX7WxRepEiYuuwc5G/LwRYq+LPsLMDUapqBQsA9ckOw/
+ ziYojWnWUFDXDCZ4RCd+F7xmObFoSXAfqMQCYey/8xVvmTGkwT/DzVJDADm8JFVkHWWWM13L
+ 00S5zpopq83nGSxSdP9dx61uniJulgbQdU4O+ki6QyXw67V+AexBWUeSDNFLts8u6ceRTUrx
+ 1aPkMHBAD1kqrqOTnyBsLyTqFuaOjkOBWoDbjUDVgwL/5/op4Rbph7CRctiOKu0hcfyAjb+3
+ 3aBqy1Wr64PgNAGkbqy/VTvgyqh4JPOS2Yd5RTTUySg4xJ0fqalf4Hu4l/ehd5MLYOYUkOA+
+ mMFhcGY7esOJZGVmWqGR+BlNKu0/O3DOTvQjER0GJ8J9yygvXWkeOh44ixlOEZvdMsefyT1S
+ E/LtEVa45o7FGv6M4d0bpi3BsBsyrLvffz9UvnIYN1UZ919bg6Z8TsrdR7O937inVJqkqwlP
+ 5qfN8G2Ah4yDaVh0SrzX+wc+aEkyzp4xm7JQ53/iRO93tK2YH+TVKdAMEqWY/onxL2LrR+T8
+ NtFMcaOjRJFX4XWaDH/+IoSIFZaa3Q2bbj6otJaMO6KJBFrHkklCvnM0fUgfZBom+JekeKg1
+ nGlU2dK2Ub4nzvMLgDiQnVibrzodYxyoXIyIWonOlPA83IjbIKg5a4EX5QwerYj+apoyvscZ
+ +UKf9WoBvVJVyjd/DIcfd/xoeRKeAqrjBiSFyujbiI2c5NpS0rO4NCMVgLp+DgmDyy5r8Iyr
+ rSskATBTvIrQwVkEdaTa/+1yV61lWYSlfg0XEbSJNRXPkL2/+BCNCHwyPs2PukPJA/Fyz/c0
+ ByZaSr0vsGU/dVzqoOQw/nZ/sH2S4OSA3a2AUHDy5ekEjHhwlapyL9QF+aWRz7RSjrrrfDKi
+ fpu8x3sDBEWtA8U4tosQug3kP5WC8jH/eEAklo+dJnfRxH7Uuk+fyPuMdxn7/UVntdkVR2Kt
+ lVjEzWwEZ6OIsrhWGUJPgsjYf/rORo8wWKKsq1dzKkX/kZKEFu7vaZ6ZULkZNR1ducdDW/c6
+ b5JVDQqwwK+kAE2Fd2NkzpZ8W+BRlRZDfR35s9BXtG12lN7or2nXXA7InaoiKxjlv0VbxJ0S
+ tNqrPGqa0tgKrrqLCNoSCmlMRt1jpUSohFapGI/y6CysoOd3JcfhUQBmQnbuywJln2rJcovY
+ Dk0X6C0TI3SlwpVaD9rBjD1QVkYWk3DpCQcCTIhzQXkcqVhbUSVREVVBApH1BlxH750FtSDw
+ Iyl9Q==
+IronPort-HdrOrdr: A9a23:t96daaPaoXi8YsBcTmyjsMiBIKoaSvp037Dk7SFMoHtuA6qlfq
+ GV7ZMmPHrP4gr5N0tMpTntAsW9qDbnhP1ICWd4B8bfYOCkghrUEGlahbGSvAEIYheOiNK1t5
+ 0BT0EOMqyVMbEgt7eC3ODQKb9Jq+VvsprY59s2qU0DcegAUdAE0+4WMGim+2RNNXh7LKt8Op
+ qAx9ZN4wGtcW4Qaa2AdwM4dtmGid3XtY7sJSULDR4/6AWIkFqTmcXHOind8BcCci9FhYwv+2
+ jdkwD/++GKvvyhxgXHvlWjnKh+qZ/OysZjGMfJsMQTJzn24zzYHLhJVrGZoTAzqPyu7lEx+e
+ O80ysdAw==
+X-Talos-CUID: 9a23:PQz+v20pJbdTWQTsAXS8ZLxfAuYEYFrF90vsKUaIGSFpVoebRUHJ5/Yx
+X-Talos-MUID: 9a23:tEDSUQsAOipBZjk9982nriloGJp26q6SDnsrsJcbgcONBxNOAmLI
+X-IronPort-AV: E=Sophos;i="6.03,271,1694750400"; 
+   d="scan'208";a="126596381"
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: [PATCH 0/3] x86/apic: Misc pruning
+Date:   Thu, 2 Nov 2023 12:26:18 +0000
+Message-ID: <20231102-x86-apic-v1-0-bf049a2a0ed6@citrix.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] selftests/mm: Add a new test for madv and hugetlb
-Content-Language: en-GB
-To:     Breno Leitao <leitao@debian.org>, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-mm@kvack.org, riel@surriel.com,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20231005163922.87568-1-leitao@debian.org>
- <20231005163922.87568-3-leitao@debian.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231005163922.87568-3-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAGqVQ2UC/x3MQQqAIBBA0avIrBvQEUK6SrQQnWo2JgohiHdPW
+ j74/A6Vi3CFTXUo/EqVJ02YRUG4fboYJU4DabLGaMLmVvRZAjoXg2XPVluCmefCp7R/tR9jfBw
+ p+fhaAAAA
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Steve Wahl <steve.wahl@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "Russ Anderson" <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        "Andy Shevchenko" <andy@infradead.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "Dexuan Cui" <decui@microsoft.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Breno,
+Seriously, this work started out trying to fix a buggy comment.  It
+escalated somewhat...  Perform some simple tidying.
 
+P.S. I'm trialing `b4 prep` to send this series.  I've got some notes
+already; others welcome too.
 
-On 05/10/2023 17:39, Breno Leitao wrote:
-> Create a selftest that exercises the race between page faults and
-> madvise(MADV_DONTNEED) in the same huge page. Do it by running two
-> threads that touches the huge page and madvise(MADV_DONTNEED) at the same
-> time.
-> 
-> In case of a SIGBUS coming at pagefault, the test should fail, since we
-> hit the bug.
-> 
-> The test doesn't have a signal handler, and if it fails, it fails like
-> the following
-> 
->   ----------------------------------
->   running ./hugetlb_fault_after_madv
->   ----------------------------------
->   ./run_vmtests.sh: line 186: 595563 Bus error    (core dumped) "$@"
->   [FAIL]
-> 
-> This selftest goes together with the fix of the bug[1] itself.
-> 
-> [1] https://lore.kernel.org/all/20231001005659.2185316-1-riel@surriel.com/#r
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->  tools/testing/selftests/mm/Makefile           |  1 +
->  .../selftests/mm/hugetlb_fault_after_madv.c   | 73 +++++++++++++++++++
->  tools/testing/selftests/mm/run_vmtests.sh     |  4 +
->  3 files changed, 78 insertions(+)
->  create mode 100644 tools/testing/selftests/mm/hugetlb_fault_after_madv.c
-> 
-> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-> index 6a9fc5693145..e71ec9910c62 100644
-> --- a/tools/testing/selftests/mm/Makefile
-> +++ b/tools/testing/selftests/mm/Makefile
-> @@ -68,6 +68,7 @@ TEST_GEN_FILES += split_huge_page_test
->  TEST_GEN_FILES += ksm_tests
->  TEST_GEN_FILES += ksm_functional_tests
->  TEST_GEN_FILES += mdwe_test
-> +TEST_GEN_FILES += hugetlb_fault_after_madv
->  
->  ifneq ($(ARCH),arm64)
->  TEST_GEN_PROGS += soft-dirty
-> diff --git a/tools/testing/selftests/mm/hugetlb_fault_after_madv.c b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
-> new file mode 100644
-> index 000000000000..73b81c632366
-> --- /dev/null
-> +++ b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
-> @@ -0,0 +1,73 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <pthread.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +
-> +#include "vm_util.h"
-> +#include "../kselftest.h"
-> +
-> +#define MMAP_SIZE (1 << 21)
-> +#define INLOOP_ITER 100
-> +
-> +char *huge_ptr;
-> +
-> +/* Touch the memory while it is being madvised() */
-> +void *touch(void *unused)
-> +{
-> +	char *ptr = (char *)huge_ptr;
-> +
-> +	for (int i = 0; i < INLOOP_ITER; i++)
-> +		ptr[0] = '.';
-> +
-> +	return NULL;
-> +}
-> +
-> +void *madv(void *unused)
-> +{
-> +	usleep(rand() % 10);
-> +
-> +	for (int i = 0; i < INLOOP_ITER; i++)
-> +		madvise(huge_ptr, MMAP_SIZE, MADV_DONTNEED);
-> +
-> +	return NULL;
-> +}
-> +
-> +int main(void)
-> +{
-> +	unsigned long free_hugepages;
-> +	pthread_t thread1, thread2;
-> +	/*
-> +	 * On kernel 6.4, we are able to reproduce the problem with ~1000
-> +	 * interactions
-> +	 */
-> +	int max = 10000;
-> +
-> +	srand(getpid());
-> +
-> +	free_hugepages = get_free_hugepages();
-> +	if (free_hugepages != 1) {
-> +		ksft_exit_skip("This test needs one and only one page to execute. Got %lu\n",
-> +			       free_hugepages);
-> +	}
-> +
-> +	while (max--) {
-> +		huge_ptr = mmap(NULL, MMAP_SIZE, PROT_READ | PROT_WRITE,
-> +				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-> +				-1, 0);
-> +
-> +		if ((unsigned long)huge_ptr == -1)
-> +			ksft_exit_skip("Failed to allocated huge page\n");
-> +
-> +		pthread_create(&thread1, NULL, madv, NULL);
-> +		pthread_create(&thread2, NULL, touch, NULL);
-> +
-> +		pthread_join(thread1, NULL);
-> +		pthread_join(thread2, NULL);
-> +		munmap(huge_ptr, MMAP_SIZE);
-> +	}
-> +
-> +	return KSFT_PASS;
-> +}
-> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-> index 3e2bc818d566..9f53f7318a38 100755
-> --- a/tools/testing/selftests/mm/run_vmtests.sh
-> +++ b/tools/testing/selftests/mm/run_vmtests.sh
-> @@ -221,6 +221,10 @@ CATEGORY="hugetlb" run_test ./hugepage-mremap
->  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
->  CATEGORY="hugetlb" run_test ./hugetlb-madvise
->  
-> +# For this test, we need one and just one huge page
-> +echo 1 > /proc/sys/vm/nr_hugepages
+Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
+---
+Andrew Cooper (3):
+      x86/apic: Drop apic::delivery_mode
+      x86/apic: Drop enum apic_delivery_modes
+      x86/apic: Drop struct local_apic
 
-I've noticed that this change breaks some of the uffd-stress tests further down
-the file, because you have freed previously reserved hugepages that the test
-requires to run. I notice that the patch is already in mm-stable, so perhaps its
-possible to submit a patch that does a save and restore?
+ arch/x86/include/asm/apic.h           |   2 -
+ arch/x86/include/asm/apicdef.h        | 276 +---------------------------------
+ arch/x86/kernel/apic/apic_flat_64.c   |   2 -
+ arch/x86/kernel/apic/apic_noop.c      |   1 -
+ arch/x86/kernel/apic/apic_numachip.c  |   2 -
+ arch/x86/kernel/apic/bigsmp_32.c      |   1 -
+ arch/x86/kernel/apic/probe_32.c       |   1 -
+ arch/x86/kernel/apic/x2apic_cluster.c |   1 -
+ arch/x86/kernel/apic/x2apic_phys.c    |   1 -
+ arch/x86/kernel/apic/x2apic_uv_x.c    |   1 -
+ arch/x86/platform/uv/uv_irq.c         |   2 +-
+ drivers/pci/controller/pci-hyperv.c   |   7 -
+ 12 files changed, 8 insertions(+), 289 deletions(-)
+---
+base-commit: b56ebe7c896dc78b5865ec2c4b1dae3c93537517
+change-id: 20231102-x86-apic-88dc3eae3032
 
-Although I'm not sure if that might be tricky because the previous reservation
-is per-size and per-node (our CI does this on the kernel command line), and I
-suspect if you want just 1 huge page in the entire system you won't be able to
-get back to the previous state by just restoring this value?
-
-These are the failing tests for reference:
-
-# ------------------------------------
-# running ./uffd-stress hugetlb 128 32
-# ------------------------------------
-# nr_pages: 64, nr_pages_per_cpu: 8
-# ERROR: context init failed (errno=12, @uffd-stress.c:254)
-# [FAIL]
-# --------------------------------------------
-# running ./uffd-stress hugetlb-private 128 32
-# --------------------------------------------
-# nr_pages: 64, nr_pages_per_cpu: 8
-# ERROR: context init failed (errno=12, @uffd-stress.c:254)
-# [FAIL]
-
-Thanks,
-Ryan
-
-
-
-> +CATEGORY="hugetlb" run_test ./hugetlb_fault_after_madv
-> +
->  if test_selected "hugetlb"; then
->  	echo "NOTE: These hugetlb tests provide minimal coverage.  Use"
->  	echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
+Best regards,
+-- 
+Andrew Cooper <andrew.cooper3@citrix.com>
 
