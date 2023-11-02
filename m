@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A0D7DF29D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384297DF29E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376403AbjKBMiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+        id S1376330AbjKBMjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376379AbjKBMio (ORCPT
+        with ESMTP id S1376372AbjKBMjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:38:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEFE197
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:38:36 -0700 (PDT)
+        Thu, 2 Nov 2023 08:39:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A571F18A;
+        Thu,  2 Nov 2023 05:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698928716; x=1730464716;
+  t=1698928739; x=1730464739;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=P0/Xt85LX/gplXPKMJhGwaLX5bFksjydXcwt6V+SytI=;
-  b=KCFq0GthXMyTjGKZRaqw3Neodttd7iiadBgP68CRy/upo1ILoQAxu/02
-   RGwK/RAjaZXExnVdrVvDJkYHPcUmOuw2xfHO2c8AA1vddDgoyda5DhEis
-   b4jhhHfCL4sLrCx/LuBZ8MaDG7Xj0Jf24NcYel+Q1+B+OPZ3UaDVO2gsp
-   P+0kmT8uppjULzRA2D7FU9XoR+jOlTn39V78gNDwninvukTwD/EUJLyZZ
-   AJzYn+FIGm3RMw8+SFZKcbwLkR1qjpf3Q02xHJ1TElae/nxzhMqRiS6FU
-   +nqElSNmEn6R675qlAqzW3xoSoZM/zSqeqbpqZBCi83xziuawkLkd2QFt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="392585824"
+  bh=76z3Un6rKgu/Gfrm6QEwK9fIGnZpQFZgYPQm9HswN+g=;
+  b=iQ+de6CuGtch6oDMHFQDy89/yxmwmDtYhT607T0OLBoR/8PQrbqG3lbZ
+   r8KFmuXLiwzuugFXdjXXI5DMRumdsydU5Dq/QHe+nDt/yR1w1hp4SPrFF
+   Ao72LR7/+2E03tWl8SiRnJTvixnyOp1n9cUbZFT+KBNno2jYQHTAvbPg8
+   ktPBMKVlfYpTSXM54e1fOwhznvFW18hk2GgZahmnE3/wcEZKnBczIRHeb
+   6bVQgxRsVjcLJcjcP+0q/T5HBsgahyMcNj1rVoCmp/K4WCCGo/LGn3pU3
+   i5rRyBPnLtSYBs9LZbDYMdK3RMBUbwHC67VoS/xH20ThGmZ0qn/xMJ83W
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7342530"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="392585824"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:38:35 -0700
+   d="scan'208";a="7342530"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:38:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="761286316"
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764901219"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="761286316"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:38:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qyWxz-0000000Agck-1kAj;
-        Thu, 02 Nov 2023 14:38:31 +0200
-Date:   Thu, 2 Nov 2023 14:38:31 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Chen Ni <nichen@iscas.ac.cn>, lee@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: intel-lpss: Fix IRQ check
-Message-ID: <ZUOYR1l9D5s3bI37@smile.fi.intel.com>
-References: <20231101062643.507983-1-nichen@iscas.ac.cn>
- <20231101070310.GF17433@black.fi.intel.com>
- <ZUIclOuVocLUUk7_@smile.fi.intel.com>
- <20231101104717.GH17433@black.fi.intel.com>
+   d="scan'208";a="764901219"
+Received: from arajan-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.215.101])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:38:54 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 01E1210A312; Thu,  2 Nov 2023 15:38:51 +0300 (+03)
+Date:   Thu, 2 Nov 2023 15:38:51 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>, seanjc@google.com,
+        pbonzini@redhat.com
+Cc:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, dionnaglaze@google.com,
+        pgonda@google.com
+Subject: Re: [PATCH v5 13/14] x86/tsc: Mark Secure TSC as reliable clocksource
+Message-ID: <20231102123851.jsdolkfz7sd3jys7@box>
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-14-nikunj@amd.com>
+ <57d63309-51cd-4138-889d-43fbdf5ec790@intel.com>
+ <ae267e31-5722-4784-9146-28bb13ca7cf5@amd.com>
+ <20231102103306.v7ydmrobd5ibs4yn@box.shutemov.name>
+ <5d8040b2-c761-4cea-a2ec-39319603e94a@amd.com>
+ <cf92b26e-d940-4dc8-a339-56903952cee2@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101104717.GH17433@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <cf92b26e-d940-4dc8-a339-56903952cee2@amd.com>
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 12:47:17PM +0200, Mika Westerberg wrote:
-> On Wed, Nov 01, 2023 at 11:38:28AM +0200, Andy Shevchenko wrote:
-> > On Wed, Nov 01, 2023 at 09:03:10AM +0200, Mika Westerberg wrote:
-> > > On Wed, Nov 01, 2023 at 06:26:43AM +0000, Chen Ni wrote:
-
-...
-
-> > > > -	if (!info || !info->mem || info->irq <= 0)
-> > > > +	if (!info || !info->mem)
-> > > 
-> > > This check (info->irq <= 0) covers both "invalid" interrupt numbers
-> > > (that's the negative errno and 0 as no interrupt) so I don't see how
-> > > this change makes it any better and the changelog does not clarify it
-> > > either.
+On Thu, Nov 02, 2023 at 05:46:26PM +0530, Nikunj A. Dadhania wrote:
+> On 11/2/2023 5:37 PM, Nikunj A. Dadhania wrote:
+> > On 11/2/2023 4:03 PM, Kirill A. Shutemov wrote:
+> >> On Thu, Nov 02, 2023 at 11:23:34AM +0530, Nikunj A. Dadhania wrote:
+> >>> On 10/30/2023 10:48 PM, Dave Hansen wrote:
+> >>>> On 10/29/23 23:36, Nikunj A Dadhania wrote:
+> >>>> ...
+> >>>>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> >>>>> index 15f97c0abc9d..b0a8546d3703 100644
+> >>>>> --- a/arch/x86/kernel/tsc.c
+> >>>>> +++ b/arch/x86/kernel/tsc.c
+> >>>>> @@ -1241,7 +1241,7 @@ static void __init check_system_tsc_reliable(void)
+> >>>>>  			tsc_clocksource_reliable = 1;
+> >>>>>  	}
+> >>>>>  #endif
+> >>>>> -	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
+> >>>>> +	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE) || cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
+> >>>>>  		tsc_clocksource_reliable = 1;
+> >>>>
+> >>>> Why can't you just set X86_FEATURE_TSC_RELIABLE?
+> >>>
+> >>> Last time when I tried, I had removed my kvmclock changes and I had set
+> >>> the X86_FEATURE_TSC_RELIABLE similar to Kirill's patch[1], this did not
+> >>> select the SecureTSC.
+> >>>
+> >>> Let me try setting X86_FEATURE_TSC_RELIABLE and retaining my patch for
+> >>> skipping kvmclock.
+> >>
+> >> kvmclock lowers its rating if TSC is good enough:
+> >>
+> >> 	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+> >> 	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+> >> 	    !check_tsc_unstable())
+> >> 		kvm_clock.rating = 299;
+> >>
+> >> Does your TSC meet the requirements?
 > > 
-> > It makes sense. The IRQ here may not be 0. We should actually fix
-> > the PCI code to guarantee that (platform_get_irq() guarantees that
-> > in platform driver).
+> > I have set TscInvariant (bit 8) in CPUID_8000_0007_edx and TSC is set as reliable.
+> > 
+> > With this I see kvm_clock rating being lowered, but kvm-clock is still being picked as clock-source.
 > 
-> Yeah but I mean the check above handles any "invalid" interrupt number
-> just fine regardless. I don't see any point changing that.
+> Ah.. at later point TSC is picked up, is this expected ?
+> 
+> [    2.564052] clocksource: Switched to clocksource kvm-clock
+> [    2.678136] clocksource: Switched to clocksource tsc
 
-The point is to have proper error code to be returned. Currently it's shadowed
-in this check.
+On bare metal I see switch from tsc-early to tsc. tsc-early rating is
+equal to kvmclock rating after it gets lowered.
+
+Maybe kvmclock rating has to be even lower after detecting sane TSC?
+
+Sean, Paolo, any comments?
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+  Kiryl Shutsemau / Kirill A. Shutemov
