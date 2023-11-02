@@ -2,307 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B30447DF4FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1427DF503
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjKBO3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
+        id S233285AbjKBO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjKBO2t (ORCPT
+        with ESMTP id S230390AbjKBO3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:28:49 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1336312F
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:28:44 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A2ERYNE03062455, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A2ERYNE03062455
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Nov 2023 22:27:34 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 2 Nov 2023 22:27:34 +0800
-Received: from james-bs01.realtek.com.tw (172.21.190.247) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 2 Nov 2023 22:27:33 +0800
-From:   James Tai <james.tai@realtek.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-realtek-soc@lists.infradead.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 6/6] irqchip: Introduce RTD1619B support using the Realtek Common Interrupt Controller Driver
-Date:   Thu, 2 Nov 2023 22:27:31 +0800
-Message-ID: <20231102142731.2087245-7-james.tai@realtek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231102142731.2087245-1-james.tai@realtek.com>
-References: <20231102142731.2087245-1-james.tai@realtek.com>
+        Thu, 2 Nov 2023 10:29:06 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470C3194
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:28:59 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso1237794e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698935337; x=1699540137; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=P3lmLdjQaNimcJWA3Fr+Yw1sTpIlS4jtMo4awig5S1k=;
+        b=vSrRzwKd/7GhL0+Wrrd9PVyxDzAwja2Eow30R/qcLDwdm9XkRMEjLHOn9/8Gb7t41w
+         PEITx14RHg4e/VAcajYt3hjwgwcsk4IfhvIAdLOqJvqb1vcmAieZrQ2Wi8Whprno762+
+         OPGSV5XZ+1AO7D9j+HpEc7VA6Yt3Tf16+MnFzJI6PPMtvKJmlOSqKBzyaKU2uzJ5HRYO
+         dssXH/hXpJNu4cHLArNrs9qqlmkDLJOVathKAwDzMkQbHmeHx95EnTFtdD6i8oxK/ucm
+         CP4jL6P+cLOZ+xYynsn8IbX8leWQ3rKPx+fe1TesXCJKM19pWNsxoAXu+kRTKB0dZS8y
+         LqGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698935337; x=1699540137;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P3lmLdjQaNimcJWA3Fr+Yw1sTpIlS4jtMo4awig5S1k=;
+        b=GYjJFfAWE5R3dk5xxTP9QS+tVb80GqF1YWMCwPqZllAoYFJbUkmR7Peh6K1w5mWvAo
+         SPukB7ErVFbbkyg7TutF8Hhpr0r111iX2Z6Dzwv/8M04j2BoTOIwJICuPt3DHHwo3xk7
+         5btR3cI/EzyAUoaa8rkEuc9yWI/waEe+iN+mwFv7NIjcnZ8bMUWAWkWgEGM4yZ1ZxV/e
+         n0qmzW4wyTv7VtRMrTkw4rpiNz2jFlC6/R85IukmFAbT/9ddemwnb0v6xSwqTLwN7q6W
+         xr/tnYQJ4Sjy8K97oDHSR61PVgBvAVxvnJvPn4vrlEGPQNzWWKiO7U/kDmhKosIH/Oay
+         GtVA==
+X-Gm-Message-State: AOJu0YwTIiK90+rELv6qVq/bqtVAEYMYMyzSubDMb0MLKCiH3NrYZ8ag
+        sW6P2ogw1wEyegr1mOm+j4uT1N6UaABpopvNzUAIVw==
+X-Google-Smtp-Source: AGHT+IGs0t6q6TkBlLPGWqM1z4pytxSxeS3aX2awqyyZpcVQDz0zPYHXf6fCdagD0an24H9BwKAbRVXQU1WJvefrHxQ=
+X-Received: by 2002:ac2:4571:0:b0:509:43c8:f5d9 with SMTP id
+ k17-20020ac24571000000b0050943c8f5d9mr3025234lfm.49.1698935337467; Thu, 02
+ Nov 2023 07:28:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.190.247]
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
-X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: license violation
-X-KSE-Antivirus-Attachment-Filter-Interceptor-Info: license violation
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231102073056.174480-1-sumit.garg@linaro.org> <20231102073056.174480-2-sumit.garg@linaro.org>
+In-Reply-To: <20231102073056.174480-2-sumit.garg@linaro.org>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Thu, 2 Nov 2023 16:28:21 +0200
+Message-ID: <CAC_iWjL_DLrKqbxvnWPmOYxLULjC46LMca5cF_sza1LDyifuWA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] tee: optee: Fix supplicant based device enumeration
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     jens.wiklander@linaro.org, op-tee@lists.trustedfirmware.org,
+        jan.kiszka@siemens.com, arnd@linaro.org, ardb@kernel.org,
+        jerome.forissier@linaro.org, masahisa.kojima@linaro.org,
+        maxim.uvarov@linaro.org, jarkko.sakkinen@linux.intel.com,
+        linux-kernel@vger.kernel.org, diogo.ivo@siemens.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the RTD1619B platform.
+Hi Sumit,
 
-Signed-off-by: James Tai <james.tai@realtek.com>
-Change-Id: I1147a27add069b86c879d15003ded2e364f11ea9
----
- drivers/irqchip/Kconfig                |   6 +
- drivers/irqchip/Makefile               |   1 +
- drivers/irqchip/irq-realtek-rtd1619b.c | 201 +++++++++++++++++++++++++
- 3 files changed, 208 insertions(+)
- create mode 100644 drivers/irqchip/irq-realtek-rtd1619b.c
+On Thu, 2 Nov 2023 at 09:31, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Currently supplicant dependent optee device enumeration only registers
+> devices whenever tee-supplicant is invoked for the first time. But it
+> forgets to remove devices when tee-supplicant daemon stops running and
+> closes its context gracefully. This leads to following error for fTPM
+> driver during reboot/shutdown:
+>
+> [   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke error: 0xffff3024
+>
+> Fix this by adding an attribute for supplicant dependent devices so that
+> the user-space service can detect and detach supplicant devices before
+> closing the supplicant:
+>
+> $ for dev in /sys/bus/tee/devices/*; do if [[ -f "$dev/need_supplicant" && -f "$dev/driver/unbind" ]]; \
+>       then echo $(basename "$dev") > $dev/driver/unbind; fi done
+>
+> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+> Link: https://github.com/OP-TEE/optee_os/issues/6094
+> Fixes: 5f178bb71e3a ("optee: enable support for multi-stage bus enumeration")
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  .../ABI/testing/sysfs-bus-optee-devices         |  9 +++++++++
+>  drivers/tee/optee/device.c                      | 17 +++++++++++++++--
+>  2 files changed, 24 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-optee-devices b/Documentation/ABI/testing/sysfs-bus-optee-devices
+> index 0f58701367b6..d914f6629662 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-optee-devices
+> +++ b/Documentation/ABI/testing/sysfs-bus-optee-devices
+> @@ -6,3 +6,12 @@ Description:
+>                 OP-TEE bus provides reference to registered drivers under this directory. The <uuid>
+>                 matches Trusted Application (TA) driver and corresponding TA in secure OS. Drivers
+>                 are free to create needed API under optee-ta-<uuid> directory.
+> +
+> +What:          /sys/bus/tee/devices/optee-ta-<uuid>/need_supplicant
+> +Date:          July 2008
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 65e2d67d1505..c5b2762df420 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -240,6 +240,12 @@ config REALTEK_RTD1325_INTC
- 	help
- 	  Support for Realtek RTD1325 Interrupt Controller.
- 
-+config REALTEK_RTD1619B_INTC
-+	tristate "Realtek RTD1619B interrupt controller"
-+	select REALTEK_DHC_INTC
-+	help
-+	  Support for Realtek RTD1619B Interrupt Controller.
-+
- config RENESAS_INTC_IRQPIN
- 	bool "Renesas INTC External IRQ Pin Support" if COMPILE_TEST
- 	select IRQ_DOMAIN
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index eaa12928d60b..da308aefcb87 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -51,6 +51,7 @@ obj-$(CONFIG_REALTEK_DHC_INTC)		+= irq-realtek-intc-common.o
- obj-$(CONFIG_REALTEK_RTD1319_INTC)	+= irq-realtek-rtd1319.o
- obj-$(CONFIG_REALTEK_RTD1319D_INTC)	+= irq-realtek-rtd1319d.o
- obj-$(CONFIG_REALTEK_RTD1325_INTC)	+= irq-realtek-rtd1325.o
-+obj-$(CONFIG_REALTEK_RTD1619B_INTC)	+= irq-realtek-rtd1619b.o
- obj-$(CONFIG_RENESAS_INTC_IRQPIN)	+= irq-renesas-intc-irqpin.o
- obj-$(CONFIG_RENESAS_IRQC)		+= irq-renesas-irqc.o
- obj-$(CONFIG_RENESAS_RZA1_IRQC)		+= irq-renesas-rza1.o
-diff --git a/drivers/irqchip/irq-realtek-rtd1619b.c b/drivers/irqchip/irq-realtek-rtd1619b.c
-new file mode 100644
-index 000000000000..d76c3f113984
---- /dev/null
-+++ b/drivers/irqchip/irq-realtek-rtd1619b.c
-@@ -0,0 +1,201 @@
-+// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
-+/*
-+ * Realtek RTD1619B interrupt controller driver
-+ *
-+ * Copyright (c) 2023 Realtek Semiconductor Corporation
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/irqchip.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+
-+#include "irq-realtek-intc-common.h"
-+
-+enum rtd1619b_iso_isr_bits {
-+	RTD1619B_ISO_ISR_TC3_SHIFT = 1,
-+	RTD1619B_ISO_ISR_UR0_SHIFT = 2,
-+	RTD1619B_ISO_ISR_LSADC0_SHIFT = 3,
-+	RTD1619B_ISO_ISR_WDOG1_NMI_SHIFT = 4,
-+	RTD1619B_ISO_ISR_IRDA_SHIFT = 5,
-+	RTD1619B_ISO_ISR_SPI1_SHIFT = 6,
-+	RTD1619B_ISO_ISR_WDOG2_NMI_SHIFT = 7,
-+	RTD1619B_ISO_ISR_I2C0_SHIFT = 8,
-+	RTD1619B_ISO_ISR_TC4_SHIFT = 9,
-+	RTD1619B_ISO_ISR_TC7_SHIFT = 10,
-+	RTD1619B_ISO_ISR_I2C1_SHIFT = 11,
-+	RTD1619B_ISO_ISR_HIFI_WAKEUP_SHIFT = 14,
-+	RTD1619B_ISO_ISR_WDOG4_NMI_SHIFT = 15,
-+	RTD1619B_ISO_ISR_TC8_SHIFT = 16,
-+	RTD1619B_ISO_ISR_VFD_SHIFT = 17,
-+	RTD1619B_ISO_ISR_VTC_SHIFT = 18,
-+	RTD1619B_ISO_ISR_GPIOA_SHIFT = 19,
-+	RTD1619B_ISO_ISR_GPIODA_SHIFT = 20,
-+	RTD1619B_ISO_ISR_ISO_MISC_SHIFT = 21,
-+	RTD1619B_ISO_ISR_CBUS_SHIFT = 22,
-+	RTD1619B_ISO_ISR_ETN_SHIFT = 23,
-+	RTD1619B_ISO_ISR_USB_HOST_SHIFT = 24,
-+	RTD1619B_ISO_ISR_USB_U3_DRD_SHIFT = 25,
-+	RTD1619B_ISO_ISR_USB_U2_DRD_SHIFT = 26,
-+	RTD1619B_ISO_ISR_WDOG3_NMI_SHIFT = 27,
-+	RTD1619B_ISO_ISR_PORB_HV_CEN_SHIFT = 28,
-+	RTD1619B_ISO_ISR_PORB_DV_CEN_SHIFT = 29,
-+	RTD1619B_ISO_ISR_PORB_AV_CEN_SHIFT = 30,
-+	RTD1619B_ISO_ISR_I2C1_REQ_SHIFT = 31,
-+};
-+static const u32 rtd1619b_iso_isr_to_scpu_int_en_mask[32] = {
-+	[RTD1619B_ISO_ISR_SPI1_SHIFT] = BIT(1),
-+	[RTD1619B_ISO_ISR_UR0_SHIFT] = BIT(2),
-+	[RTD1619B_ISO_ISR_LSADC0_SHIFT] = BIT(3),
-+	[RTD1619B_ISO_ISR_IRDA_SHIFT] = BIT(5),
-+	[RTD1619B_ISO_ISR_I2C0_SHIFT] = BIT(8),
-+	[RTD1619B_ISO_ISR_I2C1_SHIFT] = BIT(11),
-+	[RTD1619B_ISO_ISR_VFD_SHIFT] = BIT(17),
-+	[RTD1619B_ISO_ISR_GPIOA_SHIFT] = BIT(19),
-+	[RTD1619B_ISO_ISR_GPIODA_SHIFT] = BIT(20),
-+	[RTD1619B_ISO_ISR_PORB_HV_CEN_SHIFT] = BIT(28),
-+	[RTD1619B_ISO_ISR_PORB_DV_CEN_SHIFT] = BIT(29),
-+	[RTD1619B_ISO_ISR_PORB_AV_CEN_SHIFT] = BIT(30),
-+	[RTD1619B_ISO_ISR_I2C1_REQ_SHIFT] = BIT(31),
-+	[RTD1619B_ISO_ISR_WDOG1_NMI_SHIFT] = IRQ_ALWAYS_ENABLED,
-+	[RTD1619B_ISO_ISR_WDOG2_NMI_SHIFT] = IRQ_ALWAYS_ENABLED,
-+	[RTD1619B_ISO_ISR_WDOG3_NMI_SHIFT] = IRQ_ALWAYS_ENABLED,
-+	[RTD1619B_ISO_ISR_WDOG4_NMI_SHIFT] = IRQ_ALWAYS_ENABLED,
-+};
-+enum rtd1619b_misc_isr_bits {
-+	RTD1619B_ISR_UR1_SHIFT = 3,
-+	RTD1619B_ISR_TC5_SHIFT = 4,
-+	RTD1619B_ISR_UR1_TO_SHIFT = 5,
-+	RTD1619B_ISR_TC0_SHIFT = 6,
-+	RTD1619B_ISR_TC1_SHIFT = 7,
-+	RTD1619B_ISR_UR2_SHIFT = 8,
-+	RTD1619B_ISR_UR2_TO_SHIFT = 13,
-+	RTD1619B_ISR_I2C5_SHIFT = 14,
-+	RTD1619B_ISR_I2C4_SHIFT = 15,
-+	RTD1619B_ISR_I2C3_SHIFT = 23,
-+	RTD1619B_ISR_SC0_SHIFT = 24,
-+	RTD1619B_ISR_SC1_SHIFT = 25,
-+	RTD1619B_ISR_SPI_SHIFT = 27,
-+	RTD1619B_ISR_FAN_SHIFT = 29,
-+};
-+static const u32 rtd1619b_misc_isr_to_scpu_int_en_mask[32] = {
-+	[RTD1619B_ISR_UR1_SHIFT] = BIT(3),
-+	[RTD1619B_ISR_UR1_TO_SHIFT] = BIT(5),
-+	[RTD1619B_ISR_UR2_TO_SHIFT] = BIT(6),
-+	[RTD1619B_ISR_UR2_SHIFT] = BIT(7),
-+	[RTD1619B_ISR_I2C5_SHIFT] = BIT(14),
-+	[RTD1619B_ISR_I2C4_SHIFT] = BIT(15),
-+	[RTD1619B_ISR_SC0_SHIFT] = BIT(24),
-+	[RTD1619B_ISR_SC1_SHIFT] = BIT(25),
-+	[RTD1619B_ISR_SPI_SHIFT] = BIT(27),
-+	[RTD1619B_ISR_I2C3_SHIFT] = BIT(28),
-+	[RTD1619B_ISR_FAN_SHIFT] = BIT(29),
-+};
-+
-+static struct realtek_intc_subset_cfg rtd1619b_intc_iso_cfgs[] = {
-+	{ 0xf7ff7f6e, }, /* normal case */
-+	{ 0x08008090, }, /* nmi wathdog case */
-+};
-+
-+static const struct realtek_intc_info rtd1619b_intc_iso_info = {
-+	.isr_offset = 0x0,
-+	.umsk_isr_offset = 0x4,
-+	.scpu_int_en_offset = 0x40,
-+	.isr_to_scpu_int_en_mask = rtd1619b_iso_isr_to_scpu_int_en_mask,
-+	.cfg = rtd1619b_intc_iso_cfgs,
-+	.cfg_num = ARRAY_SIZE(rtd1619b_intc_iso_cfgs),
-+};
-+
-+static struct realtek_intc_subset_cfg rtd1619b_intc_misc_cfgs[] = {
-+	{ 0xffffded6, }, /* normal case */
-+	{ 0x00000028, }, /* uart1 case */
-+	{ 0x00002100, }, /* uart2 case */
-+};
-+
-+static const struct realtek_intc_info rtd1619b_intc_misc_info = {
-+	.umsk_isr_offset = 0x8,
-+	.isr_offset = 0xc,
-+	.scpu_int_en_offset = 0x80,
-+	.isr_to_scpu_int_en_mask = rtd1619b_misc_isr_to_scpu_int_en_mask,
-+	.cfg = rtd1619b_intc_misc_cfgs,
-+	.cfg_num = ARRAY_SIZE(rtd1619b_intc_misc_cfgs),
-+};
-+
-+static const struct of_device_id realtek_intc_rtd1619b_dt_matches[] = {
-+	{
-+		.compatible = "realtek,rtd1619b-intc-iso",
-+		.data = &rtd1619b_intc_iso_info,
-+	}, {
-+		.compatible = "realtek,rtd1619b-intc-misc",
-+		.data = &rtd1619b_intc_misc_info,
-+	},
-+	{ /* sentinel */ }
-+};
-+
-+static int realtek_intc_rtd1619b_suspend(struct device *dev)
-+{
-+	struct realtek_intc_data *data = dev_get_drvdata(dev);
-+	const struct realtek_intc_info *info = data->info;
-+
-+	data->saved_en = readl(data->base + info->scpu_int_en_offset);
-+
-+	writel(DISABLE_INTC, data->base + info->scpu_int_en_offset);
-+	writel(CLEAN_INTC_STATUS, data->base + info->umsk_isr_offset);
-+	writel(CLEAN_INTC_STATUS, data->base + info->isr_offset);
-+
-+	return 0;
-+}
-+
-+static int realtek_intc_rtd1619b_resume(struct device *dev)
-+{
-+	struct realtek_intc_data *data = dev_get_drvdata(dev);
-+	const struct realtek_intc_info *info = data->info;
-+
-+	writel(CLEAN_INTC_STATUS, data->base + info->umsk_isr_offset);
-+	writel(CLEAN_INTC_STATUS, data->base + info->isr_offset);
-+	writel(data->saved_en, data->base + info->scpu_int_en_offset);
-+
-+	return 0;
-+}
-+
-+const struct dev_pm_ops realtek_intc_rtd1619b_pm_ops = {
-+	.suspend_noirq = realtek_intc_rtd1619b_suspend,
-+	.resume_noirq = realtek_intc_rtd1619b_resume,
-+};
-+
-+static int rtd1619b_intc_probe(struct platform_device *pdev)
-+{
-+	const struct realtek_intc_info *info;
-+
-+	info = of_device_get_match_data(&pdev->dev);
-+	if (!info)
-+		return -EINVAL;
-+
-+	return realtek_intc_probe(pdev, info);
-+}
-+
-+static struct platform_driver realtek_intc_rtd1619b_driver = {
-+	.probe = rtd1619b_intc_probe,
-+	.driver = {
-+		.name = "realtek_intc_rtd1619b",
-+		.of_match_table = realtek_intc_rtd1619b_dt_matches,
-+		.suppress_bind_attrs = true,
-+		.pm = &realtek_intc_rtd1619b_pm_ops,
-+	},
-+};
-+
-+static int __init realtek_intc_rtd1619b_init(void)
-+{
-+	return platform_driver_register(&realtek_intc_rtd1619b_driver);
-+}
-+core_initcall(realtek_intc_rtd1619b_init);
-+
-+static void __exit realtek_intc_rtd1619b_exit(void)
-+{
-+	platform_driver_unregister(&realtek_intc_rtd1619b_driver);
-+}
-+module_exit(realtek_intc_rtd1619b_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Realtek RTD1619B Interrupt Controller Driver");
--- 
-2.25.1
+nit, date needs changing
 
+> +KernelVersion: 6.7
+> +Contact:       op-tee@lists.trustedfirmware.org
+> +Description:
+> +               Allows to distinguish whether an OP-TEE based TA/device requires user-space
+> +               tee-supplicant to function properly or not. This attribute will be present for
+> +               devices which depend on tee-supplicant to be running.
+> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
+> index 64f0e047c23d..4b1092127694 100644
+> --- a/drivers/tee/optee/device.c
+> +++ b/drivers/tee/optee/device.c
+> @@ -60,7 +60,16 @@ static void optee_release_device(struct device *dev)
+>         kfree(optee_device);
+>  }
+>
+> -static int optee_register_device(const uuid_t *device_uuid)
+> +static ssize_t
+
+(struct device *dev,
+> +                                   struct device_attribute *attr,
+> +                                   char *buf)
+> +{
+> +       return 0;
+> +}
+> +
+> +static DEVICE_ATTR_RO(need_supplicant);
+> +
+> +static int optee_register_device(const uuid_t *device_uuid, u32 func)
+>  {
+>         struct tee_client_device *optee_device = NULL;
+>         int rc;
+> @@ -83,6 +92,10 @@ static int optee_register_device(const uuid_t *device_uuid)
+>                 put_device(&optee_device->dev);
+>         }
+>
+> +       if (func == PTA_CMD_GET_DEVICES_SUPP)
+> +               device_create_file(&optee_device->dev,
+> +                                  &dev_attr_need_supplicant);
+> +
+>         return rc;
+>  }
+>
+> @@ -142,7 +155,7 @@ static int __optee_enumerate_devices(u32 func)
+>         num_devices = shm_size / sizeof(uuid_t);
+>
+>         for (idx = 0; idx < num_devices; idx++) {
+> -               rc = optee_register_device(&device_uuid[idx]);
+> +               rc = optee_register_device(&device_uuid[idx], func);
+>                 if (rc)
+>                         goto out_shm;
+>         }
+> --
+> 2.34.1
+>
+
+Other than that
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
