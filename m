@@ -2,138 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CD07DFAD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F607DFADB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345759AbjKBTWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S1345563AbjKBTXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234296AbjKBTWq (ORCPT
+        with ESMTP id S232778AbjKBTXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:22:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F3F18C
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698952922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gMbvaW7xFMUV0KcreKNTNoj1dffs08hfun7sVblosFo=;
-        b=W11wx1jL8w+9uL2q8KDkPBOaGvVbXJdqMML9fEnx9VMdngtHEch9sfd+0X7OoOlG64qbjg
-        Anzi67iIkNgrmZeXs9V2KVn/KKR8UIAfaC+BRr9JIBBhcmzjdf8EeZOsQQj7njNEvOqos9
-        BwrSLmjnJSpq9pEvEnvTPS+CghgQFDk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-zLzjRFtoM5KatsAlfDD-HA-1; Thu, 02 Nov 2023 15:22:00 -0400
-X-MC-Unique: zLzjRFtoM5KatsAlfDD-HA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40856440f41so2739945e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:22:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698952919; x=1699557719;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gMbvaW7xFMUV0KcreKNTNoj1dffs08hfun7sVblosFo=;
-        b=EFyx84n5suHhEVsM1QdFSZEGlqvZoW02XFXcH90/AeNRpJXJ0I1/Bi68fD4F3Jg9I/
-         XhvRGSARp/xTkaqqX7//naSr/RT+ML5phb7dCsMGukPoLd/6LX3ccHP8tR6mlz2ToXs/
-         trvDbrfX8O8FZCeyXbafzk8YJz5tJH9QzeGebwd+iQe9TsQibdZ2smC+YmR0V+S8tJfz
-         3X8Unt9xUQl6vE4BtgQdhHjlIOBAVDKqfDJ0MGHDG1p2BmvKBVmNRs+GVdOT1kw8Nrh5
-         LVls6dODjd8Wg45sBwuuSjiDmQrdO0Ivu+WeGtgbEJr0JPbWORrskGEaGJh/d+OZJzWk
-         V/wg==
-X-Gm-Message-State: AOJu0YyhDasT+fBZdeUQ5kIoHhYraq8hrGqHcxHXk+PgqshxwTxA15dL
-        iVAc+NXxguQYMqBDU5ZBAHqe29VEXXSW6d4ZLEpebvl/8HBAHTgYBg+Ipo4ppLHYwuDAdYhq+aH
-        HPevSEEBg87gwaR82Jl20DznK
-X-Received: by 2002:a5d:6b06:0:b0:32f:7648:18b6 with SMTP id v6-20020a5d6b06000000b0032f764818b6mr9906418wrw.6.1698952919689;
-        Thu, 02 Nov 2023 12:21:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF3mjA4NEtrXUS/d0Brl+TuRNJcpgXcLj1pTDEgegrB7GTIvz59l85VBE10bZg+13/IBsEvHA==
-X-Received: by 2002:a5d:6b06:0:b0:32f:7648:18b6 with SMTP id v6-20020a5d6b06000000b0032f764818b6mr9906408wrw.6.1698952919393;
-        Thu, 02 Nov 2023 12:21:59 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id c18-20020a5d5292000000b0032da87e32e2sm119892wrv.4.2023.11.02.12.21.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 12:21:59 -0700 (PDT)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Stanner <pstanner@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Dave Airlie <airlied@redhat.com>
-Subject: [PATCH] drivers/tty/vt: copy userspace arrays safely
-Date:   Thu,  2 Nov 2023 20:21:35 +0100
-Message-ID: <20231102192134.53301-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 2 Nov 2023 15:23:48 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CD5136;
+        Thu,  2 Nov 2023 12:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GukiPnfP3Xe/TCueOvIoJT0OZefLfRkX+nqu8Htn41o=; b=wd8/C0aoENJPmgNQ8TeNa+MmYG
+        pSMEdo/P+Z0QSaJHP/bMvwGnGVMqcS+OeNG69bQepqX5ysUypXD7SovHC+GJ00PLmtmZelmOy8nvk
+        ZrRLMS9Z28fHf/QTaSOvJYdLMPCd3HKNqv4eUAQUIlKNjautWB33QlLRWR98IIqUX0hnEPRi7T5q9
+        XnARcEGsrnG7AFikIYM4Y5CIR/aSgienYfitnY2PEKtu6LduA6Cix18Ne6qNA+8A0Azxiw7VJfZ/F
+        wTk5UuGHldo8zXv5MoY9qnspZYB9g/mvvPxGYezIUdPAZAAdTtrIZkfnL8Vqw1dEVbB5F1xvdQA46
+        ZtJdbomw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38784)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qydGj-0004u7-19;
+        Thu, 02 Nov 2023 19:22:17 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qydGY-0007YK-66; Thu, 02 Nov 2023 19:22:06 +0000
+Date:   Thu, 2 Nov 2023 19:22:06 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v4 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <ZUP23ic6adijQ8U9@shell.armlinux.org.uk>
+References: <20231102-ethtool_puts_impl-v4-0-14e1e9278496@google.com>
+ <20231102-ethtool_puts_impl-v4-1-14e1e9278496@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102-ethtool_puts_impl-v4-1-14e1e9278496@google.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The functions (v)memdup_user() are utilized to copy userspace arrays.
-This is done without overflow checks.
+On Thu, Nov 02, 2023 at 06:55:42PM +0000, Justin Stitt wrote:
+> +/**
+> + * ethtool_puts - Write string to ethtool string data
+> + * @data: Pointer to a pointer to the start of string to update
+> + * @str: String to write
+> + *
+> + * Write string to *data. Update *data to point at start of
+> + * next string.
 
-Use the new wrappers memdup_array_user() and vmemdup_array_user() to
-copy the arrays more safely.
+A minor nit...
 
-Suggested-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/tty/vt/consolemap.c | 2 +-
- drivers/tty/vt/keyboard.c   | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+Sorry to jump in a bit late in this, but... concerning the use of "puts"
+the userspace stdio version adds a trailing newline. Thus, to avoid any
+confusion, I think the kerneldoc for this should explicitly state that
+this does not add a newline.
 
-diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
-index f02d21e2a96e..313cef3322eb 100644
---- a/drivers/tty/vt/consolemap.c
-+++ b/drivers/tty/vt/consolemap.c
-@@ -644,7 +644,7 @@ int con_set_unimap(struct vc_data *vc, ushort ct, struct unipair __user *list)
- 	if (!ct)
- 		return 0;
- 
--	unilist = vmemdup_user(list, array_size(sizeof(*unilist), ct));
-+	unilist = vmemdup_array_user(list, ct, sizeof(*unilist));
- 	if (IS_ERR(unilist))
- 		return PTR_ERR(unilist);
- 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index 1fe6107b539b..802ceb0a5e4c 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -1773,8 +1773,8 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
- 
- 		if (ct) {
- 
--			dia = memdup_user(a->kbdiacr,
--					sizeof(struct kbdiacr) * ct);
-+			dia = memdup_array_user(a->kbdiacr,
-+						ct, sizeof(struct kbdiacr));
- 			if (IS_ERR(dia))
- 				return PTR_ERR(dia);
- 
-@@ -1811,8 +1811,8 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
- 			return -EINVAL;
- 
- 		if (ct) {
--			buf = memdup_user(a->kbdiacruc,
--					  ct * sizeof(struct kbdiacruc));
-+			buf = memdup_array_user(a->kbdiacruc,
-+						ct, sizeof(struct kbdiacruc));
- 			if (IS_ERR(buf))
- 				return PTR_ERR(buf);
- 		} 
+ * Write string to *data without a trailing newline. Update *data to
+ * point at the start of the next string.
+
+This shouldn't be an issue, but it makes the behaviour of it plainly
+obvious to the reader.
+
 -- 
-2.41.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
