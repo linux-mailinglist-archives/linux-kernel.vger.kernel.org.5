@@ -2,327 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E377DEE79
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E127DEE6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345454AbjKBIzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S1343753AbjKBIy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjKBIzF (ORCPT
+        with ESMTP id S234224AbjKBIy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:55:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F94189
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698915256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=hhuacmLeEt55NlKgJNjvhJFIwCxPsLqMGQxNmIQI81g=;
-        b=fpKcaCHRS23x9k968/hdwc/t+Mu4BjtaUaR7PCHtUxiHVrdaGXNK0PS5q6ntCbkT1mOKM2
-        Btr0yfLXC1IDHHvhBcroyLfgqSLGoTmDWKbBeVtzlyW3mW3b8Wc4a88u8hU41ou6jZx0Ku
-        D4HL3iAviM2wrqLlzANgkqg32DzBDfM=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-BPXn1iLKNTCohFiDrKqHNw-1; Thu, 02 Nov 2023 04:54:15 -0400
-X-MC-Unique: BPXn1iLKNTCohFiDrKqHNw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4091c9bdb8eso10597785e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:54:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698915254; x=1699520054;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hhuacmLeEt55NlKgJNjvhJFIwCxPsLqMGQxNmIQI81g=;
-        b=aQU8v6y1Z8IhjPjB4EgCnebAqRRejnu5HNxkanyYwNvDMGhKWR4qgze2RJQS89/s8D
-         6XCQ8jIg9WnYGxpRY2lh4v8tmpzN6mFUmPYkPmXtgEgUjWV3a0oqPXsXxbScIx4fAlAO
-         ZGfK6BDHVXzu4okFUdwIBWejtmwK2wLhVGw7E/VAV86nLOUhebwtTV62i7RS2ayolh7k
-         ar5a0X9TVCmA2lBgGWOcW63vtrnceCNLfLbL/lCQzBDpoOgZOqPs/cn4jOaOEutZyTe1
-         5JEvIJs6tTB6u+AV2/EzLIpUtbpA9WPQ34eArJmJ7rDXico4JLZ4XRiGWHzguMDE4pw0
-         tMhQ==
-X-Gm-Message-State: AOJu0YxKVUUiZJ8zXgi1oTx1yZpCzr9st2Qe2bjZXL1GKSvw8BYra1xa
-        dGJ6Tm0lVsO9RUtwh7Upuv5ke1UXc3hpvODmW7yvuYXX+RzaXfi3dl12386qEE74W059QW9/q8t
-        Gbw4OTilg1mxpnrrDCtT9tV4W
-X-Received: by 2002:a05:600c:4f49:b0:405:3924:3cad with SMTP id m9-20020a05600c4f4900b0040539243cadmr9416388wmq.15.1698915254052;
-        Thu, 02 Nov 2023 01:54:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFCmPB7wk4WYX3beE3RQwL26kpX7tKnW0S1AoiLWUYjQvzaem2LWlpr04EvBL0VKBRb3Dyxog==
-X-Received: by 2002:a05:600c:4f49:b0:405:3924:3cad with SMTP id m9-20020a05600c4f4900b0040539243cadmr9416375wmq.15.1698915253591;
-        Thu, 02 Nov 2023 01:54:13 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c716:3000:f155:cef2:ff4d:c7? (p200300cbc7163000f155cef2ff4d00c7.dip0.t-ipconnect.de. [2003:cb:c716:3000:f155:cef2:ff4d:c7])
-        by smtp.gmail.com with ESMTPSA id l26-20020a05600c1d1a00b003fef5e76f2csm4257226wms.0.2023.11.02.01.54.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 01:54:13 -0700 (PDT)
-Message-ID: <f71e7e27-83ef-476b-baa6-bb82ea73db10@redhat.com>
-Date:   Thu, 2 Nov 2023 09:54:11 +0100
+        Thu, 2 Nov 2023 04:54:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC0B185;
+        Thu,  2 Nov 2023 01:54:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A238EC433C7;
+        Thu,  2 Nov 2023 08:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698915257;
+        bh=5n5G3EAv0JBtXgEKOsgOIcqLdqnKS/s4mnWwMcuywxI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TTq5PhRmteno035mRD6KrMZl2n4mQkGmyCZV3WagE845OagEKoZNw4onpiS9jgGLF
+         DPp9YEXDsa9vUdxEJsTXtLdUqOy4n+OwPawOwuF0XbjrQ9Shdga2XjxBjMEEOKCYKZ
+         H5VWY6HMMkh0sK21WPa5wXZGgGkoYzRJq/c13Ev8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 6.1.61
+Date:   Thu,  2 Nov 2023 09:54:12 +0100
+Message-ID: <2023110212-dispense-frequent-58b2@gregkh>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/3] mm/memory_hotplug: split memmap_on_memory requests
- across memblocks
-Content-Language: en-US
-To:     Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Jeff Moyer <jmoyer@redhat.com>
-References: <20231101-vv-kmem_memmap-v8-0-5e4a83331388@intel.com>
- <20231101-vv-kmem_memmap-v8-2-5e4a83331388@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231101-vv-kmem_memmap-v8-2-5e4a83331388@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.23 23:51, Vishal Verma wrote:
-> The MHP_MEMMAP_ON_MEMORY flag for hotplugged memory is restricted to
-> 'memblock_size' chunks of memory being added. Adding a larger span of
-> memory precludes memmap_on_memory semantics.
-> 
-> For users of hotplug such as kmem, large amounts of memory might get
-> added from the CXL subsystem. In some cases, this amount may exceed the
-> available 'main memory' to store the memmap for the memory being added.
-> In this case, it is useful to have a way to place the memmap on the
-> memory being added, even if it means splitting the addition into
-> memblock-sized chunks.
-> 
-> Change add_memory_resource() to loop over memblock-sized chunks of
-> memory if caller requested memmap_on_memory, and if other conditions for
-> it are met. Teach try_remove_memory() to also expect that a memory
-> range being removed might have been split up into memblock sized chunks,
-> and to loop through those as needed.
-> 
-> This does preclude being able to use PUD mappings in the direct map; a
-> proposal to how this could be optimized in the future is laid out
-> here[1].
-> 
-> [1]: https://lore.kernel.org/linux-mm/b6753402-2de9-25b2-36e9-eacd49752b19@redhat.com/
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-> ---
->   mm/memory_hotplug.c | 213 ++++++++++++++++++++++++++++++++++------------------
->   1 file changed, 138 insertions(+), 75 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 6be7de9efa55..d242e49d7f7b 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1380,6 +1380,84 @@ static bool mhp_supports_memmap_on_memory(unsigned long size)
->   	return arch_supports_memmap_on_memory(vmemmap_size);
->   }
->   
-> +static void __ref remove_memory_blocks_and_altmaps(u64 start, u64 size)
-> +{
-> +	unsigned long memblock_size = memory_block_size_bytes();
-> +	u64 cur_start;
-> +
-> +	/*
-> +	 * For memmap_on_memory, the altmaps were added on a per-memblock
-> +	 * basis; we have to process each individual memory block.
-> +	 */
-> +	for (cur_start = start; cur_start < start + size;
-> +	     cur_start += memblock_size) {
-> +		struct vmem_altmap *altmap = NULL;
-> +		struct memory_block *mem;
-> +
-> +		mem = find_memory_block(pfn_to_section_nr(PFN_DOWN(cur_start)));
-> +		WARN_ON_ONCE(!mem);
-> +		if (!mem)
-> +			continue;
+I'm announcing the release of the 6.1.61 kernel.
 
-Nit:
+All users of the 6.1 kernel series must upgrade.
 
-if (WARN_ON_ONCE(!mem))
-	continue;
+The updated 6.1.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.1.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> +	for (cur_start = start; cur_start < start + size;
-> +	     cur_start += memblock_size) {
-> +		struct mhp_params params = { .pgprot =
-> +						     pgprot_mhp(PAGE_KERNEL) };
-> +		struct vmem_altmap mhp_altmap = {
-> +			.base_pfn = PHYS_PFN(cur_start),
-> +			.end_pfn = PHYS_PFN(cur_start + memblock_size - 1),
-> +		};
-> +
-> +		mhp_altmap.free = memory_block_memmap_on_memory_pages();
-> +		params.altmap = kmemdup(&mhp_altmap, sizeof(struct vmem_altmap),
-> +					GFP_KERNEL);
-> +		if (!params.altmap)
-> +			return -ENOMEM;
+thanks,
 
-As already spotted, we have to cleanup.
+greg k-h
 
-> +
-> +		/* call arch's memory hotadd */
-> +		ret = arch_add_memory(nid, cur_start, memblock_size, &params);
-> +		if (ret < 0) {
-> +			kfree(params.altmap);
-> +			goto out;
-> +		}
-> +
-> +		/* create memory block devices after memory was added */
-> +		ret = create_memory_block_devices(cur_start, memblock_size,
-> +						  params.altmap, group);
-> +		if (ret) {
-> +			arch_remove_memory(cur_start, memblock_size, NULL);
-> +			kfree(params.altmap);
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +out:
-> +	if (ret && (cur_start != start))
+------------
 
-Nit: I think you can drop the inner parentheses.
+ Makefile                                           |    2 
+ arch/arm/boot/dts/omap4-l4-abe.dtsi                |    6 +
+ arch/arm/boot/dts/omap4-l4.dtsi                    |    2 
+ arch/arm/boot/dts/omap5-l4-abe.dtsi                |    6 +
+ arch/arm/mach-omap1/timer32k.c                     |   14 ++--
+ arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi |    1 
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |   10 ++
+ arch/sparc/lib/checksum_32.S                       |    2 
+ arch/x86/include/asm/i8259.h                       |    2 
+ arch/x86/include/asm/intel-family.h                |    2 
+ arch/x86/kernel/acpi/boot.c                        |    3 
+ arch/x86/kernel/i8259.c                            |   38 ++++++++--
+ arch/x86/kvm/pmu.h                                 |    6 +
+ arch/x86/kvm/svm/pmu.c                             |    2 
+ arch/x86/kvm/vmx/pmu_intel.c                       |    4 -
+ block/blk-throttle.c                               |    6 +
+ drivers/ata/libata-scsi.c                          |    5 -
+ drivers/clk/clk.c                                  |   21 +++---
+ drivers/clk/ti/clk-44xx.c                          |    5 +
+ drivers/clk/ti/clk-54xx.c                          |    4 +
+ drivers/crypto/virtio/virtio_crypto_common.h       |    3 
+ drivers/crypto/virtio/virtio_crypto_core.c         |   14 +++-
+ drivers/firewire/sbp2.c                            |    1 
+ drivers/firmware/imx/imx-dsp.c                     |    2 
+ drivers/gpu/drm/amd/amdgpu/vi.c                    |    2 
+ drivers/gpu/drm/display/drm_dp_mst_topology.c      |    6 -
+ drivers/gpu/drm/i915/i915_pmu.c                    |    9 ++
+ drivers/gpu/drm/logicvc/Kconfig                    |    2 
+ drivers/i2c/busses/i2c-aspeed.c                    |    3 
+ drivers/i2c/busses/i2c-stm32f7.c                   |    9 +-
+ drivers/i2c/muxes/i2c-demux-pinctrl.c              |    2 
+ drivers/i2c/muxes/i2c-mux-gpmux.c                  |    2 
+ drivers/i2c/muxes/i2c-mux-pinctrl.c                |    2 
+ drivers/iio/adc/exynos_adc.c                       |   24 ++++--
+ drivers/iio/adc/xilinx-xadc-core.c                 |   39 ++++-------
+ drivers/iio/adc/xilinx-xadc.h                      |    2 
+ drivers/iio/afe/iio-rescale.c                      |   19 ++++-
+ drivers/mcb/mcb-lpc.c                              |   35 ++++++++--
+ drivers/mcb/mcb-parse.c                            |   15 ++--
+ drivers/misc/fastrpc.c                             |   34 ++++-----
+ drivers/mmc/core/block.c                           |   38 ++++++++--
+ drivers/mmc/core/mmc_ops.c                         |    1 
+ drivers/net/ethernet/adi/adin1110.c                |    2 
+ drivers/net/ethernet/intel/i40e/i40e.h             |    2 
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        |    2 
+ drivers/net/ethernet/intel/iavf/iavf_main.c        |    7 +-
+ drivers/net/ethernet/intel/igb/igb_ethtool.c       |    6 +
+ drivers/net/ethernet/intel/igc/igc_ethtool.c       |   35 +++++++---
+ drivers/net/ethernet/realtek/r8169_main.c          |    6 -
+ drivers/net/ethernet/toshiba/ps3_gelic_wireless.c  |    2 
+ drivers/net/gtp.c                                  |    5 -
+ drivers/net/ieee802154/adf7242.c                   |    5 -
+ drivers/net/usb/r8152.c                            |   11 ++-
+ drivers/net/usb/smsc95xx.c                         |    4 -
+ drivers/nvmem/imx-ocotp.c                          |    6 -
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c           |   17 +++-
+ drivers/platform/x86/thinkpad_acpi.c               |   73 +++++++++++++++++++++
+ drivers/scsi/sd.c                                  |   39 ++++++++++-
+ drivers/vhost/vhost.c                              |    4 -
+ drivers/virtio/virtio_balloon.c                    |    6 +
+ drivers/virtio/virtio_mmio.c                       |   19 ++++-
+ drivers/virtio/virtio_pci_modern_dev.c             |    2 
+ fs/ext4/mballoc.c                                  |   51 ++++++--------
+ fs/ext4/mballoc.h                                  |   14 ++++
+ fs/nfsd/vfs.c                                      |   12 +--
+ include/linux/hugetlb.h                            |    6 +
+ include/linux/kasan.h                              |    6 -
+ include/scsi/scsi_device.h                         |   20 +++++
+ include/uapi/linux/gtp.h                           |    2 
+ io_uring/fdinfo.c                                  |   18 +++--
+ kernel/events/core.c                               |    3 
+ kernel/trace/trace_kprobe.c                        |    4 -
+ lib/maple_tree.c                                   |    2 
+ lib/test_maple_tree.c                              |   35 ++++++----
+ mm/hugetlb.c                                       |   48 +++++++++++--
+ mm/kasan/report.c                                  |    4 -
+ mm/migrate.c                                       |   14 +++-
+ mm/mmap.c                                          |    6 -
+ mm/page_alloc.c                                    |    2 
+ net/core/neighbour.c                               |   67 ++++++++++---------
+ net/ipv4/tcp_input.c                               |    9 +-
+ net/vmw_vsock/virtio_transport.c                   |   18 ++++-
+ sound/soc/codecs/wcd938x.c                         |   51 ++++++++------
+ tools/include/linux/rwsem.h                        |   40 +++++++++++
+ tools/objtool/check.c                              |    2 
+ 85 files changed, 788 insertions(+), 304 deletions(-)
 
-> @@ -2146,11 +2208,31 @@ void try_offline_node(int nid)
->   }
->   EXPORT_SYMBOL(try_offline_node);
->   
-> +static int memory_blocks_have_altmaps(u64 start, u64 size)
-> +{
-> +	u64 num_memblocks = size / memory_block_size_bytes();
-> +	u64 num_altmaps = 0;
-> +
-> +	if (!mhp_memmap_on_memory())
-> +		return 0;
-> +
-> +	walk_memory_blocks(start, size, &num_altmaps,
-> +			   count_memory_range_altmaps_cb);
-> +
-> +	if (num_altmaps == 0)
-> +		return 0;
-> +
-> +	if (num_memblocks != num_altmaps) {
-> +		WARN_ONCE(1, "Not all memblocks in range have altmaps");
+Al Viro (2):
+      nfsd: lock_rename() needs both directories to live on the same fs
+      sparc32: fix a braino in fault handling in csum_and_copy_..._user()
 
-Nit:
+Alain Volmat (1):
+      i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
 
-if (WARN_ON_ONCE(num_memblocks != num_altmaps))
-	return -EINVAL;
+Alessandro Carminati (1):
+      clk: Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
 
-Should be sufficient.
+Alexandru Matei (1):
+      vsock/virtio: initialize the_virtio_vsock before using VQs
 
-[...]
+Baokun Li (3):
+      ext4: add two helper functions extent_logical_end() and pa_logical_end()
+      ext4: fix BUG in ext4_mb_new_inode_pa() due to overflow
+      ext4: avoid overlapping preallocations due to overflow
 
->   	/* remove memmap entry */
->   	firmware_map_remove(start, start + size, "System RAM");
->   
-> -	/*
-> -	 * Memory block device removal under the device_hotplug_lock is
-> -	 * a barrier against racing online attempts.
-> -	 */
-> -	remove_memory_block_devices(start, size);
-> -
->   	mem_hotplug_begin();
->   
-> -	arch_remove_memory(start, size, altmap);
-> -
-> -	/* Verify that all vmemmap pages have actually been freed. */
-> -	if (altmap) {
-> -		WARN(altmap->alloc, "Altmap not fully unmapped");
-> -		kfree(altmap);
-> +	rc = memory_blocks_have_altmaps(start, size);
-> +	if (rc < 0) {
-> +		goto err;
+Christian Loehle (1):
+      mmc: block: ioctl: do write error check for spi
 
-Nit: Maybe better to just
+Christophe JAILLET (1):
+      net: ieee802154: adf7242: Fix some potential buffer overflow in adf7242_stats_show()
 
-if (rc < 0) {
-	mem_hotplug_done();
-	return rc
-} else ...
+Christopher Obbard (2):
+      arm64: dts: rockchip: Add i2s0-2ch-bus-bclk-off pins to RK3399
+      arm64: dts: rockchip: Fix i2s0 pin conflict on ROCK Pi 4 boards
 
-And avoid the error label below. Makes the code easier to read.
+Damien Le Moal (1):
+      scsi: sd: Introduce manage_shutdown device flag
 
-> +	} else if (rc == 0) {
+David Lazar (1):
+      platform/x86: Add s2idle quirk for more Lenovo laptops
 
-Nit: else if (!rc)
+Dell Jin (1):
+      net: ethernet: adi: adin1110: Fix uninitialized variable
 
+Douglas Anderson (4):
+      r8152: Increase USB control msg timeout to 5000ms as per spec
+      r8152: Run the unload routine if we have errors during probe
+      r8152: Cancel hw_phy_work if we have an error in probe
+      r8152: Release firmware if we have an error in probe
 
+Ekansh Gupta (4):
+      misc: fastrpc: Reset metadata buffer to avoid incorrect free
+      misc: fastrpc: Free DMA handles for RPC calls with no arguments
+      misc: fastrpc: Clean buffers on remote invocation failures
+      misc: fastrpc: Unmap only if buffer is unmapped from DSP
 
-With the cleanup fixed,
+Eric Auger (1):
+      vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Eric Dumazet (1):
+      neighbour: fix various data-races
 
--- 
-Cheers,
+Fred Chen (1):
+      tcp: fix wrong RTO timeout when received SACK reneging
 
-David / dhildenb
+Gavin Shan (1):
+      virtio_balloon: Fix endless deflation and inflation on arm64
+
+Greg Kroah-Hartman (1):
+      Linux 6.1.61
+
+Gregory Price (1):
+      mm/migrate: fix do_pages_move for compat pointers
+
+Haibo Li (1):
+      kasan: print the original fault addr when access invalid shadow
+
+Hao Ge (1):
+      firmware/imx-dsp: Fix use_after_free in imx_dsp_setup_channels()
+
+Herve Codina (3):
+      i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
+      i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
+      i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
+
+Ivan Vecera (2):
+      i40e: Fix I40E_FLAG_VF_VLAN_PRUNING value
+      i40e: Fix wrong check for I40E_TXR_FLAGS_WB_ON_ITR
+
+Jens Axboe (1):
+      io_uring/fdinfo: lock SQ thread while retrieving thread cpu/pid
+
+Jian Zhang (1):
+      i2c: aspeed: Fix i2c bus hang in slave read
+
+Johan Hovold (2):
+      ASoC: codecs: wcd938x: fix regulator leaks on probe errors
+      ASoC: codecs: wcd938x: fix runtime PM imbalance on remove
+
+John Sperbeck (1):
+      objtool/x86: add missing embedded_insn check
+
+Kemeng Shi (1):
+      mm/page_alloc: correct start page when guard page debug is enabled
+
+Khazhismel Kumykov (1):
+      blk-throttle: check for overflow in calculate_bytes_allowed
+
+Krzysztof Kozlowski (2):
+      ASoC: codecs: wcd938x: Simplify with dev_err_probe
+      pinctrl: qcom: lpass-lpi: fix concurrent register updates
+
+Kunwu Chan (1):
+      treewide: Spelling fix in comment
+
+Liam R. Howlett (1):
+      maple_tree: add GFP_KERNEL to allocations in mas_expected_entries()
+
+Linus Walleij (1):
+      iio: afe: rescale: Accept only offset channels
+
+Lukasz Majczak (1):
+      drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
+
+Marek Szyprowski (1):
+      iio: exynos-adc: request second interupt only when touchscreen mode is used
+
+Mario Limonciello (1):
+      drm/amd: Disable ASPM for VI w/ all Intel systems
+
+Mateusz Palczewski (1):
+      igb: Fix potential memory leak in igb_add_ethtool_nfc_entry
+
+Maximilian Heyne (1):
+      virtio-mmio: fix memory leak of vm_dev
+
+Michal Schmidt (2):
+      iavf: initialize waitqueues before starting watchdog_task
+      iavf: in iavf_down, disable queues when removing the driver
+
+Mirsad Goran Todorovac (3):
+      r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx
+      r8169: fix the KCSAN reported data-race in rtl_tx while reading TxDescArray[entry].opts1
+      r8169: fix the KCSAN reported data race in rtl_rx while reading desc->opts1
+
+Pablo Neira Ayuso (2):
+      gtp: uapi: fix GTPA_MAX
+      gtp: fix fragmentation needed check with gso
+
+Peng Fan (3):
+      nvmem: imx: correct nregs for i.MX6ULL
+      nvmem: imx: correct nregs for i.MX6SLL
+      nvmem: imx: correct nregs for i.MX6UL
+
+Peter Zijlstra (1):
+      perf/core: Fix potential NULL deref
+
+Randy Dunlap (1):
+      ARM: OMAP: timer32K: fix all kernel-doc warnings
+
+Rik van Riel (2):
+      hugetlbfs: clear resv_map pointer if mmap fails
+      hugetlbfs: extend hugetlb_vma_lock to private VMAs
+
+Robert Hancock (2):
+      iio: adc: xilinx-xadc: Don't clobber preset voltage/temperature thresholds
+      iio: adc: xilinx-xadc: Correct temperature offset/scale for UltraScale
+
+Rodríguez Barbarin, José Javier (2):
+      mcb: Return actual parsed size when reading chameleon table
+      mcb-lpc: Reallocate memory region to avoid memory overlapping
+
+Roman Kagan (1):
+      KVM: x86/pmu: Truncate counter value to allowed width on write
+
+Sasha Neftin (1):
+      igc: Fix ambiguity in the ethtool advertising
+
+Sebastian Ott (1):
+      mm: fix vm_brk_flags() to not bail out while holding lock
+
+Shigeru Yoshida (1):
+      net: usb: smsc95xx: Fix uninit-value access in smsc95xx_read_reg
+
+Sui Jingfeng (1):
+      drm/logicvc: Kconfig: select REGMAP and REGMAP_MMIO
+
+Thomas Gleixner (1):
+      x86/i8259: Skip probing when ACPI/MADT advertises PCAT compatibility
+
+Tony Lindgren (2):
+      clk: ti: Fix missing omap4 mcbsp functional clock and aliases
+      clk: ti: Fix missing omap5 mcbsp functional clock and aliases
+
+Tony Luck (1):
+      x86/cpu: Add model number for Intel Arrow Lake mobile processor
+
+Ulf Hansson (2):
+      mmc: core: Align to common busy polling behaviour for mmc ioctls
+      mmc: core: Fix error propagation for some ioctl commands
+
+Umesh Nerlige Ramappa (1):
+      drm/i915/pmu: Check if pmu is closed before stopping event
+
+Uwe Kleine-König (1):
+      ASoC: codecs: wcd938x: Convert to platform remove callback returning void
+
+Xuan Zhuo (1):
+      virtio_pci: fix the common cfg map size
+
+Yujie Liu (1):
+      tracing/kprobes: Fix the description of variable length arguments
+
+zhenwei pi (1):
+      virtio-crypto: handle config changed by work queue
 
