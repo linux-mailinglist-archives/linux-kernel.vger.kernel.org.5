@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 732D57DF96A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDC97DF967
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345761AbjKBSAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
+        id S1346046AbjKBSAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 14:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345059AbjKBR7u (ORCPT
+        with ESMTP id S1345834AbjKBR7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 13:59:50 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC53D77
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:58:58 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7af69a4baso17193977b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:58:58 -0700 (PDT)
+        Thu, 2 Nov 2023 13:59:52 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8362310C0
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:01 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da040c021aeso1415119276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947938; x=1699552738; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698947940; x=1699552740; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=kZBuX81183QRrNaiqbrsOc3T/YgY2oF4/Db+YNFRBBQ=;
-        b=CnWi1pUOApOSGz7yPQQN2/n66MaHAO7Hjl2ZVWURDfA5rrkBZPFC1ahMouJimPDjaU
-         AxO37SZ/AXfly5TXSnzvXhQJgcbmM0mqVIY+Rvt37lWITKM0bJp4di7KWDcSB1xnnKYr
-         xvJBjsiHNJGS+/KlnxG7SsQVZcZTUHtXi5bjm4Pw/NB4BtZMUrq+ypP1jrumyV9modXO
-         3sQgVJq1ji87YThnejgrDysCajgLCD3J8ObCbu2rPXOuBxGUjBN6Rmxt5YTwOhkBW/DQ
-         j8XjmsqRn/2r7Nktof5dpjCoSv97OP7WvcWloP/Ik4VL+i9e9dOt1oDi1Yohm72JiGUs
-         ihBA==
+        bh=GrUZLhNYD/Y2M8vPyWPgqsHL9x9Vrvyt090vzDm1Z9s=;
+        b=sT0WR3P4AXwb0seTh+Bc9kkzEhWqEfZs7vB6Xm30ra8+uYqDwtd28snDxURUrQmR1c
+         FiIAcg3O+hs5ykbWIIDdRXoak2zHsZvZvu4xpYNioKBKsFRHmjzLgh1vfNAjYIxsWADM
+         e4aiJaV/R+fZuSMC6Thps2u0qhb6IDTitmnSSni2J8xavr7VElagK08VBBc4pRwkDrW5
+         7OXxy1Z+jr3GqQZQzZ5+GZxUzHsYrJEX2OWdkGKLuT3zcu4/HlVBVXcE9P0TXFQ+KbTF
+         R7ZH01PQvVA7sHPT14hZKtfP9sObVWO1/9Tng8l+fM6YmroC2vBAfmnt3E3svL18RDiQ
+         vfTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947938; x=1699552738;
+        d=1e100.net; s=20230601; t=1698947940; x=1699552740;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kZBuX81183QRrNaiqbrsOc3T/YgY2oF4/Db+YNFRBBQ=;
-        b=crYhmgTtaxzoW+AbN/LN6NMh/ByMxQeVaT+6s+3Z87bZXjZZn++Y5hjRY/WkDJYqlA
-         4GZFc1LFXCMPTKb2PpP49gTnUdNQnpYMDQ2QLWhjhWMJQ5OIUbd05hJIAVlKSDkFQ9sy
-         A/Opywz4jo+UzXpyUjgjsZb+mJQoPDSyHZzugMEWrbtZZqyPPKE9R76GdJu/jCZca4I/
-         omnxU678+IO2DSM32c0u4hq2y2K5qmi3qYwxLe83AhioGfktPBquOVFqrMmPy0OJ2LDB
-         NrxWo0oJLsLK8jJSPJW2Z8BwTB5OlhGrlx1lVT4BESisqbviCxAdz6/F8wlI0MdhmBD3
-         15RQ==
-X-Gm-Message-State: AOJu0YyeRSe7f7sU5IsAidNbKNwYYf5ELnTxs+OrMqtSpL8Rk8NPKiro
-        XYXfADzGGyCsG1AEquhc+87t3FsP3RHF
-X-Google-Smtp-Source: AGHT+IEl3qANM6gjbu74OwwL0Dqv2kvdXq7ayyS5FKZI30Es8f2oT9DzQiwouXtKFDxkyMl9cz0lzSCZTaJt
+        bh=GrUZLhNYD/Y2M8vPyWPgqsHL9x9Vrvyt090vzDm1Z9s=;
+        b=T8S5B4hIhGTp8Opbwlw0sJp1OmGWGcNC83LQyyBfmHM+ghtMPkhQfHy6Jh70ZK31oC
+         zEJnm2yQD0CuWNQTs0zzMZDTY4pSBXl7ySRLu5guzaeP5Cv31idfKjGGjSGAdFIsnuql
+         u7phhZA85C3ETaeZ9viCCTZg/zZwEn7nEhSQKr2CPzwe7Lo23ozY4Y+XrrxrONrQhbBN
+         0ViavgO44O3vHXj8iQRFCqpjHPWlBziHaH8AHoQUgf/b54Gx6sXCmaXtrx1YFgqLDoZo
+         /JdkihkvYnDEfrYP+68ZoNufedJ/F3eCgYS1LyYBd9Kh0JYluGskg7fTpxap9DFpswqi
+         lZ2g==
+X-Gm-Message-State: AOJu0Yxk9kVSpis+o96piSffNgP9OQCJgO4Y4NAGHgVo2h9KcEe7AHrW
+        327z2gd/C1mc39636a3USieTT4LEQak9
+X-Google-Smtp-Source: AGHT+IGOtO4Lxvi5jEqIvJCMb4Ve4IR0678bZXzGWgAVlQklxXfN+pTHDiDfpTSJj/JuYWSN0njzUwujKcks
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP
- id v3-20020a056902108300b00d9ac3b84274mr460470ybu.7.1698947937955; Thu, 02
- Nov 2023 10:58:57 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:09 -0700
+ (user=irogers job=sendgmr) by 2002:a25:488:0:b0:da0:5452:29f7 with SMTP id
+ 130-20020a250488000000b00da0545229f7mr377509ybe.4.1698947940657; Thu, 02 Nov
+ 2023 10:59:00 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 10:57:10 -0700
 In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-28-irogers@google.com>
+Message-Id: <20231102175735.2272696-29-irogers@google.com>
 Mime-Version: 1.0
 References: <20231102175735.2272696-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 27/53] perf maps: Fix up overlaps during fixup_end
+Subject: [PATCH v4 28/53] perf maps: Switch from rbtree to lazily sorted array
+ for addresses
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -93,36 +94,1629 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maps are sometimes made overlapping, in particular kernel maps. If the
-end of a map overlaps the start of the next, shorten the overlapping
-map. This should remove potential non-determinism in maps__find, ie
-finding maps by address.
+Maps is a collection of maps primarily sorted by the starting address
+of the map. Prior to this change the maps were held in an rbtree
+requiring 4 pointers per node. Prior to reference count checking, the
+rbnode was embedded in the map so 3 pointers per node were
+necessary. This change switches the rbtree to an array lazily sorted
+by address, much as the array sorting nodes by name. 1 pointer is
+needed per node, but to avoid excessive resizing the backing array may
+be twice the number of used elements. Meaning the memory overhead is
+roughly half that of the rbtree. For a perf record with
+"--no-bpf-event -g -a" of true, the memory overhead of perf inject is
+reduce fom 3.3MB to 3MB, so 10% or 300KB is saved.
+
+Map inserts always happen at the end of the array. The code tracks
+whether the insertion violates the sorting property. O(log n) rb-tree
+complexity is switched to O(1).
+
+Remove slides the array, so O(log n) rb-tree complexity is degraded to
+O(n).
+
+A find may need to sort the array using qsort which is O(n*log n), but
+in general the maps should be sorted and so average performance should
+be O(log n) as with the rbtree.
+
+An rbtree node consumes a cache line, but with the array 4 nodes fit
+on a cache line. Iteration is simplified to scanning an array rather
+than pointer chasing.
+
+Overall it is expected the performance after the change should be
+comparable to before, but with half of the memory consumed.
+
+To avoid a list and repeated logic around splitting maps,
+maps__merge_in is rewritten in terms of
+maps__fixup_overlap_and_insert. maps_merge_in splits the given mapping
+inserting remaining gaps. maps__fixup_overlap_and_insert splits the
+existing mappings, then adds the incoming mapping. By adding the new
+mapping first, then re-inserting the existing mappings the splitting
+behavior matches.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/maps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/tests/maps.c |    3 +
+ tools/perf/util/map.c   |    1 +
+ tools/perf/util/maps.c  | 1183 +++++++++++++++++++++++----------------
+ tools/perf/util/maps.h  |   54 +-
+ 4 files changed, 757 insertions(+), 484 deletions(-)
 
+diff --git a/tools/perf/tests/maps.c b/tools/perf/tests/maps.c
+index bb3fbfe5a73e..b15417a0d617 100644
+--- a/tools/perf/tests/maps.c
++++ b/tools/perf/tests/maps.c
+@@ -156,6 +156,9 @@ static int test__maps__merge_in(struct test_suite *t __maybe_unused, int subtest
+ 	TEST_ASSERT_VAL("merge check failed", !ret);
+ 
+ 	maps__zput(maps);
++	map__zput(map_kcore1);
++	map__zput(map_kcore2);
++	map__zput(map_kcore3);
+ 	return TEST_OK;
+ }
+ 
+diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+index 54c67cb7ecef..cf5a15db3a1f 100644
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -168,6 +168,7 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
+ 		if (dso == NULL)
+ 			goto out_delete;
+ 
++		assert(!dso->kernel);
+ 		map__init(result, start, start + len, pgoff, dso);
+ 
+ 		if (anon || no_dso) {
 diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 01c15d0b300a..fba95a00ecdf 100644
+index fba95a00ecdf..06fdd8a7c2a2 100644
 --- a/tools/perf/util/maps.c
 +++ b/tools/perf/util/maps.c
-@@ -700,7 +700,7 @@ void maps__fixup_end(struct maps *maps)
+@@ -10,286 +10,477 @@
+ #include "ui/ui.h"
+ #include "unwind.h"
+ 
+-struct map_rb_node {
+-	struct rb_node rb_node;
+-	struct map *map;
+-};
+-
+-#define maps__for_each_entry(maps, map) \
+-	for (map = maps__first(maps); map; map = map_rb_node__next(map))
++static void check_invariants(const struct maps *maps __maybe_unused)
++{
++#ifndef NDEBUG
++	assert(RC_CHK_ACCESS(maps)->nr_maps <= RC_CHK_ACCESS(maps)->nr_maps_allocated);
++	for (unsigned int i = 0; i < RC_CHK_ACCESS(maps)->nr_maps; i++) {
++		struct map *map = RC_CHK_ACCESS(maps)->maps_by_address[i];
++
++		/* Check map is well-formed. */
++		assert(map__end(map) == 0 || map__start(map) <= map__end(map));
++		/* Expect at least 1 reference count. */
++		assert(refcount_read(map__refcnt(map)) > 0);
++
++		if (map__dso(map) && map__dso(map)->kernel)
++			assert(RC_CHK_EQUAL(map__kmap(map)->kmaps, maps));
++
++		if (i > 0) {
++			struct map *prev = RC_CHK_ACCESS(maps)->maps_by_address[i - 1];
++
++			/* If addresses are sorted... */
++			if (RC_CHK_ACCESS(maps)->maps_by_address_sorted) {
++				/* Maps should be in start address order. */
++				assert(map__start(prev) <= map__start(map));
++				/*
++				 * If the ends of maps aren't broken (during
++				 * construction) then they should be ordered
++				 * too.
++				 */
++				if (!RC_CHK_ACCESS(maps)->ends_broken) {
++					assert(map__end(prev) <= map__end(map));
++					assert(map__end(prev) <= map__start(map) ||
++					       map__start(prev) == map__start(map));
++				}
++			}
++		}
++	}
++	if (RC_CHK_ACCESS(maps)->maps_by_name) {
++		for (unsigned int i = 0; i < RC_CHK_ACCESS(maps)->nr_maps; i++) {
++			struct map *map = RC_CHK_ACCESS(maps)->maps_by_name[i];
+ 
+-#define maps__for_each_entry_safe(maps, map, next) \
+-	for (map = maps__first(maps), next = map_rb_node__next(map); map; \
+-	     map = next, next = map_rb_node__next(map))
++			/*
++			 * Maps by name maps should be in maps_by_address, so
++			 * the reference count should be higher.
++			 */
++			assert(refcount_read(map__refcnt(map)) > 1);
++		}
++	}
++#endif
++}
+ 
+-static struct rb_root *maps__entries(struct maps *maps)
++static struct map **maps__maps_by_address(const struct maps *maps)
+ {
+-	return &RC_CHK_ACCESS(maps)->entries;
++	return RC_CHK_ACCESS(maps)->maps_by_address;
+ }
+ 
+-static struct rw_semaphore *maps__lock(struct maps *maps)
++static void maps__set_maps_by_address(struct maps *maps, struct map **new)
+ {
+-	return &RC_CHK_ACCESS(maps)->lock;
++	RC_CHK_ACCESS(maps)->maps_by_address = new;
++
+ }
+ 
+-static struct map **maps__maps_by_name(struct maps *maps)
++/* Not in the header, to aid reference counting. */
++static struct map **maps__maps_by_name(const struct maps *maps)
+ {
+ 	return RC_CHK_ACCESS(maps)->maps_by_name;
++
+ }
+ 
+-static struct map_rb_node *maps__first(struct maps *maps)
++static void maps__set_maps_by_name(struct maps *maps, struct map **new)
+ {
+-	struct rb_node *first = rb_first(maps__entries(maps));
++	RC_CHK_ACCESS(maps)->maps_by_name = new;
+ 
+-	if (first)
+-		return rb_entry(first, struct map_rb_node, rb_node);
+-	return NULL;
+ }
+ 
+-static struct map_rb_node *map_rb_node__next(struct map_rb_node *node)
++static bool maps__maps_by_address_sorted(const struct maps *maps)
+ {
+-	struct rb_node *next;
+-
+-	if (!node)
+-		return NULL;
+-
+-	next = rb_next(&node->rb_node);
++	return RC_CHK_ACCESS(maps)->maps_by_address_sorted;
++}
+ 
+-	if (!next)
+-		return NULL;
++static void maps__set_maps_by_address_sorted(struct maps *maps, bool value)
++{
++	RC_CHK_ACCESS(maps)->maps_by_address_sorted = value;
++}
+ 
+-	return rb_entry(next, struct map_rb_node, rb_node);
++static bool maps__maps_by_name_sorted(const struct maps *maps)
++{
++	return RC_CHK_ACCESS(maps)->maps_by_name_sorted;
+ }
+ 
+-static struct map_rb_node *maps__find_node(struct maps *maps, struct map *map)
++static void maps__set_maps_by_name_sorted(struct maps *maps, bool value)
+ {
+-	struct map_rb_node *rb_node;
++	RC_CHK_ACCESS(maps)->maps_by_name_sorted = value;
++}
+ 
+-	maps__for_each_entry(maps, rb_node) {
+-		if (rb_node->RC_CHK_ACCESS(map) == RC_CHK_ACCESS(map))
+-			return rb_node;
+-	}
+-	return NULL;
++static struct rw_semaphore *maps__lock(struct maps *maps)
++{
++	/*
++	 * When the lock is acquired or released the maps invariants should
++	 * hold.
++	 */
++	check_invariants(maps);
++	return &RC_CHK_ACCESS(maps)->lock;
+ }
+ 
+ static void maps__init(struct maps *maps, struct machine *machine)
+ {
+-	refcount_set(maps__refcnt(maps), 1);
+ 	init_rwsem(maps__lock(maps));
+-	RC_CHK_ACCESS(maps)->entries = RB_ROOT;
++	RC_CHK_ACCESS(maps)->maps_by_address = NULL;
++	RC_CHK_ACCESS(maps)->maps_by_name = NULL;
+ 	RC_CHK_ACCESS(maps)->machine = machine;
+-	RC_CHK_ACCESS(maps)->last_search_by_name = NULL;
++#ifdef HAVE_LIBUNWIND_SUPPORT
++	RC_CHK_ACCESS(maps)->addr_space = NULL;
++	RC_CHK_ACCESS(maps)->unwind_libunwind_ops = NULL;
++#endif
++	refcount_set(maps__refcnt(maps), 1);
+ 	RC_CHK_ACCESS(maps)->nr_maps = 0;
+-	RC_CHK_ACCESS(maps)->maps_by_name = NULL;
++	RC_CHK_ACCESS(maps)->nr_maps_allocated = 0;
++	RC_CHK_ACCESS(maps)->last_search_by_name_idx = 0;
++	RC_CHK_ACCESS(maps)->maps_by_address_sorted = true;
++	RC_CHK_ACCESS(maps)->maps_by_name_sorted = false;
+ }
+ 
+-static void __maps__free_maps_by_name(struct maps *maps)
++static void maps__exit(struct maps *maps)
+ {
+-	/*
+-	 * Free everything to try to do it from the rbtree in the next search
+-	 */
+-	for (unsigned int i = 0; i < maps__nr_maps(maps); i++)
+-		map__put(maps__maps_by_name(maps)[i]);
++	struct map **maps_by_address = maps__maps_by_address(maps);
++	struct map **maps_by_name = maps__maps_by_name(maps);
+ 
+-	zfree(&RC_CHK_ACCESS(maps)->maps_by_name);
+-	RC_CHK_ACCESS(maps)->nr_maps_allocated = 0;
++	for (unsigned int i = 0; i < maps__nr_maps(maps); i++) {
++		map__zput(maps_by_address[i]);
++		if (maps_by_name)
++			map__zput(maps_by_name[i]);
++	}
++	zfree(&maps_by_address);
++	zfree(&maps_by_name);
++	unwind__finish_access(maps);
+ }
+ 
+-static int __maps__insert(struct maps *maps, struct map *map)
++struct maps *maps__new(struct machine *machine)
+ {
+-	struct rb_node **p = &maps__entries(maps)->rb_node;
+-	struct rb_node *parent = NULL;
+-	const u64 ip = map__start(map);
+-	struct map_rb_node *m, *new_rb_node;
+-
+-	new_rb_node = malloc(sizeof(*new_rb_node));
+-	if (!new_rb_node)
+-		return -ENOMEM;
+-
+-	RB_CLEAR_NODE(&new_rb_node->rb_node);
+-	new_rb_node->map = map__get(map);
++	struct maps *result;
++	RC_STRUCT(maps) *maps = zalloc(sizeof(*maps));
+ 
+-	while (*p != NULL) {
+-		parent = *p;
+-		m = rb_entry(parent, struct map_rb_node, rb_node);
+-		if (ip < map__start(m->map))
+-			p = &(*p)->rb_left;
+-		else
+-			p = &(*p)->rb_right;
+-	}
++	if (ADD_RC_CHK(result, maps))
++		maps__init(result, machine);
+ 
+-	rb_link_node(&new_rb_node->rb_node, parent, p);
+-	rb_insert_color(&new_rb_node->rb_node, maps__entries(maps));
+-	return 0;
++	return result;
+ }
+ 
+-int maps__insert(struct maps *maps, struct map *map)
++static void maps__delete(struct maps *maps)
+ {
+-	int err;
+-	const struct dso *dso = map__dso(map);
+-
+-	down_write(maps__lock(maps));
+-	err = __maps__insert(maps, map);
+-	if (err)
+-		goto out;
++	maps__exit(maps);
++	RC_CHK_FREE(maps);
++}
+ 
+-	++RC_CHK_ACCESS(maps)->nr_maps;
++struct maps *maps__get(struct maps *maps)
++{
++	struct maps *result;
+ 
+-	if (dso && dso->kernel) {
+-		struct kmap *kmap = map__kmap(map);
++	if (RC_CHK_GET(result, maps))
++		refcount_inc(maps__refcnt(maps));
+ 
+-		if (kmap)
+-			kmap->kmaps = maps;
+-		else
+-			pr_err("Internal error: kernel dso with non kernel map\n");
+-	}
++	return result;
++}
+ 
++void maps__put(struct maps *maps)
++{
++	if (maps && refcount_dec_and_test(maps__refcnt(maps)))
++		maps__delete(maps);
++	else
++		RC_CHK_PUT(maps);
++}
+ 
++static void __maps__free_maps_by_name(struct maps *maps)
++{
+ 	/*
+-	 * If we already performed some search by name, then we need to add the just
+-	 * inserted map and resort.
++	 * Free everything to try to do it from the rbtree in the next search
+ 	 */
+-	if (maps__maps_by_name(maps)) {
+-		if (maps__nr_maps(maps) > RC_CHK_ACCESS(maps)->nr_maps_allocated) {
+-			int nr_allocate = maps__nr_maps(maps) * 2;
+-			struct map **maps_by_name = realloc(maps__maps_by_name(maps),
+-							    nr_allocate * sizeof(map));
++	for (unsigned int i = 0; i < maps__nr_maps(maps); i++)
++		map__put(maps__maps_by_name(maps)[i]);
+ 
+-			if (maps_by_name == NULL) {
+-				__maps__free_maps_by_name(maps);
+-				err = -ENOMEM;
+-				goto out;
+-			}
++	zfree(&RC_CHK_ACCESS(maps)->maps_by_name);
++}
+ 
+-			RC_CHK_ACCESS(maps)->maps_by_name = maps_by_name;
+-			RC_CHK_ACCESS(maps)->nr_maps_allocated = nr_allocate;
++static int map__start_cmp(const void *a, const void *b)
++{
++	const struct map *map_a = *(const struct map * const *)a;
++	const struct map *map_b = *(const struct map * const *)b;
++	u64 map_a_start = map__start(map_a);
++	u64 map_b_start = map__start(map_b);
++
++	if (map_a_start == map_b_start) {
++		u64 map_a_end = map__end(map_a);
++		u64 map_b_end = map__end(map_b);
++
++		if  (map_a_end == map_b_end) {
++			/* Ensure maps with the same addresses have a fixed order. */
++			if (RC_CHK_ACCESS(map_a) == RC_CHK_ACCESS(map_b))
++				return 0;
++			return (intptr_t)RC_CHK_ACCESS(map_a) > (intptr_t)RC_CHK_ACCESS(map_b)
++				? 1 : -1;
+ 		}
+-		maps__maps_by_name(maps)[maps__nr_maps(maps) - 1] = map__get(map);
+-		__maps__sort_by_name(maps);
++		return map_a_end > map_b_end ? 1 : -1;
+ 	}
+- out:
+-	up_write(maps__lock(maps));
+-	return err;
++	return map_a_start > map_b_start ? 1 : -1;
+ }
+ 
+-static void __maps__remove(struct maps *maps, struct map_rb_node *rb_node)
++static void __maps__sort_by_address(struct maps *maps)
+ {
+-	rb_erase_init(&rb_node->rb_node, maps__entries(maps));
+-	map__put(rb_node->map);
+-	free(rb_node);
++	if (maps__maps_by_address_sorted(maps))
++		return;
++
++	qsort(maps__maps_by_address(maps),
++		maps__nr_maps(maps),
++		sizeof(struct map *),
++		map__start_cmp);
++	maps__set_maps_by_address_sorted(maps, true);
+ }
+ 
+-void maps__remove(struct maps *maps, struct map *map)
++static void maps__sort_by_address(struct maps *maps)
+ {
+-	struct map_rb_node *rb_node;
+-
+ 	down_write(maps__lock(maps));
+-	if (RC_CHK_ACCESS(maps)->last_search_by_name == map)
+-		RC_CHK_ACCESS(maps)->last_search_by_name = NULL;
+-
+-	rb_node = maps__find_node(maps, map);
+-	assert(rb_node->RC_CHK_ACCESS(map) == RC_CHK_ACCESS(map));
+-	__maps__remove(maps, rb_node);
+-	if (maps__maps_by_name(maps))
+-		__maps__free_maps_by_name(maps);
+-	--RC_CHK_ACCESS(maps)->nr_maps;
++	__maps__sort_by_address(maps);
+ 	up_write(maps__lock(maps));
+ }
+ 
+-static void __maps__purge(struct maps *maps)
++static int map__strcmp(const void *a, const void *b)
+ {
+-	struct map_rb_node *pos, *next;
+-
+-	if (maps__maps_by_name(maps))
+-		__maps__free_maps_by_name(maps);
++	const struct map *map_a = *(const struct map * const *)a;
++	const struct map *map_b = *(const struct map * const *)b;
++	const struct dso *dso_a = map__dso(map_a);
++	const struct dso *dso_b = map__dso(map_b);
++	int ret = strcmp(dso_a->short_name, dso_b->short_name);
+ 
+-	maps__for_each_entry_safe(maps, pos, next) {
+-		rb_erase_init(&pos->rb_node,  maps__entries(maps));
+-		map__put(pos->map);
+-		free(pos);
++	if (ret == 0 && RC_CHK_ACCESS(map_a) != RC_CHK_ACCESS(map_b)) {
++		/* Ensure distinct but name equal maps have an order. */
++		return map__start_cmp(a, b);
+ 	}
++	return ret;
+ }
+ 
+-static void maps__exit(struct maps *maps)
++static int maps__sort_by_name(struct maps *maps)
+ {
++	int err = 0;
+ 	down_write(maps__lock(maps));
+-	__maps__purge(maps);
++	if (!maps__maps_by_name_sorted(maps)) {
++		struct map **maps_by_name = maps__maps_by_name(maps);
++
++		if (!maps_by_name) {
++			maps_by_name = malloc(RC_CHK_ACCESS(maps)->nr_maps_allocated *
++					sizeof(*maps_by_name));
++			if (!maps_by_name)
++				err = -ENOMEM;
++			else {
++				struct map **maps_by_address = maps__maps_by_address(maps);
++				unsigned int n = maps__nr_maps(maps);
++
++				maps__set_maps_by_name(maps, maps_by_name);
++				for (unsigned int i = 0; i < n; i++)
++					maps_by_name[i] = map__get(maps_by_address[i]);
++			}
++		}
++		if (!err) {
++			qsort(maps_by_name,
++				maps__nr_maps(maps),
++				sizeof(struct map *),
++				map__strcmp);
++			maps__set_maps_by_name_sorted(maps, true);
++		}
++	}
+ 	up_write(maps__lock(maps));
++	return err;
+ }
+ 
+-bool maps__empty(struct maps *maps)
++static unsigned int maps__by_address_index(const struct maps *maps, const struct map *map)
+ {
+-	return !maps__first(maps);
++	struct map **maps_by_address = maps__maps_by_address(maps);
++
++	if (maps__maps_by_address_sorted(maps)) {
++		struct map **mapp =
++			bsearch(&map, maps__maps_by_address(maps), maps__nr_maps(maps),
++				sizeof(*mapp), map__start_cmp);
++
++		if (mapp)
++			return mapp - maps_by_address;
++	} else {
++		for (unsigned int i = 0; i < maps__nr_maps(maps); i++) {
++			if (RC_CHK_ACCESS(maps_by_address[i]) == RC_CHK_ACCESS(map))
++				return i;
++		}
++	}
++	pr_err("Map missing from maps");
++	return -1;
+ }
+ 
+-struct maps *maps__new(struct machine *machine)
++static unsigned int maps__by_name_index(const struct maps *maps, const struct map *map)
+ {
+-	struct maps *result;
+-	RC_STRUCT(maps) *maps = zalloc(sizeof(*maps));
++	struct map **maps_by_name = maps__maps_by_name(maps);
++
++	if (maps__maps_by_name_sorted(maps)) {
++		struct map **mapp =
++			bsearch(&map, maps_by_name, maps__nr_maps(maps),
++				sizeof(*mapp), map__strcmp);
++
++		if (mapp)
++			return mapp - maps_by_name;
++	} else {
++		for (unsigned int i = 0; i < maps__nr_maps(maps); i++) {
++			if (RC_CHK_ACCESS(maps_by_name[i]) == RC_CHK_ACCESS(map))
++				return i;
++		}
++	}
++	pr_err("Map missing from maps");
++	return -1;
++}
+ 
+-	if (ADD_RC_CHK(result, maps))
+-		maps__init(result, machine);
++static int __maps__insert(struct maps *maps, struct map *new)
++{
++	struct map **maps_by_address = maps__maps_by_address(maps);
++	struct map **maps_by_name = maps__maps_by_name(maps);
++	const struct dso *dso = map__dso(new);
++	unsigned int nr_maps = maps__nr_maps(maps);
++	unsigned int nr_allocate = RC_CHK_ACCESS(maps)->nr_maps_allocated;
++
++	if (nr_maps + 1 > nr_allocate) {
++		nr_allocate = !nr_allocate ? 32 : nr_allocate * 2;
++
++		maps_by_address = realloc(maps_by_address, nr_allocate * sizeof(new));
++		if (!maps_by_address)
++			return -ENOMEM;
++
++		maps__set_maps_by_address(maps, maps_by_address);
++		if (maps_by_name) {
++			maps_by_name = realloc(maps_by_name, nr_allocate * sizeof(new));
++			if (!maps_by_name) {
++				/*
++				 * If by name fails, just disable by name and it will
++				 * recompute next time it is required.
++				 */
++				__maps__free_maps_by_name(maps);
++			}
++			maps__set_maps_by_name(maps, maps_by_name);
++		}
++		RC_CHK_ACCESS(maps)->nr_maps_allocated = nr_allocate;
++	}
++	/* Insert the value at the end. */
++	maps_by_address[nr_maps] = map__get(new);
++	if (maps_by_name)
++		maps_by_name[nr_maps] = map__get(new);
+ 
+-	return result;
++	nr_maps++;
++	RC_CHK_ACCESS(maps)->nr_maps = nr_maps;
++
++	/*
++	 * Recompute if things are sorted. If things are inserted in a sorted
++	 * manner, for example by processing /proc/pid/maps, then no
++	 * sorting/resorting will be necessary.
++	 */
++	if (nr_maps == 1) {
++		/* If there's just 1 entry then maps are sorted. */
++		maps__set_maps_by_address_sorted(maps, true);
++		maps__set_maps_by_name_sorted(maps, maps_by_name != NULL);
++	} else {
++		/* Sorted if maps were already sorted and this map starts after the last one. */
++		maps__set_maps_by_address_sorted(maps,
++			maps__maps_by_address_sorted(maps) &&
++			map__end(maps_by_address[nr_maps - 2]) <= map__start(new));
++		maps__set_maps_by_name_sorted(maps, false);
++	}
++	if (map__end(new) < map__start(new))
++		RC_CHK_ACCESS(maps)->ends_broken = true;
++	if (dso && dso->kernel) {
++		struct kmap *kmap = map__kmap(new);
++
++		if (kmap)
++			kmap->kmaps = maps;
++		else
++			pr_err("Internal error: kernel dso with non kernel map\n");
++	}
++	check_invariants(maps);
++	return 0;
+ }
+ 
+-static void maps__delete(struct maps *maps)
++int maps__insert(struct maps *maps, struct map *map)
+ {
+-	maps__exit(maps);
+-	unwind__finish_access(maps);
+-	RC_CHK_FREE(maps);
++	int ret;
++
++	down_write(maps__lock(maps));
++	ret = __maps__insert(maps, map);
++	up_write(maps__lock(maps));
++	return ret;
+ }
+ 
+-struct maps *maps__get(struct maps *maps)
++static void __maps__remove(struct maps *maps, struct map *map)
+ {
+-	struct maps *result;
++	struct map **maps_by_address = maps__maps_by_address(maps);
++	struct map **maps_by_name = maps__maps_by_name(maps);
++	unsigned int nr_maps = maps__nr_maps(maps);
++	unsigned int address_idx;
++
++	/* Slide later mappings over the one to remove */
++	address_idx = maps__by_address_index(maps, map);
++	map__put(maps_by_address[address_idx]);
++	memmove(&maps_by_address[address_idx],
++		&maps_by_address[address_idx + 1],
++		(nr_maps - address_idx - 1) * sizeof(*maps_by_address));
++
++	if (maps_by_name) {
++		unsigned int name_idx = maps__by_name_index(maps, map);
++
++		map__put(maps_by_name[name_idx]);
++		memmove(&maps_by_name[name_idx],
++			&maps_by_name[name_idx + 1],
++			(nr_maps - name_idx - 1) *  sizeof(*maps_by_name));
++	}
+ 
+-	if (RC_CHK_GET(result, maps))
+-		refcount_inc(maps__refcnt(maps));
++	--RC_CHK_ACCESS(maps)->nr_maps;
++	check_invariants(maps);
++}
+ 
+-	return result;
++void maps__remove(struct maps *maps, struct map *map)
++{
++	down_write(maps__lock(maps));
++	__maps__remove(maps, map);
++	up_write(maps__lock(maps));
+ }
+ 
+-void maps__put(struct maps *maps)
++bool maps__empty(struct maps *maps)
+ {
+-	if (maps && refcount_dec_and_test(maps__refcnt(maps)))
+-		maps__delete(maps);
+-	else
+-		RC_CHK_PUT(maps);
++	return maps__nr_maps(maps) == 0;
+ }
+ 
+ int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, void *data), void *data)
+ {
+-	struct map_rb_node *pos;
++	bool done = false;
+ 	int ret = 0;
+ 
+-	down_read(maps__lock(maps));
+-	maps__for_each_entry(maps, pos)	{
+-		ret = cb(pos->map, data);
+-		if (ret)
+-			break;
++	/* See locking/sorting note. */
++	while (!done) {
++		down_read(maps__lock(maps));
++		if (maps__maps_by_address_sorted(maps)) {
++			struct map **maps_by_address = maps__maps_by_address(maps);
++			unsigned int n = maps__nr_maps(maps);
++
++			for (unsigned int i = 0; i < n; i++) {
++				struct map *map = maps_by_address[i];
++
++				ret = cb(map, data);
++				if (ret)
++					break;
++			}
++			done = true;
++		}
++		up_read(maps__lock(maps));
++		if (!done)
++			maps__sort_by_address(maps);
+ 	}
+-	up_read(maps__lock(maps));
+ 	return ret;
+ }
+ 
+ void maps__remove_maps(struct maps *maps, bool (*cb)(struct map *map, void *data), void *data)
+ {
+-	struct map_rb_node *pos, *next;
+-	unsigned int start_nr_maps;
++	struct map **maps_by_address;
+ 
  	down_write(maps__lock(maps));
  
- 	maps__for_each_entry(maps, curr) {
--		if (prev != NULL && !map__end(prev->map))
-+		if (prev && (!map__end(prev->map) || map__end(prev->map) > map__start(curr->map)))
- 			map__set_end(prev->map, map__start(curr->map));
+-	start_nr_maps = maps__nr_maps(maps);
+-	maps__for_each_entry_safe(maps, pos, next)	{
+-		if (cb(pos->map, data)) {
+-			__maps__remove(maps, pos);
+-			--RC_CHK_ACCESS(maps)->nr_maps;
+-		}
++	maps_by_address = maps__maps_by_address(maps);
++	for (unsigned int i = 0; i < maps__nr_maps(maps);) {
++		if (cb(maps_by_address[i], data))
++			__maps__remove(maps, maps_by_address[i]);
++		else
++			i++;
+ 	}
+-	if (maps__maps_by_name(maps) && start_nr_maps != maps__nr_maps(maps))
+-		__maps__free_maps_by_name(maps);
+-
+ 	up_write(maps__lock(maps));
+ }
  
- 		prev = curr;
+@@ -300,7 +491,7 @@ struct symbol *maps__find_symbol(struct maps *maps, u64 addr, struct map **mapp)
+ 	/* Ensure map is loaded before using map->map_ip */
+ 	if (map != NULL && map__load(map) >= 0) {
+ 		if (mapp != NULL)
+-			*mapp = map;
++			*mapp = map; // TODO: map_put on else path when find returns a get.
+ 		return map__find_symbol(map, map__map_ip(map, addr));
+ 	}
+ 
+@@ -348,7 +539,7 @@ int maps__find_ams(struct maps *maps, struct addr_map_symbol *ams)
+ 	if (ams->addr < map__start(ams->ms.map) || ams->addr >= map__end(ams->ms.map)) {
+ 		if (maps == NULL)
+ 			return -1;
+-		ams->ms.map = maps__find(maps, ams->addr);
++		ams->ms.map = maps__find(maps, ams->addr);  // TODO: map_get
+ 		if (ams->ms.map == NULL)
+ 			return -1;
+ 	}
+@@ -393,24 +584,28 @@ size_t maps__fprintf(struct maps *maps, FILE *fp)
+  * Find first map where end > new->start.
+  * Same as find_vma() in kernel.
+  */
+-static struct rb_node *first_ending_after(struct maps *maps, const struct map *map)
++static unsigned int first_ending_after(struct maps *maps, const struct map *map)
+ {
+-	struct rb_root *root;
+-	struct rb_node *next, *first;
++	struct map **maps_by_address = maps__maps_by_address(maps);
++	int low = 0, high = (int)maps__nr_maps(maps) - 1, first = high + 1;
++
++	assert(maps__maps_by_address_sorted(maps));
++	if (low <= high && map__end(maps_by_address[0]) > map__start(map))
++		return 0;
+ 
+-	root = maps__entries(maps);
+-	next = root->rb_node;
+-	first = NULL;
+-	while (next) {
+-		struct map_rb_node *pos = rb_entry(next, struct map_rb_node, rb_node);
++	while (low <= high) {
++		int mid = (low + high) / 2;
++		struct map *pos = maps_by_address[mid];
+ 
+-		if (map__end(pos->map) > map__start(map)) {
+-			first = next;
+-			if (map__start(pos->map) <= map__start(map))
++		if (map__end(pos) > map__start(map)) {
++			first = mid;
++			if (map__start(pos) <= map__start(map)) {
++				/* Entry overlaps map. */
+ 				break;
+-			next = next->rb_left;
++			}
++			high = mid - 1;
+ 		} else
+-			next = next->rb_right;
++			low = mid + 1;
+ 	}
+ 	return first;
+ }
+@@ -419,170 +614,248 @@ static struct rb_node *first_ending_after(struct maps *maps, const struct map *m
+  * Adds new to maps, if new overlaps existing entries then the existing maps are
+  * adjusted or removed so that new fits without overlapping any entries.
+  */
+-int maps__fixup_overlap_and_insert(struct maps *maps, struct map *new)
++static int __maps__fixup_overlap_and_insert(struct maps *maps, struct map *new)
+ {
+-
+-	struct rb_node *next;
++	struct map **maps_by_address;
+ 	int err = 0;
+ 
+-	down_write(maps__lock(maps));
++sort_again:
++	if (!maps__maps_by_address_sorted(maps))
++		__maps__sort_by_address(maps);
+ 
+-	next = first_ending_after(maps, new);
+-	while (next && !err) {
+-		struct map_rb_node *pos = rb_entry(next, struct map_rb_node, rb_node);
+-		next = rb_next(&pos->rb_node);
++	maps_by_address = maps__maps_by_address(maps);
++	/*
++	 * Iterate through entries where the end of the existing entry is
++	 * greater-than the new map's start.
++	 */
++	for (unsigned int i = first_ending_after(maps, new); i < maps__nr_maps(maps); ) {
++		struct map *pos = maps_by_address[i];
++		struct map *before = NULL, *after = NULL;
+ 
+ 		/*
+ 		 * Stop if current map starts after map->end.
+ 		 * Maps are ordered by start: next will not overlap for sure.
+ 		 */
+-		if (map__start(pos->map) >= map__end(new))
++		if (map__start(pos) >= map__end(new))
+ 			break;
+ 
+-		if (verbose >= 2) {
+-
+-			if (use_browser) {
+-				pr_debug("overlapping maps in %s (disable tui for more info)\n",
+-					 map__dso(new)->name);
+-			} else {
+-				pr_debug("overlapping maps:\n");
+-				map__fprintf(new, debug_file());
+-				map__fprintf(pos->map, debug_file());
+-			}
++		if (use_browser) {
++			pr_debug("overlapping maps in %s (disable tui for more info)\n",
++				map__dso(new)->name);
++		} else if (verbose >= 2) {
++			pr_debug("overlapping maps:\n");
++			map__fprintf(new, debug_file());
++			map__fprintf(pos, debug_file());
+ 		}
+ 
+-		rb_erase_init(&pos->rb_node, maps__entries(maps));
+ 		/*
+ 		 * Now check if we need to create new maps for areas not
+ 		 * overlapped by the new map:
+ 		 */
+-		if (map__start(new) > map__start(pos->map)) {
+-			struct map *before = map__clone(pos->map);
++		if (map__start(new) > map__start(pos)) {
++			/* Map starts within existing map. Need to shorten the existing map. */
++			before = map__clone(pos);
+ 
+ 			if (before == NULL) {
+ 				err = -ENOMEM;
+-				goto put_map;
++				goto out_err;
+ 			}
+-
+ 			map__set_end(before, map__start(new));
+-			err = __maps__insert(maps, before);
+-			if (err) {
+-				map__put(before);
+-				goto put_map;
+-			}
+ 
+ 			if (verbose >= 2 && !use_browser)
+ 				map__fprintf(before, debug_file());
+-			map__put(before);
+ 		}
+-
+-		if (map__end(new) < map__end(pos->map)) {
+-			struct map *after = map__clone(pos->map);
++		if (map__end(new) < map__end(pos)) {
++			/* The new map isn't as long as the existing map. */
++			after = map__clone(pos);
+ 
+ 			if (after == NULL) {
++				map__zput(before);
+ 				err = -ENOMEM;
+-				goto put_map;
++				goto out_err;
+ 			}
+ 
+ 			map__set_start(after, map__end(new));
+-			map__add_pgoff(after, map__end(new) - map__start(pos->map));
+-			assert(map__map_ip(pos->map, map__end(new)) ==
+-				map__map_ip(after, map__end(new)));
+-			err = __maps__insert(maps, after);
+-			if (err) {
+-				map__put(after);
+-				goto put_map;
+-			}
++			map__add_pgoff(after, map__end(new) - map__start(pos));
++			assert(map__map_ip(pos, map__end(new)) ==
++			       map__map_ip(after, map__end(new)));
++
+ 			if (verbose >= 2 && !use_browser)
+ 				map__fprintf(after, debug_file());
+-			map__put(after);
+ 		}
+-put_map:
+-		map__put(pos->map);
+-		free(pos);
++		/*
++		 * If adding one entry, for `before` or `after`, we can replace
++		 * the existing entry. If both `before` and `after` are
++		 * necessary than an insert is needed. If the existing entry
++		 * entirely overlaps the existing entry it can just be removed.
++		 */
++		if (before) {
++			map__put(maps_by_address[i]);
++			maps_by_address[i] = before;
++			/* Maps are still ordered, go to next one. */
++			i++;
++			if (after) {
++				__maps__insert(maps, after);
++				map__put(after);
++				if (!maps__maps_by_address_sorted(maps)) {
++					/*
++					 * Sorting broken so invariants don't
++					 * hold, sort and go again.
++					 */
++					goto sort_again;
++				}
++				/*
++				 * Maps are still ordered, skip after and go to
++				 * next one (terminate loop).
++				 */
++				i++;
++			}
++		} else if (after) {
++			map__put(maps_by_address[i]);
++			maps_by_address[i] = after;
++			/* Maps are ordered, go to next one. */
++			i++;
++		} else {
++			__maps__remove(maps, pos);
++			/*
++			 * Maps are ordered but no need to increase `i` as the
++			 * later maps were moved down.
++			 */
++		}
++		check_invariants(maps);
+ 	}
+ 	/* Add the map. */
+-	err = __maps__insert(maps, new);
+-	up_write(maps__lock(maps));
++	__maps__insert(maps, new);
++out_err:
+ 	return err;
+ }
+ 
+-int maps__copy_from(struct maps *maps, struct maps *parent)
++int maps__fixup_overlap_and_insert(struct maps *maps, struct map *new)
+ {
+ 	int err;
+-	struct map_rb_node *rb_node;
+ 
++	down_write(maps__lock(maps));
++	err =  __maps__fixup_overlap_and_insert(maps, new);
++	up_write(maps__lock(maps));
++	return err;
++}
++
++int maps__copy_from(struct maps *dest, struct maps *parent)
++{
++	/* Note, if struct map were immutable then cloning could use ref counts. */
++	struct map **parent_maps_by_address;
++	int err = 0;
++	unsigned int n;
++
++	down_write(maps__lock(dest));
+ 	down_read(maps__lock(parent));
+ 
+-	maps__for_each_entry(parent, rb_node) {
+-		struct map *new = map__clone(rb_node->map);
++	parent_maps_by_address = maps__maps_by_address(parent);
++	n = maps__nr_maps(parent);
++	if (maps__empty(dest)) {
++		/* No existing mappings so just copy from parent to avoid reallocs in insert. */
++		unsigned int nr_maps_allocated = RC_CHK_ACCESS(parent)->nr_maps_allocated;
++		struct map **dest_maps_by_address =
++			malloc(nr_maps_allocated * sizeof(struct map *));
++		struct map **dest_maps_by_name = NULL;
+ 
+-		if (new == NULL) {
++		if (!dest_maps_by_address)
+ 			err = -ENOMEM;
+-			goto out_unlock;
++		else {
++			if (maps__maps_by_name(parent)) {
++				dest_maps_by_name =
++					malloc(nr_maps_allocated * sizeof(struct map *));
++			}
++
++			RC_CHK_ACCESS(dest)->maps_by_address = dest_maps_by_address;
++			RC_CHK_ACCESS(dest)->maps_by_name = dest_maps_by_name;
++			RC_CHK_ACCESS(dest)->nr_maps_allocated = nr_maps_allocated;
+ 		}
+ 
+-		err = unwind__prepare_access(maps, new, NULL);
+-		if (err)
+-			goto out_unlock;
++		for (unsigned int i = 0; !err && i < n; i++) {
++			struct map *pos = parent_maps_by_address[i];
++			struct map *new = map__clone(pos);
+ 
+-		err = maps__insert(maps, new);
+-		if (err)
+-			goto out_unlock;
++			if (!new)
++				err = -ENOMEM;
++			else {
++				err = unwind__prepare_access(dest, new, NULL);
++				if (!err) {
++					dest_maps_by_address[i] = new;
++					if (dest_maps_by_name)
++						dest_maps_by_name[i] = map__get(new);
++					RC_CHK_ACCESS(dest)->nr_maps = i + 1;
++				}
++			}
++			if (err)
++				map__put(new);
++		}
++		maps__set_maps_by_address_sorted(dest, maps__maps_by_address_sorted(parent));
++		if (!err) {
++			RC_CHK_ACCESS(dest)->last_search_by_name_idx =
++				RC_CHK_ACCESS(parent)->last_search_by_name_idx;
++			maps__set_maps_by_name_sorted(dest,
++						dest_maps_by_name &&
++						maps__maps_by_name_sorted(parent));
++		} else {
++			RC_CHK_ACCESS(dest)->last_search_by_name_idx = 0;
++			maps__set_maps_by_name_sorted(dest, false);
++		}
++	} else {
++		/* Unexpected copying to a maps containing entries. */
++		for (unsigned int i = 0; !err && i < n; i++) {
++			struct map *pos = parent_maps_by_address[i];
++			struct map *new = map__clone(pos);
+ 
+-		map__put(new);
++			if (!new)
++				err = -ENOMEM;
++			else {
++				err = unwind__prepare_access(dest, new, NULL);
++				if (!err)
++					err = maps__insert(dest, new);
++			}
++			map__put(new);
++		}
+ 	}
+-
+-	err = 0;
+-out_unlock:
+ 	up_read(maps__lock(parent));
++	up_write(maps__lock(dest));
+ 	return err;
+ }
+ 
+-struct map *maps__find(struct maps *maps, u64 ip)
++static int map__addr_cmp(const void *key, const void *entry)
+ {
+-	struct rb_node *p;
+-	struct map_rb_node *m;
+-
++	const u64 ip = *(const u64 *)key;
++	const struct map *map = *(const struct map * const *)entry;
+ 
+-	down_read(maps__lock(maps));
+-
+-	p = maps__entries(maps)->rb_node;
+-	while (p != NULL) {
+-		m = rb_entry(p, struct map_rb_node, rb_node);
+-		if (ip < map__start(m->map))
+-			p = p->rb_left;
+-		else if (ip >= map__end(m->map))
+-			p = p->rb_right;
+-		else
+-			goto out;
+-	}
+-
+-	m = NULL;
+-out:
+-	up_read(maps__lock(maps));
+-	return m ? m->map : NULL;
++	if (ip < map__start(map))
++		return -1;
++	if (ip >= map__end(map))
++		return 1;
++	return 0;
+ }
+ 
+-static int map__strcmp(const void *a, const void *b)
++struct map *maps__find(struct maps *maps, u64 ip)
+ {
+-	const struct map *map_a = *(const struct map **)a;
+-	const struct map *map_b = *(const struct map **)b;
+-	const struct dso *dso_a = map__dso(map_a);
+-	const struct dso *dso_b = map__dso(map_b);
+-	int ret = strcmp(dso_a->short_name, dso_b->short_name);
+-
+-	if (ret == 0 && map_a != map_b) {
+-		/*
+-		 * Ensure distinct but name equal maps have an order in part to
+-		 * aid reference counting.
+-		 */
+-		ret = (int)map__start(map_a) - (int)map__start(map_b);
+-		if (ret == 0)
+-			ret = (int)((intptr_t)map_a - (intptr_t)map_b);
++	struct map *result = NULL;
++	bool done = false;
++
++	/* See locking/sorting note. */
++	while (!done) {
++		down_read(maps__lock(maps));
++		if (maps__maps_by_address_sorted(maps)) {
++			struct map **mapp =
++				bsearch(&ip, maps__maps_by_address(maps), maps__nr_maps(maps),
++					sizeof(*mapp), map__addr_cmp);
++
++			if (mapp)
++				result = *mapp; // map__get(*mapp);
++			done = true;
++		}
++		up_read(maps__lock(maps));
++		if (!done)
++			maps__sort_by_address(maps);
+ 	}
+-
+-	return ret;
++	return result;
+ }
+ 
+ static int map__strcmp_name(const void *name, const void *b)
+@@ -592,126 +865,113 @@ static int map__strcmp_name(const void *name, const void *b)
+ 	return strcmp(name, dso->short_name);
+ }
+ 
+-void __maps__sort_by_name(struct maps *maps)
+-{
+-	qsort(maps__maps_by_name(maps), maps__nr_maps(maps), sizeof(struct map *), map__strcmp);
+-}
+-
+-static int map__groups__sort_by_name_from_rbtree(struct maps *maps)
+-{
+-	struct map_rb_node *rb_node;
+-	struct map **maps_by_name = realloc(maps__maps_by_name(maps),
+-					    maps__nr_maps(maps) * sizeof(struct map *));
+-	int i = 0;
+-
+-	if (maps_by_name == NULL)
+-		return -1;
+-
+-	up_read(maps__lock(maps));
+-	down_write(maps__lock(maps));
+-
+-	RC_CHK_ACCESS(maps)->maps_by_name = maps_by_name;
+-	RC_CHK_ACCESS(maps)->nr_maps_allocated = maps__nr_maps(maps);
+-
+-	maps__for_each_entry(maps, rb_node)
+-		maps_by_name[i++] = map__get(rb_node->map);
+-
+-	__maps__sort_by_name(maps);
+-
+-	up_write(maps__lock(maps));
+-	down_read(maps__lock(maps));
+-
+-	return 0;
+-}
+-
+-static struct map *__maps__find_by_name(struct maps *maps, const char *name)
++struct map *maps__find_by_name(struct maps *maps, const char *name)
+ {
+-	struct map **mapp;
++	struct map *result = NULL;
++	bool done = false;
+ 
+-	if (maps__maps_by_name(maps) == NULL &&
+-	    map__groups__sort_by_name_from_rbtree(maps))
+-		return NULL;
++	/* See locking/sorting note. */
++	while (!done) {
++		unsigned int i;
+ 
+-	mapp = bsearch(name, maps__maps_by_name(maps), maps__nr_maps(maps),
+-		       sizeof(*mapp), map__strcmp_name);
+-	if (mapp)
+-		return *mapp;
+-	return NULL;
+-}
++		down_read(maps__lock(maps));
+ 
+-struct map *maps__find_by_name(struct maps *maps, const char *name)
+-{
+-	struct map_rb_node *rb_node;
+-	struct map *map;
+-
+-	down_read(maps__lock(maps));
++		/* First check last found entry. */
++		i = RC_CHK_ACCESS(maps)->last_search_by_name_idx;
++		if (i < maps__nr_maps(maps) && maps__maps_by_name(maps)) {
++			struct dso *dso = map__dso(maps__maps_by_name(maps)[i]);
+ 
++			if (dso && strcmp(dso->short_name, name) == 0) {
++				result = maps__maps_by_name(maps)[i]; // TODO: map__get
++				done = true;
++			}
++		}
+ 
+-	if (RC_CHK_ACCESS(maps)->last_search_by_name) {
+-		const struct dso *dso = map__dso(RC_CHK_ACCESS(maps)->last_search_by_name);
++		/* Second search sorted array. */
++		if (!done && maps__maps_by_name_sorted(maps)) {
++			struct map **mapp =
++				bsearch(name, maps__maps_by_name(maps), maps__nr_maps(maps),
++					sizeof(*mapp), map__strcmp_name);
+ 
+-		if (strcmp(dso->short_name, name) == 0) {
+-			map = RC_CHK_ACCESS(maps)->last_search_by_name;
+-			goto out_unlock;
++			if (mapp) {
++				result = *mapp; // TODO: map__get
++				i = mapp - maps__maps_by_name(maps);
++				RC_CHK_ACCESS(maps)->last_search_by_name_idx = i;
++			}
++			done = true;
+ 		}
+-	}
+-	/*
+-	 * If we have maps->maps_by_name, then the name isn't in the rbtree,
+-	 * as maps->maps_by_name mirrors the rbtree when lookups by name are
+-	 * made.
+-	 */
+-	map = __maps__find_by_name(maps, name);
+-	if (map || maps__maps_by_name(maps) != NULL)
+-		goto out_unlock;
+-
+-	/* Fallback to traversing the rbtree... */
+-	maps__for_each_entry(maps, rb_node) {
+-		struct dso *dso;
+-
+-		map = rb_node->map;
+-		dso = map__dso(map);
+-		if (strcmp(dso->short_name, name) == 0) {
+-			RC_CHK_ACCESS(maps)->last_search_by_name = map;
+-			goto out_unlock;
++		up_read(maps__lock(maps));
++		if (!done) {
++			/* Sort and retry binary search. */
++			if (maps__sort_by_name(maps)) {
++				/*
++				 * Memory allocation failed do linear search
++				 * through address sorted maps.
++				 */
++				struct map **maps_by_address;
++				unsigned int n;
++
++				down_read(maps__lock(maps));
++				maps_by_address =  maps__maps_by_address(maps);
++				n = maps__nr_maps(maps);
++				for (i = 0; i < n; i++) {
++					struct map *pos = maps_by_address[i];
++					struct dso *dso = map__dso(pos);
++
++					if (dso && strcmp(dso->short_name, name) == 0) {
++						result = pos; // TODO: map__get
++						break;
++					}
++				}
++				up_read(maps__lock(maps));
++				done = true;
++			}
+ 		}
+ 	}
+-	map = NULL;
+-
+-out_unlock:
+-	up_read(maps__lock(maps));
+-	return map;
++	return result;
+ }
+ 
+ struct map *maps__find_next_entry(struct maps *maps, struct map *map)
+ {
+-	struct map_rb_node *rb_node = maps__find_node(maps, map);
+-	struct map_rb_node *next = map_rb_node__next(rb_node);
++	unsigned int i;
++	struct map *result = NULL;
+ 
+-	if (next)
+-		return next->map;
++	down_read(maps__lock(maps));
++	i = maps__by_address_index(maps, map);
++	if (i < maps__nr_maps(maps))
++		result = maps__maps_by_address(maps)[i]; // TODO: map__get
+ 
+-	return NULL;
++	up_read(maps__lock(maps));
++	return result;
+ }
+ 
+ void maps__fixup_end(struct maps *maps)
+ {
+-	struct map_rb_node *prev = NULL, *curr;
++	struct map **maps_by_address;
++	unsigned int n;
+ 
+ 	down_write(maps__lock(maps));
++	if (!maps__maps_by_address_sorted(maps))
++		__maps__sort_by_address(maps);
+ 
+-	maps__for_each_entry(maps, curr) {
+-		if (prev && (!map__end(prev->map) || map__end(prev->map) > map__start(curr->map)))
+-			map__set_end(prev->map, map__start(curr->map));
++	maps_by_address = maps__maps_by_address(maps);
++	n = maps__nr_maps(maps);
++	for (unsigned int i = 1; i < n; i++) {
++		struct map *prev = maps_by_address[i - 1];
++		struct map *curr = maps_by_address[i];
+ 
+-		prev = curr;
++		if (!map__end(prev) || map__end(prev) > map__start(curr))
++			map__set_end(prev, map__start(curr));
+ 	}
+ 
+ 	/*
+ 	 * We still haven't the actual symbols, so guess the
+ 	 * last map final address.
+ 	 */
+-	if (curr && !map__end(curr->map))
+-		map__set_end(curr->map, ~0ULL);
++	if (n > 0 && !map__end(maps_by_address[n - 1]))
++		map__set_end(maps_by_address[n - 1], ~0ULL);
++
++	RC_CHK_ACCESS(maps)->ends_broken = false;
+ 
+ 	up_write(maps__lock(maps));
+ }
+@@ -722,117 +982,92 @@ void maps__fixup_end(struct maps *maps)
+  */
+ int maps__merge_in(struct maps *kmaps, struct map *new_map)
+ {
+-	struct map_rb_node *rb_node;
+-	struct rb_node *first;
+-	bool overlaps;
+-	LIST_HEAD(merged);
+-	int err = 0;
++	unsigned int first_after_, kmaps__nr_maps;
++	struct map **kmaps_maps_by_address;
++	struct map **merged_maps_by_address;
++	unsigned int merged_nr_maps_allocated;
++
++	/* First try under a read lock. */
++	while (true) {
++		down_read(maps__lock(kmaps));
++		if (maps__maps_by_address_sorted(kmaps))
++			break;
+ 
+-	down_read(maps__lock(kmaps));
+-	first = first_ending_after(kmaps, new_map);
+-	overlaps = first &&
+-		map__start(rb_entry(first, struct map_rb_node, rb_node)->map) < map__end(new_map);
+-	up_read(maps__lock(kmaps));
++		up_read(maps__lock(kmaps));
++
++		/* First after binary search requires sorted maps. Sort and try again. */
++		maps__sort_by_address(kmaps);
++	}
++	first_after_ = first_ending_after(kmaps, new_map);
++	kmaps_maps_by_address = maps__maps_by_address(kmaps);
+ 
+-	if (!overlaps)
++	if (first_after_ >= maps__nr_maps(kmaps) ||
++	    map__start(kmaps_maps_by_address[first_after_]) >= map__end(new_map)) {
++		/* No overlap so regular insert suffices. */
++		up_read(maps__lock(kmaps));
+ 		return maps__insert(kmaps, new_map);
++	}
++	up_read(maps__lock(kmaps));
+ 
+-	maps__for_each_entry(kmaps, rb_node) {
+-		struct map *old_map = rb_node->map;
++	/* Plain insert with a read-lock failed, try again now with the write lock. */
++	down_write(maps__lock(kmaps));
++	if (!maps__maps_by_address_sorted(kmaps))
++		__maps__sort_by_address(kmaps);
+ 
+-		/* no overload with this one */
+-		if (map__end(new_map) < map__start(old_map) ||
+-		    map__start(new_map) >= map__end(old_map))
+-			continue;
++	first_after_ = first_ending_after(kmaps, new_map);
++	kmaps_maps_by_address = maps__maps_by_address(kmaps);
++	kmaps__nr_maps = maps__nr_maps(kmaps);
+ 
+-		if (map__start(new_map) < map__start(old_map)) {
+-			/*
+-			 * |new......
+-			 *       |old....
+-			 */
+-			if (map__end(new_map) < map__end(old_map)) {
+-				/*
+-				 * |new......|     -> |new..|
+-				 *       |old....| ->       |old....|
+-				 */
+-				map__set_end(new_map, map__start(old_map));
+-			} else {
+-				/*
+-				 * |new.............| -> |new..|       |new..|
+-				 *       |old....|    ->       |old....|
+-				 */
+-				struct map_list_node *m = map_list_node__new();
++	if (first_after_ >= kmaps__nr_maps ||
++	    map__start(kmaps_maps_by_address[first_after_]) >= map__end(new_map)) {
++		/* No overlap so regular insert suffices. */
++		up_write(maps__lock(kmaps));
++		return maps__insert(kmaps, new_map);
++	}
++	/* Array to merge into, possibly 1 more for the sake of new_map. */
++	merged_nr_maps_allocated = RC_CHK_ACCESS(kmaps)->nr_maps_allocated;
++	if (kmaps__nr_maps + 1 == merged_nr_maps_allocated)
++		merged_nr_maps_allocated++;
++
++	merged_maps_by_address = malloc(merged_nr_maps_allocated * sizeof(*merged_maps_by_address));
++	if (!merged_maps_by_address) {
++		up_write(maps__lock(kmaps));
++		return -ENOMEM;
++	}
++	RC_CHK_ACCESS(kmaps)->maps_by_address = merged_maps_by_address;
++	RC_CHK_ACCESS(kmaps)->maps_by_address_sorted = true;
++	zfree(&RC_CHK_ACCESS(kmaps)->maps_by_name);
++	RC_CHK_ACCESS(kmaps)->maps_by_name_sorted = false;
++	RC_CHK_ACCESS(kmaps)->nr_maps_allocated = merged_nr_maps_allocated;
+ 
+-				if (!m) {
+-					err = -ENOMEM;
+-					goto out;
+-				}
++	/* Copy entries before the new_map that can't overlap. */
++	for (unsigned int i = 0; i < first_after_; i++)
++		merged_maps_by_address[i] = map__get(kmaps_maps_by_address[i]);
+ 
+-				m->map = map__clone(new_map);
+-				if (!m->map) {
+-					free(m);
+-					err = -ENOMEM;
+-					goto out;
+-				}
++	RC_CHK_ACCESS(kmaps)->nr_maps = first_after_;
+ 
+-				map__set_end(m->map, map__start(old_map));
+-				list_add_tail(&m->node, &merged);
+-				map__add_pgoff(new_map, map__end(old_map) - map__start(new_map));
+-				map__set_start(new_map, map__end(old_map));
+-			}
+-		} else {
+-			/*
+-			 *      |new......
+-			 * |old....
+-			 */
+-			if (map__end(new_map) < map__end(old_map)) {
+-				/*
+-				 *      |new..|   -> x
+-				 * |old.........| -> |old.........|
+-				 */
+-				map__put(new_map);
+-				new_map = NULL;
+-				break;
+-			} else {
+-				/*
+-				 *      |new......| ->         |new...|
+-				 * |old....|        -> |old....|
+-				 */
+-				map__add_pgoff(new_map, map__end(old_map) - map__start(new_map));
+-				map__set_start(new_map, map__end(old_map));
+-			}
+-		}
+-	}
++	/* Add the new map, it will be split when the later overlapping mappings are added. */
++	__maps__insert(kmaps, new_map);
+ 
+-out:
+-	while (!list_empty(&merged)) {
+-		struct map_list_node *old_node;
++	/* Insert mappings after new_map, splitting new_map in the process. */
++	for (unsigned int i = first_after_; i < kmaps__nr_maps; i++)
++		__maps__fixup_overlap_and_insert(kmaps, kmaps_maps_by_address[i]);
+ 
+-		old_node = list_entry(merged.next, struct map_list_node, node);
+-		list_del_init(&old_node->node);
+-		if (!err)
+-			err = maps__insert(kmaps, old_node->map);
+-		map__put(old_node->map);
+-		free(old_node);
+-	}
++	/* Copy the maps from merged into kmaps. */
++	for (unsigned int i = 0; i < kmaps__nr_maps; i++)
++		map__zput(kmaps_maps_by_address[i]);
+ 
+-	if (new_map) {
+-		if (!err)
+-			err = maps__insert(kmaps, new_map);
+-		map__put(new_map);
+-	}
+-	return err;
++	free(kmaps_maps_by_address);
++	up_write(maps__lock(kmaps));
++	return 0;
+ }
+ 
+ void maps__load_first(struct maps *maps)
+ {
+-	struct map_rb_node *first;
+-
+ 	down_read(maps__lock(maps));
+ 
+-	first = maps__first(maps);
+-	if (first)
+-		map__load(first->map);
++	if (maps__nr_maps(maps) > 0)
++		map__load(maps__maps_by_address(maps)[0]);
+ 
+ 	up_read(maps__lock(maps));
+ }
+diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
+index d836d04c9402..df9dd5a0e3c0 100644
+--- a/tools/perf/util/maps.h
++++ b/tools/perf/util/maps.h
+@@ -25,21 +25,56 @@ static inline struct map_list_node *map_list_node__new(void)
+ 	return malloc(sizeof(struct map_list_node));
+ }
+ 
+-struct map *maps__find(struct maps *maps, u64 addr);
++/*
++ * Locking/sorting note:
++ *
++ * Sorting is done with the write lock, iteration and binary searching happens
++ * under the read lock requiring being sorted. There is a race between sorting
++ * releasing the write lock and acquiring the read lock for iteration/searching
++ * where another thread could insert and break the sorting of the maps. In
++ * practice inserting maps should be rare meaning that the race shouldn't lead
++ * to live lock. Removal of maps doesn't break being sorted.
++ */
+ 
+ DECLARE_RC_STRUCT(maps) {
+-	struct rb_root      entries;
+ 	struct rw_semaphore lock;
+-	struct machine	 *machine;
+-	struct map	 *last_search_by_name;
++	/**
++	 * @maps_by_address: array of maps sorted by their starting address if
++	 * maps_by_address_sorted is true.
++	 */
++	struct map	 **maps_by_address;
++	/**
++	 * @maps_by_name: optional array of maps sorted by their dso name if
++	 * maps_by_name_sorted is true.
++	 */
+ 	struct map	 **maps_by_name;
+-	refcount_t	 refcnt;
+-	unsigned int	 nr_maps;
+-	unsigned int	 nr_maps_allocated;
++	struct machine	 *machine;
+ #ifdef HAVE_LIBUNWIND_SUPPORT
+-	void				*addr_space;
++	void		*addr_space;
+ 	const struct unwind_libunwind_ops *unwind_libunwind_ops;
+ #endif
++	refcount_t	 refcnt;
++	/**
++	 * @nr_maps: number of maps_by_address, and possibly maps_by_name,
++	 * entries that contain maps.
++	 */
++	unsigned int	 nr_maps;
++	/**
++	 * @nr_maps_allocated: number of entries in maps_by_address and possibly
++	 * maps_by_name.
++	 */
++	unsigned int	 nr_maps_allocated;
++	/**
++	 * @last_search_by_name_idx: cache of last found by name entry's index
++	 * as frequent searches for the same dso name are common.
++	 */
++	unsigned int	 last_search_by_name_idx;
++	/** @maps_by_address_sorted: is maps_by_address sorted. */
++	bool		 maps_by_address_sorted;
++	/** @maps_by_name_sorted: is maps_by_name sorted. */
++	bool		 maps_by_name_sorted;
++	/** @ends_broken: does the map contain a map where end values are unset/unsorted? */
++	bool		 ends_broken;
+ };
+ 
+ #define KMAP_NAME_LEN 256
+@@ -102,6 +137,7 @@ size_t maps__fprintf(struct maps *maps, FILE *fp);
+ int maps__insert(struct maps *maps, struct map *map);
+ void maps__remove(struct maps *maps, struct map *map);
+ 
++struct map *maps__find(struct maps *maps, u64 addr);
+ struct symbol *maps__find_symbol(struct maps *maps, u64 addr, struct map **mapp);
+ struct symbol *maps__find_symbol_by_name(struct maps *maps, const char *name, struct map **mapp);
+ 
+@@ -117,8 +153,6 @@ struct map *maps__find_next_entry(struct maps *maps, struct map *map);
+ 
+ int maps__merge_in(struct maps *kmaps, struct map *new_map);
+ 
+-void __maps__sort_by_name(struct maps *maps);
+-
+ void maps__fixup_end(struct maps *maps);
+ 
+ void maps__load_first(struct maps *maps);
 -- 
 2.42.0.869.gea05f2083d-goog
 
