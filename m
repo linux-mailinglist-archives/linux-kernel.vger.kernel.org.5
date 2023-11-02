@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D21757DEB2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0454E7DEB32
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 04:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348189AbjKBDL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 23:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38662 "EHLO
+        id S1347898AbjKBDOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 23:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbjKBDL4 (ORCPT
+        with ESMTP id S232949AbjKBDOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 23:11:56 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5594D110;
-        Wed,  1 Nov 2023 20:11:49 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A23BT6J02297255, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 3A23BT6J02297255
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Nov 2023 11:11:30 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Thu, 2 Nov 2023 11:11:30 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 2 Nov 2023 11:11:29 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Thu, 2 Nov 2023 11:11:29 +0800
-From:   =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "Andy Shevchenko" <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/2] dt-bindings: gpio: realtek: Add realtek,rtd-gpio bindings
-Thread-Topic: [PATCH 2/2] dt-bindings: gpio: realtek: Add realtek,rtd-gpio
- bindings
-Thread-Index: AQHaDG9It5wA6xURlESdwF4Dx71B1LBkhtMAgAHPQEA=
-Date:   Thu, 2 Nov 2023 03:11:29 +0000
-Message-ID: <eeded63e9e754e0e9a5b546e616be437@realtek.com>
-References: <20231101025802.3744-1-tychang@realtek.com>
- <20231101025802.3744-3-tychang@realtek.com>
- <6a09f16e-0a41-4619-b7bb-b5561f7e36ce@linaro.org>
-In-Reply-To: <6a09f16e-0a41-4619-b7bb-b5561f7e36ce@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.181.166]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antivirus-attachment-filter-interceptor-info: license violation
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 1 Nov 2023 23:14:10 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B6F113;
+        Wed,  1 Nov 2023 20:14:07 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b4145e887bso257983b6e.3;
+        Wed, 01 Nov 2023 20:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698894847; x=1699499647; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8Ng+Ky2De9mKEU9cACPl0CpnKEJS0eue27RL+2JZ1s8=;
+        b=eCnxDRLiSUXAChl9U/MEDv23QFzLllIpgtDjPoQlV1dO+79FGy0Qm+Znb0c9DjC0+J
+         OdrDKPGjdP6y/1JgEQWDOKAFYSNJWMRFSqpwUtK/7U31STZJ7DFsL97f6Hjn74dzXx64
+         bS/iiu7iJqm3qj3TrL/m/eZQNcwYuYpH2QyFhSGvSAIH3+7rHE7NxGUVppJKmfrieP7z
+         PczOUiFIAtTSAt0636SSwTn5uI9gERRq3RMK3iVLytIQ6CW9R0+WQ7rn+YpKrXh1crBO
+         kFskOTGV1jZ57D300kR83ntXOFp/Iacm+BGdj1DW5SL5cx9GiFS55jfbU1GkA0wVM/ac
+         wS0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698894847; x=1699499647;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Ng+Ky2De9mKEU9cACPl0CpnKEJS0eue27RL+2JZ1s8=;
+        b=SNizcXjPkJ4pzC8JZhYdYCaWGqUFZ6MtbXf5ZDREr7As0O4clZX9T0LJDV/DLIAaRZ
+         MrLI2fC6EfHzL21mK9Lhq3k+n0Cs+ORVTpexJQ/bfrBtrEb2Q+2KjRbbbBKMOdI8X01t
+         eTmdmpnodCsQdF3jv2WmKxbiGM4/sFMw/3m5q9w3yz4gd0JN4lz1+/7D/zo+4YAMjS4f
+         gauFMOIn4DbfH20Zr3qyxV9o5i1OAu6yx6oUg4p1+OP7Q777hicgW6Zg81WJYv1CSEud
+         1DzwIH3T5b7P0Cc+rhmeJfVT/d2w0/MrEZsAv4R4lj/jyWOJ2RnHHs10DBd6yVXhOFlE
+         Qg1Q==
+X-Gm-Message-State: AOJu0YxEYVj4VAzuqHANIsXxMuMNywaZD2J2yQ6QSYwCgN+66N6vgrqg
+        mNas2rPcXC6UDXosMIrmIoY=
+X-Google-Smtp-Source: AGHT+IEEI4dvb7QQTncXlStBqRd1w90xo3S0vMQiCz+d240Aib9+mztsA684rMGZIJudpyercdkBZA==
+X-Received: by 2002:a05:6808:30a4:b0:3af:a0bd:45b7 with SMTP id bl36-20020a05680830a400b003afa0bd45b7mr22115843oib.13.1698894846743;
+        Wed, 01 Nov 2023 20:14:06 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z20-20020a056808065400b003adcaf28f61sm417866oih.41.2023.11.01.20.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 20:14:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 1 Nov 2023 20:14:05 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     jdelvare@suse.com, avifishman70@gmail.com, tali.perry1@gmail.com,
+        joel@jms.id.au, andrew@codeconstruct.com.au, venture@google.com,
+        yuenn@google.com, benjaminfair@google.com, j.neuschaefer@gmx.net,
+        openbmc@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] hwmon: npcm750-pwm-fan: Add NPCM8xx support
+Message-ID: <8d9d439b-70f7-4e9e-bcfd-b18182d5bb39@roeck-us.net>
+References: <20231031075806.400872-1-tmaimon77@gmail.com>
+ <20231031075806.400872-2-tmaimon77@gmail.com>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031075806.400872-2-tmaimon77@gmail.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQpUaGFuayB5b3UgZm9yIHRoZSByZXZpZXcuDQoNCj5PbiAwMS8xMS8y
-MDIzIDAzOjU4LCBUenV5aSBDaGFuZyB3cm90ZToNCj4+IFRoaXMgcGF0Y2ggYWRkcyB0aGUgZGV2
-aWNlIHRyZWUgYmluZGluZ3MgZm9yIHRoZSBSZWFsdGVrIERIQyBSVEQgU29Dcw0KPj4gR1BJTyBj
-b250cm9sbGVycy4NCj4+DQo+DQo+QSBuaXQsIHN1YmplY3Q6IGRyb3Agc2Vjb25kL2xhc3QsIHJl
-ZHVuZGFudCAiYmluZGluZ3MiLiBUaGUgImR0LWJpbmRpbmdzIiBwcmVmaXggaXMNCj5hbHJlYWR5
-IHN0YXRpbmcgdGhhdCB0aGVzZSBhcmUgYmluZGluZ3MuDQo+DQpJIHdpbGwgcmVtb3ZlIGl0Lg0K
-DQo+PiBTaWduZWQtb2ZmLWJ5OiBUenV5aSBDaGFuZyA8dHljaGFuZ0ByZWFsdGVrLmNvbT4NCj4+
-IC0tLQ0KPj4gIC4uLi9iaW5kaW5ncy9ncGlvL3JlYWx0ZWsscnRkLWdwaW8ueWFtbCAgICAgICB8
-IDU2ICsrKysrKysrKysrKysrKysrKysNCj4+ICAxIGZpbGUgY2hhbmdlZCwgNTYgaW5zZXJ0aW9u
-cygrKQ0KPj4gIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL2dwaW8vcmVhbHRlayxydGQtZ3Bpby55YW1sDQo+DQo+SG93IGRvZXMgeW91ciBi
-aW5kaW5nIGNvbWUgYWZ0ZXIgdGhlIHVzZXI/DQo+DQoNCkkgd2lsIG1vdmUgdGhlIGJpbmRpbmcg
-dG8gdGhlIGZpcnN0IHBhdGNoLg0KDQo+Pg0KPj4gZGlmZiAtLWdpdA0KPj4gYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZ3Bpby9yZWFsdGVrLHJ0ZC1ncGlvLnlhbWwNCj4+IGIv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2dwaW8vcmVhbHRlayxydGQtZ3Bpby55
-YW1sDQo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPj4gaW5kZXggMDAwMDAwMDAwMDAwLi42Y2Fi
-N2VjNTBjODgNCj4+IC0tLSAvZGV2L251bGwNCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9ncGlvL3JlYWx0ZWsscnRkLWdwaW8ueWFtbA0KPj4gQEAgLTAsMCArMSw1
-NiBAQA0KPj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0yLUNs
-YXVzZSkgIyBDb3B5cmlnaHQgMjAyMw0KPj4gK1JlYWx0ZWsgU2VtaWNvbmR1Y3RvciBDb3Jwb3Jh
-dGlvbiAlWUFNTCAxLjINCj4+ICstLS0NCj4+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9z
-Y2hlbWFzL2dwaW8vcmVhbHRlayxydGQtZ3Bpby55YW1sIw0KPj4gKyRzY2hlbWE6IGh0dHA6Ly9k
-ZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPj4gKw0KPj4gK3RpdGxlOiBS
-ZWFsdGVrIERIQyBHUElPIGNvbnRyb2xsZXINCj4NCj5XaGF0IGlzIERIQz8gV2hlcmUgaXMgaXQg
-ZXhwbGFpbmVkIGluIHRoZSBiaW5kaW5nPw0KPg0KDQpUaGlzIGlzIHRoZSBhYmJyZXZpYXRpb24g
-b2YgIkRpZ2l0YWwgSG9tZSBDZW50ZXIiLiBJIHdpbGwgYWRkIHRoZSBkZXNjcmlwdGlvbiB0byBl
-eHBsYWluIGl0Lg0KDQo+PiArDQo+PiArbWFpbnRhaW5lcnM6DQo+PiArICAtIFRZIENoYW5nIDx0
-eWNoYW5nQHJlYWx0ZWsuY29tPg0KPj4gKw0KPj4gK3Byb3BlcnRpZXM6DQo+PiArICBjb21wYXRp
-YmxlOg0KPj4gKyAgICBlbnVtOg0KPj4gKyAgICAgIC0gcmVhbHRlayxydGQtZ3Bpbw0KPg0KPldo
-YXQgaXMgInJ0ZCI/IEdlbmVyaWMgbmFtZT8gRHJvcC4gWW91IGNhbm5vdCBoYXZlIGdlbmVyaWMg
-Y29tcGF0aWJsZXMuDQo+DQoNClRoaXMgaXMgYSBnZW5lcmljIG5hbWUgZm9yIHRoZSBvdGhlcnMg
-U29DcyB3aXRob3V0IHRoZSBzcGVjaWZpYyBjb21wYXRpYmxlLg0KSSB3aWxsIGZpeCBpdC4NCg0K
-Pg0KPj4gKyAgICAgIC0gcmVhbHRlayxydGQxMjk1LW1pc2MtZ3Bpbw0KPj4gKyAgICAgIC0gcmVh
-bHRlayxydGQxMjk1LWlzby1ncGlvDQo+PiArICAgICAgLSByZWFsdGVrLHJ0ZDEzOTUtaXNvLWdw
-aW8NCj4+ICsgICAgICAtIHJlYWx0ZWsscnRkMTYxOS1pc28tZ3Bpbw0KPj4gKw0KPj4gKyAgcmVn
-Og0KPj4gKyAgICBtYXhJdGVtczogMg0KPg0KPllvdSBuZWVkIHRvIGRlc2NyaWJlIHRoZSBpdGVt
-cyBpbnN0ZWFkLg0KPg0KDQpJIHdpbGwgYWRkIHRoZSBkZXNjcmlwdGlvbi4NCg0KPj4gKw0KPj4g
-KyAgaW50ZXJydXB0czoNCj4+ICsgICAgbWF4SXRlbXM6IDINCj4NCj5Zb3UgbmVlZCB0byBkZXNj
-cmliZSB0aGUgaXRlbXMgaW5zdGVhZC4NCj4NCg0KSSB3aWxsIGFkZCB0aGUgZGVzY3JpcHRpb24u
-DQoNCj4+ICsNCj4+ICsgIGdwaW8tcmFuZ2VzOiB0cnVlDQo+PiArDQo+PiArICBncGlvLWNvbnRy
-b2xsZXI6IHRydWUNCj4+ICsNCj4+ICsgICIjZ3Bpby1jZWxscyI6DQo+PiArICAgIGNvbnN0OiAy
-DQo+PiArDQo+PiArcmVxdWlyZWQ6DQo+PiArICAtIGNvbXBhdGlibGUNCj4+ICsgIC0gcmVnDQo+
-PiArICAtIGludGVycnVwdHMNCj4+ICsgIC0gZ3Bpby1yYW5nZXMNCj4+ICsgIC0gZ3Bpby1jb250
-cm9sbGVyDQo+PiArICAtICIjZ3Bpby1jZWxscyINCj4NCj5CZXN0IHJlZ2FyZHMsDQo+S3J6eXN6
-dG9mDQoNCg0KVGhhbmtzLA0KVHp1eWkgQ2hhbmcNCg==
+On Tue, Oct 31, 2023 at 09:58:06AM +0200, Tomer Maimon wrote:
+> Adding Pulse Width Modulation (PWM) and fan tacho NPCM8xx support to
+> NPCM PWM and fan tacho driver.
+> NPCM8xx uses a different number of PWM devices.
+> 
+> As part of adding NPCM8XX support:
+> - Add NPCM8xx specific compatible string.
+> - Add data to handle architecture-specific PWM parameters.
+> 
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+
+Applied to hwmon-next. I'll push it after the relase window closes.
+
+Side note: An introductory patch is not necessary for single
+patches. Providing the change log in the unnecessary intro patch
+only adds additional overhead for no gain.
+
+Guenter
