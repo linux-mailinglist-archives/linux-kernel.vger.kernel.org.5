@@ -2,104 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7327DF491
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B2A7DF490
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376725AbjKBOFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
+        id S1376717AbjKBOFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjKBOFh (ORCPT
+        with ESMTP id S230024AbjKBOFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:05:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6398483
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698933930; x=1730469930;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=z6zjx+1JAVxgwFK1dmsKlGC6Lecu+me25nGHv4APOYQ=;
-  b=RucDBDCZ8pynDjrBXRcXSdGYoM8WjSff2qpCoPUeFmNc52WXSYxwP9MG
-   HC4R+JmUlZ809omEpRSh9WmQDmZnZqgdC9wR7hunRlJlQRAGfc7gYiGJ6
-   CYFx07B71qz0JnDyjSdLcBwjRy9po/pq+tDkk4umXkVeweJzKcBjnfpey
-   f4X/qiGgA0ZBK5PidYNYDtUNrAVYTuXuV9ZJNC4/krXX+GceuueU8eiMA
-   EHl48i0sFei/73c1x7icOgLhp4A6k3NDg6sZvvzQXwFtm63HVhWTmHZMu
-   WKjGFXX1uOqvs3ztWMM8ZANPb4pkRNfn1aQ5lLLYLSuvXgJYy3I6qRWEm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1644257"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="1644257"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 07:05:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="831701250"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="831701250"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Nov 2023 07:05:26 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyYK4-0001VU-1R;
-        Thu, 02 Nov 2023 14:05:24 +0000
-Date:   Thu, 2 Nov 2023 22:04:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        =?iso-8859-1?Q?P=E9ter?= Ujfalusi 
-        <peter.ujfalusi@linux.intel.com>
-Subject: include/linux/io-64-nonatomic-lo-hi.h:21:16: sparse: sparse: cast
- truncates bits from constant value (8000000000000000 becomes 0)
-Message-ID: <202311022232.mbDUzcRN-lkp@intel.com>
+        Thu, 2 Nov 2023 10:05:30 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDCD83
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:05:25 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1f03fdfcfacso504389fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698933924; x=1699538724; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uAKa3xYdSVkg6JDI0JPbNLKKKKg1VuHVMApjjYwsti8=;
+        b=hi1ptla2T9bEzrJtCDvssvwItlNpavMUyGrAsm00DZXh1CPjyIWCHZW7NVMo35GXwE
+         GvAGlFiNF0fs62rGqtML2p78rq8RapWDR+qpbIyya2uaGZqWsltnEuBw2q3juElTojnt
+         Fj/n6ojeO2MUplvOGEHE3kEEBlH73TlGyYP3ms4KloPK6Joh1gLOjezX5pIJ0G6fDRfj
+         KCDL03uyYR0cjYww3IgBB130raUNTFT8QB8muJV6ElmVRSp/hTRt++dLGh1k1jID6CYl
+         wILcPk067OrJmPd+evzlJ3BYSm1xJyeibGDRjJflEg50QNmYTPwONnOIDknZnTFz88QA
+         ql+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698933924; x=1699538724;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uAKa3xYdSVkg6JDI0JPbNLKKKKg1VuHVMApjjYwsti8=;
+        b=h8OJvejZfVhBpNkdnaU9QBfmdshwGXSw0Ci8ZNtJlB7e0HrU2s0e9sI12de7EcG8I/
+         CQ3tYpySd4I1tkha0wuwpAgD/xoMwv8hiCgRh/SItw20z7tMrrSjLmW21dHHtOPoPGyc
+         qNGXUyr1ljqpdg1Z9Z78QwTRfsKNDV1Iy6Bg6/r/wQbL10AR9PHPZzO+DRxuBEMoEFsB
+         uIiSH5lwGi1xT9Z9JS5koxopTO7rbfABowo31TmC4gEyg6c/h3jkSWaeqTISR41AQytX
+         6ydVzQUVak4UYu2PeUOQCSnGtVnGunx9tWqe0gC7y4hUVMbgPW5ZISkFPEnL0oYDMfui
+         12Pg==
+X-Gm-Message-State: AOJu0YwjMJJ68PAvJeIbTOEp9quybtbxgj5PJorxL5X5AYUAOnNCyxkM
+        /hdulfEs5jHk5vobaWF9CSUZDxIwWsmBrsm1/sO/fA==
+X-Google-Smtp-Source: AGHT+IGVTwuY2StKKB1isW3oqO0iZfyZX72G2otIOFE2vSNvrF3ahBHazdfSh1TejMmuOHqbySMqzr1STCrUbzvNLl4=
+X-Received: by 2002:a05:6870:b50d:b0:1ea:8b10:247a with SMTP id
+ v13-20020a056870b50d00b001ea8b10247amr21802910oap.42.1698933924425; Thu, 02
+ Nov 2023 07:05:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231026080409.4149616-1-jens.wiklander@linaro.org>
+ <CAFA6WYOYRQ4BgyUE90EwAVULsa=qDkZ4C=0rX49e-E3LOvyz6Q@mail.gmail.com>
+ <20231102115925.GA1233092@rayden> <CAFA6WYPh-hfzcuLOHToby_vuQcqHh64kF0WQ4AdoaRwjeyyFFg@mail.gmail.com>
+ <20231102131624.GB1233092@rayden>
+In-Reply-To: <20231102131624.GB1233092@rayden>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 2 Nov 2023 19:35:13 +0530
+Message-ID: <CAFA6WYMX4UdAYF3BQum0fBXhyUshJv0Hkuwt0UnppDYpR70Rkg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] OP-TEE FF-A notifications
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Olivier Deprez <Olivier.Deprez@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
-commit: 01278cb6fa82083000a9e0b56c8b004caf5b6a73 ASoC: SOF: ops: fallback to mmio in helpers
-date:   1 year ago
-config: nios2-randconfig-r132-20231102 (https://download.01.org/0day-ci/archive/20231102/202311022232.mbDUzcRN-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231102/202311022232.mbDUzcRN-lkp@intel.com/reproduce)
+On Thu, 2 Nov 2023 at 18:46, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> On Thu, Nov 02, 2023 at 05:46:55PM +0530, Sumit Garg wrote:
+> > On Thu, 2 Nov 2023 at 17:29, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> > >
+> > > Hi Sumit,
+> > >
+> > > On Mon, Oct 30, 2023 at 11:32:47AM +0530, Sumit Garg wrote:
+> > > > Hi Jens,
+> > > >
+> > > > On Thu, 26 Oct 2023 at 13:34, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> > > > >
+> > > > > Hi all,
+> > > > >
+> > > > > This patchset adds support for using FF-A notifications as a delivery
+> > > > > mechanism of asynchronous notifications from OP-TEE running in the secure
+> > > > > world. Support for asynchronous notifications via the SMC ABI was added in
+> > > > > [1], here we add the counterpart needed when using the the FF-A ABI.
+> > > > >
+> > > > > Support for FF-A notifications is added with [2] and this patch set is based
+> > > > > on Sudeeps tree at [3].
+> > > >
+> > > > It's good to see FF-A notifications support coming through. The good
+> > > > aspect here is that FF-A uses a common secure world SGI for
+> > > > notifications and doesn't have to deal with platform specific reserved
+> > > > SPI for notifications.
+> > > >
+> > > > From OP-TEE point of view I think most of the secure SGI donation base
+> > > > would be common, so can we switch the SMC ABI to use this donated
+> > > > secure world SGI for notifications too?
+> > >
+> > > The SMC ABI driver picks up the interrupt used for notification from
+> > > device-tree, so there's a chance that it just works if a donated SGI is
+> > > supplied instead. We'll need some changes in the secure world side of
+> > > OP-TEE, but they wouldn't affect the ABI.
+> >
+> > AFAIK, a secure world donated SGIs doesn't support IRQ mapping via DT.
+> > The FF-A driver explicitly creates that mapping here [1].
+>
+> That looks a lot like what platform_get_irq() does via of_irq_get().
+>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311022232.mbDUzcRN-lkp@intel.com/
+There is GIC_SPI or GIC_PPI but nothing like GIC_SGI in DT bindings [1].
 
-sparse warnings: (new ones prefixed by >>)
-   sound/soc/sof/intel/atom.c: note: in included file (through include/sound/hdaudio.h, sound/soc/sof/intel/../sof-priv.h, sound/soc/sof/intel/../ops.h):
->> include/linux/io-64-nonatomic-lo-hi.h:21:16: sparse: sparse: cast truncates bits from constant value (8000000000000000 becomes 0)
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/dt-bindings/interrupt-controller/arm-gic.h
 
-vim +21 include/linux/io-64-nonatomic-lo-hi.h
+> > Moreover
+> > it's better to detect it via an SMC call rather than hard coded via DT
+> > as FF-A driver does.
+>
+> Typo? I guess you mean that you prefer that way the FF-A driver does it
+> rather than having it set in the DT.
 
-797a796a13df6b include/asm-generic/io-64-nonatomic-lo-hi.h Hitoshi Mitake 2012-02-07  18  
-3a044178cccfeb include/asm-generic/io-64-nonatomic-lo-hi.h Jason Baron    2014-07-04  19  static inline void lo_hi_writeq(__u64 val, volatile void __iomem *addr)
-797a796a13df6b include/asm-generic/io-64-nonatomic-lo-hi.h Hitoshi Mitake 2012-02-07  20  {
-797a796a13df6b include/asm-generic/io-64-nonatomic-lo-hi.h Hitoshi Mitake 2012-02-07 @21  	writel(val, addr);
-797a796a13df6b include/asm-generic/io-64-nonatomic-lo-hi.h Hitoshi Mitake 2012-02-07  22  	writel(val >> 32, addr + 4);
-797a796a13df6b include/asm-generic/io-64-nonatomic-lo-hi.h Hitoshi Mitake 2012-02-07  23  }
-3a044178cccfeb include/asm-generic/io-64-nonatomic-lo-hi.h Jason Baron    2014-07-04  24  
+Yeah sorry about that. We shouldn't use DT if OP-TEE features are discoverable.
 
-:::::: The code at line 21 was first introduced by commit
-:::::: 797a796a13df6b84a4791e57306737059b5b2384 asm-generic: architecture independent readq/writeq for 32bit environment
+>
+> Assuming that you only care about "arm,gic-v3". The SGI will likely
+> always be the same so it shouldn't be too hard to keep the correct
+> configuration in DT.
 
-:::::: TO: Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+See above, DT looks like it does not support SGI.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> >
+> > So the ABI should dynamically detect if there is a donated SGI then
+> > use it otherwise fallback to SPI/PPI detection via DT. This would make
+> > the notifications feature platform agnostic and we can drop legacy DT
+> > methods from optee-os entirely but still need to maintain them in the
+> > kernel for backwards compatibility.
+>
+> We care about compatibility in both directions so we'd need to keep it
+> in OP-TEE too, but perhaps under a config flag.
+
+Isn't it just supported on Qemu right now in OP-TEE? I hope dropping a
+feature won't be a problem there compared with the maintenance burden.
+
+-Sumit
+
+>
+> Thanks,
+> Jens
+>
+> >
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/tree/drivers/firmware/arm_ffa/driver.c?h=ffa-updates-6.7#n1283
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/tree/drivers/firmware/arm_ffa/driver.c?h=ffa-updates-6.7#n1275
+> >
+> > -Sumit
+> >
+> > >
+> > > Cheers,
+> > > Jens
+> > >
+> > > >
+> > > > -Sumit
+> > > >
+> > > > >
+> > > > > [1] https://lore.kernel.org/lkml/20211103090255.998070-1-jens.wiklander@linaro.org/
+> > > > > [2] https://lore.kernel.org/linux-arm-kernel/20231005-ffa_v1-1_notif-v4-0-cddd3237809c@arm.com/
+> > > > > [3] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/tag/?h=ffa-updates-6.7
+> > > > >     commit bcefd1bf63b1 ("firmware: arm_ffa: Upgrade the driver version to v1.1")
+> > > > >
+> > > > > Thanks,
+> > > > > Jens
+> > > > >
+> > > > > Jens Wiklander (2):
+> > > > >   optee: provide optee_do_bottom_half() as a common function
+> > > > >   optee: ffa_abi: add asynchronous notifications
+> > > > >
+> > > > >  drivers/tee/optee/call.c          | 31 ++++++++++-
+> > > > >  drivers/tee/optee/ffa_abi.c       | 91 ++++++++++++++++++++++++++++++-
+> > > > >  drivers/tee/optee/optee_ffa.h     | 28 ++++++++--
+> > > > >  drivers/tee/optee/optee_private.h |  9 ++-
+> > > > >  drivers/tee/optee/smc_abi.c       | 36 ++----------
+> > > > >  5 files changed, 153 insertions(+), 42 deletions(-)
+> > > > >
+> > > > >
+> > > > > base-commit: bcefd1bf63b1ec9bb08067021cf47f0fad96f395
+> > > > > --
+> > > > > 2.34.1
+> > > > >
