@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384297DF29E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487E87DF2A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376330AbjKBMjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
+        id S1376352AbjKBMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376372AbjKBMjF (ORCPT
+        with ESMTP id S1376388AbjKBMjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:39:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A571F18A;
-        Thu,  2 Nov 2023 05:38:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698928739; x=1730464739;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=76z3Un6rKgu/Gfrm6QEwK9fIGnZpQFZgYPQm9HswN+g=;
-  b=iQ+de6CuGtch6oDMHFQDy89/yxmwmDtYhT607T0OLBoR/8PQrbqG3lbZ
-   r8KFmuXLiwzuugFXdjXXI5DMRumdsydU5Dq/QHe+nDt/yR1w1hp4SPrFF
-   Ao72LR7/+2E03tWl8SiRnJTvixnyOp1n9cUbZFT+KBNno2jYQHTAvbPg8
-   ktPBMKVlfYpTSXM54e1fOwhznvFW18hk2GgZahmnE3/wcEZKnBczIRHeb
-   6bVQgxRsVjcLJcjcP+0q/T5HBsgahyMcNj1rVoCmp/K4WCCGo/LGn3pU3
-   i5rRyBPnLtSYBs9LZbDYMdK3RMBUbwHC67VoS/xH20ThGmZ0qn/xMJ83W
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7342530"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="7342530"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:38:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="764901219"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="764901219"
-Received: from arajan-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.215.101])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 05:38:54 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 01E1210A312; Thu,  2 Nov 2023 15:38:51 +0300 (+03)
-Date:   Thu, 2 Nov 2023 15:38:51 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     "Nikunj A. Dadhania" <nikunj@amd.com>, seanjc@google.com,
-        pbonzini@redhat.com
-Cc:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        dave.hansen@linux.intel.com, dionnaglaze@google.com,
-        pgonda@google.com
-Subject: Re: [PATCH v5 13/14] x86/tsc: Mark Secure TSC as reliable clocksource
-Message-ID: <20231102123851.jsdolkfz7sd3jys7@box>
-References: <20231030063652.68675-1-nikunj@amd.com>
- <20231030063652.68675-14-nikunj@amd.com>
- <57d63309-51cd-4138-889d-43fbdf5ec790@intel.com>
- <ae267e31-5722-4784-9146-28bb13ca7cf5@amd.com>
- <20231102103306.v7ydmrobd5ibs4yn@box.shutemov.name>
- <5d8040b2-c761-4cea-a2ec-39319603e94a@amd.com>
- <cf92b26e-d940-4dc8-a339-56903952cee2@amd.com>
+        Thu, 2 Nov 2023 08:39:33 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616D918A;
+        Thu,  2 Nov 2023 05:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=TIQojWmE9MxmAPu4pmyVMZLAi3i+e6rSjQXCU7X4YpY=; b=wLOyVWzdffZ8kcZX/6Ys3nEbse
+        myM3WjCJSuj+r5vPeouDkpm2JbV6fEKka8u7SxZhQ6P2wrdhh3luyxWDwjBApw2IGeXfP3MJUZn+i
+        PmNaGyoYQQ7MjLJSSb66v2oUTnAKON8bv3cCDXlcRDTqoELixgcF70JeADqxhB0ozSf4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qyWyS-000kd6-Az; Thu, 02 Nov 2023 13:39:00 +0100
+Date:   Thu, 2 Nov 2023 13:39:00 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
+        <ramon.nordin.rodriguez@ferroamp.se>
+Cc:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        corbet@lwn.net, steen.hegelund@microchip.com,
+        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
+        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
+        Thorsten.Kummermehr@microchip.com
+Subject: Re: [PATCH net-next v2 8/9] microchip: lan865x: add driver support
+ for Microchip's LAN865X MACPHY
+Message-ID: <f95b42ef-b7e0-44dc-b7c8-9353e9edc2df@lunn.ch>
+References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
+ <20231023154649.45931-9-Parthiban.Veerasooran@microchip.com>
+ <ZUOUGf-PMGo8z1s-@debian>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf92b26e-d940-4dc8-a339-56903952cee2@amd.com>
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZUOUGf-PMGo8z1s-@debian>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 05:46:26PM +0530, Nikunj A. Dadhania wrote:
-> On 11/2/2023 5:37 PM, Nikunj A. Dadhania wrote:
-> > On 11/2/2023 4:03 PM, Kirill A. Shutemov wrote:
-> >> On Thu, Nov 02, 2023 at 11:23:34AM +0530, Nikunj A. Dadhania wrote:
-> >>> On 10/30/2023 10:48 PM, Dave Hansen wrote:
-> >>>> On 10/29/23 23:36, Nikunj A Dadhania wrote:
-> >>>> ...
-> >>>>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> >>>>> index 15f97c0abc9d..b0a8546d3703 100644
-> >>>>> --- a/arch/x86/kernel/tsc.c
-> >>>>> +++ b/arch/x86/kernel/tsc.c
-> >>>>> @@ -1241,7 +1241,7 @@ static void __init check_system_tsc_reliable(void)
-> >>>>>  			tsc_clocksource_reliable = 1;
-> >>>>>  	}
-> >>>>>  #endif
-> >>>>> -	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
-> >>>>> +	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE) || cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
-> >>>>>  		tsc_clocksource_reliable = 1;
-> >>>>
-> >>>> Why can't you just set X86_FEATURE_TSC_RELIABLE?
-> >>>
-> >>> Last time when I tried, I had removed my kvmclock changes and I had set
-> >>> the X86_FEATURE_TSC_RELIABLE similar to Kirill's patch[1], this did not
-> >>> select the SecureTSC.
-> >>>
-> >>> Let me try setting X86_FEATURE_TSC_RELIABLE and retaining my patch for
-> >>> skipping kvmclock.
-> >>
-> >> kvmclock lowers its rating if TSC is good enough:
-> >>
-> >> 	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
-> >> 	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
-> >> 	    !check_tsc_unstable())
-> >> 		kvm_clock.rating = 299;
-> >>
-> >> Does your TSC meet the requirements?
-> > 
-> > I have set TscInvariant (bit 8) in CPUID_8000_0007_edx and TSC is set as reliable.
-> > 
-> > With this I see kvm_clock rating being lowered, but kvm-clock is still being picked as clock-source.
+> 	spe1: ethernet@1{
+> 		compatible = "microchip,lan865x";
+> 		reg = <1>;
+> 		interrupt-parent = <&gpio5>;
+> 		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
+> 		spi-max-frequency = <50000000>;
+
+That is a pretty high frequency. It is actually running at that speed?
+
+Have you tried lower speed?
+
+> 		oa-tc6{
+> 			#address-cells = <1>;
+> 			#size-cells = <0>;
+> 			oa-cps = <32>;
+> 			oa-prote;
+> 			oa-dprac;
+> 		};
+> 	};
+> };
 > 
-> Ah.. at later point TSC is picked up, is this expected ?
-> 
-> [    2.564052] clocksource: Switched to clocksource kvm-clock
-> [    2.678136] clocksource: Switched to clocksource tsc
+> With this setup I'm getting a maximum throughput of about 90kB/s.
+> If I increase the chunk size / oa-cps to 64 I get a might higher
+> throughput ~900kB/s, but after 0-2s I get dump below (or similar).
 
-On bare metal I see switch from tsc-early to tsc. tsc-early rating is
-equal to kvmclock rating after it gets lowered.
+Is this tcp traffic? Lost packets will have a big impact. You might
+want to look at the link peer with tcpdump and look for retries. Also,
+look if there are frames with bad checksums.
 
-Maybe kvmclock rating has to be even lower after detecting sane TSC?
+     Andrew
 
-Sean, Paolo, any comments?
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
