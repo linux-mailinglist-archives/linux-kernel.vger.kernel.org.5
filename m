@@ -2,91 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE927DF33B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3CE7DF36D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 14:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376425AbjKBNHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 09:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S234570AbjKBNOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 09:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234570AbjKBNG7 (ORCPT
+        with ESMTP id S229547AbjKBNOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 09:06:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48133112
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:06:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FAABC433C7;
-        Thu,  2 Nov 2023 13:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698930416;
-        bh=GdzkL2rMR/w2blFaOs+cPZdEUazxbS2cI+qhuzRw6Zs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cW5FlNNR0fIl6JO4+fTYwnzkDPnaHFm396+U6smgx4+u7ED5SipB7flpCuGjoQTi7
-         DcwpfHsSmrpTMgYgyMiWWXOtxM8pukObOs/K5lcTKEySTv6UV3tSupmtkYksVZlVzW
-         RUBtjnRLMDS527WbBE4s+itO7edjIsAFqHeNtx+cB1vBaMSPTqmdL8wLNEqAra5MXa
-         cTg+8z8bS0ssFnJGW+yijGGZt6KWsyj7iAy+se6um+RQD6iW3Gl4m8zEXuIIkcoRJZ
-         OGX3iWpa8wbcjm8ajk1cFMAN4lEpGeRxvj8WN8Xp/kCtx5yg4JtoX2jFF4c6iV1L3F
-         YNEGfRVKNSaSw==
-Date:   Thu, 2 Nov 2023 13:06:51 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/regulator: Notify sysfs about status changes
-Message-ID: <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk>
-References: <20231005133059.917577-1-naresh.solanki@9elements.com>
- <f8dd6d53-7c0b-4a89-9ec4-400aa242c020@sirena.org.uk>
- <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
+        Thu, 2 Nov 2023 09:14:15 -0400
+Received: from smtp-1909.mail.infomaniak.ch (smtp-1909.mail.infomaniak.ch [IPv6:2001:1600:3:17::1909])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C0E134
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 06:14:04 -0700 (PDT)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4SLkpx5hN5zMqJcN;
+        Thu,  2 Nov 2023 13:14:01 +0000 (UTC)
+Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4SLkpw6ZkyzMpnPm;
+        Thu,  2 Nov 2023 14:14:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1698930841;
+        bh=JUcQS3TJeMPBK3H6KZcOPpajxJbdHlxklTtQGbSiGVI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IovpZL7mVXcmpJ+3fp3aa2YUxDJ4Ag6H8RwR4LbB9iLZ02v2CS3C1TuNyn0XdjzfJ
+         oB2517iE8enLFHNChljK2yX4c/Msf9Fqcl8K1PZmGK74B/8Ly0l6jeqS3XwzsGg+zn
+         Fm1C5kP5017YSvEaRtJ7Tc1aCBtNF8LHV82B9fro=
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        artem.kuzin@huawei.com, yusongping <yusongping@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: [GIT PULL] Landlock updates for v6.7
+Date:   Thu,  2 Nov 2023 14:13:54 +0100
+Message-ID: <20231102131354.263678-1-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KxBcZHb1OtPbqR3A"
-Content-Disposition: inline
-In-Reply-To: <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
-X-Cookie: A is for Apple.
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---KxBcZHb1OtPbqR3A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This PR adds initial network support for Landlock (TCP bind and connect
+access control), contributed by Konstantin Meskhidze [1].  Please pull
+these changes for v6.7-rc1 .  These 13 commits merged cleanly with your
+master branch and the LSM/dev branch [2].  The kernel code has been
+tested in the latest linux-next releases for a month (next-20231003 [3])
+but the related patch series has since been updated (while keeping the
+same kernel code): extended tests, improved documentation and commit
+messages.  I rebased the latest patch series (with some cosmetic fixes)
+on v6.6-rc7 and added two more tests.
 
-On Thu, Nov 02, 2023 at 05:35:42PM +0530, Naresh Solanki wrote:
-> On Thu, 5 Oct 2023 at 22:30, Mark Brown <broonie@kernel.org> wrote:
-> > On Thu, Oct 05, 2023 at 03:30:58PM +0200, Naresh Solanki wrote:
+A Landlock ruleset can now handle two new access rights:
+LANDLOCK_ACCESS_NET_BIND_TCP and LANDLOCK_ACCESS_NET_CONNECT_TCP.  When
+handled, the related actions are denied unless explicitly allowed by a
+Landlock network rule for a specific port.
 
-> > We probably should filter the events more, there's events for pre and
-> > post voltage change for example which aren't status changes so would be
-> > spurious.  It ought not to break anything but we should still avoid
-> > unneeded work.
+The related patch series has been reviewed for almost two years, it has
+evolved a lot and we now have reached a decent design, code and testing.
+The refactored kernel code and the new test helpers also bring the
+foundation to support more network protocols.
 
-> Can you please provide me inputs on the additional filtering needed for this.
-> Like some list of events for notify on status?
+Test coverage for security/landlock is 92.4% of 710 lines according to
+gcc/gcov-13, and it was 93.1% of 597 lines before this series.  The
+decrease in coverage is due to code refactoring to make the ruleset
+management more generic (i.e. dealing with inodes and ports) that also
+added new WARN_ON_ONCE() checks not possible to test from user space.
 
-I think I'd start off with just reporting things that are obviously
-errors and not things that should ever go off during normal operation.
+syzkaller has been updated accordingly [4], and such patched instance
+(tailored to Landlock) has been running for a month, covering all the
+new network-related code [5].
 
---KxBcZHb1OtPbqR3A
-Content-Type: application/pgp-signature; name="signature.asc"
+Link: https://lore.kernel.org/r/20231026014751.414649-1-konstantin.meskhidze@huawei.com [1]
+Link: https://lore.kernel.org/r/CAHC9VhS1wwgH6NNd+cJz4MYogPiRV8NyPDd1yj5SpaxeUB4UVg@mail.gmail.com [2]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git/commit/?id=c8dc5ee69d3a [3]
+Link: https://github.com/google/syzkaller/pull/4266 [4]
+Link: https://storage.googleapis.com/syzbot-assets/82e8608dec36/ci-upstream-linux-next-kasan-gce-root-ab577164.html#security%2flandlock%2fnet.c [5]
 
------BEGIN PGP SIGNATURE-----
+Regards,
+ Mickaël
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVDnusACgkQJNaLcl1U
-h9CHcgf+NaEN2T3CtYbMVQsvj1Pj061L+saEsZkDL4d6Q55K3sY5QOIQvdRatbse
-8BQUqzkADfiuE+c5IsVB90+OSM1IUx0duomjcLt3WrVLt7nxz6vI89AqR/F3pqzk
-38fGUCogq+/Rp1nTCUr9JaIxOuo13kc6APx3Prurm/CSvQEeQ+JLSAE+qZ1nQKne
-mRYgMMlMXleDSBXf1gmlP/HROH8zqJnybjEvVRmW0PWOjYnQTlUpjLI7q21BSucD
-9OgMvJM1tx+rT3Obm9WtU7Gsp8+khojxR87JtHxmPfjLnpxNeXvMbWXtJpMI9I00
-TFhvfd1g1Pm/z3HV9W5SZJkFyMNztg==
-=hVBO
------END PGP SIGNATURE-----
+--
+The following changes since commit 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1:
 
---KxBcZHb1OtPbqR3A--
+  Linux 6.6-rc7 (2023-10-22 12:11:21 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git tags/landlock-6.7-rc1
+
+for you to fetch changes up to f12f8f84509a084399444c4422661345a15cc713:
+
+  selftests/landlock: Add tests for FS topology changes with network rules (2023-10-27 17:53:31 +0200)
+
+----------------------------------------------------------------
+Landlock updates for v6.7-rc1
+
+----------------------------------------------------------------
+Konstantin Meskhidze (11):
+      landlock: Make ruleset's access masks more generic
+      landlock: Refactor landlock_find_rule/insert_rule helpers
+      landlock: Refactor merge/inherit_ruleset helpers
+      landlock: Move and rename layer helpers
+      landlock: Refactor layer helpers
+      landlock: Refactor landlock_add_rule() syscall
+      landlock: Support network rules with TCP bind and connect
+      selftests/landlock: Share enforce_ruleset() helper
+      selftests/landlock: Add network tests
+      samples/landlock: Support TCP restrictions
+      landlock: Document network support
+
+Mickaël Salaün (2):
+      landlock: Allow FS topology changes for domains without such rule type
+      selftests/landlock: Add tests for FS topology changes with network rules
+
+ Documentation/userspace-api/landlock.rst     |   99 +-
+ include/uapi/linux/landlock.h                |   55 +
+ samples/landlock/sandboxer.c                 |  115 +-
+ security/landlock/Kconfig                    |    1 +
+ security/landlock/Makefile                   |    2 +
+ security/landlock/fs.c                       |  232 ++--
+ security/landlock/limits.h                   |    6 +
+ security/landlock/net.c                      |  200 +++
+ security/landlock/net.h                      |   33 +
+ security/landlock/ruleset.c                  |  405 ++++--
+ security/landlock/ruleset.h                  |  185 ++-
+ security/landlock/setup.c                    |    2 +
+ security/landlock/syscalls.c                 |  158 ++-
+ tools/testing/selftests/landlock/base_test.c |    2 +-
+ tools/testing/selftests/landlock/common.h    |   13 +
+ tools/testing/selftests/landlock/config      |    4 +
+ tools/testing/selftests/landlock/fs_test.c   |   69 +-
+ tools/testing/selftests/landlock/net_test.c  | 1738 ++++++++++++++++++++++++++
+ 18 files changed, 2967 insertions(+), 352 deletions(-)
+ create mode 100644 security/landlock/net.c
+ create mode 100644 security/landlock/net.h
+ create mode 100644 tools/testing/selftests/landlock/net_test.c
