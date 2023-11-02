@@ -2,158 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 786447DF022
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34DA37DF024
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 11:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346739AbjKBKbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 06:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S1346670AbjKBKab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 06:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346112AbjKBKbH (ORCPT
+        with ESMTP id S1346112AbjKBKa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 06:31:07 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43373112;
-        Thu,  2 Nov 2023 03:31:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1803B2F4;
-        Thu,  2 Nov 2023 03:31:46 -0700 (PDT)
-Received: from e129154.nice.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8044E3F67D;
-        Thu,  2 Nov 2023 03:30:56 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 11:30:03 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
-        lukasz.luba@arm.com, ionela.voinescu@arm.com,
-        pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, conor.dooley@microchip.com,
-        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
-Subject: Re: [PATCH v4 7/7] arm64/amu: use capacity_ref_freq to set AMU ratio
-Message-ID: <ZUN6K4d9FD31phbs@e129154.nice.arm.com>
-References: <20231027080400.56703-1-vincent.guittot@linaro.org>
- <20231027080400.56703-8-vincent.guittot@linaro.org>
- <ZUGUvdjrpw9NHSex@e129154.nice.arm.com>
- <CAKfTPtDDouduP57P8GH6J4qDjbKUasVRe-K0QUKcZHC2NZ+syQ@mail.gmail.com>
+        Thu, 2 Nov 2023 06:30:27 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97E8136;
+        Thu,  2 Nov 2023 03:30:19 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9cbba16084so756474276.1;
+        Thu, 02 Nov 2023 03:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698921019; x=1699525819; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3rctCHpSNNnudhMuzQjqFB7K6mRQjkZdSA9bEmnPeqA=;
+        b=Z1qiOP/+FOR/JKzHy4msogsvl9JLMorgxzABTCBfAYTEzuxQW05flAE3Wkv1HrA/fJ
+         ewmPi30q2+kgee+9kNz+Mn5k58pk7Qsuy5YuWJsQ1hWmGN84mcth+ockGLwwiWDtRIR8
+         haHVhYEfz9azA3H/sEEQ8NOP0TjnKchhRMGKrR/0rIl/jShKKlSg1rud8KDc4uSN9qmT
+         Q4ntuOLnXySTmki8cc9XvRt5THyxOG1ERTxzqSkbbC6WSNdGkGcbYvGImocxPmUzNk0V
+         9unXzZAjftOm5KZ6oQyT4cCVqVuAxlwVFJz2GoFL/qOkfzjFR5JrGsgJig0ng9n77l73
+         xGQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698921019; x=1699525819;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3rctCHpSNNnudhMuzQjqFB7K6mRQjkZdSA9bEmnPeqA=;
+        b=VK0/AAGFnrztJw72j6X4YIrJzX+cj0Mh7Ax/CDCH26A15AaTLcDlj2/32hPSEKkDve
+         172ll0ydvUaehgAJCO2l90F5AWdJ/FhrkxTgFIQ+6lOJzJNioQR8rW/K8zUfVxosyH8t
+         GSBN/o/safOyz3wm6ZsrQEjxUMXvLBcPm5XvkMI/KFjqsbIazrOJ61hlbpR05HLPew5F
+         YkXCfncFkmewsICuUeRmNPWZWBYL19DFl6lBPAMxSnf6oKFh+Op4DmJaL4WiXspQBEv0
+         XnmV1sTts0KNmRsfs3Rsn50rgceVjV6WzsjdGc4yNkJ3OzLbKYOxeKPbK9FzwX5//2uE
+         YC9w==
+X-Gm-Message-State: AOJu0YwlX1qAp7mqFQfOCdWyOh09omWXqn9isg8EaOh93RscuC2kLtnn
+        ZFlF883ovR+uAze6gFwSO+HWV+G0t+6lURIxEA==
+X-Google-Smtp-Source: AGHT+IE9befvUCRRTSTK2CGqSbtQw00NeSRpf/odrYSyjMc/SGNn8v1CTqa26VeWWmBWI7wmxOXZ5rWdPQmywQvu4lc=
+X-Received: by 2002:a25:d152:0:b0:da0:3bfc:b915 with SMTP id
+ i79-20020a25d152000000b00da03bfcb915mr16112280ybg.11.1698921018746; Thu, 02
+ Nov 2023 03:30:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDDouduP57P8GH6J4qDjbKUasVRe-K0QUKcZHC2NZ+syQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
+ <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com>
+In-Reply-To: <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Thu, 2 Nov 2023 11:30:07 +0100
+Message-ID: <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
+Subject: Re: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+On Wed, Nov 1, 2023 at 9:57=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Nov 1, 2023 at 6:56=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrot=
+e:
+> >
+> > Hi,
+> >
+> > The verifier incorrectly rejects the following prog in check_cfg() when
+> > loading with root with confusing log `back-edge insn from 7 to 8`:
+> >   /* 0: r9 =3D 2
+> >    * 1: r3 =3D 0x20
+> >    * 2: r4 =3D 0x35
+> >    * 3: r8 =3D r4
+> >    * 4: goto+3
+> >    * 5: r9 -=3D r3
+> >    * 6: r9 -=3D r4
+> >    * 7: r9 -=3D r8
+> >    * 8: r8 +=3D r4
+> >    * 9: if r8 < 0x64 goto-5
+> >    * 10: r0 =3D r9
+> >    * 11: exit
+> >    * */
+> >   BPF_MOV64_IMM(BPF_REG_9, 2),
+> >   BPF_MOV64_IMM(BPF_REG_3, 0x20),
+> >   BPF_MOV64_IMM(BPF_REG_4, 0x35),
+> >   BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
+> >   BPF_JMP_IMM(BPF_JA, 0, 0, 3),
+> >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
+> >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
+> >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
+> >   BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
+> >   BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
+> >   BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
+> >   BPF_EXIT_INSN()
+> >
+> > -------- Verifier Log --------
+> > func#0 @0
+> > back-edge from insn 7 to 8
+> > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> > peak_states 0 mark_read 0
+> >
+> > This is not intentionally rejected, right?
+>
+> The way you wrote it, with goto +3, yes, it's intentional. Note that
+> you'll get different results in privileged and unprivileged modes.
+> Privileged mode allows "bounded loops" logic, so it doesn't
+> immediately reject this program, and then later sees that r8 is always
+> < 0x64, so program is correct.
+>
 
-On Wed, Nov 01, 2023 at 10:04:27AM +0100, Vincent Guittot wrote:
-> Hi Beata,
-> 
-> On Wed, 1 Nov 2023 at 00:59, Beata Michalska <beata.michalska@arm.com> wrote:
-> >
-> > On Fri, Oct 27, 2023 at 10:04:00AM +0200, Vincent Guittot wrote:
-> > > Use the new capacity_ref_freq to set the ratio that is used by AMU for
-> > > computing the arch_scale_freq_capacity().
-> > > This helps to keep everything aligned using the same reference for
-> > > computing CPUs capacity.
-> > >
-> 
-> [..]
-> 
-> > > @@ -381,6 +385,9 @@ void topology_init_cpu_capacity_cppc(void)
-> > >       }
-> > >
-> > >       for_each_possible_cpu(cpu) {
-> > > +             freq_inv_set_max_ratio(cpu,
-> > > +                                    per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> > > +
-> > The capacity_ref_freq set earlier will still lead to units mismatch,
-> > as at the point of calling topology_init_cpu_capacity_cppc the lowest & nominal
-> > frequencies will be provided in MHz (unless I have missed smth).
-> 
-> I don't get your point:
-> the unit of per_cpu(capacity_freq_ref, cpu) is Khz
-> 
-> For cppc, we have
-> per_cpu(capacity_freq_ref, cpu) = cppc_perf_to_khz(&perf_caps,
-> raw_capacity[cpu]);
-> 
-> freq_inv_set_max_ratio() uses
-> arch_timer_get_rate() which returns a freq in Hz
-> and
-> per_cpu(capacity_freq_ref, cpu) * HZ_PER_KHZ. to get a freq in Hz too.
-> 
-Apologies, I should have been more verbose here.
-Before the change made in [1] the cppc_perf_to_khz was indeed operating on
-lowest & nominal frequency values expressed in kHZ, as those were appropriately
-amended:
-cppc_cpufreq_cpu_init
-	|__> cppc_cpufreq_get_cpu_data:
-		|__> 	...
-			/* Convert the lowest and nominal freq from MHz to KHz */
-			cpu_data->perf_caps.lowest_freq *= 1000;
-			cpu_data->perf_caps.nominal_freq *= 1000;
+I load the program with privileged mode, and goto-5 makes the program
+run from #9 to #5, so r8 is updated and the program is not infinite loop.
 
-So far cppc_perf_to_khz (previously cppc_cpufreq_perf_to_khz) was being called
-with the post-processed CPC data (through cppc_cpufreq_get_cpu_data) and thus
-guaranteed to be operating on values in kHz.
-With the new changes the cppc_perf_to_khz will operate on raw CPC data,
-which are expressed in MHz.(as per acpi spec)
+> But in unprivileged mode the rules are different, and this conditional
+> back edge is not allowed, which is probably what you are getting.
+>
+> It's actually confusing and your "back-edge from insn 7 to 8" is out
+> of date and doesn't correspond to your program, you should see
+> "back-edge from insn 11 to 7", please double check.
+>
 
----
-Best Regards
-B.
-> > This means that use of both, the capacity_ref_freq and the arch_freq_scale
-> > will generate unexpected results, so I guess this should get amended in the
-> > preceding patch (?) [1]
+Yes it's also confusing to me, but "back-edge from insn 7 to 8" is what
+I got. The execution path of the program is #4 to #8 (goto+3), so the
+verifier see the #8 first. Then, the program then goes #9 to #5 (goto-5),
+the verifier thus sees #7 to #8 and incorrectly concludes back-edge here.
+
+This can is the verifier log I got from latest bpf-next, this C program can
+reproduce this: https://pastebin.com/raw/Yug0NVwx
+
+> Anyways, while I was looking into this, I realized that ldimm64 isn't
+> handled exactly correctly in check_cfg(), so I just sent a fix. It
+> also adds a nicer detection of jumping into the middle of the ldimm64
+> instruction, which I believe is something you were advocating for.
+>
 > >
-> > ---
-> > BR
-> > B.
-> >
-> > [1] https://lore.kernel.org/linux-arm-kernel/20231027080400.56703-4-vincent.guittot@linaro.org/T/#m42daa167097edc190b1cfc05382c385ed801d909
-> >
-> > >               capacity = raw_capacity[cpu];
-> > >               capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
-> > >                                    capacity_scale);
-> > > @@ -422,8 +429,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
-> > >
-> > >       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
-> > >
-> > > -     for_each_cpu(cpu, policy->related_cpus)
-> > > +     for_each_cpu(cpu, policy->related_cpus) {
-> > >               per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
-> > > +             freq_inv_set_max_ratio(cpu,
-> > > +                                    per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> > > +     }
-> > >
-> > >       if (cpumask_empty(cpus_to_visit)) {
-> > >               topology_normalize_cpu_scale();
-> > > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> > > index 38ca6c76af56..ffdf0b7c55fa 100644
-> > > --- a/include/linux/arch_topology.h
-> > > +++ b/include/linux/arch_topology.h
-> > > @@ -99,6 +99,7 @@ void update_siblings_masks(unsigned int cpu);
-> > >  void remove_cpu_topology(unsigned int cpuid);
-> > >  void reset_cpu_topology(void);
-> > >  int parse_acpi_topology(void);
-> > > +void freq_inv_set_max_ratio(int cpu, u64 max_rate);
-> > >  #endif
-> > >
-> > >  #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
-> > > --
-> > > 2.34.1
-> > >
+> > Best
+> > Hao
