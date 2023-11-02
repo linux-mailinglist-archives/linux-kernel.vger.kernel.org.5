@@ -2,114 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C2A7DEBDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBD47DEBDB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348487AbjKBEap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        id S1348476AbjKBEa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348475AbjKBEaf (ORCPT
+        with ESMTP id S1348504AbjKBEay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:30:35 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7B9DE;
-        Wed,  1 Nov 2023 21:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1698899412; x=1699504212; i=w_armin@gmx.de;
-        bh=HfgLBfuhdhyyVQd0Svg8PK5e8u/Fu2fbuxkzO+iKCZw=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-         References;
-        b=BEhBPV1PjET98tn5jLKug9mLBkZmcDA7+PMDtVIkRkOGLoeNPSsJ27/iTdmo+PkG
-         8Oph2/8AbCXEVOCOJ/M6deoCqV0Fl9FIoX7YNO8IYos84+MS2q0dSwlyTuUfsN55a
-         TY4Bu+ENa4CIGSP6jN08BP1tpjtFfxvuURTj4sBL75GBKymuQLGqD4Y7pSsA/I3AG
-         yWHYP3b5lXyOKpqnf9p1NJhlfT52M21jBTFgJncu0jgnf5qHw0YvjfFt/L6P+HGut
-         HVcjmF0fVMsRB23AqvKw6He91nAZN6pNq56du13L54h0EBUwvJDvHbbnUBKmudMx2
-         /r+Jaih2C9qLMHtCaA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1N79yQ-1rWhLs0jwy-017TvD; Thu, 02 Nov 2023 05:30:12 +0100
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     jithu.joseph@intel.com, maurice.ma@intel.com, hdegoede@redhat.com,
-        markgross@kernel.org, ilpo.jarvinen@linux.intel.com
-Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] platform/x86/intel/wmi: thunderbolt: Use bus-based WMI interface
-Date:   Thu,  2 Nov 2023 05:29:59 +0100
-Message-Id: <20231102042959.11816-4-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231102042959.11816-1-W_Armin@gmx.de>
-References: <20231102042959.11816-1-W_Armin@gmx.de>
+        Thu, 2 Nov 2023 00:30:54 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2069.outbound.protection.outlook.com [40.107.94.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFA718B;
+        Wed,  1 Nov 2023 21:30:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sjk+Sp15Vh0ofKPjGsBzncBm/WN7SFXKH9EbmCKOtVfw6Drd5NtJ3jUqKDVuL0bphp5X4dFNqJFLP6WhgZwz7Ua3kqmFRigHGcDlG3Z2nByhNwSn50nKk5Mr5XrETlKl9b1ePKPcawfWujAkHGfHr9/4TFH6F2JXs8S4VfF34WAg6+vFXiiRVAJAkzrpoOx/uH2EJ3+6R4Z4Ed7zaf3RZQfKh1WPD5cLhcgHn4wCRpdnYTJ8FZjX4MoBYZVVwqn8rdpXT9l3DI49R2abSLeiuj+QjZHE6OXv51uNM+70GqcewL4qcq9KSbQ6EBRC4OHqCStxZJSr8ZD0z9XlQNvGwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Hrzo8kc203Sv+OHLRL2+qc7So5Hbia0tz2X+CR+6j4=;
+ b=WduRBIGEEcvXXXCy3jdyrw5ygcMDgbo65+UK6/hmsaDUcfaV+GXDffAaq/skjAwgRoHVdbKF/EZA9ORkjobLPvhlYOkQe4EvIPenY24JzAze9PIZg7ksBDLhxm2xfB6bFpKGhxz69w8Zvi7fe76RamlgwN+Sq3pv2hcvhNUaYrFO256s+Mg7E+JOKYHdDZX/9lTriKSSk0TD2XcvLRp+7T0ILLgPbSNjvmVYsC0Mai/EkPfXUlonLKQgNUXZlaXkwTyEqyHBYRd5ypuyl5fS6fe4CgMvtgJqrizBBo2edlwvS68wqtyBM9l+SIf19YSU6tmlVphFynLHcWDo4xnWIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9Hrzo8kc203Sv+OHLRL2+qc7So5Hbia0tz2X+CR+6j4=;
+ b=FXdnoiztkFOuR7QWyzWyoeeJB/m3lIvj+8eglTVS50q6g/8AFhx9wRaChS/JKdDNQRD1JbKaHzIdHcZftXw8/3/g/CPeUj+xCoXtBGp7y5iHnDUqBaSwXY3/hoGA27eheZcCiWinudLXaTonD+rqLBpMo6oaowxebWZFMqqfwsM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
+ MN2PR12MB4093.namprd12.prod.outlook.com (2603:10b6:208:198::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.22; Thu, 2 Nov
+ 2023 04:30:41 +0000
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::93cc:c27:4af6:b78c]) by DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::93cc:c27:4af6:b78c%2]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 04:30:41 +0000
+Message-ID: <193a0476-042f-4766-9637-5ad25fd6f3e2@amd.com>
+Date:   Thu, 2 Nov 2023 10:00:30 +0530
+User-Agent: Mozilla Thunderbird
+Reply-To: nikunj@amd.com
+Subject: Re: [PATCH v5 08/14] x86/mm: Add generic guest initialization hook
+Content-Language: en-US
+To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org
+Cc:     bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, dionnaglaze@google.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-9-nikunj@amd.com>
+ <32e898b4-3567-4d4b-9f18-80a20d05db1e@intel.com>
+From:   "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <32e898b4-3567-4d4b-9f18-80a20d05db1e@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0028.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:97::7) To DS7PR12MB6309.namprd12.prod.outlook.com
+ (2603:10b6:8:96::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5RSM1K8nSQI5KQV5exXrYTjw7yWqWGkTtWBczPDi6Xf2u9bc61A
- /NWyhxMGt7PG+6HXbBZ60xUOqGRokci4QMJ4dBIRxM7eoHn7KpMYQ9P3TlczIsmF27IqKw8
- 0RyJjb9xuVVw3r+6JKgce1GfCvedRKHUqHna+mjOy/dDDiuZNdJtN0Vqz0FniTf0hYkwU5J
- EX0Ob65RIJamWQLziYkuw==
-UI-OutboundReport: notjunk:1;M01:P0:kNuQK5NYFiA=;7ViY7jBwB04uscd59ANqsIWbWMz
- xWyD5XGkMDQwE3e7qd5bWTgFAYF91fQLJPAj+5oiKoeLjPbDliy/H86LlbDHN3dyXEEZtHRpI
- c8RKPhYQv+akAA9OCSF+NcX6AeOcOl3vgMj8+iRS19zxCQ3Cy0jWauMWuDqcrrkOPe04lkf55
- x41YyRE5c/xPFp8G2aIt0OcKeRd/EWPxPnXBlTqap5j2XGAudXlVagqLXkUQ9l9ONxiRDObU0
- cqO8rxTTEdNiNvBCFAd15nxvS8OrBhTKSpsRPwIBAGwEiW8LjohoGSMtjjUtk7+KVioVxJUNC
- LibEReIpTTUVOg73yctFOCKcgVLVdfDhuZvI0PB8VgUaViecB1JjmbGz9d/2TzqDo/AqUCBfu
- 8Hjvp9SjOF8Mw4jUZZ7tXgwhjQmy78Q8BAQ3xTDkBbCmiIBUbGCL5ZyxVovp5MnO/xEGuBFPO
- BLg55qi8JsQTYVKEWGstMAuLK/iy2cvA4qvQ8r6qkZaNnf7mP+Ty1EBZ+YIX/yqcqAuBYGpp0
- 2b9/QrBX+XTYoheYaGmSoi39FmsvrEyChD1c+dSZk17TjB0Kc3SPlVNIej59Am4NAdWTxKoxa
- hMJBWpNF+Y8cc5OyVYYkBPw68tpidUcn+PqGDZPwOvpj4G5llrcmLXvzJ7nh2MwmGXudOVKGE
- WxvassnEtnNUOGxYTH3+v+hYY42f+M3AM4jko7H23DsOXIs4r53m3nJuixwL7Pq4o0RRAZFnE
- 8PxXC9y2al6LnZ57C8Rf0S0rkOas5jAQ7Buo7o4eMf72ifdramRtaXd53tFsOGCmh6r0otfFP
- lm
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|MN2PR12MB4093:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ab6036f-8b61-431d-a5fb-08dbdb5c78a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q9zRz6m5L2NZ8J5J2yVwNdn7lstd7nWLWdBL9totmH2d/eQ670fv6b4RCZDy8OMLak6NuOMRZNkwYBjd6CFjnvHSinehnTBIhEVEGzFFYg21Rcdn105uJW7GhIhGbyrFCqHUE1KbO6Jwv+ho8GFPyiW/nhhpaCC58Q6OGc5A0crzPoJFdqHs1IL3oFRc8F4KwfZufOjKoLgi53gM+q1UtLEtPa0ji4Cl9U9Mrk1+XFYZl9C5EktB6lq8cweBZqeTabepUgCu08AZOv9rsBQrH0Cr5Avx/rmxxlJd/lkLsFWf6FBXuXPCSoVHrZTI1ATo+/7RFp/svf2HbUuFDMDqHuKh5sSerHEAEXulw7gaBby6JNfllsPvI42nWz0LMGLU23KT5Y34ripZ7lcxLrCwqBNT/s/A9D6HP2w5q/lNvI5a5IgouDpM4ZKBW7Lu74ZMtWIcvcZ5WkuZ8iMsrVaDMsYu1aMyyIB4XTmomyP8sRFtGLlSGeKh/eoEN1JfNdhGPQNnuvB85pCLlCaHcd6B97akhtQHXzJoeqzgBUe9u4QJY+5DVnOqD3xxmGBlWRs5CJCPUWrOXBbc1P/pFUz6khSfLOpuGR74jV1Prhu2p8LLhEEIvU+nA8L8myd0aZyxb0P95G1haalX5d9zzIfNltURYLQf+k5ydS4mtFH67vs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(366004)(346002)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(66556008)(41300700001)(7416002)(66946007)(66476007)(316002)(478600001)(4326008)(8676002)(5660300002)(8936002)(3450700001)(26005)(31686004)(6486002)(2906002)(6666004)(6506007)(53546011)(83380400001)(6512007)(2616005)(36756003)(31696002)(38100700002)(41533002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTdoS1VIQ0NDajZuUGhwTUNFeXRaZjlMN2plcWJ2MUpFOUk2MGlQYk9hYTQv?=
+ =?utf-8?B?bzFjU0hVT2R3MDZFL05XdndlQ1ZiQXBXazlDYUU1eC9qZ1JpNno1OEorUW1R?=
+ =?utf-8?B?MjJ6VUllWHZZWWxmRHhzSWh3NnMyR2RWWEZrdWdPc2tuVmE1cnhKSWhvTWxZ?=
+ =?utf-8?B?UzlqalJkTFo1N0ozTkc0RUxzRzlwWEJiSVRsZnd3dFAzYzI2Umc0d1hKUnZQ?=
+ =?utf-8?B?YVVlOEM5WVdHMTc3NnNMNDNYU0hkVVRpVW1zTHdvanRFeGhYS3R4VHBISlY3?=
+ =?utf-8?B?K2c2b2IwYTR5NU02VDNHaStoM3dIZnlzWjR6anR4QlF4blZONHlwdzNiS3p4?=
+ =?utf-8?B?ZGZMSDY1Z3Y4MFBKVEpDSS9QaWZaZHBzYmNFVm1MZlBxZUZwSk5MRnl4WnZY?=
+ =?utf-8?B?Z0wvemNkM0ZLZWN2L2FoZGZUL3FKdXRxd3BPNkFqeEVVc3NTditVVFRtNnNU?=
+ =?utf-8?B?djFGQXJhMGo5TUYxL0U2cmU1M2hFdXQ5RlNBNVhaYWltN1lnYXBXbDdQb0w4?=
+ =?utf-8?B?WkhPQ09XVVI4ckJBdURQdzBMb0oxRTV6by96OXNIZUJhR0xDU212a2xFL0hk?=
+ =?utf-8?B?ZjZYN0U2bDRGZDBSZDhubnJjT1UwTFhET0htdm1OOWsybUlDTHVHT3RacExn?=
+ =?utf-8?B?ZkJZUUdsK0g3Q2N6bnFvUU40RnhkMVVhL2w4ck9uVFkySXVZVGZtdjJFd3I1?=
+ =?utf-8?B?UE9jYzQ0VU42U0ltQkV2L2labnh6cnU4Y0xMUWxLOUlwUkFVeWhDL01tUy95?=
+ =?utf-8?B?ejdzRHFvVTE2Ly9hME1PZlZBY2RkcG82Um0xUi9tWVEvV1NvZHoxOWZHTk9i?=
+ =?utf-8?B?aXZCZHJLZjdYTVhQdk1pWHl5bmVtTjcxcFFzM3BrQXNWRUg5TUlhVWF6Y1hS?=
+ =?utf-8?B?MStLNDhaU3pxdGJDYmNCQU1vOSs5RmZyMG9iOW5aVUlnVytUb2NXcjNVdjVN?=
+ =?utf-8?B?ZjNBTnZmdkJ0czJ3ZklDVFR6cWRqNmRWbGo3YW9EVUpKNG9LcHZmeG9nYmtj?=
+ =?utf-8?B?MWFrM3hiTXJiNU1PZUpUWDhuNkFFRE9yMXpmL3JDbmxUbkk0USs0UDRRSjFQ?=
+ =?utf-8?B?MU9pdUFWeW05TkR0UXBmZTVnako2aGNkUU9oRWp4ZWIxKzZJODNnZmxyaVhu?=
+ =?utf-8?B?bGlTNnl6MnhXcDZWb2pLQjRBRlJzUFdQMlJsWXlZVmYvWVN2bzJxME5Wa0Y1?=
+ =?utf-8?B?QUxFS2t6dWV2UW5IV1psb2wxdm5EeTdiNVFoRExadkNqNTEweDNlK2pITnVT?=
+ =?utf-8?B?U0pOY0Q4L3oxZE5KWVl0SEIyT3d6SDFGTmVXZ1lKSytrQnhLMFZoWG9tckNR?=
+ =?utf-8?B?T1dIdjB1dEp3V3k5L3ZOR0dHaGtnMCt6aktVMEQ4WTNaTnRxWjY2MVJ4VEJX?=
+ =?utf-8?B?OFg4eStFVjV1SW1xMkVUdXl4cjREVHNvTmRLZU5ibUN2b3VJeUFHdzZVZUVk?=
+ =?utf-8?B?NStLRk4zZk94K3V0UldNbXpwdzdtVkQ1MmtIYXVLY0tXcFRscXFxZ0t4d0pC?=
+ =?utf-8?B?b204U2I0RWdZNm5yKzJyWVFvdEJPTDQyenh4Vnp6M2U2MDBYcEtIc1Z1Vkpi?=
+ =?utf-8?B?Nlp5dWFCRWtoMzF1V0N0cUcvUFArSnlRQ0NtbTNVUTd3c1k4RHJaSnpUSkRP?=
+ =?utf-8?B?WEllaVh5dmJUUE11OVNEaytxVENidlN6cXJjVUJVNmNUNExzYUgyNTdET0N6?=
+ =?utf-8?B?K1E0OFZwQzNzL3hpSDBNSjZadDl6WW1PY2k4SlQ4YjArN0wyVkpOMDZvcGNP?=
+ =?utf-8?B?RXpVWnlxT00rWUkrN3FZL1Jqazh3aSt0OWloUjUrbHNEWnczNjNNL25JZTkz?=
+ =?utf-8?B?Qi92cXU2ZVF0cUZWRmlTZFBoN05CNXFUZ3hiVWFZcE9qc1l3T1pEYm1nVHVI?=
+ =?utf-8?B?M25NZjJaZTdlRVkrTmF3NEM0UFpkMDk1V0VpUjRUeDNielNaVjNIUDcybDUr?=
+ =?utf-8?B?bUNZb2lmSURFVnNkNnlJWEdhWmZkeVp3eGpDWHhnc3ltdW81NzY0R2xDdHp1?=
+ =?utf-8?B?ZjNSSmxMV3dqRDFCNWRxazBXSzl5ODRraHlWc3RPMGlXRWZHL3U5THpJSkNK?=
+ =?utf-8?B?eVdjWHMyVEJ4V2w4MHhWd3VIZlJ3cWVDZFZIcUJzcmpVYjRkS3p5Y2JYTWox?=
+ =?utf-8?Q?19JgDofnbN4vm3Ov5PdiFWeZh?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ab6036f-8b61-431d-a5fb-08dbdb5c78a1
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 04:30:41.4065
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FRbVNgimIS6jdSrJngrFTkb6YLirIlQudFyVyykg0VCSYEfUFKf67lpNNK7Z1iKRcb1xhKJxnFnIGPpyUPyAUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4093
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the driver still uses the legacy GUID-based interface
-to invoke WMI methods. Use the modern bus-based interface instead.
+On 10/30/2023 10:53 PM, Dave Hansen wrote:
+> On 10/29/23 23:36, Nikunj A Dadhania wrote:
+>> diff --git a/arch/x86/kernel/x86_init.c b/arch/x86/kernel/x86_init.c
+>> index a37ebd3b4773..a07985a96ca5 100644
+>> --- a/arch/x86/kernel/x86_init.c
+>> +++ b/arch/x86/kernel/x86_init.c
+>> @@ -136,6 +136,7 @@ static bool enc_status_change_finish_noop(unsigned long vaddr, int npages, bool
+>>  static bool enc_tlb_flush_required_noop(bool enc) { return false; }
+>>  static bool enc_cache_flush_required_noop(void) { return false; }
+>>  static bool is_private_mmio_noop(u64 addr) {return false; }
+>> +static void enc_init_noop(void) { }
+>>  
+>>  struct x86_platform_ops x86_platform __ro_after_init = {
+>>  	.calibrate_cpu			= native_calibrate_cpu_early,
+>> @@ -158,6 +159,7 @@ struct x86_platform_ops x86_platform __ro_after_init = {
+>>  		.enc_status_change_finish  = enc_status_change_finish_noop,
+>>  		.enc_tlb_flush_required	   = enc_tlb_flush_required_noop,
+>>  		.enc_cache_flush_required  = enc_cache_flush_required_noop,
+>> +		.enc_init		   = enc_init_noop,
+>>  	},
+>>  };
+>>  
+>> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+>> index 9f27e14e185f..01abecc9a774 100644
+>> --- a/arch/x86/mm/mem_encrypt.c
+>> +++ b/arch/x86/mm/mem_encrypt.c
+>> @@ -84,5 +84,8 @@ void __init mem_encrypt_init(void)
+>>  	/* Call into SWIOTLB to update the SWIOTLB DMA buffers */
+>>  	swiotlb_update_mem_attributes();
+>>  
+>> +	if (x86_platform.guest.enc_init)
+>> +		x86_platform.guest.enc_init();
+>> +
+>>  	print_mem_encrypt_feature_info();
+>>  }
+> 
+> How does '.enc_init' ever get set to NULL?  Isn't the point of having
+> and using a 'noop' function so that you don't have to do NULL checks?
 
-Tested on a Lenovo E51-80.
+True, I will remove the check.
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/intel/wmi/thunderbolt.c | 3 +--
- drivers/platform/x86/wmi.c                   | 1 +
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/platform/x86/intel/wmi/thunderbolt.c b/drivers/platfo=
-rm/x86/intel/wmi/thunderbolt.c
-index fc333ff82d1e..e2ad3f46f356 100644
-=2D-- a/drivers/platform/x86/intel/wmi/thunderbolt.c
-+++ b/drivers/platform/x86/intel/wmi/thunderbolt.c
-@@ -32,8 +32,7 @@ static ssize_t force_power_store(struct device *dev,
- 	mode =3D hex_to_bin(buf[0]);
- 	dev_dbg(dev, "force_power: storing %#x\n", mode);
- 	if (mode =3D=3D 0 || mode =3D=3D 1) {
--		status =3D wmi_evaluate_method(INTEL_WMI_THUNDERBOLT_GUID, 0, 1,
--					     &input, NULL);
-+		status =3D wmidev_evaluate_method(to_wmi_device(dev), 0, 1, &input, NUL=
-L);
- 		if (ACPI_FAILURE(status)) {
- 			dev_dbg(dev, "force_power: failed to evaluate ACPI method\n");
- 			return -ENODEV;
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 4c4effc883ae..58e7d5d535ba 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -107,6 +107,7 @@ static const char * const allow_duplicates[] =3D {
- 	"05901221-D566-11D1-B2F0-00A0C9062910",	/* wmi-bmof */
- 	"8A42EA14-4F2A-FD45-6422-0087F7A7E608",	/* dell-wmi-ddv */
- 	"44FADEB1-B204-40F2-8581-394BBDC1B651",	/* intel-wmi-sbl-fw-update */
-+	"86CCFD48-205E-4A77-9C48-2021CBEDE341",	/* intel-wmi-thunderbold */
- 	NULL
- };
-
-=2D-
-2.39.2
+Regards
+Nikunj
 
