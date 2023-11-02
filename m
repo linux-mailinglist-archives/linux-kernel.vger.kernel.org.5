@@ -2,181 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC9E7DEE23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597C57DEE2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 09:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbjKBIYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 04:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
+        id S1345313AbjKBI3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 04:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234827AbjKBIYa (ORCPT
+        with ESMTP id S229506AbjKBI3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 04:24:30 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA1F18E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 01:24:20 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so518782a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 01:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nathanrossi.com; s=google; t=1698913460; x=1699518260; darn=vger.kernel.org;
-        h=mime-version:content-transfer-encoding:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xBUQuJ95bR9IExrTX27aZhd9vx5/8o/0coGqo9/0lKA=;
-        b=XN76D0qf9qccoBYsNGY9TQmgd/fXtxErtOrsHLuW0Z1cD43uSSYaOY/KnaukFxA4VI
-         U+nAMP34XlJdo2exH7QJJILqse/XLIyZ9ZLzzahDSKpSX89RHBuOf83SNv6OqNRPLQiO
-         4EU3bP++84VJUugbGYHv7GbD1aOTBqGRanOzFy5G6ojtPDK3doF2OiWUWY8Vt5oVgTEC
-         /qIYAHEUiofVniLWzHEj5D81FZccXDeeMFINXnaqBDQxhIB1HVK8UhuGtod9WOdI87GJ
-         YMur4m3NmmWiloW+Rv9tNZeDwI4MQ0o7QMFm92zaaIoJcAiB1DkxVPhr5h0MKImcEJXY
-         xE7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698913460; x=1699518260;
-        h=mime-version:content-transfer-encoding:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xBUQuJ95bR9IExrTX27aZhd9vx5/8o/0coGqo9/0lKA=;
-        b=adtTBwOIa3ciFTa5KuKskoWs4aa2Md5HJOdhvNWjjFeLtijj77wQ8GAuIZPwrMsbud
-         +QAzf2m/eZN6F2qkx/DQ0cG6sHuDYZUvYTKJIsGVDM5JnQelWFY20i0yYgq00U7P7T12
-         8jWWLFjjbhGpZedTaySeAlb/J9Kfu0g1vj/9Gq5rCvI7ftZjV9Zt1j3QLcy90I+gTYPn
-         rKuUyNocgg3xWnqF+9xLFKs1/gZC52h9ybE0xWxT5XigCn6nCmwFKgIT9MdIR+Y8MrUD
-         6r70/Wa+nnPE/j6nJdTVSE9tml1q4gploatoxN7fn6AOrGsKTpFItCnRcD9WYGAxbgcN
-         6bKA==
-X-Gm-Message-State: AOJu0YxuUqotvsiNw5yya/ZthXQdo1IfqtMLqNhv407As9BtieQYZ+Bt
-        DaeSK6pLfBVPu9bAAA6AW47zgQ==
-X-Google-Smtp-Source: AGHT+IGWoSCLnLh32r2nBJb5yLB11eB9zz7cDzMn2xD7NhlXicA2jMMVwXQYSf721kBBQsVM8ZfSWg==
-X-Received: by 2002:a05:6a21:6d9c:b0:162:4f45:b415 with SMTP id wl28-20020a056a216d9c00b001624f45b415mr23597403pzb.51.1698913459805;
-        Thu, 02 Nov 2023 01:24:19 -0700 (PDT)
-Received: from [127.0.1.1] (117-20-68-32.751444.bne.nbn.aussiebb.net. [117.20.68.32])
-        by smtp.gmail.com with UTF8SMTPSA id 20-20020a17090a199400b0027d0adf653bsm2172484pji.7.2023.11.02.01.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 01:24:19 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 08:24:06 +0000
-Message-Id: <20231102082406.1555227-1-nathan@nathanrossi.com>
-From:   Nathan Rossi <nathan@nathanrossi.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Nathan Rossi <nathan@nathanrossi.com>,
-        Nathan Rossi <nathan.rossi@digi.com>, Li Jun <jun.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH] arm64: dts: imx8mp: imx8mq: Add parkmode-disable-ss-quirk on DWC3
-Content-Type: text/plain; charset="utf-8"
+        Thu, 2 Nov 2023 04:29:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E65C112;
+        Thu,  2 Nov 2023 01:29:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698913769; x=1730449769;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=RKRiC1SDEw+qFE4F0mUht9c7G2+g+v6331lkQDabKl8=;
+  b=XStE+yh9wMLwJGH8HvNWuRY87wPTFVHwQSrH2CB3iOJqQQczHwniChvo
+   5DU5KAaNn0qUqIjgXkQin4PkRyU5b4XIMzVjAk6/t6pzLG4vNhOH5n/EZ
+   ZPhVqZJew6gTrT6XPawdgL2oIF51PG+ayhKyUhJMr06fMk2MOpSyo0coj
+   rPYHvMZ0RNzU2yAYOVL0tQWRTpqAeOctjenUoBRy8oXmsKmWAiO0BUpRN
+   SoU2mLrXGVDhC9DfzgvD2DVEsy8ghxhIYRhEp63a3upg7skPH1RvONAJ/
+   7Qqud1xZYoW3GqJtIi7zbfEENoY1Yp8bSeZBuocnV6TTLkykSLrlvhR4N
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="385838065"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="385838065"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 01:29:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="2363692"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Nov 2023 01:29:29 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 2 Nov 2023 01:29:27 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 2 Nov 2023 01:29:27 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 2 Nov 2023 01:29:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CL91qwDzL7NhkWn0cbwcs5kbEr1XiNKlZuVtOmCv0IogzdZnGLo2gOSjERomLEwDFBKjdZkEYpPQW95SjBF/GxNOYBuChwP1s7221bLt79HxzEHmvVFZT3YcLQW4nEpsAjsVAbuY0DP8FU/hjVdNhaWdW9ZDg/MFY3dlOsgwBEbOV5SFwMneRzM/bpEawmc4hKouuLqw3m4C1a+uq2vyZNduu4q/oMDzCAsI/zADicKwk5LAtGU2Inu3gHv+RKx2Kw40yW+RXHdGAykMyogwkolsb9WZJBumCFUXk5Mj5tUm5MhbX0U/46xIHuW1T6rTzrV8hjCpoWrIJZ96i7HdbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xHz1QXBxa687LD+2FRrfdMRcg1twlRXobrUtJt0z2C4=;
+ b=N5AGTnUez11WBGyK6BRGR/4IsGNG79o1c2K/KPT0712eIvyjySE6ErDlKMBJwH60+zmrEaCkUIuKSbdy/wMzfZ8opl+Jzj/8h0xdVrov7u8gNyzjZnDvw/GAJ6gk5Qfau2HykiCIoawMeEGLfxkQl15TFCL4eIQKZS3rBJzyeBzN1twUc/ArMGG/ZVpNs3s8swbOMk+7IAcHXp6KUzz/G2XpiIQYonuCjNSifcWPQ4tcNOb3xYk/F0WHij6DmZfdDWeRTBKTbIPUAise5ya5go2Q8e1XmdohX4C0Mo5RYHzoJAmNJP+FvZoWRRxrKhY98DjZABLDZbElxmsMzhcvJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO6PR11MB5603.namprd11.prod.outlook.com (2603:10b6:5:35c::12)
+ by MW3PR11MB4747.namprd11.prod.outlook.com (2603:10b6:303:2f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
+ 2023 08:29:23 +0000
+Received: from CO6PR11MB5603.namprd11.prod.outlook.com
+ ([fe80::e1c3:7b76:eaa7:c1d9]) by CO6PR11MB5603.namprd11.prod.outlook.com
+ ([fe80::e1c3:7b76:eaa7:c1d9%4]) with mapi id 15.20.6954.021; Thu, 2 Nov 2023
+ 08:29:22 +0000
+Message-ID: <9b4f03fe-758a-43b0-92c7-7c72541013c2@intel.com>
+Date:   Thu, 2 Nov 2023 09:29:16 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] acpi/processor: sanitize _OSC/_PDC capabilities for
+ Xen dom0
+To:     Jason Andryuk <jandryuk@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+CC:     Roger Pau Monne <roger.pau@citrix.com>, <stable@vger.kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, <linux-kernel@vger.kernel.org>,
+        <xen-devel@lists.xenproject.org>
+References: <20231101134154.18336-1-jandryuk@gmail.com>
+Content-Language: en-US
+From:   "Wilczynski, Michal" <michal.wilczynski@intel.com>
+In-Reply-To: <20231101134154.18336-1-jandryuk@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VE1PR03CA0009.eurprd03.prod.outlook.com
+ (2603:10a6:802:a0::21) To CO6PR11MB5603.namprd11.prod.outlook.com
+ (2603:10b6:5:35c::12)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR11MB5603:EE_|MW3PR11MB4747:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca54a316-efe4-45f4-b44e-08dbdb7dd0e2
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HL1dGMntoBbjGJQrqRzuv6MWSFJ0JTjJu0766wvyeDikx6ZwAo1bUDNcIKPKznBY7iy5EKrlHex1b9Jt7WWg1hDerNsDEIIjgsGlsLjgoIHLnF3BPH8KDRV7aMkOEtMLq+0M6RqnBqyXaXlmp9apryl+7BXTFjq8skYJNarz2Nm1nSpx1pW/N1BxIfAVVzqv6u28pVra1Eige6h7l8IPad+GTistkAoEnbhsC0dalyjJY36CS0nxPJE75xiMxUUGm449BzrGclWod/OKwzs6Mkjsvu4NbxBSLBb6NMuxwlJwHwdTOm0gMdwp/g30PYD7mILP9CeN7F2HxV/MCuYR6ECEgHgP/BAqoLsBXns2+qjEdYr/ys2ILO2MM+7Kduxy7SPzNO5qqf9J28xq54gun5zR4ttyvXnRentPo5M6/KRQDH1Ro/MVHVq60HBdaiHdKBq7GRCV8Nw3Nh5FeyqmTsIRzeqYt8evUKIVAesDOOCtLUm3Fw698ZSBlesoSmFAHBKqczO4ecLca2CyLPYaFKQ5LcsveVEUmiobumgxFzkHkrzlXC0C5KSZLu3+EYO+48dEArjFopy/tMyo9IYhx9mbUYZeWgAeYu0Gf/oVVP+wInfvO1Cz1uwiB7gr5EF/U0aDTjaq2Z8azuEPozoLzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(346002)(136003)(366004)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(31686004)(6512007)(2616005)(26005)(38100700002)(31696002)(36756003)(86362001)(82960400001)(2906002)(7416002)(6506007)(53546011)(83380400001)(5660300002)(6666004)(8676002)(4326008)(8936002)(6486002)(66556008)(66476007)(66946007)(316002)(41300700001)(110136005)(478600001)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cFZrYkxnM00rb3BmdjRRYTYrZC9xN0pBMS9UNDZYUmc4b1lCZ3FCaUhDS242?=
+ =?utf-8?B?V3lzMGNBWC9nTFVnQXNtRTNKSk94Y1IrbmpydFJBaUxQbmhjc2RJekdDSVNX?=
+ =?utf-8?B?VTlWRzJMaDN6ZkNQMmtVR1plUVdBb3R6WUxRSnF6b2hQNW1USnB0WU1wMFR5?=
+ =?utf-8?B?TS9yNXZSeHFZMWQ4Z2cyWGdLcUlDRTdobHJFcEMzZGxzcFNUNklRZHAwNUl4?=
+ =?utf-8?B?UlR4WkZZMDlYRXJLVnhFeGUrdHY1dUVXb3NUdEl6SXMyeURzRE5EQkxXSVJO?=
+ =?utf-8?B?ZTlSeGlCSmF1Mk02NFBtY2loTTB5Qm9wZTliQWFMMjlHSkFYdk4xaHNFckc5?=
+ =?utf-8?B?WEN6UytOaUFvaGE4Q0xhZjJaTFVyNEhGR0NHUVZTTkRtMG8xYkl0SnUrMXlj?=
+ =?utf-8?B?R2cvS3JGNmxYNzRLUFJjZVNJVjRNRURKUUNPK0dRNWhORGw5R0U5Mk4yWXpW?=
+ =?utf-8?B?Y0tjVVVEdUhqQzNFUkhEd0RPUkV0bittdlJXNnduaGExdE1FNFl4NEJWRDVw?=
+ =?utf-8?B?N1hiN3lQaUZMRC9PUzBGOFU5UDZRaGNvMXg2OVh4L0ZzU3RrbW1iK3dWeDhM?=
+ =?utf-8?B?U1VJa2ZvVkZsY3hNOURPczZWSk80d08rb3ZoWWdmZDVlSlpLWFdiV2N0R2Yz?=
+ =?utf-8?B?aDJETW4wL0NnMmhRUlFDVTZzeWphSE9Hd3FIeTViOW9YaDR2L1RkYkJHUE5Q?=
+ =?utf-8?B?c2h3bXJIenhxaTBmd3A2TWR3U01NcXIwM0E0MWJUWThJZnNqZ1BjUStmUE5G?=
+ =?utf-8?B?aFNzNWdLNzRsSEU3Z1padExIMkwwVm9SZzMxRlhLN0VCVG9yNWtodjh2T3Jv?=
+ =?utf-8?B?SDdkSnZaZm1xMzNaZmJ5VnlFVDN0RVJjVVl5TTUyb0I5Y05rMjZ4RG5Id3px?=
+ =?utf-8?B?cTRnTGNIbzFoenVrbVZ6MFZ0ZU5lYm1sMEJoaE45bmRvMW15YVVKVHllT2wx?=
+ =?utf-8?B?RWQzeHJ6WjJ0MzFrYmpLZWpUZ09iclhZczZiWldFY0VSMWU3Rm5IMHR2MFVB?=
+ =?utf-8?B?cFR4VFBHWXdBU1hsNW5BeGVQUG5wd2JtZ3J2ZFJmSzlvdm9WWkJDQ2IvM08z?=
+ =?utf-8?B?RTJ1c1c1MkZTOXk2OHNFOFdjaTlPODVzWkplYjBKMWdDZ2R3dy9qKzBvWmps?=
+ =?utf-8?B?MUVURlhwMDRBV2JsOHF0NktMT2xUeXhXMkVuaTdxRVY5QkhtSU9OMGVERENE?=
+ =?utf-8?B?R090YkR5ZFQ4dlF6MmF3b2QvdmthOTlkRjhWNVl2N2cwTk5jd3daQ2RuV2gv?=
+ =?utf-8?B?OWVqdHZKNnI1T0drNzF6d2Rvd29JZERJdTJxZFlJK3o2cUxNbzRxenhNeVhu?=
+ =?utf-8?B?ZzdEWEtacnhMenRsdlhqV3F6endrTGJpRjF2V2RSTjNJdkJLV2duRWZseW1O?=
+ =?utf-8?B?clBKa0NVTlNmemhlNHBWZzRmMm9RMFpOMWZ2NVQzQmhQcGpTMFlqTjRzbEFN?=
+ =?utf-8?B?cGpNN2RrMjIzemRHVkxRZ1piYmFWOTNGTENaZnlUVXFQR3lyUWRQQjlhQ3lK?=
+ =?utf-8?B?UytrRWNsYi9OYUpTbGZVWTZtODhWMHhPWlRtekpaeUZReWdWUnNJdGEzeVIw?=
+ =?utf-8?B?T1JFN3ZTNERVWWxKRFBXS3dvL204VEh0Zm0vRXQvOU1hZ3FXditqUFVJMFkz?=
+ =?utf-8?B?L3JaeXhTZy84aXJhYVZoQmdhWWVLdGNUN0FHaEFRNUowU0w3WWJKS3pQUGFQ?=
+ =?utf-8?B?dTVaZzVIeTlqZ1Vidnl2NEx3MU5UeUVXc0t4Sit4cW95NFBhU2traFVaNHRV?=
+ =?utf-8?B?QlFkdUs0SG9sWURJeE1GSlFkVVZFaEVqeDM0cDBvN3dBRWRFaXVmWmVpcytr?=
+ =?utf-8?B?Q2JUM3FCMnZrWnZPRG5pRnJkU2JSMFBLemRhdkt2QU1mNjBNNUVPQ212N3hv?=
+ =?utf-8?B?MnZWMlNsRTRPRkE0bHliaEJVcUJ6Wnc2ZFZRUlFHVHB3UkduOHoxbmJQSGN2?=
+ =?utf-8?B?aENqNVBoaDBIZVZ6cFYxUTVoNDd4YVhDZFc1WDBDV1B3TWwvNC9DL0ZUU29C?=
+ =?utf-8?B?R1hManVXMXQ2M0VTQkNFUHhJWnRxVDdTeTJjRWFiVUxSN1pMb2lIRC9Dd3Fs?=
+ =?utf-8?B?QklQSnh0bFNaN2J3L3NMbVZoQ3kxejRLQVBQN0NvTTFYelF4MmhoT3ZjbExu?=
+ =?utf-8?B?M00xSFZqTWNVMkg0ZXZNN1lDeDF5eks3Q1RYOWQ1M203b3JVaGNhK2tzZ0Mr?=
+ =?utf-8?B?S0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca54a316-efe4-45f4-b44e-08dbdb7dd0e2
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 08:29:22.9055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y4PfvH+wUYmFT4M7aQriLqq1oPzVSu9qxIYGfxCzS3uwcGT7IpH3ZhkHPG35ST1uVFRrtgCO/32UM8TaweYb5NjQnR2DpmAAJlxVYbPX/N0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4747
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Rossi <nathan.rossi@digi.com>
 
-The i.MX8MP and i.MX8MQ devices both use the same DWC3 controller and
-are both affected by a known issue with the controller due to specific
-behaviour when park mode is enabled in SuperSpeed host mode operation.
 
-Under heavy USB traffic from multiple endpoints the controller will
-sometimes incorrectly process transactions such that some transactions
-are lost, or the controller may hang when processing transactions. When
-the controller hangs it does not recover.
+On 11/1/2023 2:41 PM, Jason Andryuk wrote:
+> From: Roger Pau Monne <roger.pau@citrix.com>
+>
+> The Processor capability bits notify ACPI of the OS capabilities, and
+> so ACPI can adjust the return of other Processor methods taking the OS
+> capabilities into account.
+>
+> When Linux is running as a Xen dom0, the hypervisor is the entity
+> in charge of processor power management, and hence Xen needs to make
+> sure the capabilities reported by _OSC/_PDC match the capabilities of
+> the driver in Xen.
+>
+> Introduce a small helper to sanitize the buffer when running as Xen
+> dom0.
+>
+> When Xen supports HWP, this serves as the equivalent of commit
+> a21211672c9a ("ACPI / processor: Request native thermal interrupt
+> handling via _OSC") to avoid SMM crashes.  Xen will set bit
+> ACPI_PROC_CAP_COLLAB_PROC_PERF (bit 12) in the capability bits and the
+> _OSC/_PDC call will apply it.
+>
+> [ jandryuk: Mention Xen HWP's need.  Support _OSC & _PDC ]
+> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+> ---
+> v4:
+> Use xen_santize_proc_cap_bits() name - Michal
+> Rephrase comment - Michal
+>
+> v3:
+> Move xen_sanitize_pdc() call to arch_acpi_set_proc_cap_bits() to cover
+> _OSC and _PDC.
+> drivers/xen/pcpu.c is CONFIG_DOM0 && CONFIG_X86
+>
+> v2:
+> Move local variables in acpi_processor_eval_pdc() to reuse in both conditions.
+> ---
+>  arch/x86/include/asm/acpi.h           | 14 ++++++++++++++
+>  arch/x86/include/asm/xen/hypervisor.h |  9 +++++++++
+>  drivers/xen/pcpu.c                    | 21 +++++++++++++++++++++
+>  3 files changed, 44 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+> index c8a7fc23f63c..f896eed4516c 100644
+> --- a/arch/x86/include/asm/acpi.h
+> +++ b/arch/x86/include/asm/acpi.h
+> @@ -16,6 +16,9 @@
+>  #include <asm/x86_init.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/irq_vectors.h>
+> +#include <asm/xen/hypervisor.h>
+> +
+> +#include <xen/xen.h>
+>  
+>  #ifdef CONFIG_ACPI_APEI
+>  # include <asm/pgtable_types.h>
+> @@ -127,6 +130,17 @@ static inline void arch_acpi_set_proc_cap_bits(u32 *cap)
+>  	if (!cpu_has(c, X86_FEATURE_MWAIT) ||
+>  	    boot_option_idle_override == IDLE_NOMWAIT)
+>  		*cap &= ~(ACPI_PROC_CAP_C_C1_FFH | ACPI_PROC_CAP_C_C2C3_FFH);
+> +
+> +	if (xen_initial_domain()) {
+> +		/*
+> +		 * When Linux is running as Xen dom0, the hypervisor is the
+> +		 * entity in charge of the processor power management, and so
+> +		 * Xen needs to check the OS capabilities reported in the
+> +		 * processor capabilities buffer matches what the hypervisor
+> +		 * driver supports.
+> +		 */
+> +		xen_sanitize_proc_cap_bits(cap);
+> +	}
+>  }
+>  
+>  static inline bool acpi_has_cpu_in_madt(void)
+> diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
+> index 7048dfacc04b..a9088250770f 100644
+> --- a/arch/x86/include/asm/xen/hypervisor.h
+> +++ b/arch/x86/include/asm/xen/hypervisor.h
+> @@ -100,4 +100,13 @@ static inline void leave_lazy(enum xen_lazy_mode mode)
+>  
+>  enum xen_lazy_mode xen_get_lazy_mode(void);
+>  
+> +#if defined(CONFIG_XEN_DOM0) && defined(CONFIG_ACPI)
+> +void xen_sanitize_proc_cap_bits(uint32_t *buf);
+> +#else
+> +static inline void xen_sanitize_proc_cap_bits(uint32_t *buf)
+> +{
+> +	BUG();
+> +}
+> +#endif
+> +
+>  #endif /* _ASM_X86_XEN_HYPERVISOR_H */
+> diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
+> index b3e3d1bb37f3..7000701dff8f 100644
+> --- a/drivers/xen/pcpu.c
+> +++ b/drivers/xen/pcpu.c
+> @@ -47,6 +47,9 @@
+>  #include <asm/xen/hypervisor.h>
+>  #include <asm/xen/hypercall.h>
+>  
+> +#ifdef CONFIG_ACPI
+> +#include <acpi/processor.h>
+> +#endif
+>  
+>  /*
+>   * @cpu_id: Xen physical cpu logic number
+> @@ -400,4 +403,22 @@ bool __init xen_processor_present(uint32_t acpi_id)
+>  
+>  	return online;
+>  }
+> +
+> +void xen_sanitize_proc_cap_bits(uint32_t *cap)
+> +{
+> +	struct xen_platform_op op = {
+> +		.cmd			= XENPF_set_processor_pminfo,
+> +		.u.set_pminfo.id	= -1,
+> +		.u.set_pminfo.type	= XEN_PM_PDC,
+> +	};
+> +	u32 buf[3] = { ACPI_PDC_REVISION_ID, 1, *cap };
+> +	int ret;
+> +
+> +	set_xen_guest_handle(op.u.set_pminfo.pdc, buf);
+> +	ret = HYPERVISOR_platform_op(&op);
+> +	if (ret)
+> +		pr_err("sanitize of _PDC buffer bits from Xen failed: %d\n",
+> +		       ret);
+> +	*cap = buf[2];
+> +}
+>  #endif
 
-This issue is documented partially within the linux-imx vendor kernel
-which references a Synopsys STAR number 9001415732 in commits [1] and
-additional details in [2]. Those commits provide some additional
-controller internal implementation specifics around the incorrect
-behaviour of the SuperSpeed host controller operation when park mode is
-enabled.
+Looks good to me.
+For what it's worth -
+Reviewed-by: Michal Wilczynski <michal.wilczynski@intel.com>
 
-The summary of this issue is that the host controller can incorrectly
-enter/exit park mode such that part of the controller is in a state
-which behaves as if in park mode even though it is not. In this state
-the controller incorrectly calculates the number of TRBs available which
-results in incorrect access of the internal caches causing the overwrite
-of pending requests in the cache which should have been processed but
-are ignored. This can cause the controller to drop the requests or hang
-waiting for the pending state of the dropped requests.
 
-The workaround for this issue is to disable park mode for SuperSpeed
-operation of the controller through the GUCTL1[17] bit. This is already
-available as a quirk for the DWC3 controller and can be enabled via the
-'snps,parkmode-disable-ss-quirk' device tree property.
-
-It is possible to replicate this failure on an i.MX8MP EVK with a USB
-Hub connecting 4 SuperSpeed USB flash drives. Performing continuous
-small read operations (dd if=/dev/sd... of=/dev/null bs=16) on the block
-devices will result in device errors initially and will eventually
-result in the controller hanging.
-
-  [13240.896936] xhci-hcd xhci-hcd.0.auto: WARN Event TRB for slot 4 ep 2 with no TDs queued?
-  [13240.990708] usb 2-1.3: reset SuperSpeed USB device number 5 using xhci-hcd
-  [13241.015582] sd 2:0:0:0: [sdc] tag#0 UNKNOWN(0x2003) Result: hostbyte=0x07 driverbyte=DRIVER_OK cmd_age=0s
-  [13241.025198] sd 2:0:0:0: [sdc] tag#0 CDB: opcode=0x28 28 00 00 00 03 e0 00 01 00 00
-  [13241.032949] I/O error, dev sdc, sector 992 op 0x0:(READ) flags 0x80700 phys_seg 25 prio class 2
-  [13272.150710] usb 2-1.2: reset SuperSpeed USB device number 4 using xhci-hcd
-  [13272.175469] sd 1:0:0:0: [sdb] tag#0 UNKNOWN(0x2003) Result: hostbyte=0x03 driverbyte=DRIVER_OK cmd_age=31s
-  [13272.185365] sd 1:0:0:0: [sdb] tag#0 CDB: opcode=0x28 28 00 00 00 03 e0 00 01 00 00
-  [13272.193385] I/O error, dev sdb, sector 992 op 0x0:(READ) flags 0x80700 phys_seg 18 prio class 2
-  [13434.846556] xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command
-  [13434.854592] xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
-  [13434.862553] xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
-
-[1] https://github.com/nxp-imx/linux-imx/commit/97a5349d936b08cf301730b59e4e8855283f815c
-[2] https://github.com/nxp-imx/linux-imx/commit/b4b5cbc5a12d7c3b920d1d7cba0ada3379e4e42b
-
-Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
----
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 ++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index c9a610ba48..1264da6012 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -2072,6 +2072,7 @@ usb_dwc3_0: usb@38100000 {
- 				phys = <&usb3_phy0>, <&usb3_phy0>;
- 				phy-names = "usb2-phy", "usb3-phy";
- 				snps,gfladj-refclk-lpm-sel-quirk;
-+				snps,parkmode-disable-ss-quirk;
- 			};
- 
- 		};
-@@ -2114,6 +2115,7 @@ usb_dwc3_1: usb@38200000 {
- 				phys = <&usb3_phy1>, <&usb3_phy1>;
- 				phy-names = "usb2-phy", "usb3-phy";
- 				snps,gfladj-refclk-lpm-sel-quirk;
-+				snps,parkmode-disable-ss-quirk;
- 			};
- 		};
- 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 4b1ce9fc17..c6dc3ba0d4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1649,6 +1649,7 @@ usb_dwc3_0: usb@38100000 {
- 			phys = <&usb3_phy0>, <&usb3_phy0>;
- 			phy-names = "usb2-phy", "usb3-phy";
- 			power-domains = <&pgc_otg1>;
-+			snps,parkmode-disable-ss-quirk;
- 			status = "disabled";
- 		};
- 
-@@ -1680,6 +1681,7 @@ usb_dwc3_1: usb@38200000 {
- 			phys = <&usb3_phy1>, <&usb3_phy1>;
- 			phy-names = "usb2-phy", "usb3-phy";
- 			power-domains = <&pgc_otg2>;
-+			snps,parkmode-disable-ss-quirk;
- 			status = "disabled";
- 		};
- 
----
-2.42.0
