@@ -2,438 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 359BB7DF555
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C707DF559
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 15:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjKBOxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 10:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
+        id S232605AbjKBOxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 10:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjKBOxM (ORCPT
+        with ESMTP id S229596AbjKBOxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 10:53:12 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0B1136
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:53:08 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67089696545so5929966d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:53:08 -0700 (PDT)
+        Thu, 2 Nov 2023 10:53:30 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FA912F
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 07:53:26 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c6cb4a79deso11325411fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 07:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698936788; x=1699541588; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698936804; x=1699541604; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8GvzXOE6ewh/7Rc6C9DonV3a0Npx2I7bSl14yjDuvxo=;
-        b=wbxKDP5Ci6ITuNqXJaZc/4v+hCB16rOOImLWZg8H8jfbX+IBe85Gd91QiZPJ0hnJ2J
-         ikAVQZGqmh64TlpfaJdzfka9dRtP3Pbl4SG+FX7GgEp02ngMhfwly0nwGIWgwbek0hlO
-         I0waYrtN/tQevOHtqJ3y2kLdgpDS/CM9OlSJx3aIz3J6ChXz9ZNSkDMIYZPV1jTjb45v
-         d6MvH5/5K7PXnR/GndyxzbC9sK5NJkgJhnI1kmcR1YT6N6UPXjvvXuWo/aBt04PtPhOJ
-         1z+XKpE6KANKbN/d3FFnmRF4/KMz36gSwbZ3AzLONCCCeGqie1+SlDdpI9QKf2fCuozL
-         KuwQ==
+        bh=OpPyVtURK3O1993/XOuCJ+rtbqqAwYQxZ3FZRcfqNLE=;
+        b=dcsuXAF8WQ/WQgnJlxp6mUTTx+tkLEHlwQC14+u0VWqWRXpz0ZInRrPJLniLztw4M8
+         LdraLSjUJ1nIsnOe928PBjFRvI9E8j92RISrAOK3YjKvS89WRDGkL6H2ZmAXbhghHFm5
+         BDn8ozX7Xc02+i6LvQmyIWF36qxEYrvyiokT1Ksx610H/syKEf6yN2pEZ8UHbZ3yVtNp
+         TtV7G1thlZICvMvQZQDPWZT+U4a/IelaMb1or0bNbFdmhKlAWKqFaUDg/bVtbZWkXtCm
+         UbDQG5HVzqOpdeLiDby/T6Eb2O9tDphJMPPL6hC+k3ZCO7e/25/WK8AC/Ih28Tqywn/3
+         lVqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698936788; x=1699541588;
+        d=1e100.net; s=20230601; t=1698936804; x=1699541604;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8GvzXOE6ewh/7Rc6C9DonV3a0Npx2I7bSl14yjDuvxo=;
-        b=EOM105m5RUJJKcSIEqfWzmZFEMp9UlmOa8vVFuBsqiDR1GRMAkcpHjV3kfn0S1mOww
-         Cm3JfDXTSx0rjGbVlKPbf2rysSPE7d9b/u26vFbvXHR/4yNSXJQ4iuCVENOFmcxDMPl6
-         75sTTwNmkm+ROGrMXcD4lpTsmQxqEuTU9u3HVTFZ10zfd6uLZkiGRIgdxvAXRaygLd+d
-         2KDXSUQ6Ets559i0s+TMa2I87Yo0RR1Zn4c+Vt+SXsmm1VXxfjtbdj9jpCippS2DLAam
-         f4Zq6yEo8cxq2P3SlhZcM0KD28Sigx4405wlosjcLwK5v3L7Axp0SdFASYUJH8WQRzEa
-         Gq5A==
-X-Gm-Message-State: AOJu0Yy91ob9mOxQzl1gaagNTguNLbJD0WTvC38L1S71z5Wwc5/4QnjZ
-        nROv0+HXk7yEiSdyzU1CT4pZWQXMcVwPUIqC7elJSQ==
-X-Google-Smtp-Source: AGHT+IHdXDohShBrh/wRwYkeI6kWxrlegOSTv+ByJkK1TLGURCqHB/VgK9oCYE42JR3/Ks/cAKuurxNdHClczp0acF8=
-X-Received: by 2002:a05:6214:404:b0:66d:130c:bb9d with SMTP id
- z4-20020a056214040400b0066d130cbb9dmr25099306qvx.13.1698936787681; Thu, 02
- Nov 2023 07:53:07 -0700 (PDT)
+        bh=OpPyVtURK3O1993/XOuCJ+rtbqqAwYQxZ3FZRcfqNLE=;
+        b=fUgWijoXzXadzGLpgb2nle9kH1x4Nq58W06btMvd5SXnm1JogzPccRAalcTXHaokI1
+         xQQCdFOkcwTZ64hTVTrndiKwPRyaE1xP+H1wUKHmqp35i7t5bnuF/IE2RztUvQ3PFnYZ
+         TyMfAwT0txn6eQ1UsOib1j+N1LLmaegyKabxyzC2dLGv+PVsLdX5VM+2qmIJKpGK3NHY
+         sYpjnE4roJuJkqdDOZ+NFQJ62Jaf4I2N5psl9LzjQFjEf3Kp2ey+HxW+pAgxHCc67IYh
+         RbUqPBf83kk/EqfKus9RzBGITl/lPDHdTI5OpiXCO39Jvrrn/ioBpfldgc2rAmIbrsz8
+         tIhQ==
+X-Gm-Message-State: AOJu0YzEGJd4C95cl4+UoKQLFBww45hpgcUdomF3DjDffib/DUQjaViJ
+        we+Ddm8gWDbd0DXhq1ZOeKLH33ql/5UYGhdkuuUiVLGC35AdRxBtAKh9xQ==
+X-Google-Smtp-Source: AGHT+IF+4kzPJza/2IUhZKr1xOdoJfGM7YL+7agh9GMsfaxBBtfJW0JigT3a/A8/z0p9Wkfv+y6XHzkoz2wBMSdK854=
+X-Received: by 2002:a2e:9695:0:b0:2bd:a67:e8c with SMTP id q21-20020a2e9695000000b002bd0a670e8cmr21102lji.3.1698936804612;
+ Thu, 02 Nov 2023 07:53:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-23-seanjc@google.com>
-In-Reply-To: <20231027182217.3615211-23-seanjc@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Thu, 2 Nov 2023 14:52:31 +0000
-Message-ID: <CA+EHjTzjzN-0mc6ZUTmSH=EAzRvS4v5dDO97-dCGHb668dTb7Q@mail.gmail.com>
-Subject: Re: [PATCH v13 22/35] KVM: Allow arch code to track number of memslot
- address spaces per VM
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231031210521.1661552-1-dlechner@baylibre.com> <3ea3d92db5c4c077a76b29dc5a89c4d491695752.camel@gmail.com>
+In-Reply-To: <3ea3d92db5c4c077a76b29dc5a89c4d491695752.camel@gmail.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Thu, 2 Nov 2023 09:53:13 -0500
+Message-ID: <CAMknhBEDp1baTDPrAfAv_gZ5o6LxNSt8bgS8wcGUmXdaCHq_Jw@mail.gmail.com>
+Subject: Re: [PATCH] iio: triggered-buffer: prevent possible freeing of wrong buffer
+To:     =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 7:23=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
+On Thu, Nov 2, 2023 at 3:59=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com>=
+ wrote:
 >
-> Let x86 track the number of address spaces on a per-VM basis so that KVM
-> can disallow SMM memslots for confidential VMs.  Confidentials VMs are
-> fundamentally incompatible with emulating SMM, which as the name suggests
-> requires being able to read and write guest memory and register state.
+> On Tue, 2023-10-31 at 16:05 -0500, David Lechner wrote:
+> > Commit ee708e6baacd ("iio: buffer: introduce support for attaching more
+> > IIO buffers") introduced support for multiple buffers per indio_dev but
+> > left indio_dev->buffer for a few legacy use cases.
+> >
+> > In the case of the triggered buffer, iio_triggered_buffer_cleanup()
+> > still assumes that indio_dev->buffer points to the buffer allocated by
+> > iio_triggered_buffer_setup_ext(). However, since
+> > iio_triggered_buffer_setup_ext() now calls iio_device_attach_buffer()
+> > to attach the buffer, indio_dev->buffer will only point to the buffer
+> > allocated by iio_device_attach_buffer() if it the first buffer attached=
+.
+> >
+> > This adds a check to make sure that no other buffer has been attached
+> > yet to ensure that indio_dev->buffer will be assigned when
+> > iio_device_attach_buffer() is called.
+> >
+> > Fixes: ee708e6baacd ("iio: buffer: introduce support for attaching more=
+ IIO
+> > buffers")
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > ---
+> >  drivers/iio/buffer/industrialio-triggered-buffer.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > b/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > index c7671b1f5ead..c06515987e7a 100644
+> > --- a/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > +++ b/drivers/iio/buffer/industrialio-triggered-buffer.c
+> > @@ -46,6 +46,16 @@ int iio_triggered_buffer_setup_ext(struct iio_dev
+> > *indio_dev,
+> >       struct iio_buffer *buffer;
+> >       int ret;
+> >
+> > +     /*
+> > +      * iio_triggered_buffer_cleanup() assumes that the buffer allocat=
+ed
+> > here
+> > +      * is assigned to indio_dev->buffer but this is only the case if =
+this
+> > +      * function is the first caller to iio_device_attach_buffer(). If
+> > +      * indio_dev->buffer is already set then we can't proceed otherwi=
+se
+> > the
+> > +      * cleanup function will try to free a buffer that was not alloca=
+ted
+> > here.
+> > +      */
+> > +     if (indio_dev->buffer)
+> > +             return -EADDRINUSE;
+> > +
 >
-> Disallowing SMM will simplify support for guest private memory, as KVM
-> will not need to worry about tracking memory attributes for multiple
-> address spaces (SMM is the only "non-default" address space across all
-> architectures).
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
+> Hmmm, good catch! But I think this is just workarounding the real problem
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
-Tested-by: Fuad Tabba <tabba@google.com>
+Yes, I could have done a better job explaining my reason for this fix.
+It seemed like the simplest fix that could be easily backported to
+stable kernels. And then we can look at removing the legacy field
+completely in the future.
 
-Cheers,
-/fuad
+> because like this, you can only have a triggered buffer by device. This s=
+hould
+> be fine as we don't really have any multi buffer user so far but ideally =
+it
+> should be possible.
+>
+> Long term we might want to think about moving 'pollfunc' to be a per buff=
+er
+> thing. Not sure how much trouble that would be given that a trigger is al=
+so per
+> device and I don't know if it would make sense to have a trigger per buff=
+er?!
+> Ideally, given the multi buffer concept, I would say it makes sense but i=
+t might
+> be difficult to accomplish. So better to think about it only if there's a=
+ real
+> usecase for it.
+>
+> On thing that I guess it could be done is to change the triggered API so =
+it
+> returns a buffer and so iio_triggered_buffer_cleanup() would also get a p=
+ointer
+> to the buffer it allocated (similar to what DMA buffer's are doing). But =
+that's
+> indeed also bigger change... Bahh, I'm likely over complicating things fo=
+r now.
 
->  arch/powerpc/kvm/book3s_hv.c    |  2 +-
->  arch/x86/include/asm/kvm_host.h |  8 +++++++-
->  arch/x86/kvm/debugfs.c          |  2 +-
->  arch/x86/kvm/mmu/mmu.c          |  6 +++---
->  arch/x86/kvm/x86.c              |  2 +-
->  include/linux/kvm_host.h        | 17 +++++++++++------
->  virt/kvm/dirty_ring.c           |  2 +-
->  virt/kvm/kvm_main.c             | 26 ++++++++++++++------------
->  8 files changed, 39 insertions(+), 26 deletions(-)
+This sounds very much like the work I am doing on SPI Engine offload
+support - having a trigger associated with a buffer. So maybe
+something will come out of that. =C2=AF\_(=E3=83=84)_/=C2=AF
+
+> Fell free to:
 >
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 130bafdb1430..9b0eaa17275a 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -6084,7 +6084,7 @@ static int kvmhv_svm_off(struct kvm *kvm)
->         }
+> Acked-by: Nuno Sa <nuno.sa@analog.com>
 >
->         srcu_idx =3D srcu_read_lock(&kvm->srcu);
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 struct kvm_memory_slot *memslot;
->                 struct kvm_memslots *slots =3D __kvm_memslots(kvm, i);
->                 int bkt;
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
-ost.h
-> index 6702f795c862..f9e8d5642069 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -2124,9 +2124,15 @@ enum {
->  #define HF_SMM_MASK            (1 << 1)
->  #define HF_SMM_INSIDE_NMI_MASK (1 << 2)
->
-> -# define KVM_ADDRESS_SPACE_NUM 2
-> +# define KVM_MAX_NR_ADDRESS_SPACES     2
->  # define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_M=
-ASK ? 1 : 0)
->  # define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role=
-).smm)
-> +
-> +static inline int kvm_arch_nr_memslot_as_ids(struct kvm *kvm)
-> +{
-> +       return KVM_MAX_NR_ADDRESS_SPACES;
-> +}
-> +
->  #else
->  # define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, 0)
->  #endif
-> diff --git a/arch/x86/kvm/debugfs.c b/arch/x86/kvm/debugfs.c
-> index ee8c4c3496ed..42026b3f3ff3 100644
-> --- a/arch/x86/kvm/debugfs.c
-> +++ b/arch/x86/kvm/debugfs.c
-> @@ -111,7 +111,7 @@ static int kvm_mmu_rmaps_stat_show(struct seq_file *m=
-, void *v)
->         mutex_lock(&kvm->slots_lock);
->         write_lock(&kvm->mmu_lock);
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 int bkt;
->
->                 slots =3D __kvm_memslots(kvm, i);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c4e758f0aebb..baeba8fc1c38 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3755,7 +3755,7 @@ static int mmu_first_shadow_root_alloc(struct kvm *=
-kvm)
->             kvm_page_track_write_tracking_enabled(kvm))
->                 goto out_success;
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 slots =3D __kvm_memslots(kvm, i);
->                 kvm_for_each_memslot(slot, bkt, slots) {
->                         /*
-> @@ -6294,7 +6294,7 @@ static bool kvm_rmap_zap_gfn_range(struct kvm *kvm,=
- gfn_t gfn_start, gfn_t gfn_e
->         if (!kvm_memslots_have_rmaps(kvm))
->                 return flush;
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 slots =3D __kvm_memslots(kvm, i);
->
->                 kvm_for_each_memslot_in_gfn_range(&iter, slots, gfn_start=
-, gfn_end) {
-> @@ -6791,7 +6791,7 @@ void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm,=
- u64 gen)
->          * modifier prior to checking for a wrap of the MMIO generation s=
-o
->          * that a wrap in any address space is detected.
->          */
-> -       gen &=3D ~((u64)KVM_ADDRESS_SPACE_NUM - 1);
-> +       gen &=3D ~((u64)kvm_arch_nr_memslot_as_ids(kvm) - 1);
->
->         /*
->          * The very rare case: if the MMIO generation number has wrapped,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 824b58b44382..c4d17727b199 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12456,7 +12456,7 @@ void __user * __x86_set_memory_region(struct kvm =
-*kvm, int id, gpa_t gpa,
->                 hva =3D slot->userspace_addr;
->         }
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 struct kvm_userspace_memory_region2 m;
->
->                 m.slot =3D id | (i << 16);
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index c3cfe08b1300..687589ce9f63 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -80,8 +80,8 @@
->  /* Two fragments for cross MMIO pages. */
->  #define KVM_MAX_MMIO_FRAGMENTS 2
->
-> -#ifndef KVM_ADDRESS_SPACE_NUM
-> -#define KVM_ADDRESS_SPACE_NUM  1
-> +#ifndef KVM_MAX_NR_ADDRESS_SPACES
-> +#define KVM_MAX_NR_ADDRESS_SPACES      1
->  #endif
->
->  /*
-> @@ -692,7 +692,12 @@ bool kvm_arch_irqchip_in_kernel(struct kvm *kvm);
->  #define KVM_MEM_SLOTS_NUM SHRT_MAX
->  #define KVM_USER_MEM_SLOTS (KVM_MEM_SLOTS_NUM - KVM_INTERNAL_MEM_SLOTS)
->
-> -#if KVM_ADDRESS_SPACE_NUM =3D=3D 1
-> +#if KVM_MAX_NR_ADDRESS_SPACES =3D=3D 1
-> +static inline int kvm_arch_nr_memslot_as_ids(struct kvm *kvm)
-> +{
-> +       return KVM_MAX_NR_ADDRESS_SPACES;
-> +}
-> +
->  static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
->  {
->         return 0;
-> @@ -747,9 +752,9 @@ struct kvm {
->         struct mm_struct *mm; /* userspace tied to this vm */
->         unsigned long nr_memslot_pages;
->         /* The two memslot sets - active and inactive (per address space)=
- */
-> -       struct kvm_memslots __memslots[KVM_ADDRESS_SPACE_NUM][2];
-> +       struct kvm_memslots __memslots[KVM_MAX_NR_ADDRESS_SPACES][2];
->         /* The current active memslot set for each address space */
-> -       struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
-> +       struct kvm_memslots __rcu *memslots[KVM_MAX_NR_ADDRESS_SPACES];
->         struct xarray vcpu_array;
->         /*
->          * Protected by slots_lock, but can be read outside if an
-> @@ -1018,7 +1023,7 @@ void kvm_put_kvm_no_destroy(struct kvm *kvm);
->
->  static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int a=
-s_id)
->  {
-> -       as_id =3D array_index_nospec(as_id, KVM_ADDRESS_SPACE_NUM);
-> +       as_id =3D array_index_nospec(as_id, KVM_MAX_NR_ADDRESS_SPACES);
->         return srcu_dereference_check(kvm->memslots[as_id], &kvm->srcu,
->                         lockdep_is_held(&kvm->slots_lock) ||
->                         !refcount_read(&kvm->users_count));
-> diff --git a/virt/kvm/dirty_ring.c b/virt/kvm/dirty_ring.c
-> index c1cd7dfe4a90..86d267db87bb 100644
-> --- a/virt/kvm/dirty_ring.c
-> +++ b/virt/kvm/dirty_ring.c
-> @@ -58,7 +58,7 @@ static void kvm_reset_dirty_gfn(struct kvm *kvm, u32 sl=
-ot, u64 offset, u64 mask)
->         as_id =3D slot >> 16;
->         id =3D (u16)slot;
->
-> -       if (as_id >=3D KVM_ADDRESS_SPACE_NUM || id >=3D KVM_USER_MEM_SLOT=
-S)
-> +       if (as_id >=3D kvm_arch_nr_memslot_as_ids(kvm) || id >=3D KVM_USE=
-R_MEM_SLOTS)
->                 return;
->
->         memslot =3D id_to_memslot(__kvm_memslots(kvm, as_id), id);
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 5d1a2f1b4e94..23633984142f 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -615,7 +615,7 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_=
-range(struct kvm *kvm,
->
->         idx =3D srcu_read_lock(&kvm->srcu);
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 struct interval_tree_node *node;
->
->                 slots =3D __kvm_memslots(kvm, i);
-> @@ -1248,7 +1248,7 @@ static struct kvm *kvm_create_vm(unsigned long type=
-, const char *fdname)
->                 goto out_err_no_irq_srcu;
->
->         refcount_set(&kvm->users_count, 1);
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 for (j =3D 0; j < 2; j++) {
->                         slots =3D &kvm->__memslots[i][j];
->
-> @@ -1398,7 +1398,7 @@ static void kvm_destroy_vm(struct kvm *kvm)
->  #endif
->         kvm_arch_destroy_vm(kvm);
->         kvm_destroy_devices(kvm);
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 kvm_free_memslots(kvm, &kvm->__memslots[i][0]);
->                 kvm_free_memslots(kvm, &kvm->__memslots[i][1]);
->         }
-> @@ -1681,7 +1681,7 @@ static void kvm_swap_active_memslots(struct kvm *kv=
-m, int as_id)
->          * space 0 will use generations 0, 2, 4, ... while address space =
-1 will
->          * use generations 1, 3, 5, ...
->          */
-> -       gen +=3D KVM_ADDRESS_SPACE_NUM;
-> +       gen +=3D kvm_arch_nr_memslot_as_ids(kvm);
->
->         kvm_arch_memslots_updated(kvm, gen);
->
-> @@ -2051,7 +2051,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
->             (mem->guest_memfd_offset & (PAGE_SIZE - 1) ||
->              mem->guest_memfd_offset + mem->memory_size < mem->guest_memf=
-d_offset))
->                 return -EINVAL;
-> -       if (as_id >=3D KVM_ADDRESS_SPACE_NUM || id >=3D KVM_MEM_SLOTS_NUM=
-)
-> +       if (as_id >=3D kvm_arch_nr_memslot_as_ids(kvm) || id >=3D KVM_MEM=
-_SLOTS_NUM)
->                 return -EINVAL;
->         if (mem->guest_phys_addr + mem->memory_size < mem->guest_phys_add=
-r)
->                 return -EINVAL;
-> @@ -2187,7 +2187,7 @@ int kvm_get_dirty_log(struct kvm *kvm, struct kvm_d=
-irty_log *log,
->
->         as_id =3D log->slot >> 16;
->         id =3D (u16)log->slot;
-> -       if (as_id >=3D KVM_ADDRESS_SPACE_NUM || id >=3D KVM_USER_MEM_SLOT=
-S)
-> +       if (as_id >=3D kvm_arch_nr_memslot_as_ids(kvm) || id >=3D KVM_USE=
-R_MEM_SLOTS)
->                 return -EINVAL;
->
->         slots =3D __kvm_memslots(kvm, as_id);
-> @@ -2249,7 +2249,7 @@ static int kvm_get_dirty_log_protect(struct kvm *kv=
-m, struct kvm_dirty_log *log)
->
->         as_id =3D log->slot >> 16;
->         id =3D (u16)log->slot;
-> -       if (as_id >=3D KVM_ADDRESS_SPACE_NUM || id >=3D KVM_USER_MEM_SLOT=
-S)
-> +       if (as_id >=3D kvm_arch_nr_memslot_as_ids(kvm) || id >=3D KVM_USE=
-R_MEM_SLOTS)
->                 return -EINVAL;
->
->         slots =3D __kvm_memslots(kvm, as_id);
-> @@ -2361,7 +2361,7 @@ static int kvm_clear_dirty_log_protect(struct kvm *=
-kvm,
->
->         as_id =3D log->slot >> 16;
->         id =3D (u16)log->slot;
-> -       if (as_id >=3D KVM_ADDRESS_SPACE_NUM || id >=3D KVM_USER_MEM_SLOT=
-S)
-> +       if (as_id >=3D kvm_arch_nr_memslot_as_ids(kvm) || id >=3D KVM_USE=
-R_MEM_SLOTS)
->                 return -EINVAL;
->
->         if (log->first_page & 63)
-> @@ -2502,7 +2502,7 @@ static __always_inline void kvm_handle_gfn_range(st=
-ruct kvm *kvm,
->         gfn_range.only_private =3D false;
->         gfn_range.only_shared =3D false;
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 slots =3D __kvm_memslots(kvm, i);
->
->                 kvm_for_each_memslot_in_gfn_range(&iter, slots, range->st=
-art, range->end) {
-> @@ -4857,9 +4857,11 @@ static int kvm_vm_ioctl_check_extension_generic(st=
-ruct kvm *kvm, long arg)
->         case KVM_CAP_IRQ_ROUTING:
->                 return KVM_MAX_IRQ_ROUTES;
->  #endif
-> -#if KVM_ADDRESS_SPACE_NUM > 1
-> +#if KVM_MAX_NR_ADDRESS_SPACES > 1
->         case KVM_CAP_MULTI_ADDRESS_SPACE:
-> -               return KVM_ADDRESS_SPACE_NUM;
-> +               if (kvm)
-> +                       return kvm_arch_nr_memslot_as_ids(kvm);
-> +               return KVM_MAX_NR_ADDRESS_SPACES;
->  #endif
->         case KVM_CAP_NR_MEMSLOTS:
->                 return KVM_USER_MEM_SLOTS;
-> @@ -4967,7 +4969,7 @@ bool kvm_are_all_memslots_empty(struct kvm *kvm)
->
->         lockdep_assert_held(&kvm->slots_lock);
->
-> -       for (i =3D 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +       for (i =3D 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
->                 if (!kvm_memslots_empty(__kvm_memslots(kvm, i)))
->                         return false;
->         }
-> --
-> 2.42.0.820.g83a721a137-goog
 >
