@@ -2,319 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3197DF96B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 19:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182817DF942
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 18:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344535AbjKBSBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 14:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        id S1344018AbjKBR5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 13:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347509AbjKBSAN (ORCPT
+        with ESMTP id S234072AbjKBR5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 14:00:13 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1501AC
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 10:59:06 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5afa77f9a33so18056537b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 10:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698947945; x=1699552745; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6QBB22XTKhIDhVJxWPltXcD6lstTRUmmQqDxt0zKPM4=;
-        b=cORgzD36HPPpxz21IMrWhru2iduNYlKYevv/wrqcvICniQdVLApHZ743CQkj7+Ycxe
-         oBY1QGfgxpbc3Z9jkgGXE2IiATWkD3og7L0WhZm4ogMFI7yJd91+ScQHlPUmLu6aEPR3
-         WTU4BjigEzhpdO1bMO2LUlIuPxeAECb9yJtoeUPTyomW6/TBpuzmaRmBcIUTixXETNjs
-         bVc4OblPf0vDwHhQIH7lCkJJpuHyeMRvnsez5tQCF1FDWsJPWpxdOs7lPyeIrAnHAyQJ
-         LI0j2/3pVSZpa/mK/tb7hm/nFQmQT+ajjOInB9jsrKlPoI5ZaU2Pd+ZC8d6YgSAVBrW4
-         XkfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698947945; x=1699552745;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6QBB22XTKhIDhVJxWPltXcD6lstTRUmmQqDxt0zKPM4=;
-        b=d1LUmaG7BjloVrDi15RMLjVnIy3ll8mnLqEI11SCk9vTuV590RxioQ4EFWTwvtqM7V
-         DnhxIn7Tcp3jj52CyZdpFOctJx7xJo1SdYAuPQaY6Q8CAw/swmh7JUnqCaRgEnkijRMg
-         M2du8tqzrXFz0CSLuSp6Ef6SvIrSKFmh+ordC7jfzvMmtGN5u9RxqVJMbO8OZ5fnO8BE
-         n9azRUpcc0Rn0Rw5Lu+WzIw5Ot4at2wRRu2XgCAfvsLsIkS1tHfFe9DXxTo46XeA+vBQ
-         tA2oTqVc+ZexSynYgGIHzg8YYCkiEotet2+24MZczAeCmMz3TdDiUfg067BrKZ+o4yTH
-         GGgw==
-X-Gm-Message-State: AOJu0YwmMKwFD7lK3mC2ERkSOmw7voCNq/CapWG1CBif7TqxpvmrBzpo
-        ctDLc6rMfvwU0IeTE3GA6MKxuWPp5PpI
-X-Google-Smtp-Source: AGHT+IFIMGcusLs9ss8WG+c0/bv2eoN7Iz9N+TycEIMIjngR54jo0kVxVX/CgRZCB0u7OX0zfiJMXb21huYu
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bb34:df9c:836c:afca])
- (user=irogers job=sendgmr) by 2002:a81:5217:0:b0:592:8069:540a with SMTP id
- g23-20020a815217000000b005928069540amr7440ywb.8.1698947945127; Thu, 02 Nov
- 2023 10:59:05 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 10:57:12 -0700
-In-Reply-To: <20231102175735.2272696-1-irogers@google.com>
-Message-Id: <20231102175735.2272696-31-irogers@google.com>
-Mime-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Subject: [PATCH v4 30/53] perf maps: Get map before returning in maps__find_by_name
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
+        Thu, 2 Nov 2023 13:57:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8623134;
+        Thu,  2 Nov 2023 10:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698947858; x=1730483858;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=D18QASxgavWJUkqeEG1ZkgGiV8xduulxsyNWzi9gMf4=;
+  b=n7xNCaUX8RwZ5cU6B0x3p4H2Kgky5G7t6UCrL+E3/Ttg+JdEr/0kQLH0
+   WFhAZbOiOJucX1X9C//SUbrwKmriTcbhGw81uO9vVgvYMdugvNkq6s8Rx
+   M28A+8npKNYI1Duy56Z9GGQtIEAcNMI3skEOOppWe1lbVI1mfdaxB8cFq
+   8DV3PstZiq1X/pZIP6yP24jjw+/a77YWTzZmkd/P1WHbMVd9s+MHxOHK/
+   AAyBMVrdnfvezOhfLtg3hGVvsGSJdYwOyxgUNK6mcYAsAKCpQrGxImmLr
+   t0aN4BwklOmeJmXw849hq8tJhn2cqg4RRMDt22zsE/sxUjJxsNWDkW8Nm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="475021748"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="475021748"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 10:57:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1092798006"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="1092798006"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Nov 2023 10:57:17 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 2 Nov 2023 10:57:17 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 2 Nov 2023 10:57:17 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 2 Nov 2023 10:57:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aR1en6gvE1QC5wEu2P2pTYH4gyaJNqFzTbJFbfK7me9rdCk2SEXr9rKqes+xUx8Bz0WUWUBiE2I+5qU2GA8MmwKY+Uch18Y8dQgDQYL1nk0Tbs9c5lNxTvMZszu6SEiuIKmTO4yoJ1IVu6WazQgjH3Ar4mry/Heu5i2qcLH7x+QIRMX8NiCpLqadqAY/k4WwHW0MnZgo5gCsvkUUkBH+ral+/4sZo/Sl0Xsk5baA5tEdRsDwHbIVPWQYhIuCSfAdI5LvV6G4z9fI26QijYWZhChh/WcWwDryhc+ZQ95WJT/xLW/IyNDbilKFZBvxNvwZ6I1KBi/PxHepY/2xsd+p3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zb/MJk4WON2SU77gc1dv+suZMFrI/sk91UI+cU2CwHs=;
+ b=L42bFvq4izvPqT8jNvICWHOpqJsbMwCcL+nkl7cJaTXNmPBRzPVJEiKNrVgxYR8T4tGkwHG5SAvA7hHZE5ygu824lOemJ70QJVRz3qKFTZfQERMZbVU8ejeHbLsViX9cm9LKDhKatLBvAWAZOEmAZ42wOGdtXYQl8K8m84nhsP4AJiVfnf0EVWhcCuGp/pxIjyvb2mDWytZfRL5NGmZ2v7GJ9DX4Q1rSUHQSbjy4XqZwBzGcgGxgKHO9RM6y5ud6rp+pdb4MhIlcnghgaMc73SNj9AHvcBkp+Xw3QlJv/tRasbFq1a6sDTDXwBJm4ts6QqmJq+PWQELlbqe/Sc4VOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SA1PR11MB6943.namprd11.prod.outlook.com (2603:10b6:806:2bc::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
+ 2023 17:57:15 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 17:57:15 +0000
+Message-ID: <8051f3ef-1126-41fb-b6cc-f48441936dd7@intel.com>
+Date:   Thu, 2 Nov 2023 10:57:12 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 23/24] selftests/resctrl: Add L2 CAT test
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+ <20231024092634.7122-24-ilpo.jarvinen@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231024092634.7122-24-ilpo.jarvinen@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW2PR2101CA0027.namprd21.prod.outlook.com
+ (2603:10b6:302:1::40) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA1PR11MB6943:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18cd6839-87fd-4c55-a8b4-08dbdbcd259e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AeiiLkLba5RFQPBcRrOgkdMcT3EvpwCQSaQCNS5cM0t3K2pdfJ+ww69P5JAO6azuLwfwHE7ckdz2wy7Fx9LzaMRoryc8Y0iDzLy9+KE0dj4kyqT/15LCJpTdvz33YCRDXwyBVvjIpFm2I13+ylu+zcvQQ9cX+ZITbbJxGnyn3tMczKOjHlhQ8HJtCXyzEEytqIvlPmIHkbAzsD0bJJLrTz4qG4OJjGoqv8A11qdsUR6W9zx2bV2rc6U2swuY43iRXBZv4efhkYi3h9Tg2u0uevyF/e33rDbVwDnxu2oI+bbYtrOk2H6mR+L9T+UE6mliKJRuk3Vaz3CfcLNs3rWiTJXWTFqmJfb1KwmRnCzAEC83goWee7ugSX94WGsxrrGZu1GC1/uQVGWUZS2JWTn685v8gUxtQ6g3/QTQjtrHBn54zPnE4AxfNMP7bbJVc8YfWzgBfhjOnXTEbjeYP8vxkE03kItqm/RXnN7I62Z6PH2Wab57Krcol/fFUTSTHt9QzIoyvdGfD241AhYdtmiGajwjNmPu0xXgpK6LQYYm8vlc1ruTuc5CSCehgicj2P1Qvh/d+nuviIrFh5QlZKQOZYmijENvtlS7DhyDjpuUB0w/+EimuqR7XbRXV/NK1Pefs4cV81ucBEyyRdVbMkQGUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(376002)(39860400002)(136003)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(6512007)(2616005)(6666004)(478600001)(6506007)(53546011)(66946007)(66574015)(5660300002)(41300700001)(6486002)(316002)(110136005)(66556008)(6636002)(8676002)(83380400001)(8936002)(26005)(44832011)(2906002)(66476007)(4326008)(38100700002)(82960400001)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXp3TjRTdTRkbzdNWTdDQnBMRHhkZHFXd3MxS3FwWm0wSUV0U2lqWHlOWFZO?=
+ =?utf-8?B?dnoyQXl0V0lhZGg5ZlVGZTJqNjhnNlBYOEF4UllYSThxMnV5dnR5ME54Qm9m?=
+ =?utf-8?B?d1YvYTlpOHJoaHdEVjJLRHNrZWpGYzRLeTNZUWFiOHBscEVRUDVYUkhiNWEy?=
+ =?utf-8?B?azNPd2hURE44QVZWYWtidi9VL2JEL0k2NFU0N0JvRE0vZUFyNkJ6TU1Wc0lU?=
+ =?utf-8?B?NXo5QzhyL05DOVlWYTZKQlpsM0V1akh1bzlEa3dLbFc2citEVVEydmFRemhK?=
+ =?utf-8?B?REJZZGFiNUtia0tIa3d3ZzJBbUpsRkY0Z2k2dUs3TjR6Um11ZUlhTU9sMENh?=
+ =?utf-8?B?L3RHbWZDVlJaRm5jOVRFV3N0Ykw2aE10dUI1bUorSURVRWhTMWZ6REJ5Y3Q3?=
+ =?utf-8?B?OEcvb3dHRm8yN09iako0bVE4Y0diUzRKQjJZcHJwNjRnNEVSMnAwMzFKNkxX?=
+ =?utf-8?B?WTlZS2kzYytRM1R0MmI1TTN2czhJN2J0K2dkTWpQZFZ1UkF1Z2VlY0JkdG91?=
+ =?utf-8?B?YS9pbElSSEZnK0NDbGsrWCtzWXdPcjF1dUtiemxpd3JGYkJ5R3ZSbTN0MWt3?=
+ =?utf-8?B?Q2xTSjcvcTRUemVneG55a3VKaW5pdVRrdXNDZ1hKMmt6T243VlliTUJ0S0VV?=
+ =?utf-8?B?VEZnTlJmOGVyZ21RSkhqSHpCQXBteHJCWjlNYSsxdk53VHZMWCtSU25ERHlj?=
+ =?utf-8?B?byticU5CNWYxMHJ0Ti8zTVlFc3N0c3FpRG5ScnFyYkp4b3FmeDdzZzVXM2Vh?=
+ =?utf-8?B?MHc0cHN0c1Y1RG5PQTU2ZlFDOGVHaXcraEhMcFllZEpqenNoZXhoTkhUV3FY?=
+ =?utf-8?B?bTYrNWp3N0lDSGpGUy9VSlFzbmE4YUN1SHE4L3paZ0xUbyt5dVJUcUdnUGQw?=
+ =?utf-8?B?OFdYSDRLam1IVERlN1EraGpNSERCNUc1cTdMQ2lyV1Q0bGhGM2hlSG5vck9U?=
+ =?utf-8?B?UkluaXQ3RnZBQjRYS0tsOGNIb2p1NkZoR2c0N2pHR0RZMG9xWmxoNTdiSGVT?=
+ =?utf-8?B?WGJseWZKZzFBemtoTUhrYzdhTXJ2NnY3MVZpU2k2Sm1WaHBVdmdtTkcraFgr?=
+ =?utf-8?B?enc4K0NnckY1Y29uMkxDeno4SVRpS1oyY0ptZ2xJaWYzeWlBS2E5cjlVcFJI?=
+ =?utf-8?B?VVduVXJKaWtTVFk2YVMyVjBjNTE4QmZGbWpUcUd5cTUzVTlhQkFteTd1SGFB?=
+ =?utf-8?B?RWg3VHlKa0tndmR6Y3NEaHNGR3IrVWIzbk1Xcm84cnpXUThheE5IMWRmdC9s?=
+ =?utf-8?B?cEFKZ3Z2bmNKQzVUMHQ1bEhCK3dnQnFJNm1CVzBBWDhPVTFGajVKN1h0MXZm?=
+ =?utf-8?B?aWhzazBVUVdyc3lJd2NRUklWTVhhMXl1NU9QRHRhVWRsUzdBOEVXSnFWaEE3?=
+ =?utf-8?B?cFJaa3g3ckRzRk80RkZpVSsvTXZrTFFrL0l1ZlZLeVlsbnVjTDJZQWVCWGsv?=
+ =?utf-8?B?NzBhZE45eVdjMmRSR1FDVE1HYjFWS1BvaVAyMnFJeFgwWFo1bGJhQ1RnSWFO?=
+ =?utf-8?B?MWg2VHJDV0xlZ01HWGxiaS95d0VkZm9NZ0RUYkNLOVBRV1dCLzZ0QWJhTzZw?=
+ =?utf-8?B?SUFQLzJPZUFObFVJVEhDWTRDWXpHZVMyS3M4N1dXdDF3L2RjMWlHUFNuQnJD?=
+ =?utf-8?B?R2NJNkNHNmtvemJjTENGY1NmQzBjeUdTUHE3b3VUT3FPSHQ1WWhGSEZNaUsw?=
+ =?utf-8?B?MTdPQ0tYREZVRzRBU1BaU0JSN0pUMzlwNXhoTTRRNko3c1RYTVdBcjVOb0Zy?=
+ =?utf-8?B?SGNyQjViN2VQMS9XQlk3dG53MElsZ01keHBxRVBWWDZjZTNaSmppcXU2T3Bn?=
+ =?utf-8?B?N0NneEJGaGtDdDBFWTFiekxHU0o3T0ZTWDdKTE1OckFSaGkrWEIwUGg0ck04?=
+ =?utf-8?B?RXdPUUpPTHRtRUtuUzJ2bmhRWHZPMEZuRlloSDZaS2FsQlcwYkJ4UExHbGVo?=
+ =?utf-8?B?dlNjcFpTRUxubHZIVlRtdkx2YWVza0VIcCt5RE8wZ3F4YkhWZ29LL1pQTE5q?=
+ =?utf-8?B?cHBLcGkrbGFmeXhjZmxocnRYSEtZLzY5UHp5MkJLQVVGeUdjMnVjWEZlYVZY?=
+ =?utf-8?B?MGxjWG5ZL0hleEZMQmNFcDV1VllRR3FXUnlFcFN2TWl6TlhRd2tLWGZjNWEx?=
+ =?utf-8?B?K3lKUEJGWkhaMk1IQnZEVENwSVVscTBONXN2c2ZOQ2JUN09JMlB3d0NvUmtx?=
+ =?utf-8?B?MEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18cd6839-87fd-4c55-a8b4-08dbdbcd259e
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 17:57:15.0466
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: woPlHkUo65fc40/LIAXrdAMlJnjs7itA81Ohlq7SCBcY4hjlLuCMubeN3GTDcpvMA8+JCOUaClkBfRqmPov2DN453rUeuLs+aSMz2fu0WZs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6943
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finding a map is done under a lock, returning the map without a
-reference count means it can be removed without notice and causing
-uses after free. Grab a reference count to the map within the lock
-region and return this. Fix up locations that need a map__put
-following this. Also fix some reference counted pointer comparisons.
+Hi Ilpo,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/vmlinux-kallsyms.c |  5 +++--
- tools/perf/util/machine.c           |  6 ++++--
- tools/perf/util/maps.c              |  6 +++---
- tools/perf/util/probe-event.c       |  1 +
- tools/perf/util/symbol-elf.c        |  4 +++-
- tools/perf/util/symbol.c            | 20 ++++++++++++--------
- 6 files changed, 26 insertions(+), 16 deletions(-)
+On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
+> CAT selftests only cover L3 but some newer CPUs come also with L2 CAT
+> support.
 
-diff --git a/tools/perf/tests/vmlinux-kallsyms.c b/tools/perf/tests/vmlinux-kallsyms.c
-index e808e6fc8f76..fecbf851bb2e 100644
---- a/tools/perf/tests/vmlinux-kallsyms.c
-+++ b/tools/perf/tests/vmlinux-kallsyms.c
-@@ -131,9 +131,10 @@ static int test__vmlinux_matches_kallsyms_cb1(struct map *map, void *data)
- 	struct map *pair = maps__find_by_name(args->kallsyms.kmaps,
- 					(dso->kernel ? dso->short_name : dso->name));
- 
--	if (pair)
-+	if (pair) {
- 		map__set_priv(pair, 1);
--	else {
-+		map__put(pair);
-+	} else {
- 		if (!args->header_printed) {
- 			pr_info("WARN: Maps only in vmlinux:\n");
- 			args->header_printed = true;
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 1112a9dbb21a..d6b3f84cb935 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -1538,8 +1538,10 @@ static int maps__set_module_path(struct maps *maps, const char *path, struct kmo
- 		return 0;
- 
- 	long_name = strdup(path);
--	if (long_name == NULL)
-+	if (long_name == NULL) {
-+		map__put(map);
- 		return -ENOMEM;
-+	}
- 
- 	dso = map__dso(map);
- 	dso__set_long_name(dso, long_name, true);
-@@ -1553,7 +1555,7 @@ static int maps__set_module_path(struct maps *maps, const char *path, struct kmo
- 		dso->symtab_type++;
- 		dso->comp = m->comp;
- 	}
--
-+	map__put(map);
- 	return 0;
- }
- 
-diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 28facfdac1d7..8a8c1f216b86 100644
---- a/tools/perf/util/maps.c
-+++ b/tools/perf/util/maps.c
-@@ -885,7 +885,7 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
- 			struct dso *dso = map__dso(maps__maps_by_name(maps)[i]);
- 
- 			if (dso && strcmp(dso->short_name, name) == 0) {
--				result = maps__maps_by_name(maps)[i]; // TODO: map__get
-+				result = map__get(maps__maps_by_name(maps)[i]);
- 				done = true;
- 			}
- 		}
-@@ -897,7 +897,7 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
- 					sizeof(*mapp), map__strcmp_name);
- 
- 			if (mapp) {
--				result = *mapp; // TODO: map__get
-+				result = map__get(*mapp);
- 				i = mapp - maps__maps_by_name(maps);
- 				RC_CHK_ACCESS(maps)->last_search_by_name_idx = i;
- 			}
-@@ -922,7 +922,7 @@ struct map *maps__find_by_name(struct maps *maps, const char *name)
- 					struct dso *dso = map__dso(pos);
- 
- 					if (dso && strcmp(dso->short_name, name) == 0) {
--						result = pos; // TODO: map__get
-+						result = map__get(pos);
- 						break;
- 					}
- 				}
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index a1a796043691..be71abe8b9b0 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -358,6 +358,7 @@ static int kernel_get_module_dso(const char *module, struct dso **pdso)
- 		map = maps__find_by_name(machine__kernel_maps(host_machine), module_name);
- 		if (map) {
- 			dso = map__dso(map);
-+			map__put(map);
- 			goto found;
- 		}
- 		pr_debug("Failed to find module %s.\n", module);
-diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-index 4b934ed3bfd1..5990e3fabdb5 100644
---- a/tools/perf/util/symbol-elf.c
-+++ b/tools/perf/util/symbol-elf.c
-@@ -1470,8 +1470,10 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
- 		dso__set_loaded(curr_dso);
- 		*curr_mapp = curr_map;
- 		*curr_dsop = curr_dso;
--	} else
-+	} else {
- 		*curr_dsop = map__dso(curr_map);
-+		map__put(curr_map);
-+	}
- 
- 	return 0;
- }
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index ad4819a24320..0785a54e832e 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -814,7 +814,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 				struct map *initial_map)
- {
- 	struct machine *machine;
--	struct map *curr_map = initial_map;
-+	struct map *curr_map = map__get(initial_map);
- 	struct symbol *pos;
- 	int count = 0, moved = 0;
- 	struct rb_root_cached *root = &dso->symbols;
-@@ -858,13 +858,14 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 					dso__set_loaded(curr_map_dso);
- 				}
- 
-+				map__zput(curr_map);
- 				curr_map = maps__find_by_name(kmaps, module);
- 				if (curr_map == NULL) {
- 					pr_debug("%s/proc/{kallsyms,modules} "
- 					         "inconsistency while looking "
- 						 "for \"%s\" module!\n",
- 						 machine->root_dir, module);
--					curr_map = initial_map;
-+					curr_map = map__get(initial_map);
- 					goto discard_symbol;
- 				}
- 				curr_map_dso = map__dso(curr_map);
-@@ -888,7 +889,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 			 * symbols at this point.
- 			 */
- 			goto discard_symbol;
--		} else if (curr_map != initial_map) {
-+		} else if (!RC_CHK_EQUAL(curr_map, initial_map)) {
- 			char dso_name[PATH_MAX];
- 			struct dso *ndso;
- 
-@@ -899,7 +900,8 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 			}
- 
- 			if (count == 0) {
--				curr_map = initial_map;
-+				map__zput(curr_map);
-+				curr_map = map__get(initial_map);
- 				goto add_symbol;
- 			}
- 
-@@ -913,6 +915,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 					kernel_range++);
- 
- 			ndso = dso__new(dso_name);
-+			map__zput(curr_map);
- 			if (ndso == NULL)
- 				return -1;
- 
-@@ -926,6 +929,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 
- 			map__set_mapping_type(curr_map, MAPPING_TYPE__IDENTITY);
- 			if (maps__insert(kmaps, curr_map)) {
-+				map__zput(curr_map);
- 				dso__put(ndso);
- 				return -1;
- 			}
-@@ -936,7 +940,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 			pos->end -= delta;
- 		}
- add_symbol:
--		if (curr_map != initial_map) {
-+		if (!RC_CHK_EQUAL(curr_map, initial_map)) {
- 			struct dso *curr_map_dso = map__dso(curr_map);
- 
- 			rb_erase_cached(&pos->rb_node, root);
-@@ -951,12 +955,12 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
- 		symbol__delete(pos);
- 	}
- 
--	if (curr_map != initial_map &&
-+	if (!RC_CHK_EQUAL(curr_map, initial_map) &&
- 	    dso->kernel == DSO_SPACE__KERNEL_GUEST &&
- 	    machine__is_default_guest(maps__machine(kmaps))) {
- 		dso__set_loaded(map__dso(curr_map));
- 	}
--
-+	map__put(curr_map);
- 	return count + moved;
- }
- 
-@@ -1248,7 +1252,7 @@ static bool remove_old_maps(struct map *map, void *data)
- 	 * We need to preserve eBPF maps even if they are covered by kcore,
- 	 * because we need to access eBPF dso for source data.
- 	 */
--	return RC_CHK_ACCESS(map) != RC_CHK_ACCESS(map_to_save) && !__map__is_bpf_prog(map);
-+	return !RC_CHK_EQUAL(map, map_to_save) && !__map__is_bpf_prog(map);
- }
- 
- static int dso__load_kcore(struct dso *dso, struct map *map,
--- 
-2.42.0.869.gea05f2083d-goog
+No need to use "new" language. L2 CAT has been available for a long time
+... since Apollo Lake. Which systems actually support it is a different
+topic. This is an architectural feature that has been available for a
+long time. Whether a system supports it will be detected and the test
+run based on that. 
 
+> 
+> Add L2 CAT selftest. As measuring L2 misses is not easily available
+> with perf, use L3 accesses as a proxy for L2 CAT working or not.
+
+I understand the exact measurement is not available but I do notice some
+L2 related symbolic counters when I run "perf list". l2_rqsts.all_demand_miss
+looks promising.
+
+L3 cannot be relied on for those systems, like Apollo lake, that do
+not have an L3.
+
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  tools/testing/selftests/resctrl/cat_test.c    | 68 +++++++++++++++++--
+>  tools/testing/selftests/resctrl/resctrl.h     |  1 +
+>  .../testing/selftests/resctrl/resctrl_tests.c |  1 +
+>  3 files changed, 63 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+> index 48a96acd9e31..a9c72022bb5a 100644
+> --- a/tools/testing/selftests/resctrl/cat_test.c
+> +++ b/tools/testing/selftests/resctrl/cat_test.c
+> @@ -131,8 +131,47 @@ void cat_test_cleanup(void)
+>  	remove(RESULT_FILE_NAME);
+>  }
+>  
+> +/*
+> + * L2 CAT test measures L2 misses indirectly using L3 accesses as a proxy
+> + * because perf cannot directly provide the number of L2 misses (there are
+> + * only platform specific ways to get the number of L2 misses).
+> + *
+> + * This function sets up L3 CAT to reduce noise from other processes during
+> + * L2 CAT test.
+
+This motivation is not clear to me. Does the same isolation used during L3 CAT
+testing not work? I expected it to follow the same idea with the L2 cache split
+in two, the test using one part and the rest of the system using the other.
+Is that not enough isolation?
+
+Reinette
