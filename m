@@ -2,125 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C8C7DFBF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7787DFBFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 22:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjKBVWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 17:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
+        id S229993AbjKBV2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 17:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbjKBVWB (ORCPT
+        with ESMTP id S229462AbjKBV2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 17:22:01 -0400
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C49196
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 14:21:56 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id yf8Rqp7S1uQcKyf8RqIfdN; Thu, 02 Nov 2023 22:21:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1698960113;
-        bh=lug65i9SpeCxzvrYTmUZ5JS3Ay8/Kn/DlLaH6z3IhH8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=eVip9fRFNHWDPpYoUlO67CGTnE5aVD6Ok7JeiqTgUzBtEMpoqVHN+1iWRvnokiG2P
-         czruQufq+8nreAWpibk4+WCd0Cov/lPQcJscEMSSMIEsGh8ALpTUebqffPgeqChcsa
-         8Exa7B9LYwVUUUI3w/nzuwfcyAVZislOh6guKhCm1zo2tAqiziVgvhsFGYkOKjUvqH
-         T2oJvZ6DEF/ZkAavYyvi2zpKPutTtFhampzhJAT2KPhF0rq74P8jcTAFL5Qtd8VNQE
-         sTWWEvkjWSU9Ki5PRahWbR1gIO0DZ0Nzmjtp0pRIfju6UwwxLQgsB5ayjX/WpXEdTi
-         GiHD3fvjEeAdg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 02 Nov 2023 22:21:53 +0100
-X-ME-IP: 86.243.2.178
-Message-ID: <95fdad28-95d5-4720-811b-8bbef8600830@wanadoo.fr>
-Date:   Thu, 2 Nov 2023 22:21:51 +0100
+        Thu, 2 Nov 2023 17:28:04 -0400
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A5A187
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 14:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:message-id:in-reply-to:references:
+   subject:mime-version:content-transfer-encoding;
+  bh=Z1NpHf+ickCZ3JZZnaLgy5uvJFGYSq4e+2hH9vxGT6o=;
+  b=IHMb2YOCDY/Dv59PibWzdT7rnd/tiFfKfWS8YWCLriD7l9Y5xWoRpLUC
+   r/KtHrOrr7Kdrfa3mignup/JCpmeEaMI4ppoaLscBml/CpoW1TYzzRXPb
+   xwrSAB1hhcsh9M9M8drp/q6RryA1smqfYEtDxPsc8QYKEWz6XqFG2WT0p
+   o=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=Pass smtp.mailfrom=julia.lawall@inria.fr; spf=None smtp.helo=postmaster@zcs-store9.inria.fr
+Received-SPF: Pass (mail2-relais-roc.national.inria.fr: domain of
+  julia.lawall@inria.fr designates 128.93.142.36 as permitted
+  sender) identity=mailfrom; client-ip=128.93.142.36;
+  receiver=mail2-relais-roc.national.inria.fr;
+  envelope-from="julia.lawall@inria.fr";
+  x-sender="julia.lawall@inria.fr"; x-conformance=spf_only;
+  x-record-type="v=spf1"; x-record-text="v=spf1
+  ip4:128.93.142.0/24 ip4:192.134.164.0/24 ip4:128.93.162.160
+  ip4:89.107.174.7 mx ~all"
+Received-SPF: None (mail2-relais-roc.national.inria.fr: no sender
+  authenticity information available from domain of
+  postmaster@zcs-store9.inria.fr) identity=helo;
+  client-ip=128.93.142.36;
+  receiver=mail2-relais-roc.national.inria.fr;
+  envelope-from="julia.lawall@inria.fr";
+  x-sender="postmaster@zcs-store9.inria.fr";
+  x-conformance=spf_only
+X-IronPort-AV: E=Sophos;i="6.03,272,1694728800"; 
+   d="scan'208";a="134394949"
+X-MGA-submission: =?us-ascii?q?MDEeuemg07ECtdgWwyBF/gXCatUf0rYEVG2UuN?=
+ =?us-ascii?q?CMQzu8WX+yqMTLVDDYMsQipOJ8h8IkBPjzTs7OXOBRZ2e0dhDAtxC34L?=
+ =?us-ascii?q?5EmbC4dC1LSlo7HgZLTxfzrEUT6x5t/GDDzk3DzsWq/D2DGrZXU1K3oG?=
+ =?us-ascii?q?MnpCc/Zg1XYaJew9Ktk91WJQ=3D=3D?=
+Received: from zcs-store9.inria.fr ([128.93.142.36])
+  by mail2-relais-roc.national.inria.fr with ESMTP; 02 Nov 2023 22:27:56 +0100
+Date:   Thu, 2 Nov 2023 22:27:55 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+To:     Anton Eliasson <anton.eliasson@axis.com>
+Cc:     nicolas palix <nicolas.palix@imag.fr>, cocci <cocci@inria.fr>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kernel@axis.com
+Message-ID: <978265928.4471013.1698960475973.JavaMail.zimbra@inria.fr>
+In-Reply-To: <20231003-coccicheck-v1-1-07d2d900a52a@axis.com>
+References: <20231003-coccicheck-v1-0-07d2d900a52a@axis.com> <20231003-coccicheck-v1-1-07d2d900a52a@axis.com>
+Subject: Re: [cocci] [PATCH 1/2] scripts: coccicheck: Return error from
+ run_cmd_parmap
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] vboxsf: Avoid an spurious warning if load_nls_xxx()
- fails
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <d09eaaa4e2e08206c58a1a27ca9b3e81dc168773.1698835730.git.christophe.jaillet@wanadoo.fr>
- <ZUOWS6Vr0rg4VVIb@casper.infradead.org>
-Content-Language: fr, en-US
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <ZUOWS6Vr0rg4VVIb@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [92.89.85.231]
+X-Mailer: Zimbra 8.8.15_GA_4562 (ZimbraWebClient - FF119 (Linux)/8.8.15_GA_4570)
+Thread-Topic: scripts: coccicheck: Return error from run_cmd_parmap
+Thread-Index: /FuP+QpGx8nmd9ShkUiiXS4mQsbSqA==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 02/11/2023 à 13:30, Matthew Wilcox a écrit :
-> On Wed, Nov 01, 2023 at 11:49:48AM +0100, Christophe JAILLET wrote:
->> If an load_nls_xxx() function fails a few lines above, the 'sbi->bdi_id' is
->> still 0.
->> So, in the error handling path, we will call ida_simple_remove(..., 0)
->> which is not allocated yet.
->>
->> In order to prevent a spurious "ida_free called for id=0 which is not
->> allocated." message, tweak the error handling path and add a new label.
-> 
-> That's not spurious!
 
-My fault, as a non-native English speaking man.
-I've always sought that spurious was meaning "odd" or "strange", but I 
-was wrong :(
 
-Here, a better wording could be "to prevent an un-expected "ida..."".
-Is that ok for you?
+----- Mail original -----
+> De: "Anton Eliasson" <anton.eliasson@axis.com>
+> =C0: "Julia Lawall" <Julia.Lawall@inria.fr>, "nicolas palix" <nicolas.pal=
+ix@imag.fr>
+> Cc: "cocci" <cocci@inria.fr>, "linux-kernel" <linux-kernel@vger.kernel.or=
+g>, "Anton Eliasson" <anton.eliasson@axis.com>,
+> kernel@axis.com
+> Envoy=E9: Mardi 3 Octobre 2023 16:25:14
+> Objet: [cocci] [PATCH 1/2] scripts: coccicheck: Return error from run_cmd=
+_parmap
 
-Or the last sentence could shortened to only "In order to fix it, tweak 
-the error handling path and add a new label.".
+> Exiting on error breaks the chain mode. Return the error instead in
+> order for the caller to propagate it or in the case of chain, try the
+> next mode.
+>=20
+> Signed-off-by: Anton Eliasson <anton.eliasson@axis.com>
+> ---
+> scripts/coccicheck | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/scripts/coccicheck b/scripts/coccicheck
+> index e52cb43fede6..95a312730e98 100755
+> --- a/scripts/coccicheck
+> +++ b/scripts/coccicheck
+> @@ -153,7 +153,7 @@ run_cmd_parmap() {
+> =09err=3D$?
+> =09if [[ $err -ne 0 ]]; then
+> =09=09echo "coccicheck failed"
+> -=09=09exit $err
+> +=09=09return $err
+> =09fi
+> }
+>=20
 
-CJ
+I tried disabling OCaml in my version of Coccinelle and then ran make cocci=
+check with this patch.  But I didn't see any improvement.  On the other han=
+d, it keeps going if I just remove the exit line entirely.  Is that what is=
+ wanted?  One can still see the coccicheck failed message.
 
-> You're freeing something that wasn't allocated.
-> A good quality malloc allocation will warn you if you free() a random
-> pointer.  I agree with everything abuot this patch (and the next) except
-> for the changelog.
-> 
->> Fixes: 0fd169576648 ("fs: Add VirtualBox guest shared folder (vboxsf) support")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   fs/vboxsf/super.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
->> index 1fb8f4df60cb..9848af78215b 100644
->> --- a/fs/vboxsf/super.c
->> +++ b/fs/vboxsf/super.c
->> @@ -151,7 +151,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
->>   		if (!sbi->nls) {
->>   			vbg_err("vboxsf: Count not load '%s' nls\n", nls_name);
->>   			err = -EINVAL;
->> -			goto fail_free;
->> +			goto fail_destroy_idr;
->>   		}
->>   	}
->>   
->> @@ -224,6 +224,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
->>   		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
->>   	if (sbi->nls)
->>   		unload_nls(sbi->nls);
->> +fail_destroy_idr:
->>   	idr_destroy(&sbi->ino_idr);
->>   	kfree(sbi);
->>   	return err;
->> -- 
->> 2.34.1
->>
->>
-> 
-> 
+julia
 
+> --
+> 2.30.2
